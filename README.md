@@ -1,4 +1,5 @@
-# pos
+# POS PWA APP
+POS Progressive Web App written in vuejs(cli) having caching and offline capabilities.
 
 ## This directory contains source files needed for compilation i.e js and vue files
 

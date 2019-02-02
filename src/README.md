@@ -1,4 +1,4 @@
-# pos
+# POS - Src
 
 ## This directory is root of our project which contains all of our source code written in vue-cli
 

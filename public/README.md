@@ -1,4 +1,4 @@
-# pos
+# POS - Public
 
 ## In the public directory, you place any static assets you don’t want to be run through Webpack when we build our project.
 
