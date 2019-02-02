@@ -1,21 +1,12 @@
 <template>
   <div class="title">
-    <h1>{{ msg }} </h1>
-    <Toolbar msg="Broccoli POS Header Toolbar"/>
-    <Content msg="Broccoli POS Content"/>
+    {{ msg }}
   </div>
 </template>
 
 <script>
-import Toolbar from './pos/Toolbar.vue'
-import Content from './pos/Content.vue'
-
 export default {
-  name: 'Pos',
-  components : {
-    Toolbar,
-    Content
-  },
+  name: 'Products',
   props: {
     msg: String
   }
@@ -23,11 +14,9 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-
 <style lang="scss" scoped>
 @import '@/assets/sass/variables.scss';
-
-.title {
+.top {
   color : $primary-color;
 }
 </style>
