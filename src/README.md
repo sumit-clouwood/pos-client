@@ -24,7 +24,7 @@ Add i18n and install vue-i18n loader
 vue add i18n
 ```
 
-For Sinbgle file component use loader
+For Single file component use loader
 
 ```
 npm i --save-dev @kazupon/vue-i18n-loader
