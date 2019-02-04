@@ -14,15 +14,18 @@ For Css we are going to use Sass.
 Install node-sass and sass-loader
 ```
 npm install -D sass-loader node-sass
+```
 
 ### Localization
 Multilang suport ll be added by i18n plugin for vue
 Add i18n and install vue-i18n loader
+
 ```
 vue add i18n
 ```
 
 For Sinbgle file component use loader
+
 ```
 npm i --save-dev @kazupon/vue-i18n-loader
 ```
