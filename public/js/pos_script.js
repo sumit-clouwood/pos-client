@@ -86,10 +86,10 @@ $(document).ready(function () {
         $("button.btn.referal-btn").text(selText);
     });
 
-    $('[data-toggle="tooltip"]').tooltip();
+  /*  $('[data-toggle="tooltip"]').tooltip();
     $("button#schedule-btn").click(function () {
         $('button#schedule-btn .datepicker').show();
-    });
+    });*/
 
     $(document).mouseup(function (e) {
         var popup = $("#schedule-btn .datepicker, #schedule-btn");
@@ -582,7 +582,7 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-    $('.dine-in-tabel-wrapper').draggable({
+/*    $('.dine-in-tabel-wrapper').draggable({
         start: function () {
 
             $(this).animate({
@@ -601,7 +601,7 @@ $(document).ready(function () {
     });
     $('.sitting-dine-wrap.disable-sorting').sortable('disable');
     $(".sitting-dine-wrap").sortable();
-    $("#sitting-dinein-table").sortable();
+    $("#sitting-dinein-table").sortable();*/
 
 
 });
@@ -677,7 +677,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
 
-    $('.sitting-dinein-table').droppable({
+  /*  $('.sitting-dinein-table').droppable({
         accept: '#long-table-shape, #square-table-shape, #circle-table-shape',
         drop: function (event, ui) {
             var $clone = ui.helper.last().clone();
@@ -691,7 +691,7 @@ $(document).ready(function () {
 
     $('#long-table-shape, #square-table-shape, #circle-table-shape').draggable({
         helper: 'clone'
-    });
+    });*/
 
 });
 
@@ -708,7 +708,7 @@ $(function () {
      You can also combine this plugin with the jQuery UI built-in resizable() and draggable(), although the latter works best when applied to a container with the rotatable inside it. See the Demo page for some examples.
      */
     // Assign Draggable
-    $('.box-wrapper').draggable({
+/*    $('.box-wrapper').draggable({
         cancel: ".ui-rotatable-handle"
     });
     // Assign Rotatable
@@ -723,7 +723,7 @@ $(function () {
     // Assigning bindings for rotation event
     $("span.editable-view div[class*='ui-rotatable-handle-']").bind("mousedown", function (e) {
         $('span.editable-view').rotatable("instance").startRotate(e);
-    });
+    });*/
 });
 $(function () {
     $('.autotbl').click(function () {

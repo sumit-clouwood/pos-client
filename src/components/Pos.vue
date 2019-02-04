@@ -7,10 +7,10 @@
                 <LeftNavCategory/>
             </div>
         </nav>
+        <Toolbar msg="Broccoli POS Header Toolbar"/>
+        <Content msg="Broccoli POS Content"/>
     </div>
-    <Toolbar msg="Broccoli POS Header Toolbar"/>
-    <Content msg="Broccoli POS Content"/>
-    </div>
+
 </template>
 
 <script>
