@@ -1,5 +1,5 @@
 <template>
-    <div class="Header">
+    <div class="pos-header">
         <!--<pre v-text="$attrs"/>-->
         <div class="navbar-nav-sidebar">
             <div class="add-screen-walkin">
@@ -50,7 +50,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-    @import '@/assets/sass/variables.scss';
-
-    @import '@/assets/sass/global.scss';
+    @import '../../assets/sass/variables.scss';
+    @import '../../assets/sass/global.scss';
 </style>
