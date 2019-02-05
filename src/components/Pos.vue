@@ -10,8 +10,7 @@
             <div class="content-wrapper">
                 <div class="container-fluid row">
                     <Announcement />
-                    <ContentItems />
-                    <ContentCart />
+                    <Contents />
                     <!--<h1>{{ $t('title') }} from translation</h1>-->
                     <!--<h1>{{ $t('body') }} from translation</h1>-->
                     <!--<Content msg="Broccoli POS Content"/>-->
@@ -40,9 +39,7 @@
 <script>
     import Menu from './pos/Menu.vue'
     import Header from './pos/Header.vue'
-    // import Toolbar from './pos/Toolbar.vue'
-    import ContentCart from './pos/content/Cart'
-    import ContentItems from './pos/content/Item'
+    import Contents from './pos/Contents'
     import Announcement from './pos/header/Announcement'
     import Footer from './pos/Footer'
 
@@ -51,8 +48,7 @@
         components: {
             Header,
             Menu,
-            ContentCart,
-            ContentItems,
+            Contents,
             Announcement,
             Footer
         },

@@ -1754,7 +1754,7 @@ button.buttoned.colorwhite.donebutton {
  padding-right:0;
 }
 
-.left-container {margin-right:15px;}
+.left-container {margin-right:15px; padding-left:30px !important}
 
 .orders-panel {text-align: left; max-width:32.2%; height:calc(100vh - 210px);}
 
@@ -1796,7 +1796,7 @@ footer.sticky-footer ul.template-btn {
  padding:20px 0;
 }
 
-footer.sticky-footer ul.ullist-icons {width:65%;}
+footer.sticky-footer ul.ullist-icons {width:65%; text-align:left;}
 
 /*Add customer*/
 .customer-header {
