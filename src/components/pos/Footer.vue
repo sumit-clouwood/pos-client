@@ -30,21 +30,23 @@
                 </ul>
             </div>
         </footer>
+        <div class="modal-backdrop fade show" id="transparent-screen"></div>
         <!--All footer popups-->
         <AddNote />
+        <!--<ManageCustomer />-->
     </div>
 </template>
 
 <script>
     import AddNote from './footer/popups/AddNote'
-    import ManageCustomer from './footer/popups/ManageCustomer'
+    // import ManageCustomer from './footer/popups/ManageCustomer'
 
     export default {
         name: 'Footer',
         props: {},
         components:{
             AddNote,
-            ManageCustomer
+            // ManageCustomer
         }
     }
 </script>

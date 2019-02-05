@@ -10,7 +10,7 @@
             <div class="content-wrapper">
                 <div class="container-fluid row">
                     <Announcement />
-                    <Contents />
+                    <Content />
                     <!--<h1>{{ $t('title') }} from translation</h1>-->
                     <!--<h1>{{ $t('body') }} from translation</h1>-->
                     <!--<Content msg="Broccoli POS Content"/>-->
@@ -39,7 +39,7 @@
 <script>
     import Menu from './pos/Menu.vue'
     import Header from './pos/Header.vue'
-    import Contents from './pos/Contents'
+    import Content from './pos/Content'
     import Announcement from './pos/header/Announcement'
     import Footer from './pos/Footer'
 
@@ -48,7 +48,7 @@
         components: {
             Header,
             Menu,
-            Contents,
+            Content,
             Announcement,
             Footer
         },
