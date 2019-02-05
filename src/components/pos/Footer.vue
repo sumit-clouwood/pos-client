@@ -39,9 +39,3 @@
         props: {},
     }
 </script>
-
-<style lang="scss" scoped>
-    @import "../../assets/sass/variables";
-    /*@import "../../assets/sass/global";*/
-    @import "../../assets/sass/footer";
-</style>

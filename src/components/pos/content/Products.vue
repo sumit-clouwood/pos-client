@@ -1,22 +1,145 @@
 <template>
-  <div class="title">
-    {{ msg }}
-  </div>
+    <div class="vegetable-pizza-wrapper">
+        <!--Added Breadcrumb here-->
+        <Breadcrumb />
+
+        <div class="vegetable-pizza-block">
+            <div class="vegetable-pizza">
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small + Vegetable Pizza Small beverage
+                            amlet</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+                <div class="vegetable">
+                    <div>
+                        <img src="img/pos/vegetable-pizza.png" alt="vegetable-pizza">
+                        <p class="remove-bottom popover-btn">Vegetable Pizza Small</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
-export default {
-  name: 'Products',
-  props: {
-    msg: String
-  }
-}
+    import Breadcrumb from './Breadcrumb'
+    export default {
+        name: 'Products',
+        props: {
+            msg: String
+        },
+        components: {
+            Breadcrumb
+        }
+    }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss" scoped>
-@import '@/assets/sass/variables.scss';
-.top {
-  color : $primary-color;
-}
-</style>

@@ -1,27 +1,39 @@
 <template>
-  <div class="title">
-    <h2>{{ msg }}</h2>
-    <Products msg="POS products"/>
-  </div>
+    <div>
+        <div class="col-md-8 left-container">
+            <search/>
+            <div class="row">
+                <SubMenu/>
+                <Products/>
+            </div>
+        </div>
+        <div class="col-md-4 orders-panel">
+            <div class="order-wrappers-panel animated zoomIn">
+                <CartHeader/>
+                <CartItem/>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
-import Products from './content/Products.vue'
-export default {
-  name: 'Content',
-  props: {
-    msg: String
-  },
-  components : {
-      Products
-  }
-}
-</script>
+    import Products from './content/Products'
+    import Search from './content/Search'
+    import SubMenu from './content/SubMenu'
+    import CartHeader from './content/cart/CartHeader'
+    import CartItem from './content/cart/CartItem'
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss" scoped>
-@import '../../assets/sass/variables.scss';
-.top {
-  color : $primary-color;
-}
-</style>
+    export default {
+        name: 'Content',
+        props: {
+            msg: String
+        },
+        components: {
+            Products,
+            Search,
+            SubMenu,
+            CartHeader,
+            CartItem
+        }
+    }
+</script>
