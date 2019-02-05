@@ -1097,7 +1097,7 @@ form.form-inline.search-inline {
 
 .wrappers-orders .aed-amt {width:24%;}
 
-.wrappers-orders .orders-name {width:72%;}
+.wrappers-orders .orders-name {width:72%; text-align:left}
 
 span.total-charges {
  width:58%;

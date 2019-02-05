@@ -1,5 +1,4 @@
 <template>
-
     <div>
         <div class="contain-body-class">
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
@@ -11,7 +10,8 @@
             <div class="content-wrapper">
                 <div class="container-fluid row">
                     <Announcement />
-                    <Content />
+                    <ContentProduct />
+                    <ContentCart />
                     <!--<h1>{{ $t('title') }} from translation</h1>-->
                     <!--<h1>{{ $t('body') }} from translation</h1>-->
                     <!--<Content msg="Broccoli POS Content"/>-->
@@ -41,7 +41,8 @@
     import LeftNavCategory from './pos/LeftNavCategory.vue'
     import Header from './pos/Header.vue'
     // import Toolbar from './pos/Toolbar.vue'
-    import Content from './pos/Content.vue'
+    import ContentCart from './pos/ContentCart.vue'
+    import ContentProduct from './pos/ContentProduct.vue'
     import Announcement from './pos/Announcement'
     import Footer from './pos/Footer.vue'
 
@@ -50,7 +51,8 @@
         components: {
             Header,
             LeftNavCategory,
-            Content,
+            ContentCart,
+            ContentProduct,
             Announcement,
             Footer
         },
