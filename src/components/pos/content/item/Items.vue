@@ -132,9 +132,9 @@
 </template>
 
 <script>
-    import Breadcrumb from './Breadcrumb'
+    import Breadcrumb from '../Breadcrumb'
     export default {
-        name: 'Products',
+        name: 'Items',
         props: {
             msg: String
         },

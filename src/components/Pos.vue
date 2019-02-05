@@ -4,13 +4,13 @@
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <Header/>
-                    <LeftNavCategory/>
+                    <Menu/>
                 </div>
             </nav>
             <div class="content-wrapper">
                 <div class="container-fluid row">
                     <Announcement />
-                    <ContentProduct />
+                    <ContentItems />
                     <ContentCart />
                     <!--<h1>{{ $t('title') }} from translation</h1>-->
                     <!--<h1>{{ $t('body') }} from translation</h1>-->
@@ -38,21 +38,21 @@
 </i18n>
 
 <script>
-    import LeftNavCategory from './pos/LeftNavCategory.vue'
+    import Menu from './pos/Menu.vue'
     import Header from './pos/Header.vue'
     // import Toolbar from './pos/Toolbar.vue'
-    import ContentCart from './pos/ContentCart.vue'
-    import ContentProduct from './pos/ContentProduct.vue'
-    import Announcement from './pos/Announcement'
-    import Footer from './pos/Footer.vue'
+    import ContentCart from './pos/content/Cart'
+    import ContentItems from './pos/content/Item'
+    import Announcement from './pos/header/Announcement'
+    import Footer from './pos/Footer'
 
     export default {
         name: 'Pos',
         components: {
             Header,
-            LeftNavCategory,
+            Menu,
             ContentCart,
-            ContentProduct,
+            ContentItems,
             Announcement,
             Footer
         },

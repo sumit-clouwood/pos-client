@@ -3,15 +3,15 @@
         <search/>
         <div class="row">
             <SubMenu/>
-            <Products/>
+            <Items/>
         </div>
     </div>
 </template>
 
 <script>
-    import Products from './content/Products'
-    import Search from './content/Search'
-    import SubMenu from './content/SubMenu'
+    import Items from './item/Items'
+    import Search from './Search'
+    import SubMenu from './SubMenu'
 
     export default {
         name: 'ContentProduct',
@@ -19,7 +19,7 @@
             msg: String
         },
         components: {
-            Products,
+            Items,
             Search,
             SubMenu,
         }

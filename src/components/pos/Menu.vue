@@ -96,7 +96,7 @@
 
 <script>
     export default {
-        name: 'LeftNavCategory',
+        name: 'Menu',
         props: {
         },
     };

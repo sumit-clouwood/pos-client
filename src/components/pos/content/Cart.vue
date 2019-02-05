@@ -10,10 +10,10 @@
 </template>
 
 <script>
-    import CartHeader from './content/cart/CartHeader'
-    import CartItem from './content/cart/CartItem'
-    import CartHoldOrder from './content/cart/CartHoldOrder'
-    import CartFooter from './content/cart/CartFooter'
+    import CartHeader from './cart/CartHeader'
+    import CartItem from './cart/CartItem'
+    import CartHoldOrder from './cart/CartHoldOrder'
+    import CartFooter from './cart/CartFooter'
 
     export default {
         name: 'ContentCart',
