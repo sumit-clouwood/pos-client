@@ -30,12 +30,21 @@
                 </ul>
             </div>
         </footer>
+        <!--All footer popups-->
+        <AddNote />
     </div>
 </template>
 
 <script>
+    import AddNote from './footer/popups/AddNote'
+    import ManageCustomer from './footer/popups/ManageCustomer'
+
     export default {
         name: 'Footer',
         props: {},
+        components:{
+            AddNote,
+            ManageCustomer
+        }
     }
 </script>
