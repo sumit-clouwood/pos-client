@@ -242,7 +242,7 @@ body.fixed-nav {
   background:#fff !important; border-bottom:solid 2px #e3e7f2;}
  
  #mainNav.fixed-top .navbar-sidenav {
-  height:calc(100vh - 130px);
+  height:calc(100vh - 70px);
  }
  
  #mainNav.fixed-top .sidenav-toggler {
@@ -5107,14 +5107,12 @@ div#sub-category {display:flex; align-items:center; justify-content:center;}
  background:#cbd0de !important;
 }
 
-body#page-top.active-body > div > *:not(#mainNav) {
- opacity:0.5;
+body#page-top.active-body > div#app {
+ background: #000;
 }
 
-body#page-top.active-body > .contain-body-class {
- background-color:#000 !important;
- overflow:hidden;
- 
+body#page-top.active-body  .content-wrapper {
+ opacity: 0.5;
 }
 
 #transparent-screen {display:none;}
