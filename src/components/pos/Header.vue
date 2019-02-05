@@ -6,8 +6,8 @@
 </template>
 
 <script>
-    import TopNavbarLeft from "./Header/TopNavbarLeft"
-    import TopNavbarRight from "./Header/TopNavbarRight"
+    import TopNavbarLeft from "./header/TopNavbarLeft"
+    import TopNavbarRight from "./header/TopNavbarRight"
 
     export default {
         name: 'Header',

@@ -86,7 +86,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-center" id="sidenavToggler">profile
+                <a class="nav-link text-center" id="sidenavToggler">
                     <img src="img/pos/profile-pic.png">
                 </a>
             </li>
