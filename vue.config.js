@@ -1,5 +1,4 @@
 module.exports = {
-  //configure webpack
   chainWebpack: config => {
     config.module
       .rule("i18n")
@@ -9,7 +8,6 @@ module.exports = {
         .loader("@kazupon/vue-i18n-loader")
         .end();
   },
-  
   pluginOptions: {
     i18n: {
       locale: 'en',

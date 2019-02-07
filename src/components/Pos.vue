@@ -1,97 +1,108 @@
 <template>
-  <div class="pos">
-    <div class="title">
-      <h1>{{ msg }} </h1>
-      <h1>{{ $t('title') }} from translation</h1>
-      <h1>{{ $t('body') }} from translation</h1>
-      <Toolbar msg="Broccoli POS Header Toolbar"/>
-      <Content msg="Broccoli POS Content"/>
+    <div>
+        <div class="contain-body-class">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <Header/>
+                    <Menu/>
+                </div>
+            </nav>
+            <div class="content-wrapper">
+                <div class="container-fluid row">
+                    <Announcement />
+                    <Content />
+                    <!--<h1>{{ $t('title') }} from translation</h1>-->
+                    <!--<h1>{{ $t('body') }} from translation</h1>-->
+                    <!--<Content msg="Broccoli POS Content"/>-->
+                </div>
+            </div>
+        </div>
+        <Footer/>
+
     </div>
-    <div class="catgories">
-      <h3>Categories</h3>
-      <ul>
-        <li
-          v-for="category in categories"
-          :key="category.id">
-          <span @click="browseCategory(category)">
-            {{ category.title }} 
-          </span>
-        </li>
-      </ul>  
-      
-    </div>
-    <section v-if="errored">
-      <h2 class="error">Error Messages</h2>
-      <p>{{ errored }}</p>
-    </section>
-  </div>
+
 </template>
 
+<i18n>
+    {
+    "en": {
+    "title": "Broccoli POS (En)",
+    "body": "Broccoli POS Body (En)"
+    },
+    "ar": {
+    "title": "Broccoli POS (Ar)",
+    "body": "Broccoli POS Body (Ar)"
+    }
+    }
+</i18n>
+
 <script>
-import Toolbar from './pos/Toolbar.vue'
-import Content from './pos/Content.vue'
-import { mapState } from 'vuex'
+  import Menu from './pos/Menu.vue'
+  import Header from './pos/Header.vue'
+  import Content from './pos/Content'
+  import Announcement from './pos/header/Announcement'
+  import Footer from './pos/Footer'
+  import { mapState } from 'vuex'
 
-export default {
-  name: 'Pos',
-  components : {
-    Toolbar,
-    Content
-  },
-  //store private data in component using data
-  data: function () {
-    return {
-      info : null,
-      loading: true, //async loading indicator
-      errored: false //either request had error
-    }
-  },
+  export default {
+    name: 'Pos',
+
+    components: {
+        Header,
+        Menu,
+        Content,
+        Announcement,
+        Footer
+    },
   
-  //data passed to this component by its parent is contained inside props
-  props: {
-    msg: String
-  },
-
-  computed: mapState({
-    // map this.categories to store.state.categories, it uses dispatch
-    categories: state => state.category.fetchAll
-  }),
-
-  methods : {
-    browseCategory(category) {
-      this.$store.dispatch('category/browse', category);
-    }
-  },
-
+    //store private data in component using data
+    data: function () {
+      return {
+        info : null,
+        loading: true, //async loading indicator
+        errored: false //either request had error
+      }
+    },
   
-  beforeCreate () {
-    this.$store.dispatch('auth/auth')
-      .then(response => 
-        this.$store.dispatch('category/fetchAll')
-      )
-  },
+    //data passed to this component by its parent is contained inside props
+    props: {
+      msg: String
+    },
 
-  mounted () {
-     
+    computed: mapState({
+      // map this.categories to store.state.categories, it uses dispatch
+      categories: state => state.category.fetchAll
+    }),
+
+    methods : {
+      browseCategory(category) {
+        this.$store.dispatch('category/browse', category);
+      }
+    },
+  
+    //life cycle hooks
+    beforeCreate () {
+      this.$store.dispatch('auth/auth')
+        .then(response => 
+          this.$store.dispatch('category/fetchAll')
+        )
+    },
+
+    mounted () {
+      
+    }
   }
-
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+
+<style lang="scss" scoped>
+    @import '../assets/sass/variables';
+    @import "../assets/sass/global";
+    @import "../assets/sass/footer";
+    @import '../assets/sass/mixins.scss';
+    @import '../assets/sass/navbar.scss';
+    .title {
+        color: $primary-color;
+    }
 </style>

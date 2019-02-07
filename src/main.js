@@ -15,7 +15,9 @@ import store from './store'
 //import routers
 import router from './router'
 
-Vue.config.productionTip = false
+import i18n from './i18n'
+
+Vue.config.productionTip = false;
 
 
 //create new vue isntance to use store and routers and render App to root component
@@ -23,5 +25,6 @@ Vue.config.productionTip = false
 new Vue({
   store,
   router,
+  i18n,
   render: h => h(App)
-}).$mount('#app')
+}).$mount('#app');
