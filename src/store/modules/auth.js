@@ -14,6 +14,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       DataService.auth().then(token => {
         commit('setToken', token)
+        DataService.applyMiddleWare(state.token);
         token ? resolve() : reject()
       })
     })    

@@ -11,13 +11,25 @@ axios.defaults.headers.post['Accept'] = 'application/json';
 
 
 export default {
-
   get (url) {
     return new Promise((resolve, reject) => {
       axios.get(url)
         .then(response => resolve(response))
         .catch(error => reject(error))
     })
+  },
+
+  applyMiddleWare(token) {
+    
+    axios.defaults.headers.common['Authorization'] = "Bearer " + token;
+
+    axios.interceptors.request.use(function (config) {
+      // Do something before request is sent  
+      return config;
+    }, function (error) {
+    // Do something with request error
+      return Promise.reject(error);
+    });
   },
 
   auth () {
@@ -27,17 +39,6 @@ export default {
     return new Promise((resolve, reject) => {
       axios.post(url)
         .then(response => {
-          //Promise.resolve(response.data.token)
-          //apply middleware
-          axios.interceptors.request.use(function (config) {
-            // Do something before request is sent
-            axios.defaults.headers.common['Authorization'] = response.data.token
-            return config;
-          }, function (error) {
-          // Do something with request error
-            return Promise.reject(error);
-          });
-          
           return resolve(response.data.token);
         })
         .catch(response => {

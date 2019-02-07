@@ -83,8 +83,7 @@
     //life cycle hooks
     beforeCreate () {
       this.$store.dispatch('auth/auth')
-        .then(response => 
-          this.$store.dispatch('category/fetchAll')
+        .then((response) => this.$store.dispatch('category/fetchAll', response)
         )
     },
 
