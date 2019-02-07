@@ -35,11 +35,19 @@
         <AddNote/>
         <ManageCustomer/>
         <OnlineOrder/>
+        <Discount />
+        <DineIn />
+        <SendToDelivery />
+        <ItemModifier />
     </div>
 </template>
 
 <script>
     import AddNote from './footer/popups/AddNote'
+    import Discount from './footer/popups/Discount'
+    import ItemModifier from './footer/popups/ItemModifier'
+    import SendToDelivery from './footer/popups/SendToDelivery'
+    import DineIn from  './footer/popups/DineIn'
     import ManageCustomer from './footer/popups/ManageCustomer'
     import OnlineOrder from './header/popups/OnlineOrder'
 
@@ -49,8 +57,11 @@
         components: {
             AddNote,
             ManageCustomer,
-            OnlineOrder
-
+            OnlineOrder,
+            Discount,
+            DineIn,
+            SendToDelivery,
+            ItemModifier
         }
     }
 </script>
