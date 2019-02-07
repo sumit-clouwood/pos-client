@@ -32,21 +32,26 @@
         </footer>
         <div class="modal-backdrop fade show" id="transparent-screen"></div>
         <!--All footer popups-->
-        <AddNote />
-        <!--<ManageCustomer />-->
+        <AddNote/>
+        <ManageCustomer/>
+        <OnlineOrder/>
+
     </div>
 </template>
 
 <script>
     import AddNote from './footer/popups/AddNote'
-    // import ManageCustomer from './footer/popups/ManageCustomer'
+    import ManageCustomer from './footer/popups/ManageCustomer'
+    import OnlineOrder from './header/popups/OnlineOrder'
 
     export default {
         name: 'Footer',
         props: {},
-        components:{
+        components: {
             AddNote,
-            // ManageCustomer
+            ManageCustomer,
+            OnlineOrder
+
         }
     }
 </script>

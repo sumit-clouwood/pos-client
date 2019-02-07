@@ -1,20 +1,21 @@
 <template>
     <div class="pos-header">
-        <TopNavbarLeft></TopNavbarLeft>
-        <TopNavbarRight></TopNavbarRight>
+        <TopNavLeft></TopNavLeft>
+        <TopNavRight></TopNavRight>
+
     </div>
 </template>
 
 <script>
-    import TopNavbarLeft from "./header/TopNavbarLeft"
-    import TopNavbarRight from "./header/TopNavbarRight"
+    import TopNavLeft from "./header/TopNavLeft"
+    import TopNavRight from "./header/TopNavRight"
 
     export default {
         name: 'Header',
         props: {},
         components: {
-            TopNavbarLeft,
-            TopNavbarRight
+            TopNavLeft,
+            TopNavRight,
         }
     };
 </script>

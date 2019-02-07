@@ -5565,3 +5565,7 @@ tr.pay-tot-amt > td > a.modifier-dm {
  display:flex;
  width:100%;
 }
+
+.modal-open .modal {
+ text-align:left;
+}

@@ -32,7 +32,9 @@
 
 <script>
     export default {
-        name:'navItem',
-        props: {}
+        name:'TopNavRight',
+        props: {},
+        components:{
+        }
     }
 </script>
