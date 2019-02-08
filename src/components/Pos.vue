@@ -42,7 +42,6 @@
   import Content from './pos/Content'
   import Announcement from './pos/header/Announcement'
   import Footer from './pos/Footer'
-  import { mapState } from 'vuex'
 
   export default {
     name: 'Pos',
@@ -67,17 +66,6 @@
     //data passed to this component by its parent is contained inside props
     props: {
       msg: String
-    },
-
-    computed: mapState({
-      // map this.categories to store.state.categories, it uses dispatch
-      categories: state => state.category.fetchAll
-    }),
-
-    methods : {
-      browseCategory(category) {
-        this.$store.dispatch('category/browse', category);
-      }
     },
   
     //life cycle hooks

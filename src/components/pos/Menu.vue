@@ -6,74 +6,11 @@
                     <img src="img/icons/icon.png">
                 </a>
             </li>
-
-            <li class="nav-item active-opacity" data-toggle="tooltip" data-placement="right" title=""
-                data-original-title="Pizza">
-                <a class="nav-link active" href="">
-                    <img src="img/pos/pizza.svg">
-                    <span class="nav-link-text">Pizza</span>
-                </a>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Pasta">
-                <a class="nav-link" href="">
-                    <img src="img/pos/pasta.svg">
-                    <span class="nav-link-text">Pasta</span>
-                </a>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Lasagna">
-                <a class="nav-link" href="">
-                    <img src="img/pos/lasagna.svg">
-                    <span class="nav-link-text">Lasagna</span>
-                </a>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Breakfast">
-                <a class="nav-link">
-                    <img src="img/pos/breakfast.svg">
-                    <span class="nav-link-text">Breakfast</span>
-                </a>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Salad">
-                <a class="nav-link">
-                    <img src="img/pos/salad.svg">
-                    <span class="nav-link-text">Salad</span>
-                </a>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Soup">
-                <a class="nav-link">
-                    <img src="img/pos/soup.svg">
-                    <span class="nav-link-text">Soup</span>
-                </a>
-
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Beverages">
-                <a class="nav-link" href="#">
-                    <img src="img/pos/beverage.svg">
-                    <span class="nav-link-text">Beverages</span>
-                </a>
-            </li>
-
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Misc.">
-                <a class="nav-link" href="#">
-                    <img src="img/pos/misc.svg">
-                    <span class="nav-link-text">Misc.</span>
-                </a>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Offers">
-                <a class="nav-link" href="#">
-                    <img src="img/pos/offers.svg">
-                    <span class="nav-link-text">Offers</span>
-                </a>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Lasagana">
-                <a class="nav-link" href="#">
-                    <img src="img/pos/pizza.svg">
-                    <span class="nav-link-text">Lasagana</span>
-                </a>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="" data-original-title="Talabat">
-                <a class="nav-link" href="#">
-                    <img src="img/pos/pizza.svg">
-                    <span class="nav-link-text">Talabat</span>
+            <li v-for="item in menu" :key="item._id" class="nav-item active-opacity" data-toggle="tooltip" data-placement="right" :title="item.cat_name[0].name"
+                :data-original-title="item.cat_name[0].name">
+                <a class="nav-link active" href="" @click.prevent="browse(item)">
+                    <img :src="item.category_image">
+                    <span class="nav-link-text">{{ item.cat_name[0].name }}</span>
                 </a>
             </li>
         </ul>
@@ -95,10 +32,21 @@
 </template>
 
 <script>
+    import { mapState, mapActions } from 'vuex'
+
     export default {
         name: 'Menu',
         props: {
         },
+        computed: mapState({
+            // map this.categories to store.state.categories, it uses dispatch
+            menu: state => state.category.all
+        }),
+
+        methods: mapActions('category', [
+            'browse'
+        ]),
+
     };
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

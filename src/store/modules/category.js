@@ -2,7 +2,9 @@ import CategoryService from '@/services/data/CategoryService'
 
 // initial state
 const state = {
-  all: []
+  all: [],
+  subcategory : [],
+  items : []
 }
 
 // getters, computed properties 
@@ -10,7 +12,7 @@ const getters = {
   //maincategoreis function, accepts state and getters as param and returns categories
   //access it as store.getters.maincategories
   maincategories: state => {
-    return state.all.filter(category => category.id)     
+    return state.all     
   },
 
   categoryCount: (state, getters) => {
@@ -25,18 +27,32 @@ const getters = {
 
 // actions
 const actions = {
-  fetchAll ({ commit }) {
-    CategoryService.fetchAll(categories => {
-      commit('setCategories', categories)
-    })
+  // fetchAll ({ commit }) {
+  //   CategoryService.fetchAll(categories => {
+  //     commit('setCategories', categories)
+  //   })
+  // }
+  async fetchAll( {commit, rootState} ) {
+    const params = [rootState.location.location, rootState.sync.date, rootState.sync.compress]
+    commit('setCategories', await CategoryService.fetchAll(...params))
+  },
+
+  browse(commit, rootState, item) {
+    const subCategories = state.categories.find(category => category._id = item._id);
+    commit('setSubcategories', subCategories);
   }
+
 }
 
 // mutations
 //state should be only changed through mutation
 const mutations = {
-  setCategories (state, categories) {
-    state.all = categories
+  setCategories (state, response) {
+    state.all = response.data.data.menu_data
+  },
+  
+  setSubcategories (state, subcategories) {
+    state.subcategory = subcategories
   },
 
   browseCategory (state, { maincategory }) {
