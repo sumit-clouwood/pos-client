@@ -1,14 +1,14 @@
 import CategoryService from '@/services/data/CategoryService'
-import {SET_CATEGORIES, SET_SUB_CATEGORIES, SET_SUB_CATEGORY, SET_ITEMS, SET_CATEGORY, SET_ITEM_IMG_PATH, 
-  SET_CATEGORY_IMG_PATH, SET_SUB_CATEGORY_IMG_PATH} from './category/mutation-types'
+import {SET_CATEGORIES, SET_SUBCATEGORIES, SET_SUBCATEGORY, SET_CATEGORY, SET_ITEM_IMG_PATH, 
+  SET_CATEGORY_IMG_PATH, SET_SUBCATEGORY_IMG_PATH, SET_CATEGORY_ITEMS, SET_SUBCATEGORY_ITEMS} from './category/mutation-types'
 
 // initial state
 const state = {
   categoryImagePath : '',
-  subCategoryImagePath : '',
+  subcategoryImagePath : '',
   itemImagePath : '',
   
-  all: [],
+  all : [],
   category : {},
   subcategories : [],
   subcategory : {},
@@ -33,38 +33,33 @@ const getters = {
     return state.all.find(cateogry => cateogry._id === id)
   },
 
-  categoryImage : (state) => (imageSrc) => (state.categoryImagePath + imageSrc)
+  categoryImage : (state) => (imageSrc) => (state.categoryImagePath + imageSrc),
+  items : (state) => state.categoryItems.length ? state.categoryItems : state.subcategoryItems
 }
 
 // actions
 const actions = {
-  // fetchAll ({ commit }) {
-  //   CategoryService.fetchAll(categories => {
-  //     commit('setCategories', categories)
-  //   })
-  // }
+  
   async fetchAll( {commit, rootState} ) {
     const params = [rootState.location.location, rootState.sync.date, rootState.sync.compress]
     CategoryService.fetchAll(...params).then(response => {
 
       commit(SET_CATEGORY_IMG_PATH, response.data.data.itemCategoryImagePath )
-      commit(SET_SUB_CATEGORY_IMG_PATH, response.data.data.itemSubcategoryImagePath )
+      commit(SET_SUBCATEGORY_IMG_PATH, response.data.data.itemSubcategoryImagePath )
       commit(SET_ITEM_IMG_PATH, response.data.data.itemImagePath )
       
       commit(SET_CATEGORIES, response.data.data.menu_data )
       commit(SET_CATEGORY, state.all[0])
-      commit(SET_SUB_CATEGORIES, state.category.get_sub_category )
-      commit(SET_SUB_CATEGORY, state.subcategories[0])
-      commit(SET_ITEMS, 
-        state.category.get_category_product.length 
-          ? state.category.get_category_product
-          : state.subcategory.get_sub_category_product )
+      commit(SET_SUBCATEGORIES, state.category.get_sub_category )
+      commit(SET_SUBCATEGORY, state.subcategories[0])
+      commit(SET_CATEGORY_ITEMS, state.category.get_category_product) 
+      commit(SET_SUBCATEGORY_ITEMS, state.subcategory.get_sub_category_product )
     })
   },
 
   browse(commit, rootState, item) {
-    const subCategories = state.categories.find(category => category._id = item._id);
-    commit(SET_SUB_CATEGORIES, subCategories);
+    const subcategories = state.categories.find(category => category._id = item._id);
+    commit(SET_SUBCATEGORIES, subcategories);
   }
 
 }
@@ -82,24 +77,28 @@ const mutations = {
     state.category = category
   },
 
-  [SET_SUB_CATEGORIES] (state, subcategories) {
+  [SET_SUBCATEGORIES] (state, subcategories) {
     state.subcategories = subcategories
   },
   
-  [SET_SUB_CATEGORY] (state, subcategory) {
+  [SET_SUBCATEGORY] (state, subcategory) {
     state.subcategory = subcategory
   },
 
-  [SET_ITEMS] (state, items ) {
-    state.items = items
+  [SET_CATEGORY_ITEMS] (state, items ) {
+    state.categoryItems = items
+  },
+
+  [SET_SUBCATEGORY_ITEMS] (state, items ) {
+    state.subcategoryItems = items
   },
 
   [SET_CATEGORY_IMG_PATH] (state,  path ) {
     state.categoryImagePath = path
   },
 
-  [SET_SUB_CATEGORY_IMG_PATH] (state,  path ) {
-    state.subCategoryImagePath = path
+  [SET_SUBCATEGORY_IMG_PATH] (state,  path ) {
+    state.subcategoryImagePath = path
   },
 
   [SET_ITEM_IMG_PATH] (state,  path ) {
