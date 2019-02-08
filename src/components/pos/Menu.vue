@@ -9,7 +9,7 @@
             <li v-for="item in menu" :key="item._id" class="nav-item active-opacity" data-toggle="tooltip" data-placement="right" :title="item.cat_name[0].name"
                 :data-original-title="item.cat_name[0].name">
                 <a class="nav-link active" href="" @click.prevent="browse(item)">
-                    <img :src="item.category_image">
+                    <img :src="categoryImage(item.category_image)">
                     <span class="nav-link-text">{{ item.cat_name[0].name }}</span>
                 </a>
             </li>
@@ -32,16 +32,21 @@
 </template>
 
 <script>
-    import { mapState, mapActions } from 'vuex'
+    import { mapState, mapActions, mapGetters } from 'vuex'
 
     export default {
         name: 'Menu',
         props: {
         },
-        computed: mapState({
-            // map this.categories to store.state.categories, it uses dispatch
-            menu: state => state.category.all
-        }),
+        computed: {
+            ...mapState({
+                // map this.categories to store.state.categories, it uses dispatch
+                menu: state => state.category.all,
+            }),
+            ...mapGetters('category', [
+                'categoryImage'
+            ])
+        },
 
         methods: mapActions('category', [
             'browse'

@@ -19,6 +19,14 @@ export default {
     })
   },
 
+  post (url) {
+    return new Promise((resolve, reject) => {
+      axios.post(url)
+        .then(response => resolve(response))
+        .catch(error => reject(error))
+    })
+  },
+
   applyMiddleWare(token) {
     
     axios.defaults.headers.common['Authorization'] = "Bearer " + token;

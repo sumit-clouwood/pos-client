@@ -26,7 +26,7 @@ module.exports = {
     proxy: {
       '/api': {
         //use localhost or dockerip
-        target: 'http://172.18.0.1:8000',
+        target: process.env.API_ENDPOINT,
         changeOrigin: true,
         secure: false,
         //logLevel: 'debug',
