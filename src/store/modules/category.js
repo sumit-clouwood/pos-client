@@ -58,7 +58,7 @@ const actions = {
   },
 
   browse(commit, rootState, item) {
-    const subcategories = state.categories.find(category => category._id = item._id);
+    const subcategories = state.all.find(category => category._id = item._id);
     commit(SET_SUBCATEGORIES, subcategories);
   }
 

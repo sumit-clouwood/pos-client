@@ -6,11 +6,11 @@
                     <img src="img/icons/icon.png">
                 </a>
             </li>
-            <li v-for="item in menu" :key="item._id" class="nav-item active-opacity" data-toggle="tooltip" data-placement="right" :title="item.cat_name[0].name"
-                :data-original-title="item.cat_name[0].name">
+            <li v-for="item in menu" :key="item._id" class="nav-item active-opacity" data-toggle="tooltip" data-placement="right" :title="t(item.cat_name).name"
+                :data-original-title="t(item.cat_name).name">
                 <a class="nav-link active" href="" @click.prevent="browse(item)">
                     <img :src="categoryImage(item.category_image)">
-                    <span class="nav-link-text">{{ item.cat_name[0].name }}</span>
+                    <span class="nav-link-text">{{ t(item.cat_name).name }}</span>
                 </a>
             </li>
         </ul>
@@ -60,3 +60,12 @@
     @import '../../assets/sass/mixins.scss';
     @import '../../assets/sass/navbar.scss';
 </style>-->
+
+<style lang="scss" scoped>
+.nav-link {
+    img {
+        height: 25px;
+        width: 25px;
+    }
+}
+</style>
