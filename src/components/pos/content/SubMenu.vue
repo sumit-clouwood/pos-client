@@ -1,8 +1,8 @@
 <template>
   <div class="pizza-size-wrapper">
     <div class="active" v-for="item in subcategories" :key="item._id">
-      <img src="img/pos/pizza-slice.png" alt="pizza"> 
-      <span>Pizza Slice</span>
+      <img :src="subcategoryImage(item.sub_category_image)" alt="t(item.subcategory_name).name"> 
+      <span @click.prevent="getItems(item)"> {{ t(item.subcategory_name).name }}</span>
     </div>
   </div>
 </template>
@@ -27,3 +27,11 @@ methods: mapActions('category', [
 ]),
 }
 </script>
+<style scoped lang="scss">
+.pizza-size-wrapper {
+  img {
+    height: 80px;
+    width: 80px;
+  }
+}
+</style>

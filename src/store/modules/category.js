@@ -34,10 +34,11 @@ const getters = {
   },
 
   categoryImage : (state) => (imageSrc) => (state.categoryImagePath + imageSrc),
+  subcategoryImage : (state) => (imageSrc) => (state.subcategoryImagePath + imageSrc),
   items : (state) => state.categoryItems.length ? state.categoryItems : state.subcategoryItems
 }
 
-// actions
+// actions, often async
 const actions = {
   
   async fetchAll( {commit, rootState} ) {
@@ -57,9 +58,17 @@ const actions = {
     })
   },
 
-  browse(commit, rootState, item) {
-    const subcategories = state.all.find(category => category._id = item._id);
+  browse({ commit, state }, item) {
+    const subcategories = state.all.find(category => category._id == item._id).get_sub_category;
     commit(SET_SUBCATEGORIES, subcategories);
+  },
+
+  getItems({ commit, state }, item) {
+    const subcategories = state.all.find(category => category._id == item._id);
+    return new Promise((resolve) => {
+      commit(SET_SUBCATEGORIES, subcategories);
+      resolve();
+    })
   }
 
 }

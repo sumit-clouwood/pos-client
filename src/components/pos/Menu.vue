@@ -47,7 +47,7 @@
                 'categoryImage'
             ])
         },
-
+        // map `this.browse()` to `this.$store.category.dispatch('browse')`
         methods: mapActions('category', [
             'browse'
         ]),
