@@ -6,11 +6,11 @@
                     <img src="img/icons/icon.png">
                 </a>
             </li>
-            <li v-for="item in menu" :key="item._id" class="nav-item active-opacity" data-toggle="tooltip" data-placement="right" :title="item.cat_name[0].name"
-                :data-original-title="item.cat_name[0].name">
+            <li v-for="item in menu" :key="item._id" class="nav-item active-opacity" data-toggle="tooltip" data-placement="right" :title="t(item.cat_name).name"
+                :data-original-title="t(item.cat_name).name">
                 <a class="nav-link active" href="" @click.prevent="browse(item)">
-                    <img :src="item.category_image">
-                    <span class="nav-link-text">{{ item.cat_name[0].name }}</span>
+                    <img :src="categoryImage(item.category_image)">
+                    <span class="nav-link-text">{{ t(item.cat_name).name }}</span>
                 </a>
             </li>
         </ul>
@@ -32,17 +32,22 @@
 </template>
 
 <script>
-    import { mapState, mapActions } from 'vuex'
+    import { mapState, mapActions, mapGetters } from 'vuex'
 
     export default {
         name: 'Menu',
         props: {
         },
-        computed: mapState({
-            // map this.categories to store.state.categories, it uses dispatch
-            menu: state => state.category.all
-        }),
-
+        computed: {
+            ...mapState({
+                // map this.categories to store.state.categories, it uses dispatch
+                menu: state => state.category.all,
+            }),
+            ...mapGetters('category', [
+                'categoryImage'
+            ])
+        },
+        // map `this.browse()` to `this.$store.category.dispatch('browse')`
         methods: mapActions('category', [
             'browse'
         ]),
@@ -55,3 +60,12 @@
     @import '../../assets/sass/mixins.scss';
     @import '../../assets/sass/navbar.scss';
 </style>-->
+
+<style lang="scss" scoped>
+.nav-link {
+    img {
+        height: 22px;
+        width: 25px;
+    }
+}
+</style>

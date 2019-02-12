@@ -17,8 +17,10 @@ import router from './router'
 
 import i18n from './i18n'
 
-Vue.config.productionTip = false;
+import Translate from './mixins/global/Translate'
 
+Vue.config.productionTip = false
+Vue.mixin(Translate)
 
 //create new vue isntance to use store and routers and render App to root component
 //this ll mounted to the dom <div id="app"> found in index.html
