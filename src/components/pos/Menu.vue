@@ -6,9 +6,9 @@
                     <img src="img/icons/icon.png">
                 </a>
             </li>
-            <li v-for="(item, key) in menu" :key="item._id" class="nav-item active-opacity" data-toggle="tooltip" data-placement="right" :title="t(item.cat_name).name"
+            <li v-for="(item) in menu" :key="item._id" class="nav-item active-opacity" data-toggle="tooltip" data-placement="right" :title="t(item.cat_name).name"
                 :data-original-title="t(item.cat_name).name">
-                <a class="nav-link" :class="{active : key === 0}" href="" @click.prevent="browse(item)">
+                <a class="nav-link" :class="{active : currentCategory === item._id}" href="" @click.prevent="browse(item)">
                     <img :src="categoryImage(item.category_image)">
                     <span class="nav-link-text">{{ t(item.cat_name).name }}</span>
                 </a>
@@ -42,10 +42,11 @@
             ...mapState({
                 // map this.categories to store.state.categories, it uses dispatch
                 menu: state => state.category.all,
+                currentCategory : state => state.category.category._id
             }),
             ...mapGetters('category', [
                 'categoryImage'
-            ])
+            ]) 
         },
         // map `this.browse()` to `this.$store.category.dispatch('browse')`
         methods: {
