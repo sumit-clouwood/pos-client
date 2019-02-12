@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <div class="row inner-container">
         <ContentItems />
         <ContentCart/>
     </div>
@@ -17,3 +17,8 @@
         }
     }
 </script>
+<style scoped>
+.inner-container {
+    width: 100%
+}
+</style>

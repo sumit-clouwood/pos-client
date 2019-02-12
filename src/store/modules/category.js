@@ -18,23 +18,10 @@ const state = {
 
 // getters, computed properties 
 const getters = {
-  //maincategoreis function, accepts state and getters as param and returns categories
-  //access it as store.getters.maincategories
-  maincategories: state => {
-    return state.all     
-  },
-
-  categoryCount: (state, getters) => {
-    return getters.maincategories.length
-  },
-
-  //usage: store.getters.getTodoById(2)
-  categoryById : (state) => (id) => {
-    return state.all.find(cateogry => cateogry._id === id)
-  },
-
   categoryImage : (state) => (imageSrc) => (state.categoryImagePath + imageSrc),
   subcategoryImage : (state) => (imageSrc) => (state.subcategoryImagePath + imageSrc),
+  itemImage : (state) => (imageSrc) => (state.itemImagePath + imageSrc),
+
   items : (state) => state.categoryItems.length ? state.categoryItems : state.subcategoryItems
 }
 
@@ -54,21 +41,27 @@ const actions = {
       commit(SET_SUBCATEGORIES, state.category.get_sub_category )
       commit(SET_SUBCATEGORY, state.subcategories[0])
       commit(SET_CATEGORY_ITEMS, state.category.get_category_product) 
-      commit(SET_SUBCATEGORY_ITEMS, state.subcategory.get_sub_category_product )
+      if (state.subcategory) {
+        commit(SET_SUBCATEGORY_ITEMS, state.subcategory.get_sub_category_product )
+      }
     })
   },
 
+  //get subcategories and items based on main category
   browse({ commit, state }, item) {
     const subcategories = state.all.find(category => category._id == item._id).get_sub_category;
     commit(SET_SUBCATEGORIES, subcategories);
+    commit(SET_SUBCATEGORY, state.subcategories[0])
+    commit(SET_CATEGORY_ITEMS, state.category.get_category_product) 
+    if (state.subcategory) {
+      commit(SET_SUBCATEGORY_ITEMS, state.subcategory.get_sub_category_product )
+    }
   },
-
+  //get items on subcategory click
   getItems({ commit, state }, item) {
-    const subcategories = state.all.find(category => category._id == item._id);
-    return new Promise((resolve) => {
-      commit(SET_SUBCATEGORIES, subcategories);
-      resolve();
-    })
+    const subcategory = state.subcategories.find(category => category._id == item._id);
+    commit(SET_SUBCATEGORY, subcategory)
+    commit(SET_SUBCATEGORY_ITEMS, state.subcategory.get_sub_category_product )  
   }
 
 }
