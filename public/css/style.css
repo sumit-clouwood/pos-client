@@ -5481,8 +5481,19 @@ tr.pay-tot-amt > td > a.modifier-dm {
  margin-top:5px;
 }
 
-.remove-bottom { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; width:100px; cursor:pointer}
-
+.remove-bottom { overflow:hidden;
+ display:block;
+ display:-webkit-box;
+ max-width:1150px;
+ height:34.2px;
+ margin:0 auto;
+ -webkit-line-clamp:2;
+ -webkit-box-orient:vertical;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ cursor:pointer;
+ line-height:17px !important;
+}
 /* === more text show button css =======*/
 
 
@@ -5568,4 +5579,81 @@ tr.pay-tot-amt > td > a.modifier-dm {
 
 .modal-open .modal {
  text-align:left;
+}
+.vegetable {
+ background: none;
+ border: 0;
+ box-sizing: border-box;
+ box-shadow: inset 0 0 0 1px #d7dce2;
+ font-size: inherit;
+ position: relative;
+ cursor: pointer;
+}
+.vegetable::before, .vegetable::after {
+ box-sizing: inherit;
+ content: '';
+ position: absolute;
+ width: 100%;
+ height: 100%;
+}
+
+.vegetable {
+ -webkit-transition: color 0.25s;
+ transition: color 0.25s;
+}
+.vegetable::before, .vegetable::after {
+ border: 2px solid transparent;
+ width: 0;
+ height: 0;
+}
+.vegetable::before {
+ top: 0;
+ left: 0;
+}
+.vegetable::after {
+ bottom: 0;
+ right: 0;
+}
+.vegetable:hover p.remove-bottom{
+ color: #62bb31;
+}
+.left-container .vegetable-pizza-wrapper p.remove-bottom{
+ z-index: 9;
+}
+.vegetable:hover::before, .vegetable:hover::after {
+ width: 100%;
+ height: 100%;
+}
+.vegetable:hover::before {
+ border-top-color: #62bb31;
+ border-right-color: #62bb31;
+ -webkit-transition: width 0.25s ease-out, height 0.25s ease-out 0.25s;
+ transition: width 0.25s ease-out, height 0.25s ease-out 0.25s;
+ border-radius: 4px;
+}
+.vegetable:hover::after {
+ border-bottom-color: #62bb31;
+ border-left-color: #62bb31;
+ -webkit-transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
+ transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
+ border-radius: 4px;
+}
+ul#exampleAccordion > li a span.nav-link-text {
+ line-height: 1.2;
+ padding: 8px 0;
+}
+.vegetable-pizza-block .vegetable-pizza .vegetable img{
+ z-index: 9;
+}
+/*.vegetable-pizza-wrapper .vegetable-pizza > div.vegetable:first-child p.remove-bottom{
+ height: 90px;
+ -webkit-line-clamp: 5;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+}*/
+@media only screen and (min-width:1600px){
+ .vegetable-pizza-block .vegetable-pizza .vegetable img {
+  width: 85px;
+ }
 }
