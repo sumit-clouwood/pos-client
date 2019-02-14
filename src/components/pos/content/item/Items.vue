@@ -7,8 +7,7 @@
 					<div class="vegetable" v-for="item in items" :key="item._id">
 						<div>
 							<img :src="itemImage(item.item_image)" :alt="t(item.item_name).name">
-							<p class="remove-bottom popover-btn">Vegetable Pizza Small + Vegetable Pizza Small beverage
-									amlet</p>
+							<p class="remove-bottom popover-btn">{{t(item.item_name).name}}</p>
 						</div>
 					</div>
 				</div>
