@@ -26,7 +26,7 @@ module.exports = {
     proxy: {
       '/api': {
         //use localhost or dockerip
-        target: process.env.API_ENDPOINT,
+        target: process.env.VUE_APP_API_ENDPOINT,
         changeOrigin: true,
         secure: false,
         //logLevel: 'debug',

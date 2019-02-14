@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import auth from './modules/auth'
-//import cart from './modules/cart'
 import category from './modules/category'
+import modifier from './modules/modifier'
 import sync from './modules/sync'
 import location from './modules/location'
+//import cart from './modules/cart'
 //to take snapshot 
 import createLogger from 'vuex/dist/logger'
 
@@ -17,8 +18,9 @@ export default new Vuex.Store({
     auth,
     sync,
     location,
-  //  cart,
     category,
+    modifier,
+    //  cart,
 
   },
   strict: debug,

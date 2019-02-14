@@ -1,9 +1,5 @@
 import axios from 'axios'
 
-const credentials = {
-  username : "apitest@broccoli.ae",
-  password : "test1234"
-}
 //axios.defaults.baseURL = '/api/';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.headers.post['Accept'] = 'application/json';
@@ -40,13 +36,13 @@ export default {
     });
   },
 
-  auth () {
-    const url = '/api/auth/login/' + '?email=' + credentials.username 
-    + '&password=' + credentials.password
+  auth (env) {
+    const url = '/api/auth/login/' + '?email=' + env.VUE_APP_API_USERNAME 
+    + '&password=' + env.VUE_APP_API_PASSWORD + "&device_id=" + env.VUE_APP_DEVICE_ID 
 
     return new Promise((resolve, reject) => {
       axios.post(url)
-        .then(response => {
+        . then(response => {
           return resolve(response.data.token);
         })
         .catch(response => {

@@ -13,9 +13,7 @@ const state = {
   subcategory : {},
   categoryItems : [],
   subcategoryItems : [],
-  item : {},
-
-  activeCategory : ''
+  item : {}
 }
 
 // getters, computed properties 

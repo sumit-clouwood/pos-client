@@ -12,7 +12,7 @@ const getters = {}
 const actions = {
   auth ({ commit }) {
     return new Promise((resolve, reject) => {
-      DataService.auth().then(token => {
+      DataService.auth(process.env).then(token => {
         commit('setToken', token)
         DataService.applyMiddleWare(state.token);
         token ? resolve() : reject()
