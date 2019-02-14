@@ -1,5 +1,5 @@
 <template>
-    <div class="wrappers-order-block">
+    <div class="order-wrappers-panel">
         <Header />
         <Items />
     </div>

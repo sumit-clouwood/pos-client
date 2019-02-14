@@ -8,7 +8,7 @@
                     </li>
                     <li id="hold-order-box">
                         <!-- <a href="#"><img class="hold-orders-show" src="images/footer-images/s.png" alt="customer"><img class="hold-order" src="images/hold-order.png" alt="customer"><span>Hold Orders</span></a>-->
-                        <a href="#"><img class="hold-orders-show" src="img/pos/hold.svg"><img class="hold-order"
+                        <a href="#"><img class="hold-orders-show" src="img/pos/hold.svg"><img class="hold-ordes"
                                                                                               src="img/pos/hold-order.svg"><span>Hold Orders</span></a>
                     </li>
                     <li data-toggle="modal" data-target="#order-confirmation" data-dismiss="modal">
