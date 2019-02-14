@@ -1,19 +1,19 @@
 <template>
     <div class="row inner-container">
-        <ContentItems />
-        <ContentCart/>
+        <Catalog />
+        <Cart/>
     </div>
 </template>
 
 <script>
-    import ContentCart from './content/Cart'
-    import ContentItems from './content/Item'
+    import Cart from './content/Cart'
+    import Catalog from './content/Catalog'
     export default {
         name:'Content',
         props: {},
         components: {
-            ContentCart,
-            ContentItems
+            Catalog,
+            Cart
         }
     }
 </script>

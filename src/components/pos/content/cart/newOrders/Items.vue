@@ -1,0 +1,22 @@
+<template>
+  <div class="wrappers-orders">
+    <div class="orders-name">
+        <p>Papperoni Pizza Small</p>
+        <p class="price-qty">@ 21.90 x 2</p>
+        <a href="">Bolognese Sauce</a><a href="">Chunky Tomato</a><span data-toggle="modal" data-target="#POSItemOptions"><img src="img/pos/plus-icon.png" alt="plus"></span>
+    </div>
+    <div class="aed-amt">
+        <span>AED 42.90</span>
+    </div>
+    <div class="dlt-btn">
+        <img src="img/pos/delete-icon.svg" alt="delete">
+    </div>
+  </div>
+</template>
+
+<script>
+    export default {
+        name: 'Items',
+        props: {}
+    }
+</script>

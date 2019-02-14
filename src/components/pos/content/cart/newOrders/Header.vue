@@ -20,7 +20,7 @@
 
 <script>
     export default {
-        name: 'CartHeader',
+        name: 'Header',
         props: {}
     }
 </script>

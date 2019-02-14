@@ -1,7 +1,7 @@
 <template>
-	<div class="vegetable-pizza-wrapper">
+	<div class="items vegetable-pizza-wrapper">
 		<!--Added Breadcrumb here-->
-		<Breadcrumb />
+		<Breadcrumbs />
 		<div class="vegetable-pizza-block">
 				<div class="vegetable-pizza">
 					<div class="vegetable" v-for="item in items" :key="item._id">
@@ -18,14 +18,14 @@
 <script>
 	import { mapGetters } from 'vuex'
 
-	import Breadcrumb from '../Breadcrumb'
+	import Breadcrumbs from './items/Breadcrumbs'
 	export default {
 		name: 'Items',
 		props: {
 			msg: String
 		},
 		components: {
-			Breadcrumb
+			Breadcrumbs
 		},
 		computed: {
 			...mapGetters('category', [

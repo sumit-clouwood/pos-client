@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: 'Breadcrumb',
+  name: 'Breadcrumbs',
   props: {
     msg: String
   }

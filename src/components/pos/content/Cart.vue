@@ -1,30 +1,25 @@
 <template>
     <div class="col-md-4 orders-panel">
-        <div class="order-wrappers-panel animated zoomIn">
-            <CartHeader/>
-            <CartItem/>
-        </div>
-        <CartHoldOrder/>
-        <CartFooter/>
+        <NewOrders />
+        <HoldingOrders/>
+        <Footer/>
     </div>
 </template>
 
 <script>
-    import CartHeader from './cart/CartHeader'
-    import CartItem from './cart/CartItem'
-    import CartHoldOrder from './cart/CartHoldOrder'
-    import CartFooter from './cart/CartFooter'
+    import NewOrders from './cart/NewOrders'
+    import HoldingOrders from './cart/HoldingOrders'
+    import Footer from './cart/Footer'
 
     export default {
-        name: 'ContentCart',
+        name: 'Cart',
         props: {
             msg: String
         },
         components: {
-            CartHeader,
-            CartItem,
-            CartHoldOrder,
-            CartFooter
+            NewOrders,
+            HoldingOrders,
+            Footer
         }
     }
 </script>

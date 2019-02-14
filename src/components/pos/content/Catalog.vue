@@ -1,5 +1,5 @@
 <template>
-    <div class="col-md-8 left-container">
+    <div class="catalog col-md-8 left-container">
         <search/>
         <div class="row">
             <SubMenu/>
@@ -9,12 +9,12 @@
 </template>
 
 <script>
-    import Items from './item/Items'
-    import Search from './Search'
-    import SubMenu from './SubMenu'
+    import Items from './catalog/Items'
+    import Search from './catalog/Search'
+    import SubMenu from './catalog/SubMenu'
 
     export default {
-        name: 'ContentProduct',
+        name: 'Catalog',
         props: {
             msg: String
         },
