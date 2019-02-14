@@ -1,9 +1,11 @@
 import axios from 'axios'
 
+//we have set default device ID for now. will dynamic soon
 const credentials = {
-  username : "apitest@broccoli.ae",
-  password : "test1234"
-}
+  username : "testowner@gmail.com",
+  password : "12345678",
+  device_id : "12345684def4sdgdrfgdf8e4rtge8g4er8rg"
+};
 //axios.defaults.baseURL = '/api/';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.headers.post['Accept'] = 'application/json';
@@ -41,8 +43,8 @@ export default {
   },
 
   auth () {
-    const url = '/api/auth/login/' + '?email=' + credentials.username 
-    + '&password=' + credentials.password
+    const url = '/api/auth/login/' + '?email=' + credentials.username
+    + '&password=' + credentials.password+ '&device_id=' + credentials.device_id;
 
     return new Promise((resolve, reject) => {
       axios.post(url)
