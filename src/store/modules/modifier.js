@@ -8,7 +8,6 @@ const state = {
 
 // getters, computed properties 
 const getters = {
-  
 }
 
 // actions, often async
