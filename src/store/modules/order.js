@@ -9,10 +9,32 @@ const state = {
 // getters
 const getters = {
   
-  totalPrice: () => {
+  orderTotal: () => {
     return state.items.reduce((total, item) => {
       return total + item.item_price * item.quantity
     }, 0)
+  },
+  
+  subTotal: () => {
+    return state.items.reduce((total, item) => {
+      return total + item.item_price * item.quantity
+    }, 0)
+  },
+
+  itemPrice: () => (item) => {
+    return item.quantity * item.item_price
+  },
+
+  orderSurcharge : () => {
+
+  },
+
+  orderTax : () => {
+
+  },
+
+  orderDiscount : () => {
+
   }
 }
 
