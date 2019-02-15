@@ -12,23 +12,6 @@
             </div>
             <ul class="ullist-inventory-location pl-0 pt-2">
                 <li class="p-3"><a href="#">ADNOC Al Dar - Sharjah</a></li>
-                <li class="p-3"><a href="#">ADNOC Al Wathba</a></li>
-                <li class="p-3"><a href="#">ADNOC Mahawi - Abu Dhabi</a></li>
-                <li class="p-3"><a href="#">Abha</a></li>
-                <li class="p-3"><a href="#">Abha 2</a></li>
-                <li class="p-3"><a href="#">Ahmed Bin Hanbal - Riyadh</a></li>
-                <li class="p-3"><a href="#">ADNOC Al Dar - Sharjah</a></li>
-                <li class="p-3"><a href="#">ADNOC Al Wathba</a></li>
-                <li class="p-3"><a href="#">ADNOC Mahawi - Abu Dhabi</a></li>
-                <li class="p-3"><a href="#">Abha</a></li>
-                <li class="p-3"><a href="#">Abha 2</a></li>
-                <li class="p-3"><a href="#">Ahmed Bin Hanbal - Riyadh</a></li>
-                <li class="p-3"><a href="#">ADNOC Al Dar - Sharjah</a></li>
-                <li class="p-3"><a href="#">ADNOC Al Wathba</a></li>
-                <li class="p-3"><a href="#">ADNOC Mahawi - Abu Dhabi</a></li>
-                <li class="p-3"><a href="#">Abha</a></li>
-                <li class="p-3"><a href="#">Abha 2</a></li>
-                <li class="p-3"><a href="#">Ahmed Bin Hanbal - Riyadh</a></li>
             </ul>
         </div>
     </div>

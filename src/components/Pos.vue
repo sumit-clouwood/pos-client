@@ -72,8 +72,8 @@
     beforeCreate () {
       this.$store.dispatch('auth/auth')
         .then((response) => {
-            this.$store.dispatch('category/fetchAll', response)
-            this.$store.dispatch('modifier/fetchAll', response)
+            this.$store.dispatch('category/fetchAll', response);
+            this.$store.dispatch('modifier/fetchAll', response);
         })
         .catch(error => this.errored = error)
     },
