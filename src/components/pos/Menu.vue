@@ -67,8 +67,8 @@
 <style lang="scss" scoped>
 .nav-link {
     img {
-        height: 22px;
-        width: 25px;
+        /*height: 22px;*/
+        /*width: 25px;*/
     }
 }
 </style>
