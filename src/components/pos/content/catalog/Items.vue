@@ -4,7 +4,7 @@
 		<Breadcrumbs />
 		<div class="vegetable-pizza-block">
 				<div class="vegetable-pizza">
-					<div class="vegetable" v-for="item in items" :key="item._id">
+					<div class="vegetable" v-for="item in items" :key="item._id" @click.prevent="addToOrder(item)">
 						<div>
 							<img :src="itemImage(item.item_image)" :alt="t(item.item_name).name">
 							<p class="remove-bottom popover-btn">{{t(item.item_name).name}}</p>
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-	import { mapGetters } from 'vuex'
+	import { mapGetters, mapActions } from 'vuex'
 
 	import Breadcrumbs from './items/Breadcrumbs'
 	export default {
@@ -32,6 +32,9 @@
 					'items',
 					'itemImage'
 			])
-		}
+		},
+		methods: mapActions('order', [
+			'addToOrder'
+		])
 	}
 </script>
