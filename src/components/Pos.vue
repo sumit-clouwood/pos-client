@@ -68,7 +68,7 @@
       msg: String
     },
   
-    //life cycle hooks
+    /*//life cycle hooks
     beforeCreate () {
       this.$store.dispatch('auth/auth')
         .then((response) => {
@@ -80,7 +80,7 @@
 
     mounted () {
       
-    }
+    }*/
   }
 </script>
 

@@ -11,16 +11,42 @@
                 </form>
             </div>
             <ul class="ullist-inventory-location pl-0 pt-2">
-                <li class="p-3"><a href="#">ADNOC Al Dar - Sharjah</a></li>
+                <!--<li class="p-3"></li>-->
+                <router-link tag="li" class="p-3" to="/">
+                    <a>{{locationName}}</a>
+                </router-link>
             </ul>
         </div>
     </div>
 </template>
 
 <script>
+    import { mapState } from 'vuex'
     export default {
         name: 'Location',
         props: {},
+
+        //life cycle hooks
+        beforeCreate () {
+            this.$store.dispatch('auth/auth')
+                .then((response) => {
+                    this.$store.dispatch('category/fetchAll', response);
+                    this.$store.dispatch('modifier/fetchAll', response);
+                    this.$store.dispatch('location/set',response.data.data)
+                })
+                .catch(error => this.errored = error)
+        },
+
+        mounted () {
+
+        },
+        computed: {
+        ...mapState({
+                // map this.categories to store.state.categories, it uses dispatch
+                locationIds: state => state.location.location,
+                locationName: state => state.location.locationName,
+            })
+        }
     }
 </script>
 
