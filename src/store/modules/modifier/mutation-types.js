@@ -1,1 +1,1 @@
-export const SET_MODIFIERS = 'SET_MODIFIERS'
+export const SET_MODIFIERS = 'SET_MODIFIERS';

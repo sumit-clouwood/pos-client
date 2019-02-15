@@ -41,7 +41,7 @@ export default {
     return new Promise((resolve, reject) => {
       axios.post(url)
         . then(response => {
-          return resolve(response.data.token);
+          return resolve(response);
         })
         .catch(response => {
           return reject(response)
