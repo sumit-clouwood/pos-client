@@ -2,6 +2,6 @@
 export default {
   created: function() {},
   methods: {
-    currency: function() {},
+    currency: () => 'AED',
   },
 }

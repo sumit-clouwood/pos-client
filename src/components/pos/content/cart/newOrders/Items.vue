@@ -7,7 +7,7 @@
         <Modifiers />
       </div>
       <div class="aed-amt">
-        <span>{{ currency(item._id) }} {{ item.price }}</span>
+        <span>{{ currency(item._id) }} {{ itemPrice(item) }}</span>
       </div>
       <div class="dlt-btn">
         <a href="" @click.prevent="removeFromOrder(item)">
