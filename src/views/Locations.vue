@@ -12,7 +12,7 @@
             </div>
             <ul class="ullist-inventory-location pl-0 pt-2">
                 <!--<li class="p-3"></li>-->
-                <router-link tag="li" class="p-3" to="/">
+                <router-link tag="li" class="p-3" to="/pos">
                     <a>{{locationName}}</a>
                 </router-link>
             </ul>
