@@ -1,5 +1,5 @@
 <template>
-  <div class="order-item">
+  <div class="order-item wrappers-order-block">
     <div class="wrappers-orders" v-for="item in items" :key="item._id">
       <div class="orders-name">
         <p>{{ t(item.item_name).name }}</p>
