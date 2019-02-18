@@ -58,9 +58,8 @@ export default {
     ...mapState({
       // map this.categories to store.state.categories, it uses dispatch
       locationIds: state => state.location.locationIds,
-      locationName: state => state.location.locationName,
-    }),
-  },
+      locationName: state => state.location.locationName
+    })
   }
 };
 </script>
