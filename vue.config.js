@@ -3,16 +3,16 @@ module.exports = {
     config.module
       .rule("i18n")
       .resourceQuery(/blockType=i18n/)
-      .type('javascript/auto')
+      .type("javascript/auto")
       .use("i18n")
-        .loader("@kazupon/vue-i18n-loader")
-        .end();
+      .loader("@kazupon/vue-i18n-loader")
+      .end();
   },
   pluginOptions: {
     i18n: {
-      locale: 'en',
-      fallbackLocale: 'ar',
-      localeDir: 'locales',
+      locale: "en",
+      fallbackLocale: "ar",
+      localeDir: "locales",
       enableInSFC: true
     }
   },
@@ -24,7 +24,7 @@ module.exports = {
     },
     //webpack: dev server to proxy any unknown requests (requests that did not match a static file) to http://localhost:8000.
     proxy: {
-      '/api': {
+      "/api": {
         //use localhost or dockerip
         target: process.env.VUE_APP_API_ENDPOINT,
         changeOrigin: true,
@@ -32,16 +32,15 @@ module.exports = {
         //logLevel: 'debug',
         //pathRewrite: { "^/api": "" }
         headers: {
-          Connection: 'keep-alive',
+          Connection: "keep-alive"
         }
       }
     }
   },
 
   configureWebpack: {
-    devtool: 'source-map'
+    devtool: "source-map"
   },
 
-  lintOnSave: process.env.NODE_ENV !== 'production'
-
-}
+  lintOnSave: process.env.NODE_ENV !== "production"
+};

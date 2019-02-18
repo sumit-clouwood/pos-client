@@ -19,28 +19,28 @@
 </template>
 
 <script>
-import Modifiers from './items/Modifiers.vue'
-import Mixins from './mixins'
+import Modifiers from "./items/Modifiers.vue";
+import Mixins from "./mixins";
 
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions, mapGetters } from "vuex";
 export default {
-  name: 'Items',
+  name: "Items",
   props: {},
   mixins: [Mixins],
   computed: {
     ...mapState({
       items: state => state.order.items,
-      currentItem: state => state.order.item._id,
+      currentItem: state => state.order.item._id
     }),
-    ...mapGetters('category', ['subcategoryImage']),
-    ...mapGetters('order', ['itemPrice']),
+    ...mapGetters("category", ["subcategoryImage"]),
+    ...mapGetters("order", ["itemPrice"])
   },
   methods: {
-    ...mapActions('category', ['getItems']),
-    ...mapActions('order', ['removeFromOrder']),
+    ...mapActions("category", ["getItems"]),
+    ...mapActions("order", ["removeFromOrder"])
   },
   components: {
-    Modifiers,
-  },
-}
+    Modifiers
+  }
+};
 </script>

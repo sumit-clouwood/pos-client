@@ -1,17 +1,21 @@
 <template>
-    <div class="navbar-nav-sidebar">
-        <div class="add-screen-walkin">
-            <p class="walk-in">Walk-In</p>
-            <p class="walk-in-place">ADNOC Al Dar - Sharjah</p></div>
-        <div class="time-zone-btn">
-            <a href="#"><span>2 : 30<small>pm</small></span><span>August 08, 2018</span></a>
-        </div>
+  <div class="navbar-nav-sidebar">
+    <div class="add-screen-walkin">
+      <p class="walk-in">Walk-In</p>
+      <p class="walk-in-place">ADNOC Al Dar - Sharjah</p>
     </div>
+    <div class="time-zone-btn">
+      <a href="#"
+        ><span>2 : 30<small>pm</small></span
+        ><span>August 08, 2018</span></a
+      >
+    </div>
+  </div>
 </template>
 
 <script>
-    export default {
-        name:'NavSidebar',
-        props :{}
-    }
+export default {
+  name: "NavSidebar",
+  props: {}
+};
 </script>
