@@ -2,7 +2,7 @@
   <div class="navbar-nav-sidebar">
     <div class="add-screen-walkin">
       <p class="walk-in">Walk-In</p>
-      <p class="walk-in-place">ADNOC Al Dar - Sharjah</p>
+      <p class="walk-in-place">{{ locationName }}</p>
     </div>
     <div class="time-zone-btn">
       <a href="#"
@@ -14,8 +14,17 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "NavSidebar",
-  props: {}
+  props: {},
+  computed: {
+    ...mapState({
+      // map this.categories to store.state.categories, it uses dispatch
+      // locationIds: state => state.location.locationIds,
+      locationName: state => state.location.locationName
+    })
+  }
 };
 </script>
