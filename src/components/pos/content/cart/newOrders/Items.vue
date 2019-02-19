@@ -1,13 +1,20 @@
 <template>
-  <div class="order-item">
+  <div class="order-item" v-if="items">
     <div class="wrappers-orders" v-for="item in items" :key="item._id">
       <div class="orders-name">
         <p>{{ t(item.item_name).name }}</p>
         <p class="price-qty">@ {{ item.item_price }} x {{ item.quantity }}</p>
-        <Modifiers />
+        <Modifiers v-if="orderModifiers(item)" />
+        <span
+          v-if="hasModifiers(item)"
+          data-toggle="modal"
+          data-target="#POSItemOptions"
+        >
+          <img src="img/pos/plus-icon.png" alt="plus" />
+        </span>
       </div>
       <div class="aed-amt">
-        <span>{{ currency(item._id) }} {{ itemPrice(item) }}</span>
+        <span>{{ formatPrice(itemPrice(item)) }}</span>
       </div>
       <div class="dlt-btn">
         <a href="" @click.prevent="removeFromOrder(item)">
@@ -20,20 +27,20 @@
 
 <script>
 import Modifiers from './items/Modifiers.vue'
-import Mixins from './mixins'
 
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Items',
   props: {},
-  mixins: [Mixins],
   computed: {
     ...mapState({
       items: state => state.order.items,
       currentItem: state => state.order.item._id,
     }),
     ...mapGetters('category', ['subcategoryImage']),
-    ...mapGetters('order', ['itemPrice']),
+    ...mapGetters('modifier', ['hasModifiers']),
+    ...mapGetters('order', ['itemPrice', 'orderModifiers']),
+    ...mapGetters('location', ['formatPrice']),
   },
   methods: {
     ...mapActions('category', ['getItems']),

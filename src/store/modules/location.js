@@ -5,10 +5,14 @@ const state = {
   location: false,
   locationIds: [],
   locationName: '',
+  currency: 'AED',
 }
 
 // getters
-const getters = {}
+const getters = {
+  rawPrice: () => price => (price > 0 ? price : 0),
+  formatPrice: state => price => state.currency + ' ' + price,
+}
 
 // actions
 const actions = {
@@ -32,6 +36,10 @@ const mutations = {
     },*/
   [mutation.SET_FRANCHISE_CODE](state, franchise_code) {
     state.locationName = franchise_code
+  },
+
+  [mutation.SET_CURRENCY](state, currency) {
+    state.currency = currency
   },
 }
 

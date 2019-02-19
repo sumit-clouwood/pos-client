@@ -24,6 +24,10 @@ const getters = {
     return item.quantity * item.item_price
   },
 
+  orderModifiers: () => item => {
+    return item.modifiers.length
+  },
+
   orderSurcharge: () => {},
   orderTax: () => {},
   orderDiscount: () => {},

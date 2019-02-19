@@ -1,1 +1,4 @@
-export const SET_MODIFIERS = 'SET_MODIFIERS';
+export const SET_MODIFIERS = 'SET_MODIFIERS'
+export const SET_IMAGE_PATH = 'SET_IMAGE_PATH'
+export const SET_ITEM = 'SET_ITEM'
+export const SET_ITEM_MODIFIERS = 'SET_ITEM_MODIFIERS'

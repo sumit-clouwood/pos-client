@@ -7,7 +7,7 @@ import order from './modules/order'
 import sync from './modules/sync'
 import location from './modules/location'
 //import cart from './modules/cart'
-//to take snapshot 
+//to take snapshot
 import createLogger from 'vuex/dist/logger'
 
 Vue.use(Vuex)
@@ -23,8 +23,7 @@ export default new Vuex.Store({
     modifier,
     order,
     //  cart,
-
   },
   strict: debug,
-  plugins: debug ? [createLogger()] : []
+  plugins: debug ? [createLogger()] : [],
 })
