@@ -20,16 +20,16 @@
 </template>
 
 <script>
-import ManageCustomerHeader from './ManageCustomer/ManageCustomerHeader'
-import ManageCustomerContent from './ManageCustomer/ManageCustomerContent'
-import ManageCustomerFooter from './ManageCustomer/ManageCustomerFooter'
+import ManageCustomerHeader from "./ManageCustomer/ManageCustomerHeader";
+import ManageCustomerContent from "./ManageCustomer/ManageCustomerContent";
+import ManageCustomerFooter from "./ManageCustomer/ManageCustomerFooter";
 export default {
-  name: 'ManageCustomer',
+  name: "ManageCustomer",
   props: {},
   components: {
     ManageCustomerHeader,
     ManageCustomerContent,
-    ManageCustomerFooter,
-  },
-}
+    ManageCustomerFooter
+  }
+};
 </script>
