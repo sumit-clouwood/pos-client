@@ -1,20 +1,20 @@
 <template>
-    <div class="order-wrappers-panel">
-        <Header />
-        <Items />
-    </div>
+  <div class="order-wrappers-panel">
+    <Header />
+    <Items />
+  </div>
 </template>
 
 <script>
-    import Header from './newOrders/Header.vue'
-    import Items from './newOrders/Items.vue'
-  
-    export default {
-        name: 'NewOrders',
-        components : {
-            Header,
-            Items
-        },
-        props: {}
-    }
+import Header from './newOrders/Header.vue'
+import Items from './newOrders/Items.vue'
+
+export default {
+  name: 'NewOrders',
+  components: {
+    Header,
+    Items,
+  },
+  props: {},
+}
 </script>

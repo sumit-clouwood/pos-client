@@ -1,26 +1,24 @@
 // initial state
 const state = {
-  date : "2019-02-06",
-  compress : false
+  date: '2019-02-06',
+  compress: false,
 }
 
 // getters
 const getters = {}
 
 // actions
-const actions = {
-  
-}
+const actions = {}
 
 // mutations
 const mutations = {
-  updateSyncDate (state, date) {
+  updateSyncDate(state, date) {
     state.date = date
   },
 
-  updateCompress (state, isCompress) {
+  updateCompress(state, isCompress) {
     state.compress = isCompress
-  }
+  },
 }
 
 export default {
@@ -28,5 +26,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 }
