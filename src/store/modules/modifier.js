@@ -11,20 +11,30 @@ const state = {
 
 // getters, computed properties
 const getters = {
-  hasModifiers: state => item => {
-    if (state.all.length) {
-      return state.all.find(modifier =>
-        modifier.itemIds.some(itemId => itemId === item._id)
-      )
-    }
-    return false
+  hasModifiers: (state, getters, rootState) => item => {
+    return state.all.some(modifier => {
+      if (modifier.itemIds.length) {
+        //find in itemids
+        return modifier.itemIds.some(itemId => itemId === item._id)
+      } else if (modifier.item_subcategory.length) {
+        //find in subcategory
+        return modifier.item_subcategory.some(
+          subcatId => subcatId === rootState.category.subcategory._id
+        )
+      } else {
+        //find in category
+        return modifier.item_category.some(
+          catId => catId === rootState.category._id
+        )
+      }
+    })
   },
 
   imagePath: state => imagePath => state.imagePath + imagePath,
   locationPrice: (state, getters, rootState) => item => {
     return item.item_location_price[rootState.location.location]
   },
-
+  //get modifiers specific to item id from current modifiers list
   itemModifiers: state => itemId =>
     state.itemModifiers.find(obj => obj.itemId == itemId),
 }
@@ -39,6 +49,7 @@ const actions = {
     })
   },
 
+  //find modifiers from all specific to current item and push to current list
   setModifierItem({ commit, rootState }, item) {
     //set location based pricing
     if (
@@ -52,10 +63,26 @@ const actions = {
 
     //commit item modifier only if it was not already in the list
     if (!state.itemModifiers.find(obj => obj.itemId == item._id)) {
-      //get modifiers specicif to item._id
-      const modifiers = state.all.filter(modifier =>
-        modifier.itemIds.find(itemId => itemId === item._id)
-      )
+      //1. search current item Id in all modifiers which have itemIds
+      //2. 1 not matched and search current subcategory Id in all modifiers which have subcategoryIds but don't have itemIds
+      //3. 2 not matched and search current category id in all modifiers which have categoryIds but don't have subcategory or itemIds
+
+      const modifiers = state.all.filter(modifier => {
+        if (modifier.itemIds.length) {
+          //find in itemids
+          return modifier.itemIds.find(itemId => itemId === item._id)
+        } else if (modifier.item_subcategory.length) {
+          //find in subcategory
+          return modifier.item_subcategory.find(
+            subcatId => subcatId === rootState.category.subcategory._id
+          )
+        } else {
+          //find in category
+          return modifier.item_category.find(
+            catId => catId === rootState.category._id
+          )
+        }
+      })
 
       //change modifiers to get location based pricing
       const upatedModifiers = modifiers.map(modifier => {
