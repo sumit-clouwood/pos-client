@@ -1,5 +1,6 @@
 <template>
   <div class="modal-body" v-if="item">
+    <div class="error" v-if="errorBit">{{ errorBit }}</div>
     <div
       v-for="modifier in itemModifiers(item._id).modifiers"
       :key="modifier._id"
@@ -26,7 +27,19 @@
               v-if="submodifier.noofselection > 1"
             >
               <span class="customradioc">
-                <input type="checkbox" for="check1" class="customradio" />
+                <input
+                  type="checkbox"
+                  for="check1"
+                  class="customradio"
+                  v-model="modifierIds"
+                  :value="modifierOption._id"
+                  @change="
+                    selectItemModifiers({
+                      modifier: modifierOption,
+                      itemId: item._id,
+                    })
+                  "
+                />
                 <span></span>
               </span>
               <img :src="imagePath(modifierOption.imageName)" alt="" />
@@ -40,7 +53,8 @@
                   type="radio"
                   for="check1"
                   class="customradio"
-                  value="Fettucine"
+                  v-model="pickedOptions"
+                  :value="modifierOption._id"
                   name="pasta"
                 />
                 <span class="checkmark-radio-btn"></span>
@@ -59,15 +73,44 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Content',
   props: {},
   computed: {
     ...mapState('location', ['currency']),
     ...mapState('modifier', ['item']),
+    ...mapState('order', ['errorBit']),
     ...mapGetters('modifier', ['imagePath', 'itemModifiers']),
     ...mapGetters('location', ['rawPrice', 'formatPrice']),
+    modifierIds: {
+      get() {
+        return this.$store.state.order.selectedModifierIds
+      },
+      set(modifierId) {
+        this.$store.commit('order/SELECT_MODIFIER_ID', modifierId)
+      },
+    },
+    pickedOptions: {
+      get() {
+        return this.$store.state.order.selectedModifierOptions
+      },
+      set(modifierId) {
+        this.$store.commit('order/SELECT_MODIFIER_OPTIONS', modifierId)
+      },
+    },
+  },
+  methods: {
+    ...mapActions('order', ['selectItemModifiers']),
   },
 }
 </script>
+
+<style scoped>
+.error {
+  color: #ff0000;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e3e7f2;
+}
+</style>

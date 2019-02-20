@@ -93,11 +93,15 @@ const actions = {
               mod.item_price
             return mod
           })
-          group.get_modifier_item_list = modifierItemList
-          return group
+          //do not mutate original state
+          let newGroup = { ...group }
+          newGroup.get_modifier_item_list = modifierItemList
+          return newGroup
         })
-        modifier.get_modifier_sub_groups = groups
-        return modifier
+        //do not mutate original state
+        let newModifier = { ...modifier }
+        newModifier.get_modifier_sub_groups = groups
+        return newModifier
       })
 
       //use updated modifiers
