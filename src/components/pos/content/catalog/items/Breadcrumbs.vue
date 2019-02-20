@@ -26,20 +26,20 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 
 export default {
-  name: "Breadcrumbs",
+  name: 'Breadcrumbs',
   props: {
-    msg: String
+    msg: String,
   },
   computed: {
     ...mapState({
       selectedCategory: state => state.category.category,
       selectedSubCategory: state =>
         state.category.subcategory ? state.category.subcategory : false,
-      selectedItem: state => (state.order.item ? state.order.item : false)
-    })
-  }
-};
+      selectedItem: state => (state.order.item ? state.order.item : false),
+    }),
+  },
+}
 </script>

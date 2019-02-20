@@ -14,17 +14,17 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 
 export default {
-  name: "NavSidebar",
+  name: 'NavSidebar',
   props: {},
   computed: {
     ...mapState({
       // map this.categories to store.state.categories, it uses dispatch
       // locationIds: state => state.location.locationIds,
-      locationName: state => state.location.locationName
-    })
-  }
-};
+      locationName: state => state.location.locationName,
+    }),
+  },
+}
 </script>

@@ -6,15 +6,15 @@
 </template>
 
 <script>
-import Header from "./newOrders/Header.vue";
-import Items from "./newOrders/Items.vue";
+import Header from './newOrders/Header.vue'
+import Items from './newOrders/Items.vue'
 
 export default {
-  name: "NewOrders",
+  name: 'NewOrders',
   components: {
     Header,
-    Items
+    Items,
   },
-  props: {}
-};
+  props: {},
+}
 </script>
