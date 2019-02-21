@@ -10,12 +10,16 @@ const getters = {};
 
 const actions = {
   async fetchAll({ commit, rootState }) {
-    const params = [rootState.location.location,"2019-02-20", rootState.sync.compress];
+    const params = [
+      rootState.location.location,
+      "2019-02-20",
+      rootState.sync.compress
+    ];
     TaxService.fetchAll(...params).then(response => {
-        commit(mutation.TAX_AMOUNT, response.tax_amount);
-        commit(mutation.TAX_DETAILS, response);
+      commit(mutation.TAX_AMOUNT, response);
+      commit(mutation.TAX_DETAILS, response);
     });
-  },
+  }
 };
 
 const mutations = {
