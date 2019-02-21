@@ -1,45 +1,51 @@
 <template>
   <div class="breadcrumb-category">
     <ul class="ullist-category">
-      <li>
+      <li v-if="selectedCategory && selectedCategory.cat_name">
         <span>Selected Category</span>
-        <p>{{ t(selectedCategory.cat_name).name.substring(0, 15) }}</p>
+        <p>{{ subtractString(t(selectedCategory.cat_name).name) }}</p>
         <span class="arrows"
           ><img src="img/pos/right-arrow.png" alt="right-arrow"
         /></span>
       </li>
-      <li v-if="selectedSubCategory">
+      <li v-if="selectedSubCategory && selectedSubCategory.subcategory_name">
         <span>Selected Sub Category</span>
         <p>
-          {{ t(selectedSubCategory.subcategory_name).name.substring(0, 15) }}
+          {{ subtractString(t(selectedSubCategory.subcategory_name).name) }}
         </p>
         <span class="arrows"
           ><img src="img/pos/right-arrow.png" alt="right-arrow"
         /></span>
       </li>
-      <li v-if="selectedItem">
+      <li v-if="selectedItem && selectedItem.item_name">
         <span>Selected Item</span>
-        <p>{{ t(selectedItem.item_name).name.substring(0, 15) }}</p>
+        <p>{{ subtractString(t(selectedItem.item_name).name) }}</p>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 
 export default {
-  name: 'Breadcrumbs',
+  name: "Breadcrumbs",
   props: {
-    msg: String,
+    msg: String
   },
   computed: {
     ...mapState({
-      selectedCategory: state => state.category.category,
+      selectedCategory: state =>
+        state.category.category ? state.category.category : false,
       selectedSubCategory: state =>
         state.category.subcategory ? state.category.subcategory : false,
-      selectedItem: state => (state.order.item ? state.order.item : false),
-    }),
+      selectedItem: state => (state.order.item ? state.order.item : false)
+    })
   },
-}
+  methods: {
+    subtractString(label) {
+      return label.substring(0, 15);
+    }
+  }
+};
 </script>
