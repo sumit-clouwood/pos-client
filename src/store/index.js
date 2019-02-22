@@ -6,7 +6,6 @@ import modifier from "./modules/modifier";
 import order from "./modules/order";
 import sync from "./modules/sync";
 import location from "./modules/location";
-import tax from "./modules/tax";
 //import cart from './modules/cart'
 //to take snapshot
 import createLogger from "vuex/dist/logger";
@@ -22,8 +21,7 @@ export default new Vuex.Store({
     location,
     category,
     modifier,
-    order,
-    tax
+    order
     //  cart,
   },
   strict: debug,
