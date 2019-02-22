@@ -1,6 +1,6 @@
 <template>
   <div class="modal-body" v-if="item">
-    <div class="error" v-if="errorBit">{{ errorBit }}</div>
+    <div class="error" v-if="error">{{ error }}</div>
     <div
       v-for="modifier in itemModifiers(item._id).modifiers"
       :key="modifier._id"
@@ -29,14 +29,17 @@
               <span class="customradioc">
                 <input
                   type="checkbox"
-                  for="check1"
+                  :name="modifierOption._id"
+                  :id="modifierOption._id"
                   class="customradio"
-                  v-model="modifierIds"
                   :value="modifierOption._id"
+                  :checked="modifiers(modifierOption._id)"
                   @change="
-                    selectItemModifiers({
-                      modifier: modifierOption,
+                    updateOption({
                       itemId: item._id,
+                      modifierId: modifierOption._id,
+                      groupId: submodifier._id,
+                      limit: submodifier.noofselection,
                     })
                   "
                 />
@@ -51,11 +54,19 @@
               <span class="customradioc-block">
                 <input
                   type="radio"
-                  for="check1"
                   class="customradio"
-                  v-model="pickedOptions"
                   :value="modifierOption._id"
-                  name="pasta"
+                  :id="modifierOption._id"
+                  :name="modifierOption._id"
+                  :checked="modifiers(modifierOption._id)"
+                  @change="
+                    updateOption({
+                      itemId: item._id,
+                      modifierId: modifierOption._id,
+                      groupId: submodifier._id,
+                      limit: submodifier.noofselection,
+                    })
+                  "
                 />
                 <span class="checkmark-radio-btn"></span>
               </span>
@@ -80,28 +91,13 @@ export default {
   computed: {
     ...mapState('location', ['currency']),
     ...mapState('modifier', ['item']),
-    ...mapState('order', ['errorBit']),
+    ...mapState('orderForm', ['error']),
     ...mapGetters('modifier', ['imagePath', 'itemModifiers']),
     ...mapGetters('location', ['rawPrice', 'formatPrice']),
-    modifierIds: {
-      get() {
-        return this.$store.state.order.selectedModifierIds
-      },
-      set(modifierId) {
-        this.$store.commit('order/SELECT_MODIFIER_ID', modifierId)
-      },
-    },
-    pickedOptions: {
-      get() {
-        return this.$store.state.order.selectedModifierOptions
-      },
-      set(modifierId) {
-        this.$store.commit('order/SELECT_MODIFIER_OPTIONS', modifierId)
-      },
-    },
+    ...mapGetters('orderForm', ['modifiers']),
   },
   methods: {
-    ...mapActions('order', ['selectItemModifiers']),
+    ...mapActions('orderForm', ['updateOption']),
   },
 }
 </script>
