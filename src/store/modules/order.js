@@ -55,8 +55,31 @@ const actions = {
     commit(mutation.SET_ITEM, state.items[0])
   },
 
-  clearItem() {
-    //used when we close popup without adding item to cart, to clear all selected modifiers
+  addModifierOrder({ commit, rootState }) {
+    let itemModifiers = []
+    let item = rootState.modifier.item
+    const modifiers = rootState.orderForm.modifiers.filter(
+      modifier => modifier.itemId == item._id
+    )
+    modifiers.forEach(modifier => {
+      if (Array.isArray(modifier.modifierId)) {
+        itemModifiers.push(...modifier.modifierId)
+      } else {
+        itemModifiers.push(modifier.modifierId)
+      }
+    })
+    item.modifiers = itemModifiers
+    commit(mutation.SET_ITEM, item)
+
+    //check if item exists with same signature
+    const orderItem = state.items.find(
+      orderItem => orderItem._id === state.item._id
+    )
+    if (orderItem) {
+      commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, orderItem._id)
+    } else {
+      commit(mutation.ADD_ORDER_ITEM, state.item)
+    }
   },
 }
 
@@ -68,7 +91,9 @@ const mutations = {
 
   [mutation.ADD_ORDER_ITEM](state, item) {
     item.quantity = 1
-    item.modifiers = []
+    if (!item.modifiers) {
+      item.modifiers = []
+    }
 
     state.items.push(item)
   },
