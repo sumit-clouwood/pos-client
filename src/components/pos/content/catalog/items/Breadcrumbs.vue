@@ -26,12 +26,12 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 
 export default {
-  name: "Breadcrumbs",
+  name: 'Breadcrumbs',
   props: {
-    msg: String
+    msg: String,
   },
   computed: {
     ...mapState({
@@ -39,13 +39,13 @@ export default {
         state.category.category ? state.category.category : false,
       selectedSubCategory: state =>
         state.category.subcategory ? state.category.subcategory : false,
-      selectedItem: state => (state.order.item ? state.order.item : false)
-    })
+      selectedItem: state => (state.order.item ? state.order.item : false),
+    }),
   },
   methods: {
     subtractString(label) {
-      return label.substring(0, 15);
-    }
-  }
-};
+      return label.substring(0, 15)
+    },
+  },
+}
 </script>

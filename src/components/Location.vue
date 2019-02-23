@@ -31,26 +31,26 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 export default {
-  name: "Location",
+  name: 'Location',
   props: {},
 
   //life cycle hooks
   beforeCreate() {
     this.$store
-      .dispatch("auth/auth")
+      .dispatch('auth/auth')
       .then(response => {
         if (response.data.data.location_id) {
-          this.$store.dispatch("location/setLocation", response.data.data);
+          this.$store.dispatch('location/setLocation', response.data.data)
         } else {
-          this.$store.dispatch("location/setLocations", response.data.data);
+          this.$store.dispatch('location/setLocations', response.data.data)
         }
 
-        this.$store.dispatch("category/fetchAll", response);
-        this.$store.dispatch("modifier/fetchAll", response);
+        this.$store.dispatch('category/fetchAll', response)
+        this.$store.dispatch('modifier/fetchAll', response)
       })
-      .catch(error => (this.errored = error));
+      .catch(error => (this.errored = error))
   },
 
   mounted() {},
@@ -58,12 +58,12 @@ export default {
     ...mapState({
       // map this.categories to store.state.categories, it uses dispatch
       locationIds: state => state.location.locationIds,
-      locationName: state => state.location.locationName
-    })
-  }
-};
+      locationName: state => state.location.locationName,
+    }),
+  },
+}
 </script>
 
 <style lang="scss" scoped>
-@import "../assets/sass/locations";
+@import '../assets/sass/locations';
 </style>
