@@ -58,6 +58,11 @@ const actions = {
       })
     }
   },
+
+  populateSelection({ commit }, modifers) {
+    commit('clearSelection', [])
+    commit('populateSelection', modifers)
+  },
 }
 
 // mutations
@@ -124,6 +129,11 @@ const mutations = {
   setError(state, error) {
     state.error = error
   },
+
+  clearSelection(state, data) {
+    state.modifiers = data
+  },
+  populateSelection() {},
 }
 
 export default {

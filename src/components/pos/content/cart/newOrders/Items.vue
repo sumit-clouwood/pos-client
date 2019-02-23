@@ -17,7 +17,11 @@
           data-toggle="modal"
           data-target="#POSItemOptions"
         >
-          <img src="img/pos/plus-icon.png" alt="plus" />
+          <img
+            src="img/pos/plus-icon.png"
+            alt="plus"
+            @mouseover="setActiveItem(item._id)"
+          />
         </span>
       </div>
       <div class="aed-amt">
@@ -52,6 +56,7 @@ export default {
   methods: {
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder']),
+    ...mapActions('modifier', ['setActiveItem']),
   },
   components: {
     Modifiers,

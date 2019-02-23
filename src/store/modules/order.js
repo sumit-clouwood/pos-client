@@ -66,6 +66,7 @@ const actions = {
   addModifierOrder({ commit, rootState }) {
     let itemModifiers = []
     let item = { ...rootState.modifier.item }
+
     const modifiers = rootState.orderForm.modifiers.filter(
       modifier => modifier.itemId == item._id
     )
@@ -77,49 +78,76 @@ const actions = {
       }
     })
     item.modifiers = itemModifiers
-    //add modifier prices to item price
-    let modifierPrice = 0
 
-    rootState.modifier.itemModifiers.forEach(itemMod => {
-      itemMod.modifiers.forEach(mod => {
-        mod.get_modifier_sub_groups.forEach(subgroup => {
-          subgroup.get_modifier_item_list.forEach(submod => {
-            if (item.modifiers.includes(submod._id)) {
-              modifierPrice += parseFloat(submod.price)
-            }
+    if (!item.editMode) {
+      //update current item with new modifiers
+      //add modifier prices to item price
+      let modifierPrice = 0
+
+      rootState.modifier.itemModifiers.forEach(itemMod => {
+        itemMod.modifiers.forEach(mod => {
+          mod.get_modifier_sub_groups.forEach(subgroup => {
+            subgroup.get_modifier_item_list.forEach(submod => {
+              if (item.modifiers.includes(submod._id)) {
+                modifierPrice += parseFloat(submod.price)
+              }
+            })
           })
         })
       })
-    })
 
-    item.price = parseFloat(item.price) + modifierPrice
+      item.price = parseFloat(item.price) + modifierPrice
+      commit(mutation.SET_ITEM, item)
 
-    commit(mutation.SET_ITEM, item)
+      //check if item exists with same signature
+      const orderItems = state.items.filter(
+        orderItem => orderItem._id === state.item._id
+      )
 
-    //check if item exists with same signature
-    const orderItems = state.items.filter(
-      orderItem => orderItem._id === state.item._id
-    )
+      let itemExists = -1
 
-    let itemExists = -1
+      if (orderItems.length) {
+        orderItems.forEach((orderItem, index) => {
+          if (
+            orderItem.modifiers.every(modifierId =>
+              state.item.modifiers.includes(modifierId)
+            ) &&
+            orderItem.modifiers.length == state.item.modifiers.length
+          ) {
+            itemExists = index
+          }
+        })
+      }
 
-    if (orderItems.length) {
-      orderItems.forEach((orderItem, index) => {
-        if (
-          orderItem.modifiers.every(modifierId =>
-            state.item.modifiers.includes(modifierId)
-          ) &&
-          orderItem.modifiers.length == state.item.modifiers.length
-        ) {
-          itemExists = index
-        }
-      })
-    }
-
-    if (itemExists > -1) {
-      commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, itemExists)
+      if (itemExists > -1) {
+        commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, itemExists)
+      } else {
+        commit(mutation.ADD_ORDER_ITEM, state.item)
+      }
     } else {
-      commit(mutation.ADD_ORDER_ITEM, state.item)
+      commit(mutation.SET_ITEM, item)
+      let itemExists = -1
+      //check if item exists with same signature
+      const orderItems = state.items.filter(
+        orderItem => orderItem._id === state.item._id
+      )
+      if (orderItems.length) {
+        orderItems.forEach((orderItem, index) => {
+          if (
+            orderItem.modifiers.every(modifierId =>
+              state.item.modifiers.includes(modifierId)
+            ) &&
+            orderItem.modifiers.length == state.item.modifiers.length
+          ) {
+            itemExists = index
+          }
+        })
+      }
+
+      commit(mutation.UPDATE_MODIFER_ORDER_ITEM, {
+        item: state.item,
+        index: itemExists,
+      })
     }
   },
 }
@@ -150,6 +178,10 @@ const mutations = {
     state.items = state.items.filter(function(orderItem) {
       return orderItem._id != item._id
     })
+  },
+
+  [mutation.UPDATE_MODIFER_ORDER_ITEM](state, { item, index }) {
+    state.items.splice(index, 1, item)
   },
 }
 
