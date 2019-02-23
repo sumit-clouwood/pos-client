@@ -39,11 +39,11 @@ const actions = {
     //set item price based on location
     commit(mutation.SET_ITEM, item)
 
-    const orderItem = state.items.find(
+    const index = state.items.findIndex(
       orderItem => orderItem._id === state.item._id
     )
-    if (orderItem) {
-      commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, orderItem._id)
+    if (index > -1) {
+      commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, index)
     } else {
       commit(mutation.ADD_ORDER_ITEM, state.item)
     }
@@ -57,7 +57,7 @@ const actions = {
 
   addModifierOrder({ commit, rootState }) {
     let itemModifiers = []
-    let item = rootState.modifier.item
+    let item = { ...rootState.modifier.item }
     const modifiers = rootState.orderForm.modifiers.filter(
       modifier => modifier.itemId == item._id
     )
@@ -72,11 +72,27 @@ const actions = {
     commit(mutation.SET_ITEM, item)
 
     //check if item exists with same signature
-    const orderItem = state.items.find(
+    const orderItems = state.items.filter(
       orderItem => orderItem._id === state.item._id
     )
-    if (orderItem) {
-      commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, orderItem._id)
+
+    let itemExists = -1
+
+    if (orderItems.length) {
+      orderItems.forEach((orderItem, index) => {
+        if (
+          orderItem.modifiers.every(modifierId =>
+            state.item.modifiers.includes(modifierId)
+          ) &&
+          orderItem.modifiers.length == state.item.modifiers.length
+        ) {
+          itemExists = index
+        }
+      })
+    }
+
+    if (itemExists > -1) {
+      commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, itemExists)
     } else {
       commit(mutation.ADD_ORDER_ITEM, state.item)
     }
@@ -98,11 +114,10 @@ const mutations = {
     state.items.push(item)
   },
 
-  [mutation.INCREMENT_ORDER_ITEM_QUANTITY](state, itemId) {
+  [mutation.INCREMENT_ORDER_ITEM_QUANTITY](state, index) {
     //need to use array splice to make it reactive
-    let orderItem = state.items.find(item => item._id == itemId)
+    let orderItem = state.items[index]
     orderItem.quantity++
-    const index = state.items.findIndex(item => item._id == itemId)
     state.items.splice(index, 1, orderItem)
   },
 

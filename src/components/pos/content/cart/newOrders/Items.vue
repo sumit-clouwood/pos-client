@@ -1,10 +1,17 @@
 <template>
   <div class="order-item wrappers-order-block" v-if="items">
-    <div class="wrappers-orders" v-for="item in items" :key="item._id">
+    <div
+      class="wrappers-orders"
+      v-for="(item, index) in items"
+      :key="index + '-' + item._id"
+    >
       <div class="orders-name">
         <p>{{ t(item.item_name).name }}</p>
         <p class="price-qty">@ {{ item.item_price }} x {{ item.quantity }}</p>
-        <Modifiers v-if="orderModifiers(item)" />
+        <Modifiers
+          v-bind:modifiers="item.modifiers"
+          v-if="orderModifiers(item)"
+        />
         <span
           v-if="hasModifiers(item)"
           data-toggle="modal"

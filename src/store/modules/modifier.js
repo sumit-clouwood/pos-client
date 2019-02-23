@@ -29,7 +29,21 @@ const getters = {
       }
     })
   },
-
+  findModifier: () => modifierId => {
+    let modifier = {}
+    state.itemModifiers.forEach(item => {
+      item.modifiers.forEach(mod => {
+        mod.get_modifier_sub_groups.forEach(subgroup => {
+          subgroup.get_modifier_item_list.forEach(submod => {
+            if (submod._id == modifierId) {
+              modifier = submod
+            }
+          })
+        })
+      })
+    })
+    return modifier
+  },
   imagePath: state => imagePath => state.imagePath + imagePath,
   locationPrice: (state, getters, rootState) => item => {
     return item.item_location_price[rootState.location.location]

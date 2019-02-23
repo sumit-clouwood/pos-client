@@ -1,14 +1,19 @@
 <template>
-  <div class="modifiers">
-    <a href="">Bolognese Sauce</a>
-    <a href="">Chunky Tomato</a>
-  </div>
+  <span class="modifiers" v-if="modifiers.length">
+    <a href="" v-for="modifierId in modifiers" :key="modifierId">{{
+      t(findModifier(modifierId).item_name).name
+    }}</a>
+  </span>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Modifiers',
-  props: {},
+  props: ['modifiers'],
+  computed: {
+    ...mapGetters('modifier', ['findModifier']),
+  },
 }
 </script>
 
