@@ -20,12 +20,7 @@
           <img
             src="img/pos/plus-icon.png"
             alt="plus"
-            @click="
-              setActiveItem({
-                itemId: item._id,
-                modifierGroup: item.modifierGroups,
-              })
-            "
+            @click="setActiveItem({ orderItem: item, index: index })"
           />
         </span>
       </div>

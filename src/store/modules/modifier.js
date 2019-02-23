@@ -63,15 +63,22 @@ const actions = {
     })
   },
 
-  setActiveItem({ commit, dispatch }, { itemId, modifierGroup }) {
+  setActiveItem({ commit, dispatch }, { orderItem, index }) {
     //get item from item modifiers and show all the modifiers attached with that item
-    const modifierItem = state.itemModifiers.find(item => item.itemId == itemId)
+    //create new item to replace existing one
+    const modifierItem = state.itemModifiers.find(
+      item => item.itemId == orderItem._id
+    )
     let item = modifierItem.item
     item.editMode = true
+    item.quantity = orderItem.quantity
+    item.arrayIndex = index
     commit(mutation.SET_ITEM, item)
     //formstate should contain only those fiels which are selected by this order item
 
-    dispatch('orderForm/populateSelection', modifierGroup, { root: true })
+    dispatch('orderForm/populateSelection', orderItem.modifierGroups, {
+      root: true,
+    })
   },
 
   //find modifiers from all specific to current item and push to current list

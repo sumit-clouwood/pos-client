@@ -96,18 +96,33 @@ const mutations = {
 
     if (modifier && modifier.modifierId.find(modId => modId == modifierId)) {
       const key = modifier.modifierId.findIndex(modId => modId == modifierId)
-      modifier.modifierId.splice(key, 1)
+      //if already exists, remove it : toggle concept
+      if (
+        Array.isArray(modifier.modifierId) &&
+        modifier.modifierId.length === 1
+      ) {
+        //remove the whole group
+        const index = state.modifiers.findIndex(
+          modifier => modifier.itemId == itemId && modifier.groupId == groupId
+        )
+        state.modifiers.splice(index, 1)
+      } else {
+        modifier.modifierId.splice(key, 1)
+      }
     } else {
       const key = state.modifiers.findIndex(
         item => item.itemId == itemId && item.groupId == groupId
       )
+
       if (key > -1) {
+        //modifier already exist for this item and modifier group, add modifier into existing modifers
         let modifier = state.modifiers.find(
           item => item.itemId == itemId && item.groupId == groupId
         )
         modifier.modifierId.push(modifierId)
         state.modifiers.splice(key, 1, modifier)
       } else {
+        //create new modifier
         state.modifiers.push({
           itemId: itemId,
           modifierId: [modifierId],
