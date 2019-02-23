@@ -20,7 +20,12 @@
           <img
             src="img/pos/plus-icon.png"
             alt="plus"
-            @mouseover="setActiveItem(item._id)"
+            @click="
+              setActiveItem({
+                itemId: item._id,
+                modifierGroup: item.modifierGroups,
+              })
+            "
           />
         </span>
       </div>

@@ -59,9 +59,12 @@ const actions = {
     }
   },
 
-  populateSelection({ commit }, modifers) {
+  populateSelection({ commit }, modifierGroups) {
     commit('clearSelection', [])
-    commit('populateSelection', modifers)
+    commit('populateSelection', modifierGroups)
+  },
+  clearSelection({ commit }) {
+    commit('clearSelection', [])
   },
 }
 
@@ -133,7 +136,15 @@ const mutations = {
   clearSelection(state, data) {
     state.modifiers = data
   },
-  populateSelection() {},
+  populateSelection(state, modifierGroups) {
+    modifierGroups.forEach(group => {
+      state.modifiers.push({
+        groupId: group.groupId,
+        itemId: group.itemId,
+        modifierId: group.modifierId,
+      })
+    })
+  },
 }
 
 export default {

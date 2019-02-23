@@ -65,19 +65,24 @@ const actions = {
 
   addModifierOrder({ commit, rootState }) {
     let itemModifiers = []
+    let itemModifierGroups = []
     let item = { ...rootState.modifier.item }
 
     const modifiers = rootState.orderForm.modifiers.filter(
       modifier => modifier.itemId == item._id
     )
     modifiers.forEach(modifier => {
+      itemModifierGroups.push(modifier)
+
       if (Array.isArray(modifier.modifierId)) {
         itemModifiers.push(...modifier.modifierId)
       } else {
         itemModifiers.push(modifier.modifierId)
       }
     })
+
     item.modifiers = itemModifiers
+    item.modifierGroups = itemModifierGroups
 
     if (!item.editMode) {
       //update current item with new modifiers

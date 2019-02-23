@@ -63,20 +63,21 @@ const actions = {
     })
   },
 
-  setActiveItem({ commit, dispatch }, itemId) {
+  setActiveItem({ commit, dispatch }, { itemId, modifierGroup }) {
     //get item from item modifiers and show all the modifiers attached with that item
     const modifierItem = state.itemModifiers.find(item => item.itemId == itemId)
     let item = modifierItem.item
     item.editMode = true
     commit(mutation.SET_ITEM, item)
     //formstate should contain only those fiels which are selected by this order item
-    dispatch('orderForm/populateSelection', [])
+
+    dispatch('orderForm/populateSelection', modifierGroup, { root: true })
   },
 
   //find modifiers from all specific to current item and push to current list
   setModifierItem({ commit, rootState, dispatch }, item) {
     //clear modifiers selection
-    dispatch('orderForm/clearSelection', [])
+    dispatch('orderForm/clearSelection', [], { root: true })
     //set location based pricing
     if (
       item.get_item_location_price.location_id == rootState.location.location
