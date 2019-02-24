@@ -69,10 +69,10 @@ const actions = {
     const modifierItem = state.itemModifiers.find(
       item => item.itemId == orderItem._id
     )
-    let item = modifierItem.item
+    let item = { ...modifierItem.item }
     item.editMode = true
     item.quantity = orderItem.quantity
-    item.arrayIndex = index
+    item.orderIndex = index
     commit(mutation.SET_ITEM, item)
     //formstate should contain only those fiels which are selected by this order item
 

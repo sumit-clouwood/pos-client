@@ -84,45 +84,42 @@ const actions = {
     item.modifiers = itemModifiers
     item.modifierGroups = itemModifierGroups
 
-    if (!item.editMode) {
-      //update current item with new modifiers
-      //add modifier prices to item price
-      let modifierPrice = 0
+    let modifierPrice = 0
 
-      rootState.modifier.itemModifiers.forEach(itemMod => {
-        itemMod.modifiers.forEach(mod => {
-          mod.get_modifier_sub_groups.forEach(subgroup => {
-            subgroup.get_modifier_item_list.forEach(submod => {
-              if (item.modifiers.includes(submod._id)) {
-                modifierPrice += parseFloat(submod.price)
-              }
-            })
+    rootState.modifier.itemModifiers.forEach(itemMod => {
+      itemMod.modifiers.forEach(mod => {
+        mod.get_modifier_sub_groups.forEach(subgroup => {
+          subgroup.get_modifier_item_list.forEach(submod => {
+            if (item.modifiers.includes(submod._id)) {
+              modifierPrice += parseFloat(submod.price)
+            }
           })
         })
       })
+    })
 
-      item.price = parseFloat(item.price) + modifierPrice
-      commit(mutation.SET_ITEM, item)
+    item.price = parseFloat(item.price) + modifierPrice
+
+    commit(mutation.SET_ITEM, item)
+
+    if (!item.editMode) {
+      //update current item with new modifiers
 
       //check if item exists with same signature
-      const orderItems = state.items.filter(
-        orderItem => orderItem._id === state.item._id
-      )
 
       let itemExists = -1
 
-      if (orderItems.length) {
-        orderItems.forEach((orderItem, index) => {
-          if (
-            orderItem.modifiers.every(modifierId =>
-              state.item.modifiers.includes(modifierId)
-            ) &&
-            orderItem.modifiers.length == state.item.modifiers.length
-          ) {
-            itemExists = index
-          }
-        })
-      }
+      state.items.forEach((orderItem, index) => {
+        if (
+          state.item._id == orderItem._id &&
+          orderItem.modifiers.every(modifierId =>
+            state.item.modifiers.includes(modifierId)
+          ) &&
+          orderItem.modifiers.length == state.item.modifiers.length
+        ) {
+          itemExists = index
+        }
+      })
 
       if (itemExists > -1) {
         commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, itemExists)
@@ -131,44 +128,9 @@ const actions = {
       }
     } else {
       //edit mode
-      let modifierPrice = 0
-
-      rootState.modifier.itemModifiers.forEach(itemMod => {
-        itemMod.modifiers.forEach(mod => {
-          mod.get_modifier_sub_groups.forEach(subgroup => {
-            subgroup.get_modifier_item_list.forEach(submod => {
-              if (item.modifiers.includes(submod._id)) {
-                modifierPrice += parseFloat(submod.price)
-              }
-            })
-          })
-        })
-      })
-
-      item.price = parseFloat(item.price) + modifierPrice
-
-      commit(mutation.SET_ITEM, item)
-      let itemExists = -1
-      //check if item exists with same signature
-      const orderItems = state.items.filter(
-        orderItem => orderItem._id == state.item._id
-      )
-      if (orderItems.length) {
-        orderItems.forEach((orderItem, index) => {
-          if (
-            orderItem.modifiers.every(modifierId =>
-              state.item.modifiers.includes(modifierId)
-            ) &&
-            orderItem.modifiers.length == state.item.modifiers.length
-          ) {
-            itemExists = index
-          }
-        })
-      }
-
+      //if the signature was different then modify modifiers
       commit(mutation.UPDATE_MODIFER_ORDER_ITEM, {
         item: state.item,
-        index: itemExists,
       })
     }
   },
@@ -202,15 +164,8 @@ const mutations = {
     })
   },
 
-  [mutation.UPDATE_MODIFER_ORDER_ITEM](state, { item, index }) {
-    if (index > -1 && index != item.arrayIndex) {
-      item.quantity++
-    }
-    state.items.splice(index, 1, item)
-    if (index != item.arrayIndex && state.items.length > 1) {
-      //remove updated item as its quantity was updated to matching item
-      state.items.splice(item.arrayIndex, 1)
-    }
+  [mutation.UPDATE_MODIFER_ORDER_ITEM](state, { item }) {
+    state.items.splice(item.orderIndex, 1, item)
   },
 }
 
