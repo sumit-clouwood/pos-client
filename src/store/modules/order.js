@@ -4,8 +4,6 @@ import * as mutation from './order/mutation-types'
 const state = {
   items: [],
   item: {},
-  taxData: [],
-  taxAmount: 0.0,
 }
 
 // getters
@@ -32,19 +30,7 @@ const getters = {
 
   orderSurcharge: () => {},
   orderTax: () => {
-    state.items.length > 0
-      ? state.items.forEach(cartItems =>
-          cartItems.item_tax.length > 0
-            ? cartItems.item_tax.forEach(cartItemTax =>
-                !isNaN(cartItemTax.tax_amount)
-                  ? // ? (state.taxAmount += parseFloat(cartItemTax.tax_amount))
-                    (state.taxAmount += parseFloat(cartItemTax.tax_amount))
-                  : 0
-              )
-            : (state.taxAmount += 0)
-        )
-      : (state.taxAmount += 0)
-    return !isNaN(state.taxAmount) ? state.taxAmount : 0
+    //return tax from tax store for order level tax
   },
   orderDiscount: () => {},
 }
@@ -118,6 +104,24 @@ const actions = {
 
     commit(mutation.SET_ITEM, item)
 
+    //adding tax and discounts to item
+
+    //STEP 1: calculate the item tax and add that to item
+    let taxAmount = 0
+
+    if (item.item_tax.length) {
+      taxAmount = item.item_tax.reduce(
+        (taxAmount, taxItem) => taxAmount + parseFloat(taxItem.tax_amount),
+        0
+      )
+    }
+
+    //SETP 2 : add calculated tax to state.item, we can not use that directly so commit mutation here
+    commit(mutation.SET_ITEM_TAX, taxAmount)
+
+    //STEP 3 : Add calculated tax to item price, since we already added tax to item we can get it direclty from item no need to pass an argument here
+    commit(mutation.ADD_TAX_TO_ITEM_PRICE)
+
     if (!item.editMode) {
       //update current item with new modifiers
 
@@ -140,7 +144,7 @@ const actions = {
       if (itemExists > -1) {
         commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, itemExists)
       } else {
-        commit(mutation.ADD_ORDER_ITEM, state.item)
+        commit(mutation.ADD_ORDER_ITEM_MODIFIER, state.item)
       }
     } else {
       //edit mode
@@ -160,10 +164,12 @@ const mutations = {
 
   [mutation.ADD_ORDER_ITEM](state, item) {
     item.quantity = 1
-    if (!item.modifiers) {
-      item.modifiers = []
-    }
+    item.modifiers = []
+    state.items.push(item)
+  },
 
+  [mutation.ADD_ORDER_ITEM_MODIFIER](state, item) {
+    item.quantity = 1
     state.items.push(item)
   },
 
@@ -182,6 +188,14 @@ const mutations = {
 
   [mutation.UPDATE_MODIFER_ORDER_ITEM](state, { item }) {
     state.items.splice(item.orderIndex, 1, item)
+  },
+
+  [mutation.SET_ITEM_TAX](state, tax) {
+    state.item.tax = tax
+  },
+
+  [mutation.ADD_TAX_TO_ITEM_PRICE](state) {
+    state.item.price += state.item.tax
   },
 }
 
