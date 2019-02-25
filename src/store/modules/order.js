@@ -31,6 +31,7 @@ const getters = {
   orderSurcharge: () => {},
   orderTax: () => {
     //return tax from tax store for order level tax
+    return state.items.reduce((tax, item) => tax + item.tax, 0)
   },
   orderDiscount: () => {},
 }
