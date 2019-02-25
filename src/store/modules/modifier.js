@@ -85,7 +85,8 @@ const actions = {
   setModifierItem({ commit, rootState, dispatch }, item) {
     //clear modifiers selection
     dispatch('orderForm/clearSelection', [], { root: true })
-    //set location based pricing
+    //set location based pricing for an item (not modifier) as this item ll be used in order
+    //this price needs to be shown in popup
     if (
       item.get_item_location_price.location_id == rootState.location.location
     ) {
@@ -94,6 +95,7 @@ const actions = {
       item.price = item.item_price
     }
 
+    //we are going to show a popup for new item (not for an item already added to cart)
     item.editMode = false
 
     commit(mutation.SET_ITEM, item)
@@ -128,6 +130,8 @@ const actions = {
             mod.price =
               mod.item_location_price[rootState.location.location] ||
               mod.item_price
+
+            //calculate tax for the modifiers ll be done in order store because we add modifier price to item price and then calculate tax
             return mod
           })
           //do not mutate original state
