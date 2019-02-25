@@ -43,7 +43,7 @@
 
 <script>
 export default {
-  name: 'AddNote',
-  props: {},
-}
+  name: "AddNote",
+  props: {}
+};
 </script>

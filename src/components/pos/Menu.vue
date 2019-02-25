@@ -50,24 +50,24 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
-  name: 'Menu',
+  name: "Menu",
   props: {},
   computed: {
     ...mapState({
       // map this.categories to store.state.categories, it uses dispatch
       menu: state => state.category.all,
-      currentCategory: state => state.category.category._id,
+      currentCategory: state => state.category.category._id
     }),
-    ...mapGetters('category', ['categoryImage']),
+    ...mapGetters("category", ["categoryImage"])
   },
   // map `this.browse()` to `this.$store.category.dispatch('browse')`
   methods: {
-    ...mapActions('category', ['browse']),
-  },
-}
+    ...mapActions("category", ["browse"])
+  }
+};
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <!--<style lang="scss" scoped>

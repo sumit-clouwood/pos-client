@@ -257,7 +257,7 @@
 
 <script>
 export default {
-  name: 'OnlineOrder',
-  props: {},
-}
+  name: "OnlineOrder",
+  props: {}
+};
 </script>

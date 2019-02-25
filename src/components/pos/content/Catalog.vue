@@ -9,19 +9,19 @@
 </template>
 
 <script>
-import Items from './catalog/Items'
-import Search from './catalog/Search'
-import SubMenu from './catalog/SubMenu'
+import Items from "./catalog/Items";
+import Search from "./catalog/Search";
+import SubMenu from "./catalog/SubMenu";
 
 export default {
-  name: 'Catalog',
+  name: "Catalog",
   props: {
-    msg: String,
+    msg: String
   },
   components: {
     Items,
     Search,
-    SubMenu,
-  },
-}
+    SubMenu
+  }
+};
 </script>

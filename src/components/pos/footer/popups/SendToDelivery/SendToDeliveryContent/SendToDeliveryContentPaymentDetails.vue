@@ -28,7 +28,7 @@
 
 <script>
 export default {
-  name: 'SendToDeliveryContentPaymentDetails',
-  props: {},
-}
+  name: "SendToDeliveryContentPaymentDetails",
+  props: {}
+};
 </script>

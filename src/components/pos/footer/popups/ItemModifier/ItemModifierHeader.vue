@@ -49,7 +49,7 @@
 
 <script>
 export default {
-  name: 'ItemModifierHeader',
-  props: {},
-}
+  name: "ItemModifierHeader",
+  props: {}
+};
 </script>

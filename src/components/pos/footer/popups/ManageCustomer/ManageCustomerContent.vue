@@ -366,7 +366,7 @@
 
 <script>
 export default {
-  name: 'ManageCustomerContent',
-  props: {},
-}
+  name: "ManageCustomerContent",
+  props: {}
+};
 </script>

@@ -232,7 +232,7 @@
 
 <script>
 export default {
-  name: 'ItemModifierContent',
-  props: {},
-}
+  name: "ItemModifierContent",
+  props: {}
+};
 </script>

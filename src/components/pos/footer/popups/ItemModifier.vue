@@ -20,16 +20,16 @@
 </template>
 
 <script>
-import ItemModifierContent from './ItemModifier/ItemModifierContent'
-import ItemModifierHeader from './ItemModifier/ItemModifierHeader'
-import ItemModifierFooter from './ItemModifier/ItemModifierFooter'
+import ItemModifierContent from "./ItemModifier/ItemModifierContent";
+import ItemModifierHeader from "./ItemModifier/ItemModifierHeader";
+import ItemModifierFooter from "./ItemModifier/ItemModifierFooter";
 export default {
-  name: 'ItemModifier',
+  name: "ItemModifier",
   props: {},
   components: {
     ItemModifierFooter,
     ItemModifierHeader,
-    ItemModifierContent,
-  },
-}
+    ItemModifierContent
+  }
+};
 </script>

@@ -56,7 +56,7 @@
 
 <script>
 export default {
-  name: 'SendToDeliveryContentItem',
-  props: {},
-}
+  name: "SendToDeliveryContentItem",
+  props: {}
+};
 </script>

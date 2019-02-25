@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: 'Search',
-  props: {},
-}
+  name: "Search",
+  props: {}
+};
 </script>

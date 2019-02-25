@@ -31,7 +31,7 @@
 
 <script>
 export default {
-  name: 'ItemModifierFooter',
-  props: {},
-}
+  name: "ItemModifierFooter",
+  props: {}
+};
 </script>

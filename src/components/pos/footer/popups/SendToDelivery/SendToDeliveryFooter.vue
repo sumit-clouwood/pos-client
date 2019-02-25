@@ -61,7 +61,7 @@
 
 <script>
 export default {
-  name: 'SendToDeliveryFooter',
-  props: {},
-}
+  name: "SendToDeliveryFooter",
+  props: {}
+};
 </script>

@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: 'Announcement',
-  props: {},
-}
+  name: "Announcement",
+  props: {}
+};
 </script>

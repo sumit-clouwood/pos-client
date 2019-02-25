@@ -37,7 +37,7 @@
 
 <script>
 export default {
-  name: 'ManageCustomerFooter',
-  props: {},
-}
+  name: "ManageCustomerFooter",
+  props: {}
+};
 </script>

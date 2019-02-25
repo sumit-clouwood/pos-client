@@ -47,7 +47,7 @@
 
 <script>
 export default {
-  name: 'DineIn',
-  props: {},
-}
+  name: "DineIn",
+  props: {}
+};
 </script>

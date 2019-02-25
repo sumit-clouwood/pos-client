@@ -31,26 +31,26 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from "vuex";
 
-import Breadcrumbs from './items/Breadcrumbs'
-import Popup from './items/Popup'
+import Breadcrumbs from "./items/Breadcrumbs";
+import Popup from "./items/Popup";
 export default {
-  name: 'Items',
+  name: "Items",
   props: {
-    msg: String,
+    msg: String
   },
   components: {
     Breadcrumbs,
-    Popup,
+    Popup
   },
   computed: {
-    ...mapGetters('category', ['items', 'itemImage']),
-    ...mapGetters('modifier', ['hasModifiers']),
+    ...mapGetters("category", ["items", "itemImage"]),
+    ...mapGetters("modifier", ["hasModifiers"])
   },
   methods: {
-    ...mapActions('order', ['addToOrder']),
-    ...mapActions('modifier', ['setModifierItem']),
-  },
-}
+    ...mapActions("order", ["addToOrder"]),
+    ...mapActions("modifier", ["setModifierItem"])
+  }
+};
 </script>

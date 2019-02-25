@@ -28,19 +28,19 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'CartFooter',
+  name: "CartFooter",
   props: {},
   computed: {
-    ...mapGetters('order', [
-      'orderTotal',
-      'subTotal',
-      'orderSurcharge',
-      'orderDiscount',
-      'orderTax',
+    ...mapGetters("order", [
+      "orderTotal",
+      "subTotal",
+      "orderSurcharge",
+      "orderDiscount",
+      "orderTax"
     ]),
-    ...mapGetters('location', ['formatPrice']),
-  },
-}
+    ...mapGetters("location", ["formatPrice"])
+  }
+};
 </script>

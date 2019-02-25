@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: 'ManageCustomerHeader',
-  props: {},
-}
+  name: "ManageCustomerHeader",
+  props: {}
+};
 </script>

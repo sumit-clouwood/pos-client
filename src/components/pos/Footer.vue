@@ -77,15 +77,15 @@
 </template>
 
 <script>
-import AddNote from './footer/popups/AddNote'
-import Discount from './footer/popups/Discount'
-import SendToDelivery from './footer/popups/SendToDelivery'
-import DineIn from './footer/popups/DineIn'
-import ManageCustomer from './footer/popups/ManageCustomer'
-import OnlineOrder from './header/popups/OnlineOrder'
+import AddNote from "./footer/popups/AddNote";
+import Discount from "./footer/popups/Discount";
+import SendToDelivery from "./footer/popups/SendToDelivery";
+import DineIn from "./footer/popups/DineIn";
+import ManageCustomer from "./footer/popups/ManageCustomer";
+import OnlineOrder from "./header/popups/OnlineOrder";
 
 export default {
-  name: 'Footer',
+  name: "Footer",
   props: {},
   components: {
     AddNote,
@@ -93,7 +93,7 @@ export default {
     OnlineOrder,
     Discount,
     DineIn,
-    SendToDelivery,
-  },
-}
+    SendToDelivery
+  }
+};
 </script>

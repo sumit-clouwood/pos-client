@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: 'SendToDeliveryHeader',
-  props: {},
-}
+  name: "SendToDeliveryHeader",
+  props: {}
+};
 </script>

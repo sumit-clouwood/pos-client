@@ -7,19 +7,19 @@
 </template>
 
 <script>
-import NewOrders from './cart/NewOrders'
-import HoldingOrders from './cart/HoldingOrders'
-import Footer from './cart/Footer'
+import NewOrders from "./cart/NewOrders";
+import HoldingOrders from "./cart/HoldingOrders";
+import Footer from "./cart/Footer";
 
 export default {
-  name: 'Cart',
+  name: "Cart",
   props: {
-    msg: String,
+    msg: String
   },
   components: {
     NewOrders,
     HoldingOrders,
-    Footer,
-  },
-}
+    Footer
+  }
+};
 </script>
