@@ -4,6 +4,8 @@ import * as mutation from './order/mutation-types'
 const state = {
   items: [],
   item: {},
+  taxData: [],
+  taxAmount: 0.0,
 }
 
 // getters
@@ -29,7 +31,21 @@ const getters = {
   },
 
   orderSurcharge: () => {},
-  orderTax: () => {},
+  orderTax: () => {
+    state.items.length > 0
+      ? state.items.forEach(cartItems =>
+          cartItems.item_tax.length > 0
+            ? cartItems.item_tax.forEach(cartItemTax =>
+                !isNaN(cartItemTax.tax_amount)
+                  ? // ? (state.taxAmount += parseFloat(cartItemTax.tax_amount))
+                    (state.taxAmount += parseFloat(cartItemTax.tax_amount))
+                  : 0
+              )
+            : (state.taxAmount += 0)
+        )
+      : (state.taxAmount += 0)
+    return !isNaN(state.taxAmount) ? state.taxAmount : 0
+  },
   orderDiscount: () => {},
 }
 

@@ -60,16 +60,16 @@ const actions = {
             state.subcategory.get_sub_category_product
           )
         }
-        if (state.subcategory.get_sub_category_product) {
-          commit(
-            mutation.TAX_DETAILS,
-            state.subcategory.get_sub_category_product[0].item_tax
-          )
-          commit(
-            mutation.ITEM_TAX_AMOUNT,
-            state.subcategory.get_sub_category_product[0].item_tax.tax_amount
-          )
-        }
+        // if (state.subcategory.get_sub_category_product) {
+        //   commit(
+        //     mutation.TAX_DETAILS,
+        //     state.subcategory.get_sub_category_product[0].item_tax
+        //   );
+        //   commit(
+        //     mutation.ITEM_TAX_AMOUNT,
+        //     state.subcategory.get_sub_category_product[0].item_tax[0].tax_amount
+        //   );
+        // }
       }
     })
   },
@@ -89,16 +89,6 @@ const actions = {
       commit(
         mutation.SET_SUBCATEGORY_ITEMS,
         state.subcategory.get_sub_category_product
-      )
-    }
-    if (state.subcategory) {
-      commit(
-        mutation.TAX_DETAILS,
-        state.subcategory.get_sub_category_product.item_tax
-      )
-      commit(
-        mutation.ITEM_TAX_AMOUNT,
-        state.subcategory.get_sub_category_product.item_tax.tax_amount
       )
     }
   },
@@ -125,13 +115,6 @@ const mutations = {
 
   [mutation.SET_CATEGORY](state, category) {
     state.category = category
-  },
-  [mutation.TAX_DETAILS](state, taxData) {
-    state.taxData = taxData
-  },
-
-  [mutation.ITEM_TAX_AMOUNT](state, taxAmount) {
-    state.taxAmount = taxAmount
   },
 
   [mutation.SET_SUBCATEGORIES](state, subcategories) {
