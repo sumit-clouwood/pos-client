@@ -10,7 +10,7 @@ const state = {
 const getters = {
   orderTotal: () => {
     return state.items.reduce((total, item) => {
-      return total + item.price * item.quantity
+      return total + (item.price + item.tax) * item.quantity
     }, 0)
   },
 
@@ -120,9 +120,6 @@ const actions = {
     //SETP 2 : add calculated tax to state.item, we can not use that directly so commit mutation here
     commit(mutation.SET_ITEM_TAX, taxAmount)
 
-    //STEP 3 : Add calculated tax to item price, since we already added tax to item we can get it direclty from item no need to pass an argument here
-    commit(mutation.ADD_TAX_TO_ITEM_PRICE)
-
     if (!item.editMode) {
       //update current item with new modifiers
 
@@ -193,10 +190,6 @@ const mutations = {
 
   [mutation.SET_ITEM_TAX](state, tax) {
     state.item.tax = tax
-  },
-
-  [mutation.ADD_TAX_TO_ITEM_PRICE](state) {
-    state.item.price += state.item.tax
   },
 }
 
