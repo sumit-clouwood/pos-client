@@ -15,7 +15,7 @@
       </div>
       <div>
         <span class="total-charges">Tax</span>
-        <span class="aed-charges"> {{ formatPrice(orderTax || 0) }}</span>
+        <span class="aed-charges"> {{ formatPrice(totalTax || 0) }}</span>
       </div>
     </div>
     <div class="total-amount">
@@ -38,8 +38,8 @@ export default {
       'subTotal',
       'orderSurcharge',
       'orderDiscount',
-      'orderTax',
     ]),
+    ...mapGetters('tax', ['totalTax']),
     ...mapGetters('location', ['formatPrice']),
   },
 }

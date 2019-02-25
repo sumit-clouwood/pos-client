@@ -8,10 +8,14 @@ const state = {
 
 // getters
 const getters = {
-  orderTotal: () => {
-    return state.items.reduce((total, item) => {
-      return total + (item.price + item.tax) * item.quantity
-    }, 0)
+  orderTotal: (state, getters, rootState) => {
+    return (
+      state.items.reduce((total, item) => {
+        return total + item.price * item.quantity
+      }, 0) +
+      rootState.tax.itemsTax +
+      rootState.tax.surchargeTax
+    )
   },
 
   subTotal: () => {
@@ -27,18 +31,13 @@ const getters = {
   orderModifiers: () => item => {
     return item.modifiers.length
   },
-
   orderSurcharge: () => {},
-  orderTax: () => {
-    //return tax from tax store for order level tax
-    return state.items.reduce((tax, item) => tax + item.tax, 0)
-  },
   orderDiscount: () => {},
 }
 
 // actions
 const actions = {
-  addToOrder({ state, commit, rootState }, item) {
+  addToOrder({ state, commit, rootState, dispatch }, item) {
     //set item price based on location, for modifiers items it is already set in modifer store
     if (
       item.get_item_location_price.location_id == rootState.location.location
@@ -58,15 +57,17 @@ const actions = {
     } else {
       commit(mutation.ADD_ORDER_ITEM, state.item)
     }
+    dispatch('tax/calculate', {}, { root: true })
   },
 
-  removeFromOrder({ commit }, item) {
+  removeFromOrder({ commit, dispatch }, { item, index }) {
     commit(mutation.SET_ITEM, item)
-    commit(mutation.REMOVE_ORDER_ITEM, item)
+    commit(mutation.REMOVE_ORDER_ITEM, index)
     commit(mutation.SET_ITEM, state.items[0])
+    dispatch('tax/calculate', {}, { root: true })
   },
 
-  addModifierOrder({ commit, rootState }) {
+  addModifierOrder({ commit, rootState, dispatch }) {
     let item = { ...rootState.modifier.item }
     commit(mutation.SET_ITEM, item)
 
@@ -111,20 +112,6 @@ const actions = {
 
     commit(mutation.ADD_MODIFIER_PRICE_TO_ITEM, modifierPrice)
 
-    //adding tax and discounts to item
-    //STEP 1: calculate the item tax and add that to item
-    let taxAmount = 0
-
-    if (item.item_tax.length) {
-      taxAmount = item.item_tax.reduce(
-        (taxAmount, taxItem) => taxAmount + parseFloat(taxItem.tax_amount),
-        0
-      )
-    }
-
-    //SETP 2 : add calculated tax to state.item, we can not use that directly so commit mutation here
-    commit(mutation.SET_ITEM_TAX, taxAmount)
-
     if (!item.editMode) {
       //update current item with new modifiers
 
@@ -151,11 +138,14 @@ const actions = {
       }
     } else {
       //edit mode
-      //if the signature was different then modify modifiers
+      //if the signature was different then modify modifiers,
+      //as we are creating new item and attached modifiers again so its better to just
+      //replace that item in state with existing item
       commit(mutation.UPDATE_MODIFER_ORDER_ITEM, {
         item: state.item,
       })
     }
+    dispatch('tax/calculate', {}, { root: true })
   },
 }
 
@@ -183,9 +173,9 @@ const mutations = {
     state.items.splice(index, 1, orderItem)
   },
 
-  [mutation.REMOVE_ORDER_ITEM](state, item) {
-    state.items = state.items.filter(function(orderItem) {
-      return orderItem._id != item._id
+  [mutation.REMOVE_ORDER_ITEM](state, index) {
+    state.items = state.items.filter(function(orderItem, key) {
+      return key != index
     })
   },
 

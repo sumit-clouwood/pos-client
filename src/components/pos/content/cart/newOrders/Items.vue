@@ -28,7 +28,10 @@
         <span>{{ formatPrice(itemPrice(item)) }}</span>
       </div>
       <div class="dlt-btn">
-        <a href="" @click.prevent="removeFromOrder(item)">
+        <a
+          href=""
+          @click.prevent="removeFromOrder({ item: item, index: index })"
+        >
           <img src="img/pos/delete-icon.svg" alt="delete" />
         </a>
       </div>
