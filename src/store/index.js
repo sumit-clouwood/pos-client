@@ -1,13 +1,15 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import auth from "./modules/auth";
-import category from "./modules/category";
-import modifier from "./modules/modifier";
-import order from "./modules/order";
-import sync from "./modules/sync";
-import location from "./modules/location";
+import Vue from 'vue'
+import Vuex from 'vuex'
+import auth from './modules/auth'
+import category from './modules/category'
+import modifier from './modules/modifier'
+import order from './modules/order'
+import sync from './modules/sync'
+import location from './modules/location'
+import orderForm from './modules/order/form'
+import tax from './modules/tax'
 import surcharge from "./modules/surcharge";
-import orderForm from "./modules/order/form";
+
 //to take snapshot
 import createLogger from "vuex/dist/logger";
 
@@ -24,7 +26,8 @@ export default new Vuex.Store({
     modifier,
     orderForm,
     surcharge,
-    order
+    order,
+    tax
   },
   strict: debug,
   plugins: debug ? [createLogger()] : []
