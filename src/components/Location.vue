@@ -50,6 +50,7 @@ export default {
         this.$store.dispatch("category/fetchAll", response);
         this.$store.dispatch("modifier/fetchAll", response);
         this.$store.dispatch("surcharge/fetchAll", response);
+        this.$store.dispatch("customer/fetchAll", response);
       })
       .catch(error => (this.errored = error));
   },
