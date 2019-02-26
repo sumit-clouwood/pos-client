@@ -12,11 +12,7 @@
           v-bind:modifiers="item.modifiers"
           v-if="orderModifiers(item)"
         />
-        <span
-          v-if="hasModifiers(item)"
-          data-toggle="modal"
-          data-target="#POSItemOptions"
-        >
+        <span data-toggle="modal" data-target="#POSItemOptions">
           <img
             src="img/pos/plus-icon.png"
             alt="plus"

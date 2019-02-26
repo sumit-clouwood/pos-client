@@ -9,7 +9,9 @@ import location from './modules/location'
 import orderForm from './modules/order/form'
 import tax from './modules/tax'
 import surcharge from './modules/surcharge'
+import customer from './modules/customer'
 import discount from './modules/discount'
+
 //to take snapshot
 import createLogger from 'vuex/dist/logger'
 
@@ -19,15 +21,16 @@ const debug = process.env.NODE_ENV !== 'production'
 
 export default new Vuex.Store({
   modules: {
+    tax,
     auth,
     sync,
     location,
-    category,
     modifier,
+    customer,
+    category,
     orderForm,
     surcharge,
     order,
-    tax,
     discount,
   },
   strict: debug,
