@@ -47,40 +47,18 @@ const actions = {
       // commit(mutation.SET_SURCHARGES, response.data.data);
 
       if (response.data.data.length) {
-        response.data.data.forEach(
-          surcharge =>
-            surchargeDetails.push({
-              type: surcharge.type,
-              value: surcharge.rate,
-              tax:
-                surcharge.surcharge_is_taxable === 1
-                  ? surcharge.surcharge_taxable_rate_info[0].rate
-                  : 0
-            })
-          // surcharge.type === "value"
-          //   ? (surchargeValue += parseFloat(surcharge.rate))
-          //   : (surchargeValue = 0),
-          // state.surcharges.push()
+        response.data.data.forEach(surcharge =>
+          surchargeDetails.push({
+            type: surcharge.type,
+            value: surcharge.rate,
+            tax:
+              surcharge.surcharge_is_taxable === 1
+                ? surcharge.surcharge_taxable_rate_info[0].rate
+                : 0
+          })
         );
-        // surchargeValue = response.data.data.reduce(
-        //   (surcharge, surchargeValue) =>
-        //     surcharge.type === "value"
-        //       ? (surchargeValue += parseFloat(surcharge.rate))
-        //       : (surchargeValue += 1)
-        // );
       }
       commit(mutation.SET_SURCHARGES, surchargeDetails);
-      // commit(mutation.SET_SURCHARGE_VALUE, surchargeValue);
-
-      // if (surchargeValue > 0) {
-      //   surchargeTax = response.data.data.reduce(
-      //     (surchargeTax, surcharge) =>
-      //       surchargeTax +
-      //       parseFloat(surcharge.surcharge_taxable_rate_info[0].rate),
-      //     0
-      //   );
-      // }
-      // commit(mutation.SET_SURCHARGE_TAX, surchargeTax);
     });
   },
 
