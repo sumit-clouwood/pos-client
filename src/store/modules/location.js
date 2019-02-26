@@ -14,7 +14,7 @@ const getters = {
   formatPrice: state => price =>
     state.currency +
     ' ' +
-    (Math.round((price + 0.00001) * 100) / 100).toFixed(2),
+    (Math.round((parseFloat(price) + 0.00001) * 100) / 100).toFixed(2),
 }
 
 // actions
