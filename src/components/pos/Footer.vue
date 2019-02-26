@@ -66,11 +66,13 @@
       </div>
     </footer>
     <div class="modal-backdrop fade show" id="transparent-screen"></div>
+
     <!--All popup including online order, because we need to apply few js which are not on header so all popups will be here-->
     <AddNote />
     <ManageCustomer />
     <OnlineOrder />
     <Discount />
+    <CartItemDiscount />
     <DineIn />
     <SendToDelivery />
   </div>
@@ -83,6 +85,7 @@ import SendToDelivery from "./footer/popups/SendToDelivery";
 import DineIn from "./footer/popups/DineIn";
 import ManageCustomer from "./footer/popups/ManageCustomer";
 import OnlineOrder from "./header/popups/OnlineOrder";
+import CartItemDiscount from "./content/popups/CartItemDiscount";
 
 export default {
   name: "Footer",
@@ -93,7 +96,8 @@ export default {
     OnlineOrder,
     Discount,
     DineIn,
-    SendToDelivery
+    SendToDelivery,
+    CartItemDiscount
   }
 };
 </script>
