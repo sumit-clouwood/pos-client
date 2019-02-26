@@ -6,12 +6,36 @@ const state = {
   surcharge: {}
 };
 
-const getters = {};
+const getters = {
+  calculateTax: () => surcharges => {
+    let surchargeTaxAmount = 0;
+    if (surcharges.length) {
+      surcharges.forEach(tax => {
+        if (tax.tax != "undefined") {
+          surchargeTaxAmount += (tax.rate * tax.tax) / 100;
+        }
+      });
+    }
+    return surchargeTaxAmount;
+  },
+  calculateSurchargeAmount: () => (surcharges, subTotal) => {
+    let surchargeAmount = 0;
+    if (surcharges.length) {
+      surcharges.forEach(surcharge => {
+        if (surcharge.type === "value") {
+          surchargeAmount += surcharge.rate;
+        } else {
+          surchargeAmount +=
+            (parseFloat(subTotal) * parseFloat(surcharge.rate)) / 100;
+        }
+      });
+    }
+    return surchargeAmount;
+  }
+};
 
 const actions = {
   fetchAll({ commit, rootState }) {
-    // let surchargeValue = 0;
-    // let surchargeTax = 0;
     let surchargeDetails = [];
     const params = [
       rootState.location.location,
@@ -58,17 +82,39 @@ const actions = {
       // }
       // commit(mutation.SET_SURCHARGE_TAX, surchargeTax);
     });
+  },
+
+  calculateSurchargeTax({ commit, getters }) {
+    let taxAmount = 0;
+    taxAmount = parseFloat(getters.calculateTax(state.surcharges));
+    commit(mutation.SET_SURCHARGE_TAX, taxAmount);
+    return taxAmount;
+  },
+
+  calculateSurcharge({ commit, getters, rootState }) {
+    let surchargeAmount = 0;
+    surchargeAmount =
+      rootState.subTotal > 0
+        ? parseFloat(
+            getters.calculateSurchargeAmount(
+              state.surcharges,
+              rootState.subTotal
+            )
+          )
+        : 0;
+    commit(mutation.SET_SURCHARGE_VALUE, surchargeAmount);
+    return surchargeAmount;
   }
 };
 
 const mutations = {
-  // [mutation.SET_SURCHARGE_VALUE](state, surchargeValue) {
-  //   state.surcharge.surcharge_value = surchargeValue;
-  // },
-  //
-  // [mutation.SET_SURCHARGE_TAX](state, surchargeTax) {
-  //   state.surcharge.surcharge_tax = surchargeTax;
-  // },
+  [mutation.SET_SURCHARGE_VALUE](state, surchargeValue) {
+    state.surcharge.surcharge_value = surchargeValue;
+  },
+
+  [mutation.SET_SURCHARGE_TAX](state, surchargeTax) {
+    state.surcharge.surcharge_tax = surchargeTax;
+  },
 
   [mutation.SET_SURCHARGES](state, surcharges) {
     state.surcharges = surcharges;

@@ -65,7 +65,6 @@ const actions = {
     commit(mutation.REMOVE_ORDER_ITEM, index);
     commit(mutation.SET_ITEM, state.items[0]);
     dispatch("tax/calculate", {}, { root: true });
-    dispatch("surcharge/calculate", {}, { root: true });
   },
 
   addModifierOrder({ commit, rootState, dispatch }) {

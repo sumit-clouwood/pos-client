@@ -7,7 +7,9 @@
       </div>
       <div>
         <span class="total-charges">Surcharges</span>
-        <span class="aed-charges"> {{ formatPrice(orderSurcharge || 0) }}</span>
+        <span class="aed-charges">
+          {{ formatPrice(calculateSurcharge || 0) }}</span
+        >
       </div>
       <div>
         <span class="total-charges">Discounts</span>
@@ -40,6 +42,7 @@ export default {
       "orderDiscount"
     ]),
     ...mapGetters("tax", ["totalTax"]),
+    ...mapGetters("surcharge", ["calculateSurcharge"]),
     ...mapGetters("location", ["formatPrice"])
   }
 };

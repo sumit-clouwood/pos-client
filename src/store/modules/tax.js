@@ -21,14 +21,18 @@ const getters = {
 
 // actions
 const actions = {
-  calculate({ commit, getters, rootState }) {
+  calculate({ commit, getters, rootState, dispatch }) {
     let taxAmount = 0;
+    state.surchargeTax = dispatch(
+      "surcharge/calculateSurchargeTax",
+      {},
+      { root: true }
+    );
     rootState.order.items.forEach(item => {
       if (item.item_tax) {
         taxAmount += getters.calculateItemTax(item);
       }
     });
-
     commit(mutation.SET_TAX, taxAmount);
   }
 };
