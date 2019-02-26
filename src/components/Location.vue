@@ -49,6 +49,7 @@ export default {
 
         this.$store.dispatch('category/fetchAll', response)
         this.$store.dispatch('modifier/fetchAll', response)
+        this.$store.dispatch('discount/fetchAll', response)
       })
       .catch(error => (this.errored = error))
   },

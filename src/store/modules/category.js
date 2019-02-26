@@ -33,8 +33,7 @@ const actions = {
   async fetchAll({ commit, rootState }) {
     const params = [
       rootState.location.location,
-      // rootState.sync.date,
-      '',
+      rootState.sync.date,
       rootState.sync.compress,
     ]
     CategoryService.fetchAll(...params).then(response => {

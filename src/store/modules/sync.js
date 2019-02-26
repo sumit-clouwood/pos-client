@@ -1,6 +1,7 @@
 // initial state
 const state = {
-  date: '2019-02-06',
+  //date: '2019-02-06',
+  date: '',
   compress: false,
 }
 

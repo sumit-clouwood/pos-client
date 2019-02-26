@@ -8,6 +8,7 @@ import sync from './modules/sync'
 import location from './modules/location'
 import orderForm from './modules/order/form'
 import tax from './modules/tax'
+import discount from './modules/discount'
 //to take snapshot
 import createLogger from 'vuex/dist/logger'
 
@@ -25,6 +26,7 @@ export default new Vuex.Store({
     orderForm,
     order,
     tax,
+    discount,
   },
   strict: debug,
   plugins: debug ? [createLogger()] : [],
