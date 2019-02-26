@@ -66,10 +66,13 @@ const actions = {
   },
 
   addModifierOrder({ commit, rootState }) {
-    let itemModifiers = [];
-    let itemModifierGroups = [];
     let item = { ...rootState.modifier.item };
+    commit(mutation.SET_ITEM, item);
 
+    let itemModifierGroups = [];
+    let itemModifiers = [];
+
+    //adding modifers to item
     const modifiers = rootState.orderForm.modifiers.filter(
       modifier => modifier.itemId == item._id
     );
@@ -83,10 +86,15 @@ const actions = {
       }
     });
 
-    item.modifiers = itemModifiers;
-    item.modifierGroups = itemModifierGroups;
+    commit(mutation.ADD_MODIFIERS_TO_ITEM, {
+      modifiers: itemModifiers,
+      modifierGroups: itemModifierGroups
+    });
 
+    //calculating item price based on modifiers selected
     let modifierPrice = 0;
+    //since we have just ids attached to item,
+    //we need to consult modifier store for modifier data ie price
 
     rootState.modifier.itemModifiers.forEach(itemMod => {
       itemMod.modifiers.forEach(mod => {
@@ -100,12 +108,9 @@ const actions = {
       });
     });
 
-    item.price = parseFloat(item.price) + modifierPrice;
-
-    commit(mutation.SET_ITEM, item);
+    commit(mutation.ADD_MODIFIER_PRICE_TO_ITEM, modifierPrice);
 
     //adding tax and discounts to item
-
     //STEP 1: calculate the item tax and add that to item
     let taxAmount = 0;
 
@@ -141,7 +146,7 @@ const actions = {
       if (itemExists > -1) {
         commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, itemExists);
       } else {
-        commit(mutation.ADD_ORDER_ITEM_MODIFIER, state.item);
+        commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item);
       }
     } else {
       //edit mode
@@ -165,7 +170,7 @@ const mutations = {
     state.items.push(item);
   },
 
-  [mutation.ADD_ORDER_ITEM_MODIFIER](state, item) {
+  [mutation.ADD_ORDER_ITEM_WITH_MODIFIERS](state, item) {
     item.quantity = 1;
     state.items.push(item);
   },
@@ -185,6 +190,15 @@ const mutations = {
 
   [mutation.UPDATE_MODIFER_ORDER_ITEM](state, { item }) {
     state.items.splice(item.orderIndex, 1, item);
+  },
+
+  [mutation.ADD_MODIFIERS_TO_ITEM](state, { modifiers, modifierGroups }) {
+    state.item.modifiers = modifiers;
+    state.item.modifierGroups = modifierGroups;
+  },
+
+  [mutation.ADD_MODIFIER_PRICE_TO_ITEM](state, modifierPrice) {
+    state.item.price = parseFloat(state.item.price) + modifierPrice;
   },
 
   [mutation.SET_ITEM_TAX](state, tax) {

@@ -42,11 +42,11 @@ const actions = {
         commit("removeOption", {
           itemId: itemId,
           modifierId: modifierId,
-          groupId: groupId
-        });
-        commit("setError", `Cant select more than ${limit} addons`);
+          groupId: groupId,
+        })
+        commit('setError', `Cant select more than ${limit} addons`)
       } else {
-        commit("setError", false);
+        commit('clearError')
       }
     } else {
       //radio
@@ -146,6 +146,10 @@ const mutations = {
   },
   setError(state, error) {
     state.error = error;
+  },
+
+  clearError(state) {
+    state.error = false
   },
 
   clearSelection(state, data) {
