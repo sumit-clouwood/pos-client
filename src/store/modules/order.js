@@ -14,7 +14,8 @@ const getters = {
         return total + item.price * item.quantity
       }, 0) +
       rootState.tax.itemsTax +
-      rootState.tax.surchargeTax
+      rootState.tax.surchargeTax +
+      rootState.surcharge.surchargeAmount
     )
   },
 
@@ -31,8 +32,6 @@ const getters = {
   orderModifiers: () => item => {
     return item.modifiers.length
   },
-  orderSurcharge: () => {},
-  orderDiscount: () => {},
 }
 
 // actions
@@ -57,14 +56,18 @@ const actions = {
     } else {
       commit(mutation.ADD_ORDER_ITEM, state.item)
     }
-    dispatch('tax/calculate', {}, { root: true })
+    dispatch('surcharge/calculate', {}, { root: true }).then(
+      dispatch('tax/calculate', {}, { root: true })
+    )
   },
 
   removeFromOrder({ commit, dispatch }, { item, index }) {
     commit(mutation.SET_ITEM, item)
     commit(mutation.REMOVE_ORDER_ITEM, index)
     commit(mutation.SET_ITEM, state.items[0])
-    dispatch('tax/calculate', {}, { root: true })
+    dispatch('surcharge/calculate', {}, { root: true }).then(
+      dispatch('tax/calculate', {}, { root: true })
+    )
   },
 
   addModifierOrder({ commit, rootState, dispatch }) {
@@ -145,7 +148,10 @@ const actions = {
         item: state.item,
       })
     }
-    dispatch('tax/calculate', {}, { root: true })
+
+    dispatch('surcharge/calculate', {}, { root: true }).then(
+      dispatch('tax/calculate', {}, { root: true })
+    )
   },
 }
 

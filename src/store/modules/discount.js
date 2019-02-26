@@ -8,7 +8,9 @@ const state = {
 }
 
 // getters
-const getters = {}
+const getters = {
+  discount: () => 0,
+}
 
 // actions
 const actions = {

@@ -8,35 +8,55 @@ const state = {
 // getters
 const getters = {
   totalTax: state => state.itemsTax + state.surchargeTax,
-
-  calculateItemTax: () => item => {
-    let taxAmount = 0
-    item.item_tax.forEach(tax => {
-      taxAmount += (item.price * item.quantity * tax.get_item_tax.rate) / 100
-      //tax.get_item_tax.name
-    })
-    return taxAmount
-  },
 }
 
 // actions
 const actions = {
-  calculate({ commit, getters, rootState }) {
-    let taxAmount = 0
-    rootState.order.items.forEach(item => {
+  calculate({ commit, rootState }) {
+    const itemsTax = rootState.order.items.reduce((totalTax, item) => {
       if (item.item_tax) {
-        taxAmount += getters.calculateItemTax(item)
+        return (
+          totalTax +
+          item.item_tax.reduce((total, tax) => {
+            return (
+              total + (item.price * item.quantity * tax.get_item_tax.rate) / 100
+            )
+          }, 0)
+        )
+      } else {
+        return totalTax + 0
       }
-    })
+    }, 0)
 
-    commit(mutation.SET_TAX, taxAmount)
+    commit(mutation.SET_ITEMS_TAX, itemsTax)
+
+    const surchargeTax = rootState.surcharge.surcharges.reduce(
+      (totalTax, surcharge) => {
+        if (surcharge.surcharge_is_taxable) {
+          return (
+            totalTax +
+            surcharge.surcharge_taxable_rate_info.reduce((taxAmount, tax) => {
+              return taxAmount + (surcharge.rate * tax.rate) / 100
+            }, 0)
+          )
+        } else {
+          return totalTax
+        }
+      },
+      0
+    )
+
+    commit(mutation.SET_SURCHARGE_TAX, surchargeTax)
   },
 }
 
 // mutations
 const mutations = {
-  [mutation.SET_TAX](state, tax) {
+  [mutation.SET_ITEMS_TAX](state, tax) {
     state.itemsTax = tax
+  },
+  [mutation.SET_SURCHARGE_TAX](state, tax) {
+    state.surchargeTax = tax
   },
 }
 

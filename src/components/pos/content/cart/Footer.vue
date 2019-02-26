@@ -7,11 +7,13 @@
       </div>
       <div>
         <span class="total-charges">Surcharges</span>
-        <span class="aed-charges"> {{ formatPrice(orderSurcharge || 0) }}</span>
+        <span class="aed-charges">
+          {{ formatPrice(surchargeAmount || 0) }}</span
+        >
       </div>
       <div>
         <span class="total-charges">Discounts</span>
-        <span class="aed-charges"> {{ formatPrice(orderDiscount || 0) }}</span>
+        <span class="aed-charges"> {{ formatPrice(discount || 0) }}</span>
       </div>
       <div>
         <span class="total-charges">Tax</span>
@@ -28,19 +30,16 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'CartFooter',
   props: {},
   computed: {
-    ...mapGetters('order', [
-      'orderTotal',
-      'subTotal',
-      'orderSurcharge',
-      'orderDiscount',
-    ]),
+    ...mapGetters('order', ['orderTotal', 'subTotal', 'orderDiscount']),
     ...mapGetters('tax', ['totalTax']),
+    ...mapState('surcharge', ['surchargeAmount']),
     ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('discount', ['discount']),
   },
 }
 </script>

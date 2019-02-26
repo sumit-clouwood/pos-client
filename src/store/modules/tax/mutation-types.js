@@ -1,1 +1,2 @@
-export const SET_TAX = 'SET_TAX'
+export const SET_ITEMS_TAX = 'SET_ITEMS_TAX'
+export const SET_SURCHARGE_TAX = 'SET_SURCHARGE_TAX'
