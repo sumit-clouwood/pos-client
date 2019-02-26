@@ -33,14 +33,14 @@ export default {
   name: "CartFooter",
   props: {},
   computed: {
-    ...mapGetters('order', [
-      'orderTotal',
-      'subTotal',
-      'orderSurcharge',
-      'orderDiscount',
+    ...mapGetters("order", [
+      "orderTotal",
+      "subTotal",
+      "orderSurcharge",
+      "orderDiscount"
     ]),
-    ...mapGetters('tax', ['totalTax']),
-    ...mapGetters('location', ['formatPrice']),
-  },
-}
+    ...mapGetters("tax", ["totalTax"]),
+    ...mapGetters("location", ["formatPrice"])
+  }
+};
 </script>

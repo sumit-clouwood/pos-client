@@ -1,1 +1,1 @@
-export const SET_TAX = 'SET_TAX'
+export const SET_TAX = "SET_TAX";
