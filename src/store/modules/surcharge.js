@@ -39,8 +39,7 @@ const actions = {
     let surchargeDetails = [];
     const params = [
       rootState.location.location,
-      // rootState.sync.date,
-      "",
+      rootState.sync.date,
       rootState.sync.compress
     ];
     SurchargeService.fetchAll(...params).then(response => {

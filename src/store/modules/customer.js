@@ -14,7 +14,7 @@ const actions = {
       11 /*page*/,
       "" /*all*/,
       "" /*validate*/,
-      "" /*lastSyncDate rootState.sync.date*/,
+      rootState.sync.date,
       rootState.sync.compress,
       10 /*per page entry*/
     ];

@@ -10,6 +10,7 @@ import orderForm from "./modules/order/form";
 import tax from "./modules/tax";
 import surcharge from "./modules/surcharge";
 import customer from "./modules/customer";
+import discount from "./modules/discount";
 
 //to take snapshot
 import createLogger from "vuex/dist/logger";
@@ -29,7 +30,8 @@ export default new Vuex.Store({
     customer,
     category,
     orderForm,
-    surcharge
+    surcharge,
+    discount
   },
   strict: debug,
   plugins: debug ? [createLogger()] : []

@@ -51,6 +51,7 @@ export default {
         this.$store.dispatch("modifier/fetchAll", response);
         this.$store.dispatch("surcharge/fetchAll", response);
         this.$store.dispatch("customer/fetchAll", response);
+        this.$store.dispatch("discount/fetchAll", response);
       })
       .catch(error => (this.errored = error));
   },
