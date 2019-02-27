@@ -1,7 +1,7 @@
 <template>
   <!-- Modal -->
   <div
-    class="modal fade POSItemOptions"
+    class="modal fade order-item-modal POSItemOptions"
     id="POSOrderItemOptions"
     tabindex="-1"
     role="dialog"
@@ -20,8 +20,8 @@
 </template>
 
 <script>
+import Header from './popup/Header.vue'
 import Content from './popup/Content.vue'
-import Header from '@/components/pos/content/catalog/items/popup/Header.vue'
 import Footer from '@/components/pos/content/catalog/items/popup/Footer.vue'
 export default {
   name: 'Popup',
@@ -33,3 +33,9 @@ export default {
   },
 }
 </script>
+<style lang="sass" scoped>
+.POSItemOptions
+  .modal-body
+    height : auto !important;
+    max-height: 460px
+</style>

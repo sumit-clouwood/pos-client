@@ -76,7 +76,6 @@
     <DineIn />
     <SendToDelivery />
     <OrderItemPopup />
-
   </div>
 </template>
 
@@ -90,7 +89,6 @@ import OnlineOrder from './header/popups/OnlineOrder'
 import CartItemDiscount from './footer/popups/CartItemDiscount'
 import OrderItemPopup from './content/cart/newOrders/items/Popup'
 
-
 export default {
   name: 'Footer',
   props: {},
@@ -102,7 +100,7 @@ export default {
     DineIn,
     SendToDelivery,
     CartItemDiscount,
-    OrderItemPopup
+    OrderItemPopup,
   },
 }
 </script>

@@ -3,7 +3,8 @@ import * as mutation from './order/mutation-types'
 // initial state
 const state = {
   items: [],
-  item: {},
+  item: false,
+  orderType: 'Walk-in',
 }
 
 // getters
@@ -163,7 +164,7 @@ const actions = {
 
   setActiveItem({ commit, dispatch }, { orderItem, index }) {
     //get current item
-    let item = state.items[index]
+    let item = { ...state.items[index] }
 
     item.editMode = true
     item.quantity = orderItem.quantity
@@ -172,10 +173,48 @@ const actions = {
     commit(mutation.SET_ITEM, item)
 
     if (item.modifiable) {
-      dispatch('modifier/setActiveItem', {
-        root: true,
-      })
+      dispatch(
+        'modifier/setActiveItem',
+        { item: item },
+        {
+          root: true,
+        }
+      )
     }
+  },
+
+  recalculatePrices({ commit, rootState, dispatch }) {
+    let itemsDiscount = 0
+    const newItems = state.items.map((item, index) => {
+      const discount = rootState.discount.appliedItemDiscounts.find(
+        discount => discount.item.orderIndex == index
+      )
+
+      item.originalPrice = item.price
+      if (discount) {
+        if (discount.discount.type == 'value') {
+          itemsDiscount += discount.discount.rate
+          item.price = item.originalPrice - discount.discount.rate
+        } else {
+          const calculated = (item.originalPrice * discount.discount.rate) / 100
+          item.price = item.originalPrice - calculated
+
+          itemsDiscount += calculated
+        }
+      }
+      return item
+    })
+
+    dispatch(
+      'discount/setItemsDiscountAmount',
+      { discountAmount: itemsDiscount },
+      { root: true }
+    )
+
+    commit(mutation.RE_SAVE_ITEMS, newItems)
+    dispatch('surcharge/calculate', {}, { root: true }).then(
+      dispatch('tax/calculate', {}, { root: true })
+    )
   },
 }
 
@@ -224,6 +263,10 @@ const mutations = {
 
   [mutation.SET_ITEM_TAX](state, tax) {
     state.item.tax = tax
+  },
+
+  [mutation.RE_SAVE_ITEMS](state, items) {
+    state.items = items
   },
 }
 

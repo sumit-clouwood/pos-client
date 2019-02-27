@@ -19,7 +19,7 @@ Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   modules: {
     tax,
     auth,
@@ -36,3 +36,15 @@ export default new Vuex.Store({
   strict: debug,
   plugins: debug ? [createLogger()] : [],
 })
+
+// store.subscribe(mutation => {
+//   switch (mutation.type) {
+//     case 'APPLY_ITEM_DISCOUNT':
+//       store.dispatch('order/recalculatePrices')
+//       break
+//   }
+//   // called after every mutation.
+//   // The mutation comes in the format of `{ type, payload }`.
+// })
+
+export default store

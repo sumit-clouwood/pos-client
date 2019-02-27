@@ -6,17 +6,27 @@ const state = {
 
 // getters
 const getters = {
-  modifiers: state => modifierId => {
+  modifiers: state => (itemId, groupId, modifierId) => {
     let found = false
     state.modifiers.forEach(modifier => {
-      if (modifier.modifierId == modifierId) {
-        found = true
-      } else if (Array.isArray(modifier.modifierId)) {
-        modifier.modifierId.forEach(modifier_id => {
-          if (modifier_id == modifierId) {
-            found = true
-          }
-        })
+      if (Array.isArray(modifier.modifierId)) {
+        //checkboxes
+        if (modifier.groupId == groupId && modifier.itemId == itemId) {
+          modifier.modifierId.forEach(modifier_id => {
+            if (modifier_id == modifierId) {
+              found = true
+            }
+          })
+        }
+      } else {
+        //radio
+        if (
+          modifier.modifierId == modifierId &&
+          modifier.groupId == groupId &&
+          modifier.itemId == itemId
+        ) {
+          found = true
+        }
       }
     })
     return found
@@ -60,11 +70,11 @@ const actions = {
   },
 
   populateSelection({ commit }, modifierGroups) {
-    commit('clearSelection', [])
+    commit('clearSelection')
     commit('populateSelection', modifierGroups)
   },
   clearSelection({ commit }) {
-    commit('clearSelection', [])
+    commit('clearSelection')
   },
 }
 
@@ -152,8 +162,8 @@ const mutations = {
     state.error = false
   },
 
-  clearSelection(state, data) {
-    state.modifiers = data
+  clearSelection(state) {
+    state.modifiers = []
   },
   populateSelection(state, modifierGroups) {
     modifierGroups.forEach(group => {

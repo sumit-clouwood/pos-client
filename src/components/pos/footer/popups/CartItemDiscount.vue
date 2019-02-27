@@ -14,13 +14,23 @@
         </div>
         <div class="modal-body row dining-options-block select-discount">
           <div class="dining-option-block select-discount-option">
-            <div class="option-contain">
-              <p>25%</p>
-              <span class="more">Discount 1</span>
-            </div>
-            <div class="option-contain active">
-              <p>50%</p>
-              <span class="more">Discount 2</span>
+            <div
+              class="option-contain"
+              :class="{
+                active: activeDiscountId == discount.item_discount_id,
+              }"
+              v-for="discount in itemDiscounts"
+              :key="discount.item_discount_id"
+              @click.prevent="selectDiscount(discount)"
+            >
+              <p>
+                {{
+                  discount.type == 'percentage'
+                    ? discount.rate + '%'
+                    : formatPrice(discount.rate)
+                }}
+              </p>
+              <span class="more">{{ discount.name }}</span>
             </div>
           </div>
         </div>
@@ -31,6 +41,7 @@
               type="button"
               data-dismiss="modal"
               id="discount-save"
+              @click="applyItemDiscount()"
             >
               Save
             </button>
@@ -43,8 +54,20 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'CartItemDiscount',
   props: {},
+  computed: {
+    ...mapGetters('discount', ['itemDiscounts', 'activeDiscountId']),
+    ...mapGetters('location', ['formatPrice']),
+  },
+  methods: {
+    ...mapActions('discount', ['selectDiscount', 'applyItemDiscount']),
+  },
 }
 </script>
+<style lang="sass" scoped>
+.discount-item.each
+  display:inline-block
+</style>
