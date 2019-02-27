@@ -85,7 +85,7 @@ import SendToDelivery from './footer/popups/SendToDelivery'
 import DineIn from './footer/popups/DineIn'
 import ManageCustomer from './footer/popups/ManageCustomer'
 import OnlineOrder from './header/popups/OnlineOrder'
-import CartItemDiscount from './content/popups/CartItemDiscount'
+import CartItemDiscount from './footer/popups/CartItemDiscount'
 
 export default {
   name: 'Footer',

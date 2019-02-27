@@ -16,7 +16,11 @@
           <img
             src="img/pos/plus-icon.png"
             alt="plus"
-            @click="setActiveItem({ orderItem: item, index: index })"
+            @click="
+              orderModifiers(item)
+                ? setActiveItem({ orderItem: item, index: index })
+                : false
+            "
           />
         </span>
       </div>
