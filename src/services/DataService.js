@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axios from 'axios'
 
 //axios.defaults.baseURL = '/api/';
-axios.defaults.headers.post['Content-Type'] = 'application/json';
-axios.defaults.headers.post['Accept'] = 'application/json';
+axios.defaults.headers.post['Content-Type'] = 'application/json'
+axios.defaults.headers.post['Accept'] = 'application/json'
 
 export default {
   get(url) {
@@ -10,8 +10,8 @@ export default {
       axios
         .get(url)
         .then(response => resolve(response))
-        .catch(error => reject(error));
-    });
+        .catch(error => reject(error))
+    })
   },
 
   post(url) {
@@ -19,23 +19,23 @@ export default {
       axios
         .post(url)
         .then(response => resolve(response))
-        .catch(error => reject(error));
-    });
+        .catch(error => reject(error))
+    })
   },
 
   applyMiddleWare(token) {
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
 
     axios.interceptors.request.use(
       function(config) {
         // Do something before request is sent
-        return config;
+        return config
       },
       function(error) {
         // Do something with request error
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    );
+    )
   },
 
   auth(env) {
@@ -46,17 +46,17 @@ export default {
       '&password=' +
       env.VUE_APP_API_PASSWORD +
       '&device_id=' +
-      env.VUE_APP_DEVICE_ID;
+      env.VUE_APP_DEVICE_ID
 
     return new Promise((resolve, reject) => {
       axios
         .post(url)
         .then(response => {
-          return resolve(response);
+          return resolve(response)
         })
         .catch(response => {
-          return reject(response);
-        });
-    });
-  }
-};
+          return reject(response)
+        })
+    })
+  },
+}

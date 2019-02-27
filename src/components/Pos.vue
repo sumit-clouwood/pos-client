@@ -38,11 +38,11 @@
 </i18n>
 
 <script>
-import Menu from './pos/Menu.vue';
-import Header from './pos/Header.vue';
-import Content from './pos/Content';
-import Announcement from './pos/header/Announcement';
-import Footer from './pos/Footer';
+import Menu from './pos/Menu.vue'
+import Header from './pos/Header.vue'
+import Content from './pos/Content'
+import Announcement from './pos/header/Announcement'
+import Footer from './pos/Footer'
 
 export default {
   name: 'Pos',
@@ -52,7 +52,7 @@ export default {
     Menu,
     Content,
     Announcement,
-    Footer
+    Footer,
   },
 
   //store private data in component using data
@@ -60,14 +60,14 @@ export default {
     return {
       info: null,
       loading: true, //async loading indicator
-      errored: false //either request had error
-    };
+      errored: false, //either request had error
+    }
   },
 
   //data passed to this component by its parent is contained inside props
   props: {
-    msg: String
-  }
+    msg: String,
+  },
 
   /*//life cycle hooks
     beforeCreate () {
@@ -82,17 +82,17 @@ export default {
     mounted () {
       
     }*/
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
 <style lang="scss" scoped>
-@import "../assets/sass/variables";
-@import "../assets/sass/global";
-@import "../assets/sass/footer";
-@import "../assets/sass/mixins.scss";
-@import "../assets/sass/navbar.scss";
+@import '../assets/sass/variables';
+@import '../assets/sass/global';
+@import '../assets/sass/footer';
+@import '../assets/sass/mixins.scss';
+@import '../assets/sass/navbar.scss';
 .title {
   color: $primary-color;
 }

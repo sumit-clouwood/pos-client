@@ -21,6 +21,7 @@ yarn-error.log*
 *.sw*
 package-lock.json
 .prettierrc.js
+.eslintrc.json
 .env
 .env.development
 .eslintrc.json

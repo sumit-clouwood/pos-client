@@ -50,15 +50,15 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Header',
   props: {},
   computed: {
     ...mapState({
-      item: state => state.modifier.item
+      item: state => state.modifier.item,
     }),
-    ...mapGetters('location', ['formatPrice'])
-  }
-};
+    ...mapGetters('location', ['formatPrice']),
+  },
+}
 </script>

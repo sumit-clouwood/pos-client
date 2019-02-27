@@ -26,31 +26,31 @@
         </div>
       </div>
     </div>
-    <Popup />
+    <ModifiersPopup />
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex'
 
-import Breadcrumbs from './items/Breadcrumbs';
-import Popup from './items/Popup';
+import Breadcrumbs from './items/Breadcrumbs'
+import ModifiersPopup from './items/ModifiersPopup'
 export default {
   name: 'Items',
   props: {
-    msg: String
+    msg: String,
   },
   components: {
     Breadcrumbs,
-    Popup
+    ModifiersPopup,
   },
   computed: {
     ...mapGetters('category', ['items', 'itemImage']),
-    ...mapGetters('modifier', ['hasModifiers'])
+    ...mapGetters('modifier', ['hasModifiers']),
   },
   methods: {
     ...mapActions('order', ['addToOrder']),
-    ...mapActions('modifier', ['setModifierItem'])
-  }
-};
+    ...mapActions('modifier', ['setModifierItem']),
+  },
+}
 </script>

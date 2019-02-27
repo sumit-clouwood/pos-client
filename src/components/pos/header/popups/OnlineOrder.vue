@@ -258,6 +258,6 @@
 <script>
 export default {
   name: 'OnlineOrder',
-  props: {}
-};
+  props: {},
+}
 </script>

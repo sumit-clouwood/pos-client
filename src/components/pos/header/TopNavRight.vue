@@ -51,6 +51,6 @@
 export default {
   name: 'TopNavRight',
   props: {},
-  components: {}
-};
+  components: {},
+}
 </script>

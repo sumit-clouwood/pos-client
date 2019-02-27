@@ -9,6 +9,6 @@
 <script>
 export default {
   name: 'SendToDeliveryHeader',
-  props: {}
-};
+  props: {},
+}
 </script>

@@ -12,14 +12,14 @@
 </template>
 
 <script>
-import SendToDeliveryContentItem from './SendToDeliveryContent/SendToDeliveryContentItem';
-import SendToDeliveryContentPaymentDetails from './SendToDeliveryContent/SendToDeliveryContentPaymentDetails';
+import SendToDeliveryContentItem from './SendToDeliveryContent/SendToDeliveryContentItem'
+import SendToDeliveryContentPaymentDetails from './SendToDeliveryContent/SendToDeliveryContentPaymentDetails'
 export default {
   name: 'SendToDeliveryContent',
   props: {},
   components: {
     SendToDeliveryContentItem,
-    SendToDeliveryContentPaymentDetails
-  }
-};
+    SendToDeliveryContentPaymentDetails,
+  },
+}
 </script>

@@ -7,18 +7,18 @@
 
 <script>
 // @ is an alias to /src
-import Pos from '@/components/Pos.vue';
-import Location from '@/components/Location.vue';
-import { mapState } from 'vuex';
+import Pos from '@/components/Pos.vue'
+import Location from '@/components/Location.vue'
+import { mapState } from 'vuex'
 
 export default {
   name: 'home',
   components: {
     Pos,
-    Location
+    Location,
   },
   computed: {
-    ...mapState('location', ['location'])
-  }
-};
+    ...mapState('location', ['location']),
+  },
+}
 </script>

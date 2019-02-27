@@ -1,14 +1,14 @@
-import * as mutation from './tax/mutation-types';
+import * as mutation from './tax/mutation-types'
 // initial state
 const state = {
   itemsTax: 0,
-  surchargeTax: 0
-};
+  surchargeTax: 0,
+}
 
 // getters
 const getters = {
-  totalTax: state => state.itemsTax + state.surchargeTax
-};
+  totalTax: state => state.itemsTax + state.surchargeTax,
+}
 
 // actions
 const actions = {
@@ -20,15 +20,15 @@ const actions = {
           item.item_tax.reduce((total, tax) => {
             return (
               total + (item.price * item.quantity * tax.get_item_tax.rate) / 100
-            );
+            )
           }, 0)
-        );
+        )
       } else {
-        return totalTax + 0;
+        return totalTax + 0
       }
-    }, 0);
+    }, 0)
 
-    commit(mutation.SET_ITEMS_TAX, itemsTax);
+    commit(mutation.SET_ITEMS_TAX, itemsTax)
 
     const surchargeTax = rootState.surcharge.surcharges.reduce(
       (totalTax, surcharge) => {
@@ -36,34 +36,34 @@ const actions = {
           return (
             totalTax +
             surcharge.surcharge_taxable_rate_info.reduce((taxAmount, tax) => {
-              return taxAmount + (surcharge.rate * tax.rate) / 100;
+              return taxAmount + (surcharge.rate * tax.rate) / 100
             }, 0)
-          );
+          )
         } else {
-          return totalTax;
+          return totalTax
         }
       },
       0
-    );
+    )
 
-    commit(mutation.SET_SURCHARGE_TAX, surchargeTax);
-  }
-};
+    commit(mutation.SET_SURCHARGE_TAX, surchargeTax)
+  },
+}
 
 // mutations
 const mutations = {
   [mutation.SET_ITEMS_TAX](state, tax) {
-    state.itemsTax = tax;
+    state.itemsTax = tax
   },
   [mutation.SET_SURCHARGE_TAX](state, tax) {
-    state.surchargeTax = tax;
-  }
-};
+    state.surchargeTax = tax
+  },
+}
 
 export default {
   namespaced: true,
   state,
   getters,
   actions,
-  mutations
-};
+  mutations,
+}

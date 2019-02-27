@@ -21,6 +21,6 @@
 <script>
 export default {
   name: 'Header',
-  props: {}
-};
+  props: {},
+}
 </script>

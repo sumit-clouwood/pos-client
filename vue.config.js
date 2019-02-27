@@ -6,7 +6,7 @@ module.exports = {
       .type('javascript/auto')
       .use('i18n')
       .loader('@kazupon/vue-i18n-loader')
-      .end();
+      .end()
   },
   pluginOptions: {
     i18n: {
@@ -43,4 +43,4 @@ module.exports = {
   },
 
   lintOnSave: process.env.NODE_ENV !== 'production',
-};
+}

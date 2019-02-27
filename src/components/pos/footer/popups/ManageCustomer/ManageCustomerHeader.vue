@@ -8,6 +8,6 @@
 <script>
 export default {
   name: 'ManageCustomerHeader',
-  props: {}
-};
+  props: {},
+}
 </script>

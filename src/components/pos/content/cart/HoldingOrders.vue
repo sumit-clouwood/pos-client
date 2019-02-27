@@ -8,15 +8,15 @@
 </template>
 
 <script>
-import Header from './holdingOrders/Header.vue';
-import Items from './holdingOrders/Items.vue';
+import Header from './holdingOrders/Header.vue'
+import Items from './holdingOrders/Items.vue'
 
 export default {
   name: 'HoldingOrders',
   components: {
     Header,
-    Items
+    Items,
   },
-  props: {}
-};
+  props: {},
+}
 </script>

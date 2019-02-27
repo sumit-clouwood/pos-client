@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'SubMenu',
@@ -25,12 +25,12 @@ export default {
   computed: {
     ...mapState({
       subcategories: state => state.category.subcategories,
-      currentSubcategory: state => state.category.subcategory._id
+      currentSubcategory: state => state.category.subcategory._id,
     }),
-    ...mapGetters('category', ['subcategoryImage'])
+    ...mapGetters('category', ['subcategoryImage']),
   },
-  methods: mapActions('category', ['getItems'])
-};
+  methods: mapActions('category', ['getItems']),
+}
 </script>
 <style scoped lang="scss">
 .pizza-size-wrapper {

@@ -21,16 +21,16 @@
 </template>
 
 <script>
-import Content from './popup/Content';
-import Header from './popup/Header';
-import Footer from './popup/Footer';
+import Content from './modifierspopup/Content'
+import Header from './modifierspopup/Header'
+import Footer from './modifierspopup/Footer'
 export default {
-  name: 'Popup',
+  name: 'ModifiersPopup',
   props: {},
   components: {
     Content,
     Header,
-    Footer
-  }
-};
+    Footer,
+  },
+}
 </script>

@@ -15,6 +15,6 @@
 <script>
 export default {
   name: 'Items',
-  props: {}
-};
+  props: {},
+}
 </script>
