@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-body" v-if="item">
+  <div class="modal-body-modifiers" v-if="item">
     <div class="error" v-if="error">{{ error }}</div>
     <div
       v-for="modifier in itemModifiers(item._id).modifiers"
@@ -86,7 +86,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
-  name: 'Content',
+  name: 'Modifiers',
   props: {},
   computed: {
     ...mapState('location', ['currency']),

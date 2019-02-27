@@ -8,19 +8,12 @@
       <div class="orders-name">
         <p>{{ t(item.item_name).name }}</p>
         <p class="price-qty">@ {{ item.item_price }} x {{ item.quantity }}</p>
-        <Modifiers
-          v-bind:modifiers="item.modifiers"
-          v-if="orderModifiers(item)"
-        />
-        <span data-toggle="modal" data-target="#POSItemOptions">
+        <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
+        <span data-toggle="modal" data-target="#POSOrderItemOptions">
           <img
             src="img/pos/plus-icon.png"
             alt="plus"
-            @click="
-              orderModifiers(item)
-                ? setActiveItem({ orderItem: item, index: index })
-                : false
-            "
+            @click="setActiveItem({ orderItem: item, index: index })"
           />
         </span>
       </div>
@@ -36,11 +29,13 @@
         </a>
       </div>
     </div>
+    <Popup />
   </div>
 </template>
 
 <script>
 import Modifiers from './items/Modifiers.vue'
+import Popup from './items/Popup'
 
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
@@ -58,11 +53,11 @@ export default {
   },
   methods: {
     ...mapActions('category', ['getItems']),
-    ...mapActions('order', ['removeFromOrder']),
-    ...mapActions('modifier', ['setActiveItem']),
+    ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
   },
   components: {
     Modifiers,
+    Popup,
   },
 }
 </script>

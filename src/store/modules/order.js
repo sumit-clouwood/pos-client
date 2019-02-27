@@ -46,6 +46,9 @@ const actions = {
       item.price = parseFloat(item.item_price)
     }
 
+    //this comes directly from the items menu without modifiers
+    item.modifiable = false
+
     commit(mutation.SET_ITEM, item)
 
     const index = state.items.findIndex(
@@ -72,6 +75,10 @@ const actions = {
 
   addModifierOrder({ commit, rootState, dispatch }) {
     let item = { ...rootState.modifier.item }
+
+    //this comes through the modifier popup
+    item.modifiable = true
+
     commit(mutation.SET_ITEM, item)
 
     let itemModifierGroups = []
@@ -152,6 +159,23 @@ const actions = {
     dispatch('surcharge/calculate', {}, { root: true }).then(
       dispatch('tax/calculate', {}, { root: true })
     )
+  },
+
+  setActiveItem({ commit, dispatch }, { orderItem, index }) {
+    //get current item
+    let item = state.items[index]
+
+    item.editMode = true
+    item.quantity = orderItem.quantity
+    item.orderIndex = index
+
+    commit(mutation.SET_ITEM, item)
+
+    if (item.modifiable) {
+      dispatch('modifier/setActiveItem', {
+        root: true,
+      })
+    }
   },
 }
 

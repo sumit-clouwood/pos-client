@@ -1,9 +1,8 @@
 <template>
   <!-- Modal -->
   <div
-    ref="POSItemOptions"
     class="modal fade POSItemOptions"
-    id="POSItemOptions"
+    id="POSOrderItemOptions"
     tabindex="-1"
     role="dialog"
     aria-labelledby="POSItemOptions"
@@ -21,11 +20,11 @@
 </template>
 
 <script>
-import Content from './modifierspopup/Content'
-import Header from './modifierspopup/Header'
-import Footer from './modifierspopup/Footer'
+import Content from './popup/Content.vue'
+import Header from '@/components/pos/content/catalog/items/popup/Header.vue'
+import Footer from '@/components/pos/content/catalog/items/popup/Footer.vue'
 export default {
-  name: 'ModifiersPopup',
+  name: 'Popup',
   props: {},
   components: {
     Content,

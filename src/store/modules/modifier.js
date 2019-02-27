@@ -63,25 +63,36 @@ const actions = {
     })
   },
 
-  setActiveItem({ commit, dispatch }, { orderItem, index }) {
-    //get item from item modifiers and show all the modifiers attached with that item
-    //create new item to replace existing one
+  //active item and index already been set to order.item
+  setActiveItem({ commit, dispatch, rootState }) {
+    //pop needs all modifiers available for this item so we need to fetch modifier from modifeir store
+    //but first we need to get active order so we can find exact item from modifiers
+
+    const orderItem = rootState.order.item
     const modifierItem = state.itemModifiers.find(
       item => item.itemId == orderItem._id
     )
-    let item = { ...modifierItem.item }
-    item.editMode = true
-    item.quantity = orderItem.quantity
-    item.orderIndex = index
-    commit(mutation.SET_ITEM, item)
-    //formstate should contain only those fiels which are selected by this order item
 
+    //make a copy of item
+    let item = { ...modifierItem.item }
+
+    //copy properties from active order/item
+    item.editMode = orderItem.editMode
+    item.quantity = orderItem.quantity
+    item.orderIndex = orderItem.orderIndex
+    item.modifiable = orderItem.modifiable
+
+    //set current item with modifiers in modifer store
+    commit(mutation.SET_ITEM, item)
+
+    //formstate should contain only those fiels which are selected by this order item
     dispatch('orderForm/populateSelection', orderItem.modifierGroups, {
       root: true,
     })
   },
 
-  //find modifiers from all specific to current item and push to current list
+  //find modifiers from all specific to current item and push to current list [item[0].modifiers]
+  //this function is not yet adding item to order but just showing modifiers for selection here once modifiers are selected then click on button ll add it to order
   setModifierItem({ commit, rootState, dispatch }, item) {
     //clear modifiers selection
     dispatch('orderForm/clearSelection', [], { root: true })

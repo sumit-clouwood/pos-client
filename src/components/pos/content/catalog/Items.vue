@@ -26,7 +26,7 @@
         </div>
       </div>
     </div>
-    <ModifiersPopup />
+    <Popup />
   </div>
 </template>
 
@@ -34,7 +34,7 @@
 import { mapGetters, mapActions } from 'vuex'
 
 import Breadcrumbs from './items/Breadcrumbs'
-import ModifiersPopup from './items/ModifiersPopup'
+import Popup from './items/Popup'
 export default {
   name: 'Items',
   props: {
@@ -42,7 +42,7 @@ export default {
   },
   components: {
     Breadcrumbs,
-    ModifiersPopup,
+    Popup,
   },
   computed: {
     ...mapGetters('category', ['items', 'itemImage']),
