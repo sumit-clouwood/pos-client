@@ -23,3 +23,4 @@ package-lock.json
 .prettierrc.js
 .env
 .env.development
+.eslintrc.json
