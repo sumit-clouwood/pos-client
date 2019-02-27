@@ -75,6 +75,8 @@
     <CartItemDiscount />
     <DineIn />
     <SendToDelivery />
+    <OrderItemPopup />
+
   </div>
 </template>
 
@@ -86,6 +88,8 @@ import DineIn from './footer/popups/DineIn'
 import ManageCustomer from './footer/popups/ManageCustomer'
 import OnlineOrder from './header/popups/OnlineOrder'
 import CartItemDiscount from './footer/popups/CartItemDiscount'
+import OrderItemPopup from './content/cart/newOrders/items/Popup'
+
 
 export default {
   name: 'Footer',
@@ -98,6 +102,7 @@ export default {
     DineIn,
     SendToDelivery,
     CartItemDiscount,
+    OrderItemPopup
   },
 }
 </script>

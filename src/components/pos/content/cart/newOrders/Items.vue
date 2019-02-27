@@ -29,13 +29,11 @@
         </a>
       </div>
     </div>
-    <Popup />
   </div>
 </template>
 
 <script>
 import Modifiers from './items/Modifiers.vue'
-import Popup from './items/Popup'
 
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
@@ -57,7 +55,6 @@ export default {
   },
   components: {
     Modifiers,
-    Popup,
   },
 }
 </script>
