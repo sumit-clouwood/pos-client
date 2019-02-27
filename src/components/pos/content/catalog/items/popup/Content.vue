@@ -39,7 +39,7 @@
                       itemId: item._id,
                       modifierId: modifierOption._id,
                       groupId: submodifier._id,
-                      limit: submodifier.noofselection,
+                      limit: submodifier.noofselection
                     })
                   "
                 />
@@ -64,7 +64,7 @@
                       itemId: item._id,
                       modifierId: modifierOption._id,
                       groupId: submodifier._id,
-                      limit: submodifier.noofselection,
+                      limit: submodifier.noofselection
                     })
                   "
                 />
@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex';
 export default {
   name: 'Content',
   props: {},
@@ -94,12 +94,12 @@ export default {
     ...mapState('orderForm', ['error']),
     ...mapGetters('modifier', ['imagePath', 'itemModifiers']),
     ...mapGetters('location', ['rawPrice', 'formatPrice']),
-    ...mapGetters('orderForm', ['modifiers']),
+    ...mapGetters('orderForm', ['modifiers'])
   },
   methods: {
-    ...mapActions('orderForm', ['updateOption']),
-  },
-}
+    ...mapActions('orderForm', ['updateOption'])
+  }
+};
 </script>
 
 <style scoped>

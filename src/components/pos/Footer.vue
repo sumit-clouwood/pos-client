@@ -79,13 +79,13 @@
 </template>
 
 <script>
-import AddNote from './footer/popups/AddNote'
-import Discount from './footer/popups/Discount'
-import SendToDelivery from './footer/popups/SendToDelivery'
-import DineIn from './footer/popups/DineIn'
-import ManageCustomer from './footer/popups/ManageCustomer'
-import OnlineOrder from './header/popups/OnlineOrder'
-import CartItemDiscount from './content/popups/CartItemDiscount'
+import AddNote from './footer/popups/AddNote';
+import Discount from './footer/popups/Discount';
+import SendToDelivery from './footer/popups/SendToDelivery';
+import DineIn from './footer/popups/DineIn';
+import ManageCustomer from './footer/popups/ManageCustomer';
+import OnlineOrder from './header/popups/OnlineOrder';
+import CartItemDiscount from './content/popups/CartItemDiscount';
 
 export default {
   name: 'Footer',
@@ -97,7 +97,7 @@ export default {
     Discount,
     DineIn,
     SendToDelivery,
-    CartItemDiscount,
-  },
-}
+    CartItemDiscount
+  }
+};
 </script>

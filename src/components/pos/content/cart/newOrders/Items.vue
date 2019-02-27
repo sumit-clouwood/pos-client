@@ -36,29 +36,29 @@
 </template>
 
 <script>
-import Modifiers from './items/Modifiers.vue'
+import Modifiers from './items/Modifiers.vue';
 
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex';
 export default {
   name: 'Items',
   props: {},
   computed: {
     ...mapState({
       items: state => state.order.items,
-      currentItem: state => state.order.item._id,
+      currentItem: state => state.order.item._id
     }),
     ...mapGetters('category', ['subcategoryImage']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters('order', ['itemPrice', 'orderModifiers']),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('location', ['formatPrice'])
   },
   methods: {
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder']),
-    ...mapActions('modifier', ['setActiveItem']),
+    ...mapActions('modifier', ['setActiveItem'])
   },
   components: {
-    Modifiers,
-  },
-}
+    Modifiers
+  }
+};
 </script>

@@ -7,14 +7,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex';
 export default {
   name: 'Modifiers',
   props: ['modifiers'],
   computed: {
-    ...mapGetters('modifier', ['findModifier']),
-  },
-}
+    ...mapGetters('modifier', ['findModifier'])
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -25,7 +25,7 @@ export default {
     background-color: #ef7f2a;
     padding: 10px;
     color: #fff;
-    font-family: 'Proxima Nova';
+    font-family: "Proxima Nova";
     margin-right: 10px;
     font-size: 10px;
     font-weight: 600;

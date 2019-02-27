@@ -6,16 +6,16 @@
 </template>
 
 <script>
-import Cart from './content/Cart'
-import Catalog from './content/Catalog'
+import Cart from './content/Cart';
+import Catalog from './content/Catalog';
 export default {
   name: 'Content',
   props: {},
   components: {
     Catalog,
-    Cart,
-  },
-}
+    Cart
+  }
+};
 </script>
 <style scoped>
 .inner-container {

@@ -31,13 +31,13 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from 'vuex';
 
 export default {
   name: 'Footer',
   props: {},
   methods: {
-    ...mapActions('order', ['addModifierOrder']),
-  },
-}
+    ...mapActions('order', ['addModifierOrder'])
+  }
+};
 </script>

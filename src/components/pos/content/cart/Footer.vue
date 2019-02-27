@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex';
 export default {
   name: 'CartFooter',
   props: {},
@@ -39,7 +39,7 @@ export default {
     ...mapGetters('tax', ['totalTax']),
     ...mapState('surcharge', ['surchargeAmount']),
     ...mapGetters('location', ['formatPrice']),
-    ...mapGetters('discount', ['discount']),
-  },
-}
+    ...mapGetters('discount', ['discount'])
+  }
+};
 </script>

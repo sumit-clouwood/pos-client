@@ -48,6 +48,6 @@
 <script>
 export default {
   name: 'DineIn',
-  props: {},
-}
+  props: {}
+};
 </script>

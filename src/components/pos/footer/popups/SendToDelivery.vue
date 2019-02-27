@@ -14,16 +14,16 @@
 </template>
 
 <script>
-import SendToDeliveryHeader from './SendToDelivery/SendToDeliveryHeader'
-import SendToDeliveryContent from './SendToDelivery/SendToDeliveryContent'
-import SendToDeliveryFooter from './SendToDelivery/SendToDeliveryFooter'
+import SendToDeliveryHeader from './SendToDelivery/SendToDeliveryHeader';
+import SendToDeliveryContent from './SendToDelivery/SendToDeliveryContent';
+import SendToDeliveryFooter from './SendToDelivery/SendToDeliveryFooter';
 export default {
   name: 'SendToDelivery',
   props: {},
   components: {
     SendToDeliveryHeader,
     SendToDeliveryContent,
-    SendToDeliveryFooter,
-  },
-}
+    SendToDeliveryFooter
+  }
+};
 </script>

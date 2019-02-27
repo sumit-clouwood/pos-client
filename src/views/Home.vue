@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <!--<img alt="Vue logo" src="../assets/logo.png">-->
     <Location v-show="!location" msg="Broccoli POS" />
     <Pos v-show="location" msg="Broccoli POS" />
   </div>
@@ -8,18 +7,18 @@
 
 <script>
 // @ is an alias to /src
-import Pos from '@/components/Pos.vue'
-import Location from '@/components/Location.vue'
-import { mapState } from 'vuex'
+import Pos from '@/components/Pos.vue';
+import Location from '@/components/Location.vue';
+import { mapState } from 'vuex';
 
 export default {
   name: 'home',
   components: {
     Pos,
-    Location,
+    Location
   },
   computed: {
-    ...mapState('location', ['location']),
-  },
-}
+    ...mapState('location', ['location'])
+  }
+};
 </script>

@@ -44,6 +44,6 @@
 <script>
 export default {
   name: 'AddNote',
-  props: {},
-}
+  props: {}
+};
 </script>
