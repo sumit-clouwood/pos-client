@@ -189,8 +189,9 @@ const actions = {
       const discount = rootState.discount.appliedItemDiscounts.find(
         discount => discount.item.orderIndex == index
       )
-
-      item.originalPrice = item.price
+      if (!item.originalPrice) {
+        item.originalPrice = item.price
+      }
       if (discount) {
         if (discount.discount.type == 'value') {
           itemsDiscount += discount.discount.rate
