@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <!--<img alt="Vue logo" src="../assets/logo.png">-->
     <Location v-show="!location" msg="Broccoli POS" />
     <Pos v-show="location" msg="Broccoli POS" />
   </div>
