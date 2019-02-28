@@ -76,7 +76,10 @@
     <DineIn />
     <SendToDelivery />
     <OrderItemPopup />
-
+    <ManageCustomerInformationEdit />
+    <CustomerAddress />
+    <SelectCustomerAddress />
+    <CreateNewCustomer />
   </div>
 </template>
 
@@ -89,7 +92,10 @@ import ManageCustomer from './footer/popups/ManageCustomer'
 import OnlineOrder from './header/popups/OnlineOrder'
 import CartItemDiscount from './footer/popups/CartItemDiscount'
 import OrderItemPopup from './content/cart/newOrders/items/Popup'
-
+import ManageCustomerInformationEdit from '../pos/footer/popups/ManageCustomer/ManageCustomerInformationEdit'
+import CreateNewCustomer from '../pos/footer/popups/ManageCustomer/CreateNewCustomer'
+import CustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/CustomerAddress'
+import SelectCustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/SelectCustomerAddress'
 
 export default {
   name: 'Footer',
@@ -102,7 +108,11 @@ export default {
     DineIn,
     SendToDelivery,
     CartItemDiscount,
-    OrderItemPopup
+    OrderItemPopup,
+    ManageCustomerInformationEdit,
+    CustomerAddress,
+    SelectCustomerAddress,
+    CreateNewCustomer,
   },
 }
 </script>

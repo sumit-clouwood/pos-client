@@ -16,7 +16,7 @@ import { mapGetters, mapActions, mapState } from 'vuex'
 export default {
   name: 'ManageCustomerHeader',
   props: {
-    searchTerms: '',
+    ['searchTerms']: '',
   },
   // computed: {
   //   ...mapState({

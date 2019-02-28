@@ -38,7 +38,7 @@ const actions = {
     dispatch('fetchAll')
   },
   searchCustomer: function({ commit, dispatch }, searchTerms) {
-  	console.log(searchTerms)
+    console.log(searchTerms)
     if (searchTerms !== '') {
       commit(mutation.SET_SEARCH_TERMS, searchTerms)
       dispatch('fetchAll')
