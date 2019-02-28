@@ -17,7 +17,7 @@ export default {
     )
   },
 
-  customerList(
+  /*customerList(
     ...[
       locationId,
       search,
@@ -31,6 +31,22 @@ export default {
   ) {
     return DataService.get(
       `/api/auth/crm/get/CustomerList/?location_id=${locationId}&search=${search}&perpage=${perpage}&page=${page}&all=${all}&validate=${validate}&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
+    )
+  },*/
+  customerList(
+    ...[
+      locationId,
+      search,
+      page,
+      origin,
+      validate,
+      lastSyncDate,
+      isCompress,
+      perpage,
+    ]
+  ) {
+    return DataService.get(
+      `/api/auth/pos/customerList?location_id=${locationId}&search=${search}&page_size=${perpage}&page_number=${page}&origin=${origin}&validate=${validate}&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
     )
   },
 
