@@ -33,15 +33,16 @@ const actions = {
       }
     })
   },
-  setPageNumber({ commit, dispatch }, pageNumber) {
+  setPageNumber: function({ commit, dispatch }, pageNumber) {
     commit(mutation.SET_CURRENT_PAGE_NO, pageNumber)
     dispatch('fetchAll')
   },
-  searchCustomer: function(searchTerms) {
-    let params = {}
-    params.search = searchTerms
-    commit(mutation.PARAMS, searchTerms)
-    this.fetchAll()
+  searchCustomer: function({ commit, dispatch }, searchTerms) {
+  	console.log(searchTerms)
+    if (searchTerms !== '') {
+      commit(mutation.SET_SEARCH_TERMS, searchTerms)
+      dispatch('fetchAll')
+    }
   },
 }
 const mutations = {
@@ -56,6 +57,9 @@ const mutations = {
   },
   [mutation.SET_CURRENT_PAGE_NO](commit, pageNumber) {
     state.params.page_number = pageNumber
+  },
+  [mutation.SET_SEARCH_TERMS](commit, searchTerms) {
+    state.params.search = searchTerms
   },
 }
 

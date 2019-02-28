@@ -11,13 +11,13 @@ import tax from './modules/tax'
 import surcharge from './modules/surcharge'
 import customer from './modules/customer'
 import discount from './modules/discount'
-import paginate from 'vuejs-paginate'
+// import paginate from 'vuejs-paginate'
 
 //to take snapshot
 import createLogger from 'vuex/dist/logger'
 
 Vue.use(Vuex)
-Vue.use(paginate)
+// Vue.use(paginate)
 
 const debug = process.env.NODE_ENV !== 'production'
 
@@ -34,7 +34,6 @@ export default new Vuex.Store({
     surcharge,
     order,
     discount,
-    paginate,
   },
   strict: debug,
   plugins: debug ? [createLogger()] : [],

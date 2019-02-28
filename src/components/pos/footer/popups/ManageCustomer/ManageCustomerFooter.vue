@@ -20,18 +20,19 @@
         </li>
         <li>Last</li>
       </ul>-->
-      <template>
-        <paginate
-                :page-count="20"
-                :page-range="3"
-                :margin-pages="2"
-                :click-handler="clickCallback"
-                :prev-text="'Prev'"
-                :next-text="'Next'"
-                :container-class="'pagination'"
-                :page-class="'page-item'">
+      <!--<template>-->
+        <paginate v-if="paginateDetails.totalPages"
+          :page-count="paginateDetails.totalPages"
+          :page-range="1"
+          :margin-pages="1"
+          :clickHandler="setPageNumber"
+          :prev-text="'Prev'"
+          :next-text="'Next'"
+          :container-class="''"
+          :page-class="'page-item'"
+        >
         </paginate>
-      </template>
+      <!--</template>-->
     </div>
     <div class="btn-announce">
       <button
@@ -70,14 +71,11 @@ export default {
     ...mapState({
       paginateDetails: state => state.customer.paginate,
     }),
-    ...mapState({
-      statePageNumber: state => state.customer.params.page_number,
-    }),
+    // ...mapState({
+    //   statePageNumber: state => state.customer.params.page_number,
+    // }),
   },
   methods: {
-    // updatePageNumber: function () {
-    //   this.$store.dispatch('customer/fetchCustomers', data)
-    // },
     ...mapActions('customer', ['setPageNumber']),
   },
 }

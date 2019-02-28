@@ -3195,6 +3195,18 @@ button.popup-btn-save {
  box-shadow:none !important;
  margin:0 10px;
 }
+.pagination-customer-details > ul > li > a {
+ color: white !important;
+}
+
+.pagination-customer-details > ul > li.page-item.disabled {
+  /*color: gray;*/
+  background-color: gray;
+}
+.pagination-customer-details > ul > li.page-item.active {
+  color: white;
+  /*background-color: gray;*/
+}
 
 .pagination-customer-details > ul li.next-page:hover {
  background:rgba(98, 187, 49, 0.7) !important;
