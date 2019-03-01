@@ -17,11 +17,11 @@
             <div
               class="option-contain"
               :class="{
-                active: activeDiscountId == discount.item_discount_id,
+                active: activeItemDiscountId == discount.item_discount_id,
               }"
               v-for="discount in itemDiscounts"
               :key="discount.item_discount_id"
-              @click.prevent="selectDiscount(discount)"
+              @click.prevent="selectItemDiscount(discount)"
             >
               <p>
                 {{
@@ -59,11 +59,11 @@ export default {
   name: 'CartItemDiscount',
   props: {},
   computed: {
-    ...mapGetters('discount', ['itemDiscounts', 'activeDiscountId']),
+    ...mapGetters('discount', ['itemDiscounts', 'activeItemDiscountId']),
     ...mapGetters('location', ['formatPrice']),
   },
   methods: {
-    ...mapActions('discount', ['selectDiscount', 'applyItemDiscount']),
+    ...mapActions('discount', ['selectItemDiscount', 'applyItemDiscount']),
   },
 }
 </script>

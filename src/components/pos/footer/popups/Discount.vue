@@ -9,37 +9,30 @@
           <h4 class="customer-title">Select Discount</h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
-          <div class="dining-option-block select-discount-option">
-            <div class="option-contain">
-              <p>25%</p>
-              <span class="more"
-                >Broccoli Staff (on total) Broccoli Staff (on total) Broccoli
-                Staff (on total)</span
-              >
-            </div>
-            <div class="option-contain">
-              <p>50%</p>
-              <span class="more">Broccoli Staff (on total) </span>
-            </div>
-            <div class="option-contain active">
-              <p>50%</p>
-              <span class="more">Better homes (on total)</span>
-            </div>
-            <div class="option-contain">
-              <p>50%</p>
-              <span class="more"
-                >Broccoli Staff (on total) Broccoli Staff (on total) Broccoli
-                Staff (on total) Broccoli Staff (on total) Broccoli Staff (on
-                total)</span
-              >
-            </div>
-            <div class="option-contain">
-              <p>50%</p>
-              <span class="more">Fly Dubai (on total)</span>
-            </div>
-            <div class="option-contain">
-              <p>100%</p>
-              <span class="more">Discount 1</span>
+          <div v-if="error" class="error">
+            <p>{{ error }}</p>
+          </div>
+          <div
+            class="dining-option-block select-discount-option"
+            v-if="!error && discounts.length"
+          >
+            <div
+              class="option-contain"
+              :class="{
+                active: activeOrderDiscountId == discount.discount_id,
+              }"
+              v-for="discount in discounts"
+              :key="discount.discount_id"
+              @click.prevent="selectOrderDiscount(discount)"
+            >
+              <p>
+                {{
+                  discount.type == 'percentage'
+                    ? discount.rate + '%'
+                    : formatPrice(discount.rate)
+                }}
+              </p>
+              <span class="more">{{ discount.name }}</span>
             </div>
           </div>
         </div>
@@ -50,6 +43,7 @@
               type="button"
               data-dismiss="modal"
               id="discount-save-btn"
+              @click="applyOrderDiscount()"
             >
               Ok
             </button>
@@ -63,8 +57,26 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Discount',
   props: {},
+  computed: {
+    ...mapState('discount', ['error']),
+    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('discount', {
+      // map `this.discounts` to `this.$store.discount.getters.orderDiscounts`
+      discounts: 'orderDiscounts',
+      activeOrderDiscountId: 'activeOrderDiscountId',
+    }),
+  },
+  methods: {
+    applyOrderDiscount: function(discount) {
+      this.$store.dispatch('discount/applyOrderDiscount', discount)
+    },
+    selectOrderDiscount: function(discount) {
+      this.$store.dispatch('discount/selectOrderDiscount', discount)
+    },
+  },
 }
 </script>

@@ -9,20 +9,26 @@ const state = {
 
 // getters
 const getters = {
-  orderTotal: (state, getters, rootState) => {
+  orderTotal: (state, getters, rootState, rootGetters) => {
     return (
       state.items.reduce((total, item) => {
         return total + item.price * item.quantity
       }, 0) +
       rootState.tax.itemsTax +
       rootState.tax.surchargeTax +
-      rootState.surcharge.surchargeAmount
+      rootGetters['surcharge/surcharge']
     )
   },
 
   subTotal: () => {
     return state.items.reduce((total, item) => {
       return total + item.price * item.quantity
+    }, 0)
+  },
+
+  subTotalUndiscounted: () => {
+    return state.items.reduce((total, item) => {
+      return total + item.undiscountedPrice * item.quantity
     }, 0)
   },
 
@@ -49,7 +55,7 @@ const actions = {
 
     //this comes directly from the items menu without modifiers
     item.modifiable = false
-
+    item.undiscountedPrice = item.price
     commit(mutation.SET_ITEM, item)
 
     const index = state.items.findIndex(
@@ -57,6 +63,7 @@ const actions = {
     )
     if (index > -1) {
       commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, index)
+      dispatch('recalculateItemPrices')
     } else {
       commit(mutation.ADD_ORDER_ITEM, state.item)
     }
@@ -79,6 +86,7 @@ const actions = {
 
     //this comes through the modifier popup
     item.modifiable = true
+    item.undiscountedPrice = item.price
 
     commit(mutation.SET_ITEM, item)
 
@@ -144,6 +152,7 @@ const actions = {
 
       if (itemExists > -1) {
         commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, itemExists)
+        dispatch('recalculateItemPrices')
       } else {
         commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
       }
@@ -182,25 +191,40 @@ const actions = {
       )
     }
   },
+  recalculateOrderTotals({ rootState }) {
+    const orderDiscount = rootState.discount.appliedOrderDiscount
+    //let totalDiscount = 0
+    if (orderDiscount) {
+      if (orderDiscount.discountontotal) {
+        //apply on order toal
+      }
+    }
+  },
 
-  recalculatePrices({ commit, rootState, dispatch }) {
+  recalculateItemPrices({ commit, rootState, dispatch }) {
     let itemsDiscount = 0
     const newItems = state.items.map((item, index) => {
       const discount = rootState.discount.appliedItemDiscounts.find(
         discount => discount.item.orderIndex == index
       )
-      if (!item.originalPrice) {
-        item.originalPrice = item.price
-      }
+
       if (discount) {
+        item.discount = {
+          name: discount.discount.name,
+          type: discount.discount.type,
+          rate: discount.discount.rate,
+        }
+
         if (discount.discount.type == 'value') {
           itemsDiscount += discount.discount.rate
-          item.price = item.originalPrice - discount.discount.rate
+          item.price = item.undiscountedPrice - discount.discount.rate
         } else {
-          const calculated = (item.originalPrice * discount.discount.rate) / 100
-          item.price = item.originalPrice - calculated
+          const calculated =
+            (item.undiscountedPrice * discount.discount.rate) / 100
 
-          itemsDiscount += calculated
+          item.price = item.undiscountedPrice - calculated
+
+          itemsDiscount += calculated * item.quantity
         }
       }
       return item

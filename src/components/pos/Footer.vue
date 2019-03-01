@@ -36,7 +36,7 @@
             data-target="#select-discount"
             id="discount-footer"
           >
-            <a href="#"
+            <a href="#" @click.prevent="validateOrderDiscounts()"
               ><img src="img/pos/discount.svg" /><span>Select Discount</span></a
             >
           </li>
@@ -98,6 +98,7 @@ import CustomerCreate from '../pos/footer/popups/ManageCustomer/CustomerCreate'
 import CustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/CustomerAddress'
 import CustomerInformation from './footer/popups/ManageCustomer/CustomerInformation'
 import SelectCustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/SelectCustomerAddress'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'Footer',
@@ -116,6 +117,9 @@ export default {
     CartItemDiscount,
     SelectCustomerAddress,
     CustomerInformation,
+  },
+  methods: {
+    ...mapActions('discount', ['validateOrderDiscounts']),
   },
 }
 </script>

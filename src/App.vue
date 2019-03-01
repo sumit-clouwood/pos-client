@@ -22,3 +22,13 @@ The App.vue file is the root component that all other components are nested with
   margin-top: 60px;
 }
 </style>
+<style lang="sass">
+.error
+  color: #ff0000;
+  padding: 10px 5px 10px 5px;
+
+
+.success
+  color: #00ff00;
+  padding: 10px 5px 10px 5px;
+</style>
