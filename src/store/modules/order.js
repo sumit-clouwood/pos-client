@@ -66,11 +66,15 @@ const actions = {
       commit(mutation.ADD_ORDER_ITEM, state.item)
     }
 
-    if (rootState.discount.appliedOrderDiscount) {
-      dispatch('recalculateOrderTotals')
-    } else {
-      dispatch('recalculateItemPrices')
-    }
+    dispatch('surcharge/calculate', {}, { root: true }).then(
+      dispatch('tax/calculate', {}, { root: true }).then(() => {
+        if (rootState.discount.appliedOrderDiscount) {
+          dispatch('recalculateOrderTotals')
+        } else {
+          dispatch('recalculateItemPrices')
+        }
+      })
+    )
   },
 
   removeFromOrder({ commit, dispatch, rootState }, { item, index }) {
@@ -169,11 +173,15 @@ const actions = {
       })
     }
 
-    if (rootState.discount.appliedOrderDiscount) {
-      dispatch('recalculateOrderTotals')
-    } else {
-      dispatch('recalculateItemPrices')
-    }
+    dispatch('surcharge/calculate', {}, { root: true }).then(
+      dispatch('tax/calculate', {}, { root: true }).then(() => {
+        if (rootState.discount.appliedOrderDiscount) {
+          dispatch('recalculateOrderTotals')
+        } else {
+          dispatch('recalculateItemPrices')
+        }
+      })
+    )
   },
 
   setActiveItem({ commit, dispatch }, { orderItem, index }) {
