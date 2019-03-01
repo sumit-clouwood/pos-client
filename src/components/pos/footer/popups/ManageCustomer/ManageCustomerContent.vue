@@ -32,7 +32,7 @@
           </td>
           <td>
             <button
-              @click="updateSlickSlider()"
+              @click="fetchSelectedCustomer(customer._id)"
               data-toggle="modal"
               data-target="#display-order"
               data-dismiss="modal"
@@ -40,6 +40,7 @@
             >
               Edit Info</button
             ><button
+              @click="fetchSelectedCustomer(customer._id)"
               data-toggle="modal"
               data-target="#add-to-order"
               data-dismiss="modal"
@@ -60,20 +61,23 @@ import { mapState, mapActions } from 'vuex'
 export default {
   name: 'ManageCustomerContent',
   props: {
-    ['activeIndex']:undefined
+    ['activeIndex']: undefined,
+    // ['customerId']: ''
   },
   computed: {
     ...mapState({
-      customerDetails: state => state.customer.customers_detail,
+      customerDetails: state => state.customer.customer_list,
     }),
   },
   methods: {
     setActiveCustomer(index) {
       this.activeIndex = index
     },
-    updateSlickSlider(){
-      $('.last-order-wrap')[0].slick.refresh()
-    }
+    // updateSlickSlider(customerId) {
+    //   $('.last-order-wrap')[0].slick.refresh()
+    //   this.props.customerId = customerId
+    // },
+    ...mapActions('customer', ['fetchSelectedCustomer']),
   },
 }
 </script>

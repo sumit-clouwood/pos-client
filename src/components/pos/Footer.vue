@@ -68,51 +68,54 @@
     <div class="modal-backdrop fade show" id="transparent-screen"></div>
 
     <!--All popup including online order, because we need to apply few js which are not on header so all popups will be here-->
-    <AddNote />
-    <ManageCustomer />
-    <OnlineOrder />
-    <Discount />
-    <CartItemDiscount />
     <DineIn />
+    <AddNote />
+    <Discount />
+    <OnlineOrder />
     <SendToDelivery />
+    <ManageCustomer />
     <OrderItemPopup />
-    <ManageCustomerInformationEdit />
+    <CustomerCreate />
     <CustomerAddress />
+    <CartItemDiscount />
     <SelectCustomerAddress />
-    <CreateNewCustomer />
+    <CustomerInformation />
+    <CustomerNote />
   </div>
 </template>
 
 <script>
+import DineIn from './footer/popups/DineIn'
 import AddNote from './footer/popups/AddNote'
 import Discount from './footer/popups/Discount'
-import SendToDelivery from './footer/popups/SendToDelivery'
-import DineIn from './footer/popups/DineIn'
-import ManageCustomer from './footer/popups/ManageCustomer'
 import OnlineOrder from './header/popups/OnlineOrder'
+import SendToDelivery from './footer/popups/SendToDelivery'
+import ManageCustomer from './footer/popups/ManageCustomer'
 import CartItemDiscount from './footer/popups/CartItemDiscount'
 import OrderItemPopup from './content/cart/newOrders/items/Popup'
-import ManageCustomerInformationEdit from '../pos/footer/popups/ManageCustomer/ManageCustomerInformationEdit'
-import CreateNewCustomer from '../pos/footer/popups/ManageCustomer/CreateNewCustomer'
+import CustomerNote from '../pos/footer/popups/ManageCustomer/CustomerNote'
+import CustomerCreate from '../pos/footer/popups/ManageCustomer/CustomerCreate'
 import CustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/CustomerAddress'
+import CustomerInformation from './footer/popups/ManageCustomer/CustomerInformation'
 import SelectCustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/SelectCustomerAddress'
 
 export default {
   name: 'Footer',
   props: {},
   components: {
-    AddNote,
-    ManageCustomer,
-    OnlineOrder,
-    Discount,
     DineIn,
+    AddNote,
+    Discount,
+    OnlineOrder,
+    CustomerNote,
+    ManageCustomer,
     SendToDelivery,
-    CartItemDiscount,
     OrderItemPopup,
-    ManageCustomerInformationEdit,
+    CustomerCreate,
     CustomerAddress,
+    CartItemDiscount,
     SelectCustomerAddress,
-    CreateNewCustomer,
+    CustomerInformation,
   },
 }
 </script>

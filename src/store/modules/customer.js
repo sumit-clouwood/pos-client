@@ -1,12 +1,15 @@
 import * as mutation from './customer/mutation-types'
 import customerService from '@/services/data/CustomerService'
+import DataService from '../../services/DataService'
 
 const state = {
-  customers_detail: [],
-  customers: {},
+  customer_list: [],
+  customer: {},
   customer_group: {},
   paginate: {},
   params: { page_number: 1, page_size: 10, search: '' },
+  message: {},
+  address: {},
 }
 const getters = {}
 const actions = {
@@ -40,21 +43,48 @@ const actions = {
       commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
     })
   },
+
   setPageNumber: function({ commit, dispatch }, pageNumber) {
     commit(mutation.SET_CURRENT_PAGE_NO, pageNumber)
     dispatch('fetchAll')
   },
+
   searchCustomer: function({ commit, dispatch }, searchTerms) {
-    console.log(searchTerms)
     if (searchTerms !== '') {
       commit(mutation.SET_SEARCH_TERMS, searchTerms)
       dispatch('fetchAll')
     }
   },
+
+  addNote({ commit, rootState }, note) {
+    if (typeof state.customer !== 'undefined') {
+      const params = [state.customer, rootState.auth.userDetails._id, note]
+      customerService.addNote(...params).then(response => {
+        commit(mutation.SET_RESPONSE_MESSAGES, response.message)
+      })
+    } else {
+      alert('Customer not selected yet')
+    }
+  },
+
+  fetchSelectedCustomer({ commit, rootState }, customer_id) {
+    // $('.last-order-wrap')[0].slick.refresh()
+    const params = [customer_id, rootState.location.location]
+    customerService.fetchCustomer(...params).then(response => {
+      commit(mutation.SELECTED_CUSTOMER, response.data.data)
+    })
+  },
+  selectedAddress({ commit, rootState }, selected_address_id) {
+    let selectedAddress = {}
+    selectedAddress.id = selected_address_id
+    selectedAddress.delivery_area = 'lalgarh'
+    commit(mutation.SELECTED_CUSTOMER_ADDRESS, selectedAddress)
+
+  },
 }
 const mutations = {
   [mutation.CUSTOMER_LIST](commit, customersDetail) {
-    state.customers_detail = customersDetail
+    state.customer_list = customersDetail
   },
   [mutation.PAGINATE_DETAILS](commit, paginateDetails) {
     state.paginate = paginateDetails
@@ -70,6 +100,15 @@ const mutations = {
   },
   [mutation.SET_CUSTOMER_GROUP](commit, customerGroup) {
     state.customer_group = customerGroup
+  },
+  [mutation.SET_RESPONSE_MESSAGES](commit, message) {
+    state.message.note = message
+  },
+  [mutation.SELECTED_CUSTOMER](commit, customerDetails) {
+    state.customer = customerDetails
+  },
+  [mutation.SELECTED_CUSTOMER_ADDRESS](commit, selectedAddress) {
+    state.address = selectedAddress
   },
 }
 
