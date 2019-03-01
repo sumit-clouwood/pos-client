@@ -2,6 +2,8 @@
 const state = {
   //date: '2019-02-06',
   date: '',
+  today: new Date(), //.toJSON().slice(0, 10),
+  weekDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   compress: false,
 }
 

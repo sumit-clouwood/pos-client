@@ -8,11 +8,11 @@
       class="buttoned colorwhite discountitembutton"
     >
       <img src="img/pos/DiscountIcon.jpg" alt="" />
-      <span>Discount Item</span>
+      <span>Discount</span>
     </button>
     <button type="button" class="buttoned colorwhite discountbutton">
       <img src="img/pos/DiscountIcon.jpg" alt="delete" />
-      <span>Discount</span>
+      <span>UnDiscount</span>
     </button>
     <button type="button" class="buttoned colorwhite taxbutton">
       <img src="img/pos/delete.jpg" alt="delete" />

@@ -13,40 +13,52 @@ const getters = {
 // actions
 const actions = {
   calculate({ commit, rootState }) {
-    const itemsTax = rootState.order.items.reduce((totalTax, item) => {
-      if (item.item_tax) {
-        return (
-          totalTax +
-          item.item_tax.reduce((total, tax) => {
-            return (
-              total + (item.price * item.quantity * tax.get_item_tax.rate) / 100
-            )
-          }, 0)
-        )
-      } else {
-        return totalTax + 0
-      }
+    const orderSubtotal = rootState.order.items.reduce((total, item) => {
+      return total + item.price * item.quantity
     }, 0)
 
-    commit(mutation.SET_ITEMS_TAX, itemsTax)
-
-    const surchargeTax = rootState.surcharge.surcharges.reduce(
-      (totalTax, surcharge) => {
-        if (surcharge.surcharge_is_taxable) {
+    if (orderSubtotal) {
+      const itemsTax = rootState.order.items.reduce((totalTax, item) => {
+        if (item.item_tax) {
           return (
             totalTax +
-            surcharge.surcharge_taxable_rate_info.reduce((taxAmount, tax) => {
-              return taxAmount + (surcharge.rate * tax.rate) / 100
+            item.item_tax.reduce((total, tax) => {
+              return (
+                total +
+                (item.price * item.quantity * tax.get_item_tax.rate) / 100
+              )
             }, 0)
           )
         } else {
-          return totalTax
+          return totalTax + 0
         }
-      },
-      0
-    )
+      }, 0)
+      commit(mutation.SET_ITEMS_TAX, itemsTax)
+    } else {
+      commit(mutation.SET_ITEMS_TAX, 0)
+    }
 
-    commit(mutation.SET_SURCHARGE_TAX, surchargeTax)
+    if (orderSubtotal) {
+      const surchargeTax = rootState.surcharge.surcharges.reduce(
+        (totalTax, surcharge) => {
+          if (surcharge.surcharge_is_taxable) {
+            return (
+              totalTax +
+              surcharge.surcharge_taxable_rate_info.reduce((taxAmount, tax) => {
+                return taxAmount + (surcharge.rate * tax.rate) / 100
+              }, 0)
+            )
+          } else {
+            return totalTax
+          }
+        },
+        0
+      )
+
+      commit(mutation.SET_SURCHARGE_TAX, surchargeTax)
+    } else {
+      commit(mutation.SET_SURCHARGE_TAX, 0)
+    }
   },
 }
 

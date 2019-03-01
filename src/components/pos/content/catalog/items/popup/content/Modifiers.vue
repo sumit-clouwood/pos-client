@@ -33,7 +33,9 @@
                   :id="modifierOption._id"
                   class="customradio"
                   :value="modifierOption._id"
-                  :checked="modifiers(modifierOption._id)"
+                  :checked="
+                    modifiers(item._id, submodifier._id, modifierOption._id)
+                  "
                   @change="
                     updateOption({
                       itemId: item._id,
@@ -58,7 +60,9 @@
                   :value="modifierOption._id"
                   :id="modifierOption._id"
                   :name="modifierOption._id"
-                  :checked="modifiers(modifierOption._id)"
+                  :checked="
+                    modifiers(item._id, submodifier._id, modifierOption._id)
+                  "
                   @change="
                     updateOption({
                       itemId: item._id,

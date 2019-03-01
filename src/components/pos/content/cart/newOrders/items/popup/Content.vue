@@ -1,20 +1,20 @@
 <template>
   <div class="modal-body order-modal-body">
-    order contents
+    <Modifiers v-if="item && item.modifiable" />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-//import Modifiers from './content/Modifiers'
+import { mapState } from 'vuex'
+import Modifiers from '@/components/pos/content/catalog/items/popup/content/Modifiers.vue'
 export default {
   name: 'Content',
   props: {},
   components: {
-    // Modifiers,
+    Modifiers,
   },
   computed: {
-    ...mapGetters('modifier', ['itemModifiers']),
+    ...mapState('order', ['item']),
   },
 }
 </script>
