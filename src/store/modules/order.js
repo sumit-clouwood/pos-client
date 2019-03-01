@@ -82,6 +82,12 @@ const actions = {
     commit(mutation.REMOVE_ORDER_ITEM, index)
     commit(mutation.SET_ITEM, state.items[0])
 
+    if (!state.items.length) {
+      //cart is empty remove the discounts
+      commit('discount/CLEAR_ORDER_DISCOUNT', null, { root: true })
+      commit('discount/CLEAR_ITEM_DISCOUNT', null, { root: true })
+    }
+
     dispatch('surcharge/calculate', {}, { root: true }).then(
       dispatch('tax/calculate', {}, { root: true }).then(() => {
         if (rootState.discount.appliedOrderDiscount) {
