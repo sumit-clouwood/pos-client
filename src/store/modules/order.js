@@ -82,11 +82,15 @@ const actions = {
     commit(mutation.REMOVE_ORDER_ITEM, index)
     commit(mutation.SET_ITEM, state.items[0])
 
-    if (rootState.discount.appliedOrderDiscount) {
-      dispatch('recalculateOrderTotals')
-    } else {
-      dispatch('recalculateItemPrices')
-    }
+    dispatch('surcharge/calculate', {}, { root: true }).then(
+      dispatch('tax/calculate', {}, { root: true }).then(() => {
+        if (rootState.discount.appliedOrderDiscount) {
+          dispatch('recalculateOrderTotals')
+        } else {
+          dispatch('recalculateItemPrices')
+        }
+      })
+    )
   },
 
   addModifierOrder({ commit, rootState, dispatch }) {
