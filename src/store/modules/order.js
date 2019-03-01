@@ -218,6 +218,19 @@ const actions = {
           surchargeTotalDiscount =
             (totalSurcharge * orderDiscount.discount.rate) / 100
         }
+      } else {
+        //apply offtotal discount
+        const subtotal = getters.subTotal
+        const totalTax = rootState.tax.itemsTax
+        //const totalSurcharge = rootGetters['surcharge/surcharge']
+        if (orderDiscount.discount.type == 'value') {
+          orderTotalDiscount = orderDiscount.discount.rate
+        } else {
+          orderTotalDiscount = (subtotal * orderDiscount.discount.rate) / 100
+          //const subtotalWithDiscount = subtotal - orderTotalDiscount
+          taxTotalDiscount = (totalTax * orderDiscount.discount.rate) / 100
+          surchargeTotalDiscount = 0
+        }
       }
 
       dispatch(
