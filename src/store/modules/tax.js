@@ -7,7 +7,8 @@ const state = {
 
 // getters
 const getters = {
-  totalTax: state => state.itemsTax + state.surchargeTax,
+  totalTax: (state, getters, rootState) =>
+    state.itemsTax + state.surchargeTax - rootState.discount.TaxDiscountAmount,
 }
 
 // actions

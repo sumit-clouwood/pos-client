@@ -17,18 +17,26 @@ const state = {
   itemsDiscountAmount: 0,
   //order discount calculated
   orderDiscountAmount: 0,
+  //Tax discount
+  TaxDiscountAmount: 0,
+  //Discount on surcharge
+  surchargeDiscountAmount: 0,
   //error msg
   error: false,
 }
 
 // getters
 const getters = {
-  totalDiscount: () => state.itemsDiscountAmount + state.orderDiscountAmount,
-  activeItemDiscountId: () =>
+  orderDiscountWithoutTax: state =>
+    //discount is already subtracted from tax in tax.js
+    state.orderDiscountAmount + state.surchargeDiscountAmount,
+
+  activeItemDiscountId: state =>
     state.currentActiveItemDiscount
       ? state.currentActiveItemDiscount.item_discount_id
       : false,
-  activeOrderDiscountId: () =>
+
+  activeOrderDiscountId: state =>
     state.currentActiveOrderDiscount
       ? state.currentActiveOrderDiscount.discount_id
       : false,
@@ -151,6 +159,7 @@ const actions = {
   },
 
   applyItemDiscount({ commit, rootState, dispatch }) {
+    commit(mutation.CLEAR_ORDER_DISCOUNT)
     commit(mutation.APPLY_ITEM_DISCOUNT, {
       item: rootState.order.item,
       discount: {
@@ -165,6 +174,7 @@ const actions = {
   },
 
   applyOrderDiscount({ commit, rootState, dispatch }) {
+    commit(mutation.CLEAR_ITEM_DISCOUNT)
     if (state.currentActiveOrderDiscount) {
       commit(mutation.APPLY_ORDER_DISCOUNT, {
         item: rootState.order.item,
@@ -183,6 +193,15 @@ const actions = {
   },
   setItemsDiscountAmount({ commit }, discount) {
     commit(mutation.SET_ITEMS_DISCOUNT_AMOUNT, discount.discountAmount)
+  },
+
+  setOrderDiscount(
+    { commit },
+    { orderDiscount, taxDiscount, surchargeDiscount }
+  ) {
+    commit(mutation.SET_ORDER_DISCOUNT_AMOUNT, orderDiscount)
+    commit(mutation.SET_TAX_DISCOUNT_AMOUNT, taxDiscount)
+    commit(mutation.SET_SURCHARGE_DISCOUNT_AMOUNT, surchargeDiscount)
   },
 }
 
@@ -228,6 +247,26 @@ const mutations = {
       },
       discount: discount,
     }
+  },
+
+  [mutation.SET_ORDER_DISCOUNT_AMOUNT](state, discount) {
+    state.orderDiscountAmount = discount
+  },
+  [mutation.SET_TAX_DISCOUNT_AMOUNT](state, discount) {
+    state.TaxDiscountAmount = discount
+  },
+  [mutation.SET_SURCHARGE_DISCOUNT_AMOUNT](state, discount) {
+    state.surchargeDiscountAmount = discount
+  },
+  [mutation.CLEAR_ITEM_DISCOUNT](state) {
+    state.appliedItemDiscounts = []
+    state.itemsDiscountAmount = 0
+  },
+  [mutation.CLEAR_ORDER_DISCOUNT](state) {
+    state.orderDiscountAmount = 0
+    state.surchargeDiscountAmount = 0
+    state.TaxDiscountAmount = 0
+    state.appliedOrderDiscount = false
   },
 }
 

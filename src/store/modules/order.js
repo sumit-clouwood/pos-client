@@ -11,12 +11,11 @@ const state = {
 const getters = {
   orderTotal: (state, getters, rootState, rootGetters) => {
     return (
-      state.items.reduce((total, item) => {
-        return total + item.price * item.quantity
-      }, 0) +
-      rootState.tax.itemsTax +
-      rootState.tax.surchargeTax +
-      rootGetters['surcharge/surcharge']
+      //discount is already subtracted from tax in tax.js
+      getters.subTotal +
+      rootGetters['tax/totalTax'] +
+      rootGetters['surcharge/surcharge'] -
+      rootGetters['discount/orderDiscountWithoutTax']
     )
   },
 
@@ -63,22 +62,27 @@ const actions = {
     )
     if (index > -1) {
       commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, index)
-      dispatch('recalculateItemPrices')
     } else {
       commit(mutation.ADD_ORDER_ITEM, state.item)
     }
-    dispatch('surcharge/calculate', {}, { root: true }).then(
-      dispatch('tax/calculate', {}, { root: true })
-    )
+
+    if (rootState.discount.appliedOrderDiscount) {
+      dispatch('recalculateOrderTotals')
+    } else {
+      dispatch('recalculateItemPrices')
+    }
   },
 
-  removeFromOrder({ commit, dispatch }, { item, index }) {
+  removeFromOrder({ commit, dispatch, rootState }, { item, index }) {
     commit(mutation.SET_ITEM, item)
     commit(mutation.REMOVE_ORDER_ITEM, index)
     commit(mutation.SET_ITEM, state.items[0])
-    dispatch('surcharge/calculate', {}, { root: true }).then(
-      dispatch('tax/calculate', {}, { root: true })
-    )
+
+    if (rootState.discount.appliedOrderDiscount) {
+      dispatch('recalculateOrderTotals')
+    } else {
+      dispatch('recalculateItemPrices')
+    }
   },
 
   addModifierOrder({ commit, rootState, dispatch }) {
@@ -152,7 +156,6 @@ const actions = {
 
       if (itemExists > -1) {
         commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, itemExists)
-        dispatch('recalculateItemPrices')
       } else {
         commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
       }
@@ -166,9 +169,11 @@ const actions = {
       })
     }
 
-    dispatch('surcharge/calculate', {}, { root: true }).then(
-      dispatch('tax/calculate', {}, { root: true })
-    )
+    if (rootState.discount.appliedOrderDiscount) {
+      dispatch('recalculateOrderTotals')
+    } else {
+      dispatch('recalculateItemPrices')
+    }
   },
 
   setActiveItem({ commit, dispatch }, { orderItem, index }) {
@@ -191,19 +196,46 @@ const actions = {
       )
     }
   },
-  recalculateOrderTotals({ rootState }) {
+  recalculateOrderTotals({ rootState, getters, dispatch, rootGetters }) {
     const orderDiscount = rootState.discount.appliedOrderDiscount
     //let totalDiscount = 0
     if (orderDiscount) {
-      if (orderDiscount.discountontotal) {
+      let orderTotalDiscount = 0
+      let taxTotalDiscount = 0
+      let surchargeTotalDiscount = 0
+
+      if (orderDiscount.discount.discountontotal) {
         //apply on order toal
+        const subtotal = getters.subTotal
+        const totalTax = rootState.tax.itemsTax + rootState.tax.surchargeTax
+        const totalSurcharge = rootGetters['surcharge/surcharge']
+
+        if (orderDiscount.discount.type == 'value') {
+          orderTotalDiscount = orderDiscount.discount.rate
+        } else {
+          orderTotalDiscount = (subtotal * orderDiscount.discount.rate) / 100
+          taxTotalDiscount = (totalTax * orderDiscount.discount.rate) / 100
+          surchargeTotalDiscount =
+            (totalSurcharge * orderDiscount.discount.rate) / 100
+        }
       }
+
+      dispatch(
+        'discount/setOrderDiscount',
+        {
+          orderDiscount: orderTotalDiscount,
+          taxDiscount: taxTotalDiscount,
+          surchargeDiscount: surchargeTotalDiscount,
+        },
+        { root: true }
+      )
     }
   },
 
   recalculateItemPrices({ commit, rootState, dispatch }) {
     let itemsDiscount = 0
-    const newItems = state.items.map((item, index) => {
+    const newItems = state.items.map((stateItem, index) => {
+      let item = { ...stateItem }
       const discount = rootState.discount.appliedItemDiscounts.find(
         discount => discount.item.orderIndex == index
       )
