@@ -3,27 +3,40 @@ import * as mutation from './surcharge/mutation-types'
 
 const state = {
   surcharges: [],
-  surchargeAmount: 0,
+  surchargeAmounts: [],
 }
 
-const getters = {}
+const getters = {
+  surcharge: state => {
+    return state.surchargeAmounts.reduce((total, surcharge) => {
+      return total + surcharge.amount
+    }, 0)
+  },
+}
 
 const actions = {
   calculate({ commit, rootGetters }) {
+    //look for order level discount before going furhter ;)
     const subtotal = rootGetters['order/subTotal']
-    let totalSurcharge = 0
+    let totalSurcharges = []
     if (subtotal && state.surcharges.length) {
-      totalSurcharge = state.surcharges.reduce((surchargeTotal, surchage) => {
-        return (
-          surchargeTotal +
-          (surchage.type.toLowerCase() === 'value'
-            ? surchage.rate
-            : (subtotal * surchage.rate) / 100)
-        )
-      }, 0)
+      state.surcharges.forEach(surcharge => {
+        let applidSurcharge = {
+          amount: surcharge.rate,
+          tax: surcharge.surcharge_is_taxable
+            ? surcharge.surcharge_taxable_rate_info
+            : false,
+        }
+
+        if (surcharge.type.toLowerCase() !== 'value') {
+          applidSurcharge.amount = (subtotal * surcharge.rate) / 100
+        }
+
+        totalSurcharges.push(applidSurcharge)
+      })
     }
 
-    commit(mutation.SET_SURCHARGE_AMOUNT, totalSurcharge)
+    commit(mutation.SET_SURCHARGE_AMOUNT, totalSurcharges)
   },
 
   fetchAll({ commit, rootState }) {
@@ -46,7 +59,7 @@ const mutations = {
     state.surcharges = surcharges
   },
   [mutation.SET_SURCHARGE_AMOUNT](state, amount) {
-    state.surchargeAmount = amount
+    state.surchargeAmounts = amount
   },
 }
 

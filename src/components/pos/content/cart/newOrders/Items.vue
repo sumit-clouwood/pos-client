@@ -7,7 +7,9 @@
     >
       <div class="orders-name">
         <p>{{ t(item.item_name).name }}</p>
-        <p class="price-qty">@ {{ item.item_price }} x {{ item.quantity }}</p>
+        <p class="price-qty">
+          @ {{ item.item_price }} {{ discountInfo(item) }} x {{ item.quantity }}
+        </p>
         <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
         <span data-toggle="modal" data-target="#POSOrderItemOptions">
           <img
@@ -52,6 +54,19 @@ export default {
   methods: {
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
+    discountInfo(item) {
+      if (item.discount) {
+        return (
+          ' - ' +
+          ' ( ' +
+          item.discount.rate +
+          (item.discount.type == 'value' ? ' ' : '% ') +
+          item.discount.name +
+          ' )'
+        )
+      }
+      return ''
+    },
   },
   components: {
     Modifiers,

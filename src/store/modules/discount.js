@@ -3,18 +3,36 @@ import DiscountService from '@/services/data/DiscountService'
 
 // initial state
 const state = {
+  //hold data fetched from api
   orderDiscounts: [],
   itemDiscounts: [],
+  //used only for maintaining checked states
+  currentActiveItemDiscount: false,
+  currentActiveOrderDiscount: false,
+  //holds applied disocunts for items
   appliedItemDiscounts: [],
-  currentActiveDiscount: false,
+  //holds applied discount on order
+  appliedOrderDiscount: false,
+  //items discount calculated
   itemsDiscountAmount: 0,
+  //order discount calculated
   orderDiscountAmount: 0,
+  //error msg
+  error: false,
 }
 
 // getters
 const getters = {
-  discount: () => state.itemsDiscountAmount + state.orderDiscountAmount,
-  activeDiscountId: () => state.currentActiveDiscount.item_discount_id,
+  totalDiscount: () => state.itemsDiscountAmount + state.orderDiscountAmount,
+  activeItemDiscountId: () =>
+    state.currentActiveItemDiscount
+      ? state.currentActiveItemDiscount.item_discount_id
+      : false,
+  activeOrderDiscountId: () =>
+    state.currentActiveOrderDiscount
+      ? state.currentActiveOrderDiscount.discount_id
+      : false,
+
   isActiveItemDiscount: (state, getters, rootState) => discountId => {
     return (
       state.appliedItemDiscounts.findIndex(
@@ -26,8 +44,10 @@ const getters = {
   },
 
   itemDiscounts: (state, getters, rootState) => {
+    let activeDiscounts = []
+
     if (state.itemDiscounts.data) {
-      return state.itemDiscounts.data.map(discount => {
+      state.itemDiscounts.data.forEach(discount => {
         const orderTypes = discount.enable_for.split(',')
         if (
           orderTypes.findIndex(
@@ -35,7 +55,11 @@ const getters = {
           ) > -1
         ) {
           const discountValidDate = new Date(discount.date_until)
-          if (discountValidDate.getTime() >= rootState.sync.today.getTime()) {
+          const discountStartDate = new Date(discount.date_from)
+          if (
+            discountStartDate.getTime() <= rootState.sync.today.getTime() &&
+            discountValidDate.getTime() >= rootState.sync.today.getTime()
+          ) {
             const scheduledDays = discount.discount_schedule.split(',')
             if (
               scheduledDays.findIndex(
@@ -43,14 +67,47 @@ const getters = {
                   day == rootState.sync.weekDays[discountValidDate.getDay()]
               ) > -1
             ) {
-              return discount
+              activeDiscounts.push(discount)
             }
           }
         }
       })
-    } else {
-      return []
     }
+    return activeDiscounts
+  },
+
+  orderDiscounts: (state, getters, rootState) => {
+    const activeDiscounts = []
+
+    if (state.orderDiscounts.data) {
+      state.orderDiscounts.data.forEach(discount => {
+        const orderTypes = discount.enable_for.split(',')
+        if (
+          orderTypes.findIndex(
+            orderType => orderType == rootState.order.orderType
+          ) > -1
+        ) {
+          const discountValidDate = new Date(discount.date_until)
+          const discountStartDate = new Date(discount.date_from)
+
+          if (
+            discountStartDate.getTime() <= rootState.sync.today.getTime() &&
+            discountValidDate.getTime() >= rootState.sync.today.getTime()
+          ) {
+            const scheduledDays = discount.discount_schedule.split(',')
+            if (
+              scheduledDays.findIndex(
+                day =>
+                  day == rootState.sync.weekDays[discountValidDate.getDay()]
+              ) > -1
+            ) {
+              activeDiscounts.push(discount)
+            }
+          }
+        }
+      })
+    }
+    return activeDiscounts
   },
 }
 
@@ -71,21 +128,58 @@ const actions = {
     commit(mutation.SET_ITEM_DISCOUNTS, itemDiscounts)
   },
 
+  validateOrderDiscounts({ commit, state, rootState }) {
+    let errorMsg = false
+    if (rootState.order.items.length < 1) {
+      errorMsg =
+        'Please add some item(s) to cart before applying order discount.'
+    } else if (state.appliedItemDiscounts.length) {
+      //item level discount already applied reject it
+      errorMsg =
+        'Please remove item level discount(s) first to apply order discount.'
+    }
+    commit(mutation.SET_ERROR, errorMsg)
+  },
+
+  validateItemDiscounts({ commit, state }) {
+    if (state.appliedOrderDiscount) {
+      //order level discount already applied reject it
+      const errorMsg =
+        'Please remove order discount first to apply item discount.'
+      commit(mutation.SET_ERROR, errorMsg)
+    }
+  },
+
   applyItemDiscount({ commit, rootState, dispatch }) {
     commit(mutation.APPLY_ITEM_DISCOUNT, {
       item: rootState.order.item,
       discount: {
-        _id: state.currentActiveDiscount.item_discount_id,
-        type: state.currentActiveDiscount.type,
-        rate: state.currentActiveDiscount.rate,
+        _id: state.currentActiveItemDiscount.item_discount_id,
+        type: state.currentActiveItemDiscount.type,
+        rate: state.currentActiveItemDiscount.rate,
+        name: state.currentActiveItemDiscount.name,
       },
     })
 
-    dispatch('order/recalculatePrices', {}, { root: true })
+    dispatch('order/recalculateItemPrices', {}, { root: true })
   },
 
-  selectDiscount({ commit }, discount) {
-    commit(mutation.SET_ACTIVE_DISCOUNT, discount)
+  applyOrderDiscount({ commit, rootState, dispatch }) {
+    if (state.currentActiveOrderDiscount) {
+      commit(mutation.APPLY_ORDER_DISCOUNT, {
+        item: rootState.order.item,
+        discount: state.currentActiveOrderDiscount,
+      })
+
+      dispatch('order/recalculateOrderTotals', {}, { root: true })
+    }
+  },
+
+  selectItemDiscount({ commit }, discount) {
+    commit(mutation.SET_ACTIVE_ITEM_DISCOUNT, discount)
+  },
+  selectOrderDiscount({ commit }, discount) {
+    commit(mutation.SET_ACTIVE_ORDER_DISCOUNT, discount)
   },
   setItemsDiscountAmount({ commit }, discount) {
     commit(mutation.SET_ITEMS_DISCOUNT_AMOUNT, discount.discountAmount)
@@ -100,11 +194,17 @@ const mutations = {
   [mutation.SET_ITEM_DISCOUNTS](state, itemDiscounts) {
     state.itemDiscounts = itemDiscounts.data
   },
-  [mutation.SET_ACTIVE_DISCOUNT](state, discount) {
-    state.currentActiveDiscount = discount
+  [mutation.SET_ACTIVE_ITEM_DISCOUNT](state, discount) {
+    state.currentActiveItemDiscount = discount
+  },
+  [mutation.SET_ACTIVE_ORDER_DISCOUNT](state, discount) {
+    state.currentActiveOrderDiscount = discount
   },
   [mutation.SET_ITEMS_DISCOUNT_AMOUNT](state, discount) {
     state.itemsDiscountAmount = discount
+  },
+  [mutation.SET_ERROR](state, errorMsg) {
+    state.error = errorMsg
   },
   [mutation.APPLY_ITEM_DISCOUNT](state, { item, discount }) {
     let discounts = state.appliedItemDiscounts.filter(
@@ -119,6 +219,15 @@ const mutations = {
     })
 
     state.appliedItemDiscounts = discounts
+  },
+  [mutation.APPLY_ORDER_DISCOUNT](state, { item, discount }) {
+    state.appliedOrderDiscount = {
+      item: {
+        orderIndex: item.orderIndex,
+        _id: item._id,
+      },
+      discount: discount,
+    }
   },
 }
 

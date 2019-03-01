@@ -7,13 +7,13 @@
       </div>
       <div>
         <span class="total-charges">Surcharges</span>
-        <span class="aed-charges">
-          {{ formatPrice(surchargeAmount || 0) }}</span
-        >
+        <span class="aed-charges"> {{ formatPrice(surcharge || 0) }}</span>
       </div>
       <div>
         <span class="total-charges">Discounts</span>
-        <span class="aed-charges"> {{ formatPrice(discount || 0) }}</span>
+        <span class="aed-charges">
+          {{ formatPrice(orderDiscountAmount || 0) }}</span
+        >
       </div>
       <div>
         <span class="total-charges">Tax</span>
@@ -37,9 +37,9 @@ export default {
   computed: {
     ...mapGetters('order', ['orderTotal', 'subTotal', 'orderDiscount']),
     ...mapGetters('tax', ['totalTax']),
-    ...mapState('surcharge', ['surchargeAmount']),
+    ...mapGetters('surcharge', ['surcharge']),
     ...mapGetters('location', ['formatPrice']),
-    ...mapGetters('discount', ['discount']),
+    ...mapState('discount', ['orderDiscountAmount']),
   },
 }
 </script>

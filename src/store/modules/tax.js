@@ -23,6 +23,9 @@ const actions = {
           return (
             totalTax +
             item.item_tax.reduce((total, tax) => {
+              if (!tax.get_item_tax || !tax.get_item_tax.rate) {
+                return total
+              }
               return (
                 total +
                 (item.price * item.quantity * tax.get_item_tax.rate) / 100
@@ -38,14 +41,15 @@ const actions = {
       commit(mutation.SET_ITEMS_TAX, 0)
     }
 
-    if (orderSubtotal) {
-      const surchargeTax = rootState.surcharge.surcharges.reduce(
+    //apply tax on surcharge that is calculated earlier
+    if (orderSubtotal && rootState.surcharge.surchargeAmounts) {
+      const surchargeTax = rootState.surcharge.surchargeAmounts.reduce(
         (totalTax, surcharge) => {
-          if (surcharge.surcharge_is_taxable) {
+          if (surcharge.tax) {
             return (
               totalTax +
-              surcharge.surcharge_taxable_rate_info.reduce((taxAmount, tax) => {
-                return taxAmount + (surcharge.rate * tax.rate) / 100
+              surcharge.tax.reduce((taxAmount, tax) => {
+                return taxAmount + (surcharge.amount * tax.rate) / 100
               }, 0)
             )
           } else {
