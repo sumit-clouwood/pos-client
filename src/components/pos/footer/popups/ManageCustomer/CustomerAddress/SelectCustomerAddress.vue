@@ -47,8 +47,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'SelectCustomerAddress',
   props: {},
+  computed: {
+    // ...mapState({
+    //   selectedCustomerAddress: state.customer.customers
+    // })
+  },
 }
 </script>

@@ -56,12 +56,13 @@
                 <option>Y</option>
               </select>
             </div>
-            <div class="customer-group">
+            <div class="customer-group" v-if="customerGroup">
               <label>Customer Group</label>
               <select class="selectpicker">
-                <option>Select Customer Group</option>
-                <option>X</option>
-                <option>Y</option>
+                <option>Select Customer Group </option>
+                <option v-for="cGroup in customerGroup" value="{ cGroup.id }">
+                  {{ cGroup.name }}
+                </option>
               </select>
             </div>
           </div>
@@ -134,8 +135,17 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'CreateNewCustomer',
   props: {},
+  computed: {
+    ...mapState({
+      customerGroup: state =>
+        state.customer.customer_group.length
+          ? state.customer.customer_group
+          : false,
+    }),
+  },
 }
 </script>

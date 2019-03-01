@@ -64,7 +64,7 @@ export default {
   },
   computed: {
     ...mapState({
-      customerDetails: state => state.customer.customersDetail,
+      customerDetails: state => state.customer.customers_detail,
     }),
   },
   methods: {

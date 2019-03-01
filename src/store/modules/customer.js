@@ -2,8 +2,9 @@ import * as mutation from './customer/mutation-types'
 import customerService from '@/services/data/CustomerService'
 
 const state = {
-  customersDetail: [],
+  customers_detail: [],
   customers: {},
+  customer_group: {},
   paginate: {},
   params: { page_number: 1, page_size: 10, search: '' },
 }
@@ -32,6 +33,12 @@ const actions = {
         commit(mutation.PAGINATE_DETAILS, paginateDetails)
       }
     })
+
+    // get Customer Group
+    const customerGroupParams = [rootState.sync.date, rootState.sync.compress]
+    customerService.customerGroupList(...customerGroupParams).then(response => {
+      commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
+    })
   },
   setPageNumber: function({ commit, dispatch }, pageNumber) {
     commit(mutation.SET_CURRENT_PAGE_NO, pageNumber)
@@ -47,7 +54,7 @@ const actions = {
 }
 const mutations = {
   [mutation.CUSTOMER_LIST](commit, customersDetail) {
-    state.customersDetail = customersDetail
+    state.customers_detail = customersDetail
   },
   [mutation.PAGINATE_DETAILS](commit, paginateDetails) {
     state.paginate = paginateDetails
@@ -60,6 +67,9 @@ const mutations = {
   },
   [mutation.SET_SEARCH_TERMS](commit, searchTerms) {
     state.params.search = searchTerms
+  },
+  [mutation.SET_CUSTOMER_GROUP](commit, customerGroup) {
+    state.customer_group = customerGroup
   },
 }
 
