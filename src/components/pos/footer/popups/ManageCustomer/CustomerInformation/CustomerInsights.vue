@@ -27,7 +27,10 @@
         <h3>LAST ORDER</h3>
         <ul class="fav-item-slider">
           <li><img src="/img/pos/done.png" alt="fav-item" /></li>
-          <li v-for="lastOrderItem in insight.lastOrderItems">
+          <li
+            v-for="lastOrderItem in insight.lastOrderItems"
+            :key="lastOrderItem._id"
+          >
             {{ lastOrderItem }}
           </li>
         </ul>
@@ -35,7 +38,9 @@
     </div>
     <div class="dob-customer-insight">
       <ul class="ullist-dob">
-        <li>Birthday : <span>{{ birthday }}</span></li>
+        <li>
+          Birthday : <span>{{ birthday }}</span>
+        </li>
         <li>Age : <span>24</span></li>
         <li>
           Gender : <span>{{ gender }}</span>
@@ -45,7 +50,7 @@
     <div class="customer-insights-notes">
       <div>
         <p>Notes :</p>
-        <p v-for="notes in customerNotes">{{ notes }}</p>
+        <p v-for="notes in customerNotes" :key="notes._id">{{ notes }}</p>
         <a href="#">Show more</a>
       </div>
       <div>

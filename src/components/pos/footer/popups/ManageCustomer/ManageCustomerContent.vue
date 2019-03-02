@@ -16,6 +16,7 @@
           v-for="(customer, index) in customerDetails"
           v-bind:class="{ active: activeIndex === index }"
           v-on:click="setActiveCustomer(index)"
+          :key="index"
         >
           <td>{{ customer.customer_name }}</td>
           <td>{{ customer.mobile_number }}</td>
@@ -60,10 +61,7 @@ import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'ManageCustomerContent',
-  props: {
-    ['activeIndex']: undefined,
-    // ['customerId']: ''
-  },
+  props: ['activeIndex'],
   computed: {
     ...mapState({
       customerDetails: state => state.customer.customer_list,

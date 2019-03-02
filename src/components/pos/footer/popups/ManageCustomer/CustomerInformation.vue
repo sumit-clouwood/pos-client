@@ -70,8 +70,8 @@ export default {
   },
   computed: {
     ...mapState({
-      customerDetails: state => state.customer.customer
-    })
-  }
+      customerDetails: state => state.customer.customer,
+    }),
+  },
 }
 </script>

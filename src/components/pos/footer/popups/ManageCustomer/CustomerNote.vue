@@ -12,7 +12,8 @@
         <div class="modal-body add-note-wrap">
           <div class="add-note-area">
             <p>Add Customer Note</p>
-            <textarea type="text" class="add-note-form" v-model="note"> </textarea>
+            <textarea type="text" class="add-note-form" v-model="note">
+            </textarea>
           </div>
         </div>
         <div class="modal-footer">
@@ -43,13 +44,12 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'CustomerNote',
-  props: {
-    ['note']: '',
-  },
+  props: ['note'],
+
   methods: {
     ...mapActions('customer', ['addNote']),
   },

@@ -1,7 +1,10 @@
 <template>
   <ul class="ullist-profile" v-if="customerProfile">
     <li>
-      <img v-bind:src="customerProfile.image_path + customerProfile.image" alt="order-profile" />
+      <img
+        v-bind:src="customerProfile.image_path + customerProfile.image"
+        alt="order-profile"
+      />
     </li>
     <li>
       <p class="profile-customer-title">Customer Name:</p>
