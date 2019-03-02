@@ -2,10 +2,14 @@
 const state = {
   modifiers: [],
   error: false,
+  quantity: 0,
 }
 
 // getters
 const getters = {
+  quantity: (state, getters, rootState) => {
+    return state.quantity || rootState.order.item.quantity || 1
+  },
   modifiers: state => (itemId, groupId, modifierId) => {
     let found = false
     state.modifiers.forEach(modifier => {
@@ -164,6 +168,9 @@ const mutations = {
 
   clearSelection(state) {
     state.modifiers = []
+  },
+  updateQuantity(state, quantity) {
+    state.quantity = quantity
   },
   populateSelection(state, modifierGroups) {
     modifierGroups.forEach(group => {

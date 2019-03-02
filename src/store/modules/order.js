@@ -105,6 +105,7 @@ const actions = {
     //this comes through the modifier popup
     item.modifiable = true
     item.undiscountedPrice = item.price
+    item.quantity = rootState.orderForm.quantity || 1
 
     commit(mutation.SET_ITEM, item)
 
@@ -314,6 +315,23 @@ const actions = {
       dispatch('tax/calculate', {}, { root: true })
     )
   },
+
+  updateQuantity({ rootState, dispatch, commit }, quantity) {
+    const itemQuantity = quantity || 1
+    commit(mutation.UPDATE_ITEM_QUANTITY, itemQuantity)
+
+    dispatch('surcharge/calculate', {}, { root: true }).then(
+      dispatch('tax/calculate', {}, { root: true }).then(() => {
+        if (rootState.discount.appliedOrderDiscount) {
+          dispatch('recalculateOrderTotals')
+        } else {
+          dispatch('recalculateItemPrices')
+        }
+      })
+    )
+  },
+
+  removeDiscount() {},
 }
 
 // mutations
@@ -329,7 +347,6 @@ const mutations = {
   },
 
   [mutation.ADD_ORDER_ITEM_WITH_MODIFIERS](state, item) {
-    item.quantity = 1
     state.items.push(item)
   },
 
@@ -365,6 +382,13 @@ const mutations = {
 
   [mutation.RE_SAVE_ITEMS](state, items) {
     state.items = items
+  },
+
+  [mutation.UPDATE_ITEM_QUANTITY](state, quantity) {
+    const index = state.item.orderIndex
+    let orderItem = state.items[index]
+    orderItem.quantity = quantity
+    state.items.splice(index, 1, orderItem)
   },
 }
 

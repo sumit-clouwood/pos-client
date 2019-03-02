@@ -22,7 +22,10 @@
       type="button"
       class="buttoned colorwhite donebutton"
       data-dismiss="modal"
-      @click="addModifierOrder"
+      @click="item.modifiable ? addModifierOrder() : false"
+      :class="
+        item.modifiable ? 'catalog-with-modifier' : 'catalog-without-modifiers'
+      "
     >
       <img src="img/pos/done.png" alt="done" />
       <span>Done</span>
@@ -31,14 +34,19 @@
 </template>
 
 <script>
-//this footer ll be always called by the catalog and modifiers items only
-import { mapActions } from 'vuex'
+//this footer ll be called only when we come through order
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'Footer',
   props: {},
   methods: {
     ...mapActions('order', ['addModifierOrder']),
+  },
+  computed: {
+    ...mapState({
+      item: state => state.order.item,
+    }),
   },
 }
 </script>
