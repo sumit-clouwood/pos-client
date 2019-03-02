@@ -1,16 +1,38 @@
 <template>
   <div class="modal-footer">
     <div class="pagination-customer-details">
-      <ul class="ullist-pagination">
+      <!--<ul class="ullist-pagination">
         <li class="next-page" id="previous-page">
           <img src="img/pos/back-arrow.png" alt="next-btn" />
         </li>
-        <li>1</li>
+        &lt;!&ndash;v-if="pageNumber === paginateDetails.currentPage" add class active&ndash;&gt;
+        <li
+          class="customer-paginate-page-number"
+          :class="{ active: pageNumber === statePageNumber }"
+          v-for="pageNumber in paginateDetails.totalPages"
+          :key="pageNumber"
+          v-on:click="setPageNumber(pageNumber)"
+        >
+          {{ pageNumber }}
+        </li>
         <li class="next-page" id="next-page">
           <img src="img/pos/next-arrow.png" alt="next-btn" />
         </li>
         <li>Last</li>
-      </ul>
+      </ul>-->
+      <!--<template>-->
+        <paginate v-if="paginateDetails.totalPages"
+          :page-count="paginateDetails.totalPages"
+          :page-range="1"
+          :margin-pages="1"
+          :clickHandler="setPageNumber"
+          :prev-text="'Prev'"
+          :next-text="'Next'"
+          :container-class="''"
+          :page-class="'page-item'"
+        >
+        </paginate>
+      <!--</template>-->
     </div>
     <div class="btn-announce">
       <button
@@ -36,8 +58,25 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
+import paginate from 'vuejs-paginate'
+
 export default {
   name: 'ManageCustomerFooter',
   props: {},
+  components: {
+    paginate,
+  },
+  computed: {
+    ...mapState({
+      paginateDetails: state => state.customer.paginate,
+    }),
+    // ...mapState({
+    //   statePageNumber: state => state.customer.params.page_number,
+    // }),
+  },
+  methods: {
+    ...mapActions('customer', ['setPageNumber']),
+  },
 }
 </script>

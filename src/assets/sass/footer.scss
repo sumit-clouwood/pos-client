@@ -25,3 +25,16 @@ body.sidebar-toggled {
     }
   }
 }
+
+.customer-paginate-page-number {
+  .active {
+    background-color: green;
+  }
+  background-color: darkgray;
+  &:hover {
+    background: gray;
+  }
+}
+
+
+

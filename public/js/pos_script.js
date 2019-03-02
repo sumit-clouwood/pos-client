@@ -217,11 +217,11 @@ $(document).ready(function() {
   })
 
   $('.referal-code-customer').click(function() {
-    $(this)
-      .addClass('active')
-      .siblings()
-      .removeClass('active')
+    $(this).addClass('active').siblings().removeClass('active')
   })
+  // $('.referal-code-customer').click(function () {
+  //   $(this).addClass('active').siblings().removeClass('active');
+  // });
   $('#dining-option .option-contain').click(function() {
     $('#dining-option .option-contain').removeClass('active')
     $(this).addClass('active')
@@ -573,8 +573,8 @@ $(document).ready(function() {
     slidesToShow: 1,
     slidesToScroll: 1,
     dots: true,
-    nextArrow: '<img class="next-btn" src="images/next-arrow.png"/>',
-    prevArrow: '<img class="back-btn" src="images/back-arrow.png"/>',
+    nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
+    prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
   })
   $('#payment-method').slick({
     arrows: false,
@@ -826,3 +826,9 @@ $(function() {
   })
 })
 // End View image rotateble
+
+$(document).ready(function () {
+  $('.referal-code-customer').on('click', function () {
+    $(this).addClass('active').siblings().removeClass('active');
+  })
+})
