@@ -16,27 +16,30 @@ const getters = {
 
 const actions = {
   calculate({ commit, rootGetters }) {
-    //look for order level discount before going furhter ;)
-    const subtotal = rootGetters['order/subTotal']
-    let totalSurcharges = []
-    if (subtotal && state.surcharges.length) {
-      state.surcharges.forEach(surcharge => {
-        let applidSurcharge = {
-          amount: surcharge.rate,
-          tax: surcharge.surcharge_is_taxable
-            ? surcharge.surcharge_taxable_rate_info
-            : false,
-        }
+    return new Promise(resolve => {
+      //look for order level discount before going furhter ;)
+      const subtotal = rootGetters['order/subTotal']
+      let totalSurcharges = []
+      if (subtotal && state.surcharges.length) {
+        state.surcharges.forEach(surcharge => {
+          let applidSurcharge = {
+            amount: surcharge.rate,
+            tax: surcharge.surcharge_is_taxable
+              ? surcharge.surcharge_taxable_rate_info
+              : false,
+          }
 
-        if (surcharge.type.toLowerCase() !== 'value') {
-          applidSurcharge.amount = (subtotal * surcharge.rate) / 100
-        }
+          if (surcharge.type.toLowerCase() !== 'value') {
+            applidSurcharge.amount = (subtotal * surcharge.rate) / 100
+          }
 
-        totalSurcharges.push(applidSurcharge)
-      })
-    }
+          totalSurcharges.push(applidSurcharge)
+        })
+      }
 
-    commit(mutation.SET_SURCHARGE_AMOUNT, totalSurcharges)
+      commit(mutation.SET_SURCHARGE_AMOUNT, totalSurcharges)
+      resolve()
+    })
   },
 
   fetchAll({ commit, rootState }) {
