@@ -1,11 +1,12 @@
 import * as mutation from './location/mutation-types'
-
+import LocationService from '@/services/data/LocationService'
 // initial state
 const state = {
   location: false,
   locationIds: [],
   locationName: '',
   currency: 'AED',
+  locationData: {},
 }
 
 // getters
@@ -19,6 +20,19 @@ const getters = {
 
 // actions
 const actions = {
+  fetchAll({ commit, rootState }) {
+    const params = [
+      rootState.location.location,
+      1 /*Staff*/,
+      1 /*Time*/,
+      rootState.sync.compress,
+    ]
+    LocationService.getLocationData(...params).then(response => {
+      commit(mutation.SET_LOCATION_DATA, response.data.data)
+      commit(mutation.SET_CURRENCY, response.data.data.currency_code)
+      // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
+    })
+  },
   setLocation({ commit }, userData) {
     commit(mutation.SET_LOCATION, userData.location_id)
     commit(mutation.SET_FRANCHISE_CODE, userData.franchies_code)
@@ -44,6 +58,12 @@ const mutations = {
   [mutation.SET_CURRENCY](state, currency) {
     state.currency = currency
   },
+  [mutation.SET_LOCATION_DATA](state, locationDetails) {
+    state.locationData = locationDetails
+  },
+  [mutation.SET_CURRENCY](state, currency) {
+    state.currency = currency
+  }
 }
 
 export default {

@@ -47,6 +47,7 @@ export default {
           this.$store.dispatch('location/setLocations', response.data.data)
         }
 
+        this.$store.dispatch('location/fetchAll', response)
         this.$store.dispatch('category/fetchAll', response)
         this.$store.dispatch('modifier/fetchAll', response)
         this.$store.dispatch('surcharge/fetchAll', response)

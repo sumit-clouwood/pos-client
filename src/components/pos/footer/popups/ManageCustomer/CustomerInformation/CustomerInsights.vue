@@ -50,7 +50,9 @@
     <div class="customer-insights-notes">
       <div>
         <p>Notes :</p>
-        <p v-for="notes in customerNotes" :key="notes._id">{{ notes.message }}</p>
+        <p v-for="notes in customerNotes" :key="notes._id">
+          {{ notes.message }}
+        </p>
         <span
           data-toggle="modal"
           class="text-success"
@@ -84,11 +86,11 @@ export default {
   components: {
     CustomerFeedback,
   },
-  mounted: {
-    ready() {
-      $('.last-order-wrap')[0].slick.refresh()
-    },
-  },
+  // mounted: {
+  //   // ready() {
+  //   //   $('.last-order-wrap')[0].slick.refresh()
+  //   // },
+  // },
   computed: {
     ...mapState({
       insight: state =>
