@@ -81,6 +81,7 @@
     <SelectCustomerAddress />
     <CustomerInformation />
     <CustomerNote />
+    <CustomerNotes />
   </div>
 </template>
 
@@ -97,6 +98,7 @@ import CustomerNote from '../pos/footer/popups/ManageCustomer/CustomerNote'
 import CustomerCreate from '../pos/footer/popups/ManageCustomer/CustomerCreate'
 import CustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/CustomerAddress'
 import CustomerInformation from './footer/popups/ManageCustomer/CustomerInformation'
+import CustomerNotes from './footer/popups/ManageCustomer/CustomerInformation/CustomerNotes'
 import SelectCustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/SelectCustomerAddress'
 import { mapActions } from 'vuex'
 
@@ -117,6 +119,7 @@ export default {
     CartItemDiscount,
     SelectCustomerAddress,
     CustomerInformation,
+    CustomerNotes,
   },
   methods: {
     ...mapActions('discount', ['validateOrderDiscounts']),

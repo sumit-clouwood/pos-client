@@ -77,6 +77,7 @@ export default {
     //   $('.last-order-wrap')[0].slick.refresh()
     //   this.props.customerId = customerId
     // },
+
     ...mapActions('customer', ['fetchSelectedCustomer']),
   },
 }

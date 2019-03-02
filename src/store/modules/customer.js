@@ -57,8 +57,8 @@ const actions = {
   },
 
   addNote({ commit, rootState }, note) {
-    if (typeof state.customer !== 'undefined') {
-      const params = [state.customer, rootState.auth.userDetails._id, note]
+    if (typeof state.customer.customer_list !== 'undefined') {
+      const params = [state.customer.customer_list._id, rootState.auth.userDetails._id, note]
       customerService.addNote(...params).then(response => {
         commit(mutation.SET_RESPONSE_MESSAGES, response.message)
       })
@@ -68,7 +68,6 @@ const actions = {
   },
 
   fetchSelectedCustomer({ commit, rootState }, customer_id) {
-    // $('.last-order-wrap')[0].slick.refresh()
     const params = [customer_id, rootState.location.location]
     customerService.fetchCustomer(...params).then(response => {
       commit(mutation.SELECTED_CUSTOMER, response.data.data)

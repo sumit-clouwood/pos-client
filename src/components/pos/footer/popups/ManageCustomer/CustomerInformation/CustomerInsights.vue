@@ -35,7 +35,9 @@
     </div>
     <div class="dob-customer-insight">
       <ul class="ullist-dob">
-        <li>Birthday : <span>{{ birthday }}</span></li>
+        <li>
+          Birthday : <span>{{ birthday }}</span>
+        </li>
         <li>Age : <span>24</span></li>
         <li>
           Gender : <span>{{ gender }}</span>
@@ -45,8 +47,13 @@
     <div class="customer-insights-notes">
       <div>
         <p>Notes :</p>
-        <p v-for="notes in customerNotes">{{ notes }}</p>
-        <a href="#">Show more</a>
+        <p v-for="notes in customerNotes">{{ notes.message }}</p>
+        <span
+          data-toggle="modal"
+          class="text-success"
+          data-target="#show-more-notes"
+          >Show more</span
+        >
       </div>
       <div>
         <button
@@ -58,85 +65,58 @@
         </button>
       </div>
     </div>
-    <div class="customer-insight-feedback">
-      <p>User Feedback :</p>
-      <ul class="ullist-feedback">
-        <li>
-          <a href="#"
-            ><span class="black-smile"><img src="img/pos/unhappy.png"/></span
-            ><span class="color-smile"
-              ><img src="img/pos/unhappy-color.png"/></span
-          ></a>
-        </li>
-        <li>
-          <a href="#"
-            ><span class="black-smile"
-              ><img src="img/pos/unhappy-copy.png"/></span
-            ><span class="color-smile"
-              ><img src="img/pos/unhappy-copy-color.png"/></span
-          ></a>
-        </li>
-        <li>
-          <a href="#"
-            ><span class="black-smile"><img src="img/pos/confused.png"/></span
-            ><span class="color-smile"
-              ><img src="img/pos/confused-color.png"/></span
-          ></a>
-        </li>
-        <li class="active">
-          <a href="#"
-            ><span class="black-smile"
-              ><img src="img/pos/unhappy-copy-2.png"/></span
-            ><span class="color-smile"
-              ><img src="img/pos/unhappy-copy-2-color.png"/></span
-          ></a>
-        </li>
-        <li>
-          <a href="#"
-            ><span class="black-smile"><img src="img/pos/happy.png"/></span
-            ><span class="color-smile"
-              ><img src="img/pos/happy-color.png"/></span
-          ></a>
-        </li>
-      </ul>
-    </div>
+    <CustomerFeedback />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import CustomerFeedback from './CustomerFeedback'
+function getCustomerList(state) {
+  return state.customer.customer.customer_list
+}
+
 export default {
   name: 'CustomerInsights',
+  components: {
+    CustomerFeedback,
+  },
+  mounted: {
+    ready() {
+      $('.last-order-wrap')[0].slick.refresh()
+    },
+  },
   computed: {
     ...mapState({
       insight: state =>
-        state.customer.customer.customer_list &&
-        state.customer.customer.customer_list.insight
-          ? state.customer.customer.customer_list.insight
+        getCustomerList(state) && getCustomerList(state).insight
+          ? getCustomerList(state).insight
           : false,
     }),
     ...mapState({
       customerNotes: state =>
-        state.customer.customer.customer_list &&
-        state.customer.customer.customer_list.customer_notes
-          ? state.customer.customer.customer_list.customer_notes
+        getCustomerList(state) && getCustomerList(state).customer_notes
+          ? getCustomerList(state).customer_notes
           : false,
     }),
     ...mapState({
       birthday: state =>
-        state.customer.customer.customer_list
-          ? state.customer.customer.customer_list.day +
-            ' ' +
-            state.customer.customer.customer_list.month +
-            ' ' +
-            state.customer.customer.customer_list.year
-          : false,
+        (typeof getCustomerList(state).day != 'undefined'
+          ? getCustomerList(state).day
+          : '-') +
+        ' ' +
+        (typeof getCustomerList(state).month != 'undefined'
+          ? getCustomerList(state).month
+          : '-') +
+        ' ' +
+        (typeof getCustomerList(state).year != 'undefined'
+          ? getCustomerList(state).year
+          : '-'),
     }),
     ...mapState({
       gender: state =>
-        state.customer.customer.customer_list &&
-        state.customer.customer.customer_list.gender != null
-          ? state.customer.customer.customer_list.gender
+        getCustomerList(state) && getCustomerList(state).gender != null
+          ? getCustomerList(state).gender
           : '-',
     }),
   },

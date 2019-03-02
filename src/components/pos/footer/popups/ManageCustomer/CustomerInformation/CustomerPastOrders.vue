@@ -8,22 +8,23 @@
         <th style="width: 255px">TIME TAKEN</th>
         <th style="width: 190px">AMOUNT</th>
         <th style="width: 190px">STATUS</th>
-        <th style="width: 190px">DRIVER</th>
+        <th style="width: 140px">DRIVER</th>
         <th style="width: 205px">AGENT</th>
-        <th style="width: 250px">SOURCE</th>
+        <th style="width: 290px">SOURCE</th>
       </tr>
-      <tr class="referal-code-customer">
-        <td>#22537828</td>
-        <td>My 28, 2018 6:19 pm</td>
-        <td>Delivery</td>
-        <td>28d 15h 53mins</td>
-        <td>83.00</td>
-        <td>Running</td>
+      <tr class="referal-code-customer" v-for="order in pastOrders">
+        <td>#{{ order.order_no }}</td>
+        <td>{{ order.created_date }} {{ order.created_time }}</td>
+        <td>{{ order.order_type }}</td>
+        <td>{{ order.order_taken_at }}</td>
+        <td>{{ order.balance_due }}</td>
+        <td>{{ order.order_status }}</td>
         <td></td>
-        <td>Tecom</td>
+          <td>{{ order.created_by}}</td>
+          <!--<td>Tecom</td>-->
         <td class="show-details-his">
-          <span
-            ><svg
+          <span @click="showOrderDetails(order._id)">
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
               height="13"
@@ -36,9 +37,10 @@
                 <path
                   d="M10 10.39a3.81 3.81 0 1 1 3.713-3.811A3.766 3.766 0 0 1 10 10.389zm0-6.58a2.758 2.758 0 1 0 2.66 2.769A2.713 2.713 0 0 0 10 3.82v-.01z"
                 />
-              </g></svg
-            >Show Details</span
-          >
+              </g>
+            </svg>
+            Show Details
+          </span>
         </td>
       </tr>
     </table>
@@ -46,7 +48,21 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'CustomerPastOrders',
+  computed: {
+    ...mapState({
+      pastOrders: state =>
+        state.customer.customer.customer_list
+          ? state.customer.customer.customer_list.orders
+          : false,
+    }),
+  },
+  methods: {
+    showOrderDetails: function(orderId) {
+    	alert(orderId + ': Work in progress')
+    },
+  },
 }
 </script>
