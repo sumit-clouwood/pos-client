@@ -57,7 +57,11 @@ const actions = {
 
   addNote({ commit, rootState }, note) {
     if (typeof state.customer.customer_list !== 'undefined') {
-      const params = [state.customer.customer_list._id, rootState.auth.userDetails._id, note]
+      const params = [
+        state.customer.customer_list._id,
+        rootState.auth.userDetails._id,
+        note,
+      ]
       customerService.addNote(...params).then(response => {
         commit(mutation.SET_RESPONSE_MESSAGES, response.message)
       })
@@ -72,10 +76,11 @@ const actions = {
       commit(mutation.SELECTED_CUSTOMER, response.data.data)
     })
   },
-  selectedAddress({ commit }, selected_address_id) {
+
+  selectedAddress({ commit }, selected_address_id, area) {
     let selectedAddress = {}
     selectedAddress.id = selected_address_id
-    selectedAddress.delivery_area = 'lalgarh'
+    selectedAddress.delivery_area = area
     commit(mutation.SELECTED_CUSTOMER_ADDRESS, selectedAddress)
   },
 }

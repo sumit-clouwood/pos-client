@@ -1,6 +1,6 @@
 <template>
   <div class="modal-footer">
-    <div class="pagination-customer-details">
+    <!--<div class="pagination-customer-details">
       <ul class="ullist-pagination">
         <li class="order-pagination active">1</li>
         <li class="order-pagination">2</li>
@@ -11,7 +11,7 @@
         </li>
         <li>Last</li>
       </ul>
-    </div>
+    </div>-->
     <div class="btn-announce">
       <button
         type="button"

@@ -10,14 +10,14 @@
         </div>
         <div class="modal-body add-to-order">
           <div class="add-to-order-wrapper">
-            <div class="order-location option-contain active">
-              <p>
-                <span>Test Location</span>, 13 -BNearby Street, Delhi, India
-              </p>
-            </div>
-            <div class="order-location option-contain">
-              <p><span>Test Location</span>, Delhi, India</p>
-            </div>
+            <CustomerDeliveryArea
+              v-for="(address, index) in deliveryAddresses"
+              class=""
+              :buttons="false"
+              :address="address"
+              :index="index"
+              :key="index"
+            />
           </div>
         </div>
         <div class="modal-footer">
@@ -47,14 +47,21 @@
 </template>
 
 <script>
-//import { mapState } from 'vuex'
+import { mapState } from 'vuex'
+
+import CustomerDeliveryArea from '../CustomerAddress/customerDeliveryArea'
 export default {
   name: 'SelectCustomerAddress',
-  props: {},
+  components: {
+    CustomerDeliveryArea,
+  },
   computed: {
-    // ...mapState({
-    //   selectedCustomerAddress: state.customer.customers
-    // })
+    ...mapState({
+      deliveryAddresses: state =>
+        state.customer.customer.customer_list
+          ? state.customer.customer.customer_list.customer_details
+          : false,
+    }),
   },
 }
 </script>

@@ -7,6 +7,7 @@ const state = {
   locationName: '',
   currency: 'AED',
   locationData: {},
+  deliveryAreas: {},
 }
 
 // getters
@@ -16,6 +17,16 @@ const getters = {
     state.currency +
     ' ' +
     (Math.round((parseFloat(price) + 0.00001) * 100) / 100).toFixed(2),
+
+  getDeliveryArea: state => areaId => {
+    let area = ''
+    state.deliveryAreas.forEach(deliveryArea => {
+      if (areaId == deliveryArea._id) {
+        area = deliveryArea.name
+      }
+    })
+    return area
+  },
 }
 
 // actions
@@ -30,6 +41,7 @@ const actions = {
     LocationService.getLocationData(...params).then(response => {
       commit(mutation.SET_LOCATION_DATA, response.data.data)
       commit(mutation.SET_CURRENCY, response.data.data.currency_code)
+      commit(mutation.SET_DELIVERY_AREAS, response.data.data.delivery_area)
       // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
     })
   },
@@ -63,7 +75,10 @@ const mutations = {
   },
   [mutation.SET_CURRENCY](state, currency) {
     state.currency = currency
-  }
+  },
+  [mutation.SET_DELIVERY_AREAS](state, delivery_area) {
+    state.deliveryAreas = delivery_area
+  },
 }
 
 export default {

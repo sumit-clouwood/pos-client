@@ -61,12 +61,16 @@ import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'ManageCustomerContent',
-  props: ['activeIndex'],
+  props: [''],
   computed: {
     ...mapState({
       customerDetails: state => state.customer.customer_list,
     }),
   },
+  data: function() {
+    return {'activeIndex':''}
+  },
+
   methods: {
     setActiveCustomer(index) {
       this.activeIndex = index
