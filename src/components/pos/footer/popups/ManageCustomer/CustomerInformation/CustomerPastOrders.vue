@@ -12,7 +12,7 @@
         <th style="width: 205px">AGENT</th>
         <th style="width: 290px">SOURCE</th>
       </tr>
-      <tr class="referal-code-customer" v-for="order in pastOrders">
+      <tr class="referal-code-customer" v-for="order in pastOrders" :key="order._id">
         <td>#{{ order.order_no }}</td>
         <td>{{ order.created_date }} {{ order.created_time }}</td>
         <td>{{ order.order_type }}</td>

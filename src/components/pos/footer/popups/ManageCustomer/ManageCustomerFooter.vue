@@ -21,17 +21,18 @@
         <li>Last</li>
       </ul>-->
       <!--<template>-->
-        <paginate v-if="paginateDetails.totalPages"
-          :page-count="paginateDetails.totalPages"
-          :page-range="1"
-          :margin-pages="1"
-          :clickHandler="setPageNumber"
-          :prev-text="'Prev'"
-          :next-text="'Next'"
-          :container-class="''"
-          :page-class="'page-item'"
-        >
-        </paginate>
+      <paginate
+        v-if="paginateDetails.totalPages"
+        :page-count="paginateDetails.totalPages"
+        :page-range="1"
+        :margin-pages="1"
+        :clickHandler="setPageNumber"
+        :prev-text="'Prev'"
+        :next-text="'Next'"
+        :container-class="''"
+        :page-class="'page-item'"
+      >
+      </paginate>
       <!--</template>-->
     </div>
     <div class="btn-announce">
@@ -71,9 +72,7 @@ export default {
     ...mapState({
       paginateDetails: state => state.customer.paginate,
     }),
-    // ...mapState({
-    //   statePageNumber: state => state.customer.params.page_number,
-    // }),
+
   },
   methods: {
     ...mapActions('customer', ['setPageNumber']),

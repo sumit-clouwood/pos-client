@@ -1,6 +1,5 @@
 import * as mutation from './customer/mutation-types'
 import customerService from '@/services/data/CustomerService'
-import DataService from '../../services/DataService'
 
 const state = {
   customer_list: [],
@@ -73,12 +72,11 @@ const actions = {
       commit(mutation.SELECTED_CUSTOMER, response.data.data)
     })
   },
-  selectedAddress({ commit, rootState }, selected_address_id) {
+  selectedAddress({ commit }, selected_address_id) {
     let selectedAddress = {}
     selectedAddress.id = selected_address_id
     selectedAddress.delivery_area = 'lalgarh'
     commit(mutation.SELECTED_CUSTOMER_ADDRESS, selectedAddress)
-
   },
 }
 const mutations = {

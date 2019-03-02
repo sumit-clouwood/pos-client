@@ -35,7 +35,7 @@
                 </tr>
               </thead>
               <tbody id="notes_data">
-                <tr v-for="notes in customerNotes">
+                <tr v-for="notes in customerNotes" :key="notes._id">
                   <td>{{ notes.created_at }}</td>
                   <td>{{ notes.message }}</td>
                   <td>{{ notes.user_name.name }}</td>

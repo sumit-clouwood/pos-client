@@ -12,12 +12,10 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapState } from 'vuex'
+import { mapActions } from 'vuex'
 export default {
   name: 'ManageCustomerHeader',
-  props: {
-    ['searchTerms']: '',
-  },
+  props: ['searchTerms'],
   // computed: {
   //   ...mapState({
   //     searchTerms: state => state.customer.params.search,

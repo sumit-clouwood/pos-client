@@ -60,7 +60,11 @@
               <label>Customer Group</label>
               <select class="selectpicker">
                 <option>Select Customer Group </option>
-                <option v-for="cGroup in customerGroup" value="{ cGroup.id }">
+                <option
+                  v-for="cGroup in customerGroup"
+                  value="{ cGroup.id }"
+                  :key="cGroup.id"
+                >
                   {{ cGroup.name }}
                 </option>
               </select>

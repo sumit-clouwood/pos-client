@@ -16,6 +16,7 @@
         class="order-location option-contain cu-delivery-area-location"
         v-for="address in deliveryAddresses"
         @click="selectedAddress(address.delivery_area)"
+        :key="address._id"
       >
         <p>
           <span>{{ locationName }}</span> {{ address.flat_number }},
