@@ -180,16 +180,19 @@ const actions = {
         item: rootState.order.item,
         discount: state.currentActiveOrderDiscount,
       })
-
-      dispatch('order/recalculateOrderTotals', {}, { root: true })
     }
+    dispatch('order/recalculateOrderTotals', {}, { root: true })
   },
 
   selectItemDiscount({ commit }, discount) {
     commit(mutation.SET_ACTIVE_ITEM_DISCOUNT, discount)
   },
   selectOrderDiscount({ commit }, discount) {
-    commit(mutation.SET_ACTIVE_ORDER_DISCOUNT, discount)
+    if (state.currentActiveOrderDiscount == discount) {
+      commit(mutation.REMOVE_ORDER_DISCOUNT)
+    } else {
+      commit(mutation.SET_ACTIVE_ORDER_DISCOUNT, discount)
+    }
   },
   setItemsDiscountAmount({ commit }, discount) {
     commit(mutation.SET_ITEMS_DISCOUNT_AMOUNT, discount.discountAmount)
@@ -224,6 +227,9 @@ const mutations = {
   },
   [mutation.SET_ERROR](state, errorMsg) {
     state.error = errorMsg
+  },
+  [mutation.REMOVE_ORDER_DISCOUNT](state) {
+    state.currentActiveOrderDiscount = false
   },
   [mutation.APPLY_ITEM_DISCOUNT](state, { item, discount }) {
     let discounts = state.appliedItemDiscounts.filter(
@@ -267,6 +273,7 @@ const mutations = {
     state.surchargeDiscountAmount = 0
     state.TaxDiscountAmount = 0
     state.appliedOrderDiscount = false
+    state.currentActiveOrderDiscount = false
   },
 }
 
