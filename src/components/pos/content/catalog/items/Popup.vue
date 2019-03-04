@@ -2,7 +2,7 @@
   <!-- Modal -->
   <div
     ref="POSItemOptions"
-    class="modal fade POSItemOptions"
+    class="modal fade POSItemOptions catalog-popup"
     id="POSItemOptions"
     tabindex="-1"
     role="dialog"

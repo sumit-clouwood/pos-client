@@ -1,43 +1,17 @@
 <template>
   <div class="modal-footer">
-    <button
-      type="button"
-      data-toggle="modal"
-      data-target="#select-discount-item"
-      data-dismiss="modal"
-      class="buttoned colorwhite discountitembutton"
-    >
-      <img src="img/pos/DiscountIcon.jpg" alt="" />
-      <span>Discount</span>
-    </button>
-    <button type="button" class="buttoned colorwhite discountbutton">
-      <img src="img/pos/DiscountIcon.jpg" alt="delete" />
-      <span>UnDiscount</span>
-    </button>
-    <button type="button" class="buttoned colorwhite taxbutton">
-      <img src="img/pos/delete.jpg" alt="delete" />
-      <span>Tax</span>
-    </button>
-    <button
-      type="button"
-      class="buttoned colorwhite donebutton"
-      data-dismiss="modal"
-      @click="addModifierOrder"
-    >
-      <img src="img/pos/done.png" alt="done" />
-      <span>Done</span>
-    </button>
+    <AddModifierOrderButton />
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-
+//this footer ll be always called by the catalog and modifiers items only
+import AddModifierOrderButton from './footer/AddModifierOrderButton'
 export default {
   name: 'Footer',
   props: {},
-  methods: {
-    ...mapActions('order', ['addModifierOrder']),
+  components: {
+    AddModifierOrderButton,
   },
 }
 </script>
