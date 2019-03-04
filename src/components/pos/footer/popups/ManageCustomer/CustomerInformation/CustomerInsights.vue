@@ -55,7 +55,7 @@
         </p>
         <span
           data-toggle="modal"
-          class="text-success"
+          class="text-success cursor-pointer"
           data-target="#show-more-notes"
           >Show more</span
         >

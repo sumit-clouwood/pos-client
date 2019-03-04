@@ -82,6 +82,9 @@
     <CustomerInformation />
     <CustomerNote />
     <CustomerNotes />
+    <CartAddEmail />
+    <CartAmountChange />
+    <CartTipAmount />
   </div>
 </template>
 
@@ -97,6 +100,9 @@ import OrderItemPopup from './content/cart/newOrders/items/Popup'
 import CustomerNote from '../pos/footer/popups/ManageCustomer/CustomerNote'
 import CustomerCreate from '../pos/footer/popups/ManageCustomer/CustomerCreate'
 import CustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/CustomerAddress'
+import CartAddEmail from '../pos/content/cart/payNow/popups/AddEmail'
+import CartAmountChange from '../pos/content/cart/payNow/popups/AmountChange'
+import CartTipAmount from '../pos/content/cart/payNow/popups/TipAmount'
 import CustomerInformation from './footer/popups/ManageCustomer/CustomerInformation'
 import CustomerNotes from './footer/popups/ManageCustomer/CustomerInformation/CustomerNotes'
 import SelectCustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/SelectCustomerAddress'
@@ -120,6 +126,9 @@ export default {
     SelectCustomerAddress,
     CustomerInformation,
     CustomerNotes,
+    CartAddEmail,
+    CartAmountChange,
+    CartTipAmount,
   },
   methods: {
     ...mapActions('discount', ['validateOrderDiscounts']),

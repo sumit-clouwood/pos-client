@@ -1,20 +1,13 @@
 <template>
-  <div class="modal fade green-header-modal" id="show-more-notes" role="dialog">
+  <div class="modal fade" id="show-more-notes" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
-        <div class="modal-header green-header">
-          <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            aria-hidden="true"
-          >
-            ×
-          </button>
-          <h3 id="myModalLabel">CUSTOMER NOTES</h3>
+        <div class="modal-header customer-header">
+          <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+          <h4 class="customer-title">Customer Notes</h4>
         </div>
-        <div class="modal-body add-note-wrap">
+        <div class="modal-body form-block blur-background">
           <div
             class="hero-unit noNotes text-center hidden"
             v-if="!customerNotes"
@@ -45,21 +38,25 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button
-            class="btn btn-default"
-            id="cancel_button"
-            data-dismiss="modal"
-            aria-hidden="true"
-          >
-            Close
-          </button>
-          <button
-                  id="customer-notes-add"
-                  data-toggle="modal"
-                  data-target="#admin-popup"
-          >
-            + Add
-          </button>
+          <div class="btn-announce">
+            <button
+              type="button"
+              class="btn btn-danger cancel-announce"
+              data-dismiss="modal"
+            >
+              <span>X</span> Cancel
+            </button>
+            <button
+              class="btn btn-success btn-large popup-btn-save"
+              type="button"
+              id="save_address"
+              data-toggle="modal"
+              data-target="#admin-popup"
+            >
+              + Add Note
+            </button>
+          </div>
+          <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
       </div>
     </div>
