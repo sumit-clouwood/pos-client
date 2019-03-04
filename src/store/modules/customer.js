@@ -83,6 +83,13 @@ const actions = {
     selectedAddress.delivery_area = area
     commit(mutation.SELECTED_CUSTOMER_ADDRESS, selectedAddress)
   },
+
+  CreateCustomer({}, newCustomerDetails) {
+    console.log(newCustomerDetails)
+    /*customerService.createCustomer(customerDetails).then(response => {
+      console.log(response.data)
+    })*/
+  },
 }
 const mutations = {
   [mutation.CUSTOMER_LIST](commit, customersDetail) {
