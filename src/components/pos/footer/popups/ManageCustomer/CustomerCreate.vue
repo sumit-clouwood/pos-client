@@ -38,31 +38,24 @@
               <label>Email </label>
               <input type="text" name="Name" />
             </div>
-            <div class="dob">
+            <div class="customer-group">
               <label>Date Of Birth </label>
-              <select class="selectpicker date-time">
-                <option>Day</option>
-                <option>X</option>
-                <option>Y</option>
-              </select>
-              <select class="selectpicker date-time">
-                <option>Month</option>
-                <option>X</option>
-                <option>Y</option>
-              </select>
-              <select class="selectpicker date-time">
-                <option>Year</option>
-                <option>X</option>
-                <option>Y</option>
-              </select>
+              <div class="pull-right col-md-7">
+                <date-dropdown
+                        min="1920"
+                        :max="getCurrentYear"
+                        v-model="selectedDate"
+                        months-names=""
+                />
+              </div>
             </div>
             <div class="customer-group" v-if="customerGroup">
               <label>Customer Group</label>
               <select class="selectpicker">
-                <option>Select Customer Group </option>
+                <!--<option>Select Customer Group</option>-->
                 <option
                   v-for="cGroup in customerGroup"
-                  value="{ cGroup.id }"
+                  :value="cGroup.id"
                   :key="cGroup.id"
                 >
                   {{ cGroup.name }}
@@ -73,17 +66,22 @@
           <div class="col-md-6 right-form">
             <div class="name-from">
               <label>Delivery Area <span>*</span></label>
-              <input type="text" name="Name" />
-              <span class="validation-error"
-                >Delivery area is already exit.</span
-              >
+              <!--<input type="text" name="Name" />-->
+              <select class="selectpicker">
+                <option
+                  v-for="area in deliveryAreas"
+                  :value="area._id"
+                  :key="area._id"
+                  >{{ area.name }}
+                </option>
+              </select>
             </div>
             <div class="mobile-from">
               <label>Select Location/Branch </label>
               <select class="selectpicker">
-                <option></option>
-                <option>X</option>
-                <option>Y</option>
+                <option>
+                  {{ locationData.branch_n }}
+                </option>
               </select>
             </div>
             <div class="alternate-phone-from">
@@ -99,16 +97,20 @@
               <label>Flat Number </label>
               <input type="text" name="Name" />
             </div>
-            <div class="dob">
+            <div class="customer-group">
               <label>City</label>
-              <input type="text" name="Name" />
+              <select class="selectpicker">
+                <option>
+                  {{ locationData.city }}
+                </option>
+              </select>
             </div>
             <div class="customer-group">
               <label>Country</label>
               <select class="selectpicker">
-                <option>Select Country</option>
-                <option>X</option>
-                <option>Y</option>
+                <option>
+                  {{ locationData.country_name }}
+                </option>
               </select>
             </div>
           </div>
@@ -120,7 +122,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              <span>âœ•</span> Cancel
+              <span>X</span> Cancel
             </button>
             <button
               class="btn btn-success btn-large"
@@ -140,9 +142,21 @@
 
 <script>
 import { mapState } from 'vuex'
+import DateDropdown from 'vue-date-dropdown'
+
 export default {
   name: 'CreateNewCustomer',
-  props: {},
+  props: { getCurrentYear: new Date().getFullYear() },
+  data() {
+    return {
+      selectedDate: '',
+      months:
+        'January,February,March,April,May,June,July,August,September,October,November,December',
+    }
+  },
+  components: {
+    DateDropdown,
+  },
   computed: {
     ...mapState({
       customerGroup: state =>
@@ -150,6 +164,18 @@ export default {
           ? state.customer.customer_group
           : false,
     }),
+    ...mapState({
+      locationData: state => state.location.locationData,
+    }),
+    ...mapState({
+      deliveryAreas: state =>
+        state.location.deliveryAreas.length
+          ? state.location.deliveryAreas
+          : false,
+    }),
+    /*getCurrentYear: function() {
+      return new Date().getFullYear()
+    },*/
   },
 }
 </script>
