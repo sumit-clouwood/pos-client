@@ -300,6 +300,11 @@ const actions = {
 
           itemsDiscount += calculated * item.quantity
         }
+      } else {
+        //remove already applied discount
+        item.discount = false
+        item.price = item.undiscountedPrice
+        itemsDiscount = 0
       }
       return item
     })
@@ -330,8 +335,6 @@ const actions = {
       })
     )
   },
-
-  removeDiscount() {},
 }
 
 // mutations

@@ -173,6 +173,12 @@ const actions = {
     dispatch('order/recalculateItemPrices', {}, { root: true })
   },
 
+  removeItemDiscount({ commit, rootState, dispatch }) {
+    const item = rootState.order.item
+    commit(mutation.REMOVE_ITEM_DISCOUNT, item)
+    dispatch('order/recalculateItemPrices', {}, { root: true })
+  },
+
   applyOrderDiscount({ commit, rootState, dispatch }) {
     commit(mutation.CLEAR_ITEM_DISCOUNT)
     if (state.currentActiveOrderDiscount) {
@@ -267,6 +273,14 @@ const mutations = {
   [mutation.CLEAR_ITEM_DISCOUNT](state) {
     state.appliedItemDiscounts = []
     state.itemsDiscountAmount = 0
+    state.currentActiveItemDiscount = false
+  },
+  [mutation.REMOVE_ITEM_DISCOUNT](state, item) {
+    let discounts = state.appliedItemDiscounts.filter(
+      discount => discount.item.orderIndex != item.orderIndex
+    )
+    state.appliedItemDiscounts = discounts
+    state.currentActiveItemDiscount = false
   },
   [mutation.CLEAR_ORDER_DISCOUNT](state) {
     state.orderDiscountAmount = 0
