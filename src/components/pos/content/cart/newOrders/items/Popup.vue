@@ -1,7 +1,7 @@
 <template>
   <!-- Modal -->
   <div
-    class="modal fade order-item-modal POSItemOptions"
+    class="modal fade order-item-modal POSItemOptions order-popup"
     id="POSOrderItemOptions"
     tabindex="-1"
     role="dialog"
@@ -22,7 +22,7 @@
 <script>
 import Header from './popup/Header.vue'
 import Content from './popup/Content.vue'
-import Footer from '@/components/pos/content/catalog/items/popup/Footer.vue'
+import Footer from './popup/Footer.vue'
 export default {
   name: 'Popup',
   props: {},
