@@ -335,6 +335,23 @@ const actions = {
       })
     )
   },
+
+  removeItemTax({ state, commit, dispatch, rootState }) {
+    let item = { ...state.item }
+    //remove tax information from the order and recalculate the tax
+    item.removedTax = item.item_tax
+    item.item_tax = false
+
+    //splice item at index
+    commit(mutation.REMOVE_ITEM_TAX, item)
+    dispatch('tax/calculate', {}, { root: true }).then(() => {
+      if (rootState.discount.appliedOrderDiscount) {
+        dispatch('recalculateOrderTotals')
+      } else {
+        dispatch('recalculateItemPrices')
+      }
+    })
+  },
 }
 
 // mutations
@@ -392,6 +409,9 @@ const mutations = {
     let orderItem = state.items[index]
     orderItem.quantity = quantity
     state.items.splice(index, 1, orderItem)
+  },
+  [mutation.REMOVE_ITEM_TAX](state, item) {
+    state.items.splice(item.orderIndex, 1, item)
   },
 }
 
