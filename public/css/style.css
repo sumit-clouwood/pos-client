@@ -2576,7 +2576,7 @@ div#payment-screen-footer {
 
 div#payment-screen-footer > div {
   float: left;
-  margin-left: 16px;
+  margin-left: 10px;
   height: 60px;
   box-shadow: 0 2px 2px #d1e6c5;
   border-radius: 4px;
@@ -2658,12 +2658,12 @@ div#payment-method ul.slick-dots > li > button {
 
 div#payment-method .slick-slide > div > div {
   width: 119px !important;
-  height: 72px;
+  min-height: 85px;
   border-radius: 7px;
   background-color: #ffffff;
   border: solid 1px #dbdfe9;
-  display: flex !important;
-  align-items: center;
+  /* display: flex !important; */
+  /* align-items: center; */
   margin: 25px 0 0 5px;
   padding: 8px 0;
   cursor: pointer;
@@ -2687,7 +2687,7 @@ div#payment-method .slick-slide > div > div img {
   margin: 0 auto;
   display: flex;
   align-items: center;
-  /* height: 46px; */
+  height: 46px;
 }
 
 /*End pay now popup*/
@@ -5869,7 +5869,7 @@ button#schedule-btn:hover {
 
 .modal-content {
   border: medium none;
- text-align: left;
+  text-align: left;
 }
 
 .surcharge-amt > div:first-child span {
@@ -6509,4 +6509,18 @@ ul#exampleAccordion > li a span.nav-link-text {
   .vegetable-pizza-block .vegetable-pizza .vegetable img {
     width: 85px;
   }
+}
+div#payment-method .slick-slide > div > div > label {
+  display: block;
+  text-align: center;
+  word-break: break-all;
+  margin-bottom: 0;
+  padding: 2px 8px;
+  /* overflow: hidden; */
+}
+.blur-background {
+  background: rgba(0, 0, 0, 0.3);
+}
+.cursor-pointer {
+  cursor: pointer;
 }

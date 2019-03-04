@@ -2,6 +2,7 @@
   <div class="col-md-4 orders-panel">
     <NewOrders />
     <HoldingOrders />
+    <PayNow />
     <Footer />
   </div>
 </template>
@@ -10,6 +11,7 @@
 import NewOrders from './cart/NewOrders'
 import HoldingOrders from './cart/HoldingOrders'
 import Footer from './cart/Footer'
+import PayNow from './cart/PayNow'
 
 export default {
   name: 'Cart',
@@ -20,6 +22,7 @@ export default {
     NewOrders,
     HoldingOrders,
     Footer,
+    PayNow,
   },
 }
 </script>
