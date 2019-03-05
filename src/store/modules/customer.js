@@ -85,9 +85,7 @@ const actions = {
   },
 
   CreateCustomer({ commit }, newCustomerDetails) {
-    customerService.createCustomer(customerDetails).then(response => {
-      console.log(response.data)
-    })
+    customerService.createCustomer(newCustomerDetails).then()
     //change it what ever your mutation is, this is just an example
     // we need to commit mutation so we can see what data we set for new address
     commit(mutation.SELECTED_CUSTOMER_ADDRESS, newCustomerDetails)

@@ -2,7 +2,7 @@ import DataService from '@/services/DataService'
 
 export default {
   createCustomer(newCustomerDetails) {
-    return DataService.post('/api/auth/crm/create/Customer',)
+    return DataService.post('/api/auth/crm/create/Customer', newCustomerDetails)
   },
 
   fetchCustomer(...[customerId, locationId]) {
