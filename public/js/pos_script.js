@@ -217,7 +217,10 @@ $(document).ready(function() {
   })
 
   $('.referal-code-customer').click(function() {
-    $(this).addClass('active').siblings().removeClass('active')
+    $(this)
+      .addClass('active')
+      .siblings()
+      .removeClass('active')
   })
   // $('.referal-code-customer').click(function () {
   //   $(this).addClass('active').siblings().removeClass('active');
@@ -607,6 +610,10 @@ $(document).ready(function() {
     $('.last-order-wrap')[0].slick.refresh()
   })
 })
+function updateDada() {
+  alert('fdf')
+  slick.refresh()
+}
 // for delivery manger transparent-screen
 
 $(document).ready(function() {
@@ -827,8 +834,11 @@ $(function() {
 })
 // End View image rotateble
 
-$(document).ready(function () {
-  $('.referal-code-customer').on('click', function () {
-    $(this).addClass('active').siblings().removeClass('active');
+$(document).ready(function() {
+  $('.referal-code-customer').on('click', function() {
+    $(this)
+      .addClass('active')
+      .siblings()
+      .removeClass('active')
   })
 })

@@ -1,7 +1,9 @@
 <template>
   <div
     class="order-location option-contain"
-    v-bind:class="{ active: activeIndex === index }"
+    v-bind:class="{
+      active: activeIndex === index
+    }"
     v-on:click="setActiveCustomer(index)"
   >
     <p>
@@ -118,7 +120,12 @@ export default {
   methods: {
     ...mapActions('customer', ['selectedAddress']),
     setActiveCustomer(index) {
-      this.activeIndex = index
+      if (this.activeIndex === index) {
+        this.activeIndex = null
+      } else {
+        $('.location-delivery-area-address').find('.active').removeClass('active')
+        this.activeIndex = index
+      }
     },
   },
 }

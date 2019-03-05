@@ -26,6 +26,7 @@
               data-toggle="modal"
               data-target="#display-order"
               data-dismiss="modal"
+              onClick="updateDada()"
               class="br-table-btn display-order"
             >
               Display Order
@@ -35,6 +36,7 @@
             <button
               @click="fetchSelectedCustomer(customer._id)"
               data-toggle="modal"
+              onClick="updateDada()"
               data-target="#display-order"
               data-dismiss="modal"
               class="br-table-btn edit-info"
@@ -75,9 +77,9 @@ export default {
     setActiveCustomer(index) {
       this.activeIndex = index
     },
-    // updateSlickSlider(customerId) {
+    // updateDada() {
     //   $('.last-order-wrap')[0].slick.refresh()
-    //   this.props.customerId = customerId
+    //   // this.props.customerId = customerId
     // },
 
     ...mapActions('customer', ['fetchSelectedCustomer']),

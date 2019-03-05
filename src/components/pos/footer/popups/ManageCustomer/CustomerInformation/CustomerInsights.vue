@@ -125,5 +125,10 @@ export default {
           : '-',
     }),
   },
+  created: function() {
+    // loadSlickSlider: function () {
+    // $('.last-order-wrap').slick.refresh()
+    // }
+  },
 }
 </script>
