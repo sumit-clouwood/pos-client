@@ -6,8 +6,22 @@
         <p>Tuesday, 13 Oct 2017</p>
       </div>
       <div class="account-name">
-        <p>Email : vasimahmad@gmail.com</p>
-        <p>Phone : 77777777777</p>
+        <div v-if="selectedCustomer">
+          <p v-if="selectedCustomer.email != ''">
+            Email : {{ selectedCustomer.email }}
+          </p>
+          <p
+            v-if="
+              selectedCustomer.customer_name != '' &&
+                selectedCustomer.email == ''
+            "
+          >
+            Name : {{ selectedCustomer.customer_name }}
+          </p>
+          <p v-if="selectedCustomer.mobile_number">
+            Phone : {{ selectedCustomer.mobile_number }}
+          </p>
+        </div>
       </div>
     </div>
     <div class="table-pos-btn">
@@ -19,8 +33,17 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'Header',
   props: {},
+  computed: {
+    ...mapState({
+      selectedCustomer: state =>
+        state.customer.customer.customer_list.length
+          ? state.customer.customer.customer_list
+          : false,
+    }),
+  },
 }
 </script>

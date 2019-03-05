@@ -34,6 +34,7 @@
               class="btn btn-success btn-large popup-btn-save"
               type="button"
               id="add-customer-btn"
+              data-dismiss="modal"
             >
               Add
             </button>
@@ -62,6 +63,7 @@ export default {
           ? state.customer.customer.customer_list.customer_details
           : false,
     }),
+    // ...mapActions('customer', ['addCartCustomer'])
   },
 }
 </script>

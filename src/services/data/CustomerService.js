@@ -5,6 +5,13 @@ export default {
     return DataService.post('/api/auth/crm/create/Customer', newCustomerDetails)
   },
 
+  createAddress(newAddressDetails) {
+    return DataService.post(
+      '/api/auth/crm/create/NewCustomerAddress',
+      newAddressDetails
+    )
+  },
+
   fetchCustomer(...[customerId, locationId]) {
     return DataService.get(
       `/api/auth/crm/get/CustomerDetails/?customer_id=${customerId}&location_id=${locationId}`

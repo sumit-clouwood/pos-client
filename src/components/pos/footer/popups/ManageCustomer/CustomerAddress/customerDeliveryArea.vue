@@ -4,7 +4,7 @@
     v-bind:class="{
       active: activeIndex === index
     }"
-    v-on:click="setActiveCustomer(index)"
+    v-on:click="setActiveCustomer(index, address._id, getDeliveryArea(address.delivery_area))"
   >
     <p>
       <span>{{ locationName }}</span>
@@ -118,15 +118,16 @@ export default {
     ...mapGetters('location', ['getDeliveryArea']),
   },
   methods: {
-    ...mapActions('customer', ['selectedAddress']),
-    setActiveCustomer(index) {
+    setActiveCustomer(index, selectedCustomerAddressId, selectedCustomerAddressArea) {
       if (this.activeIndex === index) {
         this.activeIndex = null
       } else {
         $('.location-delivery-area-address').find('.active').removeClass('active')
         this.activeIndex = index
       }
+      this.selectedAddress(selectedCustomerAddressId, selectedCustomerAddressArea)
     },
+	  ...mapActions('customer', ['selectedAddress']),
   },
 }
 </script>

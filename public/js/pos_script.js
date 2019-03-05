@@ -611,8 +611,8 @@ $(document).ready(function() {
   })
 })
 function updateDada() {
-  alert('fdf')
-  slick.refresh()
+  // alert('fdf')
+  // slick.refresh()
 }
 // for delivery manger transparent-screen
 

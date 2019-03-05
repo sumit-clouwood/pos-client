@@ -12,7 +12,7 @@
               <div class="cu-loyality-points">
                 <LoyaltyPoint />
                 <div class="btn-right-neworder">
-                  <button id="place-new-order">Place New Order</button>
+                  <button id="place-new-order" data-dismiss="modal">Place New Order</button>
                 </div>
               </div>
             </div>
@@ -23,7 +23,7 @@
         </div>
         <div class="modal-footer">
           <div class="pagination-customer-details">
-            <ul class="ullist-pagination">
+            <!--<ul class="ullist-pagination">
               <li class="order-pagination active">1</li>
               <li class="order-pagination">2</li>
               <li class="order-pagination">3</li>
@@ -32,7 +32,7 @@
                 <img src="img/pos/next-arrow.png" alt="next-btn" />
               </li>
               <li>Last</li>
-            </ul>
+            </ul>-->
           </div>
           <div class="btn-announce">
             <button

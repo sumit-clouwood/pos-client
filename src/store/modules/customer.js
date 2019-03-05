@@ -89,6 +89,13 @@ const actions = {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
     })
   },
+
+  CreateAddress({ commit }, newAddressDetails) {
+    newAddressDetails.customer_id = state.customer.customer_list._id
+    customerService.createAddress(newAddressDetails).then(response => {
+      commit(mutation.SET_RESPONSE_MESSAGES, response.data)
+    })
+  },
 }
 const mutations = {
   [mutation.CUSTOMER_LIST](commit, customersDetail) {
