@@ -86,9 +86,9 @@ const actions = {
 
   CreateCustomer({}, newCustomerDetails) {
     console.log(newCustomerDetails)
-    /*customerService.createCustomer(customerDetails).then(response => {
+    customerService.createCustomer(newCustomerDetails).then(response => {
       console.log(response.data)
-    })*/
+    })
   },
 }
 const mutations = {
