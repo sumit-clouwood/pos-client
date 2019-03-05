@@ -1,18 +1,18 @@
 <template>
-  <!-- Amount change -->
-  <div class="modal fade" id="information-popup" role="dialog">
+  <!-- response change -->
+  <div class="modal fade blur-background" id="information-popup" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header customer-header">
-          <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title">{{ title }}</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-        <div class="modal-body change-amount-option">
-          <div class="amount-change-wrap" v-if="responseInformation">
-            <p :class="activeClass">
+        <div class="modal-body ">
+          <div class="amount-change-wrap" v-if="responseInformation" v-on:load="activeClass">
+            <h5 :class="activatedClass">
               {{ responseInformation.message }}
-            </p>
+            </h5>
           </div>
         </div>
         <div class="modal-footer">
@@ -32,7 +32,7 @@
     </div>
   </div>
 
-  <!-- End Amount change  -->
+  <!-- End response change  -->
 </template>
 
 <script>
@@ -43,16 +43,21 @@ export default {
   props: {
     responseInformation: Object,
     title: String,
+    activatedClass: String,
   },
   computed: {
     /* ...mapState({
       responseInformation: state => state.customer.responseInformation,
     }),*/
-    activeClass: this.responseInformation.length
-      ? this.responseInformation.status == 1
-        ? 'text-success'
-        : 'text-danger'
-      : false,
+  },
+  methods: {
+    activeClass: function() {
+      return typeof this.responseInformation != 'undefined'
+        ? this.responseInformation.status === 1
+          ? (this.activatedClass = 'text-success')
+          : (this.activatedClass = 'text-danger')
+        : false
+    },
   },
 }
 </script>
