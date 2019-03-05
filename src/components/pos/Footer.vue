@@ -76,7 +76,7 @@
     <ManageCustomer />
     <OrderItemPopup />
     <CustomerCreate />
-    <CustomerAddress />
+    <CreateCustomerAddress />
     <CartItemDiscount />
     <SelectCustomerAddress />
     <CustomerInformation />
@@ -99,7 +99,7 @@ import CartItemDiscount from './footer/popups/CartItemDiscount'
 import OrderItemPopup from './content/cart/newOrders/items/Popup'
 import CustomerNote from '../pos/footer/popups/ManageCustomer/CustomerNote'
 import CustomerCreate from '../pos/footer/popups/ManageCustomer/CustomerCreate'
-import CustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/CustomerAddress'
+import CreateCustomerAddress from './footer/popups/ManageCustomer/CustomerAddress/CreateCustomerAddress'
 import CartAddEmail from '../pos/content/cart/payNow/popups/AddEmail'
 import CartAmountChange from '../pos/content/cart/payNow/popups/AmountChange'
 import CartTipAmount from '../pos/content/cart/payNow/popups/TipAmount'
@@ -121,7 +121,7 @@ export default {
     SendToDelivery,
     OrderItemPopup,
     CustomerCreate,
-    CustomerAddress,
+    CreateCustomerAddress,
     CartItemDiscount,
     SelectCustomerAddress,
     CustomerInformation,
