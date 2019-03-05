@@ -6,8 +6,7 @@
   >
     <p>
       <span>{{ locationName }}</span>
-      {{ getDeliveryArea(address.delivery_area) }},
-      {{ address.street }},
+      {{ getDeliveryArea(address.delivery_area) }}, {{ address.street }},
       {{ address.city }},
       {{ country }}
     </p>
@@ -109,7 +108,7 @@ export default {
     }),
     ...mapState({
       country: state =>
-        typeof state.location.locationData
+        typeof state.location.locationData !== 'undefined'
           ? state.location.locationData.country_name
           : '',
     }),

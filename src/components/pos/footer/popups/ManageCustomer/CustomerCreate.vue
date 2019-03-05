@@ -160,7 +160,7 @@
             <div class="customer-group">
               <label>Country</label>
               <select class="selectpicker" v-model="newCustomerDetails.country">
-                <option v-model="locationData.country_id">
+                <option :value="locationData.country_id">
                   {{ locationData.country_name }}
                 </option>
               </select>
@@ -277,8 +277,8 @@ export default {
       if (this.errors.count === 0) {
         let dob = this.newCustomerDetails.dob.split('.')
         this.newCustomerDetails.day = dob[0]
-        this.newCustomerDetails.month = dob[0]
-        this.newCustomerDetails.year = dob[0]
+        this.newCustomerDetails.month = dob[1]
+        this.newCustomerDetails.year = dob[2]
         return this.CreateCustomer(this.newCustomerDetails)
       }
       // e.preventDefault()

@@ -14,10 +14,10 @@ export default {
     })
   },
 
-  post(url) {
+  post(url, data) {
     return new Promise((resolve, reject) => {
       axios
-        .post(url)
+        .post(url, data)
         .then(response => resolve(response))
         .catch(error => reject(error))
     })

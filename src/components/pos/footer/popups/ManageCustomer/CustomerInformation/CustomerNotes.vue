@@ -1,5 +1,5 @@
 <template>
-  <div class="modal fade" id="show-more-notes" role="dialog">
+  <div class="modal fade blur-background" id="show-more-notes" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
@@ -7,17 +7,17 @@
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title">Customer Notes</h4>
         </div>
-        <div class="modal-body form-block blur-background">
+        <div class="modal-body form-block ">
           <div
             class="hero-unit noNotes text-center hidden"
-            v-if="!customerNotes"
+            v-if="customerNotes.length == 0"
           >
             <h3>No notes yet.</h3>
           </div>
           <div
             class="table-responsive"
             id="notes_data_all"
-            v-if="customerNotes"
+            v-if="customerNotes.length > 0"
           >
             <table class="table table-striped">
               <thead>
@@ -51,6 +51,7 @@
               type="button"
               id="save_address"
               data-toggle="modal"
+              @click="this.hide()"
               data-target="#admin-popup"
             >
               + Add Note
