@@ -12,7 +12,11 @@
         <th style="width: 205px">AGENT</th>
         <th style="width: 290px">SOURCE</th>
       </tr>
-      <tr class="referal-code-customer" v-for="order in pastOrders" :key="order._id">
+      <tr
+        class="referal-code-customer"
+        v-for="order in pastOrders"
+        :key="order._id"
+      >
         <td>#{{ order.order_no }}</td>
         <td>{{ order.created_date }} {{ order.created_time }}</td>
         <td>{{ order.order_type }}</td>
@@ -20,8 +24,8 @@
         <td>{{ order.balance_due }}</td>
         <td>{{ order.order_status }}</td>
         <td></td>
-          <td>{{ order.created_by}}</td>
-          <!--<td>Tecom</td>-->
+        <td>{{ order.created_by }}</td>
+        <!--<td>Tecom</td>-->
         <td class="show-details-his">
           <span @click="showOrderDetails(order._id)">
             <svg
@@ -61,7 +65,7 @@ export default {
   },
   methods: {
     showOrderDetails: function(orderId) {
-    	alert(orderId + ': Work in progress')
+      alert(orderId + ': Work in progress')
     },
   },
 }

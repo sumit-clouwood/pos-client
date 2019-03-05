@@ -68,7 +68,7 @@ export default {
     }),
   },
   data: function() {
-    return {'activeIndex':''}
+    return { activeIndex: '' }
   },
 
   methods: {
