@@ -40,9 +40,9 @@
               />
             </div>
             <div class="sex-from">
-              <label>Sex</label>
+              <label>Gender</label>
               <select class="selectpicker" v-model="newCustomerDetails.gender">
-                <option>Male</option>
+                <option selected="selected">Male</option>
                 <option>Female</option>
                 <option>Other</option>
               </select>
@@ -59,7 +59,7 @@
               }}</span>
             </div>
             <div class="customer-group">
-              <label>Date Of Birth </label>
+              <label>Date Of Birth <span>*</span></label>
               <div class="pull-right col-md-7">
                 <date-dropdown
                   min="1920"
@@ -80,7 +80,7 @@
               >
                 <!--<option>Select Customer Group</option>-->
                 <option
-                  v-for="cGroup in customerGroup"
+                  v-for="(cGroup, index) in customerGroup"
                   :value="cGroup.id"
                   :key="cGroup.id"
                 >
@@ -109,7 +109,7 @@
               }}</span>
             </div>
             <div class="mobile-from">
-              <label>Select Location/Branch </label>
+              <label>Select Location/Branch <span>*</span></label>
               <select
                 class="selectpicker"
                 v-model="newCustomerDetails.location_id"
@@ -118,6 +118,9 @@
                   {{ locationData.branch_n }}
                 </option>
               </select>
+              <span class="validation-error" v-if="errors.location">{{
+                errors.location
+              }}</span>
             </div>
             <div class="alternate-phone-from">
               <label>Building <span>*</span></label>
@@ -147,9 +150,9 @@
               />
             </div>
             <div class="customer-group">
-              <label>City</label>
+              <label>City<span>*</span></label>
               <select class="selectpicker" v-model="newCustomerDetails.city">
-                <option>
+                <option selected="selected">
                   {{ locationData.city }}
                 </option>
               </select>
@@ -158,9 +161,9 @@
               }}</span>
             </div>
             <div class="customer-group">
-              <label>Country</label>
+              <label>Country <span>*</span></label>
               <select class="selectpicker" v-model="newCustomerDetails.country">
-                <option :value="locationData.country_id">
+                <option :value="locationData.country_id" selected="selected">
                   {{ locationData.country_name }}
                 </option>
               </select>
@@ -192,12 +195,14 @@
         </div>
       </div>
     </div>
+    <InformationPopup :responseInformation="customerCreateStatus" :title="customerCreateStatus.message"/>
   </div>
   <!-- End customer Model -->
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import InformationPopup from '@/components/pos/content/InformationPopup'
 import DateDropdown from 'vue-date-dropdown'
 
 export default {
@@ -214,6 +219,7 @@ export default {
   },
   components: {
     DateDropdown,
+    InformationPopup,
   },
   computed: {
     ...mapState({
@@ -233,6 +239,9 @@ export default {
         state.location.deliveryAreas.length
           ? state.location.deliveryAreas
           : false,
+    }),
+    ...mapState({
+      customerCreateStatus: state => state.customer.responseInformation,
     }),
   },
   methods: {
@@ -266,6 +275,10 @@ export default {
         this.errors.city = 'City required'
         this.errors.count = 1
       }
+      if (!this.newCustomerDetails.location_id) {
+        this.errors.location = 'Location required'
+        this.errors.count = 1
+      }
       if (!this.newCustomerDetails.dob) {
         this.errors.dob = 'Date of birth required'
         this.errors.count = 1
@@ -279,7 +292,16 @@ export default {
         this.newCustomerDetails.day = dob[0]
         this.newCustomerDetails.month = dob[1]
         this.newCustomerDetails.year = dob[2]
-        return this.CreateCustomer(this.newCustomerDetails)
+        this.CreateCustomer(this.newCustomerDetails)
+        if (
+          this.customerCreateStatus &&
+          this.customerCreateStatus.status == 1
+        ) {
+          $('#customer').modal('hide')
+          $('#information-popup').modal('show')
+        } else {
+	        $('#information-popup').modal('show')
+        }
       }
       // e.preventDefault()
     },

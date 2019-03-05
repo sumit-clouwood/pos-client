@@ -7,7 +7,7 @@ const state = {
   customer_group: {},
   paginate: {},
   params: { page_number: 1, page_size: 10, search: '' },
-  message: {},
+  responseInformation: { status: 0, message: ''},
   address: {},
 }
 const getters = {}
@@ -63,7 +63,7 @@ const actions = {
         note,
       ]
       customerService.addNote(...params).then(response => {
-        commit(mutation.SET_RESPONSE_MESSAGES, response.message)
+        commit(mutation.SET_RESPONSE_MESSAGES, response.data)
       })
     } else {
       alert('Customer not selected yet')
@@ -85,10 +85,9 @@ const actions = {
   },
 
   CreateCustomer({ commit }, newCustomerDetails) {
-    customerService.createCustomer(newCustomerDetails).then()
-    //change it what ever your mutation is, this is just an example
-    // we need to commit mutation so we can see what data we set for new address
-    commit(mutation.SELECTED_CUSTOMER_ADDRESS, newCustomerDetails)
+    customerService.createCustomer(newCustomerDetails).then(response => {
+      commit(mutation.SET_RESPONSE_MESSAGES, response.data)
+    })
   },
 }
 const mutations = {
@@ -111,7 +110,18 @@ const mutations = {
     state.customer_group = customerGroup
   },
   [mutation.SET_RESPONSE_MESSAGES](commit, message) {
-    state.message.note = message
+    state.responseInformation.message = message
+  },
+  [mutation.SET_RESPONSE_MESSAGES](commit, customerCreateResponse) {
+  	console.log(customerCreateResponse)
+  	if(customerCreateResponse.status == 0) {
+		  state.responseInformation.status = customerCreateResponse.status
+		  state.responseInformation.message = customerCreateResponse.error
+	  } else {
+		  state.responseInformation.status = customerCreateResponse.data.status
+		  state.responseInformation.message = customerCreateResponse.data.data
+	  }
+
   },
   [mutation.SELECTED_CUSTOMER](commit, customerDetails) {
     state.customer = customerDetails
