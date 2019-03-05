@@ -180,6 +180,7 @@
               type="button"
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
+              id="close-customer"
             >
               <span>X</span> Cancel
             </button>
@@ -298,13 +299,13 @@ export default {
           this.customerCreateStatus &&
           this.customerCreateStatus.status == 1
         ) {
-          $('#customer').modal('hide')
-          $('#information-popup').modal('show')
+          $('#customer').modal('toggle')
+          $('#information-popup').modal('toggle')
+          $('#close-customer').click()
         } else {
-	        $('#information-popup').modal('show')
+	        $('#information-popup').modal('toggle')
         }
       }
-      // e.preventDefault()
     },
     validEmail: function(email) {
       var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/

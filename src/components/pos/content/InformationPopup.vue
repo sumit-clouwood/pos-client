@@ -6,11 +6,17 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <h4 class="customer-title">{{ title }}</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <!--<button type="button" class="close" data-dismiss="modal">-->
+            <!--&times;-->
+          <!--</button>-->
         </div>
         <div class="modal-body ">
-          <div class="amount-change-wrap" v-if="responseInformation" v-on:load="activeClass">
-            <h5 :class="activatedClass">
+          <div
+            class="amount-change-wrap"
+            v-if="responseInformation"
+            v-on:load="activeClass"
+          >
+            <h5 :class="activatedClass" class="text-capitalize">
               {{ responseInformation.message }}
             </h5>
           </div>
@@ -20,8 +26,8 @@
             <button
               class="btn btn-success btn-large"
               type="button"
-              data-dismiss="modal"
               id="dining-opt"
+              @click="closeModal()"
             >
               Ok
             </button>
@@ -45,12 +51,11 @@ export default {
     title: String,
     activatedClass: String,
   },
-  computed: {
-    /* ...mapState({
-      responseInformation: state => state.customer.responseInformation,
-    }),*/
-  },
+  computed: {},
   methods: {
+    closeModal: function() {
+      $('#information-popup').modal('toggle')
+    },
     activeClass: function() {
       return typeof this.responseInformation != 'undefined'
         ? this.responseInformation.status === 1

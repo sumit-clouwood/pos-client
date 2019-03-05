@@ -118,8 +118,8 @@ const mutations = {
 		  state.responseInformation.status = customerCreateResponse.status
 		  state.responseInformation.message = customerCreateResponse.error
 	  } else {
-		  state.responseInformation.status = customerCreateResponse.data.status
-		  state.responseInformation.message = customerCreateResponse.data.data
+		  state.responseInformation.status = customerCreateResponse.status
+		  state.responseInformation.message = customerCreateResponse.data
 	  }
 
   },
