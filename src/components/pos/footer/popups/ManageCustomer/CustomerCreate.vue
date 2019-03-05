@@ -44,7 +44,11 @@
             </div>
             <div class="email-from">
               <label>Email </label>
-              <input type="text" name="email" v-model="newCustomerDetails.email" />
+              <input
+                type="text"
+                name="email"
+                v-model="newCustomerDetails.email"
+              />
             </div>
             <div class="customer-group">
               <label>Date Of Birth </label>
@@ -59,7 +63,10 @@
             </div>
             <div class="customer-group" v-if="customerGroup">
               <label>Customer Group</label>
-              <select class="selectpicker" v-model="newCustomerDetails.customer_group">
+              <select
+                class="selectpicker"
+                v-model="newCustomerDetails.customer_group"
+              >
                 <!--<option>Select Customer Group</option>-->
                 <option
                   v-for="cGroup in customerGroup"
@@ -75,7 +82,10 @@
             <div class="name-from">
               <label>Delivery Area <span>*</span></label>
               <!--<input type="text" name="Name" />-->
-              <select class="selectpicker" v-model="newCustomerDetails.delivery_area">
+              <select
+                class="selectpicker"
+                v-model="newCustomerDetails.delivery_area"
+              >
                 <option
                   v-for="area in deliveryAreas"
                   :value="area._id"
@@ -86,7 +96,10 @@
             </div>
             <div class="mobile-from">
               <label>Select Location/Branch </label>
-              <select class="selectpicker" v-model="newCustomerDetails.location_id">
+              <select
+                class="selectpicker"
+                v-model="newCustomerDetails.location_id"
+              >
                 <option :value="location_id">
                   {{ locationData.branch_n }}
                 </option>
@@ -94,16 +107,28 @@
             </div>
             <div class="alternate-phone-from">
               <label>Building <span>*</span></label>
-              <input type="text" name="building" v-model="newCustomerDetails.building" />
+              <input
+                type="text"
+                name="building"
+                v-model="newCustomerDetails.building"
+              />
               <span class="validation-error">Building is already exit.</span>
             </div>
             <div class="sex-from">
               <label>Street</label>
-              <input type="text" name="street" v-model="newCustomerDetails.street" />
+              <input
+                type="text"
+                name="street"
+                v-model="newCustomerDetails.street"
+              />
             </div>
             <div class="email-from">
               <label>Flat Number </label>
-              <input type="text" name="flat_number" v-model="newCustomerDetails.flat_number" />
+              <input
+                type="text"
+                name="flat_number"
+                v-model="newCustomerDetails.flat_number"
+              />
             </div>
             <div class="customer-group">
               <label>City</label>
@@ -116,7 +141,7 @@
             <div class="customer-group">
               <label>Country</label>
               <select class="selectpicker" v-model="newCustomerDetails.country">
-                <option v-model="locationData.country_id">
+                <option :value="locationData.country_id">
                   {{ locationData.country_name }}
                 </option>
               </select>

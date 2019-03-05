@@ -52,7 +52,6 @@ export default {
     ...mapState({
       paginateDetails: state => state.customer.paginate,
     }),
-
   },
   methods: {
     ...mapActions('customer', ['setPageNumber']),

@@ -14,7 +14,7 @@
     <div class="location-delivery-area-address">
       <CustomerDeliveryArea
         v-for="(address, index) in deliveryAddresses"
-         class="cu-delivery-area-location"
+        class="cu-delivery-area-location"
         :buttons="true"
         :address="address"
         :index="index"
