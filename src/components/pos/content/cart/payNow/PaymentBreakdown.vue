@@ -11,14 +11,18 @@
           <th style="width: 150px;">Amount</th>
           <th style="width: 150px;"></th>
         </tr>
-        <tr>
-          <td>Cash</td>
-          <td>200</td>
-          <td><img src="img/pos/delete.png" alt="delete" /></td>
+        <tr v-for="(payment, index) in payments" :key="index">
+          <td>{{ payment.method }}</td>
+          <td>{{ formatPrice(payment.amount) }}</td>
+          <td>
+            <a href="" @click.prevent="removePayment(index)"
+              ><img src="img/pos/delete-icon.svg" alt="delete"
+            /></a>
+          </td>
         </tr>
         <tr class="pay-tot-amt">
           <td>Total</td>
-          <td>200.00</td>
+          <td>{{ formatPrice(paid) }}</td>
           <td></td>
         </tr>
       </table>
@@ -27,7 +31,16 @@
 </template>
 
 <script>
+import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
   name: 'PaymentBreakdown',
+  computed: {
+    ...mapState('checkoutForm', ['payments']),
+    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('checkoutForm', ['paid']),
+  },
+  methods: {
+    ...mapActions('checkoutForm', ['removePayment']),
+  },
 }
 </script>

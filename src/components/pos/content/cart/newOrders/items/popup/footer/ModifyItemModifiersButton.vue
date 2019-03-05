@@ -3,7 +3,7 @@
     type="button"
     class="buttoned colorwhite donebutton"
     data-dismiss="modal"
-    @click="item.modifiable ? addModifierOrder() : false"
+    @click="item && item.modifiable ? addModifierOrder() : false"
     :class="
       item.modifiable ? 'catalog-with-modifier' : 'catalog-without-modifiers'
     "

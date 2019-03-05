@@ -80,7 +80,11 @@ const actions = {
   removeFromOrder({ commit, dispatch, rootState }, { item, index }) {
     commit(mutation.SET_ITEM, item)
     commit(mutation.REMOVE_ORDER_ITEM, index)
-    commit(mutation.SET_ITEM, state.items[0])
+    if (state.items.length) {
+      commit(mutation.SET_ITEM, state.items[0])
+    } else {
+      commit(mutation.SET_ITEM, false)
+    }
 
     if (!state.items.length) {
       //cart is empty remove the discounts

@@ -12,6 +12,8 @@ const state = {
 
 // getters
 const getters = {
+  round: () => amount =>
+    (Math.round((parseFloat(amount) + 0.00001) * 100) / 100).toFixed(2),
   rawPrice: () => price => (price > 0 ? price : 0),
   formatPrice: state => price =>
     state.currency +

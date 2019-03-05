@@ -6,13 +6,19 @@
     </div>
     <div class="payment-amount-digit">
       <p>AED 20.00</p>
-      <h2>AED 165.00</h2>
+      <h2>{{ formatPrice(orderTotal) }}</h2>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'TotalAmount',
+  computed: {
+    ...mapGetters('order', ['orderTotal']),
+    ...mapGetters('location', ['formatPrice']),
+  },
+  methods: {},
 }
 </script>
