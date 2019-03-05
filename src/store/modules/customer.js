@@ -7,7 +7,7 @@ const state = {
   customer_group: {},
   paginate: {},
   params: { page_number: 1, page_size: 10, search: '' },
-  responseInformation: { status: 0, message: ''},
+  responseInformation: { status: 0, message: '' },
   address: {},
 }
 const getters = {}
@@ -120,15 +120,13 @@ const mutations = {
     state.responseInformation.message = message
   },
   [mutation.SET_RESPONSE_MESSAGES](commit, customerCreateResponse) {
-  	console.log(customerCreateResponse)
-  	if(customerCreateResponse.status == 0) {
-		  state.responseInformation.status = customerCreateResponse.status
-		  state.responseInformation.message = customerCreateResponse.error
-	  } else {
-		  state.responseInformation.status = customerCreateResponse.status
-		  state.responseInformation.message = customerCreateResponse.data
-	  }
-
+    if (customerCreateResponse.status == 0) {
+      state.responseInformation.status = customerCreateResponse.status
+      state.responseInformation.message = customerCreateResponse.error
+    } else {
+      state.responseInformation.status = customerCreateResponse.status
+      state.responseInformation.message = customerCreateResponse.data
+    }
   },
   [mutation.SELECTED_CUSTOMER](commit, customerDetails) {
     state.customer = customerDetails

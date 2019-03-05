@@ -5,8 +5,10 @@
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header customer-header">
-            <h4 class="customer-title">Create new customer</h4>
-           <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="customer-title">Create new customer</h4>
+          <button type="button" class="close" data-dismiss="modal">
+            &times;
+          </button>
         </div>
         <div class="modal-body row form-block">
           <div class="col-md-6 left-form">
@@ -81,7 +83,7 @@
               >
                 <!--<option>Select Customer Group</option>-->
                 <option
-                  v-for="(cGroup, index) in customerGroup"
+                  v-for="cGroup in customerGroup"
                   :value="cGroup.id"
                   :key="cGroup.id"
                 >
@@ -197,12 +199,17 @@
         </div>
       </div>
     </div>
-    <InformationPopup :responseInformation="customerCreateStatus" :title="customerCreateStatus.message"/>
+    <InformationPopup
+      :responseInformation="customerCreateStatus"
+      :title="customerCreateStatus.message"
+    />
   </div>
   <!-- End customer Model -->
 </template>
 
 <script>
+/* global $ */
+
 import { mapState, mapActions } from 'vuex'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 import DateDropdown from 'vue-date-dropdown'
@@ -303,7 +310,7 @@ export default {
           $('#information-popup').modal('toggle')
           $('#close-customer').click()
         } else {
-	        $('#information-popup').modal('toggle')
+          $('#information-popup').modal('toggle')
         }
       }
     },

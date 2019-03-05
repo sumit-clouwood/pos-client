@@ -40,9 +40,7 @@ export default {
   computed: {
     ...mapState({
       selectedCustomer: state =>
-        state.customer.customer.customer_list.length
-          ? state.customer.customer.customer_list
-          : false,
+        state.customer ? state.customer.customer_list : false,
     }),
   },
 }

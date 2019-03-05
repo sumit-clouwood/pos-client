@@ -137,6 +137,7 @@
 </template>
 
 <script>
+/* global $ */
 import { mapState, mapActions } from 'vuex'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 export default {
