@@ -24,9 +24,8 @@
             <div class="payment-method-title">
               <h2>Payment Method</h2>
             </div>
-
             <PaymentMethods />
-
+            <div class="error" v-if="error">{{ error }}</div>
             <div class="payemnt-input-block">
               <input
                 type="text"
@@ -84,6 +83,7 @@ export default {
       },
     },
     ...mapState('order', ['items']),
+    ...mapState('checkoutForm', ['error']),
     ...mapGetters('location', ['formatPrice']),
   },
 }

@@ -31,8 +31,13 @@ const actions = {
       (state.method == 'MasterCard' || state.method == 'Visa') &&
       parseFloat(state.amount) > remaining
     ) {
-      commit('SET_ERROR', `Card payment can't be greater than ${totalPayable}`)
+      commit(
+        'SET_ERROR',
+        `Card payment can't be greater than ` +
+          rootGetters['location/round'](remaining)
+      )
     } else {
+      commit('SET_ERROR', false)
       commit('addAmount', {
         amount: parseFloat(state.amount),
         method: state.method,
