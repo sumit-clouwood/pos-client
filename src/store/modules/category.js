@@ -1,12 +1,10 @@
 import CategoryService from '@/services/data/CategoryService'
 import * as mutation from './category/mutation-types'
-
 // initial state
 const state = {
   categoryImagePath: '',
   subcategoryImagePath: '',
   itemImagePath: '',
-
   all: [],
   category: {},
   subcategories: [],
@@ -14,8 +12,10 @@ const state = {
   categoryItems: [],
   subcategoryItems: [],
   item: {},
+  items: [],
   taxData: [],
   taxAmount: {},
+  searchItems: [],
 }
 
 // getters, computed properties
@@ -102,14 +102,46 @@ const actions = {
       state.subcategory.get_sub_category_product
     )
   },
-}
 
+  collectSearchItems({ commit, state, rootState }, searchTerm) {
+    console.log(searchTerm)
+    const defaultLanguage = rootState.location.selectedLanguage
+    let datas = []
+    let matches = state.items.map(item => {
+      /* if (
+        item.name.indexOf(searchTerm) != -1 &&
+        item.language == defaultLanguage
+      ) {
+        datas.push(item)
+      }*/
+      item.item_name.forEach(getByLanguage => {
+        if (
+          getByLanguage.name.indexOf(searchTerm) != -1 &&
+          defaultLanguage == getByLanguage.language
+        ) {
+          datas.push(item)
+        }
+      })
+    })
+    console.log(datas)
+  },
+}
 // mutations
 //state should be only changed through mutation and these are synchronous
 const mutations = {
   //using constant as function name
   [mutation.SET_CATEGORIES](state, categories) {
     state.all = categories
+
+    let allItems = []
+    categories.forEach(category => {
+      category.get_sub_category.forEach(subCategory => {
+        subCategory.get_sub_category_product.forEach(item => {
+          allItems.push(item)
+        })
+      })
+    })
+    state.items = allItems
   },
 
   [mutation.SET_CATEGORY](state, category) {

@@ -8,6 +8,7 @@ const state = {
   currency: 'AED',
   locationData: {},
   deliveryAreas: {},
+  selectedLanguage: 'en_US'
 }
 
 // getters
@@ -55,6 +56,10 @@ const actions = {
     commit(mutation.SET_LOCATIONS, userData.locations)
     commit(mutation.SET_FRANCHISE_CODE, userData.franchies_code)
   },
+
+  changeLanguage({ commit }, selectedLanguage) {
+    commit(mutation.SET_LANGUAGE,selectedLanguage)
+  }
 }
 
 // mutations
@@ -81,6 +86,9 @@ const mutations = {
   [mutation.SET_DELIVERY_AREAS](state, delivery_area) {
     state.deliveryAreas = delivery_area
   },
+  [mutation.SET_LANGUAGE](state, selectedLanguage) {
+    state.selectedLanguage = selectedLanguage
+  }
 }
 
 export default {

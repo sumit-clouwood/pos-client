@@ -1,5 +1,16 @@
 <template>
   <ul class="navbar-nav ml-auto">
+    <li v-if="languages">
+      <select v-model="selectedShortname" @change="changeLanguage(selectedShortname)">
+        <option
+          v-for="language in languages"
+          :key="language._id"
+          :value="language.shortname"
+        >
+          {{ language.language }}
+        </option>
+      </select>
+    </li>
     <li class="nav-item">
       <a class="nav-link mr-lg-2" id="adminDropdown" href="#">
         <span class="">Admin</span>
@@ -48,9 +59,34 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'TopNavRight',
   props: {},
-  components: {},
+  data() {
+    return {
+      selectedShortname:
+        typeof this.defaultLanguage != 'undefined'
+          ? this.defaultLanguage.language
+          : 'en_US',
+    }
+  },
+  computed: {
+    ...mapState({
+      languages: state =>
+        typeof state.location.locationData
+          ? state.location.locationData.languages
+          : false,
+    }),
+    ...mapState({
+      defaultLanguage: state =>
+        typeof state.location.locationData
+          ? state.location.locationData.default_language[0]
+          : false,
+    }),
+  },
+  methods: {
+    ...mapActions('location',['changeLanguage'])
+  }
 }
 </script>
