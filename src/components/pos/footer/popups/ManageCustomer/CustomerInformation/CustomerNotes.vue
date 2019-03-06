@@ -65,7 +65,8 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+/* global $ */
+import { mapState } from 'vuex'
 
 function getCustomerList(state) {
   return state.customer.customer.customer_list
@@ -82,9 +83,9 @@ export default {
     }),
   },
   methods: {
-    hideModal: function () {
+    hideModal: function() {
       $('#show-more-notes').modal('toggle')
-    }
-  }
+    },
+  },
 }
 </script>

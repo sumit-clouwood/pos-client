@@ -15,7 +15,11 @@
 import { mapActions } from 'vuex'
 export default {
   name: 'ManageCustomerHeader',
-  props: ['searchTerms'],
+  data: function() {
+    return {
+      searchTerms: '',
+    }
+  },
   // computed: {
   //   ...mapState({
   //     searchTerms: state => state.customer.params.search,

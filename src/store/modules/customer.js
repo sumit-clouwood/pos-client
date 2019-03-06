@@ -74,6 +74,7 @@ const actions = {
     const params = [customer_id, rootState.location.location]
     customerService.fetchCustomer(...params).then(response => {
       commit(mutation.SELECTED_CUSTOMER, response.data.data)
+      //dispatch('giftcard/setCustomerGiftCards', response.data.data)
     })
   },
 

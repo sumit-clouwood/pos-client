@@ -27,10 +27,4 @@ export default {
       `/api/auth/locationdetails/?location_id=${locationId}&staff=${staff}`
     )
   },
-
-  getGiftCards(...[locationId, lastSyncDate, isCompress]) {
-    return DataService.get(
-      `/api/auth/get/gift/cards?location_id=${locationId}&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
-    )
-  },
 }

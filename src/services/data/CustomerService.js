@@ -62,4 +62,10 @@ export default {
       `/api/auth/crm/create/CustomerNotes?customer_id=${customerId}&cashier_id=${cashierId}&notes=${notes}`
     )
   },
+
+  fetchGiftCards(...[customerId, locationId]) {
+    return DataService.get(
+      `/api/auth/crm/get/CustomerDetails/?customer_id=${customerId}&location_id=${locationId}`
+    )
+  },
 }
