@@ -105,20 +105,6 @@ $(document).ready(function() {
     }
   })
 
-  $('.payment-key').click(function() {
-    var value = $('#input').val()
-    var valThis = $(this).text()
-    var res = value.concat(valThis)
-    $('#input').val(res)
-  })
-  $('#backspace').click(function() {
-    var value = $('#input').val()
-    $('#input').val('' + value.substr(0, value.length - 1) + '')
-  })
-  $('#clearcalc').click(function() {
-    $('#input').val(' ')
-  })
-
   $('#pay-now').addClass('animated fadeInRight')
   $('.amount-keypad').addClass('animated zoomIn')
   $('.holding-order-panel, .block1-wrap-dp, div#hide-block1-dp').addClass(

@@ -11,6 +11,8 @@ import tax from './modules/tax'
 import surcharge from './modules/surcharge'
 import customer from './modules/customer'
 import discount from './modules/discount'
+import checkout from './modules/checkout'
+import checkoutForm from './modules/checkout/form'
 // import paginate from 'vuejs-paginate'
 
 //to take snapshot
@@ -34,6 +36,8 @@ const store = new Vuex.Store({
     surcharge,
     order,
     discount,
+    checkout,
+    checkoutForm,
   },
   strict: debug,
   plugins: debug ? [createLogger()] : [],

@@ -12,7 +12,9 @@
               <div class="cu-loyality-points">
                 <LoyaltyPoint />
                 <div class="btn-right-neworder">
-                  <button id="place-new-order" data-dismiss="modal">Place New Order</button>
+                  <button id="place-new-order" data-dismiss="modal">
+                    Place New Order
+                  </button>
                 </div>
               </div>
             </div>

@@ -51,7 +51,7 @@
               type="button"
               id="save_address"
               data-toggle="modal"
-              @click="this.hide()"
+              @click="hideModal()"
               data-target="#admin-popup"
             >
               + Add Note
@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 function getCustomerList(state) {
   return state.customer.customer.customer_list
@@ -81,5 +81,10 @@ export default {
           : false,
     }),
   },
+  methods: {
+    hideModal: function () {
+      $('#show-more-notes').modal('toggle')
+    }
+  }
 }
 </script>
