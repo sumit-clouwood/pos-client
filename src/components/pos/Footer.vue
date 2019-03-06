@@ -85,6 +85,7 @@
     <CartAddEmail />
     <CartAmountChange />
     <CartTipAmount />
+    <GiftCard />
   </div>
 </template>
 
@@ -106,6 +107,7 @@ import CartTipAmount from '../pos/content/cart/payNow/popups/TipAmount'
 import CustomerInformation from './footer/popups/ManageCustomer/CustomerInformation'
 import CustomerNotes from './footer/popups/ManageCustomer/CustomerInformation/CustomerNotes'
 import SelectCustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/SelectCustomerAddress'
+import GiftCard from '../pos/content/cart/newOrders/popup/GiftCard.vue'
 import { mapActions } from 'vuex'
 
 export default {
@@ -129,6 +131,7 @@ export default {
     CartAddEmail,
     CartAmountChange,
     CartTipAmount,
+    GiftCard,
   },
   methods: {
     ...mapActions('discount', ['validateOrderDiscounts']),
