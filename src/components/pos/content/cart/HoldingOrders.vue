@@ -28,8 +28,8 @@ export default {
   computed: {
     ...mapState({
       holdOrderList: state =>
-        state.holdOrders.getHoldOrders.status != 0 &&
-        state.holdOrders.getHoldOrders.data.length > 0
+        state.holdOrders.getHoldOrders &&
+        state.holdOrders.getHoldOrders.status != 0
           ? state.holdOrders.getHoldOrders.data
           : false,
     }),

@@ -42,7 +42,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link text-center" id="sidenavToggler">
-          <img src="img/pos/profile-pic.png" />
+          <img :src="profileImage" />
         </a>
       </li>
     </ul>
@@ -60,6 +60,15 @@ export default {
       // map this.categories to store.state.categories, it uses dispatch
       menu: state => state.category.all,
       currentCategory: state => state.category.category._id,
+    }),
+    ...mapState({
+      profileImage: state =>
+        state.auth.userDetails &&
+        state.auth.userDetails.image
+          ? process.env.VUE_APP_API_ENDPOINT +
+            '/profile_pic/' +
+            state.auth.userDetails.image
+          : 'img/pos/profile-pic.png',
     }),
     ...mapGetters('category', ['categoryImage']),
   },
