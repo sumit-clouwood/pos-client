@@ -1,10 +1,11 @@
 export default {
   data: function() {
     return {
-      locale: new Map([['en', 'en_US'], ['et', 'et_EE'], ['ar', 'ar_SA']]).get(
-        process.env.VUE_APP_I18N_LOCALE ||
+      locale: new Map([['en_US', 'en_US'], ['et_EE', 'et_EE'], ['ar_SA', 'ar_SA']]).get(
+        this.$store.state.location.selectedLanguage ||
+          process.env.VUE_APP_I18N_LOCALE ||
           process.env.VUE_APP_I18N_FALLBACK_LOCALE ||
-          'en'
+          'en_US'
       ),
     }
   },

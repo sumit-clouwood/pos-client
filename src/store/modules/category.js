@@ -15,7 +15,7 @@ const state = {
   items: [],
   taxData: [],
   taxAmount: {},
-  searchItems: [],
+  searchItems: {},
 }
 
 // getters, computed properties
@@ -24,8 +24,10 @@ const getters = {
   subcategoryImage: state => imageSrc => state.subcategoryImagePath + imageSrc,
   itemImage: state => imageSrc => state.itemImagePath + imageSrc,
 
-  items: state =>
-    state.categoryItems.length ? state.categoryItems : state.subcategoryItems,
+  items: state => state.searchItems.length > 0
+    ? state.searchItems : state.categoryItems.length
+      ? state.categoryItems
+      : state.subcategoryItems,
 }
 
 // actions, often async
@@ -93,6 +95,7 @@ const actions = {
   },
   //get items on subcategory click
   getItems({ commit, state }, item) {
+    commit(mutation.SET_SEARCH_ITEMS, '')
     const subcategory = state.subcategories.find(
       category => category._id == item._id
     )
@@ -104,26 +107,20 @@ const actions = {
   },
 
   collectSearchItems({ commit, state, rootState }, searchTerm) {
-    console.log(searchTerm)
     const defaultLanguage = rootState.location.selectedLanguage
-    let datas = []
+    let searchedItems = []
     let matches = state.items.map(item => {
-      /* if (
-        item.name.indexOf(searchTerm) != -1 &&
-        item.language == defaultLanguage
-      ) {
-        datas.push(item)
-      }*/
       item.item_name.forEach(getByLanguage => {
         if (
-          getByLanguage.name.indexOf(searchTerm) != -1 &&
+          getByLanguage.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !=
+            -1 &&
           defaultLanguage == getByLanguage.language
         ) {
-          datas.push(item)
+          searchedItems.push(item)
         }
       })
     })
-    console.log(datas)
+    commit(mutation.SET_SEARCH_ITEMS, searchedItems)
   },
 }
 // mutations
@@ -178,6 +175,9 @@ const mutations = {
 
   [mutation.SET_ITEM](state, item) {
     state.item = item
+  },
+  [mutation.SET_SEARCH_ITEMS](state, searchedItems) {
+    state.searchItems = searchedItems
   },
 }
 
