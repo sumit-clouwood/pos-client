@@ -57,8 +57,9 @@ const actions = {
     commit(mutation.SET_FRANCHISE_CODE, userData.franchies_code)
   },
 
-  changeLanguage({ commit }, selectedLanguage) {
+  changeLanguage({ commit, dispatch }, selectedLanguage) {
     commit(mutation.SET_LANGUAGE,selectedLanguage)
+    dispatch('fetchAll')
   }
 }
 
@@ -78,6 +79,7 @@ const mutations = {
     state.currency = currency
   },
   [mutation.SET_LOCATION_DATA](state, locationDetails) {
+    localStorage.setItem('selectedLanguage', state.selectedLanguage)
     state.locationData = locationDetails
   },
   [mutation.SET_CURRENCY](state, currency) {
@@ -88,6 +90,7 @@ const mutations = {
   },
   [mutation.SET_LANGUAGE](state, selectedLanguage) {
     state.selectedLanguage = selectedLanguage
+    localStorage.setItem('selectedLanguage',state.selectedLanguage)
   }
 }
 

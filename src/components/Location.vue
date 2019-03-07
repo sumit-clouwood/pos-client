@@ -54,6 +54,7 @@ export default {
         this.$store.dispatch('surcharge/fetchAll', response)
         this.$store.dispatch('discount/fetchAll', response)
         this.$store.dispatch('customer/fetchAll', response)
+        localStorage.setItem('selectedLanguage','en_US')
       })
       .catch(error => (this.errored = error))
   },
