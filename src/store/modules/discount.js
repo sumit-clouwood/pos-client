@@ -212,6 +212,9 @@ const actions = {
     commit(mutation.SET_TAX_DISCOUNT_AMOUNT, taxDiscount)
     commit(mutation.SET_SURCHARGE_DISCOUNT_AMOUNT, surchargeDiscount)
   },
+  reset({ commit }) {
+    commit(mutation.RESET)
+  },
 }
 
 // mutations
@@ -288,6 +291,17 @@ const mutations = {
     state.TaxDiscountAmount = 0
     state.appliedOrderDiscount = false
     state.currentActiveOrderDiscount = false
+  },
+  [mutation.RESET](state) {
+    state.currentActiveItemDiscount = false
+    state.currentActiveOrderDiscount = false
+    state.appliedItemDiscounts = []
+    state.appliedOrderDiscount = false
+    state.itemsDiscountAmount = 0
+    state.orderDiscountAmount = 0
+    state.TaxDiscountAmount = 0
+    state.surchargeDiscountAmount = 0
+    state.error = false
   },
 }
 

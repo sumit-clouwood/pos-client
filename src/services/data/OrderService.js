@@ -1,10 +1,8 @@
 import DataService from '@/services/DataService'
 
 export default {
-  saveOrder(...[locationId, lastSyncDate, isCompress]) {
-    return DataService.post(
-      `/api/auth/order/SaveOrder/itemDiscount/?location_id=${locationId}&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
-    )
+  saveOrder(data) {
+    return DataService.post(`/api/auth/order/SaveOrder`, data)
   },
 
   deleteOrder(orderId) {

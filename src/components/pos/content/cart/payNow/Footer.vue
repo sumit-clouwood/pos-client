@@ -21,6 +21,7 @@
       data-toggle="modal"
       data-target="#change-amount"
       data-dismiss="modal"
+      @click="pay"
     >
       <img src="img/pos/done.png" alt="payment-method" /><span>Done</span>
     </div>
@@ -28,7 +29,11 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'PayNowFooter',
+  methods: {
+    ...mapActions('checkout', ['pay']),
+  },
 }
 </script>

@@ -6,28 +6,36 @@ const state = {
   creditCardPopup: false,
   LoyalityPopup: false,
   error: false,
+  tipAmount: 0,
 }
 
 // getters
 const getters = {
+  validate: (state, getters) => {
+    if (getters.payable < 0) return true
+    return getters.orderTotal && !getters.payable
+  },
+  orderTotal: (state, getters, rootState, rootGetters) => {
+    return rootGetters['order/orderTotal'] + state.tipAmount
+  },
   paid: state => {
     return state.payments.reduce((total, payment) => total + payment.amount, 0)
   },
-  payable: (state, getters, rootState, rootGetters) => {
-    const totalPayable = rootGetters['order/orderTotal']
-    const paid = getters.paid
-    return totalPayable - paid
+  payable: (state, getters) => {
+    return getters.orderTotal - getters.paid
   },
 }
 
 // actions
 const actions = {
   addAmount({ commit, getters, rootGetters }) {
-    const totalPayable = rootGetters['order/orderTotal']
+    const totalPayable = getters.orderTotal
     const paid = getters.paid
     const remaining = totalPayable - paid
 
-    if (
+    if (!parseInt(state.amount)) {
+      commit('SET_ERROR', `Amount should be greater than 0`)
+    } else if (
       (state.method == 'MasterCard' || state.method == 'Visa') &&
       parseFloat(state.amount) > remaining
     ) {
@@ -70,6 +78,9 @@ const actions = {
     }
     commit('removePayment', index)
   },
+  reset({ commit }) {
+    commit('RESET')
+  },
 }
 
 // mutations
@@ -104,12 +115,25 @@ const mutations = {
       method: method,
     })
   },
+  addTip(state, tip) {
+    state.tipAmount = tip
+  },
   removePayment(state, index) {
     state.payments.splice(index, 1)
   },
 
   SET_ERROR(state, error) {
     state.error = error
+  },
+
+  RESET(state) {
+    state.amount = ''
+    state.method = 'Cash'
+    state.payments = []
+    state.creditCardPopup = false
+    state.LoyalityPopup = false
+    state.error = false
+    state.tipAmount = 0
   },
 }
 

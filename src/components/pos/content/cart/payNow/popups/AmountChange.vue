@@ -6,12 +6,19 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Amount Change</h4>
+          <h4 class="customer-title">
+            {{ validate ? 'Amount Change' : 'Error' }}
+          </h4>
         </div>
         <div class="modal-body change-amount-option">
-          <div class="amount-change-wrap">
-            <p>Change <span>(INR)</span></p>
-            <h1>4.25</h1>
+          <div v-show="validate" class="amount-change-wrap">
+            <p>
+              Change <span>({{ currency }})</span>
+            </p>
+            <h1>{{ changedAmount }}</h1>
+          </div>
+          <div v-show="!validate" class="error">
+            <p>{{ error }}</p>
           </div>
         </div>
         <div class="modal-footer">
@@ -20,6 +27,7 @@
               class="btn btn-success btn-large"
               type="button"
               data-dismiss="modal"
+              @click="generateInvoice"
               id="dining-opt"
             >
               Ok
@@ -35,7 +43,21 @@
 </template>
 
 <script>
+/* global $ */
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'AmountChange',
+  computed: {
+    ...mapState('location', ['currency']),
+    ...mapState('checkout', ['changedAmount']),
+    ...mapState('checkoutForm', ['error']),
+    ...mapGetters('checkoutForm', ['validate']),
+  },
+  methods: {
+    generateInvoice() {
+      $('#pay-now').modal('toggle')
+      this.$store.dispatch('checkout/generateInvoice')
+    },
+  },
 }
 </script>

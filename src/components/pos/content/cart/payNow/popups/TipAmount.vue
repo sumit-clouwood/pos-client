@@ -7,7 +7,7 @@
         <div class="modal-body tip-amount">
           <div class="tip-amount-wrap">
             <p>Enter Tip Amount</p>
-            <input type="number" name="tip" />
+            <input v-model.number="tip" type="number" name="tip" />
           </div>
         </div>
         <div class="modal-footer">
@@ -17,12 +17,14 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              <span>âœ•</span> Cancel
+              <span>-</span> Cancel
             </button>
             <button
               class="btn btn-success btn-large"
               type="button"
+              data-dismiss="modal"
               id="add-top"
+              @click="addTip"
             >
               <span>+</span>Add
             </button>
@@ -38,5 +40,15 @@
 <script>
 export default {
   name: 'TipAmount',
+  data: function() {
+    return {
+      tip: 0,
+    }
+  },
+  methods: {
+    addTip() {
+      this.$store.commit('checkoutForm/addTip', this.tip)
+    },
+  },
 }
 </script>

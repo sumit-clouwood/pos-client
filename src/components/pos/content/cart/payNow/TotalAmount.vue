@@ -5,19 +5,20 @@
       <p class="total-amt">Total Amount</p>
     </div>
     <div class="payment-amount-digit">
-      <p>AED 20.00</p>
+      <p>{{ formatPrice(tipAmount) }}</p>
       <h2>{{ formatPrice(orderTotal) }}</h2>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'TotalAmount',
   computed: {
-    ...mapGetters('order', ['orderTotal']),
+    ...mapGetters('checkoutForm', ['orderTotal']),
     ...mapGetters('location', ['formatPrice']),
+    ...mapState('checkoutForm', ['tipAmount']),
   },
   methods: {},
 }
