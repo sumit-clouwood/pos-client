@@ -54,7 +54,8 @@ export default {
         this.$store.dispatch('surcharge/fetchAll', response)
         this.$store.dispatch('discount/fetchAll', response)
         this.$store.dispatch('customer/fetchAll', response)
-        localStorage.setItem('selectedLanguage','en_US')
+        // localStorage.setItem('selectedLanguage', this.defaultLanguage.language)
+        // localStorage.setItem('selectedLanguageSortName', this.defaultLanguage.shortname)
       })
       .catch(error => (this.errored = error))
   },
@@ -65,6 +66,12 @@ export default {
       // map this.categories to store.state.categories, it uses dispatch
       locationIds: state => state.location.locationIds,
       locationName: state => state.location.locationName,
+    }),
+    ...mapState({
+      defaultLanguage: state =>
+        typeof state.location.locationData
+          ? state.location.locationData.default_language[0]
+          : false,
     }),
   },
 }

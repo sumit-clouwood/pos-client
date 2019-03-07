@@ -107,7 +107,7 @@ const actions = {
   },
 
   collectSearchItems({ commit, state, rootState }, searchTerm) {
-    const defaultLanguage = rootState.location.selectedLanguage
+    const defaultLanguage = rootState.location.selectedSortcode
     let searchedItems = []
     let matches = state.items.map(item => {
       item.item_name.forEach(getByLanguage => {

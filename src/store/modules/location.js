@@ -8,7 +8,8 @@ const state = {
   currency: 'AED',
   locationData: {},
   deliveryAreas: {},
-  selectedLanguage: 'en_US'
+  selectedLanguage: 'English',
+  selectedSortcode: 'en_US',
 }
 
 // getters
@@ -57,10 +58,10 @@ const actions = {
     commit(mutation.SET_FRANCHISE_CODE, userData.franchies_code)
   },
 
-  changeLanguage({ commit, dispatch }, selectedLanguage) {
-    commit(mutation.SET_LANGUAGE,selectedLanguage)
-    dispatch('fetchAll')
-  }
+  changeLanguage({ commit }, selectedLanguageShortName) {
+    commit(mutation.SET_LANGUAGE, selectedLanguageShortName)
+    // window.location.reload()
+  },
 }
 
 // mutations
@@ -79,7 +80,18 @@ const mutations = {
     state.currency = currency
   },
   [mutation.SET_LOCATION_DATA](state, locationDetails) {
-    localStorage.setItem('selectedLanguage', state.selectedLanguage)
+    if (
+      typeof localStorage.getItem('selectedLanguageSortName') != 'string'
+    ) {
+      localStorage.setItem(
+        'selectedLanguageSortName',
+        locationDetails.default_language[0].shortname
+      )
+      localStorage.setItem(
+        'selectedLanguage',
+        locationDetails.default_language[0].language
+      )
+    }
     state.locationData = locationDetails
   },
   [mutation.SET_CURRENCY](state, currency) {
@@ -88,10 +100,18 @@ const mutations = {
   [mutation.SET_DELIVERY_AREAS](state, delivery_area) {
     state.deliveryAreas = delivery_area
   },
-  [mutation.SET_LANGUAGE](state, selectedLanguage) {
+  [mutation.SET_LANGUAGE](state, selectedLanguageShortName) {
+    let selectedLanguage = state.locationData.default_language[0].language
+    state.locationData.languages.forEach(getLang => {
+      if (getLang.shortname == selectedLanguageShortName) {
+        selectedLanguage = getLang.language
+      }
+    })
+    state.selectedSortcode = selectedLanguageShortName
     state.selectedLanguage = selectedLanguage
-    localStorage.setItem('selectedLanguage',state.selectedLanguage)
-  }
+    localStorage.setItem('selectedLanguageSortName', selectedLanguageShortName)
+    localStorage.setItem('selectedLanguage', selectedLanguage)
+  },
 }
 
 export default {

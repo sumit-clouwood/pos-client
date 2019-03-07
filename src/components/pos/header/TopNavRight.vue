@@ -11,8 +11,9 @@
         <span><i class="fa fa-fw fa-circle"></i></span> Online
       </h6>
     </li>
-    <li v-if="languages">
+    <li v-if="languages"> {{ langSelected }}
       <select v-model="selectedShortname" @change="changeLanguage(selectedShortname)" class="language-button">
+        <option selected> {{ langSelected }}</option>
         <option
                 v-for="language in languages"
                 :key="language._id"
@@ -68,8 +69,9 @@ export default {
     return {
       selectedShortname:
         typeof this.defaultLanguage != 'undefined'
-          ? this.defaultLanguage.language
+          ? this.defaultLanguage.shortname
           : 'en_US',
+      langSelected: localStorage.getItem('selectedLanguage')
     }
   },
   computed: {
