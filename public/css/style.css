@@ -6524,3 +6524,10 @@ div#payment-method .slick-slide > div > div > label {
 .cursor-pointer {
   cursor: pointer;
 }
+.language-button {
+  height: 50px;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0 10px;
+}

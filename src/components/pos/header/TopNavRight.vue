@@ -1,16 +1,6 @@
 <template>
   <ul class="navbar-nav ml-auto">
-    <li v-if="languages">
-      <select v-model="selectedShortname" @change="changeLanguage(selectedShortname)">
-        <option
-          v-for="language in languages"
-          :key="language._id"
-          :value="language.shortname"
-        >
-          {{ language.language }}
-        </option>
-      </select>
-    </li>
+
     <li class="nav-item">
       <a class="nav-link mr-lg-2" id="adminDropdown" href="#">
         <span class="">Admin</span>
@@ -20,6 +10,17 @@
       <h6 class="header-online">
         <span><i class="fa fa-fw fa-circle"></i></span> Online
       </h6>
+    </li>
+    <li v-if="languages">
+      <select v-model="selectedShortname" @change="changeLanguage(selectedShortname)" class="language-button">
+        <option
+                v-for="language in languages"
+                :key="language._id"
+                :value="language.shortname"
+        >
+          {{ language.language }}
+        </option>
+      </select>
     </li>
     <li class="nav-item" data-toggle="modal" data-target="#alert">
       <a class="btn-part" href="#">3 part 27</a>
