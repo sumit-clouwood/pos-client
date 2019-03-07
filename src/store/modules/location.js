@@ -60,7 +60,7 @@ const actions = {
 
   changeLanguage({ commit }, selectedLanguageShortName) {
     commit(mutation.SET_LANGUAGE, selectedLanguageShortName)
-    // window.location.reload()
+    window.location.reload()
   },
 }
 
@@ -111,6 +111,7 @@ const mutations = {
     state.selectedLanguage = selectedLanguage
     localStorage.setItem('selectedLanguageSortName', selectedLanguageShortName)
     localStorage.setItem('selectedLanguage', selectedLanguage)
+
   },
 }
 

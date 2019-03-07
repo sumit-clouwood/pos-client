@@ -11,9 +11,9 @@
         <span><i class="fa fa-fw fa-circle"></i></span> Online
       </h6>
     </li>
-    <li v-if="languages"> {{ langSelected }}
+    <li v-if="languages">
       <select v-model="selectedShortname" @change="changeLanguage(selectedShortname)" class="language-button">
-        <option selected> {{ langSelected }}</option>
+        <option> Select Language </option>
         <option
                 v-for="language in languages"
                 :key="language._id"
