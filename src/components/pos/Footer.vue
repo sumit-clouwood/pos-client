@@ -10,7 +10,7 @@
               ></a
             >
           </li>
-          <li id="hold-order-box">
+          <li id="hold-order-box" @click="getHoldOrders">
             <!-- <a href="#"><img class="hold-orders-show" src="images/footer-images/s.png" alt="customer"><img class="hold-order" src="images/hold-order.png" alt="customer"><span>Hold Orders</span></a>-->
             <a href="#"
               ><img class="hold-orders-show" src="img/pos/hold.svg" /><img
@@ -134,6 +134,7 @@ export default {
     GiftCard,
   },
   methods: {
+    ...mapActions('holdOrders', ['getHoldOrders']),
     ...mapActions('discount', ['validateOrderDiscounts']),
   },
 }

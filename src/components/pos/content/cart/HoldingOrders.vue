@@ -2,12 +2,19 @@
   <div class="holding-order-panel animated zoomIn">
     <Header />
     <div class="wrappers-order-block">
-      <Items />
+      <Items
+        v-if="holdOrderList"
+        v-for="order in holdOrderList"
+        :orderData="order"
+        :key="1"
+        :currencyCode="currencyCode"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Header from './holdingOrders/Header.vue'
 import Items from './holdingOrders/Items.vue'
 
@@ -18,5 +25,17 @@ export default {
     Items,
   },
   props: {},
+  computed: {
+    ...mapState({
+      holdOrderList: state =>
+        state.holdOrders.getHoldOrders.status != 0 &&
+        state.holdOrders.getHoldOrders.data.length > 0
+          ? state.holdOrders.getHoldOrders.data
+          : false,
+    }),
+    ...mapState({
+      currencyCode: state => state.location.currency,
+    }),
+  },
 }
 </script>

@@ -15,6 +15,7 @@ import checkout from './modules/checkout'
 import checkoutForm from './modules/checkout/form'
 import giftcard from './modules/giftcard'
 import announcement from './modules/announcement'
+import holdOrders from './modules/holdOrders'
 // import paginate from 'vuejs-paginate'
 
 //to take snapshot
@@ -41,7 +42,8 @@ const store = new Vuex.Store({
     checkout,
     checkoutForm,
     giftcard,
-    announcement
+    announcement,
+    holdOrders
   },
   strict: debug,
   plugins: debug ? [createLogger()] : [],
