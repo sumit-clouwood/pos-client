@@ -1,6 +1,5 @@
 <template>
   <ul class="navbar-nav ml-auto">
-
     <li class="nav-item">
       <a class="nav-link mr-lg-2" id="adminDropdown" href="#">
         <span class="">Admin</span>
@@ -12,12 +11,16 @@
       </h6>
     </li>
     <li v-if="languages">
-      <select v-model="selectedShortname" @change="changeLanguage(selectedShortname)" class="language-button">
-        <option> Select Language </option>
+      <select
+        v-model="selectedShortname"
+        @change="changeLanguage(selectedShortname)"
+        class="language-button"
+      >
+        <option :value="selectedShortname"> Select Language </option>
         <option
-                v-for="language in languages"
-                :key="language._id"
-                :value="language.shortname"
+          v-for="language in languages"
+          :key="language._id"
+          :value="language.shortname"
         >
           {{ language.language }}
         </option>
@@ -71,7 +74,7 @@ export default {
         typeof this.defaultLanguage != 'undefined'
           ? this.defaultLanguage.shortname
           : 'en_US',
-      langSelected: localStorage.getItem('selectedLanguage')
+      langSelected: localStorage.getItem('selectedLanguage'),
     }
   },
   computed: {
@@ -89,7 +92,7 @@ export default {
     }),
   },
   methods: {
-    ...mapActions('location',['changeLanguage'])
-  }
+    ...mapActions('location', ['changeLanguage']),
+  },
 }
 </script>
