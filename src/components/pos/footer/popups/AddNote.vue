@@ -11,7 +11,11 @@
         <div class="modal-body add-note-wrap">
           <div class="add-note-area">
             <p>Enter Order Note</p>
-            <textarea type="text" class="add-note-form"> </textarea>
+            <textarea
+              type="text"
+              class="add-note-form"
+              v-model="orderNote"
+            ></textarea>
           </div>
         </div>
         <div class="modal-footer">
@@ -24,6 +28,7 @@
               <span>X</span> Cancel
             </button>
             <button
+              @click="addNoteOrder(orderNote)"
               class="btn btn-success btn-large"
               type="button"
               id="save-note"
@@ -42,8 +47,21 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'AddNote',
   props: {},
+  data() {
+    return {
+      orderNote: ''
+    }
+  },
+  methods: {
+    addNoteOrder: function(orderNote) {
+      this.addOrderNote(orderNote)
+      $('#add-note').modal('toggle')
+    },
+    ...mapActions('order',['addOrderNote'])
+  }
 }
 </script>

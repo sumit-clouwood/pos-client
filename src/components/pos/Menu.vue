@@ -42,7 +42,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link text-center" id="sidenavToggler">
-          <img src="img/pos/profile-pic.png" />
+          <img :src="profileImage" />
         </a>
       </li>
     </ul>
@@ -61,6 +61,15 @@ export default {
       menu: state => state.category.all,
       currentCategory: state => state.category.category._id,
     }),
+    ...mapState({
+      profileImage: state =>
+        state.auth.userDetails &&
+        state.auth.userDetails.image
+          ? process.env.VUE_APP_API_ENDPOINT +
+            '/profile_pic/' +
+            state.auth.userDetails.image
+          : 'img/pos/profile-pic.png',
+    }),
     ...mapGetters('category', ['categoryImage']),
   },
   // map `this.browse()` to `this.$store.category.dispatch('browse')`
@@ -69,18 +78,3 @@ export default {
   },
 }
 </script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<!--<style lang="scss" scoped>
-    @import '../../assets/sass/variables.scss';
-    @import '../../assets/sass/mixins.scss';
-    @import '../../assets/sass/navbar.scss';
-</style>-->
-
-<style lang="scss" scoped>
-.nav-link {
-  img {
-    /*height: 22px;*/
-    /*width: 25px;*/
-  }
-}
-</style>
