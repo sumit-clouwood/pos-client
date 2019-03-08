@@ -1,12 +1,10 @@
 import CategoryService from '@/services/data/CategoryService'
 import * as mutation from './category/mutation-types'
-
 // initial state
 const state = {
   categoryImagePath: '',
   subcategoryImagePath: '',
   itemImagePath: '',
-
   all: [],
   category: {},
   subcategories: [],
@@ -14,8 +12,10 @@ const state = {
   categoryItems: [],
   subcategoryItems: [],
   item: {},
+  items: [],
   taxData: [],
   taxAmount: {},
+  searchItems: {},
 }
 
 // getters, computed properties
@@ -24,8 +24,10 @@ const getters = {
   subcategoryImage: state => imageSrc => state.subcategoryImagePath + imageSrc,
   itemImage: state => imageSrc => state.itemImagePath + imageSrc,
 
-  items: state =>
-    state.categoryItems.length ? state.categoryItems : state.subcategoryItems,
+  items: state => state.searchItems.length > 0
+    ? state.searchItems : state.categoryItems.length
+      ? state.categoryItems
+      : state.subcategoryItems,
 }
 
 // actions, often async
@@ -93,6 +95,7 @@ const actions = {
   },
   //get items on subcategory click
   getItems({ commit, state }, item) {
+    commit(mutation.SET_SEARCH_ITEMS, '')
     const subcategory = state.subcategories.find(
       category => category._id == item._id
     )
@@ -102,14 +105,40 @@ const actions = {
       state.subcategory.get_sub_category_product
     )
   },
-}
 
+  collectSearchItems({ commit, state, rootState }, searchTerm) {
+    const defaultLanguage = rootState.location.selectedSortcode
+    let searchedItems = []
+    let matches = state.items.map(item => {
+      item.item_name.forEach(getByLanguage => {
+        if (
+          getByLanguage.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !=
+            -1 &&
+          defaultLanguage == getByLanguage.language
+        ) {
+          searchedItems.push(item)
+        }
+      })
+    })
+    commit(mutation.SET_SEARCH_ITEMS, searchedItems)
+  },
+}
 // mutations
 //state should be only changed through mutation and these are synchronous
 const mutations = {
   //using constant as function name
   [mutation.SET_CATEGORIES](state, categories) {
     state.all = categories
+
+    let allItems = []
+    categories.forEach(category => {
+      category.get_sub_category.forEach(subCategory => {
+        subCategory.get_sub_category_product.forEach(item => {
+          allItems.push(item)
+        })
+      })
+    })
+    state.items = allItems
   },
 
   [mutation.SET_CATEGORY](state, category) {
@@ -146,6 +175,9 @@ const mutations = {
 
   [mutation.SET_ITEM](state, item) {
     state.item = item
+  },
+  [mutation.SET_SEARCH_ITEMS](state, searchedItems) {
+    state.searchItems = searchedItems
   },
 }
 

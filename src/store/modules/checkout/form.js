@@ -41,7 +41,7 @@ const actions = {
     ) {
       commit(
         'SET_ERROR',
-        `Card payment can't be greater than ` +
+        'Card payment can\'t be greater than ' +
           rootGetters['location/round'](remaining)
       )
     } else {

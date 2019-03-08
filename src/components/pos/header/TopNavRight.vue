@@ -10,6 +10,22 @@
         <span><i class="fa fa-fw fa-circle"></i></span> Online
       </h6>
     </li>
+    <li v-if="languages">
+      <select
+        v-model="selectedShortname"
+        @change="changeLanguage(selectedShortname)"
+        class="language-button"
+      >
+        <option :value="selectedShortname"> Select Language </option>
+        <option
+          v-for="language in languages"
+          :key="language._id"
+          :value="language.shortname"
+        >
+          {{ language.language }}
+        </option>
+      </select>
+    </li>
     <li class="nav-item" data-toggle="modal" data-target="#alert">
       <a class="btn-part" href="#">3 part 27</a>
     </li>
@@ -48,9 +64,35 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'TopNavRight',
   props: {},
-  components: {},
+  data() {
+    return {
+      selectedShortname:
+        typeof this.defaultLanguage != 'undefined'
+          ? this.defaultLanguage.shortname
+          : 'en_US',
+      langSelected: localStorage.getItem('selectedLanguage'),
+    }
+  },
+  computed: {
+    ...mapState({
+      languages: state =>
+        typeof state.location.locationData
+          ? state.location.locationData.languages
+          : false,
+    }),
+    ...mapState({
+      defaultLanguage: state =>
+        typeof state.location.locationData
+          ? state.location.locationData.default_language[0]
+          : false,
+    }),
+  },
+  methods: {
+    ...mapActions('location', ['changeLanguage']),
+  },
 }
 </script>
