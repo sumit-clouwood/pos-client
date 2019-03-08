@@ -69,7 +69,7 @@ export default {
     }),
     ...mapState({
       defaultLanguage: state =>
-        typeof state.location.locationData
+        typeof state.location.locationData !== 'undefined'
           ? state.location.locationData.default_language[0]
           : false,
     }),

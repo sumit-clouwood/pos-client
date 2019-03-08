@@ -17,7 +17,7 @@ export default {
   name: 'Items',
   props: {
     orderData: Object,
-    currencyCode: String
+    currencyCode: String,
   },
 }
 </script>

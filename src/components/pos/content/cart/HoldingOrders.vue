@@ -1,12 +1,11 @@
 <template>
   <div class="holding-order-panel animated zoomIn">
     <Header />
-    <div class="wrappers-order-block">
+    <div class="wrappers-order-block" v-if="holdOrderList">
       <Items
-        v-if="holdOrderList"
-        v-for="order in holdOrderList"
+        v-for="(order, key) in holdOrderList"
         :orderData="order"
-        :key="1"
+        :key="key"
         :currencyCode="currencyCode"
       />
     </div>

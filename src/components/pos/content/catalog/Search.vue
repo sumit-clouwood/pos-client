@@ -24,7 +24,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('category',['collectSearchItems'])
-  }
+    ...mapActions('category', ['collectSearchItems']),
+  },
 }
 </script>

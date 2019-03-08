@@ -43,7 +43,7 @@ const store = new Vuex.Store({
     checkoutForm,
     giftcard,
     announcement,
-    holdOrders
+    holdOrders,
   },
   strict: debug,
   plugins: debug ? [createLogger()] : [],

@@ -24,8 +24,10 @@ const getters = {
   subcategoryImage: state => imageSrc => state.subcategoryImagePath + imageSrc,
   itemImage: state => imageSrc => state.itemImagePath + imageSrc,
 
-  items: state => state.searchItems.length > 0
-    ? state.searchItems : state.categoryItems.length
+  items: state =>
+    state.searchItems.length > 0
+      ? state.searchItems
+      : state.categoryItems.length
       ? state.categoryItems
       : state.subcategoryItems,
 }
@@ -109,7 +111,7 @@ const actions = {
   collectSearchItems({ commit, state, rootState }, searchTerm) {
     const defaultLanguage = rootState.location.selectedSortcode
     let searchedItems = []
-    let matches = state.items.map(item => {
+    state.items.map(item => {
       item.item_name.forEach(getByLanguage => {
         if (
           getByLanguage.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !=
