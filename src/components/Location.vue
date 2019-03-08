@@ -46,19 +46,22 @@ export default {
           this.$store.dispatch('location/setLocations', response.data.data)
         }
 
-        Promise.all([
-          this.$store.dispatch('location/fetchAll', response),
-          this.$store.dispatch('announcement/fetchAll', response),
-          this.$store.dispatch('category/fetchAll', response),
-          this.$store.dispatch('modifier/fetchAll', response),
-          this.$store.dispatch('surcharge/fetchAll', response),
-          this.$store.dispatch('discount/fetchAll', response),
-          this.$store.dispatch('customer/fetchAll', response),
-          this.$store.dispatch('payment/fetchAll', response),
-          this.$store.dispatch('invoice/fetchAll', response),
-        ]).then(() => {
-          this.$store.commit('sync/loaded', true)
-        })
+        Promise.all([this.$store.dispatch('category/fetchAll', response)]).then(
+          () => {
+            this.$store.commit('sync/loaded', true)
+          }
+        )
+
+        this.$store.dispatch('modifier/fetchAll', response)
+        this.$store.dispatch('location/fetchAll', response)
+        this.$store.dispatch('announcement/fetchAll', response)
+        this.$store.dispatch('surcharge/fetchAll', response)
+        this.$store.dispatch('discount/fetchAll', response)
+        this.$store.dispatch('customer/fetchAll', response)
+        this.$store.dispatch('payment/fetchAll', response)
+        this.$store.dispatch('giftcard/fetchAll', response)
+        this.$store.dispatch('invoice/fetchAll', response)
+
         // localStorage.setItem('selectedLanguage', this.defaultLanguage.language)
         // localStorage.setItem('selectedLanguageSortName', this.defaultLanguage.shortname)
       })
