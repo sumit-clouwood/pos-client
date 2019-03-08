@@ -3,8 +3,7 @@
     <div class="order-notes">
       <p class="notes-title">NOTES</p>
       <p>
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry porto.
+       {{ orderNotes }}
       </p>
     </div>
     <div class="order-confirm-amt" id="total-confirm-order">
@@ -16,19 +15,30 @@
         <p>BILL AMOUNT :</p>
       </div>
       <div class="order-amt-charges">
-        <p>INR 42.00</p>
-        <p>INR 0.00</p>
-        <p>INR 0.00</p>
-        <p>INR 0.00</p>
-        <p>INR 42.00</p>
+        <p>{{ formatPrice(subTotal || 0) }}</p>
+        <p>{{ formatPrice(surcharge || 0) }}</p>
+        <p>{{ formatPrice(orderDiscountWithoutTax || 0) }}</p>
+        <p>{{ formatPrice(totalTax || 0) }}</p>
+        <p>{{ formatPrice(orderTotal || 0) }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'SendToDeliveryContentPaymentDetails',
   props: {},
+  computed: {
+    ...mapState({
+      orderNotes: state => state.order.orderNote,
+    }),
+    ...mapGetters('order', ['orderTotal', 'subTotal']),
+    ...mapGetters('tax', ['totalTax']),
+    ...mapGetters('surcharge', ['surcharge']),
+    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('discount', ['orderDiscountWithoutTax']),
+  },
 }
 </script>

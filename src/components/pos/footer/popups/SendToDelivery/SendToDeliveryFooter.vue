@@ -10,21 +10,22 @@
         aria-haspopup="true"
         aria-expanded="false"
       >
-        Referal</button
+        {{ selectedReferral() }}
+      </button
       ><!--<span><img src="images/referal-down.png"></span>-->
-      <div class="dropdown-menu">
-        <a class="dropdown-item" data-value="Call Center" href="#"
-          >Call Center</a
-        >
-        <a class="dropdown-item" data-value="Talabat" href="#">Talabat</a>
-        <a class="dropdown-item" data-value="Talabat Credit" href="#"
-          >Talabat Credit</a
-        >
-        <a class="dropdown-item" data-value="Zomato" href="#">Zomato</a>
-        <a class="dropdown-item" data-value="Zomato Credit" href="#"
-          >Zomato Credit</a
-        >
-        <a class="dropdown-item" data-value="Round Menu" href="#">Round Menu</a>
+      <div class="dropdown-menu" v-if="getReferrals" v-model="changedReferral">
+        <a
+          class="dropdown-item"
+          data-value="Call Center"
+          href="#"
+          v-for="referral in getReferrals"
+          :referralType="referral.referral_type"
+          :key="referral._id"
+          >{{ referral.name }}
+        </a>
+      </div>
+      <div class="dropdown-menu" v-if="!getReferrals">
+        Nothing found
       </div>
       <button
         data-range="true"
@@ -60,8 +61,36 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'SendToDeliveryFooter',
   props: {},
+  data() {
+    return {
+      changedReferral: 'Referal'
+    }
+  },
+  computed: {
+    ...mapState({
+      getReferrals: state =>
+        typeof state.location.locationData.referrals != 'undefined' &&
+        state.location.locationData.referrals.length > 0
+          ? state.location.locationData.referrals
+          : false,
+    }),
+  },
+  methods: {
+    selectedReferral() {
+      return this.changedReferral
+    }
+  }
 }
 </script>
+
+<style lang="scss" scoped>
+  .dropdown-menu.show {
+    max-height: 275px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+</style>

@@ -78,18 +78,3 @@ export default {
   },
 }
 </script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<!--<style lang="scss" scoped>
-    @import '../../assets/sass/variables.scss';
-    @import '../../assets/sass/mixins.scss';
-    @import '../../assets/sass/navbar.scss';
-</style>-->
-
-<style lang="scss" scoped>
-.nav-link {
-  img {
-    /*height: 22px;*/
-    /*width: 25px;*/
-  }
-}
-</style>

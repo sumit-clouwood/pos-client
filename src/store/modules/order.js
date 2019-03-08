@@ -5,6 +5,7 @@ const state = {
   items: [],
   item: false,
   orderType: 'Walk-in',
+  orderNote: '',
 }
 
 // getters
@@ -364,6 +365,10 @@ const actions = {
   reset({ commit }) {
     commit(mutation.RESET)
   },
+
+  addOrderNote({ commit }, orderNote ) {
+    commit(mutation.SET_ORDER_NOTE, orderNote)
+  }
 }
 
 // mutations
@@ -431,6 +436,9 @@ const mutations = {
     state.item = false
     state.orderType = 'Walk-in'
   },
+  [mutation.SET_ORDER_NOTE](state, orderNote) {
+    state.orderNote = orderNote
+  }
 }
 
 export default {
