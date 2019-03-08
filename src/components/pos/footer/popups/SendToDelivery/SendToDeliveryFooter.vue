@@ -10,10 +10,9 @@
         aria-haspopup="true"
         aria-expanded="false"
       >
-        {{ selectedReferral() }}
-      </button
+        {{ selectedReferral() }}</button
       ><!--<span><img src="images/referal-down.png"></span>-->
-      <div class="dropdown-menu" v-if="getReferrals" v-model="changedReferral">
+      <div class="dropdown-menu" v-if="getReferrals">
         <a
           class="dropdown-item"
           data-value="Call Center"
@@ -67,7 +66,7 @@ export default {
   props: {},
   data() {
     return {
-      changedReferral: 'Referal'
+      changedReferral: 'Referal',
     }
   },
   computed: {
@@ -82,15 +81,15 @@ export default {
   methods: {
     selectedReferral() {
       return this.changedReferral
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-  .dropdown-menu.show {
-    max-height: 275px;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
+.dropdown-menu.show {
+  max-height: 275px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 </style>
