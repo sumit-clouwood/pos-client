@@ -5,6 +5,7 @@ const state = {
   today: new Date(), //.toJSON().slice(0, 10),
   weekDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   compress: false,
+  loaded: false,
 }
 
 // getters
@@ -21,6 +22,9 @@ const mutations = {
 
   updateCompress(state, isCompress) {
     state.compress = isCompress
+  },
+  loaded(state, loaded) {
+    state.loaded = loaded
   },
 }
 

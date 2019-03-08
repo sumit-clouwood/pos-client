@@ -20,8 +20,8 @@
       </div>
       <ul class="ullist-inventory-location pl-0 pt-2">
         <li class="p-3">
-          <a v-if="locationName">{{ locationName }}</a>
-          <span v-if="!locationName">
+          <a v-if="loaded && locationName">{{ locationName }}</a>
+          <span v-if="!loaded">
             Loading data...
           </span>
         </li>
@@ -35,7 +35,6 @@ import { mapState } from 'vuex'
 export default {
   name: 'Location',
   props: {},
-
   //life cycle hooks
   beforeCreate() {
     this.$store
@@ -47,15 +46,19 @@ export default {
           this.$store.dispatch('location/setLocations', response.data.data)
         }
 
-        this.$store.dispatch('location/fetchAll', response)
-        this.$store.dispatch('announcement/fetchAll', response)
-        this.$store.dispatch('category/fetchAll', response)
-        this.$store.dispatch('modifier/fetchAll', response)
-        this.$store.dispatch('surcharge/fetchAll', response)
-        this.$store.dispatch('discount/fetchAll', response)
-        this.$store.dispatch('customer/fetchAll', response)
-        this.$store.dispatch('payment/fetchAll', response)
-        this.$store.dispatch('invoice/fetchAll', response)
+        Promise.all([
+          this.$store.dispatch('location/fetchAll', response),
+          this.$store.dispatch('announcement/fetchAll', response),
+          this.$store.dispatch('category/fetchAll', response),
+          this.$store.dispatch('modifier/fetchAll', response),
+          this.$store.dispatch('surcharge/fetchAll', response),
+          this.$store.dispatch('discount/fetchAll', response),
+          this.$store.dispatch('customer/fetchAll', response),
+          this.$store.dispatch('payment/fetchAll', response),
+          this.$store.dispatch('invoice/fetchAll', response),
+        ]).then(() => {
+          this.$store.commit('sync/loaded', true)
+        })
         // localStorage.setItem('selectedLanguage', this.defaultLanguage.language)
         // localStorage.setItem('selectedLanguageSortName', this.defaultLanguage.shortname)
       })
@@ -68,6 +71,7 @@ export default {
       // map this.categories to store.state.categories, it uses dispatch
       locationIds: state => state.location.locationIds,
       locationName: state => state.location.locationName,
+      loaded: state => state.sync.loaded,
     }),
     ...mapState({
       defaultLanguage: state =>
