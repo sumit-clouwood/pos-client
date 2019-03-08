@@ -1,13 +1,16 @@
 <template>
-  <ul class="breadcrumb-news">
+  <ul class="breadcrumb-news" v-if="announcements">
     <li class="breadcrumb-item-news">
       <a href="#"> <img src="img/pos/news.png" /><span>News</span></a>
     </li>
-    <li class="item-news" v-if="announcements" v-for="(announcement, index) in announcements">
+    <li
+      class="item-news"
+      v-for="(announcement, index) in announcements"
+      :key="index"
+    >
       <marquee behavior="scroll" direction="left" :key="index">
         {{ announcement.announcement }}
-      </marquee
-      >
+      </marquee>
     </li>
   </ul>
 </template>

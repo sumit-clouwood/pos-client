@@ -80,9 +80,7 @@ const mutations = {
     state.currency = currency
   },
   [mutation.SET_LOCATION_DATA](state, locationDetails) {
-    if (
-      typeof localStorage.getItem('selectedLanguageSortName') != 'string'
-    ) {
+    if (typeof localStorage.getItem('selectedLanguageSortName') != 'string') {
       localStorage.setItem(
         'selectedLanguageSortName',
         locationDetails.default_language[0].shortname
@@ -111,7 +109,6 @@ const mutations = {
     state.selectedLanguage = selectedLanguage
     localStorage.setItem('selectedLanguageSortName', selectedLanguageShortName)
     localStorage.setItem('selectedLanguage', selectedLanguage)
-
   },
 }
 

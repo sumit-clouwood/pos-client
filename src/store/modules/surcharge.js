@@ -23,6 +23,7 @@ const actions = {
       if (subtotal && state.surcharges.length) {
         state.surcharges.forEach(surcharge => {
           let applidSurcharge = {
+            id: surcharge._id,
             amount: surcharge.rate,
             tax: surcharge.surcharge_is_taxable
               ? surcharge.surcharge_taxable_rate_info
@@ -55,6 +56,9 @@ const actions = {
       }
     })
   },
+  reset({ commit }) {
+    commit(mutation.RESET)
+  },
 }
 
 const mutations = {
@@ -63,6 +67,9 @@ const mutations = {
   },
   [mutation.SET_SURCHARGE_AMOUNT](state, amount) {
     state.surchargeAmounts = amount
+  },
+  [mutation.RESET](state) {
+    state.surchargeAmounts = []
   },
 }
 

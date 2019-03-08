@@ -1,12 +1,11 @@
 <template>
   <div class="holding-order-panel animated zoomIn">
     <Header />
-    <div class="wrappers-order-block">
+    <div class="wrappers-order-block" v-if="holdOrderList">
       <Items
-        v-if="holdOrderList"
-        v-for="order in holdOrderList"
+        v-for="(order, key) in holdOrderList"
         :orderData="order"
-        :key="1"
+        :key="key"
         :currencyCode="currencyCode"
       />
     </div>
@@ -28,8 +27,9 @@ export default {
   computed: {
     ...mapState({
       holdOrderList: state =>
-        state.holdOrders.getHoldOrders &&
-        state.holdOrders.getHoldOrders.status != 0
+        state.holdOrders.getHoldOrders.status != 0 &&
+        state.holdOrders.getHoldOrders.data &&
+        state.holdOrders.getHoldOrders.data.length > 0
           ? state.holdOrders.getHoldOrders.data
           : false,
     }),

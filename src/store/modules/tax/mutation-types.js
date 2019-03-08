@@ -1,2 +1,4 @@
 export const SET_ITEMS_TAX = 'SET_ITEMS_TAX'
+export const SET_ITEMS_TAX_DATA = 'SET_ITEMS_TAX_DATA'
 export const SET_SURCHARGE_TAX = 'SET_SURCHARGE_TAX'
+export const RESET = 'RESET'

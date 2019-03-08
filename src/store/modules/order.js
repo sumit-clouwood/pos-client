@@ -287,15 +287,17 @@ const actions = {
       )
 
       if (discount) {
-        item.discount = {
+        let itemDiscountData = {
+          id: discount.discount._id,
           name: discount.discount.name,
           type: discount.discount.type,
           rate: discount.discount.rate,
         }
 
         if (discount.discount.type == 'value') {
-          itemsDiscount += discount.discount.rate
+          itemsDiscount += discount.discount.rate * item.quantity
           item.price = item.undiscountedPrice - discount.discount.rate
+          itemDiscountData.discount = discount.discount.rate
         } else {
           const calculated =
             (item.undiscountedPrice * discount.discount.rate) / 100
@@ -303,7 +305,10 @@ const actions = {
           item.price = item.undiscountedPrice - calculated
 
           itemsDiscount += calculated * item.quantity
+          itemDiscountData.discount = calculated
         }
+
+        item.discount = itemDiscountData
       } else {
         //remove already applied discount
         item.discount = false
@@ -356,6 +361,9 @@ const actions = {
       }
     })
   },
+  reset({ commit }) {
+    commit(mutation.RESET)
+  },
 }
 
 // mutations
@@ -397,7 +405,8 @@ const mutations = {
   },
 
   [mutation.ADD_MODIFIER_PRICE_TO_ITEM](state, modifierPrice) {
-    state.item.price = parseFloat(state.item.price) + modifierPrice
+    const totalPrice = state.item.price + modifierPrice
+    state.item.price = parseFloat(totalPrice)
   },
 
   [mutation.SET_ITEM_TAX](state, tax) {
@@ -416,6 +425,11 @@ const mutations = {
   },
   [mutation.REMOVE_ITEM_TAX](state, item) {
     state.items.splice(item.orderIndex, 1, item)
+  },
+  [mutation.RESET](state) {
+    state.items = []
+    state.item = false
+    state.orderType = 'Walk-in'
   },
 }
 
