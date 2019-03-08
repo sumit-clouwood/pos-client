@@ -162,7 +162,7 @@ const actions = {
 
       //adding payment breakdown
       order.payBreakDown = rootState.checkoutForm.payments.map(payment => {
-        let paymentPart = [payment.method, payment.amount]
+        let paymentPart = [payment.method.name, payment.amount]
         if (payment.code) {
           paymentPart.push(payment.code)
         }

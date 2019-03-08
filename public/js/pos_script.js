@@ -256,10 +256,7 @@ $(document).ready(function() {
       .addClass('active')
     $('.dm-contain-order.active').hide(800)
   })
-  $('.payment-method-block table td img').click(function() {
-    $('.payment-method-block').addClass('active')
-    $('.payment-method-block').hide(800)
-  })
+
   $('.pizza-size-wrapper > div').click(function() {
     $('.pizza-size-wrapper > div').removeClass('active')
     $(this).addClass('active')
@@ -564,13 +561,6 @@ $(document).ready(function() {
     dots: true,
     nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
     prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
-  })
-  $('#payment-method').slick({
-    arrows: false,
-    infinite: true,
-    slidesToShow: 4,
-    slidesToScroll: 4,
-    dots: true,
   })
 
   $('li.pay-now').click(function() {

@@ -54,6 +54,8 @@ export default {
         this.$store.dispatch('surcharge/fetchAll', response)
         this.$store.dispatch('discount/fetchAll', response)
         this.$store.dispatch('customer/fetchAll', response)
+        this.$store.dispatch('payment/fetchAll', response)
+        this.$store.dispatch('invoice/fetchAll', response)
         // localStorage.setItem('selectedLanguage', this.defaultLanguage.language)
         // localStorage.setItem('selectedLanguageSortName', this.defaultLanguage.shortname)
       })

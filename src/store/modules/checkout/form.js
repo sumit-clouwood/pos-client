@@ -1,7 +1,7 @@
 // initial state
 const state = {
   amount: '',
-  method: 'Cash',
+  method: {},
   payments: [],
   creditCardPopup: false,
   LoyalityPopup: false,
@@ -36,7 +36,8 @@ const actions = {
     if (!parseInt(state.amount)) {
       commit('SET_ERROR', `Amount should be greater than 0`)
     } else if (
-      (state.method == 'MasterCard' || state.method == 'Visa') &&
+      !state.method.is_cash &&
+      !state.method.is_gift &&
       parseFloat(state.amount) > remaining
     ) {
       commit(
@@ -108,7 +109,7 @@ const mutations = {
   },
   setAmount(state, val) {
     state.amount = val
-    if (state.method == 'MasterCard' || state.method == 'Visa') {
+    if (!state.method.is_cash && !state.method.is_gift) {
       state.creditCardPopup = true
     } else {
       state.creditCardPopup = false
@@ -136,7 +137,7 @@ const mutations = {
 
   RESET(state) {
     state.amount = ''
-    state.method = 'Cash'
+    state.method = {}
     state.payments = []
     state.creditCardPopup = false
     state.LoyalityPopup = false

@@ -12,7 +12,7 @@
           <th style="width: 150px;"></th>
         </tr>
         <tr v-for="(payment, index) in payments" :key="index">
-          <td>{{ payment.method }}</td>
+          <td>{{ payment.method.name }}</td>
           <td>{{ formatPrice(payment.amount) }}</td>
           <td>
             <a href="" @click.prevent="removePayment(index)"
