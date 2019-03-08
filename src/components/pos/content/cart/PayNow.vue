@@ -32,12 +32,13 @@
                 name="payment"
                 v-model.number="payable"
                 id="input"
+                @click="showCalc = true"
                 :placeholder="formatPrice(0.0)"
               />
               <img src="img/pos/payment-input-icon.png" class="input-image" />
             </div>
-            <AmountCalculator />
-            <PaymentBreakdown />
+            <AmountCalculator v-show="showCalc" />
+            <PaymentBreakdown v-show="!showCalc" />
             <PayNowFooter />
           </div>
           <div v-show="!items.length">
@@ -74,6 +75,14 @@ export default {
     AmountCalculator,
   },
   computed: {
+    showCalc: {
+      get() {
+        return this.$store.state.checkoutForm.showCalc
+      },
+      set(val) {
+        return this.$store.commit('checkoutForm/showCalc', val)
+      },
+    },
     payable: {
       get() {
         return this.$store.state.checkoutForm.amount

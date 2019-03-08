@@ -9,7 +9,9 @@ const state = {
 }
 
 // getters
-const getters = {}
+const getters = {
+  find: state => code => state.giftcards.data.find(gc => gc.gift_code == code),
+}
 
 // actions
 const actions = {
@@ -17,7 +19,7 @@ const actions = {
     const params = [rootState.location.location, rootState.sync.compress]
 
     const giftcards = await GiftCardService.fetchAll(...params)
-    commit(mutation.SET_GIFT_CARDS, giftcards)
+    commit(mutation.SET_GIFT_CARDS, giftcards.data)
   },
 
   setCustomerGiftCards({ commit }, giftcards) {

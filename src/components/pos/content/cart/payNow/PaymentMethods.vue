@@ -1,6 +1,12 @@
 <template>
   <div id="payment-method">
-    <div v-for="(method, key) in methods" :key="key" @click="setMethod(method)">
+    <div
+      v-for="(method, key) in methods"
+      :key="key"
+      @click="setMethod(method)"
+      :data-toggle="getToggle(method)"
+      :data-target="getTarget(method)"
+    >
       <img :src="method.imagePath + method.image" alt="method.name" /><label>{{
         method.name
       }}</label>
@@ -22,6 +28,19 @@ export default {
     ...mapGetters('payment', ['methods']),
   },
   methods: {
+    getToggle(method) {
+      if (method.is_gift) {
+        return 'modal'
+      }
+      return ''
+    },
+
+    getTarget(method) {
+      if (method.is_gift) {
+        return '#Gift-card-payemnt'
+      }
+      return ''
+    },
     ...mapActions('checkoutForm', ['setMethod']),
   },
   updated() {
