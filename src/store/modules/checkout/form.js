@@ -53,6 +53,14 @@ const actions = {
       commit('setAmount', rootGetters['location/round'](getters.payable))
     }
   },
+  addGiftCardAmount({ commit, getters, rootGetters }) {
+    commit('SET_ERROR', false)
+    commit('addAmount', {
+      amount: parseFloat(state.amount),
+      method: state.method,
+    })
+    commit('setAmount', rootGetters['location/round'](getters.payable))
+  },
   setAmount({ commit }, amount) {
     commit('setAmount', amount)
   },

@@ -15,7 +15,7 @@
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
             <p>Enter Gift Card Code</p>
-            <input type="text" class="add-email-from" />
+            <input type="text" class="add-email-from" v-model="code" />
           </div>
         </div>
         <div class="modal-footer">
@@ -25,7 +25,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              <span>âœ•</span> Cancel
+              <span>-</span> Cancel
             </button>
             <button
               class="btn btn-success btn-large popup-btn-save"
@@ -34,6 +34,7 @@
               data-toggle="modal"
               data-target="#Gift-card-payemnt-details"
               data-dismiss="modal"
+              @click="payByGiftCard"
             >
               Add
             </button>
@@ -47,5 +48,15 @@
 <script>
 export default {
   name: 'GiftCard',
+  data: function() {
+    return {
+      code: false,
+    }
+  },
+  methods: {
+    payByGiftCard() {
+      this.$store.dispatch('addGiftCardAmount', this.code)
+    },
+  },
 }
 </script>
