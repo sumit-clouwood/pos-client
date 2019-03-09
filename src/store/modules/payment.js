@@ -22,6 +22,8 @@ const actions = {
 
     const paymentMethods = await PaymentService.fetchMethods(...params)
     commit(mutation.SET_METHODS, paymentMethods.data)
+    const activeMethod = state.methods.data.find(method => method.is_cash === 1)
+    commit('checkoutForm/setMethod', activeMethod, { root: true })
   },
 }
 

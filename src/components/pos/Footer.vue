@@ -86,10 +86,12 @@
     <CartAmountChange />
     <CartTipAmount />
     <GiftCard />
+    <Invoice v-if="print" />
   </div>
 </template>
 
 <script>
+import Invoice from '../pos/content/cart/payNow/Invoice'
 import DineIn from './footer/popups/DineIn'
 import AddNote from './footer/popups/AddNote'
 import Discount from './footer/popups/Discount'
@@ -108,7 +110,7 @@ import CustomerInformation from './footer/popups/ManageCustomer/CustomerInformat
 import CustomerNotes from './footer/popups/ManageCustomer/CustomerInformation/CustomerNotes'
 import SelectCustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/SelectCustomerAddress'
 import GiftCard from '../pos/content/cart/newOrders/popup/GiftCard.vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'Footer',
@@ -132,10 +134,12 @@ export default {
     CartAmountChange,
     CartTipAmount,
     GiftCard,
+    Invoice,
   },
   methods: {
     ...mapActions('holdOrders', ['getHoldOrders']),
     ...mapActions('discount', ['validateOrderDiscounts']),
+    ...mapState('checkout', ['print']),
   },
 }
 </script>

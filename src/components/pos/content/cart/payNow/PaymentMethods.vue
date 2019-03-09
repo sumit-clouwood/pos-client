@@ -3,6 +3,7 @@
     <div
       v-for="(method, key) in methods"
       :key="key"
+      :class="{ active: activeMethod == method.name }"
       @click="setMethod(method)"
       :data-toggle="getToggle(method)"
       :data-target="getTarget(method)"
@@ -16,16 +17,14 @@
 
 <script>
 /* global $ */
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   name: 'PaymentMethods',
-  data: function() {
-    return {
-      activeMethod: this.$store.state.checkoutForm.method,
-    }
-  },
   computed: {
     ...mapGetters('payment', ['methods']),
+    ...mapState({
+      activeMethod: state => state.checkoutForm.method.name,
+    }),
   },
   methods: {
     getToggle(method) {
