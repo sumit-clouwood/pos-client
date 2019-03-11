@@ -366,9 +366,9 @@ const actions = {
     commit(mutation.RESET)
   },
 
-  addOrderNote({ commit }, orderNote ) {
+  addOrderNote({ commit }, orderNote) {
     commit(mutation.SET_ORDER_NOTE, orderNote)
-  }
+  },
 }
 
 // mutations
@@ -438,7 +438,7 @@ const mutations = {
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
-  }
+  },
 }
 
 export default {

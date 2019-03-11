@@ -47,13 +47,14 @@
 </template>
 
 <script>
+/* global $ */
 import { mapActions } from 'vuex'
 export default {
   name: 'AddNote',
   props: {},
   data() {
     return {
-      orderNote: ''
+      orderNote: '',
     }
   },
   methods: {
@@ -61,7 +62,7 @@ export default {
       this.addOrderNote(orderNote)
       $('#add-note').modal('toggle')
     },
-    ...mapActions('order',['addOrderNote'])
-  }
+    ...mapActions('order', ['addOrderNote']),
+  },
 }
 </script>

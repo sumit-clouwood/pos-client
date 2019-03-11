@@ -8,6 +8,7 @@ const state = {
   payableAmount: 0,
   pendingAmount: 0,
   changedAmount: 0,
+  print: false,
 }
 
 // getters
@@ -162,7 +163,7 @@ const actions = {
 
       //adding payment breakdown
       order.payBreakDown = rootState.checkoutForm.payments.map(payment => {
-        let paymentPart = [payment.method, payment.amount]
+        let paymentPart = [payment.method.name, payment.amount]
         if (payment.code) {
           paymentPart.push(payment.code)
         }
@@ -181,13 +182,14 @@ const actions = {
       }
     })
   },
-  generateInvoice({ dispatch }) {
-    dispatch('checkout/reset', null, { root: true })
-    dispatch('checkoutForm/reset', null, { root: true })
-    dispatch('order/reset', null, { root: true })
-    dispatch('tax/reset', null, { root: true })
-    dispatch('discount/reset', null, { root: true })
-    dispatch('surcharge/reset', null, { root: true })
+  generateInvoice({ commit }) {
+    commit(mutation.PRINT, true)
+    // dispatch('checkout/reset', null, { root: true })
+    // dispatch('checkoutForm/reset', null, { root: true })
+    // dispatch('order/reset', null, { root: true })
+    // dispatch('tax/reset', null, { root: true })
+    // dispatch('discount/reset', null, { root: true })
+    // dispatch('surcharge/reset', null, { root: true })
   },
 
   reset({ commit }) {
@@ -211,6 +213,9 @@ const mutations = {
   },
   [mutation.SET_CHANGED_AMOUNT](state, amount) {
     state.changedAmount = amount
+  },
+  [mutation.PRINT](state, flag) {
+    state.print = flag
   },
   [mutation.RESET](state) {
     state.order = {}

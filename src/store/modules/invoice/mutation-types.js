@@ -1,0 +1,1 @@
+export const SET_TEMPLATES = 'SET_TEMPLATES'

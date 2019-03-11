@@ -1,10 +1,8 @@
 import DataService from '@/services/DataService'
 
 export default {
-  fetchAll(locationId) {
-    return DataService.get(
-      `/api/auth/get-invoice-list/?location_id=${locationId}`
-    )
+  fetchTemplates(locationId) {
+    return DataService.get(`/api/auth/invoice-list/?location_id=${locationId}`)
   },
 
   fetchPrintRules(...[locationId, orderType, language]) {

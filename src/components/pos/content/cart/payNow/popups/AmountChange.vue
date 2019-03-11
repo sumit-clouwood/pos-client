@@ -27,7 +27,7 @@
               class="btn btn-success btn-large"
               type="button"
               data-dismiss="modal"
-              @click="generateInvoice"
+              @click="validate ? generateInvoice() : false"
               id="dining-opt"
             >
               Ok

@@ -50,12 +50,12 @@ export default {
   name: 'GiftCard',
   data: function() {
     return {
-      code: false,
+      code: '',
     }
   },
   methods: {
     payByGiftCard() {
-      this.$store.dispatch('addGiftCardAmount', this.code)
+      this.$store.dispatch('checkoutForm/addGiftCardAmount', this.code)
     },
   },
 }
