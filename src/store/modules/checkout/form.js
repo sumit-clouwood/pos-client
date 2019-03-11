@@ -34,7 +34,7 @@ const actions = {
     const remaining = totalPayable - paid
 
     if (!parseInt(state.amount)) {
-      commit('SET_ERROR', `Amount should be greater than 0`)
+      commit('SET_ERROR', 'Amount should be greater than 0')
     } else if (
       (state.method == 'MasterCard' || state.method == 'Visa') &&
       parseFloat(state.amount) > remaining

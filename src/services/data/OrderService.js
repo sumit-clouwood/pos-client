@@ -2,7 +2,7 @@ import DataService from '@/services/DataService'
 
 export default {
   saveOrder(data) {
-    return DataService.post(`/api/auth/order/SaveOrder`, data)
+    return DataService.post('/api/auth/order/SaveOrder', data)
   },
 
   deleteOrder(orderId) {

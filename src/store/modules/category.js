@@ -28,8 +28,8 @@ const getters = {
     state.searchItems.length > 0
       ? state.searchItems
       : state.categoryItems.length
-      ? state.categoryItems
-      : state.subcategoryItems,
+        ? state.categoryItems
+        : state.subcategoryItems,
 }
 
 // actions, often async
