@@ -63,8 +63,7 @@ export default {
     }),
     ...mapState({
       profileImage: state =>
-        state.auth.userDetails &&
-        state.auth.userDetails.image
+        state.auth.userDetails && state.auth.userDetails.image
           ? process.env.VUE_APP_API_ENDPOINT +
             '/profile_pic/' +
             state.auth.userDetails.image

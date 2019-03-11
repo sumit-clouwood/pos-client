@@ -3,7 +3,7 @@
     <div class="order-notes">
       <p class="notes-title">NOTES</p>
       <p>
-       {{ orderNotes }}
+        {{ orderNotes }}
       </p>
     </div>
     <div class="order-confirm-amt" id="total-confirm-order">

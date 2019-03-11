@@ -37,8 +37,8 @@ export default {
       let calculetedTaxAmount = 0
       taxArr.length > 0
         ? taxArr.forEach(tax => {
-          calculetedTaxAmount += parseFloat(tax.tax_amount)
-        })
+            calculetedTaxAmount += parseFloat(tax.tax_amount)
+          })
         : 0
       return calculetedTaxAmount
     },

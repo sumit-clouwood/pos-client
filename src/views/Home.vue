@@ -1,7 +1,7 @@
 <template>
   <div class="home">
-    <Location v-show="!location" msg="Broccoli POS" />
-    <Pos v-show="location" msg="Broccoli POS" />
+    <Location v-show="!loaded" msg="Broccoli POS" />
+    <Pos v-show="loaded" msg="Broccoli POS" />
   </div>
 </template>
 
@@ -18,7 +18,7 @@ export default {
     Location,
   },
   computed: {
-    ...mapState('location', ['location']),
+    ...mapState('sync', ['loaded']),
   },
 }
 </script>

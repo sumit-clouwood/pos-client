@@ -99,28 +99,28 @@ const actions = {
   },
 }
 const mutations = {
-  [mutation.CUSTOMER_LIST](commit, customersDetail) {
+  [mutation.CUSTOMER_LIST](state, customersDetail) {
     state.customer_list = customersDetail
   },
-  [mutation.PAGINATE_DETAILS](commit, paginateDetails) {
+  [mutation.PAGINATE_DETAILS](state, paginateDetails) {
     state.paginate = paginateDetails
   },
-  [mutation.PARAMS](commit, paramsCollection) {
+  [mutation.PARAMS](state, paramsCollection) {
     state.params = paramsCollection
   },
-  [mutation.SET_CURRENT_PAGE_NO](commit, pageNumber) {
+  [mutation.SET_CURRENT_PAGE_NO](state, pageNumber) {
     state.params.page_number = pageNumber
   },
-  [mutation.SET_SEARCH_TERMS](commit, searchTerms) {
+  [mutation.SET_SEARCH_TERMS](state, searchTerms) {
     state.params.search = searchTerms
   },
-  [mutation.SET_CUSTOMER_GROUP](commit, customerGroup) {
+  [mutation.SET_CUSTOMER_GROUP](state, customerGroup) {
     state.customer_group = customerGroup
   },
-  [mutation.SET_RESPONSE_MESSAGES](commit, message) {
+  [mutation.SET_RESPONSE_MESSAGES](state, message) {
     state.responseInformation.message = message
   },
-  [mutation.SET_RESPONSE_MESSAGES](commit, customerCreateResponse) {
+  [mutation.SET_RESPONSE_MESSAGES](state, customerCreateResponse) {
     if (customerCreateResponse.status == 0) {
       state.responseInformation.status = customerCreateResponse.status
       state.responseInformation.message = customerCreateResponse.error
@@ -129,10 +129,10 @@ const mutations = {
       state.responseInformation.message = customerCreateResponse.data
     }
   },
-  [mutation.SELECTED_CUSTOMER](commit, customerDetails) {
+  [mutation.SELECTED_CUSTOMER](state, customerDetails) {
     state.customer = customerDetails
   },
-  [mutation.SELECTED_CUSTOMER_ADDRESS](commit, selectedAddress) {
+  [mutation.SELECTED_CUSTOMER_ADDRESS](state, selectedAddress) {
     state.address = selectedAddress
   },
 }
