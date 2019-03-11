@@ -35,7 +35,7 @@
       data-target="#online-order"
     >
       <a class="btn-part" href="#"
-        >online <span class="online-digit">2</span></a
+        >online <span class="online-digit">{{ onlineOrdersCount }}</span></a
       >
     </li>
     <li class="nav-item setting-icon" id="setting-icon">
@@ -75,7 +75,11 @@ export default {
           ? this.defaultLanguage.shortname
           : 'en_US',
       langSelected: localStorage.getItem('selectedLanguage'),
+      onlineOrdersCount: 0,
     }
+  },
+  mounted() {
+    this.onlineOrders()
   },
   computed: {
     ...mapState({
@@ -90,9 +94,22 @@ export default {
           ? state.location.locationData.default_language[0]
           : false,
     }),
+    ...mapState({
+      /*onlineOrders: state =>
+        typeof state.order.onlineOrders.orders != 'undefined'
+          ? state.order.onlineOrders.orders.length
+          : 0,*/
+    }),
   },
   methods: {
     ...mapActions('location', ['changeLanguage']),
+    onlineOrders() {
+      if (JSON.parse(localStorage.getItem('onlineOrders')) != null) {
+        this.onlineOrdersCount = JSON.parse(
+          localStorage.getItem('onlineOrders')
+        ).orders.length
+      }
+    },
   },
 }
 </script>
