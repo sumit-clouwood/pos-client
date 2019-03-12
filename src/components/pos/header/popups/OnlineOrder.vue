@@ -12,17 +12,14 @@
           </h4>
         </div>
         <div class="modal-body online-order-wrapper" v-if="onlineOrders">
-          <div
-            class="add-order-area"
-            v-for="(orders, index) in Math.ceil(onlineOrders.orders.length / 3)"
-          >
+          <div class="add-order-area">
             <div
+              v-for="(order, index) in onlineOrders.orders"
               class="online-order"
-              v-for="order in items.slice((orders - 1) * 3, orders * 3)"
             >
               <div class="online-order-header">
                 <h4 class="customer-title">Upcoming Order # {{ index }}</h4>
-                <p class="online-order-amount">unpaid {{ order._id }}</p>
+                <p class="online-order-amount">unpaid</p>
               </div>
               <div class="online-order-content">
                 <div class="online-order-content-wrap">
@@ -76,85 +73,52 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 export default {
   name: 'OnlineOrder',
   props: {},
   data() {
     return {
       onlineOrders: false,
-      orderCount: 0,
     }
   },
   mounted() {
+    const store = this.$store
     let socket = io('https://websocket-int.erp-pos.com')
     socket.on('sound-channel:App\\Events\\SocketBroadcast', function(
       orderData
     ) {
-      this.onlineOrders = orderData
-      console.log(this.locationId)
-      console.log(this.onlineOrders)
-
-      localStorage.setItem(
-        'order_payment_status',
-        JSON.stringify(this.onlineOrders.data.order_payment_status)
-      )
-      localStorage.setItem(
-        'orders',
-        JSON.stringify(this.onlineOrders.data.orders)
-      )
-      localStorage.setItem('site_url', this.onlineOrders.data.siteurl)
-
-      if (this.locationId == orderData.locationId) {
-        var onlineNewOrderAudioRing = new Audio(
-          'https://int.erp-pos.com/sound/doorbell.ogg'
-        )
-        onlineNewOrderAudioRing.load()
-        if (orderData.orders && orderData.orders.length) {
-          console.log('play')
-          onlineNewOrderAudioRing.addEventListener(
-            'ended',
-            function() {
-              this.currentTime = 0
-              ;(this.play() || nopromise).catch(function() {})
-            },
-            false
-          )
-          ;(onlineNewOrderAudioRing.play() || nopromise).catch(function() {})
-        } else {
-          console.log('pause')
-          onlineNewOrderAudioRing.pause()
-          onlineNewOrderAudioRing.currentTime = 0
-        }
-      }
+      store.dispatch('order/setOnlineOrders', orderData.data)
+      console.log(methods)
     })
+    this.onlineOrder()
   },
   computed: {
     ...mapState({
       locationId: state => state.location.location,
     }),
+    ...mapState({
+      /*    onlineOrder: state =>
+ /*       typeof state.order.onlineOrders.orders != 'undefined'
+             ? state.order.onlineOrders
+             : false,*/
+    }),
+  },
+  methods: {
+    onlineOrder() {
+      if (JSON.parse(localStorage.getItem('onlineOrders')) != null) {
+        this.onlineOrders = JSON.parse(localStorage.getItem('onlineOrders'))
+      }
+    },
 
-    /*orderPaymentStatus:
-      this.onlineOrders != '' && typeof this.onlineOrders != 'undefined'
-        ? this.onlineOrders.order_payment_status
-        : [],
-
-    orders: this.onlineOrders.length > 0 ? this.onlineOrders.orders : [],
-
-    OnlineOrderLocation:
-      this.onlineOrders.length > 0 ? this.onlineOrders.locationId : '',*/
-
-    collectOrderCollection: function(orderData) {
-      let onlineOrderList = []
-      alert(this.locationId)
-      if (this.locationId == orderData.locationId) {
-        console.log(orderData)
-        console.log(this.onlineOrders)
+    playSound(onlineOrders) {
+      if (this.locationId == onlineOrders.orders.locationId) {
+        alert(locationId)
         var onlineNewOrderAudioRing = new Audio(
           'https://int.erp-pos.com/sound/doorbell.ogg'
         )
         onlineNewOrderAudioRing.load()
-        if (orderData.orders && orderData.orders.length) {
+        if (onlineOrders.orders && onlineOrders.orders.length) {
           console.log('play')
           onlineNewOrderAudioRing.addEventListener(
             'ended',

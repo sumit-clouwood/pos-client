@@ -6,6 +6,7 @@ const state = {
   item: false,
   orderType: 'Walk-in',
   orderNote: '',
+  onlineOrders: {},
 }
 
 // getters
@@ -345,7 +346,6 @@ const actions = {
       })
     )
   },
-
   removeItemTax({ state, commit, dispatch, rootState }) {
     let item = { ...state.item }
     //remove tax information from the order and recalculate the tax
@@ -365,9 +365,12 @@ const actions = {
   reset({ commit }) {
     commit(mutation.RESET)
   },
-
   addOrderNote({ commit }, orderNote) {
     commit(mutation.SET_ORDER_NOTE, orderNote)
+  },
+
+  setOnlineOrders({ commit }, onlineOrderData) {
+    commit(mutation.ONLINE_ORDERS, onlineOrderData)
   },
 }
 
@@ -438,6 +441,13 @@ const mutations = {
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
+  },
+
+  [mutation.ONLINE_ORDERS](state, onlineOrderData) {
+    state.onlineOrders = onlineOrderData
+    localStorage.setItem('onlineOrders', JSON.stringify(onlineOrderData))
+    // localStorage.setItem('orders', JSON.stringify(onlineOrderData.orders))
+    // localStorage.setItem('site_url', onlineOrderData.siteurl)
   },
 }
 
