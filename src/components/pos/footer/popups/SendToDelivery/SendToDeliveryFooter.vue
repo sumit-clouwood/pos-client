@@ -97,7 +97,9 @@ export default {
   data() {
     return {
       changedReferral: 'Referal',
-      datetimeEmpty: new Date()
+      datetimeEmpty: null,
+      minDatetime: null,
+      maxDatetime: null,
     }
   },
   computed: {
