@@ -122,21 +122,10 @@ export default {
         //provide dual lang
 
         Object.keys(labels).map(function(key) {
-          labels[key] = labels[key] + ' / ' + tpl.template[key]
+          if (tpl.template[key]) {
+            labels[key] = labels[key] + ' / ' + tpl.template[key]
+          }
         })
-        // labels.title_label += ' / ' + tpl.template.title_label
-        // labels.invoice_number_label += ' / ' + tpl.template.invoice_number_label
-        // labels.order_type_label += ' / ' + tpl.template.order_type_label
-        // labels.staff_label += ' / ' + tpl.template.staff_label
-        // labels.sub_total_label += ' / ' + tpl.template.sub_total_label
-        // labels.tax_label += ' / ' + tpl.template.tax_label
-        // labels.surcharge_label += ' / ' + tpl.template.surcharge_label
-        // labels.discount_label += ' / ' + tpl.template.discount_label
-        // labels.to_pay_label += ' / ' + tpl.template.to_pay_label
-        // labels.exchange_label += ' / ' + tpl.template.exchange_label
-        // labels.qty_label += ' / ' + tpl.template.qty_label
-        // labels.item_label += ' / ' + tpl.template.item_label
-        // labels.price_label += ' / ' + tpl.template.price_label
       }
 
       return labels
