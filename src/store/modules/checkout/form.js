@@ -194,7 +194,6 @@ const mutations = {
 
   RESET(state) {
     state.amount = ''
-    state.method = {}
     state.payments = []
     state.creditCardPopup = false
     state.LoyalityPopup = false

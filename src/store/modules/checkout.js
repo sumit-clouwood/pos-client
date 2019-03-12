@@ -185,16 +185,14 @@ const actions = {
   },
   generateInvoice({ commit }) {
     commit(mutation.PRINT, true)
-    // dispatch('checkout/reset', null, { root: true })
-    // dispatch('checkoutForm/reset', null, { root: true })
-    // dispatch('order/reset', null, { root: true })
-    // dispatch('tax/reset', null, { root: true })
-    // dispatch('discount/reset', null, { root: true })
-    // dispatch('surcharge/reset', null, { root: true })
   },
-
-  reset({ commit }) {
+  reset({ commit, dispatch }) {
     commit(mutation.RESET)
+    dispatch('checkoutForm/reset', null, { root: true })
+    dispatch('order/reset', null, { root: true })
+    dispatch('tax/reset', null, { root: true })
+    dispatch('discount/reset', null, { root: true })
+    dispatch('surcharge/reset', null, { root: true })
   },
 }
 
@@ -219,11 +217,12 @@ const mutations = {
     state.print = flag
   },
   [mutation.RESET](state) {
-    state.order = {}
+    state.order = false
     state.paidAmount = 0
     state.payableAmount = 0
     state.pendingAmount = 0
     state.changedAmount = 0
+    state.print = false
   },
 }
 

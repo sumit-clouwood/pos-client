@@ -12,7 +12,7 @@
 </template>
 
 <script>
-/* global $ */
+/* global $ hidePayNow */
 import { mapState } from 'vuex'
 import WalkinInvoice from './invoice/WalkinInvoice'
 export default {
@@ -26,7 +26,6 @@ export default {
   },
   updated() {
     if (this.$store.state.checkout.print) {
-      this.$store.commit('checkout/PRINT', false)
       const w = window.open()
 
       const styles = `.invoice {
@@ -55,6 +54,12 @@ export default {
       w.document.write('<style>' + styles + '</style>' + $('#printarea').html())
       w.print()
       w.close()
+
+      //becareful for circular dependency
+      this.$store.dispatch('checkout/reset')
+      //this.$store.commit('checkout/PRINT', false)
+      $('.modal-backdrop').remove()
+      hidePayNow()
     }
   },
 }
