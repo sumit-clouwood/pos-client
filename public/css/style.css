@@ -6530,3 +6530,13 @@ div#payment-method .slick-slide > div > div > label {
   border-radius: 4px;
   padding: 0 10px;
 }
+.schedule-input {
+  color: #ffffff !important;
+  height: 50px;
+  box-shadow: 0 2px 2px #d1e6c5;
+  border-radius: 4px;
+  background-color: #62bb31;
+  border-color: #62bb31;
+  /*margin-left: 10px;*/
+  width: auto;
+}

@@ -26,7 +26,7 @@
       <div class="dropdown-menu" v-if="!getReferrals">
         Nothing found
       </div>
-      <button
+      <!-- <button
         data-range="true"
         data-multiple-dates-separator=" - "
         class="btn btn-success btn-large datepicker-here"
@@ -37,7 +37,31 @@
       >
         Schedule
         <span><img src="img/pos/schedule-icon.png" alt="schedule"/></span>
-      </button>
+      </button>-->
+      <datetime
+        type="datetime"
+        title="Schedule"
+        placeholder="Schedule"
+        v-model="datetimeEmpty"
+        input-class="btn schedule-input btn-large datepicker-here"
+        value-zone="America/New_York"
+        zone="Asia/Shanghai"
+        :format="{
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+        }"
+        :phrases="{ ok: 'Continue', cancel: 'Exit' }"
+        :hour-step="1"
+        :minute-step="10"
+        :min-datetime="minDatetime"
+        :max-datetime="maxDatetime"
+        :week-start="7"
+        use12-hour
+        auto
+      ></datetime>
     </div>
     <div class="btn-announce">
       <button
@@ -55,18 +79,25 @@
         Confirm
       </button>
     </div>
+
     <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
   </div>
 </template>
 
 <script>
+import { Datetime } from 'vue-datetime'
+
 import { mapState } from 'vuex'
 export default {
   name: 'SendToDeliveryFooter',
   props: {},
+  components: {
+    Datetime,
+  },
   data() {
     return {
       changedReferral: 'Referal',
+      datetimeEmpty: new Date()
     }
   },
   computed: {

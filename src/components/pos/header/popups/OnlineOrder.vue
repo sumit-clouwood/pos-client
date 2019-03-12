@@ -89,7 +89,6 @@ export default {
       orderData
     ) {
       store.dispatch('order/setOnlineOrders', orderData.data)
-      console.log(methods)
     })
     this.onlineOrder()
   },
