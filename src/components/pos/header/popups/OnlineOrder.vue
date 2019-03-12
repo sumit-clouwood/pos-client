@@ -8,18 +8,31 @@
           <h4 class="customer-title">
             Additional order are almost ready. Would you like to take them with
             you ?
-            {{ onlineOrders }}
           </h4>
+            <button type="button" class="close pull-right" data-dismiss="modal">
+                &times;
+            </button>
         </div>
-        <div class="modal-body online-order-wrapper" v-if="onlineOrders">
+        <div class="modal-body online-order-wrapper" v-if="getLatestOnlineOrders">
           <div class="add-order-area">
             <div
-              v-for="(order, index) in onlineOrders.orders"
+              v-for="(order, index) in getLatestOnlineOrders.orders"
               class="online-order"
             >
               <div class="online-order-header">
-                <h4 class="customer-title">Upcoming Order # {{ index }}</h4>
-                <p class="online-order-amount">unpaid</p>
+                <h4 class="customer-title">Upcoming Order # {{ ++index }}</h4>
+                <p
+                  class="online-order-amount"
+                  v-if="getPaymentStatus() === 'unpaid'"
+                >
+                  unpaid
+                </p>
+                <p
+                  class="online-order-amount paid-amt"
+                  v-if="getPaymentStatus() === 'paid'"
+                >
+                  paid
+                </p>
               </div>
               <div class="online-order-content">
                 <div class="online-order-content-wrap">
@@ -32,13 +45,27 @@
                     <span>Order No</span>#{{ order.order_no }}
                   </p>
                   <p><span>Wait Time</span>{{ order.created_timestamp }}</p>
-                  <p><span>Customer</span>{{ order.customer_id }}</p>
+                  <p>
+                    <span>Customer</span
+                    >{{
+                      getCustomerInformation(
+                        fetchAddress.customer_list,
+                        order.customer_id,
+                        order.address_id
+                      )
+                    }}
+                  </p>
                 </div>
                 <div class="online-order-address">
                   <p>
-                    555, Test-555<br />
-                    Test, 555<br />
-                    Alimps Campus, Binaker
+                    <span v-if="customerAddress">
+                      {{
+                        getDeliveryArea(customerAddress.delivery_area)
+                      }},<br />
+                      {{ customerAddress.street }}, {{ locationName }}, <br />
+                      {{ customerAddress.city }},
+                    </span>
+                    {{ country }}
                   </p>
                 </div>
                 <div class="online-order-btn">
@@ -73,13 +100,15 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'OnlineOrder',
   props: {},
   data() {
     return {
-      onlineOrders: false,
+      customerName: '',
+      customerAddress: false,
+      paymentStatus: 'unpaid',
     }
   },
   mounted() {
@@ -90,50 +119,52 @@ export default {
     ) {
       store.dispatch('order/setOnlineOrders', orderData.data)
     })
-    this.onlineOrder()
   },
   computed: {
     ...mapState({
       locationId: state => state.location.location,
     }),
     ...mapState({
-      /*    onlineOrder: state =>
- /*       typeof state.order.onlineOrders.orders != 'undefined'
-             ? state.order.onlineOrders
-             : false,*/
+      fetchAddress: state => state.customer.allOnlineAddress,
     }),
+    ...mapState({
+      locationName: state => state.location.locationName,
+    }),
+    ...mapState({
+      country: state =>
+        typeof state.location.locationData !== 'undefined'
+          ? state.location.locationData.country_name
+          : '',
+    }),
+    ...mapGetters('location', ['getDeliveryArea']),
+    ...mapGetters('order', ['getLatestOnlineOrders']),
   },
   methods: {
-    onlineOrder() {
-      if (JSON.parse(localStorage.getItem('onlineOrders')) != null) {
-        this.onlineOrders = JSON.parse(localStorage.getItem('onlineOrders'))
+
+    getCustomerInformation(addressList, customerId, addressId) {
+      if (typeof addressList != 'undefined') {
+        addressList.forEach(customerAddress => {
+          if (customerAddress._id == customerId) {
+            this.customerName = customerAddress.customer_name
+            customerAddress.customer_details.forEach(address => {
+              if (addressId == address._id) {
+                this.customerAddress = address
+              }
+            })
+          }
+          return this.customerName
+        })
       }
     },
 
-    playSound(onlineOrders) {
-      if (this.locationId == onlineOrders.orders.locationId) {
-        alert(locationId)
-        var onlineNewOrderAudioRing = new Audio(
-          'https://int.erp-pos.com/sound/doorbell.ogg'
-        )
-        onlineNewOrderAudioRing.load()
-        if (onlineOrders.orders && onlineOrders.orders.length) {
-          console.log('play')
-          onlineNewOrderAudioRing.addEventListener(
-            'ended',
-            function() {
-              this.currentTime = 0
-              ;(this.play() || nopromise).catch(function() {})
-            },
-            false
-          )
-          ;(onlineNewOrderAudioRing.play() || nopromise).catch(function() {})
-        } else {
-          console.log('pause')
-          onlineNewOrderAudioRing.pause()
-          onlineNewOrderAudioRing.currentTime = 0
+    getPaymentStatus(orderId) {
+      let orderStatus = 'unpaid'
+      this.getLatestOnlineOrders.order_payment_status.forEach(payment => {
+        if (payment.order_id == orderId) {
+          orderStatus == payment.payment_mode
         }
-      }
+      })
+      return orderStatus
     },
   },
 }

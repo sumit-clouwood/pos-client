@@ -26,7 +26,7 @@
               data-toggle="modal"
               data-target="#display-order"
               data-dismiss="modal"
-              onClick="updateDada()"
+              @click="fetchSelectedCustomer({customerId: customer._id})"
               class="br-table-btn display-order"
             >
               Display Order
@@ -34,16 +34,15 @@
           </td>
           <td>
             <button
-              @click="fetchSelectedCustomer(customer._id)"
+              @click="fetchSelectedCustomer({customerId: customer._id})"
               data-toggle="modal"
-              onClick="updateDada()"
               data-target="#display-order"
               data-dismiss="modal"
               class="br-table-btn edit-info"
             >
               Edit Info</button
             ><button
-              @click="fetchSelectedCustomer(customer._id)"
+              @click="fetchSelectedCustomer({customerId: customer._id, addressOnly:true})"
               data-toggle="modal"
               data-target="#add-to-order"
               data-dismiss="modal"

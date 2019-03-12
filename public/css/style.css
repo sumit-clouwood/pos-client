@@ -4036,8 +4036,9 @@ button.add-to-delivery {
   padding: 10px 20px;
 }
 
-.add-order-area > div:nth-child(2n) {
-  margin: 0 35px;
+/*.add-order-area > div:nth-child(2n) {*/
+.add-order-area > div {
+  margin: 0px 15px 15px 6px;;
 }
 
 .add-order-area > div:nth-child(3n + 1) {

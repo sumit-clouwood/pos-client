@@ -9,6 +9,7 @@ const state = {
   params: { page_number: 1, page_size: 10, search: '' },
   responseInformation: { status: 0, message: '' },
   address: {},
+  allOnlineAddress: {},
 }
 const getters = {}
 const actions = {
@@ -70,12 +71,19 @@ const actions = {
     }
   },
 
-  fetchSelectedCustomer({ commit, rootState }, customer_id) {
-    const params = [customer_id, rootState.location.location]
+  fetchSelectedCustomer({ commit, rootState }, { customerId, addressOnly }) {
+    const params = [customerId, rootState.location.location]
+    /*if (typeof addressOnly != 'undefined') {
+      customerService.getCustomerDetails(...params).then(response => {
+        commit(mutation.SELECTED_CUSTOMER, response.data.data)
+        //dispatch('giftcard/setCustomerGiftCards', response.data.data)
+      })
+    } else {*/
     customerService.fetchCustomer(...params).then(response => {
       commit(mutation.SELECTED_CUSTOMER, response.data.data)
       //dispatch('giftcard/setCustomerGiftCards', response.data.data)
     })
+    // }
   },
 
   selectedAddress({ commit }, selected_address_id, area) {
@@ -96,6 +104,27 @@ const actions = {
     customerService.createAddress(newAddressDetails).then(response => {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
     })
+  },
+
+  fetchCustomerAddress({ commit, rootState }) {
+    let allOnlineOrders = false
+    if (JSON.parse(localStorage.getItem('onlineOrders')) != null) {
+      allOnlineOrders = JSON.parse(localStorage.getItem('onlineOrders')).orders
+    }
+    let customerIds = []
+    if (allOnlineOrders) {
+      allOnlineOrders.forEach(order => {
+        // if (customerIds.indexOf(order.customer_id) == -1) {
+        if ($.inArray(order.customer_id, customerIds) === -1) {
+          customerIds.push(order.customer_id)
+        }
+      })
+      console.log(customerIds)
+      const params = [customerIds, rootState.location.location]
+      customerService.getCustomerDetails(...params).then(response => {
+        commit(mutation.FETCH_CUSTOMER_ADDRESSES, response.data.data)
+      })
+    }
   },
 }
 const mutations = {
@@ -134,6 +163,9 @@ const mutations = {
   },
   [mutation.SELECTED_CUSTOMER_ADDRESS](state, selectedAddress) {
     state.address = selectedAddress
+  },
+  [mutation.FETCH_CUSTOMER_ADDRESSES](state, addressList) {
+    state.allOnlineAddress = addressList
   },
 }
 

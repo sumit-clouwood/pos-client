@@ -6,7 +6,7 @@ const state = {
   item: false,
   orderType: 'Walk-in',
   orderNote: '',
-  onlineOrders: {},
+  onlineOrders: false,
 }
 
 // getters
@@ -39,6 +39,18 @@ const getters = {
 
   orderModifiers: () => item => {
     return item.modifiers.length
+  },
+
+  getLatestOnlineOrders: state => {
+    if (state.onlineOrders) {
+      return state.onlineOrders
+    } else {
+      if (JSON.parse(localStorage.getItem('onlineOrders')) != null) {
+        return JSON.parse(localStorage.getItem('onlineOrders'))
+      } else {
+        return false
+      }
+    }
   },
 }
 
@@ -369,9 +381,41 @@ const actions = {
     commit(mutation.SET_ORDER_NOTE, orderNote)
   },
 
-  setOnlineOrders({ commit }, onlineOrderData) {
-    commit(mutation.ONLINE_ORDERS, onlineOrderData)
+  setOnlineOrders({ commit, rootState }, onlineOrderData) {
+    commit(mutation.ONLINE_ORDERS, {
+      onlineOrders: onlineOrderData,
+      locationId: rootState.location.location,
+    })
   },
+}
+
+function playSound(locationId, onlineOrders) {
+  let nopromise = {
+    catch: new Function(),
+  }
+  // onlineOrders.orders.forEach(order => {
+  if (locationId == onlineOrders.location_id) {
+    let onlineNewOrderAudioRing = new Audio(
+      'https://int.erp-pos.com/sound/doorbell.ogg'
+    )
+    onlineNewOrderAudioRing.load()
+    if (onlineOrders.orders && onlineOrders.orders.length) {
+      console.log('play')
+      onlineNewOrderAudioRing.addEventListener(
+        'ended',
+        function() {
+          this.currentTime = 0
+          ;(this.play() || nopromise).catch(function() {})
+        },
+        false
+      )
+      ;(onlineNewOrderAudioRing.play() || nopromise).catch(function() {})
+    } else {
+      console.log('pause')
+      onlineNewOrderAudioRing.pause()
+      onlineNewOrderAudioRing.currentTime = 0
+    }
+  }
 }
 
 // mutations
@@ -443,11 +487,10 @@ const mutations = {
     state.orderNote = orderNote
   },
 
-  [mutation.ONLINE_ORDERS](state, onlineOrderData) {
-    state.onlineOrders = onlineOrderData
-    localStorage.setItem('onlineOrders', JSON.stringify(onlineOrderData))
-    // localStorage.setItem('orders', JSON.stringify(onlineOrderData.orders))
-    // localStorage.setItem('site_url', onlineOrderData.siteurl)
+  [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId }) {
+    state.onlineOrders = onlineOrders
+    localStorage.setItem('onlineOrders', JSON.stringify(onlineOrders))
+    playSound(locationId, onlineOrders)
   },
 }
 
