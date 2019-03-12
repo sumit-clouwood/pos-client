@@ -17,10 +17,14 @@ const getters = {
   round: () => amount =>
     (Math.round((parseFloat(amount) + 0.00001) * 100) / 100).toFixed(2),
   rawPrice: () => price => (price > 0 ? price : 0),
-  formatPrice: state => price =>
-    state.currency +
-    ' ' +
-    (Math.round((parseFloat(price) + 0.00001) * 100) / 100).toFixed(2),
+  formatPrice: state => price => {
+    if (!price) price = 0.0
+    return (
+      state.currency +
+      ' ' +
+      (Math.round((parseFloat(price) + 0.00001) * 100) / 100).toFixed(2)
+    )
+  },
 
   getDeliveryArea: state => areaId => {
     let area = ''

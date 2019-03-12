@@ -1,9 +1,10 @@
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
+import mixin from '@/mixins/global/Translate'
 
 // initial state
 const state = {
-  order: {},
+  order: false,
   paidAmount: 0,
   payableAmount: 0,
   pendingAmount: 0,
@@ -86,10 +87,10 @@ const actions = {
           taxData => taxData.itemId == item._id
         )
         let orderItem = {
-          itemName: item.item_name,
+          itemName: mixin.methods.t(item.item_name).name,
           itemId: item._id,
           itemTax: itemTax.tax,
-          total: item.price + itemTax.tax,
+          total: parseFloat(item.price) + parseFloat(itemTax.tax),
           item_discount_price: parseFloat(item.price),
           item_discount_id: item.discount.id,
           item_discount_name: item.discount.name,
@@ -117,9 +118,9 @@ const actions = {
                           _id: submodItem._id,
                           location_price: submodItem.price,
                           modifierSubGroup: '5b1e281b67018b0e6f31dcb2',
-                          item_name: 'Alfredo Sauce',
+                          item_name: mixin.methods.t(submodItem.item_name).name,
                           noofselection: 1,
-                          type: 'mandatory',
+                          type: submodItem.subgroup_type,
                         })
                       }
                     })

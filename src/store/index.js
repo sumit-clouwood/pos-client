@@ -21,12 +21,12 @@ import invoice from './modules/invoice'
 // import paginate from 'vuejs-paginate'
 
 //to take snapshot
-import createLogger from 'vuex/dist/logger'
+//import createLogger from 'vuex/dist/logger'
 
 Vue.use(Vuex)
 // Vue.use(paginate)
 
-const debug = process.env.NODE_ENV !== 'production'
+//const debug = process.env.NODE_ENV !== 'production'
 
 const store = new Vuex.Store({
   modules: {
@@ -49,8 +49,8 @@ const store = new Vuex.Store({
     invoice,
     payment,
   },
-  strict: debug,
-  plugins: debug ? [createLogger()] : [],
+  strict: false,
+  //plugins: debug ? [createLogger()] : [],
 })
 
 // store.subscribe(mutation => {

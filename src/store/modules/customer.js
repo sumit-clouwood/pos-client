@@ -3,14 +3,26 @@ import customerService from '@/services/data/CustomerService'
 
 const state = {
   customer_list: [],
-  customer: {},
+  customer: false,
   customer_group: {},
   paginate: {},
   params: { page_number: 1, page_size: 10, search: '' },
   responseInformation: { status: 0, message: '' },
-  address: {},
+  address: false,
 }
-const getters = {}
+const getters = {
+  customer: state => {
+    return state.customer ? state.customer.customer_list : false
+  },
+  selectedAddress: state => {
+    if (state.address) {
+      const addressId = state.address.id
+      return state.customer.customer_list.customer_details.find(
+        address => address._id == addressId
+      )
+    }
+  },
+}
 const actions = {
   fetchAll({ commit, rootState }) {
     let paginateDetails = {}

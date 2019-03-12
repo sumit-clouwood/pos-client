@@ -1,8 +1,9 @@
 import DataService from '@/services/DataService'
 
 export default {
-  saveOrder(data) {
-    return DataService.post(`/api/auth/order/SaveOrder`, data)
+  saveOrder() {
+    return new Promise()
+    //return DataService.post(`/api/auth/order/SaveOrder`, data)
   },
 
   deleteOrder(orderId) {
