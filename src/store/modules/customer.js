@@ -9,7 +9,7 @@ const state = {
   params: { page_number: 1, page_size: 10, search: '' },
   responseInformation: { status: 0, message: '' },
   address: false,
-	allOnlineAddress: false,
+  allOnlineAddress: false,
 }
 const getters = {
   customer: state => {

@@ -29,12 +29,12 @@ const getters = {
     const orderType = rootState.order.orderType
     let templates = ''
     switch (orderType) {
-      case 'Walk-in':
-        templates = state.templates.data['walkin']
-        break
-      default:
-        templates = state.templates.data['default_template']
-        break
+    case 'Walk-in':
+      templates = state.templates.data['walkin']
+      break
+    default:
+      templates = state.templates.data['default_template']
+      break
     }
 
     if (getters.rule.template) {
