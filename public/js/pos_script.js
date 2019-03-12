@@ -178,14 +178,10 @@ $(document).ready(function() {
   $('.input-image').click(function() {
     $('.amount-keypad').toggle()
   })
+
   $('button#hide-paynow').click(function() {
     // $('.modal-body.pay-now-block').css('opacity','0');
-    $('div#pay-now').addClass('effect-screen')
-    // $("div#pay-now").hide(800);
-    $('div#pay-now').animate({ right: '-660px' })
-    $('body').removeClass('modal-open')
-    $('div#pay-now').removeClass('show')
-    $('#transparent-screen').css('display', 'none')
+    hidePayNow()
 
     // $("div#pay-now").addClass('animated fadeOutRight');
   })
@@ -814,3 +810,12 @@ $(document).ready(function() {
       .removeClass('active')
   })
 })
+
+function hidePayNow() {
+  $('div#pay-now').addClass('effect-screen')
+  // $("div#pay-now").hide(800);
+  $('div#pay-now').animate({ right: '-660px' })
+  $('body').removeClass('modal-open')
+  $('div#pay-now').removeClass('show')
+  $('#transparent-screen').css('display', 'none')
+}

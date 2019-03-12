@@ -16,7 +16,11 @@ export default {
 
   methods: {
     t(data) {
-      return data.find(entry => entry.language == this.locale)
+      return data.find(
+        entry =>
+          entry.language ==
+          (this.locale || localStorage.getItem('selectedLanguageSortName'))
+      )
     },
   },
 }

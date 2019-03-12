@@ -15,7 +15,7 @@
             <p>
               Change <span>({{ currency }})</span>
             </p>
-            <h1>{{ changedAmount }}</h1>
+            <h1>{{ formatPrice(changedAmount) }}</h1>
           </div>
           <div v-show="!validate" class="error">
             <p>{{ error }}</p>
@@ -49,6 +49,7 @@ export default {
   name: 'AmountChange',
   computed: {
     ...mapState('location', ['currency']),
+    ...mapGetters('location', ['formatPrice']),
     ...mapState('checkout', ['changedAmount']),
     ...mapState('checkoutForm', ['error']),
     ...mapGetters('checkoutForm', ['validate']),

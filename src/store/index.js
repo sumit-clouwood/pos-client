@@ -24,12 +24,12 @@ import 'vue-datetime/dist/vue-datetime.css'
 
 
 //to take snapshot
-import createLogger from 'vuex/dist/logger'
+//import createLogger from 'vuex/dist/logger'
 
 Vue.use(Vuex)
 Vue.use(Datetime)
 
-const debug = process.env.NODE_ENV !== 'production'
+//const debug = process.env.NODE_ENV !== 'production'
 
 const store = new Vuex.Store({
   modules: {
@@ -52,8 +52,8 @@ const store = new Vuex.Store({
     invoice,
     payment,
   },
-  strict: debug,
-  plugins: debug ? [createLogger()] : [],
+  strict: false,
+  //plugins: debug ? [createLogger()] : [],
 })
 
 // store.subscribe(mutation => {

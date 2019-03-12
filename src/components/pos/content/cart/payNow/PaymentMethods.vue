@@ -51,8 +51,10 @@ export default {
       dots: true,
     })
     $('.payment-method-block table td img').click(function() {
-      $('.payment-method-block').addClass('active')
-      $('.payment-method-block').hide(800)
+      if ($('.payment-method-block').length) {
+        $('.payment-method-block').addClass('active')
+        $('.payment-method-block').hide(800)
+      }
     })
   },
 }
