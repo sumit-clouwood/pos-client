@@ -10,6 +10,7 @@ const state = {
   deliveryAreas: {},
   selectedLanguage: 'English',
   selectedSortcode: 'en_US',
+  setTimeZone: 'Asia/Dubai'
 }
 
 // getters
@@ -50,6 +51,7 @@ const actions = {
       commit(mutation.SET_LOCATION_DATA, response.data.data)
       commit(mutation.SET_CURRENCY, response.data.data.currency_code)
       commit(mutation.SET_DELIVERY_AREAS, response.data.data.delivery_area)
+      commit(mutation.SET_TIMEZONE, response.data.data.country_timezone)
       // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
     })
   },
@@ -113,6 +115,10 @@ const mutations = {
     state.selectedLanguage = selectedLanguage
     localStorage.setItem('selectedLanguageSortName', selectedLanguageShortName)
     localStorage.setItem('selectedLanguage', selectedLanguage)
+  },
+
+  [mutation.SET_TIMEZONE](state, timeZone) {
+    state.setTimeZone = timeZone
   },
 }
 
