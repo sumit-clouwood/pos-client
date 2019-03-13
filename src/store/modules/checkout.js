@@ -194,6 +194,22 @@ const actions = {
     dispatch('discount/reset', null, { root: true })
     dispatch('surcharge/reset', null, { root: true })
   },
+
+  updateOrderStatus(
+    { commit, dispatch, rootState },
+    { orderStatus, orderId, timestamp, orderType }
+  ) {
+    const params = [
+      rootState.location.location,
+      orderStatus,
+      orderId,
+      orderType,
+      timestamp,
+    ]
+    OrderService.updateOrder(...params).then(response => {})
+    /*commit(mutation.SET_ORDER, order)
+    dispatch('createOrder')*/
+  },
 }
 
 // mutations

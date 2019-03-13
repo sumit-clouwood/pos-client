@@ -79,10 +79,29 @@
                     class="reject-order"
                     data-toggle="modal"
                     data-target="#cancel-reason"
+                    @click="
+                      updateOrderStatus({
+                        orderStatus: 'cancel',
+                        orderId: order._id,
+                        timestamp: order.created_timestamp,
+                        orderType: 'delivery',
+                      })
+                    "
                   >
                     Reject
                   </button>
-                  <button class="add-to-delivery">Add to Delivery</button>
+                  <button
+                    class="add-to-delivery"
+                    @click="
+                      updateOrderStatus({
+                        orderStatus: 'new',
+                        orderId: order._id,
+                        timestamp: order.created_timestamp,
+                        orderType: 'delivery',
+                      })"
+                  >
+                    Add to Delivery
+                  </button>
                 </div>
               </div>
             </div>
@@ -107,8 +126,7 @@
 
 <script>
 import moment from 'moment-timezone'
-
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'OnlineOrder',
   props: {},
@@ -178,6 +196,7 @@ export default {
       })
       return orderStatus
     },
+    ...mapActions('checkout', ['updateOrderStatus']),
   },
 }
 </script>
