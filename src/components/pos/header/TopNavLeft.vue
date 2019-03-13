@@ -35,8 +35,8 @@ export default {
     }),
   },
   mounted: function() {
-    moment.tz.setDefault(this.$store.state.location.setTimeZone)
-    this.time()
+    /*moment.tz.setDefault(this.$store.state.location.setTimeZone)
+    this.time()*/
   },
 
   methods: {
