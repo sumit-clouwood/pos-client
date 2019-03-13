@@ -106,78 +106,78 @@
 </template>
 
 <script>
-import moment from "moment-timezone";
+import moment from 'moment-timezone'
 
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters } from 'vuex'
 export default {
-  name: "OnlineOrder",
+  name: 'OnlineOrder',
   props: {},
   data() {
     return {
-      customerName: "",
+      customerName: '',
       customerAddress: false,
-      paymentStatus: "unpaid"
-    };
+      paymentStatus: 'unpaid',
+    }
   },
   mounted() {
-    const store = this.$store;
-    let socket = io("https://websocket-int.erp-pos.com");
-    socket.on("sound-channel:App\\Events\\SocketBroadcast", function(
+    const store = this.$store
+    let socket = io('https://websocket-int.erp-pos.com')
+    socket.on('sound-channel:App\\Events\\SocketBroadcast', function(
       orderData
     ) {
-      store.dispatch("order/setOnlineOrders", orderData.data);
-    });
+      store.dispatch('order/setOnlineOrders', orderData.data)
+    })
   },
   computed: {
     ...mapState({
-      locationId: state => state.location.location
+      locationId: state => state.location.location,
     }),
     ...mapState({
-      fetchAddress: state => state.customer.allOnlineAddress
+      fetchAddress: state => state.customer.allOnlineAddress,
     }),
     ...mapState({
-      locationName: state => state.location.locationName
+      locationName: state => state.location.locationName,
     }),
     ...mapState({
       country: state =>
-        typeof state.location.locationData !== "undefined"
+        typeof state.location.locationData !== 'undefined'
           ? state.location.locationData.country_name
-          : ""
+          : '',
     }),
-    ...mapGetters("location", ["getDeliveryArea"]),
-    ...mapGetters("order", ["getLatestOnlineOrders"])
+    ...mapGetters('location', ['getDeliveryArea']),
+    ...mapGetters('order', ['getLatestOnlineOrders']),
   },
   methods: {
     moment: function(date) {
-      moment.tz.setDefault(this.$store.state.location.setTimeZone);
+      moment.tz.setDefault(this.$store.state.location.setTimeZone)
       // moment.tz.setDefault('Asia/Jakarta')
-      return moment(date).format("MMM Do YYYY, h:mm");
+      return moment(date).format('MMM Do YYYY, h:mm')
     },
     getCustomerInformation(addressList, customerId, addressId) {
-      if (typeof addressList != "undefined") {
+      if (typeof addressList != 'undefined') {
         addressList.forEach(customerAddress => {
           if (customerAddress._id == customerId) {
-            this.customerName = customerAddress.customer_name;
+            this.customerName = customerAddress.customer_name
             customerAddress.customer_details.forEach(address => {
               if (addressId == address._id) {
-                this.customerAddress = address;
+                this.customerAddress = address
               }
-            });
+            })
           }
-          return this.customerName;
-        });
+          return this.customerName
+        })
       }
     },
 
     getPaymentStatus(orderId) {
-      let orderStatus = "unpaid";
+      let orderStatus = 'unpaid'
       this.getLatestOnlineOrders.order_payment_status.forEach(payment => {
         if (payment.order_id == orderId) {
-          orderStatus == payment.payment_mode;
+          orderStatus == payment.payment_mode
         }
-      });
-      return orderStatus;
-    }
-  }
-};
+      })
+      return orderStatus
+    },
+  },
+}
 </script>
