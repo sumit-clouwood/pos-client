@@ -1,15 +1,16 @@
 <template>
   <!-- order confrmation  -->
   <div class="modal fade" id="order-confirmation" role="dialog">
-    <div class="modal-dialog" v-if="cartItems">
+    <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
+      <div class="modal-content"  v-if="cartItems">
         <SendToDeliveryHeader />
         <SendToDeliveryContent />
         <SendToDeliveryFooter />
       </div>
+      <b class="modal-content text-center text-danger pt-3" v-if="!cartItems">No Items Added in Cart</b>
+
     </div>
-    <b class="modal-content text-center text-danger pt-3" v-if="!cartItems">No Items Added in Cart</b>
   </div>
   <!-- End Order confirmation  -->
 </template>

@@ -396,7 +396,7 @@ const actions = {
     if (futureOrder != null) {
       commit(mutation.SET_FUTURE_ORDER, futureOrder)
     }
-    dispatch('checkout/pay')
+    dispatch('checkout/pay',{}, { root: true })
   },
 }
 
