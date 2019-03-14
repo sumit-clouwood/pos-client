@@ -1,6 +1,9 @@
 import axios from 'axios'
 
 //axios.defaults.baseURL = '/api/';
+const apiURL =
+  process.env.NODE_ENV === 'production' ? 'https://int.erp-pos.com' : ''
+//axios.default.baseURL = apiURL
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.post['Accept'] = 'application/json'
 
@@ -8,7 +11,7 @@ export default {
   get(url) {
     return new Promise((resolve, reject) => {
       axios
-        .get(url)
+        .get(apiURL + url)
         .then(response => resolve(response))
         .catch(error => reject(error))
     })
@@ -17,7 +20,7 @@ export default {
   post(url, data) {
     return new Promise((resolve, reject) => {
       axios
-        .post(url, data)
+        .post(apiURL + url, data)
         .then(response => resolve(response))
         .catch(error => reject(error))
     })
@@ -38,7 +41,7 @@ export default {
     )
   },
 
-  auth(env) {
+  auth(env, deviceId) {
     const url =
       '/api/auth/login/' +
       '?email=' +
@@ -46,11 +49,11 @@ export default {
       '&password=' +
       env.VUE_APP_API_PASSWORD +
       '&device_id=' +
-      env.VUE_APP_DEVICE_ID
+      deviceId
 
     return new Promise((resolve, reject) => {
       axios
-        .post(url)
+        .post(apiURL + url)
         .then(response => {
           return resolve(response)
         })

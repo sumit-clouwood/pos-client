@@ -32,13 +32,22 @@
 
 <script>
 import { mapState } from 'vuex'
+import Cookie from '@/mixins/Cookie'
 export default {
   name: 'Location',
   props: {},
+  mixins: [Cookie],
   //life cycle hooks
   beforeCreate() {
+    let deviceId = Cookie.get_cookie('device_id')
+    if (!deviceId) {
+      deviceId = 'XX:XX:XX:XX:XX:XX'.replace(/X/g, function() {
+        return '0123456789ABCDEF'.charAt(Math.floor(Math.random() * 16))
+      })
+      Cookie.set_cookie('device_id', deviceId, 365 * 10)
+    }
     this.$store
-      .dispatch('auth/auth')
+      .dispatch('auth/auth', deviceId)
       .then(response => {
         if (response.data.data.location_id) {
           this.$store.dispatch('location/setLocation', response.data.data)

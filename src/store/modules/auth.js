@@ -12,9 +12,9 @@ const getters = {}
 
 // actions
 const actions = {
-  auth({ commit }) {
+  auth({ commit }, deviceId) {
     return new Promise((resolve, reject) => {
-      DataService.auth(process.env).then(response => {
+      DataService.auth(process.env, deviceId).then(response => {
         commit('setToken', response.data.token)
         commit(mutation.SET_USER_DETAILS, response.data.data)
         DataService.applyMiddleWare(state.token)
