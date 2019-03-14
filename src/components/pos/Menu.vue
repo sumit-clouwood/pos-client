@@ -1,6 +1,10 @@
 <template>
   <div>
-    <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+    <ul
+      class="navbar-nav navbar-sidenav"
+      id="exampleAccordion"
+      v-if="menu.length"
+    >
       <li
         class="nav-item logo-wrap"
         data-toggle="tooltip"

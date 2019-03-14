@@ -5,7 +5,7 @@
         We're sorry, we're not able to proceed at the moment, please try back
         later
       </p>
-      <p>{{ errored }}</p>
+      <p>Technical info: {{ errored }}</p>
     </section>
     <div v-else class="mx-auto col-md-3 mt-5">
       <div v-if="loading">
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+/* eslint-disable no-console */
 import { mapState } from 'vuex'
 import Cookie from '@/mixins/Cookie'
 export default {
@@ -56,7 +57,7 @@ export default {
   },
   mixins: [Cookie],
   //life cycle hooks
-  beforeCreate() {
+  mounted() {
     let deviceId = Cookie.get_cookie('device_id')
     if (!deviceId) {
       deviceId = 'XX:XX:XX:XX:XX:XX'.replace(/X/g, function() {
@@ -67,6 +68,11 @@ export default {
     this.$store
       .dispatch('auth/auth', deviceId)
       .then(response => {
+        console.log('response from server', response)
+        if (response.data.error) {
+          this.errored = response.error
+          return false
+        }
         if (response.data.data.location_id) {
           this.$store.dispatch('location/setLocation', response.data.data)
         } else {
@@ -74,7 +80,11 @@ export default {
         }
 
         Promise.all([this.$store.dispatch('category/fetchAll', response)])
-          .then(() => {
+          .then(result => {
+            if (!result || result.error) {
+              this.errored = result.error || 'No result from category/fetchAll'
+              return false
+            }
             this.$store.dispatch('modifier/fetchAll', response)
             this.$store.commit('sync/loaded', true)
             this.$store.dispatch('location/fetchAll', response)
@@ -95,7 +105,7 @@ export default {
       .finally(() => (this.loading = false))
   },
 
-  mounted() {},
+  beforeCreate() {},
   computed: {
     ...mapState({
       // map this.categories to store.state.categories, it uses dispatch

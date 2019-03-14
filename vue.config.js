@@ -49,4 +49,13 @@ module.exports = {
   },
 
   lintOnSave: process.env.NODE_ENV !== 'production',
+
+  pwa: {
+    workboxPluginMode: 'InjectManifest',
+    workboxOptions: {
+      swSrc: 'src/services/service-worker.js',
+      exclude: [/\.map$/, /manifest\.json$/],
+    },
+    themeColor: '#1da025',
+  },
 }

@@ -34,46 +34,57 @@ const getters = {
 
 // actions, often async
 const actions = {
-  async fetchAll({ commit, rootState }) {
-    const params = [
-      rootState.location.location,
-      rootState.sync.date,
-      rootState.sync.compress,
-    ]
-    CategoryService.fetchAll(...params).then(response => {
-      commit(
-        mutation.SET_CATEGORY_IMG_PATH,
-        response.data.data.itemCategoryImagePath
-      )
-      commit(
-        mutation.SET_SUBCATEGORY_IMG_PATH,
-        response.data.data.itemSubcategoryImagePath
-      )
-      commit(mutation.SET_ITEM_IMG_PATH, response.data.data.itemImagePath)
-
-      commit(mutation.SET_CATEGORIES, response.data.data.menu_data)
-      if (state.all) {
-        commit(mutation.SET_CATEGORY, state.all[0])
-        commit(mutation.SET_SUBCATEGORIES, state.category.get_sub_category)
-        commit(mutation.SET_SUBCATEGORY, state.subcategories[0])
-        commit(mutation.SET_CATEGORY_ITEMS, state.category.get_category_product)
-        if (state.subcategory) {
+  fetchAll({ commit, rootState }) {
+    return new Promise((resolve, reject) => {
+      const params = [
+        rootState.location.location,
+        rootState.sync.date,
+        rootState.sync.compress,
+      ]
+      CategoryService.fetchAll(...params)
+        .then(response => {
           commit(
-            mutation.SET_SUBCATEGORY_ITEMS,
-            state.subcategory.get_sub_category_product
+            mutation.SET_CATEGORY_IMG_PATH,
+            response.data.data.itemCategoryImagePath
           )
-        }
-        // if (state.subcategory.get_sub_category_product) {
-        //   commit(
-        //     mutation.TAX_DETAILS,
-        //     state.subcategory.get_sub_category_product[0].item_tax
-        //   );
-        //   commit(
-        //     mutation.ITEM_TAX_AMOUNT,
-        //     state.subcategory.get_sub_category_product[0].item_tax[0].tax_amount
-        //   );
-        // }
-      }
+          commit(
+            mutation.SET_SUBCATEGORY_IMG_PATH,
+            response.data.data.itemSubcategoryImagePath
+          )
+          commit(mutation.SET_ITEM_IMG_PATH, response.data.data.itemImagePath)
+
+          commit(mutation.SET_CATEGORIES, response.data.data.menu_data)
+          if (state.all) {
+            commit(mutation.SET_CATEGORY, state.all[0])
+            commit(mutation.SET_SUBCATEGORIES, state.category.get_sub_category)
+            commit(mutation.SET_SUBCATEGORY, state.subcategories[0])
+            commit(
+              mutation.SET_CATEGORY_ITEMS,
+              state.category.get_category_product
+            )
+            if (state.subcategory) {
+              commit(
+                mutation.SET_SUBCATEGORY_ITEMS,
+                state.subcategory.get_sub_category_product
+              )
+            }
+            // if (state.subcategory.get_sub_category_product) {
+            //   commit(
+            //     mutation.TAX_DETAILS,
+            //     state.subcategory.get_sub_category_product[0].item_tax
+            //   );
+            //   commit(
+            //     mutation.ITEM_TAX_AMOUNT,
+            //     state.subcategory.get_sub_category_product[0].item_tax[0].tax_amount
+            //   );
+            // }
+          }
+
+          resolve(
+            response.data ? (response.data.error ? response.data : true) : true
+          )
+        })
+        .catch(error => reject(error))
     })
   },
 
