@@ -24,10 +24,11 @@ const actions = {
     const params = [orderId, '']
     HoldListService.fetchHoldOrder(...params).then(response => {
       commit(mutation.GET_HOLD_ORDER_DETAILS, response.data.data)
-      alert('Work in progress')
+      let item_ids = []
       state.orderDetails.items.forEach(item => {
-        // dispatch('order/addToOrder',{ item }, { root: true })
+        item_ids.push(item.item_id)
       })
+      dispatch('order/addHoldOrder', { item_ids }, { root: true })
     })
   },
 }

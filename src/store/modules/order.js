@@ -396,7 +396,31 @@ const actions = {
     if (futureOrder != null) {
       commit(mutation.SET_FUTURE_ORDER, futureOrder)
     }
-    dispatch('checkout/pay',{}, { root: true })
+    dispatch('checkout/pay', {}, { root: true })
+  },
+
+  addHoldOrder({ state, commit, rootState, dispatch }, holdOrders) {
+    dispatch('reset')
+    const allItems = rootState.category.items
+    console.log(holdOrders.item_ids)
+    console.log(allItems)
+    let getHoldOrderItems = []
+    allItems.forEach(item => {
+      if (holdOrders.item_ids.includes(item._id)) {
+        commit(mutation.ADD_ORDER_ITEM, item)
+        dispatch('surcharge/calculate', {}, { root: true }).then(
+          dispatch('tax/calculate', {}, { root: true }).then(() => {
+            if (rootState.discount.appliedOrderDiscount) {
+              dispatch('recalculateOrderTotals')
+            } else {
+              dispatch('recalculateItemPrices')
+            }
+          })
+        )
+        getHoldOrderItems.push(item)
+      }
+    })
+    console.log(getHoldOrderItems)
   },
 }
 

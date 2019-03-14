@@ -56,6 +56,13 @@ const actions = {
       }
     })
   },
+
+  // using this function for hold order
+  /*setSurcharges({ commit, dispatch }, surcharges) {
+    console.log(surcharges)
+    commit(mutation.SET_SURCHARGES, surcharges)
+    dispatch('calculate')
+  },*/
   reset({ commit }) {
     commit(mutation.RESET)
   },
