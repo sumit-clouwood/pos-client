@@ -13,7 +13,8 @@ const getters = {
     if (!state.rules.data) return false
 
     const ruleType =
-      rootState.order.orderType == 'Walk-in'
+      rootState.order.orderType == 'Walk-in' ||
+      rootState.order.orderType == 'delivery'
         ? 'walk_in_rule'
         : rootState.order.orderType
     return state.rules.data.find(rule => {

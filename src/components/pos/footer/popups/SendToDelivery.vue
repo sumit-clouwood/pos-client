@@ -1,7 +1,7 @@
 <template>
   <!-- order confrmation  -->
   <div class="modal fade" id="order-confirmation" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog" v-if="cartItems">
       <!-- Modal content-->
       <div class="modal-content">
         <SendToDeliveryHeader />
@@ -9,6 +9,7 @@
         <SendToDeliveryFooter />
       </div>
     </div>
+    <b class="modal-content text-center text-danger pt-3" v-if="!cartItems">No Items Added in Cart</b>
   </div>
   <!-- End Order confirmation  -->
 </template>
@@ -17,6 +18,8 @@
 import SendToDeliveryHeader from './SendToDelivery/SendToDeliveryHeader'
 import SendToDeliveryContent from './SendToDelivery/SendToDeliveryContent'
 import SendToDeliveryFooter from './SendToDelivery/SendToDeliveryFooter'
+import { mapState } from 'vuex'
+
 export default {
   name: 'SendToDelivery',
   props: {},
@@ -24,6 +27,12 @@ export default {
     SendToDeliveryHeader,
     SendToDeliveryContent,
     SendToDeliveryFooter,
+  },
+  computed: {
+    ...mapState({
+      cartItems: state =>
+        state.order.items.length > 0 ? state.order.items : false,
+    }),
   },
 }
 </script>

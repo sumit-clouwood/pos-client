@@ -1,6 +1,8 @@
 <template>
   <div class="modal-footer">
     <div class="referal">
+      <p v-if="errors !== ''" class="text-danger">{{ errors }}</p>
+
       <button
         type="button"
         data-value=""
@@ -10,7 +12,7 @@
         aria-haspopup="true"
         aria-expanded="false"
       >
-        {{ selectedReferral() }}</button
+        {{ changedReferral.referralName }}</button
       ><!--<span><img src="images/referal-down.png"></span>-->
       <div class="dropdown-menu" v-if="getReferrals">
         <a
@@ -18,6 +20,12 @@
           data-value="Call Center"
           href="#"
           v-for="referral in getReferrals"
+          @click="
+            selectedReferral({
+              referralName: referral.name,
+              referralId: referral._id,
+            })
+          "
           :referralType="referral.referral_type"
           :key="referral._id"
           >{{ referral.name }}
@@ -26,26 +34,14 @@
       <div class="dropdown-menu" v-if="!getReferrals">
         Nothing found
       </div>
-      <!-- <button
-        data-range="true"
-        data-multiple-dates-separator=" - "
-        class="btn btn-success btn-large datepicker-here"
-        type="button"
-        id="schedule-btn"
-        data-timepicker="true"
-        data-language="en"
-      >
-        Schedule
-        <span><img src="img/pos/schedule-icon.png" alt="schedule"/></span>
-      </button>-->
       <datetime
         type="datetime"
         title="Schedule"
         placeholder="Schedule"
-        v-model="datetimeEmpty"
+        v-model="futureDateTime"
         input-class="btn schedule-input btn-large datepicker-here"
-        value-zone="America/New_York"
-        zone="Asia/Shanghai"
+        :value-zone="timeZone"
+        :zone="timeZone"
         :format="{
           year: 'numeric',
           month: 'long',
@@ -69,13 +65,13 @@
         class="btn btn-danger cancel-announce"
         data-dismiss="modal"
       >
-        <span>X</span> Close
+        Close
       </button>
       <button
         class="btn btn-success btn-large"
         type="button"
         id="confirm_announcement"
-        @click="pay"
+        @click="placeOrder"
       >
         Confirm
       </button>
@@ -86,6 +82,8 @@
 </template>
 
 <script>
+import moment from 'moment-timezone'
+
 import { Datetime } from 'vue-datetime'
 import { mapState, mapActions } from 'vuex'
 export default {
@@ -96,10 +94,12 @@ export default {
   },
   data() {
     return {
-      changedReferral: 'Referal',
-      datetimeEmpty: null,
+      changedReferral: { referralName: 'Referral' },
+      futureDateTime: null,
       minDatetime: null,
       maxDatetime: null,
+      errors: '',
+      timeZone: this.$store.state.location.setTimeZone,
     }
   },
   computed: {
@@ -110,12 +110,24 @@ export default {
           ? state.location.locationData.referrals
           : false,
     }),
+
   },
   methods: {
-    selectedReferral() {
-      return this.changedReferral
+    selectedReferral(referral) {
+      this.changedReferral = referral
     },
-    ...mapActions('checkout', ['pay']),
+    placeOrder() {
+      if (this.changedReferral.referralName === 'Referral') {
+        this.errors = 'Please select referral to proceed.'
+      } else {
+        this.errors = ''
+        this.deliveryOrder({
+          referral: this.changedReferral,
+          futureOrder: moment(this.futureDateTime).format('YYYY/MM/DD hh:mm'),
+        })
+      }
+    },
+    ...mapActions('order', ['deliveryOrder']),
   },
 }
 </script>
@@ -125,5 +137,18 @@ export default {
   max-height: 275px;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+/*theming*/
+.theme-orange .vdatetime-popup__header,
+.theme-orange .vdatetime-calendar__month__day--selected > span > span,
+.theme-orange .vdatetime-calendar__month__day--selected:hover > span > span {
+  background: #ff9800;
+}
+
+.theme-orange .vdatetime-year-picker__item--selected,
+.theme-orange .vdatetime-time-picker__item--selected,
+.theme-orange .vdatetime-popup__actions__button {
+  color: #ff9800;
 }
 </style>

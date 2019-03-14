@@ -2127,7 +2127,8 @@ footer.sticky-footer ul.ullist-icons {
 button.btn.btn-danger.cancel-announce {
   height: 50px;
   font-size: 14px;
-  width: 122px;
+  /*width: 122px;*/
+  width: auto;
   background: #cc3232;
   border-color: #cc3232;
 }

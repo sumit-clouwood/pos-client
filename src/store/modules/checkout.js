@@ -64,12 +64,20 @@ const actions = {
         if (rootState.tax.surchargeTax) {
           order.surcharge_tax = rootState.tax.surchargeTax
         }
-
         //add order note
         if (rootState.order.orderNote) {
           order.order_note = rootState.order.orderNote
         }
-
+        //add referral
+        if (rootState.order.referral) {
+          order.referral = rootState.order.referral.referralName
+          order.referral_id = rootState.order.referral.referralId
+        }
+        //add future order
+        if (rootState.order.futureOrder) {
+          order.future_order = 1
+          order.future_order_date = rootState.order.futureOrder
+        }
         //adding surcharge data
         order.surchargeData = rootState.surcharge.surcharges.map(surcharge => {
           return {

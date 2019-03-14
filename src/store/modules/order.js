@@ -7,6 +7,8 @@ const state = {
   orderType: 'Walk-in',
   orderNote: false,
   onlineOrders: false,
+  futureOrder: false,
+  referral: false,
 }
 
 // getters
@@ -387,6 +389,15 @@ const actions = {
       locationId: rootState.location.location,
     })
   },
+
+  deliveryOrder({ commit, dispatch }, { referral, futureOrder }) {
+    commit(mutation.ORDER_TYPE, 'delivery')
+    commit(mutation.SET_REFERRAL, referral)
+    if (futureOrder != null) {
+      commit(mutation.SET_FUTURE_ORDER, futureOrder)
+    }
+    dispatch('checkout/pay')
+  },
 }
 
 function playSound(locationId, onlineOrders) {
@@ -486,7 +497,15 @@ const mutations = {
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
   },
-
+  [mutation.ORDER_TYPE](state, orderType) {
+    state.orderType = orderType
+  },
+  [mutation.SET_REFERRAL](state, referral) {
+    state.referral = referral
+  },
+  [mutation.SET_FUTURE_ORDER](state, futureOrder) {
+    state.futureOrder = futureOrder
+  },
   [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId }) {
     state.onlineOrders = onlineOrders
     localStorage.setItem('onlineOrders', JSON.stringify(onlineOrders))
