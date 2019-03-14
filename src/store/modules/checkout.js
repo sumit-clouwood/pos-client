@@ -65,6 +65,11 @@ const actions = {
           order.surcharge_tax = rootState.tax.surchargeTax
         }
 
+        //add order note
+        if (rootState.order.orderNote) {
+          order.order_note = rootState.order.orderNote
+        }
+
         //adding surcharge data
         order.surchargeData = rootState.surcharge.surcharges.map(surcharge => {
           return {

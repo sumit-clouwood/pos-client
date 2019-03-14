@@ -75,6 +75,7 @@
         class="btn btn-success btn-large"
         type="button"
         id="confirm_announcement"
+        @click="pay"
       >
         Confirm
       </button>
@@ -86,8 +87,7 @@
 
 <script>
 import { Datetime } from 'vue-datetime'
-
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'SendToDeliveryFooter',
   props: {},
@@ -115,6 +115,7 @@ export default {
     selectedReferral() {
       return this.changedReferral
     },
+    ...mapActions('checkout', ['pay']),
   },
 }
 </script>

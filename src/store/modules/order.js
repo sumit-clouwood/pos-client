@@ -5,7 +5,7 @@ const state = {
   items: [],
   item: false,
   orderType: 'Walk-in',
-  orderNote: '',
+  orderNote: false,
   onlineOrders: false,
 }
 
