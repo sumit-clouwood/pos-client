@@ -59,8 +59,8 @@ export default {
   computed: {
     ...mapState({
       deliveryAddresses: state =>
-        state.customer.customer.customer_list
-          ? state.customer.customer.customer_list.customer_details
+        state.customer.fetchCustomerAddressOnly.customer_list
+          ? state.customer.fetchCustomerAddressOnly.customer_list[0].customer_details
           : false,
     }),
     // ...mapActions('customer', ['addCartCustomer'])

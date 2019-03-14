@@ -1,12 +1,12 @@
 <template>
   <ul class="ullist-profile" v-if="customerProfile">
-    <li>
+    <li class="col-md-2">
       <img
         v-bind:src="customerProfile.image_path + customerProfile.image"
         alt="order-profile"
       />
     </li>
-    <li>
+    <li class="col-md-5 lh">
       <p class="profile-customer-title">Customer Name:</p>
       <h2 id="profile-customer-name">
         {{ customerProfile.customer_name }}
@@ -18,11 +18,11 @@
         >
       </p>
     </li>
-    <li>
+    <li class="col-md-3">
       <p class="profile-customer-title">Phone Number:</p>
       <h2 id="profile-customer-number">{{ customerProfile.mobile_number }}</h2>
     </li>
-    <li>
+    <li class="col-md-2">
       <a class="cu-edit-icon" href="#"
         ><span
           ><svg
@@ -99,3 +99,9 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+  .lh{
+    line-height: 1;
+  }
+</style>

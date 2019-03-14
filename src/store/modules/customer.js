@@ -10,6 +10,7 @@ const state = {
   responseInformation: { status: 0, message: '' },
   address: false,
   allOnlineAddress: false,
+  fetchCustomerAddressOnly: false,
 }
 const getters = {
   customer: state => {
@@ -18,9 +19,16 @@ const getters = {
   selectedAddress: state => {
     if (state.address) {
       const addressId = state.address.id
-      return state.customer.customer_list.customer_details.find(
-        address => address._id == addressId
-      )
+      console.log(state.customer)
+      if (state.customer) {
+        return state.customer.customer_list.customer_details.find(
+          address => address._id == addressId
+        )
+      } else {
+        return state.fetchCustomerAddressOnly.customer_list[0].customer_details.find(
+          address => address._id == addressId
+        )
+      }
     }
   },
 }
@@ -85,17 +93,17 @@ const actions = {
 
   fetchSelectedCustomer({ commit, rootState }, { customerId, addressOnly }) {
     const params = [customerId, rootState.location.location]
-    /*if (typeof addressOnly != 'undefined') {
+    if (typeof addressOnly != 'undefined') {
       customerService.getCustomerDetails(...params).then(response => {
+        commit(mutation.FETCH_CUSTOMER_ADDRESSES_ONLY, response.data.data)
+        //dispatch('giftcard/setCustomerGiftCards', response.data.data)
+      })
+    } else {
+      customerService.fetchCustomer(...params).then(response => {
         commit(mutation.SELECTED_CUSTOMER, response.data.data)
         //dispatch('giftcard/setCustomerGiftCards', response.data.data)
       })
-    } else {*/
-    customerService.fetchCustomer(...params).then(response => {
-      commit(mutation.SELECTED_CUSTOMER, response.data.data)
-      //dispatch('giftcard/setCustomerGiftCards', response.data.data)
-    })
-    // }
+    }
   },
 
   selectedAddress({ commit }, selected_address_id, area) {
@@ -178,6 +186,9 @@ const mutations = {
   },
   [mutation.FETCH_CUSTOMER_ADDRESSES](state, addressList) {
     state.allOnlineAddress = addressList
+  },
+  [mutation.FETCH_CUSTOMER_ADDRESSES_ONLY](state, customerAddressList) {
+    state.fetchCustomerAddressOnly = customerAddressList
   },
 }
 

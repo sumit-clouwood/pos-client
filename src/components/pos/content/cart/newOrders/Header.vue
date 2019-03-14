@@ -39,7 +39,10 @@ export default {
       selectedCustomer: state =>
         typeof state.customer.customer.customer_list != 'undefined'
           ? state.customer.customer.customer_list
-          : false,
+          : typeof state.customer.fetchCustomerAddressOnly.customer_list !=
+            'undefined'
+            ? state.customer.fetchCustomerAddressOnly.customer_list[0]
+            : false,
     }),
   },
 }
