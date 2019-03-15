@@ -16,11 +16,27 @@ export default {
 
   methods: {
     t(data) {
+      if (!data) {
+        return { name: '' }
+      }
       return data.find(
         entry =>
           entry.language ==
           (this.locale || localStorage.getItem('selectedLanguageSortName'))
       )
+      // if (!res) {
+      //   if (Array.isArray(data)) {
+      //     const res = data[0]
+      //     if (!res.name) {
+      //       return {
+      //         name: res,
+      //       }
+      //     }
+      //     return res
+      //   }
+      //   return data
+      // }
+      // return res
     },
   },
 }

@@ -7,7 +7,7 @@
       >
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <Header />
-          <Menu />
+          <Menu v-if="all.length" />
         </div>
       </nav>
       <div class="content-wrapper">
@@ -43,10 +43,12 @@ import Header from './pos/Header.vue'
 import Content from './pos/Content'
 import Announcement from './pos/header/Announcement'
 import Footer from './pos/Footer'
-
+import { mapState } from 'vuex'
 export default {
   name: 'Pos',
-
+  computed: {
+    ...mapState('category', ['all']),
+  },
   components: {
     Header,
     Menu,

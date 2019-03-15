@@ -2,8 +2,6 @@
 /* global workbox*/
 /* eslint-disable no-console */
 
-console.log(workbox)
-
 if (workbox) {
   console.log('workbox found ')
   // adjust log level for displaying workbox logs
@@ -18,6 +16,32 @@ if (workbox) {
   // Since we have a SPA here, this should be index.html always.
   // https://stackoverflow.com/questions/49963982/vue-router-history-mode-with-pwa-in-offline-mode
   workbox.routing.registerNavigationRoute('/index.html')
+
+  //create a quue rather
+  const ordersQueue = new workbox.backgroundSync.Queue('ordersQueue')
+  console.log('queue created', ordersQueue)
+
+  self.addEventListener('fetch', event => {
+    if (event.request.url.match(/SaveOrder/g)) {
+      console.log('Save order called')
+      console.log('fetch event called')
+      console.log(event)
+    }
+    // Clone the request to ensure it's save to read when
+    // adding to the Queue.
+    const promiseChain = fetch(event.request.clone()).catch(err => {
+      console.log('Pushing request to queue')
+      console.log('error', err)
+      return ordersQueue.addRequest(event.request, err)
+    })
+    console.log('wait for promise ')
+    event.waitUntil(promiseChain)
+    //}
+  })
+
+  self.addEventListener('sync', event => {
+    console.log('sync event received', event)
+  })
 
   workbox.routing.registerRoute(
     /\.(?:png|gif|jpg|jpeg|svg)$/,
@@ -78,24 +102,6 @@ if (workbox) {
   //   }),
   //   'POST'
   // )
-
-  //create a quue rather
-  const queue = new workbox.backgroundSync.Queue('ordersQueue')
-  console.log('queue created')
-
-  self.addEventListener('fetch', event => {
-    // Clone the request to ensure it's save to read when
-    // adding to the Queue.
-    console.log('fetch event called')
-    console.log(event)
-    const promiseChain = fetch(event.request.clone()).catch(err => {
-      console.log('Pushing request to queue')
-      console.log('error', err)
-      return queue.addRequest(event.request, err)
-    })
-    console.log('wait for promise ')
-    event.waitUntil(promiseChain)
-  })
 }
 
 // This code listens for the user's confirmation to update the app.

@@ -12,7 +12,7 @@
         <ul class="ullist-inventory-location pl-0 pt-2">
           <li class="p-3">
             <a v-if="loaded && locationName">{{ locationName }}</a>
-            <span v-if="!loaded">
+            <span>
               Loading data...
             </span>
           </li>
@@ -97,12 +97,12 @@ export default {
             this.$store.dispatch('invoice/fetchAll', response)
           })
           .catch(err => (this.errored = err))
+          .finally(() => (this.loading = false))
 
         // localStorage.setItem('selectedLanguage', this.defaultLanguage.language)
         // localStorage.setItem('selectedLanguageSortName', this.defaultLanguage.shortname)
       })
       .catch(error => (this.errored = error))
-      .finally(() => (this.loading = false))
   },
 
   beforeCreate() {},

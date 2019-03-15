@@ -175,13 +175,19 @@ const actions = {
       dispatch('createOrder')
     }
   },
-  createOrder({ state }) {
-    OrderService.saveOrder(state.order).then(response => {
-      if (response.data.data === 1) {
-        //clear all the data related to order, tax, discounts, surcharge etc
-        //create invoice
-      }
-    })
+  createOrder({ state, commit }) {
+    OrderService.saveOrder(state.order)
+      .then(response => {
+        if (response.data.data === 1) {
+          //clear all the data related to order, tax, discounts, surcharge etc
+          //create invoice
+        }
+      })
+      .catch(error => {
+        commit('checkoutForm/SET_ERROR', `Queued for sending later ${error}`, {
+          root: true,
+        })
+      })
   },
   generateInvoice({ commit }) {
     commit(mutation.PRINT, true)
