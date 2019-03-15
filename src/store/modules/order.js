@@ -406,8 +406,6 @@ const actions = {
   addHoldOrder({ state, commit, rootState, dispatch }, holdOrders) {
     dispatch('reset')
     const allItems = rootState.category.items
-    console.log(holdOrders.item_ids)
-    console.log(allItems)
     let getHoldOrderItems = []
     allItems.forEach(item => {
       holdOrders.item_ids.forEach(itemId => {
@@ -417,7 +415,6 @@ const actions = {
         }
       })
     })
-    console.log(getHoldOrderItems)
   },
 }
 
