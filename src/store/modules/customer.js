@@ -19,7 +19,6 @@ const getters = {
   selectedAddress: state => {
     if (state.address) {
       const addressId = state.address.id
-      console.log(state.customer)
       if (state.customer) {
         return state.customer.customer_list.customer_details.find(
           address => address._id == addressId
@@ -135,11 +134,10 @@ const actions = {
     if (allOnlineOrders) {
       allOnlineOrders.forEach(order => {
         // if (customerIds.indexOf(order.customer_id) == -1) {
-        if ($.inArray(order.customer_id, customerIds) === -1) {
+        if (customerIds.includes(order.customer_id)) {
           customerIds.push(order.customer_id)
         }
       })
-      console.log(customerIds)
       const params = [customerIds, rootState.location.location]
       customerService.getCustomerDetails(...params).then(response => {
         commit(mutation.FETCH_CUSTOMER_ADDRESSES, response.data.data)

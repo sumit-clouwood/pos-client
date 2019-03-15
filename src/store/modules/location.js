@@ -10,7 +10,7 @@ const state = {
   deliveryAreas: {},
   selectedLanguage: 'English',
   selectedSortcode: 'en_US',
-  setTimeZone: 'Asia/Dubai'
+  setTimeZone: 'Asia/Dubai',
 }
 
 // getters

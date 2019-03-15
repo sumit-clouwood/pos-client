@@ -20,7 +20,7 @@ const actions = {
     })
   },
 
-  fetchOrder({ state, commit, rootState, dispatch }, orderId) {
+  fetchOrder({ state, commit, dispatch }, orderId) {
     const params = [orderId, '']
     HoldListService.fetchHoldOrder(...params).then(response => {
       commit(mutation.GET_HOLD_ORDER_DETAILS, response.data.data)

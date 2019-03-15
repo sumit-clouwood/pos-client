@@ -36,14 +36,13 @@
     >
       <a class="btn-part" href="#" @click="fetchCustomerAddress"
         >online
-          <span class="online-digit" v-if="latestOnlineOrders > 0">
-              {{ latestOnlineOrders }}
-          </span>
-          <span class="online-digit" v-if="latestOnlineOrders === 0">
-              {{ onlineOrdersCount }}
-          </span>
-      </a
-      >
+        <span class="online-digit" v-if="latestOnlineOrders > 0">
+          {{ latestOnlineOrders }}
+        </span>
+        <span class="online-digit" v-if="latestOnlineOrders === 0">
+          {{ onlineOrdersCount }}
+        </span>
+      </a>
     </li>
     <li class="nav-item setting-icon" id="setting-icon">
       <a class="nav-link">
@@ -120,7 +119,7 @@ export default {
           this.onlineOrdersCount = 0
         }
       } else {
-	      this.onlineOrdersCount = this.latestOnlineOrders
+        this.onlineOrdersCount = this.latestOnlineOrders
       }
     },
     ...mapActions('customer', ['fetchCustomerAddress']),

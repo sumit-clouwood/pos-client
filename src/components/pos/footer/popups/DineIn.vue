@@ -10,7 +10,10 @@
         </div>
         <div class="modal-body row dining-options-block">
           <div class="dining-option-block">
-            <div class="option-contain active" @click="updateOrderType('dinein')">
+            <div
+              class="option-contain active"
+              @click="updateOrderType('dinein')"
+            >
               <img src="img/pos/dine-in.svg" /><span>Dine In</span>
             </div>
             <div class="option-contain" @click="updateOrderType('takeaway')">
@@ -51,7 +54,7 @@ export default {
   name: 'DineIn',
   props: {},
   methods: {
-    ...mapActions('order',['updateOrderType'])
-  }
+    ...mapActions('order', ['updateOrderType']),
+  },
 }
 </script>

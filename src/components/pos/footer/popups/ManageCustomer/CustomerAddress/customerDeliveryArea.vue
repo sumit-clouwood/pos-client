@@ -107,7 +107,6 @@ export default {
     return { activeIndex: '' }
   },
   computed: {
-
     ...mapState({
       locationName: state => state.location.locationName,
     }),

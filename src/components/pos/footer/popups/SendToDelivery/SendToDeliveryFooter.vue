@@ -110,7 +110,6 @@ export default {
           ? state.location.locationData.referrals
           : false,
     }),
-
   },
   methods: {
     selectedReferral(referral) {

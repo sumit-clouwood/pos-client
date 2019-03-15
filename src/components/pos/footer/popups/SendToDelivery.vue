@@ -3,13 +3,14 @@
   <div class="modal fade" id="order-confirmation" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content"  v-if="cartItems">
+      <div class="modal-content" v-if="cartItems">
         <SendToDeliveryHeader />
         <SendToDeliveryContent />
         <SendToDeliveryFooter />
       </div>
-      <b class="modal-content text-center text-danger pt-3" v-if="!cartItems">No Items Added in Cart</b>
-
+      <b class="modal-content text-center text-danger pt-3" v-if="!cartItems"
+        >No Items Added in Cart</b
+      >
     </div>
   </div>
   <!-- End Order confirmation  -->

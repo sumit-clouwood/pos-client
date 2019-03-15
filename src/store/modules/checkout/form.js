@@ -69,7 +69,7 @@ const actions = {
     }
     //check if gift card belongs to correct user
     if (giftCard.customer_id != rootState.customer.customer.customer_list._id) {
-      commit('SET_ERROR', 'Gift card doesn\'t belong to current customer')
+      commit('SET_ERROR', "Gift card doesn't belong to current customer")
       commit('showCalc', true)
       return false
     }
@@ -97,7 +97,7 @@ const actions = {
 
     //check the balance
     if (!giftCard.balance) {
-      commit('SET_ERROR', 'Gift card doesn\'t have sufficient balance')
+      commit('SET_ERROR', "Gift card doesn't have sufficient balance")
       commit('showCalc', true)
       return false
     }

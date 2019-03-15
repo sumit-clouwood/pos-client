@@ -101,7 +101,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .lh{
-    line-height: 1;
-  }
+.lh {
+  line-height: 1;
+}
 </style>

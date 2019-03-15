@@ -403,7 +403,7 @@ const actions = {
     commit(mutation.ORDER_TYPE, orderType)
   },
 
-  addHoldOrder({ state, commit, rootState, dispatch }, holdOrders) {
+  addHoldOrder({ rootState, dispatch }, holdOrders) {
     dispatch('reset')
     const allItems = rootState.category.items
     let getHoldOrderItems = []
@@ -429,7 +429,6 @@ function playSound(locationId, onlineOrders) {
     )
     onlineNewOrderAudioRing.load()
     if (onlineOrders.orders && onlineOrders.orders.length) {
-      console.log('play')
       onlineNewOrderAudioRing.addEventListener(
         'ended',
         function() {
@@ -440,7 +439,6 @@ function playSound(locationId, onlineOrders) {
       )
       ;(onlineNewOrderAudioRing.play() || nopromise).catch(function() {})
     } else {
-      console.log('pause')
       onlineNewOrderAudioRing.pause()
       onlineNewOrderAudioRing.currentTime = 0
     }

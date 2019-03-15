@@ -21,6 +21,7 @@
             <div
               v-for="(order, index) in getLatestOnlineOrders.orders"
               class="online-order"
+              :key="index"
             >
               <div class="online-order-header">
                 <h4 class="customer-title">Upcoming Order # {{ ++index }}</h4>
@@ -98,7 +99,8 @@
                         orderId: order._id,
                         timestamp: order.created_timestamp,
                         orderType: 'delivery',
-                      })"
+                      })
+                    "
                   >
                     Add to Delivery
                   </button>
@@ -125,6 +127,7 @@
 </template>
 
 <script>
+/* global io */
 import moment from 'moment-timezone'
 import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
