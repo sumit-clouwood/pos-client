@@ -107,12 +107,7 @@ export default {
     return { activeIndex: '' }
   },
   computed: {
-    ...mapState({
-      deliveryAddresses: state =>
-        state.customer.customer.customer_list
-          ? state.customer.customer.customer_list.customer_details
-          : false,
-    }),
+
     ...mapState({
       locationName: state => state.location.locationName,
     }),

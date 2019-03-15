@@ -64,7 +64,20 @@ const actions = {
         if (rootState.tax.surchargeTax) {
           order.surcharge_tax = rootState.tax.surchargeTax
         }
-
+        //add order note
+        if (rootState.order.orderNote) {
+          order.order_note = rootState.order.orderNote
+        }
+        //add referral
+        if (rootState.order.referral) {
+          order.referral = rootState.order.referral.referralName
+          order.referral_id = rootState.order.referral.referralId
+        }
+        //add future order
+        if (rootState.order.futureOrder) {
+          order.future_order = 1
+          order.future_order_date = rootState.order.futureOrder
+        }
         //adding surcharge data
         order.surchargeData = rootState.surcharge.surcharges.map(surcharge => {
           return {
@@ -132,14 +145,14 @@ const actions = {
 
           modifiers.forEach(modifier => {
             switch (modifier.type) {
-              case 'mandatory':
-                mandatoryModifiers.push(modifier)
-                break
-              case 'price':
-                priceModifiers.push(modifier)
-                break
-              default:
-                regularModifiers.push(modifier)
+            case 'mandatory':
+              mandatoryModifiers.push(modifier)
+              break
+            case 'price':
+              priceModifiers.push(modifier)
+              break
+            default:
+              regularModifiers.push(modifier)
             }
           })
           orderItem.modifiers = {
@@ -199,6 +212,22 @@ const actions = {
     dispatch('tax/reset', null, { root: true })
     dispatch('discount/reset', null, { root: true })
     dispatch('surcharge/reset', null, { root: true })
+  },
+
+  updateOrderStatus(
+    { commit, dispatch, rootState },
+    { orderStatus, orderId, timestamp, orderType }
+  ) {
+    const params = [
+      rootState.location.location,
+      orderStatus,
+      orderId,
+      orderType,
+      timestamp,
+    ]
+    OrderService.updateOrder(...params).then(response => {})
+    /*commit(mutation.SET_ORDER, order)
+    dispatch('createOrder')*/
   },
 }
 

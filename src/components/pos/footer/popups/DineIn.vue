@@ -10,18 +10,18 @@
         </div>
         <div class="modal-body row dining-options-block">
           <div class="dining-option-block">
-            <div class="option-contain active">
+            <div class="option-contain active" @click="updateOrderType('dinein')">
               <img src="img/pos/dine-in.svg" /><span>Dine In</span>
             </div>
-            <div class="option-contain">
+            <div class="option-contain" @click="updateOrderType('takeaway')">
               <img src="img/pos/take-away.svg" /><span>Take Away</span>
             </div>
           </div>
           <div class="dining-option-block">
-            <div class="option-contain">
+            <div class="option-contain" @click="updateOrderType('delivery')">
               <img src="img/pos/delivery-icon.svg" /><span>Delivery</span>
             </div>
-            <div class="option-contain">
+            <div class="option-contain" @click="updateOrderType('delivery')">
               <img src="img/pos/event.svg" /><span>Event</span>
             </div>
           </div>
@@ -46,8 +46,12 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'DineIn',
   props: {},
+  methods: {
+    ...mapActions('order',['updateOrderType'])
+  }
 }
 </script>

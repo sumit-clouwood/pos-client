@@ -582,10 +582,6 @@ $(document).ready(function() {
     $('.last-order-wrap')[0].slick.refresh()
   })
 })
-function updateDada() {
-  // alert('fdf')
-  // slick.refresh()
-}
 // for delivery manger transparent-screen
 
 $(document).ready(function() {

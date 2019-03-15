@@ -2,7 +2,7 @@
   <div id="total-order-wrap" class="total-order">
     <div class="order-notes">
       <p class="notes-title">NOTES</p>
-      <p>
+      <p v-if="orderNotes">
         {{ orderNotes }}
       </p>
     </div>

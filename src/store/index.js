@@ -18,13 +18,16 @@ import announcement from './modules/announcement'
 import holdOrders from './modules/holdOrders'
 import payment from './modules/payment'
 import invoice from './modules/invoice'
-// import paginate from 'vuejs-paginate'
+import Datetime from 'vue-datetime'
+// You need a specific loader for CSS files
+import 'vue-datetime/dist/vue-datetime.css'
+
 
 //to take snapshot
 //import createLogger from 'vuex/dist/logger'
 
 Vue.use(Vuex)
-// Vue.use(paginate)
+Vue.use(Datetime)
 
 //const debug = process.env.NODE_ENV !== 'production'
 

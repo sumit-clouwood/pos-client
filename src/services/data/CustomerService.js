@@ -24,22 +24,12 @@ export default {
     )
   },
 
-  /*customerList(
-    ...[
-      locationId,
-      search,
-      page,
-      all,
-      validate,
-      lastSyncDate,
-      isCompress,
-      perpage,
-    ]
-  ) {
+  getCustomerDetails(...[customerIds, locationId]) {
     return DataService.get(
-      `/api/auth/crm/get/CustomerList/?location_id=${locationId}&search=${search}&perpage=${perpage}&page=${page}&all=${all}&validate=${validate}&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
+      `/api/auth/crm/get/CustomerList/?location_id=${locationId}&customer_id=${customerIds}`
     )
-  },*/
+  },
+
   customerList(
     ...[
       locationId,

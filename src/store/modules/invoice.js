@@ -13,7 +13,8 @@ const getters = {
     if (!state.rules.data) return false
 
     const ruleType =
-      rootState.order.orderType == 'Walk-in'
+      rootState.order.orderType == 'Walk-in' ||
+      rootState.order.orderType == 'delivery'
         ? 'walk_in_rule'
         : rootState.order.orderType
     return state.rules.data.find(rule => {
@@ -29,12 +30,12 @@ const getters = {
     const orderType = rootState.order.orderType
     let templates = ''
     switch (orderType) {
-      case 'Walk-in':
-        templates = state.templates.data['walkin']
-        break
-      default:
-        templates = state.templates.data['default_template']
-        break
+    case 'Walk-in':
+      templates = state.templates.data['walkin']
+      break
+    default:
+      templates = state.templates.data['default_template']
+      break
     }
 
     if (getters.rule.template) {

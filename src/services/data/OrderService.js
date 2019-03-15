@@ -2,17 +2,11 @@ import DataService from '@/services/DataService'
 
 export default {
   saveOrder(data) {
-    return DataService.post(`/api/auth/order/SaveOrder`, data)
+    return DataService.post('/api/auth/order/SaveOrder', data)
   },
 
   deleteOrder(orderId) {
     return DataService.get(`/api/auth/order/deleteOrder/?&order_id=${orderId}`)
-  },
-
-  fetchOrder(...[orderId, lastSyncDate]) {
-    return DataService.get(
-      `/api/auth/order/details?order_id=${orderId}&last_sync_date=${lastSyncDate}`
-    )
   },
 
   updateOrder(...[locationId, orderStatus, orderId, orderType, timestamp]) {

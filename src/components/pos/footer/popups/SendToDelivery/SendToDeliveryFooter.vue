@@ -1,6 +1,8 @@
 <template>
   <div class="modal-footer">
     <div class="referal">
+      <p v-if="errors !== ''" class="text-danger">{{ errors }}</p>
+
       <button
         type="button"
         data-value=""
@@ -10,7 +12,7 @@
         aria-haspopup="true"
         aria-expanded="false"
       >
-        {{ selectedReferral() }}</button
+        {{ changedReferral.referralName }}</button
       ><!--<span><img src="images/referal-down.png"></span>-->
       <div class="dropdown-menu" v-if="getReferrals">
         <a
@@ -18,6 +20,12 @@
           data-value="Call Center"
           href="#"
           v-for="referral in getReferrals"
+          @click="
+            selectedReferral({
+              referralName: referral.name,
+              referralId: referral._id,
+            })
+          "
           :referralType="referral.referral_type"
           :key="referral._id"
           >{{ referral.name }}
@@ -26,18 +34,30 @@
       <div class="dropdown-menu" v-if="!getReferrals">
         Nothing found
       </div>
-      <button
-        data-range="true"
-        data-multiple-dates-separator=" - "
-        class="btn btn-success btn-large datepicker-here"
-        type="button"
-        id="schedule-btn"
-        data-timepicker="true"
-        data-language="en"
-      >
-        Schedule
-        <span><img src="img/pos/schedule-icon.png" alt="schedule"/></span>
-      </button>
+      <datetime
+        type="datetime"
+        title="Schedule"
+        placeholder="Schedule"
+        v-model="futureDateTime"
+        input-class="btn schedule-input btn-large datepicker-here"
+        :value-zone="timeZone"
+        :zone="timeZone"
+        :format="{
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+        }"
+        :phrases="{ ok: 'Continue', cancel: 'Exit' }"
+        :hour-step="1"
+        :minute-step="10"
+        :min-datetime="minDatetime"
+        :max-datetime="maxDatetime"
+        :week-start="7"
+        use12-hour
+        auto
+      ></datetime>
     </div>
     <div class="btn-announce">
       <button
@@ -45,28 +65,41 @@
         class="btn btn-danger cancel-announce"
         data-dismiss="modal"
       >
-        <span>X</span> Close
+        Close
       </button>
       <button
         class="btn btn-success btn-large"
         type="button"
         id="confirm_announcement"
+        @click="placeOrder"
       >
         Confirm
       </button>
     </div>
+
     <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import moment from 'moment-timezone'
+
+import { Datetime } from 'vue-datetime'
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'SendToDeliveryFooter',
   props: {},
+  components: {
+    Datetime,
+  },
   data() {
     return {
-      changedReferral: 'Referal',
+      changedReferral: { referralName: 'Referral' },
+      futureDateTime: null,
+      minDatetime: null,
+      maxDatetime: null,
+      errors: '',
+      timeZone: this.$store.state.location.setTimeZone,
     }
   },
   computed: {
@@ -77,11 +110,24 @@ export default {
           ? state.location.locationData.referrals
           : false,
     }),
+
   },
   methods: {
-    selectedReferral() {
-      return this.changedReferral
+    selectedReferral(referral) {
+      this.changedReferral = referral
     },
+    placeOrder() {
+      if (this.changedReferral.referralName === 'Referral') {
+        this.errors = 'Please select referral to proceed.'
+      } else {
+        this.errors = ''
+        this.deliveryOrder({
+          referral: this.changedReferral,
+          futureOrder: moment(this.futureDateTime).format('YYYY/MM/DD hh:mm'),
+        })
+      }
+    },
+    ...mapActions('order', ['deliveryOrder']),
   },
 }
 </script>
@@ -91,5 +137,18 @@ export default {
   max-height: 275px;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+/*theming*/
+.theme-orange .vdatetime-popup__header,
+.theme-orange .vdatetime-calendar__month__day--selected > span > span,
+.theme-orange .vdatetime-calendar__month__day--selected:hover > span > span {
+  background: #ff9800;
+}
+
+.theme-orange .vdatetime-year-picker__item--selected,
+.theme-orange .vdatetime-time-picker__item--selected,
+.theme-orange .vdatetime-popup__actions__button {
+  color: #ff9800;
 }
 </style>

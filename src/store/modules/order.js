@@ -5,7 +5,10 @@ const state = {
   items: [],
   item: false,
   orderType: 'Walk-in',
-  orderNote: '',
+  orderNote: false,
+  onlineOrders: false,
+  futureOrder: false,
+  referral: false,
 }
 
 // getters
@@ -38,6 +41,18 @@ const getters = {
 
   orderModifiers: () => item => {
     return item.modifiers.length
+  },
+
+  getLatestOnlineOrders: state => {
+    if (state.onlineOrders) {
+      return state.onlineOrders
+    } else {
+      if (JSON.parse(localStorage.getItem('onlineOrders')) != null) {
+        return JSON.parse(localStorage.getItem('onlineOrders'))
+      } else {
+        return false
+      }
+    }
   },
 }
 
@@ -345,7 +360,6 @@ const actions = {
       })
     )
   },
-
   removeItemTax({ state, commit, dispatch, rootState }) {
     let item = { ...state.item }
     //remove tax information from the order and recalculate the tax
@@ -365,10 +379,72 @@ const actions = {
   reset({ commit }) {
     commit(mutation.RESET)
   },
-
   addOrderNote({ commit }, orderNote) {
     commit(mutation.SET_ORDER_NOTE, orderNote)
   },
+
+  setOnlineOrders({ commit, rootState }, onlineOrderData) {
+    commit(mutation.ONLINE_ORDERS, {
+      onlineOrders: onlineOrderData,
+      locationId: rootState.location.location,
+    })
+  },
+
+  deliveryOrder({ commit, dispatch }, { referral, futureOrder }) {
+    commit(mutation.ORDER_TYPE, 'delivery')
+    commit(mutation.SET_REFERRAL, referral)
+    if (futureOrder != null) {
+      commit(mutation.SET_FUTURE_ORDER, futureOrder)
+    }
+    dispatch('checkout/pay', {}, { root: true })
+  },
+
+  updateOrderType({ commit }, orderType) {
+    commit(mutation.ORDER_TYPE, orderType)
+  },
+
+  addHoldOrder({ state, commit, rootState, dispatch }, holdOrders) {
+    dispatch('reset')
+    const allItems = rootState.category.items
+    let getHoldOrderItems = []
+    allItems.forEach(item => {
+      holdOrders.item_ids.forEach(itemId => {
+        if (itemId == item._id) {
+          dispatch('addToOrder', item)
+          getHoldOrderItems.push(item)
+        }
+      })
+    })
+  },
+}
+
+function playSound(locationId, onlineOrders) {
+  let nopromise = {
+    catch: new Function(),
+  }
+  // onlineOrders.orders.forEach(order => {
+  if (locationId == onlineOrders.location_id) {
+    let onlineNewOrderAudioRing = new Audio(
+      'https://int.erp-pos.com/sound/doorbell.ogg'
+    )
+    onlineNewOrderAudioRing.load()
+    if (onlineOrders.orders && onlineOrders.orders.length) {
+      console.log('play')
+      onlineNewOrderAudioRing.addEventListener(
+        'ended',
+        function() {
+          this.currentTime = 0
+          ;(this.play() || nopromise).catch(function() {})
+        },
+        false
+      )
+      ;(onlineNewOrderAudioRing.play() || nopromise).catch(function() {})
+    } else {
+      console.log('pause')
+      onlineNewOrderAudioRing.pause()
+      onlineNewOrderAudioRing.currentTime = 0
+    }
+  }
 }
 
 // mutations
@@ -438,6 +514,20 @@ const mutations = {
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
+  },
+  [mutation.ORDER_TYPE](state, orderType) {
+    state.orderType = orderType
+  },
+  [mutation.SET_REFERRAL](state, referral) {
+    state.referral = referral
+  },
+  [mutation.SET_FUTURE_ORDER](state, futureOrder) {
+    state.futureOrder = futureOrder
+  },
+  [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId }) {
+    state.onlineOrders = onlineOrders
+    localStorage.setItem('onlineOrders', JSON.stringify(onlineOrders))
+    playSound(locationId, onlineOrders)
   },
 }
 
