@@ -399,6 +399,10 @@ const actions = {
     dispatch('checkout/pay', {}, { root: true })
   },
 
+  updateOrderType({ commit }, orderType) {
+    commit(mutation.ORDER_TYPE, orderType)
+  },
+
   addHoldOrder({ state, commit, rootState, dispatch }, holdOrders) {
     dispatch('reset')
     const allItems = rootState.category.items
