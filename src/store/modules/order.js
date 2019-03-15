@@ -406,19 +406,12 @@ const actions = {
     console.log(allItems)
     let getHoldOrderItems = []
     allItems.forEach(item => {
-      if (holdOrders.item_ids.includes(item._id)) {
-        commit(mutation.ADD_ORDER_ITEM, item)
-        dispatch('surcharge/calculate', {}, { root: true }).then(
-          dispatch('tax/calculate', {}, { root: true }).then(() => {
-            if (rootState.discount.appliedOrderDiscount) {
-              dispatch('recalculateOrderTotals')
-            } else {
-              dispatch('recalculateItemPrices')
-            }
-          })
-        )
-        getHoldOrderItems.push(item)
-      }
+      holdOrders.item_ids.forEach(itemId => {
+        if (itemId == item._id) {
+          dispatch('addToOrder', item)
+          getHoldOrderItems.push(item)
+        }
+      })
     })
     console.log(getHoldOrderItems)
   },
