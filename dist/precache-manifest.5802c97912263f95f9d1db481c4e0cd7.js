@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "0a0152277402cea2ae1d",
-    "url": "https://delivery.erp-pos.com/vue-pos/css/app.6db3fa0e.css"
+    "revision": "01ebdd6d8a7e8ef78116",
+    "url": "https://delivery.erp-pos.com/vue-pos/css/app.865b6b7b.css"
   },
   {
-    "revision": "0a0152277402cea2ae1d",
-    "url": "https://delivery.erp-pos.com/vue-pos/js/app.94d7b9a8.js"
+    "revision": "01ebdd6d8a7e8ef78116",
+    "url": "https://delivery.erp-pos.com/vue-pos/js/app.bcfb90f3.js"
   },
   {
     "revision": "8cd2a4c2eebc95e6779f",
@@ -16,7 +16,7 @@ self.__precacheManifest = [
     "url": "https://delivery.erp-pos.com/vue-pos/js/chunk-vendors.8d20921d.js"
   },
   {
-    "revision": "b9aae06bd7ab88fd1286c77a3223bba8",
+    "revision": "be5d050e0efaeaed155ebe5a37101887",
     "url": "https://delivery.erp-pos.com/vue-pos/index.html"
   },
   {

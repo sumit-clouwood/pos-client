@@ -19,24 +19,24 @@ export default {
       if (!data) {
         return { name: '' }
       }
-      return data.find(
+
+      let res = data.find(
         entry =>
           entry.language ==
           (this.locale || localStorage.getItem('selectedLanguageSortName'))
       )
-      // if (!res) {
-      //   if (Array.isArray(data)) {
-      //     const res = data[0]
-      //     if (!res.name) {
-      //       return {
-      //         name: res,
-      //       }
-      //     }
-      //     return res
-      //   }
-      //   return data
-      // }
-      // return res
+
+      if (!res) {
+        res = data.find(entry => entry.language == 'en_US')
+      }
+
+      if (!res) {
+        res = {
+          name: '',
+        }
+      }
+
+      return res
     },
   },
 }

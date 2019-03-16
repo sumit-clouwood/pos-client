@@ -58,7 +58,10 @@ export default {
   mixins: [Cookie],
   //life cycle hooks
   mounted() {
-    let deviceId = Cookie.get_cookie('device_id')
+    //lets hardcode for now
+    let deviceId = '34:79:A6:37:1F:C7'
+
+    //let deviceId = Cookie.get_cookie('device_id')
     if (!deviceId) {
       deviceId = 'XX:XX:XX:XX:XX:XX'.replace(/X/g, function() {
         return '0123456789ABCDEF'.charAt(Math.floor(Math.random() * 16))

@@ -1,4 +1,4 @@
-importScripts("https://delivery.erp-pos.com/vue-pos/precache-manifest.fd5cba3abac61d32c826e592a90c3f6b.js", "https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
+importScripts("https://delivery.erp-pos.com/vue-pos/precache-manifest.5802c97912263f95f9d1db481c4e0cd7.js", "https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 // custom service-worker.js
 /* global workbox*/

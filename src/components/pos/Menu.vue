@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="debug">{{ menu }}</div>
     <ul
       class="navbar-nav navbar-sidenav"
       id="exampleAccordion"
@@ -81,3 +82,8 @@ export default {
   },
 }
 </script>
+<style scoped>
+.debug {
+  display: none;
+}
+</style>

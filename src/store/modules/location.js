@@ -87,14 +87,8 @@ const mutations = {
   },
   [mutation.SET_LOCATION_DATA](state, locationDetails) {
     if (typeof localStorage.getItem('selectedLanguageSortName') != 'string') {
-      localStorage.setItem(
-        'selectedLanguageSortName',
-        locationDetails.default_language[0].shortname
-      )
-      localStorage.setItem(
-        'selectedLanguage',
-        locationDetails.default_language[0].language
-      )
+      localStorage.setItem('selectedLanguageSortName', 'en_US')
+      localStorage.setItem('selectedLanguage', 'English(US)')
     }
     state.locationData = locationDetails
   },
