@@ -79,15 +79,19 @@ export default {
           this.$store.dispatch('location/setLocations', response.data.data)
         }
 
-        Promise.all([this.$store.dispatch('category/fetchAll', response)])
+        this.$store
+          .dispatch('category/fetchAll', response)
           .then(result => {
             if (!result || result.error) {
               this.errored = result.error || 'No result from category/fetchAll'
               return false
             }
-            this.$store.dispatch('modifier/fetchAll', response)
-            this.$store.commit('sync/loaded', true)
             this.$store.dispatch('location/fetchAll', response)
+            this.$store.dispatch('modifier/fetchAll', response).then(() => {
+              this.$store.commit('sync/loaded', true)
+              this.loading = false
+            })
+
             this.$store.dispatch('announcement/fetchAll', response)
             this.$store.dispatch('surcharge/fetchAll', response)
             this.$store.dispatch('discount/fetchAll', response)
@@ -97,7 +101,7 @@ export default {
             this.$store.dispatch('invoice/fetchAll', response)
           })
           .catch(err => (this.errored = err))
-          .finally(() => (this.loading = false))
+        //.finally(() => (this.loading = false))
 
         // localStorage.setItem('selectedLanguage', this.defaultLanguage.language)
         // localStorage.setItem('selectedLanguageSortName', this.defaultLanguage.shortname)
