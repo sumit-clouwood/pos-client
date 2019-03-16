@@ -111,12 +111,12 @@ self.addEventListener('message', e => {
   }
 
   switch (e.data) {
-    case 'skipWaiting':
-      self.skipWaiting()
-      break
-    default:
-      // NOOP
-      break
+  case 'skipWaiting':
+    self.skipWaiting()
+    break
+  default:
+    // NOOP
+    break
   }
 })
 

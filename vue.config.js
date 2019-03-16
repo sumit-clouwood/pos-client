@@ -5,7 +5,7 @@ module.exports = {
       : '/',
 
   chainWebpack: config => {
-    config.plugin('workbox')
+    // config.plugin('workbox')
 
     config.module
       .rule('i18n')
