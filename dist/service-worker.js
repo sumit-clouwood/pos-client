@@ -1,4 +1,4 @@
-importScripts("https://delivery.erp-pos.com/vue-pos/precache-manifest.30640da708c17a712725610fddc9aab0.js", "https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
+importScripts("https://delivery.erp-pos.com/vue-pos/precache-manifest.73aa855445373141acb3cbb0720b0719.js", "https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 // custom service-worker.js
 /* global workbox navigator */
@@ -286,17 +286,25 @@ function sendPostToServer() {
 
             if (authData && authData[0]) {
               authData = authData[0]
+              console.log('auth data from db', authData)
+
               var authToken = authData.token
               var deviceCode = authData.deviceCode
               var franchiesCode = authData.franchiesCode
-              var lastOrderNo = parseInt(authData.lastOrderNo) + 1
-              var transitionOrderNo =
-                franchiesCode + '-' + deviceCode + '-' + lastOrderNo
+              var lastOrderNo = parseInt(authData.lastOrderNo) || 0
 
               for (let savedRequest of savedRequests) {
+                lastOrderNo++
+                var transitionOrderNo =
+                  franchiesCode + '-' + deviceCode + '-' + lastOrderNo
+
                 // send them to the server one after the other
                 console.log('saved request', savedRequest)
                 var requestUrl = savedRequest.url
+
+                savedRequest.payload.transition_order_no = transitionOrderNo
+                savedRequest.payload.app_uniqueid = cyrb53(transitionOrderNo)
+
                 var payload = JSON.stringify(savedRequest.payload)
                 var method = savedRequest.method
 
@@ -305,9 +313,6 @@ function sendPostToServer() {
                   'Content-Type': 'application/json',
                   authorization: 'Bearer ' + authToken,
                 } // if you have any other headers put them here
-
-                payload.transition_order_no = transitionOrderNo
-                payload.app_uniqueid = cyrb53(transitionOrderNo)
 
                 //app_uniqueid
                 //transition_order_no
@@ -324,9 +329,11 @@ function sendPostToServer() {
                       //increment in the order number
                       authData.lastOrderNo = lastOrderNo
 
-                      var requestUpdate = getObjectStore(ORDER_DOCUMENT).put(
-                        authData
-                      )
+                      var requestUpdate = getObjectStore(
+                        'auth',
+                        'readwrite'
+                      ).put(authData)
+
                       requestUpdate.onerror = function(event) {
                         console.log('update failed', event)
                       }

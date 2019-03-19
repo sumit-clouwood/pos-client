@@ -56,12 +56,12 @@ self.__precacheManifest = [
     "url": "https://delivery.erp-pos.com/vue-pos/img/pos/confused.png"
   },
   {
-    "revision": "fdd4a65ec1739204635db919faf8368e",
-    "url": "https://delivery.erp-pos.com/vue-pos/img/pos/customer.svg"
-  },
-  {
     "revision": "889ddeb3deffcd1bb785bc6ca8ce5de7",
     "url": "https://delivery.erp-pos.com/vue-pos/img/pos/delete-icon.svg"
+  },
+  {
+    "revision": "fdd4a65ec1739204635db919faf8368e",
+    "url": "https://delivery.erp-pos.com/vue-pos/img/pos/customer.svg"
   },
   {
     "revision": "393ef249139d4b684a9f030beddd2634",
