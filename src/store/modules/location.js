@@ -55,13 +55,19 @@ const actions = {
       // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
     })
   },
-  setLocation({ commit }, userData) {
-    commit(mutation.SET_LOCATION, userData.location_id)
-    commit(mutation.SET_FRANCHISE_CODE, userData.franchies_code)
+  setLocation({ commit, rootState }) {
+    commit(mutation.SET_LOCATION, rootState.auth.userDetails.location_id)
+    commit(
+      mutation.SET_FRANCHISE_CODE,
+      rootState.auth.userDetails.location_id.franchies_code
+    )
   },
-  setLocations({ commit }, userData) {
-    commit(mutation.SET_LOCATIONS, userData.locations)
-    commit(mutation.SET_FRANCHISE_CODE, userData.franchies_code)
+  setLocations({ commit, rootState }) {
+    commit(mutation.SET_LOCATIONS, rootState.auth.userDetails.locations)
+    commit(
+      mutation.SET_FRANCHISE_CODE,
+      rootState.auth.userDetails.franchies_code
+    )
   },
 
   changeLanguage({ commit }, selectedLanguageShortName) {

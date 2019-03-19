@@ -1,22 +1,22 @@
 self.__precacheManifest = [
   {
-    "revision": "01ebdd6d8a7e8ef78116",
-    "url": "https://delivery.erp-pos.com/vue-pos/css/app.865b6b7b.css"
+    "revision": "2aa471ceec3f3e6b6382",
+    "url": "https://delivery.erp-pos.com/vue-pos/css/app.a142e47f.css"
   },
   {
-    "revision": "01ebdd6d8a7e8ef78116",
-    "url": "https://delivery.erp-pos.com/vue-pos/js/app.bcfb90f3.js"
+    "revision": "2aa471ceec3f3e6b6382",
+    "url": "https://delivery.erp-pos.com/vue-pos/js/app.411c00ba.js"
   },
   {
-    "revision": "8cd2a4c2eebc95e6779f",
+    "revision": "c1a79aec7ebd3cf4a285",
     "url": "https://delivery.erp-pos.com/vue-pos/css/chunk-vendors.99b7ff43.css"
   },
   {
-    "revision": "8cd2a4c2eebc95e6779f",
-    "url": "https://delivery.erp-pos.com/vue-pos/js/chunk-vendors.8d20921d.js"
+    "revision": "c1a79aec7ebd3cf4a285",
+    "url": "https://delivery.erp-pos.com/vue-pos/js/chunk-vendors.72260d40.js"
   },
   {
-    "revision": "be5d050e0efaeaed155ebe5a37101887",
+    "revision": "72c7b82e68501e2195e7966456be7e07",
     "url": "https://delivery.erp-pos.com/vue-pos/index.html"
   },
   {

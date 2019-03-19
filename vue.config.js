@@ -5,8 +5,6 @@ module.exports = {
       : '/',
 
   chainWebpack: config => {
-    config.plugin('workbox')
-
     config.module
       .rule('i18n')
       .resourceQuery(/blockType=i18n/)

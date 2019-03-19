@@ -58,29 +58,12 @@ export default {
   mixins: [Cookie],
   //life cycle hooks
   mounted() {
-    //lets hardcode for now
-    let deviceId = '34:79:A6:37:1F:C7'
-
     //let deviceId = Cookie.get_cookie('device_id')
-    if (!deviceId) {
-      deviceId = 'XX:XX:XX:XX:XX:XX'.replace(/X/g, function() {
-        return '0123456789ABCDEF'.charAt(Math.floor(Math.random() * 16))
-      })
-      Cookie.set_cookie('device_id', deviceId, 365 * 10)
-    }
     this.$store
-      .dispatch('auth/auth', deviceId)
+      .dispatch('auth/auth')
       .then(response => {
         console.log('response from server', response)
-        if (response.data.error) {
-          this.errored = response.error
-          return false
-        }
-        if (response.data.data.location_id) {
-          this.$store.dispatch('location/setLocation', response.data.data)
-        } else {
-          this.$store.dispatch('location/setLocations', response.data.data)
-        }
+        this.$store.dispatch('location/setLocation')
 
         this.$store
           .dispatch('category/fetchAll', response)
@@ -109,7 +92,10 @@ export default {
         // localStorage.setItem('selectedLanguage', this.defaultLanguage.language)
         // localStorage.setItem('selectedLanguageSortName', this.defaultLanguage.shortname)
       })
-      .catch(error => (this.errored = error))
+      .catch(error => {
+        console.log('error from server', error)
+        this.errored = error
+      })
   },
 
   beforeCreate() {},
@@ -127,6 +113,27 @@ export default {
           : false,
     }),
   },
+}
+
+if ('serviceWorker' in navigator && 'SyncManager' in window) {
+  console.log('All things available')
+  window.addEventListener('load', () => {
+    console.log('window loaded with navigator')
+    navigator.serviceWorker.ready
+      .then(registration => {
+        console.log('Service Worker Ready IN MAIN Component')
+        Notification.requestPermission()
+        return registration.sync.register('postOfflineOrders')
+      })
+      .then(function() {
+        console.log('sync event postOfflineOrders registered')
+      })
+      .catch(function() {
+        // system was unable to register for a sync,
+        // this could be an OS-level restriction
+        console.log('sync registration failed')
+      })
+  })
 }
 </script>
 

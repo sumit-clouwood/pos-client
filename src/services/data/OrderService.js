@@ -2,6 +2,11 @@ import DataService from '@/services/DataService'
 
 export default {
   saveOrder(data) {
+    const msg = {
+      form_data: data,
+    }
+
+    navigator.serviceWorker.controller.postMessage(msg)
     return DataService.post('/api/auth/order/SaveOrder', data)
   },
 
