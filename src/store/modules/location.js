@@ -8,8 +8,8 @@ const state = {
   currency: 'AED',
   locationData: {},
   deliveryAreas: {},
-  selectedLanguage: 'English',
-  selectedSortcode: 'en_US',
+  language: 'English',
+  locale: 'en_US',
   setTimeZone: 'Asia/Dubai',
 }
 
@@ -40,7 +40,7 @@ const getters = {
 
 // actions
 const actions = {
-  fetchAll({ commit, rootState }) {
+  fetch({ commit, rootState }) {
     const params = [
       rootState.location.location,
       1 /*Staff*/,
@@ -52,6 +52,11 @@ const actions = {
       commit(mutation.SET_CURRENCY, response.data.data.currency_code)
       commit(mutation.SET_DELIVERY_AREAS, response.data.data.delivery_area)
       commit(mutation.SET_TIMEZONE, response.data.data.country_timezone)
+      commit(
+        mutation.SET_LANGUAGE,
+        localStorage.getItem('locale') ||
+          state.locationData.default_language[0].shortname
+      )
       // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
     })
   },
@@ -70,9 +75,8 @@ const actions = {
     )
   },
 
-  changeLanguage({ commit }, selectedLanguageShortName) {
-    commit(mutation.SET_LANGUAGE, selectedLanguageShortName)
-    window.location.reload()
+  changeLanguage({ commit }, locale) {
+    commit(mutation.SET_LANGUAGE, locale)
   },
 }
 
@@ -92,10 +96,6 @@ const mutations = {
     state.currency = currency
   },
   [mutation.SET_LOCATION_DATA](state, locationDetails) {
-    if (typeof localStorage.getItem('selectedLanguageSortName') != 'string') {
-      localStorage.setItem('selectedLanguageSortName', 'en_US')
-      localStorage.setItem('selectedLanguage', 'English(US)')
-    }
     state.locationData = locationDetails
   },
   [mutation.SET_CURRENCY](state, currency) {
@@ -104,17 +104,16 @@ const mutations = {
   [mutation.SET_DELIVERY_AREAS](state, delivery_area) {
     state.deliveryAreas = delivery_area
   },
-  [mutation.SET_LANGUAGE](state, selectedLanguageShortName) {
-    let selectedLanguage = state.locationData.default_language[0].language
-    state.locationData.languages.forEach(getLang => {
-      if (getLang.shortname == selectedLanguageShortName) {
-        selectedLanguage = getLang.language
-      }
-    })
-    state.selectedSortcode = selectedLanguageShortName
-    state.selectedLanguage = selectedLanguage
-    localStorage.setItem('selectedLanguageSortName', selectedLanguageShortName)
-    localStorage.setItem('selectedLanguage', selectedLanguage)
+  [mutation.SET_LANGUAGE](state, locale) {
+    const language = state.locationData.languages.find(
+      language => language.shortname === locale
+    )
+
+    state.locale = language.shortname
+    state.language = language.language
+
+    localStorage.setItem('locale', state.locale)
+    localStorage.setItem('language', state.language)
   },
 
   [mutation.SET_TIMEZONE](state, timeZone) {

@@ -8,9 +8,9 @@
       <div @click.prevent="getItems(item)">
         <img
           :src="subcategoryImage(item.sub_category_image)"
-          :alt="t(item.subcategory_name).name"
+          :alt="item.name"
         />
-        <span>{{ t(item.subcategory_name).name }}</span>
+        <span>{{ item.name }}</span>
       </div>
     </div>
   </div>
@@ -24,10 +24,9 @@ export default {
   props: {},
   computed: {
     ...mapState({
-      subcategories: state => state.category.subcategories,
       currentSubcategory: state => state.category.subcategory._id,
     }),
-    ...mapGetters('category', ['subcategoryImage']),
+    ...mapGetters('category', ['subcategoryImage', 'subcategories']),
   },
   methods: mapActions('category', ['getItems']),
 }

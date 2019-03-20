@@ -15,12 +15,9 @@
           "
         >
           <div>
-            <img
-              :src="itemImage(item.item_image)"
-              :alt="t(item.item_name).name"
-            />
+            <img :src="itemImage(item.item_image)" :alt="item.name" />
             <p class="remove-bottom popover-btn">
-              {{ t(item.item_name).name }}
+              {{ item.name }}
             </p>
           </div>
         </div>

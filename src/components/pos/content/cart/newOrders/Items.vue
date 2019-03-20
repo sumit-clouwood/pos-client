@@ -6,7 +6,7 @@
       :key="index + '-' + item._id"
     >
       <div class="orders-name">
-        <p>{{ t(item.item_name).name }}</p>
+        <p>{{ item.name }}</p>
         <p class="price-qty">
           @ {{ item.item_price }} {{ discountInfo(item) }} x {{ item.quantity }}
         </p>
@@ -43,12 +43,11 @@ export default {
   props: {},
   computed: {
     ...mapState({
-      items: state => state.order.items,
       currentItem: state => state.order.item._id,
     }),
     ...mapGetters('category', ['subcategoryImage']),
     ...mapGetters('modifier', ['hasModifiers']),
-    ...mapGetters('order', ['itemPrice', 'orderModifiers']),
+    ...mapGetters('order', ['items', 'itemPrice', 'orderModifiers']),
     ...mapGetters('location', ['formatPrice']),
   },
   methods: {

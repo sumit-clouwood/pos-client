@@ -66,25 +66,31 @@ export default {
         this.$store.dispatch('location/setLocation')
 
         this.$store
-          .dispatch('category/fetchAll', response)
-          .then(result => {
-            if (!result || result.error) {
-              this.errored = result.error || 'No result from category/fetchAll'
-              return false
-            }
-            this.$store.dispatch('location/fetchAll', response)
-            this.$store.dispatch('modifier/fetchAll', response).then(() => {
-              this.$store.commit('sync/loaded', true)
-              this.loading = false
-            })
+          .dispatch('location/fetch', response)
+          .then(() => {
+            this.$store
+              .dispatch('category/fetchAll', response)
+              .then(result => {
+                if (!result || result.error) {
+                  this.errored =
+                    result.error || 'No result from category/fetchAll'
+                  return false
+                }
 
-            this.$store.dispatch('announcement/fetchAll', response)
-            this.$store.dispatch('surcharge/fetchAll', response)
-            this.$store.dispatch('discount/fetchAll', response)
-            this.$store.dispatch('customer/fetchAll', response)
-            this.$store.dispatch('payment/fetchAll', response)
-            this.$store.dispatch('giftcard/fetchAll', response)
-            this.$store.dispatch('invoice/fetchAll', response)
+                this.$store.dispatch('modifier/fetchAll', response).then(() => {
+                  this.$store.commit('sync/loaded', true)
+                  this.loading = false
+                })
+
+                this.$store.dispatch('announcement/fetchAll', response)
+                this.$store.dispatch('surcharge/fetchAll', response)
+                this.$store.dispatch('discount/fetchAll', response)
+                this.$store.dispatch('customer/fetchAll', response)
+                this.$store.dispatch('payment/fetchAll', response)
+                this.$store.dispatch('giftcard/fetchAll', response)
+                this.$store.dispatch('invoice/fetchAll', response)
+              })
+              .catch(err => (this.errored = err))
           })
           .catch(err => (this.errored = err))
         //.finally(() => (this.loading = false))

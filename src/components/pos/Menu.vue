@@ -22,8 +22,8 @@
         class="nav-item active-opacity"
         data-toggle="tooltip"
         data-placement="right"
-        :title="t(item.cat_name).name"
-        :data-original-title="t(item.cat_name).name"
+        :title="item.name"
+        :data-original-title="item.name"
       >
         <a
           class="nav-link"
@@ -32,7 +32,7 @@
           @click.prevent="browse(item)"
         >
           <img :src="categoryImage(item.category_image)" />
-          <span class="nav-link-text">{{ t(item.cat_name).name }}</span>
+          <span class="nav-link-text">{{ item.name }}</span>
         </a>
       </li>
     </ul>
@@ -62,7 +62,7 @@ export default {
   computed: {
     ...mapState({
       // map this.categories to store.state.categories, it uses dispatch
-      menu: state => state.category.all,
+      //menu: state => state.category.all,
       currentCategory: state => state.category.category._id,
     }),
     ...mapState({
@@ -73,7 +73,7 @@ export default {
             state.auth.userDetails.image
           : 'img/pos/profile-pic.png',
     }),
-    ...mapGetters('category', ['categoryImage']),
+    ...mapGetters('category', ['categoryImage', 'menu']),
   },
   // map `this.browse()` to `this.$store.category.dispatch('browse')`
   methods: {

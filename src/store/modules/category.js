@@ -11,7 +11,7 @@ const state = {
   subcategory: {},
   categoryItems: [],
   subcategoryItems: [],
-  item: {},
+  item: null,
   items: [],
   taxData: [],
   taxAmount: {},
@@ -24,12 +24,69 @@ const getters = {
   subcategoryImage: state => imageSrc => state.subcategoryImagePath + imageSrc,
   itemImage: state => imageSrc => state.itemImagePath + imageSrc,
 
-  items: state =>
-    state.searchItems.length > 0
+  menu: (state, getters, rootState) => {
+    const appLocale = rootState.location.locale
+    return state.all.map(category => {
+      let newCategory = { ...category }
+      newCategory.name = newCategory.cat_name.find(
+        locale => locale.language == appLocale
+      ).name
+      return newCategory
+    })
+  },
+  subcategories: (state, getters, rootState) => {
+    const appLocale = rootState.location.locale
+    return state.subcategories.map(category => {
+      let newCategory = { ...category }
+      newCategory.name = newCategory.subcategory_name.find(
+        locale => locale.language == appLocale
+      ).name
+      return newCategory
+    })
+  },
+  items: (state, getters, rootState) => {
+    const appLocale = rootState.location.locale
+    const items = state.searchItems.length
       ? state.searchItems
       : state.categoryItems.length
       ? state.categoryItems
-      : state.subcategoryItems,
+      : state.subcategoryItems
+
+    return items.map(item => {
+      let newItem = { ...item }
+      newItem.name = newItem.item_name.find(
+        locale => locale.language == appLocale
+      ).name
+      return newItem
+    })
+  },
+
+  selectedCategory: (state, getters, rootState) => {
+    const appLocale = rootState.location.locale
+    let newCategory = { ...state.category }
+    newCategory.name = newCategory.cat_name.find(
+      locale => locale.language == appLocale
+    ).name
+    return newCategory
+  },
+  selectedSubCategory: (state, getters, rootState) => {
+    const appLocale = rootState.location.locale
+    let newCategory = { ...state.subcategory }
+    newCategory.name = newCategory.subcategory_name.find(
+      locale => locale.language == appLocale
+    ).name
+    return newCategory
+  },
+  selectedItem: (state, getters, rootState) => {
+    const appLocale = rootState.location.locale
+    if (state.item) {
+      let newItem = { ...state.item }
+      newItem.name = newItem.item_name.find(
+        locale => locale.language == appLocale
+      ).name
+      return newItem
+    }
+  },
 }
 
 // actions, often async
