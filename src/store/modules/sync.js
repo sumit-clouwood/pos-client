@@ -6,6 +6,7 @@ const state = {
   weekDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   compress: false,
   loaded: false,
+  online: true,
 }
 
 // getters
@@ -23,6 +24,11 @@ const mutations = {
   updateCompress(state, isCompress) {
     state.compress = isCompress
   },
+
+  status(state, status) {
+    state.online = status
+  },
+
   loaded(state, loaded) {
     state.loaded = loaded
   },

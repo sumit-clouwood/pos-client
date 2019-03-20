@@ -45,9 +45,11 @@
 /* eslint-disable no-console */
 import { mapState } from 'vuex'
 import Cookie from '@/mixins/Cookie'
+import NetworkService from '@/services/NetworkService'
 export default {
   name: 'Location',
   props: {},
+  mixins: [Cookie],
   data: function() {
     return {
       info: null,
@@ -55,7 +57,20 @@ export default {
       errored: false,
     }
   },
-  mixins: [Cookie],
+  computed: {
+    ...mapState({
+      // map this.categories to store.state.categories, it uses dispatch
+      locationIds: state => state.location.locationIds,
+      locationName: state => state.location.locationName,
+      loaded: state => state.sync.loaded,
+    }),
+    ...mapState({
+      defaultLanguage: state =>
+        typeof state.location.locationData !== 'undefined'
+          ? state.location.locationData.default_language[0]
+          : false,
+    }),
+  },
   //life cycle hooks
   mounted() {
     //let deviceId = Cookie.get_cookie('device_id')
@@ -102,23 +117,14 @@ export default {
         console.log('error from server', error)
         this.errored = error
       })
+
+    NetworkService.status((status, msg, event) => {
+      this.$store.commit('sync/status', status)
+      console.log('network status: ', status, msg, event)
+    })
   },
 
   beforeCreate() {},
-  computed: {
-    ...mapState({
-      // map this.categories to store.state.categories, it uses dispatch
-      locationIds: state => state.location.locationIds,
-      locationName: state => state.location.locationName,
-      loaded: state => state.sync.loaded,
-    }),
-    ...mapState({
-      defaultLanguage: state =>
-        typeof state.location.locationData !== 'undefined'
-          ? state.location.locationData.default_language[0]
-          : false,
-    }),
-  },
 }
 
 if ('serviceWorker' in navigator && 'SyncManager' in window) {
