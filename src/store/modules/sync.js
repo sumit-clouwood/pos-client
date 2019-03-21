@@ -13,7 +13,7 @@ const state = {
     'Friday',
     'Saturday',
   ],
-  months: [
+  monthsFull: [
     'January',
     'February',
     'March',
@@ -27,13 +27,37 @@ const state = {
     'November',
     'December',
   ],
+  months: [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ],
   compress: false,
   loaded: false,
   online: true,
 }
 
 // getters
-const getters = {}
+const getters = {
+  todayDateFull: state =>
+    //Tuesday, 13 Oct 2017
+    state.weekDaysFull[state.today.getDay()] +
+    ', ' +
+    state.today.getDate() +
+    ' ' +
+    state.months[state.today.getMonth()] +
+    ' ' +
+    state.today.getFullYear(),
+}
 
 // actions
 const actions = {}
