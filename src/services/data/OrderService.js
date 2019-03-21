@@ -1,12 +1,18 @@
+/* eslint-disable no-console */
 import DataService from '@/services/DataService'
 
 export default {
-  saveOrder(data) {
-    const msg = {
+  saveOrder(data, userdata) {
+    let msg = {
       form_data: data,
     }
 
-    navigator.serviceWorker.controller.postMessage(msg)
+    msg.form_data.user = userdata
+    try {
+      navigator.serviceWorker.controller.postMessage(msg)
+    } catch (e) {
+      console.log("Couldn't send msg to service worker in dev", msg)
+    }
     return DataService.post('/api/auth/order/SaveOrder', data)
   },
 

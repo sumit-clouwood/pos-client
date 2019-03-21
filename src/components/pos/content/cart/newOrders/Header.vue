@@ -3,7 +3,7 @@
     <div class="wrappers-new-orders">
       <div class="order">
         <h5>New Orders</h5>
-        <p>Tuesday, 13 Oct 2017</p>
+        <p>{{ today.Tuesday, 13 Oct 2017</p>
       </div>
       <div class="account-name" v-if="selectedCustomer">
         <p v-if="selectedCustomer.email != ''">
@@ -35,6 +35,7 @@ export default {
   name: 'Header',
   props: {},
   computed: {
+    ...mapState('sync', ['today']),
     ...mapState({
       selectedCustomer: state =>
         typeof state.customer.customer.customer_list != 'undefined'

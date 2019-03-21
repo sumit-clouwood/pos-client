@@ -302,6 +302,7 @@ function sendPostToServer() {
 
                 savedRequest.payload.transition_order_no = transitionOrderNo
                 savedRequest.payload.app_uniqueid = cyrb53(transitionOrderNo)
+                savedRequest.payload.order_mode = 'offline'
 
                 var payload = JSON.stringify(savedRequest.payload)
                 var method = savedRequest.method

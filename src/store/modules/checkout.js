@@ -1,6 +1,7 @@
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 import mixin from '@/mixins/global/Translate'
+import db from '@/services/network/DB'
 
 // initial state
 const state = {
@@ -55,6 +56,61 @@ const actions = {
         balance_due: rootGetters['order/orderTotal'],
         subtotal: rootGetters['order/subTotal'],
         amount_changed: state.changedAmount,
+      }
+
+      const cyrb53 = function(str, seed = 0) {
+        let h1 = 0xdeadbeef ^ seed,
+          h2 = 0x41c6ce57 ^ seed
+        for (let i = 0, ch; i < str.length; i++) {
+          ch = str.charCodeAt(i)
+          h1 = Math.imul(h1 ^ ch, 2654435761)
+          h2 = Math.imul(h2 ^ ch, 1597334677)
+        }
+        h1 =
+          Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^
+          Math.imul(h2 ^ (h2 >>> 13), 3266489909)
+        h2 =
+          Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^
+          Math.imul(h1 ^ (h1 >>> 13), 3266489909)
+        return 4294967296 * (2097151 & h2) + (h1 >>> 0)
+      }
+
+      if (
+        rootState.order.orderType == 'delivery' ||
+        rootState.order.orderType == 'takeaway'
+      ) {
+        //its a crm/delivery order, include cusotmer id
+
+        //get last order no from indexedDB and update it in rootstate
+        let lastOrderNo = 1
+        db.openDatabase(2, () => {
+          db.getBucket('auth').then(bucket => {
+            db.fetch(bucket).then(data => {
+              if (data && data[0]) {
+                data = data[0]
+                //validate that token against api in case we need to refresh token otherwise use it
+                lastOrderNo = parseInt(data.lastOrderNo) + 1
+                commit('auth/SET_LAST_ORDER_NO', lastOrderNo, { root: true })
+              }
+            })
+          })
+        })
+
+        const transitionOrderNo =
+          rootState.auth.franchiesCode +
+          '-' +
+          rootState.auth.deviceCode +
+          '-' +
+          lastOrderNo
+        order.app_uniqueid = cyrb53(transitionOrderNo)
+      }
+
+      if (rootState.order.orderType == 'delivery') {
+        order.customer_id = rootState.customer.customerId
+        order.address_id = rootState.customer.address
+          ? rootState.customer.address.id
+          : null
+        order.status = 'on-hold'
       }
 
       //get surcharge for an order
@@ -188,8 +244,8 @@ const actions = {
       dispatch('createOrder')
     }
   },
-  createOrder({ state, commit }) {
-    OrderService.saveOrder(state.order)
+  createOrder({ state, commit, rootState }) {
+    OrderService.saveOrder(state.order, rootState.customer.offlineData)
       .then(response => {
         if (response.data.data === 1) {
           //clear all the data related to order, tax, discounts, surcharge etc
@@ -212,6 +268,7 @@ const actions = {
     dispatch('tax/reset', null, { root: true })
     dispatch('discount/reset', null, { root: true })
     dispatch('surcharge/reset', null, { root: true })
+    dispatch('customer/reset', null, { root: true })
   },
 
   updateOrderStatus(

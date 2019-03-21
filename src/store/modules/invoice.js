@@ -40,7 +40,10 @@ const getters = {
 
     if (getters.rule.template) {
       const templateId = getters.rule.template[0][0]
-      const template = templates.find(template => template._id == templateId)
+      let template = templates.find(template => template._id == templateId)
+      if (!template) {
+        template = templates[0]
+      }
       const defaultTemplate = state.templates.data['default_template'][0]
       let en = state.templates.data.english_labels.find(
         label => label._id == templateId
