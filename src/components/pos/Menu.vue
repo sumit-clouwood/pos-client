@@ -50,6 +50,7 @@
         </a>
       </li>
     </ul>
+    <textarea v-if="0" v-model="getImages"></textarea>
   </div>
 </template>
 
@@ -73,7 +74,7 @@ export default {
             state.auth.userDetails.image
           : 'img/pos/profile-pic.png',
     }),
-    ...mapGetters('category', ['categoryImage', 'menu']),
+    ...mapGetters('category', ['categoryImage', 'menu', 'getImages']),
   },
   // map `this.browse()` to `this.$store.category.dispatch('browse')`
   methods: {

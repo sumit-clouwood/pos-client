@@ -1,7 +1,7 @@
 <template>
   <span class="modifiers" v-if="modifiers.length">
     <a href="" v-for="modifierId in modifiers" :key="modifierId">{{
-      t(findModifier(modifierId).item_name).name
+      findModifier(modifierId).name
     }}</a>
   </span>
 </template>

@@ -84,6 +84,7 @@
         </div>
       </div>
     </div>
+    <textarea v-if="0" v-model="getImages"></textarea>
   </div>
 </template>
 
@@ -96,7 +97,7 @@ export default {
     ...mapState('location', ['currency']),
     ...mapState('modifier', ['item']),
     ...mapState('orderForm', ['error']),
-    ...mapGetters('modifier', ['imagePath', 'itemModifiers']),
+    ...mapGetters('modifier', ['imagePath', 'itemModifiers', 'getImages']),
     ...mapGetters('location', ['rawPrice', 'formatPrice']),
     ...mapGetters('orderForm', ['modifiers']),
   },

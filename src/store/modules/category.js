@@ -1,3 +1,4 @@
+/*eslint-disable no-console*/
 import CategoryService from '@/services/data/CategoryService'
 import * as mutation from './category/mutation-types'
 // initial state
@@ -51,12 +52,16 @@ const getters = {
       : state.categoryItems.length
       ? state.categoryItems
       : state.subcategoryItems
-
     return items.map(item => {
       let newItem = { ...item }
-      newItem.name = newItem.item_name.find(
+      let itemName = newItem.item_name.find(
         locale => locale.language == appLocale
-      ).name
+      )
+      //fallback if no translation found
+      if (!itemName) {
+        itemName = newItem.item_name[0]
+      }
+      newItem.name = itemName ? itemName.name : 'No name'
       return newItem
     })
   },
@@ -86,6 +91,30 @@ const getters = {
       ).name
       return newItem
     }
+  },
+  getImages() {
+    //for caching
+    //document.getElementsByTagName('a')[0].__vue__.$store.state
+    let images = []
+    const categoryImagePath = state.categoryImagePath
+    const subcategoryImagePath = state.subcategoryImagePath
+    const itemImagePath = state.itemImagePath
+
+    state.all.forEach(category => {
+      images.push(categoryImagePath + category.category_image)
+      if (category.get_category_product.length) {
+        category.get_category_product.forEach(item => {
+          images.push(itemImagePath + item.item_image)
+        })
+      }
+      category.get_sub_category.forEach(subcat => {
+        images.push(subcategoryImagePath + subcat.sub_category_image)
+        subcat.get_sub_category_product.forEach(item => {
+          images.push(itemImagePath + item.item_image)
+        })
+      })
+    })
+    return images
   },
 }
 
