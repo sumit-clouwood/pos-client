@@ -86,6 +86,7 @@
     <CustomerNotes />
     <CartAddEmail />
     <CartAmountChange />
+    <CartPaymentMsg />
     <CartTipAmount />
     <GiftCard />
     <Invoice v-show="print" />
@@ -108,6 +109,7 @@ import CustomerCreate from '../pos/footer/popups/ManageCustomer/CustomerCreate'
 import CreateCustomerAddress from './footer/popups/ManageCustomer/CustomerAddress/CreateCustomerAddress'
 import CartAddEmail from '../pos/content/cart/payNow/popups/AddEmail'
 import CartAmountChange from '../pos/content/cart/payNow/popups/AmountChange'
+import CartPaymentMsg from '../pos/content/cart/payNow/popups/PaymentMsg'
 import CartTipAmount from '../pos/content/cart/payNow/popups/TipAmount'
 import CustomerInformation from './footer/popups/ManageCustomer/CustomerInformation'
 import CustomerNotes from './footer/popups/ManageCustomer/CustomerInformation/CustomerNotes'
@@ -136,6 +138,7 @@ export default {
     CustomerNotes,
     CartAddEmail,
     CartAmountChange,
+    CartPaymentMsg,
     CartTipAmount,
     GiftCard,
     Invoice,

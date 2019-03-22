@@ -16,24 +16,42 @@
     <div class="footer-wrap" data-toggle="modal" data-target="#add-email">
       <img src="img/pos/email.png" alt="payment-method" /><span>Email</span>
     </div>
-    <div
-      class="footer-wrap"
-      data-toggle="modal"
-      data-target="#change-amount"
-      data-dismiss="modal"
-      @click="pay"
-    >
+
+    <div class="footer-wrap" @click="pay">
       <img src="img/pos/done.png" alt="payment-method" /><span>Done</span>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+/* global $ */
+import { mapState } from 'vuex'
 export default {
   name: 'PayNowFooter',
+  computed: {
+    ...mapState('checkout', ['changedAmount']),
+    ...mapState('checkoutForm', ['msg']),
+    //...mapGetters('checkoutForm', ['validate']),
+  },
   methods: {
-    ...mapActions('checkout', ['pay']),
+    pay() {
+      this.$store
+        .dispatch('checkout/pay')
+        .then(() => {
+          if (this.msg) {
+            $('#payment-msg').modal('show')
+          } else if (this.changedAmount >= 0.1) {
+            $('#change-amount').modal('show')
+          }
+        })
+        .catch(() => {
+          if (this.changedAmount >= 0.1) {
+            $('#change-amount').modal('show')
+          } else if (this.msg) {
+            $('#payment-msg').modal('show')
+          }
+        })
+    },
   },
 }
 </script>

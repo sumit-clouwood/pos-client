@@ -130,6 +130,22 @@ export default {
 if ('serviceWorker' in navigator && 'SyncManager' in window) {
   console.log('All things available')
   window.addEventListener('load', () => {
+    NetworkService.status((status, msg) => {
+      if (status) {
+        try {
+          console.log('force sync in 5 sec')
+          setInterval(
+            navigator.serviceWorker.controller.postMessage({
+              sync: 1,
+            }),
+            5000
+          )
+        } catch (e) {
+          console.log("Couldn't send msg to service worker in dev", msg)
+        }
+      }
+    })
+
     console.log('window loaded with navigator')
     navigator.serviceWorker.ready
       .then(registration => {
