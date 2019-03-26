@@ -26,7 +26,7 @@ const actions = {
       commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
 
       let pendingAmount = totalPayable - paid
-      pendingAmount = parseFloat(pendingAmount).toFixed()
+      pendingAmount = parseFloat(pendingAmount).toFixed(2)
       if (pendingAmount >= 0.01) {
         commit(mutation.SET_PENDING_AMOUNT, pendingAmount)
         commit(
@@ -134,13 +134,15 @@ const actions = {
         }
         //adding surcharge data
         order.surchargeData = rootState.surcharge.surcharges.map(surcharge => {
+          const surchargeAmount = rootState.surcharge.surchargeAmounts.find(
+            surchargeAmount => surchargeAmount.id == surcharge._id
+          ).amount
           return {
             surcharge_id: surcharge._id,
             surcharge_name: surcharge.name,
             surcharge_type: surcharge.type,
-            surcharge_amount: rootState.surcharge.surchargeAmounts.find(
-              surchargeAmount => surchargeAmount.id == surcharge._id
-            ).amount,
+            surcharge_amount: surchargeAmount,
+            surcharge_amount_value: surchargeAmount,
           }
         })
 
@@ -240,11 +242,15 @@ const actions = {
         })
 
         commit(mutation.SET_ORDER, order)
-        resolve(dispatch('createOrder'))
+        dispatch('createOrder', resolve)
       }
     })
   },
-  createOrder({ state, commit, rootState }) {
+  createOrder({ state, commit, rootState }, resolve) {
+    commit('checkoutForm/SET_MSG', `Processing...`, {
+      root: true,
+    })
+
     OrderService.saveOrder(state.order, rootState.customer.offlineData)
       .then(response => {
         if (response.data.data === 1) {
@@ -253,12 +259,20 @@ const actions = {
           commit('checkoutForm/SET_MSG', `Order Placed Successfully`, {
             root: true,
           })
+        } else {
+          commit(
+            'checkoutForm/SET_ERROR',
+            `Order Failed <br /> ${response.data}`
+          )
         }
       })
-      .catch(error => {
-        commit('checkoutForm/SET_MSG', `Queued for sending later, ${error}`, {
+      .catch(() => {
+        commit('checkoutForm/SET_MSG', `Queued for sending later`, {
           root: true,
         })
+      })
+      .finally(() => {
+        resolve()
       })
   },
   generateInvoice({ commit }) {

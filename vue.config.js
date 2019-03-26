@@ -1,8 +1,6 @@
 module.exports = {
   publicPath:
-    process.env.NODE_ENV === 'production'
-      ? 'https://delivery.erp-pos.com/vue-pos/'
-      : '/',
+    process.env.NODE_ENV === 'production' ? process.env.BASE_URL : '/',
 
   chainWebpack: config => {
     config.module

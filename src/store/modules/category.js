@@ -9,7 +9,7 @@ const state = {
   all: [],
   category: {},
   subcategories: [],
-  subcategory: {},
+  subcategory: null,
   categoryItems: [],
   subcategoryItems: [],
   item: null,
@@ -76,11 +76,13 @@ const getters = {
   },
   selectedSubCategory: (state, getters, rootState) => {
     const appLocale = rootState.location.locale
-    let newCategory = { ...state.subcategory }
-    newCategory.name = newCategory.subcategory_name.find(
-      locale => locale.language == appLocale
-    ).name
-    return newCategory
+    if (state.subcategory) {
+      let newCategory = { ...state.subcategory }
+      newCategory.name = newCategory.subcategory_name.find(
+        locale => locale.language == appLocale
+      ).name
+      return newCategory
+    }
   },
   selectedItem: (state, getters, rootState) => {
     const appLocale = rootState.location.locale
@@ -176,6 +178,13 @@ const actions = {
 
   //get subcategories and items based on main category
   browse({ commit, state }, item) {
+    //reset all
+    commit(mutation.SET_SUBCATEGORIES, [])
+    commit(mutation.SET_SUBCATEGORY, null)
+    commit(mutation.SET_CATEGORY_ITEMS, [])
+    commit(mutation.SET_SUBCATEGORY_ITEMS, [])
+
+    //apply new selected
     commit(mutation.SET_CATEGORY, item)
 
     const subcategories = state.all.find(

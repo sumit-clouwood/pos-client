@@ -10,6 +10,8 @@ var serverUrl = 'https://int.erp-pos.com'
 var clientUrl = 'https://delivery.erp-pos.com'
 
 if (workbox) {
+  openDatabase()
+
   console.log('workbox found ')
 
   // adjust log level for displaying workbox logs
@@ -103,20 +105,30 @@ if (workbox) {
 
       // event.tag name checked
       // here must be the same as the one used while registering
-      // sync
+      // sync`
       // Send our POST request to the server, now that the user is online
 
       const syncIt = async () => {
         return new Promise(resolve => {
           sendPostToServer()
             .then(() => {
-              self.registration.showNotification('Orders synced to server')
+              try {
+                self.registration.showNotification('Orders synced to server')
+              } catch (e) {
+                console.log(e)
+              }
             })
-            .catch(() => {
-              console.log('Error syncing orders to server')
+            .catch(err => {
+              console.log('Error syncing orders to server', err)
             })
 
-          resolve(self.registration.showNotification('Orders synced to server'))
+          try {
+            resolve(
+              self.registration.showNotification('Orders synced to server')
+            )
+          } catch (e) {
+            console.log(e)
+          }
         })
       }
 
@@ -130,15 +142,19 @@ if (workbox) {
       console.log('sync event', event.data)
       const syncIt = async () => {
         return new Promise(resolve => {
-          sendPostToServer()
-            .then(() => {
-              self.registration.showNotification('Orders synced to server')
-            })
-            .catch(() => {
-              console.log('Error syncing orders to server')
-            })
+          setTimeout(function() {
+            sendPostToServer()
+              .then(() => {
+                self.registration.showNotification('SW Orders synced to server')
+              })
+              .catch(() => {
+                console.log('SW Error syncing orders to server')
+              })
 
-          resolve(self.registration.showNotification('Orders synced to server'))
+            resolve(
+              self.registration.showNotification('Orders synced to server')
+            )
+          }, 1000 * 10)
         })
       }
       event.waitUntil(syncIt())
@@ -183,6 +199,7 @@ if (workbox) {
           // only save post requests in browser, if an error occurs, GET FROM MSG WE SEND EARLIER
           //we saved form_data global var from msg
           console.log('error happened when posting', error)
+          console.log('Save to indexeddb for later send')
           savePostRequests(clonedRequest.url, form_data)
         })
       )
@@ -345,6 +362,7 @@ function sendPostToServer() {
                   //create customer uses fetch which returns promise
                   console.log('creating customer')
                   createCustomer(headers, customerPayload)
+                    .then(response => response.json())
                     .then(response => {
                       console.log('customer created ', response)
                       //customer created
@@ -352,9 +370,9 @@ function sendPostToServer() {
 
                       //modify the original payload to be sent to order
                       savedRequest.payload.customer_id = customerPayload.customer_id =
-                        response.data.customer_id
+                        response.customer_id
 
-                      createAddress(headers, customerPayload)
+                      /*createAddress(headers, customerPayload)
                         .then(response => {
                           console.log('customer address created', response)
                           //re calculate payload
@@ -388,6 +406,16 @@ function sendPostToServer() {
                           )
                           reject(err)
                         })
+                        */
+                      savedRequest.payload.address_id = response.address_id
+                      createOrder(
+                        resolve,
+                        reject,
+                        headers,
+                        lastOrderNo,
+                        authData,
+                        savedRequest
+                      )
                     })
                     .catch(err => {
                       console.log(
@@ -470,415 +498,6 @@ var createOrder = function(
       // the send to server
       reject(error)
     })
-
-  var precacheList = [
-    serverUrl + '/images/category-icons/thumbnail/1540985680-category-icon.png',
-    serverUrl +
-      '/sub_category_images/thumbnail/new_1520230534-subcategory-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518430079-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518431747-item-image.png',
-    serverUrl +
-      '/sub_category_images/thumbnail/new_1520230565-subcategory-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1525263913-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520230357-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520230408-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524985770-item-image.png',
-    serverUrl +
-      '/sub_category_images/thumbnail/new_1520230583-subcategory-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524988596-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232489-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524986103-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524985778-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232378-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524987109-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232448-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232469-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524986732-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232399-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232408-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232497-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232435-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232479-item-image.png',
-    serverUrl +
-      '/sub_category_images/thumbnail/new_1520230594-subcategory-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232568-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232548-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232617-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232604-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232597-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524987198-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524988224-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232562-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524986829-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232542-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524985785-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232610-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524986145-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232554-item-image.png',
-    serverUrl +
-      '/sub_category_images/thumbnail/new_1520230610-subcategory-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232752-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232716-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524986912-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232740-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232746-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232707-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524986336-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524985862-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232669-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524987320-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232682-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232758-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524987263-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232654-item-image.png',
-    serverUrl + '/images/category-icons/thumbnail/1540981680-category-icon.png',
-    serverUrl +
-      '/sub_category_images/thumbnail/new_1518516412-subcategory-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1520233382-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232922-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1519557952-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232930-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520232905-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520233375-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520233388-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520233395-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1525263060-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1525264731-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1525939842-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1525264707-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1525974058-item-image.png',
-    serverUrl +
-      '/sub_category_images/thumbnail/new_1518516557-subcategory-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_',
-    serverUrl + '/menu_item_image/thumbnail/new_1518517331-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518517440-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518517712-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1525265433-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518517622-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1525265379-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518517524-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518517561-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1519558086-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1525265548-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518517289-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518517385-item-image.png',
-    serverUrl + '/images/category-icons/thumbnail/1540985688-category-icon.png',
-    serverUrl +
-      '/sub_category_images/thumbnail/new_1518520059-subcategory-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518520219-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518520256-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518520287-item-image.png',
-    serverUrl +
-      '/sub_category_images/thumbnail/new_1518520075-subcategory-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518520410-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518520457-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518520496-item-image.png',
-    serverUrl + '/images/category-icons/thumbnail/1540985704-category-icon.png',
-    serverUrl + '/menu_item_image/thumbnail/',
-    serverUrl + '/menu_item_image/thumbnail/new_1537426985-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1537426615-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1537426052-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520231001-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1537426118-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1537425806-item-image.png',
-    serverUrl + '/images/category-icons/thumbnail/1540985711-category-icon.png',
-    serverUrl +
-      '/sub_category_images/thumbnail/new_1520233621-subcategory-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518525626-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1518525660-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1518525502-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1518525589-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1518525465-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1518525557-item-image.jpg',
-    serverUrl +
-      '/sub_category_images/thumbnail/new_1520233641-subcategory-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518525343-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1518525257-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1518525215-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1518525179-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1518525144-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1518525295-item-image.jpg',
-    serverUrl + '/images/category-icons/thumbnail/1537779043-category-icon.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1537864694-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1537865031-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1537865132-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1537864508-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1537864868-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1537865280-item-image.png',
-    serverUrl + '/images/category-icons/thumbnail/1540985733-category-icon.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518526734-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518526838-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1518526767-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1527444498-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1537429544-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1537427945-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1537429655-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1532425756-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1537428263-item-image.png',
-    serverUrl + '/images/category-icons/thumbnail/1540985741-category-icon.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518526458-item-image.jpg',
-    serverUrl + '/images/category-icons/thumbnail/cat-icon-placeholder.png',
-    serverUrl + '/menu_item_image/thumbnail/new_',
-    serverUrl + '/menu_item_image/thumbnail/new_',
-    serverUrl + '/images/category-icons/thumbnail/1541151746-category-icon.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520610651-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1538891697-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1551356492-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1534396891-item-image.jpg',
-    serverUrl + '/images/category-icons/thumbnail/1541151767-category-icon.png',
-    serverUrl + '/images/category-icons/thumbnail/1540985822-category-icon.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1541173913-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518527124-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518527164-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518527192-item-image.jpg',
-    serverUrl + '/menu_item_image/thumbnail/new_1518527083-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518527030-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1518527058-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1524998951-item-image.png',
-    serverUrl + '/menu_item_image/thumbnail/new_1520783489-item-image.png',
-    //modifier images
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528294599-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528102262-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528102297-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528102319-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528102346-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528102375-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528102403-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528102735-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528103013-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528103057-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528103094-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528103124-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528130089-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528103728-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528104548-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528104753-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528104841-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528105040-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528105135-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528105175-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528108968-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528109076-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528109129-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528109173-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528109375-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528109597-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528129408-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528129883-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1545811963-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1529564531-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528148822-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528149210-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528149313-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528149334-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528149377-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528149408-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528149476-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528149543-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528149567-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528615279-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528615348-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528615380-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528615409-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528615436-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528615458-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528615479-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528703039-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528703077-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528703111-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528703142-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528703162-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528703238-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528704295-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528704327-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528705040-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528705109-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528705372-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528705427-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528705662-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528708293-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528708357-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528709586-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528709678-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528796608-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528796649-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528796736-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528797082-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1551075649-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1551075176-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528706569-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528706610-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528706676-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528706743-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528707231-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528707447-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528707480-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1528707511-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1545812088-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1538904327-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1538904354-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1538904392-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1538904444-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1538904708-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1538904737-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1538904851-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1538904937-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1538904967-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1551075547-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1545903184-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1545903241-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1545904156-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1545904685-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1545904778-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1545905878-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1545905983-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1545906042-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1545906117-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1545906214-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1545906532-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1546515623-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1546515765-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1546515854-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1546516004-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1546516201-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1546516952-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1546517006-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1546517067-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1546517126-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1546517176-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1546517647-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1548761173-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1548760133-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1547892411-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1548761355-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1548761583-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1548761496-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1548761615-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1547892651-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1548766423-item-modifier-image.png',
-    serverUrl +
-      '/website_item_image/itemmodifiers/thumbnail/new_1548761565-item-modifier-image.png',
-  ]
-  //workbox.precaching.precacheAndRoute(precacheList)
 }
 
 var createCustomer = function(headers, payload) {

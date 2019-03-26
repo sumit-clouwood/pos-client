@@ -50,7 +50,22 @@
         </a>
       </li>
     </ul>
-    <textarea v-if="0" v-model="getImages"></textarea>
+    <div v-if="getImages">
+      <link
+        v-for="(url, key) in getImages"
+        rel="prefetch"
+        :href="url"
+        :key="key"
+      />
+    </div>
+    <div v-if="modifierImages">
+      <link
+        v-for="(url, key) in modifierImages"
+        rel="prefetch"
+        :href="url"
+        :key="key"
+      />
+    </div>
   </div>
 </template>
 
@@ -75,6 +90,9 @@ export default {
           : 'img/pos/profile-pic.png',
     }),
     ...mapGetters('category', ['categoryImage', 'menu', 'getImages']),
+    ...mapGetters('modifier', {
+      modifierImages: 'getImages',
+    }),
   },
   // map `this.browse()` to `this.$store.category.dispatch('browse')`
   methods: {

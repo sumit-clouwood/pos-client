@@ -41,7 +41,7 @@ const actions = {
     } else if (
       !state.method.is_cash &&
       !state.method.is_gift &&
-      parseFloat(state.amount) > remaining
+      parseFloat(state.amount) - parseFloat(remaining) > 0.01
     ) {
       commit(
         'SET_ERROR',
