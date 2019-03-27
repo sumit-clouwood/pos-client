@@ -31,9 +31,9 @@ const actions = {
         commit(mutation.SET_PENDING_AMOUNT, pendingAmount)
         commit(
           'checkoutForm/SET_ERROR',
-          `Please add pending amount of ` +
+          'Please add pending amount of ' +
             pendingAmount +
-            ` before proceeding further.`,
+            ' before proceeding further.',
           { root: true }
         )
       } else {
@@ -201,14 +201,14 @@ const actions = {
 
             modifiers.forEach(modifier => {
               switch (modifier.type) {
-                case 'mandatory':
-                  mandatoryModifiers.push(modifier)
-                  break
-                case 'price':
-                  priceModifiers.push(modifier)
-                  break
-                default:
-                  regularModifiers.push(modifier)
+              case 'mandatory':
+                mandatoryModifiers.push(modifier)
+                break
+              case 'price':
+                priceModifiers.push(modifier)
+                break
+              default:
+                regularModifiers.push(modifier)
               }
             })
             orderItem.modifiers = {
@@ -247,7 +247,7 @@ const actions = {
     })
   },
   createOrder({ state, commit, rootState }, resolve) {
-    commit('checkoutForm/SET_MSG', `Processing...`, {
+    commit('checkoutForm/SET_MSG', 'Processing...', {
       root: true,
     })
 
@@ -256,7 +256,7 @@ const actions = {
         if (response.data.data === 1) {
           //clear all the data related to order, tax, discounts, surcharge etc
           //create invoice
-          commit('checkoutForm/SET_MSG', `Order Placed Successfully`, {
+          commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
             root: true,
           })
         } else {
@@ -267,7 +267,7 @@ const actions = {
         }
       })
       .catch(() => {
-        commit('checkoutForm/SET_MSG', `Queued for sending later`, {
+        commit('checkoutForm/SET_MSG', 'Queued for sending later', {
           root: true,
         })
       })

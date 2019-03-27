@@ -12,9 +12,9 @@ export default {
     )
   },
 
-  fetchCustomer(...[customerId, locationId]) {
+  fetchCustomer(...[customerId, locationId, limit, pgno]) {
     return DataService.get(
-      `/api/auth/crm/get/CustomerDetails/?customer_id=${customerId}&location_id=${locationId}`
+      `/api/auth/crm/get/CustomerDetails/?customer_id=${customerId}&location_id=${locationId}&limit=${limit}&pgno=${pgno}`
     )
   },
 

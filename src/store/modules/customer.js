@@ -7,7 +7,8 @@ const state = {
   customerId: null,
   customer_group: {},
   paginate: {},
-  params: { page_number: 1, page_size: 10, search: '' },
+  pastOrdersPaginate: {},
+  params: { page_number: 1, page_size: 10, search: '', past_order_page_number: 1 },
   responseInformation: { status: 0, message: '' },
   address: false,
   allOnlineAddress: false,
@@ -70,6 +71,12 @@ const actions = {
     dispatch('fetchAll')
   },
 
+  setPastOrderPageNumber: function({ commit, dispatch }, pageNumber) {
+    commit(mutation.SET_PAST_ORDER_CURRENT_PAGE_NO, pageNumber)
+    let customerId = state.customer.customer_list._id
+    dispatch('fetchSelectedCustomer',{customerId: customerId})
+  },
+
   searchCustomer: function({ commit, dispatch }, searchTerms) {
     if (searchTerms !== '') {
       commit(mutation.SET_SEARCH_TERMS, searchTerms)
@@ -94,15 +101,26 @@ const actions = {
 
   fetchSelectedCustomer({ commit, rootState }, { customerId, addressOnly }) {
     commit(mutation.SET_CUSTOMER_ID, customerId)
-    const params = [customerId, rootState.location.location]
     if (typeof addressOnly != 'undefined') {
+      const params = [customerId, rootState.location.location]
       customerService.getCustomerDetails(...params).then(response => {
         commit(mutation.FETCH_CUSTOMER_ADDRESSES_ONLY, response.data.data)
         //dispatch('giftcard/setCustomerGiftCards', response.data.data)
       })
     } else {
+      let limit = 10
+      let pgno = state.params.past_order_page_number
+      const params = [customerId, rootState.location.location, limit, pgno]
+      let pastOrdersPaginate = {}
       customerService.fetchCustomer(...params).then(response => {
         commit(mutation.SELECTED_CUSTOMER, response.data.data)
+        pastOrdersPaginate.currentPage = pgno
+        pastOrdersPaginate.totalOrder =
+          response.data.data.customer_list.totalOrders
+        pastOrdersPaginate.totalPages =
+          response.data.data.customer_list.totalpages
+        pastOrdersPaginate.customarPerPage = limit
+        commit(mutation.PAST_ORDER_PAGINATE_DETAILS, pastOrdersPaginate)
         //dispatch('giftcard/setCustomerGiftCards', response.data.data)
       })
     }
@@ -165,11 +183,17 @@ const mutations = {
   [mutation.PAGINATE_DETAILS](state, paginateDetails) {
     state.paginate = paginateDetails
   },
+  [mutation.PAST_ORDER_PAGINATE_DETAILS](state, paginateDetails) {
+    state.pastOrdersPaginate = paginateDetails
+  },
   [mutation.PARAMS](state, paramsCollection) {
     state.params = paramsCollection
   },
   [mutation.SET_CURRENT_PAGE_NO](state, pageNumber) {
     state.params.page_number = pageNumber
+  },
+  [mutation.SET_PAST_ORDER_CURRENT_PAGE_NO](state, pageNumber) {
+    state.params.past_order_page_number = pageNumber
   },
   [mutation.SET_SEARCH_TERMS](state, searchTerms) {
     state.params.search = searchTerms
