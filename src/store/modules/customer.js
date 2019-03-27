@@ -8,7 +8,12 @@ const state = {
   customer_group: {},
   paginate: {},
   pastOrdersPaginate: {},
-  params: { page_number: 1, page_size: 10, search: '', past_order_page_number: 1 },
+  params: {
+    page_number: 1,
+    page_size: 10,
+    search: '',
+    past_order_page_number: 1,
+  },
   responseInformation: { status: 0, message: '' },
   address: false,
   allOnlineAddress: false,
@@ -74,7 +79,7 @@ const actions = {
   setPastOrderPageNumber: function({ commit, dispatch }, pageNumber) {
     commit(mutation.SET_PAST_ORDER_CURRENT_PAGE_NO, pageNumber)
     let customerId = state.customer.customer_list._id
-    dispatch('fetchSelectedCustomer',{customerId: customerId})
+    dispatch('fetchSelectedCustomer', { customerId: customerId })
   },
 
   searchCustomer: function({ commit, dispatch }, searchTerms) {
