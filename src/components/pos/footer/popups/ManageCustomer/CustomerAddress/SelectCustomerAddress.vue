@@ -34,6 +34,7 @@
               class="btn btn-success btn-large popup-btn-save"
               type="button"
               id="add-customer-btn"
+              @click="updateModalSelectionDelivery"
               data-dismiss="modal"
             >
               Add
@@ -48,7 +49,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 import CustomerDeliveryArea from '../CustomerAddress/customerDeliveryArea'
 export default {
@@ -64,7 +65,9 @@ export default {
             .customer_details
           : false,
     }),
-    // ...mapActions('customer', ['addCartCustomer'])
   },
+  methods: {
+    ...mapActions('location', ['updateModalSelectionDelivery'])
+  }
 }
 </script>

@@ -11,6 +11,7 @@ const state = {
   language: 'English',
   locale: 'en_US',
   setTimeZone: 'Asia/Dubai',
+  setModal: '#manage-customer'
 }
 
 // getters
@@ -78,12 +79,19 @@ const actions = {
   changeLanguage({ commit }, locale) {
     commit(mutation.SET_LANGUAGE, locale)
   },
+
+  updateModalSelectionDelivery({ commit }) {
+    commit(mutation.SET_MODAL, '#order-confirmation')
+  }
 }
 
 // mutations
 const mutations = {
   [mutation.SET_LOCATION](state, location) {
     state.location = location
+  },
+  [mutation.SET_MODAL](state, setModal) {
+    state.setModal = setModal
   },
   /*[mutation.SET_LOCATIONS](state, location_id) {
         state.locationIds = location_id
