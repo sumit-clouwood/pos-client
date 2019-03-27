@@ -6,6 +6,7 @@ import db from '@/services/network/DB'
 // initial state
 const state = {
   token: null,
+  refreshToken: null,
   userDetails: null,
   deviceCode: false,
   franchiesCode: false,
@@ -17,7 +18,16 @@ const getters = {}
 
 // actions
 const actions = {
-  auth({ commit, rootState }) {
+  validateToken({ commit }, token) {
+    //check token expiry here,
+    //if token is expired then use refresh token to regenrate the token
+    return new Promise(resolve => {
+      commit(mutation.SET_TOKEN, token)
+      DataService.applyMiddleWare(state.token)
+      resolve(token)
+    })
+  },
+  auth({ commit, rootState, dispatch }) {
     return new Promise((resolve, reject) => {
       //check if token already exists in indexedDB
       console.log('in auth')
@@ -31,15 +41,15 @@ const actions = {
               if (data && data[0]) {
                 data = data[0]
                 //validate that token against api in case we need to refresh token otherwise use it
-                commit('setToken', data.token)
-                DataService.applyMiddleWare(state.token)
+                dispatch('validateToken', data.token).then(token => {
+                  commit(mutation.SET_USER_DETAILS, data.user)
+                  commit(mutation.SET_DEVICE_CODE, data.deviceCode)
+                  commit(mutation.SET_FRANCHIES_CODE, data.franchiesCode)
+                  commit(mutation.SET_LAST_ORDER_NO, data.lastOrderNo)
 
-                commit(mutation.SET_USER_DETAILS, data.user)
-                commit(mutation.SET_DEVICE_CODE, data.deviceCode)
-                commit(mutation.SET_FRANCHIES_CODE, data.franchiesCode)
-                commit(mutation.SET_LAST_ORDER_NO, data.lastOrderNo)
-
-                resolve(data)
+                  data.token = token
+                  resolve(data)
+                })
               } else {
                 const deviceId = '34:79:A6:37:1F:C7'
                 // const deviceId = 'XX:XX:XX:XX:XX:XX'.replace(/X/g, function() {
@@ -54,7 +64,7 @@ const actions = {
                       reject(response.data.error)
                       return false
                     }
-                    commit('setToken', response.data.token)
+                    commit(mutation.SET_TOKEN, response.data.token)
                     DataService.applyMiddleWare(state.token)
 
                     commit(mutation.SET_USER_DETAILS, response.data.data)
@@ -100,12 +110,12 @@ const actions = {
 
 // mutations
 const mutations = {
-  setToken(state, token) {
+  [mutation.SET_TOKEN](state, token) {
     state.token = token
   },
 
-  refreshToken(state, { token }) {
-    state.token = token
+  [mutation.SET_REFRESH_TOKEN](state, { token }) {
+    state.refreshToken = token
   },
 
   [mutation.SET_USER_DETAILS](state, details) {
