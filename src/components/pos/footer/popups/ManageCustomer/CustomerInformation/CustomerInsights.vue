@@ -26,9 +26,10 @@
       <div class="insight-last-order">
         <h3>LAST ORDER</h3>
         <ul class="fav-item-slider">
-          <li><img src="/img/pos/done.png" alt="fav-item" /></li>
+          <!--<li><img src="/img/pos/dine-right.png" alt="fav-item" /></li>-->
           <li
-            v-for="lastOrderItem in insight.lastOrderItems"
+            v-for="(lastOrderItem, index) in insight.lastOrderItems"
+            v-if="index < 3"
             :key="lastOrderItem._id"
           >
             {{ lastOrderItem }}
@@ -50,7 +51,11 @@
     <div class="customer-insights-notes">
       <div>
         <p>Notes :</p>
-        <p v-for="notes in customerNotes" :key="notes._id">
+        <p
+          v-for="(notes, index) in customerNotes"
+          :key="notes._id"
+          v-if="index < 2"
+        >
           {{ notes.message }}
         </p>
         <span

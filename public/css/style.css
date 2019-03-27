@@ -5009,8 +5009,10 @@ ul.fav-item-slider {
 }
 
 ul.fav-item-slider > li > img {
-  border: 1px solid #e1e1e1;
-  border-radius: 8px;
+  border: 1px solid #dfffcc;
+  width: 22px;
+  padding: 3px;
+  border-radius: 2px;
 }
 
 /*End CRM Details*/
