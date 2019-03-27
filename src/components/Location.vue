@@ -77,7 +77,6 @@ export default {
     bootstrap
       .setup(this.$store)
       .then(() => {
-        this.$store.commit('sync/loaded', true)
         this.loading = false
       })
       .catch(error => (this.errored = error))

@@ -94,13 +94,12 @@ export default {
       store
         .dispatch('auth/auth')
         .then(response => {
-          //sync
           store.dispatch('location/setLocation')
-
           //async
           store
             .dispatch('location/fetch', response)
             .then(() => {
+              //sync
               store
                 .dispatch('category/fetchAll', response)
                 .then(result => {
