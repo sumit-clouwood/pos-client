@@ -10,9 +10,7 @@
           :key="item._id"
           :data-toggle="hasModifiers(item) ? 'modal' : ''"
           data-target="#POSItemOptions"
-          @click.prevent="
-            hasModifiers(item) ? setModifierItem(item) : addToOrder(item)
-          "
+          @click.prevent="addToOrder(item)"
         >
           <div>
             <img :src="itemImage(item.item_image)" :alt="item.name" />
@@ -28,7 +26,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 import Breadcrumbs from './items/Breadcrumbs'
 import Popup from './items/Popup'
@@ -46,8 +44,15 @@ export default {
     ...mapGetters('modifier', ['hasModifiers']),
   },
   methods: {
-    ...mapActions('order', ['addToOrder']),
-    ...mapActions('modifier', ['setModifierItem']),
+    addToOrder(item) {
+      this.$store.commit('category/SET_ITEM', item)
+
+      if (this.$store.getters['modifier/hasModifiers'](item)) {
+        this.$store.dispatch('modifier/setModifierItem', item)
+      } else {
+        this.$store.dispatch('order/addToOrder', item)
+      }
+    },
   },
 }
 </script>

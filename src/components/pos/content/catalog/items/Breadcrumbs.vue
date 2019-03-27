@@ -17,9 +17,9 @@
           ><img src="img/pos/right-arrow.png" alt="right-arrow"
         /></span>
       </li>
-      <li v-if="selectedItem && selectedItem.item_name">
+      <li v-if="selectedItem && selectedItem.name">
         <span>Selected Item</span>
-        <p>{{ subtractString(selectedItem.name) }}</p>
+        <p>{{ selectedItem.name }}</p>
       </li>
     </ul>
   </div>
@@ -47,3 +47,8 @@ export default {
   },
 }
 </script>
+<style scoped>
+ul.ullist-category {
+  width: 500px !important;
+}
+</style>

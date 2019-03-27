@@ -34,6 +34,7 @@ The App.vue file is the root component that all other components are nested with
 </style>
 
 <script>
+export default {}
 /* eslint-disable no-console */
 if ('serviceWorker' in navigator && 'SyncManager' in window) {
   console.log('All things available')
