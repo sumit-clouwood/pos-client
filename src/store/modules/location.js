@@ -40,39 +40,45 @@ const getters = {
 
 // actions
 const actions = {
-  fetch({ commit, rootState }) {
-    const params = [
-      rootState.location.location,
-      1 /*Staff*/,
-      1 /*Time*/,
-      rootState.sync.compress,
-    ]
-    LocationService.getLocationData(...params).then(response => {
-      commit(mutation.SET_LOCATION_DATA, response.data.data)
-      commit(mutation.SET_CURRENCY, response.data.data.currency_code)
-      commit(mutation.SET_DELIVERY_AREAS, response.data.data.delivery_area)
-      commit(mutation.SET_TIMEZONE, response.data.data.country_timezone)
-      commit(
-        mutation.SET_LANGUAGE,
-        localStorage.getItem('locale') ||
-          state.locationData.default_language[0].shortname
-      )
-      // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
+  fetch({ state, commit, rootState }) {
+    return new Promise((resolve, reject) => {
+      const params = [
+        state.location,
+        1 /*Staff*/,
+        1 /*Time*/,
+        rootState.sync.compress,
+      ]
+      LocationService.getLocationData(...params)
+        .then(response => {
+          commit(mutation.SET_LOCATION_DATA, response.data.data)
+          commit(mutation.SET_CURRENCY, response.data.data.currency_code)
+          commit(mutation.SET_DELIVERY_AREAS, response.data.data.delivery_area)
+          commit(mutation.SET_TIMEZONE, response.data.data.country_timezone)
+          commit(
+            mutation.SET_LANGUAGE,
+            localStorage.getItem('locale') ||
+              state.locationData.default_language[0].shortname
+          )
+
+          //We are setting franchise code as the location name so we can just go with that
+          commit(mutation.SET_NAME, response.data.data.name)
+
+          resolve(response.data.data)
+          // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
+        })
+        .catch(error => reject(error))
     })
   },
   setLocation({ commit, rootState }) {
     commit(mutation.SET_LOCATION, rootState.auth.userDetails.location_id)
     commit(
-      mutation.SET_FRANCHISE_CODE,
+      mutation.SET_NAME,
       rootState.auth.userDetails.location_id.franchies_code
     )
   },
   setLocations({ commit, rootState }) {
     commit(mutation.SET_LOCATIONS, rootState.auth.userDetails.locations)
-    commit(
-      mutation.SET_FRANCHISE_CODE,
-      rootState.auth.userDetails.franchies_code
-    )
+    commit(mutation.SET_NAME, rootState.auth.userDetails.franchies_code)
   },
 
   changeLanguage({ commit }, locale) {
@@ -88,7 +94,7 @@ const mutations = {
   /*[mutation.SET_LOCATIONS](state, location_id) {
         state.locationIds = location_id
     },*/
-  [mutation.SET_FRANCHISE_CODE](state, franchise_code) {
+  [mutation.SET_NAME](state, franchise_code) {
     state.locationName = franchise_code
   },
 
