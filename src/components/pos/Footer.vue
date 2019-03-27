@@ -10,6 +10,7 @@
               ></a
             >
           </li>
+
           <li id="hold-order-box" @click="getHoldOrders">
             <!-- <a href="#"><img class="hold-orders-show" src="images/footer-images/s.png" alt="customer"><img class="hold-order" src="images/hold-order.png" alt="customer"><span>Hold Orders</span></a>-->
             <a href="#"
@@ -73,7 +74,8 @@
     <Discount />
     <OnlineOrder />
     <SendToDelivery />
-    <ManageCustomer />
+    <ManageCustomer v-if="online" />
+    <OfflineManageCustomer v-else />
     <OrderItemPopup />
     <CustomerCreate />
     <CreateCustomerAddress />
@@ -84,9 +86,10 @@
     <CustomerNotes />
     <CartAddEmail />
     <CartAmountChange />
+    <CartPaymentMsg />
     <CartTipAmount />
     <GiftCard />
-    <Invoice v-if="print" />
+    <Invoice v-show="print" />
   </div>
 </template>
 
@@ -98,6 +101,7 @@ import Discount from './footer/popups/Discount'
 import OnlineOrder from './header/popups/OnlineOrder'
 import SendToDelivery from './footer/popups/SendToDelivery'
 import ManageCustomer from './footer/popups/ManageCustomer'
+import OfflineManageCustomer from './footer/popups/OfflineManageCustomer'
 import CartItemDiscount from './footer/popups/CartItemDiscount'
 import OrderItemPopup from './content/cart/newOrders/items/Popup'
 import CustomerNote from '../pos/footer/popups/ManageCustomer/CustomerNote'
@@ -105,6 +109,7 @@ import CustomerCreate from '../pos/footer/popups/ManageCustomer/CustomerCreate'
 import CreateCustomerAddress from './footer/popups/ManageCustomer/CustomerAddress/CreateCustomerAddress'
 import CartAddEmail from '../pos/content/cart/payNow/popups/AddEmail'
 import CartAmountChange from '../pos/content/cart/payNow/popups/AmountChange'
+import CartPaymentMsg from '../pos/content/cart/payNow/popups/PaymentMsg'
 import CartTipAmount from '../pos/content/cart/payNow/popups/TipAmount'
 import CustomerInformation from './footer/popups/ManageCustomer/CustomerInformation'
 import CustomerNotes from './footer/popups/ManageCustomer/CustomerInformation/CustomerNotes'
@@ -122,6 +127,7 @@ export default {
     OnlineOrder,
     CustomerNote,
     ManageCustomer,
+    OfflineManageCustomer,
     SendToDelivery,
     OrderItemPopup,
     CustomerCreate,
@@ -132,14 +138,18 @@ export default {
     CustomerNotes,
     CartAddEmail,
     CartAmountChange,
+    CartPaymentMsg,
     CartTipAmount,
     GiftCard,
     Invoice,
   },
+  computed: {
+    ...mapState('checkout', ['print']),
+    ...mapState('sync', ['online']),
+  },
   methods: {
     ...mapActions('holdOrders', ['getHoldOrders']),
     ...mapActions('discount', ['validateOrderDiscounts']),
-    ...mapState('checkout', ['print']),
   },
 }
 </script>

@@ -6,6 +6,7 @@ const state = {
   creditCardPopup: false,
   LoyalityPopup: false,
   error: false,
+  msg: null,
   tipAmount: 0,
   showCalc: true,
 }
@@ -34,13 +35,13 @@ const actions = {
     const paid = getters.paid
     const remaining = totalPayable - paid
 
-    if (!parseInt(state.amount)) {
-      commit('SET_ERROR', 'Amount should be greater than 0')
+    if (parseFloat(state.amount) < 0.01) {
+      commit('SET_ERROR', 'Amount should be greater than 0.00')
       commit('showCalc', true)
     } else if (
       !state.method.is_cash &&
       !state.method.is_gift &&
-      parseFloat(state.amount) > remaining
+      parseFloat(state.amount) - parseFloat(remaining) > 0.01
     ) {
       commit(
         'SET_ERROR',
@@ -190,6 +191,9 @@ const mutations = {
 
   SET_ERROR(state, error) {
     state.error = error
+  },
+  SET_MSG(state, msg) {
+    state.msg = msg
   },
 
   RESET(state) {

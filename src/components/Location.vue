@@ -45,9 +45,12 @@
 /* eslint-disable no-console */
 import { mapState } from 'vuex'
 import Cookie from '@/mixins/Cookie'
+import bootstrap from '@/bootstrap'
+
 export default {
   name: 'Location',
   props: {},
+  mixins: [Cookie],
   data: function() {
     return {
       info: null,
@@ -55,57 +58,6 @@ export default {
       errored: false,
     }
   },
-  mixins: [Cookie],
-  //life cycle hooks
-  mounted() {
-    let deviceId = Cookie.get_cookie('device_id')
-    if (!deviceId) {
-      deviceId = 'XX:XX:XX:XX:XX:XX'.replace(/X/g, function() {
-        return '0123456789ABCDEF'.charAt(Math.floor(Math.random() * 16))
-      })
-      Cookie.set_cookie('device_id', deviceId, 365 * 10)
-    }
-    this.$store
-      .dispatch('auth/auth', deviceId)
-      .then(response => {
-        console.log('response from server', response)
-        if (response.data.error) {
-          this.errored = response.error
-          return false
-        }
-        if (response.data.data.location_id) {
-          this.$store.dispatch('location/setLocation', response.data.data)
-        } else {
-          this.$store.dispatch('location/setLocations', response.data.data)
-        }
-
-        Promise.all([this.$store.dispatch('category/fetchAll', response)])
-          .then(result => {
-            if (!result || result.error) {
-              this.errored = result.error || 'No result from category/fetchAll'
-              return false
-            }
-            this.$store.dispatch('modifier/fetchAll', response)
-            this.$store.commit('sync/loaded', true)
-            this.$store.dispatch('location/fetchAll', response)
-            this.$store.dispatch('announcement/fetchAll', response)
-            this.$store.dispatch('surcharge/fetchAll', response)
-            this.$store.dispatch('discount/fetchAll', response)
-            this.$store.dispatch('customer/fetchAll', response)
-            this.$store.dispatch('payment/fetchAll', response)
-            this.$store.dispatch('giftcard/fetchAll', response)
-            this.$store.dispatch('invoice/fetchAll', response)
-          })
-          .catch(err => (this.errored = err))
-          .finally(() => (this.loading = false))
-
-        // localStorage.setItem('selectedLanguage', this.defaultLanguage.language)
-        // localStorage.setItem('selectedLanguageSortName', this.defaultLanguage.shortname)
-      })
-      .catch(error => (this.errored = error))
-  },
-
-  beforeCreate() {},
   computed: {
     ...mapState({
       // map this.categories to store.state.categories, it uses dispatch
@@ -115,10 +67,20 @@ export default {
     }),
     ...mapState({
       defaultLanguage: state =>
-        typeof state.location.locationData !== 'undefined'
+        state.location.locationData
           ? state.location.locationData.default_language[0]
           : false,
     }),
+  },
+  //life cycle hooks
+  mounted() {
+    bootstrap
+      .setup(this.$store)
+      .then(() => {
+        this.$store.commit('sync/loaded', true)
+        this.loading = false
+      })
+      .catch(error => (this.errored = error))
   },
 }
 </script>

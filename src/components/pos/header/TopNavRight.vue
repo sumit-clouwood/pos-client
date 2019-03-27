@@ -12,11 +12,10 @@
     </li>
     <li v-if="languages">
       <select
-        v-model="selectedShortname"
-        @change="changeLanguage(selectedShortname)"
+        v-model="vlocale"
+        @change="changeLanguage(vlocale)"
         class="language-button"
       >
-        <option :value="selectedShortname"> Select Language </option>
         <option
           v-for="language in languages"
           :key="language._id"
@@ -74,32 +73,27 @@ import { mapState, mapActions } from 'vuex'
 export default {
   name: 'TopNavRight',
   props: {},
-  data() {
+  data: function() {
     return {
-      selectedShortname:
-        typeof this.defaultLanguage != 'undefined'
-          ? this.defaultLanguage.shortname
-          : 'en_US',
-      langSelected: localStorage.getItem('selectedLanguage'),
       onlineOrdersCount: 0,
     }
   },
-  mounted() {
-    this.onlineOrders()
-  },
   computed: {
+    vlocale: {
+      get() {
+        return this.$store.state.location.locale
+      },
+      set(val) {
+        return this.$store.commit('location/SET_LANGUAGE', val)
+      },
+    },
     ...mapState({
       languages: state =>
-        typeof state.location.locationData !== 'undefined'
+        state.location.locationData
           ? state.location.locationData.languages
           : false,
     }),
-    ...mapState({
-      defaultLanguage: state =>
-        typeof state.location.locationData !== 'undefined'
-          ? state.location.locationData.default_language[0]
-          : false,
-    }),
+    ...mapState('location', ['language']),
     ...mapState({
       latestOnlineOrders: state =>
         typeof state.order.onlineOrders.orders != 'undefined'
@@ -123,6 +117,9 @@ export default {
       }
     },
     ...mapActions('customer', ['fetchCustomerAddress']),
+  },
+  mounted() {
+    this.onlineOrders()
   },
 }
 </script>

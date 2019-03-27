@@ -1,12 +1,8 @@
 module.exports = {
   publicPath:
-    process.env.NODE_ENV === 'production'
-      ? 'https://delivery.erp-pos.com/vue-pos/'
-      : '/',
+    process.env.NODE_ENV === 'production' ? process.env.BASE_URL : '/',
 
   chainWebpack: config => {
-    // config.plugin('workbox')
-
     config.module
       .rule('i18n')
       .resourceQuery(/blockType=i18n/)

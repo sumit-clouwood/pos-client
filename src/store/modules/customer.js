@@ -4,6 +4,7 @@ import customerService from '@/services/data/CustomerService'
 const state = {
   customer_list: [],
   customer: false,
+  customerId: null,
   customer_group: {},
   paginate: {},
   params: { page_number: 1, page_size: 10, search: '' },
@@ -11,6 +12,7 @@ const state = {
   address: false,
   allOnlineAddress: false,
   fetchCustomerAddressOnly: false,
+  offlineData: null,
 }
 const getters = {
   customer: state => {
@@ -91,6 +93,7 @@ const actions = {
   },
 
   fetchSelectedCustomer({ commit, rootState }, { customerId, addressOnly }) {
+    commit(mutation.SET_CUSTOMER_ID, customerId)
     const params = [customerId, rootState.location.location]
     if (typeof addressOnly != 'undefined') {
       customerService.getCustomerDetails(...params).then(response => {
@@ -144,10 +147,20 @@ const actions = {
       })
     }
   },
+  setOfflineData({ commit }, data) {
+    commit(mutation.SET_OFFLINE_DATA, data)
+  },
+
+  reset({ commit }) {
+    commit(mutation.RESET)
+  },
 }
 const mutations = {
   [mutation.CUSTOMER_LIST](state, customersDetail) {
     state.customer_list = customersDetail
+  },
+  [mutation.SET_CUSTOMER_ID](state, id) {
+    state.customerId = id
   },
   [mutation.PAGINATE_DETAILS](state, paginateDetails) {
     state.paginate = paginateDetails
@@ -187,6 +200,12 @@ const mutations = {
   },
   [mutation.FETCH_CUSTOMER_ADDRESSES_ONLY](state, customerAddressList) {
     state.fetchCustomerAddressOnly = customerAddressList
+  },
+  [mutation.SET_OFFLINE_DATA](state, data) {
+    state.offlineData = data
+  },
+  [mutation.RESET](state) {
+    state.offlineData = null
   },
 }
 

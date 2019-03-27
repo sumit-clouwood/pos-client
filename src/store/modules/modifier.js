@@ -29,7 +29,7 @@ const getters = {
       }
     })
   },
-  findModifier: () => modifierId => {
+  findModifier: state => modifierId => {
     let modifier = {}
     state.itemModifiers.forEach(item => {
       item.modifiers.forEach(mod => {
@@ -51,6 +51,19 @@ const getters = {
   //get modifiers specific to item id from current modifiers list
   itemModifiers: state => itemId =>
     state.itemModifiers.find(obj => obj.itemId == itemId),
+
+  getImages: state => {
+    let images = []
+
+    state.all.forEach(item => {
+      item.get_modifier_sub_groups.forEach(subgroup => {
+        subgroup.get_modifier_item_list.forEach(submod => {
+          images.push(state.imagePath + submod.imageName)
+        })
+      })
+    })
+    return images
+  },
 }
 
 // actions, often async
@@ -133,14 +146,24 @@ const actions = {
           )
         }
       })
-
-      //change modifiers to get location based pricing
+      const appLocale = rootState.location.locale
+      //change modifiers to get location based pricing and language
       const upatedModifiers = modifiers.map(modifier => {
         const groups = modifier.get_modifier_sub_groups.map(group => {
           const modifierItemList = group.get_modifier_item_list.map(mod => {
             mod.price =
               mod.item_location_price[rootState.location.location] ||
               mod.item_price
+
+            //find translation
+            let itemName = mod.item_name.find(
+              locale => locale.language == appLocale
+            )
+            //fallback if no translation found
+            if (!itemName) {
+              itemName = mod.item_name[0]
+            }
+            mod.name = itemName ? itemName.name : 'No name'
 
             //calculate tax for the modifiers ll be done in order store because we add modifier price to item price and then calculate tax
             return mod

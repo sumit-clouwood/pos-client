@@ -3,7 +3,9 @@
     <div class="wrappers-new-orders">
       <div class="order">
         <h5>New Orders</h5>
-        <p>Tuesday, 13 Oct 2017</p>
+        <p>
+          {{ todayDateFull }}
+        </p>
       </div>
       <div class="account-name" v-if="selectedCustomer">
         <p v-if="selectedCustomer.email != ''">
@@ -30,11 +32,12 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Header',
   props: {},
   computed: {
+    ...mapGetters('sync', ['todayDateFull']),
     ...mapState({
       selectedCustomer: state =>
         typeof state.customer.customer.customer_list != 'undefined'

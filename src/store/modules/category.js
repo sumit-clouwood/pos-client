@@ -1,3 +1,4 @@
+/*eslint-disable no-console*/
 import CategoryService from '@/services/data/CategoryService'
 import * as mutation from './category/mutation-types'
 // initial state
@@ -8,10 +9,10 @@ const state = {
   all: [],
   category: {},
   subcategories: [],
-  subcategory: {},
+  subcategory: null,
   categoryItems: [],
   subcategoryItems: [],
-  item: {},
+  item: null,
   items: [],
   taxData: [],
   taxAmount: {},
@@ -24,12 +25,99 @@ const getters = {
   subcategoryImage: state => imageSrc => state.subcategoryImagePath + imageSrc,
   itemImage: state => imageSrc => state.itemImagePath + imageSrc,
 
-  items: state =>
-    state.searchItems.length > 0
+  menu: (state, getters, rootState) => {
+    const appLocale = rootState.location.locale
+    return state.all.map(category => {
+      let newCategory = { ...category }
+      newCategory.name = newCategory.cat_name.find(
+        locale => locale.language == appLocale
+      ).name
+      return newCategory
+    })
+  },
+  subcategories: (state, getters, rootState) => {
+    const appLocale = rootState.location.locale
+    return state.subcategories.map(category => {
+      let newCategory = { ...category }
+      newCategory.name = newCategory.subcategory_name.find(
+        locale => locale.language == appLocale
+      ).name
+      return newCategory
+    })
+  },
+  items: (state, getters, rootState) => {
+    const appLocale = rootState.location.locale
+    const items = state.searchItems.length
       ? state.searchItems
       : state.categoryItems.length
-        ? state.categoryItems
-        : state.subcategoryItems,
+      ? state.categoryItems
+      : state.subcategoryItems
+    return items.map(item => {
+      let newItem = { ...item }
+      let itemName = newItem.item_name.find(
+        locale => locale.language == appLocale
+      )
+      //fallback if no translation found
+      if (!itemName) {
+        itemName = newItem.item_name[0]
+      }
+      newItem.name = itemName ? itemName.name : 'No name'
+      return newItem
+    })
+  },
+
+  selectedCategory: (state, getters, rootState) => {
+    const appLocale = rootState.location.locale
+    let newCategory = { ...state.category }
+    newCategory.name = newCategory.cat_name.find(
+      locale => locale.language == appLocale
+    ).name
+    return newCategory
+  },
+  selectedSubCategory: (state, getters, rootState) => {
+    const appLocale = rootState.location.locale
+    if (state.subcategory) {
+      let newCategory = { ...state.subcategory }
+      newCategory.name = newCategory.subcategory_name.find(
+        locale => locale.language == appLocale
+      ).name
+      return newCategory
+    }
+  },
+  selectedItem: (state, getters, rootState) => {
+    const appLocale = rootState.location.locale
+    if (state.item) {
+      let newItem = { ...state.item }
+      newItem.name = newItem.item_name.find(
+        locale => locale.language == appLocale
+      ).name
+      return newItem
+    }
+  },
+  getImages() {
+    //for caching
+    //document.getElementsByTagName('a')[0].__vue__.$store.state
+    let images = []
+    const categoryImagePath = state.categoryImagePath
+    const subcategoryImagePath = state.subcategoryImagePath
+    const itemImagePath = state.itemImagePath
+
+    state.all.forEach(category => {
+      images.push(categoryImagePath + category.category_image)
+      if (category.get_category_product.length) {
+        category.get_category_product.forEach(item => {
+          images.push(itemImagePath + item.item_image)
+        })
+      }
+      category.get_sub_category.forEach(subcat => {
+        images.push(subcategoryImagePath + subcat.sub_category_image)
+        subcat.get_sub_category_product.forEach(item => {
+          images.push(itemImagePath + item.item_image)
+        })
+      })
+    })
+    return images
+  },
 }
 
 // actions, often async
@@ -90,6 +178,13 @@ const actions = {
 
   //get subcategories and items based on main category
   browse({ commit, state }, item) {
+    //reset all
+    commit(mutation.SET_SUBCATEGORIES, [])
+    commit(mutation.SET_SUBCATEGORY, null)
+    commit(mutation.SET_CATEGORY_ITEMS, [])
+    commit(mutation.SET_SUBCATEGORY_ITEMS, [])
+
+    //apply new selected
     commit(mutation.SET_CATEGORY, item)
 
     const subcategories = state.all.find(

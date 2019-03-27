@@ -54,6 +54,17 @@ const getters = {
       }
     }
   },
+
+  items: (state, getters, rootState) => {
+    const appLocale = rootState.location.locale
+    return state.items.map(item => {
+      let newItem = { ...item }
+      newItem.name = newItem.item_name.find(
+        locale => locale.language == appLocale
+      ).name
+      return newItem
+    })
+  },
 }
 
 // actions
