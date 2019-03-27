@@ -24,8 +24,8 @@
           <CustomerPastOrders />
         </div>
         <div class="modal-footer">
-          <div class="pagination-customer-details">
-            <!--<ul class="ullist-pagination">
+          <!--<div class="pagination-customer-details">
+            &lt;!&ndash;<ul class="ullist-pagination">
               <li class="order-pagination active">1</li>
               <li class="order-pagination">2</li>
               <li class="order-pagination">3</li>
@@ -34,7 +34,22 @@
                 <img src="img/pos/next-arrow.png" alt="next-btn" />
               </li>
               <li>Last</li>
-            </ul>-->
+            </ul>&ndash;&gt;
+          </div>-->
+          <div class="pagination-customer-details">
+            <paginate
+              v-if="paginateDetails.totalPages"
+              :page-count="paginateDetails.totalPages"
+              :page-range="1"
+              :margin-pages="1"
+              :clickHandler="setPastOrderPageNumber"
+              :prev-text="'Prev'"
+              :next-text="'Next'"
+              :container-class="''"
+              :page-class="'page-item'"
+            >
+            </paginate>
+            <!--</template>-->
           </div>
           <div class="btn-announce">
             <button
@@ -54,12 +69,14 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import LoyaltyPoint from './CustomerInformation/LoyaltyPoint'
 import CustomerProfile from './CustomerInformation/CustomerProfile'
 import CustomerInsights from './CustomerInformation/CustomerInsights'
 import CustomerPastOrders from './CustomerInformation/CustomerPastOrders'
 import CustomerDeliveryAddress from './CustomerInformation/CustomerDeliveryAddress'
+import paginate from 'vuejs-paginate'
+
 export default {
   name: 'CustomerInformation',
   props: {},
@@ -69,11 +86,15 @@ export default {
     CustomerInsights,
     CustomerPastOrders,
     CustomerDeliveryAddress,
+    paginate,
   },
   computed: {
     ...mapState({
-      customerDetails: state => state.customer.customer,
+      paginateDetails: state => state.customer.pastOrdersPaginate,
     }),
+  },
+  methods: {
+    ...mapActions('customer', ['setPastOrderPageNumber']),
   },
 }
 </script>

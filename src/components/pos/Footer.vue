@@ -22,7 +22,7 @@
           </li>
           <li
             data-toggle="modal"
-            data-target="#order-confirmation"
+            :data-target="selectedModal"
             data-dismiss="modal"
           >
             <a href="#"
@@ -146,6 +146,10 @@ export default {
   computed: {
     ...mapState('checkout', ['print']),
     ...mapState('sync', ['online']),
+    ...mapState({
+      selectedModal: state =>
+        state.location.setModal
+    }),
   },
   methods: {
     ...mapActions('holdOrders', ['getHoldOrders']),
