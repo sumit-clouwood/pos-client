@@ -22,7 +22,8 @@
           </li>
           <li
             data-toggle="modal"
-            data-target="#order-confirmation"
+            @click="selectModal"
+            :data-target="selectedModal"
             data-dismiss="modal"
           >
             <a href="#"
@@ -120,6 +121,11 @@ import { mapActions, mapState } from 'vuex'
 export default {
   name: 'Footer',
   props: {},
+  data() {
+    return {
+      selectedModal: '#manage-customer',
+    }
+  },
   components: {
     DineIn,
     AddNote,
@@ -146,8 +152,22 @@ export default {
   computed: {
     ...mapState('checkout', ['print']),
     ...mapState('sync', ['online']),
+    ...mapState({
+      selectedCustomer: state =>
+        typeof state.customer.customer.customer_list != 'undefined'
+          ? state.customer.customer.customer_list
+          : typeof state.customer.fetchCustomerAddressOnly.customer_list !=
+            'undefined'
+            ? state.customer.fetchCustomerAddressOnly.customer_list[0]
+            : false,
+    }),
   },
   methods: {
+    selectModal() {
+      if(this.selectedCustomer) {
+        this.selectedModal = '#order-confirmation'
+      }
+    },
     ...mapActions('holdOrders', ['getHoldOrders']),
     ...mapActions('discount', ['validateOrderDiscounts']),
   },
