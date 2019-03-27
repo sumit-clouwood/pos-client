@@ -32,3 +32,27 @@ The App.vue file is the root component that all other components are nested with
   color: #00ff00;
   padding: 10px 5px 10px 5px;
 </style>
+
+<script>
+/* eslint-disable no-console */
+if ('serviceWorker' in navigator && 'SyncManager' in window) {
+  console.log('All things available')
+  window.addEventListener('load', () => {
+    console.log('window loaded with navigator')
+    navigator.serviceWorker.ready
+      .then(registration => {
+        console.log('Service Worker Ready IN MAIN Component')
+        Notification.requestPermission()
+        return registration.sync.register('postOfflineOrders')
+      })
+      .then(function() {
+        console.log('sync event postOfflineOrders registered')
+      })
+      .catch(function() {
+        // system was unable to register for a sync,
+        // this could be an OS-level restriction
+        console.log('sync registration failed')
+      })
+  })
+}
+</script>

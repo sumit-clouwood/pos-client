@@ -3,7 +3,7 @@ import * as dbconstants from './Constants'
 
 export default {
   idb: null,
-  openDatabase(version, cb) {
+  openDatabase(version) {
     //check for support
     return new Promise((resolve, reject) => {
       if (!('indexedDB' in window)) {
@@ -15,23 +15,20 @@ export default {
       dbrequest.onupgradeneeded = function(event) {
         console.log('app upgraded', event)
         self.idb = event.target.result
-        if (cb) {
-          cb(self.idb, resolve)
-        } else {
-          resolve(self.idb)
-        }
+        resolve({ idb: self.idb, flag: 'upgrade' })
       }
 
       dbrequest.onsuccess = function(event) {
         console.log('success', event)
         self.idb = dbrequest.result
-        resolve(self.idb)
+        resolve({ idb: self.idb, flag: 'open' })
       }
 
       dbrequest.onblocked = function(event) {
         console.log('block error not important', event)
         // Another connection is open, preventing the upgrade,
         // and it didn't close immediately.
+        reject('blocked')
       }
 
       dbrequest.onerror = function(event) {

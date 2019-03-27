@@ -44,6 +44,8 @@ const state = {
   compress: false,
   loaded: false,
   online: true,
+  idb: null,
+  idbVersion: 1,
 }
 
 // getters
@@ -78,6 +80,13 @@ const mutations = {
 
   loaded(state, loaded) {
     state.loaded = loaded
+  },
+
+  setIdbVersion(state, version) {
+    state.idbVersion = version
+  },
+  setIdb(state, handle) {
+    state.idb = handle
   },
 }
 

@@ -45,7 +45,8 @@
 /* eslint-disable no-console */
 import { mapState } from 'vuex'
 import Cookie from '@/mixins/Cookie'
-import NetworkService from '@/services/NetworkService'
+import bootstrap from '@/bootstrap'
+
 export default {
   name: 'Location',
   props: {},
@@ -66,98 +67,21 @@ export default {
     }),
     ...mapState({
       defaultLanguage: state =>
-        typeof state.location.locationData !== 'undefined'
+        state.location.locationData
           ? state.location.locationData.default_language[0]
           : false,
     }),
   },
   //life cycle hooks
   mounted() {
-    //let deviceId = Cookie.get_cookie('device_id')
-    this.$store
-      .dispatch('auth/auth')
-      .then(response => {
-        console.log('response from server', response)
-        this.$store.dispatch('location/setLocation')
-
-        this.$store
-          .dispatch('location/fetch', response)
-          .then(() => {
-            this.$store
-              .dispatch('category/fetchAll', response)
-              .then(result => {
-                if (!result || result.error) {
-                  this.errored =
-                    result.error || 'No result from category/fetchAll'
-                  return false
-                }
-
-                this.$store.dispatch('modifier/fetchAll', response).then(() => {
-                  this.$store.commit('sync/loaded', true)
-                  this.loading = false
-                })
-
-                this.$store.dispatch('announcement/fetchAll', response)
-                this.$store.dispatch('surcharge/fetchAll', response)
-                this.$store.dispatch('discount/fetchAll', response)
-                this.$store.dispatch('customer/fetchAll', response)
-                this.$store.dispatch('payment/fetchAll', response)
-                this.$store.dispatch('giftcard/fetchAll', response)
-                this.$store.dispatch('invoice/fetchAll', response)
-              })
-              .catch(err => (this.errored = err))
-          })
-          .catch(err => (this.errored = err))
-        //.finally(() => (this.loading = false))
-
-        // localStorage.setItem('selectedLanguage', this.defaultLanguage.language)
-        // localStorage.setItem('selectedLanguageSortName', this.defaultLanguage.shortname)
+    bootstrap
+      .setup(this.$store)
+      .then(() => {
+        this.$store.commit('sync/loaded', true)
+        this.loading = false
       })
-      .catch(error => {
-        console.log('error from server', error)
-        this.errored = error
-      })
-
-    NetworkService.status((status, msg, event) => {
-      this.$store.commit('sync/status', status)
-      console.log('network status: ', status, msg, event)
-      if (msg === 'on') {
-        try {
-          console.log('force sync in 30 sec from app')
-          setTimeout(function() {
-            navigator.serviceWorker.controller.postMessage({
-              sync: 1,
-            })
-          }, 1000 * 30)
-        } catch (e) {
-          console.log("Couldn't send msg to service worker in dev", msg)
-        }
-      }
-    })
+      .catch(error => (this.errored = error))
   },
-
-  beforeCreate() {},
-}
-
-if ('serviceWorker' in navigator && 'SyncManager' in window) {
-  console.log('All things available')
-  window.addEventListener('load', () => {
-    console.log('window loaded with navigator')
-    navigator.serviceWorker.ready
-      .then(registration => {
-        console.log('Service Worker Ready IN MAIN Component')
-        Notification.requestPermission()
-        return registration.sync.register('postOfflineOrders')
-      })
-      .then(function() {
-        console.log('sync event postOfflineOrders registered')
-      })
-      .catch(function() {
-        // system was unable to register for a sync,
-        // this could be an OS-level restriction
-        console.log('sync registration failed')
-      })
-  })
 }
 </script>
 
