@@ -44,7 +44,6 @@
                     class="online-order-id"
                     data-toggle="modal"
                     data-target="#past-order"
-                    data-dismiss="modal"
                   >
                     <span>Order No</span>#{{ order.order_no }}
                   </p>
@@ -127,8 +126,6 @@ export default {
   data() {
     return {
       customerName: '',
-      // customerAddress: false,
-      paymentStatus: 'unpaid',
     }
   },
   mounted() {
@@ -194,27 +191,11 @@ export default {
       // moment.tz.setDefault('Asia/Jakarta')
       return moment(date).format('MMM Do YYYY, h:mm')
     },
-    /*    getCustomerInformation(addressList, customerId, addressId) {
-      if (typeof addressList != 'undefined') {
-        addressList.forEach(customerAddress => {
-          if (customerAddress._id == customerId) {
-            this.customerName = customerAddress.customer_name
-            customerAddress.customer_details.forEach(address => {
-              if (addressId == address._id) {
-                this.customerAddress = address
-              }
-            })
-          }
-          return this.customerName
-        })
-      }
-    },*/
-
     getPaymentStatus(orderId) {
       let orderStatus = 'unpaid'
-      this.getLatestOnlineOrders.forEach(paymentInfo => {
-        if (paymentInfo.length) {
-          paymentInfo.forEach(payment => {
+      this.getLatestOnlineOrders.forEach(order => {
+        if (order.payment_info.length) {
+          order.payment_info.forEach(payment => {
             if (payment.order_id == orderId) {
               orderStatus = payment.status
             }

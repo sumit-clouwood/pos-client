@@ -410,6 +410,7 @@ const actions = {
     const params = [1, onlineOrderData.location_id]
     let orderDetail = ''
     OrderService.fetchOnlineOrderDetails(...params).then(response => {
+      orderDetail = response.data.orderDetails
       commit(mutation.ONLINE_ORDERS, {
         onlineOrders: onlineOrderData,
         locationId: rootState.location.location,

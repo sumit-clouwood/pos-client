@@ -110,7 +110,7 @@
             >
               <span
                 ><img
-                  src="{{url('/')}}/theme/images/dine_in/edit-icon.png"
+                  src="/pos/img/edit-icon.png"
                   alt="schedule"/></span
               >Modify
             </button>
