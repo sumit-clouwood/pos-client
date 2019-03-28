@@ -510,27 +510,27 @@ var createCustomer = function(headers, payload) {
   })
 }
 
-var createAddress = function(headers, payload) {
-  var method = 'POST'
-  var requestUrl = serverUrl + '/api/auth/crm/create/NewCustomerAddress'
-  var address = {
-    customer_id: payload.customer_id,
-    add_delivery_area: payload.delivery_area,
-    location_id: payload.location_id,
-    add_building: payload.building,
-    add_street: payload.street,
-    add_flat_number: payload.flat_number,
-    add_landmark: payload.building,
-    add_city: payload.city,
-    country: payload.country,
-  }
+// var createAddress = function(headers, payload) {
+//   var method = 'POST'
+//   var requestUrl = serverUrl + '/api/auth/crm/create/NewCustomerAddress'
+//   var address = {
+//     customer_id: payload.customer_id,
+//     add_delivery_area: payload.delivery_area,
+//     location_id: payload.location_id,
+//     add_building: payload.building,
+//     add_street: payload.street,
+//     add_flat_number: payload.flat_number,
+//     add_landmark: payload.building,
+//     add_city: payload.city,
+//     country: payload.country,
+//   }
 
-  return fetch(requestUrl, {
-    headers: headers,
-    method: method,
-    body: JSON.stringify(address),
-  })
-}
+//   return fetch(requestUrl, {
+//     headers: headers,
+//     method: method,
+//     body: JSON.stringify(address),
+//   })
+// }
 
 var cyrb53 = function(str, seed = 0) {
   var h1 = 0xdeadbeef ^ seed,

@@ -11,7 +11,7 @@ const state = {
   language: 'English',
   locale: 'en_US',
   setTimeZone: 'Asia/Dubai',
-  setModal: '#manage-customer'
+  setModal: '#manage-customer',
 }
 
 // getters
@@ -88,7 +88,7 @@ const actions = {
 
   updateModalSelectionDelivery({ commit }) {
     commit(mutation.SET_MODAL, '#order-confirmation')
-  }
+  },
 }
 
 // mutations

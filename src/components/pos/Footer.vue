@@ -147,8 +147,7 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapState('sync', ['online']),
     ...mapState({
-      selectedModal: state =>
-        state.location.setModal
+      selectedModal: state => state.location.setModal,
     }),
   },
   methods: {
