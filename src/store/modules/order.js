@@ -414,7 +414,7 @@ const actions = {
       commit(mutation.ONLINE_ORDERS, {
         onlineOrders: onlineOrderData,
         locationId: rootState.location.location,
-        orderDetails: orderDetail
+        orderDetails: orderDetail,
       })
     })
   },

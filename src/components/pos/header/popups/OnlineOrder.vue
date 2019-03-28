@@ -47,11 +47,11 @@
                   >
                     <span>Order No</span>#{{ order.order_no }}
                   </p>
-                  <p>
+                  <div>
                     <span>Wait Time</span>
                     {{ humenDateTime(order) }}
                     <p :id="order.order_no"></p>
-                  </p>
+                  </div>
                   <p><span>Customer</span>{{ order.customer.customer_name }}</p>
                 </div>
                 <div class="online-order-address">
@@ -117,7 +117,7 @@
 </template>
 
 <script>
-/* global io */
+/* global io $ */
 import moment from 'moment-timezone'
 import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
@@ -159,7 +159,7 @@ export default {
   methods: {
     humenDateTime: function(data) {
       setInterval(function() {
-        let time = data.created_timestamp
+        //let time = data.created_timestamp
         let date = data.order_created
 
         let date_future = new Date(date)

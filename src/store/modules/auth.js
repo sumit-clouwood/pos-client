@@ -51,12 +51,12 @@ const actions = {
                   resolve(data)
                 })
               } else {
-                const deviceId = '34:79:A6:37:1F:C7'
-                // const deviceId = 'XX:XX:XX:XX:XX:XX'.replace(/X/g, function() {
-                //   return '0123456789ABCDEF'.charAt(
-                //     Math.floor(Math.random() * 16)
-                //   )
-                // })
+                //const deviceId = '34:79:A6:37:1F:C7'
+                const deviceId = 'XX:XX:XX:XX:XX:XX'.replace(/X/g, function() {
+                  return '0123456789ABCDEF'.charAt(
+                    Math.floor(Math.random() * 16)
+                  )
+                })
 
                 DataService.auth(process.env, deviceId)
                   .then(response => {

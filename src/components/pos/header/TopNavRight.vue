@@ -2,12 +2,15 @@
   <ul class="navbar-nav ml-auto">
     <li class="nav-item">
       <a class="nav-link mr-lg-2" id="adminDropdown" href="#">
-        <span class="">Admin</span>
+        <span class="">{{ username }}</span>
       </a>
     </li>
     <li class="nav-item">
       <h6 class="header-online">
-        <span><i class="fa fa-fw fa-circle"></i></span> Online
+        <span
+          ><i class="fa fa-fw fa-circle" :class="{ online: online }"></i
+        ></span>
+        Online
       </h6>
     </li>
     <li v-if="languages">
@@ -94,9 +97,11 @@ export default {
           : false,
     }),
     ...mapState('location', ['language']),
+    ...mapState('sync', ['online']),
     ...mapState({
       latestOnlineOrders: state =>
         state.order.onlineOrders ? state.order.onlineOrders.length : 0,
+      username: state => state.auth.userDetails.name,
     }),
   },
   methods: {
@@ -121,3 +126,11 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.fa-circle:before {
+  color: #eb790f;
+}
+.fa-circle.online:before {
+  color: #62bb31;
+}
+</style>

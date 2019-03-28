@@ -108,10 +108,7 @@
               type="button"
               id="modify-btn"
             >
-              <span
-                ><img
-                  src="/pos/img/edit-icon.png"
-                  alt="schedule"/></span
+              <span><img src="/pos/img/edit-icon.png" alt="schedule"/></span
               >Modify
             </button>
           </div>
