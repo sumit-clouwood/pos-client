@@ -19,7 +19,7 @@
         >
           <div class="add-order-area">
             <div
-              v-for="(order, index) in getLatestOnlineOrders.orders"
+              v-for="(order, index) in getLatestOnlineOrders"
               class="online-order"
               :key="index"
             >
@@ -27,13 +27,13 @@
                 <h4 class="customer-title">Upcoming Order # {{ ++index }}</h4>
                 <p
                   class="online-order-amount"
-                  v-if="getPaymentStatus() === 'unpaid'"
+                  v-if="getPaymentStatus(order._id) === 'unpaid'"
                 >
                   unpaid
                 </p>
                 <p
                   class="online-order-amount paid-amt"
-                  v-if="getPaymentStatus() === 'paid'"
+                  v-if="getPaymentStatus(order._id) === 'paid'"
                 >
                   paid
                 </p>
@@ -50,27 +50,18 @@
                   </p>
                   <p>
                     <span>Wait Time</span>
-                    {{ moment(order.created_timestamp) }}
+                    {{ humenDateTime(order) }}
+                    <p :id="order.order_no"></p>
                   </p>
-                  <p>
-                    <span>Customer</span
-                    >{{
-                      getCustomerInformation(
-                        fetchAddress.customer_list,
-                        order.customer_id,
-                        order.address_id
-                      )
-                    }}
-                  </p>
+                  <p><span>Customer</span>{{ order.customer.customer_name }}</p>
                 </div>
                 <div class="online-order-address">
                   <p>
-                    <span v-if="customerAddress">
-                      {{
-                        getDeliveryArea(customerAddress.delivery_area)
-                      }},<br />
-                      {{ customerAddress.street }}, {{ locationName }}, <br />
-                      {{ customerAddress.city }},
+                    <span>
+                      {{ order.delivery_area }},<br />
+                      {{ order.order_address.street }}, {{ locationName }},
+                      <br />
+                      {{ order.order_address.city }},
                     </span>
                     {{ country }}
                   </p>
@@ -136,7 +127,7 @@ export default {
   data() {
     return {
       customerName: '',
-      customerAddress: false,
+      // customerAddress: false,
       paymentStatus: 'unpaid',
     }
   },
@@ -165,16 +156,45 @@ export default {
           ? state.location.locationData.country_name
           : '',
     }),
-    ...mapGetters('location', ['getDeliveryArea']),
+    // ...mapGetters('location', ['getDeliveryArea']),
     ...mapGetters('order', ['getLatestOnlineOrders']),
   },
   methods: {
+    humenDateTime: function(data) {
+      setInterval(function() {
+        let time = data.created_timestamp
+        let date = data.order_created
+
+        let date_future = new Date(date)
+        let date_now = new Date()
+
+        let seconds = Math.floor((date_now - date_future) / 1000)
+        let minutes = Math.floor(seconds / 60)
+        let hours = Math.floor(minutes / 60)
+        let days = Math.floor(hours / 24)
+
+        hours = hours - days * 24
+        minutes = minutes - days * 24 * 60 - hours * 60
+        seconds = seconds - days * 24 * 60 * 60 - hours * 60 * 60 - minutes * 60
+
+        let htmlElement =
+          days +
+          ' Days, ' +
+          hours +
+          ' Hours, ' +
+          minutes +
+          ' Minutes, ' +
+          seconds +
+          ' Seconds'
+        $('p#' + data.order_no).html(htmlElement)
+      }, 1000)
+    },
     moment: function(date) {
       moment.tz.setDefault(this.$store.state.location.setTimeZone)
       // moment.tz.setDefault('Asia/Jakarta')
       return moment(date).format('MMM Do YYYY, h:mm')
     },
-    getCustomerInformation(addressList, customerId, addressId) {
+    /*    getCustomerInformation(addressList, customerId, addressId) {
       if (typeof addressList != 'undefined') {
         addressList.forEach(customerAddress => {
           if (customerAddress._id == customerId) {
@@ -188,13 +208,17 @@ export default {
           return this.customerName
         })
       }
-    },
+    },*/
 
     getPaymentStatus(orderId) {
       let orderStatus = 'unpaid'
-      this.getLatestOnlineOrders.order_payment_status.forEach(payment => {
-        if (payment.order_id == orderId) {
-          orderStatus == payment.payment_mode
+      this.getLatestOnlineOrders.forEach(paymentInfo => {
+        if (paymentInfo.length) {
+          paymentInfo.forEach(payment => {
+            if (payment.order_id == orderId) {
+              orderStatus = payment.status
+            }
+          })
         }
       })
       return orderStatus

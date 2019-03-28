@@ -1,4 +1,5 @@
 import * as mutation from './order/mutation-types'
+import OrderService from '../../services/data/OrderService'
 
 // initial state
 const state = {
@@ -392,12 +393,28 @@ const actions = {
   },
   addOrderNote({ commit }, orderNote) {
     commit(mutation.SET_ORDER_NOTE, orderNote)
+    /*const params = [1, rootState.location.location]
+    let orderDetail = ''
+    OrderService.fetchOnlineOrderDetails(...params).then(response => {
+      orderDetail = response.data.orderDetails
+      console.log(JSON.stringify(orderDetail))
+      commit(mutation.ONLINE_ORDERS, {
+        onlineOrders: {},
+        locationId: rootState.location.location,
+        orderDetails: orderDetail
+      })
+    })*/
   },
 
   setOnlineOrders({ commit, rootState }, onlineOrderData) {
-    commit(mutation.ONLINE_ORDERS, {
-      onlineOrders: onlineOrderData,
-      locationId: rootState.location.location,
+    const params = [1, onlineOrderData.location_id]
+    let orderDetail = ''
+    OrderService.fetchOnlineOrderDetails(...params).then(response => {
+      commit(mutation.ONLINE_ORDERS, {
+        onlineOrders: onlineOrderData,
+        locationId: rootState.location.location,
+        orderDetails: orderDetail
+      })
     })
   },
 
@@ -533,9 +550,9 @@ const mutations = {
   [mutation.SET_FUTURE_ORDER](state, futureOrder) {
     state.futureOrder = futureOrder
   },
-  [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId }) {
-    state.onlineOrders = onlineOrders
-    localStorage.setItem('onlineOrders', JSON.stringify(onlineOrders))
+  [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId, orderDetails }) {
+    localStorage.setItem('onlineOrders', JSON.stringify(orderDetails))
+    state.onlineOrders = orderDetails
     playSound(locationId, onlineOrders)
   },
 }

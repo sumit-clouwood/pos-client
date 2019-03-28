@@ -25,4 +25,10 @@ export default {
       `/api/auth/deliveryManager/update/order?location_id=${locationId}&order_status=${orderStatus}&order_id=${orderId}&order_type=${orderType}&timestamp=${timestamp}`
     )
   },
+
+  fetchOnlineOrderDetails(...[orderid, locationId]) {
+    return DataService.get(
+      `/api/auth/online-order-list/${locationId}/${orderid}`
+    )
+  },
 }

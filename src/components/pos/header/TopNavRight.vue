@@ -96,9 +96,7 @@ export default {
     ...mapState('location', ['language']),
     ...mapState({
       latestOnlineOrders: state =>
-        typeof state.order.onlineOrders.orders != 'undefined'
-          ? state.order.onlineOrders.orders.length
-          : 0,
+        state.order.onlineOrders ? state.order.onlineOrders.length : 0,
     }),
   },
   methods: {
@@ -108,7 +106,7 @@ export default {
         if (JSON.parse(localStorage.getItem('onlineOrders')) != null) {
           this.onlineOrdersCount = JSON.parse(
             localStorage.getItem('onlineOrders')
-          ).orders.length
+          ).length
         } else {
           this.onlineOrdersCount = 0
         }

@@ -28,7 +28,7 @@ const getters = {
     )
   },
 
-  getDeliveryArea: state => areaId => {
+  /*  getDeliveryArea: state => areaId => {
     let area = ''
     state.deliveryAreas.forEach(deliveryArea => {
       if (areaId == deliveryArea._id) {
@@ -36,7 +36,7 @@ const getters = {
       }
     })
     return area
-  },
+  },*/
 }
 
 // actions
