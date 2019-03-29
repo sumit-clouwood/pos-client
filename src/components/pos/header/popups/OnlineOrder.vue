@@ -15,7 +15,7 @@
         </div>
         <div
           class="modal-body online-order-wrapper"
-          v-if="getLatestOnlineOrders"
+          v-if="getLatestOnlineOrders.length"
         >
           <div class="add-order-area">
             <div

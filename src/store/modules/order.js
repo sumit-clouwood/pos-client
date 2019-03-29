@@ -420,12 +420,16 @@ const actions = {
   },
 
   deliveryOrder({ commit, dispatch }, { referral, futureOrder }) {
-    commit(mutation.ORDER_TYPE, 'delivery')
-    commit(mutation.SET_REFERRAL, referral)
-    if (futureOrder != null) {
-      commit(mutation.SET_FUTURE_ORDER, futureOrder)
-    }
-    dispatch('checkout/pay', {}, { root: true })
+    return new Promise((resolve, reject) => {
+      commit(mutation.ORDER_TYPE, 'delivery')
+      commit(mutation.SET_REFERRAL, referral)
+      if (futureOrder != null) {
+        commit(mutation.SET_FUTURE_ORDER, futureOrder)
+      }
+      dispatch('checkout/pay', {}, { root: true })
+        .then(response => resolve(response))
+        .catch(response => reject(response))
+    })
   },
 
   updateOrderType({ commit }, orderType) {

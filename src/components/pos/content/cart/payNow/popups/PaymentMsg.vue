@@ -40,7 +40,7 @@
 /* global $ */
 import { mapState } from 'vuex'
 export default {
-  name: 'AmountChange',
+  name: 'PaymentMsg',
   methods: {
     generateInvoice() {
       $('#pay-now').modal('toggle')

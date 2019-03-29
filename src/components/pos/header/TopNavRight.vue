@@ -101,7 +101,8 @@ export default {
     ...mapState({
       latestOnlineOrders: state =>
         state.order.onlineOrders ? state.order.onlineOrders.length : 0,
-      username: state => state.auth.userDetails.name,
+      username: state =>
+        state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
   },
   methods: {

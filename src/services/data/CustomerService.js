@@ -11,7 +11,7 @@ export default {
       newAddressDetails
     )
   },
-
+  //get the customer along with all previous orders and other required info
   fetchCustomer(...[customerId, locationId, limit, pgno]) {
     return DataService.get(
       `/api/auth/crm/get/CustomerDetails/?customer_id=${customerId}&location_id=${locationId}&limit=${limit}&pgno=${pgno}`
@@ -24,6 +24,7 @@ export default {
     )
   },
 
+  //get customer addresses
   getCustomerDetails(...[customerIds, locationId]) {
     return DataService.get(
       `/api/auth/crm/get/CustomerList/?location_id=${locationId}&customer_id=${customerIds}`

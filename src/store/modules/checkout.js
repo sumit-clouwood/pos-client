@@ -11,6 +11,7 @@ const state = {
   pendingAmount: 0,
   changedAmount: 0,
   print: false,
+  orderNumber: null,
 }
 
 // getters
@@ -19,27 +20,38 @@ const getters = {}
 // actions
 const actions = {
   pay({ commit, rootGetters, rootState, dispatch }) {
-    return new Promise(resolve => {
-      const paid = rootGetters['checkoutForm/paid']
-      commit(mutation.SET_PAID_AMOUNT, paid)
-      const totalPayable = rootGetters['checkoutForm/orderTotal']
-      commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
+    return new Promise((resolve, reject) => {
+      let validPayment = false
 
-      let pendingAmount = totalPayable - paid
-      pendingAmount = parseFloat(pendingAmount).toFixed(2)
-      if (pendingAmount >= 0.01) {
-        commit(mutation.SET_PENDING_AMOUNT, pendingAmount)
-        commit(
-          'checkoutForm/SET_ERROR',
-          'Please add pending amount of ' +
-            pendingAmount +
-            ' before proceeding further.',
-          { root: true }
-        )
+      if (rootState.order.orderType != 'Walk-in') {
+        validPayment = true
       } else {
-        // see if there is a change amount
-        const changedAmount = paid - totalPayable
-        commit(mutation.SET_CHANGED_AMOUNT, changedAmount)
+        const paid = rootGetters['checkoutForm/paid']
+        commit(mutation.SET_PAID_AMOUNT, paid)
+        const totalPayable = rootGetters['checkoutForm/orderTotal']
+        commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
+
+        let pendingAmount = totalPayable - paid
+        pendingAmount = parseFloat(pendingAmount).toFixed(2)
+        if (pendingAmount >= 0.01) {
+          commit(mutation.SET_PENDING_AMOUNT, pendingAmount)
+          commit(
+            'checkoutForm/SET_ERROR',
+            'Please add pending amount of ' +
+              pendingAmount +
+              ' before proceeding further.',
+            { root: true }
+          )
+        } else {
+          // see if there is a change amount
+          const changedAmount = paid - totalPayable
+          commit(mutation.SET_CHANGED_AMOUNT, changedAmount)
+
+          validPayment = true
+        }
+      }
+
+      if (validPayment) {
         //send order for payment
         const date = new Date().toJSON().slice(0, 10)
         const time = new Date().toJSON().slice(11, 19)
@@ -98,6 +110,10 @@ const actions = {
               })
             })
           })
+
+          if (process.env.NODE_ENV !== 'production') {
+            lastOrderNo = lastOrderNo + Math.random(1000)
+          }
 
           const transitionOrderNo =
             rootState.auth.franchiesCode +
@@ -242,38 +258,51 @@ const actions = {
         })
 
         commit(mutation.SET_ORDER, order)
-        dispatch('createOrder', resolve)
+        dispatch('createOrder')
+          .then(response => {
+            resolve(response)
+          })
+          .catch(response => {
+            reject(response)
+          })
       }
     })
   },
-  createOrder({ state, commit, rootState }, resolve) {
+  createOrder({ state, commit, rootState }) {
     commit('checkoutForm/SET_MSG', 'Processing...', {
       root: true,
     })
 
-    OrderService.saveOrder(state.order, rootState.customer.offlineData)
-      .then(response => {
-        if (response.data.data === 1) {
-          //clear all the data related to order, tax, discounts, surcharge etc
-          //create invoice
-          commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
+    return new Promise((resolve, reject) => {
+      OrderService.saveOrder(state.order, rootState.customer.offlineData)
+        .then(response => {
+          if (response.data.data === 1) {
+            //clear all the data related to order, tax, discounts, surcharge etc
+            //create invoice
+            commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
+            commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
+              root: true,
+            })
+            resolve(response.data)
+          } else {
+            commit(
+              'checkoutForm/SET_ERROR',
+              `Order Failed <br /> ${response.data}`,
+              { root: true }
+            )
+            reject(response.data)
+          }
+        })
+        .catch(response => {
+          commit('checkoutForm/SET_MSG', 'Queued for sending later', {
             root: true,
           })
-        } else {
-          commit(
-            'checkoutForm/SET_ERROR',
-            `Order Failed <br /> ${response.data}`
-          )
-        }
-      })
-      .catch(() => {
-        commit('checkoutForm/SET_MSG', 'Queued for sending later', {
-          root: true,
+          resolve(response.data)
         })
-      })
-      .finally(() => {
-        resolve()
-      })
+      // .finally(() => {
+      //   resolve()
+      // })
+    })
   },
   generateInvoice({ commit }) {
     commit(mutation.PRINT, true)
@@ -324,6 +353,9 @@ const mutations = {
   },
   [mutation.PRINT](state, flag) {
     state.print = flag
+  },
+  [mutation.SET_ORDER_NUMBER](state, orderNumber) {
+    state.orderNumber = orderNumber
   },
   [mutation.RESET](state) {
     state.order = false
