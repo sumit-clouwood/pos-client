@@ -73,6 +73,7 @@
     <AddNote />
     <Discount />
     <OnlineOrder />
+    <OnlineOrderDetails />
     <SendToDelivery />
     <ManageCustomer v-if="online" />
     <OfflineManageCustomer v-else />

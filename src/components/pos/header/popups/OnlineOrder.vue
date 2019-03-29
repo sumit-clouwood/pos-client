@@ -41,16 +41,16 @@
               <div class="online-order-content">
                 <div class="online-order-content-wrap">
                   <p
-                    class="online-order-id"
+                    class="online-order-id cursor-pointer"
                     data-toggle="modal"
-                    data-target="#past-order"
+                    @click="selectedOrder(order)"
                   >
                     <span>Order No</span>#{{ order.order_no }}
                   </p>
                   <p>
                     <span>Wait Time</span>
-                    {{ humenDateTime(order) }}
-                    <p :id="order.order_no"></p>
+                    {{ humanDateTime(order) }}
+                  <p :id="order.order_no"></p>
                   </p>
                   <p><span>Customer</span>{{ order.customer.customer_name }}</p>
                 </div>
@@ -119,10 +119,13 @@
 <script>
 /* global io */
 import moment from 'moment-timezone'
+import DateTime from '@/mixins/DateTime'
+
 import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'OnlineOrder',
   props: {},
+  mixins: [DateTime],
   data() {
     return {
       customerName: '',
@@ -157,35 +160,35 @@ export default {
     ...mapGetters('order', ['getLatestOnlineOrders']),
   },
   methods: {
-    humenDateTime: function(data) {
-      setInterval(function() {
-        let time = data.created_timestamp
-        let date = data.order_created
-
-        let date_future = new Date(date)
-        let date_now = new Date()
-
-        let seconds = Math.floor((date_now - date_future) / 1000)
-        let minutes = Math.floor(seconds / 60)
-        let hours = Math.floor(minutes / 60)
-        let days = Math.floor(hours / 24)
-
-        hours = hours - days * 24
-        minutes = minutes - days * 24 * 60 - hours * 60
-        seconds = seconds - days * 24 * 60 * 60 - hours * 60 * 60 - minutes * 60
-
-        let htmlElement =
-          days +
-          ' Days, ' +
-          hours +
-          ' Hours, ' +
-          minutes +
-          ' Minutes, ' +
-          seconds +
-          ' Seconds'
-        $('p#' + data.order_no).html(htmlElement)
-      }, 1000)
-    },
+    // humanDateTime: function(data) {
+    //   setInterval(function() {
+    //     let time = data.created_timestamp
+    //     let date = data.order_created
+    //
+    //     let date_future = new Date(date)
+    //     let date_now = new Date()
+    //
+    //     let seconds = Math.floor((date_now - date_future) / 1000)
+    //     let minutes = Math.floor(seconds / 60)
+    //     let hours = Math.floor(minutes / 60)
+    //     let days = Math.floor(hours / 24)
+    //
+    //     hours = hours - days * 24
+    //     minutes = minutes - days * 24 * 60 - hours * 60
+    //     seconds = seconds - days * 24 * 60 * 60 - hours * 60 * 60 - minutes * 60
+    //
+    //     let htmlElement =
+    //       days +
+    //       ' Days, ' +
+    //       hours +
+    //       ' Hours, ' +
+    //       minutes +
+    //       ' Minutes, ' +
+    //       seconds +
+    //       ' Seconds'
+    //     $('p#' + data.order_no).html(htmlElement)
+    //   }, 1000)
+    // },
     moment: function(date) {
       moment.tz.setDefault(this.$store.state.location.setTimeZone)
       // moment.tz.setDefault('Asia/Jakarta')
@@ -205,6 +208,7 @@ export default {
       return orderStatus
     },
     ...mapActions('checkout', ['updateOrderStatus']),
+    ...mapActions('order', ['selectedOrder']),
   },
 }
 </script>
