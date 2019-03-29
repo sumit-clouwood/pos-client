@@ -10,6 +10,7 @@ const state = {
   onlineOrders: false,
   futureOrder: false,
   referral: false,
+  selectedOrder: false,
 }
 
 // getters
@@ -391,19 +392,18 @@ const actions = {
   reset({ commit }) {
     commit(mutation.RESET)
   },
-  addOrderNote({ commit }, orderNote) {
+  addOrderNote({ commit, rootState }, orderNote) {
     commit(mutation.SET_ORDER_NOTE, orderNote)
-    /*const params = [1, rootState.location.location]
+    const params = [1, rootState.location.location]
     let orderDetail = ''
     OrderService.fetchOnlineOrderDetails(...params).then(response => {
       orderDetail = response.data.orderDetails
-      console.log(JSON.stringify(orderDetail))
       commit(mutation.ONLINE_ORDERS, {
         onlineOrders: {},
         locationId: rootState.location.location,
-        orderDetails: orderDetail
+        orderDetails: orderDetail,
       })
-    })*/
+    })
   },
 
   setOnlineOrders({ commit, rootState }, onlineOrderData) {
@@ -448,6 +448,10 @@ const actions = {
         }
       })
     })
+  },
+
+  selectedOrder({ commit }, selectedOrderDetails) {
+    commit(mutation.SET_ORDER_DETAILS, selectedOrderDetails)
   },
 }
 
@@ -559,6 +563,9 @@ const mutations = {
     localStorage.setItem('onlineOrders', JSON.stringify(orderDetails))
     state.onlineOrders = orderDetails
     playSound(locationId, onlineOrders)
+  },
+  [mutation.SET_ORDER_DETAILS](state, selectedOrderDetails) {
+    state.selectedOrder = selectedOrderDetails
   },
 }
 

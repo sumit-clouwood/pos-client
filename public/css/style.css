@@ -2889,7 +2889,7 @@ div#order-confirmation .modal-dialog {
 }
 
 .order-table table {
-  width: 556px !important;
+  /*width: 556px !important;*/
   margin: 0 auto;
 }
 

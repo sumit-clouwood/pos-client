@@ -1,5 +1,5 @@
 <template>
-  <div class="modal fade" id="past-order" role="dialog">
+  <div class="modal fade" id="past-order" role="dialog" v-if="getOrderDetails">
     <div class="modal-dialog">
       <!-- Modal content-->
 
@@ -8,15 +8,16 @@
           <div class="past-order-details-wrap">
             <div class="sidebar-past-order">
               <h4>Placed By</h4>
-              <p>Tecom</p>
+              <p>{{ getOrderDetails.customer.customer_name }}</p>
             </div>
             <div class="sidebar-past-order">
               <h4>Order Date & Time</h4>
-              <p>28 May 2018 06:18pm</p>
+              <p>{{ getOrderDetails.order_created }}</p>
             </div>
             <div class="sidebar-past-order">
               <h4>Order Time</h4>
-              <p>28 days 16 hrs 42 mins</p>
+              {{ humanDateTime(getOrderDetails) }}
+              <p :id="'od' + getOrderDetails.order_no"></p>
             </div>
             <div class="sidebar-past-order">
               <h4>Driver</h4>
@@ -24,7 +25,7 @@
             </div>
           </div>
           <div class="past-order-confirmation">
-            <h1 class="order-id">Order 2253728</h1>
+            <h1 class="order-id">Order {{ getOrderDetails.order_no }}</h1>
             <div class="order-table">
               <table class="table table-responsive">
                 <tr>
@@ -34,47 +35,64 @@
                   <th style="width: 100px">TAX</th>
                   <th style="width: 150px">SUBTOTAL</th>
                 </tr>
-                <tr>
-                  <td>Vegetable Pizza Small</td>
-                  <td>2</td>
-                  <td>21.00</td>
-                  <td>0.00</td>
-                  <td>21.00</td>
-                </tr>
-                <tr class="pay-tot-amt">
-                  <td>Pepsi</td>
-                  <td>2</td>
-                  <td>21.00</td>
-                  <td>0.00</td>
-                  <td>21.00</td>
-                </tr>
-                <tr>
-                  <td>Vegetable Pizza Small</td>
-                  <td>2</td>
-                  <td>21.00</td>
-                  <td>0.00</td>
-                  <td>21.00</td>
-                </tr>
-                <tr class="pay-tot-amt">
-                  <td>Pepsi</td>
-                  <td>2</td>
-                  <td>21.00</td>
-                  <td>0.00</td>
-                  <td>21.00</td>
-                </tr>
-                <tr>
-                  <td>Vegetable Pizza Small</td>
-                  <td>2</td>
-                  <td>21.00</td>
-                  <td>0.00</td>
-                  <td>21.00</td>
-                </tr>
-                <tr class="pay-tot-amt">
-                  <td>Pepsi</td>
-                  <td>2</td>
-                  <td>21.00</td>
-                  <td>0.00</td>
-                  <td>21.00</td>
+                <tr v-for="(item, index) in getOrderDetails.items" :key="index">
+                  <td>
+                    {{ item.item_name }}
+                    <div class="head1" v-if="item.item_modifiers.length">
+                      <i
+                        class="fa fa-leaf categoryColorContainer green-txt"
+                      ></i>
+                    </div>
+                    <table v-if="item.item_modifiers.length">
+                      <tbody>
+                        <tr
+                          v-for="(modifierList, key) in item.item_modifiers"
+                          :key="key"
+                        >
+                          <td class="noborder-modify">
+                            <table class="popup-order-modifiers">
+                              <tbody>
+                                <tr
+                                  v-for="(modifier,
+                                  index) in modifierList.modifiers"
+                                  :key="index"
+                                >
+                                  <td
+                                    class="ng-binding"
+                                    v-for="(MMDetails,
+                                    index) in modifier.mandatory_modifiers"
+                                    :key="index"
+                                  >
+                                    {{ MMDetails.item_name }}
+                                  </td>
+                                  <td
+                                    class="ng-binding"
+                                    v-for="(PMDetails,
+                                    index) in modifier.mandatory_modifiers"
+                                    :key="index"
+                                  >
+                                    {{ PMDetails.item_name }}
+                                  </td>
+                                  <td
+                                    class="ng-binding"
+                                    v-for="(RMDetails,
+                                    index) in modifier.mandatory_modifiers"
+                                    :key="index"
+                                  >
+                                    {{ RMDetails.item_name }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td>{{ item.item_quantity }}</td>
+                  <td>{{ item.item_price_each }}</td>
+                  <td>{{ item.item_tax }}</td>
+                  <td>{{ item.item_price_total }}</td>
                 </tr>
               </table>
             </div>
@@ -88,11 +106,26 @@
                   <p>BILL AMOUNT :</p>
                 </div>
                 <div class="order-amt-charges">
-                  <p>INR 42.00</p>
-                  <p>INR 0.00</p>
-                  <p>INR 0.00</p>
-                  <p>INR 0.00</p>
-                  <p>INR 42.00</p>
+                  <p>
+                    {{ getOrderDetails.currency_code }}
+                    {{ getOrderDetails.subtotal }}
+                  </p>
+                  <p>
+                    {{ getOrderDetails.currency_code }}
+                    {{ getOrderDetails.surcharge }}
+                  </p>
+                  <p>
+                    {{ getOrderDetails.currency_code }}
+                    {{ getOrderDetails.discount_amount }}
+                  </p>
+                  <p>
+                    {{ getOrderDetails.currency_code }}
+                    {{ getOrderDetails.final_tax }}
+                  </p>
+                  <p>
+                    {{ getOrderDetails.currency_code }}
+                    {{ getOrderDetails.balance_due }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -108,8 +141,7 @@
               type="button"
               id="modify-btn"
             >
-              <span><img src="/pos/img/edit-icon.png" alt="schedule"/></span
-              >Modify
+              <span class="fa fa-edit"></span>Modify
             </button>
           </div>
           <div class="btn-announce">
@@ -118,13 +150,13 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              <span>âœ•</span> Close
+              <span>X</span> Close
             </button>
             <button type="button" class="btn btn-danger cancel-announce">
               Cancel Order
             </button>
           </div>
-          <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+          <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
       </div>
     </div>
@@ -132,8 +164,17 @@
 </template>
 
 <script>
+import DateTime from '@/mixins/DateTime'
+import { mapState } from 'vuex'
+
 export default {
   props: {},
+  mixins: [DateTime],
   name: 'OnlineOrderDetails',
+  computed: {
+    ...mapState({
+      getOrderDetails: state => state.order.selectedOrder,
+    }),
+  },
 }
 </script>
