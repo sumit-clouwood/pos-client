@@ -2,7 +2,7 @@
   <div v-if="item">
     <div class="modal-header">
       <h5 class="modal-title" id="POSItemOptionsTitle">
-        {{ t(item.item_name).name }}
+        {{ item.name }}
       </h5>
       <CloseButton />
     </div>

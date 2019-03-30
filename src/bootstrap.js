@@ -69,10 +69,12 @@ export default {
         .catch(event => {
           if (event.srcElement.error.code === 0) {
             //db has been created already so try with a recent version
-            console.log('db already exists', 2)
-            db.openDatabase(2)
+            const version = 2
+            console.log('db already exists', version)
+            db.openDatabase(version)
               .then(({ idb, flag }) => {
                 if (flag === 'open') {
+                  store.commit('sync/setIdbVersion', version)
                   console.log('db already upgraded, resolving')
                   resolve(idb)
                 } else {

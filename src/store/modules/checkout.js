@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 import mixin from '@/mixins/global/Translate'
@@ -90,40 +91,6 @@ const actions = {
           return 4294967296 * (2097151 & h2) + (h1 >>> 0)
         }
 
-        if (
-          rootState.order.orderType == 'delivery' ||
-          rootState.order.orderType == 'takeaway'
-        ) {
-          //its a crm/delivery order, include cusotmer id
-
-          //get last order no from indexedDB and update it in rootstate
-          let lastOrderNo = 1
-          db.openDatabase(2, () => {
-            db.getBucket('auth').then(bucket => {
-              db.fetch(bucket).then(data => {
-                if (data && data[0]) {
-                  data = data[0]
-                  //validate that token against api in case we need to refresh token otherwise use it
-                  lastOrderNo = parseInt(data.lastOrderNo) + 1
-                  commit('auth/SET_LAST_ORDER_NO', lastOrderNo, { root: true })
-                }
-              })
-            })
-          })
-
-          if (process.env.NODE_ENV !== 'production') {
-            lastOrderNo = lastOrderNo + Math.random(1000)
-          }
-
-          const transitionOrderNo =
-            rootState.auth.franchiesCode +
-            '-' +
-            rootState.auth.deviceCode +
-            '-' +
-            lastOrderNo
-          order.app_uniqueid = cyrb53(transitionOrderNo)
-        }
-
         if (rootState.order.orderType == 'delivery') {
           order.customer_id = rootState.customer.customerId
           order.address_id = rootState.customer.address
@@ -171,10 +138,11 @@ const actions = {
             taxData => taxData.itemId == item._id
           )
           let orderItem = {
-            itemName: mixin.methods.t(item.item_name).name,
+            itemName: item.name,
             itemId: item._id,
-            itemTax: itemTax.tax,
-            total: parseFloat(item.price) + parseFloat(itemTax.tax),
+            itemTax: itemTax ? itemTax.tax : 0,
+            total:
+              parseFloat(item.price) + parseFloat(itemTax ? itemTax.tax : 0),
             item_discount_price: parseFloat(item.price),
             item_discount_id: item.discount.id,
             item_discount_name: item.discount.name,
@@ -201,9 +169,8 @@ const actions = {
                           modifiers.push({
                             _id: submodItem._id,
                             location_price: submodItem.price,
-                            modifierSubGroup: '5b1e281b67018b0e6f31dcb2',
-                            item_name: mixin.methods.t(submodItem.item_name)
-                              .name,
+                            modifierSubGroup: submodifier._id,
+                            item_name: submodItem.name,
                             noofselection: 1,
                             type: submodItem.subgroup_type,
                           })
@@ -257,14 +224,58 @@ const actions = {
           return paymentPart
         })
 
-        commit(mutation.SET_ORDER, order)
-        dispatch('createOrder')
-          .then(response => {
-            resolve(response)
-          })
-          .catch(response => {
-            reject(response)
-          })
+        console.log('order type', rootState.order.orderType)
+        if (
+          rootState.order.orderType == 'delivery' ||
+          rootState.order.orderType == 'takeaway'
+        ) {
+          //its a crm/delivery order, include cusotmer id
+
+          //get last order no from indexedDB and update it in rootstate
+          let lastOrderNo = 1
+          db.getBucket('auth')
+            .then(bucket => {
+              console.log(bucket)
+              db.fetch(bucket).then(data => {
+                console.log('fetched data from auth db', data)
+                if (data && data[0]) {
+                  data = data[0]
+                  //validate that token against api in case we need to refresh token otherwise use it
+                  lastOrderNo = parseInt(data.lastOrderNo) + 1
+
+                  console.log('lastorder number', lastOrderNo)
+                  const transitionOrderNo =
+                    rootState.auth.franchiesCode +
+                    '-' +
+                    rootState.auth.deviceCode +
+                    '-' +
+                    lastOrderNo
+                  order.app_uniqueid = cyrb53(transitionOrderNo)
+
+                  commit(mutation.SET_ORDER, order)
+                  dispatch('createOrder')
+                    .then(response => {
+                      resolve(response)
+                    })
+                    .catch(response => {
+                      reject(response)
+                    })
+                }
+              })
+            })
+            .catch(error => console.log('error from db', error))
+            .finally(res => console.log('final res', res))
+        } else {
+          console.log('not in delivery or take away ')
+          commit(mutation.SET_ORDER, order)
+          dispatch('createOrder')
+            .then(response => {
+              resolve(response)
+            })
+            .catch(response => {
+              reject(response)
+            })
+        }
       }
     })
   },
@@ -279,6 +290,20 @@ const actions = {
           if (response.data.data === 1) {
             //clear all the data related to order, tax, discounts, surcharge etc
             //create invoice
+            //add order no to local database
+            db.getBucket('auth').then(bucket => {
+              db.fetch(bucket).then(data => {
+                if (data && data[0]) {
+                  data = data[0]
+                  data.lastOrderNo = parseInt(data.lastOrderNo) + 1
+                  db.getBucket('auth').put(data)
+                  commit('auth/SET_LAST_ORDER_NO', data.lastOrderNo, {
+                    root: true,
+                  })
+                }
+              })
+            })
+
             commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
             commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
               root: true,

@@ -9,7 +9,7 @@
         <th style="width: 150px">SUBTOTAL</th>
       </tr>
       <tr v-for="(item, index) in cartItems" :key="index">
-        <td>{{ t(item.item_name).name }}</td>
+        <td>{{ item.name }}</td>
         <td>{{ item.quantity }}</td>
         <td>{{ item.price }}</td>
         <td>{{ taxAmount(item.item_tax) }}</td>
