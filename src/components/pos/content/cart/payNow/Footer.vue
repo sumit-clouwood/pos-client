@@ -35,6 +35,7 @@ export default {
   },
   methods: {
     pay() {
+      $('#payment-msg').modal('show')
       this.$store.dispatch('checkout/pay').then(() => {
         if (this.changedAmount >= 0.1) {
           $('#change-amount').modal('show')
