@@ -3,13 +3,9 @@
     <li class="breadcrumb-item-news">
       <a href="#"> <img src="img/pos/news.png" /><span>News</span></a>
     </li>
-    <li
-      class="item-news"
-      v-for="(announcement, index) in announcements"
-      :key="index"
-    >
-      <marquee behavior="scroll" direction="left" :key="index">
-        {{ announcement.announcement }}
+    <li class="item-news">
+      <marquee behavior="scroll" direction="left">
+        {{ announcements }}
       </marquee>
     </li>
   </ul>
@@ -20,12 +16,12 @@ import { mapState } from 'vuex'
 export default {
   name: 'Announcement',
   props: {},
+  data() {
+    return showAnnouncements = ''
+  },
   computed: {
     ...mapState({
-      announcements: state =>
-        typeof state.announcement.announcements != 'undefined'
-          ? state.announcement.announcements
-          : false,
+      announcements: state => state.announcement.announcements
     }),
   },
 }
