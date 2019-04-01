@@ -50,7 +50,6 @@
                           :key="key"
                         >
                                   <p
-                                    class="ng-binding"
                                     v-for="(PMDetails,
                                     index) in modifier.modifiers.price_modifiers"
                                     :key="index"
@@ -58,15 +57,13 @@
                                     {{ PMDetails.item_name }} ({{ PMDetails.location_price}})
                                   </p>
                                     <p
-                                            class="ng-binding"
-                                            v-for="(MMDetails,
+                                    v-for="(MMDetails,
                                     index) in modifier.modifiers.mandatory_modifiers"
-                                            :key="index"
+                                    :key="index"
                                     >
                                         {{ MMDetails.item_name }}
                                     </p>
                                   <p
-                                    class="ng-binding"
                                     v-for="(RMDetails,
                                     index) in modifier.modifiers.regular_modifiers"
                                     :key="index"

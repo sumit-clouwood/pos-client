@@ -344,15 +344,9 @@ const actions = {
 
   updateOrderStatus(
     { rootState },
-    { orderStatus, orderId, timestamp, orderType }
+    { orderStatus, orderId, timestamp, orderType, orderQueue }
   ) {
-    const params = [
-      rootState.location.location,
-      orderStatus,
-      orderId,
-      orderType,
-      timestamp,
-    ]
+    const params = [{'location_id': rootState.location.location, 'order_status': orderStatus, 'order_id':orderId, 'order_type': orderType, 'timestamp': timestamp, 'staff_id': rootState.auth.userDetails._id}]
     OrderService.updateOrder(...params).then(() => {})
     /*commit(mutation.SET_ORDER, order)
     dispatch('createOrder')*/
