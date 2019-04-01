@@ -45,7 +45,9 @@
                     data-toggle="modal"
                     @click="selectedOrder(order)"
                   >
-                    <span class="online-order-txt">Order No:</span> #{{ order.order_no }}
+                    <span class="online-order-txt">Order No:</span> #{{
+                      order.order_no
+                    }}
                   </p>
                   <div>
                     <p class="online-order-head">
@@ -54,7 +56,8 @@
                     {{ humanDateTime(order) }}
                     <p :id="order.order_no" class="online-order-head"></p>
                     <p class="online-order-head">
-                      <span class="online-order-txt">Customer: </span> {{ order.customer.customer_name }}
+                      <span class="online-order-txt">Customer: </span>
+                      {{ order.customer.customer_name }}
                     </p>
                   </div>
                 </div>
@@ -184,10 +187,9 @@ export default {
     },
     ...mapActions('checkout', ['updateOrderStatus']),
     selectedOrder(order) {
-      this.$store.dispatch('order/selectedOrderDetails',{order})
+      this.$store.dispatch('order/selectedOrderDetails', { order })
       $('#past-order').modal('toggle')
     },
-
   },
 }
 </script>

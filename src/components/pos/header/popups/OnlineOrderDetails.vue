@@ -44,36 +44,41 @@
                         class="fa fa-leaf categoryColorContainer green-txt"
                       ></i>
                     </div>
-                    <div v-if="item.item_modifiers.length" class="online-order-details-wrap">
-                        <div
-                          v-for="(modifier, key) in item.item_modifiers"
-                          :key="key"
+                    <div
+                      v-if="item.item_modifiers.length"
+                      class="online-order-details-wrap"
+                    >
+                      <div
+                        v-for="(modifier, key) in item.item_modifiers"
+                        :key="key"
+                      >
+                        <p
+                          class="ng-binding"
+                          v-for="(PMDetails, index) in modifier.modifiers
+                            .price_modifiers"
+                          :key="index"
                         >
-                                  <p
-                                    class="ng-binding"
-                                    v-for="(PMDetails,
-                                    index) in modifier.modifiers.price_modifiers"
-                                    :key="index"
-                                  >
-                                    {{ PMDetails.item_name }} ({{ PMDetails.location_price}})
-                                  </p>
-                                    <p
-                                            class="ng-binding"
-                                            v-for="(MMDetails,
-                                    index) in modifier.modifiers.mandatory_modifiers"
-                                            :key="index"
-                                    >
-                                        {{ MMDetails.item_name }}
-                                    </p>
-                                  <p
-                                    class="ng-binding"
-                                    v-for="(RMDetails,
-                                    index) in modifier.modifiers.regular_modifiers"
-                                    :key="index"
-                                  >
-                                    {{ RMDetails.item_name }}
-                                  </p>
-                        </div>
+                          {{ PMDetails.item_name }} ({{
+                            PMDetails.location_price
+                          }})
+                        </p>
+                        <p
+                          class="ng-binding"
+                          v-for="(MMDetails, index) in modifier.modifiers
+                            .mandatory_modifiers"
+                          :key="index"
+                        >
+                          {{ MMDetails.item_name }}
+                        </p>
+                        <p
+                          class="ng-binding"
+                          v-for="(RMDetails, index) in modifier.modifiers
+                            .regular_modifiers"
+                          :key="index"
+                        >
+                          {{ RMDetails.item_name }}
+                        </p>
+                      </div>
                     </div>
                   </td>
                   <td>{{ item.item_quantity }}</td>

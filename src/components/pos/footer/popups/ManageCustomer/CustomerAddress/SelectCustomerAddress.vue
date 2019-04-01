@@ -14,7 +14,7 @@
             :addresses="deliveryAddresses"
             :buttons="false"
           />
-          <div v-else>Loading...</div>
+          <div class="loading" v-else>Loading ...</div>
         </div>
         <div class="modal-footer" v-show="deliveryAddresses.length">
           <div class="btn-announce">
@@ -59,7 +59,7 @@ export default {
       deliveryAddresses: state =>
         state.customer.fetchCustomerAddressOnly.customer_list
           ? state.customer.fetchCustomerAddressOnly.customer_list[0]
-            .customer_details
+              .customer_details
           : [],
     }),
   },
@@ -68,3 +68,8 @@ export default {
   },
 }
 </script>
+<style scoped>
+.loading {
+  padding: 30px;
+}
+</style>

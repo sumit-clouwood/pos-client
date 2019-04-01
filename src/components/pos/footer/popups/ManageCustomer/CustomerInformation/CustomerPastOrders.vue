@@ -65,7 +65,7 @@ export default {
     }),
   },
   methods: {
-    ...mapActions('order',['getPastOrderDetails'])
+    ...mapActions('order', ['getPastOrderDetails']),
   },
 }
 </script>
