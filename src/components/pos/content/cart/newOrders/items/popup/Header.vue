@@ -21,17 +21,15 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import Quantity from '@/components/pos/content/catalog/items/popup/header/Quantity'
 import CloseButton from '@/components/pos/content/catalog/items/popup/header/CloseButton'
 export default {
   name: 'Header',
   props: {},
   computed: {
-    ...mapState({
-      item: state => state.order.item,
-    }),
     ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('order', ['item']),
   },
   components: {
     Quantity,

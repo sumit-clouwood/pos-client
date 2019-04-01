@@ -15,6 +15,16 @@ const state = {
 
 // getters
 const getters = {
+  item: (state, getters, rootState) => {
+    if (state.item) {
+      const appLocale = rootState.location.locale
+      let newItem = { ...state.item }
+      newItem.name = newItem.item_name.find(
+        locale => locale.language == appLocale
+      ).name
+      return newItem
+    }
+  },
   orderTotal: (state, getters, rootState, rootGetters) => {
     return (
       //discount is already subtracted from tax in tax.js

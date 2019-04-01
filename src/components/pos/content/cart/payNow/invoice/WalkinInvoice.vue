@@ -38,6 +38,7 @@
         price_label: labels.price_label,
       }"
       :items="order.itemData"
+      :tpl="tpl"
     />
     <hr />
     <div class="totals">

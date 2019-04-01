@@ -15,11 +15,11 @@
       <tr v-for="item in items" :key="item._id">
         <td>{{ item.quantity }}</td>
         <td>
-          {{ item.itemName }}
+          {{ itemName(item) }}
           <div v-if="item.modifiers">
             <span v-for="(modifierGroup, key) in item.modifiers" :key="key">
               <span v-for="(modifier, key) in modifierGroup" :key="key">
-                {{ modifier.item_name }}
+                {{ modifier.name }}
               </span>
             </span>
           </div>
@@ -34,9 +34,27 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'Items',
-  props: ['labels', 'items'],
+  props: ['labels', 'items', 'tpl'],
   computed: {
     ...mapGetters('location', ['formatPrice']),
+  },
+  methods: {
+    itemName(item) {
+      const engName = item.item_name.find(locale => locale.language == 'en_US')
+        .name
+
+      if (this.tpl.foreignLang && this.tpl.template.language != 'en_US') {
+        //send both english and other lang
+        return (
+          engName +
+          ' / ' +
+          item.item_name.find(
+            locale => locale.language == this.tpl.template.language
+          ).name
+        )
+      }
+      return engName
+    },
   },
 }
 </script>

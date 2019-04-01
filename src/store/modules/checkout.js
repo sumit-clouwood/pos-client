@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
-import mixin from '@/mixins/global/Translate'
 import db from '@/services/network/DB'
 
 // initial state
@@ -139,6 +138,7 @@ const actions = {
           )
           let orderItem = {
             itemName: item.name,
+            item_name: item.item_name,
             itemId: item._id,
             itemTax: itemTax ? itemTax.tax : 0,
             total:
