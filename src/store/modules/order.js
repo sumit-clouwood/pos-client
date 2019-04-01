@@ -458,8 +458,8 @@ const actions = {
     })
   },
 
-  selectedOrder({ commit }, selectedOrderDetails) {
-    commit(mutation.SET_ORDER_DETAILS, selectedOrderDetails)
+  selectedOrderDetails({ commit }, selectedOrderDetails) {
+    commit(mutation.SET_ORDER_DETAILS, selectedOrderDetails.order)
   },
 }
 
@@ -575,10 +575,10 @@ const mutations = {
   [mutation.SET_ORDER_DETAILS](state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails
   },
-  [mutation.PAST_ORDER_DETAILS](state, pastOrder) {
+  /*[mutation.PAST_ORDER_DETAILS](state, pastOrder) {
     state.selectedOrder = pastOrder
-    $('#past-order').modal('toggle')
-  },
+    // $('#past-order').modal('toggle')
+  },*/
 }
 
 export default {

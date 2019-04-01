@@ -184,14 +184,14 @@ const actions = {
 
             modifiers.forEach(modifier => {
               switch (modifier.type) {
-                case 'mandatory':
-                  mandatoryModifiers.push(modifier)
-                  break
-                case 'price':
-                  priceModifiers.push(modifier)
-                  break
-                default:
-                  regularModifiers.push(modifier)
+              case 'mandatory':
+                mandatoryModifiers.push(modifier)
+                break
+              case 'price':
+                priceModifiers.push(modifier)
+                break
+              default:
+                regularModifiers.push(modifier)
               }
             })
             orderItem.modifiers = {

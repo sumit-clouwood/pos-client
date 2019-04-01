@@ -41,18 +41,20 @@
               <div class="online-order-content">
                 <div class="online-order-content-wrap">
                   <p
-                    class="online-order-id cursor-pointer"
+                    class="online-order-id cursor-pointer online-order-head"
                     data-toggle="modal"
                     @click="selectedOrder(order)"
                   >
-                    <span>Order No</span> #{{ order.order_no }}
+                    <span class="online-order-txt">Order No:</span> #{{ order.order_no }}
                   </p>
                   <div>
-                    <span>Wait Time</span>
+                    <p class="online-order-head">
+                      <span class="online-order-txt">Wait Time:</span>
+                    </p>
                     {{ humanDateTime(order) }}
-                    <p :id="order.order_no"></p>
-                    <p>
-                      <span>Customer</span>{{ order.customer.customer_name }}
+                    <p :id="order.order_no" class="online-order-head"></p>
+                    <p class="online-order-head">
+                      <span class="online-order-txt">Customer: </span> {{ order.customer.customer_name }}
                     </p>
                   </div>
                 </div>
@@ -181,10 +183,11 @@ export default {
       return orderStatus
     },
     ...mapActions('checkout', ['updateOrderStatus']),
-    selectedOrder() {
-      this.$store.dispatch('order/selectedOrder')
+    selectedOrder(order) {
+      this.$store.dispatch('order/selectedOrderDetails',{order})
       $('#past-order').modal('toggle')
     },
+
   },
 }
 </script>

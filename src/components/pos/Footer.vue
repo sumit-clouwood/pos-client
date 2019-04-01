@@ -116,7 +116,7 @@ import CustomerInformation from './footer/popups/ManageCustomer/CustomerInformat
 import CustomerNotes from './footer/popups/ManageCustomer/CustomerInformation/CustomerNotes'
 import SelectCustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/SelectCustomerAddress'
 import GiftCard from '../pos/content/cart/newOrders/popup/GiftCard.vue'
-//import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
+import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 
 import { mapActions, mapState } from 'vuex'
 
@@ -127,7 +127,7 @@ export default {
     DineIn,
     AddNote,
     Discount,
-    //OnlineOrderDetails,
+    OnlineOrderDetails,
     OnlineOrder,
     CustomerNote,
     ManageCustomer,

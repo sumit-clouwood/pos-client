@@ -3929,7 +3929,7 @@ div#online-order .modal-content {
   /* justify-content:  center; */
 }
 
-.online-order-content-wrap > p > span {
+.online-order-content-wrap > p > span, .online-order-txt {
   font-size: 12px;
   font-weight: 600;
   font-style: normal;
@@ -3952,7 +3952,7 @@ p#online-order-id {
   cursor: pointer;
 }
 
-.online-order-content-wrap > p {
+.online-order-content-wrap > p, .online-order-head {
   font-size: 12px;
   font-weight: normal;
   font-style: normal;
@@ -4089,6 +4089,7 @@ button.add-to-delivery:hover {
 /*past order*/
 div#past-order .modal-dialog {
   max-width: 925px;
+  box-shadow:0px 0px 50px 0px #3b3b3c;
 }
 
 .past-order-details-wrap {
@@ -6563,4 +6564,18 @@ div#payment-method .slick-slide > div > div > label {
 
 .vdatetime {
   display: inline-block;
+}
+
+
+.online-order-details-wrap {
+  padding-left: 20px;
+  border-left: 2px solid #000;
+}
+.online-order-details-wrap > div > p {
+  margin-bottom: 1px;
+  font-size:12px;
+}
+.fa-leaf:before{
+  color:#62bb31;
+  font-size:18px;
 }
