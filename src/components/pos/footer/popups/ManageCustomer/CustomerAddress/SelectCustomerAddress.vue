@@ -10,11 +10,13 @@
         </div>
         <div class="modal-body add-to-order">
           <CustomerDeliveryArea
+            v-if="deliveryAddresses.length"
             :addresses="deliveryAddresses"
             :buttons="false"
           />
+          <div v-else>Loading...</div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" v-show="deliveryAddresses.length">
           <div class="btn-announce">
             <button
               type="button"
@@ -51,6 +53,7 @@ export default {
   components: {
     CustomerDeliveryArea,
   },
+
   computed: {
     ...mapState({
       deliveryAddresses: state =>
