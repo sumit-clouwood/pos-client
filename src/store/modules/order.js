@@ -87,9 +87,15 @@ const actions = {
     if (
       item.get_item_location_price.location_id == rootState.location.location
     ) {
-      item.price = parseFloat(item.get_item_location_price.menu_location_price)
+      item.price = isNaN(
+        parseFloat(item.get_item_location_price.menu_location_price)
+      )
+        ? 0
+        : parseFloat(item.get_item_location_price.menu_location_price)
     } else {
-      item.price = parseFloat(item.item_price)
+      item.price = isNaN(parseFloat(item.item_price))
+        ? 0
+        : parseFloat(item.get_item_location_price.menu_location_price)
     }
 
     //this comes directly from the items menu without modifiers

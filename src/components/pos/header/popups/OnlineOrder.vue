@@ -83,6 +83,7 @@
                         orderId: order._id,
                         timestamp: order.created_timestamp,
                         orderType: 'delivery',
+                        orderQueue: 0,
                       })
                     "
                   >
@@ -92,10 +93,11 @@
                     class="add-to-delivery"
                     @click="
                       updateOrderStatus({
-                        orderStatus: 'new',
+                        orderStatus: 'running',
                         orderId: order._id,
                         timestamp: order.created_timestamp,
                         orderType: 'delivery',
+                        orderQueue: 0,
                       })
                     "
                   >
