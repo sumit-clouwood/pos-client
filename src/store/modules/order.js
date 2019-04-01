@@ -11,6 +11,7 @@ const state = {
   futureOrder: false,
   referral: false,
   selectedOrder: false,
+  // pastOrder: false,
 }
 
 // getters
@@ -402,9 +403,9 @@ const actions = {
   reset({ commit }) {
     commit(mutation.RESET)
   },
-  addOrderNote({ commit, rootState }, orderNote) {
+  addOrderNote({ commit }, orderNote) {
     commit(mutation.SET_ORDER_NOTE, orderNote)
-    const params = [1, rootState.location.location]
+    /* const params = [1, rootState.location.location]
     let orderDetail = ''
     OrderService.fetchOnlineOrderDetails(...params).then(response => {
       orderDetail = response.data.orderDetails
@@ -413,7 +414,7 @@ const actions = {
         locationId: rootState.location.location,
         orderDetails: orderDetail,
       })
-    })
+    })*/
   },
 
   setOnlineOrders({ commit, rootState }, onlineOrderData) {
@@ -426,6 +427,13 @@ const actions = {
         locationId: rootState.location.location,
         orderDetails: orderDetail,
       })
+    })
+  },
+
+  getPastOrderDetails({ commit, rootState }, orderId) {
+    const params = [orderId, rootState.location.location]
+    OrderService.fetchOnlineOrderDetails(...params).then(response => {
+      commit(mutation.PAST_ORDER_DETAILS, response.data.orderDetails)
     })
   },
 
@@ -460,8 +468,8 @@ const actions = {
     })
   },
 
-  selectedOrder({ commit }, selectedOrderDetails) {
-    commit(mutation.SET_ORDER_DETAILS, selectedOrderDetails)
+  selectedOrderDetails({ commit }, selectedOrderDetails) {
+    commit(mutation.SET_ORDER_DETAILS, selectedOrderDetails.order)
   },
 }
 
@@ -577,6 +585,10 @@ const mutations = {
   [mutation.SET_ORDER_DETAILS](state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails
   },
+  /*[mutation.PAST_ORDER_DETAILS](state, pastOrder) {
+    state.selectedOrder = pastOrder
+    // $('#past-order').modal('toggle')
+  },*/
 }
 
 export default {

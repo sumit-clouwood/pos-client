@@ -27,7 +27,7 @@
         <td>{{ order.created_by }}</td>
         <!--<td>Tecom</td>-->
         <td class="show-details-his">
-          <span @click="showOrderDetails(order._id)">
+          <span @click="getPastOrderDetails(order._id)">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'CustomerPastOrders',
@@ -65,9 +65,7 @@ export default {
     }),
   },
   methods: {
-    showOrderDetails: function(orderId) {
-      alert(orderId + ': Work in progress')
-    },
+    ...mapActions('order',['getPastOrderDetails'])
   },
 }
 </script>

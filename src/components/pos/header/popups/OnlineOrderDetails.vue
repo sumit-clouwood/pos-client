@@ -8,6 +8,7 @@
           <div class="past-order-details-wrap">
             <div class="sidebar-past-order">
               <h4>Placed By</h4>
+
               <p>{{ getOrderDetails.customer.customer_name }}</p>
             </div>
             <div class="sidebar-past-order">
@@ -43,51 +44,37 @@
                         class="fa fa-leaf categoryColorContainer green-txt"
                       ></i>
                     </div>
-                    <table v-if="item.item_modifiers.length">
-                      <tbody>
-                        <tr
-                          v-for="(modifierList, key) in item.item_modifiers"
+                    <div v-if="item.item_modifiers.length" class="online-order-details-wrap">
+                        <div
+                          v-for="(modifier, key) in item.item_modifiers"
                           :key="key"
                         >
-                          <td class="noborder-modify">
-                            <table class="popup-order-modifiers">
-                              <tbody>
-                                <tr
-                                  v-for="(modifier,
-                                  index) in modifierList.modifiers"
-                                  :key="index"
-                                >
-                                  <td
-                                    class="ng-binding"
-                                    v-for="(MMDetails,
-                                    index) in modifier.mandatory_modifiers"
-                                    :key="index"
-                                  >
-                                    {{ MMDetails.item_name }}
-                                  </td>
-                                  <td
+                                  <p
                                     class="ng-binding"
                                     v-for="(PMDetails,
-                                    index) in modifier.mandatory_modifiers"
+                                    index) in modifier.modifiers.price_modifiers"
                                     :key="index"
                                   >
-                                    {{ PMDetails.item_name }}
-                                  </td>
-                                  <td
+                                    {{ PMDetails.item_name }} ({{ PMDetails.location_price}})
+                                  </p>
+                                    <p
+                                            class="ng-binding"
+                                            v-for="(MMDetails,
+                                    index) in modifier.modifiers.mandatory_modifiers"
+                                            :key="index"
+                                    >
+                                        {{ MMDetails.item_name }}
+                                    </p>
+                                  <p
                                     class="ng-binding"
                                     v-for="(RMDetails,
-                                    index) in modifier.mandatory_modifiers"
+                                    index) in modifier.modifiers.regular_modifiers"
                                     :key="index"
                                   >
                                     {{ RMDetails.item_name }}
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                                  </p>
+                        </div>
+                    </div>
                   </td>
                   <td>{{ item.item_quantity }}</td>
                   <td>{{ item.item_price_each }}</td>
@@ -170,7 +157,6 @@ import { mapState } from 'vuex'
 export default {
   props: {},
   mixins: [DateTime],
-  name: 'OnlineOrderDetails',
   computed: {
     ...mapState({
       getOrderDetails: state => state.order.selectedOrder,

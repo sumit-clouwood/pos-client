@@ -41,18 +41,20 @@
               <div class="online-order-content">
                 <div class="online-order-content-wrap">
                   <p
-                    class="online-order-id cursor-pointer"
+                    class="online-order-id cursor-pointer online-order-head"
                     data-toggle="modal"
                     @click="selectedOrder(order)"
                   >
-                    <span>Order No</span> #{{ order.order_no }}
+                    <span class="online-order-txt">Order No:</span> #{{ order.order_no }}
                   </p>
                   <div>
-                    <span>Wait Time</span>
+                    <p class="online-order-head">
+                      <span class="online-order-txt">Wait Time:</span>
+                    </p>
                     {{ humanDateTime(order) }}
-                    <p :id="order.order_no"></p>
-                    <p>
-                      <span>Customer</span>{{ order.customer.customer_name }}
+                    <p :id="order.order_no" class="online-order-head"></p>
+                    <p class="online-order-head">
+                      <span class="online-order-txt">Customer: </span> {{ order.customer.customer_name }}
                     </p>
                   </div>
                 </div>
@@ -162,35 +164,6 @@ export default {
     ...mapGetters('order', ['getLatestOnlineOrders']),
   },
   methods: {
-    // humanDateTime: function(data) {
-    //   setInterval(function() {
-    //     let time = data.created_timestamp
-    //     let date = data.order_created
-    //
-    //     let date_future = new Date(date)
-    //     let date_now = new Date()
-    //
-    //     let seconds = Math.floor((date_now - date_future) / 1000)
-    //     let minutes = Math.floor(seconds / 60)
-    //     let hours = Math.floor(minutes / 60)
-    //     let days = Math.floor(hours / 24)
-    //
-    //     hours = hours - days * 24
-    //     minutes = minutes - days * 24 * 60 - hours * 60
-    //     seconds = seconds - days * 24 * 60 * 60 - hours * 60 * 60 - minutes * 60
-    //
-    //     let htmlElement =
-    //       days +
-    //       ' Days, ' +
-    //       hours +
-    //       ' Hours, ' +
-    //       minutes +
-    //       ' Minutes, ' +
-    //       seconds +
-    //       ' Seconds'
-    //     $('p#' + data.order_no).html(htmlElement)
-    //   }, 1000)
-    // },
     moment: function(date) {
       moment.tz.setDefault(this.$store.state.location.setTimeZone)
       // moment.tz.setDefault('Asia/Jakarta')
@@ -210,10 +183,11 @@ export default {
       return orderStatus
     },
     ...mapActions('checkout', ['updateOrderStatus']),
-    selectedOrder() {
-      this.$store.dispatch('order/selectedOrder')
+    selectedOrder(order) {
+      this.$store.dispatch('order/selectedOrderDetails',{order})
       $('#past-order').modal('toggle')
     },
+
   },
 }
 </script>
