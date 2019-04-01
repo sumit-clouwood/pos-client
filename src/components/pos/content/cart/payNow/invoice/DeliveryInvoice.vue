@@ -59,7 +59,7 @@
       </div>
       <div>
         <span class="left">{{ labels.to_pay_label }} : </span>
-        <span class="right"> {{ formatPrice(payableAmount) }}</span>
+        <span class="right"> {{ formatPrice(orderTotal) }}</span>
       </div>
       <PaymentBreakdown :payments="order.payBreakDown" />
       <!-- <div>
@@ -86,7 +86,7 @@ import DeliveryAddress from './DeliveryAddress'
 import PaymentBreakdown from './PaymentBreakdown'
 import Items from './Items'
 export default {
-  name: 'WalkinInvoice',
+  name: 'DeliveryInvoice',
   props: {},
   computed: {
     ...mapState('checkout', [
@@ -95,6 +95,7 @@ export default {
       'paidAmount',
       'orderNumber',
     ]),
+    ...mapGetters('order', ['orderTotal', 'subTotal']),
     ...mapGetters('invoice', ['tpl', 'logo']),
     ...mapGetters('location', ['formatPrice']),
     ...mapGetters('customer', ['selectedAddress', 'customer']),
@@ -102,7 +103,6 @@ export default {
       username: state =>
         state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
-
     labels: function() {
       const tpl = this.$store.getters['invoice/tpl']
       let labels = {

@@ -399,11 +399,10 @@ const actions = {
     let orderDetail = ''
     OrderService.fetchOnlineOrderDetails(...params).then(response => {
       orderDetail = response.data.orderDetails
-      console.log(JSON.stringify(orderDetail))
       commit(mutation.ONLINE_ORDERS, {
         onlineOrders: {},
         locationId: rootState.location.location,
-        orderDetails: orderDetail
+        orderDetails: orderDetail,
       })
     })*/
   },
@@ -429,12 +428,16 @@ const actions = {
   },
 
   deliveryOrder({ commit, dispatch }, { referral, futureOrder }) {
-    commit(mutation.ORDER_TYPE, 'delivery')
-    commit(mutation.SET_REFERRAL, referral)
-    if (futureOrder != null) {
-      commit(mutation.SET_FUTURE_ORDER, futureOrder)
-    }
-    dispatch('checkout/pay', {}, { root: true })
+    return new Promise((resolve, reject) => {
+      commit(mutation.ORDER_TYPE, 'delivery')
+      commit(mutation.SET_REFERRAL, referral)
+      if (futureOrder != null) {
+        commit(mutation.SET_FUTURE_ORDER, futureOrder)
+      }
+      dispatch('checkout/pay', {}, { root: true })
+        .then(response => resolve(response))
+        .catch(response => reject(response))
+    })
   },
 
   updateOrderType({ commit }, orderType) {
@@ -571,7 +574,6 @@ const mutations = {
   },
   [mutation.SET_ORDER_DETAILS](state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails
-    $('#past-order').modal('toggle')
   },
   [mutation.PAST_ORDER_DETAILS](state, pastOrder) {
     state.selectedOrder = pastOrder

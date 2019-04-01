@@ -12,14 +12,7 @@
       </button>
     </div>
     <div class="location-delivery-area-address">
-      <CustomerDeliveryArea
-        v-for="(address, index) in deliveryAddresses"
-        class="cu-delivery-area-location"
-        :buttons="true"
-        :address="address"
-        :index="index"
-        :key="index"
-      />
+      <CustomerDeliveryArea :addresses="deliveryAddresses" :buttons="true" />
     </div>
   </div>
 </template>
@@ -27,7 +20,7 @@
 <script>
 import { mapState } from 'vuex'
 
-import CustomerDeliveryArea from '../CustomerAddress/customerDeliveryArea'
+import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
 export default {
   name: 'CustomerDeliveryAddress',
   components: {
@@ -38,7 +31,7 @@ export default {
       deliveryAddresses: state =>
         state.customer.customer.customer_list
           ? state.customer.customer.customer_list.customer_details
-          : false,
+          : [],
     }),
   },
 }

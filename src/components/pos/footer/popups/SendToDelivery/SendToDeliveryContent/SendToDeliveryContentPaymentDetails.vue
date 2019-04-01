@@ -42,3 +42,12 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+#total-confirm-order p {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+  height: 30px !important;
+}
+</style>

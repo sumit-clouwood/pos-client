@@ -5,6 +5,7 @@
 <template>
   <div class="invoice" id="printarea" v-if="print">
     <WalkinInvoice v-if="order.order_type == 'Walk-in'" />
+    <DeliveryInvoice v-if="order.order_type == 'delivery'" />
     <!-- <div
       v-if="tpl && tpl.foreignLang && tpl.template.language != 'en_US'"
     ></div> -->
@@ -15,6 +16,7 @@
 /* global $ hidePayNow */
 import { mapState } from 'vuex'
 import WalkinInvoice from './invoice/WalkinInvoice'
+import DeliveryInvoice from './invoice/DeliveryInvoice'
 export default {
   name: 'Invoice',
   props: {},
@@ -23,6 +25,7 @@ export default {
   },
   components: {
     WalkinInvoice,
+    DeliveryInvoice,
   },
   updated() {
     if (this.$store.state.checkout.print) {

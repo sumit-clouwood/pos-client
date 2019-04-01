@@ -9,16 +9,10 @@
           <h4 class="customer-title">Add to Order</h4>
         </div>
         <div class="modal-body add-to-order">
-          <div class="add-to-order-wrapper">
-            <CustomerDeliveryArea
-              v-for="(address, index) in deliveryAddresses"
-              class=""
-              :buttons="false"
-              :address="address"
-              :index="index"
-              :key="index"
-            />
-          </div>
+          <CustomerDeliveryArea
+            :addresses="deliveryAddresses"
+            :buttons="false"
+          />
         </div>
         <div class="modal-footer">
           <div class="btn-announce">
@@ -51,7 +45,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 
-import CustomerDeliveryArea from '../CustomerAddress/customerDeliveryArea'
+import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
 export default {
   name: 'SelectCustomerAddress',
   components: {
@@ -62,8 +56,8 @@ export default {
       deliveryAddresses: state =>
         state.customer.fetchCustomerAddressOnly.customer_list
           ? state.customer.fetchCustomerAddressOnly.customer_list[0]
-            .customer_details
-          : false,
+              .customer_details
+          : [],
     }),
   },
   methods: {

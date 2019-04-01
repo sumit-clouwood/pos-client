@@ -1,8 +1,8 @@
+/* global $ */
 export default {
   methods: {
     humanDateTime(data) {
       setInterval(function() {
-        let time = data.created_timestamp
         let date = data.order_created
 
         let date_future = new Date(date)
@@ -25,7 +25,15 @@ export default {
             Seconds: seconds,
           },
         ]*/
-        let htmlElement = days + ' Days, ' + hours + ' Hours, ' + minutes + ' Minutes, ' + seconds + ' Seconds'
+        let htmlElement =
+          days +
+          ' Days, ' +
+          hours +
+          ' Hours, ' +
+          minutes +
+          ' Minutes, ' +
+          seconds +
+          ' Seconds'
         $('p#' + data.order_no).html(htmlElement)
         $('p#od' + data.order_no).html(htmlElement)
         return htmlElement

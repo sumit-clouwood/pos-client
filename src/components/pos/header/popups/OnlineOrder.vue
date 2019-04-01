@@ -15,7 +15,7 @@
         </div>
         <div
           class="modal-body online-order-wrapper"
-          v-if="getLatestOnlineOrders"
+          v-if="getLatestOnlineOrders.length"
         >
           <div class="add-order-area">
             <div
@@ -45,14 +45,16 @@
                     data-toggle="modal"
                     @click="selectedOrder(order)"
                   >
-                    <span>Order No</span>#{{ order.order_no }}
+                    <span>Order No</span> #{{ order.order_no }}
                   </p>
-                  <p>
+                  <div>
                     <span>Wait Time</span>
                     {{ humanDateTime(order) }}
-                  <span :id="order.order_no"></span>
-                  </p>
-                  <p><span>Customer</span>{{ order.customer.customer_name }}</p>
+                    <p :id="order.order_no"></p>
+                    <p>
+                      <span>Customer</span>{{ order.customer.customer_name }}
+                    </p>
+                  </div>
                 </div>
                 <div class="online-order-address">
                   <p>
@@ -117,7 +119,7 @@
 </template>
 
 <script>
-/* global io */
+/* global io $  */
 import moment from 'moment-timezone'
 import DateTime from '@/mixins/DateTime'
 
@@ -179,7 +181,10 @@ export default {
       return orderStatus
     },
     ...mapActions('checkout', ['updateOrderStatus']),
-    ...mapActions('order', ['selectedOrder']),
+    selectedOrder() {
+      this.$store.dispatch('order/selectedOrder')
+      $('#past-order').modal('toggle')
+    },
   },
 }
 </script>

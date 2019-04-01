@@ -82,6 +82,7 @@
 </template>
 
 <script>
+/* global $, hidePayNow */
 import moment from 'moment-timezone'
 
 import { Datetime } from 'vue-datetime'
@@ -116,6 +117,7 @@ export default {
       this.changedReferral = referral
     },
     placeOrder() {
+      hidePayNow()
       if (this.changedReferral.referralName === 'Referral') {
         this.errors = 'Please select referral to proceed.'
       } else {
@@ -124,6 +126,15 @@ export default {
           referral: this.changedReferral,
           futureOrder: moment(this.futureDateTime).format('YYYY/MM/DD hh:mm'),
         })
+          .then(() => {
+            $('#order-confirmation').modal('hide')
+            $('#payment-msg').modal('show')
+          })
+          .catch(response => {
+            this.errors = response.error
+            $('#payment-msg').modal('hide')
+            $('#order-confirmation').modal('show')
+          })
       }
     },
     ...mapActions('order', ['deliveryOrder']),

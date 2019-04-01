@@ -12,7 +12,7 @@
       >
         <div class="POSItemOptions_type">
           <h3 class="POSItemOptions_typehead">
-            <span>{{ t(submodifier.item_name).name }}</span>
+            <span>{{ submodifier.name }}</span>
           </h3>
           <span class="POSItemOptions_typeline"></span>
         </div>
@@ -48,7 +48,7 @@
                 <span></span>
               </span>
               <img :src="imagePath(modifierOption.imageName)" alt="" />
-              <span>{{ t(modifierOption.item_name).name }}</span>
+              <span>{{ modifierOption.name }}</span>
               <div>({{ currency }} {{ modifierOption.price }})</div>
             </label>
 
@@ -75,7 +75,7 @@
                 <span class="checkmark-radio-btn"></span>
               </span>
               <img :src="imagePath(modifierOption.imageName)" alt="" />
-              <span>{{ t(modifierOption.item_name).name }}</span>
+              <span>{{ modifierOption.name }}</span>
               <div v-if="rawPrice(modifierOption.price)">
                 ({{ formatPrice(modifierOption.price) }})
               </div>

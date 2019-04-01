@@ -35,8 +35,8 @@
                   <th style="width: 100px">TAX</th>
                   <th style="width: 150px">SUBTOTAL</th>
                 </tr>
-                <tr v-for="(item, index) in getOrderDetails.items">
-                  <td :key="index">
+                <tr v-for="(item, index) in getOrderDetails.items" :key="index">
+                  <td>
                     {{ item.item_name }}
                     <div class="head1" v-if="item.item_modifiers.length">
                       <i
@@ -45,34 +45,38 @@
                     </div>
                     <table v-if="item.item_modifiers.length">
                       <tbody>
-                        <tr v-for="modifierList in item.item_modifiers">
+                        <tr
+                          v-for="(modifierList, key) in item.item_modifiers"
+                          :key="key"
+                        >
                           <td class="noborder-modify">
                             <table class="popup-order-modifiers">
                               <tbody>
                                 <tr
                                   v-for="(modifier,
                                   index) in modifierList.modifiers"
+                                  :key="index"
                                 >
                                   <td
                                     class="ng-binding"
-                                    v-if="modifier.mandatory_modifiers.length"
-                                    v-for="MMDetails in modifier.mandatory_modifiers"
+                                    v-for="(MMDetails,
+                                    index) in modifier.mandatory_modifiers"
                                     :key="index"
                                   >
                                     {{ MMDetails.item_name }}
                                   </td>
                                   <td
                                     class="ng-binding"
-                                    v-if="modifier.price_modifiers.length"
-                                    v-for="PMDetails in modifier.mandatory_modifiers"
+                                    v-for="(PMDetails,
+                                    index) in modifier.mandatory_modifiers"
                                     :key="index"
                                   >
                                     {{ PMDetails.item_name }}
                                   </td>
                                   <td
                                     class="ng-binding"
-                                    v-if="modifier.regular_modifiers.length"
-                                    v-for="RMDetails in modifier.mandatory_modifiers"
+                                    v-for="(RMDetails,
+                                    index) in modifier.mandatory_modifiers"
                                     :key="index"
                                   >
                                     {{ RMDetails.item_name }}
