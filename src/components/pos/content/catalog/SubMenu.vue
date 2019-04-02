@@ -4,6 +4,7 @@
       v-for="item in subcategories"
       :key="item._id"
       :class="{ active: currentSubcategory === item._id }"
+      class="pos-size-bg"
     >
       <div @click.prevent="getItems(item)">
         <img
@@ -34,8 +35,8 @@ export default {
   },
 
   updated() {
-    $('.vegetable:has(img)').addClass('pos-item-bg')
-    $('.pizza-size-wrapper > div:has(img)').addClass('pos-size-bg')
+    // $('.vegetable:has(img)').addClass('pos-item-bg')
+    // $('.pizza-size-wrapper > div:has(img)').addClass('pos-size-bg')
   },
 }
 </script>

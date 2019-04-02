@@ -100,8 +100,8 @@ export default {
     ...mapActions('category', ['browse']),
   },
   updated() {
-    $('.vegetable:has(img)').addClass('pos-item-bg')
-    $('.pizza-size-wrapper > div:has(img)').addClass('pos-size-bg')
+    // $('.vegetable:has(img)').addClass('pos-item-bg')
+    // $('.pizza-size-wrapper > div:has(img)').addClass('pos-size-bg')
   },
 }
 </script>
