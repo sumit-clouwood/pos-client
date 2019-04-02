@@ -12,10 +12,11 @@
         </div>
         <div class="modal-body change-amount-option">
           <div class="amount-change-wrap">
-            <h2>{{ msg }}</h2>
+            <Preloader v-if="msg === 'loading'" />
+            <h2 v-else>{{ msg }}</h2>
           </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" v-if="msg !== 'loading'">
           <div class="btn-announce">
             <button
               class="btn btn-success btn-large"
@@ -39,8 +40,12 @@
 <script>
 /* global $ */
 import { mapState } from 'vuex'
+import Preloader from '@/components/util/Preloader'
 export default {
   name: 'PaymentMsg',
+  components: {
+    Preloader,
+  },
   methods: {
     generateInvoice() {
       $('#pay-now').modal('toggle')

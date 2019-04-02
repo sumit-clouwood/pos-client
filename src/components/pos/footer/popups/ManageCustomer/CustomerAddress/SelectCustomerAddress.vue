@@ -14,7 +14,7 @@
             :addresses="deliveryAddresses"
             :buttons="false"
           />
-          <div class="loading" v-else>Loading ...</div>
+          <div class="loading" v-else><Preloader /></div>
         </div>
         <div class="modal-footer" v-show="deliveryAddresses.length">
           <div class="btn-announce">
@@ -46,12 +46,13 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-
+import Preloader from '@/components/util/Preloader'
 import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
 export default {
   name: 'SelectCustomerAddress',
   components: {
     CustomerDeliveryArea,
+    Preloader,
   },
 
   computed: {
