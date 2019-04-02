@@ -23,7 +23,7 @@
         </p>
       </div>
     </div>
-    <div class="table-pos-btn">
+    <div class="table-pos-btn hide">
       <button type="" class="popup-btn-save">Move Table</button>
       <button type="" class="popup-btn-save">Split Table</button>
       <button type="" class="popup-btn-save">Hold</button>
@@ -50,3 +50,7 @@ export default {
   },
 }
 </script>
+<style lang="sass" scoped>
+.hide
+  display : none
+</style>
