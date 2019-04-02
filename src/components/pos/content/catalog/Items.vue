@@ -13,7 +13,12 @@
           @click.prevent="addToOrder(item)"
         >
           <div>
-            <img :src="itemImage(item.item_image)" :alt="item.name" @error="imageLoadError(item.name.replace(/ /g,''))" :class="item.name.replace(/ /g,'')" />
+            <img
+              :src="itemImage(item.item_image)"
+              :alt="item.name"
+              @error="imageLoadError(item.name.replace(/ /g, ''))"
+              :class="item.name.replace(/ /g, '')"
+            />
             <p class="remove-bottom popover-btn">
               {{ item.name }}
             </p>
@@ -26,7 +31,7 @@
 </template>
 
 <script>
-/* global io $  */
+/* global $  */
 
 import { mapGetters } from 'vuex'
 
@@ -55,15 +60,22 @@ export default {
         this.$store.dispatch('order/addToOrder', item)
       }
     },
-    imageLoadError (className) {
-      $('img.'+className).remove()
-      let hue = 'rgb(' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ')'
-      $('div.vegetable:not(.pos-item-bg) p.remove-bottom, .pizza-size-wrapper > div:not(.pos-size-bg)').each(function() {
+    imageLoadError(className) {
+      $('img.' + className).remove()
+      let hue =
+        'rgb(' +
+        (Math.floor((256 - 199) * Math.random()) + 200) +
+        ',' +
+        (Math.floor((256 - 199) * Math.random()) + 200) +
+        ',' +
+        (Math.floor((256 - 199) * Math.random()) + 200) +
+        ')'
+      $(
+        'div.vegetable:not(.pos-item-bg) p.remove-bottom, .pizza-size-wrapper > div:not(.pos-size-bg)'
+      ).each(function() {
         $(this).css('background-color', hue)
       })
     },
   },
 }
-
 </script>
-

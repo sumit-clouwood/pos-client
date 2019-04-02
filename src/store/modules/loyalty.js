@@ -2,7 +2,7 @@ import * as mutation from './loyalty/mutation-types'
 import LoyaltyService from '@/services/data/LoyaltyService'
 
 const state = {
-  loyalty: false
+  loyalty: false,
 }
 const getters = {}
 const actions = {
@@ -12,12 +12,12 @@ const actions = {
       console.log(response.data)
       commit(mutation.LOYALTY, response.data.data)
     })
-  }
+  },
 }
 const mutations = {
   [mutation.LOYALTY](state, status) {
     state.loyalty = status
-  }
+  },
 }
 
 export default {

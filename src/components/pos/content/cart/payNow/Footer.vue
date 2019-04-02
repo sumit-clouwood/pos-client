@@ -47,3 +47,7 @@ export default {
   },
 }
 </script>
+<style lang="sass" scoped>
+.payment-screen-footer
+  min-width: 518px;
+</style>

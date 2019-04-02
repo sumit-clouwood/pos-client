@@ -39,3 +39,7 @@ export default {
   },
 }
 </script>
+<style lang="sass" scoped>
+.amount-keypad
+  min-width: 518px;
+</style>

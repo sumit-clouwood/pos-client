@@ -280,7 +280,7 @@ const actions = {
     })
   },
   createOrder({ state, commit, rootState }) {
-    commit('checkoutForm/SET_MSG', 'Processing...', {
+    commit('checkoutForm/SET_MSG', 'loading', {
       root: true,
     })
 

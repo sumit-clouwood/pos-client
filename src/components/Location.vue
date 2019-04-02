@@ -14,6 +14,7 @@
             <a v-if="loaded && locationName">{{ locationName }}</a>
             <span>
               Loading data...
+              <Preloader />
             </span>
           </li>
         </ul>
@@ -46,10 +47,14 @@
 import { mapState } from 'vuex'
 import Cookie from '@/mixins/Cookie'
 import bootstrap from '@/bootstrap'
+import Preloader from '@/components/util/Preloader'
 
 export default {
   name: 'Location',
   props: {},
+  components: {
+    Preloader,
+  },
   mixins: [Cookie],
   data: function() {
     return {

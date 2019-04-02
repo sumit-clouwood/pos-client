@@ -7,7 +7,7 @@
         class="form-control"
         placeholder="Search or scan for items"
         v-model="searchItems"
-        @keydown="collectSearchItems(searchItems)"
+        @keyup="collectSearchItems(searchItems)"
       />
     </div>
   </form>
