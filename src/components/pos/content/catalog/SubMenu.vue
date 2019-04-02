@@ -7,8 +7,6 @@
     >
       <div @click.prevent="getItems(item)">
         <img
-          @error="imageLoadError(item.name.replace(/ /g, ''))"
-          :class="item.name.replace(/ /g, '')"
           :src="subcategoryImage(item.sub_category_image)"
           :alt="item.name"
         />
@@ -33,22 +31,6 @@ export default {
   },
   methods: {
     ...mapActions('category', ['getItems']),
-    imageLoadError(className) {
-      $('img.' + className).remove()
-      let hue =
-        'rgb(' +
-        (Math.floor((256 - 199) * Math.random()) + 200) +
-        ',' +
-        (Math.floor((256 - 199) * Math.random()) + 200) +
-        ',' +
-        (Math.floor((256 - 199) * Math.random()) + 200) +
-        ')'
-      $(
-        'div.vegetable:not(.pos-item-bg) p.remove-bottom, .pizza-size-wrapper > div:not(.pos-size-bg)'
-      ).each(function() {
-        $(this).css('background-color', hue)
-      })
-    },
   },
 
   updated() {

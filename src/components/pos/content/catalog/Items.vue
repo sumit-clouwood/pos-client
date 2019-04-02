@@ -62,19 +62,12 @@ export default {
     },
     imageLoadError(className) {
       $('img.' + className).remove()
-      let hue =
-        'rgb(' +
-        (Math.floor((256 - 199) * Math.random()) + 200) +
-        ',' +
-        (Math.floor((256 - 199) * Math.random()) + 200) +
-        ',' +
-        (Math.floor((256 - 199) * Math.random()) + 200) +
-        ')'
-      $(
-        'div.vegetable:not(.pos-item-bg) p.remove-bottom, .pizza-size-wrapper > div:not(.pos-size-bg)'
-      ).each(function() {
+
+      $('div.vegetable:not(.pos-item-bg) p.remove-bottom, .pizza-size-wrapper > div:not(.pos-size-bg)').each(function() {
+        let hue = 'rgb(' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ')'
         $(this).css('background-color', hue)
       })
+
     },
   },
 }
