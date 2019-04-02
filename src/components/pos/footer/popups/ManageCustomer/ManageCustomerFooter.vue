@@ -1,8 +1,8 @@
 <template>
-  <div class="modal-footer">
+  <div class="modal-footer" v-if="!loading">
     <div class="pagination-customer-details">
       <paginate
-        v-if="paginateDetails.totalPages"
+        v-if="paginateDetails.totalPages && customerDetails.length"
         :page-count="paginateDetails.totalPages"
         :page-range="1"
         :margin-pages="1"
@@ -51,7 +51,9 @@ export default {
   computed: {
     ...mapState({
       paginateDetails: state => state.customer.paginate,
+      customerDetails: state => state.customer.customer_list,
     }),
+    ...mapState('customer', ['loading']),
   },
   methods: {
     ...mapActions('customer', ['setPageNumber']),

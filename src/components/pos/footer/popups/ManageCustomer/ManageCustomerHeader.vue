@@ -6,27 +6,32 @@
       class="form-control"
       placeholder="Search customer"
       v-model="searchTerms"
-      @keypress.enter="searchCustomer(searchTerms)"
+      @keyup="searchCustomer(searchTerms)"
     />
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 export default {
   name: 'ManageCustomerHeader',
   data: function() {
     return {
+      inputTimer: null,
       searchTerms: '',
     }
   },
-  // computed: {
-  //   ...mapState({
-  //     searchTerms: state => state.customer.params.search,
-  //   }),
-  // },
   methods: {
-    ...mapActions('customer', ['searchCustomer']),
+    searchCustomer() {
+      clearTimeout(this.inputTimer)
+      if (this.searchTerms.length > 0) {
+        this.inputTimer = setTimeout(() => {
+          this.loading = true
+          this.$store
+            .dispatch('customer/searchCustomer', this.searchTerms)
+            .then(() => {})
+        }, 500) //waith half second until user finishes the typing
+      }
+    },
   },
 }
 </script>

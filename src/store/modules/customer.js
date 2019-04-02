@@ -19,6 +19,7 @@ const state = {
   allOnlineAddress: false,
   fetchCustomerAddressOnly: false,
   offlineData: null,
+  loading: false,
 }
 const getters = {
   customer: state => {
@@ -41,39 +42,49 @@ const getters = {
 }
 const actions = {
   fetchAll({ commit, rootState }) {
-    let paginateDetails = {}
-    const params = [
-      rootState.location.location,
-      state.params.search /*search*/,
-      state.params.page_number /*page_number*/,
-      'pos' /*origin set pos for checking api is origin*/,
-      '' /*validate*/,
-      rootState.sync.date,
-      rootState.sync.compress,
-      state.params.page_size /*page_size*/,
-    ]
-    customerService.customerList(...params).then(response => {
-      if (response.data.data.length) {
-        paginateDetails.currentPage = response.data.page_number
-        paginateDetails.totalCustomers = response.data.count
-        paginateDetails.totalPages = response.data.max_page_number
-        paginateDetails.customarPerPage = response.data.page_size
+    return new Promise((resolve, reject) => {
+      let paginateDetails = {}
+      const params = [
+        rootState.location.location,
+        state.params.search /*search*/,
+        state.params.page_number /*page_number*/,
+        'pos' /*origin set pos for checking api is origin*/,
+        '' /*validate*/,
+        rootState.sync.date,
+        rootState.sync.compress,
+        state.params.page_size /*page_size*/,
+      ]
+      customerService.customerList(...params).then(response => {
+        if (response.data.data.length) {
+          paginateDetails.currentPage = response.data.page_number
+          paginateDetails.totalCustomers = response.data.count
+          paginateDetails.totalPages = response.data.max_page_number
+          paginateDetails.customarPerPage = response.data.page_size
 
-        commit(mutation.CUSTOMER_LIST, response.data.data)
-        commit(mutation.PAGINATE_DETAILS, paginateDetails)
-      }
-    })
+          commit(mutation.CUSTOMER_LIST, response.data.data)
+          commit(mutation.PAGINATE_DETAILS, paginateDetails)
+          resolve(response.data.data)
+        } else {
+          reject(response.data.data)
+        }
+      })
 
-    // get Customer Group
-    const customerGroupParams = [rootState.sync.date, rootState.sync.compress]
-    customerService.customerGroupList(...customerGroupParams).then(response => {
-      commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
+      // get Customer Group
+      const customerGroupParams = [rootState.sync.date, rootState.sync.compress]
+      customerService
+        .customerGroupList(...customerGroupParams)
+        .then(response => {
+          commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
+        })
     })
   },
 
   setPageNumber: function({ commit, dispatch }, pageNumber) {
+    commit(mutation.SET_LOADING, true)
     commit(mutation.SET_CURRENT_PAGE_NO, pageNumber)
-    dispatch('fetchAll')
+    dispatch('fetchAll').then(() => {
+      commit(mutation.SET_LOADING, false)
+    })
   },
 
   setPastOrderPageNumber: function({ commit, dispatch }, pageNumber) {
@@ -83,10 +94,17 @@ const actions = {
   },
 
   searchCustomer: function({ commit, dispatch }, searchTerms) {
-    if (searchTerms !== '') {
+    return new Promise((resolve, reject) => {
+      commit(mutation.CUSTOMER_LIST, [])
+      commit(mutation.SET_LOADING, true)
       commit(mutation.SET_SEARCH_TERMS, searchTerms)
       dispatch('fetchAll')
-    }
+        .then(response => {
+          resolve(response)
+        })
+        .catch(error => reject(error))
+        .finally(() => commit(mutation.SET_LOADING, false))
+    })
   },
 
   addNote({ commit, rootState }, note) {
@@ -235,6 +253,9 @@ const mutations = {
   },
   [mutation.RESET](state) {
     state.offlineData = null
+  },
+  [mutation.SET_LOADING](state, status) {
+    state.loading = status
   },
 }
 
