@@ -90,6 +90,7 @@
     <CartPaymentMsg />
     <CartTipAmount />
     <GiftCard />
+    <Loyalty />
     <Invoice v-show="print" />
   </div>
 </template>
@@ -116,6 +117,7 @@ import CustomerInformation from './footer/popups/ManageCustomer/CustomerInformat
 import CustomerNotes from './footer/popups/ManageCustomer/CustomerInformation/CustomerNotes'
 import SelectCustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/SelectCustomerAddress'
 import GiftCard from '../pos/content/cart/newOrders/popup/GiftCard.vue'
+import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
 import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 
 import { mapActions, mapState } from 'vuex'
@@ -145,6 +147,7 @@ export default {
     CartPaymentMsg,
     CartTipAmount,
     GiftCard,
+    Loyalty,
     Invoice,
   },
   computed: {

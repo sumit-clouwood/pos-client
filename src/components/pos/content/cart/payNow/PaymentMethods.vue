@@ -25,10 +25,13 @@ export default {
     ...mapState({
       activeMethod: state => state.checkoutForm.method.name,
     }),
+    ...mapState({
+      selectedModal: state => state.location.setModal,
+    }),
   },
   methods: {
     getToggle(method) {
-      if (method.is_gift) {
+      if (method.is_gift || method.name == 'Loyalty') {
         return 'modal'
       }
       return ''
@@ -37,10 +40,17 @@ export default {
     getTarget(method) {
       if (method.is_gift) {
         return '#Gift-card-payemnt'
+      } else if(method.name == 'Loyalty') {
+        if(this.selectedModal == '#manage-customer' ) {
+          return '#manage-customer'
+        } else {
+          return '#loyalty-payment'
+        }
       }
       return ''
     },
     ...mapActions('checkoutForm', ['setMethod']),
+
   },
   updated() {
     $('#payment-method').slick({

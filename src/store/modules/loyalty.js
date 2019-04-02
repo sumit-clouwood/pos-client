@@ -6,10 +6,11 @@ const state = {
 }
 const getters = {}
 const actions = {
-  fetchLoyalty({ commit, rootState }) {
+  fetchAll({ commit, rootState }) {
     const params = [rootState.location.location]
-    LoyaltyService.checkLoyaltyLocation(...params).then(respons=> {
-      commit(mutation.LOYALTY, respons.data)
+    LoyaltyService.checkLoyaltyLocation(...params).then(response => {
+      console.log(response.data)
+      commit(mutation.LOYALTY, response.data.data)
     })
   }
 }

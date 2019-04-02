@@ -86,8 +86,8 @@ const actions = {
     commit(mutation.SET_LANGUAGE, locale)
   },
 
-  updateModalSelectionDelivery({ commit }) {
-    commit(mutation.SET_MODAL, '#order-confirmation')
+  updateModalSelectionDelivery({ commit }, modalSelection) {
+    commit(mutation.SET_MODAL, modalSelection)
   },
 }
 

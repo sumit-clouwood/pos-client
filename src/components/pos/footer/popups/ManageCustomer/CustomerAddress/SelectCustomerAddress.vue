@@ -30,7 +30,7 @@
               class="btn btn-success btn-large popup-btn-save"
               type="button"
               id="add-customer-btn"
-              @click="updateModalSelectionDelivery"
+              @click="updateModalSelectionDelivery('#order-confirmation')"
               data-dismiss="modal"
             >
               Add

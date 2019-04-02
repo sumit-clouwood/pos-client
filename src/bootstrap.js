@@ -121,6 +121,7 @@ export default {
                   store.dispatch('payment/fetchAll', response)
                   store.dispatch('giftcard/fetchAll', response)
                   store.dispatch('invoice/fetchAll', response)
+                  store.dispatch('loyalty/fetchAll', response)
                 })
                 .catch(error => reject(error))
             })
