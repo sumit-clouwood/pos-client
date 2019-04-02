@@ -16,7 +16,10 @@ const getters = {
       if (modifier.itemIds.length) {
         //find in itemids
         return modifier.itemIds.some(itemId => itemId === item._id)
-      } else if (modifier.item_subcategory.length) {
+      } else if (
+        modifier.item_subcategory &&
+        modifier.item_subcategory.length
+      ) {
         //find in subcategory
         return modifier.item_subcategory.some(
           subcatId => subcatId === rootState.category.subcategory._id
