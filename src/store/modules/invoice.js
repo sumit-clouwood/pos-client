@@ -55,7 +55,7 @@ const getters = {
       let foreignLang = false
       if (
         template.language != 'en_US' ||
-        rootState.location.selectedSortcode !== 'en_US'
+        rootState.location.locale !== 'en_US'
       ) {
         foreignLang = true
       }
@@ -74,7 +74,7 @@ const actions = {
       rootState.order.orderType == 'Walk-in'
         ? 'walkin'
         : rootState.order.orderType,
-      rootState.location.selectedSortcode,
+      rootState.location.locale,
     ]
 
     const [templates, rules] = await Promise.all([

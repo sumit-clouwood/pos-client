@@ -215,7 +215,7 @@ const actions = {
   },
 
   collectSearchItems({ commit, state, rootState }, searchTerm) {
-    const defaultLanguage = rootState.location.selectedSortcode
+    const defaultLanguage = rootState.location.locale
     let searchedItems = []
     state.items.map(item => {
       item.item_name.forEach(getByLanguage => {
