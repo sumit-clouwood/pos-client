@@ -75,7 +75,7 @@ export default {
 
       return new Promise((resolve, reject) => {
         axios
-          .get(apiURL + url)
+          .post(apiURL + url)
           .then(response => {
             return resolve(response)
           })
