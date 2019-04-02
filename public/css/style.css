@@ -2015,6 +2015,7 @@ body#page-top {
 .pizza-size-wrapper > div {
   cursor: pointer;
   text-align: center;
+  position:relative;
 }
 
 .none-arrow {
@@ -5281,12 +5282,12 @@ button {
   }
 
   .vegetable-pizza-wrapper .vegetable > div {
-    height: 115px;
+    height: 164px;
   }
 
   .vegetable-pizza-wrapper .vegetable-pizza > div.vegetable {
-    height: 118px;
-    width: 118px;
+    height: 165px;
+    width: 166px;
   }
 
   footer.sticky-footer ul.ullist-icons li {
@@ -5381,12 +5382,12 @@ button {
   }
 
   .vegetable-pizza-wrapper .vegetable > div {
-    height: 115px;
+    height: 164px;
   }
 
   .vegetable-pizza-wrapper .vegetable-pizza > div.vegetable {
-    height: 118px;
-    width: 118px;
+    height: 165px;
+    width: 166px;
   }
 
   footer.sticky-footer ul.ullist-icons li {
@@ -5471,12 +5472,12 @@ button {
   }
 
   .vegetable-pizza-wrapper .vegetable > div {
-    height: 115px;
+    height: 164px;
   }
 
   .vegetable-pizza-wrapper .vegetable-pizza > div.vegetable {
-    height: 118px;
-    width: 118px;
+    height: 165px;
+    width: 166px;
   }
 
   footer.sticky-footer ul.ullist-icons li {
@@ -5549,12 +5550,12 @@ button {
   }
 
   .vegetable-pizza-wrapper .vegetable > div {
-    height: 115px;
+    height: 164px;
   }
 
   .vegetable-pizza-wrapper .vegetable-pizza > div.vegetable {
-    height: 118px;
-    width: 118px;
+    height: 165px;
+    width: 166px;
   }
 
   footer.sticky-footer ul.ullist-icons li {
@@ -5631,12 +5632,12 @@ button {
   }
 
   .vegetable-pizza-wrapper .vegetable > div {
-    height: 115px;
+    height: 164px;
   }
 
   .vegetable-pizza-wrapper .vegetable-pizza > div.vegetable {
-    height: 118px;
-    width: 118px;
+    height: 165px;
+    width: 166px;
   }
 
   footer.sticky-footer ul.ullist-icons li {
@@ -5660,7 +5661,7 @@ button {
   }
 
   .vegetable-pizza-block .vegetable-pizza .vegetable img {
-    width: 60px;
+    width: 101px;
   }
 }
 
@@ -6508,7 +6509,7 @@ ul#exampleAccordion > li a span.nav-link-text {
 }*/
 @media only screen and (min-width: 1600px) {
   .vegetable-pizza-block .vegetable-pizza .vegetable img {
-    width: 85px;
+    width: 101px;
   }
 }
 div#payment-method .slick-slide > div > div > label {
@@ -6578,4 +6579,49 @@ div#payment-method .slick-slide > div > div > label {
 .fa-leaf:before{
   color:#62bb31;
   font-size:18px;
+}
+/*...........*/
+.pizza-size-wrapper > div.active:after {
+  content: " ";
+  background-image: url(../img/pos/right.png);
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  background-repeat: no-repeat;
+  top: 0;
+  right: 0;
+  border-bottom-left-radius: 4px;
+  background-color: #62bb31;
+  background-position: center right 3px;
+  border-color: #62bb31;
+  
+}
+
+.vegetable-pizza-wrapper .vegetable-pizza > div.vegetable:not(.pos-item-bg) p.remove-bottom{
+  height: 164px;
+  color: #000;
+  font-size: 16px;
+  line-height: 22px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important;
+  width: 138px;
+  border-radius: 4px;
+  padding: 0 10px;
+  font-weight: 600;
+}
+.vegetable-pizza-wrapper .vegetable-pizza > div.vegetable:not(.pos-item-bg) {
+  box-shadow: none;
+}
+.pizza-size-wrapper > div:not(.pos-size-bg) span {
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  padding-top: 0;
+  word-break: break-word;
+  line-height: 20px !important;
 }

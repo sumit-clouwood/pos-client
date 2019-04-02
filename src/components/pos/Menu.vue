@@ -71,6 +71,7 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
+/* global $  */
 
 export default {
   name: 'Menu',
@@ -97,6 +98,10 @@ export default {
   // map `this.browse()` to `this.$store.category.dispatch('browse')`
   methods: {
     ...mapActions('category', ['browse']),
+  },
+  updated() {
+    $('.vegetable:has(img)').addClass('pos-item-bg')
+    $('.pizza-size-wrapper > div:has(img)').addClass('pos-size-bg')
   },
 }
 </script>
