@@ -42,24 +42,47 @@ export default {
   },
 
   auth(env, deviceId) {
-    const url =
-      '/api/auth/login/' +
-      '?email=' +
-      env.VUE_APP_API_USERNAME +
-      '&password=' +
-      env.VUE_APP_API_PASSWORD +
-      '&device_id=' +
-      deviceId
+    if (process.env.VUE_APP_API_ENDPOINT === 'http://13.127.145.151') {
+      //use post method
+      const url = '/api/auth/login'
 
-    return new Promise((resolve, reject) => {
-      axios
-        .post(apiURL + url)
-        .then(response => {
-          return resolve(response)
-        })
-        .catch(response => {
-          return reject(response)
-        })
-    })
+      const data = {
+        email: env.VUE_APP_API_USERNAME,
+        password: env.VUE_APP_API_PASSWORD,
+        device_id: deviceId,
+      }
+
+      return new Promise((resolve, reject) => {
+        axios
+          .post(apiURL + url, data)
+          .then(response => {
+            return resolve(response)
+          })
+          .catch(response => {
+            return reject(response)
+          })
+      })
+    } else {
+      //use get method
+      const url =
+        '/api/auth/login/' +
+        '?email=' +
+        env.VUE_APP_API_USERNAME +
+        '&password=' +
+        env.VUE_APP_API_PASSWORD +
+        '&device_id=' +
+        deviceId
+
+      return new Promise((resolve, reject) => {
+        axios
+          .get(apiURL + url)
+          .then(response => {
+            return resolve(response)
+          })
+          .catch(response => {
+            return reject(response)
+          })
+      })
+    }
   },
 }
