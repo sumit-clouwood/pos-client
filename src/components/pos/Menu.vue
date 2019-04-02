@@ -24,7 +24,6 @@
         data-placement="right"
         :title="item.name"
         :data-original-title="item.name"
-        @click="addImgDesign"
       >
         <a
           class="nav-link"
@@ -99,10 +98,10 @@ export default {
   // map `this.browse()` to `this.$store.category.dispatch('browse')`
   methods: {
     ...mapActions('category', ['browse']),
-    addImgDesign() {
-      $( '.vegetable:has(img)' ).addClass( 'pos-item-bg' )
-      $( '.pizza-size-wrapper > div:has(img)' ).addClass( 'pos-size-bg' )
-    }
   },
+  updated() {
+    $( '.vegetable:has(img)' ).addClass( 'pos-item-bg' )
+    $( '.pizza-size-wrapper > div:has(img)' ).addClass( 'pos-size-bg' )
+  }
 }
 </script>

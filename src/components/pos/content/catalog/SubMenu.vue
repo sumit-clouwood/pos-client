@@ -4,7 +4,6 @@
       v-for="item in subcategories"
       :key="item._id"
       :class="{ active: currentSubcategory === item._id }"
-      class="pos-size-bg"
     >
       <div @click.prevent="getItems(item)">
         <img

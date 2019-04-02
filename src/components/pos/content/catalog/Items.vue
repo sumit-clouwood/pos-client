@@ -5,7 +5,7 @@
     <div class="vegetable-pizza-block">
       <div class="vegetable-pizza">
         <div
-          class="vegetable pos-item-bg"
+          class="vegetable"
           v-for="item in items"
           :key="item._id"
           :data-toggle="hasModifiers(item) ? 'modal' : ''"
@@ -57,10 +57,6 @@ export default {
     },
     imageLoadError (className) {
       $('img.'+className).remove()
-      $( '.vegetable:has(img)' ).addClass( 'pos-item-bg' )
-      $( '.pizza-size-wrapper > div:has(img)' ).addClass( 'pos-size-bg' )
-
-
       let hue = 'rgb(' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ')'
       $('div.vegetable:not(.pos-item-bg) p.remove-bottom, .pizza-size-wrapper > div:not(.pos-size-bg)').each(function() {
         $(this).css('background-color', hue)
