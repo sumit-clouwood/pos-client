@@ -5,7 +5,7 @@
     <div class="vegetable-pizza-block">
       <div class="vegetable-pizza">
         <div
-          class="vegetable"
+          class="vegetable pos-item-bg"
           v-for="item in items"
           :key="item._id"
           :data-toggle="hasModifiers(item) ? 'modal' : ''"
@@ -13,7 +13,7 @@
           @click.prevent="addToOrder(item)"
         >
           <div>
-            <img :src="itemImage(item.item_image)" :alt="item.name" />
+            <img :src="itemImage(item.item_image)" :alt="item.name" @error="imageLoadError(item.name.replace(/ /g,''))" :class="item.name.replace(/ /g,'')" />
             <p class="remove-bottom popover-btn">
               {{ item.name }}
             </p>
@@ -26,6 +26,8 @@
 </template>
 
 <script>
+/* global io $  */
+
 import { mapGetters } from 'vuex'
 
 import Breadcrumbs from './items/Breadcrumbs'
@@ -53,6 +55,19 @@ export default {
         this.$store.dispatch('order/addToOrder', item)
       }
     },
+    imageLoadError (className) {
+      $('img.'+className).remove()
+      $( '.vegetable:has(img)' ).addClass( 'pos-item-bg' )
+      $( '.pizza-size-wrapper > div:has(img)' ).addClass( 'pos-size-bg' )
+
+
+      let hue = 'rgb(' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ')'
+      $('div.vegetable:not(.pos-item-bg) p.remove-bottom, .pizza-size-wrapper > div:not(.pos-size-bg)').each(function() {
+        $(this).css('background-color', hue)
+      })
+    },
   },
 }
+
 </script>
+

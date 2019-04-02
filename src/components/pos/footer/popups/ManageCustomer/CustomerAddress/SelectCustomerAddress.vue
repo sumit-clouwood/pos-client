@@ -59,7 +59,7 @@ export default {
       deliveryAddresses: state =>
         state.customer.fetchCustomerAddressOnly.customer_list
           ? state.customer.fetchCustomerAddressOnly.customer_list[0]
-              .customer_details
+            .customer_details
           : [],
     }),
   },

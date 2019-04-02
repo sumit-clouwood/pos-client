@@ -19,14 +19,14 @@ const getters = {}
 const mutations = {
   [mutation.SET_ANNOUNCEMENT](commit, announcements) {
     if (announcements && announcements.status != 0) {
-      let annoucmentsList = ''
+      let announcementsList = ''
       announcements.forEach(announcement => {
-        annoucmentsList =
-          annoucmentsList != ''
-            ? annoucmentsList + '  |  ' + announcement.announcement
+        announcementsList =
+          announcementsList != ''
+            ? announcementsList + '  |  ' + announcement.announcement
             : announcement.announcement
       })
-      state.announcements = annoucmentsList
+      state.announcements = announcementsList
     }
   },
 }
