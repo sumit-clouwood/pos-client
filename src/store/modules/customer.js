@@ -20,6 +20,7 @@ const state = {
   fetchCustomerAddressOnly: false,
   offlineData: null,
   loading: false,
+  error: false,
 }
 const getters = {
   customer: state => {
@@ -122,12 +123,27 @@ const actions = {
     }
   },
 
-  fetchSelectedCustomer({ commit, rootState }, { customerId, addressOnly }) {
+  fetchSelectedCustomer(
+    { state, commit, rootState },
+    { customerId, addressOnly }
+  ) {
     commit(mutation.SET_CUSTOMER_ID, customerId)
     if (typeof addressOnly != 'undefined') {
       const params = [customerId, rootState.location.location]
       customerService.getCustomerDetails(...params).then(response => {
         commit(mutation.FETCH_CUSTOMER_ADDRESSES_ONLY, response.data.data)
+
+        if (state.fetchCustomerAddressOnly.customer_list) {
+          if (
+            !state.fetchCustomerAddressOnly.customer_list[0].customer_details
+              .length
+          ) {
+            commit(mutation.SET_ERROR, true)
+          } else {
+            commit(mutation.SET_ERROR, false)
+          }
+        }
+
         //dispatch('giftcard/setCustomerGiftCards', response.data.data)
       })
     } else {
@@ -256,6 +272,9 @@ const mutations = {
   },
   [mutation.SET_LOADING](state, status) {
     state.loading = status
+  },
+  [mutation.SET_ERROR](state, error) {
+    state.error = error
   },
 }
 
