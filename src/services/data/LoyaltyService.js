@@ -17,4 +17,10 @@ export default {
   verifyCustomerLoyaltyPoints(customerDetails) {
     return DataService.post('/api/auth/apply/loyalty', customerDetails)
   },
+
+  searchCustomer(searchTerm) {
+    return DataService.get(
+      `/api/auth/search-customers?search_query=${searchTerm}`
+    )
+  }
 }

@@ -21,6 +21,7 @@ const state = {
   offlineData: null,
   loading: false,
   error: false,
+  loyalty: false,
 }
 const getters = {
   customer: state => {
@@ -124,9 +125,10 @@ const actions = {
   },
 
   fetchSelectedCustomer(
-    { state, commit, rootState },
+    { state, commit, rootState, dispatch },
     { customerId, addressOnly }
   ) {
+    dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {root: true})
     commit(mutation.SET_CUSTOMER_ID, customerId)
     if (typeof addressOnly != 'undefined') {
       const params = [customerId, rootState.location.location]
@@ -160,6 +162,7 @@ const actions = {
           response.data.data.customer_list.totalpages
         pastOrdersPaginate.customarPerPage = limit
         commit(mutation.PAST_ORDER_PAGINATE_DETAILS, pastOrdersPaginate)
+        commit(mutation.LOYALTY, response.data.data.customer_list.loyalty_point)
         //dispatch('giftcard/setCustomerGiftCards', response.data.data)
       })
     }
@@ -275,6 +278,9 @@ const mutations = {
   },
   [mutation.SET_ERROR](state, error) {
     state.error = error
+  },
+  [mutation.LOYALTY](state, loyalty) {
+    state.loyalty = loyalty.length > 0 ? loyalty[0] : false
   },
 }
 

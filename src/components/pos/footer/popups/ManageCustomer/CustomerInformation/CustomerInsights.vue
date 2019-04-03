@@ -25,13 +25,13 @@
       </div>
       <div class="insight-last-order">
         <h3>LAST ORDER</h3>
-        <ul class="fav-item-slider" v-if="index < 3">
+        <ul class="fav-item-slider">
           <!--<li><img src="/img/pos/dine-right.png" alt="fav-item" /></li>-->
           <li
-            v-for="lastOrderItem in insight.lastOrderItems"
-            :key="lastOrderItem._id"
+            v-for="i in orderCount"
+            :key="i"
           >
-            {{ lastOrderItem }}
+            {{ typeof insight.lastOrderItems[i] != 'undefined' ? insight.lastOrderItems[i] : '' }}
           </li>
         </ul>
       </div>
@@ -50,10 +50,8 @@
     <div class="customer-insights-notes">
       <div>
         <p>Notes :</p>
-        <div v-if="index < 2">
-          <p v-for="notes in customerNotes" :key="notes._id">
-            {{ notes.message }}
-          </p>
+        <div v-if="customerNotes.length > 0">
+            {{ customerNotes[0].message }}
         </div>
         <span
           data-toggle="modal"
@@ -87,6 +85,11 @@ export default {
   name: 'CustomerInsights',
   components: {
     CustomerFeedback,
+  },
+  data(){
+    return {
+      orderCount: 3
+    }
   },
   // mounted: {
   //   // ready() {

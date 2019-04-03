@@ -47,11 +47,16 @@
             >
           </li>
           <li data-toggle="modal" data-target="#add-note">
-            <a href="#"
-              ><img src="img/pos/notes.svg" alt="note" /><span
-                >Add Note</span
-              ></a
+            <a href="#"><img src="img/pos/notes.svg" alt="Note" /><span>Add Note</span></a
             >
+          </li>
+          <li data-toggle="modal" data-target="#search-loyalty-customer" v-if="loyaltyEnable">
+            <a href="#"><img src="img/pos/tip.png" alt="Loyalty" /><span>Loyalty</span>
+              <span v-if="loyaltyInfo">
+                <small>{{ loyaltyInfo.balance }} {{ loyaltyInfo.currency_code }}
+                  {{ selectedCustomer.customer_name }}</small>
+              </span>
+            </a>
           </li>
         </ul>
         <ul class="template-btn">
@@ -90,6 +95,7 @@
     <CartPaymentMsg />
     <CartTipAmount />
     <GiftCard />
+    <SearchLoyaltyCustomer />
     <Loyalty />
     <Invoice v-show="print" />
   </div>
@@ -117,6 +123,7 @@ import CustomerInformation from './footer/popups/ManageCustomer/CustomerInformat
 import CustomerNotes from './footer/popups/ManageCustomer/CustomerInformation/CustomerNotes'
 import SelectCustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/SelectCustomerAddress'
 import GiftCard from '../pos/content/cart/newOrders/popup/GiftCard.vue'
+import SearchLoyaltyCustomer from '../pos/footer/popups/SearchLoyaltyCustomer'
 import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
 import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 
@@ -147,6 +154,7 @@ export default {
     CartPaymentMsg,
     CartTipAmount,
     GiftCard,
+    SearchLoyaltyCustomer,
     Loyalty,
     Invoice,
   },
@@ -154,7 +162,22 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapState('sync', ['online']),
     ...mapState({
-      selectedModal: state => state.location.setModal,
+      selectedModal: state => state.location.setModal == '#loyalty-payment' ? '#manage-customer' : state.location.setModal,
+    }),
+    ...mapState({
+      loyaltyEnable: state => state.loyalty.loyalty
+    }),
+    ...mapState({
+      loyaltyInfo: state => state.customer.loyalty
+    }),
+    ...mapState({
+      selectedCustomer: state =>
+        typeof state.customer.customer.customer_list != 'undefined'
+          ? state.customer.customer.customer_list
+          : typeof state.customer.fetchCustomerAddressOnly.customer_list !=
+        'undefined'
+            ? state.customer.fetchCustomerAddressOnly.customer_list[0]
+            : false,
     }),
   },
   methods: {

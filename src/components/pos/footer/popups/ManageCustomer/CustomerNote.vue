@@ -28,6 +28,7 @@
             <button
               class="btn btn-success btn-large"
               type="button"
+              data-dismiss="modal"
               id=""
               @click="addNote(note)"
             >
@@ -48,8 +49,12 @@ import { mapActions } from 'vuex'
 
 export default {
   name: 'CustomerNote',
-  props: ['note'],
-
+  // props: ['note'],
+  data() {
+    return {
+      note:''
+    }
+  },
   methods: {
     ...mapActions('customer', ['addNote']),
   },

@@ -28,10 +28,7 @@ export default {
   computed: {
     ...mapState({
       loyalty: state =>
-        state.customer.customer.customer_list &&
-        state.customer.customer.customer_list.loyaltyPoints.length
-          ? state.customer.customer.customer_list.loyaltyPoints
-          : 0,
+        state.customer.loyalty ? state.customer.loyalty.balance : 0,
     }),
   },
 }

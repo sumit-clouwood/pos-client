@@ -10,12 +10,15 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Apply Loyalty</h4>
+          <h4 class="customer-title">Reward Available</h4>
         </div>
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
-            <p>Enter Loyalty</p>
-            <input type="text" class="add-email-from" v-model="amount" />
+            <p v-if="loyalty.balance > 0">Loyalty Balance: <span>{{ loyalty.balance }}</span></p>
+            <p v-if="loyalty.balance <= 0"> {{ loyalty.loyalty_order_alert }}</p>
+            <hr>
+            <p>You can spend min <b>{{ loyalty.min_redeem_amount }} {{ loyalty.currency_code}}</b>  and max <b>{{ loyalty.max_redeem_amount }} {{ loyalty.currency_code}}</b> </p>
+            <p>Amount you can spend: <b>{{ amount }}</b> </p>
           </div>
         </div>
         <div class="modal-footer">
@@ -46,18 +49,52 @@
   </div>
 </template>
 <script>
+import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Loyalty',
-  data: function() {
+  /*data: function() {
     return {
-      amount: '',
+      amount: 0,
     }
+  },*/
+  computed: {
+    ...mapState({
+      loyalty: state =>
+        state.customer.loyalty ? state.customer.loyalty : 0,
+    }),
+    ...mapState({
+      amount: state =>
+        state.checkoutForm.loyaltyAmount ? state.checkoutForm.loyaltyAmount : 0,
+    }),
+    // ...mapGetters('checkoutForm', ['orderTotal']),
+
   },
   methods: {
     payByLoyalty() {
       console.log('loyalty applied ' + this.amount)
-      // this.$store.dispatch('checkoutForm/addGiftCardAmount', this.code)
+      this.$store.dispatch('checkoutForm/setAmount', this.amount)
     },
+    /* calculateSpendLoyalty() {
+      this.amount = parseFloat(this.loyalty.balance)
+      if(parseFloat(this.loyalty.balance) > 0) {
+        if (parseFloat(this.orderTotal) > 0 && parseFloat(this.loyalty.balance) >= parseFloat(this.orderTotal)) {
+          this.amount = parseFloat(this.orderTotal).toFixed(2)
+        }
+        if (parseFloat(this.orderTotal) >= parseFloat(this.loyalty.max_redeem_amount)) {
+          this.amount = parseFloat(this.loyalty.max_redeem_amount)
+        }
+        if (parseFloat(this.loyalty.balance) < parseFloat(this.loyalty.min_redeem_amount)) {
+          this.amount = parseFloat(0)
+        }
+      }
+
+      return isNaN(this.amount) ? 0 : this.amount
+    }*/
+    ...mapActions('checkoutForm',['calculateSpendLoyalty'])
   },
+  updated() {
+    this.calculateSpendLoyalty
+  }
+
 }
 </script>
