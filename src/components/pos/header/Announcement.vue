@@ -3,7 +3,7 @@
     <li class="breadcrumb-item-news">
       <a href="#"> <img src="img/pos/news.png" /><span>News</span></a>
     </li>
-    <li class="item-news"  v-if="announcements">
+    <li class="item-news" v-if="announcements">
       <marquee behavior="scroll" direction="left">
         {{ announcements }}
       </marquee>

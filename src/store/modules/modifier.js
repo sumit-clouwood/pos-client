@@ -55,6 +55,20 @@ const getters = {
   itemModifiers: state => itemId =>
     state.itemModifiers.find(obj => obj.itemId == itemId),
 
+  //get mandatory modifiers specific to item id from current modifiers list
+  itemMandatoryGroups: state => itemId => {
+    let mandatoryModifierGroups = []
+    const allModifiers = state.itemModifiers.find(obj => obj.itemId == itemId)
+    allModifiers.modifiers.forEach(modifier => {
+      modifier.get_modifier_sub_groups.forEach(subgroup => {
+        if (subgroup.type === 'mandatory') {
+          mandatoryModifierGroups.push(subgroup._id)
+        }
+      })
+    })
+    return mandatoryModifierGroups
+  },
+
   getImages: state => {
     let images = []
 
@@ -153,6 +167,16 @@ const actions = {
       //change modifiers to get location based pricing and language
       const upatedModifiers = modifiers.map(modifier => {
         const groups = modifier.get_modifier_sub_groups.map(group => {
+          //get group name
+          let groupName = group.item_name.find(
+            locale => locale.language == appLocale
+          )
+          //fallback if no translation found
+          if (!groupName) {
+            groupName = group.item_name[0]
+          }
+          group.name = groupName ? groupName.name : 'No name'
+
           const modifierItemList = group.get_modifier_item_list.map(mod => {
             mod.price =
               mod.item_location_price[rootState.location.location] ||

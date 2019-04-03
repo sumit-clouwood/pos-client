@@ -1,8 +1,10 @@
+/* eslint-disable no-console */
 // initial state
 const state = {
   modifiers: [],
   error: false,
   quantity: 0,
+  selectionModel: {},
 }
 
 // getters
@@ -10,36 +12,18 @@ const getters = {
   quantity: (state, getters, rootState) => {
     return state.quantity || rootState.order.item.quantity || 1
   },
-  modifiers: state => (itemId, groupId, modifierId) => {
-    let found = false
-    state.modifiers.forEach(modifier => {
-      if (Array.isArray(modifier.modifierId)) {
-        //checkboxes
-        if (modifier.groupId == groupId && modifier.itemId == itemId) {
-          modifier.modifierId.forEach(modifier_id => {
-            if (modifier_id == modifierId) {
-              found = true
-            }
-          })
-        }
-      } else {
-        //radio
-        if (
-          modifier.modifierId == modifierId &&
-          modifier.groupId == groupId &&
-          modifier.itemId == itemId
-        ) {
-          found = true
-        }
-      }
-    })
-    return found
-  },
 }
 
 // actions
 const actions = {
-  updateOption({ commit }, { itemId, modifierId, groupId, limit }) {
+  updateOption({ commit }, { model, key }) {
+    commit('setSelection', { model: model, key: key })
+    model = model[key]
+    const itemId = model.itemId
+    const modifierId = model.modifierId
+    const groupId = model.groupId
+    const limit = model.limit
+
     if (limit > 1) {
       //checkbox
       //modifers[itemId][groupId] = []
@@ -180,6 +164,9 @@ const mutations = {
         modifierId: group.modifierId,
       })
     })
+  },
+  setSelection(state, { model }) {
+    state.selectionModel = model || {}
   },
 }
 

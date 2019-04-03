@@ -811,6 +811,16 @@ $(document).ready(function() {
   })
 })
 
+function closeModal(modalName) {
+  $('body').removeClass('modal-open')
+  $('#transparent-screen').css('display', 'none')
+  $(modalName).modal('hide')
+}
+
+function showModal(modalName) {
+  $(modalName).modal('show')
+}
+
 function hidePayNow() {
   $('div#pay-now').addClass('effect-screen')
   // $("div#pay-now").hide(800);

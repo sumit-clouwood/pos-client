@@ -1,6 +1,5 @@
 <template>
   <div class="modal-body-modifiers" v-if="item">
-    <div class="error" v-if="error">{{ error }}</div>
     <div
       v-for="modifier in itemModifiers(item._id).modifiers"
       :key="modifier._id"
@@ -12,7 +11,7 @@
       >
         <div class="POSItemOptions_type">
           <h3 class="POSItemOptions_typehead">
-            <span>{{ submodifier.name }}</span>
+            <span>{{ submodifier.name }} ({{ submodifier.type }}) </span>
           </h3>
           <span class="POSItemOptions_typeline"></span>
         </div>
@@ -29,19 +28,20 @@
               <span class="customradioc">
                 <input
                   type="checkbox"
-                  :name="modifierOption._id"
+                  :name="submodifier._id"
                   :id="modifierOption._id"
                   class="customradio"
-                  :value="modifierOption._id"
-                  :checked="
-                    modifiers(item._id, submodifier._id, modifierOption._id)
-                  "
+                  v-model="selectionModel[modifierOption._id]"
+                  :value="{
+                    itemId: item._id,
+                    modifierId: modifierOption._id,
+                    groupId: submodifier._id,
+                    limit: submodifier.noofselection,
+                  }"
                   @change="
                     updateOption({
-                      itemId: item._id,
-                      modifierId: modifierOption._id,
-                      groupId: submodifier._id,
-                      limit: submodifier.noofselection,
+                      model: selectionModel,
+                      key: submodifier._id,
                     })
                   "
                 />
@@ -57,18 +57,19 @@
                 <input
                   type="radio"
                   class="customradio"
-                  :value="modifierOption._id"
+                  :value="{
+                    itemId: item._id,
+                    modifierId: modifierOption._id,
+                    groupId: submodifier._id,
+                    limit: submodifier.noofselection,
+                  }"
                   :id="modifierOption._id"
-                  :name="modifierOption._id"
-                  :checked="
-                    modifiers(item._id, submodifier._id, modifierOption._id)
-                  "
+                  :name="submodifier._id"
+                  v-model="selectionModel[submodifier._id]"
                   @change="
                     updateOption({
-                      itemId: item._id,
-                      modifierId: modifierOption._id,
-                      groupId: submodifier._id,
-                      limit: submodifier.noofselection,
+                      model: selectionModel,
+                      key: submodifier._id,
                     })
                   "
                 />
@@ -84,6 +85,7 @@
         </div>
       </div>
     </div>
+    <div class="error" v-show="error">{{ error }}</div>
   </div>
 </template>
 
@@ -92,13 +94,17 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Modifiers',
   props: {},
+  data() {
+    return {
+      selectionModel: {},
+    }
+  },
   computed: {
     ...mapState('location', ['currency']),
     ...mapState('modifier', ['item']),
     ...mapState('orderForm', ['error']),
     ...mapGetters('modifier', ['imagePath', 'itemModifiers']),
     ...mapGetters('location', ['rawPrice', 'formatPrice']),
-    ...mapGetters('orderForm', ['modifiers']),
   },
   methods: {
     ...mapActions('orderForm', ['updateOption']),

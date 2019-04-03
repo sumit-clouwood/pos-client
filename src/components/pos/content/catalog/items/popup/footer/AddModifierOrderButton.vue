@@ -2,7 +2,6 @@
   <button
     type="button"
     class="buttoned colorwhite donebutton"
-    data-dismiss="modal"
     @click="addModifierOrder"
   >
     <img src="img/pos/done.png" alt="done" />
@@ -10,13 +9,20 @@
   </button>
 </template>
 <script>
-import { mapActions } from 'vuex'
+/* global closeModal */
 
 export default {
   name: 'AddModifierOrderButton',
   props: {},
   methods: {
-    ...mapActions('order', ['addModifierOrder']),
+    addModifierOrder() {
+      this.$store
+        .dispatch('order/addModifierOrder')
+        .then(() => {
+          closeModal('#POSItemOptions')
+        })
+        .catch()
+    },
   },
 }
 </script>

@@ -60,7 +60,10 @@ const getters = {
     if (state.onlineOrders) {
       return state.onlineOrders
     } else {
-      if (localStorage.getItem('onlineOrders') != 'undefined' && JSON.parse(localStorage.getItem('onlineOrders')) != null) {
+      if (
+        localStorage.getItem('onlineOrders') != 'undefined' &&
+        JSON.parse(localStorage.getItem('onlineOrders')) != null
+      ) {
         return JSON.parse(localStorage.getItem('onlineOrders'))
       } else {
         return false
@@ -149,100 +152,134 @@ const actions = {
     )
   },
 
-  addModifierOrder({ commit, rootState, dispatch }) {
-    let item = { ...rootState.modifier.item }
+  addModifierOrder({ commit, rootState, dispatch, rootGetters }) {
+    return new Promise((resolve, reject) => {
+      let item = { ...rootState.modifier.item }
 
-    //this comes through the modifier popup
-    item.modifiable = true
-    item.undiscountedPrice = item.price
-    item.quantity = rootState.orderForm.quantity || 1
+      //this comes through the modifier popup
+      item.modifiable = true
+      item.undiscountedPrice = item.price
+      item.quantity = rootState.orderForm.quantity || 1
 
-    commit(mutation.SET_ITEM, item)
+      commit(mutation.SET_ITEM, item)
 
-    let itemModifierGroups = []
-    let itemModifiers = []
+      let itemModifierGroups = []
+      let itemModifiers = []
 
-    //adding modifers to item
-    const modifiers = rootState.orderForm.modifiers.filter(
-      modifier => modifier.itemId == item._id
-    )
-    modifiers.forEach(modifier => {
-      itemModifierGroups.push(modifier)
+      //adding modifers to item
+      const modifiers = rootState.orderForm.modifiers.filter(
+        modifier => modifier.itemId == item._id
+      )
 
-      if (Array.isArray(modifier.modifierId)) {
-        itemModifiers.push(...modifier.modifierId)
+      let selectedModifeirGroups = []
+
+      modifiers.forEach(modifier => {
+        itemModifierGroups.push(modifier)
+        selectedModifeirGroups.push(modifier.groupId)
+      })
+
+      //match modifiers with mandatory modifiers for this item, if not matched set error and return false
+      const itemMandatoryModifierGroups = rootGetters[
+        'modifier/itemMandatoryGroups'
+      ](item._id)
+
+      let mandatorySelected = true
+
+      itemMandatoryModifierGroups.forEach(id => {
+        if (!selectedModifeirGroups.includes(id)) {
+          mandatorySelected = false
+        }
+      })
+
+      if (mandatorySelected) {
+        commit('orderForm/setError', false, {
+          root: true,
+        })
       } else {
-        itemModifiers.push(modifier.modifierId)
+        commit('orderForm/setError', `Please select mandatory modifiers`, {
+          root: true,
+        })
+        reject()
+        return false
       }
-    })
 
-    commit(mutation.ADD_MODIFIERS_TO_ITEM, {
-      modifiers: itemModifiers,
-      modifierGroups: itemModifierGroups,
-    })
+      modifiers.forEach(modifier => {
+        if (Array.isArray(modifier.modifierId)) {
+          itemModifiers.push(...modifier.modifierId)
+        } else {
+          itemModifiers.push(modifier.modifierId)
+        }
+      })
 
-    //calculating item price based on modifiers selected
-    let modifierPrice = 0
-    //since we have just ids attached to item,
-    //we need to consult modifier store for modifier data ie price
+      commit(mutation.ADD_MODIFIERS_TO_ITEM, {
+        modifiers: itemModifiers,
+        modifierGroups: itemModifierGroups,
+      })
 
-    rootState.modifier.itemModifiers.forEach(itemMod => {
-      itemMod.modifiers.forEach(mod => {
-        mod.get_modifier_sub_groups.forEach(subgroup => {
-          subgroup.get_modifier_item_list.forEach(submod => {
-            if (item.modifiers.includes(submod._id)) {
-              modifierPrice += parseFloat(submod.price)
-            }
+      //calculating item price based on modifiers selected
+      let modifierPrice = 0
+      //since we have just ids attached to item,
+      //we need to consult modifier store for modifier data ie price
+
+      rootState.modifier.itemModifiers.forEach(itemMod => {
+        itemMod.modifiers.forEach(mod => {
+          mod.get_modifier_sub_groups.forEach(subgroup => {
+            subgroup.get_modifier_item_list.forEach(submod => {
+              if (item.modifiers.includes(submod._id)) {
+                modifierPrice += parseFloat(submod.price)
+              }
+            })
           })
         })
       })
-    })
 
-    commit(mutation.ADD_MODIFIER_PRICE_TO_ITEM, modifierPrice)
+      commit(mutation.ADD_MODIFIER_PRICE_TO_ITEM, modifierPrice)
 
-    if (!item.editMode) {
-      //update current item with new modifiers
+      if (!item.editMode) {
+        //update current item with new modifiers
 
-      //check if item exists with same signature
+        //check if item exists with same signature
 
-      let itemExists = -1
+        let itemExists = -1
 
-      state.items.forEach((orderItem, index) => {
-        if (
-          state.item._id == orderItem._id &&
-          orderItem.modifiers.every(modifierId =>
-            state.item.modifiers.includes(modifierId)
-          ) &&
-          orderItem.modifiers.length == state.item.modifiers.length
-        ) {
-          itemExists = index
-        }
-      })
+        state.items.forEach((orderItem, index) => {
+          if (
+            state.item._id == orderItem._id &&
+            orderItem.modifiers.every(modifierId =>
+              state.item.modifiers.includes(modifierId)
+            ) &&
+            orderItem.modifiers.length == state.item.modifiers.length
+          ) {
+            itemExists = index
+          }
+        })
 
-      if (itemExists > -1) {
-        commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, itemExists)
-      } else {
-        commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
-      }
-    } else {
-      //edit mode
-      //if the signature was different then modify modifiers,
-      //as we are creating new item and attached modifiers again so its better to just
-      //replace that item in state with existing item
-      commit(mutation.UPDATE_MODIFER_ORDER_ITEM, {
-        item: state.item,
-      })
-    }
-
-    dispatch('surcharge/calculate', {}, { root: true }).then(
-      dispatch('tax/calculate', {}, { root: true }).then(() => {
-        if (rootState.discount.appliedOrderDiscount) {
-          dispatch('recalculateOrderTotals')
+        if (itemExists > -1) {
+          commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, itemExists)
         } else {
-          dispatch('recalculateItemPrices')
+          commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
         }
-      })
-    )
+      } else {
+        //edit mode
+        //if the signature was different then modify modifiers,
+        //as we are creating new item and attached modifiers again so its better to just
+        //replace that item in state with existing item
+        commit(mutation.UPDATE_MODIFER_ORDER_ITEM, {
+          item: state.item,
+        })
+      }
+
+      dispatch('surcharge/calculate', {}, { root: true }).then(
+        dispatch('tax/calculate', {}, { root: true }).then(() => {
+          if (rootState.discount.appliedOrderDiscount) {
+            dispatch('recalculateOrderTotals')
+          } else {
+            dispatch('recalculateItemPrices')
+          }
+        })
+      )
+      resolve()
+    })
   },
 
   setActiveItem({ commit, dispatch }, { orderItem, index }) {

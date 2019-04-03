@@ -121,7 +121,6 @@ const actions = {
   setAmount({ commit, dispatch }, amount) {
     commit('setAmount', amount)
     dispatch('calculateSpendLoyalty')
-
   },
   setMethod({ commit }, method) {
     commit('setMethod', method)
@@ -146,15 +145,20 @@ const actions = {
     commit('removePayment', index)
   },
 
-  calculateSpendLoyalty({ commit, rootState }){
+  calculateSpendLoyalty({ commit, rootState }) {
     let loyalty = rootState.customer.loyalty
     let amount = parseFloat(loyalty.balance)
     alert(amount)
-    if(amount > 0) {
-      if (parseFloat(getters.orderTotal) > 0 && parseFloat(loyalty.balance) >= parseFloat(getters.orderTotal)) {
+    if (amount > 0) {
+      if (
+        parseFloat(getters.orderTotal) > 0 &&
+        parseFloat(loyalty.balance) >= parseFloat(getters.orderTotal)
+      ) {
         amount = parseFloat(getters.orderTotal).toFixed(2)
       }
-      if (parseFloat(getters.orderTotal) >= parseFloat(loyalty.max_redeem_amount)) {
+      if (
+        parseFloat(getters.orderTotal) >= parseFloat(loyalty.max_redeem_amount)
+      ) {
         amount = parseFloat(loyalty.max_redeem_amount)
       }
       if (parseFloat(loyalty.balance) < parseFloat(loyalty.min_redeem_amount)) {
@@ -162,7 +166,6 @@ const actions = {
       }
     }
     commit('loyaltyAmount', amount)
-    console.log(state.loyaltyAmount)
     // return isNaN(amount) ? 0 : amount
   },
 

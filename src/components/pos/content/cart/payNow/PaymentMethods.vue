@@ -40,8 +40,8 @@ export default {
     getTarget(method) {
       if (method.is_gift) {
         return '#Gift-card-payemnt'
-      } else if(method.name == 'Loyalty') {
-        if(this.selectedModal == '#manage-customer' ) {
+      } else if (method.name == 'Loyalty') {
+        if (this.selectedModal == '#manage-customer') {
           return '#manage-customer'
         } else {
           return '#loyalty-payment'
@@ -50,7 +50,6 @@ export default {
       return ''
     },
     ...mapActions('checkoutForm', ['setMethod']),
-
   },
   updated() {
     $('#payment-method').slick({

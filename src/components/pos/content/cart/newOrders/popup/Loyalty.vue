@@ -14,11 +14,20 @@
         </div>
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
-            <p v-if="loyalty.balance > 0">Loyalty Balance: <span>{{ loyalty.balance }}</span></p>
-            <p v-if="loyalty.balance <= 0"> {{ loyalty.loyalty_order_alert }}</p>
-            <hr>
-            <p>You can spend min <b>{{ loyalty.min_redeem_amount }} {{ loyalty.currency_code}}</b>  and max <b>{{ loyalty.max_redeem_amount }} {{ loyalty.currency_code}}</b> </p>
-            <p>Amount you can spend: <b>{{ amount }}</b> </p>
+            <p v-if="loyalty.balance > 0">
+              Loyalty Balance: <span>{{ loyalty.balance }}</span>
+            </p>
+            <p v-if="loyalty.balance <= 0">{{ loyalty.loyalty_order_alert }}</p>
+            <hr />
+            <p>
+              You can spend min
+              <b>{{ loyalty.min_redeem_amount }} {{ loyalty.currency_code }}</b>
+              and max
+              <b>{{ loyalty.max_redeem_amount }} {{ loyalty.currency_code }}</b>
+            </p>
+            <p>
+              Amount you can spend: <b>{{ amount }}</b>
+            </p>
           </div>
         </div>
         <div class="modal-footer">
@@ -49,7 +58,7 @@
   </div>
 </template>
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'Loyalty',
   /*data: function() {
@@ -59,19 +68,16 @@ export default {
   },*/
   computed: {
     ...mapState({
-      loyalty: state =>
-        state.customer.loyalty ? state.customer.loyalty : 0,
+      loyalty: state => (state.customer.loyalty ? state.customer.loyalty : 0),
     }),
     ...mapState({
       amount: state =>
         state.checkoutForm.loyaltyAmount ? state.checkoutForm.loyaltyAmount : 0,
     }),
     // ...mapGetters('checkoutForm', ['orderTotal']),
-
   },
   methods: {
     payByLoyalty() {
-      console.log('loyalty applied ' + this.amount)
       this.$store.dispatch('checkoutForm/setAmount', this.amount)
     },
     /* calculateSpendLoyalty() {
@@ -90,11 +96,10 @@ export default {
 
       return isNaN(this.amount) ? 0 : this.amount
     }*/
-    ...mapActions('checkoutForm',['calculateSpendLoyalty'])
+    ...mapActions('checkoutForm', ['calculateSpendLoyalty']),
   },
   updated() {
     this.calculateSpendLoyalty
-  }
-
+  },
 }
 </script>

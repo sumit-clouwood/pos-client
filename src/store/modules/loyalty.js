@@ -3,7 +3,7 @@ import LoyaltyService from '@/services/data/LoyaltyService'
 
 const state = {
   loyalty: false,
-  loyaltyCustomerList: false
+  loyaltyCustomerList: false,
 }
 const getters = {}
 const actions = {
@@ -13,11 +13,11 @@ const actions = {
       commit(mutation.LOYALTY, response.data.data)
     })
   },
-  searchCustomer({ commit }, searchTerm ) {
+  searchCustomer({ commit }, searchTerm) {
     LoyaltyService.searchCustomer(searchTerm).then(response => {
       commit(mutation.LOYALTY_CUSTOMERS, response.data)
     })
-  }
+  },
 }
 const mutations = {
   [mutation.LOYALTY](state, status) {

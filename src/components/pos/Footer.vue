@@ -47,14 +47,24 @@
             >
           </li>
           <li data-toggle="modal" data-target="#add-note">
-            <a href="#"><img src="img/pos/notes.svg" alt="Note" /><span>Add Note</span></a
+            <a href="#"
+              ><img src="img/pos/notes.svg" alt="Note" /><span
+                >Add Note</span
+              ></a
             >
           </li>
-          <li data-toggle="modal" data-target="#search-loyalty-customer" v-if="loyaltyEnable">
-            <a href="#"><img src="img/pos/tip.png" alt="Loyalty" /><span>Loyalty</span>
+          <li
+            data-toggle="modal"
+            data-target="#search-loyalty-customer"
+            v-if="loyaltyEnable"
+          >
+            <a href="#"
+              ><img src="img/pos/tip.png" alt="Loyalty" /><span>Loyalty</span>
               <span v-if="loyaltyInfo">
-                <small>{{ loyaltyInfo.balance }} {{ loyaltyInfo.currency_code }}
-                  {{ selectedCustomer.customer_name }}</small>
+                <small
+                  >{{ loyaltyInfo.balance }} {{ loyaltyInfo.currency_code }}
+                  {{ selectedCustomer.customer_name }}</small
+                >
               </span>
             </a>
           </li>
@@ -162,22 +172,25 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapState('sync', ['online']),
     ...mapState({
-      selectedModal: state => state.location.setModal == '#loyalty-payment' ? '#manage-customer' : state.location.setModal,
+      selectedModal: state =>
+        state.location.setModal == '#loyalty-payment'
+          ? '#manage-customer'
+          : state.location.setModal,
     }),
     ...mapState({
-      loyaltyEnable: state => state.loyalty.loyalty
+      loyaltyEnable: state => state.loyalty.loyalty,
     }),
     ...mapState({
-      loyaltyInfo: state => state.customer.loyalty
+      loyaltyInfo: state => state.customer.loyalty,
     }),
     ...mapState({
       selectedCustomer: state =>
         typeof state.customer.customer.customer_list != 'undefined'
           ? state.customer.customer.customer_list
           : typeof state.customer.fetchCustomerAddressOnly.customer_list !=
-        'undefined'
-            ? state.customer.fetchCustomerAddressOnly.customer_list[0]
-            : false,
+            'undefined'
+          ? state.customer.fetchCustomerAddressOnly.customer_list[0]
+          : false,
     }),
   },
   methods: {

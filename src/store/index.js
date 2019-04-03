@@ -51,7 +51,7 @@ const store = new Vuex.Store({
     holdOrders,
     invoice,
     payment,
-    loyalty
+    loyalty,
   },
   strict: false,
   //plugins: debug ? [createLogger()] : [],

@@ -109,7 +109,10 @@ export default {
     ...mapActions('location', ['changeLanguage']),
     onlineOrders() {
       if (this.latestOnlineOrders == 0) {
-        if (localStorage.getItem('onlineOrders') != 'undefined' && JSON.parse(localStorage.getItem('onlineOrders')) != null) {
+        if (
+          localStorage.getItem('onlineOrders') != 'undefined' &&
+          JSON.parse(localStorage.getItem('onlineOrders')) != null
+        ) {
           this.onlineOrdersCount = JSON.parse(
             localStorage.getItem('onlineOrders')
           ).length
