@@ -60,7 +60,7 @@ const getters = {
     if (state.onlineOrders) {
       return state.onlineOrders
     } else {
-      if (JSON.parse(localStorage.getItem('onlineOrders')) != null) {
+      if (localStorage.getItem('onlineOrders') != 'undefined' && JSON.parse(localStorage.getItem('onlineOrders')) != null) {
         return JSON.parse(localStorage.getItem('onlineOrders'))
       } else {
         return false

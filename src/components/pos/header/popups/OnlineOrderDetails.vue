@@ -36,7 +36,7 @@
                   <th style="width: 100px">TAX</th>
                   <th style="width: 150px">SUBTOTAL</th>
                 </tr>
-                <tr v-for="(item, index) in getOrderDetails.items" :key="index">
+                <tr v-for="item in getOrderDetails.items" :key="item.item_id">
                   <td>
                     {{ item.item_name }}
                     <div class="head1" v-if="item.item_modifiers.length">
@@ -49,35 +49,29 @@
                       class="online-order-details-wrap"
                     >
                       <div
-                        v-for="(modifier, key) in item.item_modifiers"
-                        :key="key"
+                        v-for="(modifier, index) in item.item_modifiers"
+                        :key="index"
                       >
                         <p
-                          class="ng-binding"
-                          v-for="(PMDetails, index) in modifier.modifiers
+                          v-for="PMDetails in modifier.modifiers
                             .price_modifiers"
-                          :key="index"
-                        ></p>
-                        <p
-                          v-for="(PMDetails, index) in modifier.modifiers
-                            .price_modifiers"
-                          :key="index"
+                          :key="PMDetails._id"
                         >
                           {{ PMDetails.item_name }} ({{
                             PMDetails.location_price
                           }})
                         </p>
                         <p
-                          v-for="(MMDetails, index) in modifier.modifiers
+                          v-for="MMDetails in modifier.modifiers
                             .mandatory_modifiers"
-                          :key="index"
+                          :key="MMDetails._id"
                         >
                           {{ MMDetails.item_name }}
                         </p>
                         <p
-                          v-for="(RMDetails, index) in modifier.modifiers
+                          v-for="RMDetails in modifier.modifiers
                             .regular_modifiers"
-                          :key="index"
+                          :key="RMDetails._id"
                         >
                           {{ RMDetails.item_name }}
                         </p>
