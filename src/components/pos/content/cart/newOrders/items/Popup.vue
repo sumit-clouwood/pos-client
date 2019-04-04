@@ -12,6 +12,7 @@
       <div class="modal-content">
         <Header />
         <Content />
+        <div class="error" v-show="error">{{ error }}</div>
         <Footer />
       </div>
     </div>
@@ -23,6 +24,7 @@
 import Header from './popup/Header.vue'
 import Content from './popup/Content.vue'
 import Footer from './popup/Footer.vue'
+import { mapState } from 'vuex'
 export default {
   name: 'Popup',
   props: {},
@@ -30,6 +32,9 @@ export default {
     Content,
     Header,
     Footer,
+  },
+  computed: {
+    ...mapState('orderForm', ['error']),
   },
 }
 </script>

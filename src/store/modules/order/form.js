@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
 // initial state
 const state = {
-  modifiers: [],
   error: false,
   quantity: 0,
-  selectionModel: {},
+  checkboxes: [],
+  radios: {},
 }
 
 // getters
@@ -12,51 +12,43 @@ const getters = {
   quantity: (state, getters, rootState) => {
     return state.quantity || rootState.order.item.quantity || 1
   },
+  modifiers: state => {
+    let modifiers = []
+    state.checkboxes.forEach(model => {
+      modifiers.push({
+        type: 'checkbox',
+        itemId: model.itemId,
+        modifierId: model.modifierId,
+        groupId: model.groupId,
+        limit: model.limit,
+      })
+    })
+
+    for (let key in state.radios) {
+      const model = state.radios[key]
+      model &&
+        modifiers.push({
+          type: 'radio',
+          itemId: model.itemId,
+          modifierId: model.modifierId,
+          groupId: model.groupId,
+        })
+    }
+
+    return modifiers
+  },
 }
 
 // actions
 const actions = {
-  updateOption({ commit }, { model, key }) {
-    commit('setSelection', { model: model, key: key })
-    model = model[key]
-    const itemId = model.itemId
-    const modifierId = model.modifierId
-    const groupId = model.groupId
-    const limit = model.limit
-
-    if (limit > 1) {
-      //checkbox
-      //modifers[itemId][groupId] = []
-      commit('addMultiple', {
-        itemId: itemId,
-        modifierId: modifierId,
-        groupId: groupId,
-      })
-
-      const modifier = state.modifiers.find(
-        modifier => modifier.itemId == itemId && modifier.groupId == groupId
-      )
-      if (modifier && modifier.modifierId.length > limit) {
-        commit('removeOption', {
-          itemId: itemId,
-          modifierId: modifierId,
-          groupId: groupId,
-        })
-        commit('setError', `Cant select more than ${limit} addons`)
-      } else {
-        commit('clearError')
-      }
-    } else {
-      //radio
-      //modifers[itemId][groupId] = radio
-      commit('addSingle', {
-        itemId: itemId,
-        modifierId: modifierId,
-        groupId: groupId,
-      })
-    }
+  updateRadios({ commit }, { itemId, modifierId, groupId, limit }) {
+    commit('setRadios', {
+      itemId: itemId,
+      modifierId: modifierId,
+      groupId: groupId,
+      limit: limit,
+    })
   },
-
   populateSelection({ commit }, modifierGroups) {
     commit('clearSelection')
     commit('populateSelection', modifierGroups)
@@ -68,80 +60,6 @@ const actions = {
 
 // mutations
 const mutations = {
-  addSingle(state, { itemId, modifierId, groupId }) {
-    const key = state.modifiers.findIndex(
-      item => item.itemId == itemId && item.groupId == groupId
-    )
-    if (key > -1) {
-      let modifier = state.modifiers.find(
-        item => item.itemId == itemId && item.groupId == groupId
-      )
-      modifier.modifierId = modifierId
-      state.modifiers.splice(key, 1, modifier)
-    } else {
-      state.modifiers.push({
-        itemId: itemId,
-        modifierId: modifierId,
-        groupId: groupId,
-      })
-    }
-  },
-  addMultiple(state, { itemId, modifierId, groupId }) {
-    //if already exists remove that
-    const modifier = state.modifiers.find(
-      modifier => modifier.itemId == itemId && modifier.groupId == groupId
-    )
-
-    if (modifier && modifier.modifierId.find(modId => modId == modifierId)) {
-      const key = modifier.modifierId.findIndex(modId => modId == modifierId)
-      //if already exists, remove it : toggle concept
-      if (
-        Array.isArray(modifier.modifierId) &&
-        modifier.modifierId.length === 1
-      ) {
-        //remove the whole group
-        const index = state.modifiers.findIndex(
-          modifier => modifier.itemId == itemId && modifier.groupId == groupId
-        )
-        state.modifiers.splice(index, 1)
-      } else {
-        modifier.modifierId.splice(key, 1)
-      }
-    } else {
-      const key = state.modifiers.findIndex(
-        item => item.itemId == itemId && item.groupId == groupId
-      )
-
-      if (key > -1) {
-        //modifier already exist for this item and modifier group, add modifier into existing modifers
-        let modifier = state.modifiers.find(
-          item => item.itemId == itemId && item.groupId == groupId
-        )
-        modifier.modifierId.push(modifierId)
-        state.modifiers.splice(key, 1, modifier)
-      } else {
-        //create new modifier
-        state.modifiers.push({
-          itemId: itemId,
-          modifierId: [modifierId],
-          groupId: groupId,
-        })
-      }
-    }
-  },
-  removeOption(state, { itemId, modifierId, groupId }) {
-    const key = state.modifiers.findIndex(
-      item => item.itemId == itemId && item.groupId == groupId
-    )
-    if (key > -1) {
-      let modifier = state.modifiers.find(
-        item => item.itemId == itemId && item.groupId == groupId
-      )
-      const index = modifier.modifierId.findIndex(modId => modId == modifierId)
-      modifier.modifierId.splice(index, 1)
-      state.modifiers.splice(key, 1, modifier)
-    }
-  },
   setError(state, error) {
     state.error = error
   },
@@ -151,22 +69,46 @@ const mutations = {
   },
 
   clearSelection(state) {
-    state.modifiers = []
+    state.checkboxes = []
+    state.radios = {}
   },
   updateQuantity(state, quantity) {
     state.quantity = quantity
   },
   populateSelection(state, modifierGroups) {
-    modifierGroups.forEach(group => {
-      state.modifiers.push({
-        groupId: group.groupId,
-        itemId: group.itemId,
-        modifierId: group.modifierId,
-      })
+    modifierGroups.forEach(model => {
+      if (model.type === 'checkbox') {
+        state.checkboxes.push(model)
+      } else if (model.type === 'radio') {
+        state.radios[model.groupId] = model
+      }
     })
   },
-  setSelection(state, { model }) {
-    state.selectionModel = model || {}
+
+  setCheckboxes(state, vmodel) {
+    const oldState = state.checkboxes
+    state.checkboxes = vmodel
+
+    //check if modifier is in allowed limit
+    state.error = false
+    vmodel.forEach(model => {
+      const addedModifiers = state.checkboxes.filter(
+        cmodel =>
+          cmodel.groupId == model.groupId && cmodel.itemId == model.itemId
+      )
+
+      if (addedModifiers.length > model.limit) {
+        state.error = `Can not select more than ${
+          model.limit
+        } modifiers in this group`
+
+        //reset to previous state
+        state.checkboxes = oldState
+      }
+    })
+  },
+  setRadios(state, radios) {
+    state.radios = radios
   },
 }
 

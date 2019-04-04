@@ -28,22 +28,17 @@
               <span class="customradioc">
                 <input
                   type="checkbox"
-                  :name="submodifier._id"
+                  :name="modifierOption._id"
                   :id="modifierOption._id"
                   class="customradio"
-                  v-model="selectionModel[modifierOption._id]"
                   :value="{
+                    type: 'checkbox',
                     itemId: item._id,
                     modifierId: modifierOption._id,
                     groupId: submodifier._id,
-                    limit: submodifier.noofselection,
+                    limit: 4 || submodifier.noofselection,
                   }"
-                  @change="
-                    updateOption({
-                      model: selectionModel,
-                      key: submodifier._id,
-                    })
-                  "
+                  v-model="checkboxes"
                 />
                 <span></span>
               </span>
@@ -57,21 +52,19 @@
                 <input
                   type="radio"
                   class="customradio"
+                  :key="modifierOption._id"
+                  :id="modifierOption._id"
+                  :name="submodifier._id"
                   :value="{
+                    type: 'radio',
                     itemId: item._id,
                     modifierId: modifierOption._id,
                     groupId: submodifier._id,
-                    limit: submodifier.noofselection,
                   }"
-                  :id="modifierOption._id"
-                  :name="submodifier._id"
-                  v-model="selectionModel[submodifier._id]"
                   @change="
-                    updateOption({
-                      model: selectionModel,
-                      key: submodifier._id,
-                    })
+                    setRadio(item._id, submodifier._id, modifierOption._id)
                   "
+                  v-model="radios[submodifier._id]"
                 />
                 <span class="checkmark-radio-btn"></span>
               </span>
@@ -85,21 +78,28 @@
         </div>
       </div>
     </div>
-    <div class="error" v-show="error">{{ error }}</div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Modifiers',
-  props: {},
   data() {
     return {
-      selectionModel: {},
+      radios: this.$store.state.orderForm.radios,
     }
   },
+
   computed: {
+    checkboxes: {
+      get() {
+        return this.$store.state.orderForm.checkboxes
+      },
+      set(vmodel) {
+        this.$store.commit('orderForm/setCheckboxes', vmodel)
+      },
+    },
     ...mapState('location', ['currency']),
     ...mapState('modifier', ['item']),
     ...mapState('orderForm', ['error']),
@@ -107,7 +107,17 @@ export default {
     ...mapGetters('location', ['rawPrice', 'formatPrice']),
   },
   methods: {
-    ...mapActions('orderForm', ['updateOption']),
+    setRadio(itemId, groupId, modifierId) {
+      //bind model here yourself, it’s possible to add reactive properties to a nested object
+      this.$set(this.radios, groupId, {
+        type: 'radio',
+        itemId: itemId,
+        modifierId: modifierId,
+        groupId: groupId,
+      })
+
+      this.$store.commit('orderForm/setRadios', this.radios)
+    },
   },
 }
 </script>
