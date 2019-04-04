@@ -52,7 +52,7 @@ export default {
   // props: ['note'],
   data() {
     return {
-      note:''
+      note: '',
     }
   },
   methods: {

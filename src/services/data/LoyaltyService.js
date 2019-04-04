@@ -22,5 +22,5 @@ export default {
     return DataService.get(
       `/api/auth/search-customers?search_query=${searchTerm}`
     )
-  }
+  },
 }

@@ -123,7 +123,6 @@ const actions = {
   setAmount({ commit, dispatch }, amount) {
     commit('setAmount', amount)
     dispatch('calculateSpendLoyalty')
-
   },
   setMethod({ commit }, method) {
     commit('setMethod', method)
@@ -152,7 +151,7 @@ const actions = {
     const loyalty = rootState.customer.loyalty
     const orderTotal = getters.orderTotal
     let amount = parseFloat(loyalty.balance)
-    if(amount > 0) {
+    if (amount > 0) {
       if (parseFloat(orderTotal) > 0 && parseFloat(loyalty.balance) >= parseFloat(orderTotal)) {
         amount = parseFloat(orderTotal).toFixed(2)
       }

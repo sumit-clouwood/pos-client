@@ -14,11 +14,20 @@
         </div>
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
-            <p v-if="loyalty.balance > 0">Loyalty Balance: <span>{{ loyalty.balance }}</span></p>
-            <p v-if="loyalty.balance <= 0"> {{ loyalty.loyalty_order_alert }}</p>
-            <hr>
-            <p>You can spend min <b>{{ loyalty.min_redeem_amount }} {{ loyalty.currency_code}}</b>  and max <b>{{ loyalty.max_redeem_amount }} {{ loyalty.currency_code}}</b> </p>
-            <p>Amount you can spend: <b>{{ amount }}</b> </p>
+            <p v-if="loyalty.balance > 0">
+              Loyalty Balance: <span>{{ loyalty.balance }}</span>
+            </p>
+            <p v-if="loyalty.balance <= 0">{{ loyalty.loyalty_order_alert }}</p>
+            <hr />
+            <p>
+              You can spend min
+              <b>{{ loyalty.min_redeem_amount }} {{ loyalty.currency_code }}</b>
+              and max
+              <b>{{ loyalty.max_redeem_amount }} {{ loyalty.currency_code }}</b>
+            </p>
+            <p>
+              Amount you can spend: <b>{{ amount }}</b>
+            </p>
           </div>
         </div>
         <div class="modal-footer">
@@ -54,8 +63,7 @@ export default {
   name: 'Loyalty',
   computed: {
     ...mapState({
-      loyalty: state =>
-        state.customer.loyalty ? state.customer.loyalty : 0,
+      loyalty: state => (state.customer.loyalty ? state.customer.loyalty : 0),
     }),
     ...mapState({
       amount: state =>
@@ -70,7 +78,6 @@ export default {
   },
   updated() {
     this.calculateSpendLoyalty
-  }
-
+  },
 }
 </script>

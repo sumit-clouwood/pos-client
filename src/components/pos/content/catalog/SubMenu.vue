@@ -18,7 +18,6 @@
 </template>
 
 <script>
-/* global $ */
 import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {

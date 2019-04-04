@@ -47,7 +47,10 @@
             >
           </li>
           <li data-toggle="modal" data-target="#add-note">
-            <a href="#"><img src="img/pos/notes.svg" alt="Note" /><span>Add Note</span></a
+            <a href="#"
+              ><img src="img/pos/notes.svg" alt="Note" /><span
+                >Add Note</span
+              ></a
             >
           </li>
           <li data-toggle="modal" data-target="#search-loyalty-customer" v-if="loyaltyEnable" :class="{loyaltyApplied : loyaltyInfo}">
@@ -164,22 +167,25 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapState('sync', ['online']),
     ...mapState({
-      selectedModal: state => state.location.setModal == '#loyalty-payment' ? '#manage-customer' : state.location.setModal,
+      selectedModal: state =>
+        state.location.setModal == '#loyalty-payment'
+          ? '#manage-customer'
+          : state.location.setModal,
     }),
     ...mapState({
-      loyaltyEnable: state => state.loyalty.loyalty
+      loyaltyEnable: state => state.loyalty.loyalty,
     }),
     ...mapState({
-      loyaltyInfo: state => state.customer.loyalty
+      loyaltyInfo: state => state.customer.loyalty,
     }),
     ...mapState({
       selectedCustomer: state =>
         typeof state.customer.customer.customer_list != 'undefined'
           ? state.customer.customer.customer_list
           : typeof state.customer.fetchCustomerAddressOnly.customer_list !=
-        'undefined'
-            ? state.customer.fetchCustomerAddressOnly.customer_list[0]
-            : false,
+            'undefined'
+          ? state.customer.fetchCustomerAddressOnly.customer_list[0]
+          : false,
     }),
   },
   methods: {

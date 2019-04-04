@@ -71,8 +71,6 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
-/* global $  */
-
 export default {
   name: 'Menu',
   props: {},

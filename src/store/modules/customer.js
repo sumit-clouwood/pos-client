@@ -128,7 +128,9 @@ const actions = {
     { state, commit, rootState, dispatch },
     { customerId, addressOnly }
   ) {
-    dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {root: true})
+    dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
+      root: true,
+    })
     commit(mutation.SET_CUSTOMER_ID, customerId)
     if (typeof addressOnly != 'undefined') {
       const params = [customerId, rootState.location.location]

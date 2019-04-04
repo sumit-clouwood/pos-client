@@ -8,8 +8,6 @@
           class="vegetable pos-item-bg"
           v-for="item in items"
           :key="item._id"
-          :data-toggle="hasModifiers(item) ? 'modal' : ''"
-          data-target="#POSItemOptions"
           @click.prevent="addToOrder(item)"
         >
           <div>
@@ -31,7 +29,7 @@
 </template>
 
 <script>
-/* global $  */
+/* global $, showModal, hideModal  */
 
 import { mapGetters } from 'vuex'
 
@@ -55,20 +53,23 @@ export default {
       this.$store.commit('category/SET_ITEM', item)
 
       if (this.$store.getters['modifier/hasModifiers'](item)) {
+        showModal('#POSItemOptions')
         this.$store.dispatch('modifier/setModifierItem', item)
       } else {
+        hideModal('#POSItemOptions')
         this.$store.dispatch('order/addToOrder', item)
       }
     },
     imageLoadError(className) {
-      $(this).find('.popover-btn').attr('style','font-size:17px')
+      $(this)
+        .find('.popover-btn')
+        .attr('style', 'font-size:17px')
 
       $('img.' + className).remove()
       /*$('div.vegetable:not(.pos-item-bg) p.remove-bottom, .pizza-size-wrapper > div:not(.pos-size-bg)').each(function() {
         let hue = 'rgb(' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ')'
         $(this).css('background-color', hue)
       })*/
-
     },
   },
 }
