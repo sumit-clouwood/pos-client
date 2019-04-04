@@ -207,12 +207,14 @@ const actions = {
       })
     }
   },
+
   setOfflineData({ commit }, data) {
     commit(mutation.SET_OFFLINE_DATA, data)
   },
 
   reset({ commit }) {
     commit(mutation.RESET)
+    commit(mutation.LOYALTY, false)
   },
 }
 const mutations = {

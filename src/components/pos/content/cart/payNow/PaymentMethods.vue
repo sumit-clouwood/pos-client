@@ -42,7 +42,7 @@ export default {
         return '#Gift-card-payemnt'
       } else if(method.name == 'Loyalty') {
         if(this.selectedModal == '#manage-customer' ) {
-          return '#manage-customer'
+          return '#search-loyalty-customer'
         } else {
           this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
           return '#loyalty-payment'

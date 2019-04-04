@@ -38,7 +38,7 @@
               type="button"
               id="save-note"
             >
-              Save
+              Select
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
