@@ -44,6 +44,7 @@ export default {
         if(this.selectedModal == '#manage-customer' ) {
           return '#manage-customer'
         } else {
+          this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
           return '#loyalty-payment'
         }
       }

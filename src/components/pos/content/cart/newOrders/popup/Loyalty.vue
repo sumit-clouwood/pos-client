@@ -52,11 +52,6 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Loyalty',
-  /*data: function() {
-    return {
-      amount: 0,
-    }
-  },*/
   computed: {
     ...mapState({
       loyalty: state =>
@@ -66,30 +61,11 @@ export default {
       amount: state =>
         state.checkoutForm.loyaltyAmount ? state.checkoutForm.loyaltyAmount : 0,
     }),
-    // ...mapGetters('checkoutForm', ['orderTotal']),
-
   },
   methods: {
     payByLoyalty() {
-      console.log('loyalty applied ' + this.amount)
       this.$store.dispatch('checkoutForm/setAmount', this.amount)
     },
-    /* calculateSpendLoyalty() {
-      this.amount = parseFloat(this.loyalty.balance)
-      if(parseFloat(this.loyalty.balance) > 0) {
-        if (parseFloat(this.orderTotal) > 0 && parseFloat(this.loyalty.balance) >= parseFloat(this.orderTotal)) {
-          this.amount = parseFloat(this.orderTotal).toFixed(2)
-        }
-        if (parseFloat(this.orderTotal) >= parseFloat(this.loyalty.max_redeem_amount)) {
-          this.amount = parseFloat(this.loyalty.max_redeem_amount)
-        }
-        if (parseFloat(this.loyalty.balance) < parseFloat(this.loyalty.min_redeem_amount)) {
-          this.amount = parseFloat(0)
-        }
-      }
-
-      return isNaN(this.amount) ? 0 : this.amount
-    }*/
     ...mapActions('checkoutForm',['calculateSpendLoyalty'])
   },
   updated() {

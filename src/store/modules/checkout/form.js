@@ -146,24 +146,25 @@ const actions = {
     commit('removePayment', index)
   },
 
-  calculateSpendLoyalty({ commit, rootState }){
-    let loyalty = rootState.customer.loyalty
+  calculateSpendLoyalty({ commit, rootState, getters }){
+    const loyalty = rootState.customer.loyalty
+    const orderTotal = getters.orderTotal
     let amount = parseFloat(loyalty.balance)
-    alert(amount)
     if(amount > 0) {
-      if (parseFloat(getters.orderTotal) > 0 && parseFloat(loyalty.balance) >= parseFloat(getters.orderTotal)) {
-        amount = parseFloat(getters.orderTotal).toFixed(2)
+      if (parseFloat(orderTotal) > 0 && parseFloat(loyalty.balance) >= parseFloat(orderTotal)) {
+        amount = parseFloat(orderTotal).toFixed(2)
       }
-      if (parseFloat(getters.orderTotal) >= parseFloat(loyalty.max_redeem_amount)) {
+
+      if (parseFloat(orderTotal) >= parseFloat(loyalty.max_redeem_amount)) {
         amount = parseFloat(loyalty.max_redeem_amount)
       }
+
       if (parseFloat(loyalty.balance) < parseFloat(loyalty.min_redeem_amount)) {
         amount = parseFloat('0.0')
       }
+
     }
     commit('loyaltyAmount', amount)
-    console.log(state.loyaltyAmount)
-    // return isNaN(amount) ? 0 : amount
   },
 
   reset({ commit }) {
