@@ -49,7 +49,7 @@
   </div>
 </template>
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'Loyalty',
   computed: {

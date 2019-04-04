@@ -11,8 +11,10 @@
         <div class="modal-body add-note-wrap">
           <div class="add-note-area">
             <p>Select customer to get loyalty</p>
-            <input type="text" placeholder="Search.." v-model="searchTerm" class="inputSearch">
-            <img src="img/pos/search-icon.png" alt="search" class="btn btnSuccess" v-on:click="search(searchTerm)">
+            <input type="text" placeholder="Search.." v-model="searchTerm" class="inputSearch" id="getCustomerList">
+            <button type="button" class="btn btnSuccess" id="load" v-on:click="search(searchTerm)" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Order">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true">Find</span>
+            </button>
           </div>
           <div class="dropdown" v-if="customers.length">
               <div id="myDropdown" class="dropdown-content" >
@@ -81,9 +83,16 @@ export default {
       $('#myDropdown').toggle()
       this.searchCustomer(searchTerm)
     },
+    /*searchInputHit(searchTerm) {
+      const action = this
+      $('#getCustomerList').keypress(function (e) { if (e.which == 13) {
+        action.searchCustomer(searchTerm)
+      }})
+    },*/
     ...mapActions('loyalty', ['searchCustomer']),
     ...mapActions('customer', ['fetchSelectedCustomer']),
   },
+
 }
 </script>
 

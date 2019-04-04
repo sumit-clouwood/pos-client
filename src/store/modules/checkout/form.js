@@ -35,7 +35,6 @@ const actions = {
     const totalPayable = getters.orderTotal
     const paid = getters.paid
     const remaining = totalPayable - paid
-
     if (parseFloat(state.amount) < 0.01) {
       commit('SET_ERROR', 'Amount should be greater than 0.00')
       commit('showCalc', true)
@@ -49,6 +48,9 @@ const actions = {
         "Card payment can't be greater than " +
           rootGetters['location/round'](remaining)
       )
+      commit('showCalc', true)
+    } else if(state.method.name == 'Loyalty' && parseFloat(state.amount) != parseFloat(state.loyaltyAmount)) {
+      commit('SET_ERROR', 'You can add only '+ state.loyaltyAmount + ' loyalty amount.')
       commit('showCalc', true)
     } else {
       commit('SET_ERROR', false)

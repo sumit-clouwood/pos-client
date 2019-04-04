@@ -50,11 +50,13 @@
             <a href="#"><img src="img/pos/notes.svg" alt="Note" /><span>Add Note</span></a
             >
           </li>
-          <li data-toggle="modal" data-target="#search-loyalty-customer" v-if="loyaltyEnable">
-            <a href="#"><img src="img/pos/tip.png" alt="Loyalty" /><span>Loyalty</span>
+          <li data-toggle="modal" data-target="#search-loyalty-customer" v-if="loyaltyEnable" :class="{loyaltyApplied : loyaltyInfo}">
+            <a href="#">
+              <img src="img/pos/tip.png" alt="Loyalty" v-if="!loyaltyInfo" />
+              <span v-if="!loyaltyInfo">Loyalty</span>
               <span v-if="loyaltyInfo">
-                <small>{{ loyaltyInfo.balance }} {{ loyaltyInfo.currency_code }}
-                  {{ selectedCustomer.customer_name }}</small>
+                  <span>{{ loyaltyInfo.balance }} {{ loyaltyInfo.currency_code }} Loyalty</span> <br>
+                  <span> {{ selectedCustomer.customer_name }} </span>
               </span>
             </a>
           </li>
@@ -128,7 +130,7 @@ import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
 import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 
 import { mapActions, mapState } from 'vuex'
-
+/* global $ */
 export default {
   name: 'Footer',
   props: {},
@@ -184,5 +186,29 @@ export default {
     ...mapActions('holdOrders', ['getHoldOrders']),
     ...mapActions('discount', ['validateOrderDiscounts']),
   },
+  updated() {
+    $('ul.ullist-icons').slick({
+      slidesToShow:5,
+      slidesToScroll:1,
+      dots:false,
+      arrows:true,
+      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
+      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>'
+    })
+  }
 }
 </script>
+
+<style scoped>
+  footer.sticky-footer ul.ullist-icons li.loyaltyApplied {
+    background: #ff7e28;
+    padding: 5px 20px !important;
+  }
+
+  footer.sticky-footer ul.ullist-icons li.loyaltyApplied span {
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 2.1;
+    text-align: center;
+  }
+</style>
