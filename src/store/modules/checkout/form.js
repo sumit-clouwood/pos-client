@@ -35,7 +35,6 @@ const actions = {
     const totalPayable = getters.orderTotal
     const paid = getters.paid
     const remaining = totalPayable - paid
-
     if (parseFloat(state.amount) < 0.01) {
       commit('SET_ERROR', 'Amount should be greater than 0.00')
       commit('showCalc', true)
@@ -49,6 +48,13 @@ const actions = {
         "Card payment can't be greater than " +
           rootGetters['location/round'](remaining)
       )
+      commit('showCalc', true)
+    } else if(state.method.name == 'Loyalty' && parseFloat(state.amount) != parseFloat(state.loyaltyAmount)) {
+      if(parseFloat(state.loyaltyAmount) <= 0.01) {
+        commit('SET_ERROR', 'You dont have loyalty amount.')
+      } else {
+        commit('SET_ERROR', 'You can add only '+ state.loyaltyAmount + ' loyalty amount.')
+      }
       commit('showCalc', true)
     } else {
       commit('SET_ERROR', false)
@@ -145,28 +151,25 @@ const actions = {
     commit('removePayment', index)
   },
 
-  calculateSpendLoyalty({ commit, rootState }) {
-    let loyalty = rootState.customer.loyalty
+  calculateSpendLoyalty({ commit, rootState, getters }){
+    const loyalty = rootState.customer.loyalty
+    const orderTotal = getters.orderTotal
     let amount = parseFloat(loyalty.balance)
-    alert(amount)
     if (amount > 0) {
-      if (
-        parseFloat(getters.orderTotal) > 0 &&
-        parseFloat(loyalty.balance) >= parseFloat(getters.orderTotal)
-      ) {
-        amount = parseFloat(getters.orderTotal).toFixed(2)
+      if (parseFloat(orderTotal) > 0 && parseFloat(loyalty.balance) >= parseFloat(orderTotal)) {
+        amount = parseFloat(orderTotal).toFixed(2)
       }
-      if (
-        parseFloat(getters.orderTotal) >= parseFloat(loyalty.max_redeem_amount)
-      ) {
+
+      if (parseFloat(orderTotal) >= parseFloat(loyalty.max_redeem_amount)) {
         amount = parseFloat(loyalty.max_redeem_amount)
       }
+
       if (parseFloat(loyalty.balance) < parseFloat(loyalty.min_redeem_amount)) {
         amount = parseFloat('0.0')
       }
+
     }
     commit('loyaltyAmount', amount)
-    // return isNaN(amount) ? 0 : amount
   },
 
   reset({ commit }) {

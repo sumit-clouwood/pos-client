@@ -11,7 +11,7 @@
           :src="subcategoryImage(item.sub_category_image)"
           :alt="item.name"
         />
-        <span>{{ item.name }}</span>
+        <span :title="item.name">{{ item.name.substring(0, 15) }}</span>
       </div>
     </div>
   </div>
@@ -31,11 +31,6 @@ export default {
   },
   methods: {
     ...mapActions('category', ['getItems']),
-  },
-
-  updated() {
-    // $('.vegetable:has(img)').addClass('pos-item-bg')
-    // $('.pizza-size-wrapper > div:has(img)').addClass('pos-size-bg')
   },
 }
 </script>

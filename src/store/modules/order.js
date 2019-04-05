@@ -196,7 +196,7 @@ const actions = {
           root: true,
         })
       } else {
-        commit('orderForm/setError', `Please select mandatory modifiers`, {
+        commit('orderForm/setError', 'Please select mandatory modifiers', {
           root: true,
         })
         reject()

@@ -2,7 +2,7 @@
   <div>
     <ul
       class="navbar-nav navbar-sidenav"
-      id="exampleAccordion"
+      id="menuAccordion"
       v-if="menu.length"
     >
       <li
@@ -98,8 +98,34 @@ export default {
     ...mapActions('category', ['browse']),
   },
   updated() {
-    // $('.vegetable:has(img)').addClass('pos-item-bg')
-    // $('.pizza-size-wrapper > div:has(img)').addClass('pos-size-bg')
+    $('li.nav-item.arrow-bottom > a > .bt-arrow').click(function (e) {
+      e.preventDefault()
+      let menuHeight = 0
+      $('#menuAccordion li').each(function () {
+        menuHeight = menuHeight + $(this).innerHeight()
+      })
+      let accordionHeight = $('#menuAccordion').innerHeight()
+      if (menuHeight > accordionHeight) {
+        $('#menuAccordion').stop().animate({'top': (accordionHeight - (menuHeight + 60)) + 'px'}, 800)
+      } else {
+        // $("#menuAccordion").animate({'top':(menuHeight - accordionHeight)+'px'},800);
+        $('.top-arrow').css('display', 'none')
+        alert('No Items downside')
+
+      }
+      $('.bt-arrow').css('display', 'none')
+      $('.top-arrow').css('display', 'block')
+      return false
+    }),
+
+    $('li.nav-item.arrow-bottom > a > .top-arrow').click(function (e) {
+      e.preventDefault()
+      $('#menuAccordion').stop().animate({'top': (0) + 'px'}, 800)
+      $('.bt-arrow').css('display', 'block')
+      $('.top-arrow').css('display', 'none')
+      return false
+    })
+
   },
 }
 </script>

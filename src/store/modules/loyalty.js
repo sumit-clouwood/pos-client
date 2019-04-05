@@ -20,8 +20,8 @@ const actions = {
   },
 }
 const mutations = {
-  [mutation.LOYALTY](state, status) {
-    state.loyalty = status
+  [mutation.LOYALTY](state, loyalty) {
+    state.loyalty = loyalty
   },
   [mutation.LOYALTY_CUSTOMERS](state, customerList) {
     state.loyaltyCustomerList = customerList

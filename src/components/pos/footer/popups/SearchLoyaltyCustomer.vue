@@ -11,18 +11,10 @@
         <div class="modal-body add-note-wrap">
           <div class="add-note-area">
             <p>Select customer to get loyalty</p>
-            <input
-              type="text"
-              placeholder="Search.."
-              v-model="searchTerm"
-              class="inputSearch"
-            />
-            <img
-              src="img/pos/search-icon.png"
-              alt="search"
-              class="btn btnSuccess"
-              v-on:click="search(searchTerm)"
-            />
+            <input type="text" placeholder="Search..." v-model="searchTerm" class="inputSearch" id="getCustomerList" v-on:keyup="search(searchTerm)">
+            <button type="button" class="btn btnSuccess" id="load" v-on:click="search(searchTerm)">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"><i class='fa fa-circle-o-notch fa-spin' id="searchLoader"></i> Find</span>
+            </button>
           </div>
           <div class="dropdown" v-if="customers.length">
             <div id="myDropdown" class="dropdown-content">
@@ -52,7 +44,7 @@
               type="button"
               id="save-note"
             >
-              Save
+              Select
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -75,6 +67,7 @@ export default {
     return {
       searchTerm: '',
       setLoyaltyInfo: '',
+      inputTimer: '',
     }
   },
   computed: {
@@ -94,12 +87,24 @@ export default {
       $('#myDropdown').toggle()
     },
     search(searchTerm) {
-      $('#myDropdown').toggle()
-      this.searchCustomer(searchTerm)
+
+      clearTimeout(this.inputTimer)
+      if(searchTerm.length >= 2) {
+        $('#searchLoader').attr('style','display:block')
+        this.inputTimer = setTimeout(() => {
+          $('#myDropdown').toggle()
+          this.$store
+            .dispatch('loyalty/searchCustomer', searchTerm)
+            .then(() => {
+              $('#searchLoader').hide()
+            })
+        },500)
+      }
     },
     ...mapActions('loyalty', ['searchCustomer']),
     ...mapActions('customer', ['fetchSelectedCustomer']),
   },
+
 }
 </script>
 
@@ -107,7 +112,9 @@ export default {
 .dropdown {
   position: relative;
 }
-
+#searchLoader {
+  display:none;
+}
 .dropdown-content {
   /*display: block;*/
   position: absolute;

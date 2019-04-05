@@ -14,11 +14,10 @@
             <img
               :src="itemImage(item.item_image)"
               :alt="item.name"
-              @error="imageLoadError(item.name.replace(/ /g, ''))"
-              :class="item.name.replace(/ /g, '')"
+              @error="imageLoadError()"
             />
-            <p class="remove-bottom popover-btn">
-              {{ item.name }}
+            <p class="remove-bottom popover-btn" :title="item.name">
+              {{ item.name.substring(0, 15) }}
             </p>
           </div>
         </div>
@@ -62,16 +61,35 @@ export default {
         this.$store.dispatch('order/addToOrder', item)
       }
     },
-    imageLoadError(className) {
-      $(this)
-        .find('.popover-btn')
-        .attr('style', 'font-size:17px')
+    IsImageOk(img) {
+      // During the onload event, IE correctly identifies any images that
+      // weren't downloaded as not complete. Others should too. Gecko-based
+      // browsers act like NS4 in that they report this incorrectly.
+      if (!img.complete) {
+        return false
+      }
 
-      $('img.' + className).remove()
-      /*$('div.vegetable:not(.pos-item-bg) p.remove-bottom, .pizza-size-wrapper > div:not(.pos-size-bg)').each(function() {
-        let hue = 'rgb(' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ')'
-        $(this).css('background-color', hue)
-      })*/
+      // However, they do have two very useful properties: naturalWidth and
+      // naturalHeight. These give the true size of the image. If it failed
+      // to load, either of these should be zero.
+      if (typeof img.naturalWidth != 'undefined' && img.naturalWidth == 0) {
+        return false
+      }
+
+      // No other way of checking: assume it's ok.
+      return true
+    },
+    imageLoadError() {
+      for (let i = 0; i < document.images.length; i++) {
+        if (!this.IsImageOk(document.images[i])) {
+          let hue = 'rgb(' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ')'
+          $(document.images[i]).closest('div.pos-item-bg').css('background-color', hue)
+          $(document.images[i]).siblings('p').css('font-size', '15px')
+          $(document.images[i]).closest('div.pos-size-bg').css('background-color', hue)
+          $(document.images[i]).siblings('span').css('font-weight', 'bold')
+          document.images[i].remove()
+        }
+      }
     },
   },
 }

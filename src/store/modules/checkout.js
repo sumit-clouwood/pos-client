@@ -184,14 +184,14 @@ const actions = {
 
             modifiers.forEach(modifier => {
               switch (modifier.type) {
-                case 'mandatory':
-                  mandatoryModifiers.push(modifier)
-                  break
-                case 'price':
-                  priceModifiers.push(modifier)
-                  break
-                default:
-                  regularModifiers.push(modifier)
+              case 'mandatory':
+                mandatoryModifiers.push(modifier)
+                break
+              case 'price':
+                priceModifiers.push(modifier)
+                break
+              default:
+                regularModifiers.push(modifier)
               }
             })
             orderItem.modifiers = {
@@ -215,16 +215,28 @@ const actions = {
         //adding tip amount
         order.tip_amount = rootState.checkoutForm.tipAmount
 
+        //loyalty earn setting
+        if(rootState.customer.loyalty) {
+          order.loyalty_customer = null
+          order.customer_id = rootState.customer.customerId
+        }
+
         //adding payment breakdown
         order.payBreakDown = rootState.checkoutForm.payments.map(payment => {
           let paymentPart = [payment.method.name, payment.amount]
-          if (payment.code) {
-            paymentPart.push(payment.code)
+          if (payment.code || (payment.method.name != 'Loyalty' && payment.method.name != 'Cash')) {
+            // paymentPart.push(payment.code)
+            paymentPart.push('Card-1234')
+          }
+          //loyalty redeem setting
+          if(payment.method.name == 'Loyalty') {
+            if(parseFloat(rootState.customer.loyalty.balance) > 0) {
+              order.loyalty_customer = {'balance':rootState.customer.loyalty.balance,'redeemed_amount_value': rootState.checkoutForm.loyaltyAmount}
+            }
+            order.customer_id = rootState.customer.customerId
           }
           return paymentPart
         })
-
-        console.log('order type', rootState.order.orderType)
         if (
           rootState.order.orderType == 'delivery' ||
           rootState.order.orderType == 'takeaway'
@@ -277,6 +289,7 @@ const actions = {
             })
         }
       }
+
     })
   },
   createOrder({ state, commit, rootState }) {
