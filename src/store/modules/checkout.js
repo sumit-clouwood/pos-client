@@ -224,8 +224,9 @@ const actions = {
         //adding payment breakdown
         order.payBreakDown = rootState.checkoutForm.payments.map(payment => {
           let paymentPart = [payment.method.name, payment.amount]
-          if (payment.code) {
-            paymentPart.push(payment.code)
+          if (payment.code || (payment.method.name != 'Loyalty' && payment.method.name != 'Cash')) {
+            // paymentPart.push(payment.code)
+            paymentPart.push('Card-1234')
           }
           //loyalty redeem setting
           if(payment.method.name == 'Loyalty') {
@@ -236,7 +237,6 @@ const actions = {
           }
           return paymentPart
         })
-
         if (
           rootState.order.orderType == 'delivery' ||
           rootState.order.orderType == 'takeaway'
