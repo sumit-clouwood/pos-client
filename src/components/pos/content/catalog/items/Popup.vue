@@ -1,7 +1,6 @@
 <template>
   <!-- Modal -->
   <div
-    ref="POSItemOptions"
     class="modal fade POSItemOptions catalog-popup"
     id="POSItemOptions"
     tabindex="-1"
@@ -13,6 +12,7 @@
       <div class="modal-content">
         <Header />
         <Content />
+        <div class="error" v-show="error">{{ error }}</div>
         <Footer />
       </div>
     </div>
@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Content from './popup/Content'
 import Header from './popup/Header'
 import Footer from './popup/Footer'
@@ -31,6 +32,9 @@ export default {
     Content,
     Header,
     Footer,
+  },
+  computed: {
+    ...mapState('orderForm', ['error']),
   },
 }
 </script>

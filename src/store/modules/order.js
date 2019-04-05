@@ -167,7 +167,7 @@ const actions = {
       let itemModifiers = []
 
       //adding modifers to item
-      const modifiers = rootState.orderForm.modifiers.filter(
+      const modifiers = rootGetters['orderForm/modifiers'].filter(
         modifier => modifier.itemId == item._id
       )
 

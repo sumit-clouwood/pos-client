@@ -123,9 +123,9 @@ const actions = {
 
   //find modifiers from all specific to current item and push to current list [item[0].modifiers]
   //this function is not yet adding item to order but just showing modifiers for selection here once modifiers are selected then click on button ll add it to order
-  setModifierItem({ commit, rootState, dispatch }, item) {
+  setModifierItem({ commit, rootState }, item) {
     //clear modifiers selection
-    dispatch('orderForm/clearSelection', [], { root: true })
+    //dispatch('orderForm/clearSelection', [], { root: true })
     //set location based pricing for an item (not modifier) as this item ll be used in order
     //this price needs to be shown in popup
     if (

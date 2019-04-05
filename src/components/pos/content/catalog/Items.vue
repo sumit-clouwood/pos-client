@@ -29,7 +29,7 @@
 </template>
 
 <script>
-/* global $, showModal, hideModal  */
+/* global $, showModal  */
 
 import { mapGetters } from 'vuex'
 
@@ -53,10 +53,10 @@ export default {
       this.$store.commit('category/SET_ITEM', item)
 
       if (this.$store.getters['modifier/hasModifiers'](item)) {
-        showModal('#POSItemOptions')
         this.$store.dispatch('modifier/setModifierItem', item)
+        this.$store.commit('orderForm/clearSelection')
+        showModal('#POSItemOptions')
       } else {
-        hideModal('#POSItemOptions')
         this.$store.dispatch('order/addToOrder', item)
       }
     },
