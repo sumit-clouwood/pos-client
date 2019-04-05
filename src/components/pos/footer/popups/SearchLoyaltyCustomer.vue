@@ -11,7 +11,7 @@
         <div class="modal-body add-note-wrap">
           <div class="add-note-area">
             <p>Select customer to get loyalty</p>
-            <input type="text" placeholder="Search.." v-model="searchTerm" class="inputSearch" id="getCustomerList" v-on:keypress="search(searchTerm)">
+            <input type="text" placeholder="please enter at-least 3 char.." v-model="searchTerm" class="inputSearch" id="getCustomerList" v-on:keypress="search(searchTerm)">
             <button type="button" class="btn btnSuccess" id="load" v-on:click="search(searchTerm)">
               <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"><i class='fa fa-circle-o-notch fa-spin' id="searchLoader"></i> Find</span>
             </button>
@@ -86,7 +86,7 @@ export default {
       $('#myDropdown').toggle()
     },
     search(searchTerm) {
-      if(searchTerm.length > 2) {
+      if(searchTerm.length >= 2) {
         $('#myDropdown').toggle()
         $('#searchLoader').attr('style','display:block')
         this.searchCustomer(searchTerm)
