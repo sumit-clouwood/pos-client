@@ -74,7 +74,7 @@ export default {
     payByLoyalty() {
       this.$store.dispatch('checkoutForm/setAmount', this.amount)
     },
-    ...mapActions('checkoutForm',['calculateSpendLoyalty'])
+    ...mapActions('checkoutForm', ['calculateSpendLoyalty']),
   },
   updated() {
     this.calculateSpendLoyalty

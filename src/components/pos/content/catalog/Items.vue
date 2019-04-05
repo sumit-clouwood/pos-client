@@ -82,11 +82,26 @@ export default {
     imageLoadError() {
       for (let i = 0; i < document.images.length; i++) {
         if (!this.IsImageOk(document.images[i])) {
-          let hue = 'rgb(' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ',' + (Math.floor((256-199)*Math.random()) + 200) + ')'
-          $(document.images[i]).closest('div.pos-item-bg').css('background-color', hue)
-          $(document.images[i]).siblings('p').css('font-size', '15px')
-          $(document.images[i]).closest('div.pos-size-bg').css('background-color', hue)
-          $(document.images[i]).siblings('span').css('font-weight', 'bold')
+          let hue =
+            'rgb(' +
+            (Math.floor((256 - 199) * Math.random()) + 200) +
+            ',' +
+            (Math.floor((256 - 199) * Math.random()) + 200) +
+            ',' +
+            (Math.floor((256 - 199) * Math.random()) + 200) +
+            ')'
+          $(document.images[i])
+            .closest('div.pos-item-bg')
+            .css('background-color', hue)
+          $(document.images[i])
+            .siblings('p')
+            .css('font-size', '15px')
+          $(document.images[i])
+            .closest('div.pos-size-bg')
+            .css('background-color', hue)
+          $(document.images[i])
+            .siblings('span')
+            .css('font-weight', 'bold')
           document.images[i].remove()
         }
       }

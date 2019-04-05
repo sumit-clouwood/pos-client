@@ -49,11 +49,17 @@ const actions = {
           rootGetters['location/round'](remaining)
       )
       commit('showCalc', true)
-    } else if(state.method.name == 'Loyalty' && parseFloat(state.amount) != parseFloat(state.loyaltyAmount)) {
-      if(parseFloat(state.loyaltyAmount) <= 0.01) {
+    } else if (
+      state.method.name == 'Loyalty' &&
+      parseFloat(state.amount) != parseFloat(state.loyaltyAmount)
+    ) {
+      if (parseFloat(state.loyaltyAmount) <= 0.01) {
         commit('SET_ERROR', 'You dont have loyalty amount.')
       } else {
-        commit('SET_ERROR', 'You can add only '+ state.loyaltyAmount + ' loyalty amount.')
+        commit(
+          'SET_ERROR',
+          'You can add only ' + state.loyaltyAmount + ' loyalty amount.'
+        )
       }
       commit('showCalc', true)
     } else {
@@ -151,12 +157,15 @@ const actions = {
     commit('removePayment', index)
   },
 
-  calculateSpendLoyalty({ commit, rootState, getters }){
+  calculateSpendLoyalty({ commit, rootState, getters }) {
     const loyalty = rootState.customer.loyalty
     const orderTotal = getters.orderTotal
     let amount = parseFloat(loyalty.balance)
     if (amount > 0) {
-      if (parseFloat(orderTotal) > 0 && parseFloat(loyalty.balance) >= parseFloat(orderTotal)) {
+      if (
+        parseFloat(orderTotal) > 0 &&
+        parseFloat(loyalty.balance) >= parseFloat(orderTotal)
+      ) {
         amount = parseFloat(orderTotal).toFixed(2)
       }
 
@@ -167,7 +176,6 @@ const actions = {
       if (parseFloat(loyalty.balance) < parseFloat(loyalty.min_redeem_amount)) {
         amount = parseFloat('0.0')
       }
-
     }
     commit('loyaltyAmount', amount)
   },

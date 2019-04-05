@@ -1,10 +1,6 @@
 <template>
   <div>
-    <ul
-      class="navbar-nav navbar-sidenav"
-      id="menuAccordion"
-      v-if="menu.length"
-    >
+    <ul class="navbar-nav navbar-sidenav" id="menuAccordion" v-if="menu.length">
       <li
         class="nav-item logo-wrap"
         data-toggle="tooltip"
@@ -70,6 +66,7 @@
 </template>
 
 <script>
+/* global $ */
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Menu',
@@ -98,34 +95,35 @@ export default {
     ...mapActions('category', ['browse']),
   },
   updated() {
-    $('li.nav-item.arrow-bottom > a > .bt-arrow').click(function (e) {
+    $('li.nav-item.arrow-bottom > a > .bt-arrow').click(function(e) {
       e.preventDefault()
       let menuHeight = 0
-      $('#menuAccordion li').each(function () {
+      $('#menuAccordion li').each(function() {
         menuHeight = menuHeight + $(this).innerHeight()
       })
       let accordionHeight = $('#menuAccordion').innerHeight()
       if (menuHeight > accordionHeight) {
-        $('#menuAccordion').stop().animate({'top': (accordionHeight - (menuHeight + 60)) + 'px'}, 800)
+        $('#menuAccordion')
+          .stop()
+          .animate({ top: accordionHeight - (menuHeight + 60) + 'px' }, 800)
       } else {
         // $("#menuAccordion").animate({'top':(menuHeight - accordionHeight)+'px'},800);
         $('.top-arrow').css('display', 'none')
         alert('No Items downside')
-
       }
       $('.bt-arrow').css('display', 'none')
       $('.top-arrow').css('display', 'block')
       return false
     }),
-
-    $('li.nav-item.arrow-bottom > a > .top-arrow').click(function (e) {
-      e.preventDefault()
-      $('#menuAccordion').stop().animate({'top': (0) + 'px'}, 800)
-      $('.bt-arrow').css('display', 'block')
-      $('.top-arrow').css('display', 'none')
-      return false
-    })
-
+      $('li.nav-item.arrow-bottom > a > .top-arrow').click(function(e) {
+        e.preventDefault()
+        $('#menuAccordion')
+          .stop()
+          .animate({ top: 0 + 'px' }, 800)
+        $('.bt-arrow').css('display', 'block')
+        $('.top-arrow').css('display', 'none')
+        return false
+      })
   },
 }
 </script>

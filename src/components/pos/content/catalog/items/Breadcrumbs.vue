@@ -19,7 +19,9 @@
       </li>
       <li v-if="selectedItem && selectedItem.name">
         <span>Selected Item</span>
-        <p :title="selectedItem.name">{{ selectedItem.name.substring(0, 20) }}</p>
+        <p :title="selectedItem.name">
+          {{ selectedItem.name.substring(0, 20) }}
+        </p>
       </li>
     </ul>
   </div>

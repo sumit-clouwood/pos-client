@@ -11,9 +11,27 @@
         <div class="modal-body add-note-wrap">
           <div class="add-note-area">
             <p>Select customer to get loyalty</p>
-            <input type="text" placeholder="Search..." v-model="searchTerm" class="inputSearch" id="getCustomerList" v-on:keyup="search(searchTerm)">
-            <button type="button" class="btn btnSuccess" id="load" v-on:click="search(searchTerm)">
-              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"><i class='fa fa-circle-o-notch fa-spin' id="searchLoader"></i> Find</span>
+            <input
+              type="text"
+              placeholder="Search..."
+              v-model="searchTerm"
+              class="inputSearch"
+              id="getCustomerList"
+              v-on:keyup="search(searchTerm)"
+            />
+            <button
+              type="button"
+              class="btn btnSuccess"
+              id="load"
+              v-on:click="search(searchTerm)"
+            >
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+                ><i class="fa fa-circle-o-notch fa-spin" id="searchLoader"></i>
+                Find</span
+              >
             </button>
           </div>
           <div class="dropdown" v-if="customers.length">
@@ -87,10 +105,9 @@ export default {
       $('#myDropdown').toggle()
     },
     search(searchTerm) {
-
       clearTimeout(this.inputTimer)
-      if(searchTerm.length >= 2) {
-        $('#searchLoader').attr('style','display:block')
+      if (searchTerm.length >= 2) {
+        $('#searchLoader').attr('style', 'display:block')
         this.inputTimer = setTimeout(() => {
           $('#myDropdown').toggle()
           this.$store
@@ -98,13 +115,12 @@ export default {
             .then(() => {
               $('#searchLoader').hide()
             })
-        },500)
+        }, 500)
       }
     },
     ...mapActions('loyalty', ['searchCustomer']),
     ...mapActions('customer', ['fetchSelectedCustomer']),
   },
-
 }
 </script>
 

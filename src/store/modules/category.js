@@ -50,8 +50,8 @@ const getters = {
     const items = state.searchItems.length
       ? state.searchItems
       : state.categoryItems.length
-        ? state.categoryItems
-        : state.subcategoryItems
+      ? state.categoryItems
+      : state.subcategoryItems
     return items.map(item => {
       let newItem = { ...item }
       let itemName = newItem.item_name.find(
