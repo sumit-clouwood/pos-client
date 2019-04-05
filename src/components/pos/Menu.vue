@@ -125,8 +125,7 @@ export default {
       $('.top-arrow').css('display', 'none')
       return false
     })
-    // $('.vegetable:has(img)').addClass('pos-item-bg')
-    // $('.pizza-size-wrapper > div:has(img)').addClass('pos-size-bg')
+
   },
 }
 </script>
