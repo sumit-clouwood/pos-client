@@ -81,6 +81,7 @@
 </template>
 
 <script>
+/* eslint-disable no-console */
 import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Modifiers',
@@ -91,7 +92,6 @@ export default {
       radios: this.$store.state.orderForm.radios,
     }
   },
-
   computed: {
     checkboxes: {
       get() {
@@ -107,20 +107,23 @@ export default {
     ...mapGetters('modifier', ['imagePath', 'itemModifiers']),
     ...mapGetters('location', ['rawPrice', 'formatPrice']),
   },
-  updated() {
-    if (this.$store.state.orderForm.isUpdate) {
-      this.isUpdate = true
-
-      for (let i in this.radios) {
-        this.$delete(this.radios, i)
+  mounted() {
+    this.$store.watch(
+      () => this.$store.state.orderForm.isUpdate,
+      isUpdate => {
+        //this.isUpdate is now reactive
+        this.isUpdate = isUpdate
+        if (isUpdate) {
+          for (let i in this.radios) {
+            this.$delete(this.radios, i)
+          }
+          const radios = this.$store.state.orderForm.radios
+          for (let i in radios) {
+            this.$set(this.radios, i, radios[i])
+          }
+        }
       }
-      const radios = this.$store.state.orderForm.radios
-      for (let i in radios) {
-        this.$set(this.radios, i, radios[i])
-      }
-
-      this.$store.commit('orderForm/setUpdate', false)
-    }
+    )
   },
   methods: {
     setRadio(itemId, groupId, modifierId) {
