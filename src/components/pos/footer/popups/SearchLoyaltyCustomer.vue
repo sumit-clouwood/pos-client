@@ -11,9 +11,9 @@
         <div class="modal-body add-note-wrap">
           <div class="add-note-area">
             <p>Select customer to get loyalty</p>
-            <input type="text" placeholder="Search.." v-model="searchTerm" class="inputSearch" id="getCustomerList">
-            <button type="button" class="btn btnSuccess" id="load" v-on:click="search(searchTerm)" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Order">
-              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true">Find</span>
+            <input type="text" placeholder="Search.." v-model="searchTerm" class="inputSearch" id="getCustomerList" v-on:keypress="search(searchTerm)">
+            <button type="button" class="btn btnSuccess" id="load" v-on:click="search(searchTerm)">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"><i class='fa fa-circle-o-notch fa-spin' id="searchLoader"></i> Find</span>
             </button>
           </div>
           <div class="dropdown" v-if="customers.length">
@@ -86,15 +86,15 @@ export default {
       $('#myDropdown').toggle()
     },
     search(searchTerm) {
-      $('#myDropdown').toggle()
-      this.searchCustomer(searchTerm)
+      if(searchTerm.length > 2) {
+        $('#myDropdown').toggle()
+        $('#searchLoader').attr('style','display:block')
+        this.searchCustomer(searchTerm)
+        setTimeout( function  (){
+          $('#searchLoader').hide()
+        },3000)
+      }
     },
-    /*searchInputHit(searchTerm) {
-      const action = this
-      $('#getCustomerList').keypress(function (e) { if (e.which == 13) {
-        action.searchCustomer(searchTerm)
-      }})
-    },*/
     ...mapActions('loyalty', ['searchCustomer']),
     ...mapActions('customer', ['fetchSelectedCustomer']),
   },
@@ -106,7 +106,9 @@ export default {
 .dropdown {
   position: relative;
 }
-
+#searchLoader {
+  display:none;
+}
 .dropdown-content {
   /*display: block;*/
   position: absolute;

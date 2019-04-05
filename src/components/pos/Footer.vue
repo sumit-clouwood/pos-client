@@ -58,8 +58,8 @@
               <img src="img/pos/tip.png" alt="Loyalty" v-if="!loyaltyInfo" />
               <span v-if="!loyaltyInfo">Loyalty</span>
               <span v-if="loyaltyInfo">
-                  <span>{{ loyaltyInfo.balance }} {{ loyaltyInfo.currency_code }} Loyalty</span> <br>
-                  <span> {{ selectedCustomer.customer_name }} </span>
+                  <span>{{ parseFloat(loyaltyInfo.balance).toFixed(2) }} {{ loyaltyInfo.currency_code }} Loyalty</span> <br>
+                  <span> {{ selectedCustomer.customer_name.substring(0, 28) }} </span>
               </span>
             </a>
           </li>

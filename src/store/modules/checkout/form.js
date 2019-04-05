@@ -50,7 +50,11 @@ const actions = {
       )
       commit('showCalc', true)
     } else if(state.method.name == 'Loyalty' && parseFloat(state.amount) != parseFloat(state.loyaltyAmount)) {
-      commit('SET_ERROR', 'You can add only '+ state.loyaltyAmount + ' loyalty amount.')
+      if(parseFloat(state.loyaltyAmount) <= 0.01) {
+        commit('SET_ERROR', 'You dont have loyalty amount.')
+      } else {
+        commit('SET_ERROR', 'You can add only '+ state.loyaltyAmount + ' loyalty amount.')
+      }
       commit('showCalc', true)
     } else {
       commit('SET_ERROR', false)
