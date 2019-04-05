@@ -330,7 +330,7 @@ const actions = {
           } else {
             commit(
               'checkoutForm/SET_ERROR',
-              `Order Failed <br /> ${response.data}`,
+              `Order Failed, Server Response: ${response.data.error}`,
               { root: true }
             )
             reject(response.data)
