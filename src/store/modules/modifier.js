@@ -117,7 +117,6 @@ const actions = {
 
     //formstate should contain only those fiels which are selected by this order item
     commit('orderForm/setItemId', orderItem._id, { root: true })
-    commit('orderForm/setUpdate', true, { root: true })
     dispatch('orderForm/populateSelection', orderItem.modifierGroups, {
       root: true,
     })

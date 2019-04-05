@@ -111,6 +111,7 @@ export default {
     this.$store.watch(
       () => this.$store.state.orderForm.isUpdate,
       isUpdate => {
+        console.log('is update from vuex', isUpdate)
         //this.isUpdate is now reactive
         this.isUpdate = isUpdate
         if (isUpdate) {
@@ -122,6 +123,8 @@ export default {
             this.$set(this.radios, i, radios[i])
           }
         }
+
+        //this.$store.commit('orderForm/setUpdate', false)
       }
     )
   },
@@ -143,6 +146,8 @@ export default {
       })
 
       this.$store.commit('orderForm/setRadios', this.radios)
+      this.$store.commit('orderForm/setError', false)
+      this.$store.commit('orderForm/setUpdate', false)
     },
   },
 }
