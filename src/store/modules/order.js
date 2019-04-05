@@ -278,12 +278,16 @@ const actions = {
           }
         })
       )
+      //reset the modifier form
+      commit('orderForm/clearSelection', null, { root: true })
       resolve()
     })
   },
 
   setActiveItem({ commit, dispatch }, { orderItem, index }) {
     //get current item
+    commit('orderForm/setUpdate', true, { root: true })
+
     let item = { ...state.items[index] }
 
     item.editMode = true

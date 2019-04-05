@@ -116,6 +116,8 @@ const actions = {
     commit(mutation.SET_ITEM, item)
 
     //formstate should contain only those fiels which are selected by this order item
+    commit('orderForm/setItemId', orderItem._id, { root: true })
+    commit('orderForm/setUpdate', true, { root: true })
     dispatch('orderForm/populateSelection', orderItem.modifierGroups, {
       root: true,
     })
@@ -147,6 +149,8 @@ const actions = {
       //2. 1 not matched and search current subcategory Id in all modifiers which have subcategoryIds but don't have itemIds
       //3. 2 not matched and search current category id in all modifiers which have categoryIds but don't have subcategory or itemIds
 
+      //let radios = {}
+
       const modifiers = state.all.filter(modifier => {
         if (modifier.itemIds.length) {
           //find in itemids
@@ -165,6 +169,7 @@ const actions = {
       })
       const appLocale = rootState.location.locale
       //change modifiers to get location based pricing and language
+
       const upatedModifiers = modifiers.map(modifier => {
         const groups = modifier.get_modifier_sub_groups.map(group => {
           //get group name
@@ -192,6 +197,10 @@ const actions = {
             }
             mod.name = itemName ? itemName.name : 'No name'
 
+            // if (group.noofselection === '1') {
+            //   radios[group._id] = false
+            // }
+
             //calculate tax for the modifiers ll be done in order store because we add modifier price to item price and then calculate tax
             return mod
           })
@@ -212,6 +221,8 @@ const actions = {
         modifiers: upatedModifiers,
         item: item,
       })
+
+      //commit('orderForm/setRadios', radios, { root: true })
     }
   },
 }

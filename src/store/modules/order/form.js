@@ -1,10 +1,11 @@
-/* eslint-disable no-console */
 // initial state
 const state = {
   error: false,
   quantity: 0,
   checkboxes: [],
   radios: {},
+  itemId: null,
+  isUpdate: false,
 }
 
 // getters
@@ -41,14 +42,6 @@ const getters = {
 
 // actions
 const actions = {
-  updateRadios({ commit }, { itemId, modifierId, groupId, limit }) {
-    commit('setRadios', {
-      itemId: itemId,
-      modifierId: modifierId,
-      groupId: groupId,
-      limit: limit,
-    })
-  },
   populateSelection({ commit }, modifierGroups) {
     commit('clearSelection')
     commit('populateSelection', modifierGroups)
@@ -109,6 +102,12 @@ const mutations = {
   },
   setRadios(state, radios) {
     state.radios = radios
+  },
+  setItemId(state, id) {
+    state.itemId = id
+  },
+  setUpdate(state, status) {
+    state.isUpdate = status
   },
 }
 

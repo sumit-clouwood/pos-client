@@ -52,14 +52,13 @@
                 <input
                   type="radio"
                   class="customradio"
-                  :key="modifierOption._id"
                   :id="modifierOption._id"
-                  :name="submodifier._id"
+                  :name="item._id + submodifier._id"
                   :value="{
-                    type: 'radio',
-                    itemId: item._id,
                     modifierId: modifierOption._id,
                     groupId: submodifier._id,
+                    itemId: item._id,
+                    type: 'radio',
                   }"
                   @change="
                     setRadio(item._id, submodifier._id, modifierOption._id)
@@ -87,6 +86,8 @@ export default {
   name: 'Modifiers',
   data() {
     return {
+      itemId: null,
+      isUpdate: false,
       radios: this.$store.state.orderForm.radios,
     }
   },
@@ -106,14 +107,36 @@ export default {
     ...mapGetters('modifier', ['imagePath', 'itemModifiers']),
     ...mapGetters('location', ['rawPrice', 'formatPrice']),
   },
+  updated() {
+    if (this.$store.state.orderForm.isUpdate) {
+      this.isUpdate = true
+
+      for (let i in this.radios) {
+        this.$delete(this.radios, i)
+      }
+      const radios = this.$store.state.orderForm.radios
+      for (let i in radios) {
+        this.$set(this.radios, i, radios[i])
+      }
+
+      this.$store.commit('orderForm/setUpdate', false)
+    }
+  },
   methods: {
     setRadio(itemId, groupId, modifierId) {
-      //bind model here yourself, it’s possible to add reactive properties to a nested object
+      if (this.itemId != itemId && !this.isUpdate) {
+        for (let i in this.radios) {
+          this.$delete(this.radios, i)
+        }
+        this.itemId = itemId
+      }
+
+      //fire event changed
       this.$set(this.radios, groupId, {
-        type: 'radio',
-        itemId: itemId,
         modifierId: modifierId,
         groupId: groupId,
+        itemId: itemId,
+        type: 'radio',
       })
 
       this.$store.commit('orderForm/setRadios', this.radios)

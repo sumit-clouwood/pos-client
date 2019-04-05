@@ -55,6 +55,8 @@ export default {
       if (this.$store.getters['modifier/hasModifiers'](item)) {
         this.$store.dispatch('modifier/setModifierItem', item)
         this.$store.commit('orderForm/clearSelection')
+        this.$store.commit('orderForm/setItemId', item._id)
+        this.$store.commit('orderForm/setUpdate', false)
         showModal('#POSItemOptions')
       } else {
         this.$store.dispatch('order/addToOrder', item)
