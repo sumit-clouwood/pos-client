@@ -8,7 +8,7 @@ export default {
     )
   },
 
-  //location_id, customer_id, redeemed_amount_value, balance, balance_due, total_balance
+  /*  //location_id, customer_id, redeemed_amount_value, balance, balance_due, total_balance
   applyLoyalty(loyaltyDetails) {
     return DataService.post('/api/auth/apply/loyalty', loyaltyDetails)
   },
@@ -16,7 +16,7 @@ export default {
   //customer_id, location_id
   verifyCustomerLoyaltyPoints(customerDetails) {
     return DataService.post('/api/auth/apply/loyalty', customerDetails)
-  },
+  },*/
 
   searchCustomer(searchTerm) {
     return DataService.get(

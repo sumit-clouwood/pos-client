@@ -15,19 +15,21 @@
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
             <p v-if="loyalty.balance > 0">
-              Loyalty Balance: <span>{{ loyalty.balance }}</span>
+              Loyalty Balance: <span>{{ parseFloat(loyalty.balance).toFixed(2) }}</span>
             </p>
-            <p v-if="loyalty.balance <= 0">{{ loyalty.loyalty_order_alert }}</p>
-            <hr />
-            <p>
-              You can spend min
-              <b>{{ loyalty.min_redeem_amount }} {{ loyalty.currency_code }}</b>
-              and max
-              <b>{{ loyalty.max_redeem_amount }} {{ loyalty.currency_code }}</b>
-            </p>
-            <p>
-              Amount you can spend: <b>{{ amount }}</b>
-            </p>
+            <p v-if="loyalty.loyalty_order_alert != null">{{ loyalty.loyalty_order_alert }}</p>
+            <div v-if="loyalty.loyalty_order_alert == null">
+              <hr />
+              <p >
+                You can spend min
+                <b>{{ loyalty.min_redeem_amount }} {{ loyalty.currency_code }}</b>
+                and max
+                <b>{{ loyalty.max_redeem_amount }} {{ loyalty.currency_code }}</b>
+              </p>
+              <p>
+                Amount you can spend: <b>{{ amount }}</b>
+              </p>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -37,9 +39,10 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              <span>-</span> Cancel
+              Close
             </button>
             <button
+              v-if="loyalty.loyalty_order_alert == null"
               class="btn btn-success btn-large popup-btn-save"
               type="button"
               id="gift-card-btn"
