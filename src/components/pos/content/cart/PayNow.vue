@@ -85,7 +85,7 @@ export default {
     },
     payable: {
       get() {
-        return this.$store.state.checkoutForm.amount
+        return this.$store.state.checkoutForm.amount == '' ? parseFloat(this.orderTotal).toFixed(2) : this.$store.state.checkoutForm.amount
       },
       set(amount) {
         this.$store.dispatch('checkoutForm/setAmount', amount)
@@ -94,6 +94,8 @@ export default {
     ...mapState('order', ['items']),
     ...mapState('checkoutForm', ['error']),
     ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('checkoutForm', ['orderTotal']),
+
   },
 }
 </script>
