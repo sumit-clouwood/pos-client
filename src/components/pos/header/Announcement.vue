@@ -5,7 +5,7 @@
     </li>
     <li class="item-news" v-if="announcements">
       <marquee behavior="scroll" direction="left">
-        {{ announcements }}
+       <b>{{ announcements }}</b>
       </marquee>
     </li>
   </ul>

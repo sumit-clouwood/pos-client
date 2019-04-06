@@ -164,8 +164,14 @@ const actions = {
           response.data.data.customer_list.totalpages
         pastOrdersPaginate.customarPerPage = limit
         commit(mutation.PAST_ORDER_PAGINATE_DETAILS, pastOrdersPaginate)
-        commit(mutation.LOYALTY, response.data.data.customer_list.loyalty_point)
+        if(response.data.data.customer_list != null) {
+          commit(mutation.LOYALTY, response.data.data.customer_list.loyalty_point)
+        } else {
+          commit(mutation.LOYALTY, false)
+        }
+
         //dispatch('giftcard/setCustomerGiftCards', response.data.data)
+        console.log(response.data.data.customer_list.loyalty_point)
       })
     }
   },

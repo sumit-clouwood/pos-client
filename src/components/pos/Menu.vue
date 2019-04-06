@@ -62,15 +62,27 @@
         :key="key"
       />
     </div>
+    <!--<InformationPopup
+            :responseInformation="information"
+            :title="information.message"
+    />-->
   </div>
 </template>
 
 <script>
 /* global $ */
+// import InformationPopup from '@/components/pos/content/InformationPopup'
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Menu',
-  props: {},
+  data() {
+    return {
+      // information: {}
+    }
+  },
+  components: {
+    // InformationPopup
+  },
   computed: {
     ...mapState({
       // map this.categories to store.state.categories, it uses dispatch
@@ -109,21 +121,22 @@ export default {
       } else {
         // $("#menuAccordion").animate({'top':(menuHeight - accordionHeight)+'px'},800);
         $('.top-arrow').css('display', 'none')
-        alert('No Items downside')
+        // this.information = {'status':1, 'message': 'No Items downside'}
+        // $('#information-popup').modal('toggle')
       }
       $('.bt-arrow').css('display', 'none')
       $('.top-arrow').css('display', 'block')
       return false
     }),
-      $('li.nav-item.arrow-bottom > a > .top-arrow').click(function(e) {
-        e.preventDefault()
-        $('#menuAccordion')
-          .stop()
-          .animate({ top: 0 + 'px' }, 800)
-        $('.bt-arrow').css('display', 'block')
-        $('.top-arrow').css('display', 'none')
-        return false
-      })
+    $('li.nav-item.arrow-bottom > a > .top-arrow').click(function(e) {
+      e.preventDefault()
+      $('#menuAccordion')
+        .stop()
+        .animate({ top: 0 + 'px' }, 800)
+      $('.bt-arrow').css('display', 'block')
+      $('.top-arrow').css('display', 'none')
+      return false
+    })
   },
 }
 </script>
