@@ -64,7 +64,11 @@
               <span v-if="!loyaltyInfo">Loyalty</span>
               <span v-if="loyaltyInfo">
                 <span
-                  >{{ isNaN(loyaltyInfo.balance) ? 0 : parseFloat(loyaltyInfo.balance).toFixed(2) }}
+                  >{{
+                    isNaN(loyaltyInfo.balance)
+                      ? 0
+                      : parseFloat(loyaltyInfo.balance).toFixed(2)
+                  }}
                   {{ loyaltyInfo.currency_code }} Loyalty</span
                 >
                 <br />
@@ -195,8 +199,8 @@ export default {
           ? state.customer.customer.customer_list
           : typeof state.customer.fetchCustomerAddressOnly.customer_list !=
             'undefined'
-            ? state.customer.fetchCustomerAddressOnly.customer_list[0]
-            : false,
+          ? state.customer.fetchCustomerAddressOnly.customer_list[0]
+          : false,
     }),
   },
   methods: {

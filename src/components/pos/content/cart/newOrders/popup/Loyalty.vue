@@ -15,16 +15,25 @@
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
             <p v-if="loyalty.balance > 0">
-              Loyalty Balance: <span>{{ parseFloat(loyalty.balance).toFixed(2) }}</span>
+              Loyalty Balance:
+              <span>{{ parseFloat(loyalty.balance).toFixed(2) }}</span>
             </p>
-            <p v-if="loyalty.loyalty_order_alert != null">{{ loyalty.loyalty_order_alert }}</p>
+            <p v-if="loyalty.loyalty_order_alert != null">
+              {{ loyalty.loyalty_order_alert }}
+            </p>
             <div v-if="loyalty.loyalty_order_alert == null">
               <hr />
-              <p >
+              <p>
                 You can spend min
-                <b>{{ loyalty.min_redeem_amount }} {{ loyalty.currency_code }}</b>
+                <b
+                  >{{ loyalty.min_redeem_amount }}
+                  {{ loyalty.currency_code }}</b
+                >
                 and max
-                <b>{{ loyalty.max_redeem_amount }} {{ loyalty.currency_code }}</b>
+                <b
+                  >{{ loyalty.max_redeem_amount }}
+                  {{ loyalty.currency_code }}</b
+                >
               </p>
               <p>
                 Amount you can spend: <b>{{ amount }}</b>
