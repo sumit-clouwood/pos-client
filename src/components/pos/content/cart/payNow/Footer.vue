@@ -36,13 +36,20 @@ export default {
   methods: {
     pay() {
       $('#payment-msg').modal('show')
-      this.$store.dispatch('checkout/pay').then(() => {
-        if (this.changedAmount >= 0.1) {
-          $('#change-amount').modal('show')
-        } else if (this.msg) {
-          $('#payment-msg').modal('show')
-        }
-      })
+      this.$store
+        .dispatch('checkout/pay')
+        .then(() => {
+          if (this.changedAmount >= 0.1) {
+            $('#change-amount').modal('show')
+          } else if (this.msg) {
+            $('#payment-msg').modal('show')
+          }
+        })
+        .catch(() => {
+          setTimeout(() => {
+            $('#payment-msg').modal('hide')
+          }, 500)
+        })
     },
   },
 }
