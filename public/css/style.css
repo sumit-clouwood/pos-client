@@ -5195,13 +5195,13 @@ button {
 
 @media only screen and (min-width: 1024px) and (max-width: 1359px) {
   #mainNav.fixed-top .navbar-sidenav {
-    height: calc(100vh - -110px);
+    height: calc(100vh - -170px);
   }
 }
 
 @media only screen and (min-width: 1360px) and (max-width: 1439px) {
   #mainNav.fixed-top .navbar-sidenav {
-    height: calc(100vh - -87px);
+    height: calc(100vh - -112px);
   }
 }
 
