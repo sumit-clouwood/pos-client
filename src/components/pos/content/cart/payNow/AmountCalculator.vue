@@ -25,9 +25,18 @@
 import { mapActions } from 'vuex'
 export default {
   name: 'AmountCalculator',
+  data() {
+    return {
+      init: false,
+    }
+  },
   methods: {
     ...mapActions('checkoutForm', ['addAmount']),
     set(amount) {
+      if (!this.init) {
+        this.$store.commit('checkoutForm/appendAmount', '')
+        this.init = true
+      }
       this.$store.commit('checkoutForm/appendAmount', amount)
     },
     reset() {

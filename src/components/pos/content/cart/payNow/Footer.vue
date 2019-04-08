@@ -30,9 +30,10 @@ export default {
   name: 'PayNowFooter',
   computed: {
     ...mapState('checkout', ['changedAmount']),
-    ...mapState('checkoutForm', ['msg']),
+    ...mapState('checkoutForm', ['msg', 'error']),
     //...mapGetters('checkoutForm', ['validate']),
   },
+
   methods: {
     pay() {
       $('#payment-msg').modal('show')

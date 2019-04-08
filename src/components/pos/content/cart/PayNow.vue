@@ -74,6 +74,13 @@ export default {
     PaymentBreakdown,
     AmountCalculator,
   },
+  watch: {
+    orderTotal(newVal) {
+      if (newVal && !this.payable) {
+        this.payable = parseFloat(newVal).toFixed(2)
+      }
+    },
+  },
   computed: {
     showCalc: {
       get() {
@@ -85,9 +92,7 @@ export default {
     },
     payable: {
       get() {
-        return this.$store.state.checkoutForm.amount == ''
-          ? parseFloat(this.orderTotal).toFixed(2)
-          : this.$store.state.checkoutForm.amount
+        return this.$store.state.checkoutForm.amount
       },
       set(amount) {
         this.$store.dispatch('checkoutForm/setAmount', amount)

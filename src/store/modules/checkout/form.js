@@ -32,6 +32,11 @@ const getters = {
 // actions
 const actions = {
   addAmount({ commit, getters, rootGetters }) {
+    if (!state.amount) {
+      commit('SET_ERROR', 'Amount should be greater than 0.00')
+      commit('showCalc', true)
+      return false
+    }
     const totalPayable = getters.orderTotal
     const paid = getters.paid
     const remaining = totalPayable - paid

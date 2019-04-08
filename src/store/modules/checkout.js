@@ -299,6 +299,8 @@ const actions = {
               reject(response)
             })
         }
+      } else {
+        reject()
       }
     })
   },
