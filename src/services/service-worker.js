@@ -12,7 +12,7 @@ var clientUrl = 'https://delivery.erp-pos.com'
 if (workbox) {
   openDatabase()
 
-  console.log('workbox found ')
+  console.log('sw:', 'workbox found ')
 
   // adjust log level for displaying workbox logs
   workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug)
@@ -97,11 +97,14 @@ if (workbox) {
   // })
 
   self.addEventListener('sync', function(event) {
-    console.log('SYNC EVENT RECEIVED, now online, lets try postofflineorders')
-    console.log(event)
+    console.log(
+      'sw:',
+      'SYNC EVENT RECEIVED, now online, lets try postofflineorders'
+    )
+    console.log('sw:', event)
 
     if (event.tag === 'postOfflineOrders') {
-      console.log('correct event received')
+      console.log('sw:', 'correct event received')
 
       // event.tag name checked
       // here must be the same as the one used while registering
@@ -115,11 +118,11 @@ if (workbox) {
               try {
                 self.registration.showNotification('Orders synced to server')
               } catch (e) {
-                console.log(e)
+                console.log('sw:', e)
               }
             })
             .catch(err => {
-              console.log('Error syncing orders to server', err)
+              console.log('sw:', 'Error syncing orders to server', err)
             })
 
           try {
@@ -127,7 +130,7 @@ if (workbox) {
               self.registration.showNotification('Orders synced to server')
             )
           } catch (e) {
-            console.log(e)
+            console.log('sw:', e)
           }
         })
       }
@@ -139,7 +142,7 @@ if (workbox) {
   //this is manually sync, we ll remove it later
   self.addEventListener('message', function(event) {
     if (event.data.hasOwnProperty('sync')) {
-      console.log('sync event', event.data)
+      console.log('sw:', 'sync event', event.data)
       const syncIt = async () => {
         return new Promise(resolve => {
           setTimeout(function() {
@@ -148,7 +151,7 @@ if (workbox) {
                 self.registration.showNotification('SW Orders synced to server')
               })
               .catch(() => {
-                console.log('SW Error syncing orders to server')
+                console.log('sw:', 'SW Error syncing orders to server')
               })
 
             resolve(
@@ -180,7 +183,7 @@ if (workbox) {
   })
 
   self.addEventListener('message', function(event) {
-    console.log('form data', event.data)
+    console.log('sw:', 'form data', event.data)
     if (event.data.hasOwnProperty('form_data')) {
       // receives form data from script.js upon submission
       form_data = event.data.form_data
@@ -198,8 +201,8 @@ if (workbox) {
         fetch(clonedRequest).catch(function(error) {
           // only save post requests in browser, if an error occurs, GET FROM MSG WE SEND EARLIER
           //we saved form_data global var from msg
-          console.log('error happened when posting', error)
-          console.log('Save to indexeddb for later send')
+          console.log('sw:', 'error happened when posting', error)
+          console.log('sw:', 'Save to indexeddb for later send')
           savePostRequests(clonedRequest.url, form_data)
         })
       )
@@ -221,37 +224,44 @@ function getObjectStore(storeName, mode) {
 }
 function savePostRequests(url, payload) {
   // get object_store and save our payload inside it
-  console.log('try open db')
+  console.log('sw:', 'try open db')
 
   openDatabase(function(idb) {
-    console.log('db opened, adding rec', idb)
+    console.log('sw:', 'db opened, adding rec', idb)
     var request = getObjectStore(ORDER_DOCUMENT, 'readwrite').add({
       url: url,
       payload: payload,
       method: 'POST',
     })
     request.onsuccess = function(event) {
-      console.log('a new order request has been added to indexedb', event)
+      console.log(
+        'sw:',
+        'a new order request has been added to indexedb',
+        event
+      )
     }
     request.onerror = function(error) {
-      console.error("REquest can't be send to index db", error)
+      console.error('sw:', "REquest can't be send to index db", error)
     }
   })
 }
 
 function openDatabase(cb) {
-  console.log('opening database')
+  console.log('sw:', 'opening database')
   var indexedDBOpenRequest = indexedDB.open('dim-pos', IDB_VERSION)
 
   indexedDBOpenRequest.onerror = function(error) {
     // error creating db
-    console.error('IndexedDB open error:', error)
+    console.error('sw:', 'IndexedDB open error:', error)
   }
 
   //this ll be nerver called because we have same version as app and store already created
   indexedDBOpenRequest.onupgradeneeded = function() {
     iDB = this.result
-    console.log('db opened for upgrade Create/modify the database schema')
+    console.log(
+      'sw:',
+      'db opened for upgrade Create/modify the database schema'
+    )
     // This should only executes if there's a need to
     // create/update db.
     var objectStore = this.result.createObjectStore(ORDER_DOCUMENT, {
@@ -260,31 +270,32 @@ function openDatabase(cb) {
     })
 
     objectStore.transaction.oncomplete = function() {
-      console.log('create bucket complete', ORDER_DOCUMENT)
+      console.log('sw:', 'create bucket complete', ORDER_DOCUMENT)
       if (cb) {
-        console.log('calling callback to insert data')
+        console.log('sw:', 'calling callback to insert data')
         cb(iDB)
       }
     }
     objectStore.transaction.onerror = function(event) {
-      console.log('create bucket complete', event, ORDER_DOCUMENT)
+      console.log('sw:', 'create bucket complete', event, ORDER_DOCUMENT)
     }
   }
 
   // This will execute each time the database is opened.
   indexedDBOpenRequest.onsuccess = function() {
     console.log(
+      'sw:',
       'db opened for success . Save your database handler, for example something, DB_HANDLER = event.target.result'
     )
     iDB = this.result
     if (cb) {
-      console.log('calling callback to insert data')
+      console.log('sw:', 'calling callback to insert data')
       cb(iDB)
     }
   }
 
   indexedDBOpenRequest.onblocked = function(event) {
-    console.log('sw block error not important, already opened', event)
+    console.log('sw:', 'sw block error not important, already opened', event)
     iDB = this.result
     // Another connection is open, preventing the upgrade,
     // and it didn't close immediately.
@@ -318,11 +329,11 @@ function sendPostToServer() {
             authData.push(cursor.value)
             cursor.continue()
           } else {
-            console.log(authData)
+            console.log('sw:', authData)
 
             if (authData && authData[0]) {
               authData = authData[0]
-              console.log('auth data from db', authData)
+              console.log('sw:', 'auth data from db', authData)
 
               var authToken = authData.token
               var deviceCode = authData.deviceCode
@@ -335,7 +346,7 @@ function sendPostToServer() {
                   franchiesCode + '-' + deviceCode + '-' + lastOrderNo
 
                 // send them to the server one after the other
-                console.log('saved request', savedRequest)
+                console.log('sw:', 'saved request', savedRequest)
 
                 savedRequest.payload.transition_order_no = transitionOrderNo
                 savedRequest.payload.app_uniqueid = cyrb53(transitionOrderNo)
@@ -358,15 +369,15 @@ function sendPostToServer() {
                 ) {
                   var customerPayload = payload.user
 
-                  console.log('delivery order')
+                  console.log('sw:', 'delivery order')
                   //create customer uses fetch which returns promise
-                  console.log('creating customer')
+                  console.log('sw:', 'creating customer')
                   createCustomer(headers, customerPayload)
                     .then(response => response.json())
                     .then(response => {
-                      console.log('customer created ', response)
+                      console.log('sw:', 'customer created ', response)
                       //customer created
-                      console.log('creating customer address')
+                      console.log('sw:', 'creating customer address')
 
                       //modify the original payload to be sent to order
                       savedRequest.payload.customer_id = customerPayload.customer_id =
@@ -419,6 +430,7 @@ function sendPostToServer() {
                     })
                     .catch(err => {
                       console.log(
+                        'sw:',
                         'Request to save customer failed with error ',
                         err,
                         customerPayload
@@ -428,7 +440,7 @@ function sendPostToServer() {
                 } else {
                   //app_uniqueid
                   //transition_order_no
-                  console.log('Not delivery order')
+                  console.log('sw:', 'Not delivery order')
                   createOrder(
                     resolve,
                     reject,
@@ -465,7 +477,7 @@ var createOrder = function(
     body: payload,
   })
     .then(function(response) {
-      console.log('server response', response)
+      console.log('sw:', 'server response', response)
       if (response.status < 400) {
         // If sending the POST request was successful, then
         // remove it from the IndexedDB.
@@ -475,14 +487,14 @@ var createOrder = function(
         var requestUpdate = getObjectStore('auth', 'readwrite').put(authData)
 
         requestUpdate.onerror = function(event) {
-          console.log('update failed', event)
+          console.log('sw:', 'update failed', event)
         }
         requestUpdate.onsuccess = function(event) {
           // Success - the data is updated!
-          console.log('update good', event)
+          console.log('sw:', 'update good', event)
         }
 
-        console.log('Removing request from index db', savedRequest.id)
+        console.log('sw:', 'Removing request from index db', savedRequest.id)
         getObjectStore(ORDER_DOCUMENT, 'readwrite').delete(savedRequest.id)
 
         resolve(response)
@@ -492,7 +504,7 @@ var createOrder = function(
       // This will be triggered if the network is still down.
       // The request will be replayed again
       // the next time the service worker starts up.
-      console.error('Send to Server failed:', error)
+      console.error('sw:', 'Send to Server failed:', error)
       // since we are in a catch, it is important an error is
       //thrown,so the background sync knows to keep retrying
       // the send to server

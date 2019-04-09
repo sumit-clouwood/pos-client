@@ -1,9 +1,12 @@
+/* eslint-disable no-console */
 import axios from 'axios'
 
 //axios.defaults.baseURL = '/api/';
-const apiURL =
-  process.env.NODE_ENV === 'production' ? 'https://int.erp-pos.com' : ''
+//const apiURL =
+//  process.env.NODE_ENV === 'production' ? process.env.VUE_APP_API_ENDPOINT : ''
+
 //axios.default.baseURL = apiURL
+
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.post['Accept'] = 'application/json'
 
@@ -11,7 +14,7 @@ export default {
   get(url) {
     return new Promise((resolve, reject) => {
       axios
-        .get(apiURL + url)
+        .get(url)
         .then(response => resolve(response))
         .catch(error => reject(error))
     })
@@ -20,7 +23,7 @@ export default {
   post(url, data) {
     return new Promise((resolve, reject) => {
       axios
-        .post(apiURL + url, data)
+        .post(url, data)
         .then(response => resolve(response))
         .catch(error => reject(error))
     })
@@ -54,7 +57,7 @@ export default {
 
       return new Promise((resolve, reject) => {
         axios
-          .post(apiURL + url, data)
+          .post(url, data)
           .then(response => {
             return resolve(response)
           })
@@ -75,7 +78,7 @@ export default {
 
       return new Promise((resolve, reject) => {
         axios
-          .post(apiURL + url)
+          .post(url)
           .then(response => {
             return resolve(response)
           })
