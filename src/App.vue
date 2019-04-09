@@ -8,10 +8,81 @@ The App.vue file is the root component that all other components are nested with
     <!--<router-link to="/">Home</router-link> |-->
     <!--<router-link to="/about">About</router-link>-->
     <!--</div>-->
-    <router-view />
+    <section v-if="errored">
+      <p>
+        We're sorry, we're not able to proceed at the moment, please try back
+        later
+      </p>
+      <p>Technical info: {{ errored }}</p>
+    </section>
+    <div v-else-if="loading">
+      <ul class="ullist-inventory-location pl-0 pt-2">
+        <li class="p-3">
+          <span>
+            Loading data...
+            <Preloader />
+          </span>
+        </li>
+      </ul>
+    </div>
+    <router-view v-else />
   </div>
 </template>
 
+<script>
+import Cookie from '@/mixins/Cookie'
+import bootstrap from '@/bootstrap'
+import Preloader from '@/components/util/Preloader'
+import { mapState } from 'vuex'
+
+export default {
+  name: 'Location',
+  props: {},
+  components: {
+    Preloader,
+  },
+  mixins: [Cookie],
+  data: function() {
+    return {
+      loading: true,
+      errored: false,
+    }
+  },
+  computed: {
+    ...mapState({
+      defaultLanguage: state =>
+        state.location.locationData
+          ? state.location.locationData.default_language[0]
+          : false,
+    }),
+  },
+  //life cycle hooks
+  mounted() {
+    bootstrap
+      .setup(this.$store)
+      .then(() => {
+        this.loading = false
+      })
+      .catch(error => (this.errored = error))
+  },
+}
+
+//vanilla js
+if ('serviceWorker' in navigator && 'SyncManager' in window) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.ready
+      .then(registration => {
+        Notification.requestPermission()
+        return registration.sync.register('postOfflineOrders')
+      })
+      .then(function() {})
+      .catch(function() {
+        // system was unable to register for a sync,
+        // this could be an OS-level restriction
+      })
+  })
+}
+</script>
 <style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -32,28 +103,3 @@ The App.vue file is the root component that all other components are nested with
   color: #00ff00;
   padding: 10px 5px 10px 5px;
 </style>
-
-<script>
-export default {}
-/* eslint-disable no-console */
-if ('serviceWorker' in navigator && 'SyncManager' in window) {
-  console.log('All things available')
-  window.addEventListener('load', () => {
-    console.log('window loaded with navigator')
-    navigator.serviceWorker.ready
-      .then(registration => {
-        console.log('Service Worker Ready IN MAIN Component')
-        Notification.requestPermission()
-        return registration.sync.register('postOfflineOrders')
-      })
-      .then(function() {
-        console.log('sync event postOfflineOrders registered')
-      })
-      .catch(function() {
-        // system was unable to register for a sync,
-        // this could be an OS-level restriction
-        console.log('sync registration failed')
-      })
-  })
-}
-</script>

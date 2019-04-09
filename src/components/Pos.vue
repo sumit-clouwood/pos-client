@@ -56,7 +56,6 @@ export default {
     Announcement,
     Footer,
   },
-
   //store private data in component using data
   data: function() {
     return {

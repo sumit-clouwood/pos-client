@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import DataService from '@/services/DataService'
 import * as mutation from './user/mutation-types'
 import db from '@/services/network/DB'
@@ -27,17 +26,13 @@ const actions = {
       resolve(token)
     })
   },
-  auth({ commit, rootState, dispatch }) {
+  auth({ commit, dispatch }, deviceId) {
     return new Promise((resolve, reject) => {
       //check if token already exists in indexedDB
-      console.log('in auth')
-      const idb = rootState.sync.idb
-      console.log(idb)
       db.getBucket('auth')
         .then(bucket => {
           db.fetch(bucket)
             .then(data => {
-              console.log('fetched data from auth db', data)
               if (data && data[0]) {
                 data = data[0]
                 //validate that token against api in case we need to refresh token otherwise use it
@@ -51,15 +46,6 @@ const actions = {
                   resolve(data)
                 })
               } else {
-                let deviceId = '34:79:A6:37:1F:C7'
-                if (process.env.NODE_ENV === 'production') {
-                  deviceId = 'XX:XX:XX:XX:XX:XX'.replace(/X/g, function() {
-                    return '0123456789ABCDEF'.charAt(
-                      Math.floor(Math.random() * 16)
-                    )
-                  })
-                }
-
                 DataService.auth(process.env, deviceId)
                   .then(response => {
                     if (!response.data.token) {
@@ -103,9 +89,9 @@ const actions = {
                   .catch(error => reject(error))
               }
             })
-            .catch(err => console.log('error', err))
+            .catch(error => reject(error))
         })
-        .catch(err => console.log('error', err))
+        .catch(error => reject(error))
     })
   },
 }

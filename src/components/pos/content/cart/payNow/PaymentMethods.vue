@@ -53,20 +53,26 @@ export default {
     ...mapActions('checkoutForm', ['setMethod']),
   },
   updated() {
-    $('#payment-method').slick({
-      arrows: false,
-      infinite: true,
-      slidesToShow: 4,
-      slidesToScroll: 4,
-      dots: true,
-    })
-    $('.payment-method-block table td img').click(function() {
-      if ($('.payment-method-block').length) {
-        $('.payment-method-block').addClass('active')
-        $('.payment-method-block').hide(800)
-      }
-    })
+    setTimeout(() => {
+      updateUI()
+    }, 100)
   },
+}
+function updateUI() {
+  $('#payment-method').slick({
+    arrows: false,
+    infinite: true,
+    slidesToShow: 4,
+    slidesToScroll: 4,
+    dots: true,
+    accessibility: false,
+  })
+  $('.payment-method-block table td img').click(function() {
+    if ($('.payment-method-block').length) {
+      $('.payment-method-block').addClass('active')
+      $('.payment-method-block').hide(800)
+    }
+  })
 }
 </script>
 <style lang="sass" scoped>

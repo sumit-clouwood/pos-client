@@ -1,5 +1,6 @@
 <template>
   <div class="preloader">
+    <link rel="prefetch" href="./../../../static/preloader.gif" />
     <img src="./../../../static/preloader.gif" />
   </div>
 </template>

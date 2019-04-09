@@ -25,21 +25,25 @@
 
 <script>
 /* global $ */
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'PayNowFooter',
   computed: {
     ...mapState('checkout', ['changedAmount']),
-    ...mapState('checkoutForm', ['msg']),
-    //...mapGetters('checkoutForm', ['validate']),
+    ...mapState('checkoutForm', ['msg', 'error']),
+    ...mapGetters('checkoutForm', ['validate']),
   },
+
   methods: {
     pay() {
-      $('#payment-msg').modal('show')
+      if (this.validate) {
+        $('#payment-msg').modal('show')
+      }
       this.$store
         .dispatch('checkout/pay')
         .then(() => {
           if (this.changedAmount >= 0.1) {
+            $('#payment-msg').modal('hide')
             $('#change-amount').modal('show')
           } else if (this.msg) {
             $('#payment-msg').modal('show')

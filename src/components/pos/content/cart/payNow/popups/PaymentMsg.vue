@@ -12,8 +12,8 @@
         </div>
         <div class="modal-body change-amount-option">
           <div class="amount-change-wrap">
-            <Preloader v-if="msg === 'loading'" />
-            <h2 v-else>{{ msg }}</h2>
+            <h2 v-if="msg && msg !== 'loading'">{{ msg }}</h2>
+            <Preloader v-else />
           </div>
         </div>
         <div class="modal-footer" v-if="msg !== 'loading'">

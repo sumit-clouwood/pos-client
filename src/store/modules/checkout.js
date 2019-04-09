@@ -243,6 +243,11 @@ const actions = {
           }
           return paymentPart
         })
+
+        if (!order.payBreakDown.length) {
+          order.payBreakDown = [['Cash', 0]]
+        }
+
         if (
           rootState.order.orderType == 'delivery' ||
           rootState.order.orderType == 'takeaway'
@@ -294,6 +299,8 @@ const actions = {
               reject(response)
             })
         }
+      } else {
+        reject()
       }
     })
   },

@@ -12,7 +12,6 @@ const actions = {
       commit(mutation.SET_ANNOUNCEMENT, response.data.data)
     })
   },
-
 }
 
 const getters = {}
@@ -24,7 +23,9 @@ const mutations = {
       announcements.forEach(announcement => {
         announcementsList =
           announcementsList != ''
-            ? announcementsList + '  |  ' + announcement.announcement.toUpperCase()
+            ? announcementsList +
+              '  |  ' +
+              announcement.announcement.toUpperCase()
             : announcement.announcement.toUpperCase()
       })
       state.announcements = announcementsList

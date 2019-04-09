@@ -64,7 +64,11 @@
               <span v-if="!loyaltyInfo">Loyalty</span>
               <span v-if="loyaltyInfo">
                 <span
-                  >{{ isNaN(loyaltyInfo.balance) ? 0 : parseFloat(loyaltyInfo.balance).toFixed(2) }}
+                  >{{
+                    isNaN(loyaltyInfo.balance)
+                      ? 0
+                      : parseFloat(loyaltyInfo.balance).toFixed(2)
+                  }}
                   {{ loyaltyInfo.currency_code }} Loyalty</span
                 >
                 <br />
@@ -207,6 +211,7 @@ export default {
     $('ul.ullist-icons').slick({
       slidesToShow: 5,
       slidesToScroll: 1,
+      accessibility: false,
       dots: false,
       arrows: true,
       nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',

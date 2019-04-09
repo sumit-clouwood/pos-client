@@ -74,6 +74,13 @@ export default {
     PaymentBreakdown,
     AmountCalculator,
   },
+  watch: {
+    orderTotal(newVal) {
+      if (newVal && !this.payable) {
+        this.payable = parseFloat(newVal).toFixed(2)
+      }
+    },
+  },
   computed: {
     showCalc: {
       get() {
@@ -85,7 +92,9 @@ export default {
     },
     payable: {
       get() {
-        return this.$store.state.checkoutForm.amount == '' ? parseFloat(this.orderTotal).toFixed(2) : this.$store.state.checkoutForm.amount
+        return this.$store.state.checkoutForm.amount > 0
+          ? this.$store.state.checkoutForm.amount
+          : 0
       },
       set(amount) {
         this.$store.dispatch('checkoutForm/setAmount', amount)
@@ -95,7 +104,6 @@ export default {
     ...mapState('checkoutForm', ['error']),
     ...mapGetters('location', ['formatPrice']),
     ...mapGetters('checkoutForm', ['orderTotal']),
-
   },
 }
 </script>
