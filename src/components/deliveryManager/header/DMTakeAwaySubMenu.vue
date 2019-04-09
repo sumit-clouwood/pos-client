@@ -14,8 +14,15 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'DMTakeAwaySubMenu',
+  computed: {
+    ...mapState({
+      orderCount: state => state.deliveryManager.orderCounts
+    })
+  }
 }
 </script>
 

@@ -19,6 +19,7 @@ import holdOrders from './modules/holdOrders'
 import payment from './modules/payment'
 import invoice from './modules/invoice'
 import loyalty from './modules/loyalty'
+import deliveryManager from './modules/deliveryManager'
 import Datetime from 'vue-datetime'
 // You need a specific loader for CSS files
 import 'vue-datetime/dist/vue-datetime.css'
@@ -46,6 +47,7 @@ const store = new Vuex.Store({
     discount,
     checkout,
     checkoutForm,
+    deliveryManager,
     giftcard,
     announcement,
     holdOrders,

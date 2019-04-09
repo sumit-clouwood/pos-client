@@ -1,5 +1,5 @@
 <template>
-<div class="ready-order-wraper-left">
+<div class="ready-order-wraper-left" v-if="orderDetails">
     <div class="dm-contain-order">
         <div class="dm-deliver-detail">
             <h4>2231341</h4>
@@ -18,11 +18,20 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'DMItem',
   props: {
     itemDetails: Object,
     actionDetails: Object
+  },
+  computed: {
+    ...mapState({
+      orderDetails: state => state.deliveryManager.orders
+    })
+  },
+  methods: {
+
   }
 }
 </script>
