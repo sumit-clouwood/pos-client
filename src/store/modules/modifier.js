@@ -151,10 +151,13 @@ const actions = {
       //let radios = {}
 
       const modifiers = state.all.filter(modifier => {
-        if (modifier.itemIds.length) {
+        if (modifier.itemIds && modifier.itemIds.length) {
           //find in itemids
           return modifier.itemIds.find(itemId => itemId === item._id)
-        } else if (modifier.item_subcategory.length) {
+        } else if (
+          modifier.item_subcategory &&
+          modifier.item_subcategory.length
+        ) {
           //find in subcategory
           return modifier.item_subcategory.find(
             subcatId => subcatId === rootState.category.subcategory._id
