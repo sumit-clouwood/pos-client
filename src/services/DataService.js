@@ -1,11 +1,8 @@
 /* eslint-disable no-console */
 import axios from 'axios'
 
-//axios.defaults.baseURL = '/api/';
-//const apiURL =
-//  process.env.NODE_ENV === 'production' ? process.env.VUE_APP_API_ENDPOINT : ''
-
-//axios.default.baseURL = apiURL
+const apiURL =
+  process.env.NODE_ENV === 'production' ? process.env.VUE_APP_API_ENDPOINT : ''
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.post['Accept'] = 'application/json'
@@ -14,7 +11,7 @@ export default {
   get(url) {
     return new Promise((resolve, reject) => {
       axios
-        .get(url)
+        .get(apiURL + url)
         .then(response => resolve(response))
         .catch(error => reject(error))
     })
@@ -23,7 +20,7 @@ export default {
   post(url, data) {
     return new Promise((resolve, reject) => {
       axios
-        .post(url, data)
+        .post(apiURL + url, data)
         .then(response => resolve(response))
         .catch(error => reject(error))
     })
@@ -47,7 +44,7 @@ export default {
   auth(env, deviceId) {
     if (process.env.VUE_APP_API_ENDPOINT === 'http://13.127.145.151') {
       //use post method
-      const url = '/api/auth/login'
+      const url = apiURL + '/api/auth/login'
 
       const data = {
         email: env.VUE_APP_API_USERNAME,
@@ -68,6 +65,7 @@ export default {
     } else {
       //use get method
       const url =
+        apiURL +
         '/api/auth/login/' +
         '?email=' +
         env.VUE_APP_API_USERNAME +

@@ -316,7 +316,11 @@ function sendPostToServer() {
       } else {
         // At this point, we have collected all the post requests in
         // indexedb.
+        console.log('sw:', 'Saved Reqeusts', savedRequests)
 
+        if (!savedRequests.length) {
+          console.log('sw:', 'No request found')
+        }
         //add unique id and order id
         //read from the indexedDB
         var authreq = getObjectStore('auth').openCursor()
