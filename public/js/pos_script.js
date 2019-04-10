@@ -1,3 +1,5 @@
+/* global $, toggleFullScreen, hidePayNow  */
+/* eslint-disable no-unused-vars */
 $(document).ready(function() {
   // Configure/customize these variables.
   var showChar = 23 // How many characters are shown by default
@@ -129,12 +131,13 @@ $(document).ready(function() {
       .find('input')
       .val()
 
+    var newVal = 0
     if ($button.text() == '+') {
-      var newVal = parseFloat(oldValue) + 1
+      newVal = parseFloat(oldValue) + 1
     } else {
       // Don't allow decrementing below zero
       if (oldValue > 0) {
-        var newVal = parseFloat(oldValue) - 1
+        newVal = parseFloat(oldValue) - 1
       } else {
         newVal = 0
       }
@@ -505,15 +508,9 @@ $(document).ready(function() {
   $('div#add-tip-amt').click(function() {
     $('div#pay-now').addClass('active')
   })
-  $(document).mouseup(function(e) {
-    var popup = $('div#tip-amount')
+  $(document).mouseup(function() {
     // var datesassign =$(".datepicker");
-    if (
-      !$('div#tip-amount').is(e.target) &&
-      !popup.is(e.target) &&
-      popup.has(e.target).length == 0
-    ) {
-    }
+
     $('div#pay-now').removeClass('active')
   })
 
@@ -650,14 +647,14 @@ $(document).ready(function() {
 
 var currFFZoom = 1
 var currIEZoom = 100
-
+var step = 0.02
 $('.zoom-wrap-dinein .qtyplus').on('click', function() {
   if ($.browser) {
-    var step = 0.02
+    step = 0.02
     currFFZoom += step
     $('#sitting-dinein-table').css('MozTransform', 'scale(' + currFFZoom + ')')
   } else {
-    var step = 2
+    step = 2
     currIEZoom += step
     $('#sitting-dinein-table').css('zoom', ' ' + currIEZoom + '%')
   }
@@ -665,11 +662,11 @@ $('.zoom-wrap-dinein .qtyplus').on('click', function() {
 
 $('.zoom-wrap-dinein .qtyminus').on('click', function() {
   if ($.browser) {
-    var step = 0.02
+    step = 0.02
     currFFZoom -= step
     $('#sitting-dinein-table').css('MozTransform', 'scale(' + currFFZoom + ')')
   } else {
-    var step = 2
+    step = 2
     currIEZoom -= step
     $('#sitting-dinein-table').css('zoom', ' ' + currIEZoom + '%')
   }
@@ -810,22 +807,3 @@ $(document).ready(function() {
       .removeClass('active')
   })
 })
-
-function closeModal(modalName) {
-  $('body').removeClass('modal-open')
-  $('#transparent-screen').css('display', 'none')
-  $(modalName).modal('hide')
-}
-
-function showModal(modalName) {
-  $(modalName).modal('show')
-}
-
-function hidePayNow() {
-  $('div#pay-now').addClass('effect-screen')
-  // $("div#pay-now").hide(800);
-  $('div#pay-now').animate({ right: '-660px' })
-  $('body').removeClass('modal-open')
-  $('div#pay-now').removeClass('show')
-  $('#transparent-screen').css('display', 'none')
-}

@@ -62,6 +62,9 @@ export default {
       .setup(this.$store)
       .then(() => {
         this.loading = false
+        setTimeout(() => {
+          require('@/../public/js/pos_script.js')
+        }, 2000)
       })
       .catch(error => (this.errored = error))
   },

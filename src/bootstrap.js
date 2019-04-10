@@ -33,7 +33,7 @@ export default {
           console.log('device id', murmur)
           resolve(murmur)
         })
-      }, 500)
+      }, 10)
     })
   },
   setup(store) {
