@@ -1,7 +1,6 @@
 import DataService from '@/services/DataService'
 
 export default {
-
   //Get country,city,location and drivers data by location id .
   getLocationData(...[locationId, staff]) {
     return DataService.get(

@@ -33,11 +33,7 @@
     <ul class="navbar-nav sidenav-toggler">
       <li class="nav-item arrow-bottom">
         <a class="nav-link" href="#">
-          <img
-            class="bt-arrow"
-            src="img/pos/down-arrow.png"
-            alt="arrows"
-          />
+          <img class="bt-arrow" src="img/pos/down-arrow.png" alt="arrows" />
           <img class="top-arrow" src="img/pos/top-arrow.png" alt="arrows" />
         </a>
       </li>

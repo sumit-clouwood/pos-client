@@ -1,32 +1,31 @@
 <template>
+  <div>
+    <!-- Breadcrumbs-->
+    <SystemNavigation />
 
-    <div>
-        <!-- Breadcrumbs-->
-        <SystemNavigation />
+    <!--body content left-->
+    <div class="content-wrapper" id="dm-content-wrapper">
+      <div class="inner-content-dm">
+        <DMMenu />
 
-        <!--body content left-->
-        <div class="content-wrapper" id="dm-content-wrapper">
-            <div class="inner-content-dm">
-                <DMMenu />
+        <HomeDelivery />
 
-                <HomeDelivery />
+        <TakeAway />
 
-                <TakeAway />
-
-                <FutureOrder />
-            </div>
-        </div>
-
-        <!-- Delivery Manager screen -->
-        <DMOrderDetails />
-        <!-- End Delivery maanger screen -->
-
-        <!-- Delivery Assistant popup -->
-        <DeliveryAssistant />
-        <!-- End Delivery Assitant popup -->
-
-        <div class="modal-backdrop fade show" id="transparent-screen"></div>
+        <FutureOrder />
+      </div>
     </div>
+
+    <!-- Delivery Manager screen -->
+    <DMOrderDetails />
+    <!-- End Delivery maanger screen -->
+
+    <!-- Delivery Assistant popup -->
+    <DeliveryAssistant />
+    <!-- End Delivery Assitant popup -->
+
+    <div class="modal-backdrop fade show" id="transparent-screen"></div>
+  </div>
 </template>
 
 <script>
@@ -48,6 +47,6 @@ export default {
     FutureOrder,
     DeliveryAssistant,
     DMOrderDetails,
-  }
+  },
 }
 </script>

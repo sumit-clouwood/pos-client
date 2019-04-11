@@ -1,14 +1,14 @@
 <template>
-    <div class="dm-order-take-away dm-order-screen-change" id="take-away-order">
-        <DMTakeAwaySubMenu />
+  <div class="dm-order-take-away dm-order-screen-change" id="take-away-order">
+    <DMTakeAwaySubMenu />
 
-        <div class="dm-ready-order-wrapper" id="Waiting-for-Collections">
-            <DMItem :actionDetails="actionDetailsWaiting"/>
-        </div>
-        <div class="dm-ready-order-wrapper" id="collected">
-            <DMItem :actionDetails="actionDetailsCollected"/>
-        </div>
+    <div class="dm-ready-order-wrapper" id="Waiting-for-Collections">
+      <DMItem :actionDetails="actionDetailsWaiting" />
     </div>
+    <div class="dm-ready-order-wrapper" id="collected">
+      <DMItem :actionDetails="actionDetailsCollected" />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -18,17 +18,15 @@ export default {
   name: 'TakeAway',
   data() {
     return {
-      actionDetailsWaiting: {'moreDetails': true, 'action': 'Collected'},
-      actionDetailsCollected: {'moreDetails': true, 'action': 'Delivered'}
+      actionDetailsWaiting: { moreDetails: true, action: 'Collected' },
+      actionDetailsCollected: { moreDetails: true, action: 'Delivered' },
     }
   },
   components: {
     DMTakeAwaySubMenu,
     DMItem,
-  }
+  },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

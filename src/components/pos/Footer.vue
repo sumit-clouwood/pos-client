@@ -199,8 +199,8 @@ export default {
           ? state.customer.customer.customer_list
           : typeof state.customer.fetchCustomerAddressOnly.customer_list !=
             'undefined'
-            ? state.customer.fetchCustomerAddressOnly.customer_list[0]
-            : false,
+          ? state.customer.fetchCustomerAddressOnly.customer_list[0]
+          : false,
     }),
   },
   methods: {
