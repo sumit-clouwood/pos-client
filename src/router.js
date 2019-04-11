@@ -21,5 +21,11 @@ export default new Router({
       // component: () =>
       // 	import(/* webpackChunkName: "about" */ './views/About.vue'),
     },
+    {
+      path: '/dine-in',
+      name: 'Dinein',
+      component: () =>
+        import(/* webpackChunkName: "din-in" */ './views/Dinein.vue'),
+    },
   ],
 })

@@ -58,6 +58,11 @@ export default {
   },
   //life cycle hooks
   mounted() {
+    if (this.$router.currentRoute.name === 'Dinein') {
+      this.loading = false
+      return
+    }
+
     bootstrap
       .setup(this.$store)
       .then(() => {

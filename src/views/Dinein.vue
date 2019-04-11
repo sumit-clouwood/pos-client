@@ -1,0 +1,85 @@
+<template>
+  <div>
+    <div class="contain-body-class">
+      <nav
+        class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"
+        id="mainNav"
+      >
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <Header />
+          <Menu />
+        </div>
+      </nav>
+      <div class="content-wrapper">
+        <div class="container-fluid row">
+          <Announcement />
+          <Content />
+          <!--<h1>{{ $t('title') }} from translation</h1>-->
+          <!--<h1>{{ $t('body') }} from translation</h1>-->
+          <!--<Content msg="Broccoli POS Content"/>-->
+        </div>
+      </div>
+    </div>
+    <Footer />
+  </div>
+</template>
+
+<i18n>
+    {
+    "en": {
+    "title": "Broccoli POS (En)",
+    "body": "Broccoli POS Body (En)"
+    },
+    "ar": {
+    "title": "Broccoli POS (Ar)",
+    "body": "Broccoli POS Body (Ar)"
+    }
+    }
+</i18n>
+
+<script>
+import Menu from '@/components/dinein/Menu.vue'
+import Header from '@/components/dinein/Header.vue'
+import Content from '@/components/dinein/Content'
+import Footer from '@/components/dinein/Footer'
+export default {
+  name: 'Dinein',
+  computed: {},
+  components: {
+    Header,
+    Menu,
+    Content,
+    Footer,
+  },
+
+  //store private data in component using data
+  data: function() {
+    return {
+      info: null,
+      loading: true, //async loading indicator
+      errored: false, //either request had error
+    }
+  },
+
+  //data passed to this component by its parent is contained inside props
+  props: {
+    msg: String,
+  },
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+
+<style lang="scss" scoped>
+@import '../assets/sass/variables';
+@import '../assets/sass/global';
+@import '../assets/sass/footer';
+@import '../assets/sass/mixins.scss';
+@import '../assets/sass/navbar.scss';
+.title {
+  color: $primary-color;
+}
+</style>
+<style scoped>
+@import '../assets/sass/dine-in/sb-admin.css';
+</style>
