@@ -10,32 +10,15 @@
           <Menu />
         </div>
       </nav>
-      <div class="content-wrapper">
-        <div class="container-fluid row">
-          <Announcement />
+      <div class="content-wrapper full-dinein" id="dine-in-wrapper">
+        <div class="container-fluid row all-tables-dinein" id="all-tables-show">
           <Content />
-          <!--<h1>{{ $t('title') }} from translation</h1>-->
-          <!--<h1>{{ $t('body') }} from translation</h1>-->
-          <!--<Content msg="Broccoli POS Content"/>-->
         </div>
       </div>
     </div>
     <Footer />
   </div>
 </template>
-
-<i18n>
-    {
-    "en": {
-    "title": "Broccoli POS (En)",
-    "body": "Broccoli POS Body (En)"
-    },
-    "ar": {
-    "title": "Broccoli POS (Ar)",
-    "body": "Broccoli POS Body (Ar)"
-    }
-    }
-</i18n>
 
 <script>
 import Menu from '@/components/dinein/Menu.vue'
@@ -70,16 +53,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
-<style lang="scss" scoped>
-@import '../assets/sass/variables';
-@import '../assets/sass/global';
-@import '../assets/sass/footer';
-@import '../assets/sass/mixins.scss';
-@import '../assets/sass/navbar.scss';
-.title {
-  color: $primary-color;
-}
-</style>
 <style scoped>
-@import '../assets/sass/dine-in/sb-admin.css';
+@import '../assets/sass/dine-in/dineIn.css';
 </style>

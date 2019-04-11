@@ -35,15 +35,15 @@
         <a class="nav-link" href="#">
           <img
             class="bt-arrow"
-            src="images/footer-images/down-arrow.png"
+            src="img/pos/down-arrow.png"
             alt="arrows"
           />
-          <img class="top-arrow" src="images/top-arrow.png" alt="arrows" />
+          <img class="top-arrow" src="img/pos/top-arrow.png" alt="arrows" />
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-center" id="sidenavToggler">
-          <img src="images/profile-pic.png" alt="profile" />
+          <img src="img/pos/profile-pic.png" alt="profile" />
         </a>
       </li>
     </ul>
@@ -117,7 +117,6 @@
 export default {
   name: 'Topbar',
   props: {},
-  data() {},
   computed: {},
 }
 </script>
