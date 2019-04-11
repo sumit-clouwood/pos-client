@@ -368,7 +368,7 @@ const actions = {
   },
 
   updateOrderStatus(
-    { rootState },
+    { rootState, dispatch },
     { orderStatus, orderId, timestamp, orderType }
   ) {
     const params = [
@@ -382,6 +382,7 @@ const actions = {
       },
     ]
     OrderService.updateOrder(...params).then(() => {})
+    dispatch('deliveryManager/fetchOrderCount', null, { root: true })
     /*commit(mutation.SET_ORDER, order)
     dispatch('createOrder')*/
   },

@@ -286,16 +286,13 @@ button#dm-assistant {
   margin: 0 auto;
   padding-top: 15px; }
   .dm-ready-order-wrapper .ready-order-wraper-left {
-    float: left;
     margin-right: 25px;
-    float: none !important;
     float: unset;
     width: unset !important; }
   .dm-ready-order-wrapper .ready-order-wraper-right {
     float: left; }
 
 .ready-order-wraper-left {
-  width: 570px;
   width: unset !important; }
   .ready-order-wraper-left > .dm-contain-order {
     float: left;
@@ -359,29 +356,29 @@ button#dm-assistant {
   letter-spacing: 0.5px;
   color: #72747b; }
 
-button#ready {
+button.ready {
   border: medium none;
   background: #fff;
   padding-right: 0; }
-  button#ready > a {
+  button.ready > a {
     width: 80px;
     display: inline-block;
     border-radius: 4px;
     background-color: #62bb31;
     padding: 8px 0;
-    margin-left: 35px;
     font-size: 14px;
     color: #fff;
     letter-spacing: 0.5px;
     font-weight: 600;
     margin-left: 10px; }
-  button#ready > span {
+  button.ready > span {
     font-size: 12px;
     font-weight: 600;
     font-style: normal;
     font-stretch: normal;
     line-height: normal;
     letter-spacing: 0.5px;
+    padding-right: 8px;
     color: #3f831a; }
 
 .inner-content-dm {
@@ -413,7 +410,7 @@ div#delivery-manager .modal-footer {
   border-radius: 4px;
   overflow: hidden;
   margin: 0 auto;
-  padding: 35px;
+  padding: 15px;
   border: solid 1px #e4e7eb;
   border-radius: 4px; }
   .dm-ready-order-wrap > .dm-ready-order-right {
@@ -438,7 +435,7 @@ div#delivery-manager .modal-footer {
   margin-top: 30px; }
 
 .dm-confirmation-wrap {
-  padding: 35px !important;
+  padding: 20px !important;
   overflow: hidden;
   margin: 0 auto; }
 
@@ -446,10 +443,9 @@ div#delivery-manager .modal-footer {
   overflow: hidden;
   margin: 0 auto;
   border: solid 1px #e4e7eb;
-  margin-top: 20px;
   border-radius: 4px; }
   .dm-order-confirmation .order-table {
-    padding: 20px 30px;
+    padding: 0 15px 15px 15px;
     max-height: 462px; }
 
 div#dm-order-past-wrap .order-amt-charges {
@@ -463,19 +459,17 @@ div#dm-confirm-order-tab > .order-amt-charges {
   float: left;
   width: 30%; }
 div#dm-confirm-order-tab .order-amt-title > p {
-  border-bottom: solid 1px #efefef;
   margin-bottom: 0;
-  padding: 15px 0px;
-  line-height: 15px; }
+  padding: 10px 0px;
+  line-height: 10px; }
   div#dm-confirm-order-tab .order-amt-title > p:last-child {
     color: #a4a4a4;
     font-weight: normal;
     border-bottom: medium none; }
 div#dm-confirm-order-tab .order-amt-charges > p {
-  border-bottom: solid 1px #efefef;
   margin-bottom: 0;
-  padding: 15px 0px;
-  line-height: 15px;
+  padding: 10px 0px;
+  line-height: 10px;
   font-weight: 600; }
   div#dm-confirm-order-tab .order-amt-charges > p:last-child {
     border-bottom: medium none; }
@@ -523,8 +517,7 @@ h3.order-history-dm {
   line-height: normal;
   letter-spacing: 0.5px;
   color: #000000;
-  padding: 10px 35px;
-  margin-top: 20px;
+  padding: 15px 27px;
   margin-bottom: 0; }
 
 div#dm-order-history-rec {
@@ -698,5 +691,16 @@ div#dm-payment-type-order {
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
     touch-action: auto; } }
+.btn-success {
+  color: #fff;
+  background-color: #62bb31;
+  border-color: #62bb31; }
+
+div#dm-payment-type-order table th, div#dm-payment-type-order table tr td {
+  padding-left: 0; }
+
+p.payments-title {
+  color: #a4a4a4;
+  font-size: 14px; }
 
 /*# sourceMappingURL=deliveryManager.css.map */

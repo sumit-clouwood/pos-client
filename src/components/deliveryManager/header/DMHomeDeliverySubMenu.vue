@@ -2,10 +2,10 @@
     <div class="dm-order-details-wrap">
         <div class="dm-delivery-details-btn">
             <ul class="dm-ullist">
-                <li class="active" data-related="dm-new-order"><a href="#">New Orders</a><span>60</span></li>
-                <li class="pick" data-related="dm-waiting-for-pick"><a href="#">Waiting for Pick</a><span>12</span></li>
-                <li class="pick" data-related="dm-delivery-in-progress"><a href="#">Delivery - In Progress</a><span>12</span></li>
-                <li class="dm-delivered" data-related="dm-delivered"><a href="#">Delivered</a><span>12</span></li>
+                <li class="active" data-related="dm-new-order" @click="updateOrderStatus('running')"><a href="#">New Orders</a><span v-if="orderCount">{{ orderCount.running }}</span></li>
+                <li class="pick" data-related="dm-waiting-for-pick" @click="updateOrderStatus('ready')"><a href="#">Waiting for Pick</a><span v-if="orderCount">{{ orderCount.ready }}</span></li>
+                <li class="pick" data-related="dm-delivery-in-progress" @click="updateOrderStatus('in-progress')"><a href="#">Delivery - In Progress</a><span v-if="orderCount">{{ orderCount['in-progress'] }}</span></li>
+                <li class="dm-delivered" data-related="dm-delivered" @click="updateOrderStatus('delivered')"><a href="#">Delivered</a><span v-if="orderCount">{{ orderCount.delivered }}</span></li>
             </ul>
         </div>
         <div class="dm-delivery-assistants">
@@ -15,9 +15,19 @@
 </template>
 
 <script>
-
+import { mapState } from 'vuex'
 export default {
   name: 'DMHomeDeliverySubMenu',
+  methods: {
+    updateOrderStatus: function (getOrderStatus) {
+      this.$store.dispatch('deliveryManager/updateDMOrderStatus', getOrderStatus)
+    },
+  },
+  computed: {
+    ...mapState({
+      orderCount: state => state.deliveryManager.orderCounts
+    })
+  }
 }
 </script>
 

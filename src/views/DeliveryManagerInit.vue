@@ -10,10 +10,11 @@ export default {
   name: 'DeliveryManagerInit',
   components: {
     DeliveryManager
+
   }
 }
 </script>
 
 <style lang="scss">
-    @import '../assets/sass/deliveryManager';
+   @import '../assets/sass/deliveryManager';
 </style>

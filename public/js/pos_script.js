@@ -247,7 +247,7 @@ $(document).ready(function() {
       .addClass('active')
     $('.wrappers-orders.active').hide(800)
   })
-  $('button#ready > a').click(function() {
+  $('button.ready > a').click(function() {
     $(this)
       .parent()
       .parent()

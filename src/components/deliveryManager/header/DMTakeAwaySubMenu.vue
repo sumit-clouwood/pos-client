@@ -2,8 +2,8 @@
     <div class="dm-order-details-wrap">
         <div class="dm-delivery-details-btn">
             <ul class="dm-ullist">
-                <li class="active" data-related="Waiting-for-Collections"><a href="#">Waiting for Collections</a><span>10</span></li>
-                <li class="pick" data-related="collected"><a href="#">Collected</a><span>66</span></li>
+                <li class="active" data-related="Waiting-for-Collections"><a href="#">Waiting for Collections</a><span v-if="orderCount">{{ orderCount.take_away.Waiting_for_collection }}</span></li>
+                <li class="pick" data-related="collected"><a href="#">Collected</a><span v-if="orderCount">{{ orderCount.take_away.collected }}</span></li>
 
             </ul>
         </div>

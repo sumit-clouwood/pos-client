@@ -1,7 +1,7 @@
 <template>
     <div class="dm-future-order dm-order-screen-change" id="future-order">
         <div class="dm-ready-order-wrapper-future">
-            <DMItem :actionDetails="actionDetails" :itemDetails="itemDetails"/>
+            <DMItem :actionDetails="actionDetails"/>
         </div>
     </div>
 </template>
@@ -12,7 +12,6 @@ export default {
   name: 'FutureOrder',
   data() {
     return {
-      itemDetails: {},
       actionDetails: {'moreDetails': false, 'action': false}
     }
   },

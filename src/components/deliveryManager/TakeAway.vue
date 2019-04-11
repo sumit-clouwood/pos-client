@@ -3,10 +3,10 @@
         <DMTakeAwaySubMenu />
 
         <div class="dm-ready-order-wrapper" id="Waiting-for-Collections">
-            <DMItem :actionDetails="actionDetailsWaiting" :itemDetails="itemDetails"/>
+            <DMItem :actionDetails="actionDetailsWaiting"/>
         </div>
         <div class="dm-ready-order-wrapper" id="collected">
-            <DMItem :actionDetails="actionDetailsCollected" :itemDetails="itemDetails"/>
+            <DMItem :actionDetails="actionDetailsCollected"/>
         </div>
     </div>
 </template>
@@ -18,7 +18,6 @@ export default {
   name: 'TakeAway',
   data() {
     return {
-      itemDetails: {},
       actionDetailsWaiting: {'moreDetails': true, 'action': 'Collected'},
       actionDetailsCollected: {'moreDetails': true, 'action': 'Delivered'}
     }

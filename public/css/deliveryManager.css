@@ -445,7 +445,7 @@ div#delivery-manager .modal-footer {
 .dm-order-confirmation {
   overflow: hidden;
   margin: 0 auto;
-  border: solid 1px #e4e7eb;
+  /*border: solid 1px #e4e7eb;*/
   margin-top: 20px;
   border-radius: 4px; }
   .dm-order-confirmation .order-table {

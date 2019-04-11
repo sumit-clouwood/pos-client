@@ -142,6 +142,7 @@ export default {
                     store.dispatch('giftcard/fetchAll', response)
                     store.dispatch('invoice/fetchAll', response)
                     store.dispatch('loyalty/fetchAll', response)
+                    store.dispatch('deliveryManager/fetchDMOrderDetail', response)
                   })
                   .catch(error => reject(error))
               })

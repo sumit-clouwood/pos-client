@@ -3,40 +3,40 @@
         <div class="modal-dialog">
             <!-- Modal content-->
 
-            <div class="modal-content">
+            <div class="modal-content" v-if="selectedOrder">
 
                 <div class="modal-body dm-confirmation-wrap dm-con">
                     <div class="dm-ready-order-wrap">
                         <div class="dm-ready-order-left">
                             <div class="dm-ready">
                                 <p>Customer Name: </p>
-                                <h5>Beby Jovanca</h5>
+                                <h5>{{ selectedOrder.customer.customer_name }}</h5>
                             </div>
                             <div class="dm-ready">
                                 <p>Phone Number:</p>
-                                <h5>0504569912</h5>
+                                <h5>{{ selectedOrder.customer.mobile_number }}</h5>
                             </div>
                             <div class="dm-ready">
                                 <p>Location/Branch: </p>
-                                <h5>Muroor Road - Abu Dhabi</h5>
+                                <h5>{{ locationName }} </h5>
                             </div>
                             <div class="dm-ready">
                                 <p>Staff: </p>
-                                <h5>Beby Jovanca</h5>
+                                <h5>{{ selectedOrder.created_by}}</h5>
                             </div>
                         </div>
                         <div class="dm-ready-order-right">
                             <div class="dm-ready">
                                 <p>Order Number:</p>
-                                <h5>2224466</h5>
+                                <h5>{{ selectedOrder.order_no }}</h5>
                             </div>
                             <div class="dm-ready">
                                 <p>Delivery Area: </p>
-                                <h5>Al Muroor</h5>
+                                <h5>{{ selectedOrder.delivery_area }}</h5>
                             </div>
                             <div class="dm-ready">
                                 <p>Delivery Address:</p>
-                                <h5>Al Muroor Road, Abu Dhabi</h5>
+                                <h5>{{ selectedOrder.delivery_area }}, {{ selectedOrder.order_address.street }}, {{ selectedOrder.city }}</h5>
                             </div>
                         </div>
                         <div id="dm-payment-type-order">
@@ -50,31 +50,12 @@
                                         <th style="width: 150px">Collected</th>
                                         <th style="width: 150px">Returned</th>
                                     </tr>
-                                    <tr class="pay-tot-amt">
-                                        <td>Cash</td>
-                                        <td>100</td>
-                                        <td>100</td>
-                                        <td>0.00</td>
+                                    <tr class="pay-tot-amt" v-for="(payment, index) in selectedOrder.payment_info" :key="index">
+                                        <td>{{ payment.payment_mode }}</td>
+                                        <td>{{ payment.payment_amount }}</td>
+                                        <td>{{ collectedAmount(payment) }}</td>
+                                        <td>{{ returnedAmount(payment.payment_mode,selectedOrder.amount_changed ) }}</td>
                                     </tr>
-                                    <tr class="pay-tot-amt">
-                                        <td>Mastercard</td>
-                                        <td>100</td>
-                                        <td>100</td>
-                                        <td>0.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Credit Card</td>
-                                        <td>200</td>
-                                        <td>21.00</td>
-                                        <td>0.00</td>
-                                    </tr>
-                                    <tr class="pay-tot-amt">
-                                        <td>Paypal</td>
-                                        <td>200</td>
-                                        <td>21.00</td>
-                                        <td>0.00</td>
-                                    </tr>
-
                                 </table>
                             </div>
                         </div>
@@ -82,43 +63,65 @@
                     </div>
 
 
-                    <div class="dm-order-confirmation" id="dm-order-confirmation">
+                    <div class="dm-order-confirmation displayBlock" id="dm-order-confirmation" >
                         <div class="order-table">
                             <table class="table table-responsive">
                                 <tr>
                                     <th style="width: 500px">ITEM NAME</th>
-                                    <th style="width: 105px">Quantity</th>
+                                    <th style="width: 105px">QTY</th>
                                     <th style="width: 150px">PRICE</th>
+                                    <th style="width: 150px">TAX</th>
                                     <th style="width: 200px">SUB-PRICE</th>
                                 </tr>
-                                <tr class="pay-tot-amt">
-                                    <td>Deluxe Pizza Medium </td>
-                                    <td>1</td>
-                                    <td>0</td>
-                                    <td>0.00</td>
-                                </tr>
-                                <tr class="pay-tot-amt modifier-item-item">
+                                <!--<tr class="pay-tot-amt modifier-item-item">
                                     <td colspan="4"><a class="modifier-dm" href="#">Bolognese Sauce</a> <a class="modifier-dm" href="#">Bolognese Sauce</a> <a class="modifier-dm" href="#">Bolognese Sauce</a></td>
-                                </tr>
-                                <tr class="pay-tot-amt">
-                                    <td>Beef Strips Pasta Plate </td>
-                                    <td>1</td>
-                                    <td>27.14</td>
-                                    <td>27.14</td>
-                                </tr>
-                                <tr class="pay-tot-amt modifier-item-item">
-                                    <td colspan="4"><a class="modifier-dm" href="#">Bolognese Sauce</a> <a class="modifier-dm" href="#">Bolognese Sauce</a></td></tr>
-                                <tr>
-                                    <td>Vegetable Pizza Small</td>
-                                    <td>2</td>
-                                    <td>21.00</td>
-                                    <td>0.00</td>
-                                </tr>
-                                <tr class="pay-tot-amt">
-                                    <td>Pepsi</td>
-                                    <td>2</td>
-                                    <td>21.00</td>
-                                    <td>0.00</td>
+                                </tr>-->
+                                <tr v-for="item in selectedOrder.items" :key="item.item_id">
+                                    <td>
+                                        {{ item.item_name }}
+                                        <div class="head1" v-if="item.item_modifiers.length">
+                                            <i
+                                                    class="fa fa-leaf categoryColorContainer green-txt"
+                                            ></i>
+                                        </div>
+                                        <div
+                                                v-if="item.item_modifiers.length"
+                                                class="online-order-details-wrap"
+                                        >
+                                            <div
+                                                    v-for="(modifier, index) in item.item_modifiers"
+                                                    :key="index"
+                                            >
+                                                <p
+                                                        v-for="PMDetails in modifier.modifiers
+                            .price_modifiers"
+                                                        :key="PMDetails._id"
+                                                >
+                                                    {{ PMDetails.item_name }} ({{
+                                                    PMDetails.location_price
+                                                    }})
+                                                </p>
+                                                <p
+                                                        v-for="MMDetails in modifier.modifiers
+                            .mandatory_modifiers"
+                                                        :key="MMDetails._id"
+                                                >
+                                                    {{ MMDetails.item_name }}
+                                                </p>
+                                                <p
+                                                        v-for="RMDetails in modifier.modifiers
+                            .regular_modifiers"
+                                                        :key="RMDetails._id"
+                                                >
+                                                    {{ RMDetails.item_name }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ item.item_quantity }}</td>
+                                    <td>{{ formatPrice(item.item_price_each) }}</td>
+                                    <td>{{ formatPrice(item.item_tax_amount) }}</td>
+                                    <td>{{ formatPrice(item.item_price_total) }}</td>
                                 </tr>
 
                             </table>
@@ -126,13 +129,28 @@
                         <div id="dm-order-past-wrap" class="total-order">
                             <div class="order-confirm-amt" id="dm-confirm-order-tab">
                                 <div class="order-amt-title">
-                                    <p>SUBTOTAL</p>
-                                    <p>Delivery fee (AED 2.86)</p>
+                                    <p>SUBTOTAL :</p>
+                                    <p>SURCHARGE :</p>
+                                    <p>ORDER DISCOUNT :</p>
+                                    <p>TAX :</p>
+                                    <p>BILL AMOUNT :</p>
                                 </div>
                                 <div class="order-amt-charges">
-                                    <p>INR 42.00</p>
-                                    <p>INR 2.86</p>
-
+                                    <p>
+                                        {{ formatPrice(selectedOrder.subtotal) }}
+                                    </p>
+                                    <p>
+                                        {{  formatPrice(selectedOrder.surcharge) }}
+                                    </p>
+                                    <p>
+                                        {{  formatPrice(selectedOrder.discount_amount) }}
+                                    </p>
+                                    <p>
+                                        {{  formatPrice(selectedOrder.final_tax) }}
+                                    </p>
+                                    <p>
+                                        {{  formatPrice(selectedOrder.balance_due) }}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -141,37 +159,68 @@
 
 
                     <div class="dm-order-confirmation" id="dm-order-history-rec">
-                        <h3 class="order-history-dm">Order History</h3>
-                        <div class="order-table">
+                        <div class="deliver-right-inner">
+                            <h3 class="order-history-dm">Order History</h3>
+                            <div class="order-table">
+                                <table class="table table-responsive">
+                                    <thead>
+                                    <tr>
+                                        <th style="width:150px">Status</th>
+                                        <th style="width:200px">Staff</th>
+                                        <th style="width:500px">Time</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="orderHistory" v-if="selectedOrder.modifyOrder != 0">
+                                        <tr>
+                                            <td>New</td>
+                                            <td>{{ selectedOrder.created_by }}</td>
+                                            <td>{{ selectedOrder.created_date }} / {{ selectedOrder.created_time }}</td>
+                                        </tr>
+                                        <tr v-for="(mod, index) in selectedOrder.modifyOrder" :key="index">
+                                            <td>{{ mod.reprinted != 1 ? 'Modified' : 'Reprint' }}</td>
+                                            <td>{{ mod.updated_by }}</td>
+                                            <td>{{ mod.updated_date }} / {{ mod.updated_time }}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tbody v-else>
+                                        <tr>
+                                            <td>New</td>
+                                            <td>{{ selectedOrder.created_by }}</td>
+                                            <td>{{ selectedOrder.created_date }} / {{ selectedOrder.created_time }}</td>
+                                        </tr>
+                                    </tbody>
 
-                            <table class="table table-responsive">
-                                <tr>
-                                    <th style="width: 150px">STATUS</th>
-                                    <th style="width: 200px">STAFF</th>
-                                    <th style="width: 500px">TIME</th>
-                                </tr>
-                                <tr class="pay-tot-amt">
-                                    <td>New  </td>
-                                    <td>Tecom</td>
-                                    <td>May, 31 2018 14.00 PM</td>
-                                </tr>
-                                <tr class="pay-tot-amt">
-                                    <td>New  </td>
-                                    <td>Tecom</td>
-                                    <td>May, 31 2018 14.00 PM</td>
-                                </tr>
-                                <tr class="pay-tot-amt">
-                                    <td>New  </td>
-                                    <td>Tecom</td>
-                                    <td>May, 31 2018 14.00 PM</td>
-                                </tr>
-                                <tr class="pay-tot-amt">
-                                    <td>New  </td>
-                                    <td>Tecom</td>
-                                    <td>May, 31 2018 14.00 PM</td>
-                                </tr>
+                                </table>
+                            </div>
 
-                            </table>
+                            <h3 class="order-history-dm">Order Modified History</h3>
+                            <div class="order-table">
+                                <table class="table table-responsive">
+                                    <thead>
+                                    <tr>
+                                        <th style="width:150px">Modified Item</th>
+                                        <th style="width:150px">What Modified?</th>
+                                        <th style="width:150px">Who Modified?</th>
+                                        <th style="width:150px">Time</th>
+                                        <th style="width:150px">Modified Reason</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody v-if="selectedOrder.orderItemModifyArr.length">
+                                        <tr v-for="(mod, index) in selectedOrder.orderItemModifyArr" :key="index">
+                                            <td>{{ mod.item_name }}</td>
+                                            <td>{{ mod.message }}</td>
+                                            <td>{{ mod.updated_by }}</td>
+                                            <td>{{ mod.updated_date }} / {{ mod.updated_time }}</td>
+                                            <td>{{ mod.modify_reason_value }}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tbody v-else>
+                                        <tr>
+                                            <td colspan="5">Order not modified yet</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
                     </div>
@@ -198,8 +247,8 @@
                         </div>
                     </div>
                     <div class="btn-announce">
-                        <button type="button" class="btn" id="status-history"><span><img src="img/other/status.png" alt="status"></span>Status History</button>
-                        <button type="button" class="btn" id="recipt-history"><span><img src="img/other/reciept.png" alt="status"></span>Show Receipt</button>
+                        <button type="button" class="btn displayBlock" id="status-history" @click="toggleHistory()"><span><img src="img/other/status.png" alt="status"></span>Status History</button>
+                        <button type="button" class="btn" id="recipt-history" @click="toggleHistory()"><span><img src="img/other/reciept.png" alt="status"></span>Show Receipt</button>
                         <button type="button" class="btn btn-danger cancel-announce" data-dismiss="modal"><span>✕</span> Close</button>
                     </div>
                     <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -211,11 +260,38 @@
 </template>
 
 <script>
+/* global $ */
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'DMOrderDetails',
+  computed: {
+    ...mapState({
+      selectedOrder: state => state.deliveryManager.selectedOrder,
+    }),
+    ...mapState({
+      locationName: state => state.location.locationName,
+    }),
+    ...mapGetters('location', ['formatPrice']),
+  },
+  methods: {
+    returnedAmount: function (paymentMode, amountChanged) {
+      return paymentMode == 'Cash' ? amountChanged : 0
+    },
+    collectedAmount: function (payment) {
+      return payment.payment_mode == 'Cash' ? payment.payment_amount : 0
+    },
+    toggleHistory: function () {
+      $('#dm-order-confirmation').toggle()
+      $('#dm-order-history-rec').toggle()
+      $('#status-history').toggle()
+      $('#recipt-history').toggle()
+    }
+  }
 }
 </script>
 
 <style scoped>
-
+ .displayBlock{
+     display:inline-block
+ }
 </style>
