@@ -58,6 +58,11 @@ export default {
   },
   //life cycle hooks
   mounted() {
+    if (this.$router.currentRoute.name === 'Dinein') {
+      this.loading = false
+      return
+    }
+
     bootstrap
       .setup(this.$store)
       .then(() => {
@@ -73,16 +78,18 @@ export default {
 //vanilla js
 if ('serviceWorker' in navigator && 'SyncManager' in window) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.ready
-      .then(registration => {
-        Notification.requestPermission()
-        return registration.sync.register('postOfflineOrders')
-      })
-      .then(function() {})
-      .catch(function() {
-        // system was unable to register for a sync,
-        // this could be an OS-level restriction
-      })
+    setTimeout(() => {
+      navigator.serviceWorker.ready
+        .then(registration => {
+          Notification.requestPermission()
+          return registration.sync.register('postOfflineOrders')
+        })
+        .then(function() {})
+        .catch(function() {
+          // system was unable to register for a sync,
+          // this could be an OS-level restriction
+        })
+    }, 3000)
   })
 }
 </script>
