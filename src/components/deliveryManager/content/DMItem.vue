@@ -23,7 +23,7 @@
                 <button class="ready" @click="showOrderDetails(order)">
                     <span v-if="actionDetails.moreDetails" data-toggle="modal" data-target="#delivery-manager">More details</span>
                 </button>
-                <a href="#" v-if="actionDetails.action" class="btn btn-success"
+                <a href="#" v-if="actionDetails.action" class="btn btn-success" :id="order._id"
                    @click="DMOrderStatus({
                    actionDetails: actionDetails,
                    orderId: order._id,
@@ -68,12 +68,7 @@ export default {
       } else {
         this.$store.dispatch('checkout/updateOrderStatus', {'orderStatus': actionDetails.nextOrderStatus, 'orderId': orderId, 'timestamp': timestamp, 'orderType': 'delivery'})
       }
-      $(this)
-        .parent()
-        .parent()
-        .parent()
-        .addClass('active')
-      $('.dm-contain-order.active').hide(800)
+      $('#'+orderId).parent().parent().parent().hide(800)
     }
   }
 }

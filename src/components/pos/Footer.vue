@@ -4,11 +4,10 @@
       <div class="container">
         <ul class="ullist-icons">
           <li data-toggle="modal" data-target="#manage-customer">
-            <a href="#"
-              ><img src="img/pos/customer.svg" alt="customer" /><span
-                >Customer</span
-              ></a
-            >
+            <a href="#">
+              <img src="img/pos/customer.svg" alt="customer" />
+              <span>Customer</span>
+            </a>
           </li>
 
           <li id="hold-order-box" @click="getHoldOrders">
