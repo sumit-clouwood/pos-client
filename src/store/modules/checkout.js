@@ -2,6 +2,7 @@
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 import db from '@/services/network/DB'
+import Crypt from '@/plugins/helpers/Crypt.js'
 
 // initial state
 const state = {
@@ -71,23 +72,6 @@ const actions = {
           balance_due: rootGetters['order/orderTotal'],
           subtotal: rootGetters['order/subTotal'],
           amount_changed: state.changedAmount,
-        }
-
-        const cyrb53 = function(str, seed = 0) {
-          let h1 = 0xdeadbeef ^ seed,
-            h2 = 0x41c6ce57 ^ seed
-          for (let i = 0, ch; i < str.length; i++) {
-            ch = str.charCodeAt(i)
-            h1 = Math.imul(h1 ^ ch, 2654435761)
-            h2 = Math.imul(h2 ^ ch, 1597334677)
-          }
-          h1 =
-            Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^
-            Math.imul(h2 ^ (h2 >>> 13), 3266489909)
-          h2 =
-            Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^
-            Math.imul(h1 ^ (h1 >>> 13), 3266489909)
-          return 4294967296 * (2097151 & h2) + (h1 >>> 0)
         }
 
         if (rootState.order.orderType == 'delivery') {
@@ -248,57 +232,17 @@ const actions = {
           order.payBreakDown = [['Cash', 0]]
         }
 
-        if (
-          rootState.order.orderType == 'delivery' ||
-          rootState.order.orderType == 'takeaway'
-        ) {
-          //its a crm/delivery order, include cusotmer id
+        order.app_uniqueid = Crypt.uuid()
 
-          //get last order no from indexedDB and update it in rootstate
-          let lastOrderNo = 1
-          db.getBucket('auth')
-            .then(bucket => {
-              console.log(bucket)
-              db.fetch(bucket).then(data => {
-                console.log('fetched data from auth db', data)
-                if (data && data[0]) {
-                  data = data[0]
-                  //validate that token against api in case we need to refresh token otherwise use it
-                  lastOrderNo = parseInt(data.lastOrderNo) + 1
-
-                  console.log('lastorder number', lastOrderNo)
-                  const transitionOrderNo =
-                    rootState.auth.franchiesCode +
-                    '-' +
-                    rootState.auth.deviceCode +
-                    '-' +
-                    lastOrderNo
-                  order.app_uniqueid = cyrb53(transitionOrderNo)
-
-                  commit(mutation.SET_ORDER, order)
-                  dispatch('createOrder')
-                    .then(response => {
-                      resolve(response)
-                    })
-                    .catch(response => {
-                      reject(response)
-                    })
-                }
-              })
-            })
-            .catch(error => console.log('error from db', error))
-            .finally(res => console.log('final res', res))
-        } else {
-          console.log('not in delivery or take away ')
-          commit(mutation.SET_ORDER, order)
-          dispatch('createOrder')
-            .then(response => {
-              resolve(response)
-            })
-            .catch(response => {
-              reject(response)
-            })
-        }
+        console.log('not in delivery or take away ')
+        commit(mutation.SET_ORDER, order)
+        dispatch('createOrder')
+          .then(response => {
+            resolve(response)
+          })
+          .catch(response => {
+            reject(response)
+          })
       } else {
         reject()
       }
