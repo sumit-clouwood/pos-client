@@ -13,12 +13,12 @@ export default {
 
       dbrequest.onupgradeneeded = function(event) {
         self.idb = event.target.result
-        resolve({ idb: self.idb, flag: 'upgrade' })
+        resolve({ idb: self.idb, flag: 'upgrade', event: event })
       }
 
-      dbrequest.onsuccess = function() {
+      dbrequest.onsuccess = function(event) {
         self.idb = dbrequest.result
-        resolve({ idb: self.idb, flag: 'open' })
+        resolve({ idb: self.idb, flag: 'open', event: event })
       }
 
       dbrequest.onblocked = function() {
@@ -32,16 +32,20 @@ export default {
       }
     })
   },
-  createBucket(bucket) {
-    var self = this
+  createBucket(bucket, options) {
     return new Promise((resolve, reject) => {
-      const objectStore = this.idb.createObjectStore(bucket, {
-        autoIncrement: true,
-        keyPath: 'id',
-      })
-      objectStore.transaction.oncomplete = function() {
-        resolve(self.idb.transaction(bucket, 'readwrite').objectStore(bucket))
-      }
+      const objectStore = this.idb.createObjectStore(
+        bucket,
+        options
+          ? options
+          : {
+              autoIncrement: true,
+              keyPath: 'id',
+            }
+      )
+
+      resolve(objectStore)
+
       objectStore.transaction.onerror = function(event) {
         reject(event)
       }
@@ -64,10 +68,36 @@ export default {
       }
     })
   },
+  find(bucket, key) {
+    return new Promise((resolve, reject) => {
+      var objectStoreRequest = bucket.get(key)
+      objectStoreRequest.onsuccess = function() {
+        resolve(objectStoreRequest.result)
+      }
+      objectStoreRequest.onerror = function(event) {
+        reject(event)
+      }
+    })
+  },
   add(bucket, data) {
     return new Promise((resolve, reject) => {
       try {
         const req = bucket.add(data)
+        req.onsuccess = function(event) {
+          resolve(event)
+        }
+        req.onerror = function(event) {
+          reject(event)
+        }
+      } catch (e) {
+        reject(e)
+      }
+    })
+  },
+  put(bucket, data) {
+    return new Promise((resolve, reject) => {
+      try {
+        const req = bucket.put(data)
         req.onsuccess = function(event) {
           resolve(event)
         }

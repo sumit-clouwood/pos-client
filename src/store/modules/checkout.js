@@ -265,7 +265,9 @@ const actions = {
                 if (data && data[0]) {
                   data = data[0]
                   data.lastOrderNo = parseInt(data.lastOrderNo) + 1
-                  db.getBucket('auth').put(data)
+                  db.getBucket('auth').then(bucket => {
+                    bucket.put(data)
+                  })
                   commit('auth/SET_LAST_ORDER_NO', data.lastOrderNo, {
                     root: true,
                   })

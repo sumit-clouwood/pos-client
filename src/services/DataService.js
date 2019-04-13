@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import axios from 'axios'
+import db from '@/services/network/DB'
 
 const apiURL =
   process.env.NODE_ENV === 'production' ? process.env.VUE_APP_API_ENDPOINT : ''
@@ -12,8 +13,25 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .get(apiURL + url)
-        .then(response => resolve(response))
-        .catch(error => reject(error))
+        .then(response => {
+          this.saveEventOffline({ request: url, response: response.data })
+            .then(() => {
+              this.setLastUpdate(url, new Date())
+            })
+            .catch(error => {
+              reject(error)
+            })
+          resolve(response)
+        })
+        .catch(() => {
+          this.getOfflineEventData(url).then(response => {
+            if (response) {
+              resolve(response)
+            } else {
+              reject()
+            }
+          })
+        })
     })
   },
 
@@ -85,5 +103,38 @@ export default {
           })
       })
     }
+  },
+  saveEventOffline({ request, response }) {
+    return new Promise((resolve, reject) => {
+      db.getBucket('events').then(bucket => {
+        db.put(bucket, { url: request, data: response })
+          .then(response => {
+            resolve(response)
+          })
+          .catch(error => {
+            reject(error)
+          })
+      })
+    })
+  },
+  setLastUpdate(request, time) {
+    db.getBucket('events').then(bucket =>
+      db.find(bucket, request).then(data => {
+        data.lastUpdated = time
+        db.put(bucket, data)
+      })
+    )
+  },
+  getOfflineEventData(request) {
+    return new Promise((resolve, reject) => {
+      db.getBucket('events').then(bucket =>
+        db
+          .find(bucket, request)
+          .then(data => {
+            resolve(data)
+          })
+          .catch(error => reject(error))
+      )
+    })
   },
 }

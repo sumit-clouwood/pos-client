@@ -55,61 +55,65 @@ export default {
   },
 
   setupDB(store) {
-    return new Promise((resolve, reject) => {
-      let version = 1
-
-      db.openDatabase(version)
-        .then(({ idb, flag }) => {
-          if (flag === 'upgrade') {
-            db.createBucket('auth')
-              .then(() => {
-                version++
-                idb.close()
-
-                setTimeout(function() {
-                  db.openDatabase(version)
-                    .then(({ idb, flag }) => {
-                      if (flag === 'upgrade') {
-                        db.createBucket('order_post_requests')
-                          .then(() => {
-                            store.commit('sync/setIdbVersion', version)
-                            //resolve the first call back process with second idb
-                            resolve(idb)
-                          })
-                          .catch(error => reject(error))
-                      }
-                    })
-                    .catch(error => reject(error))
-                }, 1000 * 1)
-              })
-              .catch(error => reject(error))
-          } else {
-            resolve(idb)
-          }
+    return new Promise(resolve => {
+      this.createDb(store, 1)
+        .then(idb => {
+          idb.close()
+          this.createDb(store, 2).then(idb => {
+            idb.close()
+            this.createDb(store, 3).then(idb => {
+              resolve(idb)
+            })
+          })
         })
         .catch(event => {
-          if (event.srcElement.error.code === 0) {
+          if (event.target.error.code === 0) {
             //db has been created already so try with a recent version
-            const version = 2
-            db.openDatabase(version)
-              .then(({ idb, flag }) => {
-                if (flag === 'open') {
-                  store.commit('sync/setIdbVersion', version)
-                  resolve(idb)
-                } else {
-                  reject(
-                    'DB in upgrade status, Problem in creatin db buckets, check version'
-                  )
-                }
-              })
-              .catch(error => reject(error))
-          } else {
-            reject(event.srcElement.error)
+            const version = 3
+            db.openDatabase(version).then(({ idb, flag }) => {
+              if (flag === 'open') {
+                store.commit('sync/setIdbVersion', version)
+                resolve(idb)
+              }
+            })
           }
         })
     })
   },
-
+  createDb(store, version) {
+    return new Promise((resolve, reject) => {
+      db.openDatabase(version)
+        .then(({ idb, flag, event }) => {
+          if (flag === 'upgrade') {
+            this.createBuckets(store, event)
+            resolve(idb)
+          } else {
+            reject(event)
+          }
+        })
+        .catch(error => reject(error))
+    })
+  },
+  createBuckets(store, event) {
+    if (event.oldVersion === 0) {
+      // version 1 -> 2 upgrade
+      db.createBucket('auth')
+      store.commit('sync/setIdbVersion', 1)
+    }
+    if (event.oldVersion === 1) {
+      // version 2 -> 3 upgrade
+      db.createBucket('order_post_requests')
+      store.commit('sync/setIdbVersion', 2)
+    }
+    if (event.oldVersion === 2) {
+      // initial database creation
+      // (your code does nothing here)
+      db.createBucket('events', { keyPath: 'url' }).then(store => {
+        store.createIndex('url', 'url', { unique: true })
+      })
+      store.commit('sync/setIdbVersion', 3)
+    }
+  },
   fetchData(store) {
     return new Promise((resolve, reject) => {
       this.detectBrowser().then(deviceId => {
