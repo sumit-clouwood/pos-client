@@ -15,11 +15,11 @@
         </button>
         <ul class="dropdown-menu">
           <li v-for="(driver, index) in driverList" :key="index">
-            <img
+            <!--<img
               :src="driver.driverImagePath"
               class="pull-left driverImg"
               @error="imageLoadError()"
-            />
+            />-->
             <a href="#" @click="selectedDriver(driver)">{{ driver.name }}</a>
           </li>
         </ul>
@@ -31,9 +31,9 @@
     <div class="dm-ready-order-wrapper" id="dm-delivery-in-progress">
       <DMItem :actionDetails="deliveredDetails" />
     </div>
-    <div class="dm-ready-order-wrapper" id="dm-delivered">
+
       <DMDeliveredItem />
-    </div>
+
   </div>
 </template>
 
@@ -82,11 +82,11 @@ export default {
       this.selectDriver(driver)
     },
     ...mapActions('deliveryManager', ['selectDriver']),
-    imageLoadError() {
+    /*imageLoadError() {
       for (let i = 0; i < document.images.length; i++) {
         document.images[i].remove()
       }
-    },
+    },*/
   },
 }
 </script>

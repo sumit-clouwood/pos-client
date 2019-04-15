@@ -8,6 +8,8 @@ const state = {
   orderCounts: '',
   selectedOrder: false,
   selectedDriver: false,
+  deliveredOrderGroup: [],
+  deliveredOrderCollection: []
 }
 const getters = {}
 
@@ -22,6 +24,7 @@ const actions = {
     DMService.getDMOrderDetails(...params).then(response => {
       commit(mutation.SET_DM_ORDERS, response.data.data)
       dispatch('fetchOrderCount')
+      // dispatch('prepareDeliveredOrderGroup')
     })
     // })
   },
@@ -52,9 +55,56 @@ const actions = {
       dispatch('fetchOrderCount')
     })
   },
+
+  prepareDeliveredOrderGroup({ commit }) {
+    let OrderDetailsUpdate = {'totalDelivered': 0, 'totalAmount': 0, 'cash': 0, 'credit': 0}
+    if(state.orders){
+      state.orders.driverPerformanceList.forEach(order => {
+        if (!state.deliveredOrderCollection[order.driverId]){
+          commit(mutation.SET_DM_ORDER_GROUP, order)
+          commit(mutation.SET_DM_ORDER_COLLECTION,order)
+          OrderDetailsUpdate = {'totalDelivered': 0, 'totalAmount': 0, 'cash': 0, 'credit': 0, 'id': order.driverId}
+        }
+
+        commit(mutation.SET_DM_ORDER_COLLECTION,order)
+        // this.deliveredOrderCollection[order.driverId].push(order)
+
+        if(OrderDetailsUpdate.id == order.driverId)
+        {
+          OrderDetailsUpdate.id = order.driverId
+          OrderDetailsUpdate.driverName = order.driverName
+          OrderDetailsUpdate.totalDelivered += parseInt(order.noOfOrders)
+          OrderDetailsUpdate.totalAmount += parseFloat(order.orderSum)
+          OrderDetailsUpdate.cash += parseFloat(order.cash)
+          OrderDetailsUpdate.credit += parseFloat(order.credit)
+          OrderDetailsUpdate.avgDeliveryTime = order.averageDeliveryTime
+
+        }
+        if(!state.deliveredOrderGroup[order.driverId][0]) {
+          commit(mutation.SET_DM_ORDER_GROUP,OrderDetailsUpdate)
+        }
+
+      })
+
+    }
+  }
 }
 
 const mutations = {
+  [mutation.SET_DM_ORDER_COLLECTION] (state, OrderDetailsUpdate) {
+    if(!state.deliveredOrderCollection[OrderDetailsUpdate.driverId]) {
+      state.deliveredOrderGroup[OrderDetailsUpdate.driverId].push([])
+    } else {
+      state.deliveredOrderGroup[OrderDetailsUpdate.driverId].push(OrderDetailsUpdate)
+    }
+  },
+  [mutation.SET_DM_ORDER_GROUP] (state, order) {
+    if(!state.deliveredOrderCollection[order.driverId]) {
+      state.deliveredOrderGroup[order.driverId] = []
+    } else {
+      state.deliveredOrderCollection[order.driverId].push(order)
+    }
+  },
   [mutation.SET_DM_ORDER_STATUS](state, status) {
     state.deliveryOrderStatus = status
   },

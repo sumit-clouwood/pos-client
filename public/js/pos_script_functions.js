@@ -33,3 +33,16 @@ window.onload = function () {
     $('body').removeClass('dinein')
   }
 }
+
+/*
+$(document).on('click', '.popover-btn ' , function(){
+  var $this = $(this)
+  $this.popover({
+    placement : 'top',
+    html : true,
+
+    //title : 'hello ',
+    content : '<div class="text-center innter-tooltip-pos">'+ $this.text() +'<div class="text-center"><a href="#" data-dismiss="alert" class="btn btn-success btn-block btn-sm btn-rouded remove-bottom-close ">Add Item</a></div></div>'
+  })
+
+})*/
