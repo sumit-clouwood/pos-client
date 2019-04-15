@@ -31,7 +31,7 @@ export default new Router({
     {
       path: '/dm',
       name: 'DeliveryManagerInit',
-      component: DeliveryManagerInit
-    }
+      component: DeliveryManagerInit,
+    },
   ],
 })

@@ -1,9 +1,9 @@
 <template>
-    <div class="dm-future-order dm-order-screen-change" id="future-order">
-        <div class="dm-ready-order-wrapper-future">
-            <DMItem :actionDetails="actionDetails"/>
-        </div>
+  <div class="dm-future-order dm-order-screen-change" id="future-order">
+    <div class="dm-ready-order-wrapper-future">
+      <DMItem :actionDetails="actionDetails" />
     </div>
+  </div>
 </template>
 
 <script>
@@ -12,15 +12,13 @@ export default {
   name: 'FutureOrder',
   data() {
     return {
-      actionDetails: {'moreDetails': false, 'action': false}
+      actionDetails: { moreDetails: false, action: false },
     }
   },
   components: {
     DMItem,
-  }
+  },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

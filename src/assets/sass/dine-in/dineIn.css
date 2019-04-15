@@ -678,7 +678,7 @@ span#city-view-img > span { left: 70px; text-align: center; top: 28px;}
 }
 .sitting-image.active{border: 1px dashed #808daa; border-radius: 50%;}
 .dining-section span.availble_soon-seat, .dining-section span.availble-seat,.dining-section span.unavailble-seat {display: none;}
-body#page-top.dining-section{zoom: 1 !important;}
+body#page-top.dining-section{}
 .dining-section div.sitting-tbl.active:before {
  /*  content: " ";
    border: 1px dashed #808daa;
@@ -834,7 +834,7 @@ ul.dining-edit-tbl {text-align: center;}
  right: -9px;
  transform: rotate(90deg);
 }
-body#page-top.dinein{zoom: 1;}
+body#page-top.dinein{}
 .dinein div#dine-in-wrapper {height: calc(100vh - 40px);}
 .navbar-nav-sidebar.header-dinein {width: 100%;}
 @media only screen and (max-width: 1400px) and (min-width: 1024px) {

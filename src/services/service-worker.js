@@ -4,7 +4,7 @@
 
 var iDB
 var form_data
-var IDB_VERSION = 2
+var IDB_VERSION = 3
 var ORDER_DOCUMENT = 'order_post_requests'
 var serverUrl = 'https://int.erp-pos.com'
 var clientUrl = 'https://delivery.erp-pos.com'
@@ -353,7 +353,6 @@ function sendPostToServer() {
                 console.log('sw:', 'saved request', savedRequest)
 
                 savedRequest.payload.transition_order_no = transitionOrderNo
-                savedRequest.payload.app_uniqueid = cyrb53(transitionOrderNo)
                 savedRequest.payload.order_mode = 'offline'
 
                 var headers = {
@@ -547,20 +546,3 @@ var createCustomer = function(headers, payload) {
 //     body: JSON.stringify(address),
 //   })
 // }
-
-var cyrb53 = function(str, seed = 0) {
-  var h1 = 0xdeadbeef ^ seed,
-    h2 = 0x41c6ce57 ^ seed
-  for (var i = 0, ch; i < str.length; i++) {
-    ch = str.charCodeAt(i)
-    h1 = Math.imul(h1 ^ ch, 2654435761)
-    h2 = Math.imul(h2 ^ ch, 1597334677)
-  }
-  h1 =
-    Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^
-    Math.imul(h2 ^ (h2 >>> 13), 3266489909)
-  h2 =
-    Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^
-    Math.imul(h1 ^ (h1 >>> 13), 3266489909)
-  return 4294967296 * (2097151 & h2) + (h1 >>> 0)
-}

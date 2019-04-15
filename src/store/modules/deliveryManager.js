@@ -9,9 +9,7 @@ const state = {
   selectedOrder: false,
   selectedDriver: false,
 }
-const getters = {
-
-}
+const getters = {}
 
 const actions = {
   fetchDMOrderDetail({ commit, rootState, dispatch }) {
@@ -33,13 +31,10 @@ const actions = {
     dispatch('fetchDMOrderDetail')
   },
 
-  fetchOrderCount( { commit, rootState } ) {
-    const params = [
-      rootState.location.location,
-      ''
-    ]
+  fetchOrderCount({ commit, rootState }) {
+    const params = [rootState.location.location, '']
     DMService.getDMOrderCount(...params).then(response => {
-      commit(mutation.SET_DM_ORDER_COUNT,response.data.data)
+      commit(mutation.SET_DM_ORDER_COUNT, response.data.data)
     })
   },
 
@@ -51,18 +46,12 @@ const actions = {
     commit(mutation.SET_SELECTED_DM_DRIVER, driverInfo)
   },
 
-  attachOrderDriver({ commit, rootState, dispatch }, { orderId, driverId, timestamp }) {
-    const params = [
-      rootState.location.location,
-      orderId,
-      driverId,
-      timestamp
-    ]
-    DMService.assignDriverToOrder(...params).then(response =>{
+  attachOrderDriver({ rootState, dispatch }, { orderId, driverId, timestamp }) {
+    const params = [rootState.location.location, orderId, driverId, timestamp]
+    DMService.assignDriverToOrder(...params).then(() => {
       dispatch('fetchOrderCount')
     })
   },
-
 }
 
 const mutations = {
@@ -80,7 +69,7 @@ const mutations = {
   },
   [mutation.SET_SELECTED_DM_DRIVER](state, driverInfo) {
     state.selectedDriver = driverInfo
-  }
+  },
 }
 
 export default {

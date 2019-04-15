@@ -917,7 +917,6 @@ span.view-txt {
   border-radius: 50%; }
 
 body#page-top.dining-section {
-  zoom: 1 !important;
   background: #fff !important; }
 
 ul.dining-edit-tbl {
@@ -1075,9 +1074,6 @@ Span.editable-view .ui-rotatable-handle {
   top: -14px;
   right: -9px;
   transform: rotate(90deg); }
-
-body#page-top.dinein {
-  zoom: 1; }
 
 .navbar-nav-sidebar.header-dinein {
   width: 100%; }
