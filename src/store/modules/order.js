@@ -157,7 +157,7 @@ const actions = {
 
       //this comes through the modifier popup
       item.modifiable = true
-      item.undiscountedPrice = item.price
+
       item.quantity = rootState.orderForm.quantity || 1
 
       commit(mutation.SET_ITEM, item)
@@ -233,7 +233,7 @@ const actions = {
       })
 
       commit(mutation.ADD_MODIFIER_PRICE_TO_ITEM, modifierPrice)
-
+      item.undiscountedPrice = item.price
       if (!item.editMode) {
         //update current item with new modifiers
 
@@ -584,8 +584,8 @@ const mutations = {
   },
 
   [mutation.ADD_MODIFIER_PRICE_TO_ITEM](state, modifierPrice) {
-    const totalPrice = state.item.price + modifierPrice
-    state.item.price = parseFloat(totalPrice)
+    const totalPrice = parseFloat(state.item.price) + parseFloat(modifierPrice)
+    state.item.price = totalPrice
   },
 
   [mutation.SET_ITEM_TAX](state, tax) {
