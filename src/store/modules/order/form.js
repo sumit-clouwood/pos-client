@@ -4,12 +4,20 @@ const state = {
   quantity: 0,
   checkboxes: [],
   radios: {},
-  itemId: null,
-  isUpdate: false,
 }
 
 // getters
 const getters = {
+  radios: state => state.radios,
+  isSelected: state => ({ modifierId, groupId, itemId }) => {
+    const radio = state.radios[groupId]
+    return (
+      radio &&
+      radio.groupId == groupId &&
+      radio.itemId == itemId &&
+      radio.modifierId == modifierId
+    )
+  },
   quantity: (state, getters, rootState) => {
     return state.quantity || rootState.order.item.quantity || 1
   },
@@ -100,14 +108,16 @@ const mutations = {
       }
     })
   },
-  setRadios(state, radios) {
+  setRadios(state, { itemId, groupId, modifierId }) {
+    let radios = { ...state.radios }
+    radios[groupId] = {
+      type: 'radio',
+      itemId: itemId,
+      groupId: groupId,
+      modifierId: modifierId,
+    }
+    //state.obj = { ...state.obj, newProp: 123 }
     state.radios = radios
-  },
-  setItemId(state, id) {
-    state.itemId = id
-  },
-  setUpdate(state, status) {
-    state.isUpdate = status
   },
 }
 

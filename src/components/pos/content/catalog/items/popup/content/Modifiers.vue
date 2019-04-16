@@ -36,7 +36,7 @@
                     itemId: item._id,
                     modifierId: modifierOption._id,
                     groupId: submodifier._id,
-                    limit: 4 || submodifier.noofselection,
+                    limit: submodifier.noofselection,
                   }"
                   v-model="checkboxes"
                 />
@@ -54,18 +54,21 @@
                   class="customradio"
                   :id="modifierOption._id"
                   :name="item._id + submodifier._id"
-                  :value="{
-                    modifierId: modifierOption._id,
-                    groupId: submodifier._id,
-                    itemId: item._id,
-                    type: 'radio',
-                  }"
+                  :value="modifierOption._id"
                   @change="
                     setRadio(item._id, submodifier._id, modifierOption._id)
                   "
-                  v-model="radios[submodifier._id]"
                 />
-                <span class="checkmark-radio-btn"></span>
+                <span
+                  class="checkmark-radio-btn"
+                  :class="{
+                    checked: isSelected({
+                      modifierId: modifierOption._id,
+                      groupId: submodifier._id,
+                      itemId: item._id,
+                    }),
+                  }"
+                ></span>
               </span>
               <img :src="imagePath(modifierOption.imageName)" alt="" />
               <span>{{ modifierOption.name }}</span>
@@ -88,8 +91,6 @@ export default {
   data() {
     return {
       itemId: null,
-      isUpdate: false,
-      radios: this.$store.state.orderForm.radios,
     }
   },
   computed: {
@@ -103,61 +104,43 @@ export default {
     },
     ...mapState('location', ['currency']),
     ...mapState('modifier', ['item']),
-    ...mapState('orderForm', ['error']),
+    ...mapState('orderForm', ['error', 'radios']),
+    ...mapGetters('orderForm', ['isSelected']),
     ...mapGetters('modifier', ['imagePath', 'itemModifiers']),
     ...mapGetters('location', ['rawPrice', 'formatPrice']),
   },
-  mounted() {
-    this.$store.watch(
-      () => this.$store.state.orderForm.isUpdate,
-      isUpdate => {
-        console.log('is update from vuex', isUpdate)
-        //this.isUpdate is now reactive
-        this.isUpdate = isUpdate
-        if (isUpdate) {
-          for (let i in this.radios) {
-            this.$delete(this.radios, i)
-          }
-          const radios = this.$store.state.orderForm.radios
-          for (let i in radios) {
-            this.$set(this.radios, i, radios[i])
-          }
-        }
-
-        //this.$store.commit('orderForm/setUpdate', false)
-      }
-    )
-  },
+  mounted() {},
   methods: {
     setRadio(itemId, groupId, modifierId) {
-      if (this.itemId != itemId && !this.isUpdate) {
-        for (let i in this.radios) {
-          this.$delete(this.radios, i)
-        }
-        this.itemId = itemId
-      }
-
-      //fire event changed
-      this.$set(this.radios, groupId, {
-        modifierId: modifierId,
-        groupId: groupId,
+      this.$store.commit('orderForm/setRadios', {
         itemId: itemId,
-        type: 'radio',
+        groupId: groupId,
+        modifierId: modifierId,
       })
-
-      this.$store.commit('orderForm/setRadios', this.radios)
       this.$store.commit('orderForm/setError', false)
-      this.$store.commit('orderForm/setUpdate', false)
     },
   },
 }
 </script>
 
-<style scoped>
-.error {
+<style lang="sass" scoped>
+.checkmark-radio-btn
+  &.checked
+    background-color: #62bb31;
+    border-color: #62bb31;
+    &:after
+      display: block;
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: white;
+.error
   color: #ff0000;
   margin-bottom: 24px;
   padding-bottom: 24px;
   border-bottom: 1px solid #e3e7f2;
-}
 </style>

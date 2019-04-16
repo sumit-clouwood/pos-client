@@ -284,20 +284,9 @@ const actions = {
     })
   },
 
-  setActiveItem({ commit, dispatch, rootState }, { orderItem, index }) {
+  setActiveItem({ commit, dispatch }, { orderItem, index }) {
     //get current item
     //this is fired by the items.vue
-    //check if alredy update
-    if (rootState.orderForm.isUpdate) {
-      commit('orderForm/setUpdate', false, { root: true })
-      //vuex takes some time for watcher so wait a sec
-      setTimeout(() => {
-        commit('orderForm/setUpdate', true, { root: true })
-      }, 500)
-    } else {
-      commit('orderForm/setUpdate', true, { root: true })
-    }
-
     let item = { ...state.items[index] }
 
     item.editMode = true
