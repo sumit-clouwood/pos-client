@@ -30,9 +30,9 @@
               <input
                 type="text"
                 name="payment"
-                v-model.number="payable"
+                v-model.number="payableAmount"
                 id="input"
-                @click="showCalc = true"
+                @click="showCalculator()"
                 :placeholder="formatPrice(0.0)"
               />
               <img src="img/pos/payment-input-icon.png" class="input-image" />
@@ -75,22 +75,12 @@ export default {
     AmountCalculator,
   },
   watch: {
-    orderTotal(newVal) {
-      if (newVal && !this.payable) {
-        this.payable = parseFloat(newVal).toFixed(2)
-      }
+    payable(newVal) {
+      this.payableAmount = parseFloat(newVal).toFixed(2)
     },
   },
   computed: {
-    showCalc: {
-      get() {
-        return this.$store.state.checkoutForm.showCalc
-      },
-      set(val) {
-        return this.$store.commit('checkoutForm/showCalc', val)
-      },
-    },
-    payable: {
+    payableAmount: {
       get() {
         return this.$store.state.checkoutForm.amount > 0
           ? this.$store.state.checkoutForm.amount
@@ -101,9 +91,14 @@ export default {
       },
     },
     ...mapState('order', ['items']),
-    ...mapState('checkoutForm', ['error']),
+    ...mapState('checkoutForm', ['error', 'showCalc']),
     ...mapGetters('location', ['formatPrice']),
-    ...mapGetters('checkoutForm', ['orderTotal']),
+    ...mapGetters('checkoutForm', ['payable']),
+  },
+  methods: {
+    showCalculator() {
+      this.$store.commit('checkoutForm/showCalc', true)
+    },
   },
 }
 </script>

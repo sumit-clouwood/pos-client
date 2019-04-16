@@ -135,21 +135,20 @@ const actions = {
       commit(mutation.SET_ITEM, false)
     }
 
-    if (!state.items.length) {
+    if (state.items.length) {
+      dispatch('surcharge/calculate', {}, { root: true }).then(
+        dispatch('tax/calculate', {}, { root: true }).then(() => {
+          if (rootState.discount.appliedOrderDiscount) {
+            dispatch('recalculateOrderTotals')
+          } else {
+            dispatch('recalculateItemPrices')
+          }
+        })
+      )
+    } else {
       //cart is empty remove the discounts
-      commit('discount/CLEAR_ORDER_DISCOUNT', null, { root: true })
-      commit('discount/CLEAR_ITEM_DISCOUNT', null, { root: true })
+      dispatch('checkout/reset', null, { root: true })
     }
-
-    dispatch('surcharge/calculate', {}, { root: true }).then(
-      dispatch('tax/calculate', {}, { root: true }).then(() => {
-        if (rootState.discount.appliedOrderDiscount) {
-          dispatch('recalculateOrderTotals')
-        } else {
-          dispatch('recalculateItemPrices')
-        }
-      })
-    )
   },
 
   addModifierOrder({ commit, rootState, dispatch, rootGetters }) {
