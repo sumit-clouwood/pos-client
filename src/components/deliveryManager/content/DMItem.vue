@@ -5,7 +5,7 @@
       v-for="(order, index) in orderDetails"
       :key="index"
     >
-      <div v-if="order.order_status == orderStatus">
+      <!--<div v-if="order.order_status == orderStatus">-->
         <div class="dm-deliver-detail">
           <h4>{{ order.order_no }}</h4>
           <p>
@@ -18,7 +18,7 @@
             </span>
           </p>
           <h4>{{ order.delivery_area }}</h4>
-          <p>
+          <p v-if="order.order_address">
             {{ order.order_address.street }}, {{ locationName }},
             {{ order.order_address.city }}
           </p>
@@ -51,7 +51,7 @@
             >{{ actionDetails.action }}</a
           >
         </div>
-      </div>
+      <!--</div>-->
     </div>
   </div>
 </template>

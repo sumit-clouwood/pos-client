@@ -29,7 +29,10 @@ const actions = {
     // })
   },
 
-  updateDMOrderStatus({ commit, dispatch }, orderStatus) {
+  updateDMOrderStatus({ commit, dispatch }, {orderStatus, collected}) {
+    if(typeof collected != 'undefined') {
+      commit(mutation.SET_DM_ORDER_COLLECTED, collected)
+    }
     commit(mutation.SET_DM_ORDER_STATUS, orderStatus)
     dispatch('fetchDMOrderDetail')
   },
@@ -107,6 +110,9 @@ const mutations = {
   },
   [mutation.SET_DM_ORDER_STATUS](state, status) {
     state.deliveryOrderStatus = status
+  },
+  [mutation.SET_DM_ORDER_COLLECTED](state, collected) {
+    state.collected = collected
   },
   [mutation.SET_DM_ORDER_COUNT](state, orderCount) {
     state.orderCounts = orderCount
