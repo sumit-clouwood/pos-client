@@ -188,7 +188,7 @@ $(document).ready(function() {
 
     // $("div#pay-now").addClass('animated fadeOutRight');
   })
-  $('li.pay-now').click(function() {
+  $('li#pay-now').click(function() {
     // $('body').append("<div class="modal-backdrop fade show"></div>");
     $('div#pay-now').animate({ right: '0' }, 800)
     $('div#pay-now').addClass('effect-screen')
@@ -210,10 +210,6 @@ $(document).ready(function() {
   // $('.referal-code-customer').click(function () {
   //   $(this).addClass('active').siblings().removeClass('active');
   // });
-  $('#dining-option .option-contain').click(function() {
-    $('#dining-option .option-contain').removeClass('active')
-    $(this).addClass('active')
-  })
 
   $(
     'div#navbarResponsive.delivery-manager-st ul#exampleAccordion > li.nav-item > a'
@@ -556,7 +552,7 @@ $(document).ready(function() {
     prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
   })
 
-  $('li.pay-now').click(function() {
+  $('li#pay-now').click(function() {
     // $("#payment-method").trigger();
     $('#payment-method')[0].slick.refresh()
     $('#payment-method .slick-slide > div > div').click(function() {

@@ -11,20 +11,33 @@
         <div class="modal-body row dining-options-block">
           <div class="dining-option-block">
             <div
-              class="option-contain active"
-              @click="updateOrderType('dinein')"
+              class="option-contain"
+              :class="{ active: orderType === 'dinein' }"
+              @click="setOrderType('dinein')"
             >
               <img src="img/pos/dine-in.svg" /><span>Dine In</span>
             </div>
-            <div class="option-contain" @click="updateOrderType('takeaway')">
+            <div
+              class="option-contain"
+              :class="{ active: orderType === 'takeaway' }"
+              @click="setOrderType('takeaway')"
+            >
               <img src="img/pos/take-away.svg" /><span>Take Away</span>
             </div>
           </div>
           <div class="dining-option-block">
-            <div class="option-contain" @click="updateOrderType('delivery')">
+            <div
+              class="option-contain"
+              :class="{ active: orderType === 'delivery' }"
+              @click="setOrderType('delivery')"
+            >
               <img src="img/pos/delivery-icon.svg" /><span>Delivery</span>
             </div>
-            <div class="option-contain" @click="updateOrderType('delivery')">
+            <div
+              class="option-contain"
+              :class="{ active: orderType === 'event' }"
+              @click="setOrderType('event')"
+            >
               <img src="img/pos/event.svg" /><span>Event</span>
             </div>
           </div>
@@ -36,6 +49,7 @@
               type="button"
               data-dismiss="modal"
               id="dining-opt"
+              @click="updateOrderType()"
             >
               Ok
             </button>
@@ -49,12 +63,26 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 export default {
   name: 'DineIn',
   props: {},
+  data: function() {
+    return {
+      orderType: 'Walk-in',
+    }
+  },
   methods: {
-    ...mapActions('order', ['updateOrderType']),
+    setOrderType(opt) {
+      if (this.orderType === opt) {
+        //toggle
+        this.orderType = 'Walk-in'
+      } else {
+        this.orderType = opt
+      }
+    },
+    updateOrderType() {
+      this.$store.dispatch('order/updateOrderType', this.orderType)
+    },
   },
 }
 </script>

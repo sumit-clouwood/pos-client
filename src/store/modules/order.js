@@ -608,7 +608,7 @@ const mutations = {
   [mutation.RESET](state) {
     state.items = []
     state.item = false
-    state.orderType = 'Walk-in'
+    //state.orderType = 'Walk-in'
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
