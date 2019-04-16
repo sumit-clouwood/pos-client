@@ -50,7 +50,7 @@ export default {
   methods: {
     addToOrder(item) {
       this.$store.commit('category/SET_ITEM', item)
-
+      this.$store.commit('checkoutForm/showCalc', true)
       if (this.$store.getters['modifier/hasModifiers'](item)) {
         this.$store.dispatch('modifier/setModifierItem', item)
         this.$store.commit('orderForm/clearSelection')

@@ -2,6 +2,7 @@
   <div class="modal-footer">
     <div class="referal">
       <p v-if="errors !== ''" class="text-danger">{{ errors }}</p>
+      <p v-if="msg" class="text-info">{{ msg }}</p>
 
       <button
         type="button"
@@ -100,6 +101,7 @@ export default {
       minDatetime: null,
       maxDatetime: null,
       errors: '',
+      msg: '',
       timeZone: this.$store.state.location.setTimeZone,
     }
   },
@@ -121,12 +123,14 @@ export default {
       if (this.changedReferral.referralName === 'Referral') {
         this.errors = 'Please select referral to proceed.'
       } else {
+        this.msg = 'Sending order for delivery...'
         this.errors = ''
         this.deliveryOrder({
           referral: this.changedReferral,
           futureOrder: moment(this.futureDateTime).format('YYYY/MM/DD hh:mm'),
         })
           .then(() => {
+            this.msg = ''
             $('#order-confirmation').modal('hide')
             $('#payment-msg').modal('show')
           })
