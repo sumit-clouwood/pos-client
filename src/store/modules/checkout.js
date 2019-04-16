@@ -3,6 +3,7 @@ import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 import db from '@/services/network/DB'
 import Crypt from '@/plugins/helpers/Crypt.js'
+import DateTime from '@/plugins/helpers/DateTime.js'
 
 // initial state
 const state = {
@@ -54,24 +55,28 @@ const actions = {
 
       if (validPayment) {
         //send order for payment
-        const date = new Date().toJSON().slice(0, 10)
-        const time = new Date().toJSON().slice(11, 19)
+        let order = {}
 
-        let order = {
-          transition_order_no: '',
-          location_id: rootState.location.location,
-          payment_mode: 'Cash',
-          status: 'paid',
-          order_type: rootState.order.orderType,
-          currency_code: rootState.location.currency,
-          collected: 'no',
-          order_queue: '0',
-          created_date: date,
-          created_time: time,
-          order_mode: 'online',
-          balance_due: rootGetters['order/orderTotal'],
-          subtotal: rootGetters['order/subTotal'],
-          amount_changed: state.changedAmount,
+        try {
+          const newDate = new DateTime()
+          order = {
+            transition_order_no: '',
+            location_id: rootState.location.location,
+            payment_mode: 'Cash',
+            status: 'paid',
+            order_type: rootState.order.orderType,
+            currency_code: rootState.location.currency,
+            collected: 'no',
+            order_queue: '0',
+            created_date: newDate.getDate(),
+            created_time: newDate.getTime(),
+            order_mode: 'online',
+            balance_due: rootGetters['order/orderTotal'],
+            subtotal: rootGetters['order/subTotal'],
+            amount_changed: state.changedAmount,
+          }
+        } catch (e) {
+          console.log(e)
         }
 
         if (rootState.order.orderType == 'delivery') {
