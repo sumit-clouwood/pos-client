@@ -42,7 +42,6 @@
               v-show="!error"
               class="btn btn-success btn-large"
               type="button"
-              data-dismiss="modal"
               id="discount-save-btn"
               @click="applyOrderDiscount()"
             >
@@ -66,12 +65,13 @@
 </template>
 
 <script>
+/* global hideModal */
 import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Discount',
   props: {},
   computed: {
-    ...mapState('discount', ['error']),
+    ...mapState('discount', ['error', 'errorCode']),
     ...mapGetters('location', ['formatPrice']),
     ...mapGetters('discount', {
       // map `this.discounts` to `this.$store.discount.getters.orderDiscounts`
@@ -80,8 +80,13 @@ export default {
     }),
   },
   methods: {
-    applyOrderDiscount: function(discount) {
-      this.$store.dispatch('discount/applyOrderDiscount', discount)
+    applyOrderDiscount: function() {
+      this.$store
+        .dispatch('discount/applyOrderDiscount')
+        .then(() => {
+          hideModal('#select-discount')
+        })
+        .catch()
     },
     selectOrderDiscount: function(discount) {
       this.$store.dispatch('discount/selectOrderDiscount', discount)

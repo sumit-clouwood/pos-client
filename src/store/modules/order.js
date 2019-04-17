@@ -1,6 +1,8 @@
 import * as mutation from './order/mutation-types'
 import OrderService from '../../services/data/OrderService'
 
+const DISCOUNT_ORDER_ERROR_TOTAL = `Discount can't be greater than total amount of order.`
+
 // initial state
 const state = {
   items: [],
@@ -304,63 +306,87 @@ const actions = {
       )
     }
   },
-  recalculateOrderTotals({ rootState, getters, dispatch, rootGetters }) {
-    const orderDiscount = rootState.discount.appliedOrderDiscount
-    //let totalDiscount = 0
-    if (orderDiscount) {
-      let orderTotalDiscount = 0
-      let taxTotalDiscount = 0
-      let surchargeTotalDiscount = 0
+  recalculateOrderTotals({ rootState, getters, rootGetters, dispatch }) {
+    return new Promise((resolve, reject) => {
+      const orderDiscount = rootState.discount.appliedOrderDiscount
+      //let totalDiscount = 0
+      if (orderDiscount) {
+        let orderTotalDiscount = 0
+        let taxTotalDiscount = 0
+        let surchargeTotalDiscount = 0
 
-      if (orderDiscount.discount.discountontotal) {
-        //apply ontotal discount, apply on surcharge and its tax as well
-        const subtotal = getters.subTotal
-        const totalTax = rootState.tax.itemsTax + rootState.tax.surchargeTax
-        const totalSurcharge = rootGetters['surcharge/surcharge']
+        if (orderDiscount.discount.discountontotal) {
+          //apply ontotal discount, apply on surcharge and its tax as well
+          const subtotal = getters.subTotal
+          const totalTax = rootState.tax.itemsTax + rootState.tax.surchargeTax
+          const totalSurcharge = rootGetters['surcharge/surcharge']
 
-        if (orderDiscount.discount.type == 'value') {
-          orderTotalDiscount = orderDiscount.discount.rate
-          const percentDiscountOnSubTotal =
-            (orderTotalDiscount * 100) / subtotal
+          if (orderDiscount.discount.type == 'value') {
+            if (orderDiscount.discount.rate > subtotal + totalTax) {
+              dispatch('discount/clearOrderDiscount', null, { root: true })
+              reject(DISCOUNT_ORDER_ERROR_TOTAL)
+            } else {
+              orderTotalDiscount = orderDiscount.discount.rate
+              const percentDiscountOnSubTotal =
+                (orderTotalDiscount * 100) / subtotal
 
-          taxTotalDiscount = (totalTax * percentDiscountOnSubTotal) / 100
-          surchargeTotalDiscount = 0
+              taxTotalDiscount = (totalTax * percentDiscountOnSubTotal) / 100
+              surchargeTotalDiscount = 0
+              resolve({
+                orderDiscount: orderTotalDiscount,
+                taxDiscount: taxTotalDiscount,
+                surchargeDiscount: surchargeTotalDiscount,
+              })
+            }
+          } else {
+            orderTotalDiscount = (subtotal * orderDiscount.discount.rate) / 100
+            taxTotalDiscount = (totalTax * orderDiscount.discount.rate) / 100
+            surchargeTotalDiscount =
+              (totalSurcharge * orderDiscount.discount.rate) / 100
+            resolve({
+              orderDiscount: orderTotalDiscount,
+              taxDiscount: taxTotalDiscount,
+              surchargeDiscount: surchargeTotalDiscount,
+            })
+          }
         } else {
-          orderTotalDiscount = (subtotal * orderDiscount.discount.rate) / 100
-          taxTotalDiscount = (totalTax * orderDiscount.discount.rate) / 100
-          surchargeTotalDiscount =
-            (totalSurcharge * orderDiscount.discount.rate) / 100
+          //apply offtotal discount, don't calculate discount on surcharge
+          const subtotal = getters.subTotal
+          //we are not including surcharge tax in total tax for discount
+          const totalTax = rootState.tax.itemsTax
+          //const totalSurcharge = rootGetters['surcharge/surcharge']
+          if (orderDiscount.discount.type == 'value') {
+            if (orderDiscount.discount.rate > subtotal + totalTax) {
+              dispatch('discount/clearOrderDiscount', null, { root: true })
+              reject(DISCOUNT_ORDER_ERROR_TOTAL)
+            } else {
+              orderTotalDiscount = orderDiscount.discount.rate
+              const percentDiscountOnSubTotal =
+                (orderTotalDiscount * 100) / subtotal
+              taxTotalDiscount = (totalTax * percentDiscountOnSubTotal) / 100
+              surchargeTotalDiscount = 0
+              resolve({
+                orderDiscount: orderTotalDiscount,
+                taxDiscount: taxTotalDiscount,
+                surchargeDiscount: surchargeTotalDiscount,
+              })
+            }
+          } else {
+            orderTotalDiscount = (subtotal * orderDiscount.discount.rate) / 100
+            //const subtotalWithDiscount = subtotal - orderTotalDiscount
+            taxTotalDiscount = (totalTax * orderDiscount.discount.rate) / 100
+            surchargeTotalDiscount = 0
+            resolve({
+              orderDiscount: orderTotalDiscount,
+              taxDiscount: taxTotalDiscount,
+              surchargeDiscount: surchargeTotalDiscount,
+            })
+          }
         }
       } else {
-        //apply offtotal discount, don't calculate discount on surcharge
-        const subtotal = getters.subTotal
-        //we are not including surcharge tax in total tax for discount
-        const totalTax = rootState.tax.itemsTax
-        //const totalSurcharge = rootGetters['surcharge/surcharge']
-        if (orderDiscount.discount.type == 'value') {
-          orderTotalDiscount = orderDiscount.discount.rate
-          const percentDiscountOnSubTotal =
-            (orderTotalDiscount * 100) / subtotal
-          taxTotalDiscount = (totalTax * percentDiscountOnSubTotal) / 100
-          surchargeTotalDiscount = 0
-        } else {
-          orderTotalDiscount = (subtotal * orderDiscount.discount.rate) / 100
-          //const subtotalWithDiscount = subtotal - orderTotalDiscount
-          taxTotalDiscount = (totalTax * orderDiscount.discount.rate) / 100
-          surchargeTotalDiscount = 0
-        }
+        resolve()
       }
-
-      dispatch(
-        'discount/setOrderDiscount',
-        {
-          orderDiscount: orderTotalDiscount,
-          taxDiscount: taxTotalDiscount,
-          surchargeDiscount: surchargeTotalDiscount,
-        },
-        { root: true }
-      )
-    }
+    })
   },
 
   recalculateItemPrices({ commit, rootState, dispatch }) {

@@ -23,6 +23,7 @@ const state = {
   surchargeDiscountAmount: 0,
   //error msg
   error: false,
+  errorCode: false,
 }
 
 // getters
@@ -180,16 +181,34 @@ const actions = {
   },
 
   applyOrderDiscount({ commit, rootState, dispatch }) {
-    commit(mutation.CLEAR_ITEM_DISCOUNT)
-    if (state.currentActiveOrderDiscount) {
-      commit(mutation.APPLY_ORDER_DISCOUNT, {
-        item: rootState.order.item,
-        discount: state.currentActiveOrderDiscount,
-      })
-    } else {
-      commit(mutation.CLEAR_ORDER_DISCOUNT)
-    }
-    dispatch('order/recalculateOrderTotals', {}, { root: true })
+    return new Promise((resolve, reject) => {
+      commit(mutation.CLEAR_ITEM_DISCOUNT)
+      if (state.currentActiveOrderDiscount) {
+        commit(mutation.APPLY_ORDER_DISCOUNT, {
+          item: rootState.order.item,
+          discount: state.currentActiveOrderDiscount,
+        })
+
+        dispatch('order/recalculateOrderTotals', {}, { root: true })
+          .then(response => {
+            dispatch('setOrderDiscount', response)
+            resolve()
+          })
+          .catch(error => {
+            commit(mutation.CLEAR_ORDER_DISCOUNT)
+            commit(mutation.SET_ERROR, error)
+            commit(mutation.SET_ERROR_CODE, 2)
+            reject(error)
+          })
+      } else {
+        commit(mutation.CLEAR_ORDER_DISCOUNT)
+        resolve()
+      }
+    })
+  },
+
+  clearOrderDiscount({ commit }) {
+    commit(mutation.CLEAR_ORDER_DISCOUNT)
   },
 
   selectItemDiscount({ commit }, discount) {
@@ -238,6 +257,9 @@ const mutations = {
   },
   [mutation.SET_ERROR](state, errorMsg) {
     state.error = errorMsg
+  },
+  [mutation.SET_ERROR_CODE](state, code) {
+    state.errorCode = code
   },
   [mutation.REMOVE_ORDER_DISCOUNT](state) {
     state.currentActiveOrderDiscount = false
