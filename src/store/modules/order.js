@@ -135,21 +135,20 @@ const actions = {
       commit(mutation.SET_ITEM, false)
     }
 
-    if (!state.items.length) {
+    if (state.items.length) {
+      dispatch('surcharge/calculate', {}, { root: true }).then(
+        dispatch('tax/calculate', {}, { root: true }).then(() => {
+          if (rootState.discount.appliedOrderDiscount) {
+            dispatch('recalculateOrderTotals')
+          } else {
+            dispatch('recalculateItemPrices')
+          }
+        })
+      )
+    } else {
       //cart is empty remove the discounts
-      commit('discount/CLEAR_ORDER_DISCOUNT', null, { root: true })
-      commit('discount/CLEAR_ITEM_DISCOUNT', null, { root: true })
+      dispatch('checkout/reset', null, { root: true })
     }
-
-    dispatch('surcharge/calculate', {}, { root: true }).then(
-      dispatch('tax/calculate', {}, { root: true }).then(() => {
-        if (rootState.discount.appliedOrderDiscount) {
-          dispatch('recalculateOrderTotals')
-        } else {
-          dispatch('recalculateItemPrices')
-        }
-      })
-    )
   },
 
   addModifierOrder({ commit, rootState, dispatch, rootGetters }) {
@@ -158,7 +157,7 @@ const actions = {
 
       //this comes through the modifier popup
       item.modifiable = true
-      item.undiscountedPrice = item.price
+
       item.quantity = rootState.orderForm.quantity || 1
 
       commit(mutation.SET_ITEM, item)
@@ -234,7 +233,7 @@ const actions = {
       })
 
       commit(mutation.ADD_MODIFIER_PRICE_TO_ITEM, modifierPrice)
-
+      item.undiscountedPrice = item.price
       if (!item.editMode) {
         //update current item with new modifiers
 
@@ -284,20 +283,9 @@ const actions = {
     })
   },
 
-  setActiveItem({ commit, dispatch, rootState }, { orderItem, index }) {
+  setActiveItem({ commit, dispatch }, { orderItem, index }) {
     //get current item
     //this is fired by the items.vue
-    //check if alredy update
-    if (rootState.orderForm.isUpdate) {
-      commit('orderForm/setUpdate', false, { root: true })
-      //vuex takes some time for watcher so wait a sec
-      setTimeout(() => {
-        commit('orderForm/setUpdate', true, { root: true })
-      }, 500)
-    } else {
-      commit('orderForm/setUpdate', true, { root: true })
-    }
-
     let item = { ...state.items[index] }
 
     item.editMode = true
@@ -596,8 +584,8 @@ const mutations = {
   },
 
   [mutation.ADD_MODIFIER_PRICE_TO_ITEM](state, modifierPrice) {
-    const totalPrice = state.item.price + modifierPrice
-    state.item.price = parseFloat(totalPrice)
+    const totalPrice = parseFloat(state.item.price) + parseFloat(modifierPrice)
+    state.item.price = totalPrice
   },
 
   [mutation.SET_ITEM_TAX](state, tax) {
@@ -620,7 +608,7 @@ const mutations = {
   [mutation.RESET](state) {
     state.items = []
     state.item = false
-    state.orderType = 'Walk-in'
+    //state.orderType = 'Walk-in'
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote

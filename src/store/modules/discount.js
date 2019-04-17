@@ -186,6 +186,8 @@ const actions = {
         item: rootState.order.item,
         discount: state.currentActiveOrderDiscount,
       })
+    } else {
+      commit(mutation.CLEAR_ORDER_DISCOUNT)
     }
     dispatch('order/recalculateOrderTotals', {}, { root: true })
   },

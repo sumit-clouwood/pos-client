@@ -4,11 +4,8 @@
 
 <template>
   <div class="invoice" id="printarea" v-if="print">
-    <WalkinInvoice v-if="order.order_type == 'Walk-in'" />
-    <DeliveryInvoice v-if="order.order_type == 'delivery'" />
-    <!-- <div
-      v-if="tpl && tpl.foreignLang && tpl.template.language != 'en_US'"
-    ></div> -->
+    <DeliveryInvoice v-if="order.order_type === 'delivery'" />
+    <WalkinInvoice v-else />
   </div>
 </template>
 
@@ -60,7 +57,11 @@ export default {
 
       //becareful for circular dependency
       this.$store.dispatch('checkout/reset')
-      //this.$store.commit('checkout/PRINT', false)
+      this.$store.commit('checkout/PRINT', false)
+
+      if (this.$store.state.order.orderType === 'delivery') {
+        this.$router.replace({ name: 'DeliveryManager' })
+      }
       $('.modal-backdrop').remove()
       hidePayNow()
     }

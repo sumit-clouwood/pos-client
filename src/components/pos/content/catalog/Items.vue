@@ -50,13 +50,12 @@ export default {
   methods: {
     addToOrder(item) {
       this.$store.commit('category/SET_ITEM', item)
-
+      this.$store.commit('checkoutForm/showCalc', true)
       if (this.$store.getters['modifier/hasModifiers'](item)) {
         this.$store.dispatch('modifier/setModifierItem', item)
         this.$store.commit('orderForm/clearSelection')
-        this.$store.commit('orderForm/setItemId', item._id)
-        this.$store.commit('orderForm/setUpdate', false)
         showModal('#POSItemOptions')
+        $('.customradio').attr('checked', false)
       } else {
         this.$store.dispatch('order/addToOrder', item)
       }

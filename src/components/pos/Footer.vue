@@ -24,7 +24,7 @@
             :data-target="selectedModal"
             data-dismiss="modal"
           >
-            <a href="#"
+            <a href="#" @click="setOrderType('delivery')"
               ><img src="img/pos/delivery.svg" /><span
                 >Send to Delivery</span
               ></a
@@ -79,7 +79,20 @@
           </li>
         </ul>
         <ul class="template-btn">
-          <li class="pay-now">
+          <li
+            v-show="orderType === 'delivery'"
+            data-toggle="modal"
+            :data-target="selectedModal"
+            data-dismiss="modal"
+            class="pay-now"
+          >
+            <a href="#" @click="setOrderType('delivery')"
+              ><img src="img/pos/delivery.svg" class="pay-btn" /><span
+                >Send to Delivery</span
+              ></a
+            >
+          </li>
+          <li id="pay-now" class="pay-now" v-show="orderType !== 'delivery'">
             <a href="#"
               ><img src="img/pos/payment.svg" alt="payment" /><span
                 class="pay-btn"
@@ -179,6 +192,7 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print']),
+    ...mapState('order', ['orderType']),
     ...mapState('sync', ['online']),
     ...mapState({
       selectedModal: state =>
@@ -205,6 +219,9 @@ export default {
   methods: {
     ...mapActions('holdOrders', ['getHoldOrders']),
     ...mapActions('discount', ['validateOrderDiscounts']),
+    setOrderType(opt) {
+      this.$store.commit('order/ORDER_TYPE', opt)
+    },
   },
   updated() {
     $('ul.ullist-icons').slick({

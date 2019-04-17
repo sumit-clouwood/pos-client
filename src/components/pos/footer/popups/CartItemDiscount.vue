@@ -13,7 +13,10 @@
           <h4 class="customer-title">Discount Item</h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
-          <div class="dining-option-block select-discount-option">
+          <div
+            v-show="!appliedOrderDiscount"
+            class="dining-option-block select-discount-option"
+          >
             <div
               class="option-contain"
               :class="{
@@ -33,10 +36,16 @@
               <span class="more">{{ discount.name }}</span>
             </div>
           </div>
+          <div class="error" v-show="appliedOrderDiscount">
+            <p class="text-danger text-center">
+              Please remove order discount first to apply item discount.
+            </p>
+          </div>
         </div>
         <div class="modal-footer">
           <div class="btn-announce">
             <button
+              v-show="!appliedOrderDiscount"
               class="btn btn-success btn-large"
               type="button"
               data-dismiss="modal"
@@ -44,6 +53,14 @@
               @click="applyItemDiscount()"
             >
               Save
+            </button>
+            <button
+              v-show="appliedOrderDiscount"
+              class="btn btn-danger btn-large"
+              type="button"
+              data-dismiss="modal"
+            >
+              Close
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -54,13 +71,14 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapState } from 'vuex'
 export default {
   name: 'CartItemDiscount',
   props: {},
   computed: {
-    ...mapGetters('discount', ['itemDiscounts', 'activeItemDiscountId']),
     ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('discount', ['itemDiscounts', 'activeItemDiscountId']),
+    ...mapState('discount', ['appliedOrderDiscount']),
   },
   methods: {
     ...mapActions('discount', ['selectItemDiscount', 'applyItemDiscount']),
@@ -70,4 +88,7 @@ export default {
 <style lang="sass" scoped>
 .discount-item.each
   display:inline-block
+.error
+  width: 100%;
+  padding: 40px 5px 0px 5px;
 </style>

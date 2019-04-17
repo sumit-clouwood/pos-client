@@ -12,16 +12,35 @@ const getters = {
   rule: (state, getters, rootState) => {
     if (!state.rules.data) return false
 
-    const ruleType =
-      rootState.order.orderType == 'Walk-in' ||
-      rootState.order.orderType == 'delivery'
-        ? 'walk_in_rule'
-        : rootState.order.orderType
-    return state.rules.data.find(rule => {
+    let ruleType = null
+
+    switch (rootState.order.orderType) {
+    case 'Walk-in':
+    case 'takeaway':
+      ruleType = 'walk_in_rule'
+      break
+    case 'delivery':
+      ruleType = 'call_center_rule1'
+      break
+    default:
+      ruleType = rootState.order.orderType + '_rule'
+    }
+
+    let rules = state.rules.data.find(rule => {
       if (rule[ruleType]) {
         return true
       }
-    })[ruleType]
+    })
+
+    if (!rules) {
+      rules = state.rules.data.find(rule => {
+        if (rule['walk_in_rule']) {
+          return true
+        }
+      })
+      return rules['walk_in_rule']
+    }
+    return rules[ruleType]
   },
   tpl: (state, getters, rootState) => {
     if (!state.templates) {
@@ -34,8 +53,12 @@ const getters = {
       templates = state.templates.data['walkin']
       break
     default:
-      templates = state.templates.data['default_template']
+      templates = state.templates.data[orderType]
       break
+    }
+
+    if (!templates) {
+      templates = state.templates.data['default_template']
     }
 
     if (getters.rule.template) {
@@ -83,7 +106,9 @@ const actions = {
     ])
 
     commit(mutation.SET_TEMPLATES, templates.data)
-    commit(mutation.SET_RULES, rules.data)
+    if (rules.data.status === 1) {
+      commit(mutation.SET_RULES, rules.data)
+    }
   },
 }
 

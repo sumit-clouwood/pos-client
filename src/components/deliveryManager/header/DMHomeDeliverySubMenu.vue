@@ -29,7 +29,7 @@
         <li
           class="dm-delivered"
           data-related="dm-delivered"
-          @click="updateOrderStatus({orderStatus:'take-away',collected: 'no'})"
+          @click="updateOrderStatus({orderStatus:'delivered',collected: 'no'})"
         >
           <a href="#">Delivered</a
           ><span v-if="orderCount">{{ orderCount.delivered }}</span>

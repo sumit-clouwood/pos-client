@@ -3,6 +3,7 @@ import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 import db from '@/services/network/DB'
 import Crypt from '@/plugins/helpers/Crypt.js'
+import DateTime from '@/plugins/helpers/DateTime.js'
 
 // initial state
 const state = {
@@ -24,7 +25,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       let validPayment = false
 
-      if (rootState.order.orderType != 'Walk-in') {
+      if (rootState.order.orderType === 'delivery') {
         validPayment = true
       } else {
         const paid = rootGetters['checkoutForm/paid']
@@ -54,24 +55,28 @@ const actions = {
 
       if (validPayment) {
         //send order for payment
-        const date = new Date().toJSON().slice(0, 10)
-        const time = new Date().toJSON().slice(11, 19)
+        let order = {}
 
-        let order = {
-          transition_order_no: '',
-          location_id: rootState.location.location,
-          payment_mode: 'Cash',
-          status: 'paid',
-          order_type: rootState.order.orderType,
-          currency_code: rootState.location.currency,
-          collected: 'no',
-          order_queue: '0',
-          created_date: date,
-          created_time: time,
-          order_mode: 'online',
-          balance_due: rootGetters['order/orderTotal'],
-          subtotal: rootGetters['order/subTotal'],
-          amount_changed: state.changedAmount,
+        try {
+          const newDate = new DateTime()
+          order = {
+            transition_order_no: '',
+            location_id: rootState.location.location,
+            payment_mode: 'Cash',
+            status: 'paid',
+            order_type: rootState.order.orderType,
+            currency_code: rootState.location.currency,
+            collected: 'no',
+            order_queue: '0',
+            created_date: newDate.getDate(),
+            created_time: newDate.getTime(),
+            order_mode: 'online',
+            balance_due: rootGetters['order/orderTotal'],
+            subtotal: rootGetters['order/subTotal'],
+            amount_changed: state.changedAmount,
+          }
+        } catch (e) {
+          console.log(e)
         }
 
         if (rootState.order.orderType == 'delivery') {
@@ -229,7 +234,11 @@ const actions = {
         })
 
         if (!order.payBreakDown.length) {
-          order.payBreakDown = [['Cash', 0]]
+          let cashAmount = 0
+          if (order.order_type === 'delivery') {
+            cashAmount = order.balance_due
+          }
+          order.payBreakDown = [['Cash', cashAmount]]
         }
 
         order.app_uniqueid = Crypt.uuid()
@@ -248,7 +257,7 @@ const actions = {
       }
     })
   },
-  createOrder({ state, commit, rootState }) {
+  createOrder({ state, commit, rootState, dispatch }) {
     commit('checkoutForm/SET_MSG', 'loading', {
       root: true,
     })
@@ -256,38 +265,41 @@ const actions = {
     return new Promise((resolve, reject) => {
       OrderService.saveOrder(state.order, rootState.customer.offlineData)
         .then(response => {
-          if (response.data.data === 1) {
-            //clear all the data related to order, tax, discounts, surcharge etc
-            //create invoice
-            //add order no to local database
-            db.getBucket('auth').then(bucket => {
-              db.fetch(bucket).then(data => {
-                if (data && data[0]) {
-                  data = data[0]
-                  data.lastOrderNo = parseInt(data.lastOrderNo) + 1
-                  db.getBucket('auth').then(bucket => {
-                    bucket.put(data)
-                  })
-                  commit('auth/SET_LAST_ORDER_NO', data.lastOrderNo, {
-                    root: true,
-                  })
-                }
+          dispatch('invoice/fetchAll', null, { root: true }).then(() => {
+            //get print rules
+            if (response.data.data === 1) {
+              //clear all the data related to order, tax, discounts, surcharge etc
+              //create invoice
+              //add order no to local database
+              db.getBucket('auth').then(bucket => {
+                db.fetch(bucket).then(data => {
+                  if (data && data[0]) {
+                    data = data[0]
+                    data.lastOrderNo = parseInt(data.lastOrderNo) + 1
+                    db.getBucket('auth').then(bucket => {
+                      bucket.put(data)
+                    })
+                    commit('auth/SET_LAST_ORDER_NO', data.lastOrderNo, {
+                      root: true,
+                    })
+                  }
+                })
               })
-            })
 
-            commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
-            commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
-              root: true,
-            })
-            resolve(response.data)
-          } else {
-            commit(
-              'checkoutForm/SET_ERROR',
-              `Order Failed, Server Response: ${response.data.error}`,
-              { root: true }
-            )
-            reject(response.data)
-          }
+              commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
+              commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
+                root: true,
+              })
+              resolve(response.data)
+            } else {
+              commit(
+                'checkoutForm/SET_ERROR',
+                `Order Failed, Server Response: ${response.data.error}`,
+                { root: true }
+              )
+              reject(response.data)
+            }
+          })
         })
         .catch(response => {
           commit('checkoutForm/SET_MSG', 'Queued for sending later', {

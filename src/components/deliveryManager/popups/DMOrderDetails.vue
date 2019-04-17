@@ -263,10 +263,11 @@
               aria-haspopup="true"
               aria-expanded="false"
             >
-              Re-Print</button
-            ><!--<span><img src="images/referal-down.png"></span>-->
+              Re-Print
+            </button>
+            <!--<span><img src="images/referal-down.png"></span>-->
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">Delhi_invoice</a>
+              <a class="dropdown-item" href="#" @click="generateInvoice">Default</a>
 <!--              <a class="dropdown-item" href="#">ARB</a>-->
 <!--              <a class="dropdown-item" href="#">Estonia</a>-->
             </div>
@@ -319,12 +320,15 @@
         </div>
       </div>
     </div>
+    <Invoice />
   </div>
 </template>
 
 <script>
 /* global $ */
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
+import Invoice from '@/components/pos/content/cart/payNow/Invoice'
+
 export default {
   name: 'DMOrderDetails',
   computed: {
@@ -349,7 +353,12 @@ export default {
       $('#status-history').toggle()
       $('#recipt-history').toggle()
     },
+
+    ...mapActions('checkout',['generateInvoice'])
   },
+  components: {
+    Invoice
+  }
 }
 </script>
 

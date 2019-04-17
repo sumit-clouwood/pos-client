@@ -202,9 +202,6 @@ const mutations = {
   removeDigit(state) {
     state.amount = '' + state.amount.substr(0, state.amount.length - 1)
   },
-  reset(state) {
-    state.amount = 0
-  },
   setAmount(state, val) {
     state.amount = val
     if (!state.method.is_cash && !state.method.is_gift) {
@@ -218,6 +215,7 @@ const mutations = {
   },
   setMethod(state, method) {
     state.method = method
+    state.showCalc = true
   },
   addAmount(state, { amount, method }) {
     state.payments.push({
