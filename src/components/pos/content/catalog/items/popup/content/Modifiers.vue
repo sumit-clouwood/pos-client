@@ -27,6 +27,7 @@
             >
               <span class="customradioc">
                 <input
+                  ref="modifier"
                   type="checkbox"
                   :name="modifierOption._id"
                   :id="modifierOption._id"

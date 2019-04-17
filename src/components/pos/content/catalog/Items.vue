@@ -55,6 +55,7 @@ export default {
         this.$store.dispatch('modifier/setModifierItem', item)
         this.$store.commit('orderForm/clearSelection')
         showModal('#POSItemOptions')
+        $('.customradio').attr('checked', false)
       } else {
         this.$store.dispatch('order/addToOrder', item)
       }
