@@ -10,7 +10,7 @@
         </div>
         <div class="modal-body row dining-options-block select-discount">
           <div v-if="error" class="error">
-            <p>{{ error }}</p>
+            <p class="text-danger text-center">{{ error }}</p>
           </div>
           <div
             class="dining-option-block select-discount-option"
@@ -39,6 +39,7 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
+              v-show="!error"
               class="btn btn-success btn-large"
               type="button"
               data-dismiss="modal"
@@ -46,6 +47,14 @@
               @click="applyOrderDiscount()"
             >
               Ok
+            </button>
+            <button
+              v-show="error"
+              class="btn btn-danger btn-large"
+              type="button"
+              data-dismiss="modal"
+            >
+              Close
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -80,3 +89,8 @@ export default {
   },
 }
 </script>
+<style lang="sass" scoped>
+.error
+  width: 100%;
+  padding: 40px 5px 10px 5px;
+</style>
