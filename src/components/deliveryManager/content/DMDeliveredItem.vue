@@ -24,7 +24,7 @@
 
                 </div>
                 <div class="average-time">
-                    <p class="lead">Average Delivery Time: <span id="avg_time">{{ orderDetails.averageDeliveryTime }} </span></p>
+                    <p class="lead">Average Delivery Time: <span id="avg_time" v-if="orderDetails.averageDeliveryTime">{{ orderDetails.averageDeliveryTime }} </span></p>
                     <p class="lead total-order-sum">Total: <span id="total"> {{ formatPrice(orderDetails.orderTota)  }}</span></p>
             </div>
             </div>

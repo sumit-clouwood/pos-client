@@ -11,14 +11,14 @@
       <button
         class="dm-btn"
         data-related="take-away-order"
-        @click="updateDMOrderStatus({orderStatus:'take-away',collected: 'no'})"
+        @click="updateDMOrderStatus({orderStatus:'new',collected: 'no'})"
       >
         Take Away Orders
       </button>
       <button
         class="dm-btn"
         data-related="future-order"
-        @click="updateDMOrderStatus({orderStatus:'future',collected: 'no'})"
+        @click="updateDMOrderStatus({orderStatus:'future-order',collected: 'no'})"
       >
         Future Orders
       </button>

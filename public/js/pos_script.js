@@ -734,6 +734,19 @@ $(document).ready(function() {
     $('#long-table-shape, #square-table-shape, #circle-table-shape').draggable({
         helper: 'clone'
     });*/
+  // window.onload = function () {
+  var getUrl = window.location.hash.substr(1)
+  if (getUrl == '/dm') {
+    $('body').addClass('dm-manager')
+    $('body').removeClass('dinein')
+  } else if (getUrl == '/dine-in/') {
+    $('body').removeClass('dm-manager')
+    $('body').addClass('dinein')
+  } else {
+    $('body').removeClass('dm-manager')
+    $('body').removeClass('dinein')
+  }
+  // }
 })
 
 // view image rotateble

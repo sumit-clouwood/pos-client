@@ -5,7 +5,7 @@
       v-for="(order, index) in orderDetails"
       :key="index"
     >
-      <!--<div v-if="order.order_status == orderStatus">-->
+      <div v-if="order.order_status == orderStatus || orderStatus == 'future-order'">
         <div class="dm-deliver-detail">
           <h4>{{ order.order_no }}</h4>
           <p>
@@ -46,12 +46,13 @@
               DMOrderStatus({
                 actionDetails: actionDetails,
                 orderId: order._id,
+                orderType: order.order_type
               })
             "
             >{{ actionDetails.action }}</a
           >
         </div>
-      <!--</div>-->
+      </div>
     </div>
   </div>
 </template>
@@ -82,23 +83,30 @@ export default {
   },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
-    DMOrderStatus: function({ actionDetails, orderId }) {
+    DMOrderStatus: function({ actionDetails, orderId, orderType }) {
       let timestamp = Date.now()
-      if (typeof actionDetails.driverId != 'undefined') {
-        this.$store.dispatch('deliveryManager/attachOrderDriver', {
-          orderId: orderId,
-          driverId: actionDetails.driverId,
-          timestamp: timestamp,
-        })
-      } else {
-        this.$store.dispatch('checkout/updateOrderStatus', {
-          orderStatus: actionDetails.nextOrderStatus,
-          orderId: orderId,
-          timestamp: timestamp,
-          orderType: 'delivery',
-        })
+      if(actionDetails.action != 'Collected') {
+        if(orderType === 'takeaway') {
+          this.$store.dispatch('deliveryManager/updateTakeAway', orderId)
+        } else {
+          if (typeof actionDetails.driverId != 'undefined') {
+            this.$store.dispatch('deliveryManager/attachOrderDriver', {
+              orderId: orderId,
+              driverId: actionDetails.driverId,
+              timestamp: timestamp,
+            })
+          } else {
+            this.$store.dispatch('checkout/updateOrderStatus', {
+              orderStatus: actionDetails.nextOrderStatus,
+              orderId: orderId,
+              timestamp: timestamp,
+              orderType: orderType,
+            })
+          }
+        }
+
+        $('#'+orderId).parent().parent().parent().hide(800)
       }
-      $('#'+orderId).parent().parent().parent().hide(800)
     }
   }
 }

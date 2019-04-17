@@ -20,19 +20,7 @@ function hidePayNow() {
   $('#transparent-screen').css('display', 'none')
 }
 
-window.onload = function () {
-  var getUrl = window.location.hash.substr(1)
-  if (getUrl == '/dm') {
-    $('body').addClass('dm-manager')
-    $('body').removeClass('dinein')
-  } else if (getUrl == '/dine-in/') {
-    $('body').removeClass('dm-manager')
-    $('body').addClass('dinein')
-  } else {
-    $('body').removeClass('dm-manager')
-    $('body').removeClass('dinein')
-  }
-}
+
 
 /*
 $(document).on('click', '.popover-btn ' , function(){

@@ -21,8 +21,8 @@ export default {
   data() {
     return {
       actionDetailsNew: { moreDetails: true, action: 'Ready', nextOrderStatus: 'paid'},
-      actionDetailsWaiting: { moreDetails: true, action: 'Collected', nextOrderStatus: 'paid'},
-      actionDetailsCollected: { moreDetails: true, action: 'Delivered', nextOrderStatus: 'paid' },
+      actionDetailsWaiting: { moreDetails: true, action: 'Collect', nextOrderStatus: 'paid'},
+      actionDetailsCollected: { moreDetails: true, action: 'Collected', nextOrderStatus: '' },
     }
   },
   components: {

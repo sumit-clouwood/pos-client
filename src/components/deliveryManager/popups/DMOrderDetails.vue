@@ -7,11 +7,11 @@
         <div class="modal-body dm-confirmation-wrap dm-con">
           <div class="dm-ready-order-wrap">
             <div class="dm-ready-order-left">
-              <div class="dm-ready">
+              <div class="dm-ready" v-if="selectedOrder.customer">
                 <p>Customer Name:</p>
                 <h5>{{ selectedOrder.customer.customer_name }}</h5>
               </div>
-              <div class="dm-ready">
+              <div class="dm-ready" v-if="selectedOrder.customer">
                 <p>Phone Number:</p>
                 <h5>{{ selectedOrder.customer.mobile_number }}</h5>
               </div>
@@ -29,11 +29,11 @@
                 <p>Order Number:</p>
                 <h5>{{ selectedOrder.order_no }}</h5>
               </div>
-              <div class="dm-ready">
+              <div class="dm-ready" v-if="selectedOrder.delivery_area">
                 <p>Delivery Area:</p>
                 <h5>{{ selectedOrder.delivery_area }}</h5>
               </div>
-              <div class="dm-ready">
+              <div class="dm-ready" v-if="selectedOrder.delivery_area">
                 <p>Delivery Address:</p>
                 <h5>
                   {{ selectedOrder.delivery_area }},
@@ -267,13 +267,10 @@
             ><!--<span><img src="images/referal-down.png"></span>-->
             <div class="dropdown-menu">
               <a class="dropdown-item" href="#">Delhi_invoice</a>
-              <a class="dropdown-item" href="#">ARB</a>
-              <a class="dropdown-item" href="#">Estonia</a>
-              <!--data-value="Estonia"-->
-              <!--data-value="ARB"-->
-              <!--data-value="Delhi_invoice"-->
+<!--              <a class="dropdown-item" href="#">ARB</a>-->
+<!--              <a class="dropdown-item" href="#">Estonia</a>-->
             </div>
-            <div class="referal">
+            <!--<div class="referal">
               <button
                 type="button"
                 class="btn view-history"
@@ -289,7 +286,7 @@
                 <span><img src="img/other/edit-icon.png" alt="schedule"/></span
                 >Modify
               </button>
-            </div>
+            </div>-->
           </div>
           <div class="btn-announce">
             <button

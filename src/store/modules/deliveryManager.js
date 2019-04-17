@@ -37,6 +37,16 @@ const actions = {
     dispatch('fetchDMOrderDetail')
   },
 
+  updateTakeAway({ rootState }, orderId) {
+    const params = [
+      rootState.location.location,
+      orderId,
+    ]
+    DMService.updateTakeAwayOrder(...params).then(() => {
+      dispatch('fetchOrderCount')
+    })
+  },
+
   fetchOrderCount({ commit, rootState }) {
     const params = [rootState.location.location, '']
     DMService.getDMOrderCount(...params).then(response => {

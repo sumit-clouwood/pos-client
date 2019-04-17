@@ -19,6 +19,12 @@ export default {
     )
   },
 
+  updateTakeAwayOrder(...[location_id, order_id]) {
+    return DataService.get(
+      `/api/auth/order/dispatch/collected?location_id=${location_id}&order_id=${order_id}`
+    )
+  },
+
   assignDriverToOrder(...[location_id, order_id, driver_id, timestamp]) {
     return DataService.post(
       `/api/auth/deliveryManager/assign/driver/?location_id=${location_id}&order_id=${order_id}&driver_id=${driver_id}&timestamp=${timestamp}`
