@@ -1,42 +1,185 @@
 <template>
-    <div id="delivered-data">
-        <div colspan="10" class="deliveredOrderDetails">
+    <tr id="delivered-data" style="display:none" class="delivered-data">
+        <td colspan="10" class="deliveredOrderDetails">
             <div class="delivered-data-wrapper">
-                <div class="table table-responsive">
-                    <p style="width: 160px;">ORDER NUMBER</p>
-                    <p style="width: 160px;">amount</p>
-                    <p style="width: 800px;">order performance (preparation | pickup | Delivery)</p>
-                    <p style="width: 150px;">total time</p>
-                    <p style="width: 160px;">status</p>
-                    <div class="deliverd-time-table">
-                        <p>21312410</p>
-                        <p>32.12 INR</p>
-                        <p><span class="delivery-preptn">22 hours 30 Minutes 02</span><span class="delivery-pickup">4 seconds Pick</span><span
-                                class="delivery-delivered">5 seconds Delivery</span></p>
-                        <p>20 h 30 m 10 s</p>
-                        <p class="delivered-btn"><span>Delivered</span></p>
-                    </div>
+                <table class="table table-responsive">
+                    <tbody><tr>
+                        <th style="width: 160px;">ORDER NUMBER</th>
+                        <th style="width: 160px;">amount</th>
+                        <th style="width: 800px;">order performance (preparation | pickup | Delivery)</th>
+                        <th style="width: 150px;">total time</th>
+                        <th style="width: 160px;">status</th>
+                    </tr>
+                    <tr class="deliverd-time-table">
+                        <td> {{ orders.driverId }}</td>
+                        <td>{{ orders.driverId }}</td>
+                        <td>
+                            <span class="delivery-preptn">{{orders.averageDeliveryTime}}</span>
+                            <span class="delivery-pickup">{{orders.averageDeliveryTime}} Pick</span>
+                            <span class="delivery-delivered">{{orders.averageDeliveryTime}} Delivery</span>
+                         </td>
+                        <td>{{orders.averageDeliveryTime}}</td>
+                        <td class="delivered-btn"><span>Delivered</span></td>
+                    </tr>
 
-                    <div class="delivery-avg-delivery-time">
-                        <p>Total Deliveries : <span class="total-delivery">3</span></p>
-                        <p>Total : <span class="delivery-time-total">32.12 INR</span></p>
-                        <p>Average Delivery Time : <span class="dm-avg-delivery-time">00:00:04</span></p>
-                        <p></p>
-                        <p></p>
-                    </div>
-                </div>
+                    <tr class="delivery-avg-delivery-time">
+                        <td>Total Deliveries : <span class="total-delivery">{{orders.noOfOrders}}</span></td>
+                        <td>Total : <span class="delivery-time-total">{{orders.orderSum}}</span></td>
+                        <td>Average Delivery Time : <span class="dm-avg-delivery-time">{{orders.averageDeliveryTime}}</span></td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+
+
+                    </tbody></table>
             </div>
-        </div>
+        </td>
 
-    </div>
+    </tr>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'ShowDeliveredOrderDetails',
+  computed: {
+    ...mapState({
+      orders: state=> state.deliveryManager.moreOrders
+    })
+  }
 }
+
+
 </script>
 
 <style scoped>
-
+/* */
+.delivered-data-wrapper .table {
+    background-color: #f7f8fa;
+    border-radius: 8px;
+}
+.delivery-avg-delivery-time {
+    background-color: #eef0f3;
+}
+.delivered-data-wrapper .table {
+    background-color: #f7f8fa;
+    border-radius: 8px;
+}
+.deliverd-time-table {
+    height: 80px;
+    vertical-align: middle;
+}
+.deliverd-time-table_header p,.delivered-data-wrapper p {
+    display: inline-block;
+}
+.delivered-data-wrapper > .table p {
+    letter-spacing: 0.4px;
+    color: #a4a4a4;
+    font-size: 12px !important;
+    text-transform: uppercase;
+}
+.delivered-data-wrapper > .table div p {
+    letter-spacing: 0.4px;
+    color: #a4a4a4;
+    font-size: 12px !important;
+    text-transform: uppercase;
+}
+.delivery-avg-delivery-time{
+    height: 109px;
+}
+.delivered-data-wrapper > .table p {
+    letter-spacing: 0.4px;
+    color: #a4a4a4;
+    font-size: 12px !important;
+    text-transform: uppercase;
+}
+.table {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+.deliverd-time-table_header {
+    display: flex;
+}
+.delivery-avg-delivery-time p span {
+    display: block;
+    letter-spacing: 0.6px;
+    color: #3a3d44;
+    font-size: 20px;
+    font-weight: 600;
+}
+.delivered-data-wrapper .table p.delivered-btn > span {
+    border-radius: 6px;
+    background-color: #47cd8f;
+    display: inline-block;
+    padding: 8px 10px;
+    color: #fff;
+    font-size: 14px;
+    text-transform: capitalize;
+}
+.delivery-avg-delivery-time p {
+    letter-spacing: 0.6px;
+    color: #3a3d44 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+.deliverd-time-table {
+    /*display: flex;*/
+    justify-content: space-between;
+}
+.delivery-avg-delivery-time {
+    /*display: flex;*/
+    justify-content: space-between;
+}
+span.delivery-preptn {
+    border-radius:4px;
+    background-color:#f35c7f;
+    display:inline-block;
+    padding:2px 5px;
+    color:#fff;
+    font-size:12px;
+    border-top-right-radius:0;
+    border-bottom-right-radius:0;
+    float:left;
+}
+span.delivery-pickup {
+    background-color:#7881d5;
+    padding:2px 5px;
+    color:#fff;
+    font-weight:600;
+    font-size:12px;
+    /* border-radius: 4px; */
+    display:inline-block;
+    float:left;
+}
+span.delivery-delivered {
+    border-radius:4px;
+    background-color:#47cd8f;
+    font-size:12px;
+    font-weight:600;
+    display:inline-block;
+    padding:2px 5px;
+    color:#fff;
+    border-top-left-radius:0;
+    border-bottom-left-radius:0;
+    float:left;
+}
+tr.delivery-avg-delivery-time td span {
+    display: block;
+    letter-spacing: 0.6px;
+    color: #3a3d44;
+    font-size: 20px;
+    font-weight: 600;
+}
+tr.delivery-avg-delivery-time td {
+    letter-spacing: 0.6px;
+    color: #3a3d44 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+tr.delivery-avg-delivery-time td {
+    height: 109px;
+    vertical-align: middle;
+}
 </style>

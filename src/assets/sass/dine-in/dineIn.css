@@ -79,16 +79,7 @@ li#circle-table-shape .sitting-image.round-sitting-image {display:  none;}
  #dine-in-wrapper ul.ullist-dinein-table > li{font-size: 10.5px;}
 }
 @media only screen and (max-width: 991px) {
- small.delivered-hide {margin-top:5px; margin-left:0 !important;}
- 
- small.delivered-hide > span {display:none;}
- 
- .delivered-order-table td.show-details-his > span > span {display:none;}
- 
- .delivered-order-table td.show-details-his > span {margin-right:0; padding-right:0;}
- 
- small.delivered-refresh-data > span {display:none;}
- 
+
  #dine-in-wrapper .total-amount-wrapper {bottom:30px;}
  
  #dine-in-wrapper .unavailable-tbl-dropdown {z-index:9;}

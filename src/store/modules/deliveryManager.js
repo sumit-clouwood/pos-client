@@ -9,7 +9,8 @@ const state = {
   selectedOrder: false,
   selectedDriver: false,
   deliveredOrderGroup: [],
-  deliveredOrderCollection: []
+  deliveredOrderCollection: [],
+  moreOrders: false
 }
 const getters = {}
 
@@ -66,6 +67,16 @@ const actions = {
     const params = [rootState.location.location, orderId, driverId, timestamp]
     DMService.assignDriverToOrder(...params).then(() => {
       dispatch('fetchOrderCount')
+    })
+  },
+
+  showMoreOrders({rootState, commit}, driverId) {
+    const params = [
+      rootState.location.location,
+      driverId
+    ]
+    DMService.getMoreOrders(...params).then( response => {
+      commit(mutation.SET_SHOW_MORE_ORDERS, response.data.data)
     })
   },
 
@@ -135,6 +146,9 @@ const mutations = {
   },
   [mutation.SET_SELECTED_DM_DRIVER](state, driverInfo) {
     state.selectedDriver = driverInfo
+  },
+  [mutation.SET_SHOW_MORE_ORDERS](state, orderDetails) {
+    state.moreOrders = orderDetails
   },
 }
 

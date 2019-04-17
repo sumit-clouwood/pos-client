@@ -320,14 +320,12 @@
         </div>
       </div>
     </div>
-    <Invoice />
   </div>
 </template>
 
 <script>
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
-import Invoice from '@/components/pos/content/cart/payNow/Invoice'
 
 export default {
   name: 'DMOrderDetails',
@@ -357,8 +355,7 @@ export default {
     ...mapActions('checkout',['generateInvoice'])
   },
   components: {
-    Invoice
-  }
+  },
 }
 </script>
 
@@ -366,4 +363,5 @@ export default {
 .displayBlock {
   display: inline-block;
 }
+
 </style>

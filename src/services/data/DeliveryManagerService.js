@@ -24,6 +24,12 @@ export default {
     )
   },
 
+  getMoreOrders(...[location_id, driver_id]) {
+    return DataService.get(
+      `api/auth/deliveryManager/delivered/showData?driver_id=${driver_id}&location_id=${location_id}`
+    )
+  },
+
   assignDriverToOrder(...[location_id, order_id, driver_id, timestamp]) {
     return DataService.post(
       `/api/auth/deliveryManager/assign/driver/?location_id=${location_id}&order_id=${order_id}&driver_id=${driver_id}&timestamp=${timestamp}`

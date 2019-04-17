@@ -51,7 +51,7 @@
                     <td>{{ order.averageDeliveryTime }}</td>
 
                     <td class="show-details-his">
-                        <span>
+                        <span class="show-details" @click="getMoreDeliveredOrder(order.driverDetails)">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="20"
@@ -65,11 +65,10 @@
                               <path
                                       d="M10 10.39a3.81 3.81 0 1 1 3.713-3.811A3.766 3.766 0 0 1 10 10.389zm0-6.58a2.758 2.758 0 1 0 2.66 2.769A2.713 2.713 0 0 0 10 3.82v-.01z"
                               ></path>
-                            </g></svg
-                        >
-                            <span @click="getMoreDeliveredOrder(driverId)">Show Details</span>
+                            </g></svg>
+                            <span @click="showMoreOrders(order.driverId)">Show Details</span>
                         </span>
-                        <small class="delivered-refresh-data">
+                        <!--<small class="delivered-refresh-data">
                             <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -86,14 +85,14 @@
                                 </g>
                             </svg>
                             <span>Refresh Data</span>
-                        </small>
-                        <small class="delivered-hide">
-                            <span>Hide</span>
-                            <img src="images/hide.png" alt="hide"/>
-                        </small>
+                        </small>-->
+                        <span class="delivered-hide">
+                            <span> Hide </span>
+                            <img src="img/other/hide.png" alt="hide"/>
+                        </span>
                     </td>
                 </tr>
-                <ShowDeliveredOrderDetails />
+                <ShowDeliveredOrderDetails :orders="orderMoreDetails"/>
                 </tbody>
             </table>
         </div>
@@ -101,10 +100,17 @@
 </template>
 
 <script>
+/*  global $  */
+
 import { mapState, mapActions, mapGetters } from 'vuex'
 import ShowDeliveredOrderDetails from '@/components/deliveryManager/content/ShowDeliveredOrderDetails'
 export default {
   name: 'DMDeliveredItem',
+  data() {
+    return {
+      orderMoreDetails: false
+    }
+  },
   computed: {
     ...mapState({
       orderDetails: state => state.deliveryManager.orders,
@@ -124,10 +130,38 @@ export default {
       this.waitingOrder.driverId = driver._id
       this.selectDriver(driver)
     },
-    getMoreDeliveredOrder: function (driverId) {
-      // alert(driverId)
+    getMoreDeliveredOrder: function (orderDetails) {
+      this.orderMoreDetails = orderDetails
     },
     ...mapActions('deliveryManager', ['selectDriver']),
+    ...mapActions('deliveryManager', ['showMoreOrders']),
+  },
+  updated() {
+    $('.delivered-order-table .show-details-his > span').click(function () {
+      $('.delivered-order-table .show-details-his > span').removeClass('active')
+      $('.delivered-order-table table tr').removeClass('active')
+
+      $(this).parent().addClass('active')
+      $(this).parents('tr').addClass('active')
+      $(this).closest('.show-details').show()
+      $(this).hide()
+      $('.delivered-data').show().insertAfter('.delivered-order-table .table tr.active')
+    })
+
+    $('span.delivered-hide').click(function (e) {
+      e.stopPropagation()
+      $(this).closest('.delivered-hide').show()
+      $(this).hide()
+      $(this).parent().addClass('active')
+      $(this).parents('tr').next('tr#delivered-data').remove()
+      $(this).parent('.show-details-his').removeClass('active')
+      /*$('.delivered-order-table tr#delivered-data').remove();*/
+    })
+
+    $('button.dm-btn, .all-tables-wrap > button').click(function () {
+      $('button.dm-btn, .all-tables-wrap > button').removeClass('active')
+      $(this).addClass('active')
+    })
   }
 }
 </script>
@@ -145,7 +179,149 @@ export default {
     color: #3d3f43;
 }
 
+span.delivered-hide {margin-top:5px; margin-left:0 !important;}
+
+/*small.delivered-hide > span {display:none;}
+
+.delivered-order-table td.show-details-his > span > span {display:block;}
+
+.delivered-order-table td.show-details-his > span {margin-right:0; padding-right:0;}
+
+small.delivered-refresh-data > span {display:none;}*/
+
 .average-time {
     padding-left: 10px;
+}
+.show-details {
+    display:block;
+}
+.delivered-hide{
+    display:none;
+}
+/* */
+.delivered-data-wrapper .table {
+    background-color: #f7f8fa;
+    border-radius: 8px;
+}
+.delivery-avg-delivery-time {
+    background-color: #eef0f3;
+}
+.delivered-data-wrapper .table {
+    background-color: #f7f8fa;
+    border-radius: 8px;
+}
+.deliverd-time-table {
+    height: 80px;
+    vertical-align: middle;
+}
+.deliverd-time-table_header p,.delivered-data-wrapper p {
+    display: inline-block;
+}
+.delivered-data-wrapper > .table p {
+    letter-spacing: 0.4px;
+    color: #a4a4a4;
+    font-size: 12px !important;
+    text-transform: uppercase;
+}
+.delivered-data-wrapper > .table div p {
+    letter-spacing: 0.4px;
+    color: #a4a4a4;
+    font-size: 12px !important;
+    text-transform: uppercase;
+}
+.delivery-avg-delivery-time{
+    height: 109px;
+}
+.delivered-data-wrapper > .table p {
+    letter-spacing: 0.4px;
+    color: #a4a4a4;
+    font-size: 12px !important;
+    text-transform: uppercase;
+}
+.table {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.delivery-avg-delivery-time p span {
+    display: block;
+    letter-spacing: 0.6px;
+    color: #3a3d44;
+    font-size: 20px;
+    font-weight: 600;
+}
+.delivered-data-wrapper .table p.delivered-btn > span {
+    border-radius: 6px;
+    background-color: #47cd8f;
+    display: inline-block;
+    padding: 8px 10px;
+    color: #fff;
+    font-size: 14px;
+    text-transform: capitalize;
+}
+.delivery-avg-delivery-time p {
+    letter-spacing: 0.6px;
+    color: #3a3d44 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+.deliverd-time-table {
+    /*display: flex;*/
+    justify-content: space-between;
+}
+.delivery-avg-delivery-time {
+    /*display: flex;*/
+    justify-content: space-between;
+}
+span.delivery-preptn {
+    border-radius:4px;
+    background-color:#f35c7f;
+    display:inline-block;
+    padding:2px 5px;
+    color:#fff;
+    font-size:12px;
+    border-top-right-radius:0;
+    border-bottom-right-radius:0;
+    float:left;
+}
+span.delivery-pickup {
+    background-color:#7881d5;
+    padding:2px 5px;
+    color:#fff;
+    font-weight:600;
+    font-size:12px;
+    /* border-radius: 4px; */
+    display:inline-block;
+    float:left;
+}
+span.delivery-delivered {
+    border-radius:4px;
+    background-color:#47cd8f;
+    font-size:12px;
+    font-weight:600;
+    display:inline-block;
+    padding:2px 5px;
+    color:#fff;
+    border-top-left-radius:0;
+    border-bottom-left-radius:0;
+    float:left;
+}
+tr.delivery-avg-delivery-time td span {
+    display: block;
+    letter-spacing: 0.6px;
+    color: #3a3d44;
+    font-size: 20px;
+    font-weight: 600;
+}
+tr.delivery-avg-delivery-time td {
+    letter-spacing: 0.6px;
+    color: #3a3d44 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+tr.delivery-avg-delivery-time td {
+    height: 109px;
+    vertical-align: middle;
 }
 </style>
