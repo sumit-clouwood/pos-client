@@ -58,6 +58,10 @@ export default {
       //becareful for circular dependency
       this.$store.dispatch('checkout/reset')
       this.$store.commit('checkout/PRINT', false)
+
+      if (this.$store.state.order.orderType === 'delivery') {
+        this.$router.replace({ name: 'DeliveryManager' })
+      }
       $('.modal-backdrop').remove()
       hidePayNow()
     }

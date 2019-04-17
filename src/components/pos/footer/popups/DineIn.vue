@@ -12,14 +12,14 @@
           <div class="dining-option-block">
             <div
               class="option-contain"
-              :class="{ active: orderType === 'dinein' }"
+              :class="{ active: selectedOrderType === 'dinein' }"
               @click="setOrderType('dinein')"
             >
               <img src="img/pos/dine-in.svg" /><span>Dine In</span>
             </div>
             <div
               class="option-contain"
-              :class="{ active: orderType === 'takeaway' }"
+              :class="{ active: selectedOrderType === 'takeaway' }"
               @click="setOrderType('takeaway')"
             >
               <img src="img/pos/take-away.svg" /><span>Take Away</span>
@@ -28,14 +28,14 @@
           <div class="dining-option-block">
             <div
               class="option-contain"
-              :class="{ active: orderType === 'delivery' }"
+              :class="{ active: selectedOrderType === 'delivery' }"
               @click="setOrderType('delivery')"
             >
               <img src="img/pos/delivery-icon.svg" /><span>Delivery</span>
             </div>
             <div
               class="option-contain"
-              :class="{ active: orderType === 'event' }"
+              :class="{ active: selectedOrderType === 'event' }"
               @click="setOrderType('event')"
             >
               <img src="img/pos/event.svg" /><span>Event</span>
@@ -63,25 +63,36 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'DineIn',
   props: {},
   data: function() {
     return {
-      orderType: 'Walk-in',
+      selectedOrderType: this.$store.state.order.orderType,
     }
   },
+  computed: {
+    ...mapState('order', ['orderType']),
+  },
+  watch: {
+    orderType(newVal) {
+      this.selectedOrderType = newVal
+    },
+  },
+
   methods: {
     setOrderType(opt) {
-      if (this.orderType === opt) {
+      if (this.selectedOrderType === opt) {
         //toggle
-        this.orderType = 'Walk-in'
+        this.selectedOrderType = 'Walk-in'
       } else {
-        this.orderType = opt
+        this.selectedOrderType = opt
       }
     },
     updateOrderType() {
-      this.$store.dispatch('order/updateOrderType', this.orderType)
+      this.$store.dispatch('order/updateOrderType', this.selectedOrderType)
     },
   },
 }

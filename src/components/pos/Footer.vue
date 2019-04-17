@@ -25,7 +25,7 @@
             :data-target="selectedModal"
             data-dismiss="modal"
           >
-            <a href="#"
+            <a href="#" @click="setOrderType('delivery')"
               ><img src="img/pos/delivery.svg" /><span
                 >Send to Delivery</span
               ></a
@@ -87,7 +87,7 @@
             data-dismiss="modal"
             class="pay-now"
           >
-            <a href="#"
+            <a href="#" @click="setOrderType('delivery')"
               ><img src="img/pos/delivery.svg" class="pay-btn" /><span
                 >Send to Delivery</span
               ></a
@@ -220,6 +220,9 @@ export default {
   methods: {
     ...mapActions('holdOrders', ['getHoldOrders']),
     ...mapActions('discount', ['validateOrderDiscounts']),
+    setOrderType(opt) {
+      this.$store.commit('order/ORDER_TYPE', opt)
+    },
   },
   updated() {
     $('ul.ullist-icons').slick({
