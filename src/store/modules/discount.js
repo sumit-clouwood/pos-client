@@ -23,8 +23,9 @@ const state = {
   //Discount on surcharge
   surchargeDiscountAmount: 0,
   //error msg
-  error: false,
-  errorCode: false,
+  orderError: false,
+  itemError: false,
+  errorCode: 0,
 }
 
 // getters
@@ -148,7 +149,7 @@ const actions = {
       errorMsg =
         'Please remove item level discount(s) first to apply order discount.'
     }
-    commit(mutation.SET_ERROR, errorMsg)
+    commit(mutation.SET_ORDER_ERROR, errorMsg)
   },
 
   validateItemDiscounts({ commit, state }) {
@@ -156,7 +157,7 @@ const actions = {
       //order level discount already applied reject it
       const errorMsg =
         'Please remove order discount first to apply item discount.'
-      commit(mutation.SET_ERROR, errorMsg)
+      commit(mutation.SET_ITEM_ERROR, errorMsg)
     }
   },
 
@@ -177,8 +178,8 @@ const actions = {
         dispatch('order/recalculateItemPrices', {}, { root: true })
           .then(() => resolve())
           .catch(errors => {
-            commit(mutation.SET_ERROR, DISCOUNT_ITEM_ERROR)
-            commit(mutation.SET_ERROR_CODE, 3)
+            commit(mutation.SET_ITEM_ERROR, DISCOUNT_ITEM_ERROR)
+            commit(mutation.SET_ERROR_CODE, 7)
             commit(mutation.CLEAR_ITEM_DISCOUNT, errors)
             reject(errors)
           })
@@ -210,7 +211,7 @@ const actions = {
           })
           .catch(error => {
             commit(mutation.CLEAR_ORDER_DISCOUNT)
-            commit(mutation.SET_ERROR, error)
+            commit(mutation.SET_ORDER_ERROR, error)
             commit(mutation.SET_ERROR_CODE, 2)
             reject(error)
           })
@@ -273,8 +274,11 @@ const mutations = {
   [mutation.SET_ITEMS_DISCOUNT_AMOUNT](state, discount) {
     state.itemsDiscountAmount = discount
   },
-  [mutation.SET_ERROR](state, errorMsg) {
-    state.error = errorMsg
+  [mutation.SET_ORDER_ERROR](state, errorMsg) {
+    state.orderError = errorMsg
+  },
+  [mutation.SET_ITEM_ERROR](state, errorMsg) {
+    state.itemError = errorMsg
   },
   [mutation.SET_ERROR_CODE](state, code) {
     state.errorCode = code
