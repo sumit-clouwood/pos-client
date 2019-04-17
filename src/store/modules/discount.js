@@ -1,5 +1,6 @@
 import * as mutation from './discount/mutation-types'
 import DiscountService from '@/services/data/DiscountService'
+const DISCOUNT_ITEM_ERROR = `Discount can't be greater than item price.`
 
 // initial state
 const state = {
@@ -160,18 +161,31 @@ const actions = {
   },
 
   applyItemDiscount({ commit, rootState, dispatch }) {
-    commit(mutation.CLEAR_ORDER_DISCOUNT)
-    commit(mutation.APPLY_ITEM_DISCOUNT, {
-      item: rootState.order.item,
-      discount: {
-        _id: state.currentActiveItemDiscount.item_discount_id,
-        type: state.currentActiveItemDiscount.type,
-        rate: state.currentActiveItemDiscount.rate,
-        name: state.currentActiveItemDiscount.name,
-      },
-    })
+    return new Promise((resolve, reject) => {
+      commit(mutation.CLEAR_ORDER_DISCOUNT)
+      if (state.currentActiveItemDiscount) {
+        commit(mutation.APPLY_ITEM_DISCOUNT, {
+          item: rootState.order.item,
+          discount: {
+            _id: state.currentActiveItemDiscount.item_discount_id,
+            type: state.currentActiveItemDiscount.type,
+            rate: state.currentActiveItemDiscount.rate,
+            name: state.currentActiveItemDiscount.name,
+          },
+        })
 
-    dispatch('order/recalculateItemPrices', {}, { root: true })
+        dispatch('order/recalculateItemPrices', {}, { root: true })
+          .then(() => resolve())
+          .catch(errors => {
+            commit(mutation.SET_ERROR, DISCOUNT_ITEM_ERROR)
+            commit(mutation.SET_ERROR_CODE, 3)
+            commit(mutation.CLEAR_ITEM_DISCOUNT, errors)
+            reject(errors)
+          })
+      } else {
+        resolve()
+      }
+    })
   },
 
   removeItemDiscount({ commit, rootState, dispatch }) {
@@ -209,6 +223,10 @@ const actions = {
 
   clearOrderDiscount({ commit }) {
     commit(mutation.CLEAR_ORDER_DISCOUNT)
+  },
+
+  clearItemDiscount({ commit }, erroredDiscounts) {
+    commit(mutation.CLEAR_ITEM_DISCOUNT, erroredDiscounts)
   },
 
   selectItemDiscount({ commit }, discount) {
@@ -297,9 +315,16 @@ const mutations = {
   [mutation.SET_SURCHARGE_DISCOUNT_AMOUNT](state, discount) {
     state.surchargeDiscountAmount = discount
   },
-  [mutation.CLEAR_ITEM_DISCOUNT](state) {
-    state.appliedItemDiscounts = []
-    state.itemsDiscountAmount = 0
+  [mutation.CLEAR_ITEM_DISCOUNT](state, erroredDiscounts) {
+    if (erroredDiscounts && erroredDiscounts.length) {
+      const filteredDiscounts = state.appliedItemDiscounts.filter(discount => {
+        return !erroredDiscounts.includes(discount.item._id)
+      })
+      state.appliedItemDiscounts = filteredDiscounts
+    } else {
+      state.appliedItemDiscounts = []
+      state.itemsDiscountAmount = 0
+    }
     state.currentActiveItemDiscount = false
   },
   [mutation.REMOVE_ITEM_DISCOUNT](state, item) {

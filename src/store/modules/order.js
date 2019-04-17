@@ -390,55 +390,78 @@ const actions = {
   },
 
   recalculateItemPrices({ commit, rootState, dispatch }) {
-    let itemsDiscount = 0
-    const newItems = state.items.map((stateItem, index) => {
-      let item = { ...stateItem }
-      const discount = rootState.discount.appliedItemDiscounts.find(
-        discount => discount.item.orderIndex == index
+    return new Promise((resolve, reject) => {
+      let itemsDiscount = 0
+      let discountErrors = []
+
+      const newItems = state.items.map((stateItem, index) => {
+        let item = { ...stateItem }
+        const discount = rootState.discount.appliedItemDiscounts.find(
+          discount => discount.item.orderIndex == index
+        )
+
+        if (discount) {
+          let itemDiscountData = {
+            id: discount.discount._id,
+            name: discount.discount.name,
+            type: discount.discount.type,
+            rate: discount.discount.rate,
+          }
+
+          if (discount.discount.type == 'value') {
+            if (
+              discount.discount.rate >
+              item.undiscountedPrice * item.quantity
+            ) {
+              if (!discountErrors.includes(item._id)) {
+                discountErrors.push(item._id)
+              }
+              item.discount = false
+              item.price = item.undiscountedPrice
+            } else {
+              itemsDiscount += discount.discount.rate
+              item.price =
+                item.undiscountedPrice - discount.discount.rate / item.quantity
+              itemDiscountData.discount = discount.discount.rate
+            }
+          } else {
+            const calculated =
+              (item.undiscountedPrice * discount.discount.rate) / 100
+
+            item.price = item.undiscountedPrice - calculated
+
+            itemsDiscount += calculated
+            itemDiscountData.discount = calculated
+          }
+
+          if (!discountErrors.length) {
+            item.discount = itemDiscountData
+          }
+        } else {
+          //remove already applied discount
+          item.discount = false
+          item.price = item.undiscountedPrice
+        }
+        return item
+      })
+
+      dispatch(
+        'discount/setItemsDiscountAmount',
+        { discountAmount: itemsDiscount },
+        { root: true }
       )
 
-      if (discount) {
-        let itemDiscountData = {
-          id: discount.discount._id,
-          name: discount.discount.name,
-          type: discount.discount.type,
-          rate: discount.discount.rate,
-        }
-
-        if (discount.discount.type == 'value') {
-          itemsDiscount += discount.discount.rate * item.quantity
-          item.price = item.undiscountedPrice - discount.discount.rate
-          itemDiscountData.discount = discount.discount.rate
-        } else {
-          const calculated =
-            (item.undiscountedPrice * discount.discount.rate) / 100
-
-          item.price = item.undiscountedPrice - calculated
-
-          itemsDiscount += calculated * item.quantity
-          itemDiscountData.discount = calculated
-        }
-
-        item.discount = itemDiscountData
+      commit(mutation.RE_SAVE_ITEMS, newItems)
+      dispatch('surcharge/calculate', {}, { root: true }).then(
+        dispatch('tax/calculate', {}, { root: true })
+      )
+      if (discountErrors.length) {
+        reject(discountErrors)
+        dispatch('discount/clearItemDiscount', discountErrors, { root: true })
       } else {
-        //remove already applied discount
-        item.discount = false
-        item.price = item.undiscountedPrice
-        itemsDiscount = 0
+        resolve()
       }
-      return item
     })
-
-    dispatch(
-      'discount/setItemsDiscountAmount',
-      { discountAmount: itemsDiscount },
-      { root: true }
-    )
-
-    commit(mutation.RE_SAVE_ITEMS, newItems)
-    dispatch('surcharge/calculate', {}, { root: true }).then(
-      dispatch('tax/calculate', {}, { root: true })
-    )
   },
 
   updateQuantity({ rootState, dispatch, commit }, quantity) {

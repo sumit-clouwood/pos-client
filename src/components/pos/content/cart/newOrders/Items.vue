@@ -8,7 +8,7 @@
       <div class="orders-name">
         <p>{{ item.name }}</p>
         <p class="price-qty">
-          @ {{ item.item_price }} {{ discountInfo(item) }} x {{ item.quantity }}
+          @ {{ item.item_price }} x {{ item.quantity }} {{ discountInfo(item) }}
         </p>
         <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
         <span data-toggle="modal" data-target="#POSOrderItemOptions">
@@ -57,10 +57,15 @@ export default {
       if (item.discount) {
         return (
           ' - ' +
+          (item.discount.type == 'value'
+            ? item.discount.rate
+            : item.discount.rate + ' %') +
           ' ( ' +
-          item.discount.rate +
-          (item.discount.type == 'value' ? ' ' : '% ') +
           item.discount.name +
+          ' - ' +
+          (item.discount.type == 'value'
+            ? this.formatPrice(item.discount.rate)
+            : item.discount.rate + ' %') +
           ' )'
         )
       }
