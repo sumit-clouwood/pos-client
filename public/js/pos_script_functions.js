@@ -22,6 +22,11 @@ function hidePayNow() {
   $('#transparent-screen').css('display', 'none')
 }
 
+function showPaymentBreak() {
+  $('.amount-keypad').hide(100)
+  $('#payment-breakdown').fadeIn()
+}
+
 window.onload = function() {
   var getUrl = window.location.hash.substr(1)
   if (getUrl == '/dm') {

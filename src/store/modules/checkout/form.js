@@ -8,7 +8,9 @@ const state = {
   error: false,
   msg: null,
   tipAmount: 0,
+  giftAmount: 0,
   showCalc: true,
+  showPayBreak: false,
   loyaltyAmount: 0,
 }
 
@@ -32,6 +34,7 @@ const getters = {
 // actions
 const actions = {
   addAmount({ commit, getters, rootGetters }) {
+    commit('showPayBreak', false)
     if (!state.amount) {
       commit('SET_ERROR', 'Amount should be greater than 0.00')
       commit('showCalc', true)
@@ -70,6 +73,7 @@ const actions = {
     } else {
       commit('SET_ERROR', false)
       commit('showCalc', false)
+      commit('showPayBreak', true)
       commit('addAmount', {
         amount: parseFloat(state.amount),
         method: state.method,
@@ -77,7 +81,8 @@ const actions = {
       commit('setAmount', rootGetters['location/round'](getters.payable))
     }
   },
-  addGiftCardAmount({ commit, getters, rootGetters, rootState }, code) {
+  //apply giftcard by customer [future use]
+  addGiftCardAmountCustomer({ commit, getters, rootGetters, rootState }, code) {
     commit('SET_ERROR', false)
     //chek if current giftcard is valid
     const giftCard = rootGetters['giftcard/find'](code)
@@ -135,6 +140,36 @@ const actions = {
     commit('setAmount', rootGetters['location/round'](getters.payable))
     commit('showCalc', false)
   },
+
+  //apply gift card [in use]
+  addGiftCardAmount({ commit, getters, rootGetters, dispatch }, code) {
+    return new Promise((resolve, reject) => {
+      dispatch(
+        'giftcard/apply',
+        { code: code, amount: state.amount },
+        { root: true }
+      )
+        .then(card => {
+          commit('setGiftAmount', state.amount)
+          commit('addGiftAmount', {
+            amount: state.amount,
+            method: state.method,
+            code: code,
+          })
+          commit('setAmount', rootGetters['location/round'](getters.payable))
+          commit('showCalc', false)
+          commit('showPayBreak', true)
+          resolve(card)
+        })
+        .catch(error => {
+          commit('setGiftAmount', 0)
+          commit('showCalc', true)
+          commit('showPayBreak', false)
+          reject(error)
+        })
+    })
+  },
+
   setAmount({ commit, dispatch }, amount) {
     commit('setAmount', amount)
     dispatch('calculateSpendLoyalty')
@@ -223,6 +258,17 @@ const mutations = {
       method: method,
     })
   },
+  addGiftAmount(state, { amount, method, code }) {
+    let giftCards = state.payments.filter(
+      payment => payment.method !== method && payment.code !== code
+    )
+    giftCards.push({
+      amount: amount,
+      method: method,
+      code: code,
+    })
+    state.payments = giftCards
+  },
   addTip(state, tip) {
     state.tipAmount = tip
   },
@@ -231,6 +277,13 @@ const mutations = {
   },
   showCalc(state, flag) {
     state.showCalc = flag
+  },
+  showPayBreak(state, flag) {
+    state.showPayBreak = flag
+  },
+
+  setGiftAmount(state, amount) {
+    state.giftAmount = amount
   },
 
   SET_ERROR(state, error) {

@@ -38,9 +38,7 @@ export default {
     },
 
     getTarget(method) {
-      if (method.is_gift) {
-        return '#Gift-card-payemnt'
-      } else if (method.name == 'Loyalty') {
+      if (method.name == 'Loyalty') {
         if (this.selectedModal == '#manage-customer') {
           return '#search-loyalty-customer'
         } else {

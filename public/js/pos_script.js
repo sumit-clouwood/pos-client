@@ -174,10 +174,6 @@ $(document).ready(function() {
     }
   })
 
-  $('#add-amt').click(function() {
-    $('.amount-keypad').hide(100)
-    $('#payment-breakdown').fadeIn()
-  })
   $('.input-image').click(function() {
     $('.amount-keypad').toggle()
   })
