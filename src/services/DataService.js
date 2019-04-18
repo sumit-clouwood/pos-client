@@ -17,8 +17,8 @@ export default {
     return url.replace(/&?last_sync_date=[^&]*&?/, '')
   },
   getLive(url, resolve, reject) {
-    const newDate = new DateTime()
-    this.syncDate = newDate.getDate()
+    //const newDate = new DateTime()
+    //this.syncDate = newDate.getDate()
     const absUrl = this.getAbsUrl(url)
     axios
       .get(apiURL + url)
@@ -75,11 +75,17 @@ export default {
             const lastUpdatedTime = response.lastUpdated.getTime()
             const nowTime = new Date().getTime()
             const days = (nowTime - lastUpdatedTime) / (1000 * 3600 * 24)
+
+            const newDate = new DateTime(response.lastUpdated)
+
             if (days > 1) {
               //resync time greater than 1 day, get live, we ll change this later
-              this.getLive(url, resolve, reject)
+              this.getLive(
+                absUrl + '&last_sync_date=' + newDate.getDate(),
+                resolve,
+                reject
+              )
             } else {
-              const newDate = new DateTime(response.lastUpdated)
               this.syncDate = newDate.getDate()
               resolve(response)
             }
