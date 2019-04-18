@@ -34,11 +34,19 @@ export default {
     ...mapGetters('checkoutForm', ['validate']),
   },
 
+  mounted() {
+    $('#payment-msg').modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: false,
+    })
+  },
   methods: {
     pay() {
       if (this.validate) {
         $('#payment-msg').modal('show')
       }
+
       this.$store
         .dispatch('checkout/pay')
         .then(() => {
