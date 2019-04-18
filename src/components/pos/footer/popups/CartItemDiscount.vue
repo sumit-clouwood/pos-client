@@ -14,7 +14,7 @@
         </div>
         <div class="modal-body row dining-options-block select-discount">
           <div
-            v-show="!appliedOrderDiscount"
+            v-show="!appliedOrderDiscount && !itemError"
             class="dining-option-block select-discount-option"
           >
             <div
@@ -41,24 +41,29 @@
               Please remove order discount first to apply item discount.
             </p>
           </div>
+          <div class="error" v-show="itemError">
+            <p class="text-danger text-center">
+              {{ itemError }}
+            </p>
+          </div>
         </div>
         <div class="modal-footer">
           <div class="btn-announce">
             <button
-              v-show="!appliedOrderDiscount"
+              v-show="!appliedOrderDiscount && !itemError"
               class="btn btn-success btn-large"
               type="button"
-              data-dismiss="modal"
               id="discount-save"
               @click="applyItemDiscount()"
             >
               Save
             </button>
             <button
-              v-show="appliedOrderDiscount"
+              v-show="appliedOrderDiscount || itemError"
               class="btn btn-danger btn-large"
               type="button"
               data-dismiss="modal"
+              @click="resetError()"
             >
               Close
             </button>
@@ -71,6 +76,7 @@
 </template>
 
 <script>
+/* global hideModal */
 import { mapGetters, mapActions, mapState } from 'vuex'
 export default {
   name: 'CartItemDiscount',
@@ -78,10 +84,21 @@ export default {
   computed: {
     ...mapGetters('location', ['formatPrice']),
     ...mapGetters('discount', ['itemDiscounts', 'activeItemDiscountId']),
-    ...mapState('discount', ['appliedOrderDiscount']),
+    ...mapState('discount', ['appliedOrderDiscount', 'itemError']),
   },
   methods: {
-    ...mapActions('discount', ['selectItemDiscount', 'applyItemDiscount']),
+    ...mapActions('discount', ['selectItemDiscount']),
+    applyItemDiscount() {
+      this.$store
+        .dispatch('discount/applyItemDiscount')
+        .then(() => {
+          hideModal('#select-discount-item')
+        })
+        .catch()
+    },
+    resetError() {
+      this.$store.commit('discount/SET_ITEM_ERROR', false)
+    },
   },
 }
 </script>

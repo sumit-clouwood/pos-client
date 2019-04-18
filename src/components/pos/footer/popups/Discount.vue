@@ -9,12 +9,12 @@
           <h4 class="customer-title">Select Discount</h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
-          <div v-if="error" class="error">
-            <p class="text-danger text-center">{{ error }}</p>
+          <div v-if="orderError" class="error">
+            <p class="text-danger text-center">{{ orderError }}</p>
           </div>
           <div
             class="dining-option-block select-discount-option"
-            v-if="!error && discounts.length"
+            v-if="!orderError && discounts.length"
           >
             <div
               class="option-contain"
@@ -39,17 +39,16 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
-              v-show="!error"
+              v-show="!orderError"
               class="btn btn-success btn-large"
               type="button"
-              data-dismiss="modal"
               id="discount-save-btn"
               @click="applyOrderDiscount()"
             >
               Ok
             </button>
             <button
-              v-show="error"
+              v-show="orderError"
               class="btn btn-danger btn-large"
               type="button"
               data-dismiss="modal"
@@ -66,12 +65,13 @@
 </template>
 
 <script>
+/* global hideModal */
 import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Discount',
   props: {},
   computed: {
-    ...mapState('discount', ['error']),
+    ...mapState('discount', ['orderError', 'errorCode']),
     ...mapGetters('location', ['formatPrice']),
     ...mapGetters('discount', {
       // map `this.discounts` to `this.$store.discount.getters.orderDiscounts`
@@ -80,8 +80,13 @@ export default {
     }),
   },
   methods: {
-    applyOrderDiscount: function(discount) {
-      this.$store.dispatch('discount/applyOrderDiscount', discount)
+    applyOrderDiscount: function() {
+      this.$store
+        .dispatch('discount/applyOrderDiscount')
+        .then(() => {
+          hideModal('#select-discount')
+        })
+        .catch()
     },
     selectOrderDiscount: function(discount) {
       this.$store.dispatch('discount/selectOrderDiscount', discount)

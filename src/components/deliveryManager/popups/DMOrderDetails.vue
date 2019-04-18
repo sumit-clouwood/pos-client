@@ -265,11 +265,8 @@
             >
               Re-Print
             </button>
-            <!--<span><img src="images/referal-down.png"></span>-->
             <div class="dropdown-menu">
               <a class="dropdown-item" href="#" @click="generateInvoice">Default</a>
-<!--              <a class="dropdown-item" href="#">ARB</a>-->
-<!--              <a class="dropdown-item" href="#">Estonia</a>-->
             </div>
             <!--<div class="referal">
               <button
@@ -319,6 +316,7 @@
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
       </div>
+<!--      <InvoiceReprint :order="selectedOrder"/>-->
     </div>
   </div>
 </template>
@@ -326,6 +324,7 @@
 <script>
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
+// import { InvoiceReprint } from '@/components/partial/InvoiceReprint'
 
 export default {
   name: 'DMOrderDetails',
@@ -337,6 +336,9 @@ export default {
       locationName: state => state.location.locationName,
     }),
     ...mapGetters('location', ['formatPrice']),
+  },
+  components: {
+    // InvoiceReprint
   },
   methods: {
     returnedAmount: function(paymentMode, amountChanged) {
@@ -353,8 +355,6 @@ export default {
     },
 
     ...mapActions('checkout',['generateInvoice'])
-  },
-  components: {
   },
 }
 </script>

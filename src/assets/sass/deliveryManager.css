@@ -188,7 +188,6 @@ div#dm-delivery-in-progress button#ready > a {
     text-align: right;
     float: right; }
 .right-btn-wrap ul li {
-  text-align: center;
   padding-bottom: 10px;
   font-size: 14px;
   color: #3d3f43; }
@@ -554,10 +553,10 @@ div#dm-order-history-rec {
     .select-driver > button > span {
       float: right; }
   .select-driver ul {
-    width: 12%; }
+    width: 10%; }
     .select-driver ul li {
-      text-align: center;
-      padding-bottom: 10px;
+      font-weight: bold;
+      padding: 2px 7px;
       color: #3d3f43; }
       .select-driver ul li:last-child {
         padding-bottom: 0; }

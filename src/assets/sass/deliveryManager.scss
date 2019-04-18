@@ -259,7 +259,6 @@ div#dm-delivery-in-progress {
       &:last-child {
         padding-bottom: 0;
       }
-      text-align: center;
       padding-bottom: 10px;
       font-size: 14px;
       color: $color_4;
@@ -710,15 +709,16 @@ div#dm-order-history-rec {
       &:last-child {
         padding-bottom: 0;
       }
-      text-align: center;
-      padding-bottom: 10px;
+
+      font-weight: bold;
+      padding: 2px 7px;
       color: $color_4;
       >a {
         color: $color_4;
         font-size: 14px;
       }
     }
-    width: 12%;
+    width: 10%;
   }
   p {
     color: $color_4;

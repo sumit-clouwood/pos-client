@@ -11,7 +11,7 @@
         <hr />
 
         <div class="text-center">
-            {{ labels.invoice_number_label }} {{ orderNumber }}
+            {{ labels.invoice_number_label }} {{ order.order_no }}
         </div>
 
         <DeliveryAddress v-if="tpl.template.show_delivery_address" />
@@ -26,7 +26,7 @@
             </div>
             <div class="right">
                 <div>{{ order.order_type }}</div>
-                <div>{{ username }}</div>
+                <div>{{ order.customer.customer_name }}</div>
                 <div>{{ order.created_time }}</div>
             </div>
         </div>
@@ -37,7 +37,7 @@
         item_label: labels.item_label,
         price_label: labels.price_label,
       }"
-                :items="order.itemData"
+                :items="order.items"
                 :tpl="tpl"
         />
         <hr />
@@ -60,9 +60,9 @@
             </div>
             <div>
                 <span class="left">{{ labels.to_pay_label }} : </span>
-                <span class="right"> {{ formatPrice(orderTotal) }}</span>
+                <span class="right"> {{ formatPrice(order.balance_due) }}</span>
             </div>
-            <PaymentBreakdown :payments="order.payBreakDown" />
+            <PaymentBreakdown :payments="order.payment_info" />
             <!-- <div>
                 <span class="left">{{ tpl.template.received_label }} :</span>
                 <span class="right"> {{ formatPrice(paidAmount) }}</span>
@@ -83,27 +83,30 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import DeliveryAddress from './DeliveryAddress'
-import PaymentBreakdown from './PaymentBreakdown'
-import Items from './Items'
+import DeliveryAddress from '@/components/pos/content/cart/payNow/invoice/DeliveryAddress'
+import PaymentBreakdown from '@/components/pos/content/cart/payNow/invoice/PaymentBreakdown'
+import Items from '@/components/pos/content/cart/payNow/invoice/Items'
+
 export default {
   name: 'InvoiceReprint',
-  props: {},
+  props: {
+    order: Object
+  },
   computed: {
-    ...mapState('checkout', [
+    /*...mapState('checkout', [
       'order',
       'payableAmount',
       'paidAmount',
       'orderNumber',
-    ]),
-    ...mapGetters('order', ['orderTotal', 'subTotal']),
+    ]),*/
+    // ...mapGetters('order', ['orderTotal', 'subTotal']),
     ...mapGetters('invoice', ['tpl', 'logo']),
     ...mapGetters('location', ['formatPrice']),
-    ...mapGetters('customer', ['selectedAddress', 'customer']),
+    /*...mapGetters('customer', ['selectedAddress', 'customer']),
     ...mapState({
       username: state =>
         state.auth.userDetails ? state.auth.userDetails.name : '',
-    }),
+    }),*/
     labels: function() {
       const tpl = this.$store.getters['invoice/tpl']
       let labels = {

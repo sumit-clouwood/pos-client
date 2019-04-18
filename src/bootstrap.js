@@ -124,7 +124,10 @@ export default {
             //async
             store
               .dispatch('location/fetch', response)
-              .then(() => {
+              .then(syncDate => {
+                if (syncDate) {
+                  store.commit('sync/updateSyncDate', syncDate)
+                }
                 //sync
                 store
                   .dispatch('category/fetchAll', response)
