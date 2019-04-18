@@ -10,16 +10,16 @@
                         <th style="width: 150px;">total time</th>
                         <th style="width: 160px;">status</th>
                     </tr>
-                    <tr class="deliverd-time-table">
-                        <td> {{ orders.driverId }}</td>
-                        <td>{{ orders.driverId }}</td>
+                    <tr class="deliverd-time-table" v-for="(order, index) in orders.driverOrders" :key="index">
+                        <td> {{ order.orderNumber }}</td>
+                        <td>{{ order.orderAmount }}</td>
                         <td>
-                            <span class="delivery-preptn">{{orders.averageDeliveryTime}}</span>
-                            <span class="delivery-pickup">{{orders.averageDeliveryTime}} Pick</span>
-                            <span class="delivery-delivered">{{orders.averageDeliveryTime}} Delivery</span>
+                            <span class="delivery-preptn">{{order.orderPreparationTimeDifference}}</span>
+                            <span class="delivery-pickup">{{order.orderPickupTimeDifference}} Pick</span>
+                            <span class="delivery-delivered">{{order.orderDeliveryTimeDifference}} Delivery</span>
                          </td>
-                        <td>{{orders.averageDeliveryTime}}</td>
-                        <td class="delivered-btn"><span>Delivered</span></td>
+                        <td>{{order.orderTotalTime}}</td>
+                        <td class="delivered-btn"><span>{{order.orderStatus}}</span></td>
                     </tr>
 
                     <tr class="delivery-avg-delivery-time">
@@ -55,6 +55,15 @@ export default {
 
 <style scoped>
 /* */
+.delivered-btn > span {
+    border-radius: 6px;
+    background-color: #47cd8f;
+    display: inline-block;
+    padding: 8px 10px;
+    color: #fff;
+    font-size: 14px;
+    text-transform: capitalize;
+}
 .delivered-data-wrapper .table {
     background-color: #f7f8fa;
     border-radius: 8px;

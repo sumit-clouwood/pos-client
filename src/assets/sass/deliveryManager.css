@@ -581,7 +581,8 @@ div#ham-btn {
   color: #a4a4a4;
   font-size: 12px;
   font-weight: normal;
-  border: medium none; }
+  border: medium none;
+  text-transform: uppercase; }
 .delivered-order-table .show-details-his {
   cursor: pointer; }
 .delivered-order-table table tr td {
@@ -686,7 +687,7 @@ div#dm-payment-type-order {
     touch-action: auto; }
 
   .dm-ready-order-wrapper {
-    height: calc(100vh - 230px);
+    height: calc(100vh - 292px);
     overflow-x: hidden;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
