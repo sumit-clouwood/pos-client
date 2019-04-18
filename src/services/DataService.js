@@ -13,24 +13,34 @@ export default {
   getSyncDate() {
     return this.syncDate
   },
+  getAbsUrl(url) {
+    return url.replace(/&?last_sync_date=[^&]*&?/, '')
+  },
   getLive(url, resolve, reject) {
-    const newDate = new DateTime()
-    this.syncDate = newDate.getDate()
-
+    //const newDate = new DateTime()
+    //this.syncDate = newDate.getDate()
+    const absUrl = this.getAbsUrl(url)
     axios
       .get(apiURL + url)
       .then(response => {
-        this.saveEventOffline({ request: url, response: response.data })
-          .then(() => {
-            this.setLastUpdate(url, new Date())
+        if (response.data.status === 1) {
+          this.saveEventOffline({
+            request: absUrl,
+            response: response.data,
           })
-          .catch(error => {
-            reject(error)
-          })
-        resolve(response)
+            .then(() => {
+              this.setLastUpdate(absUrl, new Date())
+            })
+            .catch(error => {
+              reject(error)
+            })
+          resolve(response)
+        } else {
+          reject(response.data.error)
+        }
       })
       .catch(() => {
-        this.getOfflineEventData(url).then(response => {
+        this.getOfflineEventData(absUrl).then(response => {
           if (response) {
             resolve(response)
           } else {
@@ -44,14 +54,19 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .get(apiURL + url)
-        .then(response => resolve(response))
+        .then(response =>
+          response.data.status === 1
+            ? resolve(response)
+            : reject(response.data.error)
+        )
         .catch(error => reject(error))
     })
   },
 
   getCacheable(url) {
+    const absUrl = this.getAbsUrl(url)
     return new Promise((resolve, reject) => {
-      this.getOfflineEventData(url)
+      this.getOfflineEventData(absUrl)
         .then(response => {
           if (!response.lastUpdated) {
             //no response found in local db, get it from live
@@ -60,11 +75,17 @@ export default {
             const lastUpdatedTime = response.lastUpdated.getTime()
             const nowTime = new Date().getTime()
             const days = (nowTime - lastUpdatedTime) / (1000 * 3600 * 24)
+
+            const newDate = new DateTime(response.lastUpdated)
+
             if (days > 1) {
               //resync time greater than 1 day, get live, we ll change this later
-              this.getLive(url, resolve, reject)
+              this.getLive(
+                absUrl + '&last_sync_date=' + newDate.getDate(),
+                resolve,
+                reject
+              )
             } else {
-              const newDate = new DateTime(response.lastUpdated)
               this.syncDate = newDate.getDate()
               resolve(response)
             }
@@ -81,7 +102,11 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .post(apiURL + url, data)
-        .then(response => resolve(response))
+        .then(response =>
+          response.data.status === 1
+            ? resolve(response)
+            : reject(response.data.error)
+        )
         .catch(error => reject(error))
     })
   },
