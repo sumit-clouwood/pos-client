@@ -13,16 +13,22 @@ export default {
   getSyncDate() {
     return this.syncDate
   },
+  getAbsUrl(url) {
+    return url.replace(/&?last_sync_date=[^&]*&?/, '')
+  },
   getLive(url, resolve, reject) {
     const newDate = new DateTime()
     this.syncDate = newDate.getDate()
-
+    const absUrl = this.getAbsUrl(url)
     axios
       .get(apiURL + url)
       .then(response => {
-        this.saveEventOffline({ request: url, response: response.data })
+        this.saveEventOffline({
+          request: absUrl,
+          response: response.data,
+        })
           .then(() => {
-            this.setLastUpdate(url, new Date())
+            this.setLastUpdate(absUrl, new Date())
           })
           .catch(error => {
             reject(error)
@@ -30,7 +36,7 @@ export default {
         resolve(response)
       })
       .catch(() => {
-        this.getOfflineEventData(url).then(response => {
+        this.getOfflineEventData(absUrl).then(response => {
           if (response) {
             resolve(response)
           } else {
@@ -50,8 +56,9 @@ export default {
   },
 
   getCacheable(url) {
+    const absUrl = this.getAbsUrl(url)
     return new Promise((resolve, reject) => {
-      this.getOfflineEventData(url)
+      this.getOfflineEventData(absUrl)
         .then(response => {
           if (!response.lastUpdated) {
             //no response found in local db, get it from live
