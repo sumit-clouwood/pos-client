@@ -34,8 +34,10 @@ export default {
             .catch(error => {
               reject(error)
             })
+          resolve(response)
+        } else {
+          reject(response.data.error)
         }
-        resolve(response)
       })
       .catch(() => {
         this.getOfflineEventData(absUrl).then(response => {
@@ -52,7 +54,11 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .get(apiURL + url)
-        .then(response => resolve(response))
+        .then(response =>
+          response.data.status === 1
+            ? resolve(response)
+            : reject(response.data.error)
+        )
         .catch(error => reject(error))
     })
   },
@@ -90,7 +96,11 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .post(apiURL + url, data)
-        .then(response => resolve(response))
+        .then(response =>
+          response.data.status === 1
+            ? resolve(response)
+            : reject(response.data.error)
+        )
         .catch(error => reject(error))
     })
   },
