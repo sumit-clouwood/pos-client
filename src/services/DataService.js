@@ -23,16 +23,18 @@ export default {
     axios
       .get(apiURL + url)
       .then(response => {
-        this.saveEventOffline({
-          request: absUrl,
-          response: response.data,
-        })
-          .then(() => {
-            this.setLastUpdate(absUrl, new Date())
+        if (response.data.status === 1) {
+          this.saveEventOffline({
+            request: absUrl,
+            response: response.data,
           })
-          .catch(error => {
-            reject(error)
-          })
+            .then(() => {
+              this.setLastUpdate(absUrl, new Date())
+            })
+            .catch(error => {
+              reject(error)
+            })
+        }
         resolve(response)
       })
       .catch(() => {
