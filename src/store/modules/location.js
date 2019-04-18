@@ -64,7 +64,7 @@ const actions = {
           //We are setting franchise code as the location name so we can just go with that
           commit(mutation.SET_NAME, response.data.data.name)
 
-          resolve(response.data.data)
+          resolve(LocationService.getSyncDate())
           // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
         })
         .catch(error => reject(error))

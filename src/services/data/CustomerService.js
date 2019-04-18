@@ -19,7 +19,7 @@ export default {
   },
 
   customerGroupList(...[lastSyncDate, isCompress]) {
-    return DataService.get(
+    return DataService.getCacheable(
       `/api/auth/crm/get/CustomerGroupList/?&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
     )
   },
@@ -43,7 +43,7 @@ export default {
       perpage,
     ]
   ) {
-    return DataService.get(
+    return DataService.getCacheable(
       `/api/auth/pos/customerList?location_id=${locationId}&search=${search}&page_size=${perpage}&page_number=${page}&origin=${origin}&validate=${validate}&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
     )
   },
