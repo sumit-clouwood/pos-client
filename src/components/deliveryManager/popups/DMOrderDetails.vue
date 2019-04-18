@@ -316,7 +316,7 @@
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
       </div>
-<!--      <InvoiceReprint :order="selectedOrder"/>-->
+      <InvoiceReprint :order="selectedOrder"/>
     </div>
   </div>
 </template>
@@ -324,7 +324,7 @@
 <script>
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
-// import { InvoiceReprint } from '@/components/partial/InvoiceReprint'
+import InvoiceReprint from '@/components/partial/InvoiceReprint'
 
 export default {
   name: 'DMOrderDetails',
@@ -338,7 +338,7 @@ export default {
     ...mapGetters('location', ['formatPrice']),
   },
   components: {
-    // InvoiceReprint
+    InvoiceReprint
   },
   methods: {
     returnedAmount: function(paymentMode, amountChanged) {
