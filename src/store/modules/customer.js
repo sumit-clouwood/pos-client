@@ -56,20 +56,23 @@ const actions = {
         rootState.sync.compress,
         state.params.page_size /*page_size*/,
       ]
-      customerService.customerList(...params).then(response => {
-        if (response.data.data.length) {
-          paginateDetails.currentPage = response.data.page_number
-          paginateDetails.totalCustomers = response.data.count
-          paginateDetails.totalPages = response.data.max_page_number
-          paginateDetails.customarPerPage = response.data.page_size
+      customerService
+        .customerList(...params)
+        .then(response => {
+          if (response.data.data.length) {
+            paginateDetails.currentPage = response.data.page_number
+            paginateDetails.totalCustomers = response.data.count
+            paginateDetails.totalPages = response.data.max_page_number
+            paginateDetails.customarPerPage = response.data.page_size
 
-          commit(mutation.CUSTOMER_LIST, response.data.data)
-          commit(mutation.PAGINATE_DETAILS, paginateDetails)
-          resolve(response.data.data)
-        } else {
-          reject(response.data.data)
-        }
-      })
+            commit(mutation.CUSTOMER_LIST, response.data.data)
+            commit(mutation.PAGINATE_DETAILS, paginateDetails)
+            resolve(response.data.data)
+          } else {
+            reject(response.data.data)
+          }
+        })
+        .catch(error => reject(error))
 
       // get Customer Group
       const customerGroupParams = [rootState.sync.date, rootState.sync.compress]
