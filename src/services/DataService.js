@@ -16,6 +16,20 @@ export default {
   getAbsUrl(url) {
     return url.replace(/&?last_sync_date=[^&]*&?/, '')
   },
+  isValidResponse(response) {
+    let validResponse = false
+    if (typeof response.data.status !== 'undefined') {
+      //check for status
+      validResponse = response.data.status === 1 ? true : false
+    } else if (typeof response.data.error !== 'undefined') {
+      //check for error
+      validResponse = response.data.error ? false : true
+    } else {
+      validResponse = response.data ? true : false
+    }
+    return validResponse
+  },
+
   getLive(url, resolve, reject) {
     //const newDate = new DateTime()
     //this.syncDate = newDate.getDate()
@@ -23,7 +37,7 @@ export default {
     axios
       .get(apiURL + url)
       .then(response => {
-        if (response.data.status === 1) {
+        if (this.isValidResponse(response)) {
           this.saveEventOffline({
             request: absUrl,
             response: response.data,
@@ -54,11 +68,13 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .get(apiURL + url)
-        .then(response =>
-          response.data.status === 1
-            ? resolve(response)
-            : reject(response.data.error)
-        )
+        .then(response => {
+          if (this.isValidResponse(response)) {
+            resolve(response)
+          } else {
+            reject(response.data.error ? response.data.error : response.data)
+          }
+        })
         .catch(error => reject(error))
     })
   },
@@ -102,11 +118,13 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .post(apiURL + url, data)
-        .then(response =>
-          response.data.status === 1
-            ? resolve(response)
-            : reject(response.data.error)
-        )
+        .then(response => {
+          if (this.isValidResponse(response)) {
+            resolve(response)
+          } else {
+            reject(response.data.error ? response.data.error : response.data)
+          }
+        })
         .catch(error => reject(error))
     })
   },
