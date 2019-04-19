@@ -146,7 +146,7 @@ export default {
                     store.dispatch('discount/fetchAll', response)
                     store.dispatch('customer/fetchAll', response)
                     store.dispatch('payment/fetchAll', response)
-                    store.dispatch('giftcard/fetchAll', response)
+                    //store.dispatch('giftcard/fetchAll', response)
                     store.dispatch('invoice/fetchAll', response)
                     store.dispatch('loyalty/fetchAll', response)
                     store.dispatch(

@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+/* global showModal*/
 export default {
   name: 'AmountCalculator',
   data() {
@@ -31,7 +31,15 @@ export default {
     }
   },
   methods: {
-    ...mapActions('checkoutForm', ['addAmount']),
+    addAmount() {
+      if (this.$store.state.checkoutForm.method.is_gift) {
+        showModal('#Gift-card-payemnt')
+      } else if (this.$store.state.checkoutForm.method.is_card) {
+        showModal('#Gift-card-payemnt')
+      } else {
+        this.$store.dispatch('checkoutForm/addAmount').then(() => {})
+      }
+    },
     set(amount) {
       if (!this.init) {
         this.$store.commit('checkoutForm/appendAmount', '')

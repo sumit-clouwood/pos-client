@@ -17,6 +17,9 @@
             <p>Enter Gift Card Code</p>
             <input type="text" class="add-email-from" v-model="code" />
           </div>
+          <div v-show="error">
+            <p class="text-danger">{{ error }}</p>
+          </div>
         </div>
         <div class="modal-footer">
           <div class="btn-announce">
@@ -33,7 +36,6 @@
               id="gift-card-btn"
               data-toggle="modal"
               data-target="#Gift-card-payemnt-details"
-              data-dismiss="modal"
               @click="payByGiftCard"
             >
               Add
@@ -46,16 +48,29 @@
   </div>
 </template>
 <script>
+/* global showModal, hideModal */
 export default {
   name: 'GiftCard',
   data: function() {
     return {
       code: '',
+      error: false,
     }
   },
   methods: {
     payByGiftCard() {
-      this.$store.dispatch('checkoutForm/addGiftCardAmount', this.code)
+      this.$store
+        .dispatch('checkoutForm/addGiftCardAmount', this.code)
+        .then(() => {
+          this.error = false
+          this.$store.commit('checkoutForm/showPayBreak', true)
+          hideModal('#Gift-card-payemnt')
+          showModal('#gift-card-info')
+        })
+        .catch(error => {
+          this.error = error
+          this.$store.commit('checkoutForm/showPayBreak', false)
+        })
     },
   },
 }

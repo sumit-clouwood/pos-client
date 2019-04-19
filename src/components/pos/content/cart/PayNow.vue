@@ -38,7 +38,7 @@
               <img src="img/pos/payment-input-icon.png" class="input-image" />
             </div>
             <AmountCalculator v-show="showCalc" />
-            <PaymentBreakdown v-show="!showCalc" />
+            <PaymentBreakdown v-show="showPayBreak" />
             <PayNowFooter />
           </div>
           <div v-show="!items.length">
@@ -91,7 +91,7 @@ export default {
       },
     },
     ...mapState('order', ['items']),
-    ...mapState('checkoutForm', ['error', 'showCalc']),
+    ...mapState('checkoutForm', ['error', 'showCalc', 'showPayBreak']),
     ...mapGetters('location', ['formatPrice']),
     ...mapGetters('checkoutForm', ['payable']),
   },

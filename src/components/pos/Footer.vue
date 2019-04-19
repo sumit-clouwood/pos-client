@@ -127,6 +127,7 @@
     <CartPaymentMsg />
     <CartTipAmount />
     <GiftCard />
+    <GiftCardInfo />
     <SearchLoyaltyCustomer />
     <Loyalty />
     <Invoice v-show="print" />
@@ -155,6 +156,7 @@ import CustomerInformation from './footer/popups/ManageCustomer/CustomerInformat
 import CustomerNotes from './footer/popups/ManageCustomer/CustomerInformation/CustomerNotes'
 import SelectCustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/SelectCustomerAddress'
 import GiftCard from '../pos/content/cart/newOrders/popup/GiftCard.vue'
+import GiftCardInfo from '../pos/content/cart/newOrders/popup/GiftCardInfo.vue'
 import SearchLoyaltyCustomer from '../pos/footer/popups/SearchLoyaltyCustomer'
 import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
 import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
@@ -186,6 +188,7 @@ export default {
     CartPaymentMsg,
     CartTipAmount,
     GiftCard,
+    GiftCardInfo,
     SearchLoyaltyCustomer,
     Loyalty,
     Invoice,
