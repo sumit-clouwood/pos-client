@@ -7,10 +7,10 @@
       <button class="cross">&#735;</button>
     </div>
     <div class="dm-walk-dine">
-      <button id="dm-walkin">
+      <button id="dm-walkin" @click="updateRouter('Home')">
         <span><img src="img/other/dinein-img.png"/></span>Walk-In
       </button>
-      <button id="dm-dinein">
+      <button id="dm-dinein" @click="updateRouter('Home')">
         <span><img src="img/other/walkin.png"/></span>Dine-In
       </button>
     </div>
@@ -20,6 +20,11 @@
 <script>
 export default {
   name: 'DMTopRightNav',
+  methods: {
+    updateRouter(routerName) {
+      this.$router.replace({ name: routerName })
+    }
+  }
 }
 </script>
 

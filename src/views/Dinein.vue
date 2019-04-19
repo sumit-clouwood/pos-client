@@ -51,8 +51,8 @@ export default {
     msg: String,
   },
   mounted() {
-    $('body').removeClass('dm-manager')
-    $('body').addClass('dinein')
+    $('body').removeAttr('class')
+    $('body').attr('class','fixed-nav sticky-footer bg-dark dinein')
   },
 }
 </script>

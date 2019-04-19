@@ -35,7 +35,7 @@
           title="logo"
         >
           <a class="nav-link" href="#">
-            <img src="img/other/icon.png" alt="icon" />
+            <img src="/img/other/icon.png" alt="icon" />
           </a>
         </li>
 
@@ -240,13 +240,13 @@
       <ul class="navbar-nav sidenav-toggler">
         <li class="nav-item arrow-bottom">
           <a class="nav-link" href="#">
-            <img class="bt-arrow" src="img/other/group-6.png" alt="arrows" />
-            <img class="top-arrow" src="img/other/top-arrow.png" alt="arrows" />
+            <img class="bt-arrow" src="/img/other/group-6.png" alt="arrows" />
+            <img class="top-arrow" src="/img/other/top-arrow.png" alt="arrows" />
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link text-center" id="sidenavToggler">
-            <img src="img/pos/profile-pic.png" alt="profile" />
+            <img src="/img/pos/profile-pic.png" alt="profile" />
           </a>
         </li>
       </ul>

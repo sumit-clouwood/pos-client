@@ -13,8 +13,8 @@ export default {
     DeliveryManager,
   },
   mounted() {
-    $('body').addClass('dm-manager')
-    $('body').removeClass('dinein')
+    $('body').removeAttr('class')
+    $('body').attr('class','fixed-nav sticky-footer bg-dark dm-manager')
   },
 }
 </script>

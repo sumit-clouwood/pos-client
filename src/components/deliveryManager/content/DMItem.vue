@@ -9,14 +9,15 @@
         <div class="dm-deliver-detail">
           <h4>{{ order.order_no }}</h4>
           <p>
-            <span v-for="i in orderCount" :key="i">
+            <span v-for="(i, index) in orderCount" :key="index">
               {{
-                typeof order.items[i] != 'undefined'
-                  ? order.items[i].item_name
+                typeof order.items[index] != 'undefined'
+                  ? order.items[index].item_name
                   : ''
               }}
             </span>
           </p>
+          <p><b>{{order.created_by}}</b></p>
           <h4>{{ order.delivery_area }}</h4>
           <p v-if="order.order_address">
             {{ order.order_address.street }}, {{ locationName }},

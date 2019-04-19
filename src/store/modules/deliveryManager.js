@@ -10,7 +10,9 @@ const state = {
   selectedDriver: false,
   deliveredOrderGroup: [],
   deliveredOrderCollection: [],
-  moreOrders: false
+  moreOrders: false,
+  dispatchOrders: false,
+  dispatchOrderCount: 0
 }
 const getters = {}
 
@@ -38,7 +40,7 @@ const actions = {
     dispatch('fetchDMOrderDetail')
   },
 
-  updateTakeAway({ rootState }, orderId) {
+  updateTakeAway({ rootState, dispatch }, orderId) {
     const params = [
       rootState.location.location,
       orderId,
@@ -111,6 +113,13 @@ const actions = {
       })
 
     }
+  },
+
+  getDispatchOrder({ commit, rootState }) {
+    DMService.dispatchOrders(rootState.location.location).then( response => {
+      commit(mutation.SET_DISPATCH_SCREEN, response.data.data)
+      commit(mutation.SET_DISPATCH_ORDER_COUNT, response.data.TotalCount)
+    })
   }
 }
 
@@ -149,6 +158,12 @@ const mutations = {
   },
   [mutation.SET_SHOW_MORE_ORDERS](state, orderDetails) {
     state.moreOrders = orderDetails
+  },
+  [mutation.SET_DISPATCH_SCREEN] (state, orderDetails) {
+    state.dispatchOrders = orderDetails
+  },
+  [mutation.SET_DISPATCH_ORDER_COUNT] (state, orderCount) {
+    state.dispatchOrderCount = orderCount
   },
 }
 

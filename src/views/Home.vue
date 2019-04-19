@@ -22,8 +22,8 @@ export default {
     ...mapState('sync', ['loaded']),
   },
   mounted() {
-    $('body').removeClass('dm-manager')
-    $('body').removeClass('dinein')
+    $('body').removeAttr('class')
+    $('body').attr('class','fixed-nav sticky-footer bg-dark')
   },
 }
 </script>

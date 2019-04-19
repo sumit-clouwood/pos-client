@@ -1,4 +1,4 @@
-/* global $, toggleFullScreen, hidePayNow  */
+/* global $, hidePayNow  */
 /* eslint-disable no-unused-vars */
 $(document).ready(function() {
   // Configure/customize these variables.
@@ -45,40 +45,13 @@ $(document).ready(function() {
   })
 })
 
-$('.dp-zoom-scren').click(function(e) {
-  e.preventDefault()
-  toggleFullScreen()
-  $(this).hide()
-  $('ul.ullist-dp li.dp-btn-exit').css('display', 'inline-block')
-  $('#dp-content-wrapper').addClass('service-manager-overlay')
-  $('.sticky-footer').addClass('sticky-header-overlay')
 
-  $('header').css({ height: 'unset', position: 'unset', width: 'unset' })
-})
-$('.dp-btn-exit').click(function(e) {
-  e.preventDefault()
-  toggleFullScreen()
-  $(this).hide()
-  $('.dp-zoom-scren').show()
-  $('#dp-content-wrapper').removeClass('service-manager-overlay')
-  $('.sticky-footer').removeClass('sticky-header-overlay')
-  $('.middle-content.service-manager-content').css('margin-top', '0')
-})
 
 $('#status-history').click(function() {
   $('div#dm-order-history-rec').show()
   $('button#recipt-history').show()
   $('div#dm-order-confirmation').hide()
   $('button#status-history').hide()
-})
-
-$('.dp-next-btn').click(function() {
-  $('.block1-wrap-dp').hide()
-  $('div.block1-wrap-dp#hide-block1-dp').show()
-})
-$('.dp-prev-btn').click(function() {
-  $('.block1-wrap-dp').show()
-  $('div.block1-wrap-dp#hide-block1-dp').hide()
 })
 
 $(document).ready(function() {

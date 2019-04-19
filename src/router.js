@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import Home from './views/Home'
 import DineIn from './views/Dinein'
 import DeliveryManagerInit from './views/DeliveryManagerInit'
+import DispatchScreenInit from './views/DispatchScreenInit'
 
 Vue.use(Router)
 
@@ -29,9 +30,14 @@ export default new Router({
       component: DineIn,
     },
     {
-      path: '/dm',
+      path: '/delivery-manager',
       name: 'DeliveryManager',
       component: DeliveryManagerInit,
+    },
+    {
+      path: '/ds',
+      name: 'DispatchScreen',
+      component: DispatchScreenInit,
     },
   ],
 })
