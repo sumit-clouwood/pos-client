@@ -14,18 +14,44 @@
             </tr>
 
             <tr v-for="item in itemsDetails" :key="item._id">
-                <td>{{ item.item_quantity }}</td>
-                <td>
+                <td style="vertical-align: top;">{{ item.item_quantity }}</td>
+                <td style="vertical-align: top;">
                     {{ item.item_name }}
-                    <div v-if="item.item_modifiers.length">
-                        <span v-for="(modifierGroup, key) in item.modifiers" :key="key">
-                          <span v-for="(modifier, key) in modifierGroup" :key="key">
-                            {{ modifier.name }}
-                          </span>
-                        </span>
+                    <div
+                            v-if="item.item_modifiers.length"
+                            class="online-order-details-wrap"
+                    >
+                        <div
+                                v-for="(modifier, index) in item.item_modifiers"
+                                :key="index"
+                        >
+                            <p style="margin: 0; font-size: 14px; padding-left: 10px;"
+                                    v-for="PMDetails in modifier.modifiers
+                            .price_modifiers"
+                                    :key="PMDetails._id"
+                            >
+                                {{ PMDetails.item_name }} ({{
+                                PMDetails.location_price
+                                }})
+                            </p>
+                            <p style="margin: 0; font-size: 14px; padding-left: 10px;"
+                                    v-for="MMDetails in modifier.modifiers
+                            .mandatory_modifiers"
+                                    :key="MMDetails._id"
+                            >
+                                {{ MMDetails.item_name }}
+                            </p>
+                            <p style="margin: 0; font-size: 14px; padding-left: 10px;"
+                                    v-for="RMDetails in modifier.modifiers
+                            .regular_modifiers"
+                                    :key="RMDetails._id"
+                            >
+                                {{ RMDetails.item_name }}
+                            </p>
+                        </div>
                     </div>
                 </td>
-                <td class="text-right">{{ formatPrice(item.item_price_each) }}</td>
+                <td style="vertical-align: top;" class="text-right">{{ formatPrice(item.item_price_each) }}</td>
             </tr>
         </table>
     </div>
@@ -59,3 +85,6 @@ export default {
   },
 }
 </script>
+<style scoped lang="css">
+
+</style>

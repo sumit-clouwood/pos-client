@@ -1,13 +1,16 @@
 <template>
     <div class="invoice" id="printarea" v-if="print">
         <div v-if="tpl">
-            <div v-if="tpl.template.show_logo"><img :src="logo" /></div>
-            <div
-                    v-if="tpl.template.show_header"
-                    class="text-center"
-                    v-html="tpl.template.invoice_header"
-            ></div>
-            <hr />
+            <div v-if="tpl.template.show_logo">
+                <img :src="logo" /></div>
+                <div
+                        v-if="tpl.template.show_header"
+                        class="text-center"
+                        v-html="tpl.template.invoice_header"
+                >
+                <hr />
+            </div>
+
             <h2 class="text-center">{{ labels.title_label }}</h2>
             <hr />
 
@@ -15,22 +18,20 @@
                 {{ labels.invoice_number_label }} {{ order.order_no }}
             </div>
 
-            <DeliveryAddress v-if="tpl.template.show_delivery_address" />
+            <DeliveryAddress v-if="order.delivery_area" :deliveryAddress="order" />
 
             <div>
                 <div class="left">
                     <div class="staff-name">
                         <div>{{ labels.order_type_label }}</div>
-                        <div>{{ labels.customer_name }}</div>
-                        <div>{{ labels.customer_mobile }}</div>
-<!--                        <div>{{ order.created_date }}</div>-->
+                        <div>{{ labels.staff_label }}</div>
+                        <div>{{ order.created_date }}</div>
                     </div>
                 </div>
                 <div class="right">
-                    <div>{{ order.order_type }}</div>
-                    <div>{{ order.customer.customer_name }}</div>
-                    <div>{{ order.customer.mobile_number }}</div>
-<!--                    <div>{{ order.created_time }}</div>-->
+                    <div style="text-transform:capitalize">{{ order.order_type }}</div>
+                    <div>{{ order.created_by }}</div>
+                    <div>{{ order.created_time }}</div>
                 </div>
             </div>
             <hr />
@@ -53,11 +54,11 @@
                     <span class="left">{{ labels.tax_label }} </span>
                     <span class="right"> {{ formatPrice(order.final_tax) }}</span>
                 </div>
-                <div>
+                <div v-if="formatPrice(order.surcharge) > 0">
                     <span class="left">{{ labels.surcharge_label }} </span>
                     <span class="right"> {{ formatPrice(order.surcharge) }}</span>
                 </div>
-                <div>
+                <div v-if="formatPrice(order.discount_amount) > 0">
                     <span class="left">{{ labels.discount_label }} : </span>
                     <span class="right"> {{ formatPrice(order.discount_amount) }}</span>
                 </div>
@@ -65,7 +66,7 @@
                     <span class="left">{{ labels.to_pay_label }} : </span>
                     <span class="right"> {{ formatPrice(order.balance_due) }}</span>
                 </div>
-                <PaymentBreakdown :payments="order.payment_info" />
+                <PaymentBreakdown :payments="order.payment_info" :referral="order.referral" />
                 <!-- <div>
                     <span class="left">{{ tpl.template.received_label }} :</span>
                     <span class="right"> {{ formatPrice(paidAmount) }}</span>
@@ -81,6 +82,10 @@
                     class="text-center"
                     v-html="tpl.template.invoice_footer"
             ></div>
+            <div v-else class="text-center">
+                Thank You For Order <br >
+                <b>Visit Again</b>
+            </div>
         </div>
     </div>
 </template>
@@ -89,8 +94,8 @@
 /* global $ hidePayNow */
 
 import { mapState, mapGetters } from 'vuex'
-import DeliveryAddress from '@/components/pos/content/cart/payNow/invoice/DeliveryAddress'
-import PaymentBreakdown from '@/components/pos/content/cart/payNow/invoice/PaymentBreakdown'
+import DeliveryAddress from './invoice/DeliveryAddress'
+import PaymentBreakdown from './invoice/PaymentBreakdown'
 import Items from './invoice/Items'
 
 export default {
@@ -121,8 +126,6 @@ export default {
         invoice_number_label: tpl.en.invoice_number_label,
         order_type_label: tpl.en.order_type_label || 'Order Type',
         staff_label: tpl.en.staff_label || 'Staff',
-        customer_name: tpl.en.customer_name || 'Name',
-        customer_mobile: tpl.en.customer_mobile || 'Mobile no.',
         sub_total_label: tpl.en.sub_total_label,
         tax_label: tpl.en.tax_label,
         surcharge_label: tpl.en.surcharge_label,
