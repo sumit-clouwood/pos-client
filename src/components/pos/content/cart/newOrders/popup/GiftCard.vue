@@ -17,8 +17,11 @@
             <p>Enter Gift Card Code</p>
             <input type="text" class="add-email-from" v-model="code" />
           </div>
-          <div v-show="error">
+          <div v-show="error" class="msg">
             <p class="text-danger">{{ error }}</p>
+          </div>
+          <div v-show="msg" class="msg">
+            <p class="text-info">{{ msg }}</p>
           </div>
         </div>
         <div class="modal-footer">
@@ -55,10 +58,12 @@ export default {
     return {
       code: '',
       error: false,
+      msg: '',
     }
   },
   methods: {
     payByGiftCard() {
+      this.msg = 'Fetching gift card...'
       this.$store
         .dispatch('checkoutForm/addGiftCardAmount', this.code)
         .then(() => {
@@ -71,7 +76,14 @@ export default {
           this.error = error
           this.$store.commit('checkoutForm/showPayBreak', false)
         })
+        .finally(() => {
+          this.msg = null
+        })
     },
   },
 }
 </script>
+<style lang="sass" scoped>
+.msg
+  padding-top: 20px
+</style>

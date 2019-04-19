@@ -24,6 +24,12 @@ const state = {
   loyalty: false,
 }
 const getters = {
+  find: state => customerId => {
+    //look into already having customers
+    return state.fetchCustomerAddressOnly.find(
+      customer => customer._id == customerId
+    )
+  },
   customer: state => {
     return state.customer ? state.customer.customer_list : false
   },
@@ -131,55 +137,65 @@ const actions = {
     { state, commit, rootState, dispatch },
     { customerId, addressOnly }
   ) {
-    dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
-      root: true,
+    return new Promise((resolve, reject) => {
+      dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
+        root: true,
+      })
+      commit(mutation.SET_CUSTOMER_ID, customerId)
+
+      if (typeof addressOnly != 'undefined') {
+        const params = [customerId, rootState.location.location]
+        customerService
+          .getCustomerDetails(...params)
+          .then(response => {
+            commit(mutation.FETCH_CUSTOMER_ADDRESSES_ONLY, response.data.data)
+
+            if (state.fetchCustomerAddressOnly.customer_list) {
+              if (
+                !state.fetchCustomerAddressOnly.customer_list[0]
+                  .customer_details.length
+              ) {
+                commit(mutation.SET_ERROR, true)
+              } else {
+                commit(mutation.SET_ERROR, false)
+              }
+            }
+            resolve(response.data.data.customer_list[0])
+            //dispatch('giftcard/setCustomerGiftCards', response.data.data)
+          })
+          .catch(error => reject(error))
+      } else {
+        let limit = 10
+        let pgno = state.params.past_order_page_number
+        const params = [customerId, rootState.location.location, limit, pgno]
+        let pastOrdersPaginate = {}
+        customerService
+          .fetchCustomer(...params)
+          .then(response => {
+            commit(mutation.SELECTED_CUSTOMER, response.data.data)
+            pastOrdersPaginate.currentPage = pgno
+            pastOrdersPaginate.totalOrder =
+              response.data.data.customer_list.totalOrders
+            pastOrdersPaginate.totalPages =
+              response.data.data.customer_list.totalpages
+            pastOrdersPaginate.customarPerPage = limit
+            commit(mutation.PAST_ORDER_PAGINATE_DETAILS, pastOrdersPaginate)
+            if (response.data.data.customer_list != null) {
+              commit(
+                mutation.LOYALTY,
+                response.data.data.customer_list.loyalty_point
+              )
+            } else {
+              commit(mutation.LOYALTY, false)
+            }
+
+            resolve(response)
+            //dispatch('giftcard/setCustomerGiftCards', response.data.data)
+            //console.log(response.data.data.customer_list.loyalty_point)
+          })
+          .catch(error => reject(error))
+      }
     })
-    commit(mutation.SET_CUSTOMER_ID, customerId)
-    if (typeof addressOnly != 'undefined') {
-      const params = [customerId, rootState.location.location]
-      customerService.getCustomerDetails(...params).then(response => {
-        commit(mutation.FETCH_CUSTOMER_ADDRESSES_ONLY, response.data.data)
-
-        if (state.fetchCustomerAddressOnly.customer_list) {
-          if (
-            !state.fetchCustomerAddressOnly.customer_list[0].customer_details
-              .length
-          ) {
-            commit(mutation.SET_ERROR, true)
-          } else {
-            commit(mutation.SET_ERROR, false)
-          }
-        }
-
-        //dispatch('giftcard/setCustomerGiftCards', response.data.data)
-      })
-    } else {
-      let limit = 10
-      let pgno = state.params.past_order_page_number
-      const params = [customerId, rootState.location.location, limit, pgno]
-      let pastOrdersPaginate = {}
-      customerService.fetchCustomer(...params).then(response => {
-        commit(mutation.SELECTED_CUSTOMER, response.data.data)
-        pastOrdersPaginate.currentPage = pgno
-        pastOrdersPaginate.totalOrder =
-          response.data.data.customer_list.totalOrders
-        pastOrdersPaginate.totalPages =
-          response.data.data.customer_list.totalpages
-        pastOrdersPaginate.customarPerPage = limit
-        commit(mutation.PAST_ORDER_PAGINATE_DETAILS, pastOrdersPaginate)
-        if (response.data.data.customer_list != null) {
-          commit(
-            mutation.LOYALTY,
-            response.data.data.customer_list.loyalty_point
-          )
-        } else {
-          commit(mutation.LOYALTY, false)
-        }
-
-        //dispatch('giftcard/setCustomerGiftCards', response.data.data)
-        //console.log(response.data.data.customer_list.loyalty_point)
-      })
-    }
   },
 
   selectedAddress({ commit }, selected_address_id, area) {

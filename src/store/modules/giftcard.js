@@ -41,8 +41,20 @@ const actions = {
           )
           if (card) {
             if (card.remaining_balance >= amount) {
-              resolve(card)
-              commit(mutation.SET_GIFT_CARD, card)
+              //get customer name by customer id
+              dispatch(
+                'customer/fetchSelectedCustomer',
+                {
+                  customerId: card.customer_id,
+                  addressOnly: true,
+                },
+                { root: true }
+              ).then(customer => {
+                card.customerName = customer.customer_name
+                card.customerPhone = customer.mobile_number
+                commit(mutation.SET_GIFT_CARD, card)
+                resolve(card)
+              })
             } else {
               reject(`Available giftcard amount is lesser than ${amount}`)
             }
