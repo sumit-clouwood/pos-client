@@ -14,7 +14,7 @@
                         :page-count="pageCount"
                         :page-range="1"
                         :margin-pages="1"
-                        :clickHandler="setPageNumber"
+                        :clickHandler="updateDispatchPageNumber"
                         :prev-text="'Prev'"
                         :next-text="'Next'"
                         :container-class="'ullist-dp'"
@@ -27,7 +27,7 @@
 
 <script>
 import paginate from 'vuejs-paginate'
-import {mapState} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 
 export default {
   name: 'DSFooter',
@@ -43,9 +43,11 @@ export default {
     paginate,
   },
   methods: {
-    setPageNumber: function () {
-
-    },
+    /*setPageNumber: function () {
+      alert()
+      this.$store.dispatch('deliverManager/updateDispatchPageNumber', pageNumber)
+    },*/
+    ...mapActions('deliveryManager', ['updateDispatchPageNumber']),
   },
   updated() {
     this.pageCount = Math.ceil(this.dispatchOrderCount / 8)

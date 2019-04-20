@@ -12,7 +12,10 @@ const state = {
   deliveredOrderCollection: [],
   moreOrders: false,
   dispatchOrders: false,
-  dispatchOrderCount: 0
+  dispatchOrderCount: 0,
+  is_pagination: true,
+  pageSize: 10,
+  pageNumber: 1,
 }
 const getters = {}
 
@@ -116,10 +119,21 @@ const actions = {
   },
 
   getDispatchOrder({ commit, rootState }) {
-    DMService.dispatchOrders(rootState.location.location).then( response => {
+    const params = [
+      rootState.location.location,
+      state.is_pagination,
+      state.pageSize,
+      state.pageNumber
+    ]
+    DMService.dispatchOrders(...params).then( response => {
       commit(mutation.SET_DISPATCH_SCREEN, response.data.data)
       commit(mutation.SET_DISPATCH_ORDER_COUNT, response.data.TotalCount)
     })
+  },
+
+  updateDispatchPageNumber({ commit, dispatch }, pageNumber) {
+    commit(mutation.UPDATE_DISPATCH_PAGE_NUMBER, pageNumber)
+    dispatch('getDispatchOrder')
   }
 }
 
@@ -164,6 +178,9 @@ const mutations = {
   },
   [mutation.SET_DISPATCH_ORDER_COUNT] (state, orderCount) {
     state.dispatchOrderCount = orderCount
+  },
+  [mutation.UPDATE_DISPATCH_PAGE_NUMBER] (state, pageNumber) {
+    state.pageNumber = pageNumber
   },
 }
 
