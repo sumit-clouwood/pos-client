@@ -68,7 +68,7 @@ function updateUI() {
   $('.payment-method-block table td img').click(function() {
     if ($('.payment-method-block').length) {
       $('.payment-method-block').addClass('active')
-      $('.payment-method-block').hide(800)
+      //$('.payment-method-block').hide(800)
     }
   })
 }

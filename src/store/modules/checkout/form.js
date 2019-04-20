@@ -263,6 +263,7 @@ const actions = {
       )
     }
     commit('removePayment', index)
+    commit('showPayBreak', true)
   },
 
   calculateSpendLoyalty({ commit, rootState, getters }) {
@@ -303,7 +304,8 @@ const mutations = {
     }
   },
   removeDigit(state) {
-    state.amount = '' + state.amount.substr(0, state.amount.length - 1)
+    const stramount = '' + state.amount
+    state.amount = stramount.substr(0, stramount.length - 1)
   },
   setAmount(state, val) {
     state.amount = val
