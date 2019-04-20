@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     getToggle(method) {
-      if (method.is_gift || method.name == 'Loyalty') {
+      if (method.name == 'Loyalty') {
         return 'modal'
       }
       return ''

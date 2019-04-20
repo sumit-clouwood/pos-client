@@ -25,7 +25,9 @@
               <h2>Payment Method</h2>
             </div>
             <PaymentMethods />
-            <div class="error" v-if="error">{{ error }}</div>
+            <div class="error" v-if="error">
+              <p class="text-danger">Error: {{ error }}</p>
+            </div>
             <div class="payemnt-input-block">
               <input
                 type="text"

@@ -1,7 +1,7 @@
 <template>
   <div
     class="modal fade"
-    id="Gift-card-payemnt"
+    id="card-payemnt"
     role="dialog"
     style="display: none; padding-left: 6px;"
   >
@@ -10,18 +10,15 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Gift Card</h4>
+          <h4 class="customer-title">Card Number</h4>
         </div>
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
-            <p>Enter Gift Card Code</p>
+            <p>Enter Card Reference Code</p>
             <input type="text" class="add-email-from" v-model="code" />
           </div>
           <div v-show="error" class="msg">
             <p class="text-danger">{{ error }}</p>
-          </div>
-          <div v-show="msg" class="msg">
-            <p class="text-info">{{ msg }}</p>
           </div>
         </div>
         <div class="modal-footer">
@@ -38,8 +35,7 @@
               type="button"
               id="gift-card-btn"
               data-toggle="modal"
-              data-target="#Gift-card-payemnt-details"
-              @click="payByGiftCard"
+              @click="payByCard"
             >
               Add
             </button>
@@ -51,35 +47,24 @@
   </div>
 </template>
 <script>
-/* global showModal, hideModal */
+/* global hideModal */
 export default {
   name: 'GiftCard',
   data: function() {
     return {
       code: '',
-      error: false,
-      msg: '',
+      error: null,
     }
   },
   methods: {
-    payByGiftCard() {
-      this.msg = 'Fetching gift card...'
+    payByCard() {
       this.error = null
       this.$store
-        .dispatch('checkoutForm/addGiftCardAmount', this.code)
+        .dispatch('checkoutForm/addCardAmount', this.code)
         .then(() => {
-          this.error = false
-          this.$store.commit('checkoutForm/showPayBreak', true)
-          hideModal('#Gift-card-payemnt')
-          showModal('#gift-card-info')
+          hideModal('#card-payemnt')
         })
-        .catch(error => {
-          this.error = error
-          this.$store.commit('checkoutForm/showPayBreak', false)
-        })
-        .finally(() => {
-          this.msg = null
-        })
+        .catch(error => (this.error = error))
     },
   },
 }

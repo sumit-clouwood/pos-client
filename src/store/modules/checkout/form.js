@@ -3,7 +3,6 @@ const state = {
   amount: '',
   method: {},
   payments: [],
-  creditCardPopup: false,
   LoyaltyPopup: false,
   error: false,
   msg: null,
@@ -40,22 +39,9 @@ const actions = {
       commit('showCalc', true)
       return false
     }
-    const totalPayable = getters.orderTotal
-    const paid = getters.paid
-    const remaining = totalPayable - paid
+
     if (parseFloat(state.amount) < 0.01) {
       commit('SET_ERROR', 'Amount should be greater than 0.00')
-      commit('showCalc', true)
-    } else if (
-      !state.method.is_cash &&
-      !state.method.is_gift &&
-      parseFloat(state.amount) - parseFloat(remaining) > 0.01
-    ) {
-      commit(
-        'SET_ERROR',
-        "Card payment can't be greater than " +
-          rootGetters['location/round'](remaining)
-      )
       commit('showCalc', true)
     } else if (
       state.method.name == 'Loyalty' &&
@@ -144,35 +130,106 @@ const actions = {
   //apply gift card [in use]
   addGiftCardAmount({ commit, getters, rootGetters, dispatch }, code) {
     return new Promise((resolve, reject) => {
-      dispatch(
-        'giftcard/apply',
-        { code: code, amount: state.amount },
-        { root: true }
-      )
-        .then(card => {
-          commit('setGiftAmount', state.amount)
-          commit('addGiftAmount', {
-            amount: state.amount,
-            method: state.method,
-            code: code,
+      if (!state.amount) {
+        commit('setGiftAmount', 0)
+        commit('showCalc', true)
+        commit('showPayBreak', false)
+        reject('Amount should be greater than 0')
+      } else {
+        dispatch(
+          'giftcard/apply',
+          { code: code, amount: state.amount },
+          { root: true }
+        )
+          .then(card => {
+            commit('setGiftAmount', state.amount)
+            commit('addGiftAmount', {
+              amount: state.amount,
+              method: state.method,
+              code: 'Gift Code-' + code,
+            })
+            commit('setAmount', rootGetters['location/round'](getters.payable))
+            commit('showCalc', false)
+            commit('showPayBreak', true)
+            resolve(card)
           })
-          commit('setAmount', rootGetters['location/round'](getters.payable))
-          commit('showCalc', false)
-          commit('showPayBreak', true)
-          resolve(card)
-        })
-        .catch(error => {
-          commit('setGiftAmount', 0)
-          commit('showCalc', true)
-          commit('showPayBreak', false)
-          reject(error)
-        })
+          .catch(error => {
+            commit('setGiftAmount', 0)
+            commit('showCalc', true)
+            commit('showPayBreak', false)
+            reject(error)
+          })
+      }
+    })
+  },
+
+  addCardAmount({ commit, rootGetters }, code) {
+    return new Promise(resolve => {
+      commit('addCardAmount', {
+        amount: state.amount,
+        method: state.method,
+        code: 'Card-' + code,
+      })
+      commit('showCalc', false)
+      commit('showPayBreak', true)
+      //set remaining amount into text box
+      commit('setAmount', rootGetters['location/round'](getters.payable))
+      resolve()
+    })
+  },
+
+  validateCardPayment({ commit, getters, rootGetters }) {
+    return new Promise((resolve, reject) => {
+      const totalPayable = getters.orderTotal
+      const paid = getters.paid
+      const remaining = totalPayable - paid
+
+      if (parseFloat(state.amount) - parseFloat(remaining) > 0.01) {
+        commit('showCalc', true)
+        commit('showPayBreak', false)
+
+        commit(
+          'SET_ERROR',
+          "Card payment can't be greater than " +
+            rootGetters['location/round'](remaining)
+        )
+        reject()
+      } else {
+        commit('SET_ERROR', false)
+        resolve()
+      }
+    })
+  },
+  validateGiftPayment({ commit, getters, rootGetters }) {
+    return new Promise((resolve, reject) => {
+      const totalPayable = getters.orderTotal
+      const paid = getters.paid
+      const remaining = totalPayable - paid
+
+      if (parseFloat(state.amount) - parseFloat(remaining) > 0.01) {
+        commit('showCalc', true)
+        commit('showPayBreak', false)
+
+        commit(
+          'SET_ERROR',
+          "Gift Card payment can't be greater than " +
+            rootGetters['location/round'](remaining)
+        )
+        reject()
+      } else {
+        commit('SET_ERROR', false)
+        resolve()
+      }
     })
   },
 
   setAmount({ commit, dispatch }, amount) {
-    commit('setAmount', amount)
+    commit('setAmount', parseFloat(amount))
     dispatch('calculateSpendLoyalty')
+  },
+  resetAmount({ commit }) {
+    //commit('setAmount', rootGetters['location/round'](getters.payable))
+    commit('setAmount', 0)
   },
   setMethod({ commit }, method) {
     commit('setMethod', method)
@@ -239,11 +296,6 @@ const mutations = {
   },
   setAmount(state, val) {
     state.amount = val
-    if (!state.method.is_cash && !state.method.is_gift) {
-      state.creditCardPopup = true
-    } else {
-      state.creditCardPopup = false
-    }
   },
   loyaltyAmount(state, val) {
     state.loyaltyAmount = val
@@ -268,6 +320,13 @@ const mutations = {
       code: code,
     })
     state.payments = giftCards
+  },
+  addCardAmount(state, { amount, method, code }) {
+    state.payments.push({
+      amount: amount,
+      method: method,
+      code: code,
+    })
   },
   addTip(state, tip) {
     state.tipAmount = tip
@@ -296,7 +355,6 @@ const mutations = {
   RESET(state) {
     state.amount = ''
     state.payments = []
-    state.creditCardPopup = false
     state.LoyaltyPopup = false
     state.error = false
     state.tipAmount = 0

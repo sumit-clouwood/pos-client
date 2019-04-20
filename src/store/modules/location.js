@@ -57,8 +57,12 @@ const actions = {
           commit(mutation.SET_TIMEZONE, response.data.data.country_timezone)
           commit(
             mutation.SET_LANGUAGE,
-            localStorage.getItem('locale') ||
-              state.locationData.default_language[0].shortname
+            localStorage.getItem('locale')
+              ? localStorage.getItem('locale')
+              : typeof state.locationData.default_language[0].shortname !==
+                'undefined'
+              ? state.locationData.default_language[0].shortname
+              : 'en_US'
           )
 
           //We are setting franchise code as the location name so we can just go with that
