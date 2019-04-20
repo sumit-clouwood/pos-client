@@ -1,5 +1,5 @@
 <template>
-    <div class="invoice" id="printarea" v-if="print">
+    <div class="invoice" id="printarea" v-if="print && order">
         <div v-if="tpl">
             <div v-if="tpl.template.show_logo">
                 <img :src="logo" /></div>
@@ -101,7 +101,7 @@ import Items from './invoice/Items'
 export default {
   name: 'InvoiceReprint',
   props: {
-    order: Object
+    order: ''
   },
   computed: {
     /*...mapState('checkout', [

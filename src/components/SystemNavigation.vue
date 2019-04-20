@@ -178,11 +178,11 @@
             <!-- <span class="nav-link-text"></span> -->
           </a>
           <ul class="dp-dropdown-content">
-            <li>Home Deliveries</li>
             <li>
-              <a href="/pos-walkin-cashier/dispatch-screen.html"
-                >Dispatch Screen</a
-              >
+              <a href="#"><router-link to='/delivery-manager' class="text-white"> Home Deliveries</router-link></a>
+            </li>
+            <li>
+              <a href="#"><router-link to='/dispatch-screen' class="text-white"> Dispatch Screen</router-link></a>
             </li>
           </ul>
         </li>
@@ -256,6 +256,7 @@
 </template>
 
 <script>
+
 import DMTopRightNav from '@/components/deliveryManager/DMTopRightNav'
 import DMTopLeftNav from '@/components/deliveryManager/DMTopLeftNav'
 export default {

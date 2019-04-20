@@ -102,14 +102,15 @@ if ('serviceWorker' in navigator && 'SyncManager' in window) {
   color: #2c3e50;
   margin-top: 60px;
 }
+
 </style>
 <style lang="sass">
 .error
-  color: #ff0000;
-  padding: 10px 5px 10px 5px;
-
+  color: #ff0000
+  padding: 10px 5px 10px 5px
 
 .success
-  color: #00ff00;
-  padding: 10px 5px 10px 5px;
+  color: #00ff00
+  padding: 10px 5px 10px 5px
+
 </style>

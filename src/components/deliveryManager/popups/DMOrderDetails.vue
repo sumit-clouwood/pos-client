@@ -90,7 +90,7 @@
                 <!--<tr class="pay-tot-amt modifier-item-item">
                                     <td colspan="4"><a class="modifier-dm" href="#">Bolognese Sauce</a> <a class="modifier-dm" href="#">Bolognese Sauce</a> <a class="modifier-dm" href="#">Bolognese Sauce</a></td>
                                 </tr>-->
-                <tr v-for="item in selectedOrder.items" :key="item.item_id">
+                <tr v-for="(item, itemIndex) in selectedOrder.items" :key="itemIndex">
                   <td>
                     {{ item.item_name }}
                     <div class="head1" v-if="item.item_modifiers.length">

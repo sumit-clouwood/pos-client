@@ -35,7 +35,7 @@ export default new Router({
       component: DeliveryManagerInit,
     },
     {
-      path: '/ds',
+      path: '/dispatch-screen',
       name: 'DispatchScreen',
       component: DispatchScreenInit,
     },

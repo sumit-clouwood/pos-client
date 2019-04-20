@@ -430,7 +430,7 @@ $(document).ready(function() {
     } else {
       // $("#exampleAccordion").animate({'top':(aaa - bbb)+'px'},800);
       $('.top-arrow').css('display', 'none')
-      alert('No Items downside')
+      // alert('No Items downside')
     }
     $('.bt-arrow').css('display', 'none')
     $('.top-arrow').css('display', 'block')
@@ -474,10 +474,10 @@ $(document).ready(function() {
     // End Pos Gift Card
   })
 
-  $('.br-table-btn').click(function() {
+  /*$('.br-table-btn').click(function() {
     // $("#payment-method").trigger();
     $('.last-order-wrap')[0].slick.refresh()
-  })
+  })*/
 })
 // for delivery manger transparent-screen
 

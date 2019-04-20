@@ -227,6 +227,18 @@ export default {
     },
   },
   updated() {
+    /*$('ul.ullist-icons').slick({
+      slidesToShow: 5,
+      slidesToScroll: 1,
+      accessibility: false,
+      dots: false,
+      arrows: true,
+      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
+      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+
+    })*/
+  },
+  mounted() {
     $('ul.ullist-icons').slick({
       slidesToShow: 5,
       slidesToScroll: 1,
@@ -235,8 +247,10 @@ export default {
       arrows: true,
       nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
       prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+
     })
-  },
+
+  }
 }
 </script>
 
