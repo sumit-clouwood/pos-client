@@ -92,7 +92,10 @@ export default {
       orderCount: 3,
     }
   },
-  updated() {
+  mounted() {
+    /*$('.br-table-btn').click(function () {
+      $('div.last-order-wrap')[0].slick().refresh
+    })*/
     $('div.last-order-wrap').slick({
       slidesToShow: 5,
       slidesToScroll: 1,
