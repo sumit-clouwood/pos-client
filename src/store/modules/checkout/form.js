@@ -183,8 +183,13 @@ const actions = {
       const totalPayable = getters.orderTotal
       const paid = getters.paid
       const remaining = totalPayable - paid
+      if (parseFloat(state.amount) <= 0) {
+        commit('showCalc', true)
+        commit('showPayBreak', false)
 
-      if (parseFloat(state.amount) - parseFloat(remaining) > 0.01) {
+        commit('SET_ERROR', 'Card payment should be greater than 0.00')
+        reject()
+      } else if (parseFloat(state.amount) - parseFloat(remaining) > 0.01) {
         commit('showCalc', true)
         commit('showPayBreak', false)
 
@@ -206,7 +211,13 @@ const actions = {
       const paid = getters.paid
       const remaining = totalPayable - paid
 
-      if (parseFloat(state.amount) - parseFloat(remaining) > 0.01) {
+      if (parseFloat(state.amount) <= 0) {
+        commit('showCalc', true)
+        commit('showPayBreak', false)
+
+        commit('SET_ERROR', 'Gift Card payment should be greater than 0.00')
+        reject()
+      } else if (parseFloat(state.amount) - parseFloat(remaining) > 0.01) {
         commit('showCalc', true)
         commit('showPayBreak', false)
 
