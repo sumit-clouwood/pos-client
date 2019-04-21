@@ -16,7 +16,7 @@
     <li v-if="languages">
       <select
         v-model="vlocale"
-        @change="changeLanguage(vlocale)"
+        @change="changeLanguage()"
         class="language-button"
       >
         <option
@@ -87,7 +87,7 @@ export default {
         return this.$store.state.location.locale
       },
       set(val) {
-        return this.$store.commit('location/SET_LANGUAGE', val)
+        return this.$store.commit('location/SET_LOCALE', val)
       },
     },
     ...mapState({
@@ -106,7 +106,12 @@ export default {
     }),
   },
   methods: {
-    ...mapActions('location', ['changeLanguage']),
+    changeLanguage() {
+      const language = this.languages.find(
+        lang => lang.shortname === this.vlocale
+      )
+      this.$store.dispatch('location/changeLanguage', language)
+    },
     onlineOrders() {
       if (this.latestOnlineOrders == 0) {
         if (

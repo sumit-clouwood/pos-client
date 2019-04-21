@@ -17,10 +17,8 @@
         <td>
           {{ itemName(item) }}
           <div v-if="item.modifiers">
-            <span v-for="(modifierGroup, key) in item.modifiers" :key="key">
-              <span v-for="(modifier, key) in modifierGroup" :key="key">
-                {{ modifier.name }}
-              </span>
+            <span>
+              {{ modifiers(item) }}
             </span>
           </div>
         </td>
@@ -37,8 +35,23 @@ export default {
   props: ['labels', 'items', 'tpl'],
   computed: {
     ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('modifier', ['findModifier']),
   },
   methods: {
+    modifiers(item) {
+      let modifiers = []
+      item.modifiers.regular_modifiers.forEach(modifier =>
+        modifiers.push(modifier.item_name)
+      )
+      item.modifiers.mandatory_modifiers.forEach(modifier =>
+        modifiers.push(modifier.item_name)
+      )
+      item.modifiers.price_modifiers.forEach(modifier =>
+        modifiers.push(modifier.item_name)
+      )
+
+      return modifiers.join(', ')
+    },
     itemName(item) {
       const engName = item.item_name.find(locale => locale.language == 'en_US')
         .name

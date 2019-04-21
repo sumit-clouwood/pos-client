@@ -308,6 +308,7 @@ const actions = {
         })
         .catch(response => {
           if (
+            response.data &&
             typeof response.data.status !== 'undefined' &&
             response.data.status === 0
           ) {

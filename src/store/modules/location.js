@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as mutation from './location/mutation-types'
 import LocationService from '@/services/data/LocationService'
 // initial state
@@ -55,15 +56,20 @@ const actions = {
           commit(mutation.SET_CURRENCY, response.data.data.currency_code)
           commit(mutation.SET_DELIVERY_AREAS, response.data.data.delivery_area)
           commit(mutation.SET_TIMEZONE, response.data.data.country_timezone)
-          commit(
-            mutation.SET_LANGUAGE,
-            localStorage.getItem('locale')
-              ? localStorage.getItem('locale')
-              : typeof state.locationData.default_language[0].shortname !==
-                'undefined'
-              ? state.locationData.default_language[0].shortname
-              : 'en_US'
-          )
+
+          let locale = 'en_US'
+          let language = 'English'
+
+          if (localStorage.getItem('locale')) {
+            locale = localStorage.getItem('locale')
+            language = localStorage.getItem('language')
+          } else if (state.locationData.default_language.length) {
+            state.locationData.default_language[0].shortname
+            state.locationData.default_language[0].language
+          }
+
+          commit(mutation.SET_LOCALE, locale)
+          commit(mutation.SET_LANGUAGE, language)
 
           //We are setting franchise code as the location name so we can just go with that
           commit(mutation.SET_NAME, response.data.data.name)
@@ -86,8 +92,9 @@ const actions = {
     commit(mutation.SET_NAME, rootState.auth.userDetails.franchies_code)
   },
 
-  changeLanguage({ commit }, locale) {
-    commit(mutation.SET_LANGUAGE, locale)
+  changeLanguage({ commit }, language) {
+    commit(mutation.SET_LOCALE, language.shortname)
+    commit(mutation.SET_LANGUAGE, language.language)
   },
 
   updateModalSelectionDelivery({ commit }, modalSelection) {
@@ -122,16 +129,13 @@ const mutations = {
   [mutation.SET_DELIVERY_AREAS](state, delivery_area) {
     state.deliveryAreas = delivery_area
   },
-  [mutation.SET_LANGUAGE](state, locale) {
-    const language = state.locationData.languages.find(
-      language => language.shortname === locale
-    )
-
-    state.locale = language.shortname
-    state.language = language.language
-
-    localStorage.setItem('locale', state.locale)
-    localStorage.setItem('language', state.language)
+  [mutation.SET_LANGUAGE](state, language) {
+    state.language = language
+    localStorage.setItem('language', language)
+  },
+  [mutation.SET_LOCALE](state, locale) {
+    state.locale = locale
+    localStorage.setItem('locale', locale)
   },
 
   [mutation.SET_TIMEZONE](state, timeZone) {

@@ -14,7 +14,7 @@ export default {
     return this.syncDate
   },
   getAbsUrl(url) {
-    return url.replace(/&?last_sync_date=[^&]*&?/, '')
+    return url.replace(/last_sync_date=[^&]*&?/, '')
   },
   isValidResponse(response) {
     let validResponse = false
