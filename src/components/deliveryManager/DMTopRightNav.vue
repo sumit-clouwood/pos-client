@@ -8,10 +8,10 @@
     </div>
     <div class="dm-walk-dine">
       <button id="dm-walkin">
-        <span><img src="img/other/dinein-img.png"/></span>Walk-In
+        <router-link to="/" class="text-white"><span><img src="img/other/dinein-img.png"/></span> Walk-In</router-link>
       </button>
       <button id="dm-dinein">
-        <span><img src="img/other/walkin.png"/></span>Dine-In
+        <router-link to="/" class="text-white"><span><img src="img/other/walkin.png"/></span> Dine-In</router-link>
       </button>
     </div>
   </div>

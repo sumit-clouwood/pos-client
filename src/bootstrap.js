@@ -153,6 +153,10 @@ export default {
                       'deliveryManager/fetchDMOrderDetail',
                       response
                     )
+                    store.dispatch(
+                      'deliveryManager/getDispatchOrder',
+                      response
+                    )
                   })
                   .catch(error => reject(error))
               })

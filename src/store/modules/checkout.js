@@ -70,7 +70,7 @@ const actions = {
             order_queue: '0',
             created_date: newDate.getDate(),
             created_time: newDate.getTime(),
-            order_mode: 'online',
+            // order_mode: 'online',
             balance_due: rootGetters['order/orderTotal'],
             subtotal: rootGetters['order/subTotal'],
             amount_changed: state.changedAmount,
@@ -81,10 +81,9 @@ const actions = {
 
         if (rootState.order.orderType == 'delivery') {
           order.customer_id = rootState.customer.customerId
-          order.address_id = rootState.customer.address
-            ? rootState.customer.address.id
-            : null
-          order.status = 'on-hold'
+          order.address_id = rootState.customer.address ? rootState.customer.address.id : null
+          order.status = 'running'
+          // order.status = 'on-hold'
         }
 
         //get surcharge for an order
@@ -173,14 +172,14 @@ const actions = {
 
             modifiers.forEach(modifier => {
               switch (modifier.type) {
-                case 'mandatory':
-                  mandatoryModifiers.push(modifier)
-                  break
-                case 'price':
-                  priceModifiers.push(modifier)
-                  break
-                default:
-                  regularModifiers.push(modifier)
+              case 'mandatory':
+                mandatoryModifiers.push(modifier)
+                break
+              case 'price':
+                priceModifiers.push(modifier)
+                break
+              default:
+                regularModifiers.push(modifier)
               }
             })
             orderItem.modifiers = {

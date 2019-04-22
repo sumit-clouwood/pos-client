@@ -188,7 +188,6 @@ div#dm-delivery-in-progress button#ready > a {
     text-align: right;
     float: right; }
 .right-btn-wrap ul li {
-  text-align: center;
   padding-bottom: 10px;
   font-size: 14px;
   color: #3d3f43; }
@@ -554,10 +553,10 @@ div#dm-order-history-rec {
     .select-driver > button > span {
       float: right; }
   .select-driver ul {
-    width: 12%; }
+    width: 10%; }
     .select-driver ul li {
-      text-align: center;
-      padding-bottom: 10px;
+      font-weight: bold;
+      padding: 2px 7px;
       color: #3d3f43; }
       .select-driver ul li:last-child {
         padding-bottom: 0; }
@@ -581,7 +580,8 @@ div#ham-btn {
   color: #a4a4a4;
   font-size: 12px;
   font-weight: normal;
-  border: medium none; }
+  border: medium none;
+  text-transform: uppercase; }
 .delivered-order-table .show-details-his {
   cursor: pointer; }
 .delivered-order-table table tr td {
@@ -686,7 +686,7 @@ div#dm-payment-type-order {
     touch-action: auto; }
 
   .dm-ready-order-wrapper {
-    height: calc(100vh - 230px);
+    height: calc(100vh - 292px);
     overflow-x: hidden;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;

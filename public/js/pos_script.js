@@ -1,4 +1,4 @@
-/* global $, toggleFullScreen, hidePayNow  */
+/* global $, hidePayNow  */
 /* eslint-disable no-unused-vars */
 $(document).ready(function() {
   // Configure/customize these variables.
@@ -45,40 +45,13 @@ $(document).ready(function() {
   })
 })
 
-$('.dp-zoom-scren').click(function(e) {
-  e.preventDefault()
-  toggleFullScreen()
-  $(this).hide()
-  $('ul.ullist-dp li.dp-btn-exit').css('display', 'inline-block')
-  $('#dp-content-wrapper').addClass('service-manager-overlay')
-  $('.sticky-footer').addClass('sticky-header-overlay')
 
-  $('header').css({ height: 'unset', position: 'unset', width: 'unset' })
-})
-$('.dp-btn-exit').click(function(e) {
-  e.preventDefault()
-  toggleFullScreen()
-  $(this).hide()
-  $('.dp-zoom-scren').show()
-  $('#dp-content-wrapper').removeClass('service-manager-overlay')
-  $('.sticky-footer').removeClass('sticky-header-overlay')
-  $('.middle-content.service-manager-content').css('margin-top', '0')
-})
 
 $('#status-history').click(function() {
   $('div#dm-order-history-rec').show()
   $('button#recipt-history').show()
   $('div#dm-order-confirmation').hide()
   $('button#status-history').hide()
-})
-
-$('.dp-next-btn').click(function() {
-  $('.block1-wrap-dp').hide()
-  $('div.block1-wrap-dp#hide-block1-dp').show()
-})
-$('.dp-prev-btn').click(function() {
-  $('.block1-wrap-dp').show()
-  $('div.block1-wrap-dp#hide-block1-dp').hide()
 })
 
 $(document).ready(function() {
@@ -374,71 +347,6 @@ $(document).ready(function() {
     })
   })
 
-  // End also for delivered screen
-  //     $('tr#delivered-data').hide()
-  $('.delivered-order-table .show-details-his > span').click(function() {
-    $('.delivered-order-table .show-details-his > span').removeClass('active')
-    $('.delivered-order-table table tr').removeClass('active')
-
-    $(this)
-      .parent()
-      .addClass('active')
-    $(this)
-      .parents('tr')
-      .addClass('active')
-    // $('.delivered-order-table tr#delivered-data').show(400);
-    $(
-      '<tr id="delivered-data">\n' +
-        '                            <td colspan="10" class="deliveredOrderDetails">\n' +
-        '                                <div class="delivered-data-wrapper">\n' +
-        '                                    <table class="table table-responsive">\n' +
-        '                                        <tr>\n' +
-        '                                            <th style="width: 260px;">ORDER NUMBER</th>\n' +
-        '                                            <th style="width: 160px;">amount</th>\n' +
-        '                                            <th style="width: 500px;">order performance (preparation | pickup | Delivery)</th>\n' +
-        '                                            <th style="width: 200px;">total time</th>\n' +
-        '                                            <th style="width: 260px;">status</th>\n' +
-        '                                        </tr>\n' +
-        '                                        <tr class="deliverd-time-table">\n' +
-        '                                            <td>21312410</td>\n' +
-        '                                            <td>32.12 INR</td>\n' +
-        '                                            <td><span class="delivery-preptn">22 hours 30 Minutes 02</span><span class="delivery-pickup">4 seconds Pick</span><span class="delivery-delivered">5 seconds Delivery</span></td>\n' +
-        '                                            <td>20 h 30 m 10 s</td>\n' +
-        '                                            <td class="delivered-btn"><span>Delivered</span></td>\n' +
-        '                                        </tr>\n' +
-        '\n' +
-        '                                        <tr class="delivery-avg-delivery-time">\n' +
-        '                                            <td>Total Deliveries : <span class="total-delivery">3</span></td>\n' +
-        '                                            <td>Total : <span class="delivery-time-total">32.12 INR</span></td>\n' +
-        '                                            <td>Average Delivery Time : <span class="dm-avg-delivery-time">00:00:04</span></td>\n' +
-        '                                            <td></td>\n' +
-        '                                            <td></td>\n' +
-        '\n' +
-        '                                        </tr>\n' +
-        '\n' +
-        '\n' +
-        '                                    </table>\n' +
-        '                                </div>\n' +
-        '                            </td>\n' +
-        '\n' +
-        '                        </tr>'
-    ).insertAfter('.delivered-order-table .table tr.active')
-  })
-  $('small.delivered-hide').click(function(e) {
-    e.stopPropagation()
-    $(this)
-      .parent()
-      .addClass('active')
-    $(this)
-      .parents('tr')
-      .next('tr#delivered-data')
-      .remove()
-    $(this)
-      .parent('.show-details-his')
-      .removeClass('active')
-    /*$('.delivered-order-table tr#delivered-data').remove();*/
-  })
-
   $('button.dm-btn, .all-tables-wrap > button').click(function() {
     $('button.dm-btn, .all-tables-wrap > button').removeClass('active')
     $(this).addClass('active')
@@ -484,16 +392,6 @@ $(document).ready(function() {
     $('.sitting-image.active').css('opacity', 0)
   })
 
-  $('ul.ullist-icons > li#hold-order-box').click(function() {
-    if ($('ul.ullist-icons > li#hold-order-box').hasClass('active')) {
-      $('.holding-order-panel').hide()
-      $('.order-wrappers-panel').show()
-    } else {
-      $('.order-wrappers-panel').hide()
-      $('.holding-order-panel').show()
-    }
-    $('ul.ullist-icons > li#hold-order-box').toggleClass('active')
-  })
 
   //  For Tip Amount
 
@@ -522,7 +420,7 @@ $(document).ready(function() {
     } else {
       // $("#exampleAccordion").animate({'top':(aaa - bbb)+'px'},800);
       $('.top-arrow').css('display', 'none')
-      alert('No Items downside')
+      // alert('No Items downside')
     }
     $('.bt-arrow').css('display', 'none')
     $('.top-arrow').css('display', 'block')
@@ -566,10 +464,10 @@ $(document).ready(function() {
     // End Pos Gift Card
   })
 
-  $('.br-table-btn').click(function() {
+  /*$('.br-table-btn').click(function() {
     // $("#payment-method").trigger();
     $('.last-order-wrap')[0].slick.refresh()
-  })
+  })*/
 })
 // for delivery manger transparent-screen
 
@@ -726,6 +624,19 @@ $(document).ready(function() {
     $('#long-table-shape, #square-table-shape, #circle-table-shape').draggable({
         helper: 'clone'
     });*/
+  // window.onload = function () {
+  var getUrl = window.location.hash.substr(1)
+  if (getUrl == '/dm') {
+    $('body').addClass('dm-manager')
+    $('body').removeClass('dinein')
+  } else if (getUrl == '/dine-in/') {
+    $('body').removeClass('dm-manager')
+    $('body').addClass('dinein')
+  } else {
+    $('body').removeClass('dm-manager')
+    $('body').removeClass('dinein')
+  }
+  // }
 })
 
 // view image rotateble

@@ -7,11 +7,11 @@
         <div class="modal-body dm-confirmation-wrap dm-con">
           <div class="dm-ready-order-wrap">
             <div class="dm-ready-order-left">
-              <div class="dm-ready">
+              <div class="dm-ready" v-if="selectedOrder.customer">
                 <p>Customer Name:</p>
                 <h5>{{ selectedOrder.customer.customer_name }}</h5>
               </div>
-              <div class="dm-ready">
+              <div class="dm-ready" v-if="selectedOrder.customer">
                 <p>Phone Number:</p>
                 <h5>{{ selectedOrder.customer.mobile_number }}</h5>
               </div>
@@ -29,11 +29,11 @@
                 <p>Order Number:</p>
                 <h5>{{ selectedOrder.order_no }}</h5>
               </div>
-              <div class="dm-ready">
+              <div class="dm-ready" v-if="selectedOrder.delivery_area">
                 <p>Delivery Area:</p>
                 <h5>{{ selectedOrder.delivery_area }}</h5>
               </div>
-              <div class="dm-ready">
+              <div class="dm-ready" v-if="selectedOrder.delivery_area">
                 <p>Delivery Address:</p>
                 <h5>
                   {{ selectedOrder.delivery_area }},
@@ -48,7 +48,7 @@
                 <table class="table table-responsive">
                   <tr>
                     <th style="width: 500px">Paid By</th>
-                    <th style="width: 150px">Amount</th>
+                    <th style="width: 200px">Amount</th>
                     <th style="width: 150px">Collected</th>
                     <th style="width: 150px">Returned</th>
                   </tr>
@@ -58,8 +58,8 @@
                     :key="index"
                   >
                     <td>{{ payment.payment_mode }}</td>
-                    <td>{{ payment.payment_amount }}</td>
-                    <td>{{ collectedAmount(payment) }}</td>
+                    <td>{{ formatPrice(payment.payment_amount) }}</td>
+                    <td>{{ formatPrice(collectedAmount(payment)) }}</td>
                     <td>
                       {{
                         returnedAmount(
@@ -90,7 +90,7 @@
                 <!--<tr class="pay-tot-amt modifier-item-item">
                                     <td colspan="4"><a class="modifier-dm" href="#">Bolognese Sauce</a> <a class="modifier-dm" href="#">Bolognese Sauce</a> <a class="modifier-dm" href="#">Bolognese Sauce</a></td>
                                 </tr>-->
-                <tr v-for="item in selectedOrder.items" :key="item.item_id">
+                <tr v-for="(item, itemIndex) in selectedOrder.items" :key="itemIndex">
                   <td>
                     {{ item.item_name }}
                     <div class="head1" v-if="item.item_modifiers.length">
@@ -263,17 +263,12 @@
               aria-haspopup="true"
               aria-expanded="false"
             >
-              Re-Print</button
-            ><!--<span><img src="images/referal-down.png"></span>-->
+              Re-Print
+            </button>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">Delhi_invoice</a>
-              <a class="dropdown-item" href="#">ARB</a>
-              <a class="dropdown-item" href="#">Estonia</a>
-              <!--data-value="Estonia"-->
-              <!--data-value="ARB"-->
-              <!--data-value="Delhi_invoice"-->
+              <a class="dropdown-item" href="#" @click="generateInvoice">Default</a>
             </div>
-            <div class="referal">
+            <!--<div class="referal">
               <button
                 type="button"
                 class="btn view-history"
@@ -289,7 +284,7 @@
                 <span><img src="img/other/edit-icon.png" alt="schedule"/></span
                 >Modify
               </button>
-            </div>
+            </div>-->
           </div>
           <div class="btn-announce">
             <button
@@ -321,13 +316,16 @@
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
       </div>
+      <InvoiceReprint :order="selectedOrder"/>
     </div>
   </div>
 </template>
 
 <script>
 /* global $ */
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
+import InvoiceReprint from '@/components/partial/InvoiceReprint'
+
 export default {
   name: 'DMOrderDetails',
   computed: {
@@ -338,6 +336,9 @@ export default {
       locationName: state => state.location.locationName,
     }),
     ...mapGetters('location', ['formatPrice']),
+  },
+  components: {
+    InvoiceReprint
   },
   methods: {
     returnedAmount: function(paymentMode, amountChanged) {
@@ -352,6 +353,8 @@ export default {
       $('#status-history').toggle()
       $('#recipt-history').toggle()
     },
+
+    ...mapActions('checkout',['generateInvoice'])
   },
 }
 </script>
@@ -360,4 +363,5 @@ export default {
 .displayBlock {
   display: inline-block;
 }
+
 </style>

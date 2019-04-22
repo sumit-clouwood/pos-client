@@ -24,8 +24,8 @@ export default {
         response.data.status === 1
           ? true
           : response.data.status === 'success'
-          ? true
-          : false
+            ? true
+            : false
     } else if (typeof response.data.error !== 'undefined') {
       //check for error
       validResponse = response.data.error ? false : true

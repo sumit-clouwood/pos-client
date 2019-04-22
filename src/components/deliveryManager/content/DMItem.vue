@@ -5,20 +5,21 @@
       v-for="(order, index) in orderDetails"
       :key="index"
     >
-      <div v-if="order.order_status == orderStatus">
+      <div v-if="order.order_status == orderStatus || orderStatus == 'future-order'">
         <div class="dm-deliver-detail">
           <h4>{{ order.order_no }}</h4>
           <p>
-            <span v-for="i in orderCount" :key="i">
+            <span v-for="(i, index) in orderCount" :key="index">
               {{
-                typeof order.items[i] != 'undefined'
-                  ? order.items[i].item_name
+                typeof order.items[index] != 'undefined'
+                  ? order.items[index].item_name
                   : ''
               }}
             </span>
           </p>
+          <p><b>{{order.created_by}}</b></p>
           <h4>{{ order.delivery_area }}</h4>
-          <p>
+          <p v-if="order.order_address">
             {{ order.order_address.street }}, {{ locationName }},
             {{ order.order_address.city }}
           </p>
@@ -41,10 +42,12 @@
             href="#"
             v-if="actionDetails.action"
             class="btn btn-success"
+            :id="order._id"
             @click="
               DMOrderStatus({
                 actionDetails: actionDetails,
                 orderId: order._id,
+                orderType: order.order_type
               })
             "
             >{{ actionDetails.action }}</a
@@ -81,30 +84,32 @@ export default {
   },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
-    DMOrderStatus: function({ actionDetails, orderId }) {
+    DMOrderStatus: function({ actionDetails, orderId, orderType }) {
       let timestamp = Date.now()
-      if (typeof actionDetails.driverId != 'undefined') {
-        this.$store.dispatch('deliveryManager/attachOrderDriver', {
-          orderId: orderId,
-          driverId: actionDetails.driverId,
-          timestamp: timestamp,
-        })
-      } else {
-        this.$store.dispatch('checkout/updateOrderStatus', {
-          orderStatus: actionDetails.nextOrderStatus,
-          orderId: orderId,
-          timestamp: timestamp,
-          orderType: 'delivery',
-        })
+      if(actionDetails.action != 'Collected') {
+        if(orderType === 'takeaway') {
+          this.$store.dispatch('deliveryManager/updateTakeAway', orderId)
+        } else {
+          if (typeof actionDetails.driverId != 'undefined') {
+            this.$store.dispatch('deliveryManager/attachOrderDriver', {
+              orderId: orderId,
+              driverId: actionDetails.driverId,
+              timestamp: timestamp,
+            })
+          } else {
+            this.$store.dispatch('checkout/updateOrderStatus', {
+              orderStatus: actionDetails.nextOrderStatus,
+              orderId: orderId,
+              timestamp: timestamp,
+              orderType: orderType,
+            })
+          }
+        }
+
+        $('#'+orderId).parent().parent().parent().hide(800)
       }
-      $(this)
-        .parent()
-        .parent()
-        .parent()
-        .addClass('active')
-      $('.dm-contain-order.active').hide(800)
-    },
-  },
+    }
+  }
 }
 </script>
 

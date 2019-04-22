@@ -4,14 +4,13 @@
       <div class="container">
         <ul class="ullist-icons">
           <li data-toggle="modal" data-target="#manage-customer">
-            <a href="#"
-              ><img src="img/pos/customer.svg" alt="customer" /><span
-                >Customer</span
-              ></a
-            >
+            <a href="#">
+              <img src="img/pos/customer.svg" alt="customer" />
+              <span>Customer</span>
+            </a>
           </li>
 
-          <li id="hold-order-box" @click="getHoldOrders">
+          <li id="hold-order-box" @click="viewHoldOrders">
             <!-- <a href="#"><img class="hold-orders-show" src="images/footer-images/s.png" alt="customer"><img class="hold-order" src="images/hold-order.png" alt="customer"><span>Hold Orders</span></a>-->
             <a href="#"
               ><img class="hold-orders-show" src="img/pos/hold.svg" /><img
@@ -219,12 +218,17 @@ export default {
           ? state.customer.customer.customer_list
           : typeof state.customer.fetchCustomerAddressOnly.customer_list !=
             'undefined'
-          ? state.customer.fetchCustomerAddressOnly.customer_list[0]
-          : false,
+            ? state.customer.fetchCustomerAddressOnly.customer_list[0]
+            : false,
     }),
   },
   methods: {
-    ...mapActions('holdOrders', ['getHoldOrders']),
+    viewHoldOrders: function () {
+      this.$store.dispatch('holdOrders/getHoldOrders')
+      $('.holding-order-panel').toggle()
+      $('.order-wrappers-panel').toggle()
+      $('ul.ullist-icons > li#hold-order-box').toggleClass('active')
+    },
     ...mapActions('discount', ['validateOrderDiscounts']),
     setOrderType(opt) {
       this.$store.commit('order/ORDER_TYPE', opt)
@@ -239,8 +243,23 @@ export default {
       arrows: true,
       nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
       prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+
     })
   },
+
+  mounted() {
+    $('ul.ullist-icons').slick({
+      slidesToShow: 5,
+      slidesToScroll: 1,
+      accessibility: false,
+      dots: false,
+      arrows: true,
+      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
+      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+
+    })
+
+  }
 }
 </script>
 

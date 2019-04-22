@@ -1,6 +1,6 @@
 import * as mutation from './discount/mutation-types'
 import DiscountService from '@/services/data/DiscountService'
-const DISCOUNT_ITEM_ERROR = `Discount can't be greater than item price.`
+const DISCOUNT_ITEM_ERROR = 'Discount can\'t be greater than item price.'
 
 // initial state
 const state = {

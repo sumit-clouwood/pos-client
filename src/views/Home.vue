@@ -7,6 +7,7 @@
 
 <script>
 // @ is an alias to /src
+/* global $ */
 import Pos from '@/components/Pos.vue'
 import Location from '@/components/Location.vue'
 import { mapState } from 'vuex'
@@ -19,6 +20,10 @@ export default {
   },
   computed: {
     ...mapState('sync', ['loaded']),
+  },
+  mounted() {
+    $('body').removeAttr('class')
+    $('body').attr('class','fixed-nav sticky-footer bg-dark')
   },
 }
 </script>

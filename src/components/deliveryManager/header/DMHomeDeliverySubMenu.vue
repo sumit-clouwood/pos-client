@@ -5,7 +5,7 @@
         <li
           class="active"
           data-related="dm-new-order"
-          @click="updateOrderStatus('running')"
+          @click="updateOrderStatus({orderStatus:'running',collected: 'no'})"
         >
           <a href="#">New Orders</a
           ><span v-if="orderCount">{{ orderCount.running }}</span>
@@ -13,7 +13,7 @@
         <li
           class="pick"
           data-related="dm-waiting-for-pick"
-          @click="updateOrderStatus('ready')"
+          @click="updateOrderStatus({orderStatus:'ready',collected: 'no'})"
         >
           <a href="#">Waiting for Pick</a
           ><span v-if="orderCount">{{ orderCount.ready }}</span>
@@ -21,7 +21,7 @@
         <li
           class="pick"
           data-related="dm-delivery-in-progress"
-          @click="updateOrderStatus('in-progress')"
+          @click="updateOrderStatus({orderStatus:'in-progress',collected: 'no'})"
         >
           <a href="#">Delivery - In Progress</a
           ><span v-if="orderCount">{{ orderCount['in-progress'] }}</span>
@@ -29,7 +29,7 @@
         <li
           class="dm-delivered"
           data-related="dm-delivered"
-          @click="updateOrderStatus('delivered')"
+          @click="updateOrderStatus({orderStatus:'delivered',collected: 'no'})"
         >
           <a href="#">Delivered</a
           ><span v-if="orderCount">{{ orderCount.delivered }}</span>
@@ -56,11 +56,9 @@ import { mapState } from 'vuex'
 export default {
   name: 'DMHomeDeliverySubMenu',
   methods: {
-    updateOrderStatus: function(getOrderStatus) {
+    updateOrderStatus: function(orderStatus) {
       this.$store.dispatch(
-        'deliveryManager/updateDMOrderStatus',
-        getOrderStatus
-      )
+        'deliveryManager/updateDMOrderStatus', orderStatus)
     },
   },
   computed: {

@@ -92,11 +92,21 @@ export default {
       orderCount: 3,
     }
   },
-  // mounted: {
-  //   // ready() {
-  //   //   $('.last-order-wrap')[0].slick.refresh()
-  //   // },
-  // },
+  mounted() {
+    /*$('.br-table-btn').click(function () {
+      $('div.last-order-wrap')[0].slick().refresh
+    })*/
+    $('div.last-order-wrap').slick({
+      slidesToShow: 5,
+      slidesToScroll: 1,
+      accessibility: false,
+      dots: true,
+      arrows: true,
+      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
+      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+
+    })
+  },
   computed: {
     ...mapState({
       insight: state =>
@@ -130,11 +140,6 @@ export default {
           ? getCustomerList(state).gender
           : '-',
     }),
-  },
-  created: function() {
-    // loadSlickSlider: function () {
-    // $('.last-order-wrap').slick.refresh()
-    // }
   },
 }
 </script>

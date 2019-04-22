@@ -241,7 +241,7 @@ function savePostRequests(url, payload) {
       )
     }
     request.onerror = function(error) {
-      console.error('sw:', "REquest can't be send to index db", error)
+      console.error('sw:', "Request can't be send to index db", error)
     }
   })
 }

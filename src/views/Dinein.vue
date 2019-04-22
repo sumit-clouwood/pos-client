@@ -21,6 +21,8 @@
 </template>
 
 <script>
+/* global $ */
+
 import Menu from '@/components/dinein/Menu.vue'
 import Header from '@/components/dinein/Header.vue'
 import Content from '@/components/dinein/Content'
@@ -47,6 +49,10 @@ export default {
   //data passed to this component by its parent is contained inside props
   props: {
     msg: String,
+  },
+  mounted() {
+    $('body').removeAttr('class')
+    $('body').attr('class','fixed-nav sticky-footer bg-dark dinein')
   },
 }
 </script>

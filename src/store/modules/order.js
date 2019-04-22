@@ -1,7 +1,7 @@
 import * as mutation from './order/mutation-types'
 import OrderService from '../../services/data/OrderService'
 
-const DISCOUNT_ORDER_ERROR_TOTAL = `Discount can't be greater than total amount of order.`
+const DISCOUNT_ORDER_ERROR_TOTAL = 'Discount can\'t be greater than total amount of order.'
 
 // initial state
 const state = {
@@ -499,16 +499,6 @@ const actions = {
   },
   addOrderNote({ commit }, orderNote) {
     commit(mutation.SET_ORDER_NOTE, orderNote)
-    /* const params = [1, rootState.location.location]
-    let orderDetail = ''
-    OrderService.fetchOnlineOrderDetails(...params).then(response => {
-      orderDetail = response.data.orderDetails
-      commit(mutation.ONLINE_ORDERS, {
-        onlineOrders: {},
-        locationId: rootState.location.location,
-        orderDetails: orderDetail,
-      })
-    })*/
   },
 
   setOnlineOrders({ commit, rootState }, onlineOrderData) {
