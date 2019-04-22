@@ -14,7 +14,7 @@ const state = {
   dispatchOrders: false,
   dispatchOrderCount: 0,
   is_pagination: true,
-  pageSize: 10,
+  pageSize: 8,
   pageNumber: 1,
 }
 const getters = {}
