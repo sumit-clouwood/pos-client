@@ -3786,7 +3786,7 @@ div#add-to-order .modal-dialog {
 }
 
 .order-location.option-contain {
-  padding: 10px 35px 10px 15px;
+  padding: 10px 35px 8px 15px;
   display: flex;
   align-items: center;
   justify-content: left;

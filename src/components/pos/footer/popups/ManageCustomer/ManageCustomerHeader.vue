@@ -23,14 +23,14 @@ export default {
   methods: {
     searchCustomer() {
       clearTimeout(this.inputTimer)
-      if (this.searchTerms.length > 0) {
-        this.inputTimer = setTimeout(() => {
-          this.loading = true
-          this.$store
-            .dispatch('customer/searchCustomer', this.searchTerms)
-            .then(() => {})
-        }, 500) //waith half second until user finishes the typing
-      }
+      // if (this.searchTerms.length > 0) {
+      this.inputTimer = setTimeout(() => {
+        this.loading = true
+        this.$store
+          .dispatch('customer/searchCustomer', this.searchTerms)
+          .then(() => {})
+      }, 500) //waith half second until user finishes the typing
+      // }
     },
   },
 }
