@@ -92,11 +92,21 @@ const getters = {
 // actions
 const actions = {
   async fetchAll({ commit, rootState }) {
+    let orderType = 'walkin'
+
+    switch (rootState.order.orderType) {
+      case 'Walk-in':
+      case 'takeaway':
+        orderType = 'walkin'
+        break
+      default:
+        orderType = rootState.order.orderType
+        break
+    }
+
     const params = [
       rootState.location.location,
-      rootState.order.orderType == 'Walk-in'
-        ? 'walkin'
-        : rootState.order.orderType,
+      orderType,
       rootState.location.locale,
     ]
 
