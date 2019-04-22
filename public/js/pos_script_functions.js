@@ -26,3 +26,4 @@ function showPaymentBreak() {
   $('.amount-keypad').hide(100)
   $('#payment-breakdown').fadeIn()
 }
+

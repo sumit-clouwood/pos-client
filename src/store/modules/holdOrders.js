@@ -2,21 +2,26 @@ import * as mutation from './holdOrders/mutation-types'
 import HoldListService from '@/services/data/HoldListService'
 
 const state = {
-  getHoldOrders: {},
+  getHoldOrders: false,
   orderDetails: {},
+  orderStatus: false
 }
 
 const getters = {}
 
 const actions = {
-  getHoldOrders({ commit, rootState }) {
+  getHoldOrders({ commit, rootState, rootGetters }) {
+    /*let orderTotal = rootGetters['order/orderTotal']
+    if(orderTotal > 0) {
+      // dispatch('checkout/pay', {}, { root: true })
+    }*/
     const params = [
       rootState.location.location,
       rootState.sync.date,
       rootState.sync.compress,
     ]
     HoldListService.fetchAll(...params).then(response => {
-      commit(mutation.GET_HOLD_ORDERS, response.data)
+      commit(mutation.GET_HOLD_ORDERS, response.data.data)
     })
   },
 
@@ -31,6 +36,10 @@ const actions = {
       dispatch('order/addHoldOrder', { item_ids }, { root: true })
     })
   },
+
+  holdOrder({ commit }) {
+    commit(mutation.SET_ORDER_STATUS, 'on-hold')
+  },
 }
 
 const mutations = {
@@ -39,6 +48,9 @@ const mutations = {
   },
   [mutation.GET_HOLD_ORDER_DETAILS](state, order) {
     state.orderDetails = order
+  },
+  [mutation.SET_ORDER_STATUS](state, orderStatus) {
+    state.orderStatus = orderStatus
   },
 }
 

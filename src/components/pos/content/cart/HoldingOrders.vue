@@ -26,16 +26,12 @@ export default {
   props: {},
   computed: {
     ...mapState({
-      holdOrderList: state =>
-        state.holdOrders.getHoldOrders.status != 0 &&
-        state.holdOrders.getHoldOrders.data &&
-        state.holdOrders.getHoldOrders.data.length > 0
-          ? state.holdOrders.getHoldOrders.data
-          : false,
+      holdOrderList: state => state.holdOrders.getHoldOrders
     }),
     ...mapState({
       currencyCode: state => state.location.currency,
     }),
   },
+
 }
 </script>

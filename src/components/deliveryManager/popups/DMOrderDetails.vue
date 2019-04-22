@@ -48,7 +48,7 @@
                 <table class="table table-responsive">
                   <tr>
                     <th style="width: 500px">Paid By</th>
-                    <th style="width: 150px">Amount</th>
+                    <th style="width: 200px">Amount</th>
                     <th style="width: 150px">Collected</th>
                     <th style="width: 150px">Returned</th>
                   </tr>
@@ -58,8 +58,8 @@
                     :key="index"
                   >
                     <td>{{ payment.payment_mode }}</td>
-                    <td>{{ payment.payment_amount }}</td>
-                    <td>{{ collectedAmount(payment) }}</td>
+                    <td>{{ formatPrice(payment.payment_amount) }}</td>
+                    <td>{{ formatPrice(collectedAmount(payment)) }}</td>
                     <td>
                       {{
                         returnedAmount(

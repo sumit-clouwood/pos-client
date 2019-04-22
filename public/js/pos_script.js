@@ -392,16 +392,6 @@ $(document).ready(function() {
     $('.sitting-image.active').css('opacity', 0)
   })
 
-  $('ul.ullist-icons > li#hold-order-box').click(function() {
-    if ($('ul.ullist-icons > li#hold-order-box').hasClass('active')) {
-      $('.holding-order-panel').hide()
-      $('.order-wrappers-panel').show()
-    } else {
-      $('.order-wrappers-panel').hide()
-      $('.holding-order-panel').show()
-    }
-    $('ul.ullist-icons > li#hold-order-box').toggleClass('active')
-  })
 
   //  For Tip Amount
 

@@ -97,7 +97,7 @@ export default {
   data() {
     return {
       changedReferral: { referralName: 'Referral' },
-      futureDateTime: null,
+      futureDateTime: '',
       minDatetime: null,
       maxDatetime: null,
       errors: '',
@@ -127,7 +127,7 @@ export default {
         this.errors = ''
         this.deliveryOrder({
           referral: this.changedReferral,
-          futureOrder: moment(this.futureDateTime).format('YYYY/MM/DD hh:mm'),
+          futureOrder: this.futureDateTime != '' ? moment(this.futureDateTime).format('YYYY/MM/DD hh:mm') : null,
         })
           .then(() => {
             this.msg = ''

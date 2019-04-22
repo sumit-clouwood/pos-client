@@ -10,7 +10,7 @@
             </a>
           </li>
 
-          <li id="hold-order-box" @click="getHoldOrders">
+          <li id="hold-order-box" @click="viewHoldOrders">
             <!-- <a href="#"><img class="hold-orders-show" src="images/footer-images/s.png" alt="customer"><img class="hold-order" src="images/hold-order.png" alt="customer"><span>Hold Orders</span></a>-->
             <a href="#"
               ><img class="hold-orders-show" src="img/pos/hold.svg" /><img
@@ -220,7 +220,12 @@ export default {
     }),
   },
   methods: {
-    ...mapActions('holdOrders', ['getHoldOrders']),
+    viewHoldOrders: function () {
+      this.$store.dispatch('holdOrders/getHoldOrders')
+      $('.holding-order-panel').toggle()
+      $('.order-wrappers-panel').toggle()
+      $('ul.ullist-icons > li#hold-order-box').toggleClass('active')
+    },
     ...mapActions('discount', ['validateOrderDiscounts']),
     setOrderType(opt) {
       this.$store.commit('order/ORDER_TYPE', opt)
@@ -238,6 +243,7 @@ export default {
 
     })
   },
+
   mounted() {
     $('ul.ullist-icons').slick({
       slidesToShow: 5,
