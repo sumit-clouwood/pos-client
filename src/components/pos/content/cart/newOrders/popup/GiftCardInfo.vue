@@ -10,18 +10,24 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Gift Card Info</h4>
+          <h4 class="customer-title">Gift Card Detail</h4>
         </div>
-        <div class="modal-body add-email-wrap">
-          <div class="add-note-area">
-            <p>Gift Card Code {{ giftcard.gift_code }}</p>
-            <p>
-              Available Amount {{ formatPrice(giftcard.remaining_balance) }}
-            </p>
-            <p>
-              Remaining Amount
-              {{ formatPrice(giftcard.remaining_balance - giftAmount) }}
-            </p>
+        <div class="modal-body gift-card-details-wrap">
+          <div class="gift-card-detail">
+            <p>Customer Name</p>
+            <h4>{{ giftcard.customerName }}</h4>
+          </div>
+          <div class="gift-card-detail">
+            <p>Customer Mobile</p>
+            <h4>{{ giftcard.customerPhone }}</h4>
+          </div>
+          <div class="gift-card-detail">
+            <p>Gift Card Total Balance</p>
+            <h4>{{ formatPrice(giftcard.remaining_balance) }}</h4>
+          </div>
+          <div class="gift-card-detail">
+            <p>Gift Card Remaining Balance</p>
+            <h4>{{ formatPrice(giftcard.remaining_balance - giftAmount) }}</h4>
           </div>
         </div>
         <div class="modal-footer">

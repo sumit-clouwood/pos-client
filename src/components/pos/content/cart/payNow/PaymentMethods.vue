@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     getToggle(method) {
-      if (method.is_gift || method.name == 'Loyalty') {
+      if (method.name == 'Loyalty') {
         return 'modal'
       }
       return ''
@@ -68,7 +68,7 @@ function updateUI() {
   $('.payment-method-block table td img').click(function() {
     if ($('.payment-method-block').length) {
       $('.payment-method-block').addClass('active')
-      $('.payment-method-block').hide(800)
+      //$('.payment-method-block').hide(800)
     }
   })
 }

@@ -216,8 +216,8 @@ const actions = {
             payment.code ||
             (payment.method.name != 'Loyalty' && payment.method.name != 'Cash')
           ) {
-            // paymentPart.push(payment.code)
-            paymentPart.push('Card-1234')
+            paymentPart.push(payment.code)
+            //paymentPart.push('Card-1234')
           }
           //loyalty redeem setting
           if (payment.method.name == 'Loyalty') {
@@ -291,9 +291,14 @@ const actions = {
               })
               resolve(response.data)
             } else {
+              const error =
+                typeof response.data.error !== 'undefined'
+                  ? response.data.error
+                  : response.data.message
+
               commit(
                 'checkoutForm/SET_ERROR',
-                `Order Failed, Server Response: ${response.data.error}`,
+                `Order Failed, Server Response: ${error}`,
                 { root: true }
               )
               reject(response.data)
@@ -301,10 +306,21 @@ const actions = {
           })
         })
         .catch(response => {
-          commit('checkoutForm/SET_MSG', 'Queued for sending later', {
-            root: true,
-          })
-          resolve(response.data)
+          if (
+            response.data &&
+            typeof response.data.status !== 'undefined' &&
+            response.data.status === 0
+          ) {
+            commit('checkoutForm/SET_ERROR', response.data.error, {
+              root: true,
+            })
+            reject(response.data.error)
+          } else {
+            commit('checkoutForm/SET_MSG', 'Queued for sending later', {
+              root: true,
+            })
+            resolve(response.data)
+          }
         })
       // .finally(() => {
       //   resolve()

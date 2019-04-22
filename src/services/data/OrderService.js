@@ -17,7 +17,7 @@ export default {
   },
 
   deleteOrder(orderId) {
-    return DataService.get(`/api/auth/order/deleteOrder/?&order_id=${orderId}`)
+    return DataService.get(`/api/auth/order/deleteOrder/?order_id=${orderId}`)
   },
 
   updateOrder(data) {

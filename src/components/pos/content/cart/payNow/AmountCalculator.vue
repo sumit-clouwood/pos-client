@@ -33,11 +33,21 @@ export default {
   methods: {
     addAmount() {
       if (this.$store.state.checkoutForm.method.is_gift) {
-        showModal('#Gift-card-payemnt')
-      } else if (this.$store.state.checkoutForm.method.is_card) {
-        showModal('#Gift-card-payemnt')
-      } else {
+        this.$store
+          .dispatch('checkoutForm/validateGiftPayment')
+          .then(() => {
+            showModal('#Gift-card-payemnt')
+          })
+          .catch()
+      } else if (this.$store.state.checkoutForm.method.is_cash) {
         this.$store.dispatch('checkoutForm/addAmount').then(() => {})
+      } else if (!this.$store.state.checkoutForm.method.LoyalLoyalty) {
+        this.$store
+          .dispatch('checkoutForm/validateCardPayment')
+          .then(() => {
+            showModal('#card-payemnt')
+          })
+          .catch()
       }
     },
     set(amount) {
@@ -48,7 +58,7 @@ export default {
       this.$store.commit('checkoutForm/appendAmount', amount)
     },
     reset() {
-      this.$store.commit('checkoutForm/reset')
+      this.$store.dispatch('checkoutForm/resetAmount')
     },
     removeDigit() {
       this.$store.commit('checkoutForm/removeDigit')

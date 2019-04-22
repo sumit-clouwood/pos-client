@@ -14,13 +14,18 @@ export default {
     return this.syncDate
   },
   getAbsUrl(url) {
-    return url.replace(/&?last_sync_date=[^&]*&?/, '')
+    return url.replace(/last_sync_date=[^&]*&?/, '')
   },
   isValidResponse(response) {
     let validResponse = false
     if (typeof response.data.status !== 'undefined') {
       //check for status
-      validResponse = response.data.status === 1 ? true : false
+      validResponse =
+        response.data.status === 1
+          ? true
+          : response.data.status === 'success'
+          ? true
+          : false
     } else if (typeof response.data.error !== 'undefined') {
       //check for error
       validResponse = response.data.error ? false : true
@@ -50,7 +55,7 @@ export default {
             })
           resolve(response)
         } else {
-          reject(response.data.error)
+          reject(response)
         }
       })
       .catch(() => {
@@ -72,7 +77,7 @@ export default {
           if (this.isValidResponse(response)) {
             resolve(response)
           } else {
-            reject(response.data.error ? response.data.error : response.data)
+            reject(response)
           }
         })
         .catch(error => reject(error))
@@ -122,7 +127,7 @@ export default {
           if (this.isValidResponse(response)) {
             resolve(response)
           } else {
-            reject(response.data.error ? response.data.error : response.data)
+            reject(response)
           }
         })
         .catch(error => reject(error))

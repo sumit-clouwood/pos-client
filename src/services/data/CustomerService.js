@@ -20,7 +20,7 @@ export default {
 
   customerGroupList(...[lastSyncDate, isCompress]) {
     return DataService.getCacheable(
-      `/api/auth/crm/get/CustomerGroupList/?&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
+      `/api/auth/crm/get/CustomerGroupList/?last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
     )
   },
 
