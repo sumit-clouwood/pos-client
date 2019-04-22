@@ -179,10 +179,18 @@
           </a>
           <ul class="dp-dropdown-content">
             <li>
-              <a href="#"><router-link to='/delivery-manager' class="text-white"> Home Deliveries</router-link></a>
+              <a href="#"
+                ><router-link to="/delivery-manager" class="text-white">
+                  Home Deliveries</router-link
+                ></a
+              >
             </li>
             <li>
-              <a href="#"><router-link to='/dispatch-screen' class="text-white"> Dispatch Screen</router-link></a>
+              <a href="#"
+                ><router-link to="/dispatch-screen" class="text-white">
+                  Dispatch Screen</router-link
+                ></a
+              >
             </li>
           </ul>
         </li>
@@ -241,7 +249,11 @@
         <li class="nav-item arrow-bottom">
           <a class="nav-link" href="#">
             <img class="bt-arrow" src="/img/pos/down-arrow.png" alt="arrows" />
-            <img class="top-arrow" src="/img/other/top-arrow.png" alt="arrows" />
+            <img
+              class="top-arrow"
+              src="/img/other/top-arrow.png"
+              alt="arrows"
+            />
           </a>
         </li>
         <li class="nav-item">
@@ -256,7 +268,6 @@
 </template>
 
 <script>
-
 import DMTopRightNav from '@/components/deliveryManager/DMTopRightNav'
 import DMTopLeftNav from '@/components/deliveryManager/DMTopLeftNav'
 export default {

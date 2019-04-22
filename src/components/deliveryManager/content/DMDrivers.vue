@@ -1,24 +1,20 @@
 <template>
-    <div class="select-driver">
-        <button
-                type="button"
-                class="btn dropdown-toggle"
-                data-toggle="dropdown"
-        >
-            Select Driver
-        </button>
-        <ul class="dropdown-menu">
-            <li v-for="(driver, index) in driverList" :key="index">
-                <img
-                        :src="driver.driverImagePath"
-                        class="pull-left driverImg"
-                        @error="imageLoadError()"
-                />
-                <a href="#" @click="selectedDriver(driver)">{{ driver.name }}</a>
-            </li>
-        </ul>
-        <!-- <p>Show Available Drivers</p> -->
-    </div>
+  <div class="select-driver">
+    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+      Select Driver
+    </button>
+    <ul class="dropdown-menu">
+      <li v-for="(driver, index) in driverList" :key="index">
+        <img
+          :src="driver.driverImagePath"
+          class="pull-left driverImg"
+          @error="imageLoadError()"
+        />
+        <a href="#" @click="selectedDriver(driver)">{{ driver.name }}</a>
+      </li>
+    </ul>
+    <!-- <p>Show Available Drivers</p> -->
+  </div>
 </template>
 
 <script>
@@ -48,10 +44,8 @@ export default {
       this.selectDriver(driver)
     },
     ...mapActions('deliveryManager', ['selectDriver']),
-  }
+  },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

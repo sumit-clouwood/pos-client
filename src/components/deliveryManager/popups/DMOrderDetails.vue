@@ -90,7 +90,10 @@
                 <!--<tr class="pay-tot-amt modifier-item-item">
                                     <td colspan="4"><a class="modifier-dm" href="#">Bolognese Sauce</a> <a class="modifier-dm" href="#">Bolognese Sauce</a> <a class="modifier-dm" href="#">Bolognese Sauce</a></td>
                                 </tr>-->
-                <tr v-for="(item, itemIndex) in selectedOrder.items" :key="itemIndex">
+                <tr
+                  v-for="(item, itemIndex) in selectedOrder.items"
+                  :key="itemIndex"
+                >
                   <td>
                     {{ item.item_name }}
                     <div class="head1" v-if="item.item_modifiers.length">
@@ -266,7 +269,9 @@
               Re-Print
             </button>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="#" @click="generateInvoice">Default</a>
+              <a class="dropdown-item" href="#" @click="generateInvoice"
+                >Default</a
+              >
             </div>
             <!--<div class="referal">
               <button
@@ -316,7 +321,7 @@
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
       </div>
-      <InvoiceReprint :order="selectedOrder"/>
+      <InvoiceReprint :order="selectedOrder" />
     </div>
   </div>
 </template>
@@ -338,7 +343,7 @@ export default {
     ...mapGetters('location', ['formatPrice']),
   },
   components: {
-    InvoiceReprint
+    InvoiceReprint,
   },
   methods: {
     returnedAmount: function(paymentMode, amountChanged) {
@@ -354,7 +359,7 @@ export default {
       $('#recipt-history').toggle()
     },
 
-    ...mapActions('checkout',['generateInvoice'])
+    ...mapActions('checkout', ['generateInvoice']),
   },
 }
 </script>
@@ -363,5 +368,4 @@ export default {
 .displayBlock {
   display: inline-block;
 }
-
 </style>

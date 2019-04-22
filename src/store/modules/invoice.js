@@ -15,15 +15,15 @@ const getters = {
     let ruleType = null
 
     switch (rootState.order.orderType) {
-    case 'Walk-in':
-    case 'takeaway':
-      ruleType = 'walk_in_rule'
-      break
-    case 'delivery':
-      ruleType = 'call_center_rule1'
-      break
-    default:
-      ruleType = rootState.order.orderType + '_rule'
+      case 'Walk-in':
+      case 'takeaway':
+        ruleType = 'walk_in_rule'
+        break
+      case 'delivery':
+        ruleType = 'call_center_rule1'
+        break
+      default:
+        ruleType = rootState.order.orderType + '_rule'
     }
 
     let rules = state.rules.data.find(rule => {
@@ -49,12 +49,12 @@ const getters = {
     const orderType = rootState.order.orderType
     let templates = ''
     switch (orderType) {
-    case 'Walk-in':
-      templates = state.templates.data['walkin']
-      break
-    default:
-      templates = state.templates.data[orderType]
-      break
+      case 'Walk-in':
+        templates = state.templates.data['walkin']
+        break
+      default:
+        templates = state.templates.data[orderType]
+        break
     }
 
     if (!templates) {

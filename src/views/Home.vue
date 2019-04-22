@@ -23,7 +23,7 @@ export default {
   },
   mounted() {
     $('body').removeAttr('class')
-    $('body').attr('class','fixed-nav sticky-footer bg-dark')
+    $('body').attr('class', 'fixed-nav sticky-footer bg-dark')
   },
 }
 </script>

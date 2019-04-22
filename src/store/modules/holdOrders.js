@@ -4,13 +4,13 @@ import HoldListService from '@/services/data/HoldListService'
 const state = {
   getHoldOrders: false,
   orderDetails: {},
-  orderStatus: false
+  orderStatus: false,
 }
 
 const getters = {}
 
 const actions = {
-  getHoldOrders({ commit, rootState, rootGetters }) {
+  getHoldOrders({ commit, rootState }) {
     /*let orderTotal = rootGetters['order/orderTotal']
     if(orderTotal > 0) {
       // dispatch('checkout/pay', {}, { root: true })

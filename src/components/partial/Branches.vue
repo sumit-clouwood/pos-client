@@ -4,7 +4,11 @@
       All Branches
     </button>
     <ul class="dropdown-menu">
-      <li><a href="#" @click="getLocationOrders(locationId)">{{ locationName }}</a></li>
+      <li>
+        <a href="#" @click="getLocationOrders(locationId)">{{
+          locationName
+        }}</a>
+      </li>
     </ul>
   </div>
 </template>
@@ -22,10 +26,12 @@ export default {
     }),
   },
   methods: {
-    getLocationOrders: function () {
-      console.log('update location for other location need to update state of location.location')
-    }
-  }
+    getLocationOrders: function() {
+      console.log(
+        'update location for other location need to update state of location.location'
+      )
+    },
+  },
 }
 </script>
 

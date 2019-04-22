@@ -127,7 +127,10 @@ export default {
         this.errors = ''
         this.deliveryOrder({
           referral: this.changedReferral,
-          futureOrder: this.futureDateTime != '' ? moment(this.futureDateTime).format('YYYY/MM/DD hh:mm') : null,
+          futureOrder:
+            this.futureDateTime != ''
+              ? moment(this.futureDateTime).format('YYYY/MM/DD hh:mm')
+              : null,
         })
           .then(() => {
             this.msg = ''

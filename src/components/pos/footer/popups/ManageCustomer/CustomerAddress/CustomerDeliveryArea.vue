@@ -9,7 +9,7 @@
     >
       <p>
         <span>{{ locationName }}</span>
-        {{address.flat_number}},{{ getDeliveryArea(address.delivery_area) }},
+        {{ address.flat_number }},{{ getDeliveryArea(address.delivery_area) }},
         {{ address.city }},
         {{ country }}
       </p>

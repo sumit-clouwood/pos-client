@@ -8,8 +8,9 @@
       {{ deliveryAddress.customer.mobile_number }}
     </div>
     <div class="customer-info">
-      #{{ deliveryAddress.delivery_area }}
-      #{{ deliveryAddress.order_address.flat_number }},#{{ deliveryAddress.order_address.building }},
+      #{{ deliveryAddress.delivery_area }} #{{
+        deliveryAddress.order_address.flat_number
+      }},#{{ deliveryAddress.order_address.building }},
       <br />
       {{ deliveryAddress.order_address.street }}
     </div>
@@ -18,6 +19,6 @@
 <script>
 export default {
   name: 'DeliveryAddress',
-  props: ['deliveryAddress']
+  props: ['deliveryAddress'],
 }
 </script>

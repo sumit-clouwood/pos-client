@@ -2,16 +2,29 @@
   <div class="dm-order-details-wrap">
     <div class="dm-delivery-details-btn">
       <ul class="dm-ullist">
-        <li class="active" data-related="new-Collections" @click="updateOrderStatus({orderStatus:'new',collected: 'no'})">
-          <a href="#">New Order</a><span v-if="orderCount">{{orderCount.take_away.new_order}}</span>
+        <li
+          class="active"
+          data-related="new-Collections"
+          @click="updateOrderStatus({ orderStatus: 'new', collected: 'no' })"
+        >
+          <a href="#">New Order</a
+          ><span v-if="orderCount">{{ orderCount.take_away.new_order }}</span>
         </li>
-        <li class="pick" data-related="Waiting-for-Collections" @click="updateOrderStatus({orderStatus:'paid',collected: 'no'})">
+        <li
+          class="pick"
+          data-related="Waiting-for-Collections"
+          @click="updateOrderStatus({ orderStatus: 'paid', collected: 'no' })"
+        >
           <a href="#">Waiting for Collections</a
           ><span v-if="orderCount">{{
             orderCount.take_away.Waiting_for_collection
           }}</span>
         </li>
-        <li class="pick" data-related="collected" @click="updateOrderStatus({orderStatus:'paid',collected: 'yes'})">
+        <li
+          class="pick"
+          data-related="collected"
+          @click="updateOrderStatus({ orderStatus: 'paid', collected: 'yes' })"
+        >
           <a href="#">Collected</a
           ><span v-if="orderCount">{{ orderCount.take_away.collected }}</span>
         </li>
@@ -30,9 +43,7 @@ export default {
   name: 'DMTakeAwaySubMenu',
   methods: {
     updateOrderStatus: function(orderStatus) {
-      this.$store.dispatch(
-        'deliveryManager/updateDMOrderStatus', orderStatus
-      )
+      this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
     },
   },
   computed: {

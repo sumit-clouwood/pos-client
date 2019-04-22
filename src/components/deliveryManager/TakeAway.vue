@@ -20,9 +20,21 @@ export default {
   name: 'TakeAway',
   data() {
     return {
-      actionDetailsNew: { moreDetails: true, action: 'Ready', nextOrderStatus: 'paid'},
-      actionDetailsWaiting: { moreDetails: true, action: 'Collect', nextOrderStatus: 'paid'},
-      actionDetailsCollected: { moreDetails: true, action: 'Collected', nextOrderStatus: '' },
+      actionDetailsNew: {
+        moreDetails: true,
+        action: 'Ready',
+        nextOrderStatus: 'paid',
+      },
+      actionDetailsWaiting: {
+        moreDetails: true,
+        action: 'Collect',
+        nextOrderStatus: 'paid',
+      },
+      actionDetailsCollected: {
+        moreDetails: true,
+        action: 'Collected',
+        nextOrderStatus: '',
+      },
     }
   },
   components: {

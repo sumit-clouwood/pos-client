@@ -52,7 +52,7 @@ export default {
   },
   mounted() {
     $('body').removeAttr('class')
-    $('body').attr('class','fixed-nav sticky-footer bg-dark dinein')
+    $('body').attr('class', 'fixed-nav sticky-footer bg-dark dinein')
   },
 }
 </script>
