@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     collected: function (orderId) {
-      $('#ds_'+orderId).hide()
+      // $('#ds_'+orderId).hide()
       this.$store.dispatch('deliveryManager/updateTakeAway', orderId)
       this.$store.dispatch('deliveryManager/getDispatchOrder')
     }

@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-footer">
+  <div class="modal-footer showpropermsg">
     <div class="referal">
       <p v-if="errors !== ''" class="text-danger">{{ errors }}</p>
       <p v-if="msg" class="text-info">{{ msg }}</p>
@@ -164,5 +164,13 @@ export default {
 .theme-orange .vdatetime-time-picker__item--selected,
 .theme-orange .vdatetime-popup__actions__button {
   color: #ff9800;
+}
+div#order-confirmation .showpropermsg {
+  position:relative;
+  padding-top: 35px !important;
+}
+.showpropermsg .referal p {
+  position:absolute;
+  top: 5px;
 }
 </style>
