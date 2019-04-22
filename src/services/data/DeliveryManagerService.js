@@ -12,7 +12,7 @@ export default {
       `/api/auth/deliveryManager/get/order/detail?location_id=${location_id}&order_status=${order_status}&collected=${collected}&source=new-pos`
     )
   },
-  dispatchOrders(...[location_id,is_pagination, pageSize, pageNumber]) {
+  dispatchOrders(...[location_id, is_pagination, pageSize, pageNumber]) {
     return DataService.get(
       `/api/auth/deliveryManager/dispatch/screen/?location_id=${location_id}&is_pagination=${is_pagination}&pagesize=${pageSize}&pagenumber=${pageNumber}`
     )

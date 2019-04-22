@@ -14,7 +14,7 @@ export default {
   },
   mounted() {
     $('body').removeAttr('class')
-    $('body').attr('class','fixed-nav sticky-footer bg-dark dm-manager')
+    $('body').attr('class', 'fixed-nav sticky-footer bg-dark dm-manager')
   },
 }
 </script>

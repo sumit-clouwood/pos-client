@@ -14,12 +14,17 @@ export default {
   },
   mounted() {
     $('body').removeAttr('class')
-    $('body').attr('class','fixed-nav sticky-footer bg-dark dispatch-screen')
+    $('body').attr('class', 'fixed-nav sticky-footer bg-dark dispatch-screen')
   },
   methods: {
     toggleFullScreen: function() {
-      if (!document.fullscreenElement &&    // alternative standard method
-          !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {  // current working methods
+      if (
+        !document.fullscreenElement && // alternative standard method
+        !document.mozFullScreenElement &&
+        !document.webkitFullscreenElement &&
+        !document.msFullscreenElement
+      ) {
+        // current working methods
         if (document.documentElement.requestFullscreen) {
           document.documentElement.requestFullscreen()
         } else if (document.documentElement.msRequestFullscreen) {
@@ -27,7 +32,9 @@ export default {
         } else if (document.documentElement.mozRequestFullScreen) {
           document.documentElement.mozRequestFullScreen()
         } else if (document.documentElement.webkitRequestFullscreen) {
-          document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
+          document.documentElement.webkitRequestFullscreen(
+            Element.ALLOW_KEYBOARD_INPUT
+          )
         }
       } else {
         if (document.exitFullscreen) {
@@ -40,11 +47,11 @@ export default {
           document.webkitExitFullscreen()
         }
       }
-    }
+    },
   },
   updated() {
     let ds = this
-    $('.dp-zoom-scren').click(function (e) {
+    $('.dp-zoom-scren').click(function(e) {
       e.preventDefault()
       ds.toggleFullScreen()
       $(this).hide()
@@ -52,9 +59,9 @@ export default {
       $('#dp-content-wrapper').addClass('service-manager-overlay')
       $('.sticky-footer').addClass('sticky-header-overlay')
 
-      $('header').css({'height': 'unset', 'position': 'unset', 'width': 'unset'})
+      $('header').css({ height: 'unset', position: 'unset', width: 'unset' })
     })
-    $('.dp-btn-exit').click(function (e) {
+    $('.dp-btn-exit').click(function(e) {
       e.preventDefault()
       ds.toggleFullScreen()
       $(this).hide()
@@ -64,16 +71,15 @@ export default {
       $('.middle-content.service-manager-content').css('margin-top', '0')
     })
 
-    $('.dp-next-btn').click(function () {
+    $('.dp-next-btn').click(function() {
       $('.block1-wrap-dp').hide()
       $('div.block1-wrap-dp#hide-block1-dp').show()
     })
-    $('.dp-prev-btn').click(function () {
+    $('.dp-prev-btn').click(function() {
       $('.block1-wrap-dp').show()
       $('div.block1-wrap-dp#hide-block1-dp').hide()
     })
-
-  }
+  },
 }
 </script>
 

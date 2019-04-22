@@ -203,7 +203,7 @@ const actions = {
     selectedAddress.id = selected_address_id
     selectedAddress.delivery_area = area
     commit(mutation.SELECTED_CUSTOMER_ADDRESS, selectedAddress)
-    dispatch('order/updateOrderType','delivery',{ root: true })
+    dispatch('order/updateOrderType', 'delivery', { root: true })
   },
 
   CreateCustomer({ commit }, newCustomerDetails) {

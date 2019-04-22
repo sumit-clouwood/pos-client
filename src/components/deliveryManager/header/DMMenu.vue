@@ -4,21 +4,25 @@
       <button
         class="active dm-btn"
         data-related="home-delivery-order"
-        @click="updateDMOrderStatus({orderStatus:'running',collected: 'no'})"
+        @click="
+          updateDMOrderStatus({ orderStatus: 'running', collected: 'no' })
+        "
       >
         Home Delivery Orders
       </button>
       <button
         class="dm-btn"
         data-related="take-away-order"
-        @click="updateDMOrderStatus({orderStatus:'new',collected: 'no'})"
+        @click="updateDMOrderStatus({ orderStatus: 'new', collected: 'no' })"
       >
         Take Away Orders
       </button>
       <button
         class="dm-btn"
         data-related="future-order"
-        @click="updateDMOrderStatus({orderStatus:'future-order',collected: 'no'})"
+        @click="
+          updateDMOrderStatus({ orderStatus: 'future-order', collected: 'no' })
+        "
       >
         Future Orders
       </button>

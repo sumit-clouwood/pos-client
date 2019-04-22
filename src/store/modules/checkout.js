@@ -81,7 +81,9 @@ const actions = {
 
         if (rootState.order.orderType == 'delivery') {
           order.customer_id = rootState.customer.customerId
-          order.address_id = rootState.customer.address ? rootState.customer.address.id : null
+          order.address_id = rootState.customer.address
+            ? rootState.customer.address.id
+            : null
           order.status = 'running'
           // order.status = 'on-hold'
         }
@@ -172,14 +174,14 @@ const actions = {
 
             modifiers.forEach(modifier => {
               switch (modifier.type) {
-              case 'mandatory':
-                mandatoryModifiers.push(modifier)
-                break
-              case 'price':
-                priceModifiers.push(modifier)
-                break
-              default:
-                regularModifiers.push(modifier)
+                case 'mandatory':
+                  mandatoryModifiers.push(modifier)
+                  break
+                case 'price':
+                  priceModifiers.push(modifier)
+                  break
+                default:
+                  regularModifiers.push(modifier)
               }
             })
             orderItem.modifiers = {

@@ -5,7 +5,11 @@
       v-for="(order, index) in orderDetails"
       :key="index"
     >
-      <div v-if="order.order_status == orderStatus || orderStatus == 'future-order'">
+      <div
+        v-if="
+          order.order_status == orderStatus || orderStatus == 'future-order'
+        "
+      >
         <div class="dm-deliver-detail">
           <h4>{{ order.order_no }}</h4>
           <p>
@@ -17,7 +21,9 @@
               }}
             </span>
           </p>
-          <p><b>{{order.created_by}}</b></p>
+          <p>
+            <b>{{ order.created_by }}</b>
+          </p>
           <h4>{{ order.delivery_area }}</h4>
           <p v-if="order.order_address">
             {{ order.order_address.street }}, {{ locationName }},
@@ -47,7 +53,7 @@
               DMOrderStatus({
                 actionDetails: actionDetails,
                 orderId: order._id,
-                orderType: order.order_type
+                orderType: order.order_type,
               })
             "
             >{{ actionDetails.action }}</a
@@ -86,8 +92,8 @@ export default {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     DMOrderStatus: function({ actionDetails, orderId, orderType }) {
       let timestamp = Date.now()
-      if(actionDetails.action != 'Collected') {
-        if(orderType === 'takeaway') {
+      if (actionDetails.action != 'Collected') {
+        if (orderType === 'takeaway') {
           this.$store.dispatch('deliveryManager/updateTakeAway', orderId)
         } else {
           if (typeof actionDetails.driverId != 'undefined') {
@@ -106,10 +112,14 @@ export default {
           }
         }
 
-        $('#'+orderId).parent().parent().parent().hide(800)
+        $('#' + orderId)
+          .parent()
+          .parent()
+          .parent()
+          .hide(800)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

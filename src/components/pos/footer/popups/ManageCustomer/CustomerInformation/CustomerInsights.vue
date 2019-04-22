@@ -76,6 +76,7 @@
 </template>
 
 <script>
+/* global $ */
 import { mapState } from 'vuex'
 import CustomerFeedback from './CustomerFeedback'
 function getCustomerList(state) {
@@ -104,7 +105,6 @@ export default {
       arrows: true,
       nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
       prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
-
     })
   },
   computed: {

@@ -218,12 +218,12 @@ export default {
           ? state.customer.customer.customer_list
           : typeof state.customer.fetchCustomerAddressOnly.customer_list !=
             'undefined'
-            ? state.customer.fetchCustomerAddressOnly.customer_list[0]
-            : false,
+          ? state.customer.fetchCustomerAddressOnly.customer_list[0]
+          : false,
     }),
   },
   methods: {
-    viewHoldOrders: function () {
+    viewHoldOrders: function() {
       this.$store.dispatch('holdOrders/getHoldOrders')
       $('.holding-order-panel').toggle()
       $('.order-wrappers-panel').toggle()
@@ -243,7 +243,6 @@ export default {
       arrows: true,
       nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
       prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
-
     })
   },
 
@@ -256,10 +255,8 @@ export default {
       arrows: true,
       nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
       prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
-
     })
-
-  }
+  },
 }
 </script>
 

@@ -1,7 +1,8 @@
 import * as mutation from './order/mutation-types'
 import OrderService from '../../services/data/OrderService'
 
-const DISCOUNT_ORDER_ERROR_TOTAL = 'Discount can\'t be greater than total amount of order.'
+const DISCOUNT_ORDER_ERROR_TOTAL =
+  "Discount can't be greater than total amount of order."
 
 // initial state
 const state = {

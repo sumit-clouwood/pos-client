@@ -32,8 +32,7 @@
       <DMItem :actionDetails="deliveredDetails" />
     </div>
 
-      <DMDeliveredItem />
-
+    <DMDeliveredItem />
   </div>
 </template>
 
