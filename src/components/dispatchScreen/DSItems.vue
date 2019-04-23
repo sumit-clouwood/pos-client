@@ -71,7 +71,6 @@
 </template>
 
 <script>
-/* global $ */
 import DateTime from '@/mixins/DateTime'
 import { mapState } from 'vuex'
 
