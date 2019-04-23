@@ -176,11 +176,11 @@ export default {
   color: #ff9800;
 }
 div#order-confirmation .showpropermsg {
-  position:relative;
+  position: relative;
   padding-top: 35px !important;
 }
 .showpropermsg .referal p {
-  position:absolute;
+  position: absolute;
   top: 5px;
 }
 </style>
