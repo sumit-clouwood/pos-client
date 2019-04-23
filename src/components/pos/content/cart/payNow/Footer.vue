@@ -44,6 +44,7 @@ export default {
   methods: {
     pay() {
       if (this.validate) {
+        $('#payment-screen-footer').prop('disabled', true)
         $('#payment-msg').modal('show')
       }
 
@@ -56,10 +57,14 @@ export default {
           } else if (this.msg) {
             $('#payment-msg').modal('show')
           }
+          setTimeout(function() {
+            $('#payment-screen-footer').prop('disabled', false)
+          }, 1000)
         })
         .catch(() => {
           setTimeout(() => {
             $('#payment-msg').modal('hide')
+            $('#payment-screen-footer').prop('disabled', false)
           }, 500)
         })
     },

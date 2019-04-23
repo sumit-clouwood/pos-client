@@ -123,6 +123,7 @@ export default {
       if (this.changedReferral.referralName === 'Referral') {
         this.errors = 'Please select referral to proceed.'
       } else {
+        $('#confirm_announcement').prop('disabled', true)
         this.msg = 'Sending order for delivery...'
         this.errors = ''
         this.deliveryOrder({
@@ -136,11 +137,17 @@ export default {
             this.msg = ''
             $('#order-confirmation').modal('hide')
             $('#payment-msg').modal('show')
+            setTimeout(function() {
+              $('#confirm_announcement').prop('disabled', false)
+            }, 1000)
           })
           .catch(response => {
             this.errors = response.error
             $('#payment-msg').modal('hide')
             $('#order-confirmation').modal('show')
+            setTimeout(function() {
+              $('#confirm_announcement').prop('disabled', false)
+            }, 1000)
           })
       }
     },

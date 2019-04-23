@@ -78,7 +78,10 @@ export default {
       // No other way of checking: assume it's ok.
       return true
     },
+
     imageLoadError() {
+      // let myDoc = document.getElementsByClassName('.contain-body-class')
+      /* myDoc = myDoc.remove('.sticky-footer')*/
       for (let i = 0; i < document.images.length; i++) {
         if (!this.IsImageOk(document.images[i])) {
           let hue =
