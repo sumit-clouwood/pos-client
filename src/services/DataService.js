@@ -154,7 +154,7 @@ export default {
   auth(env, deviceId) {
     if (process.env.VUE_APP_API_ENDPOINT === 'http://13.127.145.151') {
       //use post method
-      const url = apiURL + '/api/auth/login'
+      const url = apiURL + '/api/login'
 
       const data = {
         email: env.VUE_APP_API_USERNAME,
@@ -176,7 +176,7 @@ export default {
       //use get method
       const url =
         apiURL +
-        '/api/auth/login/' +
+        '/api/login/' +
         '?email=' +
         env.VUE_APP_API_USERNAME +
         '&password=' +

@@ -55,18 +55,15 @@ const actions = {
                     commit(mutation.SET_TOKEN, response.data.token)
                     DataService.applyMiddleWare(state.token)
 
-                    commit(mutation.SET_USER_DETAILS, response.data.data)
-                    commit(
-                      mutation.SET_DEVICE_CODE,
-                      response.data.data.device_code
-                    )
+                    commit(mutation.SET_USER_DETAILS, response.data.user)
+                    commit(mutation.SET_DEVICE_CODE, response.data.device_code)
                     commit(
                       mutation.SET_FRANCHIES_CODE,
-                      response.data.data.franchies_code
+                      response.data.franchies_code
                     )
                     commit(
                       mutation.SET_LAST_ORDER_NO,
-                      response.data.data.last_order_no || 0
+                      response.data.last_order_no || 0
                     )
 
                     const data = {
