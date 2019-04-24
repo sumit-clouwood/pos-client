@@ -22,7 +22,9 @@
             </span>
           </div>
         </td>
-        <td class="text-right">{{ formatPrice(item.item_price_each) }}</td>
+        <td class="text-right">
+          {{ formatPrice(item.item_discount_price * item.quantity) }}
+        </td>
       </tr>
     </table>
   </div>
