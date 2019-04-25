@@ -35,6 +35,7 @@ module.exports = {
     proxy: {
       '/api': {
         //use localhost or dockerip
+        // /api ll be replaced by localhost/api/url
         target: process.env.VUE_APP_API_ENDPOINT,
         changeOrigin: true,
         secure: false,

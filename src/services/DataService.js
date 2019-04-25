@@ -3,8 +3,13 @@ import axios from 'axios'
 import db from '@/services/network/DB'
 import DateTime from '@/plugins/helpers/DateTime.js'
 
-const apiURL =
+let apiURL =
   process.env.NODE_ENV === 'production' ? process.env.VUE_APP_API_ENDPOINT : ''
+
+const brand = 'some brand'
+const store = 'somestore'
+
+apiURL += '/api/' + brand + '/' + store
 
 console.log('api url', process.env.NODE_ENV, apiURL)
 
@@ -154,7 +159,7 @@ export default {
   auth(env, deviceId) {
     if (process.env.VUE_APP_API_ENDPOINT === 'http://13.127.145.151') {
       //use post method
-      const url = apiURL + '/api/auth/login'
+      const url = apiURL + '/api/login'
 
       const data = {
         email: env.VUE_APP_API_USERNAME,
@@ -176,7 +181,7 @@ export default {
       //use get method
       const url =
         apiURL +
-        '/api/auth/login/' +
+        '/api/login/' +
         '?email=' +
         env.VUE_APP_API_USERNAME +
         '&password=' +
