@@ -3,8 +3,13 @@ import axios from 'axios'
 import db from '@/services/network/DB'
 import DateTime from '@/plugins/helpers/DateTime.js'
 
-const apiURL =
+let apiURL =
   process.env.NODE_ENV === 'production' ? process.env.VUE_APP_API_ENDPOINT : ''
+
+const brand = 'some brand'
+const store = 'somestore'
+
+apiURL += '/api/' + brand + '/' + store
 
 console.log('api url', process.env.NODE_ENV, apiURL)
 
