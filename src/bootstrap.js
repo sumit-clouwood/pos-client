@@ -4,38 +4,6 @@ import NetworkService from '@/services/NetworkService'
 import Fingerprint2 from 'fingerprintjs2'
 
 export default {
-  detectBrowser() {
-    return new Promise(resolve => {
-      const browserComponents = [
-        'userAgent',
-        'language',
-        'deviceMemory',
-        'hardwareConcurrency',
-        'screenResolution',
-        'availableScreenResolution',
-        'timezoneOffset',
-        'timezone',
-        'indexedDb',
-        'cpuClass',
-        'platform',
-        'canvas',
-        'webgl',
-        'webglVendorAndRenderer',
-      ]
-      setTimeout(function() {
-        Fingerprint2.get(function(components) {
-          const values = components.filter(component => {
-            if (browserComponents.includes[component.key]) {
-              return component.value
-            }
-          })
-          const murmur = Fingerprint2.x64hash128(values.join(''), 31)
-          console.log('device id', murmur)
-          resolve(murmur)
-        })
-      }, 10)
-    })
-  },
   setup(store) {
     return new Promise((resolve, reject) => {
       this.setupDB(store)
@@ -51,6 +19,56 @@ export default {
 
       //setup network
       this.setNetwork(store)
+    })
+  },
+
+  fetchData(store) {
+    return new Promise((resolve, reject) => {
+      this.detectBrowser().then(deviceId => {
+        store
+          .dispatch('auth/auth', deviceId)
+          .then(response => {
+            store.dispatch('location/setLocation')
+            //async
+            store
+              .dispatch('location/fetch', response)
+              .then(() => {
+                // if (syncDate) {
+                //   store.commit('sync/updateSyncDate', syncDate)
+                // }
+                //sync
+                store
+                  .dispatch('category/fetchAll', response)
+                  .then(result => {
+                    if (!result || result.error) {
+                      reject(result.error || 'No result from category/fetchAll')
+                    }
+
+                    store.dispatch('modifier/fetchAll', response).then(() => {
+                      store.commit('sync/loaded', true)
+                      resolve()
+                    })
+
+                    store.dispatch('announcement/fetchAll', response)
+                    store.dispatch('surcharge/fetchAll', response)
+                    store.dispatch('discount/fetchAll', response)
+                    store.dispatch('customer/fetchAll', response)
+                    store.dispatch('payment/fetchAll', response)
+                    //store.dispatch('giftcard/fetchAll', response)
+                    store.dispatch('invoice/fetchAll', response)
+                    store.dispatch('loyalty/fetchAll', response)
+                    store.dispatch(
+                      'deliveryManager/fetchDMOrderDetail',
+                      response
+                    )
+                    store.dispatch('deliveryManager/getDispatchOrder', response)
+                  })
+                  .catch(error => reject(error))
+              })
+              .catch(error => reject(error))
+          })
+          .catch(error => reject(error))
+      })
     })
   },
 
@@ -114,55 +132,6 @@ export default {
       store.commit('sync/setIdbVersion', 3)
     }
   },
-  fetchData(store) {
-    return new Promise((resolve, reject) => {
-      this.detectBrowser().then(deviceId => {
-        store
-          .dispatch('auth/auth', deviceId)
-          .then(response => {
-            store.dispatch('location/setLocation')
-            //async
-            store
-              .dispatch('location/fetch', response)
-              .then(() => {
-                // if (syncDate) {
-                //   store.commit('sync/updateSyncDate', syncDate)
-                // }
-                //sync
-                store
-                  .dispatch('category/fetchAll', response)
-                  .then(result => {
-                    if (!result || result.error) {
-                      reject(result.error || 'No result from category/fetchAll')
-                    }
-
-                    store.dispatch('modifier/fetchAll', response).then(() => {
-                      store.commit('sync/loaded', true)
-                      resolve()
-                    })
-
-                    store.dispatch('announcement/fetchAll', response)
-                    store.dispatch('surcharge/fetchAll', response)
-                    store.dispatch('discount/fetchAll', response)
-                    store.dispatch('customer/fetchAll', response)
-                    store.dispatch('payment/fetchAll', response)
-                    //store.dispatch('giftcard/fetchAll', response)
-                    store.dispatch('invoice/fetchAll', response)
-                    store.dispatch('loyalty/fetchAll', response)
-                    store.dispatch(
-                      'deliveryManager/fetchDMOrderDetail',
-                      response
-                    )
-                    store.dispatch('deliveryManager/getDispatchOrder', response)
-                  })
-                  .catch(error => reject(error))
-              })
-              .catch(error => reject(error))
-          })
-          .catch(error => reject(error))
-      })
-    })
-  },
 
   setNetwork(store) {
     NetworkService.status((status, msg) => {
@@ -175,6 +144,38 @@ export default {
           })
         }, 1000 * 10)
       }
+    })
+  },
+  detectBrowser() {
+    return new Promise(resolve => {
+      const browserComponents = [
+        'userAgent',
+        'language',
+        'deviceMemory',
+        'hardwareConcurrency',
+        'screenResolution',
+        'availableScreenResolution',
+        'timezoneOffset',
+        'timezone',
+        'indexedDb',
+        'cpuClass',
+        'platform',
+        'canvas',
+        'webgl',
+        'webglVendorAndRenderer',
+      ]
+      setTimeout(function() {
+        Fingerprint2.get(function(components) {
+          const values = components.filter(component => {
+            if (browserComponents.includes[component.key]) {
+              return component.value
+            }
+          })
+          const murmur = Fingerprint2.x64hash128(values.join(''), 31)
+          console.log('device id', murmur)
+          resolve(murmur)
+        })
+      }, 10)
     })
   },
 }

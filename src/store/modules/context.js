@@ -2,6 +2,8 @@
 import * as mutation from './context/mutation-types'
 
 const state = {
+  brandId: '5cbaeb4eef76a066b0533da2',
+  storeId: '5cbaeb59ef76a066b053401f',
   brand: null,
   store: null,
 }
@@ -11,11 +13,11 @@ const getters = {
   url: state => {
     if (state.brand) {
       if (state.store) {
-        return `/${state.brand._id}/${state.store._id}/`
+        return `/${state.brandId}/${state.storeId}`
       }
-      return `/${state.brand._id}/`
+      return `/${state.brandId}`
     } else {
-      return '/'
+      return ''
     }
   },
 }
@@ -25,11 +27,17 @@ const actions = {}
 
 // mutations
 const mutations = {
+  [mutation.SET_BRAND_ID](state, brandId) {
+    state.brandId = brandId
+  },
+  [mutation.SET_STORE_ID](state, storeId) {
+    state.storeId = storeId
+  },
   [mutation.SET_BRAND](state, brand) {
-    state.error = brand
+    state.brand = brand
   },
   [mutation.SET_STORE](state, store) {
-    state.error = store
+    state.store = store
   },
 }
 

@@ -82,14 +82,11 @@ const actions = {
   },
   setLocation({ commit, rootState }) {
     commit(mutation.SET_LOCATION, rootState.auth.userDetails.location_id)
-    commit(
-      mutation.SET_NAME,
-      rootState.auth.userDetails.location_id.franchies_code
-    )
+    commit(mutation.SET_NAME, rootState.auth.franchiseCode)
   },
   setLocations({ commit, rootState }) {
     commit(mutation.SET_LOCATIONS, rootState.auth.userDetails.locations)
-    commit(mutation.SET_NAME, rootState.auth.userDetails.franchies_code)
+    commit(mutation.SET_NAME, rootState.auth.franchiseCode)
   },
 
   changeLanguage({ commit }, language) {

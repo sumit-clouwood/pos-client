@@ -128,15 +128,15 @@ export default {
       $('.top-arrow').css('display', 'block')
       return false
     }),
-    $('li.nav-item.arrow-bottom > a > .top-arrow').click(function(e) {
-      e.preventDefault()
-      $('#menuAccordion')
-        .stop()
-        .animate({ top: 0 + 'px' }, 800)
-      $('.bt-arrow').css('display', 'block')
-      $('.top-arrow').css('display', 'none')
-      return false
-    })
+      $('li.nav-item.arrow-bottom > a > .top-arrow').click(function(e) {
+        e.preventDefault()
+        $('#menuAccordion')
+          .stop()
+          .animate({ top: 0 + 'px' }, 800)
+        $('.bt-arrow').css('display', 'block')
+        $('.top-arrow').css('display', 'none')
+        return false
+      })
   },
 }
 </script>

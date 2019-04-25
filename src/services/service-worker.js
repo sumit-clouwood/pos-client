@@ -341,13 +341,13 @@ function sendPostToServer() {
 
               var authToken = authData.token
               var deviceCode = authData.deviceCode
-              var franchiesCode = authData.franchiesCode
+              var franchiseCode = authData.franchiseCode
               var lastOrderNo = parseInt(authData.lastOrderNo) || 0
 
               for (let savedRequest of savedRequests) {
                 lastOrderNo++
                 var transitionOrderNo =
-                  franchiesCode + '-' + deviceCode + '-' + lastOrderNo
+                  franchiseCode + '-' + deviceCode + '-' + lastOrderNo
 
                 // send them to the server one after the other
                 console.log('sw:', 'saved request', savedRequest)
