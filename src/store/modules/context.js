@@ -11,8 +11,8 @@ const state = {
 // getters
 const getters = {
   url: state => {
-    if (state.brand) {
-      if (state.store) {
+    if (state.brandId) {
+      if (state.storeId) {
         return `/${state.brandId}/${state.storeId}`
       }
       return `/${state.brandId}`

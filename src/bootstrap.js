@@ -1,11 +1,13 @@
 /* eslint-disable no-console */
 import db from '@/services/network/DB'
+import DataService from '@/services/DataService'
 import NetworkService from '@/services/NetworkService'
 import Fingerprint2 from 'fingerprintjs2'
 
 export default {
   setup(store) {
     return new Promise((resolve, reject) => {
+      DataService.setContext(store.getters['context/url'])
       this.setupDB(store)
         .then(idb => {
           store.commit('sync/setIdb', idb)

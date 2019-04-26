@@ -19,6 +19,7 @@ import holdOrders from './modules/holdOrders'
 import payment from './modules/payment'
 import invoice from './modules/invoice'
 import loyalty from './modules/loyalty'
+import context from './modules/context'
 import deliveryManager from './modules/deliveryManager'
 import Datetime from 'vue-datetime'
 // You need a specific loader for CSS files
@@ -54,6 +55,7 @@ const store = new Vuex.Store({
     invoice,
     payment,
     loyalty,
+    context,
   },
   strict: false,
   //plugins: debug ? [createLogger()] : [],

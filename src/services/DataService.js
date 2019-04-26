@@ -44,6 +44,10 @@ const refreshAuthLogic = failedRequest =>
 createAuthRefreshInterceptor(axios, refreshAuthLogic)
 
 export default {
+  setContext(context) {
+    this.context = context
+    console.log(this.context)
+  },
   getSyncDate() {
     return this.syncDate
   },
@@ -104,6 +108,7 @@ export default {
   },
 
   get(url) {
+    url = this.context + url
     return new Promise((resolve, reject) => {
       axios
         .get(apiURL + url)
@@ -119,6 +124,7 @@ export default {
   },
 
   getCacheable(url) {
+    url = this.context + url
     const absUrl = this.getAbsUrl(url)
     return new Promise((resolve, reject) => {
       this.getOfflineEventData(absUrl)
@@ -154,6 +160,7 @@ export default {
   },
 
   post(url, data) {
+    url = this.context + url
     return new Promise((resolve, reject) => {
       axios
         .post(apiURL + url, data)
