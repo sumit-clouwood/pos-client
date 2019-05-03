@@ -7,12 +7,12 @@
       >
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <Header />
-          <Menu v-if="all.length" />
+          <Menu v-if="categories.length" />
         </div>
       </nav>
       <div class="content-wrapper">
         <div class="container-fluid row">
-          <Announcement />
+          <!-- <Announcement /> -->
           <Content />
           <!--<h1>{{ $t('title') }} from translation</h1>-->
           <!--<h1>{{ $t('body') }} from translation</h1>-->
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <Footer />
+    <!-- <Footer /> -->
   </div>
 </template>
 
@@ -41,29 +41,22 @@
 import Menu from './pos/Menu.vue'
 import Header from './pos/Header.vue'
 import Content from './pos/Content'
-import Announcement from './pos/header/Announcement'
-import Footer from './pos/Footer'
+// import Announcement from './pos/header/Announcement'
+// import Footer from './pos/Footer'
 import { mapState } from 'vuex'
 export default {
   name: 'Pos',
   computed: {
-    ...mapState('category', ['all']),
+    ...mapState('category', ['categories']),
   },
   components: {
     Header,
     Menu,
     Content,
-    Announcement,
-    Footer,
+    // Announcement,
+    // Footer,
   },
   //store private data in component using data
-  data: function() {
-    return {
-      info: null,
-      loading: true, //async loading indicator
-      errored: false, //either request had error
-    }
-  },
 
   //data passed to this component by its parent is contained inside props
   props: {

@@ -3,15 +3,15 @@ import * as mutation from './location/mutation-types'
 import LocationService from '@/services/data/LocationService'
 // initial state
 const state = {
-  location: false,
-  locationIds: [],
-  locationName: '',
   currency: 'AED',
-  locationData: {},
-  deliveryAreas: {},
-  language: 'English',
-  locale: 'en_US',
-  setTimeZone: 'Asia/Dubai',
+  locale: 'en-US',
+  timezone: 'Asia/Dubai',
+  brand: null,
+  store: null,
+  avaialableLanguages: null,
+  languageDirection: null,
+  translations: null,
+  location: null,
   setModal: '#manage-customer',
 }
 
@@ -28,70 +28,48 @@ const getters = {
       (Math.round((parseFloat(price) + 0.00001) * 100) / 100).toFixed(2)
     )
   },
-
-  getDeliveryArea: state => areaId => {
-    let area = ''
-    state.deliveryAreas.forEach(deliveryArea => {
-      if (areaId == deliveryArea._id) {
-        area = deliveryArea.name
-      }
-    })
-    return area
-  },
 }
 
 // actions
 const actions = {
   fetch({ state, commit, rootState }) {
     return new Promise((resolve, reject) => {
-      const params = [
-        state.location,
-        1 /*Staff*/,
-        1 /*Time*/,
-        rootState.sync.compress,
-      ]
-      LocationService.getLocationData(...params)
+      LocationService.getLocationData(rootState.context.storeId)
         .then(response => {
-          commit(mutation.SET_LOCATION_DATA, response.data.data)
-          commit(mutation.SET_CURRENCY, response.data.data.currency_code)
-          commit(mutation.SET_DELIVERY_AREAS, response.data.data.delivery_area)
-          commit(mutation.SET_TIMEZONE, response.data.data.country_timezone)
+          commit(mutation.SET_STORE, response.data.store)
+          commit(mutation.SET_BRAND, response.data.brand)
+          commit(mutation.SET_LOCALE, response.data.lang)
+          commit(mutation.SET_LANGUAGE_DIRECTION, response.data.direction)
+          commit(mutation.SET_TRASLATIONS, response.data.translations)
+          commit(mutation.SET_AVAILABLE_LANGUAGES, state.store.languages)
+          commit(mutation.SET_LOCATION, state.store.address)
+          commit(mutation.SET_CURRENCY, state.store.currency)
+          commit(mutation.SET_TIMEZONE, state.store.timezone)
 
-          let locale = 'en_US'
-          let language = 'English'
+          let locale = state.locale
 
           if (localStorage.getItem('locale')) {
             locale = localStorage.getItem('locale')
-            language = localStorage.getItem('language')
-          } else if (state.locationData.default_language.length) {
-            state.locationData.default_language[0].shortname
-            state.locationData.default_language[0].language
+          } else if (state.locationData.default_language) {
+            locale = state.locationData.default_language
           }
 
           commit(mutation.SET_LOCALE, locale)
-          commit(mutation.SET_LANGUAGE, language)
 
           //We are setting franchise code as the location name so we can just go with that
-          commit(mutation.SET_NAME, response.data.data.name)
 
-          resolve(LocationService.getSyncDate())
+          resolve()
           // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
         })
-        .catch(error => reject(error))
+        .catch(error => {
+          reject(error)
+        })
     })
   },
-  setLocation({ commit, rootState }) {
-    commit(mutation.SET_LOCATION, rootState.auth.userDetails.location_id)
-    commit(mutation.SET_NAME, rootState.auth.franchiseCode)
-  },
-  setLocations({ commit, rootState }) {
-    commit(mutation.SET_LOCATIONS, rootState.auth.userDetails.locations)
-    commit(mutation.SET_NAME, rootState.auth.franchiseCode)
-  },
 
-  changeLanguage({ commit }, language) {
-    commit(mutation.SET_LOCALE, language.shortname)
-    commit(mutation.SET_LANGUAGE, language.language)
+  changeLanguage({ commit }, locale) {
+    commit(mutation.SET_LOCALE, locale)
+    localStorage.setItem('locale', locale)
   },
 
   updateModalSelectionDelivery({ commit }, modalSelection) {
@@ -101,42 +79,35 @@ const actions = {
 
 // mutations
 const mutations = {
-  [mutation.SET_LOCATION](state, location) {
-    state.location = location
-  },
   [mutation.SET_MODAL](state, setModal) {
     state.setModal = setModal
   },
-  /*[mutation.SET_LOCATIONS](state, location_id) {
-        state.locationIds = location_id
-    },*/
-  [mutation.SET_NAME](state, franchise_code) {
-    state.locationName = franchise_code
+  [mutation.SET_STORE](state, store) {
+    state.store = store
   },
-
-  [mutation.SET_CURRENCY](state, currency) {
-    state.currency = currency
-  },
-  [mutation.SET_LOCATION_DATA](state, locationDetails) {
-    state.locationData = locationDetails
+  [mutation.SET_BRAND](state, brand) {
+    state.brand = brand
   },
   [mutation.SET_CURRENCY](state, currency) {
     state.currency = currency
-  },
-  [mutation.SET_DELIVERY_AREAS](state, delivery_area) {
-    state.deliveryAreas = delivery_area
-  },
-  [mutation.SET_LANGUAGE](state, language) {
-    state.language = language
-    localStorage.setItem('language', language)
   },
   [mutation.SET_LOCALE](state, locale) {
     state.locale = locale
-    localStorage.setItem('locale', locale)
   },
-
-  [mutation.SET_TIMEZONE](state, timeZone) {
-    state.setTimeZone = timeZone
+  [mutation.SET_LOCATION](state, location) {
+    state.location = location
+  },
+  [mutation.SET_TIMEZONE](state, timezone) {
+    state.timezone = timezone
+  },
+  [mutation.SET_AVAILABLE_LANGUAGES](state, languages) {
+    state.avaialableLanguages = languages
+  },
+  [mutation.SET_LANGUAGE_DIRECTION](state, langDirection) {
+    state.languageDirection = langDirection
+  },
+  [mutation.SET_TRASLATIONS](state, translations) {
+    state.translations = translations
   },
 }
 

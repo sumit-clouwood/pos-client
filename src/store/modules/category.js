@@ -6,7 +6,7 @@ const state = {
   categoryImagePath: '',
   subcategoryImagePath: '',
   itemImagePath: '',
-  all: [],
+  categories: [],
   category: {},
   subcategories: [],
   subcategory: null,
@@ -21,100 +21,51 @@ const state = {
 
 // getters, computed properties
 const getters = {
-  categoryImage: state => imageSrc => state.categoryImagePath + imageSrc,
-  subcategoryImage: state => imageSrc => state.subcategoryImagePath + imageSrc,
-  itemImage: state => imageSrc => state.itemImagePath + imageSrc,
+  categories: state => {
+    return state.categories
+  },
+  subcategories: state => {
+    return state.subcategories.filter(
+      subcategory => subcategory.category === state.category.name
+    )
+  },
+  categoryItems: state => {
+    return state.items.filter(
+      item => item.category === state.category.name && !item.sub_category
+    )
+  },
+  subcategoryItems: state => {
+    return state.items.filter(
+      item =>
+        item.category === state.category.name &&
+        item.sub_category === state.subcategory.name
+    )
+  },
+  items: (state, getters) => {
+    let items = []
+    const categoryItems = getters.categoryItems
+    const subcategoryItems = getters.subcategoryItems
 
-  menu: (state, getters, rootState) => {
-    const appLocale = rootState.location.locale
-    return state.all.map(category => {
-      let newCategory = { ...category }
-      newCategory.name = newCategory.cat_name.find(
-        locale => locale.language == appLocale
-      ).name
-      return newCategory
-    })
-  },
-  subcategories: (state, getters, rootState) => {
-    const appLocale = rootState.location.locale
-    return state.subcategories.map(category => {
-      let newCategory = { ...category }
-      newCategory.name = newCategory.subcategory_name.find(
-        locale => locale.language == appLocale
-      ).name
-      return newCategory
-    })
-  },
-  items: (state, getters, rootState) => {
-    const appLocale = rootState.location.locale
-    const items = state.searchItems.length
-      ? state.searchItems
-      : state.categoryItems.length
-      ? state.categoryItems
-      : state.subcategoryItems
-    return items.map(item => {
-      let newItem = { ...item }
-      let itemName = newItem.item_name.find(
-        locale => locale.language == appLocale
-      )
-      //fallback if no translation found
-      if (!itemName) {
-        itemName = newItem.item_name[0]
-      }
-      newItem.name = itemName ? itemName.name : 'No name'
-      return newItem
-    })
+    if (state.searchItems.length) {
+      items = state.searchItems
+    } else if (categoryItems.length) {
+      items = categoryItems
+    } else if (subcategoryItems.length) {
+      items = subcategoryItems
+    }
+    return items
   },
 
-  selectedCategory: (state, getters, rootState) => {
-    const appLocale = rootState.location.locale
-    let newCategory = { ...state.category }
-    newCategory.name = newCategory.cat_name.find(
-      locale => locale.language == appLocale
-    ).name
-    return newCategory
-  },
-  selectedSubCategory: (state, getters, rootState) => {
-    const appLocale = rootState.location.locale
-    if (state.subcategory) {
-      let newCategory = { ...state.subcategory }
-      newCategory.name = newCategory.subcategory_name.find(
-        locale => locale.language == appLocale
-      ).name
-      return newCategory
-    }
-  },
-  selectedItem: (state, getters, rootState) => {
-    const appLocale = rootState.location.locale
-    if (state.item) {
-      let newItem = { ...state.item }
-      newItem.name = newItem.item_name.find(
-        locale => locale.language == appLocale
-      ).name
-      return newItem
-    }
-  },
   getImages() {
     //for caching
     //document.getElementsByTagName('a')[0].__vue__.$store.state
     let images = []
-    const categoryImagePath = state.categoryImagePath
-    const subcategoryImagePath = state.subcategoryImagePath
-    const itemImagePath = state.itemImagePath
 
-    state.all.forEach(category => {
-      images.push(categoryImagePath + category.category_image)
-      if (category.get_category_product.length) {
-        category.get_category_product.forEach(item => {
-          images.push(itemImagePath + item.item_image)
-        })
-      }
-      category.get_sub_category.forEach(subcat => {
-        images.push(subcategoryImagePath + subcat.sub_category_image)
-        subcat.get_sub_category_product.forEach(item => {
-          images.push(itemImagePath + item.item_image)
-        })
-      })
+    state.categories.forEach(category => {
+      images.push(category.category_image)
+    })
+    state.subcategories.forEach(subcat => {
+      images.push(subcat.sub_category_image)
     })
     return images
   },
@@ -122,113 +73,33 @@ const getters = {
 
 // actions, often async
 const actions = {
-  fetchAll({ commit, rootState }) {
+  fetchAll({ commit }) {
     return new Promise((resolve, reject) => {
-      const params = [
-        rootState.location.location,
-        rootState.sync.date,
-        rootState.sync.compress,
-      ]
-      CategoryService.fetchAll(...params)
+      CategoryService.categories()
         .then(response => {
-          commit(
-            mutation.SET_CATEGORY_IMG_PATH,
-            response.data.data.itemCategoryImagePath
-          )
-          commit(
-            mutation.SET_SUBCATEGORY_IMG_PATH,
-            response.data.data.itemSubcategoryImagePath
-          )
-          commit(mutation.SET_ITEM_IMG_PATH, response.data.data.itemImagePath)
-
-          commit(mutation.SET_CATEGORIES, response.data.data.menu_data)
-          if (state.all) {
-            commit(mutation.SET_CATEGORY, state.all[0])
-            commit(mutation.SET_SUBCATEGORIES, state.category.get_sub_category)
+          commit(mutation.SET_CATEGORIES, response.data.data)
+          commit(mutation.SET_CATEGORY, state.categories[0])
+          //continue loading other stuff
+          CategoryService.subcategories().then(response => {
+            commit(mutation.SET_SUBCATEGORIES, response.data.data)
             commit(mutation.SET_SUBCATEGORY, state.subcategories[0])
-            commit(
-              mutation.SET_CATEGORY_ITEMS,
-              state.category.get_category_product
-            )
-            if (state.subcategory) {
-              commit(
-                mutation.SET_SUBCATEGORY_ITEMS,
-                state.subcategory.get_sub_category_product
-              )
-            }
-            // if (state.subcategory.get_sub_category_product) {
-            //   commit(
-            //     mutation.TAX_DETAILS,
-            //     state.subcategory.get_sub_category_product[0].item_tax
-            //   );
-            //   commit(
-            //     mutation.ITEM_TAX_AMOUNT,
-            //     state.subcategory.get_sub_category_product[0].item_tax[0].tax_amount
-            //   );
-            // }
-          }
-
-          resolve(
-            response.data ? (response.data.error ? response.data : true) : true
-          )
+            CategoryService.items().then(response => {
+              commit(mutation.SET_ITEMS, response.data.data)
+              resolve()
+            })
+          })
         })
         .catch(error => reject(error))
     })
   },
 
   //get subcategories and items based on main category
-  browse({ commit, state }, item) {
-    //reset all
-    commit(mutation.SET_SUBCATEGORIES, [])
-    commit(mutation.SET_SUBCATEGORY, null)
-    commit(mutation.SET_CATEGORY_ITEMS, [])
-    commit(mutation.SET_SUBCATEGORY_ITEMS, [])
-
-    //apply new selected
-    commit(mutation.SET_CATEGORY, item)
-
-    const subcategories = state.all.find(
-      category => category._id == state.category._id
-    ).get_sub_category
-
-    commit(mutation.SET_SUBCATEGORIES, subcategories)
-    commit(mutation.SET_SUBCATEGORY, state.subcategories[0])
-    commit(mutation.SET_CATEGORY_ITEMS, state.category.get_category_product)
-    if (state.subcategory) {
-      commit(
-        mutation.SET_SUBCATEGORY_ITEMS,
-        state.subcategory.get_sub_category_product
-      )
-    }
+  browse({ commit, getters }, category) {
+    commit(mutation.SET_CATEGORY, category)
+    commit(mutation.SET_SUBCATEGORY, getters.subcategories[0])
   },
-  //get items on subcategory click
-  getItems({ commit, state }, item) {
-    commit(mutation.SET_SEARCH_ITEMS, '')
-    const subcategory = state.subcategories.find(
-      category => category._id == item._id
-    )
+  getItems({ commit }, subcategory) {
     commit(mutation.SET_SUBCATEGORY, subcategory)
-    commit(
-      mutation.SET_SUBCATEGORY_ITEMS,
-      state.subcategory.get_sub_category_product
-    )
-  },
-
-  collectSearchItems({ commit, state, rootState }, searchTerm) {
-    const defaultLanguage = rootState.location.locale
-    let searchedItems = []
-    state.items.map(item => {
-      item.item_name.forEach(getByLanguage => {
-        if (
-          getByLanguage.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !=
-            -1 &&
-          defaultLanguage == getByLanguage.language
-        ) {
-          searchedItems.push(item)
-        }
-      })
-    })
-    commit(mutation.SET_SEARCH_ITEMS, searchedItems)
   },
 }
 // mutations
@@ -236,17 +107,7 @@ const actions = {
 const mutations = {
   //using constant as function name
   [mutation.SET_CATEGORIES](state, categories) {
-    state.all = categories
-
-    let allItems = []
-    categories.forEach(category => {
-      category.get_sub_category.forEach(subCategory => {
-        subCategory.get_sub_category_product.forEach(item => {
-          allItems.push(item)
-        })
-      })
-    })
-    state.items = allItems
+    state.categories = categories
   },
 
   [mutation.SET_CATEGORY](state, category) {
@@ -261,31 +122,12 @@ const mutations = {
     state.subcategory = subcategory
   },
 
-  [mutation.SET_CATEGORY_ITEMS](state, items) {
-    state.categoryItems = items
-  },
-
-  [mutation.SET_SUBCATEGORY_ITEMS](state, items) {
-    state.subcategoryItems = items
-  },
-
-  [mutation.SET_CATEGORY_IMG_PATH](state, path) {
-    state.categoryImagePath = path
-  },
-
-  [mutation.SET_SUBCATEGORY_IMG_PATH](state, path) {
-    state.subcategoryImagePath = path
-  },
-
-  [mutation.SET_ITEM_IMG_PATH](state, path) {
-    state.itemImagePath = path
+  [mutation.SET_ITEMS](state, items) {
+    state.items = items
   },
 
   [mutation.SET_ITEM](state, item) {
     state.item = item
-  },
-  [mutation.SET_SEARCH_ITEMS](state, searchedItems) {
-    state.searchItems = searchedItems
   },
 }
 

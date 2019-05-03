@@ -1,6 +1,10 @@
 <template>
   <div>
-    <ul class="navbar-nav navbar-sidenav" id="menuAccordion" v-if="menu.length">
+    <ul
+      class="navbar-nav navbar-sidenav"
+      id="menuAccordion"
+      v-if="categories.length"
+    >
       <li
         class="nav-item logo-wrap"
         data-toggle="tooltip"
@@ -13,9 +17,9 @@
         </a>
       </li>
       <li
-        v-for="item in menu"
+        v-for="item in categories"
         :key="item._id"
-        class="nav-item active-opacity"
+        class="nav-item active-opacity category"
         data-toggle="tooltip"
         data-placement="right"
         :title="item.name"
@@ -27,7 +31,7 @@
           href=""
           @click.prevent="browse(item)"
         >
-          <img :src="categoryImage(item.category_image)" />
+          <img :src="item.category_image" />
           <span class="nav-link-text">{{ item.name }}</span>
         </a>
       </li>
@@ -54,39 +58,24 @@
         :key="key"
       />
     </div>
-    <div v-if="modifierImages">
+    <!-- <div v-if="modifierImages">
       <link
         v-for="(url, key) in modifierImages"
         rel="prefetch"
         :href="url"
         :key="key"
       />
-    </div>
-    <!--<InformationPopup
-            :responseInformation="information"
-            :title="information.message"
-    />-->
+    </div> -->
   </div>
 </template>
 
 <script>
-/* global $ */
-// import InformationPopup from '@/components/pos/content/InformationPopup'
+/* global  $*/
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Menu',
-  data() {
-    return {
-      // information: {}
-    }
-  },
-  components: {
-    // InformationPopup
-  },
   computed: {
     ...mapState({
-      // map this.categories to store.state.categories, it uses dispatch
-      //menu: state => state.category.all,
       currentCategory: state => state.category.category._id,
     }),
     ...mapState({
@@ -97,12 +86,11 @@ export default {
             state.auth.userDetails.image
           : 'img/pos/profile-pic.png',
     }),
-    ...mapGetters('category', ['categoryImage', 'menu', 'getImages']),
-    ...mapGetters('modifier', {
-      modifierImages: 'getImages',
-    }),
+    ...mapGetters('category', ['categories', 'getImages']),
+    // ...mapGetters('modifier', {
+    //   modifierImages: 'getImages',
+    // }), //to preftech modifier images, todo
   },
-  // map `this.browse()` to `this.$store.category.dispatch('browse')`
   methods: {
     ...mapActions('category', ['browse']),
   },
@@ -119,10 +107,7 @@ export default {
           .stop()
           .animate({ top: accordionHeight - (menuHeight + 60) + 'px' }, 800)
       } else {
-        // $("#menuAccordion").animate({'top':(menuHeight - accordionHeight)+'px'},800);
         $('.top-arrow').css('display', 'none')
-        // this.information = {'status':1, 'message': 'No Items downside'}
-        // $('#information-popup').modal('toggle')
       }
       $('.bt-arrow').css('display', 'none')
       $('.top-arrow').css('display', 'block')
@@ -140,3 +125,10 @@ export default {
   },
 }
 </script>
+<style lang="sass" scoped>
+.category
+  a
+    cursor: pointer
+  img
+    width: 25px
+</style>

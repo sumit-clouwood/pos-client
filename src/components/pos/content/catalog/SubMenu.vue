@@ -4,14 +4,11 @@
       v-for="item in subcategories"
       :key="item._id"
       :class="{ active: currentSubcategory === item._id }"
-      class="pos-size-bg"
+      class="subcategory pos-size-bg"
     >
       <div @click.prevent="getItems(item)">
-        <img
-          :src="subcategoryImage(item.sub_category_image)"
-          :alt="item.name"
-        />
-        <span :title="item.name">{{ item.name.substring(0, 15) }}</span>
+        <img :src="item.sub_category_image" :alt="item.name" />
+        <span :title="item.name">{{ item.name }}</span>
       </div>
     </div>
   </div>
@@ -27,7 +24,7 @@ export default {
     ...mapState({
       currentSubcategory: state => state.category.subcategory._id,
     }),
-    ...mapGetters('category', ['subcategoryImage', 'subcategories']),
+    ...mapGetters('category', ['subcategories']),
   },
   methods: {
     ...mapActions('category', ['getItems']),

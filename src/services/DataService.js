@@ -44,12 +44,11 @@ const refreshAuthLogic = failedRequest =>
 createAuthRefreshInterceptor(axios, refreshAuthLogic)
 
 export default {
+  context: '',
+
   setContext(context) {
     this.context = context
     console.log(this.context)
-  },
-  getSyncDate() {
-    return this.syncDate
   },
   getAbsUrl(url) {
     return url.replace(/last_sync_date=[^&]*&?/, '')
@@ -58,12 +57,7 @@ export default {
     let validResponse = false
     if (typeof response.data.status !== 'undefined') {
       //check for status
-      validResponse =
-        response.data.status === 1
-          ? true
-          : response.data.status === 'success'
-          ? true
-          : false
+      validResponse = ['success', 'ok', '1'].includes(response.data.status)
     } else if (typeof response.data.error !== 'undefined') {
       //check for error
       validResponse = response.data.error ? false : true

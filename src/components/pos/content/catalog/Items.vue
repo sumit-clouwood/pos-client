@@ -1,25 +1,18 @@
 <template>
-  <div class="items vegetable-pizza-wrapper">
-    <!--Added Breadcrumb here-->
-    <Breadcrumbs />
-    <div class="vegetable-pizza-block">
-      <div class="vegetable-pizza">
-        <div
-          class="vegetable pos-item-bg"
-          v-for="item in items"
-          :key="item._id"
-          @click.prevent="addToOrder(item)"
-        >
-          <div>
-            <img
-              :src="itemImage(item.item_image)"
-              :alt="item.name"
-              @error="imageLoadError()"
-            />
-            <p class="remove-bottom popover-btn" :title="item.name">
-              {{ item.name.substring(0, 15) }}
-            </p>
-          </div>
+  <!--Added Breadcrumb here-->
+  <div class="vegetable-pizza-block">
+    <div class="vegetable-pizza">
+      <div
+        class="vegetable pos-item-bg"
+        v-for="item in items"
+        :key="item._id"
+        @click.prevent="addToOrder(item)"
+      >
+        <div>
+          <img :src="item.image" :alt="item.name" @error="imageLoadError()" />
+          <p class="remove-bottom popover-btn" :title="item.name">
+            {{ item.name }}
+          </p>
         </div>
       </div>
     </div>
@@ -32,7 +25,6 @@
 
 import { mapGetters } from 'vuex'
 
-import Breadcrumbs from './items/Breadcrumbs'
 import Popup from './items/Popup'
 export default {
   name: 'Items',
@@ -40,11 +32,10 @@ export default {
     msg: String,
   },
   components: {
-    Breadcrumbs,
     Popup,
   },
   computed: {
-    ...mapGetters('category', ['items', 'itemImage']),
+    ...mapGetters('category', ['items']),
     ...mapGetters('modifier', ['hasModifiers']),
   },
   methods: {

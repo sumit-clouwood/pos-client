@@ -7,7 +7,6 @@ import Fingerprint2 from 'fingerprintjs2'
 export default {
   setup(store) {
     return new Promise((resolve, reject) => {
-      DataService.setContext(store.getters['context/url'])
       this.setupDB(store)
         .then(idb => {
           store.commit('sync/setIdb', idb)
@@ -30,40 +29,37 @@ export default {
         store
           .dispatch('auth/auth', deviceId)
           .then(response => {
-            store.dispatch('location/setLocation')
+            DataService.setContext(store.getters['context/url'])
             //async
+
+            // if (syncDate) {
+            //   store.commit('sync/updateSyncDate', syncDate)
+            // }
+            //sync
             store
               .dispatch('location/fetch', response)
               .then(() => {
-                // if (syncDate) {
-                //   store.commit('sync/updateSyncDate', syncDate)
-                // }
-                //sync
                 store
                   .dispatch('category/fetchAll', response)
-                  .then(result => {
-                    if (!result || result.error) {
-                      reject(result.error || 'No result from category/fetchAll')
-                    }
-
-                    store.dispatch('modifier/fetchAll', response).then(() => {
-                      store.commit('sync/loaded', true)
-                      resolve()
-                    })
-
-                    store.dispatch('announcement/fetchAll', response)
-                    store.dispatch('surcharge/fetchAll', response)
-                    store.dispatch('discount/fetchAll', response)
-                    store.dispatch('customer/fetchAll', response)
-                    store.dispatch('payment/fetchAll', response)
-                    //store.dispatch('giftcard/fetchAll', response)
-                    store.dispatch('invoice/fetchAll', response)
-                    store.dispatch('loyalty/fetchAll', response)
-                    store.dispatch(
-                      'deliveryManager/fetchDMOrderDetail',
-                      response
-                    )
-                    store.dispatch('deliveryManager/getDispatchOrder', response)
+                  .then(() => {
+                    store.commit('sync/loaded', true)
+                    resolve()
+                    // store.dispatch('modifier/fetchAll', response).then(() => {
+                    //   resolve()
+                    // })
+                    // store.dispatch('announcement/fetchAll', response)
+                    // store.dispatch('surcharge/fetchAll', response)
+                    // store.dispatch('discount/fetchAll', response)
+                    // store.dispatch('customer/fetchAll', response)
+                    // store.dispatch('payment/fetchAll', response)
+                    // //store.dispatch('giftcard/fetchAll', response)
+                    // store.dispatch('invoice/fetchAll', response)
+                    // store.dispatch('loyalty/fetchAll', response)
+                    // store.dispatch(
+                    //   'deliveryManager/fetchDMOrderDetail',
+                    //   response
+                    // )
+                    // store.dispatch('deliveryManager/getDispatchOrder', response)
                   })
                   .catch(error => reject(error))
               })
