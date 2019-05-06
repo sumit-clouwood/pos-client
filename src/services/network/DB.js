@@ -39,9 +39,9 @@ export default {
         options
           ? options
           : {
-              autoIncrement: true,
-              keyPath: 'id',
-            }
+            autoIncrement: true,
+            keyPath: 'id',
+          }
       )
 
       resolve(objectStore)

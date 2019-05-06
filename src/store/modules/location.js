@@ -47,7 +47,6 @@ const actions = {
           commit(mutation.SET_TIMEZONE, state.store.timezone)
 
           let locale = state.locale
-
           if (localStorage.getItem('locale')) {
             locale = localStorage.getItem('locale')
           } else if (state.locationData.default_language) {
