@@ -12,7 +12,7 @@
       </nav>
       <div class="content-wrapper">
         <div class="container-fluid row">
-          <!-- <Announcement /> -->
+           <Announcement />
           <Content />
           <!--<h1>{{ $t('title') }} from translation</h1>-->
           <!--<h1>{{ $t('body') }} from translation</h1>-->
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <!-- <Footer /> -->
+     <Footer />
   </div>
 </template>
 
@@ -41,8 +41,8 @@
 import Menu from './pos/Menu.vue'
 import Header from './pos/Header.vue'
 import Content from './pos/Content'
-// import Announcement from './pos/header/Announcement'
-// import Footer from './pos/Footer'
+import Announcement from './pos/header/Announcement'
+import Footer from './pos/Footer'
 import { mapState } from 'vuex'
 export default {
   name: 'Pos',
@@ -53,8 +53,8 @@ export default {
     Header,
     Menu,
     Content,
-    // Announcement,
-    // Footer,
+    Announcement,
+    Footer,
   },
   //store private data in component using data
 

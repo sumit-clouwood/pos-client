@@ -3,15 +3,15 @@
     <ul class="ullist-category">
       <li>
         <span>Selected Category</span>
-        <p>{{ category.name }}</p>
+        <p class="shorten_name" :title="category.name">{{ category.name }}</p>
         <span class="arrows"
           ><img src="img/pos/right-arrow.png" alt="right-arrow"
         /></span>
       </li>
       <li v-if="subcategory">
-        <span>Selected Sub Category</span>
-        <p>
-          {{ subcategory.name }}
+        <span>Selected Sub Category </span>
+        <p class="shorten_name" :title="subcategory.sub_category">
+          {{ subcategory.sub_category }}
         </p>
         <span class="arrows"
           ><img src="img/pos/right-arrow.png" alt="right-arrow"
@@ -19,7 +19,7 @@
       </li>
       <li v-if="item">
         <span>Selected Item</span>
-        <p :title="item.name">
+        <p :title="item.name" class="shorten_name">
           {{ item.name }}
         </p>
       </li>
@@ -43,5 +43,13 @@ export default {
 <style scoped>
 ul.ullist-category {
   width: 500px !important;
+}
+.shorten_name{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 85%;
+  display: inline-block;
+  cursor: default;
 }
 </style>
