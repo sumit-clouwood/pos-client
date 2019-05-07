@@ -8,7 +8,7 @@
     >
       <div @click.prevent="getItems(item)">
         <img :src="item.sub_category_image" :alt="item.name" />
-        <span :title="item.name">{{ item.name }}</span>
+        <span class="cat-name" :title="item.name">{{ item.name }}</span>
       </div>
     </div>
   </div>
@@ -31,10 +31,8 @@ export default {
   },
 }
 </script>
-<style scoped lang="scss">
-.pizza-size-wrapper {
-  img {
-    width: 64px;
-  }
-}
+<style lang="sass" scoped>
+.pizza-size-wrapper
+  img
+    width: 64px
 </style>
