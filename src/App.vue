@@ -51,9 +51,7 @@ export default {
   computed: {
     ...mapState({
       defaultLanguage: state =>
-        state.location.locationData
-          ? state.location.locationData.default_language[0]
-          : false,
+        state.location.store ? state.location.store.default_language : false,
     }),
   },
   //life cycle hooks

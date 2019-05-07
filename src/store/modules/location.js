@@ -50,8 +50,8 @@ const actions = {
 
           if (localStorage.getItem('locale')) {
             locale = localStorage.getItem('locale')
-          } else if (state.locationData.default_language) {
-            locale = state.locationData.default_language
+          } else if (state.store.default_language) {
+            locale = state.store.default_language
           }
 
           commit(mutation.SET_LOCALE, locale)
