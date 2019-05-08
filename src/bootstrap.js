@@ -50,7 +50,7 @@ export default {
                     // store.dispatch('announcement/fetchAll', response)
                     // store.dispatch('surcharge/fetchAll', response)
                     // store.dispatch('discount/fetchAll', response)
-                    // store.dispatch('customer/fetchAll', response)
+                    store.dispatch('customer/fetchAll', response)
                     // store.dispatch('payment/fetchAll', response)
                     // //store.dispatch('giftcard/fetchAll', response)
                     // store.dispatch('invoice/fetchAll', response)

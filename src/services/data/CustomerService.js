@@ -44,7 +44,9 @@ export default {
     ]
   ) {
     return DataService.getCacheable(
-      `/api/auth/pos/customerList?location_id=${locationId}&search=${search}&page_size=${perpage}&page_number=${page}&origin=${origin}&validate=${validate}&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
+      `model/brand_customers?page_id=brand_customers_main_tbl&query=&limit=${perpage}&ascending=0&page=${page}&byColumn=0&orderBy=last_order_datetime=${lastSyncDate}&store_id=`, false
+
+      // `/api/auth/pos/customerList?location_id=${locationId}&search=${search}&page_size=${perpage}&page_number=${page}&origin=${origin}&validate=${validate}&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
     )
   },
 
