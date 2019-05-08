@@ -10,7 +10,7 @@ const state = {
 
 // getters
 const getters = {
-  url: state => {
+  store: state => {
     if (state.brandId) {
       if (state.storeId) {
         return `/${state.brandId}/${state.storeId}`
