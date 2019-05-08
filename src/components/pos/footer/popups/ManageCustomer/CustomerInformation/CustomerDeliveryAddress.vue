@@ -29,9 +29,9 @@ export default {
   computed: {
     ...mapState({
       deliveryAddresses: state =>
-        state.customer.customer.customer_list
-          ? state.customer.customer.customer_list.customer_details
-          : [],
+        state.customer.customer
+          ? state.customer.customer.customer_addresses
+          : false,
     }),
   },
 }

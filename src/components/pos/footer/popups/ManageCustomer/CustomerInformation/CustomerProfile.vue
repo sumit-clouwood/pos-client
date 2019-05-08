@@ -1,26 +1,30 @@
 <template>
   <ul class="ullist-profile" v-if="customerProfile">
     <li class="col-md-2">
-      <img
+      <img v-if="customerProfile.image"
         v-bind:src="customerProfile.image_path + customerProfile.image"
         alt="order-profile"
       />
+      <img v-else class="profile-picture" src="img/other/placeholder-img.png">
     </li>
-    <li class="col-md-5 lh">
+    <li class="col-md-4 lh">
       <p class="profile-customer-title">Customer Name:</p>
-      <h2 id="profile-customer-name">
-        {{ customerProfile.customer_name }}
-      </h2>
+      <h5 id="profile-customer-name">
+        {{ customerProfile.name }}
+      </h5>
+      <p class="profile-customer-title">Email: {{ customerProfile.email }}</p>
       <p class="name-confrimation">
-        Not Beby?
+        Not  {{ customerProfile.name }}?
         <span data-toggle="modal" data-target="#customer" data-dismiss="modal"
           >Create new customer</span
         >
       </p>
     </li>
-    <li class="col-md-3">
+    <li class="col-md-4">
       <p class="profile-customer-title">Phone Number:</p>
-      <h2 id="profile-customer-number">{{ customerProfile.mobile_number }}</h2>
+      <h5 id="profile-customer-number">{{ customerProfile.phone_number }}</h5>
+      <p class="profile-customer-title"><small>Alternative Phone Number: {{ customerProfile.alternative_phone }}</small></p>
+      <p class="profile-customer-title"><small>Customer Group: {{ customerProfile.customer_group }}</small></p>
     </li>
     <li class="col-md-2">
       <a class="cu-edit-icon" href="#"
@@ -92,8 +96,8 @@ export default {
   computed: {
     ...mapState({
       customerProfile: state =>
-        state.customer.customer.customer_list
-          ? state.customer.customer.customer_list
+        state.customer.customer
+          ? state.customer.customer
           : false,
     }),
   },

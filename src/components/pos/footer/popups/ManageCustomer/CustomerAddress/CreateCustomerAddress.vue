@@ -36,8 +36,8 @@
                 class="selectpicker"
                 v-model="newAddressDetails.location_id"
               >
-                <option :value="location_id">
-                  {{ locationData.branch_n }}
+                <option :value="storeData.branch_id">
+                  {{ storeData.branch_n }}
                 </option>
               </select>
               <span class="validation-error" v-if="errors.location">{{
@@ -85,7 +85,7 @@
               <label>City <span>*</span></label>
               <select class="selectpicker" v-model="newAddressDetails.add_city">
                 <option selected="selected">
-                  {{ locationData.city }}
+                  {{ storeData.city }}
                 </option>
               </select>
               <span class="validation-error" v-if="errors.add_city">{{
@@ -95,8 +95,8 @@
             <div class="customer-group">
               <label>Country <span>*</span></label>
               <select class="selectpicker" v-model="newAddressDetails.country">
-                <option :value="locationData.country_id" selected="selected">
-                  {{ locationData.country_name }}
+                <option :value="storeData.country_id" selected="selected">
+                  {{ storeData.country_name }}
                 </option>
               </select>
               <span class="validation-error" v-if="errors.country">{{
@@ -154,14 +154,11 @@ export default {
   },
   computed: {
     ...mapState({
-      locationData: state => state.location.locationData,
-    }),
-    ...mapState({
-      location_id: state => state.location.location,
+      storeData: state => state.location.store,
     }),
     ...mapState({
       deliveryAreas: state =>
-        state.location.deliveryAreas.length
+        state.customer.deliveryAreas
           ? state.location.deliveryAreas
           : false,
     }),

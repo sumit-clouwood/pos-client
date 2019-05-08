@@ -76,3 +76,11 @@ export default {
   name: 'Buttons',
 }
 </script>
+<style>
+  .cu-location-select span {
+    border-radius: 0.375rem;
+    height: 1rem;
+    width: 1.50rem;
+    display: inline-block;
+  }
+</style>

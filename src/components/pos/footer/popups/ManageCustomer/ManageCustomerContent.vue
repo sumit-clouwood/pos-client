@@ -21,15 +21,15 @@
             v-on:click="setActiveCustomer(index)"
             :key="index"
           >
-            <td>{{ customer.customer_name }}</td>
-            <td>{{ customer.mobile_number }}</td>
+            <td>{{ customer.name }}</td>
+            <td>{{ customer.phone_number }}</td>
             <td>{{ customer.email }}</td>
             <td>
               <button
                 data-toggle="modal"
                 data-target="#display-order"
                 data-dismiss="modal"
-                @click="fetchSelectedCustomer({ customerId: customer._id })"
+                @click="fetchSelectedCustomer({ customer: customer })"
                 class="br-table-btn display-order"
               >
                 Display Order
@@ -37,7 +37,7 @@
             </td>
             <td>
               <button
-                @click="fetchSelectedCustomer({ customerId: customer._id })"
+                @click="fetchSelectedCustomer({ customer: customer })"
                 data-toggle="modal"
                 data-target="#display-order"
                 data-dismiss="modal"
@@ -47,7 +47,7 @@
               ><button
                 @click="
                   fetchSelectedCustomer({
-                    customerId: customer._id,
+                    customer: customer,
                     addressOnly: true,
                   })
                 "
@@ -57,7 +57,7 @@
                 class="br-table-btn order-add"
               >
                 Add to Order</button
-              ><span>{{ customer.city }}</span>
+              ><span>{{ getCustomerLocation(customer.customer_addresses) }}</span>
             </td>
           </tr>
         </tbody>
@@ -88,6 +88,11 @@ export default {
   methods: {
     setActiveCustomer(index) {
       this.activeIndex = index
+    },
+    getCustomerLocation(customerAddress) {
+      if(customerAddress.length) {
+        return customerAddress[0].city
+      }
     },
     // updateDada() {
     //   $('.last-order-wrap')[0].slick.refresh()

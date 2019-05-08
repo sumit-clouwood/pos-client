@@ -100,8 +100,8 @@
         <div class="mobile-from">
           <label>Select Location/Branch <span>*</span></label>
           <select class="selectpicker" v-model="newCustomerDetails.location_id">
-            <option :value="location_id">
-              {{ locationData.branch_n }}
+            <option :value="storeData.brand_id">
+              {{ storeData.branch_n }}
             </option>
           </select>
           <span class="validation-error" v-if="errors.location">{{
@@ -139,7 +139,7 @@
           <label>City<span>*</span></label>
           <select class="selectpicker" v-model="newCustomerDetails.city">
             <option selected="selected">
-              {{ locationData.city }}
+              {{ storeData.city }}
             </option>
           </select>
           <span class="validation-error" v-if="errors.city">{{
@@ -149,8 +149,8 @@
         <div class="customer-group">
           <label>Country <span>*</span></label>
           <select class="selectpicker" v-model="newCustomerDetails.country">
-            <option :value="locationData.country_id" selected="selected">
-              {{ locationData.country_name }}
+            <option :value="storeData.country" selected="selected">
+              {{ storeData.country }}
             </option>
           </select>
           <span class="validation-error" v-if="errors.country">{{
@@ -185,19 +185,19 @@ export default {
   computed: {
     ...mapState({
       customerGroup: state =>
-        state.customer.customer_group.length
+        state.customer.customer_group
           ? state.customer.customer_group
           : false,
     }),
     ...mapState({
-      locationData: state => state.location.locationData,
+      storeData: state => state.location.store,
     }),
-    ...mapState({
+    /*...mapState({
       location_id: state => state.location.location,
-    }),
+    }),*/
     ...mapState({
       deliveryAreas: state =>
-        state.location.deliveryAreas.length
+        state.customer.deliveryAreas
           ? state.location.deliveryAreas
           : false,
     }),

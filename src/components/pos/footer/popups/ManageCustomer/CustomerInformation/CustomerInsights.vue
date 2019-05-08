@@ -1,59 +1,72 @@
 <template>
-  <div class="customer-insight" v-if="insight">
+  <div class="customer-insight">
+    {{insight}}
     <div class="title-cu">
       <h2>Customer Insights</h2>
     </div>
-    <div class="last-order-wrap">
-      <div class="insight-last-order">
-        <h3>LAST ORDER</h3>
-        <p class="last-order-time">{{ insight.lastOrderTimeDifference }}</p>
-        <p class="last-order-details">{{ insight.favouriteItem }}</p>
-      </div>
-      <div class="insight-last-order">
-        <ul class="ullist-business-slider">
-          <li>
-            TOTAL BUSINESS <span>{{ insight.total.total_business }}</span>
-          </li>
-          <li>
-            CANCELLED <span>{{ insight.total.total_cancelled }}</span>
-          </li>
-        </ul>
-        <div class="total-amount-business-slider">
-          <p>TOTAL AMOUNT</p>
-          <h3>AED {{ insight.total.total_amount }}</h3>
-        </div>
-      </div>
-      <div class="insight-last-order">
-        <h3>LAST ORDER</h3>
-        <ul class="fav-item-slider">
-          <!--<li><img src="/img/pos/dine-right.png" alt="fav-item" /></li>-->
-          <li v-for="i in orderCount" :key="i">
-            {{
-              typeof insight.lastOrderItems[i] != 'undefined'
-                ? insight.lastOrderItems[i]
-                : ''
-            }}
-          </li>
-        </ul>
-      </div>
-    </div>
+<!--    <div>-->
+<!--      <carousel :per-page="1" :mouse-drag="false">-->
+<!--        <slide>-->
+<!--          <div class="insight-last-order">-->
+<!--            <h3>LAST ORDER</h3>-->
+<!--            <p class="last-order-time">{{ insight.last_order_datetime }}</p>-->
+<!--            <p class="last-order-details">{{ insight.favorites   }}</p>-->
+<!--          </div>-->
+<!--        </slide>-->
+<!--        <slide>-->
+<!--          <div class="insight-last-order">-->
+<!--            <ul class="ullist-business-slider">-->
+<!--              <li>-->
+<!--                TOTAL BUSINESS <span>{{ insight.total_orders }}</span>-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                CANCELLED <span>{{ cancelled_orders_count }}</span>-->
+<!--              </li>-->
+<!--            </ul>-->
+<!--            <div class="total-amount-business-slider">-->
+<!--              <p>TOTAL AMOUNT</p>-->
+<!--              <h3>AED {{ insight.total.total_amount }}</h3>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </slide>-->
+<!--        <slide>-->
+<!--          <div class="insight-last-order">-->
+<!--            <h3>LAST ORDER</h3>-->
+<!--            <ul class="fav-item-slider">-->
+<!--              &lt;!&ndash;<li><img src="/img/pos/dine-right.png" alt="fav-item" /></li>&ndash;&gt;-->
+<!--              <li>-->
+<!--                {{ insight.last_order }}-->
+<!--              </li>-->
+<!--            </ul>-->
+<!--          </div>-->
+<!--        </slide>-->
+<!--      </carousel>-->
+<!--    </div>-->
     <div class="dob-customer-insight">
       <ul class="ullist-dob">
         <li>
-          Birthday : <span>{{ birthday }}</span>
+          Birthday : <span>{{ insight.birthday }}</span>
         </li>
         <li>Age : <span>24</span></li>
         <li>
-          Gender : <span>{{ gender }}</span>
+          Gender : <span>{{ insight.gender }}</span>
         </li>
       </ul>
     </div>
     <div class="customer-insights-notes">
       <div>
         <p>Notes :</p>
-        <div v-if="customerNotes.length > 0">
-          {{ customerNotes[0].message }}
-        </div>
+          <paginate
+                  v-if="insight.notes.length"
+                  :page-count="totalPages"
+                  :page-range="1"
+                  :margin-pages="1"
+                  :prev-text="'Prev'"
+                  :next-text="'Next'"
+                  :container-class="''"
+                  :page-class="'page-item'"
+          >
+          </paginate>
         <span
           data-toggle="modal"
           class="text-success cursor-pointer"
@@ -79,25 +92,32 @@
 /* global $ */
 import { mapState } from 'vuex'
 import CustomerFeedback from './CustomerFeedback'
+import { Carousel, Slide } from 'vue-carousel'
+import paginate from 'vuejs-paginate'
+
 function getCustomerList(state) {
-  return state.customer.customer.customer_list
+  return state.customer.customer
 }
 
 export default {
   name: 'CustomerInsights',
   components: {
     CustomerFeedback,
+    Carousel,
+    Slide,
+    paginate,
+
   },
-  data() {
+  /*data() {
     return {
       orderCount: 3,
     }
-  },
+  },*/
   mounted() {
     /*$('.br-table-btn').click(function () {
       $('div.last-order-wrap')[0].slick().refresh
     })*/
-    $('div.last-order-wrap').slick({
+    /*$('div.last-order-wrap').slick({
       slidesToShow: 5,
       slidesToScroll: 1,
       accessibility: false,
@@ -105,22 +125,35 @@ export default {
       arrows: true,
       nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
       prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
-    })
+    })*/
   },
   computed: {
     ...mapState({
       insight: state =>
-        getCustomerList(state) && getCustomerList(state).insight
-          ? getCustomerList(state).insight
+        getCustomerList(state)
+          ? getCustomerList(state)
           : false,
     }),
-    ...mapState({
+    cancelled_orders_count() {
+      return this.insight.orders.reduce((prev, current) => {
+        return prev + (current.order_status == 'ORDER_STATUS_CANCELLED' ? 1 : 0)
+      }, 0)
+    },
+    totalPages: function () {
+      let totalNotes = this.insight.notes.length
+      if(totalNotes <= 10) {
+        return 1
+      } else {
+        return (totalNotes / 10)
+      }
+    },
+    /*...mapState({
       customerNotes: state =>
         getCustomerList(state) && getCustomerList(state).customer_notes
           ? getCustomerList(state).customer_notes
           : false,
-    }),
-    ...mapState({
+    }),*/
+    /*...mapState({
       birthday: state =>
         (typeof getCustomerList(state).day != 'undefined'
           ? getCustomerList(state).day
@@ -133,13 +166,13 @@ export default {
         (typeof getCustomerList(state).year != 'undefined'
           ? getCustomerList(state).year
           : '-'),
-    }),
-    ...mapState({
+    }),*/
+    /*...mapState({
       gender: state =>
         getCustomerList(state) && getCustomerList(state).gender != null
           ? getCustomerList(state).gender
           : '-',
-    }),
+    }),*/
   },
 }
 </script>

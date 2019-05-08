@@ -2,13 +2,10 @@
   <div class="navbar-nav-sidebar">
     <div class="add-screen-walkin">
       <p class="walk-in text-capitalize">{{ orderType }}</p>
-      <p class="walk-in-place text-capitalize">{{ locationName }}</p>
+      <p class="walk-in-place text-capitalize">{{ locationName.name }}</p>
     </div>
     <div class="time-zone-btn">
-      <a href="#"
-        ><span>{{ todayTime }}</span
-        ><span>{{ todayDate }}</span></a
-      >
+      <a href="#"><span>{{ todayTime }}</span><span>{{ todayDate }}</span></a>
     </div>
   </div>
 </template>
@@ -29,7 +26,7 @@ export default {
   },
   computed: {
     ...mapState({
-      locationName: state => state.location.locationName,
+      locationName: state => state.location.store,
     }),
     ...mapState('order', ['orderType']),
   },

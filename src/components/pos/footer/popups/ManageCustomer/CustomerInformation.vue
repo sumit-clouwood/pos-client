@@ -98,3 +98,8 @@ export default {
   },
 }
 </script>
+<style scoped lang="scss">
+  div#display-order .modal-dialog {
+    max-width: 70%;
+  }
+</style>

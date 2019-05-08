@@ -7,6 +7,8 @@ const state = {
   customerId: null,
   customer_group: {},
   paginate: {},
+  pastOrder: false,
+  selectedCustomerPastOrder: false,
   pastOrdersPaginate: {},
   params: {
     page_number: 1,
@@ -22,6 +24,7 @@ const state = {
   loading: false,
   error: false,
   loyalty: false,
+  deliveryAreas: false,
 }
 const getters = {
   find: state => customerId => {
@@ -47,6 +50,9 @@ const getters = {
       }
     }
   },
+  getDeliveryArea: state => addressId => {
+    return state.deliveryAreas.find( address => address._id === addressId).name
+  }
 }
 const actions = {
   fetchAll({ commit, rootState }) {
@@ -65,25 +71,29 @@ const actions = {
       customerService
         .customerList(...params)
         .then(response => {
-          /*if (response.data.data.length) {
-            paginateDetails.currentPage = response.data.page_number
+          console.log(response.data)
+          if (response.data.data.length) {
+            // paginateDetails.currentPage = response.data.page_number
+            paginateDetails.currentPage = 1
             paginateDetails.totalCustomers = response.data.count
-            paginateDetails.totalPages = response.data.max_page_number
-            paginateDetails.customarPerPage = response.data.page_size
+            // paginateDetails.totalPages = response.data.max_page_number
+            paginateDetails.totalPages = 1
+            // paginateDetails.customarPerPage = response.data.page_size
+            paginateDetails.customarPerPage = 10
 
             commit(mutation.CUSTOMER_LIST, response.data.data)
+            commit(mutation.ORDERS, response.data.page_lookups.orders)
             commit(mutation.PAGINATE_DETAILS, paginateDetails)
             resolve(response.data.data)
           } else {
             reject(response.data.data)
-          }*/
+          }
         })
         .catch(error => reject(error))
 
       // get Customer Group
-      const customerGroupParams = [rootState.sync.date, rootState.sync.compress]
       customerService
-        .customerGroupList(...customerGroupParams)
+        .customerGroupList()
         .then(response => {
           commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
         })
@@ -135,67 +145,82 @@ const actions = {
 
   fetchSelectedCustomer(
     { state, commit, rootState, dispatch },
-    { customerId, addressOnly }
+    { customer, addressOnly }
   ) {
-    return new Promise((resolve, reject) => {
-      dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
-        root: true,
-      })
-      commit(mutation.SET_CUSTOMER_ID, customerId)
-
-      if (typeof addressOnly != 'undefined') {
-        const params = [customerId, rootState.location.location]
-        customerService
-          .getCustomerDetails(...params)
-          .then(response => {
-            commit(mutation.FETCH_CUSTOMER_ADDRESSES_ONLY, response.data.data)
-
-            if (state.fetchCustomerAddressOnly.customer_list) {
-              if (
-                !state.fetchCustomerAddressOnly.customer_list[0]
-                  .customer_details.length
-              ) {
-                commit(mutation.SET_ERROR, true)
-              } else {
-                commit(mutation.SET_ERROR, false)
-              }
-            }
-            resolve(response.data.data.customer_list[0])
-            //dispatch('giftcard/setCustomerGiftCards', response.data.data)
-          })
-          .catch(error => reject(error))
-      } else {
-        let limit = 10
-        let pgno = state.params.past_order_page_number
-        const params = [customerId, rootState.location.location, limit, pgno]
-        let pastOrdersPaginate = {}
-        customerService
-          .fetchCustomer(...params)
-          .then(response => {
-            commit(mutation.SELECTED_CUSTOMER, response.data.data)
-            pastOrdersPaginate.currentPage = pgno
-            pastOrdersPaginate.totalOrder =
-              response.data.data.customer_list.totalOrders
-            pastOrdersPaginate.totalPages =
-              response.data.data.customer_list.totalpages
-            pastOrdersPaginate.customarPerPage = limit
-            commit(mutation.PAST_ORDER_PAGINATE_DETAILS, pastOrdersPaginate)
-            if (response.data.data.customer_list != null) {
-              commit(
-                mutation.LOYALTY,
-                response.data.data.customer_list.loyalty_point
-              )
-            } else {
-              commit(mutation.LOYALTY, false)
-            }
-
-            resolve(response)
-            //dispatch('giftcard/setCustomerGiftCards', response.data.data)
-            //console.log(response.data.data.customer_list.loyalty_point)
-          })
-          .catch(error => reject(error))
-      }
+    // return new Promise((resolve, reject) => {
+    dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
+      root: true,
     })
+    let customerId = customer._id
+    commit(mutation.SET_CUSTOMER_ID, customerId)
+
+    if (typeof addressOnly != 'undefined') {
+      commit(mutation.FETCH_CUSTOMER_ADDRESSES_ONLY, customer.customer_addresses)
+
+      /*const params = [customerId, rootState.location.location]
+      customerService
+        .getCustomerDetails(...params)
+        .then(response => {
+
+          if (state.fetchCustomerAddressOnly.customer_list) {
+            if (
+              !state.fetchCustomerAddressOnly.customer_list[0]
+                .customer_details.length
+            ) {
+              commit(mutation.SET_ERROR, true)
+            } else {
+              commit(mutation.SET_ERROR, false)
+            }
+          }
+          resolve(response.data.data.customer_list[0])
+          //dispatch('giftcard/setCustomerGiftCards', response.data.data)
+        })
+        .catch(error => reject(error))*/
+    } else {
+      // let limit = 10
+      // let pgno = state.params.past_order_page_number
+      // let pastOrdersPaginate = {}
+      customerService
+        .fetchCustomer(customerId)
+        .then(response => {
+          let selectedUserPastOrder = false
+          const pastOrder = Object.entries(state.pastOrder._id)
+          for(const[key, value] of pastOrder) {
+            if(value.customer == customerId) {
+              selectedUserPastOrder = value
+            }
+          }
+          /*state.pastOrder._id.forEach(order => {
+            console.log(order)
+            if(order.customer == customerId) {
+              selectedUserPastOrder = order
+            }
+          })*/
+
+          commit(mutation.SELECTED_CUSTOMER, { customerData: response.data.item, pastOrders: selectedUserPastOrder, deliveryAreas: response.data.collected_data.delivery_areas })
+          /* pastOrdersPaginate.currentPage = pgno
+          pastOrdersPaginate.totalOrder =
+              response.data.data.customer_list.totalOrders
+          pastOrdersPaginate.totalPages =
+              response.data.data.customer_list.totalpages
+          pastOrdersPaginate.customarPerPage = limit
+          commit(mutation.PAST_ORDER_PAGINATE_DETAILS, pastOrdersPaginate)*/
+          /*if (response.data.item != null) {
+            commit(
+              mutation.LOYALTY,
+              response.data.data.customer_list.loyalty_point
+            )
+          } else {
+            commit(mutation.LOYALTY, false)
+          }*/
+
+          // resolve(response)
+          //dispatch('giftcard/setCustomerGiftCards', response.data.data)
+          //console.log(response.data.data.customer_list.loyalty_point)
+        })
+        // .catch(error => reject(error))
+    }
+    // })
   },
 
   selectedAddress({ commit, dispatch }, selected_address_id, area) {
@@ -279,6 +304,9 @@ const mutations = {
   [mutation.SET_RESPONSE_MESSAGES](state, message) {
     state.responseInformation.message = message
   },
+  [mutation.ORDERS](state, orders) {
+    state.pastOrder = orders
+  },
   [mutation.SET_RESPONSE_MESSAGES](state, customerCreateResponse) {
     if (customerCreateResponse.status == 0) {
       state.responseInformation.status = customerCreateResponse.status
@@ -289,7 +317,10 @@ const mutations = {
     }
   },
   [mutation.SELECTED_CUSTOMER](state, customerDetails) {
-    state.customer = customerDetails
+    console.log(customerDetails)
+    state.customer = customerDetails.customerData
+    state.deliveryAreas = customerDetails.deliveryAreas
+    state.selectedCustomerPastOrder = customerDetails.pastOrders
   },
   [mutation.SELECTED_CUSTOMER_ADDRESS](state, selectedAddress) {
     state.address = selectedAddress

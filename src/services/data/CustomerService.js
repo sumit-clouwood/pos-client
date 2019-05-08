@@ -13,24 +13,24 @@ export default {
     )
   },
   //get the customer along with all previous orders and other required info
-  fetchCustomer(...[customerId, locationId, limit, pgno]) {
+  fetchCustomer(customerId) {
     return DataService.get(
-      `/api/auth/crm/get/CustomerDetails/?customer_id=${customerId}&location_id=${locationId}&limit=${limit}&pgno=${pgno}`
+      `/model/brand_customers/id/${customerId}`, 'brand'
     )
   },
 
-  customerGroupList(...[lastSyncDate, isCompress]) {
-    return DataService.getCacheable(
-      `/api/auth/crm/get/CustomerGroupList/?last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
+  customerGroupList() {
+    return DataService.get(
+      '/model/brand_customer_group?no_limit=true', 'brand'
     )
   },
 
   //get customer addresses
-  getCustomerDetails(...[customerIds, locationId]) {
+  /*getCustomerDetails(...[customerIds, locationId]) {
     return DataService.get(
       `/api/auth/crm/get/CustomerList/?location_id=${locationId}&customer_id=${customerIds}`
     )
-  },
+  },*/
 
   customerList(
     ...[
