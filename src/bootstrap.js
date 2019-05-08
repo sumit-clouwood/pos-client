@@ -30,40 +30,39 @@ export default {
           .dispatch('auth/auth', deviceId)
           .then(response => {
             DataService.setContext(store.getters['context/url'])
-            //async
-
-            // if (syncDate) {
-            //   store.commit('sync/updateSyncDate', syncDate)
-            // }
-            //sync
             store
               .dispatch('location/fetch', response)
               .then(() => {
                 store
                   .dispatch('category/fetchAll', response)
                   .then(() => {
-                    store.commit('sync/loaded', true)
-                    resolve()
-                    // store.dispatch('modifier/fetchAll', response).then(() => {
-                    //   resolve()
-                    // })
-                    // store.dispatch('announcement/fetchAll', response)
-                    // store.dispatch('surcharge/fetchAll', response)
-                    // store.dispatch('discount/fetchAll', response)
-                    // store.dispatch('customer/fetchAll', response)
-                    // store.dispatch('payment/fetchAll', response)
-                    // //store.dispatch('giftcard/fetchAll', response)
-                    // store.dispatch('invoice/fetchAll', response)
-                    // store.dispatch('loyalty/fetchAll', response)
-                    // store.dispatch(
-                    //   'deliveryManager/fetchDMOrderDetail',
-                    //   response
-                    // )
-                    // store.dispatch('deliveryManager/getDispatchOrder', response)
+                    store.dispatch('modifier/fetchAll', response).then(() => {
+                      store.commit('sync/loaded', true)
+                      resolve()
+                    })
                   })
                   .catch(error => reject(error))
               })
               .catch(error => reject(error))
+
+            //continue loading other service in parallel
+            // store.dispatch('announcement/fetchAll', response)
+            // store.dispatch('surcharge/fetchAll', response)
+            // store.dispatch('discount/fetchAll', response)
+
+            DataService.setContext(store.getters['context/brand'])
+            store.dispatch('customer/fetchAll', response)
+            DataService.setContext(store.getters['context/url'])
+
+            // store.dispatch('payment/fetchAll', response)
+            // //store.dispatch('giftcard/fetchAll', response)
+            // store.dispatch('invoice/fetchAll', response)
+            // store.dispatch('loyalty/fetchAll', response)
+            // store.dispatch(
+            //   'deliveryManager/fetchDMOrderDetail',
+            //   response
+            // )
+            // store.dispatch('deliveryManager/getDispatchOrder', response)
           })
           .catch(error => reject(error))
       })
