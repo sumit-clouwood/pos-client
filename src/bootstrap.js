@@ -29,7 +29,10 @@ export default {
         store
           .dispatch('auth/auth', deviceId)
           .then(response => {
-            DataService.setContext(store.getters['context/url'])
+            DataService.setContext({
+              store: store.getters['context/store'],
+              brand: store.getters['context/brand'],
+            })
             store
               .dispatch('location/fetch', response)
               .then(() => {
@@ -49,11 +52,7 @@ export default {
             // store.dispatch('announcement/fetchAll', response)
             // store.dispatch('surcharge/fetchAll', response)
             // store.dispatch('discount/fetchAll', response)
-
-            DataService.setContext(store.getters['context/brand'])
             store.dispatch('customer/fetchAll', response)
-            DataService.setContext(store.getters['context/url'])
-
             // store.dispatch('payment/fetchAll', response)
             // //store.dispatch('giftcard/fetchAll', response)
             // store.dispatch('invoice/fetchAll', response)

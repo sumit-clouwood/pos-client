@@ -65,7 +65,7 @@ const actions = {
       customerService
         .customerList(...params)
         .then(response => {
-          if (response.data.data.length) {
+          /*if (response.data.data.length) {
             paginateDetails.currentPage = response.data.page_number
             paginateDetails.totalCustomers = response.data.count
             paginateDetails.totalPages = response.data.max_page_number
@@ -76,7 +76,7 @@ const actions = {
             resolve(response.data.data)
           } else {
             reject(response.data.data)
-          }
+          }*/
         })
         .catch(error => reject(error))
 

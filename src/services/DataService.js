@@ -44,14 +44,20 @@ const refreshAuthLogic = failedRequest =>
 createAuthRefreshInterceptor(axios, refreshAuthLogic)
 
 export default {
-  context: '',
-
   setContext(context) {
     this.context = context
-    console.log(this.context)
   },
   getAbsUrl(url) {
     return url.replace(/last_sync_date=[^&]*&?/, '')
+  },
+  getContextUrl(url, level) {
+    if (level === false) {
+      return url
+    } else if (level === 'brand') {
+      return this.context.brand + url
+    } else {
+      return this.context.store + url
+    }
   },
   isValidResponse(response) {
     let validResponse = false
@@ -101,8 +107,8 @@ export default {
       })
   },
 
-  get(url) {
-    url = this.context + url
+  get(url, level) {
+    url = this.getContextUrl(url, level)
     return new Promise((resolve, reject) => {
       axios
         .get(apiURL + url)
@@ -117,8 +123,8 @@ export default {
     })
   },
 
-  getCacheable(url) {
-    url = this.context + url
+  getCacheable(url, level) {
+    url = this.getContextUrl(url, level)
     const absUrl = this.getAbsUrl(url)
     return new Promise((resolve, reject) => {
       this.getOfflineEventData(absUrl)
@@ -153,8 +159,8 @@ export default {
     })
   },
 
-  post(url, data) {
-    url = this.context + url
+  post(url, data, level) {
+    url = this.getContextUrl(url, level)
     return new Promise((resolve, reject) => {
       axios
         .post(apiURL + url, data)
