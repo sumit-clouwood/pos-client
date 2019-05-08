@@ -77,3 +77,7 @@ export default {
   color: $primary-color;
 }
 </style>
+<style lang="sass">
+.cat-name
+    /* write category name styles, this applies to both menu and submenu */
+</style>

@@ -32,7 +32,7 @@
           @click.prevent="browse(item)"
         >
           <img :src="item.category_image" />
-          <span class="nav-link-text">{{ item.name }}</span>
+          <span class="nav-link-text cat-name">{{ item.name }}</span>
         </a>
       </li>
     </ul>
@@ -130,5 +130,6 @@ export default {
   a
     cursor: pointer
   img
-    width: 25px
+    height: 25px;
+    margin-top: 8px;
 </style>
