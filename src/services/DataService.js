@@ -44,6 +44,7 @@ const refreshAuthLogic = failedRequest =>
 createAuthRefreshInterceptor(axios, refreshAuthLogic)
 
 export default {
+  context: { store: '', brand: '' },
   setContext(context) {
     this.context = context
   },
