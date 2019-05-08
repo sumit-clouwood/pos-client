@@ -20,6 +20,13 @@ const getters = {
       return ''
     }
   },
+  brand: state => {
+    if (state.brandId) {
+      return `/${state.brandId}`
+    } else {
+      return ''
+    }
+  },
 }
 
 // actions
