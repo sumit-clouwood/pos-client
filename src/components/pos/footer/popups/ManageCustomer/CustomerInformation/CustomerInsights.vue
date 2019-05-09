@@ -1,6 +1,5 @@
 <template>
   <div class="customer-insight">
-    {{insight}}
     <div class="title-cu">
       <h2>Customer Insights</h2>
     </div>
@@ -47,7 +46,7 @@
         <li>
           Birthday : <span>{{ insight.birthday }}</span>
         </li>
-        <li>Age : <span>24</span></li>
+        <li>Age : <span>{{getAge(insight.birthday)}}</span></li>
         <li>
           Gender : <span>{{ insight.gender }}</span>
         </li>
@@ -56,17 +55,22 @@
     <div class="customer-insights-notes">
       <div>
         <p>Notes :</p>
-          <paginate
-                  v-if="insight.notes.length"
-                  :page-count="totalPages"
-                  :page-range="1"
-                  :margin-pages="1"
-                  :prev-text="'Prev'"
-                  :next-text="'Next'"
-                  :container-class="''"
-                  :page-class="'page-item'"
-          >
-          </paginate>
+        <div>
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>Date</th>
+              <th>Note</th>
+            </tr>
+            </thead>
+            <tbody id="notes_data">
+            <tr  v-for="(notes, index) in insight.notes" :key="index">
+              <td>{{notes.created_at}}</td>
+              <td>{{notes.note}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
         <span
           data-toggle="modal"
           class="text-success cursor-pointer"
@@ -93,7 +97,6 @@
 import { mapState } from 'vuex'
 import CustomerFeedback from './CustomerFeedback'
 import { Carousel, Slide } from 'vue-carousel'
-import paginate from 'vuejs-paginate'
 
 function getCustomerList(state) {
   return state.customer.customer
@@ -105,14 +108,24 @@ export default {
     CustomerFeedback,
     Carousel,
     Slide,
-    paginate,
-
   },
   /*data() {
     return {
       orderCount: 3,
     }
   },*/
+  methods: {
+    getAge: function(dob) {
+      let now = new Date()
+      let birthdate = dob.split('-')
+      let born = new Date(birthdate[0], birthdate[1]-1, birthdate[2])
+      let birthday = new Date(now.getFullYear(), born.getMonth(), born.getDate())
+      if (now >= birthday)
+        return now.getFullYear() - born.getFullYear()
+      else
+        return now.getFullYear() - born.getFullYear() - 1
+    },
+  },
   mounted() {
     /*$('.br-table-btn').click(function () {
       $('div.last-order-wrap')[0].slick().refresh
@@ -134,11 +147,12 @@ export default {
           ? getCustomerList(state)
           : false,
     }),
-    cancelled_orders_count() {
+    /* cancelled_orders_count() {
       return this.insight.orders.reduce((prev, current) => {
         return prev + (current.order_status == 'ORDER_STATUS_CANCELLED' ? 1 : 0)
       }, 0)
-    },
+    },*/
+
     totalPages: function () {
       let totalNotes = this.insight.notes.length
       if(totalNotes <= 10) {
@@ -176,3 +190,10 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+  .customer-insights-notes div {
+    max-height: 215px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+</style>
