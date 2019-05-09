@@ -3,44 +3,44 @@
     <div class="title-cu">
       <h2>Customer Insights</h2>
     </div>
-<!--    <div>-->
-<!--      <carousel :per-page="1" :mouse-drag="false">-->
-<!--        <slide>-->
-<!--          <div class="insight-last-order">-->
-<!--            <h3>LAST ORDER</h3>-->
-<!--            <p class="last-order-time">{{ insight.last_order_datetime }}</p>-->
-<!--            <p class="last-order-details">{{ insight.favorites   }}</p>-->
-<!--          </div>-->
-<!--        </slide>-->
-<!--        <slide>-->
-<!--          <div class="insight-last-order">-->
-<!--            <ul class="ullist-business-slider">-->
-<!--              <li>-->
-<!--                TOTAL BUSINESS <span>{{ insight.total_orders }}</span>-->
-<!--              </li>-->
-<!--              <li>-->
-<!--                CANCELLED <span>{{ cancelled_orders_count }}</span>-->
-<!--              </li>-->
-<!--            </ul>-->
-<!--            <div class="total-amount-business-slider">-->
-<!--              <p>TOTAL AMOUNT</p>-->
-<!--              <h3>AED {{ insight.total.total_amount }}</h3>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </slide>-->
-<!--        <slide>-->
-<!--          <div class="insight-last-order">-->
-<!--            <h3>LAST ORDER</h3>-->
-<!--            <ul class="fav-item-slider">-->
-<!--              &lt;!&ndash;<li><img src="/img/pos/dine-right.png" alt="fav-item" /></li>&ndash;&gt;-->
-<!--              <li>-->
-<!--                {{ insight.last_order }}-->
-<!--              </li>-->
-<!--            </ul>-->
-<!--          </div>-->
-<!--        </slide>-->
-<!--      </carousel>-->
-<!--    </div>-->
+    <div>
+      <carousel :per-page="1" :mouse-drag="true">
+        <slide>
+          <div class="insight-last-order">
+            <h3>LAST ORDER</h3>
+            <p class="last-order-time">{{ insight.last_order_datetime }}</p>
+            <p class="last-order-details">{{ insight.favorites   }}</p>
+          </div>
+        </slide>
+        <slide>
+          <div class="insight-last-order">
+            <ul class="ullist-business-slider">
+              <li>
+                TOTAL BUSINESS <span>{{ insight.total_orders }}</span>
+              </li>
+              <li>
+                CANCELLED <span>{{ cancelled_orders_count }}</span>
+              </li>
+            </ul>
+            <div class="total-amount-business-slider">
+              <p>TOTAL AMOUNT</p>
+              <h3>AED {{ insight.total_orders }}</h3>
+            </div>
+          </div>
+        </slide>
+        <slide>
+          <div class="insight-last-order">
+            <h3>LAST ORDER</h3>
+            <ul class="fav-item-slider">
+              <!--<li><img src="/img/pos/dine-right.png" alt="fav-item" /></li>-->
+              <li>
+                {{ insight.last_order }}
+              </li>
+            </ul>
+          </div>
+        </slide>
+      </carousel>
+    </div>
     <div class="dob-customer-insight">
       <ul class="ullist-dob">
         <li>
@@ -125,6 +125,12 @@ export default {
       else
         return now.getFullYear() - born.getFullYear() - 1
     },
+
+    cancelled_orders_count: function() {
+      return this.insight.orders.reduce((prev, current) => {
+        return prev + (current.order_status == 'ORDER_STATUS_CANCELLED' ? 1 : 0)
+      }, 0)
+    },
   },
   mounted() {
     /*$('.br-table-btn').click(function () {
@@ -147,12 +153,6 @@ export default {
           ? getCustomerList(state)
           : false,
     }),
-    /* cancelled_orders_count() {
-      return this.insight.orders.reduce((prev, current) => {
-        return prev + (current.order_status == 'ORDER_STATUS_CANCELLED' ? 1 : 0)
-      }, 0)
-    },*/
-
     totalPages: function () {
       let totalNotes = this.insight.notes.length
       if(totalNotes <= 10) {
@@ -195,5 +195,8 @@ export default {
     max-height: 215px;
     overflow-y: auto;
     overflow-x: hidden;
+  }
+  .location-delivery-area-address {
+    max-height:250px;
   }
 </style>

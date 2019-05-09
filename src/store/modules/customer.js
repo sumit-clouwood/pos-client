@@ -7,8 +7,9 @@ const state = {
   customerId: null,
   customer_group: {},
   paginate: {},
-  pastOrder: false,
-  selectedCustomerPastOrder: false,
+  lastOrder: false,
+  pastOrders: false,
+  selectedCustomerLastOrder: false,
   pastOrdersPaginate: {},
   params: {
     page_number: 1,
@@ -183,21 +184,15 @@ const actions = {
       customerService
         .fetchCustomer(customerId)
         .then(response => {
-          let selectedUserPastOrder = false
-          const pastOrder = Object.entries(state.pastOrder._id)
-          for(const[key, value] of pastOrder) {
+          let selectedCustomerLastOrder = false
+          const lastOrder = Object.entries(state.lastOrder._id)
+          for(const[key, value] of lastOrder) {
             if(value.customer == customerId) {
-              selectedUserPastOrder = value
+              selectedCustomerLastOrder = value
             }
           }
-          /*state.pastOrder._id.forEach(order => {
-            console.log(order)
-            if(order.customer == customerId) {
-              selectedUserPastOrder = order
-            }
-          })*/
 
-          commit(mutation.SELECTED_CUSTOMER, { customerData: response.data.item, pastOrders: selectedUserPastOrder, deliveryAreas: response.data.collected_data.delivery_areas })
+          commit(mutation.SELECTED_CUSTOMER, { customerData: response.data.item, lastOrders: selectedCustomerLastOrder, pastOrders: response.data.collected_data.orders, deliveryAreas: response.data.collected_data.delivery_areas })
           /* pastOrdersPaginate.currentPage = pgno
           pastOrdersPaginate.totalOrder =
               response.data.data.customer_list.totalOrders
@@ -305,7 +300,7 @@ const mutations = {
     state.responseInformation.message = message
   },
   [mutation.ORDERS](state, orders) {
-    state.pastOrder = orders
+    state.lastOrder = orders
   },
   [mutation.SET_RESPONSE_MESSAGES](state, customerCreateResponse) {
     if (customerCreateResponse.status == 0) {
@@ -320,7 +315,8 @@ const mutations = {
     console.log(customerDetails)
     state.customer = customerDetails.customerData
     state.deliveryAreas = customerDetails.deliveryAreas
-    state.selectedCustomerPastOrder = customerDetails.pastOrders
+    state.selectedCustomerLastOrder = customerDetails.lastOrders
+    state.pastOrders = customerDetails.pastOrders
   },
   [mutation.SELECTED_CUSTOMER_ADDRESS](state, selectedAddress) {
     state.address = selectedAddress

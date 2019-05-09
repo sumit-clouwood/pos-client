@@ -18,12 +18,12 @@
         :key="order._id"
       >
         <td>#{{ order.order_no }}</td>
-        <td>{{ order.created_date }} {{ order.created_time }}</td>
+        <td>{{ order.created_at }}</td>
         <td>{{ order.order_type }}</td>
-        <td>{{ order.order_taken_at }}</td>
+        <td>{{ order.real_created_datetime }}</td>
         <td>{{ order.balance_due }}</td>
         <td>{{ order.order_status }}</td>
-        <td></td>
+        <td>{{ order.driver }}</td>
         <td>{{ order.created_by }}</td>
         <!--<td>Tecom</td>-->
         <td class="show-details-his">
@@ -59,9 +59,7 @@ export default {
   computed: {
     ...mapState({
       pastOrders: state =>
-        state.customer.customer.customer_list
-          ? state.customer.customer.customer_list.orders
-          : false,
+        state.customer.pastOrders
     }),
   },
   methods: {
