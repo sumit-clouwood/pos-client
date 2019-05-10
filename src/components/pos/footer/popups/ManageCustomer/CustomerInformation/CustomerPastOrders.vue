@@ -58,8 +58,7 @@ export default {
   name: 'CustomerPastOrders',
   computed: {
     ...mapState({
-      pastOrders: state =>
-        state.customer.pastOrders
+      pastOrders: state => state.customer.pastOrders,
     }),
   },
   methods: {

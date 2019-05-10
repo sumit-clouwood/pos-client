@@ -185,9 +185,7 @@ export default {
   computed: {
     ...mapState({
       customerGroup: state =>
-        state.customer.customer_group
-          ? state.customer.customer_group
-          : false,
+        state.customer.customer_group ? state.customer.customer_group : false,
     }),
     ...mapState({
       storeData: state => state.location.store,
@@ -197,9 +195,7 @@ export default {
     }),*/
     ...mapState({
       deliveryAreas: state =>
-        state.customer.deliveryAreas
-          ? state.location.deliveryAreas
-          : false,
+        state.customer.deliveryAreas ? state.location.deliveryAreas : false,
     }),
   },
   methods: {

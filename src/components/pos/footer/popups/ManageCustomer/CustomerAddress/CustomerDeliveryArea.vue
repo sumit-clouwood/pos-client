@@ -1,26 +1,27 @@
 <template>
-    <div v-if="addresses.length" class="add-to-order-wrapper">
-        <div
-                v-for="(address, index) in addresses"
-                :key="index"
-                class="order-location option-contain"
-                :class="{ active: activeIndex === index }"
-                @click="setActiveCustomer(address, index)"
-        >
-            <p>
-                <span>Store: {{ storeName }}</span><br>
-                <span>Area: {{ getDeliveryArea(address.delivery_area_id) }}</span><br>
-                {{address.flat_number}}, {{address.building}}, {{address.street}}, {{address.city}}
-            </p>
-            <Buttons v-if="buttons"/>
-        </div>
-
-
+  <div v-if="addresses.length" class="add-to-order-wrapper">
+    <div
+      v-for="(address, index) in addresses"
+      :key="index"
+      class="order-location option-contain"
+      :class="{ active: activeIndex === index }"
+      @click="setActiveCustomer(address, index)"
+    >
+      <p>
+        <span>Store: {{ storeName }}</span
+        ><br />
+        <span>Area: {{ getDeliveryArea(address.delivery_area_id) }}</span
+        ><br />
+        {{ address.flat_number }}, {{ address.building }}, {{ address.street }},
+        {{ address.city }}
+      </p>
+      <Buttons v-if="buttons" />
     </div>
+  </div>
 </template>
 
 <script>
-import {mapState, mapActions, mapGetters} from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import Buttons from './Buttons'
 
 export default {
@@ -32,14 +33,13 @@ export default {
   components: {
     Buttons,
   },
-  data: function () {
-    return {activeIndex: null}
+  data: function() {
+    return { activeIndex: null }
   },
   computed: {
     ...mapState('location', ['location']),
     ...mapState({
-      storeName: state =>
-        state.location.store.name
+      storeName: state => state.location.store.name,
     }),
     /*...mapState({
       country: state =>
@@ -53,13 +53,13 @@ export default {
     setActiveCustomer(address, index) {
       const selectedCustomerAddressId = address.delivery_area_id
       const selectedCustomerAddressArea = this.getDeliveryArea(
-        address.delivery_area_id,
+        address.delivery_area_id
       )
 
       this.activeIndex = index
       this.selectedAddress(
         selectedCustomerAddressId,
-        selectedCustomerAddressArea,
+        selectedCustomerAddressArea
       )
     },
     ...mapActions('customer', ['selectedAddress']),
@@ -68,15 +68,15 @@ export default {
 </script>
 <style scoped lang="scss">
 .order-location.option-contain {
- padding:10px;
+  padding: 10px;
 }
-.option-contain{
-    width:408px;
+.option-contain {
+  width: 408px;
 }
 
 .cu-location-select {
-    position: absolute;
-    bottom: 0;
-    right: 5px;
+  position: absolute;
+  bottom: 0;
+  right: 5px;
 }
 </style>

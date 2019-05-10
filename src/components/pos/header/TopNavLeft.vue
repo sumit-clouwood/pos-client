@@ -5,7 +5,10 @@
       <p class="walk-in-place text-capitalize">{{ locationName.name }}</p>
     </div>
     <div class="time-zone-btn">
-      <a href="#"><span>{{ todayTime }}</span><span>{{ todayDate }}</span></a>
+      <a href="#"
+        ><span>{{ todayTime }}</span
+        ><span>{{ todayDate }}</span></a
+      >
     </div>
   </div>
 </template>

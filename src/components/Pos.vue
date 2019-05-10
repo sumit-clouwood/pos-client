@@ -12,7 +12,7 @@
       </nav>
       <div class="content-wrapper">
         <div class="container-fluid row">
-           <Announcement />
+          <Announcement />
           <Content />
           <!--<h1>{{ $t('title') }} from translation</h1>-->
           <!--<h1>{{ $t('body') }} from translation</h1>-->
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-     <Footer />
+    <Footer />
   </div>
 </template>
 

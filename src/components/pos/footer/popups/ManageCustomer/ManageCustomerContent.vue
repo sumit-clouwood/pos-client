@@ -57,7 +57,9 @@
                 class="br-table-btn order-add"
               >
                 Add to Order</button
-              ><span>{{ getCustomerLocation(customer.customer_addresses) }}</span>
+              ><span>{{
+                getCustomerLocation(customer.customer_addresses)
+              }}</span>
             </td>
           </tr>
         </tbody>
@@ -90,7 +92,7 @@ export default {
       this.activeIndex = index
     },
     getCustomerLocation(customerAddress) {
-      if(customerAddress.length) {
+      if (customerAddress.length) {
         return customerAddress[0].city
       }
     },

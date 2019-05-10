@@ -158,9 +158,7 @@ export default {
     }),
     ...mapState({
       deliveryAreas: state =>
-        state.customer.deliveryAreas
-          ? state.location.deliveryAreas
-          : false,
+        state.customer.deliveryAreas ? state.location.deliveryAreas : false,
     }),
     ...mapState({
       addressCreateStatus: state => state.customer.responseInformation,

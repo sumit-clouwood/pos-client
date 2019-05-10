@@ -9,7 +9,7 @@
           <div class="insight-last-order">
             <h3>LAST ORDER</h3>
             <p class="last-order-time">{{ insight.last_order_datetime }}</p>
-            <p class="last-order-details">{{ insight.favorites   }}</p>
+            <p class="last-order-details">{{ insight.favorites }}</p>
           </div>
         </slide>
         <slide>
@@ -46,7 +46,9 @@
         <li>
           Birthday : <span>{{ insight.birthday }}</span>
         </li>
-        <li>Age : <span>{{getAge(insight.birthday)}}</span></li>
+        <li>
+          Age : <span>{{ getAge(insight.birthday) }}</span>
+        </li>
         <li>
           Gender : <span>{{ insight.gender }}</span>
         </li>
@@ -58,16 +60,16 @@
         <div>
           <table class="table table-striped">
             <thead>
-            <tr>
-              <th>Date</th>
-              <th>Note</th>
-            </tr>
+              <tr>
+                <th>Date</th>
+                <th>Note</th>
+              </tr>
             </thead>
             <tbody id="notes_data">
-            <tr  v-for="(notes, index) in insight.notes" :key="index">
-              <td>{{notes.created_at}}</td>
-              <td>{{notes.note}}</td>
-            </tr>
+              <tr v-for="(notes, index) in insight.notes" :key="index">
+                <td>{{ notes.created_at }}</td>
+                <td>{{ notes.note }}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -93,7 +95,6 @@
 </template>
 
 <script>
-/* global $ */
 import { mapState } from 'vuex'
 import CustomerFeedback from './CustomerFeedback'
 import { Carousel, Slide } from 'vue-carousel'
@@ -118,12 +119,14 @@ export default {
     getAge: function(dob) {
       let now = new Date()
       let birthdate = dob.split('-')
-      let born = new Date(birthdate[0], birthdate[1]-1, birthdate[2])
-      let birthday = new Date(now.getFullYear(), born.getMonth(), born.getDate())
-      if (now >= birthday)
-        return now.getFullYear() - born.getFullYear()
-      else
-        return now.getFullYear() - born.getFullYear() - 1
+      let born = new Date(birthdate[0], birthdate[1] - 1, birthdate[2])
+      let birthday = new Date(
+        now.getFullYear(),
+        born.getMonth(),
+        born.getDate()
+      )
+      if (now >= birthday) return now.getFullYear() - born.getFullYear()
+      else return now.getFullYear() - born.getFullYear() - 1
     },
 
     cancelled_orders_count: function() {
@@ -149,16 +152,14 @@ export default {
   computed: {
     ...mapState({
       insight: state =>
-        getCustomerList(state)
-          ? getCustomerList(state)
-          : false,
+        getCustomerList(state) ? getCustomerList(state) : false,
     }),
-    totalPages: function () {
+    totalPages: function() {
       let totalNotes = this.insight.notes.length
-      if(totalNotes <= 10) {
+      if (totalNotes <= 10) {
         return 1
       } else {
-        return (totalNotes / 10)
+        return totalNotes / 10
       }
     },
     /*...mapState({
@@ -191,12 +192,12 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .customer-insights-notes div {
-    max-height: 215px;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-  .location-delivery-area-address {
-    max-height:250px;
-  }
+.customer-insights-notes div {
+  max-height: 215px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.location-delivery-area-address {
+  max-height: 250px;
+}
 </style>

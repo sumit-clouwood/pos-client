@@ -14,15 +14,11 @@ export default {
   },
   //get the customer along with all previous orders and other required info
   fetchCustomer(customerId) {
-    return DataService.get(
-      `/model/brand_customers/id/${customerId}`, 'brand'
-    )
+    return DataService.get(`/model/brand_customers/id/${customerId}`, 'brand')
   },
 
   customerGroupList() {
-    return DataService.get(
-      '/model/brand_customer_group?no_limit=true', 'brand'
-    )
+    return DataService.get('/model/brand_customer_group?no_limit=true', 'brand')
   },
 
   //get customer addresses
@@ -32,20 +28,10 @@ export default {
     )
   },*/
 
-  customerList(
-    ...[
-      locationId,
-      search,
-      page,
-      origin,
-      validate,
-      lastSyncDate,
-      isCompress,
-      perpage,
-    ]
-  ) {
+  customerList(...[stores, query, page, orderBy, perPage]) {
     return DataService.get(
-      `/model/brand_customers?page_id=brand_customers_main_tbl&query=&limit=${perpage}&ascending=0&page=${page}&byColumn=0&orderBy=last_order_datetime=${lastSyncDate}`, 'brand'
+      `/model/brand_customers?page_id=brand_customers_main_tbl&query=&limit=${perPage}&ascending=0&page=${page}&query=${query}&byColumn=0&store_id=&stores=${stores}&ascending=0&byColumn=0&orderBy=${orderBy}`,
+      'brand'
 
       // `/api/auth/pos/customerList?location_id=${locationId}&search=${search}&page_size=${perpage}&page_number=${page}&origin=${origin}&validate=${validate}&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
     )

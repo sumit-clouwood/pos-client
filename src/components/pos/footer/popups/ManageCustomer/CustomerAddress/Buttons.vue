@@ -77,10 +77,10 @@ export default {
 }
 </script>
 <style>
-  .cu-location-select span {
-    border-radius: 0.375rem;
-    height: 1rem;
-    width: 1.50rem;
-    display: inline-block;
-  }
+.cu-location-select span {
+  border-radius: 0.375rem;
+  height: 1rem;
+  width: 1.5rem;
+  display: inline-block;
+}
 </style>
