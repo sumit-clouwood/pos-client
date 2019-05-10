@@ -223,15 +223,12 @@ const actions = {
       //since we have just ids attached to item,
       //we need to consult modifier store for modifier data ie price
 
-      rootState.modifier.itemModifiers.forEach(itemMod => {
-        itemMod.modifiers.forEach(mod => {
-          mod.get_modifier_sub_groups.forEach(subgroup => {
-            subgroup.get_modifier_item_list.forEach(submod => {
-              if (item.modifiers.includes(submod._id)) {
-                modifierPrice += parseFloat(submod.price)
-              }
-            })
-          })
+      const modifierSubgroups = rootGetters['modifier/itemModifiers'](item._id)
+      modifierSubgroups.forEach(subgroup => {
+        subgroup.modifiers.forEach(modifier => {
+          if (item.modifiers.includes(modifier._id)) {
+            modifierPrice += parseFloat(modifier.price || 0)
+          }
         })
       })
 

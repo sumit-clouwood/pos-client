@@ -14,6 +14,7 @@ const state = {
 
 // getters, computed properties
 const getters = {
+  //before item click there is no itemModifiers data available so get it direclty from groups
   hasModifiers: state => item => {
     return state.groups.some(group => {
       return group.for_items.includes(
@@ -21,6 +22,7 @@ const getters = {
       )
     })
   },
+
   groups: state => item => {
     return state.groups.filter(group =>
       group.for_items.includes(
@@ -85,6 +87,7 @@ const getters = {
   },
 
   //get modifiers specific to item id from current modifiers list not from groups
+  //this getter is used in rendering
   itemModifiers: state => itemId => {
     let subgroups = []
     const item = state.itemModifiers.find(obj => obj.itemId == itemId)
@@ -104,15 +107,13 @@ const getters = {
   },
 
   //get mandatory modifiers specific to item id from current modifiers list
-  itemMandatoryGroups: state => itemId => {
+  itemMandatoryGroups: (state, getters) => itemId => {
     let mandatoryModifierGroups = []
-    const allModifiers = state.itemModifiers.find(obj => obj.itemId == itemId)
-    allModifiers.modifiers.forEach(modifier => {
-      modifier.get_modifier_sub_groups.forEach(subgroup => {
-        if (subgroup.type === 'mandatory') {
-          mandatoryModifierGroups.push(subgroup._id)
-        }
-      })
+    const subgroups = getters.itemModifiers(itemId)
+    subgroups.forEach(subgroup => {
+      if (subgroup.item_type === 'mandatory') {
+        mandatoryModifierGroups.push(subgroup._id)
+      }
     })
     return mandatoryModifierGroups
   },

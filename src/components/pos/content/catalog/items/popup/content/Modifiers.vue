@@ -25,7 +25,7 @@
         >
           <label
             class="POSItemOptions_choose_label"
-            v-if="subgroup.noofselection > 1"
+            v-if="subgroup.no_of_selection > 1"
           >
             <span class="customradioc">
               <input
@@ -39,7 +39,7 @@
                   itemId: item._id,
                   modifierId: modifier._id,
                   groupId: subgroup._id,
-                  limit: modifier.noofselection,
+                  limit: modifier.no_of_selection,
                 }"
                 v-model="checkboxes"
               />
@@ -147,6 +147,8 @@ export default {
   border-bottom: 1px solid #e3e7f2;
 label
   img
-    max-width: 40px
-    max-height: 40px
+    width: 40px
+    height: 40px
+.POSItemOptions_typeline
+  border: 1px solid #e3e7f2;
 </style>
