@@ -3,12 +3,16 @@ import DataService from '@/services/DataService'
 export default {
   createCustomer(newCustomerDetails) {
     //set context to brand only
-    return DataService.post('/api/auth/crm/create/Customer', newCustomerDetails)
+    return DataService.post(
+      '/model/brand_customers/add',
+      newCustomerDetails,
+      'brand'
+    )
   },
 
-  createAddress(newAddressDetails) {
+  createAddress(newAddressDetails, customer_id) {
     return DataService.post(
-      '/api/auth/crm/create/NewCustomerAddress',
+      `/model/customer_address/add?parent_id=${customer_id}`,
       newAddressDetails
     )
   },
@@ -38,8 +42,6 @@ export default {
     return DataService.get(
       `/model/brand_customers?page_id=brand_customers_main_tbl&query=&limit=${perPage}&ascending=0&page=${page}&query=${query}&byColumn=0&store_id=&stores=${stores}&ascending=0&byColumn=0&orderBy=${orderBy}`,
       'brand'
-
-      // `/api/auth/pos/customerList?location_id=${locationId}&search=${search}&page_size=${perpage}&page_number=${page}&origin=${origin}&validate=${validate}&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
     )
   },
 

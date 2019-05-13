@@ -34,7 +34,7 @@
               <label>Location/Branch <span>*</span></label>
               <select
                 class="selectpicker"
-                v-model="newAddressDetails.location_id"
+                v-model="newAddressDetails.branch_id"
               >
                 <option :value="storeData.branch_id">
                   {{ storeData.branch_n }}
@@ -49,10 +49,10 @@
               <input
                 type="text"
                 name="building"
-                v-model="newAddressDetails.add_building"
+                v-model="newAddressDetails.building"
               />
-              <span class="validation-error" v-if="errors.add_building">{{
-                errors.add_building
+              <span class="validation-error" v-if="errors.building">{{
+                errors.building
               }}</span>
             </div>
             <div class="sex-from">
@@ -60,7 +60,7 @@
               <input
                 type="text"
                 name="street"
-                v-model="newAddressDetails.add_street"
+                v-model="newAddressDetails.street"
               />
             </div>
           </div>
@@ -69,16 +69,16 @@
               <label>Flat Number </label>
               <input
                 type="text"
-                name="add_flat_number"
-                v-model="newAddressDetails.add_flat_number"
+                name="flat_number"
+                v-model="newAddressDetails.flat_number"
               />
             </div>
             <div class="landmark">
               <label>Nearest Landmark</label>
               <input
                 type="text"
-                name="add_landmark"
-                v-model="newAddressDetails.add_landmark"
+                name="nearest_landmark"
+                v-model="newAddressDetails.nearest_landmark"
               />
             </div>
             <div class="dob">
@@ -177,8 +177,8 @@ export default {
         this.errors.add_delivery_area = 'Delivery area required'
         this.errors.count = 1
       }
-      if (!this.newAddressDetails.add_building) {
-        this.errors.add_building = 'Building required'
+      if (!this.newAddressDetails.building) {
+        this.errors.building = 'Building required'
         this.errors.count = 1
       }
       if (!this.newAddressDetails.add_city) {

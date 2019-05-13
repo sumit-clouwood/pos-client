@@ -4,24 +4,20 @@
       <div class="col-md-6 left-form">
         <div class="name-from">
           <label>Name <span>*</span></label>
-          <input
-            type="text"
-            name="customer_name"
-            v-model="newCustomerDetails.customer_name"
-          />
-          <span class="validation-error" v-if="errors.customer_name">{{
-            errors.customer_name
+          <input type="text" name="name" v-model="newCustomerDetails.name" />
+          <span class="validation-error" v-if="errors.name">{{
+            errors.name
           }}</span>
         </div>
         <div class="mobile-from">
           <label>Mobile Number <span>*</span></label>
           <input
             type="text"
-            name="mobile_number"
-            v-model="newCustomerDetails.mobile_number"
+            name="phone_number"
+            v-model="newCustomerDetails.phone_number"
           />
-          <span class="validation-error" v-if="errors.mobile_number">{{
-            errors.mobile_number
+          <span class="validation-error" v-if="errors.phone_number">{{
+            errors.phone_number
           }}</span>
         </div>
         <div class="alternate-phone-from">
@@ -29,7 +25,7 @@
           <input
             type="text"
             name="alternate-phone-from"
-            v-model="newCustomerDetails.alternate_phone_number"
+            v-model="newCustomerDetails.alternative_phone"
           />
         </div>
         <div class="sex-from">
@@ -51,13 +47,13 @@
           <label>Date Of Birth <span>*</span></label>
           <div class="pull-right col-md-7">
             <date-dropdown
-              min="1920"
+              min="1950"
               :max="getCurrentYear"
-              v-model="newCustomerDetails.dob"
+              v-model="newCustomerDetails.birthday"
               months-names=""
             />
-            <span class="validation-error" v-if="errors.dob">{{
-              errors.dob
+            <span class="validation-error" v-if="errors.birthday">{{
+              errors.birthday
             }}</span>
           </div>
         </div>
@@ -201,8 +197,8 @@ export default {
     validate: function() {
       this.errors = {}
       this.errors.count = 0
-      if (!this.newCustomerDetails.customer_name) {
-        this.errors.customer_name = 'Name required'
+      if (!this.newCustomerDetails.name) {
+        this.errors.name = 'Name required'
         this.errors.count = 1
       }
       if (
@@ -212,8 +208,8 @@ export default {
         this.errors.email = 'Valid email required.'
         this.errors.count = 1
       }
-      if (!this.newCustomerDetails.mobile_number) {
-        this.errors.mobile_number = 'Mobile number required'
+      if (!this.newCustomerDetails.phone_number) {
+        this.errors.phone_number = 'Mobile number required'
         this.errors.count = 1
       }
       if (!this.newCustomerDetails.delivery_area) {
@@ -232,8 +228,8 @@ export default {
         this.errors.location = 'Location required'
         this.errors.count = 1
       }
-      if (!this.newCustomerDetails.dob) {
-        this.errors.dob = 'Date of birth required'
+      if (!this.newCustomerDetails.birthday) {
+        this.errors.birthday = 'Date of birth required'
         this.errors.count = 1
       }
       if (!this.newCustomerDetails.country) {
@@ -242,10 +238,9 @@ export default {
       }
 
       if (this.errors.count === 0) {
-        let dob = this.newCustomerDetails.dob.split('.')
-        this.newCustomerDetails.day = dob[0]
-        this.newCustomerDetails.month = dob[1]
-        this.newCustomerDetails.year = dob[2]
+        let birthday = this.newCustomerDetails.birthday.split('.')
+        this.newCustomerDetails.birthday =
+          birthday[2] + '-' + birthday[1] + '-' + birthday[0]
       }
 
       return this.errors
