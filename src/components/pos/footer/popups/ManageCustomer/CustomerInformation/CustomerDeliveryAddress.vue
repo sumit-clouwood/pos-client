@@ -1,5 +1,5 @@
 <template>
-  <div id="delivery-area-address" v-if="deliveryAddresses">
+  <div id="delivery-area-address">
     <div class="order-address-details">
       <p>Select Delivery Address</p>
       <button
@@ -12,27 +12,17 @@
       </button>
     </div>
     <div class="location-delivery-area-address">
-      <CustomerDeliveryArea :addresses="deliveryAddresses" :buttons="true" />
+      <CustomerDeliveryArea :buttons="true" />
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
 export default {
   name: 'CustomerDeliveryAddress',
   components: {
     CustomerDeliveryArea,
-  },
-  computed: {
-    ...mapState({
-      deliveryAddresses: state =>
-        state.customer.customer
-          ? state.customer.customer.customer_addresses
-          : false,
-    }),
   },
 }
 </script>

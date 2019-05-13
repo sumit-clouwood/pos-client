@@ -1,5 +1,6 @@
 import * as mutation from './customer/mutation-types'
 import customerService from '@/services/data/CustomerService'
+import CustomerService from '../../services/data/CustomerService'
 
 const state = {
   customer_list: [],
@@ -26,6 +27,7 @@ const state = {
   error: false,
   loyalty: false,
   deliveryAreas: false,
+  fetchDeliveryAreas: false,
 }
 const getters = {
   find: state => customerId => {
@@ -52,11 +54,15 @@ const getters = {
     }
   },
   getDeliveryArea: state => addressId => {
-    return state.deliveryAreas.find(address => address._id === addressId).name
+    for (const value in state.deliveryAreas) {
+      if (value == addressId) {
+        return state.deliveryAreas[value].name
+      }
+    }
   },
 }
 const actions = {
-  fetchAll({ commit, rootState }) {
+  fetchAll({ commit, rootState, dispatch }) {
     return new Promise((resolve, reject) => {
       let paginateDetails = {}
       const params = [
@@ -88,6 +94,8 @@ const actions = {
         })
         .catch(error => reject(error))
 
+      //fetch customer deliver areas
+      dispatch('fetchDeliveryArea', '')
       // get Customer Group
       customerService.customerGroupList().then(response => {
         commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
@@ -138,10 +146,7 @@ const actions = {
     }
   },
 
-  fetchSelectedCustomer(
-    { state, commit, dispatch },
-    { customer, addressOnly }
-  ) {
+  fetchSelectedCustomer({ state, commit, dispatch }, { customer }) {
     // return new Promise((resolve, reject) => {
     dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
       root: true,
@@ -149,73 +154,33 @@ const actions = {
     let customerId = customer._id
     commit(mutation.SET_CUSTOMER_ID, customerId)
 
-    if (typeof addressOnly != 'undefined') {
+    /*if (typeof addressOnly != 'undefined') {
       commit(
         mutation.FETCH_CUSTOMER_ADDRESSES_ONLY,
         customer.customer_addresses
       )
-
-      /*const params = [customerId, rootState.location.location]
-      customerService
-        .getCustomerDetails(...params)
-        .then(response => {
-
-          if (state.fetchCustomerAddressOnly.customer_list) {
-            if (
-              !state.fetchCustomerAddressOnly.customer_list[0]
-                .customer_details.length
-            ) {
-              commit(mutation.SET_ERROR, true)
-            } else {
-              commit(mutation.SET_ERROR, false)
-            }
-          }
-          resolve(response.data.data.customer_list[0])
-          //dispatch('giftcard/setCustomerGiftCards', response.data.data)
-        })
-        .catch(error => reject(error))*/
-    } else {
-      // let limit = 10
-      // let pgno = state.params.past_order_page_number
-      // let pastOrdersPaginate = {}
-      customerService.fetchCustomer(customerId).then(response => {
-        let selectedCustomerLastOrder = false
-        const lastOrder = Object.entries(state.lastOrder._id)
-        for (const [value] of lastOrder) {
-          if (value.customer == customerId) {
-            selectedCustomerLastOrder = value
-          }
+    } else {*/
+    // let limit = 10
+    // let pgno = state.params.past_order_page_number
+    // let pastOrdersPaginate = {}
+    customerService.fetchCustomer(customerId).then(response => {
+      let selectedCustomerLastOrder = false
+      const lastOrder = Object.entries(state.lastOrder._id)
+      for (const [value] of lastOrder) {
+        if (value.customer == customerId) {
+          selectedCustomerLastOrder = value
         }
+      }
 
-        commit(mutation.SELECTED_CUSTOMER, {
-          customerData: response.data.item,
-          lastOrders: selectedCustomerLastOrder,
-          pastOrders: response.data.collected_data.orders,
-          deliveryAreas: response.data.collected_data.delivery_areas,
-        })
-        /* pastOrdersPaginate.currentPage = pgno
-          pastOrdersPaginate.totalOrder =
-              response.data.data.customer_list.totalOrders
-          pastOrdersPaginate.totalPages =
-              response.data.data.customer_list.totalpages
-          pastOrdersPaginate.customarPerPage = limit
-          commit(mutation.PAST_ORDER_PAGINATE_DETAILS, pastOrdersPaginate)*/
-        /*if (response.data.item != null) {
-            commit(
-              mutation.LOYALTY,
-              response.data.data.customer_list.loyalty_point
-            )
-          } else {
-            commit(mutation.LOYALTY, false)
-          }*/
-
-        // resolve(response)
-        //dispatch('giftcard/setCustomerGiftCards', response.data.data)
-        //console.log(response.data.data.customer_list.loyalty_point)
+      commit(mutation.SELECTED_CUSTOMER, {
+        customerData: response.data.item,
+        lastOrders: selectedCustomerLastOrder,
+        pastOrders: response.data.collected_data.orders,
+        deliveryAreas:
+          response.data.collected_data.page_lookups.store_delivery_areas._id,
       })
-      // .catch(error => reject(error))
-    }
-    // })
+    })
+    /*}*/
   },
 
   selectedAddress({ commit, dispatch }, selected_address_id, area) {
@@ -238,7 +203,11 @@ const actions = {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
     })
   },
-
+  fetchDeliveryArea({ commit }, query) {
+    CustomerService.fetchDeliveryAreas(query).then(response => {
+      commit(mutation.GET_DELIVERY_AREAS, response.data.data)
+    })
+  },
   fetchCustomerAddress({ commit, rootState }) {
     let allOnlineOrders = false
     if (JSON.parse(localStorage.getItem('onlineOrders')) != null) {
@@ -284,11 +253,8 @@ const mutations = {
   [mutation.PARAMS](state, paramsCollection) {
     state.params = paramsCollection
   },
-  [mutation.SET_CURRENT_PAGE_NO](state, pageNumber) {
-    state.params.page_number = pageNumber
-  },
-  [mutation.SET_PAST_ORDER_CURRENT_PAGE_NO](state, pageNumber) {
-    state.params.past_order_page_number = pageNumber
+  [mutation.GET_DELIVERY_AREAS](state, fetchDeliveryAreas) {
+    state.fetchDeliveryAreas = fetchDeliveryAreas
   },
   [mutation.SET_SEARCH_TERMS](state, searchTerms) {
     state.params.query = searchTerms

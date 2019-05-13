@@ -20,6 +20,12 @@ export default {
   customerGroupList() {
     return DataService.get('/model/brand_customer_group?no_limit=true', 'brand')
   },
+  fetchDeliveryAreas(query) {
+    return DataService.get(
+      `/model/brand_store_delivery_areas?query=${query}`,
+      'brand'
+    )
+  },
 
   //get customer addresses
   /*getCustomerDetails(...[customerIds, locationId]) {

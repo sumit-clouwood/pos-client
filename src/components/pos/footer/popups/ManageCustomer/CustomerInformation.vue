@@ -18,10 +18,10 @@
                 </div>
               </div>
             </div>
-            <CustomerInsights />
+            <CustomerInsights :pastOrders="pastOrders" />
           </div>
           <h2 class="past-order">Past Orders</h2>
-          <CustomerPastOrders />
+          <CustomerPastOrders :pastOrders="pastOrders" />
         </div>
         <div class="modal-footer">
           <!--<div class="pagination-customer-details">
@@ -91,6 +91,9 @@ export default {
   computed: {
     ...mapState({
       paginateDetails: state => state.customer.pastOrdersPaginate,
+    }),
+    ...mapState({
+      pastOrders: state => state.customer.pastOrders,
     }),
   },
   methods: {

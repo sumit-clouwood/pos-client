@@ -19,7 +19,7 @@
                 v-model="newAddressDetails.delivery_area_id"
               >
                 <option
-                  v-for="area in deliveryAreas"
+                  v-for="area in fetchDeliveryAreas"
                   :value="area._id"
                   :key="area._id"
                   :data-deliveryarea="area.name"
@@ -95,8 +95,8 @@
             <div class="customer-group">
               <label>Country <span>*</span></label>
               <select class="selectpicker" v-model="newAddressDetails.country">
-                <option :value="storeData.country_id" selected="selected">
-                  {{ storeData.country_name }}
+                <option :value="storeData.country" selected="selected">
+                  {{ storeData.country }}
                 </option>
               </select>
               <span class="validation-error" v-if="errors.country">{{
@@ -157,11 +157,10 @@ export default {
       storeData: state => state.location.store,
     }),
     ...mapState({
-      deliveryAreas: state =>
-        state.customer.deliveryAreas ? state.location.deliveryAreas : false,
+      addressCreateStatus: state => state.customer.responseInformation,
     }),
     ...mapState({
-      addressCreateStatus: state => state.customer.responseInformation,
+      fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
     }),
     /*...mapState({
       customerId: state =>

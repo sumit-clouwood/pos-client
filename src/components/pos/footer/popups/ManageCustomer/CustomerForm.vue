@@ -194,8 +194,7 @@ export default {
       location_id: state => state.location.location,
     }),*/
     ...mapState({
-      deliveryAreas: state =>
-        state.customer.deliveryAreas ? state.location.deliveryAreas : false,
+      deliveryAreas: state => state.customer.fetchDeliveryAreas,
     }),
   },
   methods: {

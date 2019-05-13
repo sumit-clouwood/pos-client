@@ -52,14 +52,12 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'CustomerPastOrders',
-  computed: {
-    ...mapState({
-      pastOrders: state => state.customer.pastOrders,
-    }),
+  props: {
+    pastOrders: Array,
   },
   methods: {
     ...mapActions('order', ['getPastOrderDetails']),
