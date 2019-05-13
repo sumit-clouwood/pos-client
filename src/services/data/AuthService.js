@@ -3,7 +3,6 @@ const authUrl = '/login/'
 const deviceCode = '100'
 const franchiseCode = '0004'
 const lastOrderNo = '1000'
-const locationId = '5a965a0114d48822951e6b22'
 
 export default {
   getAccess(env, deviceId) {
@@ -35,7 +34,6 @@ export default {
             response.data.device_code = deviceCode
             response.data.franchise_code = franchiseCode
             response.data.last_order_no = lastOrderNo
-            response.data.user.location_id = locationId
 
             localStorage.setItem('token', response.data.token)
             localStorage.setItem('user', JSON.stringify(response.data.user))

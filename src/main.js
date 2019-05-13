@@ -19,6 +19,8 @@ import i18n from './i18n'
 
 import Translate from './mixins/global/Translate'
 
+import './plugins/constants_mixin'
+
 Vue.config.productionTip = false
 Vue.mixin(Translate)
 

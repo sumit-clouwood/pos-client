@@ -1,6 +1,7 @@
 /*eslint-disable no-console*/
 import CategoryService from '@/services/data/CategoryService'
 import * as mutation from './category/mutation-types'
+import * as CONSTANTS from '@/constants'
 // initial state
 const state = {
   categoryImagePath: '',
@@ -26,19 +27,26 @@ const getters = {
   },
   subcategories: state => {
     return state.subcategories.filter(
-      subcategory => subcategory.category === state.category.name
+      subcategory =>
+        subcategory[CONSTANTS.REFERENCE_FIELD_SUBCATEGORY_TO_CATEGORY] ===
+        state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_SUBCATEGORY]
     )
   },
   categoryItems: state => {
     return state.items.filter(
-      item => item.category === state.category.name && !item.sub_category
+      item =>
+        item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_CATEGORY] ===
+          state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_ITEM] &&
+        !item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_SUBCATEGORY]
     )
   },
   subcategoryItems: state => {
     return state.items.filter(
       item =>
-        item.category === state.category.name &&
-        item.sub_category === state.subcategory.name
+        item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_CATEGORY] ===
+          state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_ITEM] &&
+        item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_SUBCATEGORY] ===
+          state.subcategory[CONSTANTS.REFERENCE_FIELD_SUBCATEGORY_TO_ITEM]
     )
   },
   items: (state, getters) => {

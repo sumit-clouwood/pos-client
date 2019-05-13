@@ -1,83 +1,84 @@
 <template>
   <div class="modal-body-modifiers" v-if="item">
+    <!-- {{ itemModifiers(item._id) }} -->
     <div
-      v-for="modifier in itemModifiers(item._id).modifiers"
-      :key="modifier._id"
+      class="POSItemOption"
+      v-for="subgroup in itemModifiers(item._id)"
+      :key="subgroup._id"
     >
-      <div
-        class="POSItemOption"
-        v-for="submodifier in modifier.get_modifier_sub_groups"
-        :key="submodifier._id"
-      >
-        <div class="POSItemOptions_type">
-          <h3 class="POSItemOptions_typehead">
-            <span>{{ submodifier.name }} ({{ submodifier.type }}) </span>
-          </h3>
-          <span class="POSItemOptions_typeline"></span>
-        </div>
-        <div class="POSItemOptions_choose POSItemOptions_choose_radio">
-          <div
-            class="POSItemOptions_choose_choice"
-            v-for="modifierOption in submodifier.get_modifier_item_list"
-            :key="modifierOption._id"
+      <div class="POSItemOptions_type">
+        <h3 class="POSItemOptions_typehead">
+          <span
+            >{{
+              subgroup[CONST.REFERENCE_FIELD_MODIFIER_SUBGROUP_TO_MODIDIER]
+            }}
+            ({{ subgroup.item_type }})
+          </span>
+        </h3>
+        <span class="POSItemOptions_typeline"></span>
+      </div>
+      <div class="POSItemOptions_choose POSItemOptions_choose_radio">
+        <div
+          v-for="modifier in subgroup.modifiers"
+          :key="modifier._id"
+          class="POSItemOptions_choose_choice"
+        >
+          <label
+            class="POSItemOptions_choose_label"
+            v-if="subgroup.no_of_selection > 1"
           >
-            <label
-              class="POSItemOptions_choose_label"
-              v-if="submodifier.noofselection > 1"
-            >
-              <span class="customradioc">
-                <input
-                  ref="modifier"
-                  type="checkbox"
-                  :name="modifierOption._id"
-                  :id="modifierOption._id"
-                  class="customradio"
-                  :value="{
-                    type: 'checkbox',
-                    itemId: item._id,
-                    modifierId: modifierOption._id,
-                    groupId: submodifier._id,
-                    limit: submodifier.noofselection,
-                  }"
-                  v-model="checkboxes"
-                />
-                <span></span>
-              </span>
-              <img :src="imagePath(modifierOption.imageName)" alt="" />
-              <span>{{ modifierOption.name }}</span>
-              <div>({{ currency }} {{ modifierOption.price }})</div>
-            </label>
+            <span class="customradioc">
+              <input
+                ref="modifier"
+                type="checkbox"
+                :name="modifier._id"
+                :id="modifier._id"
+                class="customradio"
+                :value="{
+                  type: 'checkbox',
+                  itemId: item._id,
+                  modifierId: modifier._id,
+                  groupId: subgroup._id,
+                  limit: modifier.no_of_selection,
+                }"
+                v-model="checkboxes"
+              />
+              <span></span>
+            </span>
+            <img :src="modifier.item_modifier_image" alt="" />
+            <span>{{ modifier.name }}</span>
+            <div v-if="rawPrice(modifier.price)">
+              ({{ formatPrice(modifier.price) }})
+            </div>
+          </label>
 
-            <label class="container-radio-btn" v-else>
-              <span class="customradioc-block">
-                <input
-                  type="radio"
-                  class="customradio"
-                  :id="modifierOption._id"
-                  :name="item._id + submodifier._id"
-                  :value="modifierOption._id"
-                  @change="
-                    setRadio(item._id, submodifier._id, modifierOption._id)
-                  "
-                />
-                <span
-                  class="checkmark-radio-btn"
-                  :class="{
-                    checked: isSelected({
-                      modifierId: modifierOption._id,
-                      groupId: submodifier._id,
-                      itemId: item._id,
-                    }),
-                  }"
-                ></span>
-              </span>
-              <img :src="imagePath(modifierOption.imageName)" alt="" />
-              <span>{{ modifierOption.name }}</span>
-              <div v-if="rawPrice(modifierOption.price)">
-                ({{ formatPrice(modifierOption.price) }})
-              </div>
-            </label>
-          </div>
+          <label class="container-radio-btn" v-else>
+            <span class="customradioc-block">
+              <input
+                type="radio"
+                class="customradio"
+                :id="modifier._id"
+                :name="subgroup._id"
+                :value="modifier._id"
+                @change="setRadio(item._id, subgroup._id, modifier._id)"
+              />
+              <span
+                class="checkmark-radio-btn"
+                :class="{
+                  checked: isSelected({
+                    modifierId: modifier._id,
+                    groupId: subgroup._id,
+                    itemId: item._id,
+                  }),
+                }"
+              ></span>
+            </span>
+            <img :src="modifier.item_modifier_image" alt="" />
+            <span>{{ modifier.name }}</span>
+            <div v-if="rawPrice(modifier.price)">
+              ({{ formatPrice(modifier.price) }})
+            </div>
+          </label>
         </div>
       </div>
     </div>
@@ -107,7 +108,7 @@ export default {
     ...mapState('modifier', ['item']),
     ...mapState('orderForm', ['error', 'radios']),
     ...mapGetters('orderForm', ['isSelected']),
-    ...mapGetters('modifier', ['imagePath', 'itemModifiers']),
+    ...mapGetters('modifier', ['itemModifiers']),
     ...mapGetters('location', ['rawPrice', 'formatPrice']),
   },
   mounted() {},
@@ -144,4 +145,10 @@ export default {
   margin-bottom: 24px;
   padding-bottom: 24px;
   border-bottom: 1px solid #e3e7f2;
+label
+  img
+    width: 40px
+    height: 40px
+.POSItemOptions_typeline
+  border: 1px solid #e3e7f2;
 </style>
