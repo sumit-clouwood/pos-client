@@ -1,20 +1,10 @@
 import DataService from '@/services/DataService'
 
 export default {
-  createCustomer(newCustomerDetails) {
-    //set context to brand only
-    return DataService.post(
-      '/model/brand_customers/add',
-      newCustomerDetails,
-      'brand'
-    )
-  },
-
-  createAddress(newAddressDetails, customer_id) {
-    return DataService.post(
-      `/model/customer_address/add?parent_id=${customer_id}`,
-      newAddressDetails
-    )
+  globalCreate(data, customer_id, model) {
+    let parentId = customer_id ? `?parent_id=${customer_id}` : ''
+    alert(parentId)
+    return DataService.post(`/model/${model}/add${parentId}`, data, 'brand')
   },
   //get the customer along with all previous orders and other required info
   fetchCustomer(customerId) {
@@ -31,23 +21,10 @@ export default {
     )
   },
 
-  //get customer addresses
-  /*getCustomerDetails(...[customerIds, locationId]) {
-    return DataService.get(
-      `/api/auth/crm/get/CustomerList/?location_id=${locationId}&customer_id=${customerIds}`
-    )
-  },*/
-
   customerList(...[stores, query, page, orderBy, perPage]) {
     return DataService.get(
       `/model/brand_customers?page_id=brand_customers_main_tbl&query=&limit=${perPage}&ascending=0&page=${page}&query=${query}&byColumn=0&store_id=&stores=${stores}&ascending=0&byColumn=0&orderBy=${orderBy}`,
       'brand'
-    )
-  },
-
-  addNote(...[customerId, cashierId, notes]) {
-    return DataService.post(
-      `/api/auth/crm/create/CustomerNotes?customer_id=${customerId}&cashier_id=${cashierId}&notes=${notes}`
     )
   },
 

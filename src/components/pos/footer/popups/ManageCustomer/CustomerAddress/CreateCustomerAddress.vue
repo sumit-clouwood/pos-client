@@ -26,11 +26,11 @@
                   >{{ area.name }}
                 </option>
               </select>
-              <span class="validation-error" v-if="errors.add_delivery_area">{{
-                errors.add_delivery_area
+              <span class="validation-error" v-if="errors.delivery_area_id">{{
+                errors.delivery_area_id
               }}</span>
             </div>
-            <div class="mobile-from">
+            <!--<div class="mobile-from">
               <label>Location/Branch <span>*</span></label>
               <select
                 class="selectpicker"
@@ -43,9 +43,9 @@
               <span class="validation-error" v-if="errors.location">{{
                 errors.location
               }}</span>
-            </div>
+            </div>-->
             <div class="alternate-phone-from">
-              <label>Building <span>*</span></label>
+              <label>Building/Villa <span>*</span></label>
               <input
                 type="text"
                 name="building"
@@ -56,22 +56,28 @@
               }}</span>
             </div>
             <div class="sex-from">
-              <label>Street</label>
+              <label>Street <span>*</span></label>
               <input
                 type="text"
                 name="street"
                 v-model="newAddressDetails.street"
               />
+              <span class="validation-error" v-if="errors.street">{{
+                errors.street
+              }}</span>
             </div>
           </div>
           <div class="col-md-6 right-form add-address-form">
             <div class="landmark">
-              <label>Flat Number </label>
+              <label>Flat Number <span>*</span></label>
               <input
                 type="text"
                 name="flat_number"
                 v-model="newAddressDetails.flat_number"
               />
+              <span class="validation-error" v-if="errors.flat_number">{{
+                errors.flat_number
+              }}</span>
             </div>
             <div class="landmark">
               <label>Nearest Landmark</label>
@@ -81,7 +87,7 @@
                 v-model="newAddressDetails.nearest_landmark"
               />
             </div>
-            <div class="dob">
+            <!--<div class="dob">
               <label>City <span>*</span></label>
               <select class="selectpicker" v-model="newAddressDetails.add_city">
                 <option selected="selected">
@@ -91,8 +97,8 @@
               <span class="validation-error" v-if="errors.add_city">{{
                 errors.add_city
               }}</span>
-            </div>
-            <div class="customer-group">
+            </div>-->
+            <!--<div class="customer-group">
               <label>Country <span>*</span></label>
               <select class="selectpicker" v-model="newAddressDetails.country">
                 <option :value="storeData.country" selected="selected">
@@ -102,7 +108,7 @@
               <span class="validation-error" v-if="errors.country">{{
                 errors.country
               }}</span>
-            </div>
+            </div>-->
           </div>
         </div>
         <div class="modal-footer">
@@ -127,10 +133,10 @@
         </div>
       </div>
     </div>
-    <InformationPopup
+    <!--<InformationPopup
       :responseInformation="addressCreateStatus"
-      :title="addressCreateStatus.message"
-    />
+      title="Please fill form carefully"
+    />-->
   </div>
 
   <!--End Address popup-->
@@ -139,23 +145,24 @@
 <script>
 /* global $ */
 import { mapState, mapActions } from 'vuex'
-import InformationPopup from '@/components/pos/content/InformationPopup'
+// import InformationPopup from '@/components/pos/content/InformationPopup'
 export default {
   name: 'CreateCustomerAddress',
   props: {},
   data() {
     return {
-      newAddressDetails: {},
+      newAddressDetails: { nearest_landmark: '' },
       errors: {},
+      add_delivery_area: '',
     }
   },
   components: {
-    InformationPopup,
+    // InformationPopup,
   },
   computed: {
-    ...mapState({
+    /*...mapState({
       storeData: state => state.location.store,
-    }),
+    }),*/
     ...mapState({
       addressCreateStatus: state => state.customer.responseInformation,
     }),
@@ -173,44 +180,48 @@ export default {
     checkForm: function() {
       this.errors = {}
       this.errors.count = 0
-      if (!this.newAddressDetails.add_delivery_area) {
-        this.errors.add_delivery_area = 'Delivery area required'
+      if (!this.newAddressDetails.delivery_area_id) {
+        this.errors.delivery_area_id = 'Delivery area required'
         this.errors.count = 1
       }
       if (!this.newAddressDetails.building) {
-        this.errors.building = 'Building required'
+        this.errors.building = 'Building/Villa required'
         this.errors.count = 1
       }
-      if (!this.newAddressDetails.add_city) {
-        this.errors.add_city = 'City required'
+      if (!this.newAddressDetails.flat_number) {
+        this.errors.flat_number = 'Flat Number is required'
         this.errors.count = 1
       }
-      if (!this.newAddressDetails.location_id) {
-        this.errors.location = 'Location required'
+      if (!this.newAddressDetails.street) {
+        this.errors.street = 'Street required'
         this.errors.count = 1
       }
-      if (!this.newAddressDetails.country) {
+      if (this.newAddressDetails.street.length < 2) {
+        this.errors.street = 'Street should be at least 2 characters'
+        this.errors.count = 1
+      }
+      /*if (!this.newAddressDetails.country) {
         this.errors.country = 'Country required'
         this.errors.count = 1
-      }
+      }*/
       if (this.errors.count === 0) {
         this.CreateAddress(this.newAddressDetails)
         if (
           this.customerCreateStatus &&
-          this.customerCreateStatus.status == 1
+          this.customerCreateStatus.status == 'ok'
         ) {
           let addAddress = $('#add_address')
           addAddress.modal('toggle')
-          $('#information-popup').modal('toggle')
+          // $('#information-popup').modal('toggle')
           addAddress.click()
         } else {
-          $('#information-popup').modal('toggle')
+          // $('#information-popup').modal('toggle')
         }
       }
     },
     getAreaId: function(e) {
       if (e.target.options.selectedIndex > -1) {
-        this.newAddressDetails.add_delivery_area = $('.getAreaId')
+        this.add_delivery_area = $('.getAreaId')
           .find(':selected')
           .text()
       }

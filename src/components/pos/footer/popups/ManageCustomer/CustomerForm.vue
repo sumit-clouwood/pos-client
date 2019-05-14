@@ -20,42 +20,12 @@
             errors.phone_number
           }}</span>
         </div>
-        <div class="alternate-phone-from">
-          <label>Alternate Phone Number </label>
-          <input
-            type="text"
-            name="alternate-phone-from"
-            v-model="newCustomerDetails.alternative_phone"
-          />
-        </div>
-        <div class="sex-from">
-          <label>Gender</label>
-          <select class="selectpicker" v-model="newCustomerDetails.gender">
-            <option selected="selected">Male</option>
-            <option>Female</option>
-            <option>Other</option>
-          </select>
-        </div>
         <div class="email-from">
-          <label>Email </label>
+          <label>Email <span>*</span></label>
           <input type="email" name="email" v-model="newCustomerDetails.email" />
           <span class="validation-error" v-if="errors.email">{{
             errors.email
           }}</span>
-        </div>
-        <div class="customer-group">
-          <label>Date Of Birth <span>*</span></label>
-          <div class="pull-right col-md-7">
-            <date-dropdown
-              min="1950"
-              :max="getCurrentYear"
-              v-model="newCustomerDetails.birthday"
-              months-names=""
-            />
-            <span class="validation-error" v-if="errors.birthday">{{
-              errors.birthday
-            }}</span>
-          </div>
         </div>
         <div class="customer-group" v-if="customerGroup">
           <label>Customer Group</label>
@@ -66,8 +36,8 @@
             <!--<option>Select Customer Group</option>-->
             <option
               v-for="cGroup in customerGroup"
-              :value="cGroup.id"
-              :key="cGroup.id"
+              :value="cGroup.name"
+              :key="cGroup._id"
             >
               {{ cGroup.name }}
             </option>
@@ -75,9 +45,39 @@
         </div>
       </div>
       <div class="col-md-6 right-form">
-        <div class="name-from">
+        <div class="sex-from">
+          <label>Gender</label>
+          <select class="selectpicker" v-model="newCustomerDetails.gender">
+            <option selected="selected" value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="undisclosed">Undisclosed</option>
+          </select>
+        </div>
+        <div class="alternate-phone-from">
+          <label>Alternate Phone Number </label>
+          <input
+            type="text"
+            name="alternate-phone-from"
+            v-model="newCustomerDetails.alternative_phone"
+          />
+        </div>
+        <div class="customer-group">
+          <label>Date Of Birth <span>*</span></label>
+          <div class="right-shift col-md-7">
+            <date-dropdown
+              min="1920"
+              :max="getCurrentYear"
+              v-model="newCustomerDetails.birthday"
+              months-names=""
+            />
+            <span class="validation-error" v-if="errors.birthday">{{
+              errors.birthday
+            }}</span>
+          </div>
+        </div>
+        <!--<div class="name-from">
           <label>Delivery Area <span>*</span></label>
-          <!--<input type="text" name="Name" />-->
+          &lt;!&ndash;<input type="text" name="Name" />&ndash;&gt;
           <select
             class="selectpicker"
             v-model="newCustomerDetails.delivery_area"
@@ -92,8 +92,8 @@
           <span class="validation-error" v-if="errors.delivery_area">{{
             errors.delivery_area
           }}</span>
-        </div>
-        <div class="mobile-from">
+        </div>-->
+        <!--<div class="mobile-from">
           <label>Select Location/Branch <span>*</span></label>
           <select class="selectpicker" v-model="newCustomerDetails.location_id">
             <option :value="storeData.brand_id">
@@ -103,8 +103,8 @@
           <span class="validation-error" v-if="errors.location">{{
             errors.location
           }}</span>
-        </div>
-        <div class="alternate-phone-from">
+        </div>-->
+        <!--<div class="alternate-phone-from">
           <label>Building <span>*</span></label>
           <input
             type="text"
@@ -114,24 +114,24 @@
           <span class="validation-error" v-if="errors.building">{{
             errors.building
           }}</span>
-        </div>
-        <div class="sex-from">
+        </div>-->
+        <!--<div class="sex-from">
           <label>Street</label>
           <input
             type="text"
             name="street"
             v-model="newCustomerDetails.street"
           />
-        </div>
-        <div class="flat-from">
+        </div>-->
+        <!--<div class="flat-from">
           <label>Flat Number </label>
           <input
             type="text"
             name="flat_number"
             v-model="newCustomerDetails.flat_number"
           />
-        </div>
-        <div class="customer-group">
+        </div>-->
+        <!--<div class="customer-group">
           <label>City<span>*</span></label>
           <select class="selectpicker" v-model="newCustomerDetails.city">
             <option selected="selected">
@@ -141,8 +141,8 @@
           <span class="validation-error" v-if="errors.city">{{
             errors.city
           }}</span>
-        </div>
-        <div class="customer-group">
+        </div>-->
+        <!--<div class="customer-group">
           <label>Country <span>*</span></label>
           <select class="selectpicker" v-model="newCustomerDetails.country">
             <option :value="storeData.country" selected="selected">
@@ -152,7 +152,7 @@
           <span class="validation-error" v-if="errors.country">{{
             errors.country
           }}</span>
-        </div>
+        </div>-->
       </div>
     </div>
   </div>
@@ -174,7 +174,7 @@ export default {
       getCurrentYear: new Date().getFullYear().toString(),
       months:
         'January,February,March,April,May,June,July,August,September,October,November,December',
-      newCustomerDetails: {},
+      newCustomerDetails: { alternative_phone: '', gender: 'male' },
       errors: {},
     }
   },
@@ -184,13 +184,13 @@ export default {
         state.customer.customer_group ? state.customer.customer_group : false,
     }),
     ...mapState({
-      storeData: state => state.location.store,
+      // storeData: state => state.location.store,
     }),
     /*...mapState({
       location_id: state => state.location.location,
     }),*/
     ...mapState({
-      deliveryAreas: state => state.customer.fetchDeliveryAreas,
+      // deliveryAreas: state => state.customer.fetchDeliveryAreas,
     }),
   },
   methods: {
@@ -208,44 +208,52 @@ export default {
         this.errors.email = 'Valid email required.'
         this.errors.count = 1
       }
+      if (!this.newCustomerDetails.email) {
+        this.errors.email = 'Email required.'
+        this.errors.count = 1
+      }
       if (!this.newCustomerDetails.phone_number) {
         this.errors.phone_number = 'Mobile number required'
         this.errors.count = 1
       }
-      if (!this.newCustomerDetails.delivery_area) {
+      /*if (!this.newCustomerDetails.delivery_area) {
         this.errors.delivery_area = 'Delivery area required'
         this.errors.count = 1
-      }
-      if (!this.newCustomerDetails.building) {
+      }*/
+      /*if (!this.newCustomerDetails.building) {
         this.errors.building = 'Building required'
         this.errors.count = 1
-      }
-      if (!this.newCustomerDetails.city) {
+      }*/
+      /*if (!this.newCustomerDetails.city) {
         this.errors.city = 'City required'
         this.errors.count = 1
-      }
-      if (!this.newCustomerDetails.location_id) {
+      }*/
+      /*if (!this.newCustomerDetails.location_id) {
         this.errors.location = 'Location required'
         this.errors.count = 1
-      }
+      }*/
       if (!this.newCustomerDetails.birthday) {
         this.errors.birthday = 'Date of birth required'
         this.errors.count = 1
       }
-      if (!this.newCustomerDetails.country) {
+      /*if (!this.newCustomerDetails.country) {
         this.errors.country = 'Country required'
         this.errors.count = 1
-      }
+      }*/
 
       if (this.errors.count === 0) {
         let birthday = this.newCustomerDetails.birthday.split('.')
         this.newCustomerDetails.birthday =
           birthday[2] + '-' + birthday[1] + '-' + birthday[0]
+        // eslint-disable-next-line
+        console.log(this.newCustomerDetails.birthday)
       }
 
       return this.errors
     },
     getData() {
+      // eslint-disable-next-line
+      console.log(this.newCustomerDetails)
       return this.newCustomerDetails
     },
     validEmail: function(email) {
@@ -255,3 +263,9 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.right-shift {
+  right: 14px;
+  float: right;
+}
+</style>

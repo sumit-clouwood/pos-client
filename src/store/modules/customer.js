@@ -131,14 +131,11 @@ const actions = {
     })
   },
 
-  addNote({ commit, rootState }, note) {
-    if (typeof state.customer.customer_list !== 'undefined') {
-      const params = [
-        state.customer.customer_list._id,
-        rootState.auth.userDetails._id,
-        note,
-      ]
-      customerService.addNote(...params).then(response => {
+  addNote({ commit }, note) {
+    if (typeof state.customer._id !== 'undefined') {
+      let customerNote = { note: note }
+      const params = [customerNote, state.customer._id, 'brand_customer_notes']
+      customerService.globalCreate(...params).then(response => {
         commit(mutation.SET_RESPONSE_MESSAGES, response.data)
       })
     } else {
@@ -153,16 +150,6 @@ const actions = {
     })
     let customerId = customer._id
     commit(mutation.SET_CUSTOMER_ID, customerId)
-
-    /*if (typeof addressOnly != 'undefined') {
-      commit(
-        mutation.FETCH_CUSTOMER_ADDRESSES_ONLY,
-        customer.customer_addresses
-      )
-    } else {*/
-    // let limit = 10
-    // let pgno = state.params.past_order_page_number
-    // let pastOrdersPaginate = {}
     customerService.fetchCustomer(customerId).then(response => {
       let selectedCustomerLastOrder = false
       const lastOrder = Object.entries(state.lastOrder._id)
@@ -192,15 +179,16 @@ const actions = {
   },
 
   CreateCustomer({ commit }, newCustomerDetails) {
-    customerService.createCustomer(newCustomerDetails).then(response => {
+    const params = [newCustomerDetails, false, 'brand_customers']
+    customerService.globalCreate(...params).then(response => {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
     })
   },
 
   CreateAddress({ commit }, newAddressDetails) {
     let customer_id = state.customer._id
-    const params = [newAddressDetails, customer_id]
-    customerService.createAddress(...params).then(response => {
+    const params = [newAddressDetails, customer_id, 'customer_address']
+    customerService.globalCreate(...params).then(response => {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
     })
   },
@@ -263,14 +251,14 @@ const mutations = {
   [mutation.SET_CUSTOMER_GROUP](state, customerGroup) {
     state.customer_group = customerGroup
   },
-  [mutation.SET_RESPONSE_MESSAGES](state, message) {
+  /*[mutation.SET_RESPONSE_MESSAGES](state, message) {
     state.responseInformation.message = message
-  },
+  },*/
   [mutation.ORDERS](state, orders) {
     state.lastOrder = orders
   },
   [mutation.SET_RESPONSE_MESSAGES](state, customerCreateResponse) {
-    if (customerCreateResponse.status == 0) {
+    if (customerCreateResponse.status == 'form_errors') {
       state.responseInformation.status = customerCreateResponse.status
       state.responseInformation.message = customerCreateResponse.error
     } else {

@@ -68,13 +68,13 @@ export default {
         this.CreateCustomer(data)
         if (
           this.customerCreateStatus &&
-          this.customerCreateStatus.status == 1
+          this.customerCreateStatus.status == 'ok'
         ) {
           $('#customer').modal('toggle')
-          $('#information-popup').modal('toggle')
+          // $('#information-popup').modal('toggle')
           $('#close-customer').click()
         } else {
-          $('#information-popup').modal('toggle')
+          // $('#information-popup').modal('toggle')
         }
       }
     },
