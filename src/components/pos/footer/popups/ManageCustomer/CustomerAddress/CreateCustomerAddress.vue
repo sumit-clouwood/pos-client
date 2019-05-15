@@ -111,7 +111,7 @@ export default {
   props: {},
   data() {
     return {
-      newAddressDetails: { nearest_landmark: '' },
+      newAddressDetails: this.$store.customer.editInformation,
       errors: {},
       add_delivery_area: '',
       customer_title: 'Add New Address',

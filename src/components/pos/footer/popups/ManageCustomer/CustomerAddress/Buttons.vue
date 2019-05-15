@@ -96,9 +96,7 @@ export default {
   methods: {
     doAction: function(actionType) {
       if (actionType == 'edit') {
-        this.$store
-          .dispatch('customer/editAddress', this.id)
-          .then(() => this.updateForm())
+        this.$store.dispatch('customer/editAddress', this.id)
       } else if (actionType == 'delete') {
         let actionDetails = {
           id: this.id,
@@ -110,18 +108,18 @@ export default {
         //do nothing
       }
     },
-    updateForm: function() {
-      /*if (this.editInformation) {
+    // updateForm: function() {
+    //   /*if (this.editInformation) {
 
-      }*/
-      this.editDetails.customer_title = 'Edit Address'
-      this.editDetails.delivery_area_id = this.editInformation.delivery_area_id
-      this.editDetails.building = this.editInformation.building
-      this.editDetails.flat_number = this.editInformation.flat_number
-      this.editDetails.street = this.editInformation.street
-      this.editDetails.nearest_landmark = this.editInformation.nearest_landmark
-      // alert(this.editInformation.delivery_area_id)
-    },
+    //   }*/
+    //   this.editDetails.customer_title = 'Edit Address'
+    //   this.editDetails.delivery_area_id = this.editInformation.delivery_area_id
+    //   this.editDetails.building = this.editInformation.building
+    //   this.editDetails.flat_number = this.editInformation.flat_number
+    //   this.editDetails.street = this.editInformation.street
+    //   this.editDetails.nearest_landmark = this.editInformation.nearest_landmark
+    //   // alert(this.editInformation.delivery_area_id)
+    // },
   },
 }
 </script>
