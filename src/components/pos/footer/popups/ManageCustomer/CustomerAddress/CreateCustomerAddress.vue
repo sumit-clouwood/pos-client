@@ -171,7 +171,6 @@ export default {
           this.customerCreateStatus.status == 'ok'
         ) {
           let addAddress = $('#add_address')
-          alert(addAddress)
           addAddress.modal('toggle')
           addAddress.click()
         } else {
