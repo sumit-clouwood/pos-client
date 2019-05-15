@@ -45,12 +45,7 @@
               >
                 Edit Info</button
               ><button
-                @click="
-                  fetchSelectedCustomer({
-                    customer: customer,
-                    addressOnly: true,
-                  })
-                "
+                @click="fetchSelectedCustomer({ customer: customer })"
                 data-toggle="modal"
                 data-target="#add-to-order"
                 data-dismiss="modal"

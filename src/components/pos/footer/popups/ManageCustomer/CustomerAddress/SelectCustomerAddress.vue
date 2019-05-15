@@ -9,13 +9,9 @@
           <h4 class="customer-title">Add to Order</h4>
         </div>
         <div class="modal-body add-to-order">
-          <CustomerDeliveryArea
-            v-if="deliveryAddresses.length"
-            :addresses="deliveryAddresses"
-            :buttons="false"
-          />
-          <div class="error" v-else-if="error">No address found.</div>
-          <div class="loading" v-else><Preloader /></div>
+          <CustomerDeliveryArea :buttons="false" />
+          <!--<div class="error" v-else-if="error">No address found.</div>
+          <div class="loading" v-else><Preloader /></div>-->
         </div>
         <div class="modal-footer">
           <div class="btn-announce">
@@ -28,7 +24,6 @@
               <span>X</span> Close
             </button>
             <button
-              v-show="deliveryAddresses.length"
               class="btn btn-success btn-large popup-btn-save"
               type="button"
               id="add-customer-btn"
@@ -47,18 +42,18 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
-import Preloader from '@/components/util/Preloader'
+// import { mapActions, mapState } from 'vuex'
+// import Preloader from '@/components/util/Preloader'
 import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
 export default {
   name: 'SelectCustomerAddress',
   components: {
     CustomerDeliveryArea,
-    Preloader,
+    // Preloader,
   },
 
   computed: {
-    ...mapState('customer', ['error']),
+    /*...mapState('customer', ['error']),
     deliveryAddresses: function() {
       if (this.$store.state.customer.fetchCustomerAddressOnly.customer_list) {
         const customerDetails = this.$store.state.customer
@@ -71,10 +66,10 @@ export default {
         }
       }
       return []
-    },
+    },*/
   },
   methods: {
-    ...mapActions('location', ['updateModalSelectionDelivery']),
+    // ...mapActions('location', ['updateModalSelectionDelivery']),
   },
 }
 </script>

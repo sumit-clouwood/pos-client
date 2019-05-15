@@ -3,44 +3,6 @@
     <div class="title-cu">
       <h2>Customer Insights</h2>
     </div>
-    <div>
-      <carousel :per-page="1" :mouse-drag="true">
-        <slide>
-          <div class="insight-last-order">
-            <h3>LAST ORDER</h3>
-            <p class="last-order-time">{{ insight.last_order_datetime }}</p>
-            <p class="last-order-details">{{ insight.favorites }}</p>
-          </div>
-        </slide>
-        <slide>
-          <div class="insight-last-order">
-            <ul class="ullist-business-slider">
-              <li>
-                TOTAL BUSINESS <span>{{ insight.total_orders }}</span>
-              </li>
-              <li>
-                CANCELLED <span>{{ cancelled_orders_count }}</span>
-              </li>
-            </ul>
-            <div class="total-amount-business-slider">
-              <p>TOTAL AMOUNT</p>
-              <h3>AED {{ insight.total_orders }}</h3>
-            </div>
-          </div>
-        </slide>
-        <slide>
-          <div class="insight-last-order">
-            <h3>LAST ORDER</h3>
-            <ul class="fav-item-slider">
-              <!--<li><img src="/img/pos/dine-right.png" alt="fav-item" /></li>-->
-              <li>
-                {{ insight.last_order }}
-              </li>
-            </ul>
-          </div>
-        </slide>
-      </carousel>
-    </div>
     <div class="dob-customer-insight">
       <ul class="ullist-dob">
         <li>
@@ -53,6 +15,51 @@
           Gender : <span>{{ insight.gender }}</span>
         </li>
       </ul>
+    </div>
+
+    <div>
+      <carousel :per-page="1" :mouse-drag="true">
+        <slide>
+          <div class="insight-last-order">
+            <h3>LAST ORDER</h3>
+            <p class="last-order-time">{{ insight.last_order_datetime }}</p>
+            <ul class="fav-item-slider">
+              <!--<li><img src="/img/pos/dine-right.png" alt="fav-item" /></li>-->
+              <li v-for="(item, index) in items" :key="index">
+                {{ item.name }}
+              </li>
+            </ul>
+          </div>
+        </slide>
+        <slide>
+          <div class="insight-last-order">
+            <ul class="ullist-business-slider">
+              <li>
+                TOTAL BUSINESS <span>{{ insight.total_orders }}</span>
+              </li>
+              <li>
+                CANCELLED <span>{{ cancelOrders }}</span>
+              </li>
+            </ul>
+            <div class="total-amount-business-slider">
+              <p>TOTAL AMOUNT</p>
+              <h3>AED {{ lastOrder.balance_due }}</h3>
+            </div>
+          </div>
+        </slide>
+        <slide>
+          <div class="insight-last-order">
+            <h3>Favorites</h3>
+            <p
+              class="last-order-details"
+              v-for="(favItem, key) in insight.favorites"
+              :key="key"
+            >
+              {{ favItem.menu_item }}
+            </p>
+          </div>
+        </slide>
+      </carousel>
     </div>
     <div class="customer-insights-notes">
       <div>
@@ -102,7 +109,7 @@ import { Carousel, Slide } from 'vue-carousel'
 function getCustomerList(state) {
   return state.customer.customer
 }
-
+/* eslint-disable */
 export default {
   name: 'CustomerInsights',
   components: {
@@ -110,44 +117,47 @@ export default {
     Carousel,
     Slide,
   },
-  /*data() {
+  data() {
     return {
-      orderCount: 3,
+      items: false,
+      lastOrder: false,
+      cancelOrders: 0
     }
-  },*/
+  },
+  mounted(){
+    this.getLastOrderDetails(this.insight.last_order)
+  },
+  props: {
+    pastOrders: false,
+  },
   methods: {
     getAge: function(dob) {
       let now = new Date()
-      let birthdate = dob.split('-')
-      let born = new Date(birthdate[0], birthdate[1] - 1, birthdate[2])
-      let birthday = new Date(
-        now.getFullYear(),
-        born.getMonth(),
-        born.getDate()
-      )
-      if (now >= birthday) return now.getFullYear() - born.getFullYear()
-      else return now.getFullYear() - born.getFullYear() - 1
+      if(typeof dob != 'undefined') {
+        let born = new Date(birthdate[0], birthdate[1] - 1, birthdate[2])
+        let birthday = new Date(
+                now.getFullYear(),
+                born.getMonth(),
+                born.getDate()
+        )
+        let birthdate = dob.split('-')
+        if (now >= birthday) return now.getFullYear() - born.getFullYear()
+        else return (now.getFullYear() - born.getFullYear())/* - 1*/
+      } else return dob
     },
 
-    cancelled_orders_count: function() {
-      return this.insight.orders.reduce((prev, current) => {
-        return prev + (current.order_status == 'ORDER_STATUS_CANCELLED' ? 1 : 0)
-      }, 0)
+    getLastOrderDetails: function(orderId) {
+      if(this.pastOrders.length) {
+        this.lastOrder = this.pastOrders.find(order => order._id == orderId)
+        this.items = this.lastOrder.items
+      }
     },
-  },
-  mounted() {
-    /*$('.br-table-btn').click(function () {
-      $('div.last-order-wrap')[0].slick().refresh
-    })*/
-    /*$('div.last-order-wrap').slick({
-      slidesToShow: 5,
-      slidesToScroll: 1,
-      accessibility: false,
-      dots: true,
-      arrows: true,
-      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
-      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
-    })*/
+    cancelled_orders_count: function() {
+      /*return this.insight.orders.reduce((prev, current) => {
+        return prev + (current.order_status == 'ORDER_STATUS_CANCELLED' ? 1 : 0)
+      }, 0)*/
+      this.cancelOrders = 0
+    },
   },
   computed: {
     ...mapState({
@@ -162,42 +172,26 @@ export default {
         return totalNotes / 10
       }
     },
-    /*...mapState({
-      customerNotes: state =>
-        getCustomerList(state) && getCustomerList(state).customer_notes
-          ? getCustomerList(state).customer_notes
-          : false,
-    }),*/
-    /*...mapState({
-      birthday: state =>
-        (typeof getCustomerList(state).day != 'undefined'
-          ? getCustomerList(state).day
-          : '-') +
-        ' ' +
-        (typeof getCustomerList(state).month != 'undefined'
-          ? getCustomerList(state).month
-          : '-') +
-        ' ' +
-        (typeof getCustomerList(state).year != 'undefined'
-          ? getCustomerList(state).year
-          : '-'),
-    }),*/
-    /*...mapState({
-      gender: state =>
-        getCustomerList(state) && getCustomerList(state).gender != null
-          ? getCustomerList(state).gender
-          : '-',
-    }),*/
   },
 }
 </script>
 <style lang="scss" scoped>
-.customer-insights-notes div {
-  max-height: 215px;
+.customer-insights-notes div div {
   overflow-y: auto;
-  overflow-x: hidden;
+  max-height: 190px;
+  /*overflow-x: hidden;*/
 }
 .location-delivery-area-address {
-  max-height: 250px;
+  /*max-height: 250px;*/
 }
+.insight-last-order {
+    text-align: center;
+}
+.location-delivery-area-address {
+    /*max-height: 300px;*/
+}
+.add-to-order-wrapper {
+    /*max-height: 270px;*/
+}
+
 </style>

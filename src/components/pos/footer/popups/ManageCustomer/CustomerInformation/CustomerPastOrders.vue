@@ -52,14 +52,13 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'CustomerPastOrders',
-  computed: {
-    ...mapState({
-      pastOrders: state => state.customer.pastOrders,
-    }),
+  props: {
+    // eslint-disable-next-line vue/require-prop-type-constructor
+    pastOrders: false,
   },
   methods: {
     ...mapActions('order', ['getPastOrderDetails']),

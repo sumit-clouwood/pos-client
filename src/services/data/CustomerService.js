@@ -1,16 +1,21 @@
 import DataService from '@/services/DataService'
 
 export default {
-  createCustomer(newCustomerDetails) {
-    //set context to brand only
-    return DataService.post('/api/auth/crm/create/Customer', newCustomerDetails)
+  globalCreate(data, customer_id, model) {
+    let parentId = customer_id ? `?parent_id=${customer_id}` : ''
+    return DataService.post(`/model/${model}/add${parentId}`, data, 'brand')
   },
-
-  createAddress(newAddressDetails) {
+  globalUpdate(id, customer_id, model, action, data) {
+    let parentId = customer_id ? `?parent_id=${customer_id}` : ''
     return DataService.post(
-      '/api/auth/crm/create/NewCustomerAddress',
-      newAddressDetails
+      `/model/${model}/id/${id}/${action}${parentId}`,
+      data,
+      'brand'
     )
+  },
+  globalEdit(id, customer_id, model) {
+    let parentId = customer_id ? `?parent_id=${customer_id}` : ''
+    return DataService.get(`/model/${model}/id/${id}/edit${parentId}`, 'brand')
   },
   //get the customer along with all previous orders and other required info
   fetchCustomer(customerId) {
@@ -20,26 +25,17 @@ export default {
   customerGroupList() {
     return DataService.get('/model/brand_customer_group?no_limit=true', 'brand')
   },
-
-  //get customer addresses
-  /*getCustomerDetails(...[customerIds, locationId]) {
+  fetchDeliveryAreas(query) {
     return DataService.get(
-      `/api/auth/crm/get/CustomerList/?location_id=${locationId}&customer_id=${customerIds}`
+      `/model/brand_store_delivery_areas?query=${query}`,
+      'brand'
     )
-  },*/
+  },
 
   customerList(...[stores, query, page, orderBy, perPage]) {
     return DataService.get(
       `/model/brand_customers?page_id=brand_customers_main_tbl&query=&limit=${perPage}&ascending=0&page=${page}&query=${query}&byColumn=0&store_id=&stores=${stores}&ascending=0&byColumn=0&orderBy=${orderBy}`,
       'brand'
-
-      // `/api/auth/pos/customerList?location_id=${locationId}&search=${search}&page_size=${perpage}&page_number=${page}&origin=${origin}&validate=${validate}&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
-    )
-  },
-
-  addNote(...[customerId, cashierId, notes]) {
-    return DataService.post(
-      `/api/auth/crm/create/CustomerNotes?customer_id=${customerId}&cashier_id=${cashierId}&notes=${notes}`
     )
   },
 

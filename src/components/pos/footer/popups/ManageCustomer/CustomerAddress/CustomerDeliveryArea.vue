@@ -15,7 +15,7 @@
         {{ address.flat_number }}, {{ address.building }}, {{ address.street }},
         {{ address.city }}
       </p>
-      <Buttons v-if="buttons" />
+      <Buttons v-if="buttons" :id="address._id.$oid" />
     </div>
   </div>
 </template>
@@ -25,10 +25,9 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import Buttons from './Buttons'
 
 export default {
-  name: 'CustomerDeliveryAreas',
+  name: 'CustomerDeliveryArea',
   props: {
     buttons: Boolean,
-    addresses: Array,
   },
   components: {
     Buttons,
@@ -38,6 +37,12 @@ export default {
   },
   computed: {
     ...mapState('location', ['location']),
+    ...mapState({
+      addresses: state =>
+        state.customer.customer
+          ? state.customer.customer.customer_addresses
+          : false,
+    }),
     ...mapState({
       storeName: state => state.location.store.name,
     }),
