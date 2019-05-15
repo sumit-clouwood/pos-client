@@ -80,15 +80,25 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'Buttons',
   props: {
     id: String,
+    editDetails: {},
+  },
+  computed: {
+    ...mapState({
+      editInformation: state => state.customer.editInformation,
+    }),
   },
   methods: {
     doAction: function(actionType) {
       if (actionType == 'edit') {
-        this.$store.dispatch('customer/editAddress', this.id)
+        this.$store
+          .dispatch('customer/editAddress', this.id)
+          .then(() => this.updateForm())
       } else if (actionType == 'delete') {
         let actionDetails = {
           id: this.id,
@@ -99,6 +109,18 @@ export default {
       } else {
         //do nothing
       }
+    },
+    updateForm: function() {
+      /*if (this.editInformation) {
+
+      }*/
+      this.editDetails.customer_title = 'Edit Address'
+      this.editDetails.delivery_area_id = this.editInformation.delivery_area_id
+      this.editDetails.building = this.editInformation.building
+      this.editDetails.flat_number = this.editInformation.flat_number
+      this.editDetails.street = this.editInformation.street
+      this.editDetails.nearest_landmark = this.editInformation.nearest_landmark
+      // alert(this.editInformation.delivery_area_id)
     },
   },
 }

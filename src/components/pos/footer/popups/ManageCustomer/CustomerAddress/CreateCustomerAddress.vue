@@ -117,32 +117,12 @@ export default {
       customer_title: 'Add New Address',
     }
   },
-  updated() {
-    this.updateForm()
-  },
   computed: {
-    ...mapState({
-      editInformation: state => state.customer.editInformation,
-    }),
     ...mapState({
       fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
     }),
   },
   methods: {
-    updateForm: function() {
-      /*if (this.editInformation) {
-
-      }*/
-      this.customer_title = 'Edit Address'
-      let editDetails = {}
-      editDetails.delivery_area_id = this.editInformation.delivery_area_id
-      editDetails.building = this.editInformation.building
-      editDetails.flat_number = this.editInformation.flat_number
-      editDetails.street = this.editInformation.street
-      editDetails.nearest_landmark = this.editInformation.nearest_landmark
-      this.newAddressDetails = editDetails
-      // alert(this.editInformation.delivery_area_id)
-    },
     checkForm: function() {
       this.errors = {}
       this.errors.count = 0

@@ -194,10 +194,13 @@ const actions = {
     })
   },
   editAddress({ commit }, id) {
-    let customer_id = state.customer._id
-    const params = [id, customer_id, 'customer_address']
-    customerService.globalEdit(...params).then(response => {
-      commit(mutation.SET_EDIT_DETAILS, response.data.item)
+    return new Promise(resolve => {
+      let customer_id = state.customer._id
+      const params = [id, customer_id, 'customer_address']
+      customerService.globalEdit(...params).then(response => {
+        commit(mutation.SET_EDIT_DETAILS, response.data.item)
+        resolve()
+      })
     })
   },
   updateAction({ commit, dispatch }, actionDetails) {

@@ -57,7 +57,8 @@ import { mapActions } from 'vuex'
 export default {
   name: 'CustomerPastOrders',
   props: {
-    pastOrders: Array,
+    // eslint-disable-next-line vue/require-prop-type-constructor
+    pastOrders: false,
   },
   methods: {
     ...mapActions('order', ['getPastOrderDetails']),

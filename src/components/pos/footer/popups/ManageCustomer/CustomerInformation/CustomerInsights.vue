@@ -128,25 +128,29 @@ export default {
     this.getLastOrderDetails(this.insight.last_order)
   },
   props: {
-    pastOrders: Array,
+    pastOrders: false,
   },
   methods: {
     getAge: function(dob) {
       let now = new Date()
-      let birthdate = dob.split('-')
-      let born = new Date(birthdate[0], birthdate[1] - 1, birthdate[2])
-      let birthday = new Date(
-        now.getFullYear(),
-        born.getMonth(),
-        born.getDate()
-      )
-      if (now >= birthday) return now.getFullYear() - born.getFullYear()
-      else return (now.getFullYear() - born.getFullYear())/* - 1*/
+      if(typeof dob != 'undefined') {
+        let born = new Date(birthdate[0], birthdate[1] - 1, birthdate[2])
+        let birthday = new Date(
+                now.getFullYear(),
+                born.getMonth(),
+                born.getDate()
+        )
+        let birthdate = dob.split('-')
+        if (now >= birthday) return now.getFullYear() - born.getFullYear()
+        else return (now.getFullYear() - born.getFullYear())/* - 1*/
+      } else return dob
     },
 
     getLastOrderDetails: function(orderId) {
-      this.lastOrder = this.pastOrders.find(order => order._id == orderId)
-      this.items = this.lastOrder.items
+      if(this.pastOrders.length) {
+        this.lastOrder = this.pastOrders.find(order => order._id == orderId)
+        this.items = this.lastOrder.items
+      }
     },
     cancelled_orders_count: function() {
       /*return this.insight.orders.reduce((prev, current) => {
