@@ -43,14 +43,8 @@ const actions = {
     })
   },
 
-  fetchAll({ commit, rootState }) {
-    const params = [
-      rootState.location.location,
-      rootState.sync.date,
-      rootState.sync.compress,
-    ]
-
-    SurchargeService.fetchAll(...params).then(response => {
+  fetchAll({ commit }) {
+    SurchargeService.fetchAll().then(response => {
       if (response.data.data.length) {
         commit(mutation.SET_SURCHARGES, response.data.data)
       }

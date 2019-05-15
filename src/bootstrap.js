@@ -50,7 +50,7 @@ export default {
 
             //continue loading other service in parallel
             // store.dispatch('announcement/fetchAll', response)
-            // store.dispatch('surcharge/fetchAll', response)
+            store.dispatch('surcharge/fetchAll', response)
             // store.dispatch('discount/fetchAll', response)
             store.dispatch('customer/fetchAll', response)
             // store.dispatch('payment/fetchAll', response)
