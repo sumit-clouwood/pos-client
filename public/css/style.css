@@ -3782,12 +3782,16 @@ div#add-to-order .modal-dialog {
   font-weight: normal;
   font-style: normal;
   font-stretch: normal;
-  line-height: normal;
   letter-spacing: 0.5px;
   color: #72777c;
   text-align: left;
+  line-height: 1.6;
 }
-
+.add-to-order-wrapper > .order-location.option-contain {
+  max-height: 140px;
+  overflow-y: auto;
+  min-height: 130px;
+}
 .order-location.option-contain {
   padding: 10px 35px 8px 15px;
   display: flex;

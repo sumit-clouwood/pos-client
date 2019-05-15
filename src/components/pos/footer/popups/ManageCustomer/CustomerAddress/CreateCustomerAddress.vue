@@ -7,7 +7,7 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Add New Address</h4>
+          <h4 class="customer-title">{{ customer_title }} {{ updateForm }}</h4>
         </div>
         <div class="modal-body row form-block">
           <div class="col-md-6 left-form add-address-form">
@@ -30,20 +30,6 @@
                 errors.delivery_area_id
               }}</span>
             </div>
-            <!--<div class="mobile-from">
-              <label>Location/Branch <span>*</span></label>
-              <select
-                class="selectpicker"
-                v-model="newAddressDetails.branch_id"
-              >
-                <option :value="storeData.branch_id">
-                  {{ storeData.branch_n }}
-                </option>
-              </select>
-              <span class="validation-error" v-if="errors.location">{{
-                errors.location
-              }}</span>
-            </div>-->
             <div class="alternate-phone-from">
               <label>Building/Villa <span>*</span></label>
               <input
@@ -87,28 +73,6 @@
                 v-model="newAddressDetails.nearest_landmark"
               />
             </div>
-            <!--<div class="dob">
-              <label>City <span>*</span></label>
-              <select class="selectpicker" v-model="newAddressDetails.add_city">
-                <option selected="selected">
-                  {{ storeData.city }}
-                </option>
-              </select>
-              <span class="validation-error" v-if="errors.add_city">{{
-                errors.add_city
-              }}</span>
-            </div>-->
-            <!--<div class="customer-group">
-              <label>Country <span>*</span></label>
-              <select class="selectpicker" v-model="newAddressDetails.country">
-                <option :value="storeData.country" selected="selected">
-                  {{ storeData.country }}
-                </option>
-              </select>
-              <span class="validation-error" v-if="errors.country">{{
-                errors.country
-              }}</span>
-            </div>-->
           </div>
         </div>
         <div class="modal-footer">
@@ -133,10 +97,6 @@
         </div>
       </div>
     </div>
-    <!--<InformationPopup
-      :responseInformation="addressCreateStatus"
-      title="Please fill form carefully"
-    />-->
   </div>
 
   <!--End Address popup-->
@@ -154,29 +114,35 @@ export default {
       newAddressDetails: { nearest_landmark: '' },
       errors: {},
       add_delivery_area: '',
+      customer_title: 'Add New Address',
     }
   },
-  components: {
-    // InformationPopup,
+  updated() {
+    this.updateForm()
   },
   computed: {
-    /*...mapState({
-      storeData: state => state.location.store,
-    }),*/
     ...mapState({
-      addressCreateStatus: state => state.customer.responseInformation,
+      editInformation: state => state.customer.editInformation,
     }),
     ...mapState({
       fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
     }),
-    /*...mapState({
-      customerId: state =>
-        state.customer.customer_list.length
-          ? state.customer.customer_list._id
-          : '',
-    }),*/
   },
   methods: {
+    updateForm: function() {
+      /*if (this.editInformation) {
+
+      }*/
+      this.customer_title = 'Edit Address'
+      let editDetails = {}
+      editDetails.delivery_area_id = this.editInformation.delivery_area_id
+      editDetails.building = this.editInformation.building
+      editDetails.flat_number = this.editInformation.flat_number
+      editDetails.street = this.editInformation.street
+      editDetails.nearest_landmark = this.editInformation.nearest_landmark
+      this.newAddressDetails = editDetails
+      // alert(this.editInformation.delivery_area_id)
+    },
     checkForm: function() {
       this.errors = {}
       this.errors.count = 0
@@ -200,19 +166,14 @@ export default {
         this.errors.street = 'Street should be at least 2 characters'
         this.errors.count = 1
       }
-      /*if (!this.newAddressDetails.country) {
-        this.errors.country = 'Country required'
-        this.errors.count = 1
-      }*/
       if (this.errors.count === 0) {
-        this.CreateAddress(this.newAddressDetails)
+        this.createAddress(this.newAddressDetails)
         if (
           this.customerCreateStatus &&
           this.customerCreateStatus.status == 'ok'
         ) {
           let addAddress = $('#add_address')
           addAddress.modal('toggle')
-          // $('#information-popup').modal('toggle')
           addAddress.click()
         } else {
           // $('#information-popup').modal('toggle')
@@ -226,7 +187,7 @@ export default {
           .text()
       }
     },
-    ...mapActions('customer', ['CreateAddress']),
+    ...mapActions('customer', ['createAddress']),
   },
 }
 </script>

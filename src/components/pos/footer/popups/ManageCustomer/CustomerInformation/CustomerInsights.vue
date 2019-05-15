@@ -172,24 +172,22 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.customer-insights-notes div {
-  max-height: 215px;
+.customer-insights-notes div div {
   overflow-y: auto;
-  overflow-x: hidden;
+  max-height: 190px;
+  /*overflow-x: hidden;*/
 }
 .location-delivery-area-address {
-  max-height: 250px;
+  /*max-height: 250px;*/
 }
 .insight-last-order {
     text-align: center;
 }
 .location-delivery-area-address {
-    max-height: 300px;
+    /*max-height: 300px;*/
 }
 .add-to-order-wrapper {
-    max-height: 270px;
+    /*max-height: 270px;*/
 }
-.customer-insights-notes div {
-    max-height: 190px;
-}
+
 </style>

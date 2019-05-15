@@ -3,8 +3,19 @@ import DataService from '@/services/DataService'
 export default {
   globalCreate(data, customer_id, model) {
     let parentId = customer_id ? `?parent_id=${customer_id}` : ''
-    alert(parentId)
     return DataService.post(`/model/${model}/add${parentId}`, data, 'brand')
+  },
+  globalUpdate(id, customer_id, model, action, data) {
+    let parentId = customer_id ? `?parent_id=${customer_id}` : ''
+    return DataService.post(
+      `/model/${model}/id/${id}/${action}${parentId}`,
+      data,
+      'brand'
+    )
+  },
+  globalEdit(id, customer_id, model) {
+    let parentId = customer_id ? `?parent_id=${customer_id}` : ''
+    return DataService.get(`/model/${model}/id/${id}/edit${parentId}`, 'brand')
   },
   //get the customer along with all previous orders and other required info
   fetchCustomer(customerId) {

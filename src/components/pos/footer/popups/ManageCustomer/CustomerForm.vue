@@ -245,15 +245,11 @@ export default {
         let birthday = this.newCustomerDetails.birthday.split('.')
         this.newCustomerDetails.birthday =
           birthday[2] + '-' + birthday[1] + '-' + birthday[0]
-        // eslint-disable-next-line
-        console.log(this.newCustomerDetails.birthday)
       }
 
       return this.errors
     },
     getData() {
-      // eslint-disable-next-line
-      console.log(this.newCustomerDetails)
       return this.newCustomerDetails
     },
     validEmail: function(email) {

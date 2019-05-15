@@ -28,6 +28,7 @@ const state = {
   loyalty: false,
   deliveryAreas: false,
   fetchDeliveryAreas: false,
+  editInformation: false,
 }
 const getters = {
   find: state => customerId => {
@@ -178,18 +179,39 @@ const actions = {
     dispatch('order/updateOrderType', 'delivery', { root: true })
   },
 
-  CreateCustomer({ commit }, newCustomerDetails) {
+  createCustomer({ commit }, newCustomerDetails) {
     const params = [newCustomerDetails, false, 'brand_customers']
     customerService.globalCreate(...params).then(response => {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
     })
   },
 
-  CreateAddress({ commit }, newAddressDetails) {
+  createAddress({ commit }, newAddressDetails) {
     let customer_id = state.customer._id
     const params = [newAddressDetails, customer_id, 'customer_address']
     customerService.globalCreate(...params).then(response => {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
+    })
+  },
+  editAddress({ commit }, id) {
+    let customer_id = state.customer._id
+    const params = [id, customer_id, 'customer_address']
+    customerService.globalEdit(...params).then(response => {
+      commit(mutation.SET_EDIT_DETAILS, response.data.item)
+    })
+  },
+  updateAction({ commit, dispatch }, actionDetails) {
+    let customer_id = state.customer._id
+    const params = [
+      actionDetails.id,
+      customer_id,
+      actionDetails.model,
+      actionDetails.action,
+      '',
+    ]
+    customerService.globalUpdate(...params).then(response => {
+      commit(mutation.SET_EDIT_DETAILS, response.data.item)
+      dispatch('fetchSelectedCustomer', { _id: customer_id })
     })
   },
   fetchDeliveryArea({ commit }, query) {
@@ -251,9 +273,9 @@ const mutations = {
   [mutation.SET_CUSTOMER_GROUP](state, customerGroup) {
     state.customer_group = customerGroup
   },
-  /*[mutation.SET_RESPONSE_MESSAGES](state, message) {
-    state.responseInformation.message = message
-  },*/
+  [mutation.SET_EDIT_DETAILS](state, details) {
+    state.editInformation = details
+  },
   [mutation.ORDERS](state, orders) {
     state.lastOrder = orders
   },

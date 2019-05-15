@@ -60,12 +60,12 @@ export default {
     }),
   },
   methods: {
-    ...mapActions('customer', ['CreateCustomer']),
+    ...mapActions('customer', ['createCustomer']),
     post() {
       const errors = this.$refs.form.validate()
       if (errors.count === 0) {
         const data = this.$refs.form.getData()
-        this.CreateCustomer(data)
+        this.createCustomer(data)
         if (
           this.customerCreateStatus &&
           this.customerCreateStatus.status == 'ok'

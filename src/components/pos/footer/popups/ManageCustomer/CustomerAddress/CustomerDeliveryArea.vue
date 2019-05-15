@@ -15,7 +15,7 @@
         {{ address.flat_number }}, {{ address.building }}, {{ address.street }},
         {{ address.city }}
       </p>
-      <Buttons v-if="buttons" />
+      <Buttons v-if="buttons" :id="address._id.$oid" />
     </div>
   </div>
 </template>
