@@ -134,13 +134,13 @@ export default {
     getAge: function(dob) {
       let now = new Date()
       if(typeof dob != 'undefined') {
-        let born = new Date(birthdate[0], birthdate[1] - 1, birthdate[2])
+        let dobSplit= dob.split('-')
+        let born = new Date(dobSplit[0], dobSplit[1] - 1, dobSplit[2])
         let birthday = new Date(
                 now.getFullYear(),
                 born.getMonth(),
                 born.getDate()
         )
-        let birthdate = dob.split('-')
         if (now >= birthday) return now.getFullYear() - born.getFullYear()
         else return (now.getFullYear() - born.getFullYear())/* - 1*/
       } else return dob

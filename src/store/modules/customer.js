@@ -28,7 +28,8 @@ const state = {
   loyalty: false,
   deliveryAreas: false,
   fetchDeliveryAreas: false,
-  editInformation: false,
+  editInformation: { nearest_landmark: '' },
+  modalStatus: 'Add',
 }
 const getters = {
   find: state => customerId => {
@@ -115,7 +116,7 @@ const actions = {
   setPastOrderPageNumber: function({ commit, dispatch }, pageNumber) {
     commit(mutation.SET_PAST_ORDER_CURRENT_PAGE_NO, pageNumber)
     let customerId = state.customer.customer_list._id
-    dispatch('fetchSelectedCustomer', { customerId: customerId })
+    dispatch('fetchSelectedCustomer', customerId)
   },
 
   searchCustomer: function({ commit, dispatch }, searchTerms) {
@@ -144,12 +145,13 @@ const actions = {
     }
   },
 
-  fetchSelectedCustomer({ state, commit, dispatch }, { customer }) {
+  fetchSelectedCustomer({ state, commit, dispatch }, customerId) {
     // return new Promise((resolve, reject) => {
     dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
       root: true,
     })
-    let customerId = customer._id
+    // eslint-disable-next-line no-console
+    console.log(customerId)
     commit(mutation.SET_CUSTOMER_ID, customerId)
     customerService.fetchCustomer(customerId).then(response => {
       let selectedCustomerLastOrder = false
@@ -196,6 +198,7 @@ const actions = {
   editAddress({ commit }, id) {
     let customer_id = state.customer._id
     const params = [id, customer_id, 'customer_address']
+    localStorage.setItem('editItemKey', id)
     customerService.globalEdit(...params).then(response => {
       commit(mutation.SET_EDIT_DETAILS, response.data.item)
     })
@@ -207,11 +210,11 @@ const actions = {
       customer_id,
       actionDetails.model,
       actionDetails.action,
-      '',
+      actionDetails.data,
     ]
     customerService.globalUpdate(...params).then(response => {
-      commit(mutation.SET_EDIT_DETAILS, response.data.item)
-      dispatch('fetchSelectedCustomer', { _id: customer_id })
+      commit(mutation.SET_RESPONSE_MESSAGES, response.data)
+      dispatch('fetchSelectedCustomer', customer_id)
     })
   },
   fetchDeliveryArea({ commit }, query) {
@@ -275,6 +278,7 @@ const mutations = {
   },
   [mutation.SET_EDIT_DETAILS](state, details) {
     state.editInformation = details
+    state.modalStatus = 'Edit'
   },
   [mutation.ORDERS](state, orders) {
     state.lastOrder = orders

@@ -102,6 +102,7 @@ export default {
           id: this.id,
           action: 'delete',
           model: 'customer_address',
+          data: '',
         }
         this.$store.dispatch('customer/updateAction', actionDetails)
       } else {
