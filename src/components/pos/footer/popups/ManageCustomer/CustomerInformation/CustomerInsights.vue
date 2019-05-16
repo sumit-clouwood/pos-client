@@ -22,7 +22,9 @@
         <slide>
           <div class="insight-last-order">
             <h3>LAST ORDER</h3>
-            <p class="last-order-time">{{ insight.last_order_datetime }}</p>
+            <p class="last-order-time">
+              {{ convert_datetime(insight.last_order_datetime) }}
+            </p>
             <ul class="fav-item-slider">
               <!--<li><img src="/img/pos/dine-right.png" alt="fav-item" /></li>-->
               <li v-for="(item, index) in items" :key="index">
@@ -74,7 +76,7 @@
             </thead>
             <tbody id="notes_data">
               <tr v-for="(notes, index) in insight.notes" :key="index">
-                <td>{{ notes.created_at }}</td>
+                <td>{{ convert_datetime(notes.created_at) }}</td>
                 <td>{{ notes.note }}</td>
               </tr>
             </tbody>
@@ -105,6 +107,7 @@
 import { mapState } from 'vuex'
 import CustomerFeedback from './CustomerFeedback'
 import { Carousel, Slide } from 'vue-carousel'
+import DateTime from '@/mixins/DateTime'
 
 function getCustomerList(state) {
   return state.customer.customer
@@ -117,6 +120,7 @@ export default {
     Carousel,
     Slide,
   },
+  mixins: [DateTime],
   data() {
     return {
       items: false,

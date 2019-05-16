@@ -188,17 +188,25 @@ const actions = {
     })
   },
 
-  createAddress({ commit }, newAddressDetails) {
+  createAddress({ commit, dispatch }, newAddressDetails) {
     let customer_id = state.customer._id
-    const params = [newAddressDetails, customer_id, 'customer_address']
+    const params = [newAddressDetails, customer_id, 'customer_addresses']
     customerService.globalCreate(...params).then(response => {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
+      dispatch('fetchSelectedCustomer', customer_id)
     })
   },
-  editAddress({ commit }, id) {
+  editAction({ commit }, actionDetails) {
+    // eslint-disable-next-line no-console
+    console.log(actionDetails)
     let customer_id = state.customer._id
-    const params = [id, customer_id, 'customer_address']
-    localStorage.setItem('editItemKey', id)
+    const params = [
+      actionDetails.id,
+      customer_id,
+      actionDetails.model,
+      actionDetails.action,
+    ]
+    localStorage.setItem('editItemKey', actionDetails.id)
     customerService.globalEdit(...params).then(response => {
       commit(mutation.SET_EDIT_DETAILS, response.data.item)
     })

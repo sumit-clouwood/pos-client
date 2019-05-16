@@ -13,9 +13,12 @@ export default {
       'brand'
     )
   },
-  globalEdit(id, customer_id, model) {
+  globalEdit(id, customer_id, model, action) {
     let parentId = customer_id ? `?parent_id=${customer_id}` : ''
-    return DataService.get(`/model/${model}/id/${id}/edit${parentId}`, 'brand')
+    return DataService.get(
+      `/model/${model}/id/${id}/${action}${parentId}`,
+      'brand'
+    )
   },
   //get the customer along with all previous orders and other required info
   fetchCustomer(customerId) {
@@ -23,7 +26,10 @@ export default {
   },
 
   customerGroupList() {
-    return DataService.get('/model/brand_customer_group?no_limit=true', 'brand')
+    return DataService.get(
+      '/model/brand_customer_groups?no_limit=true',
+      'brand'
+    )
   },
   fetchDeliveryAreas(query) {
     return DataService.get(

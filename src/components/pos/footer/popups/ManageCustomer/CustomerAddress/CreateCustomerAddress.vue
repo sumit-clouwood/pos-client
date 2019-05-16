@@ -161,7 +161,7 @@ export default {
           let actionDetails = {
             id: localStorage.getItem('editItemKey'),
             action: 'edit',
-            model: 'customer_address',
+            model: 'customer_addresses',
             data: this.newAddressDetails,
           }
           this.updateAction(actionDetails)
