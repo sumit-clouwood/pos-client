@@ -25,12 +25,12 @@ const actions = {
           let applidSurcharge = {
             id: surcharge._id,
             amount: surcharge.rate,
-            tax: surcharge.surcharge_is_taxable
+            tax: surcharge.taxable
               ? surcharge.surcharge_taxable_rate_info
               : false,
           }
 
-          if (surcharge.type.toLowerCase() !== 'value') {
+          if (surcharge.type.toLowerCase() === 'percentage') {
             applidSurcharge.amount = (subtotal * surcharge.rate) / 100
           }
 

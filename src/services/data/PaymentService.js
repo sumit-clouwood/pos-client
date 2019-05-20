@@ -1,9 +1,10 @@
 import DataService from '@/services/DataService'
 
 export default {
-  fetchMethods(...[locationId, lastSyncDate, isCompress]) {
+  fetchMethods() {
     return DataService.getCacheable(
-      `/api/auth/get/Payment/Type/?location_id=${locationId}&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
+      `/model/brand_payment_types?ascending=1&byColumn=0&orderBy=name`,
+      'brand'
     )
   },
 }

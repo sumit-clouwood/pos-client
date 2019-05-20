@@ -6630,3 +6630,6 @@ div#payment-method .slick-slide > div > div > label {
     top: 40px;
     right: 0;
   }
+#order-profile .order-location.option-contain {
+  margin: 10px;
+}

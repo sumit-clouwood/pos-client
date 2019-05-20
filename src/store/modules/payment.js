@@ -13,15 +13,10 @@ const getters = {
 
 // actions
 const actions = {
-  async fetchAll({ commit, rootState }) {
-    const params = [
-      rootState.location.location,
-      rootState.sync.date,
-      rootState.sync.compress,
-    ]
-
-    const paymentMethods = await PaymentService.fetchMethods(...params)
+  async fetchAll({ commit }) {
+    const paymentMethods = await PaymentService.fetchMethods()
     commit(mutation.SET_METHODS, paymentMethods.data)
+
     let activeMethod = state.methods.data.find(method => method.is_cash === 1)
     if (!activeMethod) {
       activeMethod = state.methods.data[0]

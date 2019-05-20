@@ -101,3 +101,8 @@ export default {
   },
 }
 </script>
+<style lang="sass" scoped>
+.pos-item-bg
+  img
+    max-width: 146px;
+</style>
