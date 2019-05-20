@@ -11,7 +11,7 @@
       <li v-if="subcategory">
         <span>Selected Sub Category </span>
         <p class="shorten_name" :title="subcategory.sub_category">
-          {{ subcategory.sub_category }}
+          {{ subcategory.name }}
         </p>
         <span class="arrows"
           ><img src="img/pos/right-arrow.png" alt="right-arrow"

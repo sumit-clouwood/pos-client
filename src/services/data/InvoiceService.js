@@ -1,9 +1,10 @@
 import DataService from '@/services/DataService'
 
 export default {
-  fetchTemplates(locationId) {
+  fetchTemplates() {
     return DataService.getCacheable(
-      `/api/auth/invoice-list/?location_id=${locationId}`
+      `/model/store_invoice_template?ascending=1&byColumn=0&orderBy=name`,
+      'brand'
     )
   },
 

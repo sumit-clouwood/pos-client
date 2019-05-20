@@ -29,6 +29,9 @@ const getters = {
       return newItem
     }
   },
+
+  netPrice: () => item => item.price / ((100 + item.tax_sum) / 100),
+
   orderTotal: (state, getters, rootState, rootGetters) => {
     return (
       //discount is already subtracted from tax in tax.js
@@ -41,7 +44,7 @@ const getters = {
 
   subTotal: () => {
     return state.items.reduce((total, item) => {
-      return total + item.price * item.quantity
+      return total + item.netPrice * item.quantity
     }, 0)
   },
 
@@ -88,22 +91,11 @@ const getters = {
 
 // actions
 const actions = {
-  addToOrder({ state, commit, rootState, dispatch }, item) {
+  addToOrder({ state, getters, commit, rootState, dispatch }, item) {
     //set item price based on location, for modifiers items it is already set in modifer store
-    if (
-      item.get_item_location_price.location_id == rootState.location.location
-    ) {
-      item.price = isNaN(
-        parseFloat(item.get_item_location_price.menu_location_price)
-      )
-        ? 0
-        : parseFloat(item.get_item_location_price.menu_location_price)
-    } else {
-      item.price = isNaN(parseFloat(item.item_price))
-        ? 0
-        : parseFloat(item.get_item_location_price.menu_location_price)
-    }
-
+    // price means gross price here (including tax)
+    item.price = item.value
+    item.netPrice = getters.netPrice(item)
     //this comes directly from the items menu without modifiers
     item.modifiable = false
     item.undiscountedPrice = item.price
@@ -118,7 +110,7 @@ const actions = {
       commit(mutation.ADD_ORDER_ITEM, state.item)
     }
 
-    dispatch('surcharge/calculate', {}, { root: true }).then(
+    dispatch('surcharge/calculate', {}, { root: true }).then(() =>
       dispatch('tax/calculate', {}, { root: true }).then(() => {
         if (rootState.discount.appliedOrderDiscount) {
           dispatch('recalculateOrderTotals')
