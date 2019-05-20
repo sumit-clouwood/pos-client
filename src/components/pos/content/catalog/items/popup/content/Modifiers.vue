@@ -47,7 +47,7 @@
             </span>
             <img :src="modifier.item_modifier_image" alt="" />
             <span>{{ modifier.name }}</span>
-            <div v-if="Num.toNumber(modifier.price)">
+            <div v-if="Num.toPrice(modifier.price)">
               ({{ formatPrice(modifier.price) }})
             </div>
           </label>
@@ -75,7 +75,7 @@
             </span>
             <img :src="modifier.item_modifier_image" alt="" />
             <span>{{ modifier.name }}</span>
-            <div v-if="Num.toNumber(modifier.price)">
+            <div v-if="Num.toPrice(modifier.price)">
               ({{ formatPrice(modifier.price) }})
             </div>
           </label>
