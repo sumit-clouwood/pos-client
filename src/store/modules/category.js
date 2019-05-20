@@ -101,6 +101,17 @@ const actions = {
     })
   },
 
+  collectSearchItems({ commit, state }, searchTerm) {
+    let searchedItems = []
+    state.items.map(item => {
+      if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
+        searchedItems.push(item)
+      }
+    })
+    console.log(searchedItems)
+    commit(mutation.SET_SEARCH_ITEMS, { items: searchedItems })
+  },
+
   //get subcategories and items based on main category
   browse({ commit, getters }, category) {
     commit(mutation.SET_CATEGORY, category)
@@ -136,6 +147,9 @@ const mutations = {
 
   [mutation.SET_ITEM](state, item) {
     state.item = item
+  },
+  [mutation.SET_SEARCH_ITEMS](state, items) {
+    state.searchItems = items
   },
 }
 
