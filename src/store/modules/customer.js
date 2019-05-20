@@ -28,7 +28,7 @@ const state = {
   loyalty: false,
   deliveryAreas: false,
   fetchDeliveryAreas: false,
-  editInformation: { nearest_landmark: '' },
+  editInformation: {},
   modalStatus: 'Add',
 }
 const getters = {
@@ -181,21 +181,22 @@ const actions = {
     dispatch('order/updateOrderType', 'delivery', { root: true })
   },
 
-  createCustomer({ commit }, newCustomerDetails) {
-    const params = [newCustomerDetails, false, 'brand_customers']
+  createAction({ commit, dispatch }, actionDetails) {
+    const params = [
+      actionDetails.data,
+      actionDetails.customer,
+      actionDetails.model,
+    ]
     customerService.globalCreate(...params).then(response => {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
+      if (actionDetails.customer) {
+        dispatch('fetchSelectedCustomer', actionDetails.customer)
+      } else {
+        dispatch('fetchAll')
+      }
     })
   },
 
-  createAddress({ commit, dispatch }, newAddressDetails) {
-    let customer_id = state.customer._id
-    const params = [newAddressDetails, customer_id, 'customer_addresses']
-    customerService.globalCreate(...params).then(response => {
-      commit(mutation.SET_RESPONSE_MESSAGES, response.data)
-      dispatch('fetchSelectedCustomer', customer_id)
-    })
-  },
   editAction({ commit }, actionDetails) {
     // eslint-disable-next-line no-console
     console.log(actionDetails)
@@ -211,6 +212,7 @@ const actions = {
       commit(mutation.SET_EDIT_DETAILS, response.data.item)
     })
   },
+
   updateAction({ commit, dispatch }, actionDetails) {
     let customer_id = state.customer._id
     const params = [
@@ -225,6 +227,11 @@ const actions = {
       dispatch('fetchSelectedCustomer', customer_id)
     })
   },
+
+  setDefaultSettingsGlobalAddUpdate({ commit }, setDefaultSettings) {
+    commit(mutation.SET_ADD_DETAILS, setDefaultSettings)
+  },
+
   fetchDeliveryArea({ commit }, query) {
     CustomerService.fetchDeliveryAreas(query).then(response => {
       commit(mutation.GET_DELIVERY_AREAS, response.data.data)
@@ -287,6 +294,10 @@ const mutations = {
   [mutation.SET_EDIT_DETAILS](state, details) {
     state.editInformation = details
     state.modalStatus = 'Edit'
+  },
+  [mutation.SET_ADD_DETAILS](state, details) {
+    state.editInformation = details
+    state.modalStatus = 'Add'
   },
   [mutation.ORDERS](state, orders) {
     state.lastOrder = orders

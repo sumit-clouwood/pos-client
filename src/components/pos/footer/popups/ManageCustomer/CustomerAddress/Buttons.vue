@@ -80,18 +80,11 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
   name: 'Buttons',
   props: {
     id: String,
     editDetails: {},
-  },
-  computed: {
-    ...mapState({
-      editInformation: state => state.customer.editInformation,
-    }),
   },
   methods: {
     doAction: function(actionType) {

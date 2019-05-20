@@ -121,6 +121,7 @@ export default {
       newAddressDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
       customerCreateStatus: state => state.customer.responseInformation,
+      customerId: state => state.customer.customer._id,
     }),
   },
   methods: {
@@ -155,7 +156,11 @@ export default {
       if (this.errors.count === 0) {
         // eslint-disable-next-line no-console
         if (modalStatus == 'Add') {
-          this.createAddress(this.newAddressDetails)
+          this.createAction({
+            data: this.newAddressDetails,
+            model: 'customer_addresses',
+            customer: this.customerId,
+          })
         }
         if (modalStatus == 'Edit') {
           let actionDetails = {
@@ -185,7 +190,7 @@ export default {
           .text()
       }
     },
-    ...mapActions('customer', ['createAddress', 'updateAction']),
+    ...mapActions('customer', ['createAction', 'updateAction']),
   },
 }
 </script>

@@ -7,6 +7,7 @@
         data-toggle="modal"
         data-target="#add_address"
         data-dismiss="modal"
+        @click="setDefaultSettingsGlobalAddUpdate({ nearest_landmark: '' })"
       >
         + Add address
       </button>
@@ -18,11 +19,16 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
+
 export default {
   name: 'CustomerDeliveryAddress',
   components: {
     CustomerDeliveryArea,
+  },
+  methods: {
+    ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
   },
 }
 </script>
