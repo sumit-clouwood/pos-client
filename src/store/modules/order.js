@@ -19,18 +19,9 @@ const state = {
 
 // getters
 const getters = {
-  item: (state, getters, rootState) => {
-    if (state.item) {
-      const appLocale = rootState.location.locale
-      let newItem = { ...state.item }
-      newItem.name = newItem.item_name.find(
-        locale => locale.language == appLocale
-      ).name
-      return newItem
-    }
-  },
+  item: state => state.item,
 
-  netPrice: () => item => item.price / ((100 + item.tax_sum) / 100),
+  netPrice: () => item => item.value / ((100 + item.tax_sum) / 100),
 
   orderTotal: (state, getters, rootState, rootGetters) => {
     return (
@@ -77,16 +68,7 @@ const getters = {
     }
   },
 
-  items: (state, getters, rootState) => {
-    const appLocale = rootState.location.locale
-    return state.items.map(item => {
-      let newItem = { ...item }
-      newItem.name = newItem.item_name.find(
-        locale => locale.language == appLocale
-      ).name
-      return newItem
-    })
-  },
+  items: state => state.items,
 }
 
 // actions
@@ -94,8 +76,11 @@ const actions = {
   addToOrder({ state, getters, commit, rootState, dispatch }, item) {
     //set item price based on location, for modifiers items it is already set in modifer store
     // price means gross price here (including tax)
-    item.price = item.value
+
+    //replace vlaue with price, as all code is based on price
     item.netPrice = getters.netPrice(item)
+    item.price = item.netPrice
+
     //this comes directly from the items menu without modifiers
     item.modifiable = false
     item.undiscountedPrice = item.price

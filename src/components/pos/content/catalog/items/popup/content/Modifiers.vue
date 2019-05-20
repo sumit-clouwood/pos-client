@@ -47,7 +47,7 @@
             </span>
             <img :src="modifier.item_modifier_image" alt="" />
             <span>{{ modifier.name }}</span>
-            <div v-if="rawPrice(modifier.price)">
+            <div v-if="Num.toNumber(modifier.price)">
               ({{ formatPrice(modifier.price) }})
             </div>
           </label>
@@ -75,7 +75,7 @@
             </span>
             <img :src="modifier.item_modifier_image" alt="" />
             <span>{{ modifier.name }}</span>
-            <div v-if="rawPrice(modifier.price)">
+            <div v-if="Num.toNumber(modifier.price)">
               ({{ formatPrice(modifier.price) }})
             </div>
           </label>
@@ -109,7 +109,7 @@ export default {
     ...mapState('orderForm', ['error', 'radios']),
     ...mapGetters('orderForm', ['isSelected']),
     ...mapGetters('modifier', ['itemModifiers']),
-    ...mapGetters('location', ['rawPrice', 'formatPrice']),
+    ...mapGetters('location', ['formatPrice']),
   },
   mounted() {},
   methods: {
