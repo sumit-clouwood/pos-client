@@ -6,9 +6,9 @@ const state = {
 }
 
 const actions = {
-  fetchAll: function({ commit, rootState }) {
-    const params = [rootState.auth.userDetails._id, rootState.sync.date]
-    AnnouncementService.fetchAll(...params).then(response => {
+  fetchAll: function({ commit }) {
+    // const params = [rootState.auth.userDetails._id, rootState.sync.date]
+    AnnouncementService.fetchAll().then(response => {
       commit(mutation.SET_ANNOUNCEMENT, response.data.data)
     })
   },
@@ -18,7 +18,7 @@ const getters = {}
 
 const mutations = {
   [mutation.SET_ANNOUNCEMENT](commit, announcements) {
-    if (announcements && announcements.status != 0) {
+    if (announcements) {
       let announcementsList = ''
       announcements.forEach(announcement => {
         announcementsList =
