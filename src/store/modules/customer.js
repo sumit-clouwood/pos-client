@@ -162,7 +162,8 @@ const actions = {
       )
       commit(mutation.PAST_ORDER_PAGINATE_DETAILS, totalPages)
       commit(mutation.PAGE_LOOKUP, response.data.collected_data.page_lookups)
-      commit(mutation.LOYALTY, state.lookups.brand_loyalty_programs)
+      commit(mutation.LOYALTY_DETAILS, state.lookups.brand_loyalty_programs)
+      commit(mutation.LOYALTY, response.data.collected_data.loyalty_cards)
       commit(mutation.SELECTED_CUSTOMER, {
         customerData: response.data.item,
         pastOrders: response.data.collected_data.orders,
@@ -273,13 +274,9 @@ const mutations = {
     state.customerId = id
   },
   [mutation.PAGINATE_DETAILS](state, paginateDetails) {
-    // eslint-disable-next-line no-console
-    console.log(paginateDetails)
     state.paginate.totalPages = paginateDetails
   },
   [mutation.PAST_ORDER_PAGINATE_DETAILS](state, paginateDetails) {
-    // eslint-disable-next-line no-console
-    console.log(paginateDetails)
     state.pastOrdersPaginate.totalPages = paginateDetails
   },
   [mutation.PARAMS](state, paramsCollection) {

@@ -28,6 +28,7 @@
             getLookupsData({
               collection: users._id,
               matchWith: order.driver,
+              selection: 'name',
             })
           }}
         </td>

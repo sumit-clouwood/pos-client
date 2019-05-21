@@ -61,6 +61,7 @@
                 getLookupsData({
                   collection: favoriteItems._id,
                   matchWith: favItem.menu_item,
+                  selection: 'name',
                 })
               }}
             </p>
