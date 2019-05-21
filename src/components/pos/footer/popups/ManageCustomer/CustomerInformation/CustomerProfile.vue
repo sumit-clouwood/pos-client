@@ -34,10 +34,16 @@
         <small>Customer Group: {{ customerProfile.customer_group }}</small>
       </p>
     </li>
-    <li class="col-md-2">
-      <a class="cu-edit-icon" href="#"
-        ><span
-          ><svg
+    <li class="col-md-2" @click="editCustomer(customerProfile._id)">
+      <a
+        class="cu-edit-icon"
+        href="#"
+        data-toggle="modal"
+        data-target="#customer"
+        data-dismiss="modal"
+      >
+        <span>
+          <svg
             xmlns="http://www.w3.org/2000/svg"
             width="17"
             height="16"
@@ -60,9 +66,12 @@
                 rx=".5"
                 transform="rotate(-45 10 8.5)"
               />
-            </g></svg></span
-        >Edit</a
-      ><a class="cu-delete-icon" href="#"
+            </g>
+          </svg>
+        </span>
+        Edit</a
+      >
+      <a class="cu-delete-icon" href="#"
         ><span
           ><svg
             xmlns="http://www.w3.org/2000/svg"
@@ -106,6 +115,16 @@ export default {
       customerProfile: state =>
         state.customer.customer ? state.customer.customer : false,
     }),
+  },
+  methods: {
+    editCustomer: function(customerId) {
+      let actionDetails = {
+        id: customerId,
+        action: 'edit',
+        model: 'brand_customers',
+      }
+      this.$store.dispatch('customer/editAction', actionDetails)
+    },
   },
 }
 </script>

@@ -96,7 +96,7 @@ export default {
   methods: {
     addLoyalty: function() {
       $('#search-loyalty-customer').modal('toggle')
-      this.fetchSelectedCustomer({ customerId: this.setLoyaltyInfo.customerId })
+      this.fetchSelectedCustomer(this.setLoyaltyInfo.customerId)
     },
 
     selectCustomer(customer) {

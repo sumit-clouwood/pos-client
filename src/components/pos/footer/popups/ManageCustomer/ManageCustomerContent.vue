@@ -29,7 +29,7 @@
                 data-toggle="modal"
                 data-target="#display-order"
                 data-dismiss="modal"
-                @click="fetchSelectedCustomer({ customer: customer })"
+                @click="fetchSelectedCustomer(customer._id)"
                 class="br-table-btn display-order"
               >
                 Display Order
@@ -37,7 +37,7 @@
             </td>
             <td>
               <button
-                @click="fetchSelectedCustomer({ customer: customer })"
+                @click="fetchSelectedCustomer(customer._id)"
                 data-toggle="modal"
                 data-target="#display-order"
                 data-dismiss="modal"
@@ -45,7 +45,7 @@
               >
                 Edit Info</button
               ><button
-                @click="fetchSelectedCustomer({ customer: customer })"
+                @click="fetchSelectedCustomer(customer._id)"
                 data-toggle="modal"
                 data-target="#add-to-order"
                 data-dismiss="modal"

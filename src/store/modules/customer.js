@@ -28,7 +28,8 @@ const state = {
   loyalty: false,
   deliveryAreas: false,
   fetchDeliveryAreas: false,
-  editInformation: false,
+  editInformation: {},
+  modalStatus: 'Add',
 }
 const getters = {
   find: state => customerId => {
@@ -115,7 +116,7 @@ const actions = {
   setPastOrderPageNumber: function({ commit, dispatch }, pageNumber) {
     commit(mutation.SET_PAST_ORDER_CURRENT_PAGE_NO, pageNumber)
     let customerId = state.customer.customer_list._id
-    dispatch('fetchSelectedCustomer', { customerId: customerId })
+    dispatch('fetchSelectedCustomer', customerId)
   },
 
   searchCustomer: function({ commit, dispatch }, searchTerms) {
@@ -144,12 +145,13 @@ const actions = {
     }
   },
 
-  fetchSelectedCustomer({ state, commit, dispatch }, { customer }) {
+  fetchSelectedCustomer({ state, commit, dispatch }, customerId) {
     // return new Promise((resolve, reject) => {
     dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
       root: true,
     })
-    let customerId = customer._id
+    // eslint-disable-next-line no-console
+    console.log(customerId)
     commit(mutation.SET_CUSTOMER_ID, customerId)
     customerService.fetchCustomer(customerId).then(response => {
       let selectedCustomerLastOrder = false
@@ -179,27 +181,38 @@ const actions = {
     dispatch('order/updateOrderType', 'delivery', { root: true })
   },
 
-  createCustomer({ commit }, newCustomerDetails) {
-    const params = [newCustomerDetails, false, 'brand_customers']
+  createAction({ commit, dispatch }, actionDetails) {
+    const params = [
+      actionDetails.data,
+      actionDetails.customer,
+      actionDetails.model,
+    ]
     customerService.globalCreate(...params).then(response => {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
+      if (actionDetails.customer) {
+        dispatch('fetchSelectedCustomer', actionDetails.customer)
+      } else {
+        dispatch('fetchAll')
+      }
     })
   },
 
-  createAddress({ commit }, newAddressDetails) {
+  editAction({ commit }, actionDetails) {
+    // eslint-disable-next-line no-console
+    console.log(actionDetails)
     let customer_id = state.customer._id
-    const params = [newAddressDetails, customer_id, 'customer_address']
-    customerService.globalCreate(...params).then(response => {
-      commit(mutation.SET_RESPONSE_MESSAGES, response.data)
-    })
-  },
-  editAddress({ commit }, id) {
-    let customer_id = state.customer._id
-    const params = [id, customer_id, 'customer_address']
+    const params = [
+      actionDetails.id,
+      customer_id,
+      actionDetails.model,
+      actionDetails.action,
+    ]
+    localStorage.setItem('editItemKey', actionDetails.id)
     customerService.globalEdit(...params).then(response => {
       commit(mutation.SET_EDIT_DETAILS, response.data.item)
     })
   },
+
   updateAction({ commit, dispatch }, actionDetails) {
     let customer_id = state.customer._id
     const params = [
@@ -207,13 +220,18 @@ const actions = {
       customer_id,
       actionDetails.model,
       actionDetails.action,
-      '',
+      actionDetails.data,
     ]
     customerService.globalUpdate(...params).then(response => {
-      commit(mutation.SET_EDIT_DETAILS, response.data.item)
-      dispatch('fetchSelectedCustomer', { _id: customer_id })
+      commit(mutation.SET_RESPONSE_MESSAGES, response.data)
+      dispatch('fetchSelectedCustomer', customer_id)
     })
   },
+
+  setDefaultSettingsGlobalAddUpdate({ commit }, setDefaultSettings) {
+    commit(mutation.SET_ADD_DETAILS, setDefaultSettings)
+  },
+
   fetchDeliveryArea({ commit }, query) {
     CustomerService.fetchDeliveryAreas(query).then(response => {
       commit(mutation.GET_DELIVERY_AREAS, response.data.data)
@@ -275,6 +293,11 @@ const mutations = {
   },
   [mutation.SET_EDIT_DETAILS](state, details) {
     state.editInformation = details
+    state.modalStatus = 'Edit'
+  },
+  [mutation.SET_ADD_DETAILS](state, details) {
+    state.editInformation = details
+    state.modalStatus = 'Add'
   },
   [mutation.ORDERS](state, orders) {
     state.lastOrder = orders

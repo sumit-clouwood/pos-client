@@ -5,7 +5,7 @@
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header customer-header">
-          <h4 class="customer-title">Create new customer</h4>
+          <h4 class="customer-title">{{ customer_title }} customer</h4>
           <button type="button" class="close" data-dismiss="modal">
             &times;
           </button>
@@ -25,7 +25,7 @@
               class="btn btn-success btn-large"
               type="button"
               id="post_announcement"
-              v-on:click="post"
+              v-on:click="customerAction(customer_title)"
             >
               Save
             </button>
@@ -56,16 +56,32 @@ export default {
   },
   computed: {
     ...mapState({
+      customer_title: state => state.customer.modalStatus,
       customerCreateStatus: state => state.customer.responseInformation,
     }),
   },
   methods: {
-    ...mapActions('customer', ['createCustomer']),
-    post() {
+    ...mapActions('customer', ['createAction', 'updateAction']),
+    customerAction(modalStatus) {
       const errors = this.$refs.form.validate()
       if (errors.count === 0) {
-        const data = this.$refs.form.getData()
-        this.createCustomer(data)
+        const customerData = this.$refs.form.getData()
+        if (modalStatus == 'Add') {
+          this.createAction({
+            data: customerData,
+            model: 'brand_customers',
+            customer: false,
+          })
+        }
+        if (modalStatus == 'Edit') {
+          let actionDetails = {
+            id: localStorage.getItem('editItemKey'),
+            action: 'edit',
+            model: 'brand_customers',
+            data: customerData,
+          }
+          this.updateAction(actionDetails)
+        }
         if (
           this.customerCreateStatus &&
           this.customerCreateStatus.status == 'ok'

@@ -1,6 +1,6 @@
 <template>
   <div class="cu-location-select">
-    <span @click="doAction('map')">
+    <!--<span @click="doAction('map')">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="11"
@@ -13,7 +13,7 @@
           d="M5.5 0a5.49 5.49 0 0 0-3.535 1.286A5.504 5.504 0 0 0 .737 8.25l4.019 5.758a.861.861 0 0 0 1.489 0l4.019-5.758a5.504 5.504 0 0 0-1.228-6.964A5.49 5.49 0 0 0 5.5 0zM3.094 4.469a.343.343 0 1 0 0 .687h4.813a.343.343 0 1 0 0-.687H3.094zm0 1.375a.343.343 0 1 0 0 .688h4.813a.343.343 0 1 0 0-.688H3.094zm-.516 6.74c-.049 0-.098.01-.143.031-.62.29-1.1.677-1.303 1.144-.207.476-.09 1.035.296 1.46.77.852 2.338 1.282 4.072 1.282 1.735 0 3.303-.43 4.072-1.281.385-.426.503-.985.297-1.46-.202-.465-.687-.854-1.301-1.143a.344.344 0 0 0-.288.623c.543.248.852.55.957.793.106.243.08.444-.174.725-.51.563-1.955 1.055-3.563 1.055s-3.053-.492-3.562-1.055c-.255-.281-.281-.482-.175-.725.105-.243.415-.544.958-.793a.345.345 0 0 0-.143-.656z"
         />
       </svg>
-    </span>
+    </span>-->
     <span
       @click="doAction('edit')"
       data-toggle="modal"
@@ -80,46 +80,34 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
   name: 'Buttons',
   props: {
     id: String,
     editDetails: {},
   },
-  computed: {
-    ...mapState({
-      editInformation: state => state.customer.editInformation,
-    }),
-  },
   methods: {
     doAction: function(actionType) {
+      let actionDetails = {}
       if (actionType == 'edit') {
-        this.$store.dispatch('customer/editAddress', this.id)
+        actionDetails = {
+          id: this.id,
+          action: 'edit',
+          model: 'customer_addresses',
+        }
+        this.$store.dispatch('customer/editAction', actionDetails)
       } else if (actionType == 'delete') {
-        let actionDetails = {
+        actionDetails = {
           id: this.id,
           action: 'delete',
-          model: 'customer_address',
+          model: 'customer_addresses',
+          data: '',
         }
         this.$store.dispatch('customer/updateAction', actionDetails)
       } else {
         //do nothing
       }
     },
-    // updateForm: function() {
-    //   /*if (this.editInformation) {
-
-    //   }*/
-    //   this.editDetails.customer_title = 'Edit Address'
-    //   this.editDetails.delivery_area_id = this.editInformation.delivery_area_id
-    //   this.editDetails.building = this.editInformation.building
-    //   this.editDetails.flat_number = this.editInformation.flat_number
-    //   this.editDetails.street = this.editInformation.street
-    //   this.editDetails.nearest_landmark = this.editInformation.nearest_landmark
-    //   // alert(this.editInformation.delivery_area_id)
-    // },
   },
 }
 </script>

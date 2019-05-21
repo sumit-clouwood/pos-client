@@ -20,7 +20,7 @@
         <td>#{{ order.order_no }}</td>
         <td>{{ order.created_at }}</td>
         <td>{{ order.order_type }}</td>
-        <td>{{ order.real_created_datetime }}</td>
+        <td>{{ convert_datetime(order.real_created_datetime) }}</td>
         <td>{{ order.balance_due }}</td>
         <td>{{ order.order_status }}</td>
         <td>{{ order.driver }}</td>
@@ -53,6 +53,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import DateTime from '@/mixins/DateTime'
 
 export default {
   name: 'CustomerPastOrders',
@@ -60,6 +61,7 @@ export default {
     // eslint-disable-next-line vue/require-prop-type-constructor
     pastOrders: false,
   },
+  mixins: [DateTime],
   methods: {
     ...mapActions('order', ['getPastOrderDetails']),
   },

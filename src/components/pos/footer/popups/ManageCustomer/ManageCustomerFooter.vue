@@ -27,6 +27,12 @@
         class="btn btn-success btn-large popup-btn-save"
         type="button"
         id="cust-new"
+        @click="
+          setDefaultSettingsGlobalAddUpdate({
+            alternative_phone: '',
+            gender: 'male',
+          })
+        "
         data-toggle="modal"
         data-target="#customer"
         data-dismiss="modal"
@@ -57,6 +63,7 @@ export default {
   },
   methods: {
     ...mapActions('customer', ['setPageNumber']),
+    ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
   },
 }
 </script>

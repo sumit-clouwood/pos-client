@@ -7,7 +7,7 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ customer_title }} {{ updateForm }}</h4>
+          <h4 class="customer-title">{{ customer_title }} Address</h4>
         </div>
         <div class="modal-body row form-block">
           <div class="col-md-6 left-form add-address-form">
@@ -88,7 +88,7 @@
               class="btn btn-success btn-large popup-btn-save"
               type="button"
               id="save_address"
-              v-on:click="checkForm"
+              v-on:click="checkForm(customer_title)"
             >
               Save Address
             </button>
@@ -111,19 +111,21 @@ export default {
   props: {},
   data() {
     return {
-      newAddressDetails: this.$store.customer.editInformation,
       errors: {},
       add_delivery_area: '',
-      customer_title: 'Add New Address',
     }
   },
   computed: {
     ...mapState({
       fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
+      newAddressDetails: state => state.customer.editInformation,
+      customer_title: state => state.customer.modalStatus,
+      customerCreateStatus: state => state.customer.responseInformation,
+      customerId: state => state.customer.customer._id,
     }),
   },
   methods: {
-    checkForm: function() {
+    checkForm: function(modalStatus) {
       this.errors = {}
       this.errors.count = 0
       if (!this.newAddressDetails.delivery_area_id) {
@@ -132,6 +134,11 @@ export default {
       }
       if (!this.newAddressDetails.building) {
         this.errors.building = 'Building/Villa required'
+        this.errors.count = 1
+      }
+      if (this.newAddressDetails.building.length > 15) {
+        this.errors.building =
+          'Building/Villa should be not more than 15 characters'
         this.errors.count = 1
       }
       if (!this.newAddressDetails.flat_number) {
@@ -147,7 +154,23 @@ export default {
         this.errors.count = 1
       }
       if (this.errors.count === 0) {
-        this.createAddress(this.newAddressDetails)
+        // eslint-disable-next-line no-console
+        if (modalStatus == 'Add') {
+          this.createAction({
+            data: this.newAddressDetails,
+            model: 'customer_addresses',
+            customer: this.customerId,
+          })
+        }
+        if (modalStatus == 'Edit') {
+          let actionDetails = {
+            id: localStorage.getItem('editItemKey'),
+            action: 'edit',
+            model: 'customer_addresses',
+            data: this.newAddressDetails,
+          }
+          this.updateAction(actionDetails)
+        }
         if (
           this.customerCreateStatus &&
           this.customerCreateStatus.status == 'ok'
@@ -167,7 +190,7 @@ export default {
           .text()
       }
     },
-    ...mapActions('customer', ['createAddress']),
+    ...mapActions('customer', ['createAction', 'updateAction']),
   },
 }
 </script>
