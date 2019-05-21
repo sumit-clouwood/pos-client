@@ -8,7 +8,7 @@ const DISCOUNT_ORDER_ERROR_TOTAL =
 const state = {
   items: [],
   item: false,
-  orderType: 'Walk-in',
+  orderType: 'walk_in',
   orderNote: false,
   onlineOrders: false,
   futureOrder: false,
@@ -35,7 +35,7 @@ const getters = {
 
   subTotal: () => {
     return state.items.reduce((total, item) => {
-      return total + item.netPrice * item.quantity
+      return total + item.price * item.quantity
     }, 0)
   },
 
@@ -78,8 +78,10 @@ const actions = {
     // price means gross price here (including tax)
 
     //replace vlaue with price, as all code is based on price
-    item.netPrice = getters.netPrice(item)
-    item.price = item.netPrice
+    //item.value is gross price which is inclusive of taxes
+
+    //item price is exclusive of taxes
+    item.price = getters.netPrice(item)
 
     //this comes directly from the items menu without modifiers
     item.modifiable = false
@@ -381,11 +383,12 @@ const actions = {
             name: discount.discount.name,
             type: discount.discount.type,
             rate: discount.discount.rate,
+            value: discount.discount.value,
           }
 
-          if (discount.discount.type == 'value') {
+          if (discount.discount.type === 'value') {
             if (
-              discount.discount.rate >
+              discount.discount.value >
               item.undiscountedPrice * item.quantity
             ) {
               if (!discountErrors.includes(item._id)) {
@@ -394,12 +397,13 @@ const actions = {
               item.discount = false
               item.price = item.undiscountedPrice
             } else {
-              itemsDiscount += discount.discount.rate
+              itemsDiscount += discount.discount.value
               item.price =
-                item.undiscountedPrice - discount.discount.rate / item.quantity
-              itemDiscountData.discount = discount.discount.rate
+                item.undiscountedPrice - discount.discount.value / item.quantity
+              itemDiscountData.discount = discount.discount.value
             }
           } else {
+            //percentage based discount, use discount.rate here, not discount.value
             const calculated =
               (item.undiscountedPrice * discount.discount.rate) / 100
 

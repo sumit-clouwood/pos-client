@@ -36,12 +36,12 @@ const getters = {
 
   activeItemDiscountId: state =>
     state.currentActiveItemDiscount
-      ? state.currentActiveItemDiscount.item_discount_id
+      ? state.currentActiveItemDiscount._id
       : false,
 
   activeOrderDiscountId: state =>
     state.currentActiveOrderDiscount
-      ? state.currentActiveOrderDiscount.discount_id
+      ? state.currentActiveOrderDiscount._id
       : false,
 
   isActiveItemDiscount: (state, getters, rootState) => discountId => {
@@ -55,70 +55,13 @@ const getters = {
   },
 
   itemDiscounts: (state, getters, rootState) => {
-    let activeDiscounts = []
-
-    if (state.itemDiscounts.data) {
-      state.itemDiscounts.data.forEach(discount => {
-        const orderTypes = discount.enable_for.split(',')
-        if (
-          orderTypes.findIndex(
-            orderType => orderType == rootState.order.orderType
-          ) > -1
-        ) {
-          const discountValidDate = new Date(discount.date_until)
-          const discountStartDate = new Date(discount.date_from)
-          if (
-            discountStartDate.getTime() <= rootState.sync.today.getTime() &&
-            discountValidDate.getTime() >= rootState.sync.today.getTime()
-          ) {
-            const scheduledDays = discount.discount_schedule.split(',')
-            if (
-              scheduledDays.findIndex(
-                day =>
-                  day == rootState.sync.weekDays[discountValidDate.getDay()]
-              ) > -1
-            ) {
-              activeDiscounts.push(discount)
-            }
-          }
-        }
-      })
-    }
-    return activeDiscounts
+    return state.itemDiscounts.data.filter(
+      discount => discount[rootState.order.orderType]
+    )
   },
 
-  orderDiscounts: (state, getters, rootState) => {
-    const activeDiscounts = []
-
-    if (state.orderDiscounts.data) {
-      state.orderDiscounts.data.forEach(discount => {
-        const orderTypes = discount.enable_for.split(',')
-        if (
-          orderTypes.findIndex(
-            orderType => orderType == rootState.order.orderType
-          ) > -1
-        ) {
-          const discountValidDate = new Date(discount.date_until)
-          const discountStartDate = new Date(discount.date_from)
-
-          if (
-            discountStartDate.getTime() <= rootState.sync.today.getTime() &&
-            discountValidDate.getTime() >= rootState.sync.today.getTime()
-          ) {
-            const scheduledDays = discount.discount_schedule.split(',')
-            if (
-              scheduledDays.findIndex(
-                day =>
-                  day == rootState.sync.weekDays[discountValidDate.getDay()]
-              ) > -1
-            ) {
-              activeDiscounts.push(discount)
-            }
-          }
-        }
-      })
-    }
-    return activeDiscounts
+  orderDiscounts: state => {
+    return state.orderDiscounts.data
   },
 }
 
@@ -163,9 +106,10 @@ const actions = {
         commit(mutation.APPLY_ITEM_DISCOUNT, {
           item: rootState.order.item,
           discount: {
-            _id: state.currentActiveItemDiscount.item_discount_id,
+            _id: state.currentActiveItemDiscount._id,
             type: state.currentActiveItemDiscount.type,
             rate: state.currentActiveItemDiscount.rate,
+            value: state.currentActiveItemDiscount.value,
             name: state.currentActiveItemDiscount.name,
           },
         })
@@ -225,8 +169,12 @@ const actions = {
     commit(mutation.CLEAR_ITEM_DISCOUNT, erroredDiscounts)
   },
 
-  selectItemDiscount({ commit }, discount) {
-    commit(mutation.SET_ACTIVE_ITEM_DISCOUNT, discount)
+  selectItemDiscount({ state, commit, dispatch }, discount) {
+    if (discount._id === state.currentActiveItemDiscount._id) {
+      dispatch('clearItemDiscount')
+    } else {
+      commit(mutation.SET_ACTIVE_ITEM_DISCOUNT, discount)
+    }
   },
   selectOrderDiscount({ commit }, discount) {
     if (state.currentActiveOrderDiscount == discount) {
