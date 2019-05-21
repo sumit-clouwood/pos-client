@@ -20,10 +20,10 @@
         <td>#{{ order.order_no }}</td>
         <td>{{ order.created_at }}</td>
         <td>{{ order.order_type }}</td>
-        <td>{{ convert_datetime(order.real_created_datetime) }}</td>
+        <td>{{ convertDatetime(order.real_created_datetime) }}</td>
         <td>{{ order.balance_due }}</td>
         <td>{{ order.order_status }}</td>
-        <td>{{ order.driver }}</td>
+        <td>{{ getUserName(order.driver) }}</td>
         <td>{{ order.created_by }}</td>
         <!--<td>Tecom</td>-->
         <td class="show-details-his">
@@ -52,17 +52,31 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 
 export default {
   name: 'CustomerPastOrders',
   props: {
-    // eslint-disable-next-line vue/require-prop-type-constructor
-    pastOrders: false,
+    pastOrders: {},
   },
   mixins: [DateTime],
+  computed: {
+    ...mapState({
+      users: state => state.customer.lookups.users,
+    }),
+  },
   methods: {
+    // eslint-disable-next-line no-unused-vars
+    getUserName: function(userId) {
+      const users = Object.entries(this.users._id)
+      // eslint-disable-next-line no-console,no-unused-vars
+      for (let [key, value] of users) {
+        if (value._id == userId) {
+          return value.name
+        }
+      }
+    },
     ...mapActions('order', ['getPastOrderDetails']),
   },
 }

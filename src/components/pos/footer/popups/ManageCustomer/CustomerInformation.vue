@@ -24,18 +24,6 @@
           <CustomerPastOrders :pastOrders="pastOrders" />
         </div>
         <div class="modal-footer">
-          <!--<div class="pagination-customer-details">
-            &lt;!&ndash;<ul class="ullist-pagination">
-              <li class="order-pagination active">1</li>
-              <li class="order-pagination">2</li>
-              <li class="order-pagination">3</li>
-              <li class="order-pagination">4</li>
-              <li class="next-page" id="next-page">
-                <img src="img/pos/next-arrow.png" alt="next-btn" />
-              </li>
-              <li>Last</li>
-            </ul>&ndash;&gt;
-          </div>-->
           <div class="pagination-customer-details">
             <paginate
               v-if="paginateDetails.totalPages"

@@ -10,7 +10,7 @@ const state = {
   paginate: {},
   lastOrder: false,
   pastOrders: false,
-  selectedCustomerLastOrder: false,
+  // customerLastOrderDetails: false,
   pastOrdersPaginate: {},
   params: {
     page_number: 1,
@@ -30,6 +30,7 @@ const state = {
   fetchDeliveryAreas: false,
   editInformation: {},
   modalStatus: 'Add',
+  lookups: false,
 }
 const getters = {
   find: state => customerId => {
@@ -64,9 +65,8 @@ const getters = {
   },
 }
 const actions = {
-  fetchAll({ commit, rootState, dispatch }) {
+  fetchAll({ commit, rootState, dispatch, state }) {
     return new Promise((resolve, reject) => {
-      let paginateDetails = {}
       const params = [
         rootState.context.storeId,
         state.params.query /*query*/,
@@ -78,17 +78,12 @@ const actions = {
         .customerList(...params)
         .then(response => {
           if (response.data.data.length) {
-            // paginateDetails.currentPage = response.data.page_number
-            paginateDetails.currentPage = 1
-            paginateDetails.totalCustomers = response.data.count
-            // paginateDetails.totalPages = response.data.max_page_number
-            paginateDetails.totalPages = 1
-            // paginateDetails.customarPerPage = response.data.page_size
-            paginateDetails.customarPerPage = 10
-
+            let totalPages = parseInt(
+              parseInt(response.data.count) / parseInt(state.params.page_size)
+            )
             commit(mutation.CUSTOMER_LIST, response.data.data)
-            commit(mutation.ORDERS, response.data.page_lookups.orders)
-            commit(mutation.PAGINATE_DETAILS, paginateDetails)
+            commit(mutation.PAGINATE_DETAILS, totalPages)
+            commit(mutation.LAST_ORDERS, response.data.page_lookups.orders)
             resolve(response.data.data)
           } else {
             reject(response.data.data)
@@ -115,7 +110,7 @@ const actions = {
 
   setPastOrderPageNumber: function({ commit, dispatch }, pageNumber) {
     commit(mutation.SET_PAST_ORDER_CURRENT_PAGE_NO, pageNumber)
-    let customerId = state.customer.customer_list._id
+    let customerId = state.customer._id
     dispatch('fetchSelectedCustomer', customerId)
   },
 
@@ -145,32 +140,35 @@ const actions = {
     }
   },
 
+  /*customerLastOrder({ state, commit }, customerId) {
+    let customerLastOrderDetails = false
+    const lastOrder = Object.entries(state.lastOrder._id)
+    for (const [value] of lastOrder) {
+      if (value.customer == customerId) {
+        customerLastOrderDetails = value
+      }
+    }
+    commit(mutation.CUSTOMER_LAST_ORDERS, customerLastOrderDetails)
+  },*/
   fetchSelectedCustomer({ state, commit, dispatch }, customerId) {
-    // return new Promise((resolve, reject) => {
     dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
       root: true,
     })
-    // eslint-disable-next-line no-console
-    console.log(customerId)
     commit(mutation.SET_CUSTOMER_ID, customerId)
     customerService.fetchCustomer(customerId).then(response => {
-      let selectedCustomerLastOrder = false
-      const lastOrder = Object.entries(state.lastOrder._id)
-      for (const [value] of lastOrder) {
-        if (value.customer == customerId) {
-          selectedCustomerLastOrder = value
-        }
-      }
-
+      let totalPages = parseInt(
+        parseInt(response.data.item.total_orders) /
+          parseInt(state.params.page_size)
+      )
+      commit(mutation.PAST_ORDER_PAGINATE_DETAILS, totalPages)
+      commit(mutation.PAGE_LOOKUP, response.data.collected_data.page_lookups)
       commit(mutation.SELECTED_CUSTOMER, {
         customerData: response.data.item,
-        lastOrders: selectedCustomerLastOrder,
         pastOrders: response.data.collected_data.orders,
         deliveryAreas:
           response.data.collected_data.page_lookups.store_delivery_areas._id,
       })
     })
-    /*}*/
   },
 
   selectedAddress({ commit, dispatch }, selected_address_id, area) {
@@ -274,16 +272,26 @@ const mutations = {
     state.customerId = id
   },
   [mutation.PAGINATE_DETAILS](state, paginateDetails) {
-    state.paginate = paginateDetails
+    // eslint-disable-next-line no-console
+    console.log(paginateDetails)
+    state.paginate.totalPages = paginateDetails
   },
   [mutation.PAST_ORDER_PAGINATE_DETAILS](state, paginateDetails) {
-    state.pastOrdersPaginate = paginateDetails
+    // eslint-disable-next-line no-console
+    console.log(paginateDetails)
+    state.pastOrdersPaginate.totalPages = paginateDetails
   },
   [mutation.PARAMS](state, paramsCollection) {
     state.params = paramsCollection
   },
   [mutation.GET_DELIVERY_AREAS](state, fetchDeliveryAreas) {
     state.fetchDeliveryAreas = fetchDeliveryAreas
+  },
+  [mutation.SET_CURRENT_PAGE_NO](state, pageNumber) {
+    state.params.page_number = pageNumber
+  },
+  [mutation.SET_PAST_ORDER_CURRENT_PAGE_NO](state, pageNumber) {
+    state.params.past_order_page_number = pageNumber
   },
   [mutation.SET_SEARCH_TERMS](state, searchTerms) {
     state.params.query = searchTerms
@@ -299,9 +307,15 @@ const mutations = {
     state.editInformation = details
     state.modalStatus = 'Add'
   },
-  [mutation.ORDERS](state, orders) {
+  [mutation.LAST_ORDERS](state, orders) {
     state.lastOrder = orders
   },
+  [mutation.PAGE_LOOKUP](state, lookups) {
+    state.lookups = lookups
+  },
+  /*[mutation.CUSTOMER_LAST_ORDERS](state, customerLastOrder) {
+    state.customerLastOrderDetails = customerLastOrder
+  },*/
   [mutation.SET_RESPONSE_MESSAGES](state, customerCreateResponse) {
     if (customerCreateResponse.status == 'form_errors') {
       state.responseInformation.status = customerCreateResponse.status
@@ -314,7 +328,6 @@ const mutations = {
   [mutation.SELECTED_CUSTOMER](state, customerDetails) {
     state.customer = customerDetails.customerData
     state.deliveryAreas = customerDetails.deliveryAreas
-    state.selectedCustomerLastOrder = customerDetails.lastOrders
     state.pastOrders = customerDetails.pastOrders
   },
   [mutation.SELECTED_CUSTOMER_ADDRESS](state, selectedAddress) {
