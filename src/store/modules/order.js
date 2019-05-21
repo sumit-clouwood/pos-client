@@ -8,7 +8,7 @@ const DISCOUNT_ORDER_ERROR_TOTAL =
 const state = {
   items: [],
   item: false,
-  orderType: 'Walk-in',
+  orderType: 'walk_in',
   orderNote: false,
   onlineOrders: false,
   futureOrder: false,
@@ -46,7 +46,7 @@ const getters = {
   },
 
   itemPrice: () => item => {
-    return item.quantity * item.price
+    return item.quantity * item.netPrice
   },
 
   orderModifiers: () => item => {
@@ -78,12 +78,18 @@ const actions = {
     // price means gross price here (including tax)
 
     //replace vlaue with price, as all code is based on price
+    //item.value is gross price which is inclusive of taxes
+
+    //item price is exclusive of taxes, before tax
+    item.grossPrice = item.value
     item.netPrice = getters.netPrice(item)
-    item.price = item.netPrice
 
     //this comes directly from the items menu without modifiers
     item.modifiable = false
-    item.undiscountedPrice = item.price
+
+    item.undiscountedGrossPrice = item.grossPrice
+    item.undiscountedNetPrice = item.netPrice
+
     commit(mutation.SET_ITEM, item)
 
     const index = state.items.findIndex(
@@ -381,32 +387,43 @@ const actions = {
             name: discount.discount.name,
             type: discount.discount.type,
             rate: discount.discount.rate,
+            value: discount.discount.value,
           }
 
-          if (discount.discount.type == 'value') {
+          if (discount.discount.type === 'value') {
             if (
-              discount.discount.rate >
+              discount.discount.value >
               item.undiscountedPrice * item.quantity
             ) {
+              //discount error
               if (!discountErrors.includes(item._id)) {
                 discountErrors.push(item._id)
               }
               item.discount = false
               item.price = item.undiscountedPrice
             } else {
-              itemsDiscount += discount.discount.rate
+              //apply discount here
+              itemsDiscount += discount.discount.value
               item.price =
-                item.undiscountedPrice - discount.discount.rate / item.quantity
-              itemDiscountData.discount = discount.discount.rate
+                item.undiscountedPrice - discount.discount.value / item.quantity
+              itemDiscountData.discount = discount.discount.value
             }
           } else {
-            const calculated =
-              (item.undiscountedPrice * discount.discount.rate) / 100
+            //percentage based discount, use discount.rate here, not discount.value
+            const itemGrossDiscountAmount =
+              (item.undiscountedGrossPrice * discount.discount.rate) / 100
 
-            item.price = item.undiscountedPrice - calculated
+            item.grossPrice =
+              item.undiscountedGrossPrice - itemGrossDiscountAmount
 
-            itemsDiscount += calculated
-            itemDiscountData.discount = calculated
+            //apply discount on net price as well
+            const itemNetDiscountAmount =
+              (item.undiscountedNetPrice * discount.discount.rate) / 100
+
+            item.netPrice = item.undiscountedNetPrice - itemNetDiscountAmount
+
+            itemsDiscount += itemNetDiscountAmount
+            itemDiscountData.discount = itemNetDiscountAmount
           }
 
           if (!discountErrors.length) {
@@ -415,7 +432,8 @@ const actions = {
         } else {
           //remove already applied discount
           item.discount = false
-          item.price = item.undiscountedPrice
+          item.grossPrice = item.undiscountedGrossPrice
+          item.netPrice = item.undiscountedNetPrice
         }
         return item
       })

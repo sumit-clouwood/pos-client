@@ -2,8 +2,8 @@
 import * as mutation from './context/mutation-types'
 
 const state = {
-  brandId: '5ce27947ef76a0108d2a265b',
-  storeId: '5ce27959ef76a0108d2a27ff',
+  brandId: '5cdd23301578dd001855bf4e',
+  storeId: '5cdd23471578dd001855c04c',
   brand: null,
   store: null,
 }

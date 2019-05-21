@@ -19,10 +19,10 @@
             <div
               class="option-contain"
               :class="{
-                active: activeOrderDiscountId == discount.discount_id,
+                active: activeOrderDiscountId === discount._id,
               }"
               v-for="discount in discounts"
-              :key="discount.discount_id"
+              :key="discount._id"
               @click.prevent="selectOrderDiscount(discount)"
             >
               <p>

@@ -20,17 +20,17 @@
             <div
               class="option-contain"
               :class="{
-                active: activeItemDiscountId == discount.item_discount_id,
+                active: activeItemDiscountId == discount._id,
               }"
               v-for="discount in itemDiscounts"
-              :key="discount.item_discount_id"
+              :key="discount._id"
               @click.prevent="selectItemDiscount(discount)"
             >
               <p>
                 {{
-                  discount.type == 'percentage'
+                  discount.type === 'percentage'
                     ? discount.rate + '%'
-                    : formatPrice(discount.rate)
+                    : formatPrice(discount.value)
                 }}
               </p>
               <span class="more">{{ discount.name }}</span>

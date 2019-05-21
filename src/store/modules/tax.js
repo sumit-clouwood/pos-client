@@ -18,7 +18,9 @@ const actions = {
     return new Promise(resolve => {
       if (rootState.order.items.length) {
         let itemsTax = rootState.order.items.reduce((totalTax, item) => {
-          return totalTax + (item.value - item.netPrice) * item.quantity
+          //calculate tax here
+          //item.price is now price before tax and discount applied, so need to recalculate the tax
+          return totalTax + (item.grossPrice - item.netPrice) * item.quantity
         }, 0)
 
         commit(mutation.SET_ITEMS_TAX, itemsTax)
