@@ -23,7 +23,14 @@
         <td>{{ convertDatetime(order.real_created_datetime) }}</td>
         <td>{{ order.balance_due }}</td>
         <td>{{ order.order_status }}</td>
-        <td>{{ getUserName(order.driver) }}</td>
+        <td>
+          {{
+            getLookupsData({
+              collection: users._id,
+              matchWith: order.driver,
+            })
+          }}
+        </td>
         <td>{{ order.created_by }}</td>
         <!--<td>Tecom</td>-->
         <td class="show-details-his">
@@ -54,29 +61,20 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import DateTime from '@/mixins/DateTime'
+import Helpers from '@/mixins/Helpers'
 
 export default {
   name: 'CustomerPastOrders',
   props: {
     pastOrders: {},
   },
-  mixins: [DateTime],
+  mixins: [DateTime, Helpers],
   computed: {
     ...mapState({
       users: state => state.customer.lookups.users,
     }),
   },
   methods: {
-    // eslint-disable-next-line no-unused-vars
-    getUserName: function(userId) {
-      const users = Object.entries(this.users._id)
-      // eslint-disable-next-line no-console,no-unused-vars
-      for (let [key, value] of users) {
-        if (value._id == userId) {
-          return value.name
-        }
-      }
-    },
     ...mapActions('order', ['getPastOrderDetails']),
   },
 }

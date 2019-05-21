@@ -162,6 +162,7 @@ const actions = {
       )
       commit(mutation.PAST_ORDER_PAGINATE_DETAILS, totalPages)
       commit(mutation.PAGE_LOOKUP, response.data.collected_data.page_lookups)
+      commit(mutation.LOYALTY, state.lookups.brand_loyalty_programs)
       commit(mutation.SELECTED_CUSTOMER, {
         customerData: response.data.item,
         pastOrders: response.data.collected_data.orders,

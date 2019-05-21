@@ -57,7 +57,12 @@
               v-for="(favItem, key) in insight.favorites"
               :key="key"
             >
-              {{ getFavItems(favItem.menu_item) }}
+              {{
+                getLookupsData({
+                  collection: favoriteItems._id,
+                  matchWith: favItem.menu_item,
+                })
+              }}
             </p>
           </div>
         </slide>
@@ -108,6 +113,7 @@ import { mapState } from 'vuex'
 import CustomerFeedback from './CustomerFeedback'
 import { Carousel, Slide } from 'vue-carousel'
 import DateTime from '@/mixins/DateTime'
+import Helpers from '@/mixins/Helpers'
 
 function getCustomerList(state) {
   return state.customer.customer
@@ -120,7 +126,7 @@ export default {
     Carousel,
     Slide,
   },
-  mixins: [DateTime],
+  mixins: [Helpers, DateTime],
   data() {
     return {
       items: false,
@@ -171,16 +177,6 @@ export default {
       if(this.pastOrders.length) {
         this.lastOrder = this.pastOrders.find(order => order._id == orderId)
         this.items = this.lastOrder.items
-      }
-    },
-
-    getFavItems: function(favItemId) {
-      const favoriteItems = Object.entries(this.favoriteItems._id)
-      // eslint-disable-next-line no-console,no-unused-vars
-      for (let [key, value] of favoriteItems) {
-        if (value._id == favItemId) {
-          return value.name
-        }
       }
     },
     cancelled_orders_count: function() {
