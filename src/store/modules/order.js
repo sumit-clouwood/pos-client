@@ -432,7 +432,8 @@ const actions = {
         } else {
           //remove already applied discount
           item.discount = false
-          item.price = item.undiscountedPrice
+          item.grossPrice = item.undiscountedGrossPrice
+          item.netPrice = item.undiscountedNetPrice
         }
         return item
       })

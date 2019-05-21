@@ -113,18 +113,16 @@ const actions = {
             name: state.currentActiveItemDiscount.name,
           },
         })
-
-        dispatch('order/recalculateItemPrices', {}, { root: true })
-          .then(() => resolve())
-          .catch(errors => {
-            commit(mutation.SET_ITEM_ERROR, DISCOUNT_ITEM_ERROR)
-            commit(mutation.SET_ERROR_CODE, 7)
-            commit(mutation.CLEAR_ITEM_DISCOUNT, errors)
-            reject(errors)
-          })
-      } else {
-        resolve()
       }
+      //remove discounts if there was previously applied but now unset
+      dispatch('order/recalculateItemPrices', {}, { root: true })
+        .then(() => resolve())
+        .catch(errors => {
+          commit(mutation.SET_ITEM_ERROR, DISCOUNT_ITEM_ERROR)
+          commit(mutation.SET_ERROR_CODE, 7)
+          commit(mutation.CLEAR_ITEM_DISCOUNT, errors)
+          reject(errors)
+        })
     })
   },
 
