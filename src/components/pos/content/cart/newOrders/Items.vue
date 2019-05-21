@@ -8,7 +8,8 @@
       <div class="orders-name">
         <p>{{ item.name }}</p>
         <p class="price-qty">
-          @ {{ item.item_price }} x {{ item.quantity }} {{ discountInfo(item) }}
+          @ {{ Num.round(item.price) }} x {{ item.quantity }}
+          {{ discountInfo(item) }}
         </p>
         <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
         <span data-toggle="modal" data-target="#POSOrderItemOptions">
