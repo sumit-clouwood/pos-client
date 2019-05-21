@@ -57,7 +57,7 @@
               v-for="(favItem, key) in insight.favorites"
               :key="key"
             >
-              {{ favItem.menu_item }}
+              {{ getFavItems(favItem.menu_item) }}
             </p>
           </div>
         </slide>
@@ -134,6 +134,23 @@ export default {
   props: {
     pastOrders: false,
   },
+  computed: {
+    ...mapState({
+      insight: state =>
+        getCustomerList(state) ? getCustomerList(state) : false,
+    }),
+    ...mapState({
+      favoriteItems: state => state.customer.lookups.brand_menu_items,
+    }),
+    totalPages: function() {
+      let totalNotes = this.insight.notes.length
+      if (totalNotes <= 10) {
+        return 1
+      } else {
+        return totalNotes / 10
+      }
+    },
+  },
   methods: {
     getAge: function(dob) {
       let now = new Date()
@@ -156,25 +173,21 @@ export default {
         this.items = this.lastOrder.items
       }
     },
+
+    getFavItems: function(favItemId) {
+      const favoriteItems = Object.entries(this.favoriteItems._id)
+      // eslint-disable-next-line no-console,no-unused-vars
+      for (let [key, value] of favoriteItems) {
+        if (value._id == favItemId) {
+          return value.name
+        }
+      }
+    },
     cancelled_orders_count: function() {
       /*return this.insight.orders.reduce((prev, current) => {
         return prev + (current.order_status == 'ORDER_STATUS_CANCELLED' ? 1 : 0)
       }, 0)*/
       this.cancelOrders = 0
-    },
-  },
-  computed: {
-    ...mapState({
-      insight: state =>
-        getCustomerList(state) ? getCustomerList(state) : false,
-    }),
-    totalPages: function() {
-      let totalNotes = this.insight.notes.length
-      if (totalNotes <= 10) {
-        return 1
-      } else {
-        return totalNotes / 10
-      }
     },
   },
 }
