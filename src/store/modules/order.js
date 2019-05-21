@@ -35,7 +35,7 @@ const getters = {
 
   subTotal: () => {
     return state.items.reduce((total, item) => {
-      return total + item.price * item.quantity
+      return total + item.netPrice * item.quantity
     }, 0)
   },
 
@@ -46,7 +46,7 @@ const getters = {
   },
 
   itemPrice: () => item => {
-    return item.quantity * item.price
+    return item.quantity * item.netPrice
   },
 
   orderModifiers: () => item => {
@@ -80,12 +80,16 @@ const actions = {
     //replace vlaue with price, as all code is based on price
     //item.value is gross price which is inclusive of taxes
 
-    //item price is exclusive of taxes
-    item.price = getters.netPrice(item)
+    //item price is exclusive of taxes, before tax
+    item.grossPrice = item.value
+    item.netPrice = getters.netPrice(item)
 
     //this comes directly from the items menu without modifiers
     item.modifiable = false
-    item.undiscountedPrice = item.price
+
+    item.undiscountedGrossPrice = item.grossPrice
+    item.undiscountedNetPrice = item.netPrice
+
     commit(mutation.SET_ITEM, item)
 
     const index = state.items.findIndex(
@@ -391,12 +395,14 @@ const actions = {
               discount.discount.value >
               item.undiscountedPrice * item.quantity
             ) {
+              //discount error
               if (!discountErrors.includes(item._id)) {
                 discountErrors.push(item._id)
               }
               item.discount = false
               item.price = item.undiscountedPrice
             } else {
+              //apply discount here
               itemsDiscount += discount.discount.value
               item.price =
                 item.undiscountedPrice - discount.discount.value / item.quantity
@@ -404,13 +410,20 @@ const actions = {
             }
           } else {
             //percentage based discount, use discount.rate here, not discount.value
-            const calculated =
-              (item.undiscountedPrice * discount.discount.rate) / 100
+            const itemGrossDiscountAmount =
+              (item.undiscountedGrossPrice * discount.discount.rate) / 100
 
-            item.price = item.undiscountedPrice - calculated
+            item.grossPrice =
+              item.undiscountedGrossPrice - itemGrossDiscountAmount
 
-            itemsDiscount += calculated
-            itemDiscountData.discount = calculated
+            //apply discount on net price as well
+            const itemNetDiscountAmount =
+              (item.undiscountedNetPrice * discount.discount.rate) / 100
+
+            item.netPrice = item.undiscountedNetPrice - itemNetDiscountAmount
+
+            itemsDiscount += itemNetDiscountAmount
+            itemDiscountData.discount = itemNetDiscountAmount
           }
 
           if (!discountErrors.length) {
