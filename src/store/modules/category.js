@@ -108,7 +108,6 @@ const actions = {
         searchedItems.push(item)
       }
     })
-    console.log(searchedItems)
     commit(mutation.SET_SEARCH_ITEMS, { items: searchedItems })
   },
 
@@ -149,7 +148,7 @@ const mutations = {
     state.item = item
   },
   [mutation.SET_SEARCH_ITEMS](state, items) {
-    state.searchItems = items
+    state.searchItems = items.items
   },
 }
 
