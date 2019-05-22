@@ -6,7 +6,7 @@
       class="form-control"
       placeholder="Search customer"
       v-model="searchTerms"
-      @keyup="searchCustomer(searchTerms)"
+      @keyup="searchCustomer()"
     />
   </div>
 </template>

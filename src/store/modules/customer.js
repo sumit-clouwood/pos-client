@@ -25,7 +25,7 @@ const state = {
   offlineData: null,
   loading: false,
   error: false,
-  loyalty: false,
+  loyalty: { card: false, details: false },
   deliveryAreas: false,
   fetchDeliveryAreas: false,
   editInformation: {},
@@ -162,8 +162,10 @@ const actions = {
       )
       commit(mutation.PAST_ORDER_PAGINATE_DETAILS, totalPages)
       commit(mutation.PAGE_LOOKUP, response.data.collected_data.page_lookups)
-      commit(mutation.LOYALTY_DETAILS, state.lookups.brand_loyalty_programs)
-      commit(mutation.LOYALTY, response.data.collected_data.loyalty_cards)
+      let loyalty = {}
+      loyalty.card = response.data.collected_data.loyalty_cards
+      loyalty.details = state.lookups.brand_loyalty_programs
+      commit(mutation.LOYALTY, loyalty)
       commit(mutation.SELECTED_CUSTOMER, {
         customerData: response.data.item,
         pastOrders: response.data.collected_data.orders,
@@ -350,7 +352,8 @@ const mutations = {
     state.error = error
   },
   [mutation.LOYALTY](state, loyalty) {
-    state.loyalty = loyalty.length > 0 ? loyalty[0] : false
+    state.loyalty.card = loyalty.card.length ? loyalty.card[0] : false
+    state.loyalty.details = loyalty.details._id ? loyalty.details._id : false
   },
 }
 

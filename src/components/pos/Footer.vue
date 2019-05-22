@@ -21,6 +21,30 @@
           </li>
           <li
             data-toggle="modal"
+            data-target="#search-loyalty-customer"
+            :class="{ loyaltyApplied: loyaltyCard }"
+          >
+            <a href="#">
+              <img src="img/pos/tip.png" alt="Loyalty" v-if="!loyaltyCard" />
+              <span v-if="!loyaltyCard">Loyalty</span>
+              <span v-if="loyaltyCard">
+                <span
+                  >{{
+                    isNaN(loyaltyCard.balance)
+                      ? 0
+                      : formatPrice(loyaltyCard.balance)
+                  }}
+                  Loyalty</span
+                >
+                <br />
+                <span>
+                  {{ selectedCustomer.substring(0, 28) }}
+                </span>
+              </span>
+            </a>
+          </li>
+          <li
+            data-toggle="modal"
             :data-target="selectedModal"
             data-dismiss="modal"
           >
@@ -51,31 +75,6 @@
                 >Add Note</span
               ></a
             >
-          </li>
-          <li
-            data-toggle="modal"
-            data-target="#search-loyalty-customer"
-            v-if="loyaltyEnable"
-            :class="{ loyaltyApplied: loyaltyInfo }"
-          >
-            <a href="#">
-              <img src="img/pos/tip.png" alt="Loyalty" v-if="!loyaltyInfo" />
-              <span v-if="!loyaltyInfo">Loyalty</span>
-              <span v-if="loyaltyInfo">
-                <span
-                  >{{
-                    isNaN(loyaltyInfo.balance)
-                      ? 0
-                      : parseFloat(loyaltyInfo.balance).toFixed(2)
-                  }}
-                  {{ loyaltyInfo.currency_code }} Loyalty</span
-                >
-                <br />
-                <span>
-                  {{ selectedCustomer.customer_name.substring(0, 28) }}
-                </span>
-              </span>
-            </a>
           </li>
         </ul>
         <ul class="template-btn">
@@ -163,7 +162,7 @@ import SearchLoyaltyCustomer from '../pos/footer/popups/SearchLoyaltyCustomer'
 import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
 import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 /* global $ */
 export default {
   name: 'Footer',
@@ -200,6 +199,7 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapState('order', ['orderType']),
     ...mapState('sync', ['online']),
+    ...mapGetters('location', ['formatPrice']),
     ...mapState({
       selectedModal: state =>
         state.location.setModal == '#loyalty-payment'
@@ -207,20 +207,9 @@ export default {
           : state.location.setModal,
     }),
     ...mapState({
-      loyaltyEnable: state => state.loyalty.loyalty,
+      loyaltyCard: state => state.customer.loyalty.card,
     }),
-    ...mapState({
-      loyaltyInfo: state => state.customer.loyalty,
-    }),
-    ...mapState({
-      selectedCustomer: state =>
-        typeof state.customer.customer.customer_list != 'undefined'
-          ? state.customer.customer.customer_list
-          : typeof state.customer.fetchCustomerAddressOnly.customer_list !=
-            'undefined'
-          ? state.customer.fetchCustomerAddressOnly.customer_list[0]
-          : false,
-    }),
+    ...mapState({ selectedCustomer: state => state.customer.customer.name }),
   },
   methods: {
     viewHoldOrders: function() {
