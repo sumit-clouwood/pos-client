@@ -42,7 +42,7 @@
 </template>
 
 <script>
-// import { mapActions, mapState } from 'vuex'
+import { mapActions } from 'vuex'
 // import Preloader from '@/components/util/Preloader'
 import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
 export default {
@@ -52,8 +52,8 @@ export default {
     // Preloader,
   },
 
-  computed: {
-    /*...mapState('customer', ['error']),
+  /*computed: {
+    ...mapState('customer', ['error']),
     deliveryAddresses: function() {
       if (this.$store.state.customer.fetchCustomerAddressOnly.customer_list) {
         const customerDetails = this.$store.state.customer
@@ -66,10 +66,10 @@ export default {
         }
       }
       return []
-    },*/
-  },
+    },
+  },*/
   methods: {
-    // ...mapActions('location', ['updateModalSelectionDelivery']),
+    ...mapActions('location', ['updateModalSelectionDelivery']),
   },
 }
 </script>

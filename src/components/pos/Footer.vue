@@ -38,7 +38,7 @@
                 >
                 <br />
                 <span>
-                  {{ selectedCustomer.substring(0, 28) }}
+                  {{ selectedCustomer }}
                 </span>
               </span>
             </a>

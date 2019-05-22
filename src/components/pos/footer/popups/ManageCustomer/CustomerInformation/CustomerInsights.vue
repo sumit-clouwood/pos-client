@@ -58,7 +58,7 @@
               :key="key"
             >
               {{
-                getLookupsData({
+                LookupData.get({
                   collection: favoriteItems._id,
                   matchWith: favItem.menu_item,
                   selection: 'name',
@@ -114,7 +114,6 @@ import { mapState } from 'vuex'
 import CustomerFeedback from './CustomerFeedback'
 import { Carousel, Slide } from 'vue-carousel'
 import DateTime from '@/mixins/DateTime'
-import Helpers from '@/mixins/Helpers'
 
 function getCustomerList(state) {
   return state.customer.customer
@@ -127,7 +126,7 @@ export default {
     Carousel,
     Slide,
   },
-  mixins: [Helpers, DateTime],
+  mixins: [DateTime],
   data() {
     return {
       items: false,

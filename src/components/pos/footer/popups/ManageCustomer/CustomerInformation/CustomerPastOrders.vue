@@ -25,7 +25,7 @@
         <td>{{ order.order_status }}</td>
         <td>
           {{
-            getLookupsData({
+            LookupData.get({
               collection: users._id,
               matchWith: order.driver,
               selection: 'name',
@@ -62,14 +62,13 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import DateTime from '@/mixins/DateTime'
-import Helpers from '@/mixins/Helpers'
 
 export default {
   name: 'CustomerPastOrders',
   props: {
     pastOrders: {},
   },
-  mixins: [DateTime, Helpers],
+  mixins: [DateTime],
   computed: {
     ...mapState({
       users: state => state.customer.lookups.users,

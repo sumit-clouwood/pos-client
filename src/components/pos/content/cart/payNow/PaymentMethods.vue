@@ -18,6 +18,8 @@
 <script>
 /* global $ */
 import { mapActions, mapGetters, mapState } from 'vuex'
+import * as CONSTANTS from '@/constants'
+
 export default {
   name: 'PaymentMethods',
   computed: {
@@ -31,14 +33,14 @@ export default {
   },
   methods: {
     getToggle(method) {
-      if (method.name == 'Loyalty') {
+      if (method.name == CONSTANTS.LOYALTY) {
         return 'modal'
       }
       return ''
     },
 
     getTarget(method) {
-      if (method.name == 'Loyalty') {
+      if (method.name == CONSTANTS.LOYALTY) {
         if (this.selectedModal == '#manage-customer') {
           return '#search-loyalty-customer'
         } else {

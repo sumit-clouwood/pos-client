@@ -1,6 +1,7 @@
 import * as mutation from './customer/mutation-types'
 import customerService from '@/services/data/CustomerService'
 import CustomerService from '../../services/data/CustomerService'
+import LookupData from '@/plugins/helpers/LookupData'
 
 const state = {
   customer_list: [],
@@ -21,7 +22,6 @@ const state = {
   responseInformation: { status: 0, message: '' },
   address: false,
   allOnlineAddress: false,
-  fetchCustomerAddressOnly: false,
   offlineData: null,
   loading: false,
   error: false,
@@ -33,35 +33,23 @@ const state = {
   lookups: false,
 }
 const getters = {
-  find: state => customerId => {
-    //look into already having customers
-    return state.fetchCustomerAddressOnly.find(
-      customer => customer._id == customerId
-    )
-  },
   customer: state => {
-    return state.customer ? state.customer.customer_list : false
+    return state.customer
   },
   selectedAddress: state => {
     if (state.address) {
       const addressId = state.address.id
-      if (state.customer) {
-        return state.customer.customer_list.customer_details.find(
-          address => address._id == addressId
-        )
-      } else {
-        return state.fetchCustomerAddressOnly.customer_list[0].customer_details.find(
-          address => address._id == addressId
-        )
-      }
+      return state.customer.customer_addresses.find(
+        address => address._id.$oid == addressId
+      )
     }
   },
   getDeliveryArea: state => addressId => {
-    for (const value in state.deliveryAreas) {
-      if (value == addressId) {
-        return state.deliveryAreas[value].name
-      }
-    }
+    return LookupData.get({
+      collection: state.deliveryAreas,
+      matchWith: addressId,
+      selection: 'name',
+    })
   },
 }
 const actions = {
@@ -175,11 +163,8 @@ const actions = {
     })
   },
 
-  selectedAddress({ commit, dispatch }, selected_address_id, area) {
-    let selectedAddress = {}
-    selectedAddress.id = selected_address_id
-    selectedAddress.delivery_area = area
-    commit(mutation.SELECTED_CUSTOMER_ADDRESS, selectedAddress)
+  selectedAddress({ commit, dispatch }, area) {
+    commit(mutation.SELECTED_CUSTOMER_ADDRESS, area)
     dispatch('order/updateOrderType', 'delivery', { root: true })
   },
 
@@ -336,9 +321,6 @@ const mutations = {
   [mutation.FETCH_CUSTOMER_ADDRESSES](state, addressList) {
     state.allOnlineAddress = addressList
   },
-  [mutation.FETCH_CUSTOMER_ADDRESSES_ONLY](state, customerAddressList) {
-    state.fetchCustomerAddressOnly = customerAddressList
-  },
   [mutation.SET_OFFLINE_DATA](state, data) {
     state.offlineData = data
   },
@@ -352,8 +334,13 @@ const mutations = {
     state.error = error
   },
   [mutation.LOYALTY](state, loyalty) {
-    state.loyalty.card = loyalty.card.length ? loyalty.card[0] : false
-    state.loyalty.details = loyalty.details._id ? loyalty.details._id : false
+    state.loyalty.card = loyalty.card.length ? loyalty.card[0] : 0
+    let loyaltyDetails = LookupData.get({
+      collection: loyalty.details._id,
+      matchWith: state.loyalty.card.program,
+      selection: false,
+    })
+    state.loyalty.details = loyaltyDetails ? loyaltyDetails : false
   },
 }
 
