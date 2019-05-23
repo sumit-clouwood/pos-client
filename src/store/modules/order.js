@@ -296,7 +296,7 @@ const actions = {
         let taxTotalDiscount = 0
         let surchargeTotalDiscount = 0
 
-        if (orderDiscount.discount.discountontotal) {
+        if (orderDiscount.discount.include_surcharge) {
           //apply ontotal discount, apply on surcharge and its tax as well
           const subtotal = getters.subTotal
           const totalTax = rootState.tax.itemsTax + rootState.tax.surchargeTax
@@ -391,21 +391,37 @@ const actions = {
           }
 
           if (discount.discount.type === 'value') {
+            // NOTE: IF items are 2, per item discount should total discount / 2
+
             if (
               discount.discount.value >
-              item.undiscountedPrice * item.quantity
+              item.undiscountedNetPrice * item.quantity
             ) {
               //discount error
               if (!discountErrors.includes(item._id)) {
                 discountErrors.push(item._id)
               }
               item.discount = false
-              item.price = item.undiscountedPrice
+              item.grossPrice = item.undiscountedGrossPrice
+              item.netPrice = item.undiscountedNetPrice
             } else {
-              //apply discount here
+              //add discount amount for record to show how much discount in total was applied
               itemsDiscount += discount.discount.value
-              item.price =
-                item.undiscountedPrice - discount.discount.value / item.quantity
+              //apply discount here
+              //decided to apply discount on post tax
+
+              //divide discount on quantity to get discount applied per line item
+              const discountPerItem = discount.discount.value / item.quantity
+
+              item.grossPrice = item.undiscountedGrossPrice - discountPerItem
+
+              //calcualte ratio of discount applied and set same ratio for net price
+              const percentDiscountAppliedOnGross =
+                (discountPerItem / item.undiscountedGrossPrice) * 100
+              const netPriceDiscount =
+                (item.undiscountedNetPrice * percentDiscountAppliedOnGross) /
+                100
+              item.netPrice = item.undiscountedNetPrice - netPriceDiscount
               itemDiscountData.discount = discount.discount.value
             }
           } else {
