@@ -6,7 +6,6 @@
         v-for="(order, key) in holdOrderList"
         :orderData="order"
         :key="key"
-        :currencyCode="currencyCode"
       />
     </div>
   </div>
@@ -28,9 +27,9 @@ export default {
     ...mapState({
       holdOrderList: state => state.holdOrders.getHoldOrders,
     }),
-    ...mapState({
+    /*...mapState({
       currencyCode: state => state.location.currency,
-    }),
+    }),*/
   },
 }
 </script>

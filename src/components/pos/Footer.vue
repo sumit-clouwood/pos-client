@@ -131,6 +131,7 @@
     <SearchLoyaltyCustomer />
     <Loyalty />
     <Invoice v-show="print" />
+    <OrderDetailsPopup />
   </div>
 </template>
 
@@ -161,6 +162,7 @@ import GiftCardInfo from '../pos/content/cart/newOrders/popup/GiftCardInfo.vue'
 import SearchLoyaltyCustomer from '../pos/footer/popups/SearchLoyaltyCustomer'
 import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
 import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
+import OrderDetailsPopup from '@/components/partial/OrderDetailPopup'
 
 import { mapActions, mapState, mapGetters } from 'vuex'
 /* global $ */
@@ -194,6 +196,7 @@ export default {
     SearchLoyaltyCustomer,
     Loyalty,
     Invoice,
+    OrderDetailsPopup,
   },
   computed: {
     ...mapState('checkout', ['print']),

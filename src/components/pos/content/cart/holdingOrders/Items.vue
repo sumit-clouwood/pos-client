@@ -1,12 +1,12 @@
 <template>
   <div class="wrappers-orders">
     <div class="orders-name">
-      <p @click="fetchOrder(orderData._id)" class="cursor-pointer">
+      <p @click="fetchOrder(orderData)" class="cursor-pointer">
         {{ orderData.order_no }}
       </p>
     </div>
     <div class="aed-amt">
-      <span>{{ currencyCode }} {{ orderData.balance_due }}</span>
+      <span>{{ orderData.currency }} {{ orderData.balance_due }}</span>
     </div>
     <div class="dlt-btn">
       <img src="img/pos/delete-icon.svg" alt="delete" />
@@ -20,7 +20,6 @@ export default {
   name: 'Items',
   props: {
     orderData: Object,
-    currencyCode: String,
   },
   methods: {
     ...mapActions('holdOrders', ['fetchOrder']),
