@@ -40,6 +40,10 @@ const actions = {
           commit(mutation.SET_CURRENCY, state.store.currency)
           commit(mutation.SET_TIMEZONE, state.store.timezone)
 
+          commit('modules/SET_ENABLED_MODULES', state.brand.enabled_modules, {
+            root: true,
+          })
+
           let locale = state.locale
           if (localStorage.getItem('locale')) {
             locale = localStorage.getItem('locale')
