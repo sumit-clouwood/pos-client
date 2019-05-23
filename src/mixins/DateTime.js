@@ -40,7 +40,7 @@ export default {
         return htmlElement
       }, 1000)
     },
-    convert_datetime(datetime, fmt_out = 'Do MMM YYYY,  hh:mm:ss A') {
+    convertDatetime(datetime, fmt_out = 'Do MMM YYYY,  hh:mm:ss A') {
       moment.locale('en-US')
       var value =
         typeof datetime != 'undefined'

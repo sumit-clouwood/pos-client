@@ -1,3 +1,4 @@
+import * as CONSTANTS from '@/constants'
 // initial state
 const state = {
   amount: '',
@@ -44,7 +45,7 @@ const actions = {
       commit('SET_ERROR', 'Amount should be greater than 0.00')
       commit('showCalc', true)
     } else if (
-      state.method.name == 'Loyalty' &&
+      state.method.name == CONSTANTS.LOYALTY &&
       parseFloat(state.amount) != parseFloat(state.loyaltyAmount)
     ) {
       if (parseFloat(state.loyaltyAmount) <= 0.01) {
@@ -267,7 +268,8 @@ const actions = {
   },
 
   calculateSpendLoyalty({ commit, rootState, getters }) {
-    const loyalty = rootState.customer.loyalty
+    const loyalty = rootState.customer.loyalty.card
+    const loyaltyDetails = rootState.customer.loyalty.details
     const orderTotal = getters.orderTotal
     let amount = parseFloat(loyalty.balance)
     if (amount > 0) {
@@ -278,12 +280,20 @@ const actions = {
         amount = parseFloat(orderTotal).toFixed(2)
       }
 
-      if (parseFloat(orderTotal) >= parseFloat(loyalty.max_redeem_amount)) {
-        amount = parseFloat(loyalty.max_redeem_amount)
+      if (parseFloat(orderTotal) >= parseFloat(loyaltyDetails.maximum_redeem)) {
+        amount = parseFloat(loyaltyDetails.maximum_redeem)
       }
 
-      if (parseFloat(loyalty.balance) < parseFloat(loyalty.min_redeem_amount)) {
+      if (
+        parseFloat(loyalty.balance) < parseFloat(loyaltyDetails.minimum_redeem)
+      ) {
         amount = parseFloat('0.0')
+      }
+      // temp code
+      if (
+        parseFloat(loyaltyDetails.maximum_redeem) < parseFloat(loyalty.balance)
+      ) {
+        amount = parseFloat(loyaltyDetails.maximum_redeem)
       }
     }
     commit('loyaltyAmount', amount)

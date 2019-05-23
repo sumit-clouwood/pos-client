@@ -1,6 +1,7 @@
 import * as mutation from './customer/mutation-types'
 import customerService from '@/services/data/CustomerService'
 import CustomerService from '../../services/data/CustomerService'
+import LookupData from '@/plugins/helpers/LookupData'
 
 const state = {
   customer_list: [],
@@ -10,7 +11,7 @@ const state = {
   paginate: {},
   lastOrder: false,
   pastOrders: false,
-  selectedCustomerLastOrder: false,
+  // customerLastOrderDetails: false,
   pastOrdersPaginate: {},
   params: {
     page_number: 1,
@@ -21,52 +22,39 @@ const state = {
   responseInformation: { status: 0, message: '' },
   address: false,
   allOnlineAddress: false,
-  fetchCustomerAddressOnly: false,
   offlineData: null,
   loading: false,
   error: false,
-  loyalty: false,
+  loyalty: { card: false, details: false },
   deliveryAreas: false,
   fetchDeliveryAreas: false,
   editInformation: {},
   modalStatus: 'Add',
+  lookups: false,
 }
 const getters = {
-  find: state => customerId => {
-    //look into already having customers
-    return state.fetchCustomerAddressOnly.find(
-      customer => customer._id == customerId
-    )
-  },
   customer: state => {
-    return state.customer ? state.customer.customer_list : false
+    return state.customer
   },
   selectedAddress: state => {
     if (state.address) {
       const addressId = state.address.id
-      if (state.customer) {
-        return state.customer.customer_list.customer_details.find(
-          address => address._id == addressId
-        )
-      } else {
-        return state.fetchCustomerAddressOnly.customer_list[0].customer_details.find(
-          address => address._id == addressId
-        )
-      }
+      return state.customer.customer_addresses.find(
+        address => address._id.$oid == addressId
+      )
     }
   },
   getDeliveryArea: state => addressId => {
-    for (const value in state.deliveryAreas) {
-      if (value == addressId) {
-        return state.deliveryAreas[value].name
-      }
-    }
+    return LookupData.get({
+      collection: state.deliveryAreas,
+      matchWith: addressId,
+      selection: 'name',
+    })
   },
 }
 const actions = {
-  fetchAll({ commit, rootState, dispatch }) {
+  fetchAll({ commit, rootState, dispatch, state }) {
     return new Promise((resolve, reject) => {
-      let paginateDetails = {}
       const params = [
         rootState.context.storeId,
         state.params.query /*query*/,
@@ -78,17 +66,12 @@ const actions = {
         .customerList(...params)
         .then(response => {
           if (response.data.data.length) {
-            // paginateDetails.currentPage = response.data.page_number
-            paginateDetails.currentPage = 1
-            paginateDetails.totalCustomers = response.data.count
-            // paginateDetails.totalPages = response.data.max_page_number
-            paginateDetails.totalPages = 1
-            // paginateDetails.customarPerPage = response.data.page_size
-            paginateDetails.customarPerPage = 10
-
+            let totalPages = parseInt(
+              parseInt(response.data.count) / parseInt(state.params.page_size)
+            )
             commit(mutation.CUSTOMER_LIST, response.data.data)
-            commit(mutation.ORDERS, response.data.page_lookups.orders)
-            commit(mutation.PAGINATE_DETAILS, paginateDetails)
+            commit(mutation.PAGINATE_DETAILS, totalPages)
+            commit(mutation.LAST_ORDERS, response.data.page_lookups.orders)
             resolve(response.data.data)
           } else {
             reject(response.data.data)
@@ -115,7 +98,7 @@ const actions = {
 
   setPastOrderPageNumber: function({ commit, dispatch }, pageNumber) {
     commit(mutation.SET_PAST_ORDER_CURRENT_PAGE_NO, pageNumber)
-    let customerId = state.customer.customer_list._id
+    let customerId = state.customer._id
     dispatch('fetchSelectedCustomer', customerId)
   },
 
@@ -145,39 +128,43 @@ const actions = {
     }
   },
 
+  /*customerLastOrder({ state, commit }, customerId) {
+    let customerLastOrderDetails = false
+    const lastOrder = Object.entries(state.lastOrder._id)
+    for (const [value] of lastOrder) {
+      if (value.customer == customerId) {
+        customerLastOrderDetails = value
+      }
+    }
+    commit(mutation.CUSTOMER_LAST_ORDERS, customerLastOrderDetails)
+  },*/
   fetchSelectedCustomer({ state, commit, dispatch }, customerId) {
-    // return new Promise((resolve, reject) => {
     dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
       root: true,
     })
-    // eslint-disable-next-line no-console
-    console.log(customerId)
     commit(mutation.SET_CUSTOMER_ID, customerId)
     customerService.fetchCustomer(customerId).then(response => {
-      let selectedCustomerLastOrder = false
-      const lastOrder = Object.entries(state.lastOrder._id)
-      for (const [value] of lastOrder) {
-        if (value.customer == customerId) {
-          selectedCustomerLastOrder = value
-        }
-      }
-
+      let totalPages = parseInt(
+        parseInt(response.data.item.total_orders) /
+          parseInt(state.params.page_size)
+      )
+      commit(mutation.PAST_ORDER_PAGINATE_DETAILS, totalPages)
+      commit(mutation.PAGE_LOOKUP, response.data.collected_data.page_lookups)
+      let loyalty = {}
+      loyalty.card = response.data.collected_data.loyalty_cards
+      loyalty.details = state.lookups.brand_loyalty_programs
+      commit(mutation.LOYALTY, loyalty)
       commit(mutation.SELECTED_CUSTOMER, {
         customerData: response.data.item,
-        lastOrders: selectedCustomerLastOrder,
         pastOrders: response.data.collected_data.orders,
         deliveryAreas:
           response.data.collected_data.page_lookups.store_delivery_areas._id,
       })
     })
-    /*}*/
   },
 
-  selectedAddress({ commit, dispatch }, selected_address_id, area) {
-    let selectedAddress = {}
-    selectedAddress.id = selected_address_id
-    selectedAddress.delivery_area = area
-    commit(mutation.SELECTED_CUSTOMER_ADDRESS, selectedAddress)
+  selectedAddress({ commit, dispatch }, area) {
+    commit(mutation.SELECTED_CUSTOMER_ADDRESS, area)
     dispatch('order/updateOrderType', 'delivery', { root: true })
   },
 
@@ -274,16 +261,22 @@ const mutations = {
     state.customerId = id
   },
   [mutation.PAGINATE_DETAILS](state, paginateDetails) {
-    state.paginate = paginateDetails
+    state.paginate.totalPages = paginateDetails
   },
   [mutation.PAST_ORDER_PAGINATE_DETAILS](state, paginateDetails) {
-    state.pastOrdersPaginate = paginateDetails
+    state.pastOrdersPaginate.totalPages = paginateDetails
   },
   [mutation.PARAMS](state, paramsCollection) {
     state.params = paramsCollection
   },
   [mutation.GET_DELIVERY_AREAS](state, fetchDeliveryAreas) {
     state.fetchDeliveryAreas = fetchDeliveryAreas
+  },
+  [mutation.SET_CURRENT_PAGE_NO](state, pageNumber) {
+    state.params.page_number = pageNumber
+  },
+  [mutation.SET_PAST_ORDER_CURRENT_PAGE_NO](state, pageNumber) {
+    state.params.past_order_page_number = pageNumber
   },
   [mutation.SET_SEARCH_TERMS](state, searchTerms) {
     state.params.query = searchTerms
@@ -299,9 +292,15 @@ const mutations = {
     state.editInformation = details
     state.modalStatus = 'Add'
   },
-  [mutation.ORDERS](state, orders) {
+  [mutation.LAST_ORDERS](state, orders) {
     state.lastOrder = orders
   },
+  [mutation.PAGE_LOOKUP](state, lookups) {
+    state.lookups = lookups
+  },
+  /*[mutation.CUSTOMER_LAST_ORDERS](state, customerLastOrder) {
+    state.customerLastOrderDetails = customerLastOrder
+  },*/
   [mutation.SET_RESPONSE_MESSAGES](state, customerCreateResponse) {
     if (customerCreateResponse.status == 'form_errors') {
       state.responseInformation.status = customerCreateResponse.status
@@ -314,7 +313,6 @@ const mutations = {
   [mutation.SELECTED_CUSTOMER](state, customerDetails) {
     state.customer = customerDetails.customerData
     state.deliveryAreas = customerDetails.deliveryAreas
-    state.selectedCustomerLastOrder = customerDetails.lastOrders
     state.pastOrders = customerDetails.pastOrders
   },
   [mutation.SELECTED_CUSTOMER_ADDRESS](state, selectedAddress) {
@@ -322,9 +320,6 @@ const mutations = {
   },
   [mutation.FETCH_CUSTOMER_ADDRESSES](state, addressList) {
     state.allOnlineAddress = addressList
-  },
-  [mutation.FETCH_CUSTOMER_ADDRESSES_ONLY](state, customerAddressList) {
-    state.fetchCustomerAddressOnly = customerAddressList
   },
   [mutation.SET_OFFLINE_DATA](state, data) {
     state.offlineData = data
@@ -339,7 +334,13 @@ const mutations = {
     state.error = error
   },
   [mutation.LOYALTY](state, loyalty) {
-    state.loyalty = loyalty.length > 0 ? loyalty[0] : false
+    state.loyalty.card = loyalty.card.length ? loyalty.card[0] : 0
+    let loyaltyDetails = LookupData.get({
+      collection: loyalty.details._id,
+      matchWith: state.loyalty.card.program,
+      selection: false,
+    })
+    state.loyalty.details = loyaltyDetails ? loyaltyDetails : false
   },
 }
 

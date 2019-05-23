@@ -103,7 +103,9 @@ export default {
           model: 'customer_addresses',
           data: '',
         }
-        this.$store.dispatch('customer/updateAction', actionDetails)
+        if (confirm('Are you sure you want to delete address!')) {
+          this.$store.dispatch('customer/updateAction', actionDetails)
+        }
       } else {
         //do nothing
       }

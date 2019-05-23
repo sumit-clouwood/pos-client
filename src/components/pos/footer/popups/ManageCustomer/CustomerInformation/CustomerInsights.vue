@@ -23,7 +23,7 @@
           <div class="insight-last-order">
             <h3>LAST ORDER</h3>
             <p class="last-order-time">
-              {{ convert_datetime(insight.last_order_datetime) }}
+              {{ convertDatetime(insight.last_order_datetime) }}
             </p>
             <ul class="fav-item-slider">
               <!--<li><img src="/img/pos/dine-right.png" alt="fav-item" /></li>-->
@@ -57,7 +57,13 @@
               v-for="(favItem, key) in insight.favorites"
               :key="key"
             >
-              {{ favItem.menu_item }}
+              {{
+                LookupData.get({
+                  collection: favoriteItems._id,
+                  matchWith: favItem.menu_item,
+                  selection: 'name',
+                })
+              }}
             </p>
           </div>
         </slide>
@@ -76,7 +82,7 @@
             </thead>
             <tbody id="notes_data">
               <tr v-for="(notes, index) in insight.notes" :key="index">
-                <td>{{ convert_datetime(notes.created_at) }}</td>
+                <td>{{ convertDatetime(notes.created_at) }}</td>
                 <td>{{ notes.note }}</td>
               </tr>
             </tbody>
@@ -134,6 +140,23 @@ export default {
   props: {
     pastOrders: false,
   },
+  computed: {
+    ...mapState({
+      insight: state =>
+        getCustomerList(state) ? getCustomerList(state) : false,
+    }),
+    ...mapState({
+      favoriteItems: state => state.customer.lookups.brand_menu_items,
+    }),
+    totalPages: function() {
+      let totalNotes = this.insight.notes.length
+      if (totalNotes <= 10) {
+        return 1
+      } else {
+        return totalNotes / 10
+      }
+    },
+  },
   methods: {
     getAge: function(dob) {
       let now = new Date()
@@ -161,20 +184,6 @@ export default {
         return prev + (current.order_status == 'ORDER_STATUS_CANCELLED' ? 1 : 0)
       }, 0)*/
       this.cancelOrders = 0
-    },
-  },
-  computed: {
-    ...mapState({
-      insight: state =>
-        getCustomerList(state) ? getCustomerList(state) : false,
-    }),
-    totalPages: function() {
-      let totalNotes = this.insight.notes.length
-      if (totalNotes <= 10) {
-        return 1
-      } else {
-        return totalNotes / 10
-      }
     },
   },
 }

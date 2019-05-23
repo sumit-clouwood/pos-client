@@ -8,22 +8,23 @@
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title">Loyalty</h4>
         </div>
-        <div class="modal-body add-note-wrap">
+        <form class="modal-body add-note-wrap" autocomplete="off">
           <div class="add-note-area">
             <p>Select customer to get loyalty</p>
             <input
+              autocomplete="off"
               type="text"
               placeholder="Search..."
-              v-model="searchTerm"
               class="inputSearch"
               id="getCustomerList"
-              v-on:keyup="search(searchTerm)"
+              v-model="searchTerm"
+              v-on:keyup="search()"
             />
             <button
               type="button"
               class="btn btnSuccess"
               id="load"
-              v-on:click="search(searchTerm)"
+              v-on:click="search()"
             >
               <span
                 class="spinner-border spinner-border-sm"
@@ -41,12 +42,12 @@
                 v-for="customer in customers"
                 :key="customer.customerId"
                 v-on:click="selectCustomer(customer)"
-                >{{ customer.customerName }}</span
+                >{{ customer.name }}</span
               >
             </div>
             <!--            <small>{{searchTerm}}</small>-->
           </div>
-        </div>
+        </form>
         <div class="modal-footer">
           <div class="btn-announce">
             <button
@@ -84,41 +85,40 @@ export default {
   data() {
     return {
       searchTerm: '',
-      setLoyaltyInfo: '',
+      customerId: '',
       inputTimer: '',
     }
   },
   computed: {
     ...mapState({
-      customers: state => state.loyalty.loyaltyCustomerList,
+      customers: state => state.customer.customer_list,
     }),
   },
   methods: {
     addLoyalty: function() {
       $('#search-loyalty-customer').modal('toggle')
-      this.fetchSelectedCustomer(this.setLoyaltyInfo.customerId)
+      this.fetchSelectedCustomer(this.customerId)
     },
 
     selectCustomer(customer) {
-      this.searchTerm = customer.customerName
-      this.setLoyaltyInfo = customer
+      this.searchTerm = customer.name
+      this.customerId = customer._id
       $('#myDropdown').toggle()
     },
-    search(searchTerm) {
+    search() {
       clearTimeout(this.inputTimer)
-      if (searchTerm.length >= 2) {
+      if (this.searchTerm.length >= 2) {
         $('#searchLoader').attr('style', 'display:block')
         this.inputTimer = setTimeout(() => {
           $('#myDropdown').toggle()
           this.$store
-            .dispatch('loyalty/searchCustomer', searchTerm)
+            .dispatch('customer/searchCustomer', this.searchTerm)
             .then(() => {
               $('#searchLoader').hide()
             })
         }, 500)
       }
     },
-    ...mapActions('loyalty', ['searchCustomer']),
     ...mapActions('customer', ['fetchSelectedCustomer']),
   },
 }

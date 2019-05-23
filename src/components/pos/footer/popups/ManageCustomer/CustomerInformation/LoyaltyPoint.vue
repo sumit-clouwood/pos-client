@@ -23,12 +23,15 @@
 
 <script>
 import { mapState } from 'vuex'
+
 export default {
   name: 'LoyaltyPoint',
   computed: {
     ...mapState({
       loyalty: state =>
-        state.customer.loyalty ? state.customer.loyalty.balance : 0,
+        state.customer.loyalty.card.balance
+          ? state.customer.loyalty.card.balance
+          : 0,
     }),
   },
 }

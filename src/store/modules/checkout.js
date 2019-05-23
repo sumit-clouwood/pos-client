@@ -4,6 +4,7 @@ import * as mutation from './checkout/mutation-types'
 import db from '@/services/network/DB'
 import Crypt from '@/plugins/helpers/Crypt.js'
 import DateTime from '@/plugins/helpers/DateTime.js'
+import * as CONSTANTS from '@/constants'
 
 // initial state
 const state = {
@@ -216,13 +217,14 @@ const actions = {
           let paymentPart = [payment.method.name, payment.amount]
           if (
             payment.code ||
-            (payment.method.name != 'Loyalty' && payment.method.name != 'Cash')
+            (payment.method.name != CONSTANTS.LOYALTY &&
+              payment.method.name != 'Cash')
           ) {
             paymentPart.push(payment.code)
             //paymentPart.push('Card-1234')
           }
           //loyalty redeem setting
-          if (payment.method.name == 'Loyalty') {
+          if (payment.method.name == CONSTANTS.LOYALTY) {
             if (parseFloat(rootState.customer.loyalty.balance) > 0) {
               order.loyalty_customer = {
                 balance: rootState.customer.loyalty.balance,
