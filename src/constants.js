@@ -16,7 +16,13 @@ export const REFERENCE_FIELD_MODIFIER_GROUP_TO_MODIFIER = '_id'
 export const REFERENCE_FIELD_MODIFIER_SUBGROUP_TO_MODIDIER =
   'modifier_sub_group'
 export const FIELD_MODIFIER_NAME = '_id'
+
+/* PAYMENT RELATED CONSTANTS */
+
 export const LOYALTY = 'Loyalty Points'
+export const GIFT_CARD = 'Gift Card'
+
+/* MODULE RELATED CONSTENTS */
 
 export const MODULE_INVENTORY = 'Inventory Management'
 export const MODULE_CASHIER_APP = 'Cashier Apps'
