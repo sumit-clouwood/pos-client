@@ -8,12 +8,12 @@ export default {
   },
   subcategories() {
     return DataService.get(
-      '/model/brand_item_sub_categories?ascending=1&byColumn=0&orderBy=name&no_limit=true'
+      '/model/brand_item_sub_categories?ascending=1&byColumn=0&orderBy=name&no_limit=true&shown_pos=true&item_status=true'
     )
   },
   items() {
     return DataService.get(
-      '/model/brand_menu_items?ascending=1&byColumn=0&orderBy=name&no_limit=true'
+      '/model/brand_menu_items?ascending=1&byColumn=0&orderBy=name&no_limit=true&shown_pos=true&item_status=true'
     )
   },
 }
