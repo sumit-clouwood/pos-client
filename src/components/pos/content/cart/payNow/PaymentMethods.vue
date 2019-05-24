@@ -1,17 +1,18 @@
 <template>
-  <div id="payment-method">
-    <div
-      v-for="(method, key) in methods"
-      :key="key"
-      :class="{ active: activeMethod == method.name }"
-      @click="setMethod(method)"
-      :data-toggle="getToggle(method)"
-      :data-target="getTarget(method)"
-    >
-      <img :src="image(method.icon)" alt="method.name" /> <br /><label>{{
-        method.name
-      }}</label>
-    </div>
+  <div id="payment-method" ng-if="viewPayment">
+    <carousel :per-page="4" :mouse-drag="true">
+      <slide
+        v-for="(method, key) in methods"
+        :key="key"
+        :class="{ active: activeMethod == method.name }"
+        @click="setMethod(method)"
+        class="clicbal"
+      >
+        <img :src="getImage(method.icon)" alt="method.name" /><br /><label>{{
+          method.name
+        }}</label>
+      </slide>
+    </carousel>
   </div>
 </template>
 

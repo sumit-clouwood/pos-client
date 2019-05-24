@@ -444,21 +444,7 @@ $(document).ready(function() {
   })
 
   $('li#pay-now').click(function() {
-    // $("#payment-method").trigger();
-    $('#payment-method')[0].slick.refresh()
-    $('#payment-method .slick-slide > div > div').click(function() {
-      $('#payment-method .slick-slide > div > div').removeClass('active')
-      $(this).addClass('active')
-    })
-    // for pos gift card
-    // if($('.gift_card').hasClass('active')){
-    //     alert("hiii");
-    //     $('.gift_card').click(function () {
-    //         $('#Gift-card-payemnt').show();
-    //     });
-    // }
-
-    // End Pos Gift Card
+    $('#payment-method .VueCarousel-inner').removeAttr('style')
   })
 
   /*$('.br-table-btn').click(function() {

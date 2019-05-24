@@ -561,8 +561,16 @@ const actions = {
     })
   },
 
-  selectedOrderDetails({ commit }, selectedOrderDetails) {
-    commit(mutation.SET_ORDER_DETAILS, selectedOrderDetails.order)
+  selectedOrderDetails({ commit }, orderId) {
+    const params = ['orders', orderId]
+    OrderService.getGlobalDetails(...params).then(response => {
+      let orderDetails = {}
+      orderDetails.item = response.data.item
+      orderDetails.customer = response.data.collected_data.customer
+      orderDetails.lookups = response.data.collected_data.page_lookups
+      orderDetails.store_name = response.data.collected_data.store_name
+      commit(mutation.SET_ORDER_DETAILS, orderDetails)
+    })
   },
 }
 
