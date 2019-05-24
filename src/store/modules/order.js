@@ -216,7 +216,7 @@ const actions = {
       })
 
       commit(mutation.ADD_MODIFIER_PRICE_TO_ITEM, modifierPrice)
-      item.undiscountedPrice = item.price
+      item.undiscountedGrossPrice = item.value
       if (!item.editMode) {
         //update current item with new modifiers
 

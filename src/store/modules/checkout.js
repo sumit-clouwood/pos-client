@@ -123,33 +123,29 @@ const actions = {
         order.final_tax = rootState.tax.surchargeTax + rootState.tax.itemsTax
 
         //adding item data
-        order.itemData = rootState.order.items.map(item => {
+        order.items = rootState.order.items.map(item => {
           const itemTax = rootState.tax.itemsTaxData.find(
             taxData => taxData.itemId == item._id
           )
           let orderItem = {
-            itemName: item.name,
-            item_name: item.item_name,
-            itemId: item._id,
-            itemTax: itemTax ? itemTax.tax : 0,
-            total:
-              parseFloat(item.price) + parseFloat(itemTax ? itemTax.tax : 0),
-            item_discount_price: parseFloat(item.price),
-            item_discount_id: item.discount.id,
-            item_discount_name: item.discount.name,
-            item_price_each: parseFloat(item.undiscountedPrice),
-            item_discountontotal:
-              parseFloat(item.discount.discount) * item.quantity || 0,
+            name: item.name,
+            entity_id: item._id,
+            no: 0,
+            tax: itemTax ? itemTax.tax : 0,
+            price:
+              parseFloat(item.netPrice) + parseFloat(itemTax ? itemTax.tax : 0),
             quantity: item.quantity,
           }
 
-          if (item.modifiers.length) {
-            let regularModifiers = []
-            let mandatoryModifiers = []
-            let priceModifiers = []
+          return orderItem
+        })
 
+        //modifiers
+        let modifiers = []
+
+        rootState.order.items.forEach(item => {
+          if (item.modifiers.length) {
             //get all modifiers by modifier ids attached to item
-            let modifiers = []
             item.modifiers.forEach(modifierId => {
               rootState.modifier.itemModifiers.forEach(itemModifier => {
                 itemModifier.modifiers.forEach(itemModifierItem => {
@@ -158,11 +154,12 @@ const actions = {
                       submodifier.get_modifier_item_list.forEach(submodItem => {
                         if (submodItem._id == modifierId) {
                           modifiers.push({
-                            _id: submodItem._id,
-                            location_price: submodItem.price,
-                            modifierSubGroup: submodifier._id,
-                            item_name: submodItem.name,
-                            noofselection: 1,
+                            entity_id: submodItem._id,
+                            for_item: item._id,
+                            price: submodItem.price,
+                            tax: submodItem.tax,
+                            name: submodItem.name,
+                            qty: 1,
                             type: submodItem.subgroup_type,
                           })
                         }
@@ -172,27 +169,9 @@ const actions = {
                 })
               })
             })
-
-            modifiers.forEach(modifier => {
-              switch (modifier.type) {
-                case 'mandatory':
-                  mandatoryModifiers.push(modifier)
-                  break
-                case 'price':
-                  priceModifiers.push(modifier)
-                  break
-                default:
-                  regularModifiers.push(modifier)
-              }
-            })
-            orderItem.modifiers = {
-              regular_modifiers: regularModifiers,
-              mandatory_modifiers: mandatoryModifiers,
-              price_modifiers: priceModifiers,
-            }
           }
-          return orderItem
         })
+        order.item_modifiers = modifiers
 
         //order level discount
         if (rootState.discount.appliedOrderDiscount) {
