@@ -511,24 +511,24 @@ const actions = {
   },
 
   setOnlineOrders({ commit, rootState }, onlineOrderData) {
-    const params = [1, onlineOrderData.location_id]
+    // const params = [1, onlineOrderData.location_id]
     let orderDetail = ''
-    OrderService.fetchOnlineOrderDetails(...params).then(response => {
-      orderDetail = response.data.orderDetails
-      commit(mutation.ONLINE_ORDERS, {
-        onlineOrders: onlineOrderData,
-        locationId: rootState.location.location,
-        orderDetails: orderDetail,
-      })
+    // OrderService.fetchOnlineOrderDetails(...params).then(response => {
+    //   orderDetail = response.data.orderDetails
+    commit(mutation.ONLINE_ORDERS, {
+      onlineOrders: onlineOrderData,
+      locationId: rootState.location.location,
+      orderDetails: orderDetail,
     })
+    // })
   },
 
-  getPastOrderDetails({ commit, rootState }, orderId) {
+  /*getPastOrderDetails({ commit, rootState }, orderId) {
     const params = [orderId, rootState.location.location]
     OrderService.fetchOnlineOrderDetails(...params).then(response => {
       commit(mutation.PAST_ORDER_DETAILS, response.data.orderDetails)
     })
-  },
+  },*/
 
   deliveryOrder({ commit, dispatch }, { referral, futureOrder }) {
     return new Promise((resolve, reject) => {

@@ -11,13 +11,18 @@
       <div class="modal-content">
         <div class="col-md-5">
           <div data-v-f6351270="" class="left-part">
-            <LeftPart />
+            <LeftPart :orderDetails="selectedOrder" />
           </div>
         </div>
         <div class="col-md-7 right-part">
           <div class="tab-content" id="nav-tabContent">
             <RightPartHeader />
-            <RightPartContent />
+
+            <!--content-->
+            <Receipt :orderDetails="selectedOrder.item" />
+            <History :orderDetails="selectedOrder.item" />
+            <Modification />
+            <Payment :orderDetails="selectedOrder.item" />
           </div>
         </div>
       </div>
@@ -26,16 +31,27 @@
 </template>
 
 <script>
-import RightPartContent from '@/components/partial/orderDetails/RightPartContent'
+import Receipt from '@/components/partial/orderDetails/rightContent/Receipt'
+import History from '@/components/partial/orderDetails/rightContent/History'
+import Modification from '@/components/partial/orderDetails/rightContent/Modification'
+import Payment from '@/components/partial/orderDetails/rightContent/Payment'
 import RightPartHeader from '@/components/partial/orderDetails/RightPartHeader'
 import LeftPart from '@/components/partial/orderDetails/LeftPart'
+import { mapState } from 'vuex'
+
 export default {
   name: 'OrderDetailPopup',
   props: {},
   components: {
     RightPartHeader,
-    RightPartContent,
+    Receipt,
+    History,
+    Modification,
+    Payment,
     LeftPart,
+  },
+  computed: {
+    ...mapState('order', ['selectedOrder']),
   },
 }
 </script>

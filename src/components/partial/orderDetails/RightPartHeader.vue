@@ -35,9 +35,9 @@
         class="nav-item nav-link"
         id="nav-payments-tab"
         data-toggle="tab"
-        href="#nav-contact"
+        href="#nav-payments"
         role="tab"
-        aria-controls="nav-contact"
+        aria-controls="nav-payments"
         aria-selected="false"
         >Payments</a
       >
