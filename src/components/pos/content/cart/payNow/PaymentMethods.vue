@@ -1,28 +1,25 @@
 <template>
   <div id="payment-method">
-    <carousel :per-page="4" :mouse-drag="true">
-      <slide
-        v-for="(method, key) in methods"
-        :key="key"
-        :class="{ active: activeMethod == method.name }"
-        @click="setMethod(method)"
-      >
-        <img :src="getImage(method.icon)" alt="method.name" /><br /><label>{{
-          method.name
-        }}</label>
-      </slide>
-    </carousel>
+    <div
+      v-for="(method, key) in methods"
+      :key="key"
+      :class="{ active: activeMethod == method.name }"
+      @click="setMethod(method)"
+      :data-toggle="getToggle(method)"
+      :data-target="getTarget(method)"
+    >
+      <img :src="image(method.icon)" alt="method.name" /> <br /><label>{{
+        method.name
+      }}</label>
+    </div>
   </div>
 </template>
 
 <script>
+/* global $ */
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { Carousel, Slide } from 'vue-carousel'
-import * as CONSTANTS from '@/constants'
-
 export default {
   name: 'PaymentMethods',
-  components: { Carousel, Slide },
   computed: {
     ...mapGetters('payment', ['methods']),
     ...mapState({
@@ -33,19 +30,17 @@ export default {
     }),
   },
   methods: {
-    getImage() {
-      //fake image for now
-      return 'https://fakeimg.pl/80x80/?text=PaymentMethod&font=lobster%22'
-    },
     getToggle(method) {
-      if (method.name == CONSTANTS.LOYALTY) {
+      if (method.name == 'Loyalty') {
         return 'modal'
       }
       return ''
     },
-
+    image() {
+      return 'https://fakeimg.pl/46x46/?text=Third&font=lobster%22'
+    },
     getTarget(method) {
-      if (method.name == CONSTANTS.LOYALTY) {
+      if (method.name == 'Loyalty') {
         if (this.selectedModal == '#manage-customer') {
           return '#search-loyalty-customer'
         } else {
@@ -57,9 +52,30 @@ export default {
     },
     ...mapActions('checkoutForm', ['setMethod']),
   },
+  mounted() {
+    setTimeout(() => {
+      updateUI()
+    }, 100)
+  },
+}
+function updateUI() {
+  $('#payment-method').slick({
+    arrows: false,
+    infinite: true,
+    slidesToShow: 4,
+    slidesToScroll: 4,
+    dots: true,
+    accessibility: false,
+  })
+  $('.payment-method-block table td img').click(function() {
+    if ($('.payment-method-block').length) {
+      $('.payment-method-block').addClass('active')
+      //$('.payment-method-block').hide(800)
+    }
+  })
 }
 </script>
 <style lang="sass" scoped>
 img
-  height: 80px
+  height: "46px"
 </style>
