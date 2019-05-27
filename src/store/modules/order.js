@@ -9,7 +9,7 @@ const state = {
   items: [],
   item: false,
   orderType: 'walk_in',
-  orderNote: false,
+  orderNote: '',
   onlineOrders: false,
   futureOrder: false,
   referral: false,

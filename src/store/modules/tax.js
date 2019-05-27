@@ -17,13 +17,20 @@ const actions = {
   calculate({ commit, rootState }) {
     return new Promise(resolve => {
       if (rootState.order.items.length) {
+        let itemTaxData = []
         let itemsTax = rootState.order.items.reduce((totalTax, item) => {
           //calculate tax here
           //item.price is now price before tax and discount applied, so need to recalculate the tax
+          itemTaxData.push({
+            itemId: item._id,
+            tax: item.grossPrice - item.netPrice,
+          })
+
           return totalTax + (item.grossPrice - item.netPrice) * item.quantity
         }, 0)
 
         commit(mutation.SET_ITEMS_TAX, itemsTax)
+        commit(mutation.SET_ITEMS_TAX_DATA, itemTaxData)
 
         //apply tax on surcharge that is calculated earlier
         if (rootState.surcharge.surchargeAmounts) {
