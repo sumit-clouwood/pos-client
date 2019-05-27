@@ -302,7 +302,7 @@ const actions = {
           const totalTax = rootState.tax.itemsTax + rootState.tax.surchargeTax
           const totalSurcharge = rootGetters['surcharge/surcharge']
 
-          if (orderDiscount.discount.type == 'value') {
+          if (orderDiscount.discount.discount_type == 'value') {
             if (orderDiscount.discount.rate > subtotal + totalTax) {
               dispatch('discount/clearOrderDiscount', null, { root: true })
               reject(DISCOUNT_ORDER_ERROR_TOTAL)
@@ -336,7 +336,7 @@ const actions = {
           //we are not including surcharge tax in total tax for discount
           const totalTax = rootState.tax.itemsTax
           //const totalSurcharge = rootGetters['surcharge/surcharge']
-          if (orderDiscount.discount.type == 'value') {
+          if (orderDiscount.discount.discount_type == 'value') {
             if (orderDiscount.discount.rate > subtotal + totalTax) {
               dispatch('discount/clearOrderDiscount', null, { root: true })
               reject(DISCOUNT_ORDER_ERROR_TOTAL)
