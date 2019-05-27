@@ -8,12 +8,7 @@
     >
       <div class="POSItemOptions_type">
         <h3 class="POSItemOptions_typehead">
-          <span
-            >{{
-              subgroup[CONST.REFERENCE_FIELD_MODIFIER_SUBGROUP_TO_MODIDIER]
-            }}
-            ({{ subgroup.item_type }})
-          </span>
+          <span>{{ subgroup.name }} ({{ subgroup.item_type }}) </span>
         </h3>
         <span class="POSItemOptions_typeline"></span>
       </div>
@@ -39,7 +34,7 @@
                   itemId: item._id,
                   modifierId: modifier._id,
                   groupId: subgroup._id,
-                  limit: modifier.no_of_selection,
+                  limit: subgroup.no_of_selection,
                 }"
                 v-model="checkboxes"
               />
@@ -60,7 +55,7 @@
                 :id="modifier._id"
                 :name="subgroup._id"
                 :value="modifier._id"
-                @change="setRadio(item._id, subgroup._id, modifier._id)"
+                @click="setRadio(item._id, subgroup._id, modifier._id)"
               />
               <span
                 class="checkmark-radio-btn"

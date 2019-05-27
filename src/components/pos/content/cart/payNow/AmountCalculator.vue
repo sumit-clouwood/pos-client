@@ -23,6 +23,7 @@
 
 <script>
 /* global showModal*/
+import * as CONST from '@/constants'
 export default {
   name: 'AmountCalculator',
   data() {
@@ -32,22 +33,30 @@ export default {
   },
   methods: {
     addAmount() {
-      if (this.$store.state.checkoutForm.method.is_gift) {
-        this.$store
-          .dispatch('checkoutForm/validateGiftPayment')
-          .then(() => {
-            showModal('#Gift-card-payemnt')
-          })
-          .catch()
-      } else if (this.$store.state.checkoutForm.method.is_cash) {
+      if (this.$store.state.checkoutForm.method.reference_code) {
+        //display reference popup
+        if (this.$store.state.checkoutForm.method.name == CONST.GIFT_CARD) {
+          this.$store
+            .dispatch('checkoutForm/validateGiftPayment')
+            .then(() => {
+              showModal('#Gift-card-payemnt')
+            })
+            .catch()
+        } else if (
+          this.$store.state.checkoutForm.method.name == CONST.LOYALTY
+        ) {
+          //do check here
+        } else {
+          this.$store
+            .dispatch('checkoutForm/validateCardPayment')
+            .then(() => {
+              showModal('#card-payemnt')
+            })
+            .catch()
+        }
+      } else {
+        //its cash type
         this.$store.dispatch('checkoutForm/addAmount').then(() => {})
-      } else if (!this.$store.state.checkoutForm.method.LoyalLoyalty) {
-        this.$store
-          .dispatch('checkoutForm/validateCardPayment')
-          .then(() => {
-            showModal('#card-payemnt')
-          })
-          .catch()
       }
     },
     set(amount) {

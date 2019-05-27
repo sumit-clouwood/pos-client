@@ -1,6 +1,5 @@
 import ModifierService from '@/services/data/ModifierService'
 import * as mutation from './modifier/mutation-types'
-import * as CONSTANTS from '@/constants'
 
 // initial state
 const state = {
@@ -17,24 +16,16 @@ const getters = {
   //before item click there is no itemModifiers data available so get it direclty from groups
   hasModifiers: state => item => {
     return state.groups.some(group => {
-      return group.for_items.includes(
-        item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_MODIFIER_GROUP]
-      )
+      return group.for_items.includes(item._id)
     })
   },
 
   groups: state => item => {
-    return state.groups.filter(group =>
-      group.for_items.includes(
-        item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_MODIFIER_GROUP]
-      )
-    )
+    return state.groups.filter(group => group.for_items.includes(item._id))
   },
   subgroups: state => group => {
     return state.subgroups.filter(subgroup =>
-      subgroup.modifier_group.includes(
-        group[CONSTANTS.REFERENCE_FIELD_MODIFIER_GROUP_TO_SUBGROUP]
-      )
+      subgroup.modifier_group.includes(group._id)
     )
   },
   //modifiers fetch from the groups
@@ -53,10 +44,8 @@ const getters = {
 
         const modifiers = state.modifiers.filter(
           modifier =>
-            modifier.modifier_group ===
-              group[CONSTANTS.REFERENCE_FIELD_MODIFIER_GROUP_TO_MODIFIER] &&
-            modifier.modifier_sub_group ===
-              subgroup[CONSTANTS.REFERENCE_FIELD_MODIFIER_SUBGROUP_TO_MODIDIER]
+            modifier.modifier_group === group._id &&
+            modifier.modifier_sub_group === subgroup._id
         )
 
         if (modifiers && modifiers.length) {
@@ -70,16 +59,15 @@ const getters = {
     return groupedModifiers
   },
 
-  findModifier: state => modifierId => {
+  findModifier: (state, getters) => modifierId => {
     let modifier = {}
     state.itemModifiers.forEach(item => {
-      item.modifiers.forEach(mod => {
-        mod.get_modifier_sub_groups.forEach(subgroup => {
-          subgroup.get_modifier_item_list.forEach(submod => {
-            if (submod._id == modifierId) {
-              modifier = submod
-            }
-          })
+      const itemModifierSubgroups = getters.itemModifiers(item.itemId)
+      itemModifierSubgroups.forEach(subgroup => {
+        subgroup.modifiers.forEach(submod => {
+          if (submod._id == modifierId) {
+            modifier = submod
+          }
         })
       })
     })
@@ -122,14 +110,7 @@ const getters = {
   getImages: state => {
     let images = []
 
-    state.all.forEach(item => {
-      item.get_modifier_sub_groups.forEach(subgroup => {
-        subgroup.get_modifier_item_list.forEach(submod => {
-          images.push(state.imagePath + submod.imageName)
-        })
-      })
-    })
-    return images
+    return state ? images : []
   },
 }
 

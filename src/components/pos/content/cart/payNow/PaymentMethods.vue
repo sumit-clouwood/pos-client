@@ -1,23 +1,21 @@
 <template>
-  <div id="payment-method" ng-if="viewPayment">
-    <carousel :per-page="4" :mouse-drag="true">
-      <slide
-        v-for="(method, key) in methods"
-        :key="key"
-        :class="{ active: activeMethod == method.name }"
-        @click="setMethod(method)"
-        class="clicbal"
-      >
-        <img :src="getImage(method.icon)" alt="method.name" /><br /><label>{{
-          method.name
-        }}</label>
-      </slide>
-    </carousel>
+  <div id="payment-method">
+    <div
+      v-for="(method, key) in methods"
+      :key="key"
+      :class="{ active: activeMethod == method.name }"
+      @click="setMethod(method)"
+      :data-toggle="getToggle(method)"
+      :data-target="getTarget(method)"
+    >
+      <img :src="image(method.icon)" alt="method.name" /> <br /><label>{{
+        method.name
+      }}</label>
+    </div>
   </div>
 </template>
 
 <script>
-/* global $ */
 import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   name: 'PaymentMethods',
@@ -53,27 +51,6 @@ export default {
     },
     ...mapActions('checkoutForm', ['setMethod']),
   },
-  mounted() {
-    setTimeout(() => {
-      updateUI()
-    }, 100)
-  },
-}
-function updateUI() {
-  $('#payment-method').slick({
-    arrows: false,
-    infinite: true,
-    slidesToShow: 4,
-    slidesToScroll: 4,
-    dots: true,
-    accessibility: false,
-  })
-  $('.payment-method-block table td img').click(function() {
-    if ($('.payment-method-block').length) {
-      $('.payment-method-block').addClass('active')
-      //$('.payment-method-block').hide(800)
-    }
-  })
 }
 </script>
 <style lang="sass" scoped>

@@ -166,6 +166,23 @@ $(document).ready(function() {
     $('div#pay-now').addClass('show')
     $('div#pay-now').addClass('animated fadeInLeft')
     $('.modal-body.pay-now-block').css('opacity', '1')
+
+    setTimeout(function() {
+      $('#payment-method').slick({
+        arrows: false,
+        infinite: true,
+        slidesToShow: 4,
+        slidesToScroll: 4,
+        dots: true,
+        accessibility: false,
+      })
+      $('.payment-method-block table td img').click(function() {
+        if ($('.payment-method-block').length) {
+          $('.payment-method-block').addClass('active')
+          //$('.payment-method-block').hide(800)
+        }
+      })
+    }, 100)
   })
 
   $('.referal-code-customer').click(function() {

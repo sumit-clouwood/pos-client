@@ -13,7 +13,7 @@ export default {
     } catch (e) {
       console.log("Couldn't send msg to service worker in dev", msg)
     }
-    return DataService.post('/api/auth/order/SaveOrder', data)
+    return DataService.post('/model/orders/add', data)
   },
 
   deleteOrder(orderId) {
