@@ -5,7 +5,8 @@
     role="tabpanel"
     aria-labelledby="nav-contact-tab"
   >
-    c
+    Order Have never been cancelled, modified or created as a modification of
+    another order
   </div>
 </template>
 

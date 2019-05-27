@@ -34,12 +34,12 @@ const actions = {
 
   fetchOrder({ state, commit, dispatch }, selectedOrder) {
     commit(mutation.GET_HOLD_ORDER_DETAILS, selectedOrder)
-    let item_ids = []
-    state.orderDetails.items.forEach(item => {
-      item_ids.push(item._id.$oid)
-    })
+    let item_ids = state.orderDetails.items
+    // state.orderDetails.items.forEach(item => {
+    //   item_ids.push(item._id.$oid)
+    // })
     // eslint-disable-next-line no-console
-    console.log(item_ids)
+    // console.log(item_ids)
     dispatch('order/addHoldOrder', { item_ids }, { root: true })
   },
 

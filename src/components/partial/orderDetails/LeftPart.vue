@@ -1,25 +1,25 @@
 <template>
   <div class="details row">
-    <div class="col-md-6">
+    <div class="col-md-6" v-if="orderDetails">
       <div class="details-item">
         <span class="details-item-name">Order No:</span>
-        <p>44</p>
+        <p>{{ orderDetails.item.order_no }}</p>
       </div>
       <div class="details-item">
         <span class="details-item-name">Order Status:</span>
-        <p>On Hold</p>
+        <p>{{ orderDetails.item.order_status }}</p>
       </div>
       <div class="details-item">
         <span class="details-item-name">Order Type:</span>
-        <p>Call Center</p>
+        <p>{{ orderDetails.item.order_type }}</p>
       </div>
       <div class="details-item">
         <span class="details-item-name">Location/Branch:</span>
-        <p>Store Store Name 666</p>
+        <p>{{ orderDetails.store_name }}</p>
       </div>
       <div class="details-item">
         <span class="details-item-name">Order Date/Time:</span>
-        <p>19th Jun 2019, 08:52:03 PM</p>
+        <p>{{ orderDetails.item.created_at.date }}</p>
       </div>
       <div class="details-item">
         <span class="details-item-name">Order Duration:</span>
@@ -35,15 +35,15 @@
     <div class="col-md-6">
       <div class="details-item">
         <span class="details-item-name">Customer Name:</span>
-        <p>Customer Name 3805</p>
+        <p>{{ orderDetails.customer.name }}</p>
       </div>
       <div class="details-item">
         <span class="details-item-name">Customer Phone Number:</span>
-        <p>71234567890</p>
+        <p>{{ orderDetails.customer.phone_number }}</p>
       </div>
       <div class="details-item">
         <span class="details-item-name">Customer Email:</span>
-        <p>Custom3806@test.com</p>
+        <p>{{ orderDetails.customer.email }}</p>
       </div>
       <div class="details-item">
         <span class="details-item-name">Loyalty Points Earned:</span>
@@ -52,20 +52,29 @@
       <div class="details-item">
         <span class="details-item-name">Delivery Area:</span>
         <p>
-          Delivery Area Name 834
+          {{
+            getLookupData({
+              lookupFrom: 'store_delivery_areas',
+              id: orderDetails.item.order_delivery_area,
+            })
+          }}
         </p>
       </div>
       <div class="details-item">
         <span class="details-item-name">Driver:</span>
         <p>
-          Super Admin
+          {{
+            getLookupData({ lookupFrom: 'users', id: orderDetails.item.driver })
+          }}
         </p>
       </div>
       <div class="details-item details-item-double-span">
         <span class="details-item-name">Order Delivery Address:</span>
         <p>
-          Order Flat Number 6962, Order Building/Villa 6960, Order Street 6961,
-          Order City 6964
+          {{ orderDetails.item.order_flat_number }},
+          {{ orderDetails.item.order_building }},
+          {{ orderDetails.item.order_street }},
+          {{ orderDetails.item.order_city }}
         </p>
       </div>
     </div>
@@ -76,8 +85,23 @@
 </template>
 
 <script>
+import LookupData from '@/plugins/helpers/LookupData'
+
 export default {
   name: 'LeftPart',
+  props: {
+    orderDetails: {},
+  },
+  methods: {
+    getLookupData: function(lookup) {
+      let setData = this.orderDetails.lookups[lookup.lookupFrom]._id
+      return LookupData.get({
+        collection: setData,
+        matchWith: lookup.id,
+        selection: 'name',
+      })
+    },
+  },
 }
 </script>
 
