@@ -29,18 +29,20 @@ export default {
   computed: {
     ...mapState({
       cartItems: state =>
-        state.order.items.length > 0 ? state.order.items : false,
+        state.order && state.order.items.length > 0 ? state.order.items : false,
     }),
   },
   methods: {
     taxAmount: function(taxArr) {
-      let calculetedTaxAmount = 0
-      taxArr.length > 0
-        ? taxArr.forEach(tax => {
-            calculetedTaxAmount += parseFloat(tax.tax_amount)
-          })
-        : 0
-      return calculetedTaxAmount
+      if (typeof taxArr != 'undefined') {
+        let calculetedTaxAmount = 0
+        taxArr.length > 0
+          ? taxArr.forEach(tax => {
+              calculetedTaxAmount += parseFloat(tax.tax_amount)
+            })
+          : 0
+        return calculetedTaxAmount
+      }
     },
     subtotal: function(quantity, price) {
       return parseFloat(price) * parseInt(quantity)

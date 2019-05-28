@@ -33,49 +33,56 @@
       </div>
     </div>
     <div class="col-md-6">
-      <div class="details-item">
-        <span class="details-item-name">Customer Name:</span>
-        <p>{{ orderDetails.customer.name }}</p>
-      </div>
-      <div class="details-item">
-        <span class="details-item-name">Customer Phone Number:</span>
-        <p>{{ orderDetails.customer.phone_number }}</p>
-      </div>
-      <div class="details-item">
-        <span class="details-item-name">Customer Email:</span>
-        <p>{{ orderDetails.customer.email }}</p>
+      <div v-if="orderDetails.customer">
+        <div class="details-item">
+          <span class="details-item-name">Customer Name:</span>
+          <p>{{ orderDetails.customer.name }}</p>
+        </div>
+        <div class="details-item">
+          <span class="details-item-name">Customer Phone Number:</span>
+          <p>{{ orderDetails.customer.phone_number }}</p>
+        </div>
+        <div class="details-item">
+          <span class="details-item-name">Customer Email:</span>
+          <p>{{ orderDetails.customer.email }}</p>
+        </div>
       </div>
       <div class="details-item">
         <span class="details-item-name">Loyalty Points Earned:</span>
         <p>N/A</p>
       </div>
-      <div class="details-item">
-        <span class="details-item-name">Delivery Area:</span>
-        <p>
-          {{
-            getLookupData({
-              lookupFrom: 'store_delivery_areas',
-              id: orderDetails.item.order_delivery_area,
-            })
-          }}
-        </p>
-      </div>
-      <div class="details-item">
-        <span class="details-item-name">Driver:</span>
-        <p>
-          {{
-            getLookupData({ lookupFrom: 'users', id: orderDetails.item.driver })
-          }}
-        </p>
-      </div>
-      <div class="details-item details-item-double-span">
-        <span class="details-item-name">Order Delivery Address:</span>
-        <p>
-          {{ orderDetails.item.order_flat_number }},
-          {{ orderDetails.item.order_building }},
-          {{ orderDetails.item.order_street }},
-          {{ orderDetails.item.order_city }}
-        </p>
+      <div v-if="orderDetails.item">
+        <div class="details-item">
+          <span class="details-item-name">Delivery Area:</span>
+          <p>
+            {{
+              getLookupData({
+                lookupFrom: 'store_delivery_areas',
+                id: orderDetails.item.order_delivery_area,
+              })
+            }}
+          </p>
+        </div>
+        <div class="details-item">
+          <span class="details-item-name">Driver:</span>
+          <p>
+            {{
+              getLookupData({
+                lookupFrom: 'users',
+                id: orderDetails.item.driver,
+              })
+            }}
+          </p>
+        </div>
+        <div class="details-item details-item-double-span">
+          <span class="details-item-name">Order Delivery Address:</span>
+          <p>
+            {{ orderDetails.item.order_flat_number }},
+            {{ orderDetails.item.order_building }},
+            {{ orderDetails.item.order_street }},
+            {{ orderDetails.item.order_city }}
+          </p>
+        </div>
       </div>
     </div>
 

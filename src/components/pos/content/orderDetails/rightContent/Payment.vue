@@ -5,7 +5,7 @@
     role="tabpanel"
     aria-labelledby="nav-payments-tab"
   >
-    <table class="table-responsive">
+    <table class="table-responsive" v-if="orderDetails">
       <tr class="receipt-body">
         <th class="receipt-heading">PAYMENT METHOD NAME</th>
         <th class="receipt-heading">COLLECTED</th>
@@ -20,7 +20,7 @@
       </tr>
     </table>
 
-    <div class="receipt-summary">
+    <div class="receipt-summary" v-if="orderDetails">
       <div class="caption subtotal">
         TOTAL PAID:
       </div>

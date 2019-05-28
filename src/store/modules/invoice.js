@@ -107,15 +107,15 @@ const actions = {
 
     const params = [state.printRuleId]
 
-    const [templates, rules] = await Promise.all([
+    const [templates] = await Promise.all([
       // InvoiceService.fetchPrintRules(),
       InvoiceService.fetchTemplates(...params),
     ])
 
     commit(mutation.SET_TEMPLATES, templates.data)
-    if (rules.data.status === 1) {
-      // commit(mutation.SET_RULES, rules.data)
-    }
+    // if (rules.data.status === 1) {
+    // commit(mutation.SET_RULES, rules.data)
+    // }
   },
 }
 

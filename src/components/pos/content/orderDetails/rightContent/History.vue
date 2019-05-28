@@ -21,7 +21,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr v-if="orderDetails">
             <td class="field-type-cr_at field-created_at">
               <span> {{ orderDetails.created_at.date }}</span>
             </td>

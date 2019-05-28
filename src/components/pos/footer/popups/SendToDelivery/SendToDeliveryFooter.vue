@@ -108,7 +108,7 @@ export default {
   computed: {
     ...mapState({
       getReferrals: state =>
-        typeof state.location.locationData.referrals != 'undefined' &&
+        typeof state.location.locationData != 'undefined' &&
         state.location.locationData.referrals.length > 0
           ? state.location.locationData.referrals
           : false,
