@@ -211,7 +211,8 @@ const actions = {
   },
 
   updateAction({ commit, dispatch }, actionDetails) {
-    let customer_id = state.customer._id
+    let customer_id =
+      typeof state.customer != 'undefined' ? state.customer._id : false
     const params = [
       actionDetails.id,
       customer_id,

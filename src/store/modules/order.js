@@ -547,17 +547,13 @@ const actions = {
     commit(mutation.ORDER_TYPE, orderType)
   },
 
-  addHoldOrder({ rootState, dispatch }, holdOrders) {
+  addHoldOrder({ rootState, dispatch }, item_ids) {
     dispatch('reset')
     const allItems = rootState.category.items
-    let getHoldOrderItems = []
     allItems.forEach(item => {
-      holdOrders.item_ids.forEach(itemId => {
-        if (itemId == item._id) {
-          dispatch('addToOrder', item)
-          getHoldOrderItems.push(item)
-        }
-      })
+      if (item_ids.indexOf(item._id) !== -1) {
+        dispatch('addToOrder', item)
+      }
     })
   },
 
