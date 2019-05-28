@@ -112,7 +112,7 @@ const actions = {
 
     const [templates, rules] = await Promise.all([
       InvoiceService.fetchTemplates(...params),
-      InvoiceService.fetchPrintRules(...params),
+      InvoiceService.fetchPrintRules(),
     ])
 
     commit(mutation.SET_TEMPLATES, templates.data)
