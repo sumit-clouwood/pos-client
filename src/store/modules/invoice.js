@@ -117,7 +117,7 @@ const actions = {
 
     commit(mutation.SET_TEMPLATES, templates.data)
     if (rules.data.status === 1) {
-      commit(mutation.SET_RULES, rules.data)
+      // commit(mutation.SET_RULES, rules.data)
     }
   },
 }
