@@ -142,24 +142,34 @@ const actions = {
     dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
       root: true,
     })
-    commit(mutation.SET_CUSTOMER_ID, customerId)
-    customerService.fetchCustomer(customerId).then(response => {
-      let totalPages = parseInt(
-        parseInt(response.data.item.total_orders) /
-          parseInt(state.params.page_size)
-      )
-      commit(mutation.PAST_ORDER_PAGINATE_DETAILS, totalPages)
-      commit(mutation.PAGE_LOOKUP, response.data.collected_data.page_lookups)
-      let loyalty = {}
-      loyalty.card = response.data.collected_data.loyalty_cards
-      loyalty.details = state.lookups.brand_loyalty_programs
-      commit(mutation.LOYALTY, loyalty)
-      commit(mutation.SELECTED_CUSTOMER, {
-        customerData: response.data.item,
-        pastOrders: response.data.collected_data.orders,
-        deliveryAreas:
-          response.data.collected_data.page_lookups.store_delivery_areas._id,
-      })
+    return new Promise((resolve, reject) => {
+      commit(mutation.SET_CUSTOMER_ID, customerId)
+      customerService
+        .fetchCustomer(customerId)
+        .then(response => {
+          let totalPages = parseInt(
+            parseInt(response.data.item.total_orders) /
+              parseInt(state.params.page_size)
+          )
+          commit(mutation.PAST_ORDER_PAGINATE_DETAILS, totalPages)
+          commit(
+            mutation.PAGE_LOOKUP,
+            response.data.collected_data.page_lookups
+          )
+          let loyalty = {}
+          loyalty.card = response.data.collected_data.loyalty_cards
+          loyalty.details = state.lookups.brand_loyalty_programs
+          commit(mutation.LOYALTY, loyalty)
+          commit(mutation.SELECTED_CUSTOMER, {
+            customerData: response.data.item,
+            pastOrders: response.data.collected_data.orders,
+            deliveryAreas:
+              response.data.collected_data.page_lookups.store_delivery_areas
+                ._id,
+          })
+          resolve(response.data.item)
+        })
+        .catch(error => reject(error))
     })
   },
 

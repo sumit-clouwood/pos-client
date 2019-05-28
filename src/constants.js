@@ -33,3 +33,13 @@ export const MODULE_DINEIN = 'Dine-In'
 export const MODULE_POS = 'Point of Sale'
 export const MODULE_OFFLINE_ORDERS = 'Offline Orders'
 export const MODULE_FUTURE_ORDERS = 'Future Orders'
+
+/* order related constants */
+
+export const ORDER_STATUS_ON_HOLD = 'on-hold'
+export const ORDER_STATUS_IN_PROGRESS = 'in-progress'
+export const ORDER_STATUS_READY = 'ready'
+export const ORDER_STATUS_ON_A_WAY_TO_FINISH = 'on-a-way'
+export const ORDER_STATUS_FINISHED = 'finished'
+
+export const ORDER_SOURCE_POS = 'cashier_app'

@@ -62,6 +62,10 @@ const getters = {
 
   orderDiscounts: state => {
     return state.orderDiscounts.data
+    /*.filter(
+      discount => discount[rootState.order.orderType]
+    )
+    */
   },
 }
 

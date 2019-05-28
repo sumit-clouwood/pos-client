@@ -2,8 +2,9 @@
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 import db from '@/services/network/DB'
-import Crypt from '@/plugins/helpers/Crypt.js'
+//import Crypt from '@/plugins/helpers/Crypt.js'
 import DateTime from '@/plugins/helpers/DateTime.js'
+//import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 
 // initial state
@@ -61,27 +62,43 @@ const actions = {
         try {
           const newDate = new DateTime()
           order = {
+            customer: '',
+            referral: '',
             transition_order_no: '',
-            location_id: rootState.location.location,
-            payment_mode: 'Cash',
-            status: 'paid',
+            currency: rootState.location.currency,
+            order_status: CONSTANTS.ORDER_STATUS_IN_PROGRESS,
+            order_source: CONSTANTS.ORDER_SOURCE_POS,
             order_type: rootState.order.orderType,
-            currency_code: rootState.location.currency,
-            collected: 'no',
-            order_queue: '0',
-            created_date: newDate.getDate(),
-            created_time: newDate.getTime(),
+            order_mode: 'online',
+            real_created_datetime: newDate.getDate() + ' ' + newDate.getTime(),
             // order_mode: 'online',
+            sub_total: rootGetters['order/subTotal'],
+            total_discount: rootGetters['discount/orderDiscountWithoutTax'],
+            total_paid: rootGetters['order/subTotal'],
             balance_due: rootGetters['order/orderTotal'],
-            subtotal: rootGetters['order/subTotal'],
+            bill_printed: true,
             amount_changed: state.changedAmount,
+
+            order_building: '',
+            order_street: '',
+            order_flat_number: '',
+            order_nearest_landmark: '',
+            order_city: '',
+            order_country: '',
+            order_delivery_area: '',
+
+            item_discounts: [],
+            item_modifiers: '',
+            order_surcharges: '',
+            order_discounts: [],
+            order_payments: '',
           }
         } catch (e) {
           console.log(e)
         }
 
         if (rootState.order.orderType == 'delivery') {
-          order.customer_id = rootState.customer.customerId
+          order.customer = rootState.customer.customerId
           order.address_id = rootState.customer.address
             ? rootState.customer.address.id
             : null
@@ -89,52 +106,60 @@ const actions = {
           // order.status = 'on-hold'
         }
 
+        //ORDER SURCHARGES
         //get surcharge for an order
-        order.surcharge = rootGetters['surcharge/surcharge']
+        order.total_surcharge = rootGetters['surcharge/surcharge']
         //add surcharge tax
         order.surcharge_tax = rootState.tax.surchargeTax
+
+        //adding surcharge data
+        order.order_surcharges = rootState.surcharge.surcharges.map(
+          surcharge => {
+            const surchargeAmount = rootState.surcharge.surchargeAmounts.find(
+              surchargeAmount => surchargeAmount.id == surcharge._id
+            ).amount
+            return {
+              entity_id: surcharge._id,
+              name: surcharge.name,
+              type: surcharge.type,
+              price: surchargeAmount,
+              rate: surchargeAmount,
+              tax: surchargeAmount,
+              tax_rate: surchargeAmount,
+              taxable: surchargeAmount,
+            }
+          }
+        )
+
         //add order note
         order.order_note = rootState.order.orderNote
         //add referral
         if (rootState.order.referral) {
-          order.referral = rootState.order.referral.referralName
-          order.referral_id = rootState.order.referral.referralId
+          //order.referral = rootState.order.referral.referralName
+          order.referral = rootState.order.referral.referralId
         }
         //add future order
         if (rootState.order.futureOrder) {
           order.future_order = 1
           order.future_order_date = rootState.order.futureOrder
         }
-        //adding surcharge data
-        order.surchargeData = rootState.surcharge.surcharges.map(surcharge => {
-          const surchargeAmount = rootState.surcharge.surchargeAmounts.find(
-            surchargeAmount => surchargeAmount.id == surcharge._id
-          ).amount
-          return {
-            surcharge_id: surcharge._id,
-            surcharge_name: surcharge.name,
-            surcharge_type: surcharge.type,
-            surcharge_amount: surchargeAmount,
-            surcharge_amount_value: surchargeAmount,
-          }
-        })
 
         //adding final tax
-        order.final_tax = rootState.tax.surchargeTax + rootState.tax.itemsTax
+        order.total_tax = rootState.tax.surchargeTax + rootState.tax.itemsTax
 
         //adding item data
         order.items = rootState.order.items.map(item => {
           const itemTax = rootState.tax.itemsTaxData.find(
             taxData => taxData.itemId == item._id
           )
+
           let orderItem = {
             name: item.name,
             entity_id: item._id,
             no: 0,
             tax: itemTax ? itemTax.tax : 0,
-            price:
-              parseFloat(item.netPrice) + parseFloat(itemTax ? itemTax.tax : 0),
-            quantity: item.quantity,
+            price: parseFloat(item.netPrice),
+            qty: item.quantity,
           }
 
           return orderItem
@@ -185,24 +210,18 @@ const actions = {
         //adding tip amount
         order.tip_amount = rootState.checkoutForm.tipAmount
 
-        //loyalty earn setting
-        if (rootState.customer.loyalty) {
-          order.loyalty_customer = null
-          order.customer_id = rootState.customer.customerId
-        }
-
         //adding payment breakdown
-        order.payBreakDown = rootState.checkoutForm.payments.map(payment => {
-          let paymentPart = [payment.method.name, payment.amount]
-          if (
-            payment.code ||
-            (payment.method.name != CONSTANTS.LOYALTY &&
-              payment.method.name != 'Cash')
-          ) {
-            paymentPart.push(payment.code)
-            //paymentPart.push('Card-1234')
+        order.order_payments = rootState.checkoutForm.payments.map(payment => {
+          let paymentPart = {
+            name: payment.method.name,
+            collected: payment.amount,
+            param1: payment.coce,
+            param2: payment.amount,
+            param3: payment.coce,
+            entity_id: payment.id,
           }
-          //loyalty redeem setting
+
+          //Youvraj, have a check here
           if (payment.method.name == CONSTANTS.LOYALTY) {
             if (parseFloat(rootState.customer.loyalty.balance) > 0) {
               order.loyalty_customer = {
@@ -210,20 +229,12 @@ const actions = {
                 redeemed_amount_value: rootState.checkoutForm.loyaltyAmount,
               }
             }
-            order.customer_id = rootState.customer.customerId
+            order.customer = rootState.customer.customerId
           }
           return paymentPart
         })
 
-        if (!order.payBreakDown.length) {
-          let cashAmount = 0
-          if (order.order_type === 'delivery') {
-            cashAmount = order.balance_due
-          }
-          order.payBreakDown = [['Cash', cashAmount]]
-        }
-
-        order.app_uniqueid = Crypt.uuid()
+        //order.app_uniqueid = Crypt.uuid()
 
         console.log('not in delivery or take away ')
         commit(mutation.SET_ORDER, order)

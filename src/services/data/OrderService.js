@@ -7,7 +7,9 @@ export default {
       form_data: data,
     }
 
-    msg.form_data.user = userdata
+    if (userdata) {
+      msg.form_data.user = userdata
+    }
     try {
       navigator.serviceWorker.controller.postMessage(msg)
     } catch (e) {

@@ -81,18 +81,17 @@ const getters = {
 
 // actions, often async
 const actions = {
-  fetchAll({ commit }) {
+  fetchAll({ commit, dispatch }) {
     return new Promise((resolve, reject) => {
       CategoryService.categories()
         .then(response => {
           commit(mutation.SET_CATEGORIES, response.data.data)
-          commit(mutation.SET_CATEGORY, state.categories[0])
           //continue loading other stuff
           CategoryService.subcategories().then(response => {
             commit(mutation.SET_SUBCATEGORIES, response.data.data)
-            commit(mutation.SET_SUBCATEGORY, state.subcategories[0])
             CategoryService.items().then(response => {
               commit(mutation.SET_ITEMS, response.data.data)
+              dispatch('browse', state.categories[0])
               resolve()
             })
           })
