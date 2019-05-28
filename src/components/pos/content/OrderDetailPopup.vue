@@ -31,12 +31,12 @@
 </template>
 
 <script>
-import Receipt from '@/components/partial/orderDetails/rightContent/Receipt'
-import History from '@/components/partial/orderDetails/rightContent/History'
-import Modification from '@/components/partial/orderDetails/rightContent/Modification'
-import Payment from '@/components/partial/orderDetails/rightContent/Payment'
-import RightPartHeader from '@/components/partial/orderDetails/RightPartHeader'
-import LeftPart from '@/components/partial/orderDetails/LeftPart'
+import Receipt from '@/components/pos/content/orderDetails/rightContent/Receipt'
+import History from '@/components/pos/content/orderDetails/rightContent/History'
+import Modification from '@/components/pos/content/orderDetails/rightContent/Modification'
+import Payment from '@/components/pos/content/orderDetails/rightContent/Payment'
+import RightPartHeader from '@/components/pos/content/orderDetails/RightPartHeader'
+import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
 import { mapState } from 'vuex'
 
 export default {

@@ -9,7 +9,7 @@ const state = {
   timezone: 'Asia/Dubai',
   brand: null,
   store: null,
-  avaialableLanguages: null,
+  availableLanguages: null,
   languageDirection: null,
   translations: null,
   location: null,
@@ -26,16 +26,16 @@ const getters = {
 
 // actions
 const actions = {
-  fetch({ state, commit, rootState }) {
+  fetch({ state, commit }) {
     return new Promise((resolve, reject) => {
-      LocationService.getLocationData(rootState.context.storeId)
+      LocationService.getLocationData(state.locale)
         .then(response => {
           commit(mutation.SET_STORE, response.data.store)
           commit(mutation.SET_BRAND, response.data.brand)
           commit(mutation.SET_LOCALE, response.data.lang)
           commit(mutation.SET_LANGUAGE_DIRECTION, response.data.direction)
           commit(mutation.SET_TRASLATIONS, response.data.translations)
-          commit(mutation.SET_AVAILABLE_LANGUAGES, state.store.languages)
+          commit(mutation.SET_AVAILABLE_LANGUAGES, response.data.available_lang)
           commit(mutation.SET_LOCATION, state.store.address)
           commit(mutation.SET_CURRENCY, state.store.currency)
           commit(mutation.SET_TIMEZONE, state.store.timezone)
@@ -98,7 +98,7 @@ const mutations = {
     state.timezone = timezone
   },
   [mutation.SET_AVAILABLE_LANGUAGES](state, languages) {
-    state.avaialableLanguages = languages
+    state.availableLanguages = languages
   },
   [mutation.SET_LANGUAGE_DIRECTION](state, langDirection) {
     state.languageDirection = langDirection

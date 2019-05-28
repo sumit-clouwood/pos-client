@@ -16,15 +16,15 @@
     <li v-if="languages">
       <select
         v-model="vlocale"
-        @change="changeLanguage()"
+        @change="changeLanguage(vlocale)"
         class="language-button"
       >
         <option
           v-for="language in languages"
           :key="language._id"
-          :value="language.shortname"
+          :value="language.code"
         >
-          {{ language.language }}
+          {{ language.name }}
         </option>
       </select>
     </li>
@@ -92,9 +92,7 @@ export default {
     },
     ...mapState({
       languages: state =>
-        state.location.locationData
-          ? state.location.locationData.languages
-          : false,
+        state.location ? state.location.availableLanguages : false,
     }),
     ...mapState('location', ['language']),
     ...mapState('sync', ['online']),
@@ -106,11 +104,9 @@ export default {
     }),
   },
   methods: {
-    changeLanguage() {
-      const language = this.languages.find(
-        lang => lang.shortname === this.vlocale
-      )
-      this.$store.dispatch('location/changeLanguage', language)
+    changeLanguage(locale) {
+      // const language = this.languages.find(lang => lang.code === this.vlocale).code
+      this.$store.dispatch('location/changeLanguage', locale)
     },
     onlineOrders() {
       if (this.latestOnlineOrders == 0) {
