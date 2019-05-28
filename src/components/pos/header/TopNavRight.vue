@@ -13,14 +13,14 @@
         Online
       </h6>
     </li>
-    <li v-if="avaialableLanguages">
+    <li v-if="availableLanguages">
       <select
         v-model="vlocale"
         @change="changeLanguage(vlocale)"
         class="language-button"
       >
         <option
-          v-for="language in avaialableLanguages"
+          v-for="language in availableLanguages"
           :key="language._id"
           :value="language.code"
         >
@@ -90,7 +90,7 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
-    ...mapState('location', ['avaialableLanguages', 'language']),
+    ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('sync', ['online']),
     ...mapState({
       latestOnlineOrders: state =>

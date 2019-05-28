@@ -5,6 +5,7 @@ import * as mutation from './invoice/mutation-types'
 const state = {
   templates: false,
   rules: [],
+  printRuleId: '5ce27959ef76a0108d2a2827',
 }
 
 // getters
@@ -91,10 +92,10 @@ const getters = {
 
 // actions
 const actions = {
-  async fetchAll({ commit, rootState }) {
-    let orderType = 'walkin'
+  async fetchAll({ commit, state }) {
+    // let orderType = 'walkin'
 
-    switch (rootState.order.orderType) {
+    /*switch (rootState.order.orderType) {
       case 'Walk-in':
       case 'takeaway':
         orderType = 'walkin'
@@ -102,17 +103,13 @@ const actions = {
       default:
         orderType = rootState.order.orderType
         break
-    }
+    }*/
 
-    const params = [
-      rootState.location.location,
-      orderType,
-      rootState.location.locale,
-    ]
+    const params = [state.printRuleId]
 
     const [templates, rules] = await Promise.all([
+      // InvoiceService.fetchPrintRules(),
       InvoiceService.fetchTemplates(...params),
-      InvoiceService.fetchPrintRules(),
     ])
 
     commit(mutation.SET_TEMPLATES, templates.data)

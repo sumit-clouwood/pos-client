@@ -1,16 +1,16 @@
 import DataService from '@/services/DataService'
 
 export default {
-  fetchTemplates() {
+  fetchTemplates(printRuleId) {
     return DataService.get(
-      `/model/store_invoice_templates?ascending=1&byColumn=0&orderBy=name`
+      `/model/store_invoice_templates/id/${printRuleId}/edit`
     )
   },
 
   fetchPrintRules() {
     return DataService.getCacheable(
       // `/api/auth/get-invoice-print-rules/?location_id=${locationId}&order_type=${orderType}&language=${language}`
-      `/model/store_invoice_templates?page_id=store_invoice_templates_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=title_label`
+      `/model/store_invoice_templates?ascending=1&byColumn=0&orderBy=name`
     )
   },
 }
