@@ -1,7 +1,7 @@
 <template>
   <div class="wrappers-orders">
     <div class="orders-name">
-      <p @click="fetchOrder(orderData)" class="cursor-pointer">
+      <p @click="setHoldOrderCart(orderData)" class="cursor-pointer">
         {{ orderData.order_no }}
       </p>
     </div>
@@ -15,14 +15,20 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+// eslint-disable-next-line no-unused-vars
+/* global $ */
 export default {
   name: 'Items',
   props: {
     orderData: Object,
   },
   methods: {
-    ...mapActions('holdOrders', ['fetchOrder']),
+    setHoldOrderCart: function(orderData) {
+      this.$store.dispatch('holdOrders/fetchOrder', orderData)
+      $('.holding-order-panel').toggle()
+      $('.order-wrappers-panel').toggle()
+      $('ul.ullist-icons > li#hold-order-box').toggleClass('active')
+    },
   },
 }
 </script>

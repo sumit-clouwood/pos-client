@@ -17,6 +17,8 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
+import * as CONSTANTS from '@/constants'
+
 export default {
   name: 'PaymentMethods',
   computed: {
@@ -30,7 +32,7 @@ export default {
   },
   methods: {
     getToggle(method) {
-      if (method.name == 'Loyalty') {
+      if (method.name == CONSTANTS.LOYALTY) {
         return 'modal'
       }
       return ''
@@ -39,7 +41,7 @@ export default {
       return 'https://fakeimg.pl/46x46/?text=Third&font=lobster%22'
     },
     getTarget(method) {
-      if (method.name == 'Loyalty') {
+      if (method.name == CONSTANTS.LOYALTY) {
         if (this.selectedModal == '#manage-customer') {
           return '#search-loyalty-customer'
         } else {
@@ -55,5 +57,5 @@ export default {
 </script>
 <style lang="sass" scoped>
 img
-  height: "46px"
+  height: '46px'
 </style>

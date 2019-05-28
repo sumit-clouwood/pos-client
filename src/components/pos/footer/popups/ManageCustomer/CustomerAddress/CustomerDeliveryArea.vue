@@ -1,9 +1,9 @@
 <template>
-  <div v-if="addresses.length" class="add-to-order-wrapper">
+  <div v-if="addresses.length" class="add-to-order-wrapper col-md-12">
     <div
       v-for="(address, index) in addresses"
       :key="index"
-      class="order-location option-contain"
+      class="order-location option-contain col-md-5 col-sm-5"
       :class="{ active: activeIndex === index }"
       @click="setActiveCustomer(address, index)"
     >
@@ -75,7 +75,7 @@ export default {
   padding: 10px;
 }
 .option-contain {
-  width: 408px;
+  width: unset;
 }
 
 .cu-location-select {

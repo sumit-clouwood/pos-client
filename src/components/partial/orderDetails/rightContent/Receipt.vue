@@ -43,7 +43,7 @@
               <div v-for="(modifier, key) in itemModifiers" :key="key">
                 {{ modifier.name }}
               </div>
-            </div>  
+            </div>
           </td>
           <td class="base-price">{{ item.price }}</td>
           <td class="qty">{{ item.qty }}</td>
