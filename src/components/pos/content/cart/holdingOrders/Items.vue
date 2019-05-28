@@ -8,7 +8,7 @@
     <div class="aed-amt">
       <span>{{ orderData.currency }} {{ orderData.balance_due }}</span>
     </div>
-    <div class="dlt-btn">
+    <div class="dlt-btn" @click="dropHoldOrder(orderData)">
       <img src="img/pos/delete-icon.svg" alt="delete" />
     </div>
   </div>
@@ -28,6 +28,18 @@ export default {
       $('.holding-order-panel').toggle()
       $('.order-wrappers-panel').toggle()
       $('ul.ullist-icons > li#hold-order-box').toggleClass('active')
+    },
+
+    dropHoldOrder: function(order) {
+      let actionDetails = {
+        id: order._id,
+        action: 'delete',
+        model: 'orders',
+        data: '',
+      }
+      if (confirm('Are you sure you want to delete this order!')) {
+        this.$store.dispatch('customer/updateAction', actionDetails)
+      }
     },
   },
 }
