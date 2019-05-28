@@ -43,3 +43,6 @@ export const ORDER_STATUS_ON_A_WAY_TO_FINISH = 'on-a-way'
 export const ORDER_STATUS_FINISHED = 'finished'
 
 export const ORDER_SOURCE_POS = 'cashier_app'
+
+export const PERCENTAGE = 'percentage'
+export const VALUE = 'value'

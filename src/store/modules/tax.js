@@ -36,16 +36,7 @@ const actions = {
         if (rootState.surcharge.surchargeAmounts) {
           const surchargeTax = rootState.surcharge.surchargeAmounts.reduce(
             (totalTax, surcharge) => {
-              if (surcharge.taxable) {
-                return (
-                  totalTax +
-                  surcharge.tax.reduce((taxAmount, tax) => {
-                    return taxAmount + (surcharge.amount * tax.rate) / 100
-                  }, 0)
-                )
-              } else {
-                return totalTax
-              }
+              return totalTax + surcharge.tax
             },
             0
           )
