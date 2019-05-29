@@ -23,13 +23,13 @@
           v-for="referral in getReferrals"
           @click="
             selectedReferral({
-              referralName: referral.name,
+              referralName: referral.referral_name,
               referralId: referral._id,
             })
           "
           :referralType="referral.referral_type"
           :key="referral._id"
-          >{{ referral.name }}
+          >{{ referral.referral_name }}
         </a>
       </div>
       <div class="dropdown-menu" v-if="!getReferrals">
@@ -107,11 +107,7 @@ export default {
   },
   computed: {
     ...mapState({
-      getReferrals: state =>
-        typeof state.location.locationData != 'undefined' &&
-        state.location.locationData.referrals.length > 0
-          ? state.location.locationData.referrals
-          : false,
+      getReferrals: state => state.location.referrals,
     }),
   },
   methods: {

@@ -14,6 +14,7 @@ const state = {
   translations: null,
   location: null,
   setModal: '#manage-customer',
+  referrals: false,
 }
 
 // getters
@@ -26,7 +27,7 @@ const getters = {
 
 // actions
 const actions = {
-  fetch({ state, commit }) {
+  fetch({ state, commit, dispatch }) {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData(state.locale)
         .then(response => {
@@ -43,7 +44,7 @@ const actions = {
           commit('modules/SET_ENABLED_MODULES', state.brand.enabled_modules, {
             root: true,
           })
-
+          dispatch('referrals')
           let locale = state.locale
           if (localStorage.getItem('locale')) {
             locale = localStorage.getItem('locale')
@@ -63,7 +64,11 @@ const actions = {
         })
     })
   },
-
+  referrals({ commit }) {
+    LocationService.getReferrals().then(response => {
+      commit(mutation.SET_REFERRALS, response.data.data)
+    })
+  },
   changeLanguage({ commit }, locale) {
     commit(mutation.SET_LOCALE, locale)
     localStorage.setItem('locale', locale)
@@ -105,6 +110,9 @@ const mutations = {
   },
   [mutation.SET_TRASLATIONS](state, translations) {
     state.translations = translations
+  },
+  [mutation.SET_REFERRALS](state, referrals) {
+    state.referrals = referrals
   },
 }
 
