@@ -23,6 +23,12 @@ const getters = {
     if (!price) price = 0.0
     return state.currency + ' ' + Num.round(price)
   },
+  _trans: state => str => {
+    if (state.translations[str]) {
+      return state.translations[str]
+    }
+    return str
+  },
 }
 
 // actions
@@ -69,9 +75,17 @@ const actions = {
       commit(mutation.SET_REFERRALS, response.data.data)
     })
   },
-  changeLanguage({ commit }, locale) {
+  changeLanguage({ commit, dispatch }, locale) {
     commit(mutation.SET_LOCALE, locale)
     localStorage.setItem('locale', locale)
+    dispatch('fetch')
+
+    let direction = state.languageDirection
+    document.body.style.direction = direction
+    // Vue.prototype.$vuetify.rtl = direction == 'ltr' ? false : true
+    document.body.classList.remove('body-ltr')
+    document.body.classList.remove('body-rtl')
+    document.body.classList.add('body-' + direction)
   },
 
   updateModalSelectionDelivery({ commit }, modalSelection) {
