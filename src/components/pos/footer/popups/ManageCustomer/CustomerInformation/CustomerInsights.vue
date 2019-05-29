@@ -88,12 +88,12 @@
             </tbody>
           </table>
         </div>
-        <span
+        <!-- <span
           data-toggle="modal"
           class="text-success cursor-pointer"
           data-target="#show-more-notes"
           >Show more</span
-        >
+        >-->
       </div>
       <div>
         <button

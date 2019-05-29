@@ -12,7 +12,11 @@
               <div class="cu-loyality-points">
                 <LoyaltyPoint />
                 <div class="btn-right-neworder">
-                  <button id="place-new-order" data-dismiss="modal">
+                  <button
+                    id="place-new-order"
+                    data-dismiss="modal"
+                    @click="updateModalSelectionDelivery('#order-confirmation')"
+                  >
                     Place New Order
                   </button>
                 </div>
@@ -86,6 +90,7 @@ export default {
   },
   methods: {
     ...mapActions('customer', ['setPastOrderPageNumber']),
+    ...mapActions('location', ['updateModalSelectionDelivery']),
   },
 }
 </script>

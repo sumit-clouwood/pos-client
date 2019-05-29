@@ -44,12 +44,4 @@ export default {
 ul.ullist-category {
   width: 500px !important;
 }
-.shorten_name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 85%;
-  display: inline-block;
-  cursor: default;
-}
 </style>
