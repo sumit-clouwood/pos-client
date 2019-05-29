@@ -11,7 +11,7 @@
         <div class="POSItemOptions_price">
           <label class="POSItemOptions_label">Price</label>
           <div class="POSItemOptions_money">
-            {{ formatPrice(item.item_price) }}
+            {{ formatPrice(item.value) }}
           </div>
         </div>
         <Quantity />
