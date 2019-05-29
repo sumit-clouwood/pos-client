@@ -1,5 +1,6 @@
 import * as mutation from './order/mutation-types'
 import OrderService from '../../services/data/OrderService'
+import * as CONST from '@/constants'
 
 const DISCOUNT_ORDER_ERROR_TOTAL =
   "Discount can't be greater than total amount of order."
@@ -302,16 +303,20 @@ const actions = {
           const totalTax = rootState.tax.itemsTax + rootState.tax.surchargeTax
           const totalSurcharge = rootGetters['surcharge/surcharge']
 
-          if (orderDiscount.discount.discount_type == 'value') {
-            if (orderDiscount.discount.rate > subtotal + totalTax) {
+          if (orderDiscount.discount.type === CONST.VALUE) {
+            if (orderDiscount.discount.value > subtotal + totalTax) {
               dispatch('discount/clearOrderDiscount', null, { root: true })
               reject(DISCOUNT_ORDER_ERROR_TOTAL)
             } else {
-              orderTotalDiscount = orderDiscount.discount.rate
-              const percentDiscountOnSubTotal =
-                (orderTotalDiscount * 100) / subtotal
+              orderTotalDiscount = orderDiscount.discount.value
 
-              taxTotalDiscount = (totalTax * percentDiscountOnSubTotal) / 100
+              const percentDiscountOnOrderTotalIncludingSurcharge =
+                (orderTotalDiscount * 100) / (subtotal + totalSurcharge)
+
+              taxTotalDiscount =
+                (totalTax * percentDiscountOnOrderTotalIncludingSurcharge) / 100
+              //when calculating percent discount on subtotal we include surcharge as well,
+              //so don't need to calculate discount on surcharge again
               surchargeTotalDiscount = 0
               resolve({
                 orderDiscount: orderTotalDiscount,
@@ -331,17 +336,18 @@ const actions = {
             })
           }
         } else {
+          //without surcharge
           //apply offtotal discount, don't calculate discount on surcharge
           const subtotal = getters.subTotal
           //we are not including surcharge tax in total tax for discount
           const totalTax = rootState.tax.itemsTax
           //const totalSurcharge = rootGetters['surcharge/surcharge']
-          if (orderDiscount.discount.discount_type == 'value') {
-            if (orderDiscount.discount.rate > subtotal + totalTax) {
+          if (orderDiscount.discount.type === CONST.VALUE) {
+            if (orderDiscount.discount.value > subtotal + totalTax) {
               dispatch('discount/clearOrderDiscount', null, { root: true })
               reject(DISCOUNT_ORDER_ERROR_TOTAL)
             } else {
-              orderTotalDiscount = orderDiscount.discount.rate
+              orderTotalDiscount = orderDiscount.discount.value
               const percentDiscountOnSubTotal =
                 (orderTotalDiscount * 100) / subtotal
               taxTotalDiscount = (totalTax * percentDiscountOnSubTotal) / 100

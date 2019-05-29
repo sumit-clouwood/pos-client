@@ -204,10 +204,6 @@ $(document).ready(function() {
     $(this).addClass('active')
   })
 
-  $('#select-discount .option-contain').click(function() {
-    $('#select-discount .option-contain').removeClass('active')
-    $(this).addClass('active')
-  })
   $('.order-location.option-contain, ul#exampleAccordion-dine > li').click(
     function() {
       $(

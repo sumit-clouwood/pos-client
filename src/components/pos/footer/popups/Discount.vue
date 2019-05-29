@@ -27,9 +27,9 @@
             >
               <p>
                 {{
-                  discount.discount_type == 'percentage'
+                  discount.type == 'percentage'
                     ? discount.rate + '%'
-                    : formatPrice(discount.rate)
+                    : formatPrice(discount.value)
                 }}
               </p>
               <span class="more">{{ discount.name }}</span>
