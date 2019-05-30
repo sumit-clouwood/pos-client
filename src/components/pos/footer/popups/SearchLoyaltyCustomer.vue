@@ -6,7 +6,7 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Loyalty</h4>
+          <h4 class="customer-title">{{ _t('Loyalty') }}</h4>
         </div>
         <form class="modal-body add-note-wrap" autocomplete="off">
           <div class="add-note-area">
@@ -14,7 +14,7 @@
             <input
               autocomplete="off"
               type="text"
-              placeholder="Search..."
+              :placeholder="_t('Search')"
               class="inputSearch"
               id="getCustomerList"
               v-model="searchTerm"
