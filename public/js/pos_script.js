@@ -182,7 +182,7 @@ $(document).ready(function() {
           //$('.payment-method-block').hide(800)
         }
       })
-    }, 100)
+    }, 300)
   })
 
   $('.referal-code-customer').click(function() {

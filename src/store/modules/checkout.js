@@ -113,20 +113,21 @@ const actions = {
         order.surcharge_tax = rootState.tax.surchargeTax
 
         //adding surcharge data
-        order.order_surcharges = rootState.surcharge.surcharges.map(
-          surcharge => {
-            const surchargeAmount = rootState.surcharge.surchargeAmounts.find(
-              surchargeAmount => surchargeAmount.id == surcharge._id
-            ).amount
+
+        order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
+          appliedSurcharge => {
+            const surcharge = rootState.surcharge.surcharges.find(
+              surcharge => surcharge._id === appliedSurcharge.id
+            )
             return {
               entity_id: surcharge._id,
               name: surcharge.name,
               type: surcharge.type,
-              price: surchargeAmount,
-              rate: surchargeAmount,
-              tax: surchargeAmount,
-              tax_rate: surchargeAmount,
-              taxable: surchargeAmount,
+              price: appliedSurcharge.amount,
+              rate: surcharge.rate,
+              tax: appliedSurcharge.tax,
+              tax_rate: surcharge.tax_sum,
+              taxable: surcharge.tax_sum ? true : false,
             }
           }
         )
@@ -213,12 +214,12 @@ const actions = {
         //adding payment breakdown
         order.order_payments = rootState.checkoutForm.payments.map(payment => {
           let paymentPart = {
+            entity_id: payment.method._id,
             name: payment.method.name,
             collected: payment.amount,
-            param1: payment.coce,
+            param1: payment.code,
             param2: payment.amount,
-            param3: payment.coce,
-            entity_id: payment.id,
+            param3: payment.code,
           }
 
           //Youvraj, have a check here
