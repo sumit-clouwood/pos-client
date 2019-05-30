@@ -2,20 +2,20 @@
   <div>
     <div class="wrappers-new-orders">
       <div class="order">
-        <h5>New Orders</h5>
+        <h5>{{ _t('New Orders') }}</h5>
         <p>
           {{ todayDateFull }}
         </p>
       </div>
       <div class="account-name" v-if="selectedCustomer">
         <p v-if="selectedCustomer.email != ''">
-          Email : {{ selectedCustomer.email }}
+          {{ _t('Email') }} : {{ selectedCustomer.email }}
         </p>
         <p v-if="selectedCustomer.name != '' && selectedCustomer.email == ''">
-          Name : {{ selectedCustomer.name }}
+          {{ _t('Name') }} : {{ selectedCustomer.name }}
         </p>
         <p v-if="selectedCustomer.phone_number">
-          Phone : {{ selectedCustomer.phone_number }}
+          {{ _t('Phone') }} : {{ selectedCustomer.phone_number }}
         </p>
       </div>
     </div>
@@ -34,6 +34,7 @@ export default {
   props: {},
   computed: {
     ...mapGetters('sync', ['todayDateFull']),
+    ...mapGetters('location', ['_t']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
   },
 }

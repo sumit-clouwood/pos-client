@@ -1,7 +1,7 @@
 <template>
   <div class="navbar-nav-sidebar">
     <div class="add-screen-walkin">
-      <p class="walk-in text-capitalize">{{ orderType }}</p>
+      <p class="walk-in">{{ _t(orderType) }}</p>
       <p class="walk-in-place text-capitalize">{{ locationName.name }}</p>
     </div>
     <div class="time-zone-btn">
@@ -15,7 +15,7 @@
 
 <script>
 /* eslint-disable no-console */
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import moment from 'moment-timezone'
 
 export default {
@@ -32,6 +32,7 @@ export default {
       locationName: state => state.location.store,
     }),
     ...mapState('order', ['orderType']),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     ...mapActions('location', ['setTimeZone']),

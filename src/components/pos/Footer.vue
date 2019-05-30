@@ -5,7 +5,7 @@
         <ul class="ullist-icons">
           <li data-toggle="modal" data-target="#manage-customer">
             <a href="#">
-              <img src="img/pos/customer.svg" alt="customer" />
+              <img src="img/pos/customer.svg" :alt="_t('Customer')" />
               <span>{{ _t('Customer') }}</span>
             </a>
           </li>
@@ -25,7 +25,11 @@
             :class="{ loyaltyApplied: loyaltyCard }"
           >
             <a href="#">
-              <img src="img/pos/tip.png" alt="Loyalty" v-if="!loyaltyCard" />
+              <img
+                src="img/pos/tip.png"
+                :alt="_t('Loyalty')"
+                v-if="!loyaltyCard"
+              />
               <span v-if="!loyaltyCard">{{ _t('Loyalty') }}</span>
               <span v-if="loyaltyCard">
                 <span
@@ -75,7 +79,7 @@
           </li>
           <li data-toggle="modal" data-target="#add-note">
             <a href="#"
-              ><img src="img/pos/notes.svg" alt="Note" /><span>{{
+              ><img src="img/pos/notes.svg" :alt="_t('Add Note')" /><span>{{
                 _t('Add Note')
               }}</span></a
             >
@@ -97,7 +101,7 @@
           </li>
           <li id="pay-now" class="pay-now" v-show="orderType !== 'delivery'">
             <a href="#"
-              ><img src="img/pos/payment.svg" alt="payment" /><span
+              ><img src="img/pos/payment.svg" :alt="_t('Pay Now')" /><span
                 class="pay-btn"
                 >{{ _t('Pay Now') }}</span
               ></a

@@ -50,8 +50,10 @@ const state = {
 
 // getters
 const getters = {
+  // todayDateFull: (state, rootGetters) =>
   todayDateFull: state =>
-    //Tuesday, 13 Oct 2017
+    //   Tuesday, 13 Oct 2017
+    // rootGetters['location/_t'](state.weekDaysFull[state.today.getDay()]) +
     state.weekDaysFull[state.today.getDay()] +
     ', ' +
     state.today.getDate() +

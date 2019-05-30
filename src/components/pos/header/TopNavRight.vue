@@ -10,7 +10,7 @@
         <span
           ><i class="fa fa-fw fa-circle" :class="{ online: online }"></i
         ></span>
-        Online
+        {{ _t('Online') }}
       </h6>
     </li>
     <li v-if="availableLanguages">
@@ -29,15 +29,15 @@
       </select>
     </li>
     <li class="nav-item" data-toggle="modal" data-target="#alert">
-      <a class="btn-part" href="#">3 part 27</a>
+      <a class="btn-part" href="#">{{ _t('3 part 27') }}</a>
     </li>
     <li
       class="nav-item online-data"
       data-toggle="modal"
       data-target="#online-order"
     >
-      <a class="btn-part" href="#" @click="fetchCustomerAddress"
-        >online
+      <a class="btn-part" href="#" @click="fetchCustomerAddress">
+        {{ _t('Online') }}
         <span class="online-digit" v-if="latestOnlineOrders > 0">
           {{ latestOnlineOrders }}
         </span>
@@ -64,15 +64,19 @@
     </li>
     <li>
       <ul class="setting-dropdown animated zoomIn" style="display: none;">
-        <li><a href="#">Printers</a></li>
-        <li><a href="#">Logout</a></li>
+        <li>
+          <a href="#">{{ _t('Printers') }}</a>
+        </li>
+        <li>
+          <a href="#">{{ _t('Logout') }}</a>
+        </li>
       </ul>
     </li>
   </ul>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'TopNavRight',
   props: {},
@@ -98,6 +102,7 @@ export default {
       username: state =>
         state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     changeLanguage(locale) {

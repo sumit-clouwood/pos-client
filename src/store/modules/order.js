@@ -552,7 +552,6 @@ const actions = {
   updateOrderType({ commit }, orderType) {
     commit(mutation.ORDER_TYPE, orderType)
   },
-
   addHoldOrder({ rootState, dispatch }, item_ids) {
     dispatch('reset')
     const allItems = rootState.category.items
@@ -672,7 +671,7 @@ const mutations = {
     state.orderNote = orderNote
   },
   [mutation.ORDER_TYPE](state, orderType) {
-    state.orderType = orderType
+    state.orderType = orderType.charAt(0).toUpperCase() + orderType.slice(1)
   },
   [mutation.SET_REFERRAL](state, referral) {
     state.referral = referral

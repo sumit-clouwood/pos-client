@@ -5,7 +5,7 @@
       <input
         type="text"
         class="form-control"
-        placeholder="Search or scan for items"
+        :placeholder="_t('Start typing to get search results')"
         v-model="searchItems"
         @keyup="collectSearchItems(searchItems)"
       />
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Search',
   props: {},
@@ -22,6 +22,9 @@ export default {
     return {
       searchItems: '',
     }
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     ...mapActions('category', ['collectSearchItems']),
