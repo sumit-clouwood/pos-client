@@ -6,7 +6,7 @@
           <li data-toggle="modal" data-target="#manage-customer">
             <a href="#">
               <img src="img/pos/customer.svg" alt="customer" />
-              <span>{{ _trans('Customer') }}</span>
+              <span>{{ _t('Customer') }}</span>
             </a>
           </li>
 
@@ -16,7 +16,7 @@
               ><img class="hold-orders-show" src="img/pos/hold.svg" /><img
                 class="hold-ordes"
                 src="img/pos/hold-order.svg"
-              /><span> {{ _trans('Hold Orders') }}</span></a
+              /><span> {{ _t('Hold Orders') }}</span></a
             >
           </li>
           <li
@@ -26,7 +26,7 @@
           >
             <a href="#">
               <img src="img/pos/tip.png" alt="Loyalty" v-if="!loyaltyCard" />
-              <span v-if="!loyaltyCard">Loyalty</span>
+              <span v-if="!loyaltyCard">{{ _t('Loyalty') }}</span>
               <span v-if="loyaltyCard">
                 <span
                   >{{
@@ -34,7 +34,7 @@
                       ? 0
                       : formatPrice(loyaltyCard.balance)
                   }}
-                  {{ _trans('Loyalty') }}</span
+                  {{ _t('Loyalty') }}</span
                 >
                 <br />
                 <span>
@@ -50,7 +50,7 @@
           >
             <a href="#" @click="setOrderType('delivery')"
               ><img src="img/pos/delivery.svg" /><span>
-                {{ _trans('Send to Delivery') }}
+                {{ _t('Send to Delivery') }}
               </span></a
             >
           </li>
@@ -62,21 +62,21 @@
           >
             <a href="#" @click.prevent="validateOrderDiscounts()"
               ><img src="img/pos/discount.svg" /><span>{{
-                _trans('Select Discount')
+                _t('Select Discount')
               }}</span></a
             >
           </li>
           <li data-toggle="modal" data-target="#dining-option">
             <a href="#"
               ><img src="img/pos/dining.svg" /><span>{{
-                _trans('Dinning Options')
+                _t('Dinning Options')
               }}</span></a
             >
           </li>
           <li data-toggle="modal" data-target="#add-note">
             <a href="#"
               ><img src="img/pos/notes.svg" alt="Note" /><span>{{
-                _trans('Add Note')
+                _t('Add Note')
               }}</span></a
             >
           </li>
@@ -91,7 +91,7 @@
           >
             <a href="#" @click="setOrderType('delivery')"
               ><img src="img/pos/delivery.svg" class="pay-btn" /><span>{{
-                _trans('Send to Delivery')
+                _t('Send to Delivery')
               }}</span></a
             >
           </li>
@@ -99,7 +99,7 @@
             <a href="#"
               ><img src="img/pos/payment.svg" alt="payment" /><span
                 class="pay-btn"
-                >{{ _trans('Pay Now') }}</span
+                >{{ _t('Pay Now') }}</span
               ></a
             >
           </li>
@@ -206,7 +206,7 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapState('order', ['orderType']),
     ...mapState('sync', ['online']),
-    ...mapGetters('location', ['formatPrice', '_trans']),
+    ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
       selectedModal: state =>
         state.location.setModal == '#loyalty-payment'

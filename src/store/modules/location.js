@@ -23,10 +23,12 @@ const getters = {
     if (!price) price = 0.0
     return state.currency + ' ' + Num.round(price)
   },
-  _trans: state => str => {
+  _t: state => str => {
     if (state.translations[str]) {
+      console.log(state.translations[str] + 'trans')
       return state.translations[str]
     }
+    console.log(state.translations[str] + ' no translation ' + str)
     return str
   },
 }
