@@ -31,3 +31,32 @@
     }
   }
 }
+
+@mixin dir($direction) {
+  @if $direction == ltr {
+    body.body-ltr &
+    {
+      @content;
+    }
+  }
+  @else {
+    body.body-rtl &{
+      @content;
+    }
+  }
+}
+
+body.body-rtl
+{
+  .show-only-for-ltr
+  {
+    display:none;
+  }
+}
+body.body-ltr
+{
+  .show-only-for-rtl
+  {
+    display:none;
+  }
+}

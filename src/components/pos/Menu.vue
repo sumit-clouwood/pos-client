@@ -32,7 +32,9 @@
           @click.prevent="browse(item)"
         >
           <img :src="item.category_image" />
-          <span class="nav-link-text cat-name">{{ item.name }}</span>
+          <span class="nav-link-text cat-name shorten_name">
+            {{ item.name }}
+          </span>
         </a>
       </li>
     </ul>

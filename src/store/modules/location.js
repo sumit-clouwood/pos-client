@@ -14,6 +14,7 @@ const state = {
   translations: null,
   location: null,
   setModal: '#manage-customer',
+  referrals: false,
 }
 
 // getters
@@ -22,11 +23,19 @@ const getters = {
     if (!price) price = 0.0
     return state.currency + ' ' + Num.round(price)
   },
+  _t: state => str => {
+    if (state.translations[str]) {
+      console.log(state.translations[str] + 'trans')
+      return state.translations[str]
+    }
+    console.log(state.translations[str] + ' no translation ' + str)
+    return str
+  },
 }
 
 // actions
 const actions = {
-  fetch({ state, commit }) {
+  fetch({ state, commit, dispatch }) {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData(state.locale)
         .then(response => {
@@ -43,7 +52,7 @@ const actions = {
           commit('modules/SET_ENABLED_MODULES', state.brand.enabled_modules, {
             root: true,
           })
-
+          dispatch('referrals')
           let locale = state.locale
           if (localStorage.getItem('locale')) {
             locale = localStorage.getItem('locale')
@@ -63,10 +72,22 @@ const actions = {
         })
     })
   },
-
-  changeLanguage({ commit }, locale) {
+  referrals({ commit }) {
+    LocationService.getReferrals().then(response => {
+      commit(mutation.SET_REFERRALS, response.data.data)
+    })
+  },
+  changeLanguage({ commit, dispatch }, locale) {
     commit(mutation.SET_LOCALE, locale)
     localStorage.setItem('locale', locale)
+    dispatch('fetch')
+
+    let direction = state.languageDirection
+    document.body.style.direction = direction
+    // Vue.prototype.$vuetify.rtl = direction == 'ltr' ? false : true
+    document.body.classList.remove('body-ltr')
+    document.body.classList.remove('body-rtl')
+    document.body.classList.add('body-' + direction)
   },
 
   updateModalSelectionDelivery({ commit }, modalSelection) {
@@ -105,6 +126,9 @@ const mutations = {
   },
   [mutation.SET_TRASLATIONS](state, translations) {
     state.translations = translations
+  },
+  [mutation.SET_REFERRALS](state, referrals) {
+    state.referrals = referrals
   },
 }
 

@@ -6,7 +6,7 @@
           <li data-toggle="modal" data-target="#manage-customer">
             <a href="#">
               <img src="img/pos/customer.svg" alt="customer" />
-              <span>Customer</span>
+              <span>{{ _t('Customer') }}</span>
             </a>
           </li>
 
@@ -16,7 +16,7 @@
               ><img class="hold-orders-show" src="img/pos/hold.svg" /><img
                 class="hold-ordes"
                 src="img/pos/hold-order.svg"
-              /><span>Hold Orders</span></a
+              /><span> {{ _t('Hold Orders') }}</span></a
             >
           </li>
           <li
@@ -26,7 +26,7 @@
           >
             <a href="#">
               <img src="img/pos/tip.png" alt="Loyalty" v-if="!loyaltyCard" />
-              <span v-if="!loyaltyCard">Loyalty</span>
+              <span v-if="!loyaltyCard">{{ _t('Loyalty') }}</span>
               <span v-if="loyaltyCard">
                 <span
                   >{{
@@ -34,7 +34,7 @@
                       ? 0
                       : formatPrice(loyaltyCard.balance)
                   }}
-                  Loyalty</span
+                  {{ _t('Loyalty') }}</span
                 >
                 <br />
                 <span>
@@ -49,9 +49,9 @@
             data-dismiss="modal"
           >
             <a href="#" @click="setOrderType('delivery')"
-              ><img src="img/pos/delivery.svg" /><span
-                >Send to Delivery</span
-              ></a
+              ><img src="img/pos/delivery.svg" /><span>
+                {{ _t('Send to Delivery') }}
+              </span></a
             >
           </li>
           <li
@@ -61,19 +61,23 @@
             id="discount-footer"
           >
             <a href="#" @click.prevent="validateOrderDiscounts()"
-              ><img src="img/pos/discount.svg" /><span>Select Discount</span></a
+              ><img src="img/pos/discount.svg" /><span>{{
+                _t('Select Discount')
+              }}</span></a
             >
           </li>
           <li data-toggle="modal" data-target="#dining-option">
             <a href="#"
-              ><img src="img/pos/dining.svg" /><span>Dinning Options</span></a
+              ><img src="img/pos/dining.svg" /><span>{{
+                _t('Dinning Options')
+              }}</span></a
             >
           </li>
           <li data-toggle="modal" data-target="#add-note">
             <a href="#"
-              ><img src="img/pos/notes.svg" alt="Note" /><span
-                >Add Note</span
-              ></a
+              ><img src="img/pos/notes.svg" alt="Note" /><span>{{
+                _t('Add Note')
+              }}</span></a
             >
           </li>
         </ul>
@@ -86,16 +90,16 @@
             class="pay-now"
           >
             <a href="#" @click="setOrderType('delivery')"
-              ><img src="img/pos/delivery.svg" class="pay-btn" /><span
-                >Send to Delivery</span
-              ></a
+              ><img src="img/pos/delivery.svg" class="pay-btn" /><span>{{
+                _t('Send to Delivery')
+              }}</span></a
             >
           </li>
           <li id="pay-now" class="pay-now" v-show="orderType !== 'delivery'">
             <a href="#"
               ><img src="img/pos/payment.svg" alt="payment" /><span
                 class="pay-btn"
-                >Pay Now</span
+                >{{ _t('Pay Now') }}</span
               ></a
             >
           </li>
@@ -202,7 +206,7 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapState('order', ['orderType']),
     ...mapState('sync', ['online']),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
       selectedModal: state =>
         state.location.setModal == '#loyalty-payment'

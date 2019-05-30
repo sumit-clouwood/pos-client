@@ -6492,7 +6492,16 @@ ul#exampleAccordion > li a span.nav-link-text {
 @media only screen and (min-width: 1600px) {
   .vegetable-pizza-block .vegetable-pizza .vegetable img {
     width: 80px;
+    height: 78px;
   }
+}
+.shorten_name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 85%;
+  display: inline-block;
+  cursor: default;
 }
 div#payment-method .slick-slide > div > div > label {
   display: block;
