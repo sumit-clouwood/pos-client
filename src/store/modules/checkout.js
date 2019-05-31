@@ -72,6 +72,7 @@ const actions = {
             order_mode: 'online',
             real_created_datetime: newDate.getDate() + ' ' + newDate.getTime(),
             // order_mode: 'online',
+            //remove the modifiers prices from subtotal
             sub_total: rootGetters['order/subTotal'],
             total_discount: rootGetters['discount/orderDiscountWithoutTax'],
             total_paid: rootGetters['order/subTotal'],
@@ -162,6 +163,16 @@ const actions = {
             qty: item.quantity,
           }
 
+          //reduce modifier prices and taxes from item before sending it to checkout
+          const modifiers = rootGetters['tax/itemModifiersTaxData'](item._id)
+
+          orderItem.price -= modifiers.reduce((total, modifier) => {
+            return total + modifier.price
+          }, 0)
+          orderItem.tax -= modifiers.reduce((total, modifier) => {
+            return total + modifier.tax
+          }, 0)
+
           if (item.discount) {
             let itemDiscount = item.discount
             itemDiscount.itemId = item._id
@@ -202,30 +213,29 @@ const actions = {
 
         rootState.order.items.forEach(item => {
           if (item.modifiers.length) {
-            //get all modifiers by modifier ids attached to item
             item.modifiers.forEach(modifierId => {
-              rootState.modifier.itemModifiers.forEach(itemModifier => {
-                itemModifier.modifiers.forEach(itemModifierItem => {
-                  itemModifierItem.get_modifier_sub_groups.forEach(
-                    submodifier => {
-                      submodifier.get_modifier_item_list.forEach(submodItem => {
-                        if (submodItem._id == modifierId) {
-                          modifiers.push({
-                            entity_id: submodItem._id,
-                            for_item: item._id,
-                            price: submodItem.price,
-                            tax: submodItem.tax,
-                            name: submodItem.name,
-                            qty: 1,
-                            type: submodItem.subgroup_type,
-                          })
-                        }
-                      })
-                    }
-                  )
+              const subgroups = rootGetters['modifier/itemModifiers'](item._id)
+              subgroups.forEach(subgroup => {
+                subgroup.modifiers.forEach(modifier => {
+                  if (modifier._id === modifierId) {
+                    const modfierTaxData = rootGetters['tax/modifierTaxData']({
+                      itemId: item._id,
+                      modifierId: modifierId,
+                    })
+                    modifiers.push({
+                      entity_id: modifierId,
+                      for_item: item._id,
+                      price: modfierTaxData.price,
+                      tax: modfierTaxData.tax,
+                      name: modifier.name,
+                      qty: item.quantity,
+                      type: subgroup.item_type,
+                    })
+                  }
                 })
               })
             })
+            //get all modifiers by modifier ids attached to item
           }
         })
         order.item_modifiers = modifiers

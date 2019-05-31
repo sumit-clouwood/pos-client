@@ -3,6 +3,7 @@ import * as mutation from './tax/mutation-types'
 const state = {
   itemsTax: 0,
   itemsTaxData: [],
+  modifiersTaxData: [],
   surchargeTax: 0,
 }
 
@@ -10,6 +11,15 @@ const state = {
 const getters = {
   totalTax: (state, getters, rootState) =>
     state.itemsTax + state.surchargeTax - rootState.discount.taxDiscountAmount,
+  modifierTaxData: state => ({ modifierId, itemId }) => {
+    return state.modifiersTaxData.find(
+      modifier =>
+        modifier.itemId === itemId && modifier.modifierId === modifierId
+    )
+  },
+  itemModifiersTaxData: state => itemId => {
+    return state.modifiersTaxData.filter(modifier => modifier.itemId === itemId)
+  },
 }
 
 // actions
@@ -55,6 +65,10 @@ const actions = {
   reset({ commit }) {
     commit(mutation.RESET)
   },
+
+  setModifierTaxData({ commit }, modifiersTaxData) {
+    commit(mutation.SET_MODIFIERS_TAX_DATA, modifiersTaxData)
+  },
 }
 
 // mutations
@@ -67,6 +81,9 @@ const mutations = {
   },
   [mutation.SET_SURCHARGE_TAX](state, tax) {
     state.surchargeTax = tax
+  },
+  [mutation.SET_MODIFIERS_TAX_DATA](state, modifiersTaxData) {
+    state.modifiersTaxData = modifiersTaxData
   },
   [mutation.RESET](state) {
     state.itemsTax = 0
