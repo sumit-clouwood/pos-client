@@ -9,7 +9,7 @@ const state = {
 // getters
 const getters = {
   totalTax: (state, getters, rootState) =>
-    state.itemsTax + state.surchargeTax - rootState.discount.TaxDiscountAmount,
+    state.itemsTax + state.surchargeTax - rootState.discount.taxDiscountAmount,
 }
 
 // actions
@@ -22,8 +22,11 @@ const actions = {
           //calculate tax here
           //item.price is now price before tax and discount applied, so need to recalculate the tax
           itemTaxData.push({
+            quantity: item.quantity,
             itemId: item._id,
             tax: item.grossPrice - item.netPrice,
+            undiscountedTax:
+              item.undiscountedGrossPrice - item.undiscountedNetPrice,
           })
 
           return totalTax + (item.grossPrice - item.netPrice) * item.quantity

@@ -42,7 +42,7 @@ const getters = {
 
   subTotalUndiscounted: () => {
     return state.items.reduce((total, item) => {
-      return total + item.undiscountedPrice * item.quantity
+      return total + item.undiscountedNetPrice * item.quantity
     }, 0)
   },
 
@@ -435,6 +435,7 @@ const actions = {
               //divide discount on quantity to get discount applied per line item
               const discountPerItem = discount.discount.value / item.quantity
 
+              //Decided to apply discount on after tax, that means when sending discount info we should send item discount and tax discount separately
               item.grossPrice = item.undiscountedGrossPrice - discountPerItem
 
               //calcualte ratio of discount applied and set same ratio for net price
@@ -444,7 +445,7 @@ const actions = {
                 (item.undiscountedNetPrice * percentDiscountAppliedOnGross) /
                 100
               item.netPrice = item.undiscountedNetPrice - netPriceDiscount
-              itemDiscountData.discount = discount.discount.value
+              itemDiscountData.discount = netPriceDiscount
             }
           } else {
             //percentage based discount, use discount.rate here, not discount.value
