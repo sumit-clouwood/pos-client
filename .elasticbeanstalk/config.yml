@@ -1,0 +1,9 @@
+branch-defaults:
+  master:
+    environment: dm-pos-int
+global:
+  application_name: dm-pos
+  default_ec2_keyname: dm-pos-int
+  default_platform: 64bit Amazon Linux 2018.03 v2.13.0 running Multi-container Docker 18.06.1-ce (Generic)
+  default_region: ap-south-1
+  sc: git
