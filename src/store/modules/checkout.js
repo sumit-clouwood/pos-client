@@ -72,10 +72,11 @@ const actions = {
             order_mode: 'online',
             real_created_datetime: newDate.getDate() + ' ' + newDate.getTime(),
             // order_mode: 'online',
+            //remove the modifiers prices from subtotal
             sub_total: rootGetters['order/subTotal'],
             total_discount: rootGetters['discount/orderDiscountWithoutTax'],
             total_paid: rootGetters['order/subTotal'],
-            balance_due: rootGetters['order/orderTotal'],
+
             bill_printed: true,
             amount_changed: state.changedAmount,
 
@@ -113,20 +114,21 @@ const actions = {
         order.surcharge_tax = rootState.tax.surchargeTax
 
         //adding surcharge data
-        order.order_surcharges = rootState.surcharge.surcharges.map(
-          surcharge => {
-            const surchargeAmount = rootState.surcharge.surchargeAmounts.find(
-              surchargeAmount => surchargeAmount.id == surcharge._id
-            ).amount
+
+        order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
+          appliedSurcharge => {
+            const surcharge = rootState.surcharge.surcharges.find(
+              surcharge => surcharge._id === appliedSurcharge.id
+            )
             return {
               entity_id: surcharge._id,
               name: surcharge.name,
               type: surcharge.type,
-              price: surchargeAmount,
-              rate: surchargeAmount,
-              tax: surchargeAmount,
-              tax_rate: surchargeAmount,
-              taxable: surchargeAmount,
+              price: appliedSurcharge.amount,
+              rate: surcharge.rate,
+              tax: appliedSurcharge.tax,
+              tax_rate: surcharge.tax_sum,
+              taxable: surcharge.tax_sum ? true : false,
             }
           }
         )
@@ -144,10 +146,9 @@ const actions = {
           order.future_order_date = rootState.order.futureOrder
         }
 
-        //adding final tax
-        order.total_tax = rootState.tax.surchargeTax + rootState.tax.itemsTax
-
         //adding item data
+        let item_discounts = []
+        //let itemDiscountedTax = 0
         order.items = rootState.order.items.map(item => {
           const itemTax = rootState.tax.itemsTaxData.find(
             taxData => taxData.itemId == item._id
@@ -157,68 +158,136 @@ const actions = {
             name: item.name,
             entity_id: item._id,
             no: 0,
-            tax: itemTax ? itemTax.tax : 0,
-            price: parseFloat(item.netPrice),
+            tax: itemTax ? itemTax.undiscountedTax : 0,
+            price: parseFloat(item.undiscountedNetPrice),
             qty: item.quantity,
           }
 
+          //reduce modifier prices and taxes from item before sending it to checkout
+          const modifiers = rootGetters['tax/itemModifiersTaxData'](item._id)
+
+          orderItem.price -= modifiers.reduce((total, modifier) => {
+            return total + modifier.price
+          }, 0)
+          orderItem.tax -= modifiers.reduce((total, modifier) => {
+            return total + modifier.tax
+          }, 0)
+
+          if (item.discount) {
+            let itemDiscount = item.discount
+            itemDiscount.itemId = item._id
+            itemDiscount.quantity = item.quantity
+            itemDiscount.tax = itemTax.undiscountedTax - itemTax.tax
+            //itemDiscountedTax += itemDiscount.tax
+            item_discounts.push(itemDiscount)
+          }
           return orderItem
         })
 
+        //adding final tax
+        const itemsTax = rootState.tax.itemsTaxData.reduce((totalTax, item) => {
+          return totalTax + item.tax * item.quantity
+        }, 0)
+        const surchargeTax = rootState.surcharge.surchargeAmounts.reduce(
+          (totalTax, item) => {
+            return totalTax + item.tax
+          },
+          0
+        )
+
+        if (rootState.discount.appliedOrderDiscount) {
+          //order discount was applied
+          order.total_tax = rootGetters['tax/totalTax']
+        } else {
+          //no order discount, may be  item discount applied
+          order.total_tax = surchargeTax + itemsTax
+        }
+        //add discounted tax
+        // order.total_tax +=
+        //   +rootState.discount.taxDiscountAmount + itemDiscountedTax
+
+        //discount already applied on tax
+        order.balance_due = rootGetters['order/orderTotal']
         //modifiers
         let modifiers = []
 
         rootState.order.items.forEach(item => {
           if (item.modifiers.length) {
-            //get all modifiers by modifier ids attached to item
             item.modifiers.forEach(modifierId => {
-              rootState.modifier.itemModifiers.forEach(itemModifier => {
-                itemModifier.modifiers.forEach(itemModifierItem => {
-                  itemModifierItem.get_modifier_sub_groups.forEach(
-                    submodifier => {
-                      submodifier.get_modifier_item_list.forEach(submodItem => {
-                        if (submodItem._id == modifierId) {
-                          modifiers.push({
-                            entity_id: submodItem._id,
-                            for_item: item._id,
-                            price: submodItem.price,
-                            tax: submodItem.tax,
-                            name: submodItem.name,
-                            qty: 1,
-                            type: submodItem.subgroup_type,
-                          })
-                        }
-                      })
-                    }
-                  )
+              const subgroups = rootGetters['modifier/itemModifiers'](item._id)
+              subgroups.forEach(subgroup => {
+                subgroup.modifiers.forEach(modifier => {
+                  if (modifier._id === modifierId) {
+                    const modfierTaxData = rootGetters['tax/modifierTaxData']({
+                      itemId: item._id,
+                      modifierId: modifierId,
+                    })
+                    modifiers.push({
+                      entity_id: modifierId,
+                      for_item: item._id,
+                      price: modfierTaxData.price,
+                      tax: modfierTaxData.tax,
+                      name: modifier.name,
+                      qty: item.quantity,
+                      type: subgroup.item_type,
+                    })
+                  }
                 })
               })
             })
+            //get all modifiers by modifier ids attached to item
           }
         })
         order.item_modifiers = modifiers
 
         //order level discount
+        order.order_discounts = []
+
         if (rootState.discount.appliedOrderDiscount) {
-          order.discount_id =
-            rootState.discount.appliedOrderDiscount.discount.discount_id
-          order.discount_applied = ''
-          order.discount_amount =
-            rootGetters['discount/orderDiscountWithoutTax']
+          const discount = rootState.discount.appliedOrderDiscount.discount
+          const orderDiscount = {
+            name: discount.name,
+            price: rootGetters['discount/orderDiscountWithoutTax'],
+            tax: rootState.discount.taxDiscountAmount,
+            type: discount.type,
+            rate:
+              discount.type === CONSTANTS.VALUE
+                ? discount.value
+                : discount.rate,
+            include_surcharge: discount.include_surcharge,
+            entity_id: discount._id,
+          }
+          order.order_discounts.push(orderDiscount)
         }
 
+        //addint item discounts
+
+        order.item_discounts = item_discounts.map(itemDiscount => {
+          return {
+            name: itemDiscount.name,
+            type: itemDiscount.type,
+            rate:
+              itemDiscount.type === CONSTANTS.VALUE
+                ? itemDiscount.value
+                : itemDiscount.rate,
+            price: itemDiscount.discount * itemDiscount.quantity,
+            tax: itemDiscount.tax * itemDiscount.quantity,
+            for_item: itemDiscount.itemId,
+            entity_id: itemDiscount.id,
+          }
+        })
         //adding tip amount
         order.tip_amount = rootState.checkoutForm.tipAmount
 
         //adding payment breakdown
         order.order_payments = rootState.checkoutForm.payments.map(payment => {
           let paymentPart = {
+            entity_id: payment.method._id,
             name: payment.method.name,
             collected: payment.amount,
-            param1: payment.coce,
+            param1: payment.code,
             param2: payment.amount,
-            param3: payment.coce,
-            entity_id: payment.id,
+            param3: payment.code,
           }
 
           //Youvraj, have a check here

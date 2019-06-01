@@ -37,7 +37,7 @@
 
 <script>
 import Modifiers from './items/Modifiers.vue'
-
+import * as CONST from '@/constants'
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Items',
@@ -58,14 +58,14 @@ export default {
       if (item.discount) {
         return (
           ' - ' +
-          (item.discount.type == 'value'
-            ? item.discount.rate
+          (item.discount.type === CONST.VALUE
+            ? item.discount.value
             : item.discount.rate + ' %') +
           ' ( ' +
           item.discount.name +
           ' - ' +
-          (item.discount.type == 'value'
-            ? this.formatPrice(item.discount.rate)
+          (item.discount.type == CONST.VALUE
+            ? this.formatPrice(item.discount.value)
             : item.discount.rate + ' %') +
           ' )'
         )

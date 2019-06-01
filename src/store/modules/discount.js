@@ -19,7 +19,7 @@ const state = {
   //order discount calculated
   orderDiscountAmount: 0,
   //Tax discount
-  TaxDiscountAmount: 0,
+  taxDiscountAmount: 0,
   //Discount on surcharge
   surchargeDiscountAmount: 0,
   //error msg
@@ -259,7 +259,7 @@ const mutations = {
     state.orderDiscountAmount = discount
   },
   [mutation.SET_TAX_DISCOUNT_AMOUNT](state, discount) {
-    state.TaxDiscountAmount = discount
+    state.taxDiscountAmount = discount
   },
   [mutation.SET_SURCHARGE_DISCOUNT_AMOUNT](state, discount) {
     state.surchargeDiscountAmount = discount
@@ -286,7 +286,7 @@ const mutations = {
   [mutation.CLEAR_ORDER_DISCOUNT](state) {
     state.orderDiscountAmount = 0
     state.surchargeDiscountAmount = 0
-    state.TaxDiscountAmount = 0
+    state.taxDiscountAmount = 0
     state.appliedOrderDiscount = false
     state.currentActiveOrderDiscount = false
   },
@@ -297,7 +297,7 @@ const mutations = {
     state.appliedOrderDiscount = false
     state.itemsDiscountAmount = 0
     state.orderDiscountAmount = 0
-    state.TaxDiscountAmount = 0
+    state.taxDiscountAmount = 0
     state.surchargeDiscountAmount = 0
     state.error = false
   },

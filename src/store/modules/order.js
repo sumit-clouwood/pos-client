@@ -42,7 +42,7 @@ const getters = {
 
   subTotalUndiscounted: () => {
     return state.items.reduce((total, item) => {
-      return total + item.undiscountedPrice * item.quantity
+      return total + item.undiscountedNetPrice * item.quantity
     }, 0)
   },
 
@@ -138,11 +138,14 @@ const actions = {
     }
   },
 
-  addModifierOrder({ commit, rootState, dispatch, rootGetters }) {
+  addModifierOrder({ commit, getters, rootState, dispatch, rootGetters }) {
     return new Promise((resolve, reject) => {
       let item = { ...rootState.modifier.item }
 
       //this comes through the modifier popup
+      item.grossPrice = item.value
+      item.netPrice = getters.netPrice(item)
+
       item.modifiable = true
 
       item.quantity = rootState.orderForm.quantity || 1
@@ -208,16 +211,40 @@ const actions = {
       //we need to consult modifier store for modifier data ie price
 
       const modifierSubgroups = rootGetters['modifier/itemModifiers'](item._id)
+      let modifierTaxData = []
       modifierSubgroups.forEach(subgroup => {
         subgroup.modifiers.forEach(modifier => {
           if (item.modifiers.includes(modifier._id)) {
-            modifierPrice += parseFloat(modifier.price || 0)
+            modifierTaxData.push({
+              itemId: item._id,
+              modifierId: modifier._id,
+              price: modifier.value ? modifier.value : 0,
+              tax: modifier.value ? (modifier.value * item.tax_sum) / 100 : 0,
+            })
           }
         })
       })
 
-      commit(mutation.ADD_MODIFIER_PRICE_TO_ITEM, modifierPrice)
-      item.undiscountedGrossPrice = item.value
+      dispatch('tax/setModifierTaxData', modifierTaxData, { root: true })
+
+      modifierPrice = modifierTaxData.reduce((total, modifier) => {
+        return total + modifier.price
+      }, 0)
+      //modifier price is without tax price, we need to implement tax on that
+      //get item tax and implement that on modifier price
+      const modifiersTax = (modifierPrice * item.tax_sum) / 100
+      //calculate net and gross price
+      const itemGrossPrice =
+        parseFloat(item.grossPrice) + parseFloat(modifierPrice) + modifiersTax
+
+      //item net price (without tax ) + modifier price which is already without tax
+      const itemNetPrice = getters.netPrice(item) + parseFloat(modifierPrice)
+
+      commit(mutation.ADD_MODIFIER_PRICE_TO_ITEM, {
+        grossPrice: itemGrossPrice,
+        netPrice: itemNetPrice,
+      })
+
       if (!item.editMode) {
         //update current item with new modifiers
 
@@ -396,7 +423,7 @@ const actions = {
             value: discount.discount.value,
           }
 
-          if (discount.discount.type === 'value') {
+          if (discount.discount.type === CONST.VALUE) {
             // NOTE: IF items are 2, per item discount should total discount / 2
 
             if (
@@ -419,6 +446,7 @@ const actions = {
               //divide discount on quantity to get discount applied per line item
               const discountPerItem = discount.discount.value / item.quantity
 
+              //Decided to apply discount on after tax, that means when sending discount info we should send item discount and tax discount separately
               item.grossPrice = item.undiscountedGrossPrice - discountPerItem
 
               //calcualte ratio of discount applied and set same ratio for net price
@@ -428,7 +456,7 @@ const actions = {
                 (item.undiscountedNetPrice * percentDiscountAppliedOnGross) /
                 100
               item.netPrice = item.undiscountedNetPrice - netPriceDiscount
-              itemDiscountData.discount = discount.discount.value
+              itemDiscountData.discount = netPriceDiscount
             }
           } else {
             //percentage based discount, use discount.rate here, not discount.value
@@ -640,9 +668,11 @@ const mutations = {
     state.item.modifierGroups = modifierGroups
   },
 
-  [mutation.ADD_MODIFIER_PRICE_TO_ITEM](state, modifierPrice) {
-    const totalPrice = parseFloat(state.item.price) + parseFloat(modifierPrice)
-    state.item.price = totalPrice
+  [mutation.ADD_MODIFIER_PRICE_TO_ITEM](state, { grossPrice, netPrice }) {
+    state.item.grossPrice = grossPrice
+    state.item.netPrice = netPrice
+    state.item.undiscountedGrossPrice = state.item.grossPrice
+    state.item.undiscountedNetPrice = state.item.netPrice
   },
 
   [mutation.SET_ITEM_TAX](state, tax) {
