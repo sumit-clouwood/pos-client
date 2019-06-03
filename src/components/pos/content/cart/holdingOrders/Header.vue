@@ -1,7 +1,7 @@
 <template>
   <div class="wrappers-new-orders">
     <div class="order">
-      <h5>{{ _t('Holding Orders') }}</h5>
+      <h5>{{ _t('Holding') }} {{ _t('Orders') }}</h5>
       <p>{{ todayDateFull }}</p>
     </div>
   </div>

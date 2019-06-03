@@ -82,12 +82,12 @@ const actions = {
     localStorage.setItem('locale', locale)
     dispatch('fetch')
 
-    let direction = state.languageDirection
+    /*let direction = state.languageDirection
     document.body.style.direction = direction
     // Vue.prototype.$vuetify.rtl = direction == 'ltr' ? false : true
     document.body.classList.remove('body-ltr')
     document.body.classList.remove('body-rtl')
-    document.body.classList.add('body-' + direction)
+    document.body.classList.add('body-' + direction)*/
   },
 
   updateModalSelectionDelivery({ commit }, modalSelection) {

@@ -66,7 +66,7 @@
           >
             <a href="#" @click.prevent="validateOrderDiscounts()"
               ><img src="img/pos/discount.svg" /><span>{{
-                _t('Select Discount')
+                _t('Select') + ' ' + _t('Discount')
               }}</span></a
             >
           </li>
