@@ -2,15 +2,17 @@
   <div class="manage-customer-table">
     <Preloader v-if="loading" />
     <div v-else>
-      <div v-if="!customerDetails.length">No matching customer found.</div>
+      <div v-if="!customerDetails.length">
+        {{ _t('No matching customer found') }}
+      </div>
       <table class="table table-responsive" v-else>
         <thead>
           <tr>
-            <th style="width: 190px">Customer Name</th>
-            <th style="width: 140px">Phone#</th>
-            <th style="width: 190px">Email</th>
-            <th style="width: 155px">Ref. Code</th>
-            <th style="width: 250px">City, Location</th>
+            <th style="width: 190px">{{ _t('Customer Name') }}</th>
+            <th style="width: 140px">{{ _t('Phone') }}#</th>
+            <th style="width: 190px">{{ _t('Email') }}</th>
+            <th style="width: 155px">{{ _t('Ref. Code') }}</th>
+            <th style="width: 250px">{{ _t('City') }}, {{ _t('Location') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -32,7 +34,7 @@
                 @click="fetchSelectedCustomer(customer._id)"
                 class="br-table-btn display-order"
               >
-                Display Order
+                {{ _t('Display Order') }}
               </button>
             </td>
             <td>
@@ -43,7 +45,7 @@
                 data-dismiss="modal"
                 class="br-table-btn edit-info"
               >
-                Edit Info</button
+                {{ _t('Edit Info') }}</button
               ><button
                 @click="fetchSelectedCustomer(customer._id)"
                 data-toggle="modal"
@@ -51,7 +53,7 @@
                 data-dismiss="modal"
                 class="br-table-btn order-add"
               >
-                Add to Order</button
+                {{ _t('Add to Order') }}</button
               ><span>{{
                 getCustomerLocation(customer.customer_addresses)
               }}</span>
@@ -64,7 +66,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import Preloader from '@/components/util/Preloader'
 export default {
   name: 'ManageCustomerContent',
@@ -77,6 +79,7 @@ export default {
       customerDetails: state => state.customer.customer_list,
     }),
     ...mapState('customer', ['loading']),
+    ...mapGetters('location', ['_t']),
   },
   data: function() {
     return { activeIndex: '' }

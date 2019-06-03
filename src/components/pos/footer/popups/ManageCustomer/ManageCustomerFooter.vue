@@ -21,7 +21,7 @@
         class="btn btn-danger cancel-announce"
         data-dismiss="modal"
       >
-        <span>X</span>Cancel
+        {{ _t('Cancel') }}
       </button>
       <button
         class="btn btn-success btn-large popup-btn-save"
@@ -37,7 +37,7 @@
         data-target="#customer"
         data-dismiss="modal"
       >
-        New Customer
+        {{ _t('Create New Customer') }}
       </button>
     </div>
     <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import paginate from 'vuejs-paginate'
 
 export default {
@@ -60,6 +60,7 @@ export default {
       customerDetails: state => state.customer.customer_list,
     }),
     ...mapState('customer', ['loading']),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     ...mapActions('customer', ['setPageNumber']),
