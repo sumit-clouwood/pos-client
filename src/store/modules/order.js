@@ -9,7 +9,7 @@ const DISCOUNT_ORDER_ERROR_TOTAL =
 const state = {
   items: [],
   item: false,
-  orderType: 'Walk-In',
+  orderType: 'walk_in',
   orderNote: '',
   onlineOrders: false,
   futureOrder: false,
