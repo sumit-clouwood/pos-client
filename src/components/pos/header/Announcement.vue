@@ -1,7 +1,9 @@
 <template>
   <ul class="breadcrumb-news">
     <li class="breadcrumb-item-news">
-      <a href="#"> <img src="img/pos/news.png" /><span> {{ _t('Announcements') }}</span></a>
+      <a href="#">
+        <img src="img/pos/news.png" /><span> {{ _t('News') }}</span>
+      </a>
     </li>
     <li class="item-news" v-if="announcements">
       <marquee behavior="scroll" direction="left">
