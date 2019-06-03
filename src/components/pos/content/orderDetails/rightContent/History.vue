@@ -10,13 +10,13 @@
         <thead>
           <tr>
             <th class="field-type-cr_at field-created_at">
-              <span title="">Created At</span>
+              <span title="">{{ _t('Created At') }}</span>
             </th>
             <th class="field-type-collection_select field-user">
-              <span class="" title="">By Whom</span>
+              <span class="" title="">{{ _t('By Whom') }}</span>
             </th>
             <th class="field-type-select field-name">
-              <span class="" title="">Type</span>
+              <span class="" title="">{{ _t('Type') }}</span>
             </th>
           </tr>
         </thead>
@@ -40,10 +40,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'History',
   props: {
     orderDetails: {},
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
   },
 }
 </script>

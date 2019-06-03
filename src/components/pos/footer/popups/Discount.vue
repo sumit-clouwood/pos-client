@@ -6,11 +6,11 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Select Discount</h4>
+          <h4 class="customer-title">{{ _t('Select Discount') }}</h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
           <div v-if="orderError" class="error">
-            <p class="text-danger text-center">{{ orderError }}</p>
+            <p class="text-danger text-center">{{ _t(orderError) }}</p>
           </div>
           <div
             class="dining-option-block select-discount-option"
@@ -72,7 +72,7 @@ export default {
   props: {},
   computed: {
     ...mapState('discount', ['orderError', 'errorCode']),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', {
       // map `this.discounts` to `this.$store.discount.getters.orderDiscounts`
       discounts: 'orderDiscounts',

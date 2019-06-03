@@ -9,7 +9,7 @@
         role="tab"
         aria-controls="nav-home"
         aria-selected="true"
-        >Receipt</a
+        >{{ _t('Receipt') }}</a
       >
       <a
         class="nav-item nav-link"
@@ -19,7 +19,7 @@
         role="tab"
         aria-controls="nav-profile"
         aria-selected="false"
-        >History</a
+        >{{ _t('History') }}</a
       >
       <a
         class="nav-item nav-link"
@@ -29,7 +29,7 @@
         role="tab"
         aria-controls="nav-contact"
         aria-selected="false"
-        >Modifications</a
+        >{{ _t('Modifications') }}</a
       >
       <a
         class="nav-item nav-link"
@@ -39,15 +39,19 @@
         role="tab"
         aria-controls="nav-payments"
         aria-selected="false"
-        >Payments</a
+        >{{ _t('Payments') }}</a
       >
     </div>
   </nav>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'RightPartHeader',
+  computed: {
+    ...mapGetters('location', ['_t']),
+  },
 }
 </script>
 

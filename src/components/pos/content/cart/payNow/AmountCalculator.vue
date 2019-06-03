@@ -17,15 +17,19 @@
     <div id="clearcalc" class="" @click="reset()">c</div>
     <div class="payment-key" @click="set('0')">0</div>
     <div class="payment-key" @click="set('.')">.</div>
-    <div id="add-amt" @click="addAmount">Add</div>
+    <div id="add-amt" @click="addAmount">{{ _t('+ Add') }}</div>
   </div>
 </template>
 
 <script>
 /* global showModal*/
 import * as CONST from '@/constants'
+import { mapGetters } from 'vuex'
 export default {
   name: 'AmountCalculator',
+  computed: {
+    ...mapGetters('location', ['_t']),
+  },
   data() {
     return {
       init: false,
