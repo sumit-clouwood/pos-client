@@ -4339,7 +4339,7 @@ div#delivery-area-address .order-address-details > * {
 .order-address-details button#cu-add-address {
   text-align: right;
   float: right;
-  width: 137px;
+  width: 165px;
   height: 50px;
   border-radius: 4px;
   background-color: #62bb31;
@@ -4761,7 +4761,7 @@ ul.ullist-dob > li {
 }
 
 button#customer-notes-add {
-  width: 57px;
+  width: 110x;
   height: 25px;
   border-radius: 4px;
   background-color: #62bb31;
