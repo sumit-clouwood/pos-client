@@ -7,9 +7,9 @@
       class="subcategory pos-size-bg"
     >
       <div @click.prevent="getItems(item)">
-        <img :src="item.sub_category_image" :alt="item.name" />
-        <span class="cat-name shorten_name" :title="item.name">
-          {{ item.name }}
+        <img :src="item.sub_category_image" :alt="t(item)" />
+        <span class="cat-name shorten_name" :title="t(item)">
+          {{ t(item) }}
         </span>
       </div>
     </div>

@@ -77,6 +77,7 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
+import bootstrap from '@/bootstrap'
 export default {
   name: 'TopNavRight',
   props: {},
@@ -107,6 +108,7 @@ export default {
   methods: {
     changeLanguage(locale) {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
+      bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
     },
     onlineOrders() {

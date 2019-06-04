@@ -48,6 +48,9 @@ export default {
   setContext(context) {
     this.context = context
   },
+  setLang(lang) {
+    this.lang = lang
+  },
   getAbsUrl(url) {
     return url.replace(/last_sync_date=[^&]*&?/, '')
   },
@@ -122,6 +125,11 @@ export default {
         })
         .catch(error => reject(error))
     })
+  },
+
+  getT(url, level) {
+    url += '&translations_needed=1&lang=' + this.lang
+    return this.get(url, level)
   },
 
   getCacheable(url, level) {

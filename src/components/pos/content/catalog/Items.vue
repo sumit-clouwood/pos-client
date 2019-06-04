@@ -9,9 +9,9 @@
         @click.prevent="addToOrder(item)"
       >
         <div>
-          <img :src="item.image" :alt="item.name" @error="imageLoadError()" />
-          <p class="remove-bottom popover-btn" :title="item.name">
-            {{ item.name }}
+          <img :src="item.image" :alt="t(item)" @error="imageLoadError()" />
+          <p class="remove-bottom popover-btn" :title="t(item)">
+            {{ t(item) }}
           </p>
         </div>
       </div>

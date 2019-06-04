@@ -2,7 +2,7 @@
   <div class="wrappers-new-orders">
     <div class="order">
       <h5>{{ _t('Holding Orders') }}</h5>
-      <p>{{ todayDateFull }}</p>
+      <p>{{ DateToday }}</p>
     </div>
   </div>
 </template>
@@ -13,8 +13,12 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'Header',
   props: {},
+  // data: function() {
+  //   return {
+  //     today: DateTime.dateToday(),
+  //   }
+  // },
   computed: {
-    ...mapGetters('sync', ['todayDateFull']),
     ...mapGetters('location', ['_t']),
   },
 }

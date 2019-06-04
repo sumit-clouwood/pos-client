@@ -129,4 +129,18 @@ export default class {
     this.parseTime()
     return this.year + '-' + this.month + '-' + this.day
   }
+
+  dateToday() {
+    this.parseTime()
+    //   Tuesday, 13 Oct 2017
+    return (
+      this.weekdayFull +
+      ', ' +
+      this.date.getDate() +
+      ' ' +
+      this.monthName +
+      ' ' +
+      this.year
+    )
+  }
 }

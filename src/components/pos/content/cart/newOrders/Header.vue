@@ -4,7 +4,7 @@
       <div class="order">
         <h5>{{ _t('New Orders') }}</h5>
         <p>
-          {{ todayDateFull }}
+          {{ DateToday }}
         </p>
       </div>
       <div class="account-name" v-if="selectedCustomer">
@@ -32,8 +32,8 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Header',
   props: {},
+
   computed: {
-    ...mapGetters('sync', ['todayDateFull']),
     ...mapGetters('location', ['_t']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
   },
