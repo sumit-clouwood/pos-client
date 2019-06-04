@@ -1,30 +1,26 @@
 <template>
-  <div class="total-amount-wrapper">
-    <div class="surcharge-amt">
-      <div>
-        <span class="total-charges">{{ _t('Sub Total') }}</span>
-        <span class="aed-charges"> {{ formatPrice(subTotal || 0) }}</span>
-      </div>
-      <div>
-        <span class="total-charges">{{ _t('Surcharges') }}</span>
-        <span class="aed-charges"> {{ formatPrice(surcharge || 0) }}</span>
-      </div>
-      <div>
-        <span class="total-charges">{{ _t('Discounts') }}</span>
-        <span class="aed-charges">
-          {{ formatPrice(orderDiscountWithoutTax || 0) }}</span
-        >
-      </div>
-      <div>
-        <span class="total-charges">{{ _t('Tax') }}</span>
-        <span class="aed-charges"> {{ formatPrice(totalTax || 0) }}</span>
+  <div class="main-orders-total">
+    <div class="item sub-total">
+      <div class="sub-total-text">{{ _t('Sub Total') }}</div>
+      <div class="sub-total-num">{{ formatPrice(subTotal || 0) }}</div>
+    </div>
+    <div class="item surcharges">
+      <div class="sub-total-text">{{ _t('Surcharges') }}</div>
+      <div class="sub-total-num">{{ formatPrice(surcharge || 0) }}</div>
+    </div>
+    <div class="item discounts">
+      <div class="sub-total-text">{{ _t('Discounts') }}</div>
+      <div class="sub-total-num">
+        {{ formatPrice(orderDiscountWithoutTax || 0) }}
       </div>
     </div>
-    <div class="total-amount">
-      <div>
-        <span class="total-charges"> {{ _t('Total') }}</span
-        ><span class="aed-charges"> {{ formatPrice(orderTotal || 0) }}</span>
-      </div>
+    <div class="item tax">
+      <div class="sub-total-text">{{ _t('Tax') }}</div>
+      <div class="sub-total-num">{{ formatPrice(totalTax || 0) }}</div>
+    </div>
+    <div class="total">
+      <div class="sub-total-text">{{ _t('Total') }}</div>
+      <div class="sub-total-num">{{ formatPrice(orderTotal || 0) }}</div>
     </div>
   </div>
 </template>

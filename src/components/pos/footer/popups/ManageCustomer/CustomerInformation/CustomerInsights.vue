@@ -72,23 +72,21 @@
     </div>
     <div class="customer-insights-notes">
       <div>
-        <p>{{ _t('Notes') }} :</p>
-        <div>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>{{ _t('Date') }}</th>
-                <th>{{ _t('Note') }}</th>
-              </tr>
-            </thead>
-            <tbody id="notes_data">
-              <tr v-for="(notes, index) in insight.notes" :key="index">
-                <td>{{ convertDatetime(notes.created_at) }}</td>
-                <td>{{ notes.note }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <p>{{ _t('Notes') }}:</p>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>{{ _t('Date') }}</th>
+              <th>{{ _t('Note') }}</th>
+            </tr>
+          </thead>
+          <tbody id="notes_data">
+            <tr v-for="(notes, index) in insight.notes" :key="index">
+              <td>{{ convertDatetime(notes.created_at) }}</td>
+              <td>{{ notes.note }}</td>
+            </tr>
+          </tbody>
+        </table>
         <!-- <span
           data-toggle="modal"
           class="text-success cursor-pointer"
@@ -191,22 +189,12 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.customer-insights-notes div div {
+.customer-insights-notes div {
   overflow-y: auto;
   max-height: 190px;
-  /*overflow-x: hidden;*/
-}
-.location-delivery-area-address {
-  /*max-height: 250px;*/
 }
 .insight-last-order {
     text-align: center;
-}
-.location-delivery-area-address {
-    /*max-height: 300px;*/
-}
-.add-to-order-wrapper {
-    /*max-height: 270px;*/
 }
 
 </style>

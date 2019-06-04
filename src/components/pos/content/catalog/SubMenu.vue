@@ -1,19 +1,26 @@
 <template>
-  <div class="pizza-size-wrapper " v-if="subcategories.length">
+  <div class="food-categories" v-if="subcategories.length">
     <div
+      class="food-categories-item"
       v-for="item in subcategories"
       :key="item._id"
       :class="{ active: currentSubcategory === item._id }"
-      class="subcategory pos-size-bg"
     >
-      <div @click.prevent="getItems(item)">
-        <img :src="item.sub_category_image" :alt="item.name" />
-        <span class="cat-name shorten_name" :title="item.name">
-          {{ item.name }}
-        </span>
+      <img
+        @click.prevent="getItems(item)"
+        class="food-categories-item-img"
+        :src="item.sub_category_image"
+        :alt="item.name"
+      />
+      <div class="food-categories-item-text" :title="item.name">
+        {{ item.name }}
+      </div>
+      <div class="food-categories-item-check">
+        <i class="fa fa-check" aria-hidden="true"></i>
       </div>
     </div>
   </div>
+  <!--add class bg if image not found => class="food-categories-item bg"-->
 </template>
 
 <script>
@@ -34,11 +41,11 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
-.cat-name
-  font-size: smaller
+/*.cat-name
+  font-size: smaller*/
 
-.pizza-size-wrapper
+/*.pizza-size-wrapper
   img
     width: 64px
-    height: 64px
+    height: 64px*/
 </style>

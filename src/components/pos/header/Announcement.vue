@@ -1,16 +1,19 @@
 <template>
-  <ul class="breadcrumb-news">
-    <li class="breadcrumb-item-news">
-      <a href="#">
-        <img src="img/pos/news.png" /><span> {{ _t('News') }}</span>
+  <div class="main-news">
+    <div class="main-news-title">
+      <a class="main-news-title-link" href="#">
+        <img src="img/pos/news.png" :alt="_t('News')" />
+        <span>
+          {{ _t('News') }}
+        </span>
       </a>
-    </li>
-    <li class="item-news" v-if="announcements">
+    </div>
+    <div class="main-news-run-text" v-if="announcements">
       <marquee behavior="scroll" direction="left">
-        <b>{{ announcements }}</b>
+        {{ announcements }}
       </marquee>
-    </li>
-  </ul>
+    </div>
+  </div>
 </template>
 
 <script>

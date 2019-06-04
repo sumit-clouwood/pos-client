@@ -1,7 +1,6 @@
 <template>
   <div id="delivery-area-address">
     <div class="order-address-details">
-      <p>{{ _t('Delivery Address:') }}</p>
       <button
         id="cu-add-address"
         data-toggle="modal"
@@ -12,9 +11,7 @@
         {{ _t('+ Add Address') }}
       </button>
     </div>
-    <div class="location-delivery-area-address">
-      <CustomerDeliveryArea :buttons="true" />
-    </div>
+    <CustomerDeliveryArea :buttons="true" />
   </div>
 </template>
 

@@ -1,20 +1,18 @@
 <template>
-  <!--Added Breadcrumb here-->
-  <div class="vegetable-pizza-block">
-    <div class="vegetable-pizza">
-      <div
-        class="vegetable pos-item-bg"
-        v-for="item in items"
-        :key="item._id"
-        @click.prevent="addToOrder(item)"
-      >
-        <div>
-          <img :src="item.image" :alt="item.name" @error="imageLoadError()" />
-          <p class="remove-bottom popover-btn" :title="item.name">
-            {{ item.name }}
-          </p>
-        </div>
-      </div>
+  <div class="food-menu">
+    <div
+      class="food-menu-item"
+      v-for="item in items"
+      :key="item._id"
+      @click.prevent="addToOrder(item)"
+    >
+      <img
+        class="food-menu-item-img"
+        :src="item.image"
+        :alt="item.name"
+        @error="imageLoadError()"
+      />
+      <div class="food-menu-item-text">{{ item.name }}</div>
     </div>
     <Popup />
   </div>

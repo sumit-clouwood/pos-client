@@ -1,9 +1,9 @@
 <template>
-  <div v-if="addresses.length" class="add-to-order-wrapper col-md-12">
+  <div class="location-delivery-area-address" v-if="addresses.length">
     <div
       v-for="(address, index) in addresses"
       :key="index"
-      class="order-location option-contain col-md-5 col-sm-5"
+      class="order-location option-contain cu-delivery-area-location"
       :class="{ active: activeIndex === index }"
       @click="setActiveCustomer(address, index)"
     >

@@ -1,7 +1,9 @@
 <template>
-  <div class="pos-header">
-    <TopNavLeft></TopNavLeft>
-    <TopNavRight></TopNavRight>
+  <div class="header">
+    <div class="header-main">
+      <TopNavLeft />
+      <TopNavRight />
+    </div>
   </div>
 </template>
 

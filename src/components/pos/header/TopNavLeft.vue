@@ -1,10 +1,10 @@
 <template>
-  <div class="navbar-nav-sidebar">
+  <div class="header-main-left">
     <HeaderOrderType />
-    <div class="time-zone-btn">
-      <a href="#"
-        ><span>{{ todayTime }}</span
-        ><span>{{ todayDate }}</span></a
+    <div class="header-main-left-time">
+      <a href="#">
+        <span class="time">{{ todayTime }}</span>
+        <span>{{ todayDate }}</span></a
       >
     </div>
   </div>
