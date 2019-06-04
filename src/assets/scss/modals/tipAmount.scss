@@ -1,0 +1,68 @@
+#tip-amount {
+  .modal-dialog {
+    width: $px400;
+    max-width: $px400;
+
+    .modal-content {
+      border-radius: $btn-border-radius;
+
+      .modal-body {
+        text-align: center;
+
+        .dining-option-block {
+          .select-discount-option {
+            float: unset;
+            overflow: hidden;
+            width: 100%;
+            > div {
+              float: left;
+              width: $px160;
+              border-radius: $btn-border-radius;
+              border: 2px solid #e0e3e6;
+              background-color: #ffffff;
+            }
+          }
+        }
+
+        .tip-amount-wrap {
+          > p {
+            font-size: $px14;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            padding: $px20 0 0 0;
+            text-align: left;
+          }
+
+          input {
+            height: $px50;
+            width: 100%;
+            border-radius: $btn-border-radius;
+            border: medium none;
+            margin: 0 auto;
+            text-align: center;
+            color: #fff;
+            border: 1px solid $gray-middle;
+            margin-top: $px10;
+          }
+        }
+      }
+
+      .modal-footer {
+        .btn-announce {
+          #add-top {
+            width: $px110;
+            height: $px50;
+            border-radius: $btn-border-radius;
+            background-color: #5056ca;
+            margin-left: $px10;
+            border-color: #5056ca;
+
+            > span {
+              padding-right: $px10;
+            }
+          }
+        }
+      }
+    }
+  }
+}

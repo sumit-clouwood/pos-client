@@ -1,0 +1,198 @@
+@import "pixels_rem.scss";
+@import "variables.scss";
+@import "mixins.scss";
+
+@font-face {
+  font-family: "ProximaNova";
+  src: url("../fonts/ProximaNova-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: normal;
+}
+
+* {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: "ProximaNova";
+}
+
+html {
+  color: #1E1E20;
+  @include responsive(xs){
+    font-size: 10px;
+  }
+  @include responsive(sm) {
+    font-size: 12px;
+  }
+  @include responsive(md) {
+    font-size: 14px;
+  }
+  @include responsive(lg) {
+    font-size: 16px;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  color: #444;
+  background-color: #FAFAFA;
+}
+
+ul, ol, p {
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  display: inline-block;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+img {
+  display: inline-block;
+}
+
+//scrollbar
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: $btn-border-radius;
+  border-radius: $btn-border-radius;
+  background-color: #B2BECF;
+  margin: 2px;
+}
+
+::-webkit-resizer {
+  background-repeat: no-repeat;
+  width: 8px;
+  height: 0px
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track-piece {
+  bprder: 1px solid $gray-light;
+}
+
+// buttons
+.orders-button-small {
+  cursor: pointer;
+  padding: 0 $px10;
+  background-color: $orange-middle;
+  color: #fff;
+  height: $px30;
+  display: inline-grid;
+  align-items: center;
+  justify-content: center;
+  border-radius: $btn-border-radius;
+  margin-right: $px5;
+  margin-bottom: $px5;
+  font-size: $px12;
+  transition: 0.2s linear;
+  //min-width: $px80;
+  &.canceled{
+    background-color: #CC3232;
+    &:hover{
+      background-color: #CC1212;
+    }
+  }
+  &.success{
+    background-color: $green-middle;
+    &:hover{
+      background-color: $green-dark;
+    }
+  }
+
+  &:hover {
+    background-color: $orange-dark;
+  }
+}
+
+.orders-button-large {
+  cursor: pointer;
+  background-color: $blue-middle;
+  color: #fff;
+  height: $main-orders-buttons-height;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $btn-border-radius;
+  font-size: $px16;
+  transition: 0.2s linear;
+  svg{
+    width: $px10;
+    margin-right: $px10;
+  }
+  &:hover {
+    background-color: $blue-dark;
+  }
+}
+
+.button-plus {
+  margin-bottom: $px7;
+  cursor: pointer;
+  img{
+    width: $px30;
+    height: $px30;
+  }
+}
+
+// search field
+.search-field {
+  display: grid;
+  grid-template-columns: $px60 1fr;
+  align-items: center;
+  border: 1px solid $gray-middle;
+  border-radius: 5px;
+  margin: 0px;
+  align-self: start;
+  background-color: #fff;
+  overflow: hidden;
+
+  .search-field-icon {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid $gray-middle;
+    height: $px35;
+
+    .search-field-img {
+      width: $px20;
+      height: $px20;
+    }
+    .fa-search {
+      font-size: $px22;
+      color: #555;
+    }
+  }
+
+  .search-field-input {
+    display: block;
+    height: $header-btn-height;
+    border: none;
+    box-shadow: none;
+    font-size: $px18;
+    padding-left: $px20;
+    padding-right: $px20;
+    box-shadow: inset 0 50px 0 #fff;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-family: "ProximaNova";
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+svg{
+  color: #fff;
+}

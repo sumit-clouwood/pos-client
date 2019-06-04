@@ -1,0 +1,115 @@
+#past-order {
+  .modal-dialog {
+    max-width: $px925;
+
+    .modal-content {
+      .modal-body {
+        .past-order-details-wrap {
+          overflow: hidden;
+          float: left;
+          width: 26%;
+          border-right: solid 1px #efefef;
+          margin-right: $px20;
+          min-height: $px445;
+
+          > div {
+            border-bottom: 1px solid #efefef;
+            padding: $px20 0;
+
+            &:last-child {
+              border: medium none;
+            }
+          }
+
+          .sidebar-past-order {
+            > h4 {
+              font-size: $px18;
+              font-weight: 600;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: 0.6px;
+              color: #3a3d44;
+            }
+
+            > p {
+              font-size: $px12;
+              font-weight: normal;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: 1.54;
+              letter-spacing: 0.5px;
+              color: #3a3d44;
+              margin-bottom: 0;
+            }
+          }
+        }
+
+        .past-order-confirmation {
+          float: left;
+          width: 70%;
+
+          .total-order-past-wrap {
+            padding: $px25 0;
+
+            #past-confirm-order {
+              width: 50%;
+              float: right !important;
+
+              > div {
+                float: left;
+              }
+            }
+          }
+        }
+      }
+
+      .modal-footer {
+        border-top: 1px solid #efefef;
+        padding-top: $px30;
+      }
+    }
+  }
+}
+
+.order-amt-charges {
+  width: 45%;
+
+  p {
+    color: #4b4e53;
+    font-size: $px14;
+    margin-bottom: $px20;
+    text-align: right;
+
+    &:last-child {
+      font-weight: bold;
+    }
+  }
+}
+
+.order-amt-title {
+  width: 55%;
+
+  p {
+    color: #a4a4a4;
+    font-size: $px14;
+    margin-bottom: $px20;
+
+    &:last-child {
+      font-weight: bold;
+    }
+  }
+}
+
+div#past-confirm-order {
+  width: 50%;
+  float: right !important;
+}
+
+div#past-confirm-order > div {
+  float: left;
+}
+
+div#total-order-past-wrap {
+  padding: $px25 0;
+}

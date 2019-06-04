@@ -1,0 +1,61 @@
+#admin-popup{
+  .modal-dialog{
+    .modal-content{
+      .modal-header{
+
+      }
+      .modal-body{
+
+      }
+      .modal-footer{
+        padding: $px30;
+      }
+    }
+  }
+}
+button.btn.btn-danger.cancel-announce {
+   height: $px50;
+   font-size: $px14;
+   width: $px125;
+   background: #cc3232;
+   border-color: #cc3232;
+ }
+
+ button.btn.btn-danger.cancel-announce > span {
+   padding-right: $px10;
+ }
+
+ button:hover {
+   opacity: 0.8;
+ }
+
+ .modal-footer {
+   border-top: medium;
+ }
+
+ .modal-body.add-note-wrap {
+   padding: $px10 $px35;
+ }
+
+ .add-note-area {
+   .add-note-form {
+     width: 100%;
+     height: $px130;
+     border-radius: $btn-border-radius;
+     border: 1px solid #e0e3e6;
+     background-color: #ffffff;
+   }
+
+   > p {
+     color: #72777c;
+     font-size: $px14;
+     font-weight: 400;
+     letter-spacing: 0.5px;
+     margin-bottom: $px8;
+     margin-top: $px10;
+   }
+ }
+
+ .green-header-modal .add-note-area > textarea.add-note-form {
+   width: 100%;
+ }
