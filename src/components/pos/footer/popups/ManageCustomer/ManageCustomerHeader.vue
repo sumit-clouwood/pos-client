@@ -4,7 +4,7 @@
     <input
       type="text"
       class="form-control"
-      :placeholder="_t('Search customer')"
+      :placeholder="_t('Search') + ' ' + _t('customer')"
       v-model="searchTerms"
       @keyup="searchCustomer()"
     />

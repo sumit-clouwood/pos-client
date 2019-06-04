@@ -6,19 +6,25 @@
       data-toggle="modal"
       data-target="#tip-amount"
     >
-      <img src="img/pos/tip.png" alt="payment-method" /><span>Tip Amount</span>
+      <img src="img/pos/tip.png" alt="payment-method" /><span>
+        {{ _t('Tip Amount') }}
+      </span>
     </div>
     <div class="footer-wrap">
-      <img src="img/pos/gift-receipt.png" alt="payment-method" /><span
-        >Gift Receipt</span
-      >
+      <img src="img/pos/gift-receipt.png" alt="payment-method" /><span>{{
+        _t('Gift Receipt')
+      }}</span>
     </div>
     <div class="footer-wrap" data-toggle="modal" data-target="#add-email">
-      <img src="img/pos/email.png" alt="payment-method" /><span>Email</span>
+      <img src="img/pos/email.png" alt="payment-method" /><span>
+        {{ _t('Email') }}
+      </span>
     </div>
 
     <div class="footer-wrap" @click="pay">
-      <img src="img/pos/done.png" alt="payment-method" /><span>Done</span>
+      <img src="img/pos/done.png" alt="payment-method" /><span>
+        {{ _t('Done') }}
+      </span>
     </div>
   </div>
 </template>
@@ -32,6 +38,7 @@ export default {
     ...mapState('checkout', ['changedAmount']),
     ...mapState('checkoutForm', ['msg', 'error']),
     ...mapGetters('checkoutForm', ['validate']),
+    ...mapGetters('location', ['_t']),
   },
 
   mounted() {
@@ -73,5 +80,5 @@ export default {
 </script>
 <style lang="sass" scoped>
 .payment-screen-footer
-  min-width: 518px;
+  min-width: 518px
 </style>

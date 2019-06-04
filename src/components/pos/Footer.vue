@@ -66,7 +66,7 @@
           >
             <a href="#" @click.prevent="validateOrderDiscounts()"
               ><img src="img/pos/discount.svg" /><span>{{
-                _t('Select Discount')
+                _t('Select') + ' ' + _t('Discount')
               }}</span></a
             >
           </li>
@@ -79,9 +79,10 @@
           </li>
           <li data-toggle="modal" data-target="#add-note">
             <a href="#"
-              ><img src="img/pos/notes.svg" :alt="_t('Add Note')" /><span>{{
-                _t('Add Note')
-              }}</span></a
+              ><img
+                src="img/pos/notes.svg"
+                :alt="_t('+ Add') + ' ' + _t(' Note')"
+              /><span>{{ _t('Add Note') }}</span></a
             >
           </li>
         </ul>

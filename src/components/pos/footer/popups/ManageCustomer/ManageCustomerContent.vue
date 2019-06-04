@@ -11,8 +11,11 @@
             <th style="width: 190px">{{ _t('Customer Name') }}</th>
             <th style="width: 140px">{{ _t('Phone') }}#</th>
             <th style="width: 190px">{{ _t('Email') }}</th>
-            <th style="width: 155px">{{ _t('Ref. Code') }}</th>
-            <th style="width: 250px">{{ _t('City') }}, {{ _t('Location') }}</th>
+            <th style="width: 155px">{{ _t('Reference Code') }}</th>
+            <th style="width: 250px">
+              {{ _t('City') }}
+              <!--, {{ _t('Location') }}-->
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -45,7 +48,7 @@
                 data-dismiss="modal"
                 class="br-table-btn edit-info"
               >
-                {{ _t('Edit Info') }}</button
+                {{ _t('Edit Details') }}</button
               ><button
                 @click="fetchSelectedCustomer(customer._id)"
                 data-toggle="modal"
