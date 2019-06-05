@@ -14,6 +14,8 @@ export default {
           device_code: localStorage.getItem('device_code'),
           franchise_code: localStorage.getItem('franchise_code'),
           last_order_no: localStorage.getItem('last_order_no'),
+          brand_id: localStorage.getItem('brand_id'),
+          store_id: localStorage.getItem('store_id'),
         }
 
         const userString = localStorage.getItem('user')
