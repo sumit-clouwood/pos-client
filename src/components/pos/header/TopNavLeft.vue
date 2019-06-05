@@ -1,9 +1,6 @@
 <template>
   <div class="navbar-nav-sidebar">
-    <div class="add-screen-walkin">
-      <p class="walk-in text-capitalize">{{ orderType }}</p>
-      <p class="walk-in-place text-capitalize">{{ locationName.name }}</p>
-    </div>
+    <HeaderOrderType />
     <div class="time-zone-btn">
       <a href="#"
         ><span>{{ todayTime }}</span
@@ -15,26 +12,20 @@
 
 <script>
 /* eslint-disable no-console */
-import { mapState, mapActions } from 'vuex'
 import moment from 'moment-timezone'
+import HeaderOrderType from './HeaderOrderType'
 
 export default {
   name: 'NavSidebar',
   props: {},
+  components: {
+    HeaderOrderType,
+  },
   data() {
     return {
       todayDate: moment().format('MMMM Do YYYY'),
       todayTime: moment().format('h:mm:ss a'),
     }
-  },
-  computed: {
-    ...mapState({
-      locationName: state => state.location.store,
-    }),
-    ...mapState('order', ['orderType']),
-  },
-  methods: {
-    ...mapActions('location', ['setTimeZone']),
   },
   mounted: function() {
     setInterval(() => {

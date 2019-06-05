@@ -22,8 +22,8 @@
         class="nav-item active-opacity category"
         data-toggle="tooltip"
         data-placement="right"
-        :title="item.name"
-        :data-original-title="item.name"
+        :title="t(item)"
+        :data-original-title="t(item)"
       >
         <a
           class="nav-link"
@@ -33,7 +33,7 @@
         >
           <img :src="item.category_image" />
           <span class="nav-link-text cat-name shorten_name">
-            {{ item.name }}
+            {{ t(item) }}
           </span>
         </a>
       </li>

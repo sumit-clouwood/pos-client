@@ -211,14 +211,25 @@ const actions = {
       //we need to consult modifier store for modifier data ie price
 
       const modifierSubgroups = rootGetters['modifier/itemModifiers'](item._id)
+      let modifierTaxData = []
       modifierSubgroups.forEach(subgroup => {
         subgroup.modifiers.forEach(modifier => {
           if (item.modifiers.includes(modifier._id)) {
-            modifierPrice += parseFloat(modifier.value || 0)
+            modifierTaxData.push({
+              itemId: item._id,
+              modifierId: modifier._id,
+              price: modifier.value ? modifier.value : 0,
+              tax: modifier.value ? (modifier.value * item.tax_sum) / 100 : 0,
+            })
           }
         })
       })
 
+      dispatch('tax/setModifierTaxData', modifierTaxData, { root: true })
+
+      modifierPrice = modifierTaxData.reduce((total, modifier) => {
+        return total + modifier.price
+      }, 0)
       //modifier price is without tax price, we need to implement tax on that
       //get item tax and implement that on modifier price
       const modifiersTax = (modifierPrice * item.tax_sum) / 100
@@ -569,7 +580,6 @@ const actions = {
   updateOrderType({ commit }, orderType) {
     commit(mutation.ORDER_TYPE, orderType)
   },
-
   addHoldOrder({ rootState, dispatch }, item_ids) {
     dispatch('reset')
     const allItems = rootState.category.items
@@ -691,7 +701,7 @@ const mutations = {
     state.orderNote = orderNote
   },
   [mutation.ORDER_TYPE](state, orderType) {
-    state.orderType = orderType
+    state.orderType = orderType.charAt(0).toUpperCase() + orderType.slice(1)
   },
   [mutation.SET_REFERRAL](state, referral) {
     state.referral = referral

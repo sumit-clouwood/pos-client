@@ -6,7 +6,7 @@
       :key="index + '-' + item._id"
     >
       <div class="orders-name">
-        <p>{{ item.name }}</p>
+        <p>{{ t(item) }}</p>
         <p class="price-qty">
           @ {{ Num.round(item.undiscountedNetPrice) }} x {{ item.quantity }}
           {{ discountInfo(item) }}

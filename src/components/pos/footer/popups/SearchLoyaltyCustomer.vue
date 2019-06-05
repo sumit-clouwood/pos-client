@@ -6,15 +6,15 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Loyalty</h4>
+          <h4 class="customer-title">{{ _t('Loyalty') }}</h4>
         </div>
         <form class="modal-body add-note-wrap" autocomplete="off">
           <div class="add-note-area">
-            <p>Select customer to get loyalty</p>
+            <p>{{ _t('Jump to customer') }}</p>
             <input
               autocomplete="off"
               type="text"
-              placeholder="Search..."
+              :placeholder="_t('Search')"
               class="inputSearch"
               id="getCustomerList"
               v-model="searchTerm"
@@ -31,7 +31,7 @@
                 role="status"
                 aria-hidden="true"
                 ><i class="fa fa-circle-o-notch fa-spin" id="searchLoader"></i>
-                Find</span
+                {{ _t('Find') }}</span
               >
             </button>
           </div>
@@ -55,7 +55,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              <span>X</span> Cancel
+              {{ _t('Cancel') }}
             </button>
             <button
               @click="addLoyalty"
@@ -63,7 +63,7 @@
               type="button"
               id="save-note"
             >
-              Select
+              {{ _t('Select') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -78,7 +78,7 @@
 
 <script>
 /* global $ */
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'SearchLoyaltyCustomer',
   props: {},
@@ -93,6 +93,7 @@ export default {
     ...mapState({
       customers: state => state.customer.customer_list,
     }),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     addLoyalty: function() {
