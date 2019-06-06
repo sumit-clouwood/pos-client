@@ -1,13 +1,14 @@
 @font-face {
-  font-family: "ProximaNova";
-  src: url("../fonts/ProximaNova-Regular.ttf") format("truetype");
+  font-family: "ProximaNova-Regular";
+  src: url("../fonts/ProximaNova-Regular.woff") format("woff");
+  src: url("../fonts/ProximaNova-Regular.woff2") format("woff");
   font-style: normal;
   font-weight: normal; }
 * {
   list-style: none;
   padding: 0;
   margin: 0;
-  font-family: "ProximaNova"; }
+  font-family: "ProximaNova-Regular"; }
 
 html {
   color: #1E1E20; }
@@ -86,6 +87,13 @@ img {
       background-color: #58AC2E; }
   .orders-button-small:hover {
     background-color: #EF6A05; }
+
+.shorten-sentence {
+  Text-overflow: ellipsis;
+  overflow: hidden;
+  White-space: nowrap;
+  Width: 6.9375rem;
+  text-align: center; }
 
 .orders-button-large {
   cursor: pointer;
@@ -792,7 +800,7 @@ svg {
           padding: 0.9375rem 0 2.1875rem 0;
           position: relative; }
           #pay-now .modal-dialog .modal-content .modal-body .payemnt-input-block > input {
-            width: 31.875rem;
+            width: 31.375rem;
             height: 3.75rem;
             border-radius: 3px;
             border: 2px solid #e5e9ee;
@@ -831,7 +839,7 @@ svg {
             letter-spacing: normal;
             color: #3d3f43; }
           #pay-now .modal-dialog .modal-content .modal-body .amount-keypad > div:nth-child(4), #pay-now .modal-dialog .modal-content .modal-body .amount-keypad .amount-keypad > div:nth-child(8) {
-            background-image: linear-gradient(180deg, #5056ca 0%, #55aa26 100%);
+            background-image: linear-gradient(180deg, #5056ca 0%, #2d38aa 100%);
             color: #fff; }
           #pay-now .modal-dialog .modal-content .modal-body .amount-keypad > div:nth-child(12) {
             background-image: linear-gradient(180deg, #cc3232 0%, #bc2525 100%); }
@@ -905,7 +913,7 @@ svg {
             height: 3.75rem;
             box-shadow: 0 2px 2px #d1e6c5;
             border-radius: 3px;
-            background-color: #5c5f64;
+            background-color: #4B4E53;
             padding: 0.625rem 1.875rem;
             text-align: center; }
             #pay-now .modal-dialog .modal-content .modal-body .payment-screen-footer > div:first-child {
@@ -1119,6 +1127,30 @@ button.btn.referal-btn {
 
 .datepicker--time-row {
   background: linear-gradient(to right, #dedede, #dedede) left 50%/100% 5px no-repeat !important; }
+
+.vdatetime {
+  display: inline-block; }
+
+.vdatetime > input {
+  padding-left: 22px;
+  margin-left: 10px;
+  height: 50px;
+  border-radius: 4px;
+  border: 1px solid #e4e7eb;
+  background-color: #ffffff;
+  color: #72777c !important;
+  /* font-family: "Proxima Nova - Regular"; */
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.58px;
+  text-align: left;
+  box-shadow: none;
+  background: url(/img/pos/schedule-icon.png);
+  background-repeat: no-repeat;
+  background-position: center right 10px; }
+
+.right-shift input.vdatetime-input.btn.schedule-input.btn-large.datepicker-here {
+  width: 18.3125rem; }
 
 div#order-confirmation .modal-footer {
   padding: 0.625rem 2.1875rem 2.1875rem 2.1875rem; }
@@ -1479,7 +1511,7 @@ a:hover {
   touch-action: auto; }
 
 #add-to-order .modal-dialog {
-  max-width: 35rem; }
+  max-width: 43.75rem; }
   #add-to-order .modal-dialog .modal-content .modal-body .add-to-order-wrapper {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1614,7 +1646,6 @@ a:hover {
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
         touch-action: auto;
-        overflow: hidden;
         display: inline-grid;
         grid-template-columns: 1fr 1fr;
         margin: 0 auto;
@@ -1792,31 +1823,29 @@ a:hover {
       #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes {
         overflow: hidden;
         margin: 0 auto; }
-        #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div {
-          float: left; }
-          #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div:last-child {
-            float: right; }
-          #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div > p {
-            font-size: 0.875rem;
-            font-weight: bold;
-            font-style: normal;
-            font-stretch: normal;
-            line-height: 2.29;
-            letter-spacing: 0.6px;
-            color: #3a3d44;
-            margin-bottom: 0; }
-            #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div > p:first-child {
-              font-weight: normal;
-              line-height: 1.57;
-              color: #a4a4a4; }
-          #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div > a {
-            font-size: 0.75rem;
+        #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div:last-child {
+          float: right; }
+        #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div > p {
+          font-size: 0.875rem;
+          font-weight: bold;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: 2.29;
+          letter-spacing: 0.6px;
+          color: #3a3d44;
+          margin-bottom: 0; }
+          #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div > p:first-child {
             font-weight: normal;
-            font-style: normal;
-            font-stretch: normal;
-            line-height: 1.83;
-            letter-spacing: 0.6px;
-            color: #5056ca; }
+            line-height: 1.57;
+            color: #a4a4a4; }
+        #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div > a {
+          font-size: 0.75rem;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: 1.83;
+          letter-spacing: 0.6px;
+          color: #5056ca; }
       #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insight-feedback {
         overflow: hidden;
         padding: 0.625rem 0; }
@@ -1865,7 +1894,7 @@ a:hover {
   .cu-delivery-area-location span {
     font-weight: 600; }
   .cu-delivery-area-location > p {
-    width: 11.875rem;
+    width: 100%;
     margin-bottom: 0.625rem; }
   .cu-delivery-area-location.active {
     border: solid 2px #5056ca; }
@@ -3030,7 +3059,7 @@ body {
         grid-gap: 1.25rem; }
         .main .main-body .food-wrapper .food-categories .food-categories-item {
           width: 5.625rem;
-          height: 5.625rem;
+          /*height: 5.625rem;*/
           border: 1px solid #ddd;
           border-radius: 5px;
           display: grid;
@@ -3195,7 +3224,8 @@ body {
   grid-template-rows: min-content 1fr min-content;
   height: calc(100vh - 14.0625rem);
   overflow: hidden;
-  background-color: #F1F3F6; }
+  background-color: #F1F3F6;
+  grid-column-start: 2; }
   .main-orders .main-orders-contacts {
     display: grid;
     grid-template-columns: auto auto;

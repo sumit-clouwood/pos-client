@@ -1,4 +1,4 @@
-/* global $, hidePayNow  */
+/* global $ */
 /* eslint-disable no-unused-vars */
 $(document).ready(function() {
   // Configure/customize these variables.
@@ -155,7 +155,35 @@ $(document).ready(function() {
 
     // $("div#pay-now").addClass('animated fadeOutRight');
   })
-  $('li#pay-now').click(function() {
+  function hidePayNow() {
+    $('div#pay-now').addClass('effect-screen')
+    // $("div#pay-now").hide(800);
+    $('div#pay-now').animate({ right: '-660px' })
+    $('body').removeClass('modal-open')
+    $('div#pay-now').removeClass('show')
+    $('#transparent-screen').css('display', 'none')
+  }
+  $('#payment-method')
+    .not('.slick-initialized')
+    .slick({
+      arrows: false,
+      infinite: true,
+      slidesToShow: 4,
+      slidesToScroll: 4,
+      dots: true,
+    })
+
+  $('li.pay-now').click(function() {
+    $('#payment-method')[0].slick.refresh()
+    $('#payment-method')
+      .not('.slick-initialized')
+      .slick({
+        arrows: false,
+        infinite: true,
+        slidesToShow: 4,
+        slidesToScroll: 4,
+        dots: true,
+      })
     // $('body').append("<div class="modal-backdrop fade show"></div>");
     $('div#pay-now').animate({ right: '0' }, 800)
     $('div#pay-now').addClass('effect-screen')
@@ -168,14 +196,6 @@ $(document).ready(function() {
     $('.modal-body.pay-now-block').css('opacity', '1')
 
     setTimeout(function() {
-      $('#payment-method').slick({
-        arrows: false,
-        infinite: true,
-        slidesToShow: 4,
-        slidesToScroll: 4,
-        dots: true,
-        accessibility: false,
-      })
       $('.payment-method-block table td img').click(function() {
         if ($('.payment-method-block').length) {
           $('.payment-method-block').addClass('active')
@@ -184,7 +204,23 @@ $(document).ready(function() {
       })
     }, 300)
   })
-
+  var heightTop = parseInt($('.navigation-list').css('top'))
+  $('.slider-btn').click(function() {
+    heightTop = heightTop + 60
+    if (
+      $('.navigation-list-wrapper').offset().top <
+      $('.navigation-list').offset().top +
+        $('.navigation-list').height() -
+        $('.navigation-list-wrapper').height()
+    ) {
+      $('.navigation-list').css('top', -heightTop + '%')
+      $('.slider-btn').addClass('toggle')
+    } else {
+      $('.navigation-list').css('top', 0 + 'px')
+      heightTop = 0
+      $('.slider-btn').removeClass('toggle')
+    }
+  })
   $('.referal-code-customer').click(function() {
     $(this)
       .addClass('active')

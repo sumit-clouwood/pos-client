@@ -4,7 +4,8 @@
   grid-template-rows: min-content 1fr min-content;
   height: calc(100vh - 14.0625rem);
   overflow: hidden;
-  background-color: #F1F3F6; }
+  background-color: #F1F3F6;
+  grid-column-start: 2; }
   .main-orders .main-orders-contacts {
     display: grid;
     grid-template-columns: auto auto;

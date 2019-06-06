@@ -47,7 +47,7 @@
               id="discount-save-btn"
               @click="applyOrderDiscount()"
             >
-              Ok
+              {{ _t('Ok') }}
             </button>
             <button
               v-show="orderError"
@@ -55,7 +55,7 @@
               type="button"
               data-dismiss="modal"
             >
-              Close
+              {{ _t('Close') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -98,6 +98,6 @@ export default {
 </script>
 <style lang="sass" scoped>
 .error
-  width: 100%;
-  padding: 40px 5px 10px 5px;
+  width: 100%
+  padding: 40px 5px 10px 5px
 </style>

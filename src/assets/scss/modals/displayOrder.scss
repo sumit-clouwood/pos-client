@@ -142,7 +142,7 @@
               overflow-x: hidden;
               -webkit-overflow-scrolling: touch;
               touch-action: auto;
-              overflow: hidden;
+              //overflow: hidden;
               display: inline-grid;
               grid-template-columns: 1fr 1fr;
               margin: 0 auto;
@@ -382,7 +382,7 @@
               margin: 0 auto;
 
               > div {
-                float: left;
+                //float: left;
 
                 &:last-child {
                   float: right;
@@ -497,7 +497,7 @@
   }
 
   > p {
-    width: $px190;
+    width: 100%;
     margin-bottom: $px10;
   }
 

@@ -11,7 +11,7 @@
         {{ _t('+ Add Address') }}
       </button>
     </div>
-    <CustomerDeliveryArea :buttons="true" />
+    <CustomerDeliveryArea :buttons="true" classAccess="" />
   </div>
 </template>
 

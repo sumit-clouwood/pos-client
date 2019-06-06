@@ -1,13 +1,14 @@
 @font-face {
-  font-family: "ProximaNova";
-  src: url("../fonts/ProximaNova-Regular.ttf") format("truetype");
+  font-family: "ProximaNova-Regular";
+  src: url("../fonts/ProximaNova-Regular.woff") format("woff");
+  src: url("../fonts/ProximaNova-Regular.woff2") format("woff");
   font-style: normal;
   font-weight: normal; }
 * {
   list-style: none;
   padding: 0;
   margin: 0;
-  font-family: "ProximaNova"; }
+  font-family: "ProximaNova-Regular"; }
 
 html {
   color: #1E1E20; }
@@ -86,6 +87,13 @@ img {
       background-color: #58AC2E; }
   .orders-button-small:hover {
     background-color: #EF6A05; }
+
+.shorten-sentence {
+  Text-overflow: ellipsis;
+  overflow: hidden;
+  White-space: nowrap;
+  Width: 6.9375rem;
+  text-align: center; }
 
 .orders-button-large {
   cursor: pointer;

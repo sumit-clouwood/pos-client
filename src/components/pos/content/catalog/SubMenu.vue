@@ -5,9 +5,9 @@
       v-for="item in subcategories"
       :key="item._id"
       :class="{ active: currentSubcategory === item._id }"
+      @click.prevent="getItems(item)"
     >
       <img
-        @click.prevent="getItems(item)"
         class="food-categories-item-img"
         :src="item.sub_category_image"
         :alt="item.name"

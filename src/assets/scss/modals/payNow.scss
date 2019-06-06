@@ -208,7 +208,7 @@
           position: relative;
 
           > input {
-            width: $px510;
+            width: $px502;
             height: $px60;
             border-radius: $btn-border-radius;
             border: 2px solid #e5e9ee;
@@ -256,7 +256,7 @@
 
 
           > div:nth-child(4), .amount-keypad > div:nth-child(8) {
-            background-image: linear-gradient(180deg, #5056ca 0%, #55aa26 100%);
+            background-image: linear-gradient(180deg, #5056ca 0%, #2d38aa 100%);
             color: #fff;
           }
 
@@ -376,7 +376,7 @@
             height: $px60;
             box-shadow: 0 2px 2px #d1e6c5;
             border-radius: $btn-border-radius;
-            background-color: #5c5f64;
+            background-color: $btn-bg-black;
             padding: $px10 $px30;
             text-align: center;
 

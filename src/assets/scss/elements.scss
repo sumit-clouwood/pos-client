@@ -3,8 +3,9 @@
 @import "mixins.scss";
 
 @font-face {
-  font-family: "ProximaNova";
-  src: url("../fonts/ProximaNova-Regular.ttf") format("truetype");
+  font-family: "ProximaNova-Regular";
+  src: url("#{$assets-address}ProximaNova-Regular.woff") format("woff");
+  src: url("#{$assets-address}ProximaNova-Regular.woff2") format("woff");
   font-style: normal;
   font-weight: normal;
 }
@@ -13,7 +14,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  font-family: "ProximaNova";
+  font-family: "ProximaNova-Regular";
 }
 
 html {
@@ -114,6 +115,14 @@ img {
   &:hover {
     background-color: $orange-dark;
   }
+}
+
+  .shorten-sentence {
+  Text-overflow: ellipsis;
+  overflow: hidden;
+  White-space: nowrap;
+  Width: $px111;
+  text-align:center;
 }
 
 .orders-button-large {

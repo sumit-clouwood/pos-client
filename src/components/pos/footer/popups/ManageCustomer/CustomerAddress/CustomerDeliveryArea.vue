@@ -1,5 +1,9 @@
 <template>
-  <div class="location-delivery-area-address" v-if="addresses.length">
+  <div
+    class="location-delivery-area-address"
+    :class="classAccess"
+    v-if="addresses.length"
+  >
     <div
       v-for="(address, index) in addresses"
       :key="index"
@@ -30,6 +34,7 @@ export default {
   name: 'CustomerDeliveryArea',
   props: {
     buttons: Boolean,
+    classAccess: String,
   },
   components: {
     Buttons,
@@ -85,5 +90,20 @@ export default {
   position: absolute;
   bottom: 0;
   right: 5px;
+}
+.addOrders {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: auto;
+  overflow: hidden;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  grid-gap: 1.25rem;
 }
 </style>

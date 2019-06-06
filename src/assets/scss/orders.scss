@@ -8,6 +8,7 @@
   height: calc(100vh - #{$main-body-height});
   overflow: hidden;
   background-color: $gray-bg-light;
+  grid-column-start: 2;
 
   .main-orders-contacts {
     display: grid;

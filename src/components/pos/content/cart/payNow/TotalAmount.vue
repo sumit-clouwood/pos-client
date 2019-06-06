@@ -1,5 +1,5 @@
 <template>
-  <div id="total-amount">
+  <div id="total-amount" class="total-amount">
     <div class="payment-amount-title">
       <p class="tip-amopunt">{{ _t('Tip Amount') }}</p>
       <p class="total-amt">{{ _t('Total Amount') }}</p>

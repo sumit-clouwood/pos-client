@@ -97,7 +97,6 @@
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
         touch-action: auto;
-        overflow: hidden;
         display: inline-grid;
         grid-template-columns: 1fr 1fr;
         margin: 0 auto;
@@ -275,31 +274,29 @@
       #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes {
         overflow: hidden;
         margin: 0 auto; }
-        #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div {
-          float: left; }
-          #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div:last-child {
-            float: right; }
-          #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div > p {
-            font-size: 0.875rem;
-            font-weight: bold;
-            font-style: normal;
-            font-stretch: normal;
-            line-height: 2.29;
-            letter-spacing: 0.6px;
-            color: #3a3d44;
-            margin-bottom: 0; }
-            #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div > p:first-child {
-              font-weight: normal;
-              line-height: 1.57;
-              color: #a4a4a4; }
-          #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div > a {
-            font-size: 0.75rem;
+        #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div:last-child {
+          float: right; }
+        #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div > p {
+          font-size: 0.875rem;
+          font-weight: bold;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: 2.29;
+          letter-spacing: 0.6px;
+          color: #3a3d44;
+          margin-bottom: 0; }
+          #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div > p:first-child {
             font-weight: normal;
-            font-style: normal;
-            font-stretch: normal;
-            line-height: 1.83;
-            letter-spacing: 0.6px;
-            color: #5056ca; }
+            line-height: 1.57;
+            color: #a4a4a4; }
+        #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insights-notes > div > a {
+          font-size: 0.75rem;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: 1.83;
+          letter-spacing: 0.6px;
+          color: #5056ca; }
       #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insight-feedback {
         overflow: hidden;
         padding: 0.625rem 0; }
@@ -348,7 +345,7 @@
   .cu-delivery-area-location span {
     font-weight: 600; }
   .cu-delivery-area-location > p {
-    width: 11.875rem;
+    width: 100%;
     margin-bottom: 0.625rem; }
   .cu-delivery-area-location.active {
     border: solid 2px #5056ca; }
