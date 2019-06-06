@@ -1238,7 +1238,7 @@ button:focus {
         border: medium none;
         margin: 0 auto;
         text-align: center;
-        color: #fff;
+        color: #4B4E53;
         border: 1px solid #ddd;
         margin-top: 0.625rem; }
     #tip-amount .modal-dialog .modal-content .modal-footer .btn-announce #add-top {

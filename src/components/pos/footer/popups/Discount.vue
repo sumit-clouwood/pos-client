@@ -7,7 +7,7 @@
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title">
-            {{ _t('Select') + '' + _t('Discount') }}
+            {{ _t('Select') + ' ' + _t('Discount') }}
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
