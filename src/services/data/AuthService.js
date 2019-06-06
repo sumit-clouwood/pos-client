@@ -8,18 +8,22 @@ export default {
   getAccess(env, deviceId) {
     //use post method
     return new Promise((resolve, reject) => {
-      if (localStorage.getItem('user') && localStorage.getItem('token')) {
-        const userString = localStorage.getItem('user')
-        const user = JSON.parse(userString)
+      if (localStorage.getItem('token')) {
+        let data = {
+          token: localStorage.getItem('token'),
+          device_code: localStorage.getItem('device_code'),
+          franchise_code: localStorage.getItem('franchise_code'),
+          last_order_no: localStorage.getItem('last_order_no'),
+          brand_id: localStorage.getItem('brand_id'),
+          store_id: localStorage.getItem('store_id'),
+        }
 
+        const userString = localStorage.getItem('user')
+        if (userString) {
+          data.user = JSON.parse(userString)
+        }
         resolve({
-          data: {
-            token: localStorage.getItem('token'),
-            user: user,
-            device_code: localStorage.getItem('device_code'),
-            franchise_code: localStorage.getItem('franchise_code'),
-            last_order_no: localStorage.getItem('last_order_no'),
-          },
+          data: data,
         })
       } else {
         const data = {

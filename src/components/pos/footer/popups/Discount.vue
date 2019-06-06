@@ -34,7 +34,7 @@
                     : formatPrice(discount.value)
                 }}
               </p>
-              <span class="more">{{ discount.name }}</span>
+              <span class="more">{{ t(discount) }}</span>
             </div>
           </div>
         </div>

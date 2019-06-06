@@ -6,7 +6,7 @@
       :key="index + '-' + item._id"
     >
       <div class="main-orders-list-item-title">
-        <div class="orders-name">{{ item.name }}</div>
+        <div class="orders-name">{{ t(item) }}</div>
         <div class="orders-amount">{{ formatPrice(itemPrice(item)) }}</div>
         <div
           class="orders-close"
@@ -31,6 +31,7 @@
             alt="plus"
             @click="setActiveItem({ orderItem: item, index: index })"
           />
+      </div>
         </div>
       </div>
     </div>

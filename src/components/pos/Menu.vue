@@ -11,16 +11,16 @@
           class="nav-item active-opacity"
           v-for="item in categories"
           :key="item._id"
-          :title="item.name"
-          :data-original-title="item.name"
+          :title="t(item)"
+          :data-original-title="t(item)"
         >
           <a
             class="nav-link-nav"
             :class="{ active: currentCategory === item._id }"
             @click.prevent="browse(item)"
           >
-            <img :src="item.category_image" :alt="item.name" />
-            <span class="nav-link-text">{{ item.name }}</span>
+            <img :src="item.category_image" :alt="t(item)" />
+            <span class="nav-link-text">{{ t(item) }}</span>
           </a>
         </li>
       </ul>
@@ -31,7 +31,7 @@
     <div class="navigation-avatar">
       <a class="nav-link" href="">
         <img :src="profileImage" alt="profile" />
-        <div class="nav-link-user-name">Reino Nose</div>
+        <div class="nav-link-user-name">Admin</div>
       </a>
     </div>
     <div v-if="getImages">

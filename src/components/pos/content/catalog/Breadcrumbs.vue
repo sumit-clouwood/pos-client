@@ -3,8 +3,8 @@
     <div class="breadcrumbs-item breadcrumbs-category">
       <div class="title-box">
         <div class="breadcrumbs-subtitle">{{ _t('Category') }}</div>
-        <div class="breadcrumbs-title" :title="category.name">
-          {{ category.name }}
+        <div class="breadcrumbs-title" :title="category">
+            {{ t(category) }}
         </div>
       </div>
       <img
@@ -16,8 +16,8 @@
     <div class="breadcrumbs-item breadcrumbs-sub-category" v-if="subcategory">
       <div class="title-box">
         <div class="breadcrumbs-subtitle">{{ _t('Sub Category Name') }}</div>
-        <div class="breadcrumbs-title" :title="subcategory.sub_category">
-          {{ subcategory.name }}
+        <div class="breadcrumbs-title" :title="subcategory">
+            {{ t(subcategory) }}
         </div>
       </div>
       <img
@@ -29,7 +29,7 @@
     <div class="breadcrumbs-item breadcrumbs-menu" v-if="item">
       <div class="title-box">
         <div class="breadcrumbs-subtitle">{{ _t('Item') }}</div>
-        <div class="breadcrumbs-title" :title="item.name">{{ item.name }}</div>
+        <div class="breadcrumbs-title" :title="item">{{ item }}</div>
       </div>
     </div>
   </div>

@@ -23,39 +23,47 @@ export default {
     })
   },
 
+  loadUI(store) {
+    DataService.setLang(store.state.location.locale)
+    return new Promise((resolve, reject) => {
+      store
+        .dispatch('location/fetch')
+        .then(() => {
+          store
+            .dispatch('category/fetchAll')
+            .then(() => {
+              store.dispatch('modifier/fetchAll').then(() => {
+                store.commit('sync/loaded', true)
+                resolve()
+              })
+            })
+            .catch(error => reject(error))
+        })
+        .catch(error => reject(error))
+      //continue loading other service in parallel
+      store.dispatch('surcharge/fetchAll')
+      store.dispatch('discount/fetchAll')
+      store.dispatch('giftcard/fetchAll')
+      store.dispatch('invoice/fetchAll')
+      store.dispatch('payment/fetchAll')
+      store.dispatch('customer/fetchAll')
+      store.dispatch('announcement/fetchAll')
+    })
+  },
+
   fetchData(store) {
     return new Promise((resolve, reject) => {
       this.detectBrowser().then(deviceId => {
         store
           .dispatch('auth/auth', deviceId)
-          .then(response => {
+          .then(() => {
             DataService.setContext({
               store: store.getters['context/store'],
               brand: store.getters['context/brand'],
             })
-            store
-              .dispatch('location/fetch', response)
-              .then(() => {
-                store
-                  .dispatch('category/fetchAll', response)
-                  .then(() => {
-                    store.dispatch('modifier/fetchAll', response).then(() => {
-                      store.commit('sync/loaded', true)
-                      resolve()
-                    })
-                  })
-                  .catch(error => reject(error))
-              })
-              .catch(error => reject(error))
 
-            //continue loading other service in parallel
-            store.dispatch('announcement/fetchAll', response)
-            store.dispatch('surcharge/fetchAll', response)
-            store.dispatch('discount/fetchAll', response)
-            store.dispatch('customer/fetchAll', response)
-            store.dispatch('payment/fetchAll', response)
-            store.dispatch('giftcard/fetchAll', response)
-            store.dispatch('invoice/fetchAll', response)
+            this.loadUI(store).then(() => resolve())
+
             // store.dispatch('loyalty/fetchAll', response)
             // store.dispatch(
             //   'deliveryManager/fetchDMOrderDetail',

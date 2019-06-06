@@ -12,7 +12,7 @@
         {{ _t('Phone') }} : {{ selectedCustomer.phone_number }}
       </p>
     </div>
-    <div class="main-oreders-date">{{ todayDateFull }}</div>
+    <div class="main-oreders-date">{{ DateToday }}</div>
     <div class="main-oreders-phone" v-if="selectedCustomer.phone_number">
       {{ _t('Phone') }} : {{ selectedCustomer.phone_number }}
     </div>
@@ -29,8 +29,8 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Header',
   props: {},
+
   computed: {
-    ...mapGetters('sync', ['todayDateFull']),
     ...mapGetters('location', ['_t']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
   },

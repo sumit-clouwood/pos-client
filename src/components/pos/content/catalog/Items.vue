@@ -9,10 +9,10 @@
       <img
         class="food-menu-item-img"
         :src="item.image"
-        :alt="item.name"
+        :alt="t(item)"
         @error="imageLoadError()"
       />
-      <div class="food-menu-item-text">{{ item.name }}</div>
+      <div class="food-menu-item-text">{{ t(item) }}</div>
     </div>
     <Popup />
   </div>
