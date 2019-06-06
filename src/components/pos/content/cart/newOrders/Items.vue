@@ -31,7 +31,6 @@
             alt="plus"
             @click="setActiveItem({ orderItem: item, index: index })"
           />
-      </div>
         </div>
       </div>
     </div>
