@@ -291,7 +291,7 @@ const actions = {
           }
 
           //Youvraj, have a check here
-          if (payment.method.name == CONSTANTS.LOYALTY) {
+          if (payment.method.type == CONSTANTS.LOYALTY) {
             if (parseFloat(rootState.customer.loyalty.balance) > 0) {
               order.loyalty_customer = {
                 balance: rootState.customer.loyalty.balance,

@@ -77,21 +77,23 @@ const getters = {
   //get modifiers specific to item id from current modifiers list not from groups
   //this getter is used in rendering
   itemModifiers: state => itemId => {
-    let subgroups = []
     const item = state.itemModifiers.find(obj => obj.itemId == itemId)
-    for (let subgroupId in item.modifiers) {
-      let subgroup = item.modifiers[subgroupId].subgroup
-      subgroup.modifiers = []
-      let submodifiers = item.modifiers[subgroupId].modifiers
-      for (let submodId in submodifiers) {
-        subgroup.modifiers.push(submodifiers[submodId])
-      }
+    if (item) {
+      let subgroups = []
+      for (let subgroupId in item.modifiers) {
+        let subgroup = item.modifiers[subgroupId].subgroup
+        subgroup.modifiers = []
+        let submodifiers = item.modifiers[subgroupId].modifiers
+        for (let submodId in submodifiers) {
+          subgroup.modifiers.push(submodifiers[submodId])
+        }
 
-      if (subgroup.modifiers.length) {
-        subgroups.push(subgroup)
+        if (subgroup.modifiers.length) {
+          subgroups.push(subgroup)
+        }
       }
+      return subgroups
     }
-    return subgroups
   },
 
   //get mandatory modifiers specific to item id from current modifiers list
