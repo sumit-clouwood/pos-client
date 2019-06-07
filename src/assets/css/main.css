@@ -208,7 +208,8 @@
               box-shadow: inset 0 0 0px 2px #5056CA; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-img {
               width: 6.25rem;
-              margin: 0 auto; }
+              margin: 0 auto;
+              max-height: 5.625rem; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-text {
               text-align: center;
               font-weight: 600;

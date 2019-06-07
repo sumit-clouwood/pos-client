@@ -1,72 +1,242 @@
-/*
-Error: Undefined variable: "$px50".
-        on line 12 of scss/modals/orderConfirmation.scss
+a:hover {
+  text-decoration: none; }
 
-7:   padding: 0;
-8:   border-color: #E3E7F2;
-9: }
-10: 
-11: button.btn.btn-danger.cancel-announce {
-12:   height: $px50;
-13:   font-size: $px14;
-14:   width: $px125;
-15:   background: #cc3232;
-16:   border-color: #cc3232;
-17: }
+.modal-body {
+  padding: 0;
+  border-color: #E3E7F2; }
 
-Backtrace:
-scss/modals/orderConfirmation.scss:12
-/usr/lib/ruby/vendor_ruby/sass/script/tree/variable.rb:49:in `_perform'
-/usr/lib/ruby/vendor_ruby/sass/script/tree/node.rb:58:in `perform'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:397:in `visit_prop'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block (2 levels) in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:431:in `visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `block in visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:169:in `block in visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:168:in `visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:188:in `visit_root'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:159:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:8:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:36:in `css_tree'
-/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:29:in `render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/engine.rb:381:in `_render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/engine.rb:298:in `render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:492:in `update_stylesheet'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:209:in `each'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:209:in `update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:473:in `on_file_changed'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:331:in `block in watch'
-/usr/lib/ruby/vendor_ruby/listen/event/config.rb:23:in `call'
-/usr/lib/ruby/vendor_ruby/listen/event/processor.rb:115:in `_process_changes'
-/usr/lib/ruby/vendor_ruby/listen/event/processor.rb:19:in `block in loop_for'
-/usr/lib/ruby/vendor_ruby/listen/event/processor.rb:15:in `loop'
-/usr/lib/ruby/vendor_ruby/listen/event/processor.rb:15:in `loop_for'
-/usr/lib/ruby/vendor_ruby/listen/event/loop.rb:84:in `_wait_for_changes'
-/usr/lib/ruby/vendor_ruby/listen/event/loop.rb:42:in `block in setup'
-/usr/lib/ruby/vendor_ruby/listen/internals/thread_pool.rb:6:in `block in add'
-*/
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Error: Undefined variable: \"$px50\".\A         on line 12 of scss/modals/orderConfirmation.scss\A \A 7:   padding: 0;\A 8:   border-color: #E3E7F2;\A 9: }\A 10: \A 11: button.btn.btn-danger.cancel-announce {\A 12:   height: $px50;\A 13:   font-size: $px14;\A 14:   width: $px125;\A 15:   background: #cc3232;\A 16:   border-color: #cc3232;\A 17: }"; }
+button.btn.btn-danger.cancel-announce {
+  height: 3.125rem;
+  font-size: 0.875rem;
+  width: 7.8125rem;
+  background: #cc3232;
+  border-color: #cc3232; }
+
+button:hover {
+  opacity: 0.8; }
+
+.modal-footer {
+  border-top: medium; }
+
+.order-table {
+  max-height: 11.5625rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: auto; }
+
+div#order-confirmation .modal-dialog {
+  width: 39.6875rem;
+  height: 36.875rem;
+  box-shadow: 0 10px 40px rgba(133, 139, 151, 0.16);
+  border-radius: 3px;
+  background-color: #ffffff;
+  max-width: 39.6875rem; }
+
+.order-header > h4.order-confirm-title {
+  display: block;
+  width: 100%;
+  text-align: center;
+  color: #3f4146;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.86px; }
+
+.order-header > p {
+  color: #3f4146;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.43px; }
+
+.order-header {
+  padding: 1.875rem 0 0.625rem 0;
+  overflow: hidden;
+  margin: 0 auto; }
+
+.order-table table tr > th {
+  color: #a4a4a4;
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.43px; }
+
+.order-table table tr td {
+  color: #4b4e53;
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0.47px; }
+
+.order-table table {
+  width: 35rem !important;
+  margin: 0 auto; }
+
+.order-table table tr td {
+  border-color: #efefef !important; }
+
+.order-table table th {
+  border-top: medium none; }
+
+.order-table table tr:last-child {
+  border-bottom: 1px solid #efefef !important; }
+
+div#total-order-wrap {
+  overflow: hidden;
+  margin: 0 auto; }
+
+div#total-order-wrap > div {
+  float: left; }
+
+.order-notes {
+  width: 40%; }
+
+div#total-confirm-order {
+  width: 55%;
+  margin-left: 1.25rem; }
+
+div#total-confirm-order > div {
+  float: left; }
+
+.modal-body.order-confirmation-wrap {
+  padding: 0 2.1875rem; }
+
+.order-notes {
+  border-radius: 3px;
+  border: 1px dashed #fdc8a0;
+  background-color: #fff7ef;
+  padding: 1.25rem; }
+
+.order-notes > p:last-child {
+  color: #cf8235;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.25rem;
+  letter-spacing: 0.5px;
+  word-break: break-all;
+  max-height: 4.375rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-bottom: 0;
+  padding-right: 0.625rem; }
+
+p.notes-title {
+  color: #4b4e53;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.43px; }
+
+div#total-order-wrap {
+  padding: 1.5625rem 0;
+  border-bottom: 1px solid #efefef; }
+
+.order-table table tr th:not(:first-child) {
+  text-align: right; }
+
+.order-table table tr td:not(:first-child) {
+  text-align: right; }
+
+.referal button.btn.referal-btn {
+  height: 3.125rem;
+  border-radius: 3px;
+  background-color: #4e535d;
+  color: #fff;
+  padding-left: 0.9375rem;
+  padding-right: 1.5625rem; }
+
+button.btn.referal-btn {
+  background: url(../images/referal-down.png);
+  background-position: center right 8px;
+  background-repeat: no-repeat; }
+
+.referal button#schedule-btn {
+  padding-left: 1.375rem;
+  margin-left: 0.625rem;
+  width: 8.4375rem;
+  height: 3.125rem;
+  border-radius: 3px;
+  border: 1px solid #e4e7eb;
+  background-color: #ffffff;
+  color: #72777c;
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0.58px;
+  text-align: left; }
+
+.datepicker--time-row {
+  background: linear-gradient(to right, #dedede, #dedede) left 50%/100% 5px no-repeat !important; }
+
+.vdatetime {
+  display: inline-block; }
+
+.vdatetime > input {
+  background: url(/img/pos/schedule-icon.png);
+  background-repeat: no-repeat;
+  background-position: center right 10px;
+  width: 19.6875rem;
+  height: 3.125rem;
+  border-radius: 3px;
+  background-color: #ffffff;
+  border: solid 1px #e4e7eb;
+  padding: 0.625rem; }
+
+.right-shift input.vdatetime-input.btn.schedule-input.btn-large.datepicker-here {
+  width: 18.3125rem; }
+
+div#order-confirmation .modal-footer {
+  padding: 0.625rem 2.1875rem 2.1875rem 2.1875rem; }
+
+button#schedule-btn > span {
+  margin-left: 0px; }
+
+button#confirm_announcement {
+  width: 6.875rem;
+  height: 3.125rem;
+  box-shadow: 0 2px 2px #d1e6c5;
+  border-radius: 3px;
+  background-color: #5056ca;
+  border-color: #5056ca;
+  margin-left: 0.625rem; }
+
+.referal > button > span {
+  text-align: right;
+  float: right; }
+
+button.btn.referal-btn.dropdown-toggle {
+  -webkit-appearance: none !important;
+  -moz-appearance: none; }
+
+.dropdown-toggle::after {
+  display: none; }
+
+button#schedule-btn:focus {
+  box-shadow: none; }
+
+button {
+  cursor: pointer; }
+
+button#schedule-btn {
+  position: relative; }
+
+button#schedule-btn .datepicker {
+  display: none; }
+
+button#schedule-btn .datepicker-inline .datepicker {
+  border-color: #d7d7d7;
+  box-shadow: none;
+  position: absolute;
+  left: auto;
+  right: auto;
+  opacity: 1;
+  -webkit-transform: none;
+  transform: none;
+  top: -18.125rem; }
+
+button#schedule-btn:hover {
+  opacity: 1 !important; }
+
+button:focus {
+  box-shadow: none !important; }
+
+/***/
+
+/*# sourceMappingURL=orderConfirmation.css.map */
