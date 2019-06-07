@@ -38,16 +38,17 @@ export default {
               })
             })
             .catch(error => reject(error))
+
+          store.dispatch('surcharge/fetchAll')
+          store.dispatch('discount/fetchAll')
+          store.dispatch('giftcard/fetchAll')
+          store.dispatch('invoice/fetchAll')
+          store.dispatch('payment/fetchAll')
+          store.dispatch('customer/fetchAll')
+          store.dispatch('announcement/fetchAll')
         })
         .catch(error => reject(error))
       //continue loading other service in parallel
-      store.dispatch('surcharge/fetchAll')
-      store.dispatch('discount/fetchAll')
-      store.dispatch('giftcard/fetchAll')
-      store.dispatch('invoice/fetchAll')
-      store.dispatch('payment/fetchAll')
-      store.dispatch('customer/fetchAll')
-      store.dispatch('announcement/fetchAll')
     })
   },
 

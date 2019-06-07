@@ -33,13 +33,13 @@ module.exports = {
     },
     //webpack: dev server to proxy any unknown requests (requests that did not match a static file) to http://localhost:8000.
     proxy: {
-      '/api': {
+      '/noapi': {
         //use localhost or dockerip
         // /api ll be replaced by localhost/api/url
         target: process.env.VUE_APP_API_ENDPOINT,
         changeOrigin: true,
         secure: false,
-        //logLevel: 'debug',
+        logLevel: 'debug',
         //pathRewrite: { "^/api": "" }
         headers: {
           Connection: 'keep-alive',

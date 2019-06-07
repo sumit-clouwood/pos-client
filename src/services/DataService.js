@@ -7,7 +7,7 @@ import DateTime from '@/plugins/helpers/DateTime.js'
 const apiURL =
   process.env.NODE_ENV === 'production'
     ? process.env.VUE_APP_API_ENDPOINT
-    : '/api'
+    : process.env.VUE_APP_API_ENDPOINT + '/api'
 
 console.log('api url', process.env.NODE_ENV, apiURL)
 
@@ -182,6 +182,10 @@ export default {
         })
         .catch(error => reject(error))
     })
+  },
+
+  factory() {
+    return axios
   },
 
   saveEventOffline({ request, response }) {
