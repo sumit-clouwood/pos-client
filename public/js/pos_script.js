@@ -2,7 +2,8 @@
 /* eslint-disable no-unused-vars */
 $(document).ready(function() {
   // Configure/customize these variables.
-  var showChar = 23 // How many characters are shown by default
+  // How many characters are shown by default
+  var showChar = 23
   // var ellipsestext = "...";
   var moretext = '...'
   var lesstext = 'Show less'
@@ -272,8 +273,8 @@ $(document).ready(function() {
     $('.pizza-size-wrapper > div').removeClass('active')
     $(this).addClass('active')
   })
-  $('.ullist-feedback > li').click(function() {
-    $('.ullist-feedback > li').removeClass('active')
+  $('.ullist-feedback > li, .food-menu-item').click(function() {
+    $('.ullist-feedback > li, .food-menu-item').removeClass('active')
     $(this).addClass('active')
   })
   $('ul.ullist-pagination > li.order-pagination').click(function() {

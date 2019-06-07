@@ -12,7 +12,7 @@
 import { mapGetters, mapState } from 'vuex'
 import Modifiers from './content/Modifiers'
 export default {
-  name: 'Contents',
+  name: 'Content',
   props: {},
   components: {
     Modifiers,
