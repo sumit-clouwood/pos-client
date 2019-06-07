@@ -175,7 +175,7 @@ $(document).ready(function() {
     })
 
   $('li.pay-now').click(function() {
-    $('#payment-method')[0].slick('refresh')
+    $('#payment-method')[0].slick.refresh()
     $('#payment-method')
       .not('.slick-initialized')
       .slick({
