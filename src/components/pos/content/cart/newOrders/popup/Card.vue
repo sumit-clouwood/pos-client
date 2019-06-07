@@ -28,7 +28,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              <span>-</span> Cancel
+              Cancel
             </button>
             <button
               class="btn btn-success btn-large popup-btn-save"
