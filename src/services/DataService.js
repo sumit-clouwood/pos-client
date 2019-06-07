@@ -5,7 +5,9 @@ import db from '@/services/network/DB'
 import DateTime from '@/plugins/helpers/DateTime.js'
 
 const apiURL =
-  process.env.NODE_ENV === 'production' ? process.env.VUE_APP_API_ENDPOINT : ''
+  process.env.NODE_ENV === 'production'
+    ? process.env.VUE_APP_API_ENDPOINT
+    : '/api'
 
 console.log('api url', process.env.NODE_ENV, apiURL)
 
