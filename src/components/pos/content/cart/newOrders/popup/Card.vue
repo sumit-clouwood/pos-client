@@ -10,11 +10,11 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Card Number</h4>
+          <h4 class="customer-title">{{ _t('Card Number') }}</h4>
         </div>
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
-            <p>Enter Card Reference Code</p>
+            <p>{{ _t('Enter Card Reference Code') }}</p>
             <input type="text" class="add-email-from" v-model="code" />
           </div>
           <div v-show="error" class="msg">
@@ -28,7 +28,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              Cancel
+              {{ _t('Cancel') }}
             </button>
             <button
               class="btn btn-success btn-large popup-btn-save"
@@ -37,7 +37,7 @@
               data-toggle="modal"
               @click="payByCard"
             >
-              Add
+              {{ _t('Add') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -47,6 +47,7 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 /* global hideModal */
 export default {
   name: 'GiftCard',
@@ -55,6 +56,9 @@ export default {
       code: '',
       error: null,
     }
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     payByCard() {
