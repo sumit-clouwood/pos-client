@@ -52,7 +52,10 @@ export default {
       }
     },
     subtotal: function(quantity, price) {
-      return parseFloat(price) * parseInt(quantity)
+      let subtotal = isNaN(parseFloat(price) * parseInt(quantity))
+        ? 0.0
+        : parseFloat(price) * parseInt(quantity)
+      return subtotal
     },
   },
 }

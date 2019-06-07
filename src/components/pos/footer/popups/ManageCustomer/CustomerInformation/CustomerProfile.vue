@@ -1,6 +1,6 @@
 <template>
   <ul class="ullist-profile" v-if="customerProfile">
-    <li class="col-md-2">
+    <li>
       <img
         v-if="customerProfile.image"
         v-bind:src="customerProfile.image_path + customerProfile.image"
@@ -25,7 +25,7 @@
         </span>
       </p>
     </li>
-    <li class="col-md-4">
+    <li>
       <p class="profile-customer-title">{{ _t('Phone Number:') }}</p>
       <h5 id="profile-customer-number">{{ customerProfile.phone_number }}</h5>
       <p class="profile-customer-title">
@@ -41,7 +41,7 @@
         </small>
       </p>
     </li>
-    <li class="col-md-2" @click="editCustomer(customerProfile._id)">
+    <li @click="editCustomer(customerProfile._id)">
       <a
         class="cu-edit-icon"
         href="#"

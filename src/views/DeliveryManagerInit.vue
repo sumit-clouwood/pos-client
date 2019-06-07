@@ -20,5 +20,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../assets/sass/deliveryManager';
+/*@import '../assets/sass/deliveryManager';*/
 </style>

@@ -159,9 +159,9 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
+<!--<style lang="scss" scoped>
 .right-shift {
   right: 14px;
   float: right;
 }
-</style>
+</style>-->

@@ -6,7 +6,7 @@
       <div class="modal-content">
         <div class="modal-body tip-amount">
           <div class="tip-amount-wrap">
-            <p>Enter Tip Amount</p>
+            <p>{{ _t('Enter Tip Amount') }}</p>
             <input v-model.number="tip" type="number" name="tip" />
           </div>
         </div>
@@ -17,7 +17,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              <span>-</span> Cancel
+              {{ _t('Cancel') }}
             </button>
             <button
               class="btn btn-success btn-large"
@@ -26,7 +26,7 @@
               id="add-top"
               @click="addTip"
             >
-              <span>+</span>Add
+              {{ _t('Add') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -38,12 +38,16 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'TipAmount',
   data: function() {
     return {
       tip: 0,
     }
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     addTip() {

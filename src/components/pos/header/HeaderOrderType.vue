@@ -1,7 +1,7 @@
 <template>
-  <div class="add-screen-walkin">
-    <p class="walk-in">{{ _t(orderType) }}</p>
-    <p class="walk-in-place text-capitalize">{{ locationName.name }}</p>
+  <div class="header-main-left-info">
+    <p class="title">{{ _t(orderType) }}</p>
+    <p class="subtitle">{{ locationName.name }}</p>
   </div>
 </template>
 

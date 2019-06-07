@@ -8,9 +8,11 @@
       :data-toggle="getToggle(method)"
       :data-target="getTarget(method)"
     >
-      <img :src="image(method.icon)" alt="method.name" /> <br /><label>{{
-        method.name
-      }}</label>
+      <img :src="image(method.icon)" :alt="method.name" :title="method.name" />
+      <br />
+      <label class="shorten-sentence" :title="method.name">
+        {{ method.name }}
+      </label>
     </div>
   </div>
 </template>

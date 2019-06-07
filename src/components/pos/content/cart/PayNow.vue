@@ -44,11 +44,15 @@
             <PayNowFooter />
           </div>
           <div v-show="!items.length">
-            <div class="error">
+            <div class="error font-weight-bold">
               {{ _t('Please add some item(s) to order.') }}
             </div>
             <div class="hide-btn">
-              <button data-dismiss="modal" id="hide-paynow">
+              <button
+                data-dismiss="modal"
+                id="hide-paynow"
+                class="btn btn-danger"
+              >
                 {{ _t('Back') }}
                 <span
                   ><i class="fa fa-angle-right" aria-hidden="true"></i

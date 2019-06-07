@@ -1,0 +1,35 @@
+#change-amount {
+  .modal-dialog {
+    .modal-content {
+      .modal-header {}
+
+      .modal-body {
+        .amount-change-wrap {
+          > p {
+            color: #72777c;
+            font-size: $px14;
+            font-weight: 400;
+            margin-bottom: $px5;
+            letter-spacing: 0.5px;
+            background-color: white;
+          }
+
+          > h1 {
+            color: #5056ca;
+            font-size: $px50;
+            font-weight: 400;
+            letter-spacing: 1.71px;
+          }
+        }
+      }
+
+      .modal-footer {}
+    }
+  }
+}
+
+.amount-change-wrap {
+  overflow: hidden;
+  text-align: center;
+  padding-top: $px35;
+}

@@ -6,7 +6,7 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">_t('+ Add') + ' ' + _t('Note')</h4>
+          <h4 class="customer-title">{{ _t('+ Add') + ' ' + _t('Note') }}</h4>
         </div>
         <div class="modal-body add-note-wrap">
           <div class="add-note-area">
@@ -48,7 +48,7 @@
 
 <script>
 /* global $ */
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'AddNote',
   props: {},
@@ -56,6 +56,9 @@ export default {
     return {
       orderNote: '',
     }
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     addNoteOrder: function(orderNote) {

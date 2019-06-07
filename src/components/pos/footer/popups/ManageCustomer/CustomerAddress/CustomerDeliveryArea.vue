@@ -1,9 +1,13 @@
 <template>
-  <div v-if="addresses.length" class="add-to-order-wrapper col-md-12">
+  <div
+    class="location-delivery-area-address"
+    :class="classAccess"
+    v-if="addresses.length"
+  >
     <div
       v-for="(address, index) in addresses"
       :key="index"
-      class="order-location option-contain col-md-5 col-sm-5"
+      class="order-location option-contain cu-delivery-area-location"
       :class="{ active: activeIndex === index }"
       @click="setActiveCustomer(address, index)"
     >
@@ -30,6 +34,7 @@ export default {
   name: 'CustomerDeliveryArea',
   props: {
     buttons: Boolean,
+    classAccess: String,
   },
   components: {
     Buttons,
@@ -85,5 +90,20 @@ export default {
   position: absolute;
   bottom: 0;
   right: 5px;
+}
+.addOrders {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: auto;
+  overflow: hidden;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  grid-gap: 1.25rem;
 }
 </style>

@@ -9,7 +9,7 @@
           <h4 class="customer-title">{{ _t('Add to Order') }}</h4>
         </div>
         <div class="modal-body add-to-order">
-          <CustomerDeliveryArea :buttons="false" />
+          <CustomerDeliveryArea :buttons="false" classAccess="addOrders" />
           <!--<div class="error" v-else-if="error">No address found.</div>
           <div class="loading" v-else><Preloader /></div>-->
         </div>

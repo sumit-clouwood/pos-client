@@ -1,0 +1,427 @@
+#pay-now {
+  right: 0;
+  left: unset;
+  width: $px570;
+  margin-top: 0;
+  background: #fff;
+  overflow: auto;
+  position: fixed;
+  top: 0;
+  z-index: 1050;
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
+  touch-action: auto;
+
+  .slick-track {
+    display: flex;
+    align-items: center;
+  }
+
+  .modal-dialog {
+    max-width: $px650;
+    right: 0;
+    margin: 0 !important;
+
+    .modal-content {
+      border: medium none;
+
+      .modal-body {
+        padding: $px30;
+
+        .order-payment {
+          margin: 0 auto;
+          overflow: hidden;
+          margin-bottom: $px20;
+
+          .order-id {
+            width: 75%;
+
+            > h2 {
+              font-size: $px24;
+              font-weight: 600;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: #3d3f43;
+            }
+
+            > p {
+              font-size: $px12;
+              font-weight: normal;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: #3d3f43;
+            }
+          }
+
+          .hide-btn {
+            width: 25%;
+            text-align: right;
+
+            > button {
+              width: $px100;
+              height: $px50;
+              border-radius: $btn-border-radius;
+              background-color: #5056ca;
+              box-shadow: 0 2px 2px 0 #d1e6c5;
+              color: #fff;
+              border: medium;
+              cursor: pointer;
+              font-size: $px14;
+              font-weight: 600;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: 0.6px;
+              color: #ffffff;
+            }
+
+            span {
+              position: relative;
+              left: $px10;
+              top: 2px;
+
+              > i {
+                font-size: $px18;
+              }
+            }
+          }
+
+          > div {
+            float: left;
+          }
+        }
+
+        .total-amount {
+          overflow: hidden;
+          border-radius: $card-border-radius;
+          background-color: #eefae7;
+          padding: $px20;
+          margin: $px10 0;
+
+          .payment-amount-title {
+            width: 25%;
+
+            .tip-amopunt {
+              font-size: $px14;
+              font-weight: normal;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: #3A3E9F;
+            }
+
+            .total-amt {
+              font-size: $px16;
+              font-weight: 600;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: #3A3E9F;
+            }
+
+            > p {
+              margin-bottom: $px10;
+            }
+          }
+
+          .payment-amount-digit {
+            width: 75%;
+            text-align: right;
+
+            > p {
+              margin-bottom: $px5;
+              font-size: $px12;
+              font-weight: normal;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: #3A3E9F;
+            }
+
+            > h2 {
+              font-size: $px24;
+              font-weight: 600;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: #3A3E9F;
+            }
+          }
+
+          > div {
+            float: left;
+            margin: 0 auto;
+          }
+        }
+
+        .payment-method-title {
+          border-bottom: solid 2px #e5e9f3;
+          margin-bottom: $px20;
+
+          > h2 {
+            font-size: $px18;
+            font-weight: 600;
+            font-style: normal;
+            font-stretch: normal;
+            line-height: normal;
+            letter-spacing: normal;
+            color: #3d3f43;
+            padding-bottom: $px15;
+          }
+        }
+
+        .slick-slider {
+          width: $px520;
+
+          .slick-slide {
+            > div > div {
+              width: $px120 !important;
+              min-height: $px100;
+              border-radius: $btn-border-radius;
+              background-color: #ffffff;
+              border: solid 1px #dbdfe9;
+              padding: 0;
+              cursor: pointer;
+              display: inline-flex !important;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+            }
+          }
+
+          &.active {
+            border: solid 2px #5056ca !important;
+          }
+        }
+
+        .payemnt-input-block {
+          overflow: hidden;
+          padding: $px15 0 $px35 0;
+          position: relative;
+
+          > input {
+            width: $px502;
+            height: $px60;
+            border-radius: $btn-border-radius;
+            border: 2px solid #e5e9ee;
+            background-color: #ffffff;
+            text-align: right;
+            padding: 0 $px10;
+            font-size: $px24;
+            font-weight: bold;
+            font-style: normal;
+            font-stretch: normal;
+            line-height: normal;
+            letter-spacing: 0.9px;
+            color: #3d3f43;
+          }
+        }
+
+        .amount-keypad {
+          overflow: hidden;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: max-content max-content max-content max-content;
+          grid-gap: $px10;
+
+          #add-amt {
+            cursor: pointer;
+          }
+
+          > div {
+            width: $px120;
+            height: $px65;
+            border-radius: $card-border-radius;
+            background-image: linear-gradient(180deg, #eeeeee 0%, #d8d8d8 100%);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: $px24;
+            font-weight: 600;
+            font-style: normal;
+            font-stretch: normal;
+            line-height: 1.08;
+            letter-spacing: normal;
+            color: #3d3f43;
+          }
+
+
+          > div:nth-child(4), .amount-keypad > div:nth-child(8) {
+            background-image: linear-gradient(180deg, #5056ca 0%, #2d38aa 100%);
+            color: #fff;
+          }
+
+          > div:nth-child(12) {
+            background-image: linear-gradient(180deg, #cc3232 0%, #bc2525 100%);
+          }
+
+          > div:nth-child(13) {
+            background-image: linear-gradient(180deg, #fac161 0%, #f76b1c 100%);
+            color: #fff;
+          }
+        }
+
+        .payment-breakdown {
+          display: none;
+          margin: 0 auto;
+
+          .payment-breakdown-title {
+            > h1 {
+              color: #3d3f43;
+              font-size: $px18;
+              font-weight: 600;
+              border-bottom: 1px solid #e5e9f3;
+              padding-bottom: $px20;
+            }
+          }
+
+          .payment-method-block {
+            box-shadow: 0 $px5 $px30 #e0e7f4;
+            border-radius: $btn-border-radius;
+            background-color: #ffffff;
+            margin: $px20 0 $px70 0;
+
+            table {
+              td {
+                img {
+                  cursor: pointer;
+                  padding: $px10;
+                }
+              }
+
+              tr {
+                height: $px50;
+
+                th {
+                  color: #ffffff;
+                  font-size: $px16;
+                  font-weight: 700;
+                  letter-spacing: 0.57px;
+                  padding-left: $px15;
+                  padding-right: $px15;
+
+                  &:nth-child(2) {
+                    text-align: right;
+                  }
+
+                  &:first-child {
+                    border-top-left-radius: 4px !important;
+                  }
+
+                  &:last-child {
+                    border-top-right-radius: 4px !important;
+                  }
+                }
+
+                td {
+                  font-size: $px14;
+                  font-weight: bold;
+                  font-style: normal;
+                  font-stretch: normal;
+                  line-height: 2;
+                  letter-spacing: 0.5px;
+                  color: #3a3d44;
+                  padding-left: $px15;
+                  padding-right: $px15;
+
+                  &:nth-child(2) {
+                    text-align: right;
+                  }
+
+                  &:nth-child(3) {
+                    text-align: center;
+                  }
+                }
+
+                &:first-child {
+                  height: $px50;
+                  border-radius: $btn-border-radius $btn-border-radius 0 0;
+                  background-color: #5056ca;
+                  color: #fff;
+                }
+
+                &:nth-child(2) {
+                  border-bottom: 1px solid #eff1f8;
+                }
+
+                &:nth-child(2) {
+                  td {
+                    font-weight: normal;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        .payment-screen-footer {
+          overflow: hidden;
+          padding: $px20 0 $px20 0;
+          display: grid;
+          grid-template-columns: $px120 $px120 $px120 $px120;
+          grid-gap: $px10;
+          align-items: center;
+
+          > div {
+            float: left;
+            height: $px60;
+            box-shadow: 0 2px 2px #d1e6c5;
+            border-radius: $btn-border-radius;
+            background-color: $btn-bg-black;
+            padding: $px10 $px30;
+            text-align: center;
+
+            &:first-child {
+              margin-left: 0;
+            }
+
+            &:last-child {
+              box-shadow: 0 2px 2px #e2deda;
+              border-radius: $btn-border-radius;
+              background-color: #5056ca;
+            }
+          }
+
+
+          .footer-wrap {
+            padding: 0 !important;
+            display: grid;
+            grid-template-columns: auto;
+            align-items: center;
+            justify-content: center;
+            height: $px70;
+
+            &:hover {
+              background-color: #5056ca !important;
+              cursor: pointer;
+            }
+
+            img {
+              align-self: end;
+              margin: 0 auto;
+            }
+
+            span {
+              display: block;
+              text-align: center;
+              font-size: $px12;
+              font-weight: 600;
+              letter-spacing: 0.5px;
+              color: #fff;
+            }
+          }
+        }
+
+      }
+    }
+  }
+}

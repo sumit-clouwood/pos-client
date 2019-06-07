@@ -1,29 +1,37 @@
 <template>
-  <div class="breadcrumb-category">
-    <ul class="ullist-category">
-      <li>
-        <span>{{ _t('Category') }}</span>
-        <p class="shorten_name" :title="category.name">{{ t(category) }}</p>
-        <span class="arrows"
-          ><img src="img/pos/right-arrow.png" alt="right-arrow"
-        /></span>
-      </li>
-      <li v-if="subcategory">
-        <span>{{ _t('Sub Category Name') }}</span>
-        <p class="shorten_name" :title="subcategory.sub_category">
+  <div class="breadcrumbs">
+    <div class="breadcrumbs-item breadcrumbs-category">
+      <div class="title-box">
+        <div class="breadcrumbs-subtitle">{{ _t('Category') }}</div>
+        <div class="breadcrumbs-title" :title="category">
+          {{ t(category) }}
+        </div>
+      </div>
+      <img
+        class="breadcrumbs-img"
+        src="img/pos/right-arrow.png"
+        alt="right-arrow"
+      />
+    </div>
+    <div class="breadcrumbs-item breadcrumbs-sub-category" v-if="subcategory">
+      <div class="title-box">
+        <div class="breadcrumbs-subtitle">{{ _t('Sub Category Name') }}</div>
+        <div class="breadcrumbs-title" :title="subcategory">
           {{ t(subcategory) }}
-        </p>
-        <span class="arrows"
-          ><img src="img/pos/right-arrow.png" alt="right-arrow"
-        /></span>
-      </li>
-      <li v-if="item">
-        <span>{{ _t('Item') }}</span>
-        <p :title="t(item)" class="shorten_name">
-          {{ t(item) }}
-        </p>
-      </li>
-    </ul>
+        </div>
+      </div>
+      <img
+        class="breadcrumbs-img"
+        src="img/pos/right-arrow.png"
+        alt="right-arrow"
+      />
+    </div>
+    <div class="breadcrumbs-item breadcrumbs-menu" v-if="item">
+      <div class="title-box">
+        <div class="breadcrumbs-subtitle">{{ _t('Item') }}</div>
+        <div class="breadcrumbs-title" :title="item">{{ t(item) }}</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -42,7 +50,7 @@ export default {
 }
 </script>
 <style scoped>
-ul.ullist-category {
+/*ul.ullist-category {
   width: 500px !important;
-}
+}*/
 </style>

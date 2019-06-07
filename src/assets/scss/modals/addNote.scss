@@ -1,0 +1,60 @@
+#add-note {
+  .modal-dialog {
+    width: $px560;
+    box-shadow: 0 10px 40px rgba(133, 139, 151, 0.16);
+    border-radius: $btn-border-radius;
+    background-color: #ffffff;
+    max-width: $px560;
+
+    .modal-content {
+      box-shadow: 0 10px 40px rgba(133, 139, 151, 0.16);
+
+      .modal-header {
+
+      }
+
+      .modal-body {
+
+        .add-note-area {
+          > input {
+            width: 100%;
+            height: $px50;
+            border-radius: $btn-border-radius;
+            border: 2px solid #efefef;
+            padding: $px10;
+          }
+
+          .add-note-form {
+            width: $px490;
+            height: $px130;
+            border-radius: $btn-border-radius;
+            border: 1px solid #e0e3e6;
+            background-color: #ffffff;
+          }
+
+          > p {
+            color: #72777c;
+            font-size: $px14;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            margin-bottom: $px10;
+            margin-top: $px10;
+          }
+        }
+      }
+
+      .modal-footer {
+        .btn-announce {
+          #save-note {
+            width: $px110;
+            height: $px50;
+            border-radius: $btn-border-radius;
+            background-color: #5056ca;
+            border-color: #5056ca;
+            margin-left: $px10;
+          }
+        }
+      }
+    }
+  }
+}

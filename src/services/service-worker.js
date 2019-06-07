@@ -6,7 +6,7 @@ var iDB
 var form_data
 var IDB_VERSION = 3
 var ORDER_DOCUMENT = 'order_post_requests'
-var serverUrl = 'https://int.erp-pos.com'
+// var serverUrl = 'https://int.erp-pos.com'
 var clientUrl = 'https://delivery.erp-pos.com'
 
 if (workbox) {

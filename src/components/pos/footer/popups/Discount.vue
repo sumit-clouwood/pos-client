@@ -7,7 +7,7 @@
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title">
-            {{ _t('Select') + '' + _t('Discount') }}
+            {{ _t('Select') + ' ' + _t('Discount') }}
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
@@ -47,7 +47,7 @@
               id="discount-save-btn"
               @click="applyOrderDiscount()"
             >
-              Ok
+              {{ _t('Ok') }}
             </button>
             <button
               v-show="orderError"
@@ -55,7 +55,7 @@
               type="button"
               data-dismiss="modal"
             >
-              Close
+              {{ _t('Close') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -98,6 +98,6 @@ export default {
 </script>
 <style lang="sass" scoped>
 .error
-  width: 100%;
-  padding: 40px 5px 10px 5px;
+  width: 100%
+  padding: 40px 5px 10px 5px
 </style>

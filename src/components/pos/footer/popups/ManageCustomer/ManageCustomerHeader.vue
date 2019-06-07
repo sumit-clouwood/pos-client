@@ -1,9 +1,11 @@
 <template>
-  <div class="inner-addon left-addon">
-    <img class="search-img" src="img/pos/search-icon.png" :alt="_t('search')" />
+  <div class="search-field">
+    <label class="search-field-icon">
+      <i class="fa fa-search" aria-hidden="true"></i>
+    </label>
     <input
       type="text"
-      class="form-control"
+      class="search-field-input"
       :placeholder="_t('Search') + ' ' + _t('customer')"
       v-model="searchTerms"
       @keyup="searchCustomer()"

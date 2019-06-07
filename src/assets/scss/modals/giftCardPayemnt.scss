@@ -1,0 +1,21 @@
+
+.add-note-area > p {
+  color: #72777c;
+  font-size: $px14;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  margin-bottom: $px8;
+  margin-top: $px10;
+}
+
+.modal-body.add-email-wrap {
+  padding: 0 $px35;
+}
+
+.add-note-area > input {
+  width: 100%;
+  height: $px50;
+  border-radius: $btn-border-radius;
+  border: 2px solid #efefef;
+  padding: $px10;
+}

@@ -1,9 +1,9 @@
 <template>
-  <div class="catalog col-md-8 left-container">
+  <div class="main-body">
     <search />
-    <div class="row">
+    <div class="food-wrapper">
       <SubMenu v-if="subcategories.length" />
-      <div class="items vegetable-pizza-wrapper">
+      <div class="food-block">
         <Breadcrumbs />
         <Items v-if="items.length" />
       </div>
