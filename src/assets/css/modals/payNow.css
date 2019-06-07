@@ -1,70 +1,301 @@
-/*
-Error: Undefined variable: "$px570".
-        on line 4 of scss/modals/payNow.scss
+#pay-now {
+  right: 0;
+  left: unset;
+  width: 35.625rem;
+  margin-top: 0;
+  background: #fff;
+  overflow: auto;
+  position: fixed;
+  top: 0;
+  z-index: 1050;
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
+  touch-action: auto; }
+  #pay-now .slick-track {
+    display: flex;
+    align-items: center; }
+  #pay-now .modal-dialog {
+    max-width: 40.625rem;
+    right: 0;
+    margin: 0 !important; }
+    #pay-now .modal-dialog .modal-content {
+      border: medium none; }
+      #pay-now .modal-dialog .modal-content .modal-body {
+        padding: 1.875rem; }
+        #pay-now .modal-dialog .modal-content .modal-body .order-payment {
+          margin: 0 auto;
+          overflow: hidden;
+          margin-bottom: 1.25rem; }
+          #pay-now .modal-dialog .modal-content .modal-body .order-payment .order-id {
+            width: 75%; }
+            #pay-now .modal-dialog .modal-content .modal-body .order-payment .order-id > h2 {
+              font-size: 1.5rem;
+              font-weight: 600;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: #3d3f43; }
+            #pay-now .modal-dialog .modal-content .modal-body .order-payment .order-id > p {
+              font-size: 0.75rem;
+              font-weight: normal;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: #3d3f43; }
+          #pay-now .modal-dialog .modal-content .modal-body .order-payment .hide-btn {
+            width: 25%;
+            text-align: right; }
+            #pay-now .modal-dialog .modal-content .modal-body .order-payment .hide-btn > button {
+              width: 6.25rem;
+              height: 3.125rem;
+              border-radius: 3px;
+              background-color: #5056ca;
+              box-shadow: 0 2px 2px 0 #d1e6c5;
+              color: #fff;
+              border: medium;
+              cursor: pointer;
+              font-size: 0.875rem;
+              font-weight: 600;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: 0.6px;
+              color: #ffffff; }
+            #pay-now .modal-dialog .modal-content .modal-body .order-payment .hide-btn span {
+              position: relative;
+              left: 0.625rem;
+              top: 2px; }
+              #pay-now .modal-dialog .modal-content .modal-body .order-payment .hide-btn span > i {
+                font-size: 1.125rem; }
+          #pay-now .modal-dialog .modal-content .modal-body .order-payment > div {
+            float: left; }
+        #pay-now .modal-dialog .modal-content .modal-body .total-amount {
+          overflow: hidden;
+          border-radius: 5px;
+          background-color: #eefae7;
+          padding: 1.25rem;
+          margin: 0.625rem 0; }
+          #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-title {
+            width: 25%; }
+            #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-title .tip-amopunt {
+              font-size: 0.875rem;
+              font-weight: normal;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: #3A3E9F; }
+            #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-title .total-amt {
+              font-size: 1rem;
+              font-weight: 600;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: #3A3E9F; }
+            #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-title > p {
+              margin-bottom: 0.625rem; }
+          #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-digit {
+            width: 75%;
+            text-align: right; }
+            #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-digit > p {
+              margin-bottom: 0.3125rem;
+              font-size: 0.75rem;
+              font-weight: normal;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: #3A3E9F; }
+            #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-digit > h2 {
+              font-size: 1.5rem;
+              font-weight: 600;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: #3A3E9F; }
+          #pay-now .modal-dialog .modal-content .modal-body .total-amount > div {
+            float: left;
+            margin: 0 auto; }
+        #pay-now .modal-dialog .modal-content .modal-body .payment-method-title {
+          border-bottom: solid 2px #e5e9f3;
+          margin-bottom: 1.25rem; }
+          #pay-now .modal-dialog .modal-content .modal-body .payment-method-title > h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            font-style: normal;
+            font-stretch: normal;
+            line-height: normal;
+            letter-spacing: normal;
+            color: #3d3f43;
+            padding-bottom: 0.9375rem; }
+        #pay-now .modal-dialog .modal-content .modal-body .slick-slider {
+          width: 32.5rem; }
+          #pay-now .modal-dialog .modal-content .modal-body .slick-slider .slick-slide > div > div {
+            width: 7.5rem !important;
+            min-height: 6.25rem;
+            border-radius: 3px;
+            background-color: #ffffff;
+            border: solid 1px #dbdfe9;
+            padding: 0;
+            cursor: pointer;
+            display: inline-flex !important;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; }
+            #pay-now .modal-dialog .modal-content .modal-body .slick-slider .slick-slide > div > div.active {
+              border: solid 2px #5056ca !important; }
+          #pay-now .modal-dialog .modal-content .modal-body .slick-slider.active {
+            border: solid 2px #5056ca !important; }
+        #pay-now .modal-dialog .modal-content .modal-body .payemnt-input-block {
+          overflow: hidden;
+          padding: 0.9375rem 0 2.1875rem 0;
+          position: relative; }
+          #pay-now .modal-dialog .modal-content .modal-body .payemnt-input-block > input {
+            width: 31.375rem;
+            height: 3.75rem;
+            border-radius: 3px;
+            border: 2px solid #e5e9ee;
+            background-color: #ffffff;
+            text-align: right;
+            padding: 0 0.625rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            font-style: normal;
+            font-stretch: normal;
+            line-height: normal;
+            letter-spacing: 0.9px;
+            color: #3d3f43; }
+        #pay-now .modal-dialog .modal-content .modal-body .amount-keypad {
+          overflow: hidden;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: max-content max-content max-content max-content;
+          grid-gap: 0.625rem; }
+          #pay-now .modal-dialog .modal-content .modal-body .amount-keypad #add-amt {
+            cursor: pointer; }
+          #pay-now .modal-dialog .modal-content .modal-body .amount-keypad > div {
+            width: 7.5rem;
+            height: 4.0625rem;
+            border-radius: 5px;
+            background-image: linear-gradient(180deg, #eeeeee 0%, #d8d8d8 100%);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            font-style: normal;
+            font-stretch: normal;
+            line-height: 1.08;
+            letter-spacing: normal;
+            color: #3d3f43; }
+          #pay-now .modal-dialog .modal-content .modal-body .amount-keypad > div:nth-child(4), #pay-now .modal-dialog .modal-content .modal-body .amount-keypad .amount-keypad > div:nth-child(8) {
+            background-image: linear-gradient(180deg, #5056ca 0%, #2d38aa 100%);
+            color: #fff; }
+          #pay-now .modal-dialog .modal-content .modal-body .amount-keypad > div:nth-child(12) {
+            background-image: linear-gradient(180deg, #cc3232 0%, #bc2525 100%); }
+          #pay-now .modal-dialog .modal-content .modal-body .amount-keypad > div:nth-child(13) {
+            background-image: linear-gradient(180deg, #fac161 0%, #f76b1c 100%);
+            color: #fff; }
+        #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown {
+          display: none;
+          margin: 0 auto; }
+          #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-breakdown-title > h1 {
+            color: #3d3f43;
+            font-size: 1.125rem;
+            font-weight: 600;
+            border-bottom: 1px solid #e5e9f3;
+            padding-bottom: 1.25rem; }
+          #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-method-block {
+            box-shadow: 0 0.3125rem 1.875rem #e0e7f4;
+            border-radius: 3px;
+            background-color: #ffffff;
+            margin: 1.25rem 0 4.375rem 0; }
+            #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-method-block table td img {
+              cursor: pointer;
+              padding: 0.625rem; }
+            #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-method-block table tr {
+              height: 3.125rem; }
+              #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-method-block table tr th {
+                color: #ffffff;
+                font-size: 1rem;
+                font-weight: 700;
+                letter-spacing: 0.57px;
+                padding-left: 0.9375rem;
+                padding-right: 0.9375rem; }
+                #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-method-block table tr th:nth-child(2) {
+                  text-align: right; }
+                #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-method-block table tr th:first-child {
+                  border-top-left-radius: 4px !important; }
+                #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-method-block table tr th:last-child {
+                  border-top-right-radius: 4px !important; }
+              #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-method-block table tr td {
+                font-size: 0.875rem;
+                font-weight: bold;
+                font-style: normal;
+                font-stretch: normal;
+                line-height: 2;
+                letter-spacing: 0.5px;
+                color: #3a3d44;
+                padding-left: 0.9375rem;
+                padding-right: 0.9375rem; }
+                #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-method-block table tr td:nth-child(2) {
+                  text-align: right; }
+                #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-method-block table tr td:nth-child(3) {
+                  text-align: center; }
+              #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-method-block table tr:first-child {
+                height: 3.125rem;
+                border-radius: 3px 3px 0 0;
+                background-color: #5056ca;
+                color: #fff; }
+              #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-method-block table tr:nth-child(2) {
+                border-bottom: 1px solid #eff1f8; }
+              #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-method-block table tr:nth-child(2) td {
+                font-weight: normal; }
+        #pay-now .modal-dialog .modal-content .modal-body .payment-screen-footer {
+          overflow: hidden;
+          padding: 1.25rem 0 1.25rem 0;
+          display: grid;
+          grid-template-columns: 7.5rem 7.5rem 7.5rem 7.5rem;
+          grid-gap: 0.625rem;
+          align-items: center; }
+          #pay-now .modal-dialog .modal-content .modal-body .payment-screen-footer > div {
+            float: left;
+            height: 3.75rem;
+            box-shadow: 0 2px 2px #d1e6c5;
+            border-radius: 3px;
+            background-color: #4B4E53;
+            padding: 0.625rem 1.875rem;
+            text-align: center; }
+            #pay-now .modal-dialog .modal-content .modal-body .payment-screen-footer > div:first-child {
+              margin-left: 0; }
+            #pay-now .modal-dialog .modal-content .modal-body .payment-screen-footer > div:last-child {
+              box-shadow: 0 2px 2px #e2deda;
+              border-radius: 3px;
+              background-color: #5056ca; }
+          #pay-now .modal-dialog .modal-content .modal-body .payment-screen-footer .footer-wrap {
+            padding: 0 !important;
+            display: grid;
+            grid-template-columns: auto;
+            align-items: center;
+            justify-content: center;
+            height: 4.375rem; }
+            #pay-now .modal-dialog .modal-content .modal-body .payment-screen-footer .footer-wrap:hover {
+              background-color: #5056ca !important;
+              cursor: pointer; }
+            #pay-now .modal-dialog .modal-content .modal-body .payment-screen-footer .footer-wrap img {
+              align-self: end;
+              margin: 0 auto; }
+            #pay-now .modal-dialog .modal-content .modal-body .payment-screen-footer .footer-wrap span {
+              display: block;
+              text-align: center;
+              font-size: 0.75rem;
+              font-weight: 600;
+              letter-spacing: 0.5px;
+              color: #fff; }
 
-1: #pay-now {
-2:   right: 0;
-3:   left: unset;
-4:   width: $px570;
-5:   margin-top: 0;
-6:   background: #fff;
-7:   overflow: auto;
-8:   position: fixed;
-9:   top: 0;
-
-Backtrace:
-scss/modals/payNow.scss:4
-/usr/lib/ruby/vendor_ruby/sass/script/tree/variable.rb:49:in `_perform'
-/usr/lib/ruby/vendor_ruby/sass/script/tree/node.rb:58:in `perform'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:397:in `visit_prop'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block (2 levels) in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:431:in `visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `block in visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:169:in `block in visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:168:in `visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:188:in `visit_root'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:159:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:8:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:36:in `css_tree'
-/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:29:in `render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/engine.rb:381:in `_render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/engine.rb:298:in `render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:492:in `update_stylesheet'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:209:in `each'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:209:in `update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:473:in `on_file_changed'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:331:in `block in watch'
-/usr/lib/ruby/vendor_ruby/listen/event/config.rb:23:in `call'
-/usr/lib/ruby/vendor_ruby/listen/event/processor.rb:115:in `_process_changes'
-/usr/lib/ruby/vendor_ruby/listen/event/processor.rb:19:in `block in loop_for'
-/usr/lib/ruby/vendor_ruby/listen/event/processor.rb:15:in `loop'
-/usr/lib/ruby/vendor_ruby/listen/event/processor.rb:15:in `loop_for'
-/usr/lib/ruby/vendor_ruby/listen/event/loop.rb:84:in `_wait_for_changes'
-/usr/lib/ruby/vendor_ruby/listen/event/loop.rb:42:in `block in setup'
-/usr/lib/ruby/vendor_ruby/listen/internals/thread_pool.rb:6:in `block in add'
-*/
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Error: Undefined variable: \"$px570\".\A         on line 4 of scss/modals/payNow.scss\A \A 1: #pay-now {\A 2:   right: 0;\A 3:   left: unset;\A 4:   width: $px570;\A 5:   margin-top: 0;\A 6:   background: #fff;\A 7:   overflow: auto;\A 8:   position: fixed;\A 9:   top: 0;"; }
+/*# sourceMappingURL=payNow.css.map */
