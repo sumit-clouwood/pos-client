@@ -157,8 +157,6 @@ export default {
 }
 .btnSuccess{
   color: #fff;
-  background-color: #28a745;
-  border-color: #28a745;
   height: 47px;
   border-radius: 0px 5px 5px 0px;
 }

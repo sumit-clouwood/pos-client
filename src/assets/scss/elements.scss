@@ -205,3 +205,11 @@ img {
 svg{
   color: #fff;
 }
+.btnSuccess, .btn-success{
+  background-color:$blue-middle;
+  border-color: $blue-middle;
+  &:hover{
+    background-color:$blue-light;
+    border-color: $blue-light;
+  }
+}

@@ -160,4 +160,11 @@ img {
 svg {
   color: #fff; }
 
+.btnSuccess, .btn-success {
+  background-color: #5056CA;
+  border-color: #5056CA; }
+  .btnSuccess:hover, .btn-success:hover {
+    background-color: #767DFF;
+    border-color: #767DFF; }
+
 /*# sourceMappingURL=elements.css.map */

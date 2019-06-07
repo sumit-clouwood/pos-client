@@ -1132,22 +1132,15 @@ button.btn.referal-btn {
   display: inline-block; }
 
 .vdatetime > input {
-  padding-left: 22px;
-  margin-left: 10px;
-  height: 50px;
-  border-radius: 4px;
-  border: 1px solid #e4e7eb;
-  background-color: #ffffff;
-  color: #72777c !important;
-  /* font-family: "Proxima Nova - Regular"; */
-  font-size: 14px;
-  font-weight: 400;
-  letter-spacing: 0.58px;
-  text-align: left;
-  box-shadow: none;
   background: url(/img/pos/schedule-icon.png);
   background-repeat: no-repeat;
-  background-position: center right 10px; }
+  background-position: center right 10px;
+  width: 19.6875rem;
+  height: 3.125rem;
+  border-radius: 3px;
+  background-color: #ffffff;
+  border: solid 1px #e4e7eb;
+  padding: 0.625rem; }
 
 .right-shift input.vdatetime-input.btn.schedule-input.btn-large.datepicker-here {
   width: 18.3125rem; }
@@ -3212,7 +3205,8 @@ body {
               box-shadow: inset 0 0 0px 2px #5056CA; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-img {
               width: 6.25rem;
-              margin: 0 auto; }
+              margin: 0 auto;
+              max-height: 5.625rem; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-text {
               text-align: center;
               font-weight: 600;

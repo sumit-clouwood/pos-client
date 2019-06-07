@@ -5,7 +5,9 @@
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header customer-header">
-          <h4 class="customer-title">{{ customer_title }} customer</h4>
+          <h4 class="customer-title">
+            {{ customer_title }} {{ _t('customer') }}
+          </h4>
           <button type="button" class="close" data-dismiss="modal">
             &times;
           </button>
@@ -19,7 +21,7 @@
               data-dismiss="modal"
               id="close-customer"
             >
-              <span>X</span> Cancel
+              {{ _t('Cancel') }}
             </button>
             <button
               class="btn btn-success btn-large"
@@ -27,7 +29,7 @@
               id="post_announcement"
               v-on:click="customerAction(customer_title)"
             >
-              Save
+              {{ _t('Save') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -44,7 +46,7 @@
 
 <script>
 /* global $ */
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 import CustomerForm from './CustomerForm'
 
@@ -55,6 +57,7 @@ export default {
     CustomerForm,
   },
   computed: {
+    ...mapGetters('location', ['_t']),
     ...mapState({
       customer_title: state => state.customer.modalStatus,
       customerCreateStatus: state => state.customer.responseInformation,
