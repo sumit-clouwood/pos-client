@@ -524,15 +524,15 @@
       height: $px25;
       border-radius: $btn-border-radius;
       border: solid 2px #e4e7eb;
-      content: '';
+      content: '\2713';
       position: absolute;
       display: flex;
       align-items: center;
       justify-content: center;
       right: $px10;
       top: $px10;
-      background-color: #dfffcd;
-      color: #555;
+      background-color: $blue-light;
+      color: $blue-dark;
     }
   }
 }

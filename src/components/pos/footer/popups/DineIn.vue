@@ -6,39 +6,41 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Dinning Option</h4>
+          <h4 class="customer-title">{{ _t('Dinning Option') }}</h4>
         </div>
-        <div class="modal-body row dining-options-block">
+        <div class="modal-body dining-options-block">
           <div class="dining-option-block">
             <div
               class="option-contain"
               :class="{ active: selectedOrderType === 'dinein' }"
               @click="setOrderType('dinein')"
             >
-              <img src="img/pos/dine-in.svg" /><span>Dine In</span>
+              <img src="img/pos/dine-in.svg" /><span>{{ _t('Dine In') }}</span>
             </div>
             <div
               class="option-contain"
               :class="{ active: selectedOrderType === 'takeaway' }"
               @click="setOrderType('takeaway')"
             >
-              <img src="img/pos/take-away.svg" /><span>Take Away</span>
+              <img src="img/pos/take-away.svg" /><span>
+                {{ _t(' Take Away') }}
+              </span>
             </div>
-          </div>
-          <div class="dining-option-block">
             <div
               class="option-contain"
               :class="{ active: selectedOrderType === 'delivery' }"
               @click="setOrderType('delivery')"
             >
-              <img src="img/pos/delivery-icon.svg" /><span>Delivery</span>
+              <img src="img/pos/delivery-icon.svg" /><span>
+                {{ _t('Delivery') }}
+              </span>
             </div>
             <div
               class="option-contain"
               :class="{ active: selectedOrderType === 'event' }"
               @click="setOrderType('event')"
             >
-              <img src="img/pos/event.svg" /><span>Event</span>
+              <img src="img/pos/event.svg" /><span>{{ _t('Event') }}</span>
             </div>
           </div>
         </div>
@@ -51,7 +53,7 @@
               id="dining-opt"
               @click="updateOrderType()"
             >
-              Ok
+              {{ _t('Ok') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -63,7 +65,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'DineIn',
@@ -74,6 +76,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('location', ['_t']),
     ...mapState('order', ['orderType']),
   },
   watch: {

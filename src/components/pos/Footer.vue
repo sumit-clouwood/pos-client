@@ -246,7 +246,7 @@
     <div class="modal-backdrop fade show" id="transparent-screen"></div>
 
     <!--All popup including online order, because we need to apply few js which are not on header so all popups will be here-->
-    <!--    <DineIn />-->
+    <DineIn />
     <AddNote />
     <Discount />
     <OnlineOrder />
@@ -278,7 +278,7 @@
 
 <script>
 import Invoice from '../pos/content/cart/payNow/Invoice'
-// import DineIn from './footer/popups/DineIn'
+import DineIn from './footer/popups/DineIn'
 import AddNote from './footer/popups/AddNote'
 import Discount from './footer/popups/Discount'
 import OnlineOrder from './header/popups/OnlineOrder'
@@ -311,7 +311,7 @@ export default {
   name: 'Footer',
   props: {},
   components: {
-    // DineIn,
+    DineIn,
     AddNote,
     Discount,
     OnlineOrderDetails,

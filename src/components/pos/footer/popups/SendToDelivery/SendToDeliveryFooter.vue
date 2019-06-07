@@ -8,7 +8,7 @@
         type="button"
         data-value=""
         id="referal-btn"
-        class="btn referal-btn dropdown-toggle"
+        class="btn referal-btn dropdown-toggle shorten-sentence"
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
