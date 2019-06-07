@@ -1,4 +1,3 @@
-@import '../pixels_rem.scss';
 @import '../variables.scss';
 @import '../mixins.scss';
 
@@ -525,15 +524,15 @@
       height: $px25;
       border-radius: $btn-border-radius;
       border: solid 2px #e4e7eb;
-      content: '';
+      content: '\2713';
       position: absolute;
       display: flex;
       align-items: center;
       justify-content: center;
       right: $px10;
       top: $px10;
-      background-color: #dfffcd;
-      color: #555;
+      background-color: $blue-light;
+      color: $blue-dark;
     }
   }
 }
@@ -753,8 +752,8 @@ div#select-discount-item .dining-option-block.select-discount-option > div {
 }
 
 .container-radio-btn input:checked ~ .checkmark-radio-btn {
-  background-color: #62bb31;
-  border-color: #62bb31;
+  background-color: $blue-middle ;
+  border-color: $blue-middle ;
 }
 
 .checkmark-radio-btn:after {
@@ -794,6 +793,7 @@ label.container-radio-btn img {
   display: inline-block;
   vertical-align: middle;
   margin-right: $px5;
+  width: $px35;
 }
 
 button:focus {

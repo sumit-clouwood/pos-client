@@ -47,8 +47,8 @@ a:hover {
 }
 
 .option-contain.active:after {
-  content: " ";
-  background-image: url(../images/dine-right.png);
+  content: '\2713';
+  //background-image: url(../images/dine-right.png);
   position: absolute;
   height: $px25;
   width: $px25;
@@ -56,9 +56,9 @@ a:hover {
   top: $px10;
   right: $px10;
   border-radius: $btn-border-radius;
-  background-color: #dfffcd;
+  background-color: $blue-light;
   background-position: center center;
-  border-color: #dfffcd !important;
+  border-color: $blue-light !important;
 }
 
 .dining-option-block.select-discount-option > div {

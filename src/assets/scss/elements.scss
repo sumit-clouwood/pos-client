@@ -213,3 +213,17 @@ svg{
     border-color: $blue-light;
   }
 }
+.btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active, .show>.btn-success.dropdown-toggle{
+  background-color:$blue-middle;
+  border-color: $blue-middle;
+}
+
+.btn-announce button {
+  svg{
+    width: 15px;
+    /* height: 20px; */
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+}

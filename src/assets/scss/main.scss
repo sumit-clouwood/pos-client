@@ -72,7 +72,7 @@
 
         .food-categories-item {
           width: $food-categories-item-width;
-          height: $food-categories-item-height;
+          //height: $food-categories-item-height;
           border: 1px solid $gray-middle;
           border-radius: $card-border-radius;
           display: grid;
@@ -102,7 +102,8 @@
           .food-categories-item-img {
             width: $px50;
             margin: 0 auto;
-            margin-top: auto;
+            margin-top: $px5;
+            height: $px50;
           }
 
           .food-categories-item-text {

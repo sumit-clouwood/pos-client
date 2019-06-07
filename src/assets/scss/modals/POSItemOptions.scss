@@ -1,3 +1,4 @@
+@import "../variables";
 .POSItemOptions {
   padding-right: $px10;
 
@@ -43,7 +44,7 @@
             }
 
             .POSItemOptions_money {
-              color: #62BB31;
+              color: $blue-middle;
               font-size: $px18;
               font-weight: normal;
               letter-spacing: 0;
@@ -91,7 +92,7 @@
               .POSItemOptions_quantity_submit {
                 button {
                   color: #fff;
-                  background: #62BB31;
+                  background: $blue-middle;
                   border-radius: $btn-border-radius;
                   height: $px40;
                   width: $px140;
@@ -164,8 +165,8 @@
                 }
 
                 input[type=checkbox]:checked + span {
-                  background: #5056ca;
-                  border-color: #5056ca;
+                  background: $blue-middle;
+                  border-color: $blue-middle;
                   position: relative;
                 }
 
@@ -209,6 +210,7 @@
                   margin-right: $px5;
                   display: inline-block;
                   vertical-align: middle;
+                  width: $px35;
                 }
 
                 span {
@@ -234,17 +236,17 @@
         padding-top: $px25 !important;
 
         .discountitembutton {
-          background: #62BB31;
+          background: $blue-middle;
           border-radius: $btn-border-radius;
-          box-shadow: 0 2px 2px 0 #D1E6C5;
+          box-shadow: 0 2px 2px 0 $blue-light;
           height: $px40;
           padding: 0 $px16;
         }
 
         .discountbutton {
-          background: #62BB31;
+          background: $blue-middle;
           border-radius: $btn-border-radius;
-          box-shadow: 0 2px 2px 0 #D1E6C5;
+          box-shadow: 0 2px 2px 0 $blue-light;
           height: $px40;
           padding: 0 $px25;
         }
@@ -264,9 +266,9 @@
 
           &.colorwhite {
             &.donebutton {
-              background: #62BB31;
+              background: $blue-middle;
               border-radius: $btn-border-radius;
-              box-shadow: 0 2px 2px 0 #D1E6C5;
+              box-shadow: 0 2px 2px 0 $blue-light;
               padding: 0 $px15;
             }
           }

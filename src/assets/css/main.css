@@ -55,7 +55,6 @@
         grid-gap: 1.25rem; }
         .main .main-body .food-wrapper .food-categories .food-categories-item {
           width: 5.625rem;
-          height: 5.625rem;
           border: 1px solid #ddd;
           border-radius: 5px;
           display: grid;
@@ -78,7 +77,8 @@
           .main .main-body .food-wrapper .food-categories .food-categories-item .food-categories-item-img {
             width: 3.125rem;
             margin: 0 auto;
-            margin-top: auto; }
+            margin-top: 0.3125rem;
+            height: 3.125rem; }
           .main .main-body .food-wrapper .food-categories .food-categories-item .food-categories-item-text {
             text-align: center;
             font-weight: 600;
