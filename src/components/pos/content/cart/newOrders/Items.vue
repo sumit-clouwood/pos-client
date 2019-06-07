@@ -6,7 +6,7 @@
       :key="index + '-' + item._id"
     >
       <div class="main-orders-list-item-title">
-        <div class="orders-name">{{ t(item) }}</div>
+        <div class="orders-name">{{ dt(item) }}</div>
         <div class="orders-amount">{{ formatPrice(itemPrice(item)) }}</div>
         <div
           class="orders-close"

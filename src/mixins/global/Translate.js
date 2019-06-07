@@ -10,7 +10,7 @@ export default {
   },
 
   methods: {
-    t(data) {
+    odt(data) {
       if (!data) {
         return { name: '' }
       }

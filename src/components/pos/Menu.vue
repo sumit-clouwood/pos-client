@@ -11,16 +11,16 @@
           class="nav-item active-opacity"
           v-for="item in categories"
           :key="item._id"
-          :title="t(item)"
-          :data-original-title="t(item)"
+          :title="dt(item)"
+          :data-original-title="dt(item)"
         >
           <a
             class="nav-link-nav"
             :class="{ active: currentCategory === item._id }"
             @click.prevent="browse(item)"
           >
-            <img :src="item.category_image" :alt="t(item)" />
-            <span class="nav-link-text">{{ t(item) }}</span>
+            <img :src="item.category_image" :alt="dt(item)" />
+            <span class="nav-link-text">{{ dt(item) }}</span>
           </a>
         </li>
       </ul>

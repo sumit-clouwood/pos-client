@@ -10,7 +10,7 @@ Vue.mixin({
       Num: Num,
       DateToday: new DateTime().dateToday(),
       LookupData: LookupData,
-      t: Trans._t,
+      dt: Trans._t,
     }
   },
 })
