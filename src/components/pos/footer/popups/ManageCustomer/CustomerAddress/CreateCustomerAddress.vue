@@ -136,11 +136,6 @@ export default {
         this.errors.building = 'Building/Villa required'
         this.errors.count = 1
       }
-      if (this.newAddressDetails.building.length > 15) {
-        this.errors.building =
-          'Building/Villa should be not more than 15 characters'
-        this.errors.count = 1
-      }
       if (!this.newAddressDetails.flat_number) {
         this.errors.flat_number = 'Flat Number is required'
         this.errors.count = 1
@@ -151,6 +146,11 @@ export default {
       }
       if (this.newAddressDetails.street.length < 2) {
         this.errors.street = 'Street should be at least 2 characters'
+        this.errors.count = 1
+      }
+      if (this.newAddressDetails.building.length > 15) {
+        this.errors.building =
+          'Building/Villa should be not more than 15 characters'
         this.errors.count = 1
       }
       if (this.errors.count === 0) {
