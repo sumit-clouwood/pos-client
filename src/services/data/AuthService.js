@@ -1,5 +1,6 @@
 import DataService from '@/services/DataService'
-const authUrl = '/login/'
+const authUrl = '/login'
+//const authUrl = process.env.VUE_APP_API_ENDPOINT + '/api/login'
 const deviceCode = '100'
 const franchiseCode = '0004'
 const lastOrderNo = '1000'
@@ -14,8 +15,6 @@ export default {
           device_code: localStorage.getItem('device_code'),
           franchise_code: localStorage.getItem('franchise_code'),
           last_order_no: localStorage.getItem('last_order_no'),
-          brand_id: localStorage.getItem('brand_id'),
-          store_id: localStorage.getItem('store_id'),
         }
 
         const userString = localStorage.getItem('user')
@@ -32,6 +31,7 @@ export default {
           device_id: deviceId,
         }
 
+        //DataService.factory()
         DataService.post(authUrl, data)
           .then(response => {
             //temporary values

@@ -32,9 +32,6 @@ const actions = {
           commit(mutation.SET_FRANCHISE_CODE, response.data.franchise_code)
           commit(mutation.SET_LAST_ORDER_NO, response.data.last_order_no || 0)
 
-          commit('context/SET_BRAND_ID', response.data.brand_id, { root: true })
-          commit('context/SET_STORE_ID', response.data.store_id, { root: true })
-
           const data = {
             user: state.userDetails,
             deviceId: deviceId,

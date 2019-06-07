@@ -2,6 +2,7 @@
 import * as mutation from './location/mutation-types'
 import LocationService from '@/services/data/LocationService'
 import Num from '@/plugins/helpers/Num'
+import DataService from '@/services/DataService'
 // initial state
 const state = {
   currency: 'AED',
@@ -33,53 +34,63 @@ const getters = {
 
 // actions
 const actions = {
-  fetch({ state, commit, dispatch }) {
+  fetch({ state, commit, rootGetters, dispatch }) {
     return new Promise((resolve, reject) => {
-      LocationService.getLocationData(state.locale)
+      LocationService.getLocationData()
         .then(response => {
-          localStorage.setItem(
-            'selectedBrand',
-            response.data.available_brands[0]._id
+          commit(
+            'context/SET_BRAND_ID',
+            response.data.available_brands[1]._id,
+            { root: true }
           )
-          dispatch('setStore')
-          commit(mutation.SET_STORE, response.data.store)
-          commit(mutation.SET_BRAND, response.data.brand)
-          commit(mutation.SET_LANGUAGE_DIRECTION, response.data.direction)
-          commit(mutation.SET_TRASLATIONS, response.data.translations)
-          commit(mutation.SET_AVAILABLE_LANGUAGES, response.data.available_lang)
-          commit(mutation.SET_LOCATION, state.store.address)
-          commit(mutation.SET_CURRENCY, state.store.currency)
-          commit(mutation.SET_TIMEZONE, state.store.timezone)
-
-          commit('modules/SET_ENABLED_MODULES', state.brand.enabled_modules, {
-            root: true,
+          DataService.setContext({
+            brand: rootGetters['context/brand'],
+            store: rootGetters['context/store'],
           })
+          //call again with brand_id
+          LocationService.getLocationData().then(storedata => {
+            commit(
+              'context/SET_STORE_ID',
+              storedata.data.available_stores[0]._id,
+              { root: true }
+            )
+            DataService.setContext({
+              brand: rootGetters['context/brand'],
+              store: rootGetters['context/store'],
+            })
 
-          dispatch('referrals')
+            commit(mutation.SET_STORE, storedata.data.available_stores[0])
+            commit(mutation.SET_BRAND, storedata.data.brand)
+            commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
+            commit(mutation.SET_TRASLATIONS, storedata.data.translations)
+            commit(
+              mutation.SET_AVAILABLE_LANGUAGES,
+              storedata.data.available_lang
+            )
+            commit(mutation.SET_LOCATION, state.store.address)
+            commit(mutation.SET_CURRENCY, state.store.currency)
+            commit(mutation.SET_TIMEZONE, state.brand.timezone)
 
-          //  else if (state.store.default_language) {
-          //   locale = state.store.default_language
-          // }
-          // take out else part,as discussed with Alex language ll be dependent on cashier login
+            commit('modules/SET_ENABLED_MODULES', state.brand.enabled_modules, {
+              root: true,
+            })
 
-          resolve(state.locale)
-          // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
+            dispatch('referrals')
+
+            //  else if (state.store.default_language) {
+            //   locale = state.store.default_language
+            // }
+            // take out else part,as discussed with Alex language ll be dependent on cashier login
+
+            resolve(state.locale)
+            // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
+          })
         })
         .catch(error => {
           reject(error)
         })
     })
   },
-
-  setStore() {
-    LocationService.getLocationData().then(response => {
-      localStorage.setItem(
-        'selectedStore',
-        response.data.available_stores[0]._id
-      )
-    })
-  },
-
   referrals({ commit }) {
     LocationService.getReferrals().then(response => {
       commit(mutation.SET_REFERRALS, response.data.data)
@@ -109,11 +120,9 @@ const mutations = {
   },
   [mutation.SET_STORE](state, store) {
     state.store = store
-    state.store = state.brand = localStorage.getItem('selectedStore')
   },
   [mutation.SET_BRAND](state, brand) {
     state.brand = brand
-    state.brand = localStorage.getItem('selectedBrand')
   },
   [mutation.SET_CURRENCY](state, currency) {
     state.currency = currency
