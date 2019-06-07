@@ -327,6 +327,13 @@ const actions = {
     return new Promise((resolve, reject) => {
       OrderService.saveOrder(state.order, rootState.customer.offlineData)
         .then(response => {
+          if (response.data.id) {
+            commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
+              root: true,
+            })
+            resolve(response.data)
+            return true
+          }
           dispatch('invoice/fetchAll', null, { root: true }).then(() => {
             //get print rules
             if (response.data.data === 1) {
