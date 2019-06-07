@@ -2,7 +2,8 @@
 /* eslint-disable no-unused-vars */
 $(document).ready(function() {
   // Configure/customize these variables.
-  var showChar = 23 // How many characters are shown by default
+  // How many characters are shown by default
+  var showChar = 23
   // var ellipsestext = "...";
   var moretext = '...'
   var lesstext = 'Show less'
@@ -174,7 +175,7 @@ $(document).ready(function() {
     })
 
   $('li.pay-now').click(function() {
-    $('#payment-method')[0].slick.refresh()
+    $('#payment-method')[0].slick('refresh')
     $('#payment-method')
       .not('.slick-initialized')
       .slick({
