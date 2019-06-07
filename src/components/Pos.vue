@@ -2,7 +2,7 @@
   <div class="new-pos">
     <Menu v-if="categories.length" />
     <Header />
-    <Contents />
+    <Content />
     <Footer />
   </div>
 </template>
@@ -23,7 +23,7 @@
 <script>
 import Menu from './pos/Menu.vue'
 import Header from './pos/Header.vue'
-import Contents from './pos/Contents'
+import Content from './pos/Content.vue'
 import Footer from './pos/Footer'
 import { mapState } from 'vuex'
 export default {
@@ -34,7 +34,7 @@ export default {
   components: {
     Menu,
     Header,
-    Contents,
+    Content,
     Footer,
   },
   //store private data in component using data
