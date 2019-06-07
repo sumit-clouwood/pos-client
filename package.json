@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "axios-auth-refresh": "^1.0.6",
+    "axios-auth-refresh": "1.0.6",
     "fingerprintjs2": "^2.0.6",
     "luxon": "^1.12.1",
     "moment-timezone": "^0.5.25",
