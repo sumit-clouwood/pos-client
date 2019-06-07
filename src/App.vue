@@ -1,4 +1,4 @@
-<!-- 
+<!--
 The App.vue file is the root component that all other components are nested within.
 -->
 
@@ -102,6 +102,6 @@ if ('serviceWorker' in navigator && 'SyncManager' in window) {
   margin-top: 60px;
 }
 </style>-->
-<style lang="css">
-@import './assets/css/style.css';
+<style lang="scss">
+@import './assets/scss/style.scss';
 </style>

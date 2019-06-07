@@ -9,10 +9,6 @@ $lg: 1920px;
   font-family: 'ProximaNova';
 }
 
-// @include responsive(xs){}
-// @include responsive(sm){}
-// @include responsive(md){}
-// @include responsive(lg){}
 @mixin responsive($media) {
   @if $media==xs {
     @media only screen and (min-width: $xs - 1) {

@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAEA,IAAK;EACH,MAAM,EAAE,CAAC;EACT,OAAO,EAAE,CAAC;;AAGZ,QAAS;EACP,MAAM,EAAE,KAAK;EACb,OAAO,EAAE,CAAC;EACV,MAAM,EAAE,CAAC;EACT,OAAO,EAAE,IAAI;EACb,qBAAqB,EAAE,YAAqB;EAC5C,kBAAkB,EAAE,qBAAiC;;AAGvD,eAAe;EACb,OAAO,EAAE,IAAI",
-"sources": ["../scss/page_pos.scss"],
-"names": [],
-"file": "page_pos.css"
-}

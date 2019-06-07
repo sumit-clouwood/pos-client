@@ -60,7 +60,6 @@ img {
   display: inline-block;
 }
 
-//scrollbar
 
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: $btn-border-radius;
@@ -83,7 +82,6 @@ img {
   bprder: 1px solid $gray-light;
 }
 
-// buttons
 .orders-button-small {
   cursor: pointer;
   padding: 0 $px10;
@@ -98,7 +96,6 @@ img {
   margin-bottom: $px5;
   font-size: $px12;
   transition: 0.2s linear;
-  //min-width: $px80;
   &.canceled{
     background-color: #CC3232;
     &:hover{
@@ -154,7 +151,6 @@ img {
   }
 }
 
-// search field
 .search-field {
   display: grid;
   grid-template-columns: $px60 1fr;
