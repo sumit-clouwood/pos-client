@@ -72,7 +72,8 @@
 
         .food-categories-item {
           width: $food-categories-item-width;
-          height: $food-categories-item-height;
+          min-height: $food-categories-item-height;
+          //height: $food-categories-item-height;
           border: 1px solid $gray-middle;
           border-radius: $card-border-radius;
           display: grid;
@@ -84,6 +85,7 @@
           position: relative;
           font-size: $px14;
           background-color: #fff;
+          padding: $px10 $px5 $px5 $px5;
 
           &:hover, &.active {
             box-shadow: inset 0 0 0px 2px $blue-middle;
@@ -102,13 +104,16 @@
           .food-categories-item-img {
             width: $px50;
             margin: 0 auto;
-            margin-top: auto;
+            margin-bottom: $px5;
           }
 
           .food-categories-item-text {
             text-align: center;
             font-weight: 600;
             user-select: none;
+            line-height: $px14;
+            word-break: break-all;
+            font-size: $px12;
           }
 
           .food-categories-item-check {
@@ -281,6 +286,7 @@
 
             .food-menu-item-img {
               width: $px100;
+              max-height: $px100;
               margin: 0 auto;
             }
 

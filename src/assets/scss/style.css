@@ -526,7 +526,7 @@ svg {
       color: #3d3f43;
       padding-left: 0.9375rem; }
       #customer .modal-dialog .modal-content .modal-body select.selectpicker {
-        background-image: url("assets/images/select-arrow.png");
+        background-image: url("../images/select-arrow.png");
         background-repeat: no-repeat;
         background-position: center right 0.625rem;
         -webkit-appearance: none;
@@ -619,7 +619,7 @@ svg {
         border: solid 2px #5056ca; }
         #dining-option .modal-dialog .modal-content .modal-body .dining-option-block .option-contain.active:after {
           content: " ";
-          background-image: url(assets/images/dine-right.png);
+          background-image: url(../images/dine-right.png);
           position: absolute;
           height: 1.5625rem;
           width: 1.5625rem;
@@ -1107,7 +1107,7 @@ div#total-order-wrap {
   padding-right: 1.5625rem; }
 
 button.btn.referal-btn {
-  background: url(assets/images/referal-down.png);
+  background: url(../images/referal-down.png);
   background-position: center right 8px;
   background-repeat: no-repeat; }
 
@@ -1367,7 +1367,7 @@ a:hover {
 
 .option-contain.active:after {
   content: " ";
-  background-image: url(assets/images/dine-right.png);
+  background-image: url(../images/dine-right.png);
   position: absolute;
   height: 1.5625rem;
   width: 1.5625rem;
@@ -2230,7 +2230,7 @@ button#gift-card-btn {
   background: #fff;
   padding: 0 0.9375rem;
   border: 1px solid #e4e7eb;
-  background-image: url(assets/images/select-arrow.png);
+  background-image: url(../images/select-arrow.png);
   background-repeat: no-repeat;
   background-position: center right 0.625rem;
   -webkit-appearance: none; }
@@ -2560,7 +2560,7 @@ div#total-order-past-wrap {
         font-size: 1.5rem; }
     #add_address .modal-dialog .modal-content .modal-body .left-form > div .selectpicker,
     #add_address .modal-dialog .modal-content .modal-body .right-form > div .selectpicker {
-      background-image: url("assets/images/select-arrow.png");
+      background-image: url("../images/select-arrow.png");
       background-repeat: no-repeat;
       background-position: center right 10px;
       -webkit-appearance: none;
