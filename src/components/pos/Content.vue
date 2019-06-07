@@ -10,6 +10,7 @@
 import Catalog from './content/Catalog'
 import Announcement from './header/Announcement'
 import Cart from './content/Cart'
+
 export default {
   name: 'Contents',
   props: {},
