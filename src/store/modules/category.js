@@ -41,6 +41,7 @@ const getters = {
     )
   },
   subcategoryItems: state => {
+    if (!state.subcategory) return []
     return state.items.filter(
       item =>
         item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_CATEGORY] ===
