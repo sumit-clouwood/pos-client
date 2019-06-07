@@ -10,10 +10,10 @@
       <img
         class="food-categories-item-img"
         :src="item.sub_category_image"
-        :alt="t(item)"
+        :alt="dt(item)"
       />
-      <div class="food-categories-item-text" :title="t(item)">
-        {{ t(item) }}
+      <div class="food-categories-item-text" :title="dt(item)">
+        {{ dt(item) }}
       </div>
       <div class="food-categories-item-check">
         <i class="fa fa-check" aria-hidden="true"></i>

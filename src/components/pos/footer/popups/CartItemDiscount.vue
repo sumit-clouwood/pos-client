@@ -33,7 +33,7 @@
                     : formatPrice(discount.value)
                 }}
               </p>
-              <span class="more">{{ t(discount) }}</span>
+              <span class="more">{{ dt(discount) }}</span>
             </div>
           </div>
           <div class="error" v-show="appliedOrderDiscount">
