@@ -1,7 +1,7 @@
 <template>
   <!-- Modal -->
   <div
-    class="modal fade POSItemOptions catalog-popup"
+    class="modal fade POSItemOptions"
     id="POSItemOptions"
     tabindex="-1"
     role="dialog"
@@ -11,7 +11,8 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <Header />
-        <Content />
+        <HeaderDetails />
+        <Contents />
         <div class="error" v-show="error">{{ error }}</div>
         <Footer />
       </div>
@@ -22,15 +23,17 @@
 
 <script>
 import { mapState } from 'vuex'
-import Content from './popup/Content'
 import Header from './popup/Header'
+import HeaderDetails from './popup/header/HeaderDetails'
+import Contents from './popup/Contents'
 import Footer from './popup/Footer'
 export default {
   name: 'Popup',
   props: {},
   components: {
-    Content,
+    Contents,
     Header,
+    HeaderDetails,
     Footer,
   },
   computed: {

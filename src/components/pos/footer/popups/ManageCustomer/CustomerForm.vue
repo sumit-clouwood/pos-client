@@ -3,14 +3,14 @@
     <div class="modal-body row form-block">
       <div class="col-md-6 left-form">
         <div class="name-from">
-          <label>Name <span>*</span></label>
+          <label>{{ _t('Name') }} <span>*</span></label>
           <input type="text" name="name" v-model="newCustomerDetails.name" />
           <span class="validation-error" v-if="errors.name">{{
             errors.name
           }}</span>
         </div>
         <div class="mobile-from">
-          <label>Mobile Number <span>*</span></label>
+          <label>{{ _t('Phone Number') }} <span>*</span></label>
           <input
             type="text"
             name="phone_number"
@@ -21,14 +21,14 @@
           }}</span>
         </div>
         <div class="email-from">
-          <label>Email <span>*</span></label>
+          <label>{{ _t('Email') }} <span>*</span></label>
           <input type="email" name="email" v-model="newCustomerDetails.email" />
           <span class="validation-error" v-if="errors.email">{{
             errors.email
           }}</span>
         </div>
         <div class="customer-group" v-if="customerGroup">
-          <label>Customer Group</label>
+          <label>{{ _t('Customer Group') }}</label>
           <select
             class="selectpicker"
             v-model="newCustomerDetails.customer_group"
@@ -45,15 +45,15 @@
       </div>
       <div class="col-md-6 right-form">
         <div class="sex-from">
-          <label>Gender</label>
+          <label>{{ _t('Gender') }}</label>
           <select class="selectpicker" v-model="newCustomerDetails.gender">
-            <option selected="selected" value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="undisclosed">Undisclosed</option>
+            <option selected="selected" value="male">{{ _t('Male') }}</option>
+            <option value="female">{{ _t('Female') }}</option>
+            <option value="undisclosed">{{ _t('Undisclosed') }}</option>
           </select>
         </div>
         <div class="alternate-phone-from">
-          <label>Alternate Phone Number </label>
+          <label>{{ _t('Alt Phone Number') }} </label>
           <input
             type="text"
             name="alternate-phone-from"
@@ -61,17 +61,15 @@
           />
         </div>
         <div class="customer-group">
-          <label>Date Of Birth <span>*</span></label>
-          <div class="right-shift col-md-7">
-            <datetime
-              v-model="newCustomerDetails.birthday"
-              input-class="btn schedule-input btn-large datepicker-here"
-              :phrases="{ ok: 'Continue', cancel: 'Exit' }"
-            ></datetime>
-            <span class="validation-error" v-if="errors.birthday">{{
-              errors.birthday
-            }}</span>
-          </div>
+          <label>{{ _t('Birthday') }} <span>*</span></label>
+          <datetime
+            v-model="newCustomerDetails.birthday"
+            input-class="btn schedule-input btn-large datepicker-here"
+            :phrases="{ ok: _t('Continue'), cancel: _t('Exit') }"
+          ></datetime>
+          <span class="validation-error" v-if="errors.birthday">{{
+            errors.birthday
+          }}</span>
         </div>
       </div>
     </div>
@@ -79,7 +77,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { Datetime } from 'vue-datetime'
 
 export default {
@@ -98,6 +96,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('location', ['_t']),
     ...mapState({
       newCustomerDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,

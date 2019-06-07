@@ -1,3 +1,4 @@
+@import '../variables.scss';
 #pay-now {
   right: 0;
   left: unset;
@@ -194,6 +195,9 @@
               flex-direction: column;
               align-items: center;
               justify-content: center;
+              &.active {
+                border: solid 2px #5056ca !important;
+              }
             }
           }
 
