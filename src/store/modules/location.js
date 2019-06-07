@@ -37,6 +37,11 @@ const actions = {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData(state.locale)
         .then(response => {
+          localStorage.setItem(
+            'selectedBrand',
+            response.data.available_brands[0]._id
+          )
+          dispatch('setStore')
           commit(mutation.SET_STORE, response.data.store)
           commit(mutation.SET_BRAND, response.data.brand)
           commit(mutation.SET_LANGUAGE_DIRECTION, response.data.direction)
@@ -65,6 +70,16 @@ const actions = {
         })
     })
   },
+
+  setStore() {
+    LocationService.getLocationData().then(response => {
+      localStorage.setItem(
+        'selectedStore',
+        response.data.available_stores[0]._id
+      )
+    })
+  },
+
   referrals({ commit }) {
     LocationService.getReferrals().then(response => {
       commit(mutation.SET_REFERRALS, response.data.data)
@@ -94,9 +109,11 @@ const mutations = {
   },
   [mutation.SET_STORE](state, store) {
     state.store = store
+    state.store = state.brand = localStorage.getItem('selectedStore')
   },
   [mutation.SET_BRAND](state, brand) {
     state.brand = brand
+    state.brand = localStorage.getItem('selectedBrand')
   },
   [mutation.SET_CURRENCY](state, currency) {
     state.currency = currency

@@ -5,7 +5,9 @@ import db from '@/services/network/DB'
 import DateTime from '@/plugins/helpers/DateTime.js'
 
 const apiURL =
-  process.env.NODE_ENV === 'production' ? process.env.VUE_APP_API_ENDPOINT : ''
+  process.env.NODE_ENV === 'production'
+    ? process.env.VUE_APP_API_ENDPOINT
+    : process.env.VUE_APP_API_ENDPOINT
 
 console.log('api url', process.env.NODE_ENV, apiURL)
 
@@ -42,7 +44,10 @@ const refreshAuthLogic = failedRequest =>
 createAuthRefreshInterceptor(axios, refreshAuthLogic)
 
 export default {
-  context: { store: '', brand: '' },
+  context: {
+    store: localStorage.getItem('selectedStore'),
+    brand: localStorage.getItem('selectedBrand'),
+  },
   setContext(context) {
     this.context = context
   },
@@ -53,12 +58,22 @@ export default {
     return url.replace(/last_sync_date=[^&]*&?/, '')
   },
   getContextUrl(url, level) {
+    let storeId =
+      localStorage.getItem('selectedStore') != null
+        ? '/' + localStorage.getItem('selectedStore')
+        : ''
+    let brandId =
+      localStorage.getItem('selectedBrand') != null
+        ? '/' + localStorage.getItem('selectedBrand')
+        : ''
     if (level === false) {
       return url
     } else if (level === 'brand') {
-      return this.context.brand + url
+      return brandId + url
+    } else if (typeof level == 'undefined') {
+      return brandId + storeId + url
     } else {
-      return this.context.store + url
+      return storeId + url
     }
   },
   isValidResponse(response) {
