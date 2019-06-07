@@ -1,65 +1,211 @@
-/*
-Error: Undefined variable: "$px10".
-        on line 2 of scss/modals/POSItemOptions.scss
+.POSItemOptions {
+  padding-right: 0.625rem; }
+  .POSItemOptions .modal-title {
+    color: #3D3F43;
+    font-size: 1.125rem;
+    font-weight: bold;
+    letter-spacing: 0.64px; }
+  .POSItemOptions .modal-dialog {
+    margin: 0 auto;
+    line-height: 1;
+    min-height: calc(100% - (.5rem * 2));
+    max-width: 600px;
+    width: 600px; }
+    .POSItemOptions .modal-dialog .modal-content .modal-header {
+      padding-left: 0;
+      border: 0 none;
+      margin-bottom: 1.125rem; }
+    .POSItemOptions .modal-dialog .modal-content .modal-details {
+      border-bottom: 1px solid #E3E7F2;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.25rem; }
+      .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity {
+        display: flex;
+        flex-flow: row wrap; }
+        .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_price {
+          width: 36%; }
+          .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_price .POSItemOptions_label {
+            color: #3D3F43;
+            font-size: 0.875rem;
+            font-weight: normal;
+            letter-spacing: 0.5px; }
+          .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_price .POSItemOptions_money {
+            color: #5056CA;
+            font-size: 1.125rem;
+            font-weight: normal;
+            letter-spacing: 0;
+            text-align: left; }
+        .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity {
+          width: 64%; }
+          .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_quantity_wrapper {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: space-between; }
+            .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_quantity_wrapper .POSItemOptions_quantity_inputs {
+              width: 7.1875rem;
+              border-radius: 3px;
+              border: 1px solid #ddd;
+              overflow: hidden; }
+              .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_quantity_wrapper .POSItemOptions_quantity_inputs input {
+                border-radius: 0;
+                border-left: 1px solid #ddd;
+                border-right: 1px solid #ddd; }
+              .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_quantity_wrapper .POSItemOptions_quantity_inputs > * {
+                border: 0 none;
+                background-color: #fff;
+                float: left;
+                width: 33.33%;
+                text-align: center;
+                outline: none;
+                color: #3D3F43;
+                font-size: 1rem;
+                font-weight: 600;
+                height: 2.5rem;
+                letter-spacing: 0;
+                line-height: 2.5rem;
+                vertical-align: middle;
+                padding: 0;
+                border-radius: 3px; }
+            .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_quantity_wrapper .POSItemOptions_quantity_submit button {
+              color: #fff;
+              background: #5056CA;
+              border-radius: 3px;
+              height: 2.5rem;
+              width: 8.75rem;
+              border: 0 none; }
+    .POSItemOptions .modal-dialog .modal-content .modal-body {
+      padding-top: 0;
+      border-color: #E3E7F2;
+      height: 28.75rem;
+      overflow-y: scroll;
+      margin-right: 0.625rem;
+      -webkit-overflow-scrolling: touch;
+      touch-action: auto; }
+      .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_type {
+        position: relative; }
+        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_type .POSItemOptions_typehead {
+          color: #3D3F43;
+          font-size: 0.75rem;
+          font-weight: normal;
+          letter-spacing: 0.43px;
+          margin: 0;
+          background-color: #fff;
+          padding-right: 0.9375rem;
+          display: inline-block;
+          vertical-align: middle;
+          position: relative;
+          z-index: 2; }
+        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_type .POSItemOptions_typeline {
+          position: absolute;
+          top: 50%;
+          left: 0;
+          right: 0;
+          width: 100%;
+          height: 1px;
+          background-color: #E3E7F2;
+          z-index: 1; }
+      .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose {
+        margin-top: 1.875rem; }
+        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc {
+          position: relative; }
+          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc span {
+            width: 0.9375rem;
+            height: 0.9375rem;
+            border: 1px solid #979797;
+            border-radius: 100%;
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            color: #3D3F43;
+            font-size: 0.75rem;
+            font-weight: normal;
+            letter-spacing: 0.43px; }
+          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox]:checked + span {
+            background: #5056CA;
+            border-color: #5056CA;
+            position: relative; }
+          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox] {
+            opacity: 0;
+            position: absolute;
+            top: 4px;
+            width: 0.625rem;
+            height: 0.625rem; }
+          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox]:checked + span:before {
+            content: "\2713";
+            width: 0.75rem;
+            height: 0.75rem;
+            color: #fff;
+            line-height: 0;
+            position: absolute;
+            top: 7.5px;
+            left: 0.5px;
+            font-size: 0.9375rem !important; }
+          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox] + span {
+            border-radius: 2px; }
+        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice {
+          width: 32%;
+          display: inline-block;
+          margin-bottom: 1.125rem; }
+          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label {
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0; }
+            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label img {
+              margin-right: 0.3125rem;
+              display: inline-block;
+              vertical-align: middle;
+              width: 2.1875rem; }
+            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label span {
+              display: inline-block;
+              vertical-align: middle;
+              line-height: 1.3; }
+          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .customradioc {
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.3125rem; }
+    .POSItemOptions .modal-dialog .modal-content .modal-footer {
+      padding: 0;
+      padding-top: 1.5625rem !important; }
+      .POSItemOptions .modal-dialog .modal-content .modal-footer .discountitembutton {
+        background: #5056CA;
+        border-radius: 3px;
+        box-shadow: 0 2px 2px 0 #767DFF;
+        height: 2.5rem;
+        padding: 0 1rem; }
+      .POSItemOptions .modal-dialog .modal-content .modal-footer .discountbutton {
+        background: #5056CA;
+        border-radius: 3px;
+        box-shadow: 0 2px 2px 0 #767DFF;
+        height: 2.5rem;
+        padding: 0 1.5625rem; }
+      .POSItemOptions .modal-dialog .modal-content .modal-footer .taxbutton {
+        background: #CC3232;
+        border-radius: 3px;
+        box-shadow: 0 2px 2px 0 rgba(232, 150, 150, 0.5);
+        height: 2.5rem;
+        padding: 0 1.5625rem; }
+      .POSItemOptions .modal-dialog .modal-content .modal-footer .buttoned {
+        border: 0 none;
+        cursor: pointer;
+        outline: none; }
+        .POSItemOptions .modal-dialog .modal-content .modal-footer .buttoned.colorwhite.donebutton {
+          background: #5056CA;
+          border-radius: 3px;
+          box-shadow: 0 2px 2px 0 #767DFF;
+          padding: 0 0.9375rem; }
+        .POSItemOptions .modal-dialog .modal-content .modal-footer .buttoned > img {
+          display: inline-block;
+          vertical-align: middle; }
+        .POSItemOptions .modal-dialog .modal-content .modal-footer .buttoned > span {
+          display: inline-block;
+          vertical-align: middle; }
 
-1: .POSItemOptions {
-2:   padding-right: $px10;
-3: 
-4:   .modal-title {
-5:     color: #3D3F43;
-6:     font-size: $px18;
-7:     font-weight: bold;
+.checkmark-radio-btn {
+  height: 0.9375rem;
+  width: 0.9375rem;
+  background-color: #fff;
+  border-radius: 50%;
+  border: 1px solid #979797;
+  margin-right: 0.625rem; }
 
-Backtrace:
-scss/modals/POSItemOptions.scss:2
-/usr/lib/ruby/vendor_ruby/sass/script/tree/variable.rb:49:in `_perform'
-/usr/lib/ruby/vendor_ruby/sass/script/tree/node.rb:58:in `perform'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:397:in `visit_prop'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block (2 levels) in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:431:in `visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `block in visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:169:in `block in visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:168:in `visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:188:in `visit_root'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:159:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:8:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:36:in `css_tree'
-/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:29:in `render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/engine.rb:381:in `_render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/engine.rb:298:in `render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:492:in `update_stylesheet'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:209:in `each'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:209:in `update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:294:in `watch'
-/usr/lib/ruby/vendor_ruby/sass/plugin.rb:109:in `method_missing'
-/usr/lib/ruby/vendor_ruby/sass/exec/sass_scss.rb:356:in `watch_or_update'
-/usr/lib/ruby/vendor_ruby/sass/exec/sass_scss.rb:51:in `process_result'
-/usr/lib/ruby/vendor_ruby/sass/exec/base.rb:52:in `parse'
-/usr/lib/ruby/vendor_ruby/sass/exec/base.rb:19:in `parse!'
-/usr/bin/scss:8:in `<main>'
-*/
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Error: Undefined variable: \"$px10\".\A         on line 2 of scss/modals/POSItemOptions.scss\A \A 1: .POSItemOptions {\A 2:   padding-right: $px10;\A 3: \A 4:   .modal-title {\A 5:     color: #3D3F43;\A 6:     font-size: $px18;\A 7:     font-weight: bold;"; }
+/*# sourceMappingURL=POSItemOptions.css.map */

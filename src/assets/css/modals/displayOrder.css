@@ -538,8 +538,8 @@ div#select-discount-item .dining-option-block.select-discount-option > div {
   cursor: pointer; }
 
 .container-radio-btn input:checked ~ .checkmark-radio-btn {
-  background-color: #62bb31;
-  border-color: #62bb31; }
+  background-color: #5056CA;
+  border-color: #5056CA; }
 
 .checkmark-radio-btn:after {
   content: '';
@@ -572,7 +572,8 @@ label.container-radio-btn span {
 label.container-radio-btn img {
   display: inline-block;
   vertical-align: middle;
-  margin-right: 0.3125rem; }
+  margin-right: 0.3125rem;
+  width: 2.1875rem; }
 
 button:focus {
   box-shadow: none !important; }

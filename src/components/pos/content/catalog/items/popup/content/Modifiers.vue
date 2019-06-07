@@ -36,7 +36,7 @@
           </span>
           <img :src="modifier.item_modifier_image" alt="" />
           <span>{{ modifier.name }}</span>
-          <div v-if="Num.toPrice(modifier.value)">
+          <div class="itm-price" v-if="Num.toPrice(modifier.value)">
             ({{ formatPrice(modifier.value) }})
           </div>
         </label>

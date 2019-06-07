@@ -12,7 +12,7 @@
       <div class="modal-content">
         <Header />
         <HeaderDetails />
-        <Contents />
+        <Content />
         <div class="error" v-show="error">{{ error }}</div>
         <Footer />
       </div>
@@ -25,13 +25,13 @@
 import { mapState } from 'vuex'
 import Header from './popup/Header'
 import HeaderDetails from './popup/header/HeaderDetails'
-import Contents from './popup/Contents'
+import Content from './popup/Content'
 import Footer from './popup/Footer'
 export default {
   name: 'Popup',
   props: {},
   components: {
-    Contents,
+    Content,
     Header,
     HeaderDetails,
     Footer,

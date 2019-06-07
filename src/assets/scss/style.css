@@ -160,6 +160,13 @@ img {
 svg {
   color: #fff; }
 
+.btnSuccess, .btn-success {
+  background-color: #5056CA;
+  border-color: #5056CA; }
+  .btnSuccess:hover, .btn-success:hover {
+    background-color: #767DFF;
+    border-color: #767DFF; }
+
 .header {
   border-bottom: 1px solid #ddd; }
   .header .header-main {
@@ -323,7 +330,7 @@ svg {
             font-weight: normal;
             letter-spacing: 0.5px; }
           .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_price .POSItemOptions_money {
-            color: #62BB31;
+            color: #5056CA;
             font-size: 1.125rem;
             font-weight: normal;
             letter-spacing: 0;
@@ -361,7 +368,7 @@ svg {
                 border-radius: 3px; }
             .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_quantity_wrapper .POSItemOptions_quantity_submit button {
               color: #fff;
-              background: #62BB31;
+              background: #5056CA;
               border-radius: 3px;
               height: 2.5rem;
               width: 8.75rem;
@@ -414,8 +421,8 @@ svg {
             font-weight: normal;
             letter-spacing: 0.43px; }
           .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox]:checked + span {
-            background: #5056ca;
-            border-color: #5056ca;
+            background: #5056CA;
+            border-color: #5056CA;
             position: relative; }
           .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox] {
             opacity: 0;
@@ -446,7 +453,8 @@ svg {
             .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label img {
               margin-right: 0.3125rem;
               display: inline-block;
-              vertical-align: middle; }
+              vertical-align: middle;
+              width: 2.1875rem; }
             .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label span {
               display: inline-block;
               vertical-align: middle;
@@ -459,15 +467,15 @@ svg {
       padding: 0;
       padding-top: 1.5625rem !important; }
       .POSItemOptions .modal-dialog .modal-content .modal-footer .discountitembutton {
-        background: #62BB31;
+        background: #5056CA;
         border-radius: 3px;
-        box-shadow: 0 2px 2px 0 #D1E6C5;
+        box-shadow: 0 2px 2px 0 #767DFF;
         height: 2.5rem;
         padding: 0 1rem; }
       .POSItemOptions .modal-dialog .modal-content .modal-footer .discountbutton {
-        background: #62BB31;
+        background: #5056CA;
         border-radius: 3px;
-        box-shadow: 0 2px 2px 0 #D1E6C5;
+        box-shadow: 0 2px 2px 0 #767DFF;
         height: 2.5rem;
         padding: 0 1.5625rem; }
       .POSItemOptions .modal-dialog .modal-content .modal-footer .taxbutton {
@@ -481,9 +489,9 @@ svg {
         cursor: pointer;
         outline: none; }
         .POSItemOptions .modal-dialog .modal-content .modal-footer .buttoned.colorwhite.donebutton {
-          background: #62BB31;
+          background: #5056CA;
           border-radius: 3px;
-          box-shadow: 0 2px 2px 0 #D1E6C5;
+          box-shadow: 0 2px 2px 0 #767DFF;
           padding: 0 0.9375rem; }
         .POSItemOptions .modal-dialog .modal-content .modal-footer .buttoned > img {
           display: inline-block;
@@ -793,6 +801,8 @@ svg {
             flex-direction: column;
             align-items: center;
             justify-content: center; }
+            #pay-now .modal-dialog .modal-content .modal-body .slick-slider .slick-slide > div > div.active {
+              border: solid 2px #5056ca !important; }
           #pay-now .modal-dialog .modal-content .modal-body .slick-slider.active {
             border: solid 2px #5056ca !important; }
         #pay-now .modal-dialog .modal-content .modal-body .payemnt-input-block {
@@ -1135,7 +1145,7 @@ button.btn.referal-btn {
   background: url(/img/pos/schedule-icon.png);
   background-repeat: no-repeat;
   background-position: center right 10px;
-  width: 19.6875rem;
+  width: 14.375rem;
   height: 3.125rem;
   border-radius: 3px;
   background-color: #ffffff;
@@ -2080,8 +2090,8 @@ div#select-discount-item .dining-option-block.select-discount-option > div {
   cursor: pointer; }
 
 .container-radio-btn input:checked ~ .checkmark-radio-btn {
-  background-color: #62bb31;
-  border-color: #62bb31; }
+  background-color: #5056CA;
+  border-color: #5056CA; }
 
 .checkmark-radio-btn:after {
   content: '';
@@ -2114,7 +2124,8 @@ label.container-radio-btn span {
 label.container-radio-btn img {
   display: inline-block;
   vertical-align: middle;
-  margin-right: 0.3125rem; }
+  margin-right: 0.3125rem;
+  width: 2.1875rem; }
 
 button:focus {
   box-shadow: none !important; }
