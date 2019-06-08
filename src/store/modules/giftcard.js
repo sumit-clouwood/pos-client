@@ -37,24 +37,21 @@ const actions = {
       dispatch('fetchAll')
         .then(() => {
           const card = state.giftcards.data.find(
-            card => card.gift_code === code
+            card => card.gift_card_code === code
           )
           if (card) {
-            if (card.remaining_balance >= amount) {
+            if (card.remaining_amount >= amount) {
               //get customer name by customer id
-              dispatch(
-                'customer/fetchSelectedCustomer',
-                {
-                  customerId: card.customer_id,
-                  addressOnly: true,
-                },
-                { root: true }
-              ).then(customer => {
-                card.customerName = customer.customer_name
-                card.customerPhone = customer.mobile_number
-                commit(mutation.SET_GIFT_CARD, card)
-                resolve(card)
+              dispatch('customer/fetchSelectedCustomer', card.customer, {
+                root: true,
               })
+                .then(customer => {
+                  card.customerName = customer.name
+                  card.customerPhone = customer.phone_number
+                  commit(mutation.SET_GIFT_CARD, card)
+                  resolve(card)
+                })
+                .catch(error => reject(error))
             } else {
               reject(`Available giftcard amount is lesser than ${amount}`)
             }

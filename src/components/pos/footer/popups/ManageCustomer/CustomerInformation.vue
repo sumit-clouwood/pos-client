@@ -12,30 +12,22 @@
               <div class="cu-loyality-points">
                 <LoyaltyPoint />
                 <div class="btn-right-neworder">
-                  <button id="place-new-order" data-dismiss="modal">
-                    Place New Order
+                  <button
+                    id="place-new-order"
+                    data-dismiss="modal"
+                    @click="updateModalSelectionDelivery('#order-confirmation')"
+                  >
+                    {{ _t('+ Place New Order') }}
                   </button>
                 </div>
               </div>
             </div>
-            <CustomerInsights />
+            <CustomerInsights :pastOrders="pastOrders" />
           </div>
-          <h2 class="past-order">Past Orders</h2>
-          <CustomerPastOrders />
+          <h2 class="past-order">{{ _t('Past Orders') }}</h2>
+          <CustomerPastOrders :pastOrders="pastOrders" />
         </div>
         <div class="modal-footer">
-          <!--<div class="pagination-customer-details">
-            &lt;!&ndash;<ul class="ullist-pagination">
-              <li class="order-pagination active">1</li>
-              <li class="order-pagination">2</li>
-              <li class="order-pagination">3</li>
-              <li class="order-pagination">4</li>
-              <li class="next-page" id="next-page">
-                <img src="img/pos/next-arrow.png" alt="next-btn" />
-              </li>
-              <li>Last</li>
-            </ul>&ndash;&gt;
-          </div>-->
           <div class="pagination-customer-details">
             <paginate
               v-if="paginateDetails.totalPages"
@@ -43,10 +35,10 @@
               :page-range="1"
               :margin-pages="1"
               :clickHandler="setPastOrderPageNumber"
-              :prev-text="'Prev'"
-              :next-text="'Next'"
+              :prev-text="_t('Prev')"
+              :next-text="_t('Next')"
               :container-class="''"
-              :page-class="'page-item'"
+              :page-class="_t('page-item')"
             >
             </paginate>
             <!--</template>-->
@@ -69,7 +61,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import LoyaltyPoint from './CustomerInformation/LoyaltyPoint'
 import CustomerProfile from './CustomerInformation/CustomerProfile'
 import CustomerInsights from './CustomerInformation/CustomerInsights'
@@ -92,9 +84,19 @@ export default {
     ...mapState({
       paginateDetails: state => state.customer.pastOrdersPaginate,
     }),
+    ...mapState({
+      pastOrders: state => state.customer.pastOrders,
+    }),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     ...mapActions('customer', ['setPastOrderPageNumber']),
+    ...mapActions('location', ['updateModalSelectionDelivery']),
   },
 }
 </script>
+<style scoped lang="scss">
+div#display-order .modal-dialog {
+  max-width: 70%;
+}
+</style>

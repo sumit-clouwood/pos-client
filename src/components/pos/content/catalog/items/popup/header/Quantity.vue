@@ -1,6 +1,6 @@
 <template>
   <div class="POSItemOptions_quantity">
-    <label class="POSItemOptions_label">Quantity</label>
+    <label class="POSItemOptions_label">{{ _t('Quantity') }}</label>
     <div class="POSItemOptions_quantity_wrapper">
       <div class="POSItemOptions_quantity_inputs">
         <button class="qtyminus value-qty" @click="updateFormQuantity('-')">
@@ -20,9 +20,11 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Header',
   computed: {
+    ...mapGetters('location', ['_t']),
     quantity: {
       get() {
         return this.$store.getters['orderForm/quantity']

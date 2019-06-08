@@ -1,0 +1,181 @@
+@font-face {
+  font-family: "ProximaNova-Regular";
+  src: url("../fonts/ProximaNova-Regular.woff") format("woff");
+  src: url("../fonts/ProximaNova-Regular.woff2") format("woff");
+  font-style: normal;
+  font-weight: normal; }
+* {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: "ProximaNova-Regular"; }
+
+html {
+  color: #1E1E20; }
+  @media only screen and (min-width: 599px) {
+    html {
+      font-size: 10px; } }
+  @media only screen and (min-width: 959px) {
+    html {
+      font-size: 12px; } }
+  @media only screen and (min-width: 1263px) {
+    html {
+      font-size: 14px; } }
+  @media only screen and (min-width: 1920px) {
+    html {
+      font-size: 16px; } }
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  color: #444;
+  background-color: #FAFAFA; }
+
+ul, ol, p {
+  padding: 0;
+  margin: 0; }
+
+a {
+  display: inline-block;
+  text-decoration: none; }
+  a:hover {
+    text-decoration: none; }
+
+img {
+  display: inline-block; }
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #B2BECF;
+  margin: 2px; }
+
+::-webkit-resizer {
+  background-repeat: no-repeat;
+  width: 8px;
+  height: 0px; }
+
+::-webkit-scrollbar {
+  width: 8px; }
+
+::-webkit-scrollbar-track-piece {
+  bprder: 1px solid #eee; }
+
+.orders-button-small {
+  cursor: pointer;
+  padding: 0 0.625rem;
+  background-color: #EF7F2A;
+  color: #fff;
+  height: 1.875rem;
+  display: inline-grid;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  margin-right: 0.3125rem;
+  margin-bottom: 0.3125rem;
+  font-size: 0.75rem;
+  transition: 0.2s linear; }
+  .orders-button-small.canceled {
+    background-color: #CC3232; }
+    .orders-button-small.canceled:hover {
+      background-color: #CC1212; }
+  .orders-button-small.success {
+    background-color: #64C434; }
+    .orders-button-small.success:hover {
+      background-color: #58AC2E; }
+  .orders-button-small:hover {
+    background-color: #EF6A05; }
+
+.shorten-sentence {
+  Text-overflow: ellipsis;
+  overflow: hidden;
+  White-space: nowrap;
+  Width: 6.9375rem;
+  text-align: center; }
+
+.orders-button-large {
+  cursor: pointer;
+  background-color: #5056CA;
+  color: #fff;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  font-size: 1rem;
+  transition: 0.2s linear; }
+  .orders-button-large svg {
+    width: 0.625rem;
+    margin-right: 0.625rem; }
+  .orders-button-large:hover {
+    background-color: #3A3E9F; }
+
+.button-plus {
+  margin-bottom: 0.4375rem;
+  cursor: pointer; }
+  .button-plus img {
+    width: 1.875rem;
+    height: 1.875rem; }
+
+.search-field {
+  display: grid;
+  grid-template-columns: 3.75rem 1fr;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin: 0px;
+  align-self: start;
+  background-color: #fff;
+  overflow: hidden; }
+  .search-field .search-field-icon {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #ddd;
+    height: 2.1875rem; }
+    .search-field .search-field-icon .search-field-img {
+      width: 1.25rem;
+      height: 1.25rem; }
+    .search-field .search-field-icon .fa-search {
+      font-size: 1.375rem;
+      color: #555; }
+  .search-field .search-field-input {
+    display: block;
+    height: 3.125rem;
+    border: none;
+    box-shadow: none;
+    font-size: 1.125rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    box-shadow: inset 0 50px 0 #fff;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-family: "ProximaNova"; }
+    .search-field .search-field-input:focus {
+      outline: none; }
+
+svg {
+  color: #fff; }
+
+.btnSuccess, .btn-success {
+  background-color: #5056CA;
+  border-color: #5056CA; }
+  .btnSuccess:hover, .btn-success:hover {
+    background-color: #767DFF;
+    border-color: #767DFF; }
+
+.btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active, .show > .btn-success.dropdown-toggle {
+  background-color: #5056CA;
+  border-color: #5056CA; }
+
+.btn-announce button svg {
+  width: 15px;
+  /* height: 20px; */
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 4px; }
+
+/*# sourceMappingURL=elements.css.map */

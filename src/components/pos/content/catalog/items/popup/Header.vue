@@ -1,28 +1,14 @@
 <template>
-  <div v-if="item">
-    <div class="modal-header">
-      <h5 class="modal-title" id="POSItemOptionsTitle">
-        {{ item.name }}
-      </h5>
-      <CloseButton />
-    </div>
-    <div class="modal-details">
-      <div class="POSItemOptions_pricequantity">
-        <div class="POSItemOptions_price">
-          <label class="POSItemOptions_label">Price</label>
-          <div class="POSItemOptions_money">
-            {{ formatPrice(item.item_price) }}
-          </div>
-        </div>
-        <Quantity />
-      </div>
-    </div>
+  <div class="modal-header" v-if="item">
+    <h5 class="modal-title" id="POSItemOptionsTitle">
+      {{ item.name }}
+    </h5>
+    <CloseButton />
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
-import Quantity from './header/Quantity'
+import { mapState } from 'vuex'
 import CloseButton from './header/CloseButton'
 
 export default {
@@ -32,10 +18,8 @@ export default {
     ...mapState({
       item: state => state.modifier.item,
     }),
-    ...mapGetters('location', ['formatPrice']),
   },
   components: {
-    Quantity,
     CloseButton,
   },
 }

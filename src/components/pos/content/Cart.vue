@@ -1,17 +1,22 @@
 <template>
-  <div class="col-md-4 orders-panel">
-    <NewOrders />
-    <HoldingOrders />
+  <div class="main-orders">
+    <Header />
+    <div class="main-orders-list-wrapper">
+      <Items />
+      <HoldingOrders />
+    </div>
     <PayNow v-show="order" />
     <Footer />
   </div>
 </template>
 
 <script>
-import NewOrders from './cart/NewOrders'
+import Header from './cart/newOrders/Header.vue'
 import HoldingOrders from './cart/HoldingOrders'
 import Footer from './cart/Footer'
 import PayNow from './cart/PayNow'
+import Items from './cart/newOrders/Items.vue'
+
 import { mapState } from 'vuex'
 
 export default {
@@ -23,7 +28,8 @@ export default {
     ...mapState('checkout', ['order']),
   },
   components: {
-    NewOrders,
+    Header,
+    Items,
     HoldingOrders,
     Footer,
     PayNow,

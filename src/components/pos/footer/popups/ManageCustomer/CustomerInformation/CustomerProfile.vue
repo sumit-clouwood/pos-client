@@ -1,31 +1,56 @@
 <template>
   <ul class="ullist-profile" v-if="customerProfile">
-    <li class="col-md-2">
+    <li>
       <img
+        v-if="customerProfile.image"
         v-bind:src="customerProfile.image_path + customerProfile.image"
         alt="order-profile"
       />
+      <img v-else class="profile-picture" src="img/other/placeholder-img.png" />
     </li>
-    <li class="col-md-5 lh">
-      <p class="profile-customer-title">Customer Name:</p>
-      <h2 id="profile-customer-name">
-        {{ customerProfile.customer_name }}
-      </h2>
+    <li class="col-md-4 lh">
+      <p class="profile-customer-title">
+        {{ _t('Customer Name:') }}
+      </p>
+      <h5 id="profile-customer-name">
+        {{ customerProfile.name }}
+      </h5>
+      <p class="profile-customer-title">
+        {{ _t('Email') }}: {{ customerProfile.email }}
+      </p>
       <p class="name-confrimation">
-        Not Beby?
-        <span data-toggle="modal" data-target="#customer" data-dismiss="modal"
-          >Create new customer</span
-        >
+        {{ _t('Not') }} {{ customerProfile.name }}?
+        <span data-toggle="modal" data-target="#customer" data-dismiss="modal">
+          {{ _t('Create New Customer') }}
+        </span>
       </p>
     </li>
-    <li class="col-md-3">
-      <p class="profile-customer-title">Phone Number:</p>
-      <h2 id="profile-customer-number">{{ customerProfile.mobile_number }}</h2>
+    <li>
+      <p class="profile-customer-title">{{ _t('Phone Number:') }}</p>
+      <h5 id="profile-customer-number">{{ customerProfile.phone_number }}</h5>
+      <p class="profile-customer-title">
+        <small>
+          {{ _t('Alternative Phone Number') }}:
+          {{ customerProfile.alternative_phone }}</small
+        >
+      </p>
+      <p class="profile-customer-title">
+        <small>
+          {{ _t('Customer Group') }}:
+          {{ customerProfile.customer_group }}
+        </small>
+      </p>
     </li>
-    <li class="col-md-2">
-      <a class="cu-edit-icon" href="#"
-        ><span
-          ><svg
+    <li @click="editCustomer(customerProfile._id)">
+      <a
+        class="cu-edit-icon"
+        href="#"
+        data-toggle="modal"
+        data-target="#customer"
+        data-dismiss="modal"
+      >
+        <span>
+          <svg
             xmlns="http://www.w3.org/2000/svg"
             width="17"
             height="16"
@@ -48,9 +73,12 @@
                 rx=".5"
                 transform="rotate(-45 10 8.5)"
               />
-            </g></svg></span
-        >Edit</a
-      ><a class="cu-delete-icon" href="#"
+            </g>
+          </svg>
+        </span>
+        {{ _t('Edit') }}</a
+      >
+      <a class="cu-delete-icon" href="#"
         ><span
           ><svg
             xmlns="http://www.w3.org/2000/svg"
@@ -79,23 +107,32 @@
                 rx=".5"
               />
             </g></svg></span
-        >Delete</a
+        >{{ _t('Delete') }}</a
       >
     </li>
   </ul>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'CustomerProfile',
   computed: {
     ...mapState({
       customerProfile: state =>
-        state.customer.customer.customer_list
-          ? state.customer.customer.customer_list
-          : false,
+        state.customer.customer ? state.customer.customer : false,
     }),
+    ...mapGetters('location', ['_t']),
+  },
+  methods: {
+    editCustomer: function(customerId) {
+      let actionDetails = {
+        id: customerId,
+        action: 'edit',
+        model: 'brand_customers',
+      }
+      this.$store.dispatch('customer/editAction', actionDetails)
+    },
   },
 }
 </script>

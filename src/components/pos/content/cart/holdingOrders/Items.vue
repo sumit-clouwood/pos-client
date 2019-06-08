@@ -1,29 +1,46 @@
 <template>
   <div class="wrappers-orders">
     <div class="orders-name">
-      <p @click="fetchOrder(orderData._id)" class="cursor-pointer">
+      <p @click="setHoldOrderCart(orderData)" class="cursor-pointer">
         {{ orderData.order_no }}
       </p>
     </div>
     <div class="aed-amt">
-      <span>{{ currencyCode }} {{ orderData.balance_due }}</span>
+      <span>{{ orderData.currency }} {{ orderData.balance_due }}</span>
     </div>
-    <div class="dlt-btn">
+    <div class="dlt-btn" @click="dropHoldOrder(orderData)">
       <img src="img/pos/delete-icon.svg" alt="delete" />
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+// eslint-disable-next-line no-unused-vars
+/* global $ */
 export default {
   name: 'Items',
   props: {
     orderData: Object,
-    currencyCode: String,
   },
   methods: {
-    ...mapActions('holdOrders', ['fetchOrder']),
+    setHoldOrderCart: function(orderData) {
+      this.$store.dispatch('holdOrders/fetchOrder', orderData)
+      $('.holding-order-panel').toggle()
+      $('.order-wrappers-panel').toggle()
+      $('ul.ullist-icons > li#hold-order-box').toggleClass('active')
+    },
+
+    dropHoldOrder: function(order) {
+      let actionDetails = {
+        id: order._id,
+        action: 'delete',
+        model: 'orders',
+        data: '',
+      }
+      if (confirm('Are you sure you want to delete this order!')) {
+        this.$store.dispatch('customer/updateAction', actionDetails)
+      }
+    },
   },
 }
 </script>

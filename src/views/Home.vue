@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div>
     <Location v-show="!loaded" msg="Broccoli POS" />
     <Pos v-show="loaded" msg="Broccoli POS" />
   </div>
@@ -7,7 +7,7 @@
 
 <script>
 // @ is an alias to /src
-/* global $ */
+// /* global $ */
 import Pos from '@/components/Pos.vue'
 import Location from '@/components/Location.vue'
 import { mapState } from 'vuex'
@@ -22,8 +22,8 @@ export default {
     ...mapState('sync', ['loaded']),
   },
   mounted() {
-    $('body').removeAttr('class')
-    $('body').attr('class', 'fixed-nav sticky-footer bg-dark')
+    /*$('body').removeAttr('class')
+    $('body').attr('class', 'fixed-nav sticky-footer bg-dark')*/
   },
 }
 </script>

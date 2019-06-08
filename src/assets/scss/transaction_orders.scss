@@ -1,0 +1,194 @@
+@import "pixels_rem.scss";
+@import "variables.scss";
+
+.transaction-orders {
+  background-color: $gray-bg-light;
+  display: grid;
+  grid-template-rows: min-content 1fr min-content;
+  height: calc(100vh - #{$px185});
+
+  .transaction-orders-payment {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: max-content max-content max-content;
+    margin: $px10 $px30 0;
+
+    .orders-payment-date {
+      border-bottom: 1px solid $gray-bg-middle;
+      padding: $px8 0;
+
+      .orders-payment-date-top {
+        display: flex;
+        justify-content: space-between;
+        color: $gray-dark;
+        font-size: $px12;
+      }
+
+      .orders-payment-date-bottom {
+        display: flex;
+        justify-content: space-between;
+        font-size: $px20;
+        font-weight: 600;
+
+        .subtitle {
+          color: $green-middle;
+
+        }
+      }
+    }
+
+    .orders-payment-cash {
+      padding: $px8 0;
+      border-bottom: 1px solid $gray-bg-middle;
+      display: flex;
+      justify-content: space-between;
+      font-size: $px14;
+
+      .subtitle {
+        font-weight: 600;
+      }
+    }
+
+    .orders-payment-receipt {
+      padding: $px8 0;
+      display: flex;
+      justify-content: space-between;
+      font-size: $px14;
+
+      .subtitle {
+        font-weight: 600;
+      }
+    }
+  }
+
+  .transaction-orders-list {
+    display: grid;
+    grid-template-rows: min-content 1fr;
+    overflow: auto;
+
+    .orders-list-title {
+      background-color: $gray-bg-middle;
+      height: $header-btn-height;
+      display: flex;
+      align-items: center;
+      padding: 0 $px30;
+      font-weight: 600;
+    }
+
+    .order-list {
+      display: grid;
+      overflow: auto;
+
+      .order {
+        margin: $px20 $px30 0;
+        display: grid;
+        grid-template-columns: min-content 1fr;
+        grid-gap: $px20;
+
+        .order-img {
+          border: 1px solid $gray-middle;
+          border-radius: $card-border-radius;
+          width: $px100;
+          height: $px80;
+          background-color: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          img {
+
+          }
+        }
+
+        .order-main {
+          .order-main-title {
+            display: grid;
+            grid-template-columns: 1fr min-content;
+            align-items: center;
+            margin-bottom: $px5;
+
+            .order-main-title-left {
+              .order-main-title-text {
+                font-size: $px14;
+                font-weight: 600;
+              }
+
+              .order-main-title-str {
+                font-size: $px12;
+                color: $gray-dark;
+              }
+            }
+
+            .order-main-title-right {
+              display: grid;
+              grid-template-columns: auto auto;
+              align-items: center;
+
+              .order-main-title-amount {
+                white-space: nowrap;
+                font-size: $px12;
+                font-weight: 600;
+              }
+
+              .orders-button-small {
+                margin: 0 0 0 $px50;
+                color: $green-middle;
+                background-color: transparent;
+                border: 1px solid $green-middle;
+                transition: 0.2s linear;
+
+                &:hover {
+                  background-color: $green-middle;
+                  color: #fff;
+                }
+              }
+            }
+          }
+          .order-main-buttons{
+            display: flex;
+            flex-wrap: wrap;
+          }
+
+        }
+
+        &:last-child {
+          margin-bottom: $px20;
+        }
+      }
+    }
+
+
+  }
+
+  .transaction-total {
+
+    .total-total-title {
+      background-color: $gray-bg-middle;
+      height: $header-btn-height;
+      display: flex;
+      align-items: center;
+      padding: 0 $px30;
+      font-weight: 600;
+    }
+
+    .total-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 0 $px30 0;
+      border-bottom: 1px solid $gray-bg-middle;
+      padding: $px8 0;
+
+      .title {
+        font-size: $px14;
+      }
+
+      .subtitle {
+        font-weight: 600;
+      }
+
+      &:last-child {
+        border: none;
+      }
+    }
+  }
+}

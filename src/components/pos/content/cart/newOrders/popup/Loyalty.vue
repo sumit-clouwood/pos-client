@@ -14,9 +14,9 @@
         </div>
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
-            <p v-if="loyalty.balance > 0">
+            <p v-if="loyaltyBalance > 0">
               Loyalty Balance:
-              <span>{{ parseFloat(loyalty.balance).toFixed(2) }}</span>
+              <span>{{ formatPrice(loyaltyBalance) }}</span>
             </p>
             <p v-if="loyalty.loyalty_order_alert != null">
               {{ loyalty.loyalty_order_alert }}
@@ -25,15 +25,9 @@
               <hr />
               <p>
                 You can spend min
-                <b
-                  >{{ loyalty.min_redeem_amount }}
-                  {{ loyalty.currency_code }}</b
-                >
+                <b>{{ loyalty.minimum_redeem }} {{ loyalty.currency }}</b>
                 and max
-                <b
-                  >{{ loyalty.max_redeem_amount }}
-                  {{ loyalty.currency_code }}</b
-                >
+                <b>{{ loyalty.maximum_redeem }} {{ loyalty.currency }}</b>
               </p>
               <p>
                 Amount you can spend: <b>{{ amount }}</b>
@@ -70,12 +64,17 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Loyalty',
   computed: {
+    ...mapGetters('location', ['formatPrice']),
     ...mapState({
-      loyalty: state => (state.customer.loyalty ? state.customer.loyalty : 0),
+      loyaltyBalance: state =>
+        state.customer.loyalty.card.balance
+          ? state.customer.loyalty.card.balance
+          : 0,
+      loyalty: state => state.customer.loyalty.details,
     }),
     ...mapState({
       amount: state =>

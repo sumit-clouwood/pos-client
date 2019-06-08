@@ -1,0 +1,38 @@
+$xs: 600px;
+$sm: 960px;
+$md: 1264px;
+$lg: 1920px;
+@mixin standard_caption_font {
+  text-transform: uppercase;
+  color: $color-text-alpha80-table;
+  font-weight: 700;
+  font-family: 'ProximaNova';
+}
+
+// @include responsive(xs){}
+// @include responsive(sm){}
+// @include responsive(md){}
+// @include responsive(lg){}
+@mixin responsive($media) {
+  @if $media==xs {
+    @media only screen and (min-width: $xs - 1) {
+      @content;
+    }
+  } @else if $media==sm {
+    @media only screen and (min-width: $sm - 1) {
+      @content;
+    }
+  } @else if $media==not_sm {
+    @media only screen and (min-width: $sm) {
+      @content;
+    }
+  } @else if $media==md {
+    @media only screen and (min-width: $md - 1) {
+      @content;
+    }
+  } @else if $media==lg {
+    @media only screen and (min-width: $lg) {
+      @content;
+    }
+  }
+}

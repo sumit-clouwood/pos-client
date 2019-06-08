@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import Branches from '@/components/partial/Branches'
+import Branches from '@/components/deliveryManager/partial/Branches'
 import { mapActions } from 'vuex'
 
 export default {

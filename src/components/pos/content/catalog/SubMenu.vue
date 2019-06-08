@@ -1,20 +1,26 @@
 <template>
-  <div class="pizza-size-wrapper " v-if="subcategories.length">
+  <div class="food-categories" v-if="subcategories.length">
     <div
+      class="food-categories-item"
       v-for="item in subcategories"
       :key="item._id"
       :class="{ active: currentSubcategory === item._id }"
-      class="pos-size-bg"
+      @click.prevent="getItems(item)"
     >
-      <div @click.prevent="getItems(item)">
-        <img
-          :src="subcategoryImage(item.sub_category_image)"
-          :alt="item.name"
-        />
-        <span :title="item.name">{{ item.name.substring(0, 15) }}</span>
+      <img
+        class="food-categories-item-img"
+        :src="item.sub_category_image"
+        :alt="dt(item)"
+      />
+      <div class="food-categories-item-text" :title="dt(item)">
+        {{ dt(item) }}
+      </div>
+      <div class="food-categories-item-check">
+        <i class="fa fa-check" aria-hidden="true"></i>
       </div>
     </div>
   </div>
+  <!--add class bg if image not found => class="food-categories-item bg"-->
 </template>
 
 <script>
@@ -27,17 +33,19 @@ export default {
     ...mapState({
       currentSubcategory: state => state.category.subcategory._id,
     }),
-    ...mapGetters('category', ['subcategoryImage', 'subcategories']),
+    ...mapGetters('category', ['subcategories']),
   },
   methods: {
     ...mapActions('category', ['getItems']),
   },
 }
 </script>
-<style scoped lang="scss">
-.pizza-size-wrapper {
-  img {
-    width: 64px;
-  }
-}
+<style lang="sass" scoped>
+/*.cat-name
+  font-size: smaller*/
+
+/*.pizza-size-wrapper
+  img
+    width: 64px
+    height: 64px*/
 </style>

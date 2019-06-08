@@ -1,0 +1,120 @@
+
+a:hover {
+  text-decoration: none;
+}
+
+.modal-body {
+  padding: 0;
+  border-color: #E3E7F2;
+}
+
+.dining-option-block > div {
+  cursor: pointer;
+}
+
+.dining-options-block {
+  padding: 0 $px35;
+}
+
+.option-contain {
+  height: auto;
+  border-radius: $btn-border-radius;
+  background-color: #ffffff;
+  border: solid 2px #e0e3e6;
+  text-align: center;
+  padding: $px20 0;
+  position: relative;
+}
+
+.option-contain.active {
+  border: solid 2px #5056ca;
+}
+
+.option-contain:hover {
+  border-color: #5056ca;
+}
+
+.option-contain > span {
+  display: block !important;
+  font-size: $px14;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 0.5px;
+  color: #72777c;
+  word-break: break-all;
+}
+
+.option-contain.active:after {
+  content: '\2713';
+  //background-image: url(../images/dine-right.png);
+  position: absolute;
+  height: $px25;
+  width: $px25;
+  background-repeat: no-repeat;
+  top: $px10;
+  right: $px10;
+  border-radius: $btn-border-radius;
+  background-color: $blue-light;
+  background-position: center center;
+  border-color: $blue-light !important;
+}
+
+.dining-option-block.select-discount-option > div {
+  border-radius: $btn-border-radius;
+  border: 2px solid #e0e3e6;
+  background-color: #ffffff;
+}
+
+.dining-option-block.select-discount-option {
+  overflow: hidden;
+  width: 100%;
+  display: grid;
+  grid-gap: $px20;
+  grid-template-columns: 1fr 1fr;
+}
+
+.dining-option-block.select-discount-option > div > p {
+  border-radius: $btn-border-radius;
+  background-color: #f99c32;
+  display: inline-block;
+  padding: $px3 $px8;
+  margin-bottom: $px5;
+  color: #ffffff;
+  font-size: $px14;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.dining-option-block.select-discount-option > div > span {
+  color: #72777c;
+  font-size: $px14;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+.dining-option-block.select-discount-option > div {
+  text-align: left;
+  padding: $px10 $px15;
+  margin-bottom: 0;
+}
+
+
+.dining-option-block.select-discount-option > div.active {
+  border-color: #5056ca;
+}
+
+.dining-option-block.select-discount-option > div:hover {
+  border-color: #5056ca;
+}
+
+
+.morecontent span {
+  display: none;
+}
+
+.morelink {
+  display: inline-block;
+  color: #5056ca;
+}

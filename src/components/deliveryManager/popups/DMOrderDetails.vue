@@ -329,7 +329,7 @@
 <script>
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
-import InvoiceReprint from '@/components/partial/InvoiceReprint'
+import InvoiceReprint from '@/components/deliveryManager/partial/InvoiceReprint'
 
 export default {
   name: 'DMOrderDetails',

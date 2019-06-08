@@ -1,0 +1,59 @@
+#add-to-order {
+  .modal-dialog {
+    max-width: $px700;
+
+    .modal-content {
+      .modal-header {}
+
+      .modal-body {
+
+        .add-to-order-wrapper {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-gap: $px20;
+
+          > div {
+            float: left;
+            height: unset !important;
+
+            &:nth-child(2n) {
+              float: right;
+            }
+          }
+
+          .order-location {
+            padding: $px10 $px35 $px10 $px15;
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            min-height: $px70;
+
+            > p {
+              margin-bottom: 0;
+              font-size: $px14;
+              font-weight: normal;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: 0.5px;
+              color: #72777c;
+              text-align: left;
+
+              > span {
+                font-weight: bold;
+                color: #3f4146;
+                cursor: pointer;
+
+                &:hover {
+                  opacity: 0.8;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .modal-footer {}
+    }
+  }
+}

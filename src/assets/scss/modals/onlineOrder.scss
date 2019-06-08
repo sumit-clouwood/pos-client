@@ -1,0 +1,174 @@
+#online-order {
+  .modal-dialog {
+    max-width: $px1000;
+    width: $px1000;
+    border-radius: $btn-border-radius;
+    background-color: #ffffff;
+
+    .modal-content {
+      background-color: #ffffff;
+
+      .modal-header {
+
+      }
+
+      .modal-body {
+        padding: $px20;
+        max-height: $px700;
+        overflow: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        touch-action: auto;
+        display: grid;
+        grid-template-columns: 1fr;
+
+        grid-gap: $px20;
+        .add-order-area {
+          overflow: hidden;
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          grid-gap: $px20;
+          .online-order {
+            min-height: $px280;
+            border-radius: $btn-border-radius;
+            background-color: #ffffff;
+            border: solid 1px #e5e9f4;
+
+            .online-order-header {
+              border-top-left-radius: 4px;
+              background-color: #ebeef3;
+              overflow: hidden;
+              padding: $px15;
+
+              .online-order-amount {
+                &.paid-amt {
+                  color: #4bac16;
+                  background-color: #cdeccf;
+                }
+              }
+
+              > h4.customer-title {
+                font-size: $px14;
+                font-weight: 600;
+                font-style: normal;
+                font-stretch: normal;
+                line-height: normal;
+                letter-spacing: 0.5px;
+                color: #3a3d44;
+                float: left;
+                margin-bottom: 0;
+                padding: 5px 0;
+              }
+
+              > p.online-order-amount {
+                font-size: $px12;
+                font-weight: 600;
+                font-style: normal;
+                font-stretch: normal;
+                line-height: normal;
+                letter-spacing: 0.4px;
+                text-align: center;
+                color: #cc3232;
+                border-radius: $px10;
+                background-color: #f8d8d8;
+                width: 63px;
+                float: right;
+                margin-bottom: 0;
+                padding: 5px 0;
+              }
+            }
+
+            .online-order-content {
+              padding: $px10;
+
+              .online-order-content-wrap {
+                #online-order-id {
+                  font-size: 12px;
+                  font-weight: normal;
+                  font-style: normal;
+                  font-stretch: normal;
+                  line-height: normal;
+                  letter-spacing: 0.5px;
+                  color: #5056ca;
+                  cursor: pointer;
+                }
+
+                > p {
+                  font-size: 12px;
+                  font-weight: normal;
+                  font-style: normal;
+                  font-stretch: normal;
+                  line-height: 2;
+                  letter-spacing: 0.5px;
+                  color: #72777c;
+                  margin-bottom: 0;
+
+                  > span {
+                    font-size: 12px;
+                    font-weight: 600;
+                    font-style: normal;
+                    font-stretch: normal;
+                    line-height: 2;
+                    letter-spacing: 0.5px;
+                    color: #3a3d44;
+                    margin-right: 30px;
+                    display: inline-block;
+                  }
+                }
+              }
+
+              .online-order-address {
+                > p {
+                  font-size: $px12;
+                  font-weight: normal;
+                  font-style: normal;
+                  font-stretch: normal;
+                  line-height: 1.67;
+                  letter-spacing: 0.5px;
+                  color: #72777c;
+                  margin-bottom: 0;
+                  padding: $px10 0 $px25 0;
+                }
+              }
+
+              .online-order-btn {
+                .reject-order {
+                  font-size: $px14;
+                  font-weight: 600;
+                  font-style: normal;
+                  font-stretch: normal;
+                  line-height: normal;
+                  letter-spacing: 0.5px;
+                  text-align: center;
+                  color: #cc3232;
+                  &:hover {
+                    background: #cc3232;
+                    color: #fff;
+                    transition: 0.3s ease-in-out;
+                  }
+                }
+
+                .add-to-delivery {
+                  font-size: $px14;
+                  font-weight: 600;
+                  font-style: normal;
+                  font-stretch: normal;
+                  line-height: normal;
+                  letter-spacing: 0.5px;
+                  text-align: center;
+                  color: #5056ca;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .modal-footer {
+        flex: unset !important;
+        display: block;
+        padding-top: $px30;
+      }
+    }
+  }
+}

@@ -8,7 +8,7 @@
         type="button"
         data-value=""
         id="referal-btn"
-        class="btn referal-btn dropdown-toggle"
+        class="btn referal-btn dropdown-toggle shorten-sentence"
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
@@ -27,7 +27,7 @@
               referralId: referral._id,
             })
           "
-          :referralType="referral.referral_type"
+          :referralType="referral.name"
           :key="referral._id"
           >{{ referral.name }}
         </a>
@@ -107,11 +107,7 @@ export default {
   },
   computed: {
     ...mapState({
-      getReferrals: state =>
-        typeof state.location.locationData.referrals != 'undefined' &&
-        state.location.locationData.referrals.length > 0
-          ? state.location.locationData.referrals
-          : false,
+      getReferrals: state => state.location.referrals,
     }),
   },
   methods: {
@@ -123,6 +119,7 @@ export default {
       if (this.changedReferral.referralName === 'Referral') {
         this.errors = 'Please select referral to proceed.'
       } else {
+        $('#confirm_announcement').prop('disabled', true)
         this.msg = 'Sending order for delivery...'
         this.errors = ''
         this.deliveryOrder({
@@ -136,11 +133,17 @@ export default {
             this.msg = ''
             $('#order-confirmation').modal('hide')
             $('#payment-msg').modal('show')
+            setTimeout(function() {
+              $('#confirm_announcement').prop('disabled', false)
+            }, 1000)
           })
           .catch(response => {
             this.errors = response.error
             $('#payment-msg').modal('hide')
             $('#order-confirmation').modal('show')
+            setTimeout(function() {
+              $('#confirm_announcement').prop('disabled', false)
+            }, 1000)
           })
       }
     },
@@ -148,32 +151,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss" scoped>
-.dropdown-menu.show {
-  max-height: 275px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-/*theming*/
-.theme-orange .vdatetime-popup__header,
-.theme-orange .vdatetime-calendar__month__day--selected > span > span,
-.theme-orange .vdatetime-calendar__month__day--selected:hover > span > span {
-  background: #ff9800;
-}
-
-.theme-orange .vdatetime-year-picker__item--selected,
-.theme-orange .vdatetime-time-picker__item--selected,
-.theme-orange .vdatetime-popup__actions__button {
-  color: #ff9800;
-}
-div#order-confirmation .showpropermsg {
-  position: relative;
-  padding-top: 35px !important;
-}
-.showpropermsg .referal p {
-  position: absolute;
-  top: 5px;
-}
-</style>

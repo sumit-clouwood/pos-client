@@ -1,15 +1,17 @@
 import DataService from '@/services/DataService'
 
 export default {
-  //Get country,city,location and drivers data by location id .
-  getLocationData(...[locationId, staff]) {
-    return DataService.getCacheable(
-      // Commented because need last sync date in format if pass time it would not get location information
-      // `/api/auth/locationdetails/?location_id=${locationId}&staff=${staff}&last_sync_date=${lastSyncDate}&time=${time}`
-      `/api/auth/locationdetails/?location_id=${locationId}&staff=${staff}`
+  //Get country,city,location and drivers data by location id . ?lang=ru-RU
+  getLocationData() {
+    //const language = typeof lang != 'undefined' ? '&lang=' + lang : ''
+    return DataService.getT(
+      '/ui_menu?translations_needed=1&menu_needed=false',
+      'brand' //+ language
     )
   },
-  getSyncDate() {
-    return DataService.getSyncDate()
+  getReferrals() {
+    return DataService.get(
+      '/model/brand_referrals?page_id=brand_referrals_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=referral_name'
+    )
   },
 }

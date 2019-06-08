@@ -1,9 +1,9 @@
 import DataService from '@/services/DataService'
 
 export default {
-  fetchAll(...[staffId, lastSyncDate]) {
+  fetchAll() {
     return DataService.get(
-      `/api/auth/get/Announcement?staff_id=${staffId}&last_sync_date=${lastSyncDate}`
+      '/model/brand_announcements?page_id=brand_announcements_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=announcement'
     )
   },
 }

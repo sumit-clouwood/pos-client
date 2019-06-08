@@ -1,40 +1,45 @@
 import * as mutation from './holdOrders/mutation-types'
-import HoldListService from '@/services/data/HoldListService'
+import OrderService from '@/services/data/OrderService'
+// import OrderService from '../../services/data/OrderService'
 
 const state = {
   getHoldOrders: false,
   orderDetails: {},
-  orderStatus: false,
+  pageLookups: {},
+  params: {
+    query: '',
+    limit: 10,
+    orderBy: 'order_status',
+    orderStatus: 'on-hold',
+    page: 1,
+  },
 }
 
 const getters = {}
 
 const actions = {
-  getHoldOrders({ commit, rootState }) {
-    /*let orderTotal = rootGetters['order/orderTotal']
-    if(orderTotal > 0) {
-      // dispatch('checkout/pay', {}, { root: true })
-    }*/
+  getHoldOrders({ commit, state }) {
     const params = [
-      rootState.location.location,
-      rootState.sync.date,
-      rootState.sync.compress,
+      state.params.query,
+      state.params.limit,
+      state.params.orderBy,
+      state.params.orderStatus,
+      state.params.page,
     ]
-    HoldListService.fetchAll(...params).then(response => {
+    OrderService.getOrders(...params).then(response => {
       commit(mutation.GET_HOLD_ORDERS, response.data.data)
+      commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
     })
   },
 
-  fetchOrder({ state, commit, dispatch }, orderId) {
-    const params = [orderId, '']
-    HoldListService.fetchHoldOrder(...params).then(response => {
-      commit(mutation.GET_HOLD_ORDER_DETAILS, response.data.data)
-      let item_ids = []
-      state.orderDetails.items.forEach(item => {
-        item_ids.push(item.item_id)
-      })
-      dispatch('order/addHoldOrder', { item_ids }, { root: true })
+  fetchOrder({ state, commit, dispatch }, selectedOrder) {
+    commit(mutation.GET_HOLD_ORDER_DETAILS, selectedOrder)
+    let item_ids = []
+    state.orderDetails.items.forEach(item => {
+      item_ids.push(item._id.$oid)
     })
+    // item_ids.push('5ce27969ef76a0108d2a2b0f') // for checking
+    dispatch('order/addHoldOrder', item_ids, { root: true })
   },
 
   holdOrder({ commit }) {
@@ -51,6 +56,9 @@ const mutations = {
   },
   [mutation.SET_ORDER_STATUS](state, orderStatus) {
     state.orderStatus = orderStatus
+  },
+  [mutation.PAGE_LOOKUP](state, pageLookups) {
+    state.pageLookups = pageLookups
   },
 }
 

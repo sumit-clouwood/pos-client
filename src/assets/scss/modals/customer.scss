@@ -1,0 +1,153 @@
+#customer {
+  .modal-dialog {
+    max-width: $px1180;
+
+    .modal-content {
+      .modal-header {
+        background: #dee2e9;
+        padding: $px15 $px30;
+        border-bottom-color: #dee2e9;
+
+        .customer-title {
+          font-size: $px16;
+          font-weight: bold;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: normal;
+          letter-spacing: 0.6px;
+          color: #3f4146;
+        }
+      }
+
+      .modal-body {
+        margin-top: $px25;
+
+        select {
+          font-size: $px14;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: normal;
+          letter-spacing: 0.5px;
+          color: #3d3f43;
+          padding-left: $px15;
+
+          &.selectpicker {
+            background-image: url("../images/select-arrow.png");
+            background-repeat: no-repeat;
+            background-position: center right $px10;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+          }
+        }
+
+        .dob {
+          > select:nth-child(2) {
+            width: $px75;
+          }
+
+          > select:nth-child(3) {
+            width: $px125;
+            margin: 0 4px;
+          }
+
+          > select:nth-child(4) {
+            width: $px100;
+          }
+        }
+
+        .left-form {
+          > div {
+            margin-bottom: $px25;
+            position: relative;
+
+            > input {
+              width: $px315;
+              height: $px50;
+              border-radius: $btn-border-radius;
+              background-color: #ffffff;
+              border: solid 1px #e4e7eb;
+              padding: $px10;
+            }
+
+            > select {
+              width: $px315;
+              height: $px50;
+              border-radius: $btn-border-radius;
+              background-color: #ffffff;
+              border: solid 1px #e4e7eb;
+            }
+
+            > label {
+              width: $px215;
+              padding: 0 $px25;
+              font-size: $px14;
+              font-weight: normal;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: 0.5px;
+              color: #72777c;
+              vertical-align: middle;
+            }
+          }
+
+          label {
+            > span {
+              color: #f44040;
+              font-size: $px24;
+            }
+          }
+        }
+
+        .right-form {
+          > div {
+            margin-bottom: $px25;
+            position: relative;
+
+            > input {
+              width: $px315;
+              height: $px50;
+              border-radius: $btn-border-radius;
+              background-color: #ffffff;
+              border: solid 1px #e4e7eb;
+              padding: $px10;
+            }
+
+            > select {
+              width: $px315;
+              height: $px50;
+              border-radius: $btn-border-radius;
+              background-color: #ffffff;
+              border: solid 1px #e4e7eb;
+            }
+
+            > label {
+              width: $px215;
+              padding: 0 $px25;
+              font-size: $px14;
+              font-weight: normal;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: 0.5px;
+              color: #72777c;
+              vertical-align: middle;
+            }
+          }
+
+          label {
+            > span {
+              color: #f44040;
+              font-size: $px24;
+            }
+          }
+        }
+      }
+
+      .modal-footer {
+
+      }
+    }
+  }
+}

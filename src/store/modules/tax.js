@@ -3,99 +3,71 @@ import * as mutation from './tax/mutation-types'
 const state = {
   itemsTax: 0,
   itemsTaxData: [],
+  modifiersTaxData: [],
   surchargeTax: 0,
 }
 
 // getters
 const getters = {
   totalTax: (state, getters, rootState) =>
-    state.itemsTax + state.surchargeTax - rootState.discount.TaxDiscountAmount,
+    state.itemsTax + state.surchargeTax - rootState.discount.taxDiscountAmount,
+  modifierTaxData: state => ({ modifierId, itemId }) => {
+    return state.modifiersTaxData.find(
+      modifier =>
+        modifier.itemId === itemId && modifier.modifierId === modifierId
+    )
+  },
+  itemModifiersTaxData: state => itemId => {
+    return state.modifiersTaxData.filter(modifier => modifier.itemId === itemId)
+  },
 }
 
 // actions
 const actions = {
   calculate({ commit, rootState }) {
     return new Promise(resolve => {
-      const orderSubtotal = rootState.order.items.reduce((total, item) => {
-        return total + item.price * item.quantity
-      }, 0)
+      if (rootState.order.items.length) {
+        let itemTaxData = []
+        let itemsTax = rootState.order.items.reduce((totalTax, item) => {
+          //calculate tax here
+          //item.price is now price before tax and discount applied, so need to recalculate the tax
+          itemTaxData.push({
+            quantity: item.quantity,
+            itemId: item._id,
+            tax: item.grossPrice - item.netPrice,
+            undiscountedTax:
+              item.undiscountedGrossPrice - item.undiscountedNetPrice,
+          })
 
-      if (orderSubtotal) {
-        let itemsTaxData = []
-        let itemsTax = 0
-
-        rootState.order.items.forEach(item => {
-          if (item.item_tax) {
-            item.item_tax.forEach(tax => {
-              if (tax.get_item_tax && tax.get_item_tax.rate) {
-                const itemTax =
-                  (item.price * item.quantity * tax.get_item_tax.rate) / 100
-
-                itemsTaxData.push({
-                  itemId: item._id,
-                  tax: itemTax,
-                })
-
-                itemsTax += itemTax
-              }
-            })
-          }
-        })
+          return totalTax + (item.grossPrice - item.netPrice) * item.quantity
+        }, 0)
 
         commit(mutation.SET_ITEMS_TAX, itemsTax)
-        commit(mutation.SET_ITEMS_TAX_DATA, itemsTaxData)
-      }
+        commit(mutation.SET_ITEMS_TAX_DATA, itemTaxData)
 
-      //   const itemsTax = rootState.order.items.reduce((totalTax, item) => {
-      //     if (item.item_tax) {
-      //       return (
-      //         totalTax +
-      //         item.item_tax.reduce((total, tax) => {
-      //           if (!tax.get_item_tax || !tax.get_item_tax.rate) {
-      //             return total
-      //           }
-      //           return (
-      //             total +
-      //             (item.price * item.quantity * tax.get_item_tax.rate) / 100
-      //           )
-      //         }, 0)
-      //       )
-      //     } else {
-      //       return totalTax + 0
-      //     }
-      //   }, 0)
-      //   commit(mutation.SET_ITEMS_TAX, itemsTax)
-      // } else {
-      //   commit(mutation.SET_ITEMS_TAX, 0)
-      // }
+        //apply tax on surcharge that is calculated earlier
+        if (rootState.surcharge.surchargeAmounts) {
+          const surchargeTax = rootState.surcharge.surchargeAmounts.reduce(
+            (totalTax, surcharge) => {
+              return totalTax + surcharge.tax
+            },
+            0
+          )
 
-      //apply tax on surcharge that is calculated earlier
-      if (orderSubtotal && rootState.surcharge.surchargeAmounts) {
-        const surchargeTax = rootState.surcharge.surchargeAmounts.reduce(
-          (totalTax, surcharge) => {
-            if (surcharge.tax) {
-              return (
-                totalTax +
-                surcharge.tax.reduce((taxAmount, tax) => {
-                  return taxAmount + (surcharge.amount * tax.rate) / 100
-                }, 0)
-              )
-            } else {
-              return totalTax
-            }
-          },
-          0
-        )
-
-        commit(mutation.SET_SURCHARGE_TAX, surchargeTax)
-      } else {
-        commit(mutation.SET_SURCHARGE_TAX, 0)
+          commit(mutation.SET_SURCHARGE_TAX, surchargeTax)
+        } else {
+          commit(mutation.SET_SURCHARGE_TAX, 0)
+        }
       }
       resolve()
     })
   },
   reset({ commit }) {
     commit(mutation.RESET)
+  },
+
+  setModifierTaxData({ commit }, modifiersTaxData) {
+    commit(mutation.SET_MODIFIERS_TAX_DATA, modifiersTaxData)
   },
 }
 
@@ -109,6 +81,9 @@ const mutations = {
   },
   [mutation.SET_SURCHARGE_TAX](state, tax) {
     state.surchargeTax = tax
+  },
+  [mutation.SET_MODIFIERS_TAX_DATA](state, modifiersTaxData) {
+    state.modifiersTaxData = modifiersTaxData
   },
   [mutation.RESET](state) {
     state.itemsTax = 0

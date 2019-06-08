@@ -1,5 +1,6 @@
 import SurchargeService from '@/services/data/SurchargeService'
 import * as mutation from './surcharge/mutation-types'
+import * as CONST from '@/constants'
 
 const state = {
   surcharges: [],
@@ -7,6 +8,12 @@ const state = {
 }
 
 const getters = {
+  tax: () => surcharge => {
+    if (surcharge.type === CONST.VALUE) {
+      const beforeTax = surcharge.value / ((100 + surcharge.tax_sum) / 100)
+      return surcharge.value - beforeTax
+    }
+  },
   surcharge: state => {
     return state.surchargeAmounts.reduce((total, surcharge) => {
       return total + surcharge.amount
@@ -15,23 +22,30 @@ const getters = {
 }
 
 const actions = {
-  calculate({ commit, rootGetters }) {
+  calculate({ commit, getters, rootGetters }) {
     return new Promise(resolve => {
       //look for order level discount before going furhter ;)
       const subtotal = rootGetters['order/subTotal']
+      const undiscountedSubtotal = rootGetters['order/subTotalUndiscounted']
       let totalSurcharges = []
       if (subtotal && state.surcharges.length) {
         state.surcharges.forEach(surcharge => {
           let applidSurcharge = {
             id: surcharge._id,
-            amount: surcharge.rate,
-            tax: surcharge.surcharge_is_taxable
-              ? surcharge.surcharge_taxable_rate_info
-              : false,
+            amount: surcharge.value,
+            tax: getters.tax(surcharge),
+            undiscountedTax: getters.tax(surcharge),
           }
 
-          if (surcharge.type.toLowerCase() !== 'value') {
+          if (surcharge.type === CONST.PERCENTAGE) {
             applidSurcharge.amount = (subtotal * surcharge.rate) / 100
+            applidSurcharge.tax =
+              (applidSurcharge.amount * surcharge.tax_sum) / 100
+
+            applidSurcharge.undiscountedAmount =
+              (undiscountedSubtotal * surcharge.rate) / 100
+            applidSurcharge.undiscountedTax =
+              (applidSurcharge.undiscountedAmount * surcharge.tax_sum) / 100
           }
 
           totalSurcharges.push(applidSurcharge)
@@ -43,14 +57,8 @@ const actions = {
     })
   },
 
-  fetchAll({ commit, rootState }) {
-    const params = [
-      rootState.location.location,
-      rootState.sync.date,
-      rootState.sync.compress,
-    ]
-
-    SurchargeService.fetchAll(...params).then(response => {
+  fetchAll({ commit }) {
+    SurchargeService.fetchAll().then(response => {
       if (response.data.data.length) {
         commit(mutation.SET_SURCHARGES, response.data.data)
       }

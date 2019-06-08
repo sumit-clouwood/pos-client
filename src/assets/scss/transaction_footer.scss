@@ -1,0 +1,17 @@
+@import "pixels_rem.scss";
+@import "variables.scss";
+
+.transaction-footer {
+  border-top: 1px solid $gray-bg-light;
+  border-left: 1px solid $gray-bg-light;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding: $px20 $px30;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  .orders-button-large{
+    padding: 0 $px25;
+    height: $header-btn-height;
+  }
+}

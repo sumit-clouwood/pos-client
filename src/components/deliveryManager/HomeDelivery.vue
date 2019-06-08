@@ -74,6 +74,11 @@ export default {
       driverList: state => state.location.locationData.drivers,
     }),
   },
+
+  mounted() {
+    this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+  },
+
   methods: {
     selectedDriver: function(driver) {
       this.waitingOrder.action = driver.name

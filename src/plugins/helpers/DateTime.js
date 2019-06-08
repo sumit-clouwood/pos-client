@@ -104,7 +104,9 @@ export default class {
       'November',
       'December',
     ]
+  }
 
+  parseTime() {
     this.hours = this.Num[this.date.getHours() - 1]
     this.mins = this.Num[this.date.getMinutes() - 1]
     this.sec = this.Num[this.date.getSeconds() - 1]
@@ -120,9 +122,25 @@ export default class {
   }
 
   getTime() {
+    this.parseTime()
     return this.hours + ':' + this.mins + ':' + this.sec
   }
   getDate() {
+    this.parseTime()
     return this.year + '-' + this.month + '-' + this.day
+  }
+
+  dateToday() {
+    this.parseTime()
+    //   Tuesday, 13 Oct 2017
+    return (
+      this.weekdayFull +
+      ', ' +
+      this.date.getDate() +
+      ' ' +
+      this.monthName +
+      ' ' +
+      this.year
+    )
   }
 }

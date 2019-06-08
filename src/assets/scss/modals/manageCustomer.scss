@@ -1,0 +1,140 @@
+#manage-customer {
+  .modal-dialog {
+    max-width: $px940;
+    box-shadow: 0 10px 40px rgba(133, 139, 151, 0.16);
+    border-radius: $btn-border-radius;
+
+    .modal-content {
+      min-height: $px500;
+
+      .modal-header {
+
+      }
+
+      .modal-body {
+        .search-field {
+          margin-bottom: $px20;
+        }
+
+        .manage-customer-table {
+          table {
+            margin-top: 0px;
+
+            tr {
+              &:last-child {
+                border-bottom: 1px solid #efefef;
+              }
+
+              th {
+                padding: $px25 $px10;
+                border-top: medium none;
+              }
+            }
+          }
+        }
+      }
+
+      .modal-footer {
+
+      }
+    }
+  }
+
+}
+
+.pagination-customer-details {
+  overflow: hidden;
+
+  > ul {
+    padding-left: 0;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+
+    > li {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: $px50;
+      height: $px50;
+      padding: 0 $px20;
+      box-shadow: 0 2px 2px #d1e6c5;
+      border-radius: $btn-border-radius;
+      background-color: #5056ca;
+      border-color: #5056ca;
+      color: #ffffff;
+      font-size: $px16;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+
+      &.next-page {
+        background: transparent !important;
+        border: 1px solid #cbcfd3;
+        border-color: #cbcfd3 !important;
+        box-shadow: none !important;
+        margin: 0 $px10;
+
+        > img {
+          width: 7px;
+        }
+
+        &:hover {
+          background: rgba(98, 187, 49, 0.7) !important;
+
+          > img {
+            filter: brightness(100%);
+          }
+        }
+      }
+
+      &:hover {
+        background: rgba(98, 187, 49, 0.7);
+      }
+    }
+  }
+}
+
+.manage-customer-wrap {
+  padding: $px10 $px30;
+
+  tr {
+    td {
+      padding: 0;
+      height: $px60;
+    }
+  }
+
+  table {
+    tr {
+      td {
+        color: #4b4e53;
+        font-size: $px14;
+        font-weight: 400;
+        letter-spacing: 0.47px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: $px145;
+        max-width: $px125;
+        vertical-align: middle;
+      }
+
+      th {
+        color: #a4a4a4;
+        font-size: $px12;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.43px;
+      }
+    }
+  }
+}
+
+.manage-customer-table {
+  max-height: $px500;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: auto;
+}

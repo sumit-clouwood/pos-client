@@ -2,15 +2,15 @@
   <div class="manage-customer-table">
     <table class="table table-responsive">
       <tr>
-        <th style="width: 190px">ORDER NUMBER</th>
-        <th style="width: 250px">DATE & TIME</th>
-        <th style="width: 190px">TYPE</th>
-        <th style="width: 255px">TIME TAKEN</th>
-        <th style="width: 190px">AMOUNT</th>
-        <th style="width: 190px">STATUS</th>
-        <th style="width: 140px">DRIVER</th>
-        <th style="width: 205px">AGENT</th>
-        <th style="width: 290px">SOURCE</th>
+        <th style="width: 190px">{{ _t('Order Number') }}</th>
+        <th style="width: 250px">{{ _t('Date/Time') }}</th>
+        <th style="width: 190px">{{ _t('Type') }}</th>
+        <th style="width: 255px">{{ _t('Time Taken') }}</th>
+        <th style="width: 190px">{{ _t('Amount') }}</th>
+        <th style="width: 190px">{{ _t('Status') }}</th>
+        <th style="width: 140px">{{ _t('Driver') }}</th>
+        <th style="width: 205px">{{ _t('Agent') }}</th>
+        <th style="width: 290px">{{ _t('Order Source') }}</th>
       </tr>
       <tr
         class="referal-code-customer"
@@ -18,16 +18,29 @@
         :key="order._id"
       >
         <td>#{{ order.order_no }}</td>
-        <td>{{ order.created_date }} {{ order.created_time }}</td>
+        <td>{{ order.created_at }}</td>
         <td>{{ order.order_type }}</td>
-        <td>{{ order.order_taken_at }}</td>
+        <td>{{ convertDatetime(order.real_created_datetime) }}</td>
         <td>{{ order.balance_due }}</td>
         <td>{{ order.order_status }}</td>
-        <td></td>
+        <td>
+          {{
+            LookupData.get({
+              collection: users._id,
+              matchWith: order.driver,
+              selection: 'name',
+            })
+          }}
+        </td>
         <td>{{ order.created_by }}</td>
         <!--<td>Tecom</td>-->
         <td class="show-details-his">
-          <span @click="getPastOrderDetails(order._id)">
+          <span
+            data-toggle="modal"
+            data-target=".bd-example-modal-lg"
+            data-dismiss="modal"
+            @click="selectedOrderDetails(order._id)"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -43,29 +56,36 @@
                 />
               </g>
             </svg>
-            Show Details
           </span>
         </td>
       </tr>
     </table>
+
+    <!--    <OrderDetailsPopup />-->
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
-
+import { mapState, mapActions, mapGetters } from 'vuex'
+import DateTime from '@/mixins/DateTime'
+// import OrderDetailsPopup from '@/components/partial/OrderDetailPopup'
 export default {
   name: 'CustomerPastOrders',
+  props: {
+    pastOrders: {},
+  },
+  components: {
+    // OrderDetailsPopup,
+  },
+  mixins: [DateTime],
   computed: {
     ...mapState({
-      pastOrders: state =>
-        state.customer.customer.customer_list
-          ? state.customer.customer.customer_list.orders
-          : false,
+      users: state => state.customer.lookups.users,
     }),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
-    ...mapActions('order', ['getPastOrderDetails']),
+    ...mapActions('order', ['selectedOrderDetails']),
   },
 }
 </script>
