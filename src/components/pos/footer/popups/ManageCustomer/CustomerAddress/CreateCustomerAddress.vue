@@ -120,9 +120,9 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState({
-      fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
       newAddressDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
+      fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
       customerCreateStatus: state => state.customer.responseInformation,
       customerId: state => state.customer.customer._id,
     }),

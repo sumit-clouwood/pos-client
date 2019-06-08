@@ -18,57 +18,51 @@
     </div>
 
     <div>
-      <carousel :per-page="1" :mouse-drag="true">
-        <slide>
-          <div class="insight-last-order">
-            <h3>{{ _t('Last Order') }}</h3>
-            <p class="last-order-time">
-              {{ convertDatetime(insight.last_order_datetime) }}
-            </p>
-            <ul class="fav-item-slider">
-              <!--<li><img src="/img/pos/dine-right.png" alt="fav-item" /></li>-->
-              <li v-for="(item, index) in items" :key="index">
-                {{ item.name }}
-              </li>
-            </ul>
+      <div class="last-order-wrap">
+        <div class="insight-last-order">
+          <h3>{{ _t('Last Order') }}</h3>
+          <p class="last-order-time">
+            {{ convertDatetime(insight.last_order_datetime) }}
+          </p>
+          <ul class="fav-item-slider">
+            <!--<li><img src="/img/pos/dine-right.png" alt="fav-item" /></li>-->
+            <li v-for="(item, index) in items" :key="index">
+              {{ item.name }}
+            </li>
+          </ul>
+        </div>
+        <div class="insight-last-order">
+          <ul class="ullist-business-slider">
+            <li>
+              {{ _t('Total Business') }}
+              <span>{{ insight.total_orders }}</span>
+            </li>
+            <li>
+              {{ _t('Cancelled') }} <span>{{ cancelOrders }}</span>
+            </li>
+          </ul>
+          <div class="total-amount-business-slider">
+            <p>{{ _t('Total Amount') }}</p>
+            <h3>{{ lastOrder.currency_code }} {{ lastOrder.balance_due }}</h3>
           </div>
-        </slide>
-        <slide>
-          <div class="insight-last-order">
-            <ul class="ullist-business-slider">
-              <li>
-                {{ _t('Total Business') }}
-                <span>{{ insight.total_orders }}</span>
-              </li>
-              <li>
-                {{ _t('Cancelled') }} <span>{{ cancelOrders }}</span>
-              </li>
-            </ul>
-            <div class="total-amount-business-slider">
-              <p>{{ _t('Total Amount') }}</p>
-              <h3>{{ lastOrder.currency_code }} {{ lastOrder.balance_due }}</h3>
-            </div>
-          </div>
-        </slide>
-        <slide>
-          <div class="insight-last-order">
-            <h3>{{ _t('Favorites') }}</h3>
-            <p
-              class="last-order-details"
-              v-for="(favItem, key) in insight.favorites"
-              :key="key"
-            >
-              {{
-                LookupData.get({
-                  collection: favoriteItems._id,
-                  matchWith: favItem.menu_item,
-                  selection: 'name',
-                })
-              }}
-            </p>
-          </div>
-        </slide>
-      </carousel>
+        </div>
+        <div class="insight-last-order">
+          <h3>{{ _t('Favorites') }}</h3>
+          <p
+            class="last-order-details"
+            v-for="(favItem, key) in insight.favorites"
+            :key="key"
+          >
+            {{
+              LookupData.get({
+                collection: favoriteItems._id,
+                matchWith: favItem.menu_item,
+                selection: 'name',
+              })
+            }}
+          </p>
+        </div>
+      </div>
     </div>
     <div class="customer-insights-notes">
       <div>
@@ -111,7 +105,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import CustomerFeedback from './CustomerFeedback'
-import { Carousel, Slide } from 'vue-carousel'
 import DateTime from '@/mixins/DateTime'
 
 function getCustomerList(state) {
@@ -122,8 +115,6 @@ export default {
   name: 'CustomerInsights',
   components: {
     CustomerFeedback,
-    Carousel,
-    Slide,
   },
   mixins: [DateTime],
   data() {

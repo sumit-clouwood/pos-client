@@ -9,7 +9,6 @@
       :data-target="getTarget(method)"
     >
       <img :src="image(method.icon)" :alt="method.name" :title="method.name" />
-      <br />
       <label class="shorten-sentence" :title="method.name">
         {{ method.name }}
       </label>
@@ -39,8 +38,13 @@ export default {
       }
       return ''
     },
-    image() {
-      return 'https://fakeimg.pl/46x46/?text=Third&font=lobster%22'
+    image(imgPath) {
+      // return process.env.BASE_URL + imgPath
+      if (imgPath) {
+        return process.env.BASE_URL + imgPath
+      } else {
+        return 'https://fakeimg.pl/46x46/?text=Third&font=lobster%22'
+      }
     },
     getTarget(method) {
       if (method.name == CONSTANTS.LOYALTY) {
@@ -59,5 +63,5 @@ export default {
 </script>
 <style lang="sass" scoped>
 img
-  height: '46px'
+  height: 46px
 </style>

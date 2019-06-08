@@ -301,6 +301,7 @@ const actions = {
 
     item.editMode = true
     item.quantity = orderItem.quantity
+    item.netPrice = orderItem.netPrice
     item.orderIndex = index
 
     commit(mutation.SET_ITEM, item)

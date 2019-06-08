@@ -524,7 +524,7 @@
       height: $px25;
       border-radius: $btn-border-radius;
       border: solid 2px #e4e7eb;
-      content: '\2713';
+      content: '';
       position: absolute;
       display: flex;
       align-items: center;
@@ -609,7 +609,7 @@ div#display-order {
     text-align: left;
     width: $px125;
     padding: 0 $px10;
-    white-space: nowrap;
+    white-space: normal;
 
     > span {
       display: block;

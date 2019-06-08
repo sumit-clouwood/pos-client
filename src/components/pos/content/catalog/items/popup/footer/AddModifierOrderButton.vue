@@ -25,7 +25,7 @@
       </svg>
       <span>{{ _t('Discount Item') }}</span>
     </button>
-    <button type="button" class="buttoned colorwhite discountbutton">
+    <!--<button type="button" class="buttoned colorwhite discountbutton">
       <svg
         aria-hidden="true"
         focusable="false"
@@ -34,7 +34,7 @@
         role="img"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 512 512"
-        class="svg-inline--fa fa-badge-percent fa-w-16 fa-2x"
+        class="svg-inline&#45;&#45;fa fa-badge-percent fa-w-16 fa-2x"
       >
         <path
           fill="currentColor"
@@ -43,7 +43,7 @@
         ></path>
       </svg>
       <span>{{ _t('Discount') }}</span>
-    </button>
+    </button>-->
     <button type="button" class="buttoned colorwhite taxbutton">
       <img src="img/pos/delete.jpg" alt="delete" />
       <span>{{ _t('Tax') }}</span>

@@ -5,7 +5,8 @@
   width: $px570;
   margin-top: 0;
   background: #fff;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   position: fixed;
   top: 0;
   z-index: 1050;

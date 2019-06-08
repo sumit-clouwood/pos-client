@@ -1,10 +1,10 @@
 <template>
-  <div class="modal-details">
+  <div class="modal-details" v-if="item">
     <div class="POSItemOptions_pricequantity">
       <div class="POSItemOptions_price">
         <label class="POSItemOptions_label">{{ _t('Price') }}</label>
         <div class="POSItemOptions_money">
-          {{ formatPrice(item.value) }}
+          {{ formatPrice(itemPrice(item)) }}
         </div>
       </div>
       <Quantity />
@@ -21,9 +21,10 @@ export default {
   props: {},
   computed: {
     ...mapState({
-      item: state => state.modifier.item,
+      item: state => state.order.item,
     }),
     ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('order', ['itemPrice']),
   },
   components: {
     Quantity,

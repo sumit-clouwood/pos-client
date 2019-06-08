@@ -49,7 +49,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              <span>X</span> Dismiss
+              {{ _t('Dismiss') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->

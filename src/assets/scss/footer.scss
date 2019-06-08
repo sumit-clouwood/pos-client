@@ -4,10 +4,11 @@
   background-color: $orange-dark !important;
   padding: 5px 20px !important;
   span {
-    font-size: 12px;
+    font-size: $px12;
     font-weight: bold;
-    line-height: 2.1;
+    //line-height: 2.1;
     text-align: center;
+    display: inline-block;
   }
 }
 .footer {

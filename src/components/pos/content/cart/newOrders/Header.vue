@@ -13,9 +13,6 @@
       </p>
     </div>
     <div class="main-oreders-date">{{ DateToday }}</div>
-    <div class="main-oreders-phone" v-if="selectedCustomer.phone_number">
-      {{ _t('Phone') }} : {{ selectedCustomer.phone_number }}
-    </div>
     <div class="main-oreders-buttons">
       <div class="orders-button-large">{{ _t('Move Table') }}</div>
       <div class="orders-button-large">{{ _t('Split Table') }}</div>

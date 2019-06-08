@@ -116,6 +116,7 @@ export default {
             .dispatch('customer/searchCustomer', this.searchTerm)
             .then(() => {
               $('#searchLoader').hide()
+              $('#myDropdown').toggle()
             })
         }, 500)
       }
@@ -129,7 +130,7 @@ export default {
 .dropdown {
   position: relative;
 }
-#searchLoader {
+#searchLoader, .dropdown-content {
   display:none;
 }
 .dropdown-content {

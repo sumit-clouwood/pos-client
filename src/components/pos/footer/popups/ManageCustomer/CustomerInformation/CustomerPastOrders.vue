@@ -56,6 +56,7 @@
                 />
               </g>
             </svg>
+            {{ _t('Show Details') }}
           </span>
         </td>
       </tr>

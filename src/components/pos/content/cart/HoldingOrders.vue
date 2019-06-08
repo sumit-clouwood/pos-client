@@ -1,7 +1,7 @@
 <template>
   <div class="holding-order-panel animated zoomIn">
     <!--    <Header />-->
-    <div class="wrappers-order-block" v-if="holdOrderList">
+    <div class="wrappers-order-block show" v-if="holdOrderList">
       <Items
         v-for="(order, key) in holdOrderList"
         :orderData="order"

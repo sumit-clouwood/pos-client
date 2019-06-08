@@ -57,12 +57,12 @@
         <li
           data-toggle="modal"
           data-target="#search-loyalty-customer"
-          class="footer-slider-list-item"
+          class="footer-slider-list-item "
           :class="{ loyaltyApplied: loyaltyCard }"
         >
           <a href="#" class="footer-slider-list-item-link">
             <img
-              src="img/pos/tip.png"
+              src="img/pos/loyalty.svg"
               :alt="_t('Loyalty')"
               v-if="!loyaltyCard"
             />
@@ -77,7 +77,7 @@
                 {{ _t('Loyalty') }}</span
               >
               <br />
-              <span>
+              <span class="shorten-sentence">
                 {{ selectedCustomer }}
               </span>
             </span>
@@ -358,8 +358,8 @@ export default {
   methods: {
     viewHoldOrders: function() {
       this.$store.dispatch('holdOrders/getHoldOrders')
-      $('.holding-order-panel').toggle()
-      $('.order-wrappers-panel').toggle()
+      $('.wrappers-order-block').toggleClass('show')
+      $('.main-orders-list').toggleClass('hide')
       $('ul.ullist-icons > li#hold-order-box').toggleClass('active')
     },
     ...mapActions('discount', ['validateOrderDiscounts']),

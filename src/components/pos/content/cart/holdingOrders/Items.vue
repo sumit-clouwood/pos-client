@@ -25,8 +25,8 @@ export default {
   methods: {
     setHoldOrderCart: function(orderData) {
       this.$store.dispatch('holdOrders/fetchOrder', orderData)
-      $('.holding-order-panel').toggle()
-      $('.order-wrappers-panel').toggle()
+      $('.wrappers-order-block').toggleClass('show')
+      $('.main-orders-list').toggleClass('hide')
       $('ul.ullist-icons > li#hold-order-box').toggleClass('active')
     },
 

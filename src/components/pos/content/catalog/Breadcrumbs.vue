@@ -3,7 +3,7 @@
     <div class="breadcrumbs-item breadcrumbs-category">
       <div class="title-box">
         <div class="breadcrumbs-subtitle">{{ _t('Category') }}</div>
-        <div class="breadcrumbs-title" :title="category">
+        <div class="breadcrumbs-title shorten-sentence" :title="dt(category)">
           {{ dt(category) }}
         </div>
       </div>
@@ -16,7 +16,10 @@
     <div class="breadcrumbs-item breadcrumbs-sub-category" v-if="subcategory">
       <div class="title-box">
         <div class="breadcrumbs-subtitle">{{ _t('Sub Category Name') }}</div>
-        <div class="breadcrumbs-title" :title="subcategory">
+        <div
+          class="breadcrumbs-title shorten-sentence"
+          :title="dt(subcategory)"
+        >
           {{ dt(subcategory) }}
         </div>
       </div>
@@ -29,7 +32,9 @@
     <div class="breadcrumbs-item breadcrumbs-menu" v-if="item">
       <div class="title-box">
         <div class="breadcrumbs-subtitle">{{ _t('Item') }}</div>
-        <div class="breadcrumbs-title" :title="item">{{ dt(item) }}</div>
+        <div class="breadcrumbs-title shorten-sentence" :title="dt(item)">
+          {{ dt(item) }}
+        </div>
       </div>
     </div>
   </div>

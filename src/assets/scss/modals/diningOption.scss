@@ -29,8 +29,8 @@
               border: solid 2px #5056ca;
 
               &:after {
-                content: '\2713';
-                //background-image: url(../images/dine-right.png);
+                content: '';
+                background-image: url(../images/check-mark.svg);
                 position: absolute;
                 height: $px25;
                 width: $px25;

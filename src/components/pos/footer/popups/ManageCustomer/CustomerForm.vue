@@ -71,6 +71,70 @@
             errors.birthday
           }}</span>
         </div>
+        <div class="name-from">
+          <label>{{ _t('Delivery Area') }} <span>*</span></label>
+          <select
+            class="getAreaId"
+            @change="getAreaId"
+            v-model="newCustomerDetails.delivery_area_id"
+          >
+            <option
+              v-for="area in fetchDeliveryAreas"
+              :value="area._id"
+              :key="area._id"
+              :data-deliveryarea="area.name"
+              >{{ area.name }}
+            </option>
+          </select>
+          <span class="validation-error" v-if="errors.delivery_area_id">{{
+            errors.delivery_area_id
+          }}</span>
+        </div>
+      </div>
+      <div class="col-md-6 left-form">
+        <div class="alternate-phone-from">
+          <label>{{ _t('Building/Villa') }} <span>*</span></label>
+          <input
+            type="text"
+            name="building"
+            v-model="newCustomerDetails.building"
+          />
+          <span class="validation-error" v-if="errors.building">{{
+            errors.building
+          }}</span>
+        </div>
+        <div class="sex-from">
+          <label>{{ _t('Street') }} <span>*</span></label>
+          <input
+            type="text"
+            name="street"
+            v-model="newCustomerDetails.street"
+          />
+          <span class="validation-error" v-if="errors.street">{{
+            errors.street
+          }}</span>
+        </div>
+      </div>
+      <div class="col-md-6 right-form">
+        <div class="landmark">
+          <label>{{ _t('Flat Number') }} <span>*</span></label>
+          <input
+            type="text"
+            name="flat_number"
+            v-model="newCustomerDetails.flat_number"
+          />
+          <span class="validation-error" v-if="errors.flat_number">{{
+            errors.flat_number
+          }}</span>
+        </div>
+        <div class="landmark">
+          <label>{{ _t('Nearest Landmark') }}</label>
+          <input
+            type="text"
+            name="nearest_landmark"
+            v-model="newCustomerDetails.nearest_landmark"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -79,7 +143,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import { Datetime } from 'vue-datetime'
-
+/* global $ */
 export default {
   name: 'CustomerForm',
   props: {},
@@ -88,6 +152,7 @@ export default {
   },
   data() {
     return {
+      add_delivery_area: '',
       selectedDate: '',
       getCurrentYear: new Date().getFullYear().toString(),
       months:
@@ -100,11 +165,21 @@ export default {
     ...mapState({
       newCustomerDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
+      fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
+      customerCreateStatus: state => state.customer.responseInformation,
+      customerId: state => state.customer.customer._id,
       customerGroup: state =>
         state.customer.customer_group ? state.customer.customer_group : false,
     }),
   },
   methods: {
+    getAreaId: function(e) {
+      if (e.target.options.selectedIndex > -1) {
+        this.add_delivery_area = $('.getAreaId')
+          .find(':selected')
+          .text()
+      }
+    },
     getBirthday: function() {
       if (
         typeof this.newCustomerDetails.birthday != 'undefined' &&
@@ -116,8 +191,41 @@ export default {
       }
     },
     validate: function() {
+      alert(this.newCustomerDetails.birthday)
       this.errors = {}
       this.errors.count = 0
+      if (!this.newCustomerDetails.delivery_area_id) {
+        this.errors.delivery_area_id = 'Delivery area required'
+        this.errors.count = 1
+      }
+      if (!this.newCustomerDetails.building) {
+        this.errors.building = 'Building/Villa required'
+        this.errors.count = 1
+      }
+      if (
+        this.newCustomerDetails.building &&
+        this.newCustomerDetails.building.length > 15
+      ) {
+        this.errors.building =
+          'Building/Villa should be not more than 15 characters'
+        this.errors.count = 1
+      }
+      if (!this.newCustomerDetails.flat_number) {
+        this.errors.flat_number = 'Flat Number is required'
+        this.errors.count = 1
+      }
+      if (!this.newCustomerDetails.street) {
+        this.errors.street = 'Street required'
+        this.errors.count = 1
+      }
+      if (
+        this.newCustomerDetails.street &&
+        this.newCustomerDetails.street.length < 2
+      ) {
+        this.errors.street = 'Street should be at least 2 characters'
+        this.errors.count = 1
+      }
+
       if (!this.newCustomerDetails.name) {
         this.errors.name = 'Name required'
         this.errors.count = 1

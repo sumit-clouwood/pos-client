@@ -365,7 +365,7 @@
   height: 1.5625rem;
   border-radius: 3px;
   border: solid 2px #e4e7eb;
-  content: '\2713';
+  content: '';
   position: absolute;
   display: flex;
   align-items: center;
@@ -433,7 +433,7 @@ div#display-order {
     text-align: left;
     width: 7.8125rem;
     padding: 0 0.625rem;
-    white-space: nowrap; }
+    white-space: normal; }
     .ullist-business-slider > li > span {
       display: block;
       font-size: 1.25rem;

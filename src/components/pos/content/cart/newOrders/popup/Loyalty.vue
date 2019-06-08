@@ -10,12 +10,12 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Reward Available</h4>
+          <h4 class="customer-title">{{ _t('Reward Available') }}</h4>
         </div>
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
             <p v-if="loyaltyBalance > 0">
-              Loyalty Balance:
+              {{ _t('Loyalty Balance') }}:
               <span>{{ formatPrice(loyaltyBalance) }}</span>
             </p>
             <p v-if="loyalty.loyalty_order_alert != null">
@@ -24,13 +24,13 @@
             <div v-if="loyalty.loyalty_order_alert == null">
               <hr />
               <p>
-                You can spend min
+                {{ _t('You can spend min') }}
                 <b>{{ loyalty.minimum_redeem }} {{ loyalty.currency }}</b>
-                and max
+                {{ _t('and max') }}
                 <b>{{ loyalty.maximum_redeem }} {{ loyalty.currency }}</b>
               </p>
               <p>
-                Amount you can spend: <b>{{ amount }}</b>
+                {{ _t('Amount you can spend') }}: <b>{{ amount }}</b>
               </p>
             </div>
           </div>
@@ -42,7 +42,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              Close
+              {{ _t('Close') }}
             </button>
             <button
               v-if="loyalty.loyalty_order_alert == null"
@@ -54,7 +54,7 @@
               data-dismiss="modal"
               @click="payByLoyalty"
             >
-              Add
+              {{ _t('Add') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -68,7 +68,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Loyalty',
   computed: {
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
       loyaltyBalance: state =>
         state.customer.loyalty.card.balance

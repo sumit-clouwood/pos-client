@@ -497,10 +497,10 @@ $(document).ready(function() {
     $('#payment-method .VueCarousel-inner').removeAttr('style')
   })
 
-  /*$('.br-table-btn').click(function() {
+  $('.br-table-btn').click(function() {
     // $("#payment-method").trigger();
     $('.last-order-wrap')[0].slick.refresh()
-  })*/
+  })
 })
 // for delivery manger transparent-screen
 
@@ -741,5 +741,8 @@ $(document).ready(function() {
       .addClass('active')
       .siblings()
       .removeClass('active')
+  })
+  $('li.pay-now').click(function() {
+    $('#payment-method')[0].slick.refresh()
   })
 })
