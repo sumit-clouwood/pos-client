@@ -37,7 +37,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
         .then(storedata => {
-          //call again with brand_id
           commit(mutation.SET_STORE, storedata.data.available_stores[0])
           commit(mutation.SET_BRAND, storedata.data.brand)
           commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
