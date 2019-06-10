@@ -74,7 +74,7 @@ const actions = {
 // mutations
 const mutations = {
   [mutation.SET_ITEMS_TAX](state, tax) {
-    state.itemsTax = tax
+    state.itemsTax = !isNaN(tax) ? tax : 0
   },
   [mutation.SET_ITEMS_TAX_DATA](state, taxData) {
     state.itemsTaxData = taxData

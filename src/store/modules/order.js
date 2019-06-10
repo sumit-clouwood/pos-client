@@ -141,7 +141,6 @@ const actions = {
   addModifierOrder({ commit, getters, rootState, dispatch, rootGetters }) {
     return new Promise((resolve, reject) => {
       let item = { ...rootState.modifier.item }
-
       //this comes through the modifier popup
       item.grossPrice = item.value
       item.netPrice = getters.netPrice(item)
@@ -298,23 +297,21 @@ const actions = {
     //get current item
     //this is fired by the items.vue
     let item = { ...state.items[index] }
-
     item.editMode = true
     item.quantity = orderItem.quantity
     item.netPrice = orderItem.netPrice
     item.orderIndex = index
-
     commit(mutation.SET_ITEM, item)
 
-    if (item.modifiable) {
-      dispatch(
-        'modifier/setActiveItem',
-        { item: item },
-        {
-          root: true,
-        }
-      )
-    }
+    // if (item.modifiable) {
+    dispatch(
+      'modifier/setActiveItem',
+      { item: item },
+      {
+        root: true,
+      }
+    )
+    // }
   },
   recalculateOrderTotals({ rootState, getters, rootGetters, dispatch }) {
     return new Promise((resolve, reject) => {
@@ -687,7 +684,7 @@ const mutations = {
   [mutation.UPDATE_ITEM_QUANTITY](state, quantity) {
     const index = state.item.orderIndex
     let orderItem = state.items[index]
-    orderItem.quantity = quantity
+    orderItem.quantity = typeof quantity != 'undefined' ? quantity : 1
     state.items.splice(index, 1, orderItem)
   },
   [mutation.REMOVE_ITEM_TAX](state, item) {

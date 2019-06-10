@@ -274,8 +274,9 @@ button {
   }
 
   &#customer-notes-add {
-    height: $header-btn-height;
-    padding: 0 $px25;
+    height: $logo-link-size;
+    padding: 0 $px10;
+    margin-top: $px10;
     border-radius: $btn-border-radius;
     background-color: #5056ca;
     font-size: $px16;

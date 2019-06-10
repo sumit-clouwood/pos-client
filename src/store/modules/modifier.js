@@ -78,8 +78,8 @@ const getters = {
   //this getter is used in rendering
   itemModifiers: state => itemId => {
     const item = state.itemModifiers.find(obj => obj.itemId == itemId)
+    let subgroups = []
     if (item) {
-      let subgroups = []
       for (let subgroupId in item.modifiers) {
         let subgroup = item.modifiers[subgroupId].subgroup
         subgroup.modifiers = []
@@ -92,19 +92,21 @@ const getters = {
           subgroups.push(subgroup)
         }
       }
-      return subgroups
     }
+    return subgroups
   },
 
   //get mandatory modifiers specific to item id from current modifiers list
   itemMandatoryGroups: (state, getters) => itemId => {
     let mandatoryModifierGroups = []
     const subgroups = getters.itemModifiers(itemId)
-    subgroups.forEach(subgroup => {
-      if (subgroup.item_type === 'mandatory') {
-        mandatoryModifierGroups.push(subgroup._id)
-      }
-    })
+    if (subgroups) {
+      subgroups.forEach(subgroup => {
+        if (subgroup.item_type === 'mandatory') {
+          mandatoryModifierGroups.push(subgroup._id)
+        }
+      })
+    }
     return mandatoryModifierGroups
   },
 
@@ -139,23 +141,25 @@ const actions = {
     const modifierItem = state.itemModifiers.find(
       item => item.itemId == orderItem._id
     )
-
-    //make a copy of item
-    let item = { ...modifierItem.item }
-
-    //copy properties from active order/item
-    item.editMode = orderItem.editMode
-    item.quantity = orderItem.quantity
-    item.orderIndex = orderItem.orderIndex
-    item.modifiable = orderItem.modifiable
+    let item = {}
+    if (typeof modifierItem != 'undefined') {
+      //make a copy of item
+      item = { ...modifierItem.item }
+      //copy properties from active order/item
+      item.editMode = orderItem.editMode
+      item.quantity = orderItem.quantity
+      item.orderIndex = orderItem.orderIndex
+      item.modifiable = orderItem.modifiable
+      //formstate should contain only those fiels which are selected by this order item
+      dispatch('orderForm/populateSelection', orderItem.modifierGroups, {
+        root: true,
+      })
+    } else {
+      item = orderItem
+    }
 
     //set current item with modifiers in modifer store
     commit(mutation.SET_ITEM, item)
-
-    //formstate should contain only those fiels which are selected by this order item
-    dispatch('orderForm/populateSelection', orderItem.modifierGroups, {
-      root: true,
-    })
   },
 
   //find modifiers from all specific to current item and push to current list [item[0].modifiers]
@@ -163,7 +167,6 @@ const actions = {
   assignModifiersToItem({ commit, getters }, item) {
     item.editMode = false
     commit(mutation.SET_ITEM, item)
-
     //commit item modifier only if it was not already in the list
     if (!state.itemModifiers.find(obj => obj.itemId == item._id)) {
       //use updated modifiers

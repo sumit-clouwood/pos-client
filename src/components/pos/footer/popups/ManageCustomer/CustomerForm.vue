@@ -44,7 +44,7 @@
         </div>
       </div>
       <div class="col-md-6 right-form">
-        <div class="sex-from">
+        <div class="gender">
           <label>{{ _t('Gender') }}</label>
           <select class="selectpicker" v-model="newCustomerDetails.gender">
             <option selected="selected" value="male">{{ _t('Male') }}</option>
@@ -103,7 +103,7 @@
             errors.building
           }}</span>
         </div>
-        <div class="sex-from">
+        <div class="gender">
           <label>{{ _t('Street') }} <span>*</span></label>
           <input
             type="text"
