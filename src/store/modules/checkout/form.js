@@ -214,13 +214,13 @@ const actions = {
 
       if (parseFloat(state.amount) <= 0) {
         commit('showCalc', true)
-        commit('showPayBreak', false)
+        commit('showPayBreak', true)
 
         commit('SET_ERROR', 'Gift Card payment should be greater than 0.00')
         reject()
       } else if (parseFloat(state.amount) - parseFloat(remaining) > 0.01) {
         commit('showCalc', true)
-        commit('showPayBreak', false)
+        commit('showPayBreak', true)
 
         commit(
           'SET_ERROR',
