@@ -141,7 +141,6 @@ const actions = {
   addModifierOrder({ commit, getters, rootState, dispatch, rootGetters }) {
     return new Promise((resolve, reject) => {
       let item = { ...rootState.modifier.item }
-
       //this comes through the modifier popup
       item.grossPrice = item.value
       item.netPrice = getters.netPrice(item)
