@@ -1,0 +1,11 @@
+.new-transaction {
+  display: grid;
+  grid-template-columns: 25% 75%;
+  grid-template-rows: 5.3125rem 1fr 6.25rem;
+  height: 100vh; }
+  .new-transaction .header {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    border-bottom: 1px solid #F1F3F6; }
+
+/*# sourceMappingURL=page_transaction.css.map */

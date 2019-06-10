@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAEA,gBAAgB;EACd,OAAO,EAAE,IAAI;EACb,qBAAqB,EAAE,OAAO;EAC9B,kBAAkB,EAAE,qBAAiC;EACrD,MAAM,EAAE,KAAK;EACb,wBAAO;IACL,iBAAiB,EAAE,CAAC;IACpB,eAAe,EAAE,CAAC;IAClB,aAAa,EAAE,iBAAwB",
+"sources": ["page_transaction.scss"],
+"names": [],
+"file": "page_transaction.css"
+}
