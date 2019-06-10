@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     getToggle(method) {
-      if (method.name == CONSTANTS.LOYALTY) {
+      if (method.type == CONSTANTS.LOYALTY) {
         return 'modal'
       }
       return ''
@@ -47,7 +47,7 @@ export default {
       }
     },
     getTarget(method) {
-      if (method.name == CONSTANTS.LOYALTY) {
+      if (method.type == CONSTANTS.LOYALTY) {
         if (this.selectedModal == '#manage-customer') {
           return '#search-loyalty-customer'
         } else {

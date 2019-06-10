@@ -872,7 +872,6 @@ svg {
             background-image: linear-gradient(180deg, #fac161 0%, #f76b1c 100%);
             color: #fff; }
         #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown {
-          display: none;
           margin: 0 auto; }
           #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-breakdown-title > h1 {
             color: #3d3f43;

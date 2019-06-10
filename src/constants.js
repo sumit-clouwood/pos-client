@@ -10,8 +10,8 @@ export const REFERENCE_FIELD_SUBCATEGORY_TO_ITEM = '_id'
 
 /* PAYMENT RELATED CONSTANTS */
 
-export const LOYALTY = 'Loyalty Points'
-export const GIFT_CARD = 'Gift Card'
+export const LOYALTY = 'loyalty'
+export const GIFT_CARD = 'gift_card'
 
 /* MODULE RELATED CONSTENTS */
 

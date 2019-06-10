@@ -46,7 +46,7 @@ const actions = {
       commit('SET_ERROR', 'Amount should be greater than 0.00')
       commit('showCalc', true)
     } else if (
-      state.method.name == CONSTANTS.LOYALTY &&
+      state.method.type == CONSTANTS.LOYALTY &&
       parseFloat(state.amount) != parseFloat(state.loyaltyAmount)
     ) {
       if (parseFloat(state.loyaltyAmount) <= 0.01) {
