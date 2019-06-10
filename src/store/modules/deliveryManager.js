@@ -1,5 +1,6 @@
 import * as mutation from './deliveryManager/mutation-types'
 import DMService from '@/services/data/DeliveryManagerService'
+/* eslint-disable no-console */
 
 const state = {
   deliveryOrderStatus: 'running',
@@ -20,14 +21,11 @@ const state = {
 const getters = {}
 
 const actions = {
-  fetchDMOrderDetail({ commit, rootState, dispatch }) {
+  fetchDMOrderDetail({ commit, dispatch }) {
     // return new Promise((resolve, reject) => {
-    const params = [
-      rootState.location.location,
-      state.deliveryOrderStatus,
-      state.collected,
-    ]
+    const params = ['home_delivery_new', '', 10, 1, 'real_created_datetime']
     DMService.getDMOrderDetails(...params).then(response => {
+      console.log(response.data.data)
       commit(mutation.SET_DM_ORDERS, response.data.data)
       dispatch('fetchOrderCount')
       // dispatch('prepareDeliveredOrderGroup')

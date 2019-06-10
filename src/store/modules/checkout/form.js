@@ -1,3 +1,5 @@
+import * as CONSTANTS from '@/constants'
+import Num from '@/plugins/helpers/Num'
 // initial state
 const state = {
   amount: '',
@@ -32,7 +34,7 @@ const getters = {
 
 // actions
 const actions = {
-  addAmount({ commit, getters, rootGetters }) {
+  addAmount({ commit, getters }) {
     commit('showPayBreak', false)
     if (!state.amount) {
       commit('SET_ERROR', 'Amount should be greater than 0.00')
@@ -44,7 +46,7 @@ const actions = {
       commit('SET_ERROR', 'Amount should be greater than 0.00')
       commit('showCalc', true)
     } else if (
-      state.method.name == 'Loyalty' &&
+      state.method.type == CONSTANTS.LOYALTY &&
       parseFloat(state.amount) != parseFloat(state.loyaltyAmount)
     ) {
       if (parseFloat(state.loyaltyAmount) <= 0.01) {
@@ -64,7 +66,7 @@ const actions = {
         amount: parseFloat(state.amount),
         method: state.method,
       })
-      commit('setAmount', rootGetters['location/round'](getters.payable))
+      commit('setAmount', Num.round(getters.payable))
     }
   },
   //apply giftcard by customer [future use]
@@ -123,12 +125,12 @@ const actions = {
       method: state.method,
       code: giftCard.gift_code,
     })
-    commit('setAmount', rootGetters['location/round'](getters.payable))
+    commit('setAmount', Num.round(getters.payable))
     commit('showCalc', false)
   },
 
   //apply gift card [in use]
-  addGiftCardAmount({ commit, getters, rootGetters, dispatch }, code) {
+  addGiftCardAmount({ commit, getters, dispatch }, code) {
     return new Promise((resolve, reject) => {
       if (!state.amount) {
         commit('setGiftAmount', 0)
@@ -148,7 +150,7 @@ const actions = {
               method: state.method,
               code: 'Gift Code-' + code,
             })
-            commit('setAmount', rootGetters['location/round'](getters.payable))
+            commit('setAmount', Num.round(getters.payable))
             commit('showCalc', false)
             commit('showPayBreak', true)
             resolve(card)
@@ -163,7 +165,7 @@ const actions = {
     })
   },
 
-  addCardAmount({ commit, rootGetters }, code) {
+  addCardAmount({ commit }, code) {
     return new Promise(resolve => {
       commit('addCardAmount', {
         amount: state.amount,
@@ -173,12 +175,12 @@ const actions = {
       commit('showCalc', false)
       commit('showPayBreak', true)
       //set remaining amount into text box
-      commit('setAmount', rootGetters['location/round'](getters.payable))
+      commit('setAmount', Num.round(getters.payable))
       resolve()
     })
   },
 
-  validateCardPayment({ commit, getters, rootGetters }) {
+  validateCardPayment({ commit, getters }) {
     return new Promise((resolve, reject) => {
       const totalPayable = getters.orderTotal
       const paid = getters.paid
@@ -195,8 +197,7 @@ const actions = {
 
         commit(
           'SET_ERROR',
-          "Card payment can't be greater than " +
-            rootGetters['location/round'](remaining)
+          "Card payment can't be greater than " + Num.round(remaining)
         )
         reject()
       } else {
@@ -205,7 +206,7 @@ const actions = {
       }
     })
   },
-  validateGiftPayment({ commit, getters, rootGetters }) {
+  validateGiftPayment({ commit, getters }) {
     return new Promise((resolve, reject) => {
       const totalPayable = getters.orderTotal
       const paid = getters.paid
@@ -223,8 +224,7 @@ const actions = {
 
         commit(
           'SET_ERROR',
-          "Gift Card payment can't be greater than " +
-            rootGetters['location/round'](remaining)
+          "Gift Card payment can't be greater than " + Num.round(remaining)
         )
         reject()
       } else {
@@ -239,27 +239,22 @@ const actions = {
     dispatch('calculateSpendLoyalty')
   },
   resetAmount({ commit }) {
-    //commit('setAmount', rootGetters['location/round'](getters.payable))
     commit('setAmount', 0)
   },
   setMethod({ commit }, method) {
     commit('setMethod', method)
   },
 
-  removePayment({ commit, rootGetters }, index) {
+  removePayment({ commit }, index) {
     if (state.amount > 0) {
       commit(
         'setAmount',
-        rootGetters['location/round'](
-          parseFloat(state.amount) - state.payments[index].amount
-        )
+        Num.round(parseFloat(state.amount) - state.payments[index].amount)
       )
     } else {
       commit(
         'setAmount',
-        rootGetters['location/round'](
-          parseFloat(state.amount) + state.payments[index].amount
-        )
+        Num.round(parseFloat(state.amount) + state.payments[index].amount)
       )
     }
     commit('removePayment', index)
@@ -267,7 +262,8 @@ const actions = {
   },
 
   calculateSpendLoyalty({ commit, rootState, getters }) {
-    const loyalty = rootState.customer.loyalty
+    const loyalty = rootState.customer.loyalty.card
+    const loyaltyDetails = rootState.customer.loyalty.details
     const orderTotal = getters.orderTotal
     let amount = parseFloat(loyalty.balance)
     if (amount > 0) {
@@ -278,12 +274,20 @@ const actions = {
         amount = parseFloat(orderTotal).toFixed(2)
       }
 
-      if (parseFloat(orderTotal) >= parseFloat(loyalty.max_redeem_amount)) {
-        amount = parseFloat(loyalty.max_redeem_amount)
+      if (parseFloat(orderTotal) >= parseFloat(loyaltyDetails.maximum_redeem)) {
+        amount = parseFloat(loyaltyDetails.maximum_redeem)
       }
 
-      if (parseFloat(loyalty.balance) < parseFloat(loyalty.min_redeem_amount)) {
+      if (
+        parseFloat(loyalty.balance) < parseFloat(loyaltyDetails.minimum_redeem)
+      ) {
         amount = parseFloat('0.0')
+      }
+      // temp code
+      if (
+        parseFloat(loyaltyDetails.maximum_redeem) < parseFloat(loyalty.balance)
+      ) {
+        amount = parseFloat(loyaltyDetails.maximum_redeem)
       }
     }
     commit('loyaltyAmount', amount)

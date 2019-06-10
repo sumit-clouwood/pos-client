@@ -1,10 +1,9 @@
 import DataService from '@/services/DataService'
 
 export default {
-  fetchAll(...[locationId, isCompress]) {
+  fetchAll() {
     return DataService.get(
-      //`/api/auth/get/gift/cards?location_id=${locationId}&last_sync_date=${lastSyncDate}&is_compress=${isCompress}`
-      `/api/auth/get/gift/cards?location_id=${locationId}&is_compress=${isCompress}`
+      `/model/brand_gift_card_and_vouchers?ascending=1&byColumn=0&orderBy=name`
     )
   },
 }

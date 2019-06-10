@@ -1,0 +1,19 @@
+@import "pixels_rem.scss";
+@import "variables.scss";
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.new-pos {
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: $navigation-width 1fr;
+  grid-template-rows: $header-height 1fr $footer-height;
+}
+
+.modal-backdrop{
+  display: none;
+}

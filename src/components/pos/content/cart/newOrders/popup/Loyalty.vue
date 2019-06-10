@@ -10,13 +10,13 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Reward Available</h4>
+          <h4 class="customer-title">{{ _t('Reward Available') }}</h4>
         </div>
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
-            <p v-if="loyalty.balance > 0">
-              Loyalty Balance:
-              <span>{{ parseFloat(loyalty.balance).toFixed(2) }}</span>
+            <p v-if="loyaltyBalance > 0">
+              {{ _t('Loyalty Balance') }}:
+              <span>{{ formatPrice(loyaltyBalance) }}</span>
             </p>
             <p v-if="loyalty.loyalty_order_alert != null">
               {{ loyalty.loyalty_order_alert }}
@@ -24,19 +24,13 @@
             <div v-if="loyalty.loyalty_order_alert == null">
               <hr />
               <p>
-                You can spend min
-                <b
-                  >{{ loyalty.min_redeem_amount }}
-                  {{ loyalty.currency_code }}</b
-                >
-                and max
-                <b
-                  >{{ loyalty.max_redeem_amount }}
-                  {{ loyalty.currency_code }}</b
-                >
+                {{ _t('You can spend min') }}
+                <b>{{ loyalty.minimum_redeem }} {{ loyalty.currency }}</b>
+                {{ _t('and max') }}
+                <b>{{ loyalty.maximum_redeem }} {{ loyalty.currency }}</b>
               </p>
               <p>
-                Amount you can spend: <b>{{ amount }}</b>
+                {{ _t('Amount you can spend') }}: <b>{{ amount }}</b>
               </p>
             </div>
           </div>
@@ -48,7 +42,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              Close
+              {{ _t('Close') }}
             </button>
             <button
               v-if="loyalty.loyalty_order_alert == null"
@@ -60,7 +54,7 @@
               data-dismiss="modal"
               @click="payByLoyalty"
             >
-              Add
+              {{ _t('Add') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -70,12 +64,17 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Loyalty',
   computed: {
+    ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
-      loyalty: state => (state.customer.loyalty ? state.customer.loyalty : 0),
+      loyaltyBalance: state =>
+        state.customer.loyalty.card.balance
+          ? state.customer.loyalty.card.balance
+          : 0,
+      loyalty: state => state.customer.loyalty.details,
     }),
     ...mapState({
       amount: state =>

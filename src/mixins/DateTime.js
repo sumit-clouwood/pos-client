@@ -1,3 +1,4 @@
+import moment from 'moment-timezone'
 /* global $ */
 export default {
   methods: {
@@ -38,6 +39,23 @@ export default {
         $('p#od' + data.order_no).html(htmlElement)
         return htmlElement
       }, 1000)
+    },
+    convertDatetime(datetime, fmt_out = 'Do MMM YYYY,  hh:mm:ss A') {
+      moment.locale('en-US')
+      var value =
+        typeof datetime != 'undefined'
+          ? parseInt(datetime.$date.$numberLong)
+          : false
+      var result = ''
+      if (value) {
+        if (!moment.utc(value).isValid()) return ''
+        var fmt_in = moment(value)._f
+        result = moment
+          .utc(value, fmt_in)
+          .local()
+          .format(fmt_out)
+      }
+      return result
     },
   },
 }

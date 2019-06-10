@@ -1,5 +1,6 @@
 import PaymentService from '@/services/data/PaymentService'
 import * as mutation from './payment/mutation-types'
+import * as CONST from '@/constants'
 
 // initial state
 const state = {
@@ -13,20 +14,33 @@ const getters = {
 
 // actions
 const actions = {
-  async fetchAll({ commit, rootState }) {
-    const params = [
-      rootState.location.location,
-      rootState.sync.date,
-      rootState.sync.compress,
-    ]
+  async fetchAll({ commit, rootGetters }) {
+    const paymentMethods = await PaymentService.fetchMethods()
 
-    const paymentMethods = await PaymentService.fetchMethods(...params)
-    commit(mutation.SET_METHODS, paymentMethods.data)
-    let activeMethod = state.methods.data.find(method => method.is_cash === 1)
-    if (!activeMethod) {
-      activeMethod = state.methods.data[0]
-    }
-    commit('checkoutForm/setMethod', activeMethod, { root: true })
+    let methods = []
+    paymentMethods.data.data.forEach(method => {
+      if (method.item_status) {
+        switch (method.type) {
+          case CONST.GIFT_CARD:
+            if (rootGetters['modules/enabled'](CONST.MODULE_GIFT_CARDS)) {
+              methods.push(method)
+            }
+            break
+          case CONST.LOYALTY:
+            if (rootGetters['modules/enabled'](CONST.MODULE_LOYALTY)) {
+              methods.push(method)
+            }
+            break
+
+          default:
+            methods.push(method)
+        }
+      }
+    })
+
+    paymentMethods.data = methods
+    commit(mutation.SET_METHODS, paymentMethods)
+    commit('checkoutForm/setMethod', state.methods.data[0], { root: true })
   },
 }
 

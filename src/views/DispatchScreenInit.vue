@@ -84,5 +84,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../assets/sass/dispatchScreen';
+/*@import '../assets/sass/dispatchScreen';*/
 </style>

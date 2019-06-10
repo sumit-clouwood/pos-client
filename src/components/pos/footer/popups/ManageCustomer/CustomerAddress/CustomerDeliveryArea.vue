@@ -1,31 +1,40 @@
 <template>
-  <div v-if="addresses.length" class="add-to-order-wrapper">
+  <div
+    class="location-delivery-area-address"
+    :class="classAccess"
+    v-if="addresses.length"
+  >
     <div
       v-for="(address, index) in addresses"
       :key="index"
-      class="order-location option-contain"
+      class="order-location option-contain cu-delivery-area-location"
       :class="{ active: activeIndex === index }"
       @click="setActiveCustomer(address, index)"
     >
       <p>
-        <span>{{ locationName }}</span>
-        {{ address.flat_number }},{{ getDeliveryArea(address.delivery_area) }},
-        {{ address.city }},
-        {{ country }}
+        <span>{{ _t('Store:') }} {{ storeName }}</span
+        ><br />
+        <span
+          >{{ _t('Area:') }}
+          {{ getDeliveryArea(address.delivery_area_id) }}</span
+        ><br />
+        {{ address.flat_number }}, {{ address.building }}, {{ address.street }},
+        {{ address.city }}
       </p>
+      <Buttons v-if="buttons" :id="address._id.$oid" />
     </div>
-    <Buttons v-if="buttons" />
   </div>
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import Buttons from './Buttons'
+
 export default {
-  name: 'CustomerDeliveryAreas',
+  name: 'CustomerDeliveryArea',
   props: {
     buttons: Boolean,
-    addresses: Array,
+    classAccess: String,
   },
   components: {
     Buttons,
@@ -34,29 +43,67 @@ export default {
     return { activeIndex: null }
   },
   computed: {
-    ...mapState('location', ['locationName']),
+    ...mapState('location', ['location']),
     ...mapState({
+      addresses: state =>
+        state.customer.customer
+          ? state.customer.customer.customer_addresses
+          : false,
+    }),
+    ...mapState({
+      storeName: state => state.location.store.name,
+    }),
+    /*...mapState({
       country: state =>
         state.location.locationData
           ? state.location.locationData.country_name
           : '',
-    }),
-    ...mapGetters('location', ['getDeliveryArea']),
+    }),*/
+    ...mapGetters('customer', ['getDeliveryArea']),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     setActiveCustomer(address, index) {
-      const selectedCustomerAddressId = address._id
+      const selectedCustomerAddressId = address.delivery_area_id
       const selectedCustomerAddressArea = this.getDeliveryArea(
-        address.delivery_area
+        selectedCustomerAddressId
       )
-
       this.activeIndex = index
-      this.selectedAddress(
-        selectedCustomerAddressId,
-        selectedCustomerAddressArea
-      )
+      this.selectedAddress({
+        id: selectedCustomerAddressId,
+        delivery_area: selectedCustomerAddressArea,
+      })
     },
     ...mapActions('customer', ['selectedAddress']),
   },
 }
 </script>
+<style scoped lang="scss">
+.order-location.option-contain {
+  padding: 10px;
+}
+.option-contain {
+  width: unset;
+}
+
+.cu-location-select {
+  position: absolute;
+  bottom: 0;
+  right: 5px;
+}
+.addOrders {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: auto;
+  overflow: hidden;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  grid-gap: 1.25rem;
+}
+</style>

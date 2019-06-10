@@ -23,11 +23,11 @@
           </div>
           <div class="gift-card-detail">
             <p>Gift Card Total Balance</p>
-            <h4>{{ formatPrice(giftcard.remaining_balance) }}</h4>
+            <h4>{{ formatPrice(giftcard.remaining_amount) }}</h4>
           </div>
           <div class="gift-card-detail">
             <p>Gift Card Remaining Balance</p>
-            <h4>{{ formatPrice(giftcard.remaining_balance - giftAmount) }}</h4>
+            <h4>{{ formatPrice(giftcard.remaining_amount - giftAmount) }}</h4>
           </div>
         </div>
         <div class="modal-footer">

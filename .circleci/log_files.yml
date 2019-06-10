@@ -1,0 +1,10 @@
+files:
+  - /var/log/*.log
+  - /var/log/nginx/*.log
+  - /var/log/supervisor/*.log
+destination:
+  host: logs7.papertrailapp.com
+  port: xxxx
+  protocol: tls
+pid_file: /var/run/remote_syslog.pid
+hostname: <TAG>

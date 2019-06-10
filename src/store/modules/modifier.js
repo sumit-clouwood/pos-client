@@ -3,94 +3,131 @@ import * as mutation from './modifier/mutation-types'
 
 // initial state
 const state = {
-  imagePath: '',
-  all: [],
+  groups: [],
+  subgroups: [],
+  modifiers: [],
+
   item: false,
   itemModifiers: [],
 }
 
 // getters, computed properties
 const getters = {
-  hasModifiers: (state, getters, rootState) => item => {
-    return state.all.some(modifier => {
-      if (modifier.itemIds.length) {
-        //find in itemids
-        return modifier.itemIds.some(itemId => itemId === item._id)
-      } else if (
-        modifier.item_subcategory &&
-        modifier.item_subcategory.length
-      ) {
-        //find in subcategory
-        return modifier.item_subcategory.some(
-          subcatId => subcatId === rootState.category.subcategory._id
-        )
-      } else {
-        //find in category
-        return modifier.item_category.some(
-          catId => catId === rootState.category._id
-        )
-      }
+  //before item click there is no itemModifiers data available so get it direclty from groups
+  hasModifiers: state => item => {
+    return state.groups.some(group => {
+      return group.for_items.includes(item._id)
     })
   },
-  findModifier: state => modifierId => {
+
+  groups: state => item => {
+    return state.groups.filter(group => group.for_items.includes(item._id))
+  },
+  subgroups: state => group => {
+    return state.subgroups.filter(subgroup =>
+      subgroup.modifier_group.includes(group._id)
+    )
+  },
+  //modifiers fetch from the groups
+  modifiers: (state, getters) => item => {
+    let groupedModifiers = {}
+    //create subgroup and push to modifiers after attaching modifiers to that subgroup
+    const groups = getters.groups(item)
+
+    groups.forEach(group => {
+      const subgroups = getters.subgroups(group)
+
+      subgroups.forEach(subgroup => {
+        groupedModifiers[subgroup._id] = {}
+        groupedModifiers[subgroup._id]['subgroup'] = subgroup
+        groupedModifiers[subgroup._id]['modifiers'] = {}
+
+        const modifiers = state.modifiers.filter(
+          modifier =>
+            modifier.modifier_group === group._id &&
+            modifier.modifier_sub_group === subgroup._id
+        )
+
+        if (modifiers && modifiers.length) {
+          modifiers.forEach(modifier => {
+            groupedModifiers[subgroup._id]['modifiers'][modifier._id] = modifier
+          })
+        }
+      })
+    })
+
+    return groupedModifiers
+  },
+
+  findModifier: (state, getters) => modifierId => {
     let modifier = {}
     state.itemModifiers.forEach(item => {
-      item.modifiers.forEach(mod => {
-        mod.get_modifier_sub_groups.forEach(subgroup => {
-          subgroup.get_modifier_item_list.forEach(submod => {
-            if (submod._id == modifierId) {
-              modifier = submod
-            }
-          })
+      const itemModifierSubgroups = getters.itemModifiers(item.itemId)
+      itemModifierSubgroups.forEach(subgroup => {
+        subgroup.modifiers.forEach(submod => {
+          if (submod._id == modifierId) {
+            modifier = submod
+          }
         })
       })
     })
     return modifier
   },
-  imagePath: state => imagePath => state.imagePath + imagePath,
-  locationPrice: (state, getters, rootState) => item => {
-    return item.item_location_price[rootState.location.location]
+
+  //get modifiers specific to item id from current modifiers list not from groups
+  //this getter is used in rendering
+  itemModifiers: state => itemId => {
+    const item = state.itemModifiers.find(obj => obj.itemId == itemId)
+    if (item) {
+      let subgroups = []
+      for (let subgroupId in item.modifiers) {
+        let subgroup = item.modifiers[subgroupId].subgroup
+        subgroup.modifiers = []
+        let submodifiers = item.modifiers[subgroupId].modifiers
+        for (let submodId in submodifiers) {
+          subgroup.modifiers.push(submodifiers[submodId])
+        }
+
+        if (subgroup.modifiers.length) {
+          subgroups.push(subgroup)
+        }
+      }
+      return subgroups
+    }
   },
-  //get modifiers specific to item id from current modifiers list
-  itemModifiers: state => itemId =>
-    state.itemModifiers.find(obj => obj.itemId == itemId),
 
   //get mandatory modifiers specific to item id from current modifiers list
-  itemMandatoryGroups: state => itemId => {
+  itemMandatoryGroups: (state, getters) => itemId => {
     let mandatoryModifierGroups = []
-    const allModifiers = state.itemModifiers.find(obj => obj.itemId == itemId)
-    allModifiers.modifiers.forEach(modifier => {
-      modifier.get_modifier_sub_groups.forEach(subgroup => {
-        if (subgroup.type === 'mandatory') {
-          mandatoryModifierGroups.push(subgroup._id)
-        }
-      })
+    const subgroups = getters.itemModifiers(itemId)
+    subgroups.forEach(subgroup => {
+      if (subgroup.item_type === 'mandatory') {
+        mandatoryModifierGroups.push(subgroup._id)
+      }
     })
     return mandatoryModifierGroups
   },
 
+  /* for prefetch only */
   getImages: state => {
     let images = []
 
-    state.all.forEach(item => {
-      item.get_modifier_sub_groups.forEach(subgroup => {
-        subgroup.get_modifier_item_list.forEach(submod => {
-          images.push(state.imagePath + submod.imageName)
-        })
-      })
-    })
-    return images
+    return state ? images : []
   },
 }
 
 // actions, often async
 const actions = {
-  async fetchAll({ commit, rootState }) {
-    const params = [rootState.location.location, rootState.sync.compress]
-    ModifierService.fetchAll(...params).then(response => {
-      commit(mutation.SET_MODIFIERS, response.data.data.modifierDetails)
-      commit(mutation.SET_IMAGE_PATH, response.data.data.image_path)
-    })
+  async fetchAll({ commit }) {
+    const [groups, subgroups, modifiers] = await Promise.all([
+      ModifierService.groups(),
+      ModifierService.subgroups(),
+      ModifierService.modifiers(),
+    ])
+
+    commit(mutation.SET_MODIFIER_GROUPS, groups.data.data)
+    commit(mutation.SET_MODIFIER_SUBGROUPS, subgroups.data.data)
+    commit(mutation.SET_MODIFIERS, modifiers.data.data)
   },
 
   //active item and index already been set to order.item
@@ -123,107 +160,19 @@ const actions = {
 
   //find modifiers from all specific to current item and push to current list [item[0].modifiers]
   //this function is not yet adding item to order but just showing modifiers for selection here once modifiers are selected then click on button ll add it to order
-  setModifierItem({ commit, rootState }, item) {
-    //clear modifiers selection
-    //dispatch('orderForm/clearSelection', [], { root: true })
-    //set location based pricing for an item (not modifier) as this item ll be used in order
-    //this price needs to be shown in popup
-    if (
-      item.get_item_location_price.location_id == rootState.location.location
-    ) {
-      item.price = item.get_item_location_price.menu_location_price
-    } else {
-      item.price = item.item_price
-    }
-
-    //we are going to show a popup for new item (not for an item already added to cart)
+  assignModifiersToItem({ commit, getters }, item) {
     item.editMode = false
-
     commit(mutation.SET_ITEM, item)
 
     //commit item modifier only if it was not already in the list
     if (!state.itemModifiers.find(obj => obj.itemId == item._id)) {
-      //1. search current item Id in all modifiers which have itemIds
-      //2. 1 not matched and search current subcategory Id in all modifiers which have subcategoryIds but don't have itemIds
-      //3. 2 not matched and search current category id in all modifiers which have categoryIds but don't have subcategory or itemIds
-
-      //let radios = {}
-
-      const modifiers = state.all.filter(modifier => {
-        if (modifier.itemIds && modifier.itemIds.length) {
-          //find in itemids
-          return modifier.itemIds.find(itemId => itemId === item._id)
-        } else if (
-          modifier.item_subcategory &&
-          modifier.item_subcategory.length
-        ) {
-          //find in subcategory
-          return modifier.item_subcategory.find(
-            subcatId => subcatId === rootState.category.subcategory._id
-          )
-        } else {
-          //find in category
-          return modifier.item_category.find(
-            catId => catId === rootState.category._id
-          )
-        }
-      })
-      const appLocale = rootState.location.locale
-      //change modifiers to get location based pricing and language
-
-      const upatedModifiers = modifiers.map(modifier => {
-        const groups = modifier.get_modifier_sub_groups.map(group => {
-          //get group name
-          let groupName = group.item_name.find(
-            locale => locale.language == appLocale
-          )
-          //fallback if no translation found
-          if (!groupName) {
-            groupName = group.item_name[0]
-          }
-          group.name = groupName ? groupName.name : 'No name'
-
-          const modifierItemList = group.get_modifier_item_list.map(mod => {
-            mod.price =
-              mod.item_location_price[rootState.location.location] ||
-              mod.item_price
-
-            //find translation
-            let itemName = mod.item_name.find(
-              locale => locale.language == appLocale
-            )
-            //fallback if no translation found
-            if (!itemName) {
-              itemName = mod.item_name[0]
-            }
-            mod.name = itemName ? itemName.name : 'No name'
-
-            // if (group.noofselection === '1') {
-            //   radios[group._id] = false
-            // }
-
-            //calculate tax for the modifiers ll be done in order store because we add modifier price to item price and then calculate tax
-            return mod
-          })
-          //do not mutate original state
-          let newGroup = { ...group }
-          newGroup.get_modifier_item_list = modifierItemList
-          return newGroup
-        })
-        //do not mutate original state
-        let newModifier = { ...modifier }
-        newModifier.get_modifier_sub_groups = groups
-        return newModifier
-      })
-
       //use updated modifiers
+      const modifiers = getters.modifiers(item)
       commit(mutation.SET_ITEM_MODIFIERS, {
         itemId: item._id,
-        modifiers: upatedModifiers,
+        modifiers: modifiers,
         item: item,
       })
-
-      //commit('orderForm/setRadios', radios, { root: true })
     }
   },
 }
@@ -231,12 +180,14 @@ const actions = {
 // mutations
 //state should be only changed through mutation and these are synchronous
 const mutations = {
-  [mutation.SET_MODIFIERS](state, modifiers) {
-    state.all = modifiers
+  [mutation.SET_MODIFIER_GROUPS](state, modifierGroups) {
+    state.groups = modifierGroups
   },
-
-  [mutation.SET_IMAGE_PATH](state, path) {
-    state.imagePath = path
+  [mutation.SET_MODIFIER_SUBGROUPS](state, modifierSubgroups) {
+    state.subgroups = modifierSubgroups
+  },
+  [mutation.SET_MODIFIERS](state, modifiers) {
+    state.modifiers = modifiers
   },
 
   [mutation.SET_ITEM](state, item) {

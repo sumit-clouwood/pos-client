@@ -1,27 +1,18 @@
 <template>
-  <div class="items vegetable-pizza-wrapper">
-    <!--Added Breadcrumb here-->
-    <Breadcrumbs />
-    <div class="vegetable-pizza-block">
-      <div class="vegetable-pizza">
-        <div
-          class="vegetable pos-item-bg"
-          v-for="item in items"
-          :key="item._id"
-          @click.prevent="addToOrder(item)"
-        >
-          <div>
-            <img
-              :src="itemImage(item.item_image)"
-              :alt="item.name"
-              @error="imageLoadError()"
-            />
-            <p class="remove-bottom popover-btn" :title="item.name">
-              {{ item.name.substring(0, 15) }}
-            </p>
-          </div>
-        </div>
-      </div>
+  <div class="food-menu">
+    <div
+      class="food-menu-item"
+      v-for="item in items"
+      :key="item._id"
+      @click.prevent="addToOrder(item)"
+    >
+      <img
+        class="food-menu-item-img"
+        :src="item.image"
+        :alt="dt(item)"
+        @error="imageLoadError()"
+      />
+      <div class="food-menu-item-text">{{ dt(item) }}</div>
     </div>
     <Popup />
   </div>
@@ -32,7 +23,6 @@
 
 import { mapGetters } from 'vuex'
 
-import Breadcrumbs from './items/Breadcrumbs'
 import Popup from './items/Popup'
 export default {
   name: 'Items',
@@ -40,11 +30,10 @@ export default {
     msg: String,
   },
   components: {
-    Breadcrumbs,
     Popup,
   },
   computed: {
-    ...mapGetters('category', ['items', 'itemImage']),
+    ...mapGetters('category', ['items']),
     ...mapGetters('modifier', ['hasModifiers']),
   },
   methods: {
@@ -52,10 +41,9 @@ export default {
       this.$store.commit('category/SET_ITEM', item)
       this.$store.commit('checkoutForm/showCalc', true)
       if (this.$store.getters['modifier/hasModifiers'](item)) {
-        this.$store.dispatch('modifier/setModifierItem', item)
+        this.$store.dispatch('modifier/assignModifiersToItem', item)
         this.$store.commit('orderForm/clearSelection')
         showModal('#POSItemOptions')
-        $('.customradio').attr('checked', false)
       } else {
         this.$store.dispatch('order/addToOrder', item)
       }
@@ -78,7 +66,10 @@ export default {
       // No other way of checking: assume it's ok.
       return true
     },
+
     imageLoadError() {
+      // let myDoc = document.getElementsByClassName('.contain-body-class')
+      /* myDoc = myDoc.remove('.sticky-footer')*/
       for (let i = 0; i < document.images.length; i++) {
         if (!this.IsImageOk(document.images[i])) {
           let hue =
@@ -108,3 +99,8 @@ export default {
   },
 }
 </script>
+<style lang="sass" scoped>
+.pos-item-bg
+  img
+    max-width: 146px;
+</style>

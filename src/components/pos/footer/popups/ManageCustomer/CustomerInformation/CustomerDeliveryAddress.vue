@@ -1,38 +1,34 @@
 <template>
-  <div id="delivery-area-address" v-if="deliveryAddresses">
+  <div id="delivery-area-address">
     <div class="order-address-details">
-      <p>Select Delivery Address</p>
       <button
         id="cu-add-address"
         data-toggle="modal"
         data-target="#add_address"
         data-dismiss="modal"
+        @click="setDefaultSettingsGlobalAddUpdate({ nearest_landmark: '' })"
       >
-        + Add address
+        {{ _t('+ Add Address') }}
       </button>
     </div>
-    <div class="location-delivery-area-address">
-      <CustomerDeliveryArea :addresses="deliveryAddresses" :buttons="true" />
-    </div>
+    <CustomerDeliveryArea :buttons="true" classAccess="" />
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
+import { mapActions, mapGetters } from 'vuex'
 import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
+
 export default {
   name: 'CustomerDeliveryAddress',
   components: {
     CustomerDeliveryArea,
   },
   computed: {
-    ...mapState({
-      deliveryAddresses: state =>
-        state.customer.customer.customer_list
-          ? state.customer.customer.customer_list.customer_details
-          : [],
-    }),
+    ...mapGetters('location', ['_t']),
+  },
+  methods: {
+    ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
   },
 }
 </script>

@@ -47,7 +47,7 @@
     <!--top Menu-->
     <div class="navbar-nav-sidebar header-dinein">
       <div class="add-screen-walkin">
-        <p class="walk-in">Walk-In</p>
+        <p class="walk-in">{{ _t('Walk-In') }}</p>
         <p class="walk-in-place">ADNOC Al Dar - Sharjah</p>
       </div>
       <div class="change-dine-in-location">

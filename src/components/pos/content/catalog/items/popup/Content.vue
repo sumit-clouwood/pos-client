@@ -1,11 +1,15 @@
 <template>
-  <div class="modal-body">
-    <Modifiers v-if="itemModifiers" />
+  <div class="modal-body" v-if="itemModifiers(item._id)">
+    <Modifiers
+      v-for="subgroup in itemModifiers(item._id)"
+      :subgroup="subgroup"
+      :key="subgroup._id"
+    />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Modifiers from './content/Modifiers'
 export default {
   name: 'Content',
@@ -14,6 +18,7 @@ export default {
     Modifiers,
   },
   computed: {
+    ...mapState('modifier', ['item']),
     ...mapGetters('modifier', ['itemModifiers']),
   },
 }

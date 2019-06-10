@@ -1,51 +1,39 @@
 <template>
-  <div>
-    <ul class="navbar-nav navbar-sidenav" id="menuAccordion" v-if="menu.length">
-      <li
-        class="nav-item logo-wrap"
-        data-toggle="tooltip"
-        data-placement="right"
-        title=""
-        data-original-title="logo"
-      >
-        <a class="nav-link" href="">
-          <img src="img/icons/icon.png" />
-        </a>
-      </li>
-      <li
-        v-for="item in menu"
-        :key="item._id"
-        class="nav-item active-opacity"
-        data-toggle="tooltip"
-        data-placement="right"
-        :title="item.name"
-        :data-original-title="item.name"
-      >
-        <a
-          class="nav-link"
-          :class="{ active: currentCategory === item._id }"
-          href=""
-          @click.prevent="browse(item)"
+  <div class="navigation">
+    <div class="logo" title="logo">
+      <a class="logo-link" href="#">
+        <img src="img/icons/icon.png" alt="icon" />
+      </a>
+    </div>
+    <div class="navigation-list-wrapper">
+      <ul class="navigation-list" v-if="categories.length">
+        <li
+          class="nav-item active-opacity"
+          v-for="item in categories"
+          :key="item._id"
+          :title="dt(item)"
+          :data-original-title="dt(item)"
         >
-          <img :src="categoryImage(item.category_image)" />
-          <span class="nav-link-text">{{ item.name }}</span>
-        </a>
-      </li>
-    </ul>
-
-    <ul class="navbar-nav sidenav-toggler">
-      <li class="nav-item arrow-bottom">
-        <a class="nav-link" href="#">
-          <img class="bt-arrow" src="img/pos/down-arrow.png" />
-          <img class="top-arrow" src="img/pos/top-arrow.png" />
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-center" id="sidenavToggler">
-          <img :src="profileImage" />
-        </a>
-      </li>
-    </ul>
+          <a
+            class="nav-link-nav"
+            :class="{ active: currentCategory === item._id }"
+            @click.prevent="browse(item)"
+          >
+            <img :src="item.category_image" :alt="dt(item)" />
+            <span class="nav-link-text">{{ dt(item) }}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="slider-btn">
+      <i class="fa fa-chevron-down" aria-hidden="true"></i>
+    </div>
+    <div class="navigation-avatar">
+      <a class="nav-link" href="">
+        <img :src="profileImage" alt="profile" />
+        <div class="nav-link-user-name">Admin</div>
+      </a>
+    </div>
     <div v-if="getImages">
       <link
         v-for="(url, key) in getImages"
@@ -54,39 +42,24 @@
         :key="key"
       />
     </div>
-    <div v-if="modifierImages">
+    <!--<div v-if="modifierImages">
       <link
-        v-for="(url, key) in modifierImages"
-        rel="prefetch"
-        :href="url"
-        :key="key"
+              v-for="(url, key) in modifierImages"
+              rel="prefetch"
+              :href="url"
+              :key="key"
       />
-    </div>
-    <!--<InformationPopup
-            :responseInformation="information"
-            :title="information.message"
-    />-->
+    </div>-->
   </div>
 </template>
 
 <script>
-/* global $ */
-// import InformationPopup from '@/components/pos/content/InformationPopup'
+/* global  $*/
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Menu',
-  data() {
-    return {
-      // information: {}
-    }
-  },
-  components: {
-    // InformationPopup
-  },
   computed: {
     ...mapState({
-      // map this.categories to store.state.categories, it uses dispatch
-      //menu: state => state.category.all,
       currentCategory: state => state.category.category._id,
     }),
     ...mapState({
@@ -97,12 +70,11 @@ export default {
             state.auth.userDetails.image
           : 'img/pos/profile-pic.png',
     }),
-    ...mapGetters('category', ['categoryImage', 'menu', 'getImages']),
-    ...mapGetters('modifier', {
-      modifierImages: 'getImages',
-    }),
+    ...mapGetters('category', ['categories', 'getImages']),
+    // ...mapGetters('modifier', {
+    //   modifierImages: 'getImages',
+    // }), //to preftech modifier images, todo
   },
-  // map `this.browse()` to `this.$store.category.dispatch('browse')`
   methods: {
     ...mapActions('category', ['browse']),
   },
@@ -119,10 +91,7 @@ export default {
           .stop()
           .animate({ top: accordionHeight - (menuHeight + 60) + 'px' }, 800)
       } else {
-        // $("#menuAccordion").animate({'top':(menuHeight - accordionHeight)+'px'},800);
         $('.top-arrow').css('display', 'none')
-        // this.information = {'status':1, 'message': 'No Items downside'}
-        // $('#information-popup').modal('toggle')
       }
       $('.bt-arrow').css('display', 'none')
       $('.top-arrow').css('display', 'block')
@@ -140,3 +109,11 @@ export default {
   },
 }
 </script>
+<style lang="sass" scoped>
+.category
+  a
+    cursor: pointer
+  img
+    height: 25px;
+    margin-top: 8px;
+</style>

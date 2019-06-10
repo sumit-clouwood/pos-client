@@ -1,6 +1,5 @@
 module.exports = {
-  publicPath:
-    process.env.NODE_ENV === 'production' ? process.env.BASE_URL : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/pos/' : '/',
 
   chainWebpack: config => {
     config.module
@@ -21,9 +20,10 @@ module.exports = {
   },
 
   devServer: {
+    port: 8081,
+    host: '0.0.0.0',
+
     //open: process.platform === 'darwin',
-    //host: '0.0.0.0',
-    //port: 8085, // CHANGE YOUR PORT HERE!
     //https: true,
     //hotOnly: false,
 
@@ -33,12 +33,13 @@ module.exports = {
     },
     //webpack: dev server to proxy any unknown requests (requests that did not match a static file) to http://localhost:8000.
     proxy: {
-      '/api': {
+      '/noapi': {
         //use localhost or dockerip
+        // /api ll be replaced by localhost/api/url
         target: process.env.VUE_APP_API_ENDPOINT,
         changeOrigin: true,
         secure: false,
-        //logLevel: 'debug',
+        logLevel: 'debug',
         //pathRewrite: { "^/api": "" }
         headers: {
           Connection: 'keep-alive',

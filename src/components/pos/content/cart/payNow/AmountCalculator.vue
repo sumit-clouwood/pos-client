@@ -17,14 +17,19 @@
     <div id="clearcalc" class="" @click="reset()">c</div>
     <div class="payment-key" @click="set('0')">0</div>
     <div class="payment-key" @click="set('.')">.</div>
-    <div id="add-amt" @click="addAmount">Add</div>
+    <div id="add-amt" @click="addAmount">{{ _t('+ Add') }}</div>
   </div>
 </template>
 
 <script>
 /* global showModal*/
+import * as CONST from '@/constants'
+import { mapGetters } from 'vuex'
 export default {
   name: 'AmountCalculator',
+  computed: {
+    ...mapGetters('location', ['_t']),
+  },
   data() {
     return {
       init: false,
@@ -32,22 +37,28 @@ export default {
   },
   methods: {
     addAmount() {
-      if (this.$store.state.checkoutForm.method.is_gift) {
+      if (this.$store.state.checkoutForm.method.type == CONST.GIFT_CARD) {
         this.$store
           .dispatch('checkoutForm/validateGiftPayment')
           .then(() => {
             showModal('#Gift-card-payemnt')
           })
           .catch()
-      } else if (this.$store.state.checkoutForm.method.is_cash) {
-        this.$store.dispatch('checkoutForm/addAmount').then(() => {})
-      } else if (!this.$store.state.checkoutForm.method.LoyalLoyalty) {
-        this.$store
-          .dispatch('checkoutForm/validateCardPayment')
-          .then(() => {
-            showModal('#card-payemnt')
-          })
-          .catch()
+      } else if (this.$store.state.checkoutForm.method.type == CONST.LOYALTY) {
+        //do check here
+      } else {
+        if (this.$store.state.checkoutForm.method.reference_code) {
+          //display reference popup
+          this.$store
+            .dispatch('checkoutForm/validateCardPayment')
+            .then(() => {
+              showModal('#card-payemnt')
+            })
+            .catch()
+        } else {
+          //its cash type
+          this.$store.dispatch('checkoutForm/addAmount').then(() => {})
+        }
       }
     },
     set(amount) {

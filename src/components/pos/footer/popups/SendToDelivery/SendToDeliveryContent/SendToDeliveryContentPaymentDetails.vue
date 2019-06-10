@@ -1,18 +1,18 @@
 <template>
   <div id="total-order-wrap" class="total-order">
     <div class="order-notes">
-      <p class="notes-title">NOTES</p>
+      <p class="notes-title">{{ _t('Notes') }}</p>
       <p v-if="orderNotes">
         {{ orderNotes }}
       </p>
     </div>
     <div class="order-confirm-amt" id="total-confirm-order">
       <div class="order-amt-title">
-        <p>SUBTOTAL :</p>
-        <p>SURCHARGE :</p>
-        <p>ORDER DISCOUNT :</p>
-        <p>TAX :</p>
-        <p>BILL AMOUNT :</p>
+        <p class="text-uppercase">{{ _t('Sub Total') }} :</p>
+        <p class="text-uppercase">{{ _t('Surcharge') }} :</p>
+        <p class="text-uppercase">{{ _t('Order Discount') }} :</p>
+        <p class="text-uppercase">{{ _t('Tax') }} :</p>
+        <p class="text-uppercase">{{ _t('Bill Amount') }} :</p>
       </div>
       <div class="order-amt-charges">
         <p>{{ formatPrice(subTotal || 0) }}</p>
@@ -37,7 +37,7 @@ export default {
     ...mapGetters('order', ['orderTotal', 'subTotal']),
     ...mapGetters('tax', ['totalTax']),
     ...mapGetters('surcharge', ['surcharge']),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', ['orderDiscountWithoutTax']),
   },
 }

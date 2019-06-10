@@ -7,9 +7,11 @@ export default {
     )
   },
 
-  getDMOrderDetails(...[location_id, order_status, collected]) {
+  getDMOrderDetails(...[page_id, query, limit, page, orderBy]) {
     return DataService.get(
-      `/api/auth/deliveryManager/get/order/detail?location_id=${location_id}&order_status=${order_status}&collected=${collected}&source=new-pos`
+      //?page_id=home_delivery_new&query=&limit=99999999&ascending=1&page=1&byColumn=0&orderBy=real_created_datetime
+      // `/api/auth/deliveryManager/get/order/detail?location_id=${location_id}&order_status=${order_status}&collected=${collected}&source=new-pos`
+      `/model/orders?page_id=${page_id}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}`
     )
   },
   dispatchOrders(...[location_id, is_pagination, pageSize, pageNumber]) {

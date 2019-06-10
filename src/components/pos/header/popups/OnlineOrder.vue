@@ -189,7 +189,7 @@ export default {
     },
     ...mapActions('checkout', ['updateOrderStatus']),
     selectedOrder(order) {
-      this.$store.dispatch('order/selectedOrderDetails', { order })
+      this.$store.dispatch('order/selectedOrderDetails', order._id)
       $('#past-order').modal('toggle')
     },
   },

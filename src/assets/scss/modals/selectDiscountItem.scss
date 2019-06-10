@@ -1,0 +1,70 @@
+#select-discount-item {
+  .modal-dialog {
+    max-width: $px375;
+
+    .modal-content {
+      .modal-header {}
+
+      .modal-body {
+        .select-discount-option {
+          > div {
+            text-align: left;
+            padding: $px10 $px15;
+            margin-bottom: 0;
+
+            > p {
+              border-radius: $btn-border-radius;
+              background-color: #f99c32;
+              display: inline-block;
+              padding: $px5 $px10;
+              margin-bottom: $px5;
+              color: #ffffff;
+              font-size: $px14;
+              font-weight: 700;
+              letter-spacing: 0.5px;
+            }
+
+            > span {
+              color: #72777c;
+              font-size: $px14;
+              font-weight: 400;
+              letter-spacing: 0.5px;
+            }
+
+            &.active {
+              border-color: #5056ca;
+            }
+
+            &:hover {
+              border-color: #5056ca;
+            }
+
+            &:nth-child(2n+1) {
+              clear: left;
+            }
+          }
+
+          > div:nth-child(2n) {
+            float: right;
+          }
+        }
+      }
+
+      .modal-footer {
+        .btn-announce {
+          #discount-save {
+            width: $px125;
+            height: $px40;
+            border-radius: $btn-border-radius;
+            background-color: #5056ca;
+            color: #ffffff;
+            font-size: $px12;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-color: #5056ca;
+          }
+        }
+      }
+    }
+  }
+}

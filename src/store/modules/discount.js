@@ -19,7 +19,7 @@ const state = {
   //order discount calculated
   orderDiscountAmount: 0,
   //Tax discount
-  TaxDiscountAmount: 0,
+  taxDiscountAmount: 0,
   //Discount on surcharge
   surchargeDiscountAmount: 0,
   //error msg
@@ -36,12 +36,12 @@ const getters = {
 
   activeItemDiscountId: state =>
     state.currentActiveItemDiscount
-      ? state.currentActiveItemDiscount.item_discount_id
+      ? state.currentActiveItemDiscount._id
       : false,
 
   activeOrderDiscountId: state =>
     state.currentActiveOrderDiscount
-      ? state.currentActiveOrderDiscount.discount_id
+      ? state.currentActiveOrderDiscount._id
       : false,
 
   isActiveItemDiscount: (state, getters, rootState) => discountId => {
@@ -55,84 +55,26 @@ const getters = {
   },
 
   itemDiscounts: (state, getters, rootState) => {
-    let activeDiscounts = []
-
-    if (state.itemDiscounts.data) {
-      state.itemDiscounts.data.forEach(discount => {
-        const orderTypes = discount.enable_for.split(',')
-        if (
-          orderTypes.findIndex(
-            orderType => orderType == rootState.order.orderType
-          ) > -1
-        ) {
-          const discountValidDate = new Date(discount.date_until)
-          const discountStartDate = new Date(discount.date_from)
-          if (
-            discountStartDate.getTime() <= rootState.sync.today.getTime() &&
-            discountValidDate.getTime() >= rootState.sync.today.getTime()
-          ) {
-            const scheduledDays = discount.discount_schedule.split(',')
-            if (
-              scheduledDays.findIndex(
-                day =>
-                  day == rootState.sync.weekDays[discountValidDate.getDay()]
-              ) > -1
-            ) {
-              activeDiscounts.push(discount)
-            }
-          }
-        }
-      })
-    }
-    return activeDiscounts
+    return state.itemDiscounts.data.filter(
+      discount => discount[rootState.order.orderType]
+    )
   },
 
-  orderDiscounts: (state, getters, rootState) => {
-    const activeDiscounts = []
-
-    if (state.orderDiscounts.data) {
-      state.orderDiscounts.data.forEach(discount => {
-        const orderTypes = discount.enable_for.split(',')
-        if (
-          orderTypes.findIndex(
-            orderType => orderType == rootState.order.orderType
-          ) > -1
-        ) {
-          const discountValidDate = new Date(discount.date_until)
-          const discountStartDate = new Date(discount.date_from)
-
-          if (
-            discountStartDate.getTime() <= rootState.sync.today.getTime() &&
-            discountValidDate.getTime() >= rootState.sync.today.getTime()
-          ) {
-            const scheduledDays = discount.discount_schedule.split(',')
-            if (
-              scheduledDays.findIndex(
-                day =>
-                  day == rootState.sync.weekDays[discountValidDate.getDay()]
-              ) > -1
-            ) {
-              activeDiscounts.push(discount)
-            }
-          }
-        }
-      })
-    }
-    return activeDiscounts
+  orderDiscounts: state => {
+    return state.orderDiscounts.data
+    /*.filter(
+      discount => discount[rootState.order.orderType]
+    )
+    */
   },
 }
 
 // actions
 const actions = {
-  async fetchAll({ commit, rootState }) {
-    const params = [
-      rootState.location.location,
-      rootState.sync.date,
-      rootState.sync.compress,
-    ]
+  async fetchAll({ commit }) {
     const [orderDiscounts, itemDiscounts] = await Promise.all([
-      DiscountService.fetchOrderDiscounts(...params),
-      DiscountService.fetchItemDiscounts(...params),
+      DiscountService.fetchOrderDiscounts(),
+      DiscountService.fetchItemDiscounts(),
     ])
 
     commit(mutation.SET_ORDER_DISCOUNTS, orderDiscounts)
@@ -168,24 +110,23 @@ const actions = {
         commit(mutation.APPLY_ITEM_DISCOUNT, {
           item: rootState.order.item,
           discount: {
-            _id: state.currentActiveItemDiscount.item_discount_id,
+            _id: state.currentActiveItemDiscount._id,
             type: state.currentActiveItemDiscount.type,
             rate: state.currentActiveItemDiscount.rate,
+            value: state.currentActiveItemDiscount.value,
             name: state.currentActiveItemDiscount.name,
           },
         })
-
-        dispatch('order/recalculateItemPrices', {}, { root: true })
-          .then(() => resolve())
-          .catch(errors => {
-            commit(mutation.SET_ITEM_ERROR, DISCOUNT_ITEM_ERROR)
-            commit(mutation.SET_ERROR_CODE, 7)
-            commit(mutation.CLEAR_ITEM_DISCOUNT, errors)
-            reject(errors)
-          })
-      } else {
-        resolve()
       }
+      //remove discounts if there was previously applied but now unset
+      dispatch('order/recalculateItemPrices', {}, { root: true })
+        .then(() => resolve())
+        .catch(errors => {
+          commit(mutation.SET_ITEM_ERROR, DISCOUNT_ITEM_ERROR)
+          commit(mutation.SET_ERROR_CODE, 7)
+          commit(mutation.CLEAR_ITEM_DISCOUNT, errors)
+          reject(errors)
+        })
     })
   },
 
@@ -230,8 +171,12 @@ const actions = {
     commit(mutation.CLEAR_ITEM_DISCOUNT, erroredDiscounts)
   },
 
-  selectItemDiscount({ commit }, discount) {
-    commit(mutation.SET_ACTIVE_ITEM_DISCOUNT, discount)
+  selectItemDiscount({ state, commit, dispatch }, discount) {
+    if (discount._id === state.currentActiveItemDiscount._id) {
+      dispatch('clearItemDiscount')
+    } else {
+      commit(mutation.SET_ACTIVE_ITEM_DISCOUNT, discount)
+    }
   },
   selectOrderDiscount({ commit }, discount) {
     if (state.currentActiveOrderDiscount == discount) {
@@ -314,7 +259,7 @@ const mutations = {
     state.orderDiscountAmount = discount
   },
   [mutation.SET_TAX_DISCOUNT_AMOUNT](state, discount) {
-    state.TaxDiscountAmount = discount
+    state.taxDiscountAmount = discount
   },
   [mutation.SET_SURCHARGE_DISCOUNT_AMOUNT](state, discount) {
     state.surchargeDiscountAmount = discount
@@ -341,7 +286,7 @@ const mutations = {
   [mutation.CLEAR_ORDER_DISCOUNT](state) {
     state.orderDiscountAmount = 0
     state.surchargeDiscountAmount = 0
-    state.TaxDiscountAmount = 0
+    state.taxDiscountAmount = 0
     state.appliedOrderDiscount = false
     state.currentActiveOrderDiscount = false
   },
@@ -352,7 +297,7 @@ const mutations = {
     state.appliedOrderDiscount = false
     state.itemsDiscountAmount = 0
     state.orderDiscountAmount = 0
-    state.TaxDiscountAmount = 0
+    state.taxDiscountAmount = 0
     state.surchargeDiscountAmount = 0
     state.error = false
   },

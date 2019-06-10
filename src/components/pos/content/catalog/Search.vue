@@ -1,20 +1,21 @@
 <template>
-  <form class="form-inline search-inline">
-    <div class="inner-addon left-addon">
-      <img class="search-img" src="img/pos/search-icon.png" alt="search" />
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Search or scan for items"
-        v-model="searchItems"
-        @keyup="collectSearchItems(searchItems)"
-      />
+  <div class="search-field">
+    <div class="search-field-icon">
+      <!--<img class="search-field-img" src="images/search-icon.png" alt="search">-->
+      <i class="fa fa-search" aria-hidden="true"></i>
     </div>
-  </form>
+    <input
+      type="text"
+      class="search-field-input"
+      :placeholder="_t('Start typing to get search results')"
+      v-model="searchItems"
+      @keyup="collectSearchItems(searchItems)"
+    />
+  </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Search',
   props: {},
@@ -22,6 +23,9 @@ export default {
     return {
       searchItems: '',
     }
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     ...mapActions('category', ['collectSearchItems']),

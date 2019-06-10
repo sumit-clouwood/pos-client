@@ -6,31 +6,32 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Loyalty</h4>
+          <h4 class="customer-title">{{ _t('Loyalty') }}</h4>
         </div>
-        <div class="modal-body add-note-wrap">
+        <form class="modal-body add-note-wrap" autocomplete="off">
           <div class="add-note-area">
-            <p>Select customer to get loyalty</p>
+            <p>{{ _t('Jump to customer') }}</p>
             <input
+              autocomplete="off"
               type="text"
-              placeholder="Search..."
-              v-model="searchTerm"
+              :placeholder="_t('Search')"
               class="inputSearch"
               id="getCustomerList"
-              v-on:keyup="search(searchTerm)"
+              v-model="searchTerm"
+              v-on:keyup="search()"
             />
             <button
               type="button"
               class="btn btnSuccess"
               id="load"
-              v-on:click="search(searchTerm)"
+              v-on:click="search()"
             >
               <span
                 class="spinner-border spinner-border-sm"
                 role="status"
                 aria-hidden="true"
                 ><i class="fa fa-circle-o-notch fa-spin" id="searchLoader"></i>
-                Find</span
+                {{ _t('Find') }}</span
               >
             </button>
           </div>
@@ -41,12 +42,12 @@
                 v-for="customer in customers"
                 :key="customer.customerId"
                 v-on:click="selectCustomer(customer)"
-                >{{ customer.customerName }}</span
+                >{{ customer.name }}</span
               >
             </div>
             <!--            <small>{{searchTerm}}</small>-->
           </div>
-        </div>
+        </form>
         <div class="modal-footer">
           <div class="btn-announce">
             <button
@@ -54,7 +55,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              <span>X</span> Cancel
+              {{ _t('Cancel') }}
             </button>
             <button
               @click="addLoyalty"
@@ -62,7 +63,7 @@
               type="button"
               id="save-note"
             >
-              Select
+              {{ _t('Select') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -77,48 +78,49 @@
 
 <script>
 /* global $ */
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'SearchLoyaltyCustomer',
   props: {},
   data() {
     return {
       searchTerm: '',
-      setLoyaltyInfo: '',
+      customerId: '',
       inputTimer: '',
     }
   },
   computed: {
     ...mapState({
-      customers: state => state.loyalty.loyaltyCustomerList,
+      customers: state => state.customer.customer_list,
     }),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     addLoyalty: function() {
       $('#search-loyalty-customer').modal('toggle')
-      this.fetchSelectedCustomer({ customerId: this.setLoyaltyInfo.customerId })
+      this.fetchSelectedCustomer(this.customerId)
     },
 
     selectCustomer(customer) {
-      this.searchTerm = customer.customerName
-      this.setLoyaltyInfo = customer
+      this.searchTerm = customer.name
+      this.customerId = customer._id
       $('#myDropdown').toggle()
     },
-    search(searchTerm) {
+    search() {
       clearTimeout(this.inputTimer)
-      if (searchTerm.length >= 2) {
+      if (this.searchTerm.length >= 2) {
         $('#searchLoader').attr('style', 'display:block')
         this.inputTimer = setTimeout(() => {
           $('#myDropdown').toggle()
           this.$store
-            .dispatch('loyalty/searchCustomer', searchTerm)
+            .dispatch('customer/searchCustomer', this.searchTerm)
             .then(() => {
               $('#searchLoader').hide()
+              $('#myDropdown').toggle()
             })
         }, 500)
       }
     },
-    ...mapActions('loyalty', ['searchCustomer']),
     ...mapActions('customer', ['fetchSelectedCustomer']),
   },
 }
@@ -128,7 +130,7 @@ export default {
 .dropdown {
   position: relative;
 }
-#searchLoader {
+#searchLoader, .dropdown-content {
   display:none;
 }
 .dropdown-content {
@@ -156,8 +158,6 @@ export default {
 }
 .btnSuccess{
   color: #fff;
-  background-color: #28a745;
-  border-color: #28a745;
   height: 47px;
   border-radius: 0px 5px 5px 0px;
 }

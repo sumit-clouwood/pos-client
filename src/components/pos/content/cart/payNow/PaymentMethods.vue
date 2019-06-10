@@ -8,16 +8,18 @@
       :data-toggle="getToggle(method)"
       :data-target="getTarget(method)"
     >
-      <img :src="method.imagePath + method.image" alt="method.name" /><label>{{
-        method.name
-      }}</label>
+      <img :src="image(method.icon)" :alt="method.name" :title="method.name" />
+      <label class="shorten-sentence" :title="method.name">
+        {{ method.name }}
+      </label>
     </div>
   </div>
 </template>
 
 <script>
-/* global $ */
 import { mapActions, mapGetters, mapState } from 'vuex'
+import * as CONSTANTS from '@/constants'
+
 export default {
   name: 'PaymentMethods',
   computed: {
@@ -31,14 +33,21 @@ export default {
   },
   methods: {
     getToggle(method) {
-      if (method.name == 'Loyalty') {
+      if (method.type == CONSTANTS.LOYALTY) {
         return 'modal'
       }
       return ''
     },
-
+    image(imgPath) {
+      // return process.env.BASE_URL + imgPath
+      if (imgPath) {
+        return process.env.BASE_URL + imgPath
+      } else {
+        return 'https://fakeimg.pl/46x46/?text=Third&font=lobster%22'
+      }
+    },
     getTarget(method) {
-      if (method.name == 'Loyalty') {
+      if (method.type == CONSTANTS.LOYALTY) {
         if (this.selectedModal == '#manage-customer') {
           return '#search-loyalty-customer'
         } else {
@@ -50,30 +59,9 @@ export default {
     },
     ...mapActions('checkoutForm', ['setMethod']),
   },
-  updated() {
-    setTimeout(() => {
-      updateUI()
-    }, 100)
-  },
-}
-function updateUI() {
-  $('#payment-method').slick({
-    arrows: false,
-    infinite: true,
-    slidesToShow: 4,
-    slidesToScroll: 4,
-    dots: true,
-    accessibility: false,
-  })
-  $('.payment-method-block table td img').click(function() {
-    if ($('.payment-method-block').length) {
-      $('.payment-method-block').addClass('active')
-      //$('.payment-method-block').hide(800)
-    }
-  })
 }
 </script>
 <style lang="sass" scoped>
 img
-  height: "46px"
+  height: 46px
 </style>

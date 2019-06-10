@@ -1,34 +1,37 @@
 <template>
-  <div class="order-item wrappers-order-block" v-if="items">
+  <div class="main-orders-list" v-if="items">
     <div
-      class="wrappers-orders"
+      class="main-orders-list-item"
       v-for="(item, index) in items"
       :key="index + '-' + item._id"
     >
-      <div class="orders-name">
-        <p>{{ item.name }}</p>
-        <p class="price-qty">
-          @ {{ item.item_price }} x {{ item.quantity }} {{ discountInfo(item) }}
-        </p>
+      <div class="main-orders-list-item-title">
+        <div class="orders-name">{{ dt(item) }}</div>
+        <div class="orders-amount">{{ formatPrice(itemPrice(item)) }}</div>
+        <div
+          class="orders-close"
+          @click.prevent="removeFromOrder({ item: item, index: index })"
+        >
+          <i class="fa fa-trash-o" aria-hidden="true" :alt="_t('delete')"></i>
+        </div>
+      </div>
+      <div class="main-orders-list-item-subtitle">
+        @ {{ Num.round(item.undiscountedNetPrice) }} x {{ item.quantity }}
+        {{ discountInfo(item) }}
+      </div>
+      <div class="main-orders-list-item-buttons">
         <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
-        <span data-toggle="modal" data-target="#POSOrderItemOptions">
+        <div
+          class="button-plus"
+          data-toggle="modal"
+          data-target="#POSItemOptions"
+        >
           <img
             src="img/pos/plus-icon.png"
             alt="plus"
             @click="setActiveItem({ orderItem: item, index: index })"
           />
-        </span>
-      </div>
-      <div class="aed-amt">
-        <span>{{ formatPrice(itemPrice(item)) }}</span>
-      </div>
-      <div class="dlt-btn">
-        <a
-          href=""
-          @click.prevent="removeFromOrder({ item: item, index: index })"
-        >
-          <img src="img/pos/delete-icon.svg" alt="delete" />
-        </a>
+        </div>
       </div>
     </div>
   </div>
@@ -36,7 +39,7 @@
 
 <script>
 import Modifiers from './items/Modifiers.vue'
-
+import * as CONST from '@/constants'
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Items',
@@ -57,14 +60,14 @@ export default {
       if (item.discount) {
         return (
           ' - ' +
-          (item.discount.type == 'value'
-            ? item.discount.rate
+          (item.discount.type === CONST.VALUE
+            ? item.discount.value
             : item.discount.rate + ' %') +
           ' ( ' +
           item.discount.name +
           ' - ' +
-          (item.discount.type == 'value'
-            ? this.formatPrice(item.discount.rate)
+          (item.discount.type == CONST.VALUE
+            ? this.formatPrice(item.discount.value)
             : item.discount.rate + ' %') +
           ' )'
         )
