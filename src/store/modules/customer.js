@@ -111,7 +111,7 @@ const actions = {
         .then(response => {
           resolve(response)
         })
-        .catch(error => reject(error))
+        .catch(error => reject(error, commit(mutation.SET_LOADING, false)))
         .finally(() => commit(mutation.SET_LOADING, false))
     })
   },
