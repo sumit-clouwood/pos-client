@@ -154,6 +154,8 @@ const actions = {
       dispatch('orderForm/populateSelection', orderItem.modifierGroups, {
         root: true,
       })
+    } else {
+      item = orderItem
     }
 
     //set current item with modifiers in modifer store
@@ -165,7 +167,6 @@ const actions = {
   assignModifiersToItem({ commit, getters }, item) {
     item.editMode = false
     commit(mutation.SET_ITEM, item)
-
     //commit item modifier only if it was not already in the list
     if (!state.itemModifiers.find(obj => obj.itemId == item._id)) {
       //use updated modifiers

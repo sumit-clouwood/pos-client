@@ -9,7 +9,7 @@
     "
   >
     <img src="img/pos/done.png" alt="done" />
-    <span>Done</span>
+    <span>{{ _t('Done') }}</span>
   </button>
 </template>
 <script>
