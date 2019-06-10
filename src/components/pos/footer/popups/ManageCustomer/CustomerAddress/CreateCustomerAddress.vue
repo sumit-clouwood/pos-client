@@ -43,7 +43,7 @@
                 errors.building
               }}</span>
             </div>
-            <div class="sex-from">
+            <div class="gender">
               <label>{{ _t('Street') }} <span>*</span></label>
               <input
                 type="text"

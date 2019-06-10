@@ -390,7 +390,7 @@ svg {
     .POSItemOptions .modal-dialog .modal-content .modal-body {
       padding-top: 0;
       border-color: #E3E7F2;
-      height: 28.75rem;
+      max-height: 28.75rem;
       overflow-y: scroll;
       margin-right: 0.625rem;
       -webkit-overflow-scrolling: touch;
