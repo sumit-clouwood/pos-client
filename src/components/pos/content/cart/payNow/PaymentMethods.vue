@@ -41,7 +41,11 @@ export default {
     image(imgPath) {
       // return process.env.BASE_URL + imgPath
       if (imgPath) {
-        return process.env.BASE_URL + imgPath
+        if (imgPath.indexOf('https://') != -1) {
+          return imgPath
+        } else {
+          return process.env.BASE_URL + imgPath
+        }
       } else {
         return 'https://fakeimg.pl/46x46/?text=Third&font=lobster%22'
       }

@@ -50,6 +50,7 @@ export default {
     generateInvoice() {
       $('#pay-now').modal('toggle')
       this.$store.dispatch('checkout/generateInvoice')
+      $('#transparent-screen').hide()
     },
   },
   computed: {
