@@ -2,7 +2,6 @@
 import * as mutation from './location/mutation-types'
 import LocationService from '@/services/data/LocationService'
 import Num from '@/plugins/helpers/Num'
-import DataService from '@/services/DataService'
 // initial state
 const state = {
   currency: 'AED',
@@ -34,57 +33,37 @@ const getters = {
 
 // actions
 const actions = {
-  fetch({ state, commit, rootGetters, dispatch }) {
+  fetch({ state, commit, dispatch }) {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
-        .then(response => {
-          commit(
-            'context/SET_BRAND_ID',
-            response.data.available_brands[1]._id,
-            { root: true }
-          )
-          DataService.setContext({
-            brand: rootGetters['context/brand'],
-            store: rootGetters['context/store'],
-          })
+        .then(storedata => {
           //call again with brand_id
-          LocationService.getLocationData().then(storedata => {
-            commit(
-              'context/SET_STORE_ID',
-              storedata.data.available_stores[0]._id,
-              { root: true }
-            )
-            DataService.setContext({
-              brand: rootGetters['context/brand'],
-              store: rootGetters['context/store'],
-            })
+          commit(mutation.SET_STORE, storedata.data.available_stores[0])
+          commit(mutation.SET_BRAND, storedata.data.brand)
+          commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
+          commit(mutation.SET_TRASLATIONS, storedata.data.translations)
+          commit(
+            mutation.SET_AVAILABLE_LANGUAGES,
+            storedata.data.available_lang
+          )
 
-            commit(mutation.SET_STORE, storedata.data.available_stores[0])
-            commit(mutation.SET_BRAND, storedata.data.brand)
-            commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
-            commit(mutation.SET_TRASLATIONS, storedata.data.translations)
-            commit(
-              mutation.SET_AVAILABLE_LANGUAGES,
-              storedata.data.available_lang
-            )
-            commit(mutation.SET_LOCATION, state.store.address)
-            commit(mutation.SET_CURRENCY, state.store.currency)
-            commit(mutation.SET_TIMEZONE, state.brand.timezone)
+          commit(mutation.SET_LOCATION, state.store.address)
+          commit(mutation.SET_CURRENCY, state.store.currency)
+          commit(mutation.SET_TIMEZONE, state.brand.timezone)
 
-            commit('modules/SET_ENABLED_MODULES', state.brand.enabled_modules, {
-              root: true,
-            })
-
-            dispatch('referrals')
-
-            //  else if (state.store.default_language) {
-            //   locale = state.store.default_language
-            // }
-            // take out else part,as discussed with Alex language ll be dependent on cashier login
-
-            resolve(state.locale)
-            // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
+          commit('modules/SET_ENABLED_MODULES', state.brand.enabled_modules, {
+            root: true,
           })
+
+          dispatch('referrals')
+
+          //  else if (state.store.default_language) {
+          //   locale = state.store.default_language
+          // }
+          // take out else part,as discussed with Alex language ll be dependent on cashier login
+
+          resolve(state.locale)
+          // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
         })
         .catch(error => {
           reject(error)

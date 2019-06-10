@@ -16,6 +16,16 @@ export default new Router({
       component: Home,
     },
     {
+      path: '/:brand_id/:store_id/',
+      name: 'BrandHome',
+      component: Home,
+    },
+    {
+      path: '/pos/:brand_id/:store_id',
+      name: 'PosBrandHome',
+      component: Home,
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting

@@ -42,7 +42,6 @@ export default {
           store.dispatch('surcharge/fetchAll')
           store.dispatch('discount/fetchAll')
           store.dispatch('giftcard/fetchAll')
-          store.dispatch('invoice/fetchAll')
           store.dispatch('payment/fetchAll')
           store.dispatch('customer/fetchAll')
           store.dispatch('announcement/fetchAll')

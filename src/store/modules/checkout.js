@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
-import db from '@/services/network/DB'
+//import db from '@/services/network/DB'
 //import Crypt from '@/plugins/helpers/Crypt.js'
 import DateTime from '@/plugins/helpers/DateTime.js'
 //import Num from '@/plugins/helpers/Num.js'
@@ -327,35 +327,35 @@ const actions = {
     return new Promise((resolve, reject) => {
       OrderService.saveOrder(state.order, rootState.customer.offlineData)
         .then(response => {
-          if (response.data.id) {
-            commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
-              root: true,
-            })
-            resolve(response.data)
-            return true
-          }
-          dispatch('invoice/fetchAll', null, { root: true }).then(() => {
+          // if (response.data.id) {
+          //   commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
+          //     root: true,
+          //   })
+          //   resolve(response.data)
+          //   return true
+          // }
+          dispatch('invoice/printRules', null, { root: true }).then(() => {
             //get print rules
-            if (response.data.data === 1) {
+            if (response.data.status === 'ok') {
               //clear all the data related to order, tax, discounts, surcharge etc
               //create invoice
               //add order no to local database
-              db.getBucket('auth').then(bucket => {
-                db.fetch(bucket).then(data => {
-                  if (data && data[0]) {
-                    data = data[0]
-                    data.lastOrderNo = parseInt(data.lastOrderNo) + 1
-                    db.getBucket('auth').then(bucket => {
-                      bucket.put(data)
-                    })
-                    commit('auth/SET_LAST_ORDER_NO', data.lastOrderNo, {
-                      root: true,
-                    })
-                  }
-                })
-              })
+              // db.getBucket('auth').then(bucket => {
+              //   db.fetch(bucket).then(data => {
+              //     if (data && data[0]) {
+              //       data = data[0]
+              //       data.lastOrderNo = parseInt(data.lastOrderNo) + 1
+              //       db.getBucket('auth').then(bucket => {
+              //         bucket.put(data)
+              //       })
+              //       commit('auth/SET_LAST_ORDER_NO', data.lastOrderNo, {
+              //         root: true,
+              //       })
+              //     }
+              //   })
+              // })
 
-              commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
+              // commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
               commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
                 root: true,
               })

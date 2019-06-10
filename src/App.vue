@@ -30,6 +30,9 @@ The App.vue file is the root component that all other components are nested with
 </template>
 
 <script>
+/* eslint-disable no-console */
+import DataService from '@/services/DataService'
+
 import Cookie from '@/mixins/Cookie'
 import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
@@ -48,6 +51,25 @@ export default {
       errored: false,
     }
   },
+  created() {
+    if (this.$route.params.brand_id) {
+      this.$store.commit('context/SET_BRAND_ID', this.$route.params.brand_id)
+      this.$store.commit('context/SET_STORE_ID', this.$route.params.store_id)
+      DataService.setContext({
+        brand: this.$store.getters['context/brand'],
+        store: this.$store.getters['context/store'],
+      })
+    } else {
+      this.errored = 'Please provide brand id and store id in url'
+    }
+  },
+  watch: {
+    $route(to, from) {
+      // react to route changes...
+      console.log('route changed ', to, from)
+    },
+  },
+
   computed: {
     ...mapState({
       defaultLanguage: state =>
@@ -60,17 +82,18 @@ export default {
       this.loading = false
       return
     }
-
-    bootstrap
-      .setup(this.$store)
-      .then(() => {
-        this.loading = false
-        setTimeout(() => {
-          require('@/../public/js/pos_script.js')
-          require('@/../public/js/pos_script_functions.js')
-        }, 2000)
-      })
-      .catch(error => (this.errored = error))
+    if (this.$store.state.context.brandId) {
+      bootstrap
+        .setup(this.$store)
+        .then(() => {
+          this.loading = false
+          setTimeout(() => {
+            require('@/../public/js/pos_script.js')
+            require('@/../public/js/pos_script_functions.js')
+          }, 2000)
+        })
+        .catch(error => (this.errored = error))
+    }
   },
 }
 
