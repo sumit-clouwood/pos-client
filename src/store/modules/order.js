@@ -684,7 +684,7 @@ const mutations = {
   [mutation.UPDATE_ITEM_QUANTITY](state, quantity) {
     const index = state.item.orderIndex
     let orderItem = state.items[index]
-    orderItem.quantity = quantity
+    orderItem.quantity = typeof quantity != 'undefined' ? quantity : 1
     state.items.splice(index, 1, orderItem)
   },
   [mutation.REMOVE_ITEM_TAX](state, item) {
