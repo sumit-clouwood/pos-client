@@ -230,3 +230,25 @@ svg{
 .cursor-pointer {
   cursor: pointer;
 }
+div#nav-tabContent  {
+  border: 1px solid $gray-middle;
+  .nav-tabs {
+    .nav-item{
+      margin-bottom: -1px;
+      font-size: 20px;
+      border: medium none !important;
+      flex: 1 1 auto;
+      justify-content: center;
+      text-align: center;
+      color: #495057;
+      &.active{
+        border-bottom: 2px solid $blue-middle !important;
+      }
+    }
+  }
+}
+.tab-content{
+  >.active{
+   padding: $px20;
+  }
+}
