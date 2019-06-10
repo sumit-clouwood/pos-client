@@ -113,3 +113,14 @@ div#past-confirm-order > div {
 div#total-order-past-wrap {
   padding: $px25 0;
 }
+
+.details {
+  > div {
+    display: grid;
+    padding: 1.5625rem;
+    grid-template-columns: 1fr 1fr;
+    grid-row-gap: .75rem;
+    grid-column-gap: 1.25rem;
+    border-bottom: 1px solid $gray-middle;
+  }
+}

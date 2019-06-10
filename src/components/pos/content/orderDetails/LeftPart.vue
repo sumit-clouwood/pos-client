@@ -1,6 +1,6 @@
 <template>
-  <div class="details row">
-    <div class="col-md-6" v-if="orderDetails">
+  <div class="details">
+    <div v-if="orderDetails">
       <div class="details-item">
         <span class="details-item-name">{{ _t('Order No:') }}</span>
         <p>{{ orderDetails.item.order_no }}</p>
@@ -32,22 +32,20 @@
         <p>Seeding</p>
       </div>
     </div>
-    <div class="col-md-6">
-      <div v-if="orderDetails.customer">
-        <div class="details-item">
-          <span class="details-item-name">{{ _t('Customer Name:') }}</span>
-          <p>{{ orderDetails.customer.name }}</p>
-        </div>
-        <div class="details-item">
-          <span class="details-item-name">{{
-            _t('Customer Phone Number:')
-          }}</span>
-          <p>{{ orderDetails.customer.phone_number }}</p>
-        </div>
-        <div class="details-item">
-          <span class="details-item-name">{{ _t('Customer Email:') }}</span>
-          <p>{{ orderDetails.customer.email }}</p>
-        </div>
+    <div v-if="orderDetails.customer">
+      <div class="details-item">
+        <span class="details-item-name">{{ _t('Customer Name:') }}</span>
+        <p>{{ orderDetails.customer.name }}</p>
+      </div>
+      <div class="details-item">
+        <span class="details-item-name">{{
+          _t('Customer Phone Number:')
+        }}</span>
+        <p>{{ orderDetails.customer.phone_number }}</p>
+      </div>
+      <div class="details-item">
+        <span class="details-item-name">{{ _t('Customer Email:') }}</span>
+        <p>{{ orderDetails.customer.email }}</p>
       </div>
       <div class="details-item">
         <span class="details-item-name">{{
@@ -55,45 +53,42 @@
         }}</span>
         <p>N/A</p>
       </div>
-      <div v-if="orderDetails.item">
-        <div class="details-item">
-          <span class="details-item-name">{{ _t('Delivery Area:') }}</span>
-          <p>
-            {{
-              getLookupData({
-                lookupFrom: 'store_delivery_areas',
-                id: orderDetails.item.order_delivery_area,
-              })
-            }}
-          </p>
-        </div>
-        <div class="details-item">
-          <span class="details-item-name">{{ _t('Driver:') }}</span>
-          <p>
-            {{
-              getLookupData({
-                lookupFrom: 'users',
-                id: orderDetails.item.driver,
-              })
-            }}
-          </p>
-        </div>
-        <div class="details-item details-item-double-span">
-          <span class="details-item-name">{{
-            _t('Order Delivery Address:')
-          }}</span>
-          <p>
-            {{ orderDetails.item.order_flat_number }},
-            {{ orderDetails.item.order_building }},
-            {{ orderDetails.item.order_street }},
-            {{ orderDetails.item.order_city }}
-          </p>
-        </div>
+    </div>
+    <div v-if="orderDetails.item">
+      <div class="details-item">
+        <span class="details-item-name">{{ _t('Delivery Area:') }}</span>
+        <p>
+          {{
+            getLookupData({
+              lookupFrom: 'store_delivery_areas',
+              id: orderDetails.item.order_delivery_area,
+            })
+          }}
+        </p>
+      </div>
+      <div class="details-item">
+        <span class="details-item-name">{{ _t('Driver:') }}</span>
+        <p>
+          {{
+            getLookupData({
+              lookupFrom: 'users',
+              id: orderDetails.item.driver,
+            })
+          }}
+        </p>
+      </div>
+      <div class="details-item details-item-double-span">
+        <span class="details-item-name">{{
+          _t('Order Delivery Address:')
+        }}</span>
+        <p>
+          {{ orderDetails.item.order_flat_number }},
+          {{ orderDetails.item.order_building }},
+          {{ orderDetails.item.order_street }},
+          {{ orderDetails.item.order_city }}
+        </p>
       </div>
     </div>
-
-    <!----><!---->
-    <!--    <div class="divider"></div>-->
   </div>
 </template>
 
