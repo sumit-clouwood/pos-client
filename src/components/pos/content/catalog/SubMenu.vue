@@ -1,5 +1,5 @@
 <template>
-  <div class="food-categories" v-if="subcategories.length">
+  <div :class="['food-categories', {active: subCategoryHendler}]" v-if="subcategories.length">
     <div
       class="food-categories-item"
       v-for="item in subcategories"
@@ -34,6 +34,7 @@ export default {
       currentSubcategory: state => state.category.subcategory._id,
     }),
     ...mapGetters('category', ['subcategories']),
+    ...mapGetters(['subCategoryHendler']),
   },
   methods: {
     ...mapActions('category', ['getItems']),
