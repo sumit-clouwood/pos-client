@@ -21,20 +21,20 @@ const actions = {
     paymentMethods.data.data.forEach(method => {
       if (method.item_status) {
         switch (method.type) {
-        case CONST.GIFT_CARD:
-          if (rootGetters['modules/enabled'](CONST.MODULE_GIFT_CARDS)) {
-            methods.push(method)
-          }
-          break
-        case CONST.LOYALTY:
-          if (rootGetters['modules/enabled'](CONST.MODULE_LOYALTY)) {
-            methods.push(method)
-          }
-          break
+          case CONST.GIFT_CARD:
+            if (rootGetters['modules/enabled'](CONST.MODULE_GIFT_CARDS)) {
+              methods.push(method)
+            }
+            break
+          case CONST.LOYALTY:
+            if (rootGetters['modules/enabled'](CONST.MODULE_LOYALTY)) {
+              methods.push(method)
+            }
+            break
 
-        default:
-          methods.push(method)
-      }
+          default:
+            methods.push(method)
+        }
       }
     })
 
