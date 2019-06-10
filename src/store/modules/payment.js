@@ -20,7 +20,7 @@ const actions = {
     let methods = []
     paymentMethods.data.data.forEach(method => {
       if (method.item_status) {
-        switch (method.name) {
+        switch (method.type) {
           case CONST.GIFT_CARD:
             if (rootGetters['modules/enabled'](CONST.MODULE_GIFT_CARDS)) {
               methods.push(method)

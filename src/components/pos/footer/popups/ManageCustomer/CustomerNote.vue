@@ -1,11 +1,11 @@
 <template>
   <!-- customer note popup -->
 
-  <div class="modal fade green-header-modal" id="admin-popup" role="dialog">
+  <div class="modal fade" id="admin-popup" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
-        <div class="modal-header green-header">
+        <div class="modal-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title">{{ _t('Customer Note') }}</h4>
         </div>
@@ -17,7 +17,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <div class="text-left">
+          <div class="btn-announce">
             <button
               type="button"
               class="btn btn-danger cancel-announce"
@@ -26,7 +26,7 @@
               {{ _t('Cancel') }}
             </button>
             <button
-              class="btn btn-success btn-large"
+              class="btn btn-success btn-large popup-btn-save"
               type="button"
               data-dismiss="modal"
               id=""

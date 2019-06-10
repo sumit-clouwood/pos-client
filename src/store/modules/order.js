@@ -298,23 +298,21 @@ const actions = {
     //get current item
     //this is fired by the items.vue
     let item = { ...state.items[index] }
-
     item.editMode = true
     item.quantity = orderItem.quantity
     item.netPrice = orderItem.netPrice
     item.orderIndex = index
-
     commit(mutation.SET_ITEM, item)
 
-    if (item.modifiable) {
-      dispatch(
-        'modifier/setActiveItem',
-        { item: item },
-        {
-          root: true,
-        }
-      )
-    }
+    // if (item.modifiable) {
+    dispatch(
+      'modifier/setActiveItem',
+      { item: item },
+      {
+        root: true,
+      }
+    )
+    // }
   },
   recalculateOrderTotals({ rootState, getters, rootGetters, dispatch }) {
     return new Promise((resolve, reject) => {

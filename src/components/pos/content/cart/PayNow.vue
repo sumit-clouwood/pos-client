@@ -34,6 +34,7 @@
                 name="payment"
                 v-model.number="payableAmount"
                 id="input"
+                autocomplete="off"
                 @click="showCalculator()"
                 :placeholder="formatPrice(0.0)"
               />

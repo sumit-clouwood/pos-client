@@ -64,9 +64,9 @@
         </div>
       </div>
     </div>
+    <div class="title-cu">{{ _t('Notes') }}:</div>
     <div class="customer-insights-notes">
       <div>
-        <p>{{ _t('Notes') }}:</p>
         <table class="table table-striped">
           <thead>
             <tr>

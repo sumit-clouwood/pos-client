@@ -390,7 +390,7 @@ svg {
     .POSItemOptions .modal-dialog .modal-content .modal-body {
       padding-top: 0;
       border-color: #E3E7F2;
-      height: 28.75rem;
+      max-height: 28.75rem;
       overflow-y: scroll;
       margin-right: 0.625rem;
       -webkit-overflow-scrolling: touch;
@@ -872,7 +872,6 @@ svg {
             background-image: linear-gradient(180deg, #fac161 0%, #f76b1c 100%);
             color: #fff; }
         #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown {
-          display: none;
           margin: 0 auto; }
           #pay-now .modal-dialog .modal-content .modal-body .payment-breakdown .payment-breakdown-title > h1 {
             color: #3d3f43;
@@ -1622,7 +1621,7 @@ a:hover {
       #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .ullist-profile {
         display: grid;
         grid-template-columns: max-content max-content max-content 1fr;
-        grid-gap: 1.25rem;
+        grid-gap: 0.625rem;
         border-bottom: 2px solid #efefef;
         padding: 1.25rem; }
         #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .ullist-profile li {
@@ -2194,56 +2193,6 @@ button#gift-card-btn {
   color: #000000;
   margin-bottom: 0; }
 
-.green-header-modal .green-header {
-  padding: 0.625rem 0.9375rem;
-  background-repeat: repeat-x;
-  border-color: #0fa32f;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  color: #fff;
-  background-image: linear-gradient(to bottom, #1c6e2d, #0fa32f); }
-
-.green-header-modal .green-header h4 {
-  color: #fff;
-  font-size: 1.25rem;
-  margin-bottom: 0.1875rem; }
-
-.green-header-modal .modal-footer {
-  padding: 0.9375rem 0.9375rem 0.9375rem;
-  margin-bottom: 0;
-  text-align: right;
-  background-color: #f5f5f5;
-  border-top: 1px solid #ddd;
-  -webkit-border-radius: 0 0 5px 5px;
-  -moz-border-radius: 0 0 5px 5px;
-  border-radius: 0 0 5px 5px;
-  -webkit-box-shadow: inset 0 1px 0 #fff;
-  -moz-box-shadow: inset 0 1px 0 #fff;
-  box-shadow: inset 0 1px 0 #fff; }
-
-.green-header-modal .btn.btn-danger {
-  background-color: #5f1111 !important;
-  border-color: #5f1111 !important;
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#b42121", endColorstr="#5e1111");
-  background-image: -khtml-gradient(linear, left top, left bottom, from(#b42121), to(#5e1111));
-  background-image: -moz-linear-gradient(top, #b42121, #5e1111);
-  background-image: -ms-linear-gradient(top, #b42121, #5e1111);
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #b42121), color-stop(100%, #5e1111));
-  background-image: -webkit-linear-gradient(top, #b42121, #5e1111);
-  background-image: -o-linear-gradient(top, #b42121, #5e1111);
-  background-image: linear-gradient(#b42121, #5e1111);
-  border-color: #5f1111;
-  color: #fff !important; }
-
-.green-header-modal .btn.btn-success {
-  background-repeat: repeat-x;
-  border-color: #0fa32f;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  color: #fff !important;
-  background-image: linear-gradient(to bottom, #1c6e2d, #0fa32f);
-  height: 3.125rem;
-  width: 6.5625rem; }
-
 .select-reason > select {
   width: 100%;
   height: 3.125rem;
@@ -2661,9 +2610,6 @@ button:hover {
   margin-bottom: 0.5rem;
   margin-top: 0.625rem; }
 
-.green-header-modal .add-note-area > textarea.add-note-form {
-  width: 100%; }
-
 .modal {
   background-color: rgba(0, 0, 0, 0.5);
   display: none;
@@ -2845,8 +2791,9 @@ button {
     color: #ffffff;
     justify-self: end; }
   button#customer-notes-add {
-    height: 3.125rem;
-    padding: 0 1.5625rem;
+    height: 1.875rem;
+    padding: 0 0.625rem;
+    margin-top: 0.625rem;
     border-radius: 3px;
     background-color: #5056ca;
     font-size: 1rem;

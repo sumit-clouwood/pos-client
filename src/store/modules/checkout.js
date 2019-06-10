@@ -291,7 +291,7 @@ const actions = {
           }
 
           //Youvraj, have a check here
-          if (payment.method.name == CONSTANTS.LOYALTY) {
+          if (payment.method.type == CONSTANTS.LOYALTY) {
             if (parseFloat(rootState.customer.loyalty.balance) > 0) {
               order.loyalty_customer = {
                 balance: rootState.customer.loyalty.balance,
@@ -327,6 +327,13 @@ const actions = {
     return new Promise((resolve, reject) => {
       OrderService.saveOrder(state.order, rootState.customer.offlineData)
         .then(response => {
+          if (response.data.id) {
+            commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
+              root: true,
+            })
+            resolve(response.data)
+            return true
+          }
           dispatch('invoice/fetchAll', null, { root: true }).then(() => {
             //get print rules
             if (response.data.data === 1) {

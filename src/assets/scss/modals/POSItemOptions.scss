@@ -107,7 +107,7 @@
       .modal-body {
         padding-top: 0;
         border-color: #E3E7F2;
-        height: $px460;
+        max-height: $px460;
         overflow-y: scroll;
         margin-right: $px10;
         -webkit-overflow-scrolling: touch;
