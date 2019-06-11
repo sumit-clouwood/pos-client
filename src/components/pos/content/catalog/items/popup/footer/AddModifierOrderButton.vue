@@ -23,7 +23,7 @@
           class=""
         ></path>
       </svg>
-      <span>{{ _t('Discount Item') }}</span>
+      <span>{{ _t('Item Discount') }}</span>
     </button>
     <!--<button type="button" class="buttoned colorwhite discountbutton">
       <svg
@@ -55,7 +55,7 @@
       @click="addModifierOrder"
     >
       <img src="/img/pos/done.png" alt="done" />
-      <span>{{ _t('Done') }}</span>
+      <span>{{ _t('Apply') }}</span>
     </button>
   </div>
 </template>

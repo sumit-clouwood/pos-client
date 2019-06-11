@@ -273,9 +273,9 @@ $(document).ready(function() {
     $('.pizza-size-wrapper > div').removeClass('active')
     $(this).addClass('active')
   })
-  $('.ullist-feedback > li, .food-menu-item').click(function() {
-    $('.ullist-feedback > li, .food-menu-item').removeClass('active')
-    $(this).addClass('active')
+  $('.food-menu-item').click(function() {
+    $('.food-menu-item').removeClass('active')
+    $(this).toggleClass('active')
   })
   $('ul.ullist-pagination > li.order-pagination').click(function() {
     $('ul.ullist-pagination > li.order-pagination').removeClass('active')
