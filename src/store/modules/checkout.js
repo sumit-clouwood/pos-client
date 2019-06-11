@@ -346,6 +346,7 @@ const actions = {
 
             if (state.onHold) {
               resolve()
+              dispatch('reset')
               return true
             }
 
