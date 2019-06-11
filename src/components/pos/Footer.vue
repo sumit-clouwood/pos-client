@@ -271,7 +271,7 @@
     <GiftCardInfo />
     <SearchLoyaltyCustomer />
     <Loyalty />
-    <Invoice v-show="print" />
+    <Invoice />
     <OrderDetailsPopup />
   </div>
 </template>

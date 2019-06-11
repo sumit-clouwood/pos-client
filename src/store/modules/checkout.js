@@ -319,7 +319,7 @@ const actions = {
       }
     })
   },
-  createOrder({ state, commit, rootState, dispatch }) {
+  createOrder({ state, commit, rootState, rootGetters, dispatch }) {
     commit('checkoutForm/SET_MSG', 'loading', {
       root: true,
     })
@@ -337,29 +337,43 @@ const actions = {
           dispatch('invoice/printRules', null, { root: true }).then(() => {
             //get print rules
             if (response.data.status === 'ok') {
-              //clear all the data related to order, tax, discounts, surcharge etc
-              //create invoice
-              //add order no to local database
-              // db.getBucket('auth').then(bucket => {
-              //   db.fetch(bucket).then(data => {
-              //     if (data && data[0]) {
-              //       data = data[0]
-              //       data.lastOrderNo = parseInt(data.lastOrderNo) + 1
-              //       db.getBucket('auth').then(bucket => {
-              //         bucket.put(data)
-              //       })
-              //       commit('auth/SET_LAST_ORDER_NO', data.lastOrderNo, {
-              //         root: true,
-              //       })
-              //     }
-              //   })
-              // })
+              //get invoice template
+              commit('order/SET_ORDER_ID', response.data.id, { root: true })
+              const templateId = rootGetters['invoice/templateId']
+              dispatch(
+                'invoice/fetchTemplate',
+                {
+                  orderId: rootState.order.orderId,
+                  templateId: templateId,
+                },
+                {
+                  root: true,
+                }
+              ).then(() => {
+                //clear all the data related to order, tax, discounts, surcharge etc
+                //create invoice
+                //add order no to local database
+                // db.getBucket('auth').then(bucket => {
+                //   db.fetch(bucket).then(data => {
+                //     if (data && data[0]) {
+                //       data = data[0]
+                //       data.lastOrderNo = parseInt(data.lastOrderNo) + 1
+                //       db.getBucket('auth').then(bucket => {
+                //         bucket.put(data)
+                //       })
+                //       commit('auth/SET_LAST_ORDER_NO', data.lastOrderNo, {
+                //         root: true,
+                //       })
+                //     }
+                //   })
+                // })
 
-              // commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
-              commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
-                root: true,
+                // commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
+                commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
+                  root: true,
+                })
+                resolve(response.data)
               })
-              resolve(response.data)
             } else {
               const error =
                 typeof response.data.error !== 'undefined'

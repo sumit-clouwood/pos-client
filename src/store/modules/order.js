@@ -15,6 +15,7 @@ const state = {
   futureOrder: false,
   referral: false,
   selectedOrder: false,
+  orderId: null,
   // pastOrder: false,
 }
 
@@ -93,14 +94,16 @@ const actions = {
 
     commit(mutation.SET_ITEM, item)
 
-    const index = state.items.findIndex(
+    /* const index = state.items.findIndex(
       orderItem => orderItem._id === state.item._id
     )
     if (index > -1) {
       commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, index)
     } else {
       commit(mutation.ADD_ORDER_ITEM, state.item)
-    }
+    } */
+
+    commit(mutation.ADD_ORDER_ITEM, state.item)
 
     dispatch('surcharge/calculate', {}, { root: true }).then(() =>
       dispatch('tax/calculate', {}, { root: true }).then(() => {
@@ -248,7 +251,7 @@ const actions = {
         //update current item with new modifiers
 
         //check if item exists with same signature
-
+        /*
         let itemExists = -1
 
         state.items.forEach((orderItem, index) => {
@@ -268,6 +271,8 @@ const actions = {
         } else {
           commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
         }
+        */
+        commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
       } else {
         //edit mode
         //if the signature was different then modify modifiers,
@@ -706,6 +711,9 @@ const mutations = {
   },
   [mutation.SET_FUTURE_ORDER](state, futureOrder) {
     state.futureOrder = futureOrder
+  },
+  [mutation.SET_ORDER_ID](state, id) {
+    state.orderId = id
   },
   [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId, orderDetails }) {
     localStorage.setItem('onlineOrders', JSON.stringify(orderDetails))
