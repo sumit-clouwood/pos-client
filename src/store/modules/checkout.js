@@ -340,7 +340,11 @@ const actions = {
           //   resolve(response.data)
           //   return true
           // }
-          if (!state.onHold) {
+          if (state.onHold) {
+            resolve()
+            return true
+          }
+
           dispatch('invoice/printRules', null, { root: true }).then(() => {
             //get print rules
             if (response.data.status === 'ok') {
@@ -395,7 +399,6 @@ const actions = {
               reject(response.data)
             }
           })
-          }
         })
         .catch(response => {
           if (
