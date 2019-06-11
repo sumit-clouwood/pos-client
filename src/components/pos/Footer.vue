@@ -62,7 +62,7 @@
         >
           <a href="#" class="footer-slider-list-item-link">
             <img
-              src="img/pos/loyalty.svg"
+              src="/img/pos/loyalty.svg"
               :alt="_t('Loyalty')"
               v-if="!loyaltyCard"
             />
@@ -235,7 +235,7 @@
           </li>
           <li class="pay-now" v-show="orderType !== 'delivery'">
             <a href="#">
-              <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
+              <img src="/img/pos/payment.svg" :alt="_t('Pay Now')" />
               <span class="pay-btn">{{ _t('Pay Now') }}</span>
             </a>
           </li>
@@ -374,8 +374,8 @@ export default {
       accessibility: false,
       dots: false,
       arrows: true,
-      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
-      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+      nextArrow: '<img class="next-btn" src="/img/pos/next-arrow.png"/>',
+      prevArrow: '<img class="back-btn" src="/img/pos/back-arrow.png"/>',
     })
   },
 
@@ -386,8 +386,8 @@ export default {
       accessibility: false,
       dots: false,
       arrows: true,
-      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
-      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+      nextArrow: '<img class="next-btn" src="/img/pos/next-arrow.png"/>',
+      prevArrow: '<img class="back-btn" src="/img/pos/back-arrow.png"/>',
     })
   },
 }

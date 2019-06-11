@@ -4,7 +4,7 @@
     class="buttoned colorwhite taxbutton"
     @click="removeItemTax"
   >
-    <img src="img/pos/delete.jpg" alt="delete" />
+    <img src="/img/pos/delete.jpg" alt="delete" />
     <span>Tax</span>
   </button>
 </template>

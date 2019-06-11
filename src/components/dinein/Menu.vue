@@ -3,7 +3,7 @@
     <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
       <li class="nav-item logo-wrap">
         <a class="nav-link" href="#">
-          <img src="img/icons/icon.png" alt="icon" />
+          <img src="/img/icons/icon.png" alt="icon" />
         </a>
       </li>
 

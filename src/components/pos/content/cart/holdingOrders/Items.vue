@@ -9,7 +9,7 @@
       <span>{{ orderData.currency }} {{ orderData.balance_due }}</span>
     </div>
     <div class="dlt-btn" @click="dropHoldOrder(orderData)">
-      <img src="img/pos/delete-icon.svg" alt="delete" />
+      <img src="/img/pos/delete-icon.svg" alt="delete" />
     </div>
   </div>
 </template>

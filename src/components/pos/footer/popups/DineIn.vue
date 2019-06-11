@@ -15,14 +15,14 @@
               :class="{ active: selectedOrderType === 'dinein' }"
               @click="setOrderType('dinein')"
             >
-              <img src="img/pos/dine-in.svg" /><span>{{ _t('Dine In') }}</span>
+              <img src="/img/pos/dine-in.svg" /><span>{{ _t('Dine In') }}</span>
             </div>
             <div
               class="option-contain"
               :class="{ active: selectedOrderType === 'takeaway' }"
               @click="setOrderType('takeaway')"
             >
-              <img src="img/pos/take-away.svg" /><span>
+              <img src="/img/pos/take-away.svg" /><span>
                 {{ _t(' Take Away') }}
               </span>
             </div>
@@ -31,7 +31,7 @@
               :class="{ active: selectedOrderType === 'delivery' }"
               @click="setOrderType('delivery')"
             >
-              <img src="img/pos/delivery-icon.svg" /><span>
+              <img src="/img/pos/delivery-icon.svg" /><span>
                 {{ _t('Delivery') }}
               </span>
             </div>
@@ -40,7 +40,7 @@
               :class="{ active: selectedOrderType === 'event' }"
               @click="setOrderType('event')"
             >
-              <img src="img/pos/event.svg" /><span>{{ _t('Event') }}</span>
+              <img src="/img/pos/event.svg" /><span>{{ _t('Event') }}</span>
             </div>
           </div>
         </div>

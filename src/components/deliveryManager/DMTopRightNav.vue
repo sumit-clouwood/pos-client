@@ -9,13 +9,13 @@
     <div class="dm-walk-dine">
       <button id="dm-walkin">
         <router-link to="/" class="text-white"
-          ><span><img src="img/other/dinein-img.png"/></span>
+          ><span><img src="/img/other/dinein-img.png"/></span>
           Walk-In</router-link
         >
       </button>
       <button id="dm-dinein">
         <router-link to="/" class="text-white"
-          ><span><img src="img/other/walkin.png"/></span> Dine-In</router-link
+          ><span><img src="/img/other/walkin.png"/></span> Dine-In</router-link
         >
       </button>
     </div>

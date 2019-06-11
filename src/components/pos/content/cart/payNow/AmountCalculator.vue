@@ -12,7 +12,7 @@
     <div class="payment-key" @click="set(2)">2</div>
     <div class="payment-key" @click="set(3)">3</div>
     <div class="backspace" id="backspace" @click="removeDigit()">
-      <img src="img/pos/close-icon.png" alt="close" />
+      <img src="/img/pos/close-icon.png" alt="close" />
     </div>
     <div id="clearcalc" class="" @click="reset()">c</div>
     <div class="payment-key" @click="set('0')">0</div>

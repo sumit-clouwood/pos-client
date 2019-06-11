@@ -2,7 +2,7 @@
   <div class="main-news">
     <div class="main-news-title">
       <a class="main-news-title-link" href="#">
-        <img src="img/pos/news.png" :alt="_t('News')" />
+        <img src="/img/pos/news.png" :alt="_t('News')" />
         <span>
           {{ _t('News') }}
         </span>

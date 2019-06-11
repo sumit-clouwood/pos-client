@@ -489,8 +489,8 @@ $(document).ready(function() {
     slidesToShow: 1,
     slidesToScroll: 1,
     dots: true,
-    nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
-    prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+    nextArrow: '<img class="next-btn" src="/img/pos/next-arrow.png"/>',
+    prevArrow: '<img class="back-btn" src="/img/pos/back-arrow.png"/>',
   })
 
   $('li#pay-now').click(function() {
