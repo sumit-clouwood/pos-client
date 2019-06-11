@@ -345,13 +345,18 @@ const mutations = {
     state.error = error
   },
   [mutation.LOYALTY](state, loyalty) {
-    state.loyalty.card = loyalty.card.length ? loyalty.card[0] : 0
-    let loyaltyDetails = LookupData.get({
-      collection: loyalty.details._id,
-      matchWith: state.loyalty.card.program,
-      selection: false,
-    })
-    state.loyalty.details = loyaltyDetails ? loyaltyDetails : false
+    if (loyalty) {
+      state.loyalty.card = loyalty.card.length ? loyalty.card[0] : 0
+      let loyaltyDetails = LookupData.get({
+        collection: loyalty.details._id,
+        matchWith: state.loyalty.card.program,
+        selection: false,
+      })
+      state.loyalty.details = loyaltyDetails ? loyaltyDetails : false
+    } else {
+      state.loyalty.card = 0
+      state.loyalty.details = false
+    }
   },
 }
 

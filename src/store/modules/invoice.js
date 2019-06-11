@@ -3,44 +3,50 @@ import * as mutation from './invoice/mutation-types'
 
 // initial state
 const state = {
-  templates: false,
+  templateHtml: null,
   rules: [],
 }
 
 // getters
 const getters = {
-  rule: (state, getters, rootState) => {
-    return state, getters, rootState
+  templateId: (state, getters, rootState) => {
+    if (state.rules.count) {
+      let templateId = null
+      state.rules.data.forEach(rule => {
+        if (
+          [
+            rootState.order.orderType + '_made',
+            rootState.order.orderType + '_pays',
+            rootState.order.orderType + '_requests',
+          ].includes(rule.when)
+        ) {
+          templateId = rule.invoice_template
+        }
+      })
+      return templateId
+    }
   },
-  tpl: (state, getters, rootState) => {
-    return state, getters, rootState
+  templateHtml: state => {
+    return state.templateHtml ? state.templateHtml.data : null
   },
-  //logo: state => state.,
 }
 
 // actions
 const actions = {
-  async fetchAll({ commit }) {
-    const [rules, templates] = await Promise.all([
-      InvoiceService.fetchPrintRules(),
-      InvoiceService.fetchTemplates(),
-    ])
-
-    commit(mutation.SET_TEMPLATES, templates.data)
-    if (rules.data.status === 1) {
-      commit(mutation.SET_RULES, rules.data)
-    }
-  },
   async printRules({ commit }) {
     const rules = await InvoiceService.fetchPrintRules()
     commit(mutation.SET_RULES, rules.data)
+  },
+  async fetchTemplate({ commit }, { orderId, templateId }) {
+    const templateHtml = await InvoiceService.fetchTemplate(orderId, templateId)
+    commit(mutation.SET_TEMPLATE_HTML, templateHtml)
   },
 }
 
 // mutations
 const mutations = {
-  [mutation.SET_TEMPLATES](state, templates) {
-    state.templates = templates
+  [mutation.SET_TEMPLATE_HTML](state, templateHtml) {
+    state.templateHtml = templateHtml
   },
   [mutation.SET_RULES](state, rules) {
     state.rules = rules
