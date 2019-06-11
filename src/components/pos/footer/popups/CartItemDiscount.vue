@@ -56,7 +56,7 @@
               id="discount-save"
               @click="applyItemDiscount()"
             >
-              {{ _t('Save') }}
+              {{ _t('Apply') }}
             </button>
             <button
               v-show="appliedOrderDiscount || itemError"
