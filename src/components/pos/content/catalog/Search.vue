@@ -11,13 +11,15 @@
                 v-model="searchItems"
                 @keyup="collectSearchItems(searchItems)"
         >
-        <div :class="['allCategory', 'hideBigScreen', {notActive: searchHendler}, {active: allCategoryHendler}]" @click="allCategoryHendlerChange">
+        <div :class="['allCategory', 'hideBigScreen', {notActive: searchHendler}, {active: allCategoryHendler}]"
+             @click="allCategoryHendlerChange">
             All category
-            <i class="fa fa-angle-down" aria-hidden="true"></i>
+            <i :class="['fa', 'fa-angle-down', {active: allCategoryHendler}]" aria-hidden="true"></i>
         </div>
-        <div :class="['subCategory', 'hideBigScreen', {notActive: searchHendler}, {active: subCategoryHendler}]" @click="subCategoryHendlerChange">
+        <div :class="['subCategory', 'hideBigScreen', {notActive: searchHendler}, {active: subCategoryHendler}]"
+             @click="subCategoryHendlerChange">
             Sub category
-            <i class="fa fa-angle-down" aria-hidden="true"></i>
+            <i :class="['fa', 'fa-angle-down', {active: subCategoryHendler}]" aria-hidden="true"></i>
         </div>
     </div>
 </template>
@@ -42,10 +44,10 @@
             searchHendlerChange() {
                 this.$store.dispatch('searchHendlerChange');
             },
-            allCategoryHendlerChange(){
+            allCategoryHendlerChange() {
                 this.$store.dispatch('allCategoryHendlerChange');
             },
-            subCategoryHendlerChange(){
+            subCategoryHendlerChange() {
                 this.$store.dispatch('subCategoryHendlerChange');
             }
         },

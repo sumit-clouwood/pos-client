@@ -1,5 +1,9 @@
 <template>
-  <div class="main-orders">
+  <div :class="['main-orders', {active: mainOrdersHendler}]">
+    <div class="main-orders-title">
+      <div class="text">Current Sale Detail</div>
+      <div class="button" @click="cartClose"><i class="fa fa-angle-up" aria-hidden="true"></i></div>
+    </div>
     <Header />
     <div class="main-orders-list-wrapper">
       <Items />
@@ -17,7 +21,7 @@ import Footer from './cart/Footer'
 import PayNow from './cart/PayNow'
 import Items from './cart/newOrders/Items.vue'
 
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Cart',
@@ -26,6 +30,12 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['order']),
+    ...mapGetters(['mainOrdersHendler'])
+  },
+  methods : {
+    cartClose(){
+      this.$store.dispatch('cartClose')
+    }
   },
   components: {
     Header,

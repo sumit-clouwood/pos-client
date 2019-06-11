@@ -1,8 +1,10 @@
 @import "pixels_rem.scss";
 @import "variables.scss";
+
 .loyaltyApplied {
   background-color: $orange-dark !important;
   padding: 5px 20px !important;
+
   span {
     font-size: 12px;
     font-weight: bold;
@@ -10,6 +12,7 @@
     text-align: center;
   }
 }
+
 .footer {
   border-top: 1px solid $gray-middle;
   display: grid;
@@ -62,7 +65,8 @@
             img {
               width: $px12;
             }
-            svg{
+
+            svg {
               width: $px12;
               margin: $px5 auto;
             }
@@ -130,11 +134,14 @@
       color: #fff;
       transition: 0.2s linear;
 
+
+
       ul {
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: 1fr;
-        li{
+
+        li {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -168,5 +175,8 @@
         }
       }
     }
+    .button-cart {
+        display: none;
+      }
   }
 }

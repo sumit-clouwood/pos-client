@@ -28,6 +28,7 @@
         align-items: center;
         letter-spacing: 1px;
         font-weight: 600;
+
         img {
           margin-right: $px5;
         }
@@ -48,7 +49,8 @@
     display: grid;
     grid-template-rows: $main-body-search-height 1fr;
     padding: 0 $px30;
-    .search-field{
+
+    .search-field {
       margin-top: $px29;
     }
 
@@ -199,6 +201,8 @@
             position: relative;
             cursor: pointer;
             background-color: #fff;
+            -webkit-transition: color 0.25s;
+            transition: color 0.25s;
           }
 
           .food-menu-item::before, .food-menu-item::after {
@@ -208,37 +212,50 @@
             width: 100%;
             height: 100%;
             z-index: 99;
-          }
-
-          .food-menu-item {
-            -webkit-transition: color 0.25s;
-            transition: color 0.25s;
+            @include responsive(mobile) {
+              display: none
+            }
           }
 
           .food-menu-item::before, .food-menu-item::after {
             border: 2px solid transparent;
             width: 0;
             height: 0;
+            @include responsive(mobile) {
+              display: none
+            }
           }
 
           .food-menu-item::before {
             top: 0;
             left: 0;
+            @include responsive(mobile) {
+              display: none
+            }
           }
 
           .food-menu-item::after {
             bottom: 0;
             right: 0;
+            @include responsive(mobile) {
+              display: none
+            }
           }
 
           .food-menu-item:hover p.remove-bottom {
             color: $blue-middle;
+            @include responsive(mobile) {
+              display: none
+            }
           }
 
 
           .food-menu-item:hover::before, .food-menu-item:hover::after {
             width: 100%;
             height: 100%;
+            @include responsive(mobile) {
+              display: none
+            }
           }
 
           .food-menu-item:hover::before {
@@ -247,6 +264,9 @@
             -webkit-transition: width 0.25s ease-out, height 0.25s ease-out 0.25s;
             transition: width 0.25s ease-out, height 0.25s ease-out 0.25s;
             border-radius: $card-border-radius;
+            @include responsive(mobile) {
+              display: none
+            }
           }
 
           .food-menu-item:hover::after {
@@ -255,6 +275,9 @@
             -webkit-transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
             transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
             border-radius: $card-border-radius;
+            @include responsive(mobile) {
+              display: none
+            }
           }
 
           .food-menu-item {

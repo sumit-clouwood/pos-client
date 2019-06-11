@@ -1,5 +1,5 @@
 <template>
-  <div class="food-menu">
+  <div :class="['food-menu', {active: foodMenuHendler}]">
     <div
       class="food-menu-item"
       v-for="item in items"
@@ -35,6 +35,7 @@ export default {
   computed: {
     ...mapGetters('category', ['items']),
     ...mapGetters('modifier', ['hasModifiers']),
+    ...mapGetters(['foodMenuHendler']),
   },
   methods: {
     addToOrder(item) {

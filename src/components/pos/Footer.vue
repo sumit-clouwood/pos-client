@@ -177,7 +177,8 @@
       </ul>
     </div>
     <div class="footer-buttons">
-      <div class="button">
+      <div :class="['footer-button-menu', {active: footerButtonHendler}]">...</div>
+      <div :class="['button',{active: footerButtonHendler}]">
         <ul class="template-btn">
           <li
             v-show="orderType === 'delivery'"
@@ -215,9 +216,8 @@
           </li>
         </ul>
       </div>
-      <div class="button-cart">
-        <i class="fa fa-shopping-basket" aria-hidden="true"></i>Cart
-      </div>
+      <div :class="['button-cart', {active: !footerButtonHendler}]" @click="mainOrdersHendlerGhange">
+        <i class="fa fa-shopping-basket" aria-hidden="true"></i>Cart</div>
     </div>
 
     <div class="modal-backdrop fade show" id="transparent-screen"></div>
@@ -321,6 +321,7 @@ export default {
     ...mapState("order", ["orderType"]),
     ...mapState("sync", ["online"]),
     ...mapGetters("location", ["formatPrice", "_t"]),
+    ...mapGetters(['footerButtonHendler']),
     ...mapState({
       selectedModal: state =>
         state.location.setModal == "#loyalty-payment"
@@ -330,7 +331,7 @@ export default {
     ...mapState({
       loyaltyCard: state => state.customer.loyalty.card
     }),
-    ...mapState({ selectedCustomer: state => state.customer.customer.name })
+    ...mapState({ selectedCustomer: state => state.customer.customer.name }),
   },
   methods: {
     viewHoldOrders: function() {
@@ -342,6 +343,10 @@ export default {
     ...mapActions("discount", ["validateOrderDiscounts"]),
     setOrderType(opt) {
       this.$store.commit("order/ORDER_TYPE", opt);
+    },
+    mainOrdersHendlerGhange(){
+      this.$store.dispatch('mainOrdersHendlerGhange')
+      this.$store.dispatch('footerButtonHendlerGhange')
     }
   },
   updated() {

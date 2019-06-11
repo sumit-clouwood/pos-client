@@ -5,7 +5,7 @@
       v-for="item in subcategories"
       :key="item._id"
       :class="{ active: currentSubcategory === item._id }"
-      @click.prevent="getItems(item)"
+      @click.prevent="getItems(item)" @click="foodMenuHendlerGhange"
     >
       <img
         class="food-categories-item-img"
@@ -34,10 +34,14 @@ export default {
       currentSubcategory: state => state.category.subcategory._id,
     }),
     ...mapGetters('category', ['subcategories']),
-    ...mapGetters(['subCategoryHendler']),
+    ...mapGetters(['subCategoryHendler', 'foodMenuHendler']),
   },
   methods: {
     ...mapActions('category', ['getItems']),
+    foodMenuHendlerGhange(){
+      this.$store.dispatch('foodMenuHendlerGhange')
+      console.log(this.foodMenuHendler)
+    }
   },
 }
 </script>
