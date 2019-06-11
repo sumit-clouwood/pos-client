@@ -42,6 +42,9 @@ const getters = {
   },
   subcategoryItems: state => {
     if (!state.subcategory) return []
+    //Reset all search results if any category items are fetched
+    state.searchItems = ''
+
     return state.items.filter(
       item =>
         item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_CATEGORY] ===
