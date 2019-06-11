@@ -14,6 +14,12 @@ const router = new Router({
   base: '',
 
   routes: [
+    //for development
+    {
+      path: '/pos/:brand_id/:store_id/',
+      name: 'PosBrandHomeDev',
+      component: Home,
+    },
     //for live where this app is hosted under /pos
     {
       path: '/:brand_id/:store_id/',
