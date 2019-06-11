@@ -7,7 +7,7 @@ var form_data
 var IDB_VERSION = 3
 var ORDER_DOCUMENT = 'order_post_requests'
 // var serverUrl = 'https://int.erp-pos.com'
-var clientUrl = 'https://delivery.erp-pos.com'
+var clientUrl = 'https://web-int.dimspos.com'
 
 if (workbox) {
   openDatabase()
@@ -25,7 +25,7 @@ if (workbox) {
   // Make sure to return a specific response for all navigation requests.
   // Since we have a SPA here, this should be index.html always.
   // https://stackoverflow.com/questions/49963982/vue-router-history-mode-with-pwa-in-offline-mode
-  workbox.routing.registerNavigationRoute(clientUrl + '/vue-pos/index.html')
+  workbox.routing.registerNavigationRoute(clientUrl + '/pos/')
 
   workbox.routing.registerRoute(
     /\.(?:png|gif|jpg|jpeg|svg)$/,
