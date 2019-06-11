@@ -1,3 +1,4 @@
+@import "../variables";
 #manage-customer {
   .modal-dialog {
     max-width: $px940;
@@ -67,6 +68,7 @@
       font-weight: 600;
       letter-spacing: 0.5px;
       cursor: pointer;
+      margin-right: $px5;
 
       &.next-page {
         background: transparent !important;
@@ -74,13 +76,15 @@
         border-color: #cbcfd3 !important;
         box-shadow: none !important;
         margin: 0 $px10;
-
+        > a {
+          color: #cbcfd3;
+        }
         > img {
           width: 7px;
         }
 
         &:hover {
-          background: rgba(98, 187, 49, 0.7) !important;
+          background: $blue-light;
 
           > img {
             filter: brightness(100%);
@@ -89,7 +93,7 @@
       }
 
       &:hover {
-        background: rgba(98, 187, 49, 0.7);
+        background: $blue-light;
       }
     }
   }
@@ -137,4 +141,7 @@
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   touch-action: auto;
+}
+.holdorders {
+  justify-content: flex-end;
 }

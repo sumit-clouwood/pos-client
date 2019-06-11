@@ -72,23 +72,24 @@ export default {
       /* myDoc = myDoc.remove('.sticky-footer')*/
       for (let i = 0; i < document.images.length; i++) {
         if (!this.IsImageOk(document.images[i])) {
-          let hue =
-            'rgb(' +
+          let hue = 'bg'
+          /*'rgb(' +
             (Math.floor((256 - 199) * Math.random()) + 200) +
             ',' +
             (Math.floor((256 - 199) * Math.random()) + 200) +
             ',' +
             (Math.floor((256 - 199) * Math.random()) + 200) +
-            ')'
+            ')'*/
           $(document.images[i])
             .closest('div.pos-item-bg')
-            .css('background-color', hue)
+            .addClass(hue)
           $(document.images[i])
             .siblings('p')
             .css('font-size', '15px')
           $(document.images[i])
             .closest('div.pos-size-bg')
-            .css('background-color', hue)
+            .addClass(hue)
+          // .css('background-color', hue)
           $(document.images[i])
             .siblings('span')
             .css('font-weight', 'bold')
@@ -102,5 +103,5 @@ export default {
 <style lang="sass" scoped>
 .pos-item-bg
   img
-    max-width: 146px;
+    max-width: 146px
 </style>

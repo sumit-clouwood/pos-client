@@ -19,8 +19,8 @@ The App.vue file is the root component that all other components are nested with
       <ul class="ullist-inventory-location pl-0 pt-2">
         <li class="p-3">
           <span>
-            Loading data...
             <Preloader />
+            <h2 class="text-center blue-middle">Loading Data...</h2>
           </span>
         </li>
       </ul>

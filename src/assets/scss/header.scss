@@ -94,11 +94,11 @@
 
           &.online {
             &:before {
-              color: $blue-middle;
+              color: $green;
             }
           }
           &:before {
-            color: $orange-middle;
+            color: $red;
           }
 
         }

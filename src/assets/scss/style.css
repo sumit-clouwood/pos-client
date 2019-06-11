@@ -197,6 +197,11 @@ div#nav-tabContent {
 .tab-content > .active {
   padding: 1.25rem; }
 
+.blue-middle {
+  color: #5056CA; }
+  .blue-middle:hover {
+    color: #3A3E9F; }
+
 .header {
   border-bottom: 1px solid #ddd; }
   .header .header-main {
@@ -268,9 +273,9 @@ div#nav-tabContent {
           margin-top: 0.125rem;
           margin-right: 0.625rem; }
           .header .header-main .header-main-right .online .fa-circle.online:before {
-            color: #5056CA; }
+            color: #62bb31; }
           .header .header-main .header-main-right .online .fa-circle:before {
-            color: #EF7F2A; }
+            color: tomato; }
       .header .header-main .header-main-right .online-counter {
         background-color: #4B4E53;
         height: 3.125rem;
@@ -484,7 +489,8 @@ div#nav-tabContent {
               margin-right: 0.3125rem;
               display: inline-block;
               vertical-align: middle;
-              width: 2.1875rem; }
+              width: 2.1875rem;
+              height: 2.1875rem; }
             .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label span {
               display: inline-block;
               vertical-align: middle;
@@ -1499,21 +1505,24 @@ a:hover {
       font-size: 1rem;
       font-weight: 600;
       letter-spacing: 0.5px;
-      cursor: pointer; }
+      cursor: pointer;
+      margin-right: 0.3125rem; }
       .pagination-customer-details > ul > li.next-page {
         background: transparent !important;
         border: 1px solid #cbcfd3;
         border-color: #cbcfd3 !important;
         box-shadow: none !important;
         margin: 0 0.625rem; }
+        .pagination-customer-details > ul > li.next-page > a {
+          color: #cbcfd3; }
         .pagination-customer-details > ul > li.next-page > img {
           width: 7px; }
         .pagination-customer-details > ul > li.next-page:hover {
-          background: rgba(98, 187, 49, 0.7) !important; }
+          background: #767DFF; }
           .pagination-customer-details > ul > li.next-page:hover > img {
             filter: brightness(100%); }
       .pagination-customer-details > ul > li:hover {
-        background: rgba(98, 187, 49, 0.7); }
+        background: #767DFF; }
 
 .manage-customer-wrap {
   padding: 0.625rem 1.875rem; }
@@ -1544,6 +1553,9 @@ a:hover {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   touch-action: auto; }
+
+.holdorders {
+  justify-content: flex-end; }
 
 #add-to-order .modal-dialog {
   max-width: 43.75rem; }

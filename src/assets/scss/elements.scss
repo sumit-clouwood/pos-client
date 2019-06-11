@@ -252,3 +252,9 @@ div#nav-tabContent  {
    padding: $px20;
   }
 }
+.blue-middle {
+  color: $blue-middle;
+  &:hover{
+    color: $blue-dark;
+  }
+}

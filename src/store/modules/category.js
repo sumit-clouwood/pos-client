@@ -42,6 +42,9 @@ const getters = {
   },
   subcategoryItems: state => {
     if (!state.subcategory) return []
+    //Reset all search results if any category items are fetched
+    state.searchItems = ''
+
     return state.items.filter(
       item =>
         item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_CATEGORY] ===
@@ -103,11 +106,13 @@ const actions = {
 
   collectSearchItems({ commit, state }, searchTerm) {
     let searchedItems = []
-    state.items.map(item => {
-      if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
-        searchedItems.push(item)
-      }
-    })
+    if (searchTerm.length > 0) {
+      state.items.map(item => {
+        if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
+          searchedItems.push(item)
+        }
+      })
+    }
     commit(mutation.SET_SEARCH_ITEMS, { items: searchedItems })
   },
 
@@ -148,7 +153,11 @@ const mutations = {
     state.item = item
   },
   [mutation.SET_SEARCH_ITEMS](state, items) {
-    state.searchItems = items.items
+    if (items.items.length > 0) {
+      state.searchItems = items.items
+    } else {
+      state.searchItems = {}
+    }
   },
 }
 

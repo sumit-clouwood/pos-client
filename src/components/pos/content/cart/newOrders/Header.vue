@@ -14,15 +14,20 @@
     </div>
     <div class="main-oreders-date">{{ DateToday }}</div>
     <div class="main-oreders-buttons">
-      <div class="orders-button-large">{{ _t('Move Table') }}</div>
-      <div class="orders-button-large">{{ _t('Split Table') }}</div>
-      <div class="orders-button-large">{{ _t('Hold') }}</div>
+      <!--<div class="orders-button-large" disabled="disable">
+        {{ _t('Move Table') }}
+      </div>
+      <div class="orders-button-large" disabled="disable">
+        {{ _t('Split Table') }}
+      </div>-->
+      <div class="orders-button-large" @click="pay">{{ _t('Hold') }}</div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+/* global $ */
+import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Header',
   props: {},
@@ -30,6 +35,31 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
+  },
+  methods: {
+    pay() {
+      this.orderOnHold('on-hold')
+      this.$store
+        .dispatch('checkout/pay', 'on-hold')
+        .then(() => {
+          if (this.changedAmount >= 0.1) {
+            $('#payment-msg').modal('hide')
+            $('#change-amount').modal('show')
+          } else if (this.msg) {
+            $('#payment-msg').modal('show')
+          }
+          setTimeout(function() {
+            $('#payment-screen-footer').prop('disabled', false)
+          }, 1000)
+        })
+        .catch(() => {
+          setTimeout(() => {
+            $('#payment-msg').modal('hide')
+            $('#payment-screen-footer').prop('disabled', false)
+          }, 500)
+        })
+    },
+    ...mapActions('checkout', ['orderOnHold']),
   },
 }
 </script>
