@@ -154,7 +154,8 @@
               margin-right: 0.3125rem;
               display: inline-block;
               vertical-align: middle;
-              width: 2.1875rem; }
+              width: 2.1875rem;
+              height: 2.1875rem; }
             .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label span {
               display: inline-block;
               vertical-align: middle;

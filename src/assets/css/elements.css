@@ -197,4 +197,9 @@ div#nav-tabContent {
 .tab-content > .active {
   padding: 1.25rem; }
 
+.blue-middle {
+  color: #5056CA; }
+  .blue-middle:hover {
+    color: #3A3E9F; }
+
 /*# sourceMappingURL=elements.css.map */

@@ -49,6 +49,14 @@
           </div>
         </form>
         <div class="modal-footer">
+          <div
+            data-toggle="modal"
+            data-target="#customer"
+            data-dismiss="modal"
+            class="cursor-pointer blue-middle"
+          >
+            {{ _t('Create New Customer') }}
+          </div>
           <div class="btn-announce">
             <button
               type="button"

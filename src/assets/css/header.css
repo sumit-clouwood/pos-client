@@ -69,9 +69,9 @@
           margin-top: 0.125rem;
           margin-right: 0.625rem; }
           .header .header-main .header-main-right .online .fa-circle.online:before {
-            color: #5056CA; }
+            color: #62bb31; }
           .header .header-main .header-main-right .online .fa-circle:before {
-            color: #EF7F2A; }
+            color: tomato; }
       .header .header-main .header-main-right .online-counter {
         background-color: #4B4E53;
         height: 3.125rem;

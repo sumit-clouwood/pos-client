@@ -13,7 +13,7 @@
       </p>
     </div>
     <div class="main-oreders-date">{{ DateToday }}</div>
-    <div class="main-oreders-buttons">
+    <!--<div class="main-oreders-buttons">
       <div class="orders-button-large" disabled="disable">
         {{ _t('Move Table') }}
       </div>
@@ -21,7 +21,7 @@
         {{ _t('Split Table') }}
       </div>
       <div class="orders-button-large">{{ _t('Hold') }}</div>
-    </div>
+    </div>-->
   </div>
 </template>
 

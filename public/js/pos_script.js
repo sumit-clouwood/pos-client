@@ -275,7 +275,7 @@ $(document).ready(function() {
   })
   $('.food-menu-item').click(function() {
     $('.food-menu-item').removeClass('active')
-    $(this).toggleClass('active')
+    $(this).addClass('active')
   })
   $('ul.ullist-pagination > li.order-pagination').click(function() {
     $('ul.ullist-pagination > li.order-pagination').removeClass('active')
