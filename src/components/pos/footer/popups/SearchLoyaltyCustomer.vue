@@ -35,14 +35,8 @@
               >
             </button>
           </div>
-          <span class="loyalty-error text-danger" style="display: none">{{
-            _t('No Results Found')
-          }}</span>
-          <span
-            class="loyalty-customer-error text-danger"
-            style="display: none"
-          >
-            {{ _t('Please Select Customer') }}
+          <span class="loyalty-error text-danger loyalty-customer-error">
+            {{ _t(searchCustomerErr) }}
           </span>
           <div class="dropdown" v-if="customers.length">
             <div id="myDropdown" class="dropdown-content">
@@ -104,6 +98,7 @@ export default {
       searchTerm: '',
       customerId: '',
       inputTimer: '',
+      searchCustomerErr: '',
     }
   },
   computed: {
@@ -115,17 +110,17 @@ export default {
   methods: {
     addLoyalty: function() {
       if (this.customerId.length > 0) {
+        this.searchCustomerErr = ''
         $('.text-danger').hide()
         $('#search-loyalty-customer').modal('toggle')
         this.fetchSelectedCustomer(this.customerId)
       } else {
-        $('.text-danger').hide()
-        $('.loyalty-customer-error').show()
+        this.searchCustomerErr = 'Please Select Customer'
       }
     },
 
     selectCustomer(customer) {
-      $('.text-danger').hide()
+      this.searchCustomerErr = ''
       this.searchTerm = customer.name
       this.customerId = customer._id
       $('#myDropdown').toggle()
@@ -139,14 +134,13 @@ export default {
           this.$store
             .dispatch('customer/searchCustomer', this.searchTerm)
             .then(() => {
-              $('.text-danger').hide()
+              this.searchCustomerErr = ''
               $('#searchLoader').hide()
               $('#myDropdown').toggle()
             })
             .catch(() => {
-              $('.text-danger').hide()
               $('#searchLoader').hide()
-              $('.loyalty-error').toggle()
+              this.searchCustomerErr = 'No Results Found'
             })
         }, 500)
       }

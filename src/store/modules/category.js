@@ -153,7 +153,7 @@ const mutations = {
     if (items.items.length > 0) {
       state.searchItems = items.items
     } else {
-      state.searchItems = []
+      state.searchItems = {}
     }
   },
 }
