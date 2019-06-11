@@ -340,16 +340,18 @@ const actions = {
           //   resolve(response.data)
           //   return true
           // }
-          if (state.onHold) {
-            resolve()
-            return true
-          }
 
-          dispatch('invoice/printRules', null, { root: true }).then(() => {
-            //get print rules
-            if (response.data.status === 'ok') {
+          if (response.data.status === 'ok') {
+            commit('order/SET_ORDER_ID', response.data.id, { root: true })
+
+            if (state.onHold) {
+              resolve()
+              return true
+            }
+
+            dispatch('invoice/printRules', null, { root: true }).then(() => {
+              //get print rules
               //get invoice template
-              commit('order/SET_ORDER_ID', response.data.id, { root: true })
               const templateId = rootGetters['invoice/templateId']
               dispatch(
                 'invoice/fetchTemplate',
@@ -385,20 +387,20 @@ const actions = {
                 })
                 resolve(response.data)
               })
-            } else {
-              const error =
-                typeof response.data.error !== 'undefined'
-                  ? response.data.error
-                  : response.data.message
+            })
+          } else {
+            const error =
+              typeof response.data.error !== 'undefined'
+                ? response.data.error
+                : response.data.message
 
-              commit(
-                'checkoutForm/SET_ERROR',
-                `Order Failed, Server Response: ${error}`,
-                { root: true }
-              )
-              reject(response.data)
-            }
-          })
+            commit(
+              'checkoutForm/SET_ERROR',
+              `Order Failed, Server Response: ${error}`,
+              { root: true }
+            )
+            reject(response.data)
+          }
         })
         .catch(response => {
           if (
