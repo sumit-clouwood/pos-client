@@ -340,62 +340,65 @@ const actions = {
           //   resolve(response.data)
           //   return true
           // }
-          if (!state.onHold) {
-            dispatch('invoice/printRules', null, { root: true }).then(() => {
-              //get print rules
-              if (response.data.status === 'ok') {
-                //get invoice template
-                commit('order/SET_ORDER_ID', response.data.id, { root: true })
-                const templateId = rootGetters['invoice/templateId']
-                dispatch(
-                  'invoice/fetchTemplate',
-                  {
-                    orderId: rootState.order.orderId,
-                    templateId: templateId,
-                  },
-                  {
-                    root: true,
-                  }
-                ).then(() => {
-                  //clear all the data related to order, tax, discounts, surcharge etc
-                  //create invoice
-                  //add order no to local database
-                  // db.getBucket('auth').then(bucket => {
-                  //   db.fetch(bucket).then(data => {
-                  //     if (data && data[0]) {
-                  //       data = data[0]
-                  //       data.lastOrderNo = parseInt(data.lastOrderNo) + 1
-                  //       db.getBucket('auth').then(bucket => {
-                  //         bucket.put(data)
-                  //       })
-                  //       commit('auth/SET_LAST_ORDER_NO', data.lastOrderNo, {
-                  //         root: true,
-                  //       })
-                  //     }
-                  //   })
-                  // })
-
-                  // commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
-                  commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
-                    root: true,
-                  })
-                  resolve(response.data)
-                })
-              } else {
-                const error =
-                  typeof response.data.error !== 'undefined'
-                    ? response.data.error
-                    : response.data.message
-
-                commit(
-                  'checkoutForm/SET_ERROR',
-                  `Order Failed, Server Response: ${error}`,
-                  { root: true }
-                )
-                reject(response.data)
-              }
-            })
+          if (state.onHold) {
+            resolve()
+            return true
           }
+
+          dispatch('invoice/printRules', null, { root: true }).then(() => {
+            //get print rules
+            if (response.data.status === 'ok') {
+              //get invoice template
+              commit('order/SET_ORDER_ID', response.data.id, { root: true })
+              const templateId = rootGetters['invoice/templateId']
+              dispatch(
+                'invoice/fetchTemplate',
+                {
+                  orderId: rootState.order.orderId,
+                  templateId: templateId,
+                },
+                {
+                  root: true,
+                }
+              ).then(() => {
+                //clear all the data related to order, tax, discounts, surcharge etc
+                //create invoice
+                //add order no to local database
+                // db.getBucket('auth').then(bucket => {
+                //   db.fetch(bucket).then(data => {
+                //     if (data && data[0]) {
+                //       data = data[0]
+                //       data.lastOrderNo = parseInt(data.lastOrderNo) + 1
+                //       db.getBucket('auth').then(bucket => {
+                //         bucket.put(data)
+                //       })
+                //       commit('auth/SET_LAST_ORDER_NO', data.lastOrderNo, {
+                //         root: true,
+                //       })
+                //     }
+                //   })
+                // })
+
+                // commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
+                commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
+                  root: true,
+                })
+                resolve(response.data)
+              })
+            } else {
+              const error =
+                typeof response.data.error !== 'undefined'
+                  ? response.data.error
+                  : response.data.message
+
+              commit(
+                'checkoutForm/SET_ERROR',
+                `Order Failed, Server Response: ${error}`,
+                { root: true }
+              )
+              reject(response.data)
+            }
+          })
         })
         .catch(response => {
           if (
