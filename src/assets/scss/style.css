@@ -1505,21 +1505,24 @@ a:hover {
       font-size: 1rem;
       font-weight: 600;
       letter-spacing: 0.5px;
-      cursor: pointer; }
+      cursor: pointer;
+      margin-right: 0.3125rem; }
       .pagination-customer-details > ul > li.next-page {
         background: transparent !important;
         border: 1px solid #cbcfd3;
         border-color: #cbcfd3 !important;
         box-shadow: none !important;
         margin: 0 0.625rem; }
+        .pagination-customer-details > ul > li.next-page > a {
+          color: #cbcfd3; }
         .pagination-customer-details > ul > li.next-page > img {
           width: 7px; }
         .pagination-customer-details > ul > li.next-page:hover {
-          background: rgba(98, 187, 49, 0.7) !important; }
+          background: #767DFF; }
           .pagination-customer-details > ul > li.next-page:hover > img {
             filter: brightness(100%); }
       .pagination-customer-details > ul > li:hover {
-        background: rgba(98, 187, 49, 0.7); }
+        background: #767DFF; }
 
 .manage-customer-wrap {
   padding: 0.625rem 1.875rem; }
@@ -1550,6 +1553,9 @@ a:hover {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   touch-action: auto; }
+
+.holdorders {
+  justify-content: flex-end; }
 
 #add-to-order .modal-dialog {
   max-width: 43.75rem; }
