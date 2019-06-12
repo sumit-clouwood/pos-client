@@ -60,10 +60,13 @@ const getters = {
 
     if (state.searchItems.length) {
       items = state.searchItems
-    } else if (categoryItems.length) {
-      items = categoryItems
-    } else if (subcategoryItems.length) {
-      items = subcategoryItems
+    } else {
+      if (categoryItems.length) {
+        items = categoryItems
+      }
+      if (subcategoryItems.length) {
+        items = categoryItems.concat(subcategoryItems)
+      }
     }
     return items
   },
