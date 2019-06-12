@@ -2938,15 +2938,10 @@ body {
         justify-content: center;
         cursor: pointer; }
         .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
           text-align: center;
           font-size: 14px;
           color: #fff;
           width: 6.25rem;
-          height: 4.375rem;
           cursor: pointer;
           font-weight: 600;
           border-radius: 3px;
@@ -2962,7 +2957,8 @@ body {
             margin-bottom: 0.3125rem; }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav .nav-link-text {
             font-size: 0.75rem;
-            text-align: center; }
+            text-align: center;
+            display: block; }
   .navigation .slider-btn {
     color: #fff;
     margin: 0 auto;
