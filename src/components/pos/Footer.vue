@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    <div class="footer-slider">
+    <div :class="['footer-slider', {footerSliderActive: footerMenuHendler}]">
       <ul class="footer-slider-list ullist-icons">
         <li class="footer-slider-list-item" data-toggle="modal" data-target="#manage-customer">
           <a class="footer-slider-list-item-link" href="#">
@@ -177,7 +177,7 @@
       </ul>
     </div>
     <div class="footer-buttons">
-      <div :class="['footer-button-menu', {active: footerButtonHendler}]">...</div>
+      <div :class="['footer-button-menu', {active: footerButtonHendler}]" @click="footerMenuHendlerGhange">...</div>
       <div :class="['button',{active: footerButtonHendler}]">
         <ul class="template-btn">
           <li
@@ -321,7 +321,7 @@ export default {
     ...mapState("order", ["orderType"]),
     ...mapState("sync", ["online"]),
     ...mapGetters("location", ["formatPrice", "_t"]),
-    ...mapGetters(['footerButtonHendler']),
+    ...mapGetters(['footerButtonHendler', 'footerMenuHendler']),
     ...mapState({
       selectedModal: state =>
         state.location.setModal == "#loyalty-payment"
@@ -347,6 +347,9 @@ export default {
     mainOrdersHendlerGhange(){
       this.$store.dispatch('mainOrdersHendlerGhange')
       this.$store.dispatch('footerButtonHendlerGhange')
+    },
+    footerMenuHendlerGhange(){
+      this.$store.dispatch('footerMenuHendlerGhange')
     }
   },
   updated() {

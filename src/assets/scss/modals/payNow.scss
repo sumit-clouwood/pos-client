@@ -4,7 +4,8 @@
   width: $px570;
   margin-top: 0;
   background: #fff;
-  overflow: auto;
+  overflow: hidden;
+  overflow-y: auto;
   position: fixed;
   top: 0;
   z-index: 1050;
@@ -202,7 +203,7 @@
           }
         }
 
-        .payemnt-input-block {
+        .payment-input-block {
           overflow: hidden;
           padding: $px15 0 $px35 0;
           position: relative;
@@ -419,6 +420,10 @@
               color: #fff;
             }
           }
+        }
+
+        .pay-now-btn-next{
+          display: none;
         }
 
       }

@@ -28,7 +28,7 @@
             <div class="error" v-if="error">
               <p class="text-danger">{{ _t('Error') }}: {{ error }}</p>
             </div>
-            <div class="payemnt-input-block">
+            <div :class="['payment-input-block', {paymentInputActive: payNowCalcHendler}]">
               <input
                 type="text"
                 name="payment"
@@ -60,6 +60,7 @@
               </button>
             </div>
           </div>
+          <div class="pay-now-btn-next" @click="payNowCalcHendlerGange">Next</div>
         </div>
       </div>
     </div>
@@ -102,11 +103,15 @@ export default {
     ...mapState('checkoutForm', ['error', 'showCalc', 'showPayBreak']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('checkoutForm', ['payable']),
+    ...mapGetters(['payNowCalcHendler']),
   },
   methods: {
     showCalculator() {
       this.$store.commit('checkoutForm/showCalc', true)
     },
+    payNowCalcHendlerGange(){
+      this.$store.dispatch('payNowCalcHendlerGange')
+    }
   },
 }
 </script>

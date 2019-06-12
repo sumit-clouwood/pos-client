@@ -1,5 +1,5 @@
 <template>
-  <div id="payment-method">
+  <div id="payment-method" :class="{activePayMethod: !payNowCalcHendler}">
     <div
       v-for="(method, key) in methods"
       :key="key"
@@ -25,6 +25,7 @@ export default {
   name: 'PaymentMethods',
   computed: {
     ...mapGetters('payment', ['methods']),
+    ...mapGetters(['payNowCalcHendler']),
     ...mapState({
       activeMethod: state => state.checkoutForm.method.name,
     }),

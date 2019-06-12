@@ -7,6 +7,8 @@ export default {
         mainOrdersHendler: false,
         totalWrapperHendler: false,
         footerButtonHendler: false,
+        payNowCalcHendler: false,
+        footerMenuHendler: false
     },
     mutations: {
         SEARCH_HENDLER_CHANGE: (state) => {
@@ -41,8 +43,14 @@ export default {
         },
         FOOTER_BUTTON_HENDLER_GHANGE: (state) => {
             state.footerButtonHendler = !state.footerButtonHendler
+        },
+        PAY_NOW_CALC_HANDLER_GHANGE: (state) => {
+            state.payNowCalcHendler = !state.payNowCalcHendler
+        },
+        FOOTER_MENU_HENDLER_GHANGE: (state) => {
+            state.footerMenuHendler = true
         }
-    },
+     },
     actions: {
         searchHendlerChange({commit}) {
             commit('SEARCH_HENDLER_CHANGE')
@@ -67,6 +75,12 @@ export default {
         },
         footerButtonHendlerGhange({commit}){
             commit('FOOTER_BUTTON_HENDLER_GHANGE')
+        },
+        payNowCalcHendlerGange({commit}) {
+            commit('PAY_NOW_CALC_HANDLER_GHANGE')
+        },
+        footerMenuHendlerGhange({commit}){
+            commit('FOOTER_MENU_HENDLER_GHANGE')
         }
     },
     getters: {
@@ -77,5 +91,7 @@ export default {
         mainOrdersHendler: state => state.mainOrdersHendler,
         totalWrapperHendler: state => state.totalWrapperHendler,
         footerButtonHendler: state => state.footerButtonHendler,
+        payNowCalcHendler: state => state.payNowCalcHendler,
+        footerMenuHendler: state => state.footerMenuHendler
     },
 };
