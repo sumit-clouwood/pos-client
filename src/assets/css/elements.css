@@ -202,4 +202,26 @@ div#nav-tabContent {
   .blue-middle:hover {
     color: #3A3E9F; }
 
+.loading-modules {
+  width: 25rem;
+  margin: 0 auto;
+  border: 1px solid #ddd;
+  padding: 1.25rem;
+  border-radius: 0.3125rem;
+  background: linear-gradient(-45deg, #767DFF, #767DFF, #3A3E9F, #5056CA);
+  max-height: 12.5rem;
+  overflow-y: auto; }
+
+.loading-modules li {
+  line-height: 1.6;
+  color: #fff;
+  position: relative; }
+  .loading-modules li span {
+    position: absolute;
+    top: 0;
+    right: 0; }
+
+.margin220 .preloader {
+  margin-top: 13.75rem; }
+
 /*# sourceMappingURL=elements.css.map */

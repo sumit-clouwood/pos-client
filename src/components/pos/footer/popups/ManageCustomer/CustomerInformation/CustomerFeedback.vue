@@ -19,7 +19,8 @@
       </li>
       <li>
         <a href="#"
-          ><span class="black-smile"><img src="/pos/img/pos/confused.png"/></span
+          ><span class="black-smile"
+            ><img src="/pos/img/pos/confused.png"/></span
           ><span class="color-smile"
             ><img src="/pos/img/pos/confused-color.png"/></span
         ></a>
@@ -35,7 +36,8 @@
       <li>
         <a href="#"
           ><span class="black-smile"><img src="/pos/img/pos/happy.png"/></span
-          ><span class="color-smile"><img src="/pos/img/pos/happy-color.png"/></span
+          ><span class="color-smile"
+            ><img src="/pos/img/pos/happy-color.png"/></span
         ></a>
       </li>
     </ul>

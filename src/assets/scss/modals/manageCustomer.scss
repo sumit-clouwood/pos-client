@@ -59,17 +59,18 @@
       width: $px50;
       height: $px50;
       padding: 0 $px20;
-      box-shadow: 0 2px 2px #d1e6c5;
       border-radius: $btn-border-radius;
-      background-color: #5056ca;
-      border-color: #5056ca;
+      background-color: $blue-middle;
+      border-color: $blue-middle;
       color: #ffffff;
       font-size: $px16;
       font-weight: 600;
       letter-spacing: 0.5px;
       cursor: pointer;
       margin-right: $px5;
-
+      a {
+        color: $white;
+      }
       &.next-page {
         background: transparent !important;
         border: 1px solid #cbcfd3;

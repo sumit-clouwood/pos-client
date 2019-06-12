@@ -15,7 +15,8 @@
       </button>
       <button id="dm-dinein">
         <router-link to="/" class="text-white"
-          ><span><img src="/pos/img/other/walkin.png"/></span> Dine-In</router-link
+          ><span><img src="/pos/img/other/walkin.png"/></span>
+          Dine-In</router-link
         >
       </button>
     </div>

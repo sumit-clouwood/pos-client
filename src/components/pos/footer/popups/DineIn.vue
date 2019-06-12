@@ -15,7 +15,9 @@
               :class="{ active: selectedOrderType === 'dinein' }"
               @click="setOrderType('dinein')"
             >
-              <img src="/pos/img/pos/dine-in.svg" /><span>{{ _t('Dine In') }}</span>
+              <img src="/pos/img/pos/dine-in.svg" /><span>{{
+                _t('Dine In')
+              }}</span>
             </div>
             <div
               class="option-contain"

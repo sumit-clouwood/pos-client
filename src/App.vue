@@ -18,12 +18,24 @@ The App.vue file is the root component that all other components are nested with
     <div v-else-if="loading">
       <ul class="ullist-inventory-location pl-0 pt-2">
         <li class="p-3">
-          <span>
+          <span class="margin220">
             <Preloader />
             <h2 class="text-center blue-middle">Loading Data...</h2>
             <ul class="loading-modules">
               <li v-for="(val, key) in modules" :key="key">
                 Loading {{ key }}
+                <div class="progress">
+                  <div
+                    class="progress-bar progressIncrement"
+                    role="progressbar"
+                    aria-valuenow="50"
+                    aria-valuemin="1"
+                    aria-valuemax="100"
+                    v-bind:style="{ width: progressIncrement }"
+                  >
+                    {{ progressIncrement }}
+                  </div>
+                </div>
                 <span> {{ val }} </span>
               </li>
             </ul>
@@ -55,6 +67,7 @@ export default {
     return {
       loading: true,
       errored: false,
+      progressIncrement: '0%',
     }
   },
   created() {
@@ -93,8 +106,10 @@ export default {
       bootstrap
         .setup(this.$store)
         .then(() => {
+          this.progressIncrement = '10%'
           setTimeout(() => {
             this.loading = false
+            this.progressIncrement = '100%'
           }, 100)
           setTimeout(() => {
             require('@/../public/js/pos_script.js')
@@ -124,16 +139,6 @@ if ('serviceWorker' in navigator && 'SyncManager' in window) {
   })
 }
 </script>
-<!--<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  /*text-align: center;*/
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>-->
 <style lang="css">
 @import './assets/css/style.css';
 </style>

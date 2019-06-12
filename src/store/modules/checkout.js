@@ -345,6 +345,13 @@ const actions = {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
 
             if (state.onHold) {
+              commit(
+                'checkoutForm/SET_MSG',
+                'Order has been hold Successfully',
+                {
+                  root: true,
+                }
+              )
               resolve()
               dispatch('reset')
               return true

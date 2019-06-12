@@ -258,3 +258,30 @@ div#nav-tabContent  {
     color: $blue-dark;
   }
 }
+.loading-modules {
+  width: $px400;
+  margin: 0 auto;
+  border: 1px solid $gray-middle;
+  padding: $px20;
+  border-radius: $px5;
+  background: linear-gradient(-45deg, $blue-light, $blue-light, $blue-dark, $blue-middle);
+  max-height: $px200;
+  overflow-y:auto;
+}
+.loading-modules{
+  li{
+    line-height: 1.6;
+    color: #fff;
+    position:relative;
+    span{
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  }
+}
+.margin220{
+   .preloader{
+     margin-top: $px220
+   }
+}

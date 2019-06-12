@@ -96,7 +96,6 @@ $(document).ready(function() {
 
   // Increase amount
   $('.value-qty').on('click', function() {
-    // alert("hii");
     var $button = $(this)
     var oldValue = $button
       .parent()

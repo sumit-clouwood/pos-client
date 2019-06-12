@@ -13,7 +13,7 @@
       </p>
     </div>
     <div class="main-oreders-date">{{ DateToday }}</div>
-    <div class="main-oreders-buttons">
+    <div class="main-oreders-buttons" v-if="items.length">
       <!--<div class="orders-button-large" disabled="disable">
         {{ _t('Move Table') }}
       </div>
@@ -34,6 +34,7 @@ export default {
 
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('order', ['items']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
   },
   methods: {
