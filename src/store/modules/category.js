@@ -85,7 +85,7 @@ const getters = {
 
 // actions, often async
 const actions = {
-  fetchAll({ commit, dispatch }) {
+  fetchAll({ commit, dispatch, rootState }) {
     return new Promise((resolve, reject) => {
       CategoryService.categories()
         .then(response => {
@@ -95,7 +95,9 @@ const actions = {
             commit(mutation.SET_SUBCATEGORIES, response.data.data)
             CategoryService.items().then(response => {
               commit(mutation.SET_ITEMS, response.data.data)
-              dispatch('browse', state.categories[0])
+              if (!rootState.sync.reloaded) {
+                dispatch('browse', state.categories[0])
+              }
               resolve()
             })
           })
@@ -120,6 +122,7 @@ const actions = {
   browse({ commit, getters }, category) {
     commit(mutation.SET_CATEGORY, category)
     commit(mutation.SET_SUBCATEGORY, getters.subcategories[0])
+    //reload the ui
   },
   getItems({ commit }, subcategory) {
     commit(mutation.SET_SUBCATEGORY, subcategory)

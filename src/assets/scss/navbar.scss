@@ -54,15 +54,15 @@
         cursor: pointer;
 
         .nav-link-nav {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
+          //display: flex;
+          //flex-direction: column;
+          //align-items: center;
+          //justify-content: center;
           text-align: center;
           font-size: 14px;
           color: #fff;
           width: $nav-link-width;
-          height: $nav-link-height;
+          //height: $nav-link-height;
           cursor: pointer;
           font-weight: 600;
           border-radius: $btn-border-radius;
@@ -75,14 +75,15 @@
           }
 
           img {
-            width: $px20;
-            height: $px20;
+            width: $px35;
+            height: $px35;
             margin-bottom: $px5;
           }
 
           .nav-link-text {
             font-size: $px12;
             text-align: center;
+            display: block;
           }
         }
       }
