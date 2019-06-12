@@ -15,9 +15,9 @@
       <tr v-for="(item, index) in cartItems" :key="index">
         <td>{{ item.name }}</td>
         <td>{{ item.quantity }}</td>
-        <td>{{ item.netPrice }}</td>
-        <td>{{ taxAmount(item.tax_sum) }}</td>
-        <td>{{ subtotal(item.quantity, item.netPrice) }}</td>
+        <td>{{ formatPrice(item.netPrice || 0) }}</td>
+        <td>{{ formatPrice(taxAmount(item.tax_sum) || 0) }}</td>
+        <td>{{ formatPrice(subtotal(item.quantity, item.netPrice) || 0) }}</td>
       </tr>
     </table>
 
@@ -33,7 +33,7 @@ export default {
   name: 'SendToDeliveryContentItem',
   props: {},
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
       cartItems: state =>
         state.order && state.order.items.length > 0 ? state.order.items : false,

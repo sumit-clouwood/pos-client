@@ -165,7 +165,12 @@ export default {
     ...mapState({
       newCustomerDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
-      fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
+      fetchDeliveryAreas: state =>
+        state.customer.fetchDeliveryAreas.filter(function(u) {
+          if (u.store_id == state.context.storeId) {
+            return u.item_status
+          }
+        }),
       customerCreateStatus: state => state.customer.responseInformation,
       customerId: state => state.customer.customer._id,
       customerGroup: state =>
