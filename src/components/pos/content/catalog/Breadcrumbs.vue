@@ -9,7 +9,7 @@
       </div>
       <img
         class="breadcrumbs-img"
-        src="/img/pos/right-arrow.png"
+        src="/pos/img/pos/right-arrow.png"
         alt="right-arrow"
       />
     </div>
@@ -25,7 +25,7 @@
       </div>
       <img
         class="breadcrumbs-img"
-        src="/img/pos/right-arrow.png"
+        src="/pos/img/pos/right-arrow.png"
         alt="right-arrow"
       />
     </div>

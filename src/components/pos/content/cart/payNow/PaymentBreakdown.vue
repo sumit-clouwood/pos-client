@@ -16,7 +16,7 @@
           <td>{{ formatPrice(payment.amount) }}</td>
           <td>
             <a href="" @click.prevent="removePayment(index)"
-              ><img src="/img/pos/delete-icon.svg" alt="delete"
+              ><img src="/pos/img/pos/delete-icon.svg" alt="delete"
             /></a>
           </td>
         </tr>

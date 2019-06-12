@@ -9,7 +9,7 @@
       <img
         v-else
         class="profile-picture"
-        src="/img/other/placeholder-img.png"
+        src="/pos/img/other/placeholder-img.png"
       />
     </li>
     <li class="col-md-4 lh">

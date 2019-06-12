@@ -1,7 +1,7 @@
 <template>
   <div class="preloader">
-    <link rel="prefetch" href="/img/icons/apple-touch-icon.png" />
-    <img src="/img/icons/apple-touch-icon.png" id="slidecaption" />
+    <link rel="prefetch" href="/pos/img/icons/apple-touch-icon.png" />
+    <img src="/pos/img/icons/apple-touch-icon.png" id="slidecaption" />
   </div>
 </template>
 <script>

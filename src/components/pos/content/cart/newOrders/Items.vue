@@ -27,7 +27,7 @@
           data-target="#POSItemOptions"
           @click="setActiveItem({ orderItem: item, index: index })"
         >
-          <img src="/img/pos/plus-icon.png" alt="plus" />
+          <img src="/pos/img/pos/plus-icon.png" alt="plus" />
         </div>
       </div>
     </div>

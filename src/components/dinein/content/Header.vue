@@ -11,7 +11,7 @@
     <div class="search-dine-table">
       <form class="form-inline search-inline">
         <div class="inner-addon left-addon">
-          <img class="search-img" src="/img/pos/search-icon.png" alt="search" />
+          <img class="search-img" src="/pos/img/pos/search-icon.png" alt="search" />
           <input type="text" class="form-control" placeholder="Search table" />
         </div>
       </form>
