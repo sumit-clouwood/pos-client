@@ -13,7 +13,7 @@
       </div>
       <div class="POSItemOptions_quantity_submit">
         <button @click="updateItemQty()">
-          <img src="/img/pos/right.png" alt="check" /> Set Quantity
+          <img src="/pos/img/pos/right.png" alt="check" /> Set Quantity
         </button>
       </div>
     </div>

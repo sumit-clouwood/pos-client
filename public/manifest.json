@@ -3,7 +3,7 @@
   "short_name": "pos",
   "icons": [
     {
-      "src": "./img/icons/favicon.jpg",
+      "src": "./pos/img/icons/favicon.jpg",
       "sizes": "192x192",
       "type": "image/jpg"
     }
