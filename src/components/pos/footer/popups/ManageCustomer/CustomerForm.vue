@@ -191,7 +191,6 @@ export default {
       }
     },
     validate: function() {
-      alert(this.newCustomerDetails.birthday)
       this.errors = {}
       this.errors.count = 0
       if (!this.newCustomerDetails.delivery_area_id) {
