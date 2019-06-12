@@ -202,6 +202,43 @@ div#nav-tabContent {
   .blue-middle:hover {
     color: #3A3E9F; }
 
+.loading-modules {
+  width: 18.75rem;
+  margin: 0 auto;
+  border: 1px solid #ddd;
+  padding: 1.25rem;
+  border-radius: 0.3125rem;
+  background: linear-gradient(-45deg, #767DFF, #767DFF, #3A3E9F, #5056CA);
+  background-size: 400% 400%;
+  -webkit-animation: Gradient 1s ease infinite;
+  -moz-animation: Gradient 1s ease infinite;
+  animation: Gradient 500ms ease infinite; }
+
+@-webkit-keyframes Gradient {
+  0% {
+    background-position: 0 50%; }
+  50% {
+    background-position: 100% 50%; }
+  100% {
+    background-position: 0 50%; } }
+@-moz-keyframes Gradient {
+  0% {
+    background-position: 0 50%; }
+  50% {
+    background-position: 100% 50%; }
+  100% {
+    background-position: 0 50%; } }
+@keyframes Gradient {
+  0% {
+    background-position: 0 50%; }
+  50% {
+    background-position: 100% 50%; }
+  100% {
+    background-position: 0 50%; } }
+.loading-modules li {
+  line-height: 1.6;
+  color: #fff; }
+
 .header {
   border-bottom: 1px solid #ddd; }
   .header .header-main {
@@ -2938,15 +2975,10 @@ body {
         justify-content: center;
         cursor: pointer; }
         .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
           text-align: center;
           font-size: 14px;
           color: #fff;
           width: 6.25rem;
-          height: 4.375rem;
           cursor: pointer;
           font-weight: 600;
           border-radius: 3px;
@@ -2961,7 +2993,8 @@ body {
             margin-bottom: 0.3125rem; }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav .nav-link-text {
             font-size: 0.75rem;
-            text-align: center; }
+            text-align: center;
+            display: block; }
   .navigation .slider-btn {
     color: #fff;
     margin: 0 auto;
