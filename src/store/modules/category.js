@@ -141,6 +141,7 @@ const mutations = {
 
   [mutation.SET_CATEGORY](state, category) {
     state.category = category
+    state.subcategory = null
   },
 
   [mutation.SET_SUBCATEGORIES](state, subcategories) {
@@ -149,6 +150,7 @@ const mutations = {
 
   [mutation.SET_SUBCATEGORY](state, subcategory) {
     state.subcategory = subcategory
+    state.item = null
   },
 
   [mutation.SET_ITEMS](state, items) {
