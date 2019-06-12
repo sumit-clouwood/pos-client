@@ -22,7 +22,11 @@ The App.vue file is the root component that all other components are nested with
             <Preloader />
             <h2 class="text-center blue-middle">Loading Data...</h2>
             <ul class="loading-modules">
-              <li v-for="(val, key) in modules" :key="key">
+              <li
+                v-for="(val, key) in modules"
+                :key="key"
+                style="text-transform:capitalize"
+              >
                 Loading {{ key }}
                 <div class="progress">
                   <div
