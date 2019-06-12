@@ -24,6 +24,18 @@ The App.vue file is the root component that all other components are nested with
             <ul class="loading-modules">
               <li v-for="(val, key) in modules" :key="key">
                 Loading {{ key }}
+                <div class="progress">
+                  <div
+                    class="progress-bar progressIncrement"
+                    role="progressbar"
+                    aria-valuenow="1"
+                    aria-valuemin="0"
+                    aria-valuemax="1"
+                    v-bind:style="{ width: progressIncrement }"
+                  >
+                    {{ progressIncrement }}
+                  </div>
+                </div>
                 <span> {{ val }} </span>
               </li>
             </ul>
@@ -55,6 +67,7 @@ export default {
     return {
       loading: true,
       errored: false,
+      progressIncrement: '0%',
     }
   },
   created() {
@@ -95,6 +108,7 @@ export default {
         .then(() => {
           setTimeout(() => {
             this.loading = false
+            this.progressIncrement = '100%'
           }, 100)
           setTimeout(() => {
             require('@/../public/js/pos_script.js')

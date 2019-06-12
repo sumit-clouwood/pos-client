@@ -203,41 +203,23 @@ div#nav-tabContent {
     color: #3A3E9F; }
 
 .loading-modules {
-  width: 18.75rem;
+  width: 25rem;
   margin: 0 auto;
   border: 1px solid #ddd;
   padding: 1.25rem;
   border-radius: 0.3125rem;
   background: linear-gradient(-45deg, #767DFF, #767DFF, #3A3E9F, #5056CA);
-  background-size: 400% 400%;
-  -webkit-animation: Gradient 1s ease infinite;
-  -moz-animation: Gradient 1s ease infinite;
-  animation: Gradient 1s ease infinite; }
+  max-height: 12.5rem;
+  overflow-y: auto; }
 
-@-webkit-keyframes Gradient {
-  0% {
-    background-position: 0 50%; }
-  50% {
-    background-position: 100% 50%; }
-  100% {
-    background-position: 0 50%; } }
-@-moz-keyframes Gradient {
-  0% {
-    background-position: 0 50%; }
-  50% {
-    background-position: 100% 50%; }
-  100% {
-    background-position: 0 50%; } }
-@keyframes Gradient {
-  0% {
-    background-position: 0 50%; }
-  50% {
-    background-position: 100% 50%; }
-  100% {
-    background-position: 0 50%; } }
 .loading-modules li {
   line-height: 1.6;
-  color: #fff; }
+  color: #fff;
+  position: relative; }
+  .loading-modules li span {
+    position: absolute;
+    top: 0;
+    right: 0; }
 
 .header {
   border-bottom: 1px solid #ddd; }
