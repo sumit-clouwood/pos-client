@@ -37,7 +37,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
         .then(storedata => {
-          commit(mutation.SET_STORE, storedata.data.available_stores[0])
+          commit(mutation.SET_STORE, storedata.data.store)
           commit(mutation.SET_BRAND, storedata.data.brand)
           commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
           commit(mutation.SET_TRASLATIONS, storedata.data.translations)
