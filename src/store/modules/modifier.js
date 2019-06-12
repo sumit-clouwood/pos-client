@@ -130,6 +130,7 @@ const actions = {
     commit(mutation.SET_MODIFIER_GROUPS, groups.data.data)
     commit(mutation.SET_MODIFIER_SUBGROUPS, subgroups.data.data)
     commit(mutation.SET_MODIFIERS, modifiers.data.data)
+    return Promise.resolve(1)
   },
 
   //active item and index already been set to order.item

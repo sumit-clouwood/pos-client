@@ -55,7 +55,9 @@
 
 <script>
 /* global  $*/
-import { mapState, mapActions, mapGetters } from 'vuex'
+import bootstrap from '@/bootstrap'
+
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Menu',
   computed: {
@@ -76,7 +78,11 @@ export default {
     // }), //to preftech modifier images, todo
   },
   methods: {
-    ...mapActions('category', ['browse']),
+    browse(item) {
+      this.$store.commit('sync/reload', true)
+      bootstrap.loadUI().then(() => {})
+      this.$store.dispatch('category/browse', item)
+    },
   },
   updated() {
     $('li.nav-item.arrow-bottom > a > .bt-arrow').click(function(e) {

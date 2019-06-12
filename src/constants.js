@@ -46,3 +46,6 @@ export const ORDER_SOURCE_POS = 'cashier_app'
 
 export const PERCENTAGE = 'percentage'
 export const VALUE = 'value'
+
+export const LOADING_STATUS_LOADING = 'LOADING...'
+export const LOADING_STATUS_DONE = 'DONE'
