@@ -80,6 +80,7 @@ const actions = {
         .catch(error => reject(error))
 
       //fetch customer deliver areas
+      resolve()
       dispatch('fetchDeliveryArea', '')
       // get Customer Group
       customerService.customerGroupList().then(response => {

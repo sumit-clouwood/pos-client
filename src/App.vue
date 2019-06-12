@@ -21,6 +21,12 @@ The App.vue file is the root component that all other components are nested with
           <span>
             <Preloader />
             <h2 class="text-center blue-middle">Loading Data...</h2>
+            <ul class="loading-modules">
+              <li v-for="(val, key) in modules" :key="key">
+                Loading {{ key }}
+                <span> {{ val }} </span>
+              </li>
+            </ul>
           </span>
         </li>
       </ul>
@@ -75,6 +81,7 @@ export default {
       defaultLanguage: state =>
         state.location.store ? state.location.store.default_language : false,
     }),
+    ...mapState('sync', ['modules']),
   },
   //life cycle hooks
   mounted() {
@@ -86,7 +93,9 @@ export default {
       bootstrap
         .setup(this.$store)
         .then(() => {
-          this.loading = false
+          setTimeout(() => {
+            this.loading = false
+          }, 100)
           setTimeout(() => {
             require('@/../public/js/pos_script.js')
             require('@/../public/js/pos_script_functions.js')
