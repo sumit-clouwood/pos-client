@@ -1,6 +1,5 @@
 import DataService from '@/services/DataService'
-const authUrl = '/login'
-//const authUrl = process.env.VUE_APP_API_ENDPOINT + '/api/login'
+const authUrl = process.env.VUE_APP_API_ENDPOINT + '/api/login'
 const deviceCode = '100'
 const franchiseCode = '0004'
 const lastOrderNo = '1000'
@@ -24,15 +23,15 @@ export default {
         resolve({
           data: data,
         })
-      } else {
+      } else if (process.env.NODE_ENV !== 'production') {
         const data = {
           email: env.VUE_APP_API_USERNAME,
           password: env.VUE_APP_API_PASSWORD,
           device_id: deviceId,
         }
 
-        //DataService.factory()
-        DataService.post(authUrl, data)
+        DataService.factory()
+          .post(authUrl, data)
           .then(response => {
             //temporary values
             response.data.device_code = deviceCode
@@ -49,6 +48,8 @@ export default {
           .catch(response => {
             return reject(response)
           })
+      } else {
+        reject('Auth failed, Please check if token exists.')
       }
     })
   },
