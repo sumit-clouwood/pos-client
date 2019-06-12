@@ -221,6 +221,9 @@ div#nav-tabContent {
     top: 0;
     right: 0; }
 
+.margin220 .preloader {
+  margin-top: 13.75rem; }
+
 .header {
   border-bottom: 1px solid #ddd; }
   .header .header-main {

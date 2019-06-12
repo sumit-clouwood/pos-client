@@ -18,7 +18,7 @@ The App.vue file is the root component that all other components are nested with
     <div v-else-if="loading">
       <ul class="ullist-inventory-location pl-0 pt-2">
         <li class="p-3">
-          <span>
+          <span class="margin220">
             <Preloader />
             <h2 class="text-center blue-middle">Loading Data...</h2>
             <ul class="loading-modules">
@@ -28,9 +28,9 @@ The App.vue file is the root component that all other components are nested with
                   <div
                     class="progress-bar progressIncrement"
                     role="progressbar"
-                    aria-valuenow="1"
-                    aria-valuemin="0"
-                    aria-valuemax="1"
+                    aria-valuenow="50"
+                    aria-valuemin="1"
+                    aria-valuemax="100"
                     v-bind:style="{ width: progressIncrement }"
                   >
                     {{ progressIncrement }}
@@ -106,6 +106,7 @@ export default {
       bootstrap
         .setup(this.$store)
         .then(() => {
+          this.progressIncrement = '10%'
           setTimeout(() => {
             this.loading = false
             this.progressIncrement = '100%'
@@ -138,16 +139,6 @@ if ('serviceWorker' in navigator && 'SyncManager' in window) {
   })
 }
 </script>
-<!--<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  /*text-align: center;*/
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>-->
 <style lang="css">
 @import './assets/css/style.css';
 </style>
