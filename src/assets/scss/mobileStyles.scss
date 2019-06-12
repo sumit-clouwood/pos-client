@@ -9,7 +9,7 @@
     margin: 0;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: max-content;
+    grid-template-rows: max-content 1fr max-content;
 
     .navigation {
       position: absolute;
@@ -27,8 +27,9 @@
 
       &.active {
         display: block;
-        .navigation-list-wrapper{
-          .navigation-list{
+
+        .navigation-list-wrapper {
+          .navigation-list {
 
           }
         }
@@ -73,7 +74,7 @@
               padding: 0 $px19;
 
               .nav-link-text {
-                font-size: $px14;
+                font-size: $px12;
               }
 
               img {
@@ -94,6 +95,7 @@
     .header {
       grid-row-start: 1;
       grid-row-end: 2;
+
       .header-main {
         grid-template-columns: 1fr;
         padding: 0 $px20;
@@ -113,8 +115,9 @@
             background-color: $btn-bg-black;
             width: $px40;
             height: $px40;
-            a{
-              svg{
+
+            a {
+              svg {
                 width: $px20;
                 height: $px20;
               }
@@ -175,6 +178,7 @@
         padding: 0;
         border: none;
         grid-template-rows: max-content;
+        height: auto;
 
         .search-field {
           margin-top: 0;
@@ -303,6 +307,7 @@
           }
 
           .food-block {
+            height: 100%;
             grid-template-rows: 1fr;
             padding: 0;
 
@@ -311,6 +316,7 @@
             }
 
             .food-menu {
+              height: 100%;
               padding: 0;
               display: none;
 
@@ -323,14 +329,26 @@
                 height: auto;
                 padding: 0;
                 margin: 0;
-                grid-template-columns: auto 1fr;
+                grid-template-columns: auto 1fr max-content;
                 border-radius: 0;
                 border: none;
                 border-bottom: 1px solid $gray-middle;
+                padding-right: 10px;
 
                 img {
-                  width: $px50;
-                  height: $px50;
+                  width: $px60;
+                  height: $px60;
+                  margin-right: 20px;
+                }
+
+                .food-menu-item-text {
+                  text-align: left;
+                }
+
+                .food-menu-item-price {
+                  display: block;
+                  color: $green-middle;
+                  font-weight: 600;
                 }
               }
             }
@@ -343,7 +361,7 @@
         top: -100%;
         right: 0;
         bottom: 0;
-        left: -320px;
+        left: 0px;
         padding: $px20;
         height: 100%;
         background-color: #fff;
@@ -352,6 +370,8 @@
         overflow: hidden;
         transition: 0.7s ease-out;
         border-bottom: 1px solid $gray-middle;
+        grid-column-start: 1;
+        grid-column-end: 2;
 
         &.active {
           top: 0px;
@@ -415,11 +435,13 @@
           .total-wrapper {
             border-top: 1px solid $gray-middle;
             padding: $px10 0;
-            transition: 0.7s ease-out;
-            margin-bottom: -100%;
-            &.active{
+            transition: 0.5s ease-out;
+            margin-bottom: -90.5px;
+
+            &.active {
               margin-bottom: 0;
             }
+
             .item {
               .sub-total-text {
                 font-size: $px14;
@@ -452,7 +474,8 @@
                 font-weight: 600;
                 margin-left: $px10;
                 transition: 0.3s ease-out;
-                &.active{
+
+                &.active {
                   transform: rotate(180deg);
                 }
               }
@@ -464,7 +487,7 @@
     }
 
     .footer {
-      // display: none;
+      height: 75px;
       grid-template-columns: 1fr;
 
       .footer-slider {
@@ -476,7 +499,8 @@
         align-items: center;
         justify-content: space-between;
         padding: 0 $px20;
-        .footer-button-menu{
+
+        .footer-button-menu {
           display: none;
           background-color: $btn-bg-black;
           align-items: center;
@@ -485,12 +509,14 @@
           font-size: $px25;
           line-height: $px20;
           border-radius: $btn-border-radius;
-          width:  $header-btn-height;
+          width: $header-btn-height;
           height: $header-btn-height;
-          &.active{
+
+          &.active {
             display: flex;
           }
         }
+
         .button {
           padding: 0 $px20;
           display: none;
@@ -499,7 +525,8 @@
           background-color: $green-middle;
           flex-grow: 1;
           height: $header-btn-height;
-          &.active{
+
+          &.active {
             display: grid;
           }
         }
@@ -514,7 +541,8 @@
           border-radius: $btn-border-radius;
           display: none;
           flex-grow: 1;
-          &.active{
+
+          &.active {
             display: flex;
           }
 
@@ -522,6 +550,36 @@
             margin-right: $px10;
           }
         }
+      }
+    }
+  }
+}
+
+
+.modal,#pay-now {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  .modal-dialog {
+    min-height: 100vh;
+
+    .modal-content {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      border: none;
+      border-radius: 0;
+
+      .modal-body {
+        padding: 0;
+      }
+
+      .modal-footer {
+
       }
     }
   }

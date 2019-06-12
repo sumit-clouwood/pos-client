@@ -13,6 +13,7 @@
         @error="imageLoadError()"
       />
       <div class="food-menu-item-text">{{ dt(item) }}</div>
+      <div class="food-menu-item-price">AED 12.81</div>
     </div>
     <Popup />
   </div>
