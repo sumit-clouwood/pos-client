@@ -42,7 +42,7 @@ export default {
     // eslint-disable-next-line no-console
     console.log(stores)
     return DataService.get(
-      `/model/brand_customers?page_id=main_crm_list&query=${query}&limit=${perPage}&ascending=0&page=${page}&byColumn=0&store_id=&ascending=0&byColumn=0&orderBy=${orderBy}`,
+      `/model/brand_customers?page_id=brand_customers_main_tbl&query=${query}&limit=${perPage}&ascending=0&page=${page}&byColumn=0&store_id=&ascending=0&byColumn=0&orderBy=${orderBy}`,
       'brand'
     )
   },
