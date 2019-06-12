@@ -30,13 +30,15 @@
 </template>
 
 <script>
-/* global $ */
+/* global $ showModal */
 import { mapGetters, mapState } from 'vuex'
+import * as CONST from '@/constants'
+
 export default {
   name: 'PayNowFooter',
   computed: {
     ...mapState('checkout', ['changedAmount']),
-    ...mapState('checkoutForm', ['msg', 'error']),
+    ...mapState('checkoutForm', ['msg', 'error', 'method']),
     ...mapGetters('checkoutForm', ['validate']),
     ...mapGetters('location', ['_t']),
   },
@@ -49,31 +51,60 @@ export default {
     })
   },
   methods: {
+    addAmount() {
+      return new Promise((resolve, reject) => {
+        if (this.$store.getters['checkoutForm/validate']) {
+          return resolve()
+        }
+
+        this.$store
+          .dispatch('checkoutForm/validatePayment')
+          .then(() => {
+            if (this.method.type == CONST.GIFT_CARD) {
+              showModal('#Gift-card-payemnt')
+              reject()
+            } else if (this.method.type == CONST.LOYALTY) {
+              //show loyalty popup if needed
+              reject()
+            } else if (this.method.reference_code) {
+              showModal('#card-payemnt')
+              reject()
+            } else {
+              //cash payments
+              this.$store.dispatch('checkoutForm/addAmount').then(() => {
+                resolve()
+              })
+            }
+          })
+          .catch(() => reject())
+      })
+    },
     pay() {
-      if (this.validate) {
+      this.$store.commit('checkoutForm/setAction', 'pay')
+      this.addAmount().then(() => {
         $('#payment-screen-footer').prop('disabled', true)
         $('#payment-msg').modal('show')
-      }
 
-      this.$store
-        .dispatch('checkout/pay')
-        .then(() => {
-          if (this.changedAmount >= 0.1) {
-            $('#payment-msg').modal('hide')
-            $('#change-amount').modal('show')
-          } else if (this.msg) {
-            $('#payment-msg').modal('show')
-          }
-          setTimeout(function() {
-            $('#payment-screen-footer').prop('disabled', false)
-          }, 1000)
-        })
-        .catch(() => {
-          setTimeout(() => {
-            $('#payment-msg').modal('hide')
-            $('#payment-screen-footer').prop('disabled', false)
-          }, 500)
-        })
+        this.$store
+          .dispatch('checkout/pay')
+          .then(() => {
+            if (this.changedAmount >= 0.1) {
+              $('#payment-msg').modal('hide')
+              $('#change-amount').modal('show')
+            } else if (this.msg) {
+              $('#payment-msg').modal('show')
+            }
+            setTimeout(function() {
+              $('#payment-screen-footer').prop('disabled', false)
+            }, 1000)
+          })
+          .catch(() => {
+            setTimeout(() => {
+              $('#payment-msg').modal('hide')
+              $('#payment-screen-footer').prop('disabled', false)
+            }, 500)
+          })
+      })
     },
   },
 }

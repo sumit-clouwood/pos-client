@@ -24,11 +24,12 @@
 <script>
 /* global showModal*/
 import * as CONST from '@/constants'
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'AmountCalculator',
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('checkoutForm', ['method']),
   },
   data() {
     return {
@@ -37,29 +38,19 @@ export default {
   },
   methods: {
     addAmount() {
-      if (this.$store.state.checkoutForm.method.type == CONST.GIFT_CARD) {
-        this.$store
-          .dispatch('checkoutForm/validateGiftPayment')
-          .then(() => {
-            showModal('#Gift-card-payemnt')
-          })
-          .catch()
-      } else if (this.$store.state.checkoutForm.method.type == CONST.LOYALTY) {
-        //do check here
-      } else {
-        if (this.$store.state.checkoutForm.method.reference_code) {
-          //display reference popup
-          this.$store
-            .dispatch('checkoutForm/validateCardPayment')
-            .then(() => {
-              showModal('#card-payemnt')
-            })
-            .catch()
+      this.$store.commit('checkoutForm/setAction', 'add')
+      this.$store.dispatch('checkoutForm/validatePayment').then(() => {
+        if (this.method.type == CONST.GIFT_CARD) {
+          showModal('#Gift-card-payemnt')
+        } else if (this.method.type == CONST.LOYALTY) {
+          //show loyalty popup if needed
+        } else if (this.method.reference_code) {
+          showModal('#card-payemnt')
         } else {
-          //its cash type
-          this.$store.dispatch('checkoutForm/addAmount').then(() => {})
+          //cash payments
+          this.$store.dispatch('checkoutForm/addAmount')
         }
-      }
+      })
     },
     set(amount) {
       if (!this.init) {
