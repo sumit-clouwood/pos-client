@@ -49,7 +49,7 @@
         data-target="#delivery-assistant"
       >
         <span
-          ><img src="/img/other/delivery-assistant.png" alt="delivery"
+          ><img src="/pos/img/other/delivery-assistant.png" alt="delivery"
         /></span>
         Delivery Assistant
       </button>

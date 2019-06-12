@@ -173,10 +173,10 @@ if (workbox) {
 
     const options = {
       body: data.body,
-      icon: '/img/icons/android-chrome-192x192.png',
-      image: '/img/autumn-forest.png',
+      icon: '/pos/img/icons/android-chrome-192x192.png',
+      image: '/pos/img/autumn-forest.png',
       vibrate: [300, 200, 300],
-      badge: '/img/icons/plint-badge-96x96.png',
+      badge: '/pos/img/icons/plint-badge-96x96.png',
     }
 
     e.waitUntil(self.registration.showNotification(data.title, options))

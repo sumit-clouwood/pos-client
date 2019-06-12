@@ -2,7 +2,7 @@
   <div class="navigation">
     <div class="logo" title="logo">
       <a class="logo-link" href="#">
-        <img src="/img/icons/icon.png" alt="icon" />
+        <img src="/pos/img/icons/icon.png" alt="icon" />
       </a>
     </div>
     <div class="navigation-list-wrapper">
@@ -70,7 +70,7 @@ export default {
           ? process.env.VUE_APP_API_ENDPOINT +
             '/profile_pic/' +
             state.auth.userDetails.image
-          : '/img/pos/profile-pic.png',
+          : '/pos/img/pos/profile-pic.png',
     }),
     ...mapGetters('category', ['categories', 'getImages']),
     // ...mapGetters('modifier', {

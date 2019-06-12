@@ -25,7 +25,7 @@
             {{ convertDatetime(insight.last_order_datetime) }}
           </p>
           <ul class="fav-item-slider">
-            <!--<li><img src="/img/pos/dine-right.png" alt="fav-item" /></li>-->
+            <!--<li><img src="/pos/img/pos/dine-right.png" alt="fav-item" /></li>-->
             <li v-for="(item, index) in items" :key="index">
               {{ item.name }}
             </li>
