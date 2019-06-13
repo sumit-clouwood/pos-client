@@ -28,7 +28,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       let validPayment = false
 
-      if (rootState.order.orderType === 'delivery') {
+      if (rootState.order.orderType.OTApi === 'call_center') {
         validPayment = true
       } else {
         const paid = rootGetters['checkoutForm/paid']
@@ -71,7 +71,7 @@ const actions = {
               ? state.onHold
               : CONSTANTS.ORDER_STATUS_IN_PROGRESS,
             order_source: CONSTANTS.ORDER_SOURCE_POS,
-            order_type: rootState.order.orderType,
+            order_type: rootState.order.orderType.OTApi,
             order_mode: 'online',
             real_created_datetime: newDate.getDate() + ' ' + newDate.getTime(),
             // order_mode: 'online',
@@ -101,7 +101,7 @@ const actions = {
           console.log(e)
         }
 
-        if (rootState.order.orderType == 'delivery') {
+        if (rootState.order.orderType.OTApi == 'call_center') {
           order.customer = rootState.customer.customerId
           order.address_id = rootState.customer.address
             ? rootState.customer.address.id

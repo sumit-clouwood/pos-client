@@ -176,7 +176,8 @@ const actions = {
 
   selectedAddress({ commit, dispatch }, area) {
     commit(mutation.SELECTED_CUSTOMER_ADDRESS, area)
-    dispatch('order/updateOrderType', 'delivery', { root: true })
+    let orderType = { OTview: 'Delivery', OTApi: 'call_center' }
+    dispatch('order/updateOrderType', orderType, { root: true })
   },
 
   createAction({ commit, dispatch }, actionDetails) {

@@ -92,7 +92,7 @@
           <a
             class="footer-slider-list-item-link"
             href="#"
-            @click="setOrderType('delivery')"
+            @click="setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })"
           >
             <!--<img src="images/footer-images/d_2.png" alt="customer">-->
             <svg
@@ -202,7 +202,7 @@
       <div class="button">
         <ul class="template-btn">
           <li
-            v-show="orderType === 'delivery'"
+            v-show="orderType.OTApi === 'call_center'"
             class="footer-slider-list-item"
             data-toggle="modal"
             :data-target="selectedModal"
@@ -211,7 +211,9 @@
             <a
               class="footer-slider-list-item-link"
               href="#"
-              @click="setOrderType('delivery')"
+              @click="
+                setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
+              "
             >
               <!--<img src="images/footer-images/d_2.png" alt="customer">-->
               <svg
@@ -220,6 +222,7 @@
                 data-prefix="fas"
                 data-icon="suitcase"
                 role="img"
+                width="1.875rem"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
                 class="svg-inline--fa fa-suitcase fa-w-16 fa-2x"
@@ -233,7 +236,7 @@
               <span>{{ _t('Send to Delivery') }}</span>
             </a>
           </li>
-          <li class="pay-now" v-show="orderType !== 'delivery'">
+          <li class="pay-now" v-show="orderType.OTApi !== 'call_center'">
             <a href="#">
               <img src="/pos/img/pos/payment.svg" :alt="_t('Pay Now')" />
               <span class="pay-btn">{{ _t('Pay Now') }}</span>

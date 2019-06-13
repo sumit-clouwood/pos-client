@@ -1,4 +1,3 @@
-@import "pixels_rem.scss";
 @import "variables.scss";
 .loyaltyApplied {
   background-color: $orange-dark !important;
@@ -139,6 +138,17 @@
           display: flex;
           align-items: center;
           justify-content: center;
+          span {
+            color: #fff;
+            padding-left: $px10;
+            font-size: $px20;
+            display: inline-block;
+            vertical-align: middle;
+          }
+          svg {
+              display:inline-block;
+              vertical-align:middle;
+          }
         }
       }
 
@@ -157,7 +167,7 @@
 
             img {
               width: $px30;
-              margin-right: $px10;
+              /*margin-right: $px10;*/
             }
 
             .pay-btn {

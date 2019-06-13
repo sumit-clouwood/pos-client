@@ -31,7 +31,7 @@
                 role="status"
                 aria-hidden="true"
                 ><i class="fa fa-circle-o-notch fa-spin" id="searchLoader"></i>
-                {{ _t('Find') }}</span
+                {{ _t('Search') }}</span
               >
             </button>
           </div>
@@ -176,7 +176,8 @@ export default {
   display: block;
 }
 .inputSearch{
-  width: 85%;
+  width: 83%;
+  padding-bottom: 13px;
   height: 48px;
   border-radius: 5px 0px 0px 5px;
 }
