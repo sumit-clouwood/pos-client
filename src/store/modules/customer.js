@@ -301,7 +301,7 @@ const mutations = {
       state.responseInformation.message = customerCreateResponse.error
     } else {
       state.responseInformation.status = customerCreateResponse.status
-      state.responseInformation.message = customerCreateResponse.data
+      state.responseInformation.message = customerCreateResponse
     }
   },
   [mutation.SELECTED_CUSTOMER](state, customerDetails) {
