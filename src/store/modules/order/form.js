@@ -72,6 +72,7 @@ const mutations = {
   clearSelection(state) {
     state.checkboxes = []
     state.radios = {}
+    state.quantity = 1
   },
   updateQuantity(state, quantity) {
     state.quantity = quantity

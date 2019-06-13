@@ -51,7 +51,6 @@
     <button
       type="button"
       class="buttoned colorwhite donebutton"
-      data-dismiss="modal"
       @click="addModifierOrder"
     >
       <img src="img/pos/done.png" alt="done" />
