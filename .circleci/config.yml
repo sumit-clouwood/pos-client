@@ -20,12 +20,19 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               echo "export ENVIRONMENT=production" >> $BASH_ENV
               echo "export EBENVIRONMENT=prod" >> $BASH_ENV
+              echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_PROD" >> $BASH_ENV
+              echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_PROD" >> $BASH_ENV
+
             elif [ "${CIRCLE_BRANCH}" == "integration" ]; then
-              echo "export ENVIRONMENT=integration" >> $BASH_ENV
-              echo "export EBENVIRONMENT=int" >> $BASH_ENV
+              echo "export ENVIRONMENT=production" >> $BASH_ENV
+              echo "export EBENVIRONMENT=prod" >> $BASH_ENV
+              echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_PROD" >> $BASH_ENV
+              echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_PROD" >> $BASH_ENV
             elif [ "${CIRCLE_BRANCH}" == "circleci" ]; then
-              echo "export ENVIRONMENT=integration" >> $BASH_ENV
-              echo "export EBENVIRONMENT=int" >> $BASH_ENV
+              echo "export ENVIRONMENT=production" >> $BASH_ENV
+              echo "export EBENVIRONMENT=prod" >> $BASH_ENV
+              echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_PROD" >> $BASH_ENV
+              echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_PROD" >> $BASH_ENV
             fi
 
 
