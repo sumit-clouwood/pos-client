@@ -254,8 +254,10 @@ export default {
         this.errors.count = 1
       }*/
       if (this.errors.count === 0) {
-        let birthday = this.newCustomerDetails.birthday.split('T')
-        this.newCustomerDetails.birthday = birthday[0]
+        if (typeof this.newCustomerDetails.birthday != 'undefined') {
+          let birthday = this.newCustomerDetails.birthday.split('T')
+          this.newCustomerDetails.birthday = birthday[0]
+        }
       }
 
       return this.errors
