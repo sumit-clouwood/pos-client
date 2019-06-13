@@ -1,44 +1,46 @@
 <template>
   <!-- Add customer model -->
-  <div class="modal fade" id="customer" role="dialog">
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header customer-header">
-          <h4 class="customer-title">
-            {{ customer_title }} {{ _t('customer') }}
-          </h4>
-          <button type="button" class="close" data-dismiss="modal">
-            &times;
-          </button>
-        </div>
-        <CustomerForm ref="form" />
-        <div class="modal-footer">
-          <div class="btn-announce">
-            <button
-              type="button"
-              class="btn btn-danger cancel-announce"
-              data-dismiss="modal"
-              id="close-customer"
-            >
-              {{ _t('Cancel') }}
-            </button>
-            <button
-              class="btn btn-success btn-large"
-              type="button"
-              id="post_announcement"
-              v-on:click="customerAction(customer_title)"
-            >
-              {{ _t('Save') }}
+  <div>
+    <div class="modal fade" id="customer" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header customer-header">
+            <h4 class="customer-title">
+              {{ customer_title }} {{ _t('customer') }}
+            </h4>
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
             </button>
           </div>
-          <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+          <CustomerForm ref="form" />
+          <div class="modal-footer">
+            <div class="btn-announce">
+              <button
+                type="button"
+                class="btn btn-danger cancel-announce"
+                data-dismiss="modal"
+                id="close-customer"
+              >
+                {{ _t('Cancel') }}
+              </button>
+              <button
+                class="btn btn-success btn-large"
+                type="button"
+                id="post_announcement"
+                v-on:click="customerAction(customer_title)"
+              >
+                {{ _t('Save') }}
+              </button>
+            </div>
+            <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+          </div>
         </div>
       </div>
     </div>
     <InformationPopup
-      :responseInformation="customerCreateStatus"
-      :title="customerCreateStatus.message"
+      :responseInformation="customerCreateStatus.message.flash_message"
+      :title="customerCreateStatus.message.flash_message"
     />
   </div>
   <!-- End customer Model -->
@@ -68,6 +70,7 @@ export default {
     customerAction(modalStatus) {
       const errors = this.$refs.form.validate()
       if (errors.count === 0) {
+        $('#post_announcement').attr('disabled', true) //Disable Save button if pressed
         const customerData = this.$refs.form.getData()
         if (modalStatus == 'Add') {
           this.createAction({
@@ -89,13 +92,8 @@ export default {
           this.customerCreateStatus &&
           this.customerCreateStatus.status === 'ok'
         ) {
-          $('#customer')
-            .find('input:text')
-            .val('')
-          // $('#close-customer').click()
-          // $('#customer').modal('toggle')
-        } else {
-          // $('#information-popup').modal('toggle')
+          $('#close-customer').click()
+          $('#customer').modal('toggle')
         }
         setTimeout(function() {
           $('#information-popup').modal('toggle')

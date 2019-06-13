@@ -146,6 +146,14 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import { Datetime } from 'vue-datetime'
+
+function getWithoutSpaceLength(data) {
+  if ($.trim(data).length == 0) {
+    return false
+  }
+  return true
+}
+
 /* global $ */
 export default {
   name: 'CustomerForm',
@@ -205,7 +213,10 @@ export default {
         this.errors.delivery_area_id = this._t('Delivery area required')
         this.errors.count = 1
       }
-      if (!this.newCustomerDetails.building) {
+      if (
+        !this.newCustomerDetails.building ||
+        !getWithoutSpaceLength(this.newCustomerDetails.building)
+      ) {
         this.errors.building = this._t('Building/Villa required')
         this.errors.count = 1
       }
@@ -218,17 +229,26 @@ export default {
         )
         this.errors.count = 1
       }
-      if (!this.newCustomerDetails.flat_number) {
+      if (
+        !this.newCustomerDetails.flat_number ||
+        !getWithoutSpaceLength(this.newCustomerDetails.flat_number)
+      ) {
         this.errors.flat_number =
           this._t('Flat Number') + ' ' + this._t('is required')
         this.errors.count = 1
       }
-      if (!this.newCustomerDetails.nearest_landmark) {
+      if (
+        !this.newCustomerDetails.nearest_landmark ||
+        !getWithoutSpaceLength(this.newCustomerDetails.nearest_landmark)
+      ) {
         this.errors.nearest_landmark =
           this._t('Landmark') + ' ' + this._t('is required')
         this.errors.count = 1
       }
-      if (!this.newCustomerDetails.street) {
+      if (
+        !this.newCustomerDetails.street ||
+        !getWithoutSpaceLength(this.newCustomerDetails.street)
+      ) {
         this.errors.street = this._t('Street') + ' ' + this._t('is required')
         this.errors.count = 1
       }
@@ -240,7 +260,10 @@ export default {
         this.errors.count = 1
       }
 
-      if (!this.newCustomerDetails.name) {
+      if (
+        !this.newCustomerDetails.name ||
+        !getWithoutSpaceLength(this.newCustomerDetails.name)
+      ) {
         this.errors.name = this._t('Name') + ' ' + this._t('is required')
         this.errors.count = 1
       }
@@ -252,11 +275,17 @@ export default {
           this._t('Valid email') + ' ' + this._t('is required.')
         this.errors.count = 1
       }
-      if (!this.newCustomerDetails.email) {
+      if (
+        !this.newCustomerDetails.email ||
+        !getWithoutSpaceLength(this.newCustomerDetails.email)
+      ) {
         this.errors.email = this._t('Email') + ' ' + this._t('is required.')
         this.errors.count = 1
       }
-      if (!this.newCustomerDetails.phone_number) {
+      if (
+        !this.newCustomerDetails.phone_number ||
+        !getWithoutSpaceLength(this.newCustomerDetails.phone_number)
+      ) {
         this.errors.phone_number =
           this._t('Mobile number') + ' ' + this._t('is required')
         this.errors.count = 1
