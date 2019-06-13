@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import bootstrap from '@/bootstrap'
 export default {
   name: 'TopNavRight',
@@ -116,7 +116,7 @@ export default {
         this.onlineOrdersCount = this.latestOnlineOrders
       }
     },
-    ...mapActions('customer', ['fetchCustomerAddress']),
+    /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },
   mounted() {
     this.onlineOrders()

@@ -14,10 +14,11 @@
       <p>
         <span>{{ _t('Store:') }} {{ storeName }}</span
         ><br />
-        <span
-          >{{ _t('Area:') }}
-          {{ getDeliveryArea(address.delivery_area_id) }}</span
-        ><br />
+        <span>
+          {{ _t('Area:') }}
+          {{ getDeliveryArea(address.delivery_area_id) }}
+        </span>
+        <br />
         {{ address.flat_number }}, {{ address.building }}, {{ address.street }},
         {{ address.city }}
       </p>
