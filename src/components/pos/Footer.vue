@@ -238,7 +238,7 @@
           </li>
           <li class="pay-now" v-show="orderType.OTApi !== 'call_center'">
             <a href="javascript:void()">
-              <img src="/pos/img/pos/payment.svg" :alt="_t('Pay Now')" />
+              <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
               <span class="pay-btn">{{ _t('Pay Now') }}</span>
             </a>
           </li>
