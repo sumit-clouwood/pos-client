@@ -38,7 +38,7 @@ const getters = {
   },
   selectedAddress: state => {
     if (state.address) {
-      const addressId = state.address.id
+      const addressId = state.address.delivery_area_id
       return state.customer.customer_addresses.find(
         address => address._id.$oid == addressId
       )
@@ -174,8 +174,8 @@ const actions = {
     })
   },
 
-  selectedAddress({ commit, dispatch }, area) {
-    commit(mutation.SELECTED_CUSTOMER_ADDRESS, area)
+  selectedAddress({ commit, dispatch }, address) {
+    commit(mutation.SELECTED_CUSTOMER_ADDRESS, address)
     let orderType = { OTview: 'Delivery', OTApi: 'call_center' }
     dispatch('order/updateOrderType', orderType, { root: true })
   },

@@ -43,7 +43,7 @@ export default {
     convertDatetime(datetime, fmt_out = 'Do MMM YYYY,  hh:mm:ss A') {
       moment.locale('en-US')
       var value =
-        typeof datetime != 'undefined' && datetime.$date != 'undefined'
+        typeof datetime != 'undefined' && datetime.$date != null
           ? parseInt(datetime.$date.$numberLong)
           : false
       var result = ''

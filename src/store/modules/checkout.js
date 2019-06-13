@@ -100,14 +100,21 @@ const actions = {
         } catch (e) {
           console.log(e)
         }
-
         if (rootState.order.orderType.OTApi == 'call_center') {
           order.customer = rootState.customer.customerId
-          order.address_id = rootState.customer.address
+          /*order.address_id = rootState.customer.address
             ? rootState.customer.address.id
-            : null
-
-          order.order_status = state.onHold ? state.onHold : 'running'
+            : null*/
+          const address = rootState.customer.address
+          order.order_building = address.building
+          order.order_street = address.street
+          order.order_flat_number = address.flat_number
+          order.order_nearest_landmark = address.nearest_landmark
+          order.order_city = address.city
+          order.order_country = address.country
+          order.order_delivery_area = address.delivery_area_id
+          // check in future
+          order.order_status = state.onHold ? state.onHold : 'in-progress'
           // order.status = 'on-hold'
         }
 
