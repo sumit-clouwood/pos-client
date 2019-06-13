@@ -70,7 +70,7 @@ export default {
           ? process.env.VUE_APP_API_ENDPOINT +
             '/profile_pic/' +
             state.auth.userDetails.image
-          : '/pos/img/pos/profile-pic.png',
+          : 'img/pos/profile-pic.png',
     }),
     ...mapGetters('category', ['categories', 'getImages']),
     // ...mapGetters('modifier', {

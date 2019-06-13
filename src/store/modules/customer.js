@@ -66,7 +66,7 @@ const actions = {
         .customerList(...params)
         .then(response => {
           if (response.data.data.length) {
-            let totalPages = parseInt(
+            let totalPages = Math.ceil(
               parseInt(response.data.count) / parseInt(state.params.page_size)
             )
             commit(mutation.CUSTOMER_LIST, response.data.data)
@@ -148,7 +148,7 @@ const actions = {
       customerService
         .fetchCustomer(customerId)
         .then(response => {
-          let totalPages = parseInt(
+          let totalPages = Math.ceil(
             parseInt(response.data.item.total_orders) /
               parseInt(state.params.page_size)
           )
