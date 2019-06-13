@@ -24,19 +24,20 @@ const getters = {}
 
 // actions
 const actions = {
-  pay({ commit, rootGetters, rootState, dispatch, state }) {
+  pay({ commit, rootGetters, rootState, dispatch, state }, { action }) {
     return new Promise((resolve, reject) => {
       let validPayment = false
+      const totalPayable = rootGetters['checkoutForm/orderTotal']
+      commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
 
       if (
-        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER
+        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
+        action === CONSTANTS.ORDER_STATUS_ON_HOLD
       ) {
         validPayment = true
       } else {
         const paid = rootGetters['checkoutForm/paid']
         commit(mutation.SET_PAID_AMOUNT, paid)
-        const totalPayable = rootGetters['checkoutForm/orderTotal']
-        commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
 
         let pendingAmount = totalPayable - paid
         pendingAmount = parseFloat(pendingAmount).toFixed(2)
@@ -320,6 +321,19 @@ const actions = {
           return paymentPart
         })
 
+        //for hold orders: Tofeeq
+        if (!order.order_payments.length) {
+          const paymentMethod = rootGetters['payment/cash']
+          order.order_payments.push({
+            entity_id: paymentMethod._id,
+            name: paymentMethod.name,
+            collected: totalPayable,
+            param1: null,
+            param2: totalPayable,
+            param3: null,
+          })
+        }
+
         //order.app_uniqueid = Crypt.uuid()
 
         console.log('not in delivery or take away ')
@@ -341,7 +355,6 @@ const actions = {
     commit('checkoutForm/SET_MSG', 'loading', {
       root: true,
     })
-
     return new Promise((resolve, reject) => {
       console.log(state.order)
       OrderService.saveOrder(state.order, rootState.customer.offlineData)

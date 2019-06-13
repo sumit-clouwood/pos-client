@@ -10,6 +10,7 @@ const state = {
 // getters
 const getters = {
   methods: state => (state.methods.data ? state.methods.data : []),
+  cash: state => state.methods.data.find(method => method.type == 'regular'),
 }
 
 // actions
