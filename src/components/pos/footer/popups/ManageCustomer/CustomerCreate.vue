@@ -45,7 +45,7 @@
 </template>
 
 <script>
-/* global $ */
+/*global $ */
 import { mapActions, mapState, mapGetters } from 'vuex'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 import CustomerForm from './CustomerForm'
@@ -87,14 +87,20 @@ export default {
         }
         if (
           this.customerCreateStatus &&
-          this.customerCreateStatus.status == 'ok'
+          this.customerCreateStatus.status === 'ok'
         ) {
-          $('#customer').modal('toggle')
-          // $('#information-popup').modal('toggle')
-          $('#close-customer').click()
+          $('#customer')
+            .find('input:text')
+            .val('')
+          // $('#close-customer').click()
+          // $('#customer').modal('toggle')
         } else {
           // $('#information-popup').modal('toggle')
         }
+        setTimeout(function() {
+          $('#information-popup').modal('toggle')
+          $('#information-popup').modal('show')
+        }, 300)
       }
     },
   },
