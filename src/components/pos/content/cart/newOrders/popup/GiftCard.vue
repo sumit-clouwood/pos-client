@@ -52,7 +52,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-/* global showModal, hideModal */
+/* global $ showModal, hideModal */
 export default {
   name: 'GiftCard',
   data: function() {
@@ -74,6 +74,24 @@ export default {
         .then(() => {
           this.error = false
           this.$store.commit('checkoutForm/showPayBreak', true)
+          if (this.$store.state.checkoutForm.action == 'pay') {
+            if (this.$store.getters['checkoutForm/validate']) {
+              this.$store
+                .dispatch('checkout/pay')
+                .then(() => {
+                  $('#payment-msg').modal('show')
+                  setTimeout(function() {
+                    $('#payment-screen-footer').prop('disabled', false)
+                  }, 1000)
+                })
+                .catch(() => {
+                  setTimeout(() => {
+                    $('#payment-msg').modal('hide')
+                    $('#payment-screen-footer').prop('disabled', false)
+                  }, 500)
+                })
+            }
+          }
           hideModal('#Gift-card-payemnt')
           showModal('#gift-card-info')
         })

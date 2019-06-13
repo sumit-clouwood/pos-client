@@ -43,7 +43,7 @@
                 class="input-image"
               />
             </div>
-            <AmountCalculator v-show="showCalc" />
+            <AmountCalculator v-show="showCalc" ref="calculator" />
             <PaymentBreakdown v-show="showPayBreak" />
             <PayNowFooter />
           </div>
