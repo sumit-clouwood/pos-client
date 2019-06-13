@@ -30,7 +30,7 @@ const actions = {
       let totalSurcharges = []
       if (subtotal && state.surcharges.length) {
         state.surcharges.forEach(surcharge => {
-          if (surcharge[rootState.order.orderType]) {
+          if (surcharge[rootState.order.orderType.OTApi]) {
             let applidSurcharge = {
               id: surcharge._id,
               amount: surcharge.value,

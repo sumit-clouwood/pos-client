@@ -12,15 +12,20 @@
           <div class="dining-option-block">
             <div
               class="option-contain"
-              :class="{ active: selectedOrderType === 'dinein' }"
-              @click="setOrderType('dinein')"
+              :class="{ active: selectedOrderType.OTApi === 'dine_in' }"
+              @click="setOrderType({ OTview: 'Dine InOT', OTApi: 'dine_in' })"
             >
               <img src="img/pos/dine-in.svg" /><span>{{ _t('Dine In') }}</span>
             </div>
             <div
               class="option-contain"
-              :class="{ active: selectedOrderType === 'takeaway' }"
-              @click="setOrderType('takeaway')"
+              :class="{ active: selectedOrderType.OTApi === 'takeaway' }"
+              @click="
+                setOrderType({
+                  OTview: 'Take Away',
+                  OTApi: 'takeaway',
+                })
+              "
             >
               <img src="img/pos/take-away.svg" /><span>
                 {{ _t(' Take Away') }}
@@ -28,8 +33,10 @@
             </div>
             <div
               class="option-contain"
-              :class="{ active: selectedOrderType === 'delivery' }"
-              @click="setOrderType('delivery')"
+              :class="{ active: selectedOrderType.OTApi === 'call_center' }"
+              @click="
+                setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
+              "
             >
               <img src="img/pos/delivery-icon.svg" /><span>
                 {{ _t('Delivery') }}
@@ -37,8 +44,8 @@
             </div>
             <div
               class="option-contain"
-              :class="{ active: selectedOrderType === 'event' }"
-              @click="setOrderType('event')"
+              :class="{ active: selectedOrderType.OTApi === 'event' }"
+              @click="setOrderType({ OTview: 'Event', OTApi: 'event' })"
             >
               <img src="img/pos/event.svg" /><span>{{ _t('Event') }}</span>
             </div>
@@ -86,12 +93,12 @@ export default {
   },
 
   methods: {
-    setOrderType(opt) {
-      if (this.selectedOrderType === opt) {
+    setOrderType(orderType) {
+      if (this.selectedOrderType === orderType.OTApi) {
         //toggle
-        this.selectedOrderType = 'Walk-in'
+        this.selectedOrderType = { OTview: 'Walk In', OTApi: 'walk_in' }
       } else {
-        this.selectedOrderType = opt
+        this.selectedOrderType = orderType
       }
     },
     updateOrderType() {

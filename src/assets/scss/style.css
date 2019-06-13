@@ -3484,6 +3484,15 @@ body {
           display: flex;
           align-items: center;
           justify-content: center; }
+          .footer .footer-buttons .button ul li span {
+            color: #fff;
+            padding-left: 0.625rem;
+            font-size: 1.25rem;
+            display: inline-block;
+            vertical-align: middle; }
+          .footer .footer-buttons .button ul li svg {
+            display: inline-block;
+            vertical-align: middle; }
       .footer .footer-buttons .button:hover {
         background-color: #5056CA; }
       .footer .footer-buttons .button .template-btn .pay-now a {
@@ -3494,7 +3503,7 @@ body {
         color: #fff; }
         .footer .footer-buttons .button .template-btn .pay-now a img {
           width: 1.875rem;
-          margin-right: 0.625rem; }
+          /*margin-right: $px10;*/ }
         .footer .footer-buttons .button .template-btn .pay-now a .pay-btn {
           font-size: 1.125rem;
           display: flex;

@@ -56,7 +56,7 @@ const getters = {
 
   itemDiscounts: (state, getters, rootState) => {
     return state.itemDiscounts.data.filter(
-      discount => discount[rootState.order.orderType]
+      discount => discount[rootState.order.orderType.OTApi]
     )
   },
 

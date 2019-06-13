@@ -82,7 +82,7 @@
                         orderStatus: 'cancel',
                         orderId: order._id,
                         timestamp: order.created_timestamp,
-                        orderType: 'delivery',
+                        orderType: 'call_center',
                         orderQueue: 0,
                       })
                     "
@@ -96,7 +96,7 @@
                         orderStatus: 'running',
                         orderId: order._id,
                         timestamp: order.created_timestamp,
-                        orderType: 'delivery',
+                        orderType: 'call_center',
                         orderQueue: 0,
                       })
                     "
