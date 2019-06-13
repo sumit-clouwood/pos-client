@@ -92,7 +92,7 @@ jobs:
           command: |
             # COPY SETTINGS FROM S3.
             # For PROD and INT we rename the file to prod.env.js
-            aws s3 cp s3://dm-config-$EBENVIRONMENT/dm-web-$EBENVIRONMENT/env.$ENVIRONMENT .env
+            aws s3 cp s3://dm-config-$EBENVIRONMENT/dm-pos-$EBENVIRONMENT/env.$ENVIRONMENT .env
 
       - run:
           name: "BUILD APPLICATON"
