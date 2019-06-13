@@ -111,6 +111,7 @@ export default {
             this.loading = false
             this.progressIncrement = '100%'
           }, 100)
+          // this.progressIncrement = '100%'
           setTimeout(() => {
             require('@/../public/js/pos_script.js')
             require('@/../public/js/pos_script_functions.js')
