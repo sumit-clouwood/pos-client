@@ -1,7 +1,7 @@
 <template>
   <div class="navigation">
     <div class="logo" title="logo">
-      <a class="logo-link" href="#">
+      <a class="logo-link" href="javascript:void(0)">
         <img src="img/icons/icon.png" alt="icon" />
       </a>
     </div>

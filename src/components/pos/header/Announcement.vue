@@ -1,7 +1,7 @@
 <template>
   <div class="main-news">
     <div class="main-news-title">
-      <a class="main-news-title-link" href="#">
+      <a class="main-news-title-link" href="javascript:void(0)">
         <img src="img/pos/news.png" :alt="_t('News')" />
         <span>
           {{ _t('News') }}

@@ -7,7 +7,7 @@
           data-toggle="modal"
           data-target="#manage-customer"
         >
-          <a class="footer-slider-list-item-link" href="#">
+          <a class="footer-slider-list-item-link" href="javascript:void(0)">
             <!--<img src="images/footer-images/user.svg" alt="customer">-->
             <svg
               aria-hidden="true"
@@ -33,7 +33,7 @@
           class="footer-slider-list-item footer-slider-list-item-open-orders"
           id="hold-order-box"
         >
-          <a class="footer-slider-list-item-link" href="#">
+          <a class="footer-slider-list-item-link" href="javascript:void(0)">
             <!--<img class="hold-ordes" src="images/hold-order.png" alt="customer">-->
             <svg
               aria-hidden="true"
@@ -60,7 +60,7 @@
           class="footer-slider-list-item "
           :class="{ loyaltyApplied: loyaltyCard }"
         >
-          <a href="#" class="footer-slider-list-item-link">
+          <a href="javascript:void(0)" class="footer-slider-list-item-link">
             <img
               src="img/pos/loyalty.svg"
               :alt="_t('Loyalty')"
@@ -91,7 +91,7 @@
         >
           <a
             class="footer-slider-list-item-link"
-            href="#"
+            href="javascript:void(0)"
             @click="setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })"
           >
             <!--<img src="images/footer-images/d_2.png" alt="customer">-->
@@ -122,7 +122,7 @@
         >
           <a
             class="footer-slider-list-item-link"
-            href="#"
+            href="javascript:void(0)"
             @click.prevent="validateOrderDiscounts()"
           >
             <svg
@@ -149,7 +149,7 @@
           data-toggle="modal"
           data-target="#dining-option"
         >
-          <a class="footer-slider-list-item-link" href="#">
+          <a class="footer-slider-list-item-link" href="javascript:void(0)">
             <!--<img src="images/footer-images/group_9.png" alt="customer">-->
             <svg
               aria-hidden="true"
@@ -175,7 +175,7 @@
           data-toggle="modal"
           data-target="#add-note"
         >
-          <a class="footer-slider-list-item-link" href="#">
+          <a class="footer-slider-list-item-link" href="javascript:void(0)">
             <!--<img src="images/footer-images/a.png" alt="customer">-->
             <svg
               aria-hidden="true"
@@ -210,7 +210,7 @@
           >
             <a
               class="footer-slider-list-item-link"
-              href="#"
+              href="javascript:void(0)"
               @click="
                 setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
               "
@@ -237,7 +237,7 @@
             </a>
           </li>
           <li class="pay-now" v-show="orderType.OTApi !== 'call_center'">
-            <a href="javascript:void()">
+            <a href="javascript:void(0)">
               <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
               <span class="pay-btn">{{ _t('Pay Now') }}</span>
             </a>

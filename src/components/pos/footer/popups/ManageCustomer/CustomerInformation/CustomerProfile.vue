@@ -44,7 +44,7 @@
     <li @click="editCustomer(customerProfile._id)">
       <a
         class="cu-edit-icon"
-        href="#"
+        href="javascript:void(0)"
         data-toggle="modal"
         data-target="#customer"
         data-dismiss="modal"
@@ -78,7 +78,7 @@
         </span>
         {{ _t('Edit') }}</a
       >
-      <a class="cu-delete-icon" href="#"
+      <a class="cu-delete-icon" href="javascript:void(0)"
         ><span
           ><svg
             xmlns="http://www.w3.org/2000/svg"
