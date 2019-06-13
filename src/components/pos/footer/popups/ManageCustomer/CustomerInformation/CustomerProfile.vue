@@ -6,11 +6,7 @@
         v-bind:src="customerProfile.image_path + customerProfile.image"
         alt="order-profile"
       />
-      <img
-        v-else
-        class="profile-picture"
-        src="/pos/img/other/placeholder-img.png"
-      />
+      <img v-else class="profile-picture" src="img/other/placeholder-img.png" />
     </li>
     <li class="col-md-4 lh">
       <p class="profile-customer-title">

@@ -37,10 +37,7 @@ const getters = {
 // actions
 const actions = {
   validatePayment({ state, dispatch, commit }) {
-    if (!state.amount) {
-      commit('SET_ERROR', 'Amount should be greater than 0.00')
-      return Promise.reject()
-    } else if (parseFloat(state.amount) < 0.01) {
+    if (!state.amount || parseFloat(state.amount) < 0.01) {
       commit('SET_ERROR', 'Amount should be greater than 0.00')
       return Promise.reject()
     } else {
@@ -49,7 +46,7 @@ const actions = {
       } else if (state.method.type == CONST.LOYALTY) {
         return dispatch('validateLoyaltyPayment')
       } else {
-        if (state.method.type.reference_code) {
+        if (state.method.reference_code) {
           //display reference popup
           return dispatch('validateCardPayment')
         } else {
@@ -250,26 +247,8 @@ const actions = {
       }
     })
   },
-  validateCashPayment({ commit, getters }) {
-    return new Promise((resolve, reject) => {
-      const totalPayable = getters.orderTotal
-      const paid = getters.paid
-      const remaining = totalPayable - paid
-
-      if (parseFloat(state.amount) <= 0) {
-        commit('SET_ERROR', 'Gift Card payment should be greater than 0.00')
-        reject()
-      } else if (parseFloat(state.amount) - parseFloat(remaining) > 0.01) {
-        commit(
-          'SET_ERROR',
-          "Gift Card payment can't be greater than " + Num.round(remaining)
-        )
-        reject()
-      } else {
-        commit('SET_ERROR', false)
-        resolve()
-      }
-    })
+  validateCashPayment() {
+    return Promise.resolve(1)
   },
 
   setAmount({ commit, dispatch }, amount) {

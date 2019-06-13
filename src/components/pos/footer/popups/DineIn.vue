@@ -15,9 +15,7 @@
               :class="{ active: selectedOrderType.OTApi === 'dine_in' }"
               @click="setOrderType({ OTview: 'Dine InOT', OTApi: 'dine_in' })"
             >
-              <img src="/pos/img/pos/dine-in.svg" /><span>{{
-                _t('Dine In')
-              }}</span>
+              <img src="img/pos/dine-in.svg" /><span>{{ _t('Dine In') }}</span>
             </div>
             <div
               class="option-contain"
@@ -29,7 +27,7 @@
                 })
               "
             >
-              <img src="/pos/img/pos/take-away.svg" /><span>
+              <img src="img/pos/take-away.svg" /><span>
                 {{ _t(' Take Away') }}
               </span>
             </div>
@@ -40,7 +38,7 @@
                 setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
               "
             >
-              <img src="/pos/img/pos/delivery-icon.svg" /><span>
+              <img src="img/pos/delivery-icon.svg" /><span>
                 {{ _t('Delivery') }}
               </span>
             </div>
@@ -49,7 +47,7 @@
               :class="{ active: selectedOrderType.OTApi === 'event' }"
               @click="setOrderType({ OTview: 'Event', OTApi: 'event' })"
             >
-              <img src="/pos/img/pos/event.svg" /><span>{{ _t('Event') }}</span>
+              <img src="img/pos/event.svg" /><span>{{ _t('Event') }}</span>
             </div>
           </div>
         </div>

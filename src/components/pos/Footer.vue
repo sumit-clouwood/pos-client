@@ -62,7 +62,7 @@
         >
           <a href="#" class="footer-slider-list-item-link">
             <img
-              src="/pos/img/pos/loyalty.svg"
+              src="img/pos/loyalty.svg"
               :alt="_t('Loyalty')"
               v-if="!loyaltyCard"
             />
@@ -237,8 +237,8 @@
             </a>
           </li>
           <li class="pay-now" v-show="orderType.OTApi !== 'call_center'">
-            <a href="#">
-              <img src="/pos/img/pos/payment.svg" :alt="_t('Pay Now')" />
+            <a href="javascript:void()">
+              <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
               <span class="pay-btn">{{ _t('Pay Now') }}</span>
             </a>
           </li>
@@ -377,8 +377,8 @@ export default {
       accessibility: false,
       dots: false,
       arrows: true,
-      nextArrow: '<img class="next-btn" src="/pos/img/pos/next-arrow.png"/>',
-      prevArrow: '<img class="back-btn" src="/pos/img/pos/back-arrow.png"/>',
+      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
+      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
     })
   },
 
@@ -389,8 +389,8 @@ export default {
       accessibility: false,
       dots: false,
       arrows: true,
-      nextArrow: '<img class="next-btn" src="/pos/img/pos/next-arrow.png"/>',
-      prevArrow: '<img class="back-btn" src="/pos/img/pos/back-arrow.png"/>',
+      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
+      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
     })
   },
 }
