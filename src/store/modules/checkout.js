@@ -357,6 +357,11 @@ const actions = {
               return true
             }
 
+            commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
+              root: true,
+            })
+            resolve(response.data)
+
             dispatch('invoice/printRules', null, { root: true }).then(() => {
               //get print rules
               //get invoice template
