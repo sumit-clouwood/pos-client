@@ -286,7 +286,7 @@
                 type="button"
                 id="dm-modify-btn"
               >
-                <span><img src="/pos/img/other/edit-icon.png" alt="schedule"/></span
+                <span><img src="img/other/edit-icon.png" alt="schedule"/></span
                 >Modify
               </button>
             </div>-->
@@ -298,8 +298,8 @@
               id="status-history"
               @click="toggleHistory()"
             >
-              <span><img src="/pos/img/other/status.png" alt="status"/></span
-              >Status History
+              <span><img src="img/other/status.png" alt="status"/></span>Status
+              History
             </button>
             <button
               type="button"
@@ -307,8 +307,8 @@
               id="recipt-history"
               @click="toggleHistory()"
             >
-              <span><img src="/pos/img/other/reciept.png" alt="status"/></span
-              >Show Receipt
+              <span><img src="img/other/reciept.png" alt="status"/></span>Show
+              Receipt
             </button>
             <button
               type="button"

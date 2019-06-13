@@ -8,7 +8,7 @@
       item.modifiable ? 'catalog-with-modifier' : 'catalog-without-modifiers'
     "
   >
-    <img src="/pos/img/pos/done.png" alt="done" />
+    <img src="img/pos/done.png" alt="done" />
     <span>{{ _t('Done') }}</span>
   </button>
 </template>
