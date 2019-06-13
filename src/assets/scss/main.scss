@@ -61,6 +61,13 @@
       grid-gap: $px10;
       height: calc(100vh - #{$food-wrapper-height});
 
+      .food-categories-wrapper {
+        overflow: auto;
+        height: inherit;
+        display: grid;
+        grid-template-columns: auto 1fr;
+      }
+
       .food-categories {
         border-bottom: none;
         border-left: none;
@@ -186,12 +193,15 @@
         }
 
         .food-menu {
-          overflow: auto;
-          display: flex;
-          flex-wrap: wrap;
-          align-content: flex-start;
-          padding-right: $px30;
-          height: calc(100vh - #{$food-menu-height});
+
+          .food-menu-wrapper {
+            overflow: auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            padding-right: $px30;
+            height: calc(100vh - #{$food-menu-height});
+          }
 
           .food-menu-item {
             background: none;
@@ -318,7 +328,8 @@
               font-weight: 600;
               user-select: none;
             }
-            .food-menu-item-price{
+
+            .food-menu-item-price {
               display: none;
             }
           }

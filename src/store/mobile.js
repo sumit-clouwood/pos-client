@@ -48,7 +48,7 @@ export default {
             state.payNowCalcHendler = !state.payNowCalcHendler
         },
         FOOTER_MENU_HENDLER_GHANGE: (state) => {
-            state.footerMenuHendler = true
+            state.footerMenuHendler = !state.footerMenuHendler
         }
      },
     actions: {

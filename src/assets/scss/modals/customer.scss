@@ -151,3 +151,43 @@
     }
   }
 }
+
+// media queries
+@include responsive(mobile) {
+  #search-loyalty-customer {
+    .modal-dialog {
+      position: absolute;
+      top: 70px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      min-height: auto;
+
+      .modal-content {
+
+        .modal-header {
+          border-radius: 0;
+          padding: 10px 20px;
+        }
+
+        .modal-body {
+          padding: 10px 20px;
+
+          .inputSearch {
+            margin-bottom: 10px;
+          }
+
+          button {
+            margin-bottom: 10px;
+            border-radius: $btn-border-radius;
+          }
+        }
+
+        .modal-footer {
+          padding: 10px 20px 20px;
+        }
+      }
+    }
+  }
+}

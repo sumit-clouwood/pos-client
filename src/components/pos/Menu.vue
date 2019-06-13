@@ -1,5 +1,5 @@
 <template>
-    <div :class="['navigation', {active: allCategoryHendler}]">
+    <div :class="['navigation', (allCategoryHendler ? 'active' : 'notActive')]">
         <div class="logo" title="logo">
             <a class="logo-link" href="#">
                 <img src="img/icons/icon.png" alt="icon"/>

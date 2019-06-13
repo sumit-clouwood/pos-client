@@ -118,3 +118,36 @@ a:hover {
   display: inline-block;
   color: #5056ca;
 }
+
+//media queries
+@include responsive(mobile) {
+  #select-discount {
+    .modal-dialog {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      min-height: auto;
+
+      .modal-content {
+        .modal-header {
+          border-radius: 0;
+          padding: 10px 20px;
+        }
+
+        .modal-body {
+          overflow: auto;
+          padding: 10px 20px;
+        }
+
+        .modal-footer {
+          box-shadow: 0 0 10px #ccc;
+          z-index: 2;
+          padding: 10px 20px 20px;
+        }
+      }
+    }
+  }
+}

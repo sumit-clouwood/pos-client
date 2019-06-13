@@ -138,3 +138,63 @@
   -webkit-overflow-scrolling: touch;
   touch-action: auto;
 }
+
+// media queries
+@include responsive(mobile) {
+  #manage-customer {
+    .modal-dialog {
+      position: absolute;
+      top: 70px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      min-height: auto;
+
+      .modal-content {
+
+        .modal-header {
+          padding: 10px 20px;
+        }
+
+        .modal-body {
+          padding: 10px 20px;
+
+          .search-field {
+          }
+
+          .manage-customer-table {
+            table {
+
+              tr {
+                &:last-child {
+
+                }
+
+                th {
+
+                }
+              }
+            }
+          }
+        }
+
+        .modal-footer {
+          padding: 10px 20px 20px;
+          .btn-announce{
+            display: flex;
+            justify-content: space-between;
+            margin: 0;
+            width: 100%;
+            button{
+              margin: 0;
+              padding: 0 20px;
+              font-size: 12px;
+            }
+          }
+        }
+      }
+    }
+
+  }
+}

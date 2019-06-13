@@ -1,7 +1,7 @@
 <template>
   <div class="main-body">
     <search />
-    <div class="food-wrapper">
+    <div :class="['food-wrapper', (subCategoryHendler ? 'active' : 'notActive')]">
       <SubMenu v-if="subcategories.length" />
       <div class="food-block">
         <Breadcrumbs />
@@ -31,6 +31,7 @@ export default {
   },
   computed: {
     ...mapGetters('category', ['subcategories', 'items']),
+    ...mapGetters(['subCategoryHendler']),
   },
 }
 </script>

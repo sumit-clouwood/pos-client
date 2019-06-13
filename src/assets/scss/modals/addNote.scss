@@ -58,3 +58,49 @@
     }
   }
 }
+
+// media queries
+@include responsive(mobile) {
+  #add-note {
+    .modal-dialog {
+      position: absolute;
+      top: 70px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      min-height: auto;
+
+      .modal-content {
+        .modal-header {
+          border-radius: 0;
+          padding: 10px 20px;
+        }
+
+        .modal-body {
+          padding: 10px 20px;
+          .add-note-area{
+            display: grid;
+            grid-template-columns: 1fr;
+            .add-note-form{
+
+            }
+          }
+        }
+
+        .modal-footer {
+          padding: 10px 20px 20px;
+          .btn-announce{
+            margin: 0;
+            display: flex;
+            justify-content: space-between;
+            button{
+              margin: 0;
+
+            }
+          }
+        }
+      }
+    }
+  }
+}
