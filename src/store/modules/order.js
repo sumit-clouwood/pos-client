@@ -9,7 +9,7 @@ const DISCOUNT_ORDER_ERROR_TOTAL =
 const state = {
   items: [],
   item: false,
-  orderType: 'walk_in',
+  orderType: { OTview: 'Walk In', OTApi: 'walk_in' },
   orderNote: '',
   onlineOrders: false,
   futureOrder: false,
@@ -569,7 +569,7 @@ const actions = {
 
   deliveryOrder({ commit, dispatch }, { referral, futureOrder }) {
     return new Promise((resolve, reject) => {
-      commit(mutation.ORDER_TYPE, 'delivery')
+      commit(mutation.ORDER_TYPE, { OTview: 'Delivery', OTApi: 'call_center' })
       commit(mutation.SET_REFERRAL, referral)
       if (futureOrder != null) {
         commit(mutation.SET_FUTURE_ORDER, futureOrder)
@@ -704,7 +704,8 @@ const mutations = {
     state.orderNote = orderNote
   },
   [mutation.ORDER_TYPE](state, orderType) {
-    state.orderType = orderType.charAt(0).toUpperCase() + orderType.slice(1)
+    // state.orderType = orderType.charAt(0).toUpperCase() + orderType.slice(1)
+    state.orderType = orderType
   },
   [mutation.SET_REFERRAL](state, referral) {
     state.referral = referral

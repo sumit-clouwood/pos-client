@@ -38,10 +38,7 @@
                 @click="showCalculator()"
                 :placeholder="formatPrice(0.0)"
               />
-              <img
-                src="/pos/img/pos/payment-input-icon.png"
-                class="input-image"
-              />
+              <img src="img/pos/payment-input-icon.png" class="input-image" />
             </div>
             <AmountCalculator v-show="showCalc" ref="calculator" />
             <PaymentBreakdown v-show="showPayBreak" />

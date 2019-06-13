@@ -184,7 +184,7 @@ export default {
       this.$store.dispatch('checkout/reset')
       this.$store.commit('checkout/PRINT', false)
 
-      if (this.$store.state.order.orderType === 'delivery') {
+      if (this.$store.state.order.orderType.OTApi === 'call_center') {
         this.$router.replace({ name: 'DeliveryManager' })
       }
       $('.modal-backdrop').remove()

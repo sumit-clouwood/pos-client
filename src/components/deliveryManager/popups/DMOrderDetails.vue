@@ -88,7 +88,7 @@
                   <th style="width: 200px">SUB-PRICE</th>
                 </tr>
                 <!--<tr class="pay-tot-amt modifier-item-item">
-                                    <td colspan="4"><a class="modifier-dm" href="#">Bolognese Sauce</a> <a class="modifier-dm" href="#">Bolognese Sauce</a> <a class="modifier-dm" href="#">Bolognese Sauce</a></td>
+                                    <td colspan="4"><a class="modifier-dm" href="javascript:void(0)">Bolognese Sauce</a> <a class="modifier-dm" href="javascript:void(0)">Bolognese Sauce</a> <a class="modifier-dm" href="javascript:void(0)">Bolognese Sauce</a></td>
                                 </tr>-->
                 <tr
                   v-for="(item, itemIndex) in selectedOrder.items"
@@ -269,7 +269,10 @@
               Re-Print
             </button>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="#" @click="generateInvoice"
+              <a
+                class="dropdown-item"
+                href="javascript:void(0)"
+                @click="generateInvoice"
                 >Default</a
               >
             </div>
@@ -286,7 +289,7 @@
                 type="button"
                 id="dm-modify-btn"
               >
-                <span><img src="/pos/img/other/edit-icon.png" alt="schedule"/></span
+                <span><img src="img/other/edit-icon.png" alt="schedule"/></span
                 >Modify
               </button>
             </div>-->
@@ -298,8 +301,8 @@
               id="status-history"
               @click="toggleHistory()"
             >
-              <span><img src="/pos/img/other/status.png" alt="status"/></span
-              >Status History
+              <span><img src="img/other/status.png" alt="status"/></span>Status
+              History
             </button>
             <button
               type="button"
@@ -307,8 +310,8 @@
               id="recipt-history"
               @click="toggleHistory()"
             >
-              <span><img src="/pos/img/other/reciept.png" alt="status"/></span
-              >Show Receipt
+              <span><img src="img/other/reciept.png" alt="status"/></span>Show
+              Receipt
             </button>
             <button
               type="button"

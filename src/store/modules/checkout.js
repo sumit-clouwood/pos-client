@@ -28,7 +28,9 @@ const actions = {
     return new Promise((resolve, reject) => {
       let validPayment = false
 
-      if (rootState.order.orderType === 'delivery') {
+      if (
+        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER
+      ) {
         validPayment = true
       } else {
         const paid = rootGetters['checkoutForm/paid']
@@ -71,7 +73,7 @@ const actions = {
               ? state.onHold
               : CONSTANTS.ORDER_STATUS_IN_PROGRESS,
             order_source: CONSTANTS.ORDER_SOURCE_POS,
-            order_type: rootState.order.orderType,
+            order_type: rootState.order.orderType.OTApi,
             order_mode: 'online',
             real_created_datetime: newDate.getDate() + ' ' + newDate.getTime(),
             // order_mode: 'online',
@@ -100,14 +102,25 @@ const actions = {
         } catch (e) {
           console.log(e)
         }
-
-        if (rootState.order.orderType == 'delivery') {
+        if (
+          rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER
+        ) {
           order.customer = rootState.customer.customerId
-          order.address_id = rootState.customer.address
+          /*order.address_id = rootState.customer.address
             ? rootState.customer.address.id
-            : null
-
-          order.order_status = state.onHold ? state.onHold : 'running'
+            : null*/
+          const address = rootState.customer.address
+          order.order_building = address.building
+          order.order_street = address.street
+          order.order_flat_number = address.flat_number
+          order.order_nearest_landmark = address.nearest_landmark
+          order.order_city = address.city
+          order.order_country = address.country
+          order.order_delivery_area = address.delivery_area_id
+          // check in future
+          order.order_status = state.onHold
+            ? state.onHold
+            : CONSTANTS.ORDER_STATUS_IN_PROGRESS
           // order.status = 'on-hold'
         }
 
@@ -356,6 +369,11 @@ const actions = {
               dispatch('reset')
               return true
             }
+
+            commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
+              root: true,
+            })
+            resolve(response.data)
 
             dispatch('invoice/printRules', null, { root: true }).then(() => {
               //get print rules

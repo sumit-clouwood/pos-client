@@ -2,7 +2,7 @@
   <div class="header-main-left">
     <HeaderOrderType />
     <div class="header-main-left-time">
-      <a href="#">
+      <a href="javascript:void(0)">
         <span class="time">{{ todayTime }}</span>
         <span>{{ todayDate }}</span></a
       >

@@ -9,7 +9,7 @@
             updateOrderStatus({ orderStatus: 'running', collected: 'no' })
           "
         >
-          <a href="#">New Orders</a
+          <a href="javascript:void(0)">New Orders</a
           ><span v-if="orderCount">{{ orderCount.running }}</span>
         </li>
         <li
@@ -17,7 +17,7 @@
           data-related="dm-waiting-for-pick"
           @click="updateOrderStatus({ orderStatus: 'ready', collected: 'no' })"
         >
-          <a href="#">Waiting for Pick</a
+          <a href="javascript:void(0)">Waiting for Pick</a
           ><span v-if="orderCount">{{ orderCount.ready }}</span>
         </li>
         <li
@@ -27,7 +27,7 @@
             updateOrderStatus({ orderStatus: 'in-progress', collected: 'no' })
           "
         >
-          <a href="#">Delivery - In Progress</a
+          <a href="javascript:void(0)">Delivery - In Progress</a
           ><span v-if="orderCount">{{ orderCount['in-progress'] }}</span>
         </li>
         <li
@@ -37,7 +37,7 @@
             updateOrderStatus({ orderStatus: 'delivered', collected: 'no' })
           "
         >
-          <a href="#">Delivered</a
+          <a href="javascript:void(0)">Delivered</a
           ><span v-if="orderCount">{{ orderCount.delivered }}</span>
         </li>
       </ul>
@@ -49,7 +49,7 @@
         data-target="#delivery-assistant"
       >
         <span
-          ><img src="/pos/img/other/delivery-assistant.png" alt="delivery"
+          ><img src="img/other/delivery-assistant.png" alt="delivery"
         /></span>
         Delivery Assistant
       </button>

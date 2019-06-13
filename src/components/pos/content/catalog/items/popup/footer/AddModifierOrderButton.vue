@@ -45,16 +45,15 @@
       <span>{{ _t('Discount') }}</span>
     </button>-->
     <button type="button" class="buttoned colorwhite taxbutton">
-      <img src="/pos/img/pos/delete.jpg" alt="delete" />
+      <img src="img/pos/delete.jpg" alt="delete" />
       <span>{{ _t('Tax') }}</span>
     </button>
     <button
       type="button"
       class="buttoned colorwhite donebutton"
-      data-dismiss="modal"
       @click="addModifierOrder"
     >
-      <img src="/pos/img/pos/done.png" alt="done" />
+      <img src="img/pos/done.png" alt="done" />
       <span>{{ _t('Apply') }}</span>
     </button>
   </div>

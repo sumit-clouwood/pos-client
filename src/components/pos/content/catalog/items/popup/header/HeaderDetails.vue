@@ -4,7 +4,7 @@
       <div class="POSItemOptions_price">
         <label class="POSItemOptions_label">{{ _t('Price') }}</label>
         <div class="POSItemOptions_money">
-          {{ formatPrice(itemPrice(item)) }}
+          {{ formatPrice(item.value * quantity) }}
         </div>
       </div>
       <Quantity />
@@ -21,10 +21,10 @@ export default {
   props: {},
   computed: {
     ...mapState({
-      item: state => state.order.item,
+      item: state => state.modifier.item,
     }),
     ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapGetters('order', ['itemPrice']),
+    ...mapGetters('orderForm', ['quantity']),
   },
   components: {
     Quantity,

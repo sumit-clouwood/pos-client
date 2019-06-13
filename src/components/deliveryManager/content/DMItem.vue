@@ -45,7 +45,7 @@
             >
           </button>
           <a
-            href="#"
+            href="javascript:void(0)"
             v-if="actionDetails.action"
             class="btn btn-success"
             :id="order._id"
@@ -93,7 +93,7 @@ export default {
     DMOrderStatus: function({ actionDetails, orderId, orderType }) {
       let timestamp = Date.now()
       if (actionDetails.action != 'Collected') {
-        if (orderType === 'takeaway') {
+        if (orderType.OTApi === 'takeaway') {
           this.$store.dispatch('deliveryManager/updateTakeAway', orderId)
         } else {
           if (typeof actionDetails.driverId != 'undefined') {

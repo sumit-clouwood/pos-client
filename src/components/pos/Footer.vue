@@ -7,7 +7,7 @@
           data-toggle="modal"
           data-target="#manage-customer"
         >
-          <a class="footer-slider-list-item-link" href="#">
+          <a class="footer-slider-list-item-link" href="javascript:void(0)">
             <!--<img src="images/footer-images/user.svg" alt="customer">-->
             <svg
               aria-hidden="true"
@@ -33,7 +33,7 @@
           class="footer-slider-list-item footer-slider-list-item-open-orders"
           id="hold-order-box"
         >
-          <a class="footer-slider-list-item-link" href="#">
+          <a class="footer-slider-list-item-link" href="javascript:void(0)">
             <!--<img class="hold-ordes" src="images/hold-order.png" alt="customer">-->
             <svg
               aria-hidden="true"
@@ -60,9 +60,9 @@
           class="footer-slider-list-item "
           :class="{ loyaltyApplied: loyaltyCard }"
         >
-          <a href="#" class="footer-slider-list-item-link">
+          <a href="javascript:void(0)" class="footer-slider-list-item-link">
             <img
-              src="/pos/img/pos/loyalty.svg"
+              src="img/pos/loyalty.svg"
               :alt="_t('Loyalty')"
               v-if="!loyaltyCard"
             />
@@ -91,8 +91,8 @@
         >
           <a
             class="footer-slider-list-item-link"
-            href="#"
-            @click="setOrderType('delivery')"
+            href="javascript:void(0)"
+            @click="setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })"
           >
             <!--<img src="images/footer-images/d_2.png" alt="customer">-->
             <svg
@@ -122,7 +122,7 @@
         >
           <a
             class="footer-slider-list-item-link"
-            href="#"
+            href="javascript:void(0)"
             @click.prevent="validateOrderDiscounts()"
           >
             <svg
@@ -149,7 +149,7 @@
           data-toggle="modal"
           data-target="#dining-option"
         >
-          <a class="footer-slider-list-item-link" href="#">
+          <a class="footer-slider-list-item-link" href="javascript:void(0)">
             <!--<img src="images/footer-images/group_9.png" alt="customer">-->
             <svg
               aria-hidden="true"
@@ -175,7 +175,7 @@
           data-toggle="modal"
           data-target="#add-note"
         >
-          <a class="footer-slider-list-item-link" href="#">
+          <a class="footer-slider-list-item-link" href="javascript:void(0)">
             <!--<img src="images/footer-images/a.png" alt="customer">-->
             <svg
               aria-hidden="true"
@@ -202,7 +202,7 @@
       <div class="button">
         <ul class="template-btn">
           <li
-            v-show="orderType === 'delivery'"
+            v-show="orderType.OTApi === 'call_center'"
             class="footer-slider-list-item"
             data-toggle="modal"
             :data-target="selectedModal"
@@ -210,8 +210,10 @@
           >
             <a
               class="footer-slider-list-item-link"
-              href="#"
-              @click="setOrderType('delivery')"
+              href="javascript:void(0)"
+              @click="
+                setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
+              "
             >
               <!--<img src="images/footer-images/d_2.png" alt="customer">-->
               <svg
@@ -220,6 +222,7 @@
                 data-prefix="fas"
                 data-icon="suitcase"
                 role="img"
+                width="1.875rem"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
                 class="svg-inline--fa fa-suitcase fa-w-16 fa-2x"
@@ -233,9 +236,9 @@
               <span>{{ _t('Send to Delivery') }}</span>
             </a>
           </li>
-          <li class="pay-now" v-show="orderType !== 'delivery'">
-            <a href="#">
-              <img src="/pos/img/pos/payment.svg" :alt="_t('Pay Now')" />
+          <li class="pay-now" v-show="orderType.OTApi !== 'call_center'">
+            <a href="javascript:void(0)">
+              <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
               <span class="pay-btn">{{ _t('Pay Now') }}</span>
             </a>
           </li>
@@ -374,8 +377,8 @@ export default {
       accessibility: false,
       dots: false,
       arrows: true,
-      nextArrow: '<img class="next-btn" src="/pos/img/pos/next-arrow.png"/>',
-      prevArrow: '<img class="back-btn" src="/pos/img/pos/back-arrow.png"/>',
+      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
+      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
     })
   },
 
@@ -386,8 +389,8 @@ export default {
       accessibility: false,
       dots: false,
       arrows: true,
-      nextArrow: '<img class="next-btn" src="/pos/img/pos/next-arrow.png"/>',
-      prevArrow: '<img class="back-btn" src="/pos/img/pos/back-arrow.png"/>',
+      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
+      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
     })
   },
 }
