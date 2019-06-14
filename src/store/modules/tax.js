@@ -31,15 +31,18 @@ const actions = {
         let itemsTax = rootState.order.items.reduce((totalTax, item) => {
           //calculate tax here
           //item.price is now price before tax and discount applied, so need to recalculate the tax
-          itemTaxData.push({
-            quantity: item.quantity,
-            itemId: item._id,
-            tax: item.grossPrice - item.netPrice,
-            undiscountedTax:
-              item.undiscountedGrossPrice - item.undiscountedNetPrice,
-          })
-
-          return totalTax + (item.grossPrice - item.netPrice) * item.quantity
+          if (item.tax_sum) {
+            itemTaxData.push({
+              quantity: item.quantity,
+              itemId: item._id,
+              tax: item.grossPrice - item.netPrice,
+              undiscountedTax:
+                item.undiscountedGrossPrice - item.undiscountedNetPrice,
+            })
+            return totalTax + (item.grossPrice - item.netPrice) * item.quantity
+          } else {
+            return totalTax
+          }
         }, 0)
 
         commit(mutation.SET_ITEMS_TAX, itemsTax)

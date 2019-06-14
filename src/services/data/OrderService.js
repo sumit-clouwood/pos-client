@@ -19,17 +19,15 @@ export default {
   },
 
   deleteOrder(orderId) {
-    return DataService.get(`/api/auth/order/deleteOrder/?order_id=${orderId}`)
+    return DataService.get(`/auth/order/deleteOrder/?order_id=${orderId}`)
   },
 
   updateOrder(data) {
-    return DataService.post('/api/auth/deliveryManager/update/order', data)
+    return DataService.post('/auth/deliveryManager/update/order', data)
   },
 
   fetchOnlineOrderDetails(...[orderid, locationId]) {
-    return DataService.get(
-      `/api/auth/online-order-list/${locationId}/${orderid}`
-    )
+    return DataService.get(`/auth/online-order-list/${locationId}/${orderid}`)
   },
   getOrders(query, limit, orderBy, orderStatus, page) {
     return DataService.get(

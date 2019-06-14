@@ -1,5 +1,5 @@
 import DataService from '@/services/DataService'
-const authUrl = process.env.VUE_APP_API_ENDPOINT + '/api/login'
+const authUrl = process.env.VUE_APP_API_ENDPOINT + '/login'
 const deviceCode = '100'
 const franchiseCode = '0004'
 const lastOrderNo = '1000'
