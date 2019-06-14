@@ -83,7 +83,6 @@ const actions = {
             total_discount: Num.round(
               rootGetters['discount/orderDiscountWithoutTax']
             ),
-            total_paid: Num.round(rootGetters['order/subTotal']),
 
             bill_printed: true,
             amount_changed: Num.round(state.changedAmount),
@@ -302,6 +301,8 @@ const actions = {
         order.tip_amount = rootState.checkoutForm.tipAmount
 
         //adding payment breakdown
+        let totalPaid = order.tip_amount
+
         order.order_payments = rootState.checkoutForm.payments.map(payment => {
           let paymentPart = {
             entity_id: payment.method._id,
@@ -311,7 +312,7 @@ const actions = {
             param2: payment.amount,
             param3: payment.code,
           }
-
+          totalPaid += payment.amount
           //Youvraj, have a check here
           if (payment.method.type == CONSTANTS.LOYALTY) {
             if (parseFloat(rootState.customer.loyalty.balance) > 0) {
@@ -328,6 +329,7 @@ const actions = {
         //for hold orders: Tofeeq
         if (!order.order_payments.length) {
           const paymentMethod = rootGetters['payment/cash']
+          totalPaid += totalPayable
           order.order_payments.push({
             entity_id: paymentMethod._id,
             name: paymentMethod.name,
@@ -337,6 +339,8 @@ const actions = {
             param3: null,
           })
         }
+
+        order.total_paid = Num.round(totalPaid)
 
         //order.app_uniqueid = Crypt.uuid()
 
