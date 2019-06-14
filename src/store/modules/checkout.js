@@ -532,7 +532,6 @@ const mutations = {
     state.paidAmount = 0
     state.payableAmount = 0
     state.pendingAmount = 0
-    state.changedAmount = 0
     state.print = false
   },
   [mutation.ONHOLD](state, orderStatus) {
