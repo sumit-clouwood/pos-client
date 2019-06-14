@@ -36,7 +36,9 @@ const getters = {
 
 // actions
 const actions = {
-  validatePayment({ state, dispatch, commit }) {
+  validatePayment({ state, dispatch, getters, commit }) {
+    if (getters['payable'] <= 0.01) return Promise.resolve()
+
     if (!state.amount || parseFloat(state.amount) < 0.01) {
       commit('SET_ERROR', 'Amount should be greater than 0.00')
       return Promise.reject()

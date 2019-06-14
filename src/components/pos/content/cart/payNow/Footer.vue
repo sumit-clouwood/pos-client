@@ -56,6 +56,7 @@ export default {
         if (this.$store.getters['checkoutForm/validate']) {
           return resolve()
         }
+        if (this.$store.state.checkoutForm.amount <= 0.1) return resolve()
 
         this.$store
           .dispatch('checkoutForm/validatePayment')
