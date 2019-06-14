@@ -16,6 +16,18 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
+              id="cu-add-address"
+              data-toggle="modal"
+              data-target="#add_address"
+              class="btn btn-success btn-large"
+              data-dismiss="modal"
+              @click="
+                setDefaultSettingsGlobalAddUpdate({ nearest_landmark: '' })
+              "
+            >
+              {{ _t('+ Add Address') }}
+            </button>
+            <button
               type="button"
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
@@ -56,6 +68,7 @@ export default {
   },
   methods: {
     ...mapActions('location', ['updateModalSelectionDelivery']),
+    ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
   },
 }
 </script>
