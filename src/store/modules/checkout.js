@@ -301,7 +301,7 @@ const actions = {
         order.tip_amount = rootState.checkoutForm.tipAmount
 
         //adding payment breakdown
-        let totalPaid = order.tip_amount
+        let totalPaid = 0
 
         order.order_payments = rootState.checkoutForm.payments.map(payment => {
           let paymentPart = {
