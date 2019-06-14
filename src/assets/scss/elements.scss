@@ -47,7 +47,7 @@ body {
     .hideBigScreen {
       display: none;
       @include responsive(mobile) {
-        display: block;
+        display: flex;
       }
     }
     .hideMobileScreen {

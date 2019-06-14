@@ -1,6 +1,7 @@
 <template>
-    <div class="food-categories-wrapper">
-        <div :class="['food-categories']" v-if="subcategories.length">
+    <div :class="['food-categories-wrapper', (subCategoryHendler ? 'foodCatigoriesActive' : 'foodCatigoriesNotActive')]">
+        <div :class="['food-categories']"
+             v-if="subcategories.length">
             <div
                     class="food-categories-item"
                     v-for="item in subcategories"
@@ -47,12 +48,79 @@
         },
     }
 </script>
-<style lang="sass" scoped>
-    /*.cat-name
-      font-size: smaller*/
+<style lang="scss" scoped>
+    @import '../../../../assets/scss/pixels_rem.scss';
+    @import '../../../../assets/scss/variables.scss';
+    @import '../../../../assets/scss/mixins.scss';
 
-    /*.pizza-size-wrapper
-      img
-        width: 64px
-        height: 64px*/
+    @include responsive(mobile) {
+        .food-categories-wrapper {
+            grid-template-columns: 1fr;
+            height: 100%;
+            overflow: auto;
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 2;
+            background-color: transparent;
+            &.foodCatigoriesActive{
+                transition: 0.7s ease-out;
+                top: 0;
+            }
+            &.foodCatigoriesNotActive{
+                transition: 0.7s ease-out;
+                top: -100%;
+            }
+
+            .food-categories {
+                padding: 0;
+                grid-gap: 0;
+                overflow: auto;
+
+                .food-categories-item {
+                    display: grid;
+                    align-items: center;
+                    width: auto;
+                    height: 50px;
+                    border-radius: 0;
+                    border: none;
+                    padding: 0 20px;
+                    min-height: 65px;
+                    grid-template-columns: 50px 1fr;
+                    grid-gap: 20px;
+                    border-bottom: 1px solid $gray-middle;
+                    background-color: #fafafa;
+
+                    .food-categories-item-text {
+                        font-size: 14px;
+                        text-align: left;
+                        font-weight: 600;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                    img {
+                        margin: 0;
+                        width: 50px;
+                        height: 50px;
+                    }
+
+                    .food-categories-item-check {
+                        display: none;
+                    }
+
+                    &.active {
+                        box-shadow: none;
+
+                        .food-categories-item-check {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
 </style>

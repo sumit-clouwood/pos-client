@@ -2,7 +2,15 @@
     <div class="search-field">
         <div class="search-field-icon" @click="searchHendlerChange()">
             <!--<img class="search-field-img" src="images/search-icon.png" alt="search">-->
-            <i class="fa fa-search" aria-hidden="true"></i>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M11 4C7.13401 4 4 7.13401 4 11C4 14.866 7.13401 18 11 18C14.866 18 18 14.866 18 11C18 7.13401 14.866 4 11 4ZM2 11C2 6.02944 6.02944 2 11 2C15.9706 2 20 6.02944 20 11C20 15.9706 15.9706 20 11 20C6.02944 20 2 15.9706 2 11Z"
+                      fill="#4B4E53"/>
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M15.9428 15.9428C16.3333 15.5523 16.9665 15.5523 17.357 15.9428L21.707 20.2928C22.0975 20.6833 22.0975 21.3165 21.707 21.707C21.3165 22.0975 20.6833 22.0975 20.2928 21.707L15.9428 17.357C15.5523 16.9665 15.5523 16.3333 15.9428 15.9428Z"
+                      fill="#4B4E53"/>
+            </svg>
+
         </div>
         <input
                 type="text"
@@ -53,3 +61,94 @@
         },
     };
 </script>
+<style lang="scss">
+    @import '../../../../assets/scss/pixels_rem.scss';
+    @import '../../../../assets/scss/variables.scss';
+    @import '../../../../assets/scss/mixins.scss';
+
+    @include responsive(mobile) {
+        .search-field {
+            margin-top: 0;
+            border-radius: 0;
+            border: none;
+            grid-template-columns: $px60 1fr 1fr;
+            align-items: stretch;
+            height: 100%;
+
+            .search-field-icon {
+                display: flex;
+                align-items: center;
+                height: 100%;
+            }
+
+            .allCategory {
+                border-right: 1px solid $gray-middle;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                transition: 0.3s ease-out;
+
+                &.notActive {
+                    display: none;
+                }
+
+                &.active {
+                    color: $green-middle;
+                }
+
+                .fa {
+                    margin-left: $px10;
+                    font-weight: 600;
+                    font-size: $px18;
+                    transition: 0.3s ease-out;
+
+                    &.active {
+                        transform: rotate(180deg);
+                    }
+                }
+            }
+
+            .subCategory {
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                transition: 0.3s ease-out;
+
+                &.notActive {
+                    display: none;
+                }
+
+                &.active {
+                    color: $green-middle;
+                }
+
+                .fa {
+                    margin-left: $px10;
+                    font-weight: 600;
+                    font-size: $px18;
+                    transition: 0.3s ease-out;
+
+                    &.active {
+                        transform: rotate(180deg);
+                    }
+                }
+            }
+
+            .search-field-input {
+                display: none;
+                height: auto;
+                grid-column-start: 2;
+                grid-column-end: 4;
+
+                &.active {
+                    display: block;
+                }
+            }
+        }
+    }
+
+</style>

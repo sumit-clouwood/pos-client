@@ -1,10 +1,11 @@
 <template>
-  <div class="new-pos">
-    <Menu v-if="categories.length" />
-    <Header />
-    <Contents />
-    <Footer />
-  </div>
+    <div class="new-pos">
+        <Menu v-if="categories.length"/>
+        <Header/>
+        <Contents/>
+        <Footer/>
+        <mobileComponents/>
+    </div>
 </template>
 
 <i18n>
@@ -21,27 +22,30 @@
 </i18n>
 
 <script>
-import Menu from './pos/Menu.vue'
-import Header from './pos/Header.vue'
-import Contents from './pos/Contents'
-import Footer from './pos/Footer'
-import { mapState } from 'vuex'
-export default {
-  name: 'Pos',
-  computed: {
-    ...mapState('category', ['categories']),
-  },
-  components: {
-    Menu,
-    Header,
-    Contents,
-    Footer,
-  },
-  //store private data in component using data
+    import Menu from './pos/Menu.vue'
+    import Header from './pos/Header.vue'
+    import Contents from './pos/Contents'
+    import Footer from './pos/Footer'
+    import mobileComponents from './mobileComponents/mobileComponents.vue'
+    import {mapState} from 'vuex'
 
-  //data passed to this component by its parent is contained inside props
-  props: {
-    msg: String,
-  },
-}
+    export default {
+        name: 'Pos',
+        computed: {
+            ...mapState('category', ['categories']),
+        },
+        components: {
+            Menu,
+            Header,
+            Contents,
+            Footer,
+            mobileComponents,
+        },
+        //store private data in component using data
+
+        //data passed to this component by its parent is contained inside props
+        props: {
+            msg: String,
+        },
+    }
 </script>
