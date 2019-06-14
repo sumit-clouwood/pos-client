@@ -141,6 +141,29 @@ const actions = {
     }
   },
 
+  removeTax({ commit, state, rootState, dispatch, getters }) {
+    let item = { ...state.item }
+    if (!item.originalTax) {
+      item.originalTax = item.tax_sum
+    }
+    item.tax_sum = 0
+    item.grossPrice = item.value
+    item.netPrice = getters.netPrice(item)
+    //replace item in cart
+    commit(mutation.REPLACE_ORDER_ITEM, {
+      item: item,
+    })
+    dispatch('surcharge/calculate', {}, { root: true }).then(
+      dispatch('tax/calculate', {}, { root: true }).then(() => {
+        if (rootState.discount.appliedOrderDiscount) {
+          dispatch('recalculateOrderTotals')
+        } else {
+          dispatch('recalculateItemPrices')
+        }
+      })
+    )
+  },
+
   addModifierOrder({ commit, getters, rootState, dispatch, rootGetters }) {
     return new Promise((resolve, reject) => {
       let item = { ...rootState.modifier.item }
@@ -278,7 +301,7 @@ const actions = {
         //if the signature was different then modify modifiers,
         //as we are creating new item and attached modifiers again so its better to just
         //replace that item in state with existing item
-        commit(mutation.UPDATE_MODIFER_ORDER_ITEM, {
+        commit(mutation.REPLACE_ORDER_ITEM, {
           item: state.item,
         })
       }
@@ -524,22 +547,7 @@ const actions = {
       })
     )
   },
-  removeItemTax({ state, commit, dispatch, rootState }) {
-    let item = { ...state.item }
-    //remove tax information from the order and recalculate the tax
-    item.removedTax = item.item_tax
-    item.item_tax = false
 
-    //splice item at index
-    commit(mutation.REMOVE_ITEM_TAX, item)
-    dispatch('tax/calculate', {}, { root: true }).then(() => {
-      if (rootState.discount.appliedOrderDiscount) {
-        dispatch('recalculateOrderTotals')
-      } else {
-        dispatch('recalculateItemPrices')
-      }
-    })
-  },
   reset({ commit }) {
     commit(mutation.RESET)
   },
@@ -662,7 +670,7 @@ const mutations = {
     })
   },
 
-  [mutation.UPDATE_MODIFER_ORDER_ITEM](state, { item }) {
+  [mutation.REPLACE_ORDER_ITEM](state, { item }) {
     state.items.splice(item.orderIndex, 1, item)
   },
 
@@ -692,9 +700,7 @@ const mutations = {
     orderItem.quantity = typeof quantity != 'undefined' ? quantity : 1
     state.items.splice(index, 1, orderItem)
   },
-  [mutation.REMOVE_ITEM_TAX](state, item) {
-    state.items.splice(item.orderIndex, 1, item)
-  },
+
   [mutation.RESET](state) {
     state.items = []
     state.item = false
