@@ -4,10 +4,7 @@ import createAuthRefreshInterceptor from 'axios-auth-refresh'
 import db from '@/services/network/DB'
 import DateTime from '@/plugins/helpers/DateTime.js'
 
-const apiURL =
-  process.env.NODE_ENV === 'production'
-    ? process.env.VUE_APP_API_ENDPOINT
-    : process.env.VUE_APP_API_ENDPOINT + '/api'
+const apiURL = process.env.VUE_APP_API_ENDPOINT
 
 console.log('api url', process.env.NODE_ENV, apiURL)
 

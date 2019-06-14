@@ -44,10 +44,4 @@ export default {
       'brand'
     )
   },
-
-  /*fetchGiftCards(...[customerId, locationId]) {
-    return DataService.get(
-      `/api/auth/crm/get/CustomerDetails/?customer_id=${customerId}&location_id=${locationId}`
-    )
-  },*/
 }

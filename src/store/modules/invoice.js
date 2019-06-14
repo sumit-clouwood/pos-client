@@ -15,9 +15,9 @@ const getters = {
       state.rules.data.forEach(rule => {
         if (
           [
-            rootState.order.orderType + '_made',
-            rootState.order.orderType + '_pays',
-            rootState.order.orderType + '_requests',
+            rootState.order.orderType.OTApi + '_made',
+            rootState.order.orderType.OTApi + '_pays',
+            rootState.order.orderType.OTApi + '_requests',
           ].includes(rule.when)
         ) {
           templateId = rule.invoice_template
