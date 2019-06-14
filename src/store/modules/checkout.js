@@ -165,8 +165,10 @@ const actions = {
         }
 
         //adding item data
+        let modifiers = []
         let item_discounts = []
         //let itemDiscountedTax = 0
+        let itemNumber = 0
         order.items = rootState.order.items.map(item => {
           const itemTax = rootState.tax.itemsTaxData.find(
             taxData => taxData.itemId == item._id
@@ -175,7 +177,7 @@ const actions = {
           let orderItem = {
             name: item.name,
             entity_id: item._id,
-            no: 0,
+            no: itemNumber,
             tax: itemTax ? itemTax.undiscountedTax : 0,
             price: parseFloat(item.undiscountedNetPrice),
             qty: item.quantity,
@@ -194,11 +196,39 @@ const actions = {
           if (item.discount) {
             let itemDiscount = item.discount
             itemDiscount.itemId = item._id
+            itemDiscount.itemNo = itemNumber
             itemDiscount.quantity = item.quantity
             itemDiscount.tax = itemTax.undiscountedTax - itemTax.tax
             //itemDiscountedTax += itemDiscount.tax
             item_discounts.push(itemDiscount)
           }
+
+          if (item.modifiers.length) {
+            item.modifiers.forEach(modifierId => {
+              const subgroups = rootGetters['modifier/itemModifiers'](item._id)
+              subgroups.forEach(subgroup => {
+                subgroup.modifiers.forEach(modifier => {
+                  if (modifier._id === modifierId) {
+                    const modfierTaxData = rootGetters['tax/modifierTaxData']({
+                      itemId: item._id,
+                      modifierId: modifierId,
+                    })
+                    modifiers.push({
+                      entity_id: modifierId,
+                      for_item: itemNumber,
+                      price: modfierTaxData.price,
+                      tax: modfierTaxData.tax,
+                      name: modifier.name,
+                      qty: item.quantity,
+                      type: subgroup.item_type,
+                    })
+                  }
+                })
+              })
+            })
+            //get all modifiers by modifier ids attached to item
+          }
+          itemNumber++
           return orderItem
         })
 
@@ -227,35 +257,6 @@ const actions = {
         //discount already applied on tax
         order.balance_due = rootGetters['order/orderTotal']
         //modifiers
-        let modifiers = []
-
-        rootState.order.items.forEach(item => {
-          if (item.modifiers.length) {
-            item.modifiers.forEach(modifierId => {
-              const subgroups = rootGetters['modifier/itemModifiers'](item._id)
-              subgroups.forEach(subgroup => {
-                subgroup.modifiers.forEach(modifier => {
-                  if (modifier._id === modifierId) {
-                    const modfierTaxData = rootGetters['tax/modifierTaxData']({
-                      itemId: item._id,
-                      modifierId: modifierId,
-                    })
-                    modifiers.push({
-                      entity_id: modifierId,
-                      for_item: item._id,
-                      price: modfierTaxData.price,
-                      tax: modfierTaxData.tax,
-                      name: modifier.name,
-                      qty: item.quantity,
-                      type: subgroup.item_type,
-                    })
-                  }
-                })
-              })
-            })
-            //get all modifiers by modifier ids attached to item
-          }
-        })
         order.item_modifiers = modifiers
 
         //order level discount
@@ -290,7 +291,7 @@ const actions = {
                 : itemDiscount.rate,
             price: itemDiscount.discount * itemDiscount.quantity,
             tax: itemDiscount.tax * itemDiscount.quantity,
-            for_item: itemDiscount.itemId,
+            for_item: itemDiscount.itemNo,
             entity_id: itemDiscount.id,
           }
         })
