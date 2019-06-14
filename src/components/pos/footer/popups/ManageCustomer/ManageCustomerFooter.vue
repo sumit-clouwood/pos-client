@@ -6,11 +6,11 @@
         :page-count="paginateDetails.totalPages"
         :page-range="1"
         :margin-pages="1"
-        :clickHandler="setPageNumber"
-        :prev-text="'Prev'"
-        :next-text="'Next'"
+        :clickHandler="moreCustomer"
+        :prev-text="_t('Prev')"
+        :next-text="_t('Next')"
         :container-class="''"
-        :page-class="'page-item'"
+        :page-class="_t('page-item')"
       >
       </paginate>
       <!--</template>-->
@@ -21,7 +21,7 @@
         class="btn btn-danger cancel-announce"
         data-dismiss="modal"
       >
-        <span>X</span>Cancel
+        {{ _t('Cancel') }}
       </button>
       <button
         class="btn btn-success btn-large popup-btn-save"
@@ -37,7 +37,7 @@
         data-target="#customer"
         data-dismiss="modal"
       >
-        New Customer
+        {{ _t('Create New Customer') }}
       </button>
     </div>
     <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -45,9 +45,8 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import paginate from 'vuejs-paginate'
-
 export default {
   name: 'ManageCustomerFooter',
   props: {},
@@ -60,8 +59,12 @@ export default {
       customerDetails: state => state.customer.customer_list,
     }),
     ...mapState('customer', ['loading']),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
+    moreCustomer: function(pageNumber) {
+      this.setPageNumber(pageNumber)
+    },
     ...mapActions('customer', ['setPageNumber']),
     ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
   },

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
-import db from '@/services/network/DB'
+//import db from '@/services/network/DB'
 //import Crypt from '@/plugins/helpers/Crypt.js'
 import DateTime from '@/plugins/helpers/DateTime.js'
 //import Num from '@/plugins/helpers/Num.js'
@@ -16,6 +16,7 @@ const state = {
   changedAmount: 0,
   print: false,
   orderNumber: null,
+  onHold: '',
 }
 
 // getters
@@ -23,17 +24,20 @@ const getters = {}
 
 // actions
 const actions = {
-  pay({ commit, rootGetters, rootState, dispatch }) {
+  pay({ commit, rootGetters, rootState, dispatch, state }, { action }) {
     return new Promise((resolve, reject) => {
       let validPayment = false
+      const totalPayable = rootGetters['checkoutForm/orderTotal']
+      commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
 
-      if (rootState.order.orderType === 'delivery') {
+      if (
+        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
+        action === CONSTANTS.ORDER_STATUS_ON_HOLD
+      ) {
         validPayment = true
       } else {
         const paid = rootGetters['checkoutForm/paid']
         commit(mutation.SET_PAID_AMOUNT, paid)
-        const totalPayable = rootGetters['checkoutForm/orderTotal']
-        commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
 
         let pendingAmount = totalPayable - paid
         pendingAmount = parseFloat(pendingAmount).toFixed(2)
@@ -55,7 +59,7 @@ const actions = {
         }
       }
 
-      if (validPayment) {
+      if (validPayment || state.onHold) {
         //send order for payment
         let order = {}
 
@@ -66,12 +70,15 @@ const actions = {
             referral: '',
             transition_order_no: '',
             currency: rootState.location.currency,
-            order_status: CONSTANTS.ORDER_STATUS_IN_PROGRESS,
+            order_status: state.onHold
+              ? state.onHold
+              : CONSTANTS.ORDER_STATUS_IN_PROGRESS,
             order_source: CONSTANTS.ORDER_SOURCE_POS,
-            order_type: rootState.order.orderType,
+            order_type: rootState.order.orderType.OTApi,
             order_mode: 'online',
             real_created_datetime: newDate.getDate() + ' ' + newDate.getTime(),
             // order_mode: 'online',
+            //remove the modifiers prices from subtotal
             sub_total: rootGetters['order/subTotal'],
             total_discount: rootGetters['discount/orderDiscountWithoutTax'],
             total_paid: rootGetters['order/subTotal'],
@@ -96,13 +103,25 @@ const actions = {
         } catch (e) {
           console.log(e)
         }
-
-        if (rootState.order.orderType == 'delivery') {
+        if (
+          rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER
+        ) {
           order.customer = rootState.customer.customerId
-          order.address_id = rootState.customer.address
+          /*order.address_id = rootState.customer.address
             ? rootState.customer.address.id
-            : null
-          order.status = 'running'
+            : null*/
+          const address = rootState.customer.address
+          order.order_building = address.building
+          order.order_street = address.street
+          order.order_flat_number = address.flat_number
+          order.order_nearest_landmark = address.nearest_landmark
+          order.order_city = address.city
+          order.order_country = address.country
+          order.order_delivery_area = address.delivery_area_id
+          // check in future
+          order.order_status = state.onHold
+            ? state.onHold
+            : CONSTANTS.ORDER_STATUS_IN_PROGRESS
           // order.status = 'on-hold'
         }
 
@@ -162,6 +181,16 @@ const actions = {
             qty: item.quantity,
           }
 
+          //reduce modifier prices and taxes from item before sending it to checkout
+          const modifiers = rootGetters['tax/itemModifiersTaxData'](item._id)
+
+          orderItem.price -= modifiers.reduce((total, modifier) => {
+            return total + modifier.price
+          }, 0)
+          orderItem.tax -= modifiers.reduce((total, modifier) => {
+            return total + modifier.tax
+          }, 0)
+
           if (item.discount) {
             let itemDiscount = item.discount
             itemDiscount.itemId = item._id
@@ -202,30 +231,29 @@ const actions = {
 
         rootState.order.items.forEach(item => {
           if (item.modifiers.length) {
-            //get all modifiers by modifier ids attached to item
             item.modifiers.forEach(modifierId => {
-              rootState.modifier.itemModifiers.forEach(itemModifier => {
-                itemModifier.modifiers.forEach(itemModifierItem => {
-                  itemModifierItem.get_modifier_sub_groups.forEach(
-                    submodifier => {
-                      submodifier.get_modifier_item_list.forEach(submodItem => {
-                        if (submodItem._id == modifierId) {
-                          modifiers.push({
-                            entity_id: submodItem._id,
-                            for_item: item._id,
-                            price: submodItem.price,
-                            tax: submodItem.tax,
-                            name: submodItem.name,
-                            qty: 1,
-                            type: submodItem.subgroup_type,
-                          })
-                        }
-                      })
-                    }
-                  )
+              const subgroups = rootGetters['modifier/itemModifiers'](item._id)
+              subgroups.forEach(subgroup => {
+                subgroup.modifiers.forEach(modifier => {
+                  if (modifier._id === modifierId) {
+                    const modfierTaxData = rootGetters['tax/modifierTaxData']({
+                      itemId: item._id,
+                      modifierId: modifierId,
+                    })
+                    modifiers.push({
+                      entity_id: modifierId,
+                      for_item: item._id,
+                      price: modfierTaxData.price,
+                      tax: modfierTaxData.tax,
+                      name: modifier.name,
+                      qty: item.quantity,
+                      type: subgroup.item_type,
+                    })
+                  }
                 })
               })
             })
+            //get all modifiers by modifier ids attached to item
           }
         })
         order.item_modifiers = modifiers
@@ -281,7 +309,7 @@ const actions = {
           }
 
           //Youvraj, have a check here
-          if (payment.method.name == CONSTANTS.LOYALTY) {
+          if (payment.method.type == CONSTANTS.LOYALTY) {
             if (parseFloat(rootState.customer.loyalty.balance) > 0) {
               order.loyalty_customer = {
                 balance: rootState.customer.loyalty.balance,
@@ -292,6 +320,19 @@ const actions = {
           }
           return paymentPart
         })
+
+        //for hold orders: Tofeeq
+        if (!order.order_payments.length) {
+          const paymentMethod = rootGetters['payment/cash']
+          order.order_payments.push({
+            entity_id: paymentMethod._id,
+            name: paymentMethod.name,
+            collected: totalPayable,
+            param1: null,
+            param2: totalPayable,
+            param3: null,
+          })
+        }
 
         //order.app_uniqueid = Crypt.uuid()
 
@@ -309,54 +350,96 @@ const actions = {
       }
     })
   },
-  createOrder({ state, commit, rootState, dispatch }) {
+
+  createOrder({ state, commit, rootState, rootGetters, dispatch }) {
     commit('checkoutForm/SET_MSG', 'loading', {
       root: true,
     })
-
     return new Promise((resolve, reject) => {
+      console.log(state.order)
       OrderService.saveOrder(state.order, rootState.customer.offlineData)
         .then(response => {
-          dispatch('invoice/fetchAll', null, { root: true }).then(() => {
-            //get print rules
-            if (response.data.data === 1) {
-              //clear all the data related to order, tax, discounts, surcharge etc
-              //create invoice
-              //add order no to local database
-              db.getBucket('auth').then(bucket => {
-                db.fetch(bucket).then(data => {
-                  if (data && data[0]) {
-                    data = data[0]
-                    data.lastOrderNo = parseInt(data.lastOrderNo) + 1
-                    db.getBucket('auth').then(bucket => {
-                      bucket.put(data)
-                    })
-                    commit('auth/SET_LAST_ORDER_NO', data.lastOrderNo, {
-                      root: true,
-                    })
-                  }
-                })
-              })
+          // if (response.data.id) {
+          //   commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
+          //     root: true,
+          //   })
+          //   resolve(response.data)
+          //   return true
+          // }
 
-              commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
-              commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
-                root: true,
-              })
-              resolve(response.data)
-            } else {
-              const error =
-                typeof response.data.error !== 'undefined'
-                  ? response.data.error
-                  : response.data.message
+          if (response.data.status === 'ok') {
+            commit('order/SET_ORDER_ID', response.data.id, { root: true })
 
+            if (state.onHold) {
               commit(
-                'checkoutForm/SET_ERROR',
-                `Order Failed, Server Response: ${error}`,
-                { root: true }
+                'checkoutForm/SET_MSG',
+                'Order has been hold Successfully',
+                {
+                  root: true,
+                }
               )
-              reject(response.data)
+              resolve()
+              dispatch('reset')
+              return true
             }
-          })
+
+            commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
+              root: true,
+            })
+            resolve(response.data)
+
+            dispatch('invoice/printRules', null, { root: true }).then(() => {
+              //get print rules
+              //get invoice template
+              const templateId = rootGetters['invoice/templateId']
+              dispatch(
+                'invoice/fetchTemplate',
+                {
+                  orderId: rootState.order.orderId,
+                  templateId: templateId,
+                },
+                {
+                  root: true,
+                }
+              ).then(() => {
+                //clear all the data related to order, tax, discounts, surcharge etc
+                //create invoice
+                //add order no to local database
+                // db.getBucket('auth').then(bucket => {
+                //   db.fetch(bucket).then(data => {
+                //     if (data && data[0]) {
+                //       data = data[0]
+                //       data.lastOrderNo = parseInt(data.lastOrderNo) + 1
+                //       db.getBucket('auth').then(bucket => {
+                //         bucket.put(data)
+                //       })
+                //       commit('auth/SET_LAST_ORDER_NO', data.lastOrderNo, {
+                //         root: true,
+                //       })
+                //     }
+                //   })
+                // })
+
+                // commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
+                commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
+                  root: true,
+                })
+                resolve(response.data)
+              })
+            })
+          } else {
+            const error =
+              typeof response.data.error !== 'undefined'
+                ? response.data.error
+                : response.data.message
+
+            commit(
+              'checkoutForm/SET_ERROR',
+              `Order Failed, Server Response: ${error}`,
+              { root: true }
+            )
+            reject(response.data)
+          }
         })
         .catch(response => {
           if (
@@ -393,6 +476,9 @@ const actions = {
     dispatch('customer/reset', null, { root: true })
   },
 
+  orderOnHold({ commit }, orderStatus) {
+    commit(mutation.ONHOLD, orderStatus)
+  },
   updateOrderStatus(
     { rootState, dispatch },
     { orderStatus, orderId, timestamp, orderType }
@@ -444,6 +530,9 @@ const mutations = {
     state.pendingAmount = 0
     state.changedAmount = 0
     state.print = false
+  },
+  [mutation.ONHOLD](state, orderStatus) {
+    state.onHold = orderStatus
   },
 }
 

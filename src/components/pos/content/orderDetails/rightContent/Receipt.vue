@@ -12,10 +12,10 @@
       </div>
       <table class="table col-md-12">
         <tr>
-          <th class="receipt-heading">Item</th>
-          <th class="receipt-heading">Base Price</th>
-          <th class="receipt-heading">Qty</th>
-          <th class="receipt-heading">Total Price</th>
+          <th class="receipt-heading">{{ _t('Item') }}</th>
+          <th class="receipt-heading">{{ _t('Base Price') }}</th>
+          <th class="receipt-heading">{{ _t('Qty') }}</th>
+          <th class="receipt-heading">{{ _t('Total Price') }}</th>
         </tr>
         <tr v-for="(item, key) in orderDetails.items" :key="key">
           <td>
@@ -56,25 +56,23 @@
         <div class="subtotal">{{ orderDetails.sub_total }}</div>
         <!---->
         <div class="caption" v-if="orderDetails.total_surcharge">
-          Surcharge:
+          {{ _t('Surcharges') }}:
         </div>
         <div v-if="orderDetails.total_surcharge">
           {{ orderDetails.total_surcharge }}
         </div>
         <div class="caption" v-if="orderDetails.total_discount">
-          Discount:
+          {{ _t('Discount') }}:
         </div>
         <div v-if="orderDetails.total_discount">
           {{ orderDetails.total_discount }}
         </div>
-        <div class="caption">
-          Total Tax:
-        </div>
+        <div class="caption">{{ _t('Total Tax') }}:</div>
         <div>
           {{ orderDetails.total_tax }}
         </div>
         <div class="total">
-          Total
+          {{ _t('Total') }}
         </div>
         <div class="total">
           {{ orderDetails.balance_due }}
@@ -85,12 +83,16 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Receipt',
   props: {
     orderDetails: {},
     iteDiscount: {},
     itemModifiers: {},
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     getItemSubsets: function(details) {

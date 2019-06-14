@@ -3,14 +3,17 @@ import db from '@/services/network/DB'
 import DataService from '@/services/DataService'
 import NetworkService from '@/services/NetworkService'
 import Fingerprint2 from 'fingerprintjs2'
+import * as CONST from '@/constants'
 
 export default {
+  store: null,
   setup(store) {
+    this.store = store
     return new Promise((resolve, reject) => {
-      this.setupDB(store)
+      this.setupDB()
         .then(idb => {
-          store.commit('sync/setIdb', idb)
-          this.fetchData(store)
+          this.store.commit('sync/setIdb', idb)
+          this.fetchData()
             .then(() => {
               resolve()
             })
@@ -19,43 +22,72 @@ export default {
         .catch(error => reject(error))
 
       //setup network
-      this.setNetwork(store)
+      this.setNetwork()
     })
   },
 
-  fetchData(store) {
+  updateLoading(key) {
+    this.store.commit('sync/updateLoading', {
+      key: key,
+      status: CONST.LOADING_STATUS_DONE,
+    })
+  },
+
+  loadUI() {
+    DataService.setLang(this.store.state.location.locale)
+    return new Promise((resolve, reject) => {
+      this.store
+        .dispatch('location/fetch')
+        .then(() => {
+          this.updateLoading('store')
+          this.store
+            .dispatch('category/fetchAll')
+            .then(() => {
+              this.updateLoading('catalog')
+
+              this.store.dispatch('modifier/fetchAll').then(() => {
+                this.updateLoading('modifiers')
+                this.store.commit('sync/loaded', true)
+                resolve()
+              })
+            })
+            .catch(error => reject(error))
+
+          this.store.dispatch('surcharge/fetchAll').then(() => {
+            this.updateLoading('surcharges')
+          })
+          this.store.dispatch('discount/fetchAll').then(() => {
+            this.updateLoading('discounts')
+          })
+          //store.dispatch('giftcard/fetchAll')
+          this.store.dispatch('payment/fetchAll').then(() => {
+            this.updateLoading('payment_types')
+          })
+          this.store.dispatch('customer/fetchAll').then(() => {
+            this.updateLoading('customers')
+          })
+          this.store.dispatch('announcement/fetchAll').then(() => {
+            this.updateLoading('announcements')
+          })
+        })
+        .catch(error => reject(error))
+      //continue loading other service in parallel
+    })
+  },
+
+  fetchData() {
     return new Promise((resolve, reject) => {
       this.detectBrowser().then(deviceId => {
-        store
+        this.store
           .dispatch('auth/auth', deviceId)
-          .then(response => {
+          .then(() => {
             DataService.setContext({
-              store: store.getters['context/store'],
-              brand: store.getters['context/brand'],
+              store: this.store.getters['context/store'],
+              brand: this.store.getters['context/brand'],
             })
-            store
-              .dispatch('location/fetch', response)
-              .then(() => {
-                store
-                  .dispatch('category/fetchAll', response)
-                  .then(() => {
-                    store.dispatch('modifier/fetchAll', response).then(() => {
-                      store.commit('sync/loaded', true)
-                      resolve()
-                    })
-                  })
-                  .catch(error => reject(error))
-              })
-              .catch(error => reject(error))
 
-            //continue loading other service in parallel
-            store.dispatch('announcement/fetchAll', response)
-            store.dispatch('surcharge/fetchAll', response)
-            store.dispatch('discount/fetchAll', response)
-            store.dispatch('customer/fetchAll', response)
-            store.dispatch('payment/fetchAll', response)
-            store.dispatch('giftcard/fetchAll', response)
-            store.dispatch('invoice/fetchAll', response)
+            this.loadUI().then(() => resolve())
+
             // store.dispatch('loyalty/fetchAll', response)
             // store.dispatch(
             //   'deliveryManager/fetchDMOrderDetail',
@@ -68,14 +100,14 @@ export default {
     })
   },
 
-  setupDB(store) {
+  setupDB() {
     return new Promise(resolve => {
-      this.createDb(store, 1)
+      this.createDb(1)
         .then(idb => {
           idb.close()
-          this.createDb(store, 2).then(idb => {
+          this.createDb(2).then(idb => {
             idb.close()
-            this.createDb(store, 3).then(idb => {
+            this.createDb(3).then(idb => {
               resolve(idb)
             })
           })
@@ -86,7 +118,7 @@ export default {
             const version = 3
             db.openDatabase(version).then(({ idb, flag }) => {
               if (flag === 'open') {
-                store.commit('sync/setIdbVersion', version)
+                this.store.commit('sync/setIdbVersion', version)
                 resolve(idb)
               }
             })
@@ -94,12 +126,12 @@ export default {
         })
     })
   },
-  createDb(store, version) {
+  createDb(version) {
     return new Promise((resolve, reject) => {
       db.openDatabase(version)
         .then(({ idb, flag, event }) => {
           if (flag === 'upgrade') {
-            this.createBuckets(store, event)
+            this.createBuckets(event)
             resolve(idb)
           } else {
             reject(event)
@@ -108,30 +140,30 @@ export default {
         .catch(error => reject(error))
     })
   },
-  createBuckets(store, event) {
+  createBuckets(event) {
     if (event.oldVersion === 0) {
       // version 1 -> 2 upgrade
       db.createBucket('auth')
-      store.commit('sync/setIdbVersion', 1)
+      this.store.commit('sync/setIdbVersion', 1)
     }
     if (event.oldVersion === 1) {
       // version 2 -> 3 upgrade
       db.createBucket('order_post_requests')
-      store.commit('sync/setIdbVersion', 2)
+      this.store.commit('sync/setIdbVersion', 2)
     }
     if (event.oldVersion === 2) {
       // initial database creation
       // (your code does nothing here)
-      db.createBucket('events', { keyPath: 'url' }).then(store => {
-        store.createIndex('url', 'url', { unique: true })
+      db.createBucket('events', { keyPath: 'url' }).then(bucket => {
+        bucket.createIndex('url', 'url', { unique: true })
       })
-      store.commit('sync/setIdbVersion', 3)
+      this.store.commit('sync/setIdbVersion', 3)
     }
   },
 
-  setNetwork(store) {
+  setNetwork() {
     NetworkService.status((status, msg) => {
-      store.commit('sync/status', status)
+      this.store.commit('sync/status', status)
       if (process.env.NODE_ENV === 'production' && msg === 'on') {
         console.log('force sync in 10 sec from app')
         setTimeout(function() {

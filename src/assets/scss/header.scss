@@ -1,0 +1,183 @@
+@import "pixels_rem.scss";
+@import "variables.scss";
+
+.header {
+  border-bottom: 1px solid $gray-middle;
+
+  .header-main {
+    height: $header-height;
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 0 $px30;
+
+    .header-main-left {
+      height: $header-height;
+      display: grid;
+      grid-template-columns: auto auto;
+      align-items: center;
+      justify-content: start;
+
+      .header-main-left-info {
+        margin-right: $px30;
+
+        .title {
+          font-weight: 600;
+          font-size: $px22;
+        }
+
+        .subtitle {
+          font-size: $px14;
+          font-weight: 600;
+        }
+      }
+
+      .header-main-left-time {
+        padding: 0 $px35;
+        background-color: $btn-bg-black;
+        height: $header-btn-height;
+        border-radius: $btn-border-radius;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 400;
+        font-size: $px16;
+
+        .time {
+          margin-right: $px5;
+        }
+
+        a {
+          color: #fff;
+        }
+      }
+    }
+
+    .header-main-right {
+      height: $header-height;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      position: relative;
+
+      .user-name {
+        height: $header-btn-height;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: $px10;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .language-button {
+        height: $px50;
+        background: none;
+        border: $px1 solid $gray-middle;
+        border-radius: $px4;
+        padding: 0 $px10;
+        margin-left: $px10;
+      }
+      .online {
+        height: $header-btn-height;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: $px20;
+        cursor: pointer;
+
+        .fa-circle {
+          width: $px15;
+          height: $px15;
+          border-radius: 50%;
+          border: 1px solid rgba(0,0,0,0.1);
+          margin-top: $px2;
+          margin-right: $px10;
+
+          &.online {
+            &:before {
+              color: $green;
+            }
+          }
+          &:before {
+            color: $red;
+          }
+
+        }
+      }
+
+      .online-counter {
+        background-color: $btn-bg-black;
+        height: $header-btn-height;
+        border-radius: $btn-border-radius;
+        padding: 0 $px35;
+        color: #fff;
+        margin-left: $px20;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        .nav-item {
+          a {
+            color: #fff;
+            display: flex;
+            align-items: center;
+            .online-digit{
+              width: $px20;
+              height: $px20;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background-color: $blue-middle;
+              border-radius: $btn-border-radius;
+              margin-left: $px5;
+            }
+          }
+        }
+      }
+
+      .nav-icon {
+        background-color: $blue-middle;
+        width: $header-btn-height;
+        height: $header-btn-height;
+        border-radius: $btn-border-radius;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: $px20;
+        cursor: pointer;
+        .nav-link{
+          svg{
+            width: $px25;
+            height: $px25;
+          }
+        }
+      }
+
+      .setting-dropdown {
+        display: none;
+        background: #fff;
+        font-weight: 600;
+        position: absolute;
+        padding: $px10 $px25;
+        bottom: -$px70;
+        border: 1px solid $gray-light;
+        border-radius: $btn-border-radius;
+        background-color: #fff;
+        color: #000;
+        z-index: 10;
+        font-size: $px16;
+        li {
+          a {
+            font-size: $px18;
+            color: #555;
+            font-weight: 400;
+          }
+        }
+      }
+
+      .popup {
+        display: none;
+      }
+    }
+  }
+}

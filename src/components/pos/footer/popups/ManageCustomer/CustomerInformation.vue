@@ -17,14 +17,14 @@
                     data-dismiss="modal"
                     @click="updateModalSelectionDelivery('#order-confirmation')"
                   >
-                    Place New Order
+                    {{ _t('+ Place New Order') }}
                   </button>
                 </div>
               </div>
             </div>
             <CustomerInsights :pastOrders="pastOrders" />
           </div>
-          <h2 class="past-order">Past Orders</h2>
+          <h2 class="past-order">{{ _t('Past Orders') }}</h2>
           <CustomerPastOrders :pastOrders="pastOrders" />
         </div>
         <div class="modal-footer">
@@ -35,10 +35,10 @@
               :page-range="1"
               :margin-pages="1"
               :clickHandler="setPastOrderPageNumber"
-              :prev-text="'Prev'"
-              :next-text="'Next'"
+              :prev-text="_t('Prev')"
+              :next-text="_t('Next')"
               :container-class="''"
-              :page-class="'page-item'"
+              :page-class="_t('page-item')"
             >
             </paginate>
             <!--</template>-->
@@ -49,7 +49,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              <span>X</span> Dismiss
+              {{ _t('Dismiss') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import LoyaltyPoint from './CustomerInformation/LoyaltyPoint'
 import CustomerProfile from './CustomerInformation/CustomerProfile'
 import CustomerInsights from './CustomerInformation/CustomerInsights'
@@ -87,6 +87,7 @@ export default {
     ...mapState({
       pastOrders: state => state.customer.pastOrders,
     }),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     ...mapActions('customer', ['setPastOrderPageNumber']),

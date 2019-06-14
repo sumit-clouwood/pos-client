@@ -1,20 +1,18 @@
 <template>
-  <!--Added Breadcrumb here-->
-  <div class="vegetable-pizza-block">
-    <div class="vegetable-pizza">
-      <div
-        class="vegetable pos-item-bg"
-        v-for="item in items"
-        :key="item._id"
-        @click.prevent="addToOrder(item)"
-      >
-        <div>
-          <img :src="item.image" :alt="item.name" @error="imageLoadError()" />
-          <p class="remove-bottom popover-btn" :title="item.name">
-            {{ item.name }}
-          </p>
-        </div>
-      </div>
+  <div class="food-menu">
+    <div
+      class="food-menu-item"
+      v-for="item in items"
+      :key="item._id"
+      @click.prevent="addToOrder(item)"
+    >
+      <img
+        class="food-menu-item-img"
+        :src="item.image"
+        :alt="dt(item)"
+        @error="imageLoadError()"
+      />
+      <div class="food-menu-item-text">{{ dt(item) }}</div>
     </div>
     <Popup />
   </div>
@@ -74,23 +72,24 @@ export default {
       /* myDoc = myDoc.remove('.sticky-footer')*/
       for (let i = 0; i < document.images.length; i++) {
         if (!this.IsImageOk(document.images[i])) {
-          let hue =
-            'rgb(' +
+          let hue = 'bg'
+          /*'rgb(' +
             (Math.floor((256 - 199) * Math.random()) + 200) +
             ',' +
             (Math.floor((256 - 199) * Math.random()) + 200) +
             ',' +
             (Math.floor((256 - 199) * Math.random()) + 200) +
-            ')'
+            ')'*/
           $(document.images[i])
             .closest('div.pos-item-bg')
-            .css('background-color', hue)
+            .addClass(hue)
           $(document.images[i])
             .siblings('p')
             .css('font-size', '15px')
           $(document.images[i])
             .closest('div.pos-size-bg')
-            .css('background-color', hue)
+            .addClass(hue)
+          // .css('background-color', hue)
           $(document.images[i])
             .siblings('span')
             .css('font-weight', 'bold')
@@ -104,5 +103,5 @@ export default {
 <style lang="sass" scoped>
 .pos-item-bg
   img
-    max-width: 146px;
+    max-width: 146px
 </style>

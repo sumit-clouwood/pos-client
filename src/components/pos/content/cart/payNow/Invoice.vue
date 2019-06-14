@@ -1,70 +1,55 @@
-<!-- language show_price show_modifier_items                                                                                                                                                                                   show_modifier_notes show_combo_items
-    show_order_notes show_breakdown sub_total_label tax_label to_pay_label
-    -->
-
 <template>
-  <div class="invoice" id="printarea" v-if="print">
-    <DeliveryInvoice v-if="order.order_type === 'delivery'" />
-    <WalkinInvoice v-else />
+  <div class="invoice" id="printarea">
+    <iframe
+      ref="iframe"
+      width="100%"
+      frameborder="0"
+      @load="windowSizeChanged()"
+      :srcdoc="templateHtml"
+      v-if="print"
+    ></iframe>
   </div>
 </template>
 
 <script>
 /* global $ hidePayNow */
-import { mapState } from 'vuex'
-import WalkinInvoice from './invoice/WalkinInvoice'
-import DeliveryInvoice from './invoice/DeliveryInvoice'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Invoice',
   props: {},
   computed: {
-    ...mapState('checkout', ['print', 'order']),
+    ...mapState('checkout', ['print']),
+    ...mapGetters('invoice', ['templateHtml']),
   },
-  components: {
-    WalkinInvoice,
-    DeliveryInvoice,
+  components: {},
+  methods: {
+    windowSizeChanged() {
+      if (this.$refs.iframe) {
+        this.$nextTick(() => {
+          this.$refs.iframe.height =
+            this.$refs.iframe.contentWindow.document.body.scrollHeight + 1
+          this.doprint()
+        })
+      }
+    },
+    doprint() {
+      this.$refs.iframe.contentWindow.print()
+    },
   },
-  updated() {
-    if (this.$store.state.checkout.print) {
-      const w = window.open()
+  watch: {
+    templateHtml(newVal) {
+      if (newVal) {
+        this.$store.commit('checkout/PRINT', false)
+        this.$store.dispatch('checkout/reset')
 
-      const styles = `.invoice {
-        padding : 10px;
-      }
-      .left, .right {
-        display : inline-block;
-        width: 50%
-      }
+        if (this.$store.state.order.orderType.OTApi === 'call_center') {
+          this.$router.replace({ name: 'DeliveryManager' })
+        }
 
-      .right {
-        text-align:right !important;
+        $('.modal-backdrop').remove()
+        hidePayNow()
       }
-
-      .right div {
-          text-align:right !important;
-      }
-      .text-center {
-        text-align : center;
-      }
-      .text-left { text-align : left; }
-      .text-right {
-        text-align : right
-      }`
-
-      w.document.write('<style>' + styles + '</style>' + $('#printarea').html())
-      w.print()
-      w.close()
-
-      //becareful for circular dependency
-      this.$store.dispatch('checkout/reset')
-      this.$store.commit('checkout/PRINT', false)
-
-      if (this.$store.state.order.orderType === 'delivery') {
-        this.$router.replace({ name: 'DeliveryManager' })
-      }
-      $('.modal-backdrop').remove()
-      hidePayNow()
-    }
+    },
   },
 }
 </script>

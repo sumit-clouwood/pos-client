@@ -5,9 +5,9 @@ import db from '@/services/network/DB'
 import DateTime from '@/plugins/helpers/DateTime.js'
 
 const apiURL =
-  (process.env.NODE_ENV === 'production'
+  process.env.NODE_ENV === 'production'
     ? process.env.VUE_APP_API_ENDPOINT
-    : '') + '/api'
+    : process.env.VUE_APP_API_ENDPOINT + '/api'
 
 console.log('api url', process.env.NODE_ENV, apiURL)
 
@@ -47,6 +47,9 @@ export default {
   context: { store: '', brand: '' },
   setContext(context) {
     this.context = context
+  },
+  setLang(lang) {
+    this.lang = lang
   },
   getAbsUrl(url) {
     return url.replace(/last_sync_date=[^&]*&?/, '')
@@ -124,6 +127,11 @@ export default {
     })
   },
 
+  getT(url, level) {
+    url += '&translations_needed=1&lang=' + this.lang
+    return this.get(url, level)
+  },
+
   getCacheable(url, level) {
     url = this.getContextUrl(url, level)
     const absUrl = this.getAbsUrl(url)
@@ -174,6 +182,10 @@ export default {
         })
         .catch(error => reject(error))
     })
+  },
+
+  factory() {
+    return axios
   },
 
   saveEventOffline({ request, response }) {

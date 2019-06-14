@@ -1,34 +1,47 @@
 <template>
-  <div class="breadcrumb-category">
-    <ul class="ullist-category">
-      <li>
-        <span>Selected Category</span>
-        <p class="shorten_name" :title="category.name">{{ category.name }}</p>
-        <span class="arrows"
-          ><img src="img/pos/right-arrow.png" alt="right-arrow"
-        /></span>
-      </li>
-      <li v-if="subcategory">
-        <span>Selected Sub Category </span>
-        <p class="shorten_name" :title="subcategory.sub_category">
-          {{ subcategory.name }}
-        </p>
-        <span class="arrows"
-          ><img src="img/pos/right-arrow.png" alt="right-arrow"
-        /></span>
-      </li>
-      <li v-if="item">
-        <span>Selected Item</span>
-        <p :title="item.name" class="shorten_name">
-          {{ item.name }}
-        </p>
-      </li>
-    </ul>
+  <div class="breadcrumbs">
+    <div class="breadcrumbs-item breadcrumbs-category">
+      <div class="title-box">
+        <div class="breadcrumbs-subtitle">{{ _t('Category') }}</div>
+        <div class="breadcrumbs-title shorten-sentence" :title="dt(category)">
+          {{ dt(category) }}
+        </div>
+      </div>
+      <img
+        class="breadcrumbs-img"
+        src="img/pos/right-arrow.png"
+        alt="right-arrow"
+      />
+    </div>
+    <div class="breadcrumbs-item breadcrumbs-sub-category" v-if="subcategory">
+      <div class="title-box">
+        <div class="breadcrumbs-subtitle">{{ _t('Sub Category Name') }}</div>
+        <div
+          class="breadcrumbs-title shorten-sentence"
+          :title="dt(subcategory)"
+        >
+          {{ dt(subcategory) }}
+        </div>
+      </div>
+      <img
+        class="breadcrumbs-img"
+        src="img/pos/right-arrow.png"
+        alt="right-arrow"
+      />
+    </div>
+    <div class="breadcrumbs-item breadcrumbs-menu" v-if="item">
+      <div class="title-box">
+        <div class="breadcrumbs-subtitle">{{ _t('Item') }}</div>
+        <div class="breadcrumbs-title shorten-sentence" :title="dt(item)">
+          {{ dt(item) }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Breadcrumbs',
@@ -37,11 +50,12 @@ export default {
   },
   computed: {
     ...mapState('category', ['category', 'subcategory', 'item']),
+    ...mapGetters('location', ['_t']),
   },
 }
 </script>
 <style scoped>
-ul.ullist-category {
+/*ul.ullist-category {
   width: 500px !important;
-}
+}*/
 </style>

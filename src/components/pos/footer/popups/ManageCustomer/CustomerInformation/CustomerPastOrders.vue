@@ -2,15 +2,15 @@
   <div class="manage-customer-table">
     <table class="table table-responsive">
       <tr>
-        <th style="width: 190px">ORDER NUMBER</th>
-        <th style="width: 250px">DATE & TIME</th>
-        <th style="width: 190px">TYPE</th>
-        <th style="width: 255px">TIME TAKEN</th>
-        <th style="width: 190px">AMOUNT</th>
-        <th style="width: 190px">STATUS</th>
-        <th style="width: 140px">DRIVER</th>
-        <th style="width: 205px">AGENT</th>
-        <th style="width: 290px">SOURCE</th>
+        <th style="width: 190px">{{ _t('Order Number') }}</th>
+        <th style="width: 250px">{{ _t('Date/Time') }}</th>
+        <th style="width: 190px">{{ _t('Type') }}</th>
+        <th style="width: 255px">{{ _t('Time Taken') }}</th>
+        <th style="width: 190px">{{ _t('Amount') }}</th>
+        <th style="width: 190px">{{ _t('Status') }}</th>
+        <th style="width: 140px">{{ _t('Driver') }}</th>
+        <th style="width: 205px">{{ _t('Agent') }}</th>
+        <th style="width: 290px">{{ _t('Order Source') }}</th>
       </tr>
       <tr
         class="referal-code-customer"
@@ -56,6 +56,7 @@
                 />
               </g>
             </svg>
+            {{ _t('Show Details') }}
           </span>
         </td>
       </tr>
@@ -66,7 +67,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 // import OrderDetailsPopup from '@/components/partial/OrderDetailPopup'
 export default {
@@ -82,6 +83,7 @@ export default {
     ...mapState({
       users: state => state.customer.lookups.users,
     }),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     ...mapActions('order', ['selectedOrderDetails']),

@@ -6,7 +6,7 @@
       </p>
     </div>
     <div class="aed-amt">
-      <span>{{ orderData.currency }} {{ orderData.balance_due }}</span>
+      <span>{{ formatPrice(orderData.balance_due || 0) }}</span>
     </div>
     <div class="dlt-btn" @click="dropHoldOrder(orderData)">
       <img src="img/pos/delete-icon.svg" alt="delete" />
@@ -17,16 +17,20 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 /* global $ */
+import { mapGetters } from 'vuex'
 export default {
   name: 'Items',
   props: {
     orderData: Object,
   },
+  computed: {
+    ...mapGetters('location', ['formatPrice']),
+  },
   methods: {
     setHoldOrderCart: function(orderData) {
       this.$store.dispatch('holdOrders/fetchOrder', orderData)
-      $('.holding-order-panel').toggle()
-      $('.order-wrappers-panel').toggle()
+      $('.wrappers-order-block').toggleClass('show')
+      $('.main-orders-list').toggleClass('hide')
       $('ul.ullist-icons > li#hold-order-box').toggleClass('active')
     },
 

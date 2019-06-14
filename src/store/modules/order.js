@@ -9,12 +9,13 @@ const DISCOUNT_ORDER_ERROR_TOTAL =
 const state = {
   items: [],
   item: false,
-  orderType: 'walk_in',
+  orderType: { OTview: 'Walk In', OTApi: 'walk_in' },
   orderNote: '',
   onlineOrders: false,
   futureOrder: false,
   referral: false,
   selectedOrder: false,
+  orderId: null,
   // pastOrder: false,
 }
 
@@ -93,14 +94,16 @@ const actions = {
 
     commit(mutation.SET_ITEM, item)
 
-    const index = state.items.findIndex(
+    /* const index = state.items.findIndex(
       orderItem => orderItem._id === state.item._id
     )
     if (index > -1) {
       commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, index)
     } else {
       commit(mutation.ADD_ORDER_ITEM, state.item)
-    }
+    } */
+
+    commit(mutation.ADD_ORDER_ITEM, state.item)
 
     dispatch('surcharge/calculate', {}, { root: true }).then(() =>
       dispatch('tax/calculate', {}, { root: true }).then(() => {
@@ -138,10 +141,32 @@ const actions = {
     }
   },
 
+  removeTax({ commit, state, rootState, dispatch, getters }) {
+    let item = { ...state.item }
+    if (!item.originalTax) {
+      item.originalTax = item.tax_sum
+    }
+    item.tax_sum = 0
+    item.grossPrice = item.value
+    item.netPrice = getters.netPrice(item)
+    //replace item in cart
+    commit(mutation.REPLACE_ORDER_ITEM, {
+      item: item,
+    })
+    dispatch('surcharge/calculate', {}, { root: true }).then(
+      dispatch('tax/calculate', {}, { root: true }).then(() => {
+        if (rootState.discount.appliedOrderDiscount) {
+          dispatch('recalculateOrderTotals')
+        } else {
+          dispatch('recalculateItemPrices')
+        }
+      })
+    )
+  },
+
   addModifierOrder({ commit, getters, rootState, dispatch, rootGetters }) {
     return new Promise((resolve, reject) => {
       let item = { ...rootState.modifier.item }
-
       //this comes through the modifier popup
       item.grossPrice = item.value
       item.netPrice = getters.netPrice(item)
@@ -211,14 +236,25 @@ const actions = {
       //we need to consult modifier store for modifier data ie price
 
       const modifierSubgroups = rootGetters['modifier/itemModifiers'](item._id)
+      let modifierTaxData = []
       modifierSubgroups.forEach(subgroup => {
         subgroup.modifiers.forEach(modifier => {
           if (item.modifiers.includes(modifier._id)) {
-            modifierPrice += parseFloat(modifier.value || 0)
+            modifierTaxData.push({
+              itemId: item._id,
+              modifierId: modifier._id,
+              price: modifier.value ? modifier.value : 0,
+              tax: modifier.value ? (modifier.value * item.tax_sum) / 100 : 0,
+            })
           }
         })
       })
 
+      dispatch('tax/setModifierTaxData', modifierTaxData, { root: true })
+
+      modifierPrice = modifierTaxData.reduce((total, modifier) => {
+        return total + modifier.price
+      }, 0)
       //modifier price is without tax price, we need to implement tax on that
       //get item tax and implement that on modifier price
       const modifiersTax = (modifierPrice * item.tax_sum) / 100
@@ -238,7 +274,7 @@ const actions = {
         //update current item with new modifiers
 
         //check if item exists with same signature
-
+        /*
         let itemExists = -1
 
         state.items.forEach((orderItem, index) => {
@@ -258,12 +294,14 @@ const actions = {
         } else {
           commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
         }
+        */
+        commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
       } else {
         //edit mode
         //if the signature was different then modify modifiers,
         //as we are creating new item and attached modifiers again so its better to just
         //replace that item in state with existing item
-        commit(mutation.UPDATE_MODIFER_ORDER_ITEM, {
+        commit(mutation.REPLACE_ORDER_ITEM, {
           item: state.item,
         })
       }
@@ -287,22 +325,21 @@ const actions = {
     //get current item
     //this is fired by the items.vue
     let item = { ...state.items[index] }
-
     item.editMode = true
     item.quantity = orderItem.quantity
+    item.netPrice = orderItem.netPrice
     item.orderIndex = index
-
     commit(mutation.SET_ITEM, item)
 
-    if (item.modifiable) {
-      dispatch(
-        'modifier/setActiveItem',
-        { item: item },
-        {
-          root: true,
-        }
-      )
-    }
+    // if (item.modifiable) {
+    dispatch(
+      'modifier/setActiveItem',
+      { item: item },
+      {
+        root: true,
+      }
+    )
+    // }
   },
   recalculateOrderTotals({ rootState, getters, rootGetters, dispatch }) {
     return new Promise((resolve, reject) => {
@@ -510,22 +547,7 @@ const actions = {
       })
     )
   },
-  removeItemTax({ state, commit, dispatch, rootState }) {
-    let item = { ...state.item }
-    //remove tax information from the order and recalculate the tax
-    item.removedTax = item.item_tax
-    item.item_tax = false
 
-    //splice item at index
-    commit(mutation.REMOVE_ITEM_TAX, item)
-    dispatch('tax/calculate', {}, { root: true }).then(() => {
-      if (rootState.discount.appliedOrderDiscount) {
-        dispatch('recalculateOrderTotals')
-      } else {
-        dispatch('recalculateItemPrices')
-      }
-    })
-  },
   reset({ commit }) {
     commit(mutation.RESET)
   },
@@ -555,7 +577,7 @@ const actions = {
 
   deliveryOrder({ commit, dispatch }, { referral, futureOrder }) {
     return new Promise((resolve, reject) => {
-      commit(mutation.ORDER_TYPE, 'delivery')
+      commit(mutation.ORDER_TYPE, { OTview: 'Delivery', OTApi: 'call_center' })
       commit(mutation.SET_REFERRAL, referral)
       if (futureOrder != null) {
         commit(mutation.SET_FUTURE_ORDER, futureOrder)
@@ -569,7 +591,6 @@ const actions = {
   updateOrderType({ commit }, orderType) {
     commit(mutation.ORDER_TYPE, orderType)
   },
-
   addHoldOrder({ rootState, dispatch }, item_ids) {
     dispatch('reset')
     const allItems = rootState.category.items
@@ -649,7 +670,7 @@ const mutations = {
     })
   },
 
-  [mutation.UPDATE_MODIFER_ORDER_ITEM](state, { item }) {
+  [mutation.REPLACE_ORDER_ITEM](state, { item }) {
     state.items.splice(item.orderIndex, 1, item)
   },
 
@@ -676,12 +697,10 @@ const mutations = {
   [mutation.UPDATE_ITEM_QUANTITY](state, quantity) {
     const index = state.item.orderIndex
     let orderItem = state.items[index]
-    orderItem.quantity = quantity
+    orderItem.quantity = typeof quantity != 'undefined' ? quantity : 1
     state.items.splice(index, 1, orderItem)
   },
-  [mutation.REMOVE_ITEM_TAX](state, item) {
-    state.items.splice(item.orderIndex, 1, item)
-  },
+
   [mutation.RESET](state) {
     state.items = []
     state.item = false
@@ -691,6 +710,7 @@ const mutations = {
     state.orderNote = orderNote
   },
   [mutation.ORDER_TYPE](state, orderType) {
+    // state.orderType = orderType.charAt(0).toUpperCase() + orderType.slice(1)
     state.orderType = orderType
   },
   [mutation.SET_REFERRAL](state, referral) {
@@ -698,6 +718,9 @@ const mutations = {
   },
   [mutation.SET_FUTURE_ORDER](state, futureOrder) {
     state.futureOrder = futureOrder
+  },
+  [mutation.SET_ORDER_ID](state, id) {
+    state.orderId = id
   },
   [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId, orderDetails }) {
     localStorage.setItem('onlineOrders', JSON.stringify(orderDetails))

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table width="100%">
+    <table width="100%" cellpadding="4" cellspacing="4">
       <tr>
         <th class="text-left" width="15%">
           {{ labels.qty_label }}
@@ -15,14 +15,16 @@
       <tr v-for="item in items" :key="item._id">
         <td>{{ item.quantity }}</td>
         <td>
-          {{ itemName(item) }}
-          <div v-if="item.modifiers">
+          <span class="item-name">{{ itemName(item) }}</span>
+          <div v-if="item.modifiers" class="modifiers">
             <span>
-              {{ modifiers(item) }}
+              <i v-html="modifiers(item)"></i>
             </span>
           </div>
         </td>
-        <td class="text-right">{{ formatPrice(item.item_price_each) }}</td>
+        <td class="text-right">
+          {{ formatPrice(item.item_discount_price * item.quantity) }}
+        </td>
       </tr>
     </table>
   </div>
@@ -50,7 +52,7 @@ export default {
         modifiers.push(modifier.item_name)
       )
 
-      return modifiers.join(', ')
+      return modifiers.join('</i>, <i>')
     },
     itemName(item) {
       const engName = item.item_name.find(locale => locale.language == 'en_US')
@@ -71,3 +73,11 @@ export default {
   },
 }
 </script>
+<style lang="sass" scoped>
+.item-name
+  font-size: 16px
+.modifiers
+  margin-left: 10px
+  span
+    font-size: 14pxcccc
+</style>

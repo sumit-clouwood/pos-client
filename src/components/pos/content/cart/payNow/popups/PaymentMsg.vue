@@ -7,7 +7,7 @@
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title">
-            Order
+            {{ _t('Order') }}
           </h4>
         </div>
         <div class="modal-body change-amount-option">
@@ -25,7 +25,7 @@
               @click="generateInvoice()"
               id="dining-opt"
             >
-              Ok
+              {{ _t('Ok') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 /* global $ */
 import { mapState } from 'vuex'
 import Preloader from '@/components/util/Preloader'
@@ -50,10 +51,12 @@ export default {
     generateInvoice() {
       $('#pay-now').modal('toggle')
       this.$store.dispatch('checkout/generateInvoice')
+      $('#transparent-screen').hide()
     },
   },
   computed: {
     ...mapState('checkoutForm', ['msg']),
+    ...mapGetters('location', ['_t']),
   },
 }
 </script>

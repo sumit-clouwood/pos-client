@@ -1,40 +1,66 @@
 <template>
-  <div>
-    <div class="wrappers-new-orders">
-      <div class="order">
-        <h5>New Orders</h5>
-        <p>
-          {{ todayDateFull }}
-        </p>
-      </div>
-      <div class="account-name" v-if="selectedCustomer">
-        <p v-if="selectedCustomer.email != ''">
-          Email : {{ selectedCustomer.email }}
-        </p>
-        <p v-if="selectedCustomer.name != '' && selectedCustomer.email == ''">
-          Name : {{ selectedCustomer.name }}
-        </p>
-        <p v-if="selectedCustomer.phone_number">
-          Phone : {{ selectedCustomer.phone_number }}
-        </p>
-      </div>
+  <div class="main-orders-contacts">
+    <div class="main-oreders-title">{{ _t('New Orders') }}</div>
+    <div class="main-oreders-email" v-if="selectedCustomer">
+      <p v-if="selectedCustomer.email != ''">
+        {{ _t('Email') }} : {{ selectedCustomer.email }}
+      </p>
+      <p v-if="selectedCustomer.name != '' && selectedCustomer.email == ''">
+        {{ _t('Name') }} : {{ selectedCustomer.name }}
+      </p>
+      <p v-if="selectedCustomer.phone_number">
+        {{ _t('Phone') }} : {{ selectedCustomer.phone_number }}
+      </p>
     </div>
-    <div class="table-pos-btn hide">
-      <button type="" class="popup-btn-save">Move Table</button>
-      <button type="" class="popup-btn-save">Split Table</button>
-      <button type="" class="popup-btn-save">Hold</button>
+    <div class="main-oreders-date">{{ DateToday }}</div>
+    <div class="main-oreders-buttons" v-if="items.length">
+      <!--<div class="orders-button-large" disabled="disable">
+        {{ _t('Move Table') }}
+      </div>
+      <div class="orders-button-large" disabled="disable">
+        {{ _t('Split Table') }}
+      </div>-->
+      <div class="orders-button-large" @click="hold">{{ _t('Hold') }}</div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+/* global $ */
+import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Header',
   props: {},
+
   computed: {
-    ...mapGetters('sync', ['todayDateFull']),
+    ...mapGetters('location', ['_t']),
+    ...mapState('order', ['items']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
+  },
+  methods: {
+    hold() {
+      this.orderOnHold('on-hold')
+      this.$store
+        .dispatch('checkout/pay', { action: 'on-hold' })
+        .then(() => {
+          if (this.changedAmount >= 0.1) {
+            $('#payment-msg').modal('hide')
+            $('#change-amount').modal('show')
+          } else if (this.msg) {
+            $('#payment-msg').modal('show')
+          }
+          setTimeout(function() {
+            $('#payment-screen-footer').prop('disabled', false)
+          }, 1000)
+        })
+        .catch(() => {
+          setTimeout(() => {
+            $('#payment-msg').modal('hide')
+            $('#payment-screen-footer').prop('disabled', false)
+          }, 500)
+        })
+    },
+    ...mapActions('checkout', ['orderOnHold']),
   },
 }
 </script>

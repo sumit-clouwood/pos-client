@@ -8,9 +8,10 @@
       :data-toggle="getToggle(method)"
       :data-target="getTarget(method)"
     >
-      <img :src="image(method.icon)" alt="method.name" /> <br /><label>{{
-        method.name
-      }}</label>
+      <img :src="image(method.icon)" :alt="method.name" :title="method.name" />
+      <label class="shorten-sentence" :title="method.name">
+        {{ method.name }}
+      </label>
     </div>
   </div>
 </template>
@@ -32,16 +33,25 @@ export default {
   },
   methods: {
     getToggle(method) {
-      if (method.name == CONSTANTS.LOYALTY) {
+      if (method.type == CONSTANTS.LOYALTY) {
         return 'modal'
       }
       return ''
     },
-    image() {
-      return 'https://fakeimg.pl/46x46/?text=Third&font=lobster%22'
+    image(imgPath) {
+      // return process.env.BASE_URL + imgPath
+      if (imgPath) {
+        if (imgPath.indexOf('https://') != -1) {
+          return imgPath
+        } else {
+          return process.env.BASE_URL + imgPath
+        }
+      } else {
+        return 'https://fakeimg.pl/46x46/?text=Third&font=lobster%22'
+      }
     },
     getTarget(method) {
-      if (method.name == CONSTANTS.LOYALTY) {
+      if (method.type == CONSTANTS.LOYALTY) {
         if (this.selectedModal == '#manage-customer') {
           return '#search-loyalty-customer'
         } else {
@@ -57,5 +67,5 @@ export default {
 </script>
 <style lang="sass" scoped>
 img
-  height: '46px'
+  height: 46px
 </style>

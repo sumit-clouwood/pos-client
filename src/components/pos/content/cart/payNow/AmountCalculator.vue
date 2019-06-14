@@ -17,15 +17,20 @@
     <div id="clearcalc" class="" @click="reset()">c</div>
     <div class="payment-key" @click="set('0')">0</div>
     <div class="payment-key" @click="set('.')">.</div>
-    <div id="add-amt" @click="addAmount">Add</div>
+    <div id="add-amt" @click="addAmount">{{ _t('+ Add') }}</div>
   </div>
 </template>
 
 <script>
 /* global showModal*/
 import * as CONST from '@/constants'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'AmountCalculator',
+  computed: {
+    ...mapGetters('location', ['_t']),
+    ...mapState('checkoutForm', ['method']),
+  },
   data() {
     return {
       init: false,
@@ -33,31 +38,19 @@ export default {
   },
   methods: {
     addAmount() {
-      if (this.$store.state.checkoutForm.method.reference_code) {
-        //display reference popup
-        if (this.$store.state.checkoutForm.method.name == CONST.GIFT_CARD) {
-          this.$store
-            .dispatch('checkoutForm/validateGiftPayment')
-            .then(() => {
-              showModal('#Gift-card-payemnt')
-            })
-            .catch()
-        } else if (
-          this.$store.state.checkoutForm.method.name == CONST.LOYALTY
-        ) {
-          //do check here
+      this.$store.commit('checkoutForm/setAction', 'add')
+      this.$store.dispatch('checkoutForm/validatePayment').then(() => {
+        if (this.method.type == CONST.GIFT_CARD) {
+          showModal('#Gift-card-payemnt')
+        } else if (this.method.type == CONST.LOYALTY) {
+          //show loyalty popup if needed
+        } else if (this.method.reference_code) {
+          showModal('#card-payemnt')
         } else {
-          this.$store
-            .dispatch('checkoutForm/validateCardPayment')
-            .then(() => {
-              showModal('#card-payemnt')
-            })
-            .catch()
+          //cash payments
+          this.$store.dispatch('checkoutForm/addAmount')
         }
-      } else {
-        //its cash type
-        this.$store.dispatch('checkoutForm/addAmount').then(() => {})
-      }
+      })
     },
     set(amount) {
       if (!this.init) {

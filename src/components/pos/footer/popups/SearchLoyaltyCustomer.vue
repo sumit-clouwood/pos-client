@@ -6,15 +6,15 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Loyalty</h4>
+          <h4 class="customer-title">{{ _t('Loyalty') }}</h4>
         </div>
         <form class="modal-body add-note-wrap" autocomplete="off">
           <div class="add-note-area">
-            <p>Select customer to get loyalty</p>
+            <p>{{ _t('Jump to customer') }}</p>
             <input
               autocomplete="off"
               type="text"
-              placeholder="Search..."
+              :placeholder="_t('Search')"
               class="inputSearch"
               id="getCustomerList"
               v-model="searchTerm"
@@ -31,10 +31,13 @@
                 role="status"
                 aria-hidden="true"
                 ><i class="fa fa-circle-o-notch fa-spin" id="searchLoader"></i>
-                Find</span
+                {{ _t('Search') }}</span
               >
             </button>
           </div>
+          <span class="loyalty-error text-danger loyalty-customer-error">
+            {{ _t(searchCustomerErr) }}
+          </span>
           <div class="dropdown" v-if="customers.length">
             <div id="myDropdown" class="dropdown-content">
               <span
@@ -49,13 +52,21 @@
           </div>
         </form>
         <div class="modal-footer">
+          <div
+            data-toggle="modal"
+            data-target="#customer"
+            data-dismiss="modal"
+            class="cursor-pointer blue-middle"
+          >
+            {{ _t('Create New Customer') }}
+          </div>
           <div class="btn-announce">
             <button
               type="button"
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              <span>X</span> Cancel
+              {{ _t('Cancel') }}
             </button>
             <button
               @click="addLoyalty"
@@ -63,7 +74,7 @@
               type="button"
               id="save-note"
             >
-              Select
+              {{ _t('Select') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -78,7 +89,7 @@
 
 <script>
 /* global $ */
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'SearchLoyaltyCustomer',
   props: {},
@@ -87,20 +98,29 @@ export default {
       searchTerm: '',
       customerId: '',
       inputTimer: '',
+      searchCustomerErr: '',
     }
   },
   computed: {
     ...mapState({
       customers: state => state.customer.customer_list,
     }),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     addLoyalty: function() {
-      $('#search-loyalty-customer').modal('toggle')
-      this.fetchSelectedCustomer(this.customerId)
+      if (this.customerId.length > 0) {
+        this.searchCustomerErr = ''
+        $('.text-danger').hide()
+        $('#search-loyalty-customer').modal('toggle')
+        this.fetchSelectedCustomer(this.customerId)
+      } else {
+        this.searchCustomerErr = 'Please Select Customer'
+      }
     },
 
     selectCustomer(customer) {
+      this.searchCustomerErr = ''
       this.searchTerm = customer.name
       this.customerId = customer._id
       $('#myDropdown').toggle()
@@ -114,7 +134,13 @@ export default {
           this.$store
             .dispatch('customer/searchCustomer', this.searchTerm)
             .then(() => {
+              this.searchCustomerErr = ''
               $('#searchLoader').hide()
+              $('#myDropdown').toggle()
+            })
+            .catch(() => {
+              $('#searchLoader').hide()
+              this.searchCustomerErr = 'No Results Found'
             })
         }, 500)
       }
@@ -128,7 +154,7 @@ export default {
 .dropdown {
   position: relative;
 }
-#searchLoader {
+#searchLoader, .dropdown-content {
   display:none;
 }
 .dropdown-content {
@@ -150,14 +176,13 @@ export default {
   display: block;
 }
 .inputSearch{
-  width: 85%;
+  width: 82%;
+  padding-bottom: 11px;
   height: 48px;
   border-radius: 5px 0px 0px 5px;
 }
 .btnSuccess{
   color: #fff;
-  background-color: #28a745;
-  border-color: #28a745;
   height: 47px;
   border-radius: 0px 5px 5px 0px;
 }

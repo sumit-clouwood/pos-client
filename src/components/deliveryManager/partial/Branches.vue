@@ -5,7 +5,7 @@
     </button>
     <ul class="dropdown-menu">
       <li>
-        <a href="#" @click="getLocationOrders(locationId)">{{
+        <a href="javascript:void(0)" @click="getLocationOrders(locationId)">{{
           locationName
         }}</a>
       </li>

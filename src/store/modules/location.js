@@ -25,10 +25,8 @@ const getters = {
   },
   _t: state => str => {
     if (state.translations[str]) {
-      console.log(state.translations[str] + 'trans')
       return state.translations[str]
     }
-    console.log(state.translations[str] + ' no translation ' + str)
     return str
   },
 }
@@ -37,34 +35,33 @@ const getters = {
 const actions = {
   fetch({ state, commit, dispatch }) {
     return new Promise((resolve, reject) => {
-      LocationService.getLocationData(state.locale)
-        .then(response => {
-          commit(mutation.SET_STORE, response.data.store)
-          commit(mutation.SET_BRAND, response.data.brand)
-          commit(mutation.SET_LOCALE, response.data.lang)
-          commit(mutation.SET_LANGUAGE_DIRECTION, response.data.direction)
-          commit(mutation.SET_TRASLATIONS, response.data.translations)
-          commit(mutation.SET_AVAILABLE_LANGUAGES, response.data.available_lang)
+      LocationService.getLocationData()
+        .then(storedata => {
+          commit(mutation.SET_STORE, storedata.data.store)
+          commit(mutation.SET_BRAND, storedata.data.brand)
+          commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
+          commit(mutation.SET_TRASLATIONS, storedata.data.translations)
+          commit(
+            mutation.SET_AVAILABLE_LANGUAGES,
+            storedata.data.available_lang
+          )
+
           commit(mutation.SET_LOCATION, state.store.address)
           commit(mutation.SET_CURRENCY, state.store.currency)
-          commit(mutation.SET_TIMEZONE, state.store.timezone)
+          commit(mutation.SET_TIMEZONE, state.brand.timezone)
 
           commit('modules/SET_ENABLED_MODULES', state.brand.enabled_modules, {
             root: true,
           })
+
           dispatch('referrals')
-          let locale = state.locale
-          if (localStorage.getItem('locale')) {
-            locale = localStorage.getItem('locale')
-          } else if (state.store.default_language) {
-            locale = state.store.default_language
-          }
 
-          commit(mutation.SET_LOCALE, locale)
+          //  else if (state.store.default_language) {
+          //   locale = state.store.default_language
+          // }
+          // take out else part,as discussed with Alex language ll be dependent on cashier login
 
-          //We are setting franchise code as the location name so we can just go with that
-
-          resolve()
+          resolve(state.locale)
           // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
         })
         .catch(error => {
@@ -77,17 +74,16 @@ const actions = {
       commit(mutation.SET_REFERRALS, response.data.data)
     })
   },
-  changeLanguage({ commit, dispatch }, locale) {
+  changeLanguage({ commit }, locale) {
     commit(mutation.SET_LOCALE, locale)
-    localStorage.setItem('locale', locale)
-    dispatch('fetch')
+    //dispatch('fetch')
 
-    let direction = state.languageDirection
+    /*let direction = state.languageDirection
     document.body.style.direction = direction
     // Vue.prototype.$vuetify.rtl = direction == 'ltr' ? false : true
     document.body.classList.remove('body-ltr')
     document.body.classList.remove('body-rtl')
-    document.body.classList.add('body-' + direction)
+    document.body.classList.add('body-' + direction)*/
   },
 
   updateModalSelectionDelivery({ commit }, modalSelection) {
@@ -111,6 +107,7 @@ const mutations = {
   },
   [mutation.SET_LOCALE](state, locale) {
     state.locale = locale
+    localStorage.setItem('locale', locale)
   },
   [mutation.SET_LOCATION](state, location) {
     state.location = location

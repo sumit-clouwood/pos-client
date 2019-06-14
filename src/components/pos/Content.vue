@@ -1,19 +1,23 @@
 <template>
-  <div class="row inner-container">
-    <Catalog />
+  <div class="main">
+    <Announcement />
+    <catalog />
     <Cart />
   </div>
 </template>
 
 <script>
-import Cart from './content/Cart'
 import Catalog from './content/Catalog'
+import Announcement from './header/Announcement'
+import Cart from './content/Cart'
+
 export default {
-  name: 'Content',
+  name: 'Contents',
   props: {},
   components: {
     Catalog,
     Cart,
+    Announcement,
   },
 }
 </script>

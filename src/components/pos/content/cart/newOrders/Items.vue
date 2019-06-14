@@ -1,35 +1,34 @@
 <template>
-  <div class="order-item wrappers-order-block" v-if="items">
+  <div class="main-orders-list" v-if="items">
     <div
-      class="wrappers-orders"
+      class="main-orders-list-item"
       v-for="(item, index) in items"
       :key="index + '-' + item._id"
     >
-      <div class="orders-name">
-        <p>{{ item.name }}</p>
-        <p class="price-qty">
-          @ {{ Num.round(item.undiscountedNetPrice) }} x {{ item.quantity }}
-          {{ discountInfo(item) }}
-        </p>
-        <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
-        <span data-toggle="modal" data-target="#POSOrderItemOptions">
-          <img
-            src="img/pos/plus-icon.png"
-            alt="plus"
-            @click="setActiveItem({ orderItem: item, index: index })"
-          />
-        </span>
-      </div>
-      <div class="aed-amt">
-        <span>{{ formatPrice(itemPrice(item)) }}</span>
-      </div>
-      <div class="dlt-btn">
-        <a
-          href=""
+      <div class="main-orders-list-item-title">
+        <div class="orders-name">{{ dt(item) }}</div>
+        <div class="orders-amount">{{ formatPrice(itemPrice(item)) }}</div>
+        <div
+          class="orders-close"
           @click.prevent="removeFromOrder({ item: item, index: index })"
         >
-          <img src="img/pos/delete-icon.svg" alt="delete" />
-        </a>
+          <i class="fa fa-trash-o" aria-hidden="true" :alt="_t('delete')"></i>
+        </div>
+      </div>
+      <div class="main-orders-list-item-subtitle">
+        @ {{ Num.round(item.undiscountedNetPrice) }} x {{ item.quantity }}
+        {{ discountInfo(item) }}
+      </div>
+      <div class="main-orders-list-item-buttons">
+        <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
+        <div
+          class="button-plus"
+          data-toggle="modal"
+          data-target="#POSItemOptions"
+          @click="setActiveItem({ orderItem: item, index: index })"
+        >
+          <img src="img/pos/plus-icon.png" alt="plus" />
+        </div>
       </div>
     </div>
   </div>

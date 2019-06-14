@@ -41,6 +41,10 @@ const getters = {
     )
   },
   subcategoryItems: state => {
+    if (!state.subcategory) return []
+    //Reset all search results if any category items are fetched
+    state.searchItems = ''
+
     return state.items.filter(
       item =>
         item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_CATEGORY] ===
@@ -56,10 +60,13 @@ const getters = {
 
     if (state.searchItems.length) {
       items = state.searchItems
-    } else if (categoryItems.length) {
-      items = categoryItems
-    } else if (subcategoryItems.length) {
-      items = subcategoryItems
+    } else {
+      if (categoryItems.length) {
+        items = categoryItems
+      }
+      if (subcategoryItems.length) {
+        items = categoryItems.concat(subcategoryItems)
+      }
     }
     return items
   },
@@ -81,7 +88,7 @@ const getters = {
 
 // actions, often async
 const actions = {
-  fetchAll({ commit, dispatch }) {
+  fetchAll({ commit, dispatch, rootState }) {
     return new Promise((resolve, reject) => {
       CategoryService.categories()
         .then(response => {
@@ -91,7 +98,9 @@ const actions = {
             commit(mutation.SET_SUBCATEGORIES, response.data.data)
             CategoryService.items().then(response => {
               commit(mutation.SET_ITEMS, response.data.data)
-              dispatch('browse', state.categories[0])
+              if (!rootState.sync.reloaded) {
+                dispatch('browse', state.categories[0])
+              }
               resolve()
             })
           })
@@ -102,11 +111,13 @@ const actions = {
 
   collectSearchItems({ commit, state }, searchTerm) {
     let searchedItems = []
-    state.items.map(item => {
-      if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
-        searchedItems.push(item)
-      }
-    })
+    if (searchTerm.length > 0) {
+      state.items.map(item => {
+        if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
+          searchedItems.push(item)
+        }
+      })
+    }
     commit(mutation.SET_SEARCH_ITEMS, { items: searchedItems })
   },
 
@@ -114,6 +125,7 @@ const actions = {
   browse({ commit, getters }, category) {
     commit(mutation.SET_CATEGORY, category)
     commit(mutation.SET_SUBCATEGORY, getters.subcategories[0])
+    //reload the ui
   },
   getItems({ commit }, subcategory) {
     commit(mutation.SET_SUBCATEGORY, subcategory)
@@ -129,6 +141,7 @@ const mutations = {
 
   [mutation.SET_CATEGORY](state, category) {
     state.category = category
+    state.subcategory = null
   },
 
   [mutation.SET_SUBCATEGORIES](state, subcategories) {
@@ -137,6 +150,7 @@ const mutations = {
 
   [mutation.SET_SUBCATEGORY](state, subcategory) {
     state.subcategory = subcategory
+    state.item = null
   },
 
   [mutation.SET_ITEMS](state, items) {
@@ -147,7 +161,11 @@ const mutations = {
     state.item = item
   },
   [mutation.SET_SEARCH_ITEMS](state, items) {
-    state.searchItems = items.items
+    if (items.items.length > 0) {
+      state.searchItems = items.items
+    } else {
+      state.searchItems = {}
+    }
   },
 }
 

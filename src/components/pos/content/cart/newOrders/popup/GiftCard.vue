@@ -10,11 +10,11 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Gift Card</h4>
+          <h4 class="customer-title">{{ _t('Gift Card') }}</h4>
         </div>
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
-            <p>Enter Gift Card Code</p>
+            <p>{{ _t('Enter Gift Card Code') }}</p>
             <input type="text" class="add-email-from" v-model="code" />
           </div>
           <div v-show="error" class="msg">
@@ -31,7 +31,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              <span>-</span> Cancel
+              {{ _t('Cancel') }}
             </button>
             <button
               class="btn btn-success btn-large popup-btn-save"
@@ -41,7 +41,7 @@
               data-target="#Gift-card-payemnt-details"
               @click="payByGiftCard"
             >
-              Add
+              {{ _t('Add') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -51,7 +51,8 @@
   </div>
 </template>
 <script>
-/* global showModal, hideModal */
+import { mapGetters } from 'vuex'
+/* global $ showModal, hideModal */
 export default {
   name: 'GiftCard',
   data: function() {
@@ -60,6 +61,9 @@ export default {
       error: false,
       msg: '',
     }
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     payByGiftCard() {
@@ -70,12 +74,30 @@ export default {
         .then(() => {
           this.error = false
           this.$store.commit('checkoutForm/showPayBreak', true)
+          if (this.$store.state.checkoutForm.action == 'pay') {
+            if (this.$store.getters['checkoutForm/validate']) {
+              this.$store
+                .dispatch('checkout/pay')
+                .then(() => {
+                  $('#payment-msg').modal('show')
+                  setTimeout(function() {
+                    $('#payment-screen-footer').prop('disabled', false)
+                  }, 1000)
+                })
+                .catch(() => {
+                  setTimeout(() => {
+                    $('#payment-msg').modal('hide')
+                    $('#payment-screen-footer').prop('disabled', false)
+                  }, 500)
+                })
+            }
+          }
           hideModal('#Gift-card-payemnt')
           showModal('#gift-card-info')
         })
         .catch(error => {
           this.error = error
-          this.$store.commit('checkoutForm/showPayBreak', false)
+          this.$store.commit('checkoutForm/showPayBreak', true)
         })
         .finally(() => {
           this.msg = null

@@ -22,7 +22,7 @@ const getters = {
 }
 
 const actions = {
-  calculate({ commit, getters, rootGetters }) {
+  calculate({ commit, getters, rootGetters, rootState }) {
     return new Promise(resolve => {
       //look for order level discount before going furhter ;)
       const subtotal = rootGetters['order/subTotal']
@@ -30,25 +30,27 @@ const actions = {
       let totalSurcharges = []
       if (subtotal && state.surcharges.length) {
         state.surcharges.forEach(surcharge => {
-          let applidSurcharge = {
-            id: surcharge._id,
-            amount: surcharge.value,
-            tax: getters.tax(surcharge),
-            undiscountedTax: getters.tax(surcharge),
+          if (surcharge[rootState.order.orderType.OTApi]) {
+            let applidSurcharge = {
+              id: surcharge._id,
+              amount: surcharge.value,
+              tax: getters.tax(surcharge),
+              undiscountedTax: getters.tax(surcharge),
+            }
+
+            if (surcharge.type === CONST.PERCENTAGE) {
+              applidSurcharge.amount = (subtotal * surcharge.rate) / 100
+              applidSurcharge.tax =
+                (applidSurcharge.amount * surcharge.tax_sum) / 100
+
+              applidSurcharge.undiscountedAmount =
+                (undiscountedSubtotal * surcharge.rate) / 100
+              applidSurcharge.undiscountedTax =
+                (applidSurcharge.undiscountedAmount * surcharge.tax_sum) / 100
+            }
+
+            totalSurcharges.push(applidSurcharge)
           }
-
-          if (surcharge.type === CONST.PERCENTAGE) {
-            applidSurcharge.amount = (subtotal * surcharge.rate) / 100
-            applidSurcharge.tax =
-              (applidSurcharge.amount * surcharge.tax_sum) / 100
-
-            applidSurcharge.undiscountedAmount =
-              (undiscountedSubtotal * surcharge.rate) / 100
-            applidSurcharge.undiscountedTax =
-              (applidSurcharge.undiscountedAmount * surcharge.tax_sum) / 100
-          }
-
-          totalSurcharges.push(applidSurcharge)
         })
       }
 

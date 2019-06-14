@@ -12,6 +12,7 @@ const state = {
     orderBy: 'order_status',
     orderStatus: 'on-hold',
     page: 1,
+    totalPages: 0,
   },
 }
 
@@ -27,16 +28,21 @@ const actions = {
       state.params.page,
     ]
     OrderService.getOrders(...params).then(response => {
-      commit(mutation.GET_HOLD_ORDERS, response.data.data)
+      commit(mutation.GET_HOLD_ORDERS, response.data)
       commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
     })
   },
 
+  moreOrders({ commit, dispatch }, pageNumber) {
+    commit(mutation.GET_MORE_ORDER, pageNumber)
+    dispatch('getHoldOrders')
+  },
   fetchOrder({ state, commit, dispatch }, selectedOrder) {
     commit(mutation.GET_HOLD_ORDER_DETAILS, selectedOrder)
     let item_ids = []
     state.orderDetails.items.forEach(item => {
-      item_ids.push(item._id.$oid)
+      // eslint-disable-next-line no-console
+      item_ids.push(item.entity_id)
     })
     // item_ids.push('5ce27969ef76a0108d2a2b0f') // for checking
     dispatch('order/addHoldOrder', item_ids, { root: true })
@@ -49,7 +55,13 @@ const actions = {
 
 const mutations = {
   [mutation.GET_HOLD_ORDERS](state, holdOrders) {
-    state.getHoldOrders = holdOrders
+    state.getHoldOrders = holdOrders.data
+    state.params.totalPages = Math.ceil(
+      parseInt(holdOrders.count) / parseInt(state.params.limit)
+    )
+  },
+  [mutation.GET_MORE_ORDER](state, pageNumber) {
+    state.params.page = pageNumber
   },
   [mutation.GET_HOLD_ORDER_DETAILS](state, order) {
     state.orderDetails = order

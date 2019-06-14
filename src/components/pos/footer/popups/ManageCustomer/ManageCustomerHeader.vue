@@ -1,10 +1,12 @@
 <template>
-  <div class="inner-addon left-addon">
-    <img class="search-img" src="img/pos/search-icon.png" alt="search" />
+  <div class="search-field">
+    <label class="search-field-icon">
+      <i class="fa fa-search" aria-hidden="true"></i>
+    </label>
     <input
       type="text"
-      class="form-control"
-      placeholder="Search customer"
+      class="search-field-input"
+      :placeholder="_t('Search') + ' ' + _t('customer')"
       v-model="searchTerms"
       @keyup="searchCustomer()"
     />
@@ -12,6 +14,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'ManageCustomerHeader',
   data: function() {
@@ -32,6 +35,9 @@ export default {
       }, 500) //waith half second until user finishes the typing
       // }
     },
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
   },
 }
 </script>

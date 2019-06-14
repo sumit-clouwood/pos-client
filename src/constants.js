@@ -10,8 +10,8 @@ export const REFERENCE_FIELD_SUBCATEGORY_TO_ITEM = '_id'
 
 /* PAYMENT RELATED CONSTANTS */
 
-export const LOYALTY = 'Loyalty Points'
-export const GIFT_CARD = 'Gift Card'
+export const LOYALTY = 'loyalty'
+export const GIFT_CARD = 'gift_card'
 
 /* MODULE RELATED CONSTENTS */
 
@@ -38,6 +38,7 @@ export const MODULE_FUTURE_ORDERS = 'Future Orders'
 
 export const ORDER_STATUS_ON_HOLD = 'on-hold'
 export const ORDER_STATUS_IN_PROGRESS = 'in-progress'
+export const ORDER_TYPE_CALL_CENTER = 'call_center'
 export const ORDER_STATUS_READY = 'ready'
 export const ORDER_STATUS_ON_A_WAY_TO_FINISH = 'on-a-way'
 export const ORDER_STATUS_FINISHED = 'finished'
@@ -46,3 +47,6 @@ export const ORDER_SOURCE_POS = 'cashier_app'
 
 export const PERCENTAGE = 'percentage'
 export const VALUE = 'value'
+
+export const LOADING_STATUS_LOADING = 'LOADING...'
+export const LOADING_STATUS_DONE = 'DONE'

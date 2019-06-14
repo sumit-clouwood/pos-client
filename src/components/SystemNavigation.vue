@@ -34,8 +34,8 @@
           data-placement="right"
           title="logo"
         >
-          <a class="nav-link" href="#">
-            <img src="/img/other/icon.png" alt="icon" />
+          <a class="nav-link" href="javascript:void(0)">
+            <img src="img/other/icon.png" alt="icon" />
           </a>
         </li>
 
@@ -45,7 +45,7 @@
           data-placement="right"
           title="Dashboard"
         >
-          <a class="nav-link active" href="#">
+          <a class="nav-link active" href="javascript:void(0)">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -68,7 +68,7 @@
           data-placement="right"
           title="Food"
         >
-          <a class="nav-link" href="#">
+          <a class="nav-link" href="javascript:void(0)">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -91,7 +91,7 @@
           data-placement="right"
           title="Location"
         >
-          <a class="nav-link" href="#">
+          <a class="nav-link" href="javascript:void(0)">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -115,7 +115,7 @@
           data-placement="right"
           title="Event"
         >
-          <a class="nav-link" href="#">
+          <a class="nav-link" href="javascript:void(0)">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -138,7 +138,7 @@
           data-placement="right"
           title="CRM"
         >
-          <a class="nav-link" href="#">
+          <a class="nav-link" href="javascript:void(0)">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="22"
@@ -157,7 +157,7 @@
           </a>
         </li>
         <li class="nav-item dp-dropbtn">
-          <a class="nav-link" href="#">
+          <a class="nav-link" href="javascript:void(0)">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -179,14 +179,14 @@
           </a>
           <ul class="dp-dropdown-content">
             <li>
-              <a href="#"
+              <a href="javascript:void(0)"
                 ><router-link to="/delivery-manager" class="text-white">
                   Home Deliveries</router-link
                 ></a
               >
             </li>
             <li>
-              <a href="#"
+              <a href="javascript:void(0)"
                 ><router-link to="/dispatch-screen" class="text-white">
                   Dispatch Screen</router-link
                 ></a
@@ -200,7 +200,7 @@
           data-placement="right"
           title="Inventory"
         >
-          <a class="nav-link" href="#">
+          <a class="nav-link" href="javascript:void(0)">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="21"
@@ -225,7 +225,7 @@
           data-placement="right"
           title="Setting"
         >
-          <a class="nav-link" href="#">
+          <a class="nav-link" href="javascript:void(0)">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -247,18 +247,14 @@
 
       <ul class="navbar-nav sidenav-toggler">
         <li class="nav-item arrow-bottom">
-          <a class="nav-link" href="#">
-            <img class="bt-arrow" src="/img/pos/down-arrow.png" alt="arrows" />
-            <img
-              class="top-arrow"
-              src="/img/other/top-arrow.png"
-              alt="arrows"
-            />
+          <a class="nav-link" href="javascript:void(0)">
+            <img class="bt-arrow" src="img/pos/down-arrow.png" alt="arrows" />
+            <img class="top-arrow" src="img/other/top-arrow.png" alt="arrows" />
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link text-center" id="sidenavToggler">
-            <img src="/img/pos/profile-pic.png" alt="profile" />
+            <img src="img/pos/profile-pic.png" alt="profile" />
           </a>
         </li>
       </ul>

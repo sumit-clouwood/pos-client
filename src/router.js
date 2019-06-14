@@ -5,14 +5,25 @@ import Home from './views/Home'
 import DineIn from './views/Dinein'
 import DeliveryManagerInit from './views/DeliveryManagerInit'
 import DispatchScreenInit from './views/DispatchScreenInit'
+import NotFoundComponent from './views/NotFoundComponent'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
+  mode: 'history',
+  base: '',
+
   routes: [
+    //for development
     {
-      path: '/',
-      name: 'Home',
+      path: '/pos/:brand_id/:store_id/',
+      name: 'PosBrandHomeDev',
+      component: Home,
+    },
+    //for live where this app is hosted under /pos
+    {
+      path: '/:brand_id/:store_id/',
+      name: 'BrandHome',
       component: Home,
     },
     {
@@ -39,5 +50,10 @@ export default new Router({
       name: 'DispatchScreen',
       component: DispatchScreenInit,
     },
+    { path: '*', component: NotFoundComponent },
   ],
 })
+
+Vue.router = router
+
+export default router

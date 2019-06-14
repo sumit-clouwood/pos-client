@@ -1,0 +1,73 @@
+#dining-option {
+  .modal-dialog {
+    max-width: $px560;
+
+    .modal-content {
+      .modal-header {
+
+      }
+
+      .modal-body {
+
+        .dining-option-block {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-gap: $px20;
+          justify-content: space-between;
+          width: 100%;
+
+          .option-contain {
+            height: auto;
+            border-radius: $btn-border-radius;
+            background-color: #ffffff;
+            border: solid 2px #e0e3e6;
+            text-align: center;
+            padding: $px20 0;
+            position: relative;
+
+            &.active {
+              border: solid 2px #5056ca;
+
+              &:after {
+                content: '';
+                background-image: url(../images/check-mark.svg);
+                position: absolute;
+                height: $px25;
+                width: $px25;
+                background-repeat: no-repeat;
+                top: $px10;
+                right: $px10;
+                border-radius: $btn-border-radius;
+                background-color: $blue-light;
+                background-position: center center;
+                border-color: $blue-light !important;
+              }
+            }
+
+            &:hover {
+              border: solid 2px #5056ca;
+            }
+
+            > span {
+              display: block !important;
+              font-size: $px14;
+              font-weight: normal;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: 0.5px;
+              color: #72777c;
+              word-break: break-all;
+            }
+          }
+        }
+
+        > div {
+          cursor: pointer;
+        }
+      }
+
+      .modal-footer {}
+    }
+  }
+}

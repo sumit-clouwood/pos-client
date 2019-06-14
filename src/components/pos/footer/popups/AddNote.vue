@@ -6,11 +6,11 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Add note</h4>
+          <h4 class="customer-title">{{ _t('+ Add') + ' ' + _t('Note') }}</h4>
         </div>
         <div class="modal-body add-note-wrap">
           <div class="add-note-area">
-            <p>Enter Order Note</p>
+            <p>{{ _t('+ Add') }} {{ _t('Order') }} {{ _t('Note') }}</p>
             <textarea
               type="text"
               class="add-note-form"
@@ -25,7 +25,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              <span>X</span> Cancel
+              {{ _t('Cancel') }}
             </button>
             <button
               @click="addNoteOrder(orderNote)"
@@ -33,7 +33,7 @@
               type="button"
               id="save-note"
             >
-              Save
+              {{ _t('Save') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -48,7 +48,7 @@
 
 <script>
 /* global $ */
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'AddNote',
   props: {},
@@ -56,6 +56,9 @@ export default {
     return {
       orderNote: '',
     }
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     addNoteOrder: function(orderNote) {

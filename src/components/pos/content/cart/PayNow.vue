@@ -8,12 +8,12 @@
           <div v-show="items.length">
             <div class="order-payment">
               <div class="order-id">
-                <h2>Order Payment</h2>
-                <p>Order ID #0213232</p>
+                <h2>{{ _t('Order Payment') }}</h2>
+                <p>Order ID #1</p>
               </div>
               <div class="hide-btn">
                 <button data-dismiss="modal" id="hide-paynow">
-                  Hide
+                  {{ _t('Hide Me') }}
                   <span
                     ><i class="fa fa-angle-right" aria-hidden="true"></i
                   ></span>
@@ -22,11 +22,11 @@
             </div>
             <TotalAmount />
             <div class="payment-method-title">
-              <h2>Payment Method</h2>
+              <h2>{{ _t('Payment Method') }}</h2>
             </div>
             <PaymentMethods />
             <div class="error" v-if="error">
-              <p class="text-danger">Error: {{ error }}</p>
+              <p class="text-danger">{{ _t('Error') }}: {{ error }}</p>
             </div>
             <div class="payemnt-input-block">
               <input
@@ -34,20 +34,27 @@
                 name="payment"
                 v-model.number="payableAmount"
                 id="input"
+                autocomplete="off"
                 @click="showCalculator()"
                 :placeholder="formatPrice(0.0)"
               />
               <img src="img/pos/payment-input-icon.png" class="input-image" />
             </div>
-            <AmountCalculator v-show="showCalc" />
+            <AmountCalculator v-show="showCalc" ref="calculator" />
             <PaymentBreakdown v-show="showPayBreak" />
             <PayNowFooter />
           </div>
           <div v-show="!items.length">
-            <div class="error">Please add some item(s) to order.</div>
+            <div class="error font-weight-bold">
+              {{ _t('Please add some item(s) to order.') }}
+            </div>
             <div class="hide-btn">
-              <button data-dismiss="modal" id="hide-paynow">
-                Back
+              <button
+                data-dismiss="modal"
+                id="hide-paynow"
+                class="btn btn-danger"
+              >
+                {{ _t('Back') }}
                 <span
                   ><i class="fa fa-angle-right" aria-hidden="true"></i
                 ></span>
@@ -94,7 +101,7 @@ export default {
     },
     ...mapState('order', ['items']),
     ...mapState('checkoutForm', ['error', 'showCalc', 'showPayBreak']),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('checkoutForm', ['payable']),
   },
   methods: {

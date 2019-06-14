@@ -38,7 +38,7 @@ const getters = {
   },
   selectedAddress: state => {
     if (state.address) {
-      const addressId = state.address.id
+      const addressId = state.address.delivery_area_id
       return state.customer.customer_addresses.find(
         address => address._id.$oid == addressId
       )
@@ -66,7 +66,7 @@ const actions = {
         .customerList(...params)
         .then(response => {
           if (response.data.data.length) {
-            let totalPages = parseInt(
+            let totalPages = Math.ceil(
               parseInt(response.data.count) / parseInt(state.params.page_size)
             )
             commit(mutation.CUSTOMER_LIST, response.data.data)
@@ -80,6 +80,7 @@ const actions = {
         .catch(error => reject(error))
 
       //fetch customer deliver areas
+      resolve()
       dispatch('fetchDeliveryArea', '')
       // get Customer Group
       customerService.customerGroupList().then(response => {
@@ -111,7 +112,7 @@ const actions = {
         .then(response => {
           resolve(response)
         })
-        .catch(error => reject(error))
+        .catch(error => reject(error, commit(mutation.SET_LOADING, false)))
         .finally(() => commit(mutation.SET_LOADING, false))
     })
   },
@@ -147,7 +148,7 @@ const actions = {
       customerService
         .fetchCustomer(customerId)
         .then(response => {
-          let totalPages = parseInt(
+          let totalPages = Math.ceil(
             parseInt(response.data.item.total_orders) /
               parseInt(state.params.page_size)
           )
@@ -173,9 +174,10 @@ const actions = {
     })
   },
 
-  selectedAddress({ commit, dispatch }, area) {
-    commit(mutation.SELECTED_CUSTOMER_ADDRESS, area)
-    dispatch('order/updateOrderType', 'delivery', { root: true })
+  selectedAddress({ commit, dispatch }, address) {
+    commit(mutation.SELECTED_CUSTOMER_ADDRESS, address)
+    let orderType = { OTview: 'Delivery', OTApi: 'call_center' }
+    dispatch('order/updateOrderType', orderType, { root: true })
   },
 
   createAction({ commit, dispatch }, actionDetails) {
@@ -345,13 +347,18 @@ const mutations = {
     state.error = error
   },
   [mutation.LOYALTY](state, loyalty) {
-    state.loyalty.card = loyalty.card.length ? loyalty.card[0] : 0
-    let loyaltyDetails = LookupData.get({
-      collection: loyalty.details._id,
-      matchWith: state.loyalty.card.program,
-      selection: false,
-    })
-    state.loyalty.details = loyaltyDetails ? loyaltyDetails : false
+    if (loyalty) {
+      state.loyalty.card = loyalty.card.length ? loyalty.card[0] : 0
+      let loyaltyDetails = LookupData.get({
+        collection: loyalty.details._id,
+        matchWith: state.loyalty.card.program,
+        selection: false,
+      })
+      state.loyalty.details = loyaltyDetails ? loyaltyDetails : false
+    } else {
+      state.loyalty.card = 0
+      state.loyalty.details = false
+    }
   },
 }
 

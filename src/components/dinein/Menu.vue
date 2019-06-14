@@ -2,13 +2,13 @@
   <div>
     <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
       <li class="nav-item logo-wrap">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="javascript:void(0)">
           <img src="img/icons/icon.png" alt="icon" />
         </a>
       </li>
 
       <li class="nav-item active-opacity">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="javascript:void(0)">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

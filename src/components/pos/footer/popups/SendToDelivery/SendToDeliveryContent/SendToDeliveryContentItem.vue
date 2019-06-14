@@ -2,31 +2,38 @@
   <div class="order-table">
     <table class="table table-responsive" v-if="cartItems">
       <tr>
-        <th style="width: 300px">ITEM NAME</th>
-        <th style="width: 100px">QTY</th>
-        <th style="width: 150px">PRICE</th>
-        <th style="width: 100px">TAX</th>
-        <th style="width: 150px">SUBTOTAL</th>
+        <th class="text-uppercase" style="width: 300px">
+          {{ _t('Item Name') }}
+        </th>
+        <th class="text-uppercase" style="width: 100px">{{ _t('Qty') }}</th>
+        <th class="text-uppercase" style="width: 150px">{{ _t('Price') }}</th>
+        <th class="text-uppercase" style="width: 100px">{{ _t('Tax') }}</th>
+        <th class="text-uppercase" style="width: 150px">
+          {{ _t('Sub Total') }}
+        </th>
       </tr>
       <tr v-for="(item, index) in cartItems" :key="index">
         <td>{{ item.name }}</td>
         <td>{{ item.quantity }}</td>
-        <td>{{ item.price }}</td>
-        <td>{{ taxAmount(item.item_tax) }}</td>
-        <td>{{ subtotal(item.quantity, item.price) }}</td>
+        <td>{{ formatPrice(item.netPrice || 0) }}</td>
+        <td>{{ formatPrice(taxAmount(item.tax_sum) || 0) }}</td>
+        <td>{{ formatPrice(subtotal(item.quantity, item.netPrice) || 0) }}</td>
       </tr>
     </table>
 
-    <div class="text-center" v-if="!cartItems">No Items Added in Cart</div>
+    <div class="text-center" v-if="!cartItems">
+      {{ _t('No Items Added in Cart') }}
+    </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'SendToDeliveryContentItem',
   props: {},
   computed: {
+    ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
       cartItems: state =>
         state.order && state.order.items.length > 0 ? state.order.items : false,
@@ -45,7 +52,10 @@ export default {
       }
     },
     subtotal: function(quantity, price) {
-      return parseFloat(price) * parseInt(quantity)
+      let subtotal = isNaN(parseFloat(price) * parseInt(quantity))
+        ? 0.0
+        : parseFloat(price) * parseInt(quantity)
+      return subtotal
     },
   },
 }

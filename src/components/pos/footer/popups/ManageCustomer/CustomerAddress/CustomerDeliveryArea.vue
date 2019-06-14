@@ -1,16 +1,22 @@
 <template>
-  <div v-if="addresses.length" class="add-to-order-wrapper col-md-12">
+  <div
+    class="location-delivery-area-address"
+    :class="classAccess"
+    v-if="addresses.length"
+  >
     <div
       v-for="(address, index) in addresses"
       :key="index"
-      class="order-location option-contain col-md-5 col-sm-5"
+      class="order-location option-contain cu-delivery-area-location"
       :class="{ active: activeIndex === index }"
       @click="setActiveCustomer(address, index)"
     >
       <p>
-        <span>Store: {{ storeName }}</span
+        <span>{{ _t('Store:') }} {{ storeName }}</span
         ><br />
-        <span>Area: {{ getDeliveryArea(address.delivery_area_id) }}</span
+        <span
+          >{{ _t('Area:') }}
+          {{ getDeliveryArea(address.delivery_area_id) }}</span
         ><br />
         {{ address.flat_number }}, {{ address.building }}, {{ address.street }},
         {{ address.city }}
@@ -28,6 +34,7 @@ export default {
   name: 'CustomerDeliveryArea',
   props: {
     buttons: Boolean,
+    classAccess: String,
   },
   components: {
     Buttons,
@@ -53,18 +60,13 @@ export default {
           : '',
     }),*/
     ...mapGetters('customer', ['getDeliveryArea']),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     setActiveCustomer(address, index) {
-      const selectedCustomerAddressId = address.delivery_area_id
-      const selectedCustomerAddressArea = this.getDeliveryArea(
-        selectedCustomerAddressId
-      )
+      address.delivery_area = this.getDeliveryArea(address.delivery_area_id)
       this.activeIndex = index
-      this.selectedAddress({
-        id: selectedCustomerAddressId,
-        delivery_area: selectedCustomerAddressArea,
-      })
+      this.selectedAddress(address)
     },
     ...mapActions('customer', ['selectedAddress']),
   },
@@ -82,5 +84,20 @@ export default {
   position: absolute;
   bottom: 0;
   right: 5px;
+}
+.addOrders {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: auto;
+  overflow: hidden;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  grid-gap: 1.25rem;
 }
 </style>

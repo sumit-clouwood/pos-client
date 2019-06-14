@@ -1,5 +1,6 @@
-import * as CONSTANTS from '@/constants'
+import * as CONST from '@/constants'
 import Num from '@/plugins/helpers/Num'
+
 // initial state
 const state = {
   amount: '',
@@ -13,6 +14,7 @@ const state = {
   showCalc: true,
   showPayBreak: false,
   loyaltyAmount: 0,
+  action: 'add',
 }
 
 // getters
@@ -34,40 +36,47 @@ const getters = {
 
 // actions
 const actions = {
-  addAmount({ commit, getters }) {
-    commit('showPayBreak', false)
-    if (!state.amount) {
+  validatePayment({ state, dispatch, commit }) {
+    if (!state.amount || parseFloat(state.amount) < 0.01) {
       commit('SET_ERROR', 'Amount should be greater than 0.00')
-      commit('showCalc', true)
-      return false
-    }
-
-    if (parseFloat(state.amount) < 0.01) {
-      commit('SET_ERROR', 'Amount should be greater than 0.00')
-      commit('showCalc', true)
-    } else if (
-      state.method.name == CONSTANTS.LOYALTY &&
-      parseFloat(state.amount) != parseFloat(state.loyaltyAmount)
-    ) {
-      if (parseFloat(state.loyaltyAmount) <= 0.01) {
-        commit('SET_ERROR', 'You dont have loyalty amount.')
-      } else {
-        commit(
-          'SET_ERROR',
-          'You can add only ' + state.loyaltyAmount + ' loyalty amount.'
-        )
-      }
-      commit('showCalc', true)
+      return Promise.reject()
     } else {
-      commit('SET_ERROR', false)
-      commit('showCalc', false)
-      commit('showPayBreak', true)
-      commit('addAmount', {
-        amount: parseFloat(state.amount),
-        method: state.method,
-      })
-      commit('setAmount', Num.round(getters.payable))
+      if (state.method.type == CONST.GIFT_CARD) {
+        return dispatch('validateGiftPayment')
+      } else if (state.method.type == CONST.LOYALTY) {
+        return dispatch('validateLoyaltyPayment')
+      } else {
+        if (state.method.reference_code) {
+          //display reference popup
+          return dispatch('validateCardPayment')
+        } else {
+          return dispatch('validateCashPayment')
+        }
+      }
     }
+  },
+
+  addAmount({ commit, getters, dispatch }) {
+    return new Promise((resolve, reject) => {
+      dispatch('validatePayment')
+        .then(() => {
+          commit('SET_ERROR', false)
+          commit('showCalc', false)
+          commit('showPayBreak', true)
+          commit('addAmount', {
+            amount: parseFloat(state.amount),
+            method: state.method,
+          })
+          //round and set
+          commit('setAmount', Num.round(getters.payable))
+          resolve()
+        })
+        .catch(() => {
+          commit('showCalc', true)
+          commit('showPayBreak', false)
+          reject()
+        })
+    })
   },
   //apply giftcard by customer [future use]
   addGiftCardAmountCustomer({ commit, getters, rootGetters, rootState }, code) {
@@ -186,15 +195,9 @@ const actions = {
       const paid = getters.paid
       const remaining = totalPayable - paid
       if (parseFloat(state.amount) <= 0) {
-        commit('showCalc', true)
-        commit('showPayBreak', false)
-
         commit('SET_ERROR', 'Card payment should be greater than 0.00')
         reject()
       } else if (parseFloat(state.amount) - parseFloat(remaining) > 0.01) {
-        commit('showCalc', true)
-        commit('showPayBreak', false)
-
         commit(
           'SET_ERROR',
           "Card payment can't be greater than " + Num.round(remaining)
@@ -206,6 +209,23 @@ const actions = {
       }
     })
   },
+  validateLoyaltyPayment({ commit }) {
+    return new Promise((resolve, reject) => {
+      if (parseFloat(state.amount) != parseFloat(state.loyaltyAmount)) {
+        if (parseFloat(state.loyaltyAmount) <= 0.01) {
+          commit('SET_ERROR', 'You dont have loyalty amount.')
+        } else {
+          commit(
+            'SET_ERROR',
+            'You can add only ' + state.loyaltyAmount + ' loyalty amount.'
+          )
+        }
+        reject()
+      } else {
+        resolve()
+      }
+    })
+  },
   validateGiftPayment({ commit, getters }) {
     return new Promise((resolve, reject) => {
       const totalPayable = getters.orderTotal
@@ -213,15 +233,9 @@ const actions = {
       const remaining = totalPayable - paid
 
       if (parseFloat(state.amount) <= 0) {
-        commit('showCalc', true)
-        commit('showPayBreak', false)
-
         commit('SET_ERROR', 'Gift Card payment should be greater than 0.00')
         reject()
       } else if (parseFloat(state.amount) - parseFloat(remaining) > 0.01) {
-        commit('showCalc', true)
-        commit('showPayBreak', false)
-
         commit(
           'SET_ERROR',
           "Gift Card payment can't be greater than " + Num.round(remaining)
@@ -232,6 +246,9 @@ const actions = {
         resolve()
       }
     })
+  },
+  validateCashPayment() {
+    return Promise.resolve(1)
   },
 
   setAmount({ commit, dispatch }, amount) {
@@ -350,6 +367,9 @@ const mutations = {
   },
   removePayment(state, index) {
     state.payments.splice(index, 1)
+  },
+  setAction(state, action) {
+    state.action = action
   },
   showCalc(state, flag) {
     state.showCalc = flag

@@ -10,7 +10,7 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">Discount Item</h4>
+          <h4 class="customer-title">{{ _t('Item Discount') }}</h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
           <div
@@ -33,7 +33,7 @@
                     : formatPrice(discount.value)
                 }}
               </p>
-              <span class="more">{{ discount.name }}</span>
+              <span class="more">{{ dt(discount) }}</span>
             </div>
           </div>
           <div class="error" v-show="appliedOrderDiscount">
@@ -56,7 +56,7 @@
               id="discount-save"
               @click="applyItemDiscount()"
             >
-              Save
+              {{ _t('Apply') }}
             </button>
             <button
               v-show="appliedOrderDiscount || itemError"
@@ -65,7 +65,7 @@
               data-dismiss="modal"
               @click="resetError()"
             >
-              Close
+              {{ _t('Close') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -82,7 +82,7 @@ export default {
   name: 'CartItemDiscount',
   props: {},
   computed: {
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', ['itemDiscounts', 'activeItemDiscountId']),
     ...mapState('discount', ['appliedOrderDiscount', 'itemError']),
   },
@@ -102,10 +102,10 @@ export default {
   },
 }
 </script>
-<style lang="sass" scoped>
+<!--<style lang="sass" scoped>
 .discount-item.each
   display:inline-block
 .error
   width: 100%;
   padding: 40px 5px 0px 5px;
-</style>
+</style>-->

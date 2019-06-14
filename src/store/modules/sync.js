@@ -1,71 +1,37 @@
 // initial state
+import * as CONST from '@/constants'
 const state = {
   //date: '2019-02-06',
-  date: '',
-  today: new Date(), //.toJSON().slice(0, 10),
-  weekDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  weekDaysFull: [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-  ],
-  monthsFull: [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ],
-  months: [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ],
   compress: false,
   loaded: false,
   online: true,
   idb: null,
   idbVersion: 1,
+  reloaded: false,
+
+  modules: {
+    store: CONST.LOADING_STATUS_LOADING,
+    catalog: CONST.LOADING_STATUS_LOADING,
+    modifiers: CONST.LOADING_STATUS_LOADING,
+    surcharges: CONST.LOADING_STATUS_LOADING,
+    discounts: CONST.LOADING_STATUS_LOADING,
+    payment_types: CONST.LOADING_STATUS_LOADING,
+    announcements: CONST.LOADING_STATUS_LOADING,
+    customers: CONST.LOADING_STATUS_LOADING,
+  },
 }
 
 // getters
-const getters = {
-  todayDateFull: state =>
-    //Tuesday, 13 Oct 2017
-    state.weekDaysFull[state.today.getDay()] +
-    ', ' +
-    state.today.getDate() +
-    ' ' +
-    state.months[state.today.getMonth()] +
-    ' ' +
-    state.today.getFullYear(),
-}
+const getters = {}
 
 // actions
 const actions = {}
 
 // mutations
 const mutations = {
+  updateLoading(state, { key, status }) {
+    state.modules[key] = status
+  },
   updateSyncDate(state, date) {
     state.date = date
   },
@@ -87,6 +53,9 @@ const mutations = {
   },
   setIdb(state, handle) {
     state.idb = handle
+  },
+  reload(state, val) {
+    state.reloaded = val
   },
 }
 

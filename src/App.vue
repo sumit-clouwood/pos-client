@@ -3,7 +3,7 @@ The App.vue file is the root component that all other components are nested with
 -->
 
 <template>
-  <div id="app">
+  <div>
     <!--<div id="nav">-->
     <!--<router-link to="/">Home</router-link> |-->
     <!--<router-link to="/about">About</router-link>-->
@@ -18,9 +18,31 @@ The App.vue file is the root component that all other components are nested with
     <div v-else-if="loading">
       <ul class="ullist-inventory-location pl-0 pt-2">
         <li class="p-3">
-          <span>
-            Loading data...
+          <span class="margin220">
             <Preloader />
+            <h2 class="text-center blue-middle">Loading Data...</h2>
+            <ul class="loading-modules">
+              <li
+                v-for="(val, key) in modules"
+                :key="key"
+                style="text-transform:capitalize"
+              >
+                Loading {{ key }}
+                <div class="progress">
+                  <div
+                    class="progress-bar progressIncrement"
+                    role="progressbar"
+                    aria-valuenow="50"
+                    aria-valuemin="1"
+                    aria-valuemax="100"
+                    v-bind:style="{ width: progressIncrement }"
+                  >
+                    {{ progressIncrement }}
+                  </div>
+                </div>
+                <span> {{ val }} </span>
+              </li>
+            </ul>
           </span>
         </li>
       </ul>
@@ -30,6 +52,9 @@ The App.vue file is the root component that all other components are nested with
 </template>
 
 <script>
+/* eslint-disable no-console */
+import DataService from '@/services/DataService'
+
 import Cookie from '@/mixins/Cookie'
 import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
@@ -46,13 +71,34 @@ export default {
     return {
       loading: true,
       errored: false,
+      progressIncrement: '0%',
     }
   },
+  created() {
+    if (this.$route.params.brand_id) {
+      this.$store.commit('context/SET_BRAND_ID', this.$route.params.brand_id)
+      this.$store.commit('context/SET_STORE_ID', this.$route.params.store_id)
+      DataService.setContext({
+        brand: this.$store.getters['context/brand'],
+        store: this.$store.getters['context/store'],
+      })
+    } else {
+      this.errored = 'Please provide brand id and store id in url'
+    }
+  },
+  watch: {
+    $route(to, from) {
+      // react to route changes...
+      console.log('route changed ', to, from)
+    },
+  },
+
   computed: {
     ...mapState({
       defaultLanguage: state =>
         state.location.store ? state.location.store.default_language : false,
     }),
+    ...mapState('sync', ['modules']),
   },
   //life cycle hooks
   mounted() {
@@ -60,16 +106,23 @@ export default {
       this.loading = false
       return
     }
-
-    bootstrap
-      .setup(this.$store)
-      .then(() => {
-        this.loading = false
-        setTimeout(() => {
-          require('@/../public/js/pos_script.js')
-        }, 2000)
-      })
-      .catch(error => (this.errored = error))
+    if (this.$store.state.context.brandId) {
+      bootstrap
+        .setup(this.$store)
+        .then(() => {
+          this.progressIncrement = '10%'
+          setTimeout(() => {
+            this.loading = false
+            this.progressIncrement = '100%'
+          }, 100)
+          // this.progressIncrement = '100%'
+          setTimeout(() => {
+            require('@/../public/js/pos_script.js')
+            require('@/../public/js/pos_script_functions.js')
+          }, 2000)
+        })
+        .catch(error => (this.errored = error))
+    }
   },
 }
 
@@ -91,22 +144,6 @@ if ('serviceWorker' in navigator && 'SyncManager' in window) {
   })
 }
 </script>
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  /*text-align: center;*/
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
-<style lang="sass">
-.error
-  color: #ff0000
-  padding: 10px 5px 10px 5px
-
-.success
-  color: #00ff00
-  padding: 10px 5px 10px 5px
+<style lang="css">
+@import './assets/css/style.css';
 </style>

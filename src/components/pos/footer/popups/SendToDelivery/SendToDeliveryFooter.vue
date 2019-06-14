@@ -8,7 +8,7 @@
         type="button"
         data-value=""
         id="referal-btn"
-        class="btn referal-btn dropdown-toggle"
+        class="btn referal-btn dropdown-toggle shorten-sentence"
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
@@ -19,17 +19,17 @@
         <a
           class="dropdown-item"
           data-value="Call Center"
-          href="#"
+          href="javascript:void(0)"
           v-for="referral in getReferrals"
           @click="
             selectedReferral({
-              referralName: referral.referral_name,
+              referralName: referral.name,
               referralId: referral._id,
             })
           "
-          :referralType="referral.referral_type"
+          :referralType="referral.name"
           :key="referral._id"
-          >{{ referral.referral_name }}
+          >{{ referral.name }}
         </a>
       </div>
       <div class="dropdown-menu" v-if="!getReferrals">
@@ -151,32 +151,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss" scoped>
-.dropdown-menu.show {
-  max-height: 275px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-/*theming*/
-.theme-orange .vdatetime-popup__header,
-.theme-orange .vdatetime-calendar__month__day--selected > span > span,
-.theme-orange .vdatetime-calendar__month__day--selected:hover > span > span {
-  background: #ff9800;
-}
-
-.theme-orange .vdatetime-year-picker__item--selected,
-.theme-orange .vdatetime-time-picker__item--selected,
-.theme-orange .vdatetime-popup__actions__button {
-  color: #ff9800;
-}
-div#order-confirmation .showpropermsg {
-  position: relative;
-  padding-top: 35px !important;
-}
-.showpropermsg .referal p {
-  position: absolute;
-  top: 5px;
-}
-</style>

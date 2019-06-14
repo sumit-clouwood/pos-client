@@ -1,13 +1,13 @@
 // custom service-worker.js
-/* global workbox navigator */
+/* global workbox */
 /* eslint-disable no-console */
 
 var iDB
 var form_data
 var IDB_VERSION = 3
 var ORDER_DOCUMENT = 'order_post_requests'
-var serverUrl = 'https://int.erp-pos.com'
-var clientUrl = 'https://delivery.erp-pos.com'
+// var serverUrl = 'https://int.erp-pos.com'
+var clientUrl = 'https://web-int.dimspos.com'
 
 if (workbox) {
   openDatabase()
@@ -25,7 +25,7 @@ if (workbox) {
   // Make sure to return a specific response for all navigation requests.
   // Since we have a SPA here, this should be index.html always.
   // https://stackoverflow.com/questions/49963982/vue-router-history-mode-with-pwa-in-offline-mode
-  workbox.routing.registerNavigationRoute(clientUrl + '/vue-pos/index.html')
+  workbox.routing.registerNavigationRoute(clientUrl + '/pos/')
 
   workbox.routing.registerRoute(
     /\.(?:png|gif|jpg|jpeg|svg)$/,
@@ -173,10 +173,10 @@ if (workbox) {
 
     const options = {
       body: data.body,
-      icon: '/img/icons/android-chrome-192x192.png',
-      image: '/img/autumn-forest.png',
+      icon: '/pos/img/icons/android-chrome-192x192.png',
+      image: '/pos/img/autumn-forest.png',
       vibrate: [300, 200, 300],
-      badge: '/img/icons/plint-badge-96x96.png',
+      badge: '/pos/img/icons/plint-badge-96x96.png',
     }
 
     e.waitUntil(self.registration.showNotification(data.title, options))
@@ -342,12 +342,15 @@ function sendPostToServer() {
               var authToken = authData.token
               var deviceCode = authData.deviceCode
               var franchiseCode = authData.franchiseCode
-              var lastOrderNo = parseInt(authData.lastOrderNo) || 0
+              //var lastOrderNo = parseInt(authData.lastOrderNo) || 0
 
               for (let savedRequest of savedRequests) {
-                lastOrderNo++
+                const orderUrl = savedRequest.url
+                const contextUrl = orderUrl.replace(new RegExp('/model/.*'), '')
+                const time = new Date().getTime()
+                //lastOrderNo++
                 var transitionOrderNo =
-                  franchiseCode + '-' + deviceCode + '-' + lastOrderNo
+                  franchiseCode + '-' + deviceCode + '-' + time
 
                 // send them to the server one after the other
                 console.log('sw:', 'saved request', savedRequest)
@@ -375,7 +378,7 @@ function sendPostToServer() {
                   console.log('sw:', 'delivery order')
                   //create customer uses fetch which returns promise
                   console.log('sw:', 'creating customer')
-                  createCustomer(headers, customerPayload)
+                  createCustomer(headers, customerPayload, contextUrl)
                     .then(response => response.json())
                     .then(response => {
                       console.log('sw:', 'customer created ', response)
@@ -426,7 +429,6 @@ function sendPostToServer() {
                         resolve,
                         reject,
                         headers,
-                        lastOrderNo,
                         authData,
                         savedRequest
                       )
@@ -444,14 +446,7 @@ function sendPostToServer() {
                   //app_uniqueid
                   //transition_order_no
                   console.log('sw:', 'Not delivery order')
-                  createOrder(
-                    resolve,
-                    reject,
-                    headers,
-                    lastOrderNo,
-                    authData,
-                    savedRequest
-                  )
+                  createOrder(resolve, reject, headers, authData, savedRequest)
                 }
               }
             }
@@ -462,14 +457,7 @@ function sendPostToServer() {
   })
 }
 
-var createOrder = function(
-  resolve,
-  reject,
-  headers,
-  lastOrderNo,
-  authData,
-  savedRequest
-) {
+var createOrder = function(resolve, reject, headers, authData, savedRequest) {
   var method = savedRequest.method
   var requestUrl = savedRequest.url
   var payload = JSON.stringify(savedRequest.payload)
@@ -485,7 +473,6 @@ var createOrder = function(
         // If sending the POST request was successful, then
         // remove it from the IndexedDB.
         //increment in the order number
-        authData.lastOrderNo = lastOrderNo
 
         var requestUpdate = getObjectStore('auth', 'readwrite').put(authData)
 
@@ -515,9 +502,9 @@ var createOrder = function(
     })
 }
 
-var createCustomer = function(headers, payload) {
+var createCustomer = function(headers, payload, contextUrl) {
   var method = 'POST'
-  var requestUrl = serverUrl + '/api/auth/crm/create/Customer'
+  var requestUrl = contextUrl + '/model/crm/create/Customer'
   return fetch(requestUrl, {
     headers: headers,
     method: method,

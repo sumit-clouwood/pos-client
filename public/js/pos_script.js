@@ -1,8 +1,9 @@
-/* global $, hidePayNow  */
+/* global $ */
 /* eslint-disable no-unused-vars */
 $(document).ready(function() {
   // Configure/customize these variables.
-  var showChar = 23 // How many characters are shown by default
+  // How many characters are shown by default
+  var showChar = 23
   // var ellipsestext = "...";
   var moretext = '...'
   var lesstext = 'Show less'
@@ -95,7 +96,6 @@ $(document).ready(function() {
 
   // Increase amount
   $('.value-qty').on('click', function() {
-    // alert("hii");
     var $button = $(this)
     var oldValue = $button
       .parent()
@@ -155,7 +155,35 @@ $(document).ready(function() {
 
     // $("div#pay-now").addClass('animated fadeOutRight');
   })
-  $('li#pay-now').click(function() {
+  function hidePayNow() {
+    $('div#pay-now').addClass('effect-screen')
+    // $("div#pay-now").hide(800);
+    $('div#pay-now').animate({ right: '-660px' })
+    $('body').removeClass('modal-open')
+    $('div#pay-now').removeClass('show')
+    $('#transparent-screen').css('display', 'none')
+  }
+  $('#payment-method')
+    .not('.slick-initialized')
+    .slick({
+      arrows: false,
+      infinite: true,
+      slidesToShow: 4,
+      slidesToScroll: 4,
+      dots: true,
+    })
+
+  $('li.pay-now').click(function() {
+    $('#payment-method')[0].slick.refresh()
+    $('#payment-method')
+      .not('.slick-initialized')
+      .slick({
+        arrows: false,
+        infinite: true,
+        slidesToShow: 4,
+        slidesToScroll: 4,
+        dots: true,
+      })
     // $('body').append("<div class="modal-backdrop fade show"></div>");
     $('div#pay-now').animate({ right: '0' }, 800)
     $('div#pay-now').addClass('effect-screen')
@@ -168,14 +196,6 @@ $(document).ready(function() {
     $('.modal-body.pay-now-block').css('opacity', '1')
 
     setTimeout(function() {
-      $('#payment-method').slick({
-        arrows: false,
-        infinite: true,
-        slidesToShow: 4,
-        slidesToScroll: 4,
-        dots: true,
-        accessibility: false,
-      })
       $('.payment-method-block table td img').click(function() {
         if ($('.payment-method-block').length) {
           $('.payment-method-block').addClass('active')
@@ -184,7 +204,23 @@ $(document).ready(function() {
       })
     }, 300)
   })
-
+  var heightTop = parseInt($('.navigation-list').css('top'))
+  $('.slider-btn').click(function() {
+    heightTop = heightTop + 60
+    if (
+      $('.navigation-list-wrapper').offset().top <
+      $('.navigation-list').offset().top +
+        $('.navigation-list').height() -
+        $('.navigation-list-wrapper').height()
+    ) {
+      $('.navigation-list').css('top', -heightTop + '%')
+      $('.slider-btn').addClass('toggle')
+    } else {
+      $('.navigation-list').css('top', 0 + 'px')
+      heightTop = 0
+      $('.slider-btn').removeClass('toggle')
+    }
+  })
   $('.referal-code-customer').click(function() {
     $(this)
       .addClass('active')
@@ -236,8 +272,8 @@ $(document).ready(function() {
     $('.pizza-size-wrapper > div').removeClass('active')
     $(this).addClass('active')
   })
-  $('.ullist-feedback > li').click(function() {
-    $('.ullist-feedback > li').removeClass('active')
+  $('.food-menu-item').click(function() {
+    $('.food-menu-item').removeClass('active')
     $(this).addClass('active')
   })
   $('ul.ullist-pagination > li.order-pagination').click(function() {
@@ -314,7 +350,7 @@ $(document).ready(function() {
       content:
         '<div class="text-center innter-tooltip-pos">' +
         $this.text() +
-        '<div class="text-center"><a href="#" data-dismiss="alert" class="btn btn-success btn-block btn-sm btn-rouded remove-bottom-close ">Add Item</a></div></div>',
+        '<div class="text-center"><a href="javascript:void(0)" data-dismiss="alert" class="btn btn-success btn-block btn-sm btn-rouded remove-bottom-close ">Add Item</a></div></div>',
     })
   })
 
@@ -452,18 +488,18 @@ $(document).ready(function() {
     slidesToShow: 1,
     slidesToScroll: 1,
     dots: true,
-    nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
-    prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+    nextArrow: '<img class="next-btn" src="/pos/img/pos/next-arrow.png"/>',
+    prevArrow: '<img class="back-btn" src="/pos/img/pos/back-arrow.png"/>',
   })
 
   $('li#pay-now').click(function() {
     $('#payment-method .VueCarousel-inner').removeAttr('style')
   })
 
-  /*$('.br-table-btn').click(function() {
+  $('.br-table-btn').click(function() {
     // $("#payment-method").trigger();
     $('.last-order-wrap')[0].slick.refresh()
-  })*/
+  })
 })
 // for delivery manger transparent-screen
 
@@ -704,5 +740,8 @@ $(document).ready(function() {
       .addClass('active')
       .siblings()
       .removeClass('active')
+  })
+  $('li.pay-now').click(function() {
+    $('#payment-method')[0].slick.refresh()
   })
 })

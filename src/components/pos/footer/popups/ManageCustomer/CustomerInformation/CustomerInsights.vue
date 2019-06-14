@@ -1,93 +1,86 @@
 <template>
   <div class="customer-insight">
     <div class="title-cu">
-      <h2>Customer Insights</h2>
+      <h2>{{ _t('Customer Insights') }}</h2>
     </div>
     <div class="dob-customer-insight">
       <ul class="ullist-dob">
         <li>
-          Birthday : <span>{{ insight.birthday }}</span>
+          {{ _t('Birthday') }} : <span>{{ insight.birthday }}</span>
         </li>
         <li>
-          Age : <span>{{ getAge(insight.birthday) }}</span>
+          {{ _t('Age') }} : <span>{{ getAge(insight.birthday) }}</span>
         </li>
         <li>
-          Gender : <span>{{ insight.gender }}</span>
+          {{ _t('Gender') }} : <span>{{ insight.gender }}</span>
         </li>
       </ul>
     </div>
 
     <div>
-      <carousel :per-page="1" :mouse-drag="true">
-        <slide>
-          <div class="insight-last-order">
-            <h3>LAST ORDER</h3>
-            <p class="last-order-time">
-              {{ convertDatetime(insight.last_order_datetime) }}
-            </p>
-            <ul class="fav-item-slider">
-              <!--<li><img src="/img/pos/dine-right.png" alt="fav-item" /></li>-->
-              <li v-for="(item, index) in items" :key="index">
-                {{ item.name }}
-              </li>
-            </ul>
+      <div class="last-order-wrap">
+        <div class="insight-last-order">
+          <h3>{{ _t('Last Order') }}</h3>
+          <p class="last-order-time">
+            {{ convertDatetime(insight.last_order_datetime) }}
+          </p>
+          <ul class="fav-item-slider">
+            <!--<li><img src="img/pos/dine-right.png" alt="fav-item" /></li>-->
+            <li v-for="(item, index) in items" :key="index">
+              {{ item.name }}
+            </li>
+          </ul>
+        </div>
+        <div class="insight-last-order">
+          <ul class="ullist-business-slider">
+            <li>
+              {{ _t('Total Business') }}
+              <span>{{ insight.total_orders }}</span>
+            </li>
+            <li>
+              {{ _t('Cancelled') }} <span>{{ cancelOrders }}</span>
+            </li>
+          </ul>
+          <div class="total-amount-business-slider">
+            <p>{{ _t('Total Amount') }}</p>
+            <h3>{{ lastOrder.currency_code }} {{ lastOrder.balance_due }}</h3>
           </div>
-        </slide>
-        <slide>
-          <div class="insight-last-order">
-            <ul class="ullist-business-slider">
-              <li>
-                TOTAL BUSINESS <span>{{ insight.total_orders }}</span>
-              </li>
-              <li>
-                CANCELLED <span>{{ cancelOrders }}</span>
-              </li>
-            </ul>
-            <div class="total-amount-business-slider">
-              <p>TOTAL AMOUNT</p>
-              <h3>AED {{ lastOrder.balance_due }}</h3>
-            </div>
-          </div>
-        </slide>
-        <slide>
-          <div class="insight-last-order">
-            <h3>Favorites</h3>
-            <p
-              class="last-order-details"
-              v-for="(favItem, key) in insight.favorites"
-              :key="key"
-            >
-              {{
-                LookupData.get({
-                  collection: favoriteItems._id,
-                  matchWith: favItem.menu_item,
-                  selection: 'name',
-                })
-              }}
-            </p>
-          </div>
-        </slide>
-      </carousel>
+        </div>
+        <div class="insight-last-order">
+          <h3>{{ _t('Favorites') }}</h3>
+          <p
+            class="last-order-details"
+            v-for="(favItem, key) in insight.favorites"
+            :key="key"
+          >
+            {{
+              LookupData.get({
+                collection: favoriteItems._id,
+                matchWith: favItem.menu_item,
+                selection: 'name',
+              })
+            }}
+          </p>
+        </div>
+      </div>
     </div>
+    <div class="title-cu">{{ _t('Notes') }}:</div>
     <div class="customer-insights-notes">
       <div>
-        <p>Notes :</p>
-        <div>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Note</th>
-              </tr>
-            </thead>
-            <tbody id="notes_data">
-              <tr v-for="(notes, index) in insight.notes" :key="index">
-                <td>{{ convertDatetime(notes.created_at) }}</td>
-                <td>{{ notes.note }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>{{ _t('Date') }}</th>
+              <th>{{ _t('Note') }}</th>
+            </tr>
+          </thead>
+          <tbody id="notes_data">
+            <tr v-for="(notes, index) in insight.notes" :key="index">
+              <td>{{ convertDatetime(notes.created_at) }}</td>
+              <td>{{ notes.note }}</td>
+            </tr>
+          </tbody>
+        </table>
         <!-- <span
           data-toggle="modal"
           class="text-success cursor-pointer"
@@ -101,7 +94,7 @@
           data-toggle="modal"
           data-target="#admin-popup"
         >
-          + Add
+          {{ _t('+ Add') }}
         </button>
       </div>
     </div>
@@ -110,9 +103,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import CustomerFeedback from './CustomerFeedback'
-import { Carousel, Slide } from 'vue-carousel'
 import DateTime from '@/mixins/DateTime'
 
 function getCustomerList(state) {
@@ -123,8 +115,6 @@ export default {
   name: 'CustomerInsights',
   components: {
     CustomerFeedback,
-    Carousel,
-    Slide,
   },
   mixins: [DateTime],
   data() {
@@ -141,6 +131,7 @@ export default {
     pastOrders: false,
   },
   computed: {
+    ...mapGetters('location', ['_t']),
     ...mapState({
       insight: state =>
         getCustomerList(state) ? getCustomerList(state) : false,
@@ -189,22 +180,12 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.customer-insights-notes div div {
+.customer-insights-notes div {
   overflow-y: auto;
   max-height: 190px;
-  /*overflow-x: hidden;*/
-}
-.location-delivery-area-address {
-  /*max-height: 250px;*/
 }
 .insight-last-order {
     text-align: center;
-}
-.location-delivery-area-address {
-    /*max-height: 300px;*/
-}
-.add-to-order-wrapper {
-    /*max-height: 270px;*/
 }
 
 </style>
