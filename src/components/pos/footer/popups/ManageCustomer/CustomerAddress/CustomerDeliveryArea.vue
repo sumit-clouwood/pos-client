@@ -64,15 +64,9 @@ export default {
   },
   methods: {
     setActiveCustomer(address, index) {
-      const selectedCustomerAddressId = address.delivery_area_id
-      const selectedCustomerAddressArea = this.getDeliveryArea(
-        selectedCustomerAddressId
-      )
+      address.delivery_area = this.getDeliveryArea(address.delivery_area_id)
       this.activeIndex = index
-      this.selectedAddress({
-        id: selectedCustomerAddressId,
-        delivery_area: selectedCustomerAddressArea,
-      })
+      this.selectedAddress(address)
     },
     ...mapActions('customer', ['selectedAddress']),
   },

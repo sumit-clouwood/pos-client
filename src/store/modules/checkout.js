@@ -24,17 +24,20 @@ const getters = {}
 
 // actions
 const actions = {
-  pay({ commit, rootGetters, rootState, dispatch, state }) {
+  pay({ commit, rootGetters, rootState, dispatch, state }, { action }) {
     return new Promise((resolve, reject) => {
       let validPayment = false
+      const totalPayable = rootGetters['checkoutForm/orderTotal']
+      commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
 
-      if (rootState.order.orderType.OTApi === 'call_center') {
+      if (
+        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
+        action === CONSTANTS.ORDER_STATUS_ON_HOLD
+      ) {
         validPayment = true
       } else {
         const paid = rootGetters['checkoutForm/paid']
         commit(mutation.SET_PAID_AMOUNT, paid)
-        const totalPayable = rootGetters['checkoutForm/orderTotal']
-        commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
 
         let pendingAmount = totalPayable - paid
         pendingAmount = parseFloat(pendingAmount).toFixed(2)
@@ -100,14 +103,25 @@ const actions = {
         } catch (e) {
           console.log(e)
         }
-
-        if (rootState.order.orderType.OTApi == 'call_center') {
+        if (
+          rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER
+        ) {
           order.customer = rootState.customer.customerId
-          order.address_id = rootState.customer.address
+          /*order.address_id = rootState.customer.address
             ? rootState.customer.address.id
-            : null
-
-          order.order_status = state.onHold ? state.onHold : 'running'
+            : null*/
+          const address = rootState.customer.address
+          order.order_building = address.building
+          order.order_street = address.street
+          order.order_flat_number = address.flat_number
+          order.order_nearest_landmark = address.nearest_landmark
+          order.order_city = address.city
+          order.order_country = address.country
+          order.order_delivery_area = address.delivery_area_id
+          // check in future
+          order.order_status = state.onHold
+            ? state.onHold
+            : CONSTANTS.ORDER_STATUS_IN_PROGRESS
           // order.status = 'on-hold'
         }
 
@@ -307,6 +321,19 @@ const actions = {
           return paymentPart
         })
 
+        //for hold orders: Tofeeq
+        if (!order.order_payments.length) {
+          const paymentMethod = rootGetters['payment/cash']
+          order.order_payments.push({
+            entity_id: paymentMethod._id,
+            name: paymentMethod.name,
+            collected: totalPayable,
+            param1: null,
+            param2: totalPayable,
+            param3: null,
+          })
+        }
+
         //order.app_uniqueid = Crypt.uuid()
 
         console.log('not in delivery or take away ')
@@ -328,7 +355,6 @@ const actions = {
     commit('checkoutForm/SET_MSG', 'loading', {
       root: true,
     })
-
     return new Promise((resolve, reject) => {
       console.log(state.order)
       OrderService.saveOrder(state.order, rootState.customer.offlineData)

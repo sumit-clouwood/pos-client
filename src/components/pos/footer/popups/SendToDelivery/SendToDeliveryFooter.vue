@@ -19,7 +19,7 @@
         <a
           class="dropdown-item"
           data-value="Call Center"
-          href="#"
+          href="javascript:void(0)"
           v-for="referral in getReferrals"
           @click="
             selectedReferral({

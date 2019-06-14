@@ -1,6 +1,7 @@
 <template>
   <div class="btn-announce">
     <button
+      v-if="item.editMode"
       type="button"
       data-toggle="modal"
       data-target="#select-discount-item"
@@ -44,31 +45,44 @@
       </svg>
       <span>{{ _t('Discount') }}</span>
     </button>-->
-    <button type="button" class="buttoned colorwhite taxbutton">
-      <img src="/pos/img/pos/delete.jpg" alt="delete" />
+    <button
+      type="button"
+      class="buttoned colorwhite taxbutton"
+      v-if="item.editMode"
+      @click="removeTax(item)"
+    >
+      <img src="img/pos/delete.jpg" alt="delete" />
       <span>{{ _t('Tax') }}</span>
     </button>
     <button
       type="button"
       class="buttoned colorwhite donebutton"
-      data-dismiss="modal"
       @click="addModifierOrder"
     >
-      <img src="/pos/img/pos/done.png" alt="done" />
+      <img src="img/pos/done.png" alt="done" />
       <span>{{ _t('Apply') }}</span>
     </button>
   </div>
 </template>
 <script>
 /* global closeModal */
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'AddModifierOrderButton',
   props: {},
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('order', ['item']),
   },
   methods: {
+    removeTax() {
+      this.$store
+        .dispatch('order/removeTax')
+        .then(() => {
+          closeModal('#POSOrderItemOptions')
+        })
+        .catch()
+    },
     addModifierOrder() {
       this.$store
         .dispatch('order/addModifierOrder')

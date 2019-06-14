@@ -38,6 +38,7 @@ export const MODULE_FUTURE_ORDERS = 'Future Orders'
 
 export const ORDER_STATUS_ON_HOLD = 'on-hold'
 export const ORDER_STATUS_IN_PROGRESS = 'in-progress'
+export const ORDER_TYPE_CALL_CENTER = 'call_center'
 export const ORDER_STATUS_READY = 'ready'
 export const ORDER_STATUS_ON_A_WAY_TO_FINISH = 'on-a-way'
 export const ORDER_STATUS_FINISHED = 'finished'

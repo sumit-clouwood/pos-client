@@ -7,7 +7,7 @@
           data-related="new-Collections"
           @click="updateOrderStatus({ orderStatus: 'new', collected: 'no' })"
         >
-          <a href="#">New Order</a
+          <a href="javascript:void(0)">New Order</a
           ><span v-if="orderCount">{{ orderCount.take_away.new_order }}</span>
         </li>
         <li
@@ -15,7 +15,7 @@
           data-related="Waiting-for-Collections"
           @click="updateOrderStatus({ orderStatus: 'paid', collected: 'no' })"
         >
-          <a href="#">Waiting for Collections</a
+          <a href="javascript:void(0)">Waiting for Collections</a
           ><span v-if="orderCount">{{
             orderCount.take_away.Waiting_for_collection
           }}</span>
@@ -25,7 +25,7 @@
           data-related="collected"
           @click="updateOrderStatus({ orderStatus: 'paid', collected: 'yes' })"
         >
-          <a href="#">Collected</a
+          <a href="javascript:void(0)">Collected</a
           ><span v-if="orderCount">{{ orderCount.take_away.collected }}</span>
         </li>
       </ul>

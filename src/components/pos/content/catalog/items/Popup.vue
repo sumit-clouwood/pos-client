@@ -13,7 +13,9 @@
         <Header />
         <HeaderDetails />
         <Content />
-        <div class="error" v-show="error">{{ error }}</div>
+        <div class="modal-body">
+          <div class="text-danger" v-show="error">{{ error }}</div>
+        </div>
         <Footer />
       </div>
     </div>

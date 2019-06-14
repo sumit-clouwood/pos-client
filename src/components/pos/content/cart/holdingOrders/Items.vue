@@ -9,7 +9,7 @@
       <span>{{ formatPrice(orderData.balance_due || 0) }}</span>
     </div>
     <div class="dlt-btn" @click="dropHoldOrder(orderData)">
-      <img src="/pos/img/pos/delete-icon.svg" alt="delete" />
+      <img src="img/pos/delete-icon.svg" alt="delete" />
     </div>
   </div>
 </template>

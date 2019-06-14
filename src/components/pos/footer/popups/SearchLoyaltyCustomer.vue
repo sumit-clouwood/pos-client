@@ -176,8 +176,8 @@ export default {
   display: block;
 }
 .inputSearch{
-  width: 83%;
-  padding-bottom: 13px;
+  width: 82%;
+  padding-bottom: 11px;
   height: 48px;
   border-radius: 5px 0px 0px 5px;
 }

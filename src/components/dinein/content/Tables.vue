@@ -160,10 +160,16 @@
                   <span>&gt;</span></button
                 ><!--<span><img src="images/referal-down.png"></span>-->
                 <div class="dropdown-menu">
-                  <a class="dropdown-item" data-value="Table 3" href="#"
+                  <a
+                    class="dropdown-item"
+                    data-value="Table 3"
+                    href="javascript:void(0)"
                     >Table 3</a
                   >
-                  <a class="dropdown-item" data-value="Table 3 A" href="#"
+                  <a
+                    class="dropdown-item"
+                    data-value="Table 3 A"
+                    href="javascript:void(0)"
                     >Table 3 A</a
                   >
                 </div>

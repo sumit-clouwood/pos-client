@@ -45,7 +45,7 @@
             >
           </button>
           <a
-            href="#"
+            href="javascript:void(0)"
             v-if="actionDetails.action"
             class="btn btn-success"
             :id="order._id"

@@ -61,15 +61,15 @@
           />
         </div>
         <div class="customer-group">
-          <label>{{ _t('Birthday') }} <span>*</span></label>
+          <label>{{ _t('Birthday') }}</label>
           <datetime
             v-model="newCustomerDetails.birthday"
             input-class="btn schedule-input btn-large datepicker-here"
             :phrases="{ ok: _t('Continue'), cancel: _t('Exit') }"
           ></datetime>
-          <span class="validation-error" v-if="errors.birthday">{{
+          <!--<span class="validation-error" v-if="errors.birthday">{{
             errors.birthday
-          }}</span>
+          }}</span>-->
         </div>
         <div class="name-from">
           <label>{{ _t('Delivery Area') }} <span>*</span></label>
@@ -185,7 +185,7 @@ export default {
           .text()
       }
     },
-    getBirthday: function() {
+    /*getBirthday: function() {
       if (
         typeof this.newCustomerDetails.birthday != 'undefined' &&
         this.customer_title == 'Edit'
@@ -194,7 +194,7 @@ export default {
         this.newCustomerDetails.birthday =
           birthday[0] + '-' + birthday[1] + '-' + birthday[2]
       }
-    },
+    },*/
     validate: function() {
       this.errors = {}
       this.errors.count = 0
@@ -249,13 +249,15 @@ export default {
         this.errors.phone_number = 'Mobile number required'
         this.errors.count = 1
       }
-      if (!this.newCustomerDetails.birthday) {
+      /*if (!this.newCustomerDetails.birthday) {
         this.errors.birthday = 'Date of birth required'
         this.errors.count = 1
-      }
+      }*/
       if (this.errors.count === 0) {
-        let birthday = this.newCustomerDetails.birthday.split('T')
-        this.newCustomerDetails.birthday = birthday[0]
+        if (typeof this.newCustomerDetails.birthday != 'undefined') {
+          let birthday = this.newCustomerDetails.birthday.split('T')
+          this.newCustomerDetails.birthday = birthday[0]
+        }
       }
 
       return this.errors

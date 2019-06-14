@@ -11,7 +11,7 @@
       #manage-customer .modal-dialog .modal-content .modal-body .manage-customer-table table tr:last-child {
         border-bottom: 1px solid #efefef; }
       #manage-customer .modal-dialog .modal-content .modal-body .manage-customer-table table tr th {
-        padding: 1.5625rem 0.625rem;
+        padding: 0.9375rem 0;
         border-top: medium none; }
 
 .pagination-customer-details {
@@ -37,6 +37,12 @@
       letter-spacing: 0.5px;
       cursor: pointer;
       margin-right: 0.3125rem; }
+      .pagination-customer-details > ul > li.active {
+        background-color: #3A3E9F;
+        border-color: #3A3E9F; }
+      .pagination-customer-details > ul > li.disabled {
+        background-color: #767DFF;
+        border-color: #767DFF; }
       .pagination-customer-details > ul > li a {
         color: #fff; }
       .pagination-customer-details > ul > li.next-page {

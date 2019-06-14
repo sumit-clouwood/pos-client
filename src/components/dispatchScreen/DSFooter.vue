@@ -11,7 +11,7 @@
       <div class="dp-right-footer">
         <ul class="ullist-dp">
           <li class="dp-zoom-scren list-style-type">
-            <img src="/pos/img/other/expand.png" />
+            <img src="img/other/expand.png" />
           </li>
         </ul>
         <paginate

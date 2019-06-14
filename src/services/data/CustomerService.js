@@ -39,8 +39,6 @@ export default {
   },
 
   customerList(...[stores, query, page, orderBy, perPage]) {
-    // eslint-disable-next-line no-console
-    console.log(stores)
     return DataService.get(
       `/model/brand_customers?page_id=brand_customers_main_tbl&query=${query}&limit=${perPage}&ascending=0&page=${page}&byColumn=0&ascending=0&byColumn=0&orderBy=${orderBy}&stores=${stores}`,
       'brand'

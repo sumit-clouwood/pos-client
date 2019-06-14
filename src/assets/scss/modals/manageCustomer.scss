@@ -27,7 +27,7 @@
               }
 
               th {
-                padding: $px25 $px10;
+                padding: $px15 0;
                 border-top: medium none;
               }
             }
@@ -68,6 +68,14 @@
       letter-spacing: 0.5px;
       cursor: pointer;
       margin-right: $px5;
+      &.active {
+        background-color: $blue-dark;
+        border-color: $blue-dark;
+      }
+      &.disabled{
+        background-color: $blue-light;
+        border-color: $blue-light;
+      }
       a {
         color: $white;
       }

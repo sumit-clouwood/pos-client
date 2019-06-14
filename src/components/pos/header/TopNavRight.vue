@@ -32,7 +32,7 @@
         data-toggle="modal"
         data-target="#online-order"
       >
-        <a class="btn-part" href="#"
+        <a class="btn-part" href="javascript:void(0)"
           >{{ _t('Online') }} <span class="online-digit">2</span></a
         >
       </li>
@@ -55,10 +55,10 @@
     </li>
     <ul class="setting-dropdown">
       <li>
-        <a href="#">{{ _t('Printers') }}</a>
+        <a href="javascript:void(0)">{{ _t('Printers') }}</a>
       </li>
       <li>
-        <a href="#">{{ _t('Logout') }}</a>
+        <a href="javascript:void(0)">{{ _t('Logout') }}</a>
       </li>
     </ul>
   </div>

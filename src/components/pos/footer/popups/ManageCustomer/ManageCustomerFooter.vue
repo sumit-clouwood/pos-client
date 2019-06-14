@@ -6,11 +6,11 @@
         :page-count="paginateDetails.totalPages"
         :page-range="1"
         :margin-pages="1"
-        :clickHandler="setPageNumber"
-        :prev-text="'Prev'"
-        :next-text="'Next'"
+        :clickHandler="moreCustomer"
+        :prev-text="_t('Prev')"
+        :next-text="_t('Next')"
         :container-class="''"
-        :page-class="'page-item'"
+        :page-class="_t('page-item')"
       >
       </paginate>
       <!--</template>-->
@@ -47,7 +47,6 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import paginate from 'vuejs-paginate'
-
 export default {
   name: 'ManageCustomerFooter',
   props: {},
@@ -63,6 +62,9 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
+    moreCustomer: function(pageNumber) {
+      this.setPageNumber(pageNumber)
+    },
     ...mapActions('customer', ['setPageNumber']),
     ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
   },

@@ -5,13 +5,13 @@
   >
     <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
       <li class="nav-item logo-wrap">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="javascript:void(0)">
           <img src="images/icon.png" alt="icon" />
         </a>
       </li>
 
       <li class="nav-item active-opacity">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="javascript:void(0)">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -32,22 +32,14 @@
 
     <ul class="navbar-nav sidenav-toggler">
       <li class="nav-item arrow-bottom">
-        <a class="nav-link" href="#">
-          <img
-            class="bt-arrow"
-            src="/pos/img/pos/down-arrow.png"
-            alt="arrows"
-          />
-          <img
-            class="top-arrow"
-            src="/pos/img/pos/top-arrow.png"
-            alt="arrows"
-          />
+        <a class="nav-link" href="javascript:void(0)">
+          <img class="bt-arrow" src="img/pos/down-arrow.png" alt="arrows" />
+          <img class="top-arrow" src="img/pos/top-arrow.png" alt="arrows" />
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-center" id="sidenavToggler">
-          <img src="/pos/img/pos/profile-pic.png" alt="profile" />
+          <img src="img/pos/profile-pic.png" alt="profile" />
         </a>
       </li>
     </ul>
