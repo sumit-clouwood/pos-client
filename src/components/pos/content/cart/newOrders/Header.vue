@@ -20,7 +20,7 @@
       <div class="orders-button-large" disabled="disable">
         {{ _t('Split Table') }}
       </div>-->
-      <div class="orders-button-large" @click="pay">{{ _t('Hold') }}</div>
+      <div class="orders-button-large" @click="hold">{{ _t('Hold') }}</div>
     </div>
   </div>
 </template>
@@ -38,10 +38,10 @@ export default {
     ...mapState({ selectedCustomer: state => state.customer.customer }),
   },
   methods: {
-    pay() {
+    hold() {
       this.orderOnHold('on-hold')
       this.$store
-        .dispatch('checkout/pay', 'on-hold')
+        .dispatch('checkout/pay', { action: 'on-hold' })
         .then(() => {
           if (this.changedAmount >= 0.1) {
             $('#payment-msg').modal('hide')
