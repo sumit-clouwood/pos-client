@@ -11,18 +11,27 @@
       :class="{ active: activeIndex === index }"
       @click="setActiveCustomer(address, index)"
     >
-      <p>
-        <span>{{ _t('Store:') }} {{ storeName }}</span
-        ><br />
-        <span>
-          {{ _t('Area:') }}
-          {{ getDeliveryArea(address.delivery_area_id) }}
-        </span>
-        <br />
-        {{ address.flat_number }}, {{ address.building }}, {{ address.street }},
-        {{ address.city }}
-      </p>
-      <Buttons v-if="buttons" :id="address._id.$oid" />
+      <div>
+        <p>
+          <span
+            v-if="!getDeliveryArea(address.delivery_area_id)"
+            class="text-danger pull-right"
+          >
+            Inactive
+          </span>
+          <span>{{ _t('Store:') }} {{ storeName }}</span
+          ><br />
+          <span>
+            {{ _t('Area:') }}
+            {{ getDeliveryArea(address.delivery_area_id) }}
+          </span>
+          <br />
+          {{ address.flat_number }}, {{ address.building }},
+          {{ address.street }},
+          {{ address.city }}
+        </p>
+        <Buttons v-if="buttons" :id="address._id.$oid" />
+      </div>
     </div>
   </div>
 </template>
