@@ -49,7 +49,7 @@
       type="button"
       class="buttoned colorwhite taxbutton"
       v-if="item.editMode"
-      @click="removeTax(item)"
+      @click="removeTax()"
     >
       <img src="img/pos/delete.jpg" alt="delete" />
       <span>{{ _t('Tax') }}</span>

@@ -86,7 +86,7 @@ export default {
         $('#payment-msg').modal('show')
 
         this.$store
-          .dispatch('checkout/pay')
+          .dispatch('checkout/pay', this.$store.state.order.orderType)
           .then(() => {
             if (this.changedAmount >= 0.1) {
               $('#payment-msg').modal('hide')
