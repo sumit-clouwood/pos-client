@@ -112,6 +112,7 @@ const actions = {
             ? rootState.customer.address.id
             : null*/
           const address = rootState.customer.address
+          // address.delivery_area
           order.order_building = address.building
           order.order_street = address.street
           order.order_flat_number = address.flat_number
