@@ -43,7 +43,6 @@
             ...mapActions('category', ['getItems']),
             foodMenuHendlerGhange() {
                 this.$store.dispatch('foodMenuHendlerGhange')
-                console.log(this.foodMenuHendler)
             }
         },
     }
@@ -79,7 +78,7 @@
                 grid-gap: 0;
                 overflow: auto;
 
-                .food-categories-item {
+                .food-categories-itemfood-categories-item {
                     display: grid;
                     align-items: center;
                     width: auto;
