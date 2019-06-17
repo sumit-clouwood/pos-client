@@ -131,7 +131,7 @@ export default {
         })
           .then(() => {
             this.msg = ''
-            $('#order-confirmation').modal('hide')
+            // $('#order-confirmation').modal('hide')
             $('#payment-msg').modal('show')
             setTimeout(function() {
               $('#confirm_announcement').prop('disabled', false)

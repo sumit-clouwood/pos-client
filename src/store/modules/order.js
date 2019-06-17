@@ -77,7 +77,7 @@ const getters = {
 
 // actions
 const actions = {
-  addToOrder({ state, getters, commit, rootState, dispatch }, item) {
+  addToOrder({ state, getters, commit, dispatch }, item) {
     //set item price based on location, for modifiers items it is already set in modifer store
     // price means gross price here (including tax)
 
@@ -107,18 +107,10 @@ const actions = {
 
     commit(mutation.ADD_ORDER_ITEM, state.item)
 
-    dispatch('surcharge/calculate', {}, { root: true }).then(() =>
-      dispatch('tax/calculate', {}, { root: true }).then(() => {
-        if (rootState.discount.appliedOrderDiscount) {
-          dispatch('recalculateOrderTotals')
-        } else {
-          dispatch('recalculateItemPrices')
-        }
-      })
-    )
+    dispatch('surchargeCalculation')
   },
 
-  removeFromOrder({ commit, dispatch, rootState }, { item, index }) {
+  removeFromOrder({ commit, dispatch }, { item, index }) {
     commit(mutation.SET_ITEM, item)
     commit(mutation.REMOVE_ORDER_ITEM, index)
     if (state.items.length) {
@@ -128,15 +120,7 @@ const actions = {
     }
 
     if (state.items.length) {
-      dispatch('surcharge/calculate', {}, { root: true }).then(() =>
-        dispatch('tax/calculate', {}, { root: true }).then(() => {
-          if (rootState.discount.appliedOrderDiscount) {
-            dispatch('recalculateOrderTotals')
-          } else {
-            dispatch('recalculateItemPrices')
-          }
-        })
-      )
+      dispatch('surchargeCalculation')
     } else {
       //cart is empty remove the discounts
       dispatch('checkout/reset', null, { root: true })
@@ -316,15 +300,7 @@ const actions = {
         })
       }
 
-      dispatch('surcharge/calculate', {}, { root: true }).then(() =>
-        dispatch('tax/calculate', {}, { root: true }).then(() => {
-          if (rootState.discount.appliedOrderDiscount) {
-            dispatch('recalculateOrderTotals')
-          } else {
-            dispatch('recalculateItemPrices')
-          }
-        })
-      )
+      dispatch('surchargeCalculation')
       //reset the modifier form
       commit('orderForm/clearSelection', null, { root: true })
       resolve()
@@ -543,10 +519,13 @@ const actions = {
     })
   },
 
-  updateQuantity({ rootState, dispatch, commit }, quantity) {
+  updateQuantity({ commit, dispatch }, quantity) {
     const itemQuantity = quantity || 1
     commit(mutation.UPDATE_ITEM_QUANTITY, itemQuantity)
+    dispatch('surchargeCalculation')
+  },
 
+  surchargeCalculation({ rootState, dispatch }) {
     dispatch('surcharge/calculate', {}, { root: true }).then(() =>
       dispatch('tax/calculate', {}, { root: true }).then(() => {
         if (rootState.discount.appliedOrderDiscount) {
@@ -598,8 +577,9 @@ const actions = {
     })
   },
 
-  updateOrderType({ commit }, orderType) {
+  updateOrderType({ commit, dispatch }, orderType) {
     commit(mutation.ORDER_TYPE, orderType)
+    dispatch('surchargeCalculation')
   },
   addHoldOrder({ rootState, dispatch }, item_ids) {
     dispatch('reset')

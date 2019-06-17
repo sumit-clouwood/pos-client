@@ -120,7 +120,7 @@
 
 <script>
 /* global $ */
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'CustomerProfile',
   computed: {
@@ -131,7 +131,9 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
+    ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
     addCustomer: function() {
+      this.setDefaultSettingsGlobalAddUpdate({ nearest_landmark: '' })
       $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
       $('#customer input, #customer select').val('')
       $('.customerAddressWrapper').show()
