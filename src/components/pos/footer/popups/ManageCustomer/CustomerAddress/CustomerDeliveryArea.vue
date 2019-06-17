@@ -63,6 +63,8 @@ export default {
     ...mapState({
       storeName: state => state.location.store.name,
     }),
+    ...mapState('checkoutForm', ['msg']),
+
     /*...mapState({
       country: state =>
         state.location.locationData
@@ -77,6 +79,9 @@ export default {
       address.delivery_area = this.getDeliveryArea(address.delivery_area_id)
       this.activeIndex = index
       this.selectedAddress(address)
+      if (this.msg && this.msg.data.length > 0) {
+        this.msg.data = ''
+      }
     },
     ...mapActions('customer', ['selectedAddress']),
   },

@@ -39,8 +39,9 @@
               class="btn btn-success btn-large popup-btn-save"
               type="button"
               id="add-customer-btn"
-              @click="updateModalSelection('#order-confirmation')"
-              data-dismiss="modal"
+              @click="
+                updateModalSelection('#order-confirmation', '#add-to-order')
+              "
             >
               {{ _t('+ Add') }}
             </button>
@@ -69,10 +70,12 @@ export default {
     ...mapState('checkoutForm', ['msg']),
   },
   methods: {
-    updateModalSelection(modalName) {
+    updateModalSelection(modalName, subjectName) {
       this.updateModalSelectionDelivery(modalName)
-      if (this.msg) {
+      if (this.msg.data.length > 0) {
         $('#payment-msg').modal('show')
+      } else {
+        $(subjectName).modal('hide')
       }
     },
     ...mapActions('location', ['updateModalSelectionDelivery']),

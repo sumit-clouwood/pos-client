@@ -14,8 +14,12 @@
                 <div class="btn-right-neworder">
                   <button
                     id="place-new-order"
-                    data-dismiss="modal"
-                    @click="updateModalSelection('#order-confirmation')"
+                    @click="
+                      updateModalSelection(
+                        '#order-confirmation',
+                        '#display-order'
+                      )
+                    "
                   >
                     {{ _t('+ Place New Order') }}
                   </button>
@@ -91,10 +95,12 @@ export default {
     ...mapState('checkoutForm', ['msg']),
   },
   methods: {
-    updateModalSelection(modalName) {
+    updateModalSelection(modalName, subjectName) {
       this.updateModalSelectionDelivery(modalName)
-      if (this.msg) {
+      if (this.msg.data.length > 0) {
         $('#payment-msg').modal('show')
+      } else {
+        $(subjectName).modal('hide')
       }
     },
     ...mapActions('customer', ['setPastOrderPageNumber']),
