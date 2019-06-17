@@ -35,6 +35,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('order', ['items']),
+    ...mapState('checkoutForm', ['msg']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
   },
   methods: {
@@ -43,10 +44,11 @@ export default {
       this.$store
         .dispatch('checkout/pay', { action: 'on-hold' })
         .then(() => {
-          if (this.changedAmount >= 0.1) {
+          /*if (this.changedAmount >= 0.1) {
             $('#payment-msg').modal('hide')
             $('#change-amount').modal('show')
-          } else if (this.msg) {
+          } else*/
+          if (this.msg) {
             $('#payment-msg').modal('show')
           }
           setTimeout(function() {

@@ -15,7 +15,7 @@
                   <button
                     id="place-new-order"
                     data-dismiss="modal"
-                    @click="updateModalSelectionDelivery('#order-confirmation')"
+                    @click="updateModalSelection('#order-confirmation')"
                   >
                     {{ _t('+ Place New Order') }}
                   </button>
@@ -59,8 +59,8 @@
   </div>
   <!-- End CRM details -->
 </template>
-
 <script>
+/* global $ */
 import { mapState, mapActions, mapGetters } from 'vuex'
 import LoyaltyPoint from './CustomerInformation/LoyaltyPoint'
 import CustomerProfile from './CustomerInformation/CustomerProfile'
@@ -88,8 +88,15 @@ export default {
       pastOrders: state => state.customer.pastOrders,
     }),
     ...mapGetters('location', ['_t']),
+    ...mapState('checkoutForm', ['msg']),
   },
   methods: {
+    updateModalSelection(modalName) {
+      this.updateModalSelectionDelivery(modalName)
+      if (this.msg) {
+        $('#payment-msg').modal('show')
+      }
+    },
     ...mapActions('customer', ['setPastOrderPageNumber']),
     ...mapActions('location', ['updateModalSelectionDelivery']),
   },

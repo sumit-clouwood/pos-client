@@ -54,6 +54,7 @@
 </template>
 
 <script>
+/* global $ */
 import { mapActions, mapGetters, mapState } from 'vuex'
 // import Preloader from '@/components/util/Preloader'
 import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
@@ -65,14 +66,14 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState({ address: state => state.customer.address }),
+    ...mapState('checkoutForm', ['msg']),
   },
   methods: {
     updateModalSelection(modalName) {
-      if (!this.address) {
-        alert('fd')
-      }
       this.updateModalSelectionDelivery(modalName)
+      if (this.msg) {
+        $('#payment-msg').modal('show')
+      }
     },
     ...mapActions('location', ['updateModalSelectionDelivery']),
     ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
