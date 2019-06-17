@@ -3,7 +3,7 @@
   <div class="modal fade" id="payment-msg" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
+      <div class="modal-content" v-if="msg">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title">
@@ -12,12 +12,14 @@
         </div>
         <div class="modal-body change-amount-option">
           <div class="amount-change-wrap">
-            <h2 v-if="msg && msg !== 'loading'">{{ msg }}</h2>
+            <h2 v-if="msg.data && msg.data !== 'loading'">
+              {{ msg.data }}
+            </h2>
             <Preloader v-else />
           </div>
         </div>
-        <div class="modal-footer" v-if="msg !== 'loading'">
-          <div class="btn-announce">
+        <div class="modal-footer">
+          <div class="btn-announce" v-if="msg.result === 'success'">
             <button
               class="btn btn-success btn-large"
               type="button"
@@ -28,7 +30,14 @@
               {{ _t('Ok') }}
             </button>
           </div>
-          <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+          <button
+            v-if="msg.result !== 'success'"
+            type="button"
+            class="btn btn-default"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>

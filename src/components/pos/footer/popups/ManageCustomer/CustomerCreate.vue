@@ -88,17 +88,14 @@ export default {
           }
           this.updateAction(actionDetails)
         }
-        if (
+        /*if (
           this.customerCreateStatus &&
           this.customerCreateStatus.status === 'ok'
-        ) {
-          $('#close-customer').click()
-          $('#customer').modal('toggle')
-        }
-        setTimeout(function() {
-          $('#information-popup').modal('toggle')
-          $('#information-popup').modal('show')
-        }, 300)
+        ) {}*/
+        $('#close-customer').click()
+        $('#customer').modal('toggle')
+        $('#information-popup').modal('toggle')
+        $('#information-popup').modal('show')
       }
     },
   },

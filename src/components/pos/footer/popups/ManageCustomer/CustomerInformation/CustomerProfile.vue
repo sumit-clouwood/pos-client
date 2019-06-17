@@ -20,7 +20,12 @@
       </p>
       <p class="name-confrimation">
         {{ _t('Not') }} {{ customerProfile.name }}?
-        <span data-toggle="modal" data-target="#customer" data-dismiss="modal">
+        <span
+          @click="addCustomer"
+          data-toggle="modal"
+          data-target="#customer"
+          data-dismiss="modal"
+        >
           {{ _t('Create New Customer') }}
         </span>
       </p>
@@ -114,6 +119,7 @@
 </template>
 
 <script>
+/* global $ */
 import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'CustomerProfile',
@@ -125,12 +131,18 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
+    addCustomer: function() {
+      $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
+      $('#customer input, #customer select').val('')
+      $('.customerAddressWrapper').show()
+    },
     editCustomer: function(customerId) {
       let actionDetails = {
         id: customerId,
         action: 'edit',
         model: 'brand_customers',
       }
+      $('.customerAddressWrapper').hide()
       this.$store.dispatch('customer/editAction', actionDetails)
     },
   },
