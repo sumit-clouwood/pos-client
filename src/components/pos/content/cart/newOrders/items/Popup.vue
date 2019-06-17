@@ -1,18 +1,20 @@
 <template>
   <!-- Modal -->
   <div
-    class="modal fade order-item-modal POSItemOptions order-popup"
+    class="modal fade order-item-modal POSItemOptions"
     id="POSOrderItemOptions"
     tabindex="-1"
     role="dialog"
-    aria-labelledby="POSItemOptions"
+    aria-labelledby="POSOrderItemOptions"
     aria-hidden="true"
   >
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <Header />
         <Content />
-        <div class="error" v-show="error">{{ error }}</div>
+        <div class="modal-body">
+          <div class="text-danger" v-show="error">{{ error }}</div>
+        </div>
         <Footer />
       </div>
     </div>
@@ -22,7 +24,7 @@
 
 <script>
 import Header from './popup/Header.vue'
-import Content from './popup/Content.vue'
+import Content from '@/components/pos/content/catalog/items/popup/Content.vue'
 import Footer from './popup/Footer.vue'
 import { mapState } from 'vuex'
 export default {
