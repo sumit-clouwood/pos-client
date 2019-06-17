@@ -49,6 +49,7 @@
       type="button"
       class="buttoned colorwhite taxbutton"
       v-if="item.editMode"
+      @click="removeTax()"
     >
       <img src="img/pos/delete.jpg" alt="delete" />
       <span>{{ _t('Tax') }}</span>
@@ -74,6 +75,14 @@ export default {
     ...mapState('order', ['item']),
   },
   methods: {
+    removeTax() {
+      this.$store
+        .dispatch('order/removeTax')
+        .then(() => {
+          closeModal('#POSOrderItemOptions')
+        })
+        .catch()
+    },
     addModifierOrder() {
       this.$store
         .dispatch('order/addModifierOrder')
