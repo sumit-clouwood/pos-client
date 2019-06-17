@@ -13,7 +13,11 @@
               &times;
             </button>
           </div>
+
+          <!--Customer form-->
           <CustomerForm ref="form" />
+          <!--Customer form-->
+
           <div class="modal-footer">
             <div class="btn-announce">
               <button
