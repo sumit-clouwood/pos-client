@@ -29,15 +29,15 @@
             >
               {{ _t('Ok') }}
             </button>
+            <button
+              v-if="msg.result !== 'success'"
+              type="button"
+              class="btn btn-default"
+              data-dismiss="modal"
+            >
+              {{ _t('Close') }}
+            </button>
           </div>
-          <button
-            v-if="msg.result !== 'success'"
-            type="button"
-            class="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
         </div>
       </div>
     </div>
