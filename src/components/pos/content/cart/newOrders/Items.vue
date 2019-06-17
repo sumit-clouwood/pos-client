@@ -24,7 +24,7 @@
         <div
           class="button-plus"
           data-toggle="modal"
-          data-target="#POSItemOptions"
+          data-target="#POSOrderItemOptions"
           @click="setActiveItem({ orderItem: item, index: index })"
         >
           <img src="img/pos/plus-icon.png" alt="plus" />

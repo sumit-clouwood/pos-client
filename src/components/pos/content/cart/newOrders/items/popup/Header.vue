@@ -11,7 +11,7 @@
         <div class="POSItemOptions_price">
           <label class="POSItemOptions_label">Price</label>
           <div class="POSItemOptions_money">
-            {{ formatPrice(item.item_price) }}
+            {{ formatPrice(item.value * quantity) }}
           </div>
         </div>
         <Quantity />
@@ -30,6 +30,7 @@ export default {
   computed: {
     ...mapGetters('location', ['formatPrice']),
     ...mapGetters('order', ['item']),
+    ...mapGetters('orderForm', ['quantity']),
   },
   components: {
     Quantity,
