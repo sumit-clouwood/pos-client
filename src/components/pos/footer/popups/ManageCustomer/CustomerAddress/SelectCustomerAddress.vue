@@ -39,7 +39,7 @@
               class="btn btn-success btn-large popup-btn-save"
               type="button"
               id="add-customer-btn"
-              @click="updateModalSelectionDelivery('#order-confirmation')"
+              @click="updateModalSelection('#order-confirmation')"
               data-dismiss="modal"
             >
               {{ _t('+ Add') }}
@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 // import Preloader from '@/components/util/Preloader'
 import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
 export default {
@@ -65,8 +65,15 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState({ address: state => state.customer.address }),
   },
   methods: {
+    updateModalSelection(modalName) {
+      if (!this.address) {
+        alert('fd')
+      }
+      this.updateModalSelectionDelivery(modalName)
+    },
     ...mapActions('location', ['updateModalSelectionDelivery']),
     ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
   },
