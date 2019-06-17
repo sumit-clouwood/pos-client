@@ -27,7 +27,10 @@ const getters = {
     return rootGetters['order/orderTotal'] + state.tipAmount
   },
   paid: state => {
-    return state.payments.reduce((total, payment) => total + payment.amount, 0)
+    return state.payments.reduce(
+      (total, payment) => parseFloat(total) + parseFloat(payment.amount),
+      0
+    )
   },
   payable: (state, getters) => {
     return getters.orderTotal - getters.paid
