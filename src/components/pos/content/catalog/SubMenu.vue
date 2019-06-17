@@ -78,7 +78,7 @@
                 grid-gap: 0;
                 overflow: auto;
 
-                .food-categories-itemfood-categories-item {
+                .food-categories-item {
                     display: grid;
                     align-items: center;
                     width: auto;

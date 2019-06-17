@@ -21,7 +21,7 @@
     @import '../../assets/scss/mixins.scss';
 
     .mobile-components {
-        z-index: 1000;
+        z-index: 50;
         position: fixed;
         top: 0;
         right: 0;
