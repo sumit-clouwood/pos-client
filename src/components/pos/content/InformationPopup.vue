@@ -17,7 +17,7 @@
             v-on:load="activeClass"
           >
             <h5 :class="activatedClass" class="text-capitalize">
-              {{ responseInformation.message }}
+              {{ responseInformation }}
             </h5>
           </div>
         </div>

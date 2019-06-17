@@ -23,6 +23,7 @@ const getters = {
 
 const actions = {
   calculate({ commit, getters, rootGetters, rootState }) {
+    let i = 1
     return new Promise(resolve => {
       //look for order level discount before going furhter ;)
       const subtotal = rootGetters['order/subTotal']
@@ -30,7 +31,11 @@ const actions = {
       let totalSurcharges = []
       if (subtotal && state.surcharges.length) {
         state.surcharges.forEach(surcharge => {
+          // eslint-disable-next-line no-console
+          console.log(rootState.order.orderType.OTApi + ' > ' + i++)
           if (surcharge[rootState.order.orderType.OTApi]) {
+            // eslint-disable-next-line no-console
+            console.log(surcharge)
             let applidSurcharge = {
               id: surcharge._id,
               amount: surcharge.value,

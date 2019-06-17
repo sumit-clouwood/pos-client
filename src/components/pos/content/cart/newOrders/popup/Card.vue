@@ -66,6 +66,7 @@ export default {
       this.$store
         .dispatch('checkoutForm/addCardAmount', this.code)
         .then(() => {
+          this.code = ''
           if (this.$store.state.checkoutForm.action == 'pay') {
             if (this.$store.getters['checkoutForm/validate']) {
               this.$store

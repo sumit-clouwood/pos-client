@@ -86,8 +86,17 @@ const actions = {
     document.body.classList.add('body-' + direction)*/
   },
 
-  updateModalSelectionDelivery({ commit }, modalSelection) {
+  updateModalSelectionDelivery({ commit, rootState }, modalSelection) {
     commit(mutation.SET_MODAL, modalSelection)
+    if (!rootState.customer.address && modalSelection != '#loyalty-payment') {
+      commit(
+        'checkoutForm/SET_MSG',
+        { result: '', data: 'Please select one address' },
+        {
+          root: true,
+        }
+      )
+    }
   },
 }
 

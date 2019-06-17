@@ -1,3 +1,4 @@
+/* global $ */
 /* eslint-disable no-console */
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
@@ -112,6 +113,7 @@ const actions = {
             ? rootState.customer.address.id
             : null*/
           const address = rootState.customer.address
+          // address.delivery_area
           order.order_building = address.building
           order.order_street = address.street
           order.order_flat_number = address.flat_number
@@ -360,9 +362,13 @@ const actions = {
   },
 
   createOrder({ state, commit, rootState, rootGetters, dispatch }) {
-    commit('checkoutForm/SET_MSG', 'loading', {
-      root: true,
-    })
+    commit(
+      'checkoutForm/SET_MSG',
+      { data: '', result: 'loading' },
+      {
+        root: true,
+      }
+    )
     return new Promise((resolve, reject) => {
       console.log(state.order)
       OrderService.saveOrder(state.order, rootState.customer.offlineData)
@@ -381,7 +387,7 @@ const actions = {
             if (state.onHold) {
               commit(
                 'checkoutForm/SET_MSG',
-                'Order has been hold Successfully',
+                { result: '', data: 'Order has been hold Successfully' },
                 {
                   root: true,
                 }
@@ -390,10 +396,13 @@ const actions = {
               dispatch('reset')
               return true
             }
-
-            commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
-              root: true,
-            })
+            commit(
+              'checkoutForm/SET_MSG',
+              { result: 'success', data: 'Order Placed Successfully' },
+              {
+                root: true,
+              }
+            )
             resolve(response.data)
 
             dispatch('invoice/printRules', null, { root: true }).then(() => {
@@ -429,9 +438,13 @@ const actions = {
                 // })
 
                 // commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
-                commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
-                  root: true,
-                })
+                commit(
+                  'checkoutForm/SET_MSG',
+                  { result: 'success', data: 'Order Placed Successfully' },
+                  {
+                    root: true,
+                  }
+                )
                 resolve(response.data)
               })
             })
@@ -460,9 +473,30 @@ const actions = {
             })
             reject(response.data.error)
           } else {
-            commit('checkoutForm/SET_MSG', 'Queued for sending later', {
-              root: true,
-            })
+            var err_msg = ''
+            if (
+              response.data[response.data.status] &&
+              typeof response.data[response.data.status] != 'undefined'
+            ) {
+              $.each(response.data[response.data.status], function(key, value) {
+                err_msg += value + ' '
+              })
+              commit(
+                'checkoutForm/SET_MSG',
+                { result: '', data: err_msg },
+                {
+                  root: true,
+                }
+              )
+            } else {
+              commit(
+                'checkoutForm/SET_MSG',
+                { result: '', data: 'Queued for sending later' },
+                {
+                  root: true,
+                }
+              )
+            }
             resolve(response.data)
           }
         })

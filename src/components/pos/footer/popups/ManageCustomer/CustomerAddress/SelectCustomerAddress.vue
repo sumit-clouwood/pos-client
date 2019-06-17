@@ -16,6 +16,18 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
+              id="cu-add-address"
+              data-toggle="modal"
+              data-target="#add_address"
+              class="btn btn-success btn-large"
+              data-dismiss="modal"
+              @click="
+                setDefaultSettingsGlobalAddUpdate({ nearest_landmark: '' })
+              "
+            >
+              {{ _t('+ Add Address') }}
+            </button>
+            <button
               type="button"
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
@@ -27,8 +39,9 @@
               class="btn btn-success btn-large popup-btn-save"
               type="button"
               id="add-customer-btn"
-              @click="updateModalSelectionDelivery('#order-confirmation')"
-              data-dismiss="modal"
+              @click="
+                updateModalSelection('#order-confirmation', '#add-to-order')
+              "
             >
               {{ _t('+ Add') }}
             </button>
@@ -42,7 +55,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+/* global $ */
+import { mapActions, mapGetters, mapState } from 'vuex'
 // import Preloader from '@/components/util/Preloader'
 import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
 export default {
@@ -53,9 +67,19 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('checkoutForm', ['msg']),
   },
   methods: {
+    updateModalSelection(modalName, subjectName) {
+      this.updateModalSelectionDelivery(modalName)
+      if (this.msg.data.length > 0) {
+        $('#payment-msg').modal('show')
+      } else {
+        $(subjectName).modal('hide')
+      }
+    },
     ...mapActions('location', ['updateModalSelectionDelivery']),
+    ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
   },
 }
 </script>

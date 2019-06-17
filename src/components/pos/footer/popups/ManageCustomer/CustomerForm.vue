@@ -71,7 +71,7 @@
             errors.birthday
           }}</span>-->
         </div>
-        <div class="name-from">
+        <div class="customerAddressWrapper name-from">
           <label>{{ _t('Delivery Area') }} <span>*</span></label>
           <select
             class="getAreaId"
@@ -91,7 +91,7 @@
           }}</span>
         </div>
       </div>
-      <div class="col-md-6 left-form">
+      <div class="customerAddressWrapper col-md-6 left-form">
         <div class="alternate-phone-from">
           <label>{{ _t('Building/Villa') }} <span>*</span></label>
           <input
@@ -115,7 +115,7 @@
           }}</span>
         </div>
       </div>
-      <div class="col-md-6 right-form">
+      <div class="customerAddressWrapper col-md-6 right-form">
         <div class="landmark">
           <label>{{ _t('Flat Number') }} <span>*</span></label>
           <input
@@ -128,12 +128,15 @@
           }}</span>
         </div>
         <div class="landmark">
-          <label>{{ _t('Nearest Landmark') }}</label>
+          <label>{{ _t('Nearest Landmark') }} <span>*</span></label>
           <input
             type="text"
             name="nearest_landmark"
             v-model="newCustomerDetails.nearest_landmark"
           />
+          <span class="validation-error" v-if="errors.nearest_landmark">{{
+            errors.nearest_landmark
+          }}</span>
         </div>
       </div>
     </div>
@@ -143,6 +146,14 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import { Datetime } from 'vue-datetime'
+
+function getWithoutSpaceLength(data) {
+  if ($.trim(data).length == 0) {
+    return false
+  }
+  return true
+}
+
 /* global $ */
 export default {
   name: 'CustomerForm',
@@ -198,61 +209,92 @@ export default {
     validate: function() {
       this.errors = {}
       this.errors.count = 0
-      if (!this.newCustomerDetails.delivery_area_id) {
-        this.errors.delivery_area_id = 'Delivery area required'
-        this.errors.count = 1
-      }
-      if (!this.newCustomerDetails.building) {
-        this.errors.building = 'Building/Villa required'
-        this.errors.count = 1
-      }
       if (
-        this.newCustomerDetails.building &&
-        this.newCustomerDetails.building.length > 15
+        !this.newCustomerDetails.name ||
+        !getWithoutSpaceLength(this.newCustomerDetails.name)
       ) {
-        this.errors.building =
-          'Building/Villa should be not more than 15 characters'
-        this.errors.count = 1
-      }
-      if (!this.newCustomerDetails.flat_number) {
-        this.errors.flat_number = 'Flat Number is required'
-        this.errors.count = 1
-      }
-      if (!this.newCustomerDetails.street) {
-        this.errors.street = 'Street required'
-        this.errors.count = 1
-      }
-      if (
-        this.newCustomerDetails.street &&
-        this.newCustomerDetails.street.length < 2
-      ) {
-        this.errors.street = 'Street should be at least 2 characters'
-        this.errors.count = 1
-      }
-
-      if (!this.newCustomerDetails.name) {
-        this.errors.name = 'Name required'
+        this.errors.name = this._t('Name') + ' ' + this._t('is required')
         this.errors.count = 1
       }
       if (
         typeof this.newCustomerDetails.email != 'undefined' &&
         !this.validEmail(this.newCustomerDetails.email)
       ) {
-        this.errors.email = 'Valid email required.'
+        this.errors.email =
+          this._t('Valid email') + ' ' + this._t('is required.')
         this.errors.count = 1
       }
-      if (!this.newCustomerDetails.email) {
-        this.errors.email = 'Email required.'
+      if (
+        !this.newCustomerDetails.email ||
+        !getWithoutSpaceLength(this.newCustomerDetails.email)
+      ) {
+        this.errors.email = this._t('Email') + ' ' + this._t('is required.')
         this.errors.count = 1
       }
-      if (!this.newCustomerDetails.phone_number) {
-        this.errors.phone_number = 'Mobile number required'
+      if (
+        !this.newCustomerDetails.phone_number ||
+        !getWithoutSpaceLength(this.newCustomerDetails.phone_number)
+      ) {
+        this.errors.phone_number =
+          this._t('Mobile number') + ' ' + this._t('is required')
         this.errors.count = 1
       }
-      /*if (!this.newCustomerDetails.birthday) {
-        this.errors.birthday = 'Date of birth required'
-        this.errors.count = 1
-      }*/
+      if (this.customer_title !== 'Edit') {
+        if (!this.newCustomerDetails.delivery_area_id) {
+          this.errors.delivery_area_id = this._t('Delivery area required')
+          this.errors.count = 1
+        }
+        if (
+          !this.newCustomerDetails.building ||
+          !getWithoutSpaceLength(this.newCustomerDetails.building)
+        ) {
+          this.errors.building = this._t('Building/Villa required')
+          this.errors.count = 1
+        }
+        if (
+          this.newCustomerDetails.building &&
+          this.newCustomerDetails.building.length > 15
+        ) {
+          this.errors.building = this._t(
+            'Building/Villa should be not more than 15 characters'
+          )
+          this.errors.count = 1
+        }
+        if (
+          !this.newCustomerDetails.flat_number ||
+          !getWithoutSpaceLength(this.newCustomerDetails.flat_number)
+        ) {
+          this.errors.flat_number =
+            this._t('Flat Number') + ' ' + this._t('is required')
+          this.errors.count = 1
+        }
+        if (
+          !this.newCustomerDetails.nearest_landmark ||
+          !getWithoutSpaceLength(this.newCustomerDetails.nearest_landmark)
+        ) {
+          this.errors.nearest_landmark =
+            this._t('Landmark') + ' ' + this._t('is required')
+          this.errors.count = 1
+        }
+        if (
+          !this.newCustomerDetails.street ||
+          !getWithoutSpaceLength(this.newCustomerDetails.street)
+        ) {
+          this.errors.street = this._t('Street') + ' ' + this._t('is required')
+          this.errors.count = 1
+        }
+        if (
+          this.newCustomerDetails.street &&
+          this.newCustomerDetails.street.length < 2
+        ) {
+          this.errors.street = this._t('Street should be at least 2 characters')
+          this.errors.count = 1
+        }
+        /*if (!this.newCustomerDetails.birthday) {
+              this.errors.birthday = 'Date of birth required'
+              this.errors.count = 1
+            }*/
+      }
       if (this.errors.count === 0) {
         if (typeof this.newCustomerDetails.birthday != 'undefined') {
           let birthday = this.newCustomerDetails.birthday.split('T')

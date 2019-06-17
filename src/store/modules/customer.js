@@ -237,25 +237,6 @@ const actions = {
       commit(mutation.GET_DELIVERY_AREAS, response.data.data)
     })
   },
-  fetchCustomerAddress({ commit, rootState }) {
-    let allOnlineOrders = false
-    if (JSON.parse(localStorage.getItem('onlineOrders')) != null) {
-      allOnlineOrders = JSON.parse(localStorage.getItem('onlineOrders')).orders
-    }
-    let customerIds = []
-    if (allOnlineOrders) {
-      allOnlineOrders.forEach(order => {
-        // if (customerIds.indexOf(order.customer_id) == -1) {
-        if (customerIds.includes(order.customer_id)) {
-          customerIds.push(order.customer_id)
-        }
-      })
-      const params = [customerIds, rootState.location.location]
-      customerService.getCustomerDetails(...params).then(response => {
-        commit(mutation.FETCH_CUSTOMER_ADDRESSES, response.data.data)
-      })
-    }
-  },
 
   setOfflineData({ commit }, data) {
     commit(mutation.SET_OFFLINE_DATA, data)
@@ -320,7 +301,7 @@ const mutations = {
       state.responseInformation.message = customerCreateResponse.error
     } else {
       state.responseInformation.status = customerCreateResponse.status
-      state.responseInformation.message = customerCreateResponse.data
+      state.responseInformation.message = customerCreateResponse
     }
   },
   [mutation.SELECTED_CUSTOMER](state, customerDetails) {
@@ -331,9 +312,9 @@ const mutations = {
   [mutation.SELECTED_CUSTOMER_ADDRESS](state, selectedAddress) {
     state.address = selectedAddress
   },
-  [mutation.FETCH_CUSTOMER_ADDRESSES](state, addressList) {
+  /*[mutation.FETCH_CUSTOMER_ADDRESSES](state, addressList) {
     state.allOnlineAddress = addressList
-  },
+  },*/
   [mutation.SET_OFFLINE_DATA](state, data) {
     state.offlineData = data
   },

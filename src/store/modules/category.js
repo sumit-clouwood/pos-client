@@ -165,6 +165,7 @@ const mutations = {
       state.searchItems = items.items
     } else {
       state.searchItems = {}
+      state.item = null
     }
   },
 }
