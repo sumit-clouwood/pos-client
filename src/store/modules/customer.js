@@ -232,9 +232,15 @@ const actions = {
     commit(mutation.SET_ADD_DETAILS, setDefaultSettings)
   },
 
-  fetchDeliveryArea({ commit }, query) {
+  fetchDeliveryArea({ commit, rootState }, query) {
     CustomerService.fetchDeliveryAreas(query).then(response => {
-      commit(mutation.GET_DELIVERY_AREAS, response.data.data)
+      //Fetch Delivery Areas in add Customer Address and Add new customer form
+      let data = response.data.data.filter(function(u) {
+        if (u.store_id == rootState.context.storeId) {
+          return u.item_status
+        }
+      })
+      commit(mutation.GET_DELIVERY_AREAS, data)
     })
   },
 
