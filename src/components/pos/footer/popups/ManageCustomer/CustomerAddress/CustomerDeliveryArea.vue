@@ -101,7 +101,8 @@ export default {
   right: 5px;
 }
 .addOrders {
-  overflow-y: auto;
+  overflow-y: auto !important;
+  max-height: 21rem;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   touch-action: auto;
