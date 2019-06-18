@@ -1,6 +1,7 @@
 import * as mutation from './order/mutation-types'
 import OrderService from '../../services/data/OrderService'
 import * as CONST from '@/constants'
+import Num from '@/plugins/helpers/Num.js'
 
 const DISCOUNT_ORDER_ERROR_TOTAL =
   "Discount can't be greater than total amount of order."
@@ -85,8 +86,8 @@ const actions = {
     //item.value is gross price which is inclusive of taxes
 
     //item price is exclusive of taxes, before tax
-    item.grossPrice = item.value
-    item.netPrice = getters.netPrice(item)
+    item.grossPrice = Num.round(item.value)
+    item.netPrice = Num.round(getters.netPrice(item))
 
     //this comes directly from the items menu without modifiers
     item.modifiable = false
@@ -161,8 +162,8 @@ const actions = {
       let item = { ...rootState.modifier.item }
       //this comes through the modifier popup
 
-      item.grossPrice = item.value
-      item.netPrice = getters.netPrice(item)
+      item.grossPrice = Num.round(item.value)
+      item.netPrice = Num.round(getters.netPrice(item))
 
       item.modifiable = true
 
@@ -253,10 +254,11 @@ const actions = {
       const modifiersTax = (modifierPrice * item.tax_sum) / 100
       //calculate net and gross price
       const itemGrossPrice =
-        parseFloat(item.grossPrice) + parseFloat(modifierPrice) + modifiersTax
+        item.grossPrice + Num.round(modifierPrice) + Num.round(modifiersTax)
 
       //item net price (without tax ) + modifier price which is already without tax
-      const itemNetPrice = getters.netPrice(item) + parseFloat(modifierPrice)
+      const itemNetPrice =
+        Num.round(getters.netPrice(item)) + parseFloat(modifierPrice)
 
       commit(mutation.ADD_MODIFIER_PRICE_TO_ITEM, {
         grossPrice: itemGrossPrice,
