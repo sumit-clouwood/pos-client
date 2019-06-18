@@ -15,7 +15,7 @@ const state = {
   location: null,
   setModal: '#manage-customer',
   referrals: false,
-  userDetails: '',
+  userDetails: false,
 }
 
 // getters
@@ -78,10 +78,12 @@ const actions = {
       const user_id =
         localStorage.getItem('user').length > 0
           ? JSON.parse(localStorage.getItem('user')).user_id
-          : ''
-      LocationService.userDetails(user_id).then(response => {
-        commit(mutation.USER_DETAILS, response.data)
-      })
+          : false
+      if (user_id) {
+        LocationService.userDetails(user_id).then(response => {
+          commit(mutation.USER_DETAILS, response.data)
+        })
+      }
     }
   },
   changeLanguage({ commit }, locale) {

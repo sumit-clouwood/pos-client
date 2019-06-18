@@ -28,10 +28,16 @@
     <div class="slider-btn">
       <i class="fa fa-chevron-down" aria-hidden="true"></i>
     </div>
-    <div class="navigation-avatar">
+    <div class="navigation-avatar" v-if="userDetails">
       <a class="nav-link" href="" :title="userDetails.item.email">
         <img :src="profileImage" alt="profile" />
         <div class="nav-link-user-name">{{ userDetails.item.name }}</div>
+      </a>
+    </div>
+    <div class="navigation-avatar" v-else>
+      <a class="nav-link" href="">
+        <img :src="profileImage" alt="profile" />
+        <div class="nav-link-user-name">Admin</div>
       </a>
     </div>
     <div v-if="getImages">
