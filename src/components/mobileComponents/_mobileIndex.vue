@@ -2,16 +2,22 @@
     <div class="mobile-components">
         <profile-sidebar/>
         <mobile-page/>
+        <mobile-payment-methods/>
+        <mobile-orders/>
     </div>
 </template>
 <script>
-    import profileSidebar from './profileSidebar.vue'
+    import profileSidebar from './mobileProfileSidebar.vue'
+    import mobilePaymentMethods from './mobilePaymentMethods.vue'
     import mobilePage from './mobilePage.vue'
+    import mobileOrders from './mobileOrders.vue'
 
     export default {
         components: {
             profileSidebar,
             mobilePage,
+            mobilePaymentMethods,
+            mobileOrders
         }
     }
 </script>

@@ -64,9 +64,9 @@
 </template>
 <script>
     import {mapGetters} from 'vuex'
-    import avatar from './avatar.vue'
-    import dateTime from './dateTime.vue'
-    import onlineCounter from './onlineCounter.vue'
+    import avatar from './mobileElements/avatar.vue'
+    import dateTime from './mobileElements/dateTime.vue'
+    import onlineCounter from './mobileElements/onlineCounter.vue'
 
     export default {
         components: {
