@@ -95,6 +95,10 @@ const actions = {
     item.undiscountedGrossPrice = item.grossPrice
     item.undiscountedNetPrice = item.netPrice
 
+    if (typeof item.quantity === 'undefined') {
+      item.quantity = 1
+    }
+
     commit(mutation.SET_ITEM, item)
 
     /* const index = state.items.findIndex(
@@ -157,9 +161,14 @@ const actions = {
   },
 
   //this function re-adds an item to order if item is in edit mode, it just replaces exiting item in cart
-  addModifierOrder({ commit, getters, rootState, dispatch, rootGetters }) {
+  addModifierOrder(
+    { commit, getters, rootState, dispatch, rootGetters },
+    item
+  ) {
     return new Promise((resolve, reject) => {
-      let item = { ...rootState.modifier.item }
+      if (!item) {
+        item = { ...rootState.modifier.item }
+      }
       //this comes through the modifier popup
 
       item.grossPrice = Num.round(item.value)
@@ -167,7 +176,9 @@ const actions = {
 
       item.modifiable = true
 
-      item.quantity = rootState.orderForm.quantity || 1
+      if (typeof item.quantity === 'undefined') {
+        item.quantity = rootState.orderForm.quantity || 1
+      }
 
       commit(mutation.SET_ITEM, item)
 
@@ -175,49 +186,69 @@ const actions = {
       let itemModifiers = []
 
       //adding modifers to item
-      const modifiers = rootGetters['orderForm/modifiers'].filter(
-        modifier => modifier.itemId == item._id
-      )
+      let modifiers = []
+      if (item.modifiers) {
+        const itemModifiersArray = rootGetters['modifier/itemModifiers'](
+          item._id
+        )
+        if (itemModifiersArray.length) {
+          itemModifiersArray.forEach(modifierItem => {
+            modifierItem.modifiers.forEach(modifier => {
+              if (item.modifiers.includes(modifier._id)) {
+                modifiers.push(modifier)
+              }
+            })
+          })
 
-      let selectedModifeirGroups = []
-
-      modifiers.forEach(modifier => {
-        itemModifierGroups.push(modifier)
-        selectedModifeirGroups.push(modifier.groupId)
-      })
-
-      //match modifiers with mandatory modifiers for this item, if not matched set error and return false
-      const itemMandatoryModifierGroups = rootGetters[
-        'modifier/itemMandatoryGroups'
-      ](item._id)
-
-      let mandatorySelected = true
-
-      itemMandatoryModifierGroups.forEach(id => {
-        if (!selectedModifeirGroups.includes(id)) {
-          mandatorySelected = false
+          itemModifiers = modifiers
         }
-      })
-
-      if (mandatorySelected) {
-        commit('orderForm/setError', false, {
-          root: true,
-        })
       } else {
-        commit('orderForm/setError', 'Please select mandatory modifiers', {
-          root: true,
-        })
-        reject()
-        return false
-      }
+        //new order, user selection
 
-      modifiers.forEach(modifier => {
-        if (Array.isArray(modifier.modifierId)) {
-          itemModifiers.push(...modifier.modifierId)
+        modifiers = rootGetters['orderForm/modifiers'].filter(
+          modifier => modifier.itemId == item._id
+        )
+
+        let selectedModifeirGroups = []
+
+        modifiers.forEach(modifier => {
+          itemModifierGroups.push(modifier)
+          selectedModifeirGroups.push(modifier.groupId)
+        })
+
+        //match modifiers with mandatory modifiers for this item, if not matched set error and return false
+        const itemMandatoryModifierGroups = rootGetters[
+          'modifier/itemMandatoryGroups'
+        ](item._id)
+
+        let mandatorySelected = true
+
+        itemMandatoryModifierGroups.forEach(id => {
+          if (!selectedModifeirGroups.includes(id)) {
+            mandatorySelected = false
+          }
+        })
+
+        if (mandatorySelected) {
+          commit('orderForm/setError', false, {
+            root: true,
+          })
         } else {
-          itemModifiers.push(modifier.modifierId)
+          commit('orderForm/setError', 'Please select mandatory modifiers', {
+            root: true,
+          })
+          reject()
+          return false
         }
-      })
+
+        modifiers.forEach(modifier => {
+          if (Array.isArray(modifier.modifierId)) {
+            itemModifiers.push(...modifier.modifierId)
+          } else {
+            itemModifiers.push(modifier.modifierId)
+          }
+        })
+      }
 
       commit(mutation.ADD_MODIFIERS_TO_ITEM, {
         modifiers: itemModifiers,
@@ -584,13 +615,33 @@ const actions = {
     commit(mutation.ORDER_TYPE, orderType)
     dispatch('surchargeCalculation')
   },
-  addHoldOrder({ rootState, dispatch }, item_ids) {
+  addHoldOrder({ rootState, dispatch }, order) {
     dispatch('reset')
-    const allItems = rootState.category.items
-    allItems.forEach(item => {
-      if (item_ids.indexOf(item._id) !== -1) {
-        dispatch('addToOrder', item)
-      }
+    order.items.forEach((orderItem, key) => {
+      rootState.category.items.forEach(categoryItem => {
+        let item = { ...categoryItem }
+        if (orderItem.entity_id === categoryItem._id) {
+          item.quantity = orderItem.qty
+          let modifiers = []
+          if (order.item_modifiers.length) {
+            order.item_modifiers.forEach(modifier => {
+              if (modifier.for_item === key) {
+                modifiers.push(modifier.entity_id)
+              }
+            })
+          }
+          if (modifiers.length) {
+            item.modifiers = modifiers
+            dispatch('modifier/assignModifiersToItem', item, {
+              root: true,
+            }).then(() => {
+              dispatch('addModifierOrder', item)
+            })
+          } else {
+            dispatch('addToOrder', item)
+          }
+        }
+      })
     })
   },
 
@@ -641,7 +692,6 @@ const mutations = {
   },
 
   [mutation.ADD_ORDER_ITEM](state, item) {
-    item.quantity = 1
     item.modifiers = []
     state.items.push(item)
   },

@@ -37,15 +37,9 @@ const actions = {
     commit(mutation.GET_MORE_ORDER, pageNumber)
     dispatch('getHoldOrders')
   },
-  fetchOrder({ state, commit, dispatch }, selectedOrder) {
+  fetchOrder({ commit, dispatch }, selectedOrder) {
     commit(mutation.GET_HOLD_ORDER_DETAILS, selectedOrder)
-    let item_ids = []
-    state.orderDetails.items.forEach(item => {
-      // eslint-disable-next-line no-console
-      item_ids.push(item.entity_id)
-    })
-    // item_ids.push('5ce27969ef76a0108d2a2b0f') // for checking
-    dispatch('order/addHoldOrder', item_ids, { root: true })
+    dispatch('order/addHoldOrder', selectedOrder, { root: true })
   },
 
   holdOrder({ commit }) {

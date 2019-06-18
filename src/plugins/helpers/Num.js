@@ -1,9 +1,7 @@
 export default {
   round(amount) {
     if (!amount) amount = 0
-    return parseFloat(
-      (Math.round((parseFloat(amount) + 0.00001) * 100) / 100).toFixed(2)
-    )
+    return Math.round((parseFloat(amount) + 0.00001) * 100) / 100
   },
   toPrice(number) {
     //this converts negetive numbers to 0
