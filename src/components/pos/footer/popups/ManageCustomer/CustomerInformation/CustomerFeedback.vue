@@ -1,6 +1,6 @@
 <template>
   <div class="customer-insight-feedback">
-    <p>{{ _t('User Feedback:') }}</p>
+    <p>{{ _t('User') + ' ' + _t('Feedback') }}:</p>
     <ul class="ullist-feedback">
       <li>
         <a href="javascript:void(0)"

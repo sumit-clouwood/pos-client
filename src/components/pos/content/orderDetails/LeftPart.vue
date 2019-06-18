@@ -18,7 +18,7 @@
         <p>{{ orderDetails.store_name }}</p>
       </div>
       <div class="details-item">
-        <span class="details-item-name">{{ _t('Order Date/Time:') }}</span>
+        <span class="details-item-name">{{ _t('Order Date/Times') }}:</span>
         <p>{{ orderDetails.item.created_at.date }}</p>
       </div>
       <div class="details-item">
