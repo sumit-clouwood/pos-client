@@ -55,7 +55,6 @@ const actions = {
             root: true,
           })
           dispatch('referrals')
-          dispatch('getUserDetails')
           //  else if (state.store.default_language) {
           //   locale = state.store.default_language
           // }
