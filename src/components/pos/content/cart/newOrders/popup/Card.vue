@@ -15,7 +15,13 @@
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
             <p>{{ _t('Enter Card Reference Code') }}</p>
-            <input type="text" class="add-email-from" v-model="code" />
+            <input
+              type="text"
+              class="add-email-from"
+              v-model="code"
+              maxlength="4"
+              @keypress="Num.toNumberOnly($event)"
+            />
           </div>
           <div v-show="error" class="msg">
             <p class="text-danger">{{ error }}</p>
