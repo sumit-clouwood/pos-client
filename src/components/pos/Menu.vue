@@ -121,6 +121,6 @@ export default {
   a
     cursor: pointer
   img
-    height: 25px;
-    margin-top: 8px;
+    height: 25px
+    margin-top: 8px
 </style>

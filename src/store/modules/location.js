@@ -75,13 +75,15 @@ const actions = {
     })
   },
   getUserDetails({ commit }) {
-    const user_id =
-      localStorage.getItem('user').length > 0
-        ? JSON.parse(localStorage.getItem('user')).user_id
-        : ''
-    LocationService.userDetails(user_id).then(response => {
-      commit(mutation.USER_DETAILS, response.data)
-    })
+    if (localStorage.getItem('user') != null) {
+      const user_id =
+        localStorage.getItem('user').length > 0
+          ? JSON.parse(localStorage.getItem('user')).user_id
+          : ''
+      LocationService.userDetails(user_id).then(response => {
+        commit(mutation.USER_DETAILS, response.data)
+      })
+    }
   },
   changeLanguage({ commit }, locale) {
     commit(mutation.SET_LOCALE, locale)
