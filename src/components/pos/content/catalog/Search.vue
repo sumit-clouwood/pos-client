@@ -71,7 +71,7 @@
             margin-top: 0;
             border-radius: 0;
             border: none;
-            grid-template-columns: $px60 1fr 1fr;
+            grid-template-columns: 60px 1fr 1fr;
             align-items: stretch;
             height: 100%;
 

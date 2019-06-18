@@ -8,8 +8,9 @@ export default {
         totalWrapperHendler: false,
         footerButtonHendler: false,
         payNowCalcHendler: false,
-        footerMenuHendler: false,
+        footerMenuHendler: true,
         profileHendler: false,
+        paymentMethodsHendler: false,
     },
     mutations: {
         SEARCH_HENDLER_CHANGE: (state) => {
@@ -53,6 +54,9 @@ export default {
         },
         PROFILE_HENDLER_GHANGE: (state) => {
             state.profileHendler = !state.profileHendler
+        },
+        PAYMENT_METHODS_HENDLER_GHANGE: (state) => {
+            state.paymentMethodsHendler = !state.paymentMethodsHendler
         }
      },
     actions: {
@@ -88,6 +92,9 @@ export default {
         },
         profileHendlerGhange({commit}){
             commit('PROFILE_HENDLER_GHANGE')
+        },
+        paymentMethodsHendlerGhange({commit}){
+            commit('PAYMENT_METHODS_HENDLER_GHANGE')
         }
     },
     getters: {
@@ -101,5 +108,6 @@ export default {
         payNowCalcHendler: state => state.payNowCalcHendler,
         footerMenuHendler: state => state.footerMenuHendler,
         profileHendler: state => state.profileHendler,
+        paymentMethodsHendler: state => state.paymentMethodsHendler,
     },
 };

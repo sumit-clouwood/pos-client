@@ -11,6 +11,8 @@
         </div>
         <PayNow v-show="order"/>
         <Footer/>
+        <mobile-footer/>
+        <orders-menu/>
     </div>
 </template>
 
@@ -20,6 +22,8 @@
     import Footer from './cart/Footer'
     import PayNow from './cart/PayNow'
     import Items from './cart/newOrders/Items.vue'
+    import ordersMenu from '../../mobileComponents/ordersMenu.vue'
+    import mobileFooter from '../../mobileComponents/mobileFooter.vue'
 
     import {mapState, mapGetters} from 'vuex'
 
@@ -43,6 +47,8 @@
             HoldingOrders,
             Footer,
             PayNow,
+            ordersMenu,
+            mobileFooter
         },
     }
 </script>
@@ -58,7 +64,7 @@
             right: 0;
             bottom: 0;
             left: 0px;
-            padding: $px20;
+            padding: 20px;
             height: 100%;
             background-color: #fff;
             padding: 0;
@@ -68,7 +74,19 @@
             border-bottom: 1px solid $gray-middle;
             grid-column-start: 1;
             grid-column-end: 2;
-            z-index: 51;
+            z-index: 1050;
+
+            .mobile-footer {
+                padding-top: 0;
+
+                .btn-cart {
+                    display: none;
+                }
+
+                .main-orders-buttons {
+                    display: grid;
+                }
+            }
 
             &.active {
                 top: 0px;
@@ -78,22 +96,22 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                padding: $px10 $px20 0;
+                padding: 20px;
                 font-weight: 600;
-                font-size: $px20;
+                font-size: 18px;
 
                 .fa {
-                    font-size: $px22;
+                    font-size: 22px;
                     font-weight: 600;
                 }
             }
 
             .main-orders-contacts {
                 margin: 0;
-                padding: 0 $px20 0 $px20;
+                padding: 0 20px 20px 20px;
 
                 .main-oreders-title {
-                    font-size: $px16;
+                    font-size: 16px;
                 }
 
                 .main-oreders-date {
@@ -107,6 +125,8 @@
 
             .main-orders-list-wrapper {
                 padding: 0;
+                background-color: #fafafa;
+                padding-top: 10px;
 
                 .main-orders-list {
                     grid-gap: 0;
@@ -115,8 +135,13 @@
                         border-radius: 0;
                         border: none;
                         border-bottom: 1px solid $gray-middle;
-                        padding: $px5 0;
-                        margin: 0 $px20;
+                        padding: 10px 0;
+                        margin: 0 20px;
+                        background-color: #fafafa;
+
+                        &:last-child {
+                            border-bottom: none;
+                        }
 
                         .main-orders-list-item-title {
                             white-space: nowrap;
@@ -126,14 +151,15 @@
             }
 
             .main-orders-total {
-                padding: 0 $px20;
+                padding: 0 20px;
                 position: relative;
+                overflow: hidden;
 
                 .total-wrapper {
-                    border-top: 1px solid $gray-middle;
-                    padding: $px10 0;
+                    border-bottom: 1px solid $gray-middle;
+                    padding: 10px 0 10px 0;
                     transition: 0.5s ease-out;
-                    margin-bottom: -90.5px;
+                    margin-bottom: -105.5px;
 
                     &.active {
                         margin-bottom: 0;
@@ -141,11 +167,11 @@
 
                     .item {
                         .sub-total-text {
-                            font-size: $px14;
+                            font-size: 14px;
                         }
 
                         .sub-total-num {
-                            font-size: $px14;
+                            font-size: 14px;
                         }
                     }
                 }
@@ -153,23 +179,23 @@
 
                 .total {
                     margin: 0;
-                    border-top: 1px solid $gray-middle;
+                    border-top: 0px solid $gray-middle;
                     color: #333;
                     background-color: #fff;
 
                     .sub-total-text {
-                        font-size: $px14;
+                        font-size: 14px;
                     }
 
                     .sub-total-num {
-                        font-size: $px14;
+                        font-size: 14px;
                         display: flex;
                         align-items: center;
 
                         i {
-                            font-size: $px22;
+                            font-size: 22px;
                             font-weight: 600;
-                            margin-left: $px10;
+                            margin-left: 10px;
                             transition: 0.3s ease-out;
 
                             &.active {
@@ -177,6 +203,12 @@
                             }
                         }
                     }
+                }
+            }
+
+            .mobile-footer{
+                .btn-next{
+                    display: none;
                 }
             }
 

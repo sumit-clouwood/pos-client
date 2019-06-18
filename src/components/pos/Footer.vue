@@ -177,9 +177,7 @@
             </ul>
         </div>
         <div class="footer-buttons">
-            <div :class="['footer-button-menu', {active: footerButtonHendler}]" @click="footerMenuHendlerGhange">...
-            </div>
-            <div :class="['button',{active: footerButtonHendler}]">
+            <div class="button">
                 <ul class="template-btn">
                     <li
                             v-show="orderType === 'delivery'"

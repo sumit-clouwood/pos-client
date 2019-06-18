@@ -5,6 +5,7 @@
         <Contents/>
         <Footer/>
         <mobileComponents/>
+        <mobile-payment-methods/>
     </div>
 </template>
 
@@ -27,6 +28,7 @@
     import Contents from './pos/Contents'
     import Footer from './pos/Footer'
     import mobileComponents from './mobileComponents/mobileComponents.vue'
+    import mobilePaymentMethods from './mobileComponents/mobilePaymentMethods.vue'
     import {mapState} from 'vuex'
 
     export default {
@@ -40,6 +42,7 @@
             Contents,
             Footer,
             mobileComponents,
+            mobilePaymentMethods
         },
         //store private data in component using data
 
