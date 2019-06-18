@@ -18,8 +18,8 @@ const getters = {
       radio.modifierId == modifierId
     )
   },
-  quantity: (state, getters, rootState) => {
-    return state.quantity || rootState.order.item.quantity || 1
+  quantity: state => {
+    return state.quantity || 1
   },
   modifiers: state => {
     let modifiers = []
@@ -57,6 +57,9 @@ const actions = {
   clearSelection({ commit }) {
     commit('clearSelection')
   },
+  setItem({ commit }, { item }) {
+    commit('updateQuantity', item.quantity)
+  },
 }
 
 // mutations
@@ -72,7 +75,7 @@ const mutations = {
   clearSelection(state) {
     state.checkboxes = []
     state.radios = {}
-    state.quantity = 1
+    //state.quantity = 1
   },
   updateQuantity(state, quantity) {
     state.quantity = quantity
