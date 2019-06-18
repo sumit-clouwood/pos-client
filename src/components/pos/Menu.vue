@@ -29,9 +29,9 @@
       <i class="fa fa-chevron-down" aria-hidden="true"></i>
     </div>
     <div class="navigation-avatar">
-      <a class="nav-link" href="">
+      <a class="nav-link" href="" :title="userDetails.item.email">
         <img :src="profileImage" alt="profile" />
-        <div class="nav-link-user-name">Admin</div>
+        <div class="nav-link-user-name">{{ userDetails.item.name }}</div>
       </a>
     </div>
     <div v-if="getImages">
@@ -64,6 +64,7 @@ export default {
     ...mapState({
       currentCategory: state => state.category.category._id,
     }),
+    ...mapState('location', ['userDetails']),
     ...mapState({
       profileImage: state =>
         state.auth.userDetails && state.auth.userDetails.image
