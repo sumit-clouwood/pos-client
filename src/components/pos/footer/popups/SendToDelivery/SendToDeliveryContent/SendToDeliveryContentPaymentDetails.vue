@@ -9,7 +9,7 @@
     <div class="order-confirm-amt" id="total-confirm-order">
       <div class="order-amt-title">
         <p class="text-uppercase">{{ _t('Sub Total') }} :</p>
-        <p class="text-uppercase">{{ _t('Surcharge') }} :</p>
+        <p class="text-uppercase">{{ _t('Surcharges') }} :</p>
         <p class="text-uppercase">{{ _t('Order Discount') }} :</p>
         <p class="text-uppercase">{{ _t('Tax') }} :</p>
         <p class="text-uppercase">{{ _t('Bill Amount') }} :</p>
