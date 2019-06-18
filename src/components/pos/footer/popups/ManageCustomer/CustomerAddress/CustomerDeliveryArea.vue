@@ -106,13 +106,11 @@ export default {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   touch-action: auto;
-  overflow: hidden;
   display: inline-grid;
   grid-template-columns: 1fr 1fr;
   margin: 0 auto;
   text-align: center;
   width: 100%;
-  margin: 0 auto;
   position: relative;
   grid-gap: 1.25rem;
 }
