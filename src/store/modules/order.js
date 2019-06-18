@@ -318,6 +318,7 @@ const actions = {
     commit(mutation.SET_ITEM, item)
 
     // if (item.modifiable) {
+    dispatch('orderForm/setItem', { item: item }, { root: true })
     dispatch(
       'modifier/setActiveItem',
       { item: item },

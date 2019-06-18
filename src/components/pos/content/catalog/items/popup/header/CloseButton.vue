@@ -15,7 +15,7 @@ export default {
   computed: {},
   methods: {
     resetForm() {
-      this.$store.commit('orderForm/updateQuantity', 0)
+      this.$store.commit('orderForm/updateQuantity', 1)
     },
   },
 }

@@ -28,6 +28,7 @@ export default class {
     ]
 
     this.Num = [
+      '00',
       '01',
       '02',
       '03',
@@ -87,7 +88,6 @@ export default class {
       '57',
       '58',
       '59',
-      '00',
     ]
 
     this.monthsFull = [
@@ -107,11 +107,11 @@ export default class {
   }
 
   parseTime() {
-    this.hours = this.Num[this.date.getHours() - 1]
-    this.mins = this.Num[this.date.getMinutes() - 1]
-    this.sec = this.Num[this.date.getSeconds() - 1]
+    this.hours = this.Num[this.date.getHours()]
+    this.mins = this.Num[this.date.getMinutes()]
+    this.sec = this.Num[this.date.getSeconds()]
     this.year = this.date.getFullYear()
-    this.day = this.Num[this.date.getDate() - 1]
+    this.day = this.Num[this.date.getDate()]
     this.month = this.Num[this.date.getMonth()]
 
     this.monthName = this.months[this.date.getMonth()]

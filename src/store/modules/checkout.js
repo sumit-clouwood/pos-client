@@ -5,7 +5,7 @@ import * as mutation from './checkout/mutation-types'
 //import db from '@/services/network/DB'
 //import Crypt from '@/plugins/helpers/Crypt.js'
 import DateTime from '@/plugins/helpers/DateTime.js'
-//import Num from '@/plugins/helpers/Num.js'
+import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 
 // initial state
@@ -80,12 +80,13 @@ const actions = {
             real_created_datetime: newDate.getDate() + ' ' + newDate.getTime(),
             // order_mode: 'online',
             //remove the modifiers prices from subtotal
-            sub_total: rootGetters['order/subTotal'],
-            total_discount: rootGetters['discount/orderDiscountWithoutTax'],
-            total_paid: rootGetters['order/subTotal'],
+            sub_total: Num.round(rootGetters['order/subTotal']),
+            total_discount: Num.round(
+              rootGetters['discount/orderDiscountWithoutTax']
+            ),
 
             bill_printed: true,
-            amount_changed: state.changedAmount,
+            amount_changed: Num.round(state.changedAmount),
 
             order_building: '',
             order_street: '',
@@ -129,9 +130,9 @@ const actions = {
 
         //ORDER SURCHARGES
         //get surcharge for an order
-        order.total_surcharge = rootGetters['surcharge/surcharge']
+        order.total_surcharge = Num.round(rootGetters['surcharge/surcharge'])
         //add surcharge tax
-        order.surcharge_tax = rootState.tax.surchargeTax
+        order.surcharge_tax = Num.round(rootState.tax.surchargeTax)
 
         //adding surcharge data
 
@@ -144,9 +145,9 @@ const actions = {
               entity_id: surcharge._id,
               name: surcharge.name,
               type: surcharge.type,
-              price: appliedSurcharge.amount,
+              price: Num.round(appliedSurcharge.amount),
               rate: surcharge.rate,
-              tax: appliedSurcharge.tax,
+              tax: Num.round(appliedSurcharge.tax),
               tax_rate: surcharge.tax_sum,
               taxable: surcharge.tax_sum ? true : false,
             }
@@ -167,8 +168,10 @@ const actions = {
         }
 
         //adding item data
+        let itemModifiers = []
         let item_discounts = []
         //let itemDiscountedTax = 0
+        let itemNumber = 0
         order.items = rootState.order.items.map(item => {
           const itemTax = rootState.tax.itemsTaxData.find(
             taxData => taxData.itemId == item._id
@@ -177,9 +180,9 @@ const actions = {
           let orderItem = {
             name: item.name,
             entity_id: item._id,
-            no: 0,
-            tax: itemTax ? itemTax.undiscountedTax : 0,
-            price: parseFloat(item.undiscountedNetPrice),
+            no: itemNumber,
+            tax: itemTax ? Num.round(itemTax.undiscountedTax) : 0,
+            price: Num.round(parseFloat(item.undiscountedNetPrice)),
             qty: item.quantity,
           }
 
@@ -196,11 +199,39 @@ const actions = {
           if (item.discount) {
             let itemDiscount = item.discount
             itemDiscount.itemId = item._id
+            itemDiscount.itemNo = itemNumber
             itemDiscount.quantity = item.quantity
             itemDiscount.tax = itemTax.undiscountedTax - itemTax.tax
             //itemDiscountedTax += itemDiscount.tax
             item_discounts.push(itemDiscount)
           }
+
+          if (item.modifiers.length) {
+            item.modifiers.forEach(modifierId => {
+              const subgroups = rootGetters['modifier/itemModifiers'](item._id)
+              subgroups.forEach(subgroup => {
+                subgroup.modifiers.forEach(modifier => {
+                  if (modifier._id === modifierId) {
+                    const modfierTaxData = rootGetters['tax/modifierTaxData']({
+                      itemId: item._id,
+                      modifierId: modifierId,
+                    })
+                    itemModifiers.push({
+                      entity_id: modifierId,
+                      for_item: itemNumber,
+                      price: modfierTaxData.price,
+                      tax: modfierTaxData.tax,
+                      name: modifier.name,
+                      qty: item.quantity,
+                      type: subgroup.item_type,
+                    })
+                  }
+                })
+              })
+            })
+            //get all modifiers by modifier ids attached to item
+          }
+          itemNumber++
           return orderItem
         })
 
@@ -222,43 +253,15 @@ const actions = {
           //no order discount, may be  item discount applied
           order.total_tax = surchargeTax + itemsTax
         }
+        order.total_tax = Num.round(order.total_tax)
         //add discounted tax
         // order.total_tax +=
         //   +rootState.discount.taxDiscountAmount + itemDiscountedTax
 
         //discount already applied on tax
-        order.balance_due = rootGetters['order/orderTotal']
+        order.balance_due = Num.round(rootGetters['order/orderTotal'])
         //modifiers
-        let modifiers = []
-
-        rootState.order.items.forEach(item => {
-          if (item.modifiers.length) {
-            item.modifiers.forEach(modifierId => {
-              const subgroups = rootGetters['modifier/itemModifiers'](item._id)
-              subgroups.forEach(subgroup => {
-                subgroup.modifiers.forEach(modifier => {
-                  if (modifier._id === modifierId) {
-                    const modfierTaxData = rootGetters['tax/modifierTaxData']({
-                      itemId: item._id,
-                      modifierId: modifierId,
-                    })
-                    modifiers.push({
-                      entity_id: modifierId,
-                      for_item: item._id,
-                      price: modfierTaxData.price,
-                      tax: modfierTaxData.tax,
-                      name: modifier.name,
-                      qty: item.quantity,
-                      type: subgroup.item_type,
-                    })
-                  }
-                })
-              })
-            })
-            //get all modifiers by modifier ids attached to item
-          }
-        })
-        order.item_modifiers = modifiers
+        order.item_modifiers = itemModifiers
 
         //order level discount
         order.order_discounts = []
@@ -267,8 +270,8 @@ const actions = {
           const discount = rootState.discount.appliedOrderDiscount.discount
           const orderDiscount = {
             name: discount.name,
-            price: rootGetters['discount/orderDiscountWithoutTax'],
-            tax: rootState.discount.taxDiscountAmount,
+            price: Num.round(rootGetters['discount/orderDiscountWithoutTax']),
+            tax: Num.round(rootState.discount.taxDiscountAmount),
             type: discount.type,
             rate:
               discount.type === CONSTANTS.VALUE
@@ -290,9 +293,9 @@ const actions = {
               itemDiscount.type === CONSTANTS.VALUE
                 ? itemDiscount.value
                 : itemDiscount.rate,
-            price: itemDiscount.discount * itemDiscount.quantity,
-            tax: itemDiscount.tax * itemDiscount.quantity,
-            for_item: itemDiscount.itemId,
+            price: Num.round(itemDiscount.discount * itemDiscount.quantity),
+            tax: Num.round(itemDiscount.tax * itemDiscount.quantity),
+            for_item: itemDiscount.itemNo,
             entity_id: itemDiscount.id,
           }
         })
@@ -300,6 +303,8 @@ const actions = {
         order.tip_amount = rootState.checkoutForm.tipAmount
 
         //adding payment breakdown
+        let totalPaid = 0
+
         order.order_payments = rootState.checkoutForm.payments.map(payment => {
           let paymentPart = {
             entity_id: payment.method._id,
@@ -309,7 +314,7 @@ const actions = {
             param2: payment.amount,
             param3: payment.code,
           }
-
+          totalPaid += payment.amount
           //Youvraj, have a check here
           if (payment.method.type == CONSTANTS.LOYALTY) {
             if (parseFloat(rootState.customer.loyalty.balance) > 0) {
@@ -326,6 +331,7 @@ const actions = {
         //for hold orders: Tofeeq
         if (!order.order_payments.length) {
           const paymentMethod = rootGetters['payment/cash']
+          totalPaid += totalPayable
           order.order_payments.push({
             entity_id: paymentMethod._id,
             name: paymentMethod.name,
@@ -335,6 +341,8 @@ const actions = {
             param3: null,
           })
         }
+
+        order.total_paid = Num.round(totalPaid)
 
         //order.app_uniqueid = Crypt.uuid()
 
@@ -562,7 +570,6 @@ const mutations = {
     state.paidAmount = 0
     state.payableAmount = 0
     state.pendingAmount = 0
-    state.changedAmount = 0
     state.print = false
   },
   [mutation.ONHOLD](state, orderStatus) {

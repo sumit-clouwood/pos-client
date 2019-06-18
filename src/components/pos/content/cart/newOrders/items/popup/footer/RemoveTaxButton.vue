@@ -2,19 +2,26 @@
   <button
     type="button"
     class="buttoned colorwhite taxbutton"
-    @click="removeItemTax"
+    @click="removeTax"
   >
     <img src="img/pos/delete.jpg" alt="delete" />
     <span>Tax</span>
   </button>
 </template>
 <script>
-import { mapActions } from 'vuex'
+/* global closeModal */
 export default {
   name: 'RemoveTaxButton',
   props: {},
   methods: {
-    ...mapActions('order', ['removeItemTax']),
+    removeTax() {
+      this.$store
+        .dispatch('order/removeTax')
+        .then(() => {
+          closeModal('#POSOrderItemOptions')
+        })
+        .catch()
+    },
   },
 }
 </script>
