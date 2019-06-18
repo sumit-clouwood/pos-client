@@ -197,8 +197,6 @@ const actions = {
   },
 
   editAction({ commit }, actionDetails) {
-    // eslint-disable-next-line no-console
-    console.log(actionDetails)
     let customer_id = state.customer._id
     const params = [
       actionDetails.id,
