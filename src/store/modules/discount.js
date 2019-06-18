@@ -70,7 +70,7 @@ const getters = {
       let checkCountry = q.availability.incl.countries.includes(
         rootState.location.store.country
       )
-      if (checkCountry /*&& q[rootState.order.orderType.OTApi] === true*/) {
+      if (checkCountry && q[rootState.order.orderType.OTApi] === true) {
         return q
       }
     })
