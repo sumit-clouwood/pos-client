@@ -3,7 +3,7 @@
     <table class="table table-responsive">
       <tr>
         <th style="width: 190px">{{ _t('Order Number') }}</th>
-        <th style="width: 250px">{{ _t('Date/Time') }}</th>
+        <th style="width: 250px">{{ _t('Date/Times') }}:</th>
         <th style="width: 190px">{{ _t('Type') }}</th>
         <th style="width: 255px">{{ _t('Time Taken') }}</th>
         <th style="width: 190px">{{ _t('Amount') }}</th>

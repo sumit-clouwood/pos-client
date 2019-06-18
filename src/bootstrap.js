@@ -44,7 +44,7 @@ export default {
             .dispatch('category/fetchAll')
             .then(() => {
               this.updateLoading('catalog')
-
+              this.store.dispatch('location/getUserDetails')
               this.store.dispatch('modifier/fetchAll').then(() => {
                 this.updateLoading('modifiers')
                 this.store.commit('sync/loaded', true)

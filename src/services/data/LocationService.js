@@ -11,4 +11,7 @@ export default {
       '/model/brand_referrals?page_id=brand_referrals_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&item_status=true&orderBy=referral_name'
     )
   },
+  userDetails(userId) {
+    return DataService.get(`/model/users/id/${userId}`)
+  },
 }

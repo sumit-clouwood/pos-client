@@ -1,3 +1,4 @@
+@import "../variables";
 #customer {
   .modal-dialog {
     max-width: $px1180;
@@ -121,7 +122,9 @@
               background-color: #ffffff;
               border: solid 1px #e4e7eb;
             }
-
+            /*> select.selectpicker{
+              width: $px889;
+            }*/
             > label {
               width: $px215;
               padding: 0 $px25;
@@ -150,4 +153,21 @@
       }
     }
   }
+}
+.divide-block {
+  border-top: 1px solid #ddd;
+  padding: $px25 0;
+  margin-top: 0;
+}
+.customer-block-info{
+  position: absolute;
+  margin-top: -$px35;
+  left: $px35;
+  overflow: hidden;
+  background: #fff;
+  z-index: 9;
+  /* margin: 0 20px; */
+  padding: 0 15px;
+  font-weight: bold;
+  text-transform: capitalize;
 }
