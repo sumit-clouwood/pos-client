@@ -1,6 +1,7 @@
 import SurchargeService from '@/services/data/SurchargeService'
 import * as mutation from './surcharge/mutation-types'
 import * as CONST from '@/constants'
+import Num from '@/plugins/helpers/Num.js'
 
 const state = {
   surcharges: [],
@@ -49,19 +50,24 @@ const actions = {
             let applidSurcharge = {
               id: surcharge._id,
               amount: surcharge.value,
-              tax: getters.tax(surcharge),
-              undiscountedTax: getters.tax(surcharge),
+              tax: Num.round(getters.tax(surcharge)),
+              undiscountedTax: Num.round(getters.tax(surcharge)),
             }
             //Assign variables if Surcharge type is percentage.
             if (surcharge.type === CONST.PERCENTAGE) {
-              applidSurcharge.amount = (subtotal * surcharge.rate) / 100
-              applidSurcharge.tax =
+              applidSurcharge.amount = Num.round(
+                (subtotal * surcharge.rate) / 100
+              )
+              applidSurcharge.tax = Num.round(
                 (applidSurcharge.amount * surcharge.tax_sum) / 100
+              )
 
-              applidSurcharge.undiscountedAmount =
+              applidSurcharge.undiscountedAmount = Num.round(
                 (undiscountedSubtotal * surcharge.rate) / 100
-              applidSurcharge.undiscountedTax =
+              )
+              applidSurcharge.undiscountedTax = Num.round(
                 (applidSurcharge.undiscountedAmount * surcharge.tax_sum) / 100
+              )
             }
             totalSurcharges.push(applidSurcharge)
           })

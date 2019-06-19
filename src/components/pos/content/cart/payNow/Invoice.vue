@@ -42,9 +42,9 @@ export default {
         this.$store.commit('checkout/PRINT', false)
         this.$store.dispatch('checkout/reset')
 
-        if (this.$store.state.order.orderType.OTApi === 'call_center') {
-          this.$router.replace({ name: 'DeliveryManager' })
-        }
+        // if (this.$store.state.order.orderType.OTApi === 'call_center') {
+        //   this.$router.replace({ name: 'DeliveryManagerLive' })
+        // }
 
         $('.modal-backdrop').remove()
         hidePayNow()
