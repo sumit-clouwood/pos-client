@@ -462,32 +462,13 @@ const actions = {
           }
         })
         .catch(response => {
-          if (
-            response.data &&
-            typeof response.data.status !== 'undefined' &&
-            response.data.status === 0
-          ) {
+          if (response.data && response.data.status === 'fail') {
             commit('checkoutForm/SET_ERROR', response.data.error, {
               root: true,
             })
             reject(response.data.error)
           } else {
-            var err_msg = ''
-            if (
-              response.data[response.data.status] &&
-              typeof response.data[response.data.status] != 'undefined'
-            ) {
-              $.each(response.data[response.data.status], function(key, value) {
-                err_msg += value + ' '
-              })
-              commit(
-                'checkoutForm/SET_MSG',
-                { result: '', data: err_msg },
-                {
-                  root: true,
-                }
-              )
-            } else {
+            if (response.message === 'Network Error') {
               commit(
                 'checkoutForm/SET_MSG',
                 { result: '', data: 'Queued for sending later' },
@@ -495,13 +476,31 @@ const actions = {
                   root: true,
                 }
               )
+            } else {
+              var err_msg = ''
+              if (
+                response.data &&
+                response.data[response.data.status] &&
+                typeof response.data[response.data.status] != 'undefined'
+              ) {
+                $.each(response.data[response.data.status], function(
+                  key,
+                  value
+                ) {
+                  err_msg += value + ' '
+                })
+                commit(
+                  'checkoutForm/SET_MSG',
+                  { result: '', data: err_msg },
+                  {
+                    root: true,
+                  }
+                )
+              }
             }
             resolve(response.data)
           }
         })
-      // .finally(() => {
-      //   resolve()
-      // })
     })
   },
   generateInvoice({ commit }) {
