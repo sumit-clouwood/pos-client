@@ -27,12 +27,7 @@
         class="btn btn-success btn-large popup-btn-save"
         type="button"
         id="cust-new"
-        @click="
-          setDefaultSettingsGlobalAddUpdate({
-            alternative_phone: '',
-            gender: 'male',
-          })
-        "
+        @click="addCustomerForm"
         data-toggle="modal"
         data-target="#customer"
         data-dismiss="modal"
@@ -45,6 +40,7 @@
 </template>
 
 <script>
+/*global $*/
 import { mapState, mapActions, mapGetters } from 'vuex'
 import paginate from 'vuejs-paginate'
 export default {
@@ -65,8 +61,14 @@ export default {
     moreCustomer: function(pageNumber) {
       this.setPageNumber(pageNumber)
     },
-    ...mapActions('customer', ['setPageNumber']),
-    ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
+    addCustomerForm: function() {
+      this.addCustomer()
+      $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
+      $('#customer input, #customer select').val('')
+      $('.nogeneral').show()
+      $('.customerAddressWrapper').show()
+    },
+    ...mapActions('customer', ['setPageNumber', 'addCustomer']),
   },
 }
 </script>

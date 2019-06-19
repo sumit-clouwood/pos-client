@@ -56,24 +56,16 @@ const getters = {
 
   itemDiscounts: (state, getters, rootState) => {
     return state.itemDiscounts.data.filter(function(q) {
-      let checkCountry = q.availability.incl.countries.includes(
-        rootState.location.store.country
-      )
-      if (checkCountry && q[rootState.order.orderType.OTApi] === true) {
+      if (q[rootState.order.orderType.OTApi]) {
         return q
       }
     })
   },
 
   orderDiscounts: (state, getters, rootState) => {
-    return state.orderDiscounts.data.filter(function(q) {
-      let checkCountry = q.availability.incl.countries.includes(
-        rootState.location.store.country
-      )
-      if (checkCountry && q[rootState.order.orderType.OTApi] === true) {
-        return q
-      }
-    })
+    return state.orderDiscounts.data.filter(
+      discount => discount[rootState.order.orderType.OTApi]
+    )
   },
 }
 

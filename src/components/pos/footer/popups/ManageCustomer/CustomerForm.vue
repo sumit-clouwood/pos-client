@@ -45,116 +45,118 @@
           </div>
         </div>
       </div>
-      <div class="divide-block row">
-        <h5 class="customer-block-info">{{ _t('Additional Details') }}</h5>
-        <div class="col-md-6 left-form">
-          <div class="alternate-phone-from">
-            <label>{{ _t('Alt Phone Number') }} </label>
-            <input
-              type="text"
-              name="alternate-phone-from"
-              v-model="newCustomerDetails.alternative_phone"
-            />
+      <div class="nogeneral">
+        <div class="divide-block row">
+          <h5 class="customer-block-info">{{ _t('Additional Details') }}</h5>
+          <div class="col-md-6 left-form">
+            <div class="alternate-phone-from">
+              <label>{{ _t('Alt Phone Number') }} </label>
+              <input
+                type="text"
+                name="alternate-phone-from"
+                v-model="newCustomerDetails.alternative_phone"
+              />
+            </div>
           </div>
-        </div>
-        <div class="col-md-6 right-form">
-          <div class="customer-group">
-            <label>{{ _t('Birthday') }}</label>
-            <datetime
-              v-model="newCustomerDetails.birthday"
-              input-class="btn schedule-input btn-large datepicker-here"
-              :phrases="{ ok: _t('Continue'), cancel: _t('Exit') }"
-            ></datetime>
-            <!--<span class="validation-error" v-if="errors.birthday">{{
-              errors.birthday
-            }}</span>-->
+          <div class="col-md-6 right-form">
+            <div class="customer-group">
+              <label>{{ _t('Birthday') }}</label>
+              <datetime
+                v-model="newCustomerDetails.birthday"
+                input-class="btn schedule-input btn-large datepicker-here"
+                :phrases="{ ok: _t('Continue'), cancel: _t('Exit') }"
+              ></datetime>
+              <!--<span class="validation-error" v-if="errors.birthday">{{
+                errors.birthday
+              }}</span>-->
+            </div>
           </div>
-        </div>
-        <div class="col-md-12 left-form">
-          <div class="customer-group" v-if="customerGroup">
-            <label>{{ _t('Customer Group') }}</label>
-            <select
-              class="selectpicker"
-              v-model="newCustomerDetails.customer_group"
-            >
-              <option
-                v-for="cGroup in customerGroup"
-                :value="cGroup.name"
-                :key="cGroup._id"
+          <div class="col-md-12 left-form">
+            <div class="customer-group" v-if="customerGroup">
+              <label>{{ _t('Customer Group') }}</label>
+              <select
+                class="selectpicker"
+                v-model="newCustomerDetails.customer_group"
               >
-                {{ cGroup.name }}
-              </option>
-            </select>
+                <option
+                  v-for="cGroup in customerGroup"
+                  :value="cGroup.name"
+                  :key="cGroup._id"
+                >
+                  {{ cGroup.name }}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="divide-block row">
-        <h5 class="customer-block-info">{{ _t('Address Details') }}</h5>
-        <div class="customerAddressWrapper col-md-6 left-form">
-          <div class="customerAddressWrapper name-from">
-            <label>{{ _t('Delivery Area') }} <span>*</span></label>
-            <select
-              class="getAreaId"
-              @change="getAreaId"
-              v-model="newCustomerDetails.delivery_area_id"
-            >
-              <option
-                v-for="area in fetchDeliveryAreas"
-                :value="area._id"
-                :key="area._id"
-                :data-deliveryarea="area.name"
-                >{{ area.name }}
-              </option>
-            </select>
-            <span class="validation-error" v-if="errors.delivery_area_id">{{
-              errors.delivery_area_id
-            }}</span>
+        <div class="customerAddressWrapper divide-block row">
+          <h5 class="customer-block-info">{{ _t('Address Details') }}</h5>
+          <div class="col-md-6 left-form">
+            <div class="name-from">
+              <label>{{ _t('Delivery Area') }} <span>*</span></label>
+              <select
+                class="getAreaId"
+                @change="getAreaId"
+                v-model="newCustomerDetails.delivery_area_id"
+              >
+                <option
+                  v-for="area in fetchDeliveryAreas"
+                  :value="area._id"
+                  :key="area._id"
+                  :data-deliveryarea="area.name"
+                  >{{ area.name }}
+                </option>
+              </select>
+              <span class="validation-error" v-if="errors.delivery_area_id">{{
+                errors.delivery_area_id
+              }}</span>
+            </div>
+            <div class="alternate-phone-from">
+              <label>{{ _t('Building/Villa') }} <span>*</span></label>
+              <input
+                type="text"
+                name="building"
+                v-model="newCustomerDetails.building"
+              />
+              <span class="validation-error" v-if="errors.building">{{
+                errors.building
+              }}</span>
+            </div>
+            <div class="gender">
+              <label>{{ _t('Street') }} <span>*</span></label>
+              <input
+                type="text"
+                name="street"
+                v-model="newCustomerDetails.street"
+              />
+              <span class="validation-error" v-if="errors.street">{{
+                errors.street
+              }}</span>
+            </div>
           </div>
-          <div class="alternate-phone-from">
-            <label>{{ _t('Building/Villa') }} <span>*</span></label>
-            <input
-              type="text"
-              name="building"
-              v-model="newCustomerDetails.building"
-            />
-            <span class="validation-error" v-if="errors.building">{{
-              errors.building
-            }}</span>
-          </div>
-          <div class="gender">
-            <label>{{ _t('Street') }} <span>*</span></label>
-            <input
-              type="text"
-              name="street"
-              v-model="newCustomerDetails.street"
-            />
-            <span class="validation-error" v-if="errors.street">{{
-              errors.street
-            }}</span>
-          </div>
-        </div>
-        <div class="customerAddressWrapper col-md-6 right-form">
-          <div class="landmark">
-            <label>{{ _t('Flat Number') }} <span>*</span></label>
-            <input
-              type="text"
-              name="flat_number"
-              v-model="newCustomerDetails.flat_number"
-            />
-            <span class="validation-error" v-if="errors.flat_number">{{
-              errors.flat_number
-            }}</span>
-          </div>
-          <div class="landmark">
-            <label>{{ _t('Nearest Landmark') }} <span>*</span></label>
-            <input
-              type="text"
-              name="nearest_landmark"
-              v-model="newCustomerDetails.nearest_landmark"
-            />
-            <span class="validation-error" v-if="errors.nearest_landmark">{{
-              errors.nearest_landmark
-            }}</span>
+          <div class="col-md-6 right-form">
+            <div class="landmark">
+              <label>{{ _t('Flat Number') }} <span>*</span></label>
+              <input
+                type="text"
+                name="flat_number"
+                v-model="newCustomerDetails.flat_number"
+              />
+              <span class="validation-error" v-if="errors.flat_number">{{
+                errors.flat_number
+              }}</span>
+            </div>
+            <div class="landmark">
+              <label>{{ _t('Nearest Landmark') }} <span>*</span></label>
+              <input
+                type="text"
+                name="nearest_landmark"
+                v-model="newCustomerDetails.nearest_landmark"
+              />
+              <span class="validation-error" v-if="errors.nearest_landmark">{{
+                errors.nearest_landmark
+              }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -195,6 +197,7 @@ export default {
     ...mapState({
       newCustomerDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
+      loyalty: state => state.loyalty.loyalty,
       fetchDeliveryAreas: state =>
         state.customer.fetchDeliveryAreas.filter(function(u) {
           //Fetch Delivery Areas in add Customer Form at POS screen
@@ -259,7 +262,7 @@ export default {
           this._t('Mobile number') + ' ' + this._t('is required')
         this.errors.count = 1
       }
-      if (this.customer_title !== 'Edit') {
+      if (this.customer_title !== 'Edit' && this.loyalty !== true) {
         if (!this.newCustomerDetails.delivery_area_id) {
           this.errors.delivery_area_id = this._t('Delivery area required')
           this.errors.count = 1

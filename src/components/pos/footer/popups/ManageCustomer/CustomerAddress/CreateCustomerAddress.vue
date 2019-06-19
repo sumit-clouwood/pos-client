@@ -148,15 +148,15 @@ export default {
         this.errors.count = 1
       }
       if (
-        this.newCustomerDetails.street &&
-        this.newCustomerDetails.street.length < 2
+        this.newAddressDetails.street &&
+        this.newAddressDetails.street.length < 2
       ) {
         this.errors.street = 'Street should be at least 2 characters'
         this.errors.count = 1
       }
       if (
-        this.newCustomerDetails.building &&
-        this.newCustomerDetails.building.length > 15
+        this.newAddressDetails.building &&
+        this.newAddressDetails.building.length > 15
       ) {
         this.errors.building =
           'Building/Villa should be not more than 15 characters'

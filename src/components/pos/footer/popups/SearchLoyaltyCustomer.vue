@@ -9,8 +9,8 @@
           <h4 class="customer-title">{{ _t('Loyalty') }}</h4>
         </div>
         <form class="modal-body add-note-wrap" autocomplete="off">
-          <div class="add-note-area">
-            <p>{{ _t('Jump to customer') }}</p>
+          <p>{{ _t('Jump to customer') }}</p>
+          <div class="add-note-area loyalty-search">
             <input
               autocomplete="off"
               type="text"
@@ -54,9 +54,9 @@
         <div class="modal-footer">
           <div
             data-toggle="modal"
-            data-target="#customer"
             data-dismiss="modal"
             class="cursor-pointer blue-middle"
+            @click="loyaltyAddCustomer('#customer')"
           >
             {{ _t('Create New Customer') }}
           </div>
@@ -105,9 +105,19 @@ export default {
     ...mapState({
       customers: state => state.customer.customer_list,
     }),
+    ...mapState('loyalty', ['loyalty']),
     ...mapGetters('location', ['_t']),
   },
   methods: {
+    loyaltyAddCustomer: function(target) {
+      this.$store.commit('loyalty/LOYALTY', true)
+      this.addCustomer()
+      $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
+      $('#customer input, #customer select').val('')
+      $(target).modal('show')
+      $('.nogeneral').hide()
+    },
+
     addLoyalty: function() {
       if (this.customerId.length > 0) {
         this.searchCustomerErr = ''
@@ -145,7 +155,7 @@ export default {
         }, 500)
       }
     },
-    ...mapActions('customer', ['fetchSelectedCustomer']),
+    ...mapActions('customer', ['fetchSelectedCustomer', 'addCustomer']),
   },
 }
 </script>
@@ -155,7 +165,7 @@ export default {
   position: relative;
 }
 #searchLoader, .dropdown-content {
-  display:none;
+  /*display:none;*/
 }
 .dropdown-content {
   /*display: block;*/
@@ -176,7 +186,7 @@ export default {
   display: block;
 }
 .inputSearch{
-  width: 82%;
+  /*width: 337px;*/
   padding-bottom: 11px;
   height: 48px;
   border-radius: 5px 0px 0px 5px;

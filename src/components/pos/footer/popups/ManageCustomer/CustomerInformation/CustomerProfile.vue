@@ -21,7 +21,7 @@
       <p class="name-confrimation">
         {{ _t('Not') }} {{ customerProfile.name }}?
         <span
-          @click="addCustomer"
+          @click="addCustomerForm"
           data-toggle="modal"
           data-target="#customer"
           data-dismiss="modal"
@@ -131,11 +131,12 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
-    ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
-    addCustomer: function() {
-      this.setDefaultSettingsGlobalAddUpdate({ nearest_landmark: '' })
+    ...mapActions('customer', ['addCustomer']),
+    addCustomerForm: function() {
+      this.addCustomer()
       $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
       $('#customer input, #customer select').val('')
+      $('.nogeneral').show()
       $('.customerAddressWrapper').show()
     },
     editCustomer: function(customerId) {
@@ -144,6 +145,7 @@ export default {
         action: 'edit',
         model: 'brand_customers',
       }
+      $('.nogeneral').show()
       $('.customerAddressWrapper').hide()
       this.$store.dispatch('customer/editAction', actionDetails)
     },

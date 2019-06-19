@@ -13,7 +13,7 @@
         <div class="modal-body ">
           <div
             class="amount-change-wrap"
-            v-if="responseInformation"
+            v-if="responseInformation != ''"
             v-on:load="activeClass"
           >
             <h5 :class="activatedClass" class="text-capitalize">
