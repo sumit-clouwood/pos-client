@@ -54,9 +54,9 @@
         <div class="modal-footer">
           <div
             data-toggle="modal"
-            data-target="#customer"
             data-dismiss="modal"
             class="cursor-pointer blue-middle"
+            @click="loyaltyAddCustomer('#customer')"
           >
             {{ _t('Create New Customer') }}
           </div>
@@ -105,9 +105,17 @@ export default {
     ...mapState({
       customers: state => state.customer.customer_list,
     }),
+    ...mapState('loyalty', ['loyalty']),
     ...mapGetters('location', ['_t']),
   },
   methods: {
+    loyaltyAddCustomer: function(target) {
+      this.$store.commit('loyalty/LOYALTY', true)
+      this.addCustomer()
+      $(target).modal('show')
+      $('.nogeneral').hide()
+    },
+
     addLoyalty: function() {
       if (this.customerId.length > 0) {
         this.searchCustomerErr = ''
@@ -145,7 +153,7 @@ export default {
         }, 500)
       }
     },
-    ...mapActions('customer', ['fetchSelectedCustomer']),
+    ...mapActions('customer', ['fetchSelectedCustomer', 'addCustomer']),
   },
 }
 </script>

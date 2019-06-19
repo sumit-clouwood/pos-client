@@ -27,12 +27,7 @@
         class="btn btn-success btn-large popup-btn-save"
         type="button"
         id="cust-new"
-        @click="
-          setDefaultSettingsGlobalAddUpdate({
-            alternative_phone: '',
-            gender: 'male',
-          })
-        "
+        @click="addCustomer"
         data-toggle="modal"
         data-target="#customer"
         data-dismiss="modal"
@@ -65,8 +60,7 @@ export default {
     moreCustomer: function(pageNumber) {
       this.setPageNumber(pageNumber)
     },
-    ...mapActions('customer', ['setPageNumber']),
-    ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
+    ...mapActions('customer', ['setPageNumber', 'addCustomer']),
   },
 }
 </script>

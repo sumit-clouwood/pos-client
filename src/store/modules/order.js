@@ -176,10 +176,6 @@ const actions = {
 
       item.modifiable = true
 
-      if (typeof item.quantity === 'undefined') {
-        item.quantity = rootState.orderForm.quantity || 1
-      }
-
       commit(mutation.SET_ITEM, item)
 
       let itemModifierGroups = []
@@ -321,12 +317,24 @@ const actions = {
           commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
         }
         */
+        let quantity = 0
+        //coming through hold orders
+        if (typeof item.quantity !== 'undefined') {
+          quantity = item.quantity
+        }
+        if (!quantity) {
+          quantity = rootState.orderForm.quantity || 1
+        }
+        commit(mutation.SET_QUANTITY, quantity)
         commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
       } else {
         //edit mode
         //if the signature was different then modify modifiers,
         //as we are creating new item and attached modifiers again so its better to just
         //replace that item in state with existing item
+
+        const quantity = rootState.orderForm.quantity || 1
+        commit(mutation.SET_QUANTITY, quantity)
 
         commit(mutation.REPLACE_ORDER_ITEM, {
           item: state.item,
@@ -735,6 +743,10 @@ const mutations = {
 
   [mutation.RE_SAVE_ITEMS](state, items) {
     state.items = items
+  },
+
+  [mutation.SET_QUANTITY](state, qty) {
+    state.item.quantity = qty
   },
 
   [mutation.UPDATE_ITEM_QUANTITY](state, quantity) {

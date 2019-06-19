@@ -131,19 +131,14 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
-    ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
-    addCustomer: function() {
-      this.setDefaultSettingsGlobalAddUpdate({ nearest_landmark: '' })
-      $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
-      $('#customer input, #customer select').val('')
-      $('.customerAddressWrapper').show()
-    },
+    ...mapActions('customer', ['addCustomer']),
     editCustomer: function(customerId) {
       let actionDetails = {
         id: customerId,
         action: 'edit',
         model: 'brand_customers',
       }
+      $('.nogeneral').show()
       $('.customerAddressWrapper').hide()
       this.$store.dispatch('customer/editAction', actionDetails)
     },

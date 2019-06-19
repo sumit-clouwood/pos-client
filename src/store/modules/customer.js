@@ -1,3 +1,4 @@
+/*global $*/
 import * as mutation from './customer/mutation-types'
 import customerService from '@/services/data/CustomerService'
 import CustomerService from '../../services/data/CustomerService'
@@ -51,8 +52,40 @@ const getters = {
       selection: 'name',
     })
   },
+  getCustomerAddresses: (state, getters) => {
+    let data = {}
+    if (state.customer && state.customer.customer_addresses) {
+      data = state.customer.customer_addresses.filter(function(q) {
+        if (getters.getDeliveryArea(q.delivery_area_id)) {
+          return q
+        }
+      })
+    }
+    return data
+  },
 }
 const actions = {
+  addCustomer({ dispatch }) {
+    const params = [
+      {
+        nearest_landmark: '',
+        alternative_phone: '',
+        gender: 'undisclosed',
+        birthday: '',
+        customer_group: '',
+        delivery_area_id: '',
+        street: '',
+        building: '',
+        flat_number: '',
+      },
+    ]
+    dispatch('setDefaultSettingsGlobalAddUpdate', ...params)
+
+    $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
+    $('#customer input, #customer select').val('')
+    $('.nogeneral').show()
+    $('.customerAddressWrapper').show()
+  },
   fetchAll({ commit, rootState, dispatch, state }) {
     return new Promise((resolve, reject) => {
       const params = [
