@@ -72,21 +72,11 @@ const actions = {
     })
   },
 
-  fetchAll({ commit, rootState }) {
+  fetchAll({ commit }) {
     SurchargeService.fetchAll().then(response => {
-      //If Surcharges avialable for location.
+      //If Surcharges available for location.
       if (response.data.data.length) {
-        //Filter all surcharges by Country specific
-        let data = response.data.data.filter(function(q) {
-          if (
-            q.availability.incl.countries.includes(
-              rootState.location.store.country
-            )
-          ) {
-            return q
-          }
-        })
-        commit(mutation.SET_SURCHARGES, data)
+        commit(mutation.SET_SURCHARGES, response.data.data)
       }
     })
   },
