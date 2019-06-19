@@ -101,7 +101,11 @@ export default {
           : 0
       },
       set(amount) {
-        this.$store.dispatch('checkoutForm/setAmount', amount)
+        if (amount > 0) {
+          this.$store.dispatch('checkoutForm/setAmount', amount)
+        } else {
+          $('#submitOrder').click()
+        }
       },
     },
     ...mapState('order', ['items']),
@@ -111,10 +115,10 @@ export default {
   },
   methods: {
     showPayBreakdown() {
-      $('#payment-breakdown').toggle()
+      $('#payment-breakdown').show()
     },
     showCalculator() {
-      $('#payment-breakdown').toggle()
+      $('#payment-breakdown').hide()
       this.$store.commit('checkoutForm/showCalc', true)
     },
   },

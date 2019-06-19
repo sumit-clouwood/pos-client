@@ -345,10 +345,14 @@ const mutations = {
     state.showCalc = true
   },
   addAmount(state, { amount, method }) {
-    state.payments.push({
-      amount: amount,
-      method: method,
-    })
+    if (amount > 0) {
+      state.payments.push({
+        amount: amount,
+        method: method,
+      })
+    } else {
+      state.error = 'Amount can not be 0'
+    }
   },
   addGiftAmount(state, { amount, method, code, cardId }) {
     let giftCards = state.payments.filter(
@@ -363,14 +367,22 @@ const mutations = {
     state.payments = giftCards
   },
   addCardAmount(state, { amount, method, code }) {
-    state.payments.push({
-      amount: amount,
-      method: method,
-      code: code,
-    })
+    if (amount > 0) {
+      state.payments.push({
+        amount: amount,
+        method: method,
+        code: code,
+      })
+    } else {
+      state.error = 'Amount can not be 0'
+    }
   },
   addTip(state, tip) {
-    state.tipAmount = tip
+    if (tip > 0) {
+      state.tipAmount = tip
+    } else {
+      state.error = 'Tip amount can not be 0'
+    }
   },
   removePayment(state, index) {
     state.payments.splice(index, 1)

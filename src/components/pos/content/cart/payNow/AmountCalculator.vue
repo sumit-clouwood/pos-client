@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     addAmount() {
-      $('#payment-breakdown').toggle()
+      $('#payment-breakdown').show()
       this.$store.commit('checkoutForm/setAction', 'add')
       this.$store.dispatch('checkoutForm/validatePayment').then(() => {
         if (this.method.type == CONST.GIFT_CARD) {
