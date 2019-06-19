@@ -9,8 +9,8 @@
           <h4 class="customer-title">{{ _t('Loyalty') }}</h4>
         </div>
         <form class="modal-body add-note-wrap" autocomplete="off">
-          <div class="add-note-area">
-            <p>{{ _t('Jump to customer') }}</p>
+          <p>{{ _t('Jump to customer') }}</p>
+          <div class="add-note-area loyalty-search">
             <input
               autocomplete="off"
               type="text"
@@ -163,7 +163,7 @@ export default {
   position: relative;
 }
 #searchLoader, .dropdown-content {
-  display:none;
+  /*display:none;*/
 }
 .dropdown-content {
   /*display: block;*/
@@ -184,7 +184,7 @@ export default {
   display: block;
 }
 .inputSearch{
-  width: 82%;
+  /*width: 337px;*/
   padding-bottom: 11px;
   height: 48px;
   border-radius: 5px 0px 0px 5px;
