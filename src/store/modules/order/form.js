@@ -19,7 +19,7 @@ const getters = {
     )
   },
   quantity: state => {
-    return state.quantity || 1
+    return state.quantity > 0 ? state.quantity : 1
   },
   modifiers: state => {
     let modifiers = []
