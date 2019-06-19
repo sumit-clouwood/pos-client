@@ -89,11 +89,12 @@
           :data-target="selectedModal"
           data-dismiss="modal"
         >
-          <a
+          <!--<a
             class="footer-slider-list-item-link"
             href="javascript:void(0)"
             @click="setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })"
-          >
+          >-->
+          <a class="footer-slider-list-item-link" href="javascript:void(0)">
             <!--<img src="images/footer-images/d_2.png" alt="customer">-->
             <svg
               aria-hidden="true"

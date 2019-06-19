@@ -15,13 +15,14 @@ const state = {
   location: null,
   setModal: '#manage-customer',
   referrals: false,
+  userDetails: false,
 }
 
 // getters
 const getters = {
   formatPrice: state => price => {
     if (!price) price = 0.0
-    return state.currency + ' ' + Num.round(price)
+    return state.currency + ' ' + Num.round(price).toFixed(2)
   },
   _t: state => str => {
     if (state.translations[str]) {
@@ -53,9 +54,7 @@ const actions = {
           commit('modules/SET_ENABLED_MODULES', state.brand.enabled_modules, {
             root: true,
           })
-
           dispatch('referrals')
-
           //  else if (state.store.default_language) {
           //   locale = state.store.default_language
           // }
@@ -73,6 +72,19 @@ const actions = {
     LocationService.getReferrals().then(response => {
       commit(mutation.SET_REFERRALS, response.data.data)
     })
+  },
+  getUserDetails({ commit }) {
+    if (localStorage.getItem('user') != null) {
+      const user_id =
+        localStorage.getItem('user').length > 0
+          ? JSON.parse(localStorage.getItem('user')).user_id
+          : false
+      if (user_id) {
+        LocationService.userDetails(user_id).then(response => {
+          commit(mutation.USER_DETAILS, response.data)
+        })
+      }
+    }
   },
   changeLanguage({ commit }, locale) {
     commit(mutation.SET_LOCALE, locale)
@@ -102,6 +114,9 @@ const actions = {
 
 // mutations
 const mutations = {
+  [mutation.USER_DETAILS](state, userDetails) {
+    state.userDetails = userDetails
+  },
   [mutation.SET_MODAL](state, setModal) {
     state.setModal = setModal
   },

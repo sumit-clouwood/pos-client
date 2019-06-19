@@ -13,7 +13,7 @@
             <div
               class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'dine_in' }"
-              @click="setOrderType({ OTview: 'Dine InOT', OTApi: 'dine_in' })"
+              @click="setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })"
             >
               <img src="img/pos/dine-in.svg" /><span>{{ _t('Dine In') }}</span>
             </div>
@@ -28,7 +28,7 @@
               "
             >
               <img src="img/pos/take-away.svg" /><span>
-                {{ _t(' Take Away') }}
+                {{ _t('Take Away') }}
               </span>
             </div>
             <div

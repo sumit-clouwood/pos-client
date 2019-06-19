@@ -178,6 +178,8 @@ const actions = {
         item: item,
       })
     }
+
+    return Promise.resolve()
   },
 }
 

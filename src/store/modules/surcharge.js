@@ -1,6 +1,7 @@
 import SurchargeService from '@/services/data/SurchargeService'
 import * as mutation from './surcharge/mutation-types'
 import * as CONST from '@/constants'
+import Num from '@/plugins/helpers/Num.js'
 
 const state = {
   surcharges: [],
@@ -23,51 +24,75 @@ const getters = {
 
 const actions = {
   calculate({ commit, getters, rootGetters, rootState }) {
-    let i = 1
     return new Promise(resolve => {
       //look for order level discount before going furhter ;)
       const subtotal = rootGetters['order/subTotal']
       const undiscountedSubtotal = rootGetters['order/subTotalUndiscounted']
       let totalSurcharges = []
+      //If total surcharges exists.
       if (subtotal && state.surcharges.length) {
-        state.surcharges.forEach(surcharge => {
-          // eslint-disable-next-line no-console
-          console.log(rootState.order.orderType.OTApi + ' > ' + i++)
-          if (surcharge[rootState.order.orderType.OTApi]) {
-            // eslint-disable-next-line no-console
-            console.log(surcharge)
+        //filter surcharges with order type and country specific
+        let allSurcharges = state.surcharges.filter(function(q) {
+          if (
+            q.availability.incl.countries.includes(
+              rootState.location.store.country
+            ) &&
+            q[rootState.order.orderType.OTApi] === true
+          ) {
+            return q
+          }
+        })
+        //If filtered surcharges count more than zero
+        if (allSurcharges.length > 0) {
+          //Loop all valid surcharges to calculate individual.
+          allSurcharges.forEach(surcharge => {
+            //Assign variables if Surcharge type is value.
             let applidSurcharge = {
               id: surcharge._id,
               amount: surcharge.value,
-              tax: getters.tax(surcharge),
-              undiscountedTax: getters.tax(surcharge),
+              tax: Num.round(getters.tax(surcharge)),
+              undiscountedTax: Num.round(getters.tax(surcharge)),
             }
-
+            //Assign variables if Surcharge type is percentage.
             if (surcharge.type === CONST.PERCENTAGE) {
-              applidSurcharge.amount = (subtotal * surcharge.rate) / 100
-              applidSurcharge.tax =
+              applidSurcharge.amount = Num.round(
+                (subtotal * surcharge.rate) / 100
+              )
+              applidSurcharge.tax = Num.round(
                 (applidSurcharge.amount * surcharge.tax_sum) / 100
+              )
 
-              applidSurcharge.undiscountedAmount =
+              applidSurcharge.undiscountedAmount = Num.round(
                 (undiscountedSubtotal * surcharge.rate) / 100
-              applidSurcharge.undiscountedTax =
+              )
+              applidSurcharge.undiscountedTax = Num.round(
                 (applidSurcharge.undiscountedAmount * surcharge.tax_sum) / 100
+              )
             }
-
             totalSurcharges.push(applidSurcharge)
-          }
-        })
+          })
+        }
       }
-
       commit(mutation.SET_SURCHARGE_AMOUNT, totalSurcharges)
       resolve()
     })
   },
 
-  fetchAll({ commit }) {
+  fetchAll({ commit, rootState }) {
     SurchargeService.fetchAll().then(response => {
+      //If Surcharges avialable for location.
       if (response.data.data.length) {
-        commit(mutation.SET_SURCHARGES, response.data.data)
+        //Filter all surcharges by Country specific
+        let data = response.data.data.filter(function(q) {
+          if (
+            q.availability.incl.countries.includes(
+              rootState.location.store.country
+            )
+          ) {
+            return q
+          }
+        })
+        commit(mutation.SET_SURCHARGES, data)
       }
     })
   },

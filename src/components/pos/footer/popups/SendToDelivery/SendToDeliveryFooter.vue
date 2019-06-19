@@ -66,7 +66,7 @@
         class="btn btn-danger cancel-announce"
         data-dismiss="modal"
       >
-        Close
+        {{ _t('Close') }}
       </button>
       <button
         class="btn btn-success btn-large"
@@ -74,7 +74,7 @@
         id="confirm_announcement"
         @click="placeOrder"
       >
-        Confirm
+        {{ _t('Confirm') }}
       </button>
     </div>
 
@@ -87,7 +87,7 @@
 import moment from 'moment-timezone'
 
 import { Datetime } from 'vue-datetime'
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'SendToDeliveryFooter',
   props: {},
@@ -109,6 +109,7 @@ export default {
     ...mapState({
       getReferrals: state => state.location.referrals,
     }),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     selectedReferral(referral) {

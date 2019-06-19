@@ -33,7 +33,7 @@ export default {
   },
   fetchDeliveryAreas(query) {
     return DataService.get(
-      `/model/brand_store_delivery_areas?query=${query}`,
+      `/model/brand_store_delivery_areas?query=${query}&item_status=true`,
       'brand'
     )
   },
