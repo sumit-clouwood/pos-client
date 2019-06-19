@@ -162,7 +162,8 @@ const actions = {
             commit('addGiftAmount', {
               amount: state.amount,
               method: state.method,
-              code: 'Gift Code-' + code,
+              code: code,
+              cardId: card._id,
             })
             commit('setAmount', Num.round(getters.payable))
             commit('showCalc', false)
@@ -349,7 +350,7 @@ const mutations = {
       method: method,
     })
   },
-  addGiftAmount(state, { amount, method, code }) {
+  addGiftAmount(state, { amount, method, code, cardId }) {
     let giftCards = state.payments.filter(
       payment => payment.method !== method && payment.code !== code
     )
@@ -357,6 +358,7 @@ const mutations = {
       amount: amount,
       method: method,
       code: code,
+      cardId: cardId,
     })
     state.payments = giftCards
   },
