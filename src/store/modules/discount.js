@@ -54,7 +54,7 @@ const getters = {
     )
   },
 
-  itemDiscounts: (state, getters, rootState) => {
+  itemDiscounts: (state, rootState) => {
     return state.itemDiscounts.data.filter(function(q) {
       if (q[rootState.order.orderType.OTApi]) {
         return q
@@ -62,12 +62,10 @@ const getters = {
     })
   },
 
-  orderDiscounts: (state, getters, rootState) => {
-    return state.orderDiscounts.data.filter(function(q) {
-      if (q[rootState.order.orderType.OTApi]) {
-        return q
-      }
-    })
+  orderDiscounts: (state, rootState) => {
+    return state.orderDiscounts.data.filter(
+      discount => discount[rootState.order.orderType.OTApi]
+    )
   },
 }
 
