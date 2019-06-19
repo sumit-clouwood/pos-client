@@ -21,7 +21,7 @@
       <p class="name-confrimation">
         {{ _t('Not') }} {{ customerProfile.name }}?
         <span
-          @click="addCustomer"
+          @click="addCustomerForm"
           data-toggle="modal"
           data-target="#customer"
           data-dismiss="modal"
@@ -132,6 +132,13 @@ export default {
   },
   methods: {
     ...mapActions('customer', ['addCustomer']),
+    addCustomerForm: function() {
+      this.addCustomer()
+      $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
+      $('#customer input, #customer select').val('')
+      $('.nogeneral').show()
+      $('.customerAddressWrapper').show()
+    },
     editCustomer: function(customerId) {
       let actionDetails = {
         id: customerId,
