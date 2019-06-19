@@ -27,7 +27,7 @@
         class="btn btn-success btn-large popup-btn-save"
         type="button"
         id="cust-new"
-        @click="addCustomer"
+        @click="addCustomerForm"
         data-toggle="modal"
         data-target="#customer"
         data-dismiss="modal"
@@ -40,6 +40,7 @@
 </template>
 
 <script>
+/*global $*/
 import { mapState, mapActions, mapGetters } from 'vuex'
 import paginate from 'vuejs-paginate'
 export default {
@@ -59,6 +60,13 @@ export default {
   methods: {
     moreCustomer: function(pageNumber) {
       this.setPageNumber(pageNumber)
+    },
+    addCustomerForm: function() {
+      this.addCustomer()
+      $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
+      $('#customer input, #customer select').val('')
+      $('.nogeneral').show()
+      $('.customerAddressWrapper').show()
     },
     ...mapActions('customer', ['setPageNumber', 'addCustomer']),
   },

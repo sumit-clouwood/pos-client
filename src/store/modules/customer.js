@@ -1,4 +1,3 @@
-/*global $*/
 import * as mutation from './customer/mutation-types'
 import customerService from '@/services/data/CustomerService'
 import CustomerService from '../../services/data/CustomerService'
@@ -80,11 +79,6 @@ const actions = {
       },
     ]
     dispatch('setDefaultSettingsGlobalAddUpdate', ...params)
-
-    $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
-    $('#customer input, #customer select').val('')
-    $('.nogeneral').show()
-    $('.customerAddressWrapper').show()
   },
   fetchAll({ commit, rootState, dispatch, state }) {
     return new Promise((resolve, reject) => {

@@ -112,6 +112,8 @@ export default {
     loyaltyAddCustomer: function(target) {
       this.$store.commit('loyalty/LOYALTY', true)
       this.addCustomer()
+      $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
+      $('#customer input, #customer select').val('')
       $(target).modal('show')
       $('.nogeneral').hide()
     },
