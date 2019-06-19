@@ -40,8 +40,7 @@
               class="btn btn-success btn-large popup-btn-save"
               type="button"
               id="gift-card-btn"
-              data-toggle="modal"
-              @click="payByCard"
+              @click="payByCard('#card-payemnt')"
             >
               {{ _t('Add') }}
             </button>
@@ -67,33 +66,39 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
-    payByCard() {
+    payByCard(target) {
       this.error = null
-      this.$store
-        .dispatch('checkoutForm/addCardAmount', this.code)
-        .then(() => {
-          this.code = ''
-          if (this.$store.state.checkoutForm.action == 'pay') {
-            if (this.$store.getters['checkoutForm/validate']) {
-              this.$store
-                .dispatch('checkout/pay')
-                .then(() => {
-                  $('#payment-msg').modal('show')
-                  setTimeout(function() {
-                    $('#payment-screen-footer').prop('disabled', false)
-                  }, 1000)
-                })
-                .catch(() => {
-                  setTimeout(() => {
-                    $('#payment-msg').modal('hide')
-                    $('#payment-screen-footer').prop('disabled', false)
-                  }, 500)
-                })
+      if (this.code == '') {
+        this.error = 'Please enter card number'
+        $(target).modal('show')
+      } else {
+        this.$store
+          .dispatch('checkoutForm/addCardAmount', this.code)
+          .then(() => {
+            $(target).modal('hide')
+            this.code = ''
+            if (this.$store.state.checkoutForm.action == 'pay') {
+              if (this.$store.getters['checkoutForm/validate']) {
+                this.$store
+                  .dispatch('checkout/pay')
+                  .then(() => {
+                    $('#payment-msg').modal('show')
+                    setTimeout(function() {
+                      $('#payment-screen-footer').prop('disabled', false)
+                    }, 1000)
+                  })
+                  .catch(() => {
+                    setTimeout(() => {
+                      $('#payment-msg').modal('hide')
+                      $('#payment-screen-footer').prop('disabled', false)
+                    }, 500)
+                  })
+              }
+              hideModal('#card-payemnt')
             }
-          }
-          hideModal('#card-payemnt')
-        })
-        .catch(error => (this.error = error))
+          })
+          .catch(error => (this.error = error))
+      }
     },
   },
 }

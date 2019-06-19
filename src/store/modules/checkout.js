@@ -304,13 +304,12 @@ const actions = {
 
         //adding payment breakdown
         let totalPaid = 0
-
         order.order_payments = rootState.checkoutForm.payments.map(payment => {
           let paymentPart = {
             entity_id: payment.method._id,
             name: payment.method.name,
             collected: payment.amount,
-            param1: payment.code,
+            param1: payment.cardId,
             param2: payment.amount,
             param3: payment.code,
           }
