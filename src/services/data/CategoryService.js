@@ -3,7 +3,7 @@ import DataService from '@/services/DataService'
 export default {
   categories() {
     return DataService.getT(
-      '/model/brand_item_categories?ascending=1&byColumn=0&orderBy=name&no_limit!=false&shown_pos=true&item_status=true'
+      '/model/brand_item_categories?ascending=1&byColumn=0&orderBy=name&no_limit=true&shown_pos!=false&item_status=true'
     )
   },
   subcategories() {
