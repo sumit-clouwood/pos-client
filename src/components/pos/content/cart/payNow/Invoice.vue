@@ -47,6 +47,7 @@ export default {
         // }
 
         $('.modal-backdrop').remove()
+        $('#order-confirmation').hide()
         hidePayNow()
       }
     },
