@@ -315,7 +315,7 @@ const actions = {
             param3: payment.code,
           }
           totalPaid += payment.amount
-          //Youvraj, have a check here
+          //Yuvraj, have a check here
           if (payment.method.type == CONSTANTS.LOYALTY) {
             if (parseFloat(rootState.customer.loyalty.balance) > 0) {
               order.loyalty_customer = {
