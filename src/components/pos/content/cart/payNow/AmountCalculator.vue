@@ -22,7 +22,7 @@
 </template>
 
 <script>
-/* global showModal*/
+/* global showModal, $*/
 import * as CONST from '@/constants'
 import { mapState, mapGetters } from 'vuex'
 export default {
@@ -38,6 +38,7 @@ export default {
   },
   methods: {
     addAmount() {
+      $('#payment-breakdown').toggle()
       this.$store.commit('checkoutForm/setAction', 'add')
       this.$store.dispatch('checkoutForm/validatePayment').then(() => {
         if (this.method.type == CONST.GIFT_CARD) {
@@ -51,6 +52,7 @@ export default {
           this.$store.dispatch('checkoutForm/addAmount')
         }
       })
+      // this.$store.commit('checkoutForm/setAction', 'pay')
     },
     set(amount) {
       if (!this.init) {
@@ -70,5 +72,5 @@ export default {
 </script>
 <style lang="sass" scoped>
 .amount-keypad
-  min-width: 518px;
+  min-width: 518px
 </style>

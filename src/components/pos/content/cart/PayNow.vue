@@ -38,7 +38,11 @@
                 @click="showCalculator()"
                 :placeholder="formatPrice(0.0)"
               />
-              <img src="img/pos/payment-input-icon.png" class="input-image" />
+              <img
+                src="img/pos/payment-input-icon.png"
+                class="input-image"
+                @click="showPayBreakdown"
+              />
             </div>
             <AmountCalculator v-show="showCalc" ref="calculator" />
             <PaymentBreakdown v-show="showPayBreak" />
@@ -68,6 +72,7 @@
   <!-- End pay now screen  -->
 </template>
 <script>
+/* global $  */
 import PayNowFooter from './payNow/Footer'
 import TotalAmount from './payNow/TotalAmount'
 import PaymentMethods from './payNow/PaymentMethods'
@@ -105,7 +110,11 @@ export default {
     ...mapGetters('checkoutForm', ['payable']),
   },
   methods: {
+    showPayBreakdown() {
+      $('#payment-breakdown').toggle()
+    },
     showCalculator() {
+      $('#payment-breakdown').toggle()
       this.$store.commit('checkoutForm/showCalc', true)
     },
   },

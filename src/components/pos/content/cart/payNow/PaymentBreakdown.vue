@@ -1,5 +1,5 @@
 <template>
-  <div class="payment-breakdown" id="payment-breakdown">
+  <div class="payment-breakdown" id="payment-breakdown" style="display:none">
     <div class="payment-breakdown-title">
       <h1>Payment Breakdown</h1>
     </div>
