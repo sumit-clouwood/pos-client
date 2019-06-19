@@ -250,6 +250,7 @@ const actions = {
     customerService.globalUpdate(...params).then(response => {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
       dispatch('fetchSelectedCustomer', customer_id)
+      dispatch('fetchAll')
     })
   },
 
