@@ -96,9 +96,10 @@ export default {
           this.customerCreateStatus &&
           this.customerCreateStatus.status === 'ok'
         ) {}*/
+        // eslint-disable-next-line no-console
+        // console.log(this.customerCreateStatus)
         $('#close-customer').click()
         $('#customer').modal('toggle')
-        $('#information-popup').modal('toggle')
         $('#information-popup').modal('show')
       }
     },

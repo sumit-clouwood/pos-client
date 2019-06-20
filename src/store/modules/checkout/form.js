@@ -382,7 +382,7 @@ const mutations = {
     if (tip > 0) {
       state.tipAmount = tip
     } else {
-      state.error = 'Tip amount can not be 0'
+      state.error = 'Tip amount can not be zero or negative'
     }
   },
   removePayment(state, index) {

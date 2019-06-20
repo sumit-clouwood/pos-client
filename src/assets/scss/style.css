@@ -1335,7 +1335,7 @@ button:focus {
         padding-right: 0.625rem; }
 
 #select-discount-item .modal-dialog {
-  max-width: 23.4375rem; }
+  max-width: 24.0625rem; }
   #select-discount-item .modal-dialog .modal-content .modal-body .select-discount-option > div {
     text-align: left;
     padding: 0.625rem 0.9375rem;
@@ -2208,7 +2208,6 @@ div#select-discount-item .dining-option-block.select-discount-option > div {
 
 .container-radio-btn {
   color: #333;
-  font-size: 0.75rem;
   font-weight: normal;
   letter-spacing: 0.43px; }
 
@@ -2703,7 +2702,8 @@ button:hover {
   background-color: rgba(0, 0, 0, 0.5);
   display: none;
   align-items: center;
-  justify-content: center; }
+  justify-content: center;
+  overflow: auto; }
   .modal .modal-dialog .modal-content {
     width: 100%; }
     .modal .modal-dialog .modal-content .modal-header {

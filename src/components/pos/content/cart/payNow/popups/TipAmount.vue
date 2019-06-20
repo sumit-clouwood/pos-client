@@ -7,7 +7,7 @@
         <div class="modal-body tip-amount">
           <div class="tip-amount-wrap">
             <p>{{ _t('Enter Tip Amount') }}</p>
-            <input v-model.number="tip" type="number" name="tip" />
+            <input v-model.number="tip" type="number" name="tip" min="0" />
           </div>
         </div>
         <div class="modal-footer">
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+/*global $*/
 import { mapGetters } from 'vuex'
 export default {
   name: 'TipAmount',
@@ -52,6 +53,7 @@ export default {
   methods: {
     addTip() {
       this.$store.commit('checkoutForm/addTip', this.tip)
+      $('input[name=tip]').val(0)
     },
   },
 }

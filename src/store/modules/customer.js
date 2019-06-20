@@ -1,6 +1,5 @@
 import * as mutation from './customer/mutation-types'
-import customerService from '@/services/data/CustomerService'
-import CustomerService from '../../services/data/CustomerService'
+import CustomerService from '@/services/data/CustomerService'
 import LookupData from '@/plugins/helpers/LookupData'
 
 const state = {
@@ -89,8 +88,7 @@ const actions = {
         'last_order_datetime',
         state.params.page_size /*page_size*/,
       ]
-      customerService
-        .customerList(...params)
+      CustomerService.customerList(...params)
         .then(response => {
           if (response.data.data.length) {
             let totalPages = Math.ceil(
@@ -110,7 +108,7 @@ const actions = {
       resolve()
       dispatch('fetchDeliveryArea', '')
       // get Customer Group
-      customerService.customerGroupList().then(response => {
+      CustomerService.customerGroupList().then(response => {
         commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
       })
     })
@@ -148,7 +146,7 @@ const actions = {
     if (typeof state.customer._id !== 'undefined') {
       let customerNote = { note: note }
       const params = [customerNote, state.customer._id, 'brand_customer_notes']
-      customerService.globalCreate(...params).then(response => {
+      CustomerService.globalCreate(...params).then(response => {
         commit(mutation.SET_RESPONSE_MESSAGES, response.data)
       })
     } else {
@@ -172,8 +170,7 @@ const actions = {
     })
     return new Promise((resolve, reject) => {
       commit(mutation.SET_CUSTOMER_ID, customerId)
-      customerService
-        .fetchCustomer(customerId)
+      CustomerService.fetchCustomer(customerId)
         .then(response => {
           let totalPages = Math.ceil(
             parseInt(response.data.item.total_orders) /
@@ -213,7 +210,9 @@ const actions = {
       actionDetails.customer,
       actionDetails.model,
     ]
-    customerService.globalCreate(...params).then(response => {
+    CustomerService.globalCreate(...params).then(response => {
+      // eslint-disable-next-line no-console
+      console.log('IN')
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
       if (actionDetails.customer) {
         dispatch('fetchSelectedCustomer', actionDetails.customer)
@@ -232,7 +231,7 @@ const actions = {
       actionDetails.action,
     ]
     localStorage.setItem('editItemKey', actionDetails.id)
-    customerService.globalEdit(...params).then(response => {
+    CustomerService.globalEdit(...params).then(response => {
       commit(mutation.SET_EDIT_DETAILS, response.data.item)
     })
   },
@@ -247,7 +246,7 @@ const actions = {
       actionDetails.action,
       actionDetails.data,
     ]
-    customerService.globalUpdate(...params).then(response => {
+    CustomerService.globalUpdate(...params).then(response => {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
       dispatch('fetchSelectedCustomer', customer_id)
       dispatch('fetchAll')
@@ -330,7 +329,7 @@ const mutations = {
   [mutation.SET_RESPONSE_MESSAGES](state, customerCreateResponse) {
     if (customerCreateResponse.status == 'form_errors') {
       state.responseInformation.status = customerCreateResponse.status
-      state.responseInformation.message = customerCreateResponse.error
+      state.responseInformation.message = customerCreateResponse.form_errors
     } else {
       state.responseInformation.status = customerCreateResponse.status
       state.responseInformation.message = customerCreateResponse
