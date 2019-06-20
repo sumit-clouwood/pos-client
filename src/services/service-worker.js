@@ -370,7 +370,8 @@ function sendPostToServer() {
                 //customer_id
                 //address_id
                 if (
-                  payload.order_type == 'delivery' &&
+                  (payload.order_type == 'delivery' ||
+                    payload.order_type == 'call_center') &&
                   !(payload.customer_id && payload.address_id)
                 ) {
                   var customerPayload = payload.user
@@ -386,45 +387,20 @@ function sendPostToServer() {
                       console.log('sw:', 'creating customer address')
 
                       //modify the original payload to be sent to order
-                      savedRequest.payload.customer_id = customerPayload.customer_id =
-                        response.customer_id
+                      savedRequest.payload.customer = customerPayload.customer_id =
+                        response.id
 
-                      /*createAddress(headers, customerPayload)
-                        .then(response => {
-                          console.log('customer address created', response)
-                          //re calculate payload
-                          console.log(
-                            'now sending order with customer_id and address_id'
-                          )
+                      savedRequest.order_building = customerPayload.building
+                      savedRequest.order_street = customerPayload.street
+                      savedRequest.order_flat_number =
+                        customerPayload.flat_number
+                      savedRequest.order_nearest_landmark =
+                        customerPayload.nearest_landmark
+                      savedRequest.order_city = customerPayload.city
+                      savedRequest.order_country = customerPayload.country
+                      savedRequest.order_delivery_area =
+                        customerPayload.delivery_area_id
 
-                          //modify original payload to be sent to order
-                          savedRequest.payload.address_id =
-                            response.data.addressId
-
-                          console.log(
-                            'making call to save order',
-                            savedRequest.payload
-                          )
-
-                          createOrder(
-                            resolve,
-                            reject,
-                            headers,
-                            lastOrderNo,
-                            authData,
-                            savedRequest
-                          )
-                        })
-                        .catch(err => {
-                          console.log(
-                            'Request to save customer address failed with error ',
-                            err,
-                            customerPayload
-                          )
-                          reject(err)
-                        })
-                        */
-                      savedRequest.payload.address_id = response.address_id
                       createOrder(
                         resolve,
                         reject,
@@ -504,7 +480,7 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
 
 var createCustomer = function(headers, payload, contextUrl) {
   var method = 'POST'
-  var requestUrl = contextUrl + '/model/crm/create/Customer'
+  var requestUrl = contextUrl + '/model/brand_customers/add'
   return fetch(requestUrl, {
     headers: headers,
     method: method,

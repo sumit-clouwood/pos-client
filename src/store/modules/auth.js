@@ -1,15 +1,11 @@
 import AuthService from '@/services/data/AuthService'
 import * as mutation from './user/mutation-types'
-import db from '@/services/network/DB'
 
 // initial state
 const state = {
   token: null,
+  deviceId: null,
   refreshToken: null,
-  userDetails: null,
-  deviceCode: false,
-  franchiseCode: false,
-  lastOrderNo: false,
 }
 
 // getters
@@ -26,28 +22,8 @@ const actions = {
             return false
           }
           commit(mutation.SET_TOKEN, response.data.token)
-
-          commit(mutation.SET_USER_DETAILS, response.data.user)
-          commit(mutation.SET_DEVICE_CODE, response.data.device_code)
-          commit(mutation.SET_FRANCHISE_CODE, response.data.franchise_code)
-          commit(mutation.SET_LAST_ORDER_NO, response.data.last_order_no || 0)
-
-          const data = {
-            user: state.userDetails,
-            deviceId: deviceId,
-            token: state.token,
-            deviceCode: state.deviceCode,
-            franchiseCode: state.franchiseCode,
-            lastOrderNo: state.lastOrderNo,
-          }
-
-          db.getBucket('auth').then(bucket => {
-            db.add(bucket, data)
-              .then(() => {
-                resolve(response)
-              })
-              .catch(error => reject(error))
-          })
+          commit(mutation.SET_DEVICE_CODE, deviceId)
+          resolve(response)
         })
         .catch(error => reject(error))
     })
@@ -63,18 +39,8 @@ const mutations = {
   [mutation.SET_REFRESH_TOKEN](state, { token }) {
     state.refreshToken = token
   },
-
-  [mutation.SET_USER_DETAILS](state, details) {
-    state.userDetails = details
-  },
   [mutation.SET_DEVICE_CODE](state, code) {
-    state.deviceCode = code
-  },
-  [mutation.SET_FRANCHISE_CODE](state, code) {
-    state.franchiseCode = code
-  },
-  [mutation.SET_LAST_ORDER_NO](state, orderNo) {
-    state.lastOrderNo = orderNo
+    state.deviceId = code
   },
 }
 
