@@ -35,8 +35,8 @@ const refreshAuthLogic = failedRequest =>
     localStorage.setItem('token', tokenRefreshResponse.data.token)
     db.getBucket('auth').then(bucket => {
       db.fetch(bucket).then(data => {
-        data.token = tokenRefreshResponse.data.token
-        db.put(bucket, data)
+        data[0].token = tokenRefreshResponse.data.token
+        db.put(bucket, data[0])
       })
     })
     failedRequest.response.config.headers['Authentication'] = getAccessToken()
