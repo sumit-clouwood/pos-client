@@ -104,7 +104,7 @@ export default {
         if (amount > 0) {
           this.$store.dispatch('checkoutForm/setAmount', amount)
         } else {
-          $('#submitOrder').click()
+          /*$('#submitOrder').click()*/
         }
       },
     },

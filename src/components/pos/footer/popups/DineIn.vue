@@ -62,6 +62,14 @@
             >
               {{ _t('Ok') }}
             </button>
+            <button
+              class="btn btn-large"
+              type="button"
+              :class="{ active: selectedOrderType.OTApi === 'event' }"
+              @click="setOrderType({ OTview: 'Walk In', OTApi: 'walk_in' })"
+            >
+              {{ _t('Walk In') }}
+            </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
@@ -94,6 +102,9 @@ export default {
 
   methods: {
     setOrderType(orderType) {
+      if (orderType.OTApi == 'walk_in') {
+        this.updateOrderType()
+      }
       if (this.selectedOrderType === orderType.OTApi) {
         //toggle
         this.selectedOrderType = { OTview: 'Walk In', OTApi: 'walk_in' }
