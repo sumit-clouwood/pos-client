@@ -36,12 +36,12 @@
               <span class="more">{{ dt(discount) }}</span>
             </div>
           </div>
-          <div class="error" v-show="appliedOrderDiscount">
+          <div class="error mx-auto" v-show="appliedOrderDiscount">
             <p class="text-danger text-center">
               Please remove order discount first to apply item discount.
             </p>
           </div>
-          <div class="error" v-show="itemError">
+          <div class="error mx-auto" v-show="itemError">
             <p class="text-danger text-center">
               {{ itemError }}
             </p>
