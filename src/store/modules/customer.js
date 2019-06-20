@@ -88,8 +88,7 @@ const actions = {
         'last_order_datetime',
         state.params.page_size /*page_size*/,
       ]
-      CustomerService
-        .customerList(...params)
+      CustomerService.customerList(...params)
         .then(response => {
           if (response.data.data.length) {
             let totalPages = Math.ceil(
@@ -171,8 +170,7 @@ const actions = {
     })
     return new Promise((resolve, reject) => {
       commit(mutation.SET_CUSTOMER_ID, customerId)
-      CustomerService
-        .fetchCustomer(customerId)
+      CustomerService.fetchCustomer(customerId)
         .then(response => {
           let totalPages = Math.ceil(
             parseInt(response.data.item.total_orders) /
@@ -331,7 +329,7 @@ const mutations = {
   [mutation.SET_RESPONSE_MESSAGES](state, customerCreateResponse) {
     if (customerCreateResponse.status == 'form_errors') {
       state.responseInformation.status = customerCreateResponse.status
-      state.responseInformation.message = customerCreateResponse.error
+      state.responseInformation.message = customerCreateResponse.form_errors
     } else {
       state.responseInformation.status = customerCreateResponse.status
       state.responseInformation.message = customerCreateResponse

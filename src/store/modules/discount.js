@@ -55,15 +55,19 @@ const getters = {
   },
 
   itemDiscounts: (state, getters, rootState) => {
-    return state.itemDiscounts.data.filter(
-      discount => discount[rootState.order.orderType.OTApi]
-    )
+    if (typeof state.itemDiscounts.data != 'undefined') {
+      return state.itemDiscounts.data.filter(
+        discount => discount[rootState.order.orderType.OTApi]
+      )
+    }
   },
 
   orderDiscounts: (state, getters, rootState) => {
-    return state.orderDiscounts.data.filter(
-      discount => discount[rootState.order.orderType.OTApi]
-    )
+    if (typeof state.orderDiscounts.data != 'undefined') {
+      return state.orderDiscounts.data.filter(
+        discount => discount[rootState.order.orderType.OTApi]
+      )
+    }
   },
 }
 
