@@ -137,10 +137,10 @@ export default {
             setTimeout(function() {
               $('#confirm_announcement').prop('disabled', false)
             }, 1000)
-            this.$store.commit('order/ORDER_TYPE', {
+            /*this.$store.commit('order/ORDER_TYPE', {
               OTview: 'Walk In',
               OTApi: 'walk_in',
-            })
+            })*/
           })
           .catch(response => {
             this.errors = response.error
