@@ -1,5 +1,5 @@
 <template>
-  <div class="invoice" id="printarea">
+  <div class="invoice" id="printarea" v-if="print">
     <iframe
       ref="iframe"
       width="100%"
@@ -31,6 +31,7 @@ export default {
           this.doprint()
         })
       }
+      this.$store.commit('checkout/PRINT', false)
     },
     doprint() {
       this.$refs.iframe.contentWindow.print()
