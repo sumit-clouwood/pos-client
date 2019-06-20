@@ -2,6 +2,8 @@
 import * as mutation from './location/mutation-types'
 import LocationService from '@/services/data/LocationService'
 import Num from '@/plugins/helpers/Num'
+import db from '@/services/network/DB'
+
 // initial state
 const state = {
   currency: 'AED',
@@ -34,7 +36,7 @@ const getters = {
 
 // actions
 const actions = {
-  fetch({ state, commit, dispatch }) {
+  fetch({ state, commit, dispatch, rootState }) {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
         .then(storedata => {
@@ -60,6 +62,19 @@ const actions = {
           // }
           // take out else part,as discussed with Alex language ll be dependent on cashier login
 
+          LocationService.registerDevice(rootState.auth.deviceId).then(
+            response => {
+              const data = {
+                id: 1,
+                token: localStorage.getItem('token'),
+                branch_n: state.store.branch_n,
+                terminal_code: response.data.id,
+              }
+              db.getBucket('auth').then(bucket => {
+                db.put(bucket, data)
+              })
+            }
+          )
           resolve(state.locale)
           // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
         })
