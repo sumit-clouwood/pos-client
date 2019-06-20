@@ -37,6 +37,7 @@
             <input
               type="text"
               name="phone_number"
+              @keypress="Num.toNumberOnly($event)"
               v-model="newCustomerDetails.phone_number"
             />
             <span class="validation-error" v-if="errors.phone_number">{{
@@ -260,6 +261,16 @@ export default {
       ) {
         this.errors.phone_number =
           this._t('Mobile number') + ' ' + this._t('is required')
+        this.errors.count = 1
+      }
+      if (
+        this.newCustomerDetails.phone_number &&
+        $.trim(this.newCustomerDetails.phone_number).length < 10
+      ) {
+        this.errors.phone_number =
+          this._t('Mobile number ') +
+          ' ' +
+          this._t('length should be 10 or more characters')
         this.errors.count = 1
       }
       if (this.customer_title !== 'Edit' && this.loyalty !== true) {
