@@ -33,6 +33,12 @@ axios.interceptors.request.use(request => {
 const refreshAuthLogic = failedRequest =>
   axios.post(apiURL + '/refresh').then(tokenRefreshResponse => {
     localStorage.setItem('token', tokenRefreshResponse.data.token)
+    db.getBucket('auth').then(bucket => {
+      db.fetch(bucket).then(data => {
+        data.token = tokenRefreshResponse.data.token
+        db.put(bucket, data)
+      })
+    })
     failedRequest.response.config.headers['Authentication'] = getAccessToken()
     return Promise.resolve()
   })
