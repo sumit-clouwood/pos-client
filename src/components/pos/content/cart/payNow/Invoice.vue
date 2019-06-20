@@ -34,6 +34,10 @@ export default {
     },
     doprint() {
       this.$refs.iframe.contentWindow.print()
+      if (this.$store.state.order.orderType.OTApi === 'call_center') {
+        //this.$router.replace({ name: 'DeliveryManagerLive' })
+        window.location = process.env.VUE_APP_DELIVERY_MANAGER_URL
+      }
     },
   },
   watch: {
@@ -41,10 +45,6 @@ export default {
       if (newVal) {
         this.$store.commit('checkout/PRINT', false)
         this.$store.dispatch('checkout/reset')
-
-        // if (this.$store.state.order.orderType.OTApi === 'call_center') {
-        //   this.$router.replace({ name: 'DeliveryManagerLive' })
-        // }
 
         $('.modal-backdrop').remove()
         $('#order-confirmation').hide()
