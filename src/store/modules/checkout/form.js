@@ -72,9 +72,10 @@ const actions = {
             amount: parseFloat(state.amount),
             method: state.method,
           })
-          //round and set
+          //set back to input box for remaining payment, make sure to round it
           commit('setAmount', Num.round(getters.payable))
-          resolve()
+
+          resolve(Num.round(getters.payable))
         })
         .catch(() => {
           commit('showCalc', true)
