@@ -39,7 +39,7 @@ const refreshAuthLogic = failedRequest =>
         db.put(bucket, data[0])
       })
     })
-    failedRequest.response.config.headers['Authentication'] = getAccessToken()
+    failedRequest.response.config.headers['Authorization'] = getAccessToken()
     return Promise.resolve()
   })
 
