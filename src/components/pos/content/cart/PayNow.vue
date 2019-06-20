@@ -45,6 +45,8 @@
               />
             </div>
             <AmountCalculator v-show="showCalc" ref="calculator" />
+            <br />
+            <hr />
             <PaymentBreakdown v-show="showPayBreak" />
             <PayNowFooter />
           </div>
@@ -101,11 +103,7 @@ export default {
           : 0
       },
       set(amount) {
-        if (amount > 0) {
-          this.$store.dispatch('checkoutForm/setAmount', amount)
-        } else {
-          /*$('#submitOrder').click()*/
-        }
+        this.$store.dispatch('checkoutForm/setAmount', amount)
       },
     },
     ...mapState('order', ['items']),

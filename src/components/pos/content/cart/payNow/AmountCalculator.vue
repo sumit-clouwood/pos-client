@@ -49,7 +49,37 @@ export default {
           showModal('#card-payemnt')
         } else {
           //cash payments
-          this.$store.dispatch('checkoutForm/addAmount')
+          this.$store.dispatch('checkoutForm/addAmount').then(payable => {
+            //check if full payment was made, then just start processing the order straight away
+            if (payable <= 0.1) {
+              this.$store.commit('checkoutForm/setAction', 'pay')
+              $('#payment-screen-footer').prop('disabled', true)
+              $('#payment-msg').modal('show')
+
+              this.$store
+                .dispatch(
+                  'checkout/pay',
+                  this.$store.state.order.orderType.OTApi
+                )
+                .then(() => {
+                  if (this.changedAmount >= 0.1) {
+                    $('#payment-msg').modal('hide')
+                    $('#change-amount').modal('show')
+                  } else if (this.msg) {
+                    $('#payment-msg').modal('show')
+                  }
+                  setTimeout(function() {
+                    $('#payment-screen-footer').prop('disabled', false)
+                  }, 1000)
+                })
+                .catch(() => {
+                  setTimeout(() => {
+                    $('#payment-msg').modal('hide')
+                    $('#payment-screen-footer').prop('disabled', false)
+                  }, 500)
+                })
+            }
+          })
         }
       })
       // this.$store.commit('checkoutForm/setAction', 'pay')
