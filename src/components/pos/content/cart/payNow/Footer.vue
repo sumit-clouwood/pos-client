@@ -21,7 +21,7 @@
       </span>
     </div>
 
-    <div class="footer-wrap" @click="pay">
+    <div class="footer-wrap" @click="pay" id="submitOrder">
       <img src="img/pos/done.png" alt="payment-method" /><span>
         {{ _t('Done') }}
       </span>

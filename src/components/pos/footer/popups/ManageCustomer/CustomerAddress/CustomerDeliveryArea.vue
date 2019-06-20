@@ -2,10 +2,10 @@
   <div
     class="location-delivery-area-address"
     :class="classAccess"
-    v-if="addresses.length"
+    v-if="getCustomerAddresses.length"
   >
     <div
-      v-for="(address, index) in addresses"
+      v-for="(address, index) in getCustomerAddresses"
       :key="index"
       class="order-location option-contain cu-delivery-area-location"
       :class="{ active: activeIndex === index }"
@@ -13,12 +13,6 @@
     >
       <div>
         <p>
-          <span
-            v-if="!getDeliveryArea(address.delivery_area_id)"
-            class="text-danger pull-right"
-          >
-            Inactive
-          </span>
           <span>{{ _t('Store:') }} {{ storeName }}</span
           ><br />
           <span>
@@ -73,6 +67,7 @@ export default {
     }),*/
     ...mapGetters('customer', ['getDeliveryArea']),
     ...mapGetters('location', ['_t']),
+    ...mapGetters('customer', ['getCustomerAddresses']),
   },
   methods: {
     setActiveCustomer(address, index) {

@@ -51,8 +51,35 @@ const getters = {
       selection: 'name',
     })
   },
+  getCustomerAddresses: (state, getters) => {
+    let data = {}
+    if (state.customer && state.customer.customer_addresses) {
+      data = state.customer.customer_addresses.filter(function(q) {
+        if (getters.getDeliveryArea(q.delivery_area_id)) {
+          return q
+        }
+      })
+    }
+    return data
+  },
 }
 const actions = {
+  addCustomer({ dispatch }) {
+    const params = [
+      {
+        nearest_landmark: '',
+        alternative_phone: '',
+        gender: 'undisclosed',
+        birthday: '',
+        customer_group: '',
+        delivery_area_id: '',
+        street: '',
+        building: '',
+        flat_number: '',
+      },
+    ]
+    dispatch('setDefaultSettingsGlobalAddUpdate', ...params)
+  },
   fetchAll({ commit, rootState, dispatch, state }) {
     return new Promise((resolve, reject) => {
       const params = [
@@ -223,6 +250,7 @@ const actions = {
     customerService.globalUpdate(...params).then(response => {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
       dispatch('fetchSelectedCustomer', customer_id)
+      dispatch('fetchAll')
     })
   },
 
