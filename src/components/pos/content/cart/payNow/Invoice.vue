@@ -19,6 +19,7 @@ export default {
   props: {},
   computed: {
     ...mapState('checkout', ['print']),
+    ...mapState('context', ['brandId']),
     ...mapGetters('invoice', ['templateHtml']),
   },
   components: {},
@@ -43,9 +44,12 @@ export default {
         this.$store.commit('checkout/PRINT', false)
         this.$store.dispatch('checkout/reset')
 
-        // if (this.$store.state.order.orderType.OTApi === 'call_center') {
-        //   this.$router.replace({ name: 'DeliveryManagerLive' })
-        // }
+        if (this.$store.state.order.orderType.OTApi === 'call_center') {
+          /*let baseUrl = process.env.VUE_APP_BASE_URL
+          location.href =
+            baseUrl + 'delivery/' + this.brandId + '/delivery_home/new'*/
+          // this.$router.replace({ name: deliveryManager })
+        }
 
         $('.modal-backdrop').remove()
         $('#order-confirmation').hide()
