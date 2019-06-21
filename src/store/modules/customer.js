@@ -54,7 +54,10 @@ const getters = {
     let data = {}
     if (state.customer && state.customer.customer_addresses) {
       data = state.customer.customer_addresses.filter(function(q) {
-        if (getters.getDeliveryArea(q.delivery_area_id)) {
+        if (
+          typeof q.delivery_area_id != 'undefined' &&
+          getters.getDeliveryArea(q.delivery_area_id)
+        ) {
           // eslint-disable-next-line no-console,no-console
           console.log(getters.getDeliveryArea(q.delivery_area_id))
           // eslint-disable-next-line no-console,no-console
