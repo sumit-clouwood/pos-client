@@ -50,25 +50,25 @@ export default {
                 this.store.commit('sync/loaded', true)
                 resolve()
               })
+
+              this.store.dispatch('surcharge/fetchAll').then(() => {
+                this.updateLoading('surcharges')
+              })
+              this.store.dispatch('discount/fetchAll').then(() => {
+                this.updateLoading('discounts')
+              })
+              //store.dispatch('giftcard/fetchAll')
+              this.store.dispatch('payment/fetchAll').then(() => {
+                this.updateLoading('payment_types')
+              })
+              this.store.dispatch('customer/fetchAll').then(() => {
+                this.updateLoading('customers')
+              })
+              this.store.dispatch('announcement/fetchAll').then(() => {
+                this.updateLoading('announcements')
+              })
             })
             .catch(error => reject(error))
-
-          this.store.dispatch('surcharge/fetchAll').then(() => {
-            this.updateLoading('surcharges')
-          })
-          this.store.dispatch('discount/fetchAll').then(() => {
-            this.updateLoading('discounts')
-          })
-          //store.dispatch('giftcard/fetchAll')
-          this.store.dispatch('payment/fetchAll').then(() => {
-            this.updateLoading('payment_types')
-          })
-          this.store.dispatch('customer/fetchAll').then(() => {
-            this.updateLoading('customers')
-          })
-          this.store.dispatch('announcement/fetchAll').then(() => {
-            this.updateLoading('announcements')
-          })
         })
         .catch(error => reject(error))
       //continue loading other service in parallel
