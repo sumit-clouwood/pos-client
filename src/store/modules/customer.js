@@ -212,18 +212,23 @@ const actions = {
   },
 
   createAction({ commit, dispatch }, actionDetails) {
-    const params = [
-      actionDetails.data,
-      actionDetails.customer,
-      actionDetails.model,
-    ]
-    CustomerService.globalCreate(...params).then(response => {
-      commit(mutation.SET_RESPONSE_MESSAGES, response.data)
-      if (actionDetails.customer) {
-        dispatch('fetchSelectedCustomer', actionDetails.customer)
-      } else {
-        dispatch('fetchAll')
-      }
+    return new Promise((resolve, reject) => {
+      const params = [
+        actionDetails.data,
+        actionDetails.customer,
+        actionDetails.model,
+      ]
+      CustomerService.globalCreate(...params)
+        .then(response => {
+          commit(mutation.SET_RESPONSE_MESSAGES, response.data)
+          if (actionDetails.customer) {
+            dispatch('fetchSelectedCustomer', actionDetails.customer)
+          } else {
+            dispatch('fetchAll')
+          }
+          resolve(response.data)
+        })
+        .catch(error => reject(error))
     })
   },
 
