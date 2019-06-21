@@ -50,14 +50,21 @@ const getters = {
       selection: 'name',
     })
   },
-  getCustomerAddresses: (state, getters) => {
+  getCustomerAddresses: state => {
     let data = {}
     if (state.customer && state.customer.customer_addresses) {
-      data = state.customer.customer_addresses.filter(function(q) {
+      return state.customer.customer_addresses
+      /*data = state.customer.customer_addresses.filter(function(q) {
+        // eslint-disable-next-line no-console,no-console
+        console.log(getters.getDeliveryArea(q.delivery_area_id))
+        // eslint-disable-next-line no-console,no-console
+        console.log(state.customer.customer_addresses)
+        // eslint-disable-next-line no-console
+        console.log(q)
         if (getters.getDeliveryArea(q.delivery_area_id)) {
           return q
         }
-      })
+      })*/
     }
     return data
   },
@@ -205,20 +212,23 @@ const actions = {
   },
 
   createAction({ commit, dispatch }, actionDetails) {
-    const params = [
-      actionDetails.data,
-      actionDetails.customer,
-      actionDetails.model,
-    ]
-    CustomerService.globalCreate(...params).then(response => {
-      // eslint-disable-next-line no-console
-      console.log('IN')
-      commit(mutation.SET_RESPONSE_MESSAGES, response.data)
-      if (actionDetails.customer) {
-        dispatch('fetchSelectedCustomer', actionDetails.customer)
-      } else {
-        dispatch('fetchAll')
-      }
+    return new Promise((resolve, reject) => {
+      const params = [
+        actionDetails.data,
+        actionDetails.customer,
+        actionDetails.model,
+      ]
+      CustomerService.globalCreate(...params)
+        .then(response => {
+          commit(mutation.SET_RESPONSE_MESSAGES, response.data)
+          if (actionDetails.customer) {
+            dispatch('fetchSelectedCustomer', actionDetails.customer)
+          } else {
+            dispatch('fetchAll')
+          }
+          resolve(response.data)
+        })
+        .catch(error => reject(error))
     })
   },
 

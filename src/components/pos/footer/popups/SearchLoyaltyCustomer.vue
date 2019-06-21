@@ -30,7 +30,11 @@
                 class="spinner-border spinner-border-sm"
                 role="status"
                 aria-hidden="true"
-                ><i class="fa fa-circle-o-notch fa-spin" id="searchLoader"></i>
+                ><i
+                  class="fa fa-circle-o-notch fa-spin"
+                  id="searchLoader"
+                  v-if="searchTerm.length"
+                ></i>
                 {{ _t('Search') }}</span
               >
             </button>
@@ -38,7 +42,7 @@
           <span class="loyalty-error text-danger loyalty-customer-error">
             {{ _t(searchCustomerErr) }}
           </span>
-          <div class="dropdown" v-if="customers.length">
+          <div class="dropdown" v-if="customers.length && searchTerm.length">
             <div id="myDropdown" class="dropdown-content">
               <span
                 class="showItem"

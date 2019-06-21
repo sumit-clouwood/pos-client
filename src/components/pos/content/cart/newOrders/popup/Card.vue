@@ -69,7 +69,7 @@ export default {
     payByCard(target) {
       this.error = null
       if (this.code == '') {
-        this.error = 'Please enter card number'
+        this.error = this._t('Please enter last 4 digit of card')
         $(target).modal('show')
       } else {
         this.$store

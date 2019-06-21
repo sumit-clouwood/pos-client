@@ -71,6 +71,22 @@ export default {
   },
   methods: {
     ...mapActions('customer', ['createAction', 'updateAction']),
+    displayValidationErrors(errorData) {
+      if (errorData && errorData['status'] == 'form_errors') {
+        let validationError = {}
+        let error = ''
+        $.each(errorData['message'], function(key, val) {
+          $.each(val, function(index, data) {
+            error += key + ' : ' + data
+          })
+        })
+        validationError = {
+          status: 'flash_message',
+          flash_message: error,
+        }
+        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+      }
+    },
     customerAction(modalStatus) {
       const errors = this.$refs.form.validate()
       if (errors.count === 0) {
@@ -81,6 +97,9 @@ export default {
             data: customerData,
             model: 'brand_customers',
             customer: false,
+          }).then(() => {
+            let errorData = this.customerCreateStatus
+            this.displayValidationErrors(errorData)
           })
         }
         if (modalStatus == 'Edit') {
@@ -96,8 +115,6 @@ export default {
           this.customerCreateStatus &&
           this.customerCreateStatus.status === 'ok'
         ) {}*/
-        // eslint-disable-next-line no-console
-        // console.log(this.customerCreateStatus)
         $('#close-customer').click()
         $('#customer').modal('toggle')
         $('#information-popup').modal('show')

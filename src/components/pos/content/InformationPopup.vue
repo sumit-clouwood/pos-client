@@ -37,7 +37,7 @@
               id="dining-opt"
               @click="closeModal()"
             >
-              Ok
+              {{ _t('Ok') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -51,15 +51,17 @@
 
 <script>
 /* global $ */
-
+import { mapGetters } from 'vuex'
 export default {
   name: 'InformationPopup',
   props: {
-    responseInformation: Object,
+    responseInformation: String,
     title: String,
     activatedClass: String,
   },
-  computed: {},
+  computed: {
+    ...mapGetters('location', ['_t']),
+  },
   methods: {
     closeModal: function() {
       $('#information-popup').modal('toggle')
