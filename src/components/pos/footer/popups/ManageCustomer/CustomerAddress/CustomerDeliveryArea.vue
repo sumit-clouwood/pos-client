@@ -13,6 +13,12 @@
     >
       <div>
         <p>
+          <span
+            v-if="!getDeliveryArea(address.delivery_area_id)"
+            class="text-danger pull-right"
+          >
+            Inactive
+          </span>
           <span>{{ _t('Store:') }} {{ storeName }}</span
           ><br />
           <span>
