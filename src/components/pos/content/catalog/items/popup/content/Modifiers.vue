@@ -2,7 +2,8 @@
   <div class="POSItemOption" v-if="subgroup">
     <div class="POSItemOptions_type">
       <h3 class="POSItemOptions_typehead">
-        <span>{{ subgroup.name }} ({{ subgroup.item_type }}) </span>
+        <!--<span>{{ subgroup.name }} ({{ subgroup.item_type }}) </span>-->
+        <span>{{ subgroup.name }}</span>
       </h3>
       <span class="POSItemOptions_typeline"></span>
     </div>
