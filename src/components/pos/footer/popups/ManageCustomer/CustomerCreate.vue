@@ -43,8 +43,14 @@
       </div>
     </div>
     <InformationPopup
+      v-if="customerCreateStatus.status !== 0"
       :responseInformation="customerCreateStatus.message.flash_message"
       :title="customerCreateStatus.message.flash_message"
+    />
+    <InformationPopup
+      v-if="customerCreateStatus.status == 0"
+      :responseInformation="customerCreateStatus.message.flash_message"
+      :title="customerCreateStatus.message.title"
     />
   </div>
   <!-- End customer Model -->
@@ -77,11 +83,12 @@ export default {
         let error = ''
         $.each(errorData['message'], function(key, val) {
           $.each(val, function(index, data) {
-            error += key + ' : ' + data
+            error += key.replace(/_/g, ' ') + ' : ' + data
           })
         })
         validationError = {
-          status: 'flash_message',
+          status: 0,
+          title: 'Validation Error',
           flash_message: error,
         }
         this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
