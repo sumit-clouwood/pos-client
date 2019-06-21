@@ -72,32 +72,18 @@ export default {
   methods: {
     ...mapActions('customer', ['createAction', 'updateAction']),
     displayValidationErrors(errorData) {
-      // eslint-disable-next-line no-console
-      console.log(errorData['message'])
-      // eslint-disable-next-line no-console
-      console.log(errorData.status)
       if (errorData && errorData['status'] == 'form_errors') {
         let validationError = {}
         let error = ''
-        if (
-          typeof errorData == 'object' &&
-          typeof errorData['message'] == 'object'
-        ) {
-          $.each(errorData['message'], function(key, val) {
-            $.each(val, function(index, data) {
-              error += key + ' : ' + data
-            })
+        $.each(errorData['message'], function(key, val) {
+          $.each(val, function(index, data) {
+            error += key + ' : ' + data
           })
-        } else {
-          error = 'Validation Error'
-        }
+        })
         validationError = {
           status: 'flash_message',
-          message: { flash_message: error },
+          flash_message: error,
         }
-        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
-        // eslint-disable-next-line no-console
-        console.log(validationError)
         this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
       }
     },
