@@ -22,10 +22,14 @@ function getAccessToken() {
   }
 }
 
-axios.interceptors.request.use(request => {
-  request.headers['Authorization'] = getAccessToken()
-  return request
-})
+function setMiddleware() {
+  axios.interceptors.request.use(request => {
+    request.headers['Authorization'] = getAccessToken()
+    return request
+  })
+}
+
+setMiddleware()
 
 // Setup refresh tokens
 // This unction that will be called to refresh authorization

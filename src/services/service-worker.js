@@ -6,8 +6,9 @@ var iDB
 var form_data
 var IDB_VERSION = 3
 var ORDER_DOCUMENT = 'order_post_requests'
-// var serverUrl = 'https://int.erp-pos.com'
-var clientUrl = 'https://web-int.dimspos.com'
+//var clientUrl = 'https://web-int.dimspos.com'
+var clientUrl = 'https://local.broc.me'
+var client = null
 
 if (workbox) {
   openDatabase()
@@ -72,29 +73,6 @@ if (workbox) {
       cacheName: 'fontawesome',
     })
   )
-
-  // const queue = new workbox.backgroundSync.Queue('ordersQueue')
-  // self.addEventListener('fetch', event => {
-  //   // Clone the request to ensure it's save to read when
-  //   // adding to the Queue.
-  //   if (event.request.url.match(/SaveOrder/g)) {
-  //     return queue.addRequest(event.request)
-
-  //     // const promiseChain = fetch(event.request.clone()).catch(() => {
-  //     //   return queue.addRequest(event.request)
-  //     // })
-
-  //     // event.waitUntil(promiseChain)
-  //   }
-  // })
-
-  // self.addEventListener('sync', event => {
-  //   event.waitUntil(
-  //     new Promise(resolve => {
-  //       resolve('hello')
-  //     })
-  //   )
-  // })
 
   self.addEventListener('sync', function(event) {
     console.log(
@@ -207,6 +185,13 @@ if (workbox) {
         })
       )
     }
+
+    console.log('sw: ', 'Event fetch: ', event)
+    if (!event.clientId) {
+      return
+    }
+
+    self.clients.get(event.clientId).then(thisClient => (client = thisClient))
   })
 
   self.addEventListener('install', function(event) {
@@ -340,8 +325,8 @@ function sendPostToServer() {
               console.log('sw:', 'auth data from db', authData)
 
               var authToken = authData.token
-              var deviceCode = authData.deviceCode
-              var franchiseCode = authData.franchiseCode
+              var branch_n = authData.branch_n
+              var terminal_code = authData.terminal_code
               //var lastOrderNo = parseInt(authData.lastOrderNo) || 0
 
               for (let savedRequest of savedRequests) {
@@ -350,7 +335,9 @@ function sendPostToServer() {
                 const time = new Date().getTime()
                 //lastOrderNo++
                 var transitionOrderNo =
-                  franchiseCode + '-' + deviceCode + '-' + time
+                  branch_n + '-' + terminal_code + '-' + time
+
+                console.log('transition order number: ', transitionOrderNo)
 
                 // send them to the server one after the other
                 console.log('sw:', 'saved request', savedRequest)
@@ -367,38 +354,37 @@ function sendPostToServer() {
                 var payload = savedRequest.payload
 
                 //check if delivery order
-                //customer_id
-                //address_id
-                if (
-                  (payload.order_type == 'delivery' ||
-                    payload.order_type == 'call_center') &&
-                  !(payload.customer_id && payload.address_id)
-                ) {
+                if (payload.order_type == 'call_center' && !payload.customer) {
                   var customerPayload = payload.user
 
                   console.log('sw:', 'delivery order')
                   //create customer uses fetch which returns promise
                   console.log('sw:', 'creating customer')
-                  createCustomer(headers, customerPayload, contextUrl)
+
+                  savedRequest.payload.order_city = customerPayload.city
+                  savedRequest.payload.order_country = customerPayload.country
+
+                  delete customerPayload.city
+                  delete customerPayload.country
+
+                  createCustomer(headers, customerPayload, contextUrl, authData)
                     .then(response => response.json())
                     .then(response => {
                       console.log('sw:', 'customer created ', response)
                       //customer created
-                      console.log('sw:', 'creating customer address')
 
                       //modify the original payload to be sent to order
-                      savedRequest.payload.customer = customerPayload.customer_id =
-                        response.id
+                      savedRequest.payload.customer = response.id
 
-                      savedRequest.order_building = customerPayload.building
-                      savedRequest.order_street = customerPayload.street
-                      savedRequest.order_flat_number =
+                      savedRequest.payload.order_building =
+                        customerPayload.building
+                      savedRequest.payload.order_street = customerPayload.street
+                      savedRequest.payload.order_flat_number =
                         customerPayload.flat_number
-                      savedRequest.order_nearest_landmark =
+                      savedRequest.payload.order_nearest_landmark =
                         customerPayload.nearest_landmark
-                      savedRequest.order_city = customerPayload.city
-                      savedRequest.order_country = customerPayload.country
-                      savedRequest.order_delivery_area =
+
+                      savedRequest.payload.order_delivery_area =
                         customerPayload.delivery_area_id
 
                       createOrder(
@@ -434,9 +420,13 @@ function sendPostToServer() {
 }
 
 var createOrder = function(resolve, reject, headers, authData, savedRequest) {
+  console.log('received params', headers, authData, savedRequest)
   var method = savedRequest.method
   var requestUrl = savedRequest.url
-  var payload = JSON.stringify(savedRequest.payload)
+  var payload = savedRequest.payload
+  delete payload.user
+  payload = JSON.stringify(payload)
+  console.log('Sending to server', method, requestUrl, payload)
 
   fetch(requestUrl, {
     headers: headers,
@@ -464,6 +454,29 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
         getObjectStore(ORDER_DOCUMENT, 'readwrite').delete(savedRequest.id)
 
         resolve(response)
+      } else if (response.status == 401) {
+        console.log(
+          'sw: ',
+          'Token expired, unauthorized access, get refresh token'
+        )
+        fetch(requestUrl.replace(new RegExp('/api/.*'), '/api/refresh'), {
+          headers: headers,
+          method: method,
+          body: null,
+        })
+          .then(response => response.json())
+          .then(response => {
+            console.log('sw: ', 'refresh token response', response)
+            headers.token = response.token
+            authData.token = response.token
+            sendTokenToClient('token', response.token)
+            getObjectStore('auth', 'readwrite').put(authData)
+            console.log('second request to create order')
+            createOrder(resolve, reject, headers, authData, savedRequest)
+          })
+          .catch(function(response) {
+            console.log('sw: ', 'Second request Error ', response)
+          })
       }
     })
     .catch(function(error) {
@@ -478,34 +491,58 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
     })
 }
 
-var createCustomer = function(headers, payload, contextUrl) {
-  var method = 'POST'
-  var requestUrl = contextUrl + '/model/brand_customers/add'
-  return fetch(requestUrl, {
-    headers: headers,
-    method: method,
-    body: JSON.stringify(payload),
+function sendTokenToClient(msg, data) {
+  client.postMessage({
+    msg: msg,
+    data: data,
   })
 }
 
-// var createAddress = function(headers, payload) {
-//   var method = 'POST'
-//   var requestUrl = serverUrl + '/api/auth/crm/create/NewCustomerAddress'
-//   var address = {
-//     customer_id: payload.customer_id,
-//     add_delivery_area: payload.delivery_area,
-//     location_id: payload.location_id,
-//     add_building: payload.building,
-//     add_street: payload.street,
-//     add_flat_number: payload.flat_number,
-//     add_landmark: payload.building,
-//     add_city: payload.city,
-//     country: payload.country,
-//   }
+var createCustomer = function(headers, payload, contextUrl, authData) {
+  var method = 'POST'
+  var requestUrl = contextUrl + '/model/brand_customers/add'
+  // requestUrl = requestUrl.replace(
+  //   new RegExp('/api/(.*)/.*/model/'),
+  //   '/api/$1/model/'
+  // )
 
-//   return fetch(requestUrl, {
-//     headers: headers,
-//     method: method,
-//     body: JSON.stringify(address),
-//   })
-// }
+  if (!payload.alternative_phone) payload.alternative_phone = null
+  if (!payload.gender) payload.gender = 'undisclosed'
+  if (!payload.customer_group) payload.customer_group = null
+
+  return new Promise((resolve, reject) => {
+    fetch(requestUrl, {
+      headers: headers,
+      method: method,
+      body: JSON.stringify(payload),
+    }).then(response => {
+      if (response.status < 400) {
+        resolve(response)
+      } else if (response.status == 401) {
+        console.log(
+          'sw: ',
+          'Token expired, unauthorized access, get refresh token'
+        )
+        fetch(requestUrl.replace(new RegExp('/api/.*'), '/api/refresh'), {
+          headers: headers,
+          method: method,
+          body: null,
+        })
+          .then(response => response.json())
+          .then(response => {
+            console.log('sw: ', 'refresh token response', response)
+            headers.token = response.token
+            authData.token = response.token
+            getObjectStore('auth', 'readwrite').put(authData)
+            sendTokenToClient('token', response.token)
+            console.log('second request to create order')
+            createCustomer(headers, payload, contextUrl, authData)
+          })
+          .catch(function(response) {
+            console.log('sw: ', 'Second request Error ', response)
+            reject(response)
+          })
+      }
+    })
+  })
+}

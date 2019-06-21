@@ -62,12 +62,24 @@ export default {
   components: { InformationPopup, CustomerForm },
   methods: {
     post() {
+      this.$store.commit('order/ORDER_TYPE', {
+        OTview: 'Delivery',
+        OTApi: 'call_center',
+      })
       const errors = this.$refs.form.validate()
       if (errors.count === 0) {
         const data = this.$refs.form.getData()
+        if (!data.city) {
+          data.city = this.$store.state.location.store.city
+        }
+        if (!data.country) {
+          data.country = this.$store.state.location.store.country
+        }
+
         this.$store.dispatch('customer/setOfflineData', data)
         this.status = 1
         this.message = 'Data saved for offline order'
+        this.$store.commit('location/SET_MODAL', '#order-confirmation')
 
         $('#manage-customer').modal('hide')
         $('#information-popup').modal('show')

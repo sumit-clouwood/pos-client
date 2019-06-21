@@ -134,9 +134,12 @@ export default {
             this.msg = ''
             // $('#order-confirmation').modal('hide')
             $('#payment-msg').modal('show')
+            $('#order-confirmation').modal('hide')
             setTimeout(function() {
               $('#confirm_announcement').prop('disabled', false)
             }, 1000)
+
+            this.$store.dispatch('checkout/reset')
             /*this.$store.commit('order/ORDER_TYPE', {
               OTview: 'Walk In',
               OTApi: 'walk_in',
