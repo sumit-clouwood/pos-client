@@ -30,7 +30,7 @@
 </template>
 
 <script>
-/* global $ showModal */
+/* global $ showModal showPaymentBreak */
 import { mapGetters, mapState } from 'vuex'
 import * as CONST from '@/constants'
 
@@ -54,9 +54,11 @@ export default {
     addAmount() {
       return new Promise((resolve, reject) => {
         if (this.$store.getters['checkoutForm/validate']) {
-          return resolve()
+          return resolve(0)
         }
-        if (this.$store.state.checkoutForm.amount <= 0.1) return resolve()
+        if (this.$store.getters['checkoutForm/payable'] <= 0.1) {
+          return resolve(0)
+        }
 
         this.$store
           .dispatch('checkoutForm/validatePayment')
@@ -72,8 +74,8 @@ export default {
               reject()
             } else {
               //cash payments
-              this.$store.dispatch('checkoutForm/addAmount').then(() => {
-                resolve()
+              this.$store.dispatch('checkoutForm/addAmount').then(payable => {
+                resolve(payable)
               })
             }
           })
@@ -81,30 +83,34 @@ export default {
       })
     },
     pay() {
-      this.$store.commit('checkoutForm/setAction', 'pay')
-      this.addAmount().then(() => {
-        $('#payment-screen-footer').prop('disabled', true)
-        $('#payment-msg').modal('show')
-
-        this.$store
-          .dispatch('checkout/pay', this.$store.state.order.orderType.OTApi)
-          .then(() => {
-            if (this.changedAmount >= 0.1) {
-              $('#payment-msg').modal('hide')
-              $('#change-amount').modal('show')
-            } else if (this.msg) {
-              $('#payment-msg').modal('show')
-            }
-            setTimeout(function() {
-              $('#payment-screen-footer').prop('disabled', false)
-            }, 1000)
-          })
-          .catch(() => {
-            setTimeout(() => {
-              $('#payment-msg').modal('hide')
-              $('#payment-screen-footer').prop('disabled', false)
-            }, 500)
-          })
+      this.addAmount().then(payable => {
+        if (payable <= 0.1) {
+          $('#payment-screen-footer').prop('disabled', true)
+          this.$store.commit('checkoutForm/setAction', 'pay')
+          $('#payment-msg').modal('show')
+          this.$store
+            .dispatch('checkout/pay', this.$store.state.order.orderType.OTApi)
+            .then(() => {
+              if (this.changedAmount >= 0.1) {
+                $('#payment-msg').modal('hide')
+                $('#change-amount').modal('show')
+              } else if (this.msg) {
+                $('#payment-msg').modal('show')
+              }
+              setTimeout(function() {
+                $('#payment-screen-footer').prop('disabled', false)
+              }, 1000)
+            })
+            .catch(() => {
+              setTimeout(() => {
+                $('#payment-msg').modal('hide')
+                $('#payment-screen-footer').prop('disabled', false)
+              }, 500)
+            })
+        } else {
+          //show payment breakdown
+          showPaymentBreak()
+        }
       })
     },
   },
