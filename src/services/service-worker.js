@@ -6,8 +6,8 @@ var iDB
 var form_data
 var IDB_VERSION = 3
 var ORDER_DOCUMENT = 'order_post_requests'
-//var clientUrl = 'https://web-int.dimspos.com'
-var clientUrl = 'https://local.broc.me'
+var clientUrl = 'https://web-int.dimspos.com'
+//var clientUrl = 'https://local.broc.me'
 var client = null
 
 if (workbox) {
