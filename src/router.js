@@ -46,11 +46,6 @@ const router = new Router({
       component: DeliveryManagerInit,
     },
     {
-      path: process.env.BASE_URL.replace('/pos', '') + '/delivery-manager',
-      name: 'DeliveryManagerLive',
-      component: DeliveryManagerInit,
-    },
-    {
       path: '/dispatch-screen',
       name: 'DispatchScreen',
       component: DispatchScreenInit,
