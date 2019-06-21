@@ -56,7 +56,7 @@ const getters = {
       data = state.customer.customer_addresses.filter(function(q) {
         if (getters.getDeliveryArea(q.delivery_area_id)) {
           // eslint-disable-next-line no-console,no-console
-          console.log(console.log(q.delivery_area_id, getters.getDeliveryArea(q.delivery_area_id)))
+          console.log(getters.getDeliveryArea(q.delivery_area_id))
           // eslint-disable-next-line no-console,no-console
           console.log(state.customer.customer_addresses)
           // eslint-disable-next-line no-console
