@@ -38,7 +38,10 @@ export default {
       this.$refs.iframe.contentWindow.print()
       if (this.$store.state.order.orderType.OTApi === 'call_center') {
         //this.$router.replace({ name: 'DeliveryManagerLive' })
-        window.location = process.env.VUE_APP_DELIVERY_MANAGER_URL
+        window.location = process.env.VUE_APP_DELIVERY_MANAGER_URL.replace(
+          '{brand_id}',
+          this.$store.state.context.brandId
+        )
       }
     },
   },
