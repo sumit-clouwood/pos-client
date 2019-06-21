@@ -211,8 +211,6 @@ const actions = {
       actionDetails.model,
     ]
     CustomerService.globalCreate(...params).then(response => {
-      // eslint-disable-next-line no-console
-      console.log('IN')
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
       if (actionDetails.customer) {
         dispatch('fetchSelectedCustomer', actionDetails.customer)

@@ -265,7 +265,7 @@ export default {
       }
       if (
         this.newCustomerDetails.phone_number &&
-        $.trim(this.newCustomerDetails.phone_number).length < 10
+        $.trim(this.newCustomerDetails.phone_number).length < 5
       ) {
         this.errors.phone_number =
           this._t('Mobile number ') +
