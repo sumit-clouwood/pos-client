@@ -52,8 +52,9 @@ export default {
           this.$store.dispatch('checkoutForm/addAmount').then(payable => {
             //check if full payment was made, then just start processing the order straight away
             if (
-              payable <= 0.1 &&
-              this.$store.state.checkoutForm.payments.length == 1
+              payable <= 0.1
+              //&&
+              //this.$store.state.checkoutForm.payments.length == 1
             ) {
               this.$store.commit('checkoutForm/setAction', 'pay')
               $('#payment-screen-footer').prop('disabled', true)
