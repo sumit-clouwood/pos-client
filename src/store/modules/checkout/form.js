@@ -380,33 +380,59 @@ const mutations = {
   },
   addAmount(state, { amount, method }) {
     if (amount > 0) {
-      state.payments.push({
-        amount: amount,
-        method: method,
-      })
+      const index = state.payments.findIndex(type => type === method)
+      if (index !== -1) {
+        let type = state.payments[index]
+        type.amount += parseFloat(amount)
+        state.payments.splice(index, 1, type)
+      } else {
+        state.payments.push({
+          amount: parseFloat(amount),
+          method: method,
+        })
+      }
     } else {
       state.error = 'Amount can not be 0'
     }
   },
   addGiftAmount(state, { amount, method, code, cardId }) {
-    let giftCards = state.payments.filter(
-      payment => payment.method !== method && payment.code !== code
+    const index = state.payments.findIndex(
+      payment =>
+        payment.method === method &&
+        payment.code === code &&
+        payment.cardId == cardId
     )
-    giftCards.push({
-      amount: amount,
-      method: method,
-      code: code,
-      cardId: cardId,
-    })
-    state.payments = giftCards
+
+    if (index !== -1) {
+      let type = state.payments[index]
+      type.amount += parseFloat(amount)
+      state.payments.splice(index, 1, type)
+    } else {
+      state.payments.push({
+        amount: parseFloat(amount),
+        method: method,
+        code: code,
+        cardId: cardId,
+      })
+    }
   },
   addCardAmount(state, { amount, method, code }) {
     if (amount > 0) {
-      state.payments.push({
-        amount: amount,
-        method: method,
-        code: code,
-      })
+      const index = state.payments.findIndex(
+        payment => payment.method === method && payment.code === code
+      )
+
+      if (index !== -1) {
+        let type = state.payments[index]
+        type.amount += parseFloat(amount)
+        state.payments.splice(index, 1, type)
+      } else {
+        state.payments.push({
+          amount: parseFloat(amount),
+          method: method,
+          code: code,
+        })
+      }
     } else {
       state.error = 'Amount can not be 0'
     }
