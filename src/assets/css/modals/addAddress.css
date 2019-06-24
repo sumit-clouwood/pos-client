@@ -1,13 +1,13 @@
 #add_address .modal-dialog {
   max-width: 60rem; }
-  #add_address .modal-dialog .modal-content .modal-body .left-form > div,
-  #add_address .modal-dialog .modal-content .modal-body .right-form > div {
+  #add_address .modal-dialog .modal-content .modal-body .left-form div,
+  #add_address .modal-dialog .modal-content .modal-body .right-form div {
     margin-bottom: 1.5625rem;
     position: relative;
     display: flex;
     align-items: center; }
-    #add_address .modal-dialog .modal-content .modal-body .left-form > div > input,
-    #add_address .modal-dialog .modal-content .modal-body .right-form > div > input {
+    #add_address .modal-dialog .modal-content .modal-body .left-form div input,
+    #add_address .modal-dialog .modal-content .modal-body .right-form div input {
       width: 19.6875rem;
       height: 3.125rem;
       border-radius: 3px;
@@ -15,16 +15,16 @@
       border: solid 1px #e4e7eb;
       padding: 0.625rem;
       width: 16.875rem; }
-    #add_address .modal-dialog .modal-content .modal-body .left-form > div > select,
-    #add_address .modal-dialog .modal-content .modal-body .right-form > div > select {
+    #add_address .modal-dialog .modal-content .modal-body .left-form div select,
+    #add_address .modal-dialog .modal-content .modal-body .right-form div select {
       width: 19.6875rem;
       height: 3.125rem;
       border-radius: 3px;
       background-color: #ffffff;
       border: solid 1px #e4e7eb;
       width: 16.875rem; }
-    #add_address .modal-dialog .modal-content .modal-body .left-form > div label,
-    #add_address .modal-dialog .modal-content .modal-body .right-form > div label {
+    #add_address .modal-dialog .modal-content .modal-body .left-form div label,
+    #add_address .modal-dialog .modal-content .modal-body .right-form div label {
       width: 10.9375rem;
       font-size: 0.875rem;
       font-weight: normal;
@@ -35,12 +35,12 @@
       color: #72777c;
       vertical-align: middle;
       white-space: nowrap; }
-      #add_address .modal-dialog .modal-content .modal-body .left-form > div label > span,
-      #add_address .modal-dialog .modal-content .modal-body .right-form > div label > span {
+      #add_address .modal-dialog .modal-content .modal-body .left-form div label span,
+      #add_address .modal-dialog .modal-content .modal-body .right-form div label span {
         color: #f44040;
         font-size: 1.5rem; }
-    #add_address .modal-dialog .modal-content .modal-body .left-form > div .selectpicker,
-    #add_address .modal-dialog .modal-content .modal-body .right-form > div .selectpicker {
+    #add_address .modal-dialog .modal-content .modal-body .left-form div .selectpicker,
+    #add_address .modal-dialog .modal-content .modal-body .right-form div .selectpicker {
       background-image: url("../images/select-arrow.png");
       background-repeat: no-repeat;
       background-position: center right 10px;
@@ -54,8 +54,8 @@
       letter-spacing: 0.5px;
       color: #3d3f43;
       padding-left: 0.9375rem; }
-    #add_address .modal-dialog .modal-content .modal-body .left-form > div .validation-error,
-    #add_address .modal-dialog .modal-content .modal-body .right-form > div .validation-error {
+    #add_address .modal-dialog .modal-content .modal-body .left-form div .validation-error,
+    #add_address .modal-dialog .modal-content .modal-body .right-form div .validation-error {
       position: absolute;
       width: 100%;
       top: 3.125rem;
