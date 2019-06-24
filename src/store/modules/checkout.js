@@ -372,6 +372,9 @@ const actions = {
       console.log(state.order)
       OrderService.saveOrder(state.order, rootState.customer.offlineData)
         .then(response => {
+          //remove current order from hold list as it might be processed, refetching ll do it
+          dispatch('holdOrders/getHoldOrders')
+
           // if (response.data.id) {
           //   commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
           //     root: true,
