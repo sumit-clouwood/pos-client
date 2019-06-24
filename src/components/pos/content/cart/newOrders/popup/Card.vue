@@ -74,13 +74,19 @@ export default {
       } else {
         this.$store
           .dispatch('checkoutForm/addCardAmount', this.code)
-          .then(() => {
+          .then(payable => {
             $(target).modal('hide')
             this.code = ''
-            if (this.$store.state.checkoutForm.action == 'pay') {
+            if (
+              payable <= 0.1 ||
+              this.$store.state.checkoutForm.action == 'pay'
+            ) {
               if (this.$store.getters['checkoutForm/validate']) {
                 this.$store
-                  .dispatch('checkout/pay')
+                  .dispatch(
+                    'checkout/pay',
+                    this.$store.state.order.orderType.OTApi
+                  )
                   .then(() => {
                     $('#payment-msg').modal('show')
                     setTimeout(function() {

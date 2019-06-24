@@ -20,7 +20,7 @@ const state = {
 // getters
 const getters = {
   validate: (state, getters) => {
-    if (getters.payable < 0) return true
+    if (getters.payable <= 0) return true
     return getters.orderTotal && !getters.payable
   },
   orderTotal: (state, getters, rootState, rootGetters) => {
@@ -84,65 +84,6 @@ const actions = {
         })
     })
   },
-  //apply giftcard by customer [future use]
-  addGiftCardAmountCustomer({ commit, getters, rootGetters, rootState }, code) {
-    commit('SET_ERROR', false)
-    //chek if current giftcard is valid
-    const giftCard = rootGetters['giftcard/find'](code)
-    if (!giftCard) {
-      commit('SET_ERROR', 'Invalid gift card code')
-      commit('showCalc', true)
-      return false
-    }
-    //check if gift card belongs to correct user
-    if (giftCard.customer_id != rootState.customer.customer.customer_list._id) {
-      commit('SET_ERROR', "Gift card doesn't belong to current customer")
-      commit('showCalc', true)
-      return false
-    }
-    //check expiry
-    const activatedDate = new Date(giftCard.activated_date)
-    const expiryDate = new Date(giftCard.expire_date)
-    const today = new Date()
-
-    if (expiryDate.getTime() <= today.getTime()) {
-      commit('SET_ERROR', 'Gift card expired')
-      commit('showCalc', true)
-      return false
-    }
-
-    //check active
-    if (
-      activatedDate.getTime() > today.getTime() ||
-      giftCard.status != 'active' ||
-      giftCard.is_deleted === 1
-    ) {
-      commit('SET_ERROR', 'Gift card not active')
-      commit('showCalc', true)
-      return false
-    }
-
-    //check the balance
-    if (!giftCard.balance) {
-      commit('SET_ERROR', "Gift card doesn't have sufficient balance")
-      commit('showCalc', true)
-      return false
-    }
-
-    let giftCardAmount = giftCard.balance
-
-    if (giftCard.balance > getters.payable) {
-      giftCardAmount = getters.payable
-    }
-
-    commit('addAmount', {
-      amount: giftCardAmount,
-      method: state.method,
-      code: giftCard.gift_code,
-    })
-    commit('setAmount', Num.round(getters.payable))
-    commit('showCalc', false)
-  },
 
   //apply gift card [in use]
   addGiftCardAmount({ commit, getters, dispatch }, code) {
@@ -159,17 +100,49 @@ const actions = {
           { root: true }
         )
           .then(card => {
-            commit('setGiftAmount', state.amount)
-            commit('addGiftAmount', {
-              amount: state.amount,
-              method: state.method,
-              code: code,
-              cardId: card._id,
-            })
-            commit('setAmount', Num.round(getters.payable))
-            commit('showCalc', false)
-            commit('showPayBreak', true)
-            resolve(card)
+            //check activation here
+            //check expiry
+            const activatedDate = new Date(card.activated_date)
+            const expiryDate = new Date(card.expire_date)
+            const today = new Date()
+
+            if (expiryDate.getTime() <= today.getTime()) {
+              commit('setGiftAmount', 0)
+              commit('showCalc', true)
+              commit('showPayBreak', false)
+              reject('Gift Card has been expired.')
+            }
+
+            //check active
+            else if (activatedDate.getTime() > today.getTime()) {
+              commit('setGiftAmount', 0)
+              commit('showCalc', true)
+              commit('showPayBreak', false)
+              reject('Gift Card is not active.')
+            }
+
+            //check the balance
+            else if (
+              !card.remaining_amount ||
+              card.remaining_amount < state.amount
+            ) {
+              commit('setGiftAmount', 0)
+              commit('showCalc', true)
+              commit('showPayBreak', false)
+              reject("Gift card doesn't have sufficient balance")
+            } else {
+              commit('setGiftAmount', state.amount)
+              commit('addGiftAmount', {
+                amount: state.amount,
+                method: state.method,
+                code: code,
+                cardId: card._id,
+              })
+              commit('setAmount', Num.round(getters.payable))
+              commit('showCalc', false)
+              commit('showPayBreak', true)
+              resolve(Num.round(getters.payable))
+            }
           })
           .catch(error => {
             commit('setGiftAmount', 0)
@@ -181,7 +154,7 @@ const actions = {
     })
   },
 
-  addCardAmount({ commit }, code) {
+  addCardAmount({ commit, getters }, code) {
     return new Promise(resolve => {
       commit('addCardAmount', {
         amount: state.amount,
@@ -192,7 +165,7 @@ const actions = {
       commit('showPayBreak', true)
       //set remaining amount into text box
       commit('setAmount', Num.round(getters.payable))
-      resolve()
+      resolve(Num.round(getters.payable))
     })
   },
 
@@ -319,6 +292,66 @@ const actions = {
 
   reset({ commit }) {
     commit('RESET')
+  },
+
+  //apply giftcard by customer [future use]
+  addGiftCardAmountCustomer({ commit, getters, rootGetters, rootState }, code) {
+    commit('SET_ERROR', false)
+    //chek if current giftcard is valid
+    const giftCard = rootGetters['giftcard/find'](code)
+    if (!giftCard) {
+      commit('SET_ERROR', 'Invalid gift card code')
+      commit('showCalc', true)
+      return false
+    }
+    //check if gift card belongs to correct user
+    if (giftCard.customer_id != rootState.customer.customer.customer_list._id) {
+      commit('SET_ERROR', "Gift card doesn't belong to current customer")
+      commit('showCalc', true)
+      return false
+    }
+    //check expiry
+    const activatedDate = new Date(giftCard.activated_date)
+    const expiryDate = new Date(giftCard.expire_date)
+    const today = new Date()
+
+    if (expiryDate.getTime() <= today.getTime()) {
+      commit('SET_ERROR', 'Gift card expired')
+      commit('showCalc', true)
+      return false
+    }
+
+    //check active
+    if (
+      activatedDate.getTime() > today.getTime() ||
+      giftCard.status != 'active' ||
+      giftCard.is_deleted === 1
+    ) {
+      commit('SET_ERROR', 'Gift card not active')
+      commit('showCalc', true)
+      return false
+    }
+
+    //check the balance
+    if (!giftCard.balance) {
+      commit('SET_ERROR', "Gift card doesn't have sufficient balance")
+      commit('showCalc', true)
+      return false
+    }
+
+    let giftCardAmount = giftCard.balance
+
+    if (giftCard.balance > getters.payable) {
+      giftCardAmount = getters.payable
+    }
+
+    commit('addAmount', {
+      amount: giftCardAmount,
+      method: state.method,
+      code: giftCard.gift_code,
+    })
+    commit('setAmount', Num.round(getters.payable))
+    commit('showCalc', false)
   },
 }
 

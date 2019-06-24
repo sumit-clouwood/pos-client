@@ -71,13 +71,20 @@ export default {
       this.error = null
       this.$store
         .dispatch('checkoutForm/addGiftCardAmount', this.code)
-        .then(() => {
+        .then(payable => {
           this.error = false
           this.$store.commit('checkoutForm/showPayBreak', true)
-          if (this.$store.state.checkoutForm.action == 'pay') {
+          if (
+            payable <= 0.1 ||
+            this.$store.state.checkoutForm.action == 'pay'
+          ) {
             if (this.$store.getters['checkoutForm/validate']) {
+              this.error = null
               this.$store
-                .dispatch('checkout/pay')
+                .dispatch(
+                  'checkout/pay',
+                  this.$store.state.order.orderType.OTApi
+                )
                 .then(() => {
                   $('#payment-msg').modal('show')
                   setTimeout(function() {
