@@ -26,11 +26,13 @@ const getters = {
     return state.categories
   },
   subcategories: state => {
-    return state.subcategories.filter(
-      subcategory =>
-        subcategory[CONSTANTS.REFERENCE_FIELD_SUBCATEGORY_TO_CATEGORY] ===
-        state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_SUBCATEGORY]
-    )
+    if (typeof state.category != 'undefined') {
+      return state.subcategories.filter(
+        subcategory =>
+          subcategory[CONSTANTS.REFERENCE_FIELD_SUBCATEGORY_TO_CATEGORY] ===
+          state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_SUBCATEGORY]
+      )
+    }
   },
   categoryItems: state => {
     return state.items.filter(
@@ -123,8 +125,12 @@ const actions = {
 
   //get subcategories and items based on main category
   browse({ commit, getters }, category) {
+    let subcategory = []
     commit(mutation.SET_CATEGORY, category)
-    commit(mutation.SET_SUBCATEGORY, getters.subcategories[0])
+    if (typeof getters.subcategories != 'undefined') {
+      subcategory = getters.subcategories[0]
+    }
+    commit(mutation.SET_SUBCATEGORY, subcategory)
     //reload the ui
   },
   getItems({ commit }, subcategory) {

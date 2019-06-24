@@ -6,7 +6,9 @@
         <!-- Modal content-->
         <div class="modal-content">
           <div class="modal-header customer-header">
-            <h4 class="customer-title">Create new customer offline</h4>
+            <h4 class="customer-title">
+              {{ _t('Create New Customer') + ' ' + _t('offline') }}
+            </h4>
             <button type="button" class="close" data-dismiss="modal">
               &times;
             </button>
@@ -20,7 +22,7 @@
                 data-dismiss="modal"
                 id="close-customer"
               >
-                <span>X</span> Cancel
+                {{ _t('Cancel') }}
               </button>
               <button
                 class="btn btn-success btn-large"
@@ -28,7 +30,7 @@
                 id="post_announcement"
                 v-on:click="post"
               >
-                Save
+                {{ _t('Save') }}
               </button>
             </div>
             <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -36,10 +38,7 @@
         </div>
       </div>
     </div>
-    <InformationPopup
-      :responseInformation="{ status: status, message: message }"
-      :title="title"
-    />
+    <InformationPopup :responseInformation="message" :title="title" />
   </div>
   <!-- End Manage Customers -->
 </template>
@@ -47,11 +46,15 @@
 <script>
 /* global $ */
 /* eslint-disable no-console */
+import { mapGetters } from 'vuex'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 import CustomerForm from './ManageCustomer/CustomerForm'
 export default {
   name: 'ManageCustomer',
   props: {},
+  computed: {
+    ...mapGetters('location', ['_t']),
+  },
   data: function() {
     return {
       title: 'Customer Success',

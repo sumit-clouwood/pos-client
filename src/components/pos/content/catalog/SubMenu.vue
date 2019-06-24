@@ -40,12 +40,3 @@ export default {
   },
 }
 </script>
-<style lang="sass" scoped>
-/*.cat-name
-  font-size: smaller*/
-
-/*.pizza-size-wrapper
-  img
-    width: 64px
-    height: 64px*/
-</style>
