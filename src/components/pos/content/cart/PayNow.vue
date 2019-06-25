@@ -9,7 +9,7 @@
             <div class="order-payment">
               <div class="order-id">
                 <h2>{{ _t('Order Payment') }}</h2>
-                <p>Order ID #1</p>
+                <!--<p>Order ID #1</p>-->
               </div>
               <div class="hide-btn">
                 <button data-dismiss="modal" id="hide-paynow">
