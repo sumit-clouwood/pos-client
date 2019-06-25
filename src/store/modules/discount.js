@@ -64,10 +64,10 @@ const getters = {
   },
 
   orderDiscounts: (state, getters, rootState) => {
-    if (!state.itemDiscounts.length) {
+    if (!state.orderDiscounts.length) {
       return state.orderDiscounts
     }
-    return state.orderDiscounts.data.filter(
+    return state.orderDiscounts.filter(
       discount => discount[rootState.order.orderType.OTApi]
     )
   },
@@ -209,7 +209,7 @@ const actions = {
 // mutations
 const mutations = {
   [mutation.SET_ORDER_DISCOUNTS](state, orderDiscounts) {
-    state.orderDiscounts = orderDiscounts.data
+    state.orderDiscounts = orderDiscounts.data.data
   },
   [mutation.SET_ITEM_DISCOUNTS](state, itemDiscounts) {
     state.itemDiscounts = itemDiscounts.data
