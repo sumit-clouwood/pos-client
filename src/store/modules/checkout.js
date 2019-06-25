@@ -343,6 +343,54 @@ const actions = {
 
         order.total_paid = Num.round(totalPaid)
 
+        //applying Fixing
+
+        order.sub_total = order.sub_total.toFixed(2)
+        order.total_discount = order.total_discount.toFixed(2)
+        order.total_surcharge = order.total_surcharge.toFixed(2)
+        order.total_tax = order.total_tax.toFixed(2)
+        order.amount_changed = order.amount_changed.toFixed(2)
+        order.tip_amount = parseFloat(order.tip_amount).toFixed(2)
+        order.total_paid = order.total_paid.toFixed(2)
+        order.surcharge_tax = order.surcharge_tax.toFixed(2)
+        order.balance_due = order.balance_due.toFixed(2)
+
+        order.item_discounts = order.item_discounts.map(discount => {
+          discount.rate = discount.rate.toFixed(2)
+          discount.price = discount.price.toFixed(2)
+          discount.tax = discount.tax.toFixed(2)
+          return discount
+        })
+
+        order.order_surcharges = order.order_surcharges.map(surcharge => {
+          surcharge.rate = surcharge.rate
+            ? surcharge.rate.toFixed(2)
+            : surcharge.rate
+          surcharge.price = surcharge.price.toFixed(2)
+          surcharge.tax = surcharge.tax.toFixed(2)
+          surcharge.tax_rate = surcharge.tax_rate
+            ? surcharge.tax_rate.toFixed(2)
+            : surcharge.tax_rate
+          return surcharge
+        })
+
+        order.items = order.items.map(item => {
+          item.price = item.price.toFixed(2)
+          item.tax = item.tax.toFixed(2)
+          return item
+        })
+
+        order.item_modifiers = order.item_modifiers.map(item => {
+          item.price = item.price.toFixed(2)
+          item.tax = item.tax.toFixed(2)
+          return item
+        })
+
+        order.order_payments = order.order_payments.map(item => {
+          item.collected = parseFloat(item.collected).toFixed(2)
+          return item
+        })
+
         //order.app_uniqueid = Crypt.uuid()
 
         console.log('not in delivery or take away ')
