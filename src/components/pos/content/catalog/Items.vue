@@ -2,11 +2,13 @@
   <div class="food-menu">
     <div
       class="food-menu-item"
+      :style="{ background: item.image == '' ? item.item_color : '' }"
       v-for="item in items"
       :key="item._id"
       @click.prevent="addToOrder(item)"
     >
       <img
+        v-if="item.image != ''"
         class="food-menu-item-img"
         :src="item.image"
         :alt="dt(item)"

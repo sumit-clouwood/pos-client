@@ -19,7 +19,18 @@
             :class="{ active: currentCategory === item._id }"
             @click.prevent="browse(item)"
           >
-            <img :src="item.category_image" :alt="dt(item)" />
+            <img
+              v-if="item.category_image != ''"
+              :src="item.category_image"
+              :alt="dt(item)"
+            />
+            <img
+              v-else
+              :style="{
+                background:
+                  item.category_image == '' ? item.category_color : '',
+              }"
+            />
             <span class="nav-link-text">{{ dt(item) }}</span>
           </a>
         </li>

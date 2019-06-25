@@ -2220,7 +2220,8 @@ label.container-radio-btn img {
   display: inline-block;
   vertical-align: middle;
   margin-right: 0.3125rem;
-  width: 2.1875rem; }
+  width: 2.1875rem;
+  height: 2.1875rem; }
 
 button:focus {
   box-shadow: none !important; }

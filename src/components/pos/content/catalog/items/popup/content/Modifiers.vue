@@ -35,7 +35,20 @@
             />
             <span></span>
           </span>
-          <img :src="modifier.item_modifier_image" alt="" />
+          <img
+            :src="modifier.item_modifier_image"
+            alt=""
+            v-if="modifier.item_modifier_image != ''"
+          />
+          <img
+            v-else
+            :style="{
+              background:
+                modifier.item_modifier_image == ''
+                  ? modifier.item_modifier_color
+                  : '',
+            }"
+          />
           <span>{{ modifier.name }}</span>
           <div class="itm-price" v-if="Num.toPrice(modifier.value)">
             ({{ formatPrice(modifier.value) }})
@@ -63,7 +76,20 @@
               }"
             ></span>
           </span>
-          <img :src="modifier.item_modifier_image" alt="" />
+          <img
+            v-if="modifier.item_modifier_image != ''"
+            :src="modifier.item_modifier_image"
+            alt=""
+          />
+          <img
+            v-else
+            :style="{
+              background:
+                modifier.item_modifier_image == ''
+                  ? modifier.item_modifier_color
+                  : '',
+            }"
+          />
           <span>{{ modifier.name }}</span>
           <div v-if="Num.toPrice(modifier.value)">
             ({{ formatPrice(modifier.value) }})
@@ -116,31 +142,3 @@ export default {
   },
 }
 </script>
-
-<style lang="sass" scoped>
-/*.checkmark-radio-btn
-  &.checked
-    background-color: #62bb31
-    border-color: #62bb31
-    &:after
-      display: block
-      content: ''
-      position: absolute
-      top: 3px
-      left: 3px
-      width: 5px
-      height: 5px
-      border-radius: 50%
-      background: white*/
-/*.error*/
-/*  color: #ff0000*/
-/*  margin-bottom: 24px*/
-/*  padding-bottom: 24px*/
-/*  border-bottom: 1px solid #e3e7f2*/
-/*label*/
-/*  img*/
-/*    width: 40px*/
-/*    height: 40px*/
-/*.POSItemOptions_typeline*/
-/*  border: 1px solid #e3e7f2*/
-</style>

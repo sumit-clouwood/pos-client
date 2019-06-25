@@ -8,9 +8,18 @@
       @click.prevent="getItems(item)"
     >
       <img
+        v-if="item.sub_category_image != ''"
         class="food-categories-item-img"
         :src="item.sub_category_image"
         :alt="dt(item)"
+      />
+      <img
+        v-else
+        class="food-categories-item-img"
+        :style="{
+          background:
+            item.sub_category_image == '' ? item.sub_category_color : '',
+        }"
       />
       <div class="food-categories-item-text" :title="dt(item)">
         {{ dt(item) }}
