@@ -55,7 +55,7 @@ const getters = {
   },
 
   itemDiscounts: (state, getters, rootState) => {
-    if (!state.itemDiscounts.length) {
+    if (!state.itemDiscounts.data) {
       return state.itemDiscounts
     }
     return state.itemDiscounts.data.filter(
@@ -64,7 +64,7 @@ const getters = {
   },
 
   orderDiscounts: (state, getters, rootState) => {
-    if (!state.orderDiscounts.length) {
+    if (!state.itemDiscounts.data) {
       return state.orderDiscounts
     }
     return state.orderDiscounts.filter(
