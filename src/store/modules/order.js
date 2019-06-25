@@ -688,6 +688,18 @@ const actions = {
       commit(mutation.SET_ORDER_DETAILS, orderDetails)
     })
   },
+
+  removeOrder({ dispatch }, { order, orderType }) {
+    OrderService.deleteOrder(order._id, orderType).then(response => {
+      if (response.status == 200) {
+        switch (orderType) {
+          case 'hold':
+            dispatch('holdOrders/remove', order, { root: true })
+            break
+        }
+      }
+    })
+  },
 }
 
 function playSound(locationId, onlineOrders) {
