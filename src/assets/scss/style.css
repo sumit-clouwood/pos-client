@@ -224,6 +224,9 @@ div#nav-tabContent {
 .margin220 .preloader {
   margin-top: 13.75rem; }
 
+.pl-30 {
+  padding-left: 30px; }
+
 .header {
   border-bottom: 1px solid #ddd; }
   .header .header-main {
@@ -375,7 +378,7 @@ div#nav-tabContent {
     .POSItemOptions .modal-dialog .modal-content .modal-details {
       border-bottom: 1px solid #E3E7F2;
       padding-bottom: 0.75rem;
-      margin-bottom: 1.25rem; }
+      /*margin-bottom: $px20;*/ }
       .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity {
         display: flex;
         flex-flow: row wrap; }
@@ -1334,7 +1337,7 @@ button:focus {
         padding-right: 0.625rem; }
 
 #select-discount-item .modal-dialog {
-  max-width: 24.0625rem; }
+  max-width: 28.125rem; }
   #select-discount-item .modal-dialog .modal-content .modal-body .select-discount-option > div {
     text-align: left;
     padding: 0.625rem 0.9375rem;

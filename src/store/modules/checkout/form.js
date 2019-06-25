@@ -438,11 +438,11 @@ const mutations = {
     }
   },
   addTip(state, tip) {
-    if (tip > 0) {
-      state.tipAmount = tip
-    } else {
-      state.error = 'Tip amount can not be zero or negative'
-    }
+    state.tipAmount = tip
+    // if (tip > 0 || state.tipAmount > 0) {
+    // } else {
+    //   state.error = 'Tip amount can not be zero or negative'
+    // }
   },
   removePayment(state, index) {
     state.payments.splice(index, 1)

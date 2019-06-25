@@ -18,7 +18,7 @@
     .POSItemOptions .modal-dialog .modal-content .modal-details {
       border-bottom: 1px solid #E3E7F2;
       padding-bottom: 0.75rem;
-      margin-bottom: 1.25rem; }
+      /*margin-bottom: $px20;*/ }
       .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity {
         display: flex;
         flex-flow: row wrap; }
