@@ -27,7 +27,7 @@
     .main .main-news .main-news-run-text {
       display: flex;
       align-items: center;
-      font-size: 0.875rem; }
+      font-size: 1rem; }
   .main .main-body {
     border-right: 1px solid #ddd;
     height: calc(100vh - 14.0625rem);

@@ -98,7 +98,7 @@
           .footer .footer-buttons .button ul li span {
             color: #fff;
             padding-left: 0.625rem;
-            font-size: 1.25rem;
+            font-size: 1.625rem;
             display: inline-block;
             vertical-align: middle; }
           .footer .footer-buttons .button ul li svg {
@@ -116,7 +116,7 @@
           width: 1.875rem;
           /*margin-right: $px10;*/ }
         .footer .footer-buttons .button .template-btn .pay-now a .pay-btn {
-          font-size: 1.125rem;
+          font-size: 1.625rem;
           display: flex;
           align-items: center; }
 

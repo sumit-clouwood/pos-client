@@ -93,7 +93,7 @@ img {
   overflow: hidden;
   White-space: nowrap;
   Width: 6.9375rem;
-  text-align: center; }
+  /*text-align:center;*/ }
 
 .orders-button-large {
   cursor: pointer;
@@ -167,7 +167,7 @@ svg {
     background-color: #767DFF;
     border-color: #767DFF; }
 
-.btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active, .show > .btn-success.dropdown-toggle {
+.btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active, .show > .btn-success.dropdown-toggle, .btn-success:disabled {
   background-color: #5056CA;
   border-color: #5056CA; }
 
@@ -3090,7 +3090,7 @@ body {
     .main .main-news .main-news-run-text {
       display: flex;
       align-items: center;
-      font-size: 0.875rem; }
+      font-size: 1rem; }
   .main .main-body {
     border-right: 1px solid #ddd;
     height: calc(100vh - 14.0625rem);
@@ -3524,7 +3524,7 @@ body {
           .footer .footer-buttons .button ul li span {
             color: #fff;
             padding-left: 0.625rem;
-            font-size: 1.25rem;
+            font-size: 1.625rem;
             display: inline-block;
             vertical-align: middle; }
           .footer .footer-buttons .button ul li svg {
@@ -3542,7 +3542,7 @@ body {
           width: 1.875rem;
           /*margin-right: $px10;*/ }
         .footer .footer-buttons .button .template-btn .pay-now a .pay-btn {
-          font-size: 1.125rem;
+          font-size: 1.625rem;
           display: flex;
           align-items: center; }
 
