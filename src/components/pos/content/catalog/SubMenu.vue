@@ -3,6 +3,10 @@
     <div
       class="food-categories-item"
       v-for="item in subcategories"
+      :style="{
+        background:
+          item.sub_category_image == '' ? item.sub_category_color : '',
+      }"
       :key="item._id"
       :class="{ active: currentSubcategory === item._id }"
       @click.prevent="getItems(item)"
@@ -12,14 +16,6 @@
         class="food-categories-item-img"
         :src="item.sub_category_image"
         :alt="dt(item)"
-      />
-      <img
-        v-else
-        class="food-categories-item-img"
-        :style="{
-          background:
-            item.sub_category_image == '' ? item.sub_category_color : '',
-        }"
       />
       <div class="food-categories-item-text" :title="dt(item)">
         {{ dt(item) }}

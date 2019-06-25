@@ -54,7 +54,8 @@
         grid-template-columns: auto;
         grid-gap: 1.25rem; }
         .main .main-body .food-wrapper .food-categories .food-categories-item {
-          width: 5.625rem;
+          width: 6.25rem;
+          min-height: 6.25rem;
           border: 1px solid #ddd;
           border-radius: 5px;
           display: grid;
@@ -64,7 +65,7 @@
           cursor: pointer;
           transition: 0.2s linear;
           position: relative;
-          font-size: 0.875rem;
+          font-size: 1.125rem;
           background-color: #fff; }
           .main .main-body .food-wrapper .food-categories .food-categories-item:hover, .main .main-body .food-wrapper .food-categories .food-categories-item.active {
             box-shadow: inset 0 0 0px 2px #5056CA; }
@@ -187,7 +188,7 @@
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item {
             cursor: pointer;
             width: 10rem;
-            height: 10rem;
+            height: 14rem;
             border: 1px solid #ddd;
             border-radius: 5px;
             justify-self: center;
@@ -199,7 +200,7 @@
             margin-bottom: 1.25rem;
             padding: 1.25rem;
             transition: 0.2s linear;
-            font-size: 0.875rem; }
+            font-size: 1.125rem; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item.bg {
               background-color: #56CCF2;
               color: #fff;

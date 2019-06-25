@@ -40,6 +40,8 @@ export default {
   },
   methods: {
     addToOrder(item) {
+      $('.food-menu-item').removeClass('active')
+      $(this).addClass('active')
       this.$store.commit('category/SET_ITEM', item)
       this.$store.commit('checkoutForm/showCalc', true)
       this.$store.commit('orderForm/updateQuantity', 1)

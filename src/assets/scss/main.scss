@@ -72,7 +72,7 @@
 
         .food-categories-item {
           width: $food-categories-item-width;
-          //height: $food-categories-item-height;
+          min-height: $food-categories-item-height;
           border: 1px solid $gray-middle;
           border-radius: $card-border-radius;
           display: grid;
@@ -82,7 +82,7 @@
           cursor: pointer;
           transition: 0.2s linear;
           position: relative;
-          font-size: $px14;
+          font-size: $px18;
           background-color: #fff;
 
           &:hover, &.active {
@@ -268,7 +268,7 @@
             margin-bottom: $px20;
             padding: $px20;
             transition: 0.2s linear;
-            font-size: $px14;
+            font-size: $px18;
 
             &.bg {
               background-color: #56CCF2;

@@ -13,7 +13,7 @@
         <Header />
         <HeaderDetails />
         <Content />
-        <div class="text-danger" v-show="error">{{ error }}</div>
+        <div class="text-danger pl-30" v-show="error">{{ error }}</div>
         <Footer />
       </div>
     </div>

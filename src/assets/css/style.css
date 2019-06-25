@@ -2997,21 +2997,24 @@ body {
           text-align: center;
           font-size: 14px;
           color: #fff;
+          align-items: center;
+          display: grid;
           width: 6.25rem;
+          min-height: 4.375rem;
           cursor: pointer;
           font-weight: 600;
           border-radius: 3px;
           transition: 0.2s linear;
           padding: 0.625rem; }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav.active, .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav:hover {
-            background-color: #767DFF;
+            background-color: #767DFF !important;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav img {
             width: 2.1875rem;
             height: 2.1875rem;
-            margin-bottom: 0.3125rem; }
+            margin: 0 auto 0.3125rem auto; }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav .nav-link-text {
-            font-size: 0.75rem;
+            font-size: 0.875rem;
             text-align: center;
             display: block; }
   .navigation .slider-btn {
@@ -3114,7 +3117,8 @@ body {
         grid-template-columns: auto;
         grid-gap: 1.25rem; }
         .main .main-body .food-wrapper .food-categories .food-categories-item {
-          width: 5.625rem;
+          width: 6.25rem;
+          min-height: 6.25rem;
           border: 1px solid #ddd;
           border-radius: 5px;
           display: grid;
@@ -3124,7 +3128,7 @@ body {
           cursor: pointer;
           transition: 0.2s linear;
           position: relative;
-          font-size: 0.875rem;
+          font-size: 1.125rem;
           background-color: #fff; }
           .main .main-body .food-wrapper .food-categories .food-categories-item:hover, .main .main-body .food-wrapper .food-categories .food-categories-item.active {
             box-shadow: inset 0 0 0px 2px #5056CA; }
@@ -3247,7 +3251,7 @@ body {
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item {
             cursor: pointer;
             width: 10rem;
-            height: 10rem;
+            height: 14rem;
             border: 1px solid #ddd;
             border-radius: 5px;
             justify-self: center;
@@ -3259,7 +3263,7 @@ body {
             margin-bottom: 1.25rem;
             padding: 1.25rem;
             transition: 0.2s linear;
-            font-size: 0.875rem; }
+            font-size: 1.125rem; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item.bg {
               background-color: #56CCF2;
               color: #fff;
