@@ -11,6 +11,7 @@ export default {
         footerMenuHendler: true,
         profileHendler: false,
         paymentMethodsHendler: false,
+        openManageCustomerHendler: false
     },
     mutations: {
         SEARCH_HENDLER_CHANGE: (state) => {
@@ -57,6 +58,10 @@ export default {
         },
         PAYMENT_METHODS_HENDLER_GHANGE: (state) => {
             state.paymentMethodsHendler = !state.paymentMethodsHendler
+            state.payNowCalcHendler = false
+        },
+        OPEN_MANAGE_CUSTOMER: (state) => {
+            state.openManageCustomerHendler = !state.openManageCustomerHendler
         }
      },
     actions: {
@@ -95,6 +100,9 @@ export default {
         },
         paymentMethodsHendlerGhange({commit}){
             commit('PAYMENT_METHODS_HENDLER_GHANGE')
+        },
+        openManageCustomer({commit}){
+            commit('OPEN_MANAGE_CUSTOMER')
         }
     },
     getters: {
@@ -109,5 +117,7 @@ export default {
         footerMenuHendler: state => state.footerMenuHendler,
         profileHendler: state => state.profileHendler,
         paymentMethodsHendler: state => state.paymentMethodsHendler,
+        openManageCustomerHendler: state => state.openManageCustomerHendler,
+
     },
 };

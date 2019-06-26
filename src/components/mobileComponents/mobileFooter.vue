@@ -27,7 +27,7 @@
                 <div class="btn-chatge-title">CHARGE</div>
             </div>
         </div>
-        <div class="btn-next" @click="paymentMethodsHendlerGhange">Next</div>
+        <div class="btn-next" @click="payNowCalcHendlerGange">Next</div>
     </div>
 </template>
 <script>

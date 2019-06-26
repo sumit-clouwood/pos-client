@@ -1,7 +1,7 @@
 <template>
     <div :class="['orders-menu-overlay', {active: !footerMenuHendler}]" @click.self="footerMenuHendlerGhange">
         <div class="orders-menu">
-            <li class="footer-slider-list-item" data-toggle="modal" data-target="#manage-customer">
+            <div class="footer-slider-list-item" data-target="#manage-customer" @click="openManageCustomer">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"
                           d="M16.6667 7C16.6667 9.76667 14.4334 12 11.6667 12C8.90008 12 6.66675 9.76667 6.66675 7C6.66675 4.23333 8.90008 2 11.6667 2C14.4334 2 16.6667 4.23333 16.6667 7ZM15.3335 6.99998C15.3335 4.96665 13.7001 3.33331 11.6668 3.33331C9.63346 3.33331 8.00012 4.96665 8.00012 6.99998C8.00012 9.03331 9.63346 10.6666 11.6668 10.6666C13.7001 10.6666 15.3335 9.03331 15.3335 6.99998Z"
@@ -15,7 +15,7 @@
                 <a class="footer-slider-list-item-link" href="#">
                     <span>{{ _t('Customer') }}</span>
                 </a>
-            </li>
+            </div>
             <li class="footer-slider-list-item footer-slider-list-item-open-orders"
                 id="hold-order-box">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -126,6 +126,9 @@
             setOrderType(opt) {
                 this.$store.commit("order/ORDER_TYPE", opt);
             },
+            openManageCustomer() {
+                this.$store.dispatch("openManageCustomer")
+            }
         }
     }
 </script>
@@ -144,7 +147,7 @@
             left: 0;
             background-color: rgba(0, 0, 0, 0);
             pointer-events: none;
-            transition: 0.5s ease-out;
+            transition: 0.7s ease-out;
 
             &.active {
                 pointer-events: auto;
@@ -161,7 +164,7 @@
                 bottom: -100%;
                 left: 0;
                 background-color: #fff;
-                transition: 0.5s ease-out;
+                transition: 0.7s ease-out;
 
                 .footer-slider-list-item {
                     border-bottom: 1px solid $gray-middle;

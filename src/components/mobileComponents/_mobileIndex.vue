@@ -1,23 +1,38 @@
 <template>
     <div class="mobile-components">
+        <mobile-notification/>
         <profile-sidebar/>
         <mobile-page/>
         <mobile-payment-methods/>
         <mobile-orders/>
+        <mobile-calc/>
+        <mobile-manage-customer/>
+        <payment-successfull/>
+        <cashier/>
     </div>
 </template>
 <script>
+    import mobileNotification from './mobileNotification.vue'
     import profileSidebar from './mobileProfileSidebar.vue'
     import mobilePaymentMethods from './mobilePaymentMethods.vue'
     import mobilePage from './mobilePage.vue'
     import mobileOrders from './mobileOrders.vue'
+    import mobileCalc from './mobileCalc.vue'
+    import mobileManageCustomer from './mobileManageCustomer.vue'
+    import paymentSuccessfull from './paymentSuccessfull.vue'
+    import cashier from './cashier.vue'
 
     export default {
         components: {
+            mobileNotification,
             profileSidebar,
             mobilePage,
             mobilePaymentMethods,
-            mobileOrders
+            mobileOrders,
+            mobileCalc,
+            mobileManageCustomer,
+            paymentSuccessfull,
+            cashier
         }
     }
 </script>

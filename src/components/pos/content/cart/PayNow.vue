@@ -28,7 +28,7 @@
             <div class="error" v-if="error">
               <p class="text-danger">{{ _t('Error') }}: {{ error }}</p>
             </div>
-            <div :class="['payment-input-block', {paymentInputActive: payNowCalcHendler}]">
+            <div class="payment-input-block">
               <input
                 type="text"
                 name="payment"

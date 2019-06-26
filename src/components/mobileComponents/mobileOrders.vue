@@ -1,12 +1,16 @@
 <template>
-    <div class="mibile-orders">
-        123
-    </div>
+    <cart/>
 </template>
 
 <script>
+    import {mapState, mapGetters} from 'vuex'
+    import cart from '../pos/content/Cart.vue'
+
     export default {
-        name: "mobileOrders"
+        name: "mobileOrders",
+        components: {
+            cart
+        }
     }
 </script>
 

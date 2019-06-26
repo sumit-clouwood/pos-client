@@ -2,7 +2,7 @@
     <div :class="['main-orders', {active: mainOrdersHendler}]">
         <div class="main-orders-title">
             <div class="text">Current Sale Detail</div>
-            <div class="button" @click="cartClose"><i class="fa fa-angle-up" aria-hidden="true"></i></div>
+            <div class="button" @click="cartClose"><i class="fa fa-angle-right" aria-hidden="true"></i></div>
         </div>
         <Header/>
         <div class="main-orders-list-wrapper">
@@ -60,21 +60,21 @@
     @include responsive(mobile) {
         .main-orders {
             position: fixed;
-            top: -100%;
-            right: 0;
+            top: 0;
+            right: -100vw;
             bottom: 0;
-            left: 0px;
+            width: 100vw;
             padding: 20px;
             height: 100%;
             background-color: #fff;
             padding: 0;
             grid-template-rows: max-content max-content 1fr;
             overflow: hidden;
-            transition: 0.7s ease-out;
+            transition: 0.5s ease-out;
             border-bottom: 1px solid $gray-middle;
             grid-column-start: 1;
             grid-column-end: 2;
-            z-index: 1050;
+            z-index: 50;
 
             .mobile-footer {
                 padding-top: 0;
@@ -89,7 +89,7 @@
             }
 
             &.active {
-                top: 0px;
+                right: 0px;
             }
 
             .main-orders-title {
@@ -206,8 +206,8 @@
                 }
             }
 
-            .mobile-footer{
-                .btn-next{
+            .mobile-footer {
+                .btn-next {
                     display: none;
                 }
             }

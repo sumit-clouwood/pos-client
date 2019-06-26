@@ -1,7 +1,6 @@
 <template>
     <div class="search-field">
         <div class="search-field-icon" @click="searchHendlerChange()">
-            <!--<img class="search-field-img" src="images/search-icon.png" alt="search">-->
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd"
                       d="M11 4C7.13401 4 4 7.13401 4 11C4 14.866 7.13401 18 11 18C14.866 18 18 14.866 18 11C18 7.13401 14.866 4 11 4ZM2 11C2 6.02944 6.02944 2 11 2C15.9706 2 20 6.02944 20 11C20 15.9706 15.9706 20 11 20C6.02944 20 2 15.9706 2 11Z"
@@ -12,22 +11,22 @@
             </svg>
 
         </div>
-        <input
-                type="text"
-                :class="['search-field-input', {active: searchHendler}]"
-                :placeholder="_t('Start typing to get search results')"
-                v-model="searchItems"
-                @keyup="collectSearchItems(searchItems)"
-        >
-        <div :class="['allCategory', 'hideBigScreen', {notActive: searchHendler}, {active: allCategoryHendler}]"
-             @click="allCategoryHendlerChange">
-            All category
-            <i :class="['fa', 'fa-angle-down', {active: allCategoryHendler}]" aria-hidden="true"></i>
-        </div>
-        <div :class="['subCategory', 'hideBigScreen', {notActive: searchHendler}, {active: subCategoryHendler}]"
-             @click="subCategoryHendlerChange">
-            Sub category
-            <i :class="['fa', 'fa-angle-down', {active: subCategoryHendler}]" aria-hidden="true"></i>
+        <div :class="['input-wrapper',{active: searchHendler}]">
+            <input type="text"
+                   class="search-field-input"
+                   :placeholder="_t('Start typing to get search results')"
+                   v-model="searchItems"
+                   @keyup="collectSearchItems(searchItems)">
+            <div :class="['allCategory', 'hideBigScreen', {notActive: searchHendler}, {active: allCategoryHendler}]"
+                 @click="allCategoryHendlerChange">
+                All category
+                <i :class="['fa', 'fa-angle-down', {active: allCategoryHendler}]" aria-hidden="true"></i>
+            </div>
+            <div :class="['subCategory', 'hideBigScreen', {notActive: searchHendler}, {active: subCategoryHendler}]"
+                 @click="subCategoryHendlerChange">
+                Sub category
+                <i :class="['fa', 'fa-angle-down', {active: subCategoryHendler}]" aria-hidden="true"></i>
+            </div>
         </div>
     </div>
 </template>
@@ -81,73 +80,90 @@
                 height: 100%;
             }
 
-            .allCategory {
-                border-right: 1px solid $gray-middle;
-                text-align: center;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-weight: 600;
-                transition: 0.3s ease-out;
-
-                &.notActive {
-                    display: none;
-                }
-
-                &.active {
-                    color: $green-middle;
-                }
-
-                .fa {
-                    margin-left: $px10;
-                    font-weight: 600;
-                    font-size: $px18;
-                    transition: 0.3s ease-out;
-
-                    &.active {
-                        transform: rotate(180deg);
-                    }
-                }
-            }
-
-            .subCategory {
-                text-align: center;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-weight: 600;
-                transition: 0.3s ease-out;
-
-                &.notActive {
-                    display: none;
-                }
-
-                &.active {
-                    color: $green-middle;
-                }
-
-                .fa {
-                    margin-left: $px10;
-                    font-weight: 600;
-                    font-size: $px18;
-                    transition: 0.3s ease-out;
-
-                    &.active {
-                        transform: rotate(180deg);
-                    }
-                }
-            }
-
-            .search-field-input {
+            .input-wrapper {
                 display: none;
-                height: auto;
                 grid-column-start: 2;
                 grid-column-end: 4;
+                position: relative;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
 
                 &.active {
-                    display: block;
+                    display: grid;
+                    .search-field-input{
+                        right: 1px;
+                    }
+                }
+
+                .search-field-input {
+                    position: absolute;
+                    top: 0;
+                    right: -100%;
+                    bottom: 0;
+                    height: 100%;
+                    width: 100%;
+                    border-left: 1px solid $gray-middle;
+                    transition: 1s ease-out;
+                }
+
+                .allCategory {
+                    border-right: 1px solid $gray-middle;
+                    text-align: center;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 600;
+                    transition: 0.3s ease-out;
+
+                    &.notActive {
+                        /*display: none;*/
+                    }
+
+                    &.active {
+                        color: $green-middle;
+                    }
+
+                    .fa {
+                        margin-left: $px10;
+                        font-weight: 600;
+                        font-size: $px18;
+                        transition: 0.3s ease-out;
+
+                        &.active {
+                            transform: rotate(180deg);
+                        }
+                    }
+                }
+
+                .subCategory {
+                    text-align: center;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 600;
+                    transition: 0.3s ease-out;
+
+                    &.notActive {
+                        /*display: none;*/
+                    }
+
+                    &.active {
+                        color: $green-middle;
+                    }
+
+                    .fa {
+                        margin-left: $px10;
+                        font-weight: 600;
+                        font-size: $px18;
+                        transition: 0.3s ease-out;
+
+                        &.active {
+                            transform: rotate(180deg);
+                        }
+                    }
                 }
             }
+
         }
     }
 

@@ -137,5 +137,10 @@
             position: relative;
             background-color: #fafafa;
         }
+        .mobile-footer{
+            .btn-next{
+                display: none;
+            }
+        }
     }
 </style>

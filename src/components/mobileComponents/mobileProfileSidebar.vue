@@ -1,5 +1,6 @@
 <template>
-    <div :class="['profile-sidebar-overlay', (profileHendler ? 'active' : 'notActive')]" @click.self="profileHendlerGhange">
+    <div :class="['profile-sidebar-overlay', (profileHendler ? 'active' : 'notActive')]"
+         @click.self="profileHendlerGhange">
         <div class="profile-sidebar">
             <div class="profile-sidebar-header">
                 <avatar/>
@@ -85,6 +86,10 @@
     }
 </script>
 <style lang="scss">
+    @import '../../assets/scss/pixels_rem.scss';
+    @import '../../assets/scss/variables.scss';
+    @import '../../assets/scss/mixins.scss';
+
     .profile-sidebar-overlay {
         z-index: 10;
         width: 100%;
@@ -98,6 +103,7 @@
 
         &.active {
             display: block;
+
             .profile-sidebar {
                 transition: 0.7s ease-out;
                 right: 0;
@@ -108,6 +114,7 @@
             display: block;
             background-color: rgba(0, 0, 0, 0);
             pointer-events: none;
+
             .profile-sidebar {
                 transition: 0.7s ease-out;
                 right: -85%;
