@@ -7,7 +7,7 @@
         </th>
         <th class="text-uppercase" style="width: 100px">{{ _t('Qty') }}</th>
         <th class="text-uppercase" style="width: 150px">{{ _t('Price') }}</th>
-        <th class="text-uppercase" style="width: 100px">{{ _t('Tax') }}</th>
+        <!--<th class="text-uppercase" style="width: 100px">{{ _t('Tax') }}</th>-->
         <th class="text-uppercase" style="width: 150px">
           {{ _t('Sub Total') }}
         </th>
@@ -16,7 +16,7 @@
         <td>{{ item.name }}</td>
         <td>{{ item.quantity }}</td>
         <td>{{ formatPrice(item.netPrice || 0) }}</td>
-        <td>{{ formatPrice(taxAmount(item.tax_sum) || 0) }}</td>
+        <!--<td>{{ formatPrice(taxAmount(item.tax_sum) || 0) }}</td>-->
         <td>{{ formatPrice(subtotal(item.quantity, item.netPrice) || 0) }}</td>
       </tr>
     </table>

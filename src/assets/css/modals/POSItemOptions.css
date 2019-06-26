@@ -37,6 +37,11 @@
             text-align: left; }
         .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity {
           width: 64%; }
+          .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_label {
+            color: #3D3F43;
+            font-size: 0.875rem;
+            font-weight: normal;
+            letter-spacing: 0.5px; }
           .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_quantity_wrapper {
             display: flex;
             flex-flow: row wrap;

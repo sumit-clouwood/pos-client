@@ -12,9 +12,7 @@
       <div class="modal-content">
         <Header />
         <Content />
-        <div class="modal-body">
-          <div class="text-danger" v-show="error">{{ error }}</div>
-        </div>
+        <div class="text-danger pl-30" v-show="error">{{ error }}</div>
         <Footer />
       </div>
     </div>

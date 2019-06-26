@@ -195,10 +195,8 @@ const actions = {
         if (parseFloat(state.loyaltyAmount) <= 0.01) {
           commit('SET_ERROR', 'You dont have loyalty amount.')
         } else {
-          commit(
-            'SET_ERROR',
-            'You can add only ' + state.loyaltyAmount + ' loyalty amount.'
-          )
+          let amount = isNaN(state.loyaltyAmount) ? 0 : state.loyaltyAmount
+          commit('SET_ERROR', 'You can add only ' + amount + ' loyalty amount.')
         }
         reject()
       } else {

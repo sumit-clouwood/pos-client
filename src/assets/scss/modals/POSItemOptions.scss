@@ -55,6 +55,13 @@
           .POSItemOptions_quantity {
             width: 64%;
 
+            .POSItemOptions_label {
+              color: #3D3F43;
+              font-size: $px14;
+              font-weight: normal;
+              letter-spacing: 0.5px;
+            }
+
             .POSItemOptions_quantity_wrapper {
               display: flex;
               flex-flow: row wrap;
