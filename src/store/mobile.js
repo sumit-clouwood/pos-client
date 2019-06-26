@@ -11,7 +11,12 @@ export default {
         footerMenuHendler: true,
         profileHendler: false,
         paymentMethodsHendler: false,
-        openManageCustomerHendler: false
+        openManageCustomerHendler: false,
+        itemFood: {
+            name: '...',
+            curent: 0
+        },
+        payMethod: 'Gift Card'
     },
     mutations: {
         SEARCH_HENDLER_CHANGE: (state) => {
@@ -62,6 +67,19 @@ export default {
         },
         OPEN_MANAGE_CUSTOMER: (state) => {
             state.openManageCustomerHendler = !state.openManageCustomerHendler
+        },
+        ADD_ITEM_FOOD: (state, payLoad) => {
+            if(state.itemFood.name == '...' || state.itemFood.name == payLoad.name){
+                state.itemFood.curent = state.itemFood.curent + 1
+            }
+            else{
+                state.itemFood.curent = 1
+            }
+            state.itemFood.name = payLoad.name
+            console.log(payLoad)
+        },
+        SET_PAY_METHOD: (state, payLoad) => {
+            state.payMethod = payLoad
         }
      },
     actions: {
@@ -103,6 +121,12 @@ export default {
         },
         openManageCustomer({commit}){
             commit('OPEN_MANAGE_CUSTOMER')
+        },
+        addItemFood({commit}, payLoad){
+            commit('ADD_ITEM_FOOD', payLoad)
+        },
+        setPayMethod({commit}, payLoad){
+            commit('SET_PAY_METHOD', payLoad)
         }
     },
     getters: {
@@ -118,6 +142,8 @@ export default {
         profileHendler: state => state.profileHendler,
         paymentMethodsHendler: state => state.paymentMethodsHendler,
         openManageCustomerHendler: state => state.openManageCustomerHendler,
+        itemFood: state => state.itemFood,
+        payMethod: state => state.payMethod,
 
     },
 };

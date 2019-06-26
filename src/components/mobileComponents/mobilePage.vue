@@ -4,8 +4,8 @@
             <div class="current-sale">
                 <div class="title">Current Sale</div>
                 <div class="items">
-                    <div class="items-text">Items</div>
-                    <div class="items-num">x3</div>
+                    <div class="items-text">{{itemFood.name}}</div>
+                    <div class="items-num" v-if="itemFood.curent != 0">x{{itemFood.curent}}</div>
                 </div>
             </div>
             <div class="btn-menu" @click="profileHendlerGhange">
@@ -54,7 +54,7 @@
         },
         computed: {
             ...mapGetters('category', ['subcategories', 'items']),
-            ...mapGetters(['footerButtonHendler', 'footerMenuHendler']),
+            ...mapGetters(['footerButtonHendler', 'footerMenuHendler', 'itemFood']),
         },
         methods: {
             profileHendlerGhange() {
@@ -95,6 +95,7 @@
                 .items {
                     display: grid;
                     grid-template-columns: max-content max-content;
+                    align-items: center;
 
                     .items-text {
                         margin-right: 10px;

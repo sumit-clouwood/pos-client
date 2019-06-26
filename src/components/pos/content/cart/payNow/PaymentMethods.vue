@@ -4,7 +4,7 @@
       v-for="(method, key) in methods"
       :key="key"
       :class="{ active: activeMethod == method.name }"
-      @click="setMethod(method)"
+      @click="[setMethod(method), setPayMethod(method.name)]"
       :data-toggle="getToggle(method)"
       :data-target="getTarget(method)"
     >
@@ -55,6 +55,9 @@ export default {
       return ''
     },
     ...mapActions('checkoutForm', ['setMethod']),
+    setPayMethod(e){
+      this.$store.dispatch('setPayMethod', e)
+    }
   },
 }
 </script>

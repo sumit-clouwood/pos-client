@@ -35,7 +35,7 @@
 
     export default {
         computed: {
-            ...mapGetters(['footerMenuHendler']),
+            ...mapGetters(['footerMenuHendler', 'payMethod']),
             ...mapState("order", ["orderType"]),
             ...mapState({
                 selectedModal: state =>
@@ -53,9 +53,17 @@
                 this.$store.dispatch('footerMenuHendlerGhange')
             },
             payNowCalcHendlerGange() {
-                this.$store.dispatch('payNowCalcHendlerGange')
+                if (this.payMethod == 'Gift Card') {
+                    this.$store.dispatch('payNowCalcHendlerGange')
+                } else if (this.payMethod == 'Payment Type Payment Type Name 202') {
+                    console.log('Payment Type Payment Type Name 202')
+                } else if (this.payMethod == 'Payment Type Payment Type Name 203') {
+                    console.log('Payment Type Payment Type Name 203')
+                }else if (this.payMethod == 'Payment Type Payment Type Name 204') {
+                    console.log('Payment Type Payment Type Name 204')
+                }
             },
-            paymentMethodsHendlerGhange(){
+            paymentMethodsHendlerGhange() {
                 this.$store.dispatch('paymentMethodsHendlerGhange')
             }
         }
@@ -148,7 +156,8 @@
 
                 }
             }
-            .btn-next{
+
+            .btn-next {
                 width: 100%;
                 height: 50px;
                 color: #fff;

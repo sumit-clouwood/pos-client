@@ -1,18 +1,15 @@
 <template>
     <div :class="['food-menu', (foodMenuHendler ? 'active' : 'notActive')]">
         <div class="food-menu-wrapper">
-            <div
-                    class="food-menu-item"
-                    v-for="item in items"
-                    :key="item._id"
-                    @click.prevent="addToOrder(item)"
-            >
-                <img
-                        class="food-menu-item-img"
-                        :src="item.image"
-                        :alt="dt(item)"
-                        @error="imageLoadError()"
-                />
+            <div class="food-menu-item"
+                 v-for="item in items"
+                 :key="item._id"
+                 :value="dt(item)"
+                 @click.prevent="addToOrder(item)">
+                <img class="food-menu-item-img"
+                     :src="item.image"
+                     :alt="dt(item)"
+                     @error="imageLoadError()"/>
                 <div class="food-menu-item-text">{{ dt(item) }}</div>
                 <div class="food-menu-item-price">AED 12.81</div>
             </div>
@@ -52,6 +49,7 @@
                 } else {
                     this.$store.dispatch('order/addToOrder', item)
                 }
+                this.$store.dispatch('addItemFood', item)
             },
             IsImageOk(img) {
                 // During the onload event, IE correctly identifies any images that
@@ -156,6 +154,10 @@
                 border-bottom: 1px solid $gray-middle;
                 padding-right: 20px;
                 background-color: #fafafa;
+                transition: 0.1s ease-out;
+                &:active{
+                    background-color: #eee;
+                }
 
                 img {
                     width: 60px;

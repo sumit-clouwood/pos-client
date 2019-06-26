@@ -70,6 +70,13 @@
                         align-items: center;
                         grid-gap: 20px;
                         border: 1px solid $gray-middle;
+                        transition: 0.3s ease-out;
+                        &.active{
+                            border: 1px solid $green-middle;
+                        }
+                        &:active{
+                            background-color: #eee;
+                        }
 
                         br {
                             display: none;
