@@ -57,9 +57,10 @@
             height: 2.1875rem;
             margin: 0 auto 0.3125rem auto; }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav .nav-link-text {
-            font-size: 0.875rem;
+            font-size: 1.125rem;
             text-align: center;
-            display: block; }
+            display: block;
+            word-break: break-all; }
   .navigation .slider-btn {
     color: #fff;
     margin: 0 auto;
