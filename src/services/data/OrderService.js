@@ -48,4 +48,13 @@ export default {
 
     return DataService.post(`/model/orders/id/${id}/delete${type}`)
   },
+
+  modifyOrder(order, id, type) {
+    if (type) {
+      type += '_'
+    } else {
+      type = ''
+    }
+    return DataService.post(`/model/orders/id/${id}/modify_${type}order`, order)
+  },
 }
