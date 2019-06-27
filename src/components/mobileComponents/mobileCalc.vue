@@ -1,6 +1,6 @@
 <template>
     <div :class="['mobile-calc', {active: payNowCalcHendler}]">
-        <mobilePayHeader/>
+        <mobile-pay-header :param="{title: 'Order Payment', subtitle: 'Order ID #0213232', method: 'calcHendler'}"/>
         <div class="calc-body">
             <total-amount/>
             <div class="imput-block">

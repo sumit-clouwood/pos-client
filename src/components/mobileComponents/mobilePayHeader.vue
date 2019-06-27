@@ -1,7 +1,7 @@
 <template>
     <div class="pay-header">
-        <div class="pay-header-title">Order Payment</div>
-        <div class="pay-header-subtitle">Order ID #0213232</div>
+        <div class="pay-header-title">{{param.title}}</div>
+        <div class="pay-header-subtitle">{{param.subtitle}}</div>
         <div class="pay-header-buttons">
             <div class="button-cancel" @click="paymentMethodsHendlerGhange">
                 <div>Cansel</div>
@@ -18,9 +18,16 @@
 <script>
     export default {
         name: "mobilePayHeader",
+        props: ['param'],
         methods: {
             paymentMethodsHendlerGhange() {
-                this.$store.dispatch('paymentMethodsHendlerGhange')
+                if (this.param.method == 'closePayMethods') {
+                    this.$store.dispatch('paymentMethodsHendlerGhange')
+                } else if (this.param.method == 'calcHendler') {
+                    this.$store.dispatch('payNowCalcHendlerGhange')
+                }else if (this.param.method == 'payCartHendler') {
+                    this.$store.dispatch('payNowCalcHendlerGhange')
+                }
             }
         }
     }

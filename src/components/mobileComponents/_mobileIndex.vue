@@ -9,18 +9,20 @@
         <mobile-manage-customer/>
         <payment-successfull/>
         <cashier/>
+        <pay-methods/>
     </div>
 </template>
 <script>
     import mobileNotification from './mobileNotification.vue'
     import profileSidebar from './mobileProfileSidebar.vue'
-    import mobilePaymentMethods from './mobilePaymentMethods.vue'
+    import mobilePaymentMethods from './choosePayMethods.vue'
     import mobilePage from './mobilePage.vue'
     import mobileOrders from './mobileOrders.vue'
     import mobileCalc from './mobileCalc.vue'
     import mobileManageCustomer from './mobileManageCustomer.vue'
     import paymentSuccessfull from './paymentSuccessfull.vue'
     import cashier from './cashier.vue'
+    import payMethods from './payMethods.vue'
 
     export default {
         components: {
@@ -32,7 +34,8 @@
             mobileCalc,
             mobileManageCustomer,
             paymentSuccessfull,
-            cashier
+            cashier,
+            payMethods
         }
     }
 </script>

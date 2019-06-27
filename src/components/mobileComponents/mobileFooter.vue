@@ -27,7 +27,7 @@
                 <div class="btn-chatge-title">CHARGE</div>
             </div>
         </div>
-        <div class="btn-next" @click="payNowCalcHendlerGange">Next</div>
+        <div class="btn-next" @click="payNowCalcHendlerGhange">Next</div>
     </div>
 </template>
 <script>
@@ -52,9 +52,9 @@
             footerMenuHendlerGhange() {
                 this.$store.dispatch('footerMenuHendlerGhange')
             },
-            payNowCalcHendlerGange() {
+            payNowCalcHendlerGhange() {
                 if (this.payMethod == 'Gift Card') {
-                    this.$store.dispatch('payNowCalcHendlerGange')
+                    this.$store.dispatch('payNowCalcHendlerGhange')
                 } else if (this.payMethod == 'Payment Type Payment Type Name 202') {
                     console.log('Payment Type Payment Type Name 202')
                 } else if (this.payMethod == 'Payment Type Payment Type Name 203') {

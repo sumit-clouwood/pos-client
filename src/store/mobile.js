@@ -3,7 +3,7 @@ export default {
         searchHendler: false,
         allCategoryHendler: false,
         subCategoryHendler: false,
-        foodMenuHendler: false,
+        foodMenuHendler: true,
         mainOrdersHendler: false,
         totalWrapperHendler: false,
         footerButtonHendler: false,
@@ -16,7 +16,8 @@ export default {
             name: '...',
             curent: 0
         },
-        payMethod: 'Gift Card'
+        payMethod: 'Gift Card',
+        payMethodHendler: ''
     },
     mutations: {
         SEARCH_HENDLER_CHANGE: (state) => {
@@ -76,10 +77,9 @@ export default {
                 state.itemFood.curent = 1
             }
             state.itemFood.name = payLoad.name
-            console.log(payLoad)
         },
-        SET_PAY_METHOD: (state, payLoad) => {
-            state.payMethod = payLoad
+        PAY_METHOD_HENDLER_CHANGE: (state, payLoad) => {
+            state.payMethodHendler = payLoad
         }
      },
     actions: {
@@ -107,7 +107,7 @@ export default {
         footerButtonHendlerGhange({commit}){
             commit('FOOTER_BUTTON_HENDLER_GHANGE')
         },
-        payNowCalcHendlerGange({commit}) {
+        payNowCalcHendlerGhange({commit}) {
             commit('PAY_NOW_CALC_HANDLER_GHANGE')
         },
         footerMenuHendlerGhange({commit}){
@@ -125,8 +125,8 @@ export default {
         addItemFood({commit}, payLoad){
             commit('ADD_ITEM_FOOD', payLoad)
         },
-        setPayMethod({commit}, payLoad){
-            commit('SET_PAY_METHOD', payLoad)
+        payMethodHendlerGhange({commit}, payLoad){
+            commit('PAY_METHOD_HENDLER_CHANGE', payLoad)
         }
     },
     getters: {
@@ -144,6 +144,7 @@ export default {
         openManageCustomerHendler: state => state.openManageCustomerHendler,
         itemFood: state => state.itemFood,
         payMethod: state => state.payMethod,
+        payMethodHendler: state => state.payMethodHendler,
 
     },
 };

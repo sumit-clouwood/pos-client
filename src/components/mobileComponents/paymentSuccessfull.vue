@@ -1,7 +1,7 @@
 <template>
     <div class="payment-successfull">
         <div class="header">
-            <mobile-pay-header/>
+            <mobile-pay-header :param="{title: 'Order Payment', subtitle: 'Order ID #0213232'}"/>
         </div>
         <div class="body">
             <total-amount/>
@@ -34,6 +34,7 @@
         position: fixed;
         top: 0;
         right: -100vw;
+        /*right: 0;*/
         bottom: 0;
         width: 100vw;
         z-index: 50;

@@ -99,6 +99,9 @@
 
                     .items-text {
                         margin-right: 10px;
+                        height: 25px;
+                        display: flex;
+                        align-items: center;
                     }
 
                     .items-num {

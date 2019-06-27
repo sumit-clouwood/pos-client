@@ -60,7 +60,7 @@
               </button>
             </div>
           </div>
-          <div class="pay-now-btn-next" @click="payNowCalcHendlerGange">Next</div>
+          <div class="pay-now-btn-next" @click="payNowCalcHendlerGhange">Next</div>
         </div>
       </div>
     </div>
@@ -109,8 +109,8 @@ export default {
     showCalculator() {
       this.$store.commit('checkoutForm/showCalc', true)
     },
-    payNowCalcHendlerGange(){
-      this.$store.dispatch('payNowCalcHendlerGange')
+    payNowCalcHendlerGhange(){
+      this.$store.dispatch('payNowCalcHendlerGhange')
     }
   },
 }

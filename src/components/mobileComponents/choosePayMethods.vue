@@ -1,6 +1,6 @@
 <template>
     <div :class="['mobile-payment-methods', {active: paymentMethodsHendler}]">
-        <mobilePayHeader/>
+        <mobile-pay-header :param="{title: 'Order Payment', subtitle: 'Order ID #0213232', method: 'closePayMethods'}"/>
         <div class="pay-body">
             <total-amount/>
             <payment-methods/>
@@ -62,6 +62,7 @@
                     margin: 20px 0 0 0;
                     overflow: auto;
                     display: grid;
+                    grid-template-rows: repeat(20, 65px);
                     grid-gap: 15px;
 
                     > div {
@@ -71,10 +72,12 @@
                         grid-gap: 20px;
                         border: 1px solid $gray-middle;
                         transition: 0.3s ease-out;
-                        &.active{
+
+                        &.active {
                             border: 1px solid $green-middle;
                         }
-                        &:active{
+
+                        &:active {
                             background-color: #eee;
                         }
 
@@ -86,6 +89,11 @@
                             width: auto;
                             text-align: left;
                             margin: 0;
+                        }
+
+                        img {
+                            width: 63px;
+                            height: 63px;
                         }
                     }
                 }

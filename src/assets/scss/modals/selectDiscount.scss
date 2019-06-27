@@ -139,7 +139,39 @@ a:hover {
 
         .modal-body {
           overflow: auto;
-          padding: 10px 20px;
+          padding: 20px;
+          margin-left: 0;
+          margin-right: 0;
+
+          .select-discount-option {
+            .option-contain {
+
+              &.active {
+                border: 2px solid $green-middle;
+
+                &:after {
+                  content: "✔";
+                  color: #fff;
+                  position: absolute;
+                  height: 1.5625rem;
+                  width: 1.5625rem;
+                  top: -1px;
+                  right: -1px;
+                  border-bottom: 1px solid #ddd;
+                  border-left: 1px solid #ddd;
+                  background-repeat: no-repeat;
+                  border-radius: 3px;
+                  border-top-right-radius: 0;
+                  background-color: $green-middle;
+                  background-position: center center;
+                  border-color: #dfffcd !important;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                }
+              }
+            }
+          }
         }
 
         .modal-footer {

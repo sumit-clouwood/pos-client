@@ -154,10 +154,131 @@
 
 // media queries
 @include responsive(mobile) {
+  #customer {
+    .modal-dialog {
+      max-width: none;
+      min-height: auto;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      margin: 0;
+
+      .modal-content {
+        .modal-header {
+
+          .customer-title {
+
+          }
+        }
+
+        .modal-body {
+          margin: 0;
+          padding: 20px;
+          background-color: #fff;
+
+          select {
+
+
+            &.selectpicker {
+
+            }
+          }
+
+          .dob {
+            > select:nth-child(2) {
+
+            }
+
+            > select:nth-child(3) {
+
+            }
+
+            > select:nth-child(4) {
+            }
+          }
+
+          .left-form {
+            padding: 0;
+
+            > div {
+              margin-bottom: 10px;
+
+              > input {
+                width: 100%;
+              }
+
+              > select {
+                width: 100%;
+              }
+
+              > label {
+
+              }
+
+              label {
+                padding: 0;
+
+                > span {
+
+                }
+              }
+            }
+
+          }
+
+          .right-form {
+            padding: 0;
+
+            > div {
+              margin-bottom: 10px;
+
+              > input {
+                width: 100%;
+              }
+
+              > select {
+                width: 100%;
+              }
+
+              > label {
+                padding: 0;
+              }
+            }
+
+            .customer-group {
+              .right-shift {
+                padding: 0;
+
+                .vdatetime {
+                  width: 100%;
+
+                  input {
+                    margin: 0;
+                    width: 100%;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        .modal-footer {
+          background-color: #fff;
+          padding: 20px;
+        }
+      }
+    }
+  }
+}
+
+//
+@include responsive(mobile) {
   #search-loyalty-customer {
     .modal-dialog {
       position: absolute;
-      top: 70px;
+      top: 50%;
       right: 0;
       bottom: 0;
       left: 0;
@@ -172,7 +293,12 @@
         }
 
         .modal-body {
-          padding: 10px 20px;
+          padding: 20px;
+          .add-note-area{
+            input{
+              width: 100%;
+            }
+          }
 
           .inputSearch {
             margin-bottom: 10px;
@@ -185,7 +311,7 @@
         }
 
         .modal-footer {
-          padding: 10px 20px 20px;
+          padding: 0px 20px 20px;
         }
       }
     }

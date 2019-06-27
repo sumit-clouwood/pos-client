@@ -144,13 +144,20 @@
                 </div>
             </div>
             <div class="manage-customer-footer">
-                <div class="btn-add-customer">Add Customer</div>
+                <div class="btn-add-customer"
+                     id="cust-new"
+                     @click="setDefaultSettingsGlobalAddUpdate({alternative_phone: '', gender: 'male',})"
+                     data-toggle="modal"
+                     data-target="#customer"
+                     data-dismiss="modal">{{ _t('Create New Customer') }}
+                </div>
             </div>
         </div>
     </div>
 </template>
 <script>
-    import {mapState, mapGetters} from 'vuex'
+    import {mapState, mapActions, mapGetters} from 'vuex'
+
     export default {
         data() {
             return {
@@ -192,12 +199,14 @@
             };
         },
         computed: {
-          ...mapGetters(['openManageCustomerHendler']),
+            ...mapGetters(['openManageCustomerHendler']),
+            ...mapGetters('location', ['_t']),
         },
         methods: {
             openManageCustomer() {
                 this.$store.dispatch("openManageCustomer")
-            }
+            },
+            ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
         }
     };
 </script>
@@ -211,9 +220,11 @@
         background-color: #fff;
         transition: .5s ease-out;
         z-index: 50;
-        &.active{
+
+        &.active {
             right: 0;
         }
+
         .manage-customer {
             height: 100%;
             display: grid;

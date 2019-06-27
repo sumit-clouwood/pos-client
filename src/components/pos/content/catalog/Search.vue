@@ -103,7 +103,9 @@
                     height: 100%;
                     width: 100%;
                     border-left: 1px solid $gray-middle;
-                    transition: 1s ease-out;
+                    transition: 0.3s ease-out;
+                    font-family: 'ProximaNova-Regular';
+                    font-size: 14px;
                 }
 
                 .allCategory {
