@@ -45,6 +45,7 @@ export default {
     ...mapState({
       currentItem: state => state.order.item._id,
     }),
+    ...mapState('order', ['orderType']),
     ...mapGetters('category', ['subcategoryImage']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters('order', ['items', 'itemPrice', 'orderModifiers']),
@@ -74,6 +75,16 @@ export default {
   },
   components: {
     Modifiers,
+  },
+  watch: {
+    orderType(newVal, previousVal) {
+      if (newVal.OTApi !== previousVal.OTApi)
+        if (this.$store.state.discount.appliedOrderDiscount) {
+          this.$store.dispatch('discount/clearOrderDiscount')
+        } else {
+          this.$store.dispatch('discount/removeItemDiscount')
+        }
+    },
   },
 }
 </script>

@@ -47,30 +47,32 @@ const actions = {
         if (allSurcharges.length > 0) {
           //Loop all valid surcharges to calculate individual.
           allSurcharges.forEach(surcharge => {
-            //Assign variables if Surcharge type is value.
-            let applidSurcharge = {
-              id: surcharge._id,
-              amount: surcharge.value,
-              tax: Num.round(getters.tax(surcharge)),
-              undiscountedTax: Num.round(getters.tax(surcharge)),
-            }
-            //Assign variables if Surcharge type is percentage.
-            if (surcharge.type === CONST.PERCENTAGE) {
-              applidSurcharge.amount = Num.round(
-                (subtotal * surcharge.rate) / 100
-              )
-              applidSurcharge.tax = Num.round(
-                (applidSurcharge.amount * surcharge.tax_sum) / 100
-              )
+            if (surcharge[rootState.order.orderType.OTApi]) {
+              //Assign variables if Surcharge type is value.
+              let applidSurcharge = {
+                id: surcharge._id,
+                amount: surcharge.value,
+                tax: Num.round(getters.tax(surcharge)),
+                undiscountedTax: Num.round(getters.tax(surcharge)),
+              }
+              //Assign variables if Surcharge type is percentage.
+              if (surcharge.type === CONST.PERCENTAGE) {
+                applidSurcharge.amount = Num.round(
+                  (subtotal * surcharge.rate) / 100
+                )
+                applidSurcharge.tax = Num.round(
+                  (applidSurcharge.amount * surcharge.tax_sum) / 100
+                )
 
-              applidSurcharge.undiscountedAmount = Num.round(
-                (undiscountedSubtotal * surcharge.rate) / 100
-              )
-              applidSurcharge.undiscountedTax = Num.round(
-                (applidSurcharge.undiscountedAmount * surcharge.tax_sum) / 100
-              )
+                applidSurcharge.undiscountedAmount = Num.round(
+                  (undiscountedSubtotal * surcharge.rate) / 100
+                )
+                applidSurcharge.undiscountedTax = Num.round(
+                  (applidSurcharge.undiscountedAmount * surcharge.tax_sum) / 100
+                )
+              }
+              totalSurcharges.push(applidSurcharge)
             }
-            totalSurcharges.push(applidSurcharge)
           })
         }
       }

@@ -74,7 +74,7 @@
   <!-- End pay now screen  -->
 </template>
 <script>
-/* global $  */
+/* global $  hidePayNow */
 import PayNowFooter from './payNow/Footer'
 import TotalAmount from './payNow/TotalAmount'
 import PaymentMethods from './payNow/PaymentMethods'
@@ -91,8 +91,13 @@ export default {
     AmountCalculator,
   },
   watch: {
-    payable(newVal) {
+    payable(newVal, previousVal) {
       this.payableAmount = parseFloat(newVal).toFixed(2)
+      if (!newVal && previousVal > newVal) {
+        $('.modal-backdrop').remove()
+        $('#order-confirmation').hide()
+        hidePayNow()
+      }
     },
   },
   computed: {
