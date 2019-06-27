@@ -527,6 +527,7 @@ const actions = {
                   root: true,
                 }
               )
+              dispatch('reset')
             } else {
               var err_msg = ''
               if (
