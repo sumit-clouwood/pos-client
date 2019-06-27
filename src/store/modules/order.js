@@ -241,7 +241,7 @@ const actions = {
             root: true,
           })
         } else {
-          commit('orderForm/setError', 'Please select mandatory modifiers', {
+          commit('orderForm/setError', 'Please select at least one item', {
             root: true,
           })
           reject()
