@@ -287,9 +287,11 @@
             }
 
             .food-menu-item-text {
+              word-break:break-all;
               text-align: center;
               font-weight: 600;
               user-select: none;
+              text-transform: capitalize;
             }
           }
         }

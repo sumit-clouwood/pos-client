@@ -36,8 +36,9 @@ const actions = {
           if (
             q.availability.incl.countries.includes(
               rootState.location.store.country
-            ) &&
-            q[rootState.order.orderType.OTApi] === true
+            ) ||
+            (q.availability.incl.stores.includes(rootState.context.storeId) &&
+              q[rootState.order.orderType.OTApi] === true)
           ) {
             return q
           }

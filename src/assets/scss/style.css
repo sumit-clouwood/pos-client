@@ -3020,9 +3020,10 @@ body {
             height: 2.1875rem;
             margin: 0 auto 0.3125rem auto; }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav .nav-link-text {
-            font-size: 0.875rem;
+            font-size: 1.125rem;
             text-align: center;
-            display: block; }
+            display: block;
+            word-break: break-all; }
   .navigation .slider-btn {
     color: #fff;
     margin: 0 auto;
@@ -3281,9 +3282,11 @@ body {
               margin: 0 auto;
               max-height: 5.625rem; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-text {
+              word-break: break-all;
               text-align: center;
               font-weight: 600;
-              user-select: none; }
+              user-select: none;
+              text-transform: capitalize; }
 
 .main-orders {
   padding: 1.25rem 1.875rem 0;
