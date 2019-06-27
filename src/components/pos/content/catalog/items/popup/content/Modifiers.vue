@@ -96,6 +96,13 @@
           </div>
         </label>
       </div>
+      <div
+        class="text-danger"
+        v-if="subgroup.item_type == 'mandatory'"
+        v-show="error"
+      >
+        {{ error }}
+      </div>
     </div>
   </div>
 </template>
