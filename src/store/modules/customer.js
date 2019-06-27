@@ -19,6 +19,7 @@ const state = {
     past_order_page_number: 1,
   },
   responseInformation: { status: 0, message: '' },
+  pageId: 'brand_customers_main_tbl',
   address: false,
   allOnlineAddress: false,
   offlineData: null,
@@ -94,6 +95,7 @@ const actions = {
         state.params.page_number /*page_number*/,
         'last_order_datetime',
         state.params.page_size /*page_size*/,
+        state.pageId,
       ]
       CustomerService.customerList(...params)
         .then(response => {
@@ -315,6 +317,8 @@ const mutations = {
   },
   [mutation.SET_SEARCH_TERMS](state, searchTerms) {
     state.params.query = searchTerms
+    state.pageId = 'main_crm_list'
+    state.params.page_number = 1
   },
   [mutation.SET_CUSTOMER_GROUP](state, customerGroup) {
     state.customer_group = customerGroup
