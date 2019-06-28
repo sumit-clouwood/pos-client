@@ -417,19 +417,30 @@ const actions = {
       }
     )
     return new Promise((resolve, reject) => {
+      let response = null
+      if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+        let order = { ...state.order }
+        //order.modify_reason = 'Process order'
+        order.new_real_transition_order_no = ''
+        delete order.real_created_datetime
+
+        response = OrderService.modifyOrder(
+          order,
+          rootState.order.orderId,
+          'hold'
+        )
+      } else {
+        response = OrderService.saveOrder(
+          state.order,
+          rootState.customer.offlineData
+        )
+      }
+
       console.log(state.order)
-      OrderService.saveOrder(state.order, rootState.customer.offlineData)
+      response
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
           dispatch('holdOrders/getHoldOrders')
-
-          // if (response.data.id) {
-          //   commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
-          //     root: true,
-          //   })
-          //   resolve(response.data)
-          //   return true
-          // }
 
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
