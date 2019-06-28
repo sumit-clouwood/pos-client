@@ -24,6 +24,7 @@
                                 type="button"
                                 class="btn btn-danger cancel-announce"
                                 data-dismiss="modal"
+                                @click="addNoteHendler"
                         >
                             {{ _t('Cancel') }}
                         </button>
@@ -67,6 +68,9 @@
                 $('#add-note').modal('toggle')
             },
             ...mapActions('order', ['addOrderNote']),
+            addNoteHendler() {
+                this.$store.dispatch("addNoteHendlerGhange")
+            }
         },
     }
 </script>

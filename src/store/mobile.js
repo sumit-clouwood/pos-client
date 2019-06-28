@@ -17,7 +17,12 @@ export default {
             curent: 0
         },
         payMethod: 'Gift Card',
-        payMethodHendler: ''
+        methodCardHendler: false,
+        QRMethodGhange: false,
+        loyaltyHendler: false,
+        discountHendler: false,
+        addNoteHendler: false,
+        loyaltyPaymentHendler: false
     },
     mutations: {
         SEARCH_HENDLER_CHANGE: (state) => {
@@ -78,8 +83,23 @@ export default {
             }
             state.itemFood.name = payLoad.name
         },
-        PAY_METHOD_HENDLER_CHANGE: (state, payLoad) => {
-            state.payMethodHendler = payLoad
+        METHOD_CARD_HENDLER_CHANGE: (state) => {
+            state.methodCardHendler = !state.methodCardHendler
+        },
+        QR_METHOD_GHANGE_HENDLER: (state) => {
+            state.QRMethodGhange = !state.QRMethodGhange
+        },
+        LOYALTY_HENDLER_GHANGE: (state) => {
+            state.loyaltyHendler = !state.loyaltyHendler
+        },
+        DISCOUNT_HENDLER_GHANGE: (state) => {
+            state.discountHendler = !state.discountHendler
+        },
+        ADD_NOTE_HENDLER_GHANGE: (state) => {
+            state.addNoteHendler = !state.addNoteHendler
+        },
+        LOYALTY_PAYMMENT_HENDLER_GHANGE: (state) => {
+            state.loyaltyPaymentHendler = !state.loyaltyPaymentHendler
         }
      },
     actions: {
@@ -125,8 +145,23 @@ export default {
         addItemFood({commit}, payLoad){
             commit('ADD_ITEM_FOOD', payLoad)
         },
-        payMethodHendlerGhange({commit}, payLoad){
-            commit('PAY_METHOD_HENDLER_CHANGE', payLoad)
+        methodCardHendlerGhange({commit}){
+            commit('METHOD_CARD_HENDLER_CHANGE')
+        },
+        QRMethodGhangeHendler({commit}){
+            commit('QR_METHOD_GHANGE_HENDLER')
+        },
+        loyaltyHendlerGhange({commit}){
+            commit('LOYALTY_HENDLER_GHANGE')
+        },
+        discountHendlerGhange({commit}){
+            commit('DISCOUNT_HENDLER_GHANGE')
+        },
+        addNoteHendlerGhange({commit}){
+            commit('ADD_NOTE_HENDLER_GHANGE')
+        },
+        loyaltyPaymentHendlerGhange({commit}){
+            commit('LOYALTY_PAYMMENT_HENDLER_GHANGE')
         }
     },
     getters: {
@@ -144,7 +179,12 @@ export default {
         openManageCustomerHendler: state => state.openManageCustomerHendler,
         itemFood: state => state.itemFood,
         payMethod: state => state.payMethod,
-        payMethodHendler: state => state.payMethodHendler,
+        methodCardHendler: state => state.methodCardHendler,
+        QRMethodGhange: state => state.QRMethodGhange,
+        loyaltyHendler: state => state.loyaltyHendler,
+        discountHendler: state => state.discountHendler,
+        addNoteHendler: state => state.addNoteHendler,
+        loyaltyPaymentHendler: state => state.loyaltyPaymentHendler,
 
     },
 };

@@ -121,6 +121,10 @@
             button {
               margin: 0;
               flex-grow: 1;
+              &#save-note{
+                border-color: $green-middle;
+                background-color: $green-middle;
+              }
             }
           }
         }

@@ -9,7 +9,11 @@
         <mobile-manage-customer/>
         <payment-successfull/>
         <cashier/>
-        <pay-methods/>
+        <method-card/>
+        <QRMethod/>
+        <loyalty/>
+        <selectDiscount/>
+        <add-note/>
     </div>
 </template>
 <script>
@@ -22,7 +26,11 @@
     import mobileManageCustomer from './mobileManageCustomer.vue'
     import paymentSuccessfull from './paymentSuccessfull.vue'
     import cashier from './cashier.vue'
-    import payMethods from './payMethods.vue'
+    import methodCard from './methodCard.vue'
+    import QRMethod from './QRMethod.vue'
+    import loyalty from './loyalty.vue'
+    import selectDiscount from './selectDiscount.vue'
+    import addNote from './addNote.vue'
 
     export default {
         components: {
@@ -35,7 +43,11 @@
             mobileManageCustomer,
             paymentSuccessfull,
             cashier,
-            payMethods
+            methodCard,
+            QRMethod,
+            loyalty,
+            selectDiscount,
+            addNote
         }
     }
 </script>

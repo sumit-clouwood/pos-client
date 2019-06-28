@@ -27,7 +27,12 @@
                 <div class="btn-chatge-title">CHARGE</div>
             </div>
         </div>
-        <div class="btn-next" @click="payNowCalcHendlerGhange">Next</div>
+        <div class="btn-next">Next</div>
+        <div class="btn-cansel" @click="methodCardHendlerGhange">Cansel</div>
+        <div class="qr-voucher-code">
+            <div class="title">Voucher code</div>
+            <input type="text" placeholder="Enter voucher code">
+        </div>
     </div>
 </template>
 <script>
@@ -59,12 +64,15 @@
                     console.log('Payment Type Payment Type Name 202')
                 } else if (this.payMethod == 'Payment Type Payment Type Name 203') {
                     console.log('Payment Type Payment Type Name 203')
-                }else if (this.payMethod == 'Payment Type Payment Type Name 204') {
+                } else if (this.payMethod == 'Payment Type Payment Type Name 204') {
                     console.log('Payment Type Payment Type Name 204')
                 }
             },
             paymentMethodsHendlerGhange() {
                 this.$store.dispatch('paymentMethodsHendlerGhange')
+            },
+            methodCardHendlerGhange() {
+                this.$store.dispatch('methodCardHendlerGhange')
             }
         }
     }
@@ -168,6 +176,33 @@
                 letter-spacing: 1px;
                 border-radius: $btn-border-radius;
                 padding: 0 25px;
+            }
+
+            .btn-cansel {
+                display: none;
+            }
+
+            .qr-voucher-code {
+                display: none;
+                width: 100%;
+
+                .title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                input {
+                    height: 50px;
+                    width: 100%;
+                    border-radius: $btn-border-radius;
+                    border: 2px solid $gray-middle;
+                    padding: 0 20px;
+
+                    &:focus {
+                        outline: 0;
+                    }
+                }
             }
         }
     }

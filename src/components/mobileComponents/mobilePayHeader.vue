@@ -12,22 +12,37 @@
                 </svg>
             </div>
         </div>
+        <div class="qr-block">
+            <total-amount/>
+            <hr/>
+            <div class="qr-footer">
+                <img src="../../assets/images/gift.png"/>
+                <div class="title">Gift Card</div>
+                <div class="btn-change" @click="QRMethodGhangeHendler">Change</div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+    import totalAmount from '../pos/content/cart/payNow/TotalAmount.vue'
+
     export default {
         name: "mobilePayHeader",
         props: ['param'],
+        components: {
+            totalAmount
+        },
         methods: {
             paymentMethodsHendlerGhange() {
                 if (this.param.method == 'closePayMethods') {
                     this.$store.dispatch('paymentMethodsHendlerGhange')
                 } else if (this.param.method == 'calcHendler') {
                     this.$store.dispatch('payNowCalcHendlerGhange')
-                }else if (this.param.method == 'payCartHendler') {
-                    this.$store.dispatch('payNowCalcHendlerGhange')
                 }
+            },
+            QRMethodGhangeHendler() {
+                this.$store.dispatch('QRMethodGhangeHendler')
             }
         }
     }
@@ -44,6 +59,34 @@
         grid-template-rows: 1fr 1fr;
         align-items: center;
         padding: 20px;
+
+        hr {
+            display: none;
+        }
+
+        .total-amount {
+            display: none;
+        }
+
+        .qr-footer {
+            display: none;
+            grid-template-columns: max-content 1fr max-content;
+            align-items: center;
+            justify-content: center;
+
+            img {
+                margin-right: 5px;
+                margin-left: -8px;
+            }
+
+            .btn-change {
+                border: 2px solid $orange-middle;
+                color: $orange-dark;
+                border-radius: 3px;
+                padding: 5px 25px;
+                font-weight: 600;
+            }
+        }
 
         .pay-header-title {
             font-size: 20px;

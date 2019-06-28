@@ -251,7 +251,7 @@
                 display: grid;
                 grid-template-columns: max-content 1fr;
                 align-items: center;
-                padding: 5px 20px;
+                padding: 8px 20px;
 
                 svg {
                     margin-right: 20px;
@@ -369,7 +369,7 @@
                 padding: 20px;
 
                 .btn-add-customer {
-                    height: 45px;
+                    height: 50px;
                     color: #fff;
                     display: flex;
                     align-items: center;

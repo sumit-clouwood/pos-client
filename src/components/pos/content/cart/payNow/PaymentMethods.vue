@@ -3,7 +3,7 @@
         <div v-for="(method, key) in methods"
              :key="key"
              :class="{ active: activeMethod == method.name }"
-             @click="[setMethod(method), payMethodHendlerGhange(method.name)]"
+             @click="[setMethod(method), methodCardHendlerGhange(method.name)]"
              :data-toggle="getToggle(method)"
              :data-target="getTarget(method)">
             <img :src="image(method.icon)" :alt="method.name" :title="method.name"/>
@@ -53,8 +53,17 @@
                 return ''
             },
             ...mapActions('checkoutForm', ['setMethod']),
-            payMethodHendlerGhange(e) {
-                this.$store.dispatch('payMethodHendlerGhange', e)
+            methodCardHendlerGhange(e) {
+                if(e == 'Payment Type Payment Type Name 202'){
+                    this.$store.dispatch('methodCardHendlerGhange')
+                }else if(e == 'Payment Type Payment Type Name 203'){
+                    this.$store.dispatch('QRMethodGhangeHendler')
+                }else if(e == 'Gift Card'){
+                    this.$store.dispatch('payNowCalcHendlerGhange')
+                }else if(e == 'Loyalty Points'){
+                    this.$store.dispatch('loyaltyPaymentHendlerGhange')
+                }
+                console.log(e)
             }
         },
     }
