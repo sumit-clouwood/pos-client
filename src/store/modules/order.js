@@ -247,7 +247,7 @@ const actions = {
             root: true,
           })
         } else {
-          commit('orderForm/setError', 'Please select mandatory modifiers', {
+          commit('orderForm/setError', 'Please select at least one item', {
             root: true,
           })
           reject()
@@ -654,7 +654,10 @@ const actions = {
   },
   addHoldOrder({ rootState, dispatch, commit }, order) {
     dispatch('reset')
-    commit(mutation.ORDER_STATUS, 'on_hold')
+
+    commit(mutation.SET_ORDER_ID, order._id)
+    commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_ON_HOLD)
+
     order.items.forEach((orderItem, key) => {
       rootState.category.items.forEach(categoryItem => {
         let item = { ...categoryItem }

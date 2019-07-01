@@ -1,5 +1,5 @@
 <template>
-  <div class="contain-body-class">
+  <div>
     <DeliveryManager />
   </div>
 </template>

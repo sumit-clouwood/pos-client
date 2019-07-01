@@ -4,8 +4,8 @@
       <paginate
         v-if="paginateDetails.totalPages"
         :page-count="paginateDetails.totalPages"
-        :page-range="1"
-        :margin-pages="1"
+        :page-range="2"
+        :margin-pages="2"
         :clickHandler="moreCustomer"
         :prev-text="_t('Prev')"
         :next-text="_t('Next')"
