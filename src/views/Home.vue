@@ -24,7 +24,7 @@ export default {
   mounted() {
     let getBody = $('body')
     getBody.removeAttr('class')
-    getBody.attr('class', 'fixed-nav sticky-footer bg-dark')
+    getBody.attr('class', 'fixed-nav sticky-footer')
   },
 }
 </script>

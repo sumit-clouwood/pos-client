@@ -15,7 +15,7 @@ export default {
   mounted() {
     let getBody = $('body')
     getBody.removeAttr('class')
-    getBody.attr('class', 'fixed-nav sticky-footer bg-dark dm-manager')
+    getBody.attr('class', 'fixed-nav sticky-footer dm-manager')
   },
 }
 </script>
