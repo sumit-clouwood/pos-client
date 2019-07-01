@@ -57,11 +57,16 @@ const actions = {
     })
   },
 
-  updateDMOrderStatus({ commit, dispatch }, { orderStatus, collected }) {
+  updateDMOrderStatus(
+    { commit, dispatch },
+    { orderStatus, collected, pageId }
+  ) {
+    console.log(pageId)
     if (typeof collected != 'undefined') {
       commit(mutation.SET_DM_ORDER_COLLECTED, collected)
     }
     commit(mutation.SET_DM_ORDER_STATUS, orderStatus)
+    commit(mutation.SET_DM_PAGE_ID, pageId)
     dispatch('fetchDMOrderDetail')
   },
 
@@ -209,6 +214,9 @@ const mutations = {
   },
   [mutation.DRIVERS](state, drivers) {
     state.drivers = drivers
+  },
+  [mutation.SET_DM_PAGE_ID](state, pageId) {
+    state.params.pageId = pageId
   },
 }
 

@@ -110,8 +110,8 @@ body#page-top.dm-manager {
   border: medium none !important;
   overflow: hidden !important; }
 
-div#dm-content-wrapper {
-  padding: 20px 80px; }
+/*div#dm-content-wrapper {*/
+/*  padding: 20px 80px; }*/
   div#dm-content-wrapper .inner-content-dm {
     width: 100%;
     max-width: 100%; }
