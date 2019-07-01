@@ -22,4 +22,6 @@ export const RESET = 'RESET'
 export const SET_LOADING = 'SET_LOADING'
 export const SET_ERROR = 'SET_ERROR'
 export const LOYALTY = 'LOYALTY'
+export const LOYALTY_FILTER = 'LOYALTY_FILTER'
+
 export const GET_DELIVERY_AREAS = 'GET_DELIVERY_AREAS'

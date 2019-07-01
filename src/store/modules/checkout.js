@@ -311,7 +311,7 @@ const actions = {
             collected: payment.amount,
             param1: payment.cardId,
             param2: payment.amount,
-            param3: payment.code,
+            param3: payment.code
           }
           totalPaid += payment.amount
           //Yuvraj, have a check here
@@ -392,8 +392,6 @@ const actions = {
         })
 
         //order.app_uniqueid = Crypt.uuid()
-
-        console.log('not in delivery or take away ')
         commit(mutation.SET_ORDER, order)
         dispatch('createOrder')
           .then(response => {
@@ -417,11 +415,10 @@ const actions = {
       }
     )
     return new Promise((resolve, reject) => {
-      console.log(state.order)
       OrderService.saveOrder(state.order, rootState.customer.offlineData)
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
-          dispatch('holdOrders/getHoldOrders')
+          dispatch('holdOrders/getHoldOrders',{}, {root: true })
 
           // if (response.data.id) {
           //   commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
@@ -559,12 +556,13 @@ const actions = {
   },
   reset({ commit, dispatch }) {
     commit(mutation.RESET)
-    dispatch('checkoutForm/reset', null, { root: true })
-    dispatch('order/reset', null, { root: true })
-    dispatch('tax/reset', null, { root: true })
-    dispatch('discount/reset', null, { root: true })
-    dispatch('surcharge/reset', null, { root: true })
-    dispatch('customer/reset', null, { root: true })
+    dispatch('checkoutForm/reset', {}, { root: true })
+    dispatch('order/reset', {}, { root: true })
+    dispatch('tax/reset', {}, { root: true })
+    dispatch('discount/reset', {}, { root: true })
+    dispatch('surcharge/reset', {}, { root: true })
+    dispatch('customer/reset', {}, { root: true })
+    dispatch('location/reset', {}, { root: true })
   },
 
   orderOnHold({ commit }, orderStatus) {

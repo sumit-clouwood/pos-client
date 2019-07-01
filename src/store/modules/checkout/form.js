@@ -15,6 +15,7 @@ const state = {
   showPayBreak: false,
   loyaltyAmount: 0,
   action: 'add',
+  loyaltyCard:{},
 }
 
 // getters
@@ -231,7 +232,9 @@ const actions = {
 
   setAmount({ commit, dispatch }, amount) {
     commit('setAmount', parseFloat(amount))
-    dispatch('calculateSpendLoyalty')
+  },
+  setLoyaltyCard({ commit, dispatch }, card) {
+    commit('setLoyaltyCard', card)
   },
   resetAmount({ commit }) {
     commit('setAmount', 0)
@@ -369,6 +372,9 @@ const mutations = {
   setAmount(state, val) {
     state.amount = val
   },
+  setLoyaltyCard(state,val) {
+    state.loyaltyCard = val;
+  },
   loyaltyAmount(state, val) {
     state.loyaltyAmount = val
   },
@@ -387,6 +393,8 @@ const mutations = {
         state.payments.push({
           amount: parseFloat(amount),
           method: method,
+          cardId: state.loyaltyCard._id?state.loyaltyCard._id:null,
+          code: state.loyaltyCard.loyalty_card_code?state.loyaltyCard.loyalty_card_code:null
         })
       }
     } else {
