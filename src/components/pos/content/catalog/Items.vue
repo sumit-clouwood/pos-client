@@ -40,6 +40,7 @@ export default {
   },
   methods: {
     addToOrder(item) {
+      $('.modifier-option-radio').prop('checked', false)
       $('.food-menu-item').removeClass('active')
       $(this).addClass('active')
       this.$store.commit('category/SET_ITEM', item)

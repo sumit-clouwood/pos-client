@@ -59,7 +59,7 @@
           <span class="customradioc-block">
             <input
               type="radio"
-              class="customradio"
+              class="customradio modifier-option-radio"
               :id="modifier._id"
               :name="subgroup._id"
               :value="modifier._id"
