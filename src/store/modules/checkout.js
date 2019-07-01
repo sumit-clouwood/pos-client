@@ -85,7 +85,7 @@ const actions = {
               rootGetters['discount/orderDiscountWithoutTax']
             ),
 
-            print_count: true,
+            print_count: 1,
             amount_changed: Num.round(state.changedAmount),
 
             order_building: '',
