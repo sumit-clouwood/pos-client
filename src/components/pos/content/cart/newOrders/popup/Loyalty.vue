@@ -15,7 +15,7 @@
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
             <p v-if="loyaltyBalance > 0">
-              {{ _t('Loyalty Balance') }}:
+              {{ _t('Loyalty Balance (Points)') }}:
               <span>{{ formatPrice(loyaltyBalance) }}</span>
             </p>
             <p v-if="loyalty.loyalty_order_alert != null">
@@ -25,12 +25,15 @@
               <hr />
               <p>
                 {{ _t('You can spend min') }}
-                <b>{{ loyalty.minimum_redeem?loyalty.minimum_redeem:0 }} {{ loyalty.currency }}</b>
+                <b>{{ loyalty.minimum_redeem?loyalty.minimum_redeem:0 }} {{_t("Point(s)")}}</b>
                 {{ _t('and max') }}
-                <b>{{ loyalty.maximum_redeem?loyalty.maximum_redeem:0 }} {{ loyalty.currency }}</b>
+                <b>{{ loyalty.maximum_redeem?loyalty.maximum_redeem:0 }} {{_t("Point(s)")}}</b>
               </p>
               <p>
-                {{ _t('Amount you can spend') }}: <b>{{ amount }}</b>
+                {{ _t('Points you can spend') }}: <b> {{ points }}</b>
+              </p>
+              <p>
+                {{ _t('Amount respective to loyalty points') }}: <b> {{ amount }}</b>
               </p>
             </div> 
             <div v-else>
@@ -84,6 +87,8 @@ export default {
     ...mapState({
       amount: state =>
         state.checkoutForm.loyaltyAmount ? state.checkoutForm.loyaltyAmount : 0,
+      points: state =>
+        state.checkoutForm.loyaltyPoints ? state.checkoutForm.loyaltyPoints : 0,
       card: state => state.customer.loyalty.card
     }),
   },

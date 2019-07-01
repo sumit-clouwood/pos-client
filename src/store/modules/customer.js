@@ -24,7 +24,7 @@ const state = {
   offlineData: null,
   loading: false,
   error: false,
-  loyalty: { card: false, details: false },
+  loyalty: { card: false, details: false, points:false },
   deliveryAreas: false,
   fetchDeliveryAreas: false,
   editInformation: {},
@@ -394,37 +394,44 @@ const mutations = {
       })
       state.loyalty.details = loyaltyDetails ? loyaltyDetails : false
     } else {
-      state.loyalty.card = 0
-      state.loyalty.details = false
+      state.loyalty.card = false
+        state.loyalty.details = false
+        state.loyalty.points = false
     }
   },
   [mutation.LOYALTY_FILTER](state,
     {loyalty, orderType, orderCurrency, orderAmount}={loyalty:null, orderType:null, orderCurrency:null, orderAmount:null}) {
     if (loyalty) {
       if (orderType == 'walk_in' && state.loyalty.details.walk_in_spend_points !== true) {
-        state.loyalty.card = 0
+        state.loyalty.card = false
         state.loyalty.details = false
+        state.loyalty.points = false
       }
       if (orderType == 'call_center' && state.loyalty.details.call_center_spend_points !== true) {
-        state.loyalty.card = 0
+        state.loyalty.card = false
         state.loyalty.details = false
+        state.loyalty.points = false
       }
       if (orderType == 'dine_in' && state.loyalty.details.dine_in_spend_points !== true) {
-        state.loyalty.card = 0
+        state.loyalty.card = false
         state.loyalty.details = false
+        state.loyalty.points = false
       }
       if(state.loyalty.details.currency != orderCurrency){
-        state.loyalty.card = 0
+        state.loyalty.card = false
         state.loyalty.details = false
+        state.loyalty.points = false
       } else if(state.loyalty.details.min_order > orderAmount){
-        state.loyalty.card = 0
+        state.loyalty.card = false
         state.loyalty.details = false
+        state.loyalty.points = false
       } else {
-
+        /* do noting */
       }
     } else {
-      state.loyalty.card = 0
-      state.loyalty.details = false
+        state.loyalty.card = false
+        state.loyalty.details = false
+        state.loyalty.points = false
     }
   }
 }

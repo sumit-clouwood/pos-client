@@ -84,10 +84,8 @@ const actions = {
             total_discount: Num.round(
               rootGetters['discount/orderDiscountWithoutTax']
             ),
-
-            bill_printed: true,
+            print_count: 1,
             amount_changed: Num.round(state.changedAmount),
-
             order_building: '',
             order_street: '',
             order_flat_number: '',
@@ -95,7 +93,6 @@ const actions = {
             order_city: '',
             order_country: '',
             order_delivery_area: '',
-
             item_discounts: [],
             item_modifiers: '',
             order_surcharges: '',
@@ -304,13 +301,22 @@ const actions = {
 
         //adding payment breakdown
         let totalPaid = 0
+
         order.order_payments = rootState.checkoutForm.payments.map(payment => {
+          let {orderaAmount,orderPoints} = {}
+          if(payment.method.name==CONSTANTS.ORDER_PAYMENT_TYPE){
+            orderaAmount = payment.amount
+            orderPoints = rootState.checkoutForm.loyaltyPoints
+          } else {
+            orderaAmount = payment.amount
+            orderPoints = payment.amount
+          }
           let paymentPart = {
             entity_id: payment.method._id,
             name: payment.method.name,
-            collected: payment.amount,
+            collected: orderaAmount,
             param1: payment.cardId,
-            param2: payment.amount,
+            param2: orderPoints,
             param3: payment.code
           }
           totalPaid += payment.amount
