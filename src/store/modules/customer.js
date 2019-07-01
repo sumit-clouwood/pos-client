@@ -97,15 +97,16 @@ const actions = {
         state.params.page_size /*page_size*/,
         state.pageId,
       ]
+      
       CustomerService.customerList(...params)
         .then(response => {
           if (response.data.data.length) {
             let totalPages = Math.ceil(
               parseInt(response.data.count) / parseInt(state.params.page_size)
             )
-            commit(mutation.CUSTOMER_LIST, response.data.data)
             commit(mutation.PAGINATE_DETAILS, totalPages)
             commit(mutation.LAST_ORDERS, response.data.page_lookups.orders)
+            commit(mutation.CUSTOMER_LIST, response.data.data)
             resolve(response.data.data)
           } else {
             reject(response.data.data)
