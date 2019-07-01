@@ -382,7 +382,7 @@ const mutations = {
     state.loyaltyCard = val;
   },
   loyaltyAmount(state, val) {
-    state.loyaltyAmount = val
+    state.loyaltyAmount = val.toFixed(2)
   },
   loyaltyPoints(state, {amount, oneLoyaltyPoint}) {
     /** 
@@ -390,7 +390,7 @@ const mutations = {
      * logic : amount/one_point_redeems_to  =  points used 
      */
     if (amount && oneLoyaltyPoint) {
-      state.loyaltyPoints  = (amount/oneLoyaltyPoint);
+      state.loyaltyPoints  = (amount/oneLoyaltyPoint).toFixed(2);
     } else {
       state.loyaltyPoints  = 0;
     }
