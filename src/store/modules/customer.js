@@ -44,6 +44,13 @@ const getters = {
       )
     }
   },
+  checkDeliveryArea: (addressId, deliveryAreas) => {
+    return LookupData.get({
+      collection: deliveryAreas,
+      matchWith: addressId,
+      selection: 'name',
+    })
+  },
   getDeliveryArea: state => addressId => {
     return LookupData.get({
       collection: state.deliveryAreas,
@@ -54,18 +61,14 @@ const getters = {
   getCustomerAddresses: state => {
     let data = {}
     if (state.customer && state.customer.customer_addresses) {
-      return state.customer.customer_addresses
-      /*data = state.customer.customer_addresses.filter(function(q) {
-        // eslint-disable-next-line no-console,no-console
-        console.log(getters.getDeliveryArea(q.delivery_area_id))
-        // eslint-disable-next-line no-console,no-console
-        console.log(state.customer.customer_addresses)
-        // eslint-disable-next-line no-console
-        console.log(q)
-        if (getters.getDeliveryArea(q.delivery_area_id)) {
+      // return state.customer.customer_addresses
+      data = state.customer.customer_addresses.filter(function(q) {
+        if (
+          getters.checkDeliveryArea(q.delivery_area_id, state.deliveryAreas)
+        ) {
           return q
         }
-      })*/
+      })
     }
     return data
   },
