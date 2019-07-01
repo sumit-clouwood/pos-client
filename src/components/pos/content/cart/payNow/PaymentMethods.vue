@@ -9,7 +9,7 @@
       :data-target="getTarget(method)"
     >
       <img :src="image(method.icon)" :alt="method.name" :title="method.name" />
-      <label class="shorten-sentence" :title="method.name">
+      <label class="shorten-sentence text-center" :title="method.name">
         {{ method.name }}
       </label>
     </div>

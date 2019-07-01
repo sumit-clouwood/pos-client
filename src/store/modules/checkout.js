@@ -85,7 +85,7 @@ const actions = {
               rootGetters['discount/orderDiscountWithoutTax']
             ),
 
-            bill_printed: true,
+            print_count: 1,
             amount_changed: Num.round(state.changedAmount),
 
             order_building: '',
@@ -343,6 +343,54 @@ const actions = {
 
         order.total_paid = Num.round(totalPaid)
 
+        //applying Fixing
+
+        order.sub_total = order.sub_total.toFixed(2)
+        order.total_discount = order.total_discount.toFixed(2)
+        order.total_surcharge = order.total_surcharge.toFixed(2)
+        order.total_tax = order.total_tax.toFixed(2)
+        order.amount_changed = order.amount_changed.toFixed(2)
+        order.tip_amount = parseFloat(order.tip_amount).toFixed(2)
+        order.total_paid = order.total_paid.toFixed(2)
+        order.surcharge_tax = order.surcharge_tax.toFixed(2)
+        order.balance_due = order.balance_due.toFixed(2)
+
+        order.item_discounts = order.item_discounts.map(discount => {
+          discount.rate = discount.rate.toFixed(2)
+          discount.price = discount.price.toFixed(2)
+          discount.tax = discount.tax.toFixed(2)
+          return discount
+        })
+
+        order.order_surcharges = order.order_surcharges.map(surcharge => {
+          surcharge.rate = surcharge.rate
+            ? surcharge.rate.toFixed(2)
+            : surcharge.rate
+          surcharge.price = surcharge.price.toFixed(2)
+          surcharge.tax = surcharge.tax.toFixed(2)
+          surcharge.tax_rate = surcharge.tax_rate
+            ? surcharge.tax_rate.toFixed(2)
+            : surcharge.tax_rate
+          return surcharge
+        })
+
+        order.items = order.items.map(item => {
+          item.price = item.price.toFixed(2)
+          item.tax = item.tax.toFixed(2)
+          return item
+        })
+
+        order.item_modifiers = order.item_modifiers.map(item => {
+          item.price = item.price.toFixed(2)
+          item.tax = item.tax.toFixed(2)
+          return item
+        })
+
+        order.order_payments = order.order_payments.map(item => {
+          item.collected = parseFloat(item.collected).toFixed(2)
+          return item
+        })
+
         //order.app_uniqueid = Crypt.uuid()
 
         console.log('not in delivery or take away ')
@@ -369,16 +417,30 @@ const actions = {
       }
     )
     return new Promise((resolve, reject) => {
+      let response = null
+      if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+        let order = { ...state.order }
+        //order.modify_reason = 'Process order'
+        order.new_real_transition_order_no = ''
+        delete order.real_created_datetime
+
+        response = OrderService.modifyOrder(
+          order,
+          rootState.order.orderId,
+          'hold'
+        )
+      } else {
+        response = OrderService.saveOrder(
+          state.order,
+          rootState.customer.offlineData
+        )
+      }
+
       console.log(state.order)
-      OrderService.saveOrder(state.order, rootState.customer.offlineData)
+      response
         .then(response => {
-          // if (response.data.id) {
-          //   commit('checkoutForm/SET_MSG', 'Order Placed Successfully', {
-          //     root: true,
-          //   })
-          //   resolve(response.data)
-          //   return true
-          // }
+          //remove current order from hold list as it might be processed, refetching ll do it
+          dispatch('holdOrders/getHoldOrders')
 
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
@@ -476,6 +538,7 @@ const actions = {
                   root: true,
                 }
               )
+              dispatch('reset')
             } else {
               var err_msg = ''
               if (

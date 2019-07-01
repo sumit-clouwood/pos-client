@@ -18,9 +18,9 @@ export default {
     return DataService.post('/model/orders/add', data)
   },
 
-  deleteOrder(orderId) {
-    return DataService.get(`/auth/order/deleteOrder/?order_id=${orderId}`)
-  },
+  // deleteOrder(orderId) {
+  //   return DataService.get(`/auth/order/deleteOrder/?order_id=${orderId}`)
+  // },
 
   updateOrder(data) {
     return DataService.post('/auth/deliveryManager/update/order', data)
@@ -37,5 +37,24 @@ export default {
   },
   getGlobalDetails(modal, id) {
     return DataService.get(`/model/${modal}/id/${id}`, 'brand')
+  },
+
+  deleteOrder(id, type) {
+    if (type) {
+      type = '_' + type
+    } else {
+      type = ''
+    }
+
+    return DataService.post(`/model/orders/id/${id}/delete${type}`)
+  },
+
+  modifyOrder(order, id, type) {
+    if (type) {
+      type += '_'
+    } else {
+      type = ''
+    }
+    return DataService.post(`/model/orders/id/${id}/modify_${type}order`, order)
   },
 }

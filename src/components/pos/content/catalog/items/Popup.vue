@@ -13,9 +13,6 @@
         <Header />
         <HeaderDetails />
         <Content />
-        <div class="modal-body">
-          <div class="text-danger" v-show="error">{{ error }}</div>
-        </div>
         <Footer />
       </div>
     </div>
@@ -24,7 +21,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import Header from './popup/Header'
 import HeaderDetails from './popup/header/HeaderDetails'
 import Content from './popup/Content'
@@ -37,9 +33,6 @@ export default {
     Header,
     HeaderDetails,
     Footer,
-  },
-  computed: {
-    ...mapState('orderForm', ['error']),
   },
 }
 </script>

@@ -99,5 +99,5 @@ export default {
 <style lang="sass" scoped>
 .error
   width: 100%
-  padding: 40px 5px 10px 5px
+  /*padding: 40px 5px 10px 5px*/
 </style>

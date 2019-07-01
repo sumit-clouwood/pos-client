@@ -1,6 +1,8 @@
+@import "../variables";
+
 #select-discount-item {
   .modal-dialog {
-    max-width: $px385;
+    max-width: $px450;
 
     .modal-content {
       .modal-header {}

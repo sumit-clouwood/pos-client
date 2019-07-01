@@ -9,7 +9,7 @@
     <div class="modal-details">
       <div class="POSItemOptions_pricequantity">
         <div class="POSItemOptions_price">
-          <label class="POSItemOptions_label">Price</label>
+          <label class="POSItemOptions_label">{{ _t('Price') }}</label>
           <div class="POSItemOptions_money">
             {{ formatPrice(item.value * quantity) }}
           </div>
@@ -28,7 +28,7 @@ export default {
   name: 'Header',
   props: {},
   computed: {
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('order', ['item']),
     ...mapGetters('orderForm', ['quantity']),
   },

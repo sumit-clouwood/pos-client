@@ -2,11 +2,13 @@
   <div class="food-menu">
     <div
       class="food-menu-item"
+      :style="{ background: item.image == '' ? item.item_color : '' }"
       v-for="item in items"
       :key="item._id"
       @click.prevent="addToOrder(item)"
     >
       <img
+        v-if="item.image != ''"
         class="food-menu-item-img"
         :src="item.image"
         :alt="dt(item)"
@@ -38,6 +40,8 @@ export default {
   },
   methods: {
     addToOrder(item) {
+      $('.food-menu-item').removeClass('active')
+      $(this).addClass('active')
       this.$store.commit('category/SET_ITEM', item)
       this.$store.commit('checkoutForm/showCalc', true)
       this.$store.commit('orderForm/updateQuantity', 1)

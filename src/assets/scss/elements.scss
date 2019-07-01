@@ -122,7 +122,7 @@ img {
   overflow: hidden;
   White-space: nowrap;
   Width: $px111;
-  text-align:center;
+  /*text-align:center;*/
 }
 
 .orders-button-large {
@@ -213,7 +213,7 @@ svg{
     border-color: $blue-light;
   }
 }
-.btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active, .show>.btn-success.dropdown-toggle{
+.btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active, .show>.btn-success.dropdown-toggle, .btn-success:disabled{
   background-color:$blue-middle;
   border-color: $blue-middle;
 }
@@ -284,4 +284,7 @@ div#nav-tabContent  {
    .preloader{
      margin-top: $px220
    }
+}
+.pl-30 {
+  padding-left: 30px;
 }

@@ -123,6 +123,23 @@ export default {
         })
         .catch(error => (this.errored = error))
     }
+
+    setTimeout(() => {
+      navigator.serviceWorker.addEventListener('message', event => {
+        console.log('*** event received from service worker', event)
+        if (event.data.msg == 'token') {
+          console.log('setting new token to client')
+          localStorage.setItem('token', event.data.data)
+          //DataService.setMiddleware()
+          bootstrap.loadUI().then(() => {
+            setTimeout(() => {
+              this.loading = false
+              this.progressIncrement = '100%'
+            }, 100)
+          })
+        }
+      })
+    }, 3000)
   },
 }
 

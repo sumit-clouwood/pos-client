@@ -20,7 +20,7 @@ const state = {
 // getters
 const getters = {
   validate: (state, getters) => {
-    if (getters.payable < 0) return true
+    if (getters.payable <= 0) return true
     return getters.orderTotal && !getters.payable
   },
   orderTotal: (state, getters, rootState, rootGetters) => {
@@ -84,65 +84,6 @@ const actions = {
         })
     })
   },
-  //apply giftcard by customer [future use]
-  addGiftCardAmountCustomer({ commit, getters, rootGetters, rootState }, code) {
-    commit('SET_ERROR', false)
-    //chek if current giftcard is valid
-    const giftCard = rootGetters['giftcard/find'](code)
-    if (!giftCard) {
-      commit('SET_ERROR', 'Invalid gift card code')
-      commit('showCalc', true)
-      return false
-    }
-    //check if gift card belongs to correct user
-    if (giftCard.customer_id != rootState.customer.customer.customer_list._id) {
-      commit('SET_ERROR', "Gift card doesn't belong to current customer")
-      commit('showCalc', true)
-      return false
-    }
-    //check expiry
-    const activatedDate = new Date(giftCard.activated_date)
-    const expiryDate = new Date(giftCard.expire_date)
-    const today = new Date()
-
-    if (expiryDate.getTime() <= today.getTime()) {
-      commit('SET_ERROR', 'Gift card expired')
-      commit('showCalc', true)
-      return false
-    }
-
-    //check active
-    if (
-      activatedDate.getTime() > today.getTime() ||
-      giftCard.status != 'active' ||
-      giftCard.is_deleted === 1
-    ) {
-      commit('SET_ERROR', 'Gift card not active')
-      commit('showCalc', true)
-      return false
-    }
-
-    //check the balance
-    if (!giftCard.balance) {
-      commit('SET_ERROR', "Gift card doesn't have sufficient balance")
-      commit('showCalc', true)
-      return false
-    }
-
-    let giftCardAmount = giftCard.balance
-
-    if (giftCard.balance > getters.payable) {
-      giftCardAmount = getters.payable
-    }
-
-    commit('addAmount', {
-      amount: giftCardAmount,
-      method: state.method,
-      code: giftCard.gift_code,
-    })
-    commit('setAmount', Num.round(getters.payable))
-    commit('showCalc', false)
-  },
 
   //apply gift card [in use]
   addGiftCardAmount({ commit, getters, dispatch }, code) {
@@ -159,17 +100,49 @@ const actions = {
           { root: true }
         )
           .then(card => {
-            commit('setGiftAmount', state.amount)
-            commit('addGiftAmount', {
-              amount: state.amount,
-              method: state.method,
-              code: code,
-              cardId: card._id,
-            })
-            commit('setAmount', Num.round(getters.payable))
-            commit('showCalc', false)
-            commit('showPayBreak', true)
-            resolve(card)
+            //check activation here
+            //check expiry
+            const activatedDate = new Date(card.activated_date)
+            const expiryDate = new Date(card.expire_date)
+            const today = new Date()
+
+            if (expiryDate.getTime() <= today.getTime()) {
+              commit('setGiftAmount', 0)
+              commit('showCalc', true)
+              commit('showPayBreak', false)
+              reject('Gift Card has been expired.')
+            }
+
+            //check active
+            else if (activatedDate.getTime() > today.getTime()) {
+              commit('setGiftAmount', 0)
+              commit('showCalc', true)
+              commit('showPayBreak', false)
+              reject('Gift Card is not active.')
+            }
+
+            //check the balance
+            else if (
+              !card.remaining_amount ||
+              card.remaining_amount < state.amount
+            ) {
+              commit('setGiftAmount', 0)
+              commit('showCalc', true)
+              commit('showPayBreak', false)
+              reject("Gift card doesn't have sufficient balance")
+            } else {
+              commit('setGiftAmount', state.amount)
+              commit('addGiftAmount', {
+                amount: state.amount,
+                method: state.method,
+                code: code,
+                cardId: card._id,
+              })
+              commit('setAmount', Num.round(getters.payable))
+              commit('showCalc', false)
+              commit('showPayBreak', true)
+              resolve(Num.round(getters.payable))
+            }
           })
           .catch(error => {
             commit('setGiftAmount', 0)
@@ -181,7 +154,7 @@ const actions = {
     })
   },
 
-  addCardAmount({ commit }, code) {
+  addCardAmount({ commit, getters }, code) {
     return new Promise(resolve => {
       commit('addCardAmount', {
         amount: state.amount,
@@ -192,7 +165,7 @@ const actions = {
       commit('showPayBreak', true)
       //set remaining amount into text box
       commit('setAmount', Num.round(getters.payable))
-      resolve()
+      resolve(Num.round(getters.payable))
     })
   },
 
@@ -222,10 +195,8 @@ const actions = {
         if (parseFloat(state.loyaltyAmount) <= 0.01) {
           commit('SET_ERROR', 'You dont have loyalty amount.')
         } else {
-          commit(
-            'SET_ERROR',
-            'You can add only ' + state.loyaltyAmount + ' loyalty amount.'
-          )
+          let amount = isNaN(state.loyaltyAmount) ? 0 : state.loyaltyAmount
+          commit('SET_ERROR', 'You can add only ' + amount + ' loyalty amount.')
         }
         reject()
       } else {
@@ -320,6 +291,66 @@ const actions = {
   reset({ commit }) {
     commit('RESET')
   },
+
+  //apply giftcard by customer [future use]
+  addGiftCardAmountCustomer({ commit, getters, rootGetters, rootState }, code) {
+    commit('SET_ERROR', false)
+    //chek if current giftcard is valid
+    const giftCard = rootGetters['giftcard/find'](code)
+    if (!giftCard) {
+      commit('SET_ERROR', 'Invalid gift card code')
+      commit('showCalc', true)
+      return false
+    }
+    //check if gift card belongs to correct user
+    if (giftCard.customer_id != rootState.customer.customer.customer_list._id) {
+      commit('SET_ERROR', "Gift card doesn't belong to current customer")
+      commit('showCalc', true)
+      return false
+    }
+    //check expiry
+    const activatedDate = new Date(giftCard.activated_date)
+    const expiryDate = new Date(giftCard.expire_date)
+    const today = new Date()
+
+    if (expiryDate.getTime() <= today.getTime()) {
+      commit('SET_ERROR', 'Gift card expired')
+      commit('showCalc', true)
+      return false
+    }
+
+    //check active
+    if (
+      activatedDate.getTime() > today.getTime() ||
+      giftCard.status != 'active' ||
+      giftCard.is_deleted === 1
+    ) {
+      commit('SET_ERROR', 'Gift card not active')
+      commit('showCalc', true)
+      return false
+    }
+
+    //check the balance
+    if (!giftCard.balance) {
+      commit('SET_ERROR', "Gift card doesn't have sufficient balance")
+      commit('showCalc', true)
+      return false
+    }
+
+    let giftCardAmount = giftCard.balance
+
+    if (giftCard.balance > getters.payable) {
+      giftCardAmount = getters.payable
+    }
+
+    commit('addAmount', {
+      amount: giftCardAmount,
+      method: state.method,
+      code: giftCard.gift_code,
+    })
+    commit('setAmount', Num.round(getters.payable))
+    commit('showCalc', false)
+  },
 }
 
 // mutations
@@ -347,43 +378,69 @@ const mutations = {
   },
   addAmount(state, { amount, method }) {
     if (amount > 0) {
-      state.payments.push({
-        amount: amount,
-        method: method,
-      })
+      const index = state.payments.findIndex(type => type === method)
+      if (index !== -1) {
+        let type = state.payments[index]
+        type.amount += parseFloat(amount)
+        state.payments.splice(index, 1, type)
+      } else {
+        state.payments.push({
+          amount: parseFloat(amount),
+          method: method,
+        })
+      }
     } else {
       state.error = 'Amount can not be 0'
     }
   },
   addGiftAmount(state, { amount, method, code, cardId }) {
-    let giftCards = state.payments.filter(
-      payment => payment.method !== method && payment.code !== code
+    const index = state.payments.findIndex(
+      payment =>
+        payment.method === method &&
+        payment.code === code &&
+        payment.cardId == cardId
     )
-    giftCards.push({
-      amount: amount,
-      method: method,
-      code: code,
-      cardId: cardId,
-    })
-    state.payments = giftCards
+
+    if (index !== -1) {
+      let type = state.payments[index]
+      type.amount += parseFloat(amount)
+      state.payments.splice(index, 1, type)
+    } else {
+      state.payments.push({
+        amount: parseFloat(amount),
+        method: method,
+        code: code,
+        cardId: cardId,
+      })
+    }
   },
   addCardAmount(state, { amount, method, code }) {
     if (amount > 0) {
-      state.payments.push({
-        amount: amount,
-        method: method,
-        code: code,
-      })
+      const index = state.payments.findIndex(
+        payment => payment.method === method && payment.code === code
+      )
+
+      if (index !== -1) {
+        let type = state.payments[index]
+        type.amount += parseFloat(amount)
+        state.payments.splice(index, 1, type)
+      } else {
+        state.payments.push({
+          amount: parseFloat(amount),
+          method: method,
+          code: code,
+        })
+      }
     } else {
       state.error = 'Amount can not be 0'
     }
   },
   addTip(state, tip) {
-    if (tip > 0) {
-      state.tipAmount = tip
-    } else {
-      state.error = 'Tip amount can not be zero or negative'
-    }
+    state.tipAmount = tip
+    // if (tip > 0 || state.tipAmount > 0) {
+    // } else {
+    //   state.error = 'Tip amount can not be zero or negative'
+    // }
   },
   removePayment(state, index) {
     state.payments.splice(index, 1)

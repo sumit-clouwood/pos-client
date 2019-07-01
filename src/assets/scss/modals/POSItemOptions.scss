@@ -27,7 +27,7 @@
       .modal-details {
         border-bottom: 1px solid #E3E7F2;
         padding-bottom: $px12;
-        margin-bottom: $px20;
+        /*margin-bottom: $px20;*/
 
         .POSItemOptions_pricequantity {
           display: flex;
@@ -54,6 +54,13 @@
 
           .POSItemOptions_quantity {
             width: 64%;
+
+            .POSItemOptions_label {
+              color: #3D3F43;
+              font-size: $px14;
+              font-weight: normal;
+              letter-spacing: 0.5px;
+            }
 
             .POSItemOptions_quantity_wrapper {
               display: flex;

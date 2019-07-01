@@ -16,8 +16,16 @@
             v-if="responseInformation != ''"
             v-on:load="activeClass"
           >
-            <h5 :class="activatedClass" class="text-capitalize">
-              {{ responseInformation }}
+            <h5
+              :class="activatedClass"
+              class="text-capitalize"
+              v-if="responseInformation"
+            >
+              {{
+                typeof responseInformation.message !== 'undefined'
+                  ? responseInformation.message
+                  : responseInformation
+              }}
             </h5>
           </div>
         </div>

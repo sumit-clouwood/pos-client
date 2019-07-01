@@ -2,7 +2,7 @@ import DataService from '@/services/DataService'
 const authUrl = process.env.VUE_APP_API_ENDPOINT + '/login'
 
 export default {
-  getAccess(env, deviceId) {
+  getAccess(env) {
     //use post method
     return new Promise((resolve, reject) => {
       if (localStorage.getItem('token')) {
@@ -12,11 +12,13 @@ export default {
         resolve({
           data: data,
         })
-      } else if (process.env.NODE_ENV !== 'production') {
+      } else if (
+        process.env.NODE_ENV !== 'production' ||
+        process.env.VUE_APP_LOCAL_SERVER
+      ) {
         const data = {
           email: env.VUE_APP_API_USERNAME,
           password: env.VUE_APP_API_PASSWORD,
-          device_id: deviceId,
         }
 
         DataService.factory()

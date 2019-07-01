@@ -18,6 +18,7 @@ const state = {
   selectedOrder: false,
   orderId: null,
   // pastOrder: false,
+  orderStatus: null,
 }
 
 // getters
@@ -182,26 +183,36 @@ const actions = {
       let itemModifiers = []
 
       //adding modifers to item
-      let modifiers = []
-      if (item.modifiers) {
+      if (item.modifiers && !item.editMode) {
+        //this order came from old holders
         const itemModifiersArray = rootGetters['modifier/itemModifiers'](
           item._id
         )
+        //re check if modifiers still available for the item
         if (itemModifiersArray.length) {
           itemModifiersArray.forEach(modifierItem => {
             modifierItem.modifiers.forEach(modifier => {
               if (item.modifiers.includes(modifier._id)) {
-                modifiers.push(modifier)
+                const subgroup = rootGetters['modifier/getModifierSubgroup'](
+                  modifier._id
+                )
+                itemModifiers.push(modifier._id)
+                itemModifierGroups.push({
+                  groupId: subgroup._id,
+                  itemId: item._id,
+                  limit: subgroup.no_of_selection,
+                  modifierId: modifier._id,
+                  type: subgroup.no_of_selection > 1 ? 'checkbox' : 'radio',
+                })
               }
             })
           })
-
-          itemModifiers = modifiers
         }
+        //avoid cacthcing again in edit mode
       } else {
         //new order, user selection
 
-        modifiers = rootGetters['orderForm/modifiers'].filter(
+        const modifiers = rootGetters['orderForm/modifiers'].filter(
           modifier => modifier.itemId == item._id
         )
 
@@ -230,7 +241,7 @@ const actions = {
             root: true,
           })
         } else {
-          commit('orderForm/setError', 'Please select mandatory modifiers', {
+          commit('orderForm/setError', 'Please select at least one item', {
             root: true,
           })
           reject()
@@ -246,6 +257,18 @@ const actions = {
         })
       }
 
+      /*
+        itemModifiers 
+          0:"5cfde3211578dd00215271d1"
+          1:"5cfde3211578dd00215271d0"
+        itemModifierGroups
+          0:
+            groupId:"5cfde3211578dd00215271c8"
+            itemId:"5cfde31f1578dd0021527183"
+            limit:81
+            modifierId:"5cfde3211578dd00215271d1"
+            type:"checkbox"
+      */
       commit(mutation.ADD_MODIFIERS_TO_ITEM, {
         modifiers: itemModifiers,
         modifierGroups: itemModifierGroups,
@@ -623,8 +646,12 @@ const actions = {
     commit(mutation.ORDER_TYPE, orderType)
     dispatch('surchargeCalculation')
   },
-  addHoldOrder({ rootState, dispatch }, order) {
+  addHoldOrder({ rootState, dispatch, commit }, order) {
     dispatch('reset')
+
+    commit(mutation.SET_ORDER_ID, order._id)
+    commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_ON_HOLD)
+
     order.items.forEach((orderItem, key) => {
       rootState.category.items.forEach(categoryItem => {
         let item = { ...categoryItem }
@@ -662,6 +689,18 @@ const actions = {
       orderDetails.lookups = response.data.collected_data.page_lookups
       orderDetails.store_name = response.data.collected_data.store_name
       commit(mutation.SET_ORDER_DETAILS, orderDetails)
+    })
+  },
+
+  removeOrder({ dispatch }, { order, orderType }) {
+    OrderService.deleteOrder(order._id, orderType).then(response => {
+      if (response.status == 200) {
+        switch (orderType) {
+          case 'hold':
+            dispatch('holdOrders/remove', order, { root: true })
+            break
+        }
+      }
     })
   },
 }
@@ -759,6 +798,7 @@ const mutations = {
   [mutation.RESET](state) {
     state.items = []
     state.item = false
+    state.orderStatus = null
     //state.orderType = 'Walk-in'
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
@@ -784,6 +824,9 @@ const mutations = {
   },
   [mutation.SET_ORDER_DETAILS](state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails
+  },
+  [mutation.ORDER_STATUS](state, status) {
+    state.orderStatus = status
   },
   /*[mutation.PAST_ORDER_DETAILS](state, pastOrder) {
     state.selectedOrder = pastOrder

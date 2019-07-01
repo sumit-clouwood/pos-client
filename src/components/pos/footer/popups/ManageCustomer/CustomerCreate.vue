@@ -43,14 +43,8 @@
       </div>
     </div>
     <InformationPopup
-      v-if="customerCreateStatus.status !== 0"
       :responseInformation="customerCreateStatus.message.flash_message"
-      :title="customerCreateStatus.message.flash_message"
-    />
-    <InformationPopup
-      v-if="customerCreateStatus.status == 0"
-      :responseInformation="customerCreateStatus.message.flash_message"
-      :title="customerCreateStatus.message.title"
+      title="Information"
     />
   </div>
   <!-- End customer Model -->
@@ -68,6 +62,11 @@ export default {
     InformationPopup,
     CustomerForm,
   },
+  data() {
+    return {
+      error: '',
+    }
+  },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState({
@@ -78,20 +77,32 @@ export default {
   methods: {
     ...mapActions('customer', ['createAction', 'updateAction']),
     displayValidationErrors(errorData) {
+      let error = ''
+      let validationError = {}
       if (errorData && errorData['status'] == 'form_errors') {
-        let validationError = {}
-        let error = ''
         $.each(errorData['message'], function(key, val) {
           $.each(val, function(index, data) {
-            error += key.replace(/_/g, ' ') + ' : ' + data
+            error += data
           })
         })
         validationError = {
-          status: 0,
-          title: 'Validation Error',
+          status: 'flash_message',
           flash_message: error,
         }
         this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+      }
+      if (error == '') {
+        validationError = {
+          status: 'flash_message',
+          flash_message: 'Customer Added Successfully',
+        }
+        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+        $('#close-customer').click()
+        $('#customer').modal('toggle')
+        $('#information-popup').modal('show')
+      } else {
+        $('#post_announcement').attr('disabled', false)
+        $('#information-popup').modal('show')
       }
     },
     customerAction(modalStatus) {
@@ -122,9 +133,6 @@ export default {
           this.customerCreateStatus &&
           this.customerCreateStatus.status === 'ok'
         ) {}*/
-        $('#close-customer').click()
-        $('#customer').modal('toggle')
-        $('#information-popup').modal('show')
       }
     },
   },

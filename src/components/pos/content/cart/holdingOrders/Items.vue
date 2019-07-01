@@ -1,7 +1,10 @@
 <template>
   <div class="wrappers-orders">
-    <div class="orders-name">
-      <p @click="setHoldOrderCart(orderData)" class="cursor-pointer">
+    <div
+      class="orders-name cursor-pointer"
+      @click="setHoldOrderCart(orderData)"
+    >
+      <p>
         {{ orderData.order_no }}
       </p>
     </div>
@@ -35,14 +38,11 @@ export default {
     },
 
     dropHoldOrder: function(order) {
-      let actionDetails = {
-        id: order._id,
-        action: 'delete',
-        model: 'orders',
-        data: '',
-      }
       if (confirm('Are you sure you want to delete this order!')) {
-        this.$store.dispatch('customer/updateAction', actionDetails)
+        this.$store.dispatch('order/removeOrder', {
+          order: order,
+          orderType: 'hold',
+        })
       }
     },
   },

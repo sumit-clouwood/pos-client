@@ -93,7 +93,7 @@ img {
   overflow: hidden;
   White-space: nowrap;
   Width: 6.9375rem;
-  text-align: center; }
+  /*text-align:center;*/ }
 
 .orders-button-large {
   cursor: pointer;
@@ -167,7 +167,7 @@ svg {
     background-color: #767DFF;
     border-color: #767DFF; }
 
-.btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active, .show > .btn-success.dropdown-toggle {
+.btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active, .show > .btn-success.dropdown-toggle, .btn-success:disabled {
   background-color: #5056CA;
   border-color: #5056CA; }
 
@@ -223,5 +223,8 @@ div#nav-tabContent {
 
 .margin220 .preloader {
   margin-top: 13.75rem; }
+
+.pl-30 {
+  padding-left: 30px; }
 
 /*# sourceMappingURL=elements.css.map */

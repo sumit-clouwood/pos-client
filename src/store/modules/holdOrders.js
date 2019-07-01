@@ -45,6 +45,13 @@ const actions = {
   holdOrder({ commit }) {
     commit(mutation.SET_ORDER_STATUS, 'on-hold')
   },
+
+  remove({ commit }, order) {
+    const orderIndex = state.getHoldOrders.findIndex(
+      holdeOrder => holdeOrder._id == order._id
+    )
+    commit(mutation.REMOVE_ORDER, orderIndex)
+  },
 }
 
 const mutations = {
@@ -65,6 +72,9 @@ const mutations = {
   },
   [mutation.PAGE_LOOKUP](state, pageLookups) {
     state.pageLookups = pageLookups
+  },
+  [mutation.REMOVE_ORDER](state, index) {
+    state.getHoldOrders.splice(index, 1)
   },
 }
 

@@ -41,7 +41,7 @@ const router = new Router({
       component: DineIn,
     },
     {
-      path: '/delivery-manager',
+      path: '/delivery-manager/:brand_id/:store_id/',
       name: 'DeliveryManager',
       component: DeliveryManagerInit,
     },

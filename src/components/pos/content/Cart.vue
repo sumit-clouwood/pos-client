@@ -5,7 +5,7 @@
       <Items />
       <HoldingOrders />
     </div>
-    <PayNow v-show="order" />
+    <PayNow />
     <Footer />
   </div>
 </template>

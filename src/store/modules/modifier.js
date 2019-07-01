@@ -74,6 +74,21 @@ const getters = {
     return modifier
   },
 
+  getModifierSubgroup: (state, getters) => modifierId => {
+    let modifier = {}
+    state.itemModifiers.forEach(item => {
+      const itemModifierSubgroups = getters.itemModifiers(item.itemId)
+      itemModifierSubgroups.forEach(subgroup => {
+        subgroup.modifiers.forEach(submod => {
+          if (submod._id == modifierId) {
+            modifier = subgroup
+          }
+        })
+      })
+    })
+    return modifier
+  },
+
   //get modifiers specific to item id from current modifiers list not from groups
   //this getter is used in rendering
   itemModifiers: state => itemId => {

@@ -1,5 +1,5 @@
 <template>
-  <div class="contain-body-class">
+  <div>
     <DeliveryManager />
   </div>
 </template>
@@ -19,6 +19,8 @@ export default {
 }
 </script>
 
-<style lang="scss">
-/*@import '../assets/sass/deliveryManager';*/
+<style lang="css">
+@import '../../src/assets/css/style.css';
+
+@import '../../public/css/deliveryManager.css';
 </style>

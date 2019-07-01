@@ -200,12 +200,14 @@ export default {
       customer_title: state => state.customer.modalStatus,
       loyalty: state => state.loyalty.loyalty,
       fetchDeliveryAreas: state =>
-        state.customer.fetchDeliveryAreas.filter(function(u) {
-          //Fetch Delivery Areas in add Customer Form at POS screen
-          if (u.store_id == state.context.storeId) {
-            return u.item_status
-          }
-        }),
+        state.customer.fetchDeliveryAreas
+          ? state.customer.fetchDeliveryAreas.filter(function(u) {
+              //Fetch Delivery Areas in add Customer Form at POS screen
+              if (u.store_id == state.context.storeId) {
+                return u.item_status
+              }
+            })
+          : false,
       customerCreateStatus: state => state.customer.responseInformation,
       customerId: state => state.customer.customer._id,
       customerGroup: state =>
