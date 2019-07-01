@@ -13,8 +13,8 @@ export default {
     DispatchScreen,
   },
   mounted() {
-    $('body').removeAttr('class')
-    $('body').attr('class', 'fixed-nav sticky-footer bg-dark dispatch-screen')
+    /*$('body').removeAttr('class')
+    $('body').attr('class', 'fixed-nav sticky-footer bg-dark dispatch-screen')*/
   },
   methods: {
     toggleFullScreen: function() {

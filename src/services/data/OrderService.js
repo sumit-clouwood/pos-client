@@ -29,10 +29,9 @@ export default {
   fetchOnlineOrderDetails(...[orderid, locationId]) {
     return DataService.get(`/auth/online-order-list/${locationId}/${orderid}`)
   },
-  getOrders(query, limit, orderBy, orderStatus, page) {
+  getOrders(query, limit, orderBy, orderStatus, page, pageId, storeId) {
     return DataService.get(
-      // `/model/orders?page_id=orders_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=order_status&orderStatus=${orderStatus}`
-      `/model/orders?page_id=orders_main_tbl&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}&order_status=${orderStatus}`
+      `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}&order_status=${orderStatus}&store_id=${storeId}`
     )
   },
   getGlobalDetails(modal, id) {

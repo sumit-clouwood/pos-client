@@ -7,12 +7,19 @@ export default {
     )
   },
 
-  getDMOrderDetails(...[page_id, query, limit, page, orderBy]) {
+  getDMOrderDetails(
+    ...[query, limit, orderBy, orderStatus, page, pageId, storeId]
+  ) {
     return DataService.get(
-      //?page_id=home_delivery_new&query=&limit=99999999&ascending=1&page=1&byColumn=0&orderBy=real_created_datetime
-      `/model/orders?page_id=${page_id}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}`
+      `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}&order_status=${orderStatus}&store_id=${storeId}`,
+      'brand'
     )
   },
+
+  getUsers() {
+    return DataService.get('/model/users?no_limit=true', 'brand')
+  },
+
   dispatchOrders(...[location_id, is_pagination, pageSize, pageNumber]) {
     return DataService.get(
       `/auth/deliveryManager/dispatch/screen/?location_id=${location_id}&is_pagination=${is_pagination}&pagesize=${pageSize}&pagenumber=${pageNumber}`

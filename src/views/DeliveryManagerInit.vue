@@ -13,14 +13,14 @@ export default {
     DeliveryManager,
   },
   mounted() {
-    $('body').removeAttr('class')
-    $('body').attr('class', 'fixed-nav sticky-footer bg-dark dm-manager')
+    let getBody = $('body')
+    getBody.removeAttr('class')
+    getBody.attr('class', 'fixed-nav sticky-footer bg-dark dm-manager')
   },
 }
 </script>
 
 <style lang="css">
 @import '../../src/assets/css/style.css';
-
 @import '../../public/css/deliveryManager.css';
 </style>
