@@ -17,53 +17,53 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
-import * as CONSTANTS from '@/constants'
+import { mapActions, mapGetters, mapState } from "vuex";
+import * as CONSTANTS from "@/constants";
 
 export default {
-  name: 'PaymentMethods',
+  name: "PaymentMethods",
   computed: {
-    ...mapGetters('payment', ['methods']),
+    ...mapGetters("payment", ["methods"]),
     ...mapState({
-      activeMethod: state => state.checkoutForm.method.name,
+      activeMethod: state => state.checkoutForm.method.name
     }),
     ...mapState({
-      selectedModal: state => state.location.setModal,
-    }),
+      selectedModal: state => state.location.setModal
+    })
   },
   methods: {
     getToggle(method) {
       if (method.type == CONSTANTS.LOYALTY) {
-        return 'modal'
+        return "modal";
       }
-      return ''
+      return "";
     },
     image(imgPath) {
       // return process.env.BASE_URL + imgPath
       if (imgPath) {
-        if (imgPath.indexOf('https://') != -1) {
-          return imgPath
+        if (imgPath.indexOf("https://") != -1) {
+          return imgPath;
         } else {
-          return process.env.BASE_URL + imgPath
+          return process.env.BASE_URL + imgPath;
         }
       } else {
-        return 'https://fakeimg.pl/46x46/?text=Third&font=lobster%22'
+        return "https://fakeimg.pl/46x46/?text=Third&font=lobster%22";
       }
     },
     getTarget(method) {
       if (method.type == CONSTANTS.LOYALTY) {
-        if (this.selectedModal == '#manage-customer') {
-          return '#search-loyalty-customer'
+        if (this.selectedModal == "#manage-customer") {
+          return "#search-loyalty-customer";
         } else {
-          this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
-          return '#loyalty-payment'
+          this.$store.dispatch("checkoutForm/calculateSpendLoyalty");
+          return "#loyalty-payment";
         }
       }
-      return ''
+      return "";
     },
-    ...mapActions('checkoutForm', ['setMethod']),
-  },
-}
+    ...mapActions("checkoutForm", ["setMethod"])
+  }
+};
 </script>
 <style lang="sass" scoped>
 img

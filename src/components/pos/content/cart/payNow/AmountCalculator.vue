@@ -17,93 +17,93 @@
     <div id="clearcalc" class="" @click="reset()">c</div>
     <div class="payment-key" @click="set('0')">0</div>
     <div class="payment-key" @click="set('.')">.</div>
-    <div id="add-amt" @click="addAmount">{{ _t('+ Add') }}</div>
+    <div id="add-amt" @click="addAmount">{{ _t("+ Add") }}</div>
   </div>
 </template>
 
 <script>
 /* global showModal, $*/
-import * as CONST from '@/constants'
-import { mapState, mapGetters } from 'vuex'
+import * as CONST from "@/constants";
+import { mapState, mapGetters } from "vuex";
 export default {
-  name: 'AmountCalculator',
+  name: "AmountCalculator",
   computed: {
-    ...mapGetters('location', ['_t']),
-    ...mapState('checkoutForm', ['method']),
+    ...mapGetters("location", ["_t"]),
+    ...mapState("checkoutForm", ["method"])
   },
   data() {
     return {
-      init: false,
-    }
+      init: false
+    };
   },
   methods: {
     addAmount() {
-      $('#payment-breakdown').show()
-      this.$store.commit('checkoutForm/setAction', 'add')
-      this.$store.dispatch('checkoutForm/validatePayment').then(() => {
+      $("#payment-breakdown").show();
+      this.$store.commit("checkoutForm/setAction", "add");
+      this.$store.dispatch("checkoutForm/validatePayment").then(() => {
         if (this.method.type == CONST.GIFT_CARD) {
-          showModal('#Gift-card-payemnt')
+          showModal("#Gift-card-payemnt");
         } else if (this.method.reference_code) {
           /*else if (this.method.type == CONST.LOYALTY) {
           //show loyalty popup if needed
         }*/
-          showModal('#card-payemnt')
+          showModal("#card-payemnt");
         } else {
           //cash payments
-          this.$store.dispatch('checkoutForm/addAmount').then(payable => {
+          this.$store.dispatch("checkoutForm/addAmount").then(payable => {
             //check if full payment was made, then just start processing the order straight away
             if (
               payable <= 0.1
               //&&
               //this.$store.state.checkoutForm.payments.length == 1
             ) {
-              this.$store.commit('checkoutForm/setAction', 'pay')
-              $('#payment-screen-footer').prop('disabled', true)
-              $('#payment-msg').modal('show')
+              this.$store.commit("checkoutForm/setAction", "pay");
+              $("#payment-screen-footer").prop("disabled", true);
+              $("#payment-msg").modal("show");
 
               this.$store
                 .dispatch(
-                  'checkout/pay',
+                  "checkout/pay",
                   this.$store.state.order.orderType.OTApi
                 )
                 .then(() => {
                   if (this.changedAmount >= 0.1) {
-                    $('#payment-msg').modal('hide')
-                    $('#change-amount').modal('show')
+                    $("#payment-msg").modal("hide");
+                    $("#change-amount").modal("show");
                   } else if (this.msg) {
-                    $('#payment-msg').modal('show')
+                    $("#payment-msg").modal("show");
                   }
                   setTimeout(function() {
-                    $('#payment-screen-footer').prop('disabled', false)
-                  }, 1000)
+                    $("#payment-screen-footer").prop("disabled", false);
+                  }, 1000);
                 })
                 .catch(() => {
                   setTimeout(() => {
-                    $('#payment-msg').modal('hide')
-                    $('#payment-screen-footer').prop('disabled', false)
-                  }, 500)
-                })
+                    $("#payment-msg").modal("hide");
+                    $("#payment-screen-footer").prop("disabled", false);
+                  }, 500);
+                });
             }
-          })
+          });
         }
-      })
+      });
       // this.$store.commit('checkoutForm/setAction', 'pay')
     },
     set(amount) {
       if (!this.init) {
-        this.$store.commit('checkoutForm/appendAmount', '')
-        this.init = true
+        this.$store.commit("checkoutForm/appendAmount", "");
+        this.init = true;
       }
-      this.$store.commit('checkoutForm/appendAmount', amount)
+      this.$store.commit("checkoutForm/appendAmount", amount);
     },
     reset() {
-      this.$store.dispatch('checkoutForm/resetAmount')
+      this.$store.dispatch("checkoutForm/resetAmount");
     },
     removeDigit() {
-      this.$store.commit('checkoutForm/removeDigit')
-    },
-  },
-}
+      this.$store.commit("checkoutForm/removeDigit");
+    }
+  }
+};
 </script>
 <style lang="sass" scoped>
 .amount-keypad

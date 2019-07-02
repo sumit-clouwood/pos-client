@@ -10,11 +10,11 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ _t('Card Number') }}</h4>
+          <h4 class="customer-title">{{ _t("Card Number") }}</h4>
         </div>
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
-            <p>{{ _t('Enter Card Reference Code') }}</p>
+            <p>{{ _t("Enter Card Reference Code") }}</p>
             <input
               type="text"
               class="add-email-from"
@@ -34,7 +34,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              {{ _t('Cancel') }}
+              {{ _t("Cancel") }}
             </button>
             <button
               class="btn btn-success btn-large popup-btn-save"
@@ -42,7 +42,7 @@
               id="gift-card-btn"
               @click="payByCard('#card-payemnt')"
             >
-              {{ _t('Add') }}
+              {{ _t("Add") }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -52,62 +52,62 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 /* global $ hideModal */
 export default {
-  name: 'GiftCard',
+  name: "GiftCard",
   data: function() {
     return {
-      code: '',
-      error: null,
-    }
+      code: "",
+      error: null
+    };
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
     payByCard(target) {
-      this.error = null
-      if (this.code == '') {
-        this.error = this._t('Please enter last 4 digit of card')
-        $(target).modal('show')
+      this.error = null;
+      if (this.code == "") {
+        this.error = this._t("Please enter last 4 digit of card");
+        $(target).modal("show");
       } else {
         this.$store
-          .dispatch('checkoutForm/addCardAmount', this.code)
+          .dispatch("checkoutForm/addCardAmount", this.code)
           .then(payable => {
-            $(target).modal('hide')
-            this.code = ''
+            $(target).modal("hide");
+            this.code = "";
             if (
               payable <= 0.1 ||
-              this.$store.state.checkoutForm.action == 'pay'
+              this.$store.state.checkoutForm.action == "pay"
             ) {
-              if (this.$store.getters['checkoutForm/validate']) {
+              if (this.$store.getters["checkoutForm/validate"]) {
                 this.$store
                   .dispatch(
-                    'checkout/pay',
+                    "checkout/pay",
                     this.$store.state.order.orderType.OTApi
                   )
                   .then(() => {
-                    $('#payment-msg').modal('show')
+                    $("#payment-msg").modal("show");
                     setTimeout(function() {
-                      $('#payment-screen-footer').prop('disabled', false)
-                    }, 1000)
+                      $("#payment-screen-footer").prop("disabled", false);
+                    }, 1000);
                   })
                   .catch(() => {
                     setTimeout(() => {
-                      $('#payment-msg').modal('hide')
-                      $('#payment-screen-footer').prop('disabled', false)
-                    }, 500)
-                  })
+                      $("#payment-msg").modal("hide");
+                      $("#payment-screen-footer").prop("disabled", false);
+                    }, 500);
+                  });
               }
-              hideModal('#card-payemnt')
+              hideModal("#card-payemnt");
             }
           })
-          .catch(error => (this.error = error))
+          .catch(error => (this.error = error));
       }
-    },
-  },
-}
+    }
+  }
+};
 </script>
 <style lang="sass" scoped>
 .msg

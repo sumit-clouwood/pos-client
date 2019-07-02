@@ -7,7 +7,7 @@
         <div class="modal-content">
           <div class="modal-header customer-header">
             <h4 class="customer-title">
-              {{ customer_title }} {{ _t('customer') }}
+              {{ customer_title }} {{ _t("customer") }}
             </h4>
             <button type="button" class="close" data-dismiss="modal">
               &times;
@@ -26,7 +26,7 @@
                 data-dismiss="modal"
                 id="close-customer"
               >
-                {{ _t('Cancel') }}
+                {{ _t("Cancel") }}
               </button>
               <button
                 class="btn btn-success btn-large"
@@ -34,7 +34,7 @@
                 id="post_announcement"
                 v-on:click="customerAction(customer_title)"
               >
-                {{ _t('Save') }}
+                {{ _t("Save") }}
               </button>
             </div>
             <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -52,89 +52,89 @@
 
 <script>
 /*global $ */
-import { mapActions, mapState, mapGetters } from 'vuex'
-import InformationPopup from '@/components/pos/content/InformationPopup'
-import CustomerForm from './CustomerForm'
+import { mapActions, mapState, mapGetters } from "vuex";
+import InformationPopup from "@/components/pos/content/InformationPopup";
+import CustomerForm from "./CustomerForm";
 
 export default {
-  name: 'CreateNewCustomer',
+  name: "CreateNewCustomer",
   components: {
     InformationPopup,
-    CustomerForm,
+    CustomerForm
   },
   data() {
     return {
-      error: '',
-    }
+      error: ""
+    };
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"]),
     ...mapState({
       customer_title: state => state.customer.modalStatus,
-      customerCreateStatus: state => state.customer.responseInformation,
-    }),
+      customerCreateStatus: state => state.customer.responseInformation
+    })
   },
   methods: {
-    ...mapActions('customer', ['createAction', 'updateAction']),
+    ...mapActions("customer", ["createAction", "updateAction"]),
     displayValidationErrors(errorData) {
-      let error = ''
-      let validationError = {}
-      if (errorData && errorData['status'] == 'form_errors') {
-        $.each(errorData['message'], function(key, val) {
+      let error = "";
+      let validationError = {};
+      if (errorData && errorData["status"] == "form_errors") {
+        $.each(errorData["message"], function(key, val) {
           $.each(val, function(index, data) {
-            error += data
-          })
-        })
+            error += data;
+          });
+        });
         validationError = {
-          status: 'flash_message',
-          flash_message: error,
-        }
-        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+          status: "flash_message",
+          flash_message: error
+        };
+        this.$store.commit("customer/SET_RESPONSE_MESSAGES", validationError);
       }
-      if (error == '') {
+      if (error == "") {
         validationError = {
-          status: 'flash_message',
-          flash_message: 'Customer Added Successfully',
-        }
-        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
-        $('#close-customer').click()
-        $('#customer').modal('toggle')
-        $('#information-popup').modal('show')
+          status: "flash_message",
+          flash_message: "Customer Added Successfully"
+        };
+        this.$store.commit("customer/SET_RESPONSE_MESSAGES", validationError);
+        $("#close-customer").click();
+        $("#customer").modal("toggle");
+        $("#information-popup").modal("show");
       } else {
-        $('#post_announcement').attr('disabled', false)
-        $('#information-popup').modal('show')
+        $("#post_announcement").attr("disabled", false);
+        $("#information-popup").modal("show");
       }
     },
     customerAction(modalStatus) {
-      const errors = this.$refs.form.validate()
+      const errors = this.$refs.form.validate();
       if (errors.count === 0) {
-        $('#post_announcement').attr('disabled', true) //Disable Save button if pressed
-        const customerData = this.$refs.form.getData()
-        if (modalStatus == 'Add') {
+        $("#post_announcement").attr("disabled", true); //Disable Save button if pressed
+        const customerData = this.$refs.form.getData();
+        if (modalStatus == "Add") {
           this.createAction({
             data: customerData,
-            model: 'brand_customers',
-            customer: false,
+            model: "brand_customers",
+            customer: false
           }).then(() => {
-            let errorData = this.customerCreateStatus
-            this.displayValidationErrors(errorData)
-          })
+            let errorData = this.customerCreateStatus;
+            this.displayValidationErrors(errorData);
+          });
         }
-        if (modalStatus == 'Edit') {
+        if (modalStatus == "Edit") {
           let actionDetails = {
-            id: localStorage.getItem('editItemKey'),
-            action: 'edit',
-            model: 'brand_customers',
-            data: customerData,
-          }
-          this.updateAction(actionDetails)
+            id: localStorage.getItem("editItemKey"),
+            action: "edit",
+            model: "brand_customers",
+            data: customerData
+          };
+          this.updateAction(actionDetails);
         }
         /*if (
           this.customerCreateStatus &&
           this.customerCreateStatus.status === 'ok'
         ) {}*/
       }
-    },
-  },
-}
+    }
+  }
+};
 </script>

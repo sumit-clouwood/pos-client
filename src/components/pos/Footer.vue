@@ -25,7 +25,7 @@
                 class=""
               ></path>
             </svg>
-            <span> {{ _t('Customer') }}</span>
+            <span> {{ _t("Customer") }}</span>
           </a>
         </li>
         <li
@@ -53,7 +53,7 @@
                 class=""
               ></path>
             </svg>
-            <span>{{ _t('Hold Orders') }}</span>
+            <span>{{ _t("Hold Orders") }}</span>
           </a>
         </li>
         <li
@@ -81,7 +81,7 @@
                 class=""
               ></path>
             </svg>
-            <span>{{ _t('New Orders') }}</span>
+            <span>{{ _t("New Orders") }}</span>
           </a>
         </li>
         <li
@@ -96,7 +96,7 @@
               :alt="_t('Loyalty')"
               v-if="!loyaltyCard"
             />
-            <span v-if="!loyaltyCard">{{ _t('Loyalty') }}</span>
+            <span v-if="!loyaltyCard">{{ _t("Loyalty") }}</span>
             <span v-if="loyaltyCard">
               <span
                 >{{
@@ -104,7 +104,7 @@
                     ? 0
                     : formatPrice(loyaltyCard.balance)
                 }}
-                {{ _t('Loyalty') }}</span
+                {{ _t("Loyalty") }}</span
               >
               <br />
               <span class="shorten-sentence">
@@ -142,7 +142,7 @@
                 class=""
               ></path>
             </svg>
-            <span>{{ _t('Send to Delivery') }}</span>
+            <span>{{ _t("Send to Delivery") }}</span>
           </a>
         </li>
         <li
@@ -172,7 +172,7 @@
                 class=""
               ></path>
             </svg>
-            <span>{{ _t('Select') + ' ' + _t('Discount') }}</span>
+            <span>{{ _t("Select") + " " + _t("Discount") }}</span>
           </a>
         </li>
         <li
@@ -198,7 +198,7 @@
                 class=""
               ></path>
             </svg>
-            <span> {{ _t('Dinning Options') }}</span>
+            <span> {{ _t("Dinning Options") }}</span>
           </a>
         </li>
         <li
@@ -224,7 +224,7 @@
                 class=""
               ></path>
             </svg>
-            <span>{{ _t('Add Note') }}</span>
+            <span>{{ _t("Add Note") }}</span>
           </a>
         </li>
       </ul>
@@ -264,13 +264,13 @@
                   class=""
                 ></path>
               </svg>
-              <span>{{ _t('Send to Delivery') }}</span>
+              <span>{{ _t("Send to Delivery") }}</span>
             </a>
           </li>
           <li class="pay-now" v-show="orderType.OTApi !== 'call_center'">
             <a href="javascript:void(0)">
               <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
-              <span class="pay-btn">{{ _t('Pay Now') }}</span>
+              <span class="pay-btn">{{ _t("Pay Now") }}</span>
             </a>
           </li>
         </ul>
@@ -311,38 +311,38 @@
 </template>
 
 <script>
-import Invoice from '../pos/content/cart/payNow/Invoice'
-import DineIn from './footer/popups/DineIn'
-import AddNote from './footer/popups/AddNote'
-import Discount from './footer/popups/Discount'
-import OnlineOrder from './header/popups/OnlineOrder'
-import SendToDelivery from './footer/popups/SendToDelivery'
-import ManageCustomer from './footer/popups/ManageCustomer'
-import OfflineManageCustomer from './footer/popups/OfflineManageCustomer'
-import CartItemDiscount from './footer/popups/CartItemDiscount'
-import OrderItemPopup from './content/cart/newOrders/items/Popup'
-import CustomerNote from '../pos/footer/popups/ManageCustomer/CustomerNote'
-import CustomerCreate from '../pos/footer/popups/ManageCustomer/CustomerCreate'
-import CreateCustomerAddress from './footer/popups/ManageCustomer/CustomerAddress/CreateCustomerAddress'
-import CartAddEmail from '../pos/content/cart/payNow/popups/AddEmail'
-import CartAmountChange from '../pos/content/cart/payNow/popups/AmountChange'
-import CartPaymentMsg from '../pos/content/cart/payNow/popups/PaymentMsg'
-import CartTipAmount from '../pos/content/cart/payNow/popups/TipAmount'
-import CustomerInformation from './footer/popups/ManageCustomer/CustomerInformation'
-import CustomerNotes from './footer/popups/ManageCustomer/CustomerInformation/CustomerNotes'
-import SelectCustomerAddress from '../pos/footer/popups/ManageCustomer/CustomerAddress/SelectCustomerAddress'
-import GiftCard from '../pos/content/cart/newOrders/popup/GiftCard.vue'
-import Card from '../pos/content/cart/newOrders/popup/Card.vue'
-import GiftCardInfo from '../pos/content/cart/newOrders/popup/GiftCardInfo.vue'
-import SearchLoyaltyCustomer from '../pos/footer/popups/SearchLoyaltyCustomer'
-import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
-import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
-import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
+import Invoice from "../pos/content/cart/payNow/Invoice";
+import DineIn from "./footer/popups/DineIn";
+import AddNote from "./footer/popups/AddNote";
+import Discount from "./footer/popups/Discount";
+import OnlineOrder from "./header/popups/OnlineOrder";
+import SendToDelivery from "./footer/popups/SendToDelivery";
+import ManageCustomer from "./footer/popups/ManageCustomer";
+import OfflineManageCustomer from "./footer/popups/OfflineManageCustomer";
+import CartItemDiscount from "./footer/popups/CartItemDiscount";
+import OrderItemPopup from "./content/cart/newOrders/items/Popup";
+import CustomerNote from "../pos/footer/popups/ManageCustomer/CustomerNote";
+import CustomerCreate from "../pos/footer/popups/ManageCustomer/CustomerCreate";
+import CreateCustomerAddress from "./footer/popups/ManageCustomer/CustomerAddress/CreateCustomerAddress";
+import CartAddEmail from "../pos/content/cart/payNow/popups/AddEmail";
+import CartAmountChange from "../pos/content/cart/payNow/popups/AmountChange";
+import CartPaymentMsg from "../pos/content/cart/payNow/popups/PaymentMsg";
+import CartTipAmount from "../pos/content/cart/payNow/popups/TipAmount";
+import CustomerInformation from "./footer/popups/ManageCustomer/CustomerInformation";
+import CustomerNotes from "./footer/popups/ManageCustomer/CustomerInformation/CustomerNotes";
+import SelectCustomerAddress from "../pos/footer/popups/ManageCustomer/CustomerAddress/SelectCustomerAddress";
+import GiftCard from "../pos/content/cart/newOrders/popup/GiftCard.vue";
+import Card from "../pos/content/cart/newOrders/popup/Card.vue";
+import GiftCardInfo from "../pos/content/cart/newOrders/popup/GiftCardInfo.vue";
+import SearchLoyaltyCustomer from "../pos/footer/popups/SearchLoyaltyCustomer";
+import Loyalty from "../pos/content/cart/newOrders/popup/Loyalty.vue";
+import OnlineOrderDetails from "./header/popups/OnlineOrderDetails";
+import OrderDetailsPopup from "@/components/pos/content/OrderDetailPopup";
 
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapActions, mapState, mapGetters } from "vuex";
 /* global $ */
 export default {
-  name: 'Footer',
+  name: "Footer",
   props: {},
   components: {
     DineIn,
@@ -371,66 +371,66 @@ export default {
     SearchLoyaltyCustomer,
     Loyalty,
     Invoice,
-    OrderDetailsPopup,
+    OrderDetailsPopup
   },
   data() {
     return {
-      vbutton: '',
-    }
+      vbutton: ""
+    };
   },
   computed: {
-    ...mapState('checkout', ['print']),
-    ...mapState('order', ['orderType', 'cartType']),
-    ...mapState('sync', ['online']),
-    ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapState("checkout", ["print"]),
+    ...mapState("order", ["orderType", "cartType"]),
+    ...mapState("sync", ["online"]),
+    ...mapGetters("location", ["formatPrice", "_t"]),
     ...mapState({
       selectedModal: state =>
-        state.location.setModal == '#loyalty-payment'
-          ? '#manage-customer'
-          : state.location.setModal,
+        state.location.setModal == "#loyalty-payment"
+          ? "#manage-customer"
+          : state.location.setModal
     }),
     ...mapState({
-      loyaltyCard: state => state.customer.loyalty.card,
+      loyaltyCard: state => state.customer.loyalty.card
     }),
-    ...mapState({ selectedCustomer: state => state.customer.customer.name }),
+    ...mapState({ selectedCustomer: state => state.customer.customer.name })
   },
   methods: {
     viewHoldOrders() {
-      this.vbutton = 'new'
-      this.$store.commit('order/SET_CART_TYPE', 'hold')
-      this.$store.dispatch('holdOrders/getHoldOrders')
+      this.vbutton = "new";
+      this.$store.commit("order/SET_CART_TYPE", "hold");
+      this.$store.dispatch("holdOrders/getHoldOrders");
     },
-    ...mapActions('discount', ['validateOrderDiscounts']),
+    ...mapActions("discount", ["validateOrderDiscounts"]),
     setOrderType(opt) {
-      this.$store.commit('order/ORDER_TYPE', opt)
+      this.$store.commit("order/ORDER_TYPE", opt);
     },
     newOrders() {
-      this.vbutton = 'hold'
-      this.$store.commit('order/SET_CART_TYPE', 'new')
-    },
+      this.vbutton = "hold";
+      this.$store.commit("order/SET_CART_TYPE", "new");
+    }
   },
   updated() {
-    $('ul.ullist-icons').slick({
+    $("ul.ullist-icons").slick({
       slidesToShow: 5,
       slidesToScroll: 1,
       accessibility: false,
       dots: false,
       arrows: true,
       nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
-      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
-    })
+      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>'
+    });
   },
 
   mounted() {
-    $('ul.ullist-icons').slick({
+    $("ul.ullist-icons").slick({
       slidesToShow: 5,
       slidesToScroll: 1,
       accessibility: false,
       dots: false,
       arrows: true,
       nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
-      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
-    })
-  },
-}
+      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>'
+    });
+  }
+};
 </script>

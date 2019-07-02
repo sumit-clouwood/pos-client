@@ -1,18 +1,18 @@
 <template>
   <div id="total-order-wrap" class="total-order">
     <div class="order-notes">
-      <p class="notes-title">{{ _t('Notes') }}</p>
+      <p class="notes-title">{{ _t("Notes") }}</p>
       <p v-if="orderNotes">
         {{ orderNotes }}
       </p>
     </div>
     <div class="order-confirm-amt" id="total-confirm-order">
       <div class="order-amt-title">
-        <p class="text-uppercase">{{ _t('Sub Total') }} :</p>
-        <p class="text-uppercase">{{ _t('Surcharges') }} :</p>
-        <p class="text-uppercase">{{ _t('Order Discount') }} :</p>
-        <p class="text-uppercase">{{ _t('Tax') }} :</p>
-        <p class="text-uppercase">{{ _t('Bill Amount') }} :</p>
+        <p class="text-uppercase">{{ _t("Sub Total") }} :</p>
+        <p class="text-uppercase">{{ _t("Surcharges") }} :</p>
+        <p class="text-uppercase">{{ _t("Order Discount") }} :</p>
+        <p class="text-uppercase">{{ _t("Tax") }} :</p>
+        <p class="text-uppercase">{{ _t("Bill Amount") }} :</p>
       </div>
       <div class="order-amt-charges">
         <p>{{ formatPrice(subTotal || 0) }}</p>
@@ -26,21 +26,21 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 export default {
-  name: 'SendToDeliveryContentPaymentDetails',
+  name: "SendToDeliveryContentPaymentDetails",
   props: {},
   computed: {
     ...mapState({
-      orderNotes: state => state.order.orderNote,
+      orderNotes: state => state.order.orderNote
     }),
-    ...mapGetters('order', ['orderTotal', 'subTotal']),
-    ...mapGetters('tax', ['totalTax']),
-    ...mapGetters('surcharge', ['surcharge']),
-    ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapGetters('discount', ['orderDiscountWithoutTax']),
-  },
-}
+    ...mapGetters("order", ["orderTotal", "subTotal"]),
+    ...mapGetters("tax", ["totalTax"]),
+    ...mapGetters("surcharge", ["surcharge"]),
+    ...mapGetters("location", ["formatPrice", "_t"]),
+    ...mapGetters("discount", ["orderDiscountWithoutTax"])
+  }
+};
 </script>
 <style lang="scss" scoped>
 #total-confirm-order p {

@@ -1,18 +1,18 @@
 <template>
   <div class="customer-insight">
     <div class="title-cu">
-      <h2>{{ _t('Customer Insights') }}</h2>
+      <h2>{{ _t("Customer Insights") }}</h2>
     </div>
     <div class="dob-customer-insight">
       <ul class="ullist-dob">
         <li>
-          {{ _t('Birthday') }} : <span>{{ insight.birthday }}</span>
+          {{ _t("Birthday") }} : <span>{{ insight.birthday }}</span>
         </li>
         <li>
-          {{ _t('Age') }} : <span>{{ getAge(insight.birthday) }}</span>
+          {{ _t("Age") }} : <span>{{ getAge(insight.birthday) }}</span>
         </li>
         <li>
-          {{ _t('Gender') }} : <span>{{ insight.gender }}</span>
+          {{ _t("Gender") }} : <span>{{ insight.gender }}</span>
         </li>
       </ul>
     </div>
@@ -20,7 +20,7 @@
     <div>
       <div class="last-order-wrap">
         <div class="insight-last-order">
-          <h3>{{ _t('Last Order') }}</h3>
+          <h3>{{ _t("Last Order") }}</h3>
           <p class="last-order-time">
             {{ convertDatetime(insight.last_order_datetime) }}
           </p>
@@ -34,20 +34,20 @@
         <div class="insight-last-order">
           <ul class="ullist-business-slider">
             <li>
-              {{ _t('Total Business') }}
+              {{ _t("Total Business") }}
               <span>{{ insight.total_orders }}</span>
             </li>
             <li>
-              {{ _t('Cancelled') }} <span>{{ cancelOrders }}</span>
+              {{ _t("Cancelled") }} <span>{{ cancelOrders }}</span>
             </li>
           </ul>
           <div class="total-amount-business-slider">
-            <p>{{ _t('Total Amount') }}</p>
+            <p>{{ _t("Total Amount") }}</p>
             <h3>{{ lastOrder.currency_code }} {{ lastOrder.balance_due }}</h3>
           </div>
         </div>
         <div class="insight-last-order">
-          <h3>{{ _t('Favorites') }}</h3>
+          <h3>{{ _t("Favorites") }}</h3>
           <p
             class="last-order-details"
             v-for="(favItem, key) in insight.favorites"
@@ -57,21 +57,21 @@
               LookupData.get({
                 collection: favoriteItems._id,
                 matchWith: favItem.menu_item,
-                selection: 'name',
+                selection: "name"
               })
             }}
           </p>
         </div>
       </div>
     </div>
-    <div class="title-cu">{{ _t('Notes') }}:</div>
+    <div class="title-cu">{{ _t("Notes") }}:</div>
     <div class="customer-insights-notes">
       <div>
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>{{ _t('Date') }}</th>
-              <th>{{ _t('Note') }}</th>
+              <th>{{ _t("Date") }}</th>
+              <th>{{ _t("Note") }}</th>
             </tr>
           </thead>
           <tbody id="notes_data">
@@ -94,7 +94,7 @@
           data-toggle="modal"
           data-target="#admin-popup"
         >
-          {{ _t('+ Add') }}
+          {{ _t("+ Add") }}
         </button>
       </div>
     </div>
@@ -103,12 +103,12 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
-import CustomerFeedback from './CustomerFeedback'
-import DateTime from '@/mixins/DateTime'
+import { mapState, mapGetters } from "vuex";
+import CustomerFeedback from "./CustomerFeedback";
+import DateTime from "@/mixins/DateTime";
 
 function getCustomerList(state) {
-  return state.customer.customer
+  return state.customer.customer;
 }
 /* eslint-disable */
 export default {

@@ -7,7 +7,7 @@
     </div>
     <div class="online">
       <div class="fa fa-fw fa-circle" :class="{ online: online }"></div>
-      <div>{{ _t('Online') }}</div>
+      <div>{{ _t("Online") }}</div>
     </div>
     <ul>
       <li v-if="availableLanguages">
@@ -33,7 +33,7 @@
         data-target="#online-order"
       >
         <a class="btn-part" href="javascript:void(0)"
-          >{{ _t('Online') }} <span class="online-digit">2</span></a
+          >{{ _t("Online") }} <span class="online-digit">2</span></a
         >
       </li>
     </ul>
@@ -55,73 +55,73 @@
     </li>
     <ul class="setting-dropdown">
       <li>
-        <a href="javascript:void(0)">{{ _t('Printers') }}</a>
+        <a href="javascript:void(0)">{{ _t("Printers") }}</a>
       </li>
       <li>
-        <a href="javascript:void(0)">{{ _t('Logout') }}</a>
+        <a href="javascript:void(0)">{{ _t("Logout") }}</a>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
-import bootstrap from '@/bootstrap'
+import { mapState, mapGetters } from "vuex";
+import bootstrap from "@/bootstrap";
 export default {
-  name: 'TopNavRight',
+  name: "TopNavRight",
   props: {},
   data: function() {
     return {
-      onlineOrdersCount: 0,
-    }
+      onlineOrdersCount: 0
+    };
   },
   computed: {
     vlocale: {
       get() {
-        return this.$store.state.location.locale
+        return this.$store.state.location.locale;
       },
       set(val) {
-        return this.$store.commit('location/SET_LOCALE', val)
-      },
+        return this.$store.commit("location/SET_LOCALE", val);
+      }
     },
-    ...mapState('location', ['availableLanguages', 'language']),
-    ...mapState('sync', ['online']),
+    ...mapState("location", ["availableLanguages", "language"]),
+    ...mapState("sync", ["online"]),
     ...mapState({
       latestOnlineOrders: state =>
         state.order.onlineOrders ? state.order.onlineOrders.length : 0,
       username: state =>
-        state.auth.userDetails ? state.auth.userDetails.name : '',
+        state.auth.userDetails ? state.auth.userDetails.name : ""
     }),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
     changeLanguage(locale) {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
-      bootstrap.loadUI(this.$store)
-      this.$store.dispatch('location/changeLanguage', locale)
+      bootstrap.loadUI(this.$store);
+      this.$store.dispatch("location/changeLanguage", locale);
     },
     onlineOrders() {
       if (this.latestOnlineOrders == 0) {
         if (
-          localStorage.getItem('onlineOrders') != 'undefined' &&
-          JSON.parse(localStorage.getItem('onlineOrders')) != null
+          localStorage.getItem("onlineOrders") != "undefined" &&
+          JSON.parse(localStorage.getItem("onlineOrders")) != null
         ) {
           this.onlineOrdersCount = JSON.parse(
-            localStorage.getItem('onlineOrders')
-          ).length
+            localStorage.getItem("onlineOrders")
+          ).length;
         } else {
-          this.onlineOrdersCount = 0
+          this.onlineOrdersCount = 0;
         }
       } else {
-        this.onlineOrdersCount = this.latestOnlineOrders
+        this.onlineOrdersCount = this.latestOnlineOrders;
       }
-    },
+    }
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },
   mounted() {
-    this.onlineOrders()
-  },
-}
+    this.onlineOrders();
+  }
+};
 </script>
 <style lang="scss" scoped>
 /*.fa-circle:before {

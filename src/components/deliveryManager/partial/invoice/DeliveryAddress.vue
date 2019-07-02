@@ -18,7 +18,7 @@
 </template>
 <script>
 export default {
-  name: 'DeliveryAddress',
-  props: ['deliveryAddress'],
-}
+  name: "DeliveryAddress",
+  props: ["deliveryAddress"]
+};
 </script>

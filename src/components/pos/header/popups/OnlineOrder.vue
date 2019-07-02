@@ -83,7 +83,7 @@
                         orderId: order._id,
                         timestamp: order.created_timestamp,
                         orderType: 'call_center',
-                        orderQueue: 0,
+                        orderQueue: 0
                       })
                     "
                   >
@@ -97,7 +97,7 @@
                         orderId: order._id,
                         timestamp: order.created_timestamp,
                         orderType: 'call_center',
-                        orderQueue: 0,
+                        orderQueue: 0
                       })
                     "
                   >
@@ -127,71 +127,71 @@
 
 <script>
 /* global io $  */
-import moment from 'moment-timezone'
-import DateTime from '@/mixins/DateTime'
+import moment from "moment-timezone";
+import DateTime from "@/mixins/DateTime";
 
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from "vuex";
 export default {
-  name: 'OnlineOrder',
+  name: "OnlineOrder",
   props: {},
   mixins: [DateTime],
   data() {
     return {
-      customerName: '',
-    }
+      customerName: ""
+    };
   },
   mounted() {
-    const store = this.$store
-    let socket = io('https://websocket-int.erp-pos.com')
-    socket.on('sound-channel:App\\Events\\SocketBroadcast', function(
+    const store = this.$store;
+    let socket = io("https://websocket-int.erp-pos.com");
+    socket.on("sound-channel:App\\Events\\SocketBroadcast", function(
       orderData
     ) {
-      store.dispatch('order/setOnlineOrders', orderData.data)
-    })
+      store.dispatch("order/setOnlineOrders", orderData.data);
+    });
   },
   computed: {
     ...mapState({
-      locationId: state => state.location.location,
+      locationId: state => state.location.location
     }),
     ...mapState({
-      fetchAddress: state => state.customer.allOnlineAddress,
+      fetchAddress: state => state.customer.allOnlineAddress
     }),
     ...mapState({
-      locationName: state => state.location.locationName,
+      locationName: state => state.location.locationName
     }),
     ...mapState({
       country: state =>
-        typeof state.location.locationData !== 'undefined'
+        typeof state.location.locationData !== "undefined"
           ? state.location.locationData.country_name
-          : '',
+          : ""
     }),
     // ...mapGetters('location', ['getDeliveryArea']),
-    ...mapGetters('order', ['getLatestOnlineOrders']),
+    ...mapGetters("order", ["getLatestOnlineOrders"])
   },
   methods: {
     moment: function(date) {
-      moment.tz.setDefault(this.$store.state.location.setTimeZone)
+      moment.tz.setDefault(this.$store.state.location.setTimeZone);
       // moment.tz.setDefault('Asia/Jakarta')
-      return moment(date).format('MMM Do YYYY, h:mm')
+      return moment(date).format("MMM Do YYYY, h:mm");
     },
     getPaymentStatus(orderId) {
-      let orderStatus = 'unpaid'
+      let orderStatus = "unpaid";
       this.getLatestOnlineOrders.forEach(order => {
         if (order.payment_info.length) {
           order.payment_info.forEach(payment => {
             if (payment.order_id == orderId) {
-              orderStatus = payment.status
+              orderStatus = payment.status;
             }
-          })
+          });
         }
-      })
-      return orderStatus
+      });
+      return orderStatus;
     },
-    ...mapActions('checkout', ['updateOrderStatus']),
+    ...mapActions("checkout", ["updateOrderStatus"]),
     selectedOrder(order) {
-      this.$store.dispatch('order/selectedOrderDetails', order._id)
-      $('#past-order').modal('toggle')
-    },
-  },
-}
+      this.$store.dispatch("order/selectedOrderDetails", order._id);
+      $("#past-order").modal("toggle");
+    }
+  }
+};
 </script>

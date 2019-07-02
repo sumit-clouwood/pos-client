@@ -44,16 +44,16 @@
 </template>
 
 <script>
-import SystemNavigation from '@/components/SystemNavigation'
-import DMMenu from '@/components/deliveryManager/header/DMMenu'
-import DeliveryAssistant from '@/components/deliveryManager/popups/DeliveryAssistant'
-import DMOrderDetails from '@/components/deliveryManager/popups/DMOrderDetails'
-import HomeDelivery from '@/components/deliveryManager/HomeDelivery'
-import TakeAway from '@/components/deliveryManager/TakeAway'
-import FutureOrder from '@/components/deliveryManager/FutureOrder'
-import DMTopRightNav from '@/components/deliveryManager/DMTopRightNav'
+import SystemNavigation from "@/components/SystemNavigation";
+import DMMenu from "@/components/deliveryManager/header/DMMenu";
+import DeliveryAssistant from "@/components/deliveryManager/popups/DeliveryAssistant";
+import DMOrderDetails from "@/components/deliveryManager/popups/DMOrderDetails";
+import HomeDelivery from "@/components/deliveryManager/HomeDelivery";
+import TakeAway from "@/components/deliveryManager/TakeAway";
+import FutureOrder from "@/components/deliveryManager/FutureOrder";
+import DMTopRightNav from "@/components/deliveryManager/DMTopRightNav";
 export default {
-  name: 'DeliveryManager',
+  name: "DeliveryManager",
   components: {
     SystemNavigation,
     DMMenu,
@@ -62,9 +62,9 @@ export default {
     FutureOrder,
     DeliveryAssistant,
     DMOrderDetails,
-    DMTopRightNav,
-  },
-}
+    DMTopRightNav
+  }
+};
 </script>
 <style lang="css" scoped>
 .dm-screen-wrap {

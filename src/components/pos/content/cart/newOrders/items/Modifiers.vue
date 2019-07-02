@@ -11,12 +11,12 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'Modifiers',
-  props: ['modifiers'],
+  name: "Modifiers",
+  props: ["modifiers"],
   computed: {
-    ...mapGetters('modifier', ['findModifier']),
-  },
-}
+    ...mapGetters("modifier", ["findModifier"])
+  }
+};
 </script>

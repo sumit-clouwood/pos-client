@@ -31,11 +31,11 @@
 
 <script>
 export default {
-  name: 'Menu',
+  name: "Menu",
   data() {
     return {
       // information: {}
-    }
+    };
   },
   components: {
     // InformationPopup
@@ -43,6 +43,6 @@ export default {
   computed: {},
   // map `this.browse()` to `this.$store.category.dispatch('browse')`
   methods: {},
-  updated() {},
-}
+  updated() {}
+};
 </script>

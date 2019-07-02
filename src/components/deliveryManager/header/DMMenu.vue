@@ -33,18 +33,18 @@
 </template>
 
 <script>
-import Branches from '@/components/deliveryManager/partial/Branches'
-import { mapActions } from 'vuex'
+import Branches from "@/components/deliveryManager/partial/Branches";
+import { mapActions } from "vuex";
 
 export default {
-  name: 'DMMenu',
+  name: "DMMenu",
   components: {
-    Branches,
+    Branches
   },
   methods: {
-    ...mapActions('deliveryManager', ['updateDMOrderStatus']),
-  },
-}
+    ...mapActions("deliveryManager", ["updateDMOrderStatus"])
+  }
+};
 </script>
 
 <style scoped></style>

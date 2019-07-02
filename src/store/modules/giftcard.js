@@ -1,17 +1,17 @@
-import GiftCardService from '@/services/data/GiftCardService'
-import * as mutation from './giftcard/mutation-types'
+import GiftCardService from "@/services/data/GiftCardService";
+import * as mutation from "./giftcard/mutation-types";
 
 // initial state
 const state = {
   giftcards: [],
   customerGiftcards: [],
-  giftcard: false,
-}
+  giftcard: false
+};
 
 // getters
 const getters = {
-  find: state => code => state.giftcards.data.find(gc => gc.gift_code == code),
-}
+  find: state => code => state.giftcards.data.find(gc => gc.gift_code == code)
+};
 
 // actions
 const actions = {
@@ -19,66 +19,66 @@ const actions = {
     return new Promise((resolve, reject) => {
       GiftCardService.fetchAll(code)
         .then(response => {
-          commit(mutation.SET_GIFT_CARDS, response.data)
-          resolve(response.data)
+          commit(mutation.SET_GIFT_CARDS, response.data);
+          resolve(response.data);
         })
-        .catch(error => reject(error))
-    })
+        .catch(error => reject(error));
+    });
   },
 
   setCustomerGiftCards({ commit }, giftcards) {
-    commit(mutation.SET_CUSTOMER_GIFT_CARDS, giftcards)
+    commit(mutation.SET_CUSTOMER_GIFT_CARDS, giftcards);
   },
 
   apply({ commit, dispatch }, { code, amount }) {
     return new Promise((resolve, reject) => {
-      dispatch('fetchAll', code)
+      dispatch("fetchAll", code)
         .then(() => {
           const card = state.giftcards.data.find(
             card => card.gift_card_code === code
-          )
+          );
           if (card) {
             if (card.remaining_amount >= amount) {
               //get customer name by customer id
-              dispatch('customer/fetchSelectedCustomer', card.customer, {
-                root: true,
+              dispatch("customer/fetchSelectedCustomer", card.customer, {
+                root: true
               })
                 .then(customer => {
-                  card.customerName = customer.name
-                  card.customerPhone = customer.phone_number
-                  commit(mutation.SET_GIFT_CARD, card)
-                  resolve(card)
+                  card.customerName = customer.name;
+                  card.customerPhone = customer.phone_number;
+                  commit(mutation.SET_GIFT_CARD, card);
+                  resolve(card);
                 })
-                .catch(error => reject(error))
+                .catch(error => reject(error));
             } else {
-              reject(`Available gift card amount is lesser than ${amount}`)
+              reject(`Available gift card amount is lesser than ${amount}`);
             }
           } else {
-            reject('No matching gift card found.')
+            reject("No matching gift card found.");
           }
         })
-        .catch(error => reject(error))
-    })
-  },
-}
+        .catch(error => reject(error));
+    });
+  }
+};
 
 // mutations
 const mutations = {
   [mutation.SET_GIFT_CARDS](state, giftcards) {
-    state.giftcards = giftcards
+    state.giftcards = giftcards;
   },
   [mutation.SET_CUSTOMER_GIFT_CARDS](state, giftcards) {
-    state.customerGiftcards = giftcards
+    state.customerGiftcards = giftcards;
   },
   [mutation.SET_GIFT_CARD](state, giftcard) {
-    state.giftcard = giftcard
-  },
-}
+    state.giftcard = giftcard;
+  }
+};
 
 export default {
   namespaced: true,
   state,
   getters,
   actions,
-  mutations,
-}
+  mutations
+};

@@ -90,11 +90,11 @@
 
 <script>
 export default {
-  name: 'Footer',
+  name: "Footer",
   props: {},
   components: {},
   computed: {},
   methods: {},
-  updated() {},
-}
+  updated() {}
+};
 </script>

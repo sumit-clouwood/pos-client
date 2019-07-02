@@ -9,7 +9,7 @@
             updateOrderStatus({
               orderStatus: 'in-progress',
               collected: 'no',
-              pageId: 'home_delivery_new',
+              pageId: 'home_delivery_new'
             })
           "
         >
@@ -23,7 +23,7 @@
             updateOrderStatus({
               orderStatus: 'ready',
               collected: 'no',
-              pageId: 'home_delivery_pick',
+              pageId: 'home_delivery_pick'
             })
           "
         >
@@ -37,12 +37,12 @@
             updateOrderStatus({
               orderStatus: 'on-a-way',
               collected: 'no',
-              pageId: 'home_delivery_in_progress',
+              pageId: 'home_delivery_in_progress'
             })
           "
         >
           <a href="javascript:void(0)">Delivery - In Progress</a
-          ><span v-if="orderCount">{{ orderCount['in-progress'] }}</span>
+          ><span v-if="orderCount">{{ orderCount["in-progress"] }}</span>
         </li>
         <li
           class="dm-delivered"
@@ -51,7 +51,7 @@
             updateOrderStatus({
               orderStatus: 'finished',
               collected: 'no',
-              pageId: 'home_delivery_finished',
+              pageId: 'home_delivery_finished'
             })
           "
         >
@@ -76,20 +76,20 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 export default {
-  name: 'DMHomeDeliverySubMenu',
+  name: "DMHomeDeliverySubMenu",
   methods: {
     updateOrderStatus: function(orderStatus) {
-      this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
-    },
+      this.$store.dispatch("deliveryManager/updateDMOrderStatus", orderStatus);
+    }
   },
   computed: {
     ...mapState({
-      orderCount: state => state.deliveryManager.orderCounts,
-    }),
-  },
-}
+      orderCount: state => state.deliveryManager.orderCounts
+    })
+  }
+};
 </script>
 
 <style scoped></style>

@@ -53,112 +53,112 @@ The App.vue file is the root component that all other components are nested with
 
 <script>
 /* eslint-disable no-console */
-import DataService from '@/services/DataService'
+import DataService from "@/services/DataService";
 
-import Cookie from '@/mixins/Cookie'
-import bootstrap from '@/bootstrap'
-import Preloader from '@/components/util/Preloader'
-import { mapState } from 'vuex'
+import Cookie from "@/mixins/Cookie";
+import bootstrap from "@/bootstrap";
+import Preloader from "@/components/util/Preloader";
+import { mapState } from "vuex";
 
 export default {
-  name: 'Location',
+  name: "Location",
   props: {},
   components: {
-    Preloader,
+    Preloader
   },
   mixins: [Cookie],
   data: function() {
     return {
       loading: true,
       errored: false,
-      progressIncrement: '0%',
-    }
+      progressIncrement: "0%"
+    };
   },
   created() {
     if (this.$route.params.brand_id) {
-      this.$store.commit('context/SET_BRAND_ID', this.$route.params.brand_id)
-      this.$store.commit('context/SET_STORE_ID', this.$route.params.store_id)
+      this.$store.commit("context/SET_BRAND_ID", this.$route.params.brand_id);
+      this.$store.commit("context/SET_STORE_ID", this.$route.params.store_id);
       DataService.setContext({
-        brand: this.$store.getters['context/brand'],
-        store: this.$store.getters['context/store'],
-      })
+        brand: this.$store.getters["context/brand"],
+        store: this.$store.getters["context/store"]
+      });
     } else {
-      this.errored = 'Please provide brand id and store id in url'
+      this.errored = "Please provide brand id and store id in url";
     }
   },
   watch: {
     $route(to, from) {
       // react to route changes...
-      console.log('route changed ', to, from)
-    },
+      console.log("route changed ", to, from);
+    }
   },
 
   computed: {
     ...mapState({
       defaultLanguage: state =>
-        state.location.store ? state.location.store.default_language : false,
+        state.location.store ? state.location.store.default_language : false
     }),
-    ...mapState('sync', ['modules']),
+    ...mapState("sync", ["modules"])
   },
   //life cycle hooks
   mounted() {
-    if (this.$router.currentRoute.name === 'Dinein') {
-      this.loading = false
-      return
+    if (this.$router.currentRoute.name === "Dinein") {
+      this.loading = false;
+      return;
     }
     if (this.$store.state.context.brandId) {
       bootstrap
         .setup(this.$store)
         .then(() => {
-          this.progressIncrement = '10%'
+          this.progressIncrement = "10%";
           setTimeout(() => {
-            this.loading = false
-            this.progressIncrement = '100%'
-          }, 100)
+            this.loading = false;
+            this.progressIncrement = "100%";
+          }, 100);
           // this.progressIncrement = '100%'
           setTimeout(() => {
-            require('@/../public/js/pos_script.js')
-            require('@/../public/js/pos_script_functions.js')
-          }, 2000)
+            require("@/../public/js/pos_script.js");
+            require("@/../public/js/pos_script_functions.js");
+          }, 2000);
         })
-        .catch(error => (this.errored = error))
+        .catch(error => (this.errored = error));
     }
 
     setTimeout(() => {
-      navigator.serviceWorker.addEventListener('message', event => {
-        console.log('*** event received from service worker', event)
-        if (event.data.msg == 'token') {
-          console.log('setting new token to client')
-          localStorage.setItem('token', event.data.data)
+      navigator.serviceWorker.addEventListener("message", event => {
+        console.log("*** event received from service worker", event);
+        if (event.data.msg == "token") {
+          console.log("setting new token to client");
+          localStorage.setItem("token", event.data.data);
           //DataService.setMiddleware()
           bootstrap.loadUI().then(() => {
             setTimeout(() => {
-              this.loading = false
-              this.progressIncrement = '100%'
-            }, 100)
-          })
+              this.loading = false;
+              this.progressIncrement = "100%";
+            }, 100);
+          });
         }
-      })
-    }, 3000)
-  },
-}
+      });
+    }, 3000);
+  }
+};
 
 //vanilla js
-if ('serviceWorker' in navigator && 'SyncManager' in window) {
-  window.addEventListener('load', () => {
+if ("serviceWorker" in navigator && "SyncManager" in window) {
+  window.addEventListener("load", () => {
     setTimeout(() => {
       navigator.serviceWorker.ready
         .then(registration => {
-          Notification.requestPermission()
-          return registration.sync.register('postOfflineOrders')
+          Notification.requestPermission();
+          return registration.sync.register("postOfflineOrders");
         })
         .then(function() {})
         .catch(function() {
           // system was unable to register for a sync,
           // this could be an OS-level restriction
-        })
-    }, 3000)
-  })
+        });
+    }, 3000);
+  });
 }
 </script>
 <style lang="css">

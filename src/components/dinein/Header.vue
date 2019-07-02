@@ -5,11 +5,11 @@
 </template>
 
 <script>
-import Topbar from '@/components/dinein/header/Topbar'
+import Topbar from "@/components/dinein/header/Topbar";
 
 export default {
-  name: 'Header',
+  name: "Header",
   props: {},
-  components: { Topbar },
-}
+  components: { Topbar }
+};
 </script>

@@ -1,11 +1,11 @@
-import * as mutation from './loyalty/mutation-types'
+import * as mutation from "./loyalty/mutation-types";
 // import LoyaltyService from '@/services/data/LoyaltyService'
 
 const state = {
   loyalty: false,
-  loyaltyCustomerList: false,
-}
-const getters = {}
+  loyaltyCustomerList: false
+};
+const getters = {};
 const actions = {
   /*fetchAll({ commit, rootState }) {
     const params = [rootState.location.location]
@@ -18,20 +18,20 @@ const actions = {
       commit(mutation.LOYALTY_CUSTOMERS, response.data)
     })
   },*/
-}
+};
 const mutations = {
   [mutation.LOYALTY](state, loyalty) {
-    state.loyalty = loyalty
+    state.loyalty = loyalty;
   },
   [mutation.LOYALTY_CUSTOMERS](state, customerList) {
-    state.loyaltyCustomerList = customerList
-  },
-}
+    state.loyaltyCustomerList = customerList;
+  }
+};
 
 export default {
   namespaced: true,
   state,
   getters,
   actions,
-  mutations,
-}
+  mutations
+};

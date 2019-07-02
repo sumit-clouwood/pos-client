@@ -6,18 +6,18 @@
 
 <script>
 /* global $ */
-import DeliveryManager from '@/components/DeliveryManager'
+import DeliveryManager from "@/components/DeliveryManager";
 export default {
-  name: 'DeliveryManagerInit',
+  name: "DeliveryManagerInit",
   components: {
-    DeliveryManager,
+    DeliveryManager
   },
   mounted() {
-    let getBody = $('body')
-    getBody.removeAttr('class')
-    getBody.attr('class', 'fixed-nav sticky-footer dm-manager')
-  },
-}
+    let getBody = $("body");
+    getBody.removeAttr("class");
+    getBody.attr("class", "fixed-nav sticky-footer dm-manager");
+  }
+};
 </script>
 
 <style lang="css">

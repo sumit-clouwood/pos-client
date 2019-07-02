@@ -3,13 +3,13 @@
     <table class="table table-responsive" v-if="cartItems">
       <tr>
         <th class="text-uppercase" style="width: 300px">
-          {{ _t('Item Name') }}
+          {{ _t("Item Name") }}
         </th>
-        <th class="text-uppercase" style="width: 100px">{{ _t('Qty') }}</th>
-        <th class="text-uppercase" style="width: 150px">{{ _t('Price') }}</th>
+        <th class="text-uppercase" style="width: 100px">{{ _t("Qty") }}</th>
+        <th class="text-uppercase" style="width: 150px">{{ _t("Price") }}</th>
         <!--<th class="text-uppercase" style="width: 100px">{{ _t('Tax') }}</th>-->
         <th class="text-uppercase" style="width: 150px">
-          {{ _t('Sub Total') }}
+          {{ _t("Sub Total") }}
         </th>
       </tr>
       <tr v-for="(item, index) in cartItems" :key="index">
@@ -22,41 +22,41 @@
     </table>
 
     <div class="text-center" v-if="!cartItems">
-      {{ _t('No Items Added in Cart') }}
+      {{ _t("No Items Added in Cart") }}
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 export default {
-  name: 'SendToDeliveryContentItem',
+  name: "SendToDeliveryContentItem",
   props: {},
   computed: {
-    ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters("location", ["formatPrice", "_t"]),
     ...mapState({
       cartItems: state =>
-        state.order && state.order.items.length > 0 ? state.order.items : false,
-    }),
+        state.order && state.order.items.length > 0 ? state.order.items : false
+    })
   },
   methods: {
     taxAmount: function(taxArr) {
-      if (typeof taxArr != 'undefined') {
-        let calculetedTaxAmount = 0
+      if (typeof taxArr != "undefined") {
+        let calculetedTaxAmount = 0;
         taxArr.length > 0
           ? taxArr.forEach(tax => {
-              calculetedTaxAmount += parseFloat(tax.tax_amount)
+              calculetedTaxAmount += parseFloat(tax.tax_amount);
             })
-          : 0
-        return calculetedTaxAmount
+          : 0;
+        return calculetedTaxAmount;
       }
     },
     subtotal: function(quantity, price) {
       let subtotal = isNaN(parseFloat(price) * parseInt(quantity))
         ? 0.0
-        : parseFloat(price) * parseInt(quantity)
-      return subtotal
-    },
-  },
-}
+        : parseFloat(price) * parseInt(quantity);
+      return subtotal;
+    }
+  }
+};
 </script>

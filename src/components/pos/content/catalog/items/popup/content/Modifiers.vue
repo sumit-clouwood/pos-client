@@ -29,7 +29,7 @@
                 itemId: item._id,
                 modifierId: modifier._id,
                 groupId: subgroup._id,
-                limit: subgroup.no_of_selection,
+                limit: subgroup.no_of_selection
               }"
               v-model="checkboxes"
             />
@@ -46,7 +46,7 @@
               background:
                 modifier.item_modifier_image == ''
                   ? modifier.item_modifier_color
-                  : '',
+                  : ''
             }"
           />
           <span>{{ modifier.name }}</span>
@@ -71,8 +71,8 @@
                 checked: isSelected({
                   modifierId: modifier._id,
                   groupId: subgroup._id,
-                  itemId: item._id,
-                }),
+                  itemId: item._id
+                })
               }"
             ></span>
           </span>
@@ -87,7 +87,7 @@
               background:
                 modifier.item_modifier_image == ''
                   ? modifier.item_modifier_color
-                  : '',
+                  : ''
             }"
           />
           <span>{{ modifier.name }}</span>
@@ -109,43 +109,43 @@
 
 <script>
 /* eslint-disable no-console */
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 export default {
-  name: 'Modifiers',
+  name: "Modifiers",
   props: {
-    subgroup: Object,
+    subgroup: Object
   },
   data() {
     return {
-      itemId: null,
-    }
+      itemId: null
+    };
   },
   computed: {
     checkboxes: {
       get() {
-        return this.$store.state.orderForm.checkboxes
+        return this.$store.state.orderForm.checkboxes;
       },
       set(vmodel) {
-        this.$store.commit('orderForm/setCheckboxes', vmodel)
-      },
+        this.$store.commit("orderForm/setCheckboxes", vmodel);
+      }
     },
-    ...mapState('location', ['currency']),
-    ...mapState('modifier', ['item']),
-    ...mapState('orderForm', ['error', 'radios']),
-    ...mapGetters('orderForm', ['isSelected']),
-    ...mapGetters('modifier', ['itemModifiers']),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapState("location", ["currency"]),
+    ...mapState("modifier", ["item"]),
+    ...mapState("orderForm", ["error", "radios"]),
+    ...mapGetters("orderForm", ["isSelected"]),
+    ...mapGetters("modifier", ["itemModifiers"]),
+    ...mapGetters("location", ["formatPrice"])
   },
   mounted() {},
   methods: {
     setRadio(itemId, groupId, modifierId) {
-      this.$store.commit('orderForm/setRadios', {
+      this.$store.commit("orderForm/setRadios", {
         itemId: itemId,
         groupId: groupId,
-        modifierId: modifierId,
-      })
-      this.$store.commit('orderForm/setError', false)
-    },
-  },
-}
+        modifierId: modifierId
+      });
+      this.$store.commit("orderForm/setError", false);
+    }
+  }
+};
 </script>

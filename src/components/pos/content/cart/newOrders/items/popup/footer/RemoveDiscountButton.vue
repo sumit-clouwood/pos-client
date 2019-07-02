@@ -24,12 +24,12 @@
   </button>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from "vuex";
 export default {
-  name: 'RemoveDiscountButton',
+  name: "RemoveDiscountButton",
   methods: {
-    ...mapActions('discount', ['removeItemDiscount']),
+    ...mapActions("discount", ["removeItemDiscount"])
   },
-  props: {},
-}
+  props: {}
+};
 </script>

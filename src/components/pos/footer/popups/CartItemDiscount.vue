@@ -10,7 +10,7 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ _t('Item Discount') }}</h4>
+          <h4 class="customer-title">{{ _t("Item Discount") }}</h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
           <div
@@ -20,7 +20,7 @@
             <div
               class="option-contain"
               :class="{
-                active: activeItemDiscountId == discount._id,
+                active: activeItemDiscountId == discount._id
               }"
               v-for="discount in itemDiscounts"
               :key="discount._id"
@@ -28,8 +28,8 @@
             >
               <p>
                 {{
-                  discount.type === 'percentage'
-                    ? discount.rate + '%'
+                  discount.type === "percentage"
+                    ? discount.rate + "%"
                     : formatPrice(discount.value)
                 }}
               </p>
@@ -56,7 +56,7 @@
               id="discount-save"
               @click="applyItemDiscount()"
             >
-              {{ _t('Apply') }}
+              {{ _t("Apply") }}
             </button>
             <button
               v-show="appliedOrderDiscount || itemError"
@@ -65,7 +65,7 @@
               data-dismiss="modal"
               @click="resetError()"
             >
-              {{ _t('Close') }}
+              {{ _t("Close") }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -77,30 +77,30 @@
 
 <script>
 /* global hideModal */
-import { mapGetters, mapActions, mapState } from 'vuex'
+import { mapGetters, mapActions, mapState } from "vuex";
 export default {
-  name: 'CartItemDiscount',
+  name: "CartItemDiscount",
   props: {},
   computed: {
-    ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapGetters('discount', ['itemDiscounts', 'activeItemDiscountId']),
-    ...mapState('discount', ['appliedOrderDiscount', 'itemError']),
+    ...mapGetters("location", ["formatPrice", "_t"]),
+    ...mapGetters("discount", ["itemDiscounts", "activeItemDiscountId"]),
+    ...mapState("discount", ["appliedOrderDiscount", "itemError"])
   },
   methods: {
-    ...mapActions('discount', ['selectItemDiscount']),
+    ...mapActions("discount", ["selectItemDiscount"]),
     applyItemDiscount() {
       this.$store
-        .dispatch('discount/applyItemDiscount')
+        .dispatch("discount/applyItemDiscount")
         .then(() => {
-          hideModal('#select-discount-item')
+          hideModal("#select-discount-item");
         })
-        .catch()
+        .catch();
     },
     resetError() {
-      this.$store.commit('discount/SET_ITEM_ERROR', false)
-    },
-  },
-}
+      this.$store.commit("discount/SET_ITEM_ERROR", false);
+    }
+  }
+};
 </script>
 <!--<style lang="sass" scoped>
 .discount-item.each

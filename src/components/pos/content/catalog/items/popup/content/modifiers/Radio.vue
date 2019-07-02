@@ -18,27 +18,27 @@
 
 <script>
 export default {
-  name: 'Radio',
+  name: "Radio",
   model: {
-    prop: 'checked',
+    prop: "checked"
   },
   props: {
     data: Object,
     checked: Object,
-    value: Object,
+    value: Object
   },
   computed: {
     radios: {
       get() {
-        return this.checked
+        return this.checked;
       },
       set() {
         //emit to parent, event type : input, value this.value
-        this.$emit('input', this.value)
-      },
-    },
+        this.$emit("input", this.value);
+      }
+    }
   },
   methods: {},
-  mounted() {},
-}
+  mounted() {}
+};
 </script>

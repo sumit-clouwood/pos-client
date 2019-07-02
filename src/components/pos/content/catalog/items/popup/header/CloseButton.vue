@@ -11,12 +11,12 @@
 </template>
 <script>
 export default {
-  name: 'CloseButton',
+  name: "CloseButton",
   computed: {},
   methods: {
     resetForm() {
-      this.$store.commit('orderForm/updateQuantity', 1)
-    },
-  },
-}
+      this.$store.commit("orderForm/updateQuantity", 1);
+    }
+  }
+};
 </script>

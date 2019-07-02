@@ -10,38 +10,38 @@
     </li>
     <li class="col-md-4 lh">
       <p class="profile-customer-title">
-        {{ _t('Customer Name:') }}
+        {{ _t("Customer Name:") }}
       </p>
       <h5 id="profile-customer-name">
         {{ customerProfile.name }}
       </h5>
       <p class="profile-customer-title">
-        {{ _t('Email') }}: {{ customerProfile.email }}
+        {{ _t("Email") }}: {{ customerProfile.email }}
       </p>
       <p class="name-confrimation">
-        {{ _t('Not') }} {{ customerProfile.name }}?
+        {{ _t("Not") }} {{ customerProfile.name }}?
         <span
           @click="addCustomerForm"
           data-toggle="modal"
           data-target="#customer"
           data-dismiss="modal"
         >
-          {{ _t('Create New Customer') }}
+          {{ _t("Create New Customer") }}
         </span>
       </p>
     </li>
     <li>
-      <p class="profile-customer-title">{{ _t('Phone Number:') }}</p>
+      <p class="profile-customer-title">{{ _t("Phone Number:") }}</p>
       <h5 id="profile-customer-number">{{ customerProfile.phone_number }}</h5>
       <p class="profile-customer-title">
         <small>
-          {{ _t('Alternative Phone Number') }}:
+          {{ _t("Alternative Phone Number") }}:
           {{ customerProfile.alternative_phone }}</small
         >
       </p>
       <p class="profile-customer-title">
         <small>
-          {{ _t('Customer Group') }}:
+          {{ _t("Customer Group") }}:
           {{ customerProfile.customer_group }}
         </small>
       </p>
@@ -81,7 +81,7 @@
             </g>
           </svg>
         </span>
-        {{ _t('Edit') }}</a
+        {{ _t("Edit") }}</a
       >
       <a class="cu-delete-icon" href="javascript:void(0)"
         ><span
@@ -112,7 +112,7 @@
                 rx=".5"
               />
             </g></svg></span
-        >{{ _t('Delete') }}</a
+        >{{ _t("Delete") }}</a
       >
     </li>
   </ul>
@@ -120,37 +120,37 @@
 
 <script>
 /* global $ */
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from "vuex";
 export default {
-  name: 'CustomerProfile',
+  name: "CustomerProfile",
   computed: {
     ...mapState({
       customerProfile: state =>
-        state.customer.customer ? state.customer.customer : false,
+        state.customer.customer ? state.customer.customer : false
     }),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
-    ...mapActions('customer', ['addCustomer']),
+    ...mapActions("customer", ["addCustomer"]),
     addCustomerForm: function() {
-      this.addCustomer()
-      $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
-      $('#customer input, #customer select').val('')
-      $('.nogeneral').show()
-      $('.customerAddressWrapper').show()
+      this.addCustomer();
+      $("#post_announcement").attr("disabled", false); //Disable Save button if pressed
+      $("#customer input, #customer select").val("");
+      $(".nogeneral").show();
+      $(".customerAddressWrapper").show();
     },
     editCustomer: function(customerId) {
       let actionDetails = {
         id: customerId,
-        action: 'edit',
-        model: 'brand_customers',
-      }
-      $('.nogeneral').show()
-      $('.customerAddressWrapper').hide()
-      this.$store.dispatch('customer/editAction', actionDetails)
-    },
-  },
-}
+        action: "edit",
+        model: "brand_customers"
+      };
+      $(".nogeneral").show();
+      $(".customerAddressWrapper").hide();
+      this.$store.dispatch("customer/editAction", actionDetails);
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>

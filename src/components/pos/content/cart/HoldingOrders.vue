@@ -26,32 +26,32 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
-import paginate from 'vuejs-paginate'
+import { mapState, mapActions } from "vuex";
+import paginate from "vuejs-paginate";
 // import Header from './holdingOrders/Header.vue'
-import Items from './holdingOrders/Items.vue'
+import Items from "./holdingOrders/Items.vue";
 
 export default {
-  name: 'HoldingOrders',
+  name: "HoldingOrders",
   components: {
     // Header,
     paginate,
-    Items,
+    Items
   },
   props: {},
   computed: {
     ...mapState({
-      holdOrderList: state => state.holdOrders.getHoldOrders,
+      holdOrderList: state => state.holdOrders.getHoldOrders
     }),
     ...mapState({
-      parms: state => state.holdOrders.params,
-    }),
+      parms: state => state.holdOrders.params
+    })
   },
   methods: {
     moreOrder: function(pageNumber) {
-      this.moreOrders(pageNumber)
+      this.moreOrders(pageNumber);
     },
-    ...mapActions('holdOrders', ['moreOrders']),
-  },
-}
+    ...mapActions("holdOrders", ["moreOrders"])
+  }
+};
 </script>

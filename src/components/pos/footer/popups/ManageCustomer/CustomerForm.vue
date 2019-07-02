@@ -2,17 +2,17 @@
   <div>
     <div class="modal-body form-block">
       <div class="divide-block row">
-        <h5 class="customer-block-info">{{ _t('General Details') }}</h5>
+        <h5 class="customer-block-info">{{ _t("General Details") }}</h5>
         <div class="col-md-6 left-form">
           <div class="name-from">
-            <label>{{ _t('Name') }} <span>*</span></label>
+            <label>{{ _t("Name") }} <span>*</span></label>
             <input type="text" name="name" v-model="newCustomerDetails.name" />
             <span class="validation-error" v-if="errors.name">{{
               errors.name
             }}</span>
           </div>
           <div class="email-from">
-            <label>{{ _t('Email') }} <span>*</span></label>
+            <label>{{ _t("Email") }} <span>*</span></label>
             <input
               type="email"
               name="email"
@@ -25,15 +25,15 @@
         </div>
         <div class="col-md-6 right-form">
           <div class="gender">
-            <label>{{ _t('Gender') }}</label>
+            <label>{{ _t("Gender") }}</label>
             <select class="selectpicker" v-model="newCustomerDetails.gender">
-              <option selected="selected" value="male">{{ _t('Male') }}</option>
-              <option value="female">{{ _t('Female') }}</option>
-              <option value="undisclosed">{{ _t('Undisclosed') }}</option>
+              <option selected="selected" value="male">{{ _t("Male") }}</option>
+              <option value="female">{{ _t("Female") }}</option>
+              <option value="undisclosed">{{ _t("Undisclosed") }}</option>
             </select>
           </div>
           <div class="mobile-from">
-            <label>{{ _t('Phone Number') }} <span>*</span></label>
+            <label>{{ _t("Phone Number") }} <span>*</span></label>
             <input
               type="text"
               name="phone_number"
@@ -48,10 +48,10 @@
       </div>
       <div class="nogeneral">
         <div class="divide-block row">
-          <h5 class="customer-block-info">{{ _t('Additional Details') }}</h5>
+          <h5 class="customer-block-info">{{ _t("Additional Details") }}</h5>
           <div class="col-md-6 left-form">
             <div class="alternate-phone-from">
-              <label>{{ _t('Alt Phone Number') }} </label>
+              <label>{{ _t("Alt Phone Number") }} </label>
               <input
                 type="text"
                 name="alternate-phone-from"
@@ -61,7 +61,7 @@
           </div>
           <div class="col-md-6 right-form">
             <div class="customer-group">
-              <label>{{ _t('Birthday') }}</label>
+              <label>{{ _t("Birthday") }}</label>
               <datetime
                 v-model="newCustomerDetails.birthday"
                 input-class="btn schedule-input btn-large datepicker-here"
@@ -74,7 +74,7 @@
           </div>
           <div class="col-md-12 left-form">
             <div class="customer-group" v-if="customerGroup">
-              <label>{{ _t('Customer Group') }}</label>
+              <label>{{ _t("Customer Group") }}</label>
               <select
                 class="selectpicker"
                 v-model="newCustomerDetails.customer_group"
@@ -91,10 +91,10 @@
           </div>
         </div>
         <div class="customerAddressWrapper divide-block row">
-          <h5 class="customer-block-info">{{ _t('Address Details') }}</h5>
+          <h5 class="customer-block-info">{{ _t("Address Details") }}</h5>
           <div class="col-md-6 left-form">
             <div class="name-from">
-              <label>{{ _t('Delivery Area') }} <span>*</span></label>
+              <label>{{ _t("Delivery Area") }} <span>*</span></label>
               <select
                 class="getAreaId"
                 @change="getAreaId"
@@ -113,7 +113,7 @@
               }}</span>
             </div>
             <div class="alternate-phone-from">
-              <label>{{ _t('Building/Villa') }} <span>*</span></label>
+              <label>{{ _t("Building/Villa") }} <span>*</span></label>
               <input
                 type="text"
                 name="building"
@@ -124,7 +124,7 @@
               }}</span>
             </div>
             <div class="gender">
-              <label>{{ _t('Street') }} <span>*</span></label>
+              <label>{{ _t("Street") }} <span>*</span></label>
               <input
                 type="text"
                 name="street"
@@ -137,7 +137,7 @@
           </div>
           <div class="col-md-6 right-form">
             <div class="landmark">
-              <label>{{ _t('Flat Number') }} <span>*</span></label>
+              <label>{{ _t("Flat Number") }} <span>*</span></label>
               <input
                 type="text"
                 name="flat_number"
@@ -148,7 +148,7 @@
               }}</span>
             </div>
             <div class="landmark">
-              <label>{{ _t('Nearest Landmark') }} <span>*</span></label>
+              <label>{{ _t("Nearest Landmark") }} <span>*</span></label>
               <input
                 type="text"
                 name="nearest_landmark"
@@ -166,35 +166,35 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
-import { Datetime } from 'vue-datetime'
+import { mapState, mapGetters } from "vuex";
+import { Datetime } from "vue-datetime";
 
 function getWithoutSpaceLength(data) {
   if ($.trim(data).length == 0) {
-    return false
+    return false;
   }
-  return true
+  return true;
 }
 
 /* global $ */
 export default {
-  name: 'CustomerForm',
+  name: "CustomerForm",
   props: {},
   components: {
-    Datetime,
+    Datetime
   },
   data() {
     return {
-      add_delivery_area: '',
-      selectedDate: '',
+      add_delivery_area: "",
+      selectedDate: "",
       getCurrentYear: new Date().getFullYear().toString(),
       months:
-        'January,February,March,April,May,June,July,August,September,October,November,December',
-      errors: {},
-    }
+        "January,February,March,April,May,June,July,August,September,October,November,December",
+      errors: {}
+    };
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"]),
     ...mapState({
       newCustomerDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
@@ -204,22 +204,22 @@ export default {
           ? state.customer.fetchDeliveryAreas.filter(function(u) {
               //Fetch Delivery Areas in add Customer Form at POS screen
               if (u.store_id == state.context.storeId) {
-                return u.item_status
+                return u.item_status;
               }
             })
           : false,
       customerCreateStatus: state => state.customer.responseInformation,
       customerId: state => state.customer.customer._id,
       customerGroup: state =>
-        state.customer.customer_group ? state.customer.customer_group : false,
-    }),
+        state.customer.customer_group ? state.customer.customer_group : false
+    })
   },
   methods: {
     getAreaId: function(e) {
       if (e.target.options.selectedIndex > -1) {
-        this.add_delivery_area = $('.getAreaId')
-          .find(':selected')
-          .text()
+        this.add_delivery_area = $(".getAreaId")
+          .find(":selected")
+          .text();
       }
     },
     /*getBirthday: function() {
@@ -233,98 +233,100 @@ export default {
       }
     },*/
     validate: function() {
-      this.errors = {}
-      this.errors.count = 0
+      this.errors = {};
+      this.errors.count = 0;
       if (
         !this.newCustomerDetails.name ||
         !getWithoutSpaceLength(this.newCustomerDetails.name)
       ) {
-        this.errors.name = this._t('Name') + ' ' + this._t('is required')
-        this.errors.count = 1
+        this.errors.name = this._t("Name") + " " + this._t("is required");
+        this.errors.count = 1;
       }
       if (
-        typeof this.newCustomerDetails.email != 'undefined' &&
+        typeof this.newCustomerDetails.email != "undefined" &&
         !this.validEmail(this.newCustomerDetails.email)
       ) {
         this.errors.email =
-          this._t('Valid email') + ' ' + this._t('is required.')
-        this.errors.count = 1
+          this._t("Valid email") + " " + this._t("is required.");
+        this.errors.count = 1;
       }
       if (
         !this.newCustomerDetails.email ||
         !getWithoutSpaceLength(this.newCustomerDetails.email)
       ) {
-        this.errors.email = this._t('Email') + ' ' + this._t('is required.')
-        this.errors.count = 1
+        this.errors.email = this._t("Email") + " " + this._t("is required.");
+        this.errors.count = 1;
       }
       if (
         !this.newCustomerDetails.phone_number ||
         !getWithoutSpaceLength(this.newCustomerDetails.phone_number)
       ) {
         this.errors.phone_number =
-          this._t('Mobile number') + ' ' + this._t('is required')
-        this.errors.count = 1
+          this._t("Mobile number") + " " + this._t("is required");
+        this.errors.count = 1;
       }
       if (
         this.newCustomerDetails.phone_number &&
         $.trim(this.newCustomerDetails.phone_number).length < 10
       ) {
         this.errors.phone_number =
-          this._t('Mobile number ') +
-          ' ' +
-          this._t('length should be 10 or more characters')
-        this.errors.count = 1
+          this._t("Mobile number ") +
+          " " +
+          this._t("length should be 10 or more characters");
+        this.errors.count = 1;
       }
-      if (this.customer_title !== 'Edit' && this.loyalty !== true) {
+      if (this.customer_title !== "Edit" && this.loyalty !== true) {
         if (!this.newCustomerDetails.delivery_area_id) {
-          this.errors.delivery_area_id = this._t('Delivery area required')
-          this.errors.count = 1
+          this.errors.delivery_area_id = this._t("Delivery area required");
+          this.errors.count = 1;
         }
         if (
           !this.newCustomerDetails.building ||
           !getWithoutSpaceLength(this.newCustomerDetails.building)
         ) {
-          this.errors.building = this._t('Building/Villa required')
-          this.errors.count = 1
+          this.errors.building = this._t("Building/Villa required");
+          this.errors.count = 1;
         }
         if (
           this.newCustomerDetails.building &&
           this.newCustomerDetails.building.length > 15
         ) {
           this.errors.building = this._t(
-            'Building/Villa should be not more than 15 characters'
-          )
-          this.errors.count = 1
+            "Building/Villa should be not more than 15 characters"
+          );
+          this.errors.count = 1;
         }
         if (
           !this.newCustomerDetails.flat_number ||
           !getWithoutSpaceLength(this.newCustomerDetails.flat_number)
         ) {
           this.errors.flat_number =
-            this._t('Flat Number') + ' ' + this._t('is required')
-          this.errors.count = 1
+            this._t("Flat Number") + " " + this._t("is required");
+          this.errors.count = 1;
         }
         if (
           !this.newCustomerDetails.nearest_landmark ||
           !getWithoutSpaceLength(this.newCustomerDetails.nearest_landmark)
         ) {
           this.errors.nearest_landmark =
-            this._t('Landmark') + ' ' + this._t('is required')
-          this.errors.count = 1
+            this._t("Landmark") + " " + this._t("is required");
+          this.errors.count = 1;
         }
         if (
           !this.newCustomerDetails.street ||
           !getWithoutSpaceLength(this.newCustomerDetails.street)
         ) {
-          this.errors.street = this._t('Street') + ' ' + this._t('is required')
-          this.errors.count = 1
+          this.errors.street = this._t("Street") + " " + this._t("is required");
+          this.errors.count = 1;
         }
         if (
           this.newCustomerDetails.street &&
           this.newCustomerDetails.street.length < 2
         ) {
-          this.errors.street = this._t('Street should be at least 2 characters')
-          this.errors.count = 1
+          this.errors.street = this._t(
+            "Street should be at least 2 characters"
+          );
+          this.errors.count = 1;
         }
         /*if (!this.newCustomerDetails.birthday) {
               this.errors.birthday = 'Date of birth required'
@@ -332,23 +334,23 @@ export default {
             }*/
       }
       if (this.errors.count === 0) {
-        if (typeof this.newCustomerDetails.birthday != 'undefined') {
-          let birthday = this.newCustomerDetails.birthday.split('T')
-          this.newCustomerDetails.birthday = birthday[0]
+        if (typeof this.newCustomerDetails.birthday != "undefined") {
+          let birthday = this.newCustomerDetails.birthday.split("T");
+          this.newCustomerDetails.birthday = birthday[0];
         }
       }
 
-      return this.errors
+      return this.errors;
     },
     getData() {
-      return this.newCustomerDetails
+      return this.newCustomerDetails;
     },
     validEmail: function(email) {
-      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      return re.test(email)
-    },
-  },
-}
+      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+    }
+  }
+};
 </script>
 <!--<style lang="scss" scoped>
 .right-shift {

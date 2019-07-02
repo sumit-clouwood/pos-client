@@ -7,18 +7,18 @@
 </template>
 
 <script>
-import DMItem from '@/components/deliveryManager/content/DMItem'
+import DMItem from "@/components/deliveryManager/content/DMItem";
 export default {
-  name: 'FutureOrder',
+  name: "FutureOrder",
   data() {
     return {
-      actionDetails: { moreDetails: false, action: false },
-    }
+      actionDetails: { moreDetails: false, action: false }
+    };
   },
   components: {
-    DMItem,
-  },
-}
+    DMItem
+  }
+};
 </script>
 
 <style scoped></style>

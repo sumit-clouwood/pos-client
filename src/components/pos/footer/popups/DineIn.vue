@@ -6,7 +6,7 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ _t('Dinning Option') }}</h4>
+          <h4 class="customer-title">{{ _t("Dinning Option") }}</h4>
         </div>
         <div class="modal-body dining-options-block">
           <div class="dining-option-block">
@@ -15,7 +15,7 @@
               :class="{ active: selectedOrderType.OTApi === 'dine_in' }"
               @click="setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })"
             >
-              <img src="img/pos/dine-in.svg" /><span>{{ _t('Dine In') }}</span>
+              <img src="img/pos/dine-in.svg" /><span>{{ _t("Dine In") }}</span>
             </div>
             <div
               class="option-contain"
@@ -23,12 +23,12 @@
               @click="
                 setOrderType({
                   OTview: 'Take Away',
-                  OTApi: 'takeaway',
+                  OTApi: 'takeaway'
                 })
               "
             >
               <img src="img/pos/take-away.svg" /><span>
-                {{ _t('Take Away') }}
+                {{ _t("Take Away") }}
               </span>
             </div>
             <div
@@ -39,7 +39,7 @@
               "
             >
               <img src="img/pos/delivery-icon.svg" /><span>
-                {{ _t('Delivery') }}
+                {{ _t("Delivery") }}
               </span>
             </div>
             <div
@@ -47,7 +47,7 @@
               :class="{ active: selectedOrderType.OTApi === 'event' }"
               @click="setOrderType({ OTview: 'Event', OTApi: 'event' })"
             >
-              <img src="img/pos/event.svg" /><span>{{ _t('Event') }}</span>
+              <img src="img/pos/event.svg" /><span>{{ _t("Event") }}</span>
             </div>
             <div
               class="option-contain"
@@ -55,7 +55,7 @@
               @click="setOrderType({ OTview: 'Walk In', OTApi: 'walk_in' })"
             >
               <img src="img/pos/walkin.svg" width="35" /><span>{{
-                _t('Walk In')
+                _t("Walk In")
               }}</span>
             </div>
           </div>
@@ -69,7 +69,7 @@
               id="dining-opt"
               @click="updateOrderType()"
             >
-              {{ _t('Ok') }}
+              {{ _t("Ok") }}
             </button>
             <!--<button
               class="btn btn-large"
@@ -89,41 +89,41 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 
 export default {
-  name: 'DineIn',
+  name: "DineIn",
   props: {},
   data: function() {
     return {
-      selectedOrderType: this.$store.state.order.orderType,
-    }
+      selectedOrderType: this.$store.state.order.orderType
+    };
   },
   computed: {
-    ...mapGetters('location', ['_t']),
-    ...mapState('order', ['orderType']),
+    ...mapGetters("location", ["_t"]),
+    ...mapState("order", ["orderType"])
   },
   watch: {
     orderType(newVal) {
-      this.selectedOrderType = newVal
-    },
+      this.selectedOrderType = newVal;
+    }
   },
 
   methods: {
     setOrderType(orderType) {
-      if (orderType.OTApi == 'walk_in') {
-        this.updateOrderType()
+      if (orderType.OTApi == "walk_in") {
+        this.updateOrderType();
       }
       if (this.selectedOrderType === orderType.OTApi) {
         //toggle
-        this.selectedOrderType = { OTview: 'Walk In', OTApi: 'walk_in' }
+        this.selectedOrderType = { OTview: "Walk In", OTApi: "walk_in" };
       } else {
-        this.selectedOrderType = orderType
+        this.selectedOrderType = orderType;
       }
     },
     updateOrderType() {
-      this.$store.dispatch('order/updateOrderType', this.selectedOrderType)
-    },
-  },
-}
+      this.$store.dispatch("order/updateOrderType", this.selectedOrderType);
+    }
+  }
+};
 </script>

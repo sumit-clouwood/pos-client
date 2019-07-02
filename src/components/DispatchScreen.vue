@@ -20,18 +20,18 @@
 </template>
 
 <script>
-import SystemNavigation from '@/components/SystemNavigation'
-import DSItems from '@/components/dispatchScreen/DSItems'
-import DSFooter from '@/components/dispatchScreen/DSFooter'
+import SystemNavigation from "@/components/SystemNavigation";
+import DSItems from "@/components/dispatchScreen/DSItems";
+import DSFooter from "@/components/dispatchScreen/DSFooter";
 
 export default {
-  name: 'DispatchScreen',
+  name: "DispatchScreen",
   components: {
     SystemNavigation,
     DSItems,
-    DSFooter,
-  },
-}
+    DSFooter
+  }
+};
 </script>
 
 <style scoped></style>

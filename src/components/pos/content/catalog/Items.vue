@@ -23,36 +23,36 @@
 <script>
 /* global $, showModal  */
 
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
-import Popup from './items/Popup'
+import Popup from "./items/Popup";
 export default {
-  name: 'Items',
+  name: "Items",
   props: {
-    msg: String,
+    msg: String
   },
   components: {
-    Popup,
+    Popup
   },
   computed: {
-    ...mapGetters('category', ['items']),
-    ...mapGetters('modifier', ['hasModifiers']),
+    ...mapGetters("category", ["items"]),
+    ...mapGetters("modifier", ["hasModifiers"])
   },
   methods: {
     addToOrder(item) {
-      this.$store.commit('order/SET_CART_TYPE', 'new')
-      $('.modifier-option-radio').prop('checked', false)
-      $('.food-menu-item').removeClass('active')
-      $(this).addClass('active')
-      this.$store.commit('category/SET_ITEM', item)
-      this.$store.commit('checkoutForm/showCalc', true)
-      this.$store.commit('orderForm/updateQuantity', 1)
-      if (this.$store.getters['modifier/hasModifiers'](item)) {
-        this.$store.dispatch('modifier/assignModifiersToItem', item)
-        this.$store.commit('orderForm/clearSelection')
-        showModal('#POSItemOptions')
+      this.$store.commit("order/SET_CART_TYPE", "new");
+      $(".modifier-option-radio").prop("checked", false);
+      $(".food-menu-item").removeClass("active");
+      $(this).addClass("active");
+      this.$store.commit("category/SET_ITEM", item);
+      this.$store.commit("checkoutForm/showCalc", true);
+      this.$store.commit("orderForm/updateQuantity", 1);
+      if (this.$store.getters["modifier/hasModifiers"](item)) {
+        this.$store.dispatch("modifier/assignModifiersToItem", item);
+        this.$store.commit("orderForm/clearSelection");
+        showModal("#POSItemOptions");
       } else {
-        this.$store.dispatch('order/addToOrder', item)
+        this.$store.dispatch("order/addToOrder", item);
       }
     },
     IsImageOk(img) {
@@ -60,18 +60,18 @@ export default {
       // weren't downloaded as not complete. Others should too. Gecko-based
       // browsers act like NS4 in that they report this incorrectly.
       if (!img.complete) {
-        return false
+        return false;
       }
 
       // However, they do have two very useful properties: naturalWidth and
       // naturalHeight. These give the true size of the image. If it failed
       // to load, either of these should be zero.
-      if (typeof img.naturalWidth != 'undefined' && img.naturalWidth == 0) {
-        return false
+      if (typeof img.naturalWidth != "undefined" && img.naturalWidth == 0) {
+        return false;
       }
 
       // No other way of checking: assume it's ok.
-      return true
+      return true;
     },
 
     imageLoadError() {
@@ -79,7 +79,7 @@ export default {
       /* myDoc = myDoc.remove('.sticky-footer')*/
       for (let i = 0; i < document.images.length; i++) {
         if (!this.IsImageOk(document.images[i])) {
-          let hue = 'bg'
+          let hue = "bg";
           /*'rgb(' +
             (Math.floor((256 - 199) * Math.random()) + 200) +
             ',' +
@@ -88,24 +88,24 @@ export default {
             (Math.floor((256 - 199) * Math.random()) + 200) +
             ')'*/
           $(document.images[i])
-            .closest('div.pos-item-bg')
-            .addClass(hue)
+            .closest("div.pos-item-bg")
+            .addClass(hue);
           $(document.images[i])
-            .siblings('p')
-            .css('font-size', '15px')
+            .siblings("p")
+            .css("font-size", "15px");
           $(document.images[i])
-            .closest('div.pos-size-bg')
-            .addClass(hue)
+            .closest("div.pos-size-bg")
+            .addClass(hue);
           // .css('background-color', hue)
           $(document.images[i])
-            .siblings('span')
-            .css('font-weight', 'bold')
-          document.images[i].remove()
+            .siblings("span")
+            .css("font-weight", "bold");
+          document.images[i].remove();
         }
       }
-    },
-  },
-}
+    }
+  }
+};
 </script>
 <style lang="sass" scoped>
 .pos-item-bg

@@ -11,17 +11,17 @@
 <script>
 /* global closeModal */
 export default {
-  name: 'RemoveTaxButton',
+  name: "RemoveTaxButton",
   props: {},
   methods: {
     removeTax() {
       this.$store
-        .dispatch('order/removeTax')
+        .dispatch("order/removeTax")
         .then(() => {
-          closeModal('#POSOrderItemOptions')
+          closeModal("#POSOrderItemOptions");
         })
-        .catch()
-    },
-  },
-}
+        .catch();
+    }
+  }
+};
 </script>

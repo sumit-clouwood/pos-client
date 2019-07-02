@@ -7,9 +7,9 @@
 
 <script>
 export default {
-  name: 'NotFoundComponent',
+  name: "NotFoundComponent",
   components: {},
   computed: {},
-  mounted() {},
-}
+  mounted() {}
+};
 </script>

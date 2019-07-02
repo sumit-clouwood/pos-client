@@ -1,64 +1,64 @@
-import PaymentService from '@/services/data/PaymentService'
-import * as mutation from './payment/mutation-types'
-import * as CONST from '@/constants'
+import PaymentService from "@/services/data/PaymentService";
+import * as mutation from "./payment/mutation-types";
+import * as CONST from "@/constants";
 
 // initial state
 const state = {
-  methods: [],
-}
+  methods: []
+};
 
 // getters
 const getters = {
   methods: state => (state.methods.data ? state.methods.data : []),
   cash: state =>
-    typeof state.methods.data != 'undefined'
-      ? state.methods.data.find(method => method.type == 'regular')
-      : 0,
-}
+    typeof state.methods.data != "undefined"
+      ? state.methods.data.find(method => method.type == "regular")
+      : 0
+};
 
 // actions
 const actions = {
   async fetchAll({ commit, rootGetters }) {
-    const paymentMethods = await PaymentService.fetchMethods()
+    const paymentMethods = await PaymentService.fetchMethods();
 
-    let methods = []
+    let methods = [];
     paymentMethods.data.data.forEach(method => {
       if (method.item_status) {
         switch (method.type) {
           case CONST.GIFT_CARD:
-            if (rootGetters['modules/enabled'](CONST.MODULE_GIFT_CARDS)) {
-              methods.push(method)
+            if (rootGetters["modules/enabled"](CONST.MODULE_GIFT_CARDS)) {
+              methods.push(method);
             }
-            break
+            break;
           case CONST.LOYALTY:
-            if (rootGetters['modules/enabled'](CONST.MODULE_LOYALTY)) {
-              methods.push(method)
+            if (rootGetters["modules/enabled"](CONST.MODULE_LOYALTY)) {
+              methods.push(method);
             }
-            break
+            break;
 
           default:
-            methods.push(method)
+            methods.push(method);
         }
       }
-    })
+    });
 
-    paymentMethods.data = methods
-    commit(mutation.SET_METHODS, paymentMethods)
-    commit('checkoutForm/setMethod', state.methods.data[0], { root: true })
-  },
-}
+    paymentMethods.data = methods;
+    commit(mutation.SET_METHODS, paymentMethods);
+    commit("checkoutForm/setMethod", state.methods.data[0], { root: true });
+  }
+};
 
 // mutations
 const mutations = {
   [mutation.SET_METHODS](state, methods) {
-    state.methods = methods
-  },
-}
+    state.methods = methods;
+  }
+};
 
 export default {
   namespaced: true,
   state,
   getters,
   actions,
-  mutations,
-}
+  mutations
+};

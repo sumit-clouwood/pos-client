@@ -1369,8 +1369,8 @@
 
 <script>
 export default {
-  name: 'Tables',
+  name: "Tables",
   props: {},
-  components: {},
-}
+  components: {}
+};
 </script>

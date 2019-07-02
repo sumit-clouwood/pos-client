@@ -22,7 +22,7 @@
               v-if="responseInformation"
             >
               {{
-                typeof responseInformation.message !== 'undefined'
+                typeof responseInformation.message !== "undefined"
                   ? responseInformation.message
                   : responseInformation
               }}
@@ -37,7 +37,7 @@
               id="dining-opt"
               @click="closeModal()"
             >
-              {{ _t('Ok') }}
+              {{ _t("Ok") }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -51,28 +51,28 @@
 
 <script>
 /* global $ */
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'InformationPopup',
+  name: "InformationPopup",
   props: {
     responseInformation: String,
     title: String,
-    activatedClass: String,
+    activatedClass: String
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
     closeModal: function() {
-      $('#information-popup').modal('toggle')
+      $("#information-popup").modal("toggle");
     },
     activeClass: function() {
-      return typeof this.responseInformation != 'undefined'
+      return typeof this.responseInformation != "undefined"
         ? this.responseInformation.status === 1
-          ? (this.activatedClass = 'text-success')
-          : (this.activatedClass = 'text-danger')
-        : false
-    },
-  },
-}
+          ? (this.activatedClass = "text-success")
+          : (this.activatedClass = "text-danger")
+        : false;
+    }
+  }
+};
 </script>

@@ -1,1 +1,1 @@
-export const SET_METHODS = 'SET_METHODS'
+export const SET_METHODS = "SET_METHODS";

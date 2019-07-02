@@ -7,23 +7,23 @@
       data-target="#tip-amount"
     >
       <img src="img/pos/tip.png" alt="payment-method" /><span>
-        {{ _t('Tip Amount') }}
+        {{ _t("Tip Amount") }}
       </span>
     </div>
     <div class="footer-wrap">
       <img src="img/pos/gift-receipt.png" alt="payment-method" /><span>{{
-        _t('Gift Receipt')
+        _t("Gift Receipt")
       }}</span>
     </div>
     <div class="footer-wrap" data-toggle="modal" data-target="#add-email">
       <img src="img/pos/email.png" alt="payment-method" /><span>
-        {{ _t('Email') }}
+        {{ _t("Email") }}
       </span>
     </div>
 
     <div class="footer-wrap" @click="pay" id="submitOrder">
       <img src="img/pos/done.png" alt="payment-method" /><span>
-        {{ _t('Done') }}
+        {{ _t("Done") }}
       </span>
     </div>
   </div>
@@ -31,90 +31,90 @@
 
 <script>
 /* global $ showModal showPaymentBreak */
-import { mapGetters, mapState } from 'vuex'
-import * as CONST from '@/constants'
+import { mapGetters, mapState } from "vuex";
+import * as CONST from "@/constants";
 
 export default {
-  name: 'PayNowFooter',
+  name: "PayNowFooter",
   computed: {
-    ...mapState('checkout', ['changedAmount']),
-    ...mapState('checkoutForm', ['msg', 'error', 'method']),
-    ...mapGetters('checkoutForm', ['validate']),
-    ...mapGetters('location', ['_t']),
+    ...mapState("checkout", ["changedAmount"]),
+    ...mapState("checkoutForm", ["msg", "error", "method"]),
+    ...mapGetters("checkoutForm", ["validate"]),
+    ...mapGetters("location", ["_t"])
   },
 
   mounted() {
-    $('#payment-msg').modal({
-      backdrop: 'static',
+    $("#payment-msg").modal({
+      backdrop: "static",
       keyboard: false,
-      show: false,
-    })
+      show: false
+    });
   },
   methods: {
     addAmount() {
       return new Promise((resolve, reject) => {
-        if (this.$store.getters['checkoutForm/validate']) {
-          return resolve(0)
+        if (this.$store.getters["checkoutForm/validate"]) {
+          return resolve(0);
         }
-        if (this.$store.getters['checkoutForm/payable'] <= 0.1) {
-          return resolve(0)
+        if (this.$store.getters["checkoutForm/payable"] <= 0.1) {
+          return resolve(0);
         }
 
         this.$store
-          .dispatch('checkoutForm/validatePayment')
+          .dispatch("checkoutForm/validatePayment")
           .then(() => {
             if (this.method.type == CONST.GIFT_CARD) {
-              showModal('#Gift-card-payemnt')
-              reject()
+              showModal("#Gift-card-payemnt");
+              reject();
             } else if (this.method.type == CONST.LOYALTY) {
               //show loyalty popup if needed
-              reject()
+              reject();
             } else if (this.method.reference_code) {
-              showModal('#card-payemnt')
-              reject()
+              showModal("#card-payemnt");
+              reject();
             } else {
               //cash payments
-              this.$store.dispatch('checkoutForm/addAmount').then(payable => {
-                resolve(payable)
-              })
+              this.$store.dispatch("checkoutForm/addAmount").then(payable => {
+                resolve(payable);
+              });
             }
           })
-          .catch(() => reject())
-      })
+          .catch(() => reject());
+      });
     },
     pay() {
       this.addAmount().then(payable => {
         if (payable <= 0.1) {
-          $('#payment-screen-footer').prop('disabled', true)
-          this.$store.commit('checkoutForm/setAction', 'pay')
-          $('#payment-msg').modal('show')
+          $("#payment-screen-footer").prop("disabled", true);
+          this.$store.commit("checkoutForm/setAction", "pay");
+          $("#payment-msg").modal("show");
           this.$store
-            .dispatch('checkout/pay', this.$store.state.order.orderType.OTApi)
+            .dispatch("checkout/pay", this.$store.state.order.orderType.OTApi)
             .then(() => {
               if (this.changedAmount >= 0.1) {
-                $('#payment-msg').modal('hide')
-                $('#change-amount').modal('show')
+                $("#payment-msg").modal("hide");
+                $("#change-amount").modal("show");
               } else if (this.msg) {
-                $('#payment-msg').modal('show')
+                $("#payment-msg").modal("show");
               }
               setTimeout(function() {
-                $('#payment-screen-footer').prop('disabled', false)
-              }, 1000)
+                $("#payment-screen-footer").prop("disabled", false);
+              }, 1000);
             })
             .catch(() => {
               setTimeout(() => {
-                $('#payment-msg').modal('hide')
-                $('#payment-screen-footer').prop('disabled', false)
-              }, 500)
-            })
+                $("#payment-msg").modal("hide");
+                $("#payment-screen-footer").prop("disabled", false);
+              }, 500);
+            });
         } else {
           //show payment breakdown
-          showPaymentBreak()
+          showPaymentBreak();
         }
-      })
-    },
-  },
-}
+      });
+    }
+  }
+};
 </script>
 <style lang="sass" scoped>
 .payment-screen-footer

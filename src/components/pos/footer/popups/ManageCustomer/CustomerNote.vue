@@ -7,11 +7,11 @@
       <div class="modal-content">
         <div class="modal-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ _t('Customer Note') }}</h4>
+          <h4 class="customer-title">{{ _t("Customer Note") }}</h4>
         </div>
         <div class="modal-body add-note-wrap">
           <div class="add-note-area">
-            <p>{{ _t('Customer Note') }}</p>
+            <p>{{ _t("Customer Note") }}</p>
             <textarea type="text" class="add-note-form" v-model="note">
             </textarea>
           </div>
@@ -23,7 +23,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              {{ _t('Cancel') }}
+              {{ _t("Cancel") }}
             </button>
             <button
               class="btn btn-success btn-large popup-btn-save"
@@ -32,7 +32,7 @@
               id=""
               @click="addNote(note)"
             >
-              {{ _t('+ Add') }}
+              {{ _t("+ Add") }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -45,21 +45,21 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from "vuex";
 
 export default {
-  name: 'CustomerNote',
+  name: "CustomerNote",
   // props: ['note'],
   data() {
     return {
-      note: '',
-    }
+      note: ""
+    };
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
-    ...mapActions('customer', ['addNote']),
-  },
-}
+    ...mapActions("customer", ["addNote"])
+  }
+};
 </script>

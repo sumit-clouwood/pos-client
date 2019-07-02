@@ -1,17 +1,17 @@
-import * as mutation from './order/mutation-types'
-import OrderService from '../../services/data/OrderService'
-import * as CONST from '@/constants'
-import Num from '@/plugins/helpers/Num.js'
+import * as mutation from "./order/mutation-types";
+import OrderService from "../../services/data/OrderService";
+import * as CONST from "@/constants";
+import Num from "@/plugins/helpers/Num.js";
 
 const DISCOUNT_ORDER_ERROR_TOTAL =
-  "Discount can't be greater than total amount of order."
+  "Discount can't be greater than total amount of order.";
 
 // initial state
 const state = {
   items: [],
   item: false,
-  orderType: { OTview: 'Walk In', OTApi: 'walk_in' },
-  orderNote: '',
+  orderType: { OTview: "Walk In", OTApi: "walk_in" },
+  orderNote: "",
   onlineOrders: false,
   futureOrder: false,
   referral: false,
@@ -19,8 +19,8 @@ const state = {
   orderId: null,
   // pastOrder: false,
   orderStatus: null,
-  cartType: 'new',
-}
+  cartType: "new"
+};
 
 // getters
 const getters = {
@@ -34,54 +34,54 @@ const getters = {
     //discount is already subtracted from tax in tax.js
     let amount =
       getters.subTotal +
-      rootGetters['tax/totalTax'] +
-      rootGetters['surcharge/surcharge'] -
-      rootGetters['discount/orderDiscountWithoutTax']
+      rootGetters["tax/totalTax"] +
+      rootGetters["surcharge/surcharge"] -
+      rootGetters["discount/orderDiscountWithoutTax"];
     if (amount) {
-      return amount.toFixed(2)
+      return amount.toFixed(2);
     }
-    return 0
+    return 0;
   },
 
   subTotal: () => {
     return state.items.reduce((total, item) => {
-      return total + item.netPrice * item.quantity
-    }, 0)
+      return total + item.netPrice * item.quantity;
+    }, 0);
   },
 
   subTotalUndiscounted: () => {
     return state.items.reduce((total, item) => {
-      return total + item.undiscountedNetPrice * item.quantity
-    }, 0)
+      return total + item.undiscountedNetPrice * item.quantity;
+    }, 0);
   },
 
   itemPrice: () => item => {
-    return item.quantity * item.netPrice
+    return item.quantity * item.netPrice;
   },
 
   orderModifiers: () => item => {
-    return item.modifiers.length
+    return item.modifiers.length;
   },
 
   getLatestOnlineOrders: state => {
     if (state.onlineOrders) {
-      return state.onlineOrders
+      return state.onlineOrders;
     } else {
       if (
-        localStorage.getItem('onlineOrders') != 'undefined' &&
-        JSON.parse(localStorage.getItem('onlineOrders')) != null
+        localStorage.getItem("onlineOrders") != "undefined" &&
+        JSON.parse(localStorage.getItem("onlineOrders")) != null
       ) {
-        return JSON.parse(localStorage.getItem('onlineOrders'))
+        return JSON.parse(localStorage.getItem("onlineOrders"));
       } else {
-        return false
+        return false;
       }
     }
   },
 
   items: state => state.items,
 
-  orderType: state => state.orderType.OTApi,
-}
+  orderType: state => state.orderType.OTApi
+};
 
 // actions
 const actions = {
@@ -93,20 +93,20 @@ const actions = {
     //item.value is gross price which is inclusive of taxes
 
     //item price is exclusive of taxes, before tax
-    item.grossPrice = Num.round(item.value)
-    item.netPrice = Num.round(getters.netPrice(item))
+    item.grossPrice = Num.round(item.value);
+    item.netPrice = Num.round(getters.netPrice(item));
 
     //this comes directly from the items menu without modifiers
-    item.modifiable = false
+    item.modifiable = false;
 
-    item.undiscountedGrossPrice = item.grossPrice
-    item.undiscountedNetPrice = item.netPrice
+    item.undiscountedGrossPrice = item.grossPrice;
+    item.undiscountedNetPrice = item.netPrice;
 
-    if (typeof item.quantity === 'undefined') {
-      item.quantity = 1
+    if (typeof item.quantity === "undefined") {
+      item.quantity = 1;
     }
 
-    commit(mutation.SET_ITEM, item)
+    commit(mutation.SET_ITEM, item);
 
     /* const index = state.items.findIndex(
       orderItem => orderItem._id === state.item._id
@@ -117,54 +117,54 @@ const actions = {
       commit(mutation.ADD_ORDER_ITEM, state.item)
     } */
 
-    commit(mutation.ADD_ORDER_ITEM, state.item)
+    commit(mutation.ADD_ORDER_ITEM, state.item);
 
-    dispatch('surchargeCalculation')
+    dispatch("surchargeCalculation");
   },
 
   removeFromOrder({ commit, dispatch }, { item, index }) {
-    commit(mutation.SET_ITEM, item)
-    commit(mutation.REMOVE_ORDER_ITEM, index)
+    commit(mutation.SET_ITEM, item);
+    commit(mutation.REMOVE_ORDER_ITEM, index);
     if (state.items.length) {
-      commit(mutation.SET_ITEM, state.items[0])
+      commit(mutation.SET_ITEM, state.items[0]);
     } else {
-      commit(mutation.SET_ITEM, false)
+      commit(mutation.SET_ITEM, false);
     }
 
     if (state.items.length) {
-      dispatch('surchargeCalculation')
+      dispatch("surchargeCalculation");
     } else {
       //cart is empty remove the discounts
-      dispatch('checkout/reset', null, { root: true })
+      dispatch("checkout/reset", null, { root: true });
     }
   },
 
   removeTax({ commit, state, rootState, dispatch }) {
-    let item = { ...state.item }
+    let item = { ...state.item };
     if (!item.originalTax) {
-      item.originalTax = item.tax_sum
+      item.originalTax = item.tax_sum;
     }
-    item.tax_sum = 0
+    item.tax_sum = 0;
     //replace item in cart
     commit(mutation.REPLACE_ORDER_ITEM, {
-      item: item,
-    })
-    dispatch('surcharge/calculate', {}, { root: true }).then(() =>
-      dispatch('tax/calculate', {}, { root: true }).then(() =>
-        dispatch('recalculateItemPrices').then(() => {})
+      item: item
+    });
+    dispatch("surcharge/calculate", {}, { root: true }).then(() =>
+      dispatch("tax/calculate", {}, { root: true }).then(() =>
+        dispatch("recalculateItemPrices").then(() => {})
       )
-    )
+    );
 
     //remove tax from modifier items
-    item = { ...rootState.modifier.item }
+    item = { ...rootState.modifier.item };
     if (!item.originalTax) {
-      item.originalTax = item.tax_sum
+      item.originalTax = item.tax_sum;
     }
-    item.tax_sum = 0
+    item.tax_sum = 0;
     //replace item in cart
-    commit('modifier/SET_ITEM', item, {
-      root: true,
-    })
+    commit("modifier/SET_ITEM", item, {
+      root: true
+    });
   },
 
   //this function re-adds an item to order if item is in edit mode, it just replaces exiting item in cart
@@ -174,93 +174,93 @@ const actions = {
   ) {
     return new Promise((resolve, reject) => {
       if (!item) {
-        item = { ...rootState.modifier.item }
+        item = { ...rootState.modifier.item };
       }
       //this comes through the modifier popup
 
-      item.grossPrice = Num.round(item.value)
-      item.netPrice = Num.round(getters.netPrice(item))
+      item.grossPrice = Num.round(item.value);
+      item.netPrice = Num.round(getters.netPrice(item));
 
-      item.modifiable = true
+      item.modifiable = true;
 
-      commit(mutation.SET_ITEM, item)
+      commit(mutation.SET_ITEM, item);
 
-      let itemModifierGroups = []
-      let itemModifiers = []
+      let itemModifierGroups = [];
+      let itemModifiers = [];
 
       //adding modifers to item
       if (item.modifiers && !item.editMode) {
         //this order came from old holders
-        const itemModifiersArray = rootGetters['modifier/itemModifiers'](
+        const itemModifiersArray = rootGetters["modifier/itemModifiers"](
           item._id
-        )
+        );
         //re check if modifiers still available for the item
         if (itemModifiersArray.length) {
           itemModifiersArray.forEach(modifierItem => {
             modifierItem.modifiers.forEach(modifier => {
               if (item.modifiers.includes(modifier._id)) {
-                const subgroup = rootGetters['modifier/getModifierSubgroup'](
+                const subgroup = rootGetters["modifier/getModifierSubgroup"](
                   modifier._id
-                )
-                itemModifiers.push(modifier._id)
+                );
+                itemModifiers.push(modifier._id);
                 itemModifierGroups.push({
                   groupId: subgroup._id,
                   itemId: item._id,
                   limit: subgroup.no_of_selection,
                   modifierId: modifier._id,
-                  type: subgroup.no_of_selection > 1 ? 'checkbox' : 'radio',
-                })
+                  type: subgroup.no_of_selection > 1 ? "checkbox" : "radio"
+                });
               }
-            })
-          })
+            });
+          });
         }
         //avoid cacthcing again in edit mode
       } else {
         //new order, user selection
 
-        const modifiers = rootGetters['orderForm/modifiers'].filter(
+        const modifiers = rootGetters["orderForm/modifiers"].filter(
           modifier => modifier.itemId == item._id
-        )
+        );
 
-        let selectedModifeirGroups = []
+        let selectedModifeirGroups = [];
 
         modifiers.forEach(modifier => {
-          itemModifierGroups.push(modifier)
-          selectedModifeirGroups.push(modifier.groupId)
-        })
+          itemModifierGroups.push(modifier);
+          selectedModifeirGroups.push(modifier.groupId);
+        });
 
         //match modifiers with mandatory modifiers for this item, if not matched set error and return false
         const itemMandatoryModifierGroups = rootGetters[
-          'modifier/itemMandatoryGroups'
-        ](item._id)
+          "modifier/itemMandatoryGroups"
+        ](item._id);
 
-        let mandatorySelected = true
+        let mandatorySelected = true;
 
         itemMandatoryModifierGroups.forEach(id => {
           if (!selectedModifeirGroups.includes(id)) {
-            mandatorySelected = false
+            mandatorySelected = false;
           }
-        })
+        });
 
         if (mandatorySelected) {
-          commit('orderForm/setError', false, {
-            root: true,
-          })
+          commit("orderForm/setError", false, {
+            root: true
+          });
         } else {
-          commit('orderForm/setError', 'Please select at least one item', {
-            root: true,
-          })
-          reject()
-          return false
+          commit("orderForm/setError", "Please select at least one item", {
+            root: true
+          });
+          reject();
+          return false;
         }
 
         modifiers.forEach(modifier => {
           if (Array.isArray(modifier.modifierId)) {
-            itemModifiers.push(...modifier.modifierId)
+            itemModifiers.push(...modifier.modifierId);
           } else {
-            itemModifiers.push(modifier.modifierId)
+            itemModifiers.push(modifier.modifierId);
           }
-        })
+        });
       }
 
       /*
@@ -277,16 +277,16 @@ const actions = {
       */
       commit(mutation.ADD_MODIFIERS_TO_ITEM, {
         modifiers: itemModifiers,
-        modifierGroups: itemModifierGroups,
-      })
+        modifierGroups: itemModifierGroups
+      });
 
       //calculating item price based on modifiers selected
-      let modifierPrice = 0
+      let modifierPrice = 0;
       //since we have just ids attached to item,
       //we need to consult modifier store for modifier data ie price
 
-      const modifierSubgroups = rootGetters['modifier/itemModifiers'](item._id)
-      let modifierTaxData = []
+      const modifierSubgroups = rootGetters["modifier/itemModifiers"](item._id);
+      let modifierTaxData = [];
       modifierSubgroups.forEach(subgroup => {
         subgroup.modifiers.forEach(modifier => {
           if (item.modifiers.includes(modifier._id)) {
@@ -294,32 +294,32 @@ const actions = {
               itemId: item._id,
               modifierId: modifier._id,
               price: modifier.value ? modifier.value : 0,
-              tax: modifier.value ? (modifier.value * item.tax_sum) / 100 : 0,
-            })
+              tax: modifier.value ? (modifier.value * item.tax_sum) / 100 : 0
+            });
           }
-        })
-      })
+        });
+      });
 
-      dispatch('tax/setModifierTaxData', modifierTaxData, { root: true })
+      dispatch("tax/setModifierTaxData", modifierTaxData, { root: true });
 
       modifierPrice = modifierTaxData.reduce((total, modifier) => {
-        return total + modifier.price
-      }, 0)
+        return total + modifier.price;
+      }, 0);
       //modifier price is without tax price, we need to implement tax on that
       //get item tax and implement that on modifier price
-      const modifiersTax = (modifierPrice * item.tax_sum) / 100
+      const modifiersTax = (modifierPrice * item.tax_sum) / 100;
       //calculate net and gross price
       const itemGrossPrice =
-        item.grossPrice + Num.round(modifierPrice) + Num.round(modifiersTax)
+        item.grossPrice + Num.round(modifierPrice) + Num.round(modifiersTax);
 
       //item net price (without tax ) + modifier price which is already without tax
       const itemNetPrice =
-        Num.round(getters.netPrice(item)) + parseFloat(modifierPrice)
+        Num.round(getters.netPrice(item)) + parseFloat(modifierPrice);
 
       commit(mutation.ADD_MODIFIER_PRICE_TO_ITEM, {
         grossPrice: itemGrossPrice,
-        netPrice: itemNetPrice,
-      })
+        netPrice: itemNetPrice
+      });
 
       if (!item.editMode) {
         //update current item with new modifiers
@@ -346,156 +346,157 @@ const actions = {
           commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
         }
         */
-        let quantity = 0
+        let quantity = 0;
         //coming through hold orders
-        if (typeof item.quantity !== 'undefined') {
-          quantity = item.quantity
+        if (typeof item.quantity !== "undefined") {
+          quantity = item.quantity;
         }
         if (!quantity) {
-          quantity = rootState.orderForm.quantity || 1
+          quantity = rootState.orderForm.quantity || 1;
         }
-        commit(mutation.SET_QUANTITY, quantity)
-        commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
+        commit(mutation.SET_QUANTITY, quantity);
+        commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item);
       } else {
         //edit mode
         //if the signature was different then modify modifiers,
         //as we are creating new item and attached modifiers again so its better to just
         //replace that item in state with existing item
 
-        const quantity = rootState.orderForm.quantity || 1
-        commit(mutation.SET_QUANTITY, quantity)
+        const quantity = rootState.orderForm.quantity || 1;
+        commit(mutation.SET_QUANTITY, quantity);
 
         commit(mutation.REPLACE_ORDER_ITEM, {
-          item: state.item,
-        })
+          item: state.item
+        });
       }
 
-      dispatch('surchargeCalculation')
+      dispatch("surchargeCalculation");
       //reset the modifier form
-      commit('orderForm/clearSelection', null, { root: true })
-      resolve()
-    })
+      commit("orderForm/clearSelection", null, { root: true });
+      resolve();
+    });
   },
 
   setActiveItem({ commit, dispatch }, { orderItem, index }) {
     //get current item
     //this is fired by the items.vue
-    let item = { ...state.items[index] }
-    item.editMode = true
-    item.quantity = orderItem.quantity
-    item.netPrice = orderItem.netPrice
-    item.orderIndex = index
-    commit(mutation.SET_ITEM, item)
+    let item = { ...state.items[index] };
+    item.editMode = true;
+    item.quantity = orderItem.quantity;
+    item.netPrice = orderItem.netPrice;
+    item.orderIndex = index;
+    commit(mutation.SET_ITEM, item);
 
     // if (item.modifiable) {
-    dispatch('orderForm/setItem', { item: item }, { root: true })
+    dispatch("orderForm/setItem", { item: item }, { root: true });
     dispatch(
-      'modifier/setActiveItem',
+      "modifier/setActiveItem",
       { item: item },
       {
-        root: true,
+        root: true
       }
-    )
+    );
     // }
   },
   recalculateOrderTotals({ rootState, getters, rootGetters, dispatch }) {
     return new Promise((resolve, reject) => {
-      const orderDiscount = rootState.discount.appliedOrderDiscount
+      const orderDiscount = rootState.discount.appliedOrderDiscount;
       //let totalDiscount = 0
       if (orderDiscount) {
-        let orderTotalDiscount = 0
-        let taxTotalDiscount = 0
-        let surchargeTotalDiscount = 0
+        let orderTotalDiscount = 0;
+        let taxTotalDiscount = 0;
+        let surchargeTotalDiscount = 0;
 
         if (orderDiscount.discount.include_surcharge) {
           //apply ontotal discount, apply on surcharge and its tax as well
-          const subtotal = getters.subTotal
-          const totalTax = rootState.tax.itemsTax + rootState.tax.surchargeTax
-          const totalSurcharge = rootGetters['surcharge/surcharge']
+          const subtotal = getters.subTotal;
+          const totalTax = rootState.tax.itemsTax + rootState.tax.surchargeTax;
+          const totalSurcharge = rootGetters["surcharge/surcharge"];
 
           if (orderDiscount.discount.type === CONST.VALUE) {
             if (orderDiscount.discount.value > subtotal + totalTax) {
-              dispatch('discount/clearOrderDiscount', null, { root: true })
-              reject(DISCOUNT_ORDER_ERROR_TOTAL)
+              dispatch("discount/clearOrderDiscount", null, { root: true });
+              reject(DISCOUNT_ORDER_ERROR_TOTAL);
             } else {
-              orderTotalDiscount = orderDiscount.discount.value
+              orderTotalDiscount = orderDiscount.discount.value;
 
               const percentDiscountOnOrderTotalIncludingSurcharge =
-                (orderTotalDiscount * 100) / (subtotal + totalSurcharge)
+                (orderTotalDiscount * 100) / (subtotal + totalSurcharge);
 
               taxTotalDiscount =
-                (totalTax * percentDiscountOnOrderTotalIncludingSurcharge) / 100
+                (totalTax * percentDiscountOnOrderTotalIncludingSurcharge) /
+                100;
               //when calculating percent discount on subtotal we include surcharge as well,
               //so don't need to calculate discount on surcharge again
-              surchargeTotalDiscount = 0
+              surchargeTotalDiscount = 0;
               resolve({
                 orderDiscount: orderTotalDiscount,
                 taxDiscount: taxTotalDiscount,
-                surchargeDiscount: surchargeTotalDiscount,
-              })
+                surchargeDiscount: surchargeTotalDiscount
+              });
             }
           } else {
-            orderTotalDiscount = (subtotal * orderDiscount.discount.rate) / 100
-            taxTotalDiscount = (totalTax * orderDiscount.discount.rate) / 100
+            orderTotalDiscount = (subtotal * orderDiscount.discount.rate) / 100;
+            taxTotalDiscount = (totalTax * orderDiscount.discount.rate) / 100;
             surchargeTotalDiscount =
-              (totalSurcharge * orderDiscount.discount.rate) / 100
+              (totalSurcharge * orderDiscount.discount.rate) / 100;
             resolve({
               orderDiscount: orderTotalDiscount,
               taxDiscount: taxTotalDiscount,
-              surchargeDiscount: surchargeTotalDiscount,
-            })
+              surchargeDiscount: surchargeTotalDiscount
+            });
           }
         } else {
           //without surcharge
           //apply offtotal discount, don't calculate discount on surcharge
-          const subtotal = getters.subTotal
+          const subtotal = getters.subTotal;
           //we are not including surcharge tax in total tax for discount
-          const totalTax = rootState.tax.itemsTax
+          const totalTax = rootState.tax.itemsTax;
           //const totalSurcharge = rootGetters['surcharge/surcharge']
           if (orderDiscount.discount.type === CONST.VALUE) {
             if (orderDiscount.discount.value > subtotal + totalTax) {
-              dispatch('discount/clearOrderDiscount', null, { root: true })
-              reject(DISCOUNT_ORDER_ERROR_TOTAL)
+              dispatch("discount/clearOrderDiscount", null, { root: true });
+              reject(DISCOUNT_ORDER_ERROR_TOTAL);
             } else {
-              orderTotalDiscount = orderDiscount.discount.value
+              orderTotalDiscount = orderDiscount.discount.value;
               const percentDiscountOnSubTotal =
-                (orderTotalDiscount * 100) / subtotal
-              taxTotalDiscount = (totalTax * percentDiscountOnSubTotal) / 100
-              surchargeTotalDiscount = 0
+                (orderTotalDiscount * 100) / subtotal;
+              taxTotalDiscount = (totalTax * percentDiscountOnSubTotal) / 100;
+              surchargeTotalDiscount = 0;
               resolve({
                 orderDiscount: orderTotalDiscount,
                 taxDiscount: taxTotalDiscount,
-                surchargeDiscount: surchargeTotalDiscount,
-              })
+                surchargeDiscount: surchargeTotalDiscount
+              });
             }
           } else {
-            orderTotalDiscount = (subtotal * orderDiscount.discount.rate) / 100
+            orderTotalDiscount = (subtotal * orderDiscount.discount.rate) / 100;
             //const subtotalWithDiscount = subtotal - orderTotalDiscount
-            taxTotalDiscount = (totalTax * orderDiscount.discount.rate) / 100
-            surchargeTotalDiscount = 0
+            taxTotalDiscount = (totalTax * orderDiscount.discount.rate) / 100;
+            surchargeTotalDiscount = 0;
             resolve({
               orderDiscount: orderTotalDiscount,
               taxDiscount: taxTotalDiscount,
-              surchargeDiscount: surchargeTotalDiscount,
-            })
+              surchargeDiscount: surchargeTotalDiscount
+            });
           }
         }
       } else {
-        resolve()
+        resolve();
       }
-    })
+    });
   },
 
   recalculateItemPrices({ commit, rootState, dispatch }) {
     return new Promise((resolve, reject) => {
-      let itemsDiscount = 0
-      let discountErrors = []
+      let itemsDiscount = 0;
+      let discountErrors = [];
 
       const newItems = state.items.map((stateItem, index) => {
-        let item = { ...stateItem }
+        let item = { ...stateItem };
         const discount = rootState.discount.appliedItemDiscounts.find(
           discount => discount.item.orderIndex == index
-        )
+        );
 
         if (discount) {
           let itemDiscountData = {
@@ -503,8 +504,8 @@ const actions = {
             name: discount.discount.name,
             type: discount.discount.type,
             rate: discount.discount.rate,
-            value: discount.discount.value,
-          }
+            value: discount.discount.value
+          };
 
           if (discount.discount.type === CONST.VALUE) {
             // NOTE: IF items are 2, per item discount should total discount / 2
@@ -515,116 +516,116 @@ const actions = {
             ) {
               //discount error
               if (!discountErrors.includes(item._id)) {
-                discountErrors.push(item._id)
+                discountErrors.push(item._id);
               }
-              item.discount = false
-              item.grossPrice = item.undiscountedGrossPrice
-              item.netPrice = item.undiscountedNetPrice
+              item.discount = false;
+              item.grossPrice = item.undiscountedGrossPrice;
+              item.netPrice = item.undiscountedNetPrice;
             } else {
               //add discount amount for record to show how much discount in total was applied
-              itemsDiscount += discount.discount.value
+              itemsDiscount += discount.discount.value;
               //apply discount here
               //decided to apply discount on post tax
 
               //divide discount on quantity to get discount applied per line item
-              const discountPerItem = discount.discount.value / item.quantity
+              const discountPerItem = discount.discount.value / item.quantity;
 
               //Decided to apply discount on after tax, that means when sending discount info we should send item discount and tax discount separately
-              item.grossPrice = item.undiscountedGrossPrice - discountPerItem
+              item.grossPrice = item.undiscountedGrossPrice - discountPerItem;
 
               //calcualte ratio of discount applied and set same ratio for net price
               const percentDiscountAppliedOnGross =
-                (discountPerItem / item.undiscountedGrossPrice) * 100
+                (discountPerItem / item.undiscountedGrossPrice) * 100;
               const netPriceDiscount =
                 (item.undiscountedNetPrice * percentDiscountAppliedOnGross) /
-                100
-              item.netPrice = item.undiscountedNetPrice - netPriceDiscount
-              itemDiscountData.discount = netPriceDiscount
+                100;
+              item.netPrice = item.undiscountedNetPrice - netPriceDiscount;
+              itemDiscountData.discount = netPriceDiscount;
             }
           } else {
             //percentage based discount, use discount.rate here, not discount.value
             const itemGrossDiscountAmount =
-              (item.undiscountedGrossPrice * discount.discount.rate) / 100
+              (item.undiscountedGrossPrice * discount.discount.rate) / 100;
 
             item.grossPrice =
-              item.undiscountedGrossPrice - itemGrossDiscountAmount
+              item.undiscountedGrossPrice - itemGrossDiscountAmount;
 
             //apply discount on net price as well
             const itemNetDiscountAmount =
-              (item.undiscountedNetPrice * discount.discount.rate) / 100
+              (item.undiscountedNetPrice * discount.discount.rate) / 100;
 
-            item.netPrice = item.undiscountedNetPrice - itemNetDiscountAmount
+            item.netPrice = item.undiscountedNetPrice - itemNetDiscountAmount;
 
-            itemsDiscount += itemNetDiscountAmount
-            itemDiscountData.discount = itemNetDiscountAmount
+            itemsDiscount += itemNetDiscountAmount;
+            itemDiscountData.discount = itemNetDiscountAmount;
           }
 
           if (!discountErrors.length) {
-            item.discount = itemDiscountData
+            item.discount = itemDiscountData;
           }
         } else {
           //remove already applied discount
-          item.discount = false
-          item.grossPrice = item.undiscountedGrossPrice
-          item.netPrice = item.undiscountedNetPrice
+          item.discount = false;
+          item.grossPrice = item.undiscountedGrossPrice;
+          item.netPrice = item.undiscountedNetPrice;
         }
-        return item
-      })
+        return item;
+      });
 
       dispatch(
-        'discount/setItemsDiscountAmount',
+        "discount/setItemsDiscountAmount",
         { discountAmount: itemsDiscount },
         { root: true }
-      )
+      );
 
-      commit(mutation.RE_SAVE_ITEMS, newItems)
-      dispatch('surcharge/calculate', {}, { root: true }).then(() =>
-        dispatch('tax/calculate', {}, { root: true })
-      )
+      commit(mutation.RE_SAVE_ITEMS, newItems);
+      dispatch("surcharge/calculate", {}, { root: true }).then(() =>
+        dispatch("tax/calculate", {}, { root: true })
+      );
       if (discountErrors.length) {
-        reject(discountErrors)
-        dispatch('discount/clearItemDiscount', discountErrors, { root: true })
+        reject(discountErrors);
+        dispatch("discount/clearItemDiscount", discountErrors, { root: true });
       } else {
-        resolve()
+        resolve();
       }
-    })
+    });
   },
 
   updateQuantity({ commit, dispatch }, quantity) {
-    const itemQuantity = quantity || 1
-    commit(mutation.UPDATE_ITEM_QUANTITY, itemQuantity)
-    dispatch('surchargeCalculation')
+    const itemQuantity = quantity || 1;
+    commit(mutation.UPDATE_ITEM_QUANTITY, itemQuantity);
+    dispatch("surchargeCalculation");
   },
 
   surchargeCalculation({ rootState, dispatch }) {
-    dispatch('surcharge/calculate', {}, { root: true }).then(() =>
-      dispatch('tax/calculate', {}, { root: true }).then(() => {
+    dispatch("surcharge/calculate", {}, { root: true }).then(() =>
+      dispatch("tax/calculate", {}, { root: true }).then(() => {
         if (rootState.discount.appliedOrderDiscount) {
-          dispatch('recalculateOrderTotals')
+          dispatch("recalculateOrderTotals");
         } else {
-          dispatch('recalculateItemPrices')
+          dispatch("recalculateItemPrices");
         }
       })
-    )
+    );
   },
 
   reset({ commit }) {
-    commit(mutation.RESET)
+    commit(mutation.RESET);
   },
   addOrderNote({ commit }, orderNote) {
-    commit(mutation.SET_ORDER_NOTE, orderNote)
+    commit(mutation.SET_ORDER_NOTE, orderNote);
   },
 
   setOnlineOrders({ commit, rootState }, onlineOrderData) {
     // const params = [1, onlineOrderData.location_id]
-    let orderDetail = ''
+    let orderDetail = "";
     // OrderService.fetchOnlineOrderDetails(...params).then(response => {
     //   orderDetail = response.data.orderDetails
     commit(mutation.ONLINE_ORDERS, {
       onlineOrders: onlineOrderData,
       locationId: rootState.location.location,
-      orderDetails: orderDetail,
-    })
+      orderDetails: orderDetail
+    });
     // })
   },
 
@@ -637,103 +638,103 @@ const actions = {
 
   deliveryOrder({ commit, dispatch }, { referral, futureOrder }) {
     return new Promise((resolve, reject) => {
-      commit(mutation.ORDER_TYPE, { OTview: 'Delivery', OTApi: 'call_center' })
-      commit(mutation.SET_REFERRAL, referral)
+      commit(mutation.ORDER_TYPE, { OTview: "Delivery", OTApi: "call_center" });
+      commit(mutation.SET_REFERRAL, referral);
       if (futureOrder != null) {
-        commit(mutation.SET_FUTURE_ORDER, futureOrder)
+        commit(mutation.SET_FUTURE_ORDER, futureOrder);
       }
-      dispatch('checkout/pay', {}, { root: true })
+      dispatch("checkout/pay", {}, { root: true })
         .then(response => resolve(response))
-        .catch(response => reject(response))
-    })
+        .catch(response => reject(response));
+    });
   },
 
   updateOrderType({ commit, dispatch }, orderType) {
-    commit(mutation.ORDER_TYPE, orderType)
-    dispatch('surchargeCalculation')
+    commit(mutation.ORDER_TYPE, orderType);
+    dispatch("surchargeCalculation");
   },
   addHoldOrder({ rootState, dispatch, commit }, order) {
-    dispatch('reset')
+    dispatch("reset");
 
-    commit(mutation.SET_ORDER_ID, order._id)
-    commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_ON_HOLD)
+    commit(mutation.SET_ORDER_ID, order._id);
+    commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_ON_HOLD);
 
     order.items.forEach((orderItem, key) => {
       rootState.category.items.forEach(categoryItem => {
-        let item = { ...categoryItem }
+        let item = { ...categoryItem };
         if (orderItem.entity_id === categoryItem._id) {
-          item.quantity = orderItem.qty
-          let modifiers = []
+          item.quantity = orderItem.qty;
+          let modifiers = [];
           if (order.item_modifiers.length) {
             order.item_modifiers.forEach(modifier => {
               if (modifier.for_item === key) {
-                modifiers.push(modifier.entity_id)
+                modifiers.push(modifier.entity_id);
               }
-            })
+            });
           }
           if (modifiers.length) {
-            item.modifiers = modifiers
-            dispatch('modifier/assignModifiersToItem', item, {
-              root: true,
+            item.modifiers = modifiers;
+            dispatch("modifier/assignModifiersToItem", item, {
+              root: true
             }).then(() => {
-              dispatch('addModifierOrder', item)
-            })
+              dispatch("addModifierOrder", item);
+            });
           } else {
-            dispatch('addToOrder', item)
+            dispatch("addToOrder", item);
           }
         }
-      })
-    })
+      });
+    });
   },
 
   selectedOrderDetails({ commit }, orderId) {
-    const params = ['orders', orderId]
+    const params = ["orders", orderId];
     OrderService.getGlobalDetails(...params).then(response => {
-      let orderDetails = {}
-      orderDetails.item = response.data.item
-      orderDetails.customer = response.data.collected_data.customer
-      orderDetails.lookups = response.data.collected_data.page_lookups
-      orderDetails.store_name = response.data.collected_data.store_name
-      commit(mutation.SET_ORDER_DETAILS, orderDetails)
-    })
+      let orderDetails = {};
+      orderDetails.item = response.data.item;
+      orderDetails.customer = response.data.collected_data.customer;
+      orderDetails.lookups = response.data.collected_data.page_lookups;
+      orderDetails.store_name = response.data.collected_data.store_name;
+      commit(mutation.SET_ORDER_DETAILS, orderDetails);
+    });
   },
 
   removeOrder({ dispatch }, { order, orderType }) {
     OrderService.deleteOrder(order._id, orderType).then(response => {
       if (response.status == 200) {
         switch (orderType) {
-          case 'hold':
-            dispatch('holdOrders/remove', order, { root: true })
-            break
+          case "hold":
+            dispatch("holdOrders/remove", order, { root: true });
+            break;
         }
       }
-    })
-  },
-}
+    });
+  }
+};
 
 function playSound(locationId, onlineOrders) {
   let nopromise = {
-    catch: new Function(),
-  }
+    catch: new Function()
+  };
   // onlineOrders.orders.forEach(order => {
   if (locationId == onlineOrders.location_id) {
     let onlineNewOrderAudioRing = new Audio(
-      'https://int.erp-pos.com/sound/doorbell.ogg'
-    )
-    onlineNewOrderAudioRing.load()
+      "https://int.erp-pos.com/sound/doorbell.ogg"
+    );
+    onlineNewOrderAudioRing.load();
     if (onlineOrders.orders && onlineOrders.orders.length) {
       onlineNewOrderAudioRing.addEventListener(
-        'ended',
+        "ended",
         function() {
-          this.currentTime = 0
-          ;(this.play() || nopromise).catch(function() {})
+          this.currentTime = 0;
+          (this.play() || nopromise).catch(function() {});
         },
         false
-      )
-      ;(onlineNewOrderAudioRing.play() || nopromise).catch(function() {})
+      );
+      (onlineNewOrderAudioRing.play() || nopromise).catch(function() {});
     } else {
-      onlineNewOrderAudioRing.pause()
-      onlineNewOrderAudioRing.currentTime = 0
+      onlineNewOrderAudioRing.pause();
+      onlineNewOrderAudioRing.currentTime = 0;
     }
   }
 }
@@ -741,114 +742,114 @@ function playSound(locationId, onlineOrders) {
 // mutations
 const mutations = {
   [mutation.SET_ITEM](state, item) {
-    state.item = item
+    state.item = item;
   },
 
   [mutation.ADD_ORDER_ITEM](state, item) {
-    item.modifiers = []
-    state.items.push(item)
+    item.modifiers = [];
+    state.items.push(item);
   },
 
   [mutation.ADD_ORDER_ITEM_WITH_MODIFIERS](state, item) {
-    state.items.push(item)
+    state.items.push(item);
   },
 
   [mutation.INCREMENT_ORDER_ITEM_QUANTITY](state, index) {
     //need to use array splice to make it reactive
-    let orderItem = state.items[index]
-    orderItem.quantity++
-    state.items.splice(index, 1, orderItem)
+    let orderItem = state.items[index];
+    orderItem.quantity++;
+    state.items.splice(index, 1, orderItem);
   },
 
   [mutation.REMOVE_ORDER_ITEM](state, index) {
     state.items = state.items.filter(function(orderItem, key) {
-      return key != index
-    })
+      return key != index;
+    });
   },
 
   [mutation.REPLACE_ORDER_ITEM](state, { item }) {
-    state.items.splice(item.orderIndex, 1, item)
+    state.items.splice(item.orderIndex, 1, item);
   },
 
   [mutation.ADD_MODIFIERS_TO_ITEM](state, { modifiers, modifierGroups }) {
-    state.item.modifiers = modifiers
-    state.item.modifierGroups = modifierGroups
+    state.item.modifiers = modifiers;
+    state.item.modifierGroups = modifierGroups;
   },
 
   [mutation.ADD_MODIFIER_PRICE_TO_ITEM](state, { grossPrice, netPrice }) {
-    state.item.grossPrice = grossPrice
-    state.item.netPrice = netPrice
-    state.item.undiscountedGrossPrice = state.item.grossPrice
-    state.item.undiscountedNetPrice = state.item.netPrice
+    state.item.grossPrice = grossPrice;
+    state.item.netPrice = netPrice;
+    state.item.undiscountedGrossPrice = state.item.grossPrice;
+    state.item.undiscountedNetPrice = state.item.netPrice;
   },
 
   [mutation.SET_ITEM_TAX](state, tax) {
-    state.item.tax = tax
+    state.item.tax = tax;
   },
 
   [mutation.RE_SAVE_ITEMS](state, items) {
-    state.items = items
+    state.items = items;
   },
 
   [mutation.SET_QUANTITY](state, qty) {
-    state.item.quantity = qty
+    state.item.quantity = qty;
   },
 
   [mutation.UPDATE_ITEM_QUANTITY](state, quantity) {
-    const index = state.item.orderIndex
-    let orderItem = state.items[index]
-    orderItem.quantity = typeof quantity != 'undefined' ? quantity : 1
-    state.items.splice(index, 1, orderItem)
+    const index = state.item.orderIndex;
+    let orderItem = state.items[index];
+    orderItem.quantity = typeof quantity != "undefined" ? quantity : 1;
+    state.items.splice(index, 1, orderItem);
   },
 
   [mutation.RESET](state) {
-    state.items = []
-    state.item = false
-    state.orderStatus = null
-    state.orderId = null
-    state.orderType = { OTview: 'Walk In', OTApi: 'walk_in' }
+    state.items = [];
+    state.item = false;
+    state.orderStatus = null;
+    state.orderId = null;
+    state.orderType = { OTview: "Walk In", OTApi: "walk_in" };
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
-    state.orderNote = orderNote
+    state.orderNote = orderNote;
   },
   [mutation.ORDER_TYPE](state, orderType) {
     // state.orderType = orderType.charAt(0).toUpperCase() + orderType.slice(1)
-    state.orderType = orderType
+    state.orderType = orderType;
   },
   [mutation.SET_REFERRAL](state, referral) {
-    state.referral = referral
+    state.referral = referral;
   },
   [mutation.SET_FUTURE_ORDER](state, futureOrder) {
-    state.futureOrder = futureOrder
+    state.futureOrder = futureOrder;
   },
   [mutation.SET_ORDER_ID](state, id) {
-    state.orderId = id
+    state.orderId = id;
   },
   [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId, orderDetails }) {
-    localStorage.setItem('onlineOrders', JSON.stringify(orderDetails))
-    state.onlineOrders = orderDetails
-    playSound(locationId, onlineOrders)
+    localStorage.setItem("onlineOrders", JSON.stringify(orderDetails));
+    state.onlineOrders = orderDetails;
+    playSound(locationId, onlineOrders);
   },
   [mutation.SET_ORDER_DETAILS](state, selectedOrderDetails) {
-    state.selectedOrder = selectedOrderDetails
+    state.selectedOrder = selectedOrderDetails;
   },
   [mutation.ORDER_STATUS](state, status) {
-    state.orderStatus = status
+    state.orderStatus = status;
   },
 
   [mutation.SET_CART_TYPE](state, cartType) {
-    state.cartType = cartType
-  },
+    state.cartType = cartType;
+  }
   /*[mutation.PAST_ORDER_DETAILS](state, pastOrder) {
     state.selectedOrder = pastOrder
     // $('#past-order').modal('toggle')
   },*/
-}
+};
 
 export default {
   namespaced: true,
   state,
   getters,
   actions,
-  mutations,
-}
+  mutations
+};

@@ -1,5 +1,5 @@
 // initial state
-import * as CONST from '@/constants'
+import * as CONST from "@/constants";
 const state = {
   //date: '2019-02-06',
   compress: false,
@@ -17,52 +17,52 @@ const state = {
     discounts: CONST.LOADING_STATUS_LOADING,
     payment_types: CONST.LOADING_STATUS_LOADING,
     announcements: CONST.LOADING_STATUS_LOADING,
-    customers: CONST.LOADING_STATUS_LOADING,
-  },
-}
+    customers: CONST.LOADING_STATUS_LOADING
+  }
+};
 
 // getters
-const getters = {}
+const getters = {};
 
 // actions
-const actions = {}
+const actions = {};
 
 // mutations
 const mutations = {
   updateLoading(state, { key, status }) {
-    state.modules[key] = status
+    state.modules[key] = status;
   },
   updateSyncDate(state, date) {
-    state.date = date
+    state.date = date;
   },
 
   updateCompress(state, isCompress) {
-    state.compress = isCompress
+    state.compress = isCompress;
   },
 
   status(state, status) {
-    state.online = status
+    state.online = status;
   },
 
   loaded(state, loaded) {
-    state.loaded = loaded
+    state.loaded = loaded;
   },
 
   setIdbVersion(state, version) {
-    state.idbVersion = version
+    state.idbVersion = version;
   },
   setIdb(state, handle) {
-    state.idb = handle
+    state.idb = handle;
   },
   reload(state, val) {
-    state.reloaded = val
-  },
-}
+    state.reloaded = val;
+  }
+};
 
 export default {
   namespaced: true,
   state,
   getters,
   actions,
-  mutations,
-}
+  mutations
+};

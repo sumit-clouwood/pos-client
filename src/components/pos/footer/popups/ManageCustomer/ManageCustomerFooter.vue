@@ -22,7 +22,7 @@
         class="btn btn-danger cancel-announce"
         data-dismiss="modal"
       >
-        {{ _t('Cancel') }}
+        {{ _t("Cancel") }}
       </button>
       <button
         class="btn btn-success btn-large popup-btn-save"
@@ -33,7 +33,7 @@
         data-target="#customer"
         data-dismiss="modal"
       >
-        {{ _t('Create New Customer') }}
+        {{ _t("Create New Customer") }}
       </button>
     </div>
     <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -42,39 +42,39 @@
 
 <script>
 /*global $*/
-import { mapState, mapActions, mapGetters } from 'vuex'
-import paginate from 'vuejs-paginate'
+import { mapState, mapActions, mapGetters } from "vuex";
+import paginate from "vuejs-paginate";
 export default {
-  name: 'ManageCustomerFooter',
+  name: "ManageCustomerFooter",
   props: {},
   components: {
-    paginate,
+    paginate
   },
   data() {
     return {
-      page: 1,
-    }
+      page: 1
+    };
   },
   computed: {
     ...mapState({
       paginateDetails: state => state.customer.paginate,
-      customerDetails: state => state.customer.customer_list,
+      customerDetails: state => state.customer.customer_list
     }),
-    ...mapState('customer', ['loading']),
-    ...mapGetters('location', ['_t']),
+    ...mapState("customer", ["loading"]),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
     moreCustomer: function(pageNumber) {
-      this.setPageNumber(pageNumber)
+      this.setPageNumber(pageNumber);
     },
     addCustomerForm: function() {
-      this.addCustomer()
-      $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
-      $('#customer input, #customer select').val('')
-      $('.nogeneral').show()
-      $('.customerAddressWrapper').show()
+      this.addCustomer();
+      $("#post_announcement").attr("disabled", false); //Disable Save button if pressed
+      $("#customer input, #customer select").val("");
+      $(".nogeneral").show();
+      $(".customerAddressWrapper").show();
     },
-    ...mapActions('customer', ['setPageNumber', 'addCustomer']),
-  },
-}
+    ...mapActions("customer", ["setPageNumber", "addCustomer"])
+  }
+};
 </script>

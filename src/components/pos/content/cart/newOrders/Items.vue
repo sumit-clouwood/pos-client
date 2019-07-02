@@ -35,56 +35,56 @@
 </template>
 
 <script>
-import Modifiers from './items/Modifiers.vue'
-import * as CONST from '@/constants'
-import { mapState, mapActions, mapGetters } from 'vuex'
+import Modifiers from "./items/Modifiers.vue";
+import * as CONST from "@/constants";
+import { mapState, mapActions, mapGetters } from "vuex";
 export default {
-  name: 'Items',
+  name: "Items",
   props: {},
   computed: {
     ...mapState({
-      currentItem: state => state.order.item._id,
+      currentItem: state => state.order.item._id
     }),
-    ...mapState('order', ['orderType']),
-    ...mapGetters('category', ['subcategoryImage']),
-    ...mapGetters('modifier', ['hasModifiers']),
-    ...mapGetters('order', ['items', 'itemPrice', 'orderModifiers']),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapState("order", ["orderType"]),
+    ...mapGetters("category", ["subcategoryImage"]),
+    ...mapGetters("modifier", ["hasModifiers"]),
+    ...mapGetters("order", ["items", "itemPrice", "orderModifiers"]),
+    ...mapGetters("location", ["formatPrice"])
   },
   methods: {
-    ...mapActions('category', ['getItems']),
-    ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
+    ...mapActions("category", ["getItems"]),
+    ...mapActions("order", ["removeFromOrder", "setActiveItem"]),
     discountInfo(item) {
       if (item.discount) {
         return (
-          ' - ' +
+          " - " +
           (item.discount.type === CONST.VALUE
             ? item.discount.value
-            : item.discount.rate + ' %') +
-          ' ( ' +
+            : item.discount.rate + " %") +
+          " ( " +
           item.discount.name +
-          ' - ' +
+          " - " +
           (item.discount.type == CONST.VALUE
             ? this.formatPrice(item.discount.value)
-            : item.discount.rate + ' %') +
-          ' )'
-        )
+            : item.discount.rate + " %") +
+          " )"
+        );
       }
-      return ''
-    },
+      return "";
+    }
   },
   components: {
-    Modifiers,
+    Modifiers
   },
   watch: {
     orderType(newVal, previousVal) {
       if (newVal.OTApi !== previousVal.OTApi)
         if (this.$store.state.discount.appliedOrderDiscount) {
-          this.$store.dispatch('discount/clearOrderDiscount')
+          this.$store.dispatch("discount/clearOrderDiscount");
         } else {
-          this.$store.dispatch('discount/removeItemDiscount')
+          this.$store.dispatch("discount/removeItemDiscount");
         }
-    },
-  },
-}
+    }
+  }
+};
 </script>

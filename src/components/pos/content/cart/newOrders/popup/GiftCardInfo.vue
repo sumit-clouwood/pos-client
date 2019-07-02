@@ -47,13 +47,13 @@
   </div>
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 export default {
-  name: 'GiftCardInfo',
+  name: "GiftCardInfo",
   computed: {
-    ...mapState('giftcard', ['giftcard']),
-    ...mapState('checkoutForm', ['giftAmount']),
-    ...mapGetters('location', ['formatPrice']),
-  },
-}
+    ...mapState("giftcard", ["giftcard"]),
+    ...mapState("checkoutForm", ["giftAmount"]),
+    ...mapGetters("location", ["formatPrice"])
+  }
+};
 </script>

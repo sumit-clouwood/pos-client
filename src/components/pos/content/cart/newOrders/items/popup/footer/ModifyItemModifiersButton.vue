@@ -8,35 +8,35 @@
     "
   >
     <img src="img/pos/done.png" alt="done" />
-    <span>{{ _t('Apply') }}</span>
+    <span>{{ _t("Apply") }}</span>
   </button>
 </template>
 <script>
 //this footer ll be called only when we come through order
 /* global hideModal */
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 
 export default {
-  name: 'ModifyItemModifiersButton',
+  name: "ModifyItemModifiersButton",
   props: {},
   methods: {
     addModifierOrder() {
-      this.$store.dispatch('order/addModifierOrder').then(() => {
-        hideModal('#POSOrderItemOptions')
-      })
+      this.$store.dispatch("order/addModifierOrder").then(() => {
+        hideModal("#POSOrderItemOptions");
+      });
     },
     updateItemQuantity() {
       this.$store.dispatch(
-        'order/updateQuantity',
-        this.$store.getters['orderForm/quantity']
-      )
-    },
+        "order/updateQuantity",
+        this.$store.getters["orderForm/quantity"]
+      );
+    }
   },
   computed: {
     ...mapState({
-      item: state => state.order.item,
+      item: state => state.order.item
     }),
-    ...mapGetters('location', ['_t']),
-  },
-}
+    ...mapGetters("location", ["_t"])
+  }
+};
 </script>

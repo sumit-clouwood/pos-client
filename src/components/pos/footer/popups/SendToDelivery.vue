@@ -11,11 +11,11 @@
       <div class="modal-content text-center text-danger pt-3" v-else>
         <div class="order-header">
           <h4 class="order-confirm-title">
-            {{ _t('No items added to order') }}
+            {{ _t("No items added to order") }}
           </h4>
           <p>
             {{
-              _t('Please add some item(s) to order before sending to delivery')
+              _t("Please add some item(s) to order before sending to delivery")
             }}
           </p>
         </div>
@@ -27,7 +27,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              {{ _t('Close') }}
+              {{ _t("Close") }}
             </button>
           </div>
 
@@ -40,27 +40,27 @@
 </template>
 
 <script>
-import SendToDeliveryHeader from './SendToDelivery/SendToDeliveryHeader'
-import SendToDeliveryContent from './SendToDelivery/SendToDeliveryContent'
-import SendToDeliveryFooter from './SendToDelivery/SendToDeliveryFooter'
-import { mapState, mapGetters } from 'vuex'
+import SendToDeliveryHeader from "./SendToDelivery/SendToDeliveryHeader";
+import SendToDeliveryContent from "./SendToDelivery/SendToDeliveryContent";
+import SendToDeliveryFooter from "./SendToDelivery/SendToDeliveryFooter";
+import { mapState, mapGetters } from "vuex";
 
 export default {
-  name: 'SendToDelivery',
+  name: "SendToDelivery",
   props: {},
   components: {
     SendToDeliveryHeader,
     SendToDeliveryContent,
-    SendToDeliveryFooter,
+    SendToDeliveryFooter
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"]),
     ...mapState({
       cartItems: state =>
-        state.order.items.length > 0 ? state.order.items : false,
-    }),
-  },
-}
+        state.order.items.length > 0 ? state.order.items : false
+    })
+  }
+};
 </script>
 <style lang="scss" scoped>
 .error-dialog {

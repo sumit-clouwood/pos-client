@@ -201,7 +201,7 @@
                       v-for="(mod, index) in selectedOrder.modifyOrder"
                       :key="index"
                     >
-                      <td>{{ mod.reprinted != 1 ? 'Modified' : 'Reprint' }}</td>
+                      <td>{{ mod.reprinted != 1 ? "Modified" : "Reprint" }}</td>
                       <td>{{ mod.updated_by }}</td>
                       <td>{{ mod.updated_date }} / {{ mod.updated_time }}</td>
                     </tr>
@@ -331,40 +331,40 @@
 
 <script>
 /* global $ */
-import { mapState, mapGetters, mapActions } from 'vuex'
-import InvoiceReprint from '@/components/deliveryManager/partial/InvoiceReprint'
+import { mapState, mapGetters, mapActions } from "vuex";
+import InvoiceReprint from "@/components/deliveryManager/partial/InvoiceReprint";
 
 export default {
-  name: 'DMOrderDetails',
+  name: "DMOrderDetails",
   computed: {
     ...mapState({
-      selectedOrder: state => state.deliveryManager.selectedOrder,
+      selectedOrder: state => state.deliveryManager.selectedOrder
     }),
     ...mapState({
-      locationName: state => state.location.locationName,
+      locationName: state => state.location.locationName
     }),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters("location", ["formatPrice"])
   },
   components: {
-    InvoiceReprint,
+    InvoiceReprint
   },
   methods: {
     returnedAmount: function(paymentMode, amountChanged) {
-      return paymentMode == 'Cash' ? amountChanged : 0
+      return paymentMode == "Cash" ? amountChanged : 0;
     },
     collectedAmount: function(payment) {
-      return payment.payment_mode == 'Cash' ? payment.payment_amount : 0
+      return payment.payment_mode == "Cash" ? payment.payment_amount : 0;
     },
     toggleHistory: function() {
-      $('#dm-order-confirmation').toggle()
-      $('#dm-order-history-rec').toggle()
-      $('#status-history').toggle()
-      $('#recipt-history').toggle()
+      $("#dm-order-confirmation").toggle();
+      $("#dm-order-history-rec").toggle();
+      $("#status-history").toggle();
+      $("#recipt-history").toggle();
     },
 
-    ...mapActions('checkout', ['generateInvoice']),
-  },
-}
+    ...mapActions("checkout", ["generateInvoice"])
+  }
+};
 </script>
 
 <style scoped>

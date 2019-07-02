@@ -6,12 +6,12 @@
 
 <script>
 //this footer ll be always called by the catalog and modifiers items only
-import AddModifierOrderButton from './footer/AddModifierOrderButton'
+import AddModifierOrderButton from "./footer/AddModifierOrderButton";
 export default {
-  name: 'Footer',
+  name: "Footer",
   props: {},
   components: {
-    AddModifierOrderButton,
-  },
-}
+    AddModifierOrderButton
+  }
+};
 </script>

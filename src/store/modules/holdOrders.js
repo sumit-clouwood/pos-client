@@ -1,5 +1,5 @@
-import * as mutation from './holdOrders/mutation-types'
-import OrderService from '@/services/data/OrderService'
+import * as mutation from "./holdOrders/mutation-types";
+import OrderService from "@/services/data/OrderService";
 // import OrderService from '../../services/data/OrderService'
 
 const state = {
@@ -7,16 +7,16 @@ const state = {
   orderDetails: {},
   pageLookups: {},
   params: {
-    query: '',
+    query: "",
     limit: 10,
-    orderBy: 'order_status',
-    orderStatus: 'on-hold',
+    orderBy: "order_status",
+    orderStatus: "on-hold",
     page: 1,
-    totalPages: 0,
-  },
-}
+    totalPages: 0
+  }
+};
 
-const getters = {}
+const getters = {};
 
 const actions = {
   getHoldOrders({ commit, state }) {
@@ -26,64 +26,64 @@ const actions = {
       state.params.orderBy,
       state.params.orderStatus,
       state.params.page,
-      'orders_main_tbl',
-      '',
-    ]
+      "orders_main_tbl",
+      ""
+    ];
     OrderService.getOrders(...params).then(response => {
-      commit(mutation.GET_HOLD_ORDERS, response.data)
-      commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
-    })
+      commit(mutation.GET_HOLD_ORDERS, response.data);
+      commit(mutation.PAGE_LOOKUP, response.data.page_lookups);
+    });
   },
 
   moreOrders({ commit, dispatch }, pageNumber) {
-    commit(mutation.GET_MORE_ORDER, pageNumber)
-    dispatch('getHoldOrders')
+    commit(mutation.GET_MORE_ORDER, pageNumber);
+    dispatch("getHoldOrders");
   },
   fetchOrder({ commit, dispatch }, selectedOrder) {
-    commit(mutation.GET_HOLD_ORDER_DETAILS, selectedOrder)
-    dispatch('order/addHoldOrder', { selectedOrder }, { root: true })
+    commit(mutation.GET_HOLD_ORDER_DETAILS, selectedOrder);
+    dispatch("order/addHoldOrder", { selectedOrder }, { root: true });
   },
 
   holdOrder({ commit }) {
-    commit(mutation.SET_ORDER_STATUS, 'on-hold')
+    commit(mutation.SET_ORDER_STATUS, "on-hold");
   },
 
   remove({ commit }, order) {
     const orderIndex = state.getHoldOrders.findIndex(
       holdeOrder => holdeOrder._id == order._id
-    )
-    commit(mutation.REMOVE_ORDER, orderIndex)
-  },
-}
+    );
+    commit(mutation.REMOVE_ORDER, orderIndex);
+  }
+};
 
 const mutations = {
   [mutation.GET_HOLD_ORDERS](state, holdOrders) {
-    state.getHoldOrders = holdOrders.data
+    state.getHoldOrders = holdOrders.data;
     state.params.totalPages = Math.ceil(
       parseInt(holdOrders.count) / parseInt(state.params.limit)
-    )
+    );
   },
   [mutation.GET_MORE_ORDER](state, pageNumber) {
-    state.params.page = pageNumber
+    state.params.page = pageNumber;
   },
   [mutation.GET_HOLD_ORDER_DETAILS](state, order) {
-    state.orderDetails = order
+    state.orderDetails = order;
   },
   [mutation.SET_ORDER_STATUS](state, orderStatus) {
-    state.orderStatus = orderStatus
+    state.orderStatus = orderStatus;
   },
   [mutation.PAGE_LOOKUP](state, pageLookups) {
-    state.pageLookups = pageLookups
+    state.pageLookups = pageLookups;
   },
   [mutation.REMOVE_ORDER](state, index) {
-    state.getHoldOrders.splice(index, 1)
-  },
-}
+    state.getHoldOrders.splice(index, 1);
+  }
+};
 
 export default {
   namespaced: true,
   actions,
   state,
   mutations,
-  getters,
-}
+  getters
+};

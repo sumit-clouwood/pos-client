@@ -153,16 +153,16 @@
 </template>
 
 <script>
-import DateTime from '@/mixins/DateTime'
-import { mapState } from 'vuex'
+import DateTime from "@/mixins/DateTime";
+import { mapState } from "vuex";
 
 export default {
   props: {},
   mixins: [DateTime],
   computed: {
     ...mapState({
-      getOrderDetails: state => state.order.selectedOrder,
-    }),
-  },
-}
+      getOrderDetails: state => state.order.selectedOrder
+    })
+  }
+};
 </script>

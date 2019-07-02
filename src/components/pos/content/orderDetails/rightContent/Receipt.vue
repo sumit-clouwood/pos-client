@@ -12,10 +12,10 @@
       </div>
       <table class="table col-md-12">
         <tr>
-          <th class="receipt-heading">{{ _t('Item') }}</th>
-          <th class="receipt-heading">{{ _t('Base Price') }}</th>
-          <th class="receipt-heading">{{ _t('Qty') }}</th>
-          <th class="receipt-heading">{{ _t('Total Price') }}</th>
+          <th class="receipt-heading">{{ _t("Item") }}</th>
+          <th class="receipt-heading">{{ _t("Base Price") }}</th>
+          <th class="receipt-heading">{{ _t("Qty") }}</th>
+          <th class="receipt-heading">{{ _t("Total Price") }}</th>
         </tr>
         <tr v-for="(item, key) in orderDetails.items" :key="key">
           <td>
@@ -25,7 +25,7 @@
                 getItemSubsets({
                   subset: orderDetails.item_discounts,
                   itemId: item.no,
-                  selector: 'item_discounts',
+                  selector: "item_discounts"
                 })
               }}
               <div v-for="(discount, index) in iteDiscount" :key="index">
@@ -37,7 +37,7 @@
                 getItemSubsets({
                   subset: orderDetails.item_modifiers,
                   itemId: item.no,
-                  selector: 'item_modifiers',
+                  selector: "item_modifiers"
                 })
               }}
               <div v-for="(modifier, key) in itemModifiers" :key="key">
@@ -56,23 +56,23 @@
         <div class="subtotal">{{ orderDetails.sub_total }}</div>
         <!---->
         <div class="caption" v-if="orderDetails.total_surcharge">
-          {{ _t('Surcharges') }}:
+          {{ _t("Surcharges") }}:
         </div>
         <div v-if="orderDetails.total_surcharge">
           {{ orderDetails.total_surcharge }}
         </div>
         <div class="caption" v-if="orderDetails.total_discount">
-          {{ _t('Discount') }}:
+          {{ _t("Discount") }}:
         </div>
         <div v-if="orderDetails.total_discount">
           {{ orderDetails.total_discount }}
         </div>
-        <div class="caption">{{ _t('Total Tax') }}:</div>
+        <div class="caption">{{ _t("Total Tax") }}:</div>
         <div>
           {{ orderDetails.total_tax }}
         </div>
         <div class="total">
-          {{ _t('Total') }}
+          {{ _t("Total") }}
         </div>
         <div class="total">
           {{ orderDetails.balance_due }}
@@ -83,27 +83,27 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'Receipt',
+  name: "Receipt",
   props: {
     orderDetails: {},
     iteDiscount: {},
-    itemModifiers: {},
+    itemModifiers: {}
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
     getItemSubsets: function(details) {
-      if (details.selector == 'item_modifiers') {
+      if (details.selector == "item_modifiers") {
         this.itemDiscount = details.subset.find(
           item => item.for_item == details.itemId
-        )
+        );
       } else {
         this.itemModifiers = details.subset.find(
           item => item.for_item == details.itemId
-        )
+        );
       }
 
       /*return details.subset.forEach(item => {
@@ -111,9 +111,9 @@ export default {
           return item
         }
       })*/
-    },
-  },
-}
+    }
+  }
+};
 </script>
 
 <style scoped lang="scss">

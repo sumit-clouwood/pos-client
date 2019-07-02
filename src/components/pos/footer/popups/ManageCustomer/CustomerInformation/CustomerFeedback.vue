@@ -1,6 +1,6 @@
 <template>
   <div class="customer-insight-feedback">
-    <p>{{ _t('User') + ' ' + _t('Feedback') }}:</p>
+    <p>{{ _t("User") + " " + _t("Feedback") }}:</p>
     <ul class="ullist-feedback">
       <li>
         <a href="javascript:void(0)"
@@ -43,11 +43,11 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'CustomerFeedback',
+  name: "CustomerFeedback",
   computed: {
-    ...mapGetters('location', ['_t']),
-  },
-}
+    ...mapGetters("location", ["_t"])
+  }
+};
 </script>

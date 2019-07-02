@@ -21,27 +21,27 @@
 </i18n>
 
 <script>
-import Menu from './pos/Menu.vue'
-import Header from './pos/Header.vue'
-import Content from './pos/Content.vue'
-import Footer from './pos/Footer'
-import { mapState } from 'vuex'
+import Menu from "./pos/Menu.vue";
+import Header from "./pos/Header.vue";
+import Content from "./pos/Content.vue";
+import Footer from "./pos/Footer";
+import { mapState } from "vuex";
 export default {
-  name: 'Pos',
+  name: "Pos",
   computed: {
-    ...mapState('category', ['categories']),
+    ...mapState("category", ["categories"])
   },
   components: {
     Menu,
     Header,
     Content,
-    Footer,
+    Footer
   },
   //store private data in component using data
 
   //data passed to this component by its parent is contained inside props
   props: {
-    msg: String,
-  },
-}
+    msg: String
+  }
+};
 </script>

@@ -41,21 +41,21 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 
 export default {
-  name: 'DMTakeAwaySubMenu',
+  name: "DMTakeAwaySubMenu",
   methods: {
     updateOrderStatus: function(orderStatus) {
-      this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
-    },
+      this.$store.dispatch("deliveryManager/updateDMOrderStatus", orderStatus);
+    }
   },
   computed: {
     ...mapState({
-      orderCount: state => state.deliveryManager.orderCounts,
-    }),
-  },
-}
+      orderCount: state => state.deliveryManager.orderCounts
+    })
+  }
+};
 </script>
 
 <style scoped></style>

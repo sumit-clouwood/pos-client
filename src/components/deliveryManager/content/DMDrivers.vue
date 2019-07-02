@@ -20,34 +20,34 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from "vuex";
 
 export default {
-  name: 'DMDrivers',
+  name: "DMDrivers",
   data() {
     return {
       waitingOrder: {
         moreDetails: false,
-        action: '',
-        driverId: '',
-        nextOrderStatus: 'in-progress',
-      },
-    }
+        action: "",
+        driverId: "",
+        nextOrderStatus: "in-progress"
+      }
+    };
   },
   computed: {
     ...mapState({
-      driverList: state => state.location.locationData.drivers,
-    }),
+      driverList: state => state.location.locationData.drivers
+    })
   },
   methods: {
     selectedDriver: function(driver) {
-      this.waitingOrder.action = driver.name
-      this.waitingOrder.driverId = driver._id
-      this.selectDriver(driver)
+      this.waitingOrder.action = driver.name;
+      this.waitingOrder.driverId = driver._id;
+      this.selectDriver(driver);
     },
-    ...mapActions('deliveryManager', ['selectDriver']),
-  },
-}
+    ...mapActions("deliveryManager", ["selectDriver"])
+  }
+};
 </script>
 
 <style scoped></style>

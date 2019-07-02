@@ -8,7 +8,7 @@
         data-dismiss="modal"
         @click="setDefaultSettingsGlobalAddUpdate({ nearest_landmark: '' })"
       >
-        {{ _t('+ Add Address') }}
+        {{ _t("+ Add Address") }}
       </button>
     </div>
     <CustomerDeliveryArea :buttons="true" classAccess="" />
@@ -16,19 +16,19 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
+import { mapActions, mapGetters } from "vuex";
+import CustomerDeliveryArea from "../CustomerAddress/CustomerDeliveryArea";
 
 export default {
-  name: 'CustomerDeliveryAddress',
+  name: "CustomerDeliveryAddress",
   components: {
-    CustomerDeliveryArea,
+    CustomerDeliveryArea
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
-    ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
-  },
-}
+    ...mapActions("customer", ["setDefaultSettingsGlobalAddUpdate"])
+  }
+};
 </script>

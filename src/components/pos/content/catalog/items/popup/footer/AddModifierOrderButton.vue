@@ -6,28 +6,28 @@
       @click="addModifierOrder"
     >
       <img src="img/pos/done.png" alt="done" />
-      <span>{{ _t('Apply') }}</span>
+      <span>{{ _t("Apply") }}</span>
     </button>
   </div>
 </template>
 <script>
 /* global closeModal */
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'AddModifierOrderButton',
+  name: "AddModifierOrderButton",
   props: {},
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
     addModifierOrder() {
       this.$store
-        .dispatch('order/addModifierOrder')
+        .dispatch("order/addModifierOrder")
         .then(() => {
-          closeModal('#POSItemOptions')
+          closeModal("#POSItemOptions");
         })
-        .catch()
-    },
-  },
-}
+        .catch();
+    }
+  }
+};
 </script>

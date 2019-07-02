@@ -60,7 +60,7 @@
           {{
             humanDateTime({
               order_created: order.created_at,
-              order_no: order.order_no,
+              order_no: order.order_no
             })
           }}
           <p :id="'od' + order.order_no"></p>
@@ -71,28 +71,28 @@
 </template>
 
 <script>
-import DateTime from '@/mixins/DateTime'
-import { mapState } from 'vuex'
+import DateTime from "@/mixins/DateTime";
+import { mapState } from "vuex";
 
 export default {
-  name: 'DSItems',
+  name: "DSItems",
   mixins: [DateTime],
   computed: {
-    ...mapState('deliveryManager', ['dispatchOrders']),
+    ...mapState("deliveryManager", ["dispatchOrders"])
   },
   methods: {
     collected: function(orderId) {
       // $('#ds_'+orderId).hide()
-      this.$store.dispatch('deliveryManager/updateTakeAway', orderId)
-      this.$store.dispatch('deliveryManager/getDispatchOrder')
-    },
-  },
+      this.$store.dispatch("deliveryManager/updateTakeAway", orderId);
+      this.$store.dispatch("deliveryManager/getDispatchOrder");
+    }
+  }
   /*update() {
     if(!this.dispatchOrders){
       this.$store.dispatch('deliveryManager/getDispatchOrder')
     }
   },*/
-}
+};
 </script>
 
 <style scoped>

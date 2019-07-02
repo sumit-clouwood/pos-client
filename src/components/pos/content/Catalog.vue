@@ -12,25 +12,25 @@
 </template>
 
 <script>
-import Items from './catalog/Items'
-import Breadcrumbs from './catalog/Breadcrumbs'
-import Search from './catalog/Search'
-import SubMenu from './catalog/SubMenu'
-import { mapGetters } from 'vuex'
+import Items from "./catalog/Items";
+import Breadcrumbs from "./catalog/Breadcrumbs";
+import Search from "./catalog/Search";
+import SubMenu from "./catalog/SubMenu";
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'Catalog',
+  name: "Catalog",
   props: {
-    msg: String,
+    msg: String
   },
   components: {
     Breadcrumbs,
     Items,
     Search,
-    SubMenu,
+    SubMenu
   },
   computed: {
-    ...mapGetters('category', ['subcategories', 'items']),
-  },
-}
+    ...mapGetters("category", ["subcategories", "items"])
+  }
+};
 </script>

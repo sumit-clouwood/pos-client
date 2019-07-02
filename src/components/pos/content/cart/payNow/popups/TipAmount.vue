@@ -6,7 +6,7 @@
       <div class="modal-content">
         <div class="modal-body tip-amount">
           <div class="tip-amount-wrap">
-            <p>{{ _t('Enter Tip Amount') }}</p>
+            <p>{{ _t("Enter Tip Amount") }}</p>
             <input
               v-model.number="tip"
               type="number"
@@ -24,7 +24,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              {{ _t('Cancel') }}
+              {{ _t("Cancel") }}
             </button>
             <button
               class="btn btn-success btn-large"
@@ -33,7 +33,7 @@
               id="add-top"
               @click="addTip"
             >
-              {{ _t('Add') }}
+              {{ _t("Add") }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -46,22 +46,22 @@
 
 <script>
 // /*global $*/
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'TipAmount',
+  name: "TipAmount",
   data: function() {
     return {
-      tip: 0,
-    }
+      tip: 0
+    };
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
     addTip() {
-      this.$store.commit('checkoutForm/addTip', this.tip)
+      this.$store.commit("checkoutForm/addTip", this.tip);
       /*$('input[name=tip]').val(0)*/
-    },
-  },
-}
+    }
+  }
+};
 </script>

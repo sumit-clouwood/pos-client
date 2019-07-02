@@ -1,8 +1,8 @@
-export const SET_ORDER = 'SET_ORDER'
-export const SET_PAID_AMOUNT = 'SET_PAID_AMOUNT'
-export const SET_PAYABLE_AMOUNT = 'SET_PAYABLE_AMOUNT'
-export const SET_PENDING_AMOUNT = 'SET_PENDING_AMOUNT'
-export const SET_CHANGED_AMOUNT = 'SET_CHANGED_AMOUNT'
-export const SET_ORDER_NUMBER = 'SET_ORDER_NUMBER'
-export const PRINT = 'PRINT'
-export const RESET = 'RESET'
+export const SET_ORDER = "SET_ORDER";
+export const SET_PAID_AMOUNT = "SET_PAID_AMOUNT";
+export const SET_PAYABLE_AMOUNT = "SET_PAYABLE_AMOUNT";
+export const SET_PENDING_AMOUNT = "SET_PENDING_AMOUNT";
+export const SET_CHANGED_AMOUNT = "SET_CHANGED_AMOUNT";
+export const SET_ORDER_NUMBER = "SET_ORDER_NUMBER";
+export const PRINT = "PRINT";
+export const RESET = "RESET";

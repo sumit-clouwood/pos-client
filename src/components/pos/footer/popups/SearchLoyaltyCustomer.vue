@@ -6,10 +6,10 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ _t('Loyalty') }}</h4>
+          <h4 class="customer-title">{{ _t("Loyalty") }}</h4>
         </div>
         <form class="modal-body add-note-wrap" autocomplete="off">
-          <p>{{ _t('Jump to customer') }}</p>
+          <p>{{ _t("Jump to customer") }}</p>
           <div class="add-note-area loyalty-search">
             <input
               autocomplete="off"
@@ -35,7 +35,7 @@
                   id="searchLoader"
                   v-if="searchTerm.length"
                 ></i>
-                {{ _t('Search') }}</span
+                {{ _t("Search") }}</span
               >
             </button>
           </div>
@@ -62,7 +62,7 @@
             class="cursor-pointer blue-middle"
             @click="loyaltyAddCustomer('#customer')"
           >
-            {{ _t('Create New Customer') }}
+            {{ _t("Create New Customer") }}
           </div>
           <div class="btn-announce">
             <button
@@ -70,7 +70,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              {{ _t('Cancel') }}
+              {{ _t("Cancel") }}
             </button>
             <button
               @click="addLoyalty"
@@ -78,7 +78,7 @@
               type="button"
               id="save-note"
             >
-              {{ _t('Select') }}
+              {{ _t("Select") }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -93,75 +93,75 @@
 
 <script>
 /* global $ */
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions, mapGetters } from "vuex";
 export default {
-  name: 'SearchLoyaltyCustomer',
+  name: "SearchLoyaltyCustomer",
   props: {},
   data() {
     return {
-      searchTerm: '',
-      customerId: '',
-      inputTimer: '',
-      searchCustomerErr: '',
-    }
+      searchTerm: "",
+      customerId: "",
+      inputTimer: "",
+      searchCustomerErr: ""
+    };
   },
   computed: {
     ...mapState({
-      customers: state => state.customer.customer_list,
+      customers: state => state.customer.customer_list
     }),
-    ...mapState('loyalty', ['loyalty']),
-    ...mapGetters('location', ['_t']),
+    ...mapState("loyalty", ["loyalty"]),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
     loyaltyAddCustomer: function(target) {
-      this.$store.commit('loyalty/LOYALTY', true)
-      this.addCustomer()
-      $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
-      $('#customer input, #customer select').val('')
-      $(target).modal('show')
-      $('.nogeneral').hide()
+      this.$store.commit("loyalty/LOYALTY", true);
+      this.addCustomer();
+      $("#post_announcement").attr("disabled", false); //Disable Save button if pressed
+      $("#customer input, #customer select").val("");
+      $(target).modal("show");
+      $(".nogeneral").hide();
     },
 
     addLoyalty: function() {
       if (this.customerId.length > 0) {
-        this.searchCustomerErr = ''
-        $('.text-danger').hide()
-        $('#search-loyalty-customer').modal('toggle')
-        this.fetchSelectedCustomer(this.customerId)
+        this.searchCustomerErr = "";
+        $(".text-danger").hide();
+        $("#search-loyalty-customer").modal("toggle");
+        this.fetchSelectedCustomer(this.customerId);
       } else {
-        this.searchCustomerErr = 'Please Select Customer'
+        this.searchCustomerErr = "Please Select Customer";
       }
     },
 
     selectCustomer(customer) {
-      this.searchCustomerErr = ''
-      this.searchTerm = customer.name
-      this.customerId = customer._id
-      $('#myDropdown').toggle()
+      this.searchCustomerErr = "";
+      this.searchTerm = customer.name;
+      this.customerId = customer._id;
+      $("#myDropdown").toggle();
     },
     search() {
-      clearTimeout(this.inputTimer)
+      clearTimeout(this.inputTimer);
       if (this.searchTerm.length >= 2) {
-        $('#searchLoader').attr('style', 'display:block')
+        $("#searchLoader").attr("style", "display:block");
         this.inputTimer = setTimeout(() => {
-          $('#myDropdown').toggle()
+          $("#myDropdown").toggle();
           this.$store
-            .dispatch('customer/searchCustomer', this.searchTerm)
+            .dispatch("customer/searchCustomer", this.searchTerm)
             .then(() => {
-              this.searchCustomerErr = ''
-              $('#searchLoader').hide()
-              $('#myDropdown').toggle()
+              this.searchCustomerErr = "";
+              $("#searchLoader").hide();
+              $("#myDropdown").toggle();
             })
             .catch(() => {
-              $('#searchLoader').hide()
-              this.searchCustomerErr = 'No Results Found'
-            })
-        }, 500)
+              $("#searchLoader").hide();
+              this.searchCustomerErr = "No Results Found";
+            });
+        }, 500);
       }
     },
-    ...mapActions('customer', ['fetchSelectedCustomer', 'addCustomer']),
-  },
-}
+    ...mapActions("customer", ["fetchSelectedCustomer", "addCustomer"])
+  }
+};
 </script>
 
 <style scoped lang="css">

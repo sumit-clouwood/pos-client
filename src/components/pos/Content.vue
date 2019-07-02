@@ -7,19 +7,19 @@
 </template>
 
 <script>
-import Catalog from './content/Catalog'
-import Announcement from './header/Announcement'
-import Cart from './content/Cart'
+import Catalog from "./content/Catalog";
+import Announcement from "./header/Announcement";
+import Cart from "./content/Cart";
 
 export default {
-  name: 'Contents',
+  name: "Contents",
   props: {},
   components: {
     Catalog,
     Cart,
-    Announcement,
-  },
-}
+    Announcement
+  }
+};
 </script>
 <style scoped>
 .inner-container {

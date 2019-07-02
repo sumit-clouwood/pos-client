@@ -81,37 +81,37 @@
 
 <script>
 export default {
-  name: 'Buttons',
+  name: "Buttons",
   props: {
     id: String,
-    editDetails: {},
+    editDetails: {}
   },
   methods: {
     doAction: function(actionType) {
-      let actionDetails = {}
-      if (actionType == 'edit') {
+      let actionDetails = {};
+      if (actionType == "edit") {
         actionDetails = {
           id: this.id,
-          action: 'edit',
-          model: 'customer_addresses',
-        }
-        this.$store.dispatch('customer/editAction', actionDetails)
-      } else if (actionType == 'delete') {
+          action: "edit",
+          model: "customer_addresses"
+        };
+        this.$store.dispatch("customer/editAction", actionDetails);
+      } else if (actionType == "delete") {
         actionDetails = {
           id: this.id,
-          action: 'delete',
-          model: 'customer_addresses',
-          data: '',
-        }
-        if (confirm('Are you sure you want to delete address!')) {
-          this.$store.dispatch('customer/updateAction', actionDetails)
+          action: "delete",
+          model: "customer_addresses",
+          data: ""
+        };
+        if (confirm("Are you sure you want to delete address!")) {
+          this.$store.dispatch("customer/updateAction", actionDetails);
         }
       } else {
         //do nothing
       }
-    },
-  },
-}
+    }
+  }
+};
 </script>
 <style>
 .cu-location-select span {

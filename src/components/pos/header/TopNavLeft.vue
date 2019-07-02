@@ -12,25 +12,25 @@
 
 <script>
 /* eslint-disable no-console */
-import moment from 'moment-timezone'
-import HeaderOrderType from './HeaderOrderType'
+import moment from "moment-timezone";
+import HeaderOrderType from "./HeaderOrderType";
 
 export default {
-  name: 'NavSidebar',
+  name: "NavSidebar",
   props: {},
   components: {
-    HeaderOrderType,
+    HeaderOrderType
   },
   data() {
     return {
-      todayDate: moment().format('MMMM Do YYYY'),
-      todayTime: moment().format('h:mm:ss a'),
-    }
+      todayDate: moment().format("MMMM Do YYYY"),
+      todayTime: moment().format("h:mm:ss a")
+    };
   },
   mounted: function() {
     setInterval(() => {
-      this.todayTime = moment().format('h:mm:ss a')
-    }, 1000)
-  },
-}
+      this.todayTime = moment().format("h:mm:ss a");
+    }, 1000);
+  }
+};
 </script>

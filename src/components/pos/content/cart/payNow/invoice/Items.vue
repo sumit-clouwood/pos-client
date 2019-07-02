@@ -31,47 +31,47 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'Items',
-  props: ['labels', 'items', 'tpl'],
+  name: "Items",
+  props: ["labels", "items", "tpl"],
   computed: {
-    ...mapGetters('location', ['formatPrice']),
-    ...mapGetters('modifier', ['findModifier']),
+    ...mapGetters("location", ["formatPrice"]),
+    ...mapGetters("modifier", ["findModifier"])
   },
   methods: {
     modifiers(item) {
-      let modifiers = []
+      let modifiers = [];
       item.modifiers.regular_modifiers.forEach(modifier =>
         modifiers.push(modifier.item_name)
-      )
+      );
       item.modifiers.mandatory_modifiers.forEach(modifier =>
         modifiers.push(modifier.item_name)
-      )
+      );
       item.modifiers.price_modifiers.forEach(modifier =>
         modifiers.push(modifier.item_name)
-      )
+      );
 
-      return modifiers.join('</i>, <i>')
+      return modifiers.join("</i>, <i>");
     },
     itemName(item) {
-      const engName = item.item_name.find(locale => locale.language == 'en_US')
-        .name
+      const engName = item.item_name.find(locale => locale.language == "en_US")
+        .name;
 
-      if (this.tpl.foreignLang && this.tpl.template.language != 'en_US') {
+      if (this.tpl.foreignLang && this.tpl.template.language != "en_US") {
         //send both english and other lang
         return (
           engName +
-          ' / ' +
+          " / " +
           item.item_name.find(
             locale => locale.language == this.tpl.template.language
           ).name
-        )
+        );
       }
-      return engName
-    },
-  },
-}
+      return engName;
+    }
+  }
+};
 </script>
 <style lang="sass" scoped>
 .item-name

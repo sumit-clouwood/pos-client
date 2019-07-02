@@ -238,8 +238,8 @@
 
 <script>
 export default {
-  name: 'SystemNavigation',
-}
+  name: "SystemNavigation"
+};
 </script>
 
 <style scoped></style>

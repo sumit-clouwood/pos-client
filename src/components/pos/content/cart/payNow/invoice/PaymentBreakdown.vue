@@ -7,12 +7,12 @@
   </div></template
 >
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'PaymentBreakdown',
-  props: ['payments'],
+  name: "PaymentBreakdown",
+  props: ["payments"],
   computed: {
-    ...mapGetters('location', ['formatPrice']),
-  },
-}
+    ...mapGetters("location", ["formatPrice"])
+  }
+};
 </script>

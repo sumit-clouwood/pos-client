@@ -6,11 +6,11 @@
 
 <script>
 /* global $ */
-import DispatchScreen from '@/components/DispatchScreen'
+import DispatchScreen from "@/components/DispatchScreen";
 export default {
-  name: 'DispatchScreenInit',
+  name: "DispatchScreenInit",
   components: {
-    DispatchScreen,
+    DispatchScreen
   },
   mounted() {
     /*$('body').removeAttr('class')
@@ -26,61 +26,61 @@ export default {
       ) {
         // current working methods
         if (document.documentElement.requestFullscreen) {
-          document.documentElement.requestFullscreen()
+          document.documentElement.requestFullscreen();
         } else if (document.documentElement.msRequestFullscreen) {
-          document.documentElement.msRequestFullscreen()
+          document.documentElement.msRequestFullscreen();
         } else if (document.documentElement.mozRequestFullScreen) {
-          document.documentElement.mozRequestFullScreen()
+          document.documentElement.mozRequestFullScreen();
         } else if (document.documentElement.webkitRequestFullscreen) {
           document.documentElement.webkitRequestFullscreen(
             Element.ALLOW_KEYBOARD_INPUT
-          )
+          );
         }
       } else {
         if (document.exitFullscreen) {
-          document.exitFullscreen()
+          document.exitFullscreen();
         } else if (document.msExitFullscreen) {
-          document.msExitFullscreen()
+          document.msExitFullscreen();
         } else if (document.mozCancelFullScreen) {
-          document.mozCancelFullScreen()
+          document.mozCancelFullScreen();
         } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen()
+          document.webkitExitFullscreen();
         }
       }
-    },
+    }
   },
   updated() {
-    let ds = this
-    $('.dp-zoom-scren').click(function(e) {
-      e.preventDefault()
-      ds.toggleFullScreen()
-      $(this).hide()
-      $('ul.ullist-dp li.dp-btn-exit').css('display', 'inline-block')
-      $('#dp-content-wrapper').addClass('service-manager-overlay')
-      $('.sticky-footer').addClass('sticky-header-overlay')
+    let ds = this;
+    $(".dp-zoom-scren").click(function(e) {
+      e.preventDefault();
+      ds.toggleFullScreen();
+      $(this).hide();
+      $("ul.ullist-dp li.dp-btn-exit").css("display", "inline-block");
+      $("#dp-content-wrapper").addClass("service-manager-overlay");
+      $(".sticky-footer").addClass("sticky-header-overlay");
 
-      $('header').css({ height: 'unset', position: 'unset', width: 'unset' })
-    })
-    $('.dp-btn-exit').click(function(e) {
-      e.preventDefault()
-      ds.toggleFullScreen()
-      $(this).hide()
-      $('.dp-zoom-scren').show()
-      $('#dp-content-wrapper').removeClass('service-manager-overlay')
-      $('.sticky-footer').removeClass('sticky-header-overlay')
-      $('.middle-content.service-manager-content').css('margin-top', '0')
-    })
+      $("header").css({ height: "unset", position: "unset", width: "unset" });
+    });
+    $(".dp-btn-exit").click(function(e) {
+      e.preventDefault();
+      ds.toggleFullScreen();
+      $(this).hide();
+      $(".dp-zoom-scren").show();
+      $("#dp-content-wrapper").removeClass("service-manager-overlay");
+      $(".sticky-footer").removeClass("sticky-header-overlay");
+      $(".middle-content.service-manager-content").css("margin-top", "0");
+    });
 
-    $('.dp-next-btn').click(function() {
-      $('.block1-wrap-dp').hide()
-      $('div.block1-wrap-dp#hide-block1-dp').show()
-    })
-    $('.dp-prev-btn').click(function() {
-      $('.block1-wrap-dp').show()
-      $('div.block1-wrap-dp#hide-block1-dp').hide()
-    })
-  },
-}
+    $(".dp-next-btn").click(function() {
+      $(".block1-wrap-dp").hide();
+      $("div.block1-wrap-dp#hide-block1-dp").show();
+    });
+    $(".dp-prev-btn").click(function() {
+      $(".block1-wrap-dp").show();
+      $("div.block1-wrap-dp#hide-block1-dp").hide();
+    });
+  }
+};
 </script>
 
 <style lang="scss">

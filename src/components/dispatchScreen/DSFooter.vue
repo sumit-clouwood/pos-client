@@ -4,7 +4,7 @@
       <div class="dp-left-footer">
         <h2 id="dp-total-order">
           {{ dispatchOrderCount }}
-          {{ dispatchOrderCount == 1 ? 'order' : 'orders' }}
+          {{ dispatchOrderCount == 1 ? "order" : "orders" }}
         </h2>
       </div>
 
@@ -31,33 +31,33 @@
 </template>
 
 <script>
-import paginate from 'vuejs-paginate'
-import { mapState, mapActions } from 'vuex'
+import paginate from "vuejs-paginate";
+import { mapState, mapActions } from "vuex";
 
 export default {
-  name: 'DSFooter',
+  name: "DSFooter",
   data() {
     return {
-      pageCount: 1,
-    }
+      pageCount: 1
+    };
   },
   computed: {
-    ...mapState('deliveryManager', ['dispatchOrderCount']),
+    ...mapState("deliveryManager", ["dispatchOrderCount"])
   },
   components: {
-    paginate,
+    paginate
   },
   methods: {
     /*setPageNumber: function () {
       alert()
       this.$store.dispatch('deliverManager/updateDispatchPageNumber', pageNumber)
     },*/
-    ...mapActions('deliveryManager', ['updateDispatchPageNumber']),
+    ...mapActions("deliveryManager", ["updateDispatchPageNumber"])
   },
   updated() {
-    this.pageCount = Math.ceil(this.dispatchOrderCount / 8)
-  },
-}
+    this.pageCount = Math.ceil(this.dispatchOrderCount / 8);
+  }
+};
 </script>
 
 <style scoped lang="css">

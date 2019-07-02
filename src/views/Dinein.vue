@@ -23,18 +23,18 @@
 <script>
 // /* global $ */
 
-import Menu from '@/components/dinein/Menu.vue'
-import Header from '@/components/dinein/Header.vue'
-import Content from '@/components/dinein/Content'
-import Footer from '@/components/dinein/Footer'
+import Menu from "@/components/dinein/Menu.vue";
+import Header from "@/components/dinein/Header.vue";
+import Content from "@/components/dinein/Content";
+import Footer from "@/components/dinein/Footer";
 export default {
-  name: 'Dinein',
+  name: "Dinein",
   computed: {},
   components: {
     Header,
     Menu,
     Content,
-    Footer,
+    Footer
   },
 
   //store private data in component using data
@@ -42,19 +42,19 @@ export default {
     return {
       info: null,
       loading: true, //async loading indicator
-      errored: false, //either request had error
-    }
+      errored: false //either request had error
+    };
   },
 
   //data passed to this component by its parent is contained inside props
   props: {
-    msg: String,
+    msg: String
   },
   mounted() {
     /*$('body').removeAttr('class')
     $('body').attr('class', 'fixed-nav sticky-footer bg-dark dinein')*/
-  },
-}
+  }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

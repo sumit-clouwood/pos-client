@@ -24,7 +24,7 @@
           @click="
             selectedReferral({
               referralName: referral.name,
-              referralId: referral._id,
+              referralId: referral._id
             })
           "
           :referralType="referral.name"
@@ -48,7 +48,7 @@
           month: 'long',
           day: 'numeric',
           hour: 'numeric',
-          minute: '2-digit',
+          minute: '2-digit'
         }"
         :phrases="{ ok: 'Continue', cancel: 'Exit' }"
         :hour-step="1"
@@ -66,7 +66,7 @@
         class="btn btn-danger cancel-announce"
         data-dismiss="modal"
       >
-        {{ _t('Close') }}
+        {{ _t("Close") }}
       </button>
       <button
         class="btn btn-success btn-large"
@@ -74,7 +74,7 @@
         id="confirm_announcement"
         @click="placeOrder"
       >
-        {{ _t('Confirm') }}
+        {{ _t("Confirm") }}
       </button>
     </div>
 
@@ -84,78 +84,78 @@
 
 <script>
 /* global $, hidePayNow */
-import moment from 'moment-timezone'
+import moment from "moment-timezone";
 
-import { Datetime } from 'vue-datetime'
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { Datetime } from "vue-datetime";
+import { mapState, mapActions, mapGetters } from "vuex";
 export default {
-  name: 'SendToDeliveryFooter',
+  name: "SendToDeliveryFooter",
   props: {},
   components: {
-    Datetime,
+    Datetime
   },
   data() {
     return {
-      changedReferral: { referralName: 'Referral' },
-      futureDateTime: '',
+      changedReferral: { referralName: "Referral" },
+      futureDateTime: "",
       minDatetime: null,
       maxDatetime: null,
-      errors: '',
-      msg: '',
-      timeZone: this.$store.state.location.setTimeZone,
-    }
+      errors: "",
+      msg: "",
+      timeZone: this.$store.state.location.setTimeZone
+    };
   },
   computed: {
     ...mapState({
-      getReferrals: state => state.location.referrals,
+      getReferrals: state => state.location.referrals
     }),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
     selectedReferral(referral) {
-      this.changedReferral = referral
+      this.changedReferral = referral;
     },
     placeOrder() {
-      hidePayNow()
-      if (this.changedReferral.referralName === 'Referral') {
-        this.errors = 'Please select referral to proceed.'
+      hidePayNow();
+      if (this.changedReferral.referralName === "Referral") {
+        this.errors = "Please select referral to proceed.";
       } else {
-        $('#confirm_announcement').prop('disabled', true)
-        this.msg = 'Sending order for delivery...'
-        this.errors = ''
+        $("#confirm_announcement").prop("disabled", true);
+        this.msg = "Sending order for delivery...";
+        this.errors = "";
         this.deliveryOrder({
           referral: this.changedReferral,
           futureOrder:
-            this.futureDateTime != ''
-              ? moment(this.futureDateTime).format('YYYY/MM/DD hh:mm')
-              : null,
+            this.futureDateTime != ""
+              ? moment(this.futureDateTime).format("YYYY/MM/DD hh:mm")
+              : null
         })
           .then(() => {
-            this.msg = ''
+            this.msg = "";
             // $('#order-confirmation').modal('hide')
-            $('#payment-msg').modal('show')
-            $('#order-confirmation').modal('hide')
+            $("#payment-msg").modal("show");
+            $("#order-confirmation").modal("hide");
             setTimeout(function() {
-              $('#confirm_announcement').prop('disabled', false)
-            }, 1000)
+              $("#confirm_announcement").prop("disabled", false);
+            }, 1000);
 
-            this.$store.dispatch('checkout/reset')
+            this.$store.dispatch("checkout/reset");
             /*this.$store.commit('order/ORDER_TYPE', {
               OTview: 'Walk In',
               OTApi: 'walk_in',
             })*/
           })
           .catch(response => {
-            this.errors = response.error
-            $('#payment-msg').modal('hide')
-            $('#order-confirmation').modal('show')
+            this.errors = response.error;
+            $("#payment-msg").modal("hide");
+            $("#order-confirmation").modal("show");
             setTimeout(function() {
-              $('#confirm_announcement').prop('disabled', false)
-            }, 1000)
-          })
+              $("#confirm_announcement").prop("disabled", false);
+            }, 1000);
+          });
       }
     },
-    ...mapActions('order', ['deliveryOrder']),
-  },
-}
+    ...mapActions("order", ["deliveryOrder"])
+  }
+};
 </script>

@@ -12,8 +12,8 @@
 
 <script>
 export default {
-  name: 'Modifications',
-}
+  name: "Modifications"
+};
 </script>
 
 <style scoped></style>

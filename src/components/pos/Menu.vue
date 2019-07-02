@@ -18,7 +18,7 @@
             class="nav-link-nav"
             :class="{ active: currentCategory === item._id }"
             :style="{
-              background: item.category_image == '' ? item.category_color : '',
+              background: item.category_image == '' ? item.category_color : ''
             }"
             @click.prevent="browse(item)"
           >
@@ -68,66 +68,66 @@
 
 <script>
 /* global  $*/
-import bootstrap from '@/bootstrap'
+import bootstrap from "@/bootstrap";
 
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 export default {
-  name: 'Menu',
+  name: "Menu",
   computed: {
     ...mapState({
-      currentCategory: state => state.category.category._id,
+      currentCategory: state => state.category.category._id
     }),
-    ...mapState('location', ['userDetails']),
+    ...mapState("location", ["userDetails"]),
     ...mapState({
       profileImage: state =>
         state.auth.userDetails && state.auth.userDetails.image
           ? process.env.VUE_APP_API_ENDPOINT +
-            '/profile_pic/' +
+            "/profile_pic/" +
             state.auth.userDetails.image
-          : 'img/pos/profile-pic.png',
+          : "img/pos/profile-pic.png"
     }),
-    ...mapGetters('category', ['categories', 'getImages']),
+    ...mapGetters("category", ["categories", "getImages"])
     // ...mapGetters('modifier', {
     //   modifierImages: 'getImages',
     // }), //to preftech modifier images, todo
   },
   methods: {
     browse(item) {
-      this.$store.commit('sync/reload', true)
-      bootstrap.loadUI().then(() => {})
-      this.$store.dispatch('category/browse', item)
-    },
+      this.$store.commit("sync/reload", true);
+      bootstrap.loadUI().then(() => {});
+      this.$store.dispatch("category/browse", item);
+    }
   },
   updated() {
-    $('li.nav-item.arrow-bottom > a > .bt-arrow').click(function(e) {
-      e.preventDefault()
-      let menuHeight = 0
-      $('#menuAccordion li').each(function() {
-        menuHeight = menuHeight + $(this).innerHeight()
-      })
-      let accordionHeight = $('#menuAccordion').innerHeight()
+    $("li.nav-item.arrow-bottom > a > .bt-arrow").click(function(e) {
+      e.preventDefault();
+      let menuHeight = 0;
+      $("#menuAccordion li").each(function() {
+        menuHeight = menuHeight + $(this).innerHeight();
+      });
+      let accordionHeight = $("#menuAccordion").innerHeight();
       if (menuHeight > accordionHeight) {
-        $('#menuAccordion')
+        $("#menuAccordion")
           .stop()
-          .animate({ top: accordionHeight - (menuHeight + 60) + 'px' }, 800)
+          .animate({ top: accordionHeight - (menuHeight + 60) + "px" }, 800);
       } else {
-        $('.top-arrow').css('display', 'none')
+        $(".top-arrow").css("display", "none");
       }
-      $('.bt-arrow').css('display', 'none')
-      $('.top-arrow').css('display', 'block')
-      return false
+      $(".bt-arrow").css("display", "none");
+      $(".top-arrow").css("display", "block");
+      return false;
     }),
-      $('li.nav-item.arrow-bottom > a > .top-arrow').click(function(e) {
-        e.preventDefault()
-        $('#menuAccordion')
+      $("li.nav-item.arrow-bottom > a > .top-arrow").click(function(e) {
+        e.preventDefault();
+        $("#menuAccordion")
           .stop()
-          .animate({ top: 0 + 'px' }, 800)
-        $('.bt-arrow').css('display', 'block')
-        $('.top-arrow').css('display', 'none')
-        return false
-      })
-  },
-}
+          .animate({ top: 0 + "px" }, 800);
+        $(".bt-arrow").css("display", "block");
+        $(".top-arrow").css("display", "none");
+        return false;
+      });
+  }
+};
 </script>
 <style lang="sass" scoped>
 .category

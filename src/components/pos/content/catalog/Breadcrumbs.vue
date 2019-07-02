@@ -2,7 +2,7 @@
   <div class="breadcrumbs">
     <div class="breadcrumbs-item breadcrumbs-category">
       <div class="title-box">
-        <div class="breadcrumbs-subtitle">{{ _t('Category') }}</div>
+        <div class="breadcrumbs-subtitle">{{ _t("Category") }}</div>
         <div class="breadcrumbs-title shorten-sentence" :title="dt(category)">
           {{ dt(category) }}
         </div>
@@ -15,7 +15,7 @@
     </div>
     <div class="breadcrumbs-item breadcrumbs-sub-category" v-if="subcategory">
       <div class="title-box">
-        <div class="breadcrumbs-subtitle">{{ _t('Sub Category Name') }}</div>
+        <div class="breadcrumbs-subtitle">{{ _t("Sub Category Name") }}</div>
         <div
           class="breadcrumbs-title shorten-sentence"
           :title="dt(subcategory)"
@@ -31,7 +31,7 @@
     </div>
     <div class="breadcrumbs-item breadcrumbs-menu" v-if="item">
       <div class="title-box">
-        <div class="breadcrumbs-subtitle">{{ _t('Item') }}</div>
+        <div class="breadcrumbs-subtitle">{{ _t("Item") }}</div>
         <div class="breadcrumbs-title shorten-sentence" :title="dt(item)">
           {{ dt(item) }}
         </div>
@@ -41,18 +41,18 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 
 export default {
-  name: 'Breadcrumbs',
+  name: "Breadcrumbs",
   props: {
-    msg: String,
+    msg: String
   },
   computed: {
-    ...mapState('category', ['category', 'subcategory', 'item']),
-    ...mapGetters('location', ['_t']),
-  },
-}
+    ...mapState("category", ["category", "subcategory", "item"]),
+    ...mapGetters("location", ["_t"])
+  }
+};
 </script>
 <style scoped>
 /*ul.ullist-category {

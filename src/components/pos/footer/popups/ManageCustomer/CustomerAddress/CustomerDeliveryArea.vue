@@ -19,10 +19,10 @@
           >
             Inactive
           </span>-->
-          <span>{{ _t('Store:') }} {{ storeName }}</span
+          <span>{{ _t("Store:") }} {{ storeName }}</span
           ><br />
           <span>
-            {{ _t('Area:') }}
+            {{ _t("Area:") }}
             {{ getDeliveryArea(address.delivery_area_id) }}
           </span>
           <br />
@@ -37,33 +37,33 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
-import Buttons from './Buttons'
+import { mapState, mapActions, mapGetters } from "vuex";
+import Buttons from "./Buttons";
 
 export default {
-  name: 'CustomerDeliveryArea',
+  name: "CustomerDeliveryArea",
   props: {
     buttons: Boolean,
-    classAccess: String,
+    classAccess: String
   },
   components: {
-    Buttons,
+    Buttons
   },
   data: function() {
-    return { activeIndex: null }
+    return { activeIndex: null };
   },
   computed: {
-    ...mapState('location', ['location']),
+    ...mapState("location", ["location"]),
     ...mapState({
       addresses: state =>
         state.customer.customer
           ? state.customer.customer.customer_addresses
-          : false,
+          : false
     }),
     ...mapState({
-      storeName: state => state.location.store.name,
+      storeName: state => state.location.store.name
     }),
-    ...mapState('checkoutForm', ['msg']),
+    ...mapState("checkoutForm", ["msg"]),
 
     /*...mapState({
       country: state =>
@@ -71,22 +71,22 @@ export default {
           ? state.location.locationData.country_name
           : '',
     }),*/
-    ...mapGetters('customer', ['getDeliveryArea']),
-    ...mapGetters('location', ['_t']),
-    ...mapGetters('customer', ['getCustomerAddresses']),
+    ...mapGetters("customer", ["getDeliveryArea"]),
+    ...mapGetters("location", ["_t"]),
+    ...mapGetters("customer", ["getCustomerAddresses"])
   },
   methods: {
     setActiveCustomer(address, index) {
-      address.delivery_area = this.getDeliveryArea(address.delivery_area_id)
-      this.activeIndex = index
-      this.selectedAddress(address)
+      address.delivery_area = this.getDeliveryArea(address.delivery_area_id);
+      this.activeIndex = index;
+      this.selectedAddress(address);
       if (this.msg && this.msg.data.length > 0) {
-        this.msg.data = ''
+        this.msg.data = "";
       }
     },
-    ...mapActions('customer', ['selectedAddress']),
-  },
-}
+    ...mapActions("customer", ["selectedAddress"])
+  }
+};
 </script>
 <style scoped lang="scss">
 .order-location.option-contain {

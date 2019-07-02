@@ -7,7 +7,7 @@
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title">
-            {{ _t('Select') + ' ' + _t('Discount') }}
+            {{ _t("Select") + " " + _t("Discount") }}
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
@@ -21,7 +21,7 @@
             <div
               class="option-contain"
               :class="{
-                active: activeOrderDiscountId === discount._id,
+                active: activeOrderDiscountId === discount._id
               }"
               v-for="discount in discounts"
               :key="discount._id"
@@ -29,8 +29,8 @@
             >
               <p>
                 {{
-                  discount.type == 'percentage'
-                    ? discount.rate + '%'
+                  discount.type == "percentage"
+                    ? discount.rate + "%"
                     : formatPrice(discount.value)
                 }}
               </p>
@@ -47,7 +47,7 @@
               id="discount-save-btn"
               @click="applyOrderDiscount()"
             >
-              {{ _t('Ok') }}
+              {{ _t("Ok") }}
             </button>
             <button
               v-show="orderError"
@@ -55,7 +55,7 @@
               type="button"
               data-dismiss="modal"
             >
-              {{ _t('Close') }}
+              {{ _t("Close") }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -68,33 +68,33 @@
 
 <script>
 /* global hideModal */
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from "vuex";
 export default {
-  name: 'Discount',
+  name: "Discount",
   props: {},
   computed: {
-    ...mapState('discount', ['orderError', 'errorCode']),
-    ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapGetters('discount', {
+    ...mapState("discount", ["orderError", "errorCode"]),
+    ...mapGetters("location", ["formatPrice", "_t"]),
+    ...mapGetters("discount", {
       // map `this.discounts` to `this.$store.discount.getters.orderDiscounts`
-      discounts: 'orderDiscounts',
-      activeOrderDiscountId: 'activeOrderDiscountId',
-    }),
+      discounts: "orderDiscounts",
+      activeOrderDiscountId: "activeOrderDiscountId"
+    })
   },
   methods: {
     applyOrderDiscount: function() {
       this.$store
-        .dispatch('discount/applyOrderDiscount')
+        .dispatch("discount/applyOrderDiscount")
         .then(() => {
-          hideModal('#select-discount')
+          hideModal("#select-discount");
         })
-        .catch()
+        .catch();
     },
     selectOrderDiscount: function(discount) {
-      this.$store.dispatch('discount/selectOrderDiscount', discount)
-    },
-  },
-}
+      this.$store.dispatch("discount/selectOrderDiscount", discount);
+    }
+  }
+};
 </script>
 <style lang="sass" scoped>
 .error

@@ -40,7 +40,7 @@
         :labels="{
           qty_label: labels.qty_label,
           item_label: labels.item_label,
-          price_label: labels.price_label,
+          price_label: labels.price_label
         }"
         :itemsDetails="order.items"
         :tpl="tpl"
@@ -97,27 +97,27 @@
 <script>
 /* global $ hidePayNow */
 
-import { mapState, mapGetters } from 'vuex'
-import DeliveryAddress from './invoice/DeliveryAddress'
-import PaymentBreakdown from './invoice/PaymentBreakdown'
-import Items from './invoice/Items'
+import { mapState, mapGetters } from "vuex";
+import DeliveryAddress from "./invoice/DeliveryAddress";
+import PaymentBreakdown from "./invoice/PaymentBreakdown";
+import Items from "./invoice/Items";
 
 export default {
-  name: 'InvoiceReprint',
+  name: "InvoiceReprint",
   props: {
-    order: Object,
+    order: Object
   },
   computed: {
-    ...mapState('checkout', ['print']),
-    ...mapGetters('invoice', ['tpl', 'logo']),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapState("checkout", ["print"]),
+    ...mapGetters("invoice", ["tpl", "logo"]),
+    ...mapGetters("location", ["formatPrice"]),
     labels: function() {
-      const tpl = this.$store.getters['invoice/tpl']
+      const tpl = this.$store.getters["invoice/tpl"];
       let labels = {
         title_label: tpl.en.title_label,
         invoice_number_label: tpl.en.invoice_number_label,
-        order_type_label: tpl.en.order_type_label || 'Order Type',
-        staff_label: tpl.en.staff_label || 'Staff',
+        order_type_label: tpl.en.order_type_label || "Order Type",
+        staff_label: tpl.en.staff_label || "Staff",
         sub_total_label: tpl.en.sub_total_label,
         tax_label: tpl.en.tax_label,
         surcharge_label: tpl.en.surcharge_label,
@@ -126,32 +126,32 @@ export default {
         exchange_label: tpl.en.exchange_label,
         qty_label: tpl.en.qty_label,
         item_label: tpl.en.item_label,
-        price_label: tpl.en.price_label,
-      }
+        price_label: tpl.en.price_label
+      };
 
       //populate defaults
       Object.keys(labels).map(function(key) {
         if (!labels[key]) {
-          labels[key] = tpl.defaultTemplate[key]
+          labels[key] = tpl.defaultTemplate[key];
         }
-      })
+      });
 
-      if (tpl.foreignLang && tpl.template.language != 'en_US') {
+      if (tpl.foreignLang && tpl.template.language != "en_US") {
         //provide dual lang
 
         Object.keys(labels).map(function(key) {
           if (tpl.template[key]) {
-            labels[key] = labels[key] + ' / ' + tpl.template[key]
+            labels[key] = labels[key] + " / " + tpl.template[key];
           }
-        })
+        });
       }
 
-      return labels
-    },
+      return labels;
+    }
   },
   updated() {
     if (this.$store.state.checkout.print) {
-      const w = window.open()
+      const w = window.open();
 
       const styles = `.invoice {
         padding : 10px;
@@ -174,28 +174,30 @@ export default {
       .text-left { text-align : left; }
       .text-right {
         text-align : right
-      }`
+      }`;
 
-      w.document.write('<style>' + styles + '</style>' + $('#printarea').html())
+      w.document.write(
+        "<style>" + styles + "</style>" + $("#printarea").html()
+      );
       // w.print()
       // w.close()
 
       //becareful for circular dependency
-      this.$store.dispatch('checkout/reset')
-      this.$store.commit('checkout/PRINT', false)
+      this.$store.dispatch("checkout/reset");
+      this.$store.commit("checkout/PRINT", false);
 
-      if (this.$store.state.order.orderType.OTApi === 'call_center') {
-        this.$router.replace({ name: 'DeliveryManager' })
+      if (this.$store.state.order.orderType.OTApi === "call_center") {
+        this.$router.replace({ name: "DeliveryManager" });
       }
-      $('.modal-backdrop').remove()
-      hidePayNow()
+      $(".modal-backdrop").remove();
+      hidePayNow();
     }
   },
 
   components: {
     DeliveryAddress,
     PaymentBreakdown,
-    Items,
-  },
-}
+    Items
+  }
+};
 </script>

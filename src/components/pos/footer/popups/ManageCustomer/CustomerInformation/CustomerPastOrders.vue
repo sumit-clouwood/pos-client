@@ -2,15 +2,15 @@
   <div class="manage-customer-table">
     <table class="table table-responsive">
       <tr>
-        <th style="width: 190px">{{ _t('Order Number') }}</th>
-        <th style="width: 250px">{{ _t('Date/Times') }}:</th>
-        <th style="width: 190px">{{ _t('Type') }}</th>
-        <th style="width: 255px">{{ _t('Time Taken') }}</th>
-        <th style="width: 190px">{{ _t('Amount') }}</th>
-        <th style="width: 190px">{{ _t('Status') }}</th>
-        <th style="width: 140px">{{ _t('Driver') }}</th>
-        <th style="width: 205px">{{ _t('Agent') }}</th>
-        <th style="width: 290px">{{ _t('Order Source') }}</th>
+        <th style="width: 190px">{{ _t("Order Number") }}</th>
+        <th style="width: 250px">{{ _t("Date/Times") }}:</th>
+        <th style="width: 190px">{{ _t("Type") }}</th>
+        <th style="width: 255px">{{ _t("Time Taken") }}</th>
+        <th style="width: 190px">{{ _t("Amount") }}</th>
+        <th style="width: 190px">{{ _t("Status") }}</th>
+        <th style="width: 140px">{{ _t("Driver") }}</th>
+        <th style="width: 205px">{{ _t("Agent") }}</th>
+        <th style="width: 290px">{{ _t("Order Source") }}</th>
       </tr>
       <tr
         class="referal-code-customer"
@@ -28,7 +28,7 @@
             LookupData.get({
               collection: users._id,
               matchWith: order.driver,
-              selection: 'name',
+              selection: "name"
             })
           }}
         </td>
@@ -56,7 +56,7 @@
                 />
               </g>
             </svg>
-            {{ _t('Show Details') }}
+            {{ _t("Show Details") }}
           </span>
         </td>
       </tr>
@@ -67,13 +67,13 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
-import DateTime from '@/mixins/DateTime'
+import { mapState, mapActions, mapGetters } from "vuex";
+import DateTime from "@/mixins/DateTime";
 // import OrderDetailsPopup from '@/components/partial/OrderDetailPopup'
 export default {
-  name: 'CustomerPastOrders',
+  name: "CustomerPastOrders",
   props: {
-    pastOrders: {},
+    pastOrders: {}
   },
   components: {
     // OrderDetailsPopup,
@@ -81,12 +81,12 @@ export default {
   mixins: [DateTime],
   computed: {
     ...mapState({
-      users: state => state.customer.lookups.users,
+      users: state => state.customer.lookups.users
     }),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
-    ...mapActions('order', ['selectedOrderDetails']),
-  },
-}
+    ...mapActions("order", ["selectedOrderDetails"])
+  }
+};
 </script>

@@ -7,7 +7,7 @@
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title">
-            {{ _t('Order') }}
+            {{ _t("Order") }}
           </h4>
         </div>
         <div class="modal-body change-amount-option">
@@ -27,7 +27,7 @@
               @click="generateInvoice()"
               id="dining-opt"
             >
-              {{ _t('Ok') }}
+              {{ _t("Ok") }}
             </button>
           </div>
           <button
@@ -36,7 +36,7 @@
             class="btn btn-default"
             data-dismiss="modal"
           >
-            {{ _t('Close') }}
+            {{ _t("Close") }}
           </button>
         </div>
       </div>
@@ -47,25 +47,25 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 /* global $ */
-import { mapState } from 'vuex'
-import Preloader from '@/components/util/Preloader'
+import { mapState } from "vuex";
+import Preloader from "@/components/util/Preloader";
 export default {
-  name: 'PaymentMsg',
+  name: "PaymentMsg",
   components: {
-    Preloader,
+    Preloader
   },
   methods: {
     generateInvoice() {
-      $('#pay-now').modal('hide')
-      this.$store.dispatch('checkout/generateInvoice')
-      $('#transparent-screen').hide()
-    },
+      $("#pay-now").modal("hide");
+      this.$store.dispatch("checkout/generateInvoice");
+      $("#transparent-screen").hide();
+    }
   },
   computed: {
-    ...mapState('checkoutForm', ['msg']),
-    ...mapGetters('location', ['_t']),
-  },
-}
+    ...mapState("checkoutForm", ["msg"]),
+    ...mapGetters("location", ["_t"])
+  }
+};
 </script>

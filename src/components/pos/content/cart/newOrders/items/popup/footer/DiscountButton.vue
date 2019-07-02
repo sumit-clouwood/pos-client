@@ -28,7 +28,7 @@
 
 <script>
 export default {
-  name: 'DiscountButton',
-  props: {},
-}
+  name: "DiscountButton",
+  props: {}
+};
 </script>

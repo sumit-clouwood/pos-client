@@ -110,84 +110,86 @@
 <script>
 /*  global $  */
 
-import { mapState, mapActions, mapGetters } from 'vuex'
-import ShowDeliveredOrderDetails from '@/components/deliveryManager/content/ShowDeliveredOrderDetails'
+import { mapState, mapActions, mapGetters } from "vuex";
+import ShowDeliveredOrderDetails from "@/components/deliveryManager/content/ShowDeliveredOrderDetails";
 export default {
-  name: 'DMDeliveredItem',
+  name: "DMDeliveredItem",
   computed: {
     ...mapState({
-      orderDetails: state => state.deliveryManager.orders,
+      orderDetails: state => state.deliveryManager.orders
     }),
     ...mapState({
-      driverList: state => state.deliveryManager.drivers,
+      driverList: state => state.deliveryManager.drivers
     }),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters("location", ["formatPrice"])
   },
   data() {
     return {
-      updateId: String,
-    }
+      updateId: String
+    };
   },
   components: {
-    ShowDeliveredOrderDetails,
+    ShowDeliveredOrderDetails
   },
   methods: {
     selectedDriver: function(driver) {
-      this.waitingOrder.action = driver.name
-      this.waitingOrder.driverId = driver._id
-      this.selectDriver(driver)
+      this.waitingOrder.action = driver.name;
+      this.waitingOrder.driverId = driver._id;
+      this.selectDriver(driver);
     },
     showMoreDetails: function(driverId) {
-      this.showMoreOrders(driverId)
-      this.toggleMe(driverId)
+      this.showMoreOrders(driverId);
+      this.toggleMe(driverId);
     },
     toggleMe: function(Id) {
-      this.updateId = Id
+      this.updateId = Id;
     },
-    ...mapActions('deliveryManager', ['selectDriver']),
-    ...mapActions('deliveryManager', ['showMoreOrders']),
+    ...mapActions("deliveryManager", ["selectDriver"]),
+    ...mapActions("deliveryManager", ["showMoreOrders"])
   },
   updated() {
-    let dataElement = this
-    $('.delivered-order-table .show-details-his > span').click(function() {
-      $('.delivered-order-table .show-details-his > span').removeClass('active')
-      $('.delivered-order-table table tr').removeClass('active')
+    let dataElement = this;
+    $(".delivered-order-table .show-details-his > span").click(function() {
+      $(".delivered-order-table .show-details-his > span").removeClass(
+        "active"
+      );
+      $(".delivered-order-table table tr").removeClass("active");
 
       $(this)
         .parent()
-        .addClass('active')
+        .addClass("active");
       $(this)
-        .parents('tr')
-        .addClass('active')
-      $('.show-details').show()
-      $('.delivered-hide').hide()
-      $('#show' + dataElement.updateId).hide()
-      $('#hide' + dataElement.updateId).show()
-      $('.delivered-data').insertAfter(
-        '.delivered-order-table .table tr.active'
-      )
-      $('.delivered-data').show()
-    })
+        .parents("tr")
+        .addClass("active");
+      $(".show-details").show();
+      $(".delivered-hide").hide();
+      $("#show" + dataElement.updateId).hide();
+      $("#hide" + dataElement.updateId).show();
+      $(".delivered-data").insertAfter(
+        ".delivered-order-table .table tr.active"
+      );
+      $(".delivered-data").show();
+    });
 
-    $('span.delivered-hide').click(function(e) {
-      e.stopPropagation()
+    $("span.delivered-hide").click(function(e) {
+      e.stopPropagation();
       $(this)
         .parent()
-        .addClass('active')
-      $('.delivered-data').hide()
+        .addClass("active");
+      $(".delivered-data").hide();
       $(this)
-        .parents('tr')
-        .removeClass('active')
-      $('#show' + dataElement.updateId).show()
-      $('#hide' + dataElement.updateId).hide()
-    })
+        .parents("tr")
+        .removeClass("active");
+      $("#show" + dataElement.updateId).show();
+      $("#hide" + dataElement.updateId).hide();
+    });
 
-    $('button.dm-btn, .all-tables-wrap > button').click(function() {
-      $('button.dm-btn, .all-tables-wrap > button').removeClass('active')
-      $(this).addClass('active')
-    })
-  },
-}
+    $("button.dm-btn, .all-tables-wrap > button").click(function() {
+      $("button.dm-btn, .all-tables-wrap > button").removeClass("active");
+      $(this).addClass("active");
+    });
+  }
+};
 </script>
 
 <style scoped>

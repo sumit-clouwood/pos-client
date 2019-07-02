@@ -14,30 +14,30 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'ManageCustomerHeader',
+  name: "ManageCustomerHeader",
   data: function() {
     return {
       inputTimer: null,
-      searchTerms: '',
-    }
+      searchTerms: ""
+    };
   },
   methods: {
     searchCustomer() {
-      clearTimeout(this.inputTimer)
+      clearTimeout(this.inputTimer);
       // if (this.searchTerms.length > 0) {
       this.inputTimer = setTimeout(() => {
-        this.loading = true
+        this.loading = true;
         this.$store
-          .dispatch('customer/searchCustomer', this.searchTerms)
-          .then(() => {})
-      }, 500) //waith half second until user finishes the typing
+          .dispatch("customer/searchCustomer", this.searchTerms)
+          .then(() => {});
+      }, 500); //waith half second until user finishes the typing
       // }
-    },
+    }
   },
   computed: {
-    ...mapGetters('location', ['_t']),
-  },
-}
+    ...mapGetters("location", ["_t"])
+  }
+};
 </script>

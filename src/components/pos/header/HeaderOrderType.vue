@@ -6,15 +6,15 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from "vuex";
 export default {
-  name: 'HeaderOrderType',
+  name: "HeaderOrderType",
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"]),
     ...mapState({
-      locationName: state => state.location.store,
+      locationName: state => state.location.store
     }),
-    ...mapState('order', ['orderType']),
-  },
-}
+    ...mapState("order", ["orderType"])
+  }
+};
 </script>

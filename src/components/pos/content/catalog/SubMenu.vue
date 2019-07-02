@@ -4,8 +4,7 @@
       class="food-categories-item"
       v-for="item in subcategories"
       :style="{
-        background:
-          item.sub_category_image == '' ? item.sub_category_color : '',
+        background: item.sub_category_image == '' ? item.sub_category_color : ''
       }"
       :key="item._id"
       :class="{ active: currentSubcategory === item._id }"
@@ -29,19 +28,19 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
-  name: 'SubMenu',
+  name: "SubMenu",
   props: {},
   computed: {
     ...mapState({
-      currentSubcategory: state => state.category.subcategory._id,
+      currentSubcategory: state => state.category.subcategory._id
     }),
-    ...mapGetters('category', ['subcategories']),
+    ...mapGetters("category", ["subcategories"])
   },
   methods: {
-    ...mapActions('category', ['getItems']),
-  },
-}
+    ...mapActions("category", ["getItems"])
+  }
+};
 </script>

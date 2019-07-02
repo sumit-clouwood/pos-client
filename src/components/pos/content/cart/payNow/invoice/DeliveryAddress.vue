@@ -15,12 +15,12 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'DeliveryAddress',
+  name: "DeliveryAddress",
   computed: {
-    ...mapGetters('customer', ['selectedAddress', 'customer']),
-  },
-}
+    ...mapGetters("customer", ["selectedAddress", "customer"])
+  }
+};
 </script>

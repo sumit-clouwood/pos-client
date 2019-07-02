@@ -66,26 +66,26 @@
 
 <script>
 /* global $ */
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 
 function getCustomerList(state) {
-  return state.customer.customer.customer_list
+  return state.customer.customer.customer_list;
 }
 
 export default {
-  name: 'CustomerNotes',
+  name: "CustomerNotes",
   computed: {
     ...mapState({
       customerNotes: state =>
         getCustomerList(state) && getCustomerList(state).customer_notes
           ? getCustomerList(state).customer_notes
-          : false,
-    }),
+          : false
+    })
   },
   methods: {
     hideModal: function() {
-      $('#show-more-notes').modal('toggle')
-    },
-  },
-}
+      $("#show-more-notes").modal("toggle");
+    }
+  }
+};
 </script>

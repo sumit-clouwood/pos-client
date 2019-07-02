@@ -4,7 +4,7 @@
       <a class="main-news-title-link" href="javascript:void(0)">
         <img src="img/pos/news.png" :alt="_t('News')" />
         <span>
-          {{ _t('News') }}
+          {{ _t("News") }}
         </span>
       </a>
     </div>
@@ -17,20 +17,20 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 export default {
-  name: 'Announcement',
+  name: "Announcement",
   props: {},
   data() {
     return {
-      showAnnouncements: '',
-    }
+      showAnnouncements: ""
+    };
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"]),
     ...mapState({
-      announcements: state => state.announcement.announcements,
-    }),
-  },
-}
+      announcements: state => state.announcement.announcements
+    })
+  }
+};
 </script>

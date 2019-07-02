@@ -27,6 +27,6 @@
 
 <script>
 export default {
-  name: 'CustomerFooter',
-}
+  name: "CustomerFooter"
+};
 </script>

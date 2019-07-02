@@ -6,7 +6,7 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ _t('Add to Order') }}</h4>
+          <h4 class="customer-title">{{ _t("Add to Order") }}</h4>
         </div>
         <div class="modal-body add-to-order">
           <CustomerDeliveryArea :buttons="false" classAccess="addOrders" />
@@ -25,7 +25,7 @@
                 setDefaultSettingsGlobalAddUpdate({ nearest_landmark: '' })
               "
             >
-              {{ _t('+ Add Address') }}
+              {{ _t("+ Add Address") }}
             </button>
             <button
               type="button"
@@ -33,7 +33,7 @@
               data-dismiss="modal"
               id="cancel-annc"
             >
-              {{ _t('Close') }}
+              {{ _t("Close") }}
             </button>
             <button
               class="btn btn-success btn-large popup-btn-save"
@@ -43,7 +43,7 @@
                 updateModalSelection('#order-confirmation', '#add-to-order')
               "
             >
-              {{ _t('+ Add') }}
+              {{ _t("+ Add") }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -56,32 +56,32 @@
 
 <script>
 /* global $ */
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from "vuex";
 // import Preloader from '@/components/util/Preloader'
-import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
+import CustomerDeliveryArea from "../CustomerAddress/CustomerDeliveryArea";
 export default {
-  name: 'SelectCustomerAddress',
+  name: "SelectCustomerAddress",
   components: {
-    CustomerDeliveryArea,
+    CustomerDeliveryArea
     // Preloader,
   },
   computed: {
-    ...mapGetters('location', ['_t']),
-    ...mapState('checkoutForm', ['msg']),
+    ...mapGetters("location", ["_t"]),
+    ...mapState("checkoutForm", ["msg"])
   },
   methods: {
     updateModalSelection(modalName, subjectName) {
-      this.updateModalSelectionDelivery(modalName)
+      this.updateModalSelectionDelivery(modalName);
       if (this.msg != null && this.msg.data.length > 0) {
-        $('#payment-msg').modal('show')
+        $("#payment-msg").modal("show");
       } else {
-        $(subjectName).modal('hide')
+        $(subjectName).modal("hide");
       }
     },
-    ...mapActions('location', ['updateModalSelectionDelivery']),
-    ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),
-  },
-}
+    ...mapActions("location", ["updateModalSelectionDelivery"]),
+    ...mapActions("customer", ["setDefaultSettingsGlobalAddUpdate"])
+  }
+};
 </script>
 <style scoped>
 .loading {

@@ -14,34 +14,34 @@
 </template>
 
 <script>
-import DMItem from '@/components/deliveryManager/content/DMItem'
-import DMTakeAwaySubMenu from '@/components/deliveryManager/header/DMTakeAwaySubMenu'
+import DMItem from "@/components/deliveryManager/content/DMItem";
+import DMTakeAwaySubMenu from "@/components/deliveryManager/header/DMTakeAwaySubMenu";
 export default {
-  name: 'TakeAway',
+  name: "TakeAway",
   data() {
     return {
       actionDetailsNew: {
         moreDetails: true,
-        action: 'Ready',
-        nextOrderStatus: 'paid',
+        action: "Ready",
+        nextOrderStatus: "paid"
       },
       actionDetailsWaiting: {
         moreDetails: true,
-        action: 'Collect',
-        nextOrderStatus: 'paid',
+        action: "Collect",
+        nextOrderStatus: "paid"
       },
       actionDetailsCollected: {
         moreDetails: true,
-        action: 'Collected',
-        nextOrderStatus: '',
-      },
-    }
+        action: "Collected",
+        nextOrderStatus: ""
+      }
+    };
   },
   components: {
     DMTakeAwaySubMenu,
-    DMItem,
-  },
-}
+    DMItem
+  }
+};
 </script>
 
 <style scoped></style>

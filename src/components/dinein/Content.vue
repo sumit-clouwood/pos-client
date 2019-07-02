@@ -8,16 +8,16 @@
 </template>
 
 <script>
-import Header from './content/Header'
-import Tables from './content/Tables'
+import Header from "./content/Header";
+import Tables from "./content/Tables";
 export default {
-  name: 'Content',
+  name: "Content",
   props: {},
   components: {
     Header,
-    Tables,
-  },
-}
+    Tables
+  }
+};
 </script>
 <style scoped>
 .inner-container {

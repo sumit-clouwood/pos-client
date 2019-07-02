@@ -39,62 +39,62 @@
 </template>
 
 <script>
-import DMHomeDeliverySubMenu from '@/components/deliveryManager/header/DMHomeDeliverySubMenu'
-import DMItem from '@/components/deliveryManager/content/DMItem'
-import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredItem'
-import { mapState, mapActions } from 'vuex'
+import DMHomeDeliverySubMenu from "@/components/deliveryManager/header/DMHomeDeliverySubMenu";
+import DMItem from "@/components/deliveryManager/content/DMItem";
+import DMDeliveredItem from "@/components/deliveryManager/content/DMDeliveredItem";
+import { mapState, mapActions } from "vuex";
 
 export default {
-  name: 'HomeDelivery',
+  name: "HomeDelivery",
   data() {
     return {
       readyDetails: {
         moreDetails: true,
-        action: 'Ready',
-        nextOrderStatus: 'ready',
+        action: "Ready",
+        nextOrderStatus: "ready"
       },
       waitingOrder: {
         moreDetails: false,
-        action: '',
-        driverId: '',
-        nextOrderStatus: 'in-progress',
+        action: "",
+        driverId: "",
+        nextOrderStatus: "in-progress"
       },
       deliveredDetails: {
         moreDetails: true,
-        action: 'Ready',
-        nextOrderStatus: 'delivered',
-      },
-    }
+        action: "Ready",
+        nextOrderStatus: "delivered"
+      }
+    };
   },
   components: {
     DMHomeDeliverySubMenu,
     DMItem,
-    DMDeliveredItem,
+    DMDeliveredItem
   },
   computed: {
     ...mapState({
-      driverList: state => state.deliveryManager.drivers,
-    }),
+      driverList: state => state.deliveryManager.drivers
+    })
   },
 
   mounted() {
-    this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+    this.$store.dispatch("deliveryManager/fetchDMOrderDetail");
   },
 
   methods: {
     selectedDriver: function(driver) {
-      this.waitingOrder.action = driver.name
-      this.waitingOrder.driverId = driver._id
-      this.selectDriver(driver)
+      this.waitingOrder.action = driver.name;
+      this.waitingOrder.driverId = driver._id;
+      this.selectDriver(driver);
     },
-    ...mapActions('deliveryManager', ['selectDriver']),
+    ...mapActions("deliveryManager", ["selectDriver"])
     /*imageLoadError() {
       for (let i = 0; i < document.images.length; i++) {
         document.images[i].remove()
       }
     },*/
-  },
-}
+  }
+};
 </script>
 
 <style scoped>

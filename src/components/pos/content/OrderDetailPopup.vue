@@ -31,16 +31,16 @@
 </template>
 
 <script>
-import Receipt from '@/components/pos/content/orderDetails/rightContent/Receipt'
-import History from '@/components/pos/content/orderDetails/rightContent/History'
-import Modification from '@/components/pos/content/orderDetails/rightContent/Modification'
-import Payment from '@/components/pos/content/orderDetails/rightContent/Payment'
-import RightPartHeader from '@/components/pos/content/orderDetails/RightPartHeader'
-import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
-import { mapState } from 'vuex'
+import Receipt from "@/components/pos/content/orderDetails/rightContent/Receipt";
+import History from "@/components/pos/content/orderDetails/rightContent/History";
+import Modification from "@/components/pos/content/orderDetails/rightContent/Modification";
+import Payment from "@/components/pos/content/orderDetails/rightContent/Payment";
+import RightPartHeader from "@/components/pos/content/orderDetails/RightPartHeader";
+import LeftPart from "@/components/pos/content/orderDetails/LeftPart";
+import { mapState } from "vuex";
 
 export default {
-  name: 'OrderDetailPopup',
+  name: "OrderDetailPopup",
   props: {},
   components: {
     RightPartHeader,
@@ -48,12 +48,12 @@ export default {
     History,
     Modification,
     Payment,
-    LeftPart,
+    LeftPart
   },
   computed: {
-    ...mapState('order', ['selectedOrder']),
-  },
-}
+    ...mapState("order", ["selectedOrder"])
+  }
+};
 </script>
 <style scoped lang="scss">
 #orderDetailsPopup .modal-dialog {

@@ -1,6 +1,6 @@
 <template>
   <div class="POSItemOptions_quantity">
-    <label class="POSItemOptions_label">{{ _t('Quantity') }}</label>
+    <label class="POSItemOptions_label">{{ _t("Quantity") }}</label>
     <div class="POSItemOptions_quantity_wrapper">
       <div class="POSItemOptions_quantity_inputs">
         <button class="qtyminus value-qty" @click="updateFormQuantity('-')">
@@ -20,42 +20,42 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'Header',
+  name: "Header",
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"]),
     quantity: {
       get() {
-        return this.$store.getters['orderForm/quantity']
+        return this.$store.getters["orderForm/quantity"];
       },
       set(value) {
-        this.$store.commit('orderForm/updateQuantity', value)
-      },
-    },
+        this.$store.commit("orderForm/updateQuantity", value);
+      }
+    }
   },
   methods: {
     updateFormQuantity(action) {
-      if (action == '+') {
+      if (action == "+") {
         this.$store.commit(
-          'orderForm/updateQuantity',
-          this.$store.getters['orderForm/quantity'] + 1
-        )
+          "orderForm/updateQuantity",
+          this.$store.getters["orderForm/quantity"] + 1
+        );
       } else {
-        if (this.$store.getters['orderForm/quantity'] > 1) {
+        if (this.$store.getters["orderForm/quantity"] > 1) {
           this.$store.commit(
-            'orderForm/updateQuantity',
-            this.$store.getters['orderForm/quantity'] - 1
-          )
+            "orderForm/updateQuantity",
+            this.$store.getters["orderForm/quantity"] - 1
+          );
         }
       }
     },
     updateItemQty() {
       this.$store.dispatch(
-        'order/updateQuantity',
-        this.$store.getters['orderForm/quantity']
-      )
-    },
-  },
-}
+        "order/updateQuantity",
+        this.$store.getters["orderForm/quantity"]
+      );
+    }
+  }
+};
 </script>

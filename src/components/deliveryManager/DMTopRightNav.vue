@@ -13,8 +13,8 @@
 
 <script>
 export default {
-  name: 'DMTopRightNav',
-}
+  name: "DMTopRightNav"
+};
 </script>
 
 <style scoped lang="css">

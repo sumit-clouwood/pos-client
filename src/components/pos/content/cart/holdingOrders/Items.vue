@@ -20,29 +20,29 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 /* global $ */
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'Items',
+  name: "Items",
   props: {
-    orderData: Object,
+    orderData: Object
   },
   computed: {
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters("location", ["formatPrice"])
   },
   methods: {
     setHoldOrderCart: function(orderData) {
-      this.$store.commit('order/SET_CART_TYPE', 'new')
-      this.$store.dispatch('holdOrders/fetchOrder', orderData)
+      this.$store.commit("order/SET_CART_TYPE", "new");
+      this.$store.dispatch("holdOrders/fetchOrder", orderData);
     },
 
     dropHoldOrder: function(order) {
-      if (confirm('Are you sure you want to delete this order!')) {
-        this.$store.dispatch('order/removeOrder', {
+      if (confirm("Are you sure you want to delete this order!")) {
+        this.$store.dispatch("order/removeOrder", {
           order: order,
-          orderType: 'hold',
-        })
+          orderType: "hold"
+        });
       }
-    },
-  },
-}
+    }
+  }
+};
 </script>

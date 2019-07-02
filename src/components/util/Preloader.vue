@@ -6,8 +6,8 @@
 </template>
 <script>
 export default {
-  name: 'Preloader',
-}
+  name: "Preloader"
+};
 </script>
 <style lang="sass" scoped>
 .preloader

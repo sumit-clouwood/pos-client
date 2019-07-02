@@ -8,15 +8,15 @@
 </template>
 
 <script>
-import TopNavLeft from './header/TopNavLeft'
-import TopNavRight from './header/TopNavRight'
+import TopNavLeft from "./header/TopNavLeft";
+import TopNavRight from "./header/TopNavRight";
 
 export default {
-  name: 'Header',
+  name: "Header",
   props: {},
   components: {
     TopNavLeft,
-    TopNavRight,
-  },
-}
+    TopNavRight
+  }
+};
 </script>

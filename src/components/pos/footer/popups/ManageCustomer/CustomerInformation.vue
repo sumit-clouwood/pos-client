@@ -21,14 +21,14 @@
                       )
                     "
                   >
-                    {{ _t('+ Place New Order') }}
+                    {{ _t("+ Place New Order") }}
                   </button>
                 </div>
               </div>
             </div>
             <CustomerInsights :pastOrders="pastOrders" />
           </div>
-          <h2 class="past-order">{{ _t('Past Orders') }}</h2>
+          <h2 class="past-order">{{ _t("Past Orders") }}</h2>
           <CustomerPastOrders :pastOrders="pastOrders" />
         </div>
         <div class="modal-footer">
@@ -53,7 +53,7 @@
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
             >
-              {{ _t('Dismiss') }}
+              {{ _t("Dismiss") }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -65,16 +65,16 @@
 </template>
 <script>
 /* global $ */
-import { mapState, mapActions, mapGetters } from 'vuex'
-import LoyaltyPoint from './CustomerInformation/LoyaltyPoint'
-import CustomerProfile from './CustomerInformation/CustomerProfile'
-import CustomerInsights from './CustomerInformation/CustomerInsights'
-import CustomerPastOrders from './CustomerInformation/CustomerPastOrders'
-import CustomerDeliveryAddress from './CustomerInformation/CustomerDeliveryAddress'
-import paginate from 'vuejs-paginate'
+import { mapState, mapActions, mapGetters } from "vuex";
+import LoyaltyPoint from "./CustomerInformation/LoyaltyPoint";
+import CustomerProfile from "./CustomerInformation/CustomerProfile";
+import CustomerInsights from "./CustomerInformation/CustomerInsights";
+import CustomerPastOrders from "./CustomerInformation/CustomerPastOrders";
+import CustomerDeliveryAddress from "./CustomerInformation/CustomerDeliveryAddress";
+import paginate from "vuejs-paginate";
 
 export default {
-  name: 'CustomerInformation',
+  name: "CustomerInformation",
   props: {},
   components: {
     LoyaltyPoint,
@@ -82,31 +82,31 @@ export default {
     CustomerInsights,
     CustomerPastOrders,
     CustomerDeliveryAddress,
-    paginate,
+    paginate
   },
   computed: {
     ...mapState({
-      paginateDetails: state => state.customer.pastOrdersPaginate,
+      paginateDetails: state => state.customer.pastOrdersPaginate
     }),
     ...mapState({
-      pastOrders: state => state.customer.pastOrders,
+      pastOrders: state => state.customer.pastOrders
     }),
-    ...mapGetters('location', ['_t']),
-    ...mapState('checkoutForm', ['msg']),
+    ...mapGetters("location", ["_t"]),
+    ...mapState("checkoutForm", ["msg"])
   },
   methods: {
     updateModalSelection(modalName, subjectName) {
-      this.updateModalSelectionDelivery(modalName)
+      this.updateModalSelectionDelivery(modalName);
       if (this.msg.data.length > 0) {
-        $('#payment-msg').modal('show')
+        $("#payment-msg").modal("show");
       } else {
-        $(subjectName).modal('hide')
+        $(subjectName).modal("hide");
       }
     },
-    ...mapActions('customer', ['setPastOrderPageNumber']),
-    ...mapActions('location', ['updateModalSelectionDelivery']),
-  },
-}
+    ...mapActions("customer", ["setPastOrderPageNumber"]),
+    ...mapActions("location", ["updateModalSelectionDelivery"])
+  }
+};
 </script>
 <style scoped lang="scss">
 div#display-order .modal-dialog {

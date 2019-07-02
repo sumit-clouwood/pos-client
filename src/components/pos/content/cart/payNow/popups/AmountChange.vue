@@ -41,19 +41,19 @@
 
 <script>
 /* global $ */
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 export default {
-  name: 'AmountChange',
+  name: "AmountChange",
   computed: {
-    ...mapState('location', ['currency']),
-    ...mapGetters('location', ['formatPrice']),
-    ...mapState('checkout', ['changedAmount']),
+    ...mapState("location", ["currency"]),
+    ...mapGetters("location", ["formatPrice"]),
+    ...mapState("checkout", ["changedAmount"])
   },
   methods: {
     generateInvoice() {
-      $('#pay-now').modal('hide')
-      this.$store.dispatch('checkout/generateInvoice')
-    },
-  },
-}
+      $("#pay-now").modal("hide");
+      this.$store.dispatch("checkout/generateInvoice");
+    }
+  }
+};
 </script>

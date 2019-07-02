@@ -55,12 +55,12 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'Items',
-  props: ['labels', 'itemsDetails', 'tpl'],
+  name: "Items",
+  props: ["labels", "itemsDetails", "tpl"],
   computed: {
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters("location", ["formatPrice"])
   },
   methods: {
     /* itemName(item) {
@@ -79,7 +79,7 @@ export default {
       }
       return engName
     },*/
-  },
-}
+  }
+};
 </script>
 <style scoped lang="css"></style>

@@ -9,19 +9,19 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
-import Modifiers from './content/Modifiers'
+import { mapGetters, mapState } from "vuex";
+import Modifiers from "./content/Modifiers";
 export default {
-  name: 'Content',
+  name: "Content",
   props: {},
   components: {
-    Modifiers,
+    Modifiers
   },
   computed: {
-    ...mapState('modifier', ['item']),
-    ...mapGetters('modifier', ['itemModifiers']),
-  },
-}
+    ...mapState("modifier", ["item"]),
+    ...mapGetters("modifier", ["itemModifiers"])
+  }
+};
 </script>
 
 <style scoped>

@@ -21,22 +21,22 @@
 </template>
 
 <script>
-import Header from './popup/Header.vue'
-import Content from '@/components/pos/content/catalog/items/popup/Content.vue'
-import Footer from './popup/Footer.vue'
-import { mapState } from 'vuex'
+import Header from "./popup/Header.vue";
+import Content from "@/components/pos/content/catalog/items/popup/Content.vue";
+import Footer from "./popup/Footer.vue";
+import { mapState } from "vuex";
 export default {
-  name: 'Popup',
+  name: "Popup",
   props: {},
   components: {
     Content,
     Header,
-    Footer,
+    Footer
   },
   computed: {
-    ...mapState('orderForm', ['error']),
-  },
-}
+    ...mapState("orderForm", ["error"])
+  }
+};
 </script>
 <style lang="sass" scoped>
 .POSItemOptions

@@ -28,7 +28,7 @@
                 </div>
                 <div class="order_price-container">
                   <div class="order_price">
-                    {{ order.balance_due + ' ' + order.currency }}
+                    {{ order.balance_due + " " + order.currency }}
                   </div>
                 </div>
                 <div class="order_time">08:22 PM</div>
@@ -50,7 +50,7 @@
                     LookupData.get({
                       collection: order,
                       matchWith: order.store_id,
-                      selection: 'name',
+                      selection: "name"
                     })
                   }}
                 </div>
@@ -65,9 +65,9 @@
                   >
                     <div class="main-item">
                       {{
-                        typeof order.items[index] != 'undefined'
+                        typeof order.items[index] != "undefined"
                           ? order.items[index].name
-                          : ''
+                          : ""
                       }}<span></span>
                     </div>
                     <div
@@ -108,62 +108,62 @@
 
 <script>
 /* global $ */
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from "vuex";
 export default {
-  name: 'DMItem',
+  name: "DMItem",
   data() {
     return {
-      orderCount: 2,
-    }
+      orderCount: 2
+    };
   },
   props: {
-    actionDetails: Object,
+    actionDetails: Object
   },
   computed: {
     ...mapState({
-      orderStatus: state => state.deliveryManager.deliveryOrderStatus,
+      orderStatus: state => state.deliveryManager.deliveryOrderStatus
     }),
     ...mapState({
-      orderDetails: state => state.deliveryManager.orders,
+      orderDetails: state => state.deliveryManager.orders
       /*foodIcons: state => state.modifiers.foodIcons,*/
     }),
     ...mapState({
-      locationName: state => state.location.locationName,
-    }),
+      locationName: state => state.location.locationName
+    })
   },
   methods: {
-    ...mapActions('deliveryManager', ['showOrderDetails']),
+    ...mapActions("deliveryManager", ["showOrderDetails"]),
     DMOrderStatus: function({ actionDetails, orderId, orderType }) {
-      let timestamp = Date.now()
-      if (actionDetails.action != 'Collected') {
-        if (orderType.OTApi === 'takeaway') {
-          this.$store.dispatch('deliveryManager/updateTakeAway', orderId)
+      let timestamp = Date.now();
+      if (actionDetails.action != "Collected") {
+        if (orderType.OTApi === "takeaway") {
+          this.$store.dispatch("deliveryManager/updateTakeAway", orderId);
         } else {
-          if (typeof actionDetails.driverId != 'undefined') {
-            this.$store.dispatch('deliveryManager/attachOrderDriver', {
+          if (typeof actionDetails.driverId != "undefined") {
+            this.$store.dispatch("deliveryManager/attachOrderDriver", {
               orderId: orderId,
               driverId: actionDetails.driverId,
-              timestamp: timestamp,
-            })
+              timestamp: timestamp
+            });
           } else {
-            this.$store.dispatch('checkout/updateOrderStatus', {
+            this.$store.dispatch("checkout/updateOrderStatus", {
               orderStatus: actionDetails.nextOrderStatus,
               orderId: orderId,
               timestamp: timestamp,
-              orderType: orderType,
-            })
+              orderType: orderType
+            });
           }
         }
 
-        $('#' + orderId)
+        $("#" + orderId)
           .parent()
           .parent()
           .parent()
-          .hide(800)
+          .hide(800);
       }
-    },
-  },
-}
+    }
+  }
+};
 </script>
 
 <style scoped lang="css">

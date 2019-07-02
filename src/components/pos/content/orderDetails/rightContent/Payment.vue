@@ -7,8 +7,8 @@
   >
     <table class="table-responsive" v-if="orderDetails">
       <tr class="receipt-body">
-        <th class="receipt-heading">{{ _t('Payment Method') }}</th>
-        <th class="receipt-heading">{{ _t('Collected') }}</th>
+        <th class="receipt-heading">{{ _t("Payment Method") }}</th>
+        <th class="receipt-heading">{{ _t("Collected") }}</th>
       </tr>
       <tr
         class="receipt-body"
@@ -21,16 +21,16 @@
     </table>
 
     <div class="receipt-summary" v-if="orderDetails">
-      <div class="caption subtotal">{{ _t('Total Paid') }}:</div>
+      <div class="caption subtotal">{{ _t("Total Paid") }}:</div>
       <div class="subtotal">
         {{ orderDetails.total_paid }}
       </div>
       <!---->
-      <div class="caption">{{ _t('Amount Changed') }}:</div>
+      <div class="caption">{{ _t("Amount Changed") }}:</div>
       <div>
         {{ orderDetails.amount_changed }}
       </div>
-      <div class="caption">{{ _t('Tips') }}:</div>
+      <div class="caption">{{ _t("Tips") }}:</div>
       <div>
         {{ orderDetails.tip_amount }}
       </div>
@@ -39,16 +39,16 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'Payment',
+  name: "Payment",
   props: {
-    orderDetails: {},
+    orderDetails: {}
   },
   computed: {
-    ...mapGetters('location', ['_t']),
-  },
-}
+    ...mapGetters("location", ["_t"])
+  }
+};
 </script>
 <style scoped lang="scss">
 .receipt-body {

@@ -45,8 +45,8 @@
 
 <script>
 export default {
-  name: 'DeliveryAssistant',
-}
+  name: "DeliveryAssistant"
+};
 </script>
 
 <style scoped></style>

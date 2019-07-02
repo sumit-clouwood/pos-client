@@ -15,20 +15,20 @@
 
 <script>
 /* eslint-disable no-console */
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 export default {
-  name: 'Branches',
+  name: "Branches",
   computed: {
     ...mapState({
-      branch: state => state.deliveryManager.availableStores,
-    }),
+      branch: state => state.deliveryManager.availableStores
+    })
   },
   methods: {
     getLocationOrders: function(storeId) {
-      this.$store.dispatch('deliveryManager/fetchStoreOrders', storeId)
-    },
-  },
-}
+      this.$store.dispatch("deliveryManager/fetchStoreOrders", storeId);
+    }
+  }
+};
 </script>
 
 <style scoped></style>

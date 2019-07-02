@@ -9,7 +9,7 @@
     <div class="modal-details">
       <div class="POSItemOptions_pricequantity">
         <div class="POSItemOptions_price">
-          <label class="POSItemOptions_label">{{ _t('Price') }}</label>
+          <label class="POSItemOptions_label">{{ _t("Price") }}</label>
           <div class="POSItemOptions_money">
             {{ formatPrice(item.value * quantity) }}
           </div>
@@ -21,20 +21,20 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Quantity from '@/components/pos/content/catalog/items/popup/header/Quantity'
-import CloseButton from '@/components/pos/content/catalog/items/popup/header/CloseButton'
+import { mapGetters } from "vuex";
+import Quantity from "@/components/pos/content/catalog/items/popup/header/Quantity";
+import CloseButton from "@/components/pos/content/catalog/items/popup/header/CloseButton";
 export default {
-  name: 'Header',
+  name: "Header",
   props: {},
   computed: {
-    ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapGetters('order', ['item']),
-    ...mapGetters('orderForm', ['quantity']),
+    ...mapGetters("location", ["formatPrice", "_t"]),
+    ...mapGetters("order", ["item"]),
+    ...mapGetters("orderForm", ["quantity"])
   },
   components: {
     Quantity,
-    CloseButton,
-  },
-}
+    CloseButton
+  }
+};
 </script>

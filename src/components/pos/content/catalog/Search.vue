@@ -15,20 +15,20 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from "vuex";
 export default {
-  name: 'Search',
+  name: "Search",
   props: {},
   data() {
     return {
-      searchItems: '',
-    }
+      searchItems: ""
+    };
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
-    ...mapActions('category', ['collectSearchItems']),
-  },
-}
+    ...mapActions("category", ["collectSearchItems"])
+  }
+};
 </script>
