@@ -195,7 +195,7 @@
                             flex-direction: row;
                             justify-content: flex-start;
                             border-bottom: 1px solid $gray-middle;
-                            padding: 0 20px;
+                            padding: 0 20px 0 0px;
                             display: grid;
                             grid-template-columns: min-content 1fr;
                             grid-gap: 20px;
@@ -209,8 +209,8 @@
                             }
 
                             img {
-                                width: 50px;
-                                height: 50px;
+                                width: 65px;
+                                height: 65px;
                                 margin-bottom: 0;
                             }
 

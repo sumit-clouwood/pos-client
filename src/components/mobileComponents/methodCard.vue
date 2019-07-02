@@ -3,7 +3,7 @@
         <mobile-pay-header
                 :param="{title: 'Order Payment', subtitle: 'Order ID #0213232'}"/>
         <div class="method-card-body">
-            <total-amount/>
+            <total-amount :param="{totalAmountBlock: true, title: 'Mastercard'}"/>
             <div class="insert-cart">
                 <svg width="63" height="73" viewBox="0 0 63 73" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M58.0711 0.100006H4.92889C2.29135 0.100006 0.105164 2.19373 0.105164 4.83128V18.7552C0.105164 21.3927 2.28771 23.5789 4.92889 23.5789H8.38762L8.7502 17.3014C7.47766 17.3014 6.4752 16.2989 6.4752 15.0264V8.56392C6.4752 7.29137 7.47766 6.38137 8.7502 6.38137L54.2502 6.37782C55.5227 6.37782 56.5252 7.28782 56.5252 8.56036V15.0228C56.5252 16.2954 55.5227 17.2978 54.2502 17.2978L54.6128 23.5754H58.0715C60.7091 23.5754 62.8952 21.3928 62.8952 18.7516V4.83136C62.8952 2.19382 60.7127 0.100092 58.0715 0.100092L58.0711 0.100006Z"
@@ -19,7 +19,7 @@
                 </div>
             </div>
         </div>
-        <mobile-footer/>
+        <mobile-footer :param="{method: 'cardInput'}"/>
     </div>
 </template>
 
@@ -112,10 +112,9 @@
                 display: none;
             }
             .btn-next{
-                display: none;
             }
             .btn-cansel{
-                display: flex;
+                display: none;
                 align-items: center;
                 justify-content: center;
                 color: #fff;

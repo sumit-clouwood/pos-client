@@ -1,10 +1,10 @@
 <template>
-    <div class="payment-successfull">
+    <div :class="['payment-successfull', {active: successfullHendler}]">
         <div class="header">
-            <mobile-pay-header :param="{title: 'Order Payment', subtitle: 'Order ID #0213232'}"/>
+            <mobile-pay-header :param="{title: 'Order Payment', subtitle: 'Order ID #0213232', method: 'successfull'}"/>
         </div>
         <div class="body">
-            <total-amount/>
+            <total-amount :param="{totalAmountBlock: true}"/>
         </div>
         <pay-footer/>
     </div>
@@ -14,6 +14,7 @@
     import payFooter from '../pos/content/cart/payNow/Footer.vue'
     import totalAmount from '../pos/content/cart/payNow/TotalAmount.vue'
     import mobilePayHeader from './mobilePayHeader.vue'
+    import {mapState, mapGetters} from 'vuex'
 
     export default {
         name: "paymentSuccessfull",
@@ -21,7 +22,10 @@
             payFooter,
             totalAmount,
             mobilePayHeader
-        }
+        },
+        computed: {
+            ...mapGetters(['successfullHendler']),
+        },
     }
 </script>
 
@@ -34,16 +38,39 @@
         position: fixed;
         top: 0;
         right: -100vw;
-        /*right: 0;*/
         bottom: 0;
         width: 100vw;
         z-index: 50;
         background-color: #fff;
         display: grid;
         grid-template-rows: max-content 1fr max-content;
+        z-index: 1060;
+        transition: .5s ease-out;
+
+        &.active {
+            right: 0;
+        }
+
+        .header {
+            border: none;
+
+            .mobile-pay-header {
+                border: none;
+            }
+        }
 
         .body {
             padding: 20px;
+
+            .total-amount {
+                hr {
+                    display: none;
+                }
+
+                .total-amount-method {
+                    display: none;
+                }
+            }
         }
 
         .payment-screen-footer {
@@ -61,7 +88,8 @@
                 justify-content: center;
                 padding: 10px;
                 border-radius: $btn-border-radius;
-                &:last-child{
+
+                &:last-child {
                     background-color: $green-middle;
                 }
 

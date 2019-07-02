@@ -2,7 +2,7 @@
     <div :class="['mobile-calc', {active: payNowCalcHendler}]">
         <mobile-pay-header :param="{title: 'Order Payment', subtitle: 'Order ID #0213232', method: 'calcHendler'}"/>
         <div class="calc-body">
-            <total-amount/>
+            <total-amount :param="{totalAmountBlock: true, title: 'Cash'}"/>
             <div class="imput-block">
                 <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"

@@ -27,7 +27,7 @@
                 <div class="btn-chatge-title">CHARGE</div>
             </div>
         </div>
-        <div class="btn-next">Next</div>
+        <div class="btn-next" @click="footerBtnMethod">Next</div>
         <div class="btn-cansel" @click="methodCardHendlerGhange">Cansel</div>
         <div class="qr-voucher-code">
             <div class="title">Voucher code</div>
@@ -39,6 +39,7 @@
     import {mapState, mapGetters} from 'vuex'
 
     export default {
+        props: ['param'],
         computed: {
             ...mapGetters(['footerMenuHendler', 'payMethod']),
             ...mapState("order", ["orderType"]),
@@ -60,12 +61,6 @@
             payNowCalcHendlerGhange() {
                 if (this.payMethod == 'Gift Card') {
                     this.$store.dispatch('payNowCalcHendlerGhange')
-                } else if (this.payMethod == 'Payment Type Payment Type Name 202') {
-                    console.log('Payment Type Payment Type Name 202')
-                } else if (this.payMethod == 'Payment Type Payment Type Name 203') {
-                    console.log('Payment Type Payment Type Name 203')
-                } else if (this.payMethod == 'Payment Type Payment Type Name 204') {
-                    console.log('Payment Type Payment Type Name 204')
                 }
             },
             paymentMethodsHendlerGhange() {
@@ -73,6 +68,13 @@
             },
             methodCardHendlerGhange() {
                 this.$store.dispatch('methodCardHendlerGhange')
+            },
+            footerBtnMethod() {
+                if (this.param.method == 'cardInput') {
+                    this.$store.dispatch('cardInputHendlerGhange')
+                }else if(this.param.method == 'successfull'){
+                    this.$store.dispatch('successfullHendlerGhange')
+                }
             }
         }
     }

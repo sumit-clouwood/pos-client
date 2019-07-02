@@ -175,6 +175,7 @@
             bottom: 0;
             width: 100vw;
             background-color: rgba(0,0,0,0.5);
+            padding: 20px;
         }
     }
 </style>

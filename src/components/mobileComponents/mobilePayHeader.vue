@@ -12,15 +12,7 @@
                 </svg>
             </div>
         </div>
-        <div class="qr-block">
-            <total-amount/>
-            <hr/>
-            <div class="qr-footer">
-                <img src="../../assets/images/gift.png"/>
-                <div class="title">Gift Card</div>
-                <div class="btn-change" @click="QRMethodGhangeHendler">Change</div>
-            </div>
-        </div>
+        <total-amount :param="{totalAmountBlock: true, title: 'Gift Card'}"/>
     </div>
 </template>
 
@@ -39,6 +31,10 @@
                     this.$store.dispatch('paymentMethodsHendlerGhange')
                 } else if (this.param.method == 'calcHendler') {
                     this.$store.dispatch('payNowCalcHendlerGhange')
+                }else if (this.param.method == 'cardInput') {
+                    this.$store.dispatch('cardInputHendlerGhange')
+                }else if (this.param.method == 'successfull') {
+                    this.$store.dispatch('successfullHendlerGhange')
                 }
             },
             QRMethodGhangeHendler() {

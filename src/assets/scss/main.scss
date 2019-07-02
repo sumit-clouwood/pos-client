@@ -1,5 +1,7 @@
 @import "pixels_rem.scss";
 @import "variables.scss";
+@import 'mixins.scss';
+
 
 .main {
   display: grid;
@@ -94,7 +96,7 @@
           position: relative;
           font-size: $px14;
           background-color: #fff;
-          padding: $px10 $px5 $px5 $px5;
+          padding: $px5 $px5 $px5 $px5;
 
           &:hover, &.active {
             box-shadow: inset 0 0 0px 2px $blue-middle;
@@ -111,9 +113,10 @@
           }
 
           .food-categories-item-img {
-            width: $px50;
+            width: 100%;
             margin: 0 auto;
             margin-bottom: $px5;
+
           }
 
           .food-categories-item-text {
@@ -303,7 +306,7 @@
             justify-content: center;
             margin-right: $px20;
             margin-bottom: $px20;
-            padding: $px20;
+            padding: 0;
             transition: 0.2s linear;
             font-size: $px14;
 
@@ -318,7 +321,7 @@
             }
 
             .food-menu-item-img {
-              width: $px100;
+              width: 100%;
               max-height: $px100;
               margin: 0 auto;
             }

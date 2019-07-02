@@ -85,7 +85,7 @@
                     height: 50px;
                     border-radius: 0;
                     border: none;
-                    padding: 0 20px;
+                    padding: 0 20 0 0px;
                     min-height: 65px;
                     grid-template-columns: 50px 1fr;
                     grid-gap: 20px;
@@ -103,8 +103,8 @@
 
                     img {
                         margin: 0;
-                        width: 50px;
-                        height: 50px;
+                        width: 65px;
+                        height: 65px;
                     }
 
                     .food-categories-item-check {

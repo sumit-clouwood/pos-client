@@ -80,7 +80,7 @@
 
                     .modal-body {
                         .dining-option-block {
-                            grid-template-rows: max-content;
+                            grid-template-rows: repeat(20, max-content);
                         }
                     }
                     .modal-footer{

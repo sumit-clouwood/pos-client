@@ -39,7 +39,7 @@
         z-index: 1060;
         background-color: #fff;
         transition: 0.5s ease-out;
-        box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        border-left: 1px solid #eee;
 
         &.active {
             right: 0;
@@ -62,6 +62,7 @@
                 left: 0;
                 height: auto;
                 min-height: auto;
+                max-width: 100%;
                 margin: 0;
                 transform: none;
 

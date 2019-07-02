@@ -20,7 +20,7 @@
                 </button>
               </div>
             </div>
-            <TotalAmount />
+            <TotalAmount :param="{totalAmountBlock: true}"/>
             <div class="payment-method-title">
               <h2>{{ _t('Payment Method') }}</h2>
             </div>

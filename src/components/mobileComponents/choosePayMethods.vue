@@ -2,11 +2,11 @@
     <div :class="['mobile-payment-methods', {active: paymentMethodsHendler}]">
         <mobile-pay-header :param="{title: 'Order Payment', subtitle: 'Order ID #0213232', method: 'closePayMethods'}"/>
         <div class="pay-body">
-            <total-amount/>
+            <total-amount :param="{totalAmountBlock: false}"/>
             <payment-methods/>
         </div>
         <div class="pay-footer">
-            <mobile-footer/>
+            <mobile-footer :param="{method: 'successfull'}"/>
         </div>
     </div>
 </template>

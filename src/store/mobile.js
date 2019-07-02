@@ -22,7 +22,9 @@ export default {
         loyaltyHendler: false,
         discountHendler: false,
         addNoteHendler: false,
-        loyaltyPaymentHendler: false
+        loyaltyPaymentHendler: false,
+        cardInputHendler: false,
+        successfullHendler: false
     },
     mutations: {
         SEARCH_HENDLER_CHANGE: (state) => {
@@ -75,10 +77,9 @@ export default {
             state.openManageCustomerHendler = !state.openManageCustomerHendler
         },
         ADD_ITEM_FOOD: (state, payLoad) => {
-            if(state.itemFood.name == '...' || state.itemFood.name == payLoad.name){
+            if (state.itemFood.name == '...' || state.itemFood.name == payLoad.name) {
                 state.itemFood.curent = state.itemFood.curent + 1
-            }
-            else{
+            } else {
                 state.itemFood.curent = 1
             }
             state.itemFood.name = payLoad.name
@@ -100,8 +101,14 @@ export default {
         },
         LOYALTY_PAYMMENT_HENDLER_GHANGE: (state) => {
             state.loyaltyPaymentHendler = !state.loyaltyPaymentHendler
+        },
+        CARD_INPUT_HENDLER_GHANGE: (state) => {
+            state.cardInputHendler = !state.cardInputHendler
+        },
+        SUCCESSFULL_HENDLER_GHANGE: (state) => {
+            state.successfullHendler = !state.successfullHendler
         }
-     },
+    },
     actions: {
         searchHendlerChange({commit}) {
             commit('SEARCH_HENDLER_CHANGE')
@@ -118,50 +125,56 @@ export default {
         mainOrdersHendlerGhange({commit}) {
             commit('MAIN_ORDERS_HENDLER_GHANGE')
         },
-        cartClose({commit}){
+        cartClose({commit}) {
             commit('CART_CLOSE')
         },
         totalWrapperHendlerGhange({commit}) {
             commit('TOTAL_WRAPPER_HENDLER_GHANGE')
         },
-        footerButtonHendlerGhange({commit}){
+        footerButtonHendlerGhange({commit}) {
             commit('FOOTER_BUTTON_HENDLER_GHANGE')
         },
         payNowCalcHendlerGhange({commit}) {
             commit('PAY_NOW_CALC_HANDLER_GHANGE')
         },
-        footerMenuHendlerGhange({commit}){
+        footerMenuHendlerGhange({commit}) {
             commit('FOOTER_MENU_HENDLER_GHANGE')
         },
-        profileHendlerGhange({commit}){
+        profileHendlerGhange({commit}) {
             commit('PROFILE_HENDLER_GHANGE')
         },
-        paymentMethodsHendlerGhange({commit}){
+        paymentMethodsHendlerGhange({commit}) {
             commit('PAYMENT_METHODS_HENDLER_GHANGE')
         },
-        openManageCustomer({commit}){
+        openManageCustomer({commit}) {
             commit('OPEN_MANAGE_CUSTOMER')
         },
-        addItemFood({commit}, payLoad){
+        addItemFood({commit}, payLoad) {
             commit('ADD_ITEM_FOOD', payLoad)
         },
-        methodCardHendlerGhange({commit}){
+        methodCardHendlerGhange({commit}) {
             commit('METHOD_CARD_HENDLER_CHANGE')
         },
-        QRMethodGhangeHendler({commit}){
+        QRMethodGhangeHendler({commit}) {
             commit('QR_METHOD_GHANGE_HENDLER')
         },
-        loyaltyHendlerGhange({commit}){
+        loyaltyHendlerGhange({commit}) {
             commit('LOYALTY_HENDLER_GHANGE')
         },
-        discountHendlerGhange({commit}){
+        discountHendlerGhange({commit}) {
             commit('DISCOUNT_HENDLER_GHANGE')
         },
-        addNoteHendlerGhange({commit}){
+        addNoteHendlerGhange({commit}) {
             commit('ADD_NOTE_HENDLER_GHANGE')
         },
-        loyaltyPaymentHendlerGhange({commit}){
+        loyaltyPaymentHendlerGhange({commit}) {
             commit('LOYALTY_PAYMMENT_HENDLER_GHANGE')
+        },
+        cardInputHendlerGhange({commit}) {
+            commit('CARD_INPUT_HENDLER_GHANGE')
+        },
+        successfullHendlerGhange({commit}) {
+            commit('SUCCESSFULL_HENDLER_GHANGE')
         }
     },
     getters: {
@@ -185,6 +198,7 @@ export default {
         discountHendler: state => state.discountHendler,
         addNoteHendler: state => state.addNoteHendler,
         loyaltyPaymentHendler: state => state.loyaltyPaymentHendler,
-
+        cardInputHendler: state => state.cardInputHendler,
+        successfullHendler: state => state.successfullHendler
     },
 };

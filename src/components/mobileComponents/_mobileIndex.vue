@@ -14,6 +14,7 @@
         <loyalty/>
         <selectDiscount/>
         <add-note/>
+        <cart-input/>
     </div>
 </template>
 <script>
@@ -31,6 +32,7 @@
     import loyalty from './loyalty.vue'
     import selectDiscount from './selectDiscount.vue'
     import addNote from './addNote.vue'
+    import cartInput from './cartInput.vue'
 
     export default {
         components: {
@@ -47,7 +49,8 @@
             QRMethod,
             loyalty,
             selectDiscount,
-            addNote
+            addNote,
+            cartInput
         }
     }
 </script>
@@ -67,6 +70,16 @@
         letter-spacing: 0.5px;
         @include responsive(mobile) {
             display: block;
+            .total-amount {
+                hr{
+                    display: block;
+                }
+                .total-amount-method {
+                    .total-amount-method-btn {
+                        display: block;
+                    }
+                }
+            }
         }
     }
 </style>
