@@ -657,7 +657,7 @@ $(document).ready(function() {
         helper: 'clone'
     });*/
   // window.onload = function () {
-  var getUrl = window.location.hash.substr(1)
+  /*var getUrl = window.location.hash.substr(1)
   if (getUrl == '/dm') {
     $('body').addClass('dm-manager')
     $('body').removeClass('dinein')
@@ -667,7 +667,7 @@ $(document).ready(function() {
   } else {
     $('body').removeClass('dm-manager')
     $('body').removeClass('dinein')
-  }
+  }*/
   // }
 })
 

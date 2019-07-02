@@ -26,6 +26,8 @@ const actions = {
       state.params.orderBy,
       state.params.orderStatus,
       state.params.page,
+      'orders_main_tbl',
+      '',
     ]
     OrderService.getOrders(...params).then(response => {
       commit(mutation.GET_HOLD_ORDERS, response.data)

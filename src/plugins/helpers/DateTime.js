@@ -127,7 +127,7 @@ export default class {
   }
   getDate() {
     this.parseTime()
-    return this.year + '-' + this.month + '-' + this.day
+    return this.year + '-' + this.Num[parseInt(this.month) + 1] + '-' + this.day
   }
 
   dateToday() {

@@ -805,7 +805,8 @@ const mutations = {
     state.items = []
     state.item = false
     state.orderStatus = null
-    //state.orderType = 'Walk-in'
+    state.orderId = null
+    state.orderType = { OTview: 'Walk In', OTApi: 'walk_in' }
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
