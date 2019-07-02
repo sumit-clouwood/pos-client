@@ -737,7 +737,7 @@ div#dm-payment-type-order {
   touch-action:auto; }
  
  .dm-ready-order-wrapper {
-  height:calc(100vh - 230px);
+  /*height:calc(100vh - 230px);*/
   overflow-x:hidden;
   overflow-y:auto !important;
   -webkit-overflow-scrolling:touch;
