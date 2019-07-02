@@ -37,6 +37,17 @@ const getters = {
   payable: (state, getters) => {
     return getters.orderTotal - getters.paid
   },
+  isLoyaltyUsed: state => {
+    let loyaltyUsed = 0;
+    if (state.payments) {
+       state.payments.forEach(element => {
+        if (element.method.name == "Loyalty Points") {
+          loyaltyUsed = 1;
+        }
+      });
+    }
+    return loyaltyUsed;
+  }
 }
 
 // actions
@@ -191,11 +202,13 @@ const actions = {
       }
     })
   },
-  validateLoyaltyPayment({ commit }) {
+  validateLoyaltyPayment({ commit, getters}) {
     return new Promise((resolve, reject) => {
       if (parseFloat(state.amount) != parseFloat(state.loyaltyAmount)) {
         if (parseFloat(state.loyaltyAmount) <= 0.01) {
           commit('SET_ERROR', 'You dont have loyalty amount.')
+        } else if(getters.isLoyaltyUsed===1){
+          commit('SET_ERROR', 'Loyalty can be used only ones in order')
         } else {
           let amount = isNaN(state.loyaltyAmount) ? 0 : state.loyaltyAmount
           commit('SET_ERROR', 'You can add only ' + amount + ' loyalty amount.')
@@ -231,10 +244,10 @@ const actions = {
     return Promise.resolve(1)
   },
 
-  setAmount({ commit, dispatch }, amount) {
+  setAmount({ commit }, amount) {
     commit('setAmount', parseFloat(amount))
   },
-  setLoyaltyCard({ commit, dispatch }, card) {
+  setLoyaltyCard({ commit }, card) {
     commit('setLoyaltyCard', card)
   },
   resetAmount({ commit }) {
@@ -425,14 +438,26 @@ const mutations = {
         type.amount += parseFloat(amount)
         state.payments.splice(index, 1, type)
       } else {
-        state.payments.push({
-          amount: amount,
-          method: method,
-          cardId: state.loyaltyCard._id ? state.loyaltyCard._id : null,
+        let isPaymentAcceptble = 1;
+        if(method.name == 'Loyalty Points') {
+          /* prevent adding multiple loyalty payments using method type */
+          /* check existing payments for same (Loyalty Points) method name*/
+          state.payments.forEach(element => {
+            if(element.method.name=='Loyalty Points'){
+              isPaymentAcceptble = 0;
+            }
+          });
+        }
+        if(isPaymentAcceptble) {
+          state.payments.push({
+            amount: amount,
+            method: method,
+            cardId: state.loyaltyCard._id ? state.loyaltyCard._id : null,
           code: state.loyaltyCard.loyalty_card_code
             ? state.loyaltyCard.loyalty_card_code
             : null,
-        })
+          })
+        }
       }
     } else {
       state.error = 'Amount can not be 0'
@@ -512,7 +537,7 @@ const mutations = {
   },
 
   RESET(state) {
-    state.amount = ''
+    state.amount = 0
     state.payments = []
     state.LoyaltyPopup = false
     state.error = false
