@@ -28,8 +28,8 @@ module.exports = {
     //hotOnly: false,
 
     overlay: {
-      warnings: true,
-      errors: true,
+      warnings: false,
+      errors: false,
     },
     //webpack: dev server to proxy any unknown requests (requests that did not match a static file) to http://localhost:8000.
     proxy: {

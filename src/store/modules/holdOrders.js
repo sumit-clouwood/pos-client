@@ -41,7 +41,7 @@ const actions = {
   },
   fetchOrder({ commit, dispatch }, selectedOrder) {
     commit(mutation.GET_HOLD_ORDER_DETAILS, selectedOrder)
-    dispatch('order/addHoldOrder', selectedOrder, { root: true })
+    dispatch('order/addHoldOrder', {selectedOrder}, { root: true })
   },
 
   holdOrder({ commit }) {

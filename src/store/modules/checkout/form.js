@@ -14,7 +14,9 @@ const state = {
   showCalc: true,
   showPayBreak: false,
   loyaltyAmount: 0,
+  loyaltyPoints: 0,
   action: 'add',
+  loyaltyCard: {},
 }
 
 // getters
@@ -35,6 +37,17 @@ const getters = {
   payable: (state, getters) => {
     return getters.orderTotal - getters.paid
   },
+  isLoyaltyUsed: state => {
+    let loyaltyUsed = 0;
+    if (state.payments) {
+       state.payments.forEach(element => {
+        if (element.method.name == "Loyalty Points") {
+          loyaltyUsed = 1;
+        }
+      });
+    }
+    return loyaltyUsed;
+  }
 }
 
 // actions
@@ -189,11 +202,13 @@ const actions = {
       }
     })
   },
-  validateLoyaltyPayment({ commit }) {
+  validateLoyaltyPayment({ commit, getters}) {
     return new Promise((resolve, reject) => {
       if (parseFloat(state.amount) != parseFloat(state.loyaltyAmount)) {
         if (parseFloat(state.loyaltyAmount) <= 0.01) {
           commit('SET_ERROR', 'You dont have loyalty amount.')
+        } else if(getters.isLoyaltyUsed===1){
+          commit('SET_ERROR', 'Loyalty can be used only ones in order')
         } else {
           let amount = isNaN(state.loyaltyAmount) ? 0 : state.loyaltyAmount
           commit('SET_ERROR', 'You can add only ' + amount + ' loyalty amount.')
@@ -229,9 +244,11 @@ const actions = {
     return Promise.resolve(1)
   },
 
-  setAmount({ commit, dispatch }, amount) {
+  setAmount({ commit }, amount) {
     commit('setAmount', parseFloat(amount))
-    dispatch('calculateSpendLoyalty')
+  },
+  setLoyaltyCard({ commit }, card) {
+    commit('setLoyaltyCard', card)
   },
   resetAmount({ commit }) {
     commit('setAmount', 0)
@@ -259,33 +276,56 @@ const actions = {
   calculateSpendLoyalty({ commit, rootState, getters }) {
     const loyalty = rootState.customer.loyalty.card
     const loyaltyDetails = rootState.customer.loyalty.details
-    const orderTotal = getters.orderTotal
-    let amount = parseFloat(loyalty.balance)
-    if (amount > 0) {
-      if (
-        parseFloat(orderTotal) > 0 &&
-        parseFloat(loyalty.balance) >= parseFloat(orderTotal)
-      ) {
-        amount = parseFloat(orderTotal).toFixed(2)
-      }
-
-      if (parseFloat(orderTotal) >= parseFloat(loyaltyDetails.maximum_redeem)) {
-        amount = parseFloat(loyaltyDetails.maximum_redeem)
-      }
-
-      if (
-        parseFloat(loyalty.balance) < parseFloat(loyaltyDetails.minimum_redeem)
-      ) {
-        amount = parseFloat('0.0')
-      }
-      // temp code
-      if (
-        parseFloat(loyaltyDetails.maximum_redeem) < parseFloat(loyalty.balance)
-      ) {
-        amount = parseFloat(loyaltyDetails.maximum_redeem)
+    let orderTotal = parseFloat(getters.orderTotal)
+    let amount = 0,
+      oneLoyaltyPoint = 0
+    if (loyaltyDetails && loyalty) {
+      oneLoyaltyPoint = parseFloat(loyaltyDetails.one_point_redeems_to)
+      if (orderTotal > 0) {
+        let { maxRedeem, minRedeem, loyaltyAmountByPoints } = {
+          maxRedeem: parseFloat(
+            loyaltyDetails.maximum_redeem * loyaltyDetails.one_point_redeems_to
+          ),
+          minRedeem: parseFloat(
+            loyaltyDetails.minimum_redeem * loyaltyDetails.one_point_redeems_to
+          ),
+          loyaltyAmountByPoints: parseFloat(
+            loyalty.balance * loyaltyDetails.one_point_redeems_to
+          ),
+        }
+        orderTotal = parseFloat(getters.orderTotal).toFixed(2)
+        if (loyaltyAmountByPoints > 0) {
+          if (loyaltyAmountByPoints >= orderTotal) {
+            if (orderTotal <= maxRedeem) {
+              amount = orderTotal
+            } else {
+              amount = maxRedeem
+            }
+          }
+          if (
+            loyaltyAmountByPoints <= orderTotal &&
+            loyaltyAmountByPoints >= minRedeem
+          ) {
+            if (
+              orderTotal >= minRedeem &&
+              orderTotal <= maxRedeem &&
+              loyaltyAmountByPoints >= orderTotal
+            ) {
+              amount = orderTotal
+            }
+            if (
+              orderTotal >= minRedeem &&
+              orderTotal <= maxRedeem &&
+              loyaltyAmountByPoints <= orderTotal
+            ) {
+              amount = loyaltyAmountByPoints
+            }
+          }
+        }
       }
     }
     commit('loyaltyAmount', amount)
+    commit('loyaltyPoints', { amount, oneLoyaltyPoint })
   },
 
   reset({ commit }) {
@@ -369,8 +409,22 @@ const mutations = {
   setAmount(state, val) {
     state.amount = val
   },
+  setLoyaltyCard(state, val) {
+    state.loyaltyCard = val
+  },
   loyaltyAmount(state, val) {
-    state.loyaltyAmount = val
+    state.loyaltyAmount = val.toFixed(2)
+  },
+  loyaltyPoints(state, { amount, oneLoyaltyPoint }) {
+    /**
+     * loyalty amount to points
+     * logic : amount/one_point_redeems_to  =  points used
+     */
+    if (amount && oneLoyaltyPoint) {
+      state.loyaltyPoints = (amount / oneLoyaltyPoint).toFixed(2)
+    } else {
+      state.loyaltyPoints = 0
+    }
   },
   setMethod(state, method) {
     state.method = method
@@ -384,10 +438,26 @@ const mutations = {
         type.amount += parseFloat(amount)
         state.payments.splice(index, 1, type)
       } else {
-        state.payments.push({
-          amount: parseFloat(amount),
-          method: method,
-        })
+        let isPaymentAcceptble = 1;
+        if(method.name == 'Loyalty Points') {
+          /* prevent adding multiple loyalty payments using method type */
+          /* check existing payments for same (Loyalty Points) method name*/
+          state.payments.forEach(element => {
+            if(element.method.name=='Loyalty Points'){
+              isPaymentAcceptble = 0;
+            }
+          });
+        }
+        if(isPaymentAcceptble) {
+          state.payments.push({
+            amount: amount,
+            method: method,
+            cardId: state.loyaltyCard._id ? state.loyaltyCard._id : null,
+          code: state.loyaltyCard.loyalty_card_code
+            ? state.loyaltyCard.loyalty_card_code
+            : null,
+          })
+        }
       }
     } else {
       state.error = 'Amount can not be 0'
@@ -467,7 +537,7 @@ const mutations = {
   },
 
   RESET(state) {
-    state.amount = ''
+    state.amount = 0
     state.payments = []
     state.LoyaltyPopup = false
     state.error = false

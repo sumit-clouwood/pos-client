@@ -2,7 +2,7 @@
   <div class="dm-btn-wrap">
     <div class="left-btn-wrap">
       <button
-        class="active dm-btn"
+        class="active btn btn-success"
         data-related="home-delivery-order"
         @click="
           updateDMOrderStatus({ orderStatus: 'running', collected: 'no' })
@@ -11,14 +11,14 @@
         Home Delivery Orders
       </button>
       <button
-        class="dm-btn"
+        class="btn btn-success"
         data-related="take-away-order"
         @click="updateDMOrderStatus({ orderStatus: 'new', collected: 'no' })"
       >
         Take Away Orders
       </button>
       <button
-        class="dm-btn"
+        class="btn btn-success"
         data-related="future-order"
         @click="
           updateDMOrderStatus({ orderStatus: 'future-order', collected: 'no' })

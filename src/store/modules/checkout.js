@@ -83,10 +83,8 @@ const actions = {
             total_discount: Num.round(
               rootGetters['discount/orderDiscountWithoutTax']
             ),
-
             print_count: 1,
             amount_changed: Num.round(state.changedAmount),
-
             order_building: '',
             order_street: '',
             order_flat_number: '',
@@ -94,7 +92,6 @@ const actions = {
             order_city: '',
             order_country: '',
             order_delivery_area: '',
-
             item_discounts: [],
             item_modifiers: '',
             order_surcharges: '',
@@ -298,14 +295,23 @@ const actions = {
 
         //adding payment breakdown
         let totalPaid = 0
+
         order.order_payments = rootState.checkoutForm.payments.map(payment => {
+          let {orderaAmount,orderPoints} = {}
+          if(payment.method.name==CONSTANTS.ORDER_PAYMENT_TYPE){
+            orderaAmount = payment.amount
+            orderPoints = rootState.checkoutForm.loyaltyPoints
+          } else {
+            orderaAmount = payment.amount
+            orderPoints = payment.amount
+          }
           let paymentPart = {
             entity_id: payment.method._id,
             name: payment.method.name,
-            collected: payment.amount,
+            collected: orderaAmount,
             param1: payment.cardId,
-            param2: payment.amount,
-            param3: payment.code,
+            param2: orderPoints,
+            param3: payment.code
           }
           totalPaid += payment.amount
           //Yuvraj, have a check here
@@ -372,8 +378,6 @@ const actions = {
         })
 
         //order.app_uniqueid = Crypt.uuid()
-
-        console.log('not in delivery or take away ')
         commit(mutation.SET_ORDER, order)
         dispatch('createOrder', action)
           .then(response => {
@@ -420,13 +424,16 @@ const actions = {
       response
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
-          dispatch('holdOrders/getHoldOrders', null, { root: true })
+          dispatch('holdOrders/getHoldOrders',{}, {root: true })
 
           if (response.data.status === 'ok') {
             if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+              let msgStr = rootGetters['location/_t'](
+                'Order has been hold Successfully'
+              )
               commit(
                 'checkoutForm/SET_MSG',
-                { result: '', data: 'Order has been hold Successfully' },
+                { result: '', data: msgStr },
                 {
                   root: true,
                 }
@@ -441,9 +448,10 @@ const actions = {
             }
 
             //else
+            let msgStr = rootGetters['location/_t']('Order placed Successfully')
             commit(
               'checkoutForm/SET_MSG',
-              { result: 'success', data: 'Order Placed Successfully' },
+              { result: 'success', data: msgStr },
               {
                 root: true,
               }
@@ -467,7 +475,7 @@ const actions = {
               ).then(() => {
                 commit(
                   'checkoutForm/SET_MSG',
-                  { result: 'success', data: 'Order Placed Successfully' },
+                  { result: 'success', data: msgStr },
                   {
                     root: true,
                   }
@@ -497,9 +505,12 @@ const actions = {
             reject(response.data.error)
           } else {
             if (response.message === 'Network Error') {
+              let errorMsg = rootGetters['location/_t'](
+                'System went offline. Order is queued for sending later'
+              )
               commit(
                 'checkoutForm/SET_MSG',
-                { result: '', data: 'Queued for sending later' },
+                { result: '', data: errorMsg },
                 {
                   root: true,
                 }
@@ -535,12 +546,13 @@ const actions = {
   },
   reset({ commit, dispatch }) {
     commit(mutation.RESET)
-    dispatch('checkoutForm/reset', null, { root: true })
-    dispatch('order/reset', null, { root: true })
-    dispatch('tax/reset', null, { root: true })
-    dispatch('discount/reset', null, { root: true })
-    dispatch('surcharge/reset', null, { root: true })
-    dispatch('customer/reset', null, { root: true })
+    dispatch('checkoutForm/reset', {}, { root: true })
+    dispatch('order/reset', {}, { root: true })
+    dispatch('tax/reset', {}, { root: true })
+    dispatch('discount/reset', {}, { root: true })
+    dispatch('surcharge/reset', {}, { root: true })
+    dispatch('customer/reset', {}, { root: true })
+    dispatch('location/reset', {}, { root: true })
   },
 
   updateOrderStatus(
