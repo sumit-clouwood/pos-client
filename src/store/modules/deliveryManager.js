@@ -17,20 +17,44 @@ const state = {
   is_pagination: true,
   pageSize: 8,
   pageNumber: 1,
+  stores: '',
+  params: {
+    query: '',
+    limit: 10,
+    orderBy: 'real_created_datetime',
+    orderStatus: '',
+    page: 1,
+    totalPages: 0,
+    pageId: 'home_delivery_new',
+  },
+  drivers: false,
 }
 const getters = {}
 
 const actions = {
-  fetchDMOrderDetail({ commit, dispatch }) {
+  fetchDMOrderDetail({ commit, state, dispatch }) {
     // return new Promise((resolve, reject) => {
-    const params = ['home_delivery_new', '', 10, 1, 'real_created_datetime']
+    const params = [
+      state.params.query,
+      state.params.limit,
+      state.params.orderBy,
+      state.params.orderStatus,
+      state.params.page,
+      state.params.pageId,
+      state.stores,
+    ]
     DMService.getDMOrderDetails(...params).then(response => {
-      console.log(response.data.data)
       commit(mutation.SET_DM_ORDERS, response.data.data)
-      dispatch('fetchOrderCount')
-      // dispatch('prepareDeliveredOrderGroup')
+      if (state.params.orderStatus === 'abc') {
+        dispatch('getDrivers')
+      }
     })
     // })
+  },
+  getDrivers({ commit }) {
+    DMService.getUsers().then(response => {
+      commit(mutation.DRIVERS, response.data.data)
+    })
   },
 
   updateDMOrderStatus({ commit, dispatch }, { orderStatus, collected }) {
@@ -182,6 +206,9 @@ const mutations = {
   },
   [mutation.UPDATE_DISPATCH_PAGE_NUMBER](state, pageNumber) {
     state.pageNumber = pageNumber
+  },
+  [mutation.DRIVERS](state, drivers) {
+    state.drivers = drivers
   },
 }
 

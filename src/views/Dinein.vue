@@ -21,7 +21,7 @@
 </template>
 
 <script>
-/* global $ */
+// /* global $ */
 
 import Menu from '@/components/dinein/Menu.vue'
 import Header from '@/components/dinein/Header.vue'
@@ -51,8 +51,8 @@ export default {
     msg: String,
   },
   mounted() {
-    $('body').removeAttr('class')
-    $('body').attr('class', 'fixed-nav sticky-footer bg-dark dinein')
+    /*$('body').removeAttr('class')
+    $('body').attr('class', 'fixed-nav sticky-footer bg-dark dinein')*/
   },
 }
 </script>
