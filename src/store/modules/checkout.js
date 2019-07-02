@@ -17,7 +17,6 @@ const state = {
   changedAmount: 0,
   print: false,
   orderNumber: null,
-  onHold: '',
 }
 
 // getters
@@ -60,7 +59,7 @@ const actions = {
         }
       }
 
-      if (validPayment || state.onHold) {
+      if (validPayment) {
         //send order for payment
         let order = {}
 
@@ -71,9 +70,10 @@ const actions = {
             referral: '',
             transition_order_no: '',
             currency: rootState.location.currency,
-            order_status: state.onHold
-              ? state.onHold
-              : CONSTANTS.ORDER_STATUS_IN_PROGRESS,
+            order_status:
+              action === CONSTANTS.ORDER_STATUS_ON_HOLD
+                ? CONSTANTS.ORDER_STATUS_ON_HOLD
+                : CONSTANTS.ORDER_STATUS_IN_PROGRESS,
             order_source: CONSTANTS.ORDER_SOURCE_POS,
             order_type: rootState.order.orderType.OTApi,
             order_mode: 'online',
@@ -118,11 +118,6 @@ const actions = {
           order.order_city = address.city
           order.order_country = address.country
           order.order_delivery_area = address.delivery_area_id
-          // check in future
-          order.order_status = state.onHold
-            ? state.onHold
-            : CONSTANTS.ORDER_STATUS_IN_PROGRESS
-          // order.status = 'on-hold'
         }
 
         //ORDER SURCHARGES
@@ -333,20 +328,6 @@ const actions = {
           return paymentPart
         })
 
-        //for hold orders: Tofeeq
-        if (!order.order_payments.length) {
-          const paymentMethod = rootGetters['payment/cash']
-          totalPaid += totalPayable
-          order.order_payments.push({
-            entity_id: paymentMethod._id,
-            name: paymentMethod.name,
-            collected: totalPayable,
-            param1: null,
-            param2: totalPayable,
-            param3: null,
-          })
-        }
-
         order.total_paid = Num.round(totalPaid)
 
         //applying Fixing
@@ -399,7 +380,7 @@ const actions = {
 
         //order.app_uniqueid = Crypt.uuid()
         commit(mutation.SET_ORDER, order)
-        dispatch('createOrder')
+        dispatch('createOrder', action)
           .then(response => {
             resolve(response)
           })
@@ -412,7 +393,7 @@ const actions = {
     })
   },
 
-  createOrder({ state, commit, rootState, rootGetters, dispatch }) {
+  createOrder({ state, commit, rootState, rootGetters, dispatch }, action) {
     commit(
       'checkoutForm/SET_MSG',
       { data: '', result: 'loading' },
@@ -422,6 +403,7 @@ const actions = {
     )
     return new Promise((resolve, reject) => {
       let response = null
+      //order.order is a hold order, state.order contains current order
       if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD) {
         let order = { ...state.order }
         //order.modify_reason = 'Process order'
@@ -440,16 +422,13 @@ const actions = {
         )
       }
 
-      console.log(state.order)
       response
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
           dispatch('holdOrders/getHoldOrders',{}, {root: true })
 
           if (response.data.status === 'ok') {
-            commit('order/SET_ORDER_ID', response.data.id, { root: true })
-
-            if (state.onHold) {
+            if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
               commit(
                 'checkoutForm/SET_MSG',
                 { result: '', data: 'Order has been hold Successfully' },
@@ -461,6 +440,12 @@ const actions = {
               dispatch('reset')
               return true
             }
+
+            if (!rootState.order.orderId) {
+              commit('order/SET_ORDER_ID', response.data.id, { root: true })
+            }
+
+            //else
             commit(
               'checkoutForm/SET_MSG',
               { result: 'success', data: 'Order Placed Successfully' },
@@ -468,6 +453,7 @@ const actions = {
                 root: true,
               }
             )
+
             resolve(response.data)
 
             dispatch('invoice/printRules', null, { root: true }).then(() => {
@@ -484,25 +470,6 @@ const actions = {
                   root: true,
                 }
               ).then(() => {
-                //clear all the data related to order, tax, discounts, surcharge etc
-                //create invoice
-                //add order no to local database
-                // db.getBucket('auth').then(bucket => {
-                //   db.fetch(bucket).then(data => {
-                //     if (data && data[0]) {
-                //       data = data[0]
-                //       data.lastOrderNo = parseInt(data.lastOrderNo) + 1
-                //       db.getBucket('auth').then(bucket => {
-                //         bucket.put(data)
-                //       })
-                //       commit('auth/SET_LAST_ORDER_NO', data.lastOrderNo, {
-                //         root: true,
-                //       })
-                //     }
-                //   })
-                // })
-
-                // commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
                 commit(
                   'checkoutForm/SET_MSG',
                   { result: 'success', data: 'Order Placed Successfully' },
@@ -550,12 +517,10 @@ const actions = {
                 response.data[response.data.status] &&
                 typeof response.data[response.data.status] != 'undefined'
               ) {
-                $.each(response.data[response.data.status], function(
-                  key,
-                  value
-                ) {
+                response.data[response.data.status].forEach(value => {
                   err_msg += value + ' '
                 })
+
                 commit(
                   'checkoutForm/SET_MSG',
                   { result: '', data: err_msg },
@@ -584,9 +549,6 @@ const actions = {
     dispatch('location/reset', {}, { root: true })
   },
 
-  orderOnHold({ commit }, orderStatus) {
-    commit(mutation.ONHOLD, orderStatus)
-  },
   updateOrderStatus(
     { rootState, dispatch },
     { orderStatus, orderId, timestamp, orderType }
@@ -637,9 +599,6 @@ const mutations = {
     state.payableAmount = 0
     state.pendingAmount = 0
     state.print = false
-  },
-  [mutation.ONHOLD](state, orderStatus) {
-    state.onHold = orderStatus
   },
 }
 
