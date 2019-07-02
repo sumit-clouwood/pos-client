@@ -428,9 +428,12 @@ const actions = {
 
           if (response.data.status === 'ok') {
             if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+              let msgStr = rootGetters['location/_t'](
+                'Order has been hold Successfully'
+              )
               commit(
                 'checkoutForm/SET_MSG',
-                { result: '', data: 'Order has been hold Successfully' },
+                { result: '', data: msgStr },
                 {
                   root: true,
                 }
@@ -445,9 +448,10 @@ const actions = {
             }
 
             //else
+            let msgStr = rootGetters['location/_t']('Order placed Successfully')
             commit(
               'checkoutForm/SET_MSG',
-              { result: 'success', data: 'Order Placed Successfully' },
+              { result: 'success', data: msgStr },
               {
                 root: true,
               }
@@ -471,7 +475,7 @@ const actions = {
               ).then(() => {
                 commit(
                   'checkoutForm/SET_MSG',
-                  { result: 'success', data: 'Order Placed Successfully' },
+                  { result: 'success', data: msgStr },
                   {
                     root: true,
                   }
@@ -501,9 +505,12 @@ const actions = {
             reject(response.data.error)
           } else {
             if (response.message === 'Network Error') {
+              let errorMsg = rootGetters['location/_t'](
+                'System went offline. Order is queued for sending later'
+              )
               commit(
                 'checkoutForm/SET_MSG',
-                { result: '', data: 'Queued for sending later' },
+                { result: '', data: errorMsg },
                 {
                   root: true,
                 }
