@@ -1,4 +1,3 @@
-/* global $ */
 /* eslint-disable no-console */
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'

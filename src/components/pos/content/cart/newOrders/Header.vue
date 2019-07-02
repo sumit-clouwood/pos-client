@@ -1,6 +1,8 @@
 <template>
   <div class="main-orders-contacts">
-    <div class="main-oreders-title">{{ _t('New Orders') }}</div>
+    <div class="main-oreders-title">
+      {{ cartType == 'hold' ? _t('Hold Orders') : _t('New Orders') }}
+    </div>
     <div class="main-oreders-email" v-if="selectedCustomer">
       <p v-if="selectedCustomer.email != ''">
         {{ _t('Email') }} : {{ selectedCustomer.email }}
@@ -20,7 +22,9 @@
       <div class="orders-button-large" disabled="disable">
         {{ _t('Split Table') }}
       </div>-->
-      <div class="orders-button-large" @click="hold">{{ _t('Hold') }}</div>
+      <div v-if="cartType !== 'hold'" class="orders-button-large" @click="hold">
+        {{ _t('Hold') }}
+      </div>
     </div>
   </div>
 </template>
@@ -34,13 +38,12 @@ export default {
 
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['items']),
+    ...mapState('order', ['items', 'cartType']),
     ...mapState('checkoutForm', ['msg']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
   },
   methods: {
     hold() {
-      this.orderOnHold('on-hold')
       this.$store
         .dispatch('checkout/pay', { action: 'on-hold' })
         .then(() => {
