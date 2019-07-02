@@ -14,7 +14,7 @@ const state = {
   showCalc: true,
   showPayBreak: false,
   loyaltyAmount: 0,
-  loyaltyPoints:0,
+  loyaltyPoints: 0,
   action: 'add',
   loyaltyCard: {},
 }
@@ -263,38 +263,56 @@ const actions = {
   calculateSpendLoyalty({ commit, rootState, getters }) {
     const loyalty = rootState.customer.loyalty.card
     const loyaltyDetails = rootState.customer.loyalty.details
-    let orderTotal =  parseFloat(getters.orderTotal)
-    let amount = 0,oneLoyaltyPoint = 0;
+    let orderTotal = parseFloat(getters.orderTotal)
+    let amount = 0,
+      oneLoyaltyPoint = 0
     if (loyaltyDetails && loyalty) {
       oneLoyaltyPoint = parseFloat(loyaltyDetails.one_point_redeems_to)
       if (orderTotal > 0) {
         let { maxRedeem, minRedeem, loyaltyAmountByPoints } = {
-          maxRedeem: parseFloat(loyaltyDetails.maximum_redeem * loyaltyDetails.one_point_redeems_to),
-          minRedeem: parseFloat(loyaltyDetails.minimum_redeem * loyaltyDetails.one_point_redeems_to),
-          loyaltyAmountByPoints: parseFloat(loyalty.balance * loyaltyDetails.one_point_redeems_to)
-        }      
+          maxRedeem: parseFloat(
+            loyaltyDetails.maximum_redeem * loyaltyDetails.one_point_redeems_to
+          ),
+          minRedeem: parseFloat(
+            loyaltyDetails.minimum_redeem * loyaltyDetails.one_point_redeems_to
+          ),
+          loyaltyAmountByPoints: parseFloat(
+            loyalty.balance * loyaltyDetails.one_point_redeems_to
+          ),
+        }
         orderTotal = parseFloat(getters.orderTotal).toFixed(2)
-        if(loyaltyAmountByPoints>0){
-          if(loyaltyAmountByPoints >= orderTotal) {
-            if(orderTotal<=maxRedeem){
+        if (loyaltyAmountByPoints > 0) {
+          if (loyaltyAmountByPoints >= orderTotal) {
+            if (orderTotal <= maxRedeem) {
               amount = orderTotal
             } else {
               amount = maxRedeem
             }
           }
-          if(loyaltyAmountByPoints <= orderTotal && loyaltyAmountByPoints>=minRedeem) {
-              if (orderTotal>=minRedeem && orderTotal<=maxRedeem && loyaltyAmountByPoints>=orderTotal){
-                amount = orderTotal
-              }
-              if (orderTotal>=minRedeem && orderTotal<=maxRedeem && loyaltyAmountByPoints<=orderTotal){
-                amount = loyaltyAmountByPoints
-              }
+          if (
+            loyaltyAmountByPoints <= orderTotal &&
+            loyaltyAmountByPoints >= minRedeem
+          ) {
+            if (
+              orderTotal >= minRedeem &&
+              orderTotal <= maxRedeem &&
+              loyaltyAmountByPoints >= orderTotal
+            ) {
+              amount = orderTotal
+            }
+            if (
+              orderTotal >= minRedeem &&
+              orderTotal <= maxRedeem &&
+              loyaltyAmountByPoints <= orderTotal
+            ) {
+              amount = loyaltyAmountByPoints
+            }
           }
         }
       }
     }
     commit('loyaltyAmount', amount)
-    commit('loyaltyPoints', {amount, oneLoyaltyPoint})
+    commit('loyaltyPoints', { amount, oneLoyaltyPoint })
   },
 
   reset({ commit }) {
@@ -379,20 +397,20 @@ const mutations = {
     state.amount = val
   },
   setLoyaltyCard(state, val) {
-    state.loyaltyCard = val;
+    state.loyaltyCard = val
   },
   loyaltyAmount(state, val) {
     state.loyaltyAmount = val.toFixed(2)
   },
-  loyaltyPoints(state, {amount, oneLoyaltyPoint}) {
-    /** 
-     * loyalty amount to points 
-     * logic : amount/one_point_redeems_to  =  points used 
+  loyaltyPoints(state, { amount, oneLoyaltyPoint }) {
+    /**
+     * loyalty amount to points
+     * logic : amount/one_point_redeems_to  =  points used
      */
     if (amount && oneLoyaltyPoint) {
-      state.loyaltyPoints  = (amount/oneLoyaltyPoint).toFixed(2);
+      state.loyaltyPoints = (amount / oneLoyaltyPoint).toFixed(2)
     } else {
-      state.loyaltyPoints  = 0;
+      state.loyaltyPoints = 0
     }
   },
   setMethod(state, method) {
@@ -411,7 +429,9 @@ const mutations = {
           amount: amount,
           method: method,
           cardId: state.loyaltyCard._id ? state.loyaltyCard._id : null,
-          code: state.loyaltyCard.loyalty_card_code ? state.loyaltyCard.loyalty_card_code : null
+          code: state.loyaltyCard.loyalty_card_code
+            ? state.loyaltyCard.loyalty_card_code
+            : null,
         })
       }
     } else {
