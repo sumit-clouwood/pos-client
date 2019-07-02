@@ -297,8 +297,8 @@ const actions = {
         let totalPaid = 0
 
         order.order_payments = rootState.checkoutForm.payments.map(payment => {
-          let {orderaAmount,orderPoints} = {}
-          if(payment.method.name==CONSTANTS.ORDER_PAYMENT_TYPE){
+          let { orderaAmount, orderPoints } = {}
+          if (payment.method.name == CONSTANTS.ORDER_PAYMENT_TYPE) {
             orderaAmount = payment.amount
             orderPoints = rootState.checkoutForm.loyaltyPoints
           } else {
@@ -311,7 +311,7 @@ const actions = {
             collected: orderaAmount,
             param1: payment.cardId,
             param2: orderPoints,
-            param3: payment.code
+            param3: payment.code,
           }
           totalPaid += payment.amount
           //Yuvraj, have a check here
@@ -424,7 +424,7 @@ const actions = {
       response
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
-          dispatch('holdOrders/getHoldOrders',{}, {root: true })
+          dispatch('holdOrders/getHoldOrders', {}, { root: true })
 
           if (response.data.status === 'ok') {
             if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {

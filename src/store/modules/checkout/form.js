@@ -38,16 +38,16 @@ const getters = {
     return getters.orderTotal - getters.paid
   },
   isLoyaltyUsed: state => {
-    let loyaltyUsed = 0;
+    let loyaltyUsed = 0
     if (state.payments) {
-       state.payments.forEach(element => {
-        if (element.method.name == "Loyalty Points") {
-          loyaltyUsed = 1;
+      state.payments.forEach(element => {
+        if (element.method.name == 'Loyalty Points') {
+          loyaltyUsed = 1
         }
-      });
+      })
     }
-    return loyaltyUsed;
-  }
+    return loyaltyUsed
+  },
 }
 
 // actions
@@ -202,12 +202,12 @@ const actions = {
       }
     })
   },
-  validateLoyaltyPayment({ commit, getters}) {
+  validateLoyaltyPayment({ commit, getters }) {
     return new Promise((resolve, reject) => {
       if (parseFloat(state.amount) != parseFloat(state.loyaltyAmount)) {
         if (parseFloat(state.loyaltyAmount) <= 0.01) {
           commit('SET_ERROR', 'You dont have loyalty amount.')
-        } else if(getters.isLoyaltyUsed===1){
+        } else if (getters.isLoyaltyUsed === 1) {
           commit('SET_ERROR', 'Loyalty can be used only ones in order')
         } else {
           let amount = isNaN(state.loyaltyAmount) ? 0 : state.loyaltyAmount
@@ -438,24 +438,24 @@ const mutations = {
         type.amount += parseFloat(amount)
         state.payments.splice(index, 1, type)
       } else {
-        let isPaymentAcceptble = 1;
-        if(method.name == 'Loyalty Points') {
+        let isPaymentAcceptble = 1
+        if (method.name == 'Loyalty Points') {
           /* prevent adding multiple loyalty payments using method type */
           /* check existing payments for same (Loyalty Points) method name*/
           state.payments.forEach(element => {
-            if(element.method.name=='Loyalty Points'){
-              isPaymentAcceptble = 0;
+            if (element.method.name == 'Loyalty Points') {
+              isPaymentAcceptble = 0
             }
-          });
+          })
         }
-        if(isPaymentAcceptble) {
+        if (isPaymentAcceptble) {
           state.payments.push({
             amount: amount,
             method: method,
             cardId: state.loyaltyCard._id ? state.loyaltyCard._id : null,
-          code: state.loyaltyCard.loyalty_card_code
-            ? state.loyaltyCard.loyalty_card_code
-            : null,
+            code: state.loyaltyCard.loyalty_card_code
+              ? state.loyaltyCard.loyalty_card_code
+              : null,
           })
         }
       }

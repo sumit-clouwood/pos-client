@@ -48,11 +48,11 @@ export default {
   name: 'ManageCustomerFooter',
   props: {},
   components: {
-    paginate
+    paginate,
   },
   data() {
     return {
-      page:1
+      page: 1,
     }
   },
   computed: {
