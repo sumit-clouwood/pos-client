@@ -96,8 +96,8 @@
                     <span>{{ _t('Add Note') }}</span>
                 </a>
             </div>
-            <mobile-footer/>
         </div>
+        <mobile-footer/>
     </div>
 </template>
 <script>
@@ -150,52 +150,58 @@
     @import '../../assets/scss/mixins.scss';
 
     @include responsive(mobile) {
-        .orders-menu-overlay {
-            position: fixed;
-            display: block;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            background-color: rgba(0, 0, 0, 0);
-            pointer-events: none;
-            transition: 0.7s ease-out;
+        .main-orders {
+            .orders-menu-overlay {
+                position: fixed;
+                top: 0;
+                right: -100vw;
+                bottom: 0;
+                left: auto;
+                transition: 0.5s ease-out;
+                display: flex;
+                flex-direction: column;
+                background-color: rgba(0,0,0,0.3);
+                background-color: #fff;
+                background-color: #eee;
 
-            &.active {
-                pointer-events: auto;
-                background-color: rgba(0, 0, 0, 0.5);
+                &.active {
+                    right: 0;
+                }
 
                 .orders-menu {
-                    bottom: 0;
-                }
-            }
+                    background-color: #fff;
+                    width: 100vw;
+                    align-items: end;
+                    margin-top: auto;
+                    margin-bottom: auto;
+                    background-color: #eee;
 
-            .orders-menu {
-                position: absolute;
-                right: 0;
-                bottom: -100%;
-                left: 0;
-                background-color: #fff;
-                transition: 0.7s ease-out;
+                    .footer-slider-list-item {
+                        border-bottom: 1px solid $gray-middle;
+                        padding: 20px;
+                        display: flex;
+                        align-items: center;
+                        height: 65px;
 
-                .footer-slider-list-item {
-                    border-bottom: 1px solid $gray-middle;
-                    padding: 20px;
-                    display: flex;
-                    align-items: center;
-                    height: 65px;
+                        a {
+                            color: #333;
+                        }
 
-                    a {
-                        color: #333;
+                        svg {
+                            margin-right: 20px;
+                        }
                     }
 
-                    svg {
-                        margin-right: 20px;
+                    .mobile-footer {
+                        padding-top: 20px;
                     }
                 }
 
                 .mobile-footer {
                     padding-top: 20px;
+                    background-color: #fff;
+                    align-items: end;
+                    background-color: #eee;
                 }
             }
         }

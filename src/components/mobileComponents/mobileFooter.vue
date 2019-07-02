@@ -21,7 +21,7 @@
                           fill="white"/>
                 </svg>
             </div>
-            <div :class="['btn-menu-close', {active: !footerMenuHendler}]" @click="footerMenuHendlerGhange">✖</div>
+            <div :class="['btn-menu-close', {active: !footerMenuHendler}]" @click="footerMenuHendlerGhange"><i class="fa fa-times" aria-hidden="true"></i></div>
             <div class="btn-chatge" @click="paymentMethodsHendlerGhange">
                 <div class="btn-chatge-amount">AED <strong>100.07</strong></div>
                 <div class="btn-chatge-title">CHARGE</div>
@@ -137,11 +137,12 @@
                     justify-content: center;
                     border-radius: $btn-border-radius;
                     background-color: $red;
-                    color: #fff;
+                    color: #fff !important;
                     display: none;
 
                     &.active {
                         display: flex;
+                        color: #fff;
                     }
                 }
 

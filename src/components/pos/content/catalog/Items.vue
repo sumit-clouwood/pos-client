@@ -1,7 +1,7 @@
 <template>
     <div :class="['food-menu', (foodMenuHendler ? 'active' : 'notActive')]">
         <div class="food-menu-wrapper">
-            <div class="food-menu-item"
+            <div :class="['food-menu-item', {active: bascketItems.find(x => x.name === item.name)}]"
                  v-for="item in items"
                  :key="item._id"
                  :value="dt(item)"
@@ -30,6 +30,11 @@
         props: {
             msg: String,
         },
+        data() {
+            return {
+                bascketItems: []
+            }
+        },
         components: {
             Popup,
         },
@@ -50,6 +55,12 @@
                     this.$store.dispatch('order/addToOrder', item)
                 }
                 this.$store.dispatch('addItemFood', item)
+
+                if (!this.bascketItems.find(x => x.name === item.name)) {
+                    this.bascketItems.push({name: item.name, count: 1, class: 'active'})
+                } else {
+                    this.bascketItems.find(x => x.name === item.name).count++
+                }
             },
             IsImageOk(img) {
                 // During the onload event, IE correctly identifies any images that
@@ -155,13 +166,18 @@
                 padding-right: 20px;
                 background-color: #fafafa;
                 transition: 0.1s ease-out;
-                &:active{
-                    background-color: #eee;
+
+                &.active {
+                     background-color: rgba(36, 189, 19, 0.1);
+                }
+
+                &:active {
+                    background-color: rgba(36, 189, 19, 0.2);
                 }
 
                 img {
-                    width: 60px;
-                    height: 60px;
+                    width: 65px;
+                    height: 65px;
                 }
 
                 .food-menu-item-text {
@@ -176,6 +192,7 @@
                     display: block;
                     color: $green-middle;
                     font-weight: 600;
+                    white-space: nowrap;
                 }
             }
         }
