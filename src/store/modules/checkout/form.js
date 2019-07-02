@@ -231,10 +231,10 @@ const actions = {
     return Promise.resolve(1)
   },
 
-  setAmount({ commit, dispatch }, amount) {
+  setAmount({ commit }, amount) {
     commit('setAmount', parseFloat(amount))
   },
-  setLoyaltyCard({ commit, dispatch }, card) {
+  setLoyaltyCard({ commit }, card) {
     commit('setLoyaltyCard', card)
   },
   resetAmount({ commit }) {
