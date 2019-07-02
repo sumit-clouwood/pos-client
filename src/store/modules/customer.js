@@ -177,10 +177,7 @@ const actions = {
     }
     commit(mutation.CUSTOMER_LAST_ORDERS, customerLastOrderDetails)
   },*/
-  fetchSelectedCustomer(
-    { state, commit, dispatch, rootState, rootGetters },
-    customerId
-  ) {
+  fetchSelectedCustomer({ state, commit, dispatch, rootGetters }, customerId) {
     dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
       root: true,
     })
