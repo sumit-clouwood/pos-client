@@ -12,9 +12,9 @@
         </div>
         <div class="modal-body change-amount-option">
           <div class="amount-change-wrap">
-            <h2 v-if="msg.data && msg.data !== 'loading'">
+            <h5 v-if="msg.data && msg.data !== 'loading'">
               {{ msg.data }}
-            </h2>
+            </h5>
             <Preloader v-else />
           </div>
         </div>

@@ -413,7 +413,7 @@ const mutations = {
     state.loyaltyCard = val
   },
   loyaltyAmount(state, val) {
-      state.loyaltyAmount = parseFloat((val)).toFixed(2)
+    state.loyaltyAmount = parseFloat(val).toFixed(2)
   },
   loyaltyPoints(state, { amount, oneLoyaltyPoint }) {
     /**

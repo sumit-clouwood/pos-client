@@ -429,7 +429,7 @@ const actions = {
           if (response.data.status === 'ok') {
             if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
               let msgStr = rootGetters['location/_t'](
-                'Order has been hold Successfully'
+                'Order has been hold successfully'
               )
               commit(
                 'checkoutForm/SET_MSG',
