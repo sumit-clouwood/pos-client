@@ -1,13 +1,13 @@
 <template>
   <div class="right-btn-wrap">
     <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
-      All Branches
+      All Stores
     </button>
     <ul class="dropdown-menu">
-      <li>
-        <a href="javascript:void(0)" @click="getLocationOrders(locationId)">{{
-          locationName
-        }}</a>
+      <li v-for="(store, key) in branch" :key="key">
+        <a href="javascript:void(0)" @click="getLocationOrders(store._id)">
+          {{ store.name }}
+        </a>
       </li>
     </ul>
   </div>
@@ -20,16 +20,12 @@ export default {
   name: 'Branches',
   computed: {
     ...mapState({
-      locationIds: state => state.location.locationIds,
-      locationName: state => state.location.locationName,
-      locationId: state => state.location.location,
+      branch: state => state.deliveryManager.availableStores,
     }),
   },
   methods: {
-    getLocationOrders: function() {
-      console.log(
-        'update location for other location need to update state of location.location'
-      )
+    getLocationOrders: function(storeId) {
+      this.$store.dispatch('deliveryManager/fetchStoreOrders', storeId)
     },
   },
 }

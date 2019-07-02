@@ -1,5 +1,6 @@
 import * as mutation from './deliveryManager/mutation-types'
 import DMService from '@/services/data/DeliveryManagerService'
+// import LookupData from '@/plugins/helpers/LookupData'
 /* eslint-disable no-console */
 
 const state = {
@@ -17,7 +18,8 @@ const state = {
   is_pagination: true,
   pageSize: 8,
   pageNumber: 1,
-  stores: '',
+  selectedStores: '',
+  availableStores: false,
   params: {
     query: '',
     limit: 10,
@@ -41,10 +43,10 @@ const actions = {
       state.params.orderStatus,
       state.params.page,
       state.params.pageId,
-      state.stores,
+      state.selectedStores,
     ]
     DMService.getDMOrderDetails(...params).then(response => {
-      commit(mutation.SET_DM_ORDERS, response.data.data)
+      commit(mutation.SET_DM_ORDERS, response.data)
       if (state.params.orderStatus === 'abc') {
         dispatch('getDrivers')
       }
@@ -55,6 +57,11 @@ const actions = {
     DMService.getUsers().then(response => {
       commit(mutation.DRIVERS, response.data.data)
     })
+  },
+
+  fetchStoreOrders({ commit, dispatch }, storeId) {
+    commit(mutation.SET_SELECTED_STORE, storeId)
+    dispatch('fetchDMOrderDetail')
   },
 
   updateDMOrderStatus(
@@ -192,10 +199,20 @@ const mutations = {
     state.orderCounts = orderCount
   },
   [mutation.SET_DM_ORDERS](state, orderDetails) {
-    state.orders = orderDetails
+    state.orders = orderDetails.data
+    let stores = orderDetails.page_lookups.stores
+    /*return LookupData.get({
+      collection: stores,
+      matchWith: addressId,
+      selection: 'name',
+    })*/
+    state.availableStores = stores._id
   },
   [mutation.SET_SELECTED_DM_ORDERS](state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails
+  },
+  [mutation.SET_SELECTED_STORE](state, storeId) {
+    state.selectedStores = storeId
   },
   [mutation.SET_SELECTED_DM_DRIVER](state, driverInfo) {
     state.selectedDriver = driverInfo

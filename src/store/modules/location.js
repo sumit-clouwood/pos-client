@@ -32,7 +32,7 @@ const getters = {
     }
     return str
   },
-  currency: state => state.currency
+  currency: state => state.currency,
 }
 
 // actions
@@ -176,7 +176,7 @@ const mutations = {
     state.setModal = '#manage-customer'
     state.referrals = false
     state.userDetails = false
-  }
+  },
 }
 
 export default {

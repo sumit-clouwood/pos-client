@@ -32,16 +32,15 @@ const getters = {
 
   orderTotal: (state, getters, rootState, rootGetters) => {
     //discount is already subtracted from tax in tax.js
-    let amount = (
+    let amount =
       getters.subTotal +
       rootGetters['tax/totalTax'] +
       rootGetters['surcharge/surcharge'] -
       rootGetters['discount/orderDiscountWithoutTax']
-    )
-    if(amount){
+    if (amount) {
       return amount.toFixed(2)
     }
-    return 0; 
+    return 0
   },
 
   subTotal: () => {
@@ -81,7 +80,7 @@ const getters = {
 
   items: state => state.items,
 
-  orderType: state => state.orderType.OTApi
+  orderType: state => state.orderType.OTApi,
 }
 
 // actions

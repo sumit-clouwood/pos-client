@@ -25,7 +25,7 @@ const state = {
   offlineData: null,
   loading: false,
   error: false,
-  loyalty: { card: false, details: false, points:false },
+  loyalty: { card: false, details: false, points: false },
   deliveryAreas: false,
   fetchDeliveryAreas: false,
   editInformation: {},
@@ -100,7 +100,7 @@ const actions = {
         state.params.page_size /*page_size*/,
         state.pageId,
       ]
-      
+
       CustomerService.customerList(...params)
         .then(response => {
           if (response.data.data.length) {
@@ -127,7 +127,7 @@ const actions = {
     })
   },
 
-  setPageNumber: function ({ commit, dispatch }, pageNumber) {
+  setPageNumber: function({ commit, dispatch }, pageNumber) {
     commit(mutation.SET_LOADING, true)
     commit(mutation.SET_CURRENT_PAGE_NO, pageNumber)
     dispatch('fetchAll').then(() => {
@@ -135,13 +135,13 @@ const actions = {
     })
   },
 
-  setPastOrderPageNumber: function ({ commit, dispatch }, pageNumber) {
+  setPastOrderPageNumber: function({ commit, dispatch }, pageNumber) {
     commit(mutation.SET_PAST_ORDER_CURRENT_PAGE_NO, pageNumber)
     let customerId = state.customer._id
     dispatch('fetchSelectedCustomer', customerId)
   },
 
-  searchCustomer: function ({ commit, dispatch }, searchTerms) {
+  searchCustomer: function({ commit, dispatch }, searchTerms) {
     return new Promise((resolve, reject) => {
       commit(mutation.CUSTOMER_LIST, [])
       commit(mutation.SET_LOADING, true)
@@ -177,7 +177,10 @@ const actions = {
     }
     commit(mutation.CUSTOMER_LAST_ORDERS, customerLastOrderDetails)
   },*/
-  fetchSelectedCustomer({ state, commit, dispatch, rootState, rootGetters }, customerId) {
+  fetchSelectedCustomer(
+    { state, commit, dispatch, rootState, rootGetters },
+    customerId
+  ) {
     dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
       root: true,
     })
@@ -197,26 +200,27 @@ const actions = {
           let loyalty = {},
             orderType = null,
             orderCurrency = null,
-            orderAmount = null;
-          orderType = rootGetters["order/orderType"];
-          orderCurrency = rootGetters["location/currency"];
-          orderAmount = rootGetters["checkoutForm/orderTotal"];
+            orderAmount = null
+          orderType = rootGetters['order/orderType']
+          orderCurrency = rootGetters['location/currency']
+          orderAmount = rootGetters['checkoutForm/orderTotal']
 
           loyalty.card = response.data.collected_data.loyalty_cards
           loyalty.details = state.lookups.brand_loyalty_programs
 
-          commit(mutation.LOYALTY, loyalty);
+          commit(mutation.LOYALTY, loyalty)
           commit(mutation.LOYALTY_FILTER, {
             loyalty,
             orderType,
             orderCurrency,
-            orderAmount
-          });
+            orderAmount,
+          })
           commit(mutation.SELECTED_CUSTOMER, {
             customerData: response.data.item,
             pastOrders: response.data.collected_data.orders,
             deliveryAreas:
-              response.data.collected_data.page_lookups.store_delivery_areas._id
+              response.data.collected_data.page_lookups.store_delivery_areas
+                ._id,
           })
           resolve(response.data.item)
         })
@@ -289,7 +293,7 @@ const actions = {
   fetchDeliveryArea({ commit, rootState }, query) {
     CustomerService.fetchDeliveryAreas(query).then(response => {
       //Fetch Delivery Areas in add Customer Address and Add new customer form
-      let data = response.data.data.filter(function (u) {
+      let data = response.data.data.filter(function(u) {
         if (u.store_id == rootState.context.storeId) {
           return u.item_status
         }
@@ -384,7 +388,7 @@ const mutations = {
   },
   [mutation.RESET](state) {
     state.offlineData = null
-    state.loyalty = {card: false, details: false }
+    state.loyalty = { card: false, details: false }
   },
   [mutation.SET_LOADING](state, status) {
     state.loading = status
@@ -403,33 +407,49 @@ const mutations = {
       state.loyalty.details = loyaltyDetails ? loyaltyDetails : false
     } else {
       state.loyalty.card = false
-        state.loyalty.details = false
-        state.loyalty.points = false
+      state.loyalty.details = false
+      state.loyalty.points = false
     }
   },
-  [mutation.LOYALTY_FILTER](state,
-    {loyalty, orderType, orderCurrency, orderAmount}={loyalty:null, orderType:null, orderCurrency:null, orderAmount:null}) {
+  [mutation.LOYALTY_FILTER](
+    state,
+    { loyalty, orderType, orderCurrency, orderAmount } = {
+      loyalty: null,
+      orderType: null,
+      orderCurrency: null,
+      orderAmount: null,
+    }
+  ) {
     if (loyalty) {
-      if (orderType == 'walk_in' && state.loyalty.details.walk_in_spend_points !== true) {
+      if (
+        orderType == 'walk_in' &&
+        state.loyalty.details.walk_in_spend_points !== true
+      ) {
         state.loyalty.card = false
         state.loyalty.details = false
         state.loyalty.points = false
       }
-      if (orderType == 'call_center' && state.loyalty.details.call_center_spend_points !== true) {
+      if (
+        orderType == 'call_center' &&
+        state.loyalty.details.call_center_spend_points !== true
+      ) {
         state.loyalty.card = false
         state.loyalty.details = false
         state.loyalty.points = false
       }
-      if (orderType == 'dine_in' && state.loyalty.details.dine_in_spend_points !== true) {
+      if (
+        orderType == 'dine_in' &&
+        state.loyalty.details.dine_in_spend_points !== true
+      ) {
         state.loyalty.card = false
         state.loyalty.details = false
         state.loyalty.points = false
       }
-      if(state.loyalty.details.currency != orderCurrency){
+      if (state.loyalty.details.currency != orderCurrency) {
         state.loyalty.card = false
         state.loyalty.details = false
         state.loyalty.points = false
-      } else if(state.loyalty.details.min_order > orderAmount){
+      } else if (state.loyalty.details.min_order > orderAmount) {
         state.loyalty.card = false
         state.loyalty.details = false
         state.loyalty.points = false
@@ -437,11 +457,11 @@ const mutations = {
         /* do noting */
       }
     } else {
-        state.loyalty.card = false
-        state.loyalty.details = false
-        state.loyalty.points = false
+      state.loyalty.card = false
+      state.loyalty.details = false
+      state.loyalty.points = false
     }
-  }
+  },
 }
 
 export default {

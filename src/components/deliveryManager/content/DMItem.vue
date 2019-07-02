@@ -1,79 +1,4 @@
 <template>
-  <!--<div class="ready-order-wraper-left" v-if="orderDetails">
-    <div
-      class="dm-contain-order"
-      v-for="(order, index) in orderDetails"
-      :key="index"
-    >
-      &lt;!&ndash;<div>
-        <div class="dm-deliver-detail">
-          <h4>#{{ order.order_no }}</h4>
-          <p>
-            &lt;!&ndash;<span v-for="(i, index) in orderCount" :key="index">
-              {{
-                typeof order.items[index] != 'undefined'
-                  ? order.items[index].item_name
-                  : ''
-              }}
-            </span>&ndash;&gt;
-          </p>
-          <p>
-            <b>{{ order.created_by }}</b>
-          </p>
-          <h4>{{ order.delivery_area }}</h4>
-          <p v-if="order.order_address">
-            {{ order.order_address.street }}, {{ locationName }},
-            {{ order.order_address.city }}
-          </p>
-        </div>
-        <div class="dm-deliver-detail-right">
-          <p class="dm-amt">
-            {{ order.balance_due }} {{ order.currency_code }}
-          </p>
-          <p class="dm-time">{{ order.order_taken_at }}</p>
-
-          <button class="ready" @click="showOrderDetails(order)">
-            <span
-              v-if="actionDetails.moreDetails"
-              data-toggle="modal"
-              data-target="#delivery-manager"
-              >More details</span
-            >
-          </button>
-          <a
-            href="javascript:void(0)"
-            v-if="actionDetails.action"
-            class="btn btn-success"
-            :id="order._id"
-            @click="
-              DMOrderStatus({
-                actionDetails: actionDetails,
-                orderId: order._id,
-                orderType: order.order_type,
-              })
-            "
-            >{{ actionDetails.action }}</a
-          >
-        </div>
-      </div>&ndash;&gt;
-      <div class="dm-deliver-detail">
-        <h4>2231341</h4>
-        <p>Meat Ball Pasta Combo</p>
-        <h4>AL NOAF 3</h4>
-        <p>Box 2456, Street 7, Sharjah</p>
-      </div>
-      <div class="dm-deliver-detail-right">
-        <p class="dm-amt">40.00 AED</p>
-        <p class="dm-time">03:41 PM</p>
-
-        <button id="ready">
-          <span data-toggle="modal" data-target="#delivery-manager"
-            >More details</span
-          ><a href="#">Ready</a>
-        </button>
-      </div>
-    </div>
-  </div>-->
   <div class="table-responsive" v-if="orderDetails">
     <table class="table table-block-page">
       <!--<thead>
@@ -120,7 +45,15 @@
                     </div></button
                   ><!---->
                 </div>
-                <div>{{ order.store_id }}</div>
+                <div>
+                  {{
+                    LookupData.get({
+                      collection: order,
+                      matchWith: order.store_id,
+                      selection: 'name',
+                    })
+                  }}
+                </div>
                 <div></div>
               </div>
               <div class="order-body">
@@ -161,7 +94,7 @@
                   <div class="order-delivery-area"></div>
                   <div class="order-address">
                     {{ order.order_flat_number }}, {{ order.order_building }},
-                    Order Street 5963, {{ order.order_flat_number }}
+                    {{ order.order_street }}, {{ order.order_flat_number }}
                   </div>
                 </div>
               </div>
@@ -192,6 +125,7 @@ export default {
     }),
     ...mapState({
       orderDetails: state => state.deliveryManager.orders,
+      /*foodIcons: state => state.modifiers.foodIcons,*/
     }),
     ...mapState({
       locationName: state => state.location.locationName,
