@@ -31,10 +31,8 @@ export default {
   },
   methods: {
     setHoldOrderCart: function(orderData) {
+      this.$store.commit('order/SET_CART_TYPE', 'new')
       this.$store.dispatch('holdOrders/fetchOrder', orderData)
-      $('.wrappers-order-block').toggleClass('show')
-      $('.main-orders-list').toggleClass('hide')
-      $('ul.ullist-icons > li#hold-order-box').toggleClass('active')
     },
 
     dropHoldOrder: function(order) {

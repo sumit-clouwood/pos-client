@@ -19,6 +19,7 @@ const state = {
   orderId: null,
   // pastOrder: false,
   orderStatus: null,
+  cartType: 'new',
 }
 
 // getters
@@ -828,6 +829,10 @@ const mutations = {
   },
   [mutation.ORDER_STATUS](state, status) {
     state.orderStatus = status
+  },
+
+  [mutation.SET_CART_TYPE](state, cartType) {
+    state.cartType = cartType
   },
   /*[mutation.PAST_ORDER_DETAILS](state, pastOrder) {
     state.selectedOrder = pastOrder

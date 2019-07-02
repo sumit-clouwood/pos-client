@@ -29,8 +29,10 @@
           </a>
         </li>
         <li
+          v-if="cartType === 'new'"
           @click="viewHoldOrders"
           class="footer-slider-list-item footer-slider-list-item-open-orders"
+          :class="{ active: vbutton == 'hold' }"
           id="hold-order-box"
         >
           <a class="footer-slider-list-item-link" href="javascript:void(0)">
@@ -52,6 +54,34 @@
               ></path>
             </svg>
             <span>{{ _t('Hold Orders') }}</span>
+          </a>
+        </li>
+        <li
+          v-else
+          @click="newOrders"
+          class="footer-slider-list-item footer-slider-list-item-open-orders"
+          :class="{ active: vbutton == 'new' }"
+          id="hold-order-box"
+        >
+          <a class="footer-slider-list-item-link" href="javascript:void(0)">
+            <!--<img class="hold-ordes" src="images/hold-order.png" alt="customer">-->
+            <svg
+              aria-hidden="true"
+              focusable="false"
+              data-prefix="fas"
+              data-icon="play"
+              role="img"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              class="svg-inline--fa fa-play fa-w-14 fa-2x"
+            >
+              <path
+                fill="currentColor"
+                d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"
+                class=""
+              ></path>
+            </svg>
+            <span>{{ _t('New Orders') }}</span>
           </a>
         </li>
         <li
@@ -343,9 +373,14 @@ export default {
     Invoice,
     OrderDetailsPopup,
   },
+  data() {
+    return {
+      vbutton: '',
+    }
+  },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapState('order', ['orderType']),
+    ...mapState('order', ['orderType', 'cartType']),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
@@ -360,15 +395,18 @@ export default {
     ...mapState({ selectedCustomer: state => state.customer.customer.name }),
   },
   methods: {
-    viewHoldOrders: function() {
+    viewHoldOrders() {
+      this.vbutton = 'new'
+      this.$store.commit('order/SET_CART_TYPE', 'hold')
       this.$store.dispatch('holdOrders/getHoldOrders')
-      $('.wrappers-order-block').toggleClass('show')
-      $('.main-orders-list').toggleClass('hide')
-      $('ul.ullist-icons > li#hold-order-box').toggleClass('active')
     },
     ...mapActions('discount', ['validateOrderDiscounts']),
     setOrderType(opt) {
       this.$store.commit('order/ORDER_TYPE', opt)
+    },
+    newOrders() {
+      this.vbutton = 'hold'
+      this.$store.commit('order/SET_CART_TYPE', 'new')
     },
   },
   updated() {
