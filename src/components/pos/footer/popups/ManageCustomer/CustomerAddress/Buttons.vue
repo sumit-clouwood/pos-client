@@ -80,32 +80,48 @@
 </template>
 
 <script>
+/* global $ */
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Buttons',
   props: {
     id: String,
     editDetails: {},
   },
+  computed: {
+    ...mapGetters('location', ['_t']),
+    ...mapState('checkoutForm', ['msg']),
+  },
   methods: {
     doAction: function(actionType) {
       let actionDetails = {}
-      if (actionType == 'edit') {
+      if (actionType === 'edit') {
         actionDetails = {
           id: this.id,
           action: 'edit',
           model: 'customer_addresses',
         }
         this.$store.dispatch('customer/editAction', actionDetails)
-      } else if (actionType == 'delete') {
+      } else if (actionType === 'delete') {
         actionDetails = {
           id: this.id,
           action: 'delete',
           model: 'customer_addresses',
-          data: '',
         }
-        if (confirm('Are you sure you want to delete address!')) {
-          this.$store.dispatch('customer/updateAction', actionDetails)
-        }
+        let msgStr = this._t('Are you really want to delete this record?')
+        this.$store.commit(
+          'checkoutForm/SET_MSG',
+          {
+            result: 'confirm',
+            message: msgStr,
+            record: actionDetails,
+            flag: 'customer address',
+          },
+          {
+            root: true,
+          }
+        )
+        $('#payment-msg').modal('show')
       } else {
         //do nothing
       }

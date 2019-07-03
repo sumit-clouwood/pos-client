@@ -253,12 +253,12 @@ $(document).ready(function() {
     $(this).addClass('active')
   })
 
-  $('.wrappers-orders .dlt-btn').click(function() {
+  /*$('.wrappers-orders .dlt-btn').click(function() {
     $(this)
       .parent()
       .addClass('active')
     $('.wrappers-orders.active').hide(800)
-  })
+  })*/
   $('button.ready > a').click(function() {
     $(this)
       .parent()

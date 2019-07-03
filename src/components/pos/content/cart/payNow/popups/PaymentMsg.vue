@@ -12,8 +12,8 @@
         </div>
         <div class="modal-body change-amount-option">
           <div class="amount-change-wrap">
-            <h5 v-if="msg.data && msg.data !== 'loading'">
-              {{ msg.data }}
+            <h5 v-if="msg.message && msg.message !== 'loading'">
+              {{ msg.message }}
             </h5>
             <Preloader v-else />
           </div>
@@ -26,6 +26,21 @@
               data-dismiss="modal"
               @click="generateInvoice()"
               id="dining-opt"
+            >
+              {{ _t('Ok') }}
+            </button>
+          </div>
+          <div class="btn-announce" v-if="msg.result === 'confirm'">
+            <button
+              class="btn btn-success btn-large"
+              type="button"
+              data-dismiss="modal"
+              @click="
+                confirmDelete({
+                  records: msg.record,
+                  flag: msg.flag,
+                })
+              "
             >
               {{ _t('Ok') }}
             </button>
@@ -61,6 +76,17 @@ export default {
       $('#pay-now').modal('hide')
       this.$store.dispatch('checkout/generateInvoice')
       $('#transparent-screen').hide()
+    },
+    confirmDelete(resultLoad) {
+      if (resultLoad.flag === 'hold order') {
+        this.$store.dispatch('order/removeOrder', {
+          order: resultLoad.records,
+          orderType: 'hold',
+        })
+        this.$store.dispatch('holdOrders/getHoldOrders')
+      } else if (resultLoad.flag === 'customer address') {
+        this.$store.dispatch('customer/updateAction', resultLoad.records)
+      }
     },
   },
   computed: {

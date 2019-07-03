@@ -395,7 +395,7 @@ const actions = {
   createOrder({ state, commit, rootState, rootGetters, dispatch }, action) {
     commit(
       'checkoutForm/SET_MSG',
-      { data: '', result: 'loading' },
+      { message: '', result: 'loading' },
       {
         root: true,
       }
@@ -433,7 +433,7 @@ const actions = {
               )
               commit(
                 'checkoutForm/SET_MSG',
-                { result: '', data: msgStr },
+                { result: '', message: msgStr },
                 {
                   root: true,
                 }
@@ -451,7 +451,7 @@ const actions = {
             let msgStr = rootGetters['location/_t']('Order placed Successfully')
             commit(
               'checkoutForm/SET_MSG',
-              { result: 'success', data: msgStr },
+              { result: 'success', message: msgStr },
               {
                 root: true,
               }
@@ -475,7 +475,7 @@ const actions = {
               ).then(() => {
                 commit(
                   'checkoutForm/SET_MSG',
-                  { result: 'success', data: msgStr },
+                  { result: 'success', message: msgStr },
                   {
                     root: true,
                   }
@@ -510,7 +510,7 @@ const actions = {
               )
               commit(
                 'checkoutForm/SET_MSG',
-                { result: '', data: errorMsg },
+                { result: '', message: errorMsg },
                 {
                   root: true,
                 }
@@ -529,7 +529,7 @@ const actions = {
 
                 commit(
                   'checkoutForm/SET_MSG',
-                  { result: '', data: err_msg },
+                  { result: '', message: err_msg },
                   {
                     root: true,
                   }
