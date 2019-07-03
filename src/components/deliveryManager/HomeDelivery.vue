@@ -41,6 +41,9 @@
                     type="text"
                     class="input-search-driver"
                     id="get-customer-list"
+                    v-model="selectedUser"
+                    @click="showDropdown"
+                    @keydown="getSelectUser()"
                   />
                   <div id="my-dropdown" class="dropdown-content cursor-pointer">
                     <span
@@ -90,7 +93,7 @@ import DMHomeDeliverySubMenu from '@/components/deliveryManager/header/DMHomeDel
 import DMItem from '@/components/deliveryManager/content/DMItem'
 import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredItem'
 import { mapState, mapActions, mapGetters } from 'vuex'
-
+/* global $ */
 export default {
   name: 'HomeDelivery',
   data() {
@@ -98,19 +101,20 @@ export default {
       readyDetails: {
         moreDetails: true,
         action: 'Ready',
-        nextOrderStatus: 'ready',
+        nextOrderStatus: 'in-progress',
       },
       waitingOrder: {
         moreDetails: false,
-        action: '',
+        action: 'Assign',
         driverId: '',
-        nextOrderStatus: 'in-progress',
+        nextOrderStatus: 'Ready',
       },
       deliveredDetails: {
         moreDetails: true,
         action: 'Ready',
-        nextOrderStatus: 'delivered',
+        nextOrderStatus: 'finished',
       },
+      selectedUser: '',
     }
   },
   components: {
@@ -131,9 +135,16 @@ export default {
 
   methods: {
     selectedDriver: function(driver) {
-      this.waitingOrder.action = driver.name
       this.waitingOrder.driverId = driver._id
+      this.selectedUser = driver.name
       this.selectDriver(driver)
+      $('.dropdown-content').hide()
+    },
+    showDropdown: function() {
+      $('.dropdown-content').show()
+    },
+    getSelectUser: function() {
+      // this.selectedUser = $('#get-customer-list').val()
     },
     ...mapActions('deliveryManager', ['selectDriver']),
     /*imageLoadError() {
@@ -221,7 +232,7 @@ export default {
 
 /*search driver*/
 .dropdown-content {
-  display: block;
+  display: none;
   position: absolute;
   background-color: #f6f6f6;
   width: 100%;

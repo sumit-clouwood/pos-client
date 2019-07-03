@@ -37,17 +37,21 @@
                     {{ order.balance_due + ' ' + order.currency }}
                   </div>
                 </div>
-                <div class="order_time">08:22 PM</div>
+                <div class="order_time">
+                  {{ convertDatetime(order.real_created_datetime) }}
+                </div>
                 <div class="button-block" style="visibility: visible;">
-                  <span v-if="orderStatus == 'ready'">
+                  <span
+                    v-if="
+                      orderStatus == 'ready' && actionDetails.driverId == ''
+                    "
+                  >
                     <span class="select-driver-caption assign_driver">
                       Select driver
                     </span>
                   </span>
                   <button
-                    v-if="
-                      orderStatus == 'in-progress' || orderStatus == 'on-a-way'
-                    "
+                    v-else
                     @click="
                       updateOrderAction({
                         order: order,
@@ -61,7 +65,7 @@
                     <div class="button-content-container">
                       <div class="button-icon-container"><!----></div>
                       <div class="button-caption">
-                        {{ updateButtonAction(orderStatus) }}
+                        {{ actionDetails.action }}
                       </div>
                     </div>
                   </button>
@@ -134,6 +138,7 @@
 /* global $ */
 import { mapState, mapActions, mapGetters } from 'vuex'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
+import DateTime from '@/mixins/DateTime'
 
 export default {
   name: 'DMItem',
@@ -142,6 +147,8 @@ export default {
       orderCount: 2,
     }
   },
+  mixins: [DateTime],
+
   props: {
     actionDetails: Object,
   },
@@ -166,7 +173,7 @@ export default {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
 
-    updateButtonAction: function(orderStatus) {
+    /*updateButtonAction: function(orderStatus) {
       let actionLabel = 'Ready'
       if (orderStatus === 'in-progress') {
         actionLabel = 'Ready'
@@ -178,7 +185,7 @@ export default {
       // eslint-disable-next-line no-console
       console.log(orderStatus)
       return this._t(actionLabel)
-    },
+    },*/
 
     DMOrderStatus: function({ actionDetails, orderId, orderType }) {
       let timestamp = Date.now()
