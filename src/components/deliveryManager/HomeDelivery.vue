@@ -61,61 +61,25 @@
               </div>
             </div>
             <div class="body">
-              <div class="assigning-block">
-                <div class="order">
-                  <div class="store-info">
-                    <div class="store-name">
-                      From Store: Store Store Name 756
-                    </div>
-                    <div class="store-address">
-                      Address: Store City 761, Store Address Line 760
-                    </div>
-                  </div>
-                  <div class="order-container">
-                    <div class="order">
-                      <div class="menu-items-list">
-                        <div class="order-id">
-                          13
-                        </div>
-                        <div class="menu-items">
-                          Menu Item Name 2063
-                          <!---->
-                        </div>
-                      </div>
-                      <div class="delivery-info">
-                        Order Flat Number 6013, Order Building/Villa 6011, Order
-                        Street 6012, Order City 6015
-                        <span class="landmark"
-                          ><br />Near:
-                          <span class="value"
-                            >Order Nearest Landmark 6014</span
-                          ></span
-                        >
-                      </div>
-                      <div class="cancel-button">
-                        <button type="button" class="button btn btn-success">
-                          <div class="button-content-container">
-                            <div class="button-icon-container"><!----></div>
-                            <div class="button-caption">
-                              Remove
-                            </div>
-                          </div>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <DMAssignedDriver />
             </div>
             <div class="driver-footer">
-              <button type="button" class="button btn btn-success" style="">
+              <button
+                type="button"
+                class="button btn btn-success"
+                v-if="assignToBucket.length"
+              >
                 <div class="button-content-container">
                   <div class="button-icon-container"><!----></div>
                   <div class="button-caption">
                     Assign
                   </div>
                 </div></button
-              ><button type="button" class="button btn btn-success" style="">
+              ><button
+                type="button"
+                class="button btn btn-success"
+                v-if="assignToBucket.length"
+              >
                 <div class="button-content-container">
                   <div class="button-icon-container"><!----></div>
                   <div class="button-caption">
@@ -141,6 +105,7 @@
 import DMHomeDeliverySubMenu from '@/components/deliveryManager/header/DMHomeDeliverySubMenu'
 import DMItem from '@/components/deliveryManager/content/DMItem'
 import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredItem'
+import DMAssignedDriver from '@/components/deliveryManager/partial/DMAssignedDriver'
 import { mapState, mapActions, mapGetters } from 'vuex'
 /* global $ */
 export default {
@@ -149,17 +114,20 @@ export default {
     return {
       readyDetails: {
         moreDetails: true,
-        action: 'Ready',
+        actionLabel: 'Ready',
+        action: 'delivery_ready',
         nextOrderStatus: 'in-progress',
       },
       waitingOrder: {
         moreDetails: false,
-        action: 'Assign',
+        actionLabel: 'Assign',
+        action: 'assignToBucket',
         driverId: '',
         nextOrderStatus: 'Ready',
       },
       deliveredDetails: {
         moreDetails: true,
+        actionLabel: 'Ready',
         action: 'Ready',
         nextOrderStatus: 'finished',
       },
@@ -170,11 +138,13 @@ export default {
     DMHomeDeliverySubMenu,
     DMItem,
     DMDeliveredItem,
+    DMAssignedDriver,
   },
   computed: {
     ...mapState({
       driverList: state => state.deliveryManager.drivers,
     }),
+    ...mapState('order', ['assignToBucket']),
     ...mapGetters('location', ['_t']),
   },
 
@@ -261,6 +231,7 @@ export default {
   height: 100%;
   text-align: right;
   padding: 2px;
+  min-height: 40px;
 }
 .button .button-content-container .button-caption {
   display: inline-block;

@@ -23,16 +23,19 @@ export default {
       actionDetailsNew: {
         moreDetails: true,
         action: 'Ready',
+        actionLabel: 'Ready',
         nextOrderStatus: 'paid',
       },
       actionDetailsWaiting: {
         moreDetails: true,
         action: 'Collect',
+        actionLabel: 'Collect',
         nextOrderStatus: 'paid',
       },
       actionDetailsCollected: {
         moreDetails: true,
         action: 'Collected',
+        actionLabel: 'Collected',
         nextOrderStatus: '',
       },
     }

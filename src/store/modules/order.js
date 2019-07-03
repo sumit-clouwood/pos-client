@@ -20,6 +20,7 @@ const state = {
   // pastOrder: false,
   orderStatus: null,
   cartType: 'new',
+  assignToBucket: [],
 }
 
 // getters
@@ -708,16 +709,22 @@ const actions = {
     dispatch('updateOrderAction', { order, orderType, actionTrigger })
   },
 
-  updateOrderAction({ dispatch }, { order, orderType, actionTrigger }) {
-    OrderService.updateOrderAction(order._id, actionTrigger).then(response => {
-      if (response.status == 200) {
-        switch (orderType) {
-          case 'hold':
-            dispatch('holdOrders/remove', order, { root: true })
-            break
+  updateOrderAction({ commit, dispatch }, { order, orderType, actionTrigger }) {
+    if (actionTrigger === 'assignToBucket') {
+      commit(mutation.ASSIGNED_BUCKET, order)
+    } else {
+      OrderService.updateOrderAction(order._id, actionTrigger).then(
+        response => {
+          if (response.status == 200) {
+            switch (orderType) {
+              case 'hold':
+                dispatch('holdOrders/remove', order, { root: true })
+                break
+            }
+          }
         }
-      }
-    })
+      )
+    }
   },
 }
 
@@ -849,10 +856,20 @@ const mutations = {
   [mutation.SET_CART_TYPE](state, cartType) {
     state.cartType = cartType
   },
-  /*[mutation.PAST_ORDER_DETAILS](state, pastOrder) {
-    state.selectedOrder = pastOrder
+  [mutation.ASSIGNED_BUCKET](state, order) {
+    state.assignToBucket.push(order)
     // $('#past-order').modal('toggle')
-  },*/
+  },
+  [mutation.RE_ASSIGNED_BUCKET](state, orderId) {
+    let bucket = []
+    state.assignToBucket.filter(function(ele) {
+      if (ele._id != orderId) {
+        bucket.push(ele)
+      }
+    })
+    state.assignToBucket = []
+    state.assignToBucket = bucket
+  },
 }
 
 export default {

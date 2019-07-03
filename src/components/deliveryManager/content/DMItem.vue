@@ -56,7 +56,7 @@
                       updateOrderAction({
                         order: order,
                         orderType: order.order_type,
-                        actionTrigger: 'delivery_ready',
+                        actionTrigger: actionDetails.action,
                       })
                     "
                     class="button text-button btn btn-success"
@@ -65,7 +65,7 @@
                     <div class="button-content-container">
                       <div class="button-icon-container"><!----></div>
                       <div class="button-caption">
-                        {{ actionDetails.action }}
+                        {{ actionDetails.actionLabel }}
                       </div>
                     </div>
                   </button>
