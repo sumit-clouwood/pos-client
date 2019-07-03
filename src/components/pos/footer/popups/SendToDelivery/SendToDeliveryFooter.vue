@@ -146,7 +146,18 @@ export default {
             })*/
           })
           .catch(response => {
-            this.errors = response.error
+            this.msg = ''
+            let errors = 'Error: '
+
+            if (response.status == 'form_errors') {
+              for (let i in response.form_errors) {
+                response.form_errors[i].forEach(err => (errors += ' ' + err))
+              }
+            } else {
+              errors = response.error
+            }
+            this.errors = errors
+
             $('#payment-msg').modal('hide')
             $('#order-confirmation').modal('show')
             setTimeout(function() {

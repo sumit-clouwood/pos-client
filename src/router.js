@@ -14,17 +14,15 @@ const router = new Router({
   base: '',
 
   routes: [
-    //for development
-    {
-      path: '/pos/:brand_id/:store_id/',
-      name: 'PosBrandHomeDev',
-      component: Home,
-    },
-    //for live where this app is hosted under /pos
     {
       path: '/:brand_id/:store_id/',
       name: 'BrandHome',
       component: Home,
+    },
+    {
+      path: '/delivery-manager/:brand_id/:store_id/',
+      name: 'DeliveryManager',
+      component: DeliveryManagerInit,
     },
     {
       path: '/about',
@@ -40,11 +38,7 @@ const router = new Router({
       name: 'Dinein',
       component: DineIn,
     },
-    {
-      path: '/delivery-manager/:brand_id/:store_id/',
-      name: 'DeliveryManager',
-      component: DeliveryManagerInit,
-    },
+
     {
       path: '/dispatch-screen',
       name: 'DispatchScreen',
