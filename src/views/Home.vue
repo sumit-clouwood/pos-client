@@ -11,7 +11,7 @@
 import Pos from '@/components/Pos.vue'
 import Location from '@/components/Location.vue'
 import { mapState } from 'vuex'
-
+import BrandColor from '@/plugins/helpers/BrandColor'
 export default {
   name: 'home',
   components: {
@@ -20,10 +20,10 @@ export default {
   },
   computed: {
     ...mapState('sync', ['loaded']),
+    ...mapState('location', ['brand']),
   },
   mounted() {
-    /*$('body').removeAttr('class')
-    $('body').attr('class', 'fixed-nav sticky-footer bg-dark')*/
+    BrandColor.applyColoring(this.brand)
   },
 }
 </script>

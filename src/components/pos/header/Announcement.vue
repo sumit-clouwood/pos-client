@@ -1,5 +1,5 @@
 <template>
-  <div class="main-news">
+  <div class="main-news color-main">
     <div class="main-news-title">
       <a class="main-news-title-link" href="javascript:void(0)">
         <img src="img/pos/news.png" :alt="_t('News')" />
