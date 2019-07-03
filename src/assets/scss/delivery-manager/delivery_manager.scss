@@ -874,10 +874,32 @@ div.order-address {
 .driver-footer > button {
   margin-right: $px10;
 }
-input.input-search-driver {
+.input-search-driver {
   background: url('../../../assets/images/select-arrow.png');
   background-repeat: no-repeat;
   background-position: center right $px10;
+}
+.right-btn-wrap  {
+  > button{
+    background: transparent;
+    text-align: left;
+    background: url('../../../assets/images/select-arrow.png');
+    background-repeat: no-repeat;
+    background-position: center right $px10;
+
+  }
+}
+.right-btn-wrap  {
+  .dropdown-menu{
+    background: #f6f6f6; padding: 5px 18px;
+  }
+}
+.right-btn-wrap  {
+  .dropdown-menu {
+    >  a{
+      color: #333;
+    }
+  }
 }
 //
 
