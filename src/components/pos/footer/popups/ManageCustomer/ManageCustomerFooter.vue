@@ -11,6 +11,7 @@
         :next-text="_t('Next')"
         :container-class="''"
         :page-class="_t('page-item')"
+        v-model="page"
       >
       </paginate>
       <!--</template>-->
@@ -48,6 +49,11 @@ export default {
   props: {},
   components: {
     paginate,
+  },
+  data() {
+    return {
+      page: 1,
+    }
   },
   computed: {
     ...mapState({

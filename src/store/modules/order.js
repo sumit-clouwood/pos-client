@@ -19,6 +19,7 @@ const state = {
   orderId: null,
   // pastOrder: false,
   orderStatus: null,
+  cartType: 'new',
 }
 
 // getters
@@ -30,13 +31,16 @@ const getters = {
     ((100 + (item.originalTax ? item.originalTax : item.tax_sum)) / 100),
 
   orderTotal: (state, getters, rootState, rootGetters) => {
-    return (
-      //discount is already subtracted from tax in tax.js
+    //discount is already subtracted from tax in tax.js
+    let amount =
       getters.subTotal +
       rootGetters['tax/totalTax'] +
       rootGetters['surcharge/surcharge'] -
       rootGetters['discount/orderDiscountWithoutTax']
-    )
+    if (amount) {
+      return amount.toFixed(2)
+    }
+    return 0
   },
 
   subTotal: () => {
@@ -75,6 +79,8 @@ const getters = {
   },
 
   items: state => state.items,
+
+  orderType: state => state.orderType.OTApi,
 }
 
 // actions
@@ -693,7 +699,17 @@ const actions = {
   },
 
   removeOrder({ dispatch }, { order, orderType }) {
-    OrderService.deleteOrder(order._id, orderType).then(response => {
+    let actionTrigger = orderType
+    if (actionTrigger) {
+      actionTrigger = 'delete_' + actionTrigger
+    } else {
+      actionTrigger = 'delete'
+    }
+    dispatch('updateOrderAction', { order, orderType, actionTrigger })
+  },
+
+  updateOrderAction({ dispatch }, { order, orderType, actionTrigger }) {
+    OrderService.updateOrderAction(order._id, actionTrigger).then(response => {
       if (response.status == 200) {
         switch (orderType) {
           case 'hold':
@@ -799,7 +815,8 @@ const mutations = {
     state.items = []
     state.item = false
     state.orderStatus = null
-    //state.orderType = 'Walk-in'
+    state.orderId = null
+    state.orderType = { OTview: 'Walk In', OTApi: 'walk_in' }
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
@@ -827,6 +844,10 @@ const mutations = {
   },
   [mutation.ORDER_STATUS](state, status) {
     state.orderStatus = status
+  },
+
+  [mutation.SET_CART_TYPE](state, cartType) {
+    state.cartType = cartType
   },
   /*[mutation.PAST_ORDER_DETAILS](state, pastOrder) {
     state.selectedOrder = pastOrder

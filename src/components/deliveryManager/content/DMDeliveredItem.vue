@@ -2,7 +2,7 @@
   <div class="dm-ready-order-wrapper" id="dm-delivered">
     <div class="all-driver-main-div">
       <div class="clearfix all-driver-dropdown">
-        <div class="select-driver">
+        <div class="select-driver" v-if="driverList">
           <button
             type="button"
             class="btn dropdown-toggle"
@@ -119,7 +119,7 @@ export default {
       orderDetails: state => state.deliveryManager.orders,
     }),
     ...mapState({
-      driverList: state => state.location.locationData.drivers,
+      driverList: state => state.deliveryManager.drivers,
     }),
     ...mapGetters('location', ['formatPrice']),
   },

@@ -9,6 +9,7 @@ const state = {
 
   item: false,
   itemModifiers: [],
+  foodIcons: [],
 }
 
 // getters, computed properties
@@ -136,18 +137,19 @@ const getters = {
 // actions, often async
 const actions = {
   async fetchAll({ commit }) {
-    const [groups, subgroups, modifiers] = await Promise.all([
+    const [groups, subgroups, modifiers, foodIcons] = await Promise.all([
       ModifierService.groups(),
       ModifierService.subgroups(),
       ModifierService.modifiers(),
+      ModifierService.foodIcons(),
     ])
 
     commit(mutation.SET_MODIFIER_GROUPS, groups.data.data)
     commit(mutation.SET_MODIFIER_SUBGROUPS, subgroups.data.data)
     commit(mutation.SET_MODIFIERS, modifiers.data.data)
+    commit(mutation.SET_FOOD_ICON, foodIcons.data.data)
     return Promise.resolve(1)
   },
-
   //active item and index already been set to order.item
   setActiveItem({ commit, dispatch, rootState }) {
     //pop needs all modifiers available for this item so we need to fetch modifier from modifeir store
@@ -209,6 +211,10 @@ const mutations = {
   },
   [mutation.SET_MODIFIERS](state, modifiers) {
     state.modifiers = modifiers
+  },
+
+  [mutation.SET_FOOD_ICON](state, foodIcons) {
+    state.foodIcons = foodIcons
   },
 
   [mutation.SET_ITEM](state, item) {

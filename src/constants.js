@@ -42,8 +42,8 @@ export const ORDER_TYPE_CALL_CENTER = 'call_center'
 export const ORDER_STATUS_READY = 'ready'
 export const ORDER_STATUS_ON_A_WAY_TO_FINISH = 'on-a-way'
 export const ORDER_STATUS_FINISHED = 'finished'
-
 export const ORDER_SOURCE_POS = 'cashier_app'
+export const ORDER_PAYMENT_TYPE = 'Loyalty Points'
 
 export const PERCENTAGE = 'percentage'
 export const VALUE = 'value'

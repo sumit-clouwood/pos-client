@@ -7,7 +7,7 @@
 
 <script>
 // @ is an alias to /src
-// /* global $ */
+/* global $ */
 import Pos from '@/components/Pos.vue'
 import Location from '@/components/Location.vue'
 import { mapState } from 'vuex'
@@ -23,6 +23,9 @@ export default {
     ...mapState('location', ['brand']),
   },
   mounted() {
+    let getBody = $('body')
+    getBody.removeAttr('class')
+    getBody.attr('class', 'fixed-nav sticky-footer')
     BrandColor.applyColoring(this.brand)
   },
 }

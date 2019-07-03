@@ -1,4 +1,3 @@
-/* global $ */
 /* eslint-disable no-console */
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
@@ -17,7 +16,6 @@ const state = {
   changedAmount: 0,
   print: false,
   orderNumber: null,
-  onHold: '',
 }
 
 // getters
@@ -60,7 +58,7 @@ const actions = {
         }
       }
 
-      if (validPayment || state.onHold) {
+      if (validPayment) {
         //send order for payment
         let order = {}
 
@@ -71,9 +69,10 @@ const actions = {
             referral: '',
             transition_order_no: '',
             currency: rootState.location.currency,
-            order_status: state.onHold
-              ? state.onHold
-              : CONSTANTS.ORDER_STATUS_IN_PROGRESS,
+            order_status:
+              action === CONSTANTS.ORDER_STATUS_ON_HOLD
+                ? CONSTANTS.ORDER_STATUS_ON_HOLD
+                : CONSTANTS.ORDER_STATUS_IN_PROGRESS,
             order_source: CONSTANTS.ORDER_SOURCE_POS,
             order_type: rootState.order.orderType.OTApi,
             order_mode: 'online',
@@ -84,10 +83,8 @@ const actions = {
             total_discount: Num.round(
               rootGetters['discount/orderDiscountWithoutTax']
             ),
-
             print_count: 1,
             amount_changed: Num.round(state.changedAmount),
-
             order_building: '',
             order_street: '',
             order_flat_number: '',
@@ -95,7 +92,6 @@ const actions = {
             order_city: '',
             order_country: '',
             order_delivery_area: '',
-
             item_discounts: [],
             item_modifiers: '',
             order_surcharges: '',
@@ -121,11 +117,6 @@ const actions = {
           order.order_city = address.city
           order.order_country = address.country
           order.order_delivery_area = address.delivery_area_id
-          // check in future
-          order.order_status = state.onHold
-            ? state.onHold
-            : CONSTANTS.ORDER_STATUS_IN_PROGRESS
-          // order.status = 'on-hold'
         }
 
         //ORDER SURCHARGES
@@ -304,13 +295,22 @@ const actions = {
 
         //adding payment breakdown
         let totalPaid = 0
+
         order.order_payments = rootState.checkoutForm.payments.map(payment => {
+          let { orderaAmount, orderPoints } = {}
+          if (payment.method.name == CONSTANTS.ORDER_PAYMENT_TYPE) {
+            orderaAmount = payment.amount
+            orderPoints = rootState.checkoutForm.loyaltyPoints
+          } else {
+            orderaAmount = payment.amount
+            orderPoints = payment.amount
+          }
           let paymentPart = {
             entity_id: payment.method._id,
             name: payment.method.name,
-            collected: payment.amount,
+            collected: orderaAmount,
             param1: payment.cardId,
-            param2: payment.amount,
+            param2: orderPoints,
             param3: payment.code,
           }
           totalPaid += payment.amount
@@ -326,20 +326,6 @@ const actions = {
           }
           return paymentPart
         })
-
-        //for hold orders: Tofeeq
-        if (!order.order_payments.length) {
-          const paymentMethod = rootGetters['payment/cash']
-          totalPaid += totalPayable
-          order.order_payments.push({
-            entity_id: paymentMethod._id,
-            name: paymentMethod.name,
-            collected: totalPayable,
-            param1: null,
-            param2: totalPayable,
-            param3: null,
-          })
-        }
 
         order.total_paid = Num.round(totalPaid)
 
@@ -392,10 +378,8 @@ const actions = {
         })
 
         //order.app_uniqueid = Crypt.uuid()
-
-        console.log('not in delivery or take away ')
         commit(mutation.SET_ORDER, order)
-        dispatch('createOrder')
+        dispatch('createOrder', action)
           .then(response => {
             resolve(response)
           })
@@ -408,7 +392,7 @@ const actions = {
     })
   },
 
-  createOrder({ state, commit, rootState, rootGetters, dispatch }) {
+  createOrder({ state, commit, rootState, rootGetters, dispatch }, action) {
     commit(
       'checkoutForm/SET_MSG',
       { data: '', result: 'loading' },
@@ -418,6 +402,7 @@ const actions = {
     )
     return new Promise((resolve, reject) => {
       let response = null
+      //order.order is a hold order, state.order contains current order
       if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD) {
         let order = { ...state.order }
         //order.modify_reason = 'Process order'
@@ -436,19 +421,19 @@ const actions = {
         )
       }
 
-      console.log(state.order)
       response
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
-          dispatch('holdOrders/getHoldOrders')
+          dispatch('holdOrders/getHoldOrders', {}, { root: true })
 
           if (response.data.status === 'ok') {
-            commit('order/SET_ORDER_ID', response.data.id, { root: true })
-
-            if (state.onHold) {
+            if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+              let msgStr = rootGetters['location/_t'](
+                'Order has been hold successfully'
+              )
               commit(
                 'checkoutForm/SET_MSG',
-                { result: '', data: 'Order has been hold Successfully' },
+                { result: '', data: msgStr },
                 {
                   root: true,
                 }
@@ -457,13 +442,21 @@ const actions = {
               dispatch('reset')
               return true
             }
+
+            if (!rootState.order.orderId) {
+              commit('order/SET_ORDER_ID', response.data.id, { root: true })
+            }
+
+            //else
+            let msgStr = rootGetters['location/_t']('Order placed Successfully')
             commit(
               'checkoutForm/SET_MSG',
-              { result: 'success', data: 'Order Placed Successfully' },
+              { result: 'success', data: msgStr },
               {
                 root: true,
               }
             )
+
             resolve(response.data)
 
             dispatch('invoice/printRules', null, { root: true }).then(() => {
@@ -480,28 +473,9 @@ const actions = {
                   root: true,
                 }
               ).then(() => {
-                //clear all the data related to order, tax, discounts, surcharge etc
-                //create invoice
-                //add order no to local database
-                // db.getBucket('auth').then(bucket => {
-                //   db.fetch(bucket).then(data => {
-                //     if (data && data[0]) {
-                //       data = data[0]
-                //       data.lastOrderNo = parseInt(data.lastOrderNo) + 1
-                //       db.getBucket('auth').then(bucket => {
-                //         bucket.put(data)
-                //       })
-                //       commit('auth/SET_LAST_ORDER_NO', data.lastOrderNo, {
-                //         root: true,
-                //       })
-                //     }
-                //   })
-                // })
-
-                // commit(mutation.SET_ORDER_NUMBER, response.data.order_no)
                 commit(
                   'checkoutForm/SET_MSG',
-                  { result: 'success', data: 'Order Placed Successfully' },
+                  { result: 'success', data: msgStr },
                   {
                     root: true,
                   }
@@ -531,9 +505,12 @@ const actions = {
             reject(response.data.error)
           } else {
             if (response.message === 'Network Error') {
+              let errorMsg = rootGetters['location/_t'](
+                'System went offline. Order is queued for sending later'
+              )
               commit(
                 'checkoutForm/SET_MSG',
-                { result: '', data: 'Queued for sending later' },
+                { result: '', data: errorMsg },
                 {
                   root: true,
                 }
@@ -546,12 +523,10 @@ const actions = {
                 response.data[response.data.status] &&
                 typeof response.data[response.data.status] != 'undefined'
               ) {
-                $.each(response.data[response.data.status], function(
-                  key,
-                  value
-                ) {
+                response.data[response.data.status].forEach(value => {
                   err_msg += value + ' '
                 })
+
                 commit(
                   'checkoutForm/SET_MSG',
                   { result: '', data: err_msg },
@@ -571,17 +546,15 @@ const actions = {
   },
   reset({ commit, dispatch }) {
     commit(mutation.RESET)
-    dispatch('checkoutForm/reset', null, { root: true })
-    dispatch('order/reset', null, { root: true })
-    dispatch('tax/reset', null, { root: true })
-    dispatch('discount/reset', null, { root: true })
-    dispatch('surcharge/reset', null, { root: true })
-    dispatch('customer/reset', null, { root: true })
+    dispatch('checkoutForm/reset', {}, { root: true })
+    dispatch('order/reset', {}, { root: true })
+    dispatch('tax/reset', {}, { root: true })
+    dispatch('discount/reset', {}, { root: true })
+    dispatch('surcharge/reset', {}, { root: true })
+    dispatch('customer/reset', {}, { root: true })
+    dispatch('location/reset', {}, { root: true })
   },
 
-  orderOnHold({ commit }, orderStatus) {
-    commit(mutation.ONHOLD, orderStatus)
-  },
   updateOrderStatus(
     { rootState, dispatch },
     { orderStatus, orderId, timestamp, orderType }
@@ -632,9 +605,6 @@ const mutations = {
     state.payableAmount = 0
     state.pendingAmount = 0
     state.print = false
-  },
-  [mutation.ONHOLD](state, orderStatus) {
-    state.onHold = orderStatus
   },
 }
 

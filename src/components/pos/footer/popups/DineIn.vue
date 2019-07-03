@@ -49,6 +49,15 @@
             >
               <img src="img/pos/event.svg" /><span>{{ _t('Event') }}</span>
             </div>
+            <div
+              class="option-contain"
+              :class="{ active: selectedOrderType.OTApi === 'walk_in' }"
+              @click="setOrderType({ OTview: 'Walk In', OTApi: 'walk_in' })"
+            >
+              <img src="img/pos/walkin.svg" width="35" /><span>{{
+                _t('Walk In')
+              }}</span>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -62,14 +71,14 @@
             >
               {{ _t('Ok') }}
             </button>
-            <button
+            <!--<button
               class="btn btn-large"
               type="button"
               :class="{ active: selectedOrderType.OTApi === 'event' }"
               @click="setOrderType({ OTview: 'Walk In', OTApi: 'walk_in' })"
             >
               {{ _t('Walk In') }}
-            </button>
+            </button>-->
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>

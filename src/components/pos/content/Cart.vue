@@ -2,8 +2,8 @@
   <div class="main-orders">
     <Header />
     <div class="main-orders-list-wrapper">
-      <Items />
-      <HoldingOrders />
+      <HoldingOrders v-if="cartType === 'hold'" />
+      <Items v-else />
     </div>
     <PayNow />
     <Footer />
@@ -26,6 +26,7 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['order']),
+    ...mapState('order', ['cartType']),
   },
   components: {
     Header,

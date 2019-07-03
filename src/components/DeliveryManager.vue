@@ -1,24 +1,19 @@
 <template>
   <div class="new-pos">
     <div class="dm-screen-wrap">
-      <div id="left-fixed-menu">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
-          viewBox="0 0 32 32"
-        >
-          <path
-            fill="#FFF"
-            fill-rule="evenodd"
-            d="M2 0h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm13 0h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm13 0h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zM2 13h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2zm13 0h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2zm13 0h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2zM2 26h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2zm13 0h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2zm13 0h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2z"
-          />
-        </svg>
+      <div class="left-fixed-menu">
+        <h3 class="page-title" style="">New Orders</h3>
+        <div class="breadcrump-wrapper">
+          <ul class="ullist-breadcrump">
+            <li><a href="#">DELIVERY</a></li>
+            <li><a href="#">DEFAULT BRAND</a></li>
+            <li><a href="#">HOME DELIVERIES</a></li>
+            <li class="active"><a href="#">NEW ORDERS</a></li>
+          </ul>
+        </div>
       </div>
 
       <DMTopRightNav />
-
-      <DMTopLeftNav />
     </div>
     <!-- Breadcrumbs-->
     <SystemNavigation />
@@ -57,7 +52,6 @@ import HomeDelivery from '@/components/deliveryManager/HomeDelivery'
 import TakeAway from '@/components/deliveryManager/TakeAway'
 import FutureOrder from '@/components/deliveryManager/FutureOrder'
 import DMTopRightNav from '@/components/deliveryManager/DMTopRightNav'
-import DMTopLeftNav from '@/components/deliveryManager/DMTopLeftNav'
 export default {
   name: 'DeliveryManager',
   components: {
@@ -69,7 +63,45 @@ export default {
     DeliveryAssistant,
     DMOrderDetails,
     DMTopRightNav,
-    DMTopLeftNav,
   },
 }
 </script>
+<style lang="css" scoped>
+.dm-screen-wrap {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  /* padding: 0.625rem 1.25rem 0.9375rem 2.1875rem; */
+  -webkit-box-shadow: 0 0px 3px rgba(23,23,32,0.05), 0 0px 10px rgba(23,23,32,0.05), 0 0px 20px rgba(23,23,32,0.05);
+  box-shadow: 0 0px 3px rgba(23,23,32,0.05), 0 0px 10px rgba(23,23,32,0.05), 0 0px 20px rgba(23,23,32,0.05);
+  z-index: 2;
+  overflow: hidden;
+  background-color: #fff;
+  padding: 0.625rem 1.25rem 0.9375rem 2.1875rem;
+}
+ul.ullist-breadcrump > li {
+  display: inline-block;
+  padding-right: 1.3rem;
+  position:relative;
+}
+ul.ullist-breadcrump > li > a {
+  color: rgba(63,74,74,0.3);
+  text-transform: uppercase;
+  font-size: 0.77rem;
+  letter-spacing: 0.15rem;
+  font-weight: 700;
+}
+ul.ullist-breadcrump > li:after {
+  content: ">";
+  position: absolute;
+  right: 6px;
+  top: 1px;
+  color: rgba(63,74,74,0.3);
+}
+ul.ullist-breadcrump > li.active:after{
+  content: none;
+}
+ul.ullist-breadcrump > li.active > a{
+  color: rgba(63,74, 74, 0.8);
+  text-decoration: underline;
+}
+</style>

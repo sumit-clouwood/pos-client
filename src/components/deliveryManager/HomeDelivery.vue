@@ -4,8 +4,9 @@
     <div class="dm-ready-order-wrapper" id="dm-new-order">
       <DMItem :actionDetails="readyDetails" />
     </div>
+
     <div class="dm-ready-order-wrapper" id="dm-waiting-for-pick">
-      <div class="select-driver">
+      <!--<div class="select-driver" v-if="driverList">
         <button
           type="button"
           class="btn dropdown-toggle"
@@ -15,21 +16,70 @@
         </button>
         <ul class="dropdown-menu">
           <li v-for="(driver, index) in driverList" :key="index">
-            <!--<img
+            &lt;!&ndash;<img
               :src="driver.driverImagePath"
               class="pull-left driverImg"
               @error="imageLoadError()"
-            />-->
+            />&ndash;&gt;
             <a href="javascript:void(0)" @click="selectedDriver(driver)">{{
               driver.name
             }}</a>
           </li>
         </ul>
-        <!-- <p>Show Available Drivers</p> -->
-      </div>
-
-      <DMItem :actionDetails="waitingOrder" />
+        &lt;!&ndash; <p>Show Available Drivers</p> &ndash;&gt;
+      </div>-->
+      <section
+        class="with-drivers-filter block-table-page-container pagination_disabled"
+      >
+        <div class="home_delivery_pick">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group form-inline float-left search">
+                <div class="search-field">
+                  <label for="search_AnBPx" class="">Filter:</label
+                  ><input
+                    type="text"
+                    placeholder="Search Waiting For Pick"
+                    id="search_AnBPx"
+                    class="form-control "
+                  />
+                </div>
+              </div>
+              <div class="form-group form-inline float-right limit"></div>
+            </div>
+          </div>
+          <DMItem :actionDetails="waitingOrder" />
+        </div>
+        <div class="drivers-filter">
+          <div class="table-drivers-filter">
+            <div class="upper">
+              <div class="select-driver">
+                Select Driver
+              </div>
+              <div class="autocomplete-container">
+                <div class="drivers-list-note">No Drivers Available</div>
+              </div>
+            </div>
+            <div class="body"></div>
+            <div class="driver-footer">
+              <!----><button
+                type="button"
+                class="button"
+                style="visibility: hidden;"
+              >
+                <div class="button-content-container">
+                  <div class="button-icon-container"><!----></div>
+                  <div class="button-caption">
+                    Remove All
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
+
     <div class="dm-ready-order-wrapper" id="dm-delivery-in-progress">
       <DMItem :actionDetails="deliveredDetails" />
     </div>
@@ -73,7 +123,7 @@ export default {
   },
   computed: {
     ...mapState({
-      driverList: state => state.location.locationData.drivers,
+      driverList: state => state.deliveryManager.drivers,
     }),
   },
 
@@ -101,5 +151,73 @@ export default {
 .driverImg {
   padding-left: 14px;
   float: left;
+}
+.with-drivers-filter .drivers-filter {
+  overflow: auto;
+  float: right;
+  width: 20%;
+  height: 100%;
+  border-left: 1px solid rgba(63, 74, 74, 0.3);
+}
+
+.with-drivers-filter .home_delivery_pick {
+  overflow: auto;
+  height: 100%;
+  display: inline-block;
+  width: 80%;
+}
+.block-table-page-container .row {
+  display: none;
+}
+.table-drivers-filter .upper .select-driver {
+  padding: 0.7rem;
+  background-color: #f30105;
+  color: #fff;
+  font-weight: 600;
+}
+.table-drivers-filter .upper {
+  border-bottom: 1px solid rgba(63, 74, 74, 0.3);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  border-top: 1px solid rgba(63, 74, 74, 0.3);
+}
+.table-drivers-filter {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100%;
+}
+.table-drivers-filter .upper .autocomplete-container {
+  padding: 0rem 1rem;
+}
+.table-drivers-filter .upper .autocomplete-container .drivers-list-note {
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+}
+.table-drivers-filter .body {
+  padding: 0.3125rem 0.625rem;
+  overflow: auto;
+}
+.table-drivers-filter .driver-footer {
+  background-color: #f30105;
+  width: 100%;
+  height: 100%;
+  text-align: right;
+  padding: 2px;
+}
+.button .button-content-container .button-caption {
+  display: inline-block;
+}
+.button .button-content-container .button-icon-container {
+  display: inline-block;
+}
+.table-drivers-filter {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100%;
+}
+.block-table-page-container {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
 }
 </style>

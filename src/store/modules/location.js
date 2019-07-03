@@ -32,6 +32,7 @@ const getters = {
     }
     return str
   },
+  currency: state => state.currency,
 }
 
 // actions
@@ -127,6 +128,9 @@ const actions = {
       )
     }
   },
+  reset({ commit }) {
+    commit(mutation.RESET)
+  },
 }
 
 // mutations
@@ -167,6 +171,11 @@ const mutations = {
   },
   [mutation.SET_REFERRALS](state, referrals) {
     state.referrals = referrals
+  },
+  [mutation.RESET](state) {
+    state.setModal = '#manage-customer'
+    state.referrals = false
+    state.userDetails = false
   },
 }
 

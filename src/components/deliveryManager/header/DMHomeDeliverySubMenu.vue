@@ -6,7 +6,11 @@
           class="active"
           data-related="dm-new-order"
           @click="
-            updateOrderStatus({ orderStatus: 'running', collected: 'no' })
+            updateOrderStatus({
+              orderStatus: 'in-progress',
+              collected: 'no',
+              pageId: 'home_delivery_new',
+            })
           "
         >
           <a href="javascript:void(0)">New Orders</a
@@ -15,7 +19,13 @@
         <li
           class="pick"
           data-related="dm-waiting-for-pick"
-          @click="updateOrderStatus({ orderStatus: 'ready', collected: 'no' })"
+          @click="
+            updateOrderStatus({
+              orderStatus: 'ready',
+              collected: 'no',
+              pageId: 'home_delivery_pick',
+            })
+          "
         >
           <a href="javascript:void(0)">Waiting for Pick</a
           ><span v-if="orderCount">{{ orderCount.ready }}</span>
@@ -24,7 +34,11 @@
           class="pick"
           data-related="dm-delivery-in-progress"
           @click="
-            updateOrderStatus({ orderStatus: 'in-progress', collected: 'no' })
+            updateOrderStatus({
+              orderStatus: 'on-a-way',
+              collected: 'no',
+              pageId: 'home_delivery_in_progress',
+            })
           "
         >
           <a href="javascript:void(0)">Delivery - In Progress</a
@@ -34,7 +48,11 @@
           class="dm-delivered"
           data-related="dm-delivered"
           @click="
-            updateOrderStatus({ orderStatus: 'delivered', collected: 'no' })
+            updateOrderStatus({
+              orderStatus: 'finished',
+              collected: 'no',
+              pageId: 'home_delivery_finished',
+            })
           "
         >
           <a href="javascript:void(0)">Delivered</a

@@ -1,5 +1,6 @@
 import * as mutation from './deliveryManager/mutation-types'
 import DMService from '@/services/data/DeliveryManagerService'
+// import LookupData from '@/plugins/helpers/LookupData'
 /* eslint-disable no-console */
 
 const state = {
@@ -17,27 +18,62 @@ const state = {
   is_pagination: true,
   pageSize: 8,
   pageNumber: 1,
+  selectedStores: '',
+  availableStores: false,
+  params: {
+    query: '',
+    limit: 10,
+    orderBy: 'real_created_datetime',
+    orderStatus: '',
+    page: 1,
+    totalPages: 0,
+    pageId: 'home_delivery_new',
+  },
+  drivers: false,
 }
 const getters = {}
 
 const actions = {
-  fetchDMOrderDetail({ commit, dispatch }) {
+  fetchDMOrderDetail({ commit, state, dispatch }) {
     // return new Promise((resolve, reject) => {
-    const params = ['home_delivery_new', '', 10, 1, 'real_created_datetime']
+    const params = [
+      state.params.query,
+      state.params.limit,
+      state.params.orderBy,
+      state.params.orderStatus,
+      state.params.page,
+      state.params.pageId,
+      state.selectedStores,
+    ]
     DMService.getDMOrderDetails(...params).then(response => {
-      console.log(response.data.data)
-      commit(mutation.SET_DM_ORDERS, response.data.data)
-      dispatch('fetchOrderCount')
-      // dispatch('prepareDeliveredOrderGroup')
+      commit(mutation.SET_DM_ORDERS, response.data)
+      if (state.params.orderStatus === 'abc') {
+        dispatch('getDrivers')
+      }
     })
     // })
   },
+  getDrivers({ commit }) {
+    DMService.getUsers().then(response => {
+      commit(mutation.DRIVERS, response.data.data)
+    })
+  },
 
-  updateDMOrderStatus({ commit, dispatch }, { orderStatus, collected }) {
+  fetchStoreOrders({ commit, dispatch }, storeId) {
+    commit(mutation.SET_SELECTED_STORE, storeId)
+    dispatch('fetchDMOrderDetail')
+  },
+
+  updateDMOrderStatus(
+    { commit, dispatch },
+    { orderStatus, collected, pageId }
+  ) {
+    console.log(pageId)
     if (typeof collected != 'undefined') {
       commit(mutation.SET_DM_ORDER_COLLECTED, collected)
     }
     commit(mutation.SET_DM_ORDER_STATUS, orderStatus)
+    commit(mutation.SET_DM_PAGE_ID, pageId)
     dispatch('fetchDMOrderDetail')
   },
 
@@ -163,10 +199,20 @@ const mutations = {
     state.orderCounts = orderCount
   },
   [mutation.SET_DM_ORDERS](state, orderDetails) {
-    state.orders = orderDetails
+    state.orders = orderDetails.data
+    let stores = orderDetails.page_lookups.stores
+    /*return LookupData.get({
+      collection: stores,
+      matchWith: addressId,
+      selection: 'name',
+    })*/
+    state.availableStores = stores._id
   },
   [mutation.SET_SELECTED_DM_ORDERS](state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails
+  },
+  [mutation.SET_SELECTED_STORE](state, storeId) {
+    state.selectedStores = storeId
   },
   [mutation.SET_SELECTED_DM_DRIVER](state, driverInfo) {
     state.selectedDriver = driverInfo
@@ -182,6 +228,12 @@ const mutations = {
   },
   [mutation.UPDATE_DISPATCH_PAGE_NUMBER](state, pageNumber) {
     state.pageNumber = pageNumber
+  },
+  [mutation.DRIVERS](state, drivers) {
+    state.drivers = drivers
+  },
+  [mutation.SET_DM_PAGE_ID](state, pageId) {
+    state.params.pageId = pageId
   },
 }
 
