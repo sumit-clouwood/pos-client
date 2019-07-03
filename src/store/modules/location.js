@@ -96,7 +96,6 @@ const actions = {
         localStorage.getItem('user').length > 0
           ? JSON.parse(localStorage.getItem('user')).user_id
           : false
-      alert(user_id)
       if (user_id) {
         LocationService.userDetails(user_id).then(response => {
           commit(mutation.USER_DETAILS, response.data)
@@ -121,7 +120,7 @@ const actions = {
     if (!rootState.customer.address && modalSelection != '#loyalty-payment') {
       commit(
         'checkoutForm/SET_MSG',
-        { result: '', data: 'Please select one address' },
+        { result: '', message: 'Please select one address' },
         {
           root: true,
         }

@@ -11,7 +11,7 @@
     <div class="aed-amt">
       <span>{{ formatPrice(orderData.balance_due || 0) }}</span>
     </div>
-    <div class="dlt-btn" @click="dropHoldOrder(orderData)">
+    <div class="dlt-btn" @click="dropHoldOrder({ orderData: orderData })">
       <img src="img/pos/delete-icon.svg" alt="delete" />
     </div>
   </div>
@@ -20,14 +20,15 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 /* global $ */
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Items',
   props: {
     orderData: Object,
   },
   computed: {
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapState('checkoutForm', ['msg']),
   },
   methods: {
     setHoldOrderCart: function(orderData) {
@@ -35,13 +36,21 @@ export default {
       this.$store.dispatch('holdOrders/fetchOrder', orderData)
     },
 
-    dropHoldOrder: function(order) {
-      if (confirm('Are you sure you want to delete this order!')) {
-        this.$store.dispatch('order/removeOrder', {
-          order: order,
-          orderType: 'hold',
-        })
-      }
+    dropHoldOrder: function(data) {
+      $('#payment-msg').modal('show')
+      let msgStr = this._t('Are you really want to delete this record?')
+      this.$store.commit(
+        'checkoutForm/SET_MSG',
+        {
+          result: 'confirm',
+          message: msgStr,
+          record: data.orderData,
+          flag: 'hold order',
+        },
+        {
+          root: true,
+        }
+      )
     },
   },
 }
