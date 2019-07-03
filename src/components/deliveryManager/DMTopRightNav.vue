@@ -7,7 +7,9 @@
     <div class="button-block">
       <div class="change-location">
         <button class="btn btn-success">Change Brand</button>
-        <button class="btn btn-success walkin-btn">Walk-in</button>
+        <button class="btn btn-success walkin-btn">
+          <router-link :to="store" class="text-white">Walk-in</router-link>
+        </button>
       </div>
       <div class="lang-selector">
         <div class="v-menu v-menu--inline">
@@ -27,8 +29,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'DMTopRightNav',
+  computed: {
+    ...mapGetters('context', ['store']),
+  },
 }
 </script>
 
