@@ -232,7 +232,7 @@ div#dm-new-order tfoot {
     background:rgba(63, 74, 74, 0.6);
 }
 
-div#dm-new-order tbody {
+div#dm-new-order tbody, div#dm-delivery-in-progress tbody {
     grid-row-start:1;
     grid-row-end:2;
     overflow:auto;
