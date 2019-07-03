@@ -44,8 +44,11 @@ export default {
     } else {
       type = "";
     }
-
     return DataService.post(`/model/orders/id/${id}/delete${type}`);
+  },
+
+  updateOrderAction(id, action) {
+    return DataService.post(`/model/orders/id/${id}/${action}`);
   },
 
   modifyOrder(order, id, type) {

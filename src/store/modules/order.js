@@ -700,7 +700,17 @@ const actions = {
   },
 
   removeOrder({ dispatch }, { order, orderType }) {
-    OrderService.deleteOrder(order._id, orderType).then(response => {
+    let actionTrigger = orderType
+    if (actionTrigger) {
+      actionTrigger = 'delete_' + actionTrigger
+    } else {
+      actionTrigger = 'delete'
+    }
+    dispatch('updateOrderAction', { order, orderType, actionTrigger })
+  },
+
+  updateOrderAction({ dispatch }, { order, orderType, actionTrigger }) {
+    OrderService.updateOrderAction(order._id, actionTrigger).then(response => {
       if (response.status == 200) {
         switch (orderType) {
           case "hold":
