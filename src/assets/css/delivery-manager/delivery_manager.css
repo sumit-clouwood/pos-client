@@ -77,7 +77,7 @@ ul.dm-ullist > li {
     font-weight: 600; }
   ul.dm-ullist > li.active > a {
     color: rgba(63, 74, 74, 0.8);
-    border-bottom: 3px solid red;
+    border-bottom: 3px solid tomato;
     opacity: 1; }
   ul.dm-ullist > li.pick > span {
     background-color: #f8a634; }
@@ -620,7 +620,9 @@ div.order-address {
   height: auto;
   border-radius: 4px;
   background-color: #fff;
-  overflow: hidden; }
+  overflow: hidden;
+  color: rgba(63, 74, 74, 0.8);
+  font-size: 0.875rem; }
   .table-drivers-filter .body .assigning-block .order {
     display: grid;
     grid-template-rows: auto 1fr;
@@ -645,6 +647,8 @@ div.order-address {
       grid-template-columns: auto 1fr;
       grid-column-gap: 0.625rem;
       padding: 0.3125rem 0.625rem; }
+      .table-drivers-filter .body .assigning-block .order .order-container .menu-items-list .order-id {
+        color: #62bb31; }
     .table-drivers-filter .body .assigning-block .order .order-container .delivery-info {
       height: 100%;
       overflow: auto;
@@ -657,6 +661,21 @@ div.order-address {
       .table-drivers-filter .body .assigning-block .order .order-container .order .cancel-button .button {
         padding: 0.4375rem 0.3125rem; }
 
+.table-drivers-filter .body .assigning-block .order .order-container .landmark .value {
+  padding-top: 0.1875rem;
+  font-weight: bold; }
+
+.assigning-block .button {
+  min-width: 1.25rem;
+  border-radius: 4px;
+  letter-spacing: 0.6px;
+  font-weight: 600;
+  margin-right: 0.3125rem;
+  margin-bottom: 0.3125rem;
+  -webkit-transition: 0.2s linear;
+  transition: 0.2s linear;
+  border: none; }
+
 .button .button-content-container {
   white-space: nowrap; }
   .button .button-content-container .button-caption {
@@ -664,6 +683,11 @@ div.order-address {
 
 .driver-footer > button {
   margin-right: 0.625rem; }
+
+input.input-search-driver {
+  background: url("../../../assets/images/select-arrow.png");
+  background-repeat: no-repeat;
+  background-position: center right 0.625rem; }
 
 /*# sourceMappingURL=deliveryManager.css.map */
 

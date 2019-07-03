@@ -91,7 +91,7 @@ ul.dm-ullist > li {
   }
   &.active > a {
     color: rgba(63, 74, 74, 0.8);
-    border-bottom: 3px solid red;
+    border-bottom: 3px solid $red;
     opacity: 1;
   }
   &.pick > span {
@@ -174,7 +174,7 @@ div#delivery-manager {
       font-stretch: normal;
       line-height: 1.57;
       letter-spacing: 0.6px;
-      color: #a4a4a4;
+      color: $header-gray-light;
       margin-bottom: $px10;
     }
     h5 {
@@ -228,7 +228,7 @@ div {
       padding: $px15 0;
       line-height: $px15;
       &:last-child {
-        color: #a4a4a4;
+        color: $header-gray-light;
         font-weight: normal;
         border-bottom: medium none;
       }
@@ -297,7 +297,7 @@ div#dm-order-history-rec {
 .delivered-order-table {
   th {
     letter-spacing: 0.4px;
-    color: #a4a4a4;
+    color: $header-gray-light;
     font-size: $px12;
     font-weight: normal;
     border: medium none;
@@ -754,7 +754,7 @@ div.order-address {
   background-color: #f6f6f6;
   width: 100%;
   overflow: auto;
-  border: 1px solid #ddd;
+  border: 1px solid $gray-middle;
   z-index: 1;
   margin-top: $px3;
   max-height: $px200;
@@ -771,12 +771,12 @@ div.order-address {
   padding-bottom: $px11;
   height: $px40;
   border: medium none;
-  border-bottom: $px1 solid #ddd;
+  border-bottom: $px1 solid $gray-middle;
   padding: 0;
 }
 
 .dropdown:hover {
-  background-color: #ddd;
+  background-color: $gray-middle;
 }
 
 .driver-container {
@@ -795,6 +795,8 @@ div.order-address {
   border-radius: $block-border-radius;
   background-color: #fff;
   overflow: hidden;
+  color: rgba(63,74,74,0.8);
+  font-size: $px14;
   .order {
     display: grid;
     grid-template-rows: auto 1fr;
@@ -821,6 +823,9 @@ div.order-address {
         grid-template-columns: auto 1fr;
         grid-column-gap: $px10;
         padding: $px5 $px10;
+        .order-id{
+          color: $green;
+        }
       }
       .delivery-info {
         height: 100%;
@@ -841,6 +846,23 @@ div.order-address {
     grid-template-rows: auto 1fr;
   }
 }
+.table-drivers-filter .body .assigning-block .order .order-container .landmark .value {
+  padding-top: $px3;
+  font-weight: bold;
+}
+.assigning-block{
+  .button{
+    min-width: $px20;
+    border-radius: $block-border-radius;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+    margin-right: $px5;
+    margin-bottom: $px5;
+    -webkit-transition: 0.2s linear;
+    transition: 0.2s linear;
+    border: none;
+  }
+}
 
 .button .button-content-container {
   white-space: nowrap;
@@ -852,7 +874,11 @@ div.order-address {
 .driver-footer > button {
   margin-right: $px10;
 }
-
+input.input-search-driver {
+  background: url('../../../assets/images/select-arrow.png');
+  background-repeat: no-repeat;
+  background-position: center right $px10;
+}
 //
 
 /*# sourceMappingURL=deliveryManager.css.map */
