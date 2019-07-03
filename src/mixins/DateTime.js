@@ -134,6 +134,10 @@ export default {
     let dateUTC = moment(date)
       .clone()
       .tz("UTC");
-    return moment.tz(dateUTC.format("YYYY-MM-DD HH:mm:ss"), timezone).toDate();
+    return dateUTC
+      .clone()
+      .tz(timezone)
+      .format("YYYY-MM-DD HH:mm:ss")
+      .toDate();
   }
 };
