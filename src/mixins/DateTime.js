@@ -58,5 +58,82 @@ export default {
       }
       return result;
     }
+  },
+
+  getUTC() {
+    let UTCDate = new Date(); // local datetime
+    UTCDate = new Date(
+      UTCDate.getUTCFullYear(),
+      UTCDate.getUTCMonth(),
+      UTCDate.getUTCDate(),
+      UTCDate.getUTCHours(),
+      UTCDate.getUTCMinutes(),
+      UTCDate.getUTCSeconds()
+    );
+    return UTCDate;
+  },
+
+  getUTCTime(format) {
+    if (format == undefined) {
+      format = "24hr";
+    }
+    if (format == "12hr") {
+      return moment.utc().format("hh:mm A");
+    } else {
+      return moment.utc().format("HH:mm:ss");
+    }
+  },
+
+  getUTCDate() {
+    return moment.utc().format("YYYY-MM-DD");
+  },
+
+  getUTCDateTime() {
+    return moment.utc().format("YYYY-MM-DD HH:mm:ss");
+  },
+
+  getTimezoneTime(timezone, format) {
+    let momentUTC = moment.tz(this.getUTCDateTime(), "UTC");
+    if (format == undefined) {
+      format = "24hr";
+    }
+    if (format == "12hr") {
+      return momentUTC
+        .clone()
+        .tz(timezone)
+        .format("hh:mm A");
+    } else {
+      return momentUTC
+        .clone()
+        .tz(timezone)
+        .format("HH:mm:ss");
+    }
+  },
+
+  getTimezoneDate(timezone) {
+    let momentUTC = moment.tz(this.getUTCDateTime(), "UTC");
+    return momentUTC
+      .clone()
+      .tz(timezone)
+      .format("YYYY-MM-DD");
+  },
+
+  getTimezoneDateTime(timezone) {
+    let momentUTC = moment.tz(this.getUTCDateTime(), "UTC");
+    return momentUTC
+      .clone()
+      .tz(timezone)
+      .format("YYYY-MM-DD HH:mm:ss");
+  },
+
+  convertToTimezone(date, timezone) {
+    /**
+     *  date to UTC then to expected timezone
+     *  return Date()
+     */
+    let dateUTC = moment(date)
+      .clone()
+      .tz("UTC");
+    return moment.tz(dateUTC.format("YYYY-MM-DD HH:mm:ss"), timezone).toDate();
   }
 };

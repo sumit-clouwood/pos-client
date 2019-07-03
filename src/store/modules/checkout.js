@@ -3,9 +3,9 @@ import OrderService from "@/services/data/OrderService";
 import * as mutation from "./checkout/mutation-types";
 //import db from '@/services/network/DB'
 //import Crypt from '@/plugins/helpers/Crypt.js'
-import DateTime from "@/plugins/helpers/DateTime.js";
 import Num from "@/plugins/helpers/Num.js";
 import * as CONSTANTS from "@/constants";
+import DateTime from "@/mixins/DateTime";
 
 // initial state
 const state = {
@@ -63,7 +63,6 @@ const actions = {
         let order = {};
 
         try {
-          const newDate = new DateTime();
           order = {
             customer: "",
             referral: "",
@@ -76,7 +75,9 @@ const actions = {
             order_source: CONSTANTS.ORDER_SOURCE_POS,
             order_type: rootState.order.orderType.OTApi,
             order_mode: "online",
-            real_created_datetime: newDate.getDate() + " " + newDate.getTime(),
+            real_created_datetime: DateTime.getTimezoneDateTime(
+              rootState.location.timezoneString
+            ),
             // order_mode: 'online',
             //remove the modifiers prices from subtotal
             sub_total: Num.round(rootGetters["order/subTotal"]),

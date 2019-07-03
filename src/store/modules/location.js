@@ -3,12 +3,14 @@ import * as mutation from "./location/mutation-types";
 import LocationService from "@/services/data/LocationService";
 import Num from "@/plugins/helpers/Num";
 import db from "@/services/network/DB";
+import TimezoneService from "@/services/data/TimezoneService";
 
 // initial state
 const state = {
   currency: "AED",
   locale: "en-US",
   timezone: "Asia/Dubai",
+  timezoneString: "Asia/Dubai",
   brand: null,
   store: null,
   availableLanguages: null,
@@ -32,7 +34,9 @@ const getters = {
     }
     return str;
   },
-  currency: state => state.currency
+  currency: state => state.currency,
+  timezone: state => state.timezone,
+  timezoneString: state => state.timezoneString
 };
 
 // actions
@@ -49,10 +53,22 @@ const actions = {
             mutation.SET_AVAILABLE_LANGUAGES,
             storedata.data.available_lang
           );
-
           commit(mutation.SET_LOCATION, state.store.address);
           commit(mutation.SET_CURRENCY, state.store.currency);
           commit(mutation.SET_TIMEZONE, state.brand.timezone);
+
+          TimezoneService.getTimezoneData(state.brand.timezone)
+            .then(timezoneData => {
+              let timezoneName = timezoneData.data.item.name.split(" ");
+              if (timezoneName[0] != undefined) {
+                commit(mutation.SET_TIMEZONE_STRING, timezoneName[0]);
+              } else {
+                commit(mutation.SET_TIMEZONE_STRING, "Asia/Dubai");
+              }
+            })
+            .catch(error => {
+              reject(error);
+            });
 
           commit("modules/SET_ENABLED_MODULES", state.brand.enabled_modules, {
             root: true
@@ -159,6 +175,9 @@ const mutations = {
   },
   [mutation.SET_TIMEZONE](state, timezone) {
     state.timezone = timezone;
+  },
+  [mutation.SET_TIMEZONE_STRING](state, timezoneString) {
+    state.timezoneString = timezoneString;
   },
   [mutation.SET_AVAILABLE_LANGUAGES](state, languages) {
     state.availableLanguages = languages;

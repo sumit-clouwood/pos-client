@@ -135,7 +135,7 @@ export default class {
 
   dateToday() {
     this.parseTime();
-    //   Tuesday, 13 Oct 2017
+    //Tuesday, 13 Oct 2017
     return (
       this.weekdayFull +
       ", " +
@@ -145,77 +145,5 @@ export default class {
       " " +
       this.year
     );
-  }
-
-  getUTC() {
-    let UTCDate = new Date(); // local datetime
-    UTCDate = new Date(
-      UTCDate.getUTCFullYear(),
-      UTCDate.getUTCMonth(),
-      UTCDate.getUTCDate(),
-      UTCDate.getUTCHours(),
-      UTCDate.getUTCMinutes(),
-      UTCDate.getUTCSeconds()
-    );
-    return UTCDate;
-  }
-
-  getUTCTime(_format) {
-    let date = this.getUTC();
-    if (_format == undefined) {
-      _format = "12hr";
-    }
-    var hr = date.getHours();
-    var min = date.getMinutes();
-    var second = date.getSeconds();
-    if (hr.toString().length == 1) {
-      min = "0" + min;
-    }
-    if (min.toString().length == 1) {
-      min = "0" + min;
-    }
-    if (second.toString().length == 1) {
-      second = "0" + second;
-    }
-    var am_pm = "AM";
-    if (hr > 12) {
-      hr -= 12;
-      am_pm = "PM";
-    }
-    if (_format == "12hr") {
-      return `${hr}:${min} ${am_pm}`;
-    } else {
-      return `${hr}:${min}:${second}`;
-    }
-  }
-
-  getUTCDate() {
-    let date = this.getUTC();
-    var year = date.getFullYear();
-    var month = date.getMonth() + 1;
-    var day = date.getDate();
-    if (month.toString().length == 1) {
-      month = "0" + month;
-    }
-    if (day.toString().length == 1) {
-      day = "0" + day;
-    }
-    return `${year}-${month}-${day}`;
-  }
-
-  getUTCDateTime() {
-    return `${this.getUTCDate()} ${this.getUTCTime()}`;
-  }
-
-  getCurrentTimezoneTime() {
-    return `${this.getUTCDate()} ${this.getUTCTime()}`;
-  }
-
-  getCurrentTimezoneDate() {
-    return `${this.getUTCDate()} ${this.getUTCTime()}`;
-  }
-
-  getCurrentTimezoneDateTime() {
-    return `${this.getUTCDate()} ${this.getUTCTime()}`;
   }
 }
