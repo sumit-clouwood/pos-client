@@ -105,4 +105,8 @@
         font-size: 0.875rem;
         margin-top: 0.3125rem; }
 
+.dm-manager .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav {
+  width: 3.25rem;
+  min-height: 2.3125rem; }
+
 /*# sourceMappingURL=navbar.css.map */

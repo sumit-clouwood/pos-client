@@ -151,3 +151,17 @@
     }
   }
 }
+.dm-manager{
+  .navigation {
+    .navigation-list-wrapper{
+      .navigation-list{
+        .nav-item{
+          .nav-link-nav{
+            width: $dm-nav-link-width;
+            min-height: $dm-nav-link-height;
+          }
+        }
+      }
+    }
+  }
+}
