@@ -35,7 +35,24 @@
                 {{ _t('Select Driver') }}
               </div>
               <div class="autocomplete-container">
-                <div class="drivers-list-note">
+                <div v-if="driverList">
+                  <input
+                    autocomplete="off"
+                    type="text"
+                    class="inputSearch"
+                    id="getCustomerList"
+                  />
+                  <div id="myDropdown" class="dropdown-content">
+                    <span
+                      class="showItem cursor-pointer"
+                      v-for="driver in driverList"
+                      :key="driver._id"
+                      v-on:click="selectedDriver(driver)"
+                      >{{ driver.name }}</span
+                    >
+                  </div>
+                </div>
+                <div v-else class="drivers-list-note">
                   {{ _t('No Drivers Available') }}
                 </div>
               </div>
@@ -200,5 +217,34 @@ export default {
   width: 100%;
   height: 100%;
   background-color: transparent;
+}
+
+/*search driver*/
+.dropdown-content {
+  /*display: block;*/
+  position: absolute;
+  background-color: #f6f6f6;
+  width: 100%;
+  overflow: auto;
+  border: 1px solid #ddd;
+  z-index: 1;
+  margin-top: 3px;
+  max-height: 200px;
+}
+
+.dropdown-content span {
+  color: black;
+  padding: 6px 16px;
+  text-decoration: none;
+  display: block;
+}
+.inputSearch {
+  /*width: 337px;*/
+  padding-bottom: 11px;
+  height: 48px;
+  border-radius: 5px 0px 0px 5px;
+}
+.dropdown span:hover {
+  background-color: #ddd;
 }
 </style>
