@@ -31,13 +31,8 @@
 </template>
 
 <script>
-<<<<<<< HEAD
 import { mapState, mapActions } from "vuex";
 import paginate from "vuejs-paginate";
-=======
-import { mapState, mapActions, mapGetters } from 'vuex'
-import paginate from 'vuejs-paginate'
->>>>>>> db728634f4ab6bce37a1de0b1836c5ec5bc42345
 // import Header from './holdingOrders/Header.vue'
 import Items from "./holdingOrders/Items.vue";
 
