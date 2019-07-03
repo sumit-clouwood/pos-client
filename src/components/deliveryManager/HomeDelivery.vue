@@ -35,16 +35,16 @@
                 {{ _t('Select Driver') }}
               </div>
               <div class="autocomplete-container">
-                <div v-if="driverList">
+                <div v-if="driverList" class="driver-container">
                   <input
                     autocomplete="off"
                     type="text"
-                    class="inputSearch"
-                    id="getCustomerList"
+                    class="input-search-driver"
+                    id="get-customer-list"
                   />
-                  <div id="myDropdown" class="dropdown-content">
+                  <div id="my-dropdown" class="dropdown-content cursor-pointer">
                     <span
-                      class="showItem cursor-pointer"
+                      class="dropdown"
                       v-for="driver in driverList"
                       :key="driver._id"
                       v-on:click="selectedDriver(driver)"
@@ -221,7 +221,7 @@ export default {
 
 /*search driver*/
 .dropdown-content {
-  /*display: block;*/
+  display: block;
   position: absolute;
   background-color: #f6f6f6;
   width: 100%;
@@ -238,13 +238,21 @@ export default {
   text-decoration: none;
   display: block;
 }
-.inputSearch {
-  /*width: 337px;*/
+.input-search-driver {
+  width: 100%;
   padding-bottom: 11px;
-  height: 48px;
-  border-radius: 5px 0px 0px 5px;
+  height: 40px;
+  border: medium none;
+  border-bottom: 1px solid #ddd;
+  padding: 0;
 }
-.dropdown span:hover {
+.dropdown:hover {
   background-color: #ddd;
+}
+.driver-container {
+  position: relative;
+}
+.input-search-driver:focus {
+  outline: none;
 }
 </style>
