@@ -36,16 +36,20 @@ export default {
     },
     doprint() {
       this.$refs.iframe.contentWindow.print()
-      if (this.$store.state.order.orderType.OTApi === 'call_center') {
-        //this.$router.replace({ name: 'DeliveryManagerLive' })
-        window.location = process.env.VUE_APP_DELIVERY_MANAGER_URL.replace(
-          '{brand_id}',
-          this.$store.state.context.brandId
-        )
-      }
     },
   },
   watch: {
+    print(newVal) {
+      if (newVal) {
+        if (this.$store.state.order.orderType.OTApi === 'call_center') {
+          this.$router.replace({ name: 'DeliveryManager' })
+          // window.location = process.env.VUE_APP_DELIVERY_MANAGER_URL.replace(
+          //   '{brand_id}',
+          //   this.$store.state.context.brandId
+          // )
+        }
+      }
+    },
     templateHtml(newVal) {
       if (newVal) {
         this.$store.commit('checkout/PRINT', false)

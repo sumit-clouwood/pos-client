@@ -44,9 +44,6 @@ export default {
         if (this.method.type == CONST.GIFT_CARD) {
           showModal('#Gift-card-payemnt')
         } else if (this.method.reference_code) {
-          /*else if (this.method.type == CONST.LOYALTY) {
-          //show loyalty popup if needed
-        }*/
           showModal('#card-payemnt')
         } else {
           //cash payments

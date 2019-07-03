@@ -459,36 +459,53 @@ const actions = {
 
             resolve(response.data)
 
-            dispatch('invoice/printRules', null, { root: true }).then(() => {
-              //get print rules
-              //get invoice template
-              const templateId = rootGetters['invoice/templateId']
-              dispatch(
-                'invoice/fetchTemplate',
-                {
-                  orderId: rootState.order.orderId,
-                  templateId: templateId,
-                },
-                {
-                  root: true,
-                }
-              ).then(() => {
-                commit(
-                  'checkoutForm/SET_MSG',
-                  { result: 'success', message: msgStr },
+            if (
+              rootState.order.orderType.OTApi !==
+              CONSTANTS.ORDER_TYPE_CALL_CENTER
+            ) {
+              dispatch('invoice/printRules', null, { root: true }).then(() => {
+                //get print rules
+                //get invoice template
+                const templateId = rootGetters['invoice/templateId']
+                dispatch(
+                  'invoice/fetchTemplate',
+                  {
+                    orderId: rootState.order.orderId,
+                    templateId: templateId,
+                  },
                   {
                     root: true,
                   }
-                )
-                resolve(response.data)
+                ).then(() => {
+                  //invoice print is triggered by the success ok button
+                })
               })
-            })
-          } else {
-            const error =
-              typeof response.data.error !== 'undefined'
-                ? response.data.error
-                : response.data.message
+            } else {
+              commit(mutation.PRINT, true)
+            }
 
+            commit(
+              'checkoutForm/SET_MSG',
+                  { result: 'success', message: msgStr },
+              {
+                root: true,
+              }
+            )
+            resolve(response.data)
+          } else {
+            let error = ''
+            if (response.data.status == 'form_errors') {
+              for (let i in response.data.form_errors) {
+                response.data.form_errors[i].forEach(
+                  err => (error += ' ' + err)
+                )
+              }
+            } else {
+              error =
+                typeof response.data.error !== 'undefined'
+                  ? response.data.error
+                  : response.data.message
+            }
             commit(
               'checkoutForm/SET_ERROR',
               `Order Failed, Server Response: ${error}`,
