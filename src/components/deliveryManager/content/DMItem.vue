@@ -16,7 +16,7 @@
         </tfoot>-->
       <tbody>
         <tr :key="index" v-for="(order, index) in orderDetails">
-          <td class="">
+          <td v-if="order.order_status == orderStatus">
             <div class="order-item">
               <div class="order-header">
                 <div class="number-id-button">
@@ -37,10 +37,21 @@
                     {{ order.balance_due + ' ' + order.currency }}
                   </div>
                 </div>
-                <div class="order_time">08:22 PM</div>
+                <div class="order_time">
+                  {{ convertDatetime(order.real_created_datetime) }}
+                </div>
                 <div class="button-block" style="visibility: visible;">
+                  <span
+                    v-if="
+                      orderStatus == 'ready' && actionDetails.driverId == ''
+                    "
+                  >
+                    <span class="select-driver-caption assign_driver">
+                      Select driver
+                    </span>
+                  </span>
                   <button
-                    v-if="orderStatus == 'in-progress'"
+                    v-else
                     @click="
                       updateOrderAction({
                         order: order,
@@ -54,13 +65,10 @@
                     <div class="button-content-container">
                       <div class="button-icon-container"><!----></div>
                       <div class="button-caption">
-                        {{ _t('Ready') }}
+                        {{ actionDetails.action }}
                       </div>
                     </div>
                   </button>
-                  <span v-if="orderStatus == 'ready'">
-                    <span class="select-driver-caption">Select driver</span>
-                  </span>
                 </div>
                 <div>
                   {{
@@ -130,6 +138,7 @@
 /* global $ */
 import { mapState, mapActions, mapGetters } from 'vuex'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
+import DateTime from '@/mixins/DateTime'
 
 export default {
   name: 'DMItem',
@@ -138,6 +147,8 @@ export default {
       orderCount: 2,
     }
   },
+  mixins: [DateTime],
+
   props: {
     actionDetails: Object,
   },
@@ -161,6 +172,20 @@ export default {
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
+
+    /*updateButtonAction: function(orderStatus) {
+      let actionLabel = 'Ready'
+      if (orderStatus === 'in-progress') {
+        actionLabel = 'Ready'
+      } else if (orderStatus === 'on-a-way') {
+        actionLabel = 'Delivered'
+      } else {
+        actionLabel = 'Assign'
+      }
+      // eslint-disable-next-line no-console
+      console.log(orderStatus)
+      return this._t(actionLabel)
+    },*/
 
     DMOrderStatus: function({ actionDetails, orderId, orderType }) {
       let timestamp = Date.now()
