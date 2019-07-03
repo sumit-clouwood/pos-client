@@ -700,13 +700,13 @@ const actions = {
   },
 
   removeOrder({ dispatch }, { order, orderType }) {
-    let actionTrigger = orderType
+    let actionTrigger = orderType;
     if (actionTrigger) {
-      actionTrigger = 'delete_' + actionTrigger
+      actionTrigger = "delete_" + actionTrigger;
     } else {
-      actionTrigger = 'delete'
+      actionTrigger = "delete";
     }
-    dispatch('updateOrderAction', { order, orderType, actionTrigger })
+    dispatch("updateOrderAction", { order, orderType, actionTrigger });
   },
 
   updateOrderAction({ dispatch }, { order, orderType, actionTrigger }) {

@@ -3,7 +3,7 @@
     <!--    <Header />-->
     <div class="error" v-if="holdOrderList.length == 0">
       <span class="text-danger text-center">
-        {{ _t('Nothing found.') }}
+        {{ _t("Nothing found.") }}
       </span>
     </div>
     <div class="wrappers-order-block show" v-if="holdOrderList">
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 import paginate from "vuejs-paginate";
 // import Header from './holdingOrders/Header.vue'
 import Items from "./holdingOrders/Items.vue";
@@ -45,7 +45,7 @@ export default {
   },
   props: {},
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters("location", ["_t"]),
     ...mapState({
       holdOrderList: state => state.holdOrders.getHoldOrders
     }),

@@ -44,7 +44,7 @@
                       updateOrderAction({
                         order: order,
                         orderType: order.order_type,
-                        actionTrigger: 'delivery_ready',
+                        actionTrigger: 'delivery_ready'
                       })
                     "
                     class="button text-button btn btn-success"
@@ -125,7 +125,7 @@
 <script>
 /* global $ */
 import { mapState, mapActions } from "vuex";
-import OrderDetailsPopup from "@/components/pos/content/OrderDetailPopup"
+import OrderDetailsPopup from "@/components/pos/content/OrderDetailPopup";
 
 export default {
   name: "DMItem",
@@ -138,7 +138,7 @@ export default {
     actionDetails: Object
   },
   components: {
-    OrderDetailsPopup,
+    OrderDetailsPopup
   },
   computed: {
     ...mapState({
@@ -146,7 +146,7 @@ export default {
     }),
     ...mapState({
       orderDetails: state => state.deliveryManager.orders,
-      branch: state => state.deliveryManager.availableStores,
+      branch: state => state.deliveryManager.availableStores
       /*foodIcons: state => state.modifiers.foodIcons,*/
     }),
     ...mapState({
