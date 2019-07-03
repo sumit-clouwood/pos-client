@@ -16,7 +16,7 @@
         </tfoot>-->
       <tbody>
         <tr :key="index" v-for="(order, index) in orderDetails">
-          <td class="">
+          <td v-if="order.order_status == orderStatus">
             <div class="order-item">
               <div class="order-header">
                 <div class="number-id-button">
@@ -39,8 +39,15 @@
                 </div>
                 <div class="order_time">08:22 PM</div>
                 <div class="button-block" style="visibility: visible;">
+                  <span v-if="orderStatus == 'ready'">
+                    <span class="select-driver-caption assign_driver">
+                      Select driver
+                    </span>
+                  </span>
                   <button
-                    v-if="orderStatus == 'in-progress'"
+                    v-if="
+                      orderStatus == 'in-progress' || orderStatus == 'on-a-way'
+                    "
                     @click="
                       updateOrderAction({
                         order: order,
@@ -54,13 +61,10 @@
                     <div class="button-content-container">
                       <div class="button-icon-container"><!----></div>
                       <div class="button-caption">
-                        {{ _t('Ready') }}
+                        {{ updateButtonAction(orderStatus) }}
                       </div>
                     </div>
                   </button>
-                  <span v-if="orderStatus == 'ready'">
-                    <span class="select-driver-caption">Select driver</span>
-                  </span>
                 </div>
                 <div>
                   {{
@@ -161,6 +165,20 @@ export default {
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
+
+    updateButtonAction: function(orderStatus) {
+      let actionLabel = 'Ready'
+      if (orderStatus === 'in-progress') {
+        actionLabel = 'Ready'
+      } else if (orderStatus === 'on-a-way') {
+        actionLabel = 'Delivered'
+      } else {
+        actionLabel = 'Assign'
+      }
+      // eslint-disable-next-line no-console
+      console.log(orderStatus)
+      return this._t(actionLabel)
+    },
 
     DMOrderStatus: function({ actionDetails, orderId, orderType }) {
       let timestamp = Date.now()
