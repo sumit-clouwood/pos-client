@@ -68,22 +68,31 @@
                 type="button"
                 class="button btn btn-success"
                 v-if="assignToBucket.length"
+                @click="
+                  updateOrderAction({
+                    order: order,
+                    orderType: order.order_type,
+                    actionTrigger: 'assign_driver',
+                  })
+                "
               >
                 <div class="button-content-container">
                   <div class="button-icon-container"><!----></div>
                   <div class="button-caption">
-                    Assign
+                    {{ _t('Assign') }}
                   </div>
-                </div></button
-              ><button
+                </div>
+              </button>
+              <button
                 type="button"
                 class="button btn btn-success"
                 v-if="assignToBucket.length"
+                @click="removeAssignedOrder('all')"
               >
                 <div class="button-content-container">
                   <div class="button-icon-container"><!----></div>
                   <div class="button-caption">
-                    Remove All
+                    {{ _t('Remove All') }}
                   </div>
                 </div>
               </button>
@@ -164,6 +173,9 @@ export default {
     },
     getSelectUser: function() {
       // this.selectedUser = $('#get-customer-list').val()
+    },
+    removeAssignedOrder: function(order) {
+      this.$store.commit('order/RE_ASSIGNED_BUCKET', order)
     },
     ...mapActions('deliveryManager', ['selectDriver']),
     /*imageLoadError() {

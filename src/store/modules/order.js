@@ -713,7 +713,8 @@ const actions = {
     if (actionTrigger === 'assignToBucket') {
       commit(mutation.ASSIGNED_BUCKET, order)
     } else {
-      OrderService.updateOrderAction(order._id, actionTrigger).then(
+      let params = { driver: state.selectedDriver }
+      OrderService.updateOrderAction(order._id, actionTrigger, params).then(
         response => {
           if (response.status == 200) {
             switch (orderType) {
@@ -862,11 +863,13 @@ const mutations = {
   },
   [mutation.RE_ASSIGNED_BUCKET](state, orderId) {
     let bucket = []
-    state.assignToBucket.filter(function(ele) {
-      if (ele._id != orderId) {
-        bucket.push(ele)
-      }
-    })
+    if (orderId != 'all') {
+      state.assignToBucket.filter(function(ele) {
+        if (ele._id != orderId) {
+          bucket.push(ele)
+        }
+      })
+    }
     state.assignToBucket = []
     state.assignToBucket = bucket
   },

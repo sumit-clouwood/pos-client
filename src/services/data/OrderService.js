@@ -38,8 +38,8 @@ export default {
     return DataService.get(`/model/${modal}/id/${id}`, 'brand')
   },
 
-  updateOrderAction(id, action) {
-    return DataService.post(`/model/orders/id/${id}/${action}`)
+  updateOrderAction(id, action, params) {
+    return DataService.post(`/model/orders/id/${id}/${action}`, params)
   },
 
   modifyOrder(order, id, type) {
