@@ -22,5 +22,5 @@ export default {
 
 <style lang="css">
 @import '../../src/assets/css/style.css';
-@import '../../public/css/deliveryManager.css';
+@import '../../src/assets/css/delivery-manager/delivery_manager.css';
 </style>
