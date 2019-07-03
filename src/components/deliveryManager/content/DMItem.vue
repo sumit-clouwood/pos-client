@@ -29,8 +29,8 @@
                       data-toggle="modal"
                     >
                       #{{ order.order_no }}
-                    </span></span
-                  >
+                    </span>
+                  </span>
                 </div>
                 <div class="order_price-container">
                   <div class="order_price">
@@ -40,6 +40,7 @@
                 <div class="order_time">08:22 PM</div>
                 <div class="button-block" style="visibility: visible;">
                   <button
+                    v-if="orderStatus == 'in-progress'"
                     @click="
                       updateOrderAction({
                         order: order,
@@ -53,10 +54,13 @@
                     <div class="button-content-container">
                       <div class="button-icon-container"><!----></div>
                       <div class="button-caption">
-                        Ready
+                        {{ _t('Ready') }}
                       </div>
                     </div>
                   </button>
+                  <span v-if="orderStatus == 'ready'">
+                    <span class="select-driver-caption">Select driver</span>
+                  </span>
                 </div>
                 <div>
                   {{
@@ -124,7 +128,7 @@
 
 <script>
 /* global $ */
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 
 export default {
@@ -152,6 +156,7 @@ export default {
     ...mapState({
       locationName: state => state.location.locationName,
     }),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
@@ -340,5 +345,11 @@ div.order-address {
 .block-table-page-container table tbody td {
   border: medium none;
   padding: 0;
+}
+.select-driver-caption {
+  color: #ff6d58;
+  text-align: right;
+  font-weight: normal;
+  font-style: italic;
 }
 </style>
