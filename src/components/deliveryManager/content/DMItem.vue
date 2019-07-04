@@ -41,34 +41,36 @@
                   {{ convertDatetime(order.real_created_datetime) }}
                 </div>
                 <div class="button-block" style="visibility: visible;">
-                  <span
-                    v-if="
-                      orderStatus == 'ready' && actionDetails.driverId == ''
-                    "
-                  >
-                    <span class="select-driver-caption assign_driver">
-                      Select driver
+                  <div v-if="actionDetails.action != ''">
+                    <span
+                      v-if="
+                        orderStatus == 'ready' && actionDetails.driverId == ''
+                      "
+                    >
+                      <span class="select-driver-caption assign_driver">
+                        Select driver
+                      </span>
                     </span>
-                  </span>
-                  <button
-                    v-else
-                    @click="
-                      updateOrder({
-                        order: order,
-                        orderType: order.order_type,
-                        actionTrigger: actionDetails.action,
-                      })
-                    "
-                    class="button text-button btn btn-success"
-                    type="button"
-                  >
-                    <div class="button-content-container">
-                      <div class="button-icon-container"><!----></div>
-                      <div class="button-caption">
-                        {{ actionDetails.actionLabel }}
+                    <button
+                      v-else
+                      @click="
+                        updateOrder({
+                          order: order,
+                          orderType: order.order_type,
+                          actionTrigger: actionDetails.action,
+                        })
+                      "
+                      class="button text-button btn btn-success"
+                      type="button"
+                    >
+                      <div class="button-content-container">
+                        <div class="button-icon-container"><!----></div>
+                        <div class="button-caption">
+                          {{ actionDetails.actionLabel }}
+                        </div>
                       </div>
-                    </div>
-                  </button>
+                    </button>
+                  </div>
                 </div>
                 <div>
                   {{
