@@ -4,7 +4,7 @@
     <div class="dm-ready-order-wrapper" id="dm-new-order">
       <DMItem :actionDetails="readyDetails" />
     </div>
-    <OrderDetailsPopup />
+
     <div class="dm-ready-order-wrapper" id="dm-waiting-for-pick">
       <section
         class="with-drivers-filter block-table-page-container pagination_disabled"
@@ -118,7 +118,6 @@ import DMItem from '@/components/deliveryManager/content/DMItem'
 // import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredItem'
 import DMAssignedDriver from '@/components/deliveryManager/partial/DMAssignedDriver'
 import { mapState, mapActions, mapGetters } from 'vuex'
-import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 /* global $ */
 export default {
   name: 'HomeDelivery',
@@ -156,7 +155,6 @@ export default {
     DMHomeDeliverySubMenu,
     DMItem,
     // DMDeliveredItem,
-    OrderDetailsPopup,
     DMAssignedDriver,
   },
   computed: {

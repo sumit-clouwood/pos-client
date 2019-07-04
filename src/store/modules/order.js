@@ -714,6 +714,7 @@ const actions = {
   updateOrderAction({ commit, dispatch }, { order, orderType, actionTrigger }) {
     if (actionTrigger === 'assignToBucket') {
       commit(mutation.ASSIGNED_BUCKET, order)
+      dispatch('deliveryManager/removeFromReady', order)
     } else {
       let params = { driver: state.selectedDriver }
       OrderService.updateOrderAction(order._id, actionTrigger, params).then(

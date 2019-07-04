@@ -46,15 +46,19 @@ const actions = {
     ]
     DMService.getDMOrderDetails(...params).then(response => {
       commit(mutation.SET_DM_ORDERS, response.data)
-      if (state.deliveryOrderStatus === 'ready') {
-        dispatch('getDrivers')
-      }
+      dispatch('getDrivers')
     })
-    // })
   },
   getDrivers({ commit }) {
-    DMService.getUsers().then(response => {
-      commit(mutation.DRIVERS, response.data.data)
+    DMService.getRoles().then(response => {
+      const role = response.data.data.find(
+        user => user.start_path === 'delivery_home'
+      )
+      if (role) {
+        DMService.getUsers(role._id).then(response => {
+          commit(mutation.DRIVERS, response.data.data)
+        })
+      }
     })
   },
 
