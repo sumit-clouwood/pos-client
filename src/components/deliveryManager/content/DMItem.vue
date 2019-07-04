@@ -132,14 +132,12 @@
         </tr>
       </tbody>
     </table>
-    <OrderDetailsPopup />
   </div>
 </template>
 
 <script>
 /* global $ */
 import { mapState, mapActions, mapGetters } from 'vuex'
-import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import DateTime from '@/mixins/DateTime'
 
 export default {
@@ -153,9 +151,6 @@ export default {
 
   props: {
     actionDetails: Object,
-  },
-  components: {
-    OrderDetailsPopup,
   },
   computed: {
     ...mapState({

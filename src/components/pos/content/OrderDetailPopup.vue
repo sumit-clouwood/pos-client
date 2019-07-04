@@ -8,13 +8,11 @@
     id="orderDetailsPopup"
   >
     <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="col-md-5">
-          <div data-v-f6351270="" class="left-part">
-            <LeftPart :orderDetails="selectedOrder" />
-          </div>
+      <div class="dialog-body modal-content">
+        <div class="left-part">
+          <LeftPart :orderDetails="selectedOrder" />
         </div>
-        <div class="col-md-7 right-part">
+        <div class="right-part">
           <div class="tab-content" id="nav-tabContent">
             <RightPartHeader />
 
@@ -24,6 +22,69 @@
             <Modification />
             <Payment :orderDetails="selectedOrder.item" />
           </div>
+        </div>
+        <div class="buttons">
+          <div class="v-menu v-menu--inline">
+            <div class="v-menu__activator">
+              <div class="dropdown">
+                <button
+                  class="button btn btn-success dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  {{ _t('Reprint') }}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    v-for="(invoice, index) in selectedOrder.invoice"
+                    :key="index"
+                    >{{ invoice.name }}</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="button text-button btn btn-success">
+            <div class="button-content-container">
+              <div class="button-icon-container"></div>
+              <div class="button-caption">
+                {{ _t('Cancel Order') }}
+              </div>
+            </div>
+          </button>
+          <button type="button" class="button text-button btn btn-success">
+            <div class="button-content-container">
+              <div class="button-icon-container"></div>
+              <div class="button-caption">
+                {{ _t('Modify Order') }}
+              </div>
+            </div>
+          </button>
+          <button
+            type="button"
+            class="button past-order-buttons btn btn-success"
+          >
+            <div class="button-content-container">
+              <div class="button-icon-container"></div>
+              <div class="button-caption">
+                {{ _t('Open Past Orders') }}
+              </div>
+            </div>
+          </button>
+          <button type="button" class="button close-button btn btn-success">
+            <div class="button-content-container">
+              <div class="button-icon-container"></div>
+              <div class="button-caption">
+                {{ _t('Close') }}
+              </div>
+            </div>
+          </button>
+          <iframe frameborder="0" srcdoc="" width="0px" height="0px"></iframe>
         </div>
       </div>
     </div>
@@ -37,7 +98,7 @@ import Modification from '@/components/pos/content/orderDetails/rightContent/Mod
 import Payment from '@/components/pos/content/orderDetails/rightContent/Payment'
 import RightPartHeader from '@/components/pos/content/orderDetails/RightPartHeader'
 import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'OrderDetailPopup',
@@ -52,17 +113,12 @@ export default {
   },
   computed: {
     ...mapState('order', ['selectedOrder']),
+    ...mapGetters('location', ['_t']),
   },
 }
 </script>
 <style scoped lang="scss">
 #orderDetailsPopup .modal-dialog {
   max-width: 70%;
-}
-#orderDetailsPopup .modal-content {
-  flex-direction: row;
-}
-div#nav-tabContent {
-  margin: 25px;
 }
 </style>

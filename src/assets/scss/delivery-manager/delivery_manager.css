@@ -12,15 +12,6 @@ a.da-link {
   background-color: #f9f2f4;
   border-radius: 4px; }
 
-.dm-screen-wrap {
-  overflow: hidden;
-  width: 100%;
-  max-width: 100%;
-  background: #fff; }
-  .dm-screen-wrap .dm-title {
-    width: 100%;
-    padding-left: 4.375rem; }
-
 .dm-manager nav#mainNav {
   border-bottom: medium none; }
 .dm-manager .contain-body-class {
@@ -337,7 +328,9 @@ div#dm-new-order table td {
     .dm-ready-order-wrapper table tr {
       display: block; }
       .dm-ready-order-wrapper table tr td {
-        display: block; } }
+        display: block;
+        padding: 0;
+        border: medium none; } }
 .page-header {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -351,8 +344,7 @@ div#dm-new-order table td {
     display: flex;
     -webkit-box-align: center;
     -ms-flex-align: center;
-    align-items: center;
-    margin-top: 0.25rem; }
+    align-items: center; }
 
 .v-menu__activator {
   -webkit-box-align: center;
@@ -523,15 +515,13 @@ div.order-address {
 
 .with-drivers-filter .drivers-filter {
   overflow: auto;
-  float: right;
-  width: 20%;
-  height: 100%;
+  height: 65vh;
   border-left: 0.0625rem solid rgba(63, 74, 74, 0.3); }
 .with-drivers-filter .home_delivery_pick {
   overflow: auto;
   height: 100%;
   display: inline-block;
-  width: 80%; }
+  width: 100%; }
 
 .block-table-page-container .row {
   display: none; }
@@ -547,7 +537,7 @@ div.order-address {
     border-top: 0.0625rem solid rgba(63, 74, 74, 0.3); }
     .table-drivers-filter .upper .select-driver {
       padding: 0.6875rem;
-      background-color: #f30105;
+      background-color: tomato;
       color: #fff;
       font-weight: 600; }
     .table-drivers-filter .upper .autocomplete-container {
@@ -559,7 +549,7 @@ div.order-address {
     padding: 0.3125rem 0.625rem;
     overflow: auto; }
   .table-drivers-filter .driver-footer {
-    background-color: #f30105;
+    background-color: tomato;
     width: 100%;
     height: 100%;
     text-align: right;
@@ -703,11 +693,94 @@ div.order-address {
 .right-btn-wrap .dropdown-menu > a {
   color: #333; }
 
+.dm-screen-wrap {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  /* padding: 0.625rem 1.25rem 0.9375rem 2.1875rem; */
+  -webkit-box-shadow: 0 0px 3px rgba(23, 23, 32, 0.05), 0 0px 10px rgba(23, 23, 32, 0.05), 0 0px 20px rgba(23, 23, 32, 0.05);
+  box-shadow: 0 0px 3px rgba(23, 23, 32, 0.05), 0 0px 10px rgba(23, 23, 32, 0.05), 0 0px 20px rgba(23, 23, 32, 0.05);
+  z-index: 2;
+  overflow: hidden;
+  background-color: #fff;
+  padding: 0.625rem 1.25rem 0.9375rem 2.1875rem; }
+
+ul.ullist-breadcrump > li {
+  display: inline-block;
+  padding-right: 1.3125rem;
+  position: relative; }
+  ul.ullist-breadcrump > li > a {
+    color: rgba(63, 74, 74, 0.3);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.6px;
+    font-weight: 700; }
+  ul.ullist-breadcrump > li:after {
+    content: ">";
+    position: absolute;
+    right: 0.375rem;
+    top: 0.0625rem;
+    color: rgba(63, 74, 74, 0.3); }
+  ul.ullist-breadcrump > li.active:after {
+    content: none; }
+  ul.ullist-breadcrump > li.active > a {
+    color: rgba(63, 74, 74, 0.8);
+    text-decoration: underline; }
+
 .dm-ready-order-wrapper, .dm-order-take-away, .dm-future-order {
   display: none; }
 
 #dm-new-order {
   display: grid; }
+
+.dialog-body {
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 1.5625rem;
+  padding: 1.5625rem;
+  display: grid;
+  background: #fff; }
+
+.dialog-body .right-part, .dialog-body .left-part {
+  overflow: hidden;
+  max-width: 100%;
+  border: 0.0625rem solid rgba(63, 74, 74, 0.1);
+  height: 100%; }
+
+div#nav-tabContent {
+  border: medium none; }
+
+.dialog-body .buttons {
+  text-align: right;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  padding-top: 0.9375rem; }
+.dialog-body button.button {
+  margin-right: 0.3125rem;
+  margin-bottom: 0.3125rem; }
+
+.v-menu--inline {
+  display: inline-block; }
+
+.past-order-buttons {
+  float: left; }
+
+.button.close-button {
+  color: gray;
+  background: rgba(128, 128, 128, 0.2);
+  border-color: rgba(128, 128, 128, 0.2); }
+
+section.with-drivers-filter {
+  display: grid;
+  grid-template-columns: 1fr auto; }
+
+.v-menu__activator .dropdown.show:focus, .v-menu__activator .dropdown:hover {
+  background: transparent;
+  outline: none; }
+
+.v-menu__activator .dropdown-menu.show > a:hover {
+  background: #f1f1f1; }
+
+.v-menu__activator .dropdown-menu.show {
+  padding: 0; }
 
 /*# sourceMappingURL=deliveryManager.css.map */
 

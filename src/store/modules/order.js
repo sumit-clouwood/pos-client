@@ -695,6 +695,8 @@ const actions = {
       orderDetails.customer = response.data.collected_data.customer
       orderDetails.lookups = response.data.collected_data.page_lookups
       orderDetails.store_name = response.data.collected_data.store_name
+      orderDetails.invoice =
+        response.data.collected_data.store_invoice_templates
       commit(mutation.SET_ORDER_DETAILS, orderDetails)
     })
   },
