@@ -904,5 +904,10 @@ div.order-address {
   }
 }
 //
-
+.dm-ready-order-wrapper, .dm-order-take-away, .dm-future-order  {
+  display: none;
+}
+#dm-new-order {
+  display: grid;
+}
 /*# sourceMappingURL=deliveryManager.css.map */
