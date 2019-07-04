@@ -60,18 +60,6 @@
         </li>
       </ul>
     </div>
-    <div class="dm-delivery-assistants">
-      <button
-        id="dm-assistant"
-        data-toggle="modal"
-        data-target="#delivery-assistant"
-      >
-        <span
-          ><img src="img/other/delivery-assistant.png" alt="delivery"
-        /></span>
-        Delivery Assistant
-      </button>
-    </div>
   </div>
 </template>
 

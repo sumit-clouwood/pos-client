@@ -2963,6 +2963,10 @@ body {
   grid-template-columns: 8.125rem 1fr;
   grid-template-rows: 5.3125rem 1fr 6.25rem; }
 
+.dm-manager .new-pos {
+  grid-template-columns: 4.6875rem 1fr;
+  grid-template-rows: 6.25rem 1fr 6.25rem; }
+
 .modal-backdrop {
   display: none; }
 
@@ -3072,6 +3076,10 @@ body {
         color: #fff;
         font-size: 0.875rem;
         margin-top: 0.3125rem; }
+
+.dm-manager .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav {
+  width: 3.25rem;
+  min-height: 2.3125rem; }
 
 .main {
   display: grid;

@@ -6,28 +6,6 @@
     </div>
 
     <div class="dm-ready-order-wrapper" id="dm-waiting-for-pick">
-      <!--<div class="select-driver" v-if="driverList">
-        <button
-          type="button"
-          class="btn dropdown-toggle"
-          data-toggle="dropdown"
-        >
-          Select Driver
-        </button>
-        <ul class="dropdown-menu">
-          <li v-for="(driver, index) in driverList" :key="index">
-            &lt;!&ndash;<img
-              :src="driver.driverImagePath"
-              class="pull-left driverImg"
-              @error="imageLoadError()"
-            />&ndash;&gt;
-            <a href="javascript:void(0)" @click="selectedDriver(driver)">{{
-              driver.name
-            }}</a>
-          </li>
-        </ul>
-        &lt;!&ndash; <p>Show Available Drivers</p> &ndash;&gt;
-      </div>-->
       <section
         class="with-drivers-filter block-table-page-container pagination_disabled"
       >
@@ -36,7 +14,7 @@
             <div class="col-md-12">
               <div class="form-group form-inline float-left search">
                 <div class="search-field">
-                  <label for="search_AnBPx" class="">Filter:</label
+                  <label for="search_AnBPx" class="">{{ _t("Filter") }}:</label
                   ><input
                     type="text"
                     placeholder="Search Waiting For Pick"
@@ -54,10 +32,12 @@
           <div class="table-drivers-filter">
             <div class="upper">
               <div class="select-driver">
-                Select Driver
+                {{ _t("Select Driver") }}
               </div>
               <div class="autocomplete-container">
-                <div class="drivers-list-note">No Drivers Available</div>
+                <div class="drivers-list-note">
+                  {{ _t("No Drivers Available") }}
+                </div>
               </div>
             </div>
             <div class="body"></div>
@@ -70,7 +50,7 @@
                 <div class="button-content-container">
                   <div class="button-icon-container"><!----></div>
                   <div class="button-caption">
-                    Remove All
+                    {{ _t("Remove All") }}
                   </div>
                 </div>
               </button>
@@ -92,7 +72,7 @@
 import DMHomeDeliverySubMenu from "@/components/deliveryManager/header/DMHomeDeliverySubMenu";
 import DMItem from "@/components/deliveryManager/content/DMItem";
 import DMDeliveredItem from "@/components/deliveryManager/content/DMDeliveredItem";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
   name: "HomeDelivery",
@@ -124,7 +104,8 @@ export default {
   computed: {
     ...mapState({
       driverList: state => state.deliveryManager.drivers
-    })
+    }),
+    ...mapGetters("location", ["_t"])
   },
 
   mounted() {

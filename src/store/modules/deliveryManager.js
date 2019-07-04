@@ -40,14 +40,14 @@ const actions = {
       state.params.query,
       state.params.limit,
       state.params.orderBy,
-      state.params.orderStatus,
+      state.deliveryOrderStatus,
       state.params.page,
       state.params.pageId,
       state.selectedStores
     ];
     DMService.getDMOrderDetails(...params).then(response => {
       commit(mutation.SET_DM_ORDERS, response.data);
-      if (state.params.orderStatus === "abc") {
+      if (state.deliveryOrderStatus === "ready") {
         dispatch("getDrivers");
       }
     });

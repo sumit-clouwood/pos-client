@@ -13,7 +13,12 @@ body {
   grid-template-columns: $navigation-width 1fr;
   grid-template-rows: $header-height 1fr $footer-height;
 }
-
+.dm-manager {
+  .new-pos{
+    grid-template-columns: $dm-navigation-width 1fr;
+    grid-template-rows: $dm-header-height 1fr $footer-height;
+  }
+}
 .modal-backdrop{
   display: none;
 }

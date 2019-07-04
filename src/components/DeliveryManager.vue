@@ -35,8 +35,6 @@
     <DMOrderDetails />
     <!-- End Delivery maanger screen -->
 
-    <!-- Delivery Assistant popup -->
-    <DeliveryAssistant />
     <!-- End Delivery Assitant popup -->
 
     <div class="modal-backdrop fade show" id="transparent-screen"></div>
@@ -46,7 +44,6 @@
 <script>
 import SystemNavigation from "@/components/SystemNavigation";
 import DMMenu from "@/components/deliveryManager/header/DMMenu";
-import DeliveryAssistant from "@/components/deliveryManager/popups/DeliveryAssistant";
 import DMOrderDetails from "@/components/deliveryManager/popups/DMOrderDetails";
 import HomeDelivery from "@/components/deliveryManager/HomeDelivery";
 import TakeAway from "@/components/deliveryManager/TakeAway";
@@ -60,7 +57,6 @@ export default {
     HomeDelivery,
     TakeAway,
     FutureOrder,
-    DeliveryAssistant,
     DMOrderDetails,
     DMTopRightNav
   }

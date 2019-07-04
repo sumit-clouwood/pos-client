@@ -16,7 +16,7 @@
         </tfoot>-->
       <tbody>
         <tr :key="index" v-for="(order, index) in orderDetails">
-          <td class="">
+          <td v-if="order.order_status == orderStatus">
             <div class="order-item">
               <div class="order-header">
                 <div class="number-id-button">
@@ -29,8 +29,8 @@
                       data-toggle="modal"
                     >
                       #{{ order.order_no }}
-                    </span></span
-                  >
+                    </span>
+                  </span>
                 </div>
                 <div class="order_price-container">
                   <div class="order_price">
@@ -39,7 +39,15 @@
                 </div>
                 <div class="order_time">08:22 PM</div>
                 <div class="button-block" style="visibility: visible;">
+                  <span v-if="orderStatus == 'ready'">
+                    <span class="select-driver-caption assign_driver">
+                      Select driver
+                    </span>
+                  </span>
                   <button
+                    v-if="
+                      orderStatus == 'in-progress' || orderStatus == 'on-a-way'
+                    "
                     @click="
                       updateOrderAction({
                         order: order,
@@ -53,7 +61,7 @@
                     <div class="button-content-container">
                       <div class="button-icon-container"><!----></div>
                       <div class="button-caption">
-                        Ready
+                        {{ updateButtonAction(orderStatus) }}
                       </div>
                     </div>
                   </button>
@@ -124,7 +132,7 @@
 
 <script>
 /* global $ */
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 import OrderDetailsPopup from "@/components/pos/content/OrderDetailPopup";
 
 export default {
@@ -151,11 +159,26 @@ export default {
     }),
     ...mapState({
       locationName: state => state.location.locationName
-    })
+    }),
+    ...mapGetters("location", ["_t"])
   },
   methods: {
     ...mapActions("deliveryManager", ["showOrderDetails"]),
     ...mapActions("order", ["selectedOrderDetails", "updateOrderAction"]),
+
+    updateButtonAction: function(orderStatus) {
+      let actionLabel = "Ready";
+      if (orderStatus === "in-progress") {
+        actionLabel = "Ready";
+      } else if (orderStatus === "on-a-way") {
+        actionLabel = "Delivered";
+      } else {
+        actionLabel = "Assign";
+      }
+      // eslint-disable-next-line no-console
+      console.log(orderStatus);
+      return this._t(actionLabel);
+    },
 
     DMOrderStatus: function({ actionDetails, orderId, orderType }) {
       let timestamp = Date.now();
@@ -209,7 +232,7 @@ div#dm-new-order tfoot {
     background:rgba(63, 74, 74, 0.6);
 }
 
-div#dm-new-order tbody {
+div#dm-new-order tbody, div#dm-delivery-in-progress tbody {
     grid-row-start:1;
     grid-row-end:2;
     overflow:auto;
@@ -340,5 +363,11 @@ div.order-address {
 .block-table-page-container table tbody td {
   border: medium none;
   padding: 0;
+}
+.select-driver-caption {
+  color: #ff6d58;
+  text-align: right;
+  font-weight: normal;
+  font-style: italic;
 }
 </style>
