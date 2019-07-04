@@ -9,10 +9,12 @@
     aria-hidden="true"
   >
     <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
+      <div class="modal-content color-dashboard-background">
         <Header />
         <Content />
-        <div class="text-danger pl-30" v-show="error">{{ error }}</div>
+        <div class="text-danger pl-30 color-warning" v-show="error">
+          {{ error }}
+        </div>
         <Footer />
       </div>
     </div>

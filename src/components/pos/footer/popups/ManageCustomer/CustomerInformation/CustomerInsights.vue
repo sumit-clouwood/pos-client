@@ -1,17 +1,17 @@
 <template>
   <div class="customer-insight">
     <div class="title-cu">
-      <h2>{{ _t("Customer Insights") }}</h2>
+      <h2 class="color-text-invert">{{ _t("Customer Insights") }}</h2>
     </div>
     <div class="dob-customer-insight">
       <ul class="ullist-dob">
-        <li>
+        <li class="color-text">
           {{ _t("Birthday") }} : <span>{{ insight.birthday }}</span>
         </li>
-        <li>
+        <li class="color-text">
           {{ _t("Age") }} : <span>{{ getAge(insight.birthday) }}</span>
         </li>
-        <li>
+        <li class="color-text">
           {{ _t("Gender") }} : <span>{{ insight.gender }}</span>
         </li>
       </ul>
@@ -20,36 +20,39 @@
     <div>
       <div class="last-order-wrap">
         <div class="insight-last-order">
-          <h3>{{ _t("Last Order") }}</h3>
-          <p class="last-order-time">
+          <h3 class="color-text-invert">{{ _t("Last Order") }}</h3>
+          <p class="last-order-time color-text">
             {{ convertDatetime(insight.last_order_datetime) }}
           </p>
           <ul class="fav-item-slider">
             <!--<li><img src="img/pos/dine-right.png" alt="fav-item" /></li>-->
-            <li v-for="(item, index) in items" :key="index">
+            <li class="color-text" v-for="(item, index) in items" :key="index">
               {{ item.name }}
             </li>
           </ul>
         </div>
         <div class="insight-last-order">
           <ul class="ullist-business-slider">
-            <li>
+            <li class="color-text-invert">
               {{ _t("Total Business") }}
-              <span>{{ insight.total_orders }}</span>
+              <span class="color-text">{{ insight.total_orders }}</span>
             </li>
-            <li>
-              {{ _t("Cancelled") }} <span>{{ cancelOrders }}</span>
+            <li class="color-text-invert">
+              {{ _t("Cancelled") }}
+              <span class="color-text">{{ cancelOrders }}</span>
             </li>
           </ul>
           <div class="total-amount-business-slider">
-            <p>{{ _t("Total Amount") }}</p>
-            <h3>{{ lastOrder.currency_code }} {{ lastOrder.balance_due }}</h3>
+            <p class="color-text-invert">{{ _t("Total Amount") }}</p>
+            <h3 class="color-text">
+              {{ lastOrder.currency_code }} {{ lastOrder.balance_due }}
+            </h3>
           </div>
         </div>
         <div class="insight-last-order">
-          <h3>{{ _t("Favorites") }}</h3>
+          <h3 class="color-text-invert">{{ _t("Favorites") }}</h3>
           <p
-            class="last-order-details"
+            class="last-order-details color-text"
             v-for="(favItem, key) in insight.favorites"
             :key="key"
           >
@@ -70,14 +73,16 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>{{ _t("Date") }}</th>
-              <th>{{ _t("Note") }}</th>
+              <th class="color-text-invert">{{ _t("Date") }}</th>
+              <th class="color-text-invert">{{ _t("Note") }}</th>
             </tr>
           </thead>
-          <tbody id="notes_data">
+          <tbody id="notes_data" class="color-tables-background">
             <tr v-for="(notes, index) in insight.notes" :key="index">
-              <td>{{ convertDatetime(notes.created_at) }}</td>
-              <td>{{ notes.note }}</td>
+              <td class="color-text">
+                {{ convertDatetime(notes.created_at) }}
+              </td>
+              <td class="color-text">{{ notes.note }}</td>
             </tr>
           </tbody>
         </table>
@@ -93,6 +98,7 @@
           id="customer-notes-add"
           data-toggle="modal"
           data-target="#admin-popup"
+          class="color-text-invert color-main"
         >
           {{ _t("+ Add") }}
         </button>

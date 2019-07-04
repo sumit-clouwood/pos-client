@@ -3,13 +3,15 @@
   <div class="modal fade" id="search-loyalty-customer" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header customer-header">
+      <div class="modal-content color-dashboard-background">
+        <div class="modal-header customer-header color-secondary">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ _t("Loyalty") }}</h4>
+          <h4 class="customer-title color-text-invert">
+            {{ _t("Loyalty") }}
+          </h4>
         </div>
         <form class="modal-body add-note-wrap" autocomplete="off">
-          <p>{{ _t("Jump to customer") }}</p>
+          <p class="color-text-invert">{{ _t("Jump to customer") }}</p>
           <div class="add-note-area loyalty-search">
             <input
               autocomplete="off"
@@ -22,12 +24,12 @@
             />
             <button
               type="button"
-              class="btn btnSuccess"
+              class="btn btnSuccess color-main color-text-invert"
               id="load"
               v-on:click="search()"
             >
               <span
-                class="spinner-border spinner-border-sm"
+                class="spinner-border spinner-border-sm color-main color-text-invert"
                 role="status"
                 aria-hidden="true"
                 ><i
@@ -39,13 +41,15 @@
               >
             </button>
           </div>
-          <span class="loyalty-error text-danger loyalty-customer-error">
+          <span
+            class="loyalty-error text-danger loyalty-customer-error color-warning"
+          >
             {{ _t(searchCustomerErr) }}
           </span>
           <div class="dropdown" v-if="customers.length && searchTerm.length">
             <div id="myDropdown" class="dropdown-content">
               <span
-                class="showItem"
+                class="showItem color-dashboard-background"
                 v-for="customer in customers"
                 :key="customer.customerId"
                 v-on:click="selectCustomer(customer)"
@@ -59,7 +63,7 @@
           <div
             data-toggle="modal"
             data-dismiss="modal"
-            class="cursor-pointer blue-middle"
+            class="cursor-pointer blue-middle color-text-invert"
             @click="loyaltyAddCustomer('#customer')"
           >
             {{ _t("Create New Customer") }}
@@ -67,14 +71,14 @@
           <div class="btn-announce">
             <button
               type="button"
-              class="btn btn-danger cancel-announce"
+              class="btn btn-danger cancel-announce color-text-invert color-button"
               data-dismiss="modal"
             >
               {{ _t("Cancel") }}
             </button>
             <button
               @click="addLoyalty"
-              class="btn btn-success btn-large"
+              class="btn btn-success btn-large color-text-invert color-main"
               type="button"
               id="save-note"
             >

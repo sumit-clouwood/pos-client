@@ -7,14 +7,18 @@
   >
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header customer-header">
+      <div class="modal-content color-dashboard-background">
+        <div class="modal-header customer-header color-secondary">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ _t("Card Number") }}</h4>
+          <h4 class="customer-title color-text-invert">
+            {{ _t("Card Number") }}
+          </h4>
         </div>
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
-            <p>{{ _t("Enter Card Reference Code") }}</p>
+            <p class="color-text-invert">
+              {{ _t("Enter Card Reference Code") }}
+            </p>
             <input
               type="text"
               class="add-email-from"
@@ -23,7 +27,7 @@
               @keypress="Num.toNumberOnly($event)"
             />
           </div>
-          <div v-show="error" class="msg">
+          <div v-show="error" class="msg color-warning">
             <p class="text-danger">{{ error }}</p>
           </div>
         </div>
@@ -31,13 +35,13 @@
           <div class="btn-announce">
             <button
               type="button"
-              class="btn btn-danger cancel-announce"
+              class="btn btn-danger cancel-announce color-button color-text-invert"
               data-dismiss="modal"
             >
               {{ _t("Cancel") }}
             </button>
             <button
-              class="btn btn-success btn-large popup-btn-save"
+              class="btn btn-success btn-large popup-btn-save color-main color-text-invert"
               type="button"
               id="gift-card-btn"
               @click="payByCard('#card-payemnt')"

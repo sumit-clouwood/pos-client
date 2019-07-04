@@ -3,14 +3,18 @@
   <div class="modal fade" id="add-note" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header customer-header">
+      <div class="modal-content color-dashboard-background">
+        <div class="modal-header customer-header color-secondary">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ _t("+ Add") + " " + _t("Note") }}</h4>
+          <h4 class="customer-title color-text-invert">
+            {{ _t("+ Add") + " " + _t("Note") }}
+          </h4>
         </div>
-        <div class="modal-body add-note-wrap">
-          <div class="add-note-area">
-            <p>{{ _t("+ Add") }} {{ _t("Order") }} {{ _t("Note") }}</p>
+        <div class="modal-body add-note-wrap ">
+          <div class="add-note-area ">
+            <p class="color-text">
+              {{ _t("+ Add") }} {{ _t("Order") }} {{ _t("Note") }}
+            </p>
             <textarea
               type="text"
               class="add-note-form"
@@ -22,14 +26,14 @@
           <div class="btn-announce">
             <button
               type="button"
-              class="btn btn-danger cancel-announce"
+              class="btn btn-danger cancel-announce color-button"
               data-dismiss="modal"
             >
               {{ _t("Cancel") }}
             </button>
             <button
               @click="addNoteOrder(orderNote)"
-              class="btn btn-success btn-large"
+              class="btn btn-success btn-large color-main "
               type="button"
               id="save-note"
             >

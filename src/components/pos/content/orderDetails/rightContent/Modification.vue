@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tab-pane fade"
+    class="tab-pane fade color-dashboard-background color-text-invert"
     id="nav-contact"
     role="tabpanel"
     aria-labelledby="nav-contact-tab"

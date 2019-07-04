@@ -1,11 +1,15 @@
 <template>
   <!-- pay now screen -->
-  <div class="fade" id="pay-now">
+  <div
+    class="fade color-dashboard-background"
+    id="pay-now"
+    style="display: none;"
+  >
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-body pay-now-block">
-          <div v-show="items.length">
+          <div v-show="items.length" class="color-dashboard-background">
             <div class="order-payment">
               <div class="order-id">
                 <h2 class="color-text">{{ _t("Order Payment") }}</h2>
@@ -15,7 +19,7 @@
                 <button
                   data-dismiss="modal"
                   id="hide-paynow"
-                  class="color-text color-main"
+                  class="color-text-invert color-main"
                 >
                   {{ _t("Hide Me") }}
                   <span
@@ -30,7 +34,9 @@
             </div>
             <PaymentMethods />
             <div class="error" v-if="error">
-              <p class="text-danger">{{ _t("Error") }}: {{ error }}</p>
+              <p class="text-danger color-warning">
+                {{ _t("Error") }}: {{ error }}
+              </p>
             </div>
             <div class="payemnt-input-block">
               <input
@@ -55,17 +61,17 @@
             <PayNowFooter />
           </div>
           <div v-show="!items.length">
-            <div class="error font-weight-bold">
+            <div class="error font-weight-bold color-text">
               {{ _t("Please add some item(s) to order.") }}
             </div>
             <div class="hide-btn">
               <button
                 data-dismiss="modal"
                 id="hide-paynow"
-                class="btn btn-danger"
+                class="btn btn-danger color-secondary color-text-invert"
               >
                 {{ _t("Back") }}
-                <span
+                <span class="color-text-invert"
                   ><i class="fa fa-angle-right" aria-hidden="true"></i
                 ></span>
               </button>

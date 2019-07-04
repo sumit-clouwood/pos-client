@@ -8,7 +8,7 @@
     id="orderDetailsPopup"
   >
     <div class="modal-dialog modal-lg">
-      <div class="modal-content">
+      <div class="modal-content color-dashboard-background">
         <div class="col-md-5">
           <div data-v-f6351270="" class="left-part">
             <LeftPart :orderDetails="selectedOrder" />

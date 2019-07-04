@@ -1,27 +1,27 @@
 <template>
   <div
-    class="location-delivery-area-address"
+    class="location-delivery-area-address color-dashboard-background"
     :class="classAccess"
     v-if="getCustomerAddresses.length"
   >
     <div
       v-for="(address, index) in getCustomerAddresses"
       :key="index"
-      class="order-location option-contain cu-delivery-area-location"
+      class="order-location option-contain cu-delivery-area-location color-dashboard-background"
       :class="{ active: activeIndex === index }"
       @click="setActiveCustomer(address, index)"
     >
       <div>
-        <p>
+        <p class="color-text-invert">
           <!--<span
             v-if="!getDeliveryArea(address.delivery_area_id)"
             class="text-danger pull-right"
           >
             Inactive
           </span>-->
-          <span>{{ _t("Store:") }} {{ storeName }}</span
+          <span class="color-text">{{ _t("Store:") }} {{ storeName }}</span
           ><br />
-          <span>
+          <span class="color-text-invert">
             {{ _t("Area:") }}
             {{ getDeliveryArea(address.delivery_area_id) }}
           </span>

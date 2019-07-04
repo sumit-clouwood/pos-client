@@ -1,17 +1,17 @@
 <template>
   <div
-    class="tab-pane fade"
+    class="tab-pane fade color-dashboard-background"
     id="nav-payments"
     role="tabpanel"
     aria-labelledby="nav-payments-tab"
   >
     <table class="table-responsive" v-if="orderDetails">
-      <tr class="receipt-body">
+      <tr class="receipt-body color-secondary color-text-invert">
         <th class="receipt-heading">{{ _t("Payment Method") }}</th>
         <th class="receipt-heading">{{ _t("Collected") }}</th>
       </tr>
       <tr
-        class="receipt-body"
+        class="receipt-body color-tables-background color-text"
         v-for="(item, index) in orderDetails.order_payments"
         :key="index"
       >
@@ -21,17 +21,19 @@
     </table>
 
     <div class="receipt-summary" v-if="orderDetails">
-      <div class="caption subtotal">{{ _t("Total Paid") }}:</div>
-      <div class="subtotal">
+      <div class="caption subtotal color-text-invert">
+        {{ _t("Total Paid") }}:
+      </div>
+      <div class="subtotal color-text">
         {{ orderDetails.total_paid }}
       </div>
       <!---->
-      <div class="caption">{{ _t("Amount Changed") }}:</div>
-      <div>
+      <div class="caption color-text-invert">{{ _t("Amount Changed") }}:</div>
+      <div class="color-text">
         {{ orderDetails.amount_changed }}
       </div>
-      <div class="caption">{{ _t("Tips") }}:</div>
-      <div>
+      <div class="caption color-text-invert">{{ _t("Tips") }}:</div>
+      <div class="color-text">
         {{ orderDetails.tip_amount }}
       </div>
     </div>

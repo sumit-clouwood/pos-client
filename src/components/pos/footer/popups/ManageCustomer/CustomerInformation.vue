@@ -3,7 +3,7 @@
   <div class="modal fade" id="display-order" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
+      <div class="modal-content color-dashboard-background">
         <div class="modal-body manage-customer-wrap">
           <div class="crm-details-wrap">
             <div id="order-profile" class="profile-order">
@@ -13,6 +13,7 @@
                 <LoyaltyPoint />
                 <div class="btn-right-neworder">
                   <button
+                    class="color-button color-main color-text-invert"
                     id="place-new-order"
                     @click="
                       updateModalSelection(
@@ -28,7 +29,7 @@
             </div>
             <CustomerInsights :pastOrders="pastOrders" />
           </div>
-          <h2 class="past-order">{{ _t("Past Orders") }}</h2>
+          <h2 class="past-order color-text-invert">{{ _t("Past Orders") }}</h2>
           <CustomerPastOrders :pastOrders="pastOrders" />
         </div>
         <div class="modal-footer">
@@ -50,7 +51,7 @@
           <div class="btn-announce">
             <button
               type="button"
-              class="btn btn-danger cancel-announce"
+              class="btn btn-danger cancel-announce color-button color-text-invert"
               data-dismiss="modal"
             >
               {{ _t("Dismiss") }}

@@ -1,7 +1,7 @@
 <template>
   <button
     type="button"
-    class="close"
+    class="close color-text"
     data-dismiss="modal"
     aria-label="Close"
     @click="resetForm()"

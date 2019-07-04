@@ -3,13 +3,17 @@
   <div class="modal fade" id="online-order" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
+      <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header">
-          <h4 class="customer-title">
+          <h4 class="customer-title color-text-invert">
             Additional order are almost ready. Would you like to take them with
             you ?
           </h4>
-          <button type="button" class="close pull-right" data-dismiss="modal">
+          <button
+            type="button"
+            class="close pull-right color-text"
+            data-dismiss="modal"
+          >
             &times;
           </button>
         </div>

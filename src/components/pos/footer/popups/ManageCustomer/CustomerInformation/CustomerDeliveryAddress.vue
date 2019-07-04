@@ -1,7 +1,8 @@
 <template>
   <div id="delivery-area-address">
-    <div class="order-address-details">
+    <div class="order-address-details color-main ">
       <button
+        class="color-main color-text-invert"
         id="cu-add-address"
         data-toggle="modal"
         data-target="#add_address"
@@ -11,7 +12,7 @@
         {{ _t("+ Add Address") }}
       </button>
     </div>
-    <CustomerDeliveryArea :buttons="true" classAccess="" />
+    <CustomerDeliveryArea :buttons="true" classAccess />
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="cu-loyality-points-title">
-    <p>
+    <p class="color-text-invert">
       {{ _t("Loyalty Points Earned:") }}
       <span data-toggle="tooltip" title="Redeem">
         <svg

@@ -3,16 +3,18 @@
   <div class="modal fade" id="select-discount" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header customer-header">
+      <div class="modal-content color-dashboard-background">
+        <div class="modal-header customer-header color-secondary">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">
+          <h4 class="customer-title color-text-invert">
             {{ _t("Select") + " " + _t("Discount") }}
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
           <div v-if="orderError" class="error">
-            <p class="text-danger text-center">{{ _t(orderError) }}</p>
+            <p class="text-danger text-center color-warning">
+              {{ _t(orderError) }}
+            </p>
           </div>
           <div
             class="dining-option-block select-discount-option"
@@ -21,20 +23,21 @@
             <div
               class="option-contain"
               :class="{
-                active: activeOrderDiscountId === discount._id
+                active: activeOrderDiscountId === discount._id,
+                'color-dashboard-background': true
               }"
               v-for="discount in discounts"
               :key="discount._id"
               @click.prevent="selectOrderDiscount(discount)"
             >
-              <p>
+              <p class="color-text-invert">
                 {{
                   discount.type == "percentage"
                     ? discount.rate + "%"
                     : formatPrice(discount.value)
                 }}
               </p>
-              <span class="more">{{ dt(discount) }}</span>
+              <span class="more color-text">{{ dt(discount) }}</span>
             </div>
           </div>
         </div>
@@ -42,7 +45,7 @@
           <div class="btn-announce">
             <button
               v-show="!orderError"
-              class="btn btn-success btn-large"
+              class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="discount-save-btn"
               @click="applyOrderDiscount()"
@@ -51,7 +54,7 @@
             </button>
             <button
               v-show="orderError"
-              class="btn btn-danger btn-large"
+              class="btn btn-danger btn-large color-text-invert color-button"
               type="button"
               data-dismiss="modal"
             >

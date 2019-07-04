@@ -7,34 +7,36 @@
   >
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header customer-header">
+      <div class="modal-content color-dashboard-background">
+        <div class="modal-header customer-header color-secondary">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ _t("Gift Card") }}</h4>
+          <h4 class="customer-title color-text-invert">
+            {{ _t("Gift Card") }}
+          </h4>
         </div>
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
-            <p>{{ _t("Enter Gift Card Code") }}</p>
+            <p class="color-text-invert">{{ _t("Enter Gift Card Code") }}</p>
             <input type="text" class="add-email-from" v-model="code" />
           </div>
           <div v-show="error" class="msg">
-            <p class="text-danger">{{ error }}</p>
+            <p class="text-danger color-warning">{{ error }}</p>
           </div>
           <div v-show="msg" class="msg">
-            <p class="text-info">{{ msg }}</p>
+            <p class="text-info color-text">{{ msg }}</p>
           </div>
         </div>
         <div class="modal-footer">
           <div class="btn-announce">
             <button
               type="button"
-              class="btn btn-danger cancel-announce"
+              class="btn btn-danger cancel-announce color-text-invert color-button"
               data-dismiss="modal"
             >
               {{ _t("Cancel") }}
             </button>
             <button
-              class="btn btn-success btn-large popup-btn-save"
+              class="btn btn-success btn-large popup-btn-save color-text-invert color-main"
               type="button"
               id="gift-card-btn"
               data-toggle="modal"

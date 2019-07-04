@@ -1,5 +1,5 @@
 <template>
-  <div class="search-field">
+  <div class="search-field color-dashboard-background">
     <label class="search-field-icon">
       <i class="fa fa-search" aria-hidden="true"></i>
     </label>

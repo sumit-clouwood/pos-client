@@ -3,7 +3,7 @@
     <div
       v-for="(method, key) in methods"
       :key="key"
-      :class="{ active: activeMethod == method.name }"
+      :class="{ active: activeMethod == method.name, 'color-secondary': true }"
       @click="setMethod(method)"
       :data-toggle="getToggle(method)"
       :data-target="getTarget(method)"

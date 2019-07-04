@@ -22,8 +22,8 @@
           </td>
           <td class="color-main color-text">
             <a href="" @click.prevent="removePayment(index)"
-              ><img src="img/pos/delete-icon.svg" alt="delete"
-            /></a>
+              ><i class="fa fa-trash color-text-invert"></i
+            ></a>
           </td>
         </tr>
         <tr class="pay-tot-amt">

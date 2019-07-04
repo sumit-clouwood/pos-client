@@ -3,16 +3,16 @@
   <div class="modal fade" id="change-amount" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header customer-header">
+      <div class="modal-content color-dashboard-background">
+        <div class="modal-header customer-header color-secondary">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">
+          <h4 class="customer-title color-text-invert">
             Amount Change
           </h4>
         </div>
         <div class="modal-body change-amount-option">
           <div class="amount-change-wrap">
-            <p>
+            <p class="color-text">
               Change <span>({{ currency }})</span>
             </p>
             <h1>{{ formatPrice(changedAmount) }}</h1>
@@ -21,7 +21,7 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
-              class="btn btn-success btn-large"
+              class="btn btn-success btn-large color-main"
               type="button"
               data-dismiss="modal"
               @click="generateInvoice()"

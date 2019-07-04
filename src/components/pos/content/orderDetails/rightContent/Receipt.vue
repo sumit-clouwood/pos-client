@@ -1,24 +1,32 @@
 <template>
   <div
     v-if="orderDetails"
-    class="tab-pane fade show active"
+    class="tab-pane fade show active color-dashboard-background"
     id="nav-home"
     role="tabpanel"
     aria-labelledby="nav-home-tab"
   >
-    <div class="order-receipt">
+    <div class="order-receipt color-dashboard-background">
       <div class="order-note">
         {{ orderDetails.order_note }}
       </div>
-      <table class="table col-md-12">
+      <table class="table col-md-12 color-tables-background">
         <tr>
-          <th class="receipt-heading">{{ _t("Item") }}</th>
-          <th class="receipt-heading">{{ _t("Base Price") }}</th>
-          <th class="receipt-heading">{{ _t("Qty") }}</th>
-          <th class="receipt-heading">{{ _t("Total Price") }}</th>
+          <th class="receipt-heading color-text-invert color-secondary">
+            {{ _t("Item") }}
+          </th>
+          <th class="receipt-heading color-text-invert color-secondary">
+            {{ _t("Base Price") }}
+          </th>
+          <th class="receipt-heading color-text-invert color-secondary">
+            {{ _t("Qty") }}
+          </th>
+          <th class="receipt-heading color-text-invert color-secondary">
+            {{ _t("Total Price") }}
+          </th>
         </tr>
         <tr v-for="(item, key) in orderDetails.items" :key="key">
-          <td>
+          <td class="color-tables-background color-text">
             <div>{{ item.name }}</div>
             <div class="discount" v-if="orderDetails.item_discounts.length">
               {{
@@ -51,36 +59,46 @@
               </div>
             </div>
           </td>
-          <td class="base-price">{{ item.price }}</td>
-          <td class="qty">{{ item.qty }}</td>
-          <td class="price">{{ item.tax }}</td>
+          <td class="base-price color-tables-background color-text">
+            {{ item.price }}
+          </td>
+          <td class="qty color-tables-background color-text">{{ item.qty }}</td>
+          <td class="price color-tables-background color-text">
+            {{ item.tax }}
+          </td>
         </tr>
       </table>
 
       <div class="receipt-summary">
-        <div class="caption subtotal">Sub Total:</div>
-        <div class="subtotal">{{ orderDetails.sub_total }}</div>
+        <div class="caption subtotal color-text-invert">Sub Total:</div>
+        <div class="subtotal color-text">{{ orderDetails.sub_total }}</div>
         <!---->
-        <div class="caption" v-if="orderDetails.total_surcharge">
+        <div
+          class="caption color-text-invert"
+          v-if="orderDetails.total_surcharge"
+        >
           {{ _t("Surcharges") }}:
         </div>
-        <div v-if="orderDetails.total_surcharge">
+        <div v-if="orderDetails.total_surcharge" class=" color-text">
           {{ orderDetails.total_surcharge }}
         </div>
-        <div class="caption" v-if="orderDetails.total_discount">
+        <div
+          class="caption color-text-invert"
+          v-if="orderDetails.total_discount"
+        >
           {{ _t("Discount") }}:
         </div>
-        <div v-if="orderDetails.total_discount">
+        <div v-if="orderDetails.total_discount" class=" color-text">
           {{ orderDetails.total_discount }}
         </div>
-        <div class="caption">{{ _t("Total Tax") }}:</div>
-        <div>
+        <div class="caption color-text-invert">{{ _t("Total Tax") }}:</div>
+        <div class=" color-text">
           {{ orderDetails.total_tax }}
         </div>
-        <div class="total">
+        <div class="total color-text-invert">
           {{ _t("Total") }}
         </div>
-        <div class="total">
+        <div class="total color-text">
           {{ orderDetails.balance_due }}
         </div>
       </div>

@@ -5,14 +5,22 @@
       <div v-if="!customerDetails.length">
         {{ _t("No matching customer found") }}
       </div>
-      <table class="table table-responsive" v-else>
+      <table class="table table-responsive color-tables-background" v-else>
         <thead>
           <tr>
-            <th style="width: 190px">{{ _t("Customer Name") }}</th>
-            <th style="width: 140px">{{ _t("Phone") }}#</th>
-            <th style="width: 190px">{{ _t("Email") }}</th>
-            <th style="width: 155px">{{ _t("Reference Code") }}</th>
-            <th style="width: 250px">
+            <th style="width: 190px" class="color-text-invert">
+              {{ _t("Customer Name") }}
+            </th>
+            <th style="width: 140px" class="color-text-invert">
+              {{ _t("Phone") }}#
+            </th>
+            <th style="width: 190px" class="color-text-invert">
+              {{ _t("Email") }}
+            </th>
+            <th style="width: 155px" class="color-text-invert">
+              {{ _t("Reference Code") }}
+            </th>
+            <th style="width: 250px" class="color-text-invert">
               {{ _t("City") }}
               <!--, {{ _t('Location') }}-->
             </th>
@@ -26,16 +34,16 @@
             v-on:click="setActiveCustomer(index)"
             :key="index"
           >
-            <td>{{ customer.name }}</td>
-            <td>{{ customer.phone_number }}</td>
-            <td>{{ customer.email }}</td>
-            <td>
+            <td class="color-text">{{ customer.name }}</td>
+            <td class="color-text">{{ customer.phone_number }}</td>
+            <td class="color-text">{{ customer.email }}</td>
+            <td class="color-text">
               <button
                 data-toggle="modal"
                 data-target="#display-order"
                 data-dismiss="modal"
                 @click="fetchSelectedCustomer(customer._id)"
-                class="br-table-btn display-order"
+                class="br-table-btn display-order color-icon-table-neutral-button color-text-invert"
               >
                 {{ _t("Display Order") }}
               </button>
@@ -46,7 +54,7 @@
                 data-toggle="modal"
                 data-target="#display-order"
                 data-dismiss="modal"
-                class="br-table-btn edit-info"
+                class="br-table-btn edit-info color-icon-table-neutral-button color-text-invert"
               >
                 {{ _t("Edit Details") }}</button
               ><button
@@ -54,7 +62,7 @@
                 data-toggle="modal"
                 data-target="#add-to-order"
                 data-dismiss="modal"
-                class="br-table-btn order-add"
+                class="br-table-btn order-add color-icon-table-neutral-button color-text-invert"
               >
                 {{ _t("Add to Order") }}</button
               ><span>{{

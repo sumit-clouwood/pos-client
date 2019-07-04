@@ -3,12 +3,15 @@
   <div class="modal fade" id="order-confirmation" role="dialog">
     <div class="modal-dialog" :class="{ 'error-dialog': !cartItems }">
       <!-- Modal content-->
-      <div class="modal-content" v-if="cartItems">
+      <div class="modal-content color-dashboard-background" v-if="cartItems">
         <SendToDeliveryHeader />
         <SendToDeliveryContent />
         <SendToDeliveryFooter />
       </div>
-      <div class="modal-content text-center text-danger pt-3" v-else>
+      <div
+        class="modal-content text-center text-danger pt-3 color-dashboard-background"
+        v-else
+      >
         <div class="order-header">
           <h4 class="order-confirm-title">
             {{ _t("No items added to order") }}
@@ -24,7 +27,7 @@
           <div class="btn-announce">
             <button
               type="button"
-              class="btn btn-danger cancel-announce"
+              class="btn btn-danger cancel-announce color-button"
               data-dismiss="modal"
             >
               {{ _t("Close") }}

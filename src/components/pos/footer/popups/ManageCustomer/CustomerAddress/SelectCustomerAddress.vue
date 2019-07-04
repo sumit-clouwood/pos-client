@@ -3,10 +3,12 @@
   <div class="modal fade" id="add-to-order" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
+      <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ _t("Add to Order") }}</h4>
+          <h4 class="customer-title color-text-invert">
+            {{ _t("Add to Order") }}
+          </h4>
         </div>
         <div class="modal-body add-to-order">
           <CustomerDeliveryArea :buttons="false" classAccess="addOrders" />
@@ -19,7 +21,7 @@
               id="cu-add-address"
               data-toggle="modal"
               data-target="#add_address"
-              class="btn btn-success btn-large"
+              class="btn btn-success btn-large color-text-invert color-secondary"
               data-dismiss="modal"
               @click="
                 setDefaultSettingsGlobalAddUpdate({ nearest_landmark: '' })
@@ -29,14 +31,14 @@
             </button>
             <button
               type="button"
-              class="btn btn-danger cancel-announce"
+              class="btn btn-danger cancel-announce color-button color-text-invert"
               data-dismiss="modal"
               id="cancel-annc"
             >
               {{ _t("Close") }}
             </button>
             <button
-              class="btn btn-success btn-large popup-btn-save"
+              class="btn btn-success btn-large popup-btn-save color-main color-text-invert"
               type="button"
               id="add-customer-btn"
               @click="
