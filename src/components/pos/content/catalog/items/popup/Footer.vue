@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-footer">
+  <div class="modal-footer color-dashboard-background">
     <AddModifierOrderButton />
   </div>
 </template>

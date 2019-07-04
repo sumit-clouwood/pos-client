@@ -50,6 +50,18 @@ export default {
         ["box-shadow", "inset 0 0 0px 2px " + rulesData["color-shadow"], true]
       ],
       [
+        ".box-shadow-selected",
+        [
+          "--webkit-box-shadow",
+          "inset 0 0 0px 2px " + rulesData["color-shadow"],
+          true
+        ]
+      ],
+      [
+        ".box-shadow-selected",
+        ["box-shadow", "inset 0 0 0px 2px " + rulesData["color-shadow"], true]
+      ],
+      [
         ".main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before",
         ["border-top-color", rulesData["color-shadow"], true]
       ],

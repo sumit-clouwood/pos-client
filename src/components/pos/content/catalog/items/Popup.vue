@@ -9,7 +9,7 @@
     aria-hidden="true"
   >
     <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
+      <div class="modal-content color-dashboard-background">
         <Header />
         <HeaderDetails />
         <Content />
