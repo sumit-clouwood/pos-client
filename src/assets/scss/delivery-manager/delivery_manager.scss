@@ -454,7 +454,6 @@ div {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    margin-top: $px4;
   }
 }
 
@@ -697,7 +696,7 @@ div.order-address {
   .upper {
     .select-driver {
       padding: $px11;
-      background-color: #f30105;
+      background-color: $red;
       color: #fff;
       font-weight: 600;
     }
@@ -721,7 +720,7 @@ div.order-address {
     overflow: auto;
   }
   .driver-footer {
-    background-color: #f30105;
+    background-color: $red;
     width: 100%;
     height: 100%;
     text-align: right;
@@ -949,5 +948,48 @@ ul.ullist-breadcrump > li {
 }
 #dm-new-order {
   display: grid;
+}
+//order popup
+.dialog-body {
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: $px25;
+  padding: $px25;
+  display: grid;
+  background: #fff;
+}
+.dialog-body{
+  .right-part, .left-part{
+    overflow: hidden;
+    max-width: 100%;
+    border: $px1 solid rgba(63,74,74,0.1);
+    height: 100%;
+  }
+}
+div#nav-tabContent{
+  border: medium none;
+}
+.dialog-body {
+  .buttons{
+    text-align: right;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    padding-top: $px15;
+  }
+  button.button{
+    margin-right: $px5;
+    margin-bottom: $px5;
+  }
+}
+
+.v-menu--inline {
+  display: inline-block;
+}
+.past-order-buttons {
+  float: left;
+}
+.button.close-button{
+  color: rgba(128,128,128, 1);
+  background: rgba(128,128,128, 0.2);
+  border-color: rgba(128,128,128, 0.2);
 }
 /*# sourceMappingURL=deliveryManager.css.map */
