@@ -486,7 +486,7 @@ const actions = {
 
             commit(
               'checkoutForm/SET_MSG',
-                  { result: 'success', message: msgStr },
+              { result: 'success', message: msgStr },
               {
                 root: true,
               }

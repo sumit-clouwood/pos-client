@@ -71,12 +71,12 @@ img {
 
 ::-webkit-resizer {
   background-repeat: no-repeat;
-  width: 8px;
+  width: $px8;
   height: 0px
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: $px3;
 }
 
 ::-webkit-scrollbar-track-piece {

@@ -333,7 +333,11 @@ div#dm-new-order table td {
 
   .dm-ready-order-wrapper {
     display: grid;
-    height: 100%; } }
+    height: 100%; }
+    .dm-ready-order-wrapper table tr {
+      display: block; }
+      .dm-ready-order-wrapper table tr td {
+        display: block; } }
 .page-header {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -443,7 +447,7 @@ div#dm-delivery-in-progress tbody {
     letter-spacing: 0.5px;
     color: rgba(63, 74, 74, 0.6);
     height: calc(50vh - 17rem);
-    min-height: 7.1875rem;
+    max-height: 7.1875rem;
     overflow-y: auto;
     padding-left: 0.9375rem;
     padding-right: 0.625rem;
@@ -501,6 +505,13 @@ div.order-address {
     .block-table-page-container table tbody td {
       border: medium none;
       padding: 0; }
+
+.order-footer {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f6f6; }
 
 @media only screen and (min-width: 1264px) {
   .with-drivers-filter .home_delivery_pick table tbody {

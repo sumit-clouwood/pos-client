@@ -428,6 +428,14 @@ div {
   .dm-ready-order-wrapper {
     display: grid;
     height: 100%;
+    table {
+      tr {
+        display: block;
+        td {
+          display: block;
+        }
+      }
+    }
   }
 }
 
@@ -559,7 +567,7 @@ div {
     letter-spacing: 0.5px;
     color: rgba(63, 74, 74, 0.6);
     height: calc(50vh - 17rem);
-    min-height: $px115;
+    max-height: $px115;
     overflow-y: auto;
     padding-left: $px15;
     padding-right: $px10;
@@ -628,7 +636,13 @@ div.order-address {
     }
   }
 }
-
+.order-footer {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f6f6;
+}
 @media only screen and (min-width: 1264px) {
   .with-drivers-filter .home_delivery_pick {
     table{

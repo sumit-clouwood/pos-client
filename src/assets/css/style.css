@@ -54,11 +54,11 @@ img {
 
 ::-webkit-resizer {
   background-repeat: no-repeat;
-  width: 8px;
+  width: 0.5rem;
   height: 0px; }
 
 ::-webkit-scrollbar {
-  width: 8px; }
+  width: 0.1875rem; }
 
 ::-webkit-scrollbar-track-piece {
   bprder: 1px solid #eee; }
