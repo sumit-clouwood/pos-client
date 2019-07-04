@@ -67,7 +67,6 @@ const actions = {
     { commit, dispatch },
     { orderStatus, collected, pageId }
   ) {
-    console.log(pageId)
     if (typeof collected != 'undefined') {
       commit(mutation.SET_DM_ORDER_COLLECTED, collected)
     }

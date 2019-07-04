@@ -387,30 +387,19 @@ button.v-btn.v-btn--icon.theme--light {
 .change-location > button {
   margin-right: 0.3125rem; }
 
-div#dm-new-order table {
+div#dm-new-order table, div#dm-delivery-in-progress table, div#dm-delivered table {
   display: grid;
   grid-template-rows: auto 1fr auto; }
-div#dm-new-order thead {
+div#dm-new-order thead, div#dm-delivery-in-progress thead, div#dm-delivered thead {
   grid-row-start: 2;
   grid-row-end: 3; }
-div#dm-new-order tfoot {
+div#dm-new-order tfoot, div#dm-delivery-in-progress tfoot, div#dm-delivered tfoot {
   grid-row-start: 3;
   grid-row-end: 4;
   display: block;
   width: 100%;
   background: rgba(63, 74, 74, 0.6); }
-div#dm-new-order tbody {
-  grid-row-start: 1;
-  grid-row-end: 2;
-  overflow: auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-column-gap: 0.625rem;
-  grid-row-gap: 0.625rem;
-  padding: 2.5rem 3.75rem;
-  word-break: break-word;
-  grid-template-columns: 1fr 1fr 1fr 1fr; }
-div#dm-delivery-in-progress tbody {
+div#dm-new-order tbody, div#dm-delivery-in-progress tbody, div#dm-delivered tbody {
   grid-row-start: 1;
   grid-row-end: 2;
   overflow: auto;

@@ -497,7 +497,7 @@ button.v-btn.v-btn--icon.theme--light {
   margin-right: $px5;
 }
 div {
-  &#dm-new-order {
+  &#dm-new-order, &#dm-delivery-in-progress, &#dm-delivered {
     table {
       display: grid;
       grid-template-rows: auto 1fr auto;
@@ -525,18 +525,6 @@ div {
       word-break: break-word;
       grid-template-columns: 1fr 1fr 1fr 1fr;
     }
-  }
-  &#dm-delivery-in-progress tbody {
-    grid-row-start: 1;
-    grid-row-end: 2;
-    overflow: auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-column-gap: $px10;
-    grid-row-gap: $px10;
-    padding: $px40 $px60;
-    word-break: break-word;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
   }
 }
 

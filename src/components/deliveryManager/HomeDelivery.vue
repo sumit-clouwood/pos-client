@@ -105,15 +105,17 @@
     <div class="dm-ready-order-wrapper" id="dm-delivery-in-progress">
       <DMItem :actionDetails="deliveredDetails" />
     </div>
-
-    <DMDeliveredItem />
+    <div class="dm-ready-order-wrapper" id="dm-delivered">
+      <DMItem :actionDetails="delivered" />
+    </div>
+    <!--<DMDeliveredItem />-->
   </div>
 </template>
 
 <script>
 import DMHomeDeliverySubMenu from '@/components/deliveryManager/header/DMHomeDeliverySubMenu'
 import DMItem from '@/components/deliveryManager/content/DMItem'
-import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredItem'
+// import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredItem'
 import DMAssignedDriver from '@/components/deliveryManager/partial/DMAssignedDriver'
 import { mapState, mapActions, mapGetters } from 'vuex'
 /* global $ */
@@ -140,13 +142,19 @@ export default {
         action: 'Ready',
         nextOrderStatus: 'finished',
       },
+      delivered: {
+        moreDetails: false,
+        actionLabel: '',
+        action: '',
+        nextOrderStatus: 'finished',
+      },
       selectedUser: '',
     }
   },
   components: {
     DMHomeDeliverySubMenu,
     DMItem,
-    DMDeliveredItem,
+    // DMDeliveredItem,
     DMAssignedDriver,
   },
   computed: {
