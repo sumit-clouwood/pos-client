@@ -155,10 +155,21 @@
   .navigation {
     .navigation-list-wrapper{
       .navigation-list{
+          grid-gap: 0;
         .nav-item{
           .nav-link-nav{
-            width: $dm-nav-link-width;
-            min-height: $dm-nav-link-height;
+            width: auto;
+            min-height: auto;
+            padding: $px10 $px15 $px10 $px15;
+            margin: 0 $px7 $px10 $px7;
+            .nav-link-text{
+              display: inherit;
+              svg {
+                width: $px25;
+                height: $px25;
+                fill: $white;
+              }
+            }
           }
         }
       }
