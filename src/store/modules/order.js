@@ -688,7 +688,7 @@ const actions = {
   },
 
   selectedOrderDetails({ commit }, orderId) {
-    const params = ['orders', orderId]
+    const params = ['orders', orderId, '']
     OrderService.getGlobalDetails(...params).then(response => {
       let orderDetails = {}
       orderDetails.item = response.data.item
