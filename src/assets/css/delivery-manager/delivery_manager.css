@@ -328,7 +328,9 @@ div#dm-new-order table td {
     .dm-ready-order-wrapper table tr {
       display: block; }
       .dm-ready-order-wrapper table tr td {
-        display: block; } }
+        display: block;
+        padding: 0;
+        border: medium none; } }
 .page-header {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -513,15 +515,13 @@ div.order-address {
 
 .with-drivers-filter .drivers-filter {
   overflow: auto;
-  float: right;
-  width: 20%;
   height: 100%;
   border-left: 0.0625rem solid rgba(63, 74, 74, 0.3); }
 .with-drivers-filter .home_delivery_pick {
   overflow: auto;
   height: 100%;
   display: inline-block;
-  width: 80%; }
+  width: 100%; }
 
 .block-table-page-container .row {
   display: none; }
@@ -767,6 +767,20 @@ div#nav-tabContent {
   color: gray;
   background: rgba(128, 128, 128, 0.2);
   border-color: rgba(128, 128, 128, 0.2); }
+
+section.with-drivers-filter {
+  display: grid;
+  grid-template-columns: 1fr auto; }
+
+.v-menu__activator .dropdown.show:focus, .v-menu__activator .dropdown:hover {
+  background: transparent;
+  outline: none; }
+
+.v-menu__activator .dropdown-menu.show > a:hover {
+  background: #f1f1f1; }
+
+.v-menu__activator .dropdown-menu.show {
+  padding: 0; }
 
 /*# sourceMappingURL=deliveryManager.css.map */
 
