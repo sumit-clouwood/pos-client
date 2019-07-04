@@ -691,6 +691,12 @@ const actions = {
     const params = ['orders', orderId, '']
     OrderService.getGlobalDetails(...params).then(response => {
       let orderDetails = {}
+      OrderService.getModalDetails('brand_cancellation_reasons').then(
+        response => {
+          orderDetails.cancellationReasons = response.data.data
+        }
+      )
+
       orderDetails.item = response.data.item
       orderDetails.customer = response.data.collected_data.customer
       orderDetails.lookups = response.data.collected_data.page_lookups
@@ -700,7 +706,6 @@ const actions = {
       commit(mutation.SET_ORDER_DETAILS, orderDetails)
     })
   },
-
   removeOrder({ dispatch }, { order, orderType }) {
     let actionTrigger = orderType
     if (actionTrigger) {

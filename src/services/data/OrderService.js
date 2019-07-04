@@ -39,6 +39,10 @@ export default {
     return DataService.get(`/model/${modal}/id/${id}${validAction}`, 'brand')
   },
 
+  getModalDetails(model) {
+    return DataService.get(`/model/${model}?no_limit=true`, 'brand')
+  },
+
   updateOrderAction(id, action, params) {
     return DataService.post(`/model/orders/id/${id}/${action}`, params)
   },

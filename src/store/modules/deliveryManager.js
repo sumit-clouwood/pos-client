@@ -60,12 +60,6 @@ const actions = {
     dispatch('fetchDMOrderDetail')
   },
 
-  cancelReasons({ commit }) {
-    DMService.getGlobalDetails('brand_cancellation_reasons').then(response => {
-      commit(mutation.DRIVERS, response.data.data)
-    })
-  },
-
   updateDMOrderStatus(
     { commit, dispatch },
     { orderStatus, collected, pageId }
