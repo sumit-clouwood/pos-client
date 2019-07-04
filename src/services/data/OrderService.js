@@ -34,8 +34,9 @@ export default {
       `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}&order_status=${orderStatus}&store_id=${storeId}`
     )
   },
-  getGlobalDetails(modal, id) {
-    return DataService.get(`/model/${modal}/id/${id}`, 'brand')
+  getGlobalDetails(modal, id, action) {
+    let validAction = action !== '' ? '/' + action : ''
+    return DataService.get(`/model/${modal}/id/${id}${validAction}`, 'brand')
   },
 
   updateOrderAction(id, action, params) {

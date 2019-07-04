@@ -779,9 +779,11 @@ section.with-drivers-filter {
 .v-menu__activator .dropdown-menu.show > a:hover {
   background: #f1f1f1; }
 
-.v-menu__activator .dropdown-menu.show {
-  padding: 0; }
-
+/*.v-menu__activator{
+  .dropdown-menu.show{
+    padding: 0;
+  }
+}*/
 /*# sourceMappingURL=deliveryManager.css.map */
 
 /*# sourceMappingURL=delivery_manager.css.map */
