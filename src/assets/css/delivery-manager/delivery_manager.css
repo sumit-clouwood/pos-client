@@ -727,6 +727,12 @@ ul.ullist-breadcrump > li {
     color: rgba(63, 74, 74, 0.8);
     text-decoration: underline; }
 
+.dm-ready-order-wrapper, .dm-order-take-away, .dm-future-order {
+  display: none; }
+
+#dm-new-order {
+  display: grid; }
+
 /*# sourceMappingURL=deliveryManager.css.map */
 
 /*# sourceMappingURL=delivery_manager.css.map */

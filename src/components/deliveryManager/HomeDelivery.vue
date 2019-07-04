@@ -138,8 +138,8 @@ export default {
       },
       deliveredDetails: {
         moreDetails: true,
-        actionLabel: 'Ready',
-        action: 'Ready',
+        actionLabel: 'Delivered',
+        action: 'delivery_done',
         nextOrderStatus: 'finished',
       },
       delivered: {

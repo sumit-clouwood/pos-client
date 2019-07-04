@@ -721,6 +721,13 @@ const actions = {
               case 'hold':
                 dispatch('holdOrders/remove', order, { root: true })
                 break
+              case 'call_center':
+                dispatch(
+                  'deliveryManager/fetchDMOrderDetail',
+                  {},
+                  { root: true }
+                )
+                break
             }
           }
         }
