@@ -13,11 +13,8 @@ const state = {
   deliveredOrderGroup: [],
   deliveredOrderCollection: [],
   moreOrders: false,
-  dispatchOrders: false,
-  dispatchOrderCount: 0,
   is_pagination: true,
   pageSize: 8,
-  pageNumber: 1,
   selectedStores: '',
   availableStores: false,
   params: {
@@ -150,24 +147,6 @@ const actions = {
       })
     }
   },
-
-  getDispatchOrder({ commit, rootState }) {
-    const params = [
-      rootState.location.location,
-      state.is_pagination,
-      state.pageSize,
-      state.pageNumber,
-    ]
-    DMService.dispatchOrders(...params).then(response => {
-      commit(mutation.SET_DISPATCH_SCREEN, response.data.data)
-      commit(mutation.SET_DISPATCH_ORDER_COUNT, response.data.TotalCount)
-    })
-  },
-
-  updateDispatchPageNumber({ commit, dispatch }, pageNumber) {
-    commit(mutation.UPDATE_DISPATCH_PAGE_NUMBER, pageNumber)
-    dispatch('getDispatchOrder')
-  },
 }
 
 const mutations = {
@@ -217,15 +196,6 @@ const mutations = {
   },
   [mutation.SET_SHOW_MORE_ORDERS](state, orderDetails) {
     state.moreOrders = orderDetails
-  },
-  [mutation.SET_DISPATCH_SCREEN](state, orderDetails) {
-    state.dispatchOrders = orderDetails
-  },
-  [mutation.SET_DISPATCH_ORDER_COUNT](state, orderCount) {
-    state.dispatchOrderCount = orderCount
-  },
-  [mutation.UPDATE_DISPATCH_PAGE_NUMBER](state, pageNumber) {
-    state.pageNumber = pageNumber
   },
   [mutation.DRIVERS](state, drivers) {
     state.drivers = drivers
