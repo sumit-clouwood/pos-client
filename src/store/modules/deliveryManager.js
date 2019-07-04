@@ -7,7 +7,7 @@ const state = {
   deliveryOrderStatus: 'in-progress',
   collected: 'no',
   orders: false,
-  orderCounts: '',
+  orderCounts: 0,
   selectedOrder: false,
   selectedDriver: false,
   deliveredOrderGroup: [],
@@ -75,19 +75,19 @@ const actions = {
     dispatch('fetchDMOrderDetail')
   },
 
-  updateTakeAway({ rootState, dispatch }, orderId) {
+  updateTakeAway({ rootState }, orderId) {
     const params = [rootState.location.location, orderId]
     DMService.updateTakeAwayOrder(...params).then(() => {
-      dispatch('fetchOrderCount')
+      /*dispatch('fetchOrderCount')*/
     })
   },
 
-  fetchOrderCount({ commit, rootState }) {
+  /*fetchOrderCount({ commit, rootState }) {
     const params = [rootState.location.location, '']
     DMService.getDMOrderCount(...params).then(response => {
       commit(mutation.SET_DM_ORDER_COUNT, response.data.data)
     })
-  },
+  },*/
 
   showOrderDetails({ commit }, order) {
     commit(mutation.SET_SELECTED_DM_ORDERS, order)
@@ -97,10 +97,10 @@ const actions = {
     commit(mutation.SET_SELECTED_DM_DRIVER, driverInfo)
   },
 
-  attachOrderDriver({ rootState, dispatch }, { orderId, driverId, timestamp }) {
+  attachOrderDriver({ rootState }, { orderId, driverId, timestamp }) {
     const params = [rootState.location.location, orderId, driverId, timestamp]
     DMService.assignDriverToOrder(...params).then(() => {
-      dispatch('fetchOrderCount')
+      /*dispatch('fetchOrderCount')*/
     })
   },
 
@@ -193,9 +193,9 @@ const mutations = {
   [mutation.SET_DM_ORDER_COLLECTED](state, collected) {
     state.collected = collected
   },
-  [mutation.SET_DM_ORDER_COUNT](state, orderCount) {
+  /*[mutation.SET_DM_ORDER_COUNT](state, orderCount) {
     state.orderCounts = orderCount
-  },
+  },*/
   [mutation.SET_DM_ORDERS](state, orderDetails) {
     state.orders = orderDetails.data
     let stores = orderDetails.page_lookups.stores
