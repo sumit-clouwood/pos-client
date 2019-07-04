@@ -8,8 +8,8 @@
     id="orderDetailsPopup"
   >
     <div class="modal-dialog modal-lg">
-      <div class="dialog-body">
-        <div data-v-f6351270="" class="left-part">
+      <div class="dialog-body modal-content">
+        <div class="left-part">
           <LeftPart :orderDetails="selectedOrder" />
         </div>
         <div class="right-part">
@@ -26,51 +26,61 @@
         <div class="buttons">
           <div class="v-menu v-menu--inline">
             <div class="v-menu__activator">
-              <button type="button" class="button btn btn-success">
-                <div class="button-content-container">
-                  <div class="button-icon-container"><!----></div>
-                  <div class="button-caption">
-                    Reprint
-                  </div>
+              <div class="dropdown">
+                <button
+                  class="button btn btn-success dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  Reprint
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <a class="dropdown-item" href="#">Something else here</a>
                 </div>
-              </button>
+              </div>
             </div>
           </div>
           <button type="button" class="button text-button btn btn-success">
             <div class="button-content-container">
-              <div class="button-icon-container"><!----></div>
+              <div class="button-icon-container"></div>
               <div class="button-caption">
                 Cancel Order
               </div>
-            </div></button
-          ><!----><button
-            type="button"
-            class="button text-button btn btn-success"
-          >
+            </div>
+          </button>
+          <button type="button" class="button text-button btn btn-success">
             <div class="button-content-container">
-              <div class="button-icon-container"><!----></div>
+              <div class="button-icon-container"></div>
               <div class="button-caption">
                 Modify Order
               </div>
-            </div></button
-          ><!----><button
+            </div>
+          </button>
+          <button
             type="button"
             class="button past-order-buttons btn btn-success"
           >
             <div class="button-content-container">
-              <div class="button-icon-container"><!----></div>
+              <div class="button-icon-container"></div>
               <div class="button-caption">
                 Open Past Orders
               </div>
-            </div></button
-          ><button type="button" class="button close-button btn btn-success">
+            </div>
+          </button>
+          <button type="button" class="button close-button btn btn-success">
             <div class="button-content-container">
-              <div class="button-icon-container"><!----></div>
+              <div class="button-icon-container"></div>
               <div class="button-caption">
                 Close
               </div>
-            </div></button
-          ><iframe frameborder="0" srcdoc="" width="0px" height="0px"></iframe>
+            </div>
+          </button>
+          <iframe frameborder="0" srcdoc="" width="0px" height="0px"></iframe>
         </div>
       </div>
     </div>

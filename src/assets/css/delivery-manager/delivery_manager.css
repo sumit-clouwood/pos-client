@@ -515,7 +515,7 @@ div.order-address {
   overflow: auto;
   float: right;
   width: 20%;
-  height: 37.5rem;
+  height: 100%;
   border-left: 0.0625rem solid rgba(63, 74, 74, 0.3); }
 .with-drivers-filter .home_delivery_pick {
   overflow: auto;
