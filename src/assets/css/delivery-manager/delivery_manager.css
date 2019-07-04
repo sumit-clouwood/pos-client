@@ -646,7 +646,7 @@ div.order-address {
     .table-drivers-filter .body .assigning-block .order .order-container .order .cancel-button {
       justify-self: right;
       position: absolute;
-      bottom: 0;
+      top: 0.25rem;
       right: 0; }
       .table-drivers-filter .body .assigning-block .order .order-container .order .cancel-button .button {
         padding: 0.4375rem 0.3125rem; }
@@ -770,7 +770,7 @@ div#nav-tabContent {
 
 section.with-drivers-filter {
   display: grid;
-  grid-template-columns: 1fr auto; }
+  grid-template-columns: 4fr 1fr; }
 
 .v-menu__activator .dropdown.show:focus, .v-menu__activator .dropdown:hover {
   background: transparent;

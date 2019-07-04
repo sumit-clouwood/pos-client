@@ -836,7 +836,7 @@ div.order-address {
       .order .cancel-button {
         justify-self: right;
         position: absolute;
-        bottom: 0;
+        top: $px4;
         right: 0;
         .button {
           padding: $px7 $px5;
@@ -994,7 +994,7 @@ div#nav-tabContent{
 }
 section.with-drivers-filter {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 4fr 1fr;
 }
 .v-menu__activator  {
   .dropdown.show:focus,.dropdown:hover{
