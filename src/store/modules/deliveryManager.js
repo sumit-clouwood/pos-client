@@ -154,6 +154,9 @@ const actions = {
     }
   },
 
+  restoreOrders({ commit }) {
+    commit('DM_RESTORE_ORDERS')
+  },
   updateOrder({ state, commit }, { orderId, deleted }) {
     const index = state.orders.findIndex(dmOrder => dmOrder._id == orderId)
     const order = state.orders[index]
@@ -228,8 +231,11 @@ const mutations = {
       state.orders.splice(index, remove)
     }
   },
-  [mutation.DM_ADD_ORDER_TO_READY](state, order) {
-    state.orders.push(order)
+  [mutation.DM_RESTORE_ORDERS](state) {
+    state.orders = state.orders.map(order => {
+      order.deleted = false
+      return order
+    })
   },
 }
 

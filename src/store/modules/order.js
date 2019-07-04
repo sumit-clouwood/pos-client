@@ -879,14 +879,13 @@ const mutations = {
   },
   [mutation.RE_ASSIGNED_BUCKET](state, orderId) {
     let bucket = []
-    if (orderId != 'all') {
+    if (orderId) {
       state.assignToBucket.filter(function(ele) {
         if (ele._id != orderId) {
           bucket.push(ele)
         }
       })
     }
-    state.assignToBucket = []
     state.assignToBucket = bucket
   },
 }

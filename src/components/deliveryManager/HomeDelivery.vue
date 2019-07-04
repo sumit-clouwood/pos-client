@@ -87,7 +87,7 @@
                 type="button"
                 class="button btn btn-success"
                 v-if="assignToBucket.length"
-                @click="removeAssignedOrder('all')"
+                @click="removeAllFromBucket"
               >
                 <div class="button-content-container">
                   <div class="button-icon-container"><!----></div>
@@ -182,8 +182,9 @@ export default {
     getSelectUser: function() {
       // this.selectedUser = $('#get-customer-list').val()
     },
-    removeAssignedOrder: function(order) {
-      this.$store.commit('order/RE_ASSIGNED_BUCKET', order)
+    removeAllFromBucket() {
+      this.$store.commit('order/RE_ASSIGNED_BUCKET')
+      this.$store.dispatch('deliveryManager/restoreOrders')
     },
     ...mapActions('deliveryManager', ['selectDriver']),
     /*imageLoadError() {
