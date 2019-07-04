@@ -1,8 +1,8 @@
 <template>
   <div class="holding-order-panel animated zoomIn">
     <!--    <Header />-->
-    <div class="error" v-if="holdOrderList.length == 0">
-      <span class="text-danger text-center">
+    <div class="error color-warning" v-if="holdOrderList.length == 0">
+      <span class="text-danger text-center color-warning">
         {{ _t("Nothing found.") }}
       </span>
     </div>

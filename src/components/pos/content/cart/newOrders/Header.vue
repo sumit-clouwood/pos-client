@@ -1,5 +1,5 @@
 <template>
-  <div class="main-orders-contacts">
+  <div class="main-orders-contacts color-text">
     <div class="main-oreders-title">
       {{ cartType == "hold" ? _t("Hold Orders") : _t("New Orders") }}
     </div>
@@ -22,7 +22,11 @@
       <div class="orders-button-large" disabled="disable">
         {{ _t('Split Table') }}
       </div>-->
-      <div v-if="cartType !== 'hold'" class="orders-button-large" @click="hold">
+      <div
+        v-if="cartType !== 'hold'"
+        class="orders-button-large color-main color-text"
+        @click="hold"
+      >
         {{ _t("Hold") }}
       </div>
     </div>

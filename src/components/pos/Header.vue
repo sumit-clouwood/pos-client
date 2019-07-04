@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div class="header color-text-invert color-dashboard-background">
     <div class="header-main">
       <TopNavLeft />
       <TopNavRight />

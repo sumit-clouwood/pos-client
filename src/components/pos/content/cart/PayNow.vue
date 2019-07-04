@@ -1,18 +1,22 @@
 <template>
   <!-- pay now screen -->
-  <div class="fade" id="pay-now" style="display: none;">
+  <div class="fade" id="pay-now">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
+      <div class="modal-content color-dashboard-background">
         <div class="modal-body pay-now-block">
           <div v-show="items.length">
             <div class="order-payment">
               <div class="order-id">
-                <h2>{{ _t("Order Payment") }}</h2>
+                <h2 class="color-text">{{ _t("Order Payment") }}</h2>
                 <!--<p>Order ID #1</p>-->
               </div>
               <div class="hide-btn">
-                <button data-dismiss="modal" id="hide-paynow">
+                <button
+                  data-dismiss="modal"
+                  id="hide-paynow"
+                  class="color-text color-main"
+                >
                   {{ _t("Hide Me") }}
                   <span
                     ><i class="fa fa-angle-right" aria-hidden="true"></i
@@ -22,7 +26,7 @@
             </div>
             <TotalAmount />
             <div class="payment-method-title">
-              <h2>{{ _t("Payment Method") }}</h2>
+              <h2 class="color-text">{{ _t("Payment Method") }}</h2>
             </div>
             <PaymentMethods />
             <div class="error" v-if="error">

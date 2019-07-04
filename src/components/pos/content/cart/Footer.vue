@@ -1,5 +1,5 @@
 <template>
-  <div class="main-orders-total">
+  <div class="main-orders-total color-text-invert">
     <div class="item sub-total">
       <div class="sub-total-text">{{ _t("Sub Total") }}</div>
       <div class="sub-total-num">{{ formatPrice(subTotal || 0) }}</div>
@@ -18,7 +18,7 @@
       <div class="sub-total-text">{{ _t("Tax") }}</div>
       <div class="sub-total-num">{{ formatPrice(totalTax || 0) }}</div>
     </div>
-    <div class="total">
+    <div class="total color-text">
       <div class="sub-total-text">{{ _t("Total") }}</div>
       <div class="sub-total-num">{{ formatPrice(orderTotal || 0) }}</div>
     </div>

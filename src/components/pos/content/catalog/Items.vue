@@ -1,7 +1,7 @@
 <template>
-  <div class="food-menu">
+  <div class="food-menu color-dashboard-background">
     <div
-      class="food-menu-item"
+      class="food-menu-item color-dashboard-background"
       :style="{ background: item.image == '' ? item.item_color : '' }"
       v-for="item in items"
       :key="item._id"
@@ -14,7 +14,7 @@
         :alt="dt(item)"
         @error="imageLoadError()"
       />
-      <div class="food-menu-item-text">{{ dt(item) }}</div>
+      <div class="food-menu-item-text color-text">{{ dt(item) }}</div>
     </div>
     <Popup />
   </div>

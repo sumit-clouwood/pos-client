@@ -1,13 +1,16 @@
 <template>
   <div class="footer">
-    <div class="footer-slider">
+    <div class="footer-slider color-dashboard-background">
       <ul class="footer-slider-list ullist-icons">
         <li
-          class="footer-slider-list-item"
+          class="footer-slider-list-item color-secondary"
           data-toggle="modal"
           data-target="#manage-customer"
         >
-          <a class="footer-slider-list-item-link" href="javascript:void(0)">
+          <a
+            class="footer-slider-list-item-link color-text-invert"
+            href="javascript:void(0)"
+          >
             <!--<img src="images/footer-images/user.svg" alt="customer">-->
             <svg
               aria-hidden="true"
@@ -31,11 +34,14 @@
         <li
           v-if="cartType === 'new'"
           @click="viewHoldOrders"
-          class="footer-slider-list-item footer-slider-list-item-open-orders"
+          class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
           :class="{ active: vbutton == 'hold' }"
           id="hold-order-box"
         >
-          <a class="footer-slider-list-item-link" href="javascript:void(0)">
+          <a
+            class="footer-slider-list-item-link color-text-invert"
+            href="javascript:void(0)"
+          >
             <!--<img class="hold-ordes" src="images/hold-order.png" alt="customer">-->
             <svg
               aria-hidden="true"
@@ -59,11 +65,14 @@
         <li
           v-else
           @click="newOrders"
-          class="footer-slider-list-item footer-slider-list-item-open-orders"
+          class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
           :class="{ active: vbutton == 'new' }"
           id="hold-order-box"
         >
-          <a class="footer-slider-list-item-link" href="javascript:void(0)">
+          <a
+            class="footer-slider-list-item-link color-text-invert"
+            href="javascript:void(0)"
+          >
             <!--<img class="hold-ordes" src="images/hold-order.png" alt="customer">-->
             <svg
               aria-hidden="true"
@@ -87,10 +96,13 @@
         <li
           data-toggle="modal"
           data-target="#search-loyalty-customer"
-          class="footer-slider-list-item "
+          class="footer-slider-list-item color-secondary"
           :class="{ loyaltyApplied: loyaltyCard }"
         >
-          <a href="javascript:void(0)" class="footer-slider-list-item-link">
+          <a
+            href="javascript:void(0)"
+            class="footer-slider-list-item-link color-text-invert"
+          >
             <img
               src="img/pos/loyalty.svg"
               :alt="_t('Loyalty')"
@@ -114,7 +126,7 @@
           </a>
         </li>
         <li
-          class="footer-slider-list-item"
+          class="footer-slider-list-item color-secondary"
           data-toggle="modal"
           :data-target="selectedModal"
           data-dismiss="modal"
@@ -124,7 +136,10 @@
             href="javascript:void(0)"
             @click="setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })"
           >-->
-          <a class="footer-slider-list-item-link" href="javascript:void(0)">
+          <a
+            class="footer-slider-list-item-link color-text-invert"
+            href="javascript:void(0)"
+          >
             <!--<img src="images/footer-images/d_2.png" alt="customer">-->
             <svg
               aria-hidden="true"
@@ -146,13 +161,13 @@
           </a>
         </li>
         <li
-          class="footer-slider-list-item active"
+          class="footer-slider-list-item color-secondary active"
           data-toggle="modal"
           data-target="#select-discount"
           id="discount-footer"
         >
           <a
-            class="footer-slider-list-item-link"
+            class="footer-slider-list-item-link color-text-invert"
             href="javascript:void(0)"
             @click.prevent="validateOrderDiscounts()"
           >
@@ -176,11 +191,14 @@
           </a>
         </li>
         <li
-          class="footer-slider-list-item"
+          class="footer-slider-list-item color-secondary"
           data-toggle="modal"
           data-target="#dining-option"
         >
-          <a class="footer-slider-list-item-link" href="javascript:void(0)">
+          <a
+            class="footer-slider-list-item-link color-text-invert"
+            href="javascript:void(0)"
+          >
             <!--<img src="images/footer-images/group_9.png" alt="customer">-->
             <svg
               aria-hidden="true"
@@ -202,11 +220,14 @@
           </a>
         </li>
         <li
-          class="footer-slider-list-item"
+          class="footer-slider-list-item color-secondary"
           data-toggle="modal"
           data-target="#add-note"
         >
-          <a class="footer-slider-list-item-link" href="javascript:void(0)">
+          <a
+            class="footer-slider-list-item-link color-text-invert"
+            href="javascript:void(0)"
+          >
             <!--<img src="images/footer-images/a.png" alt="customer">-->
             <svg
               aria-hidden="true"
@@ -229,18 +250,18 @@
         </li>
       </ul>
     </div>
-    <div class="footer-buttons">
+    <div class="footer-buttons color-dashboard-background">
       <div class="button">
         <ul class="template-btn">
           <li
             v-show="orderType.OTApi === 'call_center'"
-            class="footer-slider-list-item"
+            class="footer-slider-list-item color-secondary"
             data-toggle="modal"
             :data-target="selectedModal"
             data-dismiss="modal"
           >
             <a
-              class="footer-slider-list-item-link"
+              class="footer-slider-list-item-link color-text-invert"
               href="javascript:void(0)"
               @click="
                 setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
@@ -267,10 +288,13 @@
               <span>{{ _t("Send to Delivery") }}</span>
             </a>
           </li>
-          <li class="pay-now" v-show="orderType.OTApi !== 'call_center'">
+          <li
+            class="pay-now color-dashboard-background color-main"
+            v-show="orderType.OTApi !== 'call_center'"
+          >
             <a href="javascript:void(0)">
               <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
-              <span class="pay-btn">{{ _t("Pay Now") }}</span>
+              <span class="pay-btn color-text-invert">{{ _t("Pay Now") }}</span>
             </a>
           </li>
         </ul>

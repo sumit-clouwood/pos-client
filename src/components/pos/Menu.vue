@@ -1,5 +1,5 @@
 <template>
-  <div class="navigation">
+  <div class="navigation color-main">
     <div class="logo" title="logo">
       <a class="logo-link" href="javascript:void(0)">
         <img src="img/icons/icon.png" alt="icon" />
@@ -8,14 +8,14 @@
     <div class="navigation-list-wrapper">
       <ul class="navigation-list" v-if="categories.length">
         <li
-          class="nav-item active-opacity"
+          class="nav-item active-opacity color-text-invert"
           v-for="item in categories"
           :key="item._id"
           :title="dt(item)"
           :data-original-title="dt(item)"
         >
           <a
-            class="nav-link-nav"
+            class="nav-link-nav color-text-invert"
             :class="{ active: currentCategory === item._id }"
             :style="{
               background: item.category_image == '' ? item.category_color : ''
@@ -32,19 +32,21 @@
         </li>
       </ul>
     </div>
-    <div class="slider-btn">
-      <i class="fa fa-chevron-down" aria-hidden="true"></i>
+    <div class="slider-btn color-secondary">
+      <i class="fa fa-chevron-down color-text-invert" aria-hidden="true"></i>
     </div>
-    <div class="navigation-avatar" v-if="userDetails">
+    <div class="navigation-avatar color-secondary" v-if="userDetails">
       <a class="nav-link" href="" :title="userDetails.item.email">
         <img :src="profileImage" alt="profile" />
-        <div class="nav-link-user-name">{{ userDetails.item.name }}</div>
+        <div class="nav-link-user-name color-text-invert">
+          {{ userDetails.item.name }}
+        </div>
       </a>
     </div>
-    <div class="navigation-avatar" v-else>
+    <div class="navigation-avatar color-secondary" v-else>
       <a class="nav-link" href="">
         <img :src="profileImage" alt="profile" />
-        <div class="nav-link-user-name">Admin</div>
+        <div class="nav-link-user-name color-text-invert">Admin</div>
       </a>
     </div>
     <div v-if="getImages">

@@ -1,17 +1,18 @@
 <template>
-  <div class="breadcrumbs">
+  <div class="breadcrumbs color-dashboard-background">
     <div class="breadcrumbs-item breadcrumbs-category">
       <div class="title-box">
-        <div class="breadcrumbs-subtitle">{{ _t("Category") }}</div>
-        <div class="breadcrumbs-title shorten-sentence" :title="dt(category)">
+        <div class="breadcrumbs-subtitle color-text-invert">
+          {{ _t("Category") }}
+        </div>
+        <div
+          class="breadcrumbs-title shorten-sentence color-text"
+          :title="dt(category)"
+        >
           {{ dt(category) }}
         </div>
       </div>
-      <img
-        class="breadcrumbs-img"
-        src="img/pos/right-arrow.png"
-        alt="right-arrow"
-      />
+      <i class="fa fa-chevron-right color-text-invert"></i>
     </div>
     <div class="breadcrumbs-item breadcrumbs-sub-category" v-if="subcategory">
       <div class="title-box">
@@ -23,11 +24,7 @@
           {{ dt(subcategory) }}
         </div>
       </div>
-      <img
-        class="breadcrumbs-img"
-        src="img/pos/right-arrow.png"
-        alt="right-arrow"
-      />
+      <i class="fa fa-chevron-right color-text-invert"></i>
     </div>
     <div class="breadcrumbs-item breadcrumbs-menu" v-if="item">
       <div class="title-box">

@@ -1,29 +1,35 @@
 <template>
   <div class="payment-breakdown" id="payment-breakdown" style="display:none">
     <div class="payment-breakdown-title">
-      <h1>{{ _t("Payment Breakdown") }}</h1>
+      <h1 class="color-text">{{ _t("Payment Breakdown") }}</h1>
     </div>
 
     <div class="payment-method-block">
       <table>
         <tr>
-          <th style="width: 250px;">{{ _t("Payment Method") }}</th>
-          <th style="width: 150px;">{{ _t("Amount") }}</th>
-          <th style="width: 150px;"></th>
+          <th style="width: 250px;" class="color-text color-secondary">
+            {{ _t("Payment Method") }}
+          </th>
+          <th style="width: 150px;" class="color-text color-secondary">
+            {{ _t("Amount") }}
+          </th>
+          <th style="width: 150px;" class="color-text color-secondary"></th>
         </tr>
         <tr v-for="(payment, index) in payments" :key="index">
-          <td>{{ payment.method.name }}</td>
-          <td>{{ formatPrice(payment.amount) }}</td>
-          <td>
+          <td class="color-main color-text">{{ payment.method.name }}</td>
+          <td class="color-main color-text">
+            {{ formatPrice(payment.amount) }}
+          </td>
+          <td class="color-main color-text">
             <a href="" @click.prevent="removePayment(index)"
               ><img src="img/pos/delete-icon.svg" alt="delete"
             /></a>
           </td>
         </tr>
         <tr class="pay-tot-amt">
-          <td>{{ _t("Total") }}</td>
-          <td>{{ formatPrice(paid) }}</td>
-          <td></td>
+          <td class="color-secondary color-text">{{ _t("Total") }}</td>
+          <td class="color-secondary color-text">{{ formatPrice(paid) }}</td>
+          <td class="color-secondary color-text"></td>
         </tr>
       </table>
     </div>

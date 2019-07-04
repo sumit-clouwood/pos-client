@@ -1,12 +1,12 @@
 <template>
-  <div class="search-field">
-    <div class="search-field-icon">
+  <div class="search-field color-text-invert color-dashboard-background">
+    <div class="search-field-icon ">
       <!--<img class="search-field-img" src="images/search-icon.png" alt="search">-->
-      <i class="fa fa-search" aria-hidden="true"></i>
+      <i class="fa fa-search color-text-invert" aria-hidden="true"></i>
     </div>
     <input
       type="text"
-      class="search-field-input"
+      class="search-field-input color-dashboard-background"
       :placeholder="_t('Start typing to get search results')"
       v-model="searchItems"
       @keyup="collectSearchItems(searchItems)"
