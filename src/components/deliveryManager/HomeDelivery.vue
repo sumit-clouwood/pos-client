@@ -67,7 +67,7 @@
               <button
                 type="button"
                 class="button btn btn-success"
-                v-if="assignToBucket.length"
+                v-if="driverBucket.length"
                 @click="
                   updateOrderAction({
                     order: order,
@@ -86,8 +86,8 @@
               <button
                 type="button"
                 class="button btn btn-success"
-                v-if="assignToBucket.length"
-                @click="removeAllFromBucket"
+                v-if="driverBucket.length"
+                @click="restoreOrders"
               >
                 <div class="button-content-container">
                   <div class="button-icon-container"><!----></div>
@@ -132,7 +132,7 @@ export default {
       waitingOrder: {
         moreDetails: false,
         actionLabel: 'Assign',
-        action: 'assignToBucket',
+        action: 'addToDriverBucket',
         driverId: '',
         nextOrderStatus: 'Ready',
       },
@@ -161,7 +161,7 @@ export default {
     ...mapState({
       driverList: state => state.deliveryManager.drivers,
     }),
-    ...mapState('order', ['assignToBucket']),
+    ...mapState('deliveryManager', ['driverBucket']),
     ...mapGetters('location', ['_t']),
   },
 
@@ -182,11 +182,8 @@ export default {
     getSelectUser: function() {
       // this.selectedUser = $('#get-customer-list').val()
     },
-    removeAllFromBucket() {
-      this.$store.commit('order/RE_ASSIGNED_BUCKET')
-      this.$store.dispatch('deliveryManager/restoreOrders')
-    },
-    ...mapActions('deliveryManager', ['selectDriver']),
+
+    ...mapActions('deliveryManager', ['selectDriver', 'restoreOrders']),
     /*imageLoadError() {
       for (let i = 0; i < document.images.length; i++) {
         document.images[i].remove()

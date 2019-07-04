@@ -20,7 +20,6 @@ const state = {
   // pastOrder: false,
   orderStatus: null,
   cartType: 'new',
-  assignToBucket: [],
 }
 
 // getters
@@ -691,6 +690,12 @@ const actions = {
     const params = ['orders', orderId, '']
     OrderService.getGlobalDetails(...params).then(response => {
       let orderDetails = {}
+      OrderService.getModalDetails('brand_cancellation_reasons').then(
+        response => {
+          orderDetails.cancellationReasons = response.data.data
+        }
+      )
+
       orderDetails.item = response.data.item
       orderDetails.customer = response.data.collected_data.customer
       orderDetails.lookups = response.data.collected_data.page_lookups
@@ -700,7 +705,6 @@ const actions = {
       commit(mutation.SET_ORDER_DETAILS, orderDetails)
     })
   },
-
   removeOrder({ dispatch }, { order, orderType }) {
     let actionTrigger = orderType
     if (actionTrigger) {
@@ -711,16 +715,11 @@ const actions = {
     dispatch('updateOrderAction', { order, orderType, actionTrigger })
   },
 
-  updateOrderAction({ commit, dispatch }, { order, orderType, actionTrigger }) {
-    if (actionTrigger === 'assignToBucket') {
-      commit(mutation.ASSIGNED_BUCKET, order)
-      dispatch(
-        'deliveryManager/updateOrder',
-        { orderId: order._id, deleted: true },
-        {
-          root: true,
-        }
-      )
+  updateOrderAction({ dispatch }, { order, orderType, actionTrigger }) {
+    if (actionTrigger === 'addToDriverBucket') {
+      dispatch('deliveryManager/addOrderToDriverBucket', order, {
+        root: true,
+      })
     } else {
       let params = { driver: state.selectedDriver }
       OrderService.updateOrderAction(order._id, actionTrigger, params).then(
@@ -872,21 +871,6 @@ const mutations = {
 
   [mutation.SET_CART_TYPE](state, cartType) {
     state.cartType = cartType
-  },
-  [mutation.ASSIGNED_BUCKET](state, order) {
-    state.assignToBucket.push(order)
-    // $('#past-order').modal('toggle')
-  },
-  [mutation.RE_ASSIGNED_BUCKET](state, orderId) {
-    let bucket = []
-    if (orderId) {
-      state.assignToBucket.filter(function(ele) {
-        if (ele._id != orderId) {
-          bucket.push(ele)
-        }
-      })
-    }
-    state.assignToBucket = bucket
   },
 }
 

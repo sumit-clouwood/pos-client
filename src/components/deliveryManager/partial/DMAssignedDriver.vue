@@ -1,17 +1,13 @@
 <template>
   <div>
-    <div
-      class="assigning-block"
-      v-for="order in assignToBucket"
-      :key="order._id"
-    >
+    <div class="assigning-block" v-for="order in driverBucket" :key="order._id">
       <div class="order">
         <div class="store-info">
           <div class="store-name">
             {{ _t('From Store') }}:
             {{
               LookupData.get({
-                collection: assignToBucket,
+                collection: driverBucket,
                 matchWith: order.store_id,
                 selection: 'name',
               })
@@ -69,16 +65,15 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'DMAssignedDriver',
   computed: {
-    ...mapState('order', ['assignToBucket']),
+    ...mapState('deliveryManager', ['driverBucket']),
     ...mapGetters('location', ['_t']),
   },
   methods: {
     removeAssignedOrder: function(order) {
-      this.$store.commit('order/RE_ASSIGNED_BUCKET', order._id)
-      this.$store.dispatch('deliveryManager/updateOrder', {
-        orderId: order._id,
-        deleted: false,
-      })
+      this.$store.dispatch(
+        'deliveryManager/removeOrderFromDriverBucket',
+        order._id
+      )
     },
   },
 }

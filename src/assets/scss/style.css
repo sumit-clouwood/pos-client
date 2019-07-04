@@ -3077,9 +3077,19 @@ body {
         font-size: 0.875rem;
         margin-top: 0.3125rem; }
 
-.dm-manager .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav {
-  width: 3.25rem;
-  min-height: 2.3125rem; }
+.dm-manager .navigation .navigation-list-wrapper .navigation-list {
+  grid-gap: 0; }
+  .dm-manager .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav {
+    width: auto;
+    min-height: auto;
+    padding: 0.625rem 0.9375rem 0.625rem 0.9375rem;
+    margin: 0 0.4375rem 0.625rem 0.4375rem; }
+    .dm-manager .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav .nav-link-text {
+      display: inherit; }
+      .dm-manager .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav .nav-link-text svg {
+        width: 1.5625rem;
+        height: 1.5625rem;
+        fill: #fff; }
 
 .main {
   display: grid;

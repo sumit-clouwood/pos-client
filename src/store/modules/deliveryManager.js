@@ -26,6 +26,7 @@ const state = {
     pageId: 'home_delivery_new',
   },
   drivers: false,
+  driverBucket: [],
 }
 const getters = {
   orders: state => state.orders.filter(order => order.deleted === false),
@@ -114,49 +115,27 @@ const actions = {
     })
   },
 
-  prepareDeliveredOrderGroup({ commit }) {
-    let OrderDetailsUpdate = {
-      totalDelivered: 0,
-      totalAmount: 0,
-      cash: 0,
-      credit: 0,
-    }
-    if (state.orders) {
-      state.orders.driverPerformanceList.forEach(order => {
-        if (!state.deliveredOrderCollection[order.driverId]) {
-          commit(mutation.SET_DM_ORDER_GROUP, order)
-          commit(mutation.SET_DM_ORDER_COLLECTION, order)
-          OrderDetailsUpdate = {
-            totalDelivered: 0,
-            totalAmount: 0,
-            cash: 0,
-            credit: 0,
-            id: order.driverId,
-          }
-        }
+  addOrderToDriverBucket({ commit, dispatch }, order) {
+    commit(mutation.ADD_TO_DRIVER_BUCKET, order)
+    dispatch('updateOrder', {
+      orderId: order._id,
+      deleted: true,
+    })
+  },
 
-        commit(mutation.SET_DM_ORDER_COLLECTION, order)
-        // this.deliveredOrderCollection[order.driverId].push(order)
-
-        if (OrderDetailsUpdate.id == order.driverId) {
-          OrderDetailsUpdate.id = order.driverId
-          OrderDetailsUpdate.driverName = order.driverName
-          OrderDetailsUpdate.totalDelivered += parseInt(order.noOfOrders)
-          OrderDetailsUpdate.totalAmount += parseFloat(order.orderSum)
-          OrderDetailsUpdate.cash += parseFloat(order.cash)
-          OrderDetailsUpdate.credit += parseFloat(order.credit)
-          OrderDetailsUpdate.avgDeliveryTime = order.averageDeliveryTime
-        }
-        if (!state.deliveredOrderGroup[order.driverId][0]) {
-          commit(mutation.SET_DM_ORDER_GROUP, OrderDetailsUpdate)
-        }
-      })
-    }
+  removeOrderFromDriverBucket({ commit, dispatch }, orderId) {
+    commit(mutation.REMOVE_FROM_DRIVER_BUCKET, orderId)
+    dispatch('updateOrder', {
+      orderId: orderId,
+      deleted: false,
+    })
   },
 
   restoreOrders({ commit }) {
+    commit('REMOVE_FROM_DRIVER_BUCKET')
     commit('DM_RESTORE_ORDERS')
   },
+
   updateOrder({ state, commit }, { orderId, deleted }) {
     const index = state.orders.findIndex(dmOrder => dmOrder._id == orderId)
     const order = state.orders[index]
@@ -190,20 +169,12 @@ const mutations = {
   [mutation.SET_DM_ORDER_COLLECTED](state, collected) {
     state.collected = collected
   },
-  /*[mutation.SET_DM_ORDER_COUNT](state, orderCount) {
-    state.orderCounts = orderCount
-  },*/
   [mutation.SET_DM_ORDERS](state, orderDetails) {
     state.orders = orderDetails.data.map(order => {
       order.deleted = false
       return order
     })
     let stores = orderDetails.page_lookups.stores
-    /*return LookupData.get({
-      collection: stores,
-      matchWith: addressId,
-      selection: 'name',
-    })*/
     state.availableStores = stores._id
   },
   [mutation.SET_SELECTED_DM_ORDERS](state, selectedOrderDetails) {
@@ -236,6 +207,21 @@ const mutations = {
       order.deleted = false
       return order
     })
+  },
+  [mutation.ADD_TO_DRIVER_BUCKET](state, order) {
+    state.driverBucket.push(order)
+    // $('#past-order').modal('toggle')
+  },
+  [mutation.REMOVE_FROM_DRIVER_BUCKET](state, orderId) {
+    let bucket = []
+    if (orderId) {
+      state.driverBucket.filter(function(ele) {
+        if (ele._id != orderId) {
+          bucket.push(ele)
+        }
+      })
+    }
+    state.driverBucket = bucket
   },
 }
 

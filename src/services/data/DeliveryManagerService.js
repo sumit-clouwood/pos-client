@@ -15,14 +15,11 @@ export default {
     )
   },
 
-  getRoles() {
-    return DataService.get('/model/brand_roles?no_limit=true')
+  getGlobalDetails(model) {
+    return DataService.get(`/model/${model}?no_limit=true`, 'brand')
   },
 
-  getCancelReasons() {
-    return DataService.get(
-      'model/brand_cancellation_reasons?no_limit=true',
-      'brand'
-    )
+  getRoles() {
+    return DataService.get('/model/brand_roles?no_limit=true')
   },
 }
