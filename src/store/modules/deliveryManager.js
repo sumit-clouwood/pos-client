@@ -50,7 +50,7 @@ const actions = {
     // })
   },
   getDrivers({ commit }) {
-    DMService.getUsers().then(response => {
+    DMService.getGlobalDetails('users').then(response => {
       commit(mutation.DRIVERS, response.data.data)
     })
   },
@@ -58,6 +58,12 @@ const actions = {
   fetchStoreOrders({ commit, dispatch }, storeId) {
     commit(mutation.SET_SELECTED_STORE, storeId)
     dispatch('fetchDMOrderDetail')
+  },
+
+  cancelReasons({ commit }) {
+    DMService.getGlobalDetails('brand_cancellation_reasons').then(response => {
+      commit(mutation.DRIVERS, response.data.data)
+    })
   },
 
   updateDMOrderStatus(
@@ -107,46 +113,6 @@ const actions = {
       commit(mutation.SET_SHOW_MORE_ORDERS, response.data.data)
     })
   },
-
-  prepareDeliveredOrderGroup({ commit }) {
-    let OrderDetailsUpdate = {
-      totalDelivered: 0,
-      totalAmount: 0,
-      cash: 0,
-      credit: 0,
-    }
-    if (state.orders) {
-      state.orders.driverPerformanceList.forEach(order => {
-        if (!state.deliveredOrderCollection[order.driverId]) {
-          commit(mutation.SET_DM_ORDER_GROUP, order)
-          commit(mutation.SET_DM_ORDER_COLLECTION, order)
-          OrderDetailsUpdate = {
-            totalDelivered: 0,
-            totalAmount: 0,
-            cash: 0,
-            credit: 0,
-            id: order.driverId,
-          }
-        }
-
-        commit(mutation.SET_DM_ORDER_COLLECTION, order)
-        // this.deliveredOrderCollection[order.driverId].push(order)
-
-        if (OrderDetailsUpdate.id == order.driverId) {
-          OrderDetailsUpdate.id = order.driverId
-          OrderDetailsUpdate.driverName = order.driverName
-          OrderDetailsUpdate.totalDelivered += parseInt(order.noOfOrders)
-          OrderDetailsUpdate.totalAmount += parseFloat(order.orderSum)
-          OrderDetailsUpdate.cash += parseFloat(order.cash)
-          OrderDetailsUpdate.credit += parseFloat(order.credit)
-          OrderDetailsUpdate.avgDeliveryTime = order.averageDeliveryTime
-        }
-        if (!state.deliveredOrderGroup[order.driverId][0]) {
-          commit(mutation.SET_DM_ORDER_GROUP, OrderDetailsUpdate)
-        }
-      })
-    }
-  },
 }
 
 const mutations = {
@@ -172,17 +138,9 @@ const mutations = {
   [mutation.SET_DM_ORDER_COLLECTED](state, collected) {
     state.collected = collected
   },
-  /*[mutation.SET_DM_ORDER_COUNT](state, orderCount) {
-    state.orderCounts = orderCount
-  },*/
   [mutation.SET_DM_ORDERS](state, orderDetails) {
     state.orders = orderDetails.data
     let stores = orderDetails.page_lookups.stores
-    /*return LookupData.get({
-      collection: stores,
-      matchWith: addressId,
-      selection: 'name',
-    })*/
     state.availableStores = stores._id
   },
   [mutation.SET_SELECTED_DM_ORDERS](state, selectedOrderDetails) {

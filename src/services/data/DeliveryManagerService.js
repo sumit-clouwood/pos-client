@@ -10,14 +10,7 @@ export default {
     )
   },
 
-  getUsers() {
-    return DataService.get('/model/users?no_limit=true', 'brand')
-  },
-
-  getCancelReasons() {
-    return DataService.get(
-      'model/brand_cancellation_reasons?no_limit=true',
-      'brand'
-    )
+  getGlobalDetails(model) {
+    return DataService.get(`/model/${model}?no_limit=true`, 'brand')
   },
 }
