@@ -35,12 +35,16 @@
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  Reprint
+                  {{ _t('Reprint') }}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <a class="dropdown-item" href="#">Something else here</a>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    v-for="(invoice, index) in selectedOrder.invoice"
+                    :key="index"
+                    >{{ invoice.name }}</a
+                  >
                 </div>
               </div>
             </div>
@@ -49,7 +53,7 @@
             <div class="button-content-container">
               <div class="button-icon-container"></div>
               <div class="button-caption">
-                Cancel Order
+                {{ _t('Cancel Order') }}
               </div>
             </div>
           </button>
@@ -57,7 +61,7 @@
             <div class="button-content-container">
               <div class="button-icon-container"></div>
               <div class="button-caption">
-                Modify Order
+                {{ _t('Modify Order') }}
               </div>
             </div>
           </button>
@@ -68,7 +72,7 @@
             <div class="button-content-container">
               <div class="button-icon-container"></div>
               <div class="button-caption">
-                Open Past Orders
+                {{ _t('Open Past Orders') }}
               </div>
             </div>
           </button>
@@ -76,7 +80,7 @@
             <div class="button-content-container">
               <div class="button-icon-container"></div>
               <div class="button-caption">
-                Close
+                {{ _t('Close') }}
               </div>
             </div>
           </button>
@@ -94,7 +98,7 @@ import Modification from '@/components/pos/content/orderDetails/rightContent/Mod
 import Payment from '@/components/pos/content/orderDetails/rightContent/Payment'
 import RightPartHeader from '@/components/pos/content/orderDetails/RightPartHeader'
 import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'OrderDetailPopup',
@@ -109,6 +113,7 @@ export default {
   },
   computed: {
     ...mapState('order', ['selectedOrder']),
+    ...mapGetters('location', ['_t']),
   },
 }
 </script>
