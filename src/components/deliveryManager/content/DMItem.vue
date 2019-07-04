@@ -53,7 +53,7 @@
                   <button
                     v-else
                     @click="
-                      updateOrderAction({
+                      updateOrder({
                         order: order,
                         orderType: order.order_type,
                         actionTrigger: actionDetails.action,
@@ -171,8 +171,13 @@ export default {
   },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
+    updateOrder: function({ order, orderType, actionTrigger }) {
+      this.updateOrderAction({ order, orderType, actionTrigger })
+      setInterval(function() {
+        this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+      }, 200)
+    },
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
-
     /*updateButtonAction: function(orderStatus) {
       let actionLabel = 'Ready'
       if (orderStatus === 'in-progress') {
