@@ -47,7 +47,7 @@
               <button
                 type="button"
                 class="button btn btn-success"
-                @click="removeAssignedOrder(order._id)"
+                @click="removeAssignedOrder(order)"
               >
                 <div class="button-content-container">
                   <div class="button-icon-container"><!----></div>
@@ -74,7 +74,11 @@ export default {
   },
   methods: {
     removeAssignedOrder: function(order) {
-      this.$store.commit('order/RE_ASSIGNED_BUCKET', order)
+      this.$store.commit('order/RE_ASSIGNED_BUCKET', order._id)
+      this.$store.dispatch('deliveryManager/updateOrder', {
+        orderId: order._id,
+        deleted: false,
+      })
     },
   },
 }

@@ -324,7 +324,7 @@
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
       </div>
-      <InvoiceReprint :order="selectedOrder" />
+      <InvoiceReprint v-if="selectedOrder" :order="selectedOrder" />
     </div>
   </div>
 </template>

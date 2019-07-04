@@ -1,5 +1,5 @@
 <template>
-  <div class="table-responsive" v-if="orderDetails">
+  <div class="table-responsive" v-if="orders">
     <table class="table table-block-page">
       <!--<thead>
                       <tr>
@@ -15,7 +15,7 @@
           </tr>
         </tfoot>-->
       <tbody>
-        <tr :key="index" v-for="(order, index) in orderDetails">
+        <tr :key="index" v-for="(order, index) in orders">
           <td v-if="order.order_status == orderStatus">
             <div class="order-item">
               <div class="order-header">
@@ -161,10 +161,10 @@ export default {
       orderStatus: state => state.deliveryManager.deliveryOrderStatus,
     }),
     ...mapState({
-      orderDetails: state => state.deliveryManager.orders,
       branch: state => state.deliveryManager.availableStores,
     }),
     ...mapGetters('location', ['_t']),
+    ...mapGetters('deliveryManager', ['orders']),
   },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),

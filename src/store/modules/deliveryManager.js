@@ -6,7 +6,7 @@ import DMService from '@/services/data/DeliveryManagerService'
 const state = {
   deliveryOrderStatus: 'in-progress',
   collected: 'no',
-  orders: false,
+  orders: [],
   orderCounts: 0,
   selectedOrder: false,
   selectedDriver: false,
@@ -27,7 +27,9 @@ const state = {
   },
   drivers: false,
 }
-const getters = {}
+const getters = {
+  orders: state => state.orders.filter(order => order.deleted === false),
+}
 
 const actions = {
   fetchDMOrderDetail({ commit, state, dispatch }) {
@@ -151,6 +153,15 @@ const actions = {
       })
     }
   },
+
+  updateOrder({ state, commit }, { orderId, deleted }) {
+    const index = state.orders.findIndex(dmOrder => dmOrder._id == orderId)
+    const order = state.orders[index]
+    order.deleted = deleted
+    //for delete { index: index, remove: 1 }
+    //for update it could be { index: index, remove: 1, insert : {object} }
+    commit('DM_UPDATE_ORDERS', { index: index, remove: 1, insert: order })
+  },
 }
 
 const mutations = {
@@ -180,7 +191,10 @@ const mutations = {
     state.orderCounts = orderCount
   },*/
   [mutation.SET_DM_ORDERS](state, orderDetails) {
-    state.orders = orderDetails.data
+    state.orders = orderDetails.data.map(order => {
+      order.deleted = false
+      return order
+    })
     let stores = orderDetails.page_lookups.stores
     /*return LookupData.get({
       collection: stores,
@@ -206,6 +220,16 @@ const mutations = {
   },
   [mutation.SET_DM_PAGE_ID](state, pageId) {
     state.params.pageId = pageId
+  },
+  [mutation.DM_UPDATE_ORDERS](state, { index, remove, insert }) {
+    if (insert) {
+      state.orders.splice(index, remove, insert)
+    } else {
+      state.orders.splice(index, remove)
+    }
+  },
+  [mutation.DM_ADD_ORDER_TO_READY](state, order) {
+    state.orders.push(order)
   },
 }
 
