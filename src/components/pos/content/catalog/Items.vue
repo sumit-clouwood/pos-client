@@ -1,7 +1,10 @@
 <template>
   <div class="food-menu color-dashboard-background">
     <div
-      class="food-menu-item color-dashboard-background"
+      :class="{
+        'food-menu-item': true,
+        ' color-dashboard-background': item.image != ''
+      }"
       :style="{ background: item.image == '' ? item.item_color : '' }"
       v-for="item in items"
       :key="item._id"
