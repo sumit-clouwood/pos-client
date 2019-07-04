@@ -58,6 +58,13 @@
         <a href="javascript:void(0)">{{ _t('Printers') }}</a>
       </li>
       <li>
+        <a href="javascript:void(0)"
+          ><router-link :to="'/delivery-manager' + store">{{
+            _t('Delivery Manager')
+          }}</router-link></a
+        >
+      </li>
+      <li>
         <a href="javascript:void(0)">{{ _t('Logout') }}</a>
       </li>
     </ul>
@@ -84,6 +91,7 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
+    ...mapGetters('context', ['store']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('sync', ['online']),
     ...mapState({
