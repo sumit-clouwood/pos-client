@@ -1,33 +1,4 @@
-/* global $ */
 export default {
-  applyColoring: function(Brand) {
-    // eslint-disable-next-line no-console
-    console.log(Brand);
-    $(".color-button").css("background-color", Brand["color-button"]);
-    $(".color-dashboard-background").css(
-      "background-color",
-      Brand["color-dashboard-background"]
-    );
-    $(".color-icon-table-neutral-button").css(
-      "background-color",
-      Brand["color-icon-table-neutral-button"]
-    );
-    $(".color-main").css("background-color", Brand["color-main"]);
-    $(".color-secondary").css("background-color", Brand["color-secondary"]);
-    $(".color-shadow").css("background-color", Brand["color-shadow"]);
-    $(".color-tables-background").css(
-      "background-color",
-      Brand["color-tables-background"]
-    );
-    $(".color-text-invert").css("background-color", Brand["color-text-invert"]);
-    $(".color-warning").css("background-color", Brand["color-warning"]);
-    $(".color-text").css("background-color", Brand["color-text"]);
-    let items = window.document.styleSheets;
-    for (var i = 0, n = items.length; i < n; i++) {
-      // eslint-disable-next-line no-console
-      console.log(items[i]);
-    }
-  },
   applyDynamicRules(rulesData) {
     let rules = [
       [".color-button", ["background-color", rulesData["color-button"], true]],
@@ -93,6 +64,10 @@ export default {
       [
         ".main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after",
         ["border-left-color", rulesData["color-shadow"], true]
+      ],
+      [
+        ".navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav.active, .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav:hover",
+        ["background-color", rulesData["color-shadow"], true]
       ]
     ];
     this.addStylesheetRules(rules);
