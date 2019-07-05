@@ -962,7 +962,9 @@ div.order-address {
   background-repeat: no-repeat;
   background-position: center right $px10;
 }
-
+input[type="password"] {
+  background: none;
+}
 .right-btn-wrap {
   > button {
     background: transparent;
