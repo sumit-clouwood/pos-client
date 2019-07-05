@@ -71,7 +71,12 @@
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
-              <div class="button-caption">
+              <div
+                class="button-caption"
+                data-toggle="modal"
+                data-target="#display-order"
+                @click="fetchSelectedCustomer(selectedOrder.customer._id)"
+              >
                 {{ _t('Open Past Orders') }}
               </div>
             </div>
@@ -92,6 +97,7 @@
         </div>
       </div>
     </div>
+    <CustomerInformation />
   </div>
 </template>
 
@@ -102,7 +108,9 @@ import Modification from '@/components/pos/content/orderDetails/rightContent/Mod
 import Payment from '@/components/pos/content/orderDetails/rightContent/Payment'
 import RightPartHeader from '@/components/pos/content/orderDetails/RightPartHeader'
 import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
-import { mapState, mapGetters } from 'vuex'
+import CustomerInformation from '@/components/pos/footer/popups/ManageCustomer/CustomerInformation'
+
+import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'OrderDetailPopup',
@@ -114,10 +122,14 @@ export default {
     Modification,
     Payment,
     LeftPart,
+    CustomerInformation,
   },
   computed: {
     ...mapState('order', ['selectedOrder']),
     ...mapGetters('location', ['_t']),
+  },
+  methods: {
+    ...mapActions('customer', ['fetchSelectedCustomer']),
   },
 }
 </script>
