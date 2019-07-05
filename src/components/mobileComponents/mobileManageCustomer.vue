@@ -220,6 +220,7 @@
         background-color: #fff;
         transition: .5s ease-out;
         z-index: 50;
+        border-left: 1px solid #ddd;
 
         &.active {
             right: 0;

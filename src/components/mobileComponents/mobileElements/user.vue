@@ -1,6 +1,6 @@
 <template>
     <div class="user">
-        <img class="image" src="../../../assets/images/userimg.jpg"/>
+        <img class="image" :src="'img/pos/' + param.img"/>
         <div class="name">{{param.name}}</div>
     </div>
 </template>

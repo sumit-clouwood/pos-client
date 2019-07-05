@@ -60,6 +60,7 @@
             return {
                 user: '',
                 userPin: [],
+                userKey: null
             }
         },
         computed: {
@@ -75,6 +76,7 @@
                 this.user = user
                 this.$store.dispatch('userCalcHendlerGhange')
                 this.userPin = []
+                this.userKey = user.key
             },
             inputPin(e) {
                 if (this.userPin.length < 4) {
@@ -82,7 +84,9 @@
                 }
             },
             userLoginHendlerGhange(e) {
-                this.$store.dispatch('userLoginHendlerGhange')
+                if(this.userPin == this.userKey){
+                    this.$store.dispatch('userLoginHendlerGhange')
+                }
             },
             openUserHendlerGhange() {
                 this.$store.dispatch('openUserHendlerGhange')

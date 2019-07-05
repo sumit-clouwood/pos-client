@@ -160,9 +160,10 @@
                 transition: 0.5s ease-out;
                 display: flex;
                 flex-direction: column;
-                background-color: rgba(0,0,0,0.3);
+                background-color: rgba(0, 0, 0, 0.3);
                 background-color: #fff;
-                background-color: #eee;
+                /*background-color: #eee;*/
+                border-left: 1px solid #ddd;
 
                 &.active {
                     right: 0;
@@ -174,7 +175,7 @@
                     align-items: end;
                     margin-top: auto;
                     margin-bottom: auto;
-                    background-color: #eee;
+                    /*background-color: #eee;*/
 
                     .footer-slider-list-item {
                         border-bottom: 1px solid $gray-middle;
@@ -201,7 +202,7 @@
                     padding-top: 20px;
                     background-color: #fff;
                     align-items: end;
-                    background-color: #eee;
+                    /*background-color: #eee;*/
                 }
             }
         }

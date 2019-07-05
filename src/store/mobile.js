@@ -32,22 +32,26 @@ export default {
             {
                 id: 0,
                 name: 'Aisyah Zidni',
-                img: 'userimg.jpg'
+                img: 'testUserImg-3.jpg',
+                key: 1234
             },
             {
                 id: 1,
                 name: 'Nirmala Azalea',
-                img: 'testUserImg-1.jpg'
+                img: 'testUserImg-1.jpg',
+                key: 2345
             },
             {
                 id: 2,
                 name: 'Bena Kane',
-                img: 'testUserImg-2.jpg'
+                img: 'testUserImg-2.jpg',
+                key: 3456
             },
             {
                 id: 3,
                 name: 'Firmino Kudo',
-                img: 'testUserImg-3.jpg'
+                img: 'testUserImg-0.jpg',
+                key: 4567
             },
         ]
     },
