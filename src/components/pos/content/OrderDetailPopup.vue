@@ -121,8 +121,6 @@ import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
 import CancelOrderPopup from '@/components/pos/content/orderDetails/CancelOrderPopup'
 import CustomerInformation from '@/components/pos/footer/popups/ManageCustomer/CustomerInformation'
 
-import { mapState, mapGetters, mapActions } from 'vuex'
-
 export default {
   name: 'OrderDetailPopup',
   props: {},

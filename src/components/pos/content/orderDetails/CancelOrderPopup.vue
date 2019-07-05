@@ -1,7 +1,7 @@
 <template>
   <div
     class="modal fade cancel-order"
-    id="exampleModalCenter"
+    id="cancellationReason"
     tabindex="-1"
     role="dialog"
     aria-labelledby="exampleModalCenterTitle"
@@ -24,15 +24,11 @@
         </div>
         <div class="modal-body">
           <div class="upper">
-            {{ selectedOrder.cancellationReasons }}
             <div class="select-driver">
               {{ _t('Select cancellation reason') }}
             </div>
             <div class="autocomplete-container">
-              <div
-                v-if="selectedOrder.cancellationReasons"
-                class="driver-container"
-              >
+              <div v-if="cancellationReason" class="driver-container">
                 <input
                   autocomplete="off"
                   type="text"
@@ -44,7 +40,7 @@
                 <div id="my-dropdown" class="dropdown-content cursor-pointer">
                   <span
                     class="dropdown"
-                    v-for="reason in selectedOrder.cancellationReasons"
+                    v-for="reason in cancellationReason"
                     :key="reason._id"
                     v-on:click="selectedReason(reason)"
                     >{{ reason.name }}</span
@@ -52,7 +48,7 @@
                 </div>
               </div>
               <div v-else class="drivers-list-note">
-                {{ _t('No Drivers Available') }}
+                {{ _t('No reason found') }}
               </div>
             </div>
           </div>
@@ -82,7 +78,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['selectedOrder']),
+    ...mapState('order', ['cancellationReason']),
   },
   methods: {
     selectedReason: function(driver) {

@@ -12,6 +12,7 @@ const state = {
   item: false,
   orderType: { OTview: 'Walk In', OTApi: 'walk_in' },
   orderNote: '',
+  cancellationReason: {},
   onlineOrders: false,
   futureOrder: false,
   referral: false,
@@ -691,8 +692,8 @@ const actions = {
     OrderService.getGlobalDetails(...params).then(response => {
       let orderDetails = {}
       OrderService.getModalDetails('brand_cancellation_reasons').then(
-        response => {
-          orderDetails.cancellationReasons = response.data.data
+        responseData => {
+          commit(mutation.SET_CANCELLATION_REASON, responseData.data.data)
         }
       )
 
@@ -864,6 +865,9 @@ const mutations = {
   },
   [mutation.SET_ORDER_DETAILS](state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails
+  },
+  [mutation.SET_CANCELLATION_REASON](state, cancelationReason) {
+    state.cancellationReason = cancelationReason
   },
   [mutation.ORDER_STATUS](state, status) {
     state.orderStatus = status
