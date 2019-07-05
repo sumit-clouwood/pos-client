@@ -24,11 +24,11 @@
         </div>
         <div class="modal-body">
           <div class="upper">
-            <div class="select-driver">
-              {{ _t('Select cancellation reason') }}
-            </div>
-            <div class="autocomplete-container">
-              <div v-if="cancellationReason" class="driver-container">
+            <div class="autocomplete-container" v-if="cancellationReason">
+              <div class="driver-container">
+                <div class="select-driver">
+                  {{ _t('Select cancellation reason') }}
+                </div>
                 <input
                   autocomplete="off"
                   type="text"
@@ -47,17 +47,30 @@
                   >
                 </div>
               </div>
-              <div v-else class="drivers-list-note">
-                {{ _t('No reason found') }}
+              <div>
+                <div class="select-driver">
+                  {{ _t('Select cancellation password') }}
+                </div>
+                <div>
+                  <input
+                    autocomplete="off"
+                    type="text"
+                    class="input-search-driver"
+                    v-model="cancellationReasonPassword"
+                  />
+                </div>
               </div>
+            </div>
+            <div v-else class="drivers-list-note">
+              {{ _t('No reason found') }}
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">
             {{ _t('Close') }}
           </button>
-          <button type="button" class="btn btn-primary">
+          <button type="button" class="btn btn-success">
             {{ _t('Submit') }}
           </button>
         </div>
@@ -74,6 +87,7 @@ export default {
   data() {
     return {
       showSelectedReason: '',
+      cancellationReasonPassword: '',
     }
   },
   computed: {
@@ -81,9 +95,9 @@ export default {
     ...mapState('order', ['cancellationReason']),
   },
   methods: {
-    selectedReason: function(driver) {
-      this.waitingOrder.driverId = driver._id
-      this.selectedReason = driver.name
+    selectedReason: function(reason) {
+      // this.waitingOrder.driverId = driver._id
+      this.showSelectedReason = reason.name
       /*this.selectDriver(driver)*/
       $('.dropdown-content').hide()
     },
