@@ -153,6 +153,7 @@
 }
 .dm-manager{
   .navigation {
+    grid-template-rows: $header-height 1fr $px60 $dm-nav-footer-height;
     .navigation-list-wrapper{
       .navigation-list{
           grid-gap: 0;
