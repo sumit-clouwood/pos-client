@@ -8,6 +8,7 @@
   display: grid;
   grid-template-rows: $header-height 1fr $px60 $footer-height;
 
+
   .logo {
     display: grid;
     grid-template-columns: auto;
