@@ -40,10 +40,11 @@
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <a
                     class="dropdown-item"
-                    href="#"
-                    v-for="(invoice, index) in selectedOrder.invoice"
+                    href="javascript:void(0)"
+                    v-for="(template, index) in selectedOrder.invoice"
                     :key="index"
-                    >{{ invoice.name }}</a
+                    @click="printInvoice(template)"
+                    >{{ template.name }}</a
                   >
                 </div>
               </div>
@@ -88,21 +89,23 @@
               </div>
             </div>
           </button>
-          <iframe frameborder="0" srcdoc="" width="0px" height="0px"></iframe>
         </div>
       </div>
     </div>
+    <Invoice />
   </div>
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions } from 'vuex'
+
+import Invoice from '@/components/pos/content/cart/payNow/Invoice'
 import Receipt from '@/components/pos/content/orderDetails/rightContent/Receipt'
 import History from '@/components/pos/content/orderDetails/rightContent/History'
 import Modification from '@/components/pos/content/orderDetails/rightContent/Modification'
 import Payment from '@/components/pos/content/orderDetails/rightContent/Payment'
 import RightPartHeader from '@/components/pos/content/orderDetails/RightPartHeader'
 import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
-import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'OrderDetailPopup',
@@ -114,10 +117,14 @@ export default {
     Modification,
     Payment,
     LeftPart,
+    Invoice,
   },
   computed: {
     ...mapState('order', ['selectedOrder']),
     ...mapGetters('location', ['_t']),
+  },
+  methods: {
+    ...mapActions('deliveryManager', ['printInvoice']),
   },
 }
 </script>

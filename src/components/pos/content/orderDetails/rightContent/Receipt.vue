@@ -93,9 +93,13 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'Receipt',
   props: {
-    orderDetails: {},
-    iteDiscount: {},
-    itemModifiers: {},
+    orderDetails: Object,
+  },
+  data() {
+    return {
+      iteDiscount: {},
+      itemModifiers: {},
+    }
   },
   computed: {
     ...mapGetters('location', ['_t']),
