@@ -324,7 +324,7 @@
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
       </div>
-      <InvoiceReprint v-if="selectedOrder" :order="selectedOrder" />
+      <!-- <InvoiceReprint v-if="selectedOrder" :order="selectedOrder" /> -->
     </div>
   </div>
 </template>
@@ -332,7 +332,7 @@
 <script>
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
-import InvoiceReprint from '@/components/deliveryManager/partial/InvoiceReprint'
+//import InvoiceReprint from '@/components/deliveryManager/partial/InvoiceReprint'
 
 export default {
   name: 'DMOrderDetails',
@@ -346,7 +346,7 @@ export default {
     ...mapGetters('location', ['formatPrice']),
   },
   components: {
-    InvoiceReprint,
+    //InvoiceReprint,
   },
   methods: {
     returnedAmount: function(paymentMode, amountChanged) {

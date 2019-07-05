@@ -40,10 +40,11 @@
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <a
                     class="dropdown-item"
-                    href="#"
-                    v-for="(invoice, index) in selectedOrder.invoice"
+                    href="javascript:void(0)"
+                    v-for="(template, index) in selectedOrder.invoice"
                     :key="index"
-                    >{{ invoice.name }}</a
+                    @click="printInvoice(template)"
+                    >{{ template.name }}</a
                   >
                 </div>
               </div>
@@ -98,16 +99,19 @@
               </div>
             </div>
           </button>
-          <iframe frameborder="0" srcdoc="" width="0px" height="0px"></iframe>
         </div>
       </div>
     </div>
+    <Invoice />
     <CustomerInformation />
     <CancelOrderPopup />
   </div>
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions } from 'vuex'
+
+import Invoice from '@/components/pos/content/cart/payNow/Invoice'
 import Receipt from '@/components/pos/content/orderDetails/rightContent/Receipt'
 import History from '@/components/pos/content/orderDetails/rightContent/History'
 import Modification from '@/components/pos/content/orderDetails/rightContent/Modification'
@@ -129,6 +133,7 @@ export default {
     Modification,
     Payment,
     LeftPart,
+    Invoice,
     CancelOrderPopup,
     CustomerInformation,
   },
@@ -138,6 +143,7 @@ export default {
   },
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
+    ...mapActions('deliveryManager', ['printInvoice']),
   },
 }
 </script>
