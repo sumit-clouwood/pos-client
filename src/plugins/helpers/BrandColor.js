@@ -80,7 +80,8 @@ export default {
       [
         ".navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav.active, .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav:hover",
         ["background-color", rulesData["color-shadow"], true]
-      ]
+      ],
+      ["path", ["fill", rulesData["color-text-invert"], true]]
     ];
     this.addStylesheetRules(rules);
   },
