@@ -169,6 +169,16 @@ const actions = {
       commit('checkout/PRINT', true, { root: true })
     })
   },
+
+  modifyOrder({ rootState, dispatch }) {
+    return dispatch(
+      'order/addOrderToCart',
+      rootState.order.selectedOrder.item,
+      {
+        root: true,
+      }
+    )
+  },
 }
 
 const mutations = {
