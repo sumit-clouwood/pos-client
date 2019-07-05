@@ -54,7 +54,7 @@
                 <div>
                   <input
                     autocomplete="off"
-                    type="text"
+                    type="password"
                     class="input-search-driver"
                     v-model="cancellationReasonPassword"
                   />
