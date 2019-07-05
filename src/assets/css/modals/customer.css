@@ -1,119 +1,76 @@
-#customer .modal-dialog, #manage-customer .modal-dialog {
-  max-width: 73.75rem; }
-  #customer .modal-dialog .modal-content .modal-header, #manage-customer .modal-dialog .modal-content .modal-header {
-    background: #dee2e9;
-    padding: 0.9375rem 1.875rem;
-    border-bottom-color: #dee2e9; }
-    #customer .modal-dialog .modal-content .modal-header .customer-title, #manage-customer .modal-dialog .modal-content .modal-header .customer-title {
-      font-size: 1rem;
-      font-weight: bold;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: normal;
-      letter-spacing: 0.6px;
-      color: #3f4146; }
-  #customer .modal-dialog .modal-content .modal-body, #manage-customer .modal-dialog .modal-content .modal-body {
-    margin-top: 1.5625rem; }
-    #customer .modal-dialog .modal-content .modal-body select, #manage-customer .modal-dialog .modal-content .modal-body select {
-      font-size: 0.875rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: normal;
-      letter-spacing: 0.5px;
-      color: #3d3f43;
-      padding-left: 0.9375rem; }
-      #customer .modal-dialog .modal-content .modal-body select.selectpicker, #manage-customer .modal-dialog .modal-content .modal-body select.selectpicker {
-        background-image: url("../images/select-arrow.png");
-        background-repeat: no-repeat;
-        background-position: center right 0.625rem;
-        -webkit-appearance: none;
-        -moz-appearance: none; }
-    #customer .modal-dialog .modal-content .modal-body .dob select:nth-child(2), #manage-customer .modal-dialog .modal-content .modal-body .dob select:nth-child(2) {
-      width: 4.6875rem; }
-    #customer .modal-dialog .modal-content .modal-body .dob select:nth-child(3), #manage-customer .modal-dialog .modal-content .modal-body .dob select:nth-child(3) {
-      width: 7.8125rem;
-      margin: 0 4px; }
-    #customer .modal-dialog .modal-content .modal-body .dob select:nth-child(4), #manage-customer .modal-dialog .modal-content .modal-body .dob select:nth-child(4) {
-      width: 6.25rem; }
-    #customer .modal-dialog .modal-content .modal-body .left-form div, #manage-customer .modal-dialog .modal-content .modal-body .left-form div {
-      margin-bottom: 1.5625rem;
-      position: relative; }
-      #customer .modal-dialog .modal-content .modal-body .left-form div input, #manage-customer .modal-dialog .modal-content .modal-body .left-form div input {
-        width: 19.6875rem;
-        height: 3.125rem;
-        border-radius: 3px;
-        background-color: #ffffff;
-        border: solid 1px #e4e7eb;
-        padding: 0.625rem; }
-      #customer .modal-dialog .modal-content .modal-body .left-form div select, #manage-customer .modal-dialog .modal-content .modal-body .left-form div select {
-        width: 19.6875rem;
-        height: 3.125rem;
-        border-radius: 3px;
-        background-color: #ffffff;
-        border: solid 1px #e4e7eb; }
-      #customer .modal-dialog .modal-content .modal-body .left-form div label, #manage-customer .modal-dialog .modal-content .modal-body .left-form div label {
-        width: 13.4375rem;
-        padding: 0 1.5625rem;
-        font-size: 0.875rem;
-        font-weight: normal;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: normal;
-        letter-spacing: 0.5px;
-        color: #72777c;
-        vertical-align: middle; }
-    #customer .modal-dialog .modal-content .modal-body .left-form label span, #manage-customer .modal-dialog .modal-content .modal-body .left-form label span {
-      color: #f44040;
-      font-size: 1.5rem; }
-    #customer .modal-dialog .modal-content .modal-body .right-form div, #manage-customer .modal-dialog .modal-content .modal-body .right-form div {
-      margin-bottom: 1.5625rem;
-      position: relative;
-      /*> select.selectpicker{
-        width: $px889;
-      }*/ }
-      #customer .modal-dialog .modal-content .modal-body .right-form div input, #manage-customer .modal-dialog .modal-content .modal-body .right-form div input {
-        width: 19.6875rem;
-        height: 3.125rem;
-        border-radius: 3px;
-        background-color: #ffffff;
-        border: solid 1px #e4e7eb;
-        padding: 0.625rem; }
-      #customer .modal-dialog .modal-content .modal-body .right-form div select, #manage-customer .modal-dialog .modal-content .modal-body .right-form div select {
-        width: 19.6875rem;
-        height: 3.125rem;
-        border-radius: 3px;
-        background-color: #ffffff;
-        border: solid 1px #e4e7eb; }
-      #customer .modal-dialog .modal-content .modal-body .right-form div label, #manage-customer .modal-dialog .modal-content .modal-body .right-form div label {
-        width: 13.4375rem;
-        padding: 0 1.5625rem;
-        font-size: 0.875rem;
-        font-weight: normal;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: normal;
-        letter-spacing: 0.5px;
-        color: #72777c;
-        vertical-align: middle; }
-    #customer .modal-dialog .modal-content .modal-body .right-form label span, #manage-customer .modal-dialog .modal-content .modal-body .right-form label span {
-      color: #f44040;
-      font-size: 1.5rem; }
+/*
+Error: Undefined variable: "$px".
+        on line 29 of scss/variables.scss
+        from line 1 of scss/modals/customer.scss
 
-.divide-block {
-  border-top: 1px solid #ddd;
-  padding: 1.5625rem 0;
-  margin-top: 0; }
+24:         margin-top: $px25;
+25: 
+26:         select {
+27:           font-size: $px14;
+28:           font-weight: normal;
+29:           font-style: normal;
+30:           font-stretch: normal;
+31:           line-height: normal;
+32:           letter-spacing: 0.5px;
+33:           color: #3d3f43;
+34:           padding-left: $px15;
 
-.customer-block-info {
-  position: absolute;
-  margin-top: -2.1875rem;
-  left: 2.1875rem;
-  overflow: hidden;
-  background: #fff;
-  z-index: 9;
-  padding: 0 15px;
-  font-weight: bold;
-  text-transform: capitalize; }
-
-/*# sourceMappingURL=customer.css.map */
+Backtrace:
+scss/variables.scss:29
+scss/modals/customer.scss:1
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/script/tree/variable.rb:49:in `_perform'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/script/tree/node.rb:50:in `perform'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:478:in `visit_variable'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/base.rb:36:in `visit'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/stack.rb:79:in `block in with_base'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/stack.rb:135:in `with_frame'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/stack.rb:79:in `with_base'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:158:in `visit'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:325:in `block (2 levels) in visit_import'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:325:in `map'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:325:in `block in visit_import'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/stack.rb:88:in `block in with_import'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/stack.rb:135:in `with_frame'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/stack.rb:88:in `with_import'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:322:in `visit_import'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/base.rb:36:in `visit'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/stack.rb:79:in `block in with_base'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/stack.rb:135:in `with_frame'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/stack.rb:79:in `with_base'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:158:in `visit'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/base.rb:52:in `block in visit_children'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/base.rb:52:in `map'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/base.rb:52:in `visit_children'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:167:in `block in visit_children'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:179:in `with_environment'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:166:in `visit_children'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/base.rb:36:in `block in visit'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:186:in `visit_root'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/base.rb:36:in `visit'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:157:in `visit'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/visitors/perform.rb:10:in `visit'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/root_node.rb:36:in `css_tree'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/tree/root_node.rb:29:in `render_with_sourcemap'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/engine.rb:389:in `_render_with_sourcemap'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/engine.rb:307:in `render_with_sourcemap'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/plugin/compiler.rb:462:in `update_stylesheet'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/plugin/compiler.rb:209:in `each'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/plugin/compiler.rb:209:in `update_stylesheets'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/plugin/compiler.rb:443:in `on_file_changed'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-3.7.3/lib/sass/plugin/compiler.rb:320:in `block in watch'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-listen-4.0.0/lib/sass-listen/event/config.rb:23:in `call'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-listen-4.0.0/lib/sass-listen/event/processor.rb:115:in `_process_changes'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-listen-4.0.0/lib/sass-listen/event/processor.rb:19:in `block in loop_for'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-listen-4.0.0/lib/sass-listen/event/processor.rb:15:in `loop'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-listen-4.0.0/lib/sass-listen/event/processor.rb:15:in `loop_for'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-listen-4.0.0/lib/sass-listen/event/loop.rb:84:in `_wait_for_changes'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-listen-4.0.0/lib/sass-listen/event/loop.rb:42:in `block in setup'
+C:/RailsInstaller/Ruby2.3.3/lib/ruby/gems/2.3.0/gems/sass-listen-4.0.0/lib/sass-listen/internals/thread_pool.rb:6:in `block in add'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: Undefined variable: \"$px\".\A         on line 29 of scss/variables.scss\A         from line 1 of scss/modals/customer.scss\A \A 24:         margin-top: $px25;\A 25: \A 26:         select {\A 27:           font-size: $px14;\A 28:           font-weight: normal;\A 29:           font-style: normal;\A 30:           font-stretch: normal;\A 31:           line-height: normal;\A 32:           letter-spacing: 0.5px;\A 33:           color: #3d3f43;\A 34:           padding-left: $px15;"; }

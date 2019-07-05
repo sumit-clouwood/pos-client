@@ -12,7 +12,7 @@ body {
 
 .dm-manager .new-pos {
   grid-template-columns: 4.6875rem 1fr;
-  grid-template-rows: 6.25rem 1fr 6.25rem; }
+  grid-template-rows: 6.25rem 1fr 1.25rem; }
 
 .modal-backdrop {
   display: none; }
