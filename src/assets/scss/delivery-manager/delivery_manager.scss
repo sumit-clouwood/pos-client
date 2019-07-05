@@ -427,7 +427,7 @@ div {
   }
   .dm-ready-order-wrapper {
     display: grid;
-    height: 100%;
+    height: calc(100vh - 14rem);
     table {
       tr {
         display: block;
@@ -677,7 +677,7 @@ div.order-address {
 .with-drivers-filter {
   .drivers-filter {
     overflow: auto;
-    height: 65vh;
+    height: calc(100vh - 14rem);
     border-left: $px1 solid rgba(63, 74, 74, 0.3);
   }
   .home_delivery_pick {
@@ -980,7 +980,6 @@ div#nav-tabContent{
     margin-bottom: $px5;
   }
 }
-
 .v-menu--inline {
   display: inline-block;
 }

@@ -4,7 +4,6 @@ body {
   margin: 0;
   padding: 0;
 }
-
 .new-pos {
   height: 100vh;
   padding: 0;
@@ -16,7 +15,7 @@ body {
 .dm-manager {
   .new-pos{
     grid-template-columns: $dm-navigation-width 1fr;
-    grid-template-rows: $dm-header-height 1fr $footer-height;
+    grid-template-rows: $dm-header-height 1fr $dm-footer-height;
   }
 }
 .modal-backdrop{

@@ -76,7 +76,11 @@
               </div>
             </div>
           </button>
-          <button type="button" class="button close-button btn btn-success">
+          <button
+            type="button"
+            class="button btn btn-danger"
+            data-dismiss="modal"
+          >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
               <div class="button-caption">

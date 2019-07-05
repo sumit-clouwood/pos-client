@@ -102,6 +102,7 @@
     <div class="dm-ready-order-wrapper" id="dm-delivered">
       <DMItem :actionDetails="delivered" />
     </div>
+    <OrderDetailsPopup />
     <!--<DMDeliveredItem />-->
   </div>
 </template>
@@ -112,6 +113,8 @@ import DMHomeDeliverySubMenu from '@/components/deliveryManager/header/DMHomeDel
 import DMItem from '@/components/deliveryManager/content/DMItem'
 // import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredItem'
 import DMAssignedDriver from '@/components/deliveryManager/partial/DMAssignedDriver'
+import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
+
 /* global $ */
 export default {
   name: 'HomeDelivery',
@@ -148,7 +151,7 @@ export default {
   components: {
     DMHomeDeliverySubMenu,
     DMItem,
-    // DMDeliveredItem,
+    OrderDetailsPopup,
     DMAssignedDriver,
   },
   computed: {
