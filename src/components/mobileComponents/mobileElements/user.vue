@@ -1,14 +1,24 @@
 <template>
     <div class="user">
         <img class="image" src="../../../assets/images/userimg.jpg"/>
-        <div class="name">{{userName}}</div>
+        <div class="name">{{param.name}}</div>
     </div>
 </template>
 
 <script>
+    import {mapGetters} from 'vuex'
+
     export default {
         name: "user",
-        props: ['userSrc', 'userName']
+        props: ['param'],
+        computed: {
+            ...mapGetters(['testUsers'])
+        },
+        methods: {
+            openUser() {
+                console.log(123)
+            }
+        }
     }
 </script>
 
@@ -25,6 +35,7 @@
             border: 2px solid #fff;
             border-radius: 50%;
         }
+
         .name {
 
         }

@@ -81,7 +81,7 @@
 
         .cart-input-body {
             display: grid;
-            justify-content: center;
+            justify-content: stretch;
             padding: 20px;
 
             .cart-block {
@@ -159,51 +159,54 @@
                 }
             }
 
-            .amount-keypad {
-                min-width: auto;
-                max-width: 100%;
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr 1fr;
-                grid-gap: 10px;
-                padding: 20px 0 0 0;
-                border: none;
+            /*.amount-keypad {*/
+                /*min-width: auto;*/
+                /*max-width: 100%;*/
+                /*display: grid;*/
+                /*grid-template-columns: 1fr 1fr 1fr 1fr;*/
+                /*grid-gap: 10px;*/
+                /*padding: 20px 0 0 0;*/
+                /*border: none;*/
 
-                > div {
-                    color: #333;
-                    padding: 10px;
-                    border-radius: 3px;
-                    background: linear-gradient(to bottom, #ededed 1%, #d9d9d9 100%);
-                    max-width: 100%;
-                    min-width: auto;
-                    width: auto;
-                    text-align: center;
-                    font-size: 18px;
-                    font-weight: 600;
+                /*> div {*/
+                    /*color: #333;*/
+                    /*padding: 10px;*/
+                    /*border-radius: 3px;*/
+                    /*background: linear-gradient(to bottom, #ededed 1%, #d9d9d9 100%);*/
+                    /*max-width: 100%;*/
+                    /*min-width: auto;*/
+                    /*width: auto;*/
+                    /*text-align: center;*/
+                    /*font-size: 18px;*/
+                    /*font-weight: 600;*/
 
-                    &:nth-child(4) {
-                        background: linear-gradient(to bottom, #fab95b 1%,#f76e1e 100%);
-                        color: #fff;
-                    }
-                    &:nth-child(8) {
-                        background: linear-gradient(to bottom, #60b930 1%,#56ab27 100%);
-                        color: #fff;
-                    }
-                    &:nth-child(12) {
-                        background: linear-gradient(to bottom, #60b930 1%,#56ab27 100%);
-                        color: #fff;
-                    }
-                    &:nth-child(16) {
-                        background: linear-gradient(to bottom, #c93030 2%,#bd2626 100%);
-                        color: #fff;
-                    }
+                    /*&:nth-child(4) {*/
+                        /*background: linear-gradient(to bottom, #fab95b 1%, #f76e1e 100%);*/
+                        /*color: #fff;*/
+                    /*}*/
 
-                    img {
-                        display: block;
-                        width: 30px;
-                        margin: 0 auto;
-                    }
-                }
-            }
+                    /*&:nth-child(8) {*/
+                        /*background: linear-gradient(to bottom, #60b930 1%, #56ab27 100%);*/
+                        /*color: #fff;*/
+                    /*}*/
+
+                    /*&:nth-child(12) {*/
+                        /*background: linear-gradient(to bottom, #60b930 1%, #56ab27 100%);*/
+                        /*color: #fff;*/
+                    /*}*/
+
+                    /*&:nth-child(16) {*/
+                        /*background: linear-gradient(to bottom, #c93030 2%, #bd2626 100%);*/
+                        /*color: #fff;*/
+                    /*}*/
+
+                    /*img {*/
+                        /*display: block;*/
+                        /*width: 30px;*/
+                        /*margin: 0 auto;*/
+                    /*}*/
+                /*}*/
+            /*}*/
 
         }
 
@@ -213,6 +216,52 @@
             justify-content: space-between;
             align-items: center;
             color: #fff;
+        }
+
+        .amount-keypad {
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-gap: 10px;
+            min-width: auto;
+            margin-top: 20px;
+
+            #add-amt {
+                cursor: pointer;
+            }
+
+            > div {
+                width: auto;
+                height: 45px;
+                border-radius: $btn-border-radius;
+                background-image: linear-gradient(180deg, #eeeeee 0%, #d8d8d8 100%);
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: $px24;
+                font-weight: 600;
+                font-style: normal;
+                font-stretch: normal;
+                line-height: 1.08;
+                letter-spacing: normal;
+                color: #3d3f43;
+            }
+
+
+            > div:nth-child(4), .amount-keypad > div:nth-child(8) {
+                background-image: linear-gradient(180deg, #5056ca 0%, #2d38aa 100%);
+                color: #fff;
+            }
+
+            > div:nth-child(12) {
+                background-image: linear-gradient(180deg, #cc3232 0%, #bc2525 100%);
+            }
+
+            > div:nth-child(13) {
+                background-image: linear-gradient(180deg, #fac161 0%, #f76b1c 100%);
+                color: #fff;
+            }
         }
     }
 </style>

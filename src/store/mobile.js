@@ -24,7 +24,32 @@ export default {
         addNoteHendler: false,
         loyaltyPaymentHendler: false,
         cardInputHendler: false,
-        successfullHendler: false
+        successfullHendler: false,
+        openUserHendler: false,
+        userLoginHendler: false,
+        userCalcHendler: false,
+        testUsers: [
+            {
+                id: 0,
+                name: 'Aisyah Zidni',
+                img: 'userimg.jpg'
+            },
+            {
+                id: 1,
+                name: 'Nirmala Azalea',
+                img: 'testUserImg-1.jpg'
+            },
+            {
+                id: 2,
+                name: 'Bena Kane',
+                img: 'testUserImg-2.jpg'
+            },
+            {
+                id: 3,
+                name: 'Firmino Kudo',
+                img: 'testUserImg-3.jpg'
+            },
+        ]
     },
     mutations: {
         SEARCH_HENDLER_CHANGE: (state) => {
@@ -107,6 +132,15 @@ export default {
         },
         SUCCESSFULL_HENDLER_GHANGE: (state) => {
             state.successfullHendler = !state.successfullHendler
+        },
+        OPEN_USER_HENDLER_GHANGE: (state) => {
+            state.openUserHendler = !state.openUserHendler
+        },
+        USER_LOGIN_HENDLER_CHANGE: (state) => {
+            state.userLoginHendler = !state.userLoginHendler
+        },
+        USER_CALC_HENDLER_CHANGE: (state) => {
+            state.userCalcHendler = !state.userCalcHendler
         }
     },
     actions: {
@@ -175,7 +209,16 @@ export default {
         },
         successfullHendlerGhange({commit}) {
             commit('SUCCESSFULL_HENDLER_GHANGE')
-        }
+        },
+        openUserHendlerGhange({commit}) {
+            commit('OPEN_USER_HENDLER_GHANGE')
+        },
+        userLoginHendlerGhange({commit}) {
+            commit('USER_LOGIN_HENDLER_CHANGE')
+        },
+        userCalcHendlerGhange({commit}) {
+            commit('USER_CALC_HENDLER_CHANGE')
+        },
     },
     getters: {
         searchHendler: state => state.searchHendler,
@@ -199,6 +242,10 @@ export default {
         addNoteHendler: state => state.addNoteHendler,
         loyaltyPaymentHendler: state => state.loyaltyPaymentHendler,
         cardInputHendler: state => state.cardInputHendler,
-        successfullHendler: state => state.successfullHendler
+        successfullHendler: state => state.successfullHendler,
+        testUsers: state => state.testUsers,
+        openUserHendler: state => state.openUserHendler,
+        userLoginHendler: state => state.userLoginHendler,
+        userCalcHendler: state => state.userCalcHendler,
     },
 };
