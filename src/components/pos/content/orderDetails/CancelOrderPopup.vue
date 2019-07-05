@@ -56,7 +56,7 @@
                     autocomplete="off"
                     type="password"
                     class="input-search-driver"
-                    v-model="cancellationReasonPassword"
+                    v-model="supervisorPassword"
                   />
                 </div>
               </div>
@@ -70,7 +70,16 @@
           <button type="button" class="btn btn-danger" data-dismiss="modal">
             {{ _t('Close') }}
           </button>
-          <button type="button" class="btn btn-success">
+          <button
+            type="button"
+            class="btn btn-success"
+            @click="
+              cancelOrderAction({
+                order: selectedOrder.item,
+                actionTrigger: 'cancel_order',
+              })
+            "
+          >
             {{ _t('Submit') }}
           </button>
         </div>
@@ -80,30 +89,36 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 /* global $ */
 export default {
   name: 'CancelOrderPopup',
   data() {
     return {
       showSelectedReason: '',
-      cancellationReasonPassword: '',
+      supervisorPassword: '',
     }
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['cancellationReason']),
+    ...mapState('order', ['cancellationReason', 'selectedOrder']),
   },
   methods: {
     selectedReason: function(reason) {
-      // this.waitingOrder.driverId = driver._id
       this.showSelectedReason = reason.name
-      /*this.selectDriver(driver)*/
       $('.dropdown-content').hide()
     },
     showDropdown: function() {
       $('.dropdown-content').show()
     },
+    cancelOrderAction: function(order, actionTrigger) {
+      let params = {
+        cancel_reason: this.showSelectedReason,
+        supervisor_password: this.supervisorPassword,
+      }
+      this.updateOrderAction(order, 'call_center', actionTrigger, params)
+    },
+    ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
 }
 </script>

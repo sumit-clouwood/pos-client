@@ -716,14 +716,15 @@ const actions = {
     dispatch('updateOrderAction', { order, orderType, actionTrigger })
   },
 
-  updateOrderAction({ dispatch }, { order, orderType, actionTrigger }) {
+  updateOrderAction({ dispatch }, { order, orderType, actionTrigger, params }) {
     if (actionTrigger === 'addToDriverBucket') {
       dispatch('deliveryManager/addOrderToDriverBucket', order, {
         root: true,
       })
     } else {
-      let params = { driver: state.selectedDriver }
-      OrderService.updateOrderAction(order._id, actionTrigger, params).then(
+      let data =
+        typeof params == 'undefined' ? { driver: state.selectedDriver } : params
+      OrderService.updateOrderAction(order._id, actionTrigger, data).then(
         response => {
           if (response.status == 200) {
             switch (orderType) {
