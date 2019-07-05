@@ -1,9 +1,31 @@
 <template>
   <div class="page-header">
     <div class="current-time">
-      <span class="date">July 2nd 2019</span>&nbsp;&nbsp;&nbsp;
-      <span class="time">11:09:08 AM</span>
+      <div class="header-main-left-time">
+        <a href="javascript:void(0)">
+          <span>{{ todayDate }}</span>
+          &nbsp;
+          <span class="time">{{ todayTime }}</span>
+        </a>
+      </div>
     </div>
+    <ul>
+      <li v-if="availableLanguages">
+        <select
+          v-model="vlocale"
+          @change="changeLanguage(vlocale)"
+          class="language-button"
+        >
+          <option
+            v-for="language in availableLanguages"
+            :key="language._id"
+            :value="language.code"
+          >
+            {{ language.name }}
+          </option>
+        </select>
+      </li>
+    </ul>
     <div class="button-block">
       <div class="change-location">
         <button class="btn btn-success">Change Brand</button>
@@ -29,11 +51,33 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+/* eslint-disable no-console */
+import moment from 'moment-timezone'
+import { mapGetters, mapState } from 'vuex'
+import bootstrap from '@/bootstrap'
 export default {
   name: 'DMTopRightNav',
   computed: {
     ...mapGetters('context', ['store']),
+    ...mapState('location', ['availableLanguages', 'language']),
+  },
+  methods: {
+    changeLanguage(locale) {
+      // const language = this.languages.find(lang => lang.code === this.vlocale).code
+      bootstrap.loadUI(this.$store)
+      this.$store.dispatch('location/changeLanguage', locale)
+    },
+  },
+  data() {
+    return {
+      todayDate: moment().format('MMMM Do YYYY'),
+      todayTime: moment().format('h:mm:ss a'),
+    }
+  },
+  mounted: function() {
+    setInterval(() => {
+      this.todayTime = moment().format('h:mm:ss a')
+    }, 1000)
   },
 }
 </script>
