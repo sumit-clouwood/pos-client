@@ -5,7 +5,10 @@
       <SubMenu />
       <div class="food-block">
         <Breadcrumbs />
-        <Items v-if="categories.length" />
+        <div v-if="!categories.length" class="text-danger">
+          {{ _t('Nothing found to order.') }}
+        </div>
+        <Items v-else />
       </div>
     </div>
   </div>
@@ -31,6 +34,7 @@ export default {
   },
   computed: {
     ...mapGetters('category', ['categories', 'subcategories', 'items']),
+    ...mapGetters('location', ['_t']),
   },
 }
 </script>
