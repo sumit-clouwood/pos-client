@@ -429,6 +429,7 @@ div {
     display: grid;
     height: calc(100vh - 14rem);
     overflow: auto;
+    margin-right: $px10;
     table {
       tr {
         display: block;
@@ -471,7 +472,6 @@ div {
 }
 
 .lang-flag-container {
-  display: flex;
   > img {
     width: $px25;
   }
