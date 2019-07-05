@@ -22,4 +22,11 @@ export default {
   getRoles() {
     return DataService.get('/model/brand_roles?no_limit=true')
   },
+
+  assignOrdersToDriver(driverId, orderIds) {
+    return DataService.post('/model/orders/assign_driver', {
+      driver: driverId,
+      orders: orderIds,
+    })
+  },
 }

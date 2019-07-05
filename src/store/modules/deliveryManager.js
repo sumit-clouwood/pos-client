@@ -97,15 +97,9 @@ const actions = {
     commit(mutation.SET_SELECTED_DM_ORDERS, order)
   },
 
-  selectDriver({ commit }, driverInfo) {
+  selectDriver({ commit, dispatch }, driverInfo) {
     commit(mutation.SET_SELECTED_DM_DRIVER, driverInfo)
-  },
-
-  attachOrderDriver({ rootState }, { orderId, driverId, timestamp }) {
-    const params = [rootState.location.location, orderId, driverId, timestamp]
-    DMService.assignDriverToOrder(...params).then(() => {
-      /*dispatch('fetchOrderCount')*/
-    })
+    dispatch('restoreOrders')
   },
 
   showMoreOrders({ rootState, commit }, driverId) {
@@ -143,6 +137,22 @@ const actions = {
     //for delete { index: index, remove: 1 }
     //for update it could be { index: index, remove: 1, insert : {object} }
     commit('DM_UPDATE_ORDERS', { index: index, remove: 1, insert: order })
+  },
+
+  assignBucketToDriver({ state, commit, dispatch }) {
+    const orderIds = state.driverBucket.map(order => order._id)
+    DMService.assignOrdersToDriver(state.selectedDriver._id, orderIds).then(
+      response => {
+        if (response.data.status == 'ok') {
+          commit('REMOVE_FROM_DRIVER_BUCKET')
+          dispatch('order/updateOrderAction', {
+            orderStatus: 'ready',
+            collected: 'no',
+            pageId: 'home_delivery_pick',
+          })
+        }
+      }
+    )
   },
 }
 

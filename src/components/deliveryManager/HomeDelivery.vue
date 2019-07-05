@@ -68,13 +68,7 @@
                 type="button"
                 class="button btn btn-success"
                 v-if="driverBucket.length"
-                @click="
-                  updateOrderAction({
-                    order: order,
-                    orderType: order.order_type,
-                    actionTrigger: 'assign_driver',
-                  })
-                "
+                @click="assignBucketToDriver()"
               >
                 <div class="button-content-container">
                   <div class="button-icon-container"><!----></div>
@@ -113,11 +107,11 @@
 </template>
 
 <script>
+import { mapState, mapActions, mapGetters } from 'vuex'
 import DMHomeDeliverySubMenu from '@/components/deliveryManager/header/DMHomeDeliverySubMenu'
 import DMItem from '@/components/deliveryManager/content/DMItem'
 // import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredItem'
 import DMAssignedDriver from '@/components/deliveryManager/partial/DMAssignedDriver'
-import { mapState, mapActions, mapGetters } from 'vuex'
 /* global $ */
 export default {
   name: 'HomeDelivery',
@@ -170,6 +164,7 @@ export default {
   },
 
   methods: {
+    ...mapActions('order', ['updateOrderAction']),
     selectedDriver: function(driver) {
       this.waitingOrder.driverId = driver._id
       this.selectedUser = driver.name
@@ -183,7 +178,11 @@ export default {
       // this.selectedUser = $('#get-customer-list').val()
     },
 
-    ...mapActions('deliveryManager', ['selectDriver', 'restoreOrders']),
+    ...mapActions('deliveryManager', [
+      'selectDriver',
+      'restoreOrders',
+      'assignBucketToDriver',
+    ]),
     /*imageLoadError() {
       for (let i = 0; i < document.images.length; i++) {
         document.images[i].remove()
