@@ -85,9 +85,9 @@
                     height: 50px;
                     border-radius: 0;
                     border: none;
-                    padding: 0 20 0 0px;
+                    padding: 0 20px 0 0px;
                     min-height: 65px;
-                    grid-template-columns: 50px 1fr;
+                    grid-template-columns: 65px 1fr;
                     grid-gap: 20px;
                     border-bottom: 1px solid $gray-middle;
                     background-color: #fafafa;

@@ -146,6 +146,7 @@
                     margin-top: auto;
                     height: 50px;
                     border-radius: $btn-border-radius;
+                    align-self: end;
 
                     input {
                         border: none;
