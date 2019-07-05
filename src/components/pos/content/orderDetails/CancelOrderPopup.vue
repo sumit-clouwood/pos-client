@@ -27,7 +27,7 @@
             <div class="autocomplete-container" v-if="cancellationReason">
               <div class="driver-container">
                 <div class="select-driver">
-                  {{ _t('Select cancellation reason') }}
+                  {{ _t('Cancellation Reason') }}
                 </div>
                 <input
                   autocomplete="off"
@@ -49,7 +49,7 @@
               </div>
               <div>
                 <div class="select-driver">
-                  {{ _t('Select cancellation password') }}
+                  {{ _t('Supervisor Password') }}
                 </div>
                 <div>
                   <input
