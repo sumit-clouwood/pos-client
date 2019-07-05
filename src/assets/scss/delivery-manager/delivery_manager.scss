@@ -428,6 +428,7 @@ div {
   .dm-ready-order-wrapper {
     display: grid;
     height: calc(100vh - 14rem);
+    overflow: auto;
     table {
       tr {
         display: block;
