@@ -167,19 +167,27 @@ const actions = {
     })
   },
 
-  addCardAmount({ commit, getters }, code) {
-    return new Promise(resolve => {
-      commit('addCardAmount', {
-        amount: state.amount,
-        method: state.method,
-        code: 'Card-' + code,
+  addCardAmount({ commit, getters, rootGetters, dispatch }, code) {
+    if (parseFloat(state.amount) > 0) {
+      return new Promise(resolve => {
+        commit('addCardAmount', {
+          amount: state.amount,
+          method: state.method,
+          code: 'Card-' + code,
+        })
+
+        commit('showCalc', false)
+        commit('showPayBreak', true)
+        //set remaining amount into text box
+        commit('setAmount', Num.round(getters.payable))
+        resolve(Num.round(getters.payable))
       })
-      commit('showCalc', false)
-      commit('showPayBreak', true)
-      //set remaining amount into text box
-      commit('setAmount', Num.round(getters.payable))
-      resolve(Num.round(getters.payable))
-    })
+    } else {
+      //set method as cash if amount is zero for card
+      const method = rootGetters['payment/cash']
+      commit('setMethod', method)
+      return dispatch('addAmount')
+    }
   },
 
   validateCardPayment({ commit, getters }) {
@@ -431,36 +439,32 @@ const mutations = {
     state.showCalc = true
   },
   addAmount(state, { amount, method }) {
-    if (amount > 0) {
-      const index = state.payments.findIndex(type => type === method)
-      if (index !== -1) {
-        let type = state.payments[index]
-        type.amount += parseFloat(amount)
-        state.payments.splice(index, 1, type)
-      } else {
-        let isPaymentAcceptble = 1
-        if (method.name == 'Loyalty Points') {
-          /* prevent adding multiple loyalty payments using method type */
-          /* check existing payments for same (Loyalty Points) method name*/
-          state.payments.forEach(element => {
-            if (element.method.name == 'Loyalty Points') {
-              isPaymentAcceptble = 0
-            }
-          })
-        }
-        if (isPaymentAcceptble) {
-          state.payments.push({
-            amount: amount,
-            method: method,
-            cardId: state.loyaltyCard._id ? state.loyaltyCard._id : null,
-            code: state.loyaltyCard.loyalty_card_code
-              ? state.loyaltyCard.loyalty_card_code
-              : null,
-          })
-        }
-      }
+    const index = state.payments.findIndex(type => type === method)
+    if (index !== -1) {
+      let type = state.payments[index]
+      type.amount += parseFloat(amount)
+      state.payments.splice(index, 1, type)
     } else {
-      state.error = 'Amount can not be 0'
+      let isPaymentAcceptble = 1
+      if (method.name == 'Loyalty Points') {
+        /* prevent adding multiple loyalty payments using method type */
+        /* check existing payments for same (Loyalty Points) method name*/
+        state.payments.forEach(element => {
+          if (element.method.name == 'Loyalty Points') {
+            isPaymentAcceptble = 0
+          }
+        })
+      }
+      if (isPaymentAcceptble) {
+        state.payments.push({
+          amount: amount,
+          method: method,
+          cardId: state.loyaltyCard._id ? state.loyaltyCard._id : null,
+          code: state.loyaltyCard.loyalty_card_code
+            ? state.loyaltyCard.loyalty_card_code
+            : null,
+        })
+      }
     }
   },
   addGiftAmount(state, { amount, method, code, cardId }) {
@@ -485,7 +489,7 @@ const mutations = {
     }
   },
   addCardAmount(state, { amount, method, code }) {
-    if (amount > 0) {
+    if (parseFloat(amount) > 0) {
       const index = state.payments.findIndex(
         payment => payment.method === method && payment.code === code
       )
@@ -501,8 +505,6 @@ const mutations = {
           code: code,
         })
       }
-    } else {
-      state.error = 'Amount can not be 0'
     }
   },
   addTip(state, tip) {

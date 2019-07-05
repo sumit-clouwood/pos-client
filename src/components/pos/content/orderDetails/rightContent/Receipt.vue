@@ -40,8 +40,14 @@
                   selector: 'item_modifiers',
                 })
               }}
-              <div v-for="(modifier, key) in itemModifiers" :key="key">
-                {{ modifier.name }}
+              <div
+                v-for="(modifier, key) in orderDetails.item_modifiers"
+                :key="key"
+              >
+                <span v-if="modifier.for_item == item.no">
+                  <span v-if="modifier.qty > 0">+{{ modifier.qty }}</span>
+                  {{ modifier.name }}
+                </span>
               </div>
             </div>
           </td>

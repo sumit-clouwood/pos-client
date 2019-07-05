@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAEE,wBAAc;EACZ,SAAS,EC6YJ,KAAoB",
+"sources": ["../../scss/modals/addEmail.scss","../../scss/pixels_rem.scss"],
+"names": [],
+"file": "addEmail.css"
+}

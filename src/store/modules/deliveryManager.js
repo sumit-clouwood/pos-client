@@ -4,7 +4,7 @@ import DMService from '@/services/data/DeliveryManagerService'
 /* eslint-disable no-console */
 
 const state = {
-  deliveryOrderStatus: 'running',
+  deliveryOrderStatus: 'in-progress',
   collected: 'no',
   orders: false,
   orderCounts: '',
@@ -24,7 +24,6 @@ const state = {
     query: '',
     limit: 10,
     orderBy: 'real_created_datetime',
-    orderStatus: '',
     page: 1,
     totalPages: 0,
     pageId: 'home_delivery_new',
@@ -40,14 +39,14 @@ const actions = {
       state.params.query,
       state.params.limit,
       state.params.orderBy,
-      state.params.orderStatus,
+      state.deliveryOrderStatus,
       state.params.page,
       state.params.pageId,
       state.selectedStores,
     ]
     DMService.getDMOrderDetails(...params).then(response => {
       commit(mutation.SET_DM_ORDERS, response.data)
-      if (state.params.orderStatus === 'abc') {
+      if (state.deliveryOrderStatus === 'ready') {
         dispatch('getDrivers')
       }
     })

@@ -38,14 +38,8 @@ export default {
     return DataService.get(`/model/${modal}/id/${id}`, 'brand')
   },
 
-  deleteOrder(id, type) {
-    if (type) {
-      type = '_' + type
-    } else {
-      type = ''
-    }
-
-    return DataService.post(`/model/orders/id/${id}/delete${type}`)
+  updateOrderAction(id, action) {
+    return DataService.post(`/model/orders/id/${id}/${action}`)
   },
 
   modifyOrder(order, id, type) {
