@@ -2,10 +2,13 @@
   <div class="main-body">
     <search />
     <div class="food-wrapper">
-      <SubMenu v-if="subcategories.length" />
+      <SubMenu />
       <div class="food-block">
         <Breadcrumbs />
-        <Items v-if="items.length" />
+        <div v-if="!categories.length" class="text-danger">
+          {{ _t('Nothing found to order.') }}
+        </div>
+        <Items v-else />
       </div>
     </div>
   </div>
@@ -30,7 +33,8 @@ export default {
     SubMenu,
   },
   computed: {
-    ...mapGetters('category', ['subcategories', 'items']),
+    ...mapGetters('category', ['categories', 'subcategories', 'items']),
+    ...mapGetters('location', ['_t']),
   },
 }
 </script>

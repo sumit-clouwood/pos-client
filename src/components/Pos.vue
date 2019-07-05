@@ -1,6 +1,6 @@
 <template>
   <div class="new-pos">
-    <Menu v-if="categories.length" />
+    <Menu />
     <Header />
     <Content />
     <Footer />

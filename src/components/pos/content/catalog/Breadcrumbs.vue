@@ -3,7 +3,11 @@
     <div class="breadcrumbs-item breadcrumbs-category">
       <div class="title-box">
         <div class="breadcrumbs-subtitle">{{ _t('Category') }}</div>
-        <div class="breadcrumbs-title shorten-sentence" :title="dt(category)">
+        <div
+          class="breadcrumbs-title shorten-sentence"
+          v-if="category"
+          :title="dt(category)"
+        >
           {{ dt(category) }}
         </div>
       </div>
