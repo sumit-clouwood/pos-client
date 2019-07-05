@@ -2,10 +2,10 @@
   <div class="main-body">
     <search />
     <div class="food-wrapper">
-      <SubMenu v-if="subcategories.length" />
+      <SubMenu />
       <div class="food-block">
         <Breadcrumbs />
-        <Items v-if="items.length" />
+        <Items v-if="categories.length" />
       </div>
     </div>
   </div>
@@ -30,7 +30,7 @@ export default {
     SubMenu,
   },
   computed: {
-    ...mapGetters('category', ['subcategories', 'items']),
+    ...mapGetters('category', ['categories', 'subcategories', 'items']),
   },
 }
 </script>
