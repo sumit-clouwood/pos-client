@@ -19,7 +19,7 @@
             <amount-calculator/>
         </div>
         <div class="calc-footer">
-            <mobile-footer/>
+            <mobile-footer :param="{method: 'successfull'}"/>
         </div>
     </div>
 </template>

@@ -25,7 +25,7 @@ export default {
         loyaltyPaymentHendler: false,
         cardInputHendler: false,
         successfullHendler: false,
-        openUserHendler: false,
+        openUserHendler: true,
         userLoginHendler: false,
         userCalcHendler: false,
         testUsers: [
@@ -141,7 +141,7 @@ export default {
         },
         USER_CALC_HENDLER_CHANGE: (state) => {
             state.userCalcHendler = !state.userCalcHendler
-        }
+        },
     },
     actions: {
         searchHendlerChange({commit}) {

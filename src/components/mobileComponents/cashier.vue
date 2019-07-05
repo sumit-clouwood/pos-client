@@ -1,5 +1,5 @@
 <template>
-    <div class="cashier" v-if="openUserHendler || true">
+    <div class="cashier" v-if="openUserHendler">
         <div class="user-list">
             <div class="title">Please Select User</div>
             <div class="list">
@@ -7,7 +7,7 @@
             </div>
         </div>
 
-        <div :class="['user-login', {active: userLoginHendler}]">
+        <div :class="['user-login', {active: userLoginHendler}]" @click="openUserHendlerGhange">
             <div class="cashier-list-header">
                 <user :param="user"/>
             </div>
@@ -83,6 +83,9 @@
             },
             userLoginHendlerGhange(e) {
                 this.$store.dispatch('userLoginHendlerGhange')
+            },
+            openUserHendlerGhange() {
+                this.$store.dispatch('openUserHendlerGhange')
             }
         }
     }

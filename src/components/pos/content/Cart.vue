@@ -159,13 +159,15 @@
                     border-bottom: 1px solid $gray-middle;
                     padding: 10px 0 10px 0;
                     transition: 0.5s ease-out;
-                    margin-bottom: -105.5px;
+                    margin-bottom: -140.5px;
 
                     &.active {
-                        margin-bottom: 0;
+                        margin-bottom: -10px;
                     }
 
                     .item {
+                        padding: 5px 0;
+                        border-bottom: 1px solid #eee;
                         .sub-total-text {
                             font-size: 14px;
                         }

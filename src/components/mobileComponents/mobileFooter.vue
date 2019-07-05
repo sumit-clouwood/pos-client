@@ -21,7 +21,8 @@
                           fill="white"/>
                 </svg>
             </div>
-            <div :class="['btn-menu-close', {active: !footerMenuHendler}]" @click="footerMenuHendlerGhange"><i class="fa fa-times" aria-hidden="true"></i></div>
+            <div :class="['btn-menu-close', {active: !footerMenuHendler}]" @click="footerMenuHendlerGhange"><i
+                    class="fa fa-times" aria-hidden="true"></i></div>
             <div class="btn-chatge" @click="paymentMethodsHendlerGhange">
                 <div class="btn-chatge-amount">AED <strong>100.07</strong></div>
                 <div class="btn-chatge-title">CHARGE</div>
@@ -72,7 +73,7 @@
             footerBtnMethod() {
                 if (this.param.method == 'cardInput') {
                     this.$store.dispatch('cardInputHendlerGhange')
-                }else if(this.param.method == 'successfull'){
+                } else if (this.param.method == 'successfull') {
                     this.$store.dispatch('successfullHendlerGhange')
                 }
             }
