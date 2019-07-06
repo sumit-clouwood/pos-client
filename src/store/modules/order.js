@@ -654,37 +654,53 @@ const actions = {
     commit(mutation.ORDER_TYPE, orderType)
     dispatch('surchargeCalculation')
   },
-  addHoldOrder({ rootState, dispatch, commit }, order) {
-    dispatch('reset')
 
-    commit(mutation.SET_ORDER_ID, order._id)
-    commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_ON_HOLD)
+  addOrderToCart({ rootState, commit, dispatch }, order) {
+    return new Promise(resolve => {
+      dispatch('reset')
+      commit(mutation.SET_ORDER_ID, order._id)
 
-    order.items.forEach((orderItem, key) => {
-      rootState.category.items.forEach(categoryItem => {
-        let item = { ...categoryItem }
-        if (orderItem.entity_id === categoryItem._id) {
-          item.quantity = orderItem.qty
-          let modifiers = []
-          if (order.item_modifiers.length) {
-            order.item_modifiers.forEach(modifier => {
-              if (modifier.for_item === key) {
-                modifiers.push(modifier.entity_id)
-              }
-            })
+      order.items.forEach((orderItem, key) => {
+        rootState.category.items.forEach(categoryItem => {
+          let item = { ...categoryItem }
+          if (orderItem.entity_id === categoryItem._id) {
+            item.quantity = orderItem.qty
+            let modifiers = []
+            if (order.item_modifiers.length) {
+              order.item_modifiers.forEach(modifier => {
+                if (modifier.for_item === key) {
+                  modifiers.push(modifier.entity_id)
+                }
+              })
+            }
+            if (modifiers.length) {
+              item.modifiers = modifiers
+              dispatch('modifier/assignModifiersToItem', item, {
+                root: true,
+              }).then(() => {
+                dispatch('addModifierOrder', item)
+              })
+            } else {
+              dispatch('addToOrder', item)
+            }
           }
-          if (modifiers.length) {
-            item.modifiers = modifiers
-            dispatch('modifier/assignModifiersToItem', item, {
-              root: true,
-            }).then(() => {
-              dispatch('addModifierOrder', item)
-            })
-          } else {
-            dispatch('addToOrder', item)
-          }
-        }
+        })
       })
+
+      resolve()
+    })
+  },
+
+  addHoldOrder({ dispatch, commit }, order) {
+    dispatch('addOrderToCart', order).then(() => {
+      commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_ON_HOLD)
+    })
+  },
+
+  addDeliveryOrder({ dispatch, commit }, orderData) {
+    dispatch('addOrderToCart', orderData.item).then(() => {
+      commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_DELIVERY)
+      commit(mutation.ORDER_TYPE, { OTview: 'Delivery', OTApi: 'call_center' })
     })
   },
 
