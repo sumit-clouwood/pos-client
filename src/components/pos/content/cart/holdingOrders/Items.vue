@@ -1,18 +1,20 @@
 <template>
-  <div class="wrappers-orders">
+  <div class="wrappers-orders color-dashboard-background">
     <div
-      class="orders-name cursor-pointer"
+      class="orders-name cursor-pointer color-text"
       @click="setHoldOrderCart(orderData)"
     >
-      <p>
+      <p class="color-text">
         {{ orderData.order_no }}
       </p>
     </div>
     <div class="aed-amt">
-      <span>{{ formatPrice(orderData.balance_due || 0) }}</span>
+      <span class="color-text">{{
+        formatPrice(orderData.balance_due || 0)
+      }}</span>
     </div>
     <div class="dlt-btn" @click="dropHoldOrder({ orderData: orderData })">
-      <img src="img/pos/delete-icon.svg" alt="delete" />
+      <i class="fa fa-trash color-text-invert"></i>
     </div>
   </div>
 </template>

@@ -7,47 +7,54 @@
   >
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header customer-header">
+      <div class="modal-content color-dashboard-background">
+        <div class="modal-header customer-header color-secondary">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ _t('Reward Available') }}</h4>
+          <h4 class="customer-title color-text-invert">
+            {{ _t('Reward Available') }}
+          </h4>
         </div>
         <div class="modal-body add-email-wrap">
-          <div class="add-note-area">
+          <div class="add-note-area color-text-invert">
             <p v-if="loyaltyBalance > 0">
               {{ _t('Loyalty Balance (Points)') }}:
-              <span>{{ formatPrice(loyaltyBalance) }}</span>
+              <span class="color-text">{{ formatPrice(loyaltyBalance) }}</span>
             </p>
-            <p v-if="loyalty.loyalty_order_alert != null">
+            <p
+              class="color-text-invert"
+              v-if="loyalty.loyalty_order_alert != null"
+            >
               {{ loyalty.loyalty_order_alert }}
             </p>
             <div
               v-if="loyalty.loyalty_order_alert == null && loyaltyBalance > 0"
             >
               <hr />
-              <p>
+              <p class="color-text-invert">
                 {{ _t('You can spend min') }}
-                <b
+                <b class="color-text"
                   >{{ loyalty.minimum_redeem ? loyalty.minimum_redeem : 0 }}
                   {{ _t('Point(s)') }}</b
                 >
                 {{ _t('and max') }}
-                <b
+                <b class="color-text"
                   >{{ loyalty.maximum_redeem ? loyalty.maximum_redeem : 0 }}
                   {{ _t('Point(s)') }}</b
                 >
               </p>
-              <p>
+              <p class="color-text-invert">
                 {{ _t('Points you can spend') }}:
-                <b>{{ points }}</b>
+                <b class="color-text">{{ points }}</b>
               </p>
-              <p>
+              <p class="color-text-invert">
                 {{ _t('Amount respective to loyalty points') }}:
-                <b>{{ amount }}</b>
+                <b class="color-text">{{ amount }}</b>
               </p>
             </div>
             <div v-else>
-              <p>{{ _t('No loyalty points available') }}</p>
+              <p class="color-text-invert">
+                {{ _t('No loyalty points available') }}
+              </p>
             </div>
           </div>
         </div>
@@ -55,14 +62,14 @@
           <div class="btn-announce">
             <button
               type="button"
-              class="btn btn-danger cancel-announce"
+              class="btn btn-danger cancel-announce color-text-invert color-button"
               data-dismiss="modal"
             >
               {{ _t('Close') }}
             </button>
             <button
               v-if="loyalty.loyalty_order_alert == null && !isLoyaltyUsed"
-              class="btn btn-success btn-large popup-btn-save"
+              class="btn btn-success btn-large popup-btn-save color-text-invert color-main"
               type="button"
               id="gift-card-btn"
               data-toggle="modal"

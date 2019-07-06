@@ -1,9 +1,9 @@
 <template>
   <div class="POSItemOption" v-if="subgroup">
     <div class="POSItemOptions_type">
-      <h3 class="POSItemOptions_typehead">
+      <h3 class="POSItemOptions_typehead color-secondary">
         <!--<span>{{ subgroup.name }} ({{ subgroup.item_type }}) </span>-->
-        <span>{{ subgroup.name }}</span>
+        <span class="color-text-invert">{{ subgroup.name }}</span>
       </h3>
       <span class="POSItemOptions_typeline"></span>
     </div>
@@ -49,8 +49,8 @@
                   : '',
             }"
           />
-          <span>{{ modifier.name }}</span>
-          <div class="itm-price" v-if="Num.toPrice(modifier.value)">
+          <span class="color-text">{{ modifier.name }}</span>
+          <div class="color-text itm-price" v-if="Num.toPrice(modifier.value)">
             ({{ formatPrice(modifier.value) }})
           </div>
         </label>
@@ -90,14 +90,14 @@
                   : '',
             }"
           />
-          <span>{{ modifier.name }}</span>
-          <div v-if="Num.toPrice(modifier.value)">
+          <span class="color-text">{{ modifier.name }}</span>
+          <div class="color-text" v-if="Num.toPrice(modifier.value)">
             ({{ formatPrice(modifier.value) }})
           </div>
         </label>
       </div>
       <div
-        class="text-danger"
+        class="text-danger color-warning"
         v-if="subgroup.item_type == 'mandatory'"
         v-show="error"
       >

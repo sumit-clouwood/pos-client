@@ -1,5 +1,8 @@
 <template>
-  <div class="modal-body" v-if="itemModifiers(item._id)">
+  <div
+    class="modal-body color-dashboard-background"
+    v-if="itemModifiers(item._id)"
+  >
     <Modifiers
       v-for="subgroup in itemModifiers(item._id)"
       :subgroup="subgroup"

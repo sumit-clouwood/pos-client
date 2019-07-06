@@ -10,6 +10,7 @@ const DISCOUNT_ORDER_ERROR_TOTAL =
 const state = {
   items: [],
   item: false,
+  errors: '',
   orderType: { OTview: 'Walk In', OTApi: 'walk_in' },
   orderNote: '',
   cancellationReason: {},
@@ -265,7 +266,7 @@ const actions = {
       }
 
       /*
-        itemModifiers 
+        itemModifiers
           0:"5cfde3211578dd00215271d1"
           1:"5cfde3211578dd00215271d0"
         itemModifierGroups
@@ -731,14 +732,13 @@ const actions = {
     dispatch('updateOrderAction', { order, orderType, actionTrigger })
   },
 
-  updateOrderAction({ dispatch }, { order, orderType, actionTrigger, params }) {
+  updateOrderAction({ dispatch }, { order, orderType, actionTrigger }) {
     if (actionTrigger === 'addToDriverBucket') {
       dispatch('deliveryManager/addOrderToDriverBucket', order, {
         root: true,
       })
     } else {
-      let data =
-        typeof params == 'undefined' ? { driver: state.selectedDriver } : params
+      let data = { driver: state.selectedDriver }
       OrderService.updateOrderAction(order._id, actionTrigger, data).then(
         response => {
           if (response.status == 200) {
@@ -758,6 +758,26 @@ const actions = {
         }
       )
     }
+  },
+  updateOrderCancelAction(
+    { dispatch, commit },
+    { order, orderType, actionTrigger, params }
+  ) {
+    OrderService.updateOrderAction(order.order._id, actionTrigger, params).then(
+      response => {
+        if (response.status == 200) {
+          switch (orderType) {
+            case 'hold':
+              dispatch('holdOrders/remove', order, { root: true })
+              break
+            case 'call_center':
+              commit(mutation.SET_ERRORS, response.data.form_errors)
+              dispatch('deliveryManager/fetchDMOrderDetail', {}, { root: true })
+              break
+          }
+        }
+      }
+    )
   },
 }
 
@@ -792,6 +812,9 @@ function playSound(locationId, onlineOrders) {
 const mutations = {
   [mutation.SET_ITEM](state, item) {
     state.item = item
+  },
+  [mutation.SET_ERRORS](state, item) {
+    state.errors = item
   },
 
   [mutation.ADD_ORDER_ITEM](state, item) {

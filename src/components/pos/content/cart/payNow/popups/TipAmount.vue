@@ -3,10 +3,10 @@
   <div class="modal fade" id="tip-amount" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
+      <div class="modal-content color-dashboard-background">
         <div class="modal-body tip-amount">
           <div class="tip-amount-wrap">
-            <p>{{ _t('Enter Tip Amount') }}</p>
+            <p class="color-text-invert">{{ _t('Enter Tip Amount') }}</p>
             <input
               v-model.number="tip"
               type="number"
@@ -21,13 +21,13 @@
           <div class="btn-announce">
             <button
               type="button"
-              class="btn btn-danger cancel-announce"
+              class="btn btn-danger cancel-announce color-button"
               data-dismiss="modal"
             >
               {{ _t('Cancel') }}
             </button>
             <button
-              class="btn btn-success btn-large"
+              class="btn btn-success btn-large color-main"
               type="button"
               data-dismiss="modal"
               id="add-top"

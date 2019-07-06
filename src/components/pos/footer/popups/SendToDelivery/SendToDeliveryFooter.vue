@@ -8,7 +8,7 @@
         type="button"
         data-value=""
         id="referal-btn"
-        class="btn referal-btn dropdown-toggle shorten-sentence"
+        class="btn referal-btn dropdown-toggle shorten-sentence color-text color-secondary"
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
@@ -17,7 +17,7 @@
       ><!--<span><img src="images/referal-down.png"></span>-->
       <div class="dropdown-menu" v-if="getReferrals">
         <a
-          class="dropdown-item"
+          class="dropdown-item color-text"
           data-value="Call Center"
           href="javascript:void(0)"
           v-for="referral in getReferrals"
@@ -32,7 +32,7 @@
           >{{ referral.name }}
         </a>
       </div>
-      <div class="dropdown-menu" v-if="!getReferrals">
+      <div class="dropdown-menu color-text-invert" v-if="!getReferrals">
         Nothing found
       </div>
       <datetime
@@ -40,7 +40,7 @@
         title="Schedule"
         placeholder="Schedule"
         v-model="futureDateTime"
-        input-class="btn schedule-input btn-large datepicker-here"
+        input-class="btn schedule-input btn-large datepicker-here color-dashboard-background"
         :value-zone="timeZone"
         :zone="timeZone"
         :format="{
@@ -63,13 +63,13 @@
     <div class="btn-announce">
       <button
         type="button"
-        class="btn btn-danger cancel-announce"
+        class="btn btn-danger cancel-announce color-icon-table-neutral-button"
         data-dismiss="modal"
       >
         {{ _t('Close') }}
       </button>
       <button
-        class="btn btn-success btn-large"
+        class="btn btn-success btn-large color-button"
         type="button"
         id="confirm_announcement"
         @click="placeOrder"

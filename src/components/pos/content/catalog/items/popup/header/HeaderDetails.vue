@@ -1,9 +1,11 @@
 <template>
-  <div class="modal-details" v-if="item">
+  <div class="modal-details color-dashboard-background" v-if="item">
     <div class="POSItemOptions_pricequantity">
       <div class="POSItemOptions_price">
-        <label class="POSItemOptions_label">{{ _t('Price') }}</label>
-        <div class="POSItemOptions_money">
+        <label class="POSItemOptions_label color-text-invert">{{
+          _t('Price')
+        }}</label>
+        <div class="POSItemOptions_money color-text">
           {{ formatPrice(item.value * quantity) }}
         </div>
       </div>

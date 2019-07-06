@@ -46,6 +46,16 @@
                     >{{ reason.name }}</span
                   >
                 </div>
+                <p
+                  v-if="
+                    errors &&
+                      errors.cancel_reason &&
+                      errors.cancel_reason.length
+                  "
+                  class="text-danger"
+                >
+                  {{ errors.cancel_reason }}
+                </p>
               </div>
               <div>
                 <div class="select-driver">
@@ -59,6 +69,16 @@
                     v-model="supervisorPassword"
                   />
                 </div>
+                <p
+                  v-if="
+                    errors &&
+                      errors.supervisor_password &&
+                      errors.supervisor_password.length
+                  "
+                  class="text-danger"
+                >
+                  {{ errors.supervisor_password.toString() }}
+                </p>
               </div>
             </div>
             <div v-else class="drivers-list-note">
@@ -76,7 +96,6 @@
             @click="
               cancelOrderAction({
                 order: selectedOrder.item,
-                actionTrigger: 'cancel_order',
               })
             "
           >
@@ -111,14 +130,21 @@ export default {
     showDropdown: function() {
       $('.dropdown-content').show()
     },
-    cancelOrderAction: function(order, actionTrigger) {
-      let params = {
+    cancelOrderAction: function(order) {
+      let data = {
         cancel_reason: this.showSelectedReason,
         supervisor_password: this.supervisorPassword,
       }
-      this.updateOrderAction(order, 'call_center', actionTrigger, params)
+      let orderType = 'call_center'
+      let actionTrigger = 'cancel_order'
+      this.updateOrderCancelAction({
+        order,
+        orderType,
+        actionTrigger,
+        params: data,
+      })
     },
-    ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
+    ...mapActions('order', ['selectedOrderDetails', 'updateOrderCancelAction']),
   },
 }
 </script>

@@ -1,8 +1,11 @@
 <template>
-  <div class="food-menu">
+  <div class="food-menu color-dashboard-background">
     <div v-if="items.length">
       <div
-        class="food-menu-item"
+        :class="{
+          'food-menu-item': true,
+          ' color-dashboard-background': item.image != '',
+        }"
         :style="{ background: item.image == '' ? item.item_color : '' }"
         v-for="item in items"
         :key="item._id"
@@ -15,10 +18,10 @@
           :alt="dt(item)"
           @error="imageLoadError()"
         />
-        <div class="food-menu-item-text">{{ dt(item) }}</div>
+        <div class="food-menu-item-text color-text">{{ dt(item) }}</div>
       </div>
+      <Popup />
     </div>
-    <Popup />
   </div>
 </template>
 

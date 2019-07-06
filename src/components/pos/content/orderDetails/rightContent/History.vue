@@ -1,7 +1,7 @@
 <template>
   <div
     aria-labelledby="nav-profile-tab"
-    class="tab-pane fade"
+    class="tab-pane fade color-dashboard-background"
     id="nav-profile"
     role="tabpanel"
   >
@@ -9,27 +9,35 @@
       <table class="table table-hover ">
         <thead>
           <tr>
-            <th class="field-type-cr_at field-created_at">
+            <th class="color-secondary field-type-cr_at field-created_at">
               <span title="">{{ _t('Created At') }}</span>
             </th>
-            <th class="field-type-collection_select field-user">
+            <th class="color-secondary field-type-collection_select field-user">
               <span class="" title="">{{ _t('By Whom') }}</span>
             </th>
-            <th class="field-type-select field-name">
+            <th class="color-secondary field-type-select field-name">
               <span class="" title="">{{ _t('Type') }}</span>
             </th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="orderDetails">
-            <td class="field-type-cr_at field-created_at">
-              <span> {{ orderDetails.created_at.date }}</span>
+            <td
+              class="color-tables-background field-type-cr_at field-created_at"
+            >
+              <span class="color-text">
+                {{ orderDetails.created_at.date }}</span
+              >
             </td>
-            <td class="field-type-collection_select field-user">
-              <span>Seeding</span>
+            <td
+              class="color-tables-background ield-type-collection_select field-user"
+            >
+              <span class="color-text">Seeding</span>
             </td>
-            <td class="field-type-select field-name">
-              <span>Created as {{ orderDetails.order_mode }} Order</span>
+            <td class="color-tables-background field-type-select field-name">
+              <span class="color-text"
+                >Created as {{ orderDetails.order_mode }} Order</span
+              >
             </td>
           </tr>
           <!---->

@@ -1,18 +1,24 @@
 <template>
   <div>
-    <div class="modal-body form-block">
+    <div class="modal-body form-block color-dashboard-background">
       <div class="divide-block row">
-        <h5 class="customer-block-info">{{ _t('General Details') }}</h5>
+        <h5 class="customer-block-info color-text-invert">
+          {{ _t('General Details') }}
+        </h5>
         <div class="col-md-6 left-form">
           <div class="name-from">
-            <label>{{ _t('Name') }} <span>*</span></label>
+            <label class="color-text-invert"
+              >{{ _t('Name') }} <span>*</span></label
+            >
             <input type="text" name="name" v-model="newCustomerDetails.name" />
             <span class="validation-error" v-if="errors.name">{{
               errors.name
             }}</span>
           </div>
           <div class="email-from">
-            <label>{{ _t('Email') }} <span>*</span></label>
+            <label class="color-text-invert"
+              >{{ _t('Email') }} <span>*</span></label
+            >
             <input
               type="email"
               name="email"
@@ -25,7 +31,7 @@
         </div>
         <div class="col-md-6 right-form">
           <div class="gender">
-            <label>{{ _t('Gender') }}</label>
+            <label class="color-text-invert">{{ _t('Gender') }}</label>
             <select class="selectpicker" v-model="newCustomerDetails.gender">
               <option selected="selected" value="male">{{ _t('Male') }}</option>
               <option value="female">{{ _t('Female') }}</option>
@@ -33,7 +39,9 @@
             </select>
           </div>
           <div class="mobile-from">
-            <label>{{ _t('Phone Number') }} <span>*</span></label>
+            <label class="color-text-invert"
+              >{{ _t('Phone Number') }} <span>*</span></label
+            >
             <input
               type="text"
               name="phone_number"
@@ -48,10 +56,14 @@
       </div>
       <div class="nogeneral">
         <div class="divide-block row">
-          <h5 class="customer-block-info">{{ _t('Additional Details') }}</h5>
+          <h5 class="customer-block-info color-text-invert">
+            {{ _t('Additional Details') }}
+          </h5>
           <div class="col-md-6 left-form">
             <div class="alternate-phone-from">
-              <label>{{ _t('Alt Phone Number') }} </label>
+              <label class="color-text-invert"
+                >{{ _t('Alt Phone Number') }}
+              </label>
               <input
                 type="text"
                 name="alternate-phone-from"
@@ -61,7 +73,7 @@
           </div>
           <div class="col-md-6 right-form">
             <div class="customer-group">
-              <label>{{ _t('Birthday') }}</label>
+              <label class="color-text-invert">{{ _t('Birthday') }}</label>
               <datetime
                 v-model="newCustomerDetails.birthday"
                 input-class="btn schedule-input btn-large datepicker-here"
@@ -74,7 +86,9 @@
           </div>
           <div class="col-md-12 left-form">
             <div class="customer-group" v-if="customerGroup">
-              <label>{{ _t('Customer Group') }}</label>
+              <label class="color-text-invert">{{
+                _t('Customer Group')
+              }}</label>
               <select
                 class="selectpicker"
                 v-model="newCustomerDetails.customer_group"
@@ -91,10 +105,14 @@
           </div>
         </div>
         <div class="customerAddressWrapper divide-block row">
-          <h5 class="customer-block-info">{{ _t('Address Details') }}</h5>
+          <h5 class="customer-block-info color-text-invert">
+            {{ _t('Address Details') }}
+          </h5>
           <div class="col-md-6 left-form">
             <div class="name-from">
-              <label>{{ _t('Delivery Area') }} <span>*</span></label>
+              <label class="color-text-invert"
+                >{{ _t('Delivery Area') }} <span>*</span></label
+              >
               <select
                 class="getAreaId"
                 @change="getAreaId"
@@ -113,7 +131,9 @@
               }}</span>
             </div>
             <div class="alternate-phone-from">
-              <label>{{ _t('Building/Villa') }} <span>*</span></label>
+              <label class="color-text-invert"
+                >{{ _t('Building/Villa') }} <span>*</span></label
+              >
               <input
                 type="text"
                 name="building"
@@ -124,7 +144,9 @@
               }}</span>
             </div>
             <div class="gender">
-              <label>{{ _t('Street') }} <span>*</span></label>
+              <label class="color-text-invert"
+                >{{ _t('Street') }} <span>*</span></label
+              >
               <input
                 type="text"
                 name="street"
@@ -137,7 +159,9 @@
           </div>
           <div class="col-md-6 right-form">
             <div class="landmark">
-              <label>{{ _t('Flat Number') }} <span>*</span></label>
+              <label class="color-text-invert"
+                >{{ _t('Flat Number') }} <span>*</span></label
+              >
               <input
                 type="text"
                 name="flat_number"
@@ -148,7 +172,9 @@
               }}</span>
             </div>
             <div class="landmark">
-              <label>{{ _t('Nearest Landmark') }} <span>*</span></label>
+              <label class="color-text-invert"
+                >{{ _t('Nearest Landmark') }} <span>*</span></label
+              >
               <input
                 type="text"
                 name="nearest_landmark"

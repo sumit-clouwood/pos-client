@@ -4,12 +4,12 @@
     <div class="modal fade offline" id="manage-customer" role="dialog">
       <div class="modal-dialog">
         <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header customer-header">
-            <h4 class="customer-title">
+        <div class="modal-content color-dashboard-background">
+          <div class="modal-header customer-header color-secondary">
+            <h4 class="customer-title color-text-invert">
               {{ _t('Create New Customer') + ' ' + _t('offline') }}
             </h4>
-            <button type="button" class="close" data-dismiss="modal">
+            <button type="button" class="close color-text" data-dismiss="modal">
               &times;
             </button>
           </div>
@@ -18,14 +18,14 @@
             <div class="btn-announce">
               <button
                 type="button"
-                class="btn btn-danger cancel-announce"
+                class="btn btn-danger cancel-announce color-button"
                 data-dismiss="modal"
                 id="close-customer"
               >
                 {{ _t('Cancel') }}
               </button>
               <button
-                class="btn btn-success btn-large"
+                class="btn btn-success btn-large color-main"
                 type="button"
                 id="post_announcement"
                 v-on:click="post"

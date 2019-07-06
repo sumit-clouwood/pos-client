@@ -6,23 +6,6 @@
         <span class="time"> {{ todayTime }}</span>
       </div>
     </div>
-    <!--<ul class="hide">
-      <li v-if="availableLanguages">
-        <select
-          v-model="vlocale"
-          @change="changeLanguage(vlocale)"
-          class="language-button"
-        >
-          <option
-            v-for="language in availableLanguages"
-            :key="language._id"
-            :value="language.code"
-          >
-            {{ language.name }}
-          </option>
-        </select>
-      </li>
-    </ul>-->
     <div class="button-block">
       <div class="change-location">
         <button class="btn btn-success">Change Brand</button>
@@ -61,7 +44,6 @@
 </template>
 
 <script>
-// /* global $ */
 /* eslint-disable no-console */
 import moment from 'moment-timezone'
 import { mapGetters, mapState } from 'vuex'
@@ -69,22 +51,22 @@ import bootstrap from '@/bootstrap'
 export default {
   name: 'DMTopRightNav',
   computed: {
+    vlocale: {
+      get() {
+        return this.$store.state.location.locale
+      },
+      set(val) {
+        return this.$store.commit('location/SET_LOCALE', val)
+      },
+    },
     ...mapGetters('context', ['store']),
     ...mapState('location', ['availableLanguages', 'language']),
   },
   methods: {
     changeLanguage(locale) {
-      // const language = this.languages.find(lang => lang.code === this.vlocale).code
       bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
     },
-    /*selectedReason: function(reason) {
-      this.showSelectedReason = reason.name
-      $('.dropdown-content').hide()
-    },
-    showDropdown: function() {
-      $('.dropdown-content').show()
-    },*/
   },
   data() {
     return {

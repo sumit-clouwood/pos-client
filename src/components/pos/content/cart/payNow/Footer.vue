@@ -1,28 +1,39 @@
 <template>
   <div class="payment-screen-footer" id="payment-screen-footer">
     <div
-      class="footer-wrap"
+      class="footer-wrap color-secondary"
       id="add-tip-amt"
       data-toggle="modal"
       data-target="#tip-amount"
     >
-      <img src="img/pos/tip.png" alt="payment-method" /><span>
+      <img src="img/pos/tip.png" alt="payment-method" /><span
+        class="color-text-invert"
+      >
         {{ _t('Tip Amount') }}
       </span>
     </div>
-    <div class="footer-wrap">
-      <img src="img/pos/gift-receipt.png" alt="payment-method" /><span>{{
-        _t('Gift Receipt')
-      }}</span>
+    <div class="footer-wrap color-secondary">
+      <img src="img/pos/gift-receipt.png" alt="payment-method" /><span
+        class="color-text-invert"
+        >{{ _t('Gift Receipt') }}</span
+      >
     </div>
-    <div class="footer-wrap" data-toggle="modal" data-target="#add-email">
-      <img src="img/pos/email.png" alt="payment-method" /><span>
+    <div
+      class="footer-wrap color-secondary"
+      data-toggle="modal"
+      data-target="#add-email"
+    >
+      <img src="img/pos/email.png" alt="payment-method" /><span
+        class="color-text-invert"
+      >
         {{ _t('Email') }}
       </span>
     </div>
 
-    <div class="footer-wrap" @click="pay" id="submitOrder">
-      <img src="img/pos/done.png" alt="payment-method" /><span>
+    <div class="footer-wrap color-secondary" @click="pay" id="submitOrder">
+      <img src="img/pos/done.png" alt="payment-method" /><span
+        class="color-text-invert"
+      >
         {{ _t('Done') }}
       </span>
     </div>
