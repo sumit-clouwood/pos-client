@@ -172,7 +172,7 @@ const actions = {
 
   modifyOrder({ rootState, dispatch }) {
     return dispatch(
-      'order/addOrderToCart',
+      'order/addDeliveryOrder',
       rootState.order.selectedOrder.item,
       {
         root: true,

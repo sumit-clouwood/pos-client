@@ -696,6 +696,12 @@ const actions = {
     })
   },
 
+  addDeliveryOrder({ dispatch, commit }, order) {
+    dispatch('addOrderToCart', order).then(() => {
+      commit(mutation.ORDER_TYPE, { OTview: 'Delivery', OTApi: 'call_center' })
+    })
+  },
+
   selectedOrderDetails({ commit }, orderId) {
     const params = ['orders', orderId, '']
     OrderService.getGlobalDetails(...params).then(response => {
