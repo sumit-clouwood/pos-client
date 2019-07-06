@@ -1,5 +1,5 @@
 <template>
-  <div class="header-main-left-info">
+  <div class="header-main-left-info color-text-invert">
     <p class="title">{{ _t(orderType.OTview) }}</p>
     <p class="subtitle">{{ locationName.name }}</p>
   </div>

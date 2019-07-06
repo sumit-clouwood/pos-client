@@ -2,62 +2,82 @@
   <div class="details">
     <div v-if="orderDetails">
       <div class="details-item">
-        <span class="details-item-name">{{ _t('Order No:') }}</span>
-        <p>{{ orderDetails.item.order_no }}</p>
+        <span class="details-item-name color-text-invert">{{
+          _t('Order No:')
+        }}</span>
+        <p class="color-text">{{ orderDetails.item.order_no }}</p>
       </div>
       <div class="details-item">
-        <span class="details-item-name">{{ _t('Order Status:') }}</span>
-        <p>{{ orderDetails.item.order_status }}</p>
+        <span class="details-item-name color-text-invert">{{
+          _t('Order Status:')
+        }}</span>
+        <p class="color-text">{{ orderDetails.item.order_status }}</p>
       </div>
       <div class="details-item">
-        <span class="details-item-name">{{ _t('Order Type:') }}</span>
-        <p>{{ orderDetails.item.order_type }}</p>
+        <span class="details-item-name color-text-invert">{{
+          _t('Order Type:')
+        }}</span>
+        <p class="color-text">{{ orderDetails.item.order_type }}</p>
       </div>
       <div class="details-item">
-        <span class="details-item-name">{{ _t('Location/Branch:') }}</span>
-        <p>{{ orderDetails.store_name }}</p>
+        <span class="details-item-name color-text-invert">{{
+          _t('Location/Branch:')
+        }}</span>
+        <p class="color-text">{{ orderDetails.store_name }}</p>
       </div>
       <div class="details-item">
-        <span class="details-item-name">{{ _t('Order Date/Times') }}:</span>
-        <p>{{ orderDetails.item.created_at.date }}</p>
+        <span class="details-item-name color-text-invert"
+          >{{ _t('Order Date/Times') }}:</span
+        >
+        <p class="color-text">{{ orderDetails.item.created_at.date }}</p>
       </div>
       <div class="details-item">
-        <span class="details-item-name">{{ _t('Order Duration:') }}</span>
-        <p>
+        <span class="details-item-name color-text-invert">{{
+          _t('Order Duration:')
+        }}</span>
+        <p class="color-text">
           3 weeks, 6 days, 3 hours, 2 minutes, 3 seconds
         </p>
       </div>
       <div class="details-item">
-        <span class="details-item-name">{{ _t('Placed By:') }}</span>
-        <p>Seeding</p>
+        <span class="details-item-name color-text-invert">{{
+          _t('Placed By:')
+        }}</span>
+        <p class="color-text">Seeding</p>
       </div>
     </div>
     <div v-if="orderDetails.customer">
       <div class="details-item">
-        <span class="details-item-name">{{ _t('Customer Name:') }}</span>
-        <p>{{ orderDetails.customer.name }}</p>
+        <span class="details-item-name color-text-invert">{{
+          _t('Customer Name:')
+        }}</span>
+        <p class="color-text">{{ orderDetails.customer.name }}</p>
       </div>
       <div class="details-item">
-        <span class="details-item-name">{{
+        <span class="details-item-name color-text-invert">{{
           _t('Customer Phone Number:')
         }}</span>
-        <p>{{ orderDetails.customer.phone_number }}</p>
+        <p class="color-text">{{ orderDetails.customer.phone_number }}</p>
       </div>
       <div class="details-item">
-        <span class="details-item-name">{{ _t('Customer Email:') }}</span>
-        <p>{{ orderDetails.customer.email }}</p>
+        <span class="details-item-name color-text-invert">{{
+          _t('Customer Email:')
+        }}</span>
+        <p class="color-text">{{ orderDetails.customer.email }}</p>
       </div>
       <div class="details-item">
-        <span class="details-item-name">{{
+        <span class="details-item-name color-text-invert">{{
           _t('Loyalty Points Earned:')
         }}</span>
-        <p>N/A</p>
+        <p class="color-text">N/A</p>
       </div>
     </div>
     <div v-if="orderDetails.item">
       <div class="details-item">
-        <span class="details-item-name">{{ _t('Delivery Area:') }}</span>
-        <p>
+        <span class="details-item-name color-text-invert">{{
+          _t('Delivery Area:')
+        }}</span>
+        <p class="color-text">
           {{
             getLookupData({
               lookupFrom: 'store_delivery_areas',
@@ -67,8 +87,10 @@
         </p>
       </div>
       <div class="details-item">
-        <span class="details-item-name">{{ _t('Driver:') }}</span>
-        <p>
+        <span class="details-item-name color-text-invert">{{
+          _t('Driver:')
+        }}</span>
+        <p class="color-text">
           {{
             getLookupData({
               lookupFrom: 'users',
@@ -78,10 +100,10 @@
         </p>
       </div>
       <div class="details-item details-item-double-span">
-        <span class="details-item-name">{{
+        <span class="details-item-name color-text-invert">{{
           _t('Order Delivery Address:')
         }}</span>
-        <p>
+        <p class="color-text">
           {{ orderDetails.item.order_flat_number }},
           {{ orderDetails.item.order_building }},
           {{ orderDetails.item.order_street }},

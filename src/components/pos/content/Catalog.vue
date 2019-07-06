@@ -1,5 +1,5 @@
 <template>
-  <div class="main-body">
+  <div class="main-body color-dashboard-background color-text">
     <search />
     <div class="food-wrapper">
       <SubMenu />

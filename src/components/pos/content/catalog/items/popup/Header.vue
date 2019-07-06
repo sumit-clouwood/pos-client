@@ -1,6 +1,6 @@
 <template>
-  <div class="modal-header" v-if="item">
-    <h5 class="modal-title" id="POSItemOptionsTitle">
+  <div class="modal-header color-secondary" v-if="item">
+    <h5 class="modal-title color-text-invert" id="POSItemOptionsTitle">
       {{ item.name }}
     </h5>
     <CloseButton />

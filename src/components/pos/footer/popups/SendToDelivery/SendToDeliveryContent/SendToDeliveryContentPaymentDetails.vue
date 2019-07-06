@@ -1,25 +1,31 @@
 <template>
   <div id="total-order-wrap" class="total-order">
-    <div class="order-notes">
-      <p class="notes-title">{{ _t('Notes') }}</p>
+    <div class="order-notes color-dashboard-background">
+      <p class="notes-title color-text-invert">{{ _t('Notes') }}</p>
       <p v-if="orderNotes">
         {{ orderNotes }}
       </p>
     </div>
     <div class="order-confirm-amt" id="total-confirm-order">
       <div class="order-amt-title">
-        <p class="text-uppercase">{{ _t('Sub Total') }} :</p>
-        <p class="text-uppercase">{{ _t('Surcharges') }} :</p>
-        <p class="text-uppercase">{{ _t('Order Discount') }} :</p>
-        <p class="text-uppercase">{{ _t('Tax') }} :</p>
-        <p class="text-uppercase">{{ _t('Bill Amount') }} :</p>
+        <p class="text-uppercase color-text-invert">{{ _t('Sub Total') }} :</p>
+        <p class="text-uppercase color-text-invert">{{ _t('Surcharges') }} :</p>
+        <p class="text-uppercase color-text-invert">
+          {{ _t('Order Discount') }} :
+        </p>
+        <p class="text-uppercase color-text-invert">{{ _t('Tax') }} :</p>
+        <p class="text-uppercase color-text-invert">
+          {{ _t('Bill Amount') }} :
+        </p>
       </div>
       <div class="order-amt-charges">
-        <p>{{ formatPrice(subTotal || 0) }}</p>
-        <p>{{ formatPrice(surcharge || 0) }}</p>
-        <p>{{ formatPrice(orderDiscountWithoutTax || 0) }}</p>
-        <p>{{ formatPrice(totalTax || 0) }}</p>
-        <p>{{ formatPrice(orderTotal || 0) }}</p>
+        <p class="color-text">{{ formatPrice(subTotal || 0) }}</p>
+        <p class="color-text">{{ formatPrice(surcharge || 0) }}</p>
+        <p class="color-text">
+          {{ formatPrice(orderDiscountWithoutTax || 0) }}
+        </p>
+        <p class="color-text">{{ formatPrice(totalTax || 0) }}</p>
+        <p class="color-text">{{ formatPrice(orderTotal || 0) }}</p>
       </div>
     </div>
   </div>

@@ -1,15 +1,23 @@
 <template>
-  <div class="main-news">
-    <div class="main-news-title">
-      <a class="main-news-title-link" href="javascript:void(0)">
-        <img src="img/pos/news.png" :alt="_t('News')" />
-        <span>
+  <div class="main-news color-main">
+    <div class="main-news-title color-secondary ">
+      <a
+        class="main-news-title-link color-text-invert"
+        href="javascript:void(0)"
+      >
+        <div class="fa fa-newspaper"></div>
+        <span class="color-text-invert">
           {{ _t('News') }}
         </span>
       </a>
     </div>
-    <div class="main-news-run-text" v-if="announcements">
-      <marquee behavior="scroll" direction="left">
+    <div class="main-news-run-text color-text-invert" v-if="announcements">
+      <marquee
+        behavior="scroll"
+        direction="left"
+        onmouseover="this.stop();"
+        onmouseout="this.start();"
+      >
         {{ announcements }}
       </marquee>
     </div>

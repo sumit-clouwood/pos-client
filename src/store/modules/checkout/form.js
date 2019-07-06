@@ -1,5 +1,6 @@
 import * as CONST from '@/constants'
 import Num from '@/plugins/helpers/Num'
+import DateTime from '@/mixins/DateTime'
 
 // initial state
 const state = {
@@ -99,7 +100,7 @@ const actions = {
   },
 
   //apply gift card [in use]
-  addGiftCardAmount({ commit, getters, dispatch }, code) {
+  addGiftCardAmount({ commit, getters, dispatch, rootState }, code) {
     return new Promise((resolve, reject) => {
       if (!state.amount) {
         commit('setGiftAmount', 0)
@@ -115,9 +116,18 @@ const actions = {
           .then(card => {
             //check activation here
             //check expiry
-            const activatedDate = new Date(card.activated_date)
-            const expiryDate = new Date(card.expire_date)
-            const today = new Date()
+            const activatedDate = DateTime.convertToTimezone(
+              new Date(card.activated_date),
+              rootState.location.timezoneString
+            )
+            const expiryDate = DateTime.convertToTimezone(
+              new Date(card.expire_date),
+              rootState.location.timezoneString
+            )
+            const today = DateTime.convertToTimezone(
+              new Date(),
+              rootState.location.timezoneString
+            )
 
             if (expiryDate.getTime() <= today.getTime()) {
               commit('setGiftAmount', 0)

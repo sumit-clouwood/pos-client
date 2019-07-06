@@ -2,7 +2,7 @@
   <div class="food-categories">
     <div v-if="subcategories && subcategories.length">
       <div
-        class="food-categories-item"
+        class="food-categories-item box-shadow-selected"
         v-for="item in subcategories"
         :style="{
           background:
@@ -21,8 +21,8 @@
         <div class="food-categories-item-text" :title="dt(item)">
           {{ dt(item) }}
         </div>
-        <div class="food-categories-item-check">
-          <i class="fa fa-check" aria-hidden="true"></i>
+        <div class="food-categories-item-check color-dashboard-background">
+          <i class="fa fa-check color-text-invert " aria-hidden="true"></i>
         </div>
       </div>
     </div>
