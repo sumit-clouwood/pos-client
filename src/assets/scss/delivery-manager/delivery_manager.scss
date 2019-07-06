@@ -1142,13 +1142,59 @@ div{
         display: table-row;
         th{
           letter-spacing: 0.4px;
-          color: #a4a4a4;
+          color: $header-gray-light;
           font-size: $px12;
           font-weight: normal;
         }
         td{
           display: table-cell;
           padding: $px12;
+          font-size: $px14;
+        }
+      }
+      .perfContainer.perfContainer-span > span {
+        display: inline-block;
+        padding: 2px;
+        border-radius: 4px;
+        margin: 0;
+        color: $white;
+        &.prepData {
+          background: $red;
+          border-top-right-radius: 0 !important;
+          border-bottom-right-radius: 0 !important;
+        }
+
+        &.pickData {
+          background: $blue-middle;
+          border-radius: 0 !important;
+        }
+
+        &.deliData {
+          background: $green;
+          border-top-left-radius: 0 !important;
+          border-bottom-left-radius: 0 !important;
+        }
+      }
+      .delivered-green-btn {
+        background: $blue-middle;
+        display: inline-block;
+        padding: $px2 $px5;
+        border-radius: $block-border-radius;
+        color: $white;
+      }
+      .driverSummary  {
+        > div{
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          background: $gray-bg-middle;
+          padding: 20px;
+          border-radius: 4px;
+        }
+      }
+      .historyMainContainer.show-table-delivered{
+        > table{
+          background: $gray-bg-light;
+          margin: 0;
         }
       }
     }
