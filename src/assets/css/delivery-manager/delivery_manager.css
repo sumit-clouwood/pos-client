@@ -793,6 +793,37 @@ div#cancellationReason .modal-dialog {
 div#cancellationReason .modal-footer {
   justify-content: flex-end; }
 
+@media only screen and (max-width: 979px) {
+  .page-header .current-time {
+    display: none; }
+
+  .dm-manager .navigation {
+    display: none; }
+
+  .change-location > button, .left-btn-wrap > button {
+    font-size: 0.625rem;
+    padding: 0.3125rem;
+    margin-right: 0.3125rem; }
+
+  .dm-btn-wrap {
+    grid-template-columns: 1fr;
+    margin-left: 1.5rem;
+    margin-right: 1.5rem; }
+
+  .dm-order-details-wrap {
+    margin-left: 1.5rem;
+    margin-right: 1.5rem; }
+    .dm-order-details-wrap .dm-delivery-details-btn {
+      overflow-x: auto;
+      display: grid; }
+      .dm-order-details-wrap .dm-delivery-details-btn ul.dm-ullist {
+        display: flex;
+        white-space: nowrap;
+        overflow-x: auto; }
+
+  div.dm-ready-order-wrapper tbody {
+    grid-template-columns: 1fr !important;
+    padding: 1.5rem !important; } }
 /*# sourceMappingURL=deliveryManager.css.map */
 
 /*# sourceMappingURL=delivery_manager.css.map */

@@ -58,7 +58,8 @@ img {
   height: 0px; }
 
 ::-webkit-scrollbar {
-  width: 0.1875rem; }
+  width: 0.1875rem;
+  height: 0.1875rem; }
 
 ::-webkit-scrollbar-track-piece {
   bprder: 1px solid #eee; }
@@ -2970,6 +2971,14 @@ body {
 .modal-backdrop {
   display: none; }
 
+@media only screen and (max-width: 979px) {
+  .dm-manager .new-pos {
+    height: unset;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 100vh;
+    padding-top: 2.5rem;
+    grid-auto-flow: column; } }
 .navigation {
   grid-row-start: 1;
   grid-row-end: 4;
