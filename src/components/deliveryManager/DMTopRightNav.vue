@@ -58,6 +58,14 @@ import bootstrap from '@/bootstrap'
 export default {
   name: 'DMTopRightNav',
   computed: {
+    vlocale: {
+      get() {
+        return this.$store.state.location.locale
+      },
+      set(val) {
+        return this.$store.commit('location/SET_LOCALE', val)
+      },
+    },
     ...mapGetters('context', ['store']),
     ...mapState('location', ['availableLanguages', 'language']),
   },
