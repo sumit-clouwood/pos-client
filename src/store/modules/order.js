@@ -12,6 +12,7 @@ const state = {
   item: false,
   orderType: { OTview: 'Walk In', OTApi: 'walk_in' },
   orderNote: '',
+  cancellationReason: {},
   onlineOrders: false,
   futureOrder: false,
   referral: false,
@@ -700,8 +701,8 @@ const actions = {
     OrderService.getGlobalDetails(...params).then(response => {
       let orderDetails = {}
       OrderService.getModalDetails('brand_cancellation_reasons').then(
-        response => {
-          orderDetails.cancellationReasons = response.data.data
+        responseData => {
+          commit(mutation.SET_CANCELLATION_REASON, responseData.data.data)
         }
       )
 
@@ -724,14 +725,15 @@ const actions = {
     dispatch('updateOrderAction', { order, orderType, actionTrigger })
   },
 
-  updateOrderAction({ dispatch }, { order, orderType, actionTrigger }) {
+  updateOrderAction({ dispatch }, { order, orderType, actionTrigger, params }) {
     if (actionTrigger === 'addToDriverBucket') {
       dispatch('deliveryManager/addOrderToDriverBucket', order, {
         root: true,
       })
     } else {
-      let params = { driver: state.selectedDriver }
-      OrderService.updateOrderAction(order._id, actionTrigger, params).then(
+      let data =
+        typeof params == 'undefined' ? { driver: state.selectedDriver } : params
+      OrderService.updateOrderAction(order._id, actionTrigger, data).then(
         response => {
           if (response.status == 200) {
             switch (orderType) {
@@ -873,6 +875,9 @@ const mutations = {
   },
   [mutation.SET_ORDER_DETAILS](state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails
+  },
+  [mutation.SET_CANCELLATION_REASON](state, cancelationReason) {
+    state.cancellationReason = cancelationReason
   },
   [mutation.ORDER_STATUS](state, status) {
     state.orderStatus = status

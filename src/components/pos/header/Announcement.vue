@@ -9,7 +9,12 @@
       </a>
     </div>
     <div class="main-news-run-text" v-if="announcements">
-      <marquee behavior="scroll" direction="left">
+      <marquee
+        behavior="scroll"
+        direction="left"
+        onmouseover="this.stop();"
+        onmouseout="this.start();"
+      >
         {{ announcements }}
       </marquee>
     </div>

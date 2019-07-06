@@ -2,13 +2,21 @@
   <div class="new-pos">
     <div class="dm-screen-wrap">
       <div class="left-fixed-menu">
-        <h3 class="page-title" style="">New Orders</h3>
+        <h3 class="page-title" style="">{{ _t('New Orders') }}</h3>
         <div class="breadcrump-wrapper">
           <ul class="ullist-breadcrump">
-            <li><a href="#">DELIVERY</a></li>
-            <li><a href="#">DEFAULT BRAND</a></li>
-            <li><a href="#">HOME DELIVERIES</a></li>
-            <li class="active"><a href="#">NEW ORDERS</a></li>
+            <li>
+              <a href="#">{{ _t('DELIVERY') }}</a>
+            </li>
+            <li>
+              <a href="#">{{ _t('DEFAULT BRAND') }}</a>
+            </li>
+            <li>
+              <a href="#">{{ _t('HOME DELIVERIES') }}</a>
+            </li>
+            <li class="active">
+              <a href="#">{{ _t('NEW ORDERS') }}</a>
+            </li>
           </ul>
         </div>
       </div>
@@ -49,6 +57,7 @@ import HomeDelivery from '@/components/deliveryManager/HomeDelivery'
 import TakeAway from '@/components/deliveryManager/TakeAway'
 import FutureOrder from '@/components/deliveryManager/FutureOrder'
 import DMTopRightNav from '@/components/deliveryManager/DMTopRightNav'
+import { mapGetters } from 'vuex'
 export default {
   name: 'DeliveryManager',
   components: {
@@ -59,6 +68,9 @@ export default {
     FutureOrder,
     DMOrderDetails,
     DMTopRightNav,
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
   },
 }
 </script>
