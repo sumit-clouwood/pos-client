@@ -126,18 +126,23 @@ export default {
       .format("YYYY-MM-DD HH:mm:ss");
   },
 
+  // eslint-disable-next-line no-unused-vars
   convertToTimezone(date, timezone) {
     /**
      *  date to UTC then to expected timezone
      *  return Date()
      */
+    return date;
+    /*
     let dateUTC = moment(date)
       .clone()
       .tz("UTC");
+
     return dateUTC
       .clone()
       .tz(timezone)
       .format("YYYY-MM-DD HH:mm:ss")
       .toDate();
+      */
   }
 };
