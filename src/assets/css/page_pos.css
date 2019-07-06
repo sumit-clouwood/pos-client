@@ -22,8 +22,8 @@ body {
     height: unset;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 100vh;
+    grid-template-rows: auto;
     padding-top: 2.5rem;
-    grid-auto-flow: column; } }
+    grid-auto-flow: row; } }
 
 /*# sourceMappingURL=page_pos.css.map */

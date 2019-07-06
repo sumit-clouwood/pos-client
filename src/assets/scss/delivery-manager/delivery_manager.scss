@@ -443,13 +443,27 @@ div {
     clear: both;
   }
 
-  &#dm-new-order table td {
-    padding: 0;
-    border-top: medium none;
+  &#dm-new-order {
+    table{
+      td{
+        padding: 0;
+        border-top: medium none;
+        display: block;
+      }
+    }
+
   }
 }
 
 @media only screen and (min-width: 992px) {
+  .top-menu-container{
+    display: none;
+  }
+  div {
+    &.dm-ready-order-wrapper{
+      height: calc(100vh - 17rem);
+    }
+  }
   small.delivered-hide > img, .dm-screen-wrap.dine-in-screen {
     display: none;
   }
@@ -993,15 +1007,14 @@ input[type="password"] {
 
 //
 .dm-screen-wrap {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  /* padding: 0.625rem 1.25rem 0.9375rem 2.1875rem; */
-  -webkit-box-shadow: 0 0px 3px rgba(23, 23, 32, 0.05), 0 0px 10px rgba(23, 23, 32, 0.05), 0 0px 20px rgba(23, 23, 32, 0.05);
-  box-shadow: 0 0px 3px rgba(23, 23, 32, 0.05), 0 0px 10px rgba(23, 23, 32, 0.05), 0 0px 20px rgba(23, 23, 32, 0.05);
-  z-index: 2;
-  overflow: hidden;
-  background-color: #fff;
-  padding: $px10 $px20 $px15 $px35;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    -webkit-box-shadow: 0 0px $px3 rgba(23, 23, 32, 0.05), 0 0px $px10 rgba(23, 23, 32, 0.05), 0 0px $px20 rgba(23, 23, 32, 0.05);
+    box-shadow: 0 0px $px3 rgba(23, 23, 32, 0.05), 0 0px $px10 rgba(23, 23, 32, 0.05), 0 0px $px20 rgba(23, 23, 32, 0.05);
+    z-index: 2;
+    overflow: hidden;
+    background-color: #fff;
+    padding: $px10 $px20 $px15 $px35;
 }
 
 ul.ullist-breadcrump > li {
@@ -1154,8 +1167,8 @@ div{
       }
       .perfContainer.perfContainer-span > span {
         display: inline-block;
-        padding: 2px;
-        border-radius: 4px;
+        padding: $px2;
+        border-radius: $block-border-radius;
         margin: 0;
         color: $white;
         &.prepData {
@@ -1201,15 +1214,63 @@ div{
   }
 }
 //Responsive screen
-@media only screen and (max-width: 979px) {
-  .page-header{
-    .current-time{
-      display: none;
+@media only screen and (max-width: 991px) {
+  .top-menu-container{
+    .top-menu-icon{
+      width: 20px;
+      cursor: pointer;
+      svg{
+        fill: #fff;
+      }
     }
   }
+  .dm-screen-wrap{
+    grid-template-columns: 1fr;
+    box-shadow: none;
+    padding: 0;
+    .page-header{
+      grid-template-columns: 1fr;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      right: 0;
+      top: 0;
+      margin: 0 auto;
+      background: $red;
+      .current-time{
+        display: none;
+      }
+      .button-block{
+        display: grid;
+        grid-template-columns: 2fr 2fr $px24;
+        padding: 0 $px20;
+        align-items: center;
+      }
+    }
+    .left-fixed-menu{
+      -webkit-box-shadow: 0 0px $px3 rgba(23, 23, 32, 0.05), 0 0px $px10 rgba(23, 23, 32, 0.05), 0 0px $px20 rgba(23, 23, 32, 0.05);
+      box-shadow: 0 0px $px3 rgba(23, 23, 32, 0.05), 0 0px $px10 rgba(23, 23, 32, 0.05), 0 0px $px20 rgba(23, 23, 32, 0.05);
+      margin-bottom: $px10;
+      padding: $px10 $px20;
+       > h3{
+         font-size: $px24;
+       }
+    }
+  }
+
   .dm-manager{
     .navigation{
-      display: none;
+      left: -999px;
+      transition: 0.3s ease-in-out;
+      position: fixed;
+      z-index: 99;
+      grid-template-columns: 1fr;
+      height: 100vh;
+      grid-template-rows: 5fr 1fr $px92 $px36;
+      padding-top: 20px;
+      .logo{
+        display: none;
+      }
     }
   }
   .change-location, .left-btn-wrap {
@@ -1223,6 +1284,7 @@ div{
     grid-template-columns: 1fr;
     margin-left: $px24;
     margin-right: $px24;
+    margin-top: $px10;
   }
   .dm-order-details-wrap{
     margin-left: $px24;
@@ -1242,13 +1304,37 @@ div{
 
   div{
     &.dm-ready-order-wrapper{
+       height: calc(100vh - 17rem);
+        overflow: auto;
         tbody{
           grid-template-columns: 1fr !important;
           padding: $px24 !important;
+          tr{
+            td{
+              display: block;
+            }
+          }
         }
     }
   }
 
-
+}
+@media only screen and (max-width: 599px){
+  .with-drivers-filter {
+    .drivers-filter {
+      overflow: auto;
+      height: calc(100vh - 25rem);
+      border-left: $px1 solid rgba(63, 74, 74, 0.3);
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #fff;
+    }
+  }
+  section{
+    &.with-drivers-filter{
+      grid-template-columns: 1fr;
+    }
+  }
 }
 /*# sourceMappingURL=deliveryManager.css.map */
