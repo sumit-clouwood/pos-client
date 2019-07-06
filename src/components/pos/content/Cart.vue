@@ -1,5 +1,5 @@
 <template>
-  <div class="main-orders">
+  <div class="main-orders color-dashboard-background">
     <Header />
     <div class="main-orders-list-wrapper">
       <HoldingOrders v-if="cartType === 'hold'" />

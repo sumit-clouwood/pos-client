@@ -1,16 +1,16 @@
 <template>
-  <div class="header-main-right">
+  <div class="header-main-right color-dashboard-background">
     <div class="user-name">
       <a class="">
         <span class="">{{ username }}</span>
       </a>
     </div>
-    <div class="online">
+    <div class="online color-text-invert">
       <div class="fa fa-fw fa-circle" :class="{ online: online }"></div>
       <div>{{ _t('Online') }}</div>
     </div>
     <ul>
-      <li v-if="availableLanguages">
+      <li v-if="availableLanguages" class="color-text-invert">
         <select
           v-model="vlocale"
           @change="changeLanguage(vlocale)"
@@ -26,19 +26,23 @@
         </select>
       </li>
     </ul>
-    <ul class="online-counter">
+    <ul class="online-counter color-main">
       <li
-        class="nav-item online-data"
+        class="nav-item online-data "
         data-toggle="modal"
         data-target="#online-order"
       >
-        <a class="btn-part" href="javascript:void(0)"
-          >{{ _t('Online') }} <span class="online-digit">2</span></a
+        <a class="btn-part color-text-invert" href="javascript:void(0)"
+          >{{ _t('Online') }}
+          <span class="online-digit color-secondary">2</span></a
         >
       </li>
     </ul>
-    <li class="nav-icon nav-item setting-icon" id="setting-icon">
-      <a class="nav-link">
+    <li
+      class="nav-icon nav-item setting-icon color-main color-text-invert"
+      id="setting-icon"
+    >
+      <a class="nav-link color-text-invert">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"

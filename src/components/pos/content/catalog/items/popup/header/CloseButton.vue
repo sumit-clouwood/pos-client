@@ -1,12 +1,12 @@
 <template>
   <button
     type="button"
-    class="close"
+    class="close color-text"
     data-dismiss="modal"
     aria-label="Close"
     @click="resetForm()"
   >
-    <span aria-hidden="true">&times;</span>
+    <span aria-hidden="true" class="color-text-invert">&times;</span>
   </button>
 </template>
 <script>

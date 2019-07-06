@@ -125,6 +125,7 @@ export default class {
     this.parseTime()
     return this.hours + ':' + this.mins + ':' + this.sec
   }
+
   getDate() {
     this.parseTime()
     return this.year + '-' + this.Num[parseInt(this.month) + 1] + '-' + this.day
@@ -132,7 +133,7 @@ export default class {
 
   dateToday() {
     this.parseTime()
-    //   Tuesday, 13 Oct 2017
+    //Tuesday, 13 Oct 2017
     return (
       this.weekdayFull +
       ', ' +

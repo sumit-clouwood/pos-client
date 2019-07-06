@@ -3,40 +3,50 @@
     <div class="modal-dialog">
       <!-- Modal content-->
 
-      <div class="modal-content">
+      <div class="modal-content color-dashboard-background">
         <div class="modal-body order-confirmation-wrap">
           <div class="past-order-details-wrap">
             <div class="sidebar-past-order">
-              <h4>Placed By</h4>
+              <h4 class="color-text-invert">Placed By</h4>
 
-              <p>{{ getOrderDetails.customer.customer_name }}</p>
+              <p class="color-text">
+                {{ getOrderDetails.customer.customer_name }}
+              </p>
             </div>
             <div class="sidebar-past-order">
-              <h4>Order Date & Time</h4>
-              <p>{{ getOrderDetails.order_created }}</p>
+              <h4 class="color-text-invert">Order Date & Time</h4>
+              <p class="color-text">{{ getOrderDetails.order_created }}</p>
             </div>
             <div class="sidebar-past-order">
-              <h4>Order Time</h4>
+              <h4 class="color-text-invert">Order Time</h4>
               {{ humanDateTime(getOrderDetails) }}
-              <p :id="'od' + getOrderDetails.order_no"></p>
+              <p class="color-text" :id="'od' + getOrderDetails.order_no"></p>
             </div>
             <div class="sidebar-past-order">
-              <h4>Driver</h4>
-              <p>Not Assigned</p>
+              <h4 class="color-text-invert">Driver</h4>
+              <p class="color-text">Not Assigned</p>
             </div>
           </div>
           <div class="past-order-confirmation">
             <h1 class="order-id">Order {{ getOrderDetails.order_no }}</h1>
             <div class="order-table">
               <table class="table table-responsive">
-                <tr>
-                  <th style="width: 300px">ITEM NAME</th>
-                  <th style="width: 100px">QTY</th>
-                  <th style="width: 150px">PRICE</th>
-                  <th style="width: 100px">TAX</th>
-                  <th style="width: 150px">SUBTOTAL</th>
+                <tr class="color-secondary">
+                  <th style="width: 300px" class="color-text-invert">
+                    ITEM NAME
+                  </th>
+                  <th style="width: 100px" class="color-text-invert">QTY</th>
+                  <th style="width: 150px" class="color-text-invert">PRICE</th>
+                  <th style="width: 100px" class="color-text-invert">TAX</th>
+                  <th style="width: 150px" class="color-text-invert">
+                    SUBTOTAL
+                  </th>
                 </tr>
-                <tr v-for="item in getOrderDetails.items" :key="item.item_id">
+                <tr
+                  v-for="item in getOrderDetails.items"
+                  :key="item.item_id"
+                  class="color-tables-background color-text"
+                >
                   <td>
                     {{ item.item_name }}
                     <div class="head1" v-if="item.item_modifiers.length">

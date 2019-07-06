@@ -3,16 +3,19 @@
   <div class="modal fade" id="payment-msg" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content" v-if="msg">
-        <div class="modal-header customer-header">
+      <div class="modal-content color-dashboard-background" v-if="msg">
+        <div class="modal-header customer-header color-secondary">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">
+          <h4 class="customer-title color-text-invert">
             {{ _t('Order') }}
           </h4>
         </div>
         <div class="modal-body change-amount-option">
           <div class="amount-change-wrap">
-            <h5 v-if="msg.message && msg.message !== 'loading'">
+            <h5
+              class="color-text"
+              v-if="msg.message && msg.message !== 'loading'"
+            >
               {{ msg.message }}
             </h5>
             <Preloader v-else />
@@ -21,7 +24,7 @@
         <div class="modal-footer">
           <div class="btn-announce" v-if="msg.result === 'success'">
             <button
-              class="btn btn-success btn-large"
+              class="btn btn-success btn-large color-main"
               type="button"
               data-dismiss="modal"
               @click="generateInvoice()"
@@ -48,7 +51,7 @@
           <button
             v-if="msg.result !== 'success'"
             type="button"
-            class="btn btn-default"
+            class="btn btn-default color-button"
             data-dismiss="modal"
           >
             {{ _t('Close') }}

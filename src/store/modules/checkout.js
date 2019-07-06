@@ -63,7 +63,6 @@ const actions = {
         let order = {}
 
         try {
-          const newDate = new DateTime()
           order = {
             customer: '',
             referral: '',
@@ -76,7 +75,9 @@ const actions = {
             order_source: CONSTANTS.ORDER_SOURCE_POS,
             order_type: rootState.order.orderType.OTApi,
             order_mode: 'online',
-            real_created_datetime: newDate.getDate() + ' ' + newDate.getTime(),
+            real_created_datetime: DateTime.getTimezoneDateTime(
+              rootState.location.timezoneString
+            ),
             // order_mode: 'online',
             //remove the modifiers prices from subtotal
             sub_total: Num.round(rootGetters['order/subTotal']),
@@ -429,7 +430,7 @@ const actions = {
           if (response.data.status === 'ok') {
             if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
               let msgStr = rootGetters['location/_t'](
-                'Order has been hold successfully'
+                'Order has been hold Successfully'
               )
               commit(
                 'checkoutForm/SET_MSG',

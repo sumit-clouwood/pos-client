@@ -9,18 +9,19 @@
       <img v-else class="profile-picture" src="img/other/placeholder-img.png" />
     </li>
     <li class="col-md-4 lh">
-      <p class="profile-customer-title">
+      <p class="profile-customer-title color-text-invert">
         {{ _t('Customer Name:') }}
       </p>
-      <h5 id="profile-customer-name">
+      <h5 id="profile-customer-name color-text">
         {{ customerProfile.name }}
       </h5>
-      <p class="profile-customer-title">
+      <p class="profile-customer-title color-text">
         {{ _t('Email') }}: {{ customerProfile.email }}
       </p>
-      <p class="name-confrimation">
+      <p class="name-confrimation color-text">
         {{ _t('Not') }} {{ customerProfile.name }}?
         <span
+          class="color-text-invert"
           @click="addCustomerForm"
           data-toggle="modal"
           data-target="#customer"
@@ -31,16 +32,20 @@
       </p>
     </li>
     <li>
-      <p class="profile-customer-title">{{ _t('Phone Number:') }}</p>
-      <h5 id="profile-customer-number">{{ customerProfile.phone_number }}</h5>
+      <p class="profile-customer-title color-text-invert">
+        {{ _t('Phone Number:') }}
+      </p>
+      <h5 id="profile-customer-number color-text">
+        {{ customerProfile.phone_number }}
+      </h5>
       <p class="profile-customer-title">
-        <small>
+        <small class="color-text-invert">
           {{ _t('Alternative Phone Number') }}:
           {{ customerProfile.alternative_phone }}</small
         >
       </p>
       <p class="profile-customer-title">
-        <small>
+        <small class="color-text-invert">
           {{ _t('Customer Group') }}:
           {{ customerProfile.customer_group }}
         </small>
@@ -48,7 +53,7 @@
     </li>
     <li @click="editCustomer(customerProfile._id)">
       <a
-        class="cu-edit-icon"
+        class="cu-edit-icon color-text-invert color-main"
         href="javascript:void(0)"
         data-toggle="modal"
         data-target="#customer"
@@ -83,7 +88,9 @@
         </span>
         {{ _t('Edit') }}</a
       >
-      <a class="cu-delete-icon" href="javascript:void(0)"
+      <a
+        class="cu-delete-icon color-text-invert color-secondary"
+        href="javascript:void(0)"
         ><span
           ><svg
             xmlns="http://www.w3.org/2000/svg"

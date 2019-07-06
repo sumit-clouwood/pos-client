@@ -1,21 +1,25 @@
 <template>
   <div class="main-orders-list" v-if="items">
     <div
-      class="main-orders-list-item"
+      class="main-orders-list-item color-dashboard-background"
       v-for="(item, index) in items"
       :key="index + '-' + item._id"
     >
-      <div class="main-orders-list-item-title">
+      <div class="main-orders-list-item-title color-text">
         <div class="orders-name">{{ dt(item) }}</div>
         <div class="orders-amount">{{ formatPrice(itemPrice(item)) }}</div>
         <div
           class="orders-close"
           @click.prevent="removeFromOrder({ item: item, index: index })"
         >
-          <i class="fa fa-trash-o" aria-hidden="true" :alt="_t('delete')"></i>
+          <i
+            class="fa fa-trash-o color-text-invert"
+            aria-hidden="true"
+            :alt="_t('delete')"
+          ></i>
         </div>
       </div>
-      <div class="main-orders-list-item-subtitle">
+      <div class="main-orders-list-item-subtitle color-text-invert">
         @ {{ Num.round(item.undiscountedNetPrice) }} x {{ item.quantity }}
         {{ discountInfo(item) }}
       </div>
@@ -27,7 +31,7 @@
           data-target="#POSOrderItemOptions"
           @click="setActiveItem({ orderItem: item, index: index })"
         >
-          <img src="img/pos/plus-icon.png" alt="plus" />
+          <i class="fa fa-plus-circle color-text"></i>
         </div>
       </div>
     </div>

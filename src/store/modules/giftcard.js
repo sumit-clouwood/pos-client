@@ -51,7 +51,11 @@ const actions = {
                 })
                 .catch(error => reject(error))
             } else {
-              reject(`Available gift card amount is lesser than ${amount}`)
+              reject(
+                `Available gift card amount is ${card.currency} ${
+                  card.remaining_amount
+                }, lesser than ${amount}`
+              )
             }
           } else {
             reject('No matching gift card found.')
