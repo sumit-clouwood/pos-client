@@ -3,7 +3,7 @@ import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 //import db from '@/services/network/DB'
 //import Crypt from '@/plugins/helpers/Crypt.js'
-import DateTime from '@/plugins/helpers/DateTime.js'
+import DateTime from '@/mixins/DateTime.js'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 
