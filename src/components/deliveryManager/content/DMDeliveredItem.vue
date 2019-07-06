@@ -2,6 +2,43 @@
   <div
     class="table-delivery table-responsive table-responsive-delivered-table "
   >
+    <div class="all-driver-main-div">
+      <div class="clearfix all-driver-dropdown">
+        <div class="select-driver" v-if="driverList">
+          <div>
+            <button
+              type="button"
+              class="btn dropdown-toggle input-search-driver"
+              data-toggle="dropdown"
+            >
+              {{ _t('Select Driver') }}
+            </button>
+            <ul class="dropdown-menu">
+              <li v-for="(driver, index) in driverList" :key="index">
+                <a href="javascript:void(0)" @click="selectedDriver(driver)">{{
+                  driver.name
+                }}</a>
+              </li>
+            </ul>
+          </div>
+          <div class="average-time">
+            <p class="lead">
+              {{ _t('Average Delivery Time') }}:
+              <span id="avg_time" v-if="orderDetails.averageDeliveryTime"
+                >{{ orderDetails.averageDeliveryTime }}
+              </span>
+            </p>
+            <p class="lead total-order-sum">
+              {{ _t('Total') }}:
+              <span id="total">
+                {{ formatPrice(orderDetails.orderTotal) }}</span
+              >
+            </p>
+          </div>
+          <!-- <p>Show Available Drivers</p> -->
+        </div>
+      </div>
+    </div>
     <table class="table">
       <thead class="muted">
         <tr>
@@ -166,3 +203,20 @@ export default {
   },
 }
 </script>
+<style scoped lang="css">
+.select-driver {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
+.all-driver-dropdown{
+    width: 30%;
+    padding-bottom: 21px;
+}
+.average-time {
+    letter-spacing: 0.4px;
+    color: #a4a4a4;
+    font-size: 10px;
+    font-weight: normal;
+}
+</style>
