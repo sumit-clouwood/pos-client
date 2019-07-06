@@ -10,10 +10,11 @@
               orderStatus: 'in-progress',
               collected: 'no',
               pageId: 'home_delivery_new',
+              title: _t('New Orders'),
             })
           "
         >
-          <a href="javascript:void(0)">New Orders</a
+          <a href="javascript:void(0)">{{ _t('New Orders') }}</a
           ><span v-if="orderCount">{{ orderCount.running }}</span>
         </li>
         <li
@@ -24,10 +25,11 @@
               orderStatus: 'ready',
               collected: 'no',
               pageId: 'home_delivery_pick',
+              title: _t('Waiting for Pick'),
             })
           "
         >
-          <a href="javascript:void(0)">Waiting for Pick</a
+          <a href="javascript:void(0)">{{ _t('Waiting for Pick') }}</a
           ><span v-if="orderCount">{{ orderCount.ready }}</span>
         </li>
         <li
@@ -38,10 +40,11 @@
               orderStatus: 'on-a-way',
               collected: 'no',
               pageId: 'home_delivery_in_progress',
+              title: _t('Delivery - In Progress'),
             })
           "
         >
-          <a href="javascript:void(0)">Delivery - In Progress</a
+          <a href="javascript:void(0)">{{ _t('Delivery - In Progress') }}</a
           ><span v-if="orderCount">{{ orderCount['in-progress'] }}</span>
         </li>
         <li
@@ -52,10 +55,11 @@
               orderStatus: 'finished',
               collected: 'no',
               pageId: 'home_delivery_finished',
+              title: _t('Delivered'),
             })
           "
         >
-          <a href="javascript:void(0)">Delivered</a
+          <a href="javascript:void(0)">{{ _t('Delivered') }}</a
           ><span v-if="orderCount">{{ orderCount.delivered }}</span>
         </li>
       </ul>
@@ -64,15 +68,18 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'DMHomeDeliverySubMenu',
   methods: {
     updateOrderStatus: function(orderStatus) {
+      this.$store.commit('order/LIST_TYPE', orderStatus.title)
       this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
     },
   },
   computed: {
+    ...mapGetters('location', ['_t']),
+    ...mapState('order', ['listType']),
     ...mapState({
       orderCount: state => state.deliveryManager.orderCounts,
     }),
