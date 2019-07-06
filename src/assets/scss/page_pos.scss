@@ -27,10 +27,10 @@ body {
     .new-pos{
       height: unset;
       display: grid;
-      grid-template-columns:1fr;
-      grid-template-rows: 100vh;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
       padding-top: $px40;
-      grid-auto-flow: column;
+      grid-auto-flow: row;
     }
   }
 
