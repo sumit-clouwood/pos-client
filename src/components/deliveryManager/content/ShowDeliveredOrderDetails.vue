@@ -1,70 +1,193 @@
 <template>
-  <tr id="delivered-data" style="display:none" class="delivered-data">
-    <td colspan="10" class="deliveredOrderDetails">
-      <div class="delivered-data-wrapper">
-        <table class="table table-responsive">
-          <tbody>
-            <tr>
-              <th style="width: 160px;">ORDER NUMBER</th>
-              <th style="width: 160px;">amount</th>
-              <th style="width: 800px;">
-                order performance (preparation | pickup | Delivery)
-              </th>
-              <th style="width: 150px;">total time</th>
-              <th style="width: 160px;">status</th>
-            </tr>
-            <tr
-              class="deliverd-time-table"
-              v-for="(order, index) in orders"
-              :key="index"
-            >
-              <td>{{ order.order_no }}</td>
-              <td>{{ order.balance_due }}</td>
-              <td>
-                <span class="delivery-preptn">{{
-                  order.real_created_datetime.$date.$numberLong
-                }}</span>
-                <span class="delivery-pickup"
-                  >{{
-                    order.order.real_created_datetime.$date.$numberLong
-                  }}
-                  Pick</span
+  <tr
+    id="order_details_div-5bccbd789e1dba5c01539343"
+    class="OrderDetailscontainer_13126 detContainer"
+    style="display: none;"
+  >
+    <td colspan="12" class="OrderDetails_13126 detailsContainerStyle">
+      <div>
+        <div class="historyMainContainer show-table-delivered">
+          <table class="table">
+            <thead>
+              <tr>
+                <th><i class="fa fa-file"></i> Order Number</th>
+                <th><i class="fa fa-asterisk"></i> Amount</th>
+                <th style="width: 650px;">
+                  <i class="fa fa-road"></i> Order Performance (Preparation |
+                  Pickup | Delivery)
+                </th>
+                <th style="width: 200px;">
+                  <i class="fa fa-clock-o"></i> Total Time
+                </th>
+                <th><i class="fa fa-tag"></i> Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td
+                  class="showOrderContentsButton dashboardStyleLink"
+                  ng-click="getOrderDetail('5d1f3be31e1c405a066421e4')"
                 >
-                <span class="delivery-delivered"
-                  >{{
-                    order.order.real_created_datetime.$date.$numberLong
-                  }}
-                  Delivery</span
-                >
-              </td>
-              <td>{{ order.order.real_created_datetime.$date.$numberLong }}</td>
-              <td class="delivered-btn">
-                <span>{{ order.orderStatus }}</span>
-              </td>
-            </tr>
+                  <span id="5d1f3be31e1c405a066421e4">3946396 </span>
+                </td>
+                <td>28.99 AED</td>
+                <td class="perfTD">
+                  <div class="perfContainer perfContainer-span">
+                    <span class="perfContent prepData prepDataDelivered"
+                      >16 Hours 39 Minutes 36 Seconds Prep.</span
+                    >
+                    <span class="perfContent pickData pickDataDelivered"
+                      >08 Seconds Pick</span
+                    >
+                    <span class="perfContent deliData deliDataDelivered"
+                      >07 Seconds Delivery</span
+                    >
+                    <br clear="all" />
+                  </div>
+                </td>
+                <td class="">
+                  <div class="delManTime">
+                    16 Hours 39 Minutes 51 Seconds
+                  </div>
+                </td>
+                <td>
+                  <span
+                    class="label label-success label-block delManLabelStat Delivered text-center delivered-green-btn"
+                    >Delivered</span
+                  >
+                </td>
+              </tr>
 
-            <tr class="delivery-avg-delivery-time">
-              <td>
-                Total Deliveries :
-                <span class="total-delivery">{{ orders.order_no }}</span>
-              </td>
-              <td>
-                Total :
-                <span class="delivery-time-total">{{
-                  orders.balance_due
-                }}</span>
-              </td>
-              <td>
-                Average Delivery Time :
-                <span class="dm-avg-delivery-time">{{
-                  order.order.real_created_datetime.$date.$numberLong
-                }}</span>
-              </td>
-              <td></td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
+              <tr>
+                <td
+                  class="showOrderContentsButton dashboardStyleLink"
+                  ng-click="getOrderDetail('5d1f3501e30b892dd068f348')"
+                >
+                  <span id="5d1f3501e30b892dd068f348">3946240 </span>
+                </td>
+                <td>122.50 AED</td>
+                <td class="perfTD">
+                  <div class="perfContainer perfContainer-span">
+                    <span class="perfContent prepData prepDataDelivered"
+                      >17 Hours 09 Minutes Prep.</span
+                    >
+                    <span class="perfContent pickData pickDataDelivered"
+                      >08 Seconds Pick</span
+                    >
+                    <span class="perfContent deliData deliDataDelivered"
+                      >07 Seconds Delivery</span
+                    >
+                    <br clear="all" />
+                  </div>
+                </td>
+                <td class="">
+                  <div class="delManTime">
+                    17 Hours 09 Minutes 15 Seconds
+                  </div>
+                </td>
+                <td>
+                  <span
+                    class="label label-success label-block delManLabelStat Delivered text-center delivered-green-btn"
+                    >Delivered</span
+                  >
+                </td>
+              </tr>
+
+              <tr>
+                <td
+                  class="showOrderContentsButton dashboardStyleLink"
+                  ng-click="getOrderDetail('5d1f52a39660a83026045409')"
+                >
+                  <span id="5d1f52a39660a83026045409">3946794 </span>
+                </td>
+                <td>66.99 AED</td>
+                <td class="perfTD">
+                  <div class="perfContainer perfContainer-span">
+                    <span class="perfContent prepData prepDataDelivered"
+                      >16 Hours 05 Minutes 04 Seconds Prep.</span
+                    >
+                    <span class="perfContent pickData pickDataDelivered"
+                      >04 Seconds Pick</span
+                    >
+                    <span class="perfContent deliData deliDataDelivered"
+                      >04 Seconds Delivery</span
+                    >
+                    <br clear="all" />
+                  </div>
+                </td>
+                <td class="">
+                  <div class="delManTime">
+                    16 Hours 05 Minutes 12 Seconds
+                  </div>
+                </td>
+                <td>
+                  <span
+                    class="label label-success label-block delManLabelStat Delivered text-center delivered-green-btn"
+                    >Delivered</span
+                  >
+                </td>
+              </tr>
+
+              <tr>
+                <td
+                  class="showOrderContentsButton dashboardStyleLink"
+                  ng-click="getOrderDetail('5d1f918be30b892a29076862')"
+                >
+                  <span id="5d1f918be30b892a29076862">3948698 </span>
+                </td>
+                <td>53.50 AED</td>
+                <td class="perfTD">
+                  <div class="perfContainer perfContainer-span">
+                    <span class="perfContent prepData prepDataDelivered"
+                      >16 Hours 03 Minutes 41 Seconds Prep.</span
+                    >
+                    <span class="perfContent pickData pickDataDelivered"
+                      >06 Seconds Pick</span
+                    >
+                    <span class="perfContent deliData deliDataDelivered"
+                      >05 Seconds Delivery</span
+                    >
+                    <br clear="all" />
+                  </div>
+                </td>
+                <td class="">
+                  <div class="delManTime">
+                    16 Hours 03 Minutes 52 Seconds
+                  </div>
+                </td>
+                <td>
+                  <span
+                    class="label label-success label-block delManLabelStat Delivered text-center delivered-green-btn"
+                    >Delivered</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="driverSummary">
+            <div class="row-fluid">
+              <div class="span3 span-driver-one">
+                <span class="span-text-one">Total Deliveries:</span>
+                <br /><span class="driverSummaryTotal totalDelivery">4</span>
+              </div>
+              <div class="span3">
+                <span class="span-text-two">Total:</span> <br />
+                <span class="driverSummaryTotal">
+                  271.98 AED
+                </span>
+              </div>
+              <div class="span3 span-driver-three">
+                <span class="span-text-three">Average Delivery Time: </span>
+                <br /><span class="driverSummaryTotal">00:00:05</span>
+              </div>
+              <!-- <div class="span3">Average Time: <br><span class="driverSummaryTotal">Static minutes</span></div> -->
+            </div>
+          </div>
+          <div class="driverSummary">
+            <table></table>
+          </div>
+        </div>
       </div>
     </td>
   </tr>
