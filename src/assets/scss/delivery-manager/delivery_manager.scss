@@ -545,7 +545,7 @@ button.v-btn.v-btn--icon.theme--light {
 }
 
 div {
-  &#dm-new-order, &#dm-delivery-in-progress, &#dm-delivered {
+  &#dm-new-order, &#dm-delivery-in-progress {
     table {
       display: grid;
       grid-template-rows: auto 1fr auto;
@@ -1131,6 +1131,26 @@ div {
     }
     .modal-footer {
       justify-content: flex-end;
+    }
+  }
+}
+div{
+  &#dm-delivered{
+    padding: $px40 $px44;
+    table{
+      tr{
+        display: table-row;
+        th{
+          letter-spacing: 0.4px;
+          color: #a4a4a4;
+          font-size: $px12;
+          font-weight: normal;
+        }
+        td{
+          display: table-cell;
+          padding: $px12;
+        }
+      }
     }
   }
 }

@@ -379,19 +379,19 @@ button.v-btn.v-btn--icon.theme--light {
 .change-location > button {
   margin-right: 0.3125rem; }
 
-div#dm-new-order table, div#dm-delivery-in-progress table, div#dm-delivered table {
+div#dm-new-order table, div#dm-delivery-in-progress table {
   display: grid;
   grid-template-rows: auto 1fr auto; }
-div#dm-new-order thead, div#dm-delivery-in-progress thead, div#dm-delivered thead {
+div#dm-new-order thead, div#dm-delivery-in-progress thead {
   grid-row-start: 2;
   grid-row-end: 3; }
-div#dm-new-order tfoot, div#dm-delivery-in-progress tfoot, div#dm-delivered tfoot {
+div#dm-new-order tfoot, div#dm-delivery-in-progress tfoot {
   grid-row-start: 3;
   grid-row-end: 4;
   display: block;
   width: 100%;
   background: rgba(63, 74, 74, 0.6); }
-div#dm-new-order tbody, div#dm-delivery-in-progress tbody, div#dm-delivered tbody {
+div#dm-new-order tbody, div#dm-delivery-in-progress tbody {
   grid-row-start: 1;
   grid-row-end: 2;
   overflow: auto;
@@ -792,6 +792,19 @@ div#cancellationReason .modal-dialog {
     display: none; }
 div#cancellationReason .modal-footer {
   justify-content: flex-end; }
+
+div#dm-delivered {
+  padding: 2.5rem 2.75rem; }
+  div#dm-delivered table tr {
+    display: table-row; }
+    div#dm-delivered table tr th {
+      letter-spacing: 0.4px;
+      color: #a4a4a4;
+      font-size: 0.75rem;
+      font-weight: normal; }
+    div#dm-delivered table tr td {
+      display: table-cell;
+      padding: 0.75rem; }
 
 @media only screen and (max-width: 979px) {
   .page-header .current-time {
