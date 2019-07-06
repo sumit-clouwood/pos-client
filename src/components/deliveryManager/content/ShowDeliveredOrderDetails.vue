@@ -15,23 +15,29 @@
             </tr>
             <tr
               class="deliverd-time-table"
-              v-for="(order, index) in orders.driverOrders"
+              v-for="(order, index) in orders"
               :key="index"
             >
-              <td>{{ order.orderNumber }}</td>
-              <td>{{ order.orderAmount }}</td>
+              <td>{{ order.order_no }}</td>
+              <td>{{ order.balance_due }}</td>
               <td>
                 <span class="delivery-preptn">{{
-                  order.orderPreparationTimeDifference
+                  order.real_created_datetime.$date.$numberLong
                 }}</span>
                 <span class="delivery-pickup"
-                  >{{ order.orderPickupTimeDifference }} Pick</span
+                  >{{
+                    order.order.real_created_datetime.$date.$numberLong
+                  }}
+                  Pick</span
                 >
                 <span class="delivery-delivered"
-                  >{{ order.orderDeliveryTimeDifference }} Delivery</span
+                  >{{
+                    order.order.real_created_datetime.$date.$numberLong
+                  }}
+                  Delivery</span
                 >
               </td>
-              <td>{{ order.orderTotalTime }}</td>
+              <td>{{ order.order.real_created_datetime.$date.$numberLong }}</td>
               <td class="delivered-btn">
                 <span>{{ order.orderStatus }}</span>
               </td>
@@ -40,16 +46,18 @@
             <tr class="delivery-avg-delivery-time">
               <td>
                 Total Deliveries :
-                <span class="total-delivery">{{ orders.noOfOrders }}</span>
+                <span class="total-delivery">{{ orders.order_no }}</span>
               </td>
               <td>
                 Total :
-                <span class="delivery-time-total">{{ orders.orderSum }}</span>
+                <span class="delivery-time-total">{{
+                  orders.balance_due
+                }}</span>
               </td>
               <td>
                 Average Delivery Time :
                 <span class="dm-avg-delivery-time">{{
-                  orders.averageDeliveryTime
+                  order.order.real_created_datetime.$date.$numberLong
                 }}</span>
               </td>
               <td></td>
@@ -63,13 +71,14 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   name: 'ShowDeliveredOrderDetails',
   computed: {
-    ...mapState({
+    /*...mapState({
       orders: state => state.deliveryManager.moreOrders,
-    }),
+    }),*/
+    ...mapGetters('deliveryManager', ['orders']),
   },
 }
 </script>

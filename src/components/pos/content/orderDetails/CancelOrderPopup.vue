@@ -47,11 +47,7 @@
                   >
                 </div>
                 <p
-                  v-if="
-                    errors &&
-                      errors.cancel_reason &&
-                      errors.cancel_reason.length
-                  "
+                  v-if="errors && errors.cancel_reason.length"
                   class="text-danger"
                 >
                   {{ errors.cancel_reason }}
@@ -70,11 +66,7 @@
                   />
                 </div>
                 <p
-                  v-if="
-                    errors &&
-                      errors.supervisor_password &&
-                      errors.supervisor_password.length
-                  "
+                  v-if="errors && errors.supervisor_password.length"
                   class="text-danger"
                 >
                   {{ errors.supervisor_password.toString() }}
@@ -120,7 +112,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['cancellationReason', 'selectedOrder']),
+    ...mapState('order', ['cancellationReason', 'selectedOrder', 'errors']),
   },
   methods: {
     selectedReason: function(reason) {

@@ -100,10 +100,10 @@
       <DMItem :actionDetails="deliveredDetails" />
     </div>
     <div class="dm-ready-order-wrapper" id="dm-delivered">
-      <DMItem :actionDetails="delivered" />
+      <DMDeliveredItem />
+      <!--<DMItem :actionDetails="delivered" />-->
     </div>
     <OrderDetailsPopup />
-    <!--<DMDeliveredItem />-->
   </div>
 </template>
 
@@ -111,7 +111,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import DMHomeDeliverySubMenu from '@/components/deliveryManager/header/DMHomeDeliverySubMenu'
 import DMItem from '@/components/deliveryManager/content/DMItem'
-// import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredItem'
+import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredItem'
 import DMAssignedDriver from '@/components/deliveryManager/partial/DMAssignedDriver'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 
@@ -152,6 +152,7 @@ export default {
     DMHomeDeliverySubMenu,
     DMItem,
     OrderDetailsPopup,
+    DMDeliveredItem,
     DMAssignedDriver,
   },
   computed: {
