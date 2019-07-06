@@ -145,11 +145,15 @@ const actions = {
       response => {
         if (response.data.status == 'ok') {
           commit('REMOVE_FROM_DRIVER_BUCKET')
-          dispatch('order/updateOrderAction', {
-            orderStatus: 'ready',
-            collected: 'no',
-            pageId: 'home_delivery_pick',
-          })
+          dispatch(
+            'order/updateOrderAction',
+            {
+              orderStatus: 'ready',
+              collected: 'no',
+              pageId: 'home_delivery_pick',
+            },
+            { root: true }
+          )
         }
       }
     )
@@ -170,14 +174,15 @@ const actions = {
     })
   },
 
-  modifyOrder({ rootState, dispatch }) {
-    return dispatch(
-      'order/addDeliveryOrder',
-      rootState.order.selectedOrder.item,
-      {
-        root: true,
-      }
-    )
+  modifyOrder({ rootState, commit, dispatch }) {
+    //dont show customer selection popup for modification order, can add skip button on order form instead using below
+    commit('location/SET_MODAL', '#order-confirmation', { root: true })
+
+    //this order contains customer, order info so when needed you can use state.order.selectedOrder
+
+    return dispatch('order/addDeliveryOrder', rootState.order.selectedOrder, {
+      root: true,
+    })
   },
 }
 

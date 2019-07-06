@@ -3,7 +3,7 @@ import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 //import db from '@/services/network/DB'
 //import Crypt from '@/plugins/helpers/Crypt.js'
-import DateTime from '@/plugins/helpers/DateTime.js'
+import DateTime from '@/mixins/DateTime.js'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 
@@ -105,19 +105,35 @@ const actions = {
         if (
           rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER
         ) {
-          order.customer = rootState.customer.customerId
-          /*order.address_id = rootState.customer.address
-            ? rootState.customer.address.id
-            : null*/
-          const address = rootState.customer.address
-          // address.delivery_area
-          order.order_building = address.building
-          order.order_street = address.street
-          order.order_flat_number = address.flat_number
-          order.order_nearest_landmark = address.nearest_landmark
-          order.order_city = address.city
-          order.order_country = address.country
-          order.order_delivery_area = address.delivery_area_id
+          if (
+            rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
+          ) {
+            //order was modifying from delivery so no need to overwrite info
+            order.customer = rootState.order.selectedOrder.item.customer
+            order.order_building =
+              rootState.order.selectedOrder.item.order_building
+            order.order_street = rootState.order.selectedOrder.item.order_street
+            order.order_flat_number =
+              rootState.order.selectedOrder.item.order_flat_number
+            order.order_nearest_landmark =
+              rootState.order.selectedOrder.item.order_nearest_landmark
+            order.order_city = rootState.order.selectedOrder.item.order_city
+            order.order_country =
+              rootState.order.selectedOrder.item.order_country
+            order.order_delivery_area =
+              rootState.order.selectedOrder.item.order_delivery_area
+          } else {
+            order.customer = rootState.customer.customerId
+            const address = rootState.customer.address
+            // address.delivery_area
+            order.order_building = address.building
+            order.order_street = address.street
+            order.order_flat_number = address.flat_number
+            order.order_nearest_landmark = address.nearest_landmark
+            order.order_city = address.city
+            order.order_country = address.country
+            order.order_delivery_area = address.delivery_area_id
+          }
         }
 
         //ORDER SURCHARGES
@@ -409,7 +425,7 @@ const actions = {
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
       ) {
         let order = { ...state.order }
-        //order.modify_reason = 'Process order'
+        order.modify_reason = 'Item changed'
         order.new_real_transition_order_no = ''
         delete order.real_created_datetime
 
@@ -435,9 +451,20 @@ const actions = {
       response
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
-          dispatch('holdOrders/getHoldOrders', {}, { root: true })
 
           if (response.data.status === 'ok') {
+            //check what is order status, hold or modifying delivery
+            switch (rootState.order.orderStatus) {
+              case CONSTANTS.ORDER_STATUS_ON_HOLD:
+                commit(mutation.PRINT, true)
+                dispatch('holdOrders/getHoldOrders', {}, { root: true })
+                break
+              case CONSTANTS.ORDER_STATUS_IN_DELIVERY:
+                commit(mutation.PRINT, true)
+                break
+            }
+
+            //check action, either wants to modify or hold
             if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
               let msgStr = rootGetters['location/_t'](
                 'Order has been hold Successfully'
@@ -491,8 +518,6 @@ const actions = {
                   //invoice print is triggered by the success ok button
                 })
               })
-            } else {
-              commit(mutation.PRINT, true)
             }
 
             commit(
