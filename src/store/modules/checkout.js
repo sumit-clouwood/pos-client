@@ -404,16 +404,26 @@ const actions = {
     return new Promise((resolve, reject) => {
       let response = null
       //order.order is a hold order, state.order contains current order
-      if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+      if (
+        rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
+        rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
+      ) {
         let order = { ...state.order }
         //order.modify_reason = 'Process order'
         order.new_real_transition_order_no = ''
         delete order.real_created_datetime
 
+        let modifyType = ''
+
+        switch (rootState.order.orderStatus) {
+          case CONSTANTS.ORDER_STATUS_ON_HOLD:
+            modifyType = 'hold'
+        }
+
         response = OrderService.modifyOrder(
           order,
           rootState.order.orderId,
-          'hold'
+          modifyType
         )
       } else {
         response = OrderService.saveOrder(

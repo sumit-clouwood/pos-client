@@ -699,6 +699,7 @@ const actions = {
 
   addDeliveryOrder({ dispatch, commit }, order) {
     dispatch('addOrderToCart', order).then(() => {
+      commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_DELIVERY)
       commit(mutation.ORDER_TYPE, { OTview: 'Delivery', OTApi: 'call_center' })
     })
   },
