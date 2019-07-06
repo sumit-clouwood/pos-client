@@ -804,7 +804,40 @@ div#dm-delivered {
       font-weight: normal; }
     div#dm-delivered table tr td {
       display: table-cell;
-      padding: 0.75rem; }
+      padding: 0.75rem;
+      font-size: 0.875rem; }
+  div#dm-delivered table .perfContainer.perfContainer-span > span {
+    display: inline-block;
+    padding: 2px;
+    border-radius: 4px;
+    margin: 0;
+    color: #fff; }
+    div#dm-delivered table .perfContainer.perfContainer-span > span.prepData {
+      background: tomato;
+      border-top-right-radius: 0 !important;
+      border-bottom-right-radius: 0 !important; }
+    div#dm-delivered table .perfContainer.perfContainer-span > span.pickData {
+      background: #5056CA;
+      border-radius: 0 !important; }
+    div#dm-delivered table .perfContainer.perfContainer-span > span.deliData {
+      background: #62bb31;
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important; }
+  div#dm-delivered table .delivered-green-btn {
+    background: #5056CA;
+    display: inline-block;
+    padding: 0.125rem 0.3125rem;
+    border-radius: 4px;
+    color: #fff; }
+  div#dm-delivered table .driverSummary > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    background: #E3E7F2;
+    padding: 20px;
+    border-radius: 4px; }
+  div#dm-delivered table .historyMainContainer.show-table-delivered > table {
+    background: #F1F3F6;
+    margin: 0; }
 
 @media only screen and (max-width: 979px) {
   .page-header .current-time {
