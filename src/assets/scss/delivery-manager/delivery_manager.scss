@@ -1158,11 +1158,14 @@ div{
           color: $header-gray-light;
           font-size: $px12;
           font-weight: normal;
+          vertical-align: middle;
+          text-transform: uppercase;
         }
         td{
           display: table-cell;
           padding: $px12;
           font-size: $px14;
+          vertical-align: middle;
         }
       }
       .perfContainer.perfContainer-span > span {
@@ -1210,6 +1213,60 @@ div{
           margin: 0;
         }
       }
+    }
+  }
+}
+.all-driver-main-div {
+  .all-driver-dropdown {
+    .select-driver {
+      display: grid;
+      grid-gap: $px32;
+      grid-template-columns: $px200 1fr;
+      padding-bottom: $px25;
+      .average-time {
+        span {
+          font-size: $px12;
+        }
+        p {
+          font-size: $px12;
+        }
+      }
+      .delivered-driver{
+        position: relative;
+         button{
+          font-size: $px14;
+          text-align: left;
+        }
+        .dropdown-menu{
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+ul.dropdown-menu.show {
+  padding: 0;
+  background: $gray-light;
+  li{
+    &:hover{
+      background: $gray-middle;
+    }
+    a{
+      font-size: $px14;
+      color: $black;
+      padding: $px5 $px20;
+
+    }
+  }
+}
+div#home-delivery-order {
+  overflow: auto;
+}
+tr.dataContentStyle{
+  > td{
+    > a{
+      padding: $px5;
+      font-size: $px10;
     }
   }
 }
@@ -1280,12 +1337,6 @@ div{
       margin-right: $px5;
     }
   }
-  .dm-btn-wrap{
-    grid-template-columns: 1fr;
-    margin-left: $px24;
-    margin-right: $px24;
-    margin-top: $px10;
-  }
   .dm-order-details-wrap{
     margin-left: $px24;
     margin-right: $px24;
@@ -1317,7 +1368,9 @@ div{
         }
     }
   }
-
+  div#dm-waiting-for-pick{
+    height: calc(100vh - 27rem);
+  }
 }
 @media only screen and (max-width: 599px){
   .with-drivers-filter {
@@ -1334,6 +1387,21 @@ div{
   section{
     &.with-drivers-filter{
       grid-template-columns: 1fr;
+    }
+  }
+  .dm-btn-wrap{
+    grid-template-columns: 1fr;
+    margin-left: $px24;
+    margin-right: $px24;
+    margin-top: $px10;
+  }
+}
+@media only screen and (max-width: 479px) {
+  .all-driver-main-div {
+    .all-driver-dropdown {
+      .select-driver {
+        grid-template-columns: 1fr;
+      }
     }
   }
 }

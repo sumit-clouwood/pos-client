@@ -5,7 +5,7 @@
     <div class="all-driver-main-div">
       <div class="clearfix all-driver-dropdown">
         <div class="select-driver" v-if="drivers">
-          <div>
+          <div class="delivered-driver">
             <button
               type="button"
               class="btn dropdown-toggle input-search-driver"
@@ -53,7 +53,7 @@
           <th>{{ _t('CREDIT AMOUNT') }}</th>
           <th>{{ _t('AMOUNT TO COLLECT') }}</th>
           <th>{{ _t('AVERAGE DELIVERY TIME') }}</th>
-          <th>&nbsp;</th>
+          <th style="width:215px">&nbsp;</th>
         </tr>
       </thead>
       <tbody>
@@ -94,8 +94,8 @@
               <span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="13"
+                  width="13"
+                  height="7"
                   viewBox="0 0 20 13"
                 >
                   <g fill="#fff" fill-rule="nonzero">
@@ -241,20 +241,3 @@ export default {
   },
 }
 </script>
-<style scoped lang="css">
-.select-driver {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 20px;
-}
-.all-driver-dropdown{
-    width: 30%;
-    padding-bottom: 21px;
-}
-.average-time {
-    letter-spacing: 0.4px;
-    color: #a4a4a4;
-    font-size: 10px;
-    font-weight: normal;
-}
-</style>
