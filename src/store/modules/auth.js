@@ -6,10 +6,15 @@ const state = {
   token: null,
   deviceId: null,
   refreshToken: null,
+  rolePermissions: null,
 }
 
 // getters
-const getters = {}
+const getters = {
+  getRole: state => startPath => {
+    return state.rolePermissions.find(user => user.start_path === startPath)
+  },
+}
 
 // actions
 const actions = {
@@ -21,6 +26,9 @@ const actions = {
             reject(response.data.error)
             return false
           }
+          AuthService.getRoles().then(rolesPermissions => {
+            commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
+          })
           commit(mutation.SET_TOKEN, response.data.token)
           commit(mutation.SET_DEVICE_CODE, deviceId)
           resolve(response)
@@ -41,6 +49,9 @@ const mutations = {
   },
   [mutation.SET_DEVICE_CODE](state, code) {
     state.deviceId = code
+  },
+  [mutation.SET_ROLE_DETAILS](state, rolePermissions) {
+    state.rolePermissions = rolePermissions
   },
 }
 

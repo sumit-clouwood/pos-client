@@ -49,17 +49,14 @@ const actions = {
       dispatch('getDrivers')
     })
   },
-  getDrivers({ commit }) {
-    DMService.getRoles().then(response => {
-      const role = response.data.data.find(
-        user => user.start_path === 'delivery_home'
-      )
-      if (role) {
-        DMService.getUsers(role._id).then(response => {
-          commit(mutation.DRIVERS, response.data.data)
-        })
-      }
-    })
+  getDrivers({ commit, rootGetters }) {
+    // pass start_path
+    let role = rootGetters['auth/getRole']('delivery_home')
+    if (role) {
+      DMService.getUsers(role._id).then(response => {
+        commit(mutation.DRIVERS, response.data.data)
+      })
+    }
   },
 
   fetchStoreOrders({ commit, dispatch }, storeId) {

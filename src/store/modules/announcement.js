@@ -6,11 +6,14 @@ const state = {
 }
 
 const actions = {
-  fetchAll: function({ commit }) {
+  fetchAll: function({ commit, rootGetters }) {
     // const params = [rootState.auth.userDetails._id, rootState.sync.date]
-    AnnouncementService.fetchAll().then(response => {
-      commit(mutation.SET_ANNOUNCEMENT, response.data.data)
-    })
+    let role = rootGetters['auth/getRole']('pos')
+    if (role) {
+      AnnouncementService.fetchAll(role._id).then(response => {
+        commit(mutation.SET_ANNOUNCEMENT, response.data.data)
+      })
+    }
   },
 }
 
@@ -23,10 +26,8 @@ const mutations = {
       announcements.forEach(announcement => {
         announcementsList =
           announcementsList != ''
-            ? announcementsList +
-              '  |  ' +
-              announcement.announcement.toUpperCase()
-            : announcement.announcement.toUpperCase()
+            ? announcementsList + '  |  ' + announcement.announcement
+            : announcement.announcement
       })
       state.announcements = announcementsList
     }

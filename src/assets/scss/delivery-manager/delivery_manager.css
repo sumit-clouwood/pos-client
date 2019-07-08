@@ -807,11 +807,14 @@ div#dm-delivered {
       letter-spacing: 0.4px;
       color: #a4a4a4;
       font-size: 0.75rem;
-      font-weight: normal; }
+      font-weight: normal;
+      vertical-align: middle;
+      text-transform: uppercase; }
     div#dm-delivered table tr td {
       display: table-cell;
       padding: 0.75rem;
-      font-size: 0.875rem; }
+      font-size: 0.875rem;
+      vertical-align: middle; }
   div#dm-delivered table .perfContainer.perfContainer-span > span {
     display: inline-block;
     padding: 0.125rem;
@@ -844,6 +847,40 @@ div#dm-delivered {
   div#dm-delivered table .historyMainContainer.show-table-delivered > table {
     background: #F1F3F6;
     margin: 0; }
+
+.all-driver-main-div .all-driver-dropdown .select-driver {
+  display: grid;
+  grid-gap: 2rem;
+  grid-template-columns: 12.5rem 1fr;
+  padding-bottom: 1.5625rem; }
+  .all-driver-main-div .all-driver-dropdown .select-driver .average-time span {
+    font-size: 0.75rem; }
+  .all-driver-main-div .all-driver-dropdown .select-driver .average-time p {
+    font-size: 0.75rem; }
+  .all-driver-main-div .all-driver-dropdown .select-driver .delivered-driver {
+    position: relative; }
+    .all-driver-main-div .all-driver-dropdown .select-driver .delivered-driver button {
+      font-size: 0.875rem;
+      text-align: left; }
+    .all-driver-main-div .all-driver-dropdown .select-driver .delivered-driver .dropdown-menu {
+      width: 100%; }
+
+ul.dropdown-menu.show {
+  padding: 0;
+  background: #eee; }
+  ul.dropdown-menu.show li:hover {
+    background: #ddd; }
+  ul.dropdown-menu.show li a {
+    font-size: 0.875rem;
+    color: #000;
+    padding: 0.3125rem 1.25rem; }
+
+div#home-delivery-order {
+  overflow: auto; }
+
+tr.dataContentStyle > td > a {
+  padding: 0.3125rem;
+  font-size: 0.625rem; }
 
 @media only screen and (max-width: 991px) {
   .top-menu-container .top-menu-icon {
@@ -897,12 +934,6 @@ div#dm-delivered {
     padding: 0.3125rem;
     margin-right: 0.3125rem; }
 
-  .dm-btn-wrap {
-    grid-template-columns: 1fr;
-    margin-left: 1.5rem;
-    margin-right: 1.5rem;
-    margin-top: 0.625rem; }
-
   .dm-order-details-wrap {
     margin-left: 1.5rem;
     margin-right: 1.5rem; }
@@ -921,7 +952,10 @@ div#dm-delivered {
       grid-template-columns: 1fr !important;
       padding: 1.5rem !important; }
       div.dm-ready-order-wrapper tbody tr td {
-        display: block; } }
+        display: block; }
+
+  div#dm-waiting-for-pick {
+    height: calc(100vh - 27rem); } }
 @media only screen and (max-width: 599px) {
   .with-drivers-filter .drivers-filter {
     overflow: auto;
@@ -933,6 +967,15 @@ div#dm-delivered {
     background: #fff; }
 
   section.with-drivers-filter {
+    grid-template-columns: 1fr; }
+
+  .dm-btn-wrap {
+    grid-template-columns: 1fr;
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+    margin-top: 0.625rem; } }
+@media only screen and (max-width: 479px) {
+  .all-driver-main-div .all-driver-dropdown .select-driver {
     grid-template-columns: 1fr; } }
 /*# sourceMappingURL=deliveryManager.css.map */
 
