@@ -4,7 +4,7 @@
   >
     <div class="all-driver-main-div">
       <div class="clearfix all-driver-dropdown">
-        <div class="select-driver" v-if="driverList">
+        <div class="select-driver" v-if="drivers">
           <div>
             <button
               type="button"
@@ -14,7 +14,7 @@
               {{ _t('Select Driver') }}
             </button>
             <ul class="dropdown-menu">
-              <li v-for="(driver, index) in driverList" :key="index">
+              <li v-for="(driver, index) in drivers" :key="index">
                 <a href="javascript:void(0)" @click="selectedDriver(driver)">{{
                   driver.name
                 }}</a>
