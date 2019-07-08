@@ -7,6 +7,16 @@
       </div>
     </div>
     <div class="button-block">
+      <div class="top-menu-container">
+        <div class="top-menu-icon" @click="showLeftMenu()">
+          <svg id="nav_menu_icon" viewBox="0 0 140 140">
+            <path
+              class="fil0"
+              d="M15.5 1c8.01,0 14.5,6.49 14.5,14.5 0,8.01 -6.49,14.5 -14.5,14.5 -8.01,0 -14.5,-6.49 -14.5,-14.5 0,-8.01 6.49,-14.5 14.5,-14.5zm109 0c8.01,0 14.5,6.49 14.5,14.5 0,8.01 -6.49,14.5 -14.5,14.5 -8.01,0 -14.5,-6.49 -14.5,-14.5 0,-8.01 6.49,-14.5 14.5,-14.5zm0 109c8.01,0 14.5,6.49 14.5,14.5 0,8.01 -6.49,14.5 -14.5,14.5 -8.01,0 -14.5,-6.49 -14.5,-14.5 0,-8.01 6.49,-14.5 14.5,-14.5zm-109 0c8.01,0 14.5,6.49 14.5,14.5 0,8.01 -6.49,14.5 -14.5,14.5 -8.01,0 -14.5,-6.49 -14.5,-14.5 0,-8.01 6.49,-14.5 14.5,-14.5zm54 -109c8.01,0 14.5,6.49 14.5,14.5 0,8.01 -6.49,14.5 -14.5,14.5 -8.01,0 -14.5,-6.49 -14.5,-14.5 0,-8.01 6.49,-14.5 14.5,-14.5zm0 109c8.01,0 14.5,6.49 14.5,14.5 0,8.01 -6.49,14.5 -14.5,14.5 -8.01,0 -14.5,-6.49 -14.5,-14.5 0,-8.01 6.49,-14.5 14.5,-14.5zm0 -55c8.01,0 14.5,6.49 14.5,14.5 0,8.01 -6.49,14.5 -14.5,14.5 -8.01,0 -14.5,-6.49 -14.5,-14.5 0,-8.01 6.49,-14.5 14.5,-14.5zm-54 0c8.01,0 14.5,6.49 14.5,14.5 0,8.01 -6.49,14.5 -14.5,14.5 -8.01,0 -14.5,-6.49 -14.5,-14.5 0,-8.01 6.49,-14.5 14.5,-14.5zm108.84 -0.44c8.01,0 14.5,6.49 14.5,14.5 0,8.01 -6.49,14.5 -14.5,14.5 -8,0 -14.5,-6.49 -14.5,-14.5 0,-8.01 6.5,-14.5 14.5,-14.5z"
+            ></path>
+          </svg>
+        </div>
+      </div>
       <div class="change-location">
         <button class="btn btn-success">Change Brand</button>
         <button class="btn btn-success walkin-btn">
@@ -44,7 +54,8 @@
 </template>
 
 <script>
-/* eslint-disable no-console */
+/* eslint-disable no-console  */
+/* global $ */
 import moment from 'moment-timezone'
 import { mapGetters, mapState } from 'vuex'
 import bootstrap from '@/bootstrap'
@@ -66,6 +77,12 @@ export default {
     changeLanguage(locale) {
       bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
+    },
+    showLeftMenu() {
+      let navigation = $('.navigation')
+      navigation.toggleClass('active')
+      navigation.css('left', '-999px')
+      $('.navigation.active').css('left', 0)
     },
   },
   data() {

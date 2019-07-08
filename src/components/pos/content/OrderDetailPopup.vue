@@ -63,7 +63,11 @@
               </div>
             </div>
           </button>
-          <button type="button" class="button text-button btn btn-success">
+          <button
+            type="button"
+            class="button text-button btn btn-success"
+            @click="modifyOrder"
+          >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
               <div class="button-caption">
@@ -142,6 +146,11 @@ export default {
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
+    modifyOrder() {
+      this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
+        this.$router.push({ path: this.$store.getters['context/store'] })
+      })
+    },
   },
 }
 </script>
