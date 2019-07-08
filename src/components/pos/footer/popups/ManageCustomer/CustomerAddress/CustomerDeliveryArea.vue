@@ -80,8 +80,8 @@ export default {
       address.delivery_area = this.getDeliveryArea(address.delivery_area_id)
       this.activeIndex = index
       this.selectedAddress(address)
-      if (this.msg && this.msg.data.length > 0) {
-        this.msg.data = ''
+      if (this.msg && this.msg.message.length > 0) {
+        this.msg.message = ''
       }
     },
     ...mapActions('customer', ['selectedAddress']),

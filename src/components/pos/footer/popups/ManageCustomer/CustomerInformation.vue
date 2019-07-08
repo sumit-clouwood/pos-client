@@ -98,7 +98,7 @@ export default {
   methods: {
     updateModalSelection(modalName, subjectName) {
       this.updateModalSelectionDelivery(modalName)
-      if (this.msg.data.length > 0) {
+      if (this.msg.message.length > 0) {
         $('#payment-msg').modal('show')
       } else {
         $(subjectName).modal('hide')

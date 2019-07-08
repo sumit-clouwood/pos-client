@@ -11,7 +11,7 @@
 import Pos from '@/components/Pos.vue'
 import Location from '@/components/Location.vue'
 import { mapState } from 'vuex'
-// import BrandColor from '@/plugins/helpers/BrandColor'
+import BrandColor from '@/plugins/helpers/BrandColor'
 
 export default {
   name: 'home',
@@ -27,7 +27,7 @@ export default {
     let getBody = $('body')
     getBody.removeAttr('class')
     getBody.attr('class', 'fixed-nav sticky-footer')
-    // BrandColor.applyDynamicRules(this.brand)
+    BrandColor.applyDynamicRules(this.brand)
   },
 }
 </script>

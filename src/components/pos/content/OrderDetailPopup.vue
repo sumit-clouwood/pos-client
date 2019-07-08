@@ -28,7 +28,7 @@
             <div class="v-menu__activator">
               <div class="dropdown">
                 <button
-                  class="button btn btn-success dropdown-toggle"
+                  class="button btn btn-success color-main color-text-invert dropdown-toggle"
                   type="button"
                   id="dropdownMenuButton"
                   data-toggle="dropdown"
@@ -52,7 +52,7 @@
           </div>
           <button
             type="button"
-            class="button text-button btn btn-success"
+            class="button text-button btn btn-success color-main color-text-invert"
             data-toggle="modal"
             data-target=".cancel-order"
           >
@@ -65,7 +65,7 @@
           </button>
           <button
             type="button"
-            class="button text-button btn btn-success"
+            class="button text-button btn btn-success color-main color-text-invert"
             @click="modifyOrder"
           >
             <div class="button-content-container">
@@ -77,7 +77,7 @@
           </button>
           <button
             type="button"
-            class="button past-order-buttons btn btn-success"
+            class="button past-order-buttons btn btn-success color-main color-text-invert"
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
@@ -93,7 +93,7 @@
           </button>
           <button
             type="button"
-            class="button btn btn-danger"
+            class="button btn btn-danger color-button color-text-invert"
             data-dismiss="modal"
           >
             <div class="button-content-container">
