@@ -22,11 +22,11 @@
       <tbody>
         <tr class="dataContentStyle" v-for="order in orders" :key="order._id">
           <td class="driverNameContainer showMore">
-            {{ driverName(order.driver) }}
+            {{ driverName(order) }}
           </td>
-          <td>{{ ordersDelivered(order.driver) }}</td>
+          <td>{{ ordersDelivered }}</td>
           <td>Bar</td>
-          <td>271.98</td>
+          <td>{{ orderTotalAmount }}</td>
           <td>271.98</td>
           <td>0</td>
           <td id="driverInHandAmount">271.98</td>
@@ -105,6 +105,10 @@ export default {
   },
   data() {
     return {
+      order: {},
+      ordersDelivered: 0,
+      orderTotalAmount: 0,
+      orderCashAmount: 0,
       updateId: String,
     }
   },
@@ -112,23 +116,37 @@ export default {
     ShowDeliveredOrderDetails,
   },
   methods: {
-    driverName(id) {
+    driverName(order) {
+      this.order = order
       const driver = this.$store.state.deliveryManager.drivers.find(
-        driver => driver._id == id
+        driver => driver._id == this.order.driver
       )
+
+      this.ordersDelivered = 0
+      this.orderTotalAmount = 0
+      this.orderCashAmount = 0
+
+      this.$store.state.deliveryManager.orders.forEach(order => {
+        if (order.driver == this.order.driver) {
+          this.ordersDelivered++
+          this.orderTotalAmount += order.balance_due
+          // this.orderCashAmount += order.order_payments(
+          //   payment => payment.type == 'regular'
+          // )
+        }
+      })
+
+      this.orderTotalAmount = this.$store.getters['location/formatPrice'](
+        this.orderTotalAmount
+      )
+      // this.orderCashAmount = this.$store.getters['location/formatPrice'](
+      //   this.orderCashAmount
+      // )
       if (driver) {
         return driver.name
       }
     },
 
-    ordersDelivered(id) {
-      let orders = this.$store.state.deliveryManager.orders.filter(
-        order => order.driver == id
-      )
-      if (orders) {
-        return orders.length
-      }
-    },
     selectedDriver: function(driver) {
       this.waitingOrder.action = driver.name
       this.waitingOrder.driverId = driver._id
