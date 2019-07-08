@@ -25,11 +25,96 @@ const state = {
     totalPages: 0,
     pageId: 'home_delivery_new',
   },
-  drivers: false,
+  drivers: [],
   driverBucket: [],
+  driver: null,
 }
 const getters = {
   orders: state => state.orders.filter(order => order.deleted === false),
+  currentDriverOrders: (state, getters) => {
+    if (state.driver) return getters['getOrdersByDriver'](state.driver)
+    return []
+  },
+  driverOrders: (state, getters) => {
+    let orders = {}
+    state.drivers.forEach(driver => {
+      orders[driver.name] = getters['getOrdersByDriver'](driver)
+    })
+    return orders
+  },
+  getOrdersByDriver: (state, getters, rootState, rootGetters) => driver => {
+    const cashMethod = rootGetters['payment/methods'].find(
+      method => method.type == 'regular'
+    )
+
+    let data = {
+      orders: [],
+      amountToCollect: 0,
+      totalAmount: 0,
+      cashPayment: 0,
+      creditPayment: 0,
+      totalDeliveryTime: 0,
+      driverId: driver._id,
+    }
+    state.orders.forEach(order => {
+      if (order.driver == driver._id) {
+        data.orders.push(order)
+        data.amountToCollect += parseFloat(order.balance_due)
+        order.order_payments.forEach(payment => {
+          data.totalAmount += parseFloat(payment.collected)
+          if (cashMethod._id == payment.entity_id) {
+            data.cashPayment += parseFloat(payment.collected)
+          } else {
+            data.creditPayment += parseFloat(payment.collected)
+          }
+        })
+        //delivery time, start to end
+        order.order_history.forEach(history => {
+          if (history.name == 'ORDER_HISTORY_TYPE_RECORD_DELIVERED') {
+            order.deliveryEndTime = history.created_at
+          } else if (
+            history.name == 'ORDER_HISTORY_TYPE_RECORD_DELIVERY_STARTED'
+          ) {
+            order.deliveryStartTime = history.created_at
+          } else if (history.name == 'ORDER_HISTORY_TYPE_RECORD_READY') {
+            order.deliveryReadyTime = history.created_at
+          } else {
+            order.deliveryPlacedTime = history.created_at
+          }
+        })
+
+        data.totalDeliveryTime +=
+          parseInt(order.deliveryEndTime.$date.$numberLong) -
+          parseInt(order.deliveryStartTime.$date.$numberLong)
+      }
+    })
+    return data
+  },
+  avgTime: () => driverOrders => {
+    //end : 1562223526836 , start : 1562223510206
+    const miliseconds =
+      driverOrders.totalDeliveryTime / driverOrders.orders.length
+    if (!miliseconds) return '00:00:00'
+    return new Date(miliseconds).toISOString().substr(11, 8)
+  },
+
+  timeDiff: () => (time1, time2) => {
+    var time = new Date(time2.$date.$numberLong - time1.$date.$numberLong)
+      .toISOString()
+      .substr(11, 8)
+      .split(':')
+
+    let str = ''
+    if (parseInt(time[0]) > 0) {
+      str += time[0] + ' Hours '
+    }
+    if (parseInt(time[1]) > 0) {
+      str += time[1] + ' Minutes '
+    }
+
+    str += time[2] + ' Seconds '
+    return str
+  },
 }
 
 const actions = {
@@ -44,14 +129,16 @@ const actions = {
       state.params.pageId,
       state.selectedStores,
     ]
+
     DMService.getDMOrderDetails(...params).then(response => {
       commit(mutation.SET_DM_ORDERS, response.data)
       dispatch('getDrivers')
     })
   },
+
   getDrivers({ commit, rootGetters }) {
-    // pass start_path
     let role = rootGetters['auth/getRole']('delivery_home')
+
     if (role) {
       DMService.getUsers(role._id).then(response => {
         commit(mutation.DRIVERS, response.data.data)
@@ -181,6 +268,14 @@ const actions = {
       root: true,
     })
   },
+
+  showDriverOrders({ commit }, driverId) {
+    commit(
+      mutation.SET_DRIVER,
+      state.drivers.find(driver => driver._id == driverId)
+    )
+    //set driver to null if you don't need to show the details
+  },
 }
 
 const mutations = {
@@ -248,6 +343,9 @@ const mutations = {
   [mutation.ADD_TO_DRIVER_BUCKET](state, order) {
     state.driverBucket.push(order)
     // $('#past-order').modal('toggle')
+  },
+  [mutation.SET_DRIVER](state, driver) {
+    state.driver = driver
   },
   [mutation.REMOVE_FROM_DRIVER_BUCKET](state, orderId) {
     let bucket = []

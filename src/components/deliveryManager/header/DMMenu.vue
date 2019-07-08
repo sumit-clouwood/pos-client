@@ -28,18 +28,18 @@
       </button>
     </div>
 
-    <Branches />
+    <!-- <Branches /> -->
   </div>
 </template>
 
 <script>
-import Branches from '@/components/deliveryManager/partial/Branches'
+// import Branches from '@/components/deliveryManager/partial/Branches'
 import { mapActions } from 'vuex'
 
 export default {
   name: 'DMMenu',
   components: {
-    Branches,
+    // Branches,
   },
   methods: {
     ...mapActions('deliveryManager', ['updateDMOrderStatus']),
