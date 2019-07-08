@@ -84,7 +84,7 @@ const actions = {
             total_discount: Num.round(
               rootGetters['discount/orderDiscountWithoutTax']
             ),
-            print_count: 1,
+            print_count: 0,
             amount_changed: Num.round(state.changedAmount),
             order_building: '',
             order_street: '',
@@ -325,7 +325,7 @@ const actions = {
           let paymentPart = {
             entity_id: payment.method._id,
             name: payment.method.name,
-            collected: orderaAmount,
+            collected: isNaN(orderaAmount) ? 0 : orderaAmount,
             param1: payment.cardId,
             param2: orderPoints,
             param3: payment.code,
