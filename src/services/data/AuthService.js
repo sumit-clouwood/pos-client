@@ -36,4 +36,7 @@ export default {
       }
     })
   },
+  getRoles() {
+    return DataService.get('/model/brand_roles?no_limit=true')
+  },
 }

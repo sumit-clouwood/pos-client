@@ -85,8 +85,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-.loading {
-  padding: 30px;
-}
-</style>
