@@ -1,27 +1,25 @@
 <template>
-  <div class="food-menu color-dashboard-background">
-    <div v-if="items.length">
-      <div
-        :class="{
-          'food-menu-item': true,
-          ' color-dashboard-background': item.image != '',
-        }"
-        :style="{ background: item.image == '' ? item.item_color : '' }"
-        v-for="item in items"
-        :key="item._id"
-        @click.prevent="addToOrder(item)"
-      >
-        <img
-          v-if="item.image != ''"
-          class="food-menu-item-img"
-          :src="item.image"
-          :alt="dt(item)"
-          @error="imageLoadError()"
-        />
-        <div class="food-menu-item-text color-text">{{ dt(item) }}</div>
-      </div>
-      <Popup />
+  <div class="food-menu color-dashboard-background" v-if="items.length">
+    <div
+      :class="{
+        'food-menu-item': true,
+        ' color-dashboard-background': item.image != '',
+      }"
+      :style="{ background: item.image == '' ? item.item_color : '' }"
+      v-for="item in items"
+      :key="item._id"
+      @click.prevent="addToOrder(item)"
+    >
+      <img
+        v-if="item.image != ''"
+        class="food-menu-item-img"
+        :src="item.image"
+        :alt="dt(item)"
+        @error="imageLoadError()"
+      />
+      <div class="food-menu-item-text color-text">{{ dt(item) }}</div>
     </div>
+    <Popup />
   </div>
 </template>
 
