@@ -425,7 +425,6 @@ const actions = {
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
       ) {
         let order = { ...state.order }
-        order.modify_reason = 'Item changed'
         order.new_real_transition_order_no = ''
         delete order.real_created_datetime
 
@@ -434,6 +433,10 @@ const actions = {
         switch (rootState.order.orderStatus) {
           case CONSTANTS.ORDER_STATUS_ON_HOLD:
             modifyType = 'hold'
+            break
+          case CONSTANTS.ORDER_STATUS_IN_DELIVERY:
+            order.modify_reason = 'Item changed'
+            break
         }
 
         response = OrderService.modifyOrder(

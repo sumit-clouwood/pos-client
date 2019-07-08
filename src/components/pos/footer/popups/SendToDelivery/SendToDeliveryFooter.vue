@@ -18,6 +18,7 @@
       <div class="dropdown-menu" v-if="getReferrals">
         <a
           class="dropdown-item color-text"
+          :class="{ active: referral._id === orderReferralId }"
           data-value="Call Center"
           href="javascript:void(0)"
           v-for="referral in getReferrals"
@@ -106,6 +107,13 @@ export default {
     }
   },
   computed: {
+    orderReferralId() {
+      const order = this.$store.state.order.selectedOrder
+      if (order) {
+        return order.item.referral
+      }
+      return false
+    },
     ...mapState({
       getReferrals: state => state.location.referrals,
     }),
