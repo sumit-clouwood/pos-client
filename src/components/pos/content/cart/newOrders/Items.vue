@@ -20,7 +20,8 @@
         </div>
       </div>
       <div class="main-orders-list-item-subtitle color-text-invert">
-        @ {{ Num.round(item.undiscountedNetPrice) }} x {{ item.quantity }}
+        @ {{ Num.round(item.undiscountedGrossPrice).toFixed(2) }} x
+        {{ item.quantity }}
         {{ discountInfo(item) }}
       </div>
       <div class="main-orders-list-item-buttons">

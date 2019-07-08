@@ -58,7 +58,7 @@ const getters = {
   },
 
   itemPrice: () => item => {
-    return item.quantity * item.netPrice
+    return item.quantity * item.grossPrice
   },
 
   orderModifiers: () => item => {
