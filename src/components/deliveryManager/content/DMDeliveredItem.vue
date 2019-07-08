@@ -7,6 +7,10 @@
         <tr>
           <th>{{ _t('DRIVER NAME') }}</th>
           <th>{{ _t('TOTAL DELIVERED') }}</th>
+          <th>
+            {{ _t('Order Performance') }} ({{ _t('Preparation') }} |
+            {{ _t('Pickup') }} | {{ _t('Delivery') }})
+          </th>
           <th>{{ _t('TOTAL AMOUNT') }}</th>
           <th>{{ _t('CASH AMOUNT') }}</th>
           <th>{{ _t('CREDIT AMOUNT') }}</th>
@@ -18,9 +22,10 @@
       <tbody>
         <tr class="dataContentStyle" v-for="order in orders" :key="order._id">
           <td class="driverNameContainer showMore">
-            {{ order.driver }}
+            {{ driverName(order.driver) }}
           </td>
-          <td>4</td>
+          <td>{{ ordersDelivered(order.driver) }}</td>
+          <td>Bar</td>
           <td>271.98</td>
           <td>271.98</td>
           <td>0</td>
@@ -94,9 +99,7 @@ export default {
     ...mapState({
       orderDetails: state => state.deliveryManager.orders,
     }),
-    ...mapState({
-      driverList: state => state.deliveryManager.drivers,
-    }),
+    ...mapState('deliveryManager', ['drivers']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('deliveryManager', ['orders']),
   },
@@ -109,6 +112,23 @@ export default {
     ShowDeliveredOrderDetails,
   },
   methods: {
+    driverName(id) {
+      const driver = this.$store.state.deliveryManager.drivers.find(
+        driver => driver._id == id
+      )
+      if (driver) {
+        return driver.name
+      }
+    },
+
+    ordersDelivered(id) {
+      let orders = this.$store.state.deliveryManager.orders.filter(
+        order => order.driver == id
+      )
+      if (orders) {
+        return orders.length
+      }
+    },
     selectedDriver: function(driver) {
       this.waitingOrder.action = driver.name
       this.waitingOrder.driverId = driver._id
