@@ -64,7 +64,6 @@ export default {
       storeName: state => state.location.store.name,
     }),
     ...mapState('checkoutForm', ['msg']),
-
     /*...mapState({
       country: state =>
         state.location.locationData
