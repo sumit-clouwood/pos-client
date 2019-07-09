@@ -86,24 +86,24 @@
                 id="open-collect-money-modal"
                 href="javascript:void(0)"
                 class="btn btn-success btn-large collect-driver-money-btn"
-                driver-id="5bccbd789e1dba5c01539343"
+                :driver-id="deliveryDriver"
                 total-orders="4"
                 cash="271.98"
                 ><i class="fa fa-refresh fa"></i> {{ _t('Collect Money') }}</a
               >
               &nbsp;
               <a
-                id="refresh_data-5bccbd789e1dba5c01539343"
+                :id="'refresh_data-' + driOrders.driverId"
                 href=""
                 class="btn btn-success btn-large btnRefreshDetails btn-data-refresh"
                 style="display: none;"
                 ><i class="fa fa-refresh fa"></i> {{ _t('Refresh Data') }}</a
               >&nbsp;
               <a
-                id="driver_details-5bccbd789e1dba5c01539343"
-                href="javascript:;"
+                :id="'driver_details-' + driOrders.driverId"
+                href="javascript:void(0)"
                 class="btn btn-info btn-large btnShowDetails btn-show-details-delivered"
-                @click="showDriverOrders(driOrders.driverId)"
+                @click="showOrders(driOrders.driverId)"
               >
                 <span>
                   <svg
@@ -125,8 +125,8 @@
                 {{ _t('Show Details') }}</a
               >
               <a
-                id="driver_details_hide-5bccbd789e1dba5c01539343"
-                href="javascript:;"
+                :id="'driver_details_hide-' + driOrders.driverId"
+                href="javascript:void(0)"
                 class="btn btn-info btn-large btnShowDetails btn-show-details"
                 style="display: none;"
                 >{{ _t('Hide') }}</a
@@ -237,6 +237,11 @@ export default {
     toggleMe: function(Id) {
       this.updateId = Id
     },
+
+    showOrders: function(driverId) {
+      this.showDriverOrders(driverId)
+    },
+
     ...mapActions('deliveryManager', [
       'selectDriver',
       'showMoreOrders',

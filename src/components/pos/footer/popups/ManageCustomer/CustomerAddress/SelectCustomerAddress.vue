@@ -10,7 +10,8 @@
             {{ _t('Add to Order') }}
           </h4>
         </div>
-        <div class="modal-body add-to-order">
+        <Preloader v-if="customerLoading" />
+        <div v-else class="modal-body add-to-order">
           <CustomerDeliveryArea :buttons="false" classAccess="addOrders" />
           <!--<div class="error" v-else-if="error">No address found.</div>
           <div class="loading" v-else><Preloader /></div>-->
@@ -59,17 +60,18 @@
 <script>
 /* global $ */
 import { mapActions, mapGetters, mapState } from 'vuex'
-// import Preloader from '@/components/util/Preloader'
+import Preloader from '@/components/util/Preloader'
 import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
 export default {
   name: 'SelectCustomerAddress',
   components: {
     CustomerDeliveryArea,
-    // Preloader,
+    Preloader,
   },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('checkoutForm', ['msg']),
+    ...mapState('customer', ['customerLoading']),
   },
   methods: {
     updateModalSelection(modalName, subjectName) {

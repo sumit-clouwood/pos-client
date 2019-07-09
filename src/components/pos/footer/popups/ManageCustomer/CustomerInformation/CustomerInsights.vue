@@ -157,7 +157,7 @@ export default {
   methods: {
     getAge: function(dob) {
       let now = new Date()
-      if(typeof dob != 'undefined') {
+      if(typeof dob != 'undefined' && dob != null) {
         let dobSplit= dob.split('-')
         let born = new Date(dobSplit[0], dobSplit[1] - 1, dobSplit[2])
         let birthday = new Date(

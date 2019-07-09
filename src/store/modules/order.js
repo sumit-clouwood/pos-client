@@ -12,6 +12,7 @@ const state = {
   item: false,
   errors: '',
   orderType: { OTview: 'Walk In', OTApi: 'walk_in' },
+  listType: 'New Orders',
   orderNote: '',
   cancellationReason: {},
   onlineOrders: false,
@@ -887,6 +888,9 @@ const mutations = {
   [mutation.ORDER_TYPE](state, orderType) {
     // state.orderType = orderType.charAt(0).toUpperCase() + orderType.slice(1)
     state.orderType = orderType
+  },
+  [mutation.LIST_TYPE](state, listType) {
+    state.listType = listType
   },
   [mutation.SET_REFERRAL](state, referral) {
     state.referral = referral
