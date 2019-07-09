@@ -24,6 +24,7 @@ const state = {
   allOnlineAddress: false,
   offlineData: null,
   loading: false,
+  customerLoading: false,
   error: false,
   loyalty: { card: false, details: false, points: false },
   deliveryAreas: false,
@@ -178,6 +179,7 @@ const actions = {
     commit(mutation.CUSTOMER_LAST_ORDERS, customerLastOrderDetails)
   },*/
   fetchSelectedCustomer({ state, commit, dispatch, rootGetters }, customerId) {
+    commit(mutation.SET_CUSTOMER_LOADING, true)
     dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
       root: true,
     })
@@ -219,6 +221,7 @@ const actions = {
               response.data.collected_data.page_lookups.store_delivery_areas
                 ._id,
           })
+          commit(mutation.SET_CUSTOMER_LOADING, false)
           resolve(response.data.item)
         })
         .catch(error => reject(error))
@@ -389,6 +392,9 @@ const mutations = {
   },
   [mutation.SET_LOADING](state, status) {
     state.loading = status
+  },
+  [mutation.SET_CUSTOMER_LOADING](state, status) {
+    state.customerLoading = status
   },
   [mutation.SET_ERROR](state, error) {
     state.error = error
