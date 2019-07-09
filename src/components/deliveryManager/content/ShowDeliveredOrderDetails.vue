@@ -4,25 +4,30 @@
       <table class="table">
         <thead>
           <tr>
-            <th><i class="fa fa-file"></i> Order Number</th>
-            <th><i class="fa fa-asterisk"></i> Amount</th>
+            <th><i class="fa fa-file"></i> {{ _t('Order Number') }}</th>
+            <th><i class="fa fa-asterisk"></i> {{ _t('Amount') }}</th>
             <th style="width: 650px;">
-              <i class="fa fa-road"></i> Order Performance (Preparation | Pickup
-              | Delivery)
+              <i class="fa fa-road"></i>
+              {{ _t('Order Performance (Preparation | Pickup | Delivery)') }}
             </th>
             <th style="width: 200px;">
-              <i class="fa fa-clock-o"></i> Total Time
+              <i class="fa fa-clock-o"></i> {{ _t('Total Time') }}
             </th>
-            <th><i class="fa fa-tag"></i> Status</th>
+            <th><i class="fa fa-tag"></i> {{ _t('Status') }}</th>
           </tr>
         </thead>
         <tbody v-if="currentDriverOrders.orders">
           <tr v-for="(order, key) in currentDriverOrders.orders" :key="key">
-            <td
-              class="showOrderContentsButton dashboardStyleLink"
-              ng-click="getOrderDetail('5d1f3be31e1c405a066421e4')"
-            >
-              <span id="5d1f3be31e1c405a066421e4"> {{ order.order_no }} </span>
+            <td class="showOrderContentsButton dashboardStyleLink">
+              <span
+                @click="selectedOrderDetails(order._id)"
+                class="open-details-popup cursor-pointer"
+                data-dismiss="modal"
+                data-target=".bd-example-modal-lg"
+                data-toggle="modal"
+              >
+                <a href="javascript:void(0)">#{{ order.order_no }}</a>
+              </span>
             </td>
             <td>{{ formatPrice(order.balance_due) }}</td>
             <td class="perfTD">
@@ -42,7 +47,7 @@
                   >{{
                     timeDiff(order.deliveryStartTime, order.deliveryEndTime)
                   }}
-                  Delivery</span
+                  {{ _t('Delivery') }}</span
                 >
                 <br clear="all" />
               </div>
@@ -55,7 +60,7 @@
             <td>
               <span
                 class="label label-success label-block delManLabelStat Delivered text-center delivered-green-btn"
-                >Delivered</span
+                >{{ _t('Delivered') }}</span
               >
             </td>
           </tr>
@@ -65,7 +70,7 @@
       <div class="driverSummary" v-if="currentDriverOrders.orders">
         <div class="row-fluid">
           <div class="span3 span-driver-one">
-            <span class="span-text-one">Total Deliveries:</span>
+            <span class="span-text-one">{{ _t('Total Deliveries') }}:</span>
             <br /><span class="driverSummaryTotal totalDelivery">{{
               currentDriverOrders.orders.length
             }}</span>
@@ -77,7 +82,9 @@
             </span>
           </div>
           <div class="span3 span-driver-three">
-            <span class="span-text-three">Average Delivery Time: </span>
+            <span class="span-text-three"
+              >{{ _t('Average Delivery Time') }}:
+            </span>
             <br /><span class="driverSummaryTotal">{{
               avgTime(currentDriverOrders)
             }}</span>
@@ -93,7 +100,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'ShowDeliveredOrderDetails',
   computed: {
@@ -102,7 +109,10 @@ export default {
       'avgTime',
       'timeDiff',
     ]),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('location', ['formatPrice', '_t']),
+  },
+  methods: {
+    ...mapActions('order', ['selectedOrderDetails']),
   },
 }
 </script>
