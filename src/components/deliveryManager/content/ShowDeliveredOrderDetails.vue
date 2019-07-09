@@ -16,7 +16,7 @@
             <th><i class="fa fa-tag"></i> Status</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="currentDriverOrders.orders">
           <tr v-for="(order, key) in currentDriverOrders.orders" :key="key">
             <td
               class="showOrderContentsButton dashboardStyleLink"
@@ -62,7 +62,7 @@
         </tbody>
       </table>
 
-      <div class="driverSummary">
+      <div class="driverSummary" v-if="currentDriverOrders.orders">
         <div class="row-fluid">
           <div class="span3 span-driver-one">
             <span class="span-text-one">Total Deliveries:</span>
