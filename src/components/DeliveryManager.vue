@@ -15,7 +15,7 @@
               <a href="#">{{ _t('HOME DELIVERIES') }}</a>
             </li>
             <li class="active">
-              <a href="#">{{ _t('NEW ORDERS') }}</a>
+              <a href="#">{{ listType }}</a>
             </li>
           </ul>
         </div>
@@ -57,7 +57,7 @@ import HomeDelivery from '@/components/deliveryManager/HomeDelivery'
 import TakeAway from '@/components/deliveryManager/TakeAway'
 import FutureOrder from '@/components/deliveryManager/FutureOrder'
 import DMTopRightNav from '@/components/deliveryManager/DMTopRightNav'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'DeliveryManager',
   components: {
@@ -71,6 +71,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('order', ['listType']),
   },
 }
 </script>
