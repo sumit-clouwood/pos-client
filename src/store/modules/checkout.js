@@ -484,8 +484,10 @@ const actions = {
               return true
             }
 
+            const orderId = response.data.id
+
             if (!rootState.order.orderId) {
-              commit('order/SET_ORDER_ID', response.data.id, { root: true })
+              commit('order/SET_ORDER_ID', orderId, { root: true })
             }
 
             //else
@@ -500,28 +502,29 @@ const actions = {
 
             resolve(response.data)
 
-            if (
-              rootState.order.orderType.OTApi !==
-              CONSTANTS.ORDER_TYPE_CALL_CENTER
-            ) {
-              dispatch('invoice/printRules', null, { root: true }).then(() => {
-                //get print rules
-                //get invoice template
-                const templateId = rootGetters['invoice/templateId']
-                dispatch(
-                  'invoice/fetchTemplate',
-                  {
-                    orderId: rootState.order.orderId,
-                    templateId: templateId,
-                  },
-                  {
-                    root: true,
-                  }
-                ).then(() => {
-                  //invoice print is triggered by the success ok button
-                })
+            dispatch('invoice/printRules', null, { root: true }).then(() => {
+              //get print rules
+              //get invoice template
+              const templateId = rootGetters['invoice/templateId']
+              dispatch(
+                'invoice/fetchTemplate',
+                {
+                  orderId: orderId,
+                  templateId: templateId,
+                },
+                {
+                  root: true,
+                }
+              ).then(() => {
+                //invoice print is triggered by the success ok button
+                if (
+                  rootState.order.orderType.OTApi ==
+                  CONSTANTS.ORDER_TYPE_CALL_CENTER
+                ) {
+                  commit(mutation.PRINT, true)
+                }
               })
-            }
+            })
 
             commit(
               'checkoutForm/SET_MSG',
