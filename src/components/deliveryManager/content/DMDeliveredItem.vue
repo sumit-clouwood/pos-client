@@ -36,12 +36,14 @@
             <p class="lead">
               {{ _t('Average Delivery Time') }}:
               <span id="avg_time" v-if="driverOrders"
-                >{{ averageDeliveryTime() }}
+                >{{ averageDeliveryTime().time }}
               </span>
             </p>
             <p class="lead total-order-sum">
               {{ _t('Total') }}:
-              <span id="total"> {{ formatPrice(totalAmount) }}</span>
+              <span id="total">
+                {{ formatPrice(averageDeliveryTime().amount) }}</span
+              >
             </p>
           </div>
           <!-- <p>Show Available Drivers</p> -->
@@ -172,38 +174,40 @@ export default {
   },
   methods: {
     averageDeliveryTime() {
-      // this.totalAmount = 0
-      // let avgDeliveryTime = 0
-      // let drivers = 0
-      // if (this.driver) {
-      //   const data = this.driverOrders[this.driver.name]
-      //   this.totalAmount = parseFloat(data.totalAmount)
-      //   return this.avgTime(data)
-      // } else {
-      //   for (let driverName in this.driverOrders) {
-      //     const data = this.driverOrders[driverName]
-      //     this.totalAmount += parseFloat(data.totalAmount)
-      //     if (data.orders.length) {
-      //       avgDeliveryTime +=
-      //         parseInt(data.totalDeliveryTime) / data.orders.length
-      //     }
-      //     drivers++
-      //   }
-      //   const date = new Date(avgDeliveryTime)
-      //     .toISOString()
-      //     .substr(11, 8)
-      //     .split(':')
-      //   const sec = Math.floor(parseFloat(date[2]) / drivers)
-      //   const min = Math.floor(parseFloat(date[1]) / drivers)
-      //   const hours = Math.floor(parseFloat(date[0]) / drivers)
-      //   return (
-      //     this.formatTime(hours) +
-      //     ':' +
-      //     this.formatTime(min) +
-      //     ':' +
-      //     this.formatTime(sec)
-      //   )
-      // }
+      let totalAmount = 0
+      let avgDeliveryTime = 0
+      let drivers = 0
+      if (this.driver) {
+        const data = this.driverOrders[this.driver.name]
+        totalAmount = parseFloat(data.totalAmount)
+        return this.avgTime(data)
+      } else {
+        for (let driverName in this.driverOrders) {
+          const data = this.driverOrders[driverName]
+          totalAmount += parseFloat(data.totalAmount)
+          if (data.orders.length) {
+            avgDeliveryTime +=
+              parseInt(data.totalDeliveryTime) / data.orders.length
+          }
+          drivers++
+        }
+        const date = new Date(avgDeliveryTime)
+          .toISOString()
+          .substr(11, 8)
+          .split(':')
+        const sec = Math.floor(parseFloat(date[2]) / drivers)
+        const min = Math.floor(parseFloat(date[1]) / drivers)
+        const hours = Math.floor(parseFloat(date[0]) / drivers)
+        return {
+          time:
+            this.formatTime(hours) +
+            ':' +
+            this.formatTime(min) +
+            ':' +
+            this.formatTime(sec),
+          amount: totalAmount,
+        }
+      }
     },
     formatTime(time) {
       return time < 10 ? '0' + time : time
