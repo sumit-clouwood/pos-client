@@ -28,18 +28,26 @@ const state = {
   drivers: [],
   driverBucket: [],
   driver: null,
+  driverId: null,
 }
 const getters = {
   orders: state => state.orders.filter(order => order.deleted === false),
   currentDriverOrders: (state, getters) => {
-    if (state.driver) return getters['getOrdersByDriver'](state.driver)
+    if (state.driverId) {
+      const driver = state.drivers.find(driver => driver._id == state.driverId)
+      return getters['getOrdersByDriver'](driver)
+    }
     return []
   },
   driverOrders: (state, getters) => {
     let orders = {}
-    state.drivers.forEach(driver => {
-      orders[driver.name] = getters['getOrdersByDriver'](driver)
-    })
+    if (state.driver) {
+      orders[state.driver.name] = getters['getOrdersByDriver'](state.driver)
+    } else {
+      state.drivers.forEach(driver => {
+        orders[driver.name] = getters['getOrdersByDriver'](driver)
+      })
+    }
     return orders
   },
   getOrdersByDriver: (state, getters, rootState, rootGetters) => driver => {
@@ -272,10 +280,7 @@ const actions = {
   },
 
   showDriverOrders({ commit }, driverId) {
-    commit(
-      mutation.SET_DRIVER,
-      state.drivers.find(driver => driver._id == driverId)
-    )
+    commit(mutation.SET_DRIVER_ID, driverId)
     //set driver to null if you don't need to show the details
   },
 }
@@ -348,6 +353,9 @@ const mutations = {
   },
   [mutation.SET_DRIVER](state, driver) {
     state.driver = driver
+  },
+  [mutation.SET_DRIVER_ID](state, driverId) {
+    state.driverId = driverId
   },
   [mutation.REMOVE_FROM_DRIVER_BUCKET](state, orderId) {
     let bucket = []
