@@ -81,13 +81,13 @@
           <div class="btn-announce">
             <button
               type="button"
-              class="btn btn-danger cancel-announce"
+              class="btn btn-danger cancel-announce color-button color-text-invert"
               data-dismiss="modal"
             >
               {{ _t('Cancel') }}
             </button>
             <button
-              class="btn btn-success btn-large popup-btn-save"
+              class="btn btn-success btn-large popup-btn-save color-main color-text-invert"
               type="button"
               id="save_address"
               v-on:click="checkForm(customer_title)"

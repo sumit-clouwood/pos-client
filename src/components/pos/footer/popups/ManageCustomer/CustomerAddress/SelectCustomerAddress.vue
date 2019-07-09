@@ -10,7 +10,8 @@
             {{ _t('Add to Order') }}
           </h4>
         </div>
-        <div class="modal-body add-to-order">
+        <Preloader v-if="customerLoading" />
+        <div v-else class="modal-body add-to-order">
           <CustomerDeliveryArea :buttons="false" classAccess="addOrders" />
           <!--<div class="error" v-else-if="error">No address found.</div>
           <div class="loading" v-else><Preloader /></div>-->
@@ -59,22 +60,24 @@
 <script>
 /* global $ */
 import { mapActions, mapGetters, mapState } from 'vuex'
-// import Preloader from '@/components/util/Preloader'
+import Preloader from '@/components/util/Preloader'
 import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
 export default {
   name: 'SelectCustomerAddress',
   components: {
     CustomerDeliveryArea,
-    // Preloader,
+    Preloader,
   },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('checkoutForm', ['msg']),
+    ...mapState('customer', ['customerLoading']),
   },
   methods: {
     updateModalSelection(modalName, subjectName) {
       this.updateModalSelectionDelivery(modalName)
-      if (this.msg != null && this.msg.data.length > 0) {
+      // eslint-disable-next-line no-console
+      if (this.msg != null && this.msg.message.length > 0) {
         $('#payment-msg').modal('show')
       } else {
         $(subjectName).modal('hide')
@@ -85,8 +88,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-.loading {
-  padding: 30px;
-}
-</style>

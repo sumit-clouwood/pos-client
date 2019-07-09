@@ -4,7 +4,8 @@
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
-        <div class="modal-body manage-customer-wrap">
+        <Preloader v-if="customerLoading" />
+        <div v-else class="modal-body manage-customer-wrap">
           <div class="crm-details-wrap">
             <div id="order-profile" class="profile-order">
               <CustomerProfile />
@@ -73,6 +74,7 @@ import CustomerInsights from './CustomerInformation/CustomerInsights'
 import CustomerPastOrders from './CustomerInformation/CustomerPastOrders'
 import CustomerDeliveryAddress from './CustomerInformation/CustomerDeliveryAddress'
 import paginate from 'vuejs-paginate'
+import Preloader from '@/components/util/Preloader'
 
 export default {
   name: 'CustomerInformation',
@@ -84,6 +86,7 @@ export default {
     CustomerPastOrders,
     CustomerDeliveryAddress,
     paginate,
+    Preloader,
   },
   computed: {
     ...mapState({
@@ -94,11 +97,12 @@ export default {
     }),
     ...mapGetters('location', ['_t']),
     ...mapState('checkoutForm', ['msg']),
+    ...mapState('customer', ['customerLoading']),
   },
   methods: {
     updateModalSelection(modalName, subjectName) {
       this.updateModalSelectionDelivery(modalName)
-      if (this.msg.data.length > 0) {
+      if (this.msg.message.length > 0) {
         $('#payment-msg').modal('show')
       } else {
         $(subjectName).modal('hide')
