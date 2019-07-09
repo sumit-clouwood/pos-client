@@ -91,11 +91,13 @@ const getters = {
     return data
   },
   avgTime: () => driverOrders => {
-    //end : 1562223526836 , start : 1562223510206
-    const miliseconds =
-      driverOrders.totalDeliveryTime / driverOrders.orders.length
-    if (!miliseconds) return '00:00:00'
-    return new Date(miliseconds).toISOString().substr(11, 8)
+    if (driverOrders.totalDeliveryTime && driverOrders.orders) {
+      const miliseconds =
+        driverOrders.totalDeliveryTime / driverOrders.orders.length
+      return new Date(miliseconds).toISOString().substr(11, 8)
+    } else {
+      return '00:00:00'
+    }
   },
 
   timeDiff: () => (time1, time2) => {
