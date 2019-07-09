@@ -30,18 +30,13 @@
         props: {
             msg: String,
         },
-        data() {
-            return {
-                bascketItems: []
-            }
-        },
         components: {
             Popup,
         },
         computed: {
             ...mapGetters('category', ['items']),
             ...mapGetters('modifier', ['hasModifiers']),
-            ...mapGetters(['foodMenuHendler']),
+            ...mapGetters(['foodMenuHendler', 'bascketItems']),
         },
         methods: {
             addToOrder(item) {

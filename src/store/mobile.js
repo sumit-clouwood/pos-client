@@ -12,10 +12,7 @@ export default {
         profileHendler: false,
         paymentMethodsHendler: false,
         openManageCustomerHendler: false,
-        itemFood: {
-            name: '...',
-            curent: 0
-        },
+        itemFood: [],
         payMethod: 'Gift Card',
         methodCardHendler: false,
         QRMethodGhange: false,
@@ -28,6 +25,7 @@ export default {
         openUserHendler: true,
         userLoginHendler: false,
         userCalcHendler: false,
+        bascketItems: [],
         testUsers: [
             {
                 id: 0,
@@ -106,12 +104,19 @@ export default {
             state.openManageCustomerHendler = !state.openManageCustomerHendler
         },
         ADD_ITEM_FOOD: (state, payLoad) => {
-            if (state.itemFood.name == '...' || state.itemFood.name == payLoad.name) {
-                state.itemFood.curent = state.itemFood.curent + 1
+            if (!state.itemFood.some(item => item.name === payLoad.name)) {
+                state.itemFood.unshift({
+                    name: payLoad.name,
+                    count: 1
+                })
             } else {
-                state.itemFood.curent = 1
+                state.itemFood.forEach(item => {
+                    if (item.name == payLoad.name) {
+                        item.count++
+                    }
+                })
             }
-            state.itemFood.name = payLoad.name
+
         },
         METHOD_CARD_HENDLER_CHANGE: (state) => {
             state.methodCardHendler = !state.methodCardHendler
@@ -145,6 +150,10 @@ export default {
         },
         USER_CALC_HENDLER_CHANGE: (state) => {
             state.userCalcHendler = !state.userCalcHendler
+        },
+        MOBILE_LOGOUT: (state) => {
+            state.itemFood = []
+            state.bascketItems = []
         },
     },
     actions: {
@@ -223,6 +232,9 @@ export default {
         userCalcHendlerGhange({commit}) {
             commit('USER_CALC_HENDLER_CHANGE')
         },
+        mobileLogout({commit}) {
+            commit('MOBILE_LOGOUT')
+        },
     },
     getters: {
         searchHendler: state => state.searchHendler,
@@ -251,5 +263,6 @@ export default {
         openUserHendler: state => state.openUserHendler,
         userLoginHendler: state => state.userLoginHendler,
         userCalcHendler: state => state.userCalcHendler,
+        bascketItems: state => state.bascketItems,
     },
 };

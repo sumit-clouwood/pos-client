@@ -142,7 +142,7 @@
 // media queries
 @include responsive(mobile) {
   #manage-customer {
-    display: block !important;
+    //display: block !important;
     opacity: 1;
     position: absolute;
     top: 0px;

@@ -3,9 +3,11 @@
         <div class="mobile-header">
             <div class="current-sale">
                 <div class="title">Current Sale</div>
-                <div class="items">
-                    <div class="items-text">{{itemFood.name}}</div>
-                    <div class="items-num" v-if="itemFood.curent != 0">x{{itemFood.curent}}</div>
+                <div class="list">
+                    <div class="items" v-for="(item, key) in itemFood" :key="key">
+                        <div class="items-text">{{item.name}}</div>
+                        <div class="items-num">x{{item.count}}</div>
+                    </div>
                 </div>
             </div>
             <div class="btn-menu" @click="profileHendlerGhange">
@@ -92,30 +94,47 @@
                     margin-bottom: 5px;
                 }
 
-                .items {
-                    display: grid;
-                    grid-template-columns: max-content max-content;
-                    align-items: center;
+                .list {
+                    display: flex;
+                    width: 70vw;
+                    overflow: auto;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
 
-                    .items-text {
-                        margin-right: 10px;
-                        height: 25px;
-                        display: flex;
-                        align-items: center;
+                    &::-webkit-scrollbar {
+                        width: 0;
+                        height: 0;
                     }
 
-                    .items-num {
-                        width: 25px;
-                        height: 25px;
-                        background-color: $green-middle;
-                        display: flex;
+                    .items {
+                        display: grid;
+                        grid-template-columns: max-content max-content;
                         align-items: center;
-                        justify-content: center;
-                        color: #fff;
-                        font-weight: 600;
-                        border-radius: $btn-border-radius;
+                        margin-right: 10px;
+
+                        .items-text {
+                            margin-right: 10px;
+                            height: 25px;
+                            display: flex;
+                            align-items: center;
+                        }
+
+                        .items-num {
+                            min-width: 20px;
+                            min-height: 20px;
+                            background-color: $green-middle;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: #fff;
+                            font-weight: 600;
+                            border-radius: $btn-border-radius;
+                            font-size: 12px;
+                            padding: 3px 5px;
+                        }
                     }
                 }
+
             }
 
             .btn-menu {
@@ -141,8 +160,9 @@
             position: relative;
             background-color: #fafafa;
         }
-        .mobile-footer{
-            .btn-next{
+
+        .mobile-footer {
+            .btn-next {
                 display: none;
             }
         }

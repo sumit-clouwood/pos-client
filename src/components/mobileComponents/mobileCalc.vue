@@ -88,8 +88,9 @@
 
             .calc-body {
                 padding: 0 20px;
-                display: grid;
-                grid-template-rows: auto 1fr;
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
 
                 .amount-keypad {
                     overflow: hidden;
@@ -146,7 +147,6 @@
                     margin-top: auto;
                     height: 50px;
                     border-radius: $btn-border-radius;
-                    align-self: end;
 
                     input {
                         border: none;

@@ -38,7 +38,8 @@
                     <div class="pin-input-item" @click="inputPin(9)">9</div>
                     <div class="pin-input-item" @click="inputPin('')"></div>
                     <div class="pin-input-item" @click="inputPin(0)">0</div>
-                    <div class="pin-input-item" @click="inputPin('')"></div>
+                    <div class="pin-input-item" @click="inputDel"><i class="fa fa-angle-left" aria-hidden="true"></i>
+                    </div>
                 </div>
                 <div class="pin-footer">
                     <div class="pin-footer-btn" @click="openUser">Clock In&nbsp;/&nbsp;</div>
@@ -64,12 +65,11 @@
             }
         },
         computed: {
-            ...mapGetters(['testUsers', 'openUserHendler', 'userCalcHendler', 'userLoginHendler'])
+            ...mapGetters(['testUsers', 'openUserHendler', 'userCalcHendler', 'userLoginHendler', 'userListHendler'])
         },
         components: {
             dateTime,
             user,
-
         },
         methods: {
             openUser(user) {
@@ -83,13 +83,17 @@
                     this.userPin = this.userPin + e
                 }
             },
+            inputDel() {
+                this.userPin = this.userPin.substring(0, this.userPin.length - 1)
+            },
             userLoginHendlerGhange(e) {
-                if(this.userPin == this.userKey){
+                if (this.userPin == this.userKey) {
                     this.$store.dispatch('userLoginHendlerGhange')
                 }
             },
             openUserHendlerGhange() {
                 this.$store.dispatch('openUserHendlerGhange')
+                this.$store.dispatch('userLoginHendlerGhange')
             }
         }
     }
@@ -108,7 +112,7 @@
         width: 100vw;
         background-color: #fff;
         color: #fff;
-        /*display: none;*/
+        z-index: 1060;
         font-size: 20px;
 
         .user-login {

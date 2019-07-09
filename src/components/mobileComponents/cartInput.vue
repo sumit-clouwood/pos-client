@@ -75,6 +75,10 @@
         display: grid;
         grid-template-rows: max-content 1fr;
 
+        .pay-header {
+            border-bottom: 1px solid $gray-middle;
+        }
+
         &.active {
             right: 0;
         }
@@ -158,56 +162,6 @@
                     bottom: 1px;
                 }
             }
-
-            /*.amount-keypad {*/
-                /*min-width: auto;*/
-                /*max-width: 100%;*/
-                /*display: grid;*/
-                /*grid-template-columns: 1fr 1fr 1fr 1fr;*/
-                /*grid-gap: 10px;*/
-                /*padding: 20px 0 0 0;*/
-                /*border: none;*/
-
-                /*> div {*/
-                    /*color: #333;*/
-                    /*padding: 10px;*/
-                    /*border-radius: 3px;*/
-                    /*background: linear-gradient(to bottom, #ededed 1%, #d9d9d9 100%);*/
-                    /*max-width: 100%;*/
-                    /*min-width: auto;*/
-                    /*width: auto;*/
-                    /*text-align: center;*/
-                    /*font-size: 18px;*/
-                    /*font-weight: 600;*/
-
-                    /*&:nth-child(4) {*/
-                        /*background: linear-gradient(to bottom, #fab95b 1%, #f76e1e 100%);*/
-                        /*color: #fff;*/
-                    /*}*/
-
-                    /*&:nth-child(8) {*/
-                        /*background: linear-gradient(to bottom, #60b930 1%, #56ab27 100%);*/
-                        /*color: #fff;*/
-                    /*}*/
-
-                    /*&:nth-child(12) {*/
-                        /*background: linear-gradient(to bottom, #60b930 1%, #56ab27 100%);*/
-                        /*color: #fff;*/
-                    /*}*/
-
-                    /*&:nth-child(16) {*/
-                        /*background: linear-gradient(to bottom, #c93030 2%, #bd2626 100%);*/
-                        /*color: #fff;*/
-                    /*}*/
-
-                    /*img {*/
-                        /*display: block;*/
-                        /*width: 30px;*/
-                        /*margin: 0 auto;*/
-                    /*}*/
-                /*}*/
-            /*}*/
-
         }
 
         .cart-block-footer {
