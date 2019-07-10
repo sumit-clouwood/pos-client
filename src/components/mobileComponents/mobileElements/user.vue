@@ -13,11 +13,6 @@
         props: ['param'],
         computed: {
             ...mapGetters(['testUsers'])
-        },
-        methods: {
-            openUser() {
-                console.log(123)
-            }
         }
     }
 </script>
