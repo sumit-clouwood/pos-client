@@ -1405,4 +1405,15 @@ tr.dataContentStyle{
     }
   }
 }
+.button-block  {
+  .dropdown-menu {
+    span {
+      > img{
+        display: inline-block;
+        width: 19px;
+        margin-right: 10px;
+      }
+    }
+  }
+}
 /*# sourceMappingURL=deliveryManager.css.map */

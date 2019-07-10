@@ -31,7 +31,7 @@
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <img src="/img/icons/us.svg" />
+        <img :src="'/img/flag_icon/4x3/' + iconCodeSelection + '.svg'" />
       </button>
       <div
         aria-labelledby="dropdownLanguage"
@@ -45,7 +45,11 @@
           v-for="language in availableLanguages"
           :key="language._id"
           :value="language.code"
+          @click="iconCode(language.icon_code)"
         >
+          <span>
+            <img :src="'/img/flag_icon/4x3/' + language.icon_code + '.svg'" />
+          </span>
           {{ language.name }}
         </a>
       </div>
@@ -74,6 +78,9 @@ export default {
     ...mapState('location', ['availableLanguages', 'language']),
   },
   methods: {
+    iconCode: function(iconCode) {
+      this.iconCodeSelection = iconCode
+    },
     changeLanguage(locale) {
       bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
@@ -90,6 +97,7 @@ export default {
       todayDate: moment().format('MMMM Do YYYY'),
       todayTime: moment().format('h:mm:ss a'),
       showSelectedLanguage: '',
+      iconCodeSelection: 'us',
     }
   },
   mounted: function() {
