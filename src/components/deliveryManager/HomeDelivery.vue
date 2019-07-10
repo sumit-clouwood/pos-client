@@ -179,7 +179,7 @@ export default {
       $('.dropdown-content').show()
     },
     getSelectUser: function() {
-      // this.selectedUser = $('#get-customer-list').val()
+      this.selectedUser = $('#get-customer-list').val()
     },
 
     ...mapActions('deliveryManager', [

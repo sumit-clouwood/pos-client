@@ -13,11 +13,11 @@ const state = {
     store: CONST.LOADING_STATUS_LOADING,
     catalog: CONST.LOADING_STATUS_LOADING,
     modifiers: CONST.LOADING_STATUS_LOADING,
-    surcharges: CONST.LOADING_STATUS_LOADING,
-    discounts: CONST.LOADING_STATUS_LOADING,
-    payment_types: CONST.LOADING_STATUS_LOADING,
-    announcements: CONST.LOADING_STATUS_LOADING,
-    customers: CONST.LOADING_STATUS_LOADING,
+    // surcharges: CONST.LOADING_STATUS_LOADING,
+    // discounts: CONST.LOADING_STATUS_LOADING,
+    // payment_types: CONST.LOADING_STATUS_LOADING,
+    // announcements: CONST.LOADING_STATUS_LOADING,
+    // customers: CONST.LOADING_STATUS_LOADING,
   },
 }
 

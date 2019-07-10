@@ -36,6 +36,10 @@ const actions = {
         .catch(error => reject(error))
     })
   },
+  logout() {
+    localStorage.setItem('token', '')
+    AuthService.logout().then(() => (window.location = '/'))
+  },
 }
 
 // mutations

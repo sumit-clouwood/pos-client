@@ -6,34 +6,43 @@
       <div class="clearfix all-driver-dropdown">
         <div class="select-driver" v-if="drivers">
           <div class="delivered-driver">
-            <button
-              type="button"
-              class="btn dropdown-toggle input-search-driver"
-              data-toggle="dropdown"
-            >
+            <div class="select-driver">
               {{ _t('Select Driver') }}
-            </button>
-            <ul class="dropdown-menu">
-              <li v-for="(deliverydriver, index) in drivers" :key="index">
-                <a
-                  href="javascript:void(0)"
-                  @click="selectedDriver(deliverydriver)"
-                  >{{ deliverydriver.name }}</a
+            </div>
+            <div v-if="drivers" class="driver-container">
+              <input
+                autocomplete="off"
+                type="text"
+                class="input-search-driver"
+                id="get-customer-list"
+                v-model="selectedDriver"
+                @click="showDropdown"
+              />
+              <div id="my-dropdown" class="dropdown-content cursor-pointer">
+                <span class="dropdown" :key="0" @click="setDriver(null)">
+                  All
+                </span>
+                <span
+                  class="dropdown"
+                  v-for="dri in drivers"
+                  :key="dri._id"
+                  @click="setDriver(dri)"
+                  >{{ dri.name }}</span
                 >
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
           <div class="average-time">
             <p class="lead">
               {{ _t('Average Delivery Time') }}:
-              <span id="avg_time" v-if="orderDetails.averageDeliveryTime"
-                >{{ orderDetails.averageDeliveryTime }}
+              <span id="avg_time" v-if="driverOrders"
+                >{{ averageDeliveryTime().time }}
               </span>
             </p>
             <p class="lead total-order-sum">
               {{ _t('Total') }}:
               <span id="total">
-                {{ formatPrice(orderDetails.orderTotal) }}</span
+                {{ formatPrice(averageDeliveryTime().amount) }}</span
               >
             </p>
           </div>
@@ -57,44 +66,44 @@
       </thead>
 
       <tbody>
-        <template v-for="(driverOrders, deliveryDriver) in driverOrders">
+        <template v-for="(driOrders, deliveryDriver) in driverOrders">
           <tr class="dataContentStyle" :key="deliveryDriver">
             <td class="driverNameContainer showMore">
               {{ deliveryDriver }}
             </td>
-            <td>{{ driverOrders.orders.length }}</td>
-            <td>{{ driverOrders.amountToCollect.toFixed(2) }}</td>
-            <td>{{ driverOrders.cashPayment.toFixed(2) }}</td>
-            <td>{{ driverOrders.creditPayment.toFixed(2) }}</td>
+            <td>{{ driOrders.orders.length }}</td>
+            <td>{{ driOrders.amountToCollect.toFixed(2) }}</td>
+            <td>{{ driOrders.cashPayment.toFixed(2) }}</td>
+            <td>{{ driOrders.creditPayment.toFixed(2) }}</td>
             <td id="driverInHandAmount">
-              {{ driverOrders.totalAmount.toFixed(2) }}
+              {{ driOrders.totalAmount.toFixed(2) }}
             </td>
             <td>
-              {{ avgTime(driverOrders) }}
+              {{ avgTime(driOrders) }}
             </td>
             <td class="align-right">
               <a
                 id="open-collect-money-modal"
                 href="javascript:void(0)"
                 class="btn btn-success btn-large collect-driver-money-btn"
-                driver-id="5bccbd789e1dba5c01539343"
+                :driver-id="deliveryDriver"
                 total-orders="4"
                 cash="271.98"
                 ><i class="fa fa-refresh fa"></i> {{ _t('Collect Money') }}</a
               >
               &nbsp;
               <a
-                id="refresh_data-5bccbd789e1dba5c01539343"
+                :id="'refresh_data-' + driOrders.driverId"
                 href=""
                 class="btn btn-success btn-large btnRefreshDetails btn-data-refresh"
                 style="display: none;"
                 ><i class="fa fa-refresh fa"></i> {{ _t('Refresh Data') }}</a
               >&nbsp;
               <a
-                id="driver_details-5bccbd789e1dba5c01539343"
-                href="javascript:;"
+                :id="'driver_details-' + driOrders.driverId"
+                href="javascript:void(0)"
                 class="btn btn-info btn-large btnShowDetails btn-show-details-delivered"
-                @click="showDriverOrders(driverOrders.driverId)"
+                @click="showOrders(driOrders.driverId)"
               >
                 <span>
                   <svg
@@ -116,18 +125,18 @@
                 {{ _t('Show Details') }}</a
               >
               <a
-                id="driver_details_hide-5bccbd789e1dba5c01539343"
-                href="javascript:;"
+                :id="'driver_details_hide-' + driOrders.driverId"
+                href="javascript:void(0)"
                 class="btn btn-info btn-large btnShowDetails btn-show-details"
                 style="display: none;"
                 >{{ _t('Hide') }}</a
               >
             </td>
           </tr>
-          <tr :key="driverOrders.driverId">
+          <tr :key="driOrders.driverId">
             <td colspan="8">
               <ShowDeliveredOrderDetails
-                v-show="driver && driver._id == driverOrders.driverId"
+                v-show="driverId && driverId == driOrders.driverId"
               />
             </td>
           </tr>
@@ -145,10 +154,7 @@ import ShowDeliveredOrderDetails from '@/components/deliveryManager/content/Show
 export default {
   name: 'DMDeliveredItem',
   computed: {
-    ...mapState({
-      orderDetails: state => state.deliveryManager.orders,
-    }),
-    ...mapState('deliveryManager', ['drivers', 'driver']),
+    ...mapState('deliveryManager', ['drivers', 'driver', 'driverId']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('deliveryManager', ['driverOrders', 'avgTime']),
   },
@@ -159,16 +165,70 @@ export default {
       orderTotalAmount: 0,
       orderCashAmount: 0,
       updateId: String,
+      selectedDriver: '',
+      totalAmount: 0,
     }
   },
   components: {
     ShowDeliveredOrderDetails,
   },
   methods: {
-    selectedDriver: function(driver) {
-      this.waitingOrder.action = driver.name
-      this.waitingOrder.driverId = driver._id
-      this.selectDriver(driver)
+    averageDeliveryTime() {
+      let totalAmount = 0
+      let avgDeliveryTime = 0
+      let drivers = 0
+      if (this.driver) {
+        const data = this.driverOrders[this.driver.name]
+        totalAmount = parseFloat(data.totalAmount)
+        return this.avgTime(data)
+      } else {
+        for (let driverName in this.driverOrders) {
+          const data = this.driverOrders[driverName]
+          totalAmount += parseFloat(data.totalAmount)
+          if (data.orders.length) {
+            avgDeliveryTime +=
+              parseInt(data.totalDeliveryTime) / data.orders.length
+          }
+          drivers++
+        }
+        const date = new Date(avgDeliveryTime)
+          .toISOString()
+          .substr(11, 8)
+          .split(':')
+        const sec = Math.floor(parseFloat(date[2]) / drivers)
+        const min = Math.floor(parseFloat(date[1]) / drivers)
+        const hours = Math.floor(parseFloat(date[0]) / drivers)
+        return {
+          time:
+            this.formatTime(hours) +
+            ':' +
+            this.formatTime(min) +
+            ':' +
+            this.formatTime(sec),
+          amount: totalAmount,
+        }
+      }
+    },
+    formatTime(time) {
+      return time < 10 ? '0' + time : time
+    },
+    ordersTotal() {
+      if (this.driver) {
+        const orders = this.driverOrders[this.driver.name]
+        return orders
+      }
+    },
+    showDropdown: function() {
+      $('.dropdown-content').show()
+    },
+    setDriver: function(driver) {
+      if (driver) {
+        this.selectedDriver = driver.name
+      } else {
+        this.selectedDriver = 'All'
+      }
+      this.$store.commit('deliveryManager/SET_DRIVER', driver)
+      $('.dropdown-content').hide()
     },
     showMoreDetails: function(driverId) {
       this.showMoreOrders(driverId)
@@ -177,6 +237,11 @@ export default {
     toggleMe: function(Id) {
       this.updateId = Id
     },
+
+    showOrders: function(driverId) {
+      this.showDriverOrders(driverId)
+    },
+
     ...mapActions('deliveryManager', [
       'selectDriver',
       'showMoreOrders',

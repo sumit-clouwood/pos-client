@@ -39,6 +39,35 @@ export default {
       this.store
         .dispatch('location/fetch')
         .then(() => {
+          this.store
+            .dispatch('category/fetchAll')
+            .then(() => {
+              this.store.dispatch('location/getUserDetails')
+              this.store.dispatch('modifier/fetchAll').then(() => {
+                this.store.commit('sync/loaded', true)
+                resolve()
+              })
+
+              this.store.dispatch('surcharge/fetchAll').then(() => {})
+              this.store.dispatch('discount/fetchAll').then(() => {})
+              //store.dispatch('giftcard/fetchAll')
+              this.store.dispatch('payment/fetchAll').then(() => {})
+              this.store.dispatch('customer/fetchAll').then(() => {})
+              this.store.dispatch('announcement/fetchAll').then(() => {})
+            })
+            .catch(error => reject(error))
+        })
+        .catch(error => reject(error))
+      //continue loading other service in parallel
+    })
+  },
+
+  initLoadUI() {
+    DataService.setLang(this.store.state.location.locale)
+    return new Promise((resolve, reject) => {
+      this.store
+        .dispatch('location/fetch')
+        .then(() => {
           this.updateLoading('store')
           this.store
             .dispatch('category/fetchAll')
@@ -50,28 +79,10 @@ export default {
                 this.store.commit('sync/loaded', true)
                 resolve()
               })
-
-              this.store.dispatch('surcharge/fetchAll').then(() => {
-                this.updateLoading('surcharges')
-              })
-              this.store.dispatch('discount/fetchAll').then(() => {
-                this.updateLoading('discounts')
-              })
-              //store.dispatch('giftcard/fetchAll')
-              this.store.dispatch('payment/fetchAll').then(() => {
-                this.updateLoading('payment_types')
-              })
-              this.store.dispatch('customer/fetchAll').then(() => {
-                this.updateLoading('customers')
-              })
-              this.store.dispatch('announcement/fetchAll').then(() => {
-                this.updateLoading('announcements')
-              })
             })
             .catch(error => reject(error))
         })
         .catch(error => reject(error))
-      //continue loading other service in parallel
     })
   },
 
@@ -86,7 +97,7 @@ export default {
               brand: this.store.getters['context/brand'],
             })
 
-            this.loadUI().then(() => resolve())
+            this.initLoadUI().then(() => resolve())
 
             // store.dispatch('loyalty/fetchAll', response)
             // store.dispatch(
