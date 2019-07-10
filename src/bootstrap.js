@@ -79,6 +79,7 @@ export default {
                 this.store.commit('sync/loaded', true)
                 resolve()
               })
+              this.store.dispatch('customer/fetchAll').then(() => {})
             })
             .catch(error => reject(error))
         })
