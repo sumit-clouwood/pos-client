@@ -977,6 +977,11 @@ tr.dataContentStyle > td > a {
 @media only screen and (max-width: 479px) {
   .all-driver-main-div .all-driver-dropdown .select-driver {
     grid-template-columns: 1fr; } }
+.button-block .dropdown-menu span > img {
+  display: inline-block;
+  width: 19px;
+  margin-right: 10px; }
+
 /*# sourceMappingURL=deliveryManager.css.map */
 
 /*# sourceMappingURL=delivery_manager.css.map */

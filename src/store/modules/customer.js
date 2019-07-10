@@ -46,14 +46,14 @@ const getters = {
     }
   },
   checkDeliveryArea: (addressId, deliveryAreas) => {
-    return LookupData.get({
-      collection: deliveryAreas,
-      matchWith: addressId,
-      selection: 'name',
-    })
+    if (typeof deliveryAreas[addressId] !== 'undefined') {
+      const area = deliveryAreas[addressId]
+      return area.item_status === true ? area : false
+    }
+    return false
   },
   getDeliveryArea: state => addressId => {
-    return LookupData.get({
+    return LookupData.check({
       collection: state.deliveryAreas,
       matchWith: addressId,
       selection: 'name',
@@ -63,11 +63,11 @@ const getters = {
     let data = {}
     if (state.customer && state.customer.customer_addresses) {
       // return state.customer.customer_addresses
-      data = state.customer.customer_addresses.filter(function(q) {
+      data = state.customer.customer_addresses.filter(area => {
         if (
-          getters.checkDeliveryArea(q.delivery_area_id, state.deliveryAreas)
+          getters.checkDeliveryArea(area.delivery_area_id, state.deliveryAreas)
         ) {
-          return q
+          return area
         }
       })
     }

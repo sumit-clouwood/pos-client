@@ -15,4 +15,13 @@ export default {
       }
     }
   },
+  check(data) {
+    const collectionItems = Object.entries(data.collection)
+    // eslint-disable-next-line no-console,no-unused-vars
+    for (let [key, value] of collectionItems) {
+      if (value._id == data.matchWith) {
+        return value.name
+      }
+    }
+  },
 }

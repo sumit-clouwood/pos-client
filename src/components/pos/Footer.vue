@@ -10,7 +10,6 @@
           <a
             class="footer-slider-list-item-link color-text-invert"
             href="javascript:void(0)"
-            @click="fetchAll()"
           >
             <!--<img src="images/footer-images/user.svg" alt="customer">-->
             <svg
@@ -140,7 +139,6 @@
           <a
             class="footer-slider-list-item-link color-text-invert"
             href="javascript:void(0)"
-            @click="fetchAll()"
           >
             <!--<img src="images/footer-images/d_2.png" alt="customer">-->
             <svg
@@ -427,7 +425,6 @@ export default {
       this.$store.dispatch('holdOrders/getHoldOrders')
     },
     ...mapActions('discount', ['validateOrderDiscounts']),
-    ...mapActions('customer', ['fetchAll']),
     setOrderType(opt) {
       this.$store.commit('order/ORDER_TYPE', opt)
     },
