@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 // var clientUrl = 'https://web-int.dimspos.com'
 //var clientUrl = 'https://local.broc.me'
-var clientUrl = 'https://dimspos.com/'
+var clientUrl = 'https://dimspos.com'
 
 var iDB
 var form_data
