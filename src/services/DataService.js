@@ -126,16 +126,17 @@ export default {
   get(url, level) {
     url = this.getContextUrl(url, level)
     return new Promise((resolve, reject) => {
-      axios
-        .get(apiURL + url)
-        .then(response => {
-          if (this.isValidResponse(response)) {
-            resolve(response)
-          } else {
-            reject(response)
-          }
-        })
-        .catch(error => reject(error))
+      // axios
+      //   .get(apiURL + url)
+      //   .then(response => {
+      //     if (this.isValidResponse(response)) {
+      //       resolve(response)
+      //     } else {
+      //       reject(response)
+      //     }
+      //   })
+      //   .catch(error => reject(error))
+      return this.getLive(url, resolve, reject)
     })
   },
 
