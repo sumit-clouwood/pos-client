@@ -83,7 +83,8 @@
           .main .main-body .food-wrapper .food-categories .food-categories-item .food-categories-item-text {
             text-align: center;
             font-weight: 600;
-            user-select: none; }
+            user-select: none;
+            word-break: break-word; }
           .main .main-body .food-wrapper .food-categories .food-categories-item .food-categories-item-check {
             width: 1.25rem;
             height: 1.25rem;

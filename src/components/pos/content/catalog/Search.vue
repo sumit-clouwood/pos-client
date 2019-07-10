@@ -6,6 +6,7 @@
     </div>
     <input
       type="text"
+      autocomplete="off"
       class="search-field-input color-dashboard-background"
       :placeholder="_t('Start typing to get search results')"
       v-model="searchItems"
@@ -26,6 +27,9 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+  },
+  mounted() {
+    this.searchItems = ''
   },
   methods: {
     ...mapActions('category', ['collectSearchItems']),
