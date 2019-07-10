@@ -1,3 +1,4 @@
+/*eslint-disable no-console*/
 import * as mutation from './order/mutation-types'
 import OrderService from '../../services/data/OrderService'
 import * as CONST from '@/constants'
@@ -36,10 +37,10 @@ const getters = {
   orderTotal: (state, getters, rootState, rootGetters) => {
     //discount is already subtracted from tax in tax.js
     let amount =
-      getters.subTotal +
-      rootGetters['tax/totalTax'] +
-      rootGetters['surcharge/surcharge'] -
-      rootGetters['discount/orderDiscountWithoutTax']
+      Num.round(getters.subTotal) +
+      Num.round(rootGetters['tax/totalTax']) +
+      Num.round(rootGetters['surcharge/surcharge']) -
+      Num.round(rootGetters['discount/orderDiscountWithoutTax'])
     if (amount) {
       return amount.toFixed(2)
     }
