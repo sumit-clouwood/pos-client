@@ -125,15 +125,20 @@
                 {{ _t('Show Details') }}</a
               >
               <a
-                :id="'driver_details_hide-' + driOrders.driverId"
+                :class="'driver_details_hide-' + driOrders.driverId"
                 href="javascript:void(0)"
                 class="btn btn-info btn-large btnShowDetails btn-show-details"
                 style="display: none;"
+                @click="showOrders(driOrders.driverId)"
                 >{{ _t('Hide') }}</a
               >
             </td>
           </tr>
-          <tr :key="driOrders.driverId">
+          <tr
+            style="display: none;"
+            :key="driOrders.driverId"
+            :class="'driver_details_hide-' + driOrders.driverId"
+          >
             <td colspan="8">
               <ShowDeliveredOrderDetails
                 v-show="driverId && driverId == driOrders.driverId"
@@ -239,6 +244,8 @@ export default {
     },
 
     showOrders: function(driverId) {
+      $('#driver_details-' + driverId).toggle()
+      $('.driver_details_hide-' + driverId).toggle()
       this.showDriverOrders(driverId)
     },
 
