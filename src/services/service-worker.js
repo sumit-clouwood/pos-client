@@ -1,12 +1,13 @@
 // custom service-worker.js
 /* global workbox */
 /* eslint-disable no-console */
-
+var base_url = window.location.origin
 var iDB
 var form_data
 var IDB_VERSION = 3
 var ORDER_DOCUMENT = 'order_post_requests'
-var clientUrl = 'https://web-int.dimspos.com'
+var clientUrl = base_url
+// var clientUrl = 'https://web-int.dimspos.com'
 //var clientUrl = 'https://local.broc.me'
 var client = null
 
