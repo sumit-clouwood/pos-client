@@ -37,19 +37,19 @@ export default {
                 id: 1,
                 name: 'Nirmala Azalea',
                 img: 'testUserImg-1.jpg',
-                key: 2345
+                key: 1234
             },
             {
                 id: 2,
                 name: 'Bena Kane',
                 img: 'testUserImg-2.jpg',
-                key: 3456
+                key: 1234
             },
             {
                 id: 3,
                 name: 'Firmino Kudo',
                 img: 'testUserImg-0.jpg',
-                key: 4567
+                key: 1234
             },
         ]
     },
