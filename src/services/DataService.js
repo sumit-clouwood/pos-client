@@ -55,6 +55,9 @@ export default {
   setContext(context) {
     this.context = context
   },
+  removeMiddleware() {
+    delete axios.defaults.headers['Authorization']
+  },
   setLang(lang) {
     this.lang = lang
   },

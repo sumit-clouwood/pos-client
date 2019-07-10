@@ -69,14 +69,14 @@
         >
       </li>
       <li>
-        <a href="javascript:void(0)">{{ _t('Logout') }}</a>
+        <a href="javascript:void(0)" @click="logout()">{{ _t('Logout') }}</a>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 export default {
   name: 'TopNavRight',
@@ -107,6 +107,7 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
+    ...mapActions('auth', ['logout']),
     changeLanguage(locale) {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
       bootstrap.loadUI(this.$store)

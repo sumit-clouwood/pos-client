@@ -189,7 +189,6 @@ const mutations = {
   },
   [mutation.RESET](state) {
     state.setModal = '#manage-customer'
-    state.referrals = false
     state.userDetails = false
   },
 }

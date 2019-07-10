@@ -39,4 +39,16 @@ export default {
   getRoles() {
     return DataService.get('/model/brand_roles?no_limit=true')
   },
+
+  logout() {
+    return new Promise((resolve, reject) => {
+      DataService.factory()
+        .post(process.env.VUE_APP_API_ENDPOINT + '/logout')
+        .then(response => {
+          DataService.removeMiddleware()
+          resolve(response)
+        })
+        .catch(response => reject(response))
+    })
+  },
 }
