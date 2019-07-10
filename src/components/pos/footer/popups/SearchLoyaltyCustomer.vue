@@ -12,7 +12,7 @@
         </div>
         <form class="modal-body add-note-wrap" autocomplete="off">
           <p class="color-text-invert">{{ _t('Jump to customer') }}</p>
-          <div class="add-note-area loyalty-search">
+          <div class="add-note-area ">
             <input
               autocomplete="off"
               type="text"
