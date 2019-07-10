@@ -53,7 +53,7 @@ const getters = {
     return false
   },
   getDeliveryArea: state => addressId => {
-    return LookupData.get({
+    return LookupData.check({
       collection: state.deliveryAreas,
       matchWith: addressId,
       selection: 'name',
