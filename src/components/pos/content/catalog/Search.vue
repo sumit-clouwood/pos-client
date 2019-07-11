@@ -5,7 +5,7 @@
       <i class="fa fa-search color-text-invert" aria-hidden="true"></i>
     </div>
     <input
-      type="text"
+      type="search"
       autocomplete="off"
       class="search-field-input color-dashboard-background"
       :placeholder="_t('Start typing to get search results')"

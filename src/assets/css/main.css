@@ -213,7 +213,7 @@
               margin: 0 auto;
               max-height: 5.625rem; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-text {
-              word-break: break-all;
+              word-break: break-word;
               text-align: center;
               font-weight: 600;
               user-select: none;
