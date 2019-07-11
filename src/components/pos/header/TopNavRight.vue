@@ -34,8 +34,7 @@
         data-target="#online-order"
       >
         <a class="btn-part color-text-invert" href="javascript:void(0)">
-          <span v-if="online">{{ _t('Online') }}</span>
-          <span v-else>{{ _t('Offline') }}</span>
+          {{ _t('Online') }}
           <span class="online-digit color-secondary">2</span>
         </a>
       </li>
