@@ -6,6 +6,7 @@
     </div>
     <input
       type="search"
+      autocomplete="username"
       class="search-field-input color-dashboard-background"
       :placeholder="_t('Start typing to get search results')"
       v-model="searchItems"
