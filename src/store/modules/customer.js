@@ -92,6 +92,7 @@ const actions = {
         street: '',
         building: '',
         flat_number: '',
+        email: '',
       },
     ]
     dispatch('setDefaultSettingsGlobalAddUpdate', ...params)

@@ -42,7 +42,7 @@
           </div>
           <div class="email-from nogeneral">
             <label class="color-text-invert">
-              {{ _t('Email') }} <span>*</span>
+              {{ _t('Email') }}
             </label>
             <input
               type="email"
@@ -260,7 +260,7 @@ export default {
         this.errors.count = 1
       }
       if (
-        typeof this.newCustomerDetails.email != 'undefined' &&
+        this.newCustomerDetails.email != '' &&
         !this.validEmail(this.newCustomerDetails.email)
       ) {
         this.errors.email =
