@@ -5,7 +5,7 @@
       <i class="fa fa-search color-text-invert" aria-hidden="true"></i>
     </div>
     <input
-      type="text"
+      type="search"
       class="search-field-input color-dashboard-background"
       :placeholder="_t('Start typing to get search results')"
       v-model="searchItems"
@@ -15,6 +15,7 @@
 </template>
 
 <script>
+/* global $ */
 import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Search',
@@ -26,6 +27,12 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+  },
+  mounted() {
+    this.searchItems = ''
+    setTimeout(function() {
+      $('.search-field-input').val('')
+    }, 1500)
   },
   methods: {
     ...mapActions('category', ['collectSearchItems']),

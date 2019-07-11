@@ -45,7 +45,7 @@ const getters = {
       )
     }
   },
-  checkDeliveryArea: (addressId, deliveryAreas) => {
+  checkDeliveryArea: () => (addressId, deliveryAreas) => {
     if (typeof deliveryAreas[addressId] !== 'undefined') {
       const area = deliveryAreas[addressId]
       return area.item_status === true ? area : false
@@ -59,14 +59,15 @@ const getters = {
       selection: 'name',
     })
   },
-  getCustomerAddresses: state => {
+  getCustomerAddresses: (state, getters, rootState) => {
     let data = {}
     if (state.customer && state.customer.customer_addresses) {
-      // return state.customer.customer_addresses
       data = state.customer.customer_addresses.filter(area => {
-        if (
-          getters.checkDeliveryArea(area.delivery_area_id, state.deliveryAreas)
-        ) {
+        let checkDeliveryArea = getters.checkDeliveryArea(
+          area.delivery_area_id,
+          state.deliveryAreas
+        )
+        if (area.store_id == rootState.context.storeId && checkDeliveryArea) {
           return area
         }
       })
