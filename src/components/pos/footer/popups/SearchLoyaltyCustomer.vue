@@ -12,7 +12,7 @@
         </div>
         <form class="modal-body add-note-wrap" autocomplete="off">
           <p class="color-text-invert">{{ _t('Jump to customer') }}</p>
-          <div class="add-note-area loyalty-search">
+          <div class="add-note-area <!--loyalty-search-->">
             <input
               autocomplete="off"
               type="text"
@@ -22,7 +22,7 @@
               v-model="searchTerm"
               v-on:keyup="search()"
             />
-            <button
+            <!--<button
               type="button"
               class="btn btnSuccess color-main color-text-invert"
               id="load"
@@ -39,7 +39,7 @@
                 ></i>
                 {{ _t('Search') }}</span
               >
-            </button>
+            </button>-->
           </div>
           <span
             class="loyalty-error text-danger loyalty-customer-error color-warning"
@@ -141,6 +141,7 @@ export default {
       this.searchCustomerErr = ''
       this.searchTerm = customer.name
       this.customerId = customer._id
+      this.$store.dispatch('customer/fetchAllCustomers')
       $('#myDropdown').toggle()
     },
     search() {
@@ -155,10 +156,12 @@ export default {
               this.searchCustomerErr = ''
               $('#searchLoader').hide()
               $('#myDropdown').toggle()
+              this.$store.dispatch('customer/fetchAllCustomers')
             })
             .catch(() => {
               $('#searchLoader').hide()
               this.searchCustomerErr = 'No Results Found'
+              this.$store.dispatch('customer/fetchAllCustomers')
             })
         }, 500)
       }
@@ -176,7 +179,7 @@ export default {
   /*display:none;*/
 }
 .dropdown-content {
-  /*display: block;*/
+  display: block;
   position: absolute;
   background-color: #f6f6f6;
   width: 100%;

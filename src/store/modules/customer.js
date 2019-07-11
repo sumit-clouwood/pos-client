@@ -53,7 +53,7 @@ const getters = {
     return false
   },
   getDeliveryArea: state => addressId => {
-    return LookupData.get({
+    return LookupData.check({
       collection: state.deliveryAreas,
       matchWith: addressId,
       selection: 'name',
@@ -75,6 +75,10 @@ const getters = {
   },
 }
 const actions = {
+  fetchAllCustomers({ commit, dispatch }) {
+    commit(mutation.FETCH_ALL, 'brand_customers_main_tbl')
+    dispatch('fetchAll')
+  },
   addCustomer({ dispatch }) {
     const params = [
       {
@@ -326,14 +330,18 @@ const mutations = {
   [mutation.PAST_ORDER_PAGINATE_DETAILS](state, paginateDetails) {
     state.pastOrdersPaginate.totalPages = paginateDetails
   },
+  [mutation.SET_CURRENT_PAGE_NO](state, pageNumber) {
+    state.params.page_number = pageNumber
+  },
+  [mutation.FETCH_ALL](state, pageId) {
+    state.pageId = pageId
+    state.params.query = ''
+  },
   [mutation.PARAMS](state, paramsCollection) {
     state.params = paramsCollection
   },
   [mutation.GET_DELIVERY_AREAS](state, fetchDeliveryAreas) {
     state.fetchDeliveryAreas = fetchDeliveryAreas
-  },
-  [mutation.SET_CURRENT_PAGE_NO](state, pageNumber) {
-    state.params.page_number = pageNumber
   },
   [mutation.SET_PAST_ORDER_CURRENT_PAGE_NO](state, pageNumber) {
     state.params.past_order_page_number = pageNumber

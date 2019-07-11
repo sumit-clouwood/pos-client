@@ -26,10 +26,14 @@ export default {
       })
     },
     updateItemQuantity() {
-      this.$store.dispatch(
-        'order/updateQuantity',
-        this.$store.getters['orderForm/quantity']
-      )
+      this.$store
+        .dispatch(
+          'order/updateQuantity',
+          this.$store.getters['orderForm/quantity']
+        )
+        .then(() => {
+          hideModal('#POSOrderItemOptions')
+        })
     },
   },
   computed: {
