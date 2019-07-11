@@ -7,7 +7,8 @@
     </div>
     <div class="online color-text-invert">
       <div class="fa fa-fw fa-circle" :class="{ online: online }"></div>
-      <div>{{ _t('Online') }}</div>
+      <div v-if="online">{{ _t('Online') }}</div>
+      <div v-else>{{ _t('Offline') }}</div>
     </div>
     <ul>
       <li v-if="availableLanguages" class="color-text-invert">
@@ -32,10 +33,11 @@
         data-toggle="modal"
         data-target="#online-order"
       >
-        <a class="btn-part color-text-invert" href="javascript:void(0)"
-          >{{ _t('Online') }}
-          <span class="online-digit color-secondary">2</span></a
-        >
+        <a class="btn-part color-text-invert" href="javascript:void(0)">
+          <span v-if="online">{{ _t('Online') }}</span>
+          <span v-else>{{ _t('Offline') }}</span>
+          <span class="online-digit color-secondary">2</span>
+        </a>
       </li>
     </ul>
     <li
@@ -136,11 +138,3 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
-/*.fa-circle:before {
-  color: #eb790f;
-}
-.fa-circle.online:before {
-  color: #62bb31;
-}*/
-</style>
