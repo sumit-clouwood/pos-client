@@ -3110,7 +3110,7 @@ body {
     grid-column-end: 3;
     height: 2.5rem;
     border-top: 1px solid #fff;
-    padding: 0 0 0 1.875rem;
+    padding: 0;
     background-color: #3A3E9F;
     color: #fff;
     display: grid;
