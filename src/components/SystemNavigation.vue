@@ -30,7 +30,7 @@
           class="nav-item active-opacity"
           data-toggle="tooltip"
           data-placement="right"
-          title="Food"
+          :title="_t('Menu Setup')"
         >
           <a class="nav-link-nav" href="javascript:void(0)">
             <span class="nav-link-text">
@@ -49,7 +49,7 @@
           class="nav-item active-opacity"
           data-toggle="tooltip"
           data-placement="right"
-          title="Location"
+          :title="_t('Store Setup')"
         >
           <a class="nav-link-nav" href="javascript:void(0)">
             <span class="nav-link-text">
@@ -68,7 +68,7 @@
           class="nav-item active-opacity"
           data-toggle="tooltip"
           data-placement="right"
-          title="Event"
+          :title="_t('Event')"
         >
           <a class="nav-link-nav" href="javascript:void(0)">
             <span class="nav-link-text">
@@ -87,7 +87,7 @@
           class="nav-item active-opacity"
           data-toggle="tooltip"
           data-placement="right"
-          title="CRM"
+          :title="_t('CRM')"
         >
           <a class="nav-link-nav" href="javascript:void(0)">
             <span class="nav-link-text">
@@ -107,7 +107,7 @@
           class="nav-item active-opacity"
           data-toggle="tooltip"
           data-placement="right"
-          title="Event"
+          :title="_t('Event')"
         >
           <a class="nav-link-nav" href="javascript:void(0)">
             <span class="nav-link-text">
@@ -125,7 +125,7 @@
           class="nav-item active-opacity"
           data-toggle="tooltip"
           data-placement="right"
-          title="Inventory"
+          :title="_t('Inventory')"
         >
           <a class="nav-link-nav" href="javascript:void(0)">
             <span class="nav-link-text">
@@ -144,7 +144,7 @@
           class="nav-item active-opacity"
           data-toggle="tooltip"
           data-placement="right"
-          title="Setting"
+          :title="_t('Setting')"
         >
           <a class="nav-link-nav" href="javascript:void(0)">
             <span class="nav-link-text">
@@ -165,10 +165,18 @@
     <div class="slider-btn">
       <i aria-hidden="true" class="fa fa-chevron-down"></i>
     </div>
-    <div class="navigation-avatar">
-      <a class="nav-link">
-        <img src="img/pos/profile-pic.png" alt="profile" />
-        <div class="nav-link-user-name">Admin</div>
+    <div class="navigation-avatar color-secondary" v-if="userDetails">
+      <a class="nav-link" href="" :title="userDetails.item.email">
+        <img :src="profileImage" alt="profile" />
+        <div class="nav-link-user-name color-text-invert">
+          {{ userDetails.item.name }}
+        </div>
+      </a>
+    </div>
+    <div class="navigation-avatar color-secondary" v-else>
+      <a class="nav-link" href="">
+        <img :src="profileImage" alt="profile" />
+        <div class="nav-link-user-name color-text-invert">Admin</div>
       </a>
     </div>
     <!--top Menu-->
@@ -176,8 +184,21 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'SystemNavigation',
+  computed: {
+    ...mapGetters('location', ['_t']),
+    ...mapState('location', ['userDetails']),
+    ...mapState({
+      profileImage: state =>
+        state.auth.userDetails && state.auth.userDetails.image
+          ? process.env.VUE_APP_API_ENDPOINT +
+            '/profile_pic/' +
+            state.auth.userDetails.image
+          : 'img/pos/profile-pic.png',
+    }),
+  },
 }
 </script>
 
