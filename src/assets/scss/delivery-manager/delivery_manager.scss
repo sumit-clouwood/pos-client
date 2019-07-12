@@ -482,7 +482,7 @@ div {
   }
   .dm-ready-order-wrapper {
     display: grid;
-    height: calc(100vh - 14rem);
+    height: calc(100vh - 17.6rem);
     overflow: auto;
     margin-right: $px10;
 
@@ -751,7 +751,7 @@ div.order-address {
 .with-drivers-filter {
   .drivers-filter {
     overflow: auto;
-    height: calc(100vh - 14rem);
+    height: calc(100vh - 17rem);
     border-left: $px1 solid rgba(63, 74, 74, 0.3);
   }
 

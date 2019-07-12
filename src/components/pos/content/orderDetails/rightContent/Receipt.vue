@@ -10,63 +10,95 @@
       <div class="order-note">
         {{ orderDetails.order_note }}
       </div>
-      <table class="table col-md-12 color-tables-background">
-        <tr>
-          <th class="receipt-heading color-text-invert color-secondary">
-            {{ _t('Item') }}
-          </th>
-          <th class="receipt-heading color-text-invert color-secondary">
-            {{ _t('Base Price') }}
-          </th>
-          <th class="receipt-heading color-text-invert color-secondary">
-            {{ _t('Qty') }}
-          </th>
-          <th class="receipt-heading color-text-invert color-secondary">
-            {{ _t('Total Price') }}
-          </th>
-        </tr>
-        <tr v-for="(item, key) in orderDetails.items" :key="key">
-          <td class="color-tables-background color-text">
-            <div>{{ item.name }}</div>
-            <div class="discount" v-if="orderDetails.item_discounts.length">
-              {{
-                getItemSubsets({
-                  subset: orderDetails.item_discounts,
-                  itemId: item.no,
-                  selector: 'item_discounts',
-                })
-              }}
-              <div v-for="(discount, index) in iteDiscount" :key="index">
-                {{ discount.name }}
+      <table
+        class="table col-md-12 color-tables-background table-responsive receipt-table"
+      >
+        <thead>
+          <tr>
+            <th
+              class="receipt-heading color-text-invert color-secondary"
+              style="width: 250px;"
+            >
+              {{ _t('Item') }}
+            </th>
+            <th
+              class="receipt-heading color-text-invert color-secondary"
+              style="width: 150px;"
+            >
+              {{ _t('Base Price') }}
+            </th>
+            <th
+              class="receipt-heading color-text-invert color-secondary"
+              style="width: 60px;"
+            >
+              {{ _t('Qty') }}
+            </th>
+            <th
+              class="receipt-heading color-text-invert color-secondary"
+              style="width: 150px;"
+            >
+              {{ _t('Total Price') }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, key) in orderDetails.items" :key="key">
+            <td
+              style="width: 250px;"
+              class="color-tables-background color-text"
+            >
+              <div>{{ item.name }}</div>
+              <div class="discount" v-if="orderDetails.item_discounts.length">
+                {{
+                  getItemSubsets({
+                    subset: orderDetails.item_discounts,
+                    itemId: item.no,
+                    selector: 'item_discounts',
+                  })
+                }}
+                <div v-for="(discount, index) in iteDiscount" :key="index">
+                  {{ discount.name }}
+                </div>
               </div>
-            </div>
-            <div class="modifier" v-if="orderDetails.item_modifiers.length">
-              {{
-                getItemSubsets({
-                  subset: orderDetails.item_modifiers,
-                  itemId: item.no,
-                  selector: 'item_modifiers',
-                })
-              }}
-              <div
-                v-for="(modifier, key) in orderDetails.item_modifiers"
-                :key="key"
-              >
-                <span v-if="modifier.for_item == item.no">
-                  <span v-if="modifier.qty > 0">+{{ modifier.qty }}</span>
-                  {{ modifier.name }}
-                </span>
+              <div class="modifier" v-if="orderDetails.item_modifiers.length">
+                {{
+                  getItemSubsets({
+                    subset: orderDetails.item_modifiers,
+                    itemId: item.no,
+                    selector: 'item_modifiers',
+                  })
+                }}
+                <div
+                  v-for="(modifier, key) in orderDetails.item_modifiers"
+                  :key="key"
+                >
+                  <span v-if="modifier.for_item == item.no">
+                    <span v-if="modifier.qty > 0">+{{ modifier.qty }}</span>
+                    {{ modifier.name }}
+                  </span>
+                </div>
               </div>
-            </div>
-          </td>
-          <td class="base-price color-tables-background color-text">
-            {{ item.price }}
-          </td>
-          <td class="qty color-tables-background color-text">{{ item.qty }}</td>
-          <td class="price color-tables-background color-text">
-            {{ getTotalPrice(item) }}
-          </td>
-        </tr>
+            </td>
+            <td
+              style="width: 150px;"
+              class="base-price color-tables-background color-text"
+            >
+              {{ item.price }}
+            </td>
+            <td
+              style="width: 60px;"
+              class="qty color-tables-background color-text"
+            >
+              {{ item.qty }}
+            </td>
+            <td
+              style="width: 150px;"
+              class="price color-tables-background color-text"
+            >
+              {{ getTotalPrice(item) }}
+            </td>
+          </tr>
+        </tbody>
       </table>
 
       <div class="receipt-summary">

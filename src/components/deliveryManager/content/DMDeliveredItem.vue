@@ -7,28 +7,28 @@
         <div class="select-driver" v-if="drivers">
           <div class="delivered-driver">
             <div class="select-driver">
-              {{ _t('Select Driver') }}
-            </div>
-            <div v-if="drivers" class="driver-container">
-              <input
-                autocomplete="off"
-                type="text"
-                class="input-search-driver"
-                id="get-customer-list"
-                v-model="selectedDriver"
-                @click="showDropdown"
-              />
-              <div id="my-dropdown" class="dropdown-content cursor-pointer">
-                <span class="dropdown" :key="0" @click="setDriver(null)">
-                  All
-                </span>
-                <span
-                  class="dropdown"
-                  v-for="dri in drivers"
-                  :key="dri._id"
-                  @click="setDriver(dri)"
-                  >{{ dri.name }}</span
-                >
+              <div v-if="drivers" class="driver-container">
+                <input
+                  autocomplete="off"
+                  type="text"
+                  placeholder="Select Driver"
+                  class="input-search-driver"
+                  id="get-customer-list"
+                  v-model="selectedDriver"
+                  @click="showDropdown"
+                />
+                <div id="my-dropdown" class="dropdown-content cursor-pointer">
+                  <span class="dropdown" :key="0" @click="setDriver(null)">
+                    {{ _t('Select Driver') }}
+                  </span>
+                  <span
+                    class="dropdown"
+                    v-for="dri in drivers"
+                    :key="dri._id"
+                    @click="setDriver(dri)"
+                    >{{ dri.name }}</span
+                  >
+                </div>
               </div>
             </div>
           </div>
@@ -230,7 +230,7 @@ export default {
       if (driver) {
         this.selectedDriver = driver.name
       } else {
-        this.selectedDriver = 'All'
+        this.selectedDriver = 'Select Driver'
       }
       this.$store.commit('deliveryManager/SET_DRIVER', driver)
       $('.dropdown-content').hide()

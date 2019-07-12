@@ -14,15 +14,14 @@ const state = {
   deliveredOrderCollection: [],
   moreOrders: false,
   is_pagination: true,
-  pageSize: 8,
   selectedStores: '',
   availableStores: false,
   params: {
     query: '',
-    limit: 10,
+    limit: 12,
     orderBy: 'real_created_datetime',
     page: 1,
-    totalPages: 0,
+    totalPages: 10,
     pageId: 'home_delivery_new',
   },
   drivers: [],
@@ -142,10 +141,10 @@ const actions = {
 
     DMService.getDMOrderDetails(...params).then(response => {
       commit(mutation.SET_DM_ORDERS, response.data)
+      commit(mutation.SET_TOTAL_ORDER, response.data.count)
       dispatch('getDrivers')
     })
   },
-
   getDrivers({ commit, rootGetters }) {
     let role = rootGetters['auth/getRole']('delivery_home')
 
@@ -319,6 +318,11 @@ const mutations = {
   [mutation.SET_SELECTED_DM_ORDERS](state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails
   },
+  [mutation.SET_TOTAL_ORDER](state, count) {
+    state.params.totalPages = Math.ceil(
+      parseInt(count) / parseInt(state.params.limit)
+    )
+  },
   [mutation.SET_SELECTED_STORE](state, storeId) {
     state.selectedStores = storeId
   },
@@ -333,6 +337,9 @@ const mutations = {
   },
   [mutation.SET_DM_PAGE_ID](state, pageId) {
     state.params.pageId = pageId
+  },
+  [mutation.SET_DM_PAGE](state, page) {
+    state.params.page = page
   },
   [mutation.DM_UPDATE_ORDERS](state, { index, remove, insert }) {
     if (insert) {
