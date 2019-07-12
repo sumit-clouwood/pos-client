@@ -53,10 +53,12 @@
         }}</span>
         <p class="color-text">
           {{
-            getLookupData({
-              lookupFrom: 'users',
-              id: orderDetails.item.order_history[0].user,
-            })
+            orderDetails.item.order_history.length
+              ? getLookupData({
+                  lookupFrom: 'users',
+                  id: orderDetails.item.order_history[0].user,
+                })
+              : 'N/A'
           }}
         </p>
       </div>
