@@ -7,6 +7,10 @@ export const REFERENCE_FIELD_CATEGORY_TO_ITEM = '_id'
 
 export const REFERENCE_FIELD_ITEM_TO_SUBCATEGORY = 'sub_category'
 export const REFERENCE_FIELD_SUBCATEGORY_TO_ITEM = '_id'
+export const ORDER_HISTORY_TYPE_RECORD_NEW = 'Created'
+export const ORDER_HISTORY_TYPE_RECORD_SENT_TO_KITCHEN =
+  'Sent for Cooking/Assembly'
+export const ORDER_HISTORY_TYPE_RECORD_PRINTED = 'Printed'
 
 /* PAYMENT RELATED CONSTANTS */
 

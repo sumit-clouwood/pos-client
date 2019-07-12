@@ -42,17 +42,17 @@
           <td class="color-tables-background color-text">
             {{ order.created_at }}
           </td>
-          <td class="color-tables-background color-text">
-            {{ order.order_type }}
+          <td class="color-tables-background color-text text-capitalize">
+            {{ LookupData.replaceUnderscoreHyphon(order.order_type) }}
           </td>
           <td class="color-tables-background color-text">
-            {{ convertDatetime(order.real_created_datetime) }}
+            {{ convertDatetime(order.real_created_datetime, timezoneString) }}
           </td>
           <td class="color-tables-background color-text">
             {{ order.balance_due }}
           </td>
-          <td class="color-tables-background color-text">
-            {{ order.order_status }}
+          <td class="color-tables-background color-text text-capitalize">
+            {{ LookupData.replaceUnderscoreHyphon(order.order_status) }}
           </td>
           <td class="color-tables-background color-text">
             {{
@@ -118,6 +118,7 @@ export default {
     ...mapState({
       users: state => state.customer.lookups.users,
     }),
+    ...mapState('location', ['timezoneString']),
     ...mapGetters('location', ['_t']),
   },
   methods: {

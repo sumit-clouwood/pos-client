@@ -16,55 +16,52 @@
         </li>
       </ul>
     </div>
-
-    <div>
-      <div class="last-order-wrap">
-        <div class="insight-last-order">
-          <h3 class="color-text-invert">{{ _t('Last Order') }}</h3>
-          <p class="last-order-time color-text">
-            {{ convertDatetime(insight.last_order_datetime) }}
-          </p>
-          <ul class="fav-item-slider">
-            <!--<li><img src="img/pos/dine-right.png" alt="fav-item" /></li>-->
-            <li class="color-text" v-for="(item, index) in items" :key="index">
-              {{ item.name }}
-            </li>
-          </ul>
+    <div class="last-order-wrap">
+      <div class="insight-last-order">
+        <h3 class="color-text-invert">{{ _t('Last Order') }}</h3>
+        <p class="last-order-time color-text">
+          {{ convertDatetime(insight.last_order_datetime, timezoneString) }}
+        </p>
+        <ul class="fav-item-slider">
+          <!--<li><img src="img/pos/dine-right.png" alt="fav-item" /></li>-->
+          <li class="color-text" v-for="(item, index) in items" :key="index">
+            {{ item.name }}
+          </li>
+        </ul>
+      </div>
+      <div class="insight-last-order">
+        <ul class="ullist-business-slider">
+          <li class="color-text-invert">
+            {{ _t('Total Business') }}
+            <span class="color-text">{{ insight.total_orders }}</span>
+          </li>
+          <li class="color-text-invert">
+            {{ _t('Cancelled') }}
+            <span class="color-text">{{ cancelOrders }}</span>
+          </li>
+        </ul>
+        <div class="total-amount-business-slider">
+          <p class="color-text-invert">{{ _t('Total Amount') }}</p>
+          <h3 class="color-text">
+            {{ lastOrder.currency_code }} {{ lastOrder.balance_due }}
+          </h3>
         </div>
-        <div class="insight-last-order">
-          <ul class="ullist-business-slider">
-            <li class="color-text-invert">
-              {{ _t('Total Business') }}
-              <span class="color-text">{{ insight.total_orders }}</span>
-            </li>
-            <li class="color-text-invert">
-              {{ _t('Cancelled') }}
-              <span class="color-text">{{ cancelOrders }}</span>
-            </li>
-          </ul>
-          <div class="total-amount-business-slider">
-            <p class="color-text-invert">{{ _t('Total Amount') }}</p>
-            <h3 class="color-text">
-              {{ lastOrder.currency_code }} {{ lastOrder.balance_due }}
-            </h3>
-          </div>
-        </div>
-        <div class="insight-last-order">
-          <h3 class="color-text-invert">{{ _t('Favorites') }}</h3>
-          <p
-            class="last-order-details color-text"
-            v-for="(favItem, key) in insight.favorites"
-            :key="key"
-          >
-            {{
-              LookupData.get({
-                collection: favoriteItems._id,
-                matchWith: favItem.menu_item,
-                selection: 'name',
-              })
-            }}
-          </p>
-        </div>
+      </div>
+      <div class="insight-last-order">
+        <h3 class="color-text-invert">{{ _t('Favorites') }}</h3>
+        <p
+          class="last-order-details color-text"
+          v-for="(favItem, key) in insight.favorites"
+          :key="key"
+        >
+          {{
+            LookupData.get({
+              collection: favoriteItems._id,
+              matchWith: favItem.menu_item,
+              selection: 'name',
+            })
+          }}
+        </p>
       </div>
     </div>
     <div class="title-cu">{{ _t('Notes') }}:</div>
@@ -80,7 +77,7 @@
           <tbody id="notes_data" class="color-tables-background">
             <tr v-for="(notes, index) in insight.notes" :key="index">
               <td class="color-text">
-                {{ convertDatetime(notes.created_at) }}
+                {{ convertDatetime(notes.created_at, timezoneString) }}
               </td>
               <td class="color-text">{{ notes.note }}</td>
             </tr>
@@ -138,6 +135,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('location', ['timezoneString']),
     ...mapState({
       insight: state =>
         getCustomerList(state) ? getCustomerList(state) : false,
@@ -153,6 +151,18 @@ export default {
         return totalNotes / 10
       }
     },
+  },
+  updated() {
+    $('.last-order-wrap').slick({
+      arrows: true,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      dots: true,
+      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
+      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+    })
+    $('.last-order-wrap')[0].slick.refresh()
+    // this.props.customerId = customerId
   },
   methods: {
     getAge: function(dob) {

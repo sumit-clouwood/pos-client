@@ -73,13 +73,13 @@ export default {
   name: 'DMHomeDeliverySubMenu',
   methods: {
     updateOrderStatus: function(orderStatus) {
-      this.$store.commit('order/LIST_TYPE', orderStatus.title)
+      this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
       this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
     },
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['listType']),
+    ...mapState('deliveryManager', ['listType']),
     ...mapState({
       orderCount: state => state.deliveryManager.orderCounts,
     }),

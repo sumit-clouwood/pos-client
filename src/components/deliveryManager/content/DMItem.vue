@@ -38,7 +38,9 @@
                   </div>
                 </div>
                 <div class="order_time">
-                  {{ convertDatetime(order.real_created_datetime) }}
+                  {{
+                    convertDatetime(order.real_created_datetime, timezoneString)
+                  }}
                 </div>
                 <div class="button-block" style="visibility: visible;">
                   <div v-if="actionDetails.action != ''">
@@ -123,7 +125,7 @@
                   <div class="order-address">
                     {{ order.order_flat_number }}, {{ order.order_building }},
                     {{ order.order_street }},
-                    {{ order.order_flat_number }}
+                    {{ order.order_city }}
                   </div>
                 </div>
               </div>
@@ -159,6 +161,7 @@ export default {
       branch: state => state.deliveryManager.availableStores,
     }),
     ...mapGetters('location', ['_t']),
+    ...mapState('location', ['timezoneString']),
     ...mapGetters('deliveryManager', ['orders']),
   },
   methods: {

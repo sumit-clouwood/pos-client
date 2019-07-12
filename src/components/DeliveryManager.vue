@@ -71,7 +71,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['listType']),
+    ...mapState('deliveryManager', ['listType']),
   },
 }
 </script>

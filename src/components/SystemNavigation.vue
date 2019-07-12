@@ -2,7 +2,9 @@
   <div class="navigation">
     <div class="logo">
       <a class="logo-link" href="javascript:void(0)">
-        <img src="img/other/icon.png" alt="icon" />
+        <router-link :to="dm">
+          <img src="img/other/icon.png" alt="icon" />
+        </router-link>
       </a>
     </div>
     <div class="navigation-list-wrapper">
@@ -13,7 +15,7 @@
           data-placement="right"
           title="Dashboard"
         >
-          <a class="nav-link-nav active" href="javascript:void(0)">
+          <a class="nav-link-nav active" :href="dashboard">
             <span class="nav-link-text">
               <svg id="dashboard_icon" viewBox="0 0 24 24">
                 <path
@@ -30,9 +32,9 @@
           class="nav-item active-opacity"
           data-toggle="tooltip"
           data-placement="right"
-          title="Food"
+          :title="_t('Menu Setup')"
         >
-          <a class="nav-link-nav" href="javascript:void(0)">
+          <a class="nav-link-nav" :href="menu">
             <span class="nav-link-text">
               <svg id="menu_menu_icon" viewBox="0 0 24 20">
                 <g fill="" fill-rule="nonzero">
@@ -49,9 +51,9 @@
           class="nav-item active-opacity"
           data-toggle="tooltip"
           data-placement="right"
-          title="Location"
+          :title="_t('Store Setup')"
         >
-          <a class="nav-link-nav" href="javascript:void(0)">
+          <a class="nav-link-nav" :href="store">
             <span class="nav-link-text">
               <svg id="menu_locations_icon" viewBox="0 0 16 24">
                 <path
@@ -68,7 +70,7 @@
           class="nav-item active-opacity"
           data-toggle="tooltip"
           data-placement="right"
-          title="Event"
+          :title="_t('Event')"
         >
           <a class="nav-link-nav" href="javascript:void(0)">
             <span class="nav-link-text">
@@ -87,7 +89,7 @@
           class="nav-item active-opacity"
           data-toggle="tooltip"
           data-placement="right"
-          title="CRM"
+          :title="_t('CRM')"
         >
           <a class="nav-link-nav" href="javascript:void(0)">
             <span class="nav-link-text">
@@ -107,7 +109,7 @@
           class="nav-item active-opacity"
           data-toggle="tooltip"
           data-placement="right"
-          title="Event"
+          :title="_t('Event')"
         >
           <a class="nav-link-nav" href="javascript:void(0)">
             <span class="nav-link-text">
@@ -125,7 +127,7 @@
           class="nav-item active-opacity"
           data-toggle="tooltip"
           data-placement="right"
-          title="Inventory"
+          :title="_t('Inventory')"
         >
           <a class="nav-link-nav" href="javascript:void(0)">
             <span class="nav-link-text">
@@ -144,7 +146,7 @@
           class="nav-item active-opacity"
           data-toggle="tooltip"
           data-placement="right"
-          title="Setting"
+          :title="_t('Setting')"
         >
           <a class="nav-link-nav" href="javascript:void(0)">
             <span class="nav-link-text">
@@ -165,10 +167,18 @@
     <div class="slider-btn">
       <i aria-hidden="true" class="fa fa-chevron-down"></i>
     </div>
-    <div class="navigation-avatar">
-      <a class="nav-link">
-        <img src="img/pos/profile-pic.png" alt="profile" />
-        <div class="nav-link-user-name">Admin</div>
+    <div class="navigation-avatar color-secondary" v-if="userDetails">
+      <a class="nav-link" href="" :title="userDetails.item.email">
+        <img :src="profileImage" alt="profile" />
+        <div class="nav-link-user-name color-text-invert">
+          {{ userDetails.item.name }}
+        </div>
+      </a>
+    </div>
+    <div class="navigation-avatar color-secondary" v-else>
+      <a class="nav-link" href="">
+        <img :src="profileImage" alt="profile" />
+        <div class="nav-link-user-name color-text-invert">Admin</div>
       </a>
     </div>
     <!--top Menu-->
@@ -176,8 +186,39 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'SystemNavigation',
+  methods: {
+    baseurl(link) {
+      return (
+        window.location.href.replace(
+          new RegExp('/delivery-manager/.*'),
+          '/' + link
+        ) + this.$store.getters['context/brand']
+      )
+    },
+  },
+  data() {
+    return {
+      dm: '/delivery-manager' + this.$store.getters['context/store'],
+      dashboard: this.baseurl('dashboard'),
+      menu: this.baseurl('menu'),
+      store: this.baseurl('locations'),
+    }
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
+    ...mapState('location', ['userDetails']),
+    ...mapState({
+      profileImage: state =>
+        state.auth.userDetails && state.auth.userDetails.image
+          ? process.env.VUE_APP_API_ENDPOINT +
+            '/profile_pic/' +
+            state.auth.userDetails.image
+          : 'img/pos/profile-pic.png',
+    }),
+  },
 }
 </script>
 

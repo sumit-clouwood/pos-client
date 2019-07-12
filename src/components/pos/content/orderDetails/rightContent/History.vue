@@ -20,24 +20,26 @@
             </th>
           </tr>
         </thead>
-        <tbody>
-          <tr v-if="orderDetails">
+
+        <tbody v-if="orderDetails">
+          <tr
+            v-for="(history, index) in orderDetails.order_history"
+            :key="index"
+          >
             <td
               class="color-tables-background field-type-cr_at field-created_at"
             >
               <span class="color-text">
-                {{ orderDetails.created_at.date }}</span
-              >
+                {{ convertDatetime(history.created_at, timezoneString) }}
+              </span>
             </td>
             <td
               class="color-tables-background ield-type-collection_select field-user"
             >
-              <span class="color-text">Seeding</span>
+              <span class="color-text">{{ getUserName(history.user) }}</span>
             </td>
             <td class="color-tables-background field-type-select field-name">
-              <span class="color-text"
-                >Created as {{ orderDetails.order_mode }} Order</span
-              >
+              <span class="color-text">{{ CONST[history.name] }}</span>
             </td>
           </tr>
           <!---->
@@ -48,14 +50,29 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
+import DateTime from '@/mixins/DateTime'
+import LookupData from '@/plugins/helpers/LookupData'
+
 export default {
   name: 'History',
+  mixins: [DateTime],
   props: {
     orderDetails: {},
+    userDetails: {},
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('location', ['timezoneString']),
+  },
+  methods: {
+    getUserName(userId) {
+      return LookupData.check({
+        collection: this.userDetails.users._id,
+        matchWith: userId,
+        selection: 'name',
+      })
+    },
   },
 }
 </script>

@@ -411,7 +411,7 @@ const mutations = {
   },
   [mutation.LOYALTY](state, loyalty) {
     if (loyalty) {
-      state.loyalty.card = loyalty.card.length ? loyalty.card[0] : 0
+      state.loyalty.card = loyalty.card.length ? loyalty.card[0] : false
       let loyaltyDetails = LookupData.get({
         collection: loyalty.details._id,
         matchWith: state.loyalty.card.program,

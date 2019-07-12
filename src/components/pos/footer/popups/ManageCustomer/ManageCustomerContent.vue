@@ -79,6 +79,7 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import Preloader from '@/components/util/Preloader'
+/* global $ */
 export default {
   name: 'ManageCustomerContent',
   props: [''],
@@ -95,7 +96,10 @@ export default {
   data: function() {
     return { activeIndex: '' }
   },
-
+  updated() {
+    $('.last-order-wrap')[0].slick.refresh()
+    // this.props.customerId = customerId
+  },
   methods: {
     setActiveCustomer(index) {
       this.activeIndex = index
@@ -105,11 +109,6 @@ export default {
         return customerAddress[0].city
       }
     },
-    // updateDada() {
-    //   $('.last-order-wrap')[0].slick.refresh()
-    //   // this.props.customerId = customerId
-    // },
-
     ...mapActions('customer', ['fetchSelectedCustomer']),
   },
 }

@@ -24,4 +24,7 @@ export default {
       }
     }
   },
+  replaceUnderscoreHyphon(str) {
+    return str.replace(/[_-]/g, ' ')
+  },
 }

@@ -44,8 +44,11 @@
 }
 
 .pagination-customer-details {
-  overflow: hidden;
-
+  grid-gap: $px32;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-column-gap: $px10;
+  padding: 0 $px66;
   > ul {
     padding-left: 0;
     margin-bottom: 0;
@@ -53,12 +56,6 @@
     align-items: center;
 
     > li {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: $px50;
-      height: $px50;
-      padding: 0 $px20;
       border-radius: $btn-border-radius;
       background-color: $blue-middle;
       border-color: $blue-middle;
@@ -78,6 +75,12 @@
       }
       a {
         color: $white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: $px50;
+        height: $px50;
+        padding: 0 $px20;
       }
       &.next-page {
         background: transparent !important;
@@ -153,4 +156,20 @@
 }
 .holdorders {
   justify-content: flex-end;
+}
+.receipt-table {
+  thead{
+    top: 0;
+    display: table-caption;
+    position: sticky;
+    z-index: 1;
+    background: #fff;
+  }
+}
+.receipt-table{
+  thead{
+    th{
+      font-weight: bold !important;
+    }
+  }
 }

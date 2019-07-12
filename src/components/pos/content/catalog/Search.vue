@@ -6,7 +6,7 @@
     </div>
     <input
       type="search"
-      autocomplete="username"
+      autocomplete="new-password"
       class="search-field-input color-dashboard-background"
       :placeholder="_t('Start typing to get search results')"
       v-model="searchItems"
@@ -30,6 +30,9 @@ export default {
   },
   mounted() {
     this.searchItems = ''
+    setTimeout(function() {
+      $('.search-field-input').val('')
+    }, 1500)
   },
   methods: {
     ...mapActions('category', ['collectSearchItems']),

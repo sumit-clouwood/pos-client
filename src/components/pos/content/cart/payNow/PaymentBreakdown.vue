@@ -16,7 +16,10 @@
           <th style="width: 150px;" class="color-text color-secondary"></th>
         </tr>
         <tr v-for="(payment, index) in payments" :key="index">
-          <td class="color-main color-text">{{ payment.method.name }}</td>
+          <td class="color-main color-text">
+            {{ payment.method.name }}
+            <span v-if="payment.code">({{ payment.code }})</span>
+          </td>
           <td class="color-main color-text">
             {{ formatPrice(payment.amount) }}
           </td>

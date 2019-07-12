@@ -13,7 +13,6 @@ const state = {
   item: false,
   errors: '',
   orderType: { OTview: 'Walk In', OTApi: 'walk_in' },
-  listType: 'New Orders',
   orderNote: '',
   cancellationReason: {},
   onlineOrders: false,
@@ -546,21 +545,32 @@ const actions = {
               itemDiscountData.discount = netPriceDiscount
             }
           } else {
-            //percentage based discount, use discount.rate here, not discount.value
-            const itemGrossDiscountAmount =
-              (item.undiscountedGrossPrice * discount.discount.rate) / 100
+            if (item.undiscountedNetPrice * item.quantity > 0) {
+              //discount error
 
-            item.grossPrice =
-              item.undiscountedGrossPrice - itemGrossDiscountAmount
+              //percentage based discount, use discount.rate here, not discount.value
+              const itemGrossDiscountAmount =
+                (item.undiscountedGrossPrice * discount.discount.rate) / 100
 
-            //apply discount on net price as well
-            const itemNetDiscountAmount =
-              (item.undiscountedNetPrice * discount.discount.rate) / 100
+              item.grossPrice =
+                item.undiscountedGrossPrice - itemGrossDiscountAmount
 
-            item.netPrice = item.undiscountedNetPrice - itemNetDiscountAmount
+              //apply discount on net price as well
+              const itemNetDiscountAmount =
+                (item.undiscountedNetPrice * discount.discount.rate) / 100
 
-            itemsDiscount += itemNetDiscountAmount
-            itemDiscountData.discount = itemNetDiscountAmount
+              item.netPrice = item.undiscountedNetPrice - itemNetDiscountAmount
+
+              itemsDiscount += itemNetDiscountAmount
+              itemDiscountData.discount = itemNetDiscountAmount
+            } else {
+              if (!discountErrors.includes(item._id)) {
+                discountErrors.push(item._id)
+              }
+              item.discount = false
+              item.grossPrice = item.undiscountedGrossPrice
+              item.netPrice = item.undiscountedNetPrice
+            }
           }
 
           if (!discountErrors.length) {
@@ -889,9 +899,6 @@ const mutations = {
   [mutation.ORDER_TYPE](state, orderType) {
     // state.orderType = orderType.charAt(0).toUpperCase() + orderType.slice(1)
     state.orderType = orderType
-  },
-  [mutation.LIST_TYPE](state, listType) {
-    state.listType = listType
   },
   [mutation.SET_REFERRAL](state, referral) {
     state.referral = referral

@@ -104,6 +104,20 @@
       <!--<DMItem :actionDetails="delivered" />-->
     </div>
     <OrderDetailsPopup />
+    <div class="pagination-customer-details">
+      <paginate
+        v-if="params.totalPages"
+        :page-count="params.totalPages"
+        :page-range="1"
+        :margin-pages="1"
+        :clickHandler="moreOrder"
+        :prev-text="_t('Prev')"
+        :next-text="_t('Next')"
+        :container-class="paginationDirection"
+        :page-class="_t('page-item')"
+      >
+      </paginate>
+    </div>
   </div>
 </template>
 
@@ -114,6 +128,7 @@ import DMItem from '@/components/deliveryManager/content/DMItem'
 import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredItem'
 import DMAssignedDriver from '@/components/deliveryManager/partial/DMAssignedDriver'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
+import paginate from 'vuejs-paginate'
 
 /* global $ */
 export default {
@@ -146,6 +161,7 @@ export default {
         nextOrderStatus: 'finished',
       },
       selectedUser: '',
+      paginationDirection: 'holdorders',
     }
   },
   components: {
@@ -154,15 +170,22 @@ export default {
     OrderDetailsPopup,
     DMDeliveredItem,
     DMAssignedDriver,
+    paginate,
   },
   computed: {
     ...mapState({
       driverList: state => state.deliveryManager.drivers,
     }),
-    ...mapState('deliveryManager', ['driverBucket']),
+    ...mapState('deliveryManager', ['driverBucket', 'params', 'listType']),
     ...mapGetters('location', ['_t']),
   },
-
+  updated() {
+    if (this.listType == 'Waiting for Pick') {
+      this.paginationDirection = ''
+    } else {
+      this.paginationDirection = 'holdorders'
+    }
+  },
   mounted() {
     this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
   },
@@ -177,6 +200,10 @@ export default {
     },
     showDropdown: function() {
       $('.dropdown-content').show()
+    },
+    moreOrder: function(pageNumber) {
+      this.$store.commit('deliveryManager/SET_DM_PAGE', pageNumber)
+      this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
     },
     getSelectUser: function() {
       this.selectedUser = $('#get-customer-list').val()

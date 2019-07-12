@@ -11,13 +11,19 @@
         <span class="details-item-name color-text-invert">{{
           _t('Order Status:')
         }}</span>
-        <p class="color-text">{{ orderDetails.item.order_status }}</p>
+        <p class="color-text text-capitalize">
+          {{
+            LookupData.replaceUnderscoreHyphon(orderDetails.item.order_status)
+          }}
+        </p>
       </div>
       <div class="details-item">
         <span class="details-item-name color-text-invert">{{
           _t('Order Type:')
         }}</span>
-        <p class="color-text">{{ orderDetails.item.order_type }}</p>
+        <p class="color-text text-capitalize">
+          {{ LookupData.replaceUnderscoreHyphon(orderDetails.item.order_type) }}
+        </p>
       </div>
       <div class="details-item">
         <span class="details-item-name color-text-invert">{{
@@ -29,7 +35,14 @@
         <span class="details-item-name color-text-invert"
           >{{ _t('Order Date/Times') }}:</span
         >
-        <p class="color-text">{{ orderDetails.item.created_at.date }}</p>
+        <p class="color-text">
+          {{
+            convertDatetime(
+              orderDetails.item.real_created_datetime,
+              timezoneString
+            )
+          }}
+        </p>
       </div>
       <div class="details-item">
         <span class="details-item-name color-text-invert">{{
@@ -43,7 +56,16 @@
         <span class="details-item-name color-text-invert">{{
           _t('Placed By:')
         }}</span>
-        <p class="color-text">Seeding</p>
+        <p class="color-text">
+          {{
+            orderDetails.item.order_history.length
+              ? getLookupData({
+                  lookupFrom: 'users',
+                  id: orderDetails.item.order_history[0].user,
+                })
+              : 'N/A'
+          }}
+        </p>
       </div>
     </div>
     <div v-if="orderDetails.customer">
@@ -69,7 +91,19 @@
         <span class="details-item-name color-text-invert">{{
           _t('Loyalty Points Earned:')
         }}</span>
-        <p class="color-text">N/A</p>
+        <p class="color-text">
+          {{
+            orderDetails.item.loyalty_cards_with_points &&
+            orderDetails.item.loyalty_cards_with_points.length
+              ? getLookupData({
+                  lookupFrom: 'brand_loyalty_cards',
+                  id: orderDetails.item.loyalty_cards_with_points[0].card_id,
+                }).loyalty_card_code
+              : ''
+          }}
+          :
+          {{ getLoyaltyPoint(orderDetails.item) }}
+        </p>
       </div>
     </div>
     <div v-if="orderDetails.item">
@@ -92,10 +126,12 @@
         }}</span>
         <p class="color-text">
           {{
-            getLookupData({
-              lookupFrom: 'users',
-              id: orderDetails.item.driver,
-            })
+            orderDetails.item.driver
+              ? getLookupData({
+                  lookupFrom: 'users',
+                  id: orderDetails.item.driver,
+                })
+              : 'Not Assigned'
           }}
         </p>
       </div>
@@ -116,7 +152,9 @@
 
 <script>
 import LookupData from '@/plugins/helpers/LookupData'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
+import DateTime from '@/mixins/DateTime'
+
 export default {
   name: 'LeftPart',
   props: {
@@ -124,15 +162,24 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('location', ['timezoneString']),
   },
+  mixins: [DateTime],
   methods: {
     getLookupData: function(lookup) {
       let setData = this.orderDetails.lookups[lookup.lookupFrom]._id
+      let selection =
+        lookup.lookupFrom == 'brand_loyalty_cards' ? false : 'name'
       return LookupData.get({
         collection: setData,
         matchWith: lookup.id,
-        selection: 'name',
+        selection: selection,
       })
+    },
+    getLoyaltyPoint(orderItem) {
+      return orderItem.loyalty_cards_with_points.length
+        ? orderItem.loyalty_cards_with_points[0].points
+        : 0
     },
   },
 }
