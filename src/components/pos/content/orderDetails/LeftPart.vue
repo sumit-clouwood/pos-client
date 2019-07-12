@@ -84,7 +84,18 @@
         <span class="details-item-name color-text-invert">{{
           _t('Loyalty Points Earned:')
         }}</span>
-        <p class="color-text">{{ getLoyaltyPoint(orderDetails.item) }}</p>
+        <p class="color-text">
+          {{
+            orderDetails.item.loyalty_cards_with_points
+              ? getLookupData({
+                  lookupFrom: 'brand_loyalty_cards',
+                  id: orderDetails.item.loyalty_cards_with_points[0].card_id,
+                }).loyalty_card_code
+              : ''
+          }}
+          :
+          {{ getLoyaltyPoint(orderDetails.item) }}
+        </p>
       </div>
     </div>
     <div v-if="orderDetails.item">
@@ -107,10 +118,12 @@
         }}</span>
         <p class="color-text">
           {{
-            getLookupData({
-              lookupFrom: 'users',
-              id: orderDetails.item.driver,
-            })
+            orderDetails.item.driver
+              ? getLookupData({
+                  lookupFrom: 'users',
+                  id: orderDetails.item.driver,
+                })
+              : 'Not Assigned'
           }}
         </p>
       </div>
@@ -146,10 +159,12 @@ export default {
   methods: {
     getLookupData: function(lookup) {
       let setData = this.orderDetails.lookups[lookup.lookupFrom]._id
+      let selection =
+        lookup.lookupFrom == 'brand_loyalty_cards' ? false : 'name'
       return LookupData.get({
         collection: setData,
         matchWith: lookup.id,
-        selection: 'name',
+        selection: selection,
       })
     },
     getLoyaltyPoint(orderItem) {
