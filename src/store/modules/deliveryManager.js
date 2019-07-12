@@ -8,6 +8,7 @@ const state = {
   collected: 'no',
   orders: [],
   orderCounts: 0,
+  listType: 'New Orders',
   selectedOrder: false,
   selectedDriver: false,
   deliveredOrderGroup: [],

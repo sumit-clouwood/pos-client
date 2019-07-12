@@ -13,7 +13,6 @@ const state = {
   item: false,
   errors: '',
   orderType: { OTview: 'Walk In', OTApi: 'walk_in' },
-  listType: 'New Orders',
   orderNote: '',
   cancellationReason: {},
   onlineOrders: false,

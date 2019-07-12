@@ -79,7 +79,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['listType']),
+    ...mapState('deliveryManager', ['listType']),
     ...mapState({
       orderCount: state => state.deliveryManager.orderCounts,
     }),
