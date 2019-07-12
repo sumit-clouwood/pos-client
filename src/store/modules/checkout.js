@@ -75,9 +75,7 @@ const actions = {
             order_source: CONSTANTS.ORDER_SOURCE_POS,
             order_type: rootState.order.orderType.OTApi,
             order_mode: 'online',
-            real_created_datetime: DateTime.getTimezoneDateTime(
-              rootState.location.timezoneString
-            ),
+            real_created_datetime: DateTime.getUTCDateTime(),
             // order_mode: 'online',
             //remove the modifiers prices from subtotal
             sub_total: Num.round(rootGetters['order/subTotal']),
