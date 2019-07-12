@@ -35,7 +35,7 @@
                 {{ _t('Select Driver') }}
               </div>
               <div class="autocomplete-container">
-                <div v-if="driverList" class="driver-container">
+                <div v-if="drivers" class="driver-container">
                   <input
                     autocomplete="off"
                     type="text"
@@ -48,7 +48,7 @@
                   <div id="my-dropdown" class="dropdown-content cursor-pointer">
                     <span
                       class="dropdown"
-                      v-for="driver in driverList"
+                      v-for="driver in drivers"
                       :key="driver._id"
                       v-on:click="selectedDriver(driver)"
                       >{{ driver.name }}</span
@@ -173,9 +173,7 @@ export default {
     paginate,
   },
   computed: {
-    ...mapState({
-      driverList: state => state.deliveryManager.drivers,
-    }),
+    ...mapGetters('deliveryManager', ['drivers']),
     ...mapState('deliveryManager', ['driverBucket', 'params', 'listType']),
     ...mapGetters('location', ['_t']),
   },
