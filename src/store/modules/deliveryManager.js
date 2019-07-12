@@ -286,6 +286,9 @@ const actions = {
 }
 
 const mutations = {
+  [mutation.LIST_TYPE](state, listType) {
+    state.listType = listType
+  },
   [mutation.SET_DM_ORDER_COLLECTION](state, OrderDetailsUpdate) {
     if (!state.deliveredOrderCollection[OrderDetailsUpdate.driverId]) {
       state.deliveredOrderGroup[OrderDetailsUpdate.driverId].push([])

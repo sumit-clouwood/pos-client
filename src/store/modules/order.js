@@ -901,9 +901,6 @@ const mutations = {
     // state.orderType = orderType.charAt(0).toUpperCase() + orderType.slice(1)
     state.orderType = orderType
   },
-  [mutation.LIST_TYPE](state, listType) {
-    state.listType = listType
-  },
   [mutation.SET_REFERRAL](state, referral) {
     state.referral = referral
   },
