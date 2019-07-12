@@ -30,7 +30,7 @@
               class="color-tables-background field-type-cr_at field-created_at"
             >
               <span class="color-text">
-                {{ convertDatetime(history.created_at) }}
+                {{ convertDatetime(history.created_at, timezoneString) }}
               </span>
             </td>
             <td
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 import LookupData from '@/plugins/helpers/LookupData'
 
@@ -63,6 +63,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('location', ['timezoneString']),
   },
   methods: {
     getUserName(userId) {

@@ -20,7 +20,7 @@
       <div class="insight-last-order">
         <h3 class="color-text-invert">{{ _t('Last Order') }}</h3>
         <p class="last-order-time color-text">
-          {{ convertDatetime(insight.last_order_datetime) }}
+          {{ convertDatetime(insight.last_order_datetime, timezoneString) }}
         </p>
         <ul class="fav-item-slider">
           <!--<li><img src="img/pos/dine-right.png" alt="fav-item" /></li>-->
@@ -77,7 +77,7 @@
           <tbody id="notes_data" class="color-tables-background">
             <tr v-for="(notes, index) in insight.notes" :key="index">
               <td class="color-text">
-                {{ convertDatetime(notes.created_at) }}
+                {{ convertDatetime(notes.created_at, timezoneString) }}
               </td>
               <td class="color-text">{{ notes.note }}</td>
             </tr>
@@ -135,6 +135,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('location', ['timezoneString']),
     ...mapState({
       insight: state =>
         getCustomerList(state) ? getCustomerList(state) : false,

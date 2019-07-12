@@ -36,7 +36,12 @@
           >{{ _t('Order Date/Times') }}:</span
         >
         <p class="color-text">
-          {{ convertDatetime(orderDetails.item.real_created_datetime) }}
+          {{
+            convertDatetime(
+              orderDetails.item.real_created_datetime,
+              timezoneString
+            )
+          }}
         </p>
       </div>
       <div class="details-item">
@@ -147,7 +152,7 @@
 
 <script>
 import LookupData from '@/plugins/helpers/LookupData'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 
 export default {
@@ -157,6 +162,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('location', ['timezoneString']),
   },
   mixins: [DateTime],
   methods: {
