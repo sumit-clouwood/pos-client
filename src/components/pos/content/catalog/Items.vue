@@ -47,6 +47,18 @@ export default {
       $('.modifier-option-radio').prop('checked', false)
       $('.food-menu-item').removeClass('active')
       $(this).addClass('active')
+      let cat = this.$store.getters['category/categories'].filter(
+        data => data._id === item.category
+      )
+      let subcat = this.$store.getters['category/subcategories'].filter(
+        data => data._id === item.sub_category
+      )
+      if (typeof cat !== 'undefined') {
+        this.$store.commit('category/SET_CATEGORY', cat[0])
+      }
+      if (typeof subcat !== 'undefined') {
+        this.$store.commit('category/SET_SUBCATEGORY', subcat[0])
+      }
       this.$store.commit('category/SET_ITEM', item)
       this.$store.commit('checkoutForm/showCalc', true)
       this.$store.commit('orderForm/updateQuantity', 1)
