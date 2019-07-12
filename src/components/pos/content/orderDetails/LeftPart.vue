@@ -86,7 +86,8 @@
         }}</span>
         <p class="color-text">
           {{
-            orderDetails.item.loyalty_cards_with_points
+            orderDetails.item.loyalty_cards_with_points &&
+            orderDetails.item.loyalty_cards_with_points.length
               ? getLookupData({
                   lookupFrom: 'brand_loyalty_cards',
                   id: orderDetails.item.loyalty_cards_with_points[0].card_id,
