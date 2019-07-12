@@ -21,7 +21,7 @@
           </tr>
         </thead>
 
-        <tbody v-if="orderDetails.order_history">
+        <tbody v-if="orderDetails">
           <tr
             v-for="(history, index) in orderDetails.order_history"
             :key="index"

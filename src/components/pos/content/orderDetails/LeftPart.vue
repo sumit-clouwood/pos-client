@@ -35,7 +35,9 @@
         <span class="details-item-name color-text-invert"
           >{{ _t('Order Date/Times') }}:</span
         >
-        <p class="color-text">{{ orderDetails.item.created_at.date }}</p>
+        <p class="color-text">
+          {{ convertDatetime(orderDetails.item.real_created_datetime) }}
+        </p>
       </div>
       <div class="details-item">
         <span class="details-item-name color-text-invert">{{
@@ -130,6 +132,8 @@
 <script>
 import LookupData from '@/plugins/helpers/LookupData'
 import { mapGetters } from 'vuex'
+import DateTime from '@/mixins/DateTime'
+
 export default {
   name: 'LeftPart',
   props: {
@@ -138,6 +142,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
   },
+  mixins: [DateTime],
   methods: {
     getLookupData: function(lookup) {
       let setData = this.orderDetails.lookups[lookup.lookupFrom]._id
