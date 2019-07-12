@@ -2,7 +2,9 @@
   <div class="navigation">
     <div class="logo">
       <a class="logo-link" href="javascript:void(0)">
-        <img src="img/other/icon.png" alt="icon" />
+        <router-link :to="dm">
+          <img src="img/other/icon.png" alt="icon" />
+        </router-link>
       </a>
     </div>
     <div class="navigation-list-wrapper">
@@ -13,7 +15,7 @@
           data-placement="right"
           title="Dashboard"
         >
-          <a class="nav-link-nav active" href="javascript:void(0)">
+          <a class="nav-link-nav active" :href="dashboard">
             <span class="nav-link-text">
               <svg id="dashboard_icon" viewBox="0 0 24 24">
                 <path
@@ -32,7 +34,7 @@
           data-placement="right"
           :title="_t('Menu Setup')"
         >
-          <a class="nav-link-nav" href="javascript:void(0)">
+          <a class="nav-link-nav" :href="menu">
             <span class="nav-link-text">
               <svg id="menu_menu_icon" viewBox="0 0 24 20">
                 <g fill="" fill-rule="nonzero">
@@ -51,7 +53,7 @@
           data-placement="right"
           :title="_t('Store Setup')"
         >
-          <a class="nav-link-nav" href="javascript:void(0)">
+          <a class="nav-link-nav" :href="store">
             <span class="nav-link-text">
               <svg id="menu_locations_icon" viewBox="0 0 16 24">
                 <path
@@ -187,6 +189,24 @@
 import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'SystemNavigation',
+  methods: {
+    baseurl(link) {
+      return (
+        window.location.href.replace(
+          new RegExp('/delivery-manager/.*'),
+          '/' + link
+        ) + this.$store.getters['context/brand']
+      )
+    },
+  },
+  data() {
+    return {
+      dm: '/delivery-manager' + this.$store.getters['context/store'],
+      dashboard: this.baseurl('dashboard'),
+      menu: this.baseurl('menu'),
+      store: this.baseurl('locations'),
+    }
+  },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('location', ['userDetails']),

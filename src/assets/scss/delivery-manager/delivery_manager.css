@@ -331,7 +331,7 @@ div#dm-new-order table td {
 
   .dm-ready-order-wrapper {
     display: grid;
-    height: calc(100vh - 14rem);
+    height: calc(100vh - 17.6rem);
     overflow: auto;
     margin-right: 0.625rem; }
     .dm-ready-order-wrapper table tr {
@@ -522,7 +522,7 @@ div.order-address {
 
 .with-drivers-filter .drivers-filter {
   overflow: auto;
-  height: calc(100vh - 14rem);
+  height: calc(100vh - 17rem);
   border-left: 0.0625rem solid rgba(63, 74, 74, 0.3); }
 .with-drivers-filter .home_delivery_pick {
   overflow: auto;
