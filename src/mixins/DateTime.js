@@ -40,8 +40,8 @@ export default {
         return htmlElement
       }, 1000)
     },
-    convertDatetime(datetime, fmt_out = 'Do MMM YYYY,  hh:mm:ss A') {
-      moment.locale('en-US')
+    convertDatetime(datetime, tz) {
+      moment.locale(tz)
       var value =
         datetime != null && typeof datetime.$date != 'undefined'
           ? parseInt(datetime.$date.$numberLong)
@@ -53,7 +53,7 @@ export default {
         result = moment
           .utc(value, fmt_in)
           .local()
-          .format(fmt_out)
+          .format('YYYY-MM-DD HH:mm:ss')
       }
       return result
     },
