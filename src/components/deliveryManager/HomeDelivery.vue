@@ -176,10 +176,16 @@ export default {
     ...mapState({
       driverList: state => state.deliveryManager.drivers,
     }),
-    ...mapState('deliveryManager', ['driverBucket', 'params']),
+    ...mapState('deliveryManager', ['driverBucket', 'params', 'listType']),
     ...mapGetters('location', ['_t']),
   },
-
+  updated() {
+    if (this.listType == 'Waiting for Pick') {
+      this.paginationDirection = ''
+    } else {
+      this.paginationDirection = 'holdorders'
+    }
+  },
   mounted() {
     this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
   },
