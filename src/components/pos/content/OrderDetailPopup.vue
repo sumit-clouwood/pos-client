@@ -18,7 +18,10 @@
 
             <!--content-->
             <Receipt :orderDetails="selectedOrder.item" />
-            <History :orderDetails="selectedOrder.item" />
+            <History
+              :orderDetails="selectedOrder.item"
+              :userDetails="selectedOrder.lookups"
+            />
             <Modification />
             <Payment :orderDetails="selectedOrder.item" />
           </div>

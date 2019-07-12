@@ -11,13 +11,19 @@
         <span class="details-item-name color-text-invert">{{
           _t('Order Status:')
         }}</span>
-        <p class="color-text">{{ orderDetails.item.order_status }}</p>
+        <p class="color-text text-capitalize">
+          {{
+            LookupData.replaceUnderscoreHyphon(orderDetails.item.order_status)
+          }}
+        </p>
       </div>
       <div class="details-item">
         <span class="details-item-name color-text-invert">{{
           _t('Order Type:')
         }}</span>
-        <p class="color-text">{{ orderDetails.item.order_type }}</p>
+        <p class="color-text text-capitalize">
+          {{ LookupData.replaceUnderscoreHyphon(orderDetails.item.order_type) }}
+        </p>
       </div>
       <div class="details-item">
         <span class="details-item-name color-text-invert">{{
@@ -43,7 +49,14 @@
         <span class="details-item-name color-text-invert">{{
           _t('Placed By:')
         }}</span>
-        <p class="color-text">Seeding</p>
+        <p class="color-text">
+          {{
+            getLookupData({
+              lookupFrom: 'users',
+              id: orderDetails.item.order_history[0].user,
+            })
+          }}
+        </p>
       </div>
     </div>
     <div v-if="orderDetails.customer">
@@ -69,7 +82,7 @@
         <span class="details-item-name color-text-invert">{{
           _t('Loyalty Points Earned:')
         }}</span>
-        <p class="color-text">N/A</p>
+        <p class="color-text">{{ getLoyaltyPoint(orderDetails.item) }}</p>
       </div>
     </div>
     <div v-if="orderDetails.item">
@@ -133,6 +146,11 @@ export default {
         matchWith: lookup.id,
         selection: 'name',
       })
+    },
+    getLoyaltyPoint(orderItem) {
+      return orderItem.loyalty_cards_with_points.length
+        ? orderItem.loyalty_cards_with_points[0].points
+        : 0
     },
   },
 }
