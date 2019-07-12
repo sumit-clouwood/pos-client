@@ -10,7 +10,7 @@
     grid-column-end: 3;
     height: $main-news-height;
     border-top: 1px solid #fff;
-    padding: 0 0 0 $px30;
+    padding: 0;
     background-color: $blue-dark;
     color: #fff;
     display: grid;
@@ -110,6 +110,7 @@
             text-align: center;
             font-weight: 600;
             user-select: none;
+            word-break: break-word;
           }
 
           .food-categories-item-check {
@@ -287,7 +288,7 @@
             }
 
             .food-menu-item-text {
-              word-break:break-all;
+              word-break:break-word;
               text-align: center;
               font-weight: 600;
               user-select: none;

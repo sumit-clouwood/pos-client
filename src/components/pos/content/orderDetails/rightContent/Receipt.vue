@@ -64,7 +64,7 @@
           </td>
           <td class="qty color-tables-background color-text">{{ item.qty }}</td>
           <td class="price color-tables-background color-text">
-            {{ item.tax }}
+            {{ getTotalPrice(item) }}
           </td>
         </tr>
       </table>
@@ -120,9 +120,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'formatPrice']),
   },
   methods: {
+    getTotalPrice: function(item) {
+      return this.formatPrice(item.price * item.qty)
+    },
     getItemSubsets: function(details) {
       if (details.selector == 'item_modifiers') {
         this.itemDiscount = details.subset.find(

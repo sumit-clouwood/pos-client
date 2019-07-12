@@ -15,17 +15,19 @@
               errors.name
             }}</span>
           </div>
-          <div class="email-from">
-            <label class="color-text-invert"
-              >{{ _t('Email') }} <span>*</span></label
-            >
+          <div class="mobile-from">
+            <label class="color-text-invert">
+              {{ _t('Phone Number') }}
+              <span>*</span>
+            </label>
             <input
-              type="email"
-              name="email"
-              v-model="newCustomerDetails.email"
+              type="text"
+              name="phone_number"
+              @keypress="Num.toNumberOnly($event)"
+              v-model="newCustomerDetails.phone_number"
             />
-            <span class="validation-error" v-if="errors.email">{{
-              errors.email
+            <span class="validation-error" v-if="errors.phone_number">{{
+              errors.phone_number
             }}</span>
           </div>
         </div>
@@ -38,18 +40,17 @@
               <option value="undisclosed">{{ _t('Undisclosed') }}</option>
             </select>
           </div>
-          <div class="mobile-from">
-            <label class="color-text-invert"
-              >{{ _t('Phone Number') }} <span>*</span></label
-            >
+          <div class="email-from nogeneral">
+            <label class="color-text-invert">
+              {{ _t('Email') }}
+            </label>
             <input
-              type="text"
-              name="phone_number"
-              @keypress="Num.toNumberOnly($event)"
-              v-model="newCustomerDetails.phone_number"
+              type="email"
+              name="email"
+              v-model="newCustomerDetails.email"
             />
-            <span class="validation-error" v-if="errors.phone_number">{{
-              errors.phone_number
+            <span class="validation-error" v-if="errors.email">{{
+              errors.email
             }}</span>
           </div>
         </div>
@@ -248,16 +249,6 @@ export default {
           .text()
       }
     },
-    /*getBirthday: function() {
-      if (
-        typeof this.newCustomerDetails.birthday != 'undefined' &&
-        this.customer_title == 'Edit'
-      ) {
-        let birthday = this.newCustomerDetails.birthday.split('-')
-        this.newCustomerDetails.birthday =
-          birthday[0] + '-' + birthday[1] + '-' + birthday[2]
-      }
-    },*/
     validate: function() {
       this.errors = {}
       this.errors.count = 0
@@ -269,20 +260,20 @@ export default {
         this.errors.count = 1
       }
       if (
-        typeof this.newCustomerDetails.email != 'undefined' &&
+        this.newCustomerDetails.email != '' &&
         !this.validEmail(this.newCustomerDetails.email)
       ) {
         this.errors.email =
           this._t('Valid email') + ' ' + this._t('is required.')
         this.errors.count = 1
       }
-      if (
+      /*if (
         !this.newCustomerDetails.email ||
         !getWithoutSpaceLength(this.newCustomerDetails.email)
       ) {
         this.errors.email = this._t('Email') + ' ' + this._t('is required.')
         this.errors.count = 1
-      }
+      }*/
       if (
         !this.newCustomerDetails.phone_number ||
         !getWithoutSpaceLength(this.newCustomerDetails.phone_number)
@@ -352,10 +343,6 @@ export default {
           this.errors.street = this._t('Street should be at least 2 characters')
           this.errors.count = 1
         }
-        /*if (!this.newCustomerDetails.birthday) {
-              this.errors.birthday = 'Date of birth required'
-              this.errors.count = 1
-            }*/
       }
       if (this.errors.count === 0) {
         if (typeof this.newCustomerDetails.birthday != 'undefined') {
@@ -376,9 +363,3 @@ export default {
   },
 }
 </script>
-<!--<style lang="scss" scoped>
-.right-shift {
-  right: 14px;
-  float: right;
-}
-</style>-->

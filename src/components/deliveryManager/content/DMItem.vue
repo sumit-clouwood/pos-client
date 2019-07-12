@@ -123,7 +123,7 @@
                   <div class="order-address">
                     {{ order.order_flat_number }}, {{ order.order_building }},
                     {{ order.order_street }},
-                    {{ order.order_flat_number }}
+                    {{ order.order_city }}
                   </div>
                 </div>
               </div>

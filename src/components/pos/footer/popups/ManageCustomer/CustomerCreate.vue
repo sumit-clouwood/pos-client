@@ -128,6 +128,9 @@ export default {
             data: customerData,
           }
           this.updateAction(actionDetails)
+          $('#close-customer').click()
+          $('#post_announcement').attr('disabled', false)
+          $('#information-popup').modal('show')
         }
         /*if (
           this.customerCreateStatus &&

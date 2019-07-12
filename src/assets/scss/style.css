@@ -3041,7 +3041,7 @@ body {
             font-size: 1.125rem;
             text-align: center;
             display: block;
-            word-break: break-all; }
+            word-break: break-word; }
   .navigation .slider-btn {
     color: #fff;
     margin: 0 auto;
@@ -3110,7 +3110,7 @@ body {
     grid-column-end: 3;
     height: 2.5rem;
     border-top: 1px solid #fff;
-    padding: 0 0 0 1.875rem;
+    padding: 0;
     background-color: #3A3E9F;
     color: #fff;
     display: grid;
@@ -3187,7 +3187,8 @@ body {
           .main .main-body .food-wrapper .food-categories .food-categories-item .food-categories-item-text {
             text-align: center;
             font-weight: 600;
-            user-select: none; }
+            user-select: none;
+            word-break: break-word; }
           .main .main-body .food-wrapper .food-categories .food-categories-item .food-categories-item-check {
             width: 1.25rem;
             height: 1.25rem;
@@ -3316,7 +3317,7 @@ body {
               margin: 0 auto;
               max-height: 5.625rem; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-text {
-              word-break: break-all;
+              word-break: break-word;
               text-align: center;
               font-weight: 600;
               user-select: none;

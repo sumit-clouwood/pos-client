@@ -1,3 +1,4 @@
+/*eslint-disable no-console*/
 import * as mutation from './order/mutation-types'
 import OrderService from '../../services/data/OrderService'
 import * as CONST from '@/constants'
@@ -36,10 +37,10 @@ const getters = {
   orderTotal: (state, getters, rootState, rootGetters) => {
     //discount is already subtracted from tax in tax.js
     let amount =
-      getters.subTotal +
-      rootGetters['tax/totalTax'] +
-      rootGetters['surcharge/surcharge'] -
-      rootGetters['discount/orderDiscountWithoutTax']
+      Num.round(getters.subTotal) +
+      Num.round(rootGetters['tax/totalTax']) +
+      Num.round(rootGetters['surcharge/surcharge']) -
+      Num.round(rootGetters['discount/orderDiscountWithoutTax'])
     if (amount) {
       return amount.toFixed(2)
     }
@@ -545,21 +546,32 @@ const actions = {
               itemDiscountData.discount = netPriceDiscount
             }
           } else {
-            //percentage based discount, use discount.rate here, not discount.value
-            const itemGrossDiscountAmount =
-              (item.undiscountedGrossPrice * discount.discount.rate) / 100
+            if (item.undiscountedNetPrice * item.quantity > 0) {
+              //discount error
 
-            item.grossPrice =
-              item.undiscountedGrossPrice - itemGrossDiscountAmount
+              //percentage based discount, use discount.rate here, not discount.value
+              const itemGrossDiscountAmount =
+                (item.undiscountedGrossPrice * discount.discount.rate) / 100
 
-            //apply discount on net price as well
-            const itemNetDiscountAmount =
-              (item.undiscountedNetPrice * discount.discount.rate) / 100
+              item.grossPrice =
+                item.undiscountedGrossPrice - itemGrossDiscountAmount
 
-            item.netPrice = item.undiscountedNetPrice - itemNetDiscountAmount
+              //apply discount on net price as well
+              const itemNetDiscountAmount =
+                (item.undiscountedNetPrice * discount.discount.rate) / 100
 
-            itemsDiscount += itemNetDiscountAmount
-            itemDiscountData.discount = itemNetDiscountAmount
+              item.netPrice = item.undiscountedNetPrice - itemNetDiscountAmount
+
+              itemsDiscount += itemNetDiscountAmount
+              itemDiscountData.discount = itemNetDiscountAmount
+            } else {
+              if (!discountErrors.includes(item._id)) {
+                discountErrors.push(item._id)
+              }
+              item.discount = false
+              item.grossPrice = item.undiscountedGrossPrice
+              item.netPrice = item.undiscountedNetPrice
+            }
           }
 
           if (!discountErrors.length) {
