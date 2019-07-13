@@ -42,15 +42,15 @@ export default {
           this.store
             .dispatch('category/fetchAll')
             .then(() => {
-              this.store.dispatch('location/getUserDetails')
               this.store.dispatch('modifier/fetchAll').then(() => {
                 this.store.commit('sync/loaded', true)
                 resolve()
-              })
 
-              this.store.dispatch('surcharge/fetchAll').then(() => {})
-              this.store.dispatch('discount/fetchAll').then(() => {})
-              this.store.dispatch('payment/fetchAll').then(() => {})
+                this.store.dispatch('location/getUserDetails')
+                this.store.dispatch('surcharge/fetchAll').then(() => {})
+                this.store.dispatch('discount/fetchAll').then(() => {})
+                this.store.dispatch('payment/fetchAll').then(() => {})
+              })
             })
             .catch(error => reject(error))
         })
@@ -70,17 +70,18 @@ export default {
             .dispatch('category/fetchAll')
             .then(() => {
               this.updateLoading('catalog')
-              this.store.dispatch('location/getUserDetails')
               this.store.dispatch('modifier/fetchAll').then(() => {
                 this.updateLoading('modifiers')
                 this.store.commit('sync/loaded', true)
                 resolve()
+
+                this.store.dispatch('location/getUserDetails')
+                this.store.dispatch('customer/fetchAll').then(() => {})
+                this.store.dispatch('surcharge/fetchAll').then(() => {})
+                this.store.dispatch('discount/fetchAll').then(() => {})
+                this.store.dispatch('payment/fetchAll').then(() => {})
+                this.store.dispatch('announcement/fetchAll').then(() => {})
               })
-              this.store.dispatch('customer/fetchAll').then(() => {})
-              this.store.dispatch('surcharge/fetchAll').then(() => {})
-              this.store.dispatch('discount/fetchAll').then(() => {})
-              this.store.dispatch('payment/fetchAll').then(() => {})
-              this.store.dispatch('announcement/fetchAll').then(() => {})
             })
             .catch(error => reject(error))
         })
