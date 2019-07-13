@@ -73,7 +73,6 @@ export default {
   name: 'DMHomeDeliverySubMenu',
   methods: {
     updateOrderStatus: function(orderStatus) {
-      //this.$store.commit('deliveryManager/EMPTY_DM_ORDERS')
       this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
       this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
     },

@@ -29,6 +29,7 @@ const state = {
   driverBucket: [],
   driver: null,
   driverId: null,
+  loading: false,
 }
 const getters = {
   drivers: (state, getters, rootState) =>
@@ -137,6 +138,7 @@ const getters = {
 
 const actions = {
   fetchDMOrderDetail({ commit, state, dispatch }) {
+    commit(mutation.SET_LOADING, true)
     // return new Promise((resolve, reject) => {
     const params = [
       state.params.query,
@@ -148,11 +150,16 @@ const actions = {
       state.selectedStores,
     ]
 
-    DMService.getDMOrderDetails(...params).then(response => {
-      commit(mutation.SET_DM_ORDERS, response.data)
-      commit(mutation.SET_TOTAL_ORDER, response.data.count)
-      dispatch('getDrivers')
-    })
+    DMService.getDMOrderDetails(...params)
+      .then(response => {
+        commit(mutation.SET_DM_ORDERS, response.data)
+        commit(mutation.SET_TOTAL_ORDER, response.data.count)
+        commit(mutation.SET_LOADING, false)
+        dispatch('getDrivers')
+      })
+      .catch(() => {
+        commit(mutation.SET_LOADING, false)
+      })
   },
   getDrivers({ commit, rootGetters }) {
     let role = rootGetters['auth/getRole']('delivery_home')
@@ -319,8 +326,8 @@ const mutations = {
   [mutation.SET_DM_ORDER_COLLECTED](state, collected) {
     state.collected = collected
   },
-  [mutation.EMPTY_DM_ORDERS](state) {
-    state.orders = []
+  [mutation.SET_LOADING](state, status) {
+    state.loading = status
   },
   [mutation.SET_DM_ORDERS](state, orderDetails) {
     state.orders = orderDetails.data.map(order => {

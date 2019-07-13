@@ -2,8 +2,8 @@
   <div class="dm-order-screens dm-order-screen-change" id="home-delivery-order">
     <DMHomeDeliverySubMenu />
     <div class="dm-ready-order-wrapper" id="dm-new-order">
-      <DMItem :actionDetails="readyDetails" v-if="orders.length" />
-      <Preloader v-else />
+      <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
+      <DMItem :actionDetails="readyDetails" v-else />
     </div>
 
     <div class="dm-ready-order-wrapper" id="dm-waiting-for-pick">
@@ -27,8 +27,11 @@
               <div class="form-group form-inline float-right limit"></div>
             </div>
           </div>
-          <DMItem :actionDetails="waitingOrder" v-if="orders.length" />
-          <Preloader v-else />
+          <Preloader
+            :msg="_t('Loading waiting for pickup orders') + '...'"
+            v-if="loading"
+          />
+          <DMItem :actionDetails="waitingOrder" v-else />
         </div>
         <div class="drivers-filter">
           <div class="table-drivers-filter">
@@ -99,12 +102,15 @@
     </div>
 
     <div class="dm-ready-order-wrapper" id="dm-delivery-in-progress">
-      <DMItem :actionDetails="deliveredDetails" v-if="orders.length" />
-      <Preloader v-else />
+      <Preloader
+        :msg="_t('Loading delivrey in progress orders') + '...'"
+        v-if="loading"
+      />
+      <DMItem :actionDetails="deliveredDetails" v-else />
     </div>
     <div class="dm-ready-order-wrapper" id="dm-delivered">
-      <DMDeliveredItem v-if="orders.length" />
-      <Preloader v-else />
+      <Preloader :msg="_t('Loading delivered orders') + '...'" v-if="loading" />
+      <DMDeliveredItem v-else />
       <!--<DMItem :actionDetails="delivered" />-->
     </div>
     <OrderDetailsPopup />
@@ -184,7 +190,7 @@ export default {
       'driverBucket',
       'params',
       'listType',
-      'orders',
+      'loading',
     ]),
     ...mapGetters('location', ['_t']),
   },
