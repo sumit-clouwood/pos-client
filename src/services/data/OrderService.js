@@ -44,7 +44,9 @@ export default {
   },
 
   updateOrderAction(id, action, params) {
-    let setBrand = action == 'cancel_order' ? 'brand' : ''
+    let setBrand = ['cancel_order', 'delivery_ready'].includes(action)
+      ? 'brand'
+      : ''
     return DataService.post(
       `/model/orders/id/${id}/${action}`,
       params,

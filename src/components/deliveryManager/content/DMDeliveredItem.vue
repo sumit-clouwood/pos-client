@@ -159,9 +159,9 @@ import ShowDeliveredOrderDetails from '@/components/deliveryManager/content/Show
 export default {
   name: 'DMDeliveredItem',
   computed: {
-    ...mapState('deliveryManager', ['drivers', 'driver', 'driverId']),
+    ...mapState('deliveryManager', ['driver', 'driverId']),
     ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapGetters('deliveryManager', ['driverOrders', 'avgTime']),
+    ...mapGetters('deliveryManager', ['drivers', 'driverOrders', 'avgTime']),
   },
   data() {
     return {

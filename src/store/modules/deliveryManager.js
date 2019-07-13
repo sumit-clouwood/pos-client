@@ -31,6 +31,10 @@ const state = {
   driverId: null,
 }
 const getters = {
+  drivers: (state, getters, rootState) =>
+    state.drivers.filter(driver =>
+      driver.brand_stores.includes(rootState.context.storeId)
+    ),
   orders: state => state.orders.filter(order => order.deleted === false),
   currentDriverOrders: (state, getters) => {
     if (state.driverId) {
@@ -44,7 +48,7 @@ const getters = {
     if (state.driver) {
       orders[state.driver.name] = getters['getOrdersByDriver'](state.driver)
     } else {
-      state.drivers.forEach(driver => {
+      getters['drivers'].forEach(driver => {
         orders[driver.name] = getters['getOrdersByDriver'](driver)
       })
     }
@@ -68,14 +72,16 @@ const getters = {
       if (order.driver == driver._id) {
         data.orders.push(order)
         data.amountToCollect += parseFloat(order.balance_due)
-        order.order_payments.forEach(payment => {
-          data.totalAmount += parseFloat(payment.collected)
-          if (cashMethod._id == payment.entity_id) {
-            data.cashPayment += parseFloat(payment.collected)
-          } else {
-            data.creditPayment += parseFloat(payment.collected)
-          }
-        })
+        if (order.order_payments) {
+          order.order_payments.forEach(payment => {
+            data.totalAmount += parseFloat(payment.collected)
+            if (cashMethod._id == payment.entity_id) {
+              data.cashPayment += parseFloat(payment.collected)
+            } else {
+              data.creditPayment += parseFloat(payment.collected)
+            }
+          })
+        }
         //delivery time, start to end
         order.order_history.forEach(history => {
           if (history.name == 'ORDER_HISTORY_TYPE_RECORD_DELIVERED') {
@@ -91,9 +97,11 @@ const getters = {
           }
         })
 
-        data.totalDeliveryTime +=
-          parseInt(order.deliveryEndTime.$date.$numberLong) -
-          parseInt(order.deliveryStartTime.$date.$numberLong)
+        if (order.deliveryEndTime && order.deliveryStartTime) {
+          data.totalDeliveryTime +=
+            parseInt(order.deliveryEndTime.$date.$numberLong) -
+            parseInt(order.deliveryStartTime.$date.$numberLong)
+        }
       }
     })
     return data
@@ -310,6 +318,9 @@ const mutations = {
   },
   [mutation.SET_DM_ORDER_COLLECTED](state, collected) {
     state.collected = collected
+  },
+  [mutation.EMPTY_DM_ORDERS](state) {
+    state.orders = []
   },
   [mutation.SET_DM_ORDERS](state, orderDetails) {
     state.orders = orderDetails.data.map(order => {
