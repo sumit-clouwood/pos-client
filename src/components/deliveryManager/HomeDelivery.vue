@@ -2,7 +2,8 @@
   <div class="dm-order-screens dm-order-screen-change" id="home-delivery-order">
     <DMHomeDeliverySubMenu />
     <div class="dm-ready-order-wrapper" id="dm-new-order">
-      <DMItem :actionDetails="readyDetails" />
+      <DMItem :actionDetails="readyDetails" v-if="orders.length" />
+      <Preloader v-else />
     </div>
 
     <div class="dm-ready-order-wrapper" id="dm-waiting-for-pick">
@@ -26,7 +27,8 @@
               <div class="form-group form-inline float-right limit"></div>
             </div>
           </div>
-          <DMItem :actionDetails="waitingOrder" />
+          <DMItem :actionDetails="waitingOrder" v-if="orders.length" />
+          <Preloader v-else />
         </div>
         <div class="drivers-filter">
           <div class="table-drivers-filter">
@@ -97,10 +99,12 @@
     </div>
 
     <div class="dm-ready-order-wrapper" id="dm-delivery-in-progress">
-      <DMItem :actionDetails="deliveredDetails" />
+      <DMItem :actionDetails="deliveredDetails" v-if="orders.length" />
+      <Preloader v-else />
     </div>
     <div class="dm-ready-order-wrapper" id="dm-delivered">
-      <DMDeliveredItem />
+      <DMDeliveredItem v-if="orders.length" />
+      <Preloader v-else />
       <!--<DMItem :actionDetails="delivered" />-->
     </div>
     <OrderDetailsPopup />
@@ -129,6 +133,7 @@ import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredIte
 import DMAssignedDriver from '@/components/deliveryManager/partial/DMAssignedDriver'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import paginate from 'vuejs-paginate'
+import Preloader from '@/components/util/Preloader'
 
 /* global $ */
 export default {
@@ -171,10 +176,16 @@ export default {
     DMDeliveredItem,
     DMAssignedDriver,
     paginate,
+    Preloader,
   },
   computed: {
     ...mapGetters('deliveryManager', ['drivers']),
-    ...mapState('deliveryManager', ['driverBucket', 'params', 'listType']),
+    ...mapState('deliveryManager', [
+      'driverBucket',
+      'params',
+      'listType',
+      'orders',
+    ]),
     ...mapGetters('location', ['_t']),
   },
   updated() {
