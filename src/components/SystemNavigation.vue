@@ -174,7 +174,7 @@ export default {
     baseurl(link) {
       return (
         window.location.href.replace(
-          new RegExp('/delivery-manager/.*'),
+          new RegExp('/pos/delivery-manager/.*'),
           '/' + link
         ) + this.$store.getters['context/brand']
       )
