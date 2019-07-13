@@ -9,7 +9,12 @@
       <div class="sub-total-num">{{ formatPrice(surcharge || 0) }}</div>
     </div>
     <div class="item discounts">
-      <div class="sub-total-text">{{ _t('Discounts') }}</div>
+      <div class="sub-total-text">
+        {{ _t('Discounts') }}
+        <span v-if="appliedOrderDiscount">
+          ({{ appliedOrderDiscount.discount.name }})</span
+        >
+      </div>
       <div class="sub-total-num">
         {{ formatPrice(orderDiscountWithoutTax || 0) }}
       </div>
@@ -26,7 +31,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'CartFooter',
   props: {},
@@ -36,6 +41,7 @@ export default {
     ...mapGetters('surcharge', ['surcharge']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', ['orderDiscountWithoutTax']),
+    ...mapState('discount', ['appliedOrderDiscount']),
   },
 }
 </script>
