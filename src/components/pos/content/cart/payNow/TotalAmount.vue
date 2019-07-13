@@ -16,7 +16,7 @@ import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'TotalAmount',
   computed: {
-    ...mapGetters('checkoutForm', ['orderTotal']),
+    ...mapGetters('order', ['orderTotal']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState('checkoutForm', ['tipAmount']),
   },
