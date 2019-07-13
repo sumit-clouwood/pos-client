@@ -60,7 +60,7 @@ export default {
   methods: {
     addTip() {
       this.$store.commit('checkoutForm/addTip', this.tip)
-      /*$('input[name=tip]').val(0)*/
+      this.tip = 0
     },
   },
 }

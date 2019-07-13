@@ -207,7 +207,9 @@ const actions = {
             itemDiscount.itemId = item._id
             itemDiscount.itemNo = itemNumber
             itemDiscount.quantity = item.quantity
-            itemDiscount.tax = itemTax.undiscountedTax - itemTax.tax
+            itemDiscount.tax = itemTax
+              ? itemTax.undiscountedTax - itemTax.tax
+              : 0
             //itemDiscountedTax += itemDiscount.tax
             item_discounts.push(itemDiscount)
           }
