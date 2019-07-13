@@ -1,12 +1,16 @@
 <template>
   <div class="preloader">
     <link rel="prefetch" href="/pos/img/icons/apple-touch-icon.png" />
-    <img src="img/icons/apple-touch-icon.png" id="slidecaption" />
+    <div><img src="img/icons/apple-touch-icon.png" id="slidecaption" /></div>
+    <div v-if="msg">{{ msg }}</div>
   </div>
 </template>
 <script>
 export default {
   name: 'Preloader',
+  props: {
+    msg: String,
+  },
 }
 </script>
 <style lang="sass" scoped>
