@@ -95,7 +95,7 @@ const actions = {
             item_modifiers: '',
             order_surcharges: '',
             order_discounts: [],
-            order_payments: '',
+            order_payments: [],
           }
         } catch (e) {
           console.log(e)
@@ -313,36 +313,40 @@ const actions = {
         //adding payment breakdown
         let totalPaid = 0
 
-        order.order_payments = rootState.checkoutForm.payments.map(payment => {
-          let { orderaAmount, orderPoints } = {}
-          if (payment.method.name == CONSTANTS.ORDER_PAYMENT_TYPE) {
-            orderaAmount = payment.amount
-            orderPoints = rootState.checkoutForm.loyaltyPoints
-          } else {
-            orderaAmount = payment.amount
-            orderPoints = payment.amount
-          }
-          let paymentPart = {
-            entity_id: payment.method._id,
-            name: payment.method.name,
-            collected: isNaN(orderaAmount) ? 0 : orderaAmount,
-            param1: payment.cardId,
-            param2: orderPoints,
-            param3: payment.code,
-          }
-          totalPaid += payment.amount
-          //Yuvraj, have a check here
-          if (payment.method.type == CONSTANTS.LOYALTY) {
-            if (parseFloat(rootState.customer.loyalty.balance) > 0) {
-              order.loyalty_customer = {
-                balance: rootState.customer.loyalty.balance,
-                redeemed_amount_value: rootState.checkoutForm.loyaltyAmount,
+        if (rootState.checkoutForm.payments.length) {
+          order.order_payments = rootState.checkoutForm.payments.map(
+            payment => {
+              let { orderaAmount, orderPoints } = {}
+              if (payment.method.name == CONSTANTS.ORDER_PAYMENT_TYPE) {
+                orderaAmount = payment.amount
+                orderPoints = rootState.checkoutForm.loyaltyPoints
+              } else {
+                orderaAmount = payment.amount
+                orderPoints = payment.amount
               }
+              let paymentPart = {
+                entity_id: payment.method._id,
+                name: payment.method.name,
+                collected: isNaN(orderaAmount) ? 0 : orderaAmount,
+                param1: payment.cardId,
+                param2: orderPoints,
+                param3: payment.code,
+              }
+              totalPaid += payment.amount
+              //Yuvraj, have a check here
+              if (payment.method.type == CONSTANTS.LOYALTY) {
+                if (parseFloat(rootState.customer.loyalty.balance) > 0) {
+                  order.loyalty_customer = {
+                    balance: rootState.customer.loyalty.balance,
+                    redeemed_amount_value: rootState.checkoutForm.loyaltyAmount,
+                  }
+                }
+                order.customer = rootState.customer.customerId
+              }
+              return paymentPart
             }
-            order.customer = rootState.customer.customerId
-          }
-          return paymentPart
-        })
+          )
+        }
 
         order.total_paid = Num.round(totalPaid)
 
