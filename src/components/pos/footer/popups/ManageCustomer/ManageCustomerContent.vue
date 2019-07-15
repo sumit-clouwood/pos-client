@@ -97,7 +97,11 @@ export default {
     return { activeIndex: '' }
   },
   updated() {
-    $('.last-order-wrap')[0].slick.refresh()
+    if (this.activeIndex != '') {
+      if (typeof $('.last-order-wrap')[0] != 'undefined') {
+        $('.last-order-wrap')[0].slick.refresh()
+      }
+    }
     // this.props.customerId = customerId
   },
   methods: {

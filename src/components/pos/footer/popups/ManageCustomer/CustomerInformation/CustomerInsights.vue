@@ -22,7 +22,7 @@
         <p class="last-order-time color-text">
           {{ convertDatetime(insight.last_order_datetime, timezoneString) }}
         </p>
-        <ul class="fav-item-slider">
+        <ul class="fav-item-slider" v-if="items">
           <!--<li><img src="img/pos/dine-right.png" alt="fav-item" /></li>-->
           <li class="color-text" v-for="(item, index) in items" :key="index">
             {{ item.name }}
@@ -42,8 +42,9 @@
         </ul>
         <div class="total-amount-business-slider">
           <p class="color-text-invert">{{ _t('Total Amount') }}</p>
-          <h3 class="color-text">
-            {{ lastOrder.currency_code }} {{ lastOrder.balance_due }}
+          <h3 class="color-text" v-if="lastOrder">
+            {{ lastOrder.currency_code ? lastOrder.currency_code : '' }}
+            {{ lastOrder.balance_due }}
           </h3>
         </div>
       </div>
@@ -183,7 +184,7 @@ export default {
     getLastOrderDetails: function(orderId) {
       if(this.pastOrders.length) {
         this.lastOrder = this.pastOrders.find(order => order._id == orderId)
-        this.items = this.lastOrder.items
+        this.items = typeof this.lastOrder != 'undefined' ? this.lastOrder.items : false
       }
     },
     cancelled_orders_count: function() {
