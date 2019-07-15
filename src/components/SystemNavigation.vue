@@ -161,6 +161,7 @@
         :title="userShortDetails.username"
       >
         <img
+          v-if="typeof userDetails.item != 'undefined'"
           :src="
             userDetails.item.avatar
               ? userDetails.item.avatar

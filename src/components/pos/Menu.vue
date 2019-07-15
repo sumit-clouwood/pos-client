@@ -49,7 +49,11 @@
         href="javascript:void(0)"
         :title="userShortDetails.username"
       >
-        <img :src="userDetails.item.avatar" alt="profile" />
+        <img
+          v-if="typeof userDetails.item != 'undefined'"
+          :src="userDetails.item.avatar"
+          alt="profile"
+        />
         <div class="nav-link-user-name color-text-invert">
           {{ userShortDetails.username }}
         </div>
