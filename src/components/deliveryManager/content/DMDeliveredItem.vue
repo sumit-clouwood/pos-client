@@ -216,7 +216,7 @@ export default {
     },
     formatTime(time) {
       let convertTime = time < 10 ? '0' + time : time
-      return isNaN(convertTime) ? 0 : convertTime
+      return isNaN(convertTime) ? '00' : convertTime
     },
     ordersTotal() {
       if (this.driver) {
