@@ -160,7 +160,14 @@
         href="javascript:void(0)"
         :title="userShortDetails.username"
       >
-        <img :src="userShortDetails.avatar" alt="profile" />
+        <img
+          :src="
+            userDetails.item.avatar
+              ? userDetails.item.avatar
+              : userShortDetails.avatar
+          "
+          alt="profile"
+        />
         <div class="nav-link-user-name color-text-invert">
           {{ userShortDetails.username }}
         </div>

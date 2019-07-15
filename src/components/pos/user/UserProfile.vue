@@ -13,7 +13,10 @@
           <div class="profile-content">
             <div class="profile-container">
               <div class="profile-picture-container">
-                <img :src="userAvatar" class="profile-picture" />
+                <img
+                  :src="user.avatar ? user.avatar : userAvatar"
+                  class="profile-picture"
+                />
               </div>
               <div class="items">
                 <span class="caption">{{ _t('Name') }}:</span>
