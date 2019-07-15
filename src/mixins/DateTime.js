@@ -4,7 +4,8 @@ export default {
   methods: {
     humanDateTime(data) {
       setInterval(function() {
-        let date = data.order_created
+        let date =
+          typeof data.order_created != 'undefined' ? data.order_created : data
 
         let date_future = new Date(date)
         let date_now = new Date()

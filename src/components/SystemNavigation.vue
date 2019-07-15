@@ -148,28 +148,43 @@
     <div class="slider-btn">
       <i aria-hidden="true" class="fa fa-chevron-down"></i>
     </div>
-    <div class="navigation-avatar color-secondary" v-if="userDetails">
-      <a class="nav-link" href="" :title="userDetails.item.email">
-        <img :src="profileImage" alt="profile" />
+    <div
+      class="navigation-avatar color-secondary"
+      v-if="userShortDetails"
+      data-toggle="modal"
+      data-target="#user-details"
+      data-dismiss="modal"
+    >
+      <a
+        class="nav-link"
+        href="javascript:void(0)"
+        :title="userShortDetails.username"
+      >
+        <img :src="userDetails.item.avatar" alt="profile" />
         <div class="nav-link-user-name color-text-invert">
-          {{ userDetails.item.name }}
+          {{ userShortDetails.username }}
         </div>
       </a>
     </div>
-    <div class="navigation-avatar color-secondary" v-else>
+    <!--<div class="navigation-avatar color-secondary" v-else>
       <a class="nav-link" href="">
         <img :src="profileImage" alt="profile" />
         <div class="nav-link-user-name color-text-invert">Admin</div>
       </a>
-    </div>
+    </div>-->
     <!--top Menu-->
+    <UserProfile />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex'
+import UserProfile from '@/components/pos/user/UserProfile'
 export default {
   name: 'SystemNavigation',
+  components: {
+    UserProfile,
+  },
   methods: {
     baseurl(link) {
       return (
@@ -193,7 +208,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('location', ['userDetails']),
+    ...mapState('location', ['userDetails', 'userShortDetails']),
     ...mapState({
       profileImage: state =>
         state.auth.userDetails && state.auth.userDetails.image

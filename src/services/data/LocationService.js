@@ -12,7 +12,8 @@ export default {
     )
   },
   userDetails(userId) {
-    return DataService.get(`/model/users/id/${userId}`)
+    // return DataService.get(`/model/brand_users/id/${userId}`, 'brand')
+    return DataService.get(`/model/users/id/${userId}`, false)
   },
 
   registerDevice(deviceId) {
