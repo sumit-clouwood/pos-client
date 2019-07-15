@@ -98,6 +98,9 @@ export default {
   },
   methods: {
     browse(item) {
+      // eslint-disable-next-line no-undef
+      $('.breadcrumbs').show()
+      $('.search-field-input').val('')
       this.$store.commit('sync/reload', true)
       bootstrap.loadUI().then(() => {})
       this.$store.dispatch('category/browse', item)

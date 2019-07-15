@@ -6,17 +6,18 @@
     </div>
     <input
       type="search"
-      autocomplete="new-password"
+      autocomplete="off"
       class="search-field-input color-dashboard-background"
       :placeholder="_t('Start typing to get search results')"
       v-model="searchItems"
-      @keyup="collectSearchItems(searchItems)"
+      @keyup="searchingItems(searchItems)"
     />
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+/*Global $*/
+import { mapGetters } from 'vuex'
 export default {
   name: 'Search',
   props: {},
@@ -32,7 +33,12 @@ export default {
     this.searchItems = ''
   },
   methods: {
-    ...mapActions('category', ['collectSearchItems']),
+    searchingItems(searchItems) {
+      // eslint-disable-next-line no-undef
+      $('.breadcrumbs').hide()
+      this.$store.dispatch('category/collectSearchItems', searchItems)
+    },
+    // ...mapActions('category', ['collectSearchItems']),
   },
 }
 </script>
