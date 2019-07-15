@@ -38,19 +38,19 @@
       <i class="fa fa-chevron-down color-text-invert" aria-hidden="true"></i>
     </div>
     <div class="navigation-avatar color-secondary" v-if="userDetails">
-      <a class="nav-link" href="" :title="userDetails.item.email">
-        <img :src="profileImage" alt="profile" />
+      <a class="nav-link" href="" :title="userDetails.username">
+        <img :src="userDetails.avatar" alt="profile" />
         <div class="nav-link-user-name color-text-invert">
-          {{ userDetails.item.name }}
+          {{ userDetails.username }}
         </div>
       </a>
     </div>
-    <div class="navigation-avatar color-secondary" v-else>
+    <!--<div class="navigation-avatar color-secondary" v-else>
       <a class="nav-link" href="">
         <img :src="profileImage" alt="profile" />
         <div class="nav-link-user-name color-text-invert">Admin</div>
       </a>
-    </div>
+    </div>-->
     <div v-if="getImages">
       <link
         v-for="(url, key) in getImages"
@@ -83,14 +83,14 @@ export default {
     }),
     ...mapGetters('context', ['store']),
     ...mapState('location', ['userDetails']),
-    ...mapState({
+    /*...mapState({
       profileImage: state =>
         state.auth.userDetails && state.auth.userDetails.image
           ? process.env.VUE_APP_API_ENDPOINT +
             '/profile_pic/' +
             state.auth.userDetails.image
           : 'img/pos/profile-pic.png',
-    }),
+    }),*/
     ...mapGetters('category', ['categories', 'getImages']),
     // ...mapGetters('modifier', {
     //   modifierImages: 'getImages',

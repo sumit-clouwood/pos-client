@@ -57,6 +57,12 @@ const actions = {
           commit(mutation.SET_CURRENCY, state.store.currency)
           commit(mutation.SET_TIMEZONE, state.brand.timezone)
 
+          let userDetails = {}
+          userDetails.username = storedata.data.username
+          userDetails.userId = storedata.data.user_id
+          userDetails.avatar = storedata.data.avatar
+          commit(mutation.USER_DETAILS, userDetails)
+
           TimezoneService.getTimezoneData(state.brand.timezone)
             .then(timezoneData => {
               let timezoneName = timezoneData.data.item.name.split(' ')
@@ -74,7 +80,7 @@ const actions = {
             root: true,
           })
           dispatch('referrals')
-          dispatch('getUserDetails')
+          // dispatch('getUserDetails')
           //  else if (state.store.default_language) {
           //   locale = state.store.default_language
           // }
@@ -106,7 +112,7 @@ const actions = {
       commit(mutation.SET_REFERRALS, response.data.data)
     })
   },
-  getUserDetails({ commit }) {
+  /*getUserDetails({ commit }) {
     if (localStorage.getItem('user') != null) {
       const user_id =
         localStorage.getItem('user').length > 0
@@ -118,7 +124,7 @@ const actions = {
         })
       }
     }
-  },
+  },*/
   changeLanguage({ commit }, locale) {
     commit(mutation.SET_LOCALE, locale)
     //dispatch('fetch')
