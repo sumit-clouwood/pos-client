@@ -37,20 +37,30 @@
     <div class="slider-btn color-secondary">
       <i class="fa fa-chevron-down color-text-invert" aria-hidden="true"></i>
     </div>
-    <div class="navigation-avatar color-secondary" v-if="userDetails">
-      <a class="nav-link" href="" :title="userDetails.item.email">
-        <img :src="profileImage" alt="profile" />
+    <div
+      class="navigation-avatar color-secondary"
+      v-if="userShortDetails"
+      data-toggle="modal"
+      data-target="#user-details"
+      data-dismiss="modal"
+    >
+      <a
+        class="nav-link"
+        href="javascript:void(0)"
+        :title="userShortDetails.username"
+      >
+        <img :src="userDetails.item.avatar" alt="profile" />
         <div class="nav-link-user-name color-text-invert">
-          {{ userDetails.item.name }}
+          {{ userShortDetails.username }}
         </div>
       </a>
     </div>
-    <div class="navigation-avatar color-secondary" v-else>
+    <!--<div class="navigation-avatar color-secondary" v-else>
       <a class="nav-link" href="">
-        <img :src="profileImage" alt="profile" />
-        <div class="nav-link-user-name color-text-invert">Admin</div>
+        <img :src="userDetails.item.avatar" alt="profile" />
+        <div class="nav-link-user-name color-text-invert">{{ userShortDetails.username }}</div>
       </a>
-    </div>
+    </div>-->
     <div v-if="getImages">
       <link
         v-for="(url, key) in getImages"
@@ -82,15 +92,15 @@ export default {
       currentCategory: state => state.category.category._id,
     }),
     ...mapGetters('context', ['store']),
-    ...mapState('location', ['userDetails']),
-    ...mapState({
+    ...mapState('location', ['userShortDetails', 'userDetails']),
+    /*...mapState({
       profileImage: state =>
         state.auth.userDetails && state.auth.userDetails.image
           ? process.env.VUE_APP_API_ENDPOINT +
             '/profile_pic/' +
             state.auth.userDetails.image
           : 'img/pos/profile-pic.png',
-    }),
+    }),*/
     ...mapGetters('category', ['categories', 'getImages']),
     // ...mapGetters('modifier', {
     //   modifierImages: 'getImages',
