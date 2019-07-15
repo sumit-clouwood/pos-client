@@ -492,7 +492,7 @@ const actions = {
   recalculateItemPrices({ commit, rootState, dispatch }) {
     return new Promise((resolve, reject) => {
       let itemsDiscount = 0
-      let discountErrors = []
+      let discountErrors = {}
 
       const newItems = state.items.map((stateItem, index) => {
         let item = { ...stateItem }
@@ -517,12 +517,11 @@ const actions = {
               item.undiscountedNetPrice * item.quantity
             ) {
               //discount error
-              if (!discountErrors.includes(item._id)) {
-                discountErrors.push(item._id)
-              }
               item.discount = false
               item.grossPrice = item.undiscountedGrossPrice
               item.netPrice = item.undiscountedNetPrice
+
+              discountErrors[item._id] = item
             } else {
               //add discount amount for record to show how much discount in total was applied
               itemsDiscount += discount.discount.value
@@ -564,16 +563,17 @@ const actions = {
               itemsDiscount += itemNetDiscountAmount
               itemDiscountData.discount = itemNetDiscountAmount
             } else {
-              if (!discountErrors.includes(item._id)) {
-                discountErrors.push(item._id)
-              }
               item.discount = false
               item.grossPrice = item.undiscountedGrossPrice
               item.netPrice = item.undiscountedNetPrice
+              discountErrors[item._id] = item
             }
           }
 
-          if (!discountErrors.length) {
+          if (
+            Object.entries(discountErrors).length === 0 &&
+            discountErrors.constructor === Object
+          ) {
             item.discount = itemDiscountData
           }
         } else {
@@ -595,7 +595,10 @@ const actions = {
       dispatch('surcharge/calculate', {}, { root: true }).then(() =>
         dispatch('tax/calculate', {}, { root: true })
       )
-      if (discountErrors.length) {
+      if (
+        Object.entries(discountErrors).length > 0 &&
+        discountErrors.constructor === Object
+      ) {
         reject(discountErrors)
         dispatch('discount/clearItemDiscount', discountErrors, { root: true })
       } else {

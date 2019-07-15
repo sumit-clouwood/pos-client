@@ -1,6 +1,8 @@
 import * as mutation from './discount/mutation-types'
 import DiscountService from '@/services/data/DiscountService'
-const DISCOUNT_ITEM_ERROR = "Discount can't be greater than item price."
+//const DISCOUNT_ITEM_ERROR = "Item discount can't be applied."
+const DISCOUNT_ITEM_ERROR_FREE = 'Item discount not available for free items.'
+const DISCOUNT_ITEM_ERROR_GREATER = "Discount can't be greater than item price."
 
 // initial state
 const state = {
@@ -126,7 +128,14 @@ const actions = {
       dispatch('order/recalculateItemPrices', {}, { root: true })
         .then(() => resolve())
         .catch(errors => {
-          commit(mutation.SET_ITEM_ERROR, DISCOUNT_ITEM_ERROR)
+          for (let itemId in errors) {
+            const item = errors[itemId]
+            if (item.undiscountedNetPrice <= 0) {
+              commit(mutation.SET_ITEM_ERROR, DISCOUNT_ITEM_ERROR_FREE)
+            } else {
+              commit(mutation.SET_ITEM_ERROR, DISCOUNT_ITEM_ERROR_GREATER)
+            }
+          }
           commit(mutation.SET_ERROR_CODE, 7)
           commit(mutation.CLEAR_ITEM_DISCOUNT, errors)
           reject(errors)
