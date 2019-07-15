@@ -398,6 +398,9 @@ const mutations = {
   },
   [mutation.RESET](state) {
     state.offlineData = null
+    state.address = false
+    state.customer = false
+    state.customerId = null
     state.loyalty = { card: false, details: false }
   },
   [mutation.SET_LOADING](state, status) {

@@ -102,7 +102,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-
+import * as CONST from '@/constants'
 export default {
   name: 'DineIn',
   props: {},
@@ -116,7 +116,10 @@ export default {
     ...mapState('order', ['orderType']),
   },
   watch: {
-    orderType(newVal) {
+    orderType(newVal, oldVal) {
+      if (newVal != oldVal && newVal.OTApi != CONST.ORDER_TYPE_CALL_CENTER) {
+        this.$store.dispatch('customer/reset')
+      }
       this.selectedOrderType = newVal
     },
   },
