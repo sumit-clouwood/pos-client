@@ -58,6 +58,7 @@
         <label class="container-radio-btn" v-else>
           <span class="customradioc-block">
             <input
+              v-if="item.editMode"
               type="radio"
               class="customradio modifier-option-radio"
               :id="modifier._id"
@@ -71,6 +72,15 @@
                   itemId: item._id,
                 })
               "
+            />
+            <input
+              v-else
+              type="radio"
+              class="customradio modifier-option-radio"
+              :id="modifier._id"
+              :name="subgroup._id"
+              :value="modifier._id"
+              @click="setRadio(item._id, subgroup._id, modifier._id)"
             />
             <span
               class="checkmark-radio-btn"
