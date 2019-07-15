@@ -13,7 +13,10 @@
           <div class="profile-content">
             <div class="profile-container">
               <div class="profile-picture-container">
-                <img :src="user.avatar" class="profile-picture" />
+                <img
+                  :src="user.avatar ? user.avatar : userAvatar"
+                  class="profile-picture"
+                />
               </div>
               <div class="items">
                 <span class="caption">{{ _t('Name') }}:</span>
@@ -33,11 +36,11 @@
                 </span>
 
                 <span class="caption">{{ _t('Created By') }}:</span>
-                <span>
+                <span v-if="collectedData.created_at_name">
                   {{ collectedData.created_at_name }}
-                  ( {{ collectedData.created_at_email }} )
+                  {{ collectedData.created_at_email }}
                 </span>
-
+                <span v-else> - </span>
                 <span class="caption">{{ _t('Preferred Language') }}:</span>
                 <span>{{ collectedData.language_name }}</span>
 
@@ -108,6 +111,7 @@ export default {
   mixins: [DateTime],
   computed: {
     ...mapState({
+      userAvatar: state => state.location.userShortDetails.avatar,
       user: state => state.location.userDetails.item,
       collectedData: state => state.location.userDetails.collected_data,
       rootStore: state =>

@@ -54,10 +54,10 @@ export default {
         data => data._id === item.sub_category
       )
       if (typeof cat !== 'undefined') {
-        this.$store.commit('category/SET_CATEGORY', cat[0])
+        // this.$store.commit('category/SET_CATEGORY', cat[0])
       }
       if (typeof subcat !== 'undefined') {
-        this.$store.commit('category/SET_SUBCATEGORY', subcat[0])
+        // this.$store.commit('category/SET_SUBCATEGORY', subcat[0])
       }
       this.$store.commit('category/SET_ITEM', item)
       this.$store.commit('checkoutForm/showCalc', true)

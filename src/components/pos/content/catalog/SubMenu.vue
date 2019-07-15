@@ -9,7 +9,7 @@
       }"
       :key="item._id"
       :class="{ active: currentSubcategory === item._id }"
-      @click.prevent="getItems(item)"
+      @click.prevent="getSubCatItems(item)"
     >
       <img
         v-if="item.sub_category_image != ''"
@@ -29,7 +29,8 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+/*Global $*/
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'SubMenu',
@@ -41,7 +42,14 @@ export default {
     ...mapGetters('category', ['subcategories']),
   },
   methods: {
-    ...mapActions('category', ['getItems']),
+    getSubCatItems(item) {
+      // eslint-disable-next-line no-undef
+      $('.breadcrumbs').show()
+      // eslint-disable-next-line no-undef
+      $('.search-field-input').val('')
+      this.$store.dispatch('category/getItems', item)
+    },
+    // ...mapActions('category', ['getItems']),
   },
 }
 </script>

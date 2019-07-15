@@ -49,7 +49,11 @@
         href="javascript:void(0)"
         :title="userShortDetails.username"
       >
-        <img :src="userDetails.item.avatar" alt="profile" />
+        <img
+          v-if="typeof userDetails.item != 'undefined'"
+          :src="userDetails.item.avatar"
+          alt="profile"
+        />
         <div class="nav-link-user-name color-text-invert">
           {{ userShortDetails.username }}
         </div>
@@ -108,6 +112,9 @@ export default {
   },
   methods: {
     browse(item) {
+      // eslint-disable-next-line no-undef
+      $('.breadcrumbs').show()
+      $('.search-field-input').val('')
       this.$store.commit('sync/reload', true)
       bootstrap.loadUI().then(() => {})
       this.$store.dispatch('category/browse', item)
