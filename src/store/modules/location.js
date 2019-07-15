@@ -20,6 +20,7 @@ const state = {
   setModal: '#manage-customer',
   referrals: false,
   userDetails: false,
+  userShortDetails: false,
 }
 
 // getters
@@ -61,7 +62,7 @@ const actions = {
           userDetails.username = storedata.data.username
           userDetails.userId = storedata.data.user_id
           userDetails.avatar = storedata.data.avatar
-          commit(mutation.USER_DETAILS, userDetails)
+          commit(mutation.USER_SHORT_DETAILS, userDetails)
 
           TimezoneService.getTimezoneData(state.brand.timezone)
             .then(timezoneData => {
@@ -80,7 +81,7 @@ const actions = {
             root: true,
           })
           dispatch('referrals')
-          // dispatch('getUserDetails')
+          dispatch('getUserDetails', storedata.data.user_id)
           //  else if (state.store.default_language) {
           //   locale = state.store.default_language
           // }
@@ -112,19 +113,13 @@ const actions = {
       commit(mutation.SET_REFERRALS, response.data.data)
     })
   },
-  /*getUserDetails({ commit }) {
-    if (localStorage.getItem('user') != null) {
-      const user_id =
-        localStorage.getItem('user').length > 0
-          ? JSON.parse(localStorage.getItem('user')).user_id
-          : false
-      if (user_id) {
-        LocationService.userDetails(user_id).then(response => {
-          commit(mutation.USER_DETAILS, response.data)
-        })
-      }
+  getUserDetails({ commit }, userId) {
+    if (userId) {
+      LocationService.userDetails(userId).then(response => {
+        commit(mutation.USER_DETAILS, response.data)
+      })
     }
-  },*/
+  },
   changeLanguage({ commit }, locale) {
     commit(mutation.SET_LOCALE, locale)
     //dispatch('fetch')
@@ -158,6 +153,9 @@ const actions = {
 const mutations = {
   [mutation.USER_DETAILS](state, userDetails) {
     state.userDetails = userDetails
+  },
+  [mutation.USER_SHORT_DETAILS](state, userDetails) {
+    state.userShortDetails = userDetails
   },
   [mutation.SET_MODAL](state, setModal) {
     state.setModal = setModal

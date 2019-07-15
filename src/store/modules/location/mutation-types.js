@@ -10,6 +10,7 @@ export const SET_TRASLATIONS = 'SET_TRASLATIONS'
 export const SET_STORE = 'SET_STORE'
 export const SET_BRAND = 'SET_BRAND'
 export const USER_DETAILS = 'USER_DETAILS'
+export const USER_SHORT_DETAILS = 'USER_SHORT_DETAILS'
 export const RESET = 'RESET'
 
 export const SET_MODAL = 'SET_MODAL'

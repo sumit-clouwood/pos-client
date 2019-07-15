@@ -331,6 +331,7 @@
     <Loyalty />
     <Invoice />
     <OrderDetailsPopup />
+    <UserProfile />
   </div>
 </template>
 
@@ -362,6 +363,7 @@ import SearchLoyaltyCustomer from '../pos/footer/popups/SearchLoyaltyCustomer'
 import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
 import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
+import UserProfile from '@/components/pos/user/UserProfile'
 
 import { mapActions, mapState, mapGetters } from 'vuex'
 /* global $ */
@@ -396,6 +398,7 @@ export default {
     Loyalty,
     Invoice,
     OrderDetailsPopup,
+    UserProfile,
   },
   data() {
     return {

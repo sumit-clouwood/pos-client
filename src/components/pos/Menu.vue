@@ -37,18 +37,28 @@
     <div class="slider-btn color-secondary">
       <i class="fa fa-chevron-down color-text-invert" aria-hidden="true"></i>
     </div>
-    <div class="navigation-avatar color-secondary" v-if="userDetails">
-      <a class="nav-link" href="" :title="userDetails.username">
-        <img :src="userDetails.avatar" alt="profile" />
+    <div
+      class="navigation-avatar color-secondary"
+      v-if="userShortDetails"
+      data-toggle="modal"
+      data-target="#user-details"
+      data-dismiss="modal"
+    >
+      <a
+        class="nav-link"
+        href="javascript:void(0)"
+        :title="userShortDetails.username"
+      >
+        <img :src="userDetails.item.avatar" alt="profile" />
         <div class="nav-link-user-name color-text-invert">
-          {{ userDetails.username }}
+          {{ userShortDetails.username }}
         </div>
       </a>
     </div>
     <!--<div class="navigation-avatar color-secondary" v-else>
       <a class="nav-link" href="">
-        <img :src="profileImage" alt="profile" />
-        <div class="nav-link-user-name color-text-invert">Admin</div>
+        <img :src="userDetails.item.avatar" alt="profile" />
+        <div class="nav-link-user-name color-text-invert">{{ userShortDetails.username }}</div>
       </a>
     </div>-->
     <div v-if="getImages">
@@ -82,7 +92,7 @@ export default {
       currentCategory: state => state.category.category._id,
     }),
     ...mapGetters('context', ['store']),
-    ...mapState('location', ['userDetails']),
+    ...mapState('location', ['userShortDetails', 'userDetails']),
     /*...mapState({
       profileImage: state =>
         state.auth.userDetails && state.auth.userDetails.image
