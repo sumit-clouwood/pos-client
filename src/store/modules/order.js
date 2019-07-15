@@ -89,6 +89,7 @@ const getters = {
 // actions
 const actions = {
   addToOrder({ state, getters, commit, dispatch }, item) {
+    commit('checkoutForm/RESET', 'process', { root: true })
     //set item price based on location, for modifiers items it is already set in modifer store
     // price means gross price here (including tax)
 
@@ -126,6 +127,7 @@ const actions = {
   },
 
   removeFromOrder({ commit, dispatch }, { item, index }) {
+    commit('checkoutForm/RESET', 'process', { root: true })
     commit(mutation.SET_ITEM, item)
     commit(mutation.REMOVE_ORDER_ITEM, index)
     if (state.items.length) {
@@ -175,6 +177,7 @@ const actions = {
     { commit, getters, rootState, dispatch, rootGetters },
     item
   ) {
+    commit('checkoutForm/RESET', 'process', { root: true })
     return new Promise((resolve, reject) => {
       if (!item) {
         item = { ...rootState.modifier.item }

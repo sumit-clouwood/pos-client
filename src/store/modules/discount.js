@@ -110,6 +110,7 @@ const actions = {
   },
 
   applyItemDiscount({ commit, rootState, dispatch }) {
+    commit('checkoutForm/RESET', 'process', { root: true })
     return new Promise((resolve, reject) => {
       commit(mutation.CLEAR_ORDER_DISCOUNT)
       if (state.currentActiveItemDiscount) {
@@ -150,6 +151,7 @@ const actions = {
   },
 
   applyOrderDiscount({ commit, rootState, dispatch }) {
+    commit('checkoutForm/RESET', 'process', { root: true })
     return new Promise((resolve, reject) => {
       commit(mutation.CLEAR_ITEM_DISCOUNT)
       if (state.currentActiveOrderDiscount) {
