@@ -48,7 +48,7 @@ const getters = {
 
   subTotal: () => {
     return state.items.reduce((total, item) => {
-      return total + item.netPrice * item.quantity
+      return total + Num.round(item.netPrice) * item.quantity
     }, 0)
   },
 
