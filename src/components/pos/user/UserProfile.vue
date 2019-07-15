@@ -36,15 +36,11 @@
                 </span>
 
                 <span class="caption">{{ _t('Created By') }}:</span>
-                <span>
-                  {{
-                    collectedData.created_at_name
-                      ? collectedData.created_at_name
-                      : _t('Super Admin')
-                  }}
+                <span v-if="collectedData.created_at_name">
+                  {{ collectedData.created_at_name }}
                   {{ collectedData.created_at_email }}
                 </span>
-
+                <span v-else> - </span>
                 <span class="caption">{{ _t('Preferred Language') }}:</span>
                 <span>{{ collectedData.language_name }}</span>
 
