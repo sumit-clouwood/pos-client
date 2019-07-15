@@ -44,7 +44,7 @@ export default {
   methods: {
     addToOrder(item) {
       this.$store.commit('order/SET_CART_TYPE', 'new')
-      $('.modifier-option-radio').prop('checked', false)
+      $('#POSItemOptions .modifier-option-radio').prop('checked', false)
       $('.food-menu-item').removeClass('active')
       $(this).addClass('active')
       let cat = this.$store.getters['category/categories'].filter(

@@ -64,6 +64,13 @@
               :name="subgroup._id"
               :value="modifier._id"
               @click="setRadio(item._id, subgroup._id, modifier._id)"
+              :checked="
+                isSelected({
+                  modifierId: modifier._id,
+                  groupId: subgroup._id,
+                  itemId: item._id,
+                })
+              "
             />
             <span
               class="checkmark-radio-btn"
