@@ -1,6 +1,7 @@
 <template>
   <div id="payment-method">
     <div
+      class="method"
       v-for="(method, key) in methods"
       :key="key"
       :class="{ active: activeMethod == method.name, 'color-secondary': true }"
@@ -54,12 +55,14 @@ export default {
       }
     },
     getTarget(method) {
-      if (method.type == CONSTANTS.LOYALTY) {
-        if (this.selectedModal == '#manage-customer') {
-          return '#search-loyalty-customer'
-        } else {
-          this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
-          return '#loyalty-payment'
+      if (this.$store.getters['checkoutForm/payable'] > 0) {
+        if (method.type == CONSTANTS.LOYALTY) {
+          if (this.selectedModal == '#manage-customer') {
+            return '#search-loyalty-customer'
+          } else {
+            this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
+            return '#loyalty-payment'
+          }
         }
       }
       return ''
