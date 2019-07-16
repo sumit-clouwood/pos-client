@@ -194,13 +194,14 @@ const actions = {
 
           //reduce modifier prices and taxes from item before sending it to checkout
           const modifiers = rootGetters['tax/itemModifiersTaxData'](item._id)
-
-          orderItem.price -= modifiers.reduce((total, modifier) => {
-            return total + modifier.price
-          }, 0)
-          orderItem.tax -= modifiers.reduce((total, modifier) => {
-            return total + modifier.tax
-          }, 0)
+          if (modifiers) {
+            orderItem.price -= modifiers.reduce((total, modifier) => {
+              return total + modifier.price
+            }, 0)
+            orderItem.tax -= modifiers.reduce((total, modifier) => {
+              return total + modifier.tax
+            }, 0)
+          }
 
           if (item.discount) {
             let itemDiscount = item.discount
