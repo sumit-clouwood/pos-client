@@ -1417,3 +1417,21 @@ tr.dataContentStyle{
   }
 }
 /*# sourceMappingURL=deliveryManager.css.map */
+
+.dm-order-screens {
+  .pagination-customer-details{
+    position:relative;
+    z-index:99;
+    padding: 4px 74px;
+    -webkit-box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
+    box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
+    > ul{
+      > li{
+        a {
+          height:45px;
+          width:45px;
+        }
+      }
+    }
+  }
+}
