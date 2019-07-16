@@ -3,7 +3,7 @@ import * as mutation from './tax/mutation-types'
 const state = {
   itemsTax: 0,
   itemsTaxData: [],
-  modifiersTaxData: [],
+  modifiersTaxData: {},
   surchargeTax: 0,
 }
 
@@ -12,13 +12,11 @@ const getters = {
   totalTax: (state, getters, rootState) =>
     state.itemsTax + state.surchargeTax - rootState.discount.taxDiscountAmount,
   modifierTaxData: state => ({ modifierId, itemId }) => {
-    return state.modifiersTaxData.find(
-      modifier =>
-        modifier.itemId === itemId && modifier.modifierId === modifierId
-    )
+    const modifiers = state.modifiersTaxData[itemId]
+    return modifiers.find(modifier => modifier.modifierId === modifierId)
   },
   itemModifiersTaxData: state => itemId => {
-    return state.modifiersTaxData.filter(modifier => modifier.itemId === itemId)
+    return state.modifiersTaxData[itemId]
   },
 }
 
@@ -69,8 +67,11 @@ const actions = {
     commit(mutation.RESET)
   },
 
-  setModifierTaxData({ commit }, modifiersTaxData) {
-    commit(mutation.SET_MODIFIERS_TAX_DATA, modifiersTaxData)
+  setModifierTaxData({ commit }, { itemId, modifiersTaxData }) {
+    commit(mutation.SET_MODIFIERS_TAX_DATA, {
+      itemId: itemId,
+      modifiersTaxData: modifiersTaxData,
+    })
   },
 }
 
@@ -85,8 +86,8 @@ const mutations = {
   [mutation.SET_SURCHARGE_TAX](state, tax) {
     state.surchargeTax = tax
   },
-  [mutation.SET_MODIFIERS_TAX_DATA](state, modifiersTaxData) {
-    state.modifiersTaxData = modifiersTaxData
+  [mutation.SET_MODIFIERS_TAX_DATA](state, { itemId, modifiersTaxData }) {
+    state.modifiersTaxData[itemId] = modifiersTaxData
   },
   [mutation.RESET](state) {
     state.itemsTax = 0

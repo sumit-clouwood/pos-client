@@ -48,7 +48,7 @@ const getters = {
 
   subTotal: () => {
     return state.items.reduce((total, item) => {
-      return total + item.netPrice * item.quantity
+      return total + Num.round(item.netPrice) * item.quantity
     }, 0)
   },
 
@@ -306,7 +306,11 @@ const actions = {
         })
       })
 
-      dispatch('tax/setModifierTaxData', modifierTaxData, { root: true })
+      dispatch(
+        'tax/setModifierTaxData',
+        { itemId: item._id, modifiersTaxData: modifierTaxData },
+        { root: true }
+      )
 
       modifierPrice = modifierTaxData.reduce((total, modifier) => {
         return total + modifier.price
