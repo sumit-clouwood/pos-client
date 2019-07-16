@@ -306,7 +306,11 @@ const actions = {
         })
       })
 
-      dispatch('tax/setModifierTaxData', modifierTaxData, { root: true })
+      dispatch(
+        'tax/setModifierTaxData',
+        { itemId: item._id, modifiersTaxData: modifierTaxData },
+        { root: true }
+      )
 
       modifierPrice = modifierTaxData.reduce((total, modifier) => {
         return total + modifier.price
