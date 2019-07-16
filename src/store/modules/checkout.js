@@ -347,6 +347,18 @@ const actions = {
               return paymentPart
             }
           )
+        } else {
+          const method = rootGetters['payment/cash']
+          order.order_payments = [
+            {
+              entity_id: method._id,
+              name: method.name,
+              collected: '0.00',
+              param1: '',
+              param2: '',
+              param3: '',
+            },
+          ]
         }
 
         order.total_paid = Num.round(totalPaid)
