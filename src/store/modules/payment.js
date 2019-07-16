@@ -4,7 +4,7 @@ import * as CONST from '@/constants'
 
 // initial state
 const state = {
-  methods: [],
+  methods: {},
 }
 
 // getters
