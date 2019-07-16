@@ -51,7 +51,11 @@
       >
         <img
           v-if="typeof userDetails.item != 'undefined'"
-          :src="userDetails.item.avatar"
+          :src="
+            userDetails.item.avatar
+              ? userDetails.item.avatar
+              : userShortDetails.avatar
+          "
           alt="profile"
         />
         <div class="nav-link-user-name color-text-invert">
