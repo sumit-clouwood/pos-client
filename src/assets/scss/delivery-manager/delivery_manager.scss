@@ -556,6 +556,9 @@ button.v-btn.v-btn--icon.theme--light {
 
 .change-location > button {
   margin-right: $px5;
+  > a {
+    color: #fff;
+  }
 }
 
 div {

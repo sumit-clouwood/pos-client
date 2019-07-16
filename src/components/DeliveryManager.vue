@@ -6,16 +6,16 @@
         <div class="breadcrump-wrapper">
           <ul class="ullist-breadcrump">
             <li>
-              <a href="#">{{ _t('DELIVERY') }}</a>
+              <a href="javascript:void(0)">{{ _t('DELIVERY') }}</a>
             </li>
             <li>
-              <a href="#">{{ brand.name }}</a>
+              <a href="javascript:void(0)">{{ brand.name }}</a>
             </li>
             <li>
-              <a href="#">{{ _t('HOME DELIVERIES') }}</a>
+              <a href="javascript:void(0)">{{ _t('HOME DELIVERIES') }}</a>
             </li>
             <li class="active">
-              <a href="#">{{ listType }}</a>
+              <a href="javascript:void(0)">{{ listType }}</a>
             </li>
           </ul>
         </div>
