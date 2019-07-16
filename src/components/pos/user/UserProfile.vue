@@ -112,14 +112,14 @@ export default {
   computed: {
     ...mapState({
       userAvatar: state => state.location.userShortDetails.avatar,
-      user: state => state.location.userDetails.item,
-      collectedData: state => state.location.userDetails.collected_data,
+      user: state => state.auth.userDetails.item,
+      collectedData: state => state.auth.userDetails.collected_data,
       rootStore: state =>
-        state.location.userDetails.collected_data.page_lookups.root_stores,
+        state.auth.userDetails.collected_data.page_lookups.root_stores,
       rootBrandRoles: state =>
-        state.location.userDetails.collected_data.page_lookups.root_brand_roles,
+        state.auth.userDetails.collected_data.page_lookups.root_brand_roles,
       brands: state =>
-        state.location.userDetails.collected_data.page_lookups.brands,
+        state.auth.userDetails.collected_data.page_lookups.brands,
     }),
     ...mapGetters('location', ['_t']),
   },

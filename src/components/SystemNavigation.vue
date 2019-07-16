@@ -216,7 +216,8 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('location', ['userDetails', 'userShortDetails']),
+    ...mapState('location', ['userShortDetails']),
+    ...mapState('auth', ['userDetails']),
     ...mapState({
       profileImage: state =>
         state.auth.userDetails && state.auth.userDetails.image

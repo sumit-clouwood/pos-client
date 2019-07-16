@@ -449,11 +449,16 @@ const actions = {
             taxTotalDiscount = (totalTax * orderDiscount.discount.rate) / 100
             surchargeTotalDiscount =
               (totalSurcharge * orderDiscount.discount.rate) / 100
-            resolve({
+
+            const discountData = {
               orderDiscount: orderTotalDiscount,
               taxDiscount: taxTotalDiscount,
               surchargeDiscount: surchargeTotalDiscount,
-            })
+            }
+
+            dispatch('discount/setOrderDiscount', discountData, { root: true })
+
+            resolve(discountData)
           }
         } else {
           //without surcharge

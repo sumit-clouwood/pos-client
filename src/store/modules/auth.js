@@ -7,6 +7,8 @@ const state = {
   deviceId: null,
   refreshToken: null,
   rolePermissions: null,
+  userDetails: false,
+  permissions: false,
 }
 
 // getters
@@ -36,9 +38,18 @@ const actions = {
         .catch(error => reject(error))
     })
   },
+
   logout() {
     localStorage.setItem('token', '')
     AuthService.logout().then(() => (window.location = '/'))
+  },
+
+  getUserDetails({ commit }, userId) {
+    if (userId) {
+      AuthService.userDetails(userId).then(response => {
+        commit(mutation.USER_DETAILS, response.data)
+      })
+    }
   },
 }
 
@@ -56,6 +67,9 @@ const mutations = {
   },
   [mutation.SET_ROLE_DETAILS](state, rolePermissions) {
     state.rolePermissions = rolePermissions
+  },
+  [mutation.USER_DETAILS](state, userDetails) {
+    state.userDetails = userDetails
   },
 }
 

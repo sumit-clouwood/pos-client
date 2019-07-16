@@ -9,7 +9,7 @@
               <a href="#">{{ _t('DELIVERY') }}</a>
             </li>
             <li>
-              <a href="#">{{ _t('DEFAULT BRAND') }}</a>
+              <a href="#">{{ brand.name }}</a>
             </li>
             <li>
               <a href="#">{{ _t('HOME DELIVERIES') }}</a>
@@ -72,6 +72,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('deliveryManager', ['listType']),
+    ...mapState('location', ['brand']),
   },
 }
 </script>
