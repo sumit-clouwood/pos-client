@@ -265,8 +265,13 @@ const actions = {
   resetAmount({ commit }) {
     commit('setAmount', 0)
   },
-  setMethod({ commit }, method) {
-    commit('setMethod', method)
+  setMethod({ commit, getters, rootGetters }, method) {
+    //check if payable is greater than 0 else set cash as method
+    if (getters['payable'] > 0) {
+      commit('setMethod', method)
+    } else {
+      commit('setMethod', rootGetters['payment/cash'])
+    }
   },
 
   removePayment({ commit }, index) {

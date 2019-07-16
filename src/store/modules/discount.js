@@ -162,8 +162,7 @@ const actions = {
 
         dispatch('order/recalculateOrderTotals', {}, { root: true })
           .then(response => {
-            dispatch('setOrderDiscount', response)
-            resolve()
+            resolve(response)
           })
           .catch(error => {
             commit(mutation.CLEAR_ORDER_DISCOUNT)
