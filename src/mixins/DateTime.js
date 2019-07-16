@@ -42,6 +42,12 @@ export default {
       }, 1000)
     },
     convertDatetime(datetime, tz) {
+      // eslint-disable-next-line no-console
+      console.log(
+        moment(datetime)
+          .tz(tz)
+          .format('YYYY-MM-DD HH:mm')
+      )
       moment.locale(tz)
       var value =
         datetime != null && typeof datetime.$date != 'undefined'
