@@ -229,7 +229,7 @@ const actions = {
                       entity_id: modifierId,
                       for_item: itemNumber,
                       price: modfierTaxData.price,
-                      tax: modfierTaxData.tax,
+                      tax: Num.round(modfierTaxData.tax),
                       name: modifier.name,
                       qty: item.quantity,
                       type: subgroup.item_type,
