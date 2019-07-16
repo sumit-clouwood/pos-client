@@ -27,12 +27,12 @@
 
                 <span class="caption">{{ _t('Created At') }}:</span>
                 <span>
-                  {{ user.created_at.date }}
+                  {{ toLocaleDateTimeString(user.created_at.date) }}
                 </span>
 
                 <span class="caption">{{ _t('Last Updated At') }}:</span>
                 <span>
-                  {{ user.updated_at.date }}
+                  {{ toLocaleDateTimeString(user.updated_at.date) }}
                 </span>
 
                 <span class="caption">{{ _t('Created By') }}:</span>

@@ -58,6 +58,9 @@ export default {
       }
       return result
     },
+    toLocaleDateTimeString(dateTime) {
+      return moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
+    },
   },
 
   getUTC() {
