@@ -42,12 +42,6 @@ export default {
       }, 1000)
     },
     convertDatetime(datetime, tz) {
-      // eslint-disable-next-line no-console
-      console.log(
-        moment(datetime)
-          .tz(tz)
-          .format('YYYY-MM-DD HH:mm')
-      )
       moment.locale(tz)
       var value =
         datetime != null && typeof datetime.$date != 'undefined'
@@ -59,7 +53,7 @@ export default {
         var fmt_in = moment(value)._f
         result = moment
           .utc(value, fmt_in)
-          .local()
+          .tz(tz)
           .format('YYYY-MM-DD HH:mm:ss')
       }
       return result
@@ -67,10 +61,14 @@ export default {
     toLocaleDateTimeString(dateTime) {
       return moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
     },
-    orderTimer: function(dateTime) {
+    orderTimer: function(dateTime, tz) {
       var startDateTime = new Date(dateTime) // YYYY (M-1) D H m s (start time and date from DB)
       var startStamp = startDateTime.getTime()
-      var newDate = new Date()
+
+      var indiaTime = new Date().toLocaleString('en-US', {
+        timeZone: tz,
+      })
+      var newDate = new Date(indiaTime)
       var newStamp = newDate.getTime()
       var diff = Math.round((newStamp - startStamp) / 1000)
 

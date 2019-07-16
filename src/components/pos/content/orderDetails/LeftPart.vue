@@ -193,7 +193,7 @@ export default {
     $('#runningtime').text('')
     setInterval(() => {
       let orderTime = $('#storerunningtime').val()
-      let timer = this.orderTimer(orderTime)
+      let timer = this.orderTimer(orderTime, this.timezoneString)
       $('#runningtime').text(timer)
     }, 1000)
   },
