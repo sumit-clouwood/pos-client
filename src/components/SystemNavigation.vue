@@ -188,6 +188,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import UserProfile from '@/components/pos/user/UserProfile'
+
 export default {
   name: 'SystemNavigation',
   components: {

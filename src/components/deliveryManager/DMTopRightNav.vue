@@ -18,9 +18,13 @@
         </div>
       </div>
       <div class="change-location">
-        <button class="btn btn-success">Change Brand</button>
+        <button class="btn btn-success">
+          <a :href="baseurl('dashboard')">{{ _t('Change Brand') }}</a>
+        </button>
         <button class="btn btn-success walkin-btn">
-          <router-link :to="store" class="text-white">Walk-in</router-link>
+          <router-link :to="store" class="text-white">
+            {{ _t('Walk-in') }}
+          </router-link>
         </button>
       </div>
       <button
@@ -76,6 +80,7 @@ export default {
     },
     ...mapGetters('context', ['store']),
     ...mapState('location', ['availableLanguages', 'language']),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     iconCode: function(iconCode) {
@@ -84,6 +89,14 @@ export default {
     changeLanguage(locale) {
       bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
+    },
+    baseurl(link) {
+      return (
+        window.location.href.replace(
+          new RegExp('/pos/delivery-manager/.*'),
+          '/' + link
+        ) + this.$store.getters['context/brand']
+      )
     },
     showLeftMenu() {
       let navigation = $('.navigation')
