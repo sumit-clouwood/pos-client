@@ -49,7 +49,32 @@
           _t('Order Duration:')
         }}</span>
         <p class="color-text">
-          3 weeks, 6 days, 3 hours, 2 minutes, 3 seconds
+          <span
+            id="runningtime-0"
+            class="timeago elapsedTime delManTime"
+            title=""
+          ></span>
+          <span
+            class="customtime left"
+            :id="
+              'createdOrder-0-' +
+                convertDatetime(
+                  orderDetails.item.real_created_datetime,
+                  timezoneString
+                )
+            "
+            style="display: none"
+          ></span>
+          <input
+            type="hidden"
+            id="storerunningtime-0"
+            :value="
+              convertDatetime(
+                orderDetails.item.real_created_datetime,
+                timezoneString
+              )
+            "
+          />
         </p>
       </div>
       <div class="details-item">
@@ -151,10 +176,10 @@
 </template>
 
 <script>
+/*global $*/
 import LookupData from '@/plugins/helpers/LookupData'
 import { mapGetters, mapState } from 'vuex'
 import DateTime from '@/mixins/DateTime'
-
 export default {
   name: 'LeftPart',
   props: {
@@ -163,6 +188,13 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('location', ['timezoneString']),
+  },
+  updated() {
+    let orderTime = $('#storerunningtime-0').val()
+    setInterval(() => {
+      let timer = this.orderTimer(orderTime)
+      $('#runningtime-0').text(timer)
+    }, 1000)
   },
   mixins: [DateTime],
   methods: {
