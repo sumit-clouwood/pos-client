@@ -100,7 +100,8 @@ export default {
       currentCategory: state => state.category.category._id,
     }),
     ...mapGetters('context', ['store']),
-    ...mapState('location', ['userShortDetails', 'userDetails']),
+    ...mapState('location', ['userShortDetails']),
+    ...mapState('auth', ['userDetails']),
     /*...mapState({
       profileImage: state =>
         state.auth.userDetails && state.auth.userDetails.image

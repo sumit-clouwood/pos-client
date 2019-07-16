@@ -19,7 +19,6 @@ const state = {
   location: null,
   setModal: '#manage-customer',
   referrals: false,
-  userDetails: false,
   userShortDetails: false,
 }
 
@@ -81,7 +80,10 @@ const actions = {
             root: true,
           })
           dispatch('referrals')
-          dispatch('getUserDetails', storedata.data.user_id)
+          dispatch('auth/getUserDetails', storedata.data.user_id, {
+            root: true,
+          })
+          // dispatch('getUserDetails', storedata.data.user_id)
           //  else if (state.store.default_language) {
           //   locale = state.store.default_language
           // }
@@ -113,13 +115,7 @@ const actions = {
       commit(mutation.SET_REFERRALS, response.data.data)
     })
   },
-  getUserDetails({ commit }, userId) {
-    if (userId) {
-      LocationService.userDetails(userId).then(response => {
-        commit(mutation.USER_DETAILS, response.data)
-      })
-    }
-  },
+
   changeLanguage({ commit }, locale) {
     commit(mutation.SET_LOCALE, locale)
     //dispatch('fetch')
@@ -151,9 +147,6 @@ const actions = {
 
 // mutations
 const mutations = {
-  [mutation.USER_DETAILS](state, userDetails) {
-    state.userDetails = userDetails
-  },
   [mutation.USER_SHORT_DETAILS](state, userDetails) {
     state.userShortDetails = userDetails
   },
@@ -193,7 +186,7 @@ const mutations = {
   },
   [mutation.RESET](state) {
     state.setModal = '#manage-customer'
-    state.userDetails = false
+    state.userShortDetails = false
   },
 }
 
