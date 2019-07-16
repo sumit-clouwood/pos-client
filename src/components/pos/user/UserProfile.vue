@@ -112,7 +112,7 @@ export default {
   computed: {
     ...mapState({
       userAvatar: state => state.location.userShortDetails.avatar,
-      user: state => state.auth.auth.item,
+      user: state => state.auth.userDetails.item,
       collectedData: state => state.auth.userDetails.collected_data,
       rootStore: state =>
         state.auth.userDetails.collected_data.page_lookups.root_stores,
