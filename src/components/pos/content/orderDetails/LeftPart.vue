@@ -50,14 +50,14 @@
         }}</span>
         <p class="color-text">
           <span
-            id="runningtime-0"
+            id="runningtime"
             class="timeago elapsedTime delManTime"
             title=""
           ></span>
           <span
             class="customtime left"
             :id="
-              'createdOrder-0-' +
+              'createdOrder-' +
                 convertDatetime(
                   orderDetails.item.real_created_datetime,
                   timezoneString
@@ -67,7 +67,7 @@
           ></span>
           <input
             type="hidden"
-            id="storerunningtime-0"
+            id="storerunningtime"
             :value="
               convertDatetime(
                 orderDetails.item.real_created_datetime,
@@ -190,10 +190,11 @@ export default {
     ...mapState('location', ['timezoneString']),
   },
   updated() {
-    let orderTime = $('#storerunningtime-0').val()
+    $('#runningtime').text('')
     setInterval(() => {
-      let timer = this.orderTimer(orderTime)
-      $('#runningtime-0').text(timer)
+      let orderTime = $('#storerunningtime').val()
+      let timer = this.orderTimer(orderTime, this.timezoneString)
+      $('#runningtime').text(timer)
     }, 1000)
   },
   mixins: [DateTime],
