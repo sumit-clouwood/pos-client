@@ -54,12 +54,12 @@ const getters = {
 
   subTotalUndiscounted: () => {
     return state.items.reduce((total, item) => {
-      return total + item.undiscountedNetPrice * item.quantity
+      return total + Num.round(item.undiscountedNetPrice) * item.quantity
     }, 0)
   },
 
   itemPrice: () => item => {
-    return item.quantity * item.grossPrice
+    return item.quantity * Num.round(item.grossPrice)
   },
 
   orderModifiers: () => item => {
