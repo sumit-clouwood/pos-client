@@ -209,7 +209,7 @@ const actions = {
             itemDiscount.itemNo = itemNumber
             itemDiscount.quantity = item.quantity
             itemDiscount.tax = itemTax
-              ? itemTax.undiscountedTax - itemTax.tax
+              ? Num.round(itemTax.undiscountedTax) - Num.round(itemTax.tax)
               : 0
             //itemDiscountedTax += itemDiscount.tax
             item_discounts.push(itemDiscount)
@@ -302,7 +302,7 @@ const actions = {
               itemDiscount.type === CONSTANTS.VALUE
                 ? itemDiscount.value
                 : itemDiscount.rate,
-            price: Num.round(itemDiscount.discount * itemDiscount.quantity),
+            price: Num.round(itemDiscount.discount) * itemDiscount.quantity,
             tax: Num.round(itemDiscount.tax) * itemDiscount.quantity,
             for_item: itemDiscount.itemNo,
             entity_id: itemDiscount.id,
