@@ -3,7 +3,9 @@
     <div class="current-time">
       <div class="header-main-left-time">
         <span>{{ todayDate }} </span>
-        <span class="time"> {{ todayTime }}</span>
+        <span class="time text-uppercase font-weight-bold">
+          {{ todayTime }}
+        </span>
       </div>
     </div>
     <div class="button-block">
@@ -19,7 +21,7 @@
       </div>
       <div class="change-location">
         <button class="btn btn-success">
-          <a :href="baseurl('dashboard')">{{ _t('Change Brand') }}</a>
+          <a :href="baseurl('brands')">{{ _t('Change Brand') }}</a>
         </button>
         <button class="btn btn-success walkin-btn">
           <router-link :to="store" class="text-white">
@@ -91,11 +93,9 @@ export default {
       this.$store.dispatch('location/changeLanguage', locale)
     },
     baseurl(link) {
-      return (
-        window.location.href.replace(
-          new RegExp('/pos/delivery-manager/.*'),
-          '/' + link
-        ) + this.$store.getters['context/brand']
+      return window.location.href.replace(
+        new RegExp('/pos/delivery-manager/.*'),
+        '/' + link
       )
     },
     showLeftMenu() {
