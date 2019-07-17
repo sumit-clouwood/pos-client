@@ -303,7 +303,7 @@ const actions = {
                 ? itemDiscount.value
                 : itemDiscount.rate,
             price: Num.round(itemDiscount.discount * itemDiscount.quantity),
-            tax: Num.round(itemDiscount.tax * itemDiscount.quantity),
+            tax: Num.round(itemDiscount.tax) * itemDiscount.quantity,
             for_item: itemDiscount.itemNo,
             entity_id: itemDiscount.id,
           }
