@@ -93,7 +93,7 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-danger cancel-announce color-icon-table-neutral-button"
+            class="btn btn-danger cancel-announce color-icon-table-neutral-button font-weight-bold logout"
             @click="logout()"
           >
             {{ _t('Logout') }}
