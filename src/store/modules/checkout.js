@@ -276,7 +276,7 @@ const actions = {
         order.order_discounts = []
 
         if (rootState.discount.appliedOrderDiscount) {
-          const discount = rootState.discount.appliedOrderDiscount.discount
+          const discount = rootState.discount.appliedOrderDiscount
           const orderDiscount = {
             name: discount.name,
             price: Num.round(rootGetters['discount/orderDiscountWithoutTax']),
