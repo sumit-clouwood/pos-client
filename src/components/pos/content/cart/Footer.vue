@@ -12,7 +12,7 @@
       <div class="sub-total-text">
         {{ _t('Discounts') }}
         <span v-if="appliedOrderDiscount">
-          ({{ appliedOrderDiscount.discount.name }})</span
+          ({{ appliedOrderDiscount.name }})</span
         >
       </div>
       <div class="sub-total-num">

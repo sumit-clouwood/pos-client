@@ -150,15 +150,12 @@ const actions = {
     dispatch('order/recalculateItemPrices', {}, { root: true })
   },
 
-  applyOrderDiscount({ commit, rootState, dispatch }) {
+  applyOrderDiscount({ commit, dispatch }) {
     commit('checkoutForm/RESET', 'process', { root: true })
     return new Promise((resolve, reject) => {
       commit(mutation.CLEAR_ITEM_DISCOUNT)
       if (state.currentActiveOrderDiscount) {
-        commit(mutation.APPLY_ORDER_DISCOUNT, {
-          item: rootState.order.item,
-          discount: state.currentActiveOrderDiscount,
-        })
+        commit(mutation.APPLY_ORDER_DISCOUNT, state.currentActiveOrderDiscount)
 
         dispatch('order/recalculateOrderTotals', {}, { root: true })
           .then(response => {
@@ -259,14 +256,8 @@ const mutations = {
 
     state.appliedItemDiscounts = discounts
   },
-  [mutation.APPLY_ORDER_DISCOUNT](state, { item, discount }) {
-    state.appliedOrderDiscount = {
-      item: {
-        orderIndex: item.orderIndex,
-        _id: item._id,
-      },
-      discount: discount,
-    }
+  [mutation.APPLY_ORDER_DISCOUNT](state, discount) {
+    state.appliedOrderDiscount = discount
   },
 
   [mutation.SET_ORDER_DISCOUNT_AMOUNT](state, discount) {
