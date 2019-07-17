@@ -229,7 +229,7 @@ const actions = {
                       entity_id: modifierId,
                       for_item: itemNumber,
                       price: modfierTaxData.price,
-                      tax: modfierTaxData.tax,
+                      tax: Num.round(modfierTaxData.tax),
                       name: modifier.name,
                       qty: item.quantity,
                       type: subgroup.item_type,
@@ -347,6 +347,18 @@ const actions = {
               return paymentPart
             }
           )
+        } else {
+          const method = rootGetters['payment/cash']
+          order.order_payments = [
+            {
+              entity_id: method._id,
+              name: method.name,
+              collected: '0.00',
+              param1: '',
+              param2: '',
+              param3: '',
+            },
+          ]
         }
 
         order.total_paid = Num.round(totalPaid)
