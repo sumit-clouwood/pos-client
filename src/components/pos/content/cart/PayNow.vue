@@ -38,22 +38,24 @@
                 {{ _t('Error') }}: {{ error }}
               </p>
             </div>
-            <div class="payemnt-input-block">
-              <input
-                type="text"
-                name="payment"
-                v-model.number="payableAmount"
-                id="input"
-                autocomplete="off"
-                @click="showCalculator()"
-                :placeholder="formatPrice(0.0)"
-              />
-              <img
-                src="img/pos/payment-input-icon.png"
-                class="input-image"
-                @click="showPayBreakdown"
-              />
-            </div>
+            <form>
+              <div class="payemnt-input-block">
+                <input
+                  type="text"
+                  name="payment"
+                  v-model.number="payableAmount"
+                  id="input"
+                  autocomplete="off"
+                  @click="showCalculator()"
+                  :placeholder="formatPrice(0.0)"
+                />
+                <img
+                  src="img/pos/payment-input-icon.png"
+                  class="input-image"
+                  @click="showPayBreakdown"
+                />
+              </div>
+            </form>
             <AmountCalculator v-show="showCalc" ref="calculator" />
             <br />
             <hr />

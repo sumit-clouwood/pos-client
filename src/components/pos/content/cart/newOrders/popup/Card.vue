@@ -19,13 +19,15 @@
             <p class="color-text-invert">
               {{ _t('Enter Card Reference Code') }}
             </p>
-            <input
-              type="text"
-              class="add-email-from"
-              v-model="code"
-              maxlength="4"
-              @keypress="Num.toNumberOnly($event)"
-            />
+            <form>
+              <input
+                type="text"
+                class="add-email-from"
+                v-model="code"
+                maxlength="4"
+                @keypress="Num.toNumberOnly($event)"
+              />
+            </form>
           </div>
           <div v-show="error" class="msg color-warning">
             <p class="text-danger">{{ error }}</p>
