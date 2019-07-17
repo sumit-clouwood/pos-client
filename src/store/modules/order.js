@@ -399,6 +399,7 @@ const actions = {
 
     // if (item.modifiable) {
     dispatch('orderForm/setItem', { item: item }, { root: true })
+    dispatch('discount/setItem', { item: item }, { root: true })
     dispatch(
       'modifier/setActiveItem',
       { item: item },
