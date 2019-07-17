@@ -347,6 +347,12 @@ const actions = {
               return paymentPart
             }
           )
+        } else if (
+          rootState.order.orderType.OTApi ===
+            CONSTANTS.ORDER_TYPE_CALL_CENTER ||
+          action === CONSTANTS.ORDER_STATUS_ON_HOLD
+        ) {
+          //do something here
         } else {
           const method = rootGetters['payment/cash']
           order.order_payments = [
