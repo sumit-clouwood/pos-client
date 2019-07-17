@@ -41,15 +41,17 @@
               </div>
               <div class="autocomplete-container">
                 <div v-if="drivers" class="driver-container">
-                  <input
-                    autocomplete="off"
-                    type="text"
-                    class="input-search-driver"
-                    id="get-customer-list"
-                    v-model="selectedUser"
-                    @click="showDropdown"
-                    @keydown="getSelectUser()"
-                  />
+                  <form>
+                    <input
+                      autocomplete="off"
+                      type="text"
+                      class="input-search-driver"
+                      id="get-customer-list"
+                      v-model="selectedUser"
+                      @click="showDropdown"
+                      @keydown="getSelectUser()"
+                    />
+                  </form>
                   <div id="my-dropdown" class="dropdown-content cursor-pointer">
                     <span
                       class="dropdown"
