@@ -14,7 +14,6 @@ const state = {
   brand: null,
   store: null,
   availableLanguages: null,
-  availableStores: null,
   languageDirection: null,
   translations: null,
   location: null,
@@ -36,7 +35,7 @@ const getters = {
     return str
   },
   currency: state => state.currency,
-  timezone: state => state.timezone,
+  timezone: state => state.store.timezone,
   timezoneString: state => state.timezoneString,
 }
 
@@ -48,7 +47,6 @@ const actions = {
         .then(storedata => {
           commit(mutation.SET_STORE, storedata.data.store)
           commit(mutation.SET_BRAND, storedata.data.brand)
-          commit(mutation.SET_AVAILABLE_STORE, storedata.data.available_stores)
           commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
           commit(mutation.SET_TRASLATIONS, storedata.data.translations)
           commit(
@@ -57,16 +55,6 @@ const actions = {
           )
           commit(mutation.SET_LOCATION, state.store.address)
           commit(mutation.SET_CURRENCY, state.store.currency)
-          let timeZone = state.availableStores.filter(
-            store => store._id == state.store._id
-          )
-          if (timeZone.length > 1) {
-            let storeTimeZone = timeZone[0].timezone
-            commit(mutation.SET_TIMEZONE, storeTimeZone)
-          } else {
-            commit(mutation.SET_TIMEZONE, state.brand.timezone)
-          }
-
           let userDetails = {}
           userDetails.username = storedata.data.username
           userDetails.userId = storedata.data.user_id
@@ -166,9 +154,6 @@ const mutations = {
   [mutation.SET_STORE](state, store) {
     state.store = store
   },
-  [mutation.SET_AVAILABLE_STORE](state, stores) {
-    state.availableStores = stores
-  },
   [mutation.SET_BRAND](state, brand) {
     state.brand = brand
   },
@@ -181,9 +166,6 @@ const mutations = {
   },
   [mutation.SET_LOCATION](state, location) {
     state.location = location
-  },
-  [mutation.SET_TIMEZONE](state, timezone) {
-    state.timezone = timezone
   },
   [mutation.SET_TIMEZONE_STRING](state, timezoneString) {
     state.timezoneString = timezoneString
