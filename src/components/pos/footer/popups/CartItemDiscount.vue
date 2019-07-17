@@ -36,11 +36,6 @@
               <span class="more">{{ dt(discount) }}</span>
             </div>
           </div>
-          <div class="error mx-auto">
-            <p class="text-danger text-center color-warning">
-              {{ _t('No Item Discounts available.') }}
-            </p>
-          </div>
           <div class="error mx-auto" v-show="appliedOrderDiscount">
             <p class="text-danger text-center">
               Please remove order discount first to apply item discount.
