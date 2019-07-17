@@ -133,7 +133,7 @@
 /* global io $  */
 import moment from 'moment-timezone'
 import DateTime from '@/mixins/DateTime'
-
+import * as CONST from '@/constants.js'
 import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'OnlineOrder',
@@ -145,13 +145,15 @@ export default {
     }
   },
   mounted() {
-    const store = this.$store
-    let socket = io('https://websocket-int.erp-pos.com')
-    socket.on('sound-channel:App\\Events\\SocketBroadcast', function(
-      orderData
-    ) {
-      store.dispatch('order/setOnlineOrders', orderData.data)
-    })
+    if (this.$store.getters['modules/enabled'](CONST.MODULE_DELIVERY)) {
+      const store = this.$store
+      let socket = io('https://websocket-int.erp-pos.com')
+      socket.on('sound-channel:App\\Events\\SocketBroadcast', function(
+        orderData
+      ) {
+        store.dispatch('order/setOnlineOrders', orderData.data)
+      })
+    }
   },
   computed: {
     ...mapState({
