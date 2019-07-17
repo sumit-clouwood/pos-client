@@ -115,7 +115,7 @@ export default {
       get() {
         return this.$store.state.checkoutForm.amount > 0
           ? this.$store.state.checkoutForm.amount
-          : 0
+          : this.orderTotal
       },
       set(amount) {
         this.$store.dispatch('checkoutForm/setAmount', amount)
@@ -124,6 +124,7 @@ export default {
     ...mapState('order', ['items']),
     ...mapState('checkoutForm', ['error', 'showCalc', 'showPayBreak']),
     ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('order', ['orderTotal']),
     ...mapGetters('checkoutForm', ['payable']),
   },
   methods: {

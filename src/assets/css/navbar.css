@@ -104,7 +104,12 @@
       .navigation .navigation-avatar .nav-link .nav-link-user-name {
         color: #fff;
         font-size: 0.875rem;
-        margin-top: 0.3125rem; }
+        margin-top: 0.3125rem;
+        text-align: center;
+        width: 4.6875rem;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden; }
 
 .dm-manager .navigation {
   grid-template-rows: 5.3125rem 1fr 3.75rem 7.3125rem; }

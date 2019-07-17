@@ -8,6 +8,7 @@
           <h4 class="customer-title color-text-invert">
             {{ _t('User Details') }}
           </h4>
+          <span data-dismiss="modal" class="cursor-pointer">X</span>
         </div>
         <div class="modal-body row dining-options-block select-discount">
           <div class="profile-content">
@@ -92,10 +93,10 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-danger cancel-announce color-icon-table-neutral-button"
-            data-dismiss="modal"
+            class="btn btn-danger cancel-announce color-icon-table-neutral-button font-weight-bold logout"
+            @click="logout()"
           >
-            {{ _t('Close') }}
+            {{ _t('Logout') }}
           </button>
         </div>
       </div>
@@ -105,10 +106,13 @@
 
 <script>
 import DateTime from '@/mixins/DateTime'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
   name: 'UserProfile',
   mixins: [DateTime],
+  methods: {
+    ...mapActions('auth', ['logout']),
+  },
   computed: {
     ...mapState({
       userAvatar: state => state.location.userShortDetails.avatar,

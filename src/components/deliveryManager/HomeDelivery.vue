@@ -114,7 +114,7 @@
       <!--<DMItem :actionDetails="delivered" />-->
     </div>
     <OrderDetailsPopup />
-    <div class="pagination-customer-details">
+    <div class="pagination-customer-details" v-if="!loading">
       <paginate
         v-if="params.totalPages"
         :page-count="params.totalPages"

@@ -6,7 +6,7 @@
         <div class="breadcrump-wrapper">
           <ul class="ullist-breadcrump">
             <li>
-              <a href="javascript:void(0)">{{ _t('DELIVERY') }}</a>
+              <a :href="baseurl('brands')">{{ _t('DELIVERY') }}</a>
             </li>
             <li>
               <a href="javascript:void(0)">{{ brand.name }}</a>
@@ -68,6 +68,14 @@ export default {
     FutureOrder,
     DMOrderDetails,
     DMTopRightNav,
+  },
+  methods: {
+    baseurl(link) {
+      return window.location.href.replace(
+        new RegExp('/pos/delivery-manager/.*'),
+        '/' + link
+      )
+    },
   },
   computed: {
     ...mapGetters('location', ['_t']),

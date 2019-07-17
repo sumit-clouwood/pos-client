@@ -149,6 +149,11 @@
         color: #fff;
         font-size: $px14;
         margin-top: $px5;
+        text-align: center;
+        width: $px75;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden
       }
     }
   }
