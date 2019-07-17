@@ -399,6 +399,7 @@ const actions = {
 
     // if (item.modifiable) {
     dispatch('orderForm/setItem', { item: item }, { root: true })
+    dispatch('discount/setItem', { item: item }, { root: true })
     dispatch(
       'modifier/setActiveItem',
       { item: item },
@@ -417,18 +418,18 @@ const actions = {
         let taxTotalDiscount = 0
         let surchargeTotalDiscount = 0
 
-        if (orderDiscount.discount.include_surcharge) {
+        if (orderDiscount.include_surcharge) {
           //apply ontotal discount, apply on surcharge and its tax as well
           const subtotal = getters.subTotal
           const totalTax = rootState.tax.itemsTax + rootState.tax.surchargeTax
           const totalSurcharge = rootGetters['surcharge/surcharge']
 
-          if (orderDiscount.discount.type === CONST.VALUE) {
-            if (orderDiscount.discount.value > subtotal + totalTax) {
+          if (orderDiscount.type === CONST.VALUE) {
+            if (orderDiscount.value > subtotal + totalTax) {
               dispatch('discount/clearOrderDiscount', null, { root: true })
               reject(DISCOUNT_ORDER_ERROR_TOTAL)
             } else {
-              orderTotalDiscount = orderDiscount.discount.value
+              orderTotalDiscount = orderDiscount.value
 
               const percentDiscountOnOrderTotalIncludingSurcharge =
                 (orderTotalDiscount * 100) / (subtotal + totalSurcharge)
@@ -438,17 +439,22 @@ const actions = {
               //when calculating percent discount on subtotal we include surcharge as well,
               //so don't need to calculate discount on surcharge again
               surchargeTotalDiscount = 0
-              resolve({
+              const discountData = {
                 orderDiscount: orderTotalDiscount,
                 taxDiscount: taxTotalDiscount,
                 surchargeDiscount: surchargeTotalDiscount,
+              }
+
+              dispatch('discount/setOrderDiscount', discountData, {
+                root: true,
               })
+
+              resolve(discountData)
             }
           } else {
-            orderTotalDiscount = (subtotal * orderDiscount.discount.rate) / 100
-            taxTotalDiscount = (totalTax * orderDiscount.discount.rate) / 100
-            surchargeTotalDiscount =
-              (totalSurcharge * orderDiscount.discount.rate) / 100
+            orderTotalDiscount = (subtotal * orderDiscount.rate) / 100
+            taxTotalDiscount = (totalTax * orderDiscount.rate) / 100
+            surchargeTotalDiscount = (totalSurcharge * orderDiscount.rate) / 100
 
             const discountData = {
               orderDiscount: orderTotalDiscount,
@@ -467,32 +473,38 @@ const actions = {
           //we are not including surcharge tax in total tax for discount
           const totalTax = rootState.tax.itemsTax
           //const totalSurcharge = rootGetters['surcharge/surcharge']
-          if (orderDiscount.discount.type === CONST.VALUE) {
-            if (orderDiscount.discount.value > subtotal + totalTax) {
+          if (orderDiscount.type === CONST.VALUE) {
+            if (orderDiscount.value > subtotal + totalTax) {
               dispatch('discount/clearOrderDiscount', null, { root: true })
               reject(DISCOUNT_ORDER_ERROR_TOTAL)
             } else {
-              orderTotalDiscount = orderDiscount.discount.value
               const percentDiscountOnSubTotal =
-                (orderTotalDiscount * 100) / subtotal
+                (orderDiscount.value * 100) / subtotal
               taxTotalDiscount = (totalTax * percentDiscountOnSubTotal) / 100
               surchargeTotalDiscount = 0
-              resolve({
-                orderDiscount: orderTotalDiscount,
+
+              const discountData = {
+                orderDiscount: orderDiscount.value,
                 taxDiscount: taxTotalDiscount,
                 surchargeDiscount: surchargeTotalDiscount,
+              }
+              resolve(discountData)
+              dispatch('discount/setOrderDiscount', discountData, {
+                root: true,
               })
             }
           } else {
-            orderTotalDiscount = (subtotal * orderDiscount.discount.rate) / 100
+            orderTotalDiscount = (subtotal * orderDiscount.rate) / 100
             //const subtotalWithDiscount = subtotal - orderTotalDiscount
-            taxTotalDiscount = (totalTax * orderDiscount.discount.rate) / 100
+            taxTotalDiscount = (totalTax * orderDiscount.rate) / 100
             surchargeTotalDiscount = 0
-            resolve({
+            const discountData = {
               orderDiscount: orderTotalDiscount,
               taxDiscount: taxTotalDiscount,
               surchargeDiscount: surchargeTotalDiscount,
-            })
+            }
+            resolve(discountData)
+            dispatch('discount/setOrderDiscount', discountData, { root: true })
           }
         }
       } else {

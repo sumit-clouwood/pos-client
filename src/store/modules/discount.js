@@ -124,6 +124,8 @@ const actions = {
             name: state.currentActiveItemDiscount.name,
           },
         })
+      } else {
+        dispatch('removeItemDiscount')
       }
       //remove discounts if there was previously applied but now unset
       dispatch('order/recalculateItemPrices', {}, { root: true })
@@ -150,15 +152,12 @@ const actions = {
     dispatch('order/recalculateItemPrices', {}, { root: true })
   },
 
-  applyOrderDiscount({ commit, rootState, dispatch }) {
+  applyOrderDiscount({ commit, dispatch }) {
     commit('checkoutForm/RESET', 'process', { root: true })
     return new Promise((resolve, reject) => {
       commit(mutation.CLEAR_ITEM_DISCOUNT)
       if (state.currentActiveOrderDiscount) {
-        commit(mutation.APPLY_ORDER_DISCOUNT, {
-          item: rootState.order.item,
-          discount: state.currentActiveOrderDiscount,
-        })
+        commit(mutation.APPLY_ORDER_DISCOUNT, state.currentActiveOrderDiscount)
 
         dispatch('order/recalculateOrderTotals', {}, { root: true })
           .then(response => {
@@ -185,9 +184,9 @@ const actions = {
     commit(mutation.CLEAR_ITEM_DISCOUNT, erroredDiscounts)
   },
 
-  selectItemDiscount({ state, commit, dispatch }, discount) {
+  selectItemDiscount({ state, commit }, discount) {
     if (discount._id === state.currentActiveItemDiscount._id) {
-      dispatch('clearItemDiscount')
+      commit(mutation.SET_ACTIVE_ITEM_DISCOUNT, false)
     } else {
       commit(mutation.SET_ACTIVE_ITEM_DISCOUNT, discount)
     }
@@ -211,6 +210,16 @@ const actions = {
     commit(mutation.SET_TAX_DISCOUNT_AMOUNT, taxDiscount)
     commit(mutation.SET_SURCHARGE_DISCOUNT_AMOUNT, surchargeDiscount)
   },
+
+  setItem({ state, commit }, { item }) {
+    const discount = state.appliedItemDiscounts.find(
+      discount => discount.item.orderIndex == item.orderIndex
+    )
+    if (discount) {
+      commit(mutation.SET_ACTIVE_ITEM_DISCOUNT, discount.discount)
+    }
+  },
+
   reset({ commit }) {
     commit(mutation.RESET)
   },
@@ -259,14 +268,8 @@ const mutations = {
 
     state.appliedItemDiscounts = discounts
   },
-  [mutation.APPLY_ORDER_DISCOUNT](state, { item, discount }) {
-    state.appliedOrderDiscount = {
-      item: {
-        orderIndex: item.orderIndex,
-        _id: item._id,
-      },
-      discount: discount,
-    }
+  [mutation.APPLY_ORDER_DISCOUNT](state, discount) {
+    state.appliedOrderDiscount = discount
   },
 
   [mutation.SET_ORDER_DISCOUNT_AMOUNT](state, discount) {
