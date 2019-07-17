@@ -14,6 +14,7 @@ const state = {
   brand: null,
   store: null,
   availableLanguages: null,
+  availableStores: null,
   languageDirection: null,
   translations: null,
   location: null,
@@ -47,6 +48,7 @@ const actions = {
         .then(storedata => {
           commit(mutation.SET_STORE, storedata.data.store)
           commit(mutation.SET_BRAND, storedata.data.brand)
+          commit(mutation.SET_AVAILABLE_STORE, storedata.data.available_stores)
           commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
           commit(mutation.SET_TRASLATIONS, storedata.data.translations)
           commit(
@@ -55,7 +57,15 @@ const actions = {
           )
           commit(mutation.SET_LOCATION, state.store.address)
           commit(mutation.SET_CURRENCY, state.store.currency)
-          commit(mutation.SET_TIMEZONE, state.brand.timezone)
+          let timeZone = state.availableStores.filter(
+            store => store._id == state.store._id
+          )
+          if (timeZone.length > 1) {
+            let storeTimeZone = timeZone[0].timezone
+            commit(mutation.SET_TIMEZONE, storeTimeZone)
+          } else {
+            commit(mutation.SET_TIMEZONE, state.brand.timezone)
+          }
 
           let userDetails = {}
           userDetails.username = storedata.data.username
@@ -63,7 +73,7 @@ const actions = {
           userDetails.avatar = storedata.data.avatar
           commit(mutation.USER_SHORT_DETAILS, userDetails)
 
-          TimezoneService.getTimezoneData(state.brand.timezone)
+          TimezoneService.getTimezoneData(state.store.timezone)
             .then(timezoneData => {
               let timezoneName = timezoneData.data.item.name.split(' ')
               if (timezoneName[0] != undefined) {
@@ -156,6 +166,9 @@ const mutations = {
   [mutation.SET_STORE](state, store) {
     state.store = store
   },
+  [mutation.SET_AVAILABLE_STORE](state, stores) {
+    state.availableStores = stores
+  },
   [mutation.SET_BRAND](state, brand) {
     state.brand = brand
   },
@@ -171,6 +184,9 @@ const mutations = {
   },
   [mutation.SET_TIMEZONE](state, timezone) {
     state.timezone = timezone
+  },
+  [mutation.SET_TIMEZONE_STRING](state, timezoneString) {
+    state.timezoneString = timezoneString
   },
   [mutation.SET_AVAILABLE_LANGUAGES](state, languages) {
     state.availableLanguages = languages
