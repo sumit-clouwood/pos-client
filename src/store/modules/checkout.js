@@ -209,7 +209,7 @@ const actions = {
             itemDiscount.itemNo = itemNumber
             itemDiscount.quantity = item.quantity
             itemDiscount.tax = itemTax
-              ? itemTax.undiscountedTax - itemTax.tax
+              ? Num.round(itemTax.undiscountedTax) - Num.round(itemTax.tax)
               : 0
             //itemDiscountedTax += itemDiscount.tax
             item_discounts.push(itemDiscount)
@@ -302,8 +302,8 @@ const actions = {
               itemDiscount.type === CONSTANTS.VALUE
                 ? itemDiscount.value
                 : itemDiscount.rate,
-            price: Num.round(itemDiscount.discount * itemDiscount.quantity),
-            tax: Num.round(itemDiscount.tax * itemDiscount.quantity),
+            price: Num.round(itemDiscount.discount) * itemDiscount.quantity,
+            tax: Num.round(itemDiscount.tax) * itemDiscount.quantity,
             for_item: itemDiscount.itemNo,
             entity_id: itemDiscount.id,
           }
@@ -347,6 +347,12 @@ const actions = {
               return paymentPart
             }
           )
+        } else if (
+          rootState.order.orderType.OTApi ===
+            CONSTANTS.ORDER_TYPE_CALL_CENTER ||
+          action === CONSTANTS.ORDER_STATUS_ON_HOLD
+        ) {
+          //do something here
         } else {
           const method = rootGetters['payment/cash']
           order.order_payments = [

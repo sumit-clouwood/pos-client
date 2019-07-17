@@ -17,7 +17,9 @@
         <div class="modal-body add-email-wrap">
           <div class="add-note-area">
             <p class="color-text-invert">{{ _t('Enter Gift Card Code') }}</p>
-            <input type="text" class="add-email-from" v-model="code" />
+            <form>
+              <input type="text" class="add-email-from" v-model="code" />
+            </form>
           </div>
           <div v-show="error" class="msg">
             <p class="text-danger color-warning">{{ error }}</p>

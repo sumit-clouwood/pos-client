@@ -1,4 +1,6 @@
 import * as mutation from './tax/mutation-types'
+import Num from '@/plugins/helpers/Num.js'
+
 // initial state
 const state = {
   itemsTax: 0,
@@ -10,7 +12,10 @@ const state = {
 // getters
 const getters = {
   totalTax: (state, getters, rootState) =>
-    state.itemsTax + state.surchargeTax - rootState.discount.taxDiscountAmount,
+    Num.round(state.itemsTax) +
+    Num.round(state.surchargeTax) -
+    Num.round(rootState.discount.taxDiscountAmount),
+
   modifierTaxData: state => ({ modifierId, itemId }) => {
     const modifiers = state.modifiersTaxData[itemId]
     return modifiers.find(modifier => modifier.modifierId === modifierId)

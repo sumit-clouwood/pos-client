@@ -188,7 +188,6 @@ img {
     display: block;
     height: $header-btn-height;
     border: none;
-    box-shadow: none;
     font-size: $px18;
     padding-left: $px20;
     padding-right: $px20;
@@ -196,8 +195,7 @@ img {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    font-family: "ProximaNova";
-
+    width: 100%;
     &:focus {
       outline: none;
     }

@@ -51,6 +51,11 @@
               {{ itemError }}
             </p>
           </div>
+          <div class="error mx-auto" v-if="itemDiscounts.length == 0">
+            <p class="text-danger text-center">
+              {{ errors }}
+            </p>
+          </div>
         </div>
         <div class="modal-footer">
           <div class="btn-announce">
@@ -85,7 +90,11 @@
 import { mapGetters, mapActions, mapState } from 'vuex'
 export default {
   name: 'CartItemDiscount',
-  props: {},
+  data() {
+    return {
+      errors: 'No discount available on this item.',
+    }
+  },
   computed: {
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', ['itemDiscounts', 'activeItemDiscountId']),

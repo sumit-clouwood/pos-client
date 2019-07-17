@@ -4,14 +4,16 @@
       <!--<img class="search-field-img" src="images/search-icon.png" alt="search">-->
       <i class="fa fa-search color-text-invert" aria-hidden="true"></i>
     </div>
-    <input
-      type="search"
-      autocomplete="off"
-      class="search-field-input color-dashboard-background"
-      :placeholder="_t('Start typing to get search results')"
-      v-model="searchItems"
-      @keyup="searchingItems(searchItems)"
-    />
+    <form>
+      <input
+        type="search"
+        autocomplete="off"
+        class="search-field-input color-dashboard-background"
+        :placeholder="_t('Start typing to get search results')"
+        v-model="searchItems"
+        @keyup="searchingItems(searchItems)"
+      />
+    </form>
   </div>
 </template>
 
