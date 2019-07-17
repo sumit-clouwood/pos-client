@@ -29,14 +29,16 @@
                 <div class="select-driver">
                   {{ _t('Cancellation Reason') }}
                 </div>
-                <input
-                  autocomplete="off"
-                  type="text"
-                  class="input-search-driver"
-                  id="get-customer-list"
-                  v-model="showSelectedReason"
-                  @click="showDropdown"
-                />
+                <form>
+                  <input
+                    autocomplete="off"
+                    type="text"
+                    class="input-search-driver"
+                    id="get-customer-list"
+                    v-model="showSelectedReason"
+                    @click="showDropdown"
+                  />
+                </form>
                 <div id="my-dropdown" class="dropdown-content cursor-pointer">
                   <span
                     class="dropdown"

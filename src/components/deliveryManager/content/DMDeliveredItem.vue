@@ -8,15 +8,17 @@
           <div class="delivered-driver">
             <div class="select-driver">
               <div v-if="drivers" class="driver-container">
-                <input
-                  autocomplete="off"
-                  type="text"
-                  placeholder="Select Driver"
-                  class="input-search-driver"
-                  id="get-customer-list"
-                  v-model="selectedDriver"
-                  @click="showDropdown"
-                />
+                <form>
+                  <input
+                    autocomplete="off"
+                    type="text"
+                    placeholder="Select Driver"
+                    class="input-search-driver"
+                    id="get-customer-list"
+                    v-model="selectedDriver"
+                    @click="showDropdown"
+                  />
+                </form>
                 <div id="my-dropdown" class="dropdown-content cursor-pointer">
                   <span class="dropdown" :key="0" @click="setDriver(null)">
                     {{ _t('Select Driver') }}
