@@ -5,7 +5,13 @@
         class="active btn btn-success"
         data-related="home-delivery-order"
         @click="
-          updateDMOrderStatus({ orderStatus: 'running', collected: 'no' })
+          updateOrderStatus({
+            orderStatus: 'in-progress',
+            collected: 'no',
+            pageId: 'home_delivery_new',
+            title: _t('New Orders'),
+            dataRelated: 'dm-new-order',
+          })
         "
       >
         Home Delivery Orders
@@ -13,7 +19,15 @@
       <button
         class="btn btn-success"
         data-related="take-away-order"
-        @click="updateDMOrderStatus({ orderStatus: 'new', collected: 'no' })"
+        @click="
+          updateDMOrderStatus({
+            orderStatus: 'new',
+            collected: 'no',
+            pageId: 'takeaway_new',
+            title: _t('New Orders'),
+            dataRelated: 'take-away-order',
+          })
+        "
       >
         Take Away Orders
       </button>
@@ -21,7 +35,13 @@
         class="btn btn-success"
         data-related="future-order"
         @click="
-          updateDMOrderStatus({ orderStatus: 'future-order', collected: 'no' })
+          updateDMOrderStatus({
+            orderStatus: 'future-order',
+            collected: 'no',
+            pageId: 'future',
+            title: _t('Future Orders'),
+            dataRelated: 'future-order',
+          })
         "
       >
         Future Orders

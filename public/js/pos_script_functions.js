@@ -56,6 +56,9 @@ function clickPayNow() {
       }
     })
   }, 300)
+  if ($('body').find('#payment-method').length > 0) {
+    $('#payment-method')[0].slick.refresh()
+  }
 }
 
 function posConfigLinks() {
