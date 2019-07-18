@@ -28,7 +28,6 @@ function showPaymentBreak() {
 }
 
 function clickPayNow() {
-  // $('#payment-method')[0].slick.refresh()
   $('#payment-method')
     .not('.slick-initialized')
     .slick({
