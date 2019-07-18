@@ -21,7 +21,7 @@
       </div>
       <div class="change-location">
         <button class="btn btn-success">
-          <a :href="baseurl('brands')">{{ _t('Change Brand') }}</a>
+          <a :href="baseurl('delivery')">{{ _t('Change Brand') }}</a>
         </button>
         <button class="btn btn-success walkin-btn">
           <router-link :to="store" class="text-white">
