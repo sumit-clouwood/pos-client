@@ -39,7 +39,7 @@
     </div>
     <div
       class="navigation-avatar color-secondary"
-      v-if="userShortDetails"
+      v-if="userDetails"
       data-toggle="modal"
       data-target="#user-details"
       data-dismiss="modal"
@@ -47,7 +47,7 @@
       <a
         class="nav-link"
         href="javascript:void(0)"
-        :title="userShortDetails.username"
+        :title="userDetails.item.name"
       >
         <img
           v-if="typeof userDetails.item != 'undefined'"
@@ -59,7 +59,7 @@
           alt="profile"
         />
         <div class="nav-link-user-name color-text-invert">
-          {{ userShortDetails.username }}
+          {{ userDetails.item.name }}
         </div>
       </a>
     </div>
