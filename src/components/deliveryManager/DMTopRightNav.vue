@@ -23,9 +23,12 @@
         <button class="btn btn-success">
           <a :href="baseurl('delivery')">{{ _t('Change Brand') }}</a>
         </button>
-        <button class="btn btn-success walkin-btn">
+        <button
+          class="btn btn-success walkin-btn"
+          @click="orderTypeWalkIn({ OTview: 'Walk In', OTApi: 'walk_in' })"
+        >
           <router-link :to="store" class="text-white">
-            {{ _t('Walk-in') }}Select
+            {{ _t('Walk-in') }}
           </router-link>
         </button>
       </div>
@@ -85,6 +88,9 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
+    orderTypeWalkIn: function(orderType) {
+      this.$store.commit('order/ORDER_TYPE', orderType)
+    },
     iconCode: function(iconCode) {
       this.iconCodeSelection = iconCode
     },
