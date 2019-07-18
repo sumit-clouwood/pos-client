@@ -6,7 +6,7 @@
         <div class="breadcrump-wrapper">
           <ul class="ullist-breadcrump">
             <li>
-              <a :href="baseurl('brands')">{{ _t('DELIVERY') }}</a>
+              <a :href="baseurl('delivery')">{{ _t('DELIVERY') }}</a>
             </li>
             <li>
               <a href="javascript:void(0)">{{ brand.name }}</a>
