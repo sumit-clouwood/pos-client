@@ -1,5 +1,7 @@
 import * as mutation from './discount/mutation-types'
 import DiscountService from '@/services/data/DiscountService'
+import Num from '@/plugins/helpers/Num.js'
+
 //const DISCOUNT_ITEM_ERROR = "Item discount can't be applied."
 const DISCOUNT_ITEM_ERROR_FREE = 'Item discount not available for free items.'
 const DISCOUNT_ITEM_ERROR_GREATER = "Discount can't be greater than item price."
@@ -32,9 +34,13 @@ const state = {
 
 // getters
 const getters = {
+  taxDiscountAmount: state => {
+    return Num.round(state.taxDiscountAmount)
+  },
   orderDiscountWithoutTax: state =>
     //discount is already subtracted from tax in tax.js
-    state.orderDiscountAmount + state.surchargeDiscountAmount,
+    Num.round(state.orderDiscountAmount) +
+    Num.round(state.surchargeDiscountAmount),
 
   activeItemDiscountId: state =>
     state.currentActiveItemDiscount

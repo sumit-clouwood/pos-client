@@ -3,25 +3,48 @@ import Num from '@/plugins/helpers/Num.js'
 
 // initial state
 const state = {
-  itemsTax: 0,
   itemsTaxData: [],
+  surchargeTaxData: [],
   modifiersTaxData: {},
-  surchargeTax: 0,
 }
 
 // getters
 const getters = {
-  totalTax: (state, getters, rootState) =>
-    Num.round(state.itemsTax) +
-    Num.round(state.surchargeTax) -
-    Num.round(rootState.discount.taxDiscountAmount),
+  itemsTax: state => {
+    let total = 0
+    state.itemsTaxData.forEach(item => {
+      total += item.quantity * Num.round(item.tax)
+      total += item.quantity * Num.round(item.modifiersTax)
+    })
+    return total
+  },
 
-  modifierTaxData: state => ({ modifierId, itemId }) => {
-    const modifiers = state.modifiersTaxData[itemId]
+  // modifiersTax: state => index => {
+  //   return state.modifiersTaxData[index].reduce((total, tax) => {
+  //     return total + Num.round(tax.tax)
+  //   }, 0)
+  // },
+
+  surchargeTax: state => {
+    return state.surchargeTaxData.reduce((total, tax) => {
+      return total + Num.round(tax)
+    }, 0)
+  },
+
+  totalTax: (state, getters, rootState, rootGetters) => {
+    return (
+      getters.itemsTax +
+      getters.surchargeTax -
+      rootGetters['discount/taxDiscountAmount']
+    )
+  },
+
+  modifierTaxData: state => ({ modifierId, orderIndex }) => {
+    const modifiers = state.modifiersTaxData[orderIndex]
     return modifiers.find(modifier => modifier.modifierId === modifierId)
   },
-  itemModifiersTaxData: state => itemId => {
-    return state.modifiersTaxData[itemId]
+  itemModifiersTaxData: state => orderIndex => {
+    return state.modifiersTaxData[orderIndex]
   },
 }
 
@@ -31,50 +54,61 @@ const actions = {
     return new Promise(resolve => {
       if (rootState.order.items.length) {
         let itemTaxData = []
-        let itemsTax = rootState.order.items.reduce((totalTax, item) => {
+        rootState.order.items.forEach(item => {
           //calculate tax here
           //item.price is now price before tax and discount applied, so need to recalculate the tax
           if (item.tax_sum) {
             itemTaxData.push({
               quantity: item.quantity,
-              itemId: item._id,
-              tax: item.grossPrice - item.netPrice,
+              orderIndex: item.orderIndex,
+              tax:
+                item.grossPriceWithoutModifiers - item.netPriceWithoutModifiers,
               undiscountedTax:
-                item.undiscountedGrossPrice - item.undiscountedNetPrice,
-            })
-            return totalTax + (item.grossPrice - item.netPrice) * item.quantity
-          } else {
-            return totalTax
-          }
-        }, 0)
+                item.undiscountedGrossPriceWithoutModifiers -
+                item.undiscountedNetPriceWithoutModifiers,
 
-        commit(mutation.SET_ITEMS_TAX, itemsTax)
+              //discounted and undiscounted tax with modifiers
+              taxWithModifiers: item.grossPrice - item.netPrice,
+              undiscountedTaxWithModifiers:
+                item.undiscountedGrossPrice - item.undiscountedNetPrice,
+
+              modifiersTax:
+                item.grossPrice -
+                item.netPrice -
+                (item.grossPriceWithoutModifiers -
+                  item.netPriceWithoutModifiers),
+              undiscountedModifiersTax:
+                item.undiscountedGrossPrice -
+                item.undiscountedNetPrice -
+                (item.undiscountedGrossPriceWithoutModifiers -
+                  item.undiscountedNetPriceWithoutModifiers),
+            })
+          }
+        })
+
         commit(mutation.SET_ITEMS_TAX_DATA, itemTaxData)
 
         //apply tax on surcharge that is calculated earlier
+        let surchargeTaxData = []
         if (rootState.surcharge.surchargeAmounts) {
-          const surchargeTax = rootState.surcharge.surchargeAmounts.reduce(
-            (totalTax, surcharge) => {
-              return totalTax + surcharge.tax
-            },
-            0
-          )
+          rootState.surcharge.surchargeAmounts.forEach(surcharge => {
+            surchargeTaxData.push(surcharge.tax)
+          })
 
-          commit(mutation.SET_SURCHARGE_TAX, surchargeTax)
-        } else {
-          commit(mutation.SET_SURCHARGE_TAX, 0)
+          commit(mutation.SET_SURCHARGE_TAX_DATA, surchargeTaxData)
         }
       }
       resolve()
     })
   },
+
   reset({ commit }) {
     commit(mutation.RESET)
   },
 
-  setModifierTaxData({ commit }, { itemId, modifiersTaxData }) {
+  setModifierTaxData({ commit }, { orderIndex, modifiersTaxData }) {
     commit(mutation.SET_MODIFIERS_TAX_DATA, {
-      itemId: itemId,
+      orderIndex: orderIndex,
       modifiersTaxData: modifiersTaxData,
     })
   },
@@ -82,22 +116,22 @@ const actions = {
 
 // mutations
 const mutations = {
-  [mutation.SET_ITEMS_TAX](state, tax) {
-    state.itemsTax = !isNaN(tax) ? tax : 0
-  },
   [mutation.SET_ITEMS_TAX_DATA](state, taxData) {
     state.itemsTaxData = taxData
   },
-  [mutation.SET_SURCHARGE_TAX](state, tax) {
-    state.surchargeTax = tax
+  [mutation.SET_SURCHARGE_TAX_DATA](state, data) {
+    state.surchargeTaxData = data
   },
-  [mutation.SET_MODIFIERS_TAX_DATA](state, { itemId, modifiersTaxData }) {
-    state.modifiersTaxData[itemId] = modifiersTaxData
+  [mutation.SET_MODIFIERS_TAX_DATA](state, { orderIndex, modifiersTaxData }) {
+    //Vue.set(modifiersTaxData, orderIndex, modifiersTaxData)
+    let obj = { ...state.modifiersTaxData }
+    obj[orderIndex] = modifiersTaxData
+    state.modifiersTaxData = obj
   },
   [mutation.RESET](state) {
-    state.itemsTax = 0
     state.itemsTaxData = []
-    state.surchargeTax = 0
+    state.surchargeTaxData = []
+    state.modifiersTaxData = []
   },
 }
 
