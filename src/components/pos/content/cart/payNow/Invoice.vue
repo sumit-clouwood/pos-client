@@ -35,9 +35,7 @@ export default {
       this.$store.commit('checkout/PRINT', false)
     },
     doprint() {
-      setTimeout(() => {
-        this.$refs.iframe.contentWindow.print()
-      }, 1000)
+      this.$refs.iframe.contentWindow.print()
     },
   },
   watch: {
