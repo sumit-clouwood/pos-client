@@ -25,11 +25,25 @@
 
     .main-oreders-email {
       color: $blue-dark;
-      padding: 0px 0;
+      padding: 0 $px10;
       font-weight: 600;
-      text-align: right;
+      text-align: left;
       font-size: $px14;
-      letter-spacing: 1px;
+      letter-spacing: $px1;
+      position: relative;
+      border: $px1 dashed $blue-middle;
+      > span{
+        position: absolute;
+        top: -$px12;
+        color: #fff;
+        right: -$px10;
+        background: red;
+        padding: $px1;
+        border-radius: 50%;
+        height: $px20;
+        width: $px20;
+        text-align: center;
+      }
     }
 
     .main-oreders-date {

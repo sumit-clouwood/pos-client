@@ -18,11 +18,24 @@
       padding: 0px 0; }
     .main-orders .main-orders-contacts .main-oreders-email {
       color: #3A3E9F;
-      padding: 0px 0;
+      padding: 0 0.625rem;
       font-weight: 600;
-      text-align: right;
+      text-align: left;
       font-size: 0.875rem;
-      letter-spacing: 1px; }
+      letter-spacing: 0.0625rem;
+      position: relative;
+      border: 0.0625rem dashed #5056CA; }
+      .main-orders .main-orders-contacts .main-oreders-email > span {
+        position: absolute;
+        top: -0.75rem;
+        color: #fff;
+        right: -0.625rem;
+        background: red;
+        padding: 0.0625rem;
+        border-radius: 50%;
+        height: 1.25rem;
+        width: 1.25rem;
+        text-align: center; }
     .main-orders .main-orders-contacts .main-oreders-date {
       padding: 0px 0;
       font-size: 0.75rem;
