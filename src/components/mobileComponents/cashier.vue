@@ -23,7 +23,7 @@
             </div>
             <div class="user-calc-body">
                 <div class="user-calc-body-input">
-                    <input type="number" v-model="userPin">
+                    <input type="number" v-model="userPin" placeholder="1234">
                     <div class="user-calc-body-input-btn" @click="userLoginHendlerGhange">UnLock</div>
                 </div>
                 <div class="pin-input">
