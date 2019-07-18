@@ -90,6 +90,8 @@ export default {
   methods: {
     orderTypeWalkIn: function(orderType) {
       this.$store.commit('order/ORDER_TYPE', orderType)
+      this.$store.commit('location/SET_MODAL', '#manage-customer')
+      this.$store.dispatch('customer/resetCustomer')
     },
     iconCode: function(iconCode) {
       this.iconCodeSelection = iconCode
