@@ -120,16 +120,6 @@ $(document).ready(function() {
       .val(newVal)
   })
 
-  $('#setting-icon').click(function() {
-    if ($('body').hasClass('active-body')) {
-      $('body').removeClass('active-body')
-    } else {
-      $('body').addClass('active-body')
-    }
-    $('.setting-dropdown').toggle()
-    $('.setting-dropdown').addClass('animated zoomIn')
-  })
-
   $(document).mouseup(function(e) {
     var popup = $('.setting-dropdown, #setting-icon')
     var icons = $('.setting-dropdown')
@@ -149,20 +139,6 @@ $(document).ready(function() {
     $('.amount-keypad').toggle()
   })
 
-  $('button#hide-paynow').click(function() {
-    // $('.modal-body.pay-now-block').css('opacity','0');
-    hidePayNow()
-
-    // $("div#pay-now").addClass('animated fadeOutRight');
-  })
-  function hidePayNow() {
-    $('div#pay-now').addClass('effect-screen')
-    // $("div#pay-now").hide(800);
-    $('div#pay-now').animate({ right: '-660px' })
-    $('body').removeClass('modal-open')
-    $('div#pay-now').removeClass('show')
-    $('#transparent-screen').css('display', 'none')
-  }
   $('#payment-method')
     .not('.slick-initialized')
     .slick({
@@ -173,37 +149,6 @@ $(document).ready(function() {
       dots: true,
     })
 
-  $('li.pay-now').click(function() {
-    $('#payment-method')[0].slick.refresh()
-    $('#payment-method')
-      .not('.slick-initialized')
-      .slick({
-        arrows: false,
-        infinite: true,
-        slidesToShow: 4,
-        slidesToScroll: 4,
-        dots: true,
-      })
-    // $('body').append("<div class="modal-backdrop fade show"></div>");
-    $('div#pay-now').animate({ right: '0' }, 800)
-    $('div#pay-now').addClass('effect-screen')
-    $('div#pay-now').css('display', 'block')
-    $('#transparent-screen').css('display', 'block')
-
-    $('body').addClass('modal-open')
-    $('div#pay-now').addClass('show')
-    $('div#pay-now').addClass('animated fadeInLeft')
-    $('.modal-body.pay-now-block').css('opacity', '1')
-
-    setTimeout(function() {
-      $('.payment-method-block table td img').click(function() {
-        if ($('.payment-method-block').length) {
-          $('.payment-method-block').addClass('active')
-          //$('.payment-method-block').hide(800)
-        }
-      })
-    }, 300)
-  })
   var heightTop = parseInt($('.navigation-list').css('top'))
   $('.slider-btn').click(function() {
     heightTop = heightTop + 60
@@ -383,7 +328,7 @@ $(document).ready(function() {
     }
   })
 
-  $('ul.dm-ullist > li, .all-tables-wrap > button').on('click', function(e) {
+  $('.all-tables-wrap > button').on('click', function(e) {
     e.preventDefault(e)
     var id = $(this).attr('data-related')
     $('div.dm-ready-order-wrapper, div.container-fluid').each(function() {
@@ -418,12 +363,8 @@ $(document).ready(function() {
       .parent()
       .addClass('active')
   })
-  $(
-    'ul.dm-ullist > li, ul.ullist-floor > li,  ul.ullist-dining-area > li'
-  ).click(function() {
-    $(
-      'ul.dm-ullist > li, ul.ullist-floor > li,  ul.ullist-dining-area > li'
-    ).removeClass('active')
+  $('ul.ullist-floor > li,  ul.ullist-dining-area > li').click(function() {
+    $('ul.ullist-floor > li,  ul.ullist-dining-area > li').removeClass('active')
     $(this).addClass('active')
   })
   $('ul.dining-edit-tbl > li').click(function() {

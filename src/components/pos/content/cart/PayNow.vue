@@ -20,6 +20,7 @@
                   data-dismiss="modal"
                   id="hide-paynow"
                   class="color-text-invert color-main"
+                  @click="closePayNowError()"
                 >
                   {{ _t('Hide Me') }}
                   <span
@@ -71,6 +72,7 @@
                 data-dismiss="modal"
                 id="hide-paynow"
                 class="btn btn-danger color-secondary color-text-invert"
+                @click="closePayNowError()"
               >
                 {{ _t('Back') }}
                 <span class="color-text-invert"
@@ -130,6 +132,9 @@ export default {
     ...mapGetters('checkoutForm', ['payable']),
   },
   methods: {
+    closePayNowError() {
+      hidePayNow()
+    },
     showPayBreakdown() {
       $('#payment-breakdown').show()
     },

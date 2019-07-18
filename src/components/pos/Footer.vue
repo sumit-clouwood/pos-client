@@ -291,6 +291,7 @@
           <li
             class="pay-now color-dashboard-background color-main"
             v-show="orderType.OTApi !== 'call_center'"
+            @click="payNowClick()"
           >
             <a href="javascript:void(0)">
               <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
@@ -366,7 +367,7 @@ import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import UserProfile from '@/components/pos/user/UserProfile'
 
 import { mapActions, mapState, mapGetters } from 'vuex'
-/* global $ */
+/* global $, clickPayNow */
 export default {
   name: 'Footer',
   props: {},
@@ -422,6 +423,9 @@ export default {
     ...mapState({ selectedCustomer: state => state.customer.customer.name }),
   },
   methods: {
+    payNowClick() {
+      clickPayNow()
+    },
     viewHoldOrders() {
       this.vbutton = 'new'
       this.$store.commit('order/SET_CART_TYPE', 'hold')

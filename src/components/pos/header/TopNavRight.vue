@@ -42,6 +42,7 @@
     <li
       class="nav-icon nav-item setting-icon color-main color-text-invert"
       id="setting-icon"
+      @click="openConfigLinks()"
     >
       <a class="nav-link color-text-invert">
         <svg
@@ -77,6 +78,7 @@
 </template>
 
 <script>
+/*global posConfigLinks*/
 import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 export default {
@@ -113,6 +115,9 @@ export default {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
       bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
+    },
+    openConfigLinks() {
+      posConfigLinks()
     },
     onlineOrders() {
       if (this.latestOnlineOrders == 0) {

@@ -3,14 +3,15 @@
     <div class="dm-delivery-details-btn">
       <ul class="dm-ullist">
         <li
-          class="active"
           data-related="dm-new-order"
+          :class="{ active: listType == _t('New Orders') }"
           @click="
             updateOrderStatus({
               orderStatus: 'in-progress',
               collected: 'no',
               pageId: 'home_delivery_new',
               title: _t('New Orders'),
+              dataRelated: 'dm-new-order',
             })
           "
         >
@@ -20,12 +21,14 @@
         <li
           class="pick"
           data-related="dm-waiting-for-pick"
+          :class="{ active: listType == _t('Waiting for Pick') }"
           @click="
             updateOrderStatus({
               orderStatus: 'ready',
               collected: 'no',
               pageId: 'home_delivery_pick',
               title: _t('Waiting for Pick'),
+              dataRelated: 'dm-waiting-for-pick',
             })
           "
         >
@@ -34,6 +37,7 @@
         </li>
         <li
           class="pick"
+          :class="{ active: listType == _t('Delivery - In Progress') }"
           data-related="dm-delivery-in-progress"
           @click="
             updateOrderStatus({
@@ -41,6 +45,7 @@
               collected: 'no',
               pageId: 'home_delivery_in_progress',
               title: _t('Delivery - In Progress'),
+              dataRelated: 'dm-delivery-in-progress',
             })
           "
         >
@@ -50,12 +55,14 @@
         <li
           class="dm-delivered"
           data-related="dm-delivered"
+          :class="{ active: listType == _t('Delivered') }"
           @click="
             updateOrderStatus({
               orderStatus: 'finished',
               collected: 'no',
               pageId: 'home_delivery_finished',
               title: _t('Delivered'),
+              dataRelated: 'dm-delivered',
             })
           "
         >
@@ -75,6 +82,8 @@ export default {
     updateOrderStatus: function(orderStatus) {
       this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
       this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
+      // eslint-disable-next-line no-undef
+      deliveryTabs(orderStatus.dataRelated)
     },
   },
   computed: {
