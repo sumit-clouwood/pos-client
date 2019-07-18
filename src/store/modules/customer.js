@@ -233,7 +233,14 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-
+  resetCustomer({ commit, dispatch }) {
+    let customerDetails = {}
+    customerDetails.customerData = false
+    customerDetails.deliveryAreas = false
+    customerDetails.pastOrders = false
+    commit(mutation.SELECTED_CUSTOMER, customerDetails)
+    dispatch('reset')
+  },
   selectedAddress({ commit, dispatch }, address) {
     commit(mutation.SELECTED_CUSTOMER_ADDRESS, address)
     let orderType = { OTview: 'Delivery', OTApi: 'call_center' }
@@ -314,7 +321,7 @@ const actions = {
 
   reset({ commit }) {
     commit(mutation.RESET)
-    commit(mutation.LOYALTY)
+    commit(mutation.LOYALTY, false)
     commit(mutation.LOYALTY_FILTER)
   },
 }
