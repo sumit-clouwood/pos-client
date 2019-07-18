@@ -75,6 +75,7 @@
 </template>
 
 <script>
+/*global deliveryTabs*/
 import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'DMHomeDeliverySubMenu',
@@ -82,7 +83,6 @@ export default {
     updateOrderStatus: function(orderStatus) {
       this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
       this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
-      // eslint-disable-next-line no-undef
       deliveryTabs(orderStatus.dataRelated)
     },
   },

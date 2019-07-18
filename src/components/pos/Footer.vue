@@ -441,7 +441,6 @@ export default {
     },
   },
   updated() {
-    $('#payment-method')[0].slick.refresh()
     $('ul.ullist-icons').slick({
       slidesToShow: 5,
       slidesToScroll: 1,
