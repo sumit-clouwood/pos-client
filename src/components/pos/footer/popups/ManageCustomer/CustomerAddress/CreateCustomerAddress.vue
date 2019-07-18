@@ -11,7 +11,7 @@
             {{ customer_title }} {{ _t('Address') }}
           </h4>
         </div>
-        <div class="modal-body row form-block">
+        <form class="modal-body row form-block">
           <div class="col-md-6 left-form add-address-form">
             <div class="name-from">
               <label>{{ _t('Delivery Area') }} <span>*</span></label>
@@ -76,7 +76,7 @@
               />
             </div>
           </div>
-        </div>
+        </form>
         <div class="modal-footer">
           <div class="btn-announce">
             <button

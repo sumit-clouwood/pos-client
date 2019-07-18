@@ -548,11 +548,11 @@ const mutations = {
   },
 
   RESET(state, status = 'complete') {
-    state.amount = 0
     state.payments = []
     state.LoyaltyPopup = false
     state.error = false
     if (status != 'process') {
+      state.amount = 0
       state.tipAmount = 0
     }
   },
