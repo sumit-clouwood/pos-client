@@ -16,6 +16,11 @@
               {{ _t(orderError) }}
             </p>
           </div>
+          <div class="error mx-auto" v-if="discounts.length == 0">
+            <p class="text-danger text-center">
+              {{ errors }}
+            </p>
+          </div>
           <div
             class="dining-option-block select-discount-option"
             v-if="!orderError && discounts.length"
@@ -75,6 +80,11 @@ import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Discount',
   props: {},
+  data() {
+    return {
+      errors: 'There is no discount available at this time.',
+    }
+  },
   computed: {
     ...mapState('discount', ['orderError', 'errorCode']),
     ...mapGetters('location', ['formatPrice', '_t']),

@@ -25,7 +25,7 @@
         </button>
         <button class="btn btn-success walkin-btn">
           <router-link :to="store" class="text-white">
-            {{ _t('Walk-in') }}
+            {{ _t('Walk-in') }}Select
           </router-link>
         </button>
       </div>
