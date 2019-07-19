@@ -26,6 +26,7 @@ import ManageCustomerHeader from './ManageCustomer/ManageCustomerHeader'
 import ManageCustomerContent from './ManageCustomer/ManageCustomerContent'
 import ManageCustomerFooter from './ManageCustomer/ManageCustomerFooter'
 import { mapGetters } from 'vuex'
+
 export default {
   name: 'ManageCustomer',
   props: {},
@@ -39,3 +40,38 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+    @import '../../../../assets/scss/pixels_rem.scss';
+    @import '../../../../assets/scss/variables.scss';
+    @import '../../../../assets/scss/mixins.scss';
+
+    #manage-customer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 100vh;
+
+        .modal-dialog {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: 100vh;
+
+            .search-field {
+                border: 1px solid $gray-middle;
+                display: grid;
+                grid-template-columns: 50px 1fr;
+                padding: 5px 0;
+                border-radius: 3px;
+
+                input {
+                    height: 40px;
+                }
+            }
+        }
+    }
+</style>

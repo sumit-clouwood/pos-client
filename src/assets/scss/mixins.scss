@@ -1,3 +1,4 @@
+$mobile: 320px;
 $xs: 600px;
 $sm: 960px;
 $md: 1264px;
@@ -8,13 +9,17 @@ $lg: 1920px;
   font-weight: 700;
   font-family: 'ProximaNova';
 }
-
-// @include responsive(xs){}
-// @include responsive(sm){}
-// @include responsive(md){}
-// @include responsive(lg){}
+//@include responsive(mobile){}
+//@include responsive(xs){}
+//@include responsive(sm){}
+//@include responsive(md){}
+//@include responsive(lg){}
 @mixin responsive($media) {
-  @if $media==xs {
+  @if $media==mobile {
+    @media only screen and (min-width: $mobile ) and (max-width: $xs) {
+      @content;
+    }
+  } @else if $media==xs {
     @media only screen and (min-width: $xs - 1) {
       @content;
     }

@@ -1,4 +1,4 @@
-<!-- 
+<!--
 The App.vue file is the root component that all other components are nested within.
 -->
 
@@ -162,5 +162,5 @@ if ('serviceWorker' in navigator && 'SyncManager' in window) {
 }
 </script>
 <style lang="css">
-@import './assets/css/style.css?var=1.0';
+@import './assets/scss/style.scss';
 </style>

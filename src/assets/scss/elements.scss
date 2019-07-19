@@ -1,11 +1,11 @@
-@import "pixels_rem.scss";
-@import "variables.scss";
-@import "mixins.scss";
+@import 'pixels_rem.scss';
+@import 'variables.scss';
+@import 'mixins.scss';
 
 @font-face {
-  font-family: "ProximaNova-Regular";
-  src: url("#{$assets-address}ProximaNova-Regular.woff") format("woff");
-  src: url("#{$assets-address}ProximaNova-Regular.woff2") format("woff");
+  font-family: 'ProximaNova-Regular';
+  src: url('#{$assets-address}ProximaNova-Regular.woff') format('woff');
+  src: url('#{$assets-address}ProximaNova-Regular.woff2') format('woff');
   font-style: normal;
   font-weight: normal;
 }
@@ -14,12 +14,15 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  font-family: "ProximaNova-Regular";
+  font-family: 'ProximaNova-Regular';
 }
 
 html {
-  color: #1E1E20;
-  @include responsive(xs){
+  color: #1e1e20;
+  @include responsive(mobile) {
+    font-size: 14px;
+  }
+  @include responsive(xs) {
     font-size: 10px;
   }
   @include responsive(sm) {
@@ -39,10 +42,26 @@ body {
   height: 100vh;
   overflow: hidden;
   color: #444;
-  background-color: #FAFAFA;
+  background-color: #fafafa;
+  .new-pos {
+    .hideBigScreen {
+      display: none;
+      @include responsive(mobile) {
+        display: flex;
+      }
+    }
+    .hideMobileScreen {
+       display: block;
+       @include responsive(mobile) {
+         display: none;
+       }
+     }
+  }
 }
 
-ul, ol, p {
+ul,
+ol,
+p {
   padding: 0;
   margin: 0;
 }
@@ -60,19 +79,17 @@ img {
   display: inline-block;
 }
 
-//scrollbar
-
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: $btn-border-radius;
   border-radius: $btn-border-radius;
-  background-color: #B2BECF;
+  background-color: #b2becf;
   margin: 2px;
 }
 
 ::-webkit-resizer {
   background-repeat: no-repeat;
   width: $px8;
-  height: 0px
+  height: 0;
 }
 
 ::-webkit-scrollbar {
@@ -84,7 +101,6 @@ img {
   bprder: 1px solid $gray-light;
 }
 
-// buttons
 .orders-button-small {
   cursor: pointer;
   padding: 0 $px10;
@@ -99,16 +115,15 @@ img {
   margin-bottom: $px5;
   font-size: $px12;
   transition: 0.2s linear;
-  //min-width: $px80;
-  &.canceled{
-    background-color: #CC3232;
-    &:hover{
-      background-color: #CC1212;
+  &.canceled {
+    background-color: #cc3232;
+    &:hover {
+      background-color: #cc1212;
     }
   }
-  &.success{
+  &.success {
     background-color: $green-middle;
-    &:hover{
+    &:hover {
       background-color: $green-dark;
     }
   }
@@ -118,8 +133,8 @@ img {
   }
 }
 
-  .shorten-sentence {
-  Text-overflow: ellipsis;
+.shorten-sentence {
+  text-overflow: ellipsis;
   overflow: hidden;
   White-space: nowrap;
   Width: $px111;
@@ -137,7 +152,7 @@ img {
   border-radius: $btn-border-radius;
   font-size: $px16;
   transition: 0.2s linear;
-  svg{
+  svg {
     width: $px10;
     margin-right: $px10;
   }
@@ -149,13 +164,12 @@ img {
 .button-plus {
   margin-bottom: $px7;
   cursor: pointer;
-  img{
+  img {
     width: $px30;
     height: $px30;
   }
 }
 
-// search field
 .search-field {
   display: grid;
   grid-template-columns: $px60 1fr;
@@ -196,14 +210,17 @@ img {
     white-space: nowrap;
     text-overflow: ellipsis;
     width: 100%;
+    z-index: 1;
+
     &:focus {
       outline: none;
     }
   }
 }
-svg{
+svg {
   color: #fff;
 }
+
 .btnSuccess, .btn-success{
   background-color:$blue-middle;
   border-color: $blue-middle;

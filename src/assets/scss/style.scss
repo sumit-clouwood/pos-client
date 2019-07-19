@@ -2,15 +2,14 @@
 @import "./variables.scss";
 @import "./mixins.scss";
 @import "./elements.scss";
+@import "./animation.scss";
 @import "./header.scss";
 @import "./modals/_modals.scss";
-// pos
 @import "./page_pos.scss";
 @import "./navbar.scss";
 @import "./main.scss";
 @import "./orders.scss";
 @import "./footer.scss";
-// transaction
 @import "./page_transaction.scss";
 @import "./transaction_sidebar.scss";
 @import "./transaction_orders.scss";

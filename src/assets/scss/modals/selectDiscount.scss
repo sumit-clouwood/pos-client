@@ -1,4 +1,4 @@
-@import "../variables";
+@import "../variables.scss";
 a:hover {
   text-decoration: none;
 }
@@ -48,7 +48,7 @@ a:hover {
 
 .option-contain.active:after {
   content: '';
-  background-image: url(../images/check-mark.svg);
+  background-image: url(/assets/images/check-mark.svg);
   position: absolute;
   height: $px25;
   width: $px25;
@@ -117,4 +117,70 @@ a:hover {
 .morelink {
   display: inline-block;
   color: #5056ca;
+}
+
+//media queries
+@include responsive(mobile) {
+  #select-discount {
+    .modal-dialog {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      min-height: auto;
+      border-left: 1px solid #ddd;
+
+      .modal-content {
+        .modal-header {
+          border-radius: 0;
+          padding: 10px 20px;
+        }
+
+        .modal-body {
+          overflow: auto;
+          padding: 20px;
+          margin-left: 0;
+          margin-right: 0;
+
+          .select-discount-option {
+            .option-contain {
+
+              &.active {
+                border: 2px solid $green-middle;
+
+                &:after {
+                  content: "✔";
+                  color: #fff;
+                  position: absolute;
+                  height: 1.5625rem;
+                  width: 1.5625rem;
+                  top: -1px;
+                  right: -1px;
+                  border-bottom: 1px solid #ddd;
+                  border-left: 1px solid #ddd;
+                  background-repeat: no-repeat;
+                  border-radius: 3px;
+                  border-top-right-radius: 0;
+                  background-color: $green-middle;
+                  background-position: center center;
+                  border-color: #dfffcd !important;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                }
+              }
+            }
+          }
+        }
+
+        .modal-footer {
+          box-shadow: 0 0 10px #ccc;
+          z-index: 2;
+          padding: 10px 20px 20px;
+        }
+      }
+    }
+  }
 }

@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAWQ,sFAAc;EACZ,UAAU,EAAE,KAAK;EACjB,IAAI,EAAE,IAAI",
-"sources": ["../../scss/modals/giftCardPayemntDetails.scss"],
-"names": [],
-"file": "giftCardPayemntDetails.css"
-}

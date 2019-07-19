@@ -111,10 +111,4 @@ export default {
   },
 }
 </script>
-<!--<style lang="sass" scoped>
-.discount-item.each
-  display:inline-block
-.error
-  width: 100%;
-  padding: 40px 5px 0px 5px;
-</style>-->
+

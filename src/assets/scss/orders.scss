@@ -10,6 +10,10 @@
   background-color: $gray-bg-light;
   grid-column-start: 2;
 
+  .main-orders-title {
+    display: none;
+  }
+
   .main-orders-contacts {
     display: grid;
     grid-template-columns: auto auto;
@@ -188,6 +192,10 @@
       .sub-total-num {
         font-size: $px16;
         font-weight: 700;
+
+        .fa {
+          display: none;
+        }
       }
     }
 
@@ -212,4 +220,16 @@
       }
     }
   }
+
+  .main-orders-buttons {
+    display: none;
+  }
+}
+
+.orders-menu-overlay {
+  display: none;
+}
+
+.mobile-footer {
+  display: none;
 }

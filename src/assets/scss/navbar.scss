@@ -39,7 +39,7 @@
       overflow: hidden;
       display: grid;
       grid-template-rows: auto;
-      grid-gap: $px20;
+      grid-gap: $px10;
       padding: 0 0 $px30 0;
       transition: 0.5s ease-out;
 
@@ -70,7 +70,7 @@
           font-weight: 600;
           border-radius: $btn-border-radius;
           transition: 0.2s linear;
-          padding: $px10;
+          padding: $px3;
 
           &.active, &:hover {
             background-color: $blue-light !important;
@@ -78,9 +78,11 @@
           }
 
           img {
-            width: $px35;
-            height: $px35;
-            margin: 0 auto $px5 auto;
+            width: 80%;
+            margin: 0 auto;
+            height: auto;
+            margin-bottom: $px5;
+            border-radius: $px3;
           }
 
           .nav-link-text {

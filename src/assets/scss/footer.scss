@@ -1,7 +1,9 @@
 @import "variables.scss";
+
 .loyaltyApplied {
   background-color: $orange-dark !important;
   padding: 5px 20px !important;
+
   span {
     font-size: $px12;
     font-weight: bold;
@@ -10,6 +12,7 @@
     display: inline-block;
   }
 }
+
 .footer {
   border-top: 1px solid $gray-middle;
   display: grid;
@@ -62,7 +65,8 @@
             img {
               width: $px12;
             }
-            svg{
+
+            svg {
               width: $px12;
               margin: $px5 auto;
             }
@@ -117,6 +121,10 @@
     align-items: center;
     justify-content: center;
 
+    .footer-button-menu {
+      display: none;
+    }
+
     .button {
       cursor: pointer;
       margin: 0 $px30;
@@ -130,11 +138,13 @@
       color: #fff;
       transition: 0.2s linear;
 
+
       ul {
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: 1fr;
-        li{
+
+        li {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -178,6 +188,10 @@
           }
         }
       }
+    }
+
+    .button-cart {
+      display: none;
     }
   }
 }
