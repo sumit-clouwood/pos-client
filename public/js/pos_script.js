@@ -321,12 +321,12 @@ $(document).ready(function() {
   // End More text-show
 
   // li dropdown
-  $('div.dm-ready-order-wrapper').each(function() {
+  /*$('div.dm-ready-order-wrapper').each(function() {
     $(this).hide()
     if ($(this).attr('id') == 'dm-new-order') {
       $(this).show()
     }
-  })
+  })*/
 
   $('.all-tables-wrap > button').on('click', function(e) {
     e.preventDefault(e)

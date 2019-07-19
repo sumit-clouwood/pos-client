@@ -9,6 +9,7 @@ const state = {
   orders: [],
   orderCounts: 0,
   listType: 'New Orders',
+  section: 'crm',
   selectedOrder: false,
   selectedDriver: false,
   deliveredOrderGroup: [],
@@ -303,6 +304,9 @@ const actions = {
 const mutations = {
   [mutation.LIST_TYPE](state, listType) {
     state.listType = listType
+  },
+  [mutation.SECTION](state, section) {
+    state.section = section
   },
   [mutation.SET_DM_ORDER_COLLECTION](state, OrderDetailsUpdate) {
     if (!state.deliveredOrderCollection[OrderDetailsUpdate.driverId]) {

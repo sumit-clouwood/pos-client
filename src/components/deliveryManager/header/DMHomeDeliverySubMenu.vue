@@ -12,6 +12,7 @@
               pageId: 'home_delivery_new',
               title: _t('New Orders'),
               dataRelated: 'dm-new-order',
+              section: 'crm',
             })
           "
         >
@@ -29,6 +30,7 @@
               pageId: 'home_delivery_pick',
               title: _t('Waiting for Pick'),
               dataRelated: 'dm-waiting-for-pick',
+              section: 'crm',
             })
           "
         >
@@ -46,6 +48,7 @@
               pageId: 'home_delivery_in_progress',
               title: _t('Delivery - In Progress'),
               dataRelated: 'dm-delivery-in-progress',
+              section: 'crm',
             })
           "
         >
@@ -63,6 +66,7 @@
               pageId: 'home_delivery_finished',
               title: _t('Delivered'),
               dataRelated: 'dm-delivered',
+              section: 'crm',
             })
           "
         >
@@ -82,6 +86,7 @@ export default {
   methods: {
     updateOrderStatus: function(orderStatus) {
       this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
+      this.$store.commit('deliveryManager/SECTION', orderStatus.section)
       this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
       deliveryTabs(orderStatus.dataRelated)
     },

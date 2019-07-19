@@ -1,19 +1,48 @@
 <template>
-  <div class="dm-order-take-away dm-order-screen-change" id="take-away-order">
+  <div
+    class="dm-order-take-away dm-order-screen-change"
+    id="home-delivery-order"
+    style="display: grid;"
+  >
     <DMTakeAwaySubMenu />
     <div class="dm-ready-order-wrapper" id="new-Collections">
-      <DMItem :actionDetails="actionDetailsNew" />
+      <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
+      <div id="dm-new-order" v-else>
+        <DMItem :actionDetails="actionDetailsNew" />
+      </div>
     </div>
     <div class="dm-ready-order-wrapper" id="Waiting-for-Collections">
-      <DMItem :actionDetails="actionDetailsWaiting" />
+      <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
+      <DMItem :actionDetails="actionDetailsWaiting" v-else />
     </div>
     <div class="dm-ready-order-wrapper" id="collected">
-      <DMItem :actionDetails="actionDetailsCollected" />
+      <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
+      <DMItem :actionDetails="actionDetailsCollected" v-else />
+    </div>
+    <OrderDetailsPopup />
+    <div class="pagination-customer-details" v-if="!loading">
+      <paginate
+        v-if="params.totalPages"
+        :page-count="params.totalPages"
+        :page-range="1"
+        :margin-pages="1"
+        :clickHandler="moreOrder"
+        :prev-text="_t('Prev')"
+        :next-text="_t('Next')"
+        :container-class="paginationDirection"
+        :page-class="_t('page-item')"
+      >
+      </paginate>
     </div>
   </div>
 </template>
 
 <script>
+/*global $*/
+import { mapState, mapActions, mapGetters } from 'vuex'
+import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
+import paginate from 'vuejs-paginate'
+import Preloader from '@/components/util/Preloader'
 import DMItem from '@/components/deliveryManager/content/DMItem'
 import DMTakeAwaySubMenu from '@/components/deliveryManager/header/DMTakeAwaySubMenu'
 export default {
@@ -38,11 +67,58 @@ export default {
         actionLabel: 'Collected',
         nextOrderStatus: '',
       },
+      selectedUser: '',
+      paginationDirection: 'holdorders',
     }
   },
   components: {
     DMTakeAwaySubMenu,
     DMItem,
+    // eslint-disable-next-line vue/no-unused-components
+    OrderDetailsPopup,
+    // eslint-disable-next-line vue/no-unused-components
+    paginate,
+    Preloader,
+  },
+  computed: {
+    ...mapGetters('deliveryManager', ['drivers']),
+    ...mapState('deliveryManager', [
+      'driverBucket',
+      'params',
+      'listType',
+      'loading',
+    ]),
+    ...mapGetters('location', ['_t']),
+  },
+  updated() {
+    if (this.listType == this._t('Waiting for Pick')) {
+      this.paginationDirection = ''
+    } else {
+      this.paginationDirection = 'holdorders'
+    }
+  },
+  mounted() {
+    this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+  },
+
+  methods: {
+    ...mapActions('order', ['updateOrderAction']),
+    showDropdown: function() {
+      $('.dropdown-content').show()
+    },
+    moreOrder: function(pageNumber) {
+      this.$store.commit('deliveryManager/SET_DM_PAGE', pageNumber)
+      this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+    },
+    getSelectUser: function() {
+      this.selectedUser = $('#get-customer-list').val()
+    },
+
+    ...mapActions('deliveryManager', [
+      'selectDriver',
+      'restoreOrders',
+      'assignBucketToDriver',
+    ]),
   },
 }
 </script>

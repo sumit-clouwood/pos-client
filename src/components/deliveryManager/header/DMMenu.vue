@@ -11,6 +11,7 @@
             pageId: 'home_delivery_new',
             title: _t('New Orders'),
             dataRelated: 'dm-new-order',
+            section: 'crm',
           })
         "
       >
@@ -18,14 +19,15 @@
       </button>
       <button
         class="btn btn-success"
-        data-related="take-away-order"
+        data-related="new-Collections"
         @click="
-          updateDMOrderStatus({
-            orderStatus: 'new',
+          updateOrderStatus({
+            orderStatus: 'in-progress',
             collected: 'no',
             pageId: 'takeaway_new',
-            title: _t('New Orders'),
-            dataRelated: 'take-away-order',
+            title: _t('NEW TAKEAWAY ORDERS'),
+            dataRelated: 'new-Collections',
+            section: 'takeaway',
           })
         "
       >
@@ -35,12 +37,13 @@
         class="btn btn-success"
         data-related="future-order"
         @click="
-          updateDMOrderStatus({
+          updateOrderStatus({
             orderStatus: 'future-order',
             collected: 'no',
             pageId: 'future',
             title: _t('Future Orders'),
             dataRelated: 'future-order',
+            section: 'future',
           })
         "
       >
@@ -53,8 +56,9 @@
 </template>
 
 <script>
+/*global deliveryTabs*/
 // import Branches from '@/components/deliveryManager/partial/Branches'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'DMMenu',
@@ -62,7 +66,16 @@ export default {
     // Branches,
   },
   methods: {
+    updateOrderStatus: function(orderStatus) {
+      this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
+      this.$store.commit('deliveryManager/SECTION', orderStatus.section)
+      this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
+      deliveryTabs(orderStatus.dataRelated)
+    },
     ...mapActions('deliveryManager', ['updateDMOrderStatus']),
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
   },
 }
 </script>
