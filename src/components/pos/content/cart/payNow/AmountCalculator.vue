@@ -1,5 +1,5 @@
 <template>
-  <div :class="['amount-keypad', {amountKeypadActive: payNowCalcHendler}]">
+  <div :class="['amount-keypad', { amountKeypadActive: payNowCalcHendler }]">
     <div class="payment-key" @click="set(7)">7</div>
     <div class="payment-key" @click="set(8)">8</div>
     <div class="payment-key" @click="set(9)">9</div>

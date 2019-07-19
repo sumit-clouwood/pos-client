@@ -73,7 +73,7 @@
               type="button"
               class="btn btn-danger cancel-announce color-text-invert color-button"
               data-dismiss="modal"
-                                @click="loyaltyHendlerGhange"
+              @click="loyaltyHendlerGhange"
             >
               {{ _t('Cancel') }}
             </button>
@@ -119,9 +119,9 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
-            loyaltyHendlerGhange(){
-                this.$store.dispatch('loyaltyHendlerGhange')
-            },
+    loyaltyHendlerGhange() {
+      this.$store.dispatch('loyaltyHendlerGhange')
+    },
     loyaltyAddCustomer: function(target) {
       this.$store.commit('loyalty/LOYALTY', true)
       this.addCustomer()
@@ -135,8 +135,8 @@ export default {
       if (this.customerId.length > 0) {
         this.searchCustomerErr = ''
         $('.text-danger').hide()
-      $('#search-loyalty-customer').modal('toggle')
-      this.fetchSelectedCustomer(this.customerId)
+        $('#search-loyalty-customer').modal('toggle')
+        this.fetchSelectedCustomer(this.customerId)
       } else {
         this.searchCustomerErr = 'Please Select Customer'
       }
@@ -177,48 +177,48 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.dropdown {
+  position: relative;
+}
 
-    .dropdown {
-        position: relative;
-    }
-
-#searchLoader, .dropdown-content {
+#searchLoader,
+.dropdown-content {
   /*display:none;*/
-    }
+}
 
-    .dropdown-content {
-        display: block;
-        position: absolute;
-        background-color: #f6f6f6;
-        width: 100%;
-        overflow: auto;
-        border: 1px solid #ddd;
-        z-index: 1;
-        margin-top: 3px;
-        max-height: 200px;
-    }
+.dropdown-content {
+  display: block;
+  position: absolute;
+  background-color: #f6f6f6;
+  width: 100%;
+  overflow: auto;
+  border: 1px solid #ddd;
+  z-index: 1;
+  margin-top: 3px;
+  max-height: 200px;
+}
 
-    .dropdown-content span {
-        color: black;
-        padding: 6px 16px;
-        text-decoration: none;
-        display: block;
-    }
+.dropdown-content span {
+  color: black;
+  padding: 6px 16px;
+  text-decoration: none;
+  display: block;
+}
 
-    .inputSearch {
+.inputSearch {
   /*width: 337px;*/
   padding-bottom: 11px;
-        height: 48px;
-        border-radius: 5px 0px 0px 5px;
-    }
+  height: 48px;
+  border-radius: 5px 0px 0px 5px;
+}
 
-    .btnSuccess {
-        color: #fff;
-        height: 47px;
-        border-radius: 0px 5px 5px 0px;
-    }
+.btnSuccess {
+  color: #fff;
+  height: 47px;
+  border-radius: 0px 5px 5px 0px;
+}
 
-    .dropdown span:hover {
-        background-color: #ddd;
-    }
+.dropdown span:hover {
+  background-color: #ddd;
+}
 </style>

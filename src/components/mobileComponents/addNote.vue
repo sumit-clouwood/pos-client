@@ -1,80 +1,80 @@
 <template>
-    <div :class="['add-note', {active: addNoteHendler}]">
-        <add-note/>
-    </div>
+  <div :class="['add-note', { active: addNoteHendler }]">
+    <add-note />
+  </div>
 </template>
 
 <script>
-    import {mapActions, mapGetters, mapState} from 'vuex'
-    import addNote from '../pos/footer/popups/AddNote.vue'
+import { mapGetters } from 'vuex'
+import addNote from '../pos/footer/popups/AddNote.vue'
 
-    export default {
-        components: {
-            addNote
-        },
-        computed: {
-            ...mapGetters(['addNoteHendler'])
-        }
-    }
+export default {
+  components: {
+    addNote,
+  },
+  computed: {
+    ...mapGetters(['addNoteHendler']),
+  },
+}
 </script>
 
 <style lang="scss">
-    @import '../../assets/scss/pixels_rem.scss';
-    @import '../../assets/scss/variables.scss';
-    @import '../../assets/scss/mixins.scss';
+@import '../../assets/scss/pixels_rem.scss';
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
 
-    @include responsive(mobile) {
-        #add-note {
-            display: none !important;
-        }
-    }
+@include responsive(mobile) {
+  #add-note {
+    display: none !important;
+  }
+}
 
-    .add-note {
-        position: fixed;
-        width: 100vw;
+.add-note {
+  position: fixed;
+  width: 100vw;
+  top: 0;
+  right: -100vw;
+  bottom: 0;
+  z-index: 1060;
+  background-color: #fff;
+  transition: 0.5s ease-out;
+  border-left: 1px solid #ddd;
+
+  &.active {
+    right: 0;
+  }
+
+  #add-note {
+    position: absolute;
+    display: block !important;
+    opacity: 1;
+
+    .modal-dialog {
+      display: block;
+      max-width: 100%;
+      transform: none;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+
+      .modal-content {
+        position: absolute;
         top: 0;
-        right: -100vw;
+        right: 0;
         bottom: 0;
-        z-index: 1060;
-        background-color: #fff;
-        transition: 0.5s ease-out;
-        border-left: 1px solid #ddd;
+        left: 0;
 
-        &.active {
-            right: 0;
+        .modal-header {
+          padding: 20px;
         }
 
-        #add-note {
-            position: absolute;
-            display: block !important;
-            opacity: 1;
-
-            .modal-dialog {
-                display: block;
-                max-width: 100%;
-                transform: none;
-                position: absolute;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-
-                .modal-content {
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    left: 0;
-
-                    .modal-header {
-                        padding: 20px;
-                    }
-
-                    .modal-body {
-                        padding: 0 20px;
-                    }
-                }
-            }
+        .modal-body {
+          padding: 0 20px;
         }
+      }
     }
+  }
+}
 </style>

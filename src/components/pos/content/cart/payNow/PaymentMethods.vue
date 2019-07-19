@@ -1,12 +1,13 @@
 <template>
-    <div id="payment-method" :class="{activePayMethod: !payNowCalcHendler}">
-      <div v-for="(method, key) in methods"
-          :key="key"
-          :class="{ active: activeMethod == method.name, 'color-secondary': true }"
-          @click="[setMethod(method), methodCardHendlerGhange(method.priority)]"
-          class="method"
-          :data-toggle="getToggle(method)"
-          :data-target="getTarget(method)"
+  <div id="payment-method" :class="{ activePayMethod: !payNowCalcHendler }">
+    <div
+      v-for="(method, key) in methods"
+      :key="key"
+      :class="{ active: activeMethod == method.name, 'color-secondary': true }"
+      @click=";[setMethod(method), methodCardHendlerGhange(method.priority)]"
+      class="method"
+      :data-toggle="getToggle(method)"
+      :data-target="getTarget(method)"
     >
       <img :src="image(method.icon)" :alt="method.name" :title="method.name" />
       <label
@@ -51,36 +52,36 @@ export default {
           return process.env.BASE_URL + imgPath
         }
       } else {
-      return 'https://fakeimg.pl/46x46/?text=Third&font=lobster%22'
+        return 'https://fakeimg.pl/46x46/?text=Third&font=lobster%22'
       }
     },
     getTarget(method) {
       if (this.$store.getters['checkoutForm/payable'] > 0) {
         if (method.type == CONSTANTS.LOYALTY) {
-        if (this.selectedModal == '#manage-customer') {
-          return '#search-loyalty-customer'
-        } else {
-          this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
-          return '#loyalty-payment'
+          if (this.selectedModal == '#manage-customer') {
+            return '#search-loyalty-customer'
+          } else {
+            this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
+            return '#loyalty-payment'
+          }
         }
-      }
       }
       return ''
     },
     ...mapActions('checkoutForm', ['setMethod']),
-            methodCardHendlerGhange(e) {
-                if(e == 3){
-                    this.$store.dispatch('methodCardHendlerGhange')
-                }else if(e == 4){
-                    this.$store.dispatch('QRMethodGhangeHendler')
-                }else if(e == 1){
-                    this.$store.dispatch('payNowCalcHendlerGhange')
-                }else if(e == 2){
-                    this.$store.dispatch('loyaltyPaymentHendlerGhange')
-                }
-            }
-        },
-    }
+    methodCardHendlerGhange(e) {
+      if (e == 3) {
+        this.$store.dispatch('methodCardHendlerGhange')
+      } else if (e == 4) {
+        this.$store.dispatch('QRMethodGhangeHendler')
+      } else if (e == 1) {
+        this.$store.dispatch('payNowCalcHendlerGhange')
+      } else if (e == 2) {
+        this.$store.dispatch('loyaltyPaymentHendlerGhange')
+      }
+    },
+  },
+}
 </script>
 <style lang="sass" scoped>
 img

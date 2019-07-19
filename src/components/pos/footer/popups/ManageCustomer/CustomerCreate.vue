@@ -1,5 +1,5 @@
 <template>
-    <!-- Add customer model -->
+  <!-- Add customer model -->
   <div>
     <div class="modal fade " id="customer" role="dialog">
       <div class="modal-dialog">
@@ -39,43 +39,43 @@
             </div>
             <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
           </div>
-                </div>
-            </div>
         </div>
-        <InformationPopup
+      </div>
+    </div>
+    <InformationPopup
       :responseInformation="customerCreateStatus.message.flash_message"
       title="Information"
-        />
-    </div>
-    <!-- End customer Model -->
+    />
+  </div>
+  <!-- End customer Model -->
 </template>
 
 <script>
 /*global $ */
 import { mapActions, mapState, mapGetters } from 'vuex'
-    import InformationPopup from '@/components/pos/content/InformationPopup'
-    import CustomerForm from './CustomerForm'
+import InformationPopup from '@/components/pos/content/InformationPopup'
+import CustomerForm from './CustomerForm'
 
-    export default {
-        name: 'CreateNewCustomer',
-        components: {
-            InformationPopup,
-            CustomerForm,
-        },
+export default {
+  name: 'CreateNewCustomer',
+  components: {
+    InformationPopup,
+    CustomerForm,
+  },
   data() {
     return {
       error: '',
     }
   },
-        computed: {
+  computed: {
     ...mapGetters('location', ['_t']),
-            ...mapState({
-                customer_title: state => state.customer.modalStatus,
-                customerCreateStatus: state => state.customer.responseInformation,
-            }),
-        },
-        methods: {
-            ...mapActions('customer', ['createAction', 'updateAction']),
+    ...mapState({
+      customer_title: state => state.customer.modalStatus,
+      customerCreateStatus: state => state.customer.responseInformation,
+    }),
+  },
+  methods: {
+    ...mapActions('customer', ['createAction', 'updateAction']),
     displayValidationErrors(errorData) {
       let error = ''
       let validationError = {}
@@ -105,70 +105,70 @@ import { mapActions, mapState, mapGetters } from 'vuex'
         $('#information-popup').modal('show')
       }
     },
-            customerAction(modalStatus) {
-                const errors = this.$refs.form.validate()
-                if (errors.count === 0) {
+    customerAction(modalStatus) {
+      const errors = this.$refs.form.validate()
+      if (errors.count === 0) {
         $('#post_announcement').attr('disabled', true) //Disable Save button if pressed
-                    const customerData = this.$refs.form.getData()
-                    if (modalStatus == 'Add') {
-                        this.createAction({
-                            data: customerData,
-                            model: 'brand_customers',
-                            customer: false,
+        const customerData = this.$refs.form.getData()
+        if (modalStatus == 'Add') {
+          this.createAction({
+            data: customerData,
+            model: 'brand_customers',
+            customer: false,
           }).then(() => {
             let errorData = this.customerCreateStatus
             this.displayValidationErrors(errorData)
-                        })
-                    }
-                    if (modalStatus == 'Edit') {
-                        let actionDetails = {
-                            id: localStorage.getItem('editItemKey'),
-                            action: 'edit',
-                            model: 'brand_customers',
-                            data: customerData,
-                        }
-                        this.updateAction(actionDetails)
-                        $('#close-customer').click()
+          })
+        }
+        if (modalStatus == 'Edit') {
+          let actionDetails = {
+            id: localStorage.getItem('editItemKey'),
+            action: 'edit',
+            model: 'brand_customers',
+            data: customerData,
+          }
+          this.updateAction(actionDetails)
+          $('#close-customer').click()
           $('#post_announcement').attr('disabled', false)
           $('#information-popup').modal('show')
-                    }
+        }
         /*if (
           this.customerCreateStatus &&
           this.customerCreateStatus.status === 'ok'
         ) {}*/
-                }
-            },
-        },
-    }
+      }
+    },
+  },
+}
 </script>
 <style lang="scss">
-    @import '../../../../../assets/scss/pixels_rem.scss';
-    @import '../../../../../assets/scss/variables.scss';
-    @import '../../../../../assets/scss/mixins.scss';
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
 
-    @include responsive(mobile) {
-        #customer {
-            position: fixed;
-            top: 0;
-            right: -100vw;
-            bottom: 0;
-            left: auto;
-            width: 100vw;
-            opacity: 1;
-            transform: none;
-            transition: 0.5s ease-out;
-            display: block;
+@include responsive(mobile) {
+  #customer {
+    position: fixed;
+    top: 0;
+    right: -100vw;
+    bottom: 0;
+    left: auto;
+    width: 100vw;
+    opacity: 1;
+    transform: none;
+    transition: 0.5s ease-out;
+    display: block;
 
-            &.show {
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: auto;
-            }
-
-            .modal-dialog {
-                transform: none;
-            }
-        }
+    &.show {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: auto;
     }
+
+    .modal-dialog {
+      transform: none;
+    }
+  }
+}
 </style>

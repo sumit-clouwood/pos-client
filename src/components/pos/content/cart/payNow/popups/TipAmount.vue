@@ -66,27 +66,26 @@ export default {
 }
 </script>
 <style lang="scss">
-    #tip-amount {
-        transform: none;
-        transition: none;
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        height: 100vh;
+#tip-amount {
+  transform: none;
+  transition: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100vh;
 
-        .modal-dialog {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            height: 100vh;
+  .modal-dialog {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 100vh;
 
-            .modal-content {
-
-            }
-        }
+    .modal-content {
     }
+  }
+}
 </style>

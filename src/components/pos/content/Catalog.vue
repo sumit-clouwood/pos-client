@@ -1,7 +1,7 @@
 <template>
   <div class="main-body color-dashboard-background color-text">
     <search />
-    <div :class="['food-wrapper', (subCategoryHendler ? 'active' : 'notActive')]">
+    <div :class="['food-wrapper', subCategoryHendler ? 'active' : 'notActive']">
       <SubMenu v-if="subcategories.length" />
       <div class="food-block">
         <Breadcrumbs />

@@ -105,7 +105,7 @@ export default {
         .catch()
       this.$store.dispatch('discountHendlerGhange')
     },
-    discountHendlerGhange(){
+    discountHendlerGhange() {
       this.$store.dispatch('discountHendlerGhange')
     },
     selectOrderDiscount: function(discount) {

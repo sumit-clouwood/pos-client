@@ -38,22 +38,22 @@ export default {
 }
 </script>
 <style lang="scss">
-    @import '../../../../../assets/scss/pixels_rem.scss';
-    @import '../../../../../assets/scss/variables.scss';
-    @import '../../../../../assets/scss/mixins.scss';
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
 
-    @include responsive(mobile) {
-        .POSItemOptions {
-            .modal-footer {
-                .buttoned {
-                    width: auto;
-                    height: 50px;
-                    padding: 0 25px !important;
-                    img{
-                        margin-right: 10px;
-                    }
-                }
-            }
+@include responsive(mobile) {
+  .POSItemOptions {
+    .modal-footer {
+      .buttoned {
+        width: auto;
+        height: 50px;
+        padding: 0 25px !important;
+        img {
+          margin-right: 10px;
         }
+      }
     }
+  }
+}
 </style>

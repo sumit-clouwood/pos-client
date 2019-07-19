@@ -29,7 +29,7 @@
                 </button>
               </div>
             </div>
-            <TotalAmount :param="{totalAmountBlock: true}"/>
+            <TotalAmount :param="{ totalAmountBlock: true }" />
             <div class="payment-method-title">
               <h2 class="color-text">{{ _t('Payment Method') }}</h2>
             </div>
@@ -81,7 +81,9 @@
               </button>
             </div>
           </div>
-          <div class="pay-now-btn-next" @click="payNowCalcHendlerGhange">Next</div>
+          <div class="pay-now-btn-next" @click="payNowCalcHendlerGhange">
+            Next
+          </div>
         </div>
       </div>
     </div>
@@ -144,9 +146,9 @@ export default {
       $('#payment-breakdown').hide()
       this.$store.commit('checkoutForm/showCalc', true)
     },
-    payNowCalcHendlerGhange(){
+    payNowCalcHendlerGhange() {
       this.$store.dispatch('payNowCalcHendlerGhange')
-    }
+    },
   },
 }
 </script>

@@ -4,7 +4,7 @@
     <Header />
     <Content />
     <Footer />
-    <mobileIndex/>
+    <mobileIndex />
   </div>
 </template>
 
@@ -26,7 +26,7 @@ import Menu from './pos/Menu.vue'
 import Header from './pos/Header.vue'
 import Content from './pos/Content.vue'
 import Footer from './pos/Footer'
-    import mobileIndex from './mobileComponents/_mobileIndex.vue'
+import mobileIndex from './mobileComponents/_mobileIndex.vue'
 import { mapState } from 'vuex'
 
 export default {

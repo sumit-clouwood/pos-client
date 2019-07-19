@@ -1,9 +1,12 @@
 <template>
-    <div :class="['navigation', (allCategoryHendler ? 'active' : 'notActive')]" class="color-main">
+  <div
+    :class="['navigation', allCategoryHendler ? 'active' : 'notActive']"
+    class="color-main"
+  >
     <div class="logo" title="logo">
       <a class="logo-link" href="javascript:void(0)">
         <router-link :to="'/delivery-manager' + store">
-        <img src="img/icons/icon.png" alt="icon" />
+          <img src="img/icons/icon.png" alt="icon" />
         </router-link>
       </a>
     </div>
@@ -15,7 +18,7 @@
           :key="item._id"
           :title="dt(item)"
           :data-original-title="dt(item)"
-                        @click="subCategoryHendlerChange"
+          @click="subCategoryHendlerChange"
         >
           <a
             class="nav-link-nav color-text-invert"
@@ -129,8 +132,8 @@ export default {
     },
     ...mapActions('category', ['browse']),
     subCategoryHendlerChange() {
-        this.$store.dispatch('subCategoryHendlerChange');
-    }
+      this.$store.dispatch('subCategoryHendlerChange')
+    },
   },
   updated() {
     $('li.nav-item.arrow-bottom > a > .bt-arrow').click(function(e) {
@@ -164,112 +167,111 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-    @import '../../assets/scss/pixels_rem.scss';
-    @import '../../assets/scss/variables.scss';
-    @import '../../assets/scss/mixins.scss';
+@import '../../assets/scss/pixels_rem.scss';
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
 
-    .category {
-        a {
-            cursor: pointer;
-        }
-        img {
-            height: 25px;
-            margin-top: 8px;
-        }
+.category {
+  a {
+    cursor: pointer;
+  }
+  img {
+    height: 25px;
+    margin-top: 8px;
+  }
+}
 
+@include responsive(mobile) {
+  .navigation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    background-color: transparent;
+    grid-template-rows: max-content;
+    z-index: 1;
+    overflow: hidden;
+    grid-row-start: 3;
+    grid-row-end: 4;
+
+    &.active {
+      transition: 0.7s ease-out;
     }
 
-    @include responsive(mobile) {
-        .navigation {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 100%;
-            background-color: transparent;
-            grid-template-rows: max-content;
-            z-index: 1;
-            overflow: hidden;
-            grid-row-start: 3;
-            grid-row-end: 4;
+    &.notActive {
+      top: -100%;
+      transition: 0.7s ease-out;
+    }
+
+    .logo {
+      display: none;
+    }
+
+    .slider-btn {
+      display: none;
+    }
+
+    .navigation-avatar {
+      display: none;
+    }
+
+    .navigation-list-wrapper {
+      overflow: auto;
+      height: 100%;
+      position: absolute;
+      right: 0;
+      left: 0;
+
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .navigation-list {
+        overflow: auto;
+        grid-gap: 0;
+        padding: 0;
+
+        .nav-item {
+          grid-template-columns: 1fr;
+          background-color: #fafafa;
+
+          .nav-link-nav {
+            color: #333;
+            width: auto;
+            height: 65px;
+            flex-direction: row;
+            justify-content: flex-start;
+            border-bottom: 1px solid $gray-middle;
+            padding: 0 20px 0 0px;
+            display: grid;
+            grid-template-columns: min-content 1fr;
+            grid-gap: 20px;
+
+            .nav-link-text {
+              font-size: 14px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              text-align: left;
+            }
+
+            img {
+              width: 65px;
+              height: 65px;
+              margin-bottom: 0;
+              border-radius: 0;
+            }
 
             &.active {
-                transition: 0.7s ease-out;
+              background-color: transparent;
+              box-shadow: none;
             }
-
-            &.notActive {
-                top: -100%;
-                transition: 0.7s ease-out;
-            }
-
-            .logo {
-                display: none;
-            }
-
-            .slider-btn {
-                display: none;
-            }
-
-            .navigation-avatar {
-                display: none;
-            }
-
-            .navigation-list-wrapper {
-                overflow: auto;
-                height: 100%;
-                position: absolute;
-                right: 0;
-                left: 0;
-
-                &::-webkit-scrollbar {
-                    width: 8px;
-                }
-
-                .navigation-list {
-                    overflow: auto;
-                    grid-gap: 0;
-                    padding: 0;
-
-                    .nav-item {
-                        grid-template-columns: 1fr;
-                        background-color: #fafafa;
-
-                        .nav-link-nav {
-                            color: #333;
-                            width: auto;
-                            height: 65px;
-                            flex-direction: row;
-                            justify-content: flex-start;
-                            border-bottom: 1px solid $gray-middle;
-                            padding: 0 20px 0 0px;
-                            display: grid;
-                            grid-template-columns: min-content 1fr;
-                            grid-gap: 20px;
-
-                            .nav-link-text {
-                                font-size: 14px;
-                                white-space: nowrap;
-                                overflow: hidden;
-                                text-overflow: ellipsis;
-                                text-align: left;
-                            }
-
-                            img {
-                                width: 65px;
-                                height: 65px;
-                                margin-bottom: 0;
-                                border-radius: 0;
-                            }
-
-                            &.active {
-                                background-color: transparent;
-                                box-shadow: none;
-                            }
-                        }
-                    }
-                }
-            }
+          }
         }
+      }
     }
+  }
+}
 </style>
