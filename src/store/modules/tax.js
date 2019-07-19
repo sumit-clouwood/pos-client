@@ -10,20 +10,33 @@ const state = {
 
 // getters
 const getters = {
-  itemsTax: state => {
+  itemsTax: (state, getters) => {
     let total = 0
     state.itemsTaxData.forEach(item => {
-      total += item.quantity * Num.round(item.tax)
-      total += item.quantity * Num.round(item.modifiersTax)
+      total += item.quantity * Num.round(item.undiscountedTax)
+      total += item.quantity * getters.modifiersTax(item.orderIndex)
+      total -= getters.discountedTax(item)
     })
     return total
   },
 
-  // modifiersTax: state => index => {
-  //   return state.modifiersTaxData[index].reduce((total, tax) => {
-  //     return total + Num.round(tax.tax)
-  //   }, 0)
-  // },
+  modifiersTax: state => index => {
+    return state.modifiersTaxData[index].reduce((total, tax) => {
+      return total + Num.round(tax.tax)
+    }, 0)
+  },
+
+  discountedTax: state => item => {
+    const itemTax = state.itemsTaxData.find(
+      taxData => taxData.orderIndex == item.orderIndex
+    )
+    if (itemTax) {
+      return Num.round(
+        itemTax.undiscountedTaxWithModifiers - itemTax.taxWithModifiers
+      )
+    }
+    return 0
+  },
 
   surchargeTax: state => {
     return state.surchargeTaxData.reduce((total, tax) => {
@@ -50,6 +63,8 @@ const getters = {
 
 // actions
 const actions = {
+  //as soon as discount is applied (item level), this function is called immediatley after that
+  //that means we have now discounted prices for an item
   calculate({ commit, rootState }) {
     return new Promise(resolve => {
       if (rootState.order.items.length) {
@@ -61,8 +76,10 @@ const actions = {
             itemTaxData.push({
               quantity: item.quantity,
               orderIndex: item.orderIndex,
+
               tax:
                 item.grossPriceWithoutModifiers - item.netPriceWithoutModifiers,
+
               undiscountedTax:
                 item.undiscountedGrossPriceWithoutModifiers -
                 item.undiscountedNetPriceWithoutModifiers,
