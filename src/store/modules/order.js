@@ -1,4 +1,3 @@
-/*eslint-disable no-console*/
 /*
 or example tax for an item is 2.467 
 suppose quantity is 3
@@ -74,18 +73,6 @@ const getters = {
 
   subTotal: () => {
     return state.items.reduce((total, item) => {
-      console.log(
-        'item gross price ',
-        Num.round(item.grossPrice),
-        ' quantity ',
-        item.quantity
-      )
-      console.log(
-        'item net price ',
-        Num.round(item.netPrice),
-        ' quantity ',
-        item.quantity
-      )
       return total + Num.round(item.netPrice) * item.quantity
     }, 0)
   },

@@ -1,8 +1,5 @@
-/* eslint-disable no-console */
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
-//import db from '@/services/network/DB'
-//import Crypt from '@/plugins/helpers/Crypt.js'
 import DateTime from '@/mixins/DateTime.js'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
@@ -32,62 +29,33 @@ const getters = {
 
     order.items.forEach(item => {
       data.subTotal += parseFloat(item.price) * parseFloat(item.qty)
-      console.log(
-        'item price * qty: ',
-        parseFloat(item.price) * parseFloat(item.qty)
-      )
       data.totalTax += parseFloat(item.tax) * parseFloat(item.qty)
-      console.log(
-        'item tax * qty: ',
-        parseFloat(item.tax) * parseFloat(item.qty)
-      )
     })
 
     order.item_modifiers.forEach(modifier => {
       data.subTotal += parseFloat(modifier.price) * parseFloat(modifier.qty)
-      console.log(
-        'item modifier price * qty: ',
-        parseFloat(modifier.price) * parseFloat(modifier.qty)
-      )
       data.totalTax += parseFloat(modifier.tax) * parseFloat(modifier.qty)
-      console.log(
-        'item tax * qty: ',
-        parseFloat(modifier.tax) * parseFloat(modifier.qty)
-      )
     })
 
     order.order_surcharges.forEach(surcharge => {
       data.totalSurcharge += parseFloat(surcharge.price)
-      console.log('item surcharge price: ', parseFloat(surcharge.price))
       data.surchargeTax += parseFloat(surcharge.tax)
       data.totalTax += parseFloat(surcharge.tax)
-      console.log('item surcharge tax: ', parseFloat(surcharge.tax))
     })
 
     order.item_discounts.forEach(discount => {
       data.subTotal -= parseFloat(discount.price)
-      console.log('discount price: ', discount.price)
       data.totalTax -= parseFloat(discount.tax)
-      console.log('discount tax: ', discount.tax)
     })
 
     order.order_discounts.forEach(discount => {
       data.totalDiscount += parseFloat(discount.price)
-      console.log('discount price: ', discount.price)
       data.totalTax -= parseFloat(discount.tax)
-      console.log('discount tax: ', discount.tax)
     })
 
     data.balanceDue =
       data.subTotal + data.totalTax + data.totalSurcharge - data.totalDiscount
-    console.log(
-      'totals',
-      data.subTotal,
-      data.totalTax,
-      data.totalSurcharge,
-      data.surchargeTax,
-      '-' + data.totalDiscount
-    )
+
     return data
   },
 }
@@ -168,6 +136,7 @@ const actions = {
             order_payments: [],
           }
         } catch (e) {
+          // eslint-disable-next-line no-console
           console.log(e)
         }
         if (

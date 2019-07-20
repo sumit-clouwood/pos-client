@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import * as mutation from './tax/mutation-types'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONST from '@/constants'
