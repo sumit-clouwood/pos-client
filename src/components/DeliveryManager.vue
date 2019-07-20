@@ -1,6 +1,6 @@
 <template>
   <div class="new-pos">
-    <div class="dm-screen-wrap">
+    <div class="dm-screen-wrap toggle-nav-content">
       <div class="left-fixed-menu">
         <h3 class="page-title" style="">{{ _t('New Orders') }}</h3>
         <div class="breadcrump-wrapper">
@@ -27,7 +27,7 @@
     <SystemNavigation />
 
     <!--body content left-->
-    <div class="content-wrapper" id="dm-content-wrapper">
+    <div class="content-wrapper toggle-nav-content" id="dm-content-wrapper">
       <div class="inner-content-dm">
         <DMMenu />
 

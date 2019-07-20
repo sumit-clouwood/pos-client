@@ -38,19 +38,28 @@ a.da-link {
   }
 }
 
-body#page-top.dm-manager {
-  background: $white !important;
-  border: medium none !important;
-  overflow: hidden !important;
+body#page-top{
+  &.dm-manager {
+    background: $white !important;
+    border: medium none !important;
+    overflow: hidden !important;
+  }
 }
 
-div#dm-content-wrapper .inner-content-dm {
-  width: 100%;
-  max-width: 100%;
-  display: grid;
-  height: 100%;
-  grid-template-rows: -webkit-min-content;
-  grid-template-rows: min-content;
+div#dm-content-wrapper {
+  -webkit-transition: .3s ease-out;
+  transition: .3s ease-out;
+  &.collapse-container{
+    margin-left: $px125;
+  }
+  .inner-content-dm {
+    width: 100%;
+    max-width: 100%;
+    display: grid;
+    height: 100%;
+    grid-template-rows: -webkit-min-content;
+    grid-template-rows: min-content;
+  }
 }
 
 .dm-btn-wrap {
@@ -1018,6 +1027,11 @@ input[type="password"] {
     overflow: hidden;
     background-color: #fff;
     padding: $px10 $px20 $px15 $px35;
+    -webkit-transition: .3s ease-out;
+    transition: .3s ease-out;
+    &.collapse-container {
+      margin-left:$px125;
+    }
 }
 
 ul.ullist-breadcrump > li {
@@ -1327,7 +1341,7 @@ tr.dataContentStyle{
       grid-template-columns: 1fr;
       height: 100vh;
       grid-template-rows: 5fr 1fr $px92 $px36;
-      padding-top: 20px;
+      padding-top: $px20;
       .logo{
         display: none;
       }
