@@ -134,6 +134,15 @@ const actions = {
     //net price is exclusive of tax, getter ll send unrounded price that is real one
     item.netPrice = getters.netPrice(item)
 
+    item.undiscountedNetPriceWithoutModifiers = item.netPrice
+    item.grossPriceWithoutModifiers = item.grossPrice
+    item.netPriceWithoutModifiers = item.netPrice
+    item.undiscountedGrossPriceWithoutModifiers =
+      item.grossPriceWithoutModifiers
+    item.undiscountedNetPriceWithoutModifiers = item.netPriceWithoutModifiers
+    item.undiscountedGrossPrice = item.grossPrice
+    item.undiscountedNetPrice = item.netPrice
+
     if (typeof item.orderIndex === 'undefined') {
       item.orderIndex = state.items.length
     }

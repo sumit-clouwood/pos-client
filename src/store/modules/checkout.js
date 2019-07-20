@@ -60,6 +60,7 @@ const getters = {
       data.totalSurcharge += parseFloat(surcharge.price)
       console.log('item surcharge price: ', parseFloat(surcharge.price))
       data.surchargeTax += parseFloat(surcharge.tax)
+      data.totalTax += parseFloat(surcharge.tax)
       console.log('item surcharge tax: ', parseFloat(surcharge.tax))
     })
 
@@ -78,11 +79,7 @@ const getters = {
     })
 
     data.balanceDue =
-      data.subTotal +
-      data.totalTax +
-      data.totalSurcharge +
-      data.surchargeTax -
-      data.totalDiscount
+      data.subTotal + data.totalTax + data.totalSurcharge - data.totalDiscount
     console.log(
       'totals',
       data.subTotal,
