@@ -460,7 +460,8 @@ const actions = {
         if (orderDiscount.include_surcharge) {
           //apply ontotal discount, apply on surcharge and its tax as well
           const subtotal = getters.subTotal
-          const totalTax = rootState.tax.itemsTax + rootState.tax.surchargeTax
+          const totalTax =
+            rootGetters['tax/itemsTax'] + (rootState.tax.surchargeTax || 0)
           const totalSurcharge = rootGetters['surcharge/surcharge']
 
           if (orderDiscount.type === CONST.VALUE) {
@@ -510,7 +511,7 @@ const actions = {
           //apply offtotal discount, don't calculate discount on surcharge
           const subtotal = getters.subTotal
           //we are not including surcharge tax in total tax for discount
-          const totalTax = rootState.tax.itemsTax
+          const totalTax = rootGetters['tax/itemsTax']
           //const totalSurcharge = rootGetters['surcharge/surcharge']
           if (orderDiscount.type === CONST.VALUE) {
             if (orderDiscount.value > subtotal + totalTax) {
@@ -630,23 +631,14 @@ const actions = {
           } else {
             if (item.undiscountedNetPrice * item.quantity > 0) {
               //discount error
-
               //percentage based discount, use discount.rate here, not discount.value
-
               //apply discount with modifier price
               const itemGrossDiscountAmount = Num.round(
                 (item.undiscountedGrossPrice * discount.discount.rate) / 100
               )
-              console.log('itemGrossDiscountAmount ', itemGrossDiscountAmount)
               item.grossPrice = Num.round(
                 item.undiscountedGrossPrice - itemGrossDiscountAmount
               )
-
-              console.log(
-                'undiscountedGrossPrice ',
-                item.undiscountedGrossPrice
-              )
-              console.log('item.grossPrice ', item.grossPrice)
 
               //item net discount amount should be calculated as item net price discount
               //  + modifier discount amount
