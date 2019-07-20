@@ -134,7 +134,9 @@ const actions = {
     //net price is exclusive of tax, getter ll send unrounded price that is real one
     item.netPrice = getters.netPrice(item)
 
-    item.orderIndex = state.items.length
+    if (typeof item.orderIndex === 'undefined') {
+      item.orderIndex = state.items.length
+    }
 
     //this comes directly from the items menu without modifiers
     item.modifiable = false
@@ -168,7 +170,9 @@ const actions = {
       item.grossPrice = getters.grossPrice(item)
       //getter will send un rounded value
       item.netPrice = getters.netPrice(item)
-      item.orderIndex = state.items.length
+      if (typeof item.orderIndex === 'undefined') {
+        item.orderIndex = state.items.length
+      }
       item.modifiable = true
 
       commit(mutation.SET_ITEM, item)
