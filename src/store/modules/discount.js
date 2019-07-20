@@ -37,10 +37,13 @@ const getters = {
   taxDiscountAmount: state => {
     return Num.round(state.taxDiscountAmount)
   },
-  orderDiscountWithoutTax: state =>
+  orderDiscountWithoutTax: state => {
     //discount is already subtracted from tax in tax.js
-    Num.round(state.orderDiscountAmount) +
-    Num.round(state.surchargeDiscountAmount),
+    return (
+      Num.round(state.orderDiscountAmount) +
+      Num.round(state.surchargeDiscountAmount)
+    )
+  },
 
   activeItemDiscountId: state =>
     state.currentActiveItemDiscount

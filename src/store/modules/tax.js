@@ -1,5 +1,7 @@
+/* eslint-disable no-console */
 import * as mutation from './tax/mutation-types'
 import Num from '@/plugins/helpers/Num.js'
+import * as CONST from '@/constants'
 
 // initial state
 const state = {
@@ -10,32 +12,12 @@ const state = {
 
 // getters
 const getters = {
-  itemsTax: (state, getters) => {
+  itemsTax: state => {
     let total = 0
     state.itemsTaxData.forEach(item => {
-      total += item.quantity * Num.round(item.undiscountedTax)
-      total += item.quantity * getters.modifiersTax(item.orderIndex)
-      total -= getters.discountedTax(item)
+      total += item.tax * item.quantity + item.modifiersTax * item.quantity
     })
-    return total
-  },
-
-  modifiersTax: state => index => {
-    return state.modifiersTaxData[index].reduce((total, tax) => {
-      return total + Num.round(tax.tax)
-    }, 0)
-  },
-
-  discountedTax: state => item => {
-    const itemTax = state.itemsTaxData.find(
-      taxData => taxData.orderIndex == item.orderIndex
-    )
-    if (itemTax) {
-      return Num.round(
-        itemTax.undiscountedTaxWithModifiers - itemTax.taxWithModifiers
-      )
-    }
-    return 0
+    return Num.round(total)
   },
 
   surchargeTax: state => {
@@ -73,36 +55,55 @@ const actions = {
           //calculate tax here
           //item.price is now price before tax and discount applied, so need to recalculate the tax
           if (item.tax_sum) {
+            const taxWithoutModifiers =
+              item.grossPriceWithoutModifiers - item.netPriceWithoutModifiers
+
+            const undiscountedTaxWithoutModifiers =
+              item.undiscountedGrossPriceWithoutModifiers -
+              item.undiscountedNetPriceWithoutModifiers
+
+            //discounted and undiscounted tax with modifiers
+            const undiscountedTaxWithModifiers =
+              Num.round(item.undiscountedGrossPrice) -
+              Num.round(item.undiscountedNetPrice)
+
+            const undiscountedModifiersTax =
+              Num.round(undiscountedTaxWithModifiers) -
+              Num.round(undiscountedTaxWithoutModifiers)
+
+            let modifiersTax = undiscountedModifiersTax
+
+            //apply discount on modifiers tax by getting item discount
+            if (item.discount) {
+              if (item.discount.type === CONST.VALUE) {
+                //do something here
+              } else {
+                modifiersTax =
+                  Num.round(undiscountedModifiersTax) -
+                  (Num.round(undiscountedModifiersTax) * item.discount.rate) /
+                    100
+              }
+            }
+            const taxWithModifiers = modifiersTax + taxWithoutModifiers
+
             itemTaxData.push({
               quantity: item.quantity,
               orderIndex: item.orderIndex,
 
-              tax:
-                item.grossPriceWithoutModifiers - item.netPriceWithoutModifiers,
-
-              undiscountedTax:
-                item.undiscountedGrossPriceWithoutModifiers -
-                item.undiscountedNetPriceWithoutModifiers,
+              tax: Num.round(taxWithoutModifiers),
+              undiscountedTax: Num.round(undiscountedTaxWithoutModifiers),
 
               //discounted and undiscounted tax with modifiers
-              taxWithModifiers: item.grossPrice - item.netPrice,
-              undiscountedTaxWithModifiers:
-                item.undiscountedGrossPrice - item.undiscountedNetPrice,
+              taxWithModifiers: Num.round(taxWithModifiers),
+              undiscountedTaxWithModifiers: Num.round(
+                undiscountedTaxWithModifiers
+              ),
 
-              modifiersTax:
-                item.grossPrice -
-                item.netPrice -
-                (item.grossPriceWithoutModifiers -
-                  item.netPriceWithoutModifiers),
-              undiscountedModifiersTax:
-                item.undiscountedGrossPrice -
-                item.undiscountedNetPrice -
-                (item.undiscountedGrossPriceWithoutModifiers -
-                  item.undiscountedNetPriceWithoutModifiers),
+              modifiersTax: Num.round(modifiersTax),
+              undiscountedModifiersTax: Num.round(undiscountedModifiersTax),
             })
           }
         })
-
         commit(mutation.SET_ITEMS_TAX_DATA, itemTaxData)
 
         //apply tax on surcharge that is calculated earlier

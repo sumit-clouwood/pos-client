@@ -32,27 +32,49 @@ const getters = {
 
     order.items.forEach(item => {
       data.subTotal += parseFloat(item.price) * parseFloat(item.qty)
+      console.log(
+        'item price * qty: ',
+        parseFloat(item.price) * parseFloat(item.qty)
+      )
       data.totalTax += parseFloat(item.tax) * parseFloat(item.qty)
+      console.log(
+        'item tax * qty: ',
+        parseFloat(item.tax) * parseFloat(item.qty)
+      )
     })
 
     order.item_modifiers.forEach(modifier => {
       data.subTotal += parseFloat(modifier.price) * parseFloat(modifier.qty)
+      console.log(
+        'item modifier price * qty: ',
+        parseFloat(modifier.price) * parseFloat(modifier.qty)
+      )
       data.totalTax += parseFloat(modifier.tax) * parseFloat(modifier.qty)
+      console.log(
+        'item tax * qty: ',
+        parseFloat(modifier.tax) * parseFloat(modifier.qty)
+      )
     })
 
     order.order_surcharges.forEach(surcharge => {
       data.totalSurcharge += parseFloat(surcharge.price)
+      console.log('item surcharge price: ', parseFloat(surcharge.price))
       data.surchargeTax += parseFloat(surcharge.tax)
+      console.log('item surcharge tax: ', parseFloat(surcharge.tax))
     })
 
     order.item_discounts.forEach(discount => {
       data.subTotal -= parseFloat(discount.price)
+      console.log('discount price: ', discount.price)
       data.totalTax -= parseFloat(discount.tax)
+      console.log('discount tax: ', discount.tax)
     })
 
     order.order_discounts.forEach(discount => {
       data.totalDiscount += parseFloat(discount.price)
+      console.log('discount price: ', discount.price)
       data.totalTax -= parseFloat(discount.tax)
+      console.log('discount tax: ', discount.tax)
     })
 
     data.balanceDue =
@@ -61,7 +83,14 @@ const getters = {
       data.totalSurcharge +
       data.surchargeTax -
       data.totalDiscount
-
+    console.log(
+      'totals',
+      data.subTotal,
+      data.totalTax,
+      data.totalSurcharge,
+      data.surchargeTax,
+      '-' + data.totalDiscount
+    )
     return data
   },
 }
@@ -323,8 +352,8 @@ const actions = {
               itemDiscount.type === CONSTANTS.VALUE
                 ? itemDiscount.value
                 : itemDiscount.rate,
-            price: itemDiscount.discount * itemDiscount.quantity,
-            tax: itemDiscount.tax * itemDiscount.quantity,
+            price: Num.round(itemDiscount.discount) * itemDiscount.quantity,
+            tax: Num.round(itemDiscount.tax) * itemDiscount.quantity,
             for_item: itemDiscount.itemNo,
             entity_id: itemDiscount.id,
           }
