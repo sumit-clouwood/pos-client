@@ -7,17 +7,24 @@
     <DMTakeAwaySubMenu />
     <div class="dm-ready-order-wrapper" id="new-Collections">
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
+      <!--suppress XmlDuplicatedId -->
       <div id="dm-new-order" v-else>
         <DMItem :actionDetails="actionDetailsNew" />
       </div>
     </div>
     <div class="dm-ready-order-wrapper" id="Waiting-for-Collections">
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
-      <DMItem :actionDetails="actionDetailsWaiting" v-else />
+      <!--suppress XmlDuplicatedId -->
+      <div id="dm-new-order" v-else>
+        <DMItem :actionDetails="actionDetailsWaiting" />
+      </div>
     </div>
     <div class="dm-ready-order-wrapper" id="collected">
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
-      <DMItem :actionDetails="actionDetailsCollected" v-else />
+      <!--suppress XmlDuplicatedId -->
+      <div id="dm-new-order" v-else>
+        <DMItem :actionDetails="actionDetailsCollected" />
+      </div>
     </div>
     <OrderDetailsPopup />
     <div class="pagination-customer-details" v-if="!loading">
@@ -51,19 +58,19 @@ export default {
     return {
       actionDetailsNew: {
         moreDetails: true,
-        action: 'Ready',
+        action: 'takeaway_ready',
         actionLabel: 'Ready',
         nextOrderStatus: 'paid',
       },
       actionDetailsWaiting: {
         moreDetails: true,
-        action: 'Collect',
+        action: 'collect',
         actionLabel: 'Collect',
         nextOrderStatus: 'paid',
       },
       actionDetailsCollected: {
         moreDetails: true,
-        action: 'Collected',
+        action: 'takeaway_collected',
         actionLabel: 'Collected',
         nextOrderStatus: '',
       },

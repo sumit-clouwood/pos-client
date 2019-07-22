@@ -59,15 +59,13 @@
         </li>
       </ul>
     </div>
-    <div class="dm-delivery-assistants">
-      <p style="height: 34px;"></p>
-    </div>
   </div>
 </template>
 
 <script>
-/*global deliveryTabs*/
+/*global $, deliveryTabs*/
 import { mapState, mapGetters } from 'vuex'
+import DateTime from '@/mixins/DateTime'
 
 export default {
   name: 'DMTakeAwaySubMenu',
@@ -77,8 +75,24 @@ export default {
       this.$store.commit('deliveryManager/SECTION', orderStatus.section)
       this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
       deliveryTabs(orderStatus.dataRelated)
+      var gt = this
+      $('.dm-ready-order-wrapper table tbody tr').each(function() {
+        let orderTime = $(this)
+          .find('#storerunningtime')
+          .val()
+        let orderTimer = gt.getTimer(orderTime)
+        $(this)
+          .find('.order-delivery-area')
+          .text(orderTimer)
+        // eslint-disable-next-line no-console
+        console.log(orderTimer)
+      })
+    },
+    getTimer(dateTime) {
+      return this.orderTimer(dateTime, this.timezoneString)
     },
   },
+  mixins: [DateTime],
   computed: {
     ...mapState({
       orderCount: state => state.deliveryManager.orderCounts,
