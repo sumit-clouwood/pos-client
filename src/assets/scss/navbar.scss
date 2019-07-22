@@ -8,7 +8,6 @@
   display: grid;
   grid-template-rows: $header-height 1fr $px60 $footer-height;
 
-
   .logo {
     display: grid;
     grid-template-columns: auto;
@@ -69,7 +68,6 @@
           cursor: pointer;
           font-weight: 600;
           border-radius: $btn-border-radius;
-          transition: 0.2s linear;
           padding: $px10;
 
           &.active, &:hover {
@@ -161,26 +159,72 @@
 .dm-manager{
   .navigation {
     grid-template-rows: $header-height 1fr $px60 $dm-nav-footer-height;
+    width: $px75;
+    -webkit-transition: .3s ease-out;
+    transition: .3s ease-out;
+    &.collapse-menu{
+      width:$px200;
+    }
+    .logo{
+      width: $px75;
+    }
     .navigation-list-wrapper{
       .navigation-list{
           grid-gap: 0;
         .nav-item{
+          -ms-flex-align: center;
+          -webkit-box-pack: start;
+          -ms-flex-pack: start;
+          justify-content: flex-start;
+          max-width: 4.375rem;
+          display: list-item;
+          transition: 0.3s ease-out;
+
           .nav-link-nav{
-            width: auto;
+            width: unset;
             min-height: auto;
+            /* padding: 0.625rem 0.9375rem 0.625rem 0.9375rem; */
+            /* margin: 0 0.4375rem 0.625rem 0.625rem; */
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-transition: 0.3s ease-out;
+            transition: 0.3s ease-out;
             padding: $px10 $px15 $px10 $px15;
-            margin: 0 $px7 $px10 $px7;
+            margin: 0 $px7 $px10 $px10;
             .nav-link-text{
-              display: inherit;
+              display: -webkit-box;
+              display: -ms-flexbox;
+              display: flex;
+              -webkit-box-align: center;
+              -ms-flex-align: center;
+              align-items: center;
               svg {
                 width: $px25;
                 height: $px25;
                 fill: $white;
               }
             }
+            .nav-link-name {
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              margin-left: 1.25rem;
+            }
           }
         }
       }
+    }
+  }
+}
+.collapse-menu{
+  .navigation-list{
+    li{
+      max-width: $px196 !important;
+
     }
   }
 }

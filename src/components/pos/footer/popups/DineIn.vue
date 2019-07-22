@@ -129,6 +129,11 @@ export default {
       if (orderType.OTApi == 'walk_in') {
         this.updateOrderType()
       }
+      if (orderType.OTApi != 'call_center') {
+        this.$store.commit('order/ORDER_TYPE', orderType)
+        this.$store.commit('location/SET_MODAL', '#manage-customer')
+        this.$store.dispatch('customer/resetCustomer')
+      }
       if (this.selectedOrderType === orderType.OTApi) {
         //toggle
         this.selectedOrderType = { OTview: 'Walk In', OTApi: 'walk_in' }

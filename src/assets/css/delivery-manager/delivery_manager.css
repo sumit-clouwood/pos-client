@@ -22,13 +22,18 @@ body#page-top.dm-manager {
   border: medium none !important;
   overflow: hidden !important; }
 
-div#dm-content-wrapper .inner-content-dm {
-  width: 100%;
-  max-width: 100%;
-  display: grid;
-  height: 100%;
-  grid-template-rows: -webkit-min-content;
-  grid-template-rows: min-content; }
+div#dm-content-wrapper {
+  -webkit-transition: .3s ease-out;
+  transition: .3s ease-out; }
+  div#dm-content-wrapper.collapse-container {
+    margin-left: 7.8125rem; }
+  div#dm-content-wrapper .inner-content-dm {
+    width: 100%;
+    max-width: 100%;
+    display: grid;
+    height: 100%;
+    grid-template-rows: -webkit-min-content;
+    grid-template-rows: min-content; }
 
 .dm-btn-wrap {
   overflow: hidden;
@@ -713,7 +718,11 @@ input[type="password"] {
   z-index: 2;
   overflow: hidden;
   background-color: #fff;
-  padding: 0.625rem 1.25rem 0.9375rem 2.1875rem; }
+  padding: 0.625rem 1.25rem 0.9375rem 2.1875rem;
+  -webkit-transition: .3s ease-out;
+  transition: .3s ease-out; }
+  .dm-screen-wrap.collapse-container {
+    margin-left: 7.8125rem; }
 
 ul.ullist-breadcrump > li {
   display: inline-block;
@@ -927,7 +936,7 @@ tr.dataContentStyle > td > a {
     grid-template-columns: 1fr;
     height: 100vh;
     grid-template-rows: 5fr 1fr 5.75rem 2.25rem;
-    padding-top: 20px; }
+    padding-top: 1.25rem; }
     .dm-manager .navigation .logo {
       display: none; }
 

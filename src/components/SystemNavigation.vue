@@ -1,6 +1,6 @@
 <template>
-  <div class="navigation">
-    <div class="logo">
+  <div class="navigation toggle-navigation">
+    <div class="logo" @click="collapseExpend">
       <a class="logo-link" href="javascript:void(0)">
         <router-link :to="dm">
           <img src="img/other/icon.png" alt="icon" />
@@ -16,7 +16,7 @@
           title="Dashboard"
         >
           <a class="nav-link-nav active" :href="dashboard">
-            <span class="nav-link-text">
+            <div class="nav-link-text">
               <svg id="dashboard_icon" viewBox="0 0 24 24">
                 <path
                   fill=""
@@ -24,7 +24,8 @@
                   d="M14.105 12.702l3.664-4.188a.375.375 0 0 0-.017-.512l-.254-.254a.375.375 0 0 0-.512-.017l-4.188 3.664A2.254 2.254 0 0 0 9.75 13.5a2.25 2.25 0 1 0 4.355-.798zM12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12zm-.375-21.371v.743c0 .218.168.378.375.378a.38.38 0 0 0 .375-.378v-.743A.371.371 0 0 0 12 2.25a.38.38 0 0 0-.375.379zM3.746 11.25h-.743a.371.371 0 0 0-.378.375c0 .202.17.375.378.375h.743a.371.371 0 0 0 .379-.375.38.38 0 0 0-.379-.375zm17.25 0h-.743a.371.371 0 0 0-.378.375c0 .202.17.375.378.375h.743a.371.371 0 0 0 .379-.375.38.38 0 0 0-.379-.375zm-2.9-6.252l-.525.526a.37.37 0 0 0-.002.532.38.38 0 0 0 .532-.002l.526-.525a.372.372 0 0 0 .002-.533.382.382 0 0 0-.533.002zm-11.667.526l-.525-.526a.372.372 0 0 0-.533-.002.382.382 0 0 0 .002.533l.526.525a.37.37 0 0 0 .532.002.38.38 0 0 0-.002-.532zm8.703-2.317l-.284.686a.371.371 0 0 0 .201.493.38.38 0 0 0 .491-.206l.285-.686a.371.371 0 0 0-.202-.493.38.38 0 0 0-.49.206zM4.554 8.157l-.687-.284a.372.372 0 0 0-.493.201.383.383 0 0 0 .206.492l.687.284a.372.372 0 0 0 .493-.202.38.38 0 0 0-.206-.49zm15.65-.284l-.687.284a.37.37 0 0 0-.206.491.38.38 0 0 0 .493.202l.687-.284c.2-.084.285-.3.206-.492a.382.382 0 0 0-.493-.201zm-10.98-3.98l-.285-.686a.37.37 0 0 0-.491-.206.381.381 0 0 0-.202.493l.285.686a.37.37 0 0 0 .49.206.381.381 0 0 0 .202-.493z"
                 ></path>
               </svg>
-            </span>
+            </div>
+            <span class="nav-link-name">{{ _t('Dashboard') }}</span>
             <!-- <span class="nav-link-text"></span> -->
           </a>
         </li>
@@ -35,7 +36,7 @@
           :title="_t('Menu Setup')"
         >
           <a class="nav-link-nav" :href="menu">
-            <span class="nav-link-text">
+            <dix class="nav-link-text">
               <svg id="menu_menu_icon" viewBox="0 0 24 20">
                 <g fill="" fill-rule="nonzero">
                   <path
@@ -43,7 +44,8 @@
                   ></path>
                 </g>
               </svg>
-            </span>
+            </dix>
+            <span class="nav-link-name">{{ _t('Menu Setup') }}</span>
             <!-- <span class="nav-link-text"></span> -->
           </a>
         </li>
@@ -54,7 +56,7 @@
           :title="_t('Store Setup')"
         >
           <a class="nav-link-nav" :href="store">
-            <span class="nav-link-text">
+            <div class="nav-link-text">
               <svg id="menu_locations_icon" viewBox="0 0 16 24">
                 <path
                   fill=""
@@ -62,7 +64,8 @@
                   d="M8 0a7.985 7.985 0 0 0-5.143 1.87A8.005 8.005 0 0 0 1.071 12l5.846 8.376a1.253 1.253 0 0 0 2.166 0l5.846-8.376A8.005 8.005 0 0 0 13.143 1.87 7.985 7.985 0 0 0 8 0zM4.5 6.5a.499.499 0 1 0 0 1h7a.499.499 0 1 0 0-1h-7zm0 2a.499.499 0 1 0 0 1h7a.499.499 0 1 0 0-1h-7zm-.75 9.803a.5.5 0 0 0-.208.046c-.903.421-1.6.984-1.896 1.664-.3.692-.13 1.505.43 2.124C3.196 23.374 5.477 24 8 24c2.523 0 4.803-.626 5.923-1.863.56-.62.731-1.432.43-2.124-.293-.676-.997-1.242-1.891-1.662a.5.5 0 0 0-.419.906c.79.362 1.239.8 1.393 1.154.153.354.116.646-.254 1.055C12.442 22.284 10.339 23 8 23c-2.339 0-4.441-.716-5.182-1.534-.37-.41-.408-.701-.255-1.055.154-.353.605-.791 1.395-1.153a.501.501 0 0 0-.208-.955z"
                 ></path>
               </svg>
-            </span>
+            </div>
+            <span class="nav-link-name">{{ _t('Store Setup') }}</span>
             <!-- <span class="nav-link-text">Lasagna</span> -->
           </a>
         </li>
@@ -73,7 +76,7 @@
           :title="_t('CRM')"
         >
           <a class="nav-link-nav" :href="crm">
-            <span class="nav-link-text">
+            <div class="nav-link-text">
               <svg id="brands_settings_icon" viewBox="0 0 21 18">
                 <path
                   fill-rule="evenodd"
@@ -82,7 +85,9 @@
                   fill=""
                 ></path>
               </svg>
-            </span>
+            </div>
+            <span class="nav-link-name">{{ _t('CRM') }}</span>
+
             <!-- <span class="nav-link-text"></span> -->
           </a>
         </li>
@@ -93,14 +98,16 @@
           :title="_t('Delivery')"
         >
           <a class="nav-link-nav" :href="dm">
-            <span class="nav-link-text">
+            <div class="nav-link-text">
               <svg id="delivery_manager_icon" viewBox="0 0 20 21">
                 <path
                   d="M19.455 14.158a.545.545 0 0 0-.66-.43l-9.572 2.848a2.948 2.948 0 0 0-.611-.927l8.818-2.45a.545.545 0 0 0 .42-.647l-1.023-4.8a.545.545 0 0 0-.646-.42l-2.136.453-.921-4.269a.545.545 0 0 0-.647-.425L5.675 5.119a.545.545 0 0 0-.42.65l1.022 4.8.906 4.251a3.06 3.06 0 0 0-.728-.093H6.31L2.727.693a.545.545 0 0 0-.545-.42H.545a.545.545 0 1 0 0 1.09h1.206l3.498 13.62a3 3 0 1 0 4.206 2.744v-.084l9.569-2.825a.545.545 0 0 0 .43-.66zm-13-8.084l5.714-1.797.796 3.737-5.42 1.728-.313.076-.777-3.744zm-1.91 11.653a1.91 1.91 0 1 1 3.819 0 1.91 1.91 0 0 1-3.819 0zm3.71-3.117l-.797-3.736L15.86 8.51l.796 3.734-8.4 2.366z"
                   fill=""
                 ></path>
               </svg>
-            </span>
+            </div>
+            <span class="nav-link-name">{{ _t('Delivery') }}</span>
+
             <!-- <span class="nav-link-text"></span> -->
           </a>
         </li>
@@ -111,7 +118,7 @@
           :title="_t('Dispatch')"
         >
           <a class="nav-link-nav" :href="dispatch">
-            <span class="nav-link-text">
+            <div class="nav-link-text">
               <svg id="dispatch_screen_icon" viewBox="0 0 21 16">
                 <path
                   fill=""
@@ -119,7 +126,9 @@
                   d="M15.26 14.98v-1.89h-3.78c-.81 0-1.47-.66-1.47-1.47V10.5h-2.8v2.38h1.96a.49.49 0 1 1 0 .98h-4.9a.49.49 0 1 1 0-.98h1.96V10.5H1.469A1.47 1.47 0 0 1 0 9.034V1.466C0 .656.657 0 1.469 0H12.39c.81 0 1.469.659 1.469 1.466V5.04h5.67c.81 0 1.47.66 1.47 1.47v5.11c0 .813-.656 1.47-1.47 1.47h-3.29v1.89h1.96a.49.49 0 1 1 0 .98h-4.9a.49.49 0 1 1 0-.98h1.96zm-4.27-8.47v5.11c0 .269.22.49.49.49h8.05c.272 0 .49-.218.49-.49V6.51c0-.269-.22-.49-.49-.49h-8.05a.488.488 0 0 0-.49.49zm1.89-5.044a.49.49 0 0 0-.489-.486H1.47a.486.486 0 0 0-.489.486v7.568c0 .266.22.486.489.486h8.541V6.51c0-.813.656-1.47 1.47-1.47h1.4V1.466z"
                 ></path>
               </svg>
-            </span>
+            </div>
+            <span class="nav-link-name">{{ _t('Dispatch') }}</span>
+
             <!-- <span class="nav-link-text"></span> -->
           </a>
         </li>
@@ -130,7 +139,7 @@
           :title="_t('Super Admin')"
         >
           <a class="nav-link-nav" :href="sadmin">
-            <span class="nav-link-text">
+            <div class="nav-link-text">
               <svg id="global_settings_icon" viewBox="0 0 21 21.21">
                 <path
                   fill-rule="evenodd"
@@ -139,7 +148,9 @@
                   fill=""
                 ></path>
               </svg>
-            </span>
+            </div>
+            <span class="nav-link-name">{{ _t('Super Admin') }}</span>
+
             <!-- <span class="nav-link-text"></span> -->
           </a>
         </li>
@@ -188,13 +199,17 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import UserProfile from '@/components/pos/user/UserProfile'
-
+/* global $ */
 export default {
   name: 'SystemNavigation',
   components: {
     UserProfile,
   },
   methods: {
+    collapseExpend() {
+      $('.navigation').toggleClass('collapse-menu')
+      $('.toggle-nav-content').toggleClass('collapse-container')
+    },
     baseurl(link) {
       return (
         window.location.href.replace(
