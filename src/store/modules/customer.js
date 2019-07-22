@@ -239,6 +239,7 @@ const actions = {
     customerDetails.deliveryAreas = false
     customerDetails.pastOrders = false
     commit(mutation.SELECTED_CUSTOMER, customerDetails)
+    commit('order/SET_REFERRAL', false, { root: true })
     dispatch('reset')
   },
   selectedAddress({ commit, dispatch }, address) {
