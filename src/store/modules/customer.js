@@ -14,7 +14,7 @@ const state = {
   pastOrdersPaginate: {},
   params: {
     page_number: 1,
-    page_size: 5,
+    page_size: 10,
     query: '',
     past_order_page_number: 1,
   },
