@@ -1031,6 +1031,7 @@ const mutations = {
     state.item = false
     state.orderStatus = null
     state.orderId = null
+    state.orderNote = null
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
