@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <form>
     <div class="modal-body form-block color-dashboard-background">
       <div class="divide-block row">
         <h5 class="customer-block-info color-text-invert">
@@ -189,7 +189,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </form>
 </template>
 
 <script>
