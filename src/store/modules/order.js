@@ -599,16 +599,23 @@ const actions = {
               )
 
               //Decided to apply discount on after tax, that means when sending discount info we should send item discount and tax discount separately
+              //gorssPrice is with modifiers
+              /* Discount is applied on tota of ( item price + modifiers price ) */
+
               item.grossPrice = item.undiscountedGrossPrice - discountPerItem
 
-              //calcualte ratio of discount applied and set same ratio for net price
+              //calcualte ratio of discount applied on (item + modifier prices) and set same ratio for net price
               const percentDiscountAppliedOnGross =
                 (discountPerItem / item.undiscountedGrossPrice) * 100
+
+              //calculate net price (item + modifiers )
               const netPriceDiscount =
                 (item.undiscountedNetPrice * percentDiscountAppliedOnGross) /
                 100
+
               item.netPrice = item.undiscountedNetPrice - netPriceDiscount
 
+              /* now apply discount on item and modifiers separately ...*/
               //Decided to apply discount on after tax, that means when sending discount info we should send item discount and tax discount separately
               item.grossPriceWithoutModifiers =
                 item.undiscountedGrossPriceWithoutModifiers - discountPerItem
@@ -1024,6 +1031,7 @@ const mutations = {
     state.item = false
     state.orderStatus = null
     state.orderId = null
+    state.orderNote = null
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
