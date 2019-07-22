@@ -2,8 +2,7 @@
   <div class="modal-footer" v-if="!loading">
     <div class="pagination-customer-details">
       <paginate
-        v-if="paginateDetails.totalPages"
-        :page-count="paginateDetails.totalPages"
+        :page-count="paginateDetails"
         :page-range="2"
         :margin-pages="2"
         :clickHandler="moreCustomer"

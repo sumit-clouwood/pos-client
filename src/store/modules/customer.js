@@ -14,7 +14,7 @@ const state = {
   pastOrdersPaginate: {},
   params: {
     page_number: 1,
-    page_size: 10,
+    page_size: 5,
     query: '',
     past_order_page_number: 1,
   },
@@ -110,7 +110,7 @@ const actions = {
 
       CustomerService.customerList(...params)
         .then(response => {
-          if (response.data.data.length) {
+          if (!isNaN(response.data.count)) {
             let totalPages = Math.ceil(
               parseInt(response.data.count) / parseInt(state.params.page_size)
             )
