@@ -18,7 +18,14 @@
           <div class="add-note-area">
             <p class="color-text-invert">{{ _t('Enter Gift Card Code') }}</p>
             <form>
-              <input type="text" class="add-email-from" v-model="code" />
+              <input
+                type="text"
+                class="add-email-from"
+                v-model="code"
+                @keypress="
+                  $event.keyCode == 13 ? $event.preventDefault() : true
+                "
+              />
             </form>
           </div>
           <div v-show="error" class="msg">
