@@ -21,7 +21,7 @@
     </table>
 
     <div v-else>
-      <h4 class="text-center pt-3 pb-3">No matching records</h4>
+      <h5 class="text-center pt-2 pb-3">{{ _t('No matching records') }}s</h5>
     </div>
 
     <div class="receipt-summary" v-if="orderDetails">

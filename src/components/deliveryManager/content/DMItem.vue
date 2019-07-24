@@ -1,6 +1,6 @@
 <template>
-  <div class="table-responsive" v-if="orders">
-    <table class="table table-block-page">
+  <div class="table-responsive">
+    <table v-if="orders.length" class="table table-block-page">
       <!--<thead>
                       <tr>
                         <th class="sortable ">
@@ -134,6 +134,9 @@
         </tr>
       </tbody>
     </table>
+    <h5 v-else class="center-block text-center pt-5">
+      {{ _t('No Orders Found') }}
+    </h5>
   </div>
 </template>
 
