@@ -250,7 +250,8 @@ export default {
   },
   data() {
     return {
-      dm: '/delivery-manager' + this.$store.getters['context/store'],
+      // dm: '/delivery-manager' + this.$store.getters['context/store'],
+      dm: this.baseurl('delivery') + '/delivery_home/new',
       dashboard: this.baseurl('dashboard'),
       crm: this.baseurl('crm') + '/brand_customers',
       menu: this.baseurl('menu'),
