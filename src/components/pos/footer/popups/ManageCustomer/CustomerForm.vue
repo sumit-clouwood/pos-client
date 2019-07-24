@@ -52,6 +52,7 @@
             </label>
             <input
               type="email"
+              autocomplete="off"
               name="email"
               v-model="newCustomerDetails.email"
             />
