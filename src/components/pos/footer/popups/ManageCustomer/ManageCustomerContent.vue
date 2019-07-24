@@ -24,6 +24,10 @@
               {{ _t('City') }}
               <!--, {{ _t('Location') }}-->
             </th>
+            <th style="width: 250px" class="color-text-invert">
+              {{ _t('Status') }}
+              <!--, {{ _t('Location') }}-->
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -34,11 +38,13 @@
             v-on:click="setActiveCustomer(index)"
             :key="index"
           >
-            <td class="color-text">{{ customer.name }}</td>
+            <td class="color-text">
+              {{ customer.name }}
+            </td>
             <td class="color-text">{{ customer.phone_number }}</td>
             <td class="color-text">{{ customer.email }}</td>
             <td class="color-text">
-              <button
+              <!-- <button
                 data-toggle="modal"
                 data-target="#display-order"
                 data-dismiss="modal"
@@ -46,7 +52,7 @@
                 class="br-table-btn display-order color-icon-table-neutral-button color-text-invert"
               >
                 {{ _t('Display Order') }}
-              </button>
+              </button>-->
             </td>
             <td>
               <button
@@ -56,18 +62,23 @@
                 data-dismiss="modal"
                 class="br-table-btn edit-info color-icon-table-neutral-button color-text-invert"
               >
-                {{ _t('Edit Details') }}</button
-              ><button
+                {{ _t('Edit Details') }}
+              </button>
+              <span>{{
+                getCustomerLocation(customer.customer_addresses)
+              }}</span>
+            </td>
+            <td class="color-text">
+              <button
                 @click="fetchSelectedCustomer(customer._id)"
                 data-toggle="modal"
                 data-target="#add-to-order"
                 data-dismiss="modal"
                 class="br-table-btn order-add color-icon-table-neutral-button color-text-invert"
               >
-                {{ _t('Add to Order') }}</button
-              ><span>{{
-                getCustomerLocation(customer.customer_addresses)
-              }}</span>
+                {{ _t('Add to Order') }}
+              </button>
+              <span>{{ customer.active ? 'Activated' : 'Deactivated' }}</span>
             </td>
           </tr>
         </tbody>
