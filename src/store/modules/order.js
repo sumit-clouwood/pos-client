@@ -655,14 +655,12 @@ const actions = {
 
   recalculateItemPrices({ commit, rootState, dispatch }) {
     return new Promise((resolve, reject) => {
-      let itemsDiscount = 0
       let discountErrors = {}
 
       const newItems = state.items.map((stateItem, index) => {
         let item = { ...stateItem }
         const discount = rootState.discount.appliedItemDiscounts.find(
-          discount =>
-            discount.item.orderIndex == index && discount.item._id == item._id
+          discount => discount.item.orderIndex == index
         )
 
         if (discount) {
@@ -685,9 +683,8 @@ const actions = {
               //discount should be applied after tax price
               //discount should be applied only on line item
 
-              item.discountValue = item.grossPrice - discount.value
-
-              item.discountRate = (item.discountValue / item.grossPrice) * 100
+              item.discountRate =
+                (discount.discount.value / item.grossPrice) * 100
 
               //now we got discount rate in percent, we can apply it on net price and tax
             }
@@ -710,13 +707,13 @@ const actions = {
         }
         return item
       })
-      // eslint-disable-next-line no-console
-      console.log(itemsDiscount)
-      dispatch(
-        'discount/setItemsDiscountAmount',
-        { discountAmount: itemsDiscount },
-        { root: true }
-      )
+      // // eslint-disable-next-line no-console
+      // console.log(itemsDiscount)
+      // dispatch(
+      //   'discount/setItemsDiscountAmount',
+      //   { discountAmount: itemsDiscount },
+      //   { root: true }
+      // )
 
       commit(mutation.RE_SAVE_ITEMS, newItems)
       dispatch('surcharge/calculate', {}, { root: true })
