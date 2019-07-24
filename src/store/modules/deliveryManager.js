@@ -137,7 +137,7 @@ const getters = {
 }
 
 const actions = {
-  fetchDMOrderDetail({ commit, state, dispatch }) {
+  fetchDMOrderDetail({ commit, state, dispatch, rootGetters }) {
     commit(mutation.SET_LOADING, true)
     // return new Promise((resolve, reject) => {
     const params = [
@@ -149,17 +149,24 @@ const actions = {
       state.params.pageId,
       state.selectedStores,
     ]
-
-    DMService.getDMOrderDetails(...params)
-      .then(response => {
-        commit(mutation.SET_DM_ORDERS, response.data)
-        commit(mutation.SET_TOTAL_ORDER, response.data.count)
-        commit(mutation.SET_LOADING, false)
-        dispatch('getDrivers')
-      })
-      .catch(() => {
-        commit(mutation.SET_LOADING, false)
-      })
+    let checkAPIPermission = rootGetters['location/permitted'](
+      state.params.pageId,
+      'delivery_home'
+    )
+    if (checkAPIPermission) {
+      DMService.getDMOrderDetails(...params)
+        .then(response => {
+          commit(mutation.SET_DM_ORDERS, response.data)
+          commit(mutation.SET_TOTAL_ORDER, response.data.count)
+          commit(mutation.SET_LOADING, false)
+          dispatch('getDrivers')
+        })
+        .catch(() => {
+          commit(mutation.SET_LOADING, false)
+        })
+    } else {
+      commit(mutation.SET_LOADING, false)
+    }
   },
   getDrivers({ commit, rootGetters }) {
     let role = rootGetters['auth/getRole']('delivery_home')

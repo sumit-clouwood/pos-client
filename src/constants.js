@@ -11,6 +11,9 @@ export const ORDER_HISTORY_TYPE_RECORD_NEW = 'Created'
 export const ORDER_HISTORY_TYPE_RECORD_SENT_TO_KITCHEN =
   'Sent for Cooking/Assembly'
 export const ORDER_HISTORY_TYPE_RECORD_PRINTED = 'Printed'
+export const ORDER_HISTORY_TYPE_RECORD_READY = 'Ready'
+export const ORDER_HISTORY_TYPE_RECORD_DELIVERY_STARTED = 'Delivery Started'
+export const ORDER_HISTORY_TYPE_RECORD_DELIVERED = 'Delivered'
 
 /* PAYMENT RELATED CONSTANTS */
 

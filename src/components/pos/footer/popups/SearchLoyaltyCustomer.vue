@@ -21,6 +21,7 @@
               id="getCustomerList"
               v-model="searchTerm"
               v-on:keyup="search()"
+              @keypress="$event.keyCode == 13 ? $event.preventDefault() : true"
             />
             <!--<button
               type="button"

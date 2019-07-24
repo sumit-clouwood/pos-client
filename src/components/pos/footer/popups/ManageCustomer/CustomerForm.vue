@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <form>
     <div class="modal-body form-block color-dashboard-background">
       <div class="divide-block row">
         <h5 class="customer-block-info color-text-invert">
@@ -10,7 +10,12 @@
             <label class="color-text-invert"
               >{{ _t('Name') }} <span>*</span></label
             >
-            <input type="text" name="name" v-model="newCustomerDetails.name" />
+            <input
+              type="text"
+              autocomplete="off"
+              name="name"
+              v-model="newCustomerDetails.name"
+            />
             <span class="validation-error" v-if="errors.name">{{
               errors.name
             }}</span>
@@ -22,6 +27,7 @@
             </label>
             <input
               type="text"
+              autocomplete="off"
               name="phone_number"
               @keypress="Num.toNumberOnly($event)"
               v-model="newCustomerDetails.phone_number"
@@ -46,6 +52,7 @@
             </label>
             <input
               type="email"
+              autocomplete="off"
               name="email"
               v-model="newCustomerDetails.email"
             />
@@ -67,6 +74,7 @@
               </label>
               <input
                 type="text"
+                autocomplete="off"
                 name="alternate-phone-from"
                 v-model="newCustomerDetails.alternative_phone"
               />
@@ -137,6 +145,7 @@
               >
               <input
                 type="text"
+                autocomplete="off"
                 name="building"
                 v-model="newCustomerDetails.building"
               />
@@ -150,6 +159,7 @@
               >
               <input
                 type="text"
+                autocomplete="off"
                 name="street"
                 v-model="newCustomerDetails.street"
               />
@@ -165,6 +175,7 @@
               >
               <input
                 type="text"
+                autocomplete="off"
                 name="flat_number"
                 v-model="newCustomerDetails.flat_number"
               />
@@ -178,6 +189,7 @@
               >
               <input
                 type="text"
+                autocomplete="off"
                 name="nearest_landmark"
                 v-model="newCustomerDetails.nearest_landmark"
               />
@@ -189,7 +201,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </form>
 </template>
 
 <script>

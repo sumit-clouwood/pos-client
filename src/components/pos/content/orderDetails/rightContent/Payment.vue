@@ -5,7 +5,7 @@
     role="tabpanel"
     aria-labelledby="nav-payments-tab"
   >
-    <table class="table-responsive" v-if="orderDetails">
+    <table class="table-responsive" v-if="orderDetails.order_payments.length">
       <tr class="receipt-body color-secondary color-text-invert">
         <th class="receipt-heading">{{ _t('Payment Method') }}</th>
         <th class="receipt-heading">{{ _t('Collected') }}</th>
@@ -19,6 +19,10 @@
         <td class="base-price">{{ item.collected }}</td>
       </tr>
     </table>
+
+    <div v-else>
+      <h5 class="text-center pt-2 pb-3">{{ _t('No matching records') }}s</h5>
+    </div>
 
     <div class="receipt-summary" v-if="orderDetails">
       <div class="caption subtotal color-text-invert">

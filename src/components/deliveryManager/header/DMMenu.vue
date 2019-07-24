@@ -14,7 +14,7 @@
           })
         "
       >
-        Home Delivery Orders
+        {{ _t('Home Delivery Orders') }}
       </button>
       <button
         class="btn btn-success"
@@ -29,7 +29,7 @@
           })
         "
       >
-        Take Away Orders
+        {{ _t('Take Away Orders') }}
       </button>
       <button
         class="btn btn-success"
@@ -44,7 +44,7 @@
           })
         "
       >
-        Future Orders
+        {{ _t('Future Orders') }}
       </button>
     </div>
 
@@ -54,12 +54,15 @@
 
 <script>
 // import Branches from '@/components/deliveryManager/partial/Branches'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'DMMenu',
   components: {
     // Branches,
+  },
+  computed: {
+    ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
     ...mapActions('deliveryManager', ['updateDMOrderStatus']),
