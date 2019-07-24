@@ -154,10 +154,8 @@ export default {
     },
     baseurl(link) {
       return (
-        window.location.href.replace(
-          new RegExp('/pos/delivery-manager/.*'),
-          '/' + link
-        ) + this.$store.getters['context/brand']
+        window.location.href.replace(new RegExp('/pos/.*'), '/' + link) +
+        this.$store.getters['context/brand']
       )
     },
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
