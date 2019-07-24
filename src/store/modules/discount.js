@@ -60,7 +60,8 @@ const getters = {
       state.appliedItemDiscounts.findIndex(
         discount =>
           discount.discount._id == discountId &&
-          discount.item.orderIndex == rootState.order.item.orderIndex
+          discount.item.orderIndex == rootState.order.item.orderIndex &&
+          discount.item._id == rootState.order.item._id
       ) > -1
     )
   },
@@ -222,7 +223,9 @@ const actions = {
 
   setItem({ state, commit }, { item }) {
     const discount = state.appliedItemDiscounts.find(
-      discount => discount.item.orderIndex == item.orderIndex
+      discount =>
+        discount.item.orderIndex == item.orderIndex &&
+        discount.item._id == item._id
     )
     if (discount) {
       commit(mutation.SET_ACTIVE_ITEM_DISCOUNT, discount.discount)
@@ -265,7 +268,9 @@ const mutations = {
   },
   [mutation.APPLY_ITEM_DISCOUNT](state, { item, discount }) {
     let discounts = state.appliedItemDiscounts.filter(
-      discount => discount.item.orderIndex != item.orderIndex
+      discount =>
+        discount.item.orderIndex != item.orderIndex &&
+        discount.item._id != item._id
     )
     discounts.push({
       item: {
@@ -304,7 +309,9 @@ const mutations = {
   },
   [mutation.REMOVE_ITEM_DISCOUNT](state, item) {
     let discounts = state.appliedItemDiscounts.filter(
-      discount => discount.item.orderIndex != item.orderIndex
+      discount =>
+        discount.item.orderIndex != item.orderIndex &&
+        discount.item._id != item._id
     )
     state.appliedItemDiscounts = discounts
     state.currentActiveItemDiscount = false

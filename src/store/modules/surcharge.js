@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import SurchargeService from '@/services/data/SurchargeService'
 import * as mutation from './surcharge/mutation-types'
 import * as CONST from '@/constants'
@@ -9,6 +10,11 @@ const state = {
 }
 
 const getters = {
+  totalTax: state =>
+    state.surchargeAmounts.reduce((tax, surcharge) => {
+      return tax + Num.round(surcharge.tax)
+    }, 0),
+
   tax: () => surcharge => {
     if (surcharge.type === CONST.VALUE) {
       const beforeTax = surcharge.value / ((100 + surcharge.tax_sum) / 100)
@@ -27,7 +33,6 @@ const actions = {
     return new Promise(resolve => {
       //look for order level discount before going furhter ;)
       const subtotal = rootGetters['order/subTotal']
-      const undiscountedSubtotal = rootGetters['order/subTotalUndiscounted']
       let totalSurcharges = []
       //If total surcharges exists.
       if (subtotal && state.surcharges.length) {
@@ -52,22 +57,20 @@ const actions = {
               let applidSurcharge = {
                 id: surcharge._id,
                 amount: surcharge.value,
-                tax: getters.tax(surcharge),
-                undiscountedTax: getters.tax(surcharge),
+                tax: Num.round(getters.tax(surcharge)),
+                undiscountedTax: Num.round(getters.tax(surcharge)),
               }
               //Assign variables if Surcharge type is percentage.
               if (surcharge.type === CONST.PERCENTAGE) {
-                applidSurcharge.amount = (subtotal * surcharge.rate) / 100
+                applidSurcharge.amount = Num.round(
+                  (subtotal * surcharge.rate) / 100
+                )
 
-                applidSurcharge.tax =
+                applidSurcharge.tax = Num.round(
                   (applidSurcharge.amount * surcharge.tax_sum) / 100
-
-                applidSurcharge.undiscountedAmount =
-                  (undiscountedSubtotal * surcharge.rate) / 100
-
-                applidSurcharge.undiscountedTax =
-                  (applidSurcharge.undiscountedAmount * surcharge.tax_sum) / 100
+                )
               }
+              console.log('applidSurcharge', applidSurcharge)
               totalSurcharges.push(applidSurcharge)
             }
           })
