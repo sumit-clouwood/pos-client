@@ -26,7 +26,7 @@ const state = {
 const getters = {
   formatPrice: state => price => {
     if (!price) price = 0.0
-    return state.currency + ' ' + Num.round(price).toFixed(2)
+    return state.currency + ' ' + Num.round(price, 2).toFixed(2)
   },
   _t: state => str => {
     if (state.translations[str]) {

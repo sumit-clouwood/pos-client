@@ -209,17 +209,13 @@ const actions = {
         let item_discounts = []
         //let itemDiscountedTax = 0
         order.items = rootState.order.items.map(item => {
-          const itemTax = rootState.tax.itemsTaxData.find(
-            taxData => taxData.orderIndex == item.orderIndex
-          )
-
           let orderItem = {
             name: item.name,
             entity_id: item._id,
             no: item.orderIndex,
             //itemTax.undiscountedTax is without modifiers
-            tax: itemTax ? itemTax.undiscountedTax : 0,
-            price: item.undiscountedNetPriceWithoutModifiers,
+            tax: item.tax,
+            price: item.netPrice,
             qty: item.quantity,
           }
 
@@ -232,34 +228,25 @@ const actions = {
             itemDiscount.itemNo = item.orderIndex
             itemDiscount.quantity = item.quantity
             //undiscountedTax is without modifiers
-            itemDiscount.tax = itemTax
-              ? itemTax.undiscountedTaxWithModifiers - itemTax.taxWithModifiers
-              : 0
-            //itemDiscountedTax += itemDiscount.tax
+            itemDiscount.tax =
+              rootGetters['order/itemTaxDiscount'](item) +
+              rootGetters['order/itemModifierTaxDiscount'](item)
+            itemDiscount.price =
+              rootGetters['order/itemNetDiscount'](item) +
+              rootGetters['order/itemModifierDiscount'](item)
             item_discounts.push(itemDiscount)
           }
 
-          if (item.modifiers.length) {
-            item.modifiers.forEach(modifierId => {
-              const subgroups = rootGetters['modifier/itemModifiers'](item._id)
-              subgroups.forEach(subgroup => {
-                subgroup.modifiers.forEach(modifier => {
-                  if (modifier._id === modifierId) {
-                    const modfierTaxData = rootGetters['tax/modifierTaxData']({
-                      orderIndex: item.orderIndex,
-                      modifierId: modifierId,
-                    })
-                    itemModifiers.push({
-                      entity_id: modifierId,
-                      for_item: item.orderIndex,
-                      price: modfierTaxData.price,
-                      tax: modfierTaxData.tax,
-                      name: modifier.name,
-                      qty: item.quantity,
-                      type: subgroup.item_type,
-                    })
-                  }
-                })
+          if (item.modifiersData && item.modifiersData.length) {
+            item.modifiersData.forEach(modifier => {
+              itemModifiers.push({
+                entity_id: modifier.modifierId,
+                for_item: item.orderIndex,
+                price: modifier.price,
+                tax: modifier.tax,
+                name: modifier.name,
+                qty: item.quantity,
+                type: modifier.type,
               })
             })
             //get all modifiers by modifier ids attached to item
@@ -267,24 +254,20 @@ const actions = {
           return orderItem
         })
 
-        // //adding final tax
-        // const itemsTax = rootState.tax.itemsTaxData.reduce((totalTax, item) => {
-        //   return totalTax + item.tax * item.quantity
-        // }, 0)
-        // const surchargeTax = rootState.surcharge.surchargeAmounts.reduce(
-        //   (totalTax, item) => {
-        //     return totalTax + item.tax
-        //   },
-        //   0
-        // )
-
-        // if (rootState.discount.appliedOrderDiscount) {
-        //   //order discount was applied, deduct tax discount amount from total
-        //   order.total_tax = rootGetters['tax/totalTax']
-        // } else {
-        //   //no order discount, may be  item discount applied
-        //   order.total_tax = surchargeTax + itemsTax
-        // }
+        order.item_discounts = item_discounts.map(itemDiscount => {
+          return {
+            name: itemDiscount.name,
+            type: itemDiscount.type,
+            rate:
+              itemDiscount.type === CONSTANTS.VALUE
+                ? itemDiscount.value
+                : itemDiscount.rate,
+            price: itemDiscount.price * itemDiscount.quantity,
+            tax: itemDiscount.tax * itemDiscount.quantity,
+            for_item: itemDiscount.itemNo,
+            entity_id: itemDiscount.id,
+          }
+        })
 
         order.item_modifiers = itemModifiers
 
@@ -308,22 +291,6 @@ const actions = {
           order.order_discounts.push(orderDiscount)
         }
 
-        //addint item discounts
-
-        order.item_discounts = item_discounts.map(itemDiscount => {
-          return {
-            name: itemDiscount.name,
-            type: itemDiscount.type,
-            rate:
-              itemDiscount.type === CONSTANTS.VALUE
-                ? itemDiscount.value
-                : itemDiscount.rate,
-            price: Num.round(itemDiscount.discount) * itemDiscount.quantity,
-            tax: Num.round(itemDiscount.tax) * itemDiscount.quantity,
-            for_item: itemDiscount.itemNo,
-            entity_id: itemDiscount.id,
-          }
-        })
         //adding tip amount
         order.tip_amount = rootState.checkoutForm.tipAmount
 
