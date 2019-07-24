@@ -79,7 +79,7 @@
           </a>
         </li>
         <li v-if="permitted('brand', 'root')">
-          <a :href="brands">{{ _t('Setting') }}</a>
+          <a :href="brand">{{ _t('Setting') }}</a>
         </li>
         <li>
           <a href="javascript:void(0)" @click="logout()">{{ _t('Logout') }}</a>
