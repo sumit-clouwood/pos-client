@@ -3,7 +3,7 @@
     <div class="dm-delivery-details-btn">
       <ul class="dm-ullist">
         <li
-          v-if="permitted('home_delivery_new')"
+          v-if="permitted('home_delivery_new', 'delivery_home')"
           data-related="dm-new-order"
           :class="{ active: listType == _t('New Orders') }"
           @click="
@@ -20,7 +20,7 @@
           ><span v-if="orderCount">{{ orderCount.running }}</span>
         </li>
         <li
-          v-if="permitted('home_delivery_pick')"
+          v-if="permitted('home_delivery_pick', 'delivery_home')"
           class="pick"
           data-related="dm-waiting-for-pick"
           :class="{ active: listType == _t('Waiting for Pick') }"
@@ -38,7 +38,7 @@
           ><span v-if="orderCount">{{ orderCount.ready }}</span>
         </li>
         <li
-          v-if="permitted('home_delivery_in_progress')"
+          v-if="permitted('home_delivery_in_progress', 'delivery_home')"
           class="pick"
           :class="{ active: listType == _t('Delivery - In Progress') }"
           data-related="dm-delivery-in-progress"
@@ -56,7 +56,7 @@
           ><span v-if="orderCount">{{ orderCount['in-progress'] }}</span>
         </li>
         <li
-          v-if="permitted('home_delivery_finished')"
+          v-if="permitted('home_delivery_finished', 'delivery_home')"
           class="dm-delivered"
           data-related="dm-delivered"
           :class="{ active: listType == _t('Delivered') }"

@@ -20,7 +20,10 @@
         </div>
       </div>
       <div class="change-location">
-        <button class="btn btn-success" v-if="permitted('brand', 'root')">
+        <button
+          class="btn btn-success"
+          v-if="permitted('brand_settings', 'brand')"
+        >
           <a :href="baseurl('delivery')">{{ _t('Change Brand') }}</a>
         </button>
         <button
