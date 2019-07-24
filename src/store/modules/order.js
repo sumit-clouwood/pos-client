@@ -76,7 +76,7 @@ const getters = {
   totalItemTaxDiscount: (state, getters) => {
     let itemTaxDiscount = 0
     state.items.forEach(item => {
-      itemTaxDiscount += getters.itemTaxDiscount(item) * item.quantity
+      itemTaxDiscount += Num.round(getters.itemTaxDiscount(item))
     })
     return itemTaxDiscount
   },
@@ -84,17 +84,16 @@ const getters = {
   totalModifierTaxDiscount: (state, getters) => {
     let modifiersTaxDiscount = 0
     state.items.forEach(item => {
-      modifiersTaxDiscount +=
-        getters.itemModifierTaxDiscount(item) * item.quantity
+      modifiersTaxDiscount += Num.round(getters.itemModifierTaxDiscount(item))
     })
     return modifiersTaxDiscount
   },
 
   totalTax: (state, getters, rootState, rootGetters) => {
-    const itemsTax = getters.totalItemsTax
-    const modifiersTax = getters.totalModifiersTax
-    const itemTaxDiscount = getters.totalItemTaxDiscount
-    const modifiersTaxDiscount = getters.totalModifierTaxDiscount
+    const itemsTax = Num.round(getters.totalItemsTax)
+    const modifiersTax = Num.round(getters.totalModifiersTax)
+    const itemTaxDiscount = Num.round(getters.totalItemTaxDiscount)
+    const modifiersTaxDiscount = Num.round(getters.totalModifierTaxDiscount)
 
     const surchargeTax = rootGetters['surcharge/totalTax']
 
