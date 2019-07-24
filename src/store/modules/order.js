@@ -139,8 +139,9 @@ const getters = {
       const itemPrice = Num.round(item.netPrice) * item.quantity
       const modifiersPrice = getters.itemModifiersPrice(item) * item.quantity
       //discount should apply only on line item, so don't multiply with quantity
-      const itemDiscount = getters.itemNetDiscount(item)
-      const modifiersDiscount = getters.itemModifierDiscount(item)
+      const itemDiscount = getters.itemNetDiscount(item) * item.quantity
+      const modifiersDiscount =
+        getters.itemModifierDiscount(item) * item.quantity
       subTotal += itemPrice + modifiersPrice - itemDiscount - modifiersDiscount
     })
     return subTotal
