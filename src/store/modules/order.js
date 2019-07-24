@@ -725,7 +725,8 @@ const actions = {
         }
         return item
       })
-
+      // eslint-disable-next-line no-console
+      console.log(itemsDiscount)
       dispatch(
         'discount/setItemsDiscountAmount',
         { discountAmount: itemsDiscount },

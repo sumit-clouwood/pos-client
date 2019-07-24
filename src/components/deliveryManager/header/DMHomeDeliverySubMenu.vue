@@ -3,6 +3,7 @@
     <div class="dm-delivery-details-btn">
       <ul class="dm-ullist">
         <li
+          v-if="permitted('home_delivery_new')"
           data-related="dm-new-order"
           :class="{ active: listType == _t('New Orders') }"
           @click="
@@ -19,6 +20,7 @@
           ><span v-if="orderCount">{{ orderCount.running }}</span>
         </li>
         <li
+          v-if="permitted('home_delivery_pick')"
           class="pick"
           data-related="dm-waiting-for-pick"
           :class="{ active: listType == _t('Waiting for Pick') }"
@@ -36,6 +38,7 @@
           ><span v-if="orderCount">{{ orderCount.ready }}</span>
         </li>
         <li
+          v-if="permitted('home_delivery_in_progress')"
           class="pick"
           :class="{ active: listType == _t('Delivery - In Progress') }"
           data-related="dm-delivery-in-progress"
@@ -53,6 +56,7 @@
           ><span v-if="orderCount">{{ orderCount['in-progress'] }}</span>
         </li>
         <li
+          v-if="permitted('home_delivery_finished')"
           class="dm-delivered"
           data-related="dm-delivered"
           :class="{ active: listType == _t('Delivered') }"
@@ -87,7 +91,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'permitted']),
     ...mapState('deliveryManager', ['listType']),
     ...mapState({
       orderCount: state => state.deliveryManager.orderCounts,

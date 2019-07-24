@@ -388,10 +388,13 @@ button.v-btn.v-btn--icon.theme--light {
   display: grid;
   grid-template-columns: 3fr 1fr; }
 
-.change-location > button {
-  margin-right: 0.3125rem; }
-  .change-location > button > a {
-    color: #fff; }
+.change-location {
+  display: flex;
+  justify-content: flex-end; }
+  .change-location > button {
+    margin-right: 0.3125rem; }
+    .change-location > button > a {
+      color: #fff; }
 
 div#dm-new-order table, div#dm-delivery-in-progress table {
   display: grid;

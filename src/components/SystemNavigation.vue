@@ -14,6 +14,7 @@
           data-toggle="tooltip"
           data-placement="right"
           title="Dashboard"
+          v-if="permitted('dashboard', 'root')"
         >
           <a class="nav-link-nav active" :href="dashboard">
             <div class="nav-link-text">
@@ -34,6 +35,7 @@
           data-toggle="tooltip"
           data-placement="right"
           :title="_t('Menu Setup')"
+          v-if="permitted('menu', 'root')"
         >
           <a class="nav-link-nav" :href="menu">
             <dix class="nav-link-text">
@@ -54,6 +56,7 @@
           data-toggle="tooltip"
           data-placement="right"
           :title="_t('Store Setup')"
+          v-if="permitted('store', 'root')"
         >
           <a class="nav-link-nav" :href="store">
             <div class="nav-link-text">
@@ -74,6 +77,7 @@
           data-toggle="tooltip"
           data-placement="right"
           :title="_t('CRM')"
+          v-if="permitted('crm', 'root')"
         >
           <a class="nav-link-nav" :href="crm">
             <div class="nav-link-text">
@@ -95,6 +99,7 @@
           data-toggle="tooltip"
           data-placement="right"
           :title="_t('Brands Settings')"
+          v-if="permitted('brand', 'root')"
         >
           <a class="nav-link-nav" :href="brand">
             <div class="nav-link-text">
@@ -117,6 +122,7 @@
           data-toggle="tooltip"
           data-placement="right"
           :title="_t('Delivery')"
+          v-if="permitted('delivery', 'root')"
         >
           <a class="nav-link-nav" :href="dm">
             <div class="nav-link-text">
@@ -137,6 +143,7 @@
           data-toggle="tooltip"
           data-placement="right"
           :title="_t('Dispatch')"
+          v-if="permitted('dispatch', 'root')"
         >
           <a class="nav-link-nav" :href="dispatch">
             <div class="nav-link-text">
@@ -158,6 +165,7 @@
           data-toggle="tooltip"
           data-placement="right"
           :title="_t('Super Admin')"
+          v-if="permitted('admin', 'root')"
         >
           <a class="nav-link-nav" :href="sadmin">
             <div class="nav-link-text">
@@ -182,7 +190,7 @@
     </div>
     <div
       class="navigation-avatar color-secondary"
-      v-if="userDetails"
+      v-if="userDetails && permitted('profile', 'root')"
       data-toggle="modal"
       data-target="#user-details"
       data-dismiss="modal"
@@ -253,7 +261,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'permitted']),
     ...mapState('location', ['userShortDetails']),
     ...mapState('auth', ['userDetails']),
     ...mapState({
