@@ -8,7 +8,7 @@
       <div class="main-orders-list-item-title color-text">
         <div class="orders-name">{{ dt(item) }}</div>
         <div class="orders-amount">
-          {{ formatPrice(itemGrossPriceDiscounted(item) * item.quantity) }}
+          {{ formatPrice(itemGrossPriceDiscounted(item)) }}
         </div>
         <div
           class="orders-close"
