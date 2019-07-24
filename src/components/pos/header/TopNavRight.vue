@@ -58,22 +58,34 @@
           />
         </svg>
       </a>
+      <ul class="setting-dropdown">
+        <li>
+          <a href="javascript:void(0)">{{ _t('Printers') }}</a>
+        </li>
+        <li v-if="permitted('dashboard', 'root')">
+          <a :href="dashboard">{{ _t('Dashboard') }}</a>
+        </li>
+        <li v-if="permitted('crm', 'root')">
+          <a :href="crm">{{ _t('CRM') }}</a>
+        </li>
+        <li v-if="permitted('menu', 'root')">
+          <a :href="menu">{{ _t('Menu Setup') }}</a>
+        </li>
+        <li v-if="permitted('delivery', 'root')">
+          <a href="javascript:void(0)">
+            <router-link :to="'/delivery-manager' + store">
+              {{ _t('Delivery Manager') }}
+            </router-link>
+          </a>
+        </li>
+        <li v-if="permitted('brand', 'root')">
+          <a :href="brands">{{ _t('Setting') }}</a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" @click="logout()">{{ _t('Logout') }}</a>
+        </li>
+      </ul>
     </li>
-    <ul class="setting-dropdown">
-      <li>
-        <a href="javascript:void(0)">{{ _t('Printers') }}</a>
-      </li>
-      <li>
-        <a href="javascript:void(0)"
-          ><router-link :to="'/delivery-manager' + store">{{
-            _t('Delivery Manager')
-          }}</router-link></a
-        >
-      </li>
-      <li>
-        <a href="javascript:void(0)" @click="logout()">{{ _t('Logout') }}</a>
-      </li>
-    </ul>
   </div>
 </template>
 
@@ -87,6 +99,11 @@ export default {
   data: function() {
     return {
       onlineOrdersCount: 0,
+      dm: this.baseurl('delivery') + '/delivery_home/new',
+      dashboard: this.baseurl('dashboard'),
+      crm: this.baseurl('crm') + '/brand_customers',
+      menu: this.baseurl('menu'),
+      brand: this.baseurl('brands'),
     }
   },
   computed: {
@@ -107,7 +124,7 @@ export default {
       username: state =>
         state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
     ...mapActions('auth', ['logout']),
@@ -134,6 +151,14 @@ export default {
       } else {
         this.onlineOrdersCount = this.latestOnlineOrders
       }
+    },
+    baseurl(link) {
+      return (
+        window.location.href.replace(
+          new RegExp('/pos/delivery-manager/.*'),
+          '/' + link
+        ) + this.$store.getters['context/brand']
+      )
     },
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },
