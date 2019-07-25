@@ -54,8 +54,15 @@
                 v-for="customer in customers"
                 :key="customer.customerId"
                 v-on:click="selectCustomer(customer)"
-                >{{ customer.name }}</span
               >
+                {{ customer.name }}
+                <span
+                  class="pull-right p-0"
+                  :class="customer.active ? 'text-success' : 'text-danger'"
+                >
+                  {{ customer.active ? 'Activated' : 'Deactivated' }}
+                </span>
+              </span>
             </div>
             <!--            <small>{{searchTerm}}</small>-->
           </div>
@@ -139,6 +146,9 @@ export default {
     },
 
     selectCustomer(customer) {
+      if (!customer.active) {
+        return false
+      }
       this.searchCustomerErr = ''
       this.searchTerm = customer.name
       this.customerId = customer._id
