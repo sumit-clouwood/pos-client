@@ -242,9 +242,9 @@ const getters = {
 
 // actions
 const actions = {
-  addToOrder({ state, getters, commit, dispatch }, item) {
+  addToOrder({ state, getters, commit, dispatch }, stateItem) {
     commit('checkoutForm/RESET', 'process', { root: true })
-
+    let item = { ...stateItem }
     //item gross price is inclusive of tax
     item.grossPrice = getters.grossPrice(item)
     //net price is exclusive of tax, getter ll send unrounded price that is real one
