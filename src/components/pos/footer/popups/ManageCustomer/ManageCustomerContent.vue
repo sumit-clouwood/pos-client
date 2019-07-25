@@ -56,6 +56,13 @@
             </td>
             <td>
               <button
+                v-if="!customer.active"
+                class="btn btn-default order-add deactive-table-btn color-text-invert"
+              >
+                {{ _t('Edit Details') }}
+              </button>
+              <button
+                v-else
                 @click="fetchSelectedCustomer(customer._id)"
                 data-toggle="modal"
                 data-target="#display-order"
@@ -64,12 +71,19 @@
               >
                 {{ _t('Edit Details') }}
               </button>
-              <span>{{
-                getCustomerLocation(customer.customer_addresses)
-              }}</span>
+              <span>
+                {{ getCustomerLocation(customer.customer_addresses) }}
+              </span>
             </td>
             <td class="color-text">
               <button
+                v-if="!customer.active"
+                class="btn btn-default order-add deactive-table-btn color-text-invert"
+              >
+                {{ _t('Add to Order') }}
+              </button>
+              <button
+                v-else
                 @click="fetchSelectedCustomer(customer._id)"
                 data-toggle="modal"
                 data-target="#add-to-order"

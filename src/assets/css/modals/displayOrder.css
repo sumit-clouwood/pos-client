@@ -505,7 +505,7 @@ ul.fav-item-slider > li > img {
   opacity: 0.8;
   cursor: pointer; }
 
-.br-table-btn {
+.br-table-btn, .deactive-table-btn {
   display: none; }
 
 tr.referal-code-customer {

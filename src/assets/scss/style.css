@@ -2190,7 +2190,7 @@ ul.fav-item-slider > li > img {
   opacity: 0.8;
   cursor: pointer; }
 
-.br-table-btn {
+.br-table-btn, .deactive-table-btn {
   display: none; }
 
 tr.referal-code-customer {
@@ -2893,8 +2893,6 @@ button {
     font-size: 0.875rem;
     font-weight: 600;
     letter-spacing: 0.58px; }
-  button.br-table-btn.order-add {
-    margin-left: 0.625rem; }
   button.popup-btn-save {
     height: 3.125rem;
     box-shadow: 0 2px 2px #d1e6c5;

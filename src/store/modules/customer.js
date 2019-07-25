@@ -358,7 +358,8 @@ const mutations = {
   },
   [mutation.SET_SEARCH_TERMS](state, searchTerms) {
     state.params.query = searchTerms
-    state.pageId = 'main_crm_list'
+    state.pageId =
+      searchTerms.length > 0 ? 'main_crm_list' : 'brand_customers_main_tbl'
     state.params.page_number = 1
   },
   [mutation.SET_CUSTOMER_GROUP](state, customerGroup) {
