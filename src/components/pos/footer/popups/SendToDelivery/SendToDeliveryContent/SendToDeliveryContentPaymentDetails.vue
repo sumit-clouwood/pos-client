@@ -40,8 +40,7 @@ export default {
     ...mapState({
       orderNotes: state => state.order.orderNote,
     }),
-    ...mapGetters('order', ['orderTotal', 'subTotal']),
-    ...mapGetters('tax', ['totalTax']),
+    ...mapGetters('order', ['orderTotal', 'subTotal', 'totalTax']),
     ...mapGetters('surcharge', ['surcharge']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', ['orderDiscountWithoutTax']),
