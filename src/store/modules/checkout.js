@@ -267,9 +267,8 @@ const actions = {
               itemDiscount.type === CONSTANTS.VALUE
                 ? itemDiscount.value
                 : itemDiscount.rate,
-            //discounts apply only on line items, so don't multiply with quantity
-            price: itemDiscount.price,
-            tax: itemDiscount.tax,
+            price: itemDiscount.price * itemDiscount.quantity,
+            tax: itemDiscount.tax * itemDiscount.quantity,
             for_item: itemDiscount.itemNo,
             entity_id: itemDiscount.id,
           }
@@ -620,7 +619,6 @@ const actions = {
     commit(mutation.RESET)
     dispatch('checkoutForm/reset', {}, { root: true })
     dispatch('order/reset', {}, { root: true })
-    dispatch('tax/reset', {}, { root: true })
     dispatch('discount/reset', {}, { root: true })
     dispatch('surcharge/reset', {}, { root: true })
     dispatch('customer/reset', {}, { root: true })
