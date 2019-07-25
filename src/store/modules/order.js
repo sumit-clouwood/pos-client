@@ -76,7 +76,9 @@ const getters = {
   totalItemTaxDiscount: (state, getters) => {
     let itemTaxDiscount = 0
     state.items.forEach(item => {
-      itemTaxDiscount += Num.round(getters.itemTaxDiscount(item))
+      itemTaxDiscount += Num.round(
+        getters.itemTaxDiscount(item) * item.quantity
+      )
     })
     return itemTaxDiscount
   },
@@ -84,7 +86,9 @@ const getters = {
   totalModifierTaxDiscount: (state, getters) => {
     let modifiersTaxDiscount = 0
     state.items.forEach(item => {
-      modifiersTaxDiscount += Num.round(getters.itemModifierTaxDiscount(item))
+      modifiersTaxDiscount += Num.round(
+        getters.itemModifierTaxDiscount(item) * item.quantity
+      )
     })
     return modifiersTaxDiscount
   },
@@ -142,18 +146,22 @@ const getters = {
     state.items.forEach(item => {
       const itemPrice = Num.round(item.netPrice) * item.quantity
       const modifiersPrice = getters.itemModifiersPrice(item) * item.quantity
-      //discount should apply only on line item, so don't multiply with quantity
-      const itemDiscount = getters.itemNetDiscount(item)
-      const modifiersDiscount = getters.itemModifierDiscount(item)
+      const itemDiscount = getters.itemNetDiscount(item) * item.quantity
+      const modifiersDiscount =
+        getters.itemModifierDiscount(item) * item.quantity
       subTotal += itemPrice + modifiersPrice - itemDiscount - modifiersDiscount
     })
 
     return Num.round(subTotal)
   },
 
-  itemGrossDiscount: () => item => {
+  itemGrossDiscount: (state, getters) => item => {
     if (item.discountRate) {
-      return Num.round((item.grossPrice * item.discountRate) / 100)
+      return (
+        Num.round((item.grossPrice * item.discountRate) / 100) +
+        getters.itemModifierDiscount(item) +
+        getters.itemModifierTaxDiscount(item)
+      )
     } else {
       return 0
     }
@@ -196,7 +204,7 @@ const getters = {
   itemGrossPriceDiscounted: (state, getters) => item => {
     const itemGrossPrice = getters.itemGrossPrice(item)
     const itemDiscount = getters.itemGrossDiscount(item)
-    return itemGrossPrice * item.quantity - itemDiscount
+    return itemGrossPrice * item.quantity - itemDiscount * item.quantity
   },
 
   itemGrossPrice: (state, getters) => item => {
