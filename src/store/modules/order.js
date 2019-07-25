@@ -1,5 +1,4 @@
-/*
-or example tax for an item is 2.467 
+/*or example tax for an item is 2.467 
 suppose quantity is 3
 2.467 * 3 = 7.401
 
@@ -15,6 +14,7 @@ yes but you should not charge 7.41
 you should charge 7.40
 
 */
+/* eslint-disable no-console */
 import * as mutation from './order/mutation-types'
 import OrderService from '../../services/data/OrderService'
 import * as CONST from '@/constants'
@@ -90,6 +90,12 @@ const getters = {
   },
 
   totalTax: (state, getters, rootState, rootGetters) => {
+    const totalTax = getters.totalTaxWithoutOrderDiscount
+    const orderTaxDiscount = rootGetters['discount/taxDiscountAmount']
+
+    return Num.round(totalTax - orderTaxDiscount)
+  },
+  totalTaxWithoutOrderDiscount: (state, getters, rootState, rootGetters) => {
     const itemsTax = Num.round(getters.totalItemsTax)
     const modifiersTax = Num.round(getters.totalModifiersTax)
     const itemTaxDiscount = Num.round(getters.totalItemTaxDiscount)
@@ -97,16 +103,15 @@ const getters = {
 
     const surchargeTax = rootGetters['surcharge/totalTax']
 
-    return (
+    return Num.round(
       itemsTax -
-      itemTaxDiscount +
-      modifiersTax -
-      modifiersTaxDiscount +
-      surchargeTax
+        itemTaxDiscount +
+        modifiersTax -
+        modifiersTaxDiscount +
+        surchargeTax
     )
   },
   orderTotal: (state, getters, rootState, rootGetters) => {
-    //discount is already subtracted from tax in tax.js
     let amount =
       getters.subTotal +
       getters.totalTax +
@@ -142,7 +147,8 @@ const getters = {
       const modifiersDiscount = getters.itemModifierDiscount(item)
       subTotal += itemPrice + modifiersPrice - itemDiscount - modifiersDiscount
     })
-    return subTotal
+
+    return Num.round(subTotal)
   },
 
   itemGrossDiscount: () => item => {
@@ -548,9 +554,11 @@ const actions = {
 
         if (orderDiscount.include_surcharge) {
           //apply ontotal discount, apply on surcharge and its tax as well
-          totalTax =
-            rootGetters['tax/itemsTax'] + rootGetters['tax/surchargeTax']
+          totalTax = getters.totalTaxWithoutOrderDiscount
+
+          console.log('total tax, ', totalTax)
           const totalSurcharge = rootGetters['surcharge/surcharge']
+          console.log('total surcharge', totalSurcharge)
 
           if (orderDiscount.type === CONST.VALUE) {
             if (orderDiscount.value > subtotal + totalTax) {
@@ -585,17 +593,20 @@ const actions = {
             orderTotalDiscount = Num.round(
               (subtotal * orderDiscount.rate) / 100
             )
+            console.log('order total discount', orderTotalDiscount)
             taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
+
+            console.log('taxTotalDiscount', taxTotalDiscount)
             surchargeTotalDiscount = Num.round(
               (totalSurcharge * orderDiscount.rate) / 100
             )
-
+            console.log('surchargeTotalDiscount', surchargeTotalDiscount)
             const discountData = {
               orderDiscount: orderTotalDiscount,
               taxDiscount: taxTotalDiscount,
               surchargeDiscount: surchargeTotalDiscount,
             }
-
+            console.log('order discount data', discountData)
             dispatch('discount/setOrderDiscount', discountData, { root: true })
 
             resolve(discountData)
@@ -604,7 +615,7 @@ const actions = {
           //without surcharge
           //apply offtotal discount, don't calculate discount on surcharge
           //we are not including surcharge tax in total tax for discount
-          totalTax = rootGetters['tax/itemsTax']
+          totalTax = getters.totalTaxWithoutOrderDiscount
           //const totalSurcharge = rootGetters['surcharge/surcharge']
           if (orderDiscount.type === CONST.VALUE) {
             if (orderDiscount.value > subtotal + totalTax) {
