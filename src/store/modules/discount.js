@@ -96,62 +96,45 @@ const actions = {
     commit(mutation.SET_ITEM_DISCOUNTS, itemDiscounts)
   },
 
-  validateOrderDiscounts({ commit, state, rootState }) {
-    let errorMsg = false
-    if (rootState.order.items.length < 1) {
-      errorMsg =
-        'Please add some item(s) to cart before applying order discount.'
-    } else if (state.appliedItemDiscounts.length) {
-      //item level discount already applied reject it
-      errorMsg =
-        'Please remove item level discount(s) first to apply order discount.'
-    }
-    commit(mutation.SET_ORDER_ERROR, errorMsg)
-  },
-
-  validateItemDiscounts({ commit, state }) {
-    if (state.appliedOrderDiscount) {
-      //order level discount already applied reject it
-      const errorMsg =
-        'Please remove order discount first to apply item discount.'
-      commit(mutation.SET_ITEM_ERROR, errorMsg)
-    }
-  },
-
-  applyItemDiscount({ commit, rootState, dispatch }) {
+  applyItemDiscount({ commit, state, rootState, dispatch }) {
     commit('checkoutForm/RESET', 'process', { root: true })
     return new Promise((resolve, reject) => {
-      commit(mutation.CLEAR_ORDER_DISCOUNT)
-      if (state.currentActiveItemDiscount) {
-        commit(mutation.APPLY_ITEM_DISCOUNT, {
-          item: rootState.order.item,
-          discount: {
-            _id: state.currentActiveItemDiscount._id,
-            type: state.currentActiveItemDiscount.type,
-            rate: state.currentActiveItemDiscount.rate,
-            value: state.currentActiveItemDiscount.value,
-            name: state.currentActiveItemDiscount.name,
-          },
-        })
+      //add extra layer of validation which is handled on component level though
+      if (state.appliedOrderDiscount) {
+        reject('Please remove order discount to apply item discount.')
       } else {
-        dispatch('removeItemDiscount')
-      }
-      //remove discounts if there was previously applied but now unset
-      dispatch('order/recalculateItemPrices', {}, { root: true })
-        .then(() => resolve())
-        .catch(errors => {
-          for (let itemId in errors) {
-            const item = errors[itemId]
-            if (item.undiscountedNetPrice <= 0) {
-              commit(mutation.SET_ITEM_ERROR, DISCOUNT_ITEM_ERROR_FREE)
-            } else {
-              commit(mutation.SET_ITEM_ERROR, DISCOUNT_ITEM_ERROR_GREATER)
+        commit(mutation.CLEAR_ORDER_DISCOUNT)
+        if (state.currentActiveItemDiscount) {
+          commit(mutation.APPLY_ITEM_DISCOUNT, {
+            item: rootState.order.item,
+            discount: {
+              _id: state.currentActiveItemDiscount._id,
+              type: state.currentActiveItemDiscount.type,
+              rate: state.currentActiveItemDiscount.rate,
+              value: state.currentActiveItemDiscount.value,
+              name: state.currentActiveItemDiscount.name,
+            },
+          })
+        } else {
+          dispatch('removeItemDiscount')
+        }
+        //remove discounts if there was previously applied but now unset
+        dispatch('order/recalculateItemPrices', {}, { root: true })
+          .then(() => resolve())
+          .catch(errors => {
+            for (let itemId in errors) {
+              const item = errors[itemId]
+              if (item.undiscountedNetPrice <= 0) {
+                commit(mutation.SET_ITEM_ERROR, DISCOUNT_ITEM_ERROR_FREE)
+              } else {
+                commit(mutation.SET_ITEM_ERROR, DISCOUNT_ITEM_ERROR_GREATER)
+              }
             }
-          }
-          commit(mutation.SET_ERROR_CODE, 7)
-          commit(mutation.CLEAR_ITEM_DISCOUNT, errors)
-          reject(errors)
-        })
+            commit(mutation.SET_ERROR_CODE, 7)
+            commit(mutation.CLEAR_ITEM_DISCOUNT, errors)
+            reject(errors)
+          })
+      }
     })
   },
 
@@ -161,26 +144,41 @@ const actions = {
     dispatch('order/recalculateItemPrices', {}, { root: true })
   },
 
-  applyOrderDiscount({ commit, dispatch }) {
+  applyOrderDiscount({ commit, state, rootState, dispatch }) {
     commit('checkoutForm/RESET', 'process', { root: true })
     return new Promise((resolve, reject) => {
-      commit(mutation.CLEAR_ITEM_DISCOUNT)
-      if (state.currentActiveOrderDiscount) {
-        commit(mutation.APPLY_ORDER_DISCOUNT, state.currentActiveOrderDiscount)
-
-        dispatch('order/recalculateOrderTotals', {}, { root: true })
-          .then(response => {
-            resolve(response)
-          })
-          .catch(error => {
-            commit(mutation.CLEAR_ORDER_DISCOUNT)
-            commit(mutation.SET_ORDER_ERROR, error)
-            commit(mutation.SET_ERROR_CODE, 2)
-            reject(error)
-          })
+      //add extra layer of validation which is handled on component level though
+      if (rootState.order.items.length < 1) {
+        reject(
+          'Please add some item(s) to cart before applying order discount.'
+        )
+      } else if (state.appliedItemDiscounts.length) {
+        //item level discount already applied reject it
+        reject(
+          'Please remove item level discount(s) first to apply order discount.'
+        )
       } else {
-        commit(mutation.CLEAR_ORDER_DISCOUNT)
-        resolve()
+        commit(mutation.CLEAR_ITEM_DISCOUNT)
+        if (state.currentActiveOrderDiscount) {
+          commit(
+            mutation.APPLY_ORDER_DISCOUNT,
+            state.currentActiveOrderDiscount
+          )
+
+          dispatch('order/recalculateOrderTotals', {}, { root: true })
+            .then(response => {
+              resolve(response)
+            })
+            .catch(error => {
+              commit(mutation.CLEAR_ORDER_DISCOUNT)
+              commit(mutation.SET_ORDER_ERROR, error)
+              commit(mutation.SET_ERROR_CODE, 2)
+              reject(error)
+            })
+        } else {
+          commit(mutation.CLEAR_ORDER_DISCOUNT)
+          resolve()
+        }
       }
     })
   },
@@ -291,9 +289,15 @@ const mutations = {
     state.surchargeDiscountAmount = discount
   },
   [mutation.CLEAR_ITEM_DISCOUNT](state, erroredDiscounts) {
-    if (erroredDiscounts && erroredDiscounts.length) {
+    if (erroredDiscounts) {
       const filteredDiscounts = state.appliedItemDiscounts.filter(discount => {
-        return !erroredDiscounts.includes(discount.item._id)
+        let keep = true
+        for (let orderIndex in erroredDiscounts) {
+          if (parseInt(orderIndex) === discount.item.orderIndex) {
+            keep = false
+          }
+        }
+        return keep
       })
       state.appliedItemDiscounts = filteredDiscounts
     } else {

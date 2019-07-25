@@ -86,7 +86,16 @@ export default {
     }
   },
   computed: {
-    ...mapState('discount', ['orderError', 'errorCode']),
+    orderError() {
+      if (this.$store.state.order.items.length < 1) {
+        return 'Please add some item(s) to cart before applying order discount.'
+      } else if (this.$store.state.discount.appliedItemDiscounts.length) {
+        //item level discount already applied reject it
+        return 'Please remove item level discount(s) first to apply order discount.'
+      }
+      return this.$store.state.discount.orderError
+    },
+    ...mapState('discount', ['errorCode']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', {
       // map `this.discounts` to `this.$store.discount.getters.orderDiscounts`

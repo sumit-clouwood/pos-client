@@ -695,6 +695,7 @@ const actions = {
             if (discount.discount.value > item.netPrice * item.quantity) {
               //discount error
               discountErrors[index] = item
+              item.discount = false
               item.discountRate = 0
             } else {
               //discount should be applied after tax price
@@ -708,11 +709,12 @@ const actions = {
           } else {
             //percentage discount can be applied only non free (> 0 priced) items
             if (item.netPrice * item.quantity > 0) {
-              //discount error
               //percentage based discount, use discount.rate here, not discount.value
               //apply discount with modifier price
               item.discountRate = discount.discount.rate
             } else {
+              //discount error
+              item.discount = false
               discountErrors[item.orderIndex] = item
               item.discountRate = 0
             }
