@@ -2,9 +2,7 @@
   <div class="navigation toggle-navigation">
     <div class="logo" @click="collapseExpend">
       <a class="logo-link" href="javascript:void(0)">
-        <router-link :to="dm">
-          <img src="img/other/icon.png" alt="icon" />
-        </router-link>
+        <img src="img/other/icon.png" alt="icon" />
       </a>
     </div>
     <div class="navigation-list-wrapper">
