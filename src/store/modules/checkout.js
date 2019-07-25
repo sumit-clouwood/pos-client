@@ -74,7 +74,7 @@ const actions = {
       let validPayment = false
       const totalPayable = rootGetters['checkoutForm/orderTotal']
       commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
-
+      commit('invoice/RESET', null, { root: true })
       if (
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
         action === CONSTANTS.ORDER_STATUS_ON_HOLD
@@ -527,15 +527,25 @@ const actions = {
                 {
                   root: true,
                 }
-              ).then(() => {
-                //invoice print is triggered by the success ok button
-                if (
-                  rootState.order.orderType.OTApi ==
-                  CONSTANTS.ORDER_TYPE_CALL_CENTER
-                ) {
-                  commit(mutation.PRINT, true)
-                }
-              })
+              )
+                .then(() => {
+                  //invoice print is triggered by the success ok button
+                  if (
+                    rootState.order.orderType.OTApi ==
+                    CONSTANTS.ORDER_TYPE_CALL_CENTER
+                  ) {
+                    commit(mutation.PRINT, true)
+                  }
+                })
+                .catch(error => {
+                  commit(
+                    'checkoutForm/SET_MSG',
+                    { result: 'error', message: error },
+                    {
+                      root: true,
+                    }
+                  )
+                })
             })
 
             commit(

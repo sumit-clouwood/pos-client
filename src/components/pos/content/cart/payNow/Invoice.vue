@@ -32,29 +32,33 @@ export default {
           this.doprint()
         })
       }
-      this.$store.commit('checkout/PRINT', false)
     },
     doprint() {
       this.$refs.iframe.contentWindow.print()
+      this.$store.commit('checkout/PRINT', false)
     },
   },
   watch: {
-    print(newVal) {
-      if (newVal) {
-        if (this.$store.state.order.orderType.OTApi === 'call_center') {
-          this.$router.replace({ name: 'DeliveryManager' })
-          // window.location = process.env.VUE_APP_DELIVERY_MANAGER_URL.replace(
-          //   '{brand_id}',
-          //   this.$store.state.context.brandId
-          // )
+    print(newval, oldval) {
+      if (oldval && !newval) {
+        //print was true, then printed and print set to false
+        setTimeout(() => {
+          this.$store.dispatch('checkout/reset')
+        }, 1000)
+      } else {
+        if (newval) {
+          if (this.$store.state.order.orderType.OTApi === 'call_center') {
+            this.$router.replace({ name: 'DeliveryManager' })
+            // window.location = process.env.VUE_APP_DELIVERY_MANAGER_URL.replace(
+            //   '{brand_id}',
+            //   this.$store.state.context.brandId
+            // )
+          }
         }
       }
     },
     templateHtml(newVal) {
       if (newVal) {
-        this.$store.commit('checkout/PRINT', false)
-        this.$store.dispatch('checkout/reset')
-
         $('.modal-backdrop').remove()
         $('#order-confirmation').hide()
         hidePayNow()
