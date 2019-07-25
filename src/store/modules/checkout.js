@@ -28,29 +28,33 @@ const getters = {
     }
 
     order.items.forEach(item => {
-      data.subTotal += parseFloat(item.price) * parseFloat(item.qty)
-      data.totalTax += parseFloat(item.tax) * parseFloat(item.qty)
+      data.subTotal += Num.round(Num.round(item.price) * Num.round(item.qty))
+      data.totalTax += Num.round(Num.round(item.tax) * Num.round(item.qty))
     })
 
     order.item_modifiers.forEach(modifier => {
-      data.subTotal += parseFloat(modifier.price) * parseFloat(modifier.qty)
-      data.totalTax += parseFloat(modifier.tax) * parseFloat(modifier.qty)
+      data.subTotal += Num.round(
+        Num.round(modifier.price) * Num.round(modifier.qty)
+      )
+      data.totalTax += Num.round(
+        Num.round(modifier.tax) * Num.round(modifier.qty)
+      )
     })
 
     order.order_surcharges.forEach(surcharge => {
-      data.totalSurcharge += parseFloat(surcharge.price)
-      data.surchargeTax += parseFloat(surcharge.tax)
-      data.totalTax += parseFloat(surcharge.tax)
+      data.totalSurcharge += Num.round(surcharge.price)
+      data.surchargeTax += Num.round(surcharge.tax)
+      data.totalTax += Num.round(surcharge.tax)
     })
 
     order.item_discounts.forEach(discount => {
-      data.subTotal -= parseFloat(discount.price)
-      data.totalTax -= parseFloat(discount.tax)
+      data.subTotal -= Num.round(discount.price)
+      data.totalTax -= Num.round(discount.tax)
     })
 
     order.order_discounts.forEach(discount => {
-      data.totalDiscount += parseFloat(discount.price)
-      data.totalTax -= parseFloat(discount.tax)
+      data.totalDiscount += Num.round(discount.price)
+      data.totalTax -= Num.round(discount.tax)
     })
 
     data.balanceDue =
@@ -228,9 +232,10 @@ const actions = {
             itemDiscount.itemNo = item.orderIndex
             itemDiscount.quantity = item.quantity
             //undiscountedTax is without modifiers
-            itemDiscount.tax =
-              rootGetters['order/itemTaxDiscount'](item) +
-              rootGetters['order/itemModifierTaxDiscount'](item)
+            itemDiscount.tax = Num.round(
+              Num.round(rootGetters['order/itemTaxDiscount'](item)) +
+                Num.round(rootGetters['order/itemModifierTaxDiscount'](item))
+            )
             itemDiscount.price =
               rootGetters['order/itemNetDiscount'](item) +
               rootGetters['order/itemModifierDiscount'](item)
@@ -262,8 +267,9 @@ const actions = {
               itemDiscount.type === CONSTANTS.VALUE
                 ? itemDiscount.value
                 : itemDiscount.rate,
-            price: itemDiscount.price * itemDiscount.quantity,
-            tax: itemDiscount.tax * itemDiscount.quantity,
+            //discounts apply only on line items, so don't multiply with quantity
+            price: itemDiscount.price,
+            tax: itemDiscount.tax,
             for_item: itemDiscount.itemNo,
             entity_id: itemDiscount.id,
           }
