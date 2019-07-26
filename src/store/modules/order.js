@@ -43,6 +43,14 @@ const state = {
 
 // getters
 const getters = {
+  orderIndex: state => {
+    if (!state.items.length) {
+      return 0
+    }
+    const lastItem = state.items[state.items.length - 1]
+    return lastItem.orderIndex + 1
+  },
+
   item: state => state.item,
 
   netPrice: () => item => {
@@ -76,7 +84,9 @@ const getters = {
   totalItemTaxDiscount: (state, getters) => {
     let itemTaxDiscount = 0
     state.items.forEach(item => {
-      itemTaxDiscount += Num.round(getters.itemTaxDiscount(item))
+      itemTaxDiscount += Num.round(
+        getters.itemTaxDiscount(item) * item.quantity
+      )
     })
     return itemTaxDiscount
   },
@@ -84,7 +94,9 @@ const getters = {
   totalModifierTaxDiscount: (state, getters) => {
     let modifiersTaxDiscount = 0
     state.items.forEach(item => {
-      modifiersTaxDiscount += Num.round(getters.itemModifierTaxDiscount(item))
+      modifiersTaxDiscount += Num.round(
+        getters.itemModifierTaxDiscount(item) * item.quantity
+      )
     })
     return modifiersTaxDiscount
   },
@@ -142,18 +154,22 @@ const getters = {
     state.items.forEach(item => {
       const itemPrice = Num.round(item.netPrice) * item.quantity
       const modifiersPrice = getters.itemModifiersPrice(item) * item.quantity
-      //discount should apply only on line item, so don't multiply with quantity
-      const itemDiscount = getters.itemNetDiscount(item)
-      const modifiersDiscount = getters.itemModifierDiscount(item)
+      const itemDiscount = getters.itemNetDiscount(item) * item.quantity
+      const modifiersDiscount =
+        getters.itemModifierDiscount(item) * item.quantity
       subTotal += itemPrice + modifiersPrice - itemDiscount - modifiersDiscount
     })
 
     return Num.round(subTotal)
   },
 
-  itemGrossDiscount: () => item => {
+  itemGrossDiscount: (state, getters) => item => {
     if (item.discountRate) {
-      return Num.round((item.grossPrice * item.discountRate) / 100)
+      return (
+        Num.round((item.grossPrice * item.discountRate) / 100) +
+        getters.itemModifierDiscount(item) +
+        getters.itemModifierTaxDiscount(item)
+      )
     } else {
       return 0
     }
@@ -196,7 +212,7 @@ const getters = {
   itemGrossPriceDiscounted: (state, getters) => item => {
     const itemGrossPrice = getters.itemGrossPrice(item)
     const itemDiscount = getters.itemGrossDiscount(item)
-    return itemGrossPrice * item.quantity - itemDiscount
+    return itemGrossPrice * item.quantity - itemDiscount * item.quantity
   },
 
   itemGrossPrice: (state, getters) => item => {
@@ -234,9 +250,9 @@ const getters = {
 
 // actions
 const actions = {
-  addToOrder({ state, getters, commit, dispatch }, item) {
+  addToOrder({ state, getters, commit, dispatch }, stateItem) {
     commit('checkoutForm/RESET', 'process', { root: true })
-
+    let item = { ...stateItem }
     //item gross price is inclusive of tax
     item.grossPrice = getters.grossPrice(item)
     //net price is exclusive of tax, getter ll send unrounded price that is real one
@@ -246,7 +262,7 @@ const actions = {
     item.tax = Num.round(item.grossPrice - item.netPrice)
 
     if (typeof item.orderIndex === 'undefined') {
-      item.orderIndex = state.items.length
+      item.orderIndex = getters.orderIndex
     }
 
     //this comes directly from the items menu without modifiers
@@ -286,7 +302,7 @@ const actions = {
       item.modifiersData = []
 
       if (typeof item.orderIndex === 'undefined') {
-        item.orderIndex = state.items.length
+        item.orderIndex = getters.orderIndex
       }
 
       item.modifiable = true
@@ -485,6 +501,9 @@ const actions = {
       commit(mutation.SET_ITEM, false)
     }
 
+    //remove discounts for this item from state
+    commit('discount/REMOVE_ITEM_DISCOUNT', item, { root: true })
+
     if (state.items.length) {
       dispatch('surchargeCalculation')
     } else {
@@ -518,14 +537,18 @@ const actions = {
       root: true,
     })
   },
-  setActiveItem({ commit, dispatch }, { orderItem, index }) {
+  //index is the new index of an item in cart, if there were 3 items and 1 removed index ll be 0,1
+  setActiveItem({ commit, dispatch }, { orderItem }) {
     //get current item
     //this is fired by the items.vue
-    let item = { ...state.items[index] }
+    let stateItem = state.items.find(
+      item => item.orderIndex == orderItem.orderIndex
+    )
+    let item = { ...stateItem }
+
     item.editMode = true
     item.quantity = orderItem.quantity
     item.netPrice = orderItem.netPrice
-    item.orderIndex = index
     commit(mutation.SET_ITEM, item)
 
     // if (item.modifiable) {
@@ -666,10 +689,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       let discountErrors = {}
 
-      const newItems = state.items.map((stateItem, index) => {
+      const newItems = state.items.map(stateItem => {
         let item = { ...stateItem }
         const discount = rootState.discount.appliedItemDiscounts.find(
-          discount => discount.item.orderIndex == index
+          discount => discount.item.orderIndex == item.orderIndex
         )
 
         if (discount) {
@@ -686,7 +709,8 @@ const actions = {
 
             if (discount.discount.value > item.netPrice * item.quantity) {
               //discount error
-              discountErrors[index] = item
+              discountErrors[item.orderIndex] = item
+              item.discount = false
               item.discountRate = 0
             } else {
               //discount should be applied after tax price
@@ -700,11 +724,12 @@ const actions = {
           } else {
             //percentage discount can be applied only non free (> 0 priced) items
             if (item.netPrice * item.quantity > 0) {
-              //discount error
               //percentage based discount, use discount.rate here, not discount.value
               //apply discount with modifier price
               item.discountRate = discount.discount.rate
             } else {
+              //discount error
+              item.discount = false
               discountErrors[item.orderIndex] = item
               item.discountRate = 0
             }
