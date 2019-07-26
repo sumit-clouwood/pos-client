@@ -11,19 +11,14 @@
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
-          <div v-if="orderError" class="error">
-            <p class="text-danger text-center color-warning">
-              {{ _t(orderError) }}
-            </p>
-          </div>
-          <div class="error mx-auto" v-if="discounts.length == 0">
+          <div class="error mx-auto" v-if="errors">
             <p class="text-danger text-center">
               {{ errors }}
             </p>
           </div>
           <div
             class="dining-option-block select-discount-option"
-            v-if="!orderError && discounts.length"
+            v-if="!errors && discounts.length"
           >
             <div
               class="option-contain"
@@ -49,7 +44,7 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
-              v-show="!orderError"
+              v-show="!errors"
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="discount-save-btn"
@@ -58,7 +53,7 @@
               {{ _t('Ok') }}
             </button>
             <button
-              v-show="orderError"
+              v-show="errors"
               class="btn btn-danger btn-large color-text-invert color-button"
               type="button"
               data-dismiss="modal"
@@ -82,20 +77,49 @@ export default {
   props: {},
   data() {
     return {
-      errors: 'There is no discount available at this time.',
+      errors: false,
     }
   },
-  computed: {
-    orderError() {
-      if (this.$store.state.order.items.length < 1) {
-        return 'Please add some item(s) to cart before applying order discount.'
-      } else if (this.$store.state.discount.appliedItemDiscounts.length) {
-        //item level discount already applied reject it
-        return 'Please remove item level discount(s) first to apply order discount.'
+  watch: {
+    items(orderItems) {
+      if (!orderItems.length) {
+        this.errors =
+          'Please add some item(s) to cart before applying order discount.'
+      } else {
+        this.errors = false
       }
-      return this.$store.state.discount.orderError
     },
-    ...mapState('discount', ['errorCode']),
+    appliedItemDiscounts(itemDiscounts) {
+      if (itemDiscounts.length) {
+        this.errors =
+          'Please add some item(s) to cart before applying order discount.'
+      } else {
+        this.errors = false
+      }
+    },
+    orderError(error) {
+      if (error) {
+        this.errors = error
+      } else {
+        this.errors = false
+      }
+    },
+    discounts(orderDiscounts) {
+      if (!orderDiscounts.length) {
+        this.errors = 'There is no discount available at this time.'
+      } else {
+        this.errors = false
+      }
+    },
+  },
+
+  computed: {
+    ...mapState('discount', [
+      'errorCode',
+      'appliedItemDiscounts',
+      'orderError',
+    ]),
+    ...mapState('order', ['items']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', {
       // map `this.discounts` to `this.$store.discount.getters.orderDiscounts`

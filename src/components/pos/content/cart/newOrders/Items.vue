@@ -32,7 +32,7 @@
           class="button-plus"
           data-toggle="modal"
           data-target="#POSOrderItemOptions"
-          @click="setActiveItem({ orderItem: item, index: index })"
+          @click="setActiveItem({ orderItem: item })"
         >
           <i class="fa fa-plus-circle color-text"></i>
         </div>

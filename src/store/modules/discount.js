@@ -307,9 +307,9 @@ const mutations = {
     state.currentActiveItemDiscount = false
   },
   [mutation.REMOVE_ITEM_DISCOUNT](state, item) {
-    let discounts = state.appliedItemDiscounts.filter(
-      discount => discount.item.orderIndex != item.orderIndex
-    )
+    let discounts = state.appliedItemDiscounts.filter(discount => {
+      return discount.item.orderIndex != item.orderIndex
+    })
     state.appliedItemDiscounts = discounts
     state.currentActiveItemDiscount = false
   },

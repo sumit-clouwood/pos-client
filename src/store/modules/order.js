@@ -43,6 +43,14 @@ const state = {
 
 // getters
 const getters = {
+  orderIndex: state => {
+    if (!state.items.length) {
+      return 0
+    }
+    const lastItem = state.items[state.items.length - 1]
+    return lastItem.orderIndex + 1
+  },
+
   item: state => state.item,
 
   netPrice: () => item => {
@@ -254,7 +262,7 @@ const actions = {
     item.tax = Num.round(item.grossPrice - item.netPrice)
 
     if (typeof item.orderIndex === 'undefined') {
-      item.orderIndex = state.items.length
+      item.orderIndex = getters.orderIndex
     }
 
     //this comes directly from the items menu without modifiers
@@ -294,7 +302,7 @@ const actions = {
       item.modifiersData = []
 
       if (typeof item.orderIndex === 'undefined') {
-        item.orderIndex = state.items.length
+        item.orderIndex = getters.orderIndex
       }
 
       item.modifiable = true
@@ -493,6 +501,9 @@ const actions = {
       commit(mutation.SET_ITEM, false)
     }
 
+    //remove discounts for this item from state
+    commit('discount/REMOVE_ITEM_DISCOUNT', item, { root: true })
+
     if (state.items.length) {
       dispatch('surchargeCalculation')
     } else {
@@ -526,14 +537,18 @@ const actions = {
       root: true,
     })
   },
-  setActiveItem({ commit, dispatch }, { orderItem, index }) {
+  //index is the new index of an item in cart, if there were 3 items and 1 removed index ll be 0,1
+  setActiveItem({ commit, dispatch }, { orderItem }) {
     //get current item
     //this is fired by the items.vue
-    let item = { ...state.items[index] }
+    let stateItem = state.items.find(
+      item => item.orderIndex == orderItem.orderIndex
+    )
+    let item = { ...stateItem }
+
     item.editMode = true
     item.quantity = orderItem.quantity
     item.netPrice = orderItem.netPrice
-    item.orderIndex = index
     commit(mutation.SET_ITEM, item)
 
     // if (item.modifiable) {
@@ -674,10 +689,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       let discountErrors = {}
 
-      const newItems = state.items.map((stateItem, index) => {
+      const newItems = state.items.map(stateItem => {
         let item = { ...stateItem }
         const discount = rootState.discount.appliedItemDiscounts.find(
-          discount => discount.item.orderIndex == index
+          discount => discount.item.orderIndex == item.orderIndex
         )
 
         if (discount) {
@@ -694,7 +709,7 @@ const actions = {
 
             if (discount.discount.value > item.netPrice * item.quantity) {
               //discount error
-              discountErrors[index] = item
+              discountErrors[item.orderIndex] = item
               item.discount = false
               item.discountRate = 0
             } else {
