@@ -1,6 +1,5 @@
 import * as mutation from './holdOrders/mutation-types'
 import OrderService from '@/services/data/OrderService'
-// import OrderService from '../../services/data/OrderService'
 
 const state = {
   getHoldOrders: false,
@@ -27,6 +26,7 @@ const actions = {
       state.params.orderStatus,
       state.params.page,
       'orders_main_tbl',
+      '',
       '',
     ]
     OrderService.getOrders(...params).then(response => {

@@ -1,6 +1,7 @@
 import * as mutation from './customer/mutation-types'
 import CustomerService from '@/services/data/CustomerService'
 import LookupData from '@/plugins/helpers/LookupData'
+import OrderService from '@/services/data/OrderService'
 
 const state = {
   customer_list: [],
@@ -147,7 +148,21 @@ const actions = {
     let customerId = state.customer._id
     dispatch('fetchSelectedCustomer', customerId)
   },
-
+  getMorePastOrder({ commit, state }, pageNumber) {
+    const params = [
+      '',
+      state.params.page_size,
+      'real_created_datetime',
+      '',
+      pageNumber,
+      'orders_main_tbl',
+      '',
+      state.customer._id,
+    ]
+    OrderService.getOrders(...params).then(response => {
+      commit(mutation.PAST_ORDERS, response.data.data)
+    })
+  },
   searchCustomer: function({ commit, dispatch }, searchTerms) {
     return new Promise((resolve, reject) => {
       commit(mutation.CUSTOMER_LIST, [])
@@ -398,6 +413,9 @@ const mutations = {
   },
   [mutation.SELECTED_CUSTOMER_ADDRESS](state, selectedAddress) {
     state.address = selectedAddress
+  },
+  [mutation.PAST_ORDERS](state, pastOrders) {
+    state.pastOrders = pastOrders
   },
   /*[mutation.FETCH_CUSTOMER_ADDRESSES](state, addressList) {
     state.allOnlineAddress = addressList
