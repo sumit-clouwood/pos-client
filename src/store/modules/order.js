@@ -20,9 +20,6 @@ import OrderService from '../../services/data/OrderService'
 import * as CONST from '@/constants'
 import Num from '@/plugins/helpers/Num.js'
 
-const DISCOUNT_ORDER_ERROR_TOTAL =
-  "Discount can't be greater than total amount of order."
-
 // initial state
 const state = {
   items: [],
@@ -563,7 +560,13 @@ const actions = {
     )
     // }
   },
-  recalculateOrderTotals({ rootState, getters, rootGetters, dispatch }) {
+  recalculateOrderTotals({
+    rootState,
+    getters,
+    commit,
+    rootGetters,
+    dispatch,
+  }) {
     return new Promise((resolve, reject) => {
       const orderDiscount = rootState.discount.appliedOrderDiscount
       //let totalDiscount = 0
@@ -584,9 +587,14 @@ const actions = {
           console.log('total surcharge', totalSurcharge)
 
           if (orderDiscount.type === CONST.VALUE) {
-            if (orderDiscount.value > subtotal + totalTax) {
+            if (orderDiscount.value > subtotal) {
               dispatch('discount/clearOrderDiscount', null, { root: true })
-              reject(DISCOUNT_ORDER_ERROR_TOTAL)
+              commit(
+                'discount/SET_ORDER_ERROR',
+                CONST.DISCOUNT_ORDER_ERROR_TOTAL,
+                { root: true }
+              )
+              reject(CONST.DISCOUNT_ORDER_ERROR_TOTAL)
             } else {
               orderTotalDiscount = orderDiscount.value
 
@@ -641,9 +649,14 @@ const actions = {
           totalTax = getters.totalTaxWithoutOrderDiscount
           //const totalSurcharge = rootGetters['surcharge/surcharge']
           if (orderDiscount.type === CONST.VALUE) {
-            if (orderDiscount.value > subtotal + totalTax) {
+            if (orderDiscount.value > subtotal) {
               dispatch('discount/clearOrderDiscount', null, { root: true })
-              reject(DISCOUNT_ORDER_ERROR_TOTAL)
+              commit(
+                'discount/SET_ORDER_ERROR',
+                CONST.DISCOUNT_ORDER_ERROR_TOTAL,
+                { root: true }
+              )
+              reject(CONST.DISCOUNT_ORDER_ERROR_TOTAL)
             } else {
               const percentDiscountOnSubTotal = Num.round(
                 (orderDiscount.value * 100) / subtotal
