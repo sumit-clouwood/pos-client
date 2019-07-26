@@ -11,15 +11,30 @@
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
-          <div class="error mx-auto" v-if="errors">
+          <div
+            class="error mx-auto"
+            v-if="
+              orderError ||
+                appliedItemDiscounts.length ||
+                !items.length ||
+                !discounts.length
+            "
+          >
             <p class="text-danger text-center">
-              {{ errors }}
+              <span v-if="!discounts.length">
+                {{ _t('Order discounts not available.') }}</span
+              >
+              <span v-else-if="!items.length">
+                {{ _t(CONST.DISCOUNT_ORDER_ERROR_ITEM) }}
+              </span>
+              <span v-else-if="appliedItemDiscounts.length">
+                {{ _t(CONST.DISCOUNT_ORDER_ERROR_ITEM_DISCOUNT) }}
+              </span>
+              <span v-else>{{ _t(orderError) }}</span>
             </p>
           </div>
-          <div
-            class="dining-option-block select-discount-option"
-            v-if="!errors && discounts.length"
-          >
+
+          <div v-else class="dining-option-block select-discount-option">
             <div
               class="option-contain"
               :class="{
@@ -44,21 +59,26 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
-              v-show="!errors"
+              v-if="
+                orderError ||
+                  appliedItemDiscounts.length ||
+                  !items.length ||
+                  !discounts.length
+              "
+              class="btn btn-danger btn-large color-text-invert color-button"
+              type="button"
+              data-dismiss="modal"
+            >
+              {{ _t('Close') }}
+            </button>
+            <button
+              v-else
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="discount-save-btn"
               @click="applyOrderDiscount()"
             >
               {{ _t('Ok') }}
-            </button>
-            <button
-              v-show="errors"
-              class="btn btn-danger btn-large color-text-invert color-button"
-              type="button"
-              data-dismiss="modal"
-            >
-              {{ _t('Close') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -75,50 +95,8 @@ import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Discount',
   props: {},
-  data() {
-    return {
-      errors: false,
-    }
-  },
-  watch: {
-    items(orderItems) {
-      if (!orderItems.length) {
-        this.errors =
-          'Please add some item(s) to cart before applying order discount.'
-      } else {
-        this.errors = false
-      }
-    },
-    appliedItemDiscounts(itemDiscounts) {
-      if (itemDiscounts.length) {
-        this.errors =
-          'Please add some item(s) to cart before applying order discount.'
-      } else {
-        this.errors = false
-      }
-    },
-    orderError(error) {
-      if (error) {
-        this.errors = error
-      } else {
-        this.errors = false
-      }
-    },
-    discounts(orderDiscounts) {
-      if (!orderDiscounts.length) {
-        this.errors = 'There is no discount available at this time.'
-      } else {
-        this.errors = false
-      }
-    },
-  },
-
   computed: {
-    ...mapState('discount', [
-      'errorCode',
-      'appliedItemDiscounts',
-      'orderError',
-    ]),
+    ...mapState('discount', ['orderError', 'appliedItemDiscounts']),
     ...mapState('order', ['items']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', {

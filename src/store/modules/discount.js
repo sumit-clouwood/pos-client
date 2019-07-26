@@ -1,10 +1,8 @@
 import * as mutation from './discount/mutation-types'
 import DiscountService from '@/services/data/DiscountService'
 import Num from '@/plugins/helpers/Num.js'
-
+import * as CONST from '@/constants'
 //const DISCOUNT_ITEM_ERROR = "Item discount can't be applied."
-const DISCOUNT_ITEM_ERROR_FREE = 'Item discount not available for free items.'
-const DISCOUNT_ITEM_ERROR_GREATER = "Discount can't be greater than item price."
 
 // initial state
 const state = {
@@ -101,7 +99,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       //add extra layer of validation which is handled on component level though
       if (state.appliedOrderDiscount) {
-        reject('Please remove order discount to apply item discount.')
+        commit(mutation.SET_ITEM_ERROR, CONST.DISCOUNT_ITEM_ERROR_ORDER)
+        reject(CONST.DISCOUNT_ITEM_ERROR_ORDER)
       } else {
         commit(mutation.CLEAR_ORDER_DISCOUNT)
         if (state.currentActiveItemDiscount) {
@@ -120,14 +119,19 @@ const actions = {
         }
         //remove discounts if there was previously applied but now unset
         dispatch('order/recalculateItemPrices', {}, { root: true })
-          .then(() => resolve())
+          .then(() => {
+            resolve()
+          })
           .catch(errors => {
             for (let itemId in errors) {
               const item = errors[itemId]
               if (item.undiscountedNetPrice <= 0) {
-                commit(mutation.SET_ITEM_ERROR, DISCOUNT_ITEM_ERROR_FREE)
+                commit(mutation.SET_ITEM_ERROR, CONST.DISCOUNT_ITEM_ERROR_FREE)
               } else {
-                commit(mutation.SET_ITEM_ERROR, DISCOUNT_ITEM_ERROR_GREATER)
+                commit(
+                  mutation.SET_ITEM_ERROR,
+                  CONST.DISCOUNT_ITEM_ERROR_GREATER
+                )
               }
             }
             commit(mutation.SET_ERROR_CODE, 7)
@@ -149,13 +153,14 @@ const actions = {
     return new Promise((resolve, reject) => {
       //add extra layer of validation which is handled on component level though
       if (rootState.order.items.length < 1) {
-        reject(
-          'Please add some item(s) to cart before applying order discount.'
-        )
+        reject(CONST.DISCOUNT_ORDER_ERROR_ITEM)
+        commit(mutation.SET_ORDER_ERROR, CONST.DISCOUNT_ORDER_ERROR_ITEM)
       } else if (state.appliedItemDiscounts.length) {
         //item level discount already applied reject it
-        reject(
-          'Please remove item level discount(s) first to apply order discount.'
+        reject(CONST.DISCOUNT_ORDER_ERROR_ITEM_DISCOUNT)
+        commit(
+          mutation.SET_ORDER_ERROR,
+          CONST.DISCOUNT_ORDER_ERROR_ITEM_DISCOUNT
         )
       } else {
         commit(mutation.CLEAR_ITEM_DISCOUNT)

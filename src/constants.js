@@ -58,3 +58,14 @@ export const VALUE = 'value'
 
 export const LOADING_STATUS_LOADING = 'LOADING...'
 export const LOADING_STATUS_DONE = 'DONE'
+
+export const DISCOUNT_ITEM_ERROR_GREATER =
+  "Discount can't be greater than item price."
+export const DISCOUNT_ITEM_ERROR_FREE =
+  'Item discount not available for free items.'
+export const DISCOUNT_ITEM_ERROR_ORDER =
+  'Please remove order discount to apply item discount.'
+export const DISCOUNT_ORDER_ERROR_ITEM =
+  'Please add some item(s) to cart before applying order discount.'
+export const DISCOUNT_ORDER_ERROR_ITEM_DISCOUNT =
+  'Please remove item level discount(s) first to apply order discount.'
