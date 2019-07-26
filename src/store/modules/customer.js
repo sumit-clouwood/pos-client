@@ -99,6 +99,7 @@ const actions = {
     dispatch('setDefaultSettingsGlobalAddUpdate', ...params)
   },
   fetchAll({ commit, rootState, dispatch, state }) {
+    commit(mutation.SET_LOADING, true)
     return new Promise((resolve, reject) => {
       const params = [
         rootState.context.storeId,
@@ -122,9 +123,9 @@ const actions = {
           } else {
             reject(response.data.data)
           }
+          commit(mutation.SET_LOADING, false)
         })
         .catch(error => reject(error))
-
       //fetch customer deliver areas
       resolve()
       dispatch('fetchDeliveryArea', '')
