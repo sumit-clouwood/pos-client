@@ -150,6 +150,8 @@ const actions = {
 
   applyOrderDiscount({ commit, state, rootState, dispatch }) {
     commit('checkoutForm/RESET', 'process', { root: true })
+    commit(mutation.SET_ORDER_ERROR, false)
+
     return new Promise((resolve, reject) => {
       //add extra layer of validation which is handled on component level though
       if (rootState.order.items.length < 1) {

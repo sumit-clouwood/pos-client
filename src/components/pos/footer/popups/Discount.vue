@@ -14,10 +14,7 @@
           <div
             class="error mx-auto"
             v-if="
-              orderError ||
-                appliedItemDiscounts.length ||
-                !items.length ||
-                !discounts.length
+              appliedItemDiscounts.length || !items.length || !discounts.length
             "
           >
             <p class="text-danger text-center">
@@ -30,10 +27,8 @@
               <span v-else-if="appliedItemDiscounts.length">
                 {{ _t(CONST.DISCOUNT_ORDER_ERROR_ITEM_DISCOUNT) }}
               </span>
-              <span v-else>{{ _t(orderError) }}</span>
             </p>
           </div>
-
           <div v-else class="dining-option-block select-discount-option">
             <div
               class="option-contain"
@@ -55,13 +50,28 @@
               <span class="more color-text">{{ dt(discount) }}</span>
             </div>
           </div>
+          <div
+            class="error mx-auto"
+            v-if="
+              orderError &&
+                !(
+                  appliedItemDiscounts.length ||
+                  !items.length ||
+                  !discounts.length
+                )
+            "
+          >
+            <p>&nbsp;</p>
+            <p class="text-danger text-center">
+              <span>{{ _t(orderError) }}</span>
+            </p>
+          </div>
         </div>
         <div class="modal-footer">
           <div class="btn-announce">
             <button
               v-if="
-                orderError ||
-                  appliedItemDiscounts.length ||
+                appliedItemDiscounts.length ||
                   !items.length ||
                   !discounts.length
               "
@@ -71,6 +81,7 @@
             >
               {{ _t('Close') }}
             </button>
+
             <button
               v-else
               class="btn btn-success btn-large color-main color-text-invert"
