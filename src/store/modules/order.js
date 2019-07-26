@@ -718,8 +718,6 @@ const actions = {
           }
 
           if (discount.discount.type === CONST.VALUE) {
-            // NOTE: IF items are 2, per item discount should total discount / 2
-
             if (discount.discount.value > item.netPrice * item.quantity) {
               //discount error
               discountErrors[item.orderIndex] = item
@@ -727,11 +725,9 @@ const actions = {
               item.discountRate = 0
             } else {
               //discount should be applied after tax price
-              //discount should be applied only on line item
-
               item.discountRate =
-                (discount.discount.value / item.grossPrice) * 100
-
+                (discount.discount.value / (item.grossPrice * item.quantity)) *
+                100
               //now we got discount rate in percent, we can apply it on net price and tax
             }
           } else {
