@@ -5,7 +5,10 @@
     role="tabpanel"
     aria-labelledby="nav-payments-tab"
   >
-    <table class="table-responsive" v-if="orderDetails.order_payments.length">
+    <table
+      class="table-responsive"
+      v-if="orderDetails && orderDetails.order_payments.length"
+    >
       <tr class="receipt-body color-secondary color-text-invert">
         <th class="receipt-heading">{{ _t('Payment Method') }}</th>
         <th class="receipt-heading">{{ _t('Collected') }}</th>
