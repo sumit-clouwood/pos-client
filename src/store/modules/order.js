@@ -699,6 +699,7 @@ const actions = {
   },
 
   recalculateItemPrices({ commit, rootState, dispatch }) {
+    commit('discount/SET_ORDER_ERROR', false, { root: true })
     return new Promise((resolve, reject) => {
       let discountErrors = {}
 
