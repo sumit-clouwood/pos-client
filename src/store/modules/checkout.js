@@ -442,11 +442,18 @@ const actions = {
     )
     return new Promise((resolve, reject) => {
       let response = null
+
+      //set order id to be used for invoicing
+      let orderId = null
+
       //order.order is a hold order, state.order contains current order
       if (
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
       ) {
+        //set order id for modify orders or delivery order
+        orderId = rootState.order.orderId
+
         let order = { ...state.order }
         order.new_real_transition_order_no = ''
         delete order.real_created_datetime
@@ -458,7 +465,7 @@ const actions = {
             modifyType = 'hold'
             break
           case CONSTANTS.ORDER_STATUS_IN_DELIVERY:
-            order.modify_reason = 'Item changed'
+            order.modify_reason = 'Updated from POS'
             break
         }
 
@@ -477,15 +484,18 @@ const actions = {
       response
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
-
           if (response.data.status === 'ok') {
+            if (typeof response.data.id !== 'undefined') {
+              //this is walk in order
+              orderId = response.data.id
+            }
             //check what is order status, hold or modifying delivery
             switch (rootState.order.orderStatus) {
               case CONSTANTS.ORDER_STATUS_ON_HOLD:
-                commit(mutation.PRINT, true)
                 dispatch('holdOrders/getHoldOrders', {}, { root: true })
                 break
               case CONSTANTS.ORDER_STATUS_IN_DELIVERY:
+                // for walkin order we use ok button to print invoice but in these cases we just print it
                 commit(mutation.PRINT, true)
                 break
             }
@@ -506,8 +516,6 @@ const actions = {
               dispatch('reset')
               return true
             }
-
-            const orderId = response.data.id
 
             if (!rootState.order.orderId) {
               commit('order/SET_ORDER_ID', orderId, { root: true })
