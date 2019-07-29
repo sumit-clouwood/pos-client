@@ -447,25 +447,28 @@ const actions = {
       let orderId = null
       let invoiceAutoPrint = false
 
+      //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
+      //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
+      //                already but we want to modify it from delivery manager
+
       //order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER means its a new delivery order
       // we send user directly to delivery manager after printing invoice so we auto print inoivce
       // without waiting for a button to be clicked
 
-      if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER) {
+      if (
+        rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER ||
+        rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
+      ) {
         invoiceAutoPrint = true
       }
 
       //order.order is a hold order, state.order contains current order
-      //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
-      //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
-      //                already but we want to modify it from delivery manager
       if (
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
       ) {
         //set order id for modify orders or delivery order
         orderId = rootState.order.orderId
-        invoiceAutoPrint = true
         let order = { ...state.order }
         order.new_real_transition_order_no = ''
         delete order.real_created_datetime
