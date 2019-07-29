@@ -445,15 +445,27 @@ const actions = {
 
       //set order id to be used for invoicing
       let orderId = null
+      let invoiceAutoPrint = false
+
+      //order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER means its a new delivery order
+      // we send user directly to delivery manager after printing invoice so we auto print inoivce
+      // without waiting for a button to be clicked
+
+      if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER) {
+        invoiceAutoPrint = true
+      }
 
       //order.order is a hold order, state.order contains current order
+      //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
+      //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
+      //                already but we want to modify it from delivery manager
       if (
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
       ) {
         //set order id for modify orders or delivery order
         orderId = rootState.order.orderId
-
+        invoiceAutoPrint = true
         let order = { ...state.order }
         order.new_real_transition_order_no = ''
         delete order.real_created_datetime
@@ -494,10 +506,6 @@ const actions = {
               case CONSTANTS.ORDER_STATUS_ON_HOLD:
                 dispatch('holdOrders/getHoldOrders', {}, { root: true })
                 break
-              case CONSTANTS.ORDER_STATUS_IN_DELIVERY:
-                // for walkin order we use ok button to print invoice but in these cases we just print it
-                commit(mutation.PRINT, true)
-                break
             }
 
             //check action, either wants to modify or hold
@@ -521,8 +529,8 @@ const actions = {
               commit('order/SET_ORDER_ID', orderId, { root: true })
             }
 
-            //else
             let msgStr = rootGetters['location/_t']('Order placed Successfully')
+
             commit(
               'checkoutForm/SET_MSG',
               { result: 'success', message: msgStr },
@@ -548,10 +556,7 @@ const actions = {
                 }
               ).then(() => {
                 //invoice print is triggered by the success ok button
-                if (
-                  rootState.order.orderType.OTApi ==
-                  CONSTANTS.ORDER_TYPE_CALL_CENTER
-                ) {
+                if (invoiceAutoPrint) {
                   commit(mutation.PRINT, true)
                 }
               })
