@@ -213,12 +213,12 @@ const getters = {
   },
 
   itemGrossPrice: (state, getters) => item => {
-    const itemPrice = item.grossPrice
+    const itemPrice = item.netPrice
     //gross price is inclusive of tax but modifier price is not including tax
     const modifiersPrice = getters.itemModifiersPrice(item)
     //add modifier tax to modifier price to make it gross price
     const modifiersTax = getters.itemModifiersTax(item)
-    return itemPrice + modifiersPrice + modifiersTax
+    return itemPrice + item.tax + modifiersPrice + modifiersTax
   },
 
   orderModifiers: () => item => {
@@ -509,30 +509,24 @@ const actions = {
     }
   },
 
-  removeTax({ commit, state, rootState, dispatch }) {
+  removeTax({ commit, state, dispatch }) {
     let item = { ...state.item }
-    if (!item.originalTax) {
-      item.originalTax = item.tax_sum
+
+    item.tax = 0
+
+    if (item.modifiersData && item.modifiersData.length) {
+      item.modifiersData = item.modifiersData.map(modifier => {
+        modifier.tax = 0
+        return modifier
+      })
     }
-    item.tax_sum = 0
     //replace item in cart
     commit(mutation.REPLACE_ORDER_ITEM, {
       item: item,
     })
-    dispatch('surcharge/calculate', {}, { root: true }).then(() =>
-      dispatch('recalculateItemPrices').then(() => {})
-    )
 
-    //remove tax from modifier items
-    item = { ...rootState.modifier.item }
-    if (!item.originalTax) {
-      item.originalTax = item.tax_sum
-    }
-    item.tax_sum = 0
-    //replace item in cart
-    commit('modifier/SET_ITEM', item, {
-      root: true,
-    })
+    //going to remove it sooner, used only for discount and surcharge calculation, plan to move it to getters
+    dispatch('recalculateItemPrices').then(() => {})
   },
   //index is the new index of an item in cart, if there were 3 items and 1 removed index ll be 0,1
   setActiveItem({ commit, dispatch }, { orderItem }) {
