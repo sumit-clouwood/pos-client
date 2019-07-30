@@ -559,9 +559,7 @@ const actions = {
                 }
               ).then(() => {
                 //invoice print is triggered by the success ok button
-                if (invoiceAutoPrint) {
-                  commit(mutation.PRINT, true)
-                }
+                commit(mutation.PRINT, true)
               })
             })
 
