@@ -84,7 +84,8 @@ export default {
   },
 }
 </script>
-<style lang="sass" scoped>
-.invoice
-  display:none
+<style scoped>
+.invoice {
+  display: none;
+}
 </style>
