@@ -22,5 +22,5 @@ export default {
 
 <style lang="css">
 /*@import '../../src/assets/css/style.css?var=1.0.0';*/
-@import '../../src/assets/css/delivery-manager/delivery_manager.css?var=1.0.0';
+/*@import '../../src/assets/css/delivery-manager/delivery_manager.css?var=1.0.0';*/
 </style>

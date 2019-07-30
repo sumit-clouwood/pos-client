@@ -118,6 +118,9 @@ export default {
 
       .main-oreders-title {
         font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
 
       .main-oreders-date {

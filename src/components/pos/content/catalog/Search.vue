@@ -119,7 +119,7 @@ export default {
     margin-top: 0;
     border-radius: 0;
     border: none;
-    grid-template-columns: 65px 1fr 1fr;
+    grid-template-columns: 65px 1fr;
     align-items: stretch;
     height: 100%;
 
@@ -136,6 +136,7 @@ export default {
       position: relative;
       display: grid;
       grid-template-columns: 1fr 1fr;
+      height: 100%;
 
       &.active {
         display: grid;

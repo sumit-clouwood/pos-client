@@ -161,6 +161,6 @@ if ('serviceWorker' in navigator && 'SyncManager' in window) {
   })
 }
 </script>
-<style lang="css">
+<style lang="scss">
 @import './assets/scss/style.scss';
 </style>

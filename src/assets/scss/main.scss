@@ -194,6 +194,11 @@
         }
 
         .food-menu {
+          display: flex;
+          flex-wrap: wrap;
+          align-content: flex-start;
+          height: 60vh;
+          overflow: auto;
 
           .food-menu-wrapper {
             overflow: auto;
@@ -293,8 +298,8 @@
 
           .food-menu-item {
             cursor: pointer;
-            width: $food-menu-item-width;
-            height: $food-menu-item-height;
+            width: 10vmax;
+            height: 10vmax;
             border: 1px solid $gray-middle;
             border-radius: $card-border-radius;
             justify-self: center;
