@@ -1003,9 +1003,12 @@ const mutations = {
 
   [mutation.INCREMENT_ORDER_ITEM_QUANTITY](state, index) {
     //need to use array splice to make it reactive
-    let orderItem = state.items[index]
-    orderItem.quantity++
-    state.items.splice(index, 1, orderItem)
+    state.items = state.items.map(item => {
+      if (item.orderIndex == index) {
+        item.quantity++
+      }
+      return item
+    })
   },
 
   [mutation.REMOVE_ORDER_ITEM](state, index) {
@@ -1015,7 +1018,12 @@ const mutations = {
   },
 
   [mutation.REPLACE_ORDER_ITEM](state, { item }) {
-    state.items.splice(item.orderIndex, 1, item)
+    state.items = state.items.map(stateItem => {
+      if (stateItem.orderIndex == item.orderIndex) {
+        return item
+      }
+      return stateItem
+    })
   },
 
   [mutation.ADD_MODIFIERS_TO_ITEM](state, { modifiers, modifierGroups }) {
@@ -1041,9 +1049,12 @@ const mutations = {
 
   [mutation.UPDATE_ITEM_QUANTITY](state, quantity) {
     const index = state.item.orderIndex
-    let orderItem = state.items[index]
-    orderItem.quantity = typeof quantity != 'undefined' ? quantity : 1
-    state.items.splice(index, 1, orderItem)
+    state.items = state.items.map(item => {
+      if (item.orderIndex == index) {
+        item.quantity = typeof quantity != 'undefined' ? quantity : 1
+      }
+      return item
+    })
   },
 
   [mutation.RESET](state) {
