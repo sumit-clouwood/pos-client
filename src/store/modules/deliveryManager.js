@@ -153,7 +153,6 @@ const actions = {
       state.params.pageId,
       'delivery_home'
     )
-    console.log('inside edge + 1')
     if (checkAPIPermission) {
       DMService.getDMOrderDetails(...params)
         .then(response => {
@@ -164,7 +163,6 @@ const actions = {
           dispatch('getDrivers')
         })
         .catch(() => {
-          console.log('inside edge')
           commit(mutation.SET_LOADING, false)
         })
     } else {
@@ -173,7 +171,6 @@ const actions = {
   },
   getDrivers({ commit, rootGetters }) {
     let role = rootGetters['auth/getRole']('delivery_home')
-    console.log(role)
     if (role) {
       DMService.getUsers(role._id).then(response => {
         console.log(response.data.data)
