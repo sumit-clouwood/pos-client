@@ -560,9 +560,7 @@ const actions = {
               ).then(() => {
                 //invoice print is triggered by the success ok button
                 if (invoiceAutoPrint) {
-                  setTimeout(() => {
-                    commit(mutation.PRINT, true)
-                  }, 500)
+                  commit(mutation.PRINT, true)
                 }
               })
             })
