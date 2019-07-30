@@ -37,19 +37,28 @@ a.da-link {
   }
 }
 
-body#page-top.dm-manager {
-  background: $white !important;
-  border: medium none !important;
-  overflow: hidden !important;
+body#page-top{
+  &.dm-manager {
+    background: $white !important;
+    border: medium none !important;
+    overflow: hidden !important;
+  }
 }
 
-div#dm-content-wrapper .inner-content-dm {
-  width: 100%;
-  max-width: 100%;
-  display: grid;
-  height: 100%;
-  grid-template-rows: -webkit-min-content;
-  grid-template-rows: min-content;
+div#dm-content-wrapper {
+  -webkit-transition: .3s ease-out;
+  transition: .3s ease-out;
+  &.collapse-container{
+    margin-left: $px125;
+  }
+  .inner-content-dm {
+    width: 100%;
+    max-width: 100%;
+    display: grid;
+    height: 100%;
+    grid-template-rows: -webkit-min-content;
+    grid-template-rows: min-content;
+  }
 }
 
 .dm-btn-wrap {
@@ -553,10 +562,16 @@ button.v-btn.v-btn--icon.theme--light {
   grid-template-columns: 3fr 1fr;
 }
 
-.change-location > button {
-  margin-right: $px5;
-  > a {
-    color: #fff;
+.change-location {
+  display: flex;
+  justify-content: flex-end;
+
+  > button {
+    margin-right: $px5;
+
+    > a {
+      color: #fff;
+    }
   }
 }
 
@@ -1017,6 +1032,11 @@ input[type="password"] {
     overflow: hidden;
     background-color: #fff;
     padding: $px10 $px20 $px15 $px35;
+    -webkit-transition: .3s ease-out;
+    transition: .3s ease-out;
+    &.collapse-container {
+      margin-left:$px125;
+    }
 }
 
 ul.ullist-breadcrump > li {
@@ -1326,7 +1346,7 @@ tr.dataContentStyle{
       grid-template-columns: 1fr;
       height: 100vh;
       grid-template-rows: 5fr 1fr $px92 $px36;
-      padding-top: 20px;
+      padding-top: $px20;
       .logo{
         display: none;
       }
@@ -1424,7 +1444,7 @@ tr.dataContentStyle{
   .pagination-customer-details{
     position:relative;
     z-index:99;
-    padding: 4px 74px;
+    padding: $px4 $px74;
     -webkit-box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
     box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
     > ul{

@@ -46,6 +46,7 @@
                   name="payment"
                   v-model.number="payableAmount"
                   id="input"
+                  @keypress="filterInput"
                   autocomplete="off"
                   @click="showCalculator()"
                   :placeholder="formatPrice(0.0)"
@@ -116,11 +117,21 @@ export default {
         hidePayNow()
       }
     },
+    payableAmount(newVal) {
+      //handle backspace/delete
+      const str = '' + newVal
+      if (!str.match(/\./g)) {
+        this.$store.commit('checkoutForm/SET_DECIMAL', false)
+      }
+    },
+  },
+  data() {
+    return {}
   },
   computed: {
     payableAmount: {
       get() {
-        return this.$store.state.checkoutForm.amount > 0
+        return this.$store.state.checkoutForm.amount
           ? this.$store.state.checkoutForm.amount
           : 0
       },
@@ -145,6 +156,20 @@ export default {
     showCalculator() {
       $('#payment-breakdown').hide()
       this.$store.commit('checkoutForm/showCalc', true)
+    },
+    filterInput($event) {
+      // eslint-disable-next-line no-console
+      const keyCode = $event.keyCode ? $event.keyCode : $event.which
+      if (keyCode === 46) {
+        if (!this.$store.state.checkoutForm.decimalExists) {
+          this.$store.commit('checkoutForm/SET_DECIMAL', true)
+          return true
+        }
+      }
+      if (keyCode < 48 || keyCode > 57) {
+        // 46 is dot
+        $event.preventDefault()
+      }
     },
     payNowCalcHendlerGhange() {
       this.$store.dispatch('payNowCalcHendlerGhange')

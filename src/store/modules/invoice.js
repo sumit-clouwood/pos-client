@@ -51,6 +51,10 @@ const mutations = {
   [mutation.SET_RULES](state, rules) {
     state.rules = rules
   },
+  [mutation.RESET](state) {
+    state.templateHtml = null
+    state.rules = []
+  },
 }
 
 export default {

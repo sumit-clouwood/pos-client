@@ -1,11 +1,24 @@
-/*eslint-disable no-console*/
+/*or example tax for an item is 2.467 
+suppose quantity is 3
+2.467 * 3 = 7.401
+
+but if round it before adding
+2.47 * 3 = 7.41 
+
+It is 7.41 - 7.40 = 0.01
+
+Both have difference of 0.01 that can have a huge impact as we grow in orders 
+
+badr, 12:02 PM
+yes but you should not charge 7.41 
+you should charge 7.40
+
+*/
+/* eslint-disable no-console */
 import * as mutation from './order/mutation-types'
 import OrderService from '../../services/data/OrderService'
 import * as CONST from '@/constants'
 import Num from '@/plugins/helpers/Num.js'
-
-const DISCOUNT_ORDER_ERROR_TOTAL =
-  "Discount can't be greater than total amount of order."
 
 // initial state
 const state = {
@@ -27,39 +40,185 @@ const state = {
 
 // getters
 const getters = {
+  orderIndex: state => {
+    if (!state.items.length) {
+      return 0
+    }
+    const lastItem = state.items[state.items.length - 1]
+    return lastItem.orderIndex + 1
+  },
+
   item: state => state.item,
 
-  netPrice: () => item =>
-    item.value /
-    ((100 + (item.originalTax ? item.originalTax : item.tax_sum)) / 100),
+  netPrice: () => item => {
+    const netPrice = item.grossPrice / ((100 + item.tax_sum) / 100)
+    return Num.round(netPrice)
+  },
 
+  grossPrice: () => item => {
+    if (!item.value) item.value = 0
+    return Num.round(item.value)
+  },
+
+  totalItemsTax: state => {
+    let itemsTax = 0
+    state.items.forEach(item => {
+      itemsTax += Num.round(item.tax) * item.quantity
+    })
+    return itemsTax
+  },
+
+  totalModifiersTax: (state, getters) => {
+    let modifiersTax = 0
+    state.items.forEach(item => {
+      if (item.modifiersData && item.modifiersData.length) {
+        modifiersTax += getters.itemModifiersTax(item) * item.quantity
+      }
+    })
+    return modifiersTax
+  },
+
+  totalItemTaxDiscount: (state, getters) => {
+    let itemTaxDiscount = 0
+    state.items.forEach(item => {
+      itemTaxDiscount += Num.round(
+        getters.itemTaxDiscount(item) * item.quantity
+      )
+    })
+    return itemTaxDiscount
+  },
+
+  totalModifierTaxDiscount: (state, getters) => {
+    let modifiersTaxDiscount = 0
+    state.items.forEach(item => {
+      modifiersTaxDiscount += Num.round(
+        getters.itemModifierTaxDiscount(item) * item.quantity
+      )
+    })
+    return modifiersTaxDiscount
+  },
+
+  totalTax: (state, getters, rootState, rootGetters) => {
+    const totalTax = getters.totalTaxWithoutOrderDiscount
+    const orderTaxDiscount = rootGetters['discount/taxDiscountAmount']
+
+    return Num.round(totalTax - orderTaxDiscount)
+  },
+  totalTaxWithoutOrderDiscount: (state, getters, rootState, rootGetters) => {
+    const itemsTax = Num.round(getters.totalItemsTax)
+    const modifiersTax = Num.round(getters.totalModifiersTax)
+    const itemTaxDiscount = Num.round(getters.totalItemTaxDiscount)
+    const modifiersTaxDiscount = Num.round(getters.totalModifierTaxDiscount)
+
+    const surchargeTax = rootGetters['surcharge/totalTax']
+
+    return Num.round(
+      itemsTax -
+        itemTaxDiscount +
+        modifiersTax -
+        modifiersTaxDiscount +
+        surchargeTax
+    )
+  },
   orderTotal: (state, getters, rootState, rootGetters) => {
-    //discount is already subtracted from tax in tax.js
     let amount =
-      Num.round(getters.subTotal) +
-      Num.round(rootGetters['tax/totalTax']) +
-      Num.round(rootGetters['surcharge/surcharge']) -
-      Num.round(rootGetters['discount/orderDiscountWithoutTax'])
+      getters.subTotal +
+      getters.totalTax +
+      rootGetters['surcharge/surcharge'] -
+      rootGetters['discount/orderDiscountWithoutTax']
+
     if (amount) {
       return amount.toFixed(2)
     }
     return 0
   },
 
-  subTotal: () => {
-    return state.items.reduce((total, item) => {
-      return total + Num.round(item.netPrice) * item.quantity
-    }, 0)
+  itemModifiersPrice: () => item =>
+    item.modifiersData && item.modifiersData.length
+      ? item.modifiersData.reduce(
+          (price, modifier) => price + modifier.price,
+          0
+        )
+      : 0,
+
+  itemModifiersTax: () => item =>
+    item.modifiersData && item.modifiersData.length
+      ? item.modifiersData.reduce((tax, modifier) => tax + modifier.tax, 0)
+      : 0,
+
+  subTotal: (state, getters) => {
+    let subTotal = 0
+    state.items.forEach(item => {
+      const itemPrice = Num.round(item.netPrice) * item.quantity
+      const modifiersPrice = getters.itemModifiersPrice(item) * item.quantity
+      const itemDiscount = getters.itemNetDiscount(item) * item.quantity
+      const modifiersDiscount =
+        getters.itemModifierDiscount(item) * item.quantity
+      subTotal += itemPrice + modifiersPrice - itemDiscount - modifiersDiscount
+    })
+
+    return Num.round(subTotal)
   },
 
-  subTotalUndiscounted: () => {
-    return state.items.reduce((total, item) => {
-      return total + Num.round(item.undiscountedNetPrice) * item.quantity
-    }, 0)
+  itemGrossDiscount: (state, getters) => item => {
+    if (item.discountRate) {
+      return (
+        Num.round((item.grossPrice * item.discountRate) / 100) +
+        getters.itemModifierDiscount(item) +
+        getters.itemModifierTaxDiscount(item)
+      )
+    } else {
+      return 0
+    }
   },
 
-  itemPrice: () => item => {
-    return item.quantity * Num.round(item.grossPrice)
+  itemNetDiscount: () => item => {
+    if (item.discountRate) {
+      return Num.round((item.netPrice * item.discountRate) / 100)
+    } else {
+      return 0
+    }
+  },
+
+  itemTaxDiscount: () => item => {
+    if (item.discountRate) {
+      return Num.round((item.tax * item.discountRate) / 100)
+    }
+    return 0
+  },
+
+  itemModifierDiscount: () => item => {
+    if (item.discountRate && item.modifiersData && item.modifiersData.length) {
+      return item.modifiersData.reduce((discount, modifier) => {
+        return discount + Num.round((modifier.price * item.discountRate) / 100)
+      }, 0)
+    }
+    return 0
+  },
+
+  itemModifierTaxDiscount: () => item => {
+    if (item.discountRate && item.modifiersData && item.modifiersData.length) {
+      return item.modifiersData.reduce((discount, modifier) => {
+        return discount + Num.round((modifier.tax * item.discountRate) / 100)
+      }, 0)
+    }
+    return 0
+  },
+
+  //ll be called as many times there is a commit on item
+  itemGrossPriceDiscounted: (state, getters) => item => {
+    const itemGrossPrice = getters.itemGrossPrice(item)
+    const itemDiscount = getters.itemGrossDiscount(item)
+    return itemGrossPrice * item.quantity - itemDiscount * item.quantity
+  },
+
+  itemGrossPrice: (state, getters) => item => {
+    const itemPrice = item.netPrice
+    //gross price is inclusive of tax but modifier price is not including tax
+    const modifiersPrice = getters.itemModifiersPrice(item)
+    //add modifier tax to modifier price to make it gross price
+    const modifiersTax = getters.itemModifiersTax(item)
+    return itemPrice + item.tax + modifiersPrice + modifiersTax
   },
 
   orderModifiers: () => item => {
@@ -88,23 +247,23 @@ const getters = {
 
 // actions
 const actions = {
-  addToOrder({ state, getters, commit, dispatch }, item) {
+  addToOrder({ state, getters, commit, dispatch }, stateItem) {
     commit('checkoutForm/RESET', 'process', { root: true })
-    //set item price based on location, for modifiers items it is already set in modifer store
-    // price means gross price here (including tax)
+    let item = { ...stateItem }
+    //item gross price is inclusive of tax
+    item.grossPrice = getters.grossPrice(item)
+    //net price is exclusive of tax, getter ll send unrounded price that is real one
+    item.netPrice = getters.netPrice(item)
 
-    //replace vlaue with price, as all code is based on price
-    //item.value is gross price which is inclusive of taxes
+    //calculated item tax
+    item.tax = Num.round(item.grossPrice - item.netPrice)
 
-    //item price is exclusive of taxes, before tax
-    item.grossPrice = Num.round(item.value)
-    item.netPrice = Num.round(getters.netPrice(item))
+    if (typeof item.orderIndex === 'undefined') {
+      item.orderIndex = getters.orderIndex
+    }
 
     //this comes directly from the items menu without modifiers
     item.modifiable = false
-
-    item.undiscountedGrossPrice = item.grossPrice
-    item.undiscountedNetPrice = item.netPrice
 
     if (typeof item.quantity === 'undefined') {
       item.quantity = 1
@@ -112,64 +271,9 @@ const actions = {
 
     commit(mutation.SET_ITEM, item)
 
-    /* const index = state.items.findIndex(
-      orderItem => orderItem._id === state.item._id
-    )
-    if (index > -1) {
-      commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, index)
-    } else {
-      commit(mutation.ADD_ORDER_ITEM, state.item)
-    } */
-
     commit(mutation.ADD_ORDER_ITEM, state.item)
 
     dispatch('surchargeCalculation')
-  },
-
-  removeFromOrder({ commit, dispatch }, { item, index }) {
-    commit('checkoutForm/RESET', 'process', { root: true })
-    commit(mutation.SET_ITEM, item)
-    commit(mutation.REMOVE_ORDER_ITEM, index)
-    if (state.items.length) {
-      commit(mutation.SET_ITEM, state.items[0])
-    } else {
-      commit(mutation.SET_ITEM, false)
-    }
-
-    if (state.items.length) {
-      dispatch('surchargeCalculation')
-    } else {
-      //cart is empty remove the discounts
-      dispatch('checkout/reset', null, { root: true })
-    }
-  },
-
-  removeTax({ commit, state, rootState, dispatch }) {
-    let item = { ...state.item }
-    if (!item.originalTax) {
-      item.originalTax = item.tax_sum
-    }
-    item.tax_sum = 0
-    //replace item in cart
-    commit(mutation.REPLACE_ORDER_ITEM, {
-      item: item,
-    })
-    dispatch('surcharge/calculate', {}, { root: true }).then(() =>
-      dispatch('tax/calculate', {}, { root: true }).then(() =>
-        dispatch('recalculateItemPrices').then(() => {})
-      )
-    )
-
-    //remove tax from modifier items
-    item = { ...rootState.modifier.item }
-    if (!item.originalTax) {
-      item.originalTax = item.tax_sum
-    }
-    item.tax_sum = 0
-    //replace item in cart
-    commit('modifier/SET_ITEM', item, {
-      root: true,
-    })
   },
 
   //this function re-adds an item to order if item is in edit mode, it just replaces exiting item in cart
@@ -178,14 +282,25 @@ const actions = {
     item
   ) {
     commit('checkoutForm/RESET', 'process', { root: true })
+
     return new Promise((resolve, reject) => {
       if (!item) {
         item = { ...rootState.modifier.item }
       }
       //this comes through the modifier popup
+      item.grossPrice = getters.grossPrice(item)
+      //getter will send un rounded value
+      item.netPrice = getters.netPrice(item)
 
-      item.grossPrice = Num.round(item.value)
-      item.netPrice = Num.round(getters.netPrice(item))
+      //calculated item tax, it ll be always calculated on discounted net price
+      item.tax = Num.round(item.grossPrice - item.netPrice)
+
+      //if there is item modifiers data assign it later
+      item.modifiersData = []
+
+      if (typeof item.orderIndex === 'undefined') {
+        item.orderIndex = getters.orderIndex
+      }
 
       item.modifiable = true
 
@@ -196,7 +311,9 @@ const actions = {
 
       //adding modifers to item
       if (item.modifiers && !item.editMode) {
-        //this order came from old holders
+        /* ***********************************************/
+        /*  ORDER COMING FROM HOLD ORDER                 */
+        /* ***********************************************/
         const itemModifiersArray = rootGetters['modifier/itemModifiers'](
           item._id
         )
@@ -222,7 +339,9 @@ const actions = {
         }
         //avoid cacthcing again in edit mode
       } else {
-        //new order, user selection
+        /* ***********************************************/
+        /*        New ORDER COMING CATALOG               */
+        /* ***********************************************/
 
         const modifiers = rootGetters['orderForm/modifiers'].filter(
           modifier => modifier.itemId == item._id
@@ -287,49 +406,31 @@ const actions = {
       })
 
       //calculating item price based on modifiers selected
-      let modifierPrice = 0
       //since we have just ids attached to item,
       //we need to consult modifier store for modifier data ie price
 
       const modifierSubgroups = rootGetters['modifier/itemModifiers'](item._id)
-      let modifierTaxData = []
+      let modifierData = []
       modifierSubgroups.forEach(subgroup => {
         subgroup.modifiers.forEach(modifier => {
           if (item.modifiers.includes(modifier._id)) {
-            modifierTaxData.push({
-              itemId: item._id,
+            const modifierPrice = modifier.value
+              ? parseFloat(modifier.value)
+              : 0
+            const tax = Num.round((modifierPrice * item.tax_sum) / 100)
+
+            modifierData.push({
               modifierId: modifier._id,
-              price: modifier.value ? modifier.value : 0,
-              tax: modifier.value ? (modifier.value * item.tax_sum) / 100 : 0,
+              price: modifierPrice,
+              tax: tax,
+              name: modifier.name,
+              type: subgroup.item_type,
             })
           }
         })
       })
 
-      dispatch(
-        'tax/setModifierTaxData',
-        { itemId: item._id, modifiersTaxData: modifierTaxData },
-        { root: true }
-      )
-
-      modifierPrice = modifierTaxData.reduce((total, modifier) => {
-        return total + modifier.price
-      }, 0)
-      //modifier price is without tax price, we need to implement tax on that
-      //get item tax and implement that on modifier price
-      const modifiersTax = (modifierPrice * item.tax_sum) / 100
-      //calculate net and gross price
-      const itemGrossPrice =
-        item.grossPrice + Num.round(modifierPrice) + Num.round(modifiersTax)
-
-      //item net price (without tax ) + modifier price which is already without tax
-      const itemNetPrice =
-        Num.round(getters.netPrice(item)) + parseFloat(modifierPrice)
-
-      commit(mutation.ADD_MODIFIER_PRICE_TO_ITEM, {
-        grossPrice: itemGrossPrice,
-        netPrice: itemNetPrice,
-      })
+      commit(mutation.ADD_MODIFIERS_DATA_TO_ITEM, modifierData)
 
       if (!item.editMode) {
         //update current item with new modifiers
@@ -387,14 +488,58 @@ const actions = {
     })
   },
 
-  setActiveItem({ commit, dispatch }, { orderItem, index }) {
+  removeFromOrder({ commit, dispatch }, { item, index }) {
+    commit('checkoutForm/RESET', 'process', { root: true })
+    commit(mutation.SET_ITEM, item)
+    commit(mutation.REMOVE_ORDER_ITEM, index)
+    if (state.items.length) {
+      commit(mutation.SET_ITEM, state.items[0])
+    } else {
+      commit(mutation.SET_ITEM, false)
+    }
+
+    //remove discounts for this item from state
+    commit('discount/REMOVE_ITEM_DISCOUNT', item, { root: true })
+
+    if (state.items.length) {
+      dispatch('surchargeCalculation')
+    } else {
+      //cart is empty remove the discounts
+      dispatch('checkout/reset', null, { root: true })
+    }
+  },
+
+  removeTax({ commit, state, dispatch }) {
+    let item = { ...state.item }
+
+    item.tax = 0
+
+    if (item.modifiersData && item.modifiersData.length) {
+      item.modifiersData = item.modifiersData.map(modifier => {
+        modifier.tax = 0
+        return modifier
+      })
+    }
+    //replace item in cart
+    commit(mutation.REPLACE_ORDER_ITEM, {
+      item: item,
+    })
+
+    //going to remove it sooner, used only for discount and surcharge calculation, plan to move it to getters
+    dispatch('recalculateItemPrices').then(() => {})
+  },
+  //index is the new index of an item in cart, if there were 3 items and 1 removed index ll be 0,1
+  setActiveItem({ commit, dispatch }, { orderItem }) {
     //get current item
     //this is fired by the items.vue
-    let item = { ...state.items[index] }
+    let stateItem = state.items.find(
+      item => item.orderIndex == orderItem.orderIndex
+    )
+    let item = { ...stateItem }
+
     item.editMode = true
     item.quantity = orderItem.quantity
     item.netPrice = orderItem.netPrice
-    item.orderIndex = index
     commit(mutation.SET_ITEM, item)
 
     // if (item.modifiable) {
@@ -409,7 +554,13 @@ const actions = {
     )
     // }
   },
-  recalculateOrderTotals({ rootState, getters, rootGetters, dispatch }) {
+  recalculateOrderTotals({
+    rootState,
+    getters,
+    commit,
+    rootGetters,
+    dispatch,
+  }) {
     return new Promise((resolve, reject) => {
       const orderDiscount = rootState.discount.appliedOrderDiscount
       //let totalDiscount = 0
@@ -418,24 +569,36 @@ const actions = {
         let taxTotalDiscount = 0
         let surchargeTotalDiscount = 0
 
+        const subtotal = getters.subTotal
+        let totalTax = 0
+
         if (orderDiscount.include_surcharge) {
           //apply ontotal discount, apply on surcharge and its tax as well
-          const subtotal = getters.subTotal
-          const totalTax = rootState.tax.itemsTax + rootState.tax.surchargeTax
+          totalTax = getters.totalTaxWithoutOrderDiscount
+
+          console.log('total tax, ', totalTax)
           const totalSurcharge = rootGetters['surcharge/surcharge']
+          console.log('total surcharge', totalSurcharge)
 
           if (orderDiscount.type === CONST.VALUE) {
-            if (orderDiscount.value > subtotal + totalTax) {
+            if (orderDiscount.value > subtotal) {
               dispatch('discount/clearOrderDiscount', null, { root: true })
-              reject(DISCOUNT_ORDER_ERROR_TOTAL)
+              commit(
+                'discount/SET_ORDER_ERROR',
+                CONST.DISCOUNT_ORDER_ERROR_TOTAL,
+                { root: true }
+              )
+              reject(CONST.DISCOUNT_ORDER_ERROR_TOTAL)
             } else {
               orderTotalDiscount = orderDiscount.value
 
-              const percentDiscountOnOrderTotalIncludingSurcharge =
+              const percentDiscountOnOrderTotalIncludingSurcharge = Num.round(
                 (orderTotalDiscount * 100) / (subtotal + totalSurcharge)
+              )
 
-              taxTotalDiscount =
+              taxTotalDiscount = Num.round(
                 (totalTax * percentDiscountOnOrderTotalIncludingSurcharge) / 100
+              )
               //when calculating percent discount on subtotal we include surcharge as well,
               //so don't need to calculate discount on surcharge again
               surchargeTotalDiscount = 0
@@ -452,16 +615,23 @@ const actions = {
               resolve(discountData)
             }
           } else {
-            orderTotalDiscount = (subtotal * orderDiscount.rate) / 100
-            taxTotalDiscount = (totalTax * orderDiscount.rate) / 100
-            surchargeTotalDiscount = (totalSurcharge * orderDiscount.rate) / 100
+            orderTotalDiscount = Num.round(
+              (subtotal * orderDiscount.rate) / 100
+            )
+            console.log('order total discount', orderTotalDiscount)
+            taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
 
+            console.log('taxTotalDiscount', taxTotalDiscount)
+            surchargeTotalDiscount = Num.round(
+              (totalSurcharge * orderDiscount.rate) / 100
+            )
+            console.log('surchargeTotalDiscount', surchargeTotalDiscount)
             const discountData = {
               orderDiscount: orderTotalDiscount,
               taxDiscount: taxTotalDiscount,
               surchargeDiscount: surchargeTotalDiscount,
             }
-
+            console.log('order discount data', discountData)
             dispatch('discount/setOrderDiscount', discountData, { root: true })
 
             resolve(discountData)
@@ -469,18 +639,25 @@ const actions = {
         } else {
           //without surcharge
           //apply offtotal discount, don't calculate discount on surcharge
-          const subtotal = getters.subTotal
           //we are not including surcharge tax in total tax for discount
-          const totalTax = rootState.tax.itemsTax
+          totalTax = getters.totalTaxWithoutOrderDiscount
           //const totalSurcharge = rootGetters['surcharge/surcharge']
           if (orderDiscount.type === CONST.VALUE) {
-            if (orderDiscount.value > subtotal + totalTax) {
+            if (orderDiscount.value > subtotal) {
               dispatch('discount/clearOrderDiscount', null, { root: true })
-              reject(DISCOUNT_ORDER_ERROR_TOTAL)
+              commit(
+                'discount/SET_ORDER_ERROR',
+                CONST.DISCOUNT_ORDER_ERROR_TOTAL,
+                { root: true }
+              )
+              reject(CONST.DISCOUNT_ORDER_ERROR_TOTAL)
             } else {
-              const percentDiscountOnSubTotal =
+              const percentDiscountOnSubTotal = Num.round(
                 (orderDiscount.value * 100) / subtotal
-              taxTotalDiscount = (totalTax * percentDiscountOnSubTotal) / 100
+              )
+              taxTotalDiscount = Num.round(
+                (totalTax * percentDiscountOnSubTotal) / 100
+              )
               surchargeTotalDiscount = 0
 
               const discountData = {
@@ -494,9 +671,11 @@ const actions = {
               })
             }
           } else {
-            orderTotalDiscount = (subtotal * orderDiscount.rate) / 100
+            orderTotalDiscount = Num.round(
+              (subtotal * orderDiscount.rate) / 100
+            )
             //const subtotalWithDiscount = subtotal - orderTotalDiscount
-            taxTotalDiscount = (totalTax * orderDiscount.rate) / 100
+            taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
             surchargeTotalDiscount = 0
             const discountData = {
               orderDiscount: orderTotalDiscount,
@@ -514,18 +693,18 @@ const actions = {
   },
 
   recalculateItemPrices({ commit, rootState, dispatch }) {
+    commit('discount/SET_ORDER_ERROR', false, { root: true })
     return new Promise((resolve, reject) => {
-      let itemsDiscount = 0
       let discountErrors = {}
 
-      const newItems = state.items.map((stateItem, index) => {
+      const newItems = state.items.map(stateItem => {
         let item = { ...stateItem }
         const discount = rootState.discount.appliedItemDiscounts.find(
-          discount => discount.item.orderIndex == index
+          discount => discount.item.orderIndex == item.orderIndex
         )
 
         if (discount) {
-          let itemDiscountData = {
+          item.discount = {
             id: discount.discount._id,
             name: discount.discount.name,
             type: discount.discount.type,
@@ -534,91 +713,49 @@ const actions = {
           }
 
           if (discount.discount.type === CONST.VALUE) {
-            // NOTE: IF items are 2, per item discount should total discount / 2
-
-            if (
-              discount.discount.value >
-              item.undiscountedNetPrice * item.quantity
-            ) {
+            if (discount.discount.value > item.netPrice * item.quantity) {
               //discount error
+              discountErrors[item.orderIndex] = item
               item.discount = false
-              item.grossPrice = item.undiscountedGrossPrice
-              item.netPrice = item.undiscountedNetPrice
-
-              discountErrors[item._id] = item
+              item.discountRate = 0
             } else {
-              //add discount amount for record to show how much discount in total was applied
-              itemsDiscount += discount.discount.value
-              //apply discount here
-              //decided to apply discount on post tax
-
-              //divide discount on quantity to get discount applied per line item
-              const discountPerItem = discount.discount.value / item.quantity
-
-              //Decided to apply discount on after tax, that means when sending discount info we should send item discount and tax discount separately
-              item.grossPrice = item.undiscountedGrossPrice - discountPerItem
-
-              //calcualte ratio of discount applied and set same ratio for net price
-              const percentDiscountAppliedOnGross =
-                (discountPerItem / item.undiscountedGrossPrice) * 100
-              const netPriceDiscount =
-                (item.undiscountedNetPrice * percentDiscountAppliedOnGross) /
+              //discount should be applied after tax price
+              item.discountRate =
+                (discount.discount.value / (item.grossPrice * item.quantity)) *
                 100
-              item.netPrice = item.undiscountedNetPrice - netPriceDiscount
-              itemDiscountData.discount = netPriceDiscount
+              //now we got discount rate in percent, we can apply it on net price and tax
             }
           } else {
-            if (item.undiscountedNetPrice * item.quantity > 0) {
-              //discount error
-
+            //percentage discount can be applied only non free (> 0 priced) items
+            if (item.netPrice * item.quantity > 0) {
               //percentage based discount, use discount.rate here, not discount.value
-              const itemGrossDiscountAmount =
-                (item.undiscountedGrossPrice * discount.discount.rate) / 100
-
-              item.grossPrice =
-                item.undiscountedGrossPrice - itemGrossDiscountAmount
-
-              //apply discount on net price as well
-              const itemNetDiscountAmount =
-                (item.undiscountedNetPrice * discount.discount.rate) / 100
-
-              item.netPrice = item.undiscountedNetPrice - itemNetDiscountAmount
-
-              itemsDiscount += itemNetDiscountAmount
-              itemDiscountData.discount = itemNetDiscountAmount
+              //apply discount with modifier price
+              item.discountRate = discount.discount.rate
             } else {
+              //discount error
               item.discount = false
-              item.grossPrice = item.undiscountedGrossPrice
-              item.netPrice = item.undiscountedNetPrice
-              discountErrors[item._id] = item
+              discountErrors[item.orderIndex] = item
+              item.discountRate = 0
             }
-          }
-
-          if (
-            Object.entries(discountErrors).length === 0 &&
-            discountErrors.constructor === Object
-          ) {
-            item.discount = itemDiscountData
           }
         } else {
           //remove already applied discount
           item.discount = false
-          item.grossPrice = item.undiscountedGrossPrice
-          item.netPrice = item.undiscountedNetPrice
+          item.discountRate = 0
         }
         return item
       })
-
-      dispatch(
-        'discount/setItemsDiscountAmount',
-        { discountAmount: itemsDiscount },
-        { root: true }
-      )
+      // // eslint-disable-next-line no-console
+      // console.log(itemsDiscount)
+      // dispatch(
+      //   'discount/setItemsDiscountAmount',
+      //   { discountAmount: itemsDiscount },
+      //   { root: true }
+      // )
 
       commit(mutation.RE_SAVE_ITEMS, newItems)
-      dispatch('surcharge/calculate', {}, { root: true }).then(() =>
-        dispatch('tax/calculate', {}, { root: true })
-      )
+      dispatch('surcharge/calculate', {}, { root: true })
+
       if (
         Object.entries(discountErrors).length > 0 &&
         discountErrors.constructor === Object
@@ -638,15 +775,13 @@ const actions = {
   },
 
   surchargeCalculation({ rootState, dispatch }) {
-    dispatch('surcharge/calculate', {}, { root: true }).then(() =>
-      dispatch('tax/calculate', {}, { root: true }).then(() => {
-        if (rootState.discount.appliedOrderDiscount) {
-          dispatch('recalculateOrderTotals')
-        } else {
-          dispatch('recalculateItemPrices')
-        }
-      })
-    )
+    dispatch('surcharge/calculate', {}, { root: true }).then(() => {
+      if (rootState.discount.appliedOrderDiscount) {
+        dispatch('recalculateOrderTotals')
+      } else {
+        dispatch('recalculateItemPrices')
+      }
+    })
   },
 
   reset({ commit }) {
@@ -888,11 +1023,8 @@ const mutations = {
     state.item.modifierGroups = modifierGroups
   },
 
-  [mutation.ADD_MODIFIER_PRICE_TO_ITEM](state, { grossPrice, netPrice }) {
-    state.item.grossPrice = grossPrice
-    state.item.netPrice = netPrice
-    state.item.undiscountedGrossPrice = state.item.grossPrice
-    state.item.undiscountedNetPrice = state.item.netPrice
+  [mutation.ADD_MODIFIERS_DATA_TO_ITEM](state, modifiers) {
+    state.item.modifiersData = modifiers
   },
 
   [mutation.SET_ITEM_TAX](state, tax) {
@@ -919,6 +1051,7 @@ const mutations = {
     state.item = false
     state.orderStatus = null
     state.orderId = null
+    state.orderNote = null
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote

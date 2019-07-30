@@ -20,14 +20,38 @@ const state = {
   setModal: '#manage-customer',
   referrals: false,
   userShortDetails: false,
+  permissions: false,
 }
 
 // getters
 const getters = {
   formatPrice: state => price => {
     if (!price) price = 0.0
-    return state.currency + ' ' + Num.round(price).toFixed(2)
+    return state.currency + ' ' + Num.round(price, 2).toFixed(2)
   },
+
+  permitted: state => (pageId, parentId) => {
+    typeof parentId == 'undefined' ? null : parentId
+    let routeMenus = state.permissions.filter(
+      permission =>
+        permission.meta.parent_id == parentId && permission.page_id == pageId
+    )
+    let getChildren = routeMenus
+    if (routeMenus.length) {
+      if (routeMenus[0].type == 'BlockMenuPage') {
+        getChildren = state.permissions.filter(
+          permission => permission.meta.parent_id == routeMenus[0].page_id
+        )
+      }
+    }
+    console.log(pageId)
+    console.log(parentId)
+    console.log(routeMenus)
+    return getChildren.length
+  },
+  /*collectRouteMenu: state => {
+
+  },*/
   _t: state => str => {
     if (state.translations[str]) {
       return state.translations[str]
@@ -47,6 +71,7 @@ const actions = {
         .then(storedata => {
           commit(mutation.SET_STORE, storedata.data.store)
           commit(mutation.SET_BRAND, storedata.data.brand)
+          commit(mutation.SET_PERMISSION, storedata.data.menu)
           commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
           commit(mutation.SET_TRASLATIONS, storedata.data.translations)
           commit(
@@ -156,6 +181,9 @@ const mutations = {
   },
   [mutation.SET_BRAND](state, brand) {
     state.brand = brand
+  },
+  [mutation.SET_PERMISSION](state, menu) {
+    state.permissions = menu
   },
   [mutation.SET_CURRENCY](state, currency) {
     state.currency = currency

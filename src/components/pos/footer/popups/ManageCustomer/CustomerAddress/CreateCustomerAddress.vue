@@ -90,6 +90,8 @@
               class="btn btn-success btn-large popup-btn-save color-main color-text-invert"
               type="button"
               id="save_address"
+              data-toggle="modal"
+              :data-target="reOpenAddress"
               v-on:click="checkForm(customer_title)"
             >
               {{ _t('Save Address') }}
@@ -115,6 +117,7 @@ export default {
     return {
       errors: {},
       add_delivery_area: '',
+      reOpenAddress: '',
     }
   },
   computed: {
@@ -173,6 +176,7 @@ export default {
             customer: this.customerId,
           })
           addAddress.modal('toggle')
+          $('#add-to-order').modal('toggle')
         }
         if (modalStatus == 'Edit') {
           let actionDetails = {

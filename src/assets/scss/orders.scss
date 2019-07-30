@@ -29,13 +29,13 @@
 
     .main-oreders-email {
       color: $blue-dark;
-      padding: 0 $px10;
+      padding: $px2 $px10;
       font-weight: 600;
       text-align: left;
       font-size: $px14;
       letter-spacing: $px1;
       position: relative;
-      border: $px1 dashed $blue-middle;
+      border: $px1 dashed $header-gray-light;
       > span{
         position: absolute;
         top: -$px12;

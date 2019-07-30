@@ -171,7 +171,6 @@
           <a
             class="footer-slider-list-item-link color-text-invert"
             href="javascript:void(0)"
-            @click.prevent="validateOrderDiscounts()"
           >
             <svg
               aria-hidden="true"
@@ -368,7 +367,7 @@ import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import UserProfile from '@/components/pos/user/UserProfile'
 
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 /* global $, clickPayNow */
 export default {
   name: 'Footer',
@@ -433,7 +432,6 @@ export default {
       this.$store.commit('order/SET_CART_TYPE', 'hold')
       this.$store.dispatch('holdOrders/getHoldOrders')
     },
-    ...mapActions('discount', ['validateOrderDiscounts']),
     setOrderType(opt) {
       this.$store.commit('order/ORDER_TYPE', opt)
     },

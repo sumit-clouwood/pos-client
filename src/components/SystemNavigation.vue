@@ -1,10 +1,8 @@
 <template>
-  <div class="navigation">
-    <div class="logo">
+  <div class="navigation toggle-navigation">
+    <div class="logo" @click="collapseExpend">
       <a class="logo-link" href="javascript:void(0)">
-        <router-link :to="dm">
-          <img src="img/other/icon.png" alt="icon" />
-        </router-link>
+        <img src="img/other/icon.png" alt="icon" />
       </a>
     </div>
     <div class="navigation-list-wrapper">
@@ -14,9 +12,10 @@
           data-toggle="tooltip"
           data-placement="right"
           title="Dashboard"
+          v-if="permitted('dashboard', 'root')"
         >
           <a class="nav-link-nav active" :href="dashboard">
-            <span class="nav-link-text">
+            <div class="nav-link-text">
               <svg id="dashboard_icon" viewBox="0 0 24 24">
                 <path
                   fill=""
@@ -24,7 +23,8 @@
                   d="M14.105 12.702l3.664-4.188a.375.375 0 0 0-.017-.512l-.254-.254a.375.375 0 0 0-.512-.017l-4.188 3.664A2.254 2.254 0 0 0 9.75 13.5a2.25 2.25 0 1 0 4.355-.798zM12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12zm-.375-21.371v.743c0 .218.168.378.375.378a.38.38 0 0 0 .375-.378v-.743A.371.371 0 0 0 12 2.25a.38.38 0 0 0-.375.379zM3.746 11.25h-.743a.371.371 0 0 0-.378.375c0 .202.17.375.378.375h.743a.371.371 0 0 0 .379-.375.38.38 0 0 0-.379-.375zm17.25 0h-.743a.371.371 0 0 0-.378.375c0 .202.17.375.378.375h.743a.371.371 0 0 0 .379-.375.38.38 0 0 0-.379-.375zm-2.9-6.252l-.525.526a.37.37 0 0 0-.002.532.38.38 0 0 0 .532-.002l.526-.525a.372.372 0 0 0 .002-.533.382.382 0 0 0-.533.002zm-11.667.526l-.525-.526a.372.372 0 0 0-.533-.002.382.382 0 0 0 .002.533l.526.525a.37.37 0 0 0 .532.002.38.38 0 0 0-.002-.532zm8.703-2.317l-.284.686a.371.371 0 0 0 .201.493.38.38 0 0 0 .491-.206l.285-.686a.371.371 0 0 0-.202-.493.38.38 0 0 0-.49.206zM4.554 8.157l-.687-.284a.372.372 0 0 0-.493.201.383.383 0 0 0 .206.492l.687.284a.372.372 0 0 0 .493-.202.38.38 0 0 0-.206-.49zm15.65-.284l-.687.284a.37.37 0 0 0-.206.491.38.38 0 0 0 .493.202l.687-.284c.2-.084.285-.3.206-.492a.382.382 0 0 0-.493-.201zm-10.98-3.98l-.285-.686a.37.37 0 0 0-.491-.206.381.381 0 0 0-.202.493l.285.686a.37.37 0 0 0 .49.206.381.381 0 0 0 .202-.493z"
                 ></path>
               </svg>
-            </span>
+            </div>
+            <span class="nav-link-name">{{ _t('Dashboard') }}</span>
             <!-- <span class="nav-link-text"></span> -->
           </a>
         </li>
@@ -33,9 +33,10 @@
           data-toggle="tooltip"
           data-placement="right"
           :title="_t('Menu Setup')"
+          v-if="permitted('menu', 'root')"
         >
           <a class="nav-link-nav" :href="menu">
-            <span class="nav-link-text">
+            <dix class="nav-link-text">
               <svg id="menu_menu_icon" viewBox="0 0 24 20">
                 <g fill="" fill-rule="nonzero">
                   <path
@@ -43,7 +44,8 @@
                   ></path>
                 </g>
               </svg>
-            </span>
+            </dix>
+            <span class="nav-link-name">{{ _t('Menu Setup') }}</span>
             <!-- <span class="nav-link-text"></span> -->
           </a>
         </li>
@@ -52,9 +54,10 @@
           data-toggle="tooltip"
           data-placement="right"
           :title="_t('Store Setup')"
+          v-if="permitted('store', 'root')"
         >
           <a class="nav-link-nav" :href="store">
-            <span class="nav-link-text">
+            <div class="nav-link-text">
               <svg id="menu_locations_icon" viewBox="0 0 16 24">
                 <path
                   fill=""
@@ -62,7 +65,8 @@
                   d="M8 0a7.985 7.985 0 0 0-5.143 1.87A8.005 8.005 0 0 0 1.071 12l5.846 8.376a1.253 1.253 0 0 0 2.166 0l5.846-8.376A8.005 8.005 0 0 0 13.143 1.87 7.985 7.985 0 0 0 8 0zM4.5 6.5a.499.499 0 1 0 0 1h7a.499.499 0 1 0 0-1h-7zm0 2a.499.499 0 1 0 0 1h7a.499.499 0 1 0 0-1h-7zm-.75 9.803a.5.5 0 0 0-.208.046c-.903.421-1.6.984-1.896 1.664-.3.692-.13 1.505.43 2.124C3.196 23.374 5.477 24 8 24c2.523 0 4.803-.626 5.923-1.863.56-.62.731-1.432.43-2.124-.293-.676-.997-1.242-1.891-1.662a.5.5 0 0 0-.419.906c.79.362 1.239.8 1.393 1.154.153.354.116.646-.254 1.055C12.442 22.284 10.339 23 8 23c-2.339 0-4.441-.716-5.182-1.534-.37-.41-.408-.701-.255-1.055.154-.353.605-.791 1.395-1.153a.501.501 0 0 0-.208-.955z"
                 ></path>
               </svg>
-            </span>
+            </div>
+            <span class="nav-link-name">{{ _t('Store Setup') }}</span>
             <!-- <span class="nav-link-text">Lasagna</span> -->
           </a>
         </li>
@@ -71,9 +75,32 @@
           data-toggle="tooltip"
           data-placement="right"
           :title="_t('CRM')"
+          v-if="permitted('crm', 'root')"
         >
           <a class="nav-link-nav" :href="crm">
-            <span class="nav-link-text">
+            <div class="nav-link-text">
+              <svg id="crm_icon" viewBox="0 0 22 24">
+                <path
+                  fill=""
+                  fill-rule="nonzero"
+                  d="M10.839.28C9.989.28 9.29.978 9.29 1.83c0 .85.698 1.548 1.549 1.548.85 0 1.548-.698 1.548-1.548 0-.85-.698-1.549-1.548-1.549zM8.634 2.654l-.671.388.387.67.671-.386-.387-.672zm4.41 0l-.388.672.672.387.387-.671-.672-.388zm-5.751.775l-.67.387.387.671.67-.387-.387-.671zm7.092 0l-.388.671.67.387.387-.671-.67-.387zm-8.433.774l-.67.387.387.671.67-.387-.387-.671zm9.774 0l-.387.671.67.387.387-.671-.67-.387zM4.61 4.977l-.67.387.388.671.67-.387-.388-.671zm12.457 0l-.387.671.67.387.387-.67-.67-.388zm-15.051.34c-.497.036-.968.31-1.234.77-.426.736-.17 1.69.567 2.115.736.426 1.688.17 2.114-.567a1.554 1.554 0 0 0-.566-2.115 1.539 1.539 0 0 0-.881-.203zm17.646 0a1.539 1.539 0 0 0-.882.203 1.554 1.554 0 0 0-.565 2.115 1.553 1.553 0 0 0 2.114.567 1.555 1.555 0 0 0 .567-2.115 1.552 1.552 0 0 0-1.234-.77zm-8.823.752a2.904 2.904 0 0 0-2.9 2.9v.967c0 .938.456 1.765 1.15 2.296-1.815.774-3.084 2.712-3.084 4.954 0 .267.217.483.484.483h8.7a.483.483 0 0 0 .483-.483c0-2.242-1.268-4.18-3.083-4.954a2.887 2.887 0 0 0 1.15-2.296v-.967c0-1.598-1.302-2.9-2.9-2.9zM1.736 9.184v.774h.774v-.774h-.774zm17.431 0v.774h.775v-.774h-.775zM1.736 10.732v.774h.774v-.774h-.774zm17.431 0v.774h.775v-.774h-.775zM1.736 12.28v.775h.774v-.775h-.774zm17.431 0v.775h.775v-.775h-.775zM1.736 13.83v.774h.774v-.774h-.774zm17.431 0v.774h.775v-.774h-.775zM2.23 15.382a1.534 1.534 0 0 0-.88.202A1.555 1.555 0 0 0 .782 17.7a1.555 1.555 0 0 0 2.115.567 1.555 1.555 0 0 0 .567-2.116 1.554 1.554 0 0 0-1.235-.77zm17.22 0c-.497.035-.97.309-1.236.77-.425.736-.17 1.69.567 2.115.737.425 1.69.17 2.116-.567.425-.737.17-1.69-.567-2.116a1.534 1.534 0 0 0-.88-.202zm-15.121 2.37l-.387.67.67.388.386-.672-.67-.387zm13.022 0l-.67.386.387.672.67-.387-.387-.672zm-11.681.773l-.387.672.67.387.387-.672-.67-.387zm10.34 0l-.67.387.387.672.67-.387-.387-.672zM7.01 19.3l-.387.67.67.388.387-.671-.67-.387zm7.657 0l-.67.387.388.671.67-.387-.388-.671zm-6.317.774l-.387.671.671.387.387-.671-.671-.387zm4.978 0l-.672.387.387.671.672-.387-.387-.671zm-2.49.335c-.85 0-1.548.698-1.548 1.549 0 .85.698 1.548 1.549 1.548.85 0 1.548-.698 1.548-1.548 0-.85-.698-1.549-1.548-1.549z"
+                ></path>
+              </svg>
+            </div>
+            <span class="nav-link-name">{{ _t('CRM') }}</span>
+
+            <!-- <span class="nav-link-text"></span> -->
+          </a>
+        </li>
+        <li
+          class="nav-item active-opacity"
+          data-toggle="tooltip"
+          data-placement="right"
+          :title="_t('Brands Settings')"
+          v-if="permitted('brand', 'root')"
+        >
+          <a class="nav-link-nav" :href="brand">
+            <div class="nav-link-text">
               <svg id="brands_settings_icon" viewBox="0 0 21 18">
                 <path
                   fill-rule="evenodd"
@@ -82,7 +109,9 @@
                   fill=""
                 ></path>
               </svg>
-            </span>
+            </div>
+            <span class="nav-link-name">{{ _t('Brands Settings') }}</span>
+
             <!-- <span class="nav-link-text"></span> -->
           </a>
         </li>
@@ -91,16 +120,19 @@
           data-toggle="tooltip"
           data-placement="right"
           :title="_t('Delivery')"
+          v-if="permitted('delivery', 'root')"
         >
           <a class="nav-link-nav" :href="dm">
-            <span class="nav-link-text">
+            <div class="nav-link-text">
               <svg id="delivery_manager_icon" viewBox="0 0 20 21">
                 <path
                   d="M19.455 14.158a.545.545 0 0 0-.66-.43l-9.572 2.848a2.948 2.948 0 0 0-.611-.927l8.818-2.45a.545.545 0 0 0 .42-.647l-1.023-4.8a.545.545 0 0 0-.646-.42l-2.136.453-.921-4.269a.545.545 0 0 0-.647-.425L5.675 5.119a.545.545 0 0 0-.42.65l1.022 4.8.906 4.251a3.06 3.06 0 0 0-.728-.093H6.31L2.727.693a.545.545 0 0 0-.545-.42H.545a.545.545 0 1 0 0 1.09h1.206l3.498 13.62a3 3 0 1 0 4.206 2.744v-.084l9.569-2.825a.545.545 0 0 0 .43-.66zm-13-8.084l5.714-1.797.796 3.737-5.42 1.728-.313.076-.777-3.744zm-1.91 11.653a1.91 1.91 0 1 1 3.819 0 1.91 1.91 0 0 1-3.819 0zm3.71-3.117l-.797-3.736L15.86 8.51l.796 3.734-8.4 2.366z"
                   fill=""
                 ></path>
               </svg>
-            </span>
+            </div>
+            <span class="nav-link-name">{{ _t('Delivery') }}</span>
+
             <!-- <span class="nav-link-text"></span> -->
           </a>
         </li>
@@ -109,9 +141,10 @@
           data-toggle="tooltip"
           data-placement="right"
           :title="_t('Dispatch')"
+          v-if="permitted('dispatch', 'root')"
         >
           <a class="nav-link-nav" :href="dispatch">
-            <span class="nav-link-text">
+            <div class="nav-link-text">
               <svg id="dispatch_screen_icon" viewBox="0 0 21 16">
                 <path
                   fill=""
@@ -119,7 +152,9 @@
                   d="M15.26 14.98v-1.89h-3.78c-.81 0-1.47-.66-1.47-1.47V10.5h-2.8v2.38h1.96a.49.49 0 1 1 0 .98h-4.9a.49.49 0 1 1 0-.98h1.96V10.5H1.469A1.47 1.47 0 0 1 0 9.034V1.466C0 .656.657 0 1.469 0H12.39c.81 0 1.469.659 1.469 1.466V5.04h5.67c.81 0 1.47.66 1.47 1.47v5.11c0 .813-.656 1.47-1.47 1.47h-3.29v1.89h1.96a.49.49 0 1 1 0 .98h-4.9a.49.49 0 1 1 0-.98h1.96zm-4.27-8.47v5.11c0 .269.22.49.49.49h8.05c.272 0 .49-.218.49-.49V6.51c0-.269-.22-.49-.49-.49h-8.05a.488.488 0 0 0-.49.49zm1.89-5.044a.49.49 0 0 0-.489-.486H1.47a.486.486 0 0 0-.489.486v7.568c0 .266.22.486.489.486h8.541V6.51c0-.813.656-1.47 1.47-1.47h1.4V1.466z"
                 ></path>
               </svg>
-            </span>
+            </div>
+            <span class="nav-link-name">{{ _t('Dispatch') }}</span>
+
             <!-- <span class="nav-link-text"></span> -->
           </a>
         </li>
@@ -128,9 +163,10 @@
           data-toggle="tooltip"
           data-placement="right"
           :title="_t('Super Admin')"
+          v-if="permitted('admin', 'root')"
         >
           <a class="nav-link-nav" :href="sadmin">
-            <span class="nav-link-text">
+            <div class="nav-link-text">
               <svg id="global_settings_icon" viewBox="0 0 21 21.21">
                 <path
                   fill-rule="evenodd"
@@ -139,7 +175,9 @@
                   fill=""
                 ></path>
               </svg>
-            </span>
+            </div>
+            <span class="nav-link-name">{{ _t('Super Admin') }}</span>
+
             <!-- <span class="nav-link-text"></span> -->
           </a>
         </li>
@@ -150,7 +188,7 @@
     </div>
     <div
       class="navigation-avatar color-secondary"
-      v-if="userDetails"
+      v-if="userDetails && permitted('profile', 'root')"
       data-toggle="modal"
       data-target="#user-details"
       data-dismiss="modal"
@@ -188,13 +226,17 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import UserProfile from '@/components/pos/user/UserProfile'
-
+/* global $ */
 export default {
   name: 'SystemNavigation',
   components: {
     UserProfile,
   },
   methods: {
+    collapseExpend() {
+      $('.navigation').toggleClass('collapse-menu')
+      $('.toggle-nav-content').toggleClass('collapse-container')
+    },
     baseurl(link) {
       return (
         window.location.href.replace(
@@ -206,17 +248,19 @@ export default {
   },
   data() {
     return {
-      dm: '/delivery-manager' + this.$store.getters['context/store'],
+      // dm: '/delivery-manager' + this.$store.getters['context/store'],
+      dm: this.baseurl('delivery') + '/delivery_home/new',
       dashboard: this.baseurl('dashboard'),
       crm: this.baseurl('crm') + '/brand_customers',
       menu: this.baseurl('menu'),
+      brand: this.baseurl('brands'),
       store: this.baseurl('locations'),
       dispatch: this.baseurl('dispatch'),
       sadmin: '/super-admin',
     }
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'permitted']),
     ...mapState('location', ['userShortDetails']),
     ...mapState('auth', ['userDetails']),
     ...mapState({

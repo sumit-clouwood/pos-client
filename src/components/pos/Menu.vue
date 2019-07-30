@@ -5,9 +5,9 @@
   >
     <div class="logo" title="logo">
       <a class="logo-link" href="javascript:void(0)">
-        <router-link :to="'/delivery-manager' + store">
-          <img src="img/icons/icon.png" alt="icon" />
-        </router-link>
+        <!--<router-link :to="'/delivery-manager' + store">-->
+        <img src="img/icons/icon.png" alt="icon" />
+        <!--</router-link>-->
       </a>
     </div>
     <div class="navigation-list-wrapper">

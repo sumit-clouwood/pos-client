@@ -53,8 +53,7 @@
 
 <script>
 /* global $ */
-import { mapActions, mapGetters } from 'vuex'
-
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'AddNote',
   props: {},
@@ -65,6 +64,14 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('checkout', ['print']),
+  },
+  watch: {
+    print(newVal, oldVal) {
+      if (newVal === true && newVal !== oldVal) {
+        this.orderNote = ''
+      }
+    },
   },
   methods: {
     addNoteOrder: function(orderNote) {
