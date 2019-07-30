@@ -44,9 +44,6 @@ const getters = {
         )
       }
     }
-    console.log(pageId)
-    console.log(parentId)
-    console.log(routeMenus)
     return getChildren.length
   },
   /*collectRouteMenu: state => {
