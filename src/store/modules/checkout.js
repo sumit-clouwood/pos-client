@@ -445,7 +445,6 @@ const actions = {
 
       //set order id to be used for invoicing
       let orderId = null
-      let invoiceAutoPrint = false
 
       //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
       //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
