@@ -454,13 +454,6 @@ const actions = {
       // we send user directly to delivery manager after printing invoice so we auto print inoivce
       // without waiting for a button to be clicked
 
-      if (
-        rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER ||
-        rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
-      ) {
-        invoiceAutoPrint = true
-      }
-
       //order.order is a hold order, state.order contains current order
       if (
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
