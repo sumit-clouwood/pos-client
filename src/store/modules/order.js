@@ -1049,12 +1049,11 @@ const mutations = {
 
   [mutation.UPDATE_ITEM_QUANTITY](state, quantity) {
     const index = state.item.orderIndex
-    state.items = state.items.map(item => {
-      if (item.orderIndex == index) {
-        item.quantity = typeof quantity != 'undefined' ? quantity : 1
-      }
-      return item
-    })
+    state.item.quantity = quantity
+
+    let orderItem = state.items[index]
+    orderItem.quantity = typeof quantity != 'undefined' ? quantity : 1
+    state.items.splice(index, 1, orderItem)
   },
 
   [mutation.RESET](state) {
