@@ -52,6 +52,8 @@
                 min-width: 100vw;
 
                 .modal-content {
+                    display: grid;
+                    grid-template-rows: max-content max-content max-content max-content;
                     .modal-header {
                         height: 70px;
                         background-color: #fff;
@@ -59,8 +61,9 @@
                     }
 
                     .modal-details {
-                        padding: 0 20px;
+                        padding: 0 25px;
                         border: none;
+
                         .POSItemOptions_pricequantity {
                             .POSItemOptions_price {
                                 .POSItemOptions_money {
@@ -78,6 +81,7 @@
                                 width: 100%;
                                 height: 75px;
                                 background-color: #fff;
+                                z-index: 1;
 
                                 .POSItemOptions_label {
                                     display: none;
@@ -91,10 +95,10 @@
                     .modal-body {
                         margin: 0;
                         border-top: 1px solid #ccc;
-                        margin-top: 20px;
 
                         .POSItemOption {
                             margin-bottom: 20px;
+
                             .POSItemOptions_type {
                                 .POSItemOptions_typehead {
                                     .color-text-invert {
@@ -112,25 +116,33 @@
                                 display: grid;
                                 grid-template-columns: 1fr 1fr;
                                 grid-gap: 20px;
-                                .POSItemOptions_choose_choice{
+
+                                .POSItemOptions_choose_choice {
                                     width: auto;
                                     margin-bottom: 0;
-                                    .POSItemOptions_choose_label{
+
+                                    .POSItemOptions_choose_label {
                                         padding: 10px;
                                         border: 1px solid #ccc;
                                         border-radius: 5px;
                                         position: relative;
                                         display: flex;
                                         align-items: center;
-                                        img{
+
+                                        img {
                                             flex-basis: max-content;
                                         }
-                                        .customradioc{
+
+                                        .customradioc {
                                             display: inline-flex;
                                             margin: 0;
                                             position: absolute;
                                             top: 0;
                                             right: 0;
+
+                                            .color-text {
+                                                line-height: inherit;
+                                            }
                                         }
                                     }
                                 }
@@ -139,7 +151,9 @@
                     }
 
                     .modal-footer {
-                        margin-bottom: 75px;
+                        grid-row-start: 2;
+                        grid-row-end: 3;
+
                         .buttoned {
                             width: auto;
                             height: 50px;
@@ -147,6 +161,20 @@
 
                             img {
                                 margin-right: 10px;
+                            }
+                        }
+                        .btn-announce{
+                            display: grid;
+                            grid-template-columns: 1fr 1fr 1fr;
+                            margin: 0;
+                            justify-content: space-between;
+                            grid-gap: 10px;
+                            width: 100%;
+                            button{
+                                margin: 0;
+                                padding: 0 10px !important;
+                                height: 30px;
+                                box-shadow: none !important;
                             }
                         }
                     }
