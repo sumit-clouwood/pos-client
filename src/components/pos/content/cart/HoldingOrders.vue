@@ -1,12 +1,7 @@
 <template>
   <div class="holding-order-panel animated zoomIn">
     <!--    <Header />-->
-    <Preloader v-if="holdOrderList.length === 0" />
-    <div class="error color-warning" v-if="holdOrderList.length == 0">
-      <span class="text-danger text-center color-warning">
-        {{ _t('Nothing found.') }}
-      </span>
-    </div>
+    <Preloader v-if="!loading" />
     <div class="wrappers-order-block show" v-else>
       <Items
         v-for="(order, key) in holdOrderList"
@@ -27,6 +22,11 @@
         >
         </paginate>
       </div>
+    </div>
+    <div class="error color-warning" v-if="holdOrderList.length == 0">
+      <span class="text-danger text-center color-warning">
+        {{ _t('Nothing found.') }}
+      </span>
     </div>
   </div>
 </template>
@@ -53,6 +53,7 @@ export default {
     ...mapState({
       holdOrderList: state => state.holdOrders.getHoldOrders,
     }),
+    ...mapState('holdOrders', ['loading']),
     ...mapState({
       parms: state => state.holdOrders.params,
     }),

@@ -166,6 +166,10 @@ const actions = {
           } else {
             order.customer = rootState.customer.customerId
             const address = rootState.customer.address
+
+            if (order.order_status === 'on-hold') {
+              order.customer_address_id = address._id
+            }
             // address.delivery_area
             order.order_building = address.building
             order.order_street = address.street

@@ -48,14 +48,14 @@
               {{ _t('Ok') }}
             </button>
           </div>
-          <button
+          <!--<button
             v-if="msg.result !== 'success'"
             type="button"
             class="btn btn-default color-button"
             data-dismiss="modal"
           >
             {{ _t('Close') }}
-          </button>
+          </button>-->
         </div>
       </div>
     </div>
