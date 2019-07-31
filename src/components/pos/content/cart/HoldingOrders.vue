@@ -1,12 +1,13 @@
 <template>
   <div class="holding-order-panel animated zoomIn">
     <!--    <Header />-->
+    <Preloader v-if="holdOrderList.length === 0" />
     <div class="error color-warning" v-if="holdOrderList.length == 0">
       <span class="text-danger text-center color-warning">
         {{ _t('Nothing found.') }}
       </span>
     </div>
-    <div class="wrappers-order-block show" v-if="holdOrderList">
+    <div class="wrappers-order-block show" v-else>
       <Items
         v-for="(order, key) in holdOrderList"
         :orderData="order"
@@ -33,6 +34,8 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import paginate from 'vuejs-paginate'
+import Preloader from '@/components/util/Preloader'
+
 // import Header from './holdingOrders/Header.vue'
 import Items from './holdingOrders/Items.vue'
 
@@ -42,6 +45,7 @@ export default {
     // Header,
     paginate,
     Items,
+    Preloader,
   },
   props: {},
   computed: {

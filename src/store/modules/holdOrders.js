@@ -42,6 +42,15 @@ const actions = {
   fetchOrder({ commit, dispatch }, selectedOrder) {
     commit(mutation.GET_HOLD_ORDER_DETAILS, selectedOrder)
     dispatch('order/addHoldOrder', selectedOrder, { root: true })
+    if (selectedOrder.customer != null) {
+      dispatch('customer/fetchSelectedCustomer', selectedOrder.customer, {
+        root: true,
+      })
+      let selectedOrderType = { OTview: 'Delivery', OTApi: 'call_center' }
+      dispatch('order/updateOrderType', selectedOrderType, {
+        root: true,
+      })
+    }
   },
 
   holdOrder({ commit }) {
