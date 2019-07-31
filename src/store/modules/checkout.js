@@ -434,7 +434,6 @@ const actions = {
 
       //set order id to be used for invoicing
       let orderId = null
-      let invoiceAutoPrint = false
 
       //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
       //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
@@ -443,13 +442,6 @@ const actions = {
       //order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER means its a new delivery order
       // we send user directly to delivery manager after printing invoice so we auto print inoivce
       // without waiting for a button to be clicked
-
-      if (
-        rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER ||
-        rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
-      ) {
-        invoiceAutoPrint = true
-      }
 
       //order.order is a hold order, state.order contains current order
       if (
@@ -549,9 +541,7 @@ const actions = {
               )
                 .then(() => {
                   //invoice print is triggered by the success ok button
-                  if (invoiceAutoPrint) {
-                    commit(mutation.PRINT, true)
-                  }
+                  commit(mutation.PRINT, true)
                 })
                 .catch(error => {
                   commit(
