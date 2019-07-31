@@ -828,7 +828,7 @@ const actions = {
     commit(mutation.ORDER_TYPE, orderType)
     dispatch('surchargeCalculation')
   },
-
+  //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
   addOrderToCart({ rootState, commit, dispatch }, order) {
     return new Promise(resolve => {
       dispatch('reset')
