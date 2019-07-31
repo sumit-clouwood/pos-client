@@ -146,7 +146,10 @@ export default {
         .then(({ idb, flag, event }) => {
           if (flag === 'upgrade') {
             this.createBuckets(event)
-            resolve(idb)
+              .then(() => {
+                resolve(idb)
+              })
+              .catch(error => reject(error))
           } else {
             reject(event)
           }
@@ -155,24 +158,45 @@ export default {
     })
   },
   createBuckets(event) {
-    if (event.oldVersion === 0) {
-      // version 1 -> 2 upgrade
-      db.createBucket('auth')
-      this.store.commit('sync/setIdbVersion', 1)
-    }
-    if (event.oldVersion === 1) {
-      // version 2 -> 3 upgrade
-      db.createBucket('order_post_requests')
-      this.store.commit('sync/setIdbVersion', 2)
-    }
-    if (event.oldVersion === 2) {
-      // initial database creation
-      // (your code does nothing here)
-      db.createBucket('events', { keyPath: 'url' }).then(bucket => {
-        bucket.createIndex('url', 'url', { unique: true })
-      })
-      this.store.commit('sync/setIdbVersion', 3)
-    }
+    return new Promise((resolve, reject) => {
+      if (event.oldVersion === 0) {
+        // version 1 -> 2 upgrade
+        console.log('creating bucket auth')
+        db.createBucket('auth')
+          .then(() => {
+            console.log('created bucket auth')
+            this.store.commit('sync/setIdbVersion', 1)
+            resolve(1)
+          })
+          .catch(error => reject(error))
+      }
+      if (event.oldVersion === 1) {
+        // version 2 -> 3 upgrade
+        console.log('creating bucket order_post_requests')
+        db.createBucket('order_post_requests')
+          .then(() => {
+            console.log('created bucket order_post_requests')
+            this.store.commit('sync/setIdbVersion', 2)
+            resolve(2)
+          })
+          .catch(error => reject(error))
+      }
+      if (event.oldVersion === 2) {
+        // initial database creation
+        // (your code does nothing here)
+        console.log('creating bucket events')
+        db.createBucket('events', { keyPath: 'url' }, bucket => {
+          bucket.createIndex('url', 'url', { unique: true })
+        })
+          .then(() => {
+            console.log('created bucket events')
+            this.store.commit('sync/setIdbVersion', 3)
+
+            resolve(3)
+          })
+          .catch(error => reject(error))
+      }
+    })
   },
 
   setNetwork() {
