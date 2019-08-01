@@ -107,10 +107,10 @@ const actions = {
       if (validPayment) {
         //send order for payment
         let order = {}
-
         try {
           order = {
             customer: '',
+            customer_address_id: '',
             referral: '',
             transition_order_no: '',
             currency: rootState.location.currency,
@@ -166,10 +166,6 @@ const actions = {
           } else {
             order.customer = rootState.customer.customerId
             const address = rootState.customer.address
-
-            if (order.order_status === 'on-hold') {
-              order.customer_address_id = address._id
-            }
             // address.delivery_area
             order.order_building = address.building
             order.order_street = address.street
@@ -344,6 +340,9 @@ const actions = {
             CONSTANTS.ORDER_TYPE_CALL_CENTER ||
           action === CONSTANTS.ORDER_STATUS_ON_HOLD
         ) {
+          if (rootState.customer.address) {
+            order.customer_address_id = rootState.customer.address._id.$oid
+          }
           //do something here
         } else {
           const method = rootGetters['payment/cash']
