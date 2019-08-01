@@ -94,7 +94,7 @@ export default {
         if (this.$store.state.discount.appliedOrderDiscount) {
           this.$store.dispatch('discount/clearOrderDiscount')
         } else {
-          this.$store.dispatch('discount/removeItemDiscount')
+          this.$store.dispatch('discount/clearItemDiscount')
         }
     },
   },
