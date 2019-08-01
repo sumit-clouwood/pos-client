@@ -9,12 +9,6 @@
           <h4 class="customer-title color-text-invert">
             {{ _t('Order') }}
           </h4>
-          <span
-            class="cursor-pointer top-round-close-button"
-            data-dismiss="modal"
-          >
-            X
-          </span>
         </div>
         <div class="modal-body change-amount-option">
           <div class="amount-change-wrap">
@@ -53,11 +47,15 @@
             >
               {{ _t('Confirm') }}
             </button>
+            <button
+              type="button"
+              class="btn btn-danger btn-large"
+              data-dismiss="modal"
+            >
+              {{ _t('Cancel') }}
+            </button>
           </div>
-          <div
-            class="btn-announce"
-            v-if="msg.result !== 'success' && msg.result !== 'confirm'"
-          >
+          <div class="btn-announce" v-if="msg.result == ''">
             <button
               type="button"
               class="btn btn-success btn-large"

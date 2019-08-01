@@ -48,10 +48,14 @@ const actions = {
     if (selectedOrder.customer != null) {
       dispatch('customer/fetchSelectedCustomer', selectedOrder.customer, {
         root: true,
-      })
-      let selectedOrderType = { OTview: 'Delivery', OTApi: 'call_center' }
-      dispatch('order/updateOrderType', selectedOrderType, {
-        root: true,
+      }).then(() => {
+        dispatch(
+          'customer/setCustomerAddressById',
+          selectedOrder.customer_address_id,
+          {
+            root: true,
+          }
+        )
       })
     }
   },

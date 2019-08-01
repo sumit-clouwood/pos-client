@@ -22,7 +22,7 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 /* global $ */
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
   name: 'Items',
   props: {
@@ -36,7 +36,11 @@ export default {
     setHoldOrderCart: function(orderData) {
       this.$store.commit('order/SET_CART_TYPE', 'new')
       this.$store.dispatch('holdOrders/fetchOrder', orderData)
+      if (orderData.customer != null) {
+        this.updateModalSelectionDelivery('#order-confirmation')
+      }
     },
+    ...mapActions('location', ['updateModalSelectionDelivery']),
 
     dropHoldOrder: function(data) {
       $('#payment-msg').modal('show')
