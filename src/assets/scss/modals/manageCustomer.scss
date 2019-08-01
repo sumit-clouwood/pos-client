@@ -1,4 +1,5 @@
 @import "../variables.scss";
+
 #manage-customer {
   .modal-dialog {
     max-width: $px940;
@@ -48,6 +49,7 @@
   display: grid;
   grid-template-columns: 1fr;
   grid-column-gap: $px10;
+
   > ul {
     padding-left: 0;
     margin-bottom: 0;
@@ -64,14 +66,17 @@
       letter-spacing: 0.5px;
       cursor: pointer;
       margin-right: $px5;
+
       &.active {
         background-color: $blue-dark;
         border-color: $blue-dark;
       }
-      &.disabled{
+
+      &.disabled {
         background-color: $blue-light;
         border-color: $blue-light;
       }
+
       a {
         color: $white;
         display: inline-flex;
@@ -81,15 +86,18 @@
         height: $px50;
         padding: 0 $px20;
       }
+
       &.next-page {
         background: transparent !important;
         border: 1px solid #cbcfd3;
         border-color: #cbcfd3 !important;
         box-shadow: none !important;
         margin: 0 $px10;
+
         > a {
           color: #cbcfd3;
         }
+
         > img {
           width: 7px;
         }
@@ -153,11 +161,13 @@
   -webkit-overflow-scrolling: touch;
   touch-action: auto;
 }
+
 .holdorders {
   justify-content: flex-end;
 }
+
 .receipt-table {
-  thead{
+  thead {
     top: 0;
     display: table-caption;
     position: sticky;
@@ -165,9 +175,10 @@
     background: #fff;
   }
 }
-.receipt-table{
-  thead{
-    th{
+
+.receipt-table {
+  thead {
+    th {
       font-weight: bold !important;
     }
   }
@@ -176,7 +187,6 @@
 // media queries
 @include responsive(mobile) {
   #manage-customer {
-    //display: block !important;
     opacity: 1;
     position: absolute;
     top: 0px;
@@ -201,18 +211,32 @@
       min-height: auto;
       transform: none;
       opacity: 1;
+      max-width: none;
 
       .modal-content {
+        display: grid;
+        grid-template-rows: max-content 1fr max-content;
+        min-height: 100vh;
 
         .modal-header {
           padding: 10px 20px;
+          height: 80px;
+          border-bottom: 1px solid $gray-middle;
+          background-color: #fff;
         }
 
         .modal-body {
-          padding: 10px 20px;
+          padding: 20px 20px;
+          margin: 0;
+          overflow: auto;
+          width: 100vw;
 
           .search-field {
             height: auto;
+            margin: 0;
+            label{
+              margin: 0;
+            }
           }
 
           .manage-customer-table {
@@ -242,11 +266,12 @@
 
             button {
               margin: 0;
-              padding: 0 20px;
+              padding: 0 10px;
               font-size: 14px;
               margin-left: 10px;
               height: 50px;
-              &#cust-new{
+
+              &#cust-new {
                 background-color: $green-middle;
               }
             }

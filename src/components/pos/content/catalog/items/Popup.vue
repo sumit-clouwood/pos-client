@@ -132,6 +132,8 @@
 
                                         img {
                                             flex-basis: max-content;
+                                            flex-shrink: 0;
+                                            border-radius: 50%;
                                         }
 
                                         .customradioc {
