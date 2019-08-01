@@ -11,6 +11,7 @@
             </a>
         </div>
         <div class="navigation-list-wrapper">
+            <btnBack/>
             <ul class="navigation-list" v-if="categories.length">
                 <li
                         class="nav-item active-opacity color-text-invert"
@@ -95,11 +96,15 @@
 <script>
     /* global  $*/
     import bootstrap from '@/bootstrap'
+    import btnBack from "../mobileComponents/mobileElements/btnBack"
 
     import {mapState, mapActions, mapGetters} from 'vuex'
 
     export default {
         name: 'Menu',
+        components: {
+          btnBack
+        },
         computed: {
             ...mapState({
                 currentCategory: state => state.category.category._id,
@@ -266,6 +271,7 @@
                                 height: 64px;
                                 margin-bottom: 0;
                                 border-radius: 0;
+                                margin: 0;
                             }
 
                             &.active {

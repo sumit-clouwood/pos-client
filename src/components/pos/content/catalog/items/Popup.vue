@@ -143,8 +143,10 @@
                                             top: 0;
                                             right: 0;
 
-                                            .color-text {
+                                            span {
                                                 line-height: inherit;
+                                                border-top: none;
+                                                border-right: none;
                                             }
                                         }
                                     }

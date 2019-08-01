@@ -6,6 +6,7 @@
       subCategoryHendler ? 'foodCatigoriesActive' : 'foodCatigoriesNotActive',
     ]"
     >
+        <btnBack/>
         <div :class="['food-categories']" v-if="subcategories.length">
             <div
                     class="food-categories-item box-shadow-selected"
@@ -39,9 +40,13 @@
 
 <script>
     import {mapState, mapGetters} from 'vuex'
+    import btnBack from "../../../mobileComponents/mobileElements/btnBack"
 
     export default {
         name: 'SubMenu',
+        components: {
+          btnBack
+        },
         props: {},
         computed: {
             ...mapState({
