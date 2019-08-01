@@ -3,8 +3,8 @@ files:
   - /var/log/nginx/*.log
   - /var/log/supervisor/*.log
 destination:
-  host: logs7.papertrailapp.com
-  port: xxxx
+  host: logs3.papertrailapp.com
+  port: 52445
   protocol: tls
 pid_file: /var/run/remote_syslog.pid
-hostname: <TAG>
+hostname: <SITE>
