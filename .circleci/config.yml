@@ -101,8 +101,7 @@ jobs:
             cp .circleci/Dockerrun.aws.json Dockerrun.aws.json
             cp .circleci/nginx/nginx.conf nginx.conf
 
-            sed -i "s/<SITE>/$SITE/g" .circleci/log_files.yml
-            sed -i "s/<SITE>/$SITE/g" .circleci/setup_papertrail.sh
+            sed -i "s/<SITE>/$SITE/" .ebextensions/002_papertrail.config
 
             # FIX ISSUE https://github.com/aws/aws-cli/issues/2639
             find ./node_modules -mtime +10950 -exec touch {} \;
