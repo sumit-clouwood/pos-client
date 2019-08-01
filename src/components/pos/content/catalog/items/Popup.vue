@@ -9,7 +9,7 @@
             aria-hidden="true"
     >
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content color-dashboard-background">
+            <div class="modal-content color-dashboard-background footerStyle">
                 <Header/>
                 <HeaderDetails/>
                 <Content/>
@@ -54,6 +54,7 @@
                 .modal-content {
                     display: grid;
                     grid-template-rows: max-content max-content max-content max-content;
+
                     .modal-header {
                         height: 70px;
                         background-color: #fff;
@@ -163,19 +164,28 @@
                                 margin-right: 10px;
                             }
                         }
-                        .btn-announce{
+
+                        .btn-announce {
                             display: grid;
                             grid-template-columns: 1fr 1fr 1fr;
                             margin: 0;
                             justify-content: space-between;
                             grid-gap: 10px;
                             width: 100%;
-                            button{
+
+                            button {
                                 margin: 0;
                                 padding: 0 10px !important;
                                 height: 30px;
                                 box-shadow: none !important;
                             }
+                        }
+                    }
+
+                    &.footerStyle {
+                        .modal-footer {
+                            grid-row-start: 3;
+                            grid-row-end: 4;
                         }
                     }
                 }
