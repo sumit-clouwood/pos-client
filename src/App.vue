@@ -8,46 +8,51 @@ The App.vue file is the root component that all other components are nested with
     <!--<router-link to="/">Home</router-link> |-->
     <!--<router-link to="/about">About</router-link>-->
     <!--</div>-->
-    <section v-if="errored">
-      <p>
-        We're sorry, we're not able to proceed at the moment, please try back
-        later
-      </p>
-      <p>Technical info: {{ errored }}</p>
-    </section>
-    <div v-else-if="loading">
-      <ul class="ullist-inventory-location pl-0 pt-2">
-        <li class="p-3">
-          <span class="margin220">
-            <Preloader />
-            <h2 class="text-center blue-middle">Loading Data...</h2>
-            <ul class="loading-modules">
-              <li
-                v-for="(val, key) in modules"
-                :key="key"
-                style="text-transform:capitalize"
-              >
-                Loading {{ key }}
-                <div class="progress">
-                  <div
-                    class="progress-bar progressIncrement"
-                    role="progressbar"
-                    aria-valuenow="50"
-                    aria-valuemin="1"
-                    aria-valuemax="100"
-                    v-bind:style="{ width: progressIncrement }"
-                  >
-                    {{ progressIncrement }}
+    <div v-if="loggedIn">
+      <section v-if="errored">
+        <p>
+          We're sorry, we're not able to proceed at the moment, please try back
+          later
+        </p>
+        <p>Technical info: {{ errored }}</p>
+      </section>
+      <div v-else-if="loading">
+        <ul class="ullist-inventory-location pl-0 pt-2">
+          <li class="p-3">
+            <span class="margin220">
+              <Preloader />
+              <h2 class="text-center blue-middle">Loading Data...</h2>
+              <ul class="loading-modules">
+                <li
+                  v-for="(val, key) in modules"
+                  :key="key"
+                  style="text-transform:capitalize"
+                >
+                  Loading {{ key }}
+                  <div class="progress">
+                    <div
+                      class="progress-bar progressIncrement"
+                      role="progressbar"
+                      aria-valuenow="50"
+                      aria-valuemin="1"
+                      aria-valuemax="100"
+                      v-bind:style="{ width: progressIncrement }"
+                    >
+                      {{ progressIncrement }}
+                    </div>
                   </div>
-                </div>
-                <span> {{ val }} </span>
-              </li>
-            </ul>
-          </span>
-        </li>
-      </ul>
+                  <span> {{ val }} </span>
+                </li>
+              </ul>
+            </span>
+          </li>
+        </ul>
+      </div>
+      <router-view v-else />
     </div>
-    <router-view v-else />
+    <div v-else>
+      <Login />
+    </div>
   </div>
 </template>
 
@@ -58,13 +63,15 @@ import DataService from '@/services/DataService'
 import Cookie from '@/mixins/Cookie'
 import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
-import { mapState } from 'vuex'
+import Login from '@/components/login/Login'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Location',
   props: {},
   components: {
     Preloader,
+    Login,
   },
   mixins: [Cookie],
   data: function() {
@@ -99,6 +106,7 @@ export default {
         state.location.store ? state.location.store.default_language : false,
     }),
     ...mapState('sync', ['modules']),
+    ...mapGetters('auth', ['loggedIn']),
   },
   //life cycle hooks
   mounted() {
@@ -106,7 +114,7 @@ export default {
       this.loading = false
       return
     }
-    if (this.$store.state.context.brandId) {
+    if (this.loggedIn && this.$store.state.context.brandId) {
       bootstrap
         .setup(this.$store)
         .then(() => {
@@ -122,24 +130,24 @@ export default {
           }, 2000)
         })
         .catch(error => (this.errored = error))
-    }
 
-    setTimeout(() => {
-      navigator.serviceWorker.addEventListener('message', event => {
-        console.log('*** event received from service worker', event)
-        if (event.data.msg == 'token') {
-          console.log('setting new token to client')
-          localStorage.setItem('token', event.data.data)
-          //DataService.setMiddleware()
-          bootstrap.loadUI().then(() => {
-            setTimeout(() => {
-              this.loading = false
-              this.progressIncrement = '100%'
-            }, 100)
-          })
-        }
-      })
-    }, 3000)
+      setTimeout(() => {
+        navigator.serviceWorker.addEventListener('message', event => {
+          console.log('*** event received from service worker', event)
+          if (event.data.msg == 'token') {
+            console.log('setting new token to client')
+            localStorage.setItem('token', event.data.data)
+            //DataService.setMiddleware()
+            bootstrap.loadUI().then(() => {
+              setTimeout(() => {
+                this.loading = false
+                this.progressIncrement = '100%'
+              }, 100)
+            })
+          }
+        })
+      }, 3000)
+    }
   },
 }
 
