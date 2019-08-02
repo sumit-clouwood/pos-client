@@ -1051,9 +1051,12 @@ const mutations = {
     const index = state.item.orderIndex
     state.item.quantity = quantity
 
-    let orderItem = state.items[index]
-    orderItem.quantity = typeof quantity != 'undefined' ? quantity : 1
-    state.items.splice(index, 1, orderItem)
+    state.items = state.items.map(item => {
+      if (item.orderIndex == index) {
+        item.quantity = quantity
+      }
+      return item
+    })
   },
 
   [mutation.RESET](state) {

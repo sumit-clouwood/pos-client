@@ -1,5 +1,6 @@
 import * as mutation from './announcement/mutation-types'
 import AnnouncementService from '@/services/data/AnnouncementService'
+import dateTimeAPI from '@/plugins/helpers/DateTime.js'
 
 const state = {
   announcements: false,
@@ -10,7 +11,8 @@ const actions = {
     // const params = [rootState.auth.userDetails._id, rootState.sync.date]
     let role = rootGetters['auth/getRole']('pos')
     if (role) {
-      AnnouncementService.fetchAll(role._id).then(response => {
+      const params = [role._id, dateTimeAPI.DateAPI]
+      AnnouncementService.fetchAll(...params).then(response => {
         commit(mutation.SET_ANNOUNCEMENT, response.data.data)
       })
     }

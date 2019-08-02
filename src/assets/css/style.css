@@ -234,6 +234,19 @@ h1, h2, h3, h4, h5, h6 {
   color: rgba(63, 74, 74, 0.8);
   margin: 0; }
 
+.top-round-close-button {
+  cursor: pointer;
+  position: absolute;
+  top: -0.75rem;
+  color: #fff;
+  right: -0.625rem;
+  background: #3c3a3a;
+  padding: 0.0625rem;
+  border-radius: 50%;
+  height: 25px;
+  width: 25px;
+  text-align: center; }
+
 .header {
   border-bottom: 1px solid #ddd; }
   .header .header-main {
@@ -2350,7 +2363,7 @@ p.itm-price {
   background-color: #ffffff;
   border: solid 1px #e3e7f2;
   margin-bottom: 0.625rem;
-  padding: 1.25rem;
+  padding: 0.3125rem 0.9375rem;
   margin: 0 0.625rem 0.625rem; }
 
 .wrappers-orders > .orders-name > span {
@@ -2368,15 +2381,10 @@ p.itm-price {
   width: 72%; }
 
 .wrappers-orders .orders-name > p:nth-child(1) {
-  color: red;
-  font-size: 0.875rem;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: #3d3f43;
-  margin-bottom: 0.3rem; }
+  color: #3d3f43; }
 
 .wrappers-orders .orders-name > p:nth-child(2) {
   font-size: 0.875rem;
@@ -2389,7 +2397,7 @@ p.itm-price {
 
 .wrappers-orders .aed-amt > span {
   font-size: 0.875rem;
-  font-weight: normal;
+  font-weight: bold;
   font-style: normal;
   font-stretch: normal;
   line-height: normal;
@@ -2397,9 +2405,6 @@ p.itm-price {
   color: #3d3f43; }
 
 .dlt-btn > img {
-  vertical-align: top; }
-
-.wrappers-orders .aed-amt > span {
   vertical-align: top; }
 
 #online-order .modal-dialog {
