@@ -879,22 +879,27 @@ const actions = {
   },
 
   selectedOrderDetails({ commit }, orderId) {
-    const params = ['orders', orderId, '']
-    OrderService.getGlobalDetails(...params).then(response => {
-      let orderDetails = {}
-      OrderService.getModalDetails('brand_cancellation_reasons').then(
-        responseData => {
-          commit(mutation.SET_CANCELLATION_REASON, responseData.data.data)
-        }
-      )
+    return new Promise((resolve, reject) => {
+      const params = ['orders', orderId, '']
+      OrderService.getGlobalDetails(...params)
+        .then(response => {
+          let orderDetails = {}
+          OrderService.getModalDetails('brand_cancellation_reasons')
+            .then(responseData => {
+              commit(mutation.SET_CANCELLATION_REASON, responseData.data.data)
+              resolve()
+            })
+            .catch(error => reject(error))
 
-      orderDetails.item = response.data.item
-      orderDetails.customer = response.data.collected_data.customer
-      orderDetails.lookups = response.data.collected_data.page_lookups
-      orderDetails.store_name = response.data.collected_data.store_name
-      orderDetails.invoice =
-        response.data.collected_data.store_invoice_templates
-      commit(mutation.SET_ORDER_DETAILS, orderDetails)
+          orderDetails.item = response.data.item
+          orderDetails.customer = response.data.collected_data.customer
+          orderDetails.lookups = response.data.collected_data.page_lookups
+          orderDetails.store_name = response.data.collected_data.store_name
+          orderDetails.invoice =
+            response.data.collected_data.store_invoice_templates
+          commit(mutation.SET_ORDER_DETAILS, orderDetails)
+        })
+        .catch(error => reject(error))
     })
   },
   removeOrder({ dispatch }, { order, orderType }) {
