@@ -16,6 +16,16 @@ const getters = {
   getRole: state => startPath => {
     return state.rolePermissions.find(user => user.start_path === startPath)
   },
+  loggedIn: (state, gettters, rootState, rootGetters) => {
+    if (!rootGetters['context/store']) {
+      return false
+    }
+    if (!localStorage.getItem('token')) {
+      return false
+    }
+
+    return true
+  },
 }
 
 // actions
