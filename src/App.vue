@@ -114,7 +114,7 @@ export default {
       this.loading = false
       return
     }
-    if (this.loggedIn && this.$store.state.context.brandId) {
+    if (this.$store.state.context.brandId) {
       bootstrap
         .setup(this.$store)
         .then(() => {
