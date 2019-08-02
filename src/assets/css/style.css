@@ -3735,6 +3735,118 @@ body {
           display: flex;
           align-items: center; }
 
+.login-container-container {
+  padding-bottom: 3rem; }
+
+.forgot-password-page.login-background-wrapper .login-container, .login-page.login-background-wrapper .login-container, .reset-password-page.login-background-wrapper .login-container {
+  position: relative;
+  width: 100%;
+  z-index: 200;
+  border-radius: 3px;
+  background: #fff;
+  color: #3f4a4a;
+  -webkit-box-shadow: 0 10px 20px rgba(23, 23, 32, 0.05), 0 6px 6px rgba(23, 23, 32, 0.05);
+  box-shadow: 0 10px 20px rgba(23, 23, 32, 0.05), 0 6px 6px rgba(23, 23, 32, 0.05);
+  overflow: hidden;
+  margin: 1.25rem auto;
+  max-width: 25rem; }
+
+.forgot-password-page.login-background-wrapper .login-container .login-title, .login-page.login-background-wrapper .login-container .login-title, .reset-password-page.login-background-wrapper .login-container .login-title {
+  background: #449eff;
+  padding: .625rem;
+  text-align: center;
+  font-size: 1.125rem;
+  line-height: 1.875rem;
+  font-weight: 300;
+  color: #fff; }
+
+.forgot-password-page.login-background-wrapper .login-container .login-body, .login-page.login-background-wrapper .login-container .login-body, .reset-password-page.login-background-wrapper .login-container .login-body {
+  padding: 1.875rem 1.5625rem .625rem 1.5625rem; }
+
+.forgot-password-page.login-background-wrapper .login-container .login-body .login-input, .login-page.login-background-wrapper .login-container .login-body .login-input, .reset-password-page.login-background-wrapper .login-container .login-body .login-input {
+  margin: 0;
+  min-height: 2.375rem;
+  font-size: 1.125rem;
+  color: rgba(63, 74, 74, 0.6);
+  border-radius: 0;
+  font-weight: 500;
+  padding: 7px 0 5px;
+  display: block;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid rgba(63, 74, 74, 0.3);
+  background-color: #fff;
+  background-image: none;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  height: 3.125rem;
+  margin-bottom: 1.5625rem;
+  padding-left: .625rem; }
+
+.forgot-password-page.login-background-wrapper .login-container .login-body label, .login-page.login-background-wrapper .login-container .login-body label, .reset-password-page.login-background-wrapper .login-container .login-body label {
+  font-size: .875rem; }
+
+.forgot-password-page.login-background-wrapper .login-container .login-body .align-right, .login-page.login-background-wrapper .login-container .login-body .align-right, .reset-password-page.login-background-wrapper .login-container .login-body .align-right {
+  text-align: right;
+  margin: 0 0 1.5625rem; }
+
+.btn.btn-flow {
+  background: grey none repeat scroll 0 0;
+  border-radius: 2px;
+  color: #fff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  -webkit-transition: all .4s ease 0s;
+  transition: all .4s ease 0s;
+  position: relative;
+  -webkit-transition: .7s;
+  transition: .7s;
+  border: 0;
+  font-size: 14px; }
+
+.btn.btn-flow span {
+  position: relative;
+  z-index: 1; }
+
+.forgot-password-page.login-background-wrapper .login-container .login-title, .login-page.login-background-wrapper .login-container .login-title, .reset-password-page.login-background-wrapper .login-container .login-title {
+  background: #449eff;
+  padding: .625rem;
+  text-align: center;
+  font-size: 1.125rem;
+  line-height: 1.875rem;
+  font-weight: 300;
+  color: #fff; }
+
+.forgot-password-page.login-background-wrapper .login-container .login-title.login-bottom > a, .login-page.login-background-wrapper .login-container .login-title.login-bottom > a, .reset-password-page.login-background-wrapper .login-container .login-title.login-bottom > a {
+  color: #fff; }
+
+.login-page.login-background-wrapper .before-login-wrapper .dimension-logo img {
+  width: 100%; }
+
+.forgot-password-page.login-background-wrapper, .login-page.login-background-wrapper, .reset-password-page.login-background-wrapper {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: auto;
+  background: #367fcc; }
+
+.forgot-password-page.login-background-wrapper .before-login-wrapper, .login-page.login-background-wrapper .before-login-wrapper, .reset-password-page.login-background-wrapper .before-login-wrapper {
+  margin: auto auto;
+  min-height: 100%;
+  max-width: 25rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column; }
+
 .new-transaction {
   display: grid;
   grid-template-columns: 25% 75%;

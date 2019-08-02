@@ -2,7 +2,7 @@
   <div class="login-background-wrapper login-page">
     <div class="before-login-wrapper">
       <div class="dimension-logo">
-        <img src="/img/logo.png" />
+        <img src="img/pos/logo-login.png" />
       </div>
       <div
         :class="[
@@ -12,10 +12,10 @@
         ]"
       >
         <div class="login-container">
-          <div class="login-title login-top">{{ _t('Login') }}</div>
+          <div class="login-title login-top">Login</div>
           <div class="login-body">
             <form class="login" @submit.prevent="login">
-              <label>{{ _t('Email') }}</label>
+              <label>Email</label>
               <input
                 required
                 v-model="email"
@@ -24,7 +24,7 @@
                 value=""
                 :placeholder="_t('Email Address')"
               />
-              <label>{{ _t('Password') }}</label>
+              <label>Password</label>
               <input
                 required
                 v-model="password"
@@ -37,7 +37,7 @@
                 <div class="col-6"></div>
                 <div class="col-6 align-right">
                   <button type="submit" class="btn btn-flow btn-default">
-                    <span>{{ _t('Log-in') }}</span>
+                    <span>Log-in</span>
                   </button>
                 </div>
               </div>
@@ -68,7 +68,7 @@
           </div>
           <div class="login-title login-bottom">
             <router-link :to="{ name: 'forgot_password' }">
-              {{ _t('Forgot your password?') }}
+              Forgot your password?
             </router-link>
           </div>
         </div>
