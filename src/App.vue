@@ -79,6 +79,7 @@ export default {
       loading: true,
       errored: false,
       progressIncrement: '0%',
+      orderId: null,
     }
   },
   created() {
@@ -91,6 +92,10 @@ export default {
       })
     } else {
       this.errored = 'Please provide brand id and store id in url'
+    }
+
+    if (this.$route.params.order_id) {
+      this.orderId = this.$route.params.order_id
     }
   },
   watch: {
@@ -118,6 +123,20 @@ export default {
       bootstrap
         .setup(this.$store)
         .then(() => {
+          if (this.orderId) {
+            this.$store
+              .dispatch('order/selectedOrderDetails', this.orderId)
+              .then(() => {
+                this.$store.dispatch(
+                  'order/addDeliveryOrder',
+                  this.$store.state.order.selectedOrder,
+                  {
+                    root: true,
+                  }
+                )
+              })
+          }
+
           this.progressIncrement = '10%'
           setTimeout(() => {
             this.loading = false

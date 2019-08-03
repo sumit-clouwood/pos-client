@@ -2,7 +2,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home'
-import ModifyOrder from './views/ModifyOrder.vue'
 import DineIn from './views/Dinein'
 import DeliveryManagerInit from './views/DeliveryManagerInit'
 import DispatchScreenInit from './views/DispatchScreenInit'
@@ -27,8 +26,8 @@ const router = new Router({
     },
     {
       path: '/:brand_id/:store_id/:order_id',
-      name: 'ModifyOrder',
-      component: ModifyOrder,
+      name: 'Home',
+      component: Home,
     },
     {
       path: '/about',
