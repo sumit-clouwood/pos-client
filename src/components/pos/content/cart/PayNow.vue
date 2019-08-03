@@ -40,7 +40,7 @@
               </p>
             </div>
             <form>
-              <div class="payemnt-input-block">
+              <div class="payment-input-block">
                 <input
                   type="text"
                   name="payment"
