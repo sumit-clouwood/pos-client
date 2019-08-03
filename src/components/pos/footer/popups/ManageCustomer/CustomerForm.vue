@@ -139,7 +139,7 @@
                 errors.delivery_area_id
               }}</span>
             </div>
-            <div class="alternate-phone-from">
+            <div class="Building">
               <label class="color-text-invert"
                 >{{ _t('Building/Villa') }} <span>*</span></label
               >
@@ -148,10 +148,23 @@
                 autocomplete="off"
                 name="building"
                 v-model="newCustomerDetails.building"
+                v-on:keyup="search(newCustomerDetails.building)"
               />
               <span class="validation-error" v-if="errors.building">{{
                 errors.building
               }}</span>
+              <div class="dropdown" v-if="filterBuildingArea">
+                <div id="searchDropdown" class="dropdown-content">
+                  <span
+                    class="showItem color-dashboard-background"
+                    v-for="(area, index) in filterBuildingArea"
+                    :key="index"
+                    v-on:click="selectBuilding(area)"
+                  >
+                    {{ area }}
+                  </span>
+                </div>
+              </div>
             </div>
             <div class="gender">
               <label class="color-text-invert"
@@ -230,6 +243,7 @@ export default {
       months:
         'January,February,March,April,May,June,July,August,September,October,November,December',
       errors: {},
+      filterBuildingArea: false,
     }
   },
   computed: {
@@ -237,6 +251,7 @@ export default {
     ...mapState({
       newCustomerDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
+      buildingAreas: state => state.customer.buildingAreas,
       loyalty: state => state.loyalty.loyalty,
       fetchDeliveryAreas: state =>
         state.customer.fetchDeliveryAreas
@@ -254,6 +269,25 @@ export default {
     }),
   },
   methods: {
+    search(searchTerm) {
+      $('#searchLoader').attr('style', 'display:block')
+      $('#searchDropdown').show()
+      let searchedItems = []
+      if (searchTerm.length > 0) {
+        this.buildingAreas.map(item => {
+          if (item.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
+            searchedItems.push(item)
+          }
+        })
+        this.filterBuildingArea = searchedItems
+      } else {
+        this.filterBuildingArea = this.buildingAreas
+      }
+    },
+    selectBuilding(selectedArea) {
+      this.newCustomerDetails.building = selectedArea
+      $('#searchDropdown').hide()
+    },
     getAreaId: function(e) {
       if (e.target.options.selectedIndex > -1) {
         this.add_delivery_area = $('.getAreaId')
@@ -375,3 +409,28 @@ export default {
   },
 }
 </script>
+<style scoped lang="css">
+.dropdown {
+  position: relative;
+}
+.dropdown-content {
+  display: block;
+  position: absolute;
+  background-color: #f6f6f6;
+  width: 57%;
+  right: 14px;
+  overflow: auto;
+  border: 1px solid #ddd;
+  z-index: 1;
+  margin-top:3px;
+  max-height:200px;
+}
+
+.dropdown-content span {
+  color: black;
+  padding: 6px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown span:hover {background-color: #ddd;}
+</style>

@@ -33,6 +33,7 @@ const state = {
   editInformation: {},
   modalStatus: 'Add',
   lookups: false,
+  buildingAreas: false,
 }
 const getters = {
   customer: state => {
@@ -132,6 +133,9 @@ const actions = {
       // get Customer Group
       CustomerService.customerGroupList().then(response => {
         commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
+      })
+      CustomerService.customerBuildings().then(buildingAreas => {
+        commit(mutation.BUILDING_AREA, buildingAreas.data.data)
       })
     })
   },
@@ -380,6 +384,9 @@ const mutations = {
   },
   [mutation.SET_CUSTOMER_GROUP](state, customerGroup) {
     state.customer_group = customerGroup
+  },
+  [mutation.BUILDING_AREA](state, buildingAreas) {
+    state.buildingAreas = buildingAreas
   },
   [mutation.SET_EDIT_DETAILS](state, details) {
     state.editInformation = details
