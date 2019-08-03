@@ -13,5 +13,6 @@ export const SET_PERMISSION = 'SET_PERMISSION'
 export const USER_DETAILS = 'USER_DETAILS'
 export const USER_SHORT_DETAILS = 'USER_SHORT_DETAILS'
 export const RESET = 'RESET'
+export const SET_DATE = 'SET_DATE'
 
 export const SET_MODAL = 'SET_MODAL'
