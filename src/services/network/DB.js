@@ -69,7 +69,6 @@ export default {
 
         if (transaction) {
           const bucket = transaction.objectStore(bucketName)
-
           resolve(bucket)
 
           transaction.onerror = function(event) {

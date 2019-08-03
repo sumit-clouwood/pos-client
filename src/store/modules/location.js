@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import * as mutation from './location/mutation-types'
 import LocationService from '@/services/data/LocationService'
+import DataService from '@/services/DataService'
 import Num from '@/plugins/helpers/Num'
 import db from '@/services/network/DB'
 import TimezoneService from '@/services/data/TimezoneService'
@@ -62,11 +63,10 @@ const getters = {
 
 // actions
 const actions = {
-  fetch({ state, commit, dispatch, rootState }) {
+  fetch({ state, commit, dispatch, rootState, rootGetters }) {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
         .then(storedata => {
-          commit(mutation.SET_STORE, storedata.data.store)
           commit(mutation.SET_BRAND, storedata.data.brand)
           commit(mutation.SET_PERMISSION, storedata.data.menu)
           commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
@@ -75,8 +75,29 @@ const actions = {
             mutation.SET_AVAILABLE_LANGUAGES,
             storedata.data.available_lang
           )
+
+          if (storedata.data.store) {
+            commit(mutation.SET_STORE, storedata.data.store)
+          } else {
+            //user coming through login
+            //get store from available stores
+            commit(mutation.SET_STORE, storedata.data.available_stores[0])
+            //set context as well
+            commit('context/SET_BRAND_ID', state.brand._id, { root: true })
+            commit('context/SET_STORE_ID', state.store._id, { root: true })
+
+            localStorage.setItem('brand_id', state.brand._id)
+            localStorage.setItem('store_id', state.store._id)
+
+            DataService.setContext({
+              brand: rootGetters['context/brand'],
+              store: rootGetters['context/store'],
+            })
+          }
+
           commit(mutation.SET_LOCATION, state.store.address)
           commit(mutation.SET_CURRENCY, state.store.currency)
+
           let userDetails = {}
           userDetails.username = storedata.data.username
           userDetails.userId = storedata.data.user_id
