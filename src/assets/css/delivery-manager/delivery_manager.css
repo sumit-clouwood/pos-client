@@ -48,8 +48,8 @@ div#dm-content-wrapper {
 .left-btn-wrap > button {
   margin-right: 0.625rem; }
   .left-btn-wrap > button.active {
-    background: tomato !important;
-    border-color: tomato !important; }
+    background: #CC3232 !important;
+    border-color: #CC3232 !important; }
 
 .dm-order-details-wrap {
   overflow: hidden;
@@ -73,7 +73,7 @@ ul.dm-ullist > li {
     font-weight: 600; }
   ul.dm-ullist > li.active > a {
     color: rgba(63, 74, 74, 0.8);
-    border-bottom: 3px solid tomato;
+    border-bottom: 3px solid #CC3232;
     opacity: 1; }
   ul.dm-ullist > li.pick > span {
     background-color: #f8a634; }
@@ -374,7 +374,7 @@ div#dm-new-order table td {
 
 button.v-btn.v-btn--icon.theme--light {
   padding: 0.5rem;
-  background: tomato;
+  background: #CC3232;
   border: medium none;
   border-radius: 3.125rem;
   text-align: center;
@@ -554,7 +554,7 @@ div.order-address {
     border-top: 0.0625rem solid rgba(63, 74, 74, 0.3); }
     .table-drivers-filter .upper .select-driver {
       padding: 0.6875rem;
-      background-color: tomato;
+      background-color: #CC3232;
       color: #fff;
       font-weight: 600; }
     .table-drivers-filter .upper .autocomplete-container {
@@ -566,7 +566,7 @@ div.order-address {
     padding: 0.3125rem 0.625rem;
     overflow: auto; }
   .table-drivers-filter .driver-footer {
-    background-color: tomato;
+    background-color: #CC3232;
     width: 100%;
     height: 100%;
     text-align: right;
@@ -593,7 +593,7 @@ div.order-address {
   background-color: #f6f6f6;
   width: 100%;
   overflow: auto;
-  border: 1px solid #ddd;
+  border: 1px solid #E3E7F2;
   z-index: 1;
   margin-top: 0.1875rem;
   max-height: 12.5rem; }
@@ -608,11 +608,11 @@ div.order-address {
   padding-bottom: 0.6875rem;
   height: 2.5rem;
   border: medium none;
-  border-bottom: 0.0625rem solid #ddd;
+  border-bottom: 0.0625rem solid #E3E7F2;
   padding: 0; }
 
 .dropdown:hover {
-  background-color: #ddd; }
+  background-color: #E3E7F2; }
 
 .driver-container {
   position: relative; }
@@ -836,7 +836,7 @@ div#dm-delivered {
     margin: 0;
     color: #fff; }
     div#dm-delivered table .perfContainer.perfContainer-span > span.prepData {
-      background: tomato;
+      background: #CC3232;
       border-top-right-radius: 0 !important;
       border-bottom-right-radius: 0 !important; }
     div#dm-delivered table .perfContainer.perfContainer-span > span.pickData {
@@ -883,7 +883,7 @@ ul.dropdown-menu.show {
   padding: 0;
   background: #eee; }
   ul.dropdown-menu.show li:hover {
-    background: #ddd; }
+    background: #E3E7F2; }
   ul.dropdown-menu.show li a {
     font-size: 0.875rem;
     color: #000;
@@ -915,7 +915,7 @@ tr.dataContentStyle > td > a {
       right: 0;
       top: 0;
       margin: 0 auto;
-      background: tomato; }
+      background: #CC3232; }
       .dm-screen-wrap .page-header .current-time {
         display: none; }
       .dm-screen-wrap .page-header .button-block {

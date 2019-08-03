@@ -24,7 +24,7 @@
       color: #3d3f43;
       padding-left: 0.9375rem; }
       #customer .modal-dialog .modal-content .modal-body select.selectpicker, #manage-customer .modal-dialog .modal-content .modal-body select.selectpicker {
-        background-image: url("../images/select-arrow.png");
+        background-image: url("/assets/images/select-arrow.png");
         background-repeat: no-repeat;
         background-position: center right 0.625rem;
         -webkit-appearance: none;
@@ -115,5 +115,74 @@
   padding: 0 15px;
   font-weight: bold;
   text-transform: capitalize; }
+
+@media only screen and (min-width: 320px) and (max-width: 600px) {
+  #customer .modal-dialog {
+    max-width: none;
+    min-height: auto;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: 0; }
+    #customer .modal-dialog .modal-content .modal-body {
+      margin: 0;
+      padding: 20px;
+      background-color: #fff; }
+      #customer .modal-dialog .modal-content .modal-body .left-form {
+        padding: 0; }
+        #customer .modal-dialog .modal-content .modal-body .left-form > div {
+          margin-bottom: 10px; }
+          #customer .modal-dialog .modal-content .modal-body .left-form > div > input {
+            width: 100%; }
+          #customer .modal-dialog .modal-content .modal-body .left-form > div > select {
+            width: 100%; }
+          #customer .modal-dialog .modal-content .modal-body .left-form > div label {
+            padding: 0; }
+      #customer .modal-dialog .modal-content .modal-body .right-form {
+        padding: 0; }
+        #customer .modal-dialog .modal-content .modal-body .right-form > div {
+          margin-bottom: 10px; }
+          #customer .modal-dialog .modal-content .modal-body .right-form > div > input {
+            width: 100%; }
+          #customer .modal-dialog .modal-content .modal-body .right-form > div > select {
+            width: 100%; }
+          #customer .modal-dialog .modal-content .modal-body .right-form > div > label {
+            padding: 0; }
+        #customer .modal-dialog .modal-content .modal-body .right-form .customer-group .right-shift {
+          padding: 0; }
+          #customer .modal-dialog .modal-content .modal-body .right-form .customer-group .right-shift .vdatetime {
+            width: 100%; }
+            #customer .modal-dialog .modal-content .modal-body .right-form .customer-group .right-shift .vdatetime input {
+              margin: 0;
+              width: 100%; }
+    #customer .modal-dialog .modal-content .modal-footer {
+      background-color: #fff;
+      padding: 20px; } }
+@media only screen and (min-width: 320px) and (max-width: 600px) {
+  #search-loyalty-customer .modal-dialog {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+    min-height: auto;
+    border-left: 1px solid #ddd; }
+    #search-loyalty-customer .modal-dialog .modal-content .modal-header {
+      border-radius: 0;
+      padding: 10px 20px; }
+    #search-loyalty-customer .modal-dialog .modal-content .modal-body {
+      padding: 20px; }
+      #search-loyalty-customer .modal-dialog .modal-content .modal-body .add-note-area input {
+        width: 100%; }
+      #search-loyalty-customer .modal-dialog .modal-content .modal-body .inputSearch {
+        margin-bottom: 10px; }
+      #search-loyalty-customer .modal-dialog .modal-content .modal-body button {
+        margin-bottom: 10px;
+        border-radius: 3px; }
+    #search-loyalty-customer .modal-dialog .modal-content .modal-footer {
+      padding: 0px 20px 20px; } }
 
 /*# sourceMappingURL=customer.css.map */
