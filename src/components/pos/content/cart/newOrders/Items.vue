@@ -151,7 +151,7 @@ export default {
   width: 23px;
   height: 23px;
   border-radius: 50%;
-  background-color: #64c434;
+  background-color: #3a3e9e;
   display: flex;
   align-items: center;
   justify-content: center;

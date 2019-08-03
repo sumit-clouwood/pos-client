@@ -1,0 +1,16 @@
+#add-email .modal-dialog {
+  max-width: 25rem; }
+
+@media only screen and (min-width: 320px) and (max-width: 600px) {
+  #add-email .modal-dialog {
+    margin: 0;
+    width: 100vw;
+    max-width: none;
+    transform: none !important; }
+    #add-email .modal-dialog .modal-content {
+      top: auto;
+      border-radius: 0; }
+      #add-email .modal-dialog .modal-content .modal-header {
+        border-radius: 0; } }
+
+/*# sourceMappingURL=addEmail.css.map */

@@ -1,0 +1,63 @@
+#tip-amount .modal-dialog {
+  width: 25rem;
+  max-width: 25rem; }
+  #tip-amount .modal-dialog .modal-content {
+    border-radius: 3px; }
+    #tip-amount .modal-dialog .modal-content .modal-body {
+      text-align: center; }
+      #tip-amount .modal-dialog .modal-content .modal-body .dining-option-block .select-discount-option {
+        float: unset;
+        overflow: hidden;
+        width: 100%; }
+        #tip-amount .modal-dialog .modal-content .modal-body .dining-option-block .select-discount-option > div {
+          float: left;
+          width: 10rem;
+          border-radius: 3px;
+          border: 2px solid #e0e3e6;
+          background-color: #ffffff; }
+      #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap > p {
+        font-size: 0.875rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        padding: 1.25rem 0 0 0;
+        text-align: left; }
+      #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap input {
+        height: 3.125rem;
+        width: 100%;
+        border-radius: 3px;
+        border: medium none;
+        margin: 0 auto;
+        text-align: center;
+        color: #4B4E53;
+        border: 1px solid #E3E7F2;
+        margin-top: 0.625rem; }
+    #tip-amount .modal-dialog .modal-content .modal-footer .btn-announce #add-top {
+      width: 6.875rem;
+      height: 3.125rem;
+      border-radius: 3px;
+      background-color: #5056ca;
+      margin-left: 0.625rem;
+      border-color: #5056ca; }
+      #tip-amount .modal-dialog .modal-content .modal-footer .btn-announce #add-top > span {
+        padding-right: 0.625rem; }
+
+@media only screen and (min-width: 320px) and (max-width: 600px) {
+  #tip-amount {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0; }
+    #tip-amount .modal-dialog {
+      margin: 0;
+      width: 100vw;
+      max-width: none;
+      transform: none !important; }
+      #tip-amount .modal-dialog .modal-content {
+        border-radius: 0;
+        top: auto; }
+        #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap input {
+          text-align: left;
+          padding: 0 20px; } }
+
+/*# sourceMappingURL=tipAmount.css.map */
