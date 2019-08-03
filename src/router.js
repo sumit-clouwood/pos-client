@@ -25,6 +25,11 @@ const router = new Router({
       component: DeliveryManagerInit,
     },
     {
+      path: '/:brand_id/:store_id/:order_id',
+      name: 'Home',
+      component: Home,
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting

@@ -33,6 +33,7 @@ const state = {
   editInformation: {},
   modalStatus: 'Add',
   lookups: false,
+  buildingAreas: false,
 }
 const getters = {
   customer: state => {
@@ -133,6 +134,9 @@ const actions = {
       CustomerService.customerGroupList().then(response => {
         commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
       })
+      CustomerService.customerBuildings().then(buildingAreas => {
+        commit(mutation.BUILDING_AREA, buildingAreas.data.data)
+      })
     })
   },
 
@@ -190,16 +194,6 @@ const actions = {
     }
   },
 
-  /*customerLastOrder({ state, commit }, customerId) {
-    let customerLastOrderDetails = false
-    const lastOrder = Object.entries(state.lastOrder._id)
-    for (const [value] of lastOrder) {
-      if (value.customer == customerId) {
-        customerLastOrderDetails = value
-      }
-    }
-    commit(mutation.CUSTOMER_LAST_ORDERS, customerLastOrderDetails)
-  },*/
   fetchSelectedCustomer({ state, commit, dispatch, rootGetters }, customerId) {
     commit(mutation.SET_CUSTOMER_LOADING, true)
     dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
@@ -259,6 +253,8 @@ const actions = {
     dispatch('reset')
   },
   selectedAddress({ commit, dispatch }, address) {
+    // eslint-disable-next-line no-console
+    console.log(address)
     commit(mutation.SELECTED_CUSTOMER_ADDRESS, address)
     let orderType = { OTview: 'Delivery', OTApi: 'call_center' }
     dispatch('order/updateOrderType', orderType, { root: true })
@@ -332,6 +328,14 @@ const actions = {
     })
   },
 
+  setCustomerAddressById({ dispatch, state, getters }, addressId) {
+    let address = state.customer.customer_addresses.find(
+      address => address._id.$oid == addressId
+    )
+    address.delivery_area = getters.getDeliveryArea(address.delivery_area_id)
+    dispatch('selectedAddress', address)
+  },
+
   setOfflineData({ commit }, data) {
     commit(mutation.SET_OFFLINE_DATA, data)
   },
@@ -380,6 +384,9 @@ const mutations = {
   },
   [mutation.SET_CUSTOMER_GROUP](state, customerGroup) {
     state.customer_group = customerGroup
+  },
+  [mutation.BUILDING_AREA](state, buildingAreas) {
+    state.buildingAreas = buildingAreas
   },
   [mutation.SET_EDIT_DETAILS](state, details) {
     state.editInformation = details

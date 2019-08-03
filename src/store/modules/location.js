@@ -21,6 +21,7 @@ const state = {
   referrals: false,
   userShortDetails: false,
   permissions: false,
+  apiDate: '',
 }
 
 // getters
@@ -44,9 +45,6 @@ const getters = {
         )
       }
     }
-    console.log(pageId)
-    console.log(parentId)
-    console.log(routeMenus)
     return getChildren.length
   },
   /*collectRouteMenu: state => {
@@ -66,6 +64,7 @@ const getters = {
 // actions
 const actions = {
   fetch({ state, commit, dispatch, rootState }) {
+    dispatch('formatDate')
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
         .then(storedata => {
@@ -137,6 +136,17 @@ const actions = {
     LocationService.getReferrals().then(response => {
       commit(mutation.SET_REFERRALS, response.data.data)
     })
+  },
+
+  formatDate: function({ commit }) {
+    let d = new Date(),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear()
+    if (month.length < 2) month = '0' + month
+    if (day.length < 2) day = '0' + day
+    let dateAPI = [year, month, day].join('-')
+    commit(mutation.SET_DATE, dateAPI)
   },
 
   changeLanguage({ commit }, locale) {
@@ -213,6 +223,9 @@ const mutations = {
   [mutation.RESET](state) {
     state.setModal = '#manage-customer'
     state.userShortDetails = false
+  },
+  [mutation.SET_DATE](state, dateAPI) {
+    state.apiDate = dateAPI
   },
 }
 

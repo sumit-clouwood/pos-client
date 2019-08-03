@@ -45,17 +45,25 @@
                 })
               "
             >
+              {{ _t('Confirm') }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger btn-large"
+              data-dismiss="modal"
+            >
+              {{ _t('Cancel') }}
+            </button>
+          </div>
+          <div class="btn-announce" v-if="msg.result == ''">
+            <button
+              type="button"
+              class="btn btn-success btn-large"
+              data-dismiss="modal"
+            >
               {{ _t('Ok') }}
             </button>
           </div>
-          <button
-            v-if="msg.result !== 'success'"
-            type="button"
-            class="btn btn-default color-button"
-            data-dismiss="modal"
-          >
-            {{ _t('Close') }}
-          </button>
         </div>
       </div>
     </div>

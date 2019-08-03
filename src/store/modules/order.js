@@ -828,7 +828,7 @@ const actions = {
     commit(mutation.ORDER_TYPE, orderType)
     dispatch('surchargeCalculation')
   },
-
+  //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
   addOrderToCart({ rootState, commit, dispatch }, order) {
     return new Promise(resolve => {
       dispatch('reset')
@@ -879,22 +879,27 @@ const actions = {
   },
 
   selectedOrderDetails({ commit }, orderId) {
-    const params = ['orders', orderId, '']
-    OrderService.getGlobalDetails(...params).then(response => {
-      let orderDetails = {}
-      OrderService.getModalDetails('brand_cancellation_reasons').then(
-        responseData => {
-          commit(mutation.SET_CANCELLATION_REASON, responseData.data.data)
-        }
-      )
+    return new Promise((resolve, reject) => {
+      const params = ['orders', orderId, '']
+      OrderService.getGlobalDetails(...params)
+        .then(response => {
+          let orderDetails = {}
+          OrderService.getModalDetails('brand_cancellation_reasons')
+            .then(responseData => {
+              commit(mutation.SET_CANCELLATION_REASON, responseData.data.data)
+              resolve()
+            })
+            .catch(error => reject(error))
 
-      orderDetails.item = response.data.item
-      orderDetails.customer = response.data.collected_data.customer
-      orderDetails.lookups = response.data.collected_data.page_lookups
-      orderDetails.store_name = response.data.collected_data.store_name
-      orderDetails.invoice =
-        response.data.collected_data.store_invoice_templates
-      commit(mutation.SET_ORDER_DETAILS, orderDetails)
+          orderDetails.item = response.data.item
+          orderDetails.customer = response.data.collected_data.customer
+          orderDetails.lookups = response.data.collected_data.page_lookups
+          orderDetails.store_name = response.data.collected_data.store_name
+          orderDetails.invoice =
+            response.data.collected_data.store_invoice_templates
+          commit(mutation.SET_ORDER_DETAILS, orderDetails)
+        })
+        .catch(error => reject(error))
     })
   },
   removeOrder({ dispatch }, { order, orderType }) {
@@ -1003,9 +1008,12 @@ const mutations = {
 
   [mutation.INCREMENT_ORDER_ITEM_QUANTITY](state, index) {
     //need to use array splice to make it reactive
-    let orderItem = state.items[index]
-    orderItem.quantity++
-    state.items.splice(index, 1, orderItem)
+    state.items = state.items.map(item => {
+      if (item.orderIndex == index) {
+        item.quantity++
+      }
+      return item
+    })
   },
 
   [mutation.REMOVE_ORDER_ITEM](state, index) {
@@ -1015,7 +1023,12 @@ const mutations = {
   },
 
   [mutation.REPLACE_ORDER_ITEM](state, { item }) {
-    state.items.splice(item.orderIndex, 1, item)
+    state.items = state.items.map(stateItem => {
+      if (stateItem.orderIndex == item.orderIndex) {
+        return item
+      }
+      return stateItem
+    })
   },
 
   [mutation.ADD_MODIFIERS_TO_ITEM](state, { modifiers, modifierGroups }) {
@@ -1041,9 +1054,14 @@ const mutations = {
 
   [mutation.UPDATE_ITEM_QUANTITY](state, quantity) {
     const index = state.item.orderIndex
-    let orderItem = state.items[index]
-    orderItem.quantity = typeof quantity != 'undefined' ? quantity : 1
-    state.items.splice(index, 1, orderItem)
+    state.item.quantity = quantity
+
+    state.items = state.items.map(item => {
+      if (item.orderIndex == index) {
+        item.quantity = quantity
+      }
+      return item
+    })
   },
 
   [mutation.RESET](state) {

@@ -156,14 +156,13 @@ const actions = {
     if (checkAPIPermission) {
       DMService.getDMOrderDetails(...params)
         .then(response => {
-          console.log('in')
+          console.log('inside edge')
           commit(mutation.SET_DM_ORDERS, response.data)
           commit(mutation.SET_TOTAL_ORDER, response.data.count)
           commit(mutation.SET_LOADING, false)
           dispatch('getDrivers')
         })
         .catch(() => {
-          console.log('out')
           commit(mutation.SET_LOADING, false)
         })
     } else {
@@ -172,7 +171,6 @@ const actions = {
   },
   getDrivers({ commit, rootGetters }) {
     let role = rootGetters['auth/getRole']('delivery_home')
-    console.log(role)
     if (role) {
       DMService.getUsers(role._id).then(response => {
         console.log(response.data.data)

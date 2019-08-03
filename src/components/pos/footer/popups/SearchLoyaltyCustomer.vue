@@ -64,7 +64,6 @@
                 </span>
               </span>
             </div>
-            <!--            <small>{{searchTerm}}</small>-->
           </div>
         </form>
         <div class="modal-footer">

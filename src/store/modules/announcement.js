@@ -1,16 +1,15 @@
 import * as mutation from './announcement/mutation-types'
 import AnnouncementService from '@/services/data/AnnouncementService'
-
 const state = {
   announcements: false,
 }
 
 const actions = {
-  fetchAll: function({ commit, rootGetters }) {
-    // const params = [rootState.auth.userDetails._id, rootState.sync.date]
+  fetchAll: function({ commit, rootGetters, rootState }) {
     let role = rootGetters['auth/getRole']('pos')
     if (role) {
-      AnnouncementService.fetchAll(role._id).then(response => {
+      const params = [role._id, rootState.location.apiDate]
+      AnnouncementService.fetchAll(...params).then(response => {
         commit(mutation.SET_ANNOUNCEMENT, response.data.data)
       })
     }

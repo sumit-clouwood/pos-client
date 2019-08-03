@@ -6,7 +6,11 @@ function closeModal(modalName) {
   $('#transparent-screen').css('display', 'none')
   $(modalName).modal('hide')
 }
-
+$('*').click(function(e) {
+  // if(e.target.id != 'menu') {
+  $('#searchDropdown').hide()
+  // }
+})
 function showModal(modalName) {
   $(modalName).modal('show')
 }
