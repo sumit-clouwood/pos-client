@@ -93,7 +93,7 @@ export default {
 
           label {
             width: auto;
-            text-align: left;
+            text-align: left !important;
             margin: 0;
           }
 

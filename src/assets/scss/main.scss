@@ -122,8 +122,10 @@
             text-align: center;
             font-weight: 600;
             user-select: none;
-            word-break: break-word;
             padding: 0 $px5;
+            word-break: break-all;
+            line-height: $px20;
+
           }
 
           .food-categories-item-check {
@@ -194,6 +196,24 @@
         }
 
         .food-menu {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+          height: 60vh;
+          overflow: auto;
+          align-content: start;
+          grid-gap: $px20;
+          @include responsive(xs) {
+            grid-template-columns: 1fr 1fr 1fr;
+          }
+          @include responsive(sm) {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+          }
+          @include responsive(md) {
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+          }
+          @include responsive(lg) {
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+          }
 
           .food-menu-wrapper {
             overflow: auto;
@@ -202,18 +222,6 @@
             align-content: flex-start;
             padding-right: $px30;
             height: calc(100vh - #{$food-menu-height});
-          }
-
-          .food-menu-item {
-            background: none;
-            border: 0;
-            box-sizing: border-box;
-            font-size: inherit;
-            position: relative;
-            cursor: pointer;
-            background-color: #fff;
-            -webkit-transition: color 0.25s;
-            transition: color 0.25s;
           }
 
           .food-menu-item::before, .food-menu-item::after {
@@ -280,21 +288,15 @@
             }
           }
 
-          .food-menu-item:hover::after {
-            border-bottom-color: $blue-middle;
-            border-left-color: $blue-middle;
-            -webkit-transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
-            transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
-            border-radius: $card-border-radius;
-            @include responsive(mobile) {
-              display: none
-            }
-          }
 
           .food-menu-item {
+            background: none;
+            box-sizing: border-box;
+            position: relative;
             cursor: pointer;
-            width: $food-menu-item-width;
-            height: $food-menu-item-height;
+            background-color: #fff;
+            //width: 10vmax;
+            height: auto;
             border: 1px solid $gray-middle;
             border-radius: $card-border-radius;
             justify-self: center;
@@ -302,11 +304,20 @@
             grid-template-columns: auto;
             align-items: center;
             justify-content: center;
-            margin-right: $px20;
-            margin-bottom: $px20;
             padding: 0;
             transition: 0.2s linear;
             font-size: $px18;
+
+            &:hover::after {
+              border-bottom-color: $blue-middle;
+              border-left-color: $blue-middle;
+              -webkit-transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
+              transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
+              border-radius: $card-border-radius;
+              @include responsive(mobile) {
+                display: none
+              }
+            }
 
             &.bg {
               background-color: #56CCF2;
@@ -326,11 +337,14 @@
             }
 
             .food-menu-item-text {
-              word-break:break-word;
+              word-break: break-word;
               text-align: center;
               font-weight: 600;
               user-select: none;
               text-transform: capitalize;
+              line-height: $px20;
+              margin: 5px 0;
+              padding: 0 $px10;
             }
 
             .food-menu-item-price {
