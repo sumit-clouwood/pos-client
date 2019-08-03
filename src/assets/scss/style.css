@@ -190,9 +190,11 @@ div#nav-tabContent {
     flex: 1 1 auto;
     justify-content: center;
     text-align: center;
-    color: #495057; }
+    color: #4B4E53; }
     div#nav-tabContent .nav-tabs .nav-item.active {
-      border-bottom: 2px solid #5056CA !important; }
+      border-bottom: 2px solid #5056CA !important;
+      box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
+      background: #ddd; }
 
 .tab-content > .active {
   padding: 1.25rem; }
@@ -231,6 +233,19 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   color: rgba(63, 74, 74, 0.8);
   margin: 0; }
+
+.top-round-close-button {
+  cursor: pointer;
+  position: absolute;
+  top: -0.75rem;
+  color: #fff;
+  right: -0.625rem;
+  background: #3c3a3a;
+  padding: 0.0625rem;
+  border-radius: 50%;
+  height: 25px;
+  width: 25px;
+  text-align: center; }
 
 .header {
   border-bottom: 1px solid #ddd; }
@@ -339,6 +354,7 @@ h1, h2, h3, h4, h5, h6 {
         align-items: center;
         justify-content: center;
         margin-left: 1.25rem;
+        position: relative;
         cursor: pointer; }
         .header .header-main .header-main-right .nav-icon .nav-link svg {
           width: 1.5625rem;
@@ -348,18 +364,25 @@ h1, h2, h3, h4, h5, h6 {
         background: #fff;
         font-weight: 600;
         position: absolute;
-        padding: 0.625rem 1.5625rem;
-        bottom: -4.375rem;
+        top: 3.375rem;
+        right: 0;
+        width: 13.1875rem;
+        -webkit-box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
+        box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
         border: 1px solid #eee;
         border-radius: 3px;
         background-color: #fff;
         color: #000;
         z-index: 10;
         font-size: 1rem; }
-        .header .header-main .header-main-right .setting-dropdown li a {
-          font-size: 1.125rem;
-          color: #555;
-          font-weight: 400; }
+        .header .header-main .header-main-right .setting-dropdown li {
+          padding: 5px 20px; }
+          .header .header-main .header-main-right .setting-dropdown li:hover {
+            background: #ddd; }
+          .header .header-main .header-main-right .setting-dropdown li a {
+            font-size: 1.125rem;
+            color: #555;
+            font-weight: 400; }
       .header .header-main .header-main-right .popup {
         display: none; }
 
@@ -617,23 +640,23 @@ h1, h2, h3, h4, h5, h6 {
       margin: 0 4px; }
     #customer .modal-dialog .modal-content .modal-body .dob select:nth-child(4), #manage-customer .modal-dialog .modal-content .modal-body .dob select:nth-child(4) {
       width: 6.25rem; }
-    #customer .modal-dialog .modal-content .modal-body .left-form div, #manage-customer .modal-dialog .modal-content .modal-body .left-form div {
+    #customer .modal-dialog .modal-content .modal-body .left-form > div, #manage-customer .modal-dialog .modal-content .modal-body .left-form > div {
       margin-bottom: 1.5625rem;
       position: relative; }
-      #customer .modal-dialog .modal-content .modal-body .left-form div input, #manage-customer .modal-dialog .modal-content .modal-body .left-form div input {
+      #customer .modal-dialog .modal-content .modal-body .left-form > div input, #manage-customer .modal-dialog .modal-content .modal-body .left-form > div input {
         width: 19.6875rem;
         height: 3.125rem;
         border-radius: 3px;
         background-color: #ffffff;
         border: solid 1px #e4e7eb;
         padding: 0.625rem; }
-      #customer .modal-dialog .modal-content .modal-body .left-form div select, #manage-customer .modal-dialog .modal-content .modal-body .left-form div select {
+      #customer .modal-dialog .modal-content .modal-body .left-form > div select, #manage-customer .modal-dialog .modal-content .modal-body .left-form > div select {
         width: 19.6875rem;
         height: 3.125rem;
         border-radius: 3px;
         background-color: #ffffff;
         border: solid 1px #e4e7eb; }
-      #customer .modal-dialog .modal-content .modal-body .left-form div label, #manage-customer .modal-dialog .modal-content .modal-body .left-form div label {
+      #customer .modal-dialog .modal-content .modal-body .left-form > div label, #manage-customer .modal-dialog .modal-content .modal-body .left-form > div label {
         width: 13.4375rem;
         padding: 0 1.5625rem;
         font-size: 0.875rem;
@@ -647,26 +670,26 @@ h1, h2, h3, h4, h5, h6 {
     #customer .modal-dialog .modal-content .modal-body .left-form label span, #manage-customer .modal-dialog .modal-content .modal-body .left-form label span {
       color: #f44040;
       font-size: 1.5rem; }
-    #customer .modal-dialog .modal-content .modal-body .right-form div, #manage-customer .modal-dialog .modal-content .modal-body .right-form div {
+    #customer .modal-dialog .modal-content .modal-body .right-form > div, #manage-customer .modal-dialog .modal-content .modal-body .right-form > div {
       margin-bottom: 1.5625rem;
       position: relative;
       /*> select.selectpicker{
         width: $px889;
       }*/ }
-      #customer .modal-dialog .modal-content .modal-body .right-form div input, #manage-customer .modal-dialog .modal-content .modal-body .right-form div input {
+      #customer .modal-dialog .modal-content .modal-body .right-form > div input, #manage-customer .modal-dialog .modal-content .modal-body .right-form > div input {
         width: 19.6875rem;
         height: 3.125rem;
         border-radius: 3px;
         background-color: #ffffff;
         border: solid 1px #e4e7eb;
         padding: 0.625rem; }
-      #customer .modal-dialog .modal-content .modal-body .right-form div select, #manage-customer .modal-dialog .modal-content .modal-body .right-form div select {
+      #customer .modal-dialog .modal-content .modal-body .right-form > div select, #manage-customer .modal-dialog .modal-content .modal-body .right-form > div select {
         width: 19.6875rem;
         height: 3.125rem;
         border-radius: 3px;
         background-color: #ffffff;
         border: solid 1px #e4e7eb; }
-      #customer .modal-dialog .modal-content .modal-body .right-form div label, #manage-customer .modal-dialog .modal-content .modal-body .right-form div label {
+      #customer .modal-dialog .modal-content .modal-body .right-form > div label, #manage-customer .modal-dialog .modal-content .modal-body .right-form > div label {
         width: 13.4375rem;
         padding: 0 1.5625rem;
         font-size: 0.875rem;
@@ -1546,8 +1569,7 @@ a:hover {
   grid-gap: 2rem;
   display: grid;
   grid-template-columns: 1fr;
-  grid-column-gap: 0.625rem;
-  padding: 0 4.125rem; }
+  grid-column-gap: 0.625rem; }
   .pagination-customer-details > ul {
     padding-left: 0;
     margin-bottom: 0;
@@ -2181,7 +2203,7 @@ ul.fav-item-slider > li > img {
   opacity: 0.8;
   cursor: pointer; }
 
-.br-table-btn {
+.br-table-btn, .deactive-table-btn {
   display: none; }
 
 tr.referal-code-customer {
@@ -2341,7 +2363,7 @@ p.itm-price {
   background-color: #ffffff;
   border: solid 1px #e3e7f2;
   margin-bottom: 0.625rem;
-  padding: 1.25rem;
+  padding: 0.3125rem 0.9375rem;
   margin: 0 0.625rem 0.625rem; }
 
 .wrappers-orders > .orders-name > span {
@@ -2359,15 +2381,10 @@ p.itm-price {
   width: 72%; }
 
 .wrappers-orders .orders-name > p:nth-child(1) {
-  color: red;
-  font-size: 0.875rem;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: #3d3f43;
-  margin-bottom: 0.3rem; }
+  color: #3d3f43; }
 
 .wrappers-orders .orders-name > p:nth-child(2) {
   font-size: 0.875rem;
@@ -2380,7 +2397,7 @@ p.itm-price {
 
 .wrappers-orders .aed-amt > span {
   font-size: 0.875rem;
-  font-weight: normal;
+  font-weight: bold;
   font-style: normal;
   font-stretch: normal;
   line-height: normal;
@@ -2388,9 +2405,6 @@ p.itm-price {
   color: #3d3f43; }
 
 .dlt-btn > img {
-  vertical-align: top; }
-
-.wrappers-orders .aed-amt > span {
   vertical-align: top; }
 
 #online-order .modal-dialog {
@@ -2884,8 +2898,6 @@ button {
     font-size: 0.875rem;
     font-weight: 600;
     letter-spacing: 0.58px; }
-  button.br-table-btn.order-add {
-    margin-left: 0.625rem; }
   button.popup-btn-save {
     height: 3.125rem;
     box-shadow: 0 2px 2px #d1e6c5;
@@ -3463,13 +3475,13 @@ body {
       padding: 0px 0; }
     .main-orders .main-orders-contacts .main-oreders-email {
       color: #3A3E9F;
-      padding: 0 0.625rem;
+      padding: 0.125rem 0.625rem;
       font-weight: 600;
       text-align: left;
       font-size: 0.875rem;
       letter-spacing: 0.0625rem;
       position: relative;
-      border: 0.0625rem dashed #5056CA; }
+      border: 0.0625rem dashed #a4a4a4; }
       .main-orders .main-orders-contacts .main-oreders-email > span {
         position: absolute;
         top: -0.75rem;
@@ -3722,6 +3734,118 @@ body {
           font-size: 1.625rem;
           display: flex;
           align-items: center; }
+
+.login-container-container {
+  padding-bottom: 3rem; }
+
+.forgot-password-page.login-background-wrapper .login-container, .login-page.login-background-wrapper .login-container, .reset-password-page.login-background-wrapper .login-container {
+  position: relative;
+  width: 100%;
+  z-index: 200;
+  border-radius: 3px;
+  background: #fff;
+  color: #3f4a4a;
+  -webkit-box-shadow: 0 10px 20px rgba(23, 23, 32, 0.05), 0 6px 6px rgba(23, 23, 32, 0.05);
+  box-shadow: 0 10px 20px rgba(23, 23, 32, 0.05), 0 6px 6px rgba(23, 23, 32, 0.05);
+  overflow: hidden;
+  margin: 1.25rem auto;
+  max-width: 25rem; }
+
+.forgot-password-page.login-background-wrapper .login-container .login-title, .login-page.login-background-wrapper .login-container .login-title, .reset-password-page.login-background-wrapper .login-container .login-title {
+  background: #449eff;
+  padding: .625rem;
+  text-align: center;
+  font-size: 1.125rem;
+  line-height: 1.875rem;
+  font-weight: 300;
+  color: #fff; }
+
+.forgot-password-page.login-background-wrapper .login-container .login-body, .login-page.login-background-wrapper .login-container .login-body, .reset-password-page.login-background-wrapper .login-container .login-body {
+  padding: 1.875rem 1.5625rem .625rem 1.5625rem; }
+
+.forgot-password-page.login-background-wrapper .login-container .login-body .login-input, .login-page.login-background-wrapper .login-container .login-body .login-input, .reset-password-page.login-background-wrapper .login-container .login-body .login-input {
+  margin: 0;
+  min-height: 2.375rem;
+  font-size: 1.125rem;
+  color: rgba(63, 74, 74, 0.6);
+  border-radius: 0;
+  font-weight: 500;
+  padding: 7px 0 5px;
+  display: block;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid rgba(63, 74, 74, 0.3);
+  background-color: #fff;
+  background-image: none;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  height: 3.125rem;
+  margin-bottom: 1.5625rem;
+  padding-left: .625rem; }
+
+.forgot-password-page.login-background-wrapper .login-container .login-body label, .login-page.login-background-wrapper .login-container .login-body label, .reset-password-page.login-background-wrapper .login-container .login-body label {
+  font-size: .875rem; }
+
+.forgot-password-page.login-background-wrapper .login-container .login-body .align-right, .login-page.login-background-wrapper .login-container .login-body .align-right, .reset-password-page.login-background-wrapper .login-container .login-body .align-right {
+  text-align: right;
+  margin: 0 0 1.5625rem; }
+
+.btn.btn-flow {
+  background: grey none repeat scroll 0 0;
+  border-radius: 2px;
+  color: #fff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  -webkit-transition: all .4s ease 0s;
+  transition: all .4s ease 0s;
+  position: relative;
+  -webkit-transition: .7s;
+  transition: .7s;
+  border: 0;
+  font-size: 14px; }
+
+.btn.btn-flow span {
+  position: relative;
+  z-index: 1; }
+
+.forgot-password-page.login-background-wrapper .login-container .login-title, .login-page.login-background-wrapper .login-container .login-title, .reset-password-page.login-background-wrapper .login-container .login-title {
+  background: #449eff;
+  padding: .625rem;
+  text-align: center;
+  font-size: 1.125rem;
+  line-height: 1.875rem;
+  font-weight: 300;
+  color: #fff; }
+
+.forgot-password-page.login-background-wrapper .login-container .login-title.login-bottom > a, .login-page.login-background-wrapper .login-container .login-title.login-bottom > a, .reset-password-page.login-background-wrapper .login-container .login-title.login-bottom > a {
+  color: #fff; }
+
+.login-page.login-background-wrapper .before-login-wrapper .dimension-logo img {
+  width: 100%; }
+
+.forgot-password-page.login-background-wrapper, .login-page.login-background-wrapper, .reset-password-page.login-background-wrapper {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: auto;
+  background: #367fcc; }
+
+.forgot-password-page.login-background-wrapper .before-login-wrapper, .login-page.login-background-wrapper .before-login-wrapper, .reset-password-page.login-background-wrapper .before-login-wrapper {
+  margin: auto auto;
+  min-height: 100%;
+  max-width: 25rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column; }
 
 .new-transaction {
   display: grid;

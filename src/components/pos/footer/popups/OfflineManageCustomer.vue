@@ -65,13 +65,16 @@ export default {
   components: { InformationPopup, CustomerForm },
   methods: {
     post() {
+      console.log('posting')
       this.$store.commit('order/ORDER_TYPE', {
         OTview: 'Delivery',
         OTApi: 'call_center',
       })
       const errors = this.$refs.form.validate()
+      console.log('form errors', errors)
       if (errors.count === 0) {
         const data = this.$refs.form.getData()
+        console.log(data)
         if (!data.city) {
           data.city = this.$store.state.location.store.city
         }

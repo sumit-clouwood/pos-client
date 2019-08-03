@@ -239,9 +239,11 @@ div#nav-tabContent  {
       flex: 1 1 auto;
       justify-content: center;
       text-align: center;
-      color: #495057;
+      color: $btn-bg-black;
       &.active{
         border-bottom: 2px solid $blue-middle !important;
+        box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
+        background: $gray-middle;
       }
     }
   }
@@ -291,4 +293,18 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   color: rgba(63, 74, 74, 0.8);
   margin: 0;
+}
+
+.top-round-close-button {
+  cursor: pointer;
+  position: absolute;
+  top: -0.75rem;
+  color: #fff;
+  right: -0.625rem;
+  background: #3c3a3a;
+  padding: 0.0625rem;
+  border-radius: 50%;
+  height: 25px;
+  width: 25px;
+  text-align: center;
 }

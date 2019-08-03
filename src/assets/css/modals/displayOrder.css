@@ -505,7 +505,7 @@ ul.fav-item-slider > li > img {
   opacity: 0.8;
   cursor: pointer; }
 
-.br-table-btn {
+.br-table-btn, .deactive-table-btn {
   display: none; }
 
 tr.referal-code-customer {
@@ -665,7 +665,7 @@ p.itm-price {
   background-color: #ffffff;
   border: solid 1px #e3e7f2;
   margin-bottom: 0.625rem;
-  padding: 1.25rem;
+  padding: 0.3125rem 0.9375rem;
   margin: 0 0.625rem 0.625rem; }
 
 .wrappers-orders > .orders-name > span {
@@ -683,15 +683,10 @@ p.itm-price {
   width: 72%; }
 
 .wrappers-orders .orders-name > p:nth-child(1) {
-  color: red;
-  font-size: 0.875rem;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: #3d3f43;
-  margin-bottom: 0.3rem; }
+  color: #3d3f43; }
 
 .wrappers-orders .orders-name > p:nth-child(2) {
   font-size: 0.875rem;
@@ -704,7 +699,7 @@ p.itm-price {
 
 .wrappers-orders .aed-amt > span {
   font-size: 0.875rem;
-  font-weight: normal;
+  font-weight: bold;
   font-style: normal;
   font-stretch: normal;
   line-height: normal;
@@ -712,9 +707,6 @@ p.itm-price {
   color: #3d3f43; }
 
 .dlt-btn > img {
-  vertical-align: top; }
-
-.wrappers-orders .aed-amt > span {
   vertical-align: top; }
 
 /*# sourceMappingURL=displayOrder.css.map */

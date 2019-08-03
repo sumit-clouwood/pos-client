@@ -1,11 +1,11 @@
 import * as mutation from './holdOrders/mutation-types'
 import OrderService from '@/services/data/OrderService'
-// import OrderService from '../../services/data/OrderService'
 
 const state = {
   getHoldOrders: false,
   orderDetails: {},
   pageLookups: {},
+  loading: false,
   params: {
     query: '',
     limit: 10,
@@ -28,9 +28,12 @@ const actions = {
       state.params.page,
       'orders_main_tbl',
       '',
+      '',
     ]
+    commit(mutation.LOADING, false)
     OrderService.getOrders(...params).then(response => {
       commit(mutation.GET_HOLD_ORDERS, response.data)
+      commit(mutation.LOADING, true)
       commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
     })
   },
@@ -42,6 +45,19 @@ const actions = {
   fetchOrder({ commit, dispatch }, selectedOrder) {
     commit(mutation.GET_HOLD_ORDER_DETAILS, selectedOrder)
     dispatch('order/addHoldOrder', selectedOrder, { root: true })
+    if (selectedOrder.customer != null) {
+      dispatch('customer/fetchSelectedCustomer', selectedOrder.customer, {
+        root: true,
+      }).then(() => {
+        dispatch(
+          'customer/setCustomerAddressById',
+          selectedOrder.customer_address_id,
+          {
+            root: true,
+          }
+        )
+      })
+    }
   },
 
   holdOrder({ commit }) {
@@ -65,6 +81,9 @@ const mutations = {
   },
   [mutation.GET_MORE_ORDER](state, pageNumber) {
     state.params.page = pageNumber
+  },
+  [mutation.LOADING](state, status) {
+    state.loading = status
   },
   [mutation.GET_HOLD_ORDER_DETAILS](state, order) {
     state.orderDetails = order

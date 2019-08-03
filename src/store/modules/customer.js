@@ -1,6 +1,7 @@
 import * as mutation from './customer/mutation-types'
 import CustomerService from '@/services/data/CustomerService'
 import LookupData from '@/plugins/helpers/LookupData'
+import OrderService from '@/services/data/OrderService'
 
 const state = {
   customer_list: [],
@@ -98,6 +99,7 @@ const actions = {
     dispatch('setDefaultSettingsGlobalAddUpdate', ...params)
   },
   fetchAll({ commit, rootState, dispatch, state }) {
+    commit(mutation.SET_LOADING, true)
     return new Promise((resolve, reject) => {
       const params = [
         rootState.context.storeId,
@@ -110,7 +112,7 @@ const actions = {
 
       CustomerService.customerList(...params)
         .then(response => {
-          if (response.data.data.length) {
+          if (!isNaN(response.data.count)) {
             let totalPages = Math.ceil(
               parseInt(response.data.count) / parseInt(state.params.page_size)
             )
@@ -121,9 +123,9 @@ const actions = {
           } else {
             reject(response.data.data)
           }
+          commit(mutation.SET_LOADING, false)
         })
         .catch(error => reject(error))
-
       //fetch customer deliver areas
       resolve()
       dispatch('fetchDeliveryArea', '')
@@ -147,7 +149,21 @@ const actions = {
     let customerId = state.customer._id
     dispatch('fetchSelectedCustomer', customerId)
   },
-
+  getMorePastOrder({ commit, state }, pageNumber) {
+    const params = [
+      '',
+      state.params.page_size,
+      'real_created_datetime',
+      '',
+      pageNumber,
+      'orders_main_tbl',
+      '',
+      state.customer._id,
+    ]
+    OrderService.getOrders(...params).then(response => {
+      commit(mutation.PAST_ORDERS, response.data.data)
+    })
+  },
   searchCustomer: function({ commit, dispatch }, searchTerms) {
     return new Promise((resolve, reject) => {
       commit(mutation.CUSTOMER_LIST, [])
@@ -174,16 +190,6 @@ const actions = {
     }
   },
 
-  /*customerLastOrder({ state, commit }, customerId) {
-    let customerLastOrderDetails = false
-    const lastOrder = Object.entries(state.lastOrder._id)
-    for (const [value] of lastOrder) {
-      if (value.customer == customerId) {
-        customerLastOrderDetails = value
-      }
-    }
-    commit(mutation.CUSTOMER_LAST_ORDERS, customerLastOrderDetails)
-  },*/
   fetchSelectedCustomer({ state, commit, dispatch, rootGetters }, customerId) {
     commit(mutation.SET_CUSTOMER_LOADING, true)
     dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
@@ -239,9 +245,12 @@ const actions = {
     customerDetails.deliveryAreas = false
     customerDetails.pastOrders = false
     commit(mutation.SELECTED_CUSTOMER, customerDetails)
+    commit('order/SET_REFERRAL', false, { root: true })
     dispatch('reset')
   },
   selectedAddress({ commit, dispatch }, address) {
+    // eslint-disable-next-line no-console
+    console.log(address)
     commit(mutation.SELECTED_CUSTOMER_ADDRESS, address)
     let orderType = { OTview: 'Delivery', OTApi: 'call_center' }
     dispatch('order/updateOrderType', orderType, { root: true })
@@ -315,6 +324,14 @@ const actions = {
     })
   },
 
+  setCustomerAddressById({ dispatch, state, getters }, addressId) {
+    let address = state.customer.customer_addresses.find(
+      address => address._id.$oid == addressId
+    )
+    address.delivery_area = getters.getDeliveryArea(address.delivery_area_id)
+    dispatch('selectedAddress', address)
+  },
+
   setOfflineData({ commit }, data) {
     commit(mutation.SET_OFFLINE_DATA, data)
   },
@@ -357,7 +374,8 @@ const mutations = {
   },
   [mutation.SET_SEARCH_TERMS](state, searchTerms) {
     state.params.query = searchTerms
-    state.pageId = 'main_crm_list'
+    state.pageId = 'brand_customers_main_tbl'
+    //  searchTerms.length > 0 ? 'main_crm_list' : 'brand_customers_main_tbl'
     state.params.page_number = 1
   },
   [mutation.SET_CUSTOMER_GROUP](state, customerGroup) {
@@ -396,6 +414,9 @@ const mutations = {
   },
   [mutation.SELECTED_CUSTOMER_ADDRESS](state, selectedAddress) {
     state.address = selectedAddress
+  },
+  [mutation.PAST_ORDERS](state, pastOrders) {
+    state.pastOrders = pastOrders
   },
   /*[mutation.FETCH_CUSTOMER_ADDRESSES](state, addressList) {
     state.allOnlineAddress = addressList

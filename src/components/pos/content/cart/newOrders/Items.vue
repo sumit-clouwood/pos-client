@@ -7,7 +7,9 @@
     >
       <div class="main-orders-list-item-title color-text">
         <div class="orders-name">{{ dt(item) }}</div>
-        <div class="orders-amount">{{ formatPrice(itemPrice(item)) }}</div>
+        <div class="orders-amount">
+          {{ formatPrice(itemGrossPriceDiscounted(item)) }}
+        </div>
         <div
           class="orders-close"
           @click.prevent="removeFromOrder({ item: item, index: index })"
@@ -20,7 +22,7 @@
         </div>
       </div>
       <div class="main-orders-list-item-subtitle color-text-invert">
-        @ {{ Num.round(item.undiscountedGrossPrice).toFixed(2) }} x
+        @ {{ formatPrice(itemGrossPrice(item)) }} x
         {{ item.quantity }}
         {{ discountInfo(item) }}
       </div>
@@ -30,7 +32,7 @@
           class="button-plus"
           data-toggle="modal"
           data-target="#POSOrderItemOptions"
-          @click="setActiveItem({ orderItem: item, index: index })"
+          @click="setActiveItem({ orderItem: item })"
         >
           <i class="fa fa-plus-circle color-text"></i>
         </div>
@@ -53,7 +55,12 @@ export default {
     ...mapState('order', ['orderType']),
     ...mapGetters('category', ['subcategoryImage']),
     ...mapGetters('modifier', ['hasModifiers']),
-    ...mapGetters('order', ['items', 'itemPrice', 'orderModifiers']),
+    ...mapGetters('order', [
+      'items',
+      'itemGrossPriceDiscounted',
+      'itemGrossPrice',
+      'orderModifiers',
+    ]),
     ...mapGetters('location', ['formatPrice']),
   },
   methods: {
@@ -87,7 +94,7 @@ export default {
         if (this.$store.state.discount.appliedOrderDiscount) {
           this.$store.dispatch('discount/clearOrderDiscount')
         } else {
-          this.$store.dispatch('discount/removeItemDiscount')
+          this.$store.dispatch('discount/clearItemDiscount')
         }
     },
   },

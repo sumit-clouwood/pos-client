@@ -139,15 +139,15 @@ $(document).ready(function() {
     $('.amount-keypad').toggle()
   })
 
-  $('#payment-method')
-    .not('.slick-initialized')
-    .slick({
-      arrows: false,
-      infinite: true,
-      slidesToShow: 4,
-      slidesToScroll: 4,
-      dots: true,
-    })
+  // $('#payment-method')
+  //   .not('.slick-initialized')
+  //   .slick({
+  //     arrows: false,
+  //     infinite: true,
+  //     slidesToShow: 4,
+  //     slidesToScroll: 4,
+  //     dots: true,
+  //   })
 
   var heightTop = parseInt($('.navigation-list').css('top'))
   $('.slider-btn').click(function() {
@@ -433,9 +433,9 @@ $(document).ready(function() {
     prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
   })
 
-  $('li#pay-now').click(function() {
-    $('#payment-method .VueCarousel-inner').removeAttr('style')
-  })
+  // $('li#pay-now').click(function() {
+  //   $('#payment-method .VueCarousel-inner').removeAttr('style')
+  // })
 
   $('.br-table-btn').click(function() {
     // $("#payment-method").trigger();
@@ -683,6 +683,6 @@ $(document).ready(function() {
       .removeClass('active')
   })
   $('li.pay-now').click(function() {
-    $('#payment-method')[0].slick.refresh()
+    //$('#payment-method')[0].slick.refresh()
   })
 })

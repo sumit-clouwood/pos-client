@@ -28,29 +28,33 @@ const getters = {
     }
 
     order.items.forEach(item => {
-      data.subTotal += parseFloat(item.price) * parseFloat(item.qty)
-      data.totalTax += parseFloat(item.tax) * parseFloat(item.qty)
+      data.subTotal += Num.round(Num.round(item.price) * Num.round(item.qty))
+      data.totalTax += Num.round(Num.round(item.tax) * Num.round(item.qty))
     })
 
     order.item_modifiers.forEach(modifier => {
-      data.subTotal += parseFloat(modifier.price) * parseFloat(modifier.qty)
-      data.totalTax += parseFloat(modifier.tax) * parseFloat(modifier.qty)
+      data.subTotal += Num.round(
+        Num.round(modifier.price) * Num.round(modifier.qty)
+      )
+      data.totalTax += Num.round(
+        Num.round(modifier.tax) * Num.round(modifier.qty)
+      )
     })
 
     order.order_surcharges.forEach(surcharge => {
-      data.totalSurcharge += parseFloat(surcharge.price)
-      data.surchargeTax += parseFloat(surcharge.tax)
-      data.totalTax += parseFloat(surcharge.tax)
+      data.totalSurcharge += Num.round(surcharge.price)
+      data.surchargeTax += Num.round(surcharge.tax)
+      data.totalTax += Num.round(surcharge.tax)
     })
 
     order.item_discounts.forEach(discount => {
-      data.subTotal -= parseFloat(discount.price)
-      data.totalTax -= parseFloat(discount.tax)
+      data.subTotal -= Num.round(discount.price)
+      data.totalTax -= Num.round(discount.tax)
     })
 
     order.order_discounts.forEach(discount => {
-      data.totalDiscount += parseFloat(discount.price)
-      data.totalTax -= parseFloat(discount.tax)
+      data.totalDiscount += Num.round(discount.price)
+      data.totalTax -= Num.round(discount.tax)
     })
 
     data.balanceDue =
@@ -70,7 +74,7 @@ const actions = {
       let validPayment = false
       const totalPayable = rootGetters['checkoutForm/orderTotal']
       commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
-
+      commit('invoice/RESET', null, { root: true })
       if (
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
         action === CONSTANTS.ORDER_STATUS_ON_HOLD
@@ -103,10 +107,10 @@ const actions = {
       if (validPayment) {
         //send order for payment
         let order = {}
-
         try {
           order = {
             customer: '',
+            customer_address_id: '',
             referral: '',
             transition_order_no: '',
             currency: rootState.location.currency,
@@ -209,17 +213,13 @@ const actions = {
         let item_discounts = []
         //let itemDiscountedTax = 0
         order.items = rootState.order.items.map(item => {
-          const itemTax = rootState.tax.itemsTaxData.find(
-            taxData => taxData.orderIndex == item.orderIndex
-          )
-
           let orderItem = {
             name: item.name,
             entity_id: item._id,
             no: item.orderIndex,
             //itemTax.undiscountedTax is without modifiers
-            tax: itemTax ? itemTax.undiscountedTax : 0,
-            price: item.undiscountedNetPriceWithoutModifiers,
+            tax: item.tax,
+            price: item.netPrice,
             qty: item.quantity,
           }
 
@@ -232,34 +232,26 @@ const actions = {
             itemDiscount.itemNo = item.orderIndex
             itemDiscount.quantity = item.quantity
             //undiscountedTax is without modifiers
-            itemDiscount.tax = itemTax
-              ? itemTax.undiscountedTaxWithModifiers - itemTax.taxWithModifiers
-              : 0
-            //itemDiscountedTax += itemDiscount.tax
+            itemDiscount.tax = Num.round(
+              Num.round(rootGetters['order/itemTaxDiscount'](item)) +
+                Num.round(rootGetters['order/itemModifierTaxDiscount'](item))
+            )
+            itemDiscount.price =
+              rootGetters['order/itemNetDiscount'](item) +
+              rootGetters['order/itemModifierDiscount'](item)
             item_discounts.push(itemDiscount)
           }
 
-          if (item.modifiers.length) {
-            item.modifiers.forEach(modifierId => {
-              const subgroups = rootGetters['modifier/itemModifiers'](item._id)
-              subgroups.forEach(subgroup => {
-                subgroup.modifiers.forEach(modifier => {
-                  if (modifier._id === modifierId) {
-                    const modfierTaxData = rootGetters['tax/modifierTaxData']({
-                      orderIndex: item.orderIndex,
-                      modifierId: modifierId,
-                    })
-                    itemModifiers.push({
-                      entity_id: modifierId,
-                      for_item: item.orderIndex,
-                      price: modfierTaxData.price,
-                      tax: modfierTaxData.tax,
-                      name: modifier.name,
-                      qty: item.quantity,
-                      type: subgroup.item_type,
-                    })
-                  }
-                })
+          if (item.modifiersData && item.modifiersData.length) {
+            item.modifiersData.forEach(modifier => {
+              itemModifiers.push({
+                entity_id: modifier.modifierId,
+                for_item: item.orderIndex,
+                price: modifier.price,
+                tax: modifier.tax,
+                name: modifier.name,
+                qty: item.quantity,
+                type: modifier.type,
               })
             })
             //get all modifiers by modifier ids attached to item
@@ -267,24 +259,20 @@ const actions = {
           return orderItem
         })
 
-        // //adding final tax
-        // const itemsTax = rootState.tax.itemsTaxData.reduce((totalTax, item) => {
-        //   return totalTax + item.tax * item.quantity
-        // }, 0)
-        // const surchargeTax = rootState.surcharge.surchargeAmounts.reduce(
-        //   (totalTax, item) => {
-        //     return totalTax + item.tax
-        //   },
-        //   0
-        // )
-
-        // if (rootState.discount.appliedOrderDiscount) {
-        //   //order discount was applied, deduct tax discount amount from total
-        //   order.total_tax = rootGetters['tax/totalTax']
-        // } else {
-        //   //no order discount, may be  item discount applied
-        //   order.total_tax = surchargeTax + itemsTax
-        // }
+        order.item_discounts = item_discounts.map(itemDiscount => {
+          return {
+            name: itemDiscount.name,
+            type: itemDiscount.type,
+            rate:
+              itemDiscount.type === CONSTANTS.VALUE
+                ? itemDiscount.value
+                : itemDiscount.rate,
+            price: itemDiscount.price * itemDiscount.quantity,
+            tax: itemDiscount.tax * itemDiscount.quantity,
+            for_item: itemDiscount.itemNo,
+            entity_id: itemDiscount.id,
+          }
+        })
 
         order.item_modifiers = itemModifiers
 
@@ -295,7 +283,7 @@ const actions = {
           const discount = rootState.discount.appliedOrderDiscount
           const orderDiscount = {
             name: discount.name,
-            price: rootGetters['discount/orderDiscountWithoutTax'],
+            price: Num.round(rootGetters['discount/orderDiscountWithoutTax']),
             tax: rootState.discount.taxDiscountAmount,
             type: discount.type,
             rate:
@@ -308,22 +296,6 @@ const actions = {
           order.order_discounts.push(orderDiscount)
         }
 
-        //addint item discounts
-
-        order.item_discounts = item_discounts.map(itemDiscount => {
-          return {
-            name: itemDiscount.name,
-            type: itemDiscount.type,
-            rate:
-              itemDiscount.type === CONSTANTS.VALUE
-                ? itemDiscount.value
-                : itemDiscount.rate,
-            price: Num.round(itemDiscount.discount) * itemDiscount.quantity,
-            tax: Num.round(itemDiscount.tax) * itemDiscount.quantity,
-            for_item: itemDiscount.itemNo,
-            entity_id: itemDiscount.id,
-          }
-        })
         //adding tip amount
         order.tip_amount = rootState.checkoutForm.tipAmount
 
@@ -368,6 +340,9 @@ const actions = {
             CONSTANTS.ORDER_TYPE_CALL_CENTER ||
           action === CONSTANTS.ORDER_STATUS_ON_HOLD
         ) {
+          if (rootState.customer.address) {
+            order.customer_address_id = rootState.customer.address._id.$oid
+          }
           //do something here
         } else {
           const method = rootGetters['payment/cash']
@@ -459,11 +434,25 @@ const actions = {
     )
     return new Promise((resolve, reject) => {
       let response = null
+
+      //set order id to be used for invoicing
+      let orderId = null
+
+      //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
+      //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
+      //                already but we want to modify it from delivery manager
+
+      //order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER means its a new delivery order
+      // we send user directly to delivery manager after printing invoice so we auto print inoivce
+      // without waiting for a button to be clicked
+
       //order.order is a hold order, state.order contains current order
       if (
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
       ) {
+        //set order id for modify orders or delivery order
+        orderId = rootState.order.orderId
         let order = { ...state.order }
         order.new_real_transition_order_no = ''
         delete order.real_created_datetime
@@ -475,7 +464,7 @@ const actions = {
             modifyType = 'hold'
             break
           case CONSTANTS.ORDER_STATUS_IN_DELIVERY:
-            order.modify_reason = 'Item changed'
+            order.modify_reason = 'Updated from POS'
             break
         }
 
@@ -494,16 +483,15 @@ const actions = {
       response
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
-
           if (response.data.status === 'ok') {
+            if (typeof response.data.id !== 'undefined') {
+              //this is walk in order
+              orderId = response.data.id
+            }
             //check what is order status, hold or modifying delivery
             switch (rootState.order.orderStatus) {
               case CONSTANTS.ORDER_STATUS_ON_HOLD:
-                commit(mutation.PRINT, true)
                 dispatch('holdOrders/getHoldOrders', {}, { root: true })
-                break
-              case CONSTANTS.ORDER_STATUS_IN_DELIVERY:
-                commit(mutation.PRINT, true)
                 break
             }
 
@@ -524,14 +512,12 @@ const actions = {
               return true
             }
 
-            const orderId = response.data.id
-
             if (!rootState.order.orderId) {
               commit('order/SET_ORDER_ID', orderId, { root: true })
             }
 
-            //else
             let msgStr = rootGetters['location/_t']('Order placed Successfully')
+
             commit(
               'checkoutForm/SET_MSG',
               { result: 'success', message: msgStr },
@@ -555,15 +541,20 @@ const actions = {
                 {
                   root: true,
                 }
-              ).then(() => {
-                //invoice print is triggered by the success ok button
-                if (
-                  rootState.order.orderType.OTApi ==
-                  CONSTANTS.ORDER_TYPE_CALL_CENTER
-                ) {
+              )
+                .then(() => {
+                  //invoice print is triggered by the success ok button
                   commit(mutation.PRINT, true)
-                }
-              })
+                })
+                .catch(error => {
+                  commit(
+                    'checkoutForm/SET_MSG',
+                    { result: 'error', message: error },
+                    {
+                      root: true,
+                    }
+                  )
+                })
             })
 
             commit(
@@ -647,7 +638,6 @@ const actions = {
     commit(mutation.RESET)
     dispatch('checkoutForm/reset', {}, { root: true })
     dispatch('order/reset', {}, { root: true })
-    dispatch('tax/reset', {}, { root: true })
     dispatch('discount/reset', {}, { root: true })
     dispatch('surcharge/reset', {}, { root: true })
     dispatch('customer/reset', {}, { root: true })

@@ -36,23 +36,23 @@
       margin: 0 4px; }
     #customer .modal-dialog .modal-content .modal-body .dob select:nth-child(4), #manage-customer .modal-dialog .modal-content .modal-body .dob select:nth-child(4) {
       width: 6.25rem; }
-    #customer .modal-dialog .modal-content .modal-body .left-form div, #manage-customer .modal-dialog .modal-content .modal-body .left-form div {
+    #customer .modal-dialog .modal-content .modal-body .left-form > div, #manage-customer .modal-dialog .modal-content .modal-body .left-form > div {
       margin-bottom: 1.5625rem;
       position: relative; }
-      #customer .modal-dialog .modal-content .modal-body .left-form div input, #manage-customer .modal-dialog .modal-content .modal-body .left-form div input {
+      #customer .modal-dialog .modal-content .modal-body .left-form > div input, #manage-customer .modal-dialog .modal-content .modal-body .left-form > div input {
         width: 19.6875rem;
         height: 3.125rem;
         border-radius: 3px;
         background-color: #ffffff;
         border: solid 1px #e4e7eb;
         padding: 0.625rem; }
-      #customer .modal-dialog .modal-content .modal-body .left-form div select, #manage-customer .modal-dialog .modal-content .modal-body .left-form div select {
+      #customer .modal-dialog .modal-content .modal-body .left-form > div select, #manage-customer .modal-dialog .modal-content .modal-body .left-form > div select {
         width: 19.6875rem;
         height: 3.125rem;
         border-radius: 3px;
         background-color: #ffffff;
         border: solid 1px #e4e7eb; }
-      #customer .modal-dialog .modal-content .modal-body .left-form div label, #manage-customer .modal-dialog .modal-content .modal-body .left-form div label {
+      #customer .modal-dialog .modal-content .modal-body .left-form > div label, #manage-customer .modal-dialog .modal-content .modal-body .left-form > div label {
         width: 13.4375rem;
         padding: 0 1.5625rem;
         font-size: 0.875rem;
@@ -66,26 +66,26 @@
     #customer .modal-dialog .modal-content .modal-body .left-form label span, #manage-customer .modal-dialog .modal-content .modal-body .left-form label span {
       color: #f44040;
       font-size: 1.5rem; }
-    #customer .modal-dialog .modal-content .modal-body .right-form div, #manage-customer .modal-dialog .modal-content .modal-body .right-form div {
+    #customer .modal-dialog .modal-content .modal-body .right-form > div, #manage-customer .modal-dialog .modal-content .modal-body .right-form > div {
       margin-bottom: 1.5625rem;
       position: relative;
       /*> select.selectpicker{
         width: $px889;
       }*/ }
-      #customer .modal-dialog .modal-content .modal-body .right-form div input, #manage-customer .modal-dialog .modal-content .modal-body .right-form div input {
+      #customer .modal-dialog .modal-content .modal-body .right-form > div input, #manage-customer .modal-dialog .modal-content .modal-body .right-form > div input {
         width: 19.6875rem;
         height: 3.125rem;
         border-radius: 3px;
         background-color: #ffffff;
         border: solid 1px #e4e7eb;
         padding: 0.625rem; }
-      #customer .modal-dialog .modal-content .modal-body .right-form div select, #manage-customer .modal-dialog .modal-content .modal-body .right-form div select {
+      #customer .modal-dialog .modal-content .modal-body .right-form > div select, #manage-customer .modal-dialog .modal-content .modal-body .right-form > div select {
         width: 19.6875rem;
         height: 3.125rem;
         border-radius: 3px;
         background-color: #ffffff;
         border: solid 1px #e4e7eb; }
-      #customer .modal-dialog .modal-content .modal-body .right-form div label, #manage-customer .modal-dialog .modal-content .modal-body .right-form div label {
+      #customer .modal-dialog .modal-content .modal-body .right-form > div label, #manage-customer .modal-dialog .modal-content .modal-body .right-form > div label {
         width: 13.4375rem;
         padding: 0 1.5625rem;
         font-size: 0.875rem;

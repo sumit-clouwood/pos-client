@@ -24,3 +24,4 @@ package-lock.json
 .eslintrc.json
 .env
 .env.development
+/src/assets/.scss-cache/

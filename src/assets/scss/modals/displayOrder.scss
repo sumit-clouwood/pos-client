@@ -699,7 +699,7 @@ ul.fav-item-slider > li > img {
   cursor: pointer;
 }
 
-.br-table-btn {
+.br-table-btn, .deactive-table-btn {
   display: none;
 }
 
@@ -899,7 +899,7 @@ p.itm-price {
   background-color: #ffffff;
   border: solid 1px #e3e7f2;
   margin-bottom: $px10;
-  padding: $px20;
+  padding: $px5 $px15;
   margin: 0 $px10 $px10;
 }
 
@@ -922,15 +922,14 @@ p.itm-price {
 }
 
 .wrappers-orders .orders-name > p:nth-child(1) {
-  color: red;
-  font-size: $px14;
+  //font-size: $px14;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
+  //line-height: normal;
+  //letter-spacing: normal;
   color: #3d3f43;
-  margin-bottom: 0.3rem;
+  //margin-bottom: 0.3rem;
 }
 
 .wrappers-orders .orders-name > p:nth-child(2) {
@@ -945,7 +944,7 @@ p.itm-price {
 
 .wrappers-orders .aed-amt > span {
   font-size: $px14;
-  font-weight: normal;
+  font-weight: bold;
   font-style: normal;
   font-stretch: normal;
   line-height: normal;
@@ -954,9 +953,5 @@ p.itm-price {
 }
 
 .dlt-btn > img {
-  vertical-align: top;
-}
-
-.wrappers-orders .aed-amt > span {
   vertical-align: top;
 }
