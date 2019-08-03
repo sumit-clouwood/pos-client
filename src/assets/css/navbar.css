@@ -64,8 +64,11 @@
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav .nav-link-text {
             font-size: 1.125rem;
             text-align: center;
-            display: block;
-            word-break: break-word; }
+            word-break: break-word;
+            min-height: 4.6875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center; }
   .navigation .slider-btn {
     color: #fff;
     margin: 0 auto;

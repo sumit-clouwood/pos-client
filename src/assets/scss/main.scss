@@ -123,7 +123,7 @@
             font-weight: 600;
             user-select: none;
             padding: 0 $px5;
-            word-break: break-all;
+            word-break: break-word;
             line-height: $px20;
 
           }
@@ -351,7 +351,9 @@
               align-items: center;
               justify-content: center;
             }
-
+            .item-image-only {
+              height: 104px;
+            }
             .food-menu-item-price {
               display: none;
             }
