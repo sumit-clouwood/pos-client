@@ -1,38 +1,18 @@
 import * as mutation from './announcement/mutation-types'
 import AnnouncementService from '@/services/data/AnnouncementService'
-// import dateTimeAPI from '@/plugins/helpers/DateTime.js'
-
 const state = {
   announcements: false,
-  apiDate: '2019-08-03',
 }
 
 const actions = {
-  fetchAll: function({ commit, rootGetters, dispatch, state }) {
-    dispatch('formatDate')
-
-    // const params = [rootState.auth.userDetails._id, rootState.sync.date]
+  fetchAll: function({ commit, rootGetters, rootState }) {
     let role = rootGetters['auth/getRole']('pos')
     if (role) {
-      // const params = [role._id, dateTimeAPI.DateAPI]
-      const params = [role._id, state.apiDate]
+      const params = [role._id, rootState.location.apiDate]
       AnnouncementService.fetchAll(...params).then(response => {
         commit(mutation.SET_ANNOUNCEMENT, response.data.data)
       })
     }
-  },
-  formatDate: function() {
-    let d = new Date(),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear()
-
-    if (month.length < 2) month = '0' + month
-    if (day.length < 2) day = '0' + day
-    // eslint-disable-next-line no-console
-    console.log(year + '/' + month + '/' + day)
-    // return year + '/' + month + '/' + day
-    // return [year, month, day].join('-')
   },
 }
 
