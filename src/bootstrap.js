@@ -50,6 +50,7 @@ export default {
                 this.store.dispatch('surcharge/fetchAll').then(() => {})
                 this.store.dispatch('discount/fetchAll').then(() => {})
                 this.store.dispatch('payment/fetchAll').then(() => {})
+                this.store.dispatch('auth/fetchRoles').then(() => {})
               })
             })
             .catch(error => reject(error))

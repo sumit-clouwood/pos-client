@@ -2,7 +2,7 @@
   <div class="login-background-wrapper login-page">
     <div class="before-login-wrapper">
       <div class="dimension-logo">
-        <img src="img/pos/logo-login.png" />
+        <img src="img/pos/logo.png" />
       </div>
       <div
         :class="[
@@ -42,7 +42,7 @@
                 </div>
               </div>
               <div class="progress-container" v-if="login_in_progress">
-                <v-progress-linear :indeterminate="true"></v-progress-linear>
+                <Progress />
               </div>
               <div
                 v-if="login_fail_message || login_success_message"
@@ -78,14 +78,10 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import Progress from '@/components/util/Progress'
 
 export default {
   computed: {
-    ...mapGetters([
-      'login_success_message',
-      'login_fail_message',
-      'login_in_progress',
-    ]),
     ...mapGetters('location', '_t'),
   },
   name: 'Login',
@@ -93,15 +89,34 @@ export default {
     return {
       email: '',
       password: '',
+      login_in_progress: false,
+      login_success_message: false,
+      login_fail_message: false,
     }
+  },
+  components: {
+    Progress,
   },
   methods: {
     login: function() {
       if (this.login_in_progress == false) {
-        this.$store.dispatch('auth/login', {
-          email: this.email,
-          password: this.password,
-        })
+        this.login_in_progress = true
+        this.login_success_message = ''
+        this.login_fail_message = ''
+        this.$store
+          .dispatch('auth/login', {
+            email: this.email,
+            password: this.password,
+          })
+          .then(() => {
+            this.login_success_message = 'Logged in successfully.'
+          })
+          .catch(error => {
+            this.login_fail_message = error
+          })
+          .finally(() => {
+            this.login_in_progress = false
+          })
       }
     },
   },

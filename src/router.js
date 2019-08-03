@@ -5,7 +5,6 @@ import Home from './views/Home'
 import DineIn from './views/Dinein'
 import DeliveryManagerInit from './views/DeliveryManagerInit'
 import DispatchScreenInit from './views/DispatchScreenInit'
-import NotFoundComponent from './views/NotFoundComponent'
 
 Vue.use(Router)
 
@@ -15,11 +14,6 @@ const router = new Router({
 
   routes: [
     {
-      path: '/:brand_id/:store_id/',
-      name: 'BrandHome',
-      component: Home,
-    },
-    {
       path: '/delivery-manager/:brand_id/:store_id/',
       name: 'DeliveryManager',
       component: DeliveryManagerInit,
@@ -27,6 +21,11 @@ const router = new Router({
     {
       path: '/:brand_id/:store_id/:order_id',
       name: 'Home',
+      component: Home,
+    },
+    {
+      path: '/:brand_id/:store_id/',
+      name: 'BrandHome',
       component: Home,
     },
     {
@@ -43,13 +42,16 @@ const router = new Router({
       name: 'Dinein',
       component: DineIn,
     },
-
     {
       path: '/dispatch-screen',
       name: 'DispatchScreen',
       component: DispatchScreenInit,
     },
-    { path: '*', component: NotFoundComponent },
+    {
+      path: '*',
+      name: 'BrandHome',
+      component: Home,
+    },
   ],
 })
 

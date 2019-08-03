@@ -11,9 +11,13 @@ export default {
       msg.form_data.user = userdata
     }
     try {
-      navigator.serviceWorker.controller.postMessage(msg)
+      if ('serviceWorker' in navigator && 'SyncManager' in window) {
+        navigator.serviceWorker.controller.postMessage(msg)
+      } else {
+        console.log('service worker not found in app ')
+      }
     } catch (e) {
-      console.log("Couldn't send msg to service worker in dev", msg)
+      console.log("Couldn't send msg to service worker in dev", e, msg)
     }
     return DataService.post('/model/orders/add', data)
   },
