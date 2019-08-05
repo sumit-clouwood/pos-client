@@ -6,7 +6,7 @@ export default {
     //heartbeat
     setInterval(() => {
       img.src =
-        process.env.BASE_URL + 'img/icons/favicon.jpg' + '?' + Math.random()
+        process.env.BASE_URL + 'img/icons/favicon.png' + '?' + Math.random()
       img.onload = event => {
         console.log('onload hearbeat status', this.netstatus, true)
         if (!this.netstatus) {
