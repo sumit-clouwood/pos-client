@@ -47,9 +47,10 @@ a:hover {
 }
 
 .option-contain.active:after {
-  content: '';
-  background-image: url(/assets/images/check-mark.svg);
+  @include check_symbol;
+  //background-image: url(/assets/images/check-mark.svg);
   position: absolute;
+  text-align:center;
   height: $px25;
   width: $px25;
   background-repeat: no-repeat;
