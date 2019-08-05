@@ -203,15 +203,24 @@ export default {
 
   saveEventOffline({ request, response }) {
     return new Promise((resolve, reject) => {
-      db.getBucket('events').then(bucket => {
-        db.put(bucket, { url: request, data: response })
-          .then(response => {
-            resolve(response)
-          })
-          .catch(error => {
-            reject(error)
-          })
-      })
+      db.getBucket('events')
+        .then(bucket => {
+          db.put(bucket, { url: request, data: response })
+            .then(response => {
+              resolve(response)
+            })
+            .catch(error => {
+              reject(error)
+            })
+        })
+        .catch(error =>
+          console.log(
+            'error opening db bucket events',
+            error,
+            request,
+            response
+          )
+        )
     })
   },
   setLastUpdate(request, time) {

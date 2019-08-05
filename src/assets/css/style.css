@@ -1796,9 +1796,12 @@ a:hover {
   word-break: break-all; }
 
 .option-contain.active:after {
-  content: '';
-  background-image: url(/assets/images/check-mark.svg);
+  content: "\f00c";
+  font-family: FontAwesome;
+  font-size: 1.125rem;
+  color: #fff;
   position: absolute;
+  text-align: center;
   height: 1.5625rem;
   width: 1.5625rem;
   background-repeat: no-repeat;
@@ -2478,19 +2481,21 @@ a:hover {
       color: #333; }
 
 .order-location.option-contain.cu-delivery-area-location.active:after {
+  content: "\f00c";
+  font-family: FontAwesome;
+  font-size: 1.125rem;
+  color: #fff;
   width: 1.5625rem;
   height: 1.5625rem;
   border-radius: 3px;
   border: solid 2px #e4e7eb;
-  content: '';
   position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
   right: 0.625rem;
   top: 0.625rem;
-  background-color: #767DFF;
-  color: #3A3E9F; }
+  background-color: #767DFF; }
 
 td.show-details-his > span {
   border-radius: 5px;
@@ -3553,8 +3558,11 @@ body {
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav .nav-link-text {
             font-size: 1.125rem;
             text-align: center;
-            display: block;
-            word-break: break-word; }
+            word-break: break-word;
+            /*min-height: $px75;*/
+            display: flex;
+            align-items: center;
+            justify-content: center; }
   .navigation .slider-btn {
     color: #fff;
     margin: 0 auto;
@@ -3752,7 +3760,7 @@ body {
             font-weight: 600;
             user-select: none;
             padding: 0 0.3125rem;
-            word-break: break-all;
+            word-break: break-word;
             line-height: 1.25rem; }
           .main .main-body .food-wrapper .food-categories .food-categories-item .food-categories-item-check {
             width: 1.25rem;
@@ -3879,22 +3887,26 @@ body {
               .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before {
                 display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item {
-            background: none;
-            box-sizing: border-box;
-            position: relative;
             cursor: pointer;
-            background-color: #fff;
-            height: auto;
-            border: 1px solid #E3E7F2;
-            border-radius: 5px;
+            width: auto;
+            min-height: auto;
+            border: 0.0625rem solid #ddd;
+            border-radius: 0.3125rem;
             justify-self: center;
             display: grid;
             grid-template-columns: auto;
-            align-items: flex-start;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
             justify-content: center;
-            padding: 0;
-            transition: 0.2s linear;
-            font-size: 1.125rem; }
+            margin-right: 0.625rem;
+            margin-bottom: 0.625rem;
+            -webkit-transition: .2s linear;
+            transition: .2s linear;
+            font-size: 1.125rem;
+            position: relative; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
               border-bottom-color: #5056CA;
               border-left-color: #5056CA;
@@ -3911,11 +3923,11 @@ body {
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item.active {
               box-shadow: inset 0 0 0px 2px #5056CA; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-img {
-              width: 100%;
               max-height: 6.25rem;
               margin: 0 auto;
               border-radius: 0.1875rem;
-              min-height: 6.25rem; }
+              min-height: 6.25rem;
+              padding: 0.75rem 1.5625rem 0 1.5625rem; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-text {
               word-break: break-word;
               text-align: center;
@@ -3929,6 +3941,8 @@ body {
               display: flex;
               align-items: center;
               justify-content: center; }
+            .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .item-image-only {
+              min-height: 104px; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-price {
               display: none; }
 

@@ -519,11 +519,11 @@
 .order-location.option-contain.cu-delivery-area-location {
   &.active {
     &:after {
+      @include check_symbol;
       width: $px25;
       height: $px25;
       border-radius: $btn-border-radius;
       border: solid 2px #e4e7eb;
-      content: '';
       position: absolute;
       display: flex;
       align-items: center;
@@ -531,7 +531,7 @@
       right: $px10;
       top: $px10;
       background-color: $blue-light;
-      color: $blue-dark;
+      //color: $blue-dark;
     }
   }
 }

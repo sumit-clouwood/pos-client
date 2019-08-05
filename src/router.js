@@ -6,7 +6,6 @@ import Transactions from './views/Transactions'
 import DineIn from './views/Dinein'
 import DeliveryManagerInit from './views/DeliveryManagerInit'
 import DispatchScreenInit from './views/DispatchScreenInit'
-import NotFoundComponent from './views/NotFoundComponent'
 
 Vue.use(Router)
 
@@ -36,6 +35,11 @@ const router = new Router({
       component: Home,
     },
     {
+      path: '/:brand_id/:store_id/',
+      name: 'BrandHome',
+      component: Home,
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting
@@ -49,13 +53,16 @@ const router = new Router({
       name: 'Dinein',
       component: DineIn,
     },
-
     {
       path: '/dispatch-screen',
       name: 'DispatchScreen',
       component: DispatchScreenInit,
     },
-    { path: '*', component: NotFoundComponent },
+    {
+      path: '*',
+      name: 'BrandHome',
+      component: Home,
+    },
   ],
 })
 

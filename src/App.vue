@@ -67,7 +67,7 @@ import Login from '@/components/login/Login'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
-  name: 'Location',
+  name: 'App',
   props: {},
   components: {
     Preloader,
@@ -83,16 +83,27 @@ export default {
     }
   },
   created() {
-    if (this.$route.params.brand_id) {
-      this.$store.commit('context/SET_BRAND_ID', this.$route.params.brand_id)
-      this.$store.commit('context/SET_STORE_ID', this.$route.params.store_id)
-      DataService.setContext({
-        brand: this.$store.getters['context/brand'],
-        store: this.$store.getters['context/store'],
+    this.$store
+      .dispatch('auth/checkLogin')
+      .then(() => {
+        if (this.$route.params.brand_id) {
+          this.$store.commit(
+            'context/SET_BRAND_ID',
+            this.$route.params.brand_id
+          )
+          this.$store.commit(
+            'context/SET_STORE_ID',
+            this.$route.params.store_id
+          )
+          DataService.setContext({
+            brand: this.$store.getters['context/brand'],
+            store: this.$store.getters['context/store'],
+          })
+        } else if (!this.$store.state.context.storeId) {
+          this.errored = 'Please provide brand id and store id in url'
+        }
       })
-    } else {
-      this.errored = 'Please provide brand id and store id in url'
-    }
+      .catch(error => console.log(error))
 
     if (this.$route.params.order_id) {
       this.orderId = this.$route.params.order_id
@@ -102,6 +113,77 @@ export default {
     $route(to, from) {
       // react to route changes...
       console.log('route changed ', to, from)
+    },
+    loggedIn(newVal, oldVal) {
+      if (newVal && newVal !== oldVal) {
+        bootstrap
+          .setup(this.$store)
+          .then(() => {
+            console.log('bootstrap done')
+
+            if ('serviceWorker' in navigator && 'SyncManager' in window) {
+              console.log('service worker and syncmanager are in window')
+              setTimeout(() => {
+                console.log('waiting for servicer worker ready')
+                navigator.serviceWorker.ready
+                  .then(registration => {
+                    console.log('servie worker is ready')
+                    Notification.requestPermission()
+                    console.log('asking service worker to sync')
+                    return registration.sync.register('postOfflineOrders')
+                  })
+                  .then(function() {})
+                  .catch(function() {
+                    // system was unable to register for a sync,
+                    // this could be an OS-level restriction
+                  })
+              }, 3000)
+            }
+
+            if (this.orderId) {
+              this.$store
+                .dispatch('order/selectedOrderDetails', this.orderId)
+                .then(() => {
+                  this.$store.dispatch(
+                    'order/addDeliveryOrder',
+                    this.$store.state.order.selectedOrder,
+                    {
+                      root: true,
+                    }
+                  )
+                })
+            }
+
+            this.progressIncrement = '10%'
+            setTimeout(() => {
+              this.loading = false
+              this.progressIncrement = '100%'
+            }, 100)
+            // this.progressIncrement = '100%'
+            setTimeout(() => {
+              require('@/../public/js/pos_script.js')
+              require('@/../public/js/pos_script_functions.js')
+            }, 2000)
+          })
+          .catch(error => (this.errored = error))
+
+        setTimeout(() => {
+          navigator.serviceWorker.addEventListener('message', event => {
+            console.log('*** event received from service worker', event)
+            if (event.data.msg == 'token') {
+              console.log('setting new token to client')
+              localStorage.setItem('token', event.data.data)
+              //DataService.setMiddleware()
+              bootstrap.loadUI().then(() => {
+                setTimeout(() => {
+                  this.loading = false
+                  this.progressIncrement = '100%'
+                }, 100)
+              })
+            }
+          })
+        }, 3000)
+      }
     },
   },
 
@@ -119,74 +201,10 @@ export default {
       this.loading = false
       return
     }
-    if (this.$store.state.context.brandId) {
-      bootstrap
-        .setup(this.$store)
-        .then(() => {
-          if (this.orderId) {
-            this.$store
-              .dispatch('order/selectedOrderDetails', this.orderId)
-              .then(() => {
-                this.$store.dispatch(
-                  'order/addDeliveryOrder',
-                  this.$store.state.order.selectedOrder,
-                  {
-                    root: true,
-                  }
-                )
-              })
-          }
-
-          this.progressIncrement = '10%'
-          setTimeout(() => {
-            this.loading = false
-            this.progressIncrement = '100%'
-          }, 100)
-          // this.progressIncrement = '100%'
-          setTimeout(() => {
-            require('@/../public/js/pos_script.js')
-            require('@/../public/js/pos_script_functions.js')
-          }, 2000)
-        })
-        .catch(error => (this.errored = error))
-
-      setTimeout(() => {
-        navigator.serviceWorker.addEventListener('message', event => {
-          console.log('*** event received from service worker', event)
-          if (event.data.msg == 'token') {
-            console.log('setting new token to client')
-            localStorage.setItem('token', event.data.data)
-            //DataService.setMiddleware()
-            bootstrap.loadUI().then(() => {
-              setTimeout(() => {
-                this.loading = false
-                this.progressIncrement = '100%'
-              }, 100)
-            })
-          }
-        })
-      }, 3000)
-    }
   },
 }
 
 //vanilla js
-if ('serviceWorker' in navigator && 'SyncManager' in window) {
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      navigator.serviceWorker.ready
-        .then(registration => {
-          Notification.requestPermission()
-          return registration.sync.register('postOfflineOrders')
-        })
-        .then(function() {})
-        .catch(function() {
-          // system was unable to register for a sync,
-          // this could be an OS-level restriction
-        })
-    }, 3000)
-  })
-}
 </script>
 <style lang="scss">
 @import './assets/scss/style.scss';

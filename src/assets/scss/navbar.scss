@@ -91,8 +91,11 @@
           .nav-link-text {
             font-size: $px18;
             text-align: center;
-            display: block;
             word-break:break-word;
+            /*min-height: $px75;*/
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
         }
       }

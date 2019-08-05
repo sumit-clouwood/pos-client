@@ -361,19 +361,21 @@
       color: #333; }
 
 .order-location.option-contain.cu-delivery-area-location.active:after {
+  content: "\f00c";
+  font-family: FontAwesome;
+  font-size: 1.125rem;
+  color: #fff;
   width: 1.5625rem;
   height: 1.5625rem;
   border-radius: 3px;
   border: solid 2px #e4e7eb;
-  content: '';
   position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
   right: 0.625rem;
   top: 0.625rem;
-  background-color: #767DFF;
-  color: #3A3E9F; }
+  background-color: #767DFF; }
 
 td.show-details-his > span {
   border-radius: 5px;

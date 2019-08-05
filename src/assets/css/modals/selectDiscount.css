@@ -39,9 +39,12 @@ a:hover {
   word-break: break-all; }
 
 .option-contain.active:after {
-  content: '';
-  background-image: url(/assets/images/check-mark.svg);
+  content: "\f00c";
+  font-family: FontAwesome;
+  font-size: 1.125rem;
+  color: #fff;
   position: absolute;
+  text-align: center;
   height: 1.5625rem;
   width: 1.5625rem;
   background-repeat: no-repeat;
