@@ -9,10 +9,15 @@ var IDB_VERSION = 3
 var ORDER_DOCUMENT = 'order_post_requests'
 
 var client = null
+var notificationOptions = {
+  body: '',
+  icon: './img/icons/favicon.png',
+  image: './img/icons/favicon.png',
+  vibrate: [300, 200, 300],
+  badge: './img/icons/favicon.png',
+}
 
 if (workbox) {
-  openDatabase()
-
   console.log('sw:', 'workbox found ')
 
   // adjust log level for displaying workbox logs
@@ -94,7 +99,14 @@ if (workbox) {
           sendPostToServer()
             .then(() => {
               try {
-                self.registration.showNotification('Orders synced to server')
+                notificationOptions.body =
+                  'Offline orders are synced with server.'
+                resolve(
+                  self.registration.showNotification(
+                    'POS synced',
+                    notificationOptions
+                  )
+                )
               } catch (e) {
                 console.log('sw:', e)
               }
@@ -102,14 +114,6 @@ if (workbox) {
             .catch(err => {
               console.log('sw:', 'Error syncing orders to server', err)
             })
-
-          try {
-            resolve(
-              self.registration.showNotification('Orders synced to server')
-            )
-          } catch (e) {
-            console.log('sw:', e)
-          }
         })
       }
 
@@ -126,15 +130,18 @@ if (workbox) {
           setTimeout(function() {
             sendPostToServer()
               .then(() => {
-                self.registration.showNotification('SW Orders synced to server')
+                notificationOptions.body =
+                  'Offline orders are synced with server.'
+                resolve(
+                  self.registration.showNotification(
+                    'POS synced',
+                    notificationOptions
+                  )
+                )
               })
               .catch(() => {
                 console.log('sw:', 'SW Error syncing orders to server')
               })
-
-            resolve(
-              self.registration.showNotification('Orders synced to server')
-            )
           }, 1000 * 10)
         })
       }
@@ -149,15 +156,11 @@ if (workbox) {
       data = e.data.json()
     }
 
-    const options = {
-      body: data.body,
-      icon: '/img/icons/android-chrome-192x192.png',
-      image: '/img/autumn-forest.png',
-      vibrate: [300, 200, 300],
-      badge: '/img/icons/plint-badge-96x96.png',
-    }
+    notificationOptions.body = data.body
 
-    e.waitUntil(self.registration.showNotification(data.title, options))
+    e.waitUntil(
+      self.registration.showNotification(data.title, notificationOptions)
+    )
   })
 
   self.addEventListener('message', function(event) {
@@ -173,7 +176,8 @@ if (workbox) {
     var clonedRequest = event.request.clone()
     //console.log('I am a request with url: ', clonedRequest.url)
 
-    if (clonedRequest.method === 'POST' || clonedRequest.method === 'OPTIONS') {
+    if (clonedRequest.method === 'POST') {
+      console.log('post caught', clonedRequest)
       // attempt to send request normally
       event.respondWith(
         fetch(clonedRequest).catch(function(error) {
@@ -186,7 +190,6 @@ if (workbox) {
       )
     }
 
-    console.log('sw: ', 'Event fetch: ', event)
     if (!event.clientId) {
       return
     }
@@ -286,7 +289,24 @@ function openDatabase(cb) {
     // and it didn't close immediately.
   }
 }
+
 function sendPostToServer() {
+  return new Promise((resolve, reject) => {
+    if (!iDB) {
+      openDatabase(() => {
+        sendToServer()
+          .then(() => resolve())
+          .catch(e => reject(e))
+      })
+    } else {
+      sendToServer()
+        .then(() => resolve())
+        .catch(e => reject(e))
+    }
+  })
+}
+
+function sendToServer() {
   return new Promise((resolve, reject) => {
     var savedRequests = []
     var req = getObjectStore(ORDER_DOCUMENT).openCursor() // FOLDERNAME
@@ -318,11 +338,8 @@ function sendPostToServer() {
             authData.push(cursor.value)
             cursor.continue()
           } else {
-            console.log('sw:', authData)
-
             if (authData && authData[0]) {
               authData = authData[0]
-              console.log('sw:', 'auth data from db', authData)
 
               var authToken = authData.token
               var branch_n = authData.branch_n
@@ -340,7 +357,6 @@ function sendPostToServer() {
                 console.log('transition order number: ', transitionOrderNo)
 
                 // send them to the server one after the other
-                console.log('sw:', 'saved request', savedRequest)
 
                 savedRequest.payload.transition_order_no = transitionOrderNo
                 savedRequest.payload.order_mode = 'offline'
@@ -420,13 +436,11 @@ function sendPostToServer() {
 }
 
 var createOrder = function(resolve, reject, headers, authData, savedRequest) {
-  console.log('received params', headers, authData, savedRequest)
   var method = savedRequest.method
   var requestUrl = savedRequest.url
   var payload = savedRequest.payload
   delete payload.user
   payload = JSON.stringify(payload)
-  console.log('Sending to server', method, requestUrl, payload)
 
   fetch(requestUrl, {
     headers: headers,
