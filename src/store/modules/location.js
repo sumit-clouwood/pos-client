@@ -95,7 +95,7 @@ const actions = {
 
           if (storedata.data.store) {
             commit(mutation.SET_STORE, storedata.data.store)
-          } else {
+          } else if (storedata.data.available_stores.length) {
             //user coming through login
             //get store from available stores
             commit(mutation.SET_STORE, storedata.data.available_stores[0])
@@ -110,6 +110,8 @@ const actions = {
               brand: rootGetters['context/brand'],
               store: rootGetters['context/store'],
             })
+          } else {
+            return reject('no store found in api data')
           }
 
           commit(mutation.SET_LOCATION, state.store.address)
