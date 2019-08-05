@@ -28,40 +28,10 @@
           type="text"
           autocomplete="off"
           class="search-field-input"
-          :placeholder="_t('Start typing to get search results')"
+          :placeholder="_t('Search or scan for items')"
           v-model="searchItems"
           @keyup="searchingItems(searchItems)"
         />
-        <div
-          :class="[
-            'allCategory',
-            'hideBigScreen',
-            { notActive: searchHendler },
-            { active: allCategoryHendler },
-          ]"
-          @click="allCategoryHendlerChange"
-        >
-          All category
-          <i
-            :class="['fa', 'fa-angle-down', { active: allCategoryHendler }]"
-            aria-hidden="true"
-          ></i>
-        </div>
-        <div
-          :class="[
-            'subCategory',
-            'hideBigScreen',
-            { notActive: searchHendler },
-            { active: subCategoryHendler },
-          ]"
-          @click="subCategoryHendlerChange"
-        >
-          Sub category
-          <i
-            :class="['fa', 'fa-angle-down', { active: subCategoryHendler }]"
-            aria-hidden="true"
-          ></i>
-        </div>
       </div>
     </form>
   </div>
