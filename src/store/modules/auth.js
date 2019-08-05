@@ -26,7 +26,7 @@ const getters = {
 
 // actions
 const actions = {
-  auth({ commit }, deviceId) {
+  auth({ commit, dispatch }, deviceId) {
     return new Promise((resolve, reject) => {
       AuthService.getAccess(process.env, deviceId)
         .then(response => {
@@ -36,6 +36,7 @@ const actions = {
           }
           commit(mutation.SET_TOKEN, response.data.token)
           commit(mutation.SET_DEVICE_CODE, deviceId)
+          dispatch('fetchRoles')
           resolve(response)
         })
         .catch(error => reject(error))
