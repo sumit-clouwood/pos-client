@@ -1,0 +1,229 @@
+<template>
+  <div class="details">
+    <div v-if="orderDetails">
+      <div class="details-item">
+        <span class="details-item-name color-text-invert">{{
+          _t('Order No:')
+        }}</span>
+        <p class="color-text">{{ orderDetails.item.order_no }}</p>
+      </div>
+      <div class="details-item">
+        <span class="details-item-name color-text-invert">{{
+          _t('Order Status:')
+        }}</span>
+        <p class="color-text text-capitalize">
+          {{
+            LookupData.replaceUnderscoreHyphon(orderDetails.item.order_status)
+          }}
+        </p>
+      </div>
+      <div class="details-item">
+        <span class="details-item-name color-text-invert">{{
+          _t('Order Type:')
+        }}</span>
+        <p class="color-text text-capitalize">
+          {{ LookupData.replaceUnderscoreHyphon(orderDetails.item.order_type) }}
+        </p>
+      </div>
+      <div class="details-item">
+        <span class="details-item-name color-text-invert">{{
+          _t('Location/Branch:')
+        }}</span>
+        <p class="color-text">{{ orderDetails.store_name }}</p>
+      </div>
+      <div class="details-item">
+        <span class="details-item-name color-text-invert"
+          >{{ _t('Order Date/Times') }}:</span
+        >
+        <p class="color-text">
+          {{
+            convertDatetime(
+              orderDetails.item.real_created_datetime,
+              timezoneString
+            )
+          }}
+        </p>
+      </div>
+      <div class="details-item">
+        <span class="details-item-name color-text-invert">{{
+          _t('Order Duration:')
+        }}</span>
+        <p class="color-text">
+          <span
+            id="runningtime"
+            class="timeago elapsedTime delManTime"
+            title=""
+          ></span>
+          <span
+            class="customtime left"
+            :id="
+              'createdOrder-' +
+                convertDatetime(
+                  orderDetails.item.real_created_datetime,
+                  timezoneString
+                )
+            "
+            style="display: none"
+          ></span>
+          <input
+            type="hidden"
+            id="storerunningtime"
+            :value="
+              convertDatetime(
+                orderDetails.item.real_created_datetime,
+                timezoneString
+              )
+            "
+          />
+        </p>
+      </div>
+      <div class="details-item">
+        <span class="details-item-name color-text-invert">{{
+          _t('Placed By:')
+        }}</span>
+        <p class="color-text">
+          {{
+            orderDetails.item.order_history.length
+              ? getLookupData({
+                  lookupFrom: 'users',
+                  id: orderDetails.item.order_history[0].user,
+                })
+              : 'N/A'
+          }}
+        </p>
+      </div>
+    </div>
+    <div v-if="orderDetails.customer">
+      <div class="details-item">
+        <span class="details-item-name color-text-invert">{{
+          _t('Customer Name:')
+        }}</span>
+        <p class="color-text">{{ orderDetails.customer.name }}</p>
+      </div>
+      <div class="details-item">
+        <span class="details-item-name color-text-invert">{{
+          _t('Customer Phone Number:')
+        }}</span>
+        <p class="color-text">{{ orderDetails.customer.phone_number }}</p>
+      </div>
+      <div class="details-item">
+        <span class="details-item-name color-text-invert">{{
+          _t('Customer Email:')
+        }}</span>
+        <p class="color-text">{{ orderDetails.customer.email }}</p>
+      </div>
+      <div class="details-item">
+        <span class="details-item-name color-text-invert">{{
+          _t('Loyalty Points Earned:')
+        }}</span>
+        <p class="color-text">
+          {{
+            orderDetails.item.loyalty_cards_with_points &&
+            orderDetails.item.loyalty_cards_with_points.length
+              ? getLookupData({
+                  lookupFrom: 'brand_loyalty_cards',
+                  id: orderDetails.item.loyalty_cards_with_points[0].card_id,
+                }).loyalty_card_code
+              : ''
+          }}
+          :
+          {{ getLoyaltyPoint(orderDetails.item) }}
+        </p>
+      </div>
+    </div>
+    <div v-if="orderDetails.item">
+      <div class="details-item">
+        <span class="details-item-name color-text-invert">{{
+          _t('Delivery Area:')
+        }}</span>
+        <p class="color-text">
+          {{
+            getLookupData({
+              lookupFrom: 'store_delivery_areas',
+              id: orderDetails.item.order_delivery_area,
+            })
+          }}
+        </p>
+      </div>
+      <div class="details-item">
+        <span class="details-item-name color-text-invert">{{
+          _t('Driver:')
+        }}</span>
+        <p class="color-text">
+          {{
+            orderDetails.item.driver
+              ? getLookupData({
+                  lookupFrom: 'users',
+                  id: orderDetails.item.driver,
+                })
+              : 'Not Assigned'
+          }}
+        </p>
+      </div>
+      <div class="details-item details-item-double-span">
+        <span class="details-item-name color-text-invert">{{
+          _t('Order Delivery Address:')
+        }}</span>
+        <p class="color-text">
+          {{ orderDetails.item.order_flat_number }},
+          {{ orderDetails.item.order_building }},
+          {{ orderDetails.item.order_street }},
+          {{ orderDetails.item.order_city }}
+        </p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+/*global $*/
+import LookupData from '@/plugins/helpers/LookupData'
+import { mapGetters, mapState } from 'vuex'
+import DateTime from '@/mixins/DateTime'
+export default {
+  name: 'LeftPart',
+  props: {
+    orderDetails: {},
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
+    ...mapState('location', ['timezoneString']),
+  },
+  updated() {
+    $('#runningtime').text('')
+    setInterval(() => {
+      let orderTime = $('#storerunningtime').val()
+      let timer = this.orderTimer(orderTime, this.timezoneString)
+      $('#runningtime').text(timer)
+    }, 1000)
+  },
+  mixins: [DateTime],
+  methods: {
+    getLookupData: function(lookup) {
+      let setData = this.orderDetails.lookups[lookup.lookupFrom]._id
+      let selection =
+        lookup.lookupFrom == 'brand_loyalty_cards' ? false : 'name'
+      return LookupData.get({
+        collection: setData,
+        matchWith: lookup.id,
+        selection: selection,
+      })
+    },
+    getLoyaltyPoint(orderItem) {
+      return orderItem.loyalty_cards_with_points.length
+        ? orderItem.loyalty_cards_with_points[0].points
+        : 0
+    },
+  },
+}
+</script>
+
+<style scoped lang="scss">
+.details.row {
+  margin: 25px;
+}
+
+span.details-item-name {
+  font-weight: bold;
+}
+</style>

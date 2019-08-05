@@ -1,0 +1,151 @@
+<template>
+  <!-- Select Discount  -->
+  <div class="modal fade" id="select-discount" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content color-dashboard-background">
+        <div class="modal-header customer-header color-secondary">
+          <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+          <h4 class="customer-title color-text-invert">
+            {{ _t('Select') + ' ' + _t('Discount') }}
+          </h4>
+        </div>
+        <div class="modal-body row dining-options-block select-discount">
+          <div
+            class="error mx-auto"
+            v-if="
+              appliedItemDiscounts.length || !items.length || !discounts.length
+            "
+          >
+            <p class="text-danger text-center">
+              <span v-if="!discounts.length">
+                {{ _t('Order discounts not available.') }}</span
+              >
+              <span v-else-if="!items.length">
+                {{ _t(CONST.DISCOUNT_ORDER_ERROR_ITEM) }}
+              </span>
+              <span v-else-if="appliedItemDiscounts.length">
+                {{ _t(CONST.DISCOUNT_ORDER_ERROR_ITEM_DISCOUNT) }}
+              </span>
+            </p>
+          </div>
+          <div v-else class="dining-option-block select-discount-option">
+            <div
+              class="option-contain"
+              :class="{
+                active: activeOrderDiscountId === discount._id,
+                'color-dashboard-background': true,
+              }"
+              v-for="discount in discounts"
+              :key="discount._id"
+              @click.prevent="selectOrderDiscount(discount)"
+            >
+              <p class="color-text-invert">
+                {{
+                  discount.type == 'percentage'
+                    ? discount.rate + '%'
+                    : formatPrice(discount.value)
+                }}
+              </p>
+              <span class="more color-text">{{ dt(discount) }}</span>
+            </div>
+          </div>
+          <div
+            class="error mx-auto"
+            v-if="
+              orderError &&
+                !(
+                  appliedItemDiscounts.length ||
+                  !items.length ||
+                  !discounts.length
+                )
+            "
+          >
+            <p>&nbsp;</p>
+            <p class="text-danger text-center">
+              <span>{{ _t(orderError) }}</span>
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="btn-announce">
+            <button
+              v-if="
+                appliedItemDiscounts.length ||
+                  !items.length ||
+                  !discounts.length
+              "
+              class="btn btn-danger btn-large color-text-invert color-button"
+              type="button"
+              data-dismiss="modal"
+            >
+              {{ _t('Close') }}
+            </button>
+
+            <button
+              v-else
+              class="btn btn-success btn-large color-main color-text-invert"
+              type="button"
+              id="discount-save-btn"
+              @click="applyOrderDiscount()"
+            >
+              {{ _t('Ok') }}
+            </button>
+            <!--<button
+              v-show="orderError"
+              class="btn btn-danger btn-large color-text-invert color-button"
+              type="button"
+              data-dismiss="modal"
+              @click="discountHendlerGhange"
+            >
+              {{ _t('Close') }}
+            </button>-->
+          </div>
+          <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Select Discount -->
+</template>
+
+<script>
+/* global hideModal */
+import { mapGetters, mapState } from 'vuex'
+export default {
+  name: 'Discount',
+  props: {},
+  computed: {
+    ...mapState('discount', ['orderError', 'appliedItemDiscounts']),
+    ...mapState('order', ['items']),
+    ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('discount', {
+      // map `this.discounts` to `this.$store.discount.getters.orderDiscounts`
+      discounts: 'orderDiscounts',
+      activeOrderDiscountId: 'activeOrderDiscountId',
+    }),
+  },
+  methods: {
+    applyOrderDiscount: function() {
+      this.$store
+        .dispatch('discount/applyOrderDiscount')
+        .then(() => {
+          hideModal('#select-discount')
+        })
+        .catch()
+      // this.$store.dispatch('discountHendlerGhange')
+    },
+    // discountHendlerGhange() {
+    //   this.$store.dispatch('discountHendlerGhange')
+    // },
+    selectOrderDiscount: function(discount) {
+      this.$store.dispatch('discount/selectOrderDiscount', discount)
+    },
+  },
+}
+</script>
+<style lang="sass" scoped>
+.error
+  width: 100%
+  /*padding: 40px 5px 10px 5px*/
+</style>
