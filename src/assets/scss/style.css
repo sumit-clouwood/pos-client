@@ -3900,7 +3900,8 @@ body {
             margin-bottom: 0.625rem;
             -webkit-transition: .2s linear;
             transition: .2s linear;
-            font-size: 1.125rem; }
+            font-size: 1.125rem;
+            position: relative; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
               border-bottom-color: #5056CA;
               border-left-color: #5056CA;
@@ -3917,7 +3918,6 @@ body {
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item.active {
               box-shadow: inset 0 0 0px 2px #5056CA; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-img {
-              width: 100%;
               max-height: 6.25rem;
               margin: 0 auto;
               border-radius: 0.1875rem;

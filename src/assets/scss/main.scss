@@ -309,6 +309,7 @@
             -webkit-transition: .2s linear;
             transition: .2s linear;
             font-size: $px18;
+            position: relative;
 
             &:hover::after {
               border-bottom-color: $blue-middle;
@@ -332,7 +333,6 @@
             }
 
             .food-menu-item-img {
-              width: 100%;
               max-height: $px100;
               margin: 0 auto;
               border-radius: $px3;
