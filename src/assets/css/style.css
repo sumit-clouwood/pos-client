@@ -829,7 +829,10 @@ h1, h2, h3, h4, h5, h6 {
       #dining-option .modal-dialog .modal-content .modal-body .dining-option-block .option-contain.active {
         border: solid 2px #5056ca; }
         #dining-option .modal-dialog .modal-content .modal-body .dining-option-block .option-contain.active:after {
-          content: " ";
+          content: "\f00c";
+          font-family: FontAwesome;
+          font-size: 1.125rem;
+          color: #fff;
           background-image: url(/assets/images/dine-right.png);
           position: absolute;
           height: 1.5625rem;
@@ -3540,6 +3543,7 @@ body {
           align-items: center;
           display: grid;
           width: 6.25rem;
+          min-height: 5.3125rem;
           cursor: pointer;
           font-weight: 600;
           border-radius: 3px;

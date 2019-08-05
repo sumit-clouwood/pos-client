@@ -30,7 +30,7 @@
               border: solid 2px #5056ca;
 
               &:after {
-                content: " ";
+                @include check_symbol;
                 background-image: url(/assets/images/dine-right.png);
                 position: absolute;
                 height: $px25;

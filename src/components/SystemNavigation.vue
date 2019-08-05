@@ -183,7 +183,7 @@
         </li>
       </ul>
     </div>
-    <div class="slider-btn">
+    <div class="slider-btn" @click="showMore">
       <i aria-hidden="true" class="fa fa-chevron-down"></i>
     </div>
     <div
@@ -226,7 +226,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import UserProfile from '@/components/pos/user/UserProfile'
-/* global $ */
+/* global $, menuShowMore */
 export default {
   name: 'SystemNavigation',
   components: {
@@ -236,6 +236,9 @@ export default {
     collapseExpend() {
       $('.navigation').toggleClass('collapse-menu')
       $('.toggle-nav-content').toggleClass('collapse-container')
+    },
+    showMore() {
+      menuShowMore()
     },
     baseurl(link) {
       return (

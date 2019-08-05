@@ -122,8 +122,8 @@
               <span class="shorten-sentence">
                 {{ selectedCustomer }}
               </span>
-              <br />
-              <span>{{ selectedCustomer }}</span>
+              <!--<br />
+              <span>{{ selectedCustomer }}</span>-->
             </span>
           </a>
         </li>

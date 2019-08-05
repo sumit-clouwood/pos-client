@@ -39,7 +39,7 @@
         </li>
       </ul>
     </div>
-    <div class="slider-btn color-secondary">
+    <div class="slider-btn color-secondary" @click="showMore">
       <i class="fa fa-chevron-down color-text-invert" aria-hidden="true"></i>
     </div>
     <div
@@ -94,7 +94,7 @@
 </template>
 
 <script>
-/* global  $*/
+/* global  $, menuShowMore*/
 import bootstrap from '@/bootstrap'
 import btnBack from '../mobileComponents/mobileElements/btnBack'
 
@@ -135,6 +135,9 @@ export default {
       this.$store.commit('sync/reload', true)
       bootstrap.loadUI().then(() => {})
       this.$store.dispatch('category/browse', item)
+    },
+    showMore() {
+      menuShowMore()
     },
     ...mapActions('category', ['browse']),
     subCategoryHendlerChange() {
