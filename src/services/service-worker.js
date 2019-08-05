@@ -176,8 +176,10 @@ if (workbox) {
     var clonedRequest = event.request.clone()
     //console.log('I am a request with url: ', clonedRequest.url)
 
-    if (clonedRequest.method === 'POST') {
-      console.log('post caught', clonedRequest)
+    if (
+      clonedRequest.method === 'POST' &&
+      clonedRequest.url.match('/orders/add')
+    ) {
       // attempt to send request normally
       event.respondWith(
         fetch(clonedRequest).catch(function(error) {
