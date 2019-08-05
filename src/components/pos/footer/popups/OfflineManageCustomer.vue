@@ -142,6 +142,9 @@
                                 input, select {
                                     width: 100%;
                                 }
+                                .validation-error{
+                                    position: static;
+                                }
                             }
 
                             .vdatetime {
