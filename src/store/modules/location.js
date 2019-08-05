@@ -69,12 +69,22 @@ const actions = {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
         .then(storedata => {
-          if (storedata.data.store) {
+          if (storedata.data.brand) {
             commit(mutation.SET_BRAND, storedata.data.brand)
           } else {
             //user coming through login
             //get store from available brands
-            commit(mutation.SET_BRAND, storedata.data.available_brands[0])
+            if (storedata.data.available_stores.length) {
+              commit(
+                mutation.SET_BRAND,
+                storedata.data.available_brands.find(
+                  brand =>
+                    brand._id == storedata.data.available_stores[0].brand_id
+                )
+              )
+            } else {
+              commit(mutation.SET_BRAND, storedata.data.available_brands[0])
+            }
           }
 
           commit(mutation.SET_PERMISSION, storedata.data.menu)
@@ -87,7 +97,7 @@ const actions = {
 
           if (storedata.data.store) {
             commit(mutation.SET_STORE, storedata.data.store)
-          } else {
+          } else if (storedata.data.available_stores.length) {
             //user coming through login
             //get store from available stores
             commit(mutation.SET_STORE, storedata.data.available_stores[0])
@@ -102,6 +112,8 @@ const actions = {
               brand: rootGetters['context/brand'],
               store: rootGetters['context/store'],
             })
+          } else {
+            return reject('no store found in api data')
           }
 
           commit(mutation.SET_LOCATION, state.store.address)
