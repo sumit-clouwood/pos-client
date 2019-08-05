@@ -30,6 +30,7 @@
       <div class="sub-total-num" @click="totalWrapperHendlerGhange">
         {{ formatPrice(orderTotal || 0) }}
         <i
+          v-if="totalWrapperHendler"
           aria-hidden="true"
           :class="['fa', 'fa-angle-up', { active: totalWrapperHendler }]"
         ></i>

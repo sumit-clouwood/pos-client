@@ -87,3 +87,21 @@ function deliveryTabs(id) {
     }
   })
 }
+
+function menuShowMore() {
+  var heightTop = parseInt($('.navigation-list').css('top'))
+  heightTop = heightTop + 60
+  if (
+    $('.navigation-list-wrapper').offset().top <
+    $('.navigation-list').offset().top +
+      $('.navigation-list').height() -
+      $('.navigation-list-wrapper').height()
+  ) {
+    $('.navigation-list').css('top', -heightTop + '%')
+    $('.slider-btn').addClass('toggle')
+  } else {
+    $('.navigation-list').css('top', 0 + 'px')
+    heightTop = 0
+    $('.slider-btn').removeClass('toggle')
+  }
+}
