@@ -67,12 +67,22 @@ const actions = {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
         .then(storedata => {
-          if (storedata.data.store) {
+          if (storedata.data.brand) {
             commit(mutation.SET_BRAND, storedata.data.brand)
           } else {
             //user coming through login
             //get store from available brands
-            commit(mutation.SET_BRAND, storedata.data.available_brands[0])
+            if (storedata.data.available_stores.length) {
+              commit(
+                mutation.SET_BRAND,
+                storedata.data.available_brands.find(
+                  brand =>
+                    brand._id == storedata.data.available_stores[0].brand_id
+                )
+              )
+            } else {
+              commit(mutation.SET_BRAND, storedata.data.available_brands[0])
+            }
           }
 
           commit(mutation.SET_PERMISSION, storedata.data.menu)
