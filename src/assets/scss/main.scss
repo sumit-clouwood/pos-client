@@ -290,7 +290,6 @@
 
 
           .food-menu-item {
-            background: none;
             box-sizing: border-box;
             position: relative;
             cursor: pointer;
@@ -302,11 +301,12 @@
             justify-self: center;
             display: grid;
             grid-template-columns: auto;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
             padding: 0;
             transition: 0.2s linear;
             font-size: $px18;
+            width: 100%;
 
             &:hover::after {
               border-bottom-color: $blue-middle;
@@ -352,7 +352,7 @@
               justify-content: center;
             }
             .item-image-only {
-              height: 104px;
+              min-height: 104px;
             }
             .food-menu-item-price {
               display: none;

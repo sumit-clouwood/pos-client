@@ -218,7 +218,6 @@
               .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before {
                 display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item {
-            background: none;
             box-sizing: border-box;
             position: relative;
             cursor: pointer;
@@ -229,11 +228,12 @@
             justify-self: center;
             display: grid;
             grid-template-columns: auto;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
             padding: 0;
             transition: 0.2s linear;
-            font-size: 1.125rem; }
+            font-size: 1.125rem;
+            width: 100%; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
               border-bottom-color: #5056CA;
               border-left-color: #5056CA;
@@ -269,7 +269,7 @@
               align-items: center;
               justify-content: center; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .item-image-only {
-              height: 104px; }
+              min-height: 104px; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-price {
               display: none; }
 
