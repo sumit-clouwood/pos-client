@@ -65,7 +65,7 @@
             font-size: 1.125rem;
             text-align: center;
             word-break: break-word;
-            min-height: 4.6875rem;
+            /*min-height: $px75;*/
             display: flex;
             align-items: center;
             justify-content: center; }

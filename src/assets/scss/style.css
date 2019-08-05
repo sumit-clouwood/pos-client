@@ -3554,7 +3554,7 @@ body {
             font-size: 1.125rem;
             text-align: center;
             word-break: break-word;
-            min-height: 4.6875rem;
+            /*min-height: $px75;*/
             display: flex;
             align-items: center;
             justify-content: center; }
@@ -3882,22 +3882,25 @@ body {
               .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before {
                 display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item {
-            box-sizing: border-box;
-            position: relative;
             cursor: pointer;
-            background-color: #fff;
-            height: auto;
-            border: 1px solid #E3E7F2;
-            border-radius: 5px;
+            width: auto;
+            min-height: auto;
+            border: 0.0625rem solid #ddd;
+            border-radius: 0.3125rem;
             justify-self: center;
             display: grid;
             grid-template-columns: auto;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
             align-items: center;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
             justify-content: center;
-            padding: 0;
-            transition: 0.2s linear;
-            font-size: 1.125rem;
-            width: 100%; }
+            margin-right: 0.625rem;
+            margin-bottom: 0.625rem;
+            -webkit-transition: .2s linear;
+            transition: .2s linear;
+            font-size: 1.125rem; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
               border-bottom-color: #5056CA;
               border-left-color: #5056CA;
@@ -3918,7 +3921,8 @@ body {
               max-height: 6.25rem;
               margin: 0 auto;
               border-radius: 0.1875rem;
-              min-height: 6.25rem; }
+              min-height: 6.25rem;
+              padding: 0.75rem 1.5625rem 0 1.5625rem; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-text {
               word-break: break-word;
               text-align: center;
