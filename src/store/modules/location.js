@@ -67,7 +67,14 @@ const actions = {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
         .then(storedata => {
-          commit(mutation.SET_BRAND, storedata.data.brand)
+          if (storedata.data.store) {
+            commit(mutation.SET_BRAND, storedata.data.brand)
+          } else {
+            //user coming through login
+            //get store from available brands
+            commit(mutation.SET_BRAND, storedata.data.available_brands[0])
+          }
+
           commit(mutation.SET_PERMISSION, storedata.data.menu)
           commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
           commit(mutation.SET_TRASLATIONS, storedata.data.translations)
