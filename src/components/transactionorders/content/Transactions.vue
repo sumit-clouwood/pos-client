@@ -8,6 +8,7 @@
           <div
             class="left_info_block"
             v-for="order in transactionOrderList"
+            @click="getSelectedOrder(order)"
             :key="order._id"
           >
             <div class="img_block">
@@ -166,7 +167,19 @@ export default {
       transactionOrderList: state =>
         state.transactionOrders.getTransactionOrders,
     }),
+    ...mapState('order', ['selectedOrder']),
     ...mapGetters('location', ['_t']),
+  },
+  methods: {
+    getSelectedOrder(order) {
+      this.$store
+        .dispatch('order/selectedOrderDetails', order._id)
+        .then(() => {
+          // eslint-disable-next-line no-console
+          console.log(this.selectedOrder)
+        })
+        .catch()
+    },
   },
 }
 </script>
