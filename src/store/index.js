@@ -15,6 +15,7 @@ import checkoutForm from './modules/checkout/form'
 import giftcard from './modules/giftcard'
 import announcement from './modules/announcement'
 import holdOrders from './modules/holdOrders'
+import transactionOrders from './modules/transactionOrders'
 import payment from './modules/payment'
 import invoice from './modules/invoice'
 import loyalty from './modules/loyalty'
@@ -52,6 +53,7 @@ const store = new Vuex.Store({
     giftcard,
     announcement,
     holdOrders,
+    transactionOrders,
     invoice,
     payment,
     loyalty,

@@ -2,7 +2,6 @@
   <div class="transaction-orders">
     <Header />
     <Content />
-    <Footer />
   </div>
 </template>
 
@@ -22,17 +21,11 @@
 <script>
 import Header from './transactionorders/Header.vue'
 import Content from './transactionorders/Content.vue'
-import Footer from './transactionorders/Footer'
-import { mapState } from 'vuex'
 export default {
   name: 'Pos',
-  computed: {
-    ...mapState('category', ['categories']),
-  },
   components: {
     Header,
     Content,
-    Footer,
   },
   //store private data in component using data
 

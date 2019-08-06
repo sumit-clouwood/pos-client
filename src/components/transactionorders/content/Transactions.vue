@@ -1,11 +1,11 @@
 <template>
   <div class="main-body color-dashboard-background color-text">
     <search />
-    <div :class="['food-wrapper', subCategoryHendler ? 'active' : 'notActive']">
-      <Orderlist v-if="!transactionorders" />
+    <div :class="['food-wrapper', 'active']">
+      <Orderlist v-if="transactionOrderList" />
       <div class="food-block" v-else>
         <div class="text-danger">
-          {{ _t('Nothing found to order.') }}
+          {{ _t('No order found.') }}
         </div>
       </div>
     </div>
@@ -15,7 +15,7 @@
 <script>
 import Search from './catalog/Search'
 import Orderlist from './catalog/Orderlist'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'Catalog',
@@ -26,8 +26,14 @@ export default {
     Search,
     Orderlist,
   },
+  created() {
+    this.$store.dispatch('transactionOrders/getTransactionOrders')
+  },
   computed: {
-    ...mapGetters(['subCategoryHendler', 'transactionorders']),
+    ...mapState({
+      transactionOrderList: state =>
+        state.transactionOrders.getTransactionOrders,
+    }),
     ...mapGetters('location', ['_t']),
   },
 }
