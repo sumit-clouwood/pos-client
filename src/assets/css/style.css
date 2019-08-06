@@ -1981,11 +1981,11 @@ a:hover {
     color: #4b4e53;
     font-size: 0.875rem;
     font-weight: 400;
-    letter-spacing: 0.47px;
-    /*overflow: hidden;
+    letter-spacing: 0;
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: $px145;*/
+    width: 20rem;
     max-width: 7.8125rem;
     vertical-align: middle; }
   .manage-customer-wrap table tr th {
