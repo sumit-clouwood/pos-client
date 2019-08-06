@@ -122,7 +122,7 @@ export default {
       $('.dropdown-content').hide()
     },
     showDropdown: function() {
-      $('.dropdown-content').show()
+      $('.dropdown-content').toggle()
     },
     cancelOrderAction: function(order) {
       let data = {

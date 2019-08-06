@@ -227,7 +227,7 @@ export default {
       }
     },
     showDropdown: function() {
-      $('.dropdown-content').show()
+      $('.dropdown-content').toggle()
     },
     setDriver: function(driver) {
       if (driver) {
