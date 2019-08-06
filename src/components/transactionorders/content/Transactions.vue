@@ -1,6 +1,11 @@
 <template>
   <div class="main-body-transaction color-dashboard-background color-text">
-    <search />
+    <div class="search-trans-wrapper">
+      <div class="back-trans-button">
+        <button class="btn btn-success">&lt; Back</button>
+      </div>
+      <search />
+    </div>
     <div :class="['food-wrapper', subCategoryHendler ? 'active' : 'notActive']">
       <Orderlist v-if="!transactionorders" />
       <div class="food-block" v-else>
