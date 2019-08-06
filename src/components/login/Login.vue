@@ -67,9 +67,9 @@
             </form>
           </div>
           <div class="login-title login-bottom">
-            <router-link :to="{ name: 'forgot_password' }">
+            <!-- <router-link :to="{ name: 'forgot_password' }">
               Forgot your password?
-            </router-link>
+            </router-link> -->
           </div>
         </div>
       </div>
