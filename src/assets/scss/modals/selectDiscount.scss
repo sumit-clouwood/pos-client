@@ -93,6 +93,8 @@ a:hover {
   font-size: $px14;
   font-weight: 400;
   letter-spacing: 0.5px;
+  word-break: break-word;
+  line-height: 1.2;
 }
 
 .dining-option-block.select-discount-option > div {

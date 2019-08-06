@@ -82,7 +82,9 @@ a:hover {
   color: #72777c;
   font-size: 0.875rem;
   font-weight: 400;
-  letter-spacing: 0.5px; }
+  letter-spacing: 0.5px;
+  word-break: break-word;
+  line-height: 1.2; }
 
 .dining-option-block.select-discount-option > div {
   text-align: left;

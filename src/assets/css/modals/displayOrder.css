@@ -531,9 +531,6 @@ button#schedule-btn:hover {
 button.qtyminus.value-qty:focus {
   box-shadow: none; }
 
-div#select-discount-item .dining-option-block.select-discount-option > div {
-  min-height: 5.625rem; }
-
 .container-radio-btn input {
   position: absolute;
   opacity: 0;
