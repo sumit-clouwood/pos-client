@@ -203,7 +203,7 @@
           :src="
             userDetails.item.avatar
               ? userDetails.item.avatar
-              : userShortDetails.avatar
+              : 'img/profile/default_avatar.jpg'
           "
           alt="profile"
         />
@@ -212,12 +212,6 @@
         </div>
       </a>
     </div>
-    <!--<div class="navigation-avatar color-secondary" v-else>
-      <a class="nav-link" href="">
-        <img :src="profileImage" alt="profile" />
-        <div class="nav-link-user-name color-text-invert">Admin</div>
-      </a>
-    </div>-->
     <!--top Menu-->
     <UserProfile />
   </div>
@@ -264,16 +258,15 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t', 'permitted']),
-    ...mapState('location', ['userShortDetails']),
     ...mapState('auth', ['userDetails']),
-    ...mapState({
+    /*...mapState({
       profileImage: state =>
         state.auth.userDetails && state.auth.userDetails.image
           ? process.env.VUE_APP_API_ENDPOINT +
             '/profile_pic/' +
             state.auth.userDetails.image
-          : 'img/pos/profile-pic.png',
-    }),
+          : '/img/pos/default_avatar.jpg',
+    }),*/
   },
 }
 </script>

@@ -60,7 +60,7 @@ const router = new Router({
     },
     {
       path: '*',
-      name: 'BrandHome',
+      name: 'Any',
       component: Home,
     },
   ],

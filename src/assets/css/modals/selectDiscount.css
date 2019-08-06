@@ -82,7 +82,9 @@ a:hover {
   color: #72777c;
   font-size: 0.875rem;
   font-weight: 400;
-  letter-spacing: 0.5px; }
+  letter-spacing: 0.5px;
+  word-break: break-word;
+  line-height: 1.2; }
 
 .dining-option-block.select-discount-option > div {
   text-align: left;
@@ -123,7 +125,7 @@ a:hover {
       #select-discount .modal-dialog .modal-content .modal-body .select-discount-option .option-contain.active {
         border: 2px solid #64C434; }
         #select-discount .modal-dialog .modal-content .modal-body .select-discount-option .option-contain.active:after {
-          content: "Ô£ö";
+          content: "✔";
           color: #fff;
           position: absolute;
           height: 1.5625rem;

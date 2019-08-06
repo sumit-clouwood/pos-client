@@ -59,7 +59,7 @@
           :src="
             userDetails.item.avatar
               ? userDetails.item.avatar
-              : userShortDetails.avatar
+              : 'img/profile/default_avatar.jpg'
           "
           alt="profile"
         />
@@ -68,12 +68,6 @@
         </div>
       </a>
     </div>
-    <!--<div class="navigation-avatar color-secondary" v-else>
-          <a class="nav-link" href="">
-            <img :src="userDetails.item.avatar" alt="profile" />
-            <div class="nav-link-user-name color-text-invert">{{ userShortDetails.username }}</div>
-          </a>
-        </div>-->
     <div v-if="getImages">
       <link
         v-for="(url, key) in getImages"
@@ -82,14 +76,6 @@
         :key="key"
       />
     </div>
-    <!--<div v-if="modifierImages">
-          <link
-                  v-for="(url, key) in modifierImages"
-                  rel="prefetch"
-                  :href="url"
-                  :key="key"
-          />
-        </div>-->
   </div>
 </template>
 
@@ -110,22 +96,9 @@ export default {
       currentCategory: state => state.category.category._id,
     }),
     ...mapGetters('context', ['store']),
-    ...mapState('location', ['userShortDetails']),
     ...mapState('auth', ['userDetails']),
     ...mapGetters(['allCategoryHendler', 'subCategoryHendler']),
-    /*...mapState({
-              profileImage: state =>
-                state.auth.userDetails && state.auth.userDetails.image
-                  ? process.env.VUE_APP_API_ENDPOINT +
-                    '/profile_pic/' +
-                    state.auth.userDetails.image
-                  : 'img/pos/profile-pic.png',
-            }),*/
     ...mapGetters('category', ['categories', 'getImages']),
-
-    // ...mapGetters('modifier', {
-    //   modifierImages: 'getImages',
-    // }), //to preftech modifier images, todo
   },
   methods: {
     browse(item) {
