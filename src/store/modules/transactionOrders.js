@@ -9,28 +9,26 @@ const state = {
   params: {
     query: '',
     limit: 10,
-    orderBy: 'order_status',
-    orderStatus: 'on-hold',
     page: 1,
     pageId: 'transactional_orders',
     totalPages: 0,
+    customerId: '',
   },
 }
 
 const getters = {}
 
 const actions = {
-  getTransactionOrders({ commit, state }) {
+  getTransactionOrders({ commit, state, rootState }) {
     const params = [
       state.params.query,
       state.params.limit,
-      state.params.orderBy,
-      state.params.orderStatus,
+      '',
+      '',
       state.params.page,
-      // state.params.pageId,
-      'orders_main_tbl',
-      '',
-      '',
+      state.params.pageId,
+      rootState.context.storeId,
+      state.params.customerId,
     ]
     commit(mutation.LOADING, false)
     OrderService.getOrders(...params).then(response => {
@@ -43,8 +41,6 @@ const actions = {
 
 const mutations = {
   [mutation.GET_TRANSACTION_ORDERS](state, transactionOrders) {
-    // eslint-disable-next-line no-console
-    console.log(transactionOrders.data)
     state.getTransactionOrders = transactionOrders.data
   },
   [mutation.LOADING](state, status) {
