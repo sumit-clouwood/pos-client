@@ -351,7 +351,9 @@ const mutations = {
     state.customerId = id
   },
   [mutation.PAGINATE_DETAILS](state, paginateDetails) {
-    state.paginate.totalPages = paginateDetails
+    const paginate = { ...state.paginate }
+    paginate.totalPages = paginateDetails
+    state.paginate = paginate
   },
   [mutation.PAST_ORDER_PAGINATE_DETAILS](state, paginateDetails) {
     state.pastOrdersPaginate.totalPages = paginateDetails
