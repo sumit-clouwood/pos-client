@@ -68,7 +68,7 @@ export default {
 <style lang="scss">
 #tip-amount {
   transform: none;
-  transition: none;
+  animation: none;
   position: fixed;
   top: 0;
   right: 0;

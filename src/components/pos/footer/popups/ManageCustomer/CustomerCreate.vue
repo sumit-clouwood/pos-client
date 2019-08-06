@@ -171,7 +171,7 @@
 
                 .modal-content {
                     display: grid;
-                    grid-template-rows: max-content 1fr max-content;
+                    grid-template-rows: max-contencashiert 1fr max-content;
                     .modal-header {
                         height: 80px;
                         background-color: #fff;

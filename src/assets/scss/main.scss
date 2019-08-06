@@ -361,3 +361,25 @@
     }
   }
 }
+
+@include responsive(mobile) {
+  .ullist-inventory-location{
+    padding: 0 !important;
+    .p-3{
+      background-color: #fff;
+      display: grid;
+      height: 100vh;
+      padding: 20px !important;
+      .margin220 {
+        height: 100%;
+        display: grid;
+        grid-template-rows: 1fr max-content max-content;
+
+        .loading-modules {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+}
