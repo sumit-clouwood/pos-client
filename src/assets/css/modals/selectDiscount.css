@@ -123,7 +123,7 @@ a:hover {
       #select-discount .modal-dialog .modal-content .modal-body .select-discount-option .option-contain.active {
         border: 2px solid #64C434; }
         #select-discount .modal-dialog .modal-content .modal-body .select-discount-option .option-contain.active:after {
-          content: "✔";
+          content: "Ô£ö";
           color: #fff;
           position: absolute;
           height: 1.5625rem;
