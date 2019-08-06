@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main-transaction-container">
     <Transactions />
     <Cart />
   </div>
@@ -21,5 +21,9 @@ export default {
 <style scoped>
 .inner-container {
   width: 100%;
+}
+.main-transaction-container {
+  display: grid;
+  grid-template-columns: auto 1fr;
 }
 </style>

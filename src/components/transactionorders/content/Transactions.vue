@@ -1,5 +1,5 @@
 <template>
-  <div class="main-body color-dashboard-background color-text">
+  <div class="main-body-transaction color-dashboard-background color-text">
     <search />
     <div :class="['food-wrapper', 'active']">
       <Orderlist v-if="transactionOrderList" />

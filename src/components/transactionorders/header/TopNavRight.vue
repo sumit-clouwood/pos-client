@@ -39,13 +39,13 @@
         </a>
       </li>
     </ul>
-    <div class="curent-sale hideBigScreen">
-      <div class="curent-sale-title">Current Sale</div>
-      <div class="curent-sale-item">
-        <div class="text">Item</div>
-        <div class="num">x3</div>
-      </div>
-    </div>
+    <!--<div class="curent-sale hideBigScreen">-->
+    <!--<div class="curent-sale-title">Current Sale</div>-->
+    <!--<div class="curent-sale-item">-->
+    <!--<div class="text">Item</div>-->
+    <!--<div class="num">x3</div>-->
+    <!--</div>-->
+    <!--</div>-->
     <li
       class="nav-icon nav-item setting-icon color-main color-text-invert"
       id="setting-icon"
