@@ -1,10 +1,10 @@
 <template>
   <div class="modal-footer" v-if="!loading">
-    <div class="pagination-customer-details" v-if="paginateDetails.totalPages">
+    <div class="pagination-customer-details" v-if="paginate.totalPages">
       <paginate
-        :page-count="paginateDetails.totalPages"
-        :page-range="2"
-        :margin-pages="2"
+        :page-count="paginate.totalPages"
+        :page-range="1"
+        :margin-pages="1"
         :clickHandler="moreCustomer"
         :prev-text="_t('Prev')"
         :next-text="_t('Next')"
@@ -55,11 +55,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      paginateDetails: state => state.customer.paginate,
-      customerDetails: state => state.customer.customer_list,
-    }),
-    ...mapState('customer', ['loading']),
+    ...mapState('customer', ['loading', 'paginate']),
     ...mapGetters('location', ['_t']),
   },
   methods: {
