@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="selectedOrder"
     :class="['main-orders', { active: mainOrdersHendler }]"
     class="main-orders color-dashboard-background"
   >
@@ -38,6 +39,7 @@ export default {
     msg: String,
   },
   computed: {
+    ...mapState('order', ['selectedOrder']),
     ...mapState('checkout', ['order']),
     ...mapGetters(['mainOrdersHendler']),
     ...mapState('order', ['cartType']),

@@ -2,10 +2,26 @@
   <div class="transaction-cart">
     <div class="transaction-payment">
       <div class="trans-cash-payment">
-
+        <p><span>Cash Payment</span> 1 Jan 2019 4:49 PM</p>
       </div>
       <div class="trans-cash-price">
-
+        <p><span>Sale</span> AED 2423</p>
+      </div>
+    </div>
+    <div class="transaction-payment">
+      <div class="trans-cash-payment">
+        <p class="trans-label">Cash</p>
+      </div>
+      <div class="trans-cash-price">
+        <p class="trans-cash-recipt">AED 2423</p>
+      </div>
+    </div>
+    <div class="transaction-payment">
+      <div class="trans-cash-payment">
+        <p class="trans-label">Receipt</p>
+      </div>
+      <div class="trans-cash-price">
+        <p class="trans-cash-recipt">#52wfg</p>
       </div>
     </div>
   </div>

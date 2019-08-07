@@ -75,10 +75,10 @@
     font-size: 0.875rem;
     font-weight: 400;
     letter-spacing: 0.47px;
-    overflow: hidden;
+    /*overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 9.0625rem;
+    width: $px145;*/
     max-width: 7.8125rem;
     vertical-align: middle; }
   .manage-customer-wrap table tr th {

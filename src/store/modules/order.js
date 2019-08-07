@@ -1,16 +1,16 @@
-/*or example tax for an item is 2.467 
+/*or example tax for an item is 2.467
 suppose quantity is 3
 2.467 * 3 = 7.401
 
 but if round it before adding
-2.47 * 3 = 7.41 
+2.47 * 3 = 7.41
 
 It is 7.41 - 7.40 = 0.01
 
-Both have difference of 0.01 that can have a huge impact as we grow in orders 
+Both have difference of 0.01 that can have a huge impact as we grow in orders
 
 badr, 12:02 PM
-yes but you should not charge 7.41 
+yes but you should not charge 7.41
 you should charge 7.40
 
 */
@@ -898,6 +898,8 @@ const actions = {
           orderDetails.invoice =
             response.data.collected_data.store_invoice_templates
           commit(mutation.SET_ORDER_DETAILS, orderDetails)
+          // eslint-disable-next-line no-console
+          console.log(state.selectedOrder)
         })
         .catch(error => reject(error))
     })
