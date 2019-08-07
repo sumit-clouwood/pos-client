@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="btn-next" @click="footerBtnMethod">Next</div>
-        <div class="btn-cansel" @click="methodCardHendlerGhange">Cansel</div>
+        <div class="btn-Cancel" @click="methodCardHendlerGhange">Cancel</div>
         <div class="qr-voucher-code">
             <div class="title">Voucher code</div>
             <input type="text" placeholder="Enter voucher code"/>
@@ -221,7 +221,7 @@
                 padding: 0 25px;
             }
 
-            .btn-cansel {
+            .btn-Cancel {
                 display: none;
             }
 
