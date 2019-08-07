@@ -81,6 +81,28 @@
     }
 
     @include responsive(mobile) {
+        #order-confirmation {
+            .modal-dialog {
+                margin: 0;
 
+                .modal-content {
+                    .order-header {
+                        margin: 0;
+                        padding: 20px;
+                        h4{
+                            text-align: left;
+                        }
+                    }
+
+                    .modal-body {
+
+                    }
+
+                    .modal-footer {
+
+                    }
+                }
+            }
+        }
     }
 </style>

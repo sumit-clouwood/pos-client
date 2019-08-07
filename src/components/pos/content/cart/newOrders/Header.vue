@@ -93,7 +93,7 @@
         .main-orders-contacts {
             display: grid;
             grid-template-columns: 1fr;
-            grid-gap: 5px;
+            grid-row-gap: 10px;
 
             .main-oreders-title {
                 grid-column-start: 1;
