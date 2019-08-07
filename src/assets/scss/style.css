@@ -4423,4 +4423,7 @@ body {
           .main-body-transaction .detailed_block .left_info_block .price_and_name > p.price_s_desc {
             color: #B0B2BB; }
 
+.transaction-orders .main-orders {
+  height: calc(100vh - 5.3125rem); }
+
 /*# sourceMappingURL=style.css.map */
