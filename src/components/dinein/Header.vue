@@ -1,15 +1,22 @@
 <template>
-  <div class="pos-header">
-    <Topbar />
-  </div>
+    <div class="header color-text-invert color-dashboard-background">
+        <div class="header-main">
+            <Topbar/>
+            <TopRightMenu/>
+        </div>
+    </div>
 </template>
 
 <script>
-import Topbar from '@/components/dinein/header/Topbar'
+  import Topbar from '@/components/dinein/header/Topbar'
+  import TopRightMenu from '@/components/dinein/header/TopRightMenu'
 
-export default {
-  name: 'Header',
-  props: {},
-  components: { Topbar },
-}
+  export default {
+    name: 'Header',
+    props: {},
+    components: {
+      Topbar,
+      TopRightMenu,
+    },
+  }
 </script>

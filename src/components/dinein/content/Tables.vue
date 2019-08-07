@@ -1,5 +1,5 @@
 <template>
-  <div class="dine-in-tabel-wrapper ui-draggable ui-draggable-handle">
+  <div class="dine-in-tabel-wrapper">
     <div class="inner-dinein-table">
       <div class="dinein-table-control">
         <div class="dinein-seat-available">

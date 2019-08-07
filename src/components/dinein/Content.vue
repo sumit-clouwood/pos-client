@@ -1,5 +1,5 @@
 <template>
-  <div class="col-md-8 left-container">
+  <div class="left-container">
     <Header />
     <div class="table-hodler">
       <Tables />
