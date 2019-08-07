@@ -135,7 +135,8 @@
       #manage-customer .modal-dialog .modal-content {
         display: grid;
         grid-template-rows: max-content 1fr max-content;
-        min-height: 100vh; }
+        min-height: 100vh;
+        overflow: auto; }
         #manage-customer .modal-dialog .modal-content .modal-header {
           padding: 10px 20px;
           height: 80px;
