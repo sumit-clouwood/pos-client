@@ -49,7 +49,7 @@ function clickPayNow() {
 
   $('body').addClass('modal-open')
   $('div#pay-now').addClass('show')
-  $('div#pay-now').addClass('animated fadeInLeft')
+  $('div#pay-now').addClass('animated fadeInRight')
   $('.modal-body.pay-now-block').css('opacity', '1')
 
   setTimeout(function() {

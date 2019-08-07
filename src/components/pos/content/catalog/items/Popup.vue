@@ -52,8 +52,11 @@
                 min-width: 100vw;
 
                 .modal-content {
-                    display: grid;
-                    grid-template-rows: max-content max-content max-content max-content;
+                    display: flex;
+                    flex-direction: column;
+
+                    /*display: grid;*/
+                    /*grid-template-rows: max-content max-content 1fr max-content;*/
 
                     .modal-header {
                         height: 70px;
@@ -94,6 +97,9 @@
                     .modal-body {
                         margin: 0;
                         border-top: 1px solid #ccc;
+                        max-height: none;
+                        order: 4;
+                        margin-bottom: 75px;
 
                         .POSItemOption {
                             margin-bottom: 20px;
@@ -151,6 +157,7 @@
                                                     &:checked + span {
                                                         background-color: $green-middle;
                                                     }
+
                                                     &:checked .POSItemOptions_choose_label {
                                                         background-color: $green-middle;
                                                     }
@@ -185,8 +192,8 @@
                     }
 
                     .modal-footer {
-                        grid-row-start: 2;
-                        grid-row-end: 3;
+                        grid-row-start: auto !important;
+                        grid-row-end: auto !important;
 
                         .buttoned {
                             width: auto;

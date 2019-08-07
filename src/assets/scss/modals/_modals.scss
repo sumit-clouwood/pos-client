@@ -314,6 +314,9 @@ input {
   left: 41%;
   font-size: $px12;
   color: #f44040;
+   @include responsive(mobile) {
+                position: static;
+              }
 }
 
 
