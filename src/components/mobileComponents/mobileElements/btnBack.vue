@@ -1,5 +1,5 @@
 <template>
-  <div class="back">
+  <div class="back" @click="back">
     <svg
       width="18"
       height="12"
@@ -19,8 +19,17 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
 export default {
   name: 'btnBack',
+  computed: {
+    ...mapGetters(['allCategoryHendler'])
+  },
+  methods: {
+    back(){
+
+    }
+  }
 }
 </script>
 
