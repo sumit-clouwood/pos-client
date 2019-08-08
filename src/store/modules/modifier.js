@@ -149,6 +149,14 @@ const getters = {
   /* for prefetch only */
   getImages: state => {
     let images = []
+    state.itemModifiers.forEach(item => {
+      const itemModifierSubgroups = getters.itemModifiers(item.itemId)
+      itemModifierSubgroups.forEach(subgroup => {
+        subgroup.modifiers.forEach(submod => {
+          images.push(submod.item_modifier_image)
+        })
+      })
+    })
 
     return state ? images : []
   },

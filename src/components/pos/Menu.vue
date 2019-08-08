@@ -77,14 +77,14 @@
         :key="key"
       />
     </div>
-    <!--<div v-if="modifierImages">
+    <div v-if="modifierImages">
       <link
-              v-for="(url, key) in modifierImages"
-              rel="prefetch"
-              :href="url"
-              :key="key"
+        v-for="(url, key) in modifierImages"
+        rel="prefetch"
+        :href="url"
+        :key="key"
       />
-    </div>-->
+    </div>
   </div>
 </template>
 
@@ -111,9 +111,9 @@ export default {
           : 'img/pos/profile-pic.png',
     }),*/
     ...mapGetters('category', ['categories', 'getImages']),
-    // ...mapGetters('modifier', {
-    //   modifierImages: 'getImages',
-    // }), //to preftech modifier images, todo
+    ...mapGetters('modifier', {
+      modifierImages: 'getImages',
+    }), //to preftech modifier images, todo
   },
   methods: {
     browse(item) {

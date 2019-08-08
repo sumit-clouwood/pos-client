@@ -74,7 +74,6 @@ const actions = {
       let validPayment = false
       const totalPayable = rootGetters['checkoutForm/orderTotal']
       commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
-      commit('invoice/RESET', null, { root: true })
       if (
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
         action === CONSTANTS.ORDER_STATUS_ON_HOLD
@@ -121,6 +120,7 @@ const actions = {
             order_source: CONSTANTS.ORDER_SOURCE_POS,
             order_type: rootState.order.orderType.OTApi,
             order_mode: 'online',
+            //this time can be used to indentify offline order
             real_created_datetime: DateTime.getUTCDateTime(),
             // order_mode: 'online',
             //remove the modifiers prices from subtotal
@@ -526,44 +526,7 @@ const actions = {
               }
             )
 
-            resolve(response.data)
-
-            dispatch('invoice/printRules', null, { root: true }).then(() => {
-              //get print rules
-              //get invoice template
-              const templateId = rootGetters['invoice/templateId']
-              dispatch(
-                'invoice/fetchTemplate',
-                {
-                  orderId: orderId,
-                  templateId: templateId,
-                },
-                {
-                  root: true,
-                }
-              )
-                .then(() => {
-                  //invoice print is triggered by the success ok button
-                  commit(mutation.PRINT, true)
-                })
-                .catch(error => {
-                  commit(
-                    'checkoutForm/SET_MSG',
-                    { result: 'error', message: error },
-                    {
-                      root: true,
-                    }
-                  )
-                })
-            })
-
-            commit(
-              'checkoutForm/SET_MSG',
-              { result: 'success', message: msgStr },
-              {
-                root: true,
-              }
-            )
+            commit(mutation.PRINT, true)
             resolve(response.data)
           } else {
             let error = ''
@@ -631,8 +594,8 @@ const actions = {
         })
     })
   },
-  generateInvoice({ commit }) {
-    commit(mutation.PRINT, true)
+  generateInvoice() {
+    //commit(mutation.PRINT, true)
   },
   reset({ commit, dispatch }) {
     commit(mutation.RESET)

@@ -36,9 +36,9 @@ The App.vue file is the root component that all other components are nested with
                       aria-valuenow="50"
                       aria-valuemin="1"
                       aria-valuemax="100"
-                      v-bind:style="{ width: progressIncrement }"
+                      v-bind:style="{ width: progressIncrement + '%' }"
                     >
-                      {{ progressIncrement }}
+                      {{ progressIncrement }} %
                     </div>
                   </div>
                   <span> {{ val }} </span>
@@ -78,7 +78,7 @@ export default {
     return {
       loading: true,
       errored: false,
-      progressIncrement: '0%',
+      progressIncrement: 0,
       orderId: null,
     }
   },
@@ -116,10 +116,26 @@ export default {
     },
     loggedIn(newVal, oldVal) {
       if (newVal && newVal !== oldVal) {
+        const interval = setInterval(() => {
+          this.progressIncrement += 10
+          if (this.progressIncrement > 100) {
+            this.progressIncrement = 1
+          }
+        }, 1000)
+
         bootstrap
           .setup(this.$store)
           .then(() => {
-            console.log('bootstrap done')
+            setTimeout(() => {
+              clearInterval(interval)
+              this.progressIncrement = 100
+            }, 100)
+
+            setTimeout(() => {
+              this.loading = false
+            }, 300)
+
+            console.log('bootstrap done, delayed loading')
 
             if ('serviceWorker' in navigator && 'SyncManager' in window) {
               console.log('service worker and syncmanager are in window')
@@ -154,12 +170,6 @@ export default {
                 })
             }
 
-            this.progressIncrement = '10%'
-            setTimeout(() => {
-              this.loading = false
-              this.progressIncrement = '100%'
-            }, 100)
-            // this.progressIncrement = '100%'
             setTimeout(() => {
               require('@/../public/js/pos_script.js')
               require('@/../public/js/pos_script_functions.js')

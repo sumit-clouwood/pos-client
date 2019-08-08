@@ -1,12 +1,22 @@
 <template>
   <div class="invoice" id="printarea">
+    <div v-show="print">
+      <PrintTemplate
+        ref="print_template"
+        :template="template"
+        :order_to_print="order"
+        :order_id="orderId"
+        @print_ready="print_ready"
+      ></PrintTemplate>
+    </div>
+
     <iframe
       id="print-iframe"
       ref="iframe"
       width="100%"
       frameborder="0"
-      @load="windowSizeChanged()"
-      :srcdoc="templateHtml"
+      @load="doPrint"
+      :srcdoc="iframe_body"
     ></iframe>
   </div>
 </template>
@@ -15,51 +25,75 @@
 /* global $ hidePayNow */
 /* eslint-disable no-console */
 import { mapState, mapGetters } from 'vuex'
+import PrintTemplate from './invoice/PrintTemplate'
+
 export default {
   name: 'Invoice',
   props: {},
-  computed: {
-    ...mapState('checkout', ['print']),
-    ...mapState('context', ['brandId']),
-    ...mapGetters('invoice', ['templateHtml']),
+  data() {
+    return {
+      iframe_body: null,
+    }
   },
-  components: {},
+  components: {
+    PrintTemplate,
+  },
+  computed: {
+    ...mapState('checkout', ['print', 'order']),
+    ...mapState('order', ['orderId']),
+    ...mapState('context', ['brandId']),
+    ...mapGetters('invoice', ['template']),
+    ...mapGetters('location', ['_t']),
+    order_title() {
+      return (
+        this._t('ORDER_DIALOG_TITLE_PREFIX') +
+        (this.orderId ? this.orderId : this.order.real_created_datetime) +
+        this._t('ORDER_DIALOG_TITLE_SUFFIX') +
+        this.order.order_mode
+      )
+    },
+  },
+
   methods: {
-    windowSizeChanged() {
-      console.log('window loaded with new content')
-      if (this.$refs.iframe) {
-        console.log('next tick was called')
+    doPrint() {
+      if (this.print && this.iframe_body) {
         this.$nextTick(() => {
-          console.log('changing height of the window')
+          this.$refs.iframe.contentWindow.print()
+          console.log('print singal received')
+          this.$store.commit('checkout/PRINT', false)
+
           try {
-            this.$refs.iframe.height =
-              this.$refs.iframe.contentWindow.document.body.scrollHeight + 1
+            console.log('printing iframe')
+            this.$refs.iframe.contentWindow.print()
           } catch (e) {
-            console.log('error occured while changing window height')
+            document.getElementById('print-iframe').contentWindow.print()
+
+            console.log('print ifrmae error orccured')
+            console.log(e)
           }
 
-          if (this.print) {
-            console.log('print singal received')
-            this.$store.commit('checkout/PRINT', false)
+          this.$store.dispatch('checkout/reset')
 
-            try {
-              console.log('printing iframe')
-              this.$refs.iframe.contentWindow.print()
-            } catch (e) {
-              document.getElementById('print-iframe').contentWindow.print()
-
-              console.log('print ifrmae error orccured')
-              console.log(e)
-            }
-          }
+          $('.modal-backdrop').remove()
+          $('#order-confirmation').hide()
+          hidePayNow()
         })
       }
+    },
+    print_ready() {
+      var body = `<html><head><link rel="stylesheet" href="http://localhost:8080/css/print_invoice.css"/><title>${
+        this.order_title
+      }</title></head><body style="width:100%">${
+        this.$refs.print_template.$el.outerHTML
+      }</body></html>`
+      this.iframe_body = body
     },
   },
   watch: {
     print(newVal) {
       if (newVal) {
-        console.log('print set')
+        //this.$emit('print_ready')
+        this.print_ready()
         if (this.$store.state.order.orderType.OTApi === 'call_center') {
           this.$router.replace({ name: 'DeliveryManager' })
           // window.location = process.env.VUE_APP_DELIVERY_MANAGER_URL.replace(
@@ -67,18 +101,6 @@ export default {
           //   this.$store.state.context.brandId
           // )
         }
-      }
-    },
-    templateHtml(newVal) {
-      if (newVal) {
-        console.log('new html arrived for the iframe')
-
-        this.$store.commit('checkout/PRINT', false)
-        this.$store.dispatch('checkout/reset')
-
-        $('.modal-backdrop').remove()
-        $('#order-confirmation').hide()
-        hidePayNow()
       }
     },
   },
