@@ -16,7 +16,7 @@
       <div class="main-title">{{ template.title_label }}</div>
       <div class="main-subtitle">
         {{ template.invoice_number_label }}
-        {{ order_id ? order_id : order.real_created_datetime }}
+        {{ orderId ? orderId : order.real_created_datetime }}
       </div>
       <table class="print-invoice-table">
         <thead>
@@ -275,17 +275,19 @@ export default {
       currentStore: this.$store.state.location.store,
     }
   },
-  props: ['template', 'order_to_print', 'order_id', 'customer_info'],
-  // watch: {
-  //   print: function(new_value) {
-  //     if (new_value == true) {
-  //       this.$nextTick(() => this.$emit('print_ready'))
-  //     }
-  //   },
-  // },
+  props: ['template', 'order_to_print', 'customer_info'],
+  watch: {
+    all_data_fully_loaded: function(new_value) {
+      if (new_value == true) {
+        this.$nextTick(() => this.$emit('print_ready'))
+      }
+    },
+  },
   computed: {
     ...mapState('checkout', ['print']),
     ...mapGetters('location', ['_t']),
+    ...mapState('order', ['orderId']),
+
     dataBeingLoaded() {
       if (!this.order_to_print || !this.template) {
         return true
@@ -357,7 +359,7 @@ export default {
     },
     all_data_fully_loaded() {
       //these are needed at main app to trigger loads for collections in question
-      if (this.order_to_print && this.template) {
+      if (this.order_to_print && this.template && this.print) {
         return true
       }
       return false

@@ -5,7 +5,6 @@
         ref="print_template"
         :template="template"
         :order_to_print="order"
-        :order_id="orderId"
         @print_ready="print_ready"
       ></PrintTemplate>
     </div>
@@ -33,6 +32,7 @@ export default {
   data() {
     return {
       iframe_body: null,
+      invoiceHtml: null,
     }
   },
   components: {
@@ -58,7 +58,6 @@ export default {
     doPrint() {
       if (this.print && this.iframe_body) {
         this.$nextTick(() => {
-          this.$refs.iframe.contentWindow.print()
           console.log('print singal received')
           this.$store.commit('checkout/PRINT', false)
 
@@ -81,10 +80,12 @@ export default {
       }
     },
     print_ready() {
+      this.invoiceHtml = this.$refs.print_template.$el.outerHTML
+      console.log('in print ready', this.invoiceHtml)
       var body = `<html><head><link rel="stylesheet" href="http://localhost:8080/css/print_invoice.css"/><title>${
         this.order_title
       }</title></head><body style="width:100%">${
-        this.$refs.print_template.$el.outerHTML
+        this.invoiceHtml
       }</body></html>`
       this.iframe_body = body
     },
@@ -92,8 +93,7 @@ export default {
   watch: {
     print(newVal) {
       if (newVal) {
-        //this.$emit('print_ready')
-        this.print_ready()
+        //this.print_ready()
         if (this.$store.state.order.orderType.OTApi === 'call_center') {
           this.$router.replace({ name: 'DeliveryManager' })
           // window.location = process.env.VUE_APP_DELIVERY_MANAGER_URL.replace(
