@@ -123,7 +123,7 @@ export default {
     }
     .btn-next {
     }
-    .btn-cansel {
+    .btn-Cancel {
       display: none;
       align-items: center;
       justify-content: center;
