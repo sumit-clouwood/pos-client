@@ -3,6 +3,17 @@
 .main-body-transaction {
   height: calc(100vh - #{$header-height});
   overflow: auto;
+  .search-trans-wrapper {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    margin: 0 $px10;
+    .back-trans-button{
+      > button{
+        height: $px45;
+      }
+    }
+  }
   .search-field{
     margin: $px20 $px10;
   }
@@ -62,5 +73,127 @@
     }
   }
 }
+.transaction-orders{
+  .main-orders{
+    height: calc(100vh - #{$header-height});
+    padding: 0;
+    .main-orders-list-wrapper{
+      padding-right: 0;
+    }
+    .main-orders-total{
+      .total-wrapper, .total{
+        padding: $px20 $px30 0;
+      }
+    }
+  }
+  h3 {
+    &.trans_head{
+      font-size: $px16;
+      background: #E3E7F2;
+      padding: $px10 $px30;
+      color: $middle-black;
+      font-weight: normal;
+    }
+  }
+}
 
+//Transaction cart order
+.transaction-cart {
+  padding: $px20 $px30 0;
+  .transaction-payment {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    padding: $px10 0;
+    border-bottom: 1px solid #E3E7F2;
+    > div {
+      span {
+        display: block;
+      }
+    }
+    p {
+      &:not(.trans-label) {
+        font-size: 24px;
+        > span {
+          color: #72777C;
+          font-size: $px14;
+        }
+      }
+    }
+    .trans-cash-price {
+      text-align: right;
+      > p {
+        &:not(.trans-cash-recipt) {
+          font-size: 24px;
+          color: $blue-middle;
+        }
+        font-size: 16px;
+      }
+    }
+  }
+}
+//cart
+.trans-item-list {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: $px5 $px30 0;
+  .trans-menu-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: $px16;
+    align-items: center;
+    > div {
+      padding: $px10;
+      .trans-item-btn{
+        color: #fff;
+        font-size: $px12;
+        background: $orange-middle;
+        display: inline-block;
+        padding: $px5;
+        margin-right: $px5;
+        border-radius: $block-border-radius;
+      }
+      p{
+        color: $middle-black;
+        font-size: $px14;
+        font-weight: 600;
+        &.price-qty{
+          color: #858990;
+          font-weight: normal;
+        }
+      }
 
+    }
+    .trans-menu-image {
+      background: $white;
+      border: 1px solid #D7DCE2;
+      border-radius: $block-border-radius;
+    }
+  }
+  .trans-menu-replace {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 1rem;
+    .replace-btn{
+     > a{
+       font-size: $px14;
+       color: $blue-middle;
+       border: 1px solid $blue-middle;
+       padding: $px5;
+       border-radius: $block-border-radius;
+     }
+    }
+    .aed-amt{
+      display: grid;
+      align-items: center;
+      > span{
+        color: $middle-black;
+        font-size: $px14;
+      }
+    }
+  }
+}
+.btn-transaction {
+  background: #fff;
+  padding: 20px;
+}

@@ -1,37 +1,27 @@
 <template>
-  <div class="main-orders-contacts color-text">
-    <div class="main-oreders-title">
-      {{ cartType == 'hold' ? _t('Hold Orders') : _t('New Orders') }}
-      <div class="main-oreders-date">{{ DateToday }}</div>
-    </div>
-    <div class="main-oreders-email" v-if="selectedCustomer">
-      <span class="cursor-pointer color-text" @click="removeSelectedCustomer()">
-        X
-      </span>
-      <p v-if="selectedCustomer.email != ''">
-        {{ _t('Email') }} : {{ selectedCustomer.email }}
-      </p>
-      <p v-if="selectedCustomer.name != '' && selectedCustomer.email == ''">
-        {{ _t('Name') }} : {{ selectedCustomer.name }}
-      </p>
-      <div v-if="selectedCustomer.phone_number">
-        {{ _t('Phone') }} : {{ selectedCustomer.phone_number }}
+  <div class="transaction-cart">
+    <div class="transaction-payment">
+      <div class="trans-cash-payment">
+        <p><span>Cash Payment</span> 1 Jan 2019 4:49 PM</p>
+      </div>
+      <div class="trans-cash-price">
+        <p><span>Sale</span> AED 2423</p>
       </div>
     </div>
-    <div class="main-oreders-buttons" v-if="items.length">
-      <!--<div class="orders-button-large" disabled="disable">
-        {{ _t('Move Table') }}
+    <div class="transaction-payment">
+      <div class="trans-cash-payment">
+        <p class="trans-label">Cash</p>
       </div>
-      <div class="orders-button-large" disabled="disable">
-        {{ _t('Split Table') }}
-      </div>-->
-      <div
-        v-if="cartType !== 'hold'"
-        id="holdorder"
-        class="orders-button-large color-main color-text"
-        @click="hold"
-      >
-        {{ _t('Hold') }}
+      <div class="trans-cash-price">
+        <p class="trans-cash-recipt">AED 2423</p>
+      </div>
+    </div>
+    <div class="transaction-payment">
+      <div class="trans-cash-payment">
+        <p class="trans-label">Receipt</p>
+      </div>
+      <div class="trans-cash-price">
+        <p class="trans-cash-recipt">#52wfg</p>
       </div>
     </div>
   </div>

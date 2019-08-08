@@ -1,5 +1,6 @@
 <template>
   <div class="main-orders-total color-text-invert">
+    <h3 class="trans_head">ITEMS</h3>
     <div :class="['total-wrapper', { active: totalWrapperHendler }]">
       <div class="item sub-total">
         <div class="sub-total-text">{{ _t('Sub Total') }}</div>
@@ -34,6 +35,11 @@
           :class="['fa', 'fa-angle-up', { active: totalWrapperHendler }]"
         ></i>
       </div>
+    </div>
+    <div class="btn-transaction text-right">
+      <button class="pos-button-design btn btn-success">
+        Cancel Transaction
+      </button>
     </div>
   </div>
 </template>

@@ -1,6 +1,13 @@
 .main-body-transaction {
   height: calc(100vh - 5.3125rem);
   overflow: auto; }
+  .main-body-transaction .search-trans-wrapper {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    margin: 0 0.625rem; }
+    .main-body-transaction .search-trans-wrapper .back-trans-button > button {
+      height: 2.8125rem; }
   .main-body-transaction .search-field {
     margin: 1.25rem 0.625rem; }
   .main-body-transaction .detailed_block {
