@@ -26,7 +26,7 @@
                 data-target=".bd-example-modal-lg"
                 data-toggle="modal"
               >
-                <a href="javascript:void(0)">#{{ order.order_no }}</a>
+                <a role="button" class="cursor-pointer">#{{ order.order_no }}</a>
               </span>
             </td>
             <td>{{ formatPrice(order.balance_due) }}</td>

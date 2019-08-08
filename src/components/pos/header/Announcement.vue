@@ -2,8 +2,8 @@
   <div class="main-news color-main">
     <div class="main-news-title color-secondary ">
       <a
-        class="main-news-title-link color-text-invert"
-        href="javascript:void(0)"
+        class="main-news-title-link color-text-invert cursor-pointer"
+        role="button"
       >
         <div class="fa fa-newspaper"></div>
         <span class="color-text-invert">

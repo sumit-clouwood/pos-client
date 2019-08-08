@@ -2,7 +2,7 @@
   <div class="header-main-left color-dashboard-background">
     <HeaderOrderType />
     <!--<div class="header-main-left-time color-main color-text-invert">
-      <a href="javascript:void(0)" class="color-text-invert">
+      <a role="button" class="cursor-pointer" class="color-text-invert">
         <span class="time">{{ todayTime }}</span>
         <span>{{ todayDate }}</span>
       </a>

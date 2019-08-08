@@ -3611,7 +3611,9 @@ body {
   grid-template-rows: 5.3125rem 1fr 3.75rem 7.3125rem;
   width: 4.6875rem;
   -webkit-transition: .3s ease-out;
-  transition: .3s ease-out; }
+  transition: .3s ease-out;
+  position: relative;
+  z-index: 99999; }
   .dm-manager .navigation.collapse-menu {
     width: 12.5rem; }
   .dm-manager .navigation .logo {
@@ -4472,19 +4474,6 @@ li#circle-table-shape {
 #dining-option .modal-footer {
   border-top: medium none;
   margin-bottom: 1.25rem; }
-
-.option-contain.active:after {
-  content: " ";
-  position: absolute;
-  height: 1.5625rem;
-  width: 1.5625rem;
-  background-repeat: no-repeat;
-  top: 0.625rem;
-  right: 0.625rem;
-  border-radius: 0.25rem;
-  background-color: #dfffcd;
-  background-position: center center;
-  border-color: #dfffcd !important; }
 
 .dm-walk-dine {
   margin: 0 auto;
@@ -5471,23 +5460,6 @@ span.booked-time {
       .unavailable-tbl-dropdown .dropdown-menu > a:hover {
         color: #000; }
 
-.location-delivery-area-address {
-  max-height: 10.9375rem;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-bottom: 1.25rem !important;
-  -webkit-overflow-scrolling: touch;
-  touch-action: auto; }
-
-.order-address-details button#cu-add-address {
-  margin-right: 0.625rem; }
-
-div#delivery-area-address > div {
-  padding: 0 1.875rem; }
-
-.option-contain {
-  margin: 1.875rem auto 0 auto; }
-
 .add-to-order-wrapper {
   max-height: 13.4375rem;
   overflow-y: auto;
@@ -5508,9 +5480,6 @@ div#select-discount .dining-options-block.select-discount {
   touch-action: auto; }
   .dining-option-block.select-discount-option > div:nth-child(2n) {
     margin-right: 0.625rem; }
-
-div#select-discount-item .modal-dialog {
-  max-width: 25rem; }
 
 table#running-order {
   border-spacing: 0 1.875rem;
@@ -5908,7 +5877,12 @@ footer.sticky-footer {
   background-color: #fff;
   box-shadow: 0 0 20px 0 #d8dbe2;
   line-height: 55px;
-  z-index: 99; }
+  z-index: 99;
+              /*div#select-discount-item {
+  .modal-dialog {
+    max-width: $px400;
+  }
+}*/ }
 
 footer.sticky-footer > .container {
   padding-right: 0;
@@ -5933,6 +5907,11 @@ button.popup-btn-save {
   letter-spacing: 0.58px;
   margin-left: 10px;
   border: medium none; }
+
+.dm-manager .dm-screen-wrap {
+  overflow: visible; }
+.dm-manager .header .header-main {
+  padding: 0; }
 
 .new-transaction {
   display: grid;

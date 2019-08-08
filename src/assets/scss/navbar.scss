@@ -172,6 +172,8 @@
     width: $px75;
     -webkit-transition: .3s ease-out;
     transition: .3s ease-out;
+    position: relative;
+    z-index: 99999;
     &.collapse-menu{
       width:$px200;
     }

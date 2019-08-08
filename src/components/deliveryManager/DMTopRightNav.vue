@@ -52,8 +52,8 @@
         @change="changeLanguage(vlocale)"
       >
         <a
-          class="dropdown-item"
-          href="javascript:void(0)"
+          class="dropdown-item cursor-pointer"
+          role="button"
           v-for="language in availableLanguages"
           :key="language._id"
           :value="language.code"

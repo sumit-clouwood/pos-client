@@ -9,7 +9,7 @@
     </button>
     <ul class="dropdown-menu">
       <li v-for="(store, key) in branch" :key="key">
-        <a href="javascript:void(0)" @click="getLocationOrders(store)">
+        <a role="button" class="cursor-pointer" @click="getLocationOrders(store)">
           {{ store.name }}
         </a>
       </li>

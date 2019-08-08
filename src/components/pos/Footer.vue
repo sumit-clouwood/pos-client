@@ -8,8 +8,8 @@
           data-target="#manage-customer"
         >
           <a
-            class="footer-slider-list-item-link color-text-invert"
-            href="javascript:void(0)"
+            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            role="button"
           >
             <!--<img src="images/footer-images/user.svg" alt="customer">-->
             <svg
@@ -39,8 +39,8 @@
           id="hold-order-box"
         >
           <a
-            class="footer-slider-list-item-link color-text-invert"
-            href="javascript:void(0)"
+            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            role="button"
           >
             <!--<img class="hold-ordes" src="images/hold-order.png" alt="customer">-->
             <svg
@@ -70,8 +70,8 @@
           id="hold-order-box"
         >
           <a
-            class="footer-slider-list-item-link color-text-invert"
-            href="javascript:void(0)"
+            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            role="button"
           >
             <!--<img class="hold-ordes" src="images/hold-order.png" alt="customer">-->
             <svg
@@ -100,8 +100,8 @@
           :class="{ loyaltyApplied: loyaltyCard }"
         >
           <a
-            href="javascript:void(0)"
-            class="footer-slider-list-item-link color-text-invert"
+            role="button"
+            class="footer-slider-list-item-link color-text-invert cursor-pointer"
           >
             <img
               src="img/pos/loyalty.svg"
@@ -135,12 +135,12 @@
         >
           <!--<a
             class="footer-slider-list-item-link"
-            href="javascript:void(0)"
+            role="button" class="cursor-pointer"
             @click="setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })"
           >-->
           <a
-            class="footer-slider-list-item-link color-text-invert"
-            href="javascript:void(0)"
+            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            role="button"
           >
             <!--<img src="images/footer-images/d_2.png" alt="customer">-->
             <svg
@@ -169,8 +169,8 @@
           id="discount-footer"
         >
           <a
-            class="footer-slider-list-item-link color-text-invert"
-            href="javascript:void(0)"
+            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            role="button"
           >
             <svg
               aria-hidden="true"
@@ -197,8 +197,8 @@
           data-target="#dining-option"
         >
           <a
-            class="footer-slider-list-item-link color-text-invert"
-            href="javascript:void(0)"
+            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            role="button"
           >
             <!--<img src="images/footer-images/group_9.png" alt="customer">-->
             <svg
@@ -226,8 +226,8 @@
           data-target="#add-note"
         >
           <a
-            class="footer-slider-list-item-link color-text-invert"
-            href="javascript:void(0)"
+            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            role="button"
           >
             <!--<img src="images/footer-images/a.png" alt="customer">-->
             <svg
@@ -262,8 +262,8 @@
             data-dismiss="modal"
           >
             <a
-              class="footer-slider-list-item-link color-text-invert"
-              href="javascript:void(0)"
+              class="footer-slider-list-item-link color-text-invert cursor-pointer cursor-pointer"
+              role="button"
               @click="
                 setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
               "
@@ -294,7 +294,7 @@
             v-show="orderType.OTApi !== 'call_center'"
             @click="payNowClick()"
           >
-            <a href="javascript:void(0)">
+            <a role="button" class="cursor-pointer">
               <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
               <span class="pay-btn color-text-invert">{{ _t('Pay Now') }}</span>
             </a>

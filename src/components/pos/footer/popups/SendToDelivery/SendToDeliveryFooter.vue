@@ -17,10 +17,10 @@
       ><!--<span><img src="images/referal-down.png"></span>-->
       <div class="dropdown-menu" v-if="getReferrals">
         <a
-          class="dropdown-item color-text"
+          class="dropdown-item color-text cursor-pointer"
           :class="{ active: referral._id === orderReferralId }"
           data-value="Call Center"
-          href="javascript:void(0)"
+          role="button"
           v-for="referral in getReferrals"
           @click="
             selectedReferral({

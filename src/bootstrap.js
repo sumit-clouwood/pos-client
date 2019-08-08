@@ -82,6 +82,7 @@ export default {
                 this.store.dispatch('discount/fetchAll').then(() => {})
                 this.store.dispatch('payment/fetchAll').then(() => {})
                 this.store.dispatch('announcement/fetchAll').then(() => {})
+                this.store.dispatch('dinein/fetchAll')
               })
             })
             .catch(error => reject(error))

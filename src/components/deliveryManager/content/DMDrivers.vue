@@ -10,7 +10,7 @@
           class="pull-left driverImg"
           @error="imageLoadError()"
         />
-        <a href="javascript:void(0)" @click="selectedDriver(driver)">{{
+        <a role="button" class="cursor-pointer" @click="selectedDriver(driver)">{{
           driver.name
         }}</a>
       </li>

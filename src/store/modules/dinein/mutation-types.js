@@ -1,0 +1,5 @@
+export const DINE_IN_ORDERS = 'DINE_IN_ORDERS'
+export const DINE_IN_TABLES = 'DINE_IN_TABLES'
+export const DINE_IN_AREAS = 'DINE_IN_AREAS'
+export const SELECTED_AREA = 'SELECTED_AREA'
+export const LOADING = 'LOADING'

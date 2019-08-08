@@ -53,8 +53,8 @@
     </li>
     <li @click="editCustomer(customerProfile._id)">
       <a
-        class="cu-edit-icon color-text-invert color-main"
-        href="javascript:void(0)"
+        class="cu-edit-icon color-text-invert color-main cursor-pointer"
+        role="button"
         data-toggle="modal"
         data-target="#customer"
         data-dismiss="modal"
@@ -89,8 +89,8 @@
         {{ _t('Edit') }}</a
       >
       <a
-        class="cu-delete-icon color-text-invert color-secondary"
-        href="javascript:void(0)"
+        class="cu-delete-icon color-text-invert color-secondary cursor-pointer"
+        role="button"
         ><span
           ><svg
             xmlns="http://www.w3.org/2000/svg"

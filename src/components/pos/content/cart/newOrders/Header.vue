@@ -19,12 +19,12 @@
       </div>
     </div>
     <div class="main-oreders-buttons" v-if="items.length">
-      <!--<div class="orders-button-large" disabled="disable">
+      <div class="orders-button-large" disabled="disable">
         {{ _t('Move Table') }}
       </div>
       <div class="orders-button-large" disabled="disable">
         {{ _t('Split Table') }}
-      </div>-->
+      </div>
       <div
         v-if="cartType !== 'hold'"
         id="holdorder"

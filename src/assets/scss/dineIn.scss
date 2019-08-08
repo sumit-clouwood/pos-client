@@ -145,21 +145,6 @@ li#circle-table-shape {
     margin-bottom: $px20;
   }
 }
-.option-contain.active {
-  &:after {
-    content: " ";
-    position: absolute;
-    height: $px25;
-    width: $px25;
-    background-repeat: no-repeat;
-    top: $px10;
-    right: $px10;
-    border-radius: $px4;
-    background-color: #dfffcd;
-    background-position: center center;
-    border-color: #dfffcd !important;
-  }
-}
 .dm-walk-dine {
   >button {
     >span {
@@ -1309,27 +1294,6 @@ span.booked-time {
     }
   }
 }
-.location-delivery-area-address {
-  max-height: $px175;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-bottom: $px20 !important;
-  -webkit-overflow-scrolling: touch;
-  touch-action: auto;
-}
-.order-address-details {
-  button#cu-add-address {
-    margin-right: $px10;
-  }
-}
-div#delivery-area-address {
-  >div {
-    padding: 0 $px30;
-  }
-}
-.option-contain {
-  margin: $px30 auto 0 auto;
-}
 .add-to-order-wrapper {
   max-height: $px215;
   overflow-y: auto;
@@ -1358,11 +1322,6 @@ div#select-discount {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   touch-action: auto;
-}
-div#select-discount-item {
-  .modal-dialog {
-    max-width: $px400;
-  }
 }
 table#running-order {
   th {
@@ -1887,7 +1846,11 @@ footer.sticky-footer {
   background-color: $white;
   box-shadow: 0 0 20px 0 #d8dbe2;
   line-height: 55px;
-  z-index: 99;
+  z-index: 99;/*div#select-discount-item {
+  .modal-dialog {
+    max-width: $px400;
+  }
+}*/
 }
 
 footer.sticky-footer > .container {
@@ -1916,4 +1879,14 @@ button.popup-btn-save {
   letter-spacing: 0.58px;
   margin-left: 10px;
   border: medium none;
+}
+.dm-manager{
+  .dm-screen-wrap{
+    overflow: visible;
+  }
+  .header {
+    .header-main{
+      padding:0;
+    }
+  }
 }

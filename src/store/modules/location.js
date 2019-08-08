@@ -34,26 +34,31 @@ const getters = {
 
   permitted: state => (pageId, parentId) => {
     typeof parentId == 'undefined' ? null : parentId
-    let routeMenus = state.permissions.filter(
-      permission =>
-        permission.meta.parent_id == parentId && permission.page_id == pageId
-    )
-    let getChildren = routeMenus
-    if (routeMenus.length) {
-      if (routeMenus[0].type == 'BlockMenuPage') {
-        getChildren = state.permissions.filter(
-          permission => permission.meta.parent_id == routeMenus[0].page_id
-        )
+    if(state.permissions){
+      let routeMenus = state.permissions.filter(
+        permission =>
+          permission.meta.parent_id == parentId && permission.page_id == pageId
+      )
+      let getChildren = routeMenus
+      if (routeMenus.length) {
+        if (routeMenus[0].type == 'BlockMenuPage') {
+          getChildren = state.permissions.filter(
+            permission => permission.meta.parent_id == routeMenus[0].page_id
+          )
+        }
       }
+      return getChildren.length
     }
-    return getChildren.length
+    return false
   },
   /*collectRouteMenu: state => {
 
   },*/
   _t: state => str => {
-    if (state.translations[str]) {
-      return state.translations[str]
+    if(state.translations) {
+      if (state.translations[str]) {
+        return state.translations[str]
+      }
     }
     return str
   },
