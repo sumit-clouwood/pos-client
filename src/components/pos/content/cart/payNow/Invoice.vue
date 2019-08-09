@@ -67,11 +67,17 @@ export default {
           this.$store.commit('checkout/PRINT', false)
 
           try {
+            //2. to print in new window
             console.log('printing iframe')
-            this.$refs.iframe.contentWindow.print()
-          } catch (e) {
-            document.getElementById('print-iframe').contentWindow.print()
+            // const w = window.open()
+            // w.document.write(this.iframe_body)
+            // w.print()
+            // w.close()
 
+            //1. print in iframe
+            this.$refs.iframe.contentWindow.print()
+            //this.$refs.iframe.contentWindow.print()
+          } catch (e) {
             console.log('print ifrmae error orccured')
             console.log(e)
           }
@@ -94,10 +100,263 @@ export default {
       console.log('in print ready html length', this.invoiceHtml.length)
       var body = `<html><head><link rel="stylesheet" href="css/print_invoice.css"/><title>${
         this.order_title
-      }</title></head><body style="width:100%">${
+      }</title><style lang="css" scoped>
+          .invoice-body {
+              overflow-y: auto;
+              height: 100%;
+              width: 100%;
+              padding: 1.25em;
+              margin: 0px;
+              font-family: 'Roboto', sans-serif;
+              color: #000;
+              box-sizing: border-box;
+              font-size: 11px;
+          }
+
+          .invoice-body .loading {
+              padding: 05em;
+          }
+
+
+          .invoice-body * {
+              font-family: 'Roboto', sans-serif;
+              font-size: 1em;
+              line-height: normal;
+          }
+
+          .invoice-body table {
+              border-collapse: collapse;
+              width: 100%;
+          }
+
+          .invoice-body thead {
+
+          }
+
+          .invoice-body tfoot tr.first-col {
+              border-top: 2px solid #666;
+              margin-top: 0.3em;
+              padding: 0.3em 0;
+          }
+
+
+          .invoice-body tr th {
+              word-break: normal;
+          }
+
+          .invoice-body tr td.right-aligned, .invoice-body tr th.right-aligned {
+              text-align: right;
+          }
+
+          .invoice-body.rtl tr td.right-aligned, .invoice-body.rtl tr th.right-aligned {
+              text-align: left;
+          }
+
+          .invoice-body tr td.first-col {
+              width: 20%;
+              min-width: 20%;
+          }
+
+          .invoice-body tr.full-width td {
+              text-align: center;
+              width: 100%;
+          }
+
+          .invoice-body tr.full-width {
+              justify-content: center;
+          }
+
+          .invoice-body tr.important td {
+              border-bottom: 1px solid #666;
+              border-top: 1px solid #666;
+              padding-bottom: 0.6em;
+              padding-top: 0.6em;
+          }
+
+          .invoice-body tr.small-padding td {
+
+              padding-bottom: 0.4em;
+              padding-top: 0.4em;
+
+          }
+
+          .invoice-body tbody td:nth-child(2) {
+              /*flex-grow: 1;
+              flex-shrink:100;*/
+          }
+
+          .invoice-body tbody {
+              border-bottom: 1px solid #666;
+          }
+
+          .invoice-body tbody tr td {
+              padding-top: 0.3em;
+              margin-top: 0.3em;
+          }
+
+          .invoice-body tbody tr.item-discount {
+              border-top: unset;
+              padding-top: 0;
+              margin-top: 0;
+          }
+
+          .invoice-body tbody tr.item-discount td {
+              padding-top: 0;
+              margin-top: 0;
+          }
+
+          .invoice-body tbody tr:first-child {
+              border: none;
+          }
+
+
+          .invoice-body .table-title {
+              margin-top: 0.8em;
+          }
+
+          .invoice-body .table-title th {
+              border-top: 2px solid #666;
+              border-bottom: 2px solid #666;
+
+          }
+
+          .invoice-body .table-title th {
+              padding: 0.3em;
+              margin: 0.3em;
+          }
+
+          .invoice-body .table-title th:nth-child(1) {
+              width: 20%;
+              min-width: 20%;
+              text-align: left;
+          }
+
+          .invoice-body.rtl td {
+              text-align: right;
+          }
+
+
+          .invoice-body.rtl .table-title th:nth-child(1) {
+              text-align: right;
+          }
+
+          .invoice-body.rtl .float-left {
+              float: right !important;
+          }
+
+          .invoice-body.rtl .float-right {
+              float: left !important;
+          }
+
+          .invoice-body .food-title {
+              font-weight: 500;
+          }
+
+          .invoice-body .food-extra {
+              font-style: italic;
+              font-size: 1em;
+          }
+
+          .invoice-body .header {
+              border-bottom: 1px solid #666;
+              display: grid;
+              justify-content: center;
+              text-align: center;
+              padding: 0 0 1.25em 0;
+              font-size: 1.1em;
+          }
+
+          .invoice-body .header p {
+              margin-top: 1em;
+              margin-bottom: 1em;
+          }
+
+          .invoice-body .header-img {
+              width: 50%;
+              min-width: 50%;
+              display: inline-block;
+              margin: 0 auto 1.2em;
+          }
+
+          .invoice-body .main {
+              display: block;
+          }
+
+          .invoice-body .main-title {
+              text-align: center;
+              font-weight: 700;
+              padding: 0.3em 0;
+              border-bottom: 1px solid #666;
+              font-size: 2em;
+          }
+
+          .invoice-body .main-subtitle {
+              text-align: center;
+              font-weight: 700;
+              padding: 0.6em;
+              font-size: 1.4em;
+          }
+
+          .invoice-body .footer {
+              display: grid;
+              padding: 1.25em 0;
+              text-align: center;
+              font-size: 1.2em;
+          }
+
+          .invoice-body .last-thead th {
+              padding-bottom: 0.6em;
+          }
+
+          .invoice-body .footTotal {
+              font-weight: 900;
+          }
+
+          .invoice-body tr.padding-top td {
+
+              padding-top: 0.8em;
+          }
+
+          .invoice-body .foot-cash {
+              font-weight: 900;
+              font-size: 1.25em;
+          }
+
+          .invoice-body .left-aligned {
+              text-align: left;
+          }
+
+          .invoice-body.rtl .left-aligned {
+              text-align: right;
+          }
+
+          .float-right {
+              float: right
+          }
+
+          .invoice-body.rtl .float-right {
+              float: left;
+          }
+
+          .invoice-body tr td {
+              page-break-inside: avoid;
+              font-size: 1em;
+          }
+
+          .invoice-body table tfoot {
+              display: table-row-group;
+          }
+
+          .invoice-body table thead {
+              display: table-row-group;
+          }
+
+        </style></head><body style="width:100%">${
         this.invoiceHtml
       }</body></html>`
       this.iframe_body = body
+      //1. to print in new window
+      //this.doPrint()
     },
   },
 }
