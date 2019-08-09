@@ -107,12 +107,9 @@ export default {
     ...mapState('auth', ['userDetails']),
     ...mapGetters(['allCategoryHendler', 'subCategoryHendler']),
     ...mapGetters('category', ['categories', 'getImages']),
-<<<<<<< HEAD
-=======
     ...mapGetters('modifier', {
       modifierImages: 'getImages',
     }), //to preftech modifier images, todo
->>>>>>> tofeeq
   },
   methods: {
     browse(item) {
