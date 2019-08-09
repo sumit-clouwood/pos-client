@@ -69,6 +69,11 @@
         <li>
           <a href="javascript:void(0)">{{ _t('Printers') }}</a>
         </li>
+        <li>
+          <router-link :to="store" class="text-white">
+            {{ _t('Walk-in') }}
+          </router-link>
+        </li>
         <li v-if="permitted('dashboard', 'root')">
           <a :href="dashboard">{{ _t('Dashboard') }}</a>
         </li>

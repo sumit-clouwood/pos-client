@@ -41,7 +41,7 @@ export default {
         return htmlElement
       }, 1000)
     },
-    convertDatetime(datetime, tz) {
+    convertDatetime(datetime, tz, format='YYYY-MM-DD HH:mm:ss') {
       moment.locale(tz)
       var value =
         datetime != null && typeof datetime.$date != 'undefined'
@@ -54,7 +54,7 @@ export default {
         result = moment
           .utc(value, fmt_in)
           .tz(tz)
-          .format('YYYY-MM-DD HH:mm:ss')
+          .format(format)
       }
       return result
     },

@@ -1,32 +1,37 @@
 <template>
-  <div
+    <div
     v-if="selectedOrder"
     :class="['main-orders', { active: mainOrdersHendler }]"
     class="main-orders color-dashboard-background"
   >
     <div class="main-orders-title">
-      <div class="text">Current Sale Detail</div>
+      <div class="text">{{ _t('Current Sale Detail') }}</div>
       <div class="button" @click="cartClose">
         <i class="fa fa-angle-right" aria-hidden="true"></i>
       </div>
     </div>
-    <Header />
+    <Header :order="selectedOrder.item" />
     <div class="main-orders-list-wrapper">
       <HoldingOrders v-if="cartType === 'hold'" />
-      <Items v-else />
+      <Items :order="selectedOrder.item" :items="selectedOrder.item.items" />
     </div>
-    <PayNow />
-    <Footer />
+    <!--<PayNow :order="selectedOrder.item" />-->
+    <Footer :order="selectedOrder.item" />
     <mobile-footer />
     <orders-menu />
   </div>
+    <div class="food-block" v-else>
+        <div class="text-danger text-center font-weight-bold">
+            {{ _t('No orders found.') }}
+        </div>
+    </div>
 </template>
 
 <script>
 import Header from './cart/newOrders/Header.vue'
 import HoldingOrders from './cart/HoldingOrders'
 import Footer from './cart/Footer'
-import PayNow from './cart/PayNow'
+// import PayNow from './cart/PayNow'
 import Items from './cart/newOrders/Items.vue'
 import ordersMenu from '../../mobileComponents/mobileOrdersMenu.vue'
 import mobileFooter from '../../mobileComponents/mobileFooter.vue'
@@ -43,6 +48,7 @@ export default {
     ...mapState('checkout', ['order']),
     ...mapGetters(['mainOrdersHendler']),
     ...mapState('order', ['cartType']),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     cartClose() {
@@ -54,7 +60,7 @@ export default {
     Items,
     HoldingOrders,
     Footer,
-    PayNow,
+    // PayNow,
     ordersMenu,
     mobileFooter,
   },

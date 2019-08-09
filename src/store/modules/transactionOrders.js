@@ -16,7 +16,14 @@ const state = {
   },
 }
 
-const getters = {}
+const getters = {
+    getOrderItemsStr: () => orderItems => {
+        let str = orderItems.map(function (item) {
+            return item.name
+        }).toString()
+        return str
+    },
+}
 
 const actions = {
   getTransactionOrders({ commit, state, rootState }) {

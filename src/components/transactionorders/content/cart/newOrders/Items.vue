@@ -1,107 +1,29 @@
 <template>
   <div class="transaction-item">
-    <h3 class="trans_head">ITEMS</h3>
-    <div class="trans-item-list">
+    <h3 class="trans_head">{{ _t('ITEMS') }}</h3>
+    <div class="trans-item-list" v-for="(item, index) in items" :key="index">
       <div class="trans-menu-item">
         <div class="trans-menu-image">
           <img
             src="http://13.127.145.151/pos-new/images/pizza-medium.png"
-            alt="item"
+            :alt="_t('Image')"
           />
         </div>
         <div class="trans-menu-list">
           <div class="orders-name">
-            <p>Papperoni Pizza Small</p>
-            <p class="price-qty">@ 21.90 x 2</p>
-            <a href="" class="trans-item-btn">Bolognese Sauce</a
-            ><a href="" class="trans-item-btn">Chunky Tomato</a>
+            <p>{{ item.name }}</p>
+            <p class="price-qty">@ {{ item.price }} x {{ item.qty }}</p>
+            <a href="javascript:void" class="trans-item-btn">Bolognese Sauce</a>
+            <a href="javascript:void" class="trans-item-btn">Chunky Tomato</a>
           </div>
         </div>
       </div>
       <div class="trans-menu-replace">
         <div class="aed-amt">
-          <span>AED 42.90</span>
+          <span>{{ order.currency }} {{ item.price * item.qty }}</span>
         </div>
         <div class="replace-btn">
-          <a href="#">Replace</a>
-        </div>
-      </div>
-    </div>
-    <div class="trans-item-list">
-      <div class="trans-menu-item">
-        <div class="trans-menu-image">
-          <img
-            src="http://13.127.145.151/pos-new/images/pizza-medium.png"
-            alt="item"
-          />
-        </div>
-        <div class="trans-menu-list">
-          <div class="orders-name">
-            <p>Papperoni Pizza Small</p>
-            <p class="price-qty">@ 21.90 x 2</p>
-            <a href="" class="trans-item-btn">Bolognese Sauce</a
-            ><a href="" class="trans-item-btn">Chunky Tomato</a>
-          </div>
-        </div>
-      </div>
-      <div class="trans-menu-replace">
-        <div class="aed-amt">
-          <span>AED 42.90</span>
-        </div>
-        <div class="replace-btn">
-          <a href="#">Replace</a>
-        </div>
-      </div>
-    </div>
-    <div class="trans-item-list">
-      <div class="trans-menu-item">
-        <div class="trans-menu-image">
-          <img
-            src="http://13.127.145.151/pos-new/images/pizza-medium.png"
-            alt="item"
-          />
-        </div>
-        <div class="trans-menu-list">
-          <div class="orders-name">
-            <p>Papperoni Pizza Small</p>
-            <p class="price-qty">@ 21.90 x 2</p>
-            <a href="" class="trans-item-btn">Bolognese Sauce</a
-            ><a href="" class="trans-item-btn">Chunky Tomato</a>
-          </div>
-        </div>
-      </div>
-      <div class="trans-menu-replace">
-        <div class="aed-amt">
-          <span>AED 42.90</span>
-        </div>
-        <div class="replace-btn">
-          <a href="#">Replace</a>
-        </div>
-      </div>
-    </div>
-    <div class="trans-item-list">
-      <div class="trans-menu-item">
-        <div class="trans-menu-image">
-          <img
-            src="http://13.127.145.151/pos-new/images/pizza-medium.png"
-            alt="item"
-          />
-        </div>
-        <div class="trans-menu-list">
-          <div class="orders-name">
-            <p>Papperoni Pizza Small</p>
-            <p class="price-qty">@ 21.90 x 2</p>
-            <a href="" class="trans-item-btn">Bolognese Sauce</a
-            ><a href="" class="trans-item-btn">Chunky Tomato</a>
-          </div>
-        </div>
-      </div>
-      <div class="trans-menu-replace">
-        <div class="aed-amt">
-          <span>AED 42.90</span>
-        </div>
-        <div class="replace-btn">
-          <a href="#">Replace</a>
+          <a href="javascript:void" @click="modifyOrder">{{ _t('Replace') }}</a>
         </div>
       </div>
     </div>
@@ -115,25 +37,24 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Items',
-  props: {},
+  props: {
+    items: Array,
+    order: Object,
+  },
   computed: {
     ...mapState({
       currentItem: state => state.order.item._id,
     }),
-    ...mapState('order', ['orderType']),
-    ...mapGetters('category', ['subcategoryImage']),
-    ...mapGetters('modifier', ['hasModifiers']),
-    ...mapGetters('order', [
-      'items',
-      'itemGrossPriceDiscounted',
-      'itemGrossPrice',
-      'orderModifiers',
-    ]),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('location', ['formatPrice', '_t']),
   },
   methods: {
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
+    modifyOrder() {
+      this.$store.dispatch('order/modifyOrderTransaction').then(() => {
+        this.$router.push({ path: this.$store.getters['context/store'] })
+      })
+    },
   },
   components: {
     //    Modifiers,

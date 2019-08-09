@@ -878,6 +878,24 @@ const actions = {
     })
   },
 
+  transactionOrderModify({ dispatch, commit }, orderData) {
+    dispatch('addOrderToCart', orderData.item).then(() => {
+      commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_DELIVERY)
+      commit(mutation.ORDER_TYPE, { OTview: 'Delivery', OTApi: 'call_center' })
+    })
+  },
+
+  modifyOrderTransaction({ rootState, commit, dispatch }) {
+    //dont show customer selection popup for modification order, can add skip button on order form instead using below
+    // commit('location/SET_MODAL', '#order-confirmation', { root: true })
+
+    //this order contains customer, order info so when needed you can use state.order.selectedOrder
+
+    return dispatch('order/transactionOrderModify', rootState.order.selectedOrder, {
+      root: true,
+    })
+  },
+
   selectedOrderDetails({ commit }, orderId) {
     return new Promise((resolve, reject) => {
       const params = ['orders', orderId, '']
@@ -899,7 +917,7 @@ const actions = {
             response.data.collected_data.store_invoice_templates
           commit(mutation.SET_ORDER_DETAILS, orderDetails)
           // eslint-disable-next-line no-console
-          console.log(state.selectedOrder)
+          console.log(orderDetails)
         })
         .catch(error => reject(error))
     })
@@ -955,6 +973,11 @@ const actions = {
             case 'call_center':
               commit(mutation.SET_ERRORS, response.data.form_errors)
               dispatch('deliveryManager/fetchDMOrderDetail', {}, { root: true })
+              break
+            case 'walk_in':
+              console.log(orderType)
+              commit(mutation.SET_ERRORS, response.data.form_errors)
+              // dispatch('deliveryManager/fetchDMOrderDetail', {}, { root: true })
               break
           }
         }

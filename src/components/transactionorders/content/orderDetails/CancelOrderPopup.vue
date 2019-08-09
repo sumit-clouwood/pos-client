@@ -48,12 +48,12 @@
                     >{{ reason.name }}</span
                   >
                 </div>
-                <p
+                <!--<p
                   v-if="errors && errors.cancel_reason.length"
                   class="text-danger"
                 >
                   {{ errors.cancel_reason }}
-                </p>
+                </p>-->
               </div>
               <div>
                 <div class="select-driver">
@@ -89,7 +89,7 @@
             class="btn btn-success"
             @click="
               cancelOrderAction({
-                order: selectedOrder.item,
+                order,
               })
             "
           >
@@ -112,9 +112,12 @@ export default {
       supervisorPassword: '',
     }
   },
+  props: {
+    'order' : Object,
+  },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['cancellationReason', 'selectedOrder', 'errors']),
+    ...mapState('order', ['cancellationReason', 'errors']),
   },
   methods: {
     selectedReason: function(reason) {
@@ -129,7 +132,7 @@ export default {
         cancel_reason: this.showSelectedReason,
         supervisor_password: this.supervisorPassword,
       }
-      let orderType = 'call_center'
+      let orderType = order.order.order_type
       let actionTrigger = 'cancel_order'
       this.updateOrderCancelAction({
         order,
@@ -138,7 +141,7 @@ export default {
         params: data,
       })
     },
-    ...mapActions('order', ['selectedOrderDetails', 'updateOrderCancelAction']),
+    ...mapActions('order', ['updateOrderCancelAction']),
   },
 }
 </script>

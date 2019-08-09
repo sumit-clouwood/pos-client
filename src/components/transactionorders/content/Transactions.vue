@@ -2,7 +2,7 @@
   <div class="main-body-transaction color-dashboard-background color-text">
     <search />
     <div :class="['food-wrapper', 'active']">
-      <div v-if="transactionOrderList" class="left_size_details">
+      <div v-if="transactionOrderList.length > 0" class="left_size_details">
         <div class="detailed_block">
           <p class="date_class">{{ todayDate }}</p>
           <div
@@ -10,6 +10,7 @@
             v-for="order in transactionOrderList"
             @click="getSelectedOrder(order)"
             :key="order._id"
+            :class="{active : selectedOrder && selectedOrder.item._id === order._id}"
           >
             <div class="img_block">
               <svg
@@ -42,11 +43,17 @@
               <p class="doller_price">
                 {{ order.currency }} {{ order.balance_due }}
               </p>
-              <p class="price_s_desc">{{ order.order_note }}</p>
+              <p class="price_s_desc shorten-sentence" :title="getOrderItemsStr(order.items)">{{ getOrderItemsStr(order.items, true) }}</p>
             </div>
             <div class="time_and_button">
-              <p>4:59 PM</p>
-              <a href="" class="canceled">Canceled</a>
+              <p>{{
+                convertDatetime(
+                  order.real_created_datetime,
+                  timezoneString,
+                'HH:mm A'
+                  )
+                  }}</p>
+              <a href="javascript:void" :class="setOrderStatus(order.order_system_status).class">{{ setOrderStatus(order.order_system_status).label }}</a>
             </div>
           </div>
         </div>
@@ -134,7 +141,7 @@
       </div>
       <div class="food-block" v-else>
         <div class="text-danger text-center font-weight-bold">
-          {{ _t('No order found.') }}
+          {{ _t('No orders found.') }}
         </div>
       </div>
     </div>
@@ -144,6 +151,7 @@
 <script>
 import moment from 'moment-timezone'
 import Search from './catalog/Search'
+import DateTime from '@/mixins/DateTime'
 import { mapGetters, mapState } from 'vuex'
 
 export default {
@@ -168,9 +176,29 @@ export default {
         state.transactionOrders.getTransactionOrders,
     }),
     ...mapState('order', ['selectedOrder']),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'timezoneString']),
+    ...mapGetters('transactionOrders', ['getOrderItemsStr']),
   },
+  mixins: [DateTime],
   methods: {
+    setOrderStatus(orderStatus) {
+      let statusArr = []
+      switch (orderStatus) {
+        case 'normal':
+          statusArr = { class: 'success', label : 'Success' }
+          break
+        case 'cancelled':
+          statusArr = { class: 'canceled', label : 'Canceled' }
+          break
+        case 'modified':
+          statusArr = { class: 'refunded', label : 'Modified' }
+          break
+        default:
+          statusArr = { class: 'refunded', label : 'Success' }
+          break
+      }
+      return statusArr
+    },
     getSelectedOrder(order) {
       this.$store
         .dispatch('order/selectedOrderDetails', order._id)

@@ -72,6 +72,11 @@
         <li v-if="permitted('dashboard', 'root')">
           <a :href="dashboard">{{ _t('Dashboard') }}</a>
         </li>
+        <li v-if="permitted('transactional_orders')">
+            <router-link :to="store + '/transactions'">
+              {{ _t('Transactions') }}
+            </router-link>
+        </li>
         <li v-if="permitted('crm', 'root')">
           <a :href="crm">{{ _t('CRM') }}</a>
         </li>
@@ -122,7 +127,7 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
-    ...mapGetters('context', ['store']),
+    ...mapGetters('context', ['store', 'transactions']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('sync', ['online']),
     ...mapState({
