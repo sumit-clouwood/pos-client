@@ -76,6 +76,14 @@
         :key="key"
       />
     </div>
+    <div v-if="modifierImages">
+      <link
+        v-for="(url, key) in modifierImages"
+        rel="prefetch"
+        :href="url"
+        :key="key"
+      />
+    </div>
   </div>
 </template>
 
@@ -99,6 +107,12 @@ export default {
     ...mapState('auth', ['userDetails']),
     ...mapGetters(['allCategoryHendler', 'subCategoryHendler']),
     ...mapGetters('category', ['categories', 'getImages']),
+<<<<<<< HEAD
+=======
+    ...mapGetters('modifier', {
+      modifierImages: 'getImages',
+    }), //to preftech modifier images, todo
+>>>>>>> tofeeq
   },
   methods: {
     browse(item) {
