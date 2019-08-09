@@ -147,7 +147,7 @@ const getters = {
   },
 
   /* for prefetch only */
-  getImages: state => {
+  getImages: (state, getters) => {
     let images = []
     state.itemModifiers.forEach(item => {
       const itemModifierSubgroups = getters.itemModifiers(item.itemId)

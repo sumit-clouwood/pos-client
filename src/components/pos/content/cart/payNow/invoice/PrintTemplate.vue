@@ -80,7 +80,7 @@
             <th class="right-aligned">{{ template.amount_label }}</th>
           </tr>
           <template v-for="(item, key) in order.items">
-            <tr :key="key">
+            <tr :key="'item' + key">
               <td class="first-col">{{ item.qty }}</td>
               <td>
                 <div class="food-title">
@@ -95,7 +95,7 @@
                 </div>
                 <template v-for="(modifier, i) in order.item_modifiers">
                   <template v-if="modifier.for_item == item.no">
-                    <div class="food-extra" :key="i">
+                    <div class="food-extra" :key="'modifier' + i">
                       {{ translate_item_modifier(modifier) }}
                       <span v-if="modifier.price !== 0"
                         >({{
@@ -119,7 +119,7 @@
             </tr>
             <tr
               v-for="(discount, key) in order.item_discounts"
-              :key="key"
+              :key="'itemdiscount' + item.no + key"
               class="item-discount table-page-child"
             >
               <template v-if="discount.for_item == item.no">
@@ -155,7 +155,10 @@
                 {{ format_number(order.sub_total) }}
               </td>
             </tr>
-            <tr v-for="(surcharge, key) in order.order_surcharges" :key="key">
+            <tr
+              v-for="(surcharge, key) in order.order_surcharges"
+              :key="'surcharge' + key"
+            >
               <td colspan="2">
                 {{ translate_surcharge(surcharge) }}
               </td>
@@ -165,7 +168,7 @@
             </tr>
             <tr
               v-for="(order_discount, key) in order.order_discounts"
-              :key="key"
+              :key="'orderdiscount' + key"
             >
               <td colspan="2">
                 {{ translate_order_discount(order_discount) }}
@@ -200,7 +203,7 @@
             </tr>
             <tr
               v-for="(order_payment, key) in order.order_payments"
-              :key="key"
+              :key="'payment' + key"
               class="footer-cash"
             >
               <td colspan="2">
@@ -242,7 +245,7 @@
             </tr>
             <tr
               v-for="(cards_with_point, key) in order.loyalty_cards_with_points"
-              :key="key"
+              :key="'loyalty' + key"
             >
               <td colspan="2">
                 {{ template.loyalty_points_earned_label }}
@@ -256,6 +259,7 @@
       </table>
     </div>
     <div class="footer" v-html="template.footer"></div>
+    <link rel="prefetch" :href="company_logo" />
   </div>
 </template>
 
@@ -263,19 +267,22 @@
 import Preloader from '@/components/util/Preloader'
 import { mapGetters, mapState } from 'vuex'
 var moment = require('moment')
+import DateTime from '@/mixins/DateTime'
 
 export default {
   name: 'PrintTemplate',
   components: {
     Preloader,
   },
+  mixins: [DateTime],
   data() {
     return {
       currentBrand: this.$store.state.location.brand,
       currentStore: this.$store.state.location.store,
+      current_locale: this.$store.state.location.locale,
     }
   },
-  props: ['template', 'order_to_print', 'customer_info'],
+  props: ['template', 'order_to_print'],
   watch: {
     all_data_fully_loaded: function(new_value) {
       if (new_value == true) {
@@ -287,6 +294,7 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapGetters('location', ['_t']),
     ...mapState('order', ['orderId']),
+    ...mapState('location', ['timezoneString']),
 
     dataBeingLoaded() {
       if (!this.order_to_print || !this.template) {
@@ -325,30 +333,44 @@ export default {
     },
     created_time() {
       if (this.order_to_print) {
-        return this.order.real_created_datetime
+        return this.convertDatetime(
+          this.order.real_created_datetime,
+          this.timezoneString,
+          'h:mm:ss A'
+        )
       }
       return this.current_time.format('h:mm A')
     },
     created_date() {
       if (this.order_to_print) {
-        return this.order.real_created_datetime
+        return this.convertDatetime(
+          this.order.real_created_datetime,
+          this.timezoneString,
+          'Do MMMM YYYY'
+        )
       }
       return this.current_time.format('Do MMMM YYYY')
     },
-    //Next function either analyze order history (for order which is printed from the backend - i.e. inside
-    //order details dialog, or use fake data for the fake order. At the POS, the behaviour of these two functions
-    //needs to be changed as the data on who and when placed order is in a different format
     placed_by: function() {
-      return this.userName
+      return this.$store.state.location.userShortDetails.username
+        ? this.$store.state.location.userShortDetails.username
+        : this.$store.state.auth.userDetails.item.name
     },
     //If the customer is set in the order, we check if there is a property with customer info. If there is -
     // we output it. If there are no, we use sample customer. If customer is not set on the order -
     // that means there should be no customer in that order
     customer() {
       if (this.order) {
+        if (this.$store.state.customer.offlineData) {
+          return {
+            name: this.$store.state.customer.offlineData.name,
+            phone: this.$store.state.customer.offlineData.phone_number,
+          }
+        }
         if (this.order.customer) {
-          if (this.customer_info) {
-            return this.customer_info
+          return {
+            name: this.$store.state.customer.customer.name,
+            phone: this.$store.state.customer.customer.phone_number,
           }
         }
       }
@@ -366,7 +388,7 @@ export default {
     },
     //This is a method to generate fake order for invoice generation. No need to have bottom part of it at the POS
     order() {
-      if (this.all_data_fully_loaded == false) {
+      if (this.dataBeingLoaded) {
         return null
       }
       return this.order_to_print
@@ -435,37 +457,37 @@ export default {
         item.entity_id
       )
       if (found_item) {
-        return this.translate_entity(found_item.full, 'name')
+        return this.translate_entity(found_item, 'name')
       } else {
         return ''
       }
     },
     translate_item_discount(item) {
-      var found_item = this.loaded_item_discounts.find(
-        loaded_item => loaded_item.value == item.entity_id
+      var found_item = this.$store.state.discount.itemDiscounts.data.find(
+        loaded_item => loaded_item._id == item.entity_id
       )
       if (found_item) {
-        return this.translate_entity(found_item.full, 'name')
+        return this.translate_entity(found_item, 'name')
       } else {
         return ''
       }
     },
     translate_surcharge(item) {
-      var found_item = this.loaded_surcharges.find(
-        loaded_item => loaded_item.value == item.entity_id
+      var found_item = this.$store.state.surcharge.surcharges.find(
+        loaded_item => loaded_item._id == item.entity_id
       )
       if (found_item) {
-        return this.translate_entity(found_item.full, 'name')
+        return this.translate_entity(found_item, 'name')
       } else {
         return ''
       }
     },
     translate_order_discount(item) {
-      var found_item = this.loaded_order_discounts.find(
-        loaded_item => loaded_item.value == item.entity_id
+      var found_item = this.$store.state.discount.orderDiscounts.find(
+        loaded_item => loaded_item._id == item.entity_id
       )
       if (found_item) {
-        return this.translate_entity(found_item.full, 'name')
+        return this.translate_entity(found_item, 'name')
       } else {
         return ''
       }
@@ -481,8 +503,8 @@ export default {
       }
     },
     get_delivery_area_name(delivery_area_id) {
-      var found = this.loaded_delivery_areas.find(
-        item => item.value == delivery_area_id
+      var found = this.$store.state.customer.fetchDeliveryAreas.find(
+        item => item._id == delivery_area_id
       )
       if (found) {
         return found.text

@@ -17,6 +17,8 @@
       @load="doPrint"
       :srcdoc="iframe_body"
     ></iframe>
+
+    <link rel="prefetch" href="css/print_invoice.css" />
   </div>
 </template>
 
@@ -56,8 +58,11 @@ export default {
 
   methods: {
     doPrint() {
-      if (this.print && this.iframe_body) {
-        this.$nextTick(() => {
+      console.log('iframe laoded, do print called')
+      this.$nextTick(() => {
+        console.log('iframe laoded, do print called, next tick called')
+        console.log('print', this.print)
+        if (this.print && this.iframe_body) {
           console.log('print singal received')
           this.$store.commit('checkout/PRINT', false)
 
@@ -76,32 +81,23 @@ export default {
           $('.modal-backdrop').remove()
           $('#order-confirmation').hide()
           hidePayNow()
-        })
-      }
+
+          if (this.$store.state.order.orderType.OTApi === 'call_center') {
+            this.$router.replace({ name: 'DeliveryManager' })
+          }
+        }
+      })
     },
     print_ready() {
+      console.log(this.print)
       this.invoiceHtml = this.$refs.print_template.$el.outerHTML
-      console.log('in print ready', this.invoiceHtml)
-      var body = `<html><head><link rel="stylesheet" href="http://localhost:8080/css/print_invoice.css"/><title>${
+      console.log('in print ready html length', this.invoiceHtml.length)
+      var body = `<html><head><link rel="stylesheet" href="css/print_invoice.css"/><title>${
         this.order_title
       }</title></head><body style="width:100%">${
         this.invoiceHtml
       }</body></html>`
       this.iframe_body = body
-    },
-  },
-  watch: {
-    print(newVal) {
-      if (newVal) {
-        //this.print_ready()
-        if (this.$store.state.order.orderType.OTApi === 'call_center') {
-          this.$router.replace({ name: 'DeliveryManager' })
-          // window.location = process.env.VUE_APP_DELIVERY_MANAGER_URL.replace(
-          //   '{brand_id}',
-          //   this.$store.state.context.brandId
-          // )
-        }
-      }
     },
   },
 }
