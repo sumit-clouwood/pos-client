@@ -17,8 +17,6 @@
       @load="doPrint"
       :srcdoc="iframe_body"
     ></iframe>
-
-    <link rel="prefetch" href="css/print_invoice.css" />
   </div>
 </template>
 
@@ -98,7 +96,7 @@ export default {
       console.log(this.print)
       this.invoiceHtml = this.$refs.print_template.$el.outerHTML
       console.log('in print ready html length', this.invoiceHtml.length)
-      var body = `<html><head><link rel="stylesheet" href="css/print_invoice.css"/><title>${
+      var body = `<html><head><title>${
         this.order_title
       }</title><style lang="css" scoped>
           .invoice-body {
