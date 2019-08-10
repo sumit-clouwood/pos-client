@@ -259,7 +259,6 @@
       </table>
     </div>
     <div class="footer" v-html="template.footer"></div>
-    <link rel="prefetch" :href="company_logo" />
   </div>
 </template>
 
@@ -280,7 +279,13 @@ export default {
       currentBrand: this.$store.state.location.brand,
       currentStore: this.$store.state.location.store,
       current_locale: this.$store.state.location.locale,
+      company_logo:  this.$store.state.location.brand.company_logo
     }
+  },
+  mounted() {
+    this.toDataURL(this.company_logo, base64 => {
+      this.company_logo = base64
+    }, 'image/png')
   },
   props: ['template', 'order_to_print'],
   watch: {
@@ -323,10 +328,7 @@ export default {
         return ''
       }
     },
-    company_logo: function() {
-      return this.currentBrand.company_logo
-    },
-
+    
     current_time: function() {
       moment.locale(this.current_locale)
       return moment().local()
@@ -510,6 +512,27 @@ export default {
         return found.text
       }
     },
+    toDataURL(src, callback, outputFormat) {
+      var img = new Image()
+      img.crossOrigin = 'Anonymous'
+      
+      img.src = src
+      if (img.complete || img.complete === undefined) {
+        img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
+        img.src = src
+      }
+
+      img.onload = function() {
+        var canvas = document.createElement('CANVAS')
+        var ctx = canvas.getContext('2d')
+        var dataURL
+        canvas.height = this.naturalHeight
+        canvas.width = this.naturalWidth
+        ctx.drawImage(this, 0, 0)
+        dataURL = canvas.toDataURL(outputFormat)
+        callback(dataURL)
+      }
+    }
   },
 }
 </script>
