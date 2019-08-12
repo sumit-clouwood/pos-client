@@ -66,9 +66,7 @@
     }
 </script>
 <style lang="scss" scoped>
-    @import '../../../../assets/scss/pixels_rem.scss';
-    @import '../../../../assets/scss/variables.scss';
-    @import '../../../../assets/scss/mixins.scss';
+
 
     .error-dialog {
         height: 280px !important;
@@ -79,6 +77,11 @@
             }
         }
     }
+</style>
+<style lang="scss">
+    @import '../../../../assets/scss/pixels_rem.scss';
+    @import '../../../../assets/scss/variables.scss';
+    @import '../../../../assets/scss/mixins.scss';
 
     @include responsive(mobile) {
         #order-confirmation {
@@ -89,17 +92,79 @@
                     .order-header {
                         margin: 0;
                         padding: 20px;
-                        h4{
+                        height: 80px;
+                        border-bottom: 1px solid $gray-middle;
+                        align-items: flex-start;
+
+                        h4 {
                             text-align: left;
                         }
                     }
 
                     .modal-body {
+                        width: 100vw;
 
+                        .order-table {
+                            max-height: none;
+                            width: 100%;
+
+                            table {
+                                width: auto;
+                                display: grid;
+                                grid-template-columns: 1fr 1fr;
+                                justify-content: space-between;
+
+                                tr {
+                                    display: grid;
+
+                                    th, td {
+                                        text-align: left;
+                                        width: auto !important;
+                                        border-bottom: 1px solid $gray-middle !important;
+                                        border-top: none !important;
+                                        height: 40px;
+                                        padding: 0;
+                                        display: flex;
+                                        align-items: center;
+
+                                    }
+
+                                    td {
+                                        box-sizing: content-box;
+
+                                        &:nth-child(1) {
+                                            box-sizing: border-box;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        #total-order-wrap {
+                            .order-notes {
+                                width: 100%;
+                            }
+
+                            #total-confirm-order {
+                                margin: 20px 0 0 0;
+                            }
+                        }
                     }
 
                     .modal-footer {
+                        display: grid;
+                        grid-template-columns: 1fr;
+                        width: 100vw;
+                        grid-gap: 10px;
 
+                        .btn-announce {
+                            btn-announce {
+                                margin-left: auto;
+                            }
+
+                            .btn-danger {
+                            }
+                        }
                     }
                 }
             }
