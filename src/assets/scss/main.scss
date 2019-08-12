@@ -283,8 +283,8 @@
 
           .food-menu-item {
             cursor: pointer;
-            width: $px170;
-            min-height: $px170;
+            width: 8vmax;
+            min-height: 8vmax;
             border: $px1 solid #ddd;
             border-radius: $px5;
             justify-self: center;
@@ -333,7 +333,8 @@
               border-radius: $px3;
               //min-height: $px100;
               //padding: $px12 $px25 0 $px25;
-              width: $px170;
+              width: 8vmax;
+              height: 8vmax;
               margin-bottom: auto;
             }
 
