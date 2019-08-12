@@ -75,7 +75,6 @@ const getters = {
 
   getImages() {
     //for caching
-    //document.getElementsByTagName('a')[0].__vue__.$store.state
     let images = []
 
     state.categories.forEach(category => {
@@ -83,6 +82,10 @@ const getters = {
     })
     state.subcategories.forEach(subcat => {
       images.push(subcat.sub_category_image)
+    })
+
+    state.items.forEach(item => {
+      images.push(item.image)
     })
     return images
   },
