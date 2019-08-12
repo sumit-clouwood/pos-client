@@ -6,7 +6,7 @@
       subCategoryHendler ? 'foodCatigoriesActive' : 'foodCatigoriesNotActive',
     ]"
   >
-    <btnBack />
+    <btnBack  :param="'subcategory'"/>
     <div :class="['food-categories']" v-if="subcategories.length">
       <div
         class="food-categories-item box-shadow-selected"

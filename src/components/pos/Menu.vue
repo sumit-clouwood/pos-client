@@ -11,7 +11,7 @@
       </a>
     </div>
     <div class="navigation-list-wrapper">
-      <btnBack />
+      <btnBack :param="'category'"/>
       <ul class="navigation-list" v-if="categories.length">
         <li
           class="nav-item active-opacity color-text-invert"

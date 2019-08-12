@@ -62,6 +62,16 @@ export default {
       state.subCategoryHendler = false
       state.foodMenuHendler = false
     },
+    BACK_CATEGORY: state=> {
+      state.allCategoryHendler = !state.allCategoryHendler
+      state.subCategoryHendler = false
+      state.foodMenuHendler = !state.foodMenuHendler
+    },
+    BACK_SUB_CATEGORY: state =>{
+      state.allCategoryHendler = !state.allCategoryHendler
+      state.subCategoryHendler = false
+      state.foodMenuHendler = false
+    },
     SUB_CATEGORY_HENDLER_CHANGE: state => {
       state.allCategoryHendler = false
       state.subCategoryHendler = !state.subCategoryHendler
@@ -156,6 +166,12 @@ export default {
     },
   },
   actions: {
+    backCategory({commit}){
+      commit('BACK_CATEGORY')
+    },
+    backSubCategory({commit}){
+      commit('BACK_SUB_CATEGORY')
+    },
     searchHendlerChange({ commit }) {
       commit('SEARCH_HENDLER_CHANGE')
     },
