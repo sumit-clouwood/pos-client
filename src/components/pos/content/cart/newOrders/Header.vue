@@ -6,7 +6,7 @@
         </div>
         <div class="main-oreders-email" v-if="selectedCustomer">
       <span class="cursor-pointer color-text" @click="removeSelectedCustomer()">
-        X
+        ✖
       </span>
             <p v-if="selectedCustomer.email != ''">
                 {{ _t('Email') }} : {{ selectedCustomer.email }}
@@ -95,13 +95,21 @@
             grid-template-columns: 1fr;
             grid-row-gap: 10px;
 
+            .cursor-pointer {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: $red !important;
+            }
+
             .main-oreders-title {
                 grid-column-start: 1;
                 grid-column-end: 3;
             }
 
             .main-oreders-email {
-
+                padding: 10px 20px;
+                border-radius: 5px;
             }
 
             .main-oreders-buttons {

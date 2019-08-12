@@ -147,6 +147,11 @@
 
                             #total-confirm-order {
                                 margin: 20px 0 0 0;
+                                width: 100%;
+                                p{
+                                    display: flex;
+                                    align-items: center;
+                                }
                             }
                         }
                     }
