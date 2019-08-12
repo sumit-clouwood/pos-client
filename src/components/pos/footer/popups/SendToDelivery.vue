@@ -93,6 +93,7 @@
                         margin: 0;
                         padding: 20px;
                         height: 80px;
+                        min-height: 80px;
                         border-bottom: 1px solid $gray-middle;
                         align-items: flex-start;
 
@@ -103,6 +104,7 @@
 
                     .modal-body {
                         width: 100vw;
+                        overflow: auto;
 
                         .order-table {
                             max-height: none;
