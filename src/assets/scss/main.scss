@@ -95,7 +95,7 @@
           position: relative;
           font-size: $px18;
           background-color: #fff;
-          padding: $px5 $px5 $px5 $px5;
+          padding: 2px 2px 2px 2px;
 
           &:hover, &.active {
             box-shadow: inset 0 0 0px 2px $blue-middle;
@@ -126,6 +126,8 @@
             word-break: break-word;
             line-height: $px20;
 
+          font-size: 12px;
+
           }
 
           .food-categories-item-check {
@@ -154,7 +156,8 @@
         border-left: 1px solid $gray-middle;
         padding-left: $px30;
         display: grid;
-        grid-template-rows: $px75 1fr;
+        grid-template-rows: auto 1fr;
+        grid-gap: 20px;
 
         .breadcrumbs {
           padding: 0px $px20;
@@ -196,24 +199,13 @@
         }
 
         .food-menu {
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-          height: 60vh;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: flex-start;
+          align-content: flex-start;
+          //height: 60vh;
           overflow: auto;
-          align-content: start;
-          grid-gap: $px20;
-          @include responsive(xs) {
-            grid-template-columns: 1fr 1fr 1fr;
-          }
-          @include responsive(sm) {
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-          }
-          @include responsive(md) {
-            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-          }
-          @include responsive(lg) {
-            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-          }
+
 
           .food-menu-wrapper {
             overflow: auto;
@@ -291,8 +283,8 @@
 
           .food-menu-item {
             cursor: pointer;
-            width: auto;
-            min-height: auto;
+            width: $px170;
+            min-height: $px170;
             border: $px1 solid #ddd;
             border-radius: $px5;
             justify-self: center;
@@ -336,11 +328,13 @@
             }
 
             .food-menu-item-img {
-              max-height: $px100;
+              //max-height: $px100;
               margin: 0 auto;
               border-radius: $px3;
-              min-height: $px100;
-              padding: $px12 $px25 0 $px25;
+              //min-height: $px100;
+              //padding: $px12 $px25 0 $px25;
+              width: $px170;
+              margin-bottom: auto;
             }
 
             .food-menu-item-text {
