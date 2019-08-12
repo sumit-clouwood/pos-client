@@ -103,24 +103,30 @@
                 .modal-content {
                     .modal-header {
                         height: 80px;
+                        min-height: 80px;
                         background-color: #fff;
                     }
 
                     .modal-body {
-
+                        overflow: auto;
+                        .addOrders {
+                            max-height: none;
+                        }
                     }
 
                     .modal-footer {
-.btn-announce{
-    display: grid;
-    grid-template-columns: max-content max-content max-content;
-    grid-gap: 10px;
-    button{
-        width: auto;
-        margin: 0;
-        padding: 0 20px;
-    }
-}
+                        padding-top: 20px;
+                        .btn-announce {
+                            display: grid;
+                            grid-template-columns: max-content max-content max-content;
+                            grid-gap: 10px;
+
+                            button {
+                                width: auto;
+                                margin: 0;
+                                padding: 0 20px;
+                            }
+                        }
                     }
                 }
             }
