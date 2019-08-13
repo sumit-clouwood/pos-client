@@ -2,7 +2,7 @@
   <div class="main-body-transaction color-dashboard-background color-text">
     <div class="search-trans-wrapper">
       <div class="back-trans-button">
-        <button class="btn btn-success">&lt; Back</button>
+        <button class="btn btn-success">&lt; {{ _t('Back') }}</button>
       </div>
       <search />
     </div>
