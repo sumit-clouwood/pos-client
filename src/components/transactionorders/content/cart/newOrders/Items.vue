@@ -3,24 +3,25 @@
     <h3 class="trans_head">{{ _t('ITEMS') }}</h3>
     <div class="trans-item-list" v-for="(item, index) in items" :key="index">
       <div class="trans-menu-item">
-        <div class="trans-menu-image">
+          <div class="trans-menu-image">
           <img
-            src="http://13.127.145.151/pos-new/images/pizza-medium.png"
+            :src = getItemImage(item.name)
             :alt="_t('Image')"
           />
         </div>
         <div class="trans-menu-list">
           <div class="orders-name">
             <p>{{ item.name }}</p>
-            <p class="price-qty">@ {{ item.price }} x {{ item.qty }}</p>
-            <a href="javascript:void" class="trans-item-btn">Bolognese Sauce</a>
-            <a href="javascript:void" class="trans-item-btn">Chunky Tomato</a>
+            <p class="price-qty">@ {{ item.price }} x {{ item.qty }} &nbsp; ({{ getItemDiscountValue(order.item_discounts).name }})</p>
+              <a href="javascript:void" v-for="(modifier, indexNo) in order.item_modifiers" :key="indexNo" class="trans-item-btn">
+                  <span v-if="modifier.for_item == index">{{ modifier.name }}</span>
+              </a>
           </div>
         </div>
       </div>
       <div class="trans-menu-replace">
         <div class="aed-amt">
-          <span>{{ order.currency }} {{ item.price * item.qty }}</span>
+          <span>{{formatPrice((item.price * item.qty) - getItemDiscountValue(order.item_discounts).value || 0) }}</span>
         </div>
         <div class="replace-btn">
           <a href="javascript:void" @click="modifyOrder">{{ _t('Replace') }}</a>
@@ -31,8 +32,6 @@
 </template>
 
 <script>
-//import Modifiers from './items/Modifiers.vue'
-//import * as CONST from '@/constants'
 import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
@@ -48,6 +47,21 @@ export default {
     ...mapGetters('location', ['formatPrice', '_t']),
   },
   methods: {
+      getItemImage(itemName) {
+          let itemData = this.$store.state.category.items.filter(
+              data => data.name.toLowerCase() === itemName.toLowerCase()
+          )
+          return itemData[0].image
+      },
+      getItemDiscountValue(discounts) {
+          let value = name = ''
+          discounts.map(function (discount) {
+              let type = (discount.type) === 'percentage' ? '%' : ''
+              name += discount.name + ' ('+ discount.rate +  type + ')'
+              value += discount.price
+          })
+          return ({name, value})
+      },
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
     modifyOrder() {
@@ -58,16 +72,6 @@ export default {
   },
   components: {
     //    Modifiers,
-  },
-  watch: {
-    //    orderType(newVal, previousVal) {
-    //      if (newVal.OTApi !== previousVal.OTApi)
-    //        if (this.$store.state.discount.appliedOrderDiscount) {
-    //          this.$store.dispatch('discount/clearOrderDiscount')
-    //        } else {
-    //          this.$store.dispatch('discount/clearItemDiscount')
-    //        }
-    //    },
   },
 }
 </script>

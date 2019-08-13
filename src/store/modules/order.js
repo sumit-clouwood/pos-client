@@ -963,26 +963,33 @@ const actions = {
     { dispatch, commit },
     { order, orderType, actionTrigger, params }
   ) {
-    OrderService.updateOrderAction(order.order._id, actionTrigger, params).then(
-      response => {
-        if (response.status == 200) {
-          switch (orderType) {
-            case 'hold':
-              dispatch('holdOrders/remove', order, { root: true })
-              break
-            case 'call_center':
-              commit(mutation.SET_ERRORS, response.data.form_errors)
-              dispatch('deliveryManager/fetchDMOrderDetail', {}, { root: true })
-              break
-            case 'walk_in':
-              console.log(orderType)
-              commit(mutation.SET_ERRORS, response.data.form_errors)
-              // dispatch('deliveryManager/fetchDMOrderDetail', {}, { root: true })
-              break
-          }
-        }
-      }
+    return new Promise((resolve, reject) => {
+      OrderService.updateOrderAction(order.order._id, actionTrigger, params).then(
+          response => {
+            if (response.status == 200) {
+              switch (orderType) {
+                case 'hold':
+                  dispatch('holdOrders/remove', order, { root: true })
+                  break
+                case 'call_center':
+                  commit(mutation.SET_ERRORS, response.data.form_errors)
+                  dispatch('deliveryManager/fetchDMOrderDetail', {}, { root: true })
+                  break
+                case 'walk_in':
+                  commit(mutation.SET_ERRORS, response.data.form_errors)
+                  dispatch('transactionOrders/getTransactionOrders', {}, { root: true })
+                  // dispatch('deliveryManager/fetchDMOrderDetail', {}, { root: true })
+                  break
+              }
+              dispatch('transactionOrders/getTransactionOrders', {}, { root: true })
+              resolve()
+            }
+          },
     )
+    .catch(response => {
+      commit(mutation.SET_ERRORS, {error: response.data.error})
+    })
+    })
   },
 }
 

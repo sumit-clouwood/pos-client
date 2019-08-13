@@ -34,11 +34,14 @@
       </div>
     </div>
     <div class="btn-transaction text-right">
+    <button class="pos-button-design btn btn-success" v-if="order.order_system_status === 'cancelled'" @click="modifyOrder">
+        {{ _t('Modify Transaction') }}
+    </button>
     <button class="pos-button-design btn btn-success"
-    data-toggle="modal"
+    data-toggle="modal" v-if="order.order_system_status != 'cancelled'"
     data-target=".cancel-order"
     >
-        Cancel Transaction
+        {{ _t('Cancel Transaction') }}
       </button>
     </div>
     <CancelOrderPopup :order="order" />
@@ -67,6 +70,11 @@ export default {
   methods: {
     totalWrapperHendlerGhange() {
       this.$store.dispatch('totalWrapperHendlerGhange')
+    },
+    modifyOrder() {
+      this.$store.dispatch('order/modifyOrderTransaction').then(() => {
+        this.$router.push({ path: this.$store.getters['context/store'] })
+      })
     },
   },
 }

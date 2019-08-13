@@ -12,7 +12,6 @@
     </div>
     <Header :order="selectedOrder.item" />
     <div class="main-orders-list-wrapper">
-      <HoldingOrders v-if="cartType === 'hold'" />
       <Items :order="selectedOrder.item" :items="selectedOrder.item.items" />
     </div>
     <!--<PayNow :order="selectedOrder.item" />-->
@@ -29,7 +28,6 @@
 
 <script>
 import Header from './cart/newOrders/Header.vue'
-import HoldingOrders from './cart/HoldingOrders'
 import Footer from './cart/Footer'
 // import PayNow from './cart/PayNow'
 import Items from './cart/newOrders/Items.vue'
@@ -44,10 +42,9 @@ export default {
     msg: String,
   },
   computed: {
-    ...mapState('order', ['selectedOrder']),
+    ...mapState('order', ['cartType', 'selectedOrder']),
     ...mapState('checkout', ['order']),
     ...mapGetters(['mainOrdersHendler']),
-    ...mapState('order', ['cartType']),
     ...mapGetters('location', ['_t']),
   },
   methods: {
@@ -58,7 +55,6 @@ export default {
   components: {
     Header,
     Items,
-    HoldingOrders,
     Footer,
     // PayNow,
     ordersMenu,

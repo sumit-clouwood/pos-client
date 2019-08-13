@@ -93,20 +93,10 @@
 </template>
 <script>
 /* global $  hidePayNow */
-import PayNowFooter from './payNow/Footer'
-import TotalAmount from './payNow/TotalAmount'
-import PaymentMethods from './payNow/PaymentMethods'
-import AmountCalculator from './payNow/AmountCalculator'
-import PaymentBreakdown from './payNow/PaymentBreakdown'
 import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'PayNow',
   components: {
-    PaymentMethods,
-    TotalAmount,
-    PayNowFooter,
-    PaymentBreakdown,
-    AmountCalculator,
   },
   watch: {
     payable(newVal, previousVal) {
