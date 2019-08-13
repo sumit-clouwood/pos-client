@@ -1,6 +1,11 @@
 <template>
   <div class="main-body-transaction color-dashboard-background color-text">
-    <search />
+    <div class="search-trans-wrapper">
+      <div class="back-trans-button">
+        <button class="btn btn-success">&lt; Back</button>
+      </div>
+      <search />
+    </div>
     <div :class="['food-wrapper', 'active']">
       <div v-if="transactionOrderList.length > 0" class="left_size_details">
         <div class="detailed_block">

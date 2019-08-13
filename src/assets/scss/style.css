@@ -1166,19 +1166,7 @@ h1, h2, h3, h4, h5, h6 {
     display: grid;
     grid-template-rows: max-content 1fr max-content; }
 
-    /**/
-    .preloader {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center; }
-
-    /**/
+  /**/
   .modal, #pay-now {
     width: 100%;
     position: fixed;
@@ -1887,7 +1875,7 @@ a:hover {
       #select-discount .modal-dialog .modal-content .modal-body .select-discount-option .option-contain.active {
         border: 2px solid #64C434; }
         #select-discount .modal-dialog .modal-content .modal-body .select-discount-option .option-contain.active:after {
-          content: "✔";
+          content: "Ô£ö";
           color: #fff;
           position: absolute;
           height: 1.5625rem;
@@ -4412,6 +4400,15 @@ body {
       justify-content: space-around;
       cursor: pointer;
       padding: 10px 10px; }
+      .main-body-transaction .detailed_block .left_info_block.active, .main-body-transaction .detailed_block .left_info_block:hover {
+        background: #5056CA; }
+        .main-body-transaction .detailed_block .left_info_block.active .img_block svg path, .main-body-transaction .detailed_block .left_info_block:hover .img_block svg path {
+          fill: #fff; }
+        .main-body-transaction .detailed_block .left_info_block.active .img_block svg circle, .main-body-transaction .detailed_block .left_info_block:hover .img_block svg circle {
+          stroke: #fff;
+          fill: #fff; }
+        .main-body-transaction .detailed_block .left_info_block.active *, .main-body-transaction .detailed_block .left_info_block:hover * {
+          color: #fff !important; }
       .main-body-transaction .detailed_block .left_info_block .time_and_button a {
         border-radius: 4px;
         padding: 0.625rem;
@@ -4506,6 +4503,9 @@ body {
       background: #fff;
       border: 1px solid #D7DCE2;
       border-radius: 4px; }
+      .trans-item-list .trans-menu-item .trans-menu-image > img {
+        border-radius: 50%;
+        width: 3.75rem; }
   .trans-item-list .trans-menu-replace {
     display: grid;
     grid-template-columns: auto auto;
