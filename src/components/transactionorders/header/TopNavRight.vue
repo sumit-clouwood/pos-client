@@ -70,7 +70,7 @@
           <a href="javascript:void(0)">{{ _t('Printers') }}</a>
         </li>
         <li>
-          <router-link :to="store" class="text-white">
+          <router-link :to="store">
             {{ _t('Walk-in') }}
           </router-link>
         </li>
