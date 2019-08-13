@@ -105,7 +105,8 @@
                     .modal-body {
                         width: 100vw;
                         overflow: auto;
-padding: 20px;
+                        padding: 20px;
+
                         .order-table {
                             max-height: none;
                             width: 100%;
@@ -151,6 +152,12 @@ padding: 20px;
                                 margin: 20px 0 0 0;
                                 width: 100%;
 
+                                .order-amt-charges {
+                                    p {
+                                        justify-content: flex-end;
+                                    }
+                                }
+
                                 p {
                                     display: flex;
                                     align-items: center;
@@ -174,7 +181,8 @@ padding: 20px;
 
                             .vdatetime {
                                 order: 1;
-                                input{
+
+                                input {
                                     margin: 0;
                                     width: 100%;
                                 }
