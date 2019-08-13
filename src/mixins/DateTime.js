@@ -41,12 +41,12 @@ export default {
         return htmlElement
       }, 1000)
     },
-    convertDatetime(datetime, tz, format='YYYY-MM-DD HH:mm:ss') {
+    convertDatetime(datetime, tz, format = 'YYYY-MM-DD HH:mm:ss') {
       moment.locale(tz)
       var value =
         datetime != null && typeof datetime.$date != 'undefined'
           ? parseInt(datetime.$date.$numberLong)
-          : false
+          : datetime
       var result = ''
       if (value) {
         if (!moment.utc(value).isValid()) return ''
