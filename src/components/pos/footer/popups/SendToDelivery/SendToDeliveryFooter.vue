@@ -138,16 +138,17 @@ export default {
               ? moment(this.futureDateTime).format('YYYY/MM/DD hh:mm')
               : null,
         })
-          .then(() => {
-            this.msg = ''
+          .then(response => {
+            if (response.message != 'Network Error') {
+              this.msg = ''
+            }
             // $('#order-confirmation').modal('hide')
-            $('#payment-msg').modal('show')
             $('#order-confirmation').modal('hide')
+            $('#payment-msg').modal('show')
             setTimeout(function() {
               $('#confirm_announcement').prop('disabled', false)
             }, 1000)
 
-            this.$store.dispatch('checkout/reset')
             /*this.$store.commit('order/ORDER_TYPE', {
               OTview: 'Walk In',
               OTApi: 'walk_in',
