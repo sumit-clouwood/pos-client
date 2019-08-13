@@ -34,6 +34,23 @@
       justify-content: space-around;
       cursor: pointer;
       padding: 10px 10px;
+      &.active, &:hover{
+        background: $blue-middle;
+        .img_block{
+          svg {
+            path{
+              fill: $white;
+            }
+            circle{
+              stroke: $white;
+              fill: $white;
+            }
+          }
+        }
+        *{
+          color: $white !important;
+        }
+      }
       .time_and_button  {
         a{
           border-radius: $block-border-radius;
@@ -168,6 +185,10 @@
       background: $white;
       border: 1px solid #D7DCE2;
       border-radius: $block-border-radius;
+       > img{
+         border-radius: 50%;
+         width: $px60;
+       }
     }
   }
   .trans-menu-replace {
