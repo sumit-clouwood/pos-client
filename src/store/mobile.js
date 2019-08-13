@@ -85,7 +85,7 @@ export default {
     MAIN_ORDERS_HENDLER_GHANGE: state => {
       state.allCategoryHendler = false
       state.subCategoryHendler = false
-      state.mainOrdersHendler = true
+      state.mainOrdersHendler = !state.mainOrdersHendler
     },
     CART_CLOSE: state => {
       state.mainOrdersHendler = false
