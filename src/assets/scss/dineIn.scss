@@ -344,7 +344,9 @@ span#dine-bottom {
   text-align: center;
 }
 div#sitting-dinein-table {
-  overflow: hidden;
+  /*overflow: hidden;*/
+  height: calc(100vh - 373px);
+  overflow-y: auto;
   margin: 0 auto;
   max-width: 100%;
   width: 100%;
@@ -681,6 +683,7 @@ nav#left-side-section {
     }
   }
   .dine-in-tabel-wrapper {
+    width: 100%;
     background-color: $white;
     padding-bottom: $px50;
   }
@@ -1308,7 +1311,7 @@ span.booked-time {
 }
 div#select-discount {
   .dining-options-block.select-discount {
-    padding: 0 $px40 !important;
+    padding: $px40 !important;
   }
 }
 .dining-option-block.select-discount-option {
@@ -1461,7 +1464,7 @@ tr.dine-table-heading {
   }
 }
 .running-order-table-wrap {
-  max-height: calc(100vh - 175px);
+  max-height: calc(100vh - 350px);
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: $px15;
@@ -1885,8 +1888,22 @@ button.popup-btn-save {
     overflow: visible;
   }
   .header {
+    border: medium none;
     .header-main{
       padding:0;
     }
   }
+}
+.dine-order-details .modifiers {
+  font-size: 0.75rem;
+  padding-left: 1rem;
+}
+.running-orders-dinein {
+  display: none;
+}
+.running-orders-dinein.active {
+  display: flex;
+}
+.dine-in-tabel-wrapper{
+  width:100%;
 }

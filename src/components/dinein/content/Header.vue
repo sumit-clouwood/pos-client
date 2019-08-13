@@ -32,12 +32,13 @@
   </div>
 </template>
 <script>
+
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Header',
   computed: {
     ...mapState('dinein', ['areas', 'activeArea', 'loading']),
-    ...mapGetters('location', ['_t'])
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     ...mapActions('dinein', ['selectedArea'])

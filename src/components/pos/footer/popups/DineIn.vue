@@ -13,37 +13,35 @@
                 <div class="modal-body dining-options-block">
                     <div class="dining-option-block">
                         <div
-                                class="option-contain"
                                 :class="{ active: selectedOrderType.OTApi === 'dine_in' }"
                                 @click="setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })"
+                                class="option-contain"
                         >
-                            <img src="img/pos/dine-in.svg"/><span
-                                class="color-text-invert"
-                        >{{ _t('Dine In') }}</span
-                        >
+                            <img src="img/pos/dine-in.svg"/>
+                            <span class="color-text-invert">
+                                {{ _t('Dine In') }}
+                            </span>
                         </div>
                         <div
-                                class="option-contain"
                                 :class="{ active: selectedOrderType.OTApi === 'takeaway' }"
-                                @click="
-                setOrderType({
-                  OTview: 'Take Away',
-                  OTApi: 'takeaway',
-                })
-              "
+                                @click="setOrderType({
+                              OTview: 'Take Away',
+                              OTApi: 'takeaway',
+                            })
+                          "
+                                class="option-contain"
                         >
-                            <img src="img/pos/take-away.svg"/><span
-                                class="color-text-invert"
-                        >
+                            <img src="img/pos/take-away.svg"/>
+                            <span class="color-text-invert">
                 {{ _t('Take Away') }}
               </span>
                         </div>
                         <div
-                                class="option-contain"
                                 :class="{ active: selectedOrderType.OTApi === 'call_center' }"
                                 @click="
                 setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
               "
+                                class="option-contain"
                         >
                             <img src="img/pos/delivery-icon.svg"/><span
                                 class="color-text-invert"
@@ -52,18 +50,18 @@
               </span>
                         </div>
                         <div
-                                class="option-contain"
                                 :class="{ active: selectedOrderType.OTApi === 'event' }"
                                 @click="setOrderType({ OTview: 'Event', OTApi: 'event' })"
+                                class="option-contain"
                         >
                             <img src="img/pos/event.svg"/><span class="color-text-invert">{{
                 _t('Event')
               }}</span>
                         </div>
                         <div
-                                class="option-contain"
                                 :class="{ active: selectedOrderType.OTApi === 'walk_in' }"
                                 @click="setOrderType({ OTview: 'Walk In', OTApi: 'walk_in' })"
+                                class="option-contain"
                         >
                             <img src="img/pos/walkin.svg" width="35"/><span
                                 class="color-text-invert"
@@ -75,11 +73,11 @@
                 <div class="modal-footer">
                     <div class="btn-announce">
                         <button
+                                @click="updateOrderType()"
                                 class="btn btn-success btn-large color-main color-text-invert"
-                                type="button"
                                 data-dismiss="modal"
                                 id="dining-opt"
-                                @click="updateOrderType()"
+                                type="button"
                         >
                             {{ _t('Ok') }}
                         </button>
@@ -101,52 +99,52 @@
 </template>
 
 <script>
-    import {mapState, mapGetters} from 'vuex'
-    import * as CONST from '@/constants'
+  import {mapState, mapGetters} from 'vuex'
+  import * as CONST from '@/constants'
 
-    export default {
-        name: 'DineIn',
-        props: {},
-        data: function () {
-            return {
-                selectedOrderType: this.$store.state.order.orderType,
-            }
-        },
-        computed: {
-            ...mapGetters('location', ['_t']),
-            ...mapState('order', ['orderType']),
-        },
-        watch: {
-            orderType(newVal, oldVal) {
-                if (newVal != oldVal && newVal.OTApi != CONST.ORDER_TYPE_CALL_CENTER) {
-                    this.$store.dispatch('customer/reset')
-                }
-                this.selectedOrderType = newVal
-            },
-        },
+  export default {
+    name: 'DineIn',
+    props: {},
+    data: function () {
+      return {
+        selectedOrderType: this.$store.state.order.orderType,
+      }
+    },
+    computed: {
+      ...mapGetters('location', ['_t']),
+      ...mapState('order', ['orderType']),
+    },
+    watch: {
+      orderType(newVal, oldVal) {
+        if (newVal != oldVal && newVal.OTApi != CONST.ORDER_TYPE_CALL_CENTER) {
+          this.$store.dispatch('customer/reset')
+        }
+        this.selectedOrderType = newVal
+      },
+    },
 
-        methods: {
-            setOrderType(orderType) {
-                if (orderType.OTApi == 'walk_in') {
-                    this.updateOrderType()
-                }
-                if (orderType.OTApi != 'call_center') {
-                    this.$store.commit('order/ORDER_TYPE', orderType)
-                    this.$store.commit('location/SET_MODAL', '#manage-customer')
-                    this.$store.dispatch('customer/resetCustomer')
-                }
-                if (this.selectedOrderType === orderType.OTApi) {
-                    //toggle
-                    this.selectedOrderType = {OTview: 'Walk In', OTApi: 'walk_in'}
-                } else {
-                    this.selectedOrderType = orderType
-                }
-            },
-            updateOrderType() {
-                this.$store.dispatch('order/updateOrderType', this.selectedOrderType)
-            },
-        },
-    }
+    methods: {
+      setOrderType(orderType) {
+        if (orderType.OTApi == 'walk_in') {
+          this.updateOrderType()
+        }
+        if (orderType.OTApi != 'call_center') {
+          this.$store.commit('order/ORDER_TYPE', orderType)
+          this.$store.commit('location/SET_MODAL', '#manage-customer')
+          this.$store.dispatch('customer/resetCustomer')
+        }
+        if (this.selectedOrderType === orderType.OTApi) {
+          //toggle
+          this.selectedOrderType = {OTview: 'Walk In', OTApi: 'walk_in'}
+        } else {
+          this.selectedOrderType = orderType
+        }
+      },
+      updateOrderType() {
+        this.$store.dispatch('order/updateOrderType', this.selectedOrderType)
+      },
+    },
+  }
 </script>
 <style lang="scss">
     @import '../../../../assets/scss/pixels_rem.scss';

@@ -1,17 +1,19 @@
 <template>
     <div class="dine-in-tabel-wrapper">
         <div class="inner-dinein-table">
-            {{ tablesOnArea }}
             <TableStatus/>
             <div class="sitting-dinein-table ui-droppable" id="sitting-dinein-table">
                 <div class="sitting-dine-wrap disable-sorting">
-                    <div class="sitting-image" data-target="/pos-walkin-cashier/pos.html">
+                    <div class="sitting-image"  @click="orderTypeWalkIn({ OTview: 'Walk In', OTApi: 'walk_in' })" :data-target="store">
+                        <!--<router-link :to="store" class="text-white">
+                            {{ _t('Walk-in') }}
+                        </router-link>-->
                         <svg
-                                :height="height+'px'"
-                                :width="width+'px'"
-                                id="dine-in-area"
-                                ref="dine-in-area"
-                                xmlns="http://www.w3.org/2000/svg"></svg>
+                            :height="height+'px'"
+                            :width="width+'px'"
+                            id="dine-in-area"
+                            ref="dine-in-area"
+                            xmlns="http://www.w3.org/2000/svg"></svg>
                     </div>
                 </div>
             </div>
@@ -28,6 +30,7 @@ export default {
     computed: {
       ...mapGetters('location', ['_t']),
       ...mapState('dinein', ['tablesOnArea']),
+      ...mapGetters('context', ['store']),
     },
     components: {
       TableStatus,
@@ -48,6 +51,9 @@ export default {
     this.updateTableOnArea()
   },
   methods:{
+    orderTypeWalkIn: function(orderType) {
+      this.$store.commit('order/ORDER_TYPE', orderType)
+    },
     updateTableOnArea() {
       this.page = d3
         .select(this.$el)

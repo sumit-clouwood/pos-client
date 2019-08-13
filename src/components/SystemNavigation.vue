@@ -36,7 +36,7 @@
           v-if="permitted('menu', 'root')"
         >
           <a class="nav-link-nav" :href="menu">
-            <dix class="nav-link-text">
+            <div class="nav-link-text">
               <svg id="menu_menu_icon" viewBox="0 0 24 20">
                 <g fill="" fill-rule="nonzero">
                   <path
@@ -44,7 +44,7 @@
                   ></path>
                 </g>
               </svg>
-            </dix>
+            </div>
             <span class="nav-link-name">{{ _t('Menu Setup') }}</span>
             <!-- <span class="nav-link-text"></span> -->
           </a>

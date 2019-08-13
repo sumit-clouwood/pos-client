@@ -1,18 +1,37 @@
 import * as mutation from './dinein/mutation-types'
 import DineInService from '@/services/data/DineInService'
 import LookupData from '@/plugins/helpers/LookupData'
+import * as CONST from '@/constants'
 
 const state = {
   orders:false,
+  dineInOrderDetails:{},
   areas:false,
   tables:false,
   activeArea:false,
   loading:false,
   tablesOnArea:false,
-  tableStatus:false,
+  tableStatus: {'unavailable': 0, 'available_soon': 0, 'available': 0},
   tableOrders:false,
 }
-const getters = {}
+const getters = {
+  getOrderStatus: () => order_status => {
+    if (order_status === CONST.ORDER_STATUS_ON_HOLD || order_status === CONST.ORDER_STATUS_IN_PROGRESS) {
+      return 'running-order-details'
+    } else {
+      return 'done-soon-order'
+    }
+  },
+  getTableNumber: state => orderId => {
+    let tableNumber = ''
+     state.orders.data.filter(function (order) {
+      if(order.order_id === orderId) {
+        tableNumber = order.table_number
+      }
+    })
+    return tableNumber
+  },
+}
 
 const actions = {
   fetchAll({ dispatch, commit }) {
@@ -27,9 +46,10 @@ const actions = {
       commit(mutation.DINE_IN_ORDERS, response.data)
     })
   },
-  getDineInArea({ commit }) {
+  getDineInArea({ commit, dispatch }) {
     DineInService.dineAreas().then(response => {
       commit(mutation.DINE_IN_AREAS, response.data)
+      dispatch('getTableStatus')
     })
   },
   getDineInTables({ commit }) {
@@ -41,25 +61,31 @@ const actions = {
     commit(mutation.SELECTED_AREA, area)
     dispatch('getTableStatus')
   },
+
   getTableStatus({commit, state}) {
-    let OrderOnTable = false
+    let tableStatus = {'unavailable': 0, 'available_soon': 0, 'available': 0}
     state.tablesOnArea.forEach(table => {
-      alert(table._id)
-      let orderId = state.orders.data.filter(order => function () {
+      let orderIds = []
+      state.orders.data.filter(function (order) {
         if(order.table_id === table._id) {
-          return order._id
+          orderIds.push(order.order_id)
         }
       })
-      let orderStatus = LookupData.get({
-        collection: state.orders.page_lookups.orders._id,
-        matchWith: orderId,
-        selection: false,
+      orderIds.forEach(id => {
+        let order = LookupData.get({
+          collection: state.orders.page_lookups.orders._id,
+          matchWith: id,
+          selection: false,
+        })
+        if (order.order_status == CONST.ORDER_STATUS_ON_HOLD || order.order_status == CONST.ORDER_STATUS_IN_PROGRESS) {
+          tableStatus.unavailable += 1
+        } else {
+          tableStatus.available_soon += 1
+        }
       })
-      console.log(orderStatus)
-      // let order =state.orders.page_lookups
-
+      tableStatus.available = parseInt(state.tablesOnArea.length) - parseInt(tableStatus.available_soon + tableStatus.unavailable)
     })
-    commit(mutation.TABLE_STATUS, 'abc')
+    commit(mutation.TABLE_STATUS, tableStatus)
   },
 }
 
@@ -77,6 +103,7 @@ const mutations = {
     state.tables = tables.data
   },
   [mutation.DINE_IN_ORDERS](state, orders) {
+    state.dineInOrderDetails = orders.page_lookups.orders._id
     state.orders = orders
   },
   [mutation.SELECTED_AREA](state, activeArea) {
