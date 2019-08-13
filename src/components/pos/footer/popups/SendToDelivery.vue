@@ -105,7 +105,7 @@
                     .modal-body {
                         width: 100vw;
                         overflow: auto;
-
+padding: 20px;
                         .order-table {
                             max-height: none;
                             width: 100%;
@@ -150,7 +150,8 @@
                             #total-confirm-order {
                                 margin: 20px 0 0 0;
                                 width: 100%;
-                                p{
+
+                                p {
                                     display: flex;
                                     align-items: center;
                                 }
@@ -163,6 +164,22 @@
                         grid-template-columns: 1fr;
                         width: 100vw;
                         grid-gap: 10px;
+                        padding: 20px;
+
+                        .referal {
+                            display: grid;
+                            margin: 0;
+                            grid-template-columns: max-content 1fr;
+                            grid-gap: 10px;
+
+                            .vdatetime {
+                                order: 1;
+                                input{
+                                    margin: 0;
+                                    width: 100%;
+                                }
+                            }
+                        }
 
                         .btn-announce {
                             btn-announce {

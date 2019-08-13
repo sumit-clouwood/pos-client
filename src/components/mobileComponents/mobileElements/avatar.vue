@@ -5,7 +5,7 @@
       <img class="avatar-link-img" :src="
                     user.avatar ? user.avatar : 'img/profile/default_avatar.jpg'
                   " alt="profile" />
-      <div class="avatar-link-user">Admin</div>
+      <div class="avatar-link-user">{{ user.name }}</div>
       <status />
     </a>
   </div>
