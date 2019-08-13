@@ -91,8 +91,7 @@ export default {
   },
   computed: {
     ...mapState({
-      transactionOrderList: state =>
-        state.transactionOrders.getTransactionOrders,
+      transactionOrderList: state => state.transactionOrders.getTransactionOrders,
     }),
     ...mapState('order', ['selectedOrder']),
     ...mapGetters('location', ['_t', 'timezoneString']),
@@ -122,8 +121,6 @@ export default {
       this.$store
         .dispatch('order/selectedOrderDetails', order._id)
         .then(() => {
-          // eslint-disable-next-line no-console
-          console.log(this.selectedOrder)
         })
         .catch()
     },

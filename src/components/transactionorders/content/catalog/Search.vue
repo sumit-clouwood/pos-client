@@ -29,8 +29,8 @@
           autocomplete="off"
           class="search-field-input"
           :placeholder="_t('Search or scan for items')"
-          v-model="searchItems"
-          @keyup="searchingItems(searchItems)"
+          v-model="searchTransactions"
+          @keyup="searchingItems(searchTransactions)"
         />
       </div>
     </form>
@@ -46,7 +46,7 @@ export default {
   props: {},
   data() {
     return {
-      searchItems: '',
+      searchTransactions: '',
     }
   },
   computed: {
@@ -58,15 +58,12 @@ export default {
     ]),
   },
   mounted() {
-    this.searchItems = ''
+    this.searchTransactions = ''
   },
   methods: {
-    searchingItems(searchItems) {
-      // eslint-disable-next-line no-undef
-      $('.breadcrumbs').hide()
-      this.$store.dispatch('category/collectSearchItems', searchItems)
+    searchingItems(searchTransactions) {
+      this.$store.dispatch('transactionOrders/collectSearchTransactions', searchTransactions)
     },
-    // ...mapActions('category', ['collectSearchItems']),
     searchHendlerChange() {
       this.$store.dispatch('searchHendlerChange')
     },
