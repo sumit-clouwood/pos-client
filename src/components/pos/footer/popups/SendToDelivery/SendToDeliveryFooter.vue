@@ -20,7 +20,7 @@
           class="dropdown-item color-text"
           :class="{ active: referral._id === orderReferralId }"
           data-value="Call Center"
-          href="javascript:void(0)"
+          role="button"
           v-for="referral in getReferrals"
           @click="
             selectedReferral({

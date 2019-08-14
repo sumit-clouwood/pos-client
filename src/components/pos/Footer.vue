@@ -9,7 +9,7 @@
         >
           <a
             class="footer-slider-list-item-link color-text-invert"
-            href="javascript:void(0)"
+            role="button"
           >
             <!--<img src="images/footer-images/user.svg" alt="customer">-->
             <svg
@@ -40,7 +40,7 @@
         >
           <a
             class="footer-slider-list-item-link color-text-invert"
-            href="javascript:void(0)"
+            role="button"
           >
             <!--<img class="hold-ordes" src="images/hold-order.png" alt="customer">-->
             <svg
@@ -71,7 +71,7 @@
         >
           <a
             class="footer-slider-list-item-link color-text-invert"
-            href="javascript:void(0)"
+            role="button"
           >
             <!--<img class="hold-ordes" src="images/hold-order.png" alt="customer">-->
             <svg
@@ -100,7 +100,7 @@
           :class="{ loyaltyApplied: loyaltyCard }"
         >
           <a
-            href="javascript:void(0)"
+            role="button"
             class="footer-slider-list-item-link color-text-invert"
           >
             <img
@@ -135,12 +135,12 @@
         >
           <!--<a
             class="footer-slider-list-item-link"
-            href="javascript:void(0)"
+            role="button"
             @click="setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })"
           >-->
           <a
             class="footer-slider-list-item-link color-text-invert"
-            href="javascript:void(0)"
+            role="button"
           >
             <!--<img src="images/footer-images/d_2.png" alt="customer">-->
             <svg
@@ -170,7 +170,7 @@
         >
           <a
             class="footer-slider-list-item-link color-text-invert"
-            href="javascript:void(0)"
+            role="button"
           >
             <svg
               aria-hidden="true"
@@ -198,7 +198,7 @@
         >
           <a
             class="footer-slider-list-item-link color-text-invert"
-            href="javascript:void(0)"
+            role="button"
           >
             <!--<img src="images/footer-images/group_9.png" alt="customer">-->
             <svg
@@ -227,7 +227,7 @@
         >
           <a
             class="footer-slider-list-item-link color-text-invert"
-            href="javascript:void(0)"
+            role="button"
           >
             <!--<img src="images/footer-images/a.png" alt="customer">-->
             <svg
@@ -263,7 +263,7 @@
           >
             <a
               class="footer-slider-list-item-link color-text-invert"
-              href="javascript:void(0)"
+              role="button"
               @click="
                 setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
               "
@@ -294,7 +294,7 @@
             v-show="orderType.OTApi !== 'call_center'"
             @click="payNowClick()"
           >
-            <a href="javascript:void(0)">
+            <a role="button">
               <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
               <span class="pay-btn color-text-invert">{{ _t('Pay Now') }}</span>
             </a>

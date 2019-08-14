@@ -4,7 +4,7 @@
     class="color-main"
   >
     <div class="logo" title="logo">
-      <a class="logo-link" href="javascript:void(0)">
+      <a class="logo-link" role="button">
         <!--<router-link :to="'/delivery-manager' + store">-->
         <img src="img/icons/icon.png" alt="icon" />
         <!--</router-link>-->
@@ -51,7 +51,7 @@
     >
       <a
         class="nav-link"
-        href="javascript:void(0)"
+        role="button"
         :title="userDetails.item.name"
       >
         <img

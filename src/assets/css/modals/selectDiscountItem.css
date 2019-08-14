@@ -36,4 +36,34 @@
   letter-spacing: 0.5px;
   border-color: #5056ca; }
 
+@media only screen and (min-width: 320px) and (max-width: 600px) {
+  #select-discount-item {
+    padding: 0 !important; }
+    #select-discount-item .modal-dialog {
+      margin: 0; }
+      #select-discount-item .modal-dialog .modal-content .modal-header {
+        height: 80px;
+        background-color: #fff; }
+      #select-discount-item .modal-dialog .modal-content .modal-body {
+        margin: 0; }
+        #select-discount-item .modal-dialog .modal-content .modal-body .dining-option-block {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: repeat(5, max-content);
+          grid-gap: 0; }
+          #select-discount-item .modal-dialog .modal-content .modal-body .dining-option-block .option-contain {
+            margin-right: 10px;
+            margin-bottom: 20px; }
+            #select-discount-item .modal-dialog .modal-content .modal-body .dining-option-block .option-contain.active {
+              border: 2px solid #64C434; }
+              #select-discount-item .modal-dialog .modal-content .modal-body .dining-option-block .option-contain.active:after {
+                background-color: #64C434;
+                position: absolute;
+                top: 0;
+                right: 0;
+                border-top-right-radius: 0; }
+            #select-discount-item .modal-dialog .modal-content .modal-body .dining-option-block .option-contain:nth-child(2n) {
+              margin-right: 0px;
+              margin-left: 10px; } }
+
 /*# sourceMappingURL=selectDiscountItem.css.map */

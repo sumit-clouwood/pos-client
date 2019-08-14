@@ -2,10 +2,10 @@
   <div class="floor-section-wrap">
     <div class="floor-section">
       <ul class="ullist-floor">
-        <li class="active"><a href="javascript:void(0)">1st Floor</a></li>
-        <li><a href="javascript:void(0)">2nd Floor</a></li>
-        <li><a href="javascript:void(0)">Bar</a></li>
-        <li><a href="javascript:void(0)">Rooftop</a></li>
+        <li class="active"><a role="button">1st Floor</a></li>
+        <li><a role="button">2nd Floor</a></li>
+        <li><a role="button">Bar</a></li>
+        <li><a role="button">Rooftop</a></li>
       </ul>
     </div>
     <div class="search-dine-table">
