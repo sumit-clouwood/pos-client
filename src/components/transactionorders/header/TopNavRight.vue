@@ -39,6 +39,16 @@
         </a>
       </li>
     </ul>
+    <div class="col-md-1 col-sm-1">
+      <button
+              class="btn btn-success walkin-btn"
+              @click="orderTypeWalkIn({ OTview: 'Walk In', OTApi: 'walk_in' })"
+      >
+        <router-link :to="store" class="text-white">
+          {{ _t('Walk-in') }}
+        </router-link>
+      </button>
+    </div>
     <!--<div class="curent-sale hideBigScreen">-->
     <!--<div class="curent-sale-title">Current Sale</div>-->
     <!--<div class="curent-sale-item">-->
@@ -68,11 +78,6 @@
       <ul class="setting-dropdown">
         <li>
           <a href="javascript:void(0)">{{ _t('Printers') }}</a>
-        </li>
-        <li>
-          <router-link :to="store">
-            {{ _t('Walk-in') }}
-          </router-link>
         </li>
         <li v-if="permitted('dashboard', 'root')">
           <a :href="dashboard">{{ _t('Dashboard') }}</a>
