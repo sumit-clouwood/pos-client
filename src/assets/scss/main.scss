@@ -201,9 +201,8 @@
         .food-menu {
           display: flex;
           flex-wrap: wrap;
-          align-items: flex-start;
+          align-items: stretch;
           align-content: flex-start;
-          //height: 60vh;
           overflow: auto;
 
 

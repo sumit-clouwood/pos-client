@@ -76,11 +76,11 @@ export default {
           grid-template-columns: max-content 1fr;
           align-items: center;
           grid-gap: 20px;
-          border: 1px solid $gray-middle;
+          //border: 1px solid $gray-middle;
           transition: 0.3s ease-out;
 
           &.active {
-            border: 1px solid $green-middle;
+            //border: 1px solid $green-middle;
           }
 
           &:active {

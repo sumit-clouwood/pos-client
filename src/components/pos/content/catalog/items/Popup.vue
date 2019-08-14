@@ -134,6 +134,7 @@
                                         display: flex;
                                         align-items: center;
                                         position: relative;
+                                        flex-wrap: wrap;
 
                                         &.active {
                                             border: 2px solid $green-middle;
@@ -159,10 +160,6 @@
 
                                                 &[type=checkbox] {
                                                     &:checked + span {
-                                                        background-color: $green-middle;
-                                                    }
-
-                                                    &:checked .POSItemOptions_choose_label {
                                                         background-color: $green-middle;
                                                     }
                                                 }
@@ -222,6 +219,7 @@
                                 padding: 0 10px !important;
                                 height: 30px;
                                 box-shadow: none !important;
+                                height: 35px;
                             }
                         }
                     }
