@@ -2,7 +2,7 @@
   <div class="main-body-transaction color-dashboard-background color-text">
     <div class="search-trans-wrapper">
       <div class="back-trans-button">
-        <button class="btn btn-success">&lt; {{ _t('Back') }}</button>
+        <button class="btn btn-success" @onclick="$router.go(-1)">&lt; {{ _t('Back') }}</button>
       </div>
       <search />
     </div>
@@ -46,7 +46,7 @@
 
             <div class="price_and_name">
               <p class="doller_price">
-                {{ order.currency }} {{ order.balance_due }}
+                {{ '#'+ order.order_no }} - {{ order.currency }} {{ order.balance_due }}
               </p>
               <p class="price_s_desc shorten-sentence" :title="getOrderItemsStr(order.items)">{{ getOrderItemsStr(order.items, true) }}</p>
             </div>
@@ -74,7 +74,7 @@
 
 <script>
 import moment from 'moment-timezone'
-import Search from './catalog/Search'
+import Search from './Search'
 import DateTime from '@/mixins/DateTime'
 import { mapGetters, mapState } from 'vuex'
 
@@ -96,7 +96,7 @@ export default {
   },
   computed: {
     ...mapState({
-      transactionOrderList: state => state.transactionOrders.getTransactionOrders,
+      transactionOrderList: state => state.transactionOrders.displayTransactionOrders,
     }),
     ...mapState('order', ['selectedOrder']),
     ...mapGetters('location', ['_t', 'timezoneString']),
@@ -128,6 +128,15 @@ export default {
         .then(() => {
         })
         .catch()
+    },
+    getReferPath() {
+      let path = '13443'
+      /*if(document.referrer.length > 0) {
+        path = document.referrer.fullPath
+      }
+      console.log(document.referrer)*/
+      console.log(path)
+      // this.$route.router.go(path)
     },
   },
 }
