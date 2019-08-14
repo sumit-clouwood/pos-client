@@ -177,6 +177,7 @@
 
                                     .location-delivery-area-address {
                                         max-height: none;
+                                        grid-template-columns: 1fr;
                                     }
                                 }
 

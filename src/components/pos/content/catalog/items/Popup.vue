@@ -135,6 +135,10 @@
                                         align-items: center;
                                         position: relative;
 
+                                        &.active {
+                                            border: 2px solid $green-middle;
+                                        }
+
                                         img {
                                             flex-basis: max-content;
                                             flex-shrink: 0;
