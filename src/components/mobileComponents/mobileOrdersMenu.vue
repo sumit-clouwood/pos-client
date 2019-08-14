@@ -291,6 +291,7 @@ export default {
         align-items: end;
         margin-top: auto;
         margin-bottom: auto;
+        overflow-y: auto;
 
         .footer-slider-list-item {
           border-bottom: 1px solid $gray-middle;
