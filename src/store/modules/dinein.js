@@ -6,6 +6,7 @@ import * as CONST from '@/constants'
 const state = {
   orders:false,
   dineInOrderDetails:{},
+  completedOrderDetails:{},
   areas:false,
   tables:false,
   activeArea:false,
@@ -104,6 +105,12 @@ const mutations = {
   },
   [mutation.DINE_IN_ORDERS](state, orders) {
     state.dineInOrderDetails = orders.page_lookups.orders._id
+     /*let order = LookupData.get({
+      collection: orders.page_lookups.orders._id,
+      matchWith: id,
+      selection: false,
+    })
+    state.completedOrderDetails = order.order_status.*/
     state.orders = orders
   },
   [mutation.SELECTED_AREA](state, activeArea) {
