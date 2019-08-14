@@ -11,7 +11,7 @@
       </a>
     </div>
     <div class="navigation-list-wrapper">
-      <btnBack />
+      <btnBack :param="'category'"/>
       <ul class="navigation-list" v-if="categories.length">
         <li
           class="nav-item active-opacity color-text-invert"
@@ -241,7 +241,6 @@ export default {
             padding: 0 20px 0 0px;
             display: grid;
             grid-template-columns: min-content 1fr;
-            grid-gap: 20px;
             background-color: #fff !important;
 
             .nav-link-text {
@@ -250,6 +249,8 @@ export default {
               overflow: hidden;
               text-overflow: ellipsis;
               text-align: left;
+              justify-content: flex-start;
+              margin-left: 20px;
             }
 
             img {

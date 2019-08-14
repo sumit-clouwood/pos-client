@@ -21,7 +21,7 @@
             overflow: hidden;
             margin: 0 auto;
             float: left;
-            width: 70%;
+            width: 60%;
 
             #delivery-area-address {
               overflow: hidden;
@@ -72,15 +72,36 @@
 
             .ullist-profile {
               display: grid;
-              grid-template-columns: max-content max-content max-content 1fr;
-              grid-gap: $px10;
+              flex-wrap: wrap;
+              grid-template-columns: max-content 1fr;
+              grid-gap: $px20;
               border-bottom: 2px solid #efefef;
               padding: $px20;
 
               li {
+                padding: 0;
                 display: grid;
                 grid-template-rows: min-content min-content min-content;
                 grid-template-columns: max-content;
+
+                &:nth-child(3) {
+                  grid-column-start: 2;
+                  grid-column-end: 3;
+                }
+
+                &:nth-child(4) {
+                  //display: grid;
+                  //grid-template-columns: 1fr 1fr;
+                  align-self: end;
+                  grid-column-start: 1;
+                  grid-column-end: 2;
+                  grid-row-start: 2;
+                  grid-row-end: 3;
+
+                  a {
+
+                  }
+                }
 
                 img {
                   width: $px95;
@@ -255,7 +276,7 @@
 
           .customer-insight {
             float: left;
-            width: 30%;
+            width: 40%;
             padding: $px20;
             border-left: 2px solid #efefef;
 
@@ -280,7 +301,6 @@
               display: grid;
               grid-template-columns: min-content 1fr min-content;
               align-items: center;
-              max-height: $px160;
 
               .slick-track {
                 display: flex;
@@ -749,8 +769,8 @@ div#select-discount-item .dining-option-block.select-discount-option > div {
 }
 
 .container-radio-btn input:checked ~ .checkmark-radio-btn {
-  background-color: $blue-middle ;
-  border-color: $blue-middle ;
+  background-color: $blue-middle;
+  border-color: $blue-middle;
 }
 
 .checkmark-radio-btn:after {

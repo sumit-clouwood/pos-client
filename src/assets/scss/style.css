@@ -3432,7 +3432,8 @@ input .qty {
   top: 3.25rem;
   left: 41%;
   font-size: 0.75rem;
-  color: #f44040; }
+  color: #f44040;
+}
 
 input#input {
   position: relative; }

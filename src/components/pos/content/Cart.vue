@@ -135,7 +135,6 @@ export default {
     .main-orders-list-wrapper {
       padding: 0;
       background-color: #fafafa;
-      padding-top: 10px;
 
       .main-orders-list {
         grid-gap: 0;

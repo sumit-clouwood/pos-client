@@ -82,7 +82,7 @@
         </div>
       </div>
       <div class="profile-sidebar-footer">
-        <div class="logout" @click="logout">
+        <div class="logout" @click="mlogout">
           <svg
             width="15"
             height="18"
@@ -102,7 +102,7 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import avatar from './mobileElements/avatar.vue'
 import dateTime from './mobileElements/dateTime.vue'
 import onlineCounter from './mobileElements/onlineCounter.vue'
@@ -115,16 +115,18 @@ export default {
   },
   computed: {
     ...mapGetters(['profileHendler']),
+    ...mapActions('auth', ['logout']),
   },
   methods: {
     profileHendlerGhange() {
       this.$store.dispatch('profileHendlerGhange')
     },
-    logout() {
+    mlogout() {
       this.$store.dispatch('mobileLogout')
       this.$store.dispatch('userCalcHendlerGhange')
       this.$store.dispatch('openUserHendlerGhange')
       this.$store.dispatch('profileHendlerGhange')
+      this.logout()
     },
   },
 }

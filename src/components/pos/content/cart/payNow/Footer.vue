@@ -123,6 +123,10 @@ export default {
           showPaymentBreak()
         }
       })
+      this.$store.dispatch('successfullHendlerGhange')
+      this.$store.dispatch('payNowCalcHendlerGhange')
+      this.$store.dispatch('paymentMethodsHendlerGhange')
+      this.$store.dispatch('mainOrdersHendlerGhange')
     },
   },
 }
