@@ -12,7 +12,7 @@
         <div class="trans-menu-list">
           <div class="orders-name">
             <p>{{ item.name }}</p>
-            <p class="price-qty">@ {{ item.price }} x {{ item.qty }} &nbsp; ({{ getItemDiscountValue(order.item_discounts).name }})</p>
+            <p class="price-qty">@ {{ item.price }} x {{ item.qty }} &nbsp; {{ getItemDiscountValue(order.item_discounts).name }}</p>
               <a href="javascript:void" v-for="(modifier, indexNo) in order.item_modifiers" :key="indexNo" class="trans-item-btn">
                   <span v-if="modifier.for_item == index">{{ modifier.name }}</span>
               </a>
@@ -57,7 +57,7 @@ export default {
           let value = name = ''
           discounts.map(function (discount) {
               let type = (discount.type) === 'percentage' ? '%' : ''
-              name += discount.name + ' ('+ discount.rate +  type + ')'
+              name += '('+discount.name + ' ('+ discount.rate +  type + '))'
               value += discount.price
           })
           return ({name, value})

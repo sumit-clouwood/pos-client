@@ -34,6 +34,9 @@
       justify-content: space-around;
       cursor: pointer;
       padding: 10px 10px;
+      &:hover {
+        background: $blue-light !important;
+      }
       &.active, &:hover{
         background: $blue-middle;
         .img_block{
@@ -49,6 +52,11 @@
         }
         *{
           color: $white !important;
+        }
+        .time_and_button{
+          a{
+            background: $blue-dark !important;
+          }
         }
       }
       .time_and_button  {

@@ -29,7 +29,6 @@
 <script>
 import Header from './cart/newOrders/Header.vue'
 import Footer from './cart/Footer'
-// import PayNow from './cart/PayNow'
 import Items from './cart/newOrders/Items.vue'
 import ordersMenu from '../../mobileComponents/mobileOrdersMenu.vue'
 import mobileFooter from '../../mobileComponents/mobileFooter.vue'

@@ -4,6 +4,7 @@ import OrderService from '@/services/data/OrderService'
 const state = {
   getTransactions: false,
   getTransactionOrders: false,
+    displayTransactionOrders: false,
   orderDetails: {},
   pageLookups: {},
   loading: false,
@@ -40,36 +41,49 @@ const actions = {
     ]
     commit(mutation.LOADING, false)
     OrderService.getOrders(...params).then(response => {
-      commit(mutation.TRANSACTIONS, response.data)
+      commit(mutation.ALL_TRANSACTIONS, response.data)
       commit(mutation.LOADING, true)
       commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
     })
   },
-  collectSearchTransactions({ commit, state }, searchTerm) {
+  collectSearchTransactions({ commit, state, dispatch }, searchTerm) {
     let searchedItems = []
-    if (searchTerm.length > 0) {
-      state.getTransactions.data.map(order => {
-        order.items.map(item => {
+    if (searchTerm != '' && searchTerm.length > 0) {
+        state.getTransactions.map(order => {
+          if (order.order_no.toString().toLowerCase().indexOf(searchTerm.toString().toLowerCase()) != -1) {
+            searchedItems.push(order)
+          }
+          order.items.map(item => {
           if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
             searchedItems.push(order)
           }
         })
       })
+      commit(mutation.SEARCH_TRANSACTIONS, searchedItems)
+    } else {
+      dispatch('getTransactionOrders')
     }
-    commit(mutation.TRANSACTIONS, searchedItems)
   },
 }
 
 const mutations = {
-  [mutation.TRANSACTIONS](state, transactionOrders) {
-    state.getTransactions = transactionOrders //Set whole collection
+  //Set whole collection
+  [mutation.ALL_TRANSACTIONS](state, transactionOrders) {
+    state.getTransactions = transactionOrders.data
+    state.displayTransactionOrders = transactionOrders.data
+  },
+  //Collection to display only.
+  [mutation.TRANSACTIONS_ORDERS](state, transactionOrders) {
+    state.displayTransactionOrders = transactionOrders.data
+  },
+  //Set a third collection for searching, will be merged into TRANSACTIONS_ORDERS mutate.
+  [mutation.SEARCH_TRANSACTIONS](state, transactionOrders) {
     if (transactionOrders.data && transactionOrders.data.length > 0) {
-      state.getTransactionOrders = transactionOrders.data
+      state.displayTransactionOrders = transactionOrders.data
     } else if(transactionOrders.length > 0) {
-      state.getTransactionOrders = transactionOrders
+      state.displayTransactionOrders = transactionOrders
     } else {
-      state.getTransactionOrders = {}
-      state.item = null
+      state.displayTransactionOrders = {}
     }
   },
   [mutation.LOADING](state, status) {
