@@ -33,7 +33,7 @@
         data-toggle="modal"
         data-target="#online-order"
       >
-        <a class="btn-part color-text-invert cursor-pointer" role="button">
+        <a class="btn-part color-text-invert" role="button">
           {{ _t('Online') }}
           <span class="online-digit color-secondary">2</span>
         </a>
@@ -67,7 +67,7 @@
       </a>
       <ul class="setting-dropdown">
         <li>
-          <a role="button" class="cursor-pointer">{{ _t('Printers') }}</a>
+          <a role="button">{{ _t('Printers') }}</a>
         </li>
         <li v-if="permitted('dashboard', 'root')">
           <a :href="dashboard">{{ _t('Dashboard') }}</a>
@@ -79,7 +79,7 @@
           <a :href="menu">{{ _t('Menu Setup') }}</a>
         </li>
         <li v-if="permitted('delivery', 'root')">
-          <a role="button" class="cursor-pointer">
+          <a role="button">
             <router-link :to="'/delivery-manager' + store">
               {{ _t('Delivery Manager') }}
             </router-link>
@@ -89,7 +89,7 @@
           <a :href="brand">{{ _t('Settings') }}</a>
         </li>
         <li>
-          <a role="button" class="cursor-pointer" @click="logout()">{{ _t('Logout') }}</a>
+          <a role="button" @click="logout()">{{ _t('Logout') }}</a>
         </li>
       </ul>
     </li>

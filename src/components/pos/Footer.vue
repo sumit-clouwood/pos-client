@@ -8,7 +8,7 @@
           data-target="#manage-customer"
         >
           <a
-            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            class="footer-slider-list-item-link color-text-invert"
             role="button"
           >
             <!--<img src="images/footer-images/user.svg" alt="customer">-->
@@ -39,7 +39,7 @@
           id="hold-order-box"
         >
           <a
-            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            class="footer-slider-list-item-link color-text-invert"
             role="button"
           >
             <!--<img class="hold-ordes" src="images/hold-order.png" alt="customer">-->
@@ -70,7 +70,7 @@
           id="hold-order-box"
         >
           <a
-            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            class="footer-slider-list-item-link color-text-invert"
             role="button"
           >
             <!--<img class="hold-ordes" src="images/hold-order.png" alt="customer">-->
@@ -101,7 +101,7 @@
         >
           <a
             role="button"
-            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            class="footer-slider-list-item-link color-text-invert"
           >
             <img
               src="img/pos/loyalty.svg"
@@ -135,11 +135,11 @@
         >
           <!--<a
             class="footer-slider-list-item-link"
-            role="button" class="cursor-pointer"
+            role="button"
             @click="setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })"
           >-->
           <a
-            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            class="footer-slider-list-item-link color-text-invert"
             role="button"
           >
             <!--<img src="images/footer-images/d_2.png" alt="customer">-->
@@ -169,7 +169,7 @@
           id="discount-footer"
         >
           <a
-            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            class="footer-slider-list-item-link color-text-invert"
             role="button"
           >
             <svg
@@ -197,7 +197,7 @@
           data-target="#dining-option"
         >
           <a
-            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            class="footer-slider-list-item-link color-text-invert"
             role="button"
           >
             <!--<img src="images/footer-images/group_9.png" alt="customer">-->
@@ -226,7 +226,7 @@
           data-target="#add-note"
         >
           <a
-            class="footer-slider-list-item-link color-text-invert cursor-pointer"
+            class="footer-slider-list-item-link color-text-invert"
             role="button"
           >
             <!--<img src="images/footer-images/a.png" alt="customer">-->
@@ -262,7 +262,7 @@
             data-dismiss="modal"
           >
             <a
-              class="footer-slider-list-item-link color-text-invert cursor-pointer cursor-pointer"
+              class="footer-slider-list-item-link color-text-invert"
               role="button"
               @click="
                 setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
@@ -294,7 +294,7 @@
             v-show="orderType.OTApi !== 'call_center'"
             @click="payNowClick()"
           >
-            <a role="button" class="cursor-pointer">
+            <a role="button">
               <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
               <span class="pay-btn color-text-invert">{{ _t('Pay Now') }}</span>
             </a>

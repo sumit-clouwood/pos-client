@@ -1,7 +1,7 @@
 <template>
   <div class="navigation toggle-navigation">
     <div class="logo" @click="collapseExpend">
-      <a class="logo-link cursor-pointer" role="button">
+      <a class="logo-link" role="button">
         <img src="img/other/icon.png" alt="icon" />
       </a>
     </div>
@@ -194,7 +194,7 @@
       data-dismiss="modal"
     >
       <a
-        class="nav-link cursor-pointer"
+        class="nav-link"
         role="button"
         :title="userDetails.item.name"
       >

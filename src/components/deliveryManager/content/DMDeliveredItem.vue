@@ -87,7 +87,7 @@
               <a
                 id="open-collect-money-modal"
                 role="button"
-                class="btn btn-success btn-large collect-driver-money-btn cursor-pointer"
+                class="btn btn-success btn-large collect-driver-money-btn"
                 :driver-id="deliveryDriver"
                 total-orders="4"
                 cash="271.98"
@@ -104,7 +104,7 @@
               <a
                 :id="'driver_details-' + driOrders.driverId"
                 role="button"
-                class="btn btn-info btn-large btnShowDetails btn-show-details-delivered cursor-pointer"
+                class="btn btn-info btn-large btnShowDetails btn-show-details-delivered"
                 @click="showOrders(driOrders.driverId)"
               >
                 <span>
@@ -129,7 +129,7 @@
               <a
                 :class="'driver_details_hide-' + driOrders.driverId"
                 role="button"
-                class="btn btn-info btn-large btnShowDetails btn-show-details cursor-pointer"
+                class="btn btn-info btn-large btnShowDetails btn-show-details"
                 style="display: none;"
                 @click="showOrders(driOrders.driverId)"
                 >{{ _t('Hide') }}</a

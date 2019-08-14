@@ -33,13 +33,14 @@
             fill="#3D3F43"
           />
         </svg>
-        <a class="footer-slider-list-item-link" href="#">
+        <a class="footer-slider-list-item-link">
           <span>{{ _t('Customer') }}</span>
         </a>
       </div>
       <div
         class="footer-slider-list-item footer-slider-list-item-open-orders"
         id="hold-order-box"
+        @click="viewHoldOrders"
       >
         <svg
           width="24"
@@ -59,7 +60,7 @@
             stroke-linecap="square"
           />
         </svg>
-        <a class="footer-slider-list-item-link" href="#">
+        <a class="footer-slider-list-item-link">
           <span>{{ _t('Hold Orders') }}</span>
         </a>
       </div>
@@ -85,7 +86,6 @@
         </svg>
         <a
           class="footer-slider-list-item-link"
-          href="#"
           @click="setOrderType('delivery')"
         >
           <span>{{ _t('Send to Delivery') }}</span>
@@ -114,7 +114,6 @@
         </svg>
         <a
           class="footer-slider-list-item-link"
-          href="#"
           @click.prevent="validateOrderDiscounts()"
         >
           <span>{{ _t('Select') + ' ' + _t('Discount') }}</span>
@@ -138,7 +137,7 @@
             stroke-linecap="square"
           />
         </svg>
-        <a class="footer-slider-list-item-link" href="#">
+        <a class="footer-slider-list-item-link">
           <span>{{ _t('Dinning Options') }}</span>
         </a>
       </li>
@@ -163,7 +162,7 @@
             fill="#3D3F43"
           />
         </svg>
-        <a href="#" class="footer-slider-list-item-link">
+        <a class="footer-slider-list-item-link">
           <span v-if="!loyaltyCard">{{ _t('Loyalty') }}</span>
           <span v-if="loyaltyCard">
             <span>
@@ -199,7 +198,7 @@
             fill="#3D3F43"
           />
         </svg>
-        <a class="footer-slider-list-item-link" href="#">
+        <a class="footer-slider-list-item-link">
           <span>{{ _t('Add Note') }}</span>
         </a>
       </div>
@@ -212,6 +211,11 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import mobileFooter from './mobileFooter.vue'
 
 export default {
+  data(){
+    return {
+      vbutton: '',
+    }
+  },
   components: {
     mobileFooter,
   },
@@ -248,6 +252,12 @@ export default {
     addNoteHendlerGhange() {
       this.$store.dispatch('addNoteHendlerGhange')
     },
+    viewHoldOrders() {
+      this.vbutton = 'new'
+      this.$store.commit('order/SET_CART_TYPE', 'hold')
+      this.$store.dispatch('holdOrders/getHoldOrders')
+      this.$store.dispatch('footerMenuHendlerGhange')
+    },
   },
 }
 </script>
@@ -281,6 +291,7 @@ export default {
         align-items: end;
         margin-top: auto;
         margin-bottom: auto;
+        overflow-y: auto;
 
         .footer-slider-list-item {
           border-bottom: 1px solid $gray-middle;

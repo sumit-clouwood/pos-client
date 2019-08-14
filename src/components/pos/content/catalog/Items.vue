@@ -23,9 +23,10 @@
                     @error="imageLoadError()"
             />
             <div
-             class="food-menu-item-text color-text"
-             :class="item.image === '' ? 'item-image-only' : ''">{{ dt(item) }}</div>
-            <div class="food-menu-item-price">{{ choosePrice(item.price_availability) }} </div>
+                    class="food-menu-item-text color-text"
+                    :class="item.image === '' ? 'item-image-only' : ''">{{ dt(item) }}
+            </div>
+            <div class="food-menu-item-price">{{ choosePrice(item.price_availability) }}</div>
         </div>
         <Popup/>
     </div>
@@ -51,12 +52,12 @@
             ...mapGetters(['foodMenuHendler', 'bascketItems']),
         },
         methods: {
-            choosePrice(item){
-                if(item.countries.length !== 0){
+            choosePrice(item) {
+                if (item.countries.length !== 0) {
                     return item.countries[0].value
-                }else if(item.cities.length !== 0){
+                } else if (item.cities.length !== 0) {
                     return item.cities[0].value
-                }else if(item.stores.length !== 0){
+                } else if (item.stores.length !== 0) {
                     return item.stores[0].value
                 }
             },
@@ -200,6 +201,18 @@
                 padding-right: 20px;
                 background-color: #fafafa;
                 transition: 0.1s ease-out;
+
+                &:not(.color-dashboard-background) {
+                    padding-left: 85px;
+                    padding-right: 0;
+                    color: #fff;
+                    height: 66px;
+
+                    .food-menu-item-price {
+                        justify-self: end;
+                        color: #fff;
+                    }
+                }
 
                 &.active {
                     background-color: rgba(36, 189, 19, 0.1);

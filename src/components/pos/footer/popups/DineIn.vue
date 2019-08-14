@@ -157,12 +157,15 @@
                 margin: 0;
 
                 .modal-content {
+                    display: grid;
+                    grid-template-rows: max-content 1fr max-content;
                     .modal-header {
                         height: 80px;
                         background-color: #fff;
                     }
 
                     .modal-body {
+                        overflow-y: auto;
                         .dining-option-block {
                             .option-contain {
                                 position: relative;
@@ -186,6 +189,8 @@
                     }
 
                     .modal-footer {
+                        padding-top: 20px;
+                        box-shadow: 0 0 30px rgba(0,0,0,0.3);
                         .btn-announce {
                             button {
                                 background-color: $green-middle;

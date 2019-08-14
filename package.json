@@ -45,7 +45,9 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential"
+      "plugin:vue/essential",
+      "plugin:prettier/recommended",
+      "eslint:recommended"
     ],
     "rules": {},
     "parserOptions": {

@@ -16,7 +16,7 @@
             })
           "
         >
-          <a role="button" class="cursor-pointer">{{ _t('New Orders') }}</a
+          <a role="button">{{ _t('New Orders') }}</a
           ><span v-if="orderCount">{{ orderCount.running }}</span>
         </li>
         <li
@@ -34,7 +34,7 @@
             })
           "
         >
-          <a role="button" class="cursor-pointer">{{ _t('Waiting for Pick') }}</a
+          <a role="button">{{ _t('Waiting for Pick') }}</a
           ><span v-if="orderCount">{{ orderCount.ready }}</span>
         </li>
         <li
@@ -52,7 +52,7 @@
             })
           "
         >
-          <a role="button" class="cursor-pointer">{{ _t('Delivery - In Progress') }}</a
+          <a role="button">{{ _t('Delivery - In Progress') }}</a
           ><span v-if="orderCount">{{ orderCount['in-progress'] }}</span>
         </li>
         <li
@@ -70,7 +70,7 @@
             })
           "
         >
-          <a role="button" class="cursor-pointer">{{ _t('Delivered') }}</a
+          <a role="button">{{ _t('Delivered') }}</a
           ><span v-if="orderCount">{{ orderCount.delivered }}</span>
         </li>
       </ul>

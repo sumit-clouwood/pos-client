@@ -9,13 +9,13 @@
               <a :href="baseurl('delivery')">{{ _t('DELIVERY') }}</a>
             </li>
             <li>
-              <a role="button" class="cursor-pointer">{{ brand.name }}</a>
+              <a role="button">{{ brand.name }}</a>
             </li>
             <li>
-              <a role="button" class="cursor-pointer">{{ _t('HOME DELIVERIES') }}</a>
+              <a role="button">{{ _t('HOME DELIVERIES') }}</a>
             </li>
             <li class="active">
-              <a role="button" class="cursor-pointer">{{ listType }}</a>
+              <a role="button">{{ listType }}</a>
             </li>
           </ul>
         </div>

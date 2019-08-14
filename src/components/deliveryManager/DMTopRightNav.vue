@@ -52,7 +52,7 @@
         @change="changeLanguage(vlocale)"
       >
         <a
-          class="dropdown-item cursor-pointer"
+          class="dropdown-item"
           role="button"
           v-for="language in availableLanguages"
           :key="language._id"
