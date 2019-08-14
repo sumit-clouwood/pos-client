@@ -2,7 +2,7 @@
   <div class="main-body-transaction color-dashboard-background color-text">
     <div class="search-trans-wrapper">
       <div class="back-trans-button">
-        <button class="btn btn-success" @onclick="$router.go(-1)">&lt; {{ _t('Back') }}</button>
+        <button class="btn btn-success" v-on:click="getReferPath()">&lt; {{ _t('Back') }}</button>
       </div>
       <search />
     </div>
@@ -130,13 +130,7 @@ export default {
         .catch()
     },
     getReferPath() {
-      let path = '13443'
-      /*if(document.referrer.length > 0) {
-        path = document.referrer.fullPath
-      }
-      console.log(document.referrer)*/
-      console.log(path)
-      // this.$route.router.go(path)
+      history.go(-1)
     },
   },
 }
