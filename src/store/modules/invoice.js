@@ -3,16 +3,16 @@ import * as mutation from './invoice/mutation-types'
 
 // initial state
 const state = {
-  templateHtml: null,
-  rules: [],
+  templates: null,
+  rules: null,
 }
 
 // getters
 const getters = {
-  templateId: (state, getters, rootState) => {
-    if (state.rules.count) {
+  template: (state, getters, rootState) => {
+    if (state.rules) {
       let templateId = null
-      state.rules.data.forEach(rule => {
+      state.rules.data.data.forEach(rule => {
         if (
           [
             rootState.order.orderType.OTApi + '_made',
@@ -23,11 +23,14 @@ const getters = {
           templateId = rule.invoice_template
         }
       })
-      return templateId
+
+      if (state.templates && templateId) {
+        return state.templates.data.data.find(
+          template => template._id == templateId
+        )
+      }
+      return false
     }
-  },
-  templateHtml: state => {
-    return state.templateHtml ? state.templateHtml.data : null
   },
 }
 
@@ -35,26 +38,38 @@ const getters = {
 const actions = {
   async printRules({ commit }) {
     const rules = await InvoiceService.fetchPrintRules()
-    commit(mutation.SET_RULES, rules.data)
+    commit(mutation.SET_RULES, rules)
   },
-  async fetchTemplate({ commit }, { orderId, templateId }) {
-    const templateHtml = await InvoiceService.fetchTemplate(orderId, templateId)
-    commit(mutation.SET_TEMPLATE_HTML, templateHtml)
+
+  async fetchTemplates({ commit }) {
+    const templates = await InvoiceService.fetchTemplates()
+    commit('SET_PRINT_TEMPLATES', templates)
   },
+
+  // async fetchTemplate({ commit }, { orderId, templateId }) {
+  //   const templateHtml = await InvoiceService.fetchTemplate(orderId, templateId)
+  //   commit(mutation.SET_TEMPLATE_HTML, templateHtml)
+  // },
 }
 
 // mutations
 const mutations = {
-  [mutation.SET_TEMPLATE_HTML](state, templateHtml) {
-    state.templateHtml = templateHtml
+  // [mutation.SET_TEMPLATE_HTML](state, templateHtml) {
+  //   state.templateHtml = templateHtml
+  // },
+  // [mutation.SET_TEMPLATE](state, template) {
+  //   state.template = template
+  // },
+  [mutation.SET_PRINT_TEMPLATES](state, templates) {
+    state.templates = templates
   },
   [mutation.SET_RULES](state, rules) {
     state.rules = rules
   },
-  [mutation.RESET](state) {
-    state.templateHtml = null
-    state.rules = []
-  },
+  // [mutation.RESET](state) {
+  //   state.templateHtml = null
+  //   state.rules = []
+  // },
 }
 
 export default {
