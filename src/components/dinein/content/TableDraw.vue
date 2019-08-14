@@ -32,11 +32,19 @@
             id="tooltip-c"
             style="position: absolute; transform: translate3d(0px, 20px, 0px); top: 0px; left: 0px; will-change: transform;"
           >
-            <div class="tooltip-c-range" id="range"></div>
-            <a class="dropdown-item" data-value="Table 3" href="#">Table 3</a>
-            <a class="dropdown-item" data-value="Table 3 A" href="#"
+            <!--get table id-->
+            <!--<div class="tooltip-c-range" id="range"></div>-->
+            <a
+              class="dropdown-item"
+              data-value="Table 3"
+              href="#"
+              v-for="(order, index) in orderOnTables.orderId"
+              :key="index"
+              >{{ order }}
+            </a>
+            <!--<a class="dropdown-item" data-value="Table 3 A" href="#"
               >Table 3 A</a
-            >
+            >-->
           </div>
         </div>
       </div>
@@ -44,7 +52,6 @@
   </div>
 </template>
 <script>
-/*  global  $ */
 import { mapGetters, mapState } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
@@ -52,7 +59,7 @@ export default {
   name: 'TableDraw',
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('dinein', ['tablesOnArea']),
+    ...mapState('dinein', ['tablesOnArea', 'orderOnTables']),
     ...mapGetters('context', ['store']),
   },
   components: {
@@ -102,7 +109,6 @@ export default {
         .attr('class', 'dinein_table')
         .attr('draggable', 'true')
         .attr('x', function(d) {
-          console.log(d.table_position_coordinate)
           return d.table_position_coordinate.x || 0
         })
         .attr('y', function(d) {
@@ -117,7 +123,7 @@ export default {
         .attr('xlink:href', function(d) {
           return `#dinein_${d.table_shape}_${d.chairs}`
         })
-        .on('click', (d, i, a) => this.showOptions(d, i, a))
+        .on('click', (d, i, a) => this.showOptions(d))
         .attr('fill', 'green')
 
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
@@ -139,7 +145,7 @@ export default {
           })
       })
     },
-    showOptions(datum, i, a) {
+    showOptions(datum) {
       this.tooltip.style('opacity', 1)
       this.tooltip.select('#range').text(datum._id)
       this.tooltip
@@ -173,7 +179,7 @@ svg#dine-in-area {
 }
 
 .tooltip-c-range {
-  margin-bottom: 0em;
+  margin-bottom: 0;
   font-weight: 600;
 }
 </style>

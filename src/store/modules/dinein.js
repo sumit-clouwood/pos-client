@@ -4,20 +4,23 @@ import LookupData from '@/plugins/helpers/LookupData'
 import * as CONST from '@/constants'
 
 const state = {
-  orders:false,
-  dineInOrderDetails:{},
-  completedOrderDetails:{},
-  areas:false,
-  tables:false,
-  activeArea:false,
-  loading:false,
-  tablesOnArea:false,
-  tableStatus: {'unavailable': 0, 'available_soon': 0, 'available': 0},
-  tableOrders:false,
+  orders: false,
+  dineInOrderDetails: {},
+  completedOrderDetails: {},
+  areas: false,
+  tables: false,
+  activeArea: false,
+  loading: false,
+  tablesOnArea: false,
+  tableStatus: { unavailable: 0, available_soon: 0, available: 0 },
+  orderOnTables: false,
 }
 const getters = {
   getOrderStatus: () => order_status => {
-    if (order_status === CONST.ORDER_STATUS_ON_HOLD || order_status === CONST.ORDER_STATUS_IN_PROGRESS) {
+    if (
+      order_status === CONST.ORDER_STATUS_ON_HOLD ||
+      order_status === CONST.ORDER_STATUS_IN_PROGRESS
+    ) {
       return 'running-order-details'
     } else {
       return 'done-soon-order'
@@ -25,8 +28,8 @@ const getters = {
   },
   getTableNumber: state => orderId => {
     let tableNumber = ''
-     state.orders.data.filter(function (order) {
-      if(order.order_id === orderId) {
+    state.orders.data.filter(function(order) {
+      if (order.order_id === orderId) {
         tableNumber = order.table_number
       }
     })
@@ -58,33 +61,43 @@ const actions = {
       commit(mutation.DINE_IN_TABLES, response.data)
     })
   },
-  selectedArea({ commit,dispatch }, area) {
+  selectedArea({ commit, dispatch }, area) {
     commit(mutation.SELECTED_AREA, area)
     dispatch('getTableStatus')
   },
 
-  getTableStatus({commit, state}) {
-    let tableStatus = {'unavailable': 0, 'available_soon': 0, 'available': 0}
+  getTableStatus({ commit, state }) {
+    let tableStatus = { unavailable: 0, available_soon: 0, available: 0 }
+    let orderOnTable = { tableId: '', orderId: '' }
     state.tablesOnArea.forEach(table => {
       let orderIds = []
-      state.orders.data.filter(function (order) {
-        if(order.table_id === table._id) {
+      orderOnTable.tableId = table._id
+      state.orders.data.filter(function(order) {
+        if (order.table_id === table._id) {
           orderIds.push(order.order_id)
         }
       })
+      orderOnTable.orderId = orderIds
+      commit(mutation.ORDER_ON_TABLES, orderOnTable)
+
       orderIds.forEach(id => {
         let order = LookupData.get({
           collection: state.orders.page_lookups.orders._id,
           matchWith: id,
           selection: false,
         })
-        if (order.order_status == CONST.ORDER_STATUS_ON_HOLD || order.order_status == CONST.ORDER_STATUS_IN_PROGRESS) {
+        if (
+          order.order_status == CONST.ORDER_STATUS_ON_HOLD ||
+          order.order_status == CONST.ORDER_STATUS_IN_PROGRESS
+        ) {
           tableStatus.unavailable += 1
         } else {
           tableStatus.available_soon += 1
         }
       })
-      tableStatus.available = parseInt(state.tablesOnArea.length) - parseInt(tableStatus.available_soon + tableStatus.unavailable)
+      tableStatus.available =
+        parseInt(state.tablesOnArea.length) -
+        parseInt(tableStatus.available_soon + tableStatus.unavailable)
     })
     commit(mutation.TABLE_STATUS, tableStatus)
   },
@@ -93,11 +106,14 @@ const actions = {
 const mutations = {
   [mutation.DINE_IN_AREAS](state, areas) {
     state.areas = areas.data
-    if(areas.count > 0) {
+    if (areas.count > 0) {
       let selectedArea = state.areas.filter(area => area.priority === 1)
       state.activeArea = selectedArea[0]
       state.tablesOnArea = false
-      state.tablesOnArea = state.tables.length > 0 ? state.tables.filter(table => table.area_id === state.activeArea._id) : false
+      state.tablesOnArea =
+        state.tables.length > 0
+          ? state.tables.filter(table => table.area_id === state.activeArea._id)
+          : false
     }
   },
   [mutation.DINE_IN_TABLES](state, tables) {
@@ -105,7 +121,7 @@ const mutations = {
   },
   [mutation.DINE_IN_ORDERS](state, orders) {
     state.dineInOrderDetails = orders.page_lookups.orders._id
-     /*let order = LookupData.get({
+    /*let order = LookupData.get({
       collection: orders.page_lookups.orders._id,
       matchWith: id,
       selection: false,
@@ -116,14 +132,20 @@ const mutations = {
   [mutation.SELECTED_AREA](state, activeArea) {
     state.tablesOnArea = false
     state.activeArea = activeArea
-    state.tablesOnArea = state.tables.length > 0 ? state.tables.filter(table => table.area_id === activeArea._id) : false
+    state.tablesOnArea =
+      state.tables.length > 0
+        ? state.tables.filter(table => table.area_id === activeArea._id)
+        : false
   },
   [mutation.LOADING](state, loadingStatus) {
     state.loading = loadingStatus
   },
+  [mutation.ORDER_ON_TABLES](state, orderOnTables) {
+    state.orderOnTables = orderOnTables
+  },
   [mutation.TABLE_STATUS](state, tableStatus) {
     state.tableStatus = tableStatus
-  }
+  },
 }
 
 export default {
