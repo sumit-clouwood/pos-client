@@ -150,7 +150,8 @@
                                         &:nth-child(3) {
                                             grid-column-start: 2;
                                             grid-column-end: 3;
-                                            a{
+
+                                            a {
                                                 margin-top: 0 !important;
                                             }
                                         }
@@ -260,7 +261,7 @@
                     }
 
                     .modal-footer {
-
+                        padding-top: 20px;
                     }
                 }
             }
