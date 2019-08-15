@@ -351,7 +351,7 @@ function sendToServer() {
               for (let savedRequest of savedRequests) {
                 const orderUrl = savedRequest.url
                 const contextUrl = orderUrl.replace(new RegExp('/model/.*'), '')
-                const time = new Date().getTime()
+                const time = savedRequest.payload.real_created_datetime
                 //lastOrderNo++
                 var transitionOrderNo =
                   branch_n + '-' + terminal_code + '-' + time
@@ -379,9 +379,7 @@ function sendToServer() {
                   //create customer uses fetch which returns promise
                   console.log('sw:', 'creating customer')
 
-                  savedRequest.payload.order_city = customerPayload.city
-                  savedRequest.payload.order_country = customerPayload.country
-
+                  
                   delete customerPayload.city
                   delete customerPayload.country
 
@@ -393,17 +391,6 @@ function sendToServer() {
 
                       //modify the original payload to be sent to order
                       savedRequest.payload.customer = response.id
-
-                      savedRequest.payload.order_building =
-                        customerPayload.building
-                      savedRequest.payload.order_street = customerPayload.street
-                      savedRequest.payload.order_flat_number =
-                        customerPayload.flat_number
-                      savedRequest.payload.order_nearest_landmark =
-                        customerPayload.nearest_landmark
-
-                      savedRequest.payload.order_delivery_area =
-                        customerPayload.delivery_area_id
 
                       createOrder(
                         resolve,
