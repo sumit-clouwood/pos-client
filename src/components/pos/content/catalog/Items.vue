@@ -188,8 +188,8 @@
 
             .food-menu-item {
                 width: 100%;
-                height: auto;
-                padding: 0;
+                height: 80px;
+                padding: 0 10px;
                 margin: 0;
                 display: grid;
                 align-items: center;
@@ -225,6 +225,7 @@
                 img {
                     width: 65px;
                     height: 65px;
+                    border-radius: 2px;
                 }
 
                 .food-menu-item-text {

@@ -87,6 +87,7 @@
         #order-confirmation {
             .modal-dialog {
                 margin: 0;
+                width: auto !important;
 
                 .modal-content {
                     .order-header {
@@ -96,6 +97,8 @@
                         min-height: 80px;
                         border-bottom: 1px solid $gray-middle;
                         align-items: flex-start;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        border: none;
 
                         h4 {
                             text-align: left;
@@ -115,10 +118,18 @@
                                 width: auto;
                                 display: grid;
                                 grid-template-columns: 1fr 1fr;
+                                grid-gap: 10px;
                                 justify-content: space-between;
 
                                 tr {
                                     display: grid;
+                                    border: 1px solid #eee;
+                                    border-radius: 3px;
+                                    padding: 0 10px;
+
+                                    &:first-child {
+                                        display: none;
+                                    }
 
                                     th, td {
                                         text-align: left;
@@ -134,6 +145,10 @@
 
                                     td {
                                         box-sizing: content-box;
+
+                                        &:last-child {
+                                            border-bottom: none !important;
+                                        }
 
                                         &:nth-child(1) {
                                             box-sizing: border-box;
@@ -172,6 +187,8 @@
                         width: 100vw;
                         grid-gap: 10px;
                         padding: 20px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        border: none;
 
                         .referal {
                             display: grid;

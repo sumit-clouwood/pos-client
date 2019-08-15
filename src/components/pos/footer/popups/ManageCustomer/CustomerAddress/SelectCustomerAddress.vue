@@ -105,10 +105,33 @@
                         height: 80px;
                         min-height: 80px;
                         background-color: #fff;
+                        border: none;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                     }
 
                     .modal-body {
                         overflow: auto;
+
+                        .location-delivery-area-address {
+                            .order-location {
+                                &.active {
+                                    border: 2px solid $green-middle;
+                                    &:after{
+                                        border: 2px solid $green-middle;
+                                    }
+                                }
+
+
+                                &:after {
+                                    background-color: $green-middle;
+                                    border: 2px solid $green-middle;
+                                    top: -1px;
+                                    right: -1px;
+                                }
+
+                            }
+                        }
+
                         .addOrders {
                             max-height: none;
                         }
@@ -116,6 +139,8 @@
 
                     .modal-footer {
                         padding-top: 20px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
                         .btn-announce {
                             display: grid;
                             grid-template-columns: max-content max-content max-content;

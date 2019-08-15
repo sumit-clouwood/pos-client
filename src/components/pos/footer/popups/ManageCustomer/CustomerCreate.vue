@@ -175,14 +175,19 @@
 
                 .modal-content {
                     display: grid;
-                    grid-template-rows: max-contencashiert 1fr max-content;
+                    grid-template-rows: max-content 1fr max-content;
 
                     .modal-header {
                         height: 80px;
                         background-color: #fff;
                     }
 
+                    form {
+                        overflow-y: auto;
+                    }
+
                     .modal-body {
+
                         .divide-block {
                             margin: 0;
                             border: none;
@@ -192,6 +197,11 @@
                                 position: static;
                             }
                         }
+                    }
+
+                    .modal-footer {
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        z-index: 1;
                     }
                 }
             }

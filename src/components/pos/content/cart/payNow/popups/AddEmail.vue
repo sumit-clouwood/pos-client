@@ -64,7 +64,7 @@
 
                 .modal-body {
 padding: 20px;
-                }
+                }POSItemOptions_choose_label
 
                 .modal-footer {
 padding: 20px;

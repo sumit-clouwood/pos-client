@@ -67,6 +67,8 @@
                     .modal-details {
                         padding: 0 25px;
                         border: none;
+                        z-index: 1;
+                        background-color: #fff;
 
                         .POSItemOptions_pricequantity {
                             .POSItemOptions_price {
@@ -81,7 +83,7 @@
                                 right: 0;
                                 left: 0;
                                 padding: 20px;
-                                box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+                                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                                 width: 100%;
                                 height: 75px;
                                 background-color: #fff;
@@ -96,7 +98,7 @@
 
                     .modal-body {
                         margin: 0;
-                        border-top: 1px solid #ccc;
+                        /*border-top: 1px solid #ccc;*/
                         max-height: none;
                         order: 4;
                         margin-bottom: 75px;
@@ -195,6 +197,7 @@
                     .modal-footer {
                         grid-row-start: auto !important;
                         grid-row-end: auto !important;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
                         .buttoned {
                             width: auto;

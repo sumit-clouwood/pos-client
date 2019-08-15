@@ -235,11 +235,11 @@
                         .nav-link-nav {
                             color: #333;
                             width: auto;
-                            height: 65px;
+                            height: 80px;
                             flex-direction: row;
                             justify-content: flex-start;
                             border-bottom: 1px solid $gray-middle;
-                            padding: 0 20px 0 0px;
+                            padding: 0 20px 0 10px;
                             display: grid;
                             grid-template-columns: min-content 1fr;
                             background-color: #fff !important;
@@ -259,7 +259,7 @@
                                 width: 64px;
                                 height: 64px;
                                 margin-bottom: 0;
-                                border-radius: 0;
+                                border-radius: 2;
                                 margin: 0;
                             }
 

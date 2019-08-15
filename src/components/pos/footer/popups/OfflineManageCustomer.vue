@@ -242,7 +242,7 @@
                     .modal-footer {
                         width: 100vw;
                         padding-top: 20px;
-                        box-shadow: 0 0 30px rgba(0,0,0,0.3);
+                        box-shadow: 0 0 10px rgba(0,0,0,0.1);
                         z-index: 10;
                         .pagination-customer-details{
                             display: none;

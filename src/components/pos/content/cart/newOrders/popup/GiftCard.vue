@@ -137,6 +137,7 @@
         #Gift-card-payemnt {
             padding: 0 !important;
 
+
             .modal-dialog {
                 position: fixed;
                 top: auto;
@@ -149,9 +150,22 @@
 
                 .modal-content {
                     top: auto;
+
                     .modal-header {
                         height: 80px;
                         background-color: #fff;
+                        padding: 20px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        border: none;
+                    }
+                    .modal-footer{
+                        padding: 20px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        .btn-announce{
+                            #gift-card-btn{
+                                background-color: $green-middle;
+                            }
+                        }
                     }
                 }
             }

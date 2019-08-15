@@ -221,6 +221,9 @@
                 .modal-header {
                     height: 80px;
                     background-color: #fff;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    padding: 20px;
+                    border: none;
                 }
 
                 .modal-body {
@@ -272,10 +275,11 @@
 
                 .modal-footer {
                     padding-top: 20px;
-                    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                     z-index: 10;
                 }
-                select, input{
+
+                select, input {
                     width: 100% !important;
                 }
             }

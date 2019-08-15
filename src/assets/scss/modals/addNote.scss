@@ -1,4 +1,5 @@
 @import "../variables.scss";
+
 #add-note {
   .modal-dialog {
     width: $px560;
@@ -59,7 +60,8 @@
     }
   }
 }
-.loyalty-search{
+
+.loyalty-search {
   display: grid;
   grid-template-columns: 4fr 1fr;
 }
@@ -89,7 +91,8 @@
           border-radius: 0;
           padding: 10px 20px;
           background-color: #fff;
-          border-bottom: none;
+          min-height: 80px;
+          //border-bottom: none;
 
           .customer-title {
             font-size: 16px;
@@ -126,7 +129,8 @@
             button {
               margin: 0;
               flex-grow: 1;
-              &#save-note{
+
+              &#save-note {
                 border-color: $green-middle;
                 background-color: $green-middle;
               }

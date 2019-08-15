@@ -1,4 +1,5 @@
 @import "../variables.scss";
+
 #customer, #manage-customer {
   .modal-dialog {
     max-width: $px1180;
@@ -52,17 +53,17 @@
             margin: 0 4px;
           }
 
-           select:nth-child(4) {
+          select:nth-child(4) {
             width: $px100;
           }
         }
 
         .left-form {
-            > div {
+          > div {
             margin-bottom: $px25;
             position: relative;
 
-             input {
+            input {
               width: $px315;
               height: $px50;
               border-radius: $btn-border-radius;
@@ -71,7 +72,7 @@
               padding: $px10;
             }
 
-             select {
+            select {
               width: $px315;
               height: $px50;
               border-radius: $btn-border-radius;
@@ -79,7 +80,7 @@
               border: solid 1px #e4e7eb;
             }
 
-             label {
+            label {
               width: $px215;
               padding: 0 $px25;
               font-size: $px14;
@@ -94,7 +95,7 @@
           }
 
           label {
-             span {
+            span {
               color: #f44040;
               font-size: $px24;
             }
@@ -102,7 +103,7 @@
         }
 
         .right-form {
-           > div {
+          > div {
             margin-bottom: $px25;
             position: relative;
 
@@ -115,13 +116,14 @@
               padding: $px10;
             }
 
-             select {
+            select {
               width: $px315;
               height: $px50;
               border-radius: $btn-border-radius;
               background-color: #ffffff;
               border: solid 1px #e4e7eb;
             }
+
             /*> select.selectpicker{
               width: $px889;
             }*/
@@ -154,12 +156,14 @@
     }
   }
 }
+
 .divide-block {
   border-top: 1px solid #ddd;
   padding: $px25 0;
   margin-top: 0;
 }
-.customer-block-info{
+
+.customer-block-info {
   position: absolute;
   margin-top: -$px35;
   left: $px35;
@@ -186,7 +190,14 @@
       margin: 0;
 
       .modal-content {
+        display: grid;
+        grid-template-rows: max-content 1fr max-content;
+
         .modal-header {
+          border: none;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+          z-index: 1;
 
           .customer-title {
 
@@ -197,6 +208,13 @@
           margin: 0;
           padding: 20px;
           background-color: #fff;
+
+          .divide-block {
+            padding: 0;
+            h5{
+              margin: 0;
+            }
+          }
 
           select {
 
@@ -287,6 +305,7 @@
         .modal-footer {
           background-color: #fff;
           padding: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
       }
     }
@@ -315,8 +334,9 @@
 
         .modal-body {
           padding: 20px;
-          .add-note-area{
-            input{
+
+          .add-note-area {
+            input {
               width: 100%;
             }
           }
