@@ -173,7 +173,7 @@
                     border-bottom: 1px solid $gray-middle;
                     padding: 10px 0 10px 0;
                     transition: 0.5s ease-out;
-                    margin-bottom: -147.5px;
+                    margin-bottom: -167.5px;
                     word-break: break-all;
 
                     &.active {

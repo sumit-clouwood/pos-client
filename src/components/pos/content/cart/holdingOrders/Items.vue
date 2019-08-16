@@ -73,7 +73,7 @@
             grid-template-columns: 1fr max-content  max-content;
             grid-gap: 20px;
             align-items: center;
-            height: 50px;
+            height: 65px;
             margin: 0;
             padding: 0 10px;
             margin-bottom: 10px;
