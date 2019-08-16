@@ -96,6 +96,12 @@
 
     export default {
         name: 'Menu',
+        data() {
+            return {
+                topHeight: 0,
+                counter: 0
+            }
+        },
         components: {
             btnBack,
         },
@@ -122,7 +128,18 @@
                 this.$store.dispatch('category/browse', item)
             },
             showMore() {
-                menuShowMore()
+                // menuShowMore()
+                let navigationListY = document.querySelector('.navigation-list').getBoundingClientRect().top + document.querySelector('.navigation-list').getBoundingClientRect().height
+                let navigationListWrapperY = document.querySelector('.navigation-list-wrapper').getBoundingClientRect().top + document.querySelector('.navigation-list-wrapper').getBoundingClientRect().height
+                if (this.counter <= this.categories.length && navigationListY+5 >= navigationListWrapperY) {
+                    this.topHeight += document.querySelector('.nav-item').offsetHeight
+                    this.topHeight += 10
+                    this.counter++
+                } else {
+                    this.topHeight = 0
+                    this.counter = 0
+                }
+                document.querySelector('.navigation-list').style.top = `-${this.topHeight}px`
             },
             ...mapActions('category', ['browse']),
             subCategoryHendlerChange() {
@@ -259,7 +276,7 @@
                                 width: 64px;
                                 height: 64px;
                                 margin-bottom: 0;
-                                border-radius: 2;
+                                border-radius: 2px;
                                 margin: 0;
                             }
 

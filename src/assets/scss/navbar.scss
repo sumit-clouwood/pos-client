@@ -25,6 +25,7 @@
   .navigation-list-wrapper {
     overflow: hidden;
     position: relative;
+    //overflow-y: auto;
 
     &::-webkit-scrollbar {
       width: 0;
@@ -38,7 +39,7 @@
       overflow: hidden;
       display: grid;
       grid-template-rows: auto;
-      grid-gap: $px10;
+      grid-gap: 10px;
       padding: 0 0 $px30 0;
       transition: 0.5s ease-out;
       @include responsive(mobile) {
@@ -83,9 +84,9 @@
           }
 
           img {
-            width: 80%;
+            width: $px80;
             margin: 0 auto;
-            height: auto;
+            height: $px80;
             margin-bottom: $px5;
             border-radius: $px3;
             margin-top: $px7;
