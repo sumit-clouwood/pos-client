@@ -119,7 +119,7 @@ export default {
         const interval = setInterval(() => {
           this.progressIncrement += 10
           if (this.progressIncrement > 100) {
-            this.progressIncrement = 1
+            this.progressIncrement = 0
           }
         }, 1000)
 
