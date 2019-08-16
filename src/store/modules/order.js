@@ -916,8 +916,6 @@ const actions = {
           orderDetails.invoice =
             response.data.collected_data.store_invoice_templates
           commit(mutation.SET_ORDER_DETAILS, orderDetails)
-          // eslint-disable-next-line no-console
-          console.log(orderDetails)
         })
         .catch(error => reject(error))
     })
@@ -977,12 +975,10 @@ const actions = {
                   break
                 case 'walk_in':
                   commit(mutation.SET_ERRORS, response.data.form_errors)
-                  dispatch('transactionOrders/getTransactionOrders', {}, { root: true })
-                  // dispatch('deliveryManager/fetchDMOrderDetail', {}, { root: true })
                   break
               }
               dispatch('transactionOrders/getTransactionOrders', {}, { root: true })
-              resolve()
+              resolve(response.data)
             }
           },
     )

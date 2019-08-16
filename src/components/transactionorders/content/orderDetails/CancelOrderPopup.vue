@@ -185,9 +185,11 @@ export default {
         orderType,
         actionTrigger,
         params: data,
-      }).then(() => {
-        closeModal('#cancellationReason')
-        showModal('#successCancel')
+      }).then((response) => {
+        if(response.status.length > 0 && response.status == 'ok'){
+          closeModal('#cancellationReason')
+          showModal('#successCancel')
+        }
       })
     },
     ...mapActions('order', ['updateOrderCancelAction']),

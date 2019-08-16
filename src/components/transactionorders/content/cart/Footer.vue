@@ -13,9 +13,10 @@
       <div class="item discounts">
         <div class="sub-total-text">
           {{ _t('Discounts') }}
+          {{ getOrderDiscount(order.order_discounts).name }}
         </div>
         <div class="sub-total-num">
-          {{ formatPrice(order.total_discount || 0) }}
+          {{ formatPrice(getOrderDiscount(order.order_discounts).value || 0) }}
         </div>
       </div>
       <div class="item tax">
@@ -68,6 +69,15 @@ export default {
     ...mapGetters(['totalWrapperHendler']),
   },
   methods: {
+    getOrderDiscount(discounts){
+      let value = name = ''
+      discounts.map(function (discount) {
+        let type = (discount.type) === 'percentage' ? '%' : ''
+        name += '('+discount.name + ' ('+ discount.rate +  type + '))'
+        value += discount.price
+      })
+      return ({name, value})
+    },
     totalWrapperHendlerGhange() {
       this.$store.dispatch('totalWrapperHendlerGhange')
     },

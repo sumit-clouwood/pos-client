@@ -39,9 +39,9 @@
         </a>
       </li>
     </ul>
-    <div class="col-md-1 col-sm-1">
+    <div class="col-md-2 col-sm-2">
       <button
-              class="btn btn-success walkin-btn"
+              class="col-md-12 btn btn-success walkin-btn"
               @click="orderTypeWalkIn({ OTview: 'Walk In', OTApi: 'walk_in' })"
       >
         <router-link :to="store" class="text-white">

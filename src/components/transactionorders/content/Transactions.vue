@@ -100,7 +100,7 @@ export default {
     }),
     ...mapState('order', ['selectedOrder']),
     ...mapGetters('location', ['_t', 'timezoneString']),
-    ...mapGetters('transactionOrders', ['getOrderItemsStr']),
+    ...mapGetters('transactionOrders', ['getOrderItemsStr', 'setSelectedOrder']),
   },
   mixins: [DateTime],
   methods: {
