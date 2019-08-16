@@ -543,7 +543,11 @@ const actions = {
             )
 
             commit(mutation.PRINT, true)
-            dispatch('transactionOrders/getTransactionOrders', {}, { root: true })
+            dispatch(
+              'transactionOrders/getTransactionOrders',
+              {},
+              { root: true }
+            )
             resolve(response.data)
           } else {
             let error = ''
@@ -586,7 +590,11 @@ const actions = {
                 }
               )
               commit(mutation.PRINT, true)
-              dispatch('transactionOrders/getTransactionOrders', {}, { root: true })
+              dispatch(
+                'transactionOrders/getTransactionOrders',
+                {},
+                { root: true }
+              )
             } else {
               var err_msg = ''
               if (

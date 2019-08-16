@@ -41,8 +41,8 @@
     </ul>
     <div class="col-md-2 col-sm-2">
       <button
-              class="col-md-12 btn btn-success walkin-btn"
-              @click="orderTypeWalkIn({ OTview: 'Walk In', OTApi: 'walk_in' })"
+        class="col-md-12 btn btn-success walkin-btn"
+        @click="orderTypeWalkIn({ OTview: 'Walk In', OTApi: 'walk_in' })"
       >
         <router-link :to="store" class="text-white">
           {{ _t('Walk-in') }}

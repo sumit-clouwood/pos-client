@@ -73,9 +73,9 @@
           <a :href="dashboard">{{ _t('Dashboard') }}</a>
         </li>
         <li v-if="permitted('transactional_orders')">
-            <router-link :to="store + '/transactions'">
-              {{ _t('Transactions') }}
-            </router-link>
+          <router-link :to="store + '/transactions'">
+            {{ _t('Transactions') }}
+          </router-link>
         </li>
         <li v-if="permitted('crm', 'root')">
           <a :href="crm">{{ _t('CRM') }}</a>

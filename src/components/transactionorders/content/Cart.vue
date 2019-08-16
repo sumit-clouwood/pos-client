@@ -1,5 +1,5 @@
 <template>
-    <div
+  <div
     v-if="selectedOrder"
     :class="['main-orders', { active: mainOrdersHendler }]"
     class="main-orders color-dashboard-background"
@@ -19,11 +19,11 @@
     <mobile-footer />
     <orders-menu />
   </div>
-    <div class="food-block" v-else>
-        <div class="text-danger text-center font-weight-bold">
-            {{ _t('No orders found.') }}
-        </div>
+  <div class="food-block" v-else>
+    <div class="text-danger text-center font-weight-bold">
+      {{ _t('No orders found.') }}
     </div>
+  </div>
 </template>
 
 <script>

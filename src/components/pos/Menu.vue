@@ -11,7 +11,7 @@
       </a>
     </div>
     <div class="navigation-list-wrapper">
-      <btnBack :param="'category'"/>
+      <btnBack :param="'category'" />
       <ul class="navigation-list" v-if="categories.length">
         <li
           class="nav-item active-opacity color-text-invert"
@@ -49,11 +49,7 @@
       data-target="#user-details"
       data-dismiss="modal"
     >
-      <a
-        class="nav-link"
-        role="button"
-        :title="userDetails.item.name"
-      >
+      <a class="nav-link" role="button" :title="userDetails.item.name">
         <img
           v-if="typeof userDetails.item != 'undefined'"
           :src="

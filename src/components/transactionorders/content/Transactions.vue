@@ -2,7 +2,9 @@
   <div class="main-body-transaction color-dashboard-background color-text">
     <div class="search-trans-wrapper">
       <div class="back-trans-button">
-        <button class="btn btn-success" v-on:click="getReferPath()">&lt; {{ _t('Back') }}</button>
+        <button class="btn btn-success" v-on:click="getReferPath()">
+          &lt; {{ _t('Back') }}
+        </button>
       </div>
       <search />
     </div>
@@ -15,7 +17,9 @@
             v-for="order in transactionOrderList"
             @click="getSelectedOrder(order)"
             :key="order._id"
-            :class="{active : selectedOrder && selectedOrder.item._id === order._id}"
+            :class="{
+              active: selectedOrder && selectedOrder.item._id === order._id,
+            }"
           >
             <div class="img_block">
               <svg
@@ -46,19 +50,31 @@
 
             <div class="price_and_name">
               <p class="doller_price">
-                {{ '#'+ order.order_no }} - {{ order.currency }} {{ order.balance_due }}
+                {{ '#' + order.order_no }} - {{ order.currency }}
+                {{ order.balance_due }}
               </p>
-              <p class="price_s_desc shorten-sentence" :title="getOrderItemsStr(order.items)">{{ getOrderItemsStr(order.items, true) }}</p>
+              <p
+                class="price_s_desc shorten-sentence"
+                :title="getOrderItemsStr(order.items)"
+              >
+                {{ getOrderItemsStr(order.items, true) }}
+              </p>
             </div>
             <div class="time_and_button">
-              <p>{{
-                convertDatetime(
-                  order.real_created_datetime,
-                  timezoneString,
-                'HH:mm A'
+              <p>
+                {{
+                  convertDatetime(
+                    order.real_created_datetime,
+                    timezoneString,
+                    'HH:mm A'
                   )
-                  }}</p>
-              <a href="javascript:void" :class="setOrderStatus(order.order_system_status).class">{{ setOrderStatus(order.order_system_status).label }}</a>
+                }}
+              </p>
+              <a
+                href="javascript:void"
+                :class="setOrderStatus(order.order_system_status).class"
+                >{{ setOrderStatus(order.order_system_status).label }}</a
+              >
             </div>
           </div>
         </div>
@@ -96,11 +112,15 @@ export default {
   },
   computed: {
     ...mapState({
-      transactionOrderList: state => state.transactionOrders.displayTransactionOrders,
+      transactionOrderList: state =>
+        state.transactionOrders.displayTransactionOrders,
     }),
     ...mapState('order', ['selectedOrder']),
     ...mapGetters('location', ['_t', 'timezoneString']),
-    ...mapGetters('transactionOrders', ['getOrderItemsStr', 'setSelectedOrder']),
+    ...mapGetters('transactionOrders', [
+      'getOrderItemsStr',
+      'setSelectedOrder',
+    ]),
   },
   mixins: [DateTime],
   methods: {
@@ -108,16 +128,16 @@ export default {
       let statusArr = []
       switch (orderStatus) {
         case 'normal':
-          statusArr = { class: 'success', label : 'Success' }
+          statusArr = { class: 'success', label: 'Success' }
           break
         case 'cancelled':
-          statusArr = { class: 'canceled', label : 'Canceled' }
+          statusArr = { class: 'canceled', label: 'Canceled' }
           break
         case 'modified':
-          statusArr = { class: 'refunded', label : 'Modified' }
+          statusArr = { class: 'refunded', label: 'Modified' }
           break
         default:
-          statusArr = { class: 'refunded', label : 'Success' }
+          statusArr = { class: 'refunded', label: 'Success' }
           break
       }
       return statusArr
@@ -125,8 +145,7 @@ export default {
     getSelectedOrder(order) {
       this.$store
         .dispatch('order/selectedOrderDetails', order._id)
-        .then(() => {
-        })
+        .then(() => {})
         .catch()
     },
     getReferPath() {

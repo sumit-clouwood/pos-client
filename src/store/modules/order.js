@@ -877,25 +877,6 @@ const actions = {
       commit(mutation.ORDER_TYPE, { OTview: 'Delivery', OTApi: 'call_center' })
     })
   },
-
-  transactionOrderModify({ dispatch, commit }, orderData) {
-    dispatch('addOrderToCart', orderData.item).then(() => {
-      commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_DELIVERY)
-      commit(mutation.ORDER_TYPE, { OTview: 'Delivery', OTApi: 'call_center' })
-    })
-  },
-
-  modifyOrderTransaction({ rootState, commit, dispatch }) {
-    //dont show customer selection popup for modification order, can add skip button on order form instead using below
-    // commit('location/SET_MODAL', '#order-confirmation', { root: true })
-
-    //this order contains customer, order info so when needed you can use state.order.selectedOrder
-
-    return dispatch('order/transactionOrderModify', rootState.order.selectedOrder, {
-      root: true,
-    })
-  },
-
   selectedOrderDetails({ commit }, orderId) {
     return new Promise((resolve, reject) => {
       const params = ['orders', orderId, '']
@@ -962,29 +943,37 @@ const actions = {
     { order, orderType, actionTrigger, params }
   ) {
     return new Promise((resolve, reject) => {
-      OrderService.updateOrderAction(order.order._id, actionTrigger, params).then(
-          response => {
-            if (response.status == 200) {
-              switch (orderType) {
-                case 'hold':
-                  dispatch('holdOrders/remove', order, { root: true })
-                  break
-                case 'call_center':
-                  commit(mutation.SET_ERRORS, response.data.form_errors)
-                  dispatch('deliveryManager/fetchDMOrderDetail', {}, { root: true })
-                  break
-                case 'walk_in':
-                  commit(mutation.SET_ERRORS, response.data.form_errors)
-                  break
-              }
-              dispatch('transactionOrders/getTransactionOrders', {}, { root: true })
-              resolve(response.data)
+      OrderService.updateOrderAction(order.order._id, actionTrigger, params)
+        .then(response => {
+          if (response.status == 200) {
+            switch (orderType) {
+              case 'hold':
+                dispatch('holdOrders/remove', order, { root: true })
+                break
+              case 'call_center':
+                commit(mutation.SET_ERRORS, response.data.form_errors)
+                dispatch(
+                  'deliveryManager/fetchDMOrderDetail',
+                  {},
+                  { root: true }
+                )
+                break
+              case 'walk_in':
+                commit(mutation.SET_ERRORS, response.data.form_errors)
+                break
             }
-          },
-    )
-    .catch(response => {
-      commit(mutation.SET_ERRORS, {error: response.data.error})
-    })
+            dispatch(
+              'transactionOrders/getTransactionOrders',
+              {},
+              { root: true }
+            )
+            resolve(response.data)
+          }
+        })
+        .catch(response => {
+          commit(mutation.SET_ERRORS, { error: response.data.error })
+          reject(response.data)
+        })
     })
   },
 }

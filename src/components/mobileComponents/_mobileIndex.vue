@@ -69,7 +69,7 @@ export default {
   display: none;
   letter-spacing: 0.5px;
   @include responsive(mobile) {
-    .loading-modules{
+    .loading-modules {
       width: auto;
     }
     display: block;

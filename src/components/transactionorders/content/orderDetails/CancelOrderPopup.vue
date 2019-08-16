@@ -1,12 +1,12 @@
 <template>
   <div>
     <div
-            class="modal fade cancel-order"
-            id="cancellationReason"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="exampleModalCenterTitle"
-            aria-hidden="true"
+      class="modal fade cancel-order"
+      id="cancellationReason"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true"
     >
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -15,10 +15,10 @@
               {{ _t('Cancel Order') }}
             </h5>
             <button
-                    type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-label="Close"
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
             >
               <span aria-hidden="true">&times;</span>
             </button>
@@ -26,8 +26,8 @@
           <div class="modal-body">
             <div class="upper">
               <p
-                      v-if="errors && errors.error && errors.error.length"
-                      class="text-danger text-center"
+                v-if="errors && errors.error && errors.error.length"
+                class="text-danger text-center"
               >
                 {{ errors.error.toString() }}
               </p>
@@ -38,22 +38,22 @@
                   </div>
                   <form>
                     <input
-                            autocomplete="off"
-                            type="text"
-                            class="input-search-driver"
-                            id="get-customer-list"
-                            v-model="showSelectedReason"
-                            @click="showDropdown"
+                      autocomplete="off"
+                      type="text"
+                      class="input-search-driver"
+                      id="get-customer-list"
+                      v-model="showSelectedReason"
+                      @click="showDropdown"
                     />
                   </form>
                   <div id="my-dropdown" class="dropdown-content cursor-pointer">
-                  <span
-                          class="dropdown"
-                          v-for="reason in cancellationReason"
-                          :key="reason._id"
-                          v-on:click="selectedReason(reason)"
-                  >{{ reason.name }}</span
-                  >
+                    <span
+                      class="dropdown"
+                      v-for="reason in cancellationReason"
+                      :key="reason._id"
+                      v-on:click="selectedReason(reason)"
+                      >{{ reason.name }}</span
+                    >
                   </div>
                   <!--<p
                     v-if="errors && errors.cancel_reason.length"
@@ -68,15 +68,19 @@
                   </div>
                   <div>
                     <input
-                            autocomplete="off"
-                            type="password"
-                            class="input-search-driver"
-                            v-model="supervisorPassword"
+                      autocomplete="off"
+                      type="password"
+                      class="input-search-driver"
+                      v-model="supervisorPassword"
                     />
                   </div>
                   <p
-                          v-if="errors && errors.supervisor_password && errors.supervisor_password.length"
-                          class="text-danger"
+                    v-if="
+                      errors &&
+                        errors.supervisor_password &&
+                        errors.supervisor_password.length
+                    "
+                    class="text-danger"
                   >
                     {{ errors.supervisor_password.toString() }}
                   </p>
@@ -92,13 +96,13 @@
               {{ _t('Close') }}
             </button>
             <button
-                    type="button"
-                    class="btn btn-success"
-                    @click="
-              cancelOrderAction({
-                order,
-              })
-            "
+              type="button"
+              class="btn btn-success"
+              @click="
+                cancelOrderAction({
+                  order,
+                })
+              "
             >
               {{ _t('Submit') }}
             </button>
@@ -107,12 +111,12 @@
       </div>
     </div>
     <div
-            class="modal fade cancel-order"
-            id="successCancel"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="exampleModalCenterTitle"
-            aria-hidden="true"
+      class="modal fade cancel-order"
+      id="successCancel"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true"
     >
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -121,10 +125,10 @@
               {{ _t('Cancel Order') }}
             </h5>
             <button
-                    type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-label="Close"
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
             >
               <span aria-hidden="true">&times;</span>
             </button>
@@ -159,7 +163,7 @@ export default {
     }
   },
   props: {
-    'order' : Object,
+    order: Object,
   },
   computed: {
     ...mapGetters('location', ['_t']),
@@ -185,8 +189,8 @@ export default {
         orderType,
         actionTrigger,
         params: data,
-      }).then((response) => {
-        if(response.status.length > 0 && response.status == 'ok'){
+      }).then(response => {
+        if (response.status.length > 0 && response.status == 'ok') {
           closeModal('#cancellationReason')
           showModal('#successCancel')
         }
@@ -194,5 +198,13 @@ export default {
     },
     ...mapActions('order', ['updateOrderCancelAction']),
   },
+}
+function closeModal(modalName) {
+  $('body').removeClass('modal-open')
+  $('#transparent-screen').css('display', 'none')
+  $(modalName).modal('hide')
+}
+function showModal(modalName) {
+  $(modalName).modal('show')
 }
 </script>

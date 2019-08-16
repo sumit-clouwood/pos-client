@@ -8,7 +8,9 @@
       </div>
       <div class="item surcharges">
         <div class="sub-total-text">{{ _t('Surcharges') }}</div>
-        <div class="sub-total-num">{{ formatPrice(order.total_surcharge || 0) }}</div>
+        <div class="sub-total-num">
+          {{ formatPrice(order.total_surcharge || 0) }}
+        </div>
       </div>
       <div class="item discounts">
         <div class="sub-total-text">
@@ -35,13 +37,19 @@
       </div>
     </div>
     <div class="btn-transaction text-right">
-    <button class="pos-button-design btn btn-success" v-if="order.order_system_status === 'cancelled'" @click="modifyOrder">
+      <button
+        class="pos-button-design btn btn-success"
+        v-if="order.order_system_status === 'cancelled'"
+        @click="modifyOrder"
+      >
         {{ _t('Modify Transaction') }}
-    </button>
-    <button class="pos-button-design btn btn-success"
-    data-toggle="modal" v-if="order.order_system_status != 'cancelled'"
-    data-target=".cancel-order"
-    >
+      </button>
+      <button
+        class="pos-button-design btn btn-success"
+        data-toggle="modal"
+        v-if="order.order_system_status != 'cancelled'"
+        data-target=".cancel-order"
+      >
         {{ _t('Cancel Transaction') }}
       </button>
     </div>
@@ -55,7 +63,7 @@ import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'CartFooter',
   props: {
-    'order' : Object,
+    order: Object,
   },
   components: {
     CancelOrderPopup,
@@ -69,14 +77,15 @@ export default {
     ...mapGetters(['totalWrapperHendler']),
   },
   methods: {
-    getOrderDiscount(discounts){
-      let value = name = ''
-      discounts.map(function (discount) {
-        let type = (discount.type) === 'percentage' ? '%' : ''
-        name += '('+discount.name + ' ('+ discount.rate +  type + '))'
+    getOrderDiscount(discounts) {
+      let value = ''
+      let name = ''
+      discounts.map(function(discount) {
+        let type = discount.type === 'percentage' ? '%' : ''
+        name += '(' + discount.name + ' (' + discount.rate + type + '))'
         value += discount.price
       })
-      return ({name, value})
+      return { name, value }
     },
     totalWrapperHendlerGhange() {
       this.$store.dispatch('totalWrapperHendlerGhange')

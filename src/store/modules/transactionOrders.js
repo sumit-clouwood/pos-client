@@ -1,11 +1,11 @@
 import * as mutation from './transactionOrders/mutation-types'
 import OrderService from '@/services/data/OrderService'
-import LookupData from "../../plugins/helpers/LookupData";
+import LookupData from '../../plugins/helpers/LookupData'
 
 const state = {
   getTransactions: false,
   getTransactionOrders: false,
-    displayTransactionOrders: false,
+  displayTransactionOrders: false,
   orderDetails: {},
   pageLookups: {},
   loading: false,
@@ -20,12 +20,14 @@ const state = {
 }
 
 const getters = {
-    getOrderItemsStr: () => orderItems => {
-        let str = orderItems.map(function (item) {
-            return item.name
-        }).toString()
-        return str
-    },
+  getOrderItemsStr: () => orderItems => {
+    let str = orderItems
+      .map(function(item) {
+        return item.name
+      })
+      .toString()
+    return str
+  },
 }
 
 const actions = {
@@ -45,41 +47,51 @@ const actions = {
       commit(mutation.ALL_TRANSACTIONS, response.data)
       commit(mutation.LOADING, true)
       commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
-      if(state.displayTransactionOrders.length > 0) {
+      if (state.displayTransactionOrders.length > 0) {
         let firstOrder = state.displayTransactionOrders[0]._id
-        dispatch('order/selectedOrderDetails', firstOrder, { root : true })
+        dispatch('order/selectedOrderDetails', firstOrder, { root: true })
       }
     })
   },
   collectSearchTransactions({ commit, state, dispatch }, searchTerm) {
     let searchedItems = []
     if (searchTerm != '' && searchTerm.length > 0) {
-        state.getTransactions.data.map(order => {
-          //Searching with Order No.
-          if (order.order_no.toString().toLowerCase().indexOf(searchTerm.toString().toLowerCase()) != -1) {
+      state.getTransactions.data.map(order => {
+        //Searching with Order No.
+        if (
+          order.order_no
+            .toString()
+            .toLowerCase()
+            .indexOf(searchTerm.toString().toLowerCase()) != -1
+        ) {
+          searchedItems.push(order)
+        }
+
+        //Searching with Order Item Names
+        order.items.map(item => {
+          if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
             searchedItems.push(order)
           }
-
-          //Searching with Order Item Names
-          order.items.map(item => {
-            if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
-              searchedItems.push(order)
-            }
-          })
-
-          //Searching with Order Customer Name
-          if(order.customer != null && order.customer.length > 0){
-            let customerName = LookupData.get({
-              collection : state.getTransactions.page_lookups.brand_customers._id,
-              matchWith: order.customer,
-              selection: 'name',
-            })
-            order['customer_name'] = customerName
-            if (order.customer_name.toString().toLowerCase().indexOf(searchTerm.toString().toLowerCase()) != -1) {
-              searchedItems.push(order)
-            }
-          }
         })
+
+        //Searching with Order Customer Name
+        if (order.customer != null && order.customer.length > 0) {
+          let customerName = LookupData.get({
+            collection: state.getTransactions.page_lookups.brand_customers._id,
+            matchWith: order.customer,
+            selection: 'name',
+          })
+          order['customer_name'] = customerName
+          if (
+            order.customer_name
+              .toString()
+              .toLowerCase()
+              .indexOf(searchTerm.toString().toLowerCase()) != -1
+          ) {
+            searchedItems.push(order)
+          }
+        }
+      })
       commit(mutation.SEARCH_TRANSACTIONS, searchedItems)
     } else {
       dispatch('getTransactionOrders')
@@ -101,7 +113,7 @@ const mutations = {
   [mutation.SEARCH_TRANSACTIONS](state, transactionOrders) {
     if (transactionOrders.data && transactionOrders.data.length > 0) {
       state.displayTransactionOrders = transactionOrders.data
-    } else if(transactionOrders.length > 0) {
+    } else if (transactionOrders.length > 0) {
       state.displayTransactionOrders = transactionOrders
     } else {
       state.displayTransactionOrders = {}
