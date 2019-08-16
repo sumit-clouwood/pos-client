@@ -418,7 +418,7 @@
       #pay-now .modal-dialog .modal-content .modal-body .payment-input-block.paymentInputActive {
         display: block; }
     #pay-now .modal-dialog .modal-content .modal-body .amount-keypad {
-      display: none !important;
+      display: none;
       width: 100%;
       min-width: 100%;
       grid-template-columns: 1fr 1fr 1fr 1fr; }

@@ -202,7 +202,7 @@ export default {
 
   .amount-keypad {
     overflow: hidden;
-    display: grid;
+    display: grid !important;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-gap: 10px;
     min-width: auto;

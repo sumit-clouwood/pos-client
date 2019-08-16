@@ -1,7 +1,7 @@
 <template>
   <div class="navigation toggle-navigation">
     <div class="logo" @click="collapseExpend">
-      <a class="logo-link" href="javascript:void(0)">
+      <a class="logo-link" role="button">
         <img src="img/other/icon.png" alt="icon" />
       </a>
     </div>
@@ -195,7 +195,7 @@
     >
       <a
         class="nav-link"
-        href="javascript:void(0)"
+        role="button"
         :title="userDetails.item.name"
       >
         <img

@@ -53,7 +53,7 @@
       >
         <a
           class="dropdown-item"
-          href="javascript:void(0)"
+          role="button"
           v-for="language in availableLanguages"
           :key="language._id"
           :value="language.code"

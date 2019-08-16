@@ -12,7 +12,7 @@
       overflow: hidden;
       margin: 0 auto;
       float: left;
-      width: 70%; }
+      width: 60%; }
       #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile #delivery-area-address {
         overflow: hidden;
         padding: 0 1.25rem 1.25rem 1.25rem;
@@ -52,14 +52,25 @@
           cursor: pointer; }
       #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .ullist-profile {
         display: grid;
-        grid-template-columns: max-content max-content max-content 1fr;
-        grid-gap: 0.625rem;
+        flex-wrap: wrap;
+        grid-template-columns: max-content 1fr;
+        grid-gap: 1.25rem;
         border-bottom: 2px solid #efefef;
         padding: 1.25rem; }
         #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .ullist-profile li {
+          padding: 0;
           display: grid;
           grid-template-rows: min-content min-content min-content;
           grid-template-columns: max-content; }
+          #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .ullist-profile li:nth-child(3) {
+            grid-column-start: 2;
+            grid-column-end: 3; }
+          #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .ullist-profile li:nth-child(4) {
+            align-self: end;
+            grid-column-start: 1;
+            grid-column-end: 2;
+            grid-row-start: 2;
+            grid-row-end: 3; }
           #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .ullist-profile li img {
             width: 5.9375rem;
             height: 5.9375rem;
@@ -183,7 +194,7 @@
           justify-content: flex-end; }
     #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight {
       float: left;
-      width: 30%;
+      width: 40%;
       padding: 1.25rem;
       border-left: 2px solid #efefef; }
       #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .title-cu {
@@ -201,8 +212,7 @@
         background-color: #f2f7fb;
         display: grid;
         grid-template-columns: min-content 1fr min-content;
-        align-items: center;
-        max-height: 10rem; }
+        align-items: center; }
         #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .last-order-wrap .slick-track {
           display: flex;
           align-items: center;

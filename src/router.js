@@ -30,6 +30,11 @@ const router = new Router({
       component: DeliveryManagerInit,
     },
     {
+      path: '/:brand_id/:store_id/dine-in',
+      name: 'Dinein',
+      component: DineIn,
+    },
+    {
       path: '/:brand_id/:store_id/:order_id',
       name: 'Home',
       component: Home,
@@ -47,11 +52,6 @@ const router = new Router({
       // which is lazy-loaded when the route is visited.
       // component: () =>
       // 	import(/* webpackChunkName: "about" */ './views/About.vue'),
-    },
-    {
-      path: '/dine-in',
-      name: 'Dinein',
-      component: DineIn,
     },
     {
       path: '/dispatch-screen',

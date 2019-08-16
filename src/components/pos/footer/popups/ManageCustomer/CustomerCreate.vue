@@ -147,6 +147,10 @@
     @import '../../../../../assets/scss/mixins.scss';
 
     @include responsive(mobile) {
+        #post_announcement {
+            background-color: $green-middle;
+            border: none;
+        }
         #customer {
             position: fixed;
             top: 0;
@@ -172,15 +176,18 @@
                 .modal-content {
                     display: grid;
                     grid-template-rows: max-contencashiert 1fr max-content;
+
                     .modal-header {
                         height: 80px;
                         background-color: #fff;
                     }
-                    .modal-body{
-                        .divide-block{
+
+                    .modal-body {
+                        .divide-block {
                             margin: 0;
                             border: none;
-                            .customer-block-info{
+
+                            .customer-block-info {
                                 padding: 0;
                                 position: static;
                             }

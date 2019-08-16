@@ -112,9 +112,16 @@
                 .modal-content {
                     .modal-header {
                         width: 100vw;
+                        border: none;
                     }
 
                     .modal-body {
+                        padding-top: 0;
+                        overflow: hidden;
+                        display: grid;
+                        grid-template-rows: max-content 1fr;
+                        padding-bottom: 0;
+
                         .divide-block {
                             border: none;
                             margin: 0;
@@ -142,7 +149,8 @@
                                 input, select {
                                     width: 100%;
                                 }
-                                .validation-error{
+
+                                .validation-error {
                                     position: static;
                                 }
                             }
@@ -151,11 +159,114 @@
                                 width: 100%;
                             }
                         }
+
+                        .search-field {
+                            margin-left: -20px;
+                            margin-right: -20px;
+                            border-radius: 0;
+                            border-left: none;
+                            border-right: none;
+                        }
+
+                        .manage-customer-table {
+                            max-height: none;
+                            .table {
+                                thead {
+                                    display: none;
+                                }
+
+                                tbody {
+                                    display: grid;
+                                    grid-gap: 20px;
+                                    width: 100%;
+                                    padding-top: 20px;
+
+                                    tr {
+                                        display: grid;
+                                        grid-template-columns: 1fr 1fr;
+                                        border-radius: 5px;
+                                        border: 1px solid $gray-middle;
+                                        overflow: hidden;
+
+                                        td {
+                                            display: grid;
+                                            align-items: center;
+                                            height: 40px;
+                                            width: 100%;
+                                            border: none;
+                                            max-width: none;
+                                            padding-left: 20px;
+
+                                            button {
+                                                height: 100%;
+                                                border-radius: 0;
+                                            }
+
+                                            &.color-text {
+                                                grid-column-start: 1;
+                                                grid-column-end: 2;
+                                            }
+
+                                            &:empty {
+                                                display: none;
+                                            }
+
+                                            &:nth-child(5), &:nth-child(6) {
+                                                grid-column-start: 2;
+                                                grid-column-end: 3;
+                                                    padding: 0;
+                                            }
+
+                                            &:nth-child(5) {
+                                                grid-row-start: 1;
+                                                grid-row-end: 2;
+                                                button{
+                                                    background-color: #F99C32;
+                                                }
+                                            }
+
+                                            &:nth-child(6) {
+                                                grid-row-start: 2;
+                                                grid-row-end: 3;
+                                                button{
+                                                    background-color: #64C434;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     .modal-footer {
                         width: 100vw;
-                        padding-top: 0;
+                        padding-top: 20px;
+                        box-shadow: 0 0 30px rgba(0,0,0,0.3);
+                        z-index: 10;
+                        .pagination-customer-details{
+                            display: none;
+                        }
+                        .btn-announce{
+                            button {
+                                width: 100%;
+                            }
+                            .btn-danger{
+                                position: absolute;
+                                top: 28px;
+                                right: 40px;
+                                width: 0;
+                                height: 0;
+                                border: none;
+                                &:after{
+                                    font-size: 16px;
+                                    content: '✖';
+                                    color: #444;
+                                    position: absolute;
+                                    right: -10px;
+                                }
+                            }
+                        }
                     }
                 }
             }

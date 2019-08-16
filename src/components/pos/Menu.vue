@@ -4,14 +4,14 @@
     class="color-main"
   >
     <div class="logo" title="logo">
-      <a class="logo-link" href="javascript:void(0)">
+      <a class="logo-link" role="button">
         <!--<router-link :to="'/delivery-manager' + store">-->
         <img src="img/icons/icon.png" alt="icon" />
         <!--</router-link>-->
       </a>
     </div>
     <div class="navigation-list-wrapper">
-      <btnBack />
+      <btnBack :param="'category'"/>
       <ul class="navigation-list" v-if="categories.length">
         <li
           class="nav-item active-opacity color-text-invert"
@@ -51,7 +51,7 @@
     >
       <a
         class="nav-link"
-        href="javascript:void(0)"
+        role="button"
         :title="userDetails.item.name"
       >
         <img
@@ -241,7 +241,6 @@ export default {
             padding: 0 20px 0 0px;
             display: grid;
             grid-template-columns: min-content 1fr;
-            grid-gap: 20px;
             background-color: #fff !important;
 
             .nav-link-text {
@@ -250,6 +249,8 @@ export default {
               overflow: hidden;
               text-overflow: ellipsis;
               text-align: left;
+              justify-content: flex-start;
+              margin-left: 20px;
             }
 
             img {

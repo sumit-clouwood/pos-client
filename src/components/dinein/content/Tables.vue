@@ -163,13 +163,13 @@
                   <a
                     class="dropdown-item"
                     data-value="Table 3"
-                    href="javascript:void(0)"
+                    role="button"
                     >Table 3</a
                   >
                   <a
                     class="dropdown-item"
                     data-value="Table 3 A"
-                    href="javascript:void(0)"
+                    role="button"
                     >Table 3 A</a
                   >
                 </div>

@@ -1,8 +1,11 @@
 <template>
   <div class="avatar">
     <a class="avatar-link" href="">
-      <img class="avatar-link-img" :src="profileImage" alt="profile" />
-      <div class="avatar-link-user">Admin</div>
+      <!--<img class="avatar-link-img" :src="profileImage" alt="profile" />-->
+      <img class="avatar-link-img" :src="
+                    user.avatar ? user.avatar : 'img/profile/default_avatar.jpg'
+                  " alt="profile" />
+      <div class="avatar-link-user">{{ user.name }}</div>
       <status />
     </a>
   </div>
@@ -16,13 +19,23 @@ export default {
     status,
   },
   computed: {
+    // ...mapState({
+    //   profileImage: state =>
+    //     state.auth.userDetails && state.auth.userDetails.image
+    //       ? process.env.VUE_APP_API_ENDPOINT +
+    //         '/profile_pic/' +
+    //         state.auth.userDetails.image
+    //       : 'img/pos/profile-pic.png',
+    // }),
     ...mapState({
-      profileImage: state =>
-        state.auth.userDetails && state.auth.userDetails.image
-          ? process.env.VUE_APP_API_ENDPOINT +
-            '/profile_pic/' +
-            state.auth.userDetails.image
-          : 'img/pos/profile-pic.png',
+      user: state => state.auth.userDetails.item,
+      collectedData: state => state.auth.userDetails.collected_data,
+      rootStore: state =>
+        state.auth.userDetails.collected_data.page_lookups.root_stores,
+      rootBrandRoles: state =>
+        state.auth.userDetails.collected_data.page_lookups.root_brand_roles,
+      brands: state =>
+        state.auth.userDetails.collected_data.page_lookups.brands,
     }),
   },
 }

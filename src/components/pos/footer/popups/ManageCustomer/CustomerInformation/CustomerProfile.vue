@@ -54,7 +54,7 @@
     <li @click="editCustomer(customerProfile._id)">
       <a
         class="cu-edit-icon color-text-invert color-main"
-        href="javascript:void(0)"
+        role="button"
         data-toggle="modal"
         data-target="#customer"
         data-dismiss="modal"
@@ -90,7 +90,7 @@
       >
       <a
         class="cu-delete-icon color-text-invert color-secondary"
-        href="javascript:void(0)"
+        role="button"
         ><span
           ><svg
             xmlns="http://www.w3.org/2000/svg"
