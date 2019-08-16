@@ -467,6 +467,7 @@
                 grid-template-columns: 1fr max-content;
                 align-items: center;
                 border-bottom: 1px solid #ccc;
+                margin: 0 10px;
                 &:last-child{
                     border: none !important;
                 }

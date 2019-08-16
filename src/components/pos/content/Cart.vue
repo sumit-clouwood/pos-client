@@ -173,7 +173,7 @@
                     border-bottom: 1px solid $gray-middle;
                     padding: 10px 0 10px 0;
                     transition: 0.5s ease-out;
-                    margin-bottom: -140.5px;
+                    margin-bottom: -147.5px;
                     word-break: break-all;
 
                     &.active {
@@ -226,8 +226,10 @@
             }
 
             .mobile-footer {
-                z-index: 2;
                 background-color: #fff;
+                z-index: 10;
+                padding-top: 20px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
                 .btn-next {
                     display: none;

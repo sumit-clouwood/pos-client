@@ -74,6 +74,15 @@
     right: 0;
     bottom: 0;
     left: 0;
+    height: 100vh;
+    max-height: 100vh;
+    &.show{
+      .modal-dialog{
+        .modal-content{
+          margin-bottom: 0;
+        }
+      }
+    }
 
     .modal-dialog {
       position: absolute;
@@ -83,9 +92,17 @@
       margin: 0;
       width: auto;
       min-height: auto;
+      overflow-y: hidden;
+      animation: none;
+        transform: none;
 
       .modal-content {
         top: auto;
+        margin-bottom: -362px;
+        animation: none;
+        transform: none;
+        transition: 0.3s ease-out;
+        position: static;
 
         .modal-header {
           border-radius: 0;

@@ -1,6 +1,6 @@
 <template>
     <!-- Add Note -->
-    <div class="modal fade" id="search-loyalty-customer" role="dialog">
+    <div class="modal fade" id="search-loyalty-customer" role="dialog" @click.self="loyaltyHendlerGhange">
         <div class="modal-dialog">
             <!-- Modal content-->
             <div class="modal-content color-dashboard-background">
@@ -207,6 +207,7 @@
         z-index: 1;
         margin-top: 3px;
         max-height: 200px;
+
     }
 
     .dropdown-content span {
@@ -238,9 +239,17 @@
     @import '../../../../assets/scss/mixins.scss';
 
     @include responsive(mobile) {
+        .loyalty{
+            background-color: transparent !important;
+            border: none !important;
+        }
         #search-loyalty-customer {
+            border: none;
             .modal-dialog {
+                border: none;
                 .modal-content {
+                    border: none;
+                    /*top: auto;*/
                     .modal-header {
                         height: 80px;
                         background-color: #fff;
@@ -253,7 +262,6 @@
 
                     .modal-body {
                         display: grid;
-                        grid-gap: 20px;
                         grid-template-rows: max-content max-content max-content 1fr max-content;
                         padding-bottom: 0;
 
