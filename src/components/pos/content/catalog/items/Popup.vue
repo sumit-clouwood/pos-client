@@ -119,7 +119,7 @@
                             }
 
                             .POSItemOptions_choose {
-                                margin-top: 20px;
+                                margin-top: 10px;
                                 display: grid;
                                 grid-template-columns: 1fr 1fr;
                                 grid-gap: 20px;

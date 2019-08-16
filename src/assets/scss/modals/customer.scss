@@ -1,4 +1,5 @@
 @import "../variables.scss";
+@import "../mixins.scss";
 
 #customer, #manage-customer {
   .modal-dialog {
@@ -18,6 +19,9 @@
           line-height: normal;
           letter-spacing: 0.6px;
           color: #3f4146;
+          @include responsive(mobile){
+            font-size: 18px;
+          }
         }
       }
 
