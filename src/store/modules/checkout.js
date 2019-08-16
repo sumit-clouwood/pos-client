@@ -492,7 +492,7 @@ const actions = {
       } else {
         response = OrderService.saveOrder(
           state.order,
-          rootState.customer.offlineData
+          rootState.customer.offlineData ? rootState.customer.offlineData : rootState.customer.customer
         )
       }
 
