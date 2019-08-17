@@ -88,9 +88,7 @@
         </span>
         {{ _t('Edit') }}</a
       >
-      <a
-        class="cu-delete-icon color-text-invert color-secondary"
-        role="button"
+      <a class="cu-delete-icon color-text-invert color-secondary" role="button"
         ><span
           ><svg
             xmlns="http://www.w3.org/2000/svg"

@@ -12,8 +12,8 @@ const state = {
   activeArea: false,
   loading: false,
   tablesOnArea: false,
-  tableStatus: { unavailable: 0, available_soon: 0, available: 0 },
-  orderOnTables: false,
+  tableStatus: {},
+  orderOnTables: {},
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -28,7 +28,7 @@ const getters = {
   },
   getTableNumber: state => orderId => {
     let tableNumber = ''
-    state.orders.data.filter(function(order) {
+    state.orders.filter(function(order) {
       if (order.order_id === orderId) {
         tableNumber = order.table_number
       }
@@ -67,38 +67,61 @@ const actions = {
   },
 
   getTableStatus({ commit, state }) {
-    let tableStatus = { unavailable: 0, available_soon: 0, available: 0 }
-    let orderOnTable = { tableId: '', orderId: '' }
+    let tableStatus = {
+      availableCount: 0,
+      unavailableCount: 0,
+      availableSoonCount: 0,
+      table: [],
+    }
+    /*unavailable: ,
+      available_soon: { count: 0, table: [] },
+      available: { count: 0, table: [] },
+    }*/
+    let orderOnTable = []
+
     state.tablesOnArea.forEach(table => {
       let orderIds = []
-      orderOnTable.tableId = table._id
-      state.orders.data.filter(function(order) {
+      state.orders.filter(function(order) {
         if (order.table_id === table._id) {
           orderIds.push(order.order_id)
         }
       })
-      orderOnTable.orderId = orderIds
+      let tableDetails = { id: table._id, number: table.number, status: '' }
+      orderOnTable.push({ tableId: table._id, orderIds: orderIds })
       commit(mutation.ORDER_ON_TABLES, orderOnTable)
-
-      orderIds.forEach(id => {
-        let order = LookupData.get({
-          collection: state.orders.page_lookups.orders._id,
-          matchWith: id,
-          selection: false,
+      if (orderIds.length) {
+        orderIds.forEach(id => {
+          let order = LookupData.get({
+            collection: state.dineInOrderDetails,
+            matchWith: id,
+            selection: false,
+          })
+          if (
+            order.order_status == CONST.ORDER_STATUS_ON_HOLD ||
+            order.order_status == CONST.ORDER_STATUS_IN_PROGRESS
+          ) {
+            tableStatus.unavailableCount += 1
+            tableDetails.status = '#c84c4c'
+            tableStatus.table.push(tableDetails)
+          } else {
+            tableStatus.availableSoonCount += 1
+            tableDetails.status = '#faa03c'
+            tableStatus.table.push(tableDetails)
+          }
         })
-        if (
-          order.order_status == CONST.ORDER_STATUS_ON_HOLD ||
-          order.order_status == CONST.ORDER_STATUS_IN_PROGRESS
-        ) {
-          tableStatus.unavailable += 1
-        } else {
-          tableStatus.available_soon += 1
-        }
-      })
-      tableStatus.available =
-        parseInt(state.tablesOnArea.length) -
-        parseInt(tableStatus.available_soon + tableStatus.unavailable)
+      } else {
+        tableStatus.availableCount =
+          parseInt(state.tablesOnArea.length) -
+          parseInt(
+            tableStatus.unavailableCount + tableStatus.availableSoonCount
+          )
+        tableDetails.status = '#62bb31'
+        tableStatus.table.push(tableDetails)
+      }
     })
+    /*tableStatus.available.table.id = [
+      ...new Set(tableStatus.available.table.id),
+    ]*/
     commit(mutation.TABLE_STATUS, tableStatus)
   },
 }
@@ -127,7 +150,7 @@ const mutations = {
       selection: false,
     })
     state.completedOrderDetails = order.order_status.*/
-    state.orders = orders
+    state.orders = orders.data
   },
   [mutation.SELECTED_AREA](state, activeArea) {
     state.tablesOnArea = false

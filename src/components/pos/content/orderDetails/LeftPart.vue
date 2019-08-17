@@ -176,8 +176,14 @@ export default {
   },
   mixins: [DateTime],
   methods: {
-    timerClock: function(){
-      return  this.orderTimer(this.convertDatetime(this.orderDetails.item.real_created_datetime, this.timezoneString), this.timezoneString)
+    timerClock: function() {
+      return this.orderTimer(
+        this.convertDatetime(
+          this.orderDetails.item.real_created_datetime,
+          this.timezoneString
+        ),
+        this.timezoneString
+      )
     },
     getLookupData: function(lookup) {
       let setData = this.orderDetails.lookups[lookup.lookupFrom]._id

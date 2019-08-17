@@ -1,13 +1,16 @@
 <template>
   <div class="left-container">
     <Header />
-    <div class="table-holder container-fluid row running-orders-dinein active" id="all-tables-show" v-if="tablesOnArea">
-        <TableDraw />
+    <div
+      class="table-holder container-fluid row running-orders-dinein active"
+      id="all-tables-show"
+      v-if="tablesOnArea"
+    >
+      <TableDraw />
     </div>
     <RunningOrders />
     <Reservation />
     <CompletedOrders />
-
   </div>
 </template>
 
@@ -20,17 +23,17 @@ import Header from './content/Header'
 import { mapState } from 'vuex'
 
 export default {
-    name: 'Content',
-    computed: {
-        ...mapState('dinein', ['tablesOnArea'])
-    },
-    components: {
-        Header,
-        RunningOrders,
-        Reservation,
-        CompletedOrders,
-        TableDraw,
-    },
+  name: 'Content',
+  computed: {
+    ...mapState('dinein', ['tablesOnArea']),
+  },
+  components: {
+    Header,
+    RunningOrders,
+    Reservation,
+    CompletedOrders,
+    TableDraw,
+  },
 }
 </script>
 <style scoped>

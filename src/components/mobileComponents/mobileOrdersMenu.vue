@@ -211,7 +211,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import mobileFooter from './mobileFooter.vue'
 
 export default {
-  data(){
+  data() {
     return {
       vbutton: '',
     }

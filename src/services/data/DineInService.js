@@ -6,7 +6,9 @@ export default {
   },
 
   dineAreas() {
-    return DataService.get(`/model/dine_in_area?page_id=dinning_section&query=&limit=99999999&ascending=1&page=1&byColumn=0&orderBy=priority`)
+    return DataService.get(
+      `/model/dine_in_area?page_id=dinning_section&query=&limit=99999999&ascending=1&page=1&byColumn=0&orderBy=priority`
+    )
   },
 
   dineTables() {

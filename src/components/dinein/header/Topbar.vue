@@ -9,14 +9,14 @@
     </div>-->
     <div class="change-location color-main color-text-invert">
       <button
-              class="popup-btn-save"
-              v-if="permitted('brand_settings', 'brand')"
+        class="popup-btn-save"
+        v-if="permitted('brand_settings', 'brand')"
       >
         <a :href="baseurl('delivery')">{{ _t('Change Brand') }}</a>
       </button>
     </div>
   </div>
- </template>
+</template>
 
 <script>
 // import moment from 'moment-timezone'
@@ -40,8 +40,8 @@ export default {
   methods: {
     baseurl(link) {
       return window.location.href.replace(
-              new RegExp('/pos/delivery-manager/.*'),
-              '/' + link
+        new RegExp('/pos/delivery-manager/.*'),
+        '/' + link
       )
     },
   },
@@ -52,4 +52,3 @@ export default {
   },*/
 }
 </script>
-

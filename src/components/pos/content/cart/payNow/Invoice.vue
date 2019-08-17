@@ -350,8 +350,8 @@ export default {
           }
 
         </style></head><body style="width:100%">${
-        this.invoiceHtml
-      }</body></html>`
+          this.invoiceHtml
+        }</body></html>`
       this.iframe_body = body
       //1. to print in new window
       //this.doPrint()

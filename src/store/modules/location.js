@@ -34,7 +34,7 @@ const getters = {
 
   permitted: state => (pageId, parentId) => {
     typeof parentId == 'undefined' ? null : parentId
-    if(state.permissions){
+    if (state.permissions) {
       let routeMenus = state.permissions.filter(
         permission =>
           permission.meta.parent_id == parentId && permission.page_id == pageId
@@ -55,7 +55,7 @@ const getters = {
 
   },*/
   _t: state => str => {
-    if(state.translations) {
+    if (state.translations) {
       if (state.translations[str]) {
         return state.translations[str]
       }

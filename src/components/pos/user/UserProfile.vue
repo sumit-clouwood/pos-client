@@ -123,8 +123,10 @@ export default {
         state.auth.userDetails.collected_data.page_lookups.root_stores,
       rootBrandRoles: state =>
         state.auth.userDetails.collected_data.page_lookups.root_brand_roles,
-      brands: state => state.auth.userDetails ?
-        state.auth.userDetails.collected_data.page_lookups.brands : false,
+      brands: state =>
+        state.auth.userDetails
+          ? state.auth.userDetails.collected_data.page_lookups.brands
+          : false,
     }),
     ...mapGetters('location', ['_t']),
   },

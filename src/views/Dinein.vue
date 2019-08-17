@@ -1,6 +1,5 @@
 <template>
   <div class="new-pos">
-
     <div class="dm-screen-wrap toggle-nav-content">
       <Header />
     </div>
@@ -14,7 +13,6 @@
       </div>
     </div>
     <div class="modal-backdrop fade show" id="transparent-screen"></div>
-
   </div>
 </template>
 
@@ -48,7 +46,7 @@ export default {
   props: {
     msg: String,
   },
-  computed:{
+  computed: {
     ...mapState('dinein', ['loading']),
   },
   mounted() {

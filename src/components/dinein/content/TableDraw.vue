@@ -9,9 +9,6 @@
             @click="orderTypeWalkIn({ OTview: 'Dine In', OTApi: 'dine_in' })"
             :data-target="store"
           >
-            <!--<router-link :to="store" class="text-white">
-                            {{ _t('Walk-in') }}
-                        </router-link>-->
             <svg
               :height="height + 'px'"
               :width="width + 'px'"
@@ -20,31 +17,8 @@
               xmlns="http://www.w3.org/2000/svg"
             ></svg>
           </div>
-          <!--<div id="tooltip-c" class="tooltip-c">
-                        <div class="tooltip-c-range" id="range"></div>
-                        <button>move</button>
-                        <button>edit</button>
-                        <button>disable</button>
-                    </div>-->
-          <div
-            class="dropdown-menu show tooltip-c"
-            x-placement="bottom-start"
-            id="tooltip-c"
-            style="position: absolute; transform: translate3d(0px, 20px, 0px); top: 0px; left: 0px; will-change: transform;"
-          >
-            <!--get table id-->
-            <!--<div class="tooltip-c-range" id="range"></div>-->
-            <a
-              class="dropdown-item"
-              data-value="Table 3"
-              href="#"
-              v-for="(order, index) in orderOnTables.orderId"
-              :key="index"
-              >{{ order }}
-            </a>
-            <!--<a class="dropdown-item" data-value="Table 3 A" href="#"
-              >Table 3 A</a
-            >-->
+          <div id="tooltipdata" class="dropdown-content cursor-pointer">
+            <div class="dropdown tooltip-c-range" id="range"></div>
           </div>
         </div>
       </div>
@@ -52,6 +26,7 @@
   </div>
 </template>
 <script>
+/* global $ */
 import { mapGetters, mapState } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
@@ -59,7 +34,7 @@ export default {
   name: 'TableDraw',
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('dinein', ['tablesOnArea', 'orderOnTables']),
+    ...mapState('dinein', ['tablesOnArea', 'orderOnTables', 'tableStatus']),
     ...mapGetters('context', ['store']),
   },
   components: {
@@ -83,9 +58,15 @@ export default {
   },
   updated() {
     this.clearTableArea()
+    $('#range')
+      .parent('div')
+      .fadeOut()
     this.updateTableOnArea()
   },
   methods: {
+    baseURL(link) {
+      return window.location.href.replace('dine-in', link)
+    },
     clearTableArea() {
       d3.selectAll('#dine-in-area > g > *').remove()
     },
@@ -94,6 +75,7 @@ export default {
     },
     updateTableOnArea() {
       let dis = this
+      let svgWidth = []
       this.page = d3.select(this.$el).select('#dine-in-area')
       this.svg = d3
         .select(this.$el)
@@ -118,39 +100,136 @@ export default {
         .attr('table_shape', d => d.table_shape)
         .attr('table_number', d => d.number)
         .attr('chairs', d => d.chairs)
-        .attr('width', this.svgWidth)
+        .attr('width', function(d) {
+          // eslint-disable-next-line no-console
+          console.log(d)
+          let tableWidth = 90
+          if (d.table_shape === 'rectangle') {
+            tableWidth = d.chairs > 5 ? 220 : 120
+          } /*else if (d.table_shape === 'circle') {
+            tableWidth += 5
+          }*/
+          svgWidth.push(tableWidth)
+          return tableWidth
+        })
         .attr('height', this.svgHeight)
         .attr('xlink:href', function(d) {
           return `#dinein_${d.table_shape}_${d.chairs}`
         })
-        .on('click', (d, i, a) => this.showOptions(d))
+        .on('click', d => this.showOptions(d))
         .attr('fill', 'green')
-
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
+        let dineInTableWidth = 0
+        if (
+          typeof $('.dinein_table') != 'undefined' &&
+          $('.dinein_table').length
+        ) {
+          dineInTableWidth = $('.dinein_table')[i].getBoundingClientRect().width
+          // alert(dineInTableWidth)
+        }
         d3.select(a[i])
           .append('text')
           .attr('class', 'dinein_table_number')
           .attr('x', function(d) {
-            return (d.table_position_coordinate.x || 0) + dis.svgWidth / 2
+            let xPosition = svgWidth[i] <= 100 ? 5 : 0
+            if (d.table_shape === 'circle') {
+              xPosition += 5
+            }
+            return (
+              (d.table_position_coordinate.x + xPosition || 0) +
+              dineInTableWidth / 2
+            )
           })
           .attr('y', function(d) {
             return (d.table_position_coordinate.y || 0) + dis.svgHeight / 2
           })
           .style('fill', 'black')
-          .style('font-size', '15px')
+          .style('font-size', '18px')
+          .style('font-weight', 'bold')
           .attr('dy', '.35em')
           .attr('text-anchor', 'middle')
           .text(function(d) {
             return d.number
           })
+
+        d3.select(a[i])
+          .append('rect')
+          .attr('x', function(d) {
+            let rectleft = 10
+            if (d.table_shape === 'rectangle') {
+              rectleft += d.chairs > 5 ? 5 : 0
+            } else if (
+              d.table_shape === 'circle' ||
+              d.table_shape === 'square'
+            ) {
+              rectleft += 10
+            }
+            return (d.table_position_coordinate.x || 0) + rectleft
+          })
+          .attr('y', function(d) {
+            let rectTop = 5
+            if (d.table_shape === 'square') {
+              rectTop = 0
+            }
+            return (d.table_position_coordinate.y || 0) + rectTop + 50 / 2
+          })
+          .attr('rx', '20')
+          .attr('ry', '3')
+          .style('fill', function(d) {
+            let fillcolor = '#c84c4c'
+            dis.tableStatus.table.filter(ts => {
+              if (ts.id === d._id) {
+                fillcolor = ts.status
+              }
+            })
+            return fillcolor
+          })
+          .style('stroke', 'gray')
+          .style('opacity', '1')
+          .style('stroke-width', '0.5')
+          .attr('width', '15')
+          .attr('height', '15')
       })
     },
+    prepareTableOrder: function(datum, toolTipText) {
+      let i = 0
+      this.orderOnTables.filter(order => {
+        if (datum._id === order.tableId) {
+          order.orderIds.forEach(id => {
+            let url = this.baseURL(id)
+            toolTipText +=
+              '<a class="dropdown-item text-capitalize" href="' +
+              url +
+              '"> Table ' +
+              datum.number +
+              '&nbsp;' +
+              (i++ + 10).toString(36) +
+              '</a>'
+          })
+        }
+      })
+      return toolTipText
+    },
+
     showOptions(datum) {
-      this.tooltip.style('opacity', 1)
-      this.tooltip.select('#range').text(datum._id)
-      this.tooltip
-        .style('left', datum.table_position_coordinate.x + 'px')
-        .style('top', datum.table_position_coordinate.y + this.svgHeight + 'px')
+      let toolTipText = ''
+      toolTipText = this.prepareTableOrder(datum, toolTipText)
+      let range = $('#range')
+      if (toolTipText === '') {
+        range.parent('div').attr('style', 'display:none')
+      } else {
+        range
+          .parent('div')
+          .attr(
+            'style',
+            'top:' +
+              datum.table_position_coordinate.y +
+              'px; left:' +
+              datum.table_position_coordinate.x +
+              'px; display:block'
+          )
+        range.html(toolTipText)
+      }
     },
   },
 }
@@ -159,27 +238,16 @@ export default {
 svg#dine-in-area {
   background: #f8fbff;
 }
-.stroke-svg {
-  stroke: #d4dae5;
-  stroke-width: 1;
-}
-
-.tooltip-c {
-  position: absolute;
-  opacity: 0;
-  left: 0;
-  padding: 0.6em 1em;
-  background: lightgray;
-  text-align: center;
-  border: 1px solid #ddd;
-  box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
-  z-index: 20;
-  transition: all 0.2s ease-out;
-  pointer-events: none;
-}
-
 .tooltip-c-range {
   margin-bottom: 0;
   font-weight: 600;
+}
+.dropdown-content {
+  box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
+  transition: all 0.2s ease-out;
+  width: auto;
+}
+#tooltipdata {
+  display: none;
 }
 </style>

@@ -1,9 +1,11 @@
 <template>
   <div class="floor-section-wrap">
     <div class="floor-section">
-      <!--<ul class="ullist-floor" v-if="loading">
-        <li><a role="button" class="cursor-pointer">{{ _t('loading') }}</a></li>
-      </ul>-->
+      <ul class="ullist-floor" v-if="loading">
+        <li>
+          <a role="button" class="cursor-pointer">{{ _t('loading') }}</a>
+        </li>
+      </ul>
       <ul class="ullist-floor" v-if="areas">
         <li
           :class="{
@@ -14,11 +16,17 @@
           :key="index"
           @click="selectedArea(area)"
         >
-          <a role="button" class="cursor-pointer">{{ area.name }}</a>
+          <a role="button" class="cursor-pointer text-uppercase">
+            {{ area.name }}
+          </a>
         </li>
       </ul>
       <ul class="ullist-floor" v-else>
-        <li><a role="button" class="cursor-pointer">{{ _t('No area added for this store') }}</a></li>
+        <li>
+          <a role="button" class="cursor-pointer">{{
+            _t('No area added for this store')
+          }}</a>
+        </li>
       </ul>
     </div>
     <div class="search-dine-table">
@@ -32,7 +40,6 @@
   </div>
 </template>
 <script>
-
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Header',
@@ -41,7 +48,7 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
-    ...mapActions('dinein', ['selectedArea'])
-  }
+    ...mapActions('dinein', ['selectedArea']),
+  },
 }
 </script>
