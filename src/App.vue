@@ -80,6 +80,7 @@ export default {
       errored: false,
       progressIncrement: 0,
       orderId: null,
+      tableId: null,
     }
   },
   created() {
@@ -107,6 +108,10 @@ export default {
 
     if (this.$route.params.order_id) {
       this.orderId = this.$route.params.order_id
+    }
+    if (this.$route.params.table_id) {
+      this.tableId = this.$route.params.table_id
+      alert(this.tableId)
     }
   },
   watch: {

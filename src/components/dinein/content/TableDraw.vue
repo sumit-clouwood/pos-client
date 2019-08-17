@@ -68,7 +68,7 @@ export default {
       return window.location.href.replace('dine-in', link)
     },
     clearTableArea() {
-      d3.selectAll('#dine-in-area > g > *').remove()
+      d3.selectAll('#dine-in-area > *').remove()
     },
     orderTypeWalkIn: function(orderType) {
       this.$store.commit('order/ORDER_TYPE', orderType)
@@ -196,7 +196,7 @@ export default {
       this.orderOnTables.filter(order => {
         if (datum._id === order.tableId) {
           order.orderIds.forEach(id => {
-            let url = this.baseURL(id)
+            let url = this.baseURL(id + '/' + datum._id)
             toolTipText +=
               '<a class="dropdown-item text-capitalize" href="' +
               url +
@@ -223,9 +223,9 @@ export default {
           .attr(
             'style',
             'top:' +
-              datum.table_position_coordinate.y +
+              (datum.table_position_coordinate.y || 0) +
               'px; left:' +
-              datum.table_position_coordinate.x +
+              (datum.table_position_coordinate.x || 100) +
               'px; display:block'
           )
         range.html(toolTipText)
