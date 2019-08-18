@@ -221,6 +221,15 @@ const getters = {
     return itemPrice + item.tax + modifiersPrice + modifiersTax
   },
 
+  itemNetPrice: (state, getters) => item => {
+    const itemPrice = item.netPrice
+    //gross price is inclusive of tax but modifier price is not including tax
+    const modifiersPrice = getters.itemModifiersPrice(item)
+    //add modifier tax to modifier price to make it gross price
+    //const modifiersTax = getters.itemModifiersTax(item)
+    return itemPrice + modifiersPrice
+  },
+
   orderModifiers: () => item => {
     return item.modifiers.length
   },
@@ -692,7 +701,7 @@ const actions = {
     })
   },
 
-  recalculateItemPrices({ commit, rootState, dispatch }) {
+  recalculateItemPrices({ commit, rootState, getters, dispatch }) {
     commit('discount/SET_ORDER_ERROR', false, { root: true })
     return new Promise((resolve, reject) => {
       let discountErrors = {}
@@ -713,21 +722,21 @@ const actions = {
           }
 
           if (discount.discount.type === CONST.VALUE) {
-            if (discount.discount.value > item.netPrice * item.quantity) {
+            if (discount.discount.value > getters.itemNetPrice(item) * item.quantity) {
               //discount error
               discountErrors[item.orderIndex] = item
               item.discount = false
               item.discountRate = 0
             } else {
-              //discount should be applied after tax price
+              //discount should be appliedapplied after tax prix`ce
               item.discountRate =
-                (discount.discount.value / (item.grossPrice * item.quantity)) *
+                (discount.discount.value / (getters.itemNetPrice(item) * item.quantity)) *
                 100
               //now we got discount rate in percent, we can apply it on net price and tax
             }
           } else {
             //percentage discount can be applied only non free (> 0 priced) items
-            if (item.netPrice * item.quantity > 0) {
+            if (getters.itemNetPrice(item) * item.quantity > 0) {
               //percentage based discount, use discount.rate here, not discount.value
               //apply discount with modifier price
               item.discountRate = discount.discount.rate
