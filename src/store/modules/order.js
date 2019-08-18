@@ -114,10 +114,10 @@ const getters = {
 
     return Num.round(
       itemsTax -
-        itemTaxDiscount +
-        modifiersTax -
-        modifiersTaxDiscount +
-        surchargeTax
+      itemTaxDiscount +
+      modifiersTax -
+      modifiersTaxDiscount +
+      surchargeTax
     )
   },
   orderTotal: (state, getters, rootState, rootGetters) => {
@@ -136,9 +136,9 @@ const getters = {
   itemModifiersPrice: () => item =>
     item.modifiersData && item.modifiersData.length
       ? item.modifiersData.reduce(
-          (price, modifier) => price + modifier.price,
-          0
-        )
+        (price, modifier) => price + modifier.price,
+        0
+      )
       : 0,
 
   itemModifiersTax: () => item =>
@@ -172,15 +172,25 @@ const getters = {
     }
   },
 
-  itemNetDiscount: () => item => {
+  itemNetDiscount: (state, getters) => item => {
     if (item.discountRate) {
+      if (typeof item.discountType !== 'undefined' && item.discountType == 'fixed') {
+        return getters.itemNetPrice(item) * item.discountRate / 100
+      }
       return Num.round((item.netPrice * item.discountRate) / 100)
     } else {
       return 0
     }
   },
 
-  itemTaxDiscount: () => item => {
+  itemTaxDiscount: (state, getters) => item => {
+    if (typeof item.discountType !== 'undefined' && item.discountType == 'fixed') {
+      //send accumulative of modifiers + item tax discount, don't round
+      const modifiersTax = getters.itemModifiersTax(item)
+      const totalTaxDiscount = ((item.tax + modifiersTax) * item.discountRate) / 100
+      return totalTaxDiscount
+    }
+
     if (item.discountRate) {
       return Num.round((item.tax * item.discountRate) / 100)
     }
@@ -188,6 +198,10 @@ const getters = {
   },
 
   itemModifierDiscount: () => item => {
+    if (typeof item.discountType !== 'undefined' && item.discountType == 'fixed') {
+      return 0
+    }
+
     if (item.discountRate && item.modifiersData && item.modifiersData.length) {
       return item.modifiersData.reduce((discount, modifier) => {
         return discount + Num.round((modifier.price * item.discountRate) / 100)
@@ -198,6 +212,9 @@ const getters = {
 
   itemModifierTaxDiscount: () => item => {
     if (item.discountRate && item.modifiersData && item.modifiersData.length) {
+      if (typeof item.discountType !== 'undefined' && item.discountType == 'fixed') {
+        return 0
+      }
       return item.modifiersData.reduce((discount, modifier) => {
         return discount + Num.round((modifier.tax * item.discountRate) / 100)
       }, 0)
@@ -256,7 +273,7 @@ const getters = {
 
 // actions
 const actions = {
-  addToOrder({ state, getters, commit, dispatch }, stateItem) {
+  addToOrder ({ state, getters, commit, dispatch }, stateItem) {
     commit('checkoutForm/RESET', 'process', { root: true })
     let item = { ...stateItem }
     //item gross price is inclusive of tax
@@ -286,7 +303,7 @@ const actions = {
   },
 
   //this function re-adds an item to order if item is in edit mode, it just replaces exiting item in cart
-  addModifierOrder(
+  addModifierOrder (
     { commit, getters, rootState, dispatch, rootGetters },
     item
   ) {
@@ -497,7 +514,7 @@ const actions = {
     })
   },
 
-  removeFromOrder({ commit, dispatch }, { item, index }) {
+  removeFromOrder ({ commit, dispatch }, { item, index }) {
     commit('checkoutForm/RESET', 'process', { root: true })
     commit(mutation.SET_ITEM, item)
     commit(mutation.REMOVE_ORDER_ITEM, index)
@@ -518,7 +535,7 @@ const actions = {
     }
   },
 
-  removeTax({ commit, state, dispatch }) {
+  removeTax ({ commit, state, dispatch }) {
     let item = { ...state.item }
 
     item.tax = 0
@@ -535,10 +552,10 @@ const actions = {
     })
 
     //going to remove it sooner, used only for discount and surcharge calculation, plan to move it to getters
-    dispatch('recalculateItemPrices').then(() => {})
+    dispatch('recalculateItemPrices').then(() => { })
   },
   //index is the new index of an item in cart, if there were 3 items and 1 removed index ll be 0,1
-  setActiveItem({ commit, dispatch }, { orderItem }) {
+  setActiveItem ({ commit, dispatch }, { orderItem }) {
     //get current item
     //this is fired by the items.vue
     let stateItem = state.items.find(
@@ -563,7 +580,7 @@ const actions = {
     )
     // }
   },
-  recalculateOrderTotals({
+  recalculateOrderTotals ({
     rootState,
     getters,
     commit,
@@ -702,7 +719,7 @@ const actions = {
     })
   },
 
-  recalculateItemPrices({ commit, rootState, getters, dispatch }) {
+  recalculateItemPrices ({ commit, rootState, getters, dispatch }) {
     commit('discount/SET_ORDER_ERROR', false, { root: true })
     return new Promise((resolve, reject) => {
       let discountErrors = {}
@@ -729,10 +746,13 @@ const actions = {
               item.discount = false
               item.discountRate = 0
             } else {
-              //discount should be appliedapplied after tax prix`ce
-              item.discountRate =
-                (discount.discount.value / (getters.itemNetPrice(item) * item.quantity)) *
-                100
+              //discount should be appliedapplied after tax prixce
+              //Don't Round values below, these are strictly used
+              const itemNetPriceWithModifiers = getters.itemNetPrice(item)
+              const discountForOneItem = discount.discount.value / item.quantity
+              item.discountRate = discountForOneItem * 100 / itemNetPriceWithModifiers
+
+              item.discountType = 'fixed'
               //now we got discount rate in percent, we can apply it on net price and tax
             }
           } else {
@@ -778,13 +798,13 @@ const actions = {
     })
   },
 
-  updateQuantity({ commit, dispatch }, quantity) {
+  updateQuantity ({ commit, dispatch }, quantity) {
     const itemQuantity = quantity || 1
     commit(mutation.UPDATE_ITEM_QUANTITY, itemQuantity)
     dispatch('surchargeCalculation')
   },
 
-  surchargeCalculation({ rootState, dispatch }) {
+  surchargeCalculation ({ rootState, dispatch }) {
     dispatch('surcharge/calculate', {}, { root: true }).then(() => {
       if (rootState.discount.appliedOrderDiscount) {
         dispatch('recalculateOrderTotals')
@@ -794,14 +814,14 @@ const actions = {
     })
   },
 
-  reset({ commit }) {
+  reset ({ commit }) {
     commit(mutation.RESET)
   },
-  addOrderNote({ commit }, orderNote) {
+  addOrderNote ({ commit }, orderNote) {
     commit(mutation.SET_ORDER_NOTE, orderNote)
   },
 
-  setOnlineOrders({ commit, rootState }, onlineOrderData) {
+  setOnlineOrders ({ commit, rootState }, onlineOrderData) {
     // const params = [1, onlineOrderData.location_id]
     let orderDetail = ''
     // OrderService.fetchOnlineOrderDetails(...params).then(response => {
@@ -821,7 +841,7 @@ const actions = {
     })
   },*/
 
-  deliveryOrder({ commit, dispatch }, { referral, futureOrder }) {
+  deliveryOrder ({ commit, dispatch }, { referral, futureOrder }) {
     return new Promise((resolve, reject) => {
       commit(mutation.ORDER_TYPE, { OTview: 'Delivery', OTApi: 'call_center' })
       commit(mutation.SET_REFERRAL, referral)
@@ -834,12 +854,12 @@ const actions = {
     })
   },
 
-  updateOrderType({ commit, dispatch }, orderType) {
+  updateOrderType ({ commit, dispatch }, orderType) {
     commit(mutation.ORDER_TYPE, orderType)
     dispatch('surchargeCalculation')
   },
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
-  addOrderToCart({ rootState, commit, dispatch }, order) {
+  addOrderToCart ({ rootState, commit, dispatch }, order) {
     return new Promise(resolve => {
       dispatch('reset')
       commit(mutation.SET_ORDER_ID, order._id)
@@ -875,20 +895,20 @@ const actions = {
     })
   },
 
-  addHoldOrder({ dispatch, commit }, order) {
+  addHoldOrder ({ dispatch, commit }, order) {
     dispatch('addOrderToCart', order).then(() => {
       commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_ON_HOLD)
     })
   },
 
-  addDeliveryOrder({ dispatch, commit }, orderData) {
+  addDeliveryOrder ({ dispatch, commit }, orderData) {
     dispatch('addOrderToCart', orderData.item).then(() => {
       commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_DELIVERY)
       commit(mutation.ORDER_TYPE, { OTview: 'Delivery', OTApi: 'call_center' })
     })
   },
 
-  selectedOrderDetails({ commit }, orderId) {
+  selectedOrderDetails ({ commit }, orderId) {
     return new Promise((resolve, reject) => {
       const params = ['orders', orderId, '']
       OrderService.getGlobalDetails(...params)
@@ -912,7 +932,7 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  removeOrder({ dispatch }, { order, orderType }) {
+  removeOrder ({ dispatch }, { order, orderType }) {
     let actionTrigger = orderType
     if (actionTrigger) {
       actionTrigger = 'delete_' + actionTrigger
@@ -922,7 +942,7 @@ const actions = {
     dispatch('updateOrderAction', { order, orderType, actionTrigger })
   },
 
-  updateOrderAction({ dispatch }, { order, orderType, actionTrigger }) {
+  updateOrderAction ({ dispatch }, { order, orderType, actionTrigger }) {
     if (actionTrigger === 'addToDriverBucket') {
       dispatch('deliveryManager/addOrderToDriverBucket', order, {
         root: true,
@@ -949,7 +969,7 @@ const actions = {
       )
     }
   },
-  updateOrderCancelAction(
+  updateOrderCancelAction (
     { dispatch, commit },
     { order, orderType, actionTrigger, params }
   ) {
@@ -971,7 +991,7 @@ const actions = {
   },
 }
 
-function playSound(locationId, onlineOrders) {
+function playSound (locationId, onlineOrders) {
   let nopromise = {
     catch: new Function(),
   }
@@ -984,13 +1004,13 @@ function playSound(locationId, onlineOrders) {
     if (onlineOrders.orders && onlineOrders.orders.length) {
       onlineNewOrderAudioRing.addEventListener(
         'ended',
-        function() {
+        function () {
           this.currentTime = 0
-          ;(this.play() || nopromise).catch(function() {})
+            ; (this.play() || nopromise).catch(function () { })
         },
         false
       )
-      ;(onlineNewOrderAudioRing.play() || nopromise).catch(function() {})
+        ; (onlineNewOrderAudioRing.play() || nopromise).catch(function () { })
     } else {
       onlineNewOrderAudioRing.pause()
       onlineNewOrderAudioRing.currentTime = 0
@@ -1000,23 +1020,23 @@ function playSound(locationId, onlineOrders) {
 
 // mutations
 const mutations = {
-  [mutation.SET_ITEM](state, item) {
+  [mutation.SET_ITEM] (state, item) {
     state.item = item
   },
-  [mutation.SET_ERRORS](state, item) {
+  [mutation.SET_ERRORS] (state, item) {
     state.errors = item
   },
 
-  [mutation.ADD_ORDER_ITEM](state, item) {
+  [mutation.ADD_ORDER_ITEM] (state, item) {
     item.modifiers = []
     state.items.push(item)
   },
 
-  [mutation.ADD_ORDER_ITEM_WITH_MODIFIERS](state, item) {
+  [mutation.ADD_ORDER_ITEM_WITH_MODIFIERS] (state, item) {
     state.items.push(item)
   },
 
-  [mutation.INCREMENT_ORDER_ITEM_QUANTITY](state, index) {
+  [mutation.INCREMENT_ORDER_ITEM_QUANTITY] (state, index) {
     //need to use array splice to make it reactive
     state.items = state.items.map(item => {
       if (item.orderIndex == index) {
@@ -1026,13 +1046,13 @@ const mutations = {
     })
   },
 
-  [mutation.REMOVE_ORDER_ITEM](state, index) {
-    state.items = state.items.filter(function(orderItem, key) {
+  [mutation.REMOVE_ORDER_ITEM] (state, index) {
+    state.items = state.items.filter(function (orderItem, key) {
       return key != index
     })
   },
 
-  [mutation.REPLACE_ORDER_ITEM](state, { item }) {
+  [mutation.REPLACE_ORDER_ITEM] (state, { item }) {
     state.items = state.items.map(stateItem => {
       if (stateItem.orderIndex == item.orderIndex) {
         return item
@@ -1041,28 +1061,28 @@ const mutations = {
     })
   },
 
-  [mutation.ADD_MODIFIERS_TO_ITEM](state, { modifiers, modifierGroups }) {
+  [mutation.ADD_MODIFIERS_TO_ITEM] (state, { modifiers, modifierGroups }) {
     state.item.modifiers = modifiers
     state.item.modifierGroups = modifierGroups
   },
 
-  [mutation.ADD_MODIFIERS_DATA_TO_ITEM](state, modifiers) {
+  [mutation.ADD_MODIFIERS_DATA_TO_ITEM] (state, modifiers) {
     state.item.modifiersData = modifiers
   },
 
-  [mutation.SET_ITEM_TAX](state, tax) {
+  [mutation.SET_ITEM_TAX] (state, tax) {
     state.item.tax = tax
   },
 
-  [mutation.RE_SAVE_ITEMS](state, items) {
+  [mutation.RE_SAVE_ITEMS] (state, items) {
     state.items = items
   },
 
-  [mutation.SET_QUANTITY](state, qty) {
+  [mutation.SET_QUANTITY] (state, qty) {
     state.item.quantity = qty
   },
 
-  [mutation.UPDATE_ITEM_QUANTITY](state, quantity) {
+  [mutation.UPDATE_ITEM_QUANTITY] (state, quantity) {
     const index = state.item.orderIndex
     state.item.quantity = quantity
 
@@ -1074,45 +1094,45 @@ const mutations = {
     })
   },
 
-  [mutation.RESET](state) {
+  [mutation.RESET] (state) {
     state.items = []
     state.item = false
     state.orderStatus = null
     state.orderId = null
     state.orderNote = null
   },
-  [mutation.SET_ORDER_NOTE](state, orderNote) {
+  [mutation.SET_ORDER_NOTE] (state, orderNote) {
     state.orderNote = orderNote
   },
-  [mutation.ORDER_TYPE](state, orderType) {
+  [mutation.ORDER_TYPE] (state, orderType) {
     // state.orderType = orderType.charAt(0).toUpperCase() + orderType.slice(1)
     state.orderType = orderType
   },
-  [mutation.SET_REFERRAL](state, referral) {
+  [mutation.SET_REFERRAL] (state, referral) {
     state.referral = referral
   },
-  [mutation.SET_FUTURE_ORDER](state, futureOrder) {
+  [mutation.SET_FUTURE_ORDER] (state, futureOrder) {
     state.futureOrder = futureOrder
   },
-  [mutation.SET_ORDER_ID](state, id) {
+  [mutation.SET_ORDER_ID] (state, id) {
     state.orderId = id
   },
-  [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId, orderDetails }) {
+  [mutation.ONLINE_ORDERS] (state, { onlineOrders, locationId, orderDetails }) {
     localStorage.setItem('onlineOrders', JSON.stringify(orderDetails))
     state.onlineOrders = orderDetails
     playSound(locationId, onlineOrders)
   },
-  [mutation.SET_ORDER_DETAILS](state, selectedOrderDetails) {
+  [mutation.SET_ORDER_DETAILS] (state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails
   },
-  [mutation.SET_CANCELLATION_REASON](state, cancelationReason) {
+  [mutation.SET_CANCELLATION_REASON] (state, cancelationReason) {
     state.cancellationReason = cancelationReason
   },
-  [mutation.ORDER_STATUS](state, status) {
+  [mutation.ORDER_STATUS] (state, status) {
     state.orderStatus = status
   },
 
-  [mutation.SET_CART_TYPE](state, cartType) {
+  [mutation.SET_CART_TYPE] (state, cartType) {
     state.cartType = cartType
   },
 }
