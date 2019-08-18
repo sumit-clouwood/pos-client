@@ -66,7 +66,7 @@ const getters = {
 
 // actions
 const actions = {
-  pay(
+  pay (
     { commit, getters, rootGetters, rootState, dispatch, state },
     { action }
   ) {
@@ -90,8 +90,8 @@ const actions = {
           commit(
             'checkoutForm/SET_ERROR',
             'Please add pending amount of ' +
-              pendingAmount +
-              ' before proceeding further.',
+            pendingAmount +
+            ' before proceeding further.',
             { root: true }
           )
         } else {
@@ -240,15 +240,33 @@ const actions = {
           //item discount as total of both discounts
 
           if (item.discount) {
+
+            let itemDiscountedTax = Num.round(rootGetters['order/itemTaxDiscount'](item))
+
+            if (typeof item.discountType !== 'undefined' && item.discountType == 'fixed') {
+              //don't round here
+              itemDiscountedTax = (rootGetters['order/itemTaxDiscount'](item))
+            }
+
+            const modifiersDiscountedTax = Num.round(rootGetters['order/itemModifierTaxDiscount'](item))
+
             let itemDiscount = item.discount
             itemDiscount.itemId = item._id
             itemDiscount.itemNo = item.orderIndex
             itemDiscount.quantity = item.quantity
             //undiscountedTax is without modifiers
-            itemDiscount.tax = Num.round(
-              Num.round(rootGetters['order/itemTaxDiscount'](item)) +
-                Num.round(rootGetters['order/itemModifierTaxDiscount'](item))
-            )
+            if (typeof item.discountType !== 'undefined' && item.discountType == 'fixed') {
+              //donot round
+              itemDiscount.tax = (
+                itemDiscountedTax +
+                modifiersDiscountedTax
+              )
+            } else {
+              itemDiscount.tax = Num.round(
+                itemDiscountedTax +
+                modifiersDiscountedTax
+              )
+            }
             itemDiscount.price =
               rootGetters['order/itemNetDiscount'](item) +
               rootGetters['order/itemModifierDiscount'](item)
@@ -353,7 +371,7 @@ const actions = {
           )
         } else if (
           rootState.order.orderType.OTApi ===
-            CONSTANTS.ORDER_TYPE_CALL_CENTER ||
+          CONSTANTS.ORDER_TYPE_CALL_CENTER ||
           action === CONSTANTS.ORDER_STATUS_ON_HOLD
         ) {
           if (rootState.customer.address) {
@@ -440,7 +458,7 @@ const actions = {
     })
   },
 
-  createOrder({ state, commit, rootState, rootGetters, dispatch }, action) {
+  createOrder ({ state, commit, rootState, rootGetters, dispatch }, action) {
     commit(
       'checkoutForm/SET_MSG',
       { message: '', result: 'loading' },
@@ -610,10 +628,10 @@ const actions = {
         })
     })
   },
-  generateInvoice() {
+  generateInvoice () {
     //commit(mutation.PRINT, true)
   },
-  reset({ commit, dispatch }) {
+  reset ({ commit, dispatch }) {
     commit(mutation.RESET)
     dispatch('checkoutForm/reset', {}, { root: true })
     dispatch('order/reset', {}, { root: true })
@@ -623,7 +641,7 @@ const actions = {
     dispatch('location/reset', {}, { root: true })
   },
 
-  updateOrderStatus(
+  updateOrderStatus (
     { rootState, dispatch },
     { orderStatus, orderId, timestamp, orderType }
   ) {
@@ -637,7 +655,7 @@ const actions = {
         staff_id: rootState.auth.userDetails._id,
       },
     ]
-    OrderService.updateOrder(...params).then(() => {})
+    OrderService.updateOrder(...params).then(() => { })
     dispatch('deliveryManager/fetchOrderCount', null, { root: true })
     /*commit(mutation.SET_ORDER, order)
     dispatch('createOrder')*/
@@ -646,28 +664,28 @@ const actions = {
 
 // mutations
 const mutations = {
-  [mutation.SET_ORDER](state, order) {
+  [mutation.SET_ORDER] (state, order) {
     state.order = order
   },
-  [mutation.SET_PAID_AMOUNT](state, amount) {
+  [mutation.SET_PAID_AMOUNT] (state, amount) {
     state.paidAmount = amount
   },
-  [mutation.SET_PAYABLE_AMOUNT](state, amount) {
+  [mutation.SET_PAYABLE_AMOUNT] (state, amount) {
     state.payableAmount = amount
   },
-  [mutation.SET_PENDING_AMOUNT](state, amount) {
+  [mutation.SET_PENDING_AMOUNT] (state, amount) {
     state.pendingAmount = amount
   },
-  [mutation.SET_CHANGED_AMOUNT](state, amount) {
+  [mutation.SET_CHANGED_AMOUNT] (state, amount) {
     state.changedAmount = amount
   },
-  [mutation.PRINT](state, flag) {
+  [mutation.PRINT] (state, flag) {
     state.print = flag
   },
-  [mutation.SET_ORDER_NUMBER](state, orderNumber) {
+  [mutation.SET_ORDER_NUMBER] (state, orderNumber) {
     state.orderNumber = orderNumber
   },
-  [mutation.RESET](state) {
+  [mutation.RESET] (state) {
     state.order = false
     state.paidAmount = 0
     state.payableAmount = 0
