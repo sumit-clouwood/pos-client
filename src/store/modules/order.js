@@ -684,6 +684,7 @@ const actions = {
               (subtotal * orderDiscount.rate) / 100
             )
             //const subtotalWithDiscount = subtotal - orderTotalDiscount
+            totalTax = getters.totalItemsTax
             taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
             surchargeTotalDiscount = 0
             const discountData = {
