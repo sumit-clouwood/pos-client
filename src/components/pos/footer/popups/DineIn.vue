@@ -13,16 +13,17 @@
         <div class="modal-body dining-options-block">
           <div class="dining-option-block">
             <div
+              class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'dine_in' }"
               @click="setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })"
-              class="option-contain"
             >
-              <img src="img/pos/dine-in.svg" />
-              <span class="color-text-invert">
-                {{ _t('Dine In') }}
-              </span>
+              <img src="img/pos/dine-in.svg" /><span
+                class="color-text-invert"
+                >{{ _t('Dine In') }}</span
+              >
             </div>
             <div
+              class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'takeaway' }"
               @click="
                 setOrderType({
@@ -30,19 +31,19 @@
                   OTApi: 'takeaway',
                 })
               "
-              class="option-contain"
             >
-              <img src="img/pos/take-away.svg" />
-              <span class="color-text-invert">
+              <img src="img/pos/take-away.svg" /><span
+                class="color-text-invert"
+              >
                 {{ _t('Take Away') }}
               </span>
             </div>
             <div
+              class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'call_center' }"
               @click="
                 setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
               "
-              class="option-contain"
             >
               <img src="img/pos/delivery-icon.svg" /><span
                 class="color-text-invert"
@@ -51,18 +52,18 @@
               </span>
             </div>
             <div
+              class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'event' }"
               @click="setOrderType({ OTview: 'Event', OTApi: 'event' })"
-              class="option-contain"
             >
               <img src="img/pos/event.svg" /><span class="color-text-invert">{{
                 _t('Event')
               }}</span>
             </div>
             <div
+              class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'walk_in' }"
               @click="setOrderType({ OTview: 'Walk In', OTApi: 'walk_in' })"
-              class="option-contain"
             >
               <img src="img/pos/walkin.svg" width="35" /><span
                 class="color-text-invert"
@@ -74,11 +75,11 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
-              @click="updateOrderType()"
               class="btn btn-success btn-large color-main color-text-invert"
+              type="button"
               data-dismiss="modal"
               id="dining-opt"
-              type="button"
+              @click="updateOrderType()"
             >
               {{ _t('Ok') }}
             </button>
@@ -156,17 +157,27 @@ export default {
   #dining-option {
     .modal-dialog {
       margin: 0;
+      transform: none;
+      animation: none;
+      transition: none;
+      max-width: none;
 
       .modal-content {
         display: grid;
         grid-template-rows: max-content 1fr max-content;
+
         .modal-header {
           height: 80px;
           background-color: #fff;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          border: none;
+          padding: 20px;
         }
 
         .modal-body {
+          padding: 20px;
           overflow-y: auto;
+
           .dining-option-block {
             .option-contain {
               position: relative;
@@ -190,8 +201,9 @@ export default {
         }
 
         .modal-footer {
-          padding-top: 20px;
-          box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+          padding: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
           .btn-announce {
             button {
               background-color: $green-middle;

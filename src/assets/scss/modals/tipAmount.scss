@@ -77,16 +77,25 @@
     right: 0;
     bottom: 0;
     left: 0;
+    max-height: 100vh;
 
     .modal-dialog {
       margin: 0;
       width: 100vw;
       max-width: none;
       transform: none !important;
+      max-height: 100vh;
+      height: 100vh;
+      display: grid;
 
       .modal-content {
+
         border-radius: 0;
-        top: auto;
+        display: grid;
+        grid-template-rows: max-content max-content;
+        //margin-bottom: 100px;
+        position: static;
+        margin-top: auto;
 
         .modal-body {
 
@@ -113,6 +122,9 @@
         }
 
         .modal-footer {
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+
           .btn-announce {
             #add-top {
 

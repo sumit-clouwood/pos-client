@@ -1,5 +1,12 @@
 #display-order .slick-dots {
-  bottom: 0.625rem; }
+  bottom: 0.625rem;
+  position: static;
+  display: grid !important;
+  grid-template-columns: max-content max-content max-content;
+  justify-content: center;
+  margin-bottom: 20px;
+  grid-column-start: 1;
+  grid-column-end: 4; }
 #display-order .modal-dialog {
   max-width: 75rem; }
   #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap {
@@ -121,6 +128,13 @@
           text-align: left;
           font-size: 0.875rem;
           cursor: pointer; }
+          #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .location-delivery-area-address .order-location.active {
+            border: 2px solid #64C434; }
+            #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .location-delivery-area-address .order-location.active:after {
+              background-color: #64C434;
+              border: 2px solid #64C434 !important;
+              top: -1px;
+              right: -1px; }
           #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .location-delivery-area-address .order-location > p span {
             font-weight: bold; }
           #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .location-delivery-area-address .order-location > span {
@@ -434,7 +448,8 @@ div#display-order {
   display: flex;
   align-items: center; }
   .ullist-business-slider > li {
-    display: inline-block;
+    display: inline-grid;
+    justify-content: center;
     font-size: 0.625rem;
     font-weight: 600;
     font-style: normal;
@@ -445,7 +460,9 @@ div#display-order {
     text-align: left;
     width: 7.8125rem;
     padding: 0 0.625rem;
-    white-space: normal; }
+    white-space: normal;
+    text-align: center;
+    grid-gap: 5px; }
     .ullist-business-slider > li > span {
       display: block;
       font-size: 1.25rem;

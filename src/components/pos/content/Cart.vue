@@ -105,6 +105,8 @@ export default {
       padding: 20px;
       font-weight: 600;
       font-size: 18px;
+      z-index: 2;
+      background-color: #fff;
 
       .fa {
         font-size: 22px;
@@ -115,6 +117,8 @@ export default {
     .main-orders-contacts {
       margin: 0;
       padding: 0 20px 20px 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 1;
 
       .main-oreders-title {
         font-size: 16px;
@@ -162,12 +166,15 @@ export default {
       padding: 0 20px;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 1;
 
       .total-wrapper {
         border-bottom: 1px solid $gray-middle;
         padding: 10px 0 10px 0;
         transition: 0.5s ease-out;
-        margin-bottom: -140.5px;
+        margin-bottom: -167.5px;
+        word-break: break-all;
 
         &.active {
           margin-bottom: -10px;
@@ -176,8 +183,11 @@ export default {
         .item {
           padding: 5px 0;
           border-bottom: 1px solid #eee;
+
           .sub-total-text {
             font-size: 14px;
+            overflow: hidden;
+            max-width: 200px;
           }
 
           .sub-total-num {
@@ -216,6 +226,11 @@ export default {
     }
 
     .mobile-footer {
+      background-color: #fff;
+      z-index: 10;
+      padding-top: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
       .btn-next {
         display: none;
       }

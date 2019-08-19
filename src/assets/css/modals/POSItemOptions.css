@@ -89,8 +89,8 @@
       .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_type {
         position: relative; }
         .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_type .POSItemOptions_typehead {
-          color: #3D3F43;
-          font-size: 0.75rem;
+          color: #222;
+          font-size: 12px;
           font-weight: normal;
           letter-spacing: 0.43px;
           margin: 0;

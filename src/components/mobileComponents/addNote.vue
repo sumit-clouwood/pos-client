@@ -1,6 +1,6 @@
 <template>
   <div :class="['add-note', { active: addNoteHendler }]">
-    <add-note />
+    <add-note v-if="false" />
   </div>
 </template>
 
@@ -24,8 +24,37 @@ export default {
 @import '../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
-  #add-note {
-    display: none !important;
+  .add-note {
+    /*background-color: rgba(0, 0, 0, 0.3);*/
+
+    #add-note {
+      display: none !important;
+      background-color: transparent;
+
+      .modal-dialog {
+        background-color: transparent;
+
+        .modal-content {
+          background-color: transparent;
+
+          .modal-body {
+            .add-note-area {
+              textarea {
+                outline: none;
+                padding: 10px 10px;
+              }
+            }
+          }
+          .modal-footer {
+            .btn-announce {
+              button {
+                height: 50px;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 

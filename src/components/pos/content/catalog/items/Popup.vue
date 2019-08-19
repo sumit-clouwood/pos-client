@@ -67,6 +67,8 @@ export default {
         .modal-details {
           padding: 0 25px;
           border: none;
+          z-index: 1;
+          background-color: #fff;
 
           .POSItemOptions_pricequantity {
             .POSItemOptions_price {
@@ -81,7 +83,7 @@ export default {
               right: 0;
               left: 0;
               padding: 20px;
-              box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+              box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
               width: 100%;
               height: 75px;
               background-color: #fff;
@@ -96,7 +98,7 @@ export default {
 
         .modal-body {
           margin: 0;
-          border-top: 1px solid #ccc;
+          /*border-top: 1px solid #ccc;*/
           max-height: none;
           order: 4;
           margin-bottom: 75px;
@@ -117,7 +119,7 @@ export default {
             }
 
             .POSItemOptions_choose {
-              margin-top: 20px;
+              margin-top: 10px;
               display: grid;
               grid-template-columns: 1fr 1fr;
               grid-gap: 20px;
@@ -134,6 +136,7 @@ export default {
                   display: flex;
                   align-items: center;
                   position: relative;
+                  flex-wrap: wrap;
 
                   &.active {
                     border: 2px solid $green-middle;
@@ -159,10 +162,6 @@ export default {
 
                       &[type='checkbox'] {
                         &:checked + span {
-                          background-color: $green-middle;
-                        }
-
-                        &:checked .POSItemOptions_choose_label {
                           background-color: $green-middle;
                         }
                       }
@@ -198,6 +197,7 @@ export default {
         .modal-footer {
           grid-row-start: auto !important;
           grid-row-end: auto !important;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
           .buttoned {
             width: auto;
@@ -222,6 +222,7 @@ export default {
               padding: 0 10px !important;
               height: 30px;
               box-shadow: none !important;
+              height: 35px;
             }
           }
         }

@@ -23,7 +23,10 @@
         >
           <a
             class="nav-link-nav color-text-invert"
-            :class="{ active: currentCategory === item._id }"
+            :class="[
+              { active: currentCategory === item._id },
+              item.category_image ? '' : 'activebg',
+            ]"
             :style="{
               background: item.category_image == '' ? item.category_color : '',
             }"
@@ -84,7 +87,7 @@
 </template>
 
 <script>
-/* global  $, menuShowMore*/
+/* global  $ */
 import bootstrap from '@/bootstrap'
 import btnBack from '../mobileComponents/mobileElements/btnBack'
 
@@ -92,6 +95,12 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Menu',
+  data() {
+    return {
+      topHeight: 0,
+      counter: 0,
+    }
+  },
   components: {
     btnBack,
   },
@@ -117,7 +126,32 @@ export default {
       this.$store.dispatch('category/browse', item)
     },
     showMore() {
-      menuShowMore()
+      // menuShowMore()
+      let navigationListY =
+        document.querySelector('.navigation-list').getBoundingClientRect().top +
+        document.querySelector('.navigation-list').getBoundingClientRect()
+          .height
+      let navigationListWrapperY =
+        document
+          .querySelector('.navigation-list-wrapper')
+          .getBoundingClientRect().top +
+        document
+          .querySelector('.navigation-list-wrapper')
+          .getBoundingClientRect().height
+      if (
+        this.counter <= this.categories.length &&
+        navigationListY + 5 >= navigationListWrapperY
+      ) {
+        this.topHeight += document.querySelector('.nav-item').offsetHeight
+        this.topHeight += 10
+        this.counter++
+      } else {
+        this.topHeight = 0
+        this.counter = 0
+      }
+      document.querySelector('.navigation-list').style.top = `-${
+        this.topHeight
+      }px`
     },
     ...mapActions('category', ['browse']),
     subCategoryHendlerChange() {
@@ -230,11 +264,11 @@ export default {
           .nav-link-nav {
             color: #333;
             width: auto;
-            height: 65px;
+            height: 80px;
             flex-direction: row;
             justify-content: flex-start;
             border-bottom: 1px solid $gray-middle;
-            padding: 0 20px 0 0px;
+            padding: 0 20px 0 10px;
             display: grid;
             grid-template-columns: min-content 1fr;
             background-color: #fff !important;
@@ -253,7 +287,7 @@ export default {
               width: 64px;
               height: 64px;
               margin-bottom: 0;
-              border-radius: 0;
+              border-radius: 2px;
               margin: 0;
             }
 

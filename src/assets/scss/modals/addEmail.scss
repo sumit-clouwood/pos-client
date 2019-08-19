@@ -1,4 +1,5 @@
 @import "../variables.scss";
+
 #add-email {
   .modal-dialog {
     max-width: $px400;
@@ -42,8 +43,14 @@
         }
 
         .modal-footer {
-          .btn-announce {
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          padding: 20px;
 
+          .btn-announce {
+            #add-email-btn {
+              background-color: $green-middle;
+              border: none;
+            }
           }
         }
       }
