@@ -10,6 +10,7 @@ export default {
     if (userdata) {
       msg.form_data.user = userdata
     }
+
     try {
       if ('serviceWorker' in navigator && 'SyncManager' in window) {
         navigator.serviceWorker.controller.postMessage(msg)
@@ -19,6 +20,7 @@ export default {
     } catch (e) {
       console.log("Couldn't send msg to service worker in dev", e, msg)
     }
+    delete data.user
     return DataService.post('/model/orders/add', data)
   },
 
