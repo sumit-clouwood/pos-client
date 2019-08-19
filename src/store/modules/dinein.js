@@ -1,11 +1,11 @@
 import * as mutation from './dinein/mutation-types'
 import DineInService from '@/services/data/DineInService'
-import LookupData from '@/plugins/helpers/LookupData'
+// import LookupData from '@/plugins/helpers/LookupData'
 import * as CONST from '@/constants'
 
 const state = {
   orders: false,
-  dineInOrderDetails: {},
+  dineInTableDetails: {},
   completedOrderDetails: {},
   areas: false,
   tables: false,
@@ -73,55 +73,46 @@ const actions = {
       availableSoonCount: 0,
       table: [],
     }
-    /*unavailable: ,
-      available_soon: { count: 0, table: [] },
-      available: { count: 0, table: [] },
-    }*/
     let orderOnTable = []
 
     state.tablesOnArea.forEach(table => {
-      let orderIds = []
-      state.orders.filter(function(order) {
-        if (order.table_id === table._id) {
-          orderIds.push(order.order_id)
-        }
-      })
-      let tableDetails = { id: table._id, number: table.number, status: '' }
-      orderOnTable.push({ tableId: table._id, orderIds: orderIds })
-      commit(mutation.ORDER_ON_TABLES, orderOnTable)
-      if (orderIds.length) {
-        orderIds.forEach(id => {
-          let order = LookupData.get({
-            collection: state.dineInOrderDetails,
-            matchWith: id,
-            selection: false,
-          })
+      let orders = []
+      let tableDetails = { id: table._id, number: table.number, status: {} }
+      orders = state.orders.filter(
+        order => order.assigned_table_id === table._id
+      )
+      if (orders.length) {
+        orders.forEach(order => {
           if (
-            order.order_status == CONST.ORDER_STATUS_ON_HOLD ||
-            order.order_status == CONST.ORDER_STATUS_IN_PROGRESS
+            order.status === CONST.ORDER_STATUS_RESERVED ||
+            order.status === CONST.ORDER_STATUS_IN_PROGRESS
           ) {
             tableStatus.unavailableCount += 1
-            tableDetails.status = '#c84c4c'
+            tableDetails.status.color = '#c84c4c'
+            tableDetails.status.text = 'unavailable'
             tableStatus.table.push(tableDetails)
-          } else {
+          } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
             tableStatus.availableSoonCount += 1
-            tableDetails.status = '#faa03c'
+            tableDetails.status.color = '#faa03c'
+            tableDetails.status.text = 'available_soon'
             tableStatus.table.push(tableDetails)
           }
+          orderOnTable.push({
+            tableId: table._id,
+            orderIds: order.related_orders_ids,
+          })
         })
       } else {
         tableStatus.availableCount =
           parseInt(state.tablesOnArea.length) -
-          parseInt(
-            tableStatus.unavailableCount + tableStatus.availableSoonCount
-          )
-        tableDetails.status = '#62bb31'
+          parseInt(tableStatus.unavailableCount) +
+          parseInt(tableStatus.availableSoonCount)
+        tableDetails.status.color = '#62bb31'
+        tableDetails.status.text = 'available'
         tableStatus.table.push(tableDetails)
       }
+      commit(mutation.ORDER_ON_TABLES, orderOnTable)
     })
-    /*tableStatus.available.table.id = [
-      ...new Set(tableStatus.available.table.id),
-    ]*/
     commit(mutation.TABLE_STATUS, tableStatus)
   },
 }
@@ -130,8 +121,7 @@ const mutations = {
   [mutation.DINE_IN_AREAS](state, areas) {
     state.areas = areas.data
     if (areas.count > 0) {
-      let selectedArea = state.areas.filter(area => area.priority === 1)
-      state.activeArea = selectedArea[0]
+      state.activeArea = state.areas[0]
       state.tablesOnArea = false
       state.tablesOnArea =
         state.tables.length > 0
@@ -143,13 +133,13 @@ const mutations = {
     state.tables = tables.data
   },
   [mutation.DINE_IN_ORDERS](state, orders) {
-    state.dineInOrderDetails = orders.page_lookups.orders._id
+    state.dineInTableDetails = orders.page_lookups.dine_in_tables._id
     /*let order = LookupData.get({
       collection: orders.page_lookups.orders._id,
       matchWith: id,
       selection: false,
     })
-    state.completedOrderDetails = order.order_status.*/
+    state.completedOrderDetails = order.status.*/
     state.orders = orders.data
   },
   [mutation.SELECTED_AREA](state, activeArea) {

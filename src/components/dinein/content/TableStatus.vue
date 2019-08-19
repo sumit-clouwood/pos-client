@@ -2,9 +2,6 @@
   <div class="dinein-table-control">
     <div class="dinein-seat-available">
       <ul class="ullist-dinein-table" v-if="tableStatus">
-        {{
-          tableStatus
-        }}
         <li id="unavailable-seat">
           <span>{{ tableStatus.unavailableCount }}</span
           >Unavailable

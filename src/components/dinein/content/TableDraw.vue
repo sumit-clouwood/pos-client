@@ -179,7 +179,7 @@ export default {
             let fillcolor = '#c84c4c'
             dis.tableStatus.table.filter(ts => {
               if (ts.id === d._id) {
-                fillcolor = ts.status
+                fillcolor = ts.status.color
               }
             })
             return fillcolor

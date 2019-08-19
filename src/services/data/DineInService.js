@@ -2,7 +2,7 @@ import DataService from '@/services/DataService'
 
 export default {
   dineInOrders() {
-    return DataService.get(`/model/dine_in_orders`)
+    return DataService.get(`/model/reservations`)
   },
 
   dineAreas() {

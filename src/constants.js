@@ -44,6 +44,8 @@ export const MODULE_FUTURE_ORDERS = 'Future Orders'
 /* order related constants */
 
 export const ORDER_STATUS_ON_HOLD = 'on-hold'
+export const ORDER_STATUS_RESERVED = 'reserved'
+export const ORDER_STATUS_ON_WAY = 'on-a-way'
 export const ORDER_STATUS_IN_DELIVERY = 'in-delivery'
 export const ORDER_STATUS_IN_PROGRESS = 'in-progress'
 export const ORDER_TYPE_CALL_CENTER = 'call_center'
