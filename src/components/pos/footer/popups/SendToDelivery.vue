@@ -85,7 +85,7 @@ export default {
   #order-confirmation {
     .modal-dialog {
       margin: 0;
-                width: auto !important;
+      width: auto !important;
 
       .modal-content {
         .order-header {
@@ -95,8 +95,8 @@ export default {
           min-height: 80px;
           border-bottom: 1px solid $gray-middle;
           align-items: flex-start;
-                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                        border: none;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          border: none;
 
           h4 {
             text-align: left;
@@ -116,18 +116,18 @@ export default {
               width: auto;
               display: grid;
               grid-template-columns: 1fr 1fr;
-                                grid-gap: 10px;
+              grid-gap: 10px;
               justify-content: space-between;
 
               tr {
                 display: grid;
-                                    border: 1px solid #eee;
-                                    border-radius: 3px;
-                                    padding: 0 10px;
+                border: 1px solid #eee;
+                border-radius: 3px;
+                padding: 0 10px;
 
-                                    &:first-child {
-                                        display: none;
-                                    }
+                &:first-child {
+                  display: none;
+                }
 
                 th,
                 td {
@@ -144,9 +144,9 @@ export default {
                 td {
                   box-sizing: content-box;
 
-                                        &:last-child {
-                                            border-bottom: none !important;
-                                        }
+                  &:last-child {
+                    border-bottom: none !important;
+                  }
 
                   &:nth-child(1) {
                     box-sizing: border-box;
@@ -185,8 +185,8 @@ export default {
           width: 100vw;
           grid-gap: 10px;
           padding: 20px;
-                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                        border: none;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          border: none;
 
           .referal {
             display: grid;

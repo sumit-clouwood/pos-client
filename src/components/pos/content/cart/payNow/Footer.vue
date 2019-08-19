@@ -1,149 +1,148 @@
 <template>
-    <div class="payment-screen-footer" id="payment-screen-footer">
-        <div
-                class="footer-wrap color-secondary"
-                id="add-tip-amt"
-                data-toggle="modal"
-                data-target="#tip-amount"
-        >
-            <img src="img/pos/tip.png" alt="payment-method"/><span
-                class="color-text-invert"
-        >
+  <div class="payment-screen-footer" id="payment-screen-footer">
+    <div
+      class="footer-wrap color-secondary"
+      id="add-tip-amt"
+      data-toggle="modal"
+      data-target="#tip-amount"
+    >
+      <img src="img/pos/tip.png" alt="payment-method" /><span
+        class="color-text-invert"
+      >
         {{ _t('Tip Amount') }}
       </span>
-        </div>
-        <div class="footer-wrap color-secondary">
-            <img src="img/pos/gift-receipt.png" alt="payment-method"/><span
-                class="color-text-invert"
+    </div>
+    <div class="footer-wrap color-secondary">
+      <img src="img/pos/gift-receipt.png" alt="payment-method" /><span
+        class="color-text-invert"
         >{{ _t('Gift Receipt') }}</span
-        >
-        </div>
-        <div
-                class="footer-wrap color-secondary"
-                data-toggle="modal"
-                data-target="#add-email"
-        >
-            <img src="img/pos/email.png" alt="payment-method"/><span
-                class="color-text-invert"
-        >
+      >
+    </div>
+    <div
+      class="footer-wrap color-secondary"
+      data-toggle="modal"
+      data-target="#add-email"
+    >
+      <img src="img/pos/email.png" alt="payment-method" /><span
+        class="color-text-invert"
+      >
         {{ _t('Email') }}
       </span>
-        </div>
+    </div>
 
-        <div class="footer-wrap color-secondary" @click="pay" id="submitOrder">
-            <img src="img/pos/done.png" alt="payment-method"/><span
-                class="color-text-invert"
-        >
+    <div class="footer-wrap color-secondary" @click="pay" id="submitOrder">
+      <img src="img/pos/done.png" alt="payment-method" /><span
+        class="color-text-invert"
+      >
         {{ _t('Done') }}
       </span>
-        </div>
     </div>
+  </div>
 </template>
 
 <script>
-    /* global $ showModal showPaymentBreak */
-    import {mapGetters, mapState} from 'vuex'
-    import * as CONST from '@/constants'
+/* global $ showModal showPaymentBreak */
+import { mapGetters, mapState } from 'vuex'
+import * as CONST from '@/constants'
 
-    export default {
-        name: 'PayNowFooter',
-        computed: {
-            ...mapState('checkout', ['changedAmount']),
-            ...mapState('checkoutForm', ['msg', 'error', 'method']),
-            ...mapGetters('checkoutForm', ['validate']),
-            ...mapGetters('location', ['_t']),
-        },
+export default {
+  name: 'PayNowFooter',
+  computed: {
+    ...mapState('checkout', ['changedAmount']),
+    ...mapState('checkoutForm', ['msg', 'error', 'method']),
+    ...mapGetters('checkoutForm', ['validate']),
+    ...mapGetters('location', ['_t']),
+  },
 
-        mounted() {
-            $('#payment-msg').modal({
-                backdrop: 'static',
-                keyboard: false,
-                show: false,
+  mounted() {
+    $('#payment-msg').modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: false,
+    })
+  },
+  methods: {
+    addAmount() {
+      return new Promise((resolve, reject) => {
+        if (this.$store.getters['checkoutForm/validate']) {
+          return resolve(0)
+        }
+        if (this.$store.getters['checkoutForm/payable'] <= 0.1) {
+          return resolve(0)
+        }
+
+        this.$store
+          .dispatch('checkoutForm/validatePayment')
+          .then(() => {
+            if (this.method.type == CONST.GIFT_CARD) {
+              showModal('#Gift-card-payemnt')
+              reject()
+            } else if (this.method.type == CONST.LOYALTY) {
+              //show loyalty popup if needed
+              reject()
+            } else if (this.method.reference_code) {
+              showModal('#card-payemnt')
+              reject()
+            } else {
+              //cash payments
+              this.$store.dispatch('checkoutForm/addAmount').then(payable => {
+                resolve(payable)
+              })
+            }
+          })
+          .catch(() => reject())
+      })
+    },
+    pay() {
+      this.addAmount().then(payable => {
+        if (payable <= 0.1) {
+          $('#payment-screen-footer').prop('disabled', true)
+          this.$store.commit('checkoutForm/setAction', 'pay')
+          $('#payment-msg').modal('show')
+          this.$store
+            .dispatch('checkout/pay', this.$store.state.order.orderType.OTApi)
+            .then(() => {
+              if (this.changedAmount >= 0.1) {
+                $('#payment-msg').modal('hide')
+                $('#change-amount').modal('show')
+              } else if (this.msg) {
+                $('#payment-msg').modal('show')
+              }
+              setTimeout(function() {
+                $('#payment-screen-footer').prop('disabled', false)
+              }, 1000)
             })
-        },
-        methods: {
-            addAmount() {
-                return new Promise((resolve, reject) => {
-                    if (this.$store.getters['checkoutForm/validate']) {
-                        return resolve(0)
-                    }
-                    if (this.$store.getters['checkoutForm/payable'] <= 0.1) {
-                        return resolve(0)
-                    }
-
-                    this.$store
-                        .dispatch('checkoutForm/validatePayment')
-                        .then(() => {
-                            if (this.method.type == CONST.GIFT_CARD) {
-                                showModal('#Gift-card-payemnt')
-                                reject()
-                            } else if (this.method.type == CONST.LOYALTY) {
-                                //show loyalty popup if needed
-                                reject()
-                            } else if (this.method.reference_code) {
-                                showModal('#card-payemnt')
-                                reject()
-                            } else {
-                                //cash payments
-                                this.$store.dispatch('checkoutForm/addAmount').then(payable => {
-                                    resolve(payable)
-                                })
-                            }
-                        })
-                        .catch(() => reject())
-                })
-            },
-            pay() {
-                this.addAmount().then(payable => {
-                    if (payable <= 0.1) {
-                        $('#payment-screen-footer').prop('disabled', true)
-                        this.$store.commit('checkoutForm/setAction', 'pay')
-                        $('#payment-msg').modal('show')
-                        this.$store
-                            .dispatch('checkout/pay', this.$store.state.order.orderType.OTApi)
-                            .then(() => {
-                                if (this.changedAmount >= 0.1) {
-                                    $('#payment-msg').modal('hide')
-                                    $('#change-amount').modal('show')
-                                } else if (this.msg) {
-                                    $('#payment-msg').modal('show')
-                                }
-                                setTimeout(function () {
-                                    $('#payment-screen-footer').prop('disabled', false)
-                                }, 1000)
-                            })
-                            .catch(() => {
-                                setTimeout(() => {
-                                    $('#payment-msg').modal('hide')
-                                    $('#payment-screen-footer').prop('disabled', false)
-                                }, 500)
-                            })
-                    } else {
-                        //show payment breakdown
-                        showPaymentBreak()
-                    }
-                })
-                this.$store.dispatch('successfullHendlerGhange')
-                this.$store.dispatch('payNowCalcHendlerGhange')
-                this.$store.dispatch('paymentMethodsHendlerGhange')
-                this.$store.dispatch('mainOrdersHendlerGhange')
-            },
-        },
-    }
+            .catch(() => {
+              setTimeout(() => {
+                $('#payment-msg').modal('hide')
+                $('#payment-screen-footer').prop('disabled', false)
+              }, 500)
+            })
+        } else {
+          //show payment breakdown
+          showPaymentBreak()
+        }
+      })
+      this.$store.dispatch('successfullHendlerGhange')
+      this.$store.dispatch('payNowCalcHendlerGhange')
+      this.$store.dispatch('paymentMethodsHendlerGhange')
+      this.$store.dispatch('mainOrdersHendlerGhange')
+    },
+  },
+}
 </script>
 <style lang="sass" scoped>
-    .payment-screen-footer
-        min-width: 518px
+.payment-screen-footer
+    min-width: 518px
 </style>
 <style lang="scss">
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
 
-    @import '../../../../../assets/scss/pixels_rem.scss';
-    @import '../../../../../assets/scss/variables.scss';
-    @import '../../../../../assets/scss/mixins.scss';
-
-    @include responsive(mobile) {
-        .payment-screen-footer {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-    }
+@include responsive(mobile) {
+  .payment-screen-footer {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+}
 </style>

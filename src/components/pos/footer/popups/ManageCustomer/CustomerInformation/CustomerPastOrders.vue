@@ -68,7 +68,6 @@
           </td>
           <!--<td>Tecom</td>-->
           <td class="show-details-his color-tables-background color-text">
-
             <span
               class="color-icon-table-neutral-button color-text-invert"
               data-toggle="modal"

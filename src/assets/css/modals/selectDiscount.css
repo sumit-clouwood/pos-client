@@ -116,7 +116,8 @@ a:hover {
     border-left: 1px solid #ddd; }
     #select-discount .modal-dialog .modal-content .modal-header {
       border-radius: 0;
-      padding: 10px 20px; }
+      padding: 10px 20px;
+      min-height: 80px; }
     #select-discount .modal-dialog .modal-content .modal-body {
       overflow: auto;
       padding: 20px;
@@ -146,6 +147,9 @@ a:hover {
     #select-discount .modal-dialog .modal-content .modal-footer {
       box-shadow: 0 0 10px #ccc;
       z-index: 2;
-      padding: 10px 20px 20px; } }
+      padding: 10px 20px 20px; }
+      #select-discount .modal-dialog .modal-content .modal-footer .btn-announce #discount-save-btn {
+        background-color: #64C434;
+        border: none; } }
 
 /*# sourceMappingURL=selectDiscount.css.map */

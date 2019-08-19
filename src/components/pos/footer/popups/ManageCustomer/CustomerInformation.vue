@@ -129,9 +129,9 @@ div#display-order .modal-dialog {
       margin: 0;
       width: 100vw;
       max-width: none !important;
-                transform: none;
-                animation: none;
-                transition: none;
+      transform: none;
+      animation: none;
+      transition: none;
 
       .modal-content {
         overflow: auto;

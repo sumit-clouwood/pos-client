@@ -192,8 +192,8 @@ export default {
 
     .food-menu-item {
       width: 100%;
-                height: 80px;
-                padding: 0 10px;
+      height: 80px;
+      padding: 0 10px;
       margin: 0;
       display: grid;
       align-items: center;
@@ -229,7 +229,7 @@ export default {
       img {
         width: 65px;
         height: 65px;
-                    border-radius: 2px;
+        border-radius: 2px;
       }
 
       .food-menu-item-text {

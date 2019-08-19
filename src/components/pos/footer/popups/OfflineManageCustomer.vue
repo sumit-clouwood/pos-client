@@ -168,8 +168,8 @@ export default {
             border-radius: 0;
             border-left: none;
             border-right: none;
-                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    border-bottom: none;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-bottom: none;
           }
 
           .manage-customer-table {
@@ -247,7 +247,7 @@ export default {
         .modal-footer {
           width: 100vw;
           padding-top: 20px;
-                        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
           z-index: 10;
           .pagination-customer-details {
             display: none;
