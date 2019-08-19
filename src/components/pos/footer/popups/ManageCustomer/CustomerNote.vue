@@ -79,12 +79,20 @@ export default {
         .modal-header {
           height: 80px;
           background-color: #fff;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        border: none;
         }
 
         .modal-body {
+                        .add-note-area {
+                            textarea {
+                                padding: 10px;
+                            }
+                        }
         }
 
         .modal-footer {
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
       }
     }

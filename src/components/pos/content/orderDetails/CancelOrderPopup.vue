@@ -144,6 +144,10 @@ export default {
 </script>
 
 <style lang="scss">
+    @import '../../../../assets/scss/pixels_rem.scss';
+    @import '../../../../assets/scss/variables.scss';
+    @import '../../../../assets/scss/mixins.scss';
+
 #cancellationReason {
   .modal-dialog {
     margin: 0;
@@ -158,6 +162,29 @@ export default {
       }
 
       .modal-footer {
+
+                }
+            }
+        }
+    }
+
+    @include responsive(mobile) {
+        #cancellationReason {
+            .modal-dialog {
+                .modal-content {
+                    .modal-header {
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        border: none;
+                    }
+
+                    .modal-body {
+
+                    }
+
+                    .modal-footer {
+                        padding: 20px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    }
       }
     }
   }

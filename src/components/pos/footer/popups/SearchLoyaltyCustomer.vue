@@ -1,6 +1,6 @@
 <template>
   <!-- Add Note -->
-  <div class="modal fade" id="search-loyalty-customer" role="dialog">
+    <div class="modal fade" id="search-loyalty-customer" role="dialog" @click.self="loyaltyHendlerGhange">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
@@ -205,6 +205,7 @@ export default {
   z-index: 1;
   margin-top: 3px;
   max-height: 200px;
+
 }
 
 .dropdown-content span {
@@ -236,31 +237,51 @@ export default {
 @import '../../../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
+        .loyalty{
+            background-color: transparent !important;
+            border: none !important;
+        }
   #search-loyalty-customer {
+            border: none;
     .modal-dialog {
+                border: none;
       .modal-content {
+                    border: none;
+                    /*top: auto;*/
         .modal-header {
           height: 80px;
           background-color: #fff;
           display: grid !important;
           align-items: center;
+                        padding: 20px;
+                        border: none;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .modal-body {
+                        display: grid;
+                        grid-template-rows: max-content max-content max-content 1fr max-content;
+                        padding-bottom: 0;
+
+                        .add-note-area {
+                            height: 50px;
+
           .inputSearch {
-            margin-left: -20px;
-            margin-right: -20px;
-            width: 100vw !important;
-            border: none;
-            border-bottom: 1px solid $gray-middle;
-            border-top: 1px solid $gray-middle;
+                                /*width: 100vw !important;*/
             border-radius: 0;
-            margin-top: 20px;
+                                /*margin-top: 20px;*/
             outline: none;
+                                margin-bottom: 0;
           }
         }
 
+
+                    }
+
         .modal-footer {
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        padding: 20px;
+
           .cursor-pointer {
             background-color: $green-middle;
             height: 100%;

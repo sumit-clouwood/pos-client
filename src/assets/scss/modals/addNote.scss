@@ -1,4 +1,5 @@
 @import "../variables.scss";
+
 #add-note {
   .modal-dialog {
     width: $px560;
@@ -59,7 +60,8 @@
     }
   }
 }
-.loyalty-search{
+
+.loyalty-search {
   display: grid;
   grid-template-columns: 4fr 1fr;
 }
@@ -72,6 +74,16 @@
     right: 0;
     bottom: 0;
     left: 0;
+    height: 100vh;
+    max-height: 100vh;
+    &.show{
+      .modal-dialog{
+        max-width: none;
+        .modal-content{
+          margin-bottom: 0;
+        }
+      }
+    }
 
     .modal-dialog {
       position: absolute;
@@ -81,15 +93,24 @@
       margin: 0;
       width: auto;
       min-height: auto;
+      overflow-y: hidden;
+      animation: none;
+        transform: none;
 
       .modal-content {
         top: auto;
+        margin-bottom: -362px;
+        animation: none;
+        transform: none;
+        transition: 0.3s ease-out;
+        position: static;
 
         .modal-header {
           border-radius: 0;
           padding: 10px 20px;
           background-color: #fff;
-          border-bottom: none;
+          min-height: 80px;
+          //border-bottom: none;
 
           .customer-title {
             font-size: 16px;
@@ -126,7 +147,8 @@
             button {
               margin: 0;
               flex-grow: 1;
-              &#save-note{
+
+              &#save-note {
                 border-color: $green-middle;
                 background-color: $green-middle;
               }

@@ -217,6 +217,9 @@
       .sub-total-num {
         font-size: $px20;
         font-weight: 700;
+        .fa{
+          display: none;
+        }
       }
     }
   }
