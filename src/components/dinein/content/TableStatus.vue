@@ -26,16 +26,16 @@
         <button class="qtyplus value-qty">+</button>
       </div>
       <div class="round-dinein-circle">
-        <span id="dine-top">
+        <span id="dine-top" @click="moveTable('-=50', 'top')">
           <img src="img/dinein/chairs/dine-top.svg" />
         </span>
-        <span id="dine-left">
+        <span id="dine-left" @click="moveTable('-=50', 'left')">
           <img src="img/dinein/chairs/dine-left.svg" />
         </span>
-        <span id="dine-right">
+        <span id="dine-right" @click="moveTable('+=50', 'right')">
           <img src="img/dinein/chairs/dine-right.svg" />
         </span>
-        <span id="dine-bottom">
+        <span id="dine-bottom" @click="moveTable('+=50', 'bottom')">
           <img src="img/dinein/chairs/dine-bottom.svg" />
         </span>
         <div class="inner-round">
@@ -48,11 +48,16 @@
 
 <script>
 import { mapState } from 'vuex'
-
+/* global moveTables */
 export default {
   name: 'TableStatus',
   computed: {
     ...mapState('dinein', ['tableStatus']),
+  },
+  methods: {
+    moveTable(px, movingSide) {
+      moveTables(px, movingSide)
+    },
   },
 }
 </script>

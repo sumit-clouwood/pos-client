@@ -6,6 +6,21 @@ function closeModal(modalName) {
   $('#transparent-screen').css('display', 'none')
   $(modalName).modal('hide')
 }
+function moveTables(mvPx, movingSide) {
+  let sdt = $('#sitting-dinein-table')
+  if (movingSide === 'top') {
+    sdt.animate({ top: mvPx })
+  }
+  if (movingSide === 'left') {
+    sdt.animate({ left: mvPx })
+  }
+  if (movingSide === 'bottom') {
+    sdt.animate({ bottom: mvPx })
+  }
+  if (movingSide === 'right') {
+    sdt.animate({ right: mvPx })
+  }
+}
 $('*').click(function(e) {
   // if(e.target.id != 'menu') {
   $('#searchDropdown').hide()
