@@ -78,6 +78,7 @@
     max-height: 100vh;
     &.show{
       .modal-dialog{
+        max-width: none;
         .modal-content{
           margin-bottom: 0;
         }

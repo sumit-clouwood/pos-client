@@ -166,6 +166,8 @@
                             border-radius: 0;
                             border-left: none;
                             border-right: none;
+                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-bottom: none;
                         }
 
                         .manage-customer-table {

@@ -160,6 +160,7 @@
                 transform: none;
                 animation: none;
                 transition: none;
+                max-width: none;
 
                 .modal-content {
                     display: grid;

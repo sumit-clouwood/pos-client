@@ -117,7 +117,7 @@
                                 &.active {
                                     border: 2px solid $green-middle;
                                     &:after{
-                                        border: 2px solid $green-middle;
+                                        border: 2px solid $green-middle !important;
                                     }
                                 }
 

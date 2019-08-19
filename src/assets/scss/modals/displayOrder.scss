@@ -3,6 +3,13 @@
 #display-order {
   .slick-dots {
     bottom: $px10;
+    position: static;
+    display: grid !important;
+    grid-template-columns: max-content max-content max-content;
+    justify-content: center;
+    margin-bottom: 20px;
+    grid-column-start: 1;
+    grid-column-end: 4;
   }
 
   .modal-dialog {
@@ -177,6 +184,15 @@
                 text-align: left;
                 font-size: $px14;
                 cursor: pointer;
+                &.active{
+                  border: 2px solid $green-middle;
+                  &:after{
+                    background-color: $green-middle;
+                    border: 2px solid $green-middle !important;
+                    top: -1px;
+                    right: -1px;
+                  }
+                }
 
                 > p {
                   span {
@@ -615,7 +631,8 @@ div#display-order {
   align-items: center;
 
   > li {
-    display: inline-block;
+    display: inline-grid;
+    justify-content: center;
     font-size: $px10;
     font-weight: 600;
     font-style: normal;
@@ -627,6 +644,8 @@ div#display-order {
     width: $px125;
     padding: 0 $px10;
     white-space: normal;
+    text-align: center;
+    grid-gap: 5px;
 
     > span {
       display: block;
