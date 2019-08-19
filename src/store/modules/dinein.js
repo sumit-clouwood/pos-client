@@ -1,6 +1,5 @@
 import * as mutation from './dinein/mutation-types'
 import DineInService from '@/services/data/DineInService'
-// import LookupData from '@/plugins/helpers/LookupData'
 import * as CONST from '@/constants'
 
 const state = {
