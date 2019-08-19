@@ -373,14 +373,15 @@ function sendToServer() {
 
                 //check if delivery order
                 if (payload.order_type == 'call_center' && !payload.customer) {
-                  console.log('no customer was selected so need to create a customer')
+                  console.log(
+                    'no customer was selected so need to create a customer'
+                  )
                   var customerPayload = payload.user
                   //payload.user is always available either its online or offline
                   console.log('sw:', 'delivery order')
                   //create customer uses fetch which returns promise
                   console.log('sw:', 'creating customer')
 
-                  
                   delete customerPayload.city
                   delete customerPayload.country
 
