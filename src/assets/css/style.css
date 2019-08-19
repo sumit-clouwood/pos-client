@@ -3743,9 +3743,7 @@ body {
   grid-template-rows: 5.3125rem 1fr 3.75rem 7.3125rem;
   width: 4.6875rem;
   -webkit-transition: .3s ease-out;
-  transition: .3s ease-out;
-  position: relative;
-  z-index: 99999; }
+  transition: .3s ease-out; }
   .dm-manager .navigation.collapse-menu {
     width: 12.5rem; }
   .dm-manager .navigation .logo {
