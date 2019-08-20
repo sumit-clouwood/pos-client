@@ -4,11 +4,7 @@
       <TableStatus />
       <div class="sitting-dinein-table ui-droppable" id="sitting-dinein-table">
         <div class="sitting-dine-wrap disable-sorting" v-if="tablesOnArea">
-          <div
-            class="sitting-image"
-            @click="orderTypeWalkIn({ OTview: 'Dine In', OTApi: 'dine_in' })"
-            :data-target="store"
-          >
+          <div class="sitting-image">
             <svg
               :height="height + 'px'"
               :width="width + 'px'"
@@ -46,15 +42,12 @@ export default {
       svg: null,
       width: 960,
       height: 600,
-      tooltip: null,
       svgWidth: 250,
       svgHeight: 100,
     }
   },
   mounted() {
     this.updateTableOnArea()
-    // this.page = d3.select(this.$el).select('#dine-in-area')
-    this.tooltip = d3.select(this.$el).select('#tooltip-c')
   },
   updated() {
     this.clearTableArea()
@@ -64,17 +57,15 @@ export default {
     this.updateTableOnArea()
   },
   methods: {
-    // ...mapActions('dinein', ['addReservation']),
     baseURL(link) {
       return window.location.href.replace('dine-in', 'dine-in/' + link)
-      // return window.location.href(link)
     },
     clearTableArea() {
       d3.selectAll('#dine-in-area > *').remove()
     },
-    orderTypeWalkIn: function(orderType) {
+    /*orderTypeWalkIn: function(orderType) {
       this.$store.commit('order/ORDER_TYPE', orderType)
-    },
+    },*/
     updateTableOnArea() {
       let dis = this
       let svgWidth = []

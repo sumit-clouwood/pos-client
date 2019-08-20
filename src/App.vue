@@ -103,7 +103,13 @@ export default {
           if (this.$route.params.table_id) {
             this.tableId = this.$route.params.table_id
             if (this.$route.params.order_id) {
-              alert(this.order_id + 'oid')
+              this.$store.dispatch(
+                'dinein/getSelectedOrder',
+                this.$route.params.order_id,
+                {
+                  root: true,
+                }
+              )
             } else {
               this.$store.dispatch('dinein/addReservation', this.tableId, {
                 root: true,

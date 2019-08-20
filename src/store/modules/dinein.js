@@ -15,6 +15,7 @@ const state = {
   orderOnTables: {},
   availableTables: {},
   reservation: {},
+  orderType: { OTview: 'Dine In', OTApi: 'dine_in' },
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -129,7 +130,7 @@ const actions = {
     commit(mutation.AVAILABLE_TABLES, availableTables)
   },
 
-  addReservation({ commit }, tableId) {
+  addReservation({ commit, state }, tableId) {
     const params = [
       {
         start_date: moment().format('YYYY-MM-DD'),
@@ -141,6 +142,17 @@ const actions = {
     ]
     DineInService.reservationOperation(...params, 'add').then(response => {
       commit(mutation.RESERVATION_RESPONSE, response.data)
+      commit('order/ORDER_TYPE', state.orderType, { root: true })
+    })
+  },
+  getSelectedOrder({ dispatch, commit, state, rootState }, orderId) {
+    dispatch('order/selectedOrderDetails', orderId, {
+      root: true,
+    }).then(() => {
+      commit('order/ORDER_TYPE', state.orderType, { root: true })
+      return dispatch('order/addDeliveryOrder', rootState.order.selectedOrder, {
+        root: true,
+      })
     })
   },
 }
