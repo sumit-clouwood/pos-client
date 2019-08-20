@@ -99,6 +99,7 @@ export default {
     // ...mapActions('category', ['collectSearchItems']),
     searchHendlerChange() {
       this.$store.dispatch('searchHendlerChange')
+      this.$store.dispatch('CloseCategoryAndSubCategory')
     },
     allCategoryHendlerChange() {
       this.$store.dispatch('allCategoryHendlerChange')
