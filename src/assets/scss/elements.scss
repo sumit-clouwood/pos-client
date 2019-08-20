@@ -36,13 +36,19 @@ html {
   }
 }
 
+html {
+  height: 100vh;
+}
+
 body {
+  height: 100vh;
   margin: 0;
   padding: 0;
   height: 100vh;
   overflow: hidden;
   color: #444;
   background-color: #fafafa;
+  position: relative;
 
   .new-pos {
     .hideBigScreen {
@@ -353,9 +359,38 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @include responsive(mobile) {
+  html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden
+  }
+  .modal-header {
+    padding: 20px !important;
+  }
+  .modal-details {
+    padding: 0 20px !important;
+  }
   .modal {
+    position: absolute !important;
+    height: 100% !important;
+    overflow-y: hidden !important;
+    border: none !important;
 
     .modal-dialog {
+      min-height: 100% !important;
+      height: 100% !important;
+      overflow-y: hidden !important;
+      border: none !important;
+
+      .modal-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        min-height: 100% !important;
+        height: 100%;
+        overflow-y: hidden !important;
+        border: none !important;
+      }
+
       .preloader {
         position: fixed;
         top: 0;
@@ -378,6 +413,7 @@ h1, h2, h3, h4, h5, h6 {
 
       .modal-content {
         .modal-header {
+          padding: 20px;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
           .customer-title {

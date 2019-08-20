@@ -175,6 +175,7 @@
 
         .mobile-search {
             border-top: 1px solid #e3e7f2;
+            border-bottom: 1px solid #e3e7f2;
             padding: 10px 0;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             z-index: 1;

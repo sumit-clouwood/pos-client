@@ -67,6 +67,7 @@
                 transform: none;
 
                 .modal-content {
+                    grid-template-rows: max-content 1fr max-content;
                     .modal-header {
                         display: none;
                     }
