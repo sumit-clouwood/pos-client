@@ -4488,7 +4488,7 @@ body {
   -ms-flex-direction: column;
   flex-direction: column; }
 
-div#reservation-orders-show .rinning-order-title {
+div#reservation-orders-show .rinning-order-title, #waiting-dinein-show .rinning-order-title {
   padding: 2.8125rem; }
 
 .dinein-footer-icon {

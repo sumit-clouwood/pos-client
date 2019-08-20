@@ -100,6 +100,16 @@ export default {
             brand: this.$store.getters['context/brand'],
             store: this.$store.getters['context/store'],
           })
+          if (this.$route.params.table_id) {
+            this.tableId = this.$route.params.table_id
+            if (this.$route.params.order_id) {
+              alert(this.order_id + 'oid')
+            } else {
+              this.$store.dispatch('dinein/addReservation', this.tableId, {
+                root: true,
+              })
+            }
+          }
         } else if (!this.$store.state.context.storeId) {
           this.errored = 'Please provide brand id and store id in url'
         }
@@ -108,10 +118,6 @@ export default {
 
     if (this.$route.params.order_id) {
       this.orderId = this.$route.params.order_id
-    }
-    if (this.$route.params.table_id) {
-      this.tableId = this.$route.params.table_id
-      alert(this.tableId)
     }
   },
   watch: {

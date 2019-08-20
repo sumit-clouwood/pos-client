@@ -9,6 +9,7 @@
       <TableDraw />
     </div>
     <RunningOrders />
+    <Waiting />
     <Reservation />
     <CompletedOrders />
   </div>
@@ -17,6 +18,7 @@
 <script>
 import RunningOrders from './content/RunningOrders'
 import Reservation from './content/Reservation'
+import Waiting from './content/Waiting'
 import CompletedOrders from './content/CompletedOrders'
 import TableDraw from './content/TableDraw'
 import Header from './content/Header'
@@ -33,6 +35,7 @@ export default {
     Reservation,
     CompletedOrders,
     TableDraw,
+    Waiting,
   },
 }
 </script>

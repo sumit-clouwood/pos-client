@@ -1,6 +1,7 @@
 import * as mutation from './dinein/mutation-types'
 import DineInService from '@/services/data/DineInService'
 import * as CONST from '@/constants'
+import moment from 'moment-timezone'
 
 const state = {
   orders: { running: false, completed: false },
@@ -13,6 +14,7 @@ const state = {
   tableStatus: {},
   orderOnTables: {},
   availableTables: {},
+  reservation: {},
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -102,6 +104,7 @@ const actions = {
           orderOnTable.push({
             tableId: table._id,
             orderIds: order.related_orders_ids,
+            tableNumber: order.number,
           })
         })
       } else {
@@ -124,6 +127,21 @@ const actions = {
         ? state.tables.filter(table => table.area_id === state.activeArea._id)
         : false
     commit(mutation.AVAILABLE_TABLES, availableTables)
+  },
+
+  addReservation({ commit }, tableId) {
+    const params = [
+      {
+        start_date: moment().format('YYYY-MM-DD'),
+        start_time: moment().format('hh:mm'),
+        assigned_table_id: tableId,
+        number_of_guests: 1,
+        customers: [],
+      },
+    ]
+    DineInService.reservationOperation(...params, 'add').then(response => {
+      commit(mutation.RESERVATION_RESPONSE, response.data)
+    })
   },
 }
 
@@ -164,6 +182,11 @@ const mutations = {
   },
   [mutation.TABLE_STATUS](state, tableStatus) {
     state.tableStatus = tableStatus
+  },
+  [mutation.RESERVATION_RESPONSE](state, reservation) {
+    // eslint-disable-next-line no-console
+    console.log(reservation)
+    state.reservation = reservation.id
   },
 }
 

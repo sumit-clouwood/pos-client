@@ -19,17 +19,23 @@ const router = new Router({
       component: DeliveryManagerInit,
     },
     {
+      //view dine in
       path: '/:brand_id/:store_id/dine-in',
       name: 'Dinein',
       component: DineIn,
     },
     {
-      path: '/:brand_id/:store_id/:order_id',
+      path: '/:brand_id/:store_id/dine-in/:table_id/:order_id',
       name: 'Home',
       component: Home,
     },
     {
-      path: '/:brand_id/:store_id/:table_id/:order_id',
+      path: '/:brand_id/:store_id/dine-in/:table_id/',
+      name: 'Home',
+      component: Home,
+    },
+    {
+      path: '/:brand_id/:store_id/:order_id',
       name: 'Home',
       component: Home,
     },

@@ -64,8 +64,9 @@ export default {
     this.updateTableOnArea()
   },
   methods: {
+    // ...mapActions('dinein', ['addReservation']),
     baseURL(link) {
-      return window.location.href.replace('dine-in', link)
+      return window.location.href.replace('dine-in', 'dine-in/' + link)
       // return window.location.href(link)
     },
     clearTableArea() {
@@ -192,14 +193,11 @@ export default {
       })
     },
     prepareTableOrder: function(datum, toolTipText) {
-      let i = 0
       let url = this.baseURL(datum._id)
       toolTipText =
         '<a class="dropdown-item text-capitalize bg-success font-weight-bold" href="' +
         url +
-        '">Add Order</a>'
-      // eslint-disable-next-line no-console
-      console.log(this.orderOnTables)
+        '"> + Add Order</a>'
       this.orderOnTables.filter(order => {
         if (datum._id === order.tableId) {
           order.orderIds.forEach(id => {
@@ -207,29 +205,11 @@ export default {
             toolTipText +=
               '<a class="dropdown-item text-capitalize" href="' +
               url +
-              '"> Table ' +
-              datum.number +
-              '&nbsp;' +
-              (i++ + 10).toString(36) +
+              '">' +
+              order.tableNumber +
+              // (i++ + 10).toString(36) +
               '</a>'
           })
-        } else {
-          // url = this.baseURL(datum._id)
-          /*if (
-            typeof $('.dinein_table') != 'undefined' &&
-            $('.dinein_table').length
-          ) {
-            $('.dinein_table').each(function() {
-              if ($(this).attr('table_id') == datum._id) {
-                alert($(this).attr('table_id'))
-                $(this).attr('data-target', url)
-              }
-            })
-          }*/
-          /*toolTipText =
-            '<a class="dropdown-item text-capitalize" href="' +
-            url +
-            '">Create New</a>'*/
         }
       })
       return toolTipText
@@ -273,5 +253,9 @@ svg#dine-in-area {
 }
 #tooltipdata {
   display: none;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px 0 rgba(187, 187, 187, 0.5);
+  background-color: #f8fbff;
 }
 </style>

@@ -12,7 +12,15 @@
         data-related="all-tables-show"
         class="tables-btn-style active"
       >
-        All Tables
+        {{ _t('All Tables') }}
+      </button>
+      <button
+        type=""
+        id="waiting-dinein"
+        data-related="waiting-dinein-show"
+        class="tables-btn-style"
+      >
+        {{ _t('Waiting') }}
       </button>
       <button
         type=""
@@ -20,7 +28,7 @@
         data-related="reservation-orders-show"
         class="tables-btn-style"
       >
-        Reservation
+        {{ _t('Reservation') }}
       </button>
       <button
         type=""
@@ -28,7 +36,7 @@
         data-related="running-orders-show"
         class="tables-btn-style"
       >
-        Running Orders
+        {{ _t('Running Orders') }}
       </button>
       <button
         type=""
@@ -36,7 +44,7 @@
         data-related="completed-orders-show"
         class="tables-btn-style"
       >
-        Completed Orders
+        {{ _t('Completed Orders') }}
       </button>
     </div>
     <div class="online color-text-invert">
