@@ -11,7 +11,7 @@
           >Available Soon
         </li>
         <li id="available-seat">
-          <span>{{ tableStatus.availableCount }}</span
+          <span>{{ getAvailableTableCount(tableStatus) }}</span
           >Available
         </li>
       </ul>
@@ -54,6 +54,15 @@ export default {
   methods: {
     moveTable(px, movingSide) {
       moveTables(px, movingSide)
+    },
+    getAvailableTableCount(tableStatus) {
+      let tableCount = 0
+      if (tableStatus.availableCount > 0) {
+        tableCount =
+          tableStatus.availableCount -
+          (tableStatus.unavailableCount + tableStatus.availableSoonCount)
+      }
+      return tableCount
     },
   },
 }

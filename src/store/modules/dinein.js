@@ -3,8 +3,7 @@ import DineInService from '@/services/data/DineInService'
 import * as CONST from '@/constants'
 
 const state = {
-  orders: false,
-  dineInTableDetails: {},
+  orders: { running: false, completed: false },
   completedOrderDetails: {},
   areas: false,
   tables: false,
@@ -13,6 +12,7 @@ const state = {
   tablesOnArea: false,
   tableStatus: {},
   orderOnTables: {},
+  availableTables: {},
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -27,7 +27,7 @@ const getters = {
   },
   getTableNumber: state => orderId => {
     let tableNumber = ''
-    state.orders.filter(function(order) {
+    state.orders.running.filter(function(order) {
       if (order.order_id === orderId) {
         tableNumber = order.table_number
       }
@@ -45,8 +45,11 @@ const actions = {
     commit(mutation.LOADING, false)
   },
   getDineInOrders({ commit }) {
-    DineInService.dineInOrders().then(response => {
-      commit(mutation.DINE_IN_ORDERS, response.data)
+    DineInService.dineInRunningOrders().then(response => {
+      commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
+    })
+    DineInService.dineInCompleteOrders().then(response => {
+      commit(mutation.DINE_IN_COMPLETED_ORDERS, response.data)
     })
   },
   getDineInArea({ commit, dispatch }) {
@@ -77,7 +80,7 @@ const actions = {
     state.tablesOnArea.forEach(table => {
       let orders = []
       let tableDetails = { id: table._id, number: table.number, status: {} }
-      orders = state.orders.filter(
+      orders = state.orders.running.filter(
         order => order.assigned_table_id === table._id
       )
       if (orders.length) {
@@ -102,10 +105,10 @@ const actions = {
           })
         })
       } else {
-        tableStatus.availableCount =
-          parseInt(state.tablesOnArea.length) -
-          parseInt(tableStatus.unavailableCount) +
-          parseInt(tableStatus.availableSoonCount)
+        tableStatus.availableCount = parseInt(state.tablesOnArea.length)
+        /*-
+        parseInt(tableStatus.unavailableCount) +
+        parseInt(tableStatus.availableSoonCount)*/
         tableDetails.status.color = '#62bb31'
         tableDetails.status.text = 'available'
         tableStatus.table.push(tableDetails)
@@ -113,6 +116,14 @@ const actions = {
       commit(mutation.ORDER_ON_TABLES, orderOnTable)
     })
     commit(mutation.TABLE_STATUS, tableStatus)
+  },
+
+  getAvailableTables({ commit, state }) {
+    let availableTables =
+      state.tables.length > 0
+        ? state.tables.filter(table => table.area_id === state.activeArea._id)
+        : false
+    commit(mutation.AVAILABLE_TABLES, availableTables)
   },
 }
 
@@ -131,15 +142,11 @@ const mutations = {
   [mutation.DINE_IN_TABLES](state, tables) {
     state.tables = tables.data
   },
-  [mutation.DINE_IN_ORDERS](state, orders) {
-    state.dineInTableDetails = orders.page_lookups.dine_in_tables._id
-    /*let order = LookupData.get({
-      collection: orders.page_lookups.orders._id,
-      matchWith: id,
-      selection: false,
-    })
-    state.completedOrderDetails = order.status.*/
-    state.orders = orders.data
+  [mutation.DINE_IN_RUNNING_ORDERS](state, orders) {
+    state.orders.running = orders.data
+  },
+  [mutation.DINE_IN_COMPLETED_ORDERS](state, orders) {
+    state.orders.completed = orders.data
   },
   [mutation.SELECTED_AREA](state, activeArea) {
     state.tablesOnArea = false

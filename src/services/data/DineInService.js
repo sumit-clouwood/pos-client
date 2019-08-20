@@ -1,8 +1,15 @@
 import DataService from '@/services/DataService'
 
 export default {
-  dineInOrders() {
-    return DataService.get(`/model/reservations`)
+  dineInRunningOrders() {
+    return DataService.get(
+      `/model/reservations?page_id=running_orders&query=&limit=10&ascending=1&page=1`
+    )
+  },
+  dineInCompleteOrders() {
+    return DataService.get(
+      `/model/reservations?page_id=reservations_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=1&status=completed`
+    )
   },
 
   dineAreas() {
@@ -12,6 +19,6 @@ export default {
   },
 
   dineTables() {
-    return DataService.get(`/model/dine_in_tables`)
+    return DataService.get(`/model/dine_in_tables?byColumn=1&item_status=true`)
   },
 }

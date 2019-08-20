@@ -29,7 +29,7 @@ const router = new Router({
       component: Home,
     },
     {
-      path: '/:brand_id/:store_id/:order_id/:table_id',
+      path: '/:brand_id/:store_id/:table_id/:order_id',
       name: 'Home',
       component: Home,
     },

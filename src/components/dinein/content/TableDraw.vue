@@ -66,6 +66,7 @@ export default {
   methods: {
     baseURL(link) {
       return window.location.href.replace('dine-in', link)
+      // return window.location.href(link)
     },
     clearTableArea() {
       d3.selectAll('#dine-in-area > *').remove()
@@ -125,7 +126,6 @@ export default {
           $('.dinein_table').length
         ) {
           dineInTableWidth = $('.dinein_table')[i].getBoundingClientRect().width
-          // alert(dineInTableWidth)
         }
         d3.select(a[i])
           .append('text')
@@ -193,10 +193,17 @@ export default {
     },
     prepareTableOrder: function(datum, toolTipText) {
       let i = 0
+      let url = this.baseURL(datum._id)
+      toolTipText =
+        '<a class="dropdown-item text-capitalize bg-success font-weight-bold" href="' +
+        url +
+        '">Add Order</a>'
+      // eslint-disable-next-line no-console
+      console.log(this.orderOnTables)
       this.orderOnTables.filter(order => {
         if (datum._id === order.tableId) {
           order.orderIds.forEach(id => {
-            let url = this.baseURL(id + '/' + datum._id)
+            url += '/' + id
             toolTipText +=
               '<a class="dropdown-item text-capitalize" href="' +
               url +
@@ -206,6 +213,23 @@ export default {
               (i++ + 10).toString(36) +
               '</a>'
           })
+        } else {
+          // url = this.baseURL(datum._id)
+          /*if (
+            typeof $('.dinein_table') != 'undefined' &&
+            $('.dinein_table').length
+          ) {
+            $('.dinein_table').each(function() {
+              if ($(this).attr('table_id') == datum._id) {
+                alert($(this).attr('table_id'))
+                $(this).attr('data-target', url)
+              }
+            })
+          }*/
+          /*toolTipText =
+            '<a class="dropdown-item text-capitalize" href="' +
+            url +
+            '">Create New</a>'*/
         }
       })
       return toolTipText

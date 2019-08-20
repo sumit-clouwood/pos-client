@@ -10,11 +10,14 @@
           <th width="450px">{{ _t('DINING FOR') }}</th>
         </tr>
       </thead>
-      <tbody v-if="dineInOrderDetails">
+      {{
+        orders[tabName]
+      }}
+      <tbody v-if="orders[tabName]">
         <tr
           :key="index"
           class="dine-table-content"
-          v-for="(order, index) in dineInOrderDetails"
+          v-for="(order, index) in orders[tabName]"
         >
           <td class="dine-order-tabel">
             <span>{{ getTableNumber(order._id) }}</span>
@@ -134,7 +137,7 @@ export default {
   computed: {
     ...mapState('location', ['timezoneString']),
     ...mapGetters('location', ['_t']),
-    ...mapState('dinein', ['dineInOrderDetails']),
+    ...mapState('dinein', ['orders']),
     ...mapGetters('dinein', ['getOrderStatus', 'getTableNumber']),
   },
   methods: {
