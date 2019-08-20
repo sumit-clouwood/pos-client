@@ -103,6 +103,7 @@
                 align-items: center;
                 justify-content: space-between;
                 padding: 20px;
+                padding-bottom: 0;
                 font-weight: 600;
                 font-size: 18px;
                 z-index: 2;
@@ -121,7 +122,8 @@
                 z-index: 1;
 
                 .main-oreders-title {
-                    font-size: 16px;
+                    font-size: 14px;
+                    font-weight: normal;
                     display: flex;
                     align-items: center;
                     justify-content: space-between;

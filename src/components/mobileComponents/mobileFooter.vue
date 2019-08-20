@@ -125,6 +125,8 @@
             padding: 20px 20px 20px 20px;
             display: flex;
             align-items: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1;
 
             .btn-cart {
                 width: 100%;

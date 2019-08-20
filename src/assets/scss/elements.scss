@@ -355,7 +355,6 @@ h1, h2, h3, h4, h5, h6 {
 @include responsive(mobile) {
   .modal {
 
-
     .modal-dialog {
       .preloader {
         position: fixed;
@@ -391,6 +390,14 @@ h1, h2, h3, h4, h5, h6 {
               font-size: 30px;
               color: #3f4146;
               opacity: 1;
+            }
+          }
+
+          .main-orders-title {
+            font-size: 16px;
+
+            .text {
+              font-size: 16px;
             }
           }
         }
