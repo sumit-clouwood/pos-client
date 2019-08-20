@@ -200,17 +200,17 @@
         }
 
         .food-menu {
-          //display: flex;
-          //flex-wrap: wrap;
-          //align-items: stretch;
-          //align-content: flex-start;
-          //overflow: auto;
-          display: grid;
-          //align-items: start;
-          align-content: start;
-          justify-content: start;
-          grid-gap: 20px;
-          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+          display: flex;
+          flex-wrap: wrap;
+          align-items: stretch;
+          align-content: flex-start;
+          overflow: auto;
+          //display: grid;
+          ////align-items: start;
+          //align-content: start;
+          //justify-content: start;
+          //grid-gap: 20px;
+          //grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
 
 
           .food-menu-wrapper {
@@ -290,8 +290,8 @@
           .food-menu-item {
             padding: 10px;
             cursor: pointer;
-            width: 100%;
-            min-height: 8vmax;
+            width: calc(7vmax + 20px);
+            min-height: 7vmax;
             border: $px1 solid #ddd;
             border-radius: $px5;
             justify-self: center;
@@ -303,8 +303,8 @@
             -webkit-box-pack: center;
             -ms-flex-pack: center;
             justify-content: center;
-            //margin-right: $px10;
-            //margin-bottom: $px10;
+            margin-right: $px20;
+            margin-bottom: $px20;
             -webkit-transition: .2s linear;
             transition: .2s linear;
             font-size: $px18;
@@ -339,8 +339,9 @@
               border-radius: $px3;
               //min-height: $px100;
               //padding: $px12 $px25 0 $px25;
-              width: 100%;
-              height: auto;
+              width: 7vmax;
+              height: 7vmax;
+
               margin-bottom: auto;
             }
 
