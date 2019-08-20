@@ -264,7 +264,6 @@
                     }
 
                     .modal-footer {
-                        padding-top: 20px;
                     }
                 }
             }

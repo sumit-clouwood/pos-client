@@ -186,8 +186,6 @@
                         grid-template-columns: 1fr;
                         width: 100vw;
                         grid-gap: 10px;
-                        padding: 20px;
-                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                         border: none;
 
                         .referal {

@@ -243,13 +243,20 @@
 
                     .modal-footer {
                         width: 100vw;
-                        padding-top: 20px;
-                        box-shadow: 0 0 10px rgba(0,0,0,0.1);
                         z-index: 10;
+                        display: grid;
+                        grid-template-columns: 1fr;
                         .pagination-customer-details{
-                            display: none;
+                            display: grid;
+                            grid-template-columns: max-content;
+                            justify-content: end;
+                            margin-bottom: 20px;
+                            margin-right: 0;
                         }
                         .btn-announce{
+                            #cust-new{
+                                margin-left: 0;
+                            }
                             button {
                                 width: 100%;
                             }

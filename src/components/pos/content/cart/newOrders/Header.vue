@@ -93,7 +93,8 @@
         .main-orders-contacts {
             display: grid;
             grid-template-columns: 1fr;
-            grid-row-gap: 10px;
+            grid-template-rows: none;
+            grid-row-gap: 20px;
 
             .cursor-pointer {
                 display: flex;
@@ -113,7 +114,13 @@
             }
 
             .main-oreders-buttons {
-
+                display: flex !important;
+                align-items: center;
+                margin: 0;
+                #holdorder{
+                    width: 30%;
+                    background-color: $green-middle;
+                }
             }
         }
     }

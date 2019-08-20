@@ -353,40 +353,55 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @include responsive(mobile) {
-  .modal-dialog {
-    .preloader {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      background-color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000000;
-      //display: none !important;
+  .modal {
 
 
-      > div {
-        width: auto;
+    .modal-dialog {
+      .preloader {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000000;
+        //display: none !important;
+
+
+        > div {
+          width: auto;
+        }
       }
-    }
 
-    .modal-content {
-      .modal-header {
-        .customer-title {
-          font-size: 18px;
-          color: #3f4146;
+      .modal-content {
+        .modal-header {
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+          .customer-title {
+            font-size: 18px;
+            color: #3f4146;
+          }
+
+          button {
+            &.close {
+              font-size: 30px;
+              color: #3f4146;
+              opacity: 1;
+            }
+          }
         }
 
-        button {
-          &.close {
-            font-size: 30px;
-            color: #3f4146;
-            opacity: 1;
-          }
+        .modal-body {
+
+        }
+
+        .modal-footer {
+          padding: 20px !important;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
       }
     }

@@ -80,12 +80,13 @@ export default {
 
         .modal-body {
           .dining-option-block {
-            grid-template-rows: repeat(20, max-content);
+            grid-template-rows: 1fr 1fr;
+            grid-template-rows: none;
+            align-items: start;
+            align-content: start;
           }
         }
         .modal-footer {
-          padding: 20px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
           .btn-announce {
             button {
               padding: 0 35px;
