@@ -174,11 +174,8 @@ const getters = {
 
   itemNetDiscount: (state, getters) => item => {
     if (item.discountRate) {
-      if (
-        typeof item.discountType !== 'undefined' &&
-        item.discountType == 'fixed'
-      ) {
-        return (getters.itemNetPrice(item) * item.discountRate) / 100
+      if (item.discountedNetPrice) {
+        return getters.itemNetPrice(item) - item.discountedNetPrice
       }
       return Num.round((item.netPrice * item.discountRate) / 100)
     } else {
@@ -187,14 +184,9 @@ const getters = {
   },
 
   itemTaxDiscount: (state, getters) => item => {
-    if (
-      typeof item.discountType !== 'undefined' &&
-      item.discountType == 'fixed'
-    ) {
-      //send accumulative of modifiers + item tax discount, don't round
+    if (item.discountedNetPrice) {
       const modifiersTax = getters.itemModifiersTax(item)
-      const totalTaxDiscount =
-        ((item.tax + modifiersTax) * item.discountRate) / 100
+      const totalTaxDiscount = item.tax + modifiersTax - item.discountedTax
       return totalTaxDiscount
     }
 
@@ -205,10 +197,7 @@ const getters = {
   },
 
   itemModifierDiscount: () => item => {
-    if (
-      typeof item.discountType !== 'undefined' &&
-      item.discountType == 'fixed'
-    ) {
+    if (item.discountedNetPrice) {
       return 0
     }
 
@@ -222,10 +211,7 @@ const getters = {
 
   itemModifierTaxDiscount: () => item => {
     if (item.discountRate && item.modifiersData && item.modifiersData.length) {
-      if (
-        typeof item.discountType !== 'undefined' &&
-        item.discountType == 'fixed'
-      ) {
+      if (item.discountedNetPrice) {
         return 0
       }
       return item.modifiersData.reduce((discount, modifier) => {
@@ -762,15 +748,17 @@ const actions = {
               item.discount = false
               item.discountRate = 0
             } else {
-              //discount should be appliedapplied after tax prixce
-              //Don't Round values below, these are strictly used
               const itemNetPriceWithModifiers = getters.itemNetPrice(item)
-              const discountForOneItem = discount.discount.value / item.quantity
-              item.discountRate =
-                (discountForOneItem * 100) / itemNetPriceWithModifiers
 
-              item.discountType = 'fixed'
-              //now we got discount rate in percent, we can apply it on net price and tax
+              const itemsNetPriceWithModifiers =
+                itemNetPriceWithModifiers * item.quantity
+              const itemsDiscountedPrice =
+                itemsNetPriceWithModifiers - discount.discount.value
+
+              item.discountedTax =
+                (itemsDiscountedPrice * item.tax_sum) / 100 / item.quantity
+              item.discountedNetPrice = itemsDiscountedPrice / item.quantity
+              item.discountRate = discount.discount.value
             }
           } else {
             //percentage discount can be applied only non free (> 0 priced) items
@@ -789,6 +777,8 @@ const actions = {
           //remove already applied discount
           item.discount = false
           item.discountRate = 0
+          item.discountedTax = false
+          item.discountedNetPrice = false
         }
         return item
       })
