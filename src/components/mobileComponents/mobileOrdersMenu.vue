@@ -4,10 +4,10 @@
     @click.self="footerMenuHendlerGhange"
   >
     <div class="orders-menu">
-      <div
-        class="footer-slider-list-item"
+      <li
+        class="footer-slider-list-item color-secondary"
+        data-toggle="modal"
         data-target="#manage-customer"
-        @click="openManageCustomer"
       >
         <svg
           width="24"
@@ -36,7 +36,7 @@
         <a class="footer-slider-list-item-link">
           <span>{{ _t('Customer') }}</span>
         </a>
-      </div>
+      </li>
       <div
         class="footer-slider-list-item footer-slider-list-item-open-orders"
         id="hold-order-box"
@@ -182,7 +182,6 @@
         class="footer-slider-list-item"
         data-toggle="modal"
         data-target="#add-note"
-        @click="addNoteHendlerGhange"
       >
         <svg
           width="22"
@@ -268,30 +267,47 @@ export default {
 
 @include responsive(mobile) {
   .main-orders {
+    .pagination-customer-details {
+      margin-bottom: 20px;
+    }
+
     .orders-menu-overlay {
       position: fixed;
       top: 0;
       right: -100vw;
-      bottom: 0;
+      right: 0;
+      bottom: -100vh;
       left: auto;
       transition: 0.5s ease-out;
       display: flex;
       flex-direction: column;
-      background-color: rgba(0, 0, 0, 0.3);
-      background-color: #fff;
+      background-color: rgba(0, 0, 0, 0);
+      /*background-color: #fff;*/
       border-left: 1px solid #ddd;
+      z-index: 5;
+      pointer-events: none;
 
       &.active {
+        bottom: 85px;
         right: 0;
+        transition: 0.5s ease-out;
+        pointer-events: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        /*.orders-menu{*/
+        /*transition: 0.5s ease-out;*/
+        /*margin-bottom: 0;*/
+        /*}*/
       }
 
       .orders-menu {
+        /*transition: 0.5s ease-out;*/
         background-color: #fff;
         width: 100vw;
         align-items: end;
         margin-top: auto;
-        margin-bottom: auto;
+        /*margin-bottom: auto;*/
         overflow-y: auto;
+        //margin-bottom: -455px;
 
         .footer-slider-list-item {
           border-bottom: 1px solid $gray-middle;
@@ -318,6 +334,8 @@ export default {
         padding-top: 20px;
         background-color: #fff;
         align-items: end;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: none;
       }
     }
   }

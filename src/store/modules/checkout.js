@@ -240,15 +240,38 @@ const actions = {
           //item discount as total of both discounts
 
           if (item.discount) {
+            let itemDiscountedTax = Num.round(
+              rootGetters['order/itemTaxDiscount'](item)
+            )
+
+            if (
+              typeof item.discountType !== 'undefined' &&
+              item.discountType == 'fixed'
+            ) {
+              //don't round here
+              itemDiscountedTax = rootGetters['order/itemTaxDiscount'](item)
+            }
+
+            const modifiersDiscountedTax = Num.round(
+              rootGetters['order/itemModifierTaxDiscount'](item)
+            )
+
             let itemDiscount = item.discount
             itemDiscount.itemId = item._id
             itemDiscount.itemNo = item.orderIndex
             itemDiscount.quantity = item.quantity
             //undiscountedTax is without modifiers
-            itemDiscount.tax = Num.round(
-              Num.round(rootGetters['order/itemTaxDiscount'](item)) +
-                Num.round(rootGetters['order/itemModifierTaxDiscount'](item))
-            )
+            if (
+              typeof item.discountType !== 'undefined' &&
+              item.discountType == 'fixed'
+            ) {
+              //donot round
+              itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
+            } else {
+              itemDiscount.tax = Num.round(
+                itemDiscountedTax + modifiersDiscountedTax
+              )
+            }
             itemDiscount.price =
               rootGetters['order/itemNetDiscount'](item) +
               rootGetters['order/itemModifierDiscount'](item)
@@ -493,6 +516,8 @@ const actions = {
         response = OrderService.saveOrder(
           state.order,
           rootState.customer.offlineData
+            ? rootState.customer.offlineData
+            : rootState.customer.customer
         )
       }
 

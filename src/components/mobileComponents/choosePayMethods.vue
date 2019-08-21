@@ -58,29 +58,35 @@ export default {
       right: 0;
     }
 
+    .pay-header {
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
     .pay-body {
-      padding: 0 20px;
+      padding: 20px;
+      padding-bottom: 0;
       display: grid;
       grid-template-rows: max-content 1fr;
       overflow: auto;
 
       #payment-method {
-        margin: 20px 0 0 0;
+        margin: 0;
         overflow: auto;
         display: grid;
         grid-template-rows: repeat(20, 65px);
         grid-gap: 15px;
+        margin-top: 20px;
 
         > div {
           display: grid;
           grid-template-columns: max-content 1fr;
           align-items: center;
           grid-gap: 20px;
-          border: 1px solid $gray-middle;
+          //border: 1px solid $gray-middle;
           transition: 0.3s ease-out;
 
           &.active {
-            border: 1px solid $green-middle;
+            //border: 1px solid $green-middle;
           }
 
           &:active {

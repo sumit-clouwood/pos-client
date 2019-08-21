@@ -110,8 +110,8 @@ export default {
         height: 50px;
         border-radius: 0;
         border: none;
-        padding: 0 20px 0 0px;
-        min-height: 65px;
+        padding: 0 10px 0 10px;
+        min-height: 80px;
         grid-template-columns: 65px 1fr;
         grid-gap: 20px;
         border-bottom: 1px solid $gray-middle;
@@ -131,6 +131,7 @@ export default {
           margin: 0;
           width: 64px;
           height: 64px;
+          border-radius: 2px;
         }
 
         .food-categories-item-check {

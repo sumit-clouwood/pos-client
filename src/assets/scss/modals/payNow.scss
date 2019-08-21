@@ -632,7 +632,7 @@
           }
 
           .amount-keypad {
-            display: none;
+            display: none !important;
             width: 100%;
             min-width: 100%;
             grid-template-columns: 1fr 1fr 1fr 1fr;

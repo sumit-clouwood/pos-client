@@ -38,7 +38,7 @@ export default {
   bottom: 0;
   z-index: 1060;
   background-color: #fff;
-  transition: 0.5s ease-out;
+  /*transition: 0.5s ease-out;*/
   border-left: 1px solid #eee;
 
   &.active {

@@ -89,8 +89,8 @@
                 :phrases="{ ok: _t('Continue'), cancel: _t('Exit') }"
               ></datetime>
               <!--<span class="validation-error" v-if="errors.birthday">{{
-                errors.birthday
-              }}</span>-->
+                              errors.birthday
+                            }}</span>-->
             </div>
           </div>
           <div class="col-md-12 left-form">
@@ -314,12 +314,12 @@ export default {
         this.errors.count = 1
       }
       /*if (
-        !this.newCustomerDetails.email ||
-        !getWithoutSpaceLength(this.newCustomerDetails.email)
-      ) {
-        this.errors.email = this._t('Email') + ' ' + this._t('is required.')
-        this.errors.count = 1
-      }*/
+                  !this.newCustomerDetails.email ||
+                  !getWithoutSpaceLength(this.newCustomerDetails.email)
+                ) {
+                  this.errors.email = this._t('Email') + ' ' + this._t('is required.')
+                  this.errors.count = 1
+                }*/
       if (
         !this.newCustomerDetails.phone_number ||
         !getWithoutSpaceLength(this.newCustomerDetails.phone_number)
@@ -411,26 +411,67 @@ export default {
 </script>
 <style scoped lang="css">
 .dropdown {
-  position: relative;
+    position: relative;
 }
+
 .dropdown-content {
-  display: block;
-  position: absolute;
-  background-color: #f6f6f6;
-  width: 57%;
-  right: 14px;
-  overflow: auto;
-  border: 1px solid #ddd;
-  z-index: 1;
-  margin-top:3px;
-  max-height:200px;
+    display: block;
+    position: absolute;
+    background-color: #f6f6f6;
+    width: 57%;
+    right: 14px;
+    overflow: auto;
+    border: 1px solid #ddd;
+    z-index: 1;
+    margin-top: 3px;
+    max-height: 200px;
 }
 
 .dropdown-content span {
-  color: black;
-  padding: 6px 16px;
-  text-decoration: none;
-  display: block;
+    color: black;
+    padding: 6px 16px;
+    text-decoration: none;
+    display: block;
 }
-.dropdown span:hover {background-color: #ddd;}
+
+.dropdown span:hover {
+    background-color: #ddd;
+}
+</style>
+<style lang="scss">
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  .dropdown-content {
+    margin: 0 !important;
+    border: none !important;
+    background-color: transparent !important;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-height: 100% !important;
+
+    .showItem {
+      padding: 0 !important;
+      display: grid !important;
+      grid-template-columns: 1fr max-content;
+      align-items: center;
+      background-color: transparent;
+      height: 65px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr max-content;
+      align-items: center;
+      border-bottom: 1px solid #ccc;
+      margin: 0 10px;
+      &:last-child {
+        border: none !important;
+      }
+    }
+  }
+}
 </style>

@@ -37,7 +37,7 @@ export default {
   bottom: 0;
   z-index: 1060;
   background-color: #fff;
-  transition: 0.5s ease-out;
+  /*transition: 0.5s ease-out;*/
 
   &.active {
     right: 0;
@@ -85,6 +85,7 @@ export default {
         }
         .modal-footer {
           padding: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
           .btn-announce {
             button {
               padding: 0 35px;

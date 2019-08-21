@@ -147,7 +147,7 @@
         .main .main-body .food-wrapper .food-block .food-menu {
           display: flex;
           flex-wrap: wrap;
-          align-items: flex-start;
+          align-items: stretch;
           align-content: flex-start;
           overflow: auto; }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-wrapper {
@@ -208,8 +208,8 @@
                 display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item {
             cursor: pointer;
-            width: 8vmax;
-            min-height: 8vmax;
+            width: 9vmax;
+            min-height: 9vmax;
             border: 0.0625rem solid #ddd;
             border-radius: 0.3125rem;
             justify-self: center;
@@ -247,8 +247,8 @@
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-img {
               margin: 0 auto;
               border-radius: 0.1875rem;
-              width: calc(8vmax - 5px);
-              height: 8vmax;
+              width: calc(9vmax - 5px);
+              height: 9vmax;
               margin-bottom: auto;
               margin-top: 2px; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-text {

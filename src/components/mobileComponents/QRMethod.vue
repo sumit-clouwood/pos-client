@@ -50,7 +50,7 @@ export default {
 
   .pay-header {
     grid-template-rows: min-content;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
     hr {
       display: block;
@@ -112,7 +112,7 @@ export default {
   .mobile-footer {
     width: 100%;
     height: 135px;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
     .btn-cart {
       display: none;

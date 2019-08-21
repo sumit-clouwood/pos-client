@@ -59,6 +59,11 @@ export default {
 
   .header {
     border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    height: 90px;
+    .pay-header {
+      height: 90px;
+    }
 
     .mobile-pay-header {
       border: none;

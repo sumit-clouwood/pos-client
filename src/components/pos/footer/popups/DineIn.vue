@@ -157,17 +157,27 @@ export default {
   #dining-option {
     .modal-dialog {
       margin: 0;
+      transform: none;
+      animation: none;
+      transition: none;
+      max-width: none;
 
       .modal-content {
         display: grid;
         grid-template-rows: max-content 1fr max-content;
+
         .modal-header {
           height: 80px;
           background-color: #fff;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          border: none;
+          padding: 20px;
         }
 
         .modal-body {
+          padding: 20px;
           overflow-y: auto;
+
           .dining-option-block {
             .option-contain {
               position: relative;
@@ -191,8 +201,9 @@ export default {
         }
 
         .modal-footer {
-          padding-top: 20px;
-          box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+          padding: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
           .btn-announce {
             button {
               background-color: $green-middle;
