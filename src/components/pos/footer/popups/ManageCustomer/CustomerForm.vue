@@ -407,6 +407,9 @@
                 return re.test(email)
             },
         },
+        beforeMount() {
+            console.log(this.fetchDeliveryAreas)
+        }
     }
 </script>
 <style scoped lang="css">
@@ -468,7 +471,8 @@
                 align-items: center;
                 border-bottom: 1px solid #ccc;
                 margin: 0 10px;
-                &:last-child{
+
+                &:last-child {
                     border: none !important;
                 }
             }

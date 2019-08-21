@@ -138,7 +138,7 @@ export default {
 
                 .POSItemOptions_choose_label {
                   padding: 10px;
-                  border: 1px solid #ccc;
+                  border: 2px solid $gray-middle;
                   border-radius: 5px;
                   position: relative;
                   display: flex;
@@ -154,6 +154,7 @@ export default {
                     flex-basis: max-content;
                     flex-shrink: 0;
                     border-radius: 50%;
+                    margin-bottom: 5px;
                   }
 
                   .customradioc {
