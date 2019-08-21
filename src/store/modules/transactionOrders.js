@@ -1,17 +1,17 @@
 import * as mutation from './transactionOrders/mutation-types'
+import moment from 'moment-timezone'
 import OrderService from '@/services/data/OrderService'
 import LookupData from '../../plugins/helpers/LookupData'
 
 const state = {
-  getTransactions: false,
-  getTransactionOrders: false,
-  displayTransactionOrders: false,
+  transactionOrders: false,
+  displayTransactionOrders: {},
   orderDetails: {},
   pageLookups: {},
   loading: false,
   params: {
     query: '',
-    limit: 10,
+    limit: 999999,
     page: 1,
     pageId: 'transactional_orders',
     totalPages: 0,
@@ -20,6 +20,32 @@ const state = {
 }
 
 const getters = {
+  listTransactionOrders: state => timezonestring => {
+    let data = state.transactionOrders
+    if (typeof data != 'undefined' && data.length > 0) {
+      let result = []
+      let transactionOrderDates = []
+      data.forEach(function(value) {
+        let orderDateTime = LookupData.convertDatetimeCustom(
+          value.real_created_datetime,
+          timezonestring
+        )
+        orderDateTime = orderDateTime.substring(0, orderDateTime.indexOf(' '))
+        if (orderDateTime.length) {
+          value['created_date'] = orderDateTime
+          value['created_datetime'] = value.real_created_datetime
+          value['order_date'] = moment(orderDateTime.toString()).format(
+            'dddd, LL'
+          )
+        }
+        if (transactionOrderDates.indexOf(value['order_date']) == '-1') {
+          transactionOrderDates.push(value['order_date'])
+        }
+        result.push(value)
+      })
+      return result
+    }
+  },
   getOrderItemsStr: () => orderItems => {
     let str = orderItems
       .map(function(item) {
@@ -47,16 +73,60 @@ const actions = {
       commit(mutation.ALL_TRANSACTIONS, response.data)
       commit(mutation.LOADING, true)
       commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
-      if (state.displayTransactionOrders.length > 0) {
-        let firstOrder = state.displayTransactionOrders[0]._id
-        dispatch('order/selectedOrderDetails', firstOrder, { root: true })
+      if (state.transactionOrders.length > 0) {
+        dispatch('setTransactionOrders', '') //Set Sorted & Group Order List
+        let firstOrder = state.transactionOrders[0]._id
+        dispatch('order/selectedOrderDetails', firstOrder, { root: true }) //Set First Order as Selected
       }
     })
+  },
+  setTransactionOrders({ commit, state, rootState }, searchTerm) {
+    let finalArr = []
+    let result = []
+    let transactionOrderDates = []
+    let timezoneString = rootState.location.timezoneString
+    let data = state.transactionOrders
+    if (data) {
+      data.forEach(function(value) {
+        let orderDateTime = LookupData.convertDatetimeCustom(
+          value.real_created_datetime,
+          timezoneString
+        )
+        orderDateTime = orderDateTime.substring(0, orderDateTime.indexOf(' '))
+        if (orderDateTime.length) {
+          value['created_date'] = orderDateTime
+          value['created_datetime'] = value.real_created_datetime
+          value['order_date'] = moment(orderDateTime.toString()).format(
+            'dddd, LL'
+          )
+        }
+        if (transactionOrderDates.indexOf(value['order_date']) == '-1') {
+          transactionOrderDates.push(value['order_date'])
+        }
+        result.push(value)
+      })
+    }
+    if (result) {
+      result = result.reduce(function(r, a) {
+        r[a.order_date] = r[a.order_date] || []
+        r[a.order_date].push(a)
+        return r
+      }, Object.create(null))
+      finalArr.push(result)
+      // eslint-disable-next-line no-console
+      console.log(searchTerm)
+      if (finalArr.length > 0) {
+        // eslint-disable-next-line no-console
+        console.log(finalArr[0])
+        // commit('TRANSACTIONS_ORDERS', result)
+        commit('TRANSACTIONS_ORDERS', finalArr[0])
+      }
+    }
   },
   collectSearchTransactions({ commit, state, dispatch }, searchTerm) {
     let searchedItems = []
     if (searchTerm != '' && searchTerm.length > 0) {
-      state.getTransactions.data.map(order => {
+      state.transactionOrders.data.map(order => {
         //Searching with Order No.
         if (
           order.order_no
@@ -77,7 +147,7 @@ const actions = {
         //Searching with Order Customer Name
         if (order.customer != null && order.customer.length > 0) {
           let customerName = LookupData.get({
-            collection: state.getTransactions.page_lookups.brand_customers._id,
+            collection: state.pageLookups.brand_customers._id,
             matchWith: order.customer,
             selection: 'name',
           })
@@ -102,12 +172,11 @@ const actions = {
 const mutations = {
   //Set whole collection
   [mutation.ALL_TRANSACTIONS](state, transactionOrders) {
-    state.getTransactions = transactionOrders
-    state.displayTransactionOrders = transactionOrders.data
+    state.transactionOrders = transactionOrders.data
   },
   //Collection to display only.
   [mutation.TRANSACTIONS_ORDERS](state, transactionOrders) {
-    state.displayTransactionOrders = transactionOrders.data
+    state.displayTransactionOrders = transactionOrders
   },
   //Set a third collection for searching, will be merged into TRANSACTIONS_ORDERS mutate.
   [mutation.SEARCH_TRANSACTIONS](state, transactionOrders) {

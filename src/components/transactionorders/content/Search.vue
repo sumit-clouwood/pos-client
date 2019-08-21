@@ -50,7 +50,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'timezoneString']),
     ...mapGetters([
       'searchHendler',
       'allCategoryHendler',
@@ -62,19 +62,18 @@ export default {
   },
   methods: {
     searchingItems(searchTransactions) {
-      this.$store.dispatch(
+      /*this.$store.getters['transactionOrders/listTransactionOrders'](
+        this.timezoneString,
+        searchTransactions
+      )*/
+      this.$emit('search_ready', this.timezoneString, searchTransactions)
+      /*this.$store.dispatch(
         'transactionOrders/collectSearchTransactions',
         searchTransactions
-      )
+      )*/
     },
     searchHendlerChange() {
       this.$store.dispatch('searchHendlerChange')
-    },
-    allCategoryHendlerChange() {
-      this.$store.dispatch('allCategoryHendlerChange')
-    },
-    subCategoryHendlerChange() {
-      this.$store.dispatch('subCategoryHendlerChange')
     },
   },
 }
