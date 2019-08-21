@@ -123,7 +123,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch('transactionOrders/getTransactionOrders')
-    // this.getAllOrders(this.timezoneString)
   },
   computed: {
     ...mapState('location', ['timezoneString']),
@@ -136,22 +135,6 @@ export default {
     ]),
   },
   methods: {
-    getAllOrders(timezoneString) {
-      let finalArr = []
-      let result = this.listTransactionOrders(timezoneString)
-      if (result) {
-        result = result.reduce(function(r, a) {
-          r[a.order_date] = r[a.order_date] || []
-          r[a.order_date].push(a)
-          return r
-        }, Object.create(null))
-        finalArr.push(result)
-        if (finalArr) {
-          this.$store.commit('transactionOrders/TRANSACTIONS_ORDERS', finalArr)
-        }
-      }
-      return finalArr
-    },
     setOrderStatus(orderStatus) {
       let statusArr = []
       switch (orderStatus) {

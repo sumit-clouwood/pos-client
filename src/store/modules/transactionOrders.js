@@ -20,32 +20,6 @@ const state = {
 }
 
 const getters = {
-  listTransactionOrders: state => timezonestring => {
-    let data = state.transactionOrders
-    if (typeof data != 'undefined' && data.length > 0) {
-      let result = []
-      let transactionOrderDates = []
-      data.forEach(function(value) {
-        let orderDateTime = LookupData.convertDatetimeCustom(
-          value.real_created_datetime,
-          timezonestring
-        )
-        orderDateTime = orderDateTime.substring(0, orderDateTime.indexOf(' '))
-        if (orderDateTime.length) {
-          value['created_date'] = orderDateTime
-          value['created_datetime'] = value.real_created_datetime
-          value['order_date'] = moment(orderDateTime.toString()).format(
-            'dddd, LL'
-          )
-        }
-        if (transactionOrderDates.indexOf(value['order_date']) == '-1') {
-          transactionOrderDates.push(value['order_date'])
-        }
-        result.push(value)
-      })
-      return result
-    }
-  },
   getOrderItemsStr: () => orderItems => {
     let str = orderItems
       .map(function(item) {
