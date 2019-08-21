@@ -5,7 +5,7 @@ import LookupData from '../../plugins/helpers/LookupData'
 
 const state = {
   transactionOrders: false,
-  displayTransactionOrders: {},
+  displayTransactionOrders: false,
   orderDetails: {},
   pageLookups: {},
   loading: false,
@@ -81,7 +81,7 @@ const actions = {
     })
   },
   setTransactionOrders({ commit, state, rootState }, searchTerm) {
-    let finalArr = []
+    let finalArr = {}
     let result = []
     let transactionOrderDates = []
     let timezoneString = rootState.location.timezoneString
@@ -112,14 +112,11 @@ const actions = {
         r[a.order_date].push(a)
         return r
       }, Object.create(null))
-      finalArr.push(result)
+      finalArr = JSON.stringify(result)
       // eslint-disable-next-line no-console
       console.log(searchTerm)
       if (finalArr.length > 0) {
-        // eslint-disable-next-line no-console
-        console.log(finalArr[0])
-        // commit('TRANSACTIONS_ORDERS', result)
-        commit('TRANSACTIONS_ORDERS', finalArr[0])
+        commit('TRANSACTIONS_ORDERS', JSON.parse(finalArr))
       }
     }
   },

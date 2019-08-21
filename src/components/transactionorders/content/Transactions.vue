@@ -9,14 +9,13 @@
       <search @search_ready="getAllOrders" />
     </div>
     <div :class="['food-wrapper', 'active']">
-      {{ displayTransactionOrders }}
-      <div v-if="displayTransactionOrders.length > 0" class="left_size_details">
+      <div v-if="displayTransactionOrders" class="left_size_details">
         <div
           class="left_info_block"
           v-for="(orders, key) in displayTransactionOrders"
           :key="key"
         >
-          <p class="date_class">{{ orders }}</p>
+          <p class="date_class">{{ key }}</p>
           <div
             class="detailed_block"
             v-if="typeof orders != 'undefined' && orders != null"
