@@ -166,8 +166,8 @@
 
               .customradioc {
                 position: absolute;
-                top: -2px;
-                right: -2px;
+                top: -1px;
+                right: -1px;
                 margin-right: 0 !important;
                 width: 20px;
                 height: 20px;
@@ -195,9 +195,11 @@
                   letter-spacing: 0.43px;
                   width: 20px;
                   height: 20px;
-                  &:before{
+
+                  &:before {
                     width: 15px !important;
                     height: 15px !important;
+                    color: #fff;
                   }
                 }
 
@@ -216,7 +218,8 @@
                 }
 
                 input[type=checkbox]:checked + span:before {
-                  content: "\2713";
+                  font-family: "FontAwesome";
+                  content: "\f00c";
                   width: $px12;
                   height: $px12;
                   color: #fff;

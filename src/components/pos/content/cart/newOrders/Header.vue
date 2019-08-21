@@ -6,7 +6,7 @@
         </div>
         <div class="main-oreders-email" v-if="selectedCustomer">
       <span class="cursor-pointer color-text" @click="removeSelectedCustomer()">
-        ✖
+        <i class="fa fa-times" aria-hidden="true"></i>
       </span>
             <p v-if="selectedCustomer.email != ''">
                 {{ _t('Email') }} : {{ selectedCustomer.email }}

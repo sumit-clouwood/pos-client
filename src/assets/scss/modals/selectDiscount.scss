@@ -155,7 +155,8 @@ a:hover {
                 border: 2px solid $green-middle;
 
                 &:after {
-                  content: "✔";
+                  font-family: "FontAwesome";
+                  content: "\f00c";
                   color: #fff;
                   position: absolute;
                   height: 1.5625rem;
