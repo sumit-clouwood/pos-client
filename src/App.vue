@@ -41,7 +41,7 @@ The App.vue file is the root component that all other components are nested with
                       {{ progressIncrement }} %
                     </div>
                   </div>
-                  <span> {{ val }} </span>
+                  <span>{{ val }}</span>
                 </li>
               </ul>
             </span>
@@ -80,6 +80,7 @@ export default {
       errored: false,
       progressIncrement: 0,
       orderId: null,
+      tableId: null,
     }
   },
   created() {
@@ -91,10 +92,13 @@ export default {
             'context/SET_BRAND_ID',
             this.$route.params.brand_id
           )
+          localStorage.setItem('brand_id', this.$route.params.brand_id)
           this.$store.commit(
             'context/SET_STORE_ID',
             this.$route.params.store_id
           )
+
+          localStorage.setItem('store_id', this.$route.params.store_id)
           DataService.setContext({
             brand: this.$store.getters['context/brand'],
             store: this.$store.getters['context/store'],
@@ -107,6 +111,9 @@ export default {
 
     if (this.$route.params.order_id) {
       this.orderId = this.$route.params.order_id
+    }
+    if (this.$route.params.table_id) {
+      this.tableId = this.$route.params.table_id
     }
   },
   watch: {
