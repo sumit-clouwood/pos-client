@@ -197,7 +197,7 @@
                                             width: 100%;
                                             border: none;
                                             max-width: none;
-                                            padding-left: 20px;
+                                            padding-left: 10px;
 
                                             button {
                                                 height: 100%;

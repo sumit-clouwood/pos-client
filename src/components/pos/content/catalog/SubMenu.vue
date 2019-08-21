@@ -18,7 +18,6 @@
         :key="item._id"
         :class="{ active: currentSubcategory === item._id }"
         @click.prevent="getSubCatItems(item)"
-        @click="foodMenuHendlerGhange"
       >
         <img
           v-if="item.sub_category_image != ''"
@@ -56,15 +55,13 @@ export default {
     ...mapGetters(['subCategoryHendler', 'foodMenuHendler']),
   },
   methods: {
-    foodMenuHendlerGhange() {
-      this.$store.dispatch('foodMenuHendlerGhange')
-    },
     getSubCatItems(item) {
       // eslint-disable-next-line no-undef
       $('.breadcrumbs').show()
       // eslint-disable-next-line no-undef
       $('.search-field-input').val('')
       this.$store.dispatch('category/getItems', item)
+      this.$store.dispatch('foodMenuHendlerGhange')
     },
     // ...mapActions('category', ['getItems']),
   },

@@ -359,10 +359,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @include responsive(mobile) {
+
   html, body {
     margin: 0;
     height: 100%;
-    overflow: hidden
+    overflow: hidden;
+
+    .dropdown {
+      &:hover {
+        background-color: #fff;
+      }
+    }
   }
   .modal-header {
     padding: 20px !important;
@@ -373,22 +380,38 @@ h1, h2, h3, h4, h5, h6 {
   .modal {
     position: absolute !important;
     height: 100% !important;
-    overflow-y: hidden !important;
+    overflow: hidden !important;
     border: none !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+    opacity: 1 !important;
 
     .modal-dialog {
       min-height: 100% !important;
       height: 100% !important;
-      overflow-y: hidden !important;
       border: none !important;
+      transform: none !important;
+      transition: none !important;
+      animation: none !important;
+      opacity: 1 !important;
 
       .modal-content {
         display: grid;
         grid-template-columns: 1fr;
+        grid-template-rows: max-content 1fr max-content;
         min-height: 100% !important;
         height: 100%;
-        overflow-y: hidden !important;
         border: none !important;
+        transform: none !important;
+        transition: none !important;
+        animation: none !important;
+        opacity: 1 !important;
+
+        .modal-body {
+          width: 100vw;
+          border: none !important;
+        }
       }
 
       .preloader {

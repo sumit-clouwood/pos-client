@@ -126,7 +126,7 @@
             word-break: break-word;
             line-height: $px20;
 
-          font-size: 12px;
+            font-size: 12px;
 
           }
 
@@ -309,7 +309,8 @@
             transition: .2s linear;
             font-size: $px18;
             position: relative;
-            &:not(.color-dashboard-background){
+
+            &:not(.color-dashboard-background) {
               color: #fff;
             }
 
@@ -359,9 +360,11 @@
               align-items: center;
               justify-content: center;
             }
+
             .item-image-only {
               min-height: 104px;
             }
+
             .food-menu-item-price {
               display: none;
             }
@@ -373,13 +376,21 @@
 }
 
 @include responsive(mobile) {
-  .ullist-inventory-location{
+  .ullist-inventory-location {
     padding: 0 !important;
-    .p-3{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    .p-3 {
       background-color: #fff;
       display: grid;
-      height: 100vh;
+      height: 100%;
+      grid-template-rows: 1fr;
       padding: 20px !important;
+
       .margin220 {
         height: 100%;
         display: grid;

@@ -5,27 +5,32 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import discount from '../pos/footer/popups/Discount.vue'
+import { mapGetters } from "vuex";
+import discount from "../pos/footer/popups/Discount.vue";
 
 export default {
   computed: {
-    ...mapGetters(['discountHendler']),
+    ...mapGetters(["discountHendler"])
   },
   components: {
-    discount,
-  },
-}
+    discount
+  }
+};
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import "../../assets/scss/pixels_rem.scss";
+@import "../../assets/scss/variables.scss";
+@import "../../assets/scss/mixins.scss";
 
 @include responsive(mobile) {
   #select-discount {
     display: none !important;
+    .modal-dialog {
+      .modal-content {
+        grid-template-rows: max-content 1fr max-content;
+      }
+    }
   }
 }
 

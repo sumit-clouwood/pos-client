@@ -19,7 +19,7 @@
           line-height: normal;
           letter-spacing: 0.6px;
           color: #3f4146;
-          @include responsive(mobile){
+          @include responsive(mobile) {
             font-size: 18px;
           }
         }
@@ -215,7 +215,8 @@
 
           .divide-block {
             padding: 0;
-            h5{
+
+            h5 {
               margin: 0;
             }
           }
@@ -335,6 +336,10 @@
 
         .modal-body {
           padding: 20px;
+
+          > .color-text-invert {
+            margin-bottom: 10px;
+          }
 
           .add-note-area {
             input {

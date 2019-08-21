@@ -18,10 +18,7 @@
 
                         <!--content-->
                         <Receipt :orderDetails="selectedOrder.item"/>
-                        <History
-                                :orderDetails="selectedOrder.item"
-                                :userDetails="selectedOrder.lookups"
-                        />
+                        <History :orderDetails="selectedOrder.item" :userDetails="selectedOrder.lookups"/>
                         <Modification/>
                         <Payment :orderDetails="selectedOrder.item"/>
                     </div>
@@ -37,8 +34,7 @@
                                         data-toggle="dropdown"
                                         aria-haspopup="true"
                                         aria-expanded="false"
-                                >
-                                    {{ _t('Reprint') }}
+                                >{{ _t('Reprint') }}
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <a
@@ -47,8 +43,7 @@
                                             v-for="(template, index) in selectedOrder.invoice"
                                             :key="index"
                                             @click="printInvoice(template)"
-                                    >{{ template.name }}</a
-                                    >
+                                    >{{ template.name }}</a>
                                 </div>
                             </div>
                         </div>
@@ -61,9 +56,7 @@
                     >
                         <div class="button-content-container">
                             <div class="button-icon-container"></div>
-                            <div class="button-caption">
-                                {{ _t('Cancel Order') }}
-                            </div>
+                            <div class="button-caption">{{ _t('Cancel Order') }}</div>
                         </div>
                     </button>
                     <button
@@ -73,9 +66,7 @@
                     >
                         <div class="button-content-container">
                             <div class="button-icon-container"></div>
-                            <div class="button-caption">
-                                {{ _t('Modify Order') }}
-                            </div>
+                            <div class="button-caption">{{ _t('Modify Order') }}</div>
                         </div>
                     </button>
                     <button
@@ -89,8 +80,7 @@
                                     data-toggle="modal"
                                     data-target="#display-order"
                                     @click="fetchSelectedCustomer(selectedOrder.customer._id)"
-                            >
-                                {{ _t('Open Past Orders') }}
+                            >{{ _t('Open Past Orders') }}
                             </div>
                         </div>
                     </button>
@@ -101,9 +91,7 @@
                     >
                         <div class="button-content-container">
                             <div class="button-icon-container"></div>
-                            <div class="button-caption">
-                                {{ _t('Close') }}
-                            </div>
+                            <div class="button-caption">{{ _t('Close') }}</div>
                         </div>
                     </button>
                 </div>
@@ -116,20 +104,20 @@
 </template>
 
 <script>
-    import {mapState, mapGetters, mapActions} from 'vuex'
+    import {mapState, mapGetters, mapActions} from "vuex";
 
-    import Invoice from '@/components/pos/content/cart/payNow/Invoice'
-    import Receipt from '@/components/pos/content/orderDetails/rightContent/Receipt'
-    import History from '@/components/pos/content/orderDetails/rightContent/History'
-    import Modification from '@/components/pos/content/orderDetails/rightContent/Modification'
-    import Payment from '@/components/pos/content/orderDetails/rightContent/Payment'
-    import RightPartHeader from '@/components/pos/content/orderDetails/RightPartHeader'
-    import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
-    import CancelOrderPopup from '@/components/pos/content/orderDetails/CancelOrderPopup'
-    import CustomerInformation from '@/components/pos/footer/popups/ManageCustomer/CustomerInformation'
+    import Invoice from "@/components/pos/content/cart/payNow/Invoice";
+    import Receipt from "@/components/pos/content/orderDetails/rightContent/Receipt";
+    import History from "@/components/pos/content/orderDetails/rightContent/History";
+    import Modification from "@/components/pos/content/orderDetails/rightContent/Modification";
+    import Payment from "@/components/pos/content/orderDetails/rightContent/Payment";
+    import RightPartHeader from "@/components/pos/content/orderDetails/RightPartHeader";
+    import LeftPart from "@/components/pos/content/orderDetails/LeftPart";
+    import CancelOrderPopup from "@/components/pos/content/orderDetails/CancelOrderPopup";
+    import CustomerInformation from "@/components/pos/footer/popups/ManageCustomer/CustomerInformation";
 
     export default {
-        name: 'OrderDetailPopup',
+        name: "OrderDetailPopup",
         props: {},
         components: {
             RightPartHeader,
@@ -140,22 +128,22 @@
             LeftPart,
             Invoice,
             CancelOrderPopup,
-            CustomerInformation,
+            CustomerInformation
         },
         computed: {
-            ...mapState('order', ['selectedOrder']),
-            ...mapGetters('location', ['_t']),
+            ...mapState("order", ["selectedOrder"]),
+            ...mapGetters("location", ["_t"])
         },
         methods: {
-            ...mapActions('customer', ['fetchSelectedCustomer']),
-            ...mapActions('deliveryManager', ['printInvoice']),
+            ...mapActions("customer", ["fetchSelectedCustomer"]),
+            ...mapActions("deliveryManager", ["printInvoice"]),
             modifyOrder() {
-                this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
-                    this.$router.push({path: this.$store.getters['context/store']})
-                })
-            },
-        },
-    }
+                this.$store.dispatch("deliveryManager/modifyOrder").then(() => {
+                    this.$router.push({path: this.$store.getters["context/store"]});
+                });
+            }
+        }
+    };
 </script>
 <style scoped lang="scss">
     #orderDetailsPopup .modal-dialog {
@@ -163,9 +151,9 @@
     }
 </style>
 <style lang="scss">
-    @import '../../../assets/scss/pixels_rem.scss';
-    @import '../../../assets/scss/variables.scss';
-    @import '../../../assets/scss/mixins.scss';
+    @import "../../../assets/scss/pixels_rem.scss";
+    @import "../../../assets/scss/variables.scss";
+    @import "../../../assets/scss/mixins.scss";
 
     @include responsive(mobile) {
         #orderDetailsPopup {
@@ -178,6 +166,7 @@
                 .dialog-body {
                     display: block;
                     position: static;
+                    overflow: auto;
 
                     .details {
                         display: grid;
@@ -186,11 +175,24 @@
 
                         > div {
                             padding: 0 0 20px 0;
+                            display: grid;
+                            grid-template-columns: 1fr;
+                            align-content: start;
+                            align-items: flex-start;
+
+                            .details-item {
+                                border-bottom: 1px solid $gray-middle;
+                                padding-bottom: 10px;
+                                display: grid;
+                                grid-template-columns: max-content max-content;
+                                grid-gap: 10px;
+                            }
                         }
                     }
 
-                    .left-part {
+                    .left-part, .right-part {
                         border: none;
+                        height: auto;
                     }
 
                     .right-part {
@@ -201,7 +203,8 @@
                                 .table {
                                     padding: 0;
                                 }
-                                .receipt-summary{
+
+                                .receipt-summary {
                                     text-align: left;
                                     font-weight: bold;
                                 }
@@ -212,14 +215,21 @@
                     .buttons {
                         display: grid;
                         grid-template-columns: 1fr 1fr;
+                        grid-gap: 5px;
+
+                        button.button {
+                            margin: 0;
+                        }
 
                         .v-menu {
                             display: block;
-                            margin-right: 0.3125rem;
+                            margin-right: 0;
 
                             .dropdown {
                                 display: block;
-                                .dropdown-menu{
+                                width: 100%;
+
+                                .dropdown-menu {
                                     overflow: hidden;
                                 }
 
