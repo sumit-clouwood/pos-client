@@ -101,6 +101,9 @@ const actions = {
             //user coming through login
             //get store from available stores
             commit(mutation.SET_STORE, storedata.data.available_stores[0])
+          }
+
+          if (state.store._id) {
             //set context as well
             commit('context/SET_BRAND_ID', state.brand._id, { root: true })
             commit('context/SET_STORE_ID', state.store._id, { root: true })
