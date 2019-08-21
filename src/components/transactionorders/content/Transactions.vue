@@ -6,7 +6,7 @@
           &lt; {{ _t('Back') }}
         </button>
       </div>
-      <search @search_ready="getAllOrders" />
+      <search />
     </div>
     <div :class="['food-wrapper', 'active']">
       <div v-if="displayTransactionOrders" class="left_size_details">

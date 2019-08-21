@@ -62,15 +62,10 @@ export default {
   },
   methods: {
     searchingItems(searchTransactions) {
-      /*this.$store.getters['transactionOrders/listTransactionOrders'](
-        this.timezoneString,
+      this.$store.dispatch(
+        'transactionOrders/setTransactionOrders',
         searchTransactions
-      )*/
-      this.$emit('search_ready', this.timezoneString, searchTransactions)
-      /*this.$store.dispatch(
-        'transactionOrders/collectSearchTransactions',
-        searchTransactions
-      )*/
+      )
     },
     searchHendlerChange() {
       this.$store.dispatch('searchHendlerChange')

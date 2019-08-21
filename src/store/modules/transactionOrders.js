@@ -84,6 +84,7 @@ const actions = {
     let finalArr = {}
     let result = []
     let transactionOrderDates = []
+    let searchedItems = []
     let timezoneString = rootState.location.timezoneString
     let data = state.transactionOrders
     if (data) {
@@ -106,6 +107,50 @@ const actions = {
         result.push(value)
       })
     }
+    if (searchTerm != '' && searchTerm.length > 0) {
+      result.map(order => {
+        //Searching with Order No.
+        if (
+          order.order_no
+            .toString()
+            .toLowerCase()
+            .indexOf(searchTerm.toString().toLowerCase()) != -1
+        ) {
+          searchedItems.push(order)
+        }
+
+        //Searching with Order Item Names
+        order.items.map(item => {
+          if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
+            searchedItems.push(order)
+          }
+        })
+
+        //Searching with Order Customer Name
+        if (order.customer != null && order.customer.length > 0) {
+          let customerName = LookupData.get({
+            collection: state.pageLookups.brand_customers._id,
+            matchWith: order.customer,
+            selection: 'name',
+          })
+          order['customer_name'] = customerName
+          if (
+            order.customer_name
+              .toString()
+              .toLowerCase()
+              .indexOf(searchTerm.toString().toLowerCase()) != -1
+          ) {
+            searchedItems.push(order)
+          }
+        }
+      })
+      result = searchedItems
+    }
+
+    if (searchTerm) {
+      // eslint-disable-next-line no-console
+      console.log(searchTerm)
+    }
     if (result) {
       result = result.reduce(function(r, a) {
         r[a.order_date] = r[a.order_date] || []
@@ -113,8 +158,6 @@ const actions = {
         return r
       }, Object.create(null))
       finalArr = JSON.stringify(result)
-      // eslint-disable-next-line no-console
-      console.log(searchTerm)
       if (finalArr.length > 0) {
         commit('TRANSACTIONS_ORDERS', JSON.parse(finalArr))
       }
