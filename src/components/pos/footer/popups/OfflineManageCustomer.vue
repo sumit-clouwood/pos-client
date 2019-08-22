@@ -116,7 +116,7 @@
                     }
 
                     .modal-body {
-                        padding-top: 0;
+                        padding-top: 0 !important;
                         overflow: hidden;
                         display: grid;
                         grid-template-rows: max-content 1fr;
