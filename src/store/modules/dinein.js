@@ -57,11 +57,11 @@ const actions = {
     })
   },
 
-  reservationUpdateStatus({ dispatch }, reservationId, status) {
+  reservationUpdateStatus({ dispatch, commit }, reservationId, status) {
     DineInService.updateReservationStatus(reservationId, status).then(
       response => {
         // eslint-disable-next-line no-console
-        console.log(response)
+        commit(mutation.RESERVATION_ID, response.data)
         dispatch('getDineInOrders')
       }
     )
@@ -222,6 +222,9 @@ const mutations = {
   },
   [mutation.AVAILABLE_TABLES](state, availableTables) {
     state.availableTables = availableTables
+  },
+  [mutation.RESERVATION_ID](state, reservationId) {
+    state.reservation = reservationId
   },
   [mutation.RESERVATION_RESPONSE](state, reservation) {
     // eslint-disable-next-line no-console
