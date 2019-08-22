@@ -210,3 +210,11 @@ export default {
 }
 
 </style>
+<style lang="scss">
+  .customer-insight{
+    #customer-notes-add{
+      height: 45px;
+      padding: 0 25px;
+    }
+  }
+</style>

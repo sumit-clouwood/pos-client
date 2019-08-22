@@ -55,9 +55,6 @@ export default {
         display: flex;
         flex-direction: column;
 
-        /*display: grid;*/
-        /*grid-template-rows: max-content max-content 1fr max-content;*/
-
         .modal-header {
           height: 70px;
           background-color: #fff;
@@ -85,7 +82,6 @@ export default {
               padding: 20px;
               box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
               width: 100%;
-              // height: 75px;
               background-color: #fff;
               z-index: 1;
 
@@ -109,7 +105,6 @@ export default {
 
         .modal-body {
           margin: 0;
-          /*border-top: 1px solid #ccc;*/
           max-height: none;
           order: 4;
           margin-bottom: 75px;
@@ -166,18 +161,26 @@ export default {
                     position: absolute;
                     width: 20px;
                     height: 20px;
+                                        }
 
                     input {
-                      display: none;
+
 
                       &[type='checkbox'] {
-                        &:checked + span {
-                          background-color: $green-middle;
-                        }
-                      }
-                    }
+                        &:checked + div {
+                          display: block;
 
                     span {
+                                                        background-color: $green-middle;
+                                                        border: none;
+                                                        border-radius: 3px;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+
+                                        .checkBox {
                       width: 20px;
                       height: 20px;
                       line-height: inherit;
@@ -199,6 +202,17 @@ export default {
                         border: none;
                       }
                     }
+
+                                        .borderCheck {
+                                            display: none;
+                                            position: absolute;
+                                            top: -2px;
+                                            right: -2px;
+                                            bottom: -2px;
+                                            left: -2px;
+                                            border: 2px solid $green-middle;
+                                            border-radius: 3px;
+                                            pointer-events: none;
                   }
                 }
               }

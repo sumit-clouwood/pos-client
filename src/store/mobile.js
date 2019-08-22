@@ -169,6 +169,10 @@ export default {
       state.itemFood = []
       state.bascketItems = []
     },
+        CHOOSE_CURENT_PAY_METHOD: (state, payLoad) => {
+            state.payMethod = payLoad
+            // console.log(payLoad)
+        }
   },
   actions: {
     CloseCategoryAndSubCategory({ commit }) {
@@ -258,6 +262,9 @@ export default {
     mobileLogout({ commit }) {
       commit('MOBILE_LOGOUT')
     },
+        chooseCurentPayMethod({commit}, payLoad){
+            commit('CHOOSE_CURENT_PAY_METHOD', payLoad)
+        }
   },
   getters: {
     searchHendler: state => state.searchHendler,

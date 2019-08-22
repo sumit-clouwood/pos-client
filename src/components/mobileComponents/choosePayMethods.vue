@@ -77,16 +77,39 @@ export default {
         grid-gap: 15px;
         margin-top: 20px;
 
+                    &::-webkit-scrollbar {
+                        width: 0;
+                    }
+
         > div {
           display: grid;
           grid-template-columns: max-content 1fr;
           align-items: center;
           grid-gap: 20px;
-          //border: 1px solid $gray-middle;
+                        border: 2px solid $gray-middle;
           transition: 0.3s ease-out;
+                        border-radius: 5px;
+                        position: relative;
 
           &.active {
-            //border: 1px solid $green-middle;
+                            border: 2px solid $green-middle;
+
+                            &:after {
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                content: "\f00c";
+                                font-family: FontAwesome;
+                                position: absolute;
+                                width: 20px;
+                                height: 20px;
+                                top: -2px;
+                                right: -2px;
+                                border-bottom-left-radius: 3px;
+                                border-top-right-radius: 3px;
+                                background-color: $green-middle;
+                                color: #fff;
+                            }
           }
 
           &:active {
@@ -104,8 +127,10 @@ export default {
           }
 
           img {
-            width: 63px;
-            height: 63px;
+                            width: 50px;
+                            height: 50px;
+                            margin-left: 5px;
+                            border-radius: 3px;
           }
         }
       }
