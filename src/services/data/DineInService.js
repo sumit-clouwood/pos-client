@@ -45,10 +45,17 @@ export default {
     )
   },
 
-  updateReservationStatus(reservationId, status) {
+  updateReservationStatus(reservationId, action) {
     return DataService.post(
-      // dine_in_order_finished` \dine_in_about_to_finish
-      `/model/reservations/id/${reservationId}/${status}`
+      // dine_in_order_finished` /dine_in_about_to_finish /cancelled_reservation
+      `/model/reservations/id/${reservationId}/${action}`
+    )
+  },
+
+  dineInCovers() {
+    return DataService.post(
+      // dine_in_order_finished` /dine_in_about_to_finish /cancelled_reservation
+      `/model/brand_dine_in_covers?page_id=brand_dine_in_covers_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=priority`
     )
   },
 
@@ -56,7 +63,7 @@ export default {
     // action: add, move_waiting_to_reservation
     return DataService.post(`/model/reservations/${action}`, data)
     /*Save order :
-table_reservation_id : id of above
-covers : []*/
+      table_reservation_id : id of above
+      covers : []*/
   },
 }

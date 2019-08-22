@@ -291,12 +291,26 @@
           </li>
           <li
             class="pay-now color-dashboard-background color-main"
-            v-show="orderType.OTApi !== 'call_center'"
+            v-show="
+              orderType.OTApi !== 'call_center' && orderType.OTApi !== 'dine_in'
+            "
             @click="payNowClick()"
           >
             <a role="button">
               <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
               <span class="pay-btn color-text-invert">{{ _t('Pay Now') }}</span>
+            </a>
+          </li>
+          <li
+            class="pay-now color-dashboard-background color-main"
+            v-show="orderType.OTApi === 'dine_in'"
+            @click="payNowClick()"
+          >
+            <a role="button">
+              <img src="img/pos/payment.svg" :alt="_t('Place Order')" />
+              <span class="pay-btn color-text-invert">
+                {{ _t('Place Order') }}
+              </span>
             </a>
           </li>
         </ul>
@@ -425,7 +439,11 @@ export default {
   },
   methods: {
     payNowClick() {
-      clickPayNow()
+      if (this.orderType.OTApi !== 'dine_in') {
+        clickPayNow()
+      } else {
+        clickPayNow()
+      }
     },
     viewHoldOrders() {
       this.vbutton = 'new'

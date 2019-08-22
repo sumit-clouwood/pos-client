@@ -1911,3 +1911,10 @@ table#running-order tr > td:last-child > span{
   width: auto;
   padding-right: 10px;
 }
+.reservation-cancel {
+  position: absolute;
+  bottom: 0;
+  color: #fff;
+  right: 0;
+  padding: 5px !important;
+}

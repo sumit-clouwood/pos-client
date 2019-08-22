@@ -23,7 +23,7 @@
 </template>
 <script>
 /* global $ */
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
 export default {
@@ -57,6 +57,7 @@ export default {
     this.updateTableOnArea()
   },
   methods: {
+    ...mapActions('dinein', ['reservationUpdateStatus']),
     baseURL(link) {
       return window.location.href.replace('dine-in', 'dine-in/' + link)
     },
@@ -194,16 +195,25 @@ export default {
           order.orderIds.forEach(id => {
             url += '/' + id
             toolTipText +=
+              '<div class="table-action">' +
               '<a class="dropdown-item text-capitalize" href="' +
               url +
               '">' +
               order.tableNumber +
               // (i++ + 10).toString(36) +
-              '</a>'
+              '</a>' +
+              '<span class="cursor-pointer text-danger reservation-cancel" @click="cancelReservation(' +
+              order.reservationId +
+              ')">✖</span>' +
+              '</div>'
           })
         }
       })
       return toolTipText
+    },
+
+    cancelReservation(reservationId) {
+      this.reservationUpdateStatus(reservationId, 'cancelled_reservation')
     },
 
     showOptions(datum) {
@@ -229,7 +239,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 svg#dine-in-area {
   background: #f8fbff;
 }
@@ -248,5 +258,16 @@ svg#dine-in-area {
   border-radius: 8px;
   box-shadow: 0 2px 4px 0 rgba(187, 187, 187, 0.5);
   background-color: #f8fbff;
+}
+
+.dinein_table {
+  &:hover {
+    svg {
+      path {
+        fill: #62bb31;
+        stroke: #62bb31;
+      }
+    }
+  }
 }
 </style>

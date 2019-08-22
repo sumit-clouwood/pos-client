@@ -14,7 +14,7 @@ const state = {
   tableStatus: {},
   orderOnTables: {},
   availableTables: {},
-  reservation: {},
+  reservation: false,
   orderType: { OTview: 'Dine In', OTApi: 'dine_in' },
 }
 const getters = {
@@ -55,6 +55,17 @@ const actions = {
       commit(mutation.DINE_IN_COMPLETED_ORDERS, response.data)
     })
   },
+
+  reservationUpdateStatus({ dispatch }, reservationId, status) {
+    DineInService.updateReservationStatus(reservationId, status).then(
+      response => {
+        // eslint-disable-next-line no-console
+        console.log(response)
+        dispatch('getDineInOrders')
+      }
+    )
+  },
+
   getDineInArea({ commit, dispatch }) {
     DineInService.dineAreas().then(response => {
       commit(mutation.DINE_IN_AREAS, response.data)
@@ -106,6 +117,7 @@ const actions = {
             tableId: table._id,
             orderIds: order.related_orders_ids,
             tableNumber: order.number,
+            reservationId: order._id,
           })
         })
       } else {
@@ -131,19 +143,21 @@ const actions = {
   },
 
   addReservation({ commit, state }, tableId) {
-    const params = [
-      {
-        start_date: moment().format('YYYY-MM-DD'),
-        start_time: moment().format('hh:mm'),
-        assigned_table_id: tableId,
-        number_of_guests: 1,
-        customers: [],
-      },
-    ]
-    DineInService.reservationOperation(...params, 'add').then(response => {
-      commit(mutation.RESERVATION_RESPONSE, response.data)
-      commit('order/ORDER_TYPE', state.orderType, { root: true })
-    })
+    if (!state.reservation) {
+      const params = [
+        {
+          start_date: moment().format('YYYY-MM-DD'),
+          start_time: moment().format('hh:mm'),
+          assigned_table_id: tableId,
+          number_of_guests: 1,
+          customers: [],
+        },
+      ]
+      DineInService.reservationOperation(...params, 'add').then(response => {
+        commit(mutation.RESERVATION_RESPONSE, response.data)
+        commit('order/ORDER_TYPE', state.orderType, { root: true })
+      })
+    }
   },
   getSelectedOrder({ dispatch, commit, state, rootState }, orderId) {
     dispatch('order/selectedOrderDetails', orderId, {
