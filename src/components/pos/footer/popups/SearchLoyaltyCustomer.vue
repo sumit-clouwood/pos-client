@@ -281,10 +281,9 @@ export default {
         }
 
         .modal-footer {
-
           .cursor-pointer {
             background-color: $green-middle;
-                            height: 50px;
+            height: 50px;
             color: #fff;
             border-radius: 3px;
             display: grid;

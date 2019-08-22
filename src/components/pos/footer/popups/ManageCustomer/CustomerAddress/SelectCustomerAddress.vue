@@ -135,7 +135,6 @@ export default {
         }
 
         .modal-footer {
-
           .btn-announce {
             display: grid;
             grid-template-columns: max-content max-content max-content;

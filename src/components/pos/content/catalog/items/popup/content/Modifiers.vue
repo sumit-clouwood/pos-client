@@ -9,12 +9,12 @@
     </div>
     <div class="POSItemOptions_choose POSItemOptions_choose_radio">
       <div
-        v-for="(modifier) in subgroup.modifiers"
+        v-for="modifier in subgroup.modifiers"
         :key="modifier._id"
         class="POSItemOptions_choose_choice"
       >
         <label
-          :class="['POSItemOptions_choose_label',  modifier.class]"
+          :class="['POSItemOptions_choose_label', modifier.class]"
           v-if="subgroup.no_of_selection > 1"
         >
           <span class="customradioc">
@@ -155,10 +155,10 @@ export default {
   },
   mounted() {},
   methods: {
-    addClass(index){
-      if(this.subgroup.modifiers[index].class !== 'active'){
+    addClass(index) {
+      if (this.subgroup.modifiers[index].class !== 'active') {
         this.subgroup.modifiers[index].class = 'active'
-      }else{
+      } else {
         this.subgroup.modifiers[index].class = ''
       }
 

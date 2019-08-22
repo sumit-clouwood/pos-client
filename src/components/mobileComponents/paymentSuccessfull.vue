@@ -17,28 +17,28 @@
 </template>
 
 <script>
-import payFooter from "../pos/content/cart/payNow/Footer.vue";
-import totalAmount from "../pos/content/cart/payNow/TotalAmount.vue";
-import mobilePayHeader from "./mobilePayHeader.vue";
-import { mapGetters } from "vuex";
+import payFooter from '../pos/content/cart/payNow/Footer.vue'
+import totalAmount from '../pos/content/cart/payNow/TotalAmount.vue'
+import mobilePayHeader from './mobilePayHeader.vue'
+import { mapGetters } from 'vuex'
 
 export default {
-  name: "paymentSuccessfull",
+  name: 'paymentSuccessfull',
   components: {
     payFooter,
     totalAmount,
-    mobilePayHeader
+    mobilePayHeader,
   },
   computed: {
-    ...mapGetters(["successfullHendler"])
-  }
-};
+    ...mapGetters(['successfullHendler']),
+  },
+}
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/pixels_rem.scss";
-@import "../../assets/scss/variables.scss";
-@import "../../assets/scss/mixins.scss";
+@import '../../assets/scss/pixels_rem.scss';
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
 
 .payment-successfull {
   position: fixed;

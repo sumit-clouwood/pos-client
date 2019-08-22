@@ -407,9 +407,9 @@ export default {
       return re.test(email)
     },
   },
-        beforeMount() {
-            console.log(this.fetchDeliveryAreas)
-        }
+  beforeMount() {
+    console.log(this.fetchDeliveryAreas)
+  },
 }
 </script>
 <style scoped lang="css">

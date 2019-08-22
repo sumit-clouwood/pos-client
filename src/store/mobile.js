@@ -1,64 +1,64 @@
 export default {
-    state: {
-        searchHendler: false,
-        allCategoryHendler: false,
-        subCategoryHendler: false,
-        foodMenuHendler: true,
-        mainOrdersHendler: false,
-        totalWrapperHendler: false,
-        footerButtonHendler: false,
-        payNowCalcHendler: false,
-        footerMenuHendler: true,
-        profileHendler: false,
-        paymentMethodsHendler: false,
-        openManageCustomerHendler: false,
-        itemFood: [],
-        payMethod: 'Gift Card',
-        methodCardHendler: false,
-        QRMethodGhange: false,
-        loyaltyHendler: false,
-        discountHendler: false,
-        addNoteHendler: false,
-        loyaltyPaymentHendler: false,
-        cardInputHendler: false,
-        successfullHendler: false,
-        openUserHendler: true,
-        userLoginHendler: false,
-        userCalcHendler: false,
-        bascketItems: [],
-        testUsers: [
-            {
-                id: 0,
-                name: 'Aisyah Zidni',
-                img: 'testUserImg-3.jpg',
-                key: 1234,
-            },
-            {
-                id: 1,
-                name: 'Nirmala Azalea',
-                img: 'testUserImg-1.jpg',
-                key: 1234,
-            },
-            {
-                id: 2,
-                name: 'Bena Kane',
-                img: 'testUserImg-2.jpg',
-                key: 1234,
-            },
-            {
-                id: 3,
-                name: 'Firmino Kudo',
-                img: 'testUserImg-0.jpg',
-                key: 1234,
-            },
-        ],
+  state: {
+    searchHendler: false,
+    allCategoryHendler: false,
+    subCategoryHendler: false,
+    foodMenuHendler: true,
+    mainOrdersHendler: false,
+    totalWrapperHendler: false,
+    footerButtonHendler: false,
+    payNowCalcHendler: false,
+    footerMenuHendler: true,
+    profileHendler: false,
+    paymentMethodsHendler: false,
+    openManageCustomerHendler: false,
+    itemFood: [],
+    payMethod: 'Gift Card',
+    methodCardHendler: false,
+    QRMethodGhange: false,
+    loyaltyHendler: false,
+    discountHendler: false,
+    addNoteHendler: false,
+    loyaltyPaymentHendler: false,
+    cardInputHendler: false,
+    successfullHendler: false,
+    openUserHendler: true,
+    userLoginHendler: false,
+    userCalcHendler: false,
+    bascketItems: [],
+    testUsers: [
+      {
+        id: 0,
+        name: 'Aisyah Zidni',
+        img: 'testUserImg-3.jpg',
+        key: 1234,
+      },
+      {
+        id: 1,
+        name: 'Nirmala Azalea',
+        img: 'testUserImg-1.jpg',
+        key: 1234,
+      },
+      {
+        id: 2,
+        name: 'Bena Kane',
+        img: 'testUserImg-2.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+    ],
+  },
+  mutations: {
+    CLOSE_CATEGORY_AND_SUB_CATEGORY: state => {
+      state.allCategoryHendler = false
+      state.subCategoryHendler = false
+      state.foodMenuHendler = true
     },
-    mutations: {
-        CLOSE_CATEGORY_AND_SUB_CATEGORY: state => {
-            state.allCategoryHendler = false
-            state.subCategoryHendler = false
-            state.foodMenuHendler = true
-        },
     SEARCH_HENDLER_CHANGE: state => {
       state.searchHendler = !state.searchHendler
     },
@@ -171,9 +171,9 @@ export default {
     },
   },
   actions: {
-        CloseCategoryAndSubCategory({commit}) {
-            commit('CLOSE_CATEGORY_AND_SUB_CATEGORY')
-        },
+    CloseCategoryAndSubCategory({ commit }) {
+      commit('CLOSE_CATEGORY_AND_SUB_CATEGORY')
+    },
     backCategory({ commit }) {
       commit('BACK_CATEGORY')
     },
