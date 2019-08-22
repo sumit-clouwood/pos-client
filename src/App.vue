@@ -111,8 +111,8 @@ export default {
           })
         }
       }
-    } else if (!this.$store.state.context.storeId) {
     }
+    /*else if (!this.$store.state.context.storeId) {}*/
     this.$store
       .dispatch('auth/checkLogin')
       .then(() => {
