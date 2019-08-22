@@ -91,11 +91,11 @@
               </div>
             </div>
           </div>
-          <div class="food-block" v-else>
-            <div class="text-danger text-center font-weight-bold">
-              {{ _t('No orders found.') }}
-            </div>
-          </div>
+        </div>
+      </div>
+      <div class="food-block" v-else>
+        <div class="text-danger text-center font-weight-bold">
+          {{ _t('No orders found.') }}
         </div>
       </div>
     </div>

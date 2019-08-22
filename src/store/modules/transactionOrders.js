@@ -120,65 +120,18 @@ const actions = {
       })
       result = searchedItems
     }
-
-    if (searchTerm) {
-      // eslint-disable-next-line no-console
-      console.log(searchTerm)
-    }
-    if (result) {
+    if (result.length > 0) {
       result = result.reduce(function(r, a) {
         r[a.order_date] = r[a.order_date] || []
         r[a.order_date].push(a)
         return r
       }, Object.create(null))
       finalArr = JSON.stringify(result)
-      if (finalArr.length > 0) {
-        commit('TRANSACTIONS_ORDERS', JSON.parse(finalArr))
-      }
     }
-  },
-  collectSearchTransactions({ commit, state, dispatch }, searchTerm) {
-    let searchedItems = []
-    if (searchTerm != '' && searchTerm.length > 0) {
-      state.transactionOrders.data.map(order => {
-        //Searching with Order No.
-        if (
-          order.order_no
-            .toString()
-            .toLowerCase()
-            .indexOf(searchTerm.toString().toLowerCase()) != -1
-        ) {
-          searchedItems.push(order)
-        }
-
-        //Searching with Order Item Names
-        order.items.map(item => {
-          if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
-            searchedItems.push(order)
-          }
-        })
-
-        //Searching with Order Customer Name
-        if (order.customer != null && order.customer.length > 0) {
-          let customerName = LookupData.get({
-            collection: state.pageLookups.brand_customers._id,
-            matchWith: order.customer,
-            selection: 'name',
-          })
-          order['customer_name'] = customerName
-          if (
-            order.customer_name
-              .toString()
-              .toLowerCase()
-              .indexOf(searchTerm.toString().toLowerCase()) != -1
-          ) {
-            searchedItems.push(order)
-          }
-        }
-      })
-      commit(mutation.SEARCH_TRANSACTIONS, searchedItems)
+    if (finalArr.length > 0) {
+      commit('TRANSACTIONS_ORDERS', JSON.parse(finalArr))
     } else {
-      dispatch('getTransactionOrders')
+      commit('TRANSACTIONS_ORDERS', false)
     }
   },
 }
@@ -191,16 +144,6 @@ const mutations = {
   //Collection to display only.
   [mutation.TRANSACTIONS_ORDERS](state, transactionOrders) {
     state.displayTransactionOrders = transactionOrders
-  },
-  //Set a third collection for searching, will be merged into TRANSACTIONS_ORDERS mutate.
-  [mutation.SEARCH_TRANSACTIONS](state, transactionOrders) {
-    if (transactionOrders.data && transactionOrders.data.length > 0) {
-      state.displayTransactionOrders = transactionOrders.data
-    } else if (transactionOrders.length > 0) {
-      state.displayTransactionOrders = transactionOrders
-    } else {
-      state.displayTransactionOrders = {}
-    }
   },
   [mutation.LOADING](state, status) {
     state.loading = status
