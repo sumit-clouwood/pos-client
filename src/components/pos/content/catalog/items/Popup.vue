@@ -55,9 +55,6 @@
                     display: flex;
                     flex-direction: column;
 
-                    /*display: grid;*/
-                    /*grid-template-rows: max-content max-content 1fr max-content;*/
-
                     .modal-header {
                         height: 70px;
                         background-color: #fff;
@@ -85,7 +82,6 @@
                                 padding: 20px;
                                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                                 width: 100%;
-                                // height: 75px;
                                 background-color: #fff;
                                 z-index: 1;
 
@@ -109,7 +105,6 @@
 
                     .modal-body {
                         margin: 0;
-                        /*border-top: 1px solid #ccc;*/
                         max-height: none;
                         order: 4;
                         margin-bottom: 75px;
@@ -168,25 +163,7 @@
                                             height: 20px;
                                         }
 
-                                        input {
-                                            display: none;
 
-                                            /* &[type="checkbox"] {
-                                                 &:checked + span {
-                                                     background-color: $green-middle;
-                                                 }
-                                             }*/
-
-                                            &[type="checkbox"] {
-                                                &:checked + div {
-                                                    display: block;
-
-                                                    span {
-                                                        background-color: $green-middle;
-                                                    }
-                                                }
-                                            }
-                                        }
 
                                         .checkBox {
                                             width: 20px;

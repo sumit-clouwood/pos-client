@@ -164,6 +164,10 @@
               border-radius: 5px;
               position: relative;
 
+              .borderCheck {
+                display: none;
+              }
+
               .customradioc {
                 position: absolute;
                 top: -1px;
@@ -237,7 +241,6 @@
             }
 
             .POSItemOptions_choose_choice {
-              //width: 32%;
               display: inline-block;
               margin-bottom: $px18;
 
@@ -246,6 +249,26 @@
                 vertical-align: middle;
                 margin: 0;
                 border: 2px solid $gray-middle;
+
+                input {
+                  display: none;
+                  /* &[type="checkbox"] {
+                       &:checked + span {
+                           background-color: $green-middle;
+                       }
+                   }*/
+                  &[type="checkbox"] {
+                    &:checked + div {
+                      display: block;
+
+                      span {
+                        background-color: $blue-middle;
+                        border: none;
+                        border-radius: 3px;
+                      }
+                    }
+                  }
+                }
 
                 img {
                   margin-right: $px5;
@@ -267,6 +290,41 @@
                 display: inline-block;
                 vertical-align: middle;
                 margin-right: $px5;
+
+                .checkBox {
+                  width: 20px;
+                  height: 20px;
+                  line-height: inherit;
+                  border-top: none;
+                  border-right: none;
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  border: none;
+
+                  &:before {
+                    font-family: "FontAwesome";
+                    content: "\f00c";
+                    position: static !important;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 14px !important;
+                    border: none;
+                  }
+                }
+              }
+
+              .borderCheck {
+                display: none;
+                position: absolute;
+                top: -2px;
+                right: -2px;
+                bottom: -2px;
+                left: -2px;
+                border: 2px solid $blue-middle;
+                border-radius: 3px;
+                pointer-events: none;
               }
             }
           }
