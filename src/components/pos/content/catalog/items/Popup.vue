@@ -163,6 +163,19 @@
                                             height: 20px;
                                         }
 
+                                        input {
+                                            &[type="checkbox"] {
+                                                &:checked + div {
+                                                    display: block;
+
+                                                    span {
+                                                        background-color: $green-middle;
+                                                        border: none;
+                                                        border-radius: 3px;
+                                                    }
+                                                }
+                                            }
+                                        }
 
 
                                         .checkBox {
