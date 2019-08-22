@@ -213,6 +213,7 @@ export default {
     },
 
     cancelReservation(reservationId) {
+      alert(reservationId)
       this.reservationUpdateStatus(reservationId, 'cancelled_reservation')
     },
 

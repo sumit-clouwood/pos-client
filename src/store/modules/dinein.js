@@ -13,9 +13,10 @@ const state = {
   tablesOnArea: false,
   tableStatus: {},
   orderOnTables: {},
-  availableTables: {},
+  availableTables: false,
   reservation: false,
   orderType: { OTview: 'Dine In', OTApi: 'dine_in' },
+  covers: false,
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -81,7 +82,11 @@ const actions = {
     commit(mutation.SELECTED_AREA, area)
     dispatch('getTableStatus')
   },
-
+  getCovers({ commit }) {
+    DineInService.dineInCovers().then(response => {
+      commit(mutation.COVERS, response.data)
+    })
+  },
   getTableStatus({ commit, state }) {
     let tableStatus = {
       availableCount: 0,
@@ -135,14 +140,14 @@ const actions = {
   },
 
   getAvailableTables({ commit, state }) {
-    let availableTables =
-      state.tables.length > 0
-        ? state.tables.filter(table => table.area_id === state.activeArea._id)
-        : false
+    let availableTables = state.tables
+    /*state.tables.length > 0
+      ? state.tables.filter(table => table.area_id === state.activeArea._id)
+      : false*/
     commit(mutation.AVAILABLE_TABLES, availableTables)
   },
 
-  addReservation({ commit, state }, tableId) {
+  addReservation({ commit, state, dispatch }, tableId) {
     if (!state.reservation) {
       const params = [
         {
@@ -155,6 +160,9 @@ const actions = {
       ]
       DineInService.reservationOperation(...params, 'add').then(response => {
         commit(mutation.RESERVATION_RESPONSE, response.data)
+        alert('f')
+        dispatch('getCovers')
+        dispatch('getAvailableTables')
         commit('order/ORDER_TYPE', state.orderType, { root: true })
       })
     }
@@ -208,6 +216,12 @@ const mutations = {
   },
   [mutation.TABLE_STATUS](state, tableStatus) {
     state.tableStatus = tableStatus
+  },
+  [mutation.COVERS](state, covers) {
+    state.covers = covers.data
+  },
+  [mutation.AVAILABLE_TABLES](state, availableTables) {
+    state.availableTables = availableTables
   },
   [mutation.RESERVATION_RESPONSE](state, reservation) {
     // eslint-disable-next-line no-console

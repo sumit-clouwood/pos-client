@@ -19,11 +19,60 @@
       </div>
     </div>
     <div class="main-oreders-buttons" v-if="items.length">
-      <div class="orders-button-large" disabled="disable">
-        {{ _t('Move Table') }}
+      {{ availableTables }}
+      <div v-if="availableTables" class="driver-container">
+        <form>
+          <input
+            autocomplete="off"
+            type="text"
+            placeholder="Move Table"
+            class="input-search-driver"
+            id="get-available-tables-list"
+            v-model="selectedTable"
+            @click="showTableList"
+          />
+        </form>
+        <div id="available-tables" class="available-tables cursor-pointer">
+          <span class="dropdown" @click="setTable(null)">
+            {{ _t('Select Table') }}
+          </span>
+          <span
+            class="dropdown"
+            v-for="table in availableTables"
+            :key="table._id"
+            @click="setTable(table)"
+          >
+            {{ table.name }}
+          </span>
+        </div>
       </div>
       <div class="orders-button-large" disabled="disable">
         {{ _t('Split Table') }}
+      </div>
+      <div v-if="covers" class="driver-container">
+        <form>
+          <input
+            autocomplete="off"
+            type="text"
+            placeholder="Select Cover"
+            class="input-search-driver"
+            id="get-customer-list"
+            v-model="selectedCover"
+            @click="showDropdown"
+          />
+        </form>
+        <div id="my-dropdown" class="dropdown-content cursor-pointer">
+          <span class="dropdown" :key="0" @click="setCover(null)">
+            {{ _t('Select Cover') }}
+          </span>
+          <span
+            class="dropdown"
+            v-for="cover in covers"
+            :key="cover._id"
+            @click="setCover(cover)"
+            >{{ cover.name }}
+          </span>
+        </div>
       </div>
       <div
         v-if="cartType !== 'hold'"
@@ -43,18 +92,47 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'Header',
-  props: {},
-
+  data() {
+    return {
+      selectedCover: '',
+      selectedTable: '',
+    }
+  },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('order', ['items', 'cartType']),
     ...mapState('checkoutForm', ['msg']),
+    ...mapState('dinein', ['covers', 'availableTables']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
   },
   methods: {
     removeSelectedCustomer() {
       this.$store.commit('location/SET_MODAL', '#manage-customer')
       this.$store.dispatch('customer/resetCustomer')
+    },
+    showDropdown: function() {
+      $('.dropdown-content').toggle()
+    },
+    showTableList: function() {
+      $('.available-tables').toggle()
+    },
+    setCover: function(cover) {
+      if (cover) {
+        this.selectedCover = cover.name
+      } else {
+        this.selectedCover = 'Select Cover'
+      }
+      this.$store.commit('dinein/SET_COVER', cover)
+      $('.dropdown-content').hide()
+    },
+    setTable: function(table) {
+      if (table) {
+        this.selectedCover = table.name
+      } else {
+        this.selectedCover = 'Select Cover'
+      }
+      this.$store.commit('dinein/AVAILABLE_TABLES', table)
+      $('.available-tables').hide()
     },
     hold() {
       $('#holdorder').hide()

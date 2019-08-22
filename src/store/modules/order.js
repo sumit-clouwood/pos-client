@@ -36,6 +36,7 @@ const state = {
   // pastOrder: false,
   orderStatus: null,
   cartType: 'new',
+  selectedCover: '',
 }
 
 // getters
@@ -1141,6 +1142,10 @@ const mutations = {
 
   [mutation.SET_CART_TYPE](state, cartType) {
     state.cartType = cartType
+  },
+
+  [mutation.SET_COVER](state, selectedCover) {
+    state.selectedCover = selectedCover
   },
 }
 
