@@ -166,39 +166,61 @@
                                             position: absolute;
                                             width: 20px;
                                             height: 20px;
+                                        }
 
-                                            input {
-                                                display: none;
+                                        input {
+                                            display: none;
 
-                                                &[type="checkbox"] {
-                                                    &:checked + span {
+                                            /* &[type="checkbox"] {
+                                                 &:checked + span {
+                                                     background-color: $green-middle;
+                                                 }
+                                             }*/
+
+                                            &[type="checkbox"] {
+                                                &:checked + div {
+                                                    display: block;
+
+                                                    span {
                                                         background-color: $green-middle;
                                                     }
                                                 }
                                             }
+                                        }
 
-                                            span {
-                                                width: 20px;
-                                                height: 20px;
-                                                line-height: inherit;
-                                                border-top: none;
-                                                border-right: none;
-                                                display: inline-flex;
+                                        .checkBox {
+                                            width: 20px;
+                                            height: 20px;
+                                            line-height: inherit;
+                                            border-top: none;
+                                            border-right: none;
+                                            display: inline-flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            border: none;
+
+                                            &:before {
+                                                font-family: "FontAwesome";
+                                                content: "\f00c";
+                                                position: static !important;
+                                                display: flex;
                                                 align-items: center;
                                                 justify-content: center;
+                                                font-size: 14px !important;
                                                 border: none;
-
-                                                &:before {
-                                                    font-family: "FontAwesome";
-                                                    content: "\f00c";
-                                                    position: static !important;
-                                                    display: flex;
-                                                    align-items: center;
-                                                    justify-content: center;
-                                                    font-size: 14px !important;
-                                                    border: none;
-                                                }
                                             }
+                                        }
+
+                                        .borderCheck {
+                                            display: none;
+                                            position: absolute;
+                                            top: -2px;
+                                            right: -2px;
+                                            bottom: -2px;
+                                            left: -2px;
+                                            border: 2px solid $green-middle;
+                                            border-radius: 3px;
+                                            pointer-events: none;
                                         }
                                     }
                                 }

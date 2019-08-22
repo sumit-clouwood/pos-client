@@ -265,7 +265,7 @@
                                 top: 28px;
                                 right: 40px;
                                 width: 0;
-                                height: 0;
+                                height: 0 !important;
                                 border: none;
                                 &:after{
                                     font-size: 16px;

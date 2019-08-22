@@ -411,6 +411,20 @@ h1, h2, h3, h4, h5, h6 {
         .modal-body {
           width: 100vw;
           border: none !important;
+          padding: 20px !important;
+        }
+
+        .modal-footer {
+          .btn-announce {
+            button {
+              //height: 50px !important;
+              font-size: 14px !important;
+              &#discount-save{
+                background-color: $green-middle !important;
+                border: none !important;
+              }
+            }
+          }
         }
       }
 

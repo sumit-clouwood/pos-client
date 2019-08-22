@@ -99,15 +99,22 @@
                 &:after{
                   background-color: $green-middle;
                   position: absolute;
-                  top: 0;
-                  right: 0;
-                  border-top-right-radius: 0;
+                  top: -2px;
+                  right: -2px;
                 }
               }
               &:nth-child(2n){
                 margin-right: 0px;
                 margin-left: 10px;
               }
+            }
+          }
+        }
+        .modal-footer{
+          .btn-announce{
+            button{
+              height: 50px !important;
+
             }
           }
         }
