@@ -85,18 +85,16 @@
               font-weight: 600; }
             #add-note .modal-dialog .modal-content .modal-body .add-note-area .add-note-form {
               width: auto; }
-        #add-note .modal-dialog .modal-content .modal-footer {
-          padding: 10px 20px 20px; }
-          #add-note .modal-dialog .modal-content .modal-footer .btn-announce {
+        #add-note .modal-dialog .modal-content .modal-footer .btn-announce {
+          margin: 0;
+          display: flex;
+          justify-content: space-between;
+          width: 100%; }
+          #add-note .modal-dialog .modal-content .modal-footer .btn-announce button {
             margin: 0;
-            display: flex;
-            justify-content: space-between;
-            width: 100%; }
-            #add-note .modal-dialog .modal-content .modal-footer .btn-announce button {
-              margin: 0;
-              flex-grow: 1; }
-              #add-note .modal-dialog .modal-content .modal-footer .btn-announce button#save-note {
-                border-color: #64C434;
-                background-color: #64C434; } }
+            flex-grow: 1; }
+            #add-note .modal-dialog .modal-content .modal-footer .btn-announce button#save-note {
+              border-color: #64C434;
+              background-color: #64C434; } }
 
 /*# sourceMappingURL=addNote.css.map */

@@ -112,9 +112,6 @@ div#delivery-manager .modal-dialog {
 div#delivery-manager .btn-announce {
   text-align: right;
   flex: auto; }
-div#delivery-manager .modal-footer {
-  padding-top: 0;
-  padding-left: 2.1875rem; }
 
 .dm-ready-order-wrap {
   overflow: hidden;

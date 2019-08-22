@@ -171,11 +171,7 @@
               width: 100%; }
               #customer .modal-dialog .modal-content .modal-body .right-form .customer-group .right-shift .vdatetime input {
                 margin: 0;
-                width: 100%; }
-      #customer .modal-dialog .modal-content .modal-footer {
-        background-color: #fff;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); } }
+                width: 100%; } }
 @media only screen and (min-width: 320px) and (max-width: 600px) {
   #search-loyalty-customer .modal-dialog {
     position: absolute;
@@ -191,14 +187,14 @@
       padding: 10px 20px; }
     #search-loyalty-customer .modal-dialog .modal-content .modal-body {
       padding: 20px; }
+      #search-loyalty-customer .modal-dialog .modal-content .modal-body > .color-text-invert {
+        margin-bottom: 10px; }
       #search-loyalty-customer .modal-dialog .modal-content .modal-body .add-note-area input {
         width: 100%; }
       #search-loyalty-customer .modal-dialog .modal-content .modal-body .inputSearch {
         margin-bottom: 10px; }
       #search-loyalty-customer .modal-dialog .modal-content .modal-body button {
         margin-bottom: 10px;
-        border-radius: 3px; }
-    #search-loyalty-customer .modal-dialog .modal-content .modal-footer {
-      padding: 0px 20px 20px; } }
+        border-radius: 3px; } }
 
 /*# sourceMappingURL=customer.css.map */

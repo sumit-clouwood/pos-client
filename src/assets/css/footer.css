@@ -18,7 +18,7 @@
     align-items: center;
     padding-right: 1.875rem; }
     .footer .footer-slider .footer-slider-list .slick-slide {
-      margin-right: 0.9375rem;
+      margin-right: 15px;
       border-radius: 3px;
       overflow: hidden; }
       .footer .footer-slider .footer-slider-list .slick-slide .footer-slider-list-item {
