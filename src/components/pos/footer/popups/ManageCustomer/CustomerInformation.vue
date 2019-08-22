@@ -22,9 +22,7 @@
                         '#display-order'
                       )
                     "
-                  >
-                    {{ _t('+ Place New Order') }}
-                  </button>
+                  >{{ _t('+ Place New Order') }}</button>
                 </div>
               </div>
             </div>
@@ -45,8 +43,7 @@
               :next-text="_t('Next')"
               :container-class="''"
               :page-class="_t('page-item')"
-            >
-            </paginate>
+            ></paginate>
             <!--</template>-->
           </div>
           <div class="btn-announce">
@@ -54,9 +51,7 @@
               type="button"
               class="btn btn-danger cancel-announce color-button color-text-invert"
               data-dismiss="modal"
-            >
-              {{ _t('Dismiss') }}
-            </button>
+            >{{ _t('Dismiss') }}</button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
@@ -67,17 +62,17 @@
 </template>
 <script>
 /* global $ */
-import { mapState, mapActions, mapGetters } from 'vuex'
-import LoyaltyPoint from './CustomerInformation/LoyaltyPoint'
-import CustomerProfile from './CustomerInformation/CustomerProfile'
-import CustomerInsights from './CustomerInformation/CustomerInsights'
-import CustomerPastOrders from './CustomerInformation/CustomerPastOrders'
-import CustomerDeliveryAddress from './CustomerInformation/CustomerDeliveryAddress'
-import paginate from 'vuejs-paginate'
-import Preloader from '@/components/util/Preloader'
+import { mapState, mapActions, mapGetters } from "vuex";
+import LoyaltyPoint from "./CustomerInformation/LoyaltyPoint";
+import CustomerProfile from "./CustomerInformation/CustomerProfile";
+import CustomerInsights from "./CustomerInformation/CustomerInsights";
+import CustomerPastOrders from "./CustomerInformation/CustomerPastOrders";
+import CustomerDeliveryAddress from "./CustomerInformation/CustomerDeliveryAddress";
+import paginate from "vuejs-paginate";
+import Preloader from "@/components/util/Preloader";
 
 export default {
-  name: 'CustomerInformation',
+  name: "CustomerInformation",
   props: {},
   components: {
     LoyaltyPoint,
@@ -86,32 +81,32 @@ export default {
     CustomerPastOrders,
     CustomerDeliveryAddress,
     paginate,
-    Preloader,
+    Preloader
   },
   computed: {
     ...mapState({
-      paginateDetails: state => state.customer.pastOrdersPaginate,
+      paginateDetails: state => state.customer.pastOrdersPaginate
     }),
     ...mapState({
-      pastOrders: state => state.customer.pastOrders,
+      pastOrders: state => state.customer.pastOrders
     }),
-    ...mapGetters('location', ['_t']),
-    ...mapState('checkoutForm', ['msg']),
-    ...mapState('customer', ['customerLoading']),
+    ...mapGetters("location", ["_t"]),
+    ...mapState("checkoutForm", ["msg"]),
+    ...mapState("customer", ["customerLoading"])
   },
   methods: {
     updateModalSelection(modalName, subjectName) {
-      this.updateModalSelectionDelivery(modalName)
+      this.updateModalSelectionDelivery(modalName);
       if (this.msg.message.length > 0) {
-        $('#payment-msg').modal('show')
+        $("#payment-msg").modal("show");
       } else {
-        $(subjectName).modal('hide')
+        $(subjectName).modal("hide");
       }
     },
-    ...mapActions('customer', ['setPastOrderPageNumber']),
-    ...mapActions('location', ['updateModalSelectionDelivery']),
-  },
+    ...mapActions("customer", ["setPastOrderPageNumber"]),
+    ...mapActions("location", ["updateModalSelectionDelivery"])
 }
+};
 </script>
 <style scoped lang="scss">
 div#display-order .modal-dialog {
@@ -119,9 +114,9 @@ div#display-order .modal-dialog {
 }
 </style>
 <style lang="scss">
-@import '../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../assets/scss/variables.scss';
-@import '../../../../../assets/scss/mixins.scss';
+@import "../../../../../assets/scss/pixels_rem.scss";
+@import "../../../../../assets/scss/variables.scss";
+@import "../../../../../assets/scss/mixins.scss";
 
 @include responsive(mobile) {
   #display-order {
@@ -141,6 +136,7 @@ div#display-order .modal-dialog {
 
           .crm-details-wrap {
             display: grid;
+            border: none;
 
             #order-profile {
               width: 100%;
@@ -261,7 +257,6 @@ div#display-order .modal-dialog {
         }
 
         .modal-footer {
-          padding-top: 20px;
         }
       }
     }

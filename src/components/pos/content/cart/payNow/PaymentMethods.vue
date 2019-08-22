@@ -4,7 +4,7 @@
       v-for="(method, key) in methods"
       :key="key"
       :class="{ active: activeMethod == method.name, 'color-secondary': true }"
-      @click=";[setMethod(method), methodCardHendlerGhange(method.priority)]"
+      @click="[setMethod(method), methodCardHendlerGhange(method.priority)]"
       class="method"
       :data-toggle="getToggle(method)"
       :data-target="getTarget(method)"
@@ -83,7 +83,18 @@ export default {
   },
 }
 </script>
-<style lang="sass" scoped>
-img
-  height: 46px
+<style lang="scss">
+  #payment-method{
+    display: flex;
+    overflow: hidden;
+    >div{
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+    img{height: 46px}
+  }
+
+
 </style>

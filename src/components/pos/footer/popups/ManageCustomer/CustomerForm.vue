@@ -407,6 +407,9 @@ export default {
       return re.test(email)
     },
   },
+        beforeMount() {
+            console.log(this.fetchDeliveryAreas)
+        }
 }
 </script>
 <style scoped lang="css">
@@ -468,6 +471,7 @@ export default {
       align-items: center;
       border-bottom: 1px solid #ccc;
       margin: 0 10px;
+
       &:last-child {
         border: none !important;
       }

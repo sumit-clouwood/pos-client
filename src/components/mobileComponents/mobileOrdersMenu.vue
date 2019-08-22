@@ -9,6 +9,7 @@
         data-toggle="modal"
         data-target="#manage-customer"
       >
+        <!--@click="openManageCustomer"-->
         <svg
           width="24"
           height="24"
@@ -84,10 +85,7 @@
             fill="#3D3F43"
           />
         </svg>
-        <a
-          class="footer-slider-list-item-link"
-          @click="setOrderType('delivery')"
-        >
+        <a class="footer-slider-list-item-link" @click="setOrderType('delivery')">
           <span>{{ _t('Send to Delivery') }}</span>
         </a>
       </li>
@@ -112,18 +110,11 @@
             fill="#3D3F43"
           />
         </svg>
-        <a
-          class="footer-slider-list-item-link"
-          @click.prevent="validateOrderDiscounts()"
-        >
+        <a class="footer-slider-list-item-link" @click.prevent="validateOrderDiscounts()">
           <span>{{ _t('Select') + ' ' + _t('Discount') }}</span>
         </a>
       </div>
-      <li
-        class="footer-slider-list-item"
-        data-toggle="modal"
-        data-target="#dining-option"
-      >
+      <li class="footer-slider-list-item" data-toggle="modal" data-target="#dining-option">
         <svg
           width="15"
           height="17"
@@ -167,9 +158,9 @@
           <span v-if="loyaltyCard">
             <span>
               {{
-                isNaN(loyaltyCard.balance)
-                  ? 0
-                  : formatPrice(loyaltyCard.balance)
+              isNaN(loyaltyCard.balance)
+              ? 0
+              : formatPrice(loyaltyCard.balance)
               }}
               {{ _t('Loyalty') }}
             </span>
@@ -178,11 +169,7 @@
           </span>
         </a>
       </li>
-      <div
-        class="footer-slider-list-item"
-        data-toggle="modal"
-        data-target="#add-note"
-      >
+      <div class="footer-slider-list-item" data-toggle="modal" data-target="#add-note">
         <svg
           width="22"
           height="22"
@@ -206,64 +193,64 @@
   </div>
 </template>
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex'
-import mobileFooter from './mobileFooter.vue'
+import { mapActions, mapState, mapGetters } from "vuex";
+import mobileFooter from "./mobileFooter.vue";
 
 export default {
   data() {
     return {
-      vbutton: '',
-    }
+      vbutton: ""
+    };
   },
   components: {
-    mobileFooter,
+    mobileFooter
   },
   computed: {
-    ...mapGetters(['footerMenuHendler']),
-    ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters(["footerMenuHendler"]),
+    ...mapGetters("location", ["formatPrice", "_t"]),
     ...mapState({
-      loyaltyCard: state => state.customer.loyalty.card,
+      loyaltyCard: state => state.customer.loyalty.card
     }),
     ...mapState({
       selectedModal: state =>
-        state.location.setModal == '#loyalty-payment'
-          ? '#manage-customer'
-          : state.location.setModal,
-    }),
+        state.location.setModal == "#loyalty-payment"
+          ? "#manage-customer"
+          : state.location.setModal
+    })
   },
   methods: {
-    ...mapActions('discount', ['validateOrderDiscounts']),
+    ...mapActions("discount", ["validateOrderDiscounts"]),
     footerMenuHendlerGhange() {
-      this.$store.dispatch('footerMenuHendlerGhange')
+      this.$store.dispatch("footerMenuHendlerGhange");
     },
     setOrderType(opt) {
-      this.$store.commit('order/ORDER_TYPE', opt)
+      this.$store.commit("order/ORDER_TYPE", opt);
     },
     openManageCustomer() {
-      this.$store.dispatch('openManageCustomer')
+      this.$store.dispatch("openManageCustomer");
     },
     discountHendlerGhange() {
-      this.$store.dispatch('discountHendlerGhange')
+      this.$store.dispatch("discountHendlerGhange");
     },
     loyaltyHendlerGhange() {
-      this.$store.dispatch('loyaltyHendlerGhange')
+      this.$store.dispatch("loyaltyHendlerGhange");
     },
     addNoteHendlerGhange() {
-      this.$store.dispatch('addNoteHendlerGhange')
+      this.$store.dispatch("addNoteHendlerGhange");
     },
     viewHoldOrders() {
-      this.vbutton = 'new'
-      this.$store.commit('order/SET_CART_TYPE', 'hold')
-      this.$store.dispatch('holdOrders/getHoldOrders')
-      this.$store.dispatch('footerMenuHendlerGhange')
-    },
-  },
-}
+      this.vbutton = "new";
+      this.$store.commit("order/SET_CART_TYPE", "hold");
+      this.$store.dispatch("holdOrders/getHoldOrders");
+      this.$store.dispatch("footerMenuHendlerGhange");
+    }
+  }
+};
 </script>
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import "../../assets/scss/pixels_rem.scss";
+@import "../../assets/scss/variables.scss";
+@import "../../assets/scss/mixins.scss";
 
 @include responsive(mobile) {
   .main-orders {
@@ -284,7 +271,7 @@ export default {
       background-color: rgba(0, 0, 0, 0);
       /*background-color: #fff;*/
       border-left: 1px solid #ddd;
-      z-index: 5;
+      z-index: 50;
       pointer-events: none;
 
       &.active {
