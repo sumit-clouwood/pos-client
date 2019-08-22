@@ -244,12 +244,9 @@ const actions = {
               rootGetters['order/itemTaxDiscount'](item)
             )
 
-            if (
-              typeof item.discountType !== 'undefined' &&
-              item.discountType == 'fixed'
-            ) {
-              //don't round here
-              itemDiscountedTax = rootGetters['order/itemTaxDiscount'](item)
+            if (item.discountedNetPrice) {
+              const modifiersTax = rootGetters['order/itemModifiersTax'](item)
+              itemDiscountedTax = item.tax + modifiersTax - item.discountedTax
             }
 
             const modifiersDiscountedTax = Num.round(
@@ -261,11 +258,9 @@ const actions = {
             itemDiscount.itemNo = item.orderIndex
             itemDiscount.quantity = item.quantity
             //undiscountedTax is without modifiers
-            if (
-              typeof item.discountType !== 'undefined' &&
-              item.discountType == 'fixed'
-            ) {
-              //donot round
+
+            if (item.discountedNetPrice) {
+              //don't round fixed discount calculations
               itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
             } else {
               itemDiscount.tax = Num.round(
