@@ -8,7 +8,7 @@ The App.vue file is the root component that all other components are nested with
     <!--<router-link to="/">Home</router-link> |-->
     <!--<router-link to="/about">About</router-link>-->
     <!--</div>-->
-    <div v-if="loggedIn">
+    <div v-if="loggedIn && storeContext">
       <section v-if="errored">
         <p>
           We're sorry, we're not able to proceed at the moment, please try back
@@ -76,6 +76,7 @@ export default {
   mixins: [Cookie],
   data: function() {
     return {
+      storeContext: true,
       loading: true,
       errored: false,
       progressIncrement: 0,
@@ -84,27 +85,25 @@ export default {
     }
   },
   created() {
+    if (this.$route.params.brand_id) {
+      this.$store.commit('context/SET_BRAND_ID', this.$route.params.brand_id)
+      localStorage.setItem('brand_id', this.$route.params.brand_id)
+      this.$store.commit('context/SET_STORE_ID', this.$route.params.store_id)
+
+      localStorage.setItem('store_id', this.$route.params.store_id)
+      DataService.setContext({
+        brand: this.$store.getters['context/brand'],
+        store: this.$store.getters['context/store'],
+      })
+    }
     this.$store
       .dispatch('auth/checkLogin')
       .then(() => {
-        if (this.$route.params.brand_id) {
-          this.$store.commit(
-            'context/SET_BRAND_ID',
-            this.$route.params.brand_id
-          )
-          localStorage.setItem('brand_id', this.$route.params.brand_id)
-          this.$store.commit(
-            'context/SET_STORE_ID',
-            this.$route.params.store_id
-          )
-
-          localStorage.setItem('store_id', this.$route.params.store_id)
-          DataService.setContext({
-            brand: this.$store.getters['context/brand'],
-            store: this.$store.getters['context/store'],
-          })
-        } else if (!this.$store.state.context.storeId) {
+        if (!this.$store.state.context.storeId) {
           this.errored = 'Please provide brand id and store id in url'
+          this.storeContext = false
+        } else {
+          this.storeContext = true
         }
       })
       .catch(error => console.log(error))
