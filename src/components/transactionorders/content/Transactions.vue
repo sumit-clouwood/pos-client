@@ -105,7 +105,6 @@
 <script>
 import moment from 'moment-timezone'
 import Search from './Search'
-// import LookupData from '@/plugins/helpers/LookupData'
 import { mapGetters, mapState } from 'vuex'
 
 export default {

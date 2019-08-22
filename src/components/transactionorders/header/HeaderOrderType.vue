@@ -1,6 +1,6 @@
 <template>
   <div class="header-main-left-info color-text-invert">
-    <p class="title">{{ _t(orderType.OTview) }}</p>
+    <p class="title">{{ _t('Transactions') }}</p>
     <p class="subtitle">{{ locationName.name }}</p>
   </div>
 </template>

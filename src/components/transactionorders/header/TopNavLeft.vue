@@ -11,7 +11,6 @@
 </template>
 
 <script>
-/* eslint-disable no-console */
 import moment from 'moment-timezone'
 import HeaderOrderType from './HeaderOrderType'
 
