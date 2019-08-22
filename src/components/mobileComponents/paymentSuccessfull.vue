@@ -17,28 +17,28 @@
 </template>
 
 <script>
-import payFooter from '../pos/content/cart/payNow/Footer.vue'
-import totalAmount from '../pos/content/cart/payNow/TotalAmount.vue'
-import mobilePayHeader from './mobilePayHeader.vue'
-import { mapGetters } from 'vuex'
+import payFooter from "../pos/content/cart/payNow/Footer.vue";
+import totalAmount from "../pos/content/cart/payNow/TotalAmount.vue";
+import mobilePayHeader from "./mobilePayHeader.vue";
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'paymentSuccessfull',
+  name: "paymentSuccessfull",
   components: {
     payFooter,
     totalAmount,
-    mobilePayHeader,
+    mobilePayHeader
   },
   computed: {
-    ...mapGetters(['successfullHendler']),
-  },
-}
+    ...mapGetters(["successfullHendler"])
+  }
+};
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import "../../assets/scss/pixels_rem.scss";
+@import "../../assets/scss/variables.scss";
+@import "../../assets/scss/mixins.scss";
 
 .payment-successfull {
   position: fixed;
@@ -48,11 +48,13 @@ export default {
   width: 100vw;
   z-index: 50;
   background-color: #fff;
-  display: grid;
+  display: none;
   grid-template-rows: max-content 1fr max-content;
   z-index: 1060;
   transition: 0.5s ease-out;
-
+  @include responsive(mobile) {
+    display: grid;
+  }
   &.active {
     right: 0;
   }

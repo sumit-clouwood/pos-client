@@ -21,26 +21,26 @@
 </template>
 
 <script>
-import Header from './popup/Header'
-import HeaderDetails from './popup/header/HeaderDetails'
-import Content from './popup/Content'
-import Footer from './popup/Footer'
+    import Header from "./popup/Header";
+    import HeaderDetails from "./popup/header/HeaderDetails";
+    import Content from "./popup/Content";
+    import Footer from "./popup/Footer";
 
 export default {
-  name: 'Popup',
+        name: "Popup",
   props: {},
   components: {
     Content,
     Header,
     HeaderDetails,
-    Footer,
-  },
+            Footer
 }
+    };
 </script>
 <style lang="scss">
-@import '../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../assets/scss/variables.scss';
-@import '../../../../../assets/scss/mixins.scss';
+    @import "../../../../../assets/scss/pixels_rem.scss";
+    @import "../../../../../assets/scss/variables.scss";
+    @import "../../../../../assets/scss/mixins.scss";
 
 @include responsive(mobile) {
   .POSItemOptions {
@@ -85,9 +85,20 @@ export default {
               padding: 20px;
               box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
               width: 100%;
-              height: 75px;
+                                // height: 75px;
               background-color: #fff;
               z-index: 1;
+
+                                .POSItemOptions_quantity_wrapper {
+                                    align-items: center;
+
+                                    .POSItemOptions_quantity_submit {
+                                        button {
+                                            height: 50px;
+                                            background-color: $green-middle;
+                                        }
+                                    }
+                                }
 
               .POSItemOptions_label {
                 display: none;
@@ -130,7 +141,7 @@ export default {
 
                 .POSItemOptions_choose_label {
                   padding: 10px;
-                  border: 1px solid #ccc;
+                                        border: 2px solid $gray-middle;
                   border-radius: 5px;
                   position: relative;
                   display: flex;
@@ -146,14 +157,13 @@ export default {
                     flex-basis: max-content;
                     flex-shrink: 0;
                     border-radius: 50%;
+                                            margin-bottom: 5px;
                   }
 
                   .customradioc {
                     display: inline-flex;
                     margin: 0;
                     position: absolute;
-                    top: 0;
-                    right: 0;
                     width: 20px;
                     height: 20px;
 
@@ -179,6 +189,8 @@ export default {
                       border: none;
 
                       &:before {
+                                                    font-family: "FontAwesome";
+                                                    content: "\f00c";
                         position: static !important;
                         display: flex;
                         align-items: center;
@@ -223,6 +235,7 @@ export default {
               height: 30px;
               box-shadow: none !important;
               height: 35px;
+                                //   background-color: $green-middle !important;
             }
           }
         }

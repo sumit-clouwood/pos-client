@@ -22,30 +22,30 @@
 </template>
 
 <script>
-import Header from './cart/newOrders/Header.vue'
-import HoldingOrders from './cart/HoldingOrders'
-import Footer from './cart/Footer'
-import PayNow from './cart/PayNow'
-import Items from './cart/newOrders/Items.vue'
-import ordersMenu from '../../mobileComponents/mobileOrdersMenu.vue'
-import mobileFooter from '../../mobileComponents/mobileFooter.vue'
+import Header from "./cart/newOrders/Header.vue";
+import HoldingOrders from "./cart/HoldingOrders";
+import Footer from "./cart/Footer";
+import PayNow from "./cart/PayNow";
+import Items from "./cart/newOrders/Items.vue";
+import ordersMenu from "../../mobileComponents/mobileOrdersMenu.vue";
+import mobileFooter from "../../mobileComponents/mobileFooter.vue";
 
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 
 export default {
-  name: 'Cart',
+  name: "Cart",
   props: {
-    msg: String,
+    msg: String
   },
   computed: {
-    ...mapState('checkout', ['order']),
-    ...mapGetters(['mainOrdersHendler']),
-    ...mapState('order', ['cartType']),
+    ...mapState("checkout", ["order"]),
+    ...mapGetters(["mainOrdersHendler"]),
+    ...mapState("order", ["cartType"])
   },
   methods: {
     cartClose() {
-      this.$store.dispatch('cartClose')
-    },
+      this.$store.dispatch("cartClose");
+    }
   },
   components: {
     Header,
@@ -54,14 +54,14 @@ export default {
     Footer,
     PayNow,
     ordersMenu,
-    mobileFooter,
-  },
+    mobileFooter
 }
+};
 </script>
 <style lang="scss">
-@import '../../../assets/scss/pixels_rem.scss';
-@import '../../../assets/scss/variables.scss';
-@import '../../../assets/scss/mixins.scss';
+@import "../../../assets/scss/pixels_rem.scss";
+@import "../../../assets/scss/variables.scss";
+@import "../../../assets/scss/mixins.scss";
 
 @include responsive(mobile) {
   .main-orders {
@@ -103,9 +103,10 @@ export default {
       align-items: center;
       justify-content: space-between;
       padding: 20px;
+      padding-bottom: 0;
       font-weight: 600;
       font-size: 18px;
-      z-index: 2;
+      z-index: 6;
       background-color: #fff;
 
       .fa {
@@ -121,7 +122,8 @@ export default {
       z-index: 1;
 
       .main-oreders-title {
-        font-size: 16px;
+        font-size: 14px;
+        font-weight: normal;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -166,8 +168,7 @@ export default {
       padding: 0 20px;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      z-index: 1;
+      z-index: -1;
 
       .total-wrapper {
         border-bottom: 1px solid $gray-middle;
@@ -229,7 +230,7 @@ export default {
       background-color: #fff;
       z-index: 10;
       padding-top: 20px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: none;
 
       .btn-next {
         display: none;

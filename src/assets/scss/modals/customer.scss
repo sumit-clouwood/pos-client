@@ -19,7 +19,7 @@
           line-height: normal;
           letter-spacing: 0.6px;
           color: #3f4146;
-          @include responsive(mobile){
+          @include responsive(mobile) {
             font-size: 18px;
           }
         }
@@ -215,7 +215,8 @@
 
           .divide-block {
             padding: 0;
-            h5{
+
+            h5 {
               margin: 0;
             }
           }
@@ -307,9 +308,6 @@
         }
 
         .modal-footer {
-          background-color: #fff;
-          padding: 20px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
       }
     }
@@ -339,6 +337,10 @@
         .modal-body {
           padding: 20px;
 
+          > .color-text-invert {
+            margin-bottom: 10px;
+          }
+
           .add-note-area {
             input {
               width: 100%;
@@ -356,7 +358,6 @@
         }
 
         .modal-footer {
-          padding: 0px 20px 20px;
         }
       }
     }
