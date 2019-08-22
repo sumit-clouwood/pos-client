@@ -22,30 +22,30 @@
 </template>
 
 <script>
-import Header from "./cart/newOrders/Header.vue";
-import HoldingOrders from "./cart/HoldingOrders";
-import Footer from "./cart/Footer";
-import PayNow from "./cart/PayNow";
-import Items from "./cart/newOrders/Items.vue";
-import ordersMenu from "../../mobileComponents/mobileOrdersMenu.vue";
-import mobileFooter from "../../mobileComponents/mobileFooter.vue";
+import Header from './cart/newOrders/Header.vue'
+import HoldingOrders from './cart/HoldingOrders'
+import Footer from './cart/Footer'
+import PayNow from './cart/PayNow'
+import Items from './cart/newOrders/Items.vue'
+import ordersMenu from '../../mobileComponents/mobileOrdersMenu.vue'
+import mobileFooter from '../../mobileComponents/mobileFooter.vue'
 
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters } from 'vuex'
 
 export default {
-  name: "Cart",
+  name: 'Cart',
   props: {
-    msg: String
+    msg: String,
   },
   computed: {
-    ...mapState("checkout", ["order"]),
-    ...mapGetters(["mainOrdersHendler"]),
-    ...mapState("order", ["cartType"])
+    ...mapState('checkout', ['order']),
+    ...mapGetters(['mainOrdersHendler']),
+    ...mapState('order', ['cartType']),
   },
   methods: {
     cartClose() {
-      this.$store.dispatch("cartClose");
-    }
+      this.$store.dispatch('cartClose')
+    },
   },
   components: {
     Header,
@@ -54,14 +54,14 @@ export default {
     Footer,
     PayNow,
     ordersMenu,
-    mobileFooter
+    mobileFooter,
+  },
 }
-};
 </script>
 <style lang="scss">
-@import "../../../assets/scss/pixels_rem.scss";
-@import "../../../assets/scss/variables.scss";
-@import "../../../assets/scss/mixins.scss";
+@import '../../../assets/scss/pixels_rem.scss';
+@import '../../../assets/scss/variables.scss';
+@import '../../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   .main-orders {

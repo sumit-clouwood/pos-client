@@ -201,7 +201,6 @@ export default {
         }
 
         .modal-footer {
-
           .btn-announce {
             button {
               background-color: $green-middle;

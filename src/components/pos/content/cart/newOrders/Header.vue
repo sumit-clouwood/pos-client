@@ -92,8 +92,8 @@ export default {
   .main-orders-contacts {
     display: grid;
     grid-template-columns: 1fr;
-            grid-template-rows: none;
-            grid-row-gap: 20px;
+    grid-template-rows: none;
+    grid-row-gap: 20px;
 
     .cursor-pointer {
       display: flex;
@@ -113,13 +113,13 @@ export default {
     }
 
     .main-oreders-buttons {
-                display: flex !important;
-                align-items: center;
-                margin: 0;
-                #holdorder{
-                    width: 30%;
-                    background-color: $green-middle;
-                }
+      display: flex !important;
+      align-items: center;
+      margin: 0;
+      #holdorder {
+        width: 30%;
+        background-color: $green-middle;
+      }
     }
   }
 }

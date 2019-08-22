@@ -115,7 +115,6 @@ export default {
         }
 
         .modal-footer {
-
           .btn-announce {
             button,
             #save-note {

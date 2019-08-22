@@ -199,7 +199,7 @@ export default {
                     width: 100%;
                     border: none;
                     max-width: none;
-                                            padding-left: 10px;
+                    padding-left: 10px;
 
                     button {
                       height: 100%;
@@ -247,19 +247,19 @@ export default {
         .modal-footer {
           width: 100vw;
           z-index: 10;
-                        display: grid;
-                        grid-template-columns: 1fr;
+          display: grid;
+          grid-template-columns: 1fr;
           .pagination-customer-details {
-                            display: grid;
-                            grid-template-columns: max-content;
-                            justify-content: end;
-                            margin-bottom: 20px;
-                            margin-right: 0;
+            display: grid;
+            grid-template-columns: max-content;
+            justify-content: end;
+            margin-bottom: 20px;
+            margin-right: 0;
           }
           .btn-announce {
-                            #cust-new{
-                                margin-left: 0;
-                            }
+            #cust-new {
+              margin-left: 0;
+            }
             button {
               width: 100%;
             }
