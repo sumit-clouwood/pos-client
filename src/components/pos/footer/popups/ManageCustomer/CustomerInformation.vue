@@ -132,7 +132,7 @@ div#display-order .modal-dialog {
         overflow: auto;
 
         .modal-body {
-          padding: 0;
+          padding: 0 !important;
 
           .crm-details-wrap {
             display: grid;
