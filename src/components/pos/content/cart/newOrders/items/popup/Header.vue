@@ -1,5 +1,5 @@
 <template>
-  <div v-if="item">
+  <div v-if="item" class="modal-header-wrapper">
     <div class="modal-header color-secondary">
       <h5 class="modal-title color-text-invert" id="POSItemOptionsTitle">
         {{ item.name }}
@@ -24,6 +24,7 @@
 import { mapGetters } from 'vuex'
 import Quantity from '@/components/pos/content/catalog/items/popup/header/Quantity'
 import CloseButton from '@/components/pos/content/catalog/items/popup/header/CloseButton'
+
 export default {
   name: 'Header',
   props: {},
@@ -38,3 +39,14 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+@import '../../../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../../../assets/scss/variables.scss';
+@import '../../../../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  .modal-header-wrapper {
+    z-index: 1;
+  }
+}
+</style>

@@ -68,9 +68,12 @@ export default {
   z-index: 1055;
   transition: 0.5s ease-out;
   width: 100vw;
-  height: 100vh;
-  display: grid;
+  height: 100%;
+  display: none;
   grid-template-rows: max-content 1fr max-content;
+  @include responsive(mobile) {
+    display: grid;
+  }
 
   &.active {
     right: 0;
@@ -79,6 +82,7 @@ export default {
   .pay-header {
     padding-bottom: 10px;
     grid-template-columns: 1fr;
+
     .pay-header-buttons {
       display: none;
     }
@@ -121,8 +125,10 @@ export default {
     .btn-cart {
       display: none;
     }
+
     .btn-next {
     }
+
     .btn-Cancel {
       display: none;
       align-items: center;

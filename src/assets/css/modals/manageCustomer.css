@@ -128,7 +128,7 @@
       bottom: 0;
       left: 0;
       margin: 0;
-      min-height: auto;
+      min-height: 100% !important;
       transform: none;
       opacity: 1;
       max-width: none; }
@@ -149,7 +149,8 @@
           width: 100vw; }
           #manage-customer .modal-dialog .modal-content .modal-body .search-field {
             height: auto;
-            margin: 0; }
+            margin: 0;
+            border-bottom: 1px solid #E3E7F2; }
             #manage-customer .modal-dialog .modal-content .modal-body .search-field label {
               margin: 0; }
         #manage-customer .modal-dialog .modal-content .modal-footer {

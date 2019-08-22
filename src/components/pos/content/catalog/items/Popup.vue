@@ -55,9 +55,6 @@ export default {
         display: flex;
         flex-direction: column;
 
-        /*display: grid;*/
-        /*grid-template-rows: max-content max-content 1fr max-content;*/
-
         .modal-header {
           height: 70px;
           background-color: #fff;
@@ -85,9 +82,19 @@ export default {
               padding: 20px;
               box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
               width: 100%;
-              height: 75px;
               background-color: #fff;
               z-index: 1;
+
+              .POSItemOptions_quantity_wrapper {
+                align-items: center;
+
+                .POSItemOptions_quantity_submit {
+                  button {
+                    height: 50px;
+                    background-color: $green-middle;
+                  }
+                }
+              }
 
               .POSItemOptions_label {
                 display: none;
@@ -98,7 +105,6 @@ export default {
 
         .modal-body {
           margin: 0;
-          /*border-top: 1px solid #ccc;*/
           max-height: none;
           order: 4;
           margin-bottom: 75px;
@@ -130,7 +136,7 @@ export default {
 
                 .POSItemOptions_choose_label {
                   padding: 10px;
-                  border: 1px solid #ccc;
+                  border: 2px solid $gray-middle;
                   border-radius: 5px;
                   position: relative;
                   display: flex;
@@ -146,47 +152,64 @@ export default {
                     flex-basis: max-content;
                     flex-shrink: 0;
                     border-radius: 50%;
+                    margin-bottom: 5px;
                   }
 
                   .customradioc {
                     display: inline-flex;
                     margin: 0;
                     position: absolute;
-                    top: 0;
-                    right: 0;
                     width: 20px;
                     height: 20px;
+                  }
 
-                    input {
-                      display: none;
+                  input {
+                    &[type='checkbox'] {
+                      &:checked + div {
+                        display: block;
 
-                      &[type='checkbox'] {
-                        &:checked + span {
+                        span {
                           background-color: $green-middle;
+                          border: none;
+                          border-radius: 3px;
                         }
                       }
                     }
+                  }
 
-                    span {
-                      width: 20px;
-                      height: 20px;
-                      line-height: inherit;
-                      border-top: none;
-                      border-right: none;
-                      display: inline-flex;
+                  .checkBox {
+                    width: 20px;
+                    height: 20px;
+                    line-height: inherit;
+                    border-top: none;
+                    border-right: none;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    border: none;
+
+                    &:before {
+                      font-family: 'FontAwesome';
+                      content: '\f00c';
+                      position: static !important;
+                      display: flex;
                       align-items: center;
                       justify-content: center;
+                      font-size: 14px !important;
                       border: none;
-
-                      &:before {
-                        position: static !important;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: 14px !important;
-                        border: none;
-                      }
                     }
+                  }
+
+                  .borderCheck {
+                    display: none;
+                    position: absolute;
+                    top: -2px;
+                    right: -2px;
+                    bottom: -2px;
+                    left: -2px;
+                    border: 2px solid $green-middle;
+                    border-radius: 3px;
+                    pointer-events: none;
                   }
                 }
               }
@@ -223,6 +246,7 @@ export default {
               height: 30px;
               box-shadow: none !important;
               height: 35px;
+              //   background-color: $green-middle !important;
             }
           }
         }

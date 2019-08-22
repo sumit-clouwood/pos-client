@@ -30,7 +30,6 @@
       <div class="sub-total-num" @click="totalWrapperHendlerGhange">
         {{ formatPrice(orderTotal || 0) }}
         <i
-          v-if="totalWrapperHendler"
           aria-hidden="true"
           :class="['fa', 'fa-angle-up', { active: totalWrapperHendler }]"
         ></i>
@@ -41,6 +40,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
+
 export default {
   name: 'CartFooter',
   props: {},
@@ -59,3 +59,20 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+@import '../../../../assets/scss/pixels_rem.scss';
+@import '../../../../assets/scss/variables.scss';
+@import '../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  .main-orders-total {
+    .total {
+      .sub-total-num {
+        .fa {
+          display: block !important;
+        }
+      }
+    }
+  }
+}
+</style>

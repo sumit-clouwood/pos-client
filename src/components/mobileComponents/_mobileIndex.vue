@@ -59,24 +59,37 @@ export default {
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
 
-.mobile-components {
-  z-index: 50;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  display: none;
-  letter-spacing: 0.5px;
-  @include responsive(mobile) {
+@include responsive(mobile) {
+  .mobile-components {
+    z-index: 50;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    letter-spacing: 0.5px;
+
+    .mobile-page {
+      .mobile-header {
+        .current-sale {
+          .title {
+            font-size: 18px;
+            margin: 0;
+          }
+        }
+      }
+    }
+
     .loading-modules {
       width: auto;
     }
-    display: block;
+
     .total-amount {
       hr {
         display: block;
       }
+
       .total-amount-method {
         .total-amount-method-btn {
           display: block;

@@ -1,5 +1,5 @@
 <template>
-  <div class="cashier" v-if="openUserHendler && false">
+  <div class="cashier" v-if="openUserHendler">
     <div class="user-list">
       <div class="title">Please Select User</div>
       <div class="list">
@@ -133,6 +133,7 @@ export default {
   color: #fff;
   z-index: 1060;
   font-size: 20px;
+  display: none;
 
   .user-login {
     display: grid;
@@ -353,6 +354,12 @@ export default {
         }
       }
     }
+  }
+}
+
+@include responsive(mobile) {
+  .cashier {
+    display: block;
   }
 }
 </style>

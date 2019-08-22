@@ -45,8 +45,7 @@
               :next-text="_t('Next')"
               :container-class="''"
               :page-class="_t('page-item')"
-            >
-            </paginate>
+            ></paginate>
             <!--</template>-->
           </div>
           <div class="btn-announce">
@@ -141,6 +140,7 @@ div#display-order .modal-dialog {
 
           .crm-details-wrap {
             display: grid;
+            border: none;
 
             #order-profile {
               width: 100%;
@@ -261,7 +261,6 @@ div#display-order .modal-dialog {
         }
 
         .modal-footer {
-          padding-top: 20px;
         }
       }
     }

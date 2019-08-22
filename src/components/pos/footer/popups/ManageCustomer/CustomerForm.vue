@@ -403,9 +403,13 @@ export default {
       return this.newCustomerDetails
     },
     validEmail: function(email) {
-      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       return re.test(email)
     },
+  },
+  beforeMount() {
+    // eslint-disable-next-line no-console
+    console.log(this.fetchDeliveryAreas)
   },
 }
 </script>
@@ -468,6 +472,7 @@ export default {
       align-items: center;
       border-bottom: 1px solid #ccc;
       margin: 0 10px;
+
       &:last-child {
         border: none !important;
       }

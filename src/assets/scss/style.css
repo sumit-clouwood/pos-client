@@ -1,4 +1,3 @@
-@charset "UTF-8";
 @font-face {
   font-family: 'ProximaNova-Regular';
   src: url("/assets/fonts/ProximaNova-Regular.woff") format("woff");
@@ -29,13 +28,18 @@ html {
     html {
       font-size: 16px; } }
 
+html {
+  height: 100vh; }
+
 body {
+  height: 100vh;
   margin: 0;
   padding: 0;
   height: 100vh;
   overflow: hidden;
   color: #444;
-  background-color: #fafafa; }
+  background-color: #fafafa;
+  position: relative; }
   body .new-pos .hideBigScreen {
     display: none; }
     @media only screen and (min-width: 320px) and (max-width: 600px) {
@@ -265,27 +269,87 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center; }
 
 @media only screen and (min-width: 320px) and (max-width: 600px) {
-  .modal-dialog .preloader {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000000; }
-    .modal-dialog .preloader > div {
-      width: auto; }
-  .modal-dialog .modal-content .modal-header .customer-title {
-    font-size: 18px;
-    color: #3f4146; }
-  .modal-dialog .modal-content .modal-header button.close {
-    font-size: 30px;
-    color: #3f4146;
-    opacity: 1; } }
+  html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden; }
+    html .dropdown:hover, body .dropdown:hover {
+      background-color: #fff; }
+
+  .modal-header {
+    padding: 20px !important; }
+
+  .modal-details {
+    padding: 0 20px !important; }
+
+  .modal {
+    position: absolute !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    border: none !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+    opacity: 1 !important; }
+    .modal .modal-dialog {
+      min-height: 100% !important;
+      height: 100% !important;
+      border: none !important;
+      transform: none !important;
+      transition: none !important;
+      animation: none !important;
+      opacity: 1 !important; }
+      .modal .modal-dialog .modal-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: max-content 1fr max-content;
+        min-height: 100% !important;
+        height: 100%;
+        border: none !important;
+        transform: none !important;
+        transition: none !important;
+        animation: none !important;
+        opacity: 1 !important; }
+        .modal .modal-dialog .modal-content .modal-body {
+          width: 100vw;
+          border: none !important;
+          padding: 20px !important; }
+        .modal .modal-dialog .modal-content .modal-footer .btn-announce button {
+          font-size: 14px !important; }
+          .modal .modal-dialog .modal-content .modal-footer .btn-announce button#discount-save {
+            background-color: #64C434 !important;
+            border: none !important; }
+      .modal .modal-dialog .preloader {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000000; }
+        .modal .modal-dialog .preloader > div {
+          width: auto; }
+      .modal .modal-dialog .modal-content .modal-header {
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        .modal .modal-dialog .modal-content .modal-header .customer-title {
+          font-size: 18px;
+          color: #3f4146; }
+        .modal .modal-dialog .modal-content .modal-header button.close {
+          font-size: 30px;
+          color: #3f4146;
+          opacity: 1; }
+        .modal .modal-dialog .modal-content .modal-header .main-orders-title {
+          font-size: 16px; }
+          .modal .modal-dialog .modal-content .modal-header .main-orders-title .text {
+            font-size: 16px; }
+      .modal .modal-dialog .modal-content .modal-footer {
+        padding: 20px !important;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); } }
 .header {
   border-bottom: 1px solid #E3E7F2; }
   .header .header-main {
@@ -542,57 +606,99 @@ h1, h2, h3, h4, h5, h6 {
           background-color: #E3E7F2;
           z-index: 1; }
       .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose {
-        margin-top: 1.875rem; }
-        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc {
+        margin-top: 1.875rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 150px);
+        grid-gap: 10px; }
+        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label {
+          padding: 10px;
+          border-radius: 5px;
           position: relative; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc span {
-            width: 0.9375rem;
-            height: 0.9375rem;
-            border: 1px solid #979797;
-            border-radius: 100%;
-            display: inline-block;
-            vertical-align: middle;
-            text-align: center;
-            color: #3D3F43;
-            font-size: 0.75rem;
-            font-weight: normal;
-            letter-spacing: 0.43px; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox]:checked + span {
-            background: #5056CA;
-            border-color: #5056CA;
-            position: relative; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox] {
-            opacity: 0;
+          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .borderCheck {
+            display: none; }
+          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc {
             position: absolute;
-            top: 4px;
-            width: 0.625rem;
-            height: 0.625rem; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox]:checked + span:before {
-            content: "\2713";
-            width: 0.75rem;
-            height: 0.75rem;
-            color: #fff;
-            line-height: 0;
-            position: absolute;
-            top: 7.5px;
-            left: 0.5px;
-            font-size: 0.9375rem !important; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox] + span {
-            border-radius: 2px; }
+            top: -1px;
+            right: -1px;
+            margin-right: 0 !important;
+            width: 20px;
+            height: 20px; }
+            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input {
+              display: none; }
+            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc span {
+              position: absolute;
+              top: 0;
+              right: 0;
+              bottom: 0;
+              left: 0;
+              border: 2px solid #E3E7F2;
+              border-radius: 100%;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              vertical-align: middle;
+              text-align: center;
+              color: #3D3F43;
+              font-size: 0.75rem;
+              font-weight: normal;
+              letter-spacing: 0.43px;
+              width: 20px;
+              height: 20px; }
+              .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc span:before {
+                width: 15px !important;
+                height: 15px !important;
+                color: #fff; }
+            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox]:checked + span {
+              background: #5056CA;
+              border-color: #5056CA;
+              position: relative; }
+            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox] {
+              opacity: 0;
+              position: absolute;
+              top: 4px;
+              width: 0.625rem;
+              height: 0.625rem; }
+            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox]:checked + span:before {
+              font-family: "FontAwesome";
+              content: "\f00c";
+              width: 0.75rem;
+              height: 0.75rem;
+              color: #fff;
+              line-height: 0;
+              position: absolute;
+              top: 7.5px;
+              left: 0.5px;
+              font-size: 0.9375rem !important; }
+            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox] + span {
+              border-radius: 2px; }
         .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice {
-          width: 32%;
           display: inline-block;
           margin-bottom: 1.125rem; }
           .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label {
             display: inline-block;
             vertical-align: middle;
-            margin: 0; }
+            margin: 0;
+            border: 2px solid #E3E7F2; }
+            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label input {
+              display: none;
+              /* &[type="checkbox"] {
+                   &:checked + span {
+                       background-color: $green-middle;
+                   }
+               }*/ }
+              .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label input[type="checkbox"]:checked + div {
+                display: block; }
+                .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label input[type="checkbox"]:checked + div span {
+                  background-color: #5056CA;
+                  border: none;
+                  border-radius: 3px; }
             .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label img {
               margin-right: 0.3125rem;
               display: inline-block;
               vertical-align: middle;
               width: 2.1875rem;
-              height: 2.1875rem; }
+              height: 2.1875rem;
+              border-radius: 50%; }
             .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label span {
               display: inline-block;
               vertical-align: middle;
@@ -601,6 +707,35 @@ h1, h2, h3, h4, h5, h6 {
             display: inline-block;
             vertical-align: middle;
             margin-right: 0.3125rem; }
+            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .customradioc .checkBox {
+              width: 20px;
+              height: 20px;
+              line-height: inherit;
+              border-top: none;
+              border-right: none;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              border: none; }
+              .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .customradioc .checkBox:before {
+                font-family: "FontAwesome";
+                content: "\f00c";
+                position: static !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px !important;
+                border: none; }
+          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .borderCheck {
+            display: none;
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            bottom: -2px;
+            left: -2px;
+            border: 2px solid #5056CA;
+            border-radius: 3px;
+            pointer-events: none; }
     .POSItemOptions .modal-dialog .modal-content .modal-footer {
       padding: 0;
       padding-top: 1.5625rem !important; }
@@ -819,11 +954,7 @@ h1, h2, h3, h4, h5, h6 {
               width: 100%; }
               #customer .modal-dialog .modal-content .modal-body .right-form .customer-group .right-shift .vdatetime input {
                 margin: 0;
-                width: 100%; }
-      #customer .modal-dialog .modal-content .modal-footer {
-        background-color: #fff;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); } }
+                width: 100%; } }
 @media only screen and (min-width: 320px) and (max-width: 600px) {
   #search-loyalty-customer .modal-dialog {
     position: absolute;
@@ -839,15 +970,15 @@ h1, h2, h3, h4, h5, h6 {
       padding: 10px 20px; }
     #search-loyalty-customer .modal-dialog .modal-content .modal-body {
       padding: 20px; }
+      #search-loyalty-customer .modal-dialog .modal-content .modal-body > .color-text-invert {
+        margin-bottom: 10px; }
       #search-loyalty-customer .modal-dialog .modal-content .modal-body .add-note-area input {
         width: 100%; }
       #search-loyalty-customer .modal-dialog .modal-content .modal-body .inputSearch {
         margin-bottom: 10px; }
       #search-loyalty-customer .modal-dialog .modal-content .modal-body button {
         margin-bottom: 10px;
-        border-radius: 3px; }
-    #search-loyalty-customer .modal-dialog .modal-content .modal-footer {
-      padding: 0px 20px 20px; } }
+        border-radius: 3px; } }
 #dining-option .modal-dialog {
   max-width: 35rem; }
   #dining-option .modal-dialog .modal-content .modal-body .dining-option-block {
@@ -1734,12 +1865,13 @@ button:focus {
               #select-discount-item .modal-dialog .modal-content .modal-body .dining-option-block .option-contain.active:after {
                 background-color: #64C434;
                 position: absolute;
-                top: 0;
-                right: 0;
-                border-top-right-radius: 0; }
+                top: -2px;
+                right: -2px; }
             #select-discount-item .modal-dialog .modal-content .modal-body .dining-option-block .option-contain:nth-child(2n) {
               margin-right: 0px;
-              margin-left: 10px; } }
+              margin-left: 10px; }
+      #select-discount-item .modal-dialog .modal-content .modal-footer .btn-announce button {
+        height: 50px !important; } }
 #add-note .modal-dialog {
   width: 35rem;
   box-shadow: 0 10px 40px rgba(133, 139, 151, 0.16);
@@ -1827,19 +1959,17 @@ button:focus {
               font-weight: 600; }
             #add-note .modal-dialog .modal-content .modal-body .add-note-area .add-note-form {
               width: auto; }
-        #add-note .modal-dialog .modal-content .modal-footer {
-          padding: 10px 20px 20px; }
-          #add-note .modal-dialog .modal-content .modal-footer .btn-announce {
+        #add-note .modal-dialog .modal-content .modal-footer .btn-announce {
+          margin: 0;
+          display: flex;
+          justify-content: space-between;
+          width: 100%; }
+          #add-note .modal-dialog .modal-content .modal-footer .btn-announce button {
             margin: 0;
-            display: flex;
-            justify-content: space-between;
-            width: 100%; }
-            #add-note .modal-dialog .modal-content .modal-footer .btn-announce button {
-              margin: 0;
-              flex-grow: 1; }
-              #add-note .modal-dialog .modal-content .modal-footer .btn-announce button#save-note {
-                border-color: #64C434;
-                background-color: #64C434; } }
+            flex-grow: 1; }
+            #add-note .modal-dialog .modal-content .modal-footer .btn-announce button#save-note {
+              border-color: #64C434;
+              background-color: #64C434; } }
 a:hover {
   text-decoration: none; }
 
@@ -1967,18 +2097,18 @@ a:hover {
       #select-discount .modal-dialog .modal-content .modal-body .select-discount-option .option-contain.active {
         border: 2px solid #64C434; }
         #select-discount .modal-dialog .modal-content .modal-body .select-discount-option .option-contain.active:after {
-          content: "✔";
+          font-family: "FontAwesome";
+          content: "\f00c";
           color: #fff;
           position: absolute;
           height: 1.5625rem;
           width: 1.5625rem;
-          top: -1px;
-          right: -1px;
+          top: -2px;
+          right: -2px;
           border-bottom: 1px solid #ddd;
           border-left: 1px solid #ddd;
           background-repeat: no-repeat;
           border-radius: 3px;
-          border-top-right-radius: 0;
           background-color: #64C434;
           background-position: center center;
           border-color: #dfffcd !important;
@@ -1986,9 +2116,7 @@ a:hover {
           align-items: center;
           justify-content: center; }
     #select-discount .modal-dialog .modal-content .modal-footer {
-      box-shadow: 0 0 10px #ccc;
-      z-index: 2;
-      padding: 10px 20px 20px; }
+      z-index: 2; }
       #select-discount .modal-dialog .modal-content .modal-footer .btn-announce #discount-save-btn {
         background-color: #64C434;
         border: none; } }
@@ -2122,7 +2250,7 @@ a:hover {
       bottom: 0;
       left: 0;
       margin: 0;
-      min-height: auto;
+      min-height: 100% !important;
       transform: none;
       opacity: 1;
       max-width: none; }
@@ -2143,7 +2271,8 @@ a:hover {
           width: 100vw; }
           #manage-customer .modal-dialog .modal-content .modal-body .search-field {
             height: auto;
-            margin: 0; }
+            margin: 0;
+            border-bottom: 1px solid #E3E7F2; }
             #manage-customer .modal-dialog .modal-content .modal-body .search-field label {
               margin: 0; }
         #manage-customer .modal-dialog .modal-content .modal-footer {
@@ -3912,7 +4041,8 @@ body {
         padding-left: 1.875rem;
         display: grid;
         grid-template-rows: auto 1fr;
-        grid-gap: 20px; }
+        grid-gap: 20px;
+        overflow-y: auto; }
         .main .main-body .food-wrapper .food-block .breadcrumbs {
           padding: 0px 1.25rem;
           height: 3.125rem;
@@ -4002,9 +4132,10 @@ body {
               .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before {
                 display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item {
+            padding: 10px;
             cursor: pointer;
-            width: 9vmax;
-            min-height: 9vmax;
+            width: calc(7vmax + 20px);
+            min-height: 7vmax;
             border: 0.0625rem solid #ddd;
             border-radius: 0.3125rem;
             justify-self: center;
@@ -4016,8 +4147,8 @@ body {
             -webkit-box-pack: center;
             -ms-flex-pack: center;
             justify-content: center;
-            margin-right: 0.625rem;
-            margin-bottom: 0.625rem;
+            margin-right: 1.25rem;
+            margin-bottom: 1.25rem;
             -webkit-transition: .2s linear;
             transition: .2s linear;
             font-size: 1.125rem;
@@ -4042,10 +4173,9 @@ body {
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-img {
               margin: 0 auto;
               border-radius: 0.1875rem;
-              width: calc(9vmax - 5px);
-              height: 9vmax;
-              margin-bottom: auto;
-              margin-top: 2px; }
+              width: 7vmax;
+              height: 7vmax;
+              margin-bottom: auto; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-text {
               word-break: break-word;
               text-align: center;
@@ -4066,11 +4196,17 @@ body {
 
 @media only screen and (min-width: 320px) and (max-width: 600px) {
   .ullist-inventory-location {
-    padding: 0 !important; }
+    padding: 0 !important;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0; }
     .ullist-inventory-location .p-3 {
       background-color: #fff;
       display: grid;
-      height: 100vh;
+      height: 100%;
+      grid-template-rows: 1fr;
       padding: 20px !important; }
       .ullist-inventory-location .p-3 .margin220 {
         height: 100%;
@@ -4270,7 +4406,7 @@ body {
     align-items: center;
     padding-right: 1.875rem; }
     .footer .footer-slider .footer-slider-list .slick-slide {
-      margin-right: 0.9375rem;
+      margin-right: 15px;
       border-radius: 3px;
       overflow: hidden; }
       .footer .footer-slider .footer-slider-list .slick-slide .footer-slider-list-item {

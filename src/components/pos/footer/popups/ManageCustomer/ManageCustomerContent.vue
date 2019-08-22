@@ -45,14 +45,14 @@
             <td class="color-text">{{ customer.email }}</td>
             <td class="color-text">
               <!-- <button
-                data-toggle="modal"
-                data-target="#display-order"
-                data-dismiss="modal"
-                @click="fetchSelectedCustomer(customer._id)"
-                class="br-table-btn display-order color-icon-table-neutral-button color-text-invert"
-              >
-                {{ _t('Display Order') }}
-              </button>-->
+                          data-toggle="modal"
+                          data-target="#display-order"
+                          data-dismiss="modal"
+                          @click="fetchSelectedCustomer(customer._id)"
+                          class="br-table-btn display-order color-icon-table-neutral-button color-text-invert"
+                        >
+                          {{ _t('Display Order') }}
+                        </button>-->
             </td>
             <td>
               <button
@@ -94,6 +94,7 @@
               </button>
               <span>{{ customer.active ? 'Activated' : 'Deactivated' }}</span>
             </td>
+            <!--<td class="color-text more-button">More</td>-->
           </tr>
         </tbody>
       </table>
@@ -111,6 +112,9 @@ export default {
   components: {
     Preloader,
   },
+  // beforeUpdate() {
+  //     console.log(this.customerDetails)
+  // },
   computed: {
     ...mapState({
       customerDetails: state => state.customer.customer_list,
@@ -142,3 +146,17 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+.more-button {
+  background-color: #4b4e53;
+  grid-column-start: 2 !important;
+  grid-column-end: 3 !important;
+  grid-row-start: 3;
+  grid-row-end: 4;
+  color: #fff !important;
+  font-weight: bold;
+  opacity: 1;
+  align-items: center;
+  justify-content: center;
+}
+</style>

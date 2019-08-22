@@ -14,27 +14,29 @@
         class="POSItemOptions_choose_choice"
       >
         <label
-          class="POSItemOptions_choose_label"
+          :class="['POSItemOptions_choose_label', modifier.class]"
           v-if="subgroup.no_of_selection > 1"
         >
-          <span class="customradioc">
-            <input
-              ref="modifier"
-              type="checkbox"
-              :name="modifier._id"
-              :id="modifier._id"
-              class="customradio"
-              :value="{
-                type: 'checkbox',
-                itemId: item._id,
-                modifierId: modifier._id,
-                groupId: subgroup._id,
-                limit: subgroup.no_of_selection,
-              }"
-              v-model="checkboxes"
-            />
-            <span></span>
-          </span>
+          <input
+            ref="modifier"
+            type="checkbox"
+            :name="modifier._id"
+            :id="modifier._id"
+            class="customradio"
+            :value="{
+              type: 'checkbox',
+              itemId: item._id,
+              modifierId: modifier._id,
+              groupId: subgroup._id,
+              limit: subgroup.no_of_selection,
+            }"
+            v-model="checkboxes"
+          />
+          <div class="borderCheck">
+            <span class="customradioc">
+              <span class="checkBox"></span>
+            </span>
+          </div>
           <img
             :src="modifier.item_modifier_image"
             alt=""
@@ -127,6 +129,7 @@
 <script>
 /* eslint-disable no-console */
 import { mapState, mapGetters } from 'vuex'
+
 export default {
   name: 'Modifiers',
   props: {
@@ -155,6 +158,15 @@ export default {
   },
   mounted() {},
   methods: {
+    addClass(index) {
+      if (this.subgroup.modifiers[index].class !== 'active') {
+        this.subgroup.modifiers[index].class = 'active'
+      } else {
+        this.subgroup.modifiers[index].class = ''
+      }
+
+      console.log(this.subgroup.modifiers[index])
+    },
     setRadio(itemId, groupId, modifierId) {
       this.$store.commit('orderForm/setRadios', {
         itemId: itemId,

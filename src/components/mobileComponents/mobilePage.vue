@@ -102,14 +102,15 @@ export default {
   background-color: #fff;
   height: 100%;
   display: grid;
-  grid-template-rows: 100px 55px 1fr 75px;
+  grid-template-rows: max-content 55px 1fr max-content;
 
   .mobile-header {
-    padding: 0 20px;
+    padding: 20px;
     display: grid;
     grid-template-columns: 1fr max-content;
     align-items: center;
     background-color: #fafafa;
+    z-index: 1;
 
     .current-sale {
       .title {
@@ -174,18 +175,20 @@ export default {
 
   .mobile-search {
     border-top: 1px solid #e3e7f2;
+    border-bottom: 1px solid #e3e7f2;
     padding: 10px 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1;
   }
 
   .mobile-body {
-    border-top: 1px solid #e3e7f2;
-    border-bottom: 1px solid #e3e7f2;
     overflow: hidden;
     position: relative;
     background-color: #fafafa;
   }
 
   .mobile-footer {
+    z-index: 1;
     .btn-next {
       display: none;
     }

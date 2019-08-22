@@ -137,7 +137,7 @@ export default {
 @import '../../assets/scss/mixins.scss';
 
 .profile-sidebar-overlay {
-  z-index: 10;
+  z-index: 100;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.3);
   position: fixed;
@@ -185,7 +185,8 @@ export default {
       align-items: center;
       justify-content: space-between;
       grid-row-gap: 20px;
-      padding: 35px 20px;
+      padding: 30.5px 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
       .btn-close {
         font-size: 18px;
@@ -201,8 +202,6 @@ export default {
     }
 
     .profile-sidebar-body {
-      border-top: 1px solid #e3e7f2;
-      border-bottom: 1px solid #e3e7f2;
       padding: 0 20px;
 
       .profile-menu {
@@ -242,9 +241,9 @@ export default {
     .profile-sidebar-footer {
       display: flex;
       padding: 20px;
-      height: 75px;
-
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       .logout {
+        height: 50px;
         display: grid;
         grid-template-columns: max-content max-content;
         align-items: center;

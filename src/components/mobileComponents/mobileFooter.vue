@@ -111,10 +111,14 @@ export default {
       this.$store.dispatch('methodCardHendlerGhange')
     },
     footerBtnMethod() {
-      if (this.param.method == 'cardInput') {
-        this.$store.dispatch('cardInputHendlerGhange')
-      } else if (this.param.method == 'successfull') {
-        this.$store.dispatch('successfullHendlerGhange')
+      if (this.payMethod == 'Gift Card') {
+        this.$store.dispatch('payNowCalcHendlerGhange')
+      } else if (this.payMethod == 'Loyalty Points') {
+        this.$store.dispatch('loyaltyPaymentHendlerGhange')
+      } else if (this.payMethod == 'Payment Type Payment Type Name 179') {
+        this.$store.dispatch('methodCardHendlerGhange')
+      } else if (this.payMethod == 'Payment Type Payment Type Name 180') {
+        this.$store.dispatch('QRMethodGhangeHendler')
       }
     },
   },
@@ -130,6 +134,8 @@ export default {
     padding: 20px 20px 20px 20px;
     display: flex;
     align-items: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1;
 
     .btn-cart {
       width: 100%;
@@ -144,7 +150,7 @@ export default {
       padding: 0 25px;
 
       &.disable {
-        opacity: 0.7;
+        opacity: 0.5;
       }
 
       .text {

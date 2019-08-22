@@ -6,7 +6,7 @@
     </div>
     <div class="main-oreders-email" v-if="selectedCustomer">
       <span class="cursor-pointer color-text" @click="removeSelectedCustomer()">
-        ✖
+        <i class="fa fa-times" aria-hidden="true"></i>
       </span>
       <p v-if="selectedCustomer.email != ''">
         {{ _t('Email') }} : {{ selectedCustomer.email }}
@@ -92,7 +92,8 @@ export default {
   .main-orders-contacts {
     display: grid;
     grid-template-columns: 1fr;
-    grid-row-gap: 10px;
+    grid-template-rows: none;
+    grid-row-gap: 20px;
 
     .cursor-pointer {
       display: flex;
@@ -112,6 +113,13 @@ export default {
     }
 
     .main-oreders-buttons {
+      display: flex !important;
+      align-items: center;
+      margin: 0;
+      #holdorder {
+        width: 30%;
+        background-color: $green-middle;
+      }
     }
   }
 }

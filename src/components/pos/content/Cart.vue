@@ -82,18 +82,6 @@ export default {
     grid-column-end: 2;
     z-index: 50;
 
-    .mobile-footer {
-      padding-top: 0;
-
-      .btn-cart {
-        display: none;
-      }
-
-      .main-orders-buttons {
-        display: grid;
-      }
-    }
-
     &.active {
       right: 0px;
     }
@@ -103,9 +91,10 @@ export default {
       align-items: center;
       justify-content: space-between;
       padding: 20px;
+      padding-bottom: 0;
       font-weight: 600;
       font-size: 18px;
-      z-index: 2;
+      z-index: 6;
       background-color: #fff;
 
       .fa {
@@ -121,7 +110,8 @@ export default {
       z-index: 1;
 
       .main-oreders-title {
-        font-size: 16px;
+        font-size: 14px;
+        font-weight: normal;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -166,8 +156,7 @@ export default {
       padding: 0 20px;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      z-index: 1;
+      z-index: -1;
 
       .total-wrapper {
         border-bottom: 1px solid $gray-middle;
@@ -226,10 +215,19 @@ export default {
     }
 
     .mobile-footer {
+      padding-top: 0;
       background-color: #fff;
       z-index: 10;
       padding-top: 20px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: none;
+
+      .btn-cart {
+        display: none;
+      }
+
+      .main-orders-buttons {
+        display: grid;
+      }
 
       .btn-next {
         display: none;

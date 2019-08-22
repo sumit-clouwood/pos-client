@@ -83,8 +83,12 @@ export default {
     bottom: 0;
     left: 0;
     height: 100vh;
+    display: grid;
 
     .modal-content {
+      height: 100%;
+      display: grid;
+      grid-template-rows: 1fr max-content;
     }
   }
 }

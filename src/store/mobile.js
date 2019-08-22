@@ -54,6 +54,11 @@ export default {
     ],
   },
   mutations: {
+    CLOSE_CATEGORY_AND_SUB_CATEGORY: state => {
+      state.allCategoryHendler = false
+      state.subCategoryHendler = false
+      state.foodMenuHendler = true
+    },
     SEARCH_HENDLER_CHANGE: state => {
       state.searchHendler = !state.searchHendler
     },
@@ -164,8 +169,15 @@ export default {
       state.itemFood = []
       state.bascketItems = []
     },
+    CHOOSE_CURENT_PAY_METHOD: (state, payLoad) => {
+      state.payMethod = payLoad
+      // console.log(payLoad)
+    },
   },
   actions: {
+    CloseCategoryAndSubCategory({ commit }) {
+      commit('CLOSE_CATEGORY_AND_SUB_CATEGORY')
+    },
     backCategory({ commit }) {
       commit('BACK_CATEGORY')
     },
@@ -249,6 +261,9 @@ export default {
     },
     mobileLogout({ commit }) {
       commit('MOBILE_LOGOUT')
+    },
+    chooseCurentPayMethod({ commit }, payLoad) {
+      commit('CHOOSE_CURENT_PAY_METHOD', payLoad)
     },
   },
   getters: {

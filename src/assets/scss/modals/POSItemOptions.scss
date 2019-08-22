@@ -1,4 +1,5 @@
 @import "../variables.scss";
+
 .POSItemOptions {
   padding-right: $px10;
 
@@ -72,11 +73,13 @@
                 border-radius: $btn-border-radius;
                 border: 1px solid $gray-middle;
                 overflow: hidden;
-                input{
+
+                input {
                   border-radius: 0;
                   border-left: 1px solid $gray-middle;
                   border-right: 1px solid $gray-middle;
                 }
+
                 > * {
                   border: 0 none;
                   background-color: #fff;
@@ -152,23 +155,56 @@
 
           .POSItemOptions_choose {
             margin-top: $px30;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 150px);
+            grid-gap: 10px;
 
             .POSItemOptions_choose_label {
+              padding: 10px;
+              border-radius: 5px;
+              position: relative;
+
+              .borderCheck {
+                display: none;
+              }
+
               .customradioc {
-                position: relative;
+                position: absolute;
+                top: -1px;
+                right: -1px;
+                margin-right: 0 !important;
+                width: 20px;
+                height: 20px;
+
+                input {
+                  display: none;
+                }
 
                 span {
-                  width: $px15;
-                  height: $px15;
-                  border: 1px solid #979797;
+                  position: absolute;
+                  top: 0;
+                  right: 0;
+                  bottom: 0;
+                  left: 0;
+                  border: 2px solid $gray-middle;
                   border-radius: 100%;
-                  display: inline-block;
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
                   vertical-align: middle;
                   text-align: center;
                   color: #3D3F43;
                   font-size: $px12;
                   font-weight: normal;
                   letter-spacing: 0.43px;
+                  width: 20px;
+                  height: 20px;
+
+                  &:before {
+                    width: 15px !important;
+                    height: 15px !important;
+                    color: #fff;
+                  }
                 }
 
                 input[type=checkbox]:checked + span {
@@ -186,7 +222,8 @@
                 }
 
                 input[type=checkbox]:checked + span:before {
-                  content: "\2713";
+                  font-family: "FontAwesome";
+                  content: "\f00c";
                   width: $px12;
                   height: $px12;
                   color: #fff;
@@ -204,7 +241,6 @@
             }
 
             .POSItemOptions_choose_choice {
-              width: 32%;
               display: inline-block;
               margin-bottom: $px18;
 
@@ -212,6 +248,27 @@
                 display: inline-block;
                 vertical-align: middle;
                 margin: 0;
+                border: 2px solid $gray-middle;
+
+                input {
+                  display: none;
+                  /* &[type="checkbox"] {
+                       &:checked + span {
+                           background-color: $green-middle;
+                       }
+                   }*/
+                  &[type="checkbox"] {
+                    &:checked + div {
+                      display: block;
+
+                      span {
+                        background-color: $blue-middle;
+                        border: none;
+                        border-radius: 3px;
+                      }
+                    }
+                  }
+                }
 
                 img {
                   margin-right: $px5;
@@ -219,6 +276,7 @@
                   vertical-align: middle;
                   width: $px35;
                   height: $px35;
+                  border-radius: 50%;
                 }
 
                 span {
@@ -232,6 +290,41 @@
                 display: inline-block;
                 vertical-align: middle;
                 margin-right: $px5;
+
+                .checkBox {
+                  width: 20px;
+                  height: 20px;
+                  line-height: inherit;
+                  border-top: none;
+                  border-right: none;
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  border: none;
+
+                  &:before {
+                    font-family: "FontAwesome";
+                    content: "\f00c";
+                    position: static !important;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 14px !important;
+                    border: none;
+                  }
+                }
+              }
+
+              .borderCheck {
+                display: none;
+                position: absolute;
+                top: -2px;
+                right: -2px;
+                bottom: -2px;
+                left: -2px;
+                border: 2px solid $blue-middle;
+                border-radius: 3px;
+                pointer-events: none;
               }
             }
           }

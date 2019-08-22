@@ -36,13 +36,19 @@ html {
   }
 }
 
+html {
+  height: 100vh;
+}
+
 body {
+  height: 100vh;
   margin: 0;
   padding: 0;
   height: 100vh;
   overflow: hidden;
   color: #444;
   background-color: #fafafa;
+  position: relative;
 
   .new-pos {
     .hideBigScreen {
@@ -353,40 +359,129 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @include responsive(mobile) {
-  .modal-dialog {
-    .preloader {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      background-color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000000;
-      //display: none !important;
 
+  html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
 
-      > div {
-        width: auto;
+    .dropdown {
+      &:hover {
+        background-color: #fff;
       }
     }
+  }
+  .modal-header {
+    padding: 20px !important;
+  }
+  .modal-details {
+    padding: 0 20px !important;
+  }
+  .modal {
+    position: absolute !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    border: none !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+    opacity: 1 !important;
 
-    .modal-content {
-      .modal-header {
-        .customer-title {
-          font-size: 18px;
-          color: #3f4146;
+    .modal-dialog {
+      min-height: 100% !important;
+      height: 100% !important;
+      border: none !important;
+      transform: none !important;
+      transition: none !important;
+      animation: none !important;
+      opacity: 1 !important;
+
+      .modal-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: max-content 1fr max-content;
+        min-height: 100% !important;
+        height: 100%;
+        border: none !important;
+        transform: none !important;
+        transition: none !important;
+        animation: none !important;
+        opacity: 1 !important;
+
+        .modal-body {
+          width: 100vw;
+          border: none !important;
+          padding: 20px !important;
         }
 
-        button {
-          &.close {
-            font-size: 30px;
-            color: #3f4146;
-            opacity: 1;
+        .modal-footer {
+          .btn-announce {
+            button {
+              //height: 50px !important;
+              font-size: 14px !important;
+              &#discount-save{
+                background-color: $green-middle !important;
+                border: none !important;
+              }
+            }
           }
+        }
+      }
+
+      .preloader {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000000;
+        //display: none !important;
+
+
+        > div {
+          width: auto;
+        }
+      }
+
+      .modal-content {
+        .modal-header {
+          padding: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+          .customer-title {
+            font-size: 18px;
+            color: #3f4146;
+          }
+
+          button {
+            &.close {
+              font-size: 30px;
+              color: #3f4146;
+              opacity: 1;
+            }
+          }
+
+          .main-orders-title {
+            font-size: 16px;
+
+            .text {
+              font-size: 16px;
+            }
+          }
+        }
+
+        .modal-body {
+
+        }
+
+        .modal-footer {
+          padding: 20px !important;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
       }
     }

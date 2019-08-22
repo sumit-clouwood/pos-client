@@ -40,9 +40,12 @@ export default {
   width: 100vw;
   background-color: #fff;
   z-index: 1055;
-  display: grid;
+  display: none;
   grid-template-rows: min-content 1fr min-content;
   transition: 0.5s ease-out;
+  @include responsive(mobile) {
+    display: grid;
+  }
 
   &.active {
     right: 0;

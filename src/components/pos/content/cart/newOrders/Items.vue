@@ -147,6 +147,10 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
+
 .button-plus-icon {
   width: 23px;
   height: 23px;
@@ -159,6 +163,12 @@ export default {
   svg {
     fill: #fff;
     width: 13px;
+  }
+}
+
+@include responsive(mobile) {
+  .button-plus-icon {
+    background-color: $green-middle;
   }
 }
 </style>

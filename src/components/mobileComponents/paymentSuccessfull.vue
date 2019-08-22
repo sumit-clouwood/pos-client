@@ -48,11 +48,13 @@ export default {
   width: 100vw;
   z-index: 50;
   background-color: #fff;
-  display: grid;
+  display: none;
   grid-template-rows: max-content 1fr max-content;
   z-index: 1060;
   transition: 0.5s ease-out;
-
+  @include responsive(mobile) {
+    display: grid;
+  }
   &.active {
     right: 0;
   }

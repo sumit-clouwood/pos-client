@@ -61,9 +61,7 @@
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
-              <div class="button-caption">
-                {{ _t('Cancel Order') }}
-              </div>
+              <div class="button-caption">{{ _t('Cancel Order') }}</div>
             </div>
           </button>
           <button
@@ -73,9 +71,7 @@
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
-              <div class="button-caption">
-                {{ _t('Modify Order') }}
-              </div>
+              <div class="button-caption">{{ _t('Modify Order') }}</div>
             </div>
           </button>
           <button
@@ -101,9 +97,7 @@
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
-              <div class="button-caption">
-                {{ _t('Close') }}
-              </div>
+              <div class="button-caption">{{ _t('Close') }}</div>
             </div>
           </button>
         </div>
@@ -178,6 +172,7 @@ export default {
       .dialog-body {
         display: block;
         position: static;
+        overflow: auto;
 
         .details {
           display: grid;
@@ -186,11 +181,25 @@ export default {
 
           > div {
             padding: 0 0 20px 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            align-content: start;
+            align-items: flex-start;
+
+            .details-item {
+              border-bottom: 1px solid $gray-middle;
+              padding-bottom: 10px;
+              display: grid;
+              grid-template-columns: max-content max-content;
+              grid-gap: 10px;
+            }
           }
         }
 
-        .left-part {
+        .left-part,
+        .right-part {
           border: none;
+          height: auto;
         }
 
         .right-part {
@@ -201,6 +210,7 @@ export default {
               .table {
                 padding: 0;
               }
+
               .receipt-summary {
                 text-align: left;
                 font-weight: bold;
@@ -212,13 +222,20 @@ export default {
         .buttons {
           display: grid;
           grid-template-columns: 1fr 1fr;
+          grid-gap: 5px;
+
+          button.button {
+            margin: 0;
+          }
 
           .v-menu {
             display: block;
-            margin-right: 0.3125rem;
+            margin-right: 0;
 
             .dropdown {
               display: block;
+              width: 100%;
+
               .dropdown-menu {
                 overflow: hidden;
               }

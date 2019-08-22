@@ -9,6 +9,7 @@
         data-toggle="modal"
         data-target="#manage-customer"
       >
+        <!--@click="openManageCustomer"-->
         <svg
           width="24"
           height="24"
@@ -284,7 +285,7 @@ export default {
       background-color: rgba(0, 0, 0, 0);
       /*background-color: #fff;*/
       border-left: 1px solid #ddd;
-      z-index: 5;
+      z-index: 50;
       pointer-events: none;
 
       &.active {
