@@ -178,7 +178,6 @@ export default {
 
             setTimeout(() => {
               require('@/../public/js/pos_script.js')
-              require('@/../public/js/pos_script_functions.js')
             }, 2000)
           })
           .catch(error => (this.errored = error))
