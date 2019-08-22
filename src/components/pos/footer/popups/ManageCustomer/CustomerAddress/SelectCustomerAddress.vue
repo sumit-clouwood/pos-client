@@ -123,8 +123,8 @@ export default {
               &:after {
                 background-color: $green-middle;
                 border: 2px solid $green-middle;
-                                    top: -2px;
-                                    right: -2px;
+                top: -2px;
+                right: -2px;
               }
             }
           }

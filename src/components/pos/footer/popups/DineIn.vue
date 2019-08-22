@@ -186,14 +186,14 @@ export default {
                 border: 2px solid $green-middle;
 
                 &::after {
-                                        content: "\F00C";
-                                        font-family: FontAwesome;
+                  content: '\F00C';
+                  font-family: FontAwesome;
                   color: #fff;
                   background-color: $green-middle;
                   position: absolute;
-                                        top: -2px;
-                                        right: -2px;
-                                        border-radius: 3px;
+                  top: -2px;
+                  right: -2px;
+                  border-radius: 3px;
                 }
               }
             }
