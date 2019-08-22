@@ -4,7 +4,7 @@
       v-for="(method, key) in methods"
       :key="key"
       :class="{ active: activeMethod == method.name, 'color-secondary': true }"
-      @click="[setMethod(method), methodCardHendlerGhange(method.name)]"
+      @click="[setMethod(method), methodCardHendlerGhange(method.priority)]"
       class="method"
       :data-toggle="getToggle(method)"
       :data-target="getTarget(method)"

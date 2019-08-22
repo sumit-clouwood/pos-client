@@ -2,7 +2,7 @@
     <div class="preloader">
         <link rel="prefetch" href="/pos/img/icons/apple-touch-icon.png"/>
         <div>
-            <img src="img/icons/apple-touch-icon.png" id="slidecaption"/>
+            <img src="img/pos/DimsLogo.gif" id="slidecaption"/>
         </div>
         <div v-if="msg">{{ msg }}</div>
     </div>
@@ -17,23 +17,26 @@
 </script>
 <style lang="sass" scoped>
     .preloader
-        /*margin-top: 220px*/
+        margin-top
         text-align: center
-
+        display: flex
+        align-items: flex-start
+        align-content: flex-start
+        margin: 0 auto
         img
-            height: 120px
-            -webkit-animation-name: spinner
-            -webkit-animation-timing-function: linear
-            -webkit-animation-iteration-count: infinite
-            -webkit-animation-duration: 2s
-            animation-name: spinner
-            animation-timing-function: linear
-            animation-iteration-count: infinite
-            animation-duration: 2s
-            -webkit-transform-style: preserve-3d
-            -moz-transform-style: preserve-3d
-            -ms-transform-style: preserve-3d
-            transform-style: preserve-3d
+            width: 100%
+            /*-webkit-animation-name: spinner*/
+            /*-webkit-animation-timing-function: linear*/
+            /*-webkit-animation-iteration-count: infinite*/
+            /*-webkit-animation-duration: 2s*/
+            /*animation-name: spinner*/
+            /*animation-timing-function: linear*/
+            /*animation-iteration-count: infinite*/
+            /*animation-duration: 2s*/
+            /*-webkit-transform-style: preserve-3d*/
+            /*-moz-transform-style: preserve-3d*/
+            /*-ms-transform-style: preserve-3d*/
+            /*transform-style: preserve-3d*/
 
         @-webkit-keyframes spinner
             from

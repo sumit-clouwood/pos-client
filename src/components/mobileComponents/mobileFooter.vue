@@ -107,13 +107,13 @@
             },
             footerBtnMethod() {
                 console.log(this.payMethod)
-                if (this.payMethod == 'Gift Card') {
+                if (this.payMethod == '1') {
                     this.$store.dispatch('payNowCalcHendlerGhange')
-                } else if (this.payMethod == 'Loyalty Points') {
+                } else if (this.payMethod == '2') {
                     this.$store.dispatch('loyaltyPaymentHendlerGhange')
-                } else if (this.payMethod == 'Payment Type Payment Type Name 179') {
+                } else if (this.payMethod == '3') {
                     this.$store.dispatch('methodCardHendlerGhange')
-                } else if (this.payMethod == 'Payment Type Payment Type Name 180') {
+                } else if (this.payMethod == '4') {
                     this.$store.dispatch('QRMethodGhangeHendler')
                 }
             },
