@@ -11,6 +11,12 @@
       top: auto;
       border-radius: 0; }
       #add-email .modal-dialog .modal-content .modal-header {
-        border-radius: 0; } }
+        border-radius: 0; }
+      #add-email .modal-dialog .modal-content .modal-footer {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px; }
+        #add-email .modal-dialog .modal-content .modal-footer .btn-announce #add-email-btn {
+          background-color: #64C434;
+          border: none; } }
 
 /*# sourceMappingURL=addEmail.css.map */

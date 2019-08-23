@@ -59,11 +59,12 @@
               #select-discount-item .modal-dialog .modal-content .modal-body .dining-option-block .option-contain.active:after {
                 background-color: #64C434;
                 position: absolute;
-                top: 0;
-                right: 0;
-                border-top-right-radius: 0; }
+                top: -2px;
+                right: -2px; }
             #select-discount-item .modal-dialog .modal-content .modal-body .dining-option-block .option-contain:nth-child(2n) {
               margin-right: 0px;
-              margin-left: 10px; } }
+              margin-left: 10px; }
+      #select-discount-item .modal-dialog .modal-content .modal-footer .btn-announce button {
+        height: 50px !important; } }
 
 /*# sourceMappingURL=selectDiscountItem.css.map */

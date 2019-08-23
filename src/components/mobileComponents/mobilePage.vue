@@ -4,9 +4,9 @@
       <div class="current-sale">
         <div class="title">Current Sale</div>
         <div class="list">
-          <div class="items" v-if="items[items.length-1]">
-            <div class="items-text">{{ items[items.length-1].name}}</div>
-            <div class="items-num">x{{ items[items.length-1].quantity}}</div>
+          <div class="items" v-if="items[items.length - 1]">
+            <div class="items-text">{{ items[items.length - 1].name }}</div>
+            <div class="items-num">x{{ items[items.length - 1].quantity }}</div>
           </div>
         </div>
       </div>
@@ -57,12 +57,12 @@
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import search from "../pos/content/catalog/Search.vue";
-import submenu from "../pos/content/catalog/SubMenu.vue";
-import posmenu from "../pos/Menu.vue";
-import items from "../pos/content/catalog/Items.vue";
-import mobileFooter from "./mobileFooter.vue";
+import { mapGetters } from 'vuex'
+import search from '../pos/content/catalog/Search.vue'
+import submenu from '../pos/content/catalog/SubMenu.vue'
+import posmenu from '../pos/Menu.vue'
+import items from '../pos/content/catalog/Items.vue'
+import mobileFooter from './mobileFooter.vue'
 
 export default {
   components: {
@@ -70,33 +70,33 @@ export default {
     posmenu,
     submenu,
     items,
-    mobileFooter
+    mobileFooter,
   },
   computed: {
-    ...mapGetters("category", ["subcategories", "items"]),
-    ...mapGetters(["footerButtonHendler", "footerMenuHendler", "itemFood"]),
-    ...mapGetters("location", ["formatPrice"]),
-    ...mapGetters("order", [
-      "items",
-      "itemGrossPriceDiscounted",
-      "itemGrossPrice",
-      "orderModifiers"
-    ])
+    ...mapGetters('category', ['subcategories', 'items']),
+    ...mapGetters(['footerButtonHendler', 'footerMenuHendler', 'itemFood']),
+    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('order', [
+      'items',
+      'itemGrossPriceDiscounted',
+      'itemGrossPrice',
+      'orderModifiers',
+    ]),
   },
   methods: {
     profileHendlerGhange() {
-      this.$store.dispatch("profileHendlerGhange");
+      this.$store.dispatch('profileHendlerGhange')
     },
     footerMenuHendlerGhange() {
-      this.$store.dispatch("footerMenuHendlerGhange");
-    }
-  }
-};
+      this.$store.dispatch('footerMenuHendlerGhange')
+    },
+  },
+}
 </script>
 <style lang="scss">
-@import "../../assets/scss/pixels_rem.scss";
-@import "../../assets/scss/variables.scss";
-@import "../../assets/scss/mixins.scss";
+@import '../../assets/scss/pixels_rem.scss';
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
 
 .mobile-page {
   background-color: #fff;

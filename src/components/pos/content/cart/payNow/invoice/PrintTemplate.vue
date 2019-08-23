@@ -279,13 +279,17 @@ export default {
       currentBrand: this.$store.state.location.brand,
       currentStore: this.$store.state.location.store,
       current_locale: this.$store.state.location.locale,
-      company_logo:  this.$store.state.location.brand.company_logo
+      company_logo: this.$store.state.location.brand.company_logo,
     }
   },
   mounted() {
-    this.toDataURL(this.company_logo, base64 => {
-      this.company_logo = base64
-    }, 'image/png')
+    this.toDataURL(
+      this.company_logo,
+      base64 => {
+        this.company_logo = base64
+      },
+      'image/png'
+    )
   },
   props: ['template', 'order_to_print'],
   watch: {
@@ -328,7 +332,7 @@ export default {
         return ''
       }
     },
-    
+
     current_time: function() {
       moment.locale(this.current_locale)
       return moment().local()
@@ -515,10 +519,11 @@ export default {
     toDataURL(src, callback, outputFormat) {
       var img = new Image()
       img.crossOrigin = 'Anonymous'
-      
+
       img.src = src
       if (img.complete || img.complete === undefined) {
-        img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
+        img.src =
+          'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='
         img.src = src
       }
 
@@ -532,7 +537,7 @@ export default {
         dataURL = canvas.toDataURL(outputFormat)
         callback(dataURL)
       }
-    }
+    },
   },
 }
 </script>

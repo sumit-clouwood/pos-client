@@ -269,10 +269,7 @@
               Re-Print
             </button>
             <div class="dropdown-menu">
-              <a
-                class="dropdown-item"
-                role="button"
-                @click="generateInvoice"
+              <a class="dropdown-item" role="button" @click="generateInvoice"
                 >Default</a
               >
             </div>

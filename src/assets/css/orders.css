@@ -159,6 +159,8 @@
       .main-orders .main-orders-total .total .sub-total-num {
         font-size: 1.25rem;
         font-weight: 700; }
+        .main-orders .main-orders-total .total .sub-total-num .fa {
+          display: none; }
   .main-orders .main-orders-buttons {
     display: none; }
 

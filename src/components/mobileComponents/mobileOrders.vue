@@ -1,6 +1,6 @@
 <template>
   <div>
-    <cart/>
+    <cart />
   </div>
 </template>
 
@@ -10,7 +10,7 @@ import cart from '../pos/content/Cart.vue'
 export default {
   name: 'mobileOrders',
   components: {
-    cart
+    cart,
   },
 }
 </script>
