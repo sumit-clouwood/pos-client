@@ -22,6 +22,7 @@ export default {
 
     img
         height: 310px
+        margin-bottom: -50px
         /*-webkit-animation-name: spinner*/
         /*-webkit-animation-timing-function: linear*/
         /*-webkit-animation-iteration-count: infinite*/
