@@ -19,7 +19,6 @@
       </div>
     </div>
     <div class="main-oreders-buttons" v-if="items.length">
-      {{ availableTables }}
       <div v-if="availableTables" class="driver-container">
         <form>
           <input
@@ -36,14 +35,14 @@
           <span class="dropdown" @click="setTable(null)">
             {{ _t('Select Table') }}
           </span>
-          <span
+          <div
             class="dropdown"
             v-for="table in availableTables"
             :key="table._id"
             @click="setTable(table)"
           >
             {{ table.name }}
-          </span>
+          </div>
         </div>
       </div>
       <div class="orders-button-large" disabled="disable">

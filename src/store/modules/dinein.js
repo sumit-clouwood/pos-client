@@ -7,6 +7,7 @@ const state = {
   orders: { running: false, completed: false },
   completedOrderDetails: {},
   areas: false,
+  areaLookup: false,
   tables: false,
   activeArea: false,
   loading: false,
@@ -81,6 +82,7 @@ const actions = {
   getDineInTables({ commit, dispatch }) {
     DineInService.dineTables().then(response => {
       commit(mutation.DINE_IN_TABLES, response.data)
+      commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
       dispatch('getAvailableTables')
     })
   },
@@ -146,9 +148,22 @@ const actions = {
   },
 
   getAvailableTables({ commit, state }) {
+    let areaTable = []
+    state.tables.forEach(value => {
+      if (state.areaLookup.dine_in_area._id[value.area_id] != undefined) {
+        areaTable.push({
+          status: '',
+          name:
+            state.areaLookup.dine_in_area._id[value.area_id].name +
+            ' Table Number ' +
+            value.number,
+          id: value.area_id,
+        })
+      }
+    })
     // eslint-disable-next-line no-console
-    console.log(state.tables)
-    let availableTables = state.tables
+    console.log(areaTable)
+    let availableTables = areaTable
     /*state.tables.length > 0
       ? state.tables.filter(table => table.area_id === state.activeArea._id)
       : false*/
@@ -235,6 +250,9 @@ const mutations = {
   },
   [mutation.BOOKED_TABLES](state, bookedTables) {
     state.allBookedTables = bookedTables
+  },
+  [mutation.PAGE_LOOKUP](state, lookups) {
+    state.areaLookup = lookups
   },
   [mutation.RESERVATION_RESPONSE](state, reservation) {
     // eslint-disable-next-line no-console
