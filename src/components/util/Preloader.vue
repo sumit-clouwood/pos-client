@@ -15,14 +15,18 @@ export default {
   }
 };
 </script>
-<style lang="sass" scoped>
-    .preloader
-        margin-top: 0
-        text-align: center
-        display: grid
-        align-items: start
-        align-content: start
-        justify-content: center
+<style lang="scss" scoped>
+.preloader {
+  margin-top: 0 !important;
+  text-align: center;
+  display: grid;
+  align-items: start;
+  align-content: start;
+  justify-content: center;
+  img {
+    width: 100%;
+  }
+}
 </style>
 <!--style lang="stylus">
  img

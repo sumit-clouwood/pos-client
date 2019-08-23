@@ -42,16 +42,7 @@ export default {
       return "";
     },
     image(imgPath) {
-      // return process.env.BASE_URL + imgPath
-      if (imgPath) {
-        if (imgPath.indexOf("https://") != -1) {
-          return imgPath;
-        } else {
-          return process.env.BASE_URL + imgPath;
-        }
-      } else {
-        return "https://fakeimg.pl/46x46/?text=Third&font=lobster%22";
-      }
+      return imgPath;
     },
     getTarget(method) {
       if (this.$store.getters["checkoutForm/payable"] > 0) {

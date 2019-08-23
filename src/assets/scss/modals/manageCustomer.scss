@@ -1,4 +1,4 @@
-@import "../variables.scss";
+@import '../variables.scss';
 
 #manage-customer {
   .modal-dialog {
@@ -10,7 +10,6 @@
       min-height: $px500;
 
       .modal-header {
-
       }
 
       .modal-body {
@@ -37,11 +36,9 @@
       }
 
       .modal-footer {
-
       }
     }
   }
-
 }
 
 .pagination-customer-details {
@@ -236,21 +233,18 @@
             height: auto;
             margin: 0;
             border-bottom: 1px solid $gray-middle;
-            label{
+            label {
               margin: 0;
             }
           }
 
           .manage-customer-table {
             table {
-
               tr {
                 &:last-child {
-
                 }
 
                 th {
-
                 }
               }
             }
@@ -281,6 +275,5 @@
         }
       }
     }
-
   }
 }

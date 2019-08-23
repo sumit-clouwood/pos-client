@@ -110,7 +110,7 @@ img {
 
 ::-webkit-scrollbar {
   width: $px3;
-  height: $px3;;
+  height: $px3;
 }
 
 ::-webkit-scrollbar-track-piece {
@@ -156,8 +156,8 @@ img {
 .shorten-sentence {
   text-overflow: ellipsis;
   overflow: hidden;
-  White-space: nowrap;
-  Width: $px111;
+  white-space: nowrap;
+  width: $px111;
   /*text-align:center;*/
 }
 
@@ -246,7 +246,8 @@ svg {
   color: #fff;
 }
 
-.btnSuccess, .btn-success {
+.btnSuccess,
+.btn-success {
   background-color: $blue-middle;
   border-color: $blue-middle;
 
@@ -256,7 +257,10 @@ svg {
   }
 }
 
-.btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active, .show > .btn-success.dropdown-toggle, .btn-success:disabled {
+.btn-success:not(:disabled):not(.disabled).active,
+.btn-success:not(:disabled):not(.disabled):active,
+.show > .btn-success.dropdown-toggle,
+.btn-success:disabled {
   background-color: $blue-middle;
   border-color: $blue-middle;
 }
@@ -290,7 +294,11 @@ div#nav-tabContent {
 
       &.active {
         border-bottom: 2px solid $blue-middle !important;
-        box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
+        box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05),
+          0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
+          0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
+          0 0px 0.375rem 0 rgba(23, 23, 32, 0.05),
+          0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
         background: $gray-middle;
       }
     }
@@ -317,7 +325,13 @@ div#nav-tabContent {
   border: 1px solid $gray-middle;
   padding: $px20;
   border-radius: $px5;
-  background: linear-gradient(-45deg, $blue-light, $blue-light, $blue-dark, $blue-middle);
+  background: linear-gradient(
+    -45deg,
+    $blue-light,
+    $blue-light,
+    $blue-dark,
+    $blue-middle
+  );
   max-height: $px200;
   overflow-y: auto;
 }
@@ -336,17 +350,16 @@ div#nav-tabContent {
   }
 }
 
-.margin220 {
-  .preloader {
-    margin-top: $px220
-  }
-}
-
 .pl-30 {
   padding-left: 30px;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 600;
   color: rgba(63, 74, 74, 0.8);
   margin: 0;
@@ -367,8 +380,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @include responsive(mobile) {
-
-  html, body {
+  html,
+  body {
     margin: 0;
     height: 100%;
     overflow: hidden;
@@ -451,7 +464,6 @@ h1, h2, h3, h4, h5, h6 {
         z-index: 1000000;
         //display: none !important;
 
-
         > div {
           width: auto;
         }
@@ -485,7 +497,6 @@ h1, h2, h3, h4, h5, h6 {
         }
 
         .modal-body {
-
         }
 
         .modal-footer {

@@ -13,7 +13,7 @@ export default {
     paymentMethodsHendler: false,
     openManageCustomerHendler: false,
     itemFood: [],
-    payMethod: 'Gift Card',
+    payMethod: 1,
     methodCardHendler: false,
     QRMethodGhange: false,
     loyaltyHendler: false,
@@ -111,7 +111,7 @@ export default {
     PROFILE_HENDLER_GHANGE: state => {
       state.profileHendler = !state.profileHendler;
     },
-    PAYMENT_METHODS_HENDLER_GHANGE: state => {
+    PAYMENT_METHODS_GHANGE: state => {
       state.paymentMethodsHendler = !state.paymentMethodsHendler;
       state.payNowCalcHendler = false;
     },
@@ -217,8 +217,8 @@ export default {
     profileHendlerGhange({ commit }) {
       commit('PROFILE_HENDLER_GHANGE');
     },
-    paymentMethodsHendlerGhange({ commit }) {
-      commit('PAYMENT_METHODS_HENDLER_GHANGE');
+    paymentMethodsGhange({ commit }) {
+      commit('PAYMENT_METHODS_GHANGE');
     },
     openManageCustomer({ commit }) {
       commit('OPEN_MANAGE_CUSTOMER');

@@ -50,7 +50,7 @@
       >
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <div class="btn-chatge" @click="paymentMethodsHendlerGhange">
+      <div class="btn-chatge" @click="paymentMethodsGhange">
         <div class="btn-chatge-amount">{{ formatPrice(orderTotal || 0) }}</div>
         <div class="btn-chatge-title">CHARGE</div>
       </div>
@@ -97,8 +97,8 @@ export default {
         this.$store.dispatch("payNowCalcHendlerGhange");
       }
     },
-    paymentMethodsHendlerGhange() {
-      this.$store.dispatch("paymentMethodsHendlerGhange");
+    paymentMethodsGhange() {
+      this.$store.dispatch("paymentMethodsGhange");
     },
     methodCardHendlerGhange() {
       this.$store.dispatch("methodCardHendlerGhange");
