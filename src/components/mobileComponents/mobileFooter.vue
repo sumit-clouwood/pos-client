@@ -58,8 +58,8 @@
                 <div class="btn-chatge-title">CHARGE</div>
             </div>
         </div>
-        <div class="btn-next" @click="footerBtnMethod">Next1</div>
-        <div class="btn-next btn-next-s" @click="footerBtnMethodS">Next2</div>
+        <div class="btn-next" @click="footerBtnMethod">Next</div>
+        <div class="btn-next btn-next-s" @click="footerBtnMethodS">Next</div>
         <div class="btn-Cancel" @click="methodCardHendlerGhange">Cancel</div>
         <div class="qr-voucher-code">
             <div class="title">Voucher code</div>
