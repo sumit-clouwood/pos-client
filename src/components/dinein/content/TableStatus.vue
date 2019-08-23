@@ -52,7 +52,6 @@
 <script>
 import { mapState } from 'vuex'
 import * as d3 from 'd3'
-
 export default {
   name: 'TableStatus',
   computed: {
@@ -94,6 +93,11 @@ export default {
     moveRight() {
       let that = this
       that.transform.x += 10
+      this.getNewCoordinates(
+        document.getElementById('tooltipdata').style.left,
+        'increase',
+        'left'
+      )
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
         let transform = d3.zoomIdentity
           .scale(that.transform.k)
@@ -102,6 +106,11 @@ export default {
       })
     },
     moveLeft() {
+      this.getNewCoordinates(
+        document.getElementById('tooltipdata').style.left,
+        '',
+        'left'
+      )
       let that = this
       that.transform.x -= 10
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
@@ -112,6 +121,11 @@ export default {
       })
     },
     moveUp() {
+      this.getNewCoordinates(
+        document.getElementById('tooltipdata').style.top,
+        '',
+        ''
+      )
       let that = this
       that.transform.y -= 10
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
@@ -124,6 +138,11 @@ export default {
     moveDown() {
       let that = this
       that.transform.y += 10
+      this.getNewCoordinates(
+        document.getElementById('tooltipdata').style.top,
+        'increase',
+        ''
+      )
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
         let transform = d3.zoomIdentity
           .scale(that.transform.k)
@@ -131,6 +150,24 @@ export default {
         d3.select(a[i]).attr('transform', transform)
       })
     },
+
+    getNewCoordinates(positionObj, iteration, moveSide) {
+      let newValue = 0
+      let valueInPX = positionObj.split('px')
+      if (iteration === 'increase') {
+        newValue +=
+          typeof valueInPX[0] != 'undefined' ? parseInt(valueInPX[0]) + 10 : 0
+      } else {
+        newValue =
+          typeof valueInPX[0] != 'undefined' ? parseInt(valueInPX[0]) - 10 : 0
+      }
+      if (moveSide === 'left') {
+        document.getElementById('tooltipdata').style.left = newValue + 'px'
+      } else {
+        document.getElementById('tooltipdata').style.top = newValue + 'px'
+      }
+    },
+
     getAvailableTableCount(tableStatus) {
       let tableCount = 0
       if (tableStatus.availableCount > 0) {

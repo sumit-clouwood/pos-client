@@ -59,12 +59,13 @@ export default {
       'brand'
     )
   },
-
+  getAllBookedTables() {
+    return DataService.get(
+      '/model/reservations?page_id=tables_reserved&page=1&limit=999999'
+    )
+  },
   reservationOperation(data, action) {
     // action: add, move_waiting_to_reservation
     return DataService.post(`/model/reservations/${action}`, data)
-    /*Save order :
-      table_reservation_id : id of above
-      covers : []*/
   },
 }
