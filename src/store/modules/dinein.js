@@ -17,6 +17,7 @@ const state = {
   reservation: false,
   orderType: { OTview: 'Dine In', OTApi: 'dine_in' },
   covers: false,
+  selectedCover: '',
   allBookedTables: {},
 }
 const getters = {
@@ -101,53 +102,52 @@ const actions = {
       table: [],
     }
     let orderOnTable = []
-
-    state.tablesOnArea.forEach(table => {
-      let orders = []
-      let tableDetails = { id: table._id, number: table.number, status: {} }
-      orders = state.orders.running.filter(
-        order => order.assigned_table_id === table._id
-      )
-      if (orders.length) {
-        orders.forEach(order => {
-          if (
-            order.status === CONST.ORDER_STATUS_RESERVED ||
-            order.status === CONST.ORDER_STATUS_IN_PROGRESS
-          ) {
-            tableStatus.unavailableCount += 1
-            tableDetails.status.color = '#c84c4c'
-            tableDetails.status.text = 'unavailable'
-            tableStatus.table.push(tableDetails)
-          } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
-            tableStatus.availableSoonCount += 1
-            tableDetails.status.color = '#faa03c'
-            tableDetails.status.text = 'available_soon'
-            tableStatus.table.push(tableDetails)
-          }
-          orderOnTable.push({
-            tableId: table._id,
-            orderIds: order.related_orders_ids,
-            tableNumber: order.number,
-            reservationId: order._id,
+    if (state.tablesOnArea) {
+      state.tablesOnArea.forEach(table => {
+        let orders = []
+        let tableDetails = { id: table._id, number: table.number, status: {} }
+        orders = state.orders.running.filter(
+          order => order.assigned_table_id === table._id
+        )
+        if (orders.length) {
+          orders.forEach(order => {
+            if (
+              order.status === CONST.ORDER_STATUS_RESERVED ||
+              order.status === CONST.ORDER_STATUS_IN_PROGRESS
+            ) {
+              tableStatus.unavailableCount += 1
+              tableDetails.status.color = '#c84c4c'
+              tableDetails.status.text = 'unavailable'
+              tableStatus.table.push(tableDetails)
+            } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
+              tableStatus.availableSoonCount += 1
+              tableDetails.status.color = '#faa03c'
+              tableDetails.status.text = 'available_soon'
+              tableStatus.table.push(tableDetails)
+            }
+            orderOnTable.push({
+              tableId: table._id,
+              orderIds: order.related_orders_ids,
+              tableNumber: order.number,
+              reservationId: order._id,
+            })
           })
-        })
-      } else {
-        tableStatus.availableCount = parseInt(state.tablesOnArea.length)
-        /*-
-        parseInt(tableStatus.unavailableCount) +
-        parseInt(tableStatus.availableSoonCount)*/
-        tableDetails.status.color = '#62bb31'
-        tableDetails.status.text = 'available'
-        tableStatus.table.push(tableDetails)
-      }
-      commit(mutation.ORDER_ON_TABLES, orderOnTable)
-    })
+        } else {
+          tableStatus.availableCount = parseInt(state.tablesOnArea.length)
+          /*-
+          parseInt(tableStatus.unavailableCount) +
+          parseInt(tableStatus.availableSoonCount)*/
+          tableDetails.status.color = '#62bb31'
+          tableDetails.status.text = 'available'
+          tableStatus.table.push(tableDetails)
+        }
+        commit(mutation.ORDER_ON_TABLES, orderOnTable)
+      })
+    }
     commit(mutation.TABLE_STATUS, tableStatus)
   },
 
   getAvailableTables({ commit, state }) {
-    // eslint-disable-next-line no-console
-    console.log(state.tables)
     let availableTables = state.tables
     /*state.tables.length > 0
       ? state.tables.filter(table => table.area_id === state.activeArea._id)
@@ -168,7 +168,6 @@ const actions = {
       ]
       DineInService.reservationOperation(...params, 'add').then(response => {
         commit(mutation.RESERVATION_RESPONSE, response.data)
-        alert('f')
         dispatch('getCovers')
         commit('order/ORDER_TYPE', state.orderType, { root: true })
       })
@@ -187,6 +186,9 @@ const actions = {
 }
 
 const mutations = {
+  [mutation.SET_COVER](state, selectedCover) {
+    state.selectedCover = selectedCover
+  },
   [mutation.DINE_IN_AREAS](state, areas) {
     state.areas = areas.data
     if (areas.count > 0) {
