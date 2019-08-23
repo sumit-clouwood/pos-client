@@ -17,12 +17,12 @@
 </script>
 <style lang="sass" scoped>
     .preloader
-        margin-top
+        margin-top: 0
         text-align: center
-        display: flex
-        align-items: flex-start
-        align-content: flex-start
-        margin: 0 auto
+        display: grid
+        align-items: start
+        align-content: start
+        justify-content: center
         img
             width: 100%
             /*-webkit-animation-name: spinner*/

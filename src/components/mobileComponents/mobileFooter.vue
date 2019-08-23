@@ -58,7 +58,8 @@
                 <div class="btn-chatge-title">CHARGE</div>
             </div>
         </div>
-        <div class="btn-next" @click="footerBtnMethod">Next</div>
+        <div class="btn-next" @click="footerBtnMethod">Next1</div>
+        <div class="btn-next btn-next-s" @click="footerBtnMethodS">Next2</div>
         <div class="btn-Cancel" @click="methodCardHendlerGhange">Cancel</div>
         <div class="qr-voucher-code">
             <div class="title">Voucher code</div>
@@ -117,6 +118,9 @@
                     this.$store.dispatch('QRMethodGhangeHendler')
                 }
             },
+            footerBtnMethodS() {
+                this.$store.dispatch('successfullHendlerGhange')
+            }
         },
     }
 </script>
@@ -132,6 +136,10 @@
             align-items: center;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             z-index: 1;
+
+            .btn-next-s {
+                display: none !important;
+            }
 
             .btn-cart {
                 width: 100%;
