@@ -152,7 +152,7 @@ export default {
                     console.log('servie worker is ready')
                     Notification.requestPermission()
                     console.log('asking service worker to sync')
-                    return registration.sync.register('postOfflineOrders')
+                    return registration.sync.register('syncpos')
                   })
                   .then(function() {})
                   .catch(function() {

@@ -121,6 +121,11 @@ function _eventListner_push() {
     )
   })
 }
+
+//we send form data earlier before sending the actual request
+//if request was failed we get form data and add that to indexedb for offline
+//otherwise don't don any thing
+//messages can be received from pos app i.e to store temporary data in variables
 function _eventListner_message() {
   //custom events
   self.addEventListener('message', function(event) {
@@ -131,6 +136,37 @@ function _eventListner_message() {
     }
   })
 }
+
+//intercept api calls and if no network available then get data from temp variables and store
+//it to the indexeddb
+
+function _eventListner_fetch() {
+  self.addEventListener('fetch', function(event) {
+    // every request from our site, passes through the fetch handler
+    var clonedRequest = event.request.clone()
+    //console.log('I am a request with url: ', clonedRequest.url)
+    var handler = Factory.offlineHandler(clonedRequest)
+    if (handler) {
+      // attempt to send request normally
+      event.respondWith(
+        fetch(clonedRequest).catch(function(error) {
+          // only save post requests in browser, if an error occurs, GET FROM MSG WE SEND EARLIER
+          //we saved form_data global var from msg
+          console.log('sw:', 'Network offline, saving request offline', error)
+          handler.addOfflineEvent(clonedRequest.url, form_data)
+        })
+      )
+    }
+
+    if (!event.clientId) {
+      return
+    }
+
+    self.clients.get(event.clientId).then(thisClient => (client = thisClient))
+  })
+}
+
+//sync event, when system comes online, lets sync what we have in indexedDB
 function _eventListner_sync() {
   self.addEventListener('sync', function(event) {
     console.log(
@@ -171,36 +207,6 @@ function _eventListner_sync() {
 
       event.waitUntil(syncIt())
     }
-  })
-}
-
-//we send form data earlier before sending the actual request
-//if request was failed we get form data and add that to indexedb for offline
-//otherwise don't don any thing
-
-function _eventListner_fetch() {
-  self.addEventListener('fetch', function(event) {
-    // every request from our site, passes through the fetch handler
-    var clonedRequest = event.request.clone()
-    //console.log('I am a request with url: ', clonedRequest.url)
-    var handler = Factory.offlineHandler(clonedRequest)
-    if (handler) {
-      // attempt to send request normally
-      event.respondWith(
-        fetch(clonedRequest).catch(function(error) {
-          // only save post requests in browser, if an error occurs, GET FROM MSG WE SEND EARLIER
-          //we saved form_data global var from msg
-          console.log('sw:', 'Network offline, saving request offline', error)
-          handler.addOfflineEvent(clonedRequest.url, form_data)
-        })
-      )
-    }
-
-    if (!event.clientId) {
-      return
-    }
-
-    self.clients.get(event.clientId).then(thisClient => (client = thisClient))
   })
 }
 
