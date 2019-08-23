@@ -4,7 +4,7 @@ import * as CONST from '@/constants'
 import moment from 'moment-timezone'
 
 const state = {
-  orders: { running: false, completed: false },
+  orders: { running: false, completed: false, lookup: false },
   completedOrderDetails: {},
   areas: false,
   tables: false,
@@ -203,9 +203,11 @@ const mutations = {
   },
   [mutation.DINE_IN_RUNNING_ORDERS](state, orders) {
     state.orders.running = orders.data
+    state.orders.lookup = orders.page_lookups
   },
   [mutation.DINE_IN_COMPLETED_ORDERS](state, orders) {
     state.orders.completed = orders.data
+    state.orders.lookup = orders.page_lookups
   },
   [mutation.SELECTED_AREA](state, activeArea) {
     state.tablesOnArea = false
