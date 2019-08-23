@@ -212,7 +212,7 @@
 <style lang="scss">
     #add_address {
         .modal-dialog {
-            margin: 0;
+            /*margin: 0;*/
 
             .modal-content {
                 display: grid;
