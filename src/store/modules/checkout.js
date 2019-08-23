@@ -76,6 +76,7 @@ const actions = {
       commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
       if (
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
+        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN ||
         action === CONSTANTS.ORDER_STATUS_ON_HOLD
       ) {
         validPayment = true
@@ -235,6 +236,22 @@ const actions = {
             price: item.netPrice,
             qty: item.quantity,
           }
+          if (
+            rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN
+          ) {
+            let itemCover = item.cover_no
+              ? item.cover_no
+              : rootState.dinein.selectedCover._id
+            orderItem = {
+              name: item.name,
+              entity_id: item._id,
+              no: item.orderIndex,
+              tax: item.tax,
+              price: item.netPrice,
+              qty: item.quantity,
+              cover_no: itemCover,
+            }
+          }
 
           //we are sending item price and modifier prices separtely but sending
           //item discount as total of both discounts
@@ -380,16 +397,20 @@ const actions = {
           //do something here
         } else {
           const method = rootGetters['payment/cash']
-          order.order_payments = [
-            {
-              entity_id: method._id,
-              name: method.name,
-              collected: '0.00',
-              param1: '',
-              param2: '',
-              param3: '',
-            },
-          ]
+          if (
+            rootState.order.orderType.OTApi !== CONSTANTS.ORDER_TYPE_DINE_IN
+          ) {
+            order.order_payments = [
+              {
+                entity_id: method._id,
+                name: method.name,
+                collected: '0.00',
+                param1: '',
+                param2: '',
+                param3: '',
+              },
+            ]
+          }
         }
 
         order.item_discounts = order.item_discounts.map(discount => {
@@ -423,10 +444,12 @@ const actions = {
           return item
         })
 
-        order.order_payments = order.order_payments.map(item => {
-          item.collected = Num.round(item.collected).toFixed(2)
-          return item
-        })
+        if (rootState.order.orderType.OTApi !== CONSTANTS.ORDER_TYPE_DINE_IN) {
+          order.order_payments = order.order_payments.map(item => {
+            item.collected = Num.round(item.collected).toFixed(2)
+            return item
+          })
+        }
 
         const orderData = getters.calculateOrderTotals(order)
 
@@ -442,6 +465,19 @@ const actions = {
         order.amount_changed = Num.round(order.amount_changed).toFixed(2)
         order.tip_amount = Num.round(order.tip_amount).toFixed(2)
 
+        //Added a new parameter if dine-in order.
+        if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
+          if (rootState.dinein.selectedCover) {
+            let table_reservation = [
+              {
+                entity_id: rootState.dinein.selectedCover._id,
+                name: rootState.dinein.selectedCover.name,
+              },
+            ]
+            order.covers = table_reservation
+          }
+          order.table_reservation_id = rootState.dinein.reservation
+        }
         //order.app_uniqueid = Crypt.uuid()
         commit(mutation.SET_ORDER, order)
 
