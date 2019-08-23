@@ -62,7 +62,9 @@ export default {
 @import '../../../assets/scss/pixels_rem.scss';
 @import '../../../assets/scss/variables.scss';
 @import '../../../assets/scss/mixins.scss';
+.main-orders{
 
+}
 @include responsive(mobile) {
   .main-orders {
     position: fixed;
