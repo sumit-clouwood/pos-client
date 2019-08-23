@@ -18,6 +18,7 @@ const state = {
   orderType: { OTview: 'Dine In', OTApi: 'dine_in' },
   covers: false,
   selectedCover: '',
+  allBookedTables: {},
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -67,16 +68,21 @@ const actions = {
       }
     )
   },
-
+  getBookedTables({ commit }) {
+    DineInService.getAllBookedTables().then(response => {
+      commit(mutation.BOOKED_TABLES, response.data)
+    })
+  },
   getDineInArea({ commit, dispatch }) {
     DineInService.dineAreas().then(response => {
       commit(mutation.DINE_IN_AREAS, response.data)
       dispatch('getTableStatus')
     })
   },
-  getDineInTables({ commit }) {
+  getDineInTables({ commit, dispatch }) {
     DineInService.dineTables().then(response => {
       commit(mutation.DINE_IN_TABLES, response.data)
+      dispatch('getAvailableTables')
     })
   },
   selectedArea({ commit, dispatch }, area) {
@@ -163,7 +169,6 @@ const actions = {
       DineInService.reservationOperation(...params, 'add').then(response => {
         commit(mutation.RESERVATION_RESPONSE, response.data)
         dispatch('getCovers')
-        dispatch('getAvailableTables')
         commit('order/ORDER_TYPE', state.orderType, { root: true })
       })
     }
@@ -229,6 +234,9 @@ const mutations = {
   },
   [mutation.RESERVATION_ID](state, reservationId) {
     state.reservation = reservationId
+  },
+  [mutation.BOOKED_TABLES](state, bookedTables) {
+    state.allBookedTables = bookedTables
   },
   [mutation.RESERVATION_RESPONSE](state, reservation) {
     // eslint-disable-next-line no-console

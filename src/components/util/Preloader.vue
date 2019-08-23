@@ -2,7 +2,7 @@
   <div class="preloader">
     <link rel="prefetch" href="/pos/img/icons/apple-touch-icon.png" />
     <div>
-      <img src="img/icons/apple-touch-icon.png" id="slidecaption" />
+      <img src="img/icons/logo.gif" id="slidecaption" />
     </div>
     <div v-if="msg">{{ msg }}</div>
   </div>
@@ -21,19 +21,20 @@ export default {
     text-align: center
 
     img
-        height: 120px
-        -webkit-animation-name: spinner
-        -webkit-animation-timing-function: linear
-        -webkit-animation-iteration-count: infinite
-        -webkit-animation-duration: 2s
-        animation-name: spinner
-        animation-timing-function: linear
-        animation-iteration-count: infinite
-        animation-duration: 2s
-        -webkit-transform-style: preserve-3d
-        -moz-transform-style: preserve-3d
-        -ms-transform-style: preserve-3d
-        transform-style: preserve-3d
+        height: 310px
+        margin-bottom: -50px
+        /*-webkit-animation-name: spinner*/
+        /*-webkit-animation-timing-function: linear*/
+        /*-webkit-animation-iteration-count: infinite*/
+        /*-webkit-animation-duration: 2s*/
+        /*animation-name: spinner*/
+        /*animation-timing-function: linear*/
+        /*animation-iteration-count: infinite*/
+        /*animation-duration: 2s*/
+        /*-webkit-transform-style: preserve-3d*/
+        /*-moz-transform-style: preserve-3d*/
+        /*-ms-transform-style: preserve-3d*/
+        /*transform-style: preserve-3d*/
 
     @-webkit-keyframes spinner
         from

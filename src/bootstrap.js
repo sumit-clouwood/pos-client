@@ -139,13 +139,13 @@ export default {
           this.store.dispatch('surcharge/fetchAll').then(() => {})
           this.store.dispatch('discount/fetchAll').then(() => {})
           this.store.dispatch('payment/fetchAll').then(() => {})
+          this.store.dispatch('dinein/fetchAll')
           resolve()
           break
         case 'customer':
           this.store.dispatch('announcement/fetchAll').then(() => {})
           this.store.dispatch('auth/getUserDetails')
           this.store.dispatch('customer/fetchAll').then(() => {})
-          this.store.dispatch('dinein/fetchAll')
           resolve()
           break
         case 'order':

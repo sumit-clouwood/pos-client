@@ -271,4 +271,8 @@ svg#dine-in-area {
     }
   }
 }
+g.dinein_table_parent:active {
+  stroke: #62bb31;
+  stroke-width: 2px;
+}
 </style>

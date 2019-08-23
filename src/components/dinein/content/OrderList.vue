@@ -10,44 +10,41 @@
           <th width="450px">{{ _t('DINING FOR') }}</th>
         </tr>
       </thead>
-      {{
-        orders[tabName]
-      }}
       <tbody v-if="orders[tabName]">
         <tr
           :key="index"
           class="dine-table-content"
-          v-for="(order, index) in orders[tabName]"
+          v-for="(orderTable, index) in orders[tabName]"
         >
           <td class="dine-order-tabel">
-            <span>{{ getTableNumber(order._id) }}</span>
+            <span>{{ orderTable.number }}</span>
           </td>
           <td class="dine-order-details">
             <span
-              @click="selectedOrderDetails(order._id)"
+              @click="selectedOrderDetails(orderTable._id)"
               class="open-details-popup cursor-pointer"
               data-dismiss="modal"
               data-target=".bd-example-modal-lg"
               data-toggle="modal"
             >
-              #{{ order.order_no }}
+              #{{ orderTable._id }}
             </span>
             <div
               :key="index"
               class="order-name"
-              v-for="(i, index) in order.items"
+              v-for="(i, index) in orderTable.items"
             >
               <div class="main-item">
                 {{
-                  typeof order.items[index] != 'undefined'
-                    ? order.items[index].name
+                  typeof orderTable.items[index] != 'undefined'
+                    ? orderTable.items[index].name
                     : ''
                 }}
               </div>
               <div
                 :key="index"
                 class="modifiers"
-                v-for="(item, index) in order.item_modifiers"
+                v-for="(item, index) in orderTable.item_modifiers"
               >
                 <span v-if="item.for_item == i.no">
                   <span v-if="item.qty > 0">+{{ item.qty }}</span>
@@ -57,19 +54,19 @@
             </div>
           </td>
           <td class="dine-order-amt">
-            {{ order.balance_due + ' ' + order.currency }}
+            {{ orderTable.balance_due + ' ' + orderTable.currency }}
           </td>
-          <td :class="getOrderStatus(order.order_status)">
-            <span>{{ order.order_status }}</span>
+          <td :class="getOrderStatus(orderTable.order_status)">
+            <span>{{ orderTable.order_status }}</span>
           </td>
           <!--<td><span>{{ order.order_status }}</span></td>-->
           <td class="order-time-det">
             <span
-              :id="order._id"
+              :id="orderTable._id"
               class="timeago elapsedTime delManTime runningtime"
               title=""
             >
-              {{ timerClock(order.real_created_datetime, order._id) }}
+              {{ timerClock(orderTable.real_created_datetime, orderTable._id) }}
             </span>
             <div class="dining-for-button">
               <span class="dinefor-reprint"
