@@ -13,7 +13,7 @@ export default {
         paymentMethodsHendler: false,
         openManageCustomerHendler: false,
         itemFood: [],
-        payMethod: 'Gift Card',
+        payMethod: 1,
         methodCardHendler: false,
         QRMethodGhange: false,
         loyaltyHendler: false,

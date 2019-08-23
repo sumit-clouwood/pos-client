@@ -71,6 +71,15 @@
         height: 100%;
         display: none;
         grid-template-rows: max-content 1fr max-content;
+
+        .btn-next {
+            display: none;
+        }
+
+        .btn-next-s {
+            display: flex !important;
+        }
+
         @include responsive(mobile) {
             display: grid;
         }
