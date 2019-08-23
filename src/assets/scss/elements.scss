@@ -40,6 +40,14 @@ html {
   height: 100vh;
 }
 
+.mobile-components {
+  .main-orders {
+    #pay-now {
+      display: none !important;
+    }
+  }
+}
+
 body {
   height: 100vh;
   margin: 0;
@@ -419,7 +427,8 @@ h1, h2, h3, h4, h5, h6 {
             button {
               //height: 50px !important;
               font-size: 14px !important;
-              &#discount-save{
+
+              &#discount-save {
                 background-color: $green-middle !important;
                 border: none !important;
               }
