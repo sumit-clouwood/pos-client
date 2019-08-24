@@ -230,7 +230,8 @@
                         padding: 10px;
                         border-radius: 3px;
                         position: relative;
-
+                        width: 100%;
+                        height: 100%;
                         input {
                             display: none;
 
@@ -286,7 +287,7 @@
 
                                     &:before {
                                         font-family: "FontAwesome";
-                                        content: "\f192";
+                                        content: "\F00C";
                                         position: static !important;
                                         display: flex;
                                         align-items: center;

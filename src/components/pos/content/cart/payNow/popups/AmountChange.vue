@@ -6,14 +6,13 @@
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title color-text-invert">
-            Amount Change
-          </h4>
+          <h4 class="customer-title color-text-invert">Amount Change</h4>
         </div>
         <div class="modal-body change-amount-option">
           <div class="amount-change-wrap">
             <p class="color-text">
-              Change <span>({{ currency }})</span>
+              Change
+              <span>({{ currency }})</span>
             </p>
             <h1>{{ formatPrice(changedAmount) }}</h1>
           </div>
@@ -26,9 +25,7 @@
               data-dismiss="modal"
               @click="generateInvoice()"
               id="dining-opt"
-            >
-              Ok
-            </button>
+            >Ok</button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
@@ -41,19 +38,19 @@
 
 <script>
 /* global $ */
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 export default {
-  name: 'AmountChange',
+  name: "AmountChange",
   computed: {
-    ...mapState('location', ['currency']),
-    ...mapGetters('location', ['formatPrice']),
-    ...mapState('checkout', ['changedAmount']),
+    ...mapState("location", ["currency"]),
+    ...mapGetters("location", ["formatPrice"]),
+    ...mapState("checkout", ["changedAmount"])
   },
   methods: {
     generateInvoice() {
-      $('#pay-now').modal('hide')
-      this.$store.dispatch('checkout/generateInvoice')
-    },
-  },
-}
+      $("#pay-now").modal("hide");
+      this.$store.dispatch("checkout/generateInvoice");
+    }
+  }
+};
 </script>

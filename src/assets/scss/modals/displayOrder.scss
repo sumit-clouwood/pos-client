@@ -106,7 +106,6 @@
                   grid-row-end: 3;
 
                   a {
-
                   }
                 }
 
@@ -184,9 +183,9 @@
                 text-align: left;
                 font-size: $px14;
                 cursor: pointer;
-                &.active{
+                &.active {
                   border: 2px solid $green-middle;
-                  &:after{
+                  &:after {
                     background-color: $green-middle;
                     border: 2px solid $green-middle !important;
                     top: -1px;
@@ -225,7 +224,7 @@
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    background-color: #E3E9F0;
+                    background-color: #e3e9f0;
                     margin-right: $px5;
                     cursor: pointer;
                   }
@@ -295,7 +294,6 @@
             width: 40%;
             padding: $px20;
             border-left: 2px solid #efefef;
-
 
             .title-cu {
               padding: 0 $px10 $px10 $px10;
@@ -608,7 +606,6 @@ div#display-order .manage-customer-table {
   border: solid 1px #cbcfd3;
 }
 
-
 div#display-order .past-order {
   font-size: $px22;
   font-weight: 600;
@@ -738,7 +735,8 @@ ul.fav-item-slider > li > img {
   cursor: pointer;
 }
 
-.br-table-btn, .deactive-table-btn {
+.br-table-btn,
+.deactive-table-btn {
   display: none;
 }
 
@@ -759,7 +757,6 @@ tr.referal-code-customer {
     }
   }
 }
-
 
 button#schedule-btn {
   position: relative;
@@ -827,7 +824,7 @@ label.container-radio-btn span {
 label.container-radio-btn img {
   display: inline-block;
   vertical-align: middle;
-  margin-right: $px5;
+  margin-right: $px10;
   width: $px35;
   height: $px35;
 }
@@ -835,7 +832,6 @@ label.container-radio-btn img {
 button:focus {
   box-shadow: none !important;
 }
-
 
 .order-address-details button#cu-add-address {
   margin-right: $px10;

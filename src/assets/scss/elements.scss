@@ -380,12 +380,16 @@ h6 {
 }
 
 @include responsive(mobile) {
+  .pl-30 {
+    padding: 5px 20px 0;
+    background-color: #fff;
+    z-index: 1;
+  }
   html,
   body {
     margin: 0;
     height: 100%;
     overflow: hidden;
-
     .dropdown {
       &:hover {
         background-color: #fff;

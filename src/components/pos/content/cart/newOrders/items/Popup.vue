@@ -12,9 +12,7 @@
       <div class="modal-content color-dashboard-background">
         <Header />
         <Content />
-        <div class="text-danger pl-30 color-warning" v-show="error">
-          {{ error }}
-        </div>
+        <div class="text-danger pl-30 color-warning" v-show="error">{{ error }}</div>
         <Footer />
       </div>
     </div>
@@ -23,28 +21,28 @@
 </template>
 
 <script>
-import Header from './popup/Header.vue'
-import Content from '@/components/pos/content/catalog/items/popup/Content.vue'
-import Footer from './popup/Footer.vue'
-import { mapState } from 'vuex'
+import Header from "./popup/Header.vue";
+import Content from "@/components/pos/content/catalog/items/popup/Content.vue";
+import Footer from "./popup/Footer.vue";
+import { mapState } from "vuex";
 
 export default {
-  name: 'Popup',
+  name: "Popup",
   props: {},
   components: {
     Content,
     Header,
-    Footer,
+    Footer
   },
   computed: {
-    ...mapState('orderForm', ['error']),
-  },
-}
+    ...mapState("orderForm", ["error"])
+  }
+};
 </script>
 <style lang="scss" scoped>
-@import '../../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../../assets/scss/variables.scss';
-@import '../../../../../../assets/scss/mixins.scss';
+@import "../../../../../../assets/scss/pixels_rem.scss";
+@import "../../../../../../assets/scss/variables.scss";
+@import "../../../../../../assets/scss/mixins.scss";
 
 .POSItemOptions {
   .modal-body {
