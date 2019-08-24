@@ -747,6 +747,8 @@ const actions = {
               discountErrors[item.orderIndex] = item
               item.discount = false
               item.discountRate = 0
+              item.discountedTax = false
+              item.discountedNetPrice = false
             } else {
               const itemNetPriceWithModifiers = getters.itemNetPrice(item)
 
@@ -766,11 +768,15 @@ const actions = {
               //percentage based discount, use discount.rate here, not discount.value
               //apply discount with modifier price
               item.discountRate = discount.discount.rate
+              item.discountedTax = false
+              item.discountedNetPrice = false
             } else {
               //discount error
               item.discount = false
               discountErrors[item.orderIndex] = item
               item.discountRate = 0
+              item.discountedTax = false
+              item.discountedNetPrice = false
             }
           }
         } else {
