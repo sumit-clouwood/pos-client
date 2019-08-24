@@ -198,7 +198,7 @@ export default {
       toolTipText =
         '<a class="dropdown-item text-capitalize bg-success font-weight-bold" href="' +
         customUrl +
-        '" target="_self">Place Order</a>'
+        '" target="_self">Add Order</a>'
       this.orderOnTables.filter(order => {
         if (datum._id === order.tableId) {
           order.orderIds.forEach(id => {
