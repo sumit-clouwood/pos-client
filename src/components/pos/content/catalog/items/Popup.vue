@@ -130,11 +130,6 @@ export default {
               grid-template-columns: 1fr 1fr;
               grid-gap: 20px;
               position: relative;
-              .text-danger {
-                position: absolute;
-                bottom: -15px;
-                font-size: 12px;
-              }
               .POSItemOptions_choose_choice {
                 width: auto;
                 margin-bottom: 0;

@@ -211,6 +211,9 @@ export default {
 };
 </script>
 <style lang="scss">
+@import "../../../../../../assets/scss/pixels_rem.scss";
+@import "../../../../../../assets/scss/variables.scss";
+@import "../../../../../../assets/scss/mixins.scss";
 #add_address {
   .modal-dialog {
     /*margin: 0;*/
@@ -294,6 +297,29 @@ export default {
       select,
       input {
         width: 100% !important;
+      }
+    }
+  }
+}
+@include responsive(mobile) {
+  #add_address {
+    .modal-dialog {
+      margin: 0;
+
+      .modal-content {
+        .modal-header {
+        }
+      }
+
+      .modal-content {
+        .modal-header {
+        }
+
+        .modal-body {
+        }
+
+        .modal-footer {
+        }
       }
     }
   }

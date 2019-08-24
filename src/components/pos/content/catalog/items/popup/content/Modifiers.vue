@@ -219,6 +219,13 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, 150px);
             grid-gap: 10px;
+            position: relative;
+            .text-danger {
+                position: absolute;
+                bottom: 0px;
+                font-size: 12px;
+                z-index: 10;
+              }
 
             &.POSItemOptions_choose_radio {
                 .POSItemOptions_choose_choice {
@@ -433,6 +440,7 @@
             .POSItemOptions_choose_choice {
                 display: inline-block;
                 margin-bottom: $px18;
+
 
                 .POSItemOptions_choose_label {
                     display: inline-block;
