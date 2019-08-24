@@ -4,9 +4,9 @@
       <thead>
         <tr class="dine-table-heading">
           <th width="200px">{{ _t('TABLE NUMBER') }}</th>
-          <th width="250px">{{ _t('ORDER NUMBER') }}</th>
+          <th width="250px">{{ _t('ORDERS') }}</th>
           <th width="200px">{{ _t('AMOUNT') }}</th>
-          <th width="100px">{{ _t('STATUS') }}</th>
+          <!--<th width="100px">{{ _t('STATUS') }}</th>-->
           <th width="450px">{{ _t('DINING FOR') }}</th>
         </tr>
       </thead>
@@ -20,53 +20,71 @@
             <span>{{ orderTable.number }}</span>
           </td>
           <td class="dine-order-details">
-            <span
-              @click="selectedOrderDetails(orderTable._id)"
-              class="open-details-popup cursor-pointer"
-              data-dismiss="modal"
-              data-target=".bd-example-modal-lg"
-              data-toggle="modal"
-            >
-              #{{ orderTable._id }}
-            </span>
             <div
-              :key="index"
-              class="order-name"
-              v-for="(i, index) in orderTable.items"
+              v-for="(orderId, i) in orderTable.related_orders_ids"
+              :key="i"
+              class="table-order-view"
             >
-              <div class="main-item">
+              {{
+                getOrderDetails({
+                  collection: orders.lookup.orders._id,
+                  matchWith: orderId,
+                })
+              }}
+              <span
+                @click="selectedOrderDetails(orderId)"
+                class="open-details-popup cursor-pointer font-weight-bold text-capitalize"
+                :class="getOrderStatus(orderDetails.order_status)"
+                data-dismiss="modal"
+                data-target=".bd-example-modal-lg"
+                data-toggle="modal"
+              >
+                #{{ orderDetails.order_no }} |
                 {{
-                  typeof orderTable.items[index] != 'undefined'
-                    ? orderTable.items[index].name
-                    : ''
+                  LookupData.replaceUnderscoreHyphon(orderDetails.order_status)
                 }}
-              </div>
+              </span>
               <div
                 :key="index"
-                class="modifiers"
-                v-for="(item, index) in orderTable.item_modifiers"
+                class="order-name"
+                v-for="(i, index) in orderDetails.items"
               >
-                <span v-if="item.for_item == i.no">
-                  <span v-if="item.qty > 0">+{{ item.qty }}</span>
-                  {{ item.name }}
-                </span>
+                <div class="main-item">
+                  {{
+                    typeof orderDetails.items[index] != 'undefined'
+                      ? orderDetails.items[index].name
+                      : ''
+                  }}
+                </div>
+                <div
+                  :key="index"
+                  class="modifiers"
+                  v-for="(item, index) in orderDetails.item_modifiers"
+                >
+                  <span v-if="item.for_item == i.no">
+                    <span v-if="item.qty > 0">+{{ item.qty }}</span>
+                    {{ item.name }}
+                  </span>
+                </div>
               </div>
             </div>
           </td>
           <td class="dine-order-amt">
-            {{ orderTable.balance_due + ' ' + orderTable.currency }}
+            {{ orderDetails.balance_due + ' ' + orderDetails.currency }}
           </td>
-          <td :class="getOrderStatus(orderTable.order_status)">
-            <span>{{ orderTable.order_status }}</span>
-          </td>
+          <!--<td :class="getOrderStatus(orderDetails.order_status)">
+            <span>{{ orderDetails.order_status }}</span>
+          </td>-->
           <!--<td><span>{{ order.order_status }}</span></td>-->
           <td class="order-time-det">
             <span
-              :id="orderTable._id"
+              :id="orderDetails._id"
               class="timeago elapsedTime delManTime runningtime"
               title=""
             >
-              {{ timerClock(orderTable.real_created_datetime, orderTable._id) }}
+              {{
+                timerClock(orderDetails.real_created_datetime, orderDetails._id)
+              }}
             </span>
             <div class="dining-for-button">
               <span class="dinefor-reprint"
@@ -121,6 +139,7 @@
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import DateTime from '@/mixins/DateTime'
+import LookupData from '@/plugins/helpers/LookupData'
 
 export default {
   name: 'OrderList',
@@ -129,6 +148,11 @@ export default {
   },
   props: {
     tabName: String,
+  },
+  data() {
+    return {
+      orderDetails: false,
+    }
   },
   mixins: [DateTime],
   computed: {
@@ -139,6 +163,9 @@ export default {
   },
   methods: {
     ...mapActions('order', ['selectedOrderDetails']),
+    getOrderDetails(collection) {
+      this.orderDetails = LookupData.get(collection)
+    },
     timerClock: function(datetime, id) {
       // eslint-disable-next-line no-console
       console.log(id)
@@ -151,4 +178,20 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+span.open-details-popup.cursor-pointer.font-weight-bold.running-order-details {
+  background-color: #e73030;
+  padding: 8px;
+  color: #fff;
+  box-shadow: 0px 0px 3px 0 #191515;
+  border-radius: 3px;
+  line-height: 3;
+}
+.table-order-view {
+  max-height: 100px;
+  overflow: auto;
+  float: left;
+  width: 50%;
+  padding-left: 8px;
+}
+</style>

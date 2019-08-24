@@ -251,7 +251,12 @@
         </li>
       </ul>
     </div>
-    <div class="footer-buttons color-dashboard-background">
+    <div
+      class="footer-buttons color-dashboard-background"
+      :style="
+        orderType.OTApi === 'dine_in' ? 'grid-template-columns: 1fr 1fr' : ''
+      "
+    >
       <div class="button">
         <ul class="template-btn">
           <li
@@ -305,6 +310,22 @@
             class="pay-now color-dashboard-background color-main"
             v-show="orderType.OTApi === 'dine_in'"
             @click="payNowClick()"
+          >
+            <a role="button">
+              <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
+              <span class="pay-btn color-text-invert">
+                {{ _t('Pay Now') }}
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="button" v-show="orderType.OTApi === 'dine_in'">
+        <ul class="template-btn">
+          <li
+            class="pay-now color-dashboard-background color-main"
+            v-show="orderType.OTApi === 'dine_in'"
+            @click="payNowDirect()"
           >
             <a role="button">
               <img src="img/pos/payment.svg" :alt="_t('Place Order')" />
@@ -417,6 +438,9 @@ export default {
     UserProfile,
   },
   data() {
+    if (window.location.href.indexOf('dine-in') > -1) {
+      this.setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })
+    }
     return {
       vbutton: '',
     }
@@ -438,6 +462,21 @@ export default {
     ...mapState({ selectedCustomer: state => state.customer.customer.name }),
   },
   methods: {
+    payNowDirect() {
+      this.$store
+        .dispatch('checkout/pay', this.orderType.OTApi)
+        .then(() => {
+          setTimeout(function() {
+            $('#payment-screen-footer').prop('disabled', false)
+          }, 1000)
+        })
+        .catch(() => {
+          setTimeout(() => {
+            $('#payment-msg').modal('hide')
+            $('#payment-screen-footer').prop('disabled', false)
+          }, 500)
+        })
+    },
     payNowClick() {
       if (this.orderType.OTApi !== 'dine_in') {
         clickPayNow()
@@ -483,3 +522,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.displayBlock {
+  display: inline-block;
+}
+</style>

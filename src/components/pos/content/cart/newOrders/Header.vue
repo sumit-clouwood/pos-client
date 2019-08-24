@@ -31,7 +31,7 @@
             @click="showTableList"
           />
         </form>
-        <div id="available-tables" class="available-tables cursor-pointer">
+        <div id="available-tables" class="available-tables cursor-pointer hide">
           <span class="dropdown" @click="setTable(null)">
             {{ _t('Select Table') }}
           </span>
@@ -125,12 +125,14 @@ export default {
       $('.dropdown-content').hide()
     },
     setTable: function(table) {
+      // eslint-disable-next-line no-console
+      console.log(table)
       if (table) {
-        this.selectedCover = table.name
+        this.selectedTable = table.name
       } else {
-        this.selectedCover = 'Select Cover'
+        this.selectedTable = 'Select Table'
       }
-      this.$store.commit('dinein/AVAILABLE_TABLES', table)
+      // this.$store.commit('dinein/AVAILABLE_TABLES', table)
       $('.available-tables').hide()
     },
     hold() {
