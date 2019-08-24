@@ -1,6 +1,5 @@
 <template>
   <div class="left-container">
-    <Header />
     <div
       class="table-holder container-fluid row running-orders-dinein active"
       id="all-tables-show"
@@ -21,7 +20,6 @@ import Reservation from './content/Reservation'
 import Waiting from './content/Waiting'
 import CompletedOrders from './content/CompletedOrders'
 import TableDraw from './content/TableDraw'
-import Header from './content/Header'
 import { mapState } from 'vuex'
 
 export default {
@@ -30,7 +28,6 @@ export default {
     ...mapState('dinein', ['tablesOnArea']),
   },
   components: {
-    Header,
     RunningOrders,
     Reservation,
     CompletedOrders,
