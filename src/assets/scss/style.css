@@ -31,6 +31,9 @@ html {
 html {
   height: 100vh; }
 
+.mobile-components .main-orders #pay-now {
+  display: none !important; }
+
 body {
   height: 100vh;
   margin: 0;
@@ -38,7 +41,7 @@ body {
   height: 100vh;
   overflow: hidden;
   color: #444;
-  background-color: #fafafa;
+  background-color: #fff;
   position: relative; }
   body .new-pos .hideBigScreen {
     display: none; }
@@ -112,8 +115,8 @@ img {
 .shorten-sentence {
   text-overflow: ellipsis;
   overflow: hidden;
-  White-space: nowrap;
-  Width: 6.9375rem;
+  white-space: nowrap;
+  width: 6.9375rem;
   /*text-align:center;*/ }
 
 .orders-button-large {
@@ -181,14 +184,19 @@ img {
 svg {
   color: #fff; }
 
-.btnSuccess, .btn-success {
+.btnSuccess,
+.btn-success {
   background-color: #5056CA;
   border-color: #5056CA; }
-  .btnSuccess:hover, .btn-success:hover {
+  .btnSuccess:hover,
+  .btn-success:hover {
     background-color: #767DFF;
     border-color: #767DFF; }
 
-.btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active, .show > .btn-success.dropdown-toggle, .btn-success:disabled {
+.btn-success:not(:disabled):not(.disabled).active,
+.btn-success:not(:disabled):not(.disabled):active,
+.show > .btn-success.dropdown-toggle,
+.btn-success:disabled {
   background-color: #5056CA;
   border-color: #5056CA; }
 
@@ -244,13 +252,15 @@ div#nav-tabContent {
     top: 0;
     right: 0; }
 
-.margin220 .preloader {
-  margin-top: 13.75rem; }
-
 .pl-30 {
   padding-left: 30px; }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 600;
   color: rgba(63, 74, 74, 0.8);
   margin: 0; }
@@ -269,11 +279,18 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center; }
 
 @media only screen and (min-width: 320px) and (max-width: 600px) {
-  html, body {
+  .pl-30 {
+    padding: 5px 20px 0;
+    background-color: #fff;
+    z-index: 1; }
+
+  html,
+  body {
     margin: 0;
     height: 100%;
     overflow: hidden; }
-    html .dropdown:hover, body .dropdown:hover {
+    html .dropdown:hover,
+    body .dropdown:hover {
       background-color: #fff; }
 
   .modal-header {
@@ -497,14 +514,14 @@ h1, h2, h3, h4, h5, h6 {
 .POSItemOptions {
   padding-right: 0.625rem; }
   .POSItemOptions .modal-title {
-    color: #3D3F43;
+    color: #3d3f43;
     font-size: 1.125rem;
     font-weight: bold;
     letter-spacing: 0.64px; }
   .POSItemOptions .modal-dialog {
     margin: 0 auto;
     line-height: 1;
-    min-height: calc(100% - (.5rem * 2));
+    min-height: calc(100% - (0.5rem * 2));
     max-width: 600px;
     width: 600px; }
     .POSItemOptions .modal-dialog .modal-content .modal-header {
@@ -512,7 +529,7 @@ h1, h2, h3, h4, h5, h6 {
       border: 0 none;
       margin-bottom: 1.125rem; }
     .POSItemOptions .modal-dialog .modal-content .modal-details {
-      border-bottom: 1px solid #E3E7F2;
+      border-bottom: 1px solid #e3e7f2;
       padding-bottom: 0.75rem;
       /*margin-bottom: $px20;*/ }
       .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity {
@@ -521,7 +538,7 @@ h1, h2, h3, h4, h5, h6 {
         .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_price {
           width: 36%; }
           .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_price .POSItemOptions_label {
-            color: #3D3F43;
+            color: #3d3f43;
             font-size: 0.875rem;
             font-weight: normal;
             letter-spacing: 0.5px; }
@@ -534,7 +551,7 @@ h1, h2, h3, h4, h5, h6 {
         .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity {
           width: 64%; }
           .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_label {
-            color: #3D3F43;
+            color: #3d3f43;
             font-size: 0.875rem;
             font-weight: normal;
             letter-spacing: 0.5px; }
@@ -558,7 +575,7 @@ h1, h2, h3, h4, h5, h6 {
                 width: 33.33%;
                 text-align: center;
                 outline: none;
-                color: #3D3F43;
+                color: #3d3f43;
                 font-size: 1rem;
                 font-weight: 600;
                 height: 2.5rem;
@@ -576,166 +593,12 @@ h1, h2, h3, h4, h5, h6 {
               border: 0 none; }
     .POSItemOptions .modal-dialog .modal-content .modal-body {
       padding-top: 0;
-      border-color: #E3E7F2;
+      border-color: #e3e7f2;
       max-height: 28.75rem;
       overflow-y: scroll;
       margin-right: 0.625rem;
       -webkit-overflow-scrolling: touch;
       touch-action: auto; }
-      .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_type {
-        position: relative; }
-        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_type .POSItemOptions_typehead {
-          color: #222;
-          font-size: 12px;
-          font-weight: normal;
-          letter-spacing: 0.43px;
-          margin: 0;
-          background-color: #fff;
-          padding-right: 0.9375rem;
-          display: inline-block;
-          vertical-align: middle;
-          position: relative;
-          z-index: 2; }
-        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_type .POSItemOptions_typeline {
-          position: absolute;
-          top: 50%;
-          left: 0;
-          right: 0;
-          width: 100%;
-          height: 1px;
-          background-color: #E3E7F2;
-          z-index: 1; }
-      .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose {
-        margin-top: 1.875rem;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, 150px);
-        grid-gap: 10px; }
-        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label {
-          padding: 10px;
-          border-radius: 5px;
-          position: relative; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .borderCheck {
-            display: none; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc {
-            position: absolute;
-            top: -1px;
-            right: -1px;
-            margin-right: 0 !important;
-            width: 20px;
-            height: 20px; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input {
-              display: none; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc span {
-              position: absolute;
-              top: 0;
-              right: 0;
-              bottom: 0;
-              left: 0;
-              border: 2px solid #E3E7F2;
-              border-radius: 100%;
-              display: inline-flex;
-              align-items: center;
-              justify-content: center;
-              vertical-align: middle;
-              text-align: center;
-              color: #3D3F43;
-              font-size: 0.75rem;
-              font-weight: normal;
-              letter-spacing: 0.43px;
-              width: 20px;
-              height: 20px; }
-              .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc span:before {
-                width: 15px !important;
-                height: 15px !important;
-                color: #fff; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox]:checked + span {
-              background: #5056CA;
-              border-color: #5056CA;
-              position: relative; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox] {
-              opacity: 0;
-              position: absolute;
-              top: 4px;
-              width: 0.625rem;
-              height: 0.625rem; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox]:checked + span:before {
-              font-family: "FontAwesome";
-              content: "\f00c";
-              width: 0.75rem;
-              height: 0.75rem;
-              color: #fff;
-              line-height: 0;
-              position: absolute;
-              top: 7.5px;
-              left: 0.5px;
-              font-size: 0.9375rem !important; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox] + span {
-              border-radius: 2px; }
-        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice {
-          display: inline-block;
-          margin-bottom: 1.125rem; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label {
-            display: inline-block;
-            vertical-align: middle;
-            margin: 0;
-            border: 2px solid #E3E7F2; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label input {
-              display: none;
-              /* &[type="checkbox"] {
-                   &:checked + span {
-                       background-color: $green-middle;
-                   }
-               }*/ }
-              .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label input[type="checkbox"]:checked + div {
-                display: block; }
-                .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label input[type="checkbox"]:checked + div span {
-                  background-color: #5056CA;
-                  border: none;
-                  border-radius: 3px; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label img {
-              margin-right: 0.3125rem;
-              display: inline-block;
-              vertical-align: middle;
-              width: 2.1875rem;
-              height: 2.1875rem;
-              border-radius: 50%; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label span {
-              display: inline-block;
-              vertical-align: middle;
-              line-height: 1.3; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .customradioc {
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 0.3125rem; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .customradioc .checkBox {
-              width: 20px;
-              height: 20px;
-              line-height: inherit;
-              border-top: none;
-              border-right: none;
-              display: inline-flex;
-              align-items: center;
-              justify-content: center;
-              border: none; }
-              .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .customradioc .checkBox:before {
-                font-family: "FontAwesome";
-                content: "\f00c";
-                position: static !important;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 14px !important;
-                border: none; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .borderCheck {
-            display: none;
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            bottom: -2px;
-            left: -2px;
-            border: 2px solid #5056CA;
-            border-radius: 3px;
-            pointer-events: none; }
     .POSItemOptions .modal-dialog .modal-content .modal-footer {
       padding: 0;
       padding-top: 1.5625rem !important; }
@@ -752,7 +615,7 @@ h1, h2, h3, h4, h5, h6 {
         height: 2.5rem;
         padding: 0 1.5625rem; }
       .POSItemOptions .modal-dialog .modal-content .modal-footer .taxbutton {
-        background: #CC3232;
+        background: #cc3232;
         border-radius: 3px;
         box-shadow: 0 2px 2px 0 rgba(232, 150, 150, 0.5);
         height: 2.5rem;
@@ -781,13 +644,17 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid #979797;
   margin-right: 0.625rem; }
 
-#customer .modal-dialog, #manage-customer .modal-dialog {
+#customer .modal-dialog,
+#manage-customer .modal-dialog {
   max-width: 73.75rem; }
-  #customer .modal-dialog .modal-content .modal-header, #manage-customer .modal-dialog .modal-content .modal-header {
+  #customer .modal-dialog .modal-content .modal-header,
+  #manage-customer .modal-dialog .modal-content .modal-header {
     background: #dee2e9;
     padding: 0.9375rem 1.875rem;
-    border-bottom-color: #dee2e9; }
-    #customer .modal-dialog .modal-content .modal-header .customer-title, #manage-customer .modal-dialog .modal-content .modal-header .customer-title {
+    border-bottom-color: #dee2e9;
+    box-shadow: none; }
+    #customer .modal-dialog .modal-content .modal-header .customer-title,
+    #manage-customer .modal-dialog .modal-content .modal-header .customer-title {
       font-size: 1rem;
       font-weight: bold;
       font-style: normal;
@@ -796,11 +663,14 @@ h1, h2, h3, h4, h5, h6 {
       letter-spacing: 0.6px;
       color: #3f4146; }
       @media only screen and (min-width: 320px) and (max-width: 600px) {
-        #customer .modal-dialog .modal-content .modal-header .customer-title, #manage-customer .modal-dialog .modal-content .modal-header .customer-title {
+        #customer .modal-dialog .modal-content .modal-header .customer-title,
+        #manage-customer .modal-dialog .modal-content .modal-header .customer-title {
           font-size: 18px; } }
-  #customer .modal-dialog .modal-content .modal-body, #manage-customer .modal-dialog .modal-content .modal-body {
+  #customer .modal-dialog .modal-content .modal-body,
+  #manage-customer .modal-dialog .modal-content .modal-body {
     margin-top: 1.5625rem; }
-    #customer .modal-dialog .modal-content .modal-body select, #manage-customer .modal-dialog .modal-content .modal-body select {
+    #customer .modal-dialog .modal-content .modal-body select,
+    #manage-customer .modal-dialog .modal-content .modal-body select {
       font-size: 0.875rem;
       font-weight: normal;
       font-style: normal;
@@ -809,36 +679,44 @@ h1, h2, h3, h4, h5, h6 {
       letter-spacing: 0.5px;
       color: #3d3f43;
       padding-left: 0.9375rem; }
-      #customer .modal-dialog .modal-content .modal-body select.selectpicker, #manage-customer .modal-dialog .modal-content .modal-body select.selectpicker {
+      #customer .modal-dialog .modal-content .modal-body select.selectpicker,
+      #manage-customer .modal-dialog .modal-content .modal-body select.selectpicker {
         background-image: url("/assets/images/select-arrow.png");
         background-repeat: no-repeat;
         background-position: center right 0.625rem;
         -webkit-appearance: none;
         -moz-appearance: none; }
-    #customer .modal-dialog .modal-content .modal-body .dob select:nth-child(2), #manage-customer .modal-dialog .modal-content .modal-body .dob select:nth-child(2) {
+    #customer .modal-dialog .modal-content .modal-body .dob select:nth-child(2),
+    #manage-customer .modal-dialog .modal-content .modal-body .dob select:nth-child(2) {
       width: 4.6875rem; }
-    #customer .modal-dialog .modal-content .modal-body .dob select:nth-child(3), #manage-customer .modal-dialog .modal-content .modal-body .dob select:nth-child(3) {
+    #customer .modal-dialog .modal-content .modal-body .dob select:nth-child(3),
+    #manage-customer .modal-dialog .modal-content .modal-body .dob select:nth-child(3) {
       width: 7.8125rem;
       margin: 0 4px; }
-    #customer .modal-dialog .modal-content .modal-body .dob select:nth-child(4), #manage-customer .modal-dialog .modal-content .modal-body .dob select:nth-child(4) {
+    #customer .modal-dialog .modal-content .modal-body .dob select:nth-child(4),
+    #manage-customer .modal-dialog .modal-content .modal-body .dob select:nth-child(4) {
       width: 6.25rem; }
-    #customer .modal-dialog .modal-content .modal-body .left-form > div, #manage-customer .modal-dialog .modal-content .modal-body .left-form > div {
+    #customer .modal-dialog .modal-content .modal-body .left-form > div,
+    #manage-customer .modal-dialog .modal-content .modal-body .left-form > div {
       margin-bottom: 1.5625rem;
       position: relative; }
-      #customer .modal-dialog .modal-content .modal-body .left-form > div input, #manage-customer .modal-dialog .modal-content .modal-body .left-form > div input {
+      #customer .modal-dialog .modal-content .modal-body .left-form > div input,
+      #manage-customer .modal-dialog .modal-content .modal-body .left-form > div input {
         width: 19.6875rem;
         height: 3.125rem;
         border-radius: 3px;
         background-color: #ffffff;
         border: solid 1px #e4e7eb;
         padding: 0.625rem; }
-      #customer .modal-dialog .modal-content .modal-body .left-form > div select, #manage-customer .modal-dialog .modal-content .modal-body .left-form > div select {
+      #customer .modal-dialog .modal-content .modal-body .left-form > div select,
+      #manage-customer .modal-dialog .modal-content .modal-body .left-form > div select {
         width: 19.6875rem;
         height: 3.125rem;
         border-radius: 3px;
         background-color: #ffffff;
         border: solid 1px #e4e7eb; }
-      #customer .modal-dialog .modal-content .modal-body .left-form > div label, #manage-customer .modal-dialog .modal-content .modal-body .left-form > div label {
+      #customer .modal-dialog .modal-content .modal-body .left-form > div label,
+      #manage-customer .modal-dialog .modal-content .modal-body .left-form > div label {
         width: 13.4375rem;
         padding: 0 1.5625rem;
         font-size: 0.875rem;
@@ -849,29 +727,34 @@ h1, h2, h3, h4, h5, h6 {
         letter-spacing: 0.5px;
         color: #72777c;
         vertical-align: middle; }
-    #customer .modal-dialog .modal-content .modal-body .left-form label span, #manage-customer .modal-dialog .modal-content .modal-body .left-form label span {
+    #customer .modal-dialog .modal-content .modal-body .left-form label span,
+    #manage-customer .modal-dialog .modal-content .modal-body .left-form label span {
       color: #f44040;
       font-size: 1.5rem; }
-    #customer .modal-dialog .modal-content .modal-body .right-form > div, #manage-customer .modal-dialog .modal-content .modal-body .right-form > div {
+    #customer .modal-dialog .modal-content .modal-body .right-form > div,
+    #manage-customer .modal-dialog .modal-content .modal-body .right-form > div {
       margin-bottom: 1.5625rem;
       position: relative;
       /*> select.selectpicker{
         width: $px889;
       }*/ }
-      #customer .modal-dialog .modal-content .modal-body .right-form > div input, #manage-customer .modal-dialog .modal-content .modal-body .right-form > div input {
+      #customer .modal-dialog .modal-content .modal-body .right-form > div input,
+      #manage-customer .modal-dialog .modal-content .modal-body .right-form > div input {
         width: 19.6875rem;
         height: 3.125rem;
         border-radius: 3px;
         background-color: #ffffff;
         border: solid 1px #e4e7eb;
         padding: 0.625rem; }
-      #customer .modal-dialog .modal-content .modal-body .right-form > div select, #manage-customer .modal-dialog .modal-content .modal-body .right-form > div select {
+      #customer .modal-dialog .modal-content .modal-body .right-form > div select,
+      #manage-customer .modal-dialog .modal-content .modal-body .right-form > div select {
         width: 19.6875rem;
         height: 3.125rem;
         border-radius: 3px;
         background-color: #ffffff;
         border: solid 1px #e4e7eb; }
-      #customer .modal-dialog .modal-content .modal-body .right-form > div label, #manage-customer .modal-dialog .modal-content .modal-body .right-form > div label {
+      #customer .modal-dialog .modal-content .modal-body .right-form > div label,
+      #manage-customer .modal-dialog .modal-content .modal-body .right-form > div label {
         width: 13.4375rem;
         padding: 0 1.5625rem;
         font-size: 0.875rem;
@@ -882,7 +765,8 @@ h1, h2, h3, h4, h5, h6 {
         letter-spacing: 0.5px;
         color: #72777c;
         vertical-align: middle; }
-    #customer .modal-dialog .modal-content .modal-body .right-form label span, #manage-customer .modal-dialog .modal-content .modal-body .right-form label span {
+    #customer .modal-dialog .modal-content .modal-body .right-form label span,
+    #manage-customer .modal-dialog .modal-content .modal-body .right-form label span {
       color: #f44040;
       font-size: 1.5rem; }
 
@@ -1030,6 +914,7 @@ h1, h2, h3, h4, h5, h6 {
 
 #pay-now {
   right: 0;
+  bottom: 0;
   left: unset;
   width: 35.625rem;
   margin-top: 0;
@@ -1041,20 +926,27 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1050;
   height: 100%;
   -webkit-overflow-scrolling: touch;
-  touch-action: auto; }
+  touch-action: auto;
+  display: grid; }
   #pay-now .slick-track {
     display: flex;
     align-items: center; }
   #pay-now .modal-dialog {
     max-width: 40.625rem;
     right: 0;
-    margin: 0 !important; }
+    margin: 0 !important;
+    height: 100%; }
     #pay-now .modal-dialog .modal-content {
-      border: medium none; }
+      border: medium none;
+      height: 100%; }
       #pay-now .modal-dialog .modal-content .modal-body {
         padding: 1.875rem; }
+        #pay-now .modal-dialog .modal-content .modal-body .color-dashboard-background {
+          height: 100%;
+          display: flex;
+          flex-direction: column; }
         #pay-now .modal-dialog .modal-content .modal-body .order-payment {
-          margin: 0 auto;
+          margin: 0;
           overflow: hidden;
           margin-bottom: 1.25rem; }
           #pay-now .modal-dialog .modal-content .modal-body .order-payment .order-id {
@@ -1117,7 +1009,7 @@ h1, h2, h3, h4, h5, h6 {
               font-stretch: normal;
               line-height: normal;
               letter-spacing: normal;
-              color: #3A3E9F; }
+              color: #3a3e9f; }
             #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-title .total-amt {
               font-size: 1rem;
               font-weight: 600;
@@ -1125,7 +1017,7 @@ h1, h2, h3, h4, h5, h6 {
               font-stretch: normal;
               line-height: normal;
               letter-spacing: normal;
-              color: #3A3E9F; }
+              color: #3a3e9f; }
             #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-title > p {
               margin-bottom: 0.625rem; }
           #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-digit {
@@ -1139,7 +1031,7 @@ h1, h2, h3, h4, h5, h6 {
               font-stretch: normal;
               line-height: normal;
               letter-spacing: normal;
-              color: #3A3E9F; }
+              color: #3a3e9f; }
             #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-digit > h2 {
               font-size: 1.5rem;
               font-weight: 600;
@@ -1147,7 +1039,7 @@ h1, h2, h3, h4, h5, h6 {
               font-stretch: normal;
               line-height: normal;
               letter-spacing: normal;
-              color: #3A3E9F; }
+              color: #3a3e9f; }
           #pay-now .modal-dialog .modal-content .modal-body .total-amount > div {
             float: left;
             margin: 0 auto; }
@@ -1167,7 +1059,7 @@ h1, h2, h3, h4, h5, h6 {
           width: 32.5rem; }
           #pay-now .modal-dialog .modal-content .modal-body .slick-slider .slick-slide > div > div {
             width: 7.5rem !important;
-            min-height: 6.25rem;
+            min-height: 5.625rem;
             border-radius: 3px;
             background-color: #ffffff;
             border: solid 1px #dbdfe9;
@@ -1177,6 +1069,9 @@ h1, h2, h3, h4, h5, h6 {
             flex-direction: column;
             align-items: center;
             justify-content: center; }
+            #pay-now .modal-dialog .modal-content .modal-body .slick-slider .slick-slide > div > div img {
+              width: 2.8125rem;
+              height: 2.8125rem; }
             #pay-now .modal-dialog .modal-content .modal-body .slick-slider .slick-slide > div > div.active {
               border: solid 2px #5056ca !important; }
           #pay-now .modal-dialog .modal-content .modal-body .slick-slider.active {
@@ -1205,12 +1100,13 @@ h1, h2, h3, h4, h5, h6 {
           margin: 0 auto;
           display: grid;
           grid-template-columns: max-content max-content max-content max-content;
-          grid-gap: 0.625rem; }
+          grid-gap: 0.625rem;
+          margin-top: auto; }
           #pay-now .modal-dialog .modal-content .modal-body .amount-keypad #add-amt {
             cursor: pointer; }
           #pay-now .modal-dialog .modal-content .modal-body .amount-keypad > div {
             width: 7.5rem;
-            height: 4.0625rem;
+            height: 3.125rem;
             border-radius: 5px;
             background-image: linear-gradient(180deg, #eeeeee 0%, #d8d8d8 100%);
             text-align: center;
@@ -1224,7 +1120,8 @@ h1, h2, h3, h4, h5, h6 {
             line-height: 1.08;
             letter-spacing: normal;
             color: #3d3f43; }
-          #pay-now .modal-dialog .modal-content .modal-body .amount-keypad > div:nth-child(4), #pay-now .modal-dialog .modal-content .modal-body .amount-keypad .amount-keypad > div:nth-child(8) {
+          #pay-now .modal-dialog .modal-content .modal-body .amount-keypad > div:nth-child(4),
+          #pay-now .modal-dialog .modal-content .modal-body .amount-keypad .amount-keypad > div:nth-child(8) {
             background-image: linear-gradient(180deg, #5056ca 0%, #2d38aa 100%);
             color: #fff; }
           #pay-now .modal-dialog .modal-content .modal-body .amount-keypad > div:nth-child(12) {
@@ -1336,15 +1233,18 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-rows: max-content 1fr max-content; }
 
   /**/
-  .modal, #pay-now {
+  .modal,
+  #pay-now {
     width: 100%;
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0; }
-    .modal .modal-dialog, #pay-now .modal-dialog {
+    .modal .modal-dialog,
+    #pay-now .modal-dialog {
       min-height: 100vh; }
-      .modal .modal-dialog .modal-content, #pay-now .modal-dialog .modal-content {
+      .modal .modal-dialog .modal-content,
+      #pay-now .modal-dialog .modal-content {
         position: absolute;
         top: 0;
         right: 0;
@@ -1352,7 +1252,8 @@ h1, h2, h3, h4, h5, h6 {
         left: 0;
         border: none;
         border-radius: 0; }
-        .modal .modal-dialog .modal-content .modal-body, #pay-now .modal-dialog .modal-content .modal-body {
+        .modal .modal-dialog .modal-content .modal-body,
+        #pay-now .modal-dialog .modal-content .modal-body {
           padding: 0; }
 
   #pay-now .modal-dialog .modal-content .modal-body {
@@ -2505,7 +2406,7 @@ a:hover {
               display: flex;
               justify-content: center;
               align-items: center;
-              background-color: #E3E9F0;
+              background-color: #e3e9f0;
               margin-right: 0.3125rem;
               cursor: pointer; }
       #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .cu-loyality-points {
@@ -2792,7 +2693,8 @@ div#display-order {
 .ullist-business-slider {
   text-align: center;
   display: flex;
-  align-items: center; }
+  align-items: center;
+  justify-content: center; }
   .ullist-business-slider > li {
     display: inline-grid;
     justify-content: center;
@@ -2880,7 +2782,8 @@ ul.fav-item-slider > li > img {
   opacity: 0.8;
   cursor: pointer; }
 
-.br-table-btn, .deactive-table-btn {
+.br-table-btn,
+.deactive-table-btn {
   display: none; }
 
 tr.referal-code-customer {
@@ -2943,7 +2846,7 @@ label.container-radio-btn span {
 label.container-radio-btn img {
   display: inline-block;
   vertical-align: middle;
-  margin-right: 0.3125rem;
+  margin-right: 0.625rem;
   width: 2.1875rem;
   height: 2.1875rem; }
 
@@ -3038,7 +2941,10 @@ p.itm-price {
   border: solid 1px #e3e7f2;
   margin-bottom: 0.625rem;
   padding: 0.3125rem 0.9375rem;
-  margin: 0 0.625rem 0.625rem; }
+  margin: 0 0.625rem 0.625rem;
+  display: grid;
+  grid-template-columns: 1fr max-content max-content;
+  grid-gap: 10px; }
 
 .wrappers-orders > .orders-name > span {
   cursor: pointer; }
@@ -3049,7 +2955,7 @@ p.itm-price {
   cursor: pointer; }
 
 .wrappers-orders .aed-amt {
-  width: 24%; }
+  width: auto; }
 
 .wrappers-orders .orders-name {
   width: 72%; }
@@ -3939,7 +3845,7 @@ body {
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #FD3C83; }
+      background-color: #fd3c83; }
       .main .main-news .main-news-title .main-news-title-link {
         color: #fff;
         display: flex;
@@ -4002,7 +3908,7 @@ body {
             .main .main-body .food-wrapper .food-categories .food-categories-item:hover .food-categories-item-check, .main .main-body .food-wrapper .food-categories .food-categories-item.active .food-categories-item-check {
               opacity: 1; }
           .main .main-body .food-wrapper .food-categories .food-categories-item.bg {
-            background-color: #F99C32;
+            background-color: #f99c32;
             color: #fff;
             font-size: 0.75rem; }
           .main .main-body .food-wrapper .food-categories .food-categories-item .food-categories-item-img {
@@ -4074,7 +3980,7 @@ body {
           flex-wrap: wrap;
           align-items: stretch;
           align-content: flex-start;
-          overflow: auto; }
+          overflow-y: hidden; }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-wrapper {
             overflow: auto;
             display: flex;
@@ -4082,7 +3988,8 @@ body {
             align-content: flex-start;
             padding-right: 1.875rem;
             height: calc(100vh - 26.25rem); }
-          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
+          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before,
+          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
             box-sizing: inherit;
             content: '';
             position: absolute;
@@ -4090,14 +3997,17 @@ body {
             height: 100%;
             z-index: 99; }
             @media only screen and (min-width: 320px) and (max-width: 600px) {
-              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before,
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
                 display: none; } }
-          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
+          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before,
+          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
             border: 2px solid transparent;
             width: 0;
             height: 0; }
             @media only screen and (min-width: 320px) and (max-width: 600px) {
-              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before,
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
                 display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before {
             top: 0;
@@ -4116,11 +4026,13 @@ body {
             @media only screen and (min-width: 320px) and (max-width: 600px) {
               .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover p.remove-bottom {
                 display: none; } }
-          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
+          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before,
+          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
             width: 100%;
             height: 100%; }
             @media only screen and (min-width: 320px) and (max-width: 600px) {
-              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before,
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
                 display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before {
             border-top-color: #5056CA;
@@ -4134,8 +4046,8 @@ body {
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item {
             padding: 10px;
             cursor: pointer;
-            width: calc(7vmax + 20px);
-            min-height: 7vmax;
+            width: calc(7.5vmax + 20px);
+            min-height: 7.5vmax;
             border: 0.0625rem solid #ddd;
             border-radius: 0.3125rem;
             justify-self: center;
@@ -4149,12 +4061,10 @@ body {
             justify-content: center;
             margin-right: 1.25rem;
             margin-bottom: 1.25rem;
-            -webkit-transition: .2s linear;
-            transition: .2s linear;
+            -webkit-transition: 0.2s linear;
+            transition: 0.2s linear;
             font-size: 1.125rem;
             position: relative; }
-            .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:not(.color-dashboard-background) {
-              color: #fff; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
               border-bottom-color: #5056CA;
               border-left-color: #5056CA;
@@ -4165,7 +4075,7 @@ body {
                 .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
                   display: none; } }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item.bg {
-              background-color: #56CCF2;
+              background-color: #56ccf2;
               color: #fff;
               font-size: 0.875rem; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item.active {
@@ -4173,8 +4083,8 @@ body {
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-img {
               margin: 0 auto;
               border-radius: 0.1875rem;
-              width: 7vmax;
-              height: 7vmax;
+              width: 7.5vmax;
+              height: 7.5vmax;
               margin-bottom: auto; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-text {
               word-break: break-word;
