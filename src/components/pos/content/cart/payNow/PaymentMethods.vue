@@ -4,7 +4,7 @@
       v-for="(method, key) in methods"
       :key="key"
       :class="{ active: activeMethod == method.name, 'color-secondary': true }"
-      @click="[setMethod(method), methodCardHendlerGhange(method.priority)]"
+      @click=";[setMethod(method), methodCardHendlerGhange(method.priority)]"
       class="method"
       :data-toggle="getToggle(method)"
       :data-target="getTarget(method)"
@@ -13,61 +13,62 @@
       <label
         class="shorten-sentence text-center color-text-inverse"
         :title="method.name"
-      >{{ method.name }}</label>
+        >{{ method.name }}</label
+      >
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
-import * as CONSTANTS from "@/constants";
+import { mapActions, mapGetters, mapState } from 'vuex'
+import * as CONSTANTS from '@/constants'
 
 export default {
-  name: "PaymentMethods",
+  name: 'PaymentMethods',
   computed: {
-    ...mapGetters("payment", ["methods"]),
-    ...mapGetters(["payNowCalcHendler"]),
+    ...mapGetters('payment', ['methods']),
+    ...mapGetters(['payNowCalcHendler']),
     ...mapState({
-      activeMethod: state => state.checkoutForm.method.name
+      activeMethod: state => state.checkoutForm.method.name,
     }),
     ...mapState({
-      selectedModal: state => state.location.setModal
-    })
+      selectedModal: state => state.location.setModal,
+    }),
   },
   methods: {
     getToggle(method) {
       if (method.type == CONSTANTS.LOYALTY) {
-        return "modal";
+        return 'modal'
       }
-      return "";
+      return ''
     },
     image(imgPath) {
-      return imgPath;
+      return imgPath
     },
     getTarget(method) {
-      if (this.$store.getters["checkoutForm/payable"] > 0) {
+      if (this.$store.getters['checkoutForm/payable'] > 0) {
         if (method.type == CONSTANTS.LOYALTY) {
-          if (this.selectedModal == "#manage-customer") {
-            return "#search-loyalty-customer";
+          if (this.selectedModal == '#manage-customer') {
+            return '#search-loyalty-customer'
           } else {
-            this.$store.dispatch("checkoutForm/calculateSpendLoyalty");
-            return "#loyalty-payment";
+            this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
+            return '#loyalty-payment'
           }
         }
       }
-      return "";
+      return ''
     },
-    ...mapActions("checkoutForm", ["setMethod"]),
+    ...mapActions('checkoutForm', ['setMethod']),
     methodCardHendlerGhange(e) {
-      this.$store.dispatch("chooseCurentPayMethod", e);
-    }
-  }
-};
+      this.$store.dispatch('chooseCurentPayMethod', e)
+    },
+  },
+}
 </script>
 <style lang="scss">
-@import "../../../../../assets/scss/pixels_rem.scss";
-@import "../../../../../assets/scss/variables.scss";
-@import "../../../../../assets/scss/mixins.scss";
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
 
 #payment-method {
   img {
@@ -109,7 +110,7 @@ export default {
           display: flex;
           align-items: center;
           justify-content: center;
-          content: "\f00c";
+          content: '\f00c';
           font-family: FontAwesome;
           position: absolute;
           width: 20px;

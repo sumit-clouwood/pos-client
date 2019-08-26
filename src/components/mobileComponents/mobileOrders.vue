@@ -3,16 +3,16 @@
 </template>
 
 <script>
-import cart from "../pos/content/Cart.vue";
-import { mapGetters } from "vuex";
+import cart from '../pos/content/Cart.vue'
+// import { mapGetters } from 'vuex'
 
 export default {
-  name: "mobileOrders",
+  name: 'mobileOrders',
   components: {
-    cart
+    cart,
   },
-  computed: {}
-};
+  computed: {},
+}
 </script>
 
 <style lang="scss">

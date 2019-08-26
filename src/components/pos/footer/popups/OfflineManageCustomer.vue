@@ -6,10 +6,12 @@
         <!-- Modal content-->
         <div class="modal-content color-dashboard-background">
           <div class="modal-header customer-header color-secondary">
-            <h4
-              class="customer-title color-text-invert"
-            >{{ _t('Create New Customer') + ' ' + _t('offline') }}</h4>
-            <button type="button" class="close color-text" data-dismiss="modal">&times;</button>
+            <h4 class="customer-title color-text-invert">
+              {{ _t('Create New Customer') + ' ' + _t('offline') }}
+            </h4>
+            <button type="button" class="close color-text" data-dismiss="modal">
+              &times;
+            </button>
           </div>
           <CustomerForm ref="form" />
           <div class="modal-footer">
@@ -19,13 +21,17 @@
                 class="btn btn-danger cancel-announce color-button"
                 data-dismiss="modal"
                 id="close-customer"
-              >{{ _t('Cancel') }}</button>
+              >
+                {{ _t('Cancel') }}
+              </button>
               <button
                 class="btn btn-success btn-large color-main"
                 type="button"
                 id="post_announcement"
                 v-on:click="post"
-              >{{ _t('Save') }}</button>
+              >
+                {{ _t('Save') }}
+              </button>
             </div>
             <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
           </div>
@@ -40,54 +46,54 @@
 <script>
 /* global $ */
 /* eslint-disable no-console */
-import { mapGetters } from "vuex";
-import InformationPopup from "@/components/pos/content/InformationPopup";
-import CustomerForm from "./ManageCustomer/CustomerForm";
+import { mapGetters } from 'vuex'
+import InformationPopup from '@/components/pos/content/InformationPopup'
+import CustomerForm from './ManageCustomer/CustomerForm'
 
 export default {
-  name: "ManageCustomer",
+  name: 'ManageCustomer',
   props: {},
   computed: {
-    ...mapGetters("location", ["_t"])
+    ...mapGetters('location', ['_t']),
   },
   data: function() {
     return {
-      title: "Customer Success",
+      title: 'Customer Success',
       status: 0,
-      message: ""
-    };
+      message: '',
+    }
   },
   components: { InformationPopup, CustomerForm },
   methods: {
     post() {
-      console.log("posting");
-      this.$store.commit("order/ORDER_TYPE", {
-        OTview: "Delivery",
-        OTApi: "call_center"
-      });
-      const errors = this.$refs.form.validate();
-      console.log("form errors", errors);
+      console.log('posting')
+      this.$store.commit('order/ORDER_TYPE', {
+        OTview: 'Delivery',
+        OTApi: 'call_center',
+      })
+      const errors = this.$refs.form.validate()
+      console.log('form errors', errors)
       if (errors.count === 0) {
-        const data = this.$refs.form.getData();
-        console.log(data);
+        const data = this.$refs.form.getData()
+        console.log(data)
         if (!data.city) {
-          data.city = this.$store.state.location.store.city;
+          data.city = this.$store.state.location.store.city
         }
         if (!data.country) {
-          data.country = this.$store.state.location.store.country;
+          data.country = this.$store.state.location.store.country
         }
 
-        this.$store.dispatch("customer/setOfflineData", data);
-        this.status = 1;
-        this.message = "Data saved for offline order";
-        this.$store.commit("location/SET_MODAL", "#order-confirmation");
+        this.$store.dispatch('customer/setOfflineData', data)
+        this.status = 1
+        this.message = 'Data saved for offline order'
+        this.$store.commit('location/SET_MODAL', '#order-confirmation')
 
-        $("#manage-customer").modal("hide");
-        $("#information-popup").modal("show");
+        $('#manage-customer').modal('hide')
+        $('#information-popup').modal('show')
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 <style scoped>
 .modal-dialog {
@@ -96,9 +102,9 @@ export default {
 }
 </style>
 <style lang="scss">
-@import "../../../../assets/scss/pixels_rem.scss";
-@import "../../../../assets/scss/variables.scss";
-@import "../../../../assets/scss/mixins.scss";
+@import '../../../../assets/scss/pixels_rem.scss';
+@import '../../../../assets/scss/variables.scss';
+@import '../../../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #manage-customer {
@@ -274,7 +280,7 @@ export default {
               border: none;
               &:after {
                 font-size: 16px;
-                content: "✖";
+                content: '✖';
                 color: #444;
                 position: absolute;
                 right: -10px;

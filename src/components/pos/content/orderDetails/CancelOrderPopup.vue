@@ -10,8 +10,15 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">{{ _t('Cancel Order') }}</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <h5 class="modal-title" id="exampleModalLongTitle">
+            {{ _t('Cancel Order') }}
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -36,12 +43,15 @@
                     v-for="reason in cancellationReason"
                     :key="reason._id"
                     v-on:click="selectedReason(reason)"
-                  >{{ reason.name }}</span>
+                    >{{ reason.name }}</span
+                  >
                 </div>
                 <p
                   v-if="errors && errors.cancel_reason.length"
                   class="text-danger"
-                >{{ errors.cancel_reason }}</p>
+                >
+                  {{ errors.cancel_reason }}
+                </p>
               </div>
               <div>
                 <div class="select-driver">{{ _t('Supervisor Password') }}</div>
@@ -56,14 +66,20 @@
                 <p
                   v-if="errors && errors.supervisor_password.length"
                   class="text-danger"
-                >{{ errors.supervisor_password.toString() }}</p>
+                >
+                  {{ errors.supervisor_password.toString() }}
+                </p>
               </div>
             </div>
-            <div v-else class="drivers-list-note">{{ _t('No reason found') }}</div>
+            <div v-else class="drivers-list-note">
+              {{ _t('No reason found') }}
+            </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">{{ _t('Close') }}</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">
+            {{ _t('Close') }}
+          </button>
           <button
             type="button"
             class="btn btn-success"
@@ -72,7 +88,9 @@
                 order: selectedOrder.item,
               })
             "
-          >{{ _t('Submit') }}</button>
+          >
+            {{ _t('Submit') }}
+          </button>
         </div>
       </div>
     </div>
@@ -80,51 +98,51 @@
 </template>
 
 <script>
-import { mapGetters, mapState, mapActions } from "vuex";
+import { mapGetters, mapState, mapActions } from 'vuex'
 /* global $ */
 export default {
-  name: "CancelOrderPopup",
+  name: 'CancelOrderPopup',
   data() {
     return {
-      showSelectedReason: "",
-      supervisorPassword: ""
-    };
+      showSelectedReason: '',
+      supervisorPassword: '',
+    }
   },
   computed: {
-    ...mapGetters("location", ["_t"]),
-    ...mapState("order", ["cancellationReason", "selectedOrder", "errors"])
+    ...mapGetters('location', ['_t']),
+    ...mapState('order', ['cancellationReason', 'selectedOrder', 'errors']),
   },
   methods: {
     selectedReason: function(reason) {
-      this.showSelectedReason = reason.name;
-      $(".dropdown-content").hide();
+      this.showSelectedReason = reason.name
+      $('.dropdown-content').hide()
     },
     showDropdown: function() {
-      $(".dropdown-content").toggle();
+      $('.dropdown-content').toggle()
     },
     cancelOrderAction: function(order) {
       let data = {
         cancel_reason: this.showSelectedReason,
-        supervisor_password: this.supervisorPassword
-      };
-      let orderType = "call_center";
-      let actionTrigger = "cancel_order";
+        supervisor_password: this.supervisorPassword,
+      }
+      let orderType = 'call_center'
+      let actionTrigger = 'cancel_order'
       this.updateOrderCancelAction({
         order,
         orderType,
         actionTrigger,
-        params: data
-      });
+        params: data,
+      })
     },
-    ...mapActions("order", ["selectedOrderDetails", "updateOrderCancelAction"])
-  }
-};
+    ...mapActions('order', ['selectedOrderDetails', 'updateOrderCancelAction']),
+  },
+}
 </script>
 
 <style lang="scss">
-@import "../../../../assets/scss/pixels_rem.scss";
-@import "../../../../assets/scss/variables.scss";
-@import "../../../../assets/scss/mixins.scss";
+@import '../../../../assets/scss/pixels_rem.scss';
+@import '../../../../assets/scss/variables.scss';
+@import '../../../../assets/scss/mixins.scss';
 
 #cancellationReason {
   .modal-dialog {

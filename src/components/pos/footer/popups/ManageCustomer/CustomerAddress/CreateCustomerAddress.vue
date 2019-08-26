@@ -7,7 +7,9 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ customer_title }} {{ _t('Address') }}</h4>
+          <h4 class="customer-title">
+            {{ customer_title }} {{ _t('Address') }}
+          </h4>
         </div>
         <form class="modal-body row form-block">
           <div class="col-md-6 left-form add-address-form">
@@ -26,12 +28,11 @@
                   :value="area._id"
                   :key="area._id"
                   :data-deliveryarea="area.name"
-                >{{ area.name }}</option>
+                  >{{ area.name }}</option
+                >
               </select>
               <span class="validation-error" v-if="errors.delivery_area_id">
-                {{
-                errors.delivery_area_id
-                }}
+                {{ errors.delivery_area_id }}
               </span>
             </div>
             <div class="alternate-phone-from">
@@ -39,11 +40,13 @@
                 {{ _t('Building/Villa') }}
                 <span>*</span>
               </label>
-              <input type="text" name="building" v-model="newAddressDetails.building" />
+              <input
+                type="text"
+                name="building"
+                v-model="newAddressDetails.building"
+              />
               <span class="validation-error" v-if="errors.building">
-                {{
-                errors.building
-                }}
+                {{ errors.building }}
               </span>
             </div>
             <div class="gender">
@@ -51,11 +54,13 @@
                 {{ _t('Street') }}
                 <span>*</span>
               </label>
-              <input type="text" name="street" v-model="newAddressDetails.street" />
+              <input
+                type="text"
+                name="street"
+                v-model="newAddressDetails.street"
+              />
               <span class="validation-error" v-if="errors.street">
-                {{
-                errors.street
-                }}
+                {{ errors.street }}
               </span>
             </div>
           </div>
@@ -65,11 +70,13 @@
                 {{ _t('Flat Number') }}
                 <span>*</span>
               </label>
-              <input type="text" name="flat_number" v-model="newAddressDetails.flat_number" />
+              <input
+                type="text"
+                name="flat_number"
+                v-model="newAddressDetails.flat_number"
+              />
               <span class="validation-error" v-if="errors.flat_number">
-                {{
-                errors.flat_number
-                }}
+                {{ errors.flat_number }}
               </span>
             </div>
             <div class="landmark">
@@ -88,7 +95,9 @@
               type="button"
               class="btn btn-danger cancel-announce color-button color-text-invert"
               data-dismiss="modal"
-            >{{ _t('Cancel') }}</button>
+            >
+              {{ _t('Cancel') }}
+            </button>
             <button
               class="btn btn-success btn-large popup-btn-save color-main color-text-invert"
               type="button"
@@ -96,7 +105,9 @@
               data-toggle="modal"
               :data-target="reOpenAddress"
               v-on:click="checkForm(customer_title)"
-            >{{ _t('Save Address') }}</button>
+            >
+              {{ _t('Save Address') }}
+            </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
@@ -109,85 +120,85 @@
 
 <script>
 /* global $ */
-import { mapState, mapActions, mapGetters } from "vuex";
+import { mapState, mapActions, mapGetters } from 'vuex'
 // import InformationPopup from '@/components/pos/content/InformationPopup'
 export default {
-  name: "CreateCustomerAddress",
+  name: 'CreateCustomerAddress',
   props: {},
   data() {
     return {
       errors: {},
-      add_delivery_area: "",
-      reOpenAddress: ""
-    };
+      add_delivery_area: '',
+      reOpenAddress: '',
+    }
   },
   computed: {
-    ...mapGetters("location", ["_t"]),
+    ...mapGetters('location', ['_t']),
     ...mapState({
       newAddressDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
       fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
       customerCreateStatus: state => state.customer.responseInformation,
-      customerId: state => state.customer.customer._id
-    })
+      customerId: state => state.customer.customer._id,
+    }),
   },
   methods: {
     checkForm: function(modalStatus) {
-      this.errors = {};
-      this.errors.count = 0;
+      this.errors = {}
+      this.errors.count = 0
       if (!this.newAddressDetails.delivery_area_id) {
-        this.errors.delivery_area_id = "Delivery area required";
-        this.errors.count = 1;
+        this.errors.delivery_area_id = 'Delivery area required'
+        this.errors.count = 1
       }
       if (!this.newAddressDetails.building) {
-        this.errors.building = "Building/Villa required";
-        this.errors.count = 1;
+        this.errors.building = 'Building/Villa required'
+        this.errors.count = 1
       }
       if (!this.newAddressDetails.flat_number) {
-        this.errors.flat_number = "Flat Number is required";
-        this.errors.count = 1;
+        this.errors.flat_number = 'Flat Number is required'
+        this.errors.count = 1
       }
       if (!this.newAddressDetails.street) {
-        this.errors.street = "Street required";
-        this.errors.count = 1;
+        this.errors.street = 'Street required'
+        this.errors.count = 1
       }
       if (
         this.newAddressDetails.street &&
         this.newAddressDetails.street.length < 2
       ) {
-        this.errors.street = "Street should be at least 2 characters";
-        this.errors.count = 1;
+        this.errors.street = 'Street should be at least 2 characters'
+        this.errors.count = 1
       }
       if (
         this.newAddressDetails.building &&
         this.newAddressDetails.building.length > 15
       ) {
         this.errors.building =
-          "Building/Villa should be not more than 15 characters";
-        this.errors.count = 1;
+          'Building/Villa should be not more than 15 characters'
+        this.errors.count = 1
       }
       if (this.errors.count === 0) {
-        let addAddress = $("#add_address");
-        addAddress.modal("toggle");
+        let addAddress = $('#add_address')
+        addAddress.modal('toggle')
         // addAddress.click()
-        if (modalStatus == "Add") {
+        if (modalStatus == 'Add') {
           this.createAction({
             data: this.newAddressDetails,
-            model: "customer_addresses",
-            customer: this.customerId
-          });
-          addAddress.modal("toggle");
-          $("#add-to-order").modal("toggle");
+            model: 'customer_addresses',
+            customer: this.customerId,
+          })
+          addAddress.modal('toggle')
+          $('#add-to-order').modal('toggle')
         }
-        if (modalStatus == "Edit") {
+        if (modalStatus == 'Edit') {
           let actionDetails = {
-            id: localStorage.getItem("editItemKey"),
-            action: "edit",
-            model: "customer_addresses",
-            data: this.newAddressDetails
-          };
-          this.updateAction(actionDetails);
-          addAddress.modal("toggle");
+            id: localStorage.getItem('editItemKey'),
+            action: 'edit',
+            model: 'customer_addresses',
+            data: this.newAddressDetails,
+          }
+          this.updateAction(actionDetails)
+          addAddress.modal('toggle')
         }
         /*if (
                       this.customerCreateStatus &&
@@ -201,19 +212,19 @@ export default {
     },
     getAreaId: function(e) {
       if (e.target.options.selectedIndex > -1) {
-        this.add_delivery_area = $(".getAreaId")
-          .find(":selected")
-          .text();
+        this.add_delivery_area = $('.getAreaId')
+          .find(':selected')
+          .text()
       }
     },
-    ...mapActions("customer", ["createAction", "updateAction"])
-  }
-};
+    ...mapActions('customer', ['createAction', 'updateAction']),
+  },
+}
 </script>
 <style lang="scss">
-@import "../../../../../../assets/scss/pixels_rem.scss";
-@import "../../../../../../assets/scss/variables.scss";
-@import "../../../../../../assets/scss/mixins.scss";
+@import '../../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../../assets/scss/variables.scss';
+@import '../../../../../../assets/scss/mixins.scss';
 #add_address {
   .modal-dialog {
     /*margin: 0;*/
