@@ -442,11 +442,25 @@ const actions = {
     )
     return new Promise((resolve, reject) => {
       let response = null
+
+      //set order id to be used for invoicing
+      let orderId = null
+
+      //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
+      //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
+      //                already but we want to modify it from delivery manager
+
+      //order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER means its a new delivery order
+      // we send user directly to delivery manager after printing invoice so we auto print inoivce
+      // without waiting for a button to be clicked
+
       //order.order is a hold order, state.order contains current order
       if (
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
       ) {
+        //set order id for modify orders or delivery order
+        orderId = rootState.order.orderId
         let order = { ...state.order }
         order.new_real_transition_order_no = ''
         delete order.real_created_datetime
@@ -458,7 +472,7 @@ const actions = {
             modifyType = 'hold'
             break
           case CONSTANTS.ORDER_STATUS_IN_DELIVERY:
-            order.modify_reason = 'Item changed'
+            order.modify_reason = 'Updated from POS'
             break
         }
 
@@ -477,16 +491,15 @@ const actions = {
       response
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
-
           if (response.data.status === 'ok') {
+            if (typeof response.data.id !== 'undefined') {
+              //this is walk in order
+              orderId = response.data.id
+            }
             //check what is order status, hold or modifying delivery
             switch (rootState.order.orderStatus) {
               case CONSTANTS.ORDER_STATUS_ON_HOLD:
-                commit(mutation.PRINT, true)
                 dispatch('holdOrders/getHoldOrders', {}, { root: true })
-                break
-              case CONSTANTS.ORDER_STATUS_IN_DELIVERY:
-                commit(mutation.PRINT, true)
                 break
             }
 
@@ -507,14 +520,12 @@ const actions = {
               return true
             }
 
-            const orderId = response.data.id
-
             if (!rootState.order.orderId) {
               commit('order/SET_ORDER_ID', orderId, { root: true })
             }
 
-            //else
             let msgStr = rootGetters['location/_t']('Order placed Successfully')
+
             commit(
               'checkoutForm/SET_MSG',
               { result: 'success', message: msgStr },
@@ -540,12 +551,7 @@ const actions = {
                 }
               ).then(() => {
                 //invoice print is triggered by the success ok button
-                if (
-                  rootState.order.orderType.OTApi ==
-                  CONSTANTS.ORDER_TYPE_CALL_CENTER
-                ) {
-                  commit(mutation.PRINT, true)
-                }
+                commit(mutation.PRINT, true)
               })
             })
 
