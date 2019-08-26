@@ -106,6 +106,8 @@ const actions = {
     let orderOnTable = []
     if (state.tablesOnArea) {
       state.tablesOnArea.forEach(table => {
+        let is_unavail = 0
+        let is_avail_soon = 0
         let orders = []
         let tableDetails = { id: table._id, number: table.number, status: {} }
         orders = state.orders.running.filter(
@@ -117,12 +119,18 @@ const actions = {
               order.status === CONST.ORDER_STATUS_RESERVED ||
               order.status === CONST.ORDER_STATUS_IN_PROGRESS
             ) {
-              tableStatus.unavailableCount += 1
+              if (order.assigned_table_id == table._id) {
+                is_unavail = 1
+              }
+              // tableStatus.unavailableCount += 1
               tableDetails.status.color = '#c84c4c'
               tableDetails.status.text = 'unavailable'
               tableStatus.table.push(tableDetails)
             } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
-              tableStatus.availableSoonCount += 1
+              if (order.assigned_table_id == table._id) {
+                is_avail_soon = 1
+              }
+              // tableStatus.availableSoonCount += 1
               tableDetails.status.color = '#faa03c'
               tableDetails.status.text = 'available_soon'
               tableStatus.table.push(tableDetails)
@@ -134,6 +142,12 @@ const actions = {
               reservationId: order._id,
             })
           })
+          if (is_unavail == 1) {
+            tableStatus.unavailableCount += 1
+          }
+          if (is_avail_soon == 1) {
+            tableStatus.availableSoonCount += 1
+          }
         } else {
           tableStatus.availableCount = parseInt(state.tablesOnArea.length)
           /*-
@@ -213,7 +227,11 @@ const mutations = {
       state.tablesOnArea = false
       state.tablesOnArea =
         state.tables.length > 0
-          ? state.tables.filter(table => table.area_id === state.activeArea._id)
+          ? state.tables.filter(
+              table =>
+                table.item_status != 'false' &&
+                table.area_id === state.activeArea._id
+            )
           : false
     }
   },
