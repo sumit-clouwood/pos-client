@@ -77,14 +77,16 @@
           </td>-->
           <!--<td><span>{{ order.order_status }}</span></td>-->
           <td class="order-time-det">
+            <input
+              type="hidden"
+              id="ordertime"
+              :value="orderDetails.real_created_datetime.$date.$numberLong"
+            />
             <span
               :id="orderDetails._id"
               class="timeago elapsedTime delManTime runningtime"
               title=""
             >
-              {{
-                timerClock(orderDetails.real_created_datetime, orderDetails._id)
-              }}
             </span>
             <div class="dining-for-button">
               <span class="dinefor-reprint"
@@ -136,6 +138,7 @@
 </template>
 
 <script>
+/*global $*/
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import DateTime from '@/mixins/DateTime'
@@ -154,6 +157,21 @@ export default {
       orderDetails: false,
     }
   },
+  updated() {
+    let scope = this
+    $('#running-order tbody .dine-table-content').each(function() {
+      let orderDateTime = $(this)
+        .find('.order-time-det #ordertime')
+        .val()
+      setInterval(() => {
+        orderDateTime = parseInt($.trim(orderDateTime))
+        let orderTime = scope.timerClock(orderDateTime)
+        $(this)
+          .find('span.runningtime')
+          .html(orderTime)
+      }, 1000)
+    })
+  },
   mixins: [DateTime],
   computed: {
     ...mapState('location', ['timezoneString']),
@@ -166,9 +184,7 @@ export default {
     getOrderDetails(collection) {
       this.orderDetails = LookupData.get(collection)
     },
-    timerClock: function(datetime, id) {
-      // eslint-disable-next-line no-console
-      console.log(id)
+    timerClock(datetime) {
       return this.orderTimer(
         this.convertDatetime(datetime, this.timezoneString),
         this.timezoneString

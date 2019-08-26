@@ -19,7 +19,6 @@
       </div>
     </div>
     <div class="main-oreders-buttons" v-if="items.length">
-      {{ availableTables }}
       <div v-if="availableTables" class="driver-container">
         <form>
           <input

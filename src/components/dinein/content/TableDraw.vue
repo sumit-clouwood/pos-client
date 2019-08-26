@@ -1,20 +1,26 @@
 <template>
   <div class="dine-in-tabel-wrapper">
-    <div class="inner-dinein-table">
-      <TableStatus />
-      <div class="sitting-dinein-table ui-droppable" id="sitting-dinein-table">
-        <div class="sitting-dine-wrap disable-sorting" v-if="tablesOnArea">
-          <div class="sitting-image">
-            <svg
-              :height="height + 'px'"
-              :width="width + 'px'"
-              id="dine-in-area"
-              ref="dine-in-area"
-              xmlns="http://www.w3.org/2000/svg"
-            ></svg>
-          </div>
-          <div id="tooltipdata" class="dropdown-content cursor-pointer">
-            <div class="dropdown tooltip-c-range" id="range"></div>
+    <Header />
+    <div class="dine-in-tabel-wrapper">
+      <div class="inner-dinein-table">
+        <TableStatus />
+        <div
+          class="sitting-dinein-table ui-droppable"
+          id="sitting-dinein-table"
+        >
+          <div class="sitting-dine-wrap disable-sorting" v-if="tablesOnArea">
+            <div class="sitting-image">
+              <svg
+                :height="height + 'px'"
+                :width="width + 'px'"
+                id="dine-in-area"
+                ref="dine-in-area"
+                xmlns="http://www.w3.org/2000/svg"
+              ></svg>
+            </div>
+            <div id="tooltipdata" class="dropdown-content cursor-pointer">
+              <div class="dropdown tooltip-c-range" id="range"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -26,6 +32,7 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
+import Header from './Header'
 export default {
   name: 'TableDraw',
   computed: {
@@ -34,6 +41,7 @@ export default {
     ...mapGetters('context', ['store']),
   },
   components: {
+    Header,
     TableStatus,
   },
   data() {
@@ -186,10 +194,11 @@ export default {
     },
     prepareTableOrder: function(datum, toolTipText) {
       let url = this.baseURL(datum._id)
+      let customUrl = this.store + '/dine-in/' + datum._id
       toolTipText =
         '<a class="dropdown-item text-capitalize bg-success font-weight-bold" href="' +
-        url +
-        '"> + Add Order</a>'
+        customUrl +
+        '" target="_self">Add Order</a>'
       this.orderOnTables.filter(order => {
         if (datum._id === order.tableId) {
           order.orderIds.forEach(id => {
