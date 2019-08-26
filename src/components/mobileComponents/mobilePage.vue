@@ -73,15 +73,7 @@ export default {
     mobileFooter,
   },
   computed: {
-    ...mapGetters('category', ['subcategories', 'items']),
-    ...mapGetters(['footerButtonHendler', 'footerMenuHendler', 'itemFood']),
-    ...mapGetters('location', ['formatPrice']),
-    ...mapGetters('order', [
-      'items',
-      'itemGrossPriceDiscounted',
-      'itemGrossPrice',
-      'orderModifiers',
-    ]),
+    ...mapGetters('order', ['items']),
   },
   methods: {
     profileHendlerGhange() {

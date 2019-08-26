@@ -83,7 +83,6 @@ export default {
       'openUserHendler',
       'userCalcHendler',
       'userLoginHendler',
-      'userListHendler',
     ]),
   },
   components: {

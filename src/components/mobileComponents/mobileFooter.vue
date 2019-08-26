@@ -78,11 +78,9 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   props: ['param'],
   computed: {
-    ...mapGetters('order', ['items', 'orderTotal', 'subTotal', 'totalTax']),
-    ...mapGetters('surcharge', ['surcharge']),
-    ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('order', ['items', 'orderTotal']),
+    ...mapGetters('location', ['formatPrice']),
     ...mapGetters(['footerMenuHendler', 'payMethod']),
-    ...mapState('order', ['orderType']),
     ...mapState({
       selectedModal: state =>
         state.location.setModal == '#loyalty-payment'
