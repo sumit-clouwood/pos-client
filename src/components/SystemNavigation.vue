@@ -1,7 +1,7 @@
 <template>
   <div class="navigation">
     <div class="logo">
-      <a class="logo-link" href="javascript:void(0)">
+      <a class="logo-link" role="button">
         <router-link :to="dm">
           <img src="img/other/icon.png" alt="icon" />
         </router-link>
@@ -155,11 +155,7 @@
       data-target="#user-details"
       data-dismiss="modal"
     >
-      <a
-        class="nav-link"
-        href="javascript:void(0)"
-        :title="userDetails.item.name"
-      >
+      <a class="nav-link" role="button" :title="userDetails.item.name">
         <img
           v-if="typeof userDetails.item != 'undefined'"
           :src="
