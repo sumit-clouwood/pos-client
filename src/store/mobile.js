@@ -171,7 +171,6 @@ export default {
     },
     CHOOSE_CURENT_PAY_METHOD: (state, payLoad) => {
       state.payMethod = payLoad;
-      // console.log(payLoad)
     },
   },
   actions: {

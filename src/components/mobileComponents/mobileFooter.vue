@@ -104,7 +104,6 @@ export default {
       this.$store.dispatch("methodCardHendlerGhange");
     },
     footerBtnMethod() {
-      console.log(this.payMethod);
       if (this.payMethod == "1") {
         this.$store.dispatch("payNowCalcHendlerGhange");
       } else if (this.payMethod == "2") {
