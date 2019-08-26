@@ -262,7 +262,6 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
 
@@ -283,7 +282,6 @@ export default {
       display: flex;
       flex-direction: column;
       background-color: rgba(0, 0, 0, 0);
-      /*background-color: #fff;*/
       border-left: 1px solid #ddd;
       z-index: 50;
       pointer-events: none;
@@ -294,21 +292,14 @@ export default {
         transition: 0.5s ease-out;
         pointer-events: auto;
         background-color: rgba(0, 0, 0, 0.5);
-        /*.orders-menu{*/
-        /*transition: 0.5s ease-out;*/
-        /*margin-bottom: 0;*/
-        /*}*/
       }
 
       .orders-menu {
-        /*transition: 0.5s ease-out;*/
         background-color: #fff;
         width: 100vw;
         align-items: end;
         margin-top: auto;
-        /*margin-bottom: auto;*/
         overflow-y: auto;
-        //margin-bottom: -455px;
 
         .footer-slider-list-item {
           border-bottom: 1px solid $gray-middle;
