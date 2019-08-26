@@ -43,7 +43,7 @@
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <a
                     class="dropdown-item"
-                    href="javascript:void(0)"
+                    role="button"
                     v-for="(template, index) in selectedOrder.invoice"
                     :key="index"
                     @click="printInvoice(template)"

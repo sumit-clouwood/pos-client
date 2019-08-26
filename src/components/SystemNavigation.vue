@@ -1,7 +1,7 @@
 <template>
   <div class="navigation">
     <div class="logo">
-      <a class="logo-link" href="javascript:void(0)">
+      <a class="logo-link" role="button">
         <router-link :to="dm">
           <img src="img/other/icon.png" alt="icon" />
         </router-link>
@@ -157,7 +157,7 @@
     >
       <a
         class="nav-link"
-        href="javascript:void(0)"
+        role="button"
         :title="userDetails.item.name"
       >
         <img

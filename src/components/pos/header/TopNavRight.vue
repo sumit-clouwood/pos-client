@@ -33,7 +33,7 @@
         data-toggle="modal"
         data-target="#online-order"
       >
-        <a class="btn-part color-text-invert" href="javascript:void(0)">
+        <a class="btn-part color-text-invert" role="button">
           {{ _t('Online') }}
           <span class="online-digit color-secondary">2</span>
         </a>
@@ -61,17 +61,17 @@
     </li>
     <ul class="setting-dropdown">
       <li>
-        <a href="javascript:void(0)">{{ _t('Printers') }}</a>
+        <a role="button">{{ _t('Printers') }}</a>
       </li>
       <li>
-        <a href="javascript:void(0)"
+        <a role="button"
           ><router-link :to="'/delivery-manager' + store">{{
             _t('Delivery Manager')
           }}</router-link></a
         >
       </li>
       <li>
-        <a href="javascript:void(0)" @click="logout()">{{ _t('Logout') }}</a>
+        <a role="button" @click="logout()">{{ _t('Logout') }}</a>
       </li>
     </ul>
   </div>

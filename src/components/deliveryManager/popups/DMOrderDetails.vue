@@ -88,7 +88,7 @@
                   <th style="width: 200px">SUB-PRICE</th>
                 </tr>
                 <!--<tr class="pay-tot-amt modifier-item-item">
-                                    <td colspan="4"><a class="modifier-dm" href="javascript:void(0)">Bolognese Sauce</a> <a class="modifier-dm" href="javascript:void(0)">Bolognese Sauce</a> <a class="modifier-dm" href="javascript:void(0)">Bolognese Sauce</a></td>
+                                    <td colspan="4"><a class="modifier-dm" role="button">Bolognese Sauce</a> <a class="modifier-dm" role="button">Bolognese Sauce</a> <a class="modifier-dm" role="button">Bolognese Sauce</a></td>
                                 </tr>-->
                 <tr
                   v-for="(item, itemIndex) in selectedOrder.items"
@@ -271,7 +271,7 @@
             <div class="dropdown-menu">
               <a
                 class="dropdown-item"
-                href="javascript:void(0)"
+                role="button"
                 @click="generateInvoice"
                 >Default</a
               >
