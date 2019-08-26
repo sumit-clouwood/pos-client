@@ -58,12 +58,13 @@
       >
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <div class="btn-chatge" @click="paymentMethodsHendlerGhange">
+      <div class="btn-chatge" @click="paymentMethodsGhange">
         <div class="btn-chatge-amount">{{ formatPrice(orderTotal || 0) }}</div>
         <div class="btn-chatge-title">CHARGE</div>
       </div>
     </div>
     <div class="btn-next" @click="footerBtnMethod">Next</div>
+    <div class="btn-next btn-next-s" @click="footerBtnMethodS">Next</div>
     <div class="btn-Cancel" @click="methodCardHendlerGhange">Cancel</div>
     <div class="qr-voucher-code">
       <div class="title">Voucher code</div>
@@ -104,22 +105,25 @@ export default {
         this.$store.dispatch('payNowCalcHendlerGhange')
       }
     },
-    paymentMethodsHendlerGhange() {
-      this.$store.dispatch('paymentMethodsHendlerGhange')
+    paymentMethodsGhange() {
+      this.$store.dispatch('paymentMethodsGhange')
     },
     methodCardHendlerGhange() {
       this.$store.dispatch('methodCardHendlerGhange')
     },
     footerBtnMethod() {
-      if (this.payMethod == 'Gift Card') {
+      if (this.payMethod == '1') {
         this.$store.dispatch('payNowCalcHendlerGhange')
-      } else if (this.payMethod == 'Loyalty Points') {
+      } else if (this.payMethod == '2') {
         this.$store.dispatch('loyaltyPaymentHendlerGhange')
-      } else if (this.payMethod == 'Payment Type Payment Type Name 179') {
+      } else if (this.payMethod == '3') {
         this.$store.dispatch('methodCardHendlerGhange')
-      } else if (this.payMethod == 'Payment Type Payment Type Name 180') {
+      } else if (this.payMethod == '4') {
         this.$store.dispatch('QRMethodGhangeHendler')
       }
+    },
+    footerBtnMethodS() {
+      this.$store.dispatch('successfullHendlerGhange')
     },
   },
 }
@@ -136,6 +140,10 @@ export default {
     align-items: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1;
+
+    .btn-next-s {
+      display: none !important;
+    }
 
     .btn-cart {
       width: 100%;

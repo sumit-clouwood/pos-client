@@ -29,7 +29,7 @@
         {{ dt(item) }}
       </div>
       <div class="food-menu-item-price">
-        {{ choosePrice(item.price_availability) }}
+        {{ currency }} {{ item.value || 0 }}
       </div>
     </div>
     <Popup />
@@ -39,7 +39,7 @@
 <script>
 /* global $, showModal  */
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Popup from './items/Popup'
 
 export default {
@@ -51,6 +51,7 @@ export default {
     Popup,
   },
   computed: {
+    ...mapState('location', ['currency']),
     ...mapGetters('category', ['items']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
@@ -207,14 +208,14 @@ export default {
       transition: 0.1s ease-out;
 
       &:not(.color-dashboard-background) {
-        padding-left: 85px;
+        // padding-left: 85px;
         padding-right: 0;
-        color: #fff;
+        // color: #fff;
         height: 66px;
 
         .food-menu-item-price {
           justify-self: end;
-          color: #fff;
+          color: #444;
         }
       }
 

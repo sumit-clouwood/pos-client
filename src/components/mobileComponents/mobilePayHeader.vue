@@ -3,7 +3,7 @@
     <div class="pay-header-title">{{ param.title }}</div>
     <div class="pay-header-subtitle">{{ param.subtitle }}</div>
     <div class="pay-header-buttons">
-      <div class="button-cancel" @click="paymentMethodsHendlerGhange">
+      <div class="button-cancel" @click="paymentMethodsGhange">
         <div>Cancel</div>
         <svg
           width="8"
@@ -35,9 +35,9 @@ export default {
     totalAmount,
   },
   methods: {
-    paymentMethodsHendlerGhange() {
+    paymentMethodsGhange() {
       if (this.param.method == 'closePayMethods') {
-        this.$store.dispatch('paymentMethodsHendlerGhange')
+        this.$store.dispatch('paymentMethodsGhange')
       } else if (this.param.method == 'calcHendler') {
         this.$store.dispatch('payNowCalcHendlerGhange')
       } else if (this.param.method == 'cardInput') {

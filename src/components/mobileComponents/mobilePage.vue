@@ -110,7 +110,7 @@ export default {
     grid-template-columns: 1fr max-content;
     align-items: center;
     background-color: #fafafa;
-    z-index: 1;
+    z-index: 2;
 
     .current-sale {
       .title {

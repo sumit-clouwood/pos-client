@@ -6,14 +6,13 @@
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title color-text-invert">
-            Amount Change
-          </h4>
+          <h4 class="customer-title color-text-invert">Amount Change</h4>
         </div>
         <div class="modal-body change-amount-option">
           <div class="amount-change-wrap">
             <p class="color-text">
-              Change <span>({{ currency }})</span>
+              Change
+              <span>({{ currency }})</span>
             </p>
             <h1>{{ formatPrice(changedAmount) }}</h1>
           </div>
