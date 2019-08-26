@@ -198,6 +198,11 @@ export default {
             }
           })
         }, 3000)
+      } else {
+        if (!newVal && newVal !== oldVal) {
+          this.loading = true
+          this.progressIncrement = 0
+        }
       }
     },
   },

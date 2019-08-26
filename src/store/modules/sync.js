@@ -57,6 +57,11 @@ const mutations = {
   reload(state, val) {
     state.reloaded = val
   },
+  reset(state) {
+    state.modules.store = CONST.LOADING_STATUS_LOADING
+    state.modules.catalog = CONST.LOADING_STATUS_LOADING
+    state.modules.modifiers = CONST.LOADING_STATUS_LOADING
+  },
 }
 
 export default {

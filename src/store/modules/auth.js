@@ -26,7 +26,7 @@ const getters = {
 
 // actions
 const actions = {
-  auth({ commit, dispatch }, deviceId) {
+  auth({ commit }, deviceId) {
     return new Promise((resolve, reject) => {
       AuthService.getAccess(process.env, deviceId)
         .then(response => {
@@ -36,7 +36,6 @@ const actions = {
           }
           commit(mutation.SET_TOKEN, response.data.token)
           commit(mutation.SET_DEVICE_CODE, deviceId)
-          dispatch('fetchRoles')
           resolve(response)
         })
         .catch(error => reject(error))
@@ -52,6 +51,7 @@ const actions = {
           }
           commit(mutation.SET_TOKEN, response.data.token)
           localStorage.setItem('token', response.data.token)
+          resolve()
         })
         .catch(error => reject(error))
     })
@@ -80,12 +80,19 @@ const actions = {
       }
     })
   },
-  logout({ commit }) {
+  logout({ commit, rootGetters }) {
     localStorage.setItem('token', '')
     localStorage.setItem('brand_id', '')
     localStorage.setItem('store_id', '')
     AuthService.logout().then(() => {
       commit('context/RESET', null, { root: true })
+      DataService.setContext({
+        brand: rootGetters['context/brand'],
+        store: rootGetters['context/store'],
+      })
+
+      commit('sync/reset', {}, { root: true })
+
       commit(mutation.SET_TOKEN, false)
     })
   },
