@@ -144,7 +144,7 @@ const actions = {
       state.params.query,
       state.params.limit,
       state.params.orderBy,
-      state.deliveryOrderStatus,
+      // state.deliveryOrderStatus,
       state.params.page,
       state.params.pageId,
       state.selectedStores,
