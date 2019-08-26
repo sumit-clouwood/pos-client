@@ -369,6 +369,7 @@
     <Invoice />
     <OrderDetailsPopup />
     <UserProfile />
+    <InformationPopup :responseInformation="this.message" :title="this.title" />
   </div>
 </template>
 
@@ -401,6 +402,7 @@ import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
 import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import UserProfile from '@/components/pos/user/UserProfile'
+import InformationPopup from '@/components/pos/content/InformationPopup'
 
 import { mapState, mapGetters } from 'vuex'
 /* global $, clickPayNow */
@@ -436,6 +438,7 @@ export default {
     Invoice,
     OrderDetailsPopup,
     UserProfile,
+    InformationPopup,
   },
   data() {
     if (window.location.href.indexOf('dine-in') > -1) {
@@ -443,11 +446,16 @@ export default {
     }
     return {
       vbutton: '',
+      title: '',
+      status: 0,
+      message: '',
     }
   },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapState('order', ['orderType', 'cartType']),
+    ...mapState('dinein', ['selectedCover']),
+    ...mapState('customer', ['responseInformation']),
+    ...mapState('order', ['orderType', 'cartType', 'items']),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
@@ -463,19 +471,42 @@ export default {
   },
   methods: {
     payNowDirect() {
-      this.$store
-        .dispatch('checkout/pay', this.orderType.OTApi)
-        .then(() => {
-          setTimeout(function() {
-            $('#payment-screen-footer').prop('disabled', false)
-          }, 1000)
-        })
-        .catch(() => {
-          setTimeout(() => {
-            $('#payment-msg').modal('hide')
-            $('#payment-screen-footer').prop('disabled', false)
-          }, 500)
-        })
+      let validationError = {}
+      let flash_msg = 'Please add items.'
+      if (this.items.length > 0) {
+        flash_msg = ''
+        if (this.selectedCover && this.selectedCover.name) {
+          this.$store
+            .dispatch('checkout/pay', this.orderType.OTApi)
+            .then(() => {
+              //set router ondemand
+              /*this.$router.push({
+                path: this.$store.getters['context/store'] + '/dine-in',
+              })*/
+              this.$router.replace({ name: 'Dinein' })
+            })
+            .catch(() => {
+              setTimeout(() => {
+                $('#payment-msg').modal('hide')
+                $('#payment-screen-footer').prop('disabled', false)
+              }, 500)
+            })
+        } else {
+          validationError = {
+            status: 'flash_message',
+            flash_message: 'Please select a cover.',
+          }
+          this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+          $('#information-popup').modal('show')
+        }
+      } else {
+        validationError = {
+          status: 'flash_message',
+          flash_message: flash_msg,
+        }
+        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+        $('#information-popup').modal('show')
+      }
     },
     payNowClick() {
       if (this.orderType.OTApi !== 'dine_in') {

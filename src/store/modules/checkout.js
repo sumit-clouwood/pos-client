@@ -598,7 +598,15 @@ const actions = {
               }
             )
 
-            commit(mutation.PRINT, true)
+            //In case if order is not dine in, print out the invoice.
+            if (
+              rootState.order.orderType.OTApi !== CONSTANTS.ORDER_TYPE_DINE_IN
+            ) {
+              commit(mutation.PRINT, true)
+            } else {
+              alert('Item added to order successfully.')
+              dispatch('reset')
+            }
             resolve(response.data)
           } else {
             let error = ''
