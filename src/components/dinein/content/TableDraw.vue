@@ -191,6 +191,12 @@ export default {
         url +
         '"> + Add Order</a>'
       this.orderOnTables.filter(order => {
+        // eslint-disable-next-line no-console
+        console.log('hello')
+        // eslint-disable-next-line no-console
+        console.log(datum._id)
+        // eslint-disable-next-line no-console
+        console.log(order.tableId)
         if (datum._id === order.tableId) {
           order.orderIds.forEach(id => {
             url += '/' + id
@@ -274,5 +280,10 @@ svg#dine-in-area {
 g.dinein_table_parent:active {
   stroke: #62bb31;
   stroke-width: 2px;
+}
+</style>
+<style lang="scss">
+.table-action {
+  position: relative;
 }
 </style>
