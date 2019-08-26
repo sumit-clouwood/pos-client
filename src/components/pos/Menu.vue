@@ -44,11 +44,7 @@
       data-target="#user-details"
       data-dismiss="modal"
     >
-      <a
-        class="nav-link"
-        role="button"
-        :title="userDetails.item.name"
-      >
+      <a class="nav-link" role="button" :title="userDetails.item.name">
         <img
           v-if="typeof userDetails.item != 'undefined'"
           :src="

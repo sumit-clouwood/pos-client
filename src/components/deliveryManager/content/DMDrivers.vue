@@ -10,9 +10,7 @@
           class="pull-left driverImg"
           @error="imageLoadError()"
         />
-        <a role="button" @click="selectedDriver(driver)">{{
-          driver.name
-        }}</a>
+        <a role="button" @click="selectedDriver(driver)">{{ driver.name }}</a>
       </li>
     </ul>
     <!-- <p>Show Available Drivers</p> -->
