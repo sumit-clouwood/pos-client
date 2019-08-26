@@ -31,18 +31,18 @@
             @click="showTableList"
           />
         </form>
-        <div id="available-tables" class="available-tables cursor-pointer">
+        <div id="available-tables" class="available-tables cursor-pointer hide">
           <span class="dropdown" @click="setTable(null)">
             {{ _t('Select Table') }}
           </span>
-          <span
+          <div
             class="dropdown"
             v-for="table in availableTables"
             :key="table._id"
             @click="setTable(table)"
           >
             {{ table.name }}
-          </span>
+          </div>
         </div>
       </div>
       <div class="orders-button-large" disabled="disable">
@@ -125,12 +125,14 @@ export default {
       $('.dropdown-content').hide()
     },
     setTable: function(table) {
+      // eslint-disable-next-line no-console
+      console.log(table)
       if (table) {
-        this.selectedCover = table.name
+        this.selectedTable = table.name
       } else {
-        this.selectedCover = 'Select Cover'
+        this.selectedTable = 'Select Table'
       }
-      this.$store.commit('dinein/AVAILABLE_TABLES', table)
+      // this.$store.commit('dinein/AVAILABLE_TABLES', table)
       $('.available-tables').hide()
     },
     hold() {

@@ -1,5 +1,5 @@
 <template>
-  <div class="cashier" v-if="openUserHendler">
+  <div class="cashier" v-if="openUserHendler && false">
     <div class="user-list">
       <div class="title">Please Select User</div>
       <div class="list">

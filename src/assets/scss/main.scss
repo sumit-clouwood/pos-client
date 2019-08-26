@@ -1,7 +1,6 @@
-@import "pixels_rem.scss";
-@import "variables.scss";
+@import 'pixels_rem.scss';
+@import 'variables.scss';
 @import 'mixins.scss';
-
 
 .main {
   display: grid;
@@ -22,7 +21,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #FD3C83;
+      background-color: #fd3c83;
 
       .main-news-title-link {
         color: #fff;
@@ -97,7 +96,8 @@
           background-color: #fff;
           padding: 2px 2px 2px 2px;
 
-          &:hover, &.active {
+          &:hover,
+          &.active {
             box-shadow: inset 0 0 0px 2px $blue-middle;
 
             .food-categories-item-check {
@@ -106,7 +106,7 @@
           }
 
           &.bg {
-            background-color: #F99C32;
+            background-color: #f99c32;
             color: #fff;
             font-size: $px12;
           }
@@ -127,7 +127,6 @@
             line-height: $px20;
 
             font-size: 12px;
-
           }
 
           .food-categories-item-check {
@@ -191,7 +190,6 @@
               }
             }
 
-
             .breadcrumbs-img {
               width: $px6;
               margin: 0 $px10 0 $px25;
@@ -204,8 +202,7 @@
           flex-wrap: wrap;
           align-items: stretch;
           align-content: flex-start;
-          overflow: auto;
-
+          overflow-y: hidden;
 
           .food-menu-wrapper {
             overflow: auto;
@@ -216,7 +213,8 @@
             height: calc(100vh - #{$food-menu-height});
           }
 
-          .food-menu-item::before, .food-menu-item::after {
+          .food-menu-item::before,
+          .food-menu-item::after {
             box-sizing: inherit;
             content: '';
             position: absolute;
@@ -224,16 +222,17 @@
             height: 100%;
             z-index: 99;
             @include responsive(mobile) {
-              display: none
+              display: none;
             }
           }
 
-          .food-menu-item::before, .food-menu-item::after {
+          .food-menu-item::before,
+          .food-menu-item::after {
             border: 2px solid transparent;
             width: 0;
             height: 0;
             @include responsive(mobile) {
-              display: none
+              display: none;
             }
           }
 
@@ -241,7 +240,7 @@
             top: 0;
             left: 0;
             @include responsive(mobile) {
-              display: none
+              display: none;
             }
           }
 
@@ -249,43 +248,43 @@
             bottom: 0;
             right: 0;
             @include responsive(mobile) {
-              display: none
+              display: none;
             }
           }
 
           .food-menu-item:hover p.remove-bottom {
             color: $blue-middle;
             @include responsive(mobile) {
-              display: none
+              display: none;
             }
           }
 
-
-          .food-menu-item:hover::before, .food-menu-item:hover::after {
+          .food-menu-item:hover::before,
+          .food-menu-item:hover::after {
             width: 100%;
             height: 100%;
             @include responsive(mobile) {
-              display: none
+              display: none;
             }
           }
 
           .food-menu-item:hover::before {
             border-top-color: $blue-middle;
             border-right-color: $blue-middle;
-            -webkit-transition: width 0.25s ease-out, height 0.25s ease-out 0.25s;
+            -webkit-transition: width 0.25s ease-out,
+              height 0.25s ease-out 0.25s;
             transition: width 0.25s ease-out, height 0.25s ease-out 0.25s;
             border-radius: $card-border-radius;
             @include responsive(mobile) {
-              display: none
+              display: none;
             }
           }
-
 
           .food-menu-item {
             padding: 10px;
             cursor: pointer;
-            width: calc(7vmax + 20px);
-            min-height: 7vmax;
+            width: calc(7.5vmax + 20px);
+            min-height: 7.5vmax;
             border: $px1 solid #ddd;
             border-radius: $px5;
             justify-self: center;
@@ -299,28 +298,30 @@
             justify-content: center;
             margin-right: $px20;
             margin-bottom: $px20;
-            -webkit-transition: .2s linear;
-            transition: .2s linear;
+            -webkit-transition: 0.2s linear;
+            transition: 0.2s linear;
             font-size: $px18;
             position: relative;
 
             &:not(.color-dashboard-background) {
-              color: #fff;
+              // color: #fff;
             }
 
             &:hover::after {
               border-bottom-color: $blue-middle;
               border-left-color: $blue-middle;
-              -webkit-transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
-              transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
+              -webkit-transition: border-color 0s ease-out 0.5s,
+                width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
+              transition: border-color 0s ease-out 0.5s,
+                width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
               border-radius: $card-border-radius;
               @include responsive(mobile) {
-                display: none
+                display: none;
               }
             }
 
             &.bg {
-              background-color: #56CCF2;
+              background-color: #56ccf2;
               color: #fff;
               font-size: $px14;
             }
@@ -332,10 +333,8 @@
             .food-menu-item-img {
               margin: 0 auto;
               border-radius: $px3;
-              //min-height: $px100;
-              //padding: $px12 $px25 0 $px25;
-              width: 7vmax;
-              height: 7vmax;
+              width: 7.5vmax;
+              height: 7.5vmax;
 
               margin-bottom: auto;
             }
@@ -396,5 +395,4 @@
       }
     }
   }
-
 }

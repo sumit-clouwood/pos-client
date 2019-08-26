@@ -10,7 +10,7 @@
       />
       <span class="checkmark-radio-btn"></span>
     </span>
-    <img :src="data.image" alt="" />
+    <img :src="data.image" alt />
     <span class="color-text">{{ data.name }}</span>
     <div class="color-text" v-if="data.price">({{ data.price }})</div>
   </label>

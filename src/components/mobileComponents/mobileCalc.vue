@@ -178,6 +178,12 @@ export default {
 
     .calc-footer {
       .mobile-footer {
+        .btn-next {
+          display: none;
+          &.btn-next-s {
+            display: flex !important;
+          }
+        }
         .btn-cart {
           display: none;
         }

@@ -116,6 +116,14 @@ export default {
         }
 
         .modal-body {
+          padding-top: 0 !important;
+          overflow: hidden;
+          display: grid;
+          grid-template-rows: max-content 1fr;
+          padding-bottom: 0;
+        }
+
+        .modal-body {
           padding-top: 0;
           overflow: hidden;
           display: grid;
