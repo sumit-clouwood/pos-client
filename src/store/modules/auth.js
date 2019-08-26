@@ -85,6 +85,7 @@ const actions = {
     localStorage.setItem('brand_id', '')
     localStorage.setItem('store_id', '')
     AuthService.logout().then(() => {
+      commit('context/RESET')
       commit(mutation.SET_TOKEN, false)
     })
   },
