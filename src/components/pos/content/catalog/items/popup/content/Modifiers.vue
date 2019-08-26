@@ -222,7 +222,7 @@
             position: relative;
             .text-danger {
                 position: absolute;
-                bottom: 0px;
+                bottom: -15px;
                 font-size: 12px;
                 z-index: 10;
               }
