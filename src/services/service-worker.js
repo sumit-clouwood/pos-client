@@ -261,6 +261,30 @@ var Customer = {
   },
 }
 
+var DeliveryManager = {
+  addOfflineEvent: function(url, payload) {
+    // get object_store and save our payload inside it
+    console.log('sw:', 'try open db')
+
+    DB.open(function() {
+      console.log('sw:', 'db opened, adding rec')
+      var request = DB.getBucket(ORDER_DOCUMENT, 'readwrite').add({
+        url: url,
+        payload: payload,
+        method: 'POST',
+      })
+      request.onsuccess = function(event) {
+        console.log(
+          'sw:',
+          'a new order request has been added to indexedb',
+          event
+        )
+      }
+      request.onerror = function(error) {
+        console.error('sw:', "Request can't be send to index db", error)
+      }
+    })
+}
 var Order = {
   addOfflineEvent: function(url, payload) {
     // get object_store and save our payload inside it
