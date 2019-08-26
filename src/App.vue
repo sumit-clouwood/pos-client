@@ -23,7 +23,11 @@ The App.vue file is the root component that all other components are nested with
               <Preloader />
               <h2 class="text-center blue-middle">Loading Data...</h2>
               <ul class="loading-modules">
-                <li v-for="(val, key) in modules" :key="key" style="text-transform:capitalize">
+                <li
+                  v-for="(val, key) in modules"
+                  :key="key"
+                  style="text-transform:capitalize"
+                >
                   Loading {{ key }}
                   <div class="progress">
                     <div
@@ -33,7 +37,9 @@ The App.vue file is the root component that all other components are nested with
                       aria-valuemin="1"
                       aria-valuemax="100"
                       v-bind:style="{ width: progressIncrement + '%' }"
-                    >{{ progressIncrement }} %</div>
+                    >
+                      {{ progressIncrement }} %
+                    </div>
                   </div>
                   <span>{{ val }}</span>
                 </li>
@@ -52,20 +58,20 @@ The App.vue file is the root component that all other components are nested with
 
 <script>
 /* eslint-disable no-console */
-import DataService from "@/services/DataService";
+import DataService from '@/services/DataService'
 
-import Cookie from "@/mixins/Cookie";
-import bootstrap from "@/bootstrap";
-import Preloader from "@/components/util/Preloader";
-import Login from "@/components/login/Login";
-import { mapState, mapGetters } from "vuex";
+import Cookie from '@/mixins/Cookie'
+import bootstrap from '@/bootstrap'
+import Preloader from '@/components/util/Preloader'
+import Login from '@/components/login/Login'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
-  name: "App",
+  name: 'App',
   props: {},
   components: {
     Preloader,
-    Login
+    Login,
   },
   mixins: [Cookie],
   data: function() {
@@ -75,146 +81,146 @@ export default {
       errored: false,
       progressIncrement: 0,
       orderId: null,
-      tableId: null
-    };
+      tableId: null,
+    }
   },
   created() {
     if (this.$route.params.brand_id) {
-      this.$store.commit("context/SET_BRAND_ID", this.$route.params.brand_id);
-      localStorage.setItem("brand_id", this.$route.params.brand_id);
-      this.$store.commit("context/SET_STORE_ID", this.$route.params.store_id);
+      this.$store.commit('context/SET_BRAND_ID', this.$route.params.brand_id)
+      localStorage.setItem('brand_id', this.$route.params.brand_id)
+      this.$store.commit('context/SET_STORE_ID', this.$route.params.store_id)
 
-      localStorage.setItem("store_id", this.$route.params.store_id);
+      localStorage.setItem('store_id', this.$route.params.store_id)
       DataService.setContext({
-        brand: this.$store.getters["context/brand"],
-        store: this.$store.getters["context/store"]
-      });
+        brand: this.$store.getters['context/brand'],
+        store: this.$store.getters['context/store'],
+      })
     }
     this.$store
-      .dispatch("auth/checkLogin")
+      .dispatch('auth/checkLogin')
       .then(() => {
         if (!this.$store.state.context.storeId) {
-          this.errored = "Please provide brand id and store id in url";
-          this.storeContext = false;
+          this.errored = 'Please provide brand id and store id in url'
+          this.storeContext = false
         } else {
-          this.storeContext = true;
+          this.storeContext = true
         }
       })
-      .catch(error => console.log(error));
+      .catch(error => console.log(error))
 
     if (this.$route.params.order_id) {
-      this.orderId = this.$route.params.order_id;
+      this.orderId = this.$route.params.order_id
     }
     if (this.$route.params.table_id) {
-      this.tableId = this.$route.params.table_id;
+      this.tableId = this.$route.params.table_id
     }
   },
   watch: {
     $route(to, from) {
       // react to route changes...
-      console.log("route changed ", to, from);
+      console.log('route changed ', to, from)
     },
     loggedIn(newVal, oldVal) {
       if (newVal && newVal !== oldVal) {
         const interval = setInterval(() => {
-          this.progressIncrement += 10;
+          this.progressIncrement += 10
           if (this.progressIncrement > 100) {
-            this.progressIncrement = 0;
+            this.progressIncrement = 0
           }
-        }, 1000);
+        }, 1000)
 
         bootstrap
           .setup(this.$store)
           .then(() => {
             setTimeout(() => {
-              clearInterval(interval);
-              this.progressIncrement = 100;
-            }, 100);
+              clearInterval(interval)
+              this.progressIncrement = 100
+            }, 100)
 
             setTimeout(() => {
-              this.loading = false;
-            }, 300);
+              this.loading = false
+            }, 300)
 
-            console.log("bootstrap done, delayed loading");
+            console.log('bootstrap done, delayed loading')
 
-            if ("serviceWorker" in navigator && "SyncManager" in window) {
-              console.log("service worker and syncmanager are in window");
+            if ('serviceWorker' in navigator && 'SyncManager' in window) {
+              console.log('service worker and syncmanager are in window')
               setTimeout(() => {
-                console.log("waiting for servicer worker ready");
+                console.log('waiting for servicer worker ready')
                 navigator.serviceWorker.ready
                   .then(registration => {
-                    console.log("servie worker is ready");
-                    Notification.requestPermission();
-                    console.log("asking service worker to sync");
-                    return registration.sync.register("postOfflineOrders");
+                    console.log('servie worker is ready')
+                    Notification.requestPermission()
+                    console.log('asking service worker to sync')
+                    return registration.sync.register('postOfflineOrders')
                   })
                   .then(function() {})
                   .catch(function() {
                     // system was unable to register for a sync,
                     // this could be an OS-level restriction
-                  });
-              }, 3000);
+                  })
+              }, 3000)
             }
 
             if (this.orderId) {
               this.$store
-                .dispatch("order/selectedOrderDetails", this.orderId)
+                .dispatch('order/selectedOrderDetails', this.orderId)
                 .then(() => {
                   this.$store.dispatch(
-                    "order/addDeliveryOrder",
+                    'order/addDeliveryOrder',
                     this.$store.state.order.selectedOrder,
                     {
-                      root: true
+                      root: true,
                     }
-                  );
-                });
+                  )
+                })
             }
 
             setTimeout(() => {
-              require("@/../public/js/pos_script.js");
-            }, 2000);
+              require('@/../public/js/pos_script.js')
+            }, 2000)
           })
-          .catch(error => (this.errored = error));
+          .catch(error => (this.errored = error))
 
         setTimeout(() => {
-          navigator.serviceWorker.addEventListener("message", event => {
-            console.log("*** event received from service worker", event);
-            if (event.data.msg == "token") {
-              console.log("setting new token to client");
-              localStorage.setItem("token", event.data.data);
+          navigator.serviceWorker.addEventListener('message', event => {
+            console.log('*** event received from service worker', event)
+            if (event.data.msg == 'token') {
+              console.log('setting new token to client')
+              localStorage.setItem('token', event.data.data)
               //DataService.setMiddleware()
               bootstrap.loadUI().then(() => {
                 setTimeout(() => {
-                  this.loading = false;
-                  this.progressIncrement = "100%";
-                }, 100);
-              });
+                  this.loading = false
+                  this.progressIncrement = '100%'
+                }, 100)
+              })
             }
-          });
-        }, 3000);
+          })
+        }, 3000)
       }
-    }
+    },
   },
 
   computed: {
     ...mapState({
       defaultLanguage: state =>
-        state.location.store ? state.location.store.default_language : false
+        state.location.store ? state.location.store.default_language : false,
     }),
-    ...mapState("sync", ["modules"]),
-    ...mapGetters("auth", ["loggedIn"])
+    ...mapState('sync', ['modules']),
+    ...mapGetters('auth', ['loggedIn']),
   },
   //life cycle hooks
   mounted() {
-    if (this.$router.currentRoute.name === "Dinein") {
-      this.loading = false;
-      return;
+    if (this.$router.currentRoute.name === 'Dinein') {
+      this.loading = false
+      return
     }
-  }
-};
+  },
+}
 
 //vanilla js
 </script>
 <style lang="scss">
-@import "./assets/scss/style.scss";
+@import './assets/scss/style.scss';
 </style>

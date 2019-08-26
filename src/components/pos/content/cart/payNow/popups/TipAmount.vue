@@ -23,14 +23,18 @@
               type="button"
               class="btn btn-danger cancel-announce color-button"
               data-dismiss="modal"
-            >{{ _t('Cancel') }}</button>
+            >
+              {{ _t('Cancel') }}
+            </button>
             <button
               class="btn btn-success btn-large color-main"
               type="button"
               data-dismiss="modal"
               id="add-top"
               @click="addTip"
-            >{{ _t('Add') }}</button>
+            >
+              {{ _t('Add') }}
+            </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
@@ -42,14 +46,18 @@
           type="button"
           class="btn btn-danger cancel-announce color-button"
           data-dismiss="modal"
-        >{{ _t('Cancel') }}</button>
+        >
+          {{ _t('Cancel') }}
+        </button>
         <button
           class="btn btn-success btn-large color-main"
           type="button"
           data-dismiss="modal"
           id="add-top"
           @click="addTip"
-        >{{ _t('Add') }}</button>
+        >
+          {{ _t('Add') }}
+        </button>
       </div>
       <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
     </div>
@@ -58,30 +66,30 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex'
 
 export default {
-  name: "TipAmount",
+  name: 'TipAmount',
   data: function() {
     return {
-      tip: 0
-    };
+      tip: 0,
+    }
   },
   computed: {
-    ...mapGetters("location", ["_t"])
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     addTip() {
-      this.$store.commit("checkoutForm/addTip", this.tip);
-      this.tip = 0;
-    }
-  }
-};
+      this.$store.commit('checkoutForm/addTip', this.tip)
+      this.tip = 0
+    },
+  },
+}
 </script>
 <style lang="scss">
-@import "../../../../../../assets/scss/pixels_rem.scss";
-@import "../../../../../../assets/scss/variables.scss";
-@import "../../../../../../assets/scss/mixins.scss";
+@import '../../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../../assets/scss/variables.scss';
+@import '../../../../../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #tip-amount {

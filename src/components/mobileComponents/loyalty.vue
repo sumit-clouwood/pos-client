@@ -5,24 +5,24 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import searchLoyaltyCustomer from "../pos/footer/popups/SearchLoyaltyCustomer";
+import { mapGetters } from 'vuex'
+import searchLoyaltyCustomer from '../pos/footer/popups/SearchLoyaltyCustomer'
 
 export default {
-  name: "loyalty",
+  name: 'loyalty',
   components: {
-    searchLoyaltyCustomer
+    searchLoyaltyCustomer,
   },
   computed: {
-    ...mapGetters(["loyaltyHendler"])
-  }
-};
+    ...mapGetters(['loyaltyHendler']),
+  },
+}
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/pixels_rem.scss";
-@import "../../assets/scss/variables.scss";
-@import "../../assets/scss/mixins.scss";
+@import '../../assets/scss/pixels_rem.scss';
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #search-loyalty-customer {

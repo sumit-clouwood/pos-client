@@ -1,6 +1,9 @@
 <template>
   <div class="mobile-footer">
-    <div :class="['btn-cart', {disable: !items.length}]" @click="mainOrdersHendlerGhange">
+    <div
+      :class="['btn-cart', { disable: !items.length }]"
+      @click="mainOrdersHendlerGhange"
+    >
       <svg
         width="18"
         height="16"
@@ -13,10 +16,15 @@
           fill="white"
         />
       </svg>
-      <div class="text">{{items.length ? `Cart ${items.length}` : 'Cart is empty'}}</div>
+      <div class="text">
+        {{ items.length ? `Cart ${items.length}` : 'Cart is empty' }}
+      </div>
     </div>
     <div class="main-orders-buttons">
-      <div :class="['btn-menu', { active: footerMenuHendler }]" @click="footerMenuHendlerGhange">
+      <div
+        :class="['btn-menu', { active: footerMenuHendler }]"
+        @click="footerMenuHendlerGhange"
+      >
         <svg
           width="24"
           height="24"
@@ -65,66 +73,65 @@
   </div>
 </template>
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters } from 'vuex'
 
 export default {
-  props: ["param"],
+  props: ['param'],
   computed: {
-    ...mapGetters("order", ["items", "orderTotal", "subTotal", "totalTax"]),
-    ...mapGetters("surcharge", ["surcharge"]),
-    ...mapGetters("location", ["formatPrice", "_t"]),
-    ...mapGetters(["footerMenuHendler", "payMethod"]),
-    ...mapState("order", ["orderType"]),
+    ...mapGetters('order', ['items', 'orderTotal', 'subTotal', 'totalTax']),
+    ...mapGetters('surcharge', ['surcharge']),
+    ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters(['footerMenuHendler', 'payMethod']),
+    ...mapState('order', ['orderType']),
     ...mapState({
       selectedModal: state =>
-        state.location.setModal == "#loyalty-payment"
-          ? "#manage-customer"
-          : state.location.setModal
-    })
+        state.location.setModal == '#loyalty-payment'
+          ? '#manage-customer'
+          : state.location.setModal,
+    }),
   },
   methods: {
     mainOrdersHendlerGhange() {
       if (this.items.length) {
-        this.$store.dispatch("mainOrdersHendlerGhange");
-        this.$store.dispatch("footerButtonHendlerGhange");
+        this.$store.dispatch('mainOrdersHendlerGhange')
+        this.$store.dispatch('footerButtonHendlerGhange')
       }
     },
     footerMenuHendlerGhange() {
-      this.$store.dispatch("footerMenuHendlerGhange");
+      this.$store.dispatch('footerMenuHendlerGhange')
     },
     payNowCalcHendlerGhange() {
-      if (this.payMethod == "Gift Card") {
-        this.$store.dispatch("payNowCalcHendlerGhange");
+      if (this.payMethod == 'Gift Card') {
+        this.$store.dispatch('payNowCalcHendlerGhange')
       }
     },
     paymentMethodsGhange() {
-      this.$store.dispatch("paymentMethodsGhange");
+      this.$store.dispatch('paymentMethodsGhange')
     },
     methodCardHendlerGhange() {
-      this.$store.dispatch("methodCardHendlerGhange");
+      this.$store.dispatch('methodCardHendlerGhange')
     },
     footerBtnMethod() {
-      console.log(this.payMethod);
-      if (this.payMethod == "1") {
-        this.$store.dispatch("payNowCalcHendlerGhange");
-      } else if (this.payMethod == "2") {
-        this.$store.dispatch("loyaltyPaymentHendlerGhange");
-      } else if (this.payMethod == "3") {
-        this.$store.dispatch("methodCardHendlerGhange");
-      } else if (this.payMethod == "4") {
-        this.$store.dispatch("QRMethodGhangeHendler");
+      if (this.payMethod == '1') {
+        this.$store.dispatch('payNowCalcHendlerGhange')
+      } else if (this.payMethod == '2') {
+        this.$store.dispatch('loyaltyPaymentHendlerGhange')
+      } else if (this.payMethod == '3') {
+        this.$store.dispatch('methodCardHendlerGhange')
+      } else if (this.payMethod == '4') {
+        this.$store.dispatch('QRMethodGhangeHendler')
       }
     },
     footerBtnMethodS() {
-      this.$store.dispatch("successfullHendlerGhange");
-    }
-  }
-};
+      this.$store.dispatch('successfullHendlerGhange')
+    },
+  },
+}
 </script>
 <style lang="scss">
-@import "../../assets/scss/pixels_rem.scss";
-@import "../../assets/scss/variables.scss";
-@import "../../assets/scss/mixins.scss";
+@import '../../assets/scss/pixels_rem.scss';
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   .mobile-footer {

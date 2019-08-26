@@ -52,7 +52,7 @@ export default {
   grid-template-rows: max-content 1fr max-content;
   z-index: 1060;
   transition: 0.5s ease-out;
-  .btn-next-s{
+  .btn-next-s {
     display: flex !important;
   }
   @include responsive(mobile) {

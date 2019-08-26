@@ -1,6 +1,8 @@
 <template>
   <div :class="['method-card', { active: methodCardHendler }]">
-    <mobile-pay-header :param="{ title: 'Order Payment', subtitle: 'Order ID #0213232' }" />
+    <mobile-pay-header
+      :param="{ title: 'Order Payment', subtitle: 'Order ID #0213232' }"
+    />
     <div class="method-card-body">
       <total-amount :param="{ totalAmountBlock: true, title: 'Mastercard' }" />
       <div class="insert-cart">
@@ -29,28 +31,28 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import totalAmount from "../pos/content/cart/payNow/TotalAmount.vue";
-import mobilePayHeader from "./mobilePayHeader.vue";
-import mobileFooter from "./mobileFooter.vue";
+import { mapGetters } from 'vuex'
+import totalAmount from '../pos/content/cart/payNow/TotalAmount.vue'
+import mobilePayHeader from './mobilePayHeader.vue'
+import mobileFooter from './mobileFooter.vue'
 
 export default {
-  name: "payMethod",
+  name: 'payMethod',
   components: {
     totalAmount,
     mobilePayHeader,
-    mobileFooter
+    mobileFooter,
   },
   computed: {
-    ...mapGetters(["methodCardHendler"])
-  }
-};
+    ...mapGetters(['methodCardHendler']),
+  },
+}
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/pixels_rem.scss";
-@import "../../assets/scss/variables.scss";
-@import "../../assets/scss/mixins.scss";
+@import '../../assets/scss/pixels_rem.scss';
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
 
 .method-card {
   position: fixed;

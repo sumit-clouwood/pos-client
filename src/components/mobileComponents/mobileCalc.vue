@@ -178,9 +178,9 @@ export default {
 
     .calc-footer {
       .mobile-footer {
-        .btn-next{
+        .btn-next {
           display: none;
-          &.btn-next-s{
+          &.btn-next-s {
             display: flex !important;
           }
         }

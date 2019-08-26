@@ -9,11 +9,11 @@
 </template>
 <script>
 export default {
-  name: "Preloader",
+  name: 'Preloader',
   props: {
-    msg: String
-  }
-};
+    msg: String,
+  },
+}
 </script>
 <style lang="scss" scoped>
 .preloader {

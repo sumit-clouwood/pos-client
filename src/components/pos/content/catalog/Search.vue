@@ -69,47 +69,51 @@
 
 <script>
 /*Global $*/
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex'
 
 export default {
-  name: "Search",
+  name: 'Search',
   props: {},
   data() {
     return {
-      searchItems: ""
-    };
+      searchItems: '',
+    }
   },
   computed: {
-    ...mapGetters("location", ["_t"]),
-    ...mapGetters(["searchHendler", "allCategoryHendler", "subCategoryHendler"])
+    ...mapGetters('location', ['_t']),
+    ...mapGetters([
+      'searchHendler',
+      'allCategoryHendler',
+      'subCategoryHendler',
+    ]),
   },
   mounted() {
-    this.searchItems = "";
+    this.searchItems = ''
   },
   methods: {
     searchingItems(searchItems) {
       // eslint-disable-next-line no-undef
-      $(".breadcrumbs").hide();
-      this.$store.dispatch("category/collectSearchItems", searchItems);
+      $('.breadcrumbs').hide()
+      this.$store.dispatch('category/collectSearchItems', searchItems)
     },
     // ...mapActions('category', ['collectSearchItems']),
     searchHendlerChange() {
-      this.$store.dispatch("searchHendlerChange");
-      this.$store.dispatch("CloseCategoryAndSubCategory");
+      this.$store.dispatch('searchHendlerChange')
+      this.$store.dispatch('CloseCategoryAndSubCategory')
     },
     allCategoryHendlerChange() {
-      this.$store.dispatch("allCategoryHendlerChange");
+      this.$store.dispatch('allCategoryHendlerChange')
     },
     subCategoryHendlerChange() {
-      this.$store.dispatch("subCategoryHendlerChange");
-    }
-  }
-};
+      this.$store.dispatch('subCategoryHendlerChange')
+    },
+  },
+}
 </script>
 <style lang="scss">
-@import "../../../../assets/scss/pixels_rem.scss";
-@import "../../../../assets/scss/variables.scss";
-@import "../../../../assets/scss/mixins.scss";
+@import '../../../../assets/scss/pixels_rem.scss';
+@import '../../../../assets/scss/variables.scss';
+@import '../../../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   .search-field {
@@ -151,7 +155,7 @@ export default {
         width: 100%;
         border-left: 1px solid $gray-middle;
         transition: 0.3s ease-out;
-        font-family: "ProximaNova-Regular";
+        font-family: 'ProximaNova-Regular';
         font-size: 14px;
       }
 

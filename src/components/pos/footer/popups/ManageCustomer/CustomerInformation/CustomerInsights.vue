@@ -1,121 +1,121 @@
 <template>
-    <div class="customer-insight">
-        <div class="title-cu">
-            <h2 class="color-text-invert">{{ _t('Customer Insights') }}</h2>
+  <div class="customer-insight">
+    <div class="title-cu">
+      <h2 class="color-text-invert">{{ _t('Customer Insights') }}</h2>
+    </div>
+    <div class="dob-customer-insight">
+      <ul class="ullist-dob">
+        <li class="color-text">
+          {{ _t('Birthday') }} : <span>{{ insight.birthday }}</span>
+        </li>
+        <li class="color-text">
+          {{ _t('Age') }} : <span>{{ getAge(insight.birthday) }}</span>
+        </li>
+        <li class="color-text">
+          {{ _t('Gender') }} : <span>{{ insight.gender }}</span>
+        </li>
+      </ul>
+    </div>
+    <div class="last-order-wrap">
+      <div class="insight-last-order">
+        <h3 class="color-text-invert">{{ _t('Last Order') }}</h3>
+        <p class="last-order-time color-text">
+          {{ convertDatetime(insight.last_order_datetime, timezoneString) }}
+        </p>
+        <ul class="fav-item-slider" v-if="items">
+          <!--<li><img src="img/pos/dine-right.png" alt="fav-item" /></li>-->
+          <li class="color-text" v-for="(item, index) in items" :key="index">
+            {{ item.name }}
+          </li>
+        </ul>
+      </div>
+      <div class="insight-last-order">
+        <ul class="ullist-business-slider">
+          <li class="color-text-invert">
+            {{ _t('Total Business') }}
+            <span class="color-text">{{ insight.total_orders }}</span>
+          </li>
+          <li class="color-text-invert">
+            {{ _t('Cancelled') }}
+            <span class="color-text">{{ cancelOrders }}</span>
+          </li>
+        </ul>
+        <div class="total-amount-business-slider">
+          <p class="color-text-invert">{{ _t('Total Amount') }}</p>
+          <h3 class="color-text" v-if="lastOrder">
+            {{ lastOrder.currency_code ? lastOrder.currency_code : '' }}
+            {{ lastOrder.balance_due }}
+          </h3>
         </div>
-        <div class="dob-customer-insight">
-            <ul class="ullist-dob">
-                <li class="color-text">
-                    {{ _t('Birthday') }} : <span>{{ insight.birthday }}</span>
-                </li>
-                <li class="color-text">
-                    {{ _t('Age') }} : <span>{{ getAge(insight.birthday) }}</span>
-                </li>
-                <li class="color-text">
-                    {{ _t('Gender') }} : <span>{{ insight.gender }}</span>
-                </li>
-            </ul>
-        </div>
-        <div class="last-order-wrap">
-            <div class="insight-last-order">
-                <h3 class="color-text-invert">{{ _t('Last Order') }}</h3>
-                <p class="last-order-time color-text">
-                    {{ convertDatetime(insight.last_order_datetime, timezoneString) }}
-                </p>
-                <ul class="fav-item-slider" v-if="items">
-                    <!--<li><img src="img/pos/dine-right.png" alt="fav-item" /></li>-->
-                    <li class="color-text" v-for="(item, index) in items" :key="index">
-                        {{ item.name }}
-                    </li>
-                </ul>
-            </div>
-            <div class="insight-last-order">
-                <ul class="ullist-business-slider">
-                    <li class="color-text-invert">
-                        {{ _t('Total Business') }}
-                        <span class="color-text">{{ insight.total_orders }}</span>
-                    </li>
-                    <li class="color-text-invert">
-                        {{ _t('Cancelled') }}
-                        <span class="color-text">{{ cancelOrders }}</span>
-                    </li>
-                </ul>
-                <div class="total-amount-business-slider">
-                    <p class="color-text-invert">{{ _t('Total Amount') }}</p>
-                    <h3 class="color-text" v-if="lastOrder">
-                        {{ lastOrder.currency_code ? lastOrder.currency_code : '' }}
-                        {{ lastOrder.balance_due }}
-                    </h3>
-                </div>
-            </div>
-            <div class="insight-last-order">
-                <h3 class="color-text-invert">{{ _t('Favorites') }}</h3>
-                <p
-                        class="last-order-details color-text"
-                        v-for="(favItem, key) in insight.favorites"
-                        :key="key"
-                >
-                    {{
-                    LookupData.get({
-                    collection: favoriteItems._id,
-                    matchWith: favItem.menu_item,
-                    selection: 'name',
-                    })
-                    }}
-                </p>
-            </div>
-        </div>
-        <div class="title-cu">{{ _t('Notes') }}:</div>
-        <div class="customer-insights-notes">
-            <div>
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th class="color-text-invert">{{ _t('Date') }}</th>
-                        <th class="color-text-invert">{{ _t('Note') }}</th>
-                    </tr>
-                    </thead>
-                    <tbody id="notes_data" class="color-tables-background">
-                    <tr v-for="(notes, index) in insight.notes" :key="index">
-                        <td class="color-text">
-                            {{ convertDatetime(notes.created_at, timezoneString) }}
-                        </td>
-                        <td class="color-text">{{ notes.note }}</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <!-- <span
+      </div>
+      <div class="insight-last-order">
+        <h3 class="color-text-invert">{{ _t('Favorites') }}</h3>
+        <p
+          class="last-order-details color-text"
+          v-for="(favItem, key) in insight.favorites"
+          :key="key"
+        >
+          {{
+            LookupData.get({
+              collection: favoriteItems._id,
+              matchWith: favItem.menu_item,
+              selection: 'name',
+            })
+          }}
+        </p>
+      </div>
+    </div>
+    <div class="title-cu">{{ _t('Notes') }}:</div>
+    <div class="customer-insights-notes">
+      <div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th class="color-text-invert">{{ _t('Date') }}</th>
+              <th class="color-text-invert">{{ _t('Note') }}</th>
+            </tr>
+          </thead>
+          <tbody id="notes_data" class="color-tables-background">
+            <tr v-for="(notes, index) in insight.notes" :key="index">
+              <td class="color-text">
+                {{ convertDatetime(notes.created_at, timezoneString) }}
+              </td>
+              <td class="color-text">{{ notes.note }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- <span
                   data-toggle="modal"
                   class="text-success cursor-pointer"
                   data-target="#show-more-notes"
                   >Show more</span
                 >-->
-            </div>
-            <div>
-                <button
-                        id="customer-notes-add"
-                        data-toggle="modal"
-                        data-target="#admin-popup"
-                        class="color-text-invert color-main"
-                >
-                    {{ _t('+ Add') }}
-                </button>
-            </div>
-        </div>
-        <CustomerFeedback/>
+      </div>
+      <div>
+        <button
+          id="customer-notes-add"
+          data-toggle="modal"
+          data-target="#admin-popup"
+          class="color-text-invert color-main"
+        >
+          {{ _t('+ Add') }}
+        </button>
+      </div>
     </div>
+    <CustomerFeedback />
+  </div>
 </template>
 
 <script>
-    import {mapState, mapGetters} from 'vuex'
-    import CustomerFeedback from './CustomerFeedback'
-    import DateTime from '@/mixins/DateTime'
+import { mapState, mapGetters } from 'vuex'
+import CustomerFeedback from './CustomerFeedback'
+import DateTime from '@/mixins/DateTime'
 
-    function getCustomerList(state) {
-        return state.customer.customer
-    }
+function getCustomerList(state) {
+  return state.customer.customer
+}
 
-    /* eslint-disable */
+/* eslint-disable */
     export default {
         name: 'CustomerInsights',
         components: {
