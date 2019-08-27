@@ -28,7 +28,7 @@ const getters = {
         return state.templates.data.data.find(
           template => template._id == templateId
         )
-      }
+      } else
       return false
     }
   },

@@ -14,7 +14,7 @@ axios.defaults.headers.post['Accept'] = 'application/json'
 // Set up access token with axios
 
 function getAccessToken() {
-  //we will remoe this later
+  //we will remove this later
   if (localStorage.getItem('token')) {
     return 'Bearer ' + localStorage.getItem('token')
   } else {
