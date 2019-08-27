@@ -59,6 +59,19 @@ export default {
       'brand'
     )
   },
+
+  aboutToFinish(reservationId) {
+    return DataService.post(
+      `/model/reservations/id/${reservationId}/dine_in_about_to_finish`
+    )
+  },
+
+  dineInComplete(reservationId) {
+    return DataService.post(
+      `/model/reservations/id/${reservationId}/dine_in_order_finished`
+    )
+  },
+
   getAllBookedTables() {
     return DataService.get(
       '/model/reservations?page_id=tables_reserved&page=1&limit=999999'
