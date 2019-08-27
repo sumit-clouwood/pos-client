@@ -45,9 +45,9 @@
           </div>
         </div>
       </div>
-      <div class="orders-button-large" disabled="disable">
+      <!--<div class="orders-button-large" disabled="disable">
         {{ _t('Split Table') }}
-      </div>
+      </div>-->
       <div v-if="covers" class="driver-container">
         <form>
           <input
