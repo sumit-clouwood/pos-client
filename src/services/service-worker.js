@@ -332,10 +332,12 @@ function sendPostToServer() {
               for (let savedRequest of savedRequests) {
                 const orderUrl = savedRequest.url
                 const contextUrl = orderUrl.replace(new RegExp('/model/.*'), '')
-                const time = new Date().getTime()
+                //const time = new Date().getTime()
+                const time = savedRequest.payload.real_created_datetime
                 //lastOrderNo++
                 var transitionOrderNo =
                   branch_n + '-' + terminal_code + '-' + time
+                //lastOrderNo++
 
                 console.log('transition order number: ', transitionOrderNo)
 
