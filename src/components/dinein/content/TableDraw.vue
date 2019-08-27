@@ -41,8 +41,7 @@
                         v-if="orders.lookup.orders._id"
                       >
                         {{ orderData.tableNumber }}
-                        {{ getOrderNo(orderId) }}
-                        #{{ order ? order.order_no : '' }}
+                        &nbsp; #{{ getOrderNo(orderId) }}
                       </a>
                       <span
                         class="cursor-pointer text-danger reservation-cancel"
@@ -92,10 +91,13 @@ import * as d3 from 'd3'
 import TableStatus from './TableStatus'
 import LookupData from '@/plugins/helpers/LookupData'
 import Header from './Header'
+import DateTime from '@/mixins/DateTime'
+
 export default {
   name: 'TableDraw',
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('location', ['timezoneString']),
     ...mapState('dinein', [
       'tablesOnArea',
       'orderOnTables',
@@ -104,6 +106,7 @@ export default {
     ]),
     ...mapGetters('context', ['store']),
   },
+  mixins: [DateTime],
   components: {
     Header,
     TableStatus,
@@ -136,10 +139,20 @@ export default {
       return window.location.href.replace('dine-in', 'dine-in/' + link)
     },*/
     getOrderNo(orderId) {
-      this.order = LookupData.check({
+      let order = LookupData.get({
         collection: this.orders.lookup.orders._id,
         matchWith: orderId,
       })
+      return order
+        ? order.order_no +
+            ' | ' +
+            this.convertDatetime(
+              order.real_created_datetime,
+              this.timezoneString
+            ) +
+            ' | ' +
+            order.customer
+        : ''
     },
     newOrder() {
       let URL = this.store + '/dine-in/' + this.selectedTableId
