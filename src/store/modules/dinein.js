@@ -111,9 +111,13 @@ const actions = {
         let is_avail_soon = 0
         let orders = []
         let tableDetails = { id: table._id, number: table.number, status: {} }
-        orders = state.orders.running.filter(
-          order => order.assigned_table_id === table._id
-        )
+
+        if (state.orders.running) {
+          orders = state.orders.running.filter(
+            order => order.assigned_table_id === table._id
+          )
+        }
+
         if (orders.length) {
           orders.forEach(order => {
             if (

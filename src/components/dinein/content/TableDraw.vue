@@ -38,15 +38,11 @@
                         @click="updateOrder(orderId)"
                         role="button"
                         class="dropdown-item text-capitalize font-weight-bold"
-                        v-if="orders.running.length"
+                        v-if="orders.lookup.orders._id"
                       >
                         {{ orderData.tableNumber }}
-                        #{{
-                          LookupData.get({
-                            collection: orders.lookup.orders._id,
-                            matchWith: orderId,
-                          }).order_no
-                        }}
+                        {{ getOrderNo(orderId) }}
+                        #{{ order ? order.order_no : '' }}
                       </a>
                       <span
                         class="cursor-pointer text-danger reservation-cancel"
@@ -70,6 +66,7 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
+import LookupData from '@/plugins/helpers/LookupData'
 import Header from './Header'
 export default {
   name: 'TableDraw',
@@ -91,13 +88,14 @@ export default {
     return {
       page: null,
       svg: null,
-      width: '100%',
+      width: 1000,
       height: 600,
       svgWidth: 250,
       svgHeight: 100,
       orderDetails: [],
       selectedTableId: false,
       addOrSplit: 'Add Order',
+      order: false,
     }
   },
   mounted() {
@@ -112,6 +110,12 @@ export default {
     /*baseURL(link) {
       return window.location.href.replace('dine-in', 'dine-in/' + link)
     },*/
+    getOrderNo(orderId) {
+      this.order = LookupData.check({
+        collection: this.orders.lookup.orders._id,
+        matchWith: orderId,
+      })
+    },
     newOrder() {
       let URL = this.store + '/dine-in/' + this.selectedTableId
       this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
