@@ -5,6 +5,7 @@ import * as mutation from './invoice/mutation-types'
 const state = {
   templates: null,
   rules: null,
+  templateId: null,
 }
 
 // getters
@@ -12,17 +13,22 @@ const getters = {
   template: (state, getters, rootState) => {
     if (state.rules) {
       let templateId = null
-      state.rules.data.data.forEach(rule => {
-        if (
-          [
-            rootState.order.orderType.OTApi + '_made',
-            rootState.order.orderType.OTApi + '_pays',
-            rootState.order.orderType.OTApi + '_requests',
-          ].includes(rule.when)
-        ) {
-          templateId = rule.invoice_template
-        }
-      })
+      if (state.templateId) {
+        //template id already selected
+        templateId = state.templateId
+      } else {
+        state.rules.data.data.forEach(rule => {
+          if (
+            [
+              rootState.order.orderType.OTApi + '_made',
+              rootState.order.orderType.OTApi + '_pays',
+              rootState.order.orderType.OTApi + '_requests',
+            ].includes(rule.when)
+          ) {
+            templateId = rule.invoice_template
+          }
+        })
+      }
 
       if (state.templates && templateId) {
         return state.templates.data.data.find(
@@ -46,6 +52,9 @@ const actions = {
     commit('SET_PRINT_TEMPLATES', templates)
   },
 
+  setTemplateId({ commit }, templateId) {
+    commit(mutation.SET_TEMPLATE_ID, templateId)
+  },
   // async fetchTemplate({ commit }, { orderId, templateId }) {
   //   const templateHtml = await InvoiceService.fetchTemplate(orderId, templateId)
   //   commit(mutation.SET_TEMPLATE_HTML, templateHtml)
@@ -65,6 +74,12 @@ const mutations = {
   },
   [mutation.SET_RULES](state, rules) {
     state.rules = rules
+  },
+  [mutation.SET_RULES](state, rules) {
+    state.rules = rules
+  },
+  [mutation.SET_TEMPLATE_ID](state, templateId) {
+    state.templateId = templateId
   },
   // [mutation.RESET](state) {
   //   state.templateHtml = null

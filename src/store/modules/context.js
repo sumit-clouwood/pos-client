@@ -46,6 +46,12 @@ const mutations = {
   [mutation.SET_STORE](state, store) {
     state.store = store
   },
+  [mutation.RESET](state) {
+    state.store = null
+    state.brand = null
+    state.storeId = null
+    state.brandId = null
+  },
 }
 
 export default {

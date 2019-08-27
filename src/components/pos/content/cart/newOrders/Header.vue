@@ -105,6 +105,7 @@ export default {
     return {
       OrderSelectedCover: 'Select Cover',
       selectedTable: '',
+      selectedOrderType: this.$store.state.order.orderType,
     }
   },
   computed: {
@@ -135,10 +136,12 @@ export default {
     },
     setTable: function(table) {
       if (table) {
+        this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
         this.selectedTable = table.name
       } else {
         this.selectedTable = 'Select Table'
       }
+      // this.$store.commit('dinein/AVAILABLE_TABLES', table)
       $('.available-tables').hide()
     },
     hold() {

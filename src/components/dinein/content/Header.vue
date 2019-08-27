@@ -14,7 +14,7 @@
           }"
           v-for="(area, index) in areas"
           :key="index"
-          @click="selectedArea(area)"
+          @click="areaSelection(area)"
         >
           <a role="button" class="cursor-pointer text-uppercase">
             {{ area.name }}
@@ -41,6 +41,7 @@
 </template>
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
+/* global $ */
 export default {
   name: 'Header',
   computed: {
@@ -48,6 +49,12 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
+    areaSelection(area) {
+      $('#range')
+        .parent('div')
+        .hide()
+      this.selectedArea(area)
+    },
     ...mapActions('dinein', ['selectedArea']),
   },
 }

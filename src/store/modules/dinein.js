@@ -19,6 +19,7 @@ const state = {
   orderType: { OTview: 'Dine In', OTApi: 'dine_in' },
   covers: false,
   selectedCover: '',
+  POSMoveTableSelection: '',
   allBookedTables: {},
 }
 const getters = {
@@ -60,14 +61,13 @@ const actions = {
     })
   },
 
-  reservationUpdateStatus({ dispatch, commit }, reservationId, status) {
-    DineInService.updateReservationStatus(reservationId, status).then(
-      response => {
-        // eslint-disable-next-line no-console
-        commit(mutation.RESERVATION_ID, response.data)
-        dispatch('getDineInOrders')
-      }
-    )
+  reservationUpdateStatus({ dispatch, commit }, reservationData) {
+    const params = [reservationData.reservationId, reservationData.status]
+    DineInService.updateReservationStatus(...params).then(response => {
+      // eslint-disable-next-line no-console
+      commit(mutation.RESERVATION_ID, response.data)
+      dispatch('getDineInOrders')
+    })
   },
   getBookedTables({ commit }) {
     DineInService.getAllBookedTables().then(response => {
@@ -277,6 +277,9 @@ const mutations = {
   },
   [mutation.PAGE_LOOKUP](state, lookups) {
     state.areaLookup = lookups
+  },
+  [mutation.POS_MOVE_TABLE_SELECTION](state, tableDetails) {
+    state.POSMoveTableSelection = tableDetails
   },
   [mutation.RESERVATION_RESPONSE](state, reservation) {
     // eslint-disable-next-line no-console
