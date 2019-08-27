@@ -85,6 +85,8 @@ const actions = {
     localStorage.setItem('brand_id', '')
     localStorage.setItem('store_id', '')
     AuthService.logout().then(() => {
+      commit('order/RESET', null, { root: true })
+      commit('checkout/RESET', null, { root: true })
       commit('context/RESET', null, { root: true })
       DataService.setContext({
         brand: rootGetters['context/brand'],
