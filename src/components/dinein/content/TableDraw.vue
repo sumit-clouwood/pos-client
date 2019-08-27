@@ -63,6 +63,7 @@
         </div>
       </div>
     </div>
+    <CancelOrderPopup />
   </div>
 </template>
 <script>
@@ -71,6 +72,7 @@ import { mapGetters, mapState, mapActions } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
 import Header from './Header'
+import CancelOrderPopup from '@/components/pos/content/orderDetails/CancelOrderPopup'
 export default {
   name: 'TableDraw',
   computed: {
@@ -86,6 +88,7 @@ export default {
   components: {
     Header,
     TableStatus,
+    CancelOrderPopup,
   },
   data() {
     return {
