@@ -5,6 +5,7 @@ import * as mutation from './invoice/mutation-types'
 const state = {
   templates: null,
   rules: null,
+  templateId: null,
 }
 
 // getters
@@ -32,6 +33,7 @@ const getters = {
       return false
     }
   },
+  templateId: state => state.templateId,
 }
 
 // actions
@@ -46,6 +48,9 @@ const actions = {
     commit('SET_PRINT_TEMPLATES', templates)
   },
 
+  setTemplateId({ commit }, templateId) {
+    commit('SET_TEMPLATE_ID', templateId)
+  },
   // async fetchTemplate({ commit }, { orderId, templateId }) {
   //   const templateHtml = await InvoiceService.fetchTemplate(orderId, templateId)
   //   commit(mutation.SET_TEMPLATE_HTML, templateHtml)
@@ -65,6 +70,12 @@ const mutations = {
   },
   [mutation.SET_RULES](state, rules) {
     state.rules = rules
+  },
+  [mutation.SET_RULES](state, rules) {
+    state.rules = rules
+  },
+  [mutation.SET_TEMPLATE_ID](state, templateId) {
+    state.template_id = templateId
   },
   // [mutation.RESET](state) {
   //   state.templateHtml = null

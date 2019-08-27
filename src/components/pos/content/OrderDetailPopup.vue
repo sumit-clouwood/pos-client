@@ -46,7 +46,12 @@
                     role="button"
                     v-for="(template, index) in selectedOrder.invoice"
                     :key="index"
-                    @click="printInvoice(template)"
+                    @click="
+                      printInvoice({
+                        template_id: template._id,
+                        order: selectedOrder,
+                      })
+                    "
                     >{{ template.name }}</a
                   >
                 </div>

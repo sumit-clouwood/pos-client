@@ -200,12 +200,6 @@ export default {
         customUrl +
         '" target="_self">Add Order</a>'
       this.orderOnTables.filter(order => {
-        // eslint-disable-next-line no-console
-        console.log('hello')
-        // eslint-disable-next-line no-console
-        console.log(datum._id)
-        // eslint-disable-next-line no-console
-        console.log(order.tableId)
         if (datum._id === order.tableId) {
           order.orderIds.forEach(id => {
             url += '/' + id
