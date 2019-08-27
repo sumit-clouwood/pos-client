@@ -24,12 +24,16 @@ const getters = {
         }
       })
 
-      if (state.templates && templateId) {
-        return state.templates.data.data.find(
-          template => template._id == templateId
-        )
+      if(state.templates) {
+        if (templateId) {
+          return state.templates.data.data.find(
+              template => template._id == templateId
+          )
+        } else {
+          return state.templates.data.data[0]
+        }
       }
-      return false
+
     }
   },
 }
@@ -38,7 +42,8 @@ const getters = {
 const actions = {
   async printRules({ commit }) {
     const rules = await InvoiceService.fetchPrintRules()
-    commit(mutation.SET_RULES, rules)
+    // commit(mutation.SET_RULES, rules)
+    commit(mutation.SET_RULES, null)
   },
 
   async fetchTemplates({ commit }) {
@@ -68,14 +73,4 @@ const mutations = {
   },
   // [mutation.RESET](state) {
   //   state.templateHtml = null
-  //   state.rules = []
-  // },
-}
-
-export default {
-  namespaced: true,
-  state,
-  getters,
-  actions,
-  mutations,
-}
+  //   sta
