@@ -42,8 +42,7 @@ const getters = {
 const actions = {
   async printRules({ commit }) {
     const rules = await InvoiceService.fetchPrintRules()
-    // commit(mutation.SET_RULES, rules)
-    commit(mutation.SET_RULES, null)
+    commit(mutation.SET_RULES, rules)
   },
 
   async fetchTemplates({ commit }) {
@@ -73,4 +72,14 @@ const mutations = {
   },
   // [mutation.RESET](state) {
   //   state.templateHtml = null
-  //   sta
+  //   state.rules = []
+  // },
+}
+
+export default {
+  namespaced: true,
+  state,
+  getters,
+  actions,
+  mutations,
+}
