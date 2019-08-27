@@ -14,7 +14,10 @@
         <form class="modal-body row form-block">
           <div class="col-md-6 left-form add-address-form">
             <div class="name-from">
-              <label>{{ _t('Delivery Area') }} <span>*</span></label>
+              <label>
+                {{ _t('Delivery Area') }}
+                <span>*</span>
+              </label>
               <select
                 class="getAreaId"
                 @change="getAreaId"
@@ -25,47 +28,56 @@
                   :value="area._id"
                   :key="area._id"
                   :data-deliveryarea="area.name"
-                  >{{ area.name }}
-                </option>
+                  >{{ area.name }}</option
+                >
               </select>
-              <span class="validation-error" v-if="errors.delivery_area_id">{{
-                errors.delivery_area_id
-              }}</span>
+              <span class="validation-error" v-if="errors.delivery_area_id">
+                {{ errors.delivery_area_id }}
+              </span>
             </div>
             <div class="alternate-phone-from">
-              <label>{{ _t('Building/Villa') }} <span>*</span></label>
+              <label>
+                {{ _t('Building/Villa') }}
+                <span>*</span>
+              </label>
               <input
                 type="text"
                 name="building"
                 v-model="newAddressDetails.building"
               />
-              <span class="validation-error" v-if="errors.building">{{
-                errors.building
-              }}</span>
+              <span class="validation-error" v-if="errors.building">
+                {{ errors.building }}
+              </span>
             </div>
             <div class="gender">
-              <label>{{ _t('Street') }} <span>*</span></label>
+              <label>
+                {{ _t('Street') }}
+                <span>*</span>
+              </label>
               <input
                 type="text"
                 name="street"
                 v-model="newAddressDetails.street"
               />
-              <span class="validation-error" v-if="errors.street">{{
-                errors.street
-              }}</span>
+              <span class="validation-error" v-if="errors.street">
+                {{ errors.street }}
+              </span>
             </div>
           </div>
           <div class="col-md-6 right-form add-address-form">
             <div class="landmark">
-              <label>{{ _t('Flat Number') }} <span>*</span></label>
+              <label>
+                {{ _t('Flat Number') }}
+                <span>*</span>
+              </label>
               <input
                 type="text"
                 name="flat_number"
                 v-model="newAddressDetails.flat_number"
               />
-              <span class="validation-error" v-if="errors.flat_number">{{
-                errors.flat_number
-              }}</span>
+              <span class="validation-error" v-if="errors.flat_number">
+                {{ errors.flat_number }}
+              </span>
             </div>
             <div class="landmark">
               <label>{{ _t('Nearest Landmark') }}</label>
@@ -210,9 +222,25 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '../../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../../assets/scss/variables.scss';
+@import '../../../../../../assets/scss/mixins.scss';
 #add_address {
   .modal-dialog {
-    margin: 0;
+    /*margin: 0;*/
+
+    .modal-content {
+      display: grid;
+      grid-template-rows: max-content 1fr max-content;
+
+      .modal-header {
+        height: 80px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border: none;
+      }
+    }
 
     .modal-content {
       display: grid;
@@ -280,6 +308,29 @@ export default {
       select,
       input {
         width: 100% !important;
+      }
+    }
+  }
+}
+@include responsive(mobile) {
+  #add_address {
+    .modal-dialog {
+      margin: 0;
+
+      .modal-content {
+        .modal-header {
+        }
+      }
+
+      .modal-content {
+        .modal-header {
+        }
+
+        .modal-body {
+        }
+
+        .modal-footer {
+        }
       }
     }
   }

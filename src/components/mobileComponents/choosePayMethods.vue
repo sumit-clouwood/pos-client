@@ -58,8 +58,12 @@ export default {
       right: 0;
     }
 
-    .pay-header {
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    .pay-body {
+      padding: 20px;
+      padding-bottom: 0;
+      display: grid;
+      grid-template-rows: max-content 1fr;
+      overflow: auto;
     }
 
     .pay-body {

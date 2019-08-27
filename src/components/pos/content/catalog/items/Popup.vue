@@ -129,7 +129,7 @@ export default {
               display: grid;
               grid-template-columns: 1fr 1fr;
               grid-gap: 20px;
-
+              position: relative;
               .POSItemOptions_choose_choice {
                 width: auto;
                 margin-bottom: 0;

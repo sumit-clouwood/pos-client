@@ -22,7 +22,7 @@
         />
       </svg>
     </div>
-    <form>
+    <form onsubmit="1;return false">
       <div :class="['input-wrapper', { active: searchHendler }]">
         <input
           type="text"

@@ -12,7 +12,7 @@
         </div>
         <div
           class="orders-close"
-          @click.prevent="removeFromOrder({ item: item, index: index })"
+          @click.prevent="removeCurrentOrder({ item: item, index: index })"
         >
           <svg
             class="color-text-invert"
@@ -129,6 +129,12 @@ export default {
         )
       }
       return ''
+    },
+    removeCurrentOrder(param) {
+      this.removeFromOrder(param)
+      if (!this.items.length) {
+        this.$store.dispatch('mainOrdersHendlerGhange')
+      }
     },
   },
   components: {

@@ -60,14 +60,13 @@ const actions = {
     })
   },
 
-  reservationUpdateStatus({ dispatch, commit }, reservationId, status) {
-    DineInService.updateReservationStatus(reservationId, status).then(
-      response => {
-        // eslint-disable-next-line no-console
-        commit(mutation.RESERVATION_ID, response.data)
-        dispatch('getDineInOrders')
-      }
-    )
+  reservationUpdateStatus({ dispatch, commit }, reservationData) {
+    const params = [reservationData.reservationId, reservationData.status]
+    DineInService.updateReservationStatus(...params).then(response => {
+      // eslint-disable-next-line no-console
+      commit(mutation.RESERVATION_ID, response.data)
+      dispatch('getDineInOrders')
+    })
   },
   getBookedTables({ commit }) {
     DineInService.getAllBookedTables().then(response => {
