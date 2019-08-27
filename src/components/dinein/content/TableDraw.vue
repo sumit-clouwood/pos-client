@@ -19,37 +19,41 @@
               ></svg>
             </div>
             <div id="tooltipdata" class="dropdown-content cursor-pointer">
-              <div
-                class="dropdown tooltip-c-range"
-                id="range"
-                v-if="orderDetails"
-              >
+              <div class="dropdown tooltip-c-range" id="range">
                 <a
                   role="button"
                   class="dropdown-item text-capitalize bg-success font-weight-bold"
                   @click="newOrder()"
                 >
-                  {{ _t('Add Order') }}
+                  {{ _t(addOrSplit) }}
                 </a>
-                <div v-for="(orderData, index) in orderDetails" :key="index">
-                  <div
-                    class="table-action"
-                    v-for="orderId in orderData.orderIds"
-                    :key="orderId"
-                  >
-                    <a
-                      @click="updateOrder(orderId)"
-                      role="button"
-                      class="dropdown-item text-capitalize"
+                <div v-if="orderDetails">
+                  <div v-for="(orderData, index) in orderDetails" :key="index">
+                    <div
+                      class="table-action"
+                      v-for="orderId in orderData.orderIds"
+                      :key="orderId"
                     >
-                      {{ orderData.tableNumber }}
-                    </a>
-                    <span
-                      class="cursor-pointer text-danger reservation-cancel"
-                      @click="cancelReservation(orderData.reservationId)"
-                    >
-                      ✖
-                    </span>
+                      <a
+                        @click="updateOrder(orderId)"
+                        role="button"
+                        class="dropdown-item text-capitalize font-weight-bold"
+                      >
+                        {{ orderData.tableNumber }}
+                        #{{
+                          LookupData.get({
+                            collection: orders.lookup.orders._id,
+                            matchWith: orderId,
+                          }).order_no
+                        }}
+                      </a>
+                      <span
+                        class="cursor-pointer text-danger reservation-cancel"
+                        @click="cancelReservation(orderData.reservationId)"
+                      >
+                        ✖
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -71,7 +75,12 @@ export default {
   name: 'TableDraw',
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('dinein', ['tablesOnArea', 'orderOnTables', 'tableStatus']),
+    ...mapState('dinein', [
+      'tablesOnArea',
+      'orderOnTables',
+      'tableStatus',
+      'orders',
+    ]),
     ...mapGetters('context', ['store']),
   },
   components: {
@@ -89,6 +98,7 @@ export default {
       svgHeight: 100,
       orderDetails: [],
       selectedTableId: false,
+      addOrSplit: 'Add Order',
     }
   },
   mounted() {
@@ -96,9 +106,6 @@ export default {
   },
   updated() {
     this.clearTableArea()
-    /*$('#range')
-      .parent('div')
-      .fadeOut()*/
     this.updateTableOnArea()
   },
   methods: {
@@ -237,7 +244,6 @@ export default {
     },
 
     cancelReservation(id) {
-      alert(id)
       this.reservationUpdateStatus({
         reservationId: id,
         status: 'cancelled_reservation',
@@ -248,6 +254,8 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
+      this.addOrSplit =
+        this.orderDetails.length > 0 ? 'Split Table' : 'Add Order'
       this.selectedTableId = datum._id
       let range = $('#range')
       range
