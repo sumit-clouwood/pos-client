@@ -65,7 +65,6 @@ const actions = {
   reservationUpdateStatus({ dispatch, commit }, reservationData) {
     const params = [reservationData.reservationId, reservationData.status]
     DineInService.updateReservationStatus(...params).then(response => {
-      // eslint-disable-next-line no-console
       commit(mutation.RESERVATION_ID, response.data)
       dispatch('getDineInOrders')
     })
@@ -285,8 +284,6 @@ const mutations = {
     state.POSMoveTableSelection = tableDetails
   },
   [mutation.RESERVATION_RESPONSE](state, reservation) {
-    // eslint-disable-next-line no-console
-    console.log(reservation)
     state.reservation = reservation.id
   },
 }

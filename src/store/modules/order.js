@@ -787,18 +787,6 @@ const actions = {
           item.discountedTax = false
           item.discountedNetPrice = false
         }
-        if (state.selectedOrder.item.order_type === 'dine_in') {
-          let coverNo = state.selectedOrder.item.items.filter(
-            data => data.entity_id === item._id
-          )
-          item.cover_no = coverNo.length ? coverNo[0].cover_no : ''
-          if (item.cover_no !== '' && rootState.dinein.covers) {
-            let coverDetail = rootState.dinein.covers.filter(
-              cover => cover._id === item.cover_no
-            )
-            item.cover_name = coverDetail.length > 0 ? coverDetail[0].name : ''
-          }
-        }
         return item
       })
       // // eslint-disable-next-line no-console
@@ -893,6 +881,22 @@ const actions = {
       order.items.forEach((orderItem, key) => {
         rootState.category.items.forEach(categoryItem => {
           let item = { ...categoryItem }
+          if (
+            state.selectedOrder &&
+            state.selectedOrder.item.order_type === 'dine_in'
+          ) {
+            let coverNo = state.selectedOrder.item.items.filter(
+              data => data.entity_id === item._id
+            )
+            item.cover_no = coverNo.length ? coverNo[0].cover_no : ''
+            if (item.cover_no !== '' && rootState.dinein.covers) {
+              let coverDetail = rootState.dinein.covers.filter(
+                cover => cover._id === item.cover_no
+              )
+              item.cover_name =
+                coverDetail.length > 0 ? coverDetail[0].name : ''
+            }
+          }
           if (orderItem.entity_id === categoryItem._id) {
             item.quantity = orderItem.qty
             let modifiers = []
