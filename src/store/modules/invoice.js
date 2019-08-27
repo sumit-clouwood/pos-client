@@ -13,17 +13,22 @@ const getters = {
   template: (state, getters, rootState) => {
     if (state.rules) {
       let templateId = null
-      state.rules.data.data.forEach(rule => {
-        if (
-          [
-            rootState.order.orderType.OTApi + '_made',
-            rootState.order.orderType.OTApi + '_pays',
-            rootState.order.orderType.OTApi + '_requests',
-          ].includes(rule.when)
-        ) {
-          templateId = rule.invoice_template
-        }
-      })
+      if (state.templateId) {
+        //template id already selected
+        templateId = state.templateId
+      } else {
+        state.rules.data.data.forEach(rule => {
+          if (
+            [
+              rootState.order.orderType.OTApi + '_made',
+              rootState.order.orderType.OTApi + '_pays',
+              rootState.order.orderType.OTApi + '_requests',
+            ].includes(rule.when)
+          ) {
+            templateId = rule.invoice_template
+          }
+        })
+      }
 
       if (state.templates && templateId) {
         return state.templates.data.data.find(
@@ -33,7 +38,6 @@ const getters = {
       return false
     }
   },
-  templateId: state => state.templateId,
 }
 
 // actions
@@ -49,7 +53,7 @@ const actions = {
   },
 
   setTemplateId({ commit }, templateId) {
-    commit('SET_TEMPLATE_ID', templateId)
+    commit(mutation.SET_TEMPLATE_ID, templateId)
   },
   // async fetchTemplate({ commit }, { orderId, templateId }) {
   //   const templateHtml = await InvoiceService.fetchTemplate(orderId, templateId)
@@ -75,7 +79,7 @@ const mutations = {
     state.rules = rules
   },
   [mutation.SET_TEMPLATE_ID](state, templateId) {
-    state.template_id = templateId
+    state.templateId = templateId
   },
   // [mutation.RESET](state) {
   //   state.templateHtml = null
