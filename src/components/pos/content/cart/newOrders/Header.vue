@@ -105,7 +105,6 @@ export default {
     return {
       OrderSelectedCover: 'Select Cover',
       selectedTable: '',
-      selectedOrderType: this.$store.state.order.orderType,
     }
   },
   computed: {

@@ -47,6 +47,7 @@ const getters = {
 const actions = {
   fetchAll({ dispatch, commit }) {
     commit(mutation.LOADING, true)
+    dispatch('getCovers')
     dispatch('getDineInOrders')
     dispatch('getDineInTables')
     dispatch('getDineInArea')
@@ -177,8 +178,6 @@ const actions = {
         })
       }
     })
-    // eslint-disable-next-line no-console
-    console.log(areaTable)
     let availableTables = areaTable
     /*state.tables.length > 0
       ? state.tables.filter(table => table.area_id === state.activeArea._id)

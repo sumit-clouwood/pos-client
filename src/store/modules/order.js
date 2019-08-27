@@ -792,7 +792,6 @@ const actions = {
             data => data.entity_id === item._id
           )
           item.cover_no = coverNo.length ? coverNo[0].cover_no : ''
-          console.log(rootState.dinein.covers)
           if (item.cover_no !== '' && rootState.dinein.covers) {
             let coverDetail = rootState.dinein.covers.filter(
               cover => cover._id === item.cover_no

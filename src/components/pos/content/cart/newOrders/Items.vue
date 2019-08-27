@@ -59,7 +59,7 @@
         v-if="orderType.OTApi === 'dine_in'"
       >
         <p class="selectedCoverName">
-          {{ item.cover_no ? getItemCoverName(item.cover_no) : '' }}
+          {{ item.cover_name }}
         </p>
       </div>
       <div class="main-orders-list-item-buttons">
@@ -119,16 +119,6 @@ export default {
     ...mapGetters('location', ['formatPrice', '_t']),
   },
   methods: {
-    getItemCoverName(coverno) {
-      let coverName = ''
-      if (coverno) {
-        let covers = this.covers.filter(cover => cover._id === coverno)
-        coverName = covers.length > 0 ? covers[0].name : '---'
-      }
-      // eslint-disable-next-line no-console
-      console.log(coverName)
-      return coverName
-    },
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
     discountInfo(item) {

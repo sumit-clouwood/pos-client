@@ -70,6 +70,7 @@ export default {
           this.store
             .dispatch('category/fetchAll')
             .then(() => {
+              this.store.dispatch('dinein/getCovers')
               this.updateLoading('catalog')
               this.store.dispatch('modifier/fetchAll').then(() => {
                 this.updateLoading('modifiers')
