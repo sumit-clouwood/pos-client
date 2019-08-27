@@ -362,11 +362,11 @@ div#sitting-dinein-table {
   text-align: left;
   >div {
     display: inline-block;
-    margin-left: $px100;
     vertical-align: top;
     margin-left: $px50;
     &:first-child {
       margin-left: $px35;
+      width: 96%;
     }
   }
 }

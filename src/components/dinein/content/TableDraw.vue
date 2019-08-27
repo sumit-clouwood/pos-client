@@ -92,7 +92,7 @@ export default {
     return {
       page: null,
       svg: null,
-      width: 960,
+      width: '100%',
       height: 600,
       svgWidth: 250,
       svgHeight: 100,

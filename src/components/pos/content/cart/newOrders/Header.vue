@@ -20,6 +20,7 @@
     </div>
     <div class="main-oreders-buttons" v-if="items.length">
       <div v-if="availableTables" class="driver-container">
+        <!--&& selectedOrderType.OTApi === 'dine_in'-->
         <form>
           <input
             autocomplete="off"
@@ -95,6 +96,7 @@ export default {
     return {
       selectedCover: '',
       selectedTable: '',
+      selectedOrderType: this.$store.state.order.orderType,
     }
   },
   computed: {
