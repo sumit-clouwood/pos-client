@@ -246,7 +246,7 @@ const mutations = {
   },
   [mutation.DINE_IN_COMPLETED_ORDERS](state, orders) {
     state.orders.completed = orders.data
-    state.orders.lookup = orders.page_lookups
+    // state.orders.lookup = orders.page_lookups
   },
   [mutation.SELECTED_AREA](state, activeArea) {
     state.tablesOnArea = false
