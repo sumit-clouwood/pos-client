@@ -19,7 +19,40 @@
               ></svg>
             </div>
             <div id="tooltipdata" class="dropdown-content cursor-pointer">
-              <div class="dropdown tooltip-c-range" id="range"></div>
+              <div
+                class="dropdown tooltip-c-range"
+                id="range"
+                v-if="orderDetails"
+              >
+                <a
+                  role="button"
+                  class="dropdown-item text-capitalize bg-success font-weight-bold"
+                  @click="newOrder()"
+                >
+                  {{ _t('Add Order') }}
+                </a>
+                <div v-for="(orderData, index) in orderDetails" :key="index">
+                  <div
+                    class="table-action"
+                    v-for="orderId in orderData.orderIds"
+                    :key="orderId"
+                  >
+                    <a
+                      @click="updateOrder(orderId)"
+                      role="button"
+                      class="dropdown-item text-capitalize"
+                    >
+                      {{ orderData.tableNumber }}
+                    </a>
+                    <span
+                      class="cursor-pointer text-danger reservation-cancel"
+                      @click="cancelReservation(orderData.reservationId)"
+                    >
+                      ✖
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -33,6 +66,7 @@ import { mapGetters, mapState, mapActions } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
 import Header from './Header'
+// import TablePopup from './TablePopup'
 export default {
   name: 'TableDraw',
   computed: {
@@ -42,6 +76,7 @@ export default {
   },
   components: {
     Header,
+    // TablePopup,
     TableStatus,
   },
   data() {
@@ -52,6 +87,8 @@ export default {
       height: 600,
       svgWidth: 250,
       svgHeight: 100,
+      orderDetails: [],
+      selectedTableId: false,
     }
   },
   mounted() {
@@ -59,15 +96,23 @@ export default {
   },
   updated() {
     this.clearTableArea()
-    $('#range')
+    /*$('#range')
       .parent('div')
-      .fadeOut()
+      .fadeOut()*/
     this.updateTableOnArea()
   },
   methods: {
     ...mapActions('dinein', ['reservationUpdateStatus']),
-    baseURL(link) {
+    /*baseURL(link) {
       return window.location.href.replace('dine-in', 'dine-in/' + link)
+    },*/
+    newOrder() {
+      let URL = this.store + '/dine-in/' + this.selectedTableId
+      this.$router.push({ path: URL })
+    },
+    updateOrder(orderId) {
+      let URL = this.store + '/dine-in/' + this.selectedTableId + '/' + orderId
+      this.$router.push({ path: URL })
     },
     clearTableArea() {
       d3.selectAll('#dine-in-area > *').remove()
@@ -103,8 +148,6 @@ export default {
         .attr('table_number', d => d.number)
         .attr('chairs', d => d.chairs)
         .attr('width', function(d) {
-          // eslint-disable-next-line no-console
-          console.log(d)
           let tableWidth = 90
           if (d.table_shape === 'rectangle') {
             tableWidth = d.chairs > 5 ? 220 : 120
@@ -192,65 +235,31 @@ export default {
           .attr('height', '15')
       })
     },
-    prepareTableOrder: function(datum, toolTipText) {
-      let url = this.baseURL(datum._id)
-      let customUrl = this.store + '/dine-in/' + datum._id
-      toolTipText =
-        '<a class="dropdown-item text-capitalize bg-success font-weight-bold" href="' +
-        customUrl +
-        '" target="_self">Add Order</a>'
-      this.orderOnTables.filter(order => {
-        // eslint-disable-next-line no-console
-        console.log('hello')
-        // eslint-disable-next-line no-console
-        console.log(datum._id)
-        // eslint-disable-next-line no-console
-        console.log(order.tableId)
-        if (datum._id === order.tableId) {
-          order.orderIds.forEach(id => {
-            url += '/' + id
-            toolTipText +=
-              '<div class="table-action">' +
-              '<a class="dropdown-item text-capitalize" href="' +
-              url +
-              '">' +
-              order.tableNumber +
-              // (i++ + 10).toString(36) +
-              '</a>' +
-              '<span class="cursor-pointer text-danger reservation-cancel" @click="cancelReservation(' +
-              order.reservationId +
-              ')">✖</span>' +
-              '</div>'
-          })
-        }
-      })
-      return toolTipText
-    },
 
-    cancelReservation(reservationId) {
-      alert(reservationId)
-      this.reservationUpdateStatus(reservationId, 'cancelled_reservation')
+    cancelReservation(id) {
+      alert(id)
+      this.reservationUpdateStatus({
+        reservationId: id,
+        status: 'cancelled_reservation',
+      })
     },
 
     showOptions(datum) {
-      let toolTipText = ''
-      toolTipText = this.prepareTableOrder(datum, toolTipText)
+      this.orderDetails = this.orderOnTables.filter(
+        order => order.tableId === datum._id
+      )
+      this.selectedTableId = datum._id
       let range = $('#range')
-      if (toolTipText === '') {
-        range.parent('div').attr('style', 'display:none')
-      } else {
-        range
-          .parent('div')
-          .attr(
-            'style',
-            'top:' +
-              (datum.table_position_coordinate.y || 0) +
-              'px; left:' +
-              (datum.table_position_coordinate.x || 100) +
-              'px; display:block'
-          )
-        range.html(toolTipText)
-      }
+      range
+        .parent('div')
+        .attr(
+          'style',
+          'top:' +
+            (datum.table_position_coordinate.y || 0) +
+            'px; left:' +
+            (datum.table_position_coordinate.x || 100) +
+            'px; display:block'
+        )
     },
   },
 }

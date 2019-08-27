@@ -45,10 +45,10 @@ export default {
     )
   },
 
-  updateReservationStatus(reservationId, action) {
+  updateReservationStatus(reservationId, status) {
     return DataService.post(
       // dine_in_order_finished` /dine_in_about_to_finish /cancelled_reservation
-      `/model/reservations/id/${reservationId}/${action}`
+      `/model/reservations/id/${reservationId}/${status}`
     )
   },
 
