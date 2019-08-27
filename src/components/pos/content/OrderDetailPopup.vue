@@ -48,7 +48,7 @@
                     :key="index"
                     @click="
                       printInvoice({
-                        template_id: template._id,
+                        templateId: template._id,
                         order: selectedOrder,
                       })
                     "

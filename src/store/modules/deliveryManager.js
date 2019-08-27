@@ -275,12 +275,10 @@ const actions = {
       }
     )
   },
-  printInvoice({ commit }, { template_id, order }) {
-    // eslint-disable-next-line no-console
-    console.log(template_id)
-    // eslint-disable-next-line no-console
-    console.log(order)
-    // commit('invoice/SET_TEMPLATE_ID', templateId, { root: true })
+  printInvoice({ commit }, { templateId, order }) {
+    commit('invoice/SET_TEMPLATE_ID', templateId, { root: true })
+    commit('checkout/SET_ORDER', order.item, { root: true })
+    commit('order/SET_ORDER_ID', order.item._id, { root: true })
     commit('checkout/PRINT', true, { root: true })
   },
 
