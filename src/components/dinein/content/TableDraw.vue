@@ -38,7 +38,7 @@
                         @click="updateOrder(orderId)"
                         role="button"
                         class="dropdown-item text-capitalize font-weight-bold"
-                        v-if="orders.running.length"
+                        v-if="orders.lookup.orders._id"
                       >
                         {{ orderData.tableNumber }}
                         #{{
@@ -91,7 +91,7 @@ export default {
     return {
       page: null,
       svg: null,
-      width: '100%',
+      width: 1000,
       height: 600,
       svgWidth: 250,
       svgHeight: 100,
