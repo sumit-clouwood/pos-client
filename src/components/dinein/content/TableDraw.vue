@@ -41,12 +41,12 @@
                         v-if="orders.running.length"
                       >
                         {{ orderData.tableNumber }}
-                        <!--#{{
+                        #{{
                           LookupData.get({
                             collection: orders.lookup.orders._id,
                             matchWith: orderId,
                           }).order_no
-                        }}-->
+                        }}
                       </a>
                       <span
                         class="cursor-pointer text-danger reservation-cancel"

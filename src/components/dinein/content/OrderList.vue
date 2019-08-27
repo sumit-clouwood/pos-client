@@ -125,7 +125,12 @@
               <span
                 class="dinefor-paynow"
                 v-if="orderTable.status == 'in-progress'"
-                @click="aboutToFinish(orderTable._id)"
+                @click="
+                  reservationUpdateStatus({
+                    reservationId: orderTable._id,
+                    status: 'dine_in_about_to_finish',
+                  })
+                "
               >
                 <svg
                   height="21"
@@ -151,7 +156,12 @@
               <span
                 class="dinefor-paynow"
                 v-if="orderTable.status == 'on-a-way'"
-                @click="dineInComplete(orderTable._id)"
+                @click="
+                  reservationUpdateStatus({
+                    reservationId: orderTable._id,
+                    status: 'dine_in_order_finished',
+                  })
+                "
               >
                 <svg
                   height="21"
@@ -228,7 +238,6 @@ import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 import LookupData from '@/plugins/helpers/LookupData'
-import DineInService from '../../../services/data/DineInService'
 
 export default {
   name: 'OrderList',
@@ -267,6 +276,7 @@ export default {
   },
   methods: {
     ...mapActions('order', ['selectedOrderDetails']),
+    ...mapActions('dinein', ['reservationUpdateStatus']),
     getOrderDetails(collection) {
       this.orderDetails = LookupData.get(collection)
     },
@@ -279,20 +289,6 @@ export default {
     payNow(orderId) {
       // eslint-disable-next-line no-console
       console.log(orderId, this.$store)
-    },
-    aboutToFinish(reservationId) {
-      const params = [reservationId]
-      DineInService.aboutToFinish(...params).then(response => {
-        // eslint-disable-next-line no-console
-        console.log(response.data)
-      })
-    },
-    dineInComplete(reservationId) {
-      const params = [reservationId]
-      DineInService.dineInComplete(...params).then(response => {
-        // eslint-disable-next-line no-console
-        console.log(response.data)
-      })
     },
   },
 }
