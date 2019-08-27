@@ -95,22 +95,6 @@ export default {
         brand: this.$store.getters['context/brand'],
         store: this.$store.getters['context/store'],
       })
-      if (this.$route.params.table_id) {
-        this.tableId = this.$route.params.table_id
-        if (this.$route.params.order_id) {
-          this.$store.dispatch(
-            'dinein/getSelectedOrder',
-            this.$route.params.order_id,
-            {
-              root: true,
-            }
-          )
-        } else {
-          this.$store.dispatch('dinein/addReservation', this.tableId, {
-            root: true,
-          })
-        }
-      }
     }
     /*else if (!this.$store.state.context.storeId) {}*/
     this.$store

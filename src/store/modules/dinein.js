@@ -19,6 +19,7 @@ const state = {
   orderType: { OTview: 'Dine In', OTApi: 'dine_in' },
   covers: false,
   selectedCover: '',
+  POSMoveTableSelection: '',
   allBookedTables: {},
 }
 const getters = {
@@ -276,6 +277,9 @@ const mutations = {
   },
   [mutation.PAGE_LOOKUP](state, lookups) {
     state.areaLookup = lookups
+  },
+  [mutation.POS_MOVE_TABLE_SELECTION](state, tableDetails) {
+    state.POSMoveTableSelection = tableDetails
   },
   [mutation.RESERVATION_RESPONSE](state, reservation) {
     // eslint-disable-next-line no-console

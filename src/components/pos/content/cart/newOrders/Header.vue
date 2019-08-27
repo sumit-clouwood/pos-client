@@ -127,9 +127,8 @@ export default {
       $('.dropdown-content').hide()
     },
     setTable: function(table) {
-      // eslint-disable-next-line no-console
-      console.log(table)
       if (table) {
+        this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
         this.selectedTable = table.name
       } else {
         this.selectedTable = 'Select Table'

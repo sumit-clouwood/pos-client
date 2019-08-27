@@ -38,14 +38,15 @@
                         @click="updateOrder(orderId)"
                         role="button"
                         class="dropdown-item text-capitalize font-weight-bold"
+                        v-if="orders.running.length"
                       >
                         {{ orderData.tableNumber }}
-                        #{{
+                        <!--#{{
                           LookupData.get({
                             collection: orders.lookup.orders._id,
                             matchWith: orderId,
                           }).order_no
-                        }}
+                        }}-->
                       </a>
                       <span
                         class="cursor-pointer text-danger reservation-cancel"
@@ -113,10 +114,16 @@ export default {
     },*/
     newOrder() {
       let URL = this.store + '/dine-in/' + this.selectedTableId
+      this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
+        root: true,
+      })
       this.$router.push({ path: URL })
     },
     updateOrder(orderId) {
       let URL = this.store + '/dine-in/' + this.selectedTableId + '/' + orderId
+      this.$store.dispatch('dinein/getSelectedOrder', orderId, {
+        root: true,
+      })
       this.$router.push({ path: URL })
     },
     clearTableArea() {
@@ -252,6 +259,8 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
+      // eslint-disable-next-line no-console
+      console.log(this.orderDetails)
       this.addOrSplit =
         this.orderDetails.length > 0 ? 'Split Table' : 'Add Order'
       this.selectedTableId = datum._id

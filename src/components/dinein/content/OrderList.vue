@@ -10,7 +10,7 @@
           <th width="450px">{{ _t('DINING FOR') }}</th>
         </tr>
       </thead>
-      <tbody v-if="orders[tabName]">
+      <tbody v-if="orders[tabName].length">
         <tr
           :key="index"
           class="dine-table-content"
