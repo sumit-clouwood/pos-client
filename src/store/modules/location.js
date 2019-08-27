@@ -154,8 +154,8 @@ const actions = {
           // }
           // take out else part,as discussed with Alex language ll be dependent on cashier login
 
-          LocationService.registerDevice(rootState.auth.deviceId).then(
-            response => {
+          LocationService.registerDevice(rootState.auth.deviceId)
+            .then(response => {
               const data = {
                 id: 1,
                 token: localStorage.getItem('token'),
@@ -165,20 +165,32 @@ const actions = {
               db.getBucket('auth').then(bucket => {
                 db.put(bucket, data)
               })
-            }
-          )
-          resolve(state.locale)
+              resolve(state.locale)
+            })
+            .catch(error => {
+              //if refresh token faild log out user here
+              return reject(error)
+            })
+
           // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
         })
         .catch(error => {
+          //if refresh token faild log out user here
+          console.log('refresh token failed, logout user', error)
           reject(error)
         })
     })
   },
   referrals({ commit }) {
-    LocationService.getReferrals().then(response => {
-      commit(mutation.SET_REFERRALS, response.data.data)
-    })
+    LocationService.getReferrals()
+      .then(response => {
+        commit(mutation.SET_REFERRALS, response.data.data)
+      })
+      .catch(error => {
+        //if refresh token faild log out user here
+        console.log('refresh token failed, logout user', error)
+        return Promise.reject(error)
+      })
   },
 
   formatDate: function({ commit }) {

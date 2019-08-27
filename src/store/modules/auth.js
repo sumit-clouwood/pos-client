@@ -101,9 +101,14 @@ const actions = {
 
   getUserDetails({ commit }, userId) {
     if (userId) {
-      AuthService.userDetails(userId).then(response => {
-        commit(mutation.USER_DETAILS, response.data)
-      })
+      AuthService.userDetails(userId)
+        .then(response => {
+          commit(mutation.USER_DETAILS, response.data)
+        })
+        .catch(error => {
+          //if refresh token faild log out user here
+          return Promise.reject(error)
+        })
     }
   },
   fetchRoles({ commit }) {
