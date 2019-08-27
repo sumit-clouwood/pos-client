@@ -24,16 +24,15 @@ const getters = {
         }
       })
 
-      if(state.templates) {
+      if (state.templates) {
         if (templateId) {
           return state.templates.data.data.find(
-              template => template._id == templateId
+            template => template._id == templateId
           )
         } else {
           return state.templates.data.data[0]
         }
       }
-
     }
   },
 }
