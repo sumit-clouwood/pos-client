@@ -58,6 +58,30 @@
         </div>
       </div>
     </div>
+    <!-- Modal confirm -->
+    <div class="modal" id="confirmModal" style="display: none; z-index: 1050;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body" id="confirmMessage">
+            <b>Do you want to cancel this reservation ?</b>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              id="confirm"
+              class="btn btn-success"
+              data-dismiss="modal"
+              @click="confirmReservation()"
+            >
+              {{ _t('Ok') }}
+            </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+              {{ _t('Close') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -98,6 +122,8 @@ export default {
       orderDetails: [],
       selectedTableId: false,
       addOrSplit: 'Add Order',
+      order: false,
+      selectedReservationId: '',
     }
   },
   mounted() {
@@ -267,12 +293,15 @@ export default {
           .attr('height', '15')
       })
     },
-
-    cancelReservation(id) {
+    confirmReservation() {
       this.reservationUpdateStatus({
-        reservationId: id,
+        reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
       })
+    },
+    cancelReservation(id) {
+      $('#confirmModal').modal('show')
+      this.selectedReservationId = id
     },
 
     showOptions(datum) {
@@ -331,6 +360,9 @@ svg#dine-in-area {
 g.dinein_table_parent:active {
   stroke: #62bb31;
   stroke-width: 2px;
+}
+.modal-dialog {
+  max-width: 30%;
 }
 </style>
 <style lang="scss">

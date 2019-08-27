@@ -7,7 +7,7 @@
           <th width="200px">{{ _t('AMOUNT') }}</th>
           <!--<th width="100px">{{ _t('STATUS') }}</th>-->
           <th width="450px">{{ _t('ORDERS') }}</th>
-          <th width="250px">{{ _t('DINING FOR') }}</th>
+          <th width="250px">{{ _t('STATUS') }}</th>
         </tr>
       </thead>
       <tbody v-if="orders.lookup.orders">
