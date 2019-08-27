@@ -54,6 +54,14 @@
         {{ item.quantity }}
         {{ discountInfo(item) }}
       </div>
+      <div
+        class="main-orders-list-item-subtitle color-text-invert"
+        v-if="orderType.OTApi === 'dine_in'"
+      >
+        <p class="selectedCoverName">
+          {{ item.cover_no ? getItemCoverName(item.cover_no) : '' }}
+        </p>
+      </div>
       <div class="main-orders-list-item-buttons">
         <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
         <div
@@ -95,10 +103,11 @@ export default {
   name: 'Items',
   props: {},
   computed: {
+    ...mapState('dinein', ['covers']),
     ...mapState({
       currentItem: state => state.order.item._id,
     }),
-    ...mapState('order', ['orderType']),
+    ...mapState('order', ['orderType', 'selectedOrder']),
     ...mapGetters('category', ['subcategoryImage']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters('order', [
@@ -107,9 +116,19 @@ export default {
       'itemGrossPrice',
       'orderModifiers',
     ]),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('location', ['formatPrice', '_t']),
   },
   methods: {
+    getItemCoverName(coverno) {
+      let coverName = ''
+      if (coverno) {
+        let covers = this.covers.filter(cover => cover._id === coverno)
+        coverName = covers.length > 0 ? covers[0].name : '---'
+      }
+      // eslint-disable-next-line no-console
+      console.log(coverName)
+      return coverName
+    },
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
     discountInfo(item) {

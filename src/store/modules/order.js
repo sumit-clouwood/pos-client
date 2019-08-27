@@ -728,6 +728,7 @@ const actions = {
         const discount = rootState.discount.appliedItemDiscounts.find(
           discount => discount.item.orderIndex == item.orderIndex
         )
+        item.cover_no = false
 
         if (discount) {
           item.discount = {
@@ -785,6 +786,19 @@ const actions = {
           item.discountRate = 0
           item.discountedTax = false
           item.discountedNetPrice = false
+        }
+        if (state.selectedOrder.item.order_type === 'dine_in') {
+          let coverNo = state.selectedOrder.item.items.filter(
+            data => data.entity_id === item._id
+          )
+          item.cover_no = coverNo.length ? coverNo[0].cover_no : ''
+          console.log(rootState.dinein.covers)
+          if (item.cover_no !== '' && rootState.dinein.covers) {
+            let coverDetail = rootState.dinein.covers.filter(
+              cover => cover._id === item.cover_no
+            )
+            item.cover_name = coverDetail.length > 0 ? coverDetail[0].name : ''
+          }
         }
         return item
       })
@@ -921,7 +935,7 @@ const actions = {
     })
   },
 
-  selectedOrderDetails({ commit }, orderId) {
+  selectedOrderDetails: function({ commit }, orderId) {
     return new Promise((resolve, reject) => {
       const params = ['orders', orderId, '']
       OrderService.getGlobalDetails(...params)
@@ -933,7 +947,6 @@ const actions = {
               resolve()
             })
             .catch(error => reject(error))
-
           orderDetails.item = response.data.item
           orderDetails.customer = response.data.collected_data.customer
           orderDetails.lookups = response.data.collected_data.page_lookups

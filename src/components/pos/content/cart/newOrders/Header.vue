@@ -19,7 +19,10 @@
       </div>
     </div>
     <div class="main-oreders-buttons" v-if="items.length">
-      <div v-if="availableTables" class="driver-container">
+      <div
+        v-if="availableTables && orderType.OTApi === 'dine_in'"
+        class="driver-container"
+      >
         <form>
           <input
             autocomplete="off"
@@ -45,10 +48,17 @@
           </div>
         </div>
       </div>
-      <div class="orders-button-large" disabled="disable">
+      <div
+        class="orders-button-large"
+        disabled="disable"
+        v-if="orderType.OTApi === 'dine_in'"
+      >
         {{ _t('Split Table') }}
       </div>
-      <div v-if="covers" class="driver-container">
+      <div
+        v-if="covers && orderType.OTApi === 'dine_in'"
+        class="driver-container"
+      >
         <form>
           <input
             autocomplete="off"
@@ -56,7 +66,7 @@
             placeholder="Select Cover"
             class="input-search-driver"
             id="get-customer-list"
-            v-model="selectedCover"
+            v-model="OrderSelectedCover"
             @click="showDropdown"
           />
         </form>
@@ -74,7 +84,7 @@
         </div>
       </div>
       <div
-        v-if="cartType !== 'hold'"
+        v-if="cartType !== 'hold' && orderType.OTApi === 'dine_in'"
         id="holdorder"
         class="orders-button-large color-main color-text"
         @click="hold"
@@ -93,15 +103,16 @@ export default {
   name: 'Header',
   data() {
     return {
-      selectedCover: '',
+      OrderSelectedCover: 'Select Cover',
       selectedTable: '',
     }
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['items', 'cartType']),
+    ...mapGetters('dinein', ['getAllCovers']),
+    ...mapState('order', ['items', 'cartType', 'orderType']),
     ...mapState('checkoutForm', ['msg']),
-    ...mapState('dinein', ['covers', 'availableTables']),
+    ...mapState('dinein', ['selectedCover', 'covers', 'availableTables']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
   },
   methods: {
@@ -117,22 +128,17 @@ export default {
     },
     setCover: function(cover) {
       if (cover) {
-        this.selectedCover = cover.name
-      } else {
-        this.selectedCover = 'Select Cover'
+        this.OrderSelectedCover = cover.name
       }
       this.$store.commit('dinein/SET_COVER', cover)
       $('.dropdown-content').hide()
     },
     setTable: function(table) {
-      // eslint-disable-next-line no-console
-      console.log(table)
       if (table) {
         this.selectedTable = table.name
       } else {
         this.selectedTable = 'Select Table'
       }
-      // this.$store.commit('dinein/AVAILABLE_TABLES', table)
       $('.available-tables').hide()
     },
     hold() {
