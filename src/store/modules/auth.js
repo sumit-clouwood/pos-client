@@ -86,6 +86,8 @@ const actions = {
     localStorage.setItem('store_id', '')
     AuthService.logout().then(() => {
       commit(mutation.RESET)
+      commit('order/RESET', null, { root: true })
+      commit('checkout/RESET', null, { root: true })
       commit('context/RESET', null, { root: true })
       commit('customer/reset', null, { root: true })
       DataService.setContext({
