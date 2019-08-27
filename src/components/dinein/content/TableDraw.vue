@@ -128,6 +128,10 @@ export default {
       this.$store.dispatch('dinein/getSelectedOrder', orderId, {
         root: true,
       })
+      this.$store.dispatch('order/updateOrderType', {
+        OTview: 'Dine In',
+        OTApi: 'dine_in',
+      })
       this.$router.push({ path: URL })
     },
     clearTableArea() {
@@ -263,8 +267,6 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
-      // eslint-disable-next-line no-console
-      console.log(this.orderDetails)
       this.addOrSplit =
         this.orderDetails.length > 0 ? 'Split Table' : 'Add Order'
       this.selectedTableId = datum._id
