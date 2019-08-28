@@ -57,6 +57,17 @@
           </div>
         </div>
       </div>
+      <div id="svgContainter">
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100%"
+            :height="height + 'px'"
+            id="dine-in-area"
+            ref="dine-in-area"
+          />
+        </div>
+      </div>
     </div>
     <!-- Modal confirm -->
     <div class="modal" id="confirmModal" style="display: none; z-index: 1050;">
@@ -101,6 +112,7 @@ export default {
     ...mapState('dinein', [
       'tablesOnArea',
       'orderOnTables',
+      'allBookedTables',
       'tableStatus',
       'orders',
     ]),
@@ -121,6 +133,8 @@ export default {
       svgHeight: 100,
       orderDetails: [],
       selectedTableId: false,
+      svgCordinates: {},
+      viewsCordinates: {},
       addOrSplit: 'Add Order',
       order: false,
       selectedReservationId: '',
@@ -195,6 +209,16 @@ export default {
         .append('use')
         .attr('class', 'dinein_table')
         .attr('draggable', 'true')
+        .attr('transform', d => {
+          let transform
+          if (!d.table_position_coordinate.angle) {
+            d.table_position_coordinate.angle = 0
+          }
+          transform = `rotate(${d.table_position_coordinate.angle},${d
+            .table_position_coordinate.x + 45},${d.table_position_coordinate.y +
+            45})`
+          return transform
+        })
         .attr('x', function(d) {
           return d.table_position_coordinate.x || 0
         })
@@ -253,7 +277,7 @@ export default {
           .text(function(d) {
             return d.number
           })
-
+        this.manageViews()
         d3.select(a[i])
           .append('rect')
           .attr('x', function(d) {
@@ -293,6 +317,120 @@ export default {
           .attr('height', '15')
       })
     },
+    manageViews() {
+      let that = this
+      this.mainViewCalc()
+      d3.select('#dine-in-area > g')
+        .append('g')
+        .lower()
+        .attr('class', 'side-view-left views')
+        .attr('fill', 'white')
+        .attr('stroke', '#9b9fb8')
+        .on('click', (d, i, a) => {
+          that.clearSelection()
+          d3.select(a[i])
+            .attr('class', ' selected_view side-view-bottom views')
+            .attr('stroke', '#b2b5c1')
+            .attr('fill', '#b2b5c1')
+        })
+        .attr('side', 'left_view')
+        .append('rect')
+        .attr('x', 10)
+        .attr('y', 10)
+        .attr('width', 60)
+        .attr('height', that.svgCordinates.height - 20)
+        .attr('stroke-width', 3)
+        .attr('stroke-dasharray', '10.5')
+
+      this.mainViewCalc()
+
+      d3.select('#dine-in-area > g')
+        .append('g')
+        .lower()
+        .attr('class', 'side-view-top views')
+        .attr('fill', 'white')
+        .attr('stroke', '#9b9fb8')
+        .on('click', (d, i, a) => {
+          that.clearSelection()
+          d3.select(a[i])
+            .attr('class', ' selected_view side-view-bottom views')
+            .attr('stroke', '#b2b5c1')
+            .attr('fill', '#b2b5c1')
+        })
+        .attr('side', 'top_view')
+        .append('rect')
+        .attr('x', 90)
+        .attr('y', 10)
+        .attr('width', that.svgCordinates.width - 200)
+        .attr('height', 60)
+        .attr('stroke-width', 3)
+        .attr('stroke-dasharray', '10.5')
+
+      this.mainViewCalc()
+
+      d3.select('#dine-in-area > g')
+        .append('g')
+        .lower()
+        .attr('class', 'side-view-right views')
+        .attr('fill', 'white')
+        .attr('stroke', '#9b9fb8')
+        .on('click', (d, i, a) => {
+          that.clearSelection()
+          d3.select(a[i])
+            .attr('class', ' selected_view side-view-bottom views')
+            .attr('stroke', '#b2b5c1')
+            .attr('fill', '#b2b5c1')
+        })
+        .attr('side', 'right_view')
+        .append('rect')
+        .attr('x', that.svgCordinates.width - 90)
+        .attr('y', 10)
+        .attr('width', 60)
+        .attr('height', that.svgCordinates.height - 20)
+        .attr('stroke-width', 3)
+        .attr('stroke-dasharray', '10.5')
+
+      this.mainViewCalc()
+
+      d3.select('#dine-in-area > g')
+        .append('g')
+        .lower()
+        .attr('class', 'side-view-bottom views')
+        .attr('fill', 'white')
+        .attr('stroke', '#9b9fb8')
+        .on('click', (d, i, a) => {
+          that.clearSelection()
+          d3.select(a[i])
+            .attr('class', ' selected_view side-view-bottom views')
+            .attr('stroke', '#b2b5c1')
+            .attr('fill', '#b2b5c1')
+        })
+        .attr('side', 'bottom_view')
+        .append('rect')
+        .attr('x', 90)
+        .attr('y', that.svgCordinates.height - 70)
+        .attr('width', that.svgCordinates.width - 200)
+        .attr('height', 60)
+        .attr('stroke-width', 3)
+        .attr('stroke-dasharray', '10.5')
+
+      this.viewsCordinates.bottom_view = d3
+        .select('#dine-in-area > g > .side-view-bottom')
+        .node()
+        .getBBox()
+      this.viewsCordinates.right_view = d3
+        .select('#dine-in-area > g > .side-view-right')
+        .node()
+        .getBBox()
+      this.viewsCordinates.top_view = d3
+        .select('#dine-in-area > g > .side-view-top')
+        .node()
+        .getBBox()
+      this.viewsCordinates.left_view = d3
+        .select('#dine-in-area > g > .side-view-left')
+        .node()
+        .getBBox()
+    },
     confirmReservation() {
       this.reservationUpdateStatus({
         reservationId: this.selectedReservationId,
@@ -303,7 +441,510 @@ export default {
       $('#confirmModal').modal('show')
       this.selectedReservationId = id
     },
+    mainViewCalc() {
+      this.svgCordinates = d3
+        .select('#svgContainter')
+        .node()
+        .getBoundingClientRect()
+    },
+    drawViews() {
+      let that = this
+      that.table.top_view.forEach((element, i) => {
+        d3.select(this.$el)
+          .select('#dine-in-area > g')
+          .datum(element)
+          .append('g')
+          .attr('index_id', i)
+          .on('mouseover', (d, ia, a) => {
+            if (d3.select('.view_delete_button').node()) {
+              if (
+                d3
+                  .select(d3.select('.view_delete_button').node().parentNode)
+                  .attr('index_id') == d3.select(a[ia]).attr('index_id') &&
+                d3
+                  .select(d3.select('.view_delete_button').node().parentNode)
+                  .attr('view_type') == d3.select(a[ia]).attr('view_type')
+              ) {
+                return
+              } else {
+                d3.selectAll('.resizer').remove()
+                d3.selectAll('.view_delete_button').remove()
+              }
+            }
+            d3.select(a[ia])
+              .append('use')
+              .attr('class', 'view_delete_button')
+              .attr('draggable', 'true')
+              .attr('x', function(d) {
+                return d.x
+              })
+              .attr('y', function(d) {
+                return d.y
+              })
+              .attr('width', 30)
+              .attr('height', 30)
+              .attr('xlink:href', '#dinning_close_button')
+              .on('click', function() {
+                d3.select('.view_delete_button')
+                  .node()
+                  .parentNode.remove()
+                that.updateViewLayout()
+              })
+            if (d3.select('.resizer').node()) {
+              return
+            }
+            d3.select(a[ia])
+              .append('g')
+              .attr('class', 'resizer side-view-resize-top_view')
+              .attr('fill', 'none')
+              .attr('stroke', '#9b9fb8')
+              .attr('side', 'bottom_view')
+              .append('line')
+              .attr('x2', d => parseInt(d.x))
+              .attr('y2', d => parseInt(d.y) + 60)
+              .attr('x1', d => parseInt(d.x))
+              .attr('y1', d => parseInt(d.y))
+              .attr('stroke-width', 4)
+              .style('cursor', 'nw-resize')
+              .call(
+                d3
+                  .drag()
+                  .on('start', d => this.drag_start(d))
+                  .on('drag', (d, i, a) =>
+                    this.drag_view_horizontal_drag_right_resize(d, i, a)
+                  )
+                  .on('end', this.drag_view_end)
+              )
+          })
+          .attr('view_type', d => d.name)
+          .attr('view_side', 'top_view')
+          .attr('class', 'side_view_block')
+          .attr('x', function(d) {
+            // d.x = that.viewsCordinates.top_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCordinates.top_view.y
+            return d.y
+          })
+          .append('image')
+          .attr('xlink:href', function(d) {
+            // eslint-disable-next-line no-console
+            console.log(d.name)
+            // return `/img/dinein/table-view/${d.name}_view_h.jpg`
+            return `/img/dinein/table-view/city_view_h.jpg`
+          })
+          .attr('x', function(d) {
+            // d.x = that.viewsCordinates.top_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCordinates.top_view.y
+            return d.y
+          })
+          .attr('height', d => d.height)
+          .attr('width', d => d.width)
+          .attr('index_id', i)
+          .attr('stroke', d => {
+            if (d.name == 'sea') {
+              return 'blue'
+            }
+            if (d.name == 'green') {
+              return 'green'
+            }
+            if (d.name == 'city') {
+              return 'yellow'
+            }
+            if (d.name == 'none') {
+              return 'gray'
+            }
+          })
+          .attr('fill', d => {
+            if (d.name == 'sea') {
+              return 'blue'
+            }
+            if (d.name == 'green') {
+              return 'green'
+            }
+            if (d.name == 'city') {
+              return 'yellow'
+            }
+            if (d.name == 'none') {
+              return 'gray'
+            }
+          })
+          .call(
+            d3
+              .drag()
+              .on('start', d => this.drag_start(d))
+              .on('drag', (d, ia, a) =>
+                this.drag_view_horizontal_drag(d, ia, a)
+              )
+              .on('end', this.drag_view_end)
+          )
+      })
+      that.table.right_view.forEach((element, i) => {
+        d3.select(this.$el)
+          .select('#dine-in-area > g')
+          .datum(element)
+          .append('g')
+          .attr('index_id', i)
+          .on('mouseover', (d, ia, a) => {
+            if (d3.select('.view_delete_button').node()) {
+              if (
+                d3
+                  .select(d3.select('.view_delete_button').node().parentNode)
+                  .attr('index_id') == d3.select(a[ia]).attr('index_id') &&
+                d3
+                  .select(d3.select('.view_delete_button').node().parentNode)
+                  .attr('view_type') == d3.select(a[ia]).attr('view_type')
+              ) {
+                return
+              } else {
+                d3.selectAll('.resizer').remove()
+                d3.selectAll('.view_delete_button').remove()
+              }
+            }
+            d3.select(a[ia])
+              .append('use')
+              .attr('class', 'view_delete_button')
+              .attr('draggable', 'true')
+              .attr('x', function(d) {
+                return d.x
+              })
+              .attr('y', function(d) {
+                return d.y
+              })
+              .attr('width', 30)
+              .attr('height', 30)
+              .attr('xlink:href', '#dinning_close_button')
+              .on('click', function() {
+                d3.select('.view_delete_button')
+                  .node()
+                  .parentNode.remove()
+                that.updateViewLayout()
+              })
+            if (d3.select('.resizer').node()) {
+              return
+            }
+            d3.select(a[ia])
+              .append('g')
+              .attr('class', 'resizer side-view-resize-right_view')
+              .attr('fill', 'none')
+              .attr('stroke', '#9b9fb8')
+              .attr('side', 'bottom_view')
+              .append('line')
+              .attr('x2', d => parseInt(d.x) + 60)
+              .attr('y2', d => parseInt(d.y))
+              .attr('x1', d => parseInt(d.x))
+              .attr('y1', d => parseInt(d.y))
+              .attr('stroke-width', 4)
+              .style('cursor', 'nw-resize')
+              .call(
+                d3
+                  .drag()
+                  .on('start', d => this.drag_start(d))
+                  .on('drag', (d, i, a) =>
+                    this.drag_view_vertical_drag_top_resize(d, i, a)
+                  )
+                  .on('end', this.drag_view_end)
+              )
+          })
+          .attr('class', 'side_view_block')
+          .attr('view_type', d => d.name)
+          .attr('view_side', 'right_view')
+          .attr('x', function(d) {
+            // d.x = that.viewsCordinates.right_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCordinates.right_view.y
+            return d.y
+          })
+          .append('image')
+          .attr('xlink:href', function(d) {
+            return `/img/table-view/${d.name}_view_v.jpg`
+          })
+          .attr('x', function(d) {
+            // d.x = that.viewsCordinates.right_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCordinates.right_view.y
+            return d.y
+          })
+          .attr('height', d => d.height)
+          .attr('width', d => d.width)
+          .attr('index_id', i)
+          .attr('stroke', d => {
+            if (d.name == 'sea') {
+              return 'blue'
+            }
+            if (d.name == 'green') {
+              return 'green'
+            }
+            if (d.name == 'city') {
+              return 'yellow'
+            }
+            if (d.name == 'none') {
+              return 'gray'
+            }
+          })
+          .attr('fill', d => {
+            if (d.name == 'sea') {
+              return 'blue'
+            }
+            if (d.name == 'green') {
+              return 'green'
+            }
+            if (d.name == 'city') {
+              return 'yellow'
+            }
+            if (d.name == 'none') {
+              return 'gray'
+            }
+          })
+          .call(
+            d3
+              .drag()
+              .on('start', d => this.drag_start(d))
+              .on('drag', (d, i, a) => this.drag_view_vertical_drag(d, i, a))
+              .on('end', this.drag_view_end)
+          )
+      })
+      that.table.bottom_view.forEach((element, i) => {
+        d3.select(this.$el)
+          .select('#dine-in-area > g')
+          .datum(element)
+          .append('g')
+          .attr('index_id', i)
+          .on('mouseover', (d, ia, a) => {
+            if (d3.select('.view_delete_button').node()) {
+              if (
+                d3
+                  .select(d3.select('.view_delete_button').node().parentNode)
+                  .attr('index_id') == d3.select(a[ia]).attr('index_id') &&
+                d3
+                  .select(d3.select('.view_delete_button').node().parentNode)
+                  .attr('view_type') == d3.select(a[ia]).attr('view_type')
+              ) {
+                return
+              } else {
+                d3.selectAll('.resizer').remove()
+                d3.selectAll('.view_delete_button').remove()
+              }
+            }
+            d3.select(a[ia])
+              .append('use')
+              .attr('class', 'view_delete_button')
+              .attr('draggable', 'true')
+              .attr('x', function(d) {
+                return d.x
+              })
+              .attr('y', function(d) {
+                return d.y
+              })
+              .attr('width', 30)
+              .attr('height', 30)
+              .attr('xlink:href', '#dinning_close_button')
+              .on('click', function() {
+                d3.select('.view_delete_button')
+                  .node()
+                  .parentNode.remove()
+                that.updateViewLayout()
+              })
+            if (d3.select('.resizer').node()) {
+              return
+            }
+            d3.select(a[ia])
+              .append('g')
+              .attr('class', 'resizer side-view-resize-bottom_view')
+              .attr('fill', 'none')
+              .attr('stroke', '#9b9fb8')
+              .attr('side', 'bottom_view')
+              .append('line')
+              .attr('x2', d => parseInt(d.x))
+              .attr('y2', d => parseInt(d.y) + 60)
+              .attr('x1', d => parseInt(d.x))
+              .attr('y1', d => parseInt(d.y))
+              .attr('stroke-width', 4)
+              .style('cursor', 'nw-resize')
+              .call(
+                d3
+                  .drag()
+                  .on('start', d => this.drag_start(d))
+                  .on('drag', (d, i, a) =>
+                    this.drag_view_horizontal_drag_right_resize(d, i, a)
+                  )
+                  .on('end', this.drag_view_end)
+              )
+          })
+          .attr('class', 'side_view_block')
+          .attr('view_type', d => d.name)
+          .attr('view_side', 'bottom_view')
 
+          .attr('x', function(d) {
+            // d.x = that.viewsCordinates.bottom_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCordinates.bottom_view.y
+            return d.y
+          })
+          .append('image')
+          .attr('xlink:href', function(d) {
+            return `/img/table-view/${d.name}_view_h.jpg`
+          })
+          .attr('x', function(d) {
+            // d.x = that.viewsCordinates.bottom_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCordinates.bottom_view.y
+            return d.y
+          })
+          .attr('height', d => d.height)
+          .attr('width', d => d.width)
+          .attr('index_id', i)
+          .call(
+            d3
+              .drag()
+              .on('start', d => this.drag_start(d))
+              .on('drag', (d, i, a) => this.drag_view_horizontal_drag(d, i, a))
+              .on('end', this.drag_view_end)
+          )
+      })
+      that.table.left_view.forEach((element, i) => {
+        d3.select(this.$el)
+          .select('#dine-in-area > g')
+          .datum(element)
+          .append('g')
+          .attr('index_id', i)
+          .on('mouseover', (d, ia, a) => {
+            if (d3.select('.view_delete_button').node()) {
+              if (
+                d3
+                  .select(d3.select('.view_delete_button').node().parentNode)
+                  .attr('index_id') == d3.select(a[ia]).attr('index_id') &&
+                d3
+                  .select(d3.select('.view_delete_button').node().parentNode)
+                  .attr('view_type') == d3.select(a[ia]).attr('view_type')
+              ) {
+                return
+              } else {
+                d3.selectAll('.resizer').remove()
+                d3.selectAll('.view_delete_button').remove()
+              }
+            }
+            d3.select(a[ia])
+              .append('use')
+              .attr('class', 'view_delete_button')
+              .attr('draggable', 'true')
+              .attr('x', function(d) {
+                return d.x
+              })
+              .attr('y', function(d) {
+                return d.y
+              })
+              .attr('width', 30)
+              .attr('height', 30)
+              .attr('xlink:href', '#dinning_close_button')
+              .on('click', function() {
+                d3.select('.view_delete_button')
+                  .node()
+                  .parentNode.remove()
+                that.updateViewLayout()
+              })
+            if (d3.select('.resizer').node()) {
+              return
+            }
+            d3.select(a[ia])
+              .append('g')
+              .attr('class', 'resizer side-view-resize-left_view')
+              .attr('fill', 'none')
+              .attr('stroke', '#9b9fb8')
+              .attr('side', 'bottom_view')
+              .append('line')
+              .attr('x2', d => parseInt(d.x) + 60)
+              .attr('y2', d => parseInt(d.y))
+              .attr('x1', d => parseInt(d.x))
+              .attr('y1', d => parseInt(d.y))
+              .attr('stroke-width', 4)
+              .style('cursor', 'nw-resize')
+              .call(
+                d3
+                  .drag()
+                  .on('start', d => this.drag_start(d))
+                  .on('drag', (d, i, a) =>
+                    this.drag_view_vertical_drag_top_resize(d, i, a)
+                  )
+                  .on('end', this.drag_view_end)
+              )
+          })
+          .attr('class', 'side_view_block')
+          .attr('view_type', d => d.name)
+          .attr('view_side', 'left_view')
+          .attr('x', function(d) {
+            // d.x = that.viewsCordinates.left_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCordinates.left_view.y
+            return d.y
+          })
+          .append('image')
+          .attr('xlink:href', function(d) {
+            return `/img/table-view/${d.name}_view_v.jpg`
+          })
+          .attr('x', function(d) {
+            // d.x = that.viewsCordinates.left_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCordinates.left_view.y
+            return d.y
+          })
+          .attr('height', d => d.height)
+          .attr('width', d => d.width)
+          .attr('index_id', i)
+
+          .attr('stroke', d => {
+            if (d.name == 'sea') {
+              return 'blue'
+            }
+            if (d.name == 'green') {
+              return 'green'
+            }
+            if (d.name == 'city') {
+              return 'yellow'
+            }
+            if (d.name == 'none') {
+              return 'gray'
+            }
+          })
+          .attr('fill', d => {
+            if (d.name == 'sea') {
+              return 'blue'
+            }
+            if (d.name == 'green') {
+              return 'green'
+            }
+            if (d.name == 'city') {
+              return 'yellow'
+            }
+            if (d.name == 'none') {
+              return 'gray'
+            }
+          })
+          .call(
+            d3
+              .drag()
+              .on('start', d => this.drag_start(d))
+              .on('drag', (d, i, a) => this.drag_view_vertical_drag(d, i, a))
+              .on('end', this.drag_view_end)
+          )
+      })
+    },
     showOptions(datum) {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id

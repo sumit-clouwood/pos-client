@@ -48,6 +48,7 @@ const actions = {
   fetchAll({ dispatch, commit }) {
     commit(mutation.LOADING, true)
     dispatch('getCovers')
+    dispatch('getBookedTables')
     dispatch('getDineInOrders')
     dispatch('getDineInTables')
     dispatch('getDineInArea')

@@ -54,21 +54,8 @@ export default {
 
   dineInCovers() {
     return DataService.get(
-      // dine_in_order_finished` /dine_in_about_to_finish /cancelled_reservation
       `/model/brand_dine_in_covers?page_id=brand_dine_in_covers_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=priority`,
       'brand'
-    )
-  },
-
-  aboutToFinish(reservationId) {
-    return DataService.post(
-      `/model/reservations/id/${reservationId}/dine_in_about_to_finish`
-    )
-  },
-
-  dineInComplete(reservationId) {
-    return DataService.post(
-      `/model/reservations/id/${reservationId}/dine_in_order_finished`
     )
   },
 
