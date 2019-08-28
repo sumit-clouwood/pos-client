@@ -20,7 +20,7 @@ const state = {
   covers: false,
   selectedCover: '',
   POSMoveTableSelection: '',
-  allBookedTables: false,
+  allBookedTables: {},
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -48,13 +48,13 @@ const actions = {
   fetchAll({ dispatch, commit }) {
     commit(mutation.LOADING, true)
     dispatch('getCovers')
-    dispatch('getBookedTables')
     dispatch('getDineInOrders')
     dispatch('getDineInTables')
     dispatch('getDineInArea')
     commit(mutation.LOADING, false)
   },
-  getDineInOrders({ commit }) {
+  getDineInOrders({ commit, dispatch }) {
+    dispatch('getBookedTables')
     DineInService.dineInRunningOrders().then(response => {
       commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
     })
@@ -112,8 +112,8 @@ const actions = {
         let orders = []
         let tableDetails = { id: table._id, number: table.number, status: {} }
 
-        if (state.orders.running) {
-          orders = state.orders.running.filter(
+        if (state.allBookedTables) {
+          orders = state.allBookedTables.filter(
             order => order.assigned_table_id === table._id
           )
         }
@@ -145,6 +145,8 @@ const actions = {
               orderIds: order.related_orders_ids,
               tableNumber: order.number,
               reservationId: order._id,
+              startDate: order.start_date,
+              startTime: order.start_time,
             })
           })
           if (is_unavail == 1) {
@@ -276,7 +278,7 @@ const mutations = {
     state.reservation = reservationId
   },
   [mutation.BOOKED_TABLES](state, bookedTables) {
-    state.allBookedTables = bookedTables
+    state.allBookedTables = bookedTables.data
   },
   [mutation.PAGE_LOOKUP](state, lookups) {
     state.areaLookup = lookups

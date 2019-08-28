@@ -22,26 +22,44 @@
               <div class="dropdown tooltip-c-range" id="range">
                 <a
                   role="button"
-                  class="dropdown-item text-capitalize bg-success font-weight-bold"
+                  class="table-popup bg-success font-weight-bold"
                   @click="newOrder()"
                 >
                   {{ _t(addOrSplit) }}
                 </a>
                 <div v-if="orderDetails">
                   <div v-for="(orderData, index) in orderDetails" :key="index">
-                    <div
-                      class="table-action"
-                      v-for="orderId in orderData.orderIds"
-                      :key="orderId"
-                    >
-                      <a
-                        @click="updateOrder(orderId)"
-                        role="button"
-                        class="dropdown-item text-capitalize font-weight-bold"
-                        v-if="orders.lookup.orders._id"
+                    <div v-if="orderData.orderIds.length">
+                      <div
+                        class="table-action"
+                        v-for="orderId in orderData.orderIds"
+                        :key="orderId"
                       >
-                        {{ orderData.tableNumber }}
-                        &nbsp; #{{ getOrderNo(orderId) }}
+                        <a
+                          @click="updateOrder(orderId)"
+                          role="button"
+                          class="dropdown-item text-capitalize"
+                          v-if="orders.lookup.orders._id"
+                        >
+                          {{ orderData.tableNumber }}
+                          #{{ getOrderNo(orderId) }}
+                        </a>
+                        <span
+                          class="cursor-pointer text-danger reservation-cancel"
+                          @click="cancelReservation(orderData.reservationId)"
+                        >
+                          ✖
+                        </span>
+                      </div>
+                    </div>
+                    <div v-else class="table-action">
+                      <a
+                        @click="newOrder()"
+                        role="button"
+                        class="dropdown-item"
+                      >
+                        {{ orderData.tableNumber }} #Reserved |
+                        {{ orderData.startDate }}, {{ orderData.startTime }}
                       </a>
                       <span
                         class="cursor-pointer text-danger reservation-cancel"
@@ -112,7 +130,6 @@ export default {
     ...mapState('dinein', [
       'tablesOnArea',
       'orderOnTables',
-      'allBookedTables',
       'tableStatus',
       'orders',
     ]),
@@ -135,7 +152,7 @@ export default {
       selectedTableId: false,
       svgCoordinates: {},
       viewsCordinates: {},
-      addOrSplit: 'Add Order',
+      addOrSplit: 'Click here to add order',
       order: false,
       selectedReservationId: '',
     }
@@ -950,7 +967,9 @@ export default {
         order => order.tableId === datum._id
       )
       this.addOrSplit =
-        this.orderDetails.length > 0 ? 'Split Table' : 'Add Order'
+        this.orderDetails.length > 0
+          ? 'Click here to split table'
+          : 'Click here to add order'
       this.selectedTableId = datum._id
       let range = $('#range')
       range
@@ -1005,9 +1024,12 @@ g.dinein_table_parent:active {
 .modal-dialog {
   max-width: 30%;
 }
-</style>
-<style lang="scss">
 .table-action {
   position: relative;
+}
+a.table-popup {
+  display: block;
+  padding: 2px 25px 1px 12px;
+  font-weight: 400;
 }
 </style>

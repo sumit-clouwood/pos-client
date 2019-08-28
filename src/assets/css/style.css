@@ -4819,7 +4819,7 @@ span#dine-bottom {
 
 div#sitting-dinein-table {
   /*overflow: hidden;*/
-  height: calc(100vh - 280px);
+  height: calc(100vh - 190px);
   overflow-y: auto;
   margin: 0 auto;
   max-width: 100%;
