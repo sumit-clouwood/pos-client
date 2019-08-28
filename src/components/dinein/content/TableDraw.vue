@@ -179,6 +179,7 @@ export default {
         collection: this.orders.lookup_running.orders._id,
         matchWith: orderId,
       })
+      let customerName = order && order.customer != null ? order.customer : ''
       return order
         ? order.order_no +
             ' | ' +
@@ -187,7 +188,7 @@ export default {
               this.timezoneString
             ) +
             ' | ' +
-            order.customer
+            customerName
         : ''
     },
     newOrder() {
@@ -363,7 +364,7 @@ export default {
         .attr('y', 10)
         .attr('width', 60)
         .attr('height', that.svgCoordinates.height - 20)
-        .attr('stroke-width', 3)
+        .attr('stroke-width', 0.5)
         .attr('stroke-dasharray', '10.5')
 
       this.mainViewCalc()
@@ -387,7 +388,7 @@ export default {
         .attr('y', 10)
         .attr('width', that.svgCoordinates.width - 200)
         .attr('height', 60)
-        .attr('stroke-width', 3)
+        .attr('stroke-width', 0.5)
         .attr('stroke-dasharray', '10.5')
 
       this.mainViewCalc()
@@ -411,7 +412,7 @@ export default {
         .attr('y', 10)
         .attr('width', 60)
         .attr('height', that.svgCoordinates.height - 20)
-        .attr('stroke-width', 3)
+        .attr('stroke-width', 0.5)
         .attr('stroke-dasharray', '10.5')
 
       this.mainViewCalc()
@@ -435,7 +436,7 @@ export default {
         .attr('y', that.svgCoordinates.height - 70)
         .attr('width', that.svgCoordinates.width - 200)
         .attr('height', 60)
-        .attr('stroke-width', 3)
+        .attr('stroke-width', 0.5)
         .attr('stroke-dasharray', '10.5')
 
       this.viewsCordinates.bottom_view = d3
