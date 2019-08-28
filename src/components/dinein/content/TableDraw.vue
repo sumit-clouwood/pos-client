@@ -36,7 +36,7 @@
                         :key="orderId"
                       >
                         <a
-                          @click="updateOrder(orderId)"
+                          @click="updateOrder(orderId, orderData)"
                           role="button"
                           class="dropdown-item text-capitalize"
                           v-if="orders.lookup.orders._id"
@@ -192,7 +192,8 @@ export default {
       })
       this.$router.push({ path: URL })
     },
-    updateOrder(orderId) {
+    updateOrder(orderId, orderData) {
+      this.$store.commit('dinein/ORDER_RESERVATION_DATA', orderData)
       let URL = this.store + '/dine-in/' + this.selectedTableId + '/' + orderId
       this.$store.dispatch('dinein/getSelectedOrder', orderId, {
         root: true,
@@ -453,6 +454,9 @@ export default {
         reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
       })
+      $('#range')
+        .parent('div')
+        .hide()
     },
     cancelReservation(id) {
       $('#confirmModal').modal('show')

@@ -21,6 +21,7 @@ const state = {
   selectedCover: '',
   POSMoveTableSelection: '',
   allBookedTables: {},
+  orderReservationData: {},
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -48,19 +49,16 @@ const actions = {
   fetchAll({ dispatch, commit }) {
     commit(mutation.LOADING, true)
     dispatch('getCovers')
-    dispatch('getDineInOrders')
+    dispatch('getBookedTables')
+    dispatch('dineInRunningOrders')
     dispatch('getDineInTables')
     dispatch('getDineInArea')
     commit(mutation.LOADING, false)
   },
-  getDineInOrders({ commit, dispatch }) {
+  getDineInOrders({ dispatch }) {
     dispatch('getBookedTables')
-    DineInService.dineInRunningOrders().then(response => {
-      commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
-    })
-    DineInService.dineInCompleteOrders().then(response => {
-      commit(mutation.DINE_IN_COMPLETED_ORDERS, response.data)
-    })
+    dispatch('dineInRunningOrders')
+    dispatch('dineInCompleteOrders')
   },
 
   reservationUpdateStatus({ dispatch, commit }, reservationData) {
@@ -73,6 +71,16 @@ const actions = {
   getBookedTables({ commit }) {
     DineInService.getAllBookedTables().then(response => {
       commit(mutation.BOOKED_TABLES, response.data)
+    })
+  },
+  dineInRunningOrders({ commit }) {
+    DineInService.dineInRunningOrders().then(response => {
+      commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
+    })
+  },
+  dineInCompleteOrders({ commit }) {
+    DineInService.dineInCompleteOrders().then(response => {
+      commit(mutation.DINE_IN_COMPLETED_ORDERS, response.data)
     })
   },
   getDineInArea({ commit, dispatch }) {
@@ -288,6 +296,9 @@ const mutations = {
   },
   [mutation.RESERVATION_RESPONSE](state, reservation) {
     state.reservation = reservation.id
+  },
+  [mutation.ORDER_RESERVATION_DATA](state, reservationData) {
+    state.orderReservationData = reservationData
   },
 }
 
