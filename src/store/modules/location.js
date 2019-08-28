@@ -265,9 +265,25 @@ const mutations = {
   [mutation.SET_REFERRALS](state, referrals) {
     state.referrals = referrals
   },
-  [mutation.RESET](state) {
+  [mutation.RESET](state, full = false) {
     state.setModal = '#manage-customer'
     state.userShortDetails = false
+
+    if (full) {
+      state.currency = 'AED'
+      state.locale = 'en-US'
+      state.timezone = 'Asia/Dubai'
+      state.timezoneString = 'Asia/Dubai'
+      state.brand = null
+      state.store = null
+      state.availableLanguages = null
+      state.languageDirection = null
+      state.translations = null
+      state.location = null
+      state.referrals = false
+      state.permissions = false
+      state.apiDate = ''
+    }
   },
   [mutation.SET_DATE](state, dateAPI) {
     state.apiDate = dateAPI
