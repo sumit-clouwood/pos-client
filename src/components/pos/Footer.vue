@@ -483,6 +483,13 @@ export default {
               /*this.$router.push({
                 path: this.$store.getters['context/store'] + '/dine-in',
               })*/
+              let dineInAreas = this.$store.state.order.areas
+              // eslint-disable-next-line no-console
+              console.log(dineInAreas)
+              this.$store.dispatch('dinein/selectedArea', dineInAreas[0], {
+                root: true,
+              })
+              this.$store.dispatch('dinein/getDineInOrders', {}, { root: true })
               this.$router.replace({ name: 'Dinein' })
             })
             .catch(() => {
@@ -509,11 +516,7 @@ export default {
       }
     },
     payNowClick() {
-      if (this.orderType.OTApi !== 'dine_in') {
-        clickPayNow()
-      } else {
-        clickPayNow()
-      }
+      clickPayNow()
     },
     viewHoldOrders() {
       this.vbutton = 'new'
