@@ -21,6 +21,7 @@ const state = {
   selectedCover: '',
   POSMoveTableSelection: '',
   allBookedTables: {},
+  orderReservationData: {},
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -49,18 +50,15 @@ const actions = {
     commit(mutation.LOADING, true)
     dispatch('getCovers')
     dispatch('getBookedTables')
-    dispatch('getDineInOrders')
+    dispatch('dineInRunningOrders')
     dispatch('getDineInTables')
     dispatch('getDineInArea')
     commit(mutation.LOADING, false)
   },
-  getDineInOrders({ commit }) {
-    DineInService.dineInRunningOrders().then(response => {
-      commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
-    })
-    DineInService.dineInCompleteOrders().then(response => {
-      commit(mutation.DINE_IN_COMPLETED_ORDERS, response.data)
-    })
+  getDineInOrders({ dispatch }) {
+    dispatch('getBookedTables')
+    dispatch('dineInRunningOrders')
+    dispatch('dineInCompleteOrders')
   },
 
   reservationUpdateStatus({ dispatch, commit }, reservationData) {
@@ -73,6 +71,16 @@ const actions = {
   getBookedTables({ commit }) {
     DineInService.getAllBookedTables().then(response => {
       commit(mutation.BOOKED_TABLES, response.data)
+    })
+  },
+  dineInRunningOrders({ commit }) {
+    DineInService.dineInRunningOrders().then(response => {
+      commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
+    })
+  },
+  dineInCompleteOrders({ commit }) {
+    DineInService.dineInCompleteOrders().then(response => {
+      commit(mutation.DINE_IN_COMPLETED_ORDERS, response.data)
     })
   },
   getDineInArea({ commit, dispatch }) {
@@ -112,8 +120,8 @@ const actions = {
         let orders = []
         let tableDetails = { id: table._id, number: table.number, status: {} }
 
-        if (state.orders.running) {
-          orders = state.orders.running.filter(
+        if (state.allBookedTables) {
+          orders = state.allBookedTables.filter(
             order => order.assigned_table_id === table._id
           )
         }
@@ -145,6 +153,8 @@ const actions = {
               orderIds: order.related_orders_ids,
               tableNumber: order.number,
               reservationId: order._id,
+              startDate: order.start_date,
+              startTime: order.start_time,
             })
           })
           if (is_unavail == 1) {
@@ -276,7 +286,7 @@ const mutations = {
     state.reservation = reservationId
   },
   [mutation.BOOKED_TABLES](state, bookedTables) {
-    state.allBookedTables = bookedTables
+    state.allBookedTables = bookedTables.data
   },
   [mutation.PAGE_LOOKUP](state, lookups) {
     state.areaLookup = lookups
@@ -286,6 +296,9 @@ const mutations = {
   },
   [mutation.RESERVATION_RESPONSE](state, reservation) {
     state.reservation = reservation.id
+  },
+  [mutation.ORDER_RESERVATION_DATA](state, reservationData) {
+    state.orderReservationData = reservationData
   },
 }
 

@@ -11,8 +11,8 @@
           <div class="sitting-dine-wrap disable-sorting" v-if="tablesOnArea">
             <div class="sitting-image">
               <svg
-                :height="height + 'px'"
-                :width="width + 'px'"
+                :height="height"
+                :width="width"
                 id="dine-in-area"
                 ref="dine-in-area"
                 xmlns="http://www.w3.org/2000/svg"
@@ -22,26 +22,44 @@
               <div class="dropdown tooltip-c-range" id="range">
                 <a
                   role="button"
-                  class="dropdown-item text-capitalize bg-success font-weight-bold"
+                  class="table-popup bg-success font-weight-bold"
                   @click="newOrder()"
                 >
                   {{ _t(addOrSplit) }}
                 </a>
                 <div v-if="orderDetails">
                   <div v-for="(orderData, index) in orderDetails" :key="index">
-                    <div
-                      class="table-action"
-                      v-for="orderId in orderData.orderIds"
-                      :key="orderId"
-                    >
-                      <a
-                        @click="updateOrder(orderId)"
-                        role="button"
-                        class="dropdown-item text-capitalize font-weight-bold"
-                        v-if="orders.lookup.orders._id"
+                    <div v-if="orderData.orderIds.length">
+                      <div
+                        class="table-action"
+                        v-for="orderId in orderData.orderIds"
+                        :key="orderId"
                       >
-                        {{ orderData.tableNumber }}
-                        &nbsp; #{{ getOrderNo(orderId) }}
+                        <a
+                          @click="updateOrder(orderId, orderData)"
+                          role="button"
+                          class="dropdown-item text-capitalize"
+                          v-if="orders.lookup.orders._id"
+                        >
+                          {{ orderData.tableNumber }}
+                          #{{ getOrderNo(orderId) }}
+                        </a>
+                        <span
+                          class="cursor-pointer text-danger reservation-cancel"
+                          @click="cancelReservation(orderData.reservationId)"
+                        >
+                          ✖
+                        </span>
+                      </div>
+                    </div>
+                    <div v-else class="table-action">
+                      <a
+                        @click="newOrder()"
+                        role="button"
+                        class="dropdown-item"
+                      >
+                        {{ orderData.tableNumber }} #Reserved |
+                        {{ orderData.startDate }}, {{ orderData.startTime }}
                       </a>
                       <span
                         class="cursor-pointer text-danger reservation-cancel"
@@ -62,7 +80,7 @@
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="100%"
-            :height="height + 'px'"
+            :height="height"
             id="dine-in-area"
             ref="dine-in-area"
           />
@@ -112,7 +130,6 @@ export default {
     ...mapState('dinein', [
       'tablesOnArea',
       'orderOnTables',
-      'allBookedTables',
       'tableStatus',
       'orders',
     ]),
@@ -127,15 +144,15 @@ export default {
     return {
       page: null,
       svg: null,
-      width: 1000,
-      height: 600,
+      width: 'auto',
+      height: '700px',
       svgWidth: 250,
       svgHeight: 100,
       orderDetails: [],
       selectedTableId: false,
-      svgCordinates: {},
+      svgCoordinates: {},
       viewsCordinates: {},
-      addOrSplit: 'Add Order',
+      addOrSplit: 'Click here to add order',
       order: false,
       selectedReservationId: '',
     }
@@ -175,7 +192,8 @@ export default {
       })
       this.$router.push({ path: URL })
     },
-    updateOrder(orderId) {
+    updateOrder(orderId, orderData) {
+      this.$store.commit('dinein/ORDER_RESERVATION_DATA', orderData)
       let URL = this.store + '/dine-in/' + this.selectedTableId + '/' + orderId
       this.$store.dispatch('dinein/getSelectedOrder', orderId, {
         root: true,
@@ -338,7 +356,7 @@ export default {
         .attr('x', 10)
         .attr('y', 10)
         .attr('width', 60)
-        .attr('height', that.svgCordinates.height - 20)
+        .attr('height', that.svgCoordinates.height - 20)
         .attr('stroke-width', 3)
         .attr('stroke-dasharray', '10.5')
 
@@ -361,7 +379,7 @@ export default {
         .append('rect')
         .attr('x', 90)
         .attr('y', 10)
-        .attr('width', that.svgCordinates.width - 200)
+        .attr('width', that.svgCoordinates.width - 200)
         .attr('height', 60)
         .attr('stroke-width', 3)
         .attr('stroke-dasharray', '10.5')
@@ -383,10 +401,10 @@ export default {
         })
         .attr('side', 'right_view')
         .append('rect')
-        .attr('x', that.svgCordinates.width - 90)
+        .attr('x', that.svgCoordinates.width - 90)
         .attr('y', 10)
         .attr('width', 60)
-        .attr('height', that.svgCordinates.height - 20)
+        .attr('height', that.svgCoordinates.height - 20)
         .attr('stroke-width', 3)
         .attr('stroke-dasharray', '10.5')
 
@@ -408,8 +426,8 @@ export default {
         .attr('side', 'bottom_view')
         .append('rect')
         .attr('x', 90)
-        .attr('y', that.svgCordinates.height - 70)
-        .attr('width', that.svgCordinates.width - 200)
+        .attr('y', that.svgCoordinates.height - 70)
+        .attr('width', that.svgCoordinates.width - 200)
         .attr('height', 60)
         .attr('stroke-width', 3)
         .attr('stroke-dasharray', '10.5')
@@ -436,13 +454,16 @@ export default {
         reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
       })
+      $('#range')
+        .parent('div')
+        .hide()
     },
     cancelReservation(id) {
       $('#confirmModal').modal('show')
       this.selectedReservationId = id
     },
     mainViewCalc() {
-      this.svgCordinates = d3
+      this.svgCoordinates = d3
         .select('#svgContainter')
         .node()
         .getBoundingClientRect()
@@ -950,7 +971,9 @@ export default {
         order => order.tableId === datum._id
       )
       this.addOrSplit =
-        this.orderDetails.length > 0 ? 'Split Table' : 'Add Order'
+        this.orderDetails.length > 0
+          ? 'Click here to split table'
+          : 'Click here to add order'
       this.selectedTableId = datum._id
       let range = $('#range')
       range
@@ -1005,9 +1028,12 @@ g.dinein_table_parent:active {
 .modal-dialog {
   max-width: 30%;
 }
-</style>
-<style lang="scss">
 .table-action {
   position: relative;
+}
+a.table-popup {
+  display: block;
+  padding: 2px 25px 1px 12px;
+  font-weight: 400;
 }
 </style>
