@@ -121,34 +121,6 @@ if (workbox) {
     }
   })
 
-  //this is manually sync, we ll remove it later
-  self.addEventListener('message', function(event) {
-    if (event.data.hasOwnProperty('sync')) {
-      console.log('sw:', 'sync event', event.data)
-      const syncIt = async () => {
-        return new Promise(resolve => {
-          setTimeout(function() {
-            sendPostToServer()
-              .then(() => {
-                notificationOptions.body =
-                  'Offline orders are synced with server.'
-                resolve(
-                  self.registration.showNotification(
-                    'POS synced',
-                    notificationOptions
-                  )
-                )
-              })
-              .catch(() => {
-                console.log('sw:', 'SW Error syncing orders to server')
-              })
-          }, 1000 * 10)
-        })
-      }
-      event.waitUntil(syncIt())
-    }
-  })
-
   // Listen to Push
   self.addEventListener('push', e => {
     let data
