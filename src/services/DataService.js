@@ -60,8 +60,10 @@ const refreshAuthLogic = failedRequest =>
 createAuthRefreshInterceptor(axios, refreshAuthLogic)
 
 export default {
-  systemStatus: 'on',
   context: { store: '', brand: '' },
+  setStore(store) {
+    this.store = store
+  },
   setContext(context) {
     this.context = context
   },
@@ -102,9 +104,9 @@ export default {
   getLive(url, resolve, reject) {
     if (!localStorage.getItem('token')) {
       Promise.reject('token expired or not found, logout')
-      window.location = '/pos'
-      return false
+      return this.store.dispatch('auth/logout')
     }
+
     //const newDate = new DateTime()
     //this.syncDate = newDate.getDate()
     const absUrl = this.getAbsUrl(url)
