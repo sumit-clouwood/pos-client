@@ -10,7 +10,7 @@
           <th width="250px">{{ _t('STATUS') }}</th>
         </tr>
       </thead>
-      <tbody v-if="orders.lookup.orders">
+      <tbody v-if="orders[lookup].orders">
         <tr
           :key="index"
           class="dine-table-content"
@@ -30,7 +30,7 @@
             >
               {{
                 getOrderDetails({
-                  collection: orders.lookup.orders._id,
+                  collection: orders[lookup].orders._id,
                   matchWith: orderId,
                 })
               }}
@@ -76,7 +76,7 @@
                         d="M25.21 19.19a1.2 1.2 0 0 1-.851.355H2.675a1.2 1.2 0 0 1-.851-.355 1.2 1.2 0 0 1-.355-.851V5.69c0-.331.134-.63.355-.851a1.2 1.2 0 0 1 .851-.355V3.283A2.413 2.413 0 0 0 .267 5.69v12.65a2.413 2.413 0 0 0 2.408 2.407H24.36a2.413 2.413 0 0 0 2.407-2.408h-1.201c0 .33-.135.63-.355.851z"
                       ></path>
                     </g></svg
-                  ><span class="pay_now">Pay Now</span></a
+                  ><span class="pay_now">{{ _t('Pay Now') }}</span></a
                 >
               </span>
               <div
@@ -120,8 +120,17 @@
               title=""
             >
             </span>
-            <div class="dining-for-button">
+            <div
+              class="dining-for-button"
+              :class="
+                orderTable.status === 'completed'
+                  ? 'btn btn-success'
+                  : 'btn btn-danger'
+              "
+            >
               {{ orderTable.status }}
+            </div>
+            <div>
               <span
                 class="dinefor-paynow"
                 v-if="orderTable.status == 'in-progress'"
@@ -151,7 +160,7 @@
                       d="M25.21 19.19a1.2 1.2 0 0 1-.851.355H2.675a1.2 1.2 0 0 1-.851-.355 1.2 1.2 0 0 1-.355-.851V5.69c0-.331.134-.63.355-.851a1.2 1.2 0 0 1 .851-.355V3.283A2.413 2.413 0 0 0 .267 5.69v12.65a2.413 2.413 0 0 0 2.408 2.407H24.36a2.413 2.413 0 0 0 2.407-2.408h-1.201c0 .33-.135.63-.355.851z"
                     ></path>
                   </g></svg
-                ><span class="pay_now">About to Finish</span>
+                ><span class="pay_now">{{ _t('About to Finish') }}</span>
               </span>
               <span
                 class="dinefor-paynow"
@@ -182,7 +191,7 @@
                       d="M25.21 19.19a1.2 1.2 0 0 1-.851.355H2.675a1.2 1.2 0 0 1-.851-.355 1.2 1.2 0 0 1-.355-.851V5.69c0-.331.134-.63.355-.851a1.2 1.2 0 0 1 .851-.355V3.283A2.413 2.413 0 0 0 .267 5.69v12.65a2.413 2.413 0 0 0 2.408 2.407H24.36a2.413 2.413 0 0 0 2.407-2.408h-1.201c0 .33-.135.63-.355.851z"
                     ></path>
                   </g></svg
-                ><span class="pay_now">Complete</span>
+                ><span class="pay_now">{{ _t('Complete') }}</span>
               </span>
             </div>
           </td>
@@ -207,6 +216,7 @@ export default {
   },
   props: {
     tabName: String,
+    lookup: String,
   },
   data() {
     return {

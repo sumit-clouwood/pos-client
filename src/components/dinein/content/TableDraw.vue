@@ -39,7 +39,7 @@
                           @click="updateOrder(orderId, orderData)"
                           role="button"
                           class="dropdown-item text-capitalize"
-                          v-if="orders.lookup.orders._id"
+                          v-if="orders.lookup_running.orders._id"
                         >
                           {{ orderData.tableNumber }}
                           #{{ getOrderNo(orderId) }}
@@ -171,7 +171,7 @@ export default {
     },*/
     getOrderNo(orderId) {
       let order = LookupData.get({
-        collection: this.orders.lookup.orders._id,
+        collection: this.orders.lookup_running.orders._id,
         matchWith: orderId,
       })
       return order

@@ -9,7 +9,7 @@
         <h2>{{ _t('Completed Orders') }}</h2>
       </div>
 
-      <OrderList tabName="completed" />
+      <OrderList tabName="completed" lookup="lookup_completed" />
     </div>
   </div>
 </template>

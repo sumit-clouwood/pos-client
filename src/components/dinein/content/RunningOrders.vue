@@ -8,7 +8,7 @@
       <div class="rinning-order-title">
         <h2>{{ _t('Running Orders') }}</h2>
       </div>
-      <OrderList tabName="running" />
+      <OrderList tabName="running" lookup="lookup_running" />
     </div>
   </div>
 </template>
