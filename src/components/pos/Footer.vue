@@ -35,7 +35,7 @@
           v-if="cartType === 'new'"
           @click="viewHoldOrders"
           class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
-          :class="{ active: vbutton == 'hold' }"
+          :class="{ active: vbutton === 'hold' }"
           id="hold-order-box"
         >
           <a
@@ -66,8 +66,8 @@
           v-else
           @click="newOrders"
           class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
-          :class="{ active: vbutton == 'new' }"
-          id="hold-order-box"
+          :class="{ active: vbutton === 'new' }"
+          id="new-order-box"
         >
           <a
             class="footer-slider-list-item-link color-text-invert"
@@ -531,7 +531,7 @@ export default {
       this.$store.commit('order/SET_CART_TYPE', 'new')
     },
   },
-  updated() {
+  mounted() {
     $('ul.ullist-icons').slick({
       slidesToShow: 5,
       slidesToScroll: 1,
@@ -541,9 +541,10 @@ export default {
       nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
       prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
     })
+    $('.next-btn').click()
   },
 
-  mounted() {
+  updated() {
     $('ul.ullist-icons').slick({
       slidesToShow: 5,
       slidesToScroll: 1,
