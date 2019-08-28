@@ -36,7 +36,12 @@
                         :key="orderId"
                       >
                         <a
-                          @click="updateOrder(orderId, orderData)"
+                          @click="
+                            updateOrder({
+                              orderId: orderId,
+                              orderData: orderData,
+                            })
+                          "
                           role="button"
                           class="dropdown-item text-capitalize"
                           v-if="orders.lookup_running.orders._id"
@@ -192,10 +197,11 @@ export default {
       })
       this.$router.push({ path: URL })
     },
-    updateOrder(orderId, orderData) {
-      this.$store.commit('dinein/ORDER_RESERVATION_DATA', orderData)
-      let URL = this.store + '/dine-in/' + this.selectedTableId + '/' + orderId
-      this.$store.dispatch('dinein/getSelectedOrder', orderId, {
+    updateOrder(data) {
+      this.$store.commit('dinein/ORDER_RESERVATION_DATA', data.orderData)
+      let URL =
+        this.store + '/dine-in/' + this.selectedTableId + '/' + data.orderId
+      this.$store.dispatch('dinein/getSelectedOrder', data.orderId, {
         root: true,
       })
       this.$store.dispatch('order/updateOrderType', {

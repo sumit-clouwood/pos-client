@@ -453,7 +453,7 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapState('dinein', ['selectedCover']),
+    ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('customer', ['responseInformation']),
     ...mapState('order', ['orderType', 'cartType', 'items']),
     ...mapState('sync', ['online']),
@@ -484,19 +484,31 @@ export default {
                 path: this.$store.getters['context/store'] + '/dine-in',
               })*/
               let dineInAreas = this.$store.state.order.areas
-              // eslint-disable-next-line no-console
-              console.log(dineInAreas)
               this.$store.dispatch('dinein/selectedArea', dineInAreas[0], {
                 root: true,
               })
               this.$store.dispatch('dinein/getDineInOrders', {}, { root: true })
               this.$router.replace({ name: 'Dinein' })
             })
-            .catch(() => {
-              setTimeout(() => {
-                $('#payment-msg').modal('hide')
-                $('#payment-screen-footer').prop('disabled', false)
-              }, 500)
+            .catch(response => {
+              let validationError = {}
+              let errors = 'Error: '
+              if (response.status == 'form_errors') {
+                for (let i in response.form_errors) {
+                  response.form_errors[i].forEach(err => (errors += ' ' + err))
+                }
+              } else {
+                errors = response.error
+              }
+              validationError = {
+                status: 'flash_message',
+                flash_message: errors,
+              }
+              this.$store.commit(
+                'customer/SET_RESPONSE_MESSAGES',
+                validationError
+              )
+              $('#information-popup').modal('show')
             })
         } else {
           validationError = {
