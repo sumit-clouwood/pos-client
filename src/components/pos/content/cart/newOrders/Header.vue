@@ -48,13 +48,13 @@
           </div>
         </div>
       </div>
-      <div
+      <!--<div
         class="orders-button-large"
         disabled="disable"
         v-if="orderType.OTApi === 'dine_in'"
       >
         {{ _t('Split Table') }}
-      </div>
+      </div>-->
       <div
         v-if="covers && orderType.OTApi === 'dine_in'"
         class="driver-container"

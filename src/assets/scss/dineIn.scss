@@ -1385,19 +1385,17 @@ table#running-order {
     font-weight: 600;
   }
   span.dinefor-paynow {
-    width: $px119;
-    height: $px35;
-    border-radius: $px4;
-    background-color: $blue-middle;
-    display: block;
-    text-align: center;
-    padding-top: $px6;
-    margin-top: $px8;
-    color: $white;
-    font-size: $px14;
-    font-weight: 600;
-    cursor: pointer;
-  }
+  width: auto;
+  border-radius: 4px;
+  background-color: #5056CA;
+  display: inline-block;
+  padding: 7px;
+  margin-left: 8px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  vertical-align:middle;
+}
   td.done-soon-order {
     >span {
       border-radius: $px4;
