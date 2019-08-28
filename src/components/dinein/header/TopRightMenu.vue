@@ -11,6 +11,7 @@
         id="all-tables"
         data-related="all-tables-show"
         class="tables-btn-style active"
+        @click="getBookedTables"
       >
         {{ _t('All Tables') }}
       </button>
@@ -35,6 +36,7 @@
         id="running-orders"
         data-related="running-orders-show"
         class="tables-btn-style"
+        @click="dineInRunningOrders"
       >
         {{ _t('Running Orders') }}
       </button>
@@ -43,6 +45,7 @@
         id="completed-orders"
         data-related="completed-orders-show"
         class="tables-btn-style"
+        @click="dineInCompleteOrders"
       >
         {{ _t('Completed Orders') }}
       </button>
@@ -168,6 +171,11 @@ export default {
   },
   methods: {
     ...mapActions('auth', ['logout']),
+    ...mapActions('dinein', [
+      'getBookedTables',
+      'dineInRunningOrders',
+      'dineInCompleteOrders',
+    ]),
     changeLanguage(locale) {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
       bootstrap.loadUI(this.$store)
