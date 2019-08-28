@@ -196,7 +196,7 @@ const actions = {
           start_date: moment().format('YYYY-MM-DD'),
           start_time: moment().format('hh:mm'),
           assigned_table_id: tableId,
-          number_of_guests: 1,
+          number_of_guests: 0,
           customers: [],
         },
       ]

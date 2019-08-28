@@ -477,6 +477,7 @@ const actions = {
             order.covers = table_reservation
           }
           order.table_reservation_id = rootState.dinein.reservation
+          order.supervisor_password = '1234'
         }
         //order.app_uniqueid = Crypt.uuid()
         commit(mutation.SET_ORDER, order)
