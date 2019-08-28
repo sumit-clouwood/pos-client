@@ -133,7 +133,7 @@ export default {
       svgHeight: 100,
       orderDetails: [],
       selectedTableId: false,
-      svgCordinates: {},
+      svgCoordinates: {},
       viewsCordinates: {},
       addOrSplit: 'Add Order',
       order: false,
@@ -338,7 +338,7 @@ export default {
         .attr('x', 10)
         .attr('y', 10)
         .attr('width', 60)
-        .attr('height', that.svgCordinates.height - 20)
+        .attr('height', that.svgCoordinates.height - 20)
         .attr('stroke-width', 3)
         .attr('stroke-dasharray', '10.5')
 
@@ -361,7 +361,7 @@ export default {
         .append('rect')
         .attr('x', 90)
         .attr('y', 10)
-        .attr('width', that.svgCordinates.width - 200)
+        .attr('width', that.svgCoordinates.width - 200)
         .attr('height', 60)
         .attr('stroke-width', 3)
         .attr('stroke-dasharray', '10.5')
@@ -383,10 +383,10 @@ export default {
         })
         .attr('side', 'right_view')
         .append('rect')
-        .attr('x', that.svgCordinates.width - 90)
+        .attr('x', that.svgCoordinates.width - 90)
         .attr('y', 10)
         .attr('width', 60)
-        .attr('height', that.svgCordinates.height - 20)
+        .attr('height', that.svgCoordinates.height - 20)
         .attr('stroke-width', 3)
         .attr('stroke-dasharray', '10.5')
 
@@ -408,8 +408,8 @@ export default {
         .attr('side', 'bottom_view')
         .append('rect')
         .attr('x', 90)
-        .attr('y', that.svgCordinates.height - 70)
-        .attr('width', that.svgCordinates.width - 200)
+        .attr('y', that.svgCoordinates.height - 70)
+        .attr('width', that.svgCoordinates.width - 200)
         .attr('height', 60)
         .attr('stroke-width', 3)
         .attr('stroke-dasharray', '10.5')
@@ -442,7 +442,7 @@ export default {
       this.selectedReservationId = id
     },
     mainViewCalc() {
-      this.svgCordinates = d3
+      this.svgCoordinates = d3
         .select('#svgContainter')
         .node()
         .getBoundingClientRect()

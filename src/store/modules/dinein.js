@@ -20,7 +20,7 @@ const state = {
   covers: false,
   selectedCover: '',
   POSMoveTableSelection: '',
-  allBookedTables: {},
+  allBookedTables: false,
 }
 const getters = {
   getOrderStatus: () => order_status => {
