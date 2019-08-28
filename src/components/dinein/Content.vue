@@ -1,7 +1,7 @@
 <template>
   <div class="left-container">
     <div
-      class="table-holder container-fluid row running-orders-dinein active"
+      class="table-holder container-fluid running-orders-dinein active"
       id="all-tables-show"
       v-if="tablesOnArea"
     >

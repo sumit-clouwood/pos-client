@@ -11,8 +11,8 @@
           <div class="sitting-dine-wrap disable-sorting" v-if="tablesOnArea">
             <div class="sitting-image">
               <svg
-                :height="height + 'px'"
-                :width="width + 'px'"
+                :height="height"
+                :width="width"
                 id="dine-in-area"
                 ref="dine-in-area"
                 xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +62,7 @@
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="100%"
-            :height="height + 'px'"
+            :height="height"
             id="dine-in-area"
             ref="dine-in-area"
           />
@@ -127,8 +127,8 @@ export default {
     return {
       page: null,
       svg: null,
-      width: 1000,
-      height: 600,
+      width: 'auto',
+      height: '700px',
       svgWidth: 250,
       svgHeight: 100,
       orderDetails: [],

@@ -4819,7 +4819,7 @@ span#dine-bottom {
 
 div#sitting-dinein-table {
   /*overflow: hidden;*/
-  height: calc(100vh - 373px);
+  height: calc(100vh - 280px);
   overflow-y: auto;
   margin: 0 auto;
   max-width: 100%;
@@ -4838,8 +4838,9 @@ div#sitting-dinein-table {
     vertical-align: top;
     margin-left: 3.125rem; }
     .sitting-dine-wrap > div:first-child {
-      margin-left: 2.1875rem;
-      width: 96%; }
+      margin-left: 0;
+      padding-left: 0;
+      width: 100%; }
 
 span.availble_soon-seat {
   background: #faa03c;
