@@ -7,6 +7,7 @@
     >
       <TableDraw />
     </div>
+    <OrderDetailsPopup />
     <RunningOrders />
     <Waiting />
     <Reservation />
@@ -21,6 +22,7 @@ import Waiting from './content/Waiting'
 import CompletedOrders from './content/CompletedOrders'
 import TableDraw from './content/TableDraw'
 import { mapState } from 'vuex'
+import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 
 export default {
   name: 'Content',
@@ -33,6 +35,7 @@ export default {
     CompletedOrders,
     TableDraw,
     Waiting,
+    OrderDetailsPopup,
   },
 }
 </script>

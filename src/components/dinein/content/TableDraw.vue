@@ -12,7 +12,7 @@
             <div class="sitting-image">
               <svg
                 :height="height"
-                :width="width"
+                width="100%"
                 id="dine-in-area"
                 ref="dine-in-area"
                 xmlns="http://www.w3.org/2000/svg"
@@ -303,7 +303,9 @@ export default {
           .text(function(d) {
             return d.number
           })
+
         this.manageViews()
+
         d3.select(a[i])
           .append('rect')
           .attr('x', function(d) {
@@ -560,8 +562,8 @@ export default {
           .attr('xlink:href', function(d) {
             // eslint-disable-next-line no-console
             console.log(d.name)
-            // return `/img/dinein/table-view/${d.name}_view_h.jpg`
-            return `/img/dinein/table-view/city_view_h.jpg`
+            // return `/img/dinein/area-view/${d.name}_view_h.jpg`
+            return `/img/dinein/area-view/city_view_h.jpg`
           })
           .attr('x', function(d) {
             // d.x = that.viewsCordinates.top_view.x
