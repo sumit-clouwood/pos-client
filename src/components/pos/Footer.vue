@@ -472,7 +472,7 @@ export default {
   methods: {
     payNowDirect() {
       let validationError = {}
-      let flash_msg = 'Please add items.'
+      let flash_msg = this._t('Please add items.')
       if (this.items.length > 0) {
         flash_msg = ''
         if (this.selectedCover && this.selectedCover.name) {
@@ -484,36 +484,41 @@ export default {
                 path: this.$store.getters['context/store'] + '/dine-in',
               })*/
               let dineInAreas = this.$store.state.order.areas
-              this.$store.dispatch('dinein/selectedArea', dineInAreas[0], {
-                root: true,
-              })
+              if (typeof dineInAreas != 'undefined') {
+                this.$store.dispatch('dinein/selectedArea', dineInAreas[0], {
+                  root: true,
+                })
+              }
               this.$store.dispatch('dinein/getDineInOrders', {}, { root: true })
+              localStorage.setItem('reservation', false) //Empty Local Storage
               this.$router.replace({ name: 'Dinein' })
             })
             .catch(response => {
               let validationError = {}
-              let errors = 'Error: '
+              let errors = ''
               if (response.status == 'form_errors') {
                 for (let i in response.form_errors) {
                   response.form_errors[i].forEach(err => (errors += ' ' + err))
                 }
-              } else {
+              } else if (response.error) {
                 errors = response.error
               }
-              validationError = {
-                status: 'flash_message',
-                flash_message: errors,
+              if (errors != '') {
+                validationError = {
+                  status: 'flash_message',
+                  flash_message: errors,
+                }
+                this.$store.commit(
+                  'customer/SET_RESPONSE_MESSAGES',
+                  validationError
+                )
+                $('#information-popup').modal('show')
               }
-              this.$store.commit(
-                'customer/SET_RESPONSE_MESSAGES',
-                validationError
-              )
-              $('#information-popup').modal('show')
             })
         } else {
           validationError = {
             status: 'flash_message',
-            flash_message: 'Please select a cover.',
+            flash_message: this._t('Please select a cover.'),
           }
           this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
           $('#information-popup').modal('show')

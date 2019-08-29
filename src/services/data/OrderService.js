@@ -78,4 +78,12 @@ export default {
     }
     return DataService.post(`/model/orders/id/${id}/modify_${type}order`, order)
   },
+  updateOrderItems(order, id, type) {
+    if (type) {
+      type += '_'
+    } else {
+      type = ''
+    }
+    return DataService.post(`/model/orders/id/${id}/update_order_items`, order)
+  },
 }

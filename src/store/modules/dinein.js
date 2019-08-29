@@ -21,6 +21,7 @@ const state = {
   orderOnTables: {},
   availableTables: false,
   reservation: false,
+  reservationId: false,
   orderType: { OTview: 'Dine In', OTApi: 'dine_in' },
   covers: false,
   selectedCover: '',
@@ -289,6 +290,7 @@ const mutations = {
   },
   [mutation.RESERVATION_ID](state, reservationId) {
     state.reservation = reservationId
+    localStorage.setItem('reservationId', reservationId)
   },
   [mutation.BOOKED_TABLES](state, bookedTables) {
     state.allBookedTables = bookedTables.data
@@ -300,7 +302,8 @@ const mutations = {
     state.POSMoveTableSelection = tableDetails
   },
   [mutation.RESERVATION_RESPONSE](state, reservation) {
-    state.reservation = reservation.id
+    state.reservationId = reservation.id
+    localStorage.setItem('reservationId', reservation.id)
   },
   [mutation.ORDER_RESERVATION_DATA](state, reservationData) {
     state.orderReservationData = reservationData

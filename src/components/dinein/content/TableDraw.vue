@@ -97,7 +97,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-body" id="confirmMessage">
-            <b>Do you want to cancel this reservation ?</b>
+            <b>{{ _t('Do you want to cancel this reservation') }} ?</b>
           </div>
           <div class="modal-footer">
             <button
@@ -137,6 +137,7 @@ export default {
       'orderOnTables',
       'tableStatus',
       'orders',
+      'reservationId',
     ]),
     ...mapGetters('context', ['store']),
   },

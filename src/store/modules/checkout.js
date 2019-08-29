@@ -476,8 +476,10 @@ const actions = {
             ]
             order.covers = table_reservation
           }
-          order.table_reservation_id =
-            rootState.dinein.orderReservationData.reservationId
+          /*order.table_reservation_id = rootState.dinein.reservationId
+            ? rootState.dinein.reservationId
+            : rootState.dinein.orderReservationData.reservationId*/
+          order.table_reservation_id = localStorage.getItem('reservationId')
         }
         //order.app_uniqueid = Crypt.uuid()
         commit(mutation.SET_ORDER, order)
@@ -525,7 +527,6 @@ const actions = {
         //set order id for modify orders or delivery order
         orderId = rootState.order.orderId
         let order = { ...state.order }
-        order.supervisor_password = '1234'
         order.new_real_transition_order_no = ''
         delete order.real_created_datetime
 
@@ -539,12 +540,19 @@ const actions = {
             order.modify_reason = 'Updated from POS'
             break
         }
-
-        response = OrderService.modifyOrder(
-          order,
-          rootState.order.orderId,
-          modifyType
-        )
+        if (rootState.order.order_status != 'completed') {
+          response = OrderService.updateOrderItems(
+            order,
+            rootState.order.orderId,
+            modifyType
+          )
+        } else {
+          response = OrderService.modifyOrder(
+            order,
+            rootState.order.orderId,
+            modifyType
+          )
+        }
       } else {
         response = OrderService.saveOrder(
           state.order,
