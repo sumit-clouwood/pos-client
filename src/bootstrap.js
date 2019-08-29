@@ -218,7 +218,13 @@ export default {
       if (event.oldVersion === 1) {
         // version 2 -> 3 upgrade
         console.log('creating bucket order_post_requests')
-        db.createBucket('order_post_requests')
+        db.createBucket(
+          'order_post_requests',
+          { keyPath: 'order_time' },
+          bucket => {
+            bucket.createIndex('order_time', 'order_time', { unique: true })
+          }
+        )
           .then(() => {
             console.log('created bucket order_post_requests')
             this.store.commit('sync/setIdbVersion', 2)
