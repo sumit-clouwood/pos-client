@@ -182,7 +182,14 @@ export default {
               require('@/../public/js/pos_script.js')
             }, 2000)
           })
-          .catch(error => (this.errored = error))
+          .catch(error => {
+            this.errored = error
+            setTimeout(() => {
+              this.$store.dispatch('auth/logout')
+              this.errored = ''
+            }, 1000 * 10)
+            console.log('some catch ', error)
+          })
 
         setTimeout(() => {
           navigator.serviceWorker.addEventListener('message', event => {

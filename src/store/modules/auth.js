@@ -1,7 +1,7 @@
 import DataService from '@/services/DataService'
 import AuthService from '@/services/data/AuthService'
 import * as mutation from './user/mutation-types'
-import db from '@/services/network/DB'
+//import db from '@/services/network/DB'
 
 // initial state
 const state = {
@@ -53,14 +53,6 @@ const actions = {
           commit(mutation.SET_TOKEN, response.data.token)
           localStorage.setItem('token', response.data.token)
 
-          //update token in the indexeddb/auth
-          db.getBucket('auth').then(bucket => {
-            db.fetch(bucket).then(data => {
-              data[0].token = response.data.token
-              db.put(bucket, data[0])
-            })
-          })
-
           resolve()
         })
         .catch(error => reject(error))
@@ -100,7 +92,7 @@ const actions = {
     commit('order/RESET', null, { root: true })
     commit('checkout/RESET', null, { root: true })
     commit('context/RESET', null, { root: true })
-    commit('customer/reset', null, { root: true })
+    commit('customer/RESET', null, { root: true })
     commit('sync/reset', {}, { root: true })
     commit('location/RESET', true, { root: true })
 
