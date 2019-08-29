@@ -104,7 +104,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-body" id="confirmMessage">
-            <b>Do you want to cancel this reservation ?</b>
+            <b>{{ _t('Do you want to cancel this reservation') }} ?</b>
           </div>
           <div class="modal-footer">
             <button
@@ -145,6 +145,7 @@ export default {
       'orderOnTables',
       'tableStatus',
       'allBookedTables',
+      'reservationId',
     ]),
     ...mapGetters('context', ['store']),
   },
@@ -473,7 +474,6 @@ export default {
         status: 'cancelled_reservation',
       })
       this.componentKey += 1
-      alert(this.componentKey)
       $('#range')
         .parent('div')
         .hide()
@@ -745,8 +745,6 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
-      // eslint-disable-next-line no-console
-      console.log(this.orderDetails)
       this.addOrSplit =
         this.orderDetails.length > 0
           ? 'Click here to split table'

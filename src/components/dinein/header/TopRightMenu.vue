@@ -109,6 +109,9 @@
         <li v-if="permitted('crm', 'root')">
           <a :href="crm">{{ _t('CRM') }}</a>
         </li>
+        <li v-if="permitted('dinein', 'root')">
+          <a :href="dinein">{{ _t('Dine In') }}</a>
+        </li>
         <li v-if="permitted('menu', 'root')">
           <a :href="menu">{{ _t('Menu Setup') }}</a>
         </li>
