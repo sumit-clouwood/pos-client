@@ -19,7 +19,11 @@
               ></svg>
             </div>
             <div id="tooltipdata" class="dropdown-content cursor-pointer">
-              <div class="dropdown tooltip-c-range" id="range">
+              <div
+                class="dropdown tooltip-c-range"
+                id="range"
+                :key="componentKey"
+              >
                 <a
                   role="button"
                   class="table-popup bg-success font-weight-bold"
@@ -28,7 +32,10 @@
                   {{ _t(addOrSplit) }}
                 </a>
                 <div v-if="orderDetails">
-                  <div v-for="(orderData, index) in orderDetails" :key="index">
+                  <div
+                    v-for="orderData in orderDetails"
+                    :key="orderData.reservationId"
+                  >
                     <div v-if="orderData.orderIds.length">
                       <div
                         class="table-action"
@@ -44,7 +51,7 @@
                           "
                           role="button"
                           class="dropdown-item text-capitalize"
-                          v-if="orders.lookup_running.orders._id"
+                          v-if="allBookedTables.lookup.orders._id"
                         >
                           {{ orderData.tableNumber }}
                           #{{ getOrderNo(orderId) }}
@@ -134,9 +141,10 @@ export default {
     ...mapState('location', ['timezoneString']),
     ...mapState('dinein', [
       'tablesOnArea',
+      'activeArea',
       'orderOnTables',
       'tableStatus',
-      'orders',
+      'allBookedTables',
     ]),
     ...mapGetters('context', ['store']),
   },
@@ -156,10 +164,11 @@ export default {
       orderDetails: [],
       selectedTableId: false,
       svgCoordinates: {},
-      viewsCordinates: {},
+      viewsCoordinates: {},
       addOrSplit: 'Click here to add order',
       order: false,
       selectedReservationId: '',
+      componentKey: 0,
     }
   },
   mounted() {
@@ -176,7 +185,7 @@ export default {
     },*/
     getOrderNo(orderId) {
       let order = LookupData.get({
-        collection: this.orders.lookup_running.orders._id,
+        collection: this.allBookedTables.lookup.orders._id,
         matchWith: orderId,
       })
       let customerName = order && order.customer != null ? order.customer : ''
@@ -304,7 +313,6 @@ export default {
           })
 
         this.manageViews()
-
         d3.select(a[i])
           .append('rect')
           .attr('x', function(d) {
@@ -343,6 +351,7 @@ export default {
           .attr('width', '15')
           .attr('height', '15')
       })
+      this.drawViews()
     },
     manageViews() {
       let that = this
@@ -354,7 +363,7 @@ export default {
         .attr('fill', 'white')
         .attr('stroke', '#9b9fb8')
         .on('click', (d, i, a) => {
-          that.clearSelection()
+          /*that.clearSelection()*/
           d3.select(a[i])
             .attr('class', ' selected_view side-view-bottom views')
             .attr('stroke', '#b2b5c1')
@@ -378,7 +387,7 @@ export default {
         .attr('fill', 'white')
         .attr('stroke', '#9b9fb8')
         .on('click', (d, i, a) => {
-          that.clearSelection()
+          /*that.clearSelection()*/
           d3.select(a[i])
             .attr('class', ' selected_view side-view-bottom views')
             .attr('stroke', '#b2b5c1')
@@ -402,7 +411,7 @@ export default {
         .attr('fill', 'white')
         .attr('stroke', '#9b9fb8')
         .on('click', (d, i, a) => {
-          that.clearSelection()
+          /*that.clearSelection()*/
           d3.select(a[i])
             .attr('class', ' selected_view side-view-bottom views')
             .attr('stroke', '#b2b5c1')
@@ -426,7 +435,7 @@ export default {
         .attr('fill', 'white')
         .attr('stroke', '#9b9fb8')
         .on('click', (d, i, a) => {
-          that.clearSelection()
+          /*that.clearSelection()*/
           d3.select(a[i])
             .attr('class', ' selected_view side-view-bottom views')
             .attr('stroke', '#b2b5c1')
@@ -441,19 +450,19 @@ export default {
         .attr('stroke-width', 0.5)
         .attr('stroke-dasharray', '10.5')
 
-      this.viewsCordinates.bottom_view = d3
+      this.viewsCoordinates.bottom_view = d3
         .select('#dine-in-area > g > .side-view-bottom')
         .node()
         .getBBox()
-      this.viewsCordinates.right_view = d3
+      this.viewsCoordinates.right_view = d3
         .select('#dine-in-area > g > .side-view-right')
         .node()
         .getBBox()
-      this.viewsCordinates.top_view = d3
+      this.viewsCoordinates.top_view = d3
         .select('#dine-in-area > g > .side-view-top')
         .node()
         .getBBox()
-      this.viewsCordinates.left_view = d3
+      this.viewsCoordinates.left_view = d3
         .select('#dine-in-area > g > .side-view-left')
         .node()
         .getBBox()
@@ -463,6 +472,8 @@ export default {
         reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
       })
+      this.componentKey += 1
+      alert(this.componentKey)
       $('#range')
         .parent('div')
         .hide()
@@ -478,98 +489,36 @@ export default {
         .getBoundingClientRect()
     },
     drawViews() {
-      let that = this
-      that.table.top_view.forEach((element, i) => {
+      this.activeArea.top_view.forEach((element, i) => {
         d3.select(this.$el)
           .select('#dine-in-area > g')
           .datum(element)
           .append('g')
           .attr('index_id', i)
-          .on('mouseover', (d, ia, a) => {
-            if (d3.select('.view_delete_button').node()) {
-              if (
-                d3
-                  .select(d3.select('.view_delete_button').node().parentNode)
-                  .attr('index_id') == d3.select(a[ia]).attr('index_id') &&
-                d3
-                  .select(d3.select('.view_delete_button').node().parentNode)
-                  .attr('view_type') == d3.select(a[ia]).attr('view_type')
-              ) {
-                return
-              } else {
-                d3.selectAll('.resizer').remove()
-                d3.selectAll('.view_delete_button').remove()
-              }
-            }
-            d3.select(a[ia])
-              .append('use')
-              .attr('class', 'view_delete_button')
-              .attr('draggable', 'true')
-              .attr('x', function(d) {
-                return d.x
-              })
-              .attr('y', function(d) {
-                return d.y
-              })
-              .attr('width', 30)
-              .attr('height', 30)
-              .attr('xlink:href', '#dinning_close_button')
-              .on('click', function() {
-                d3.select('.view_delete_button')
-                  .node()
-                  .parentNode.remove()
-                that.updateViewLayout()
-              })
-            if (d3.select('.resizer').node()) {
-              return
-            }
-            d3.select(a[ia])
-              .append('g')
-              .attr('class', 'resizer side-view-resize-top_view')
-              .attr('fill', 'none')
-              .attr('stroke', '#9b9fb8')
-              .attr('side', 'bottom_view')
-              .append('line')
-              .attr('x2', d => parseInt(d.x))
-              .attr('y2', d => parseInt(d.y) + 60)
-              .attr('x1', d => parseInt(d.x))
-              .attr('y1', d => parseInt(d.y))
-              .attr('stroke-width', 4)
-              .style('cursor', 'nw-resize')
-              .call(
-                d3
-                  .drag()
-                  .on('start', d => this.drag_start(d))
-                  .on('drag', (d, i, a) =>
-                    this.drag_view_horizontal_drag_right_resize(d, i, a)
-                  )
-                  .on('end', this.drag_view_end)
-              )
-          })
           .attr('view_type', d => d.name)
           .attr('view_side', 'top_view')
           .attr('class', 'side_view_block')
           .attr('x', function(d) {
-            // d.x = that.viewsCordinates.top_view.x
+            // d.x = that.viewsCoordinates.top_view.x
             return d.x
           })
           .attr('y', function(d) {
-            // d.y = that.viewsCordinates.top_view.y
+            // d.y = that.viewsCoordinates.top_view.y
             return d.y
           })
           .append('image')
           .attr('xlink:href', function(d) {
             // eslint-disable-next-line no-console
             console.log(d.name)
-            // return `/img/dinein/area-view/${d.name}_view_h.jpg`
-            return `/img/dinein/area-view/city_view_h.jpg`
+            return `/img/dinein/area-view/${d.name}_view_h.jpg`
+            // return `/img/dinein/area-view/city_view_h.jpg`
           })
           .attr('x', function(d) {
-            // d.x = that.viewsCordinates.top_view.x
+            // d.x = that.viewsCoordinates.top_view.x
             return d.x
           })
           .attr('y', function(d) {
-            // d.y = that.viewsCordinates.top_view.y
+            // d.y = that.viewsCoordinates.top_view.y
             return d.y
           })
           .attr('height', d => d.height)
@@ -613,94 +562,33 @@ export default {
               .on('end', this.drag_view_end)
           )
       })
-      that.table.right_view.forEach((element, i) => {
+      this.activeArea.right_view.forEach((element, i) => {
         d3.select(this.$el)
           .select('#dine-in-area > g')
           .datum(element)
           .append('g')
           .attr('index_id', i)
-          .on('mouseover', (d, ia, a) => {
-            if (d3.select('.view_delete_button').node()) {
-              if (
-                d3
-                  .select(d3.select('.view_delete_button').node().parentNode)
-                  .attr('index_id') == d3.select(a[ia]).attr('index_id') &&
-                d3
-                  .select(d3.select('.view_delete_button').node().parentNode)
-                  .attr('view_type') == d3.select(a[ia]).attr('view_type')
-              ) {
-                return
-              } else {
-                d3.selectAll('.resizer').remove()
-                d3.selectAll('.view_delete_button').remove()
-              }
-            }
-            d3.select(a[ia])
-              .append('use')
-              .attr('class', 'view_delete_button')
-              .attr('draggable', 'true')
-              .attr('x', function(d) {
-                return d.x
-              })
-              .attr('y', function(d) {
-                return d.y
-              })
-              .attr('width', 30)
-              .attr('height', 30)
-              .attr('xlink:href', '#dinning_close_button')
-              .on('click', function() {
-                d3.select('.view_delete_button')
-                  .node()
-                  .parentNode.remove()
-                that.updateViewLayout()
-              })
-            if (d3.select('.resizer').node()) {
-              return
-            }
-            d3.select(a[ia])
-              .append('g')
-              .attr('class', 'resizer side-view-resize-right_view')
-              .attr('fill', 'none')
-              .attr('stroke', '#9b9fb8')
-              .attr('side', 'bottom_view')
-              .append('line')
-              .attr('x2', d => parseInt(d.x) + 60)
-              .attr('y2', d => parseInt(d.y))
-              .attr('x1', d => parseInt(d.x))
-              .attr('y1', d => parseInt(d.y))
-              .attr('stroke-width', 4)
-              .style('cursor', 'nw-resize')
-              .call(
-                d3
-                  .drag()
-                  .on('start', d => this.drag_start(d))
-                  .on('drag', (d, i, a) =>
-                    this.drag_view_vertical_drag_top_resize(d, i, a)
-                  )
-                  .on('end', this.drag_view_end)
-              )
-          })
           .attr('class', 'side_view_block')
           .attr('view_type', d => d.name)
           .attr('view_side', 'right_view')
           .attr('x', function(d) {
-            // d.x = that.viewsCordinates.right_view.x
+            // d.x = that.viewsCoordinates.right_view.x
             return d.x
           })
           .attr('y', function(d) {
-            // d.y = that.viewsCordinates.right_view.y
+            // d.y = that.viewsCoordinates.right_view.y
             return d.y
           })
           .append('image')
           .attr('xlink:href', function(d) {
-            return `/img/table-view/${d.name}_view_v.jpg`
+            return `/img/dinein/area-view/${d.name}_view_v.jpg`
           })
           .attr('x', function(d) {
-            // d.x = that.viewsCordinates.right_view.x
+            // d.x = that.viewsCoordinates.right_view.x
             return d.x
           })
           .attr('y', function(d) {
-            // d.y = that.viewsCordinates.right_view.y
+            // d.y = that.viewsCoordinates.right_view.y
             return d.y
           })
           .attr('height', d => d.height)
@@ -742,95 +630,34 @@ export default {
               .on('end', this.drag_view_end)
           )
       })
-      that.table.bottom_view.forEach((element, i) => {
+      this.activeArea.bottom_view.forEach((element, i) => {
         d3.select(this.$el)
           .select('#dine-in-area > g')
           .datum(element)
           .append('g')
           .attr('index_id', i)
-          .on('mouseover', (d, ia, a) => {
-            if (d3.select('.view_delete_button').node()) {
-              if (
-                d3
-                  .select(d3.select('.view_delete_button').node().parentNode)
-                  .attr('index_id') == d3.select(a[ia]).attr('index_id') &&
-                d3
-                  .select(d3.select('.view_delete_button').node().parentNode)
-                  .attr('view_type') == d3.select(a[ia]).attr('view_type')
-              ) {
-                return
-              } else {
-                d3.selectAll('.resizer').remove()
-                d3.selectAll('.view_delete_button').remove()
-              }
-            }
-            d3.select(a[ia])
-              .append('use')
-              .attr('class', 'view_delete_button')
-              .attr('draggable', 'true')
-              .attr('x', function(d) {
-                return d.x
-              })
-              .attr('y', function(d) {
-                return d.y
-              })
-              .attr('width', 30)
-              .attr('height', 30)
-              .attr('xlink:href', '#dinning_close_button')
-              .on('click', function() {
-                d3.select('.view_delete_button')
-                  .node()
-                  .parentNode.remove()
-                that.updateViewLayout()
-              })
-            if (d3.select('.resizer').node()) {
-              return
-            }
-            d3.select(a[ia])
-              .append('g')
-              .attr('class', 'resizer side-view-resize-bottom_view')
-              .attr('fill', 'none')
-              .attr('stroke', '#9b9fb8')
-              .attr('side', 'bottom_view')
-              .append('line')
-              .attr('x2', d => parseInt(d.x))
-              .attr('y2', d => parseInt(d.y) + 60)
-              .attr('x1', d => parseInt(d.x))
-              .attr('y1', d => parseInt(d.y))
-              .attr('stroke-width', 4)
-              .style('cursor', 'nw-resize')
-              .call(
-                d3
-                  .drag()
-                  .on('start', d => this.drag_start(d))
-                  .on('drag', (d, i, a) =>
-                    this.drag_view_horizontal_drag_right_resize(d, i, a)
-                  )
-                  .on('end', this.drag_view_end)
-              )
-          })
           .attr('class', 'side_view_block')
           .attr('view_type', d => d.name)
           .attr('view_side', 'bottom_view')
 
           .attr('x', function(d) {
-            // d.x = that.viewsCordinates.bottom_view.x
+            // d.x = that.viewsCoordinates.bottom_view.x
             return d.x
           })
           .attr('y', function(d) {
-            // d.y = that.viewsCordinates.bottom_view.y
+            // d.y = that.viewsCoordinates.bottom_view.y
             return d.y
           })
           .append('image')
           .attr('xlink:href', function(d) {
-            return `/img/table-view/${d.name}_view_h.jpg`
+            return `/img/dinein/area-view/${d.name}_view_h.jpg`
           })
           .attr('x', function(d) {
-            // d.x = that.viewsCordinates.bottom_view.x
+            // d.x = that.viewsCoordinates.bottom_view.x
             return d.x
           })
           .attr('y', function(d) {
-            // d.y = that.viewsCordinates.bottom_view.y
+            // d.y = that.viewsCoordinates.bottom_view.y
             return d.y
           })
           .attr('height', d => d.height)
@@ -844,94 +671,33 @@ export default {
               .on('end', this.drag_view_end)
           )
       })
-      that.table.left_view.forEach((element, i) => {
+      this.activeArea.left_view.forEach((element, i) => {
         d3.select(this.$el)
           .select('#dine-in-area > g')
           .datum(element)
           .append('g')
           .attr('index_id', i)
-          .on('mouseover', (d, ia, a) => {
-            if (d3.select('.view_delete_button').node()) {
-              if (
-                d3
-                  .select(d3.select('.view_delete_button').node().parentNode)
-                  .attr('index_id') == d3.select(a[ia]).attr('index_id') &&
-                d3
-                  .select(d3.select('.view_delete_button').node().parentNode)
-                  .attr('view_type') == d3.select(a[ia]).attr('view_type')
-              ) {
-                return
-              } else {
-                d3.selectAll('.resizer').remove()
-                d3.selectAll('.view_delete_button').remove()
-              }
-            }
-            d3.select(a[ia])
-              .append('use')
-              .attr('class', 'view_delete_button')
-              .attr('draggable', 'true')
-              .attr('x', function(d) {
-                return d.x
-              })
-              .attr('y', function(d) {
-                return d.y
-              })
-              .attr('width', 30)
-              .attr('height', 30)
-              .attr('xlink:href', '#dinning_close_button')
-              .on('click', function() {
-                d3.select('.view_delete_button')
-                  .node()
-                  .parentNode.remove()
-                that.updateViewLayout()
-              })
-            if (d3.select('.resizer').node()) {
-              return
-            }
-            d3.select(a[ia])
-              .append('g')
-              .attr('class', 'resizer side-view-resize-left_view')
-              .attr('fill', 'none')
-              .attr('stroke', '#9b9fb8')
-              .attr('side', 'bottom_view')
-              .append('line')
-              .attr('x2', d => parseInt(d.x) + 60)
-              .attr('y2', d => parseInt(d.y))
-              .attr('x1', d => parseInt(d.x))
-              .attr('y1', d => parseInt(d.y))
-              .attr('stroke-width', 4)
-              .style('cursor', 'nw-resize')
-              .call(
-                d3
-                  .drag()
-                  .on('start', d => this.drag_start(d))
-                  .on('drag', (d, i, a) =>
-                    this.drag_view_vertical_drag_top_resize(d, i, a)
-                  )
-                  .on('end', this.drag_view_end)
-              )
-          })
           .attr('class', 'side_view_block')
           .attr('view_type', d => d.name)
           .attr('view_side', 'left_view')
           .attr('x', function(d) {
-            // d.x = that.viewsCordinates.left_view.x
+            // d.x = that.viewsCoordinates.left_view.x
             return d.x
           })
           .attr('y', function(d) {
-            // d.y = that.viewsCordinates.left_view.y
+            // d.y = that.viewsCoordinates.left_view.y
             return d.y
           })
           .append('image')
           .attr('xlink:href', function(d) {
-            return `/img/table-view/${d.name}_view_v.jpg`
+            return `/img/dinein/area-view/${d.name}_view_v.jpg`
           })
           .attr('x', function(d) {
-            // d.x = that.viewsCordinates.left_view.x
+            // d.x = that.viewsCoordinates.left_view.x
             return d.x
           })
           .attr('y', function(d) {
-            // d.y = that.viewsCordinates.left_view.y
+            // d.y = that.viewsCoordinates.left_view.y
             return d.y
           })
           .attr('height', d => d.height)
@@ -979,6 +745,8 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
+      // eslint-disable-next-line no-console
+      console.log(this.orderDetails)
       this.addOrSplit =
         this.orderDetails.length > 0
           ? 'Click here to split table'
