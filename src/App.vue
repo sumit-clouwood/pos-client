@@ -190,7 +190,6 @@ export default {
             if (event.data.msg == 'token') {
               console.log('setting new token to client')
               localStorage.setItem('token', event.data.data)
-              //DataService.setMiddleware()
               bootstrap.loadUI().then(() => {
                 setTimeout(() => {
                   this.loading = false

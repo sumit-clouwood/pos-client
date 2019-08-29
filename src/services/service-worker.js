@@ -80,45 +80,42 @@ if (workbox) {
   )
 
   self.addEventListener('sync', function(event) {
-    console.log(
-      'sw:',
-      'SYNC EVENT RECEIVED, now online, lets try postofflineorders'
-    )
-    console.log('sw:', event)
-
-    if (event.tag === 'postOfflineOrders') {
-      console.log('sw:', 'correct event received')
-
-      // event.tag name checked
-      // here must be the same as the one used while registering
-      // sync`
-      // Send our POST request to the server, now that the user is online
-
-      const syncIt = async () => {
-        return new Promise(resolve => {
-          sendPostToServer()
-            .then(() => {
-              try {
-                notificationOptions.body =
-                  'Offline orders are synced with server.'
-                resolve(
-                  self.registration.showNotification(
-                    'POS synced',
-                    notificationOptions
-                  )
-                )
-              } catch (e) {
-                console.log('sw:', e)
-              }
-            })
-            .catch(err => {
-              console.log('sw:', 'Error syncing orders to server', err)
-            })
-        })
-      }
-
-      event.waitUntil(syncIt())
-    }
+    console.log('browser sync event received', event)
+    // console.log(
+    //   'sw:',
+    //   'SYNC EVENT RECEIVED, now online, lets try postofflineorders'
+    // )
+    // console.log('sw:', event)
+    // if (event.tag === 'postOfflineOrders') {
+    //   console.log('sw:', 'correct event received')
+    //   // event.tag name checked
+    //   // here must be the same as the one used while registering
+    //   // sync`
+    //   // Send our POST request to the server, now that the user is online
+    //   const syncIt = async () => {
+    //     return new Promise(resolve => {
+    //       sendPostToServer()
+    //         .then(() => {
+    //           try {
+    //             notificationOptions.body =
+    //               'Offline orders are synced with server.'
+    //             resolve(
+    //               self.registration.showNotification(
+    //                 'POS synced',
+    //                 notificationOptions
+    //               )
+    //             )
+    //           } catch (e) {
+    //             console.log('sw:', e)
+    //           }
+    //         })
+    //         .catch(err => {
+    //           console.log('sw:', 'Error syncing orders to server', err)
+    //         })
+    //     })
+    //   }
+    //   event.waitUntil(syncIt())
+    // }
   })
 
   //this is manually sync, we ll remove it later
@@ -130,18 +127,15 @@ if (workbox) {
           setTimeout(function() {
             sendPostToServer()
               .then(() => {
-                notificationOptions.body =
-                  'Offline orders are synced with server.'
-                resolve(
-                  self.registration.showNotification(
-                    'POS synced',
-                    notificationOptions
-                  )
-                )
+                self.registration.showNotification('SW Orders synced to server')
               })
               .catch(() => {
                 console.log('sw:', 'SW Error syncing orders to server')
               })
+
+            resolve(
+              self.registration.showNotification('Orders synced to server')
+            )
           }, 1000 * 10)
         })
       }
