@@ -34,6 +34,12 @@
       </div>
     </div>
   </div>
+  <div v-else>
+    <p>
+      Since there is no address linked to the customer, please add address or
+      choose another customer.
+    </p>
+  </div>
 </template>
 
 <script>
