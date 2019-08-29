@@ -488,6 +488,10 @@ h1, h2, h3, h4, h5, h6 {
       .header .header-main .header-main-right .popup {
         display: none; }
 
+.transaction-orders .header-main .header-main-right .walkin-btn-design > .walkin-btn {
+  height: 3.125rem;
+  margin-left: 1.25rem; }
+
 .POSItemOptions {
   padding-right: 0.625rem; }
   .POSItemOptions .modal-title {
@@ -4595,32 +4599,43 @@ body {
       height: 2.8125rem; }
   .main-body-transaction .search-field {
     margin: 1.25rem 0.625rem; }
-  .main-body-transaction .detailed_block {
+  .main-body-transaction .left_info_block > p.date_class {
+    margin: 0 0.75rem; }
+  .main-body-transaction .left_info_block .detailed_block {
     border-bottom: 1px solid #E3E7F2;
     margin-bottom: 0.625rem; }
-    .main-body-transaction .detailed_block > .date_class {
+    .main-body-transaction .left_info_block .detailed_block > .date_class {
       font-size: 0.875rem;
       line-height: 0.9375rem;
       letter-spacing: 0.5px;
       color: #4B4E53;
       padding-left: 0.625rem;
       margin-bottom: 0.4375rem; }
-    .main-body-transaction .detailed_block .left_info_block {
+    .main-body-transaction .left_info_block .detailed_block .left_info_block {
       display: flex;
       align-items: center;
       justify-content: space-around;
       cursor: pointer;
       padding: 10px 10px; }
-      .main-body-transaction .detailed_block .left_info_block.active, .main-body-transaction .detailed_block .left_info_block:hover {
+      .main-body-transaction .left_info_block .detailed_block .left_info_block:hover {
+        background: #767DFF !important; }
+      .main-body-transaction .left_info_block .detailed_block .left_info_block.active, .main-body-transaction .left_info_block .detailed_block .left_info_block:hover {
         background: #5056CA; }
-        .main-body-transaction .detailed_block .left_info_block.active .img_block svg path, .main-body-transaction .detailed_block .left_info_block:hover .img_block svg path {
+        .main-body-transaction .left_info_block .detailed_block .left_info_block.active .img_block svg path, .main-body-transaction .left_info_block .detailed_block .left_info_block:hover .img_block svg path {
           fill: #fff; }
-        .main-body-transaction .detailed_block .left_info_block.active .img_block svg circle, .main-body-transaction .detailed_block .left_info_block:hover .img_block svg circle {
+        .main-body-transaction .left_info_block .detailed_block .left_info_block.active .img_block svg circle, .main-body-transaction .left_info_block .detailed_block .left_info_block:hover .img_block svg circle {
           stroke: #fff;
           fill: #fff; }
-        .main-body-transaction .detailed_block .left_info_block.active *, .main-body-transaction .detailed_block .left_info_block:hover * {
+        .main-body-transaction .left_info_block .detailed_block .left_info_block.active *, .main-body-transaction .left_info_block .detailed_block .left_info_block:hover * {
           color: #fff !important; }
-      .main-body-transaction .detailed_block .left_info_block .time_and_button a {
+        .main-body-transaction .left_info_block .detailed_block .left_info_block.active .time_and_button a, .main-body-transaction .left_info_block .detailed_block .left_info_block:hover .time_and_button a {
+          background: #3A3E9F; }
+      .main-body-transaction .left_info_block .detailed_block .left_info_block .img_block svg path {
+        fill: #5056CA; }
+      .main-body-transaction .left_info_block .detailed_block .left_info_block .img_block svg circle {
+        stroke: #5056CA;
+        fill: #fff; }
+      .main-body-transaction .left_info_block .detailed_block .left_info_block .time_and_button a {
         border-radius: 4px;
         padding: 0.625rem;
         font-weight: 600;
@@ -4630,21 +4645,21 @@ body {
         min-width: 3.6875rem;
         color: #fff;
         margin: 0 auto; }
-        .main-body-transaction .detailed_block .left_info_block .time_and_button a.canceled {
+        .main-body-transaction .left_info_block .detailed_block .left_info_block .time_and_button a.canceled {
           background-color: #CC3232; }
-        .main-body-transaction .detailed_block .left_info_block .time_and_button a.refunded {
+        .main-body-transaction .left_info_block .detailed_block .left_info_block .time_and_button a.refunded {
           background-color: #EF7F2A; }
-        .main-body-transaction .detailed_block .left_info_block .time_and_button a.success {
+        .main-body-transaction .left_info_block .detailed_block .left_info_block .time_and_button a.success {
           background-color: #5056CA; }
-      .main-body-transaction .detailed_block .left_info_block .time_and_button > p {
+      .main-body-transaction .left_info_block .detailed_block .left_info_block .time_and_button > p {
         font-size: 0.875rem;
         text-align: right; }
-      .main-body-transaction .detailed_block .left_info_block .price_and_name {
+      .main-body-transaction .left_info_block .detailed_block .left_info_block .price_and_name {
         padding: 0 1.25rem; }
-        .main-body-transaction .detailed_block .left_info_block .price_and_name > p {
+        .main-body-transaction .left_info_block .detailed_block .left_info_block .price_and_name > p {
           color: #4B4E53;
           font-size: 0.875rem; }
-          .main-body-transaction .detailed_block .left_info_block .price_and_name > p.price_s_desc {
+          .main-body-transaction .left_info_block .detailed_block .left_info_block .price_and_name > p.price_s_desc {
             color: #B0B2BB; }
 
 .transaction-orders .main-orders {
@@ -4702,6 +4717,7 @@ body {
         display: inline-block;
         padding: 0.3125rem;
         margin-right: 0.3125rem;
+        margin-bottom: 0.3125rem;
         border-radius: 4px; }
       .trans-item-list .trans-menu-item > div p {
         color: #3d3f43;
@@ -4716,7 +4732,9 @@ body {
       border-radius: 4px; }
       .trans-item-list .trans-menu-item .trans-menu-image > img {
         border-radius: 50%;
-        width: 3.75rem; }
+        width: 3.75rem;
+        height: 3.75rem;
+        object-fit: cover; }
   .trans-item-list .trans-menu-replace {
     display: grid;
     grid-template-columns: auto auto;
@@ -4737,5 +4755,33 @@ body {
 .btn-transaction {
   background: #fff;
   padding: 20px; }
+
+@media only screen and (min-width: 320px) and (max-width: 600px) {
+  .transaction-orders .main-transaction-container {
+    grid-template-columns: 1fr !important; }
+    .transaction-orders .main-transaction-container .main-body-transaction .search-trans-wrapper {
+      margin: 0.625rem 0; }
+      .transaction-orders .main-transaction-container .main-body-transaction .search-trans-wrapper .search-field {
+        margin: 0; }
+  .transaction-orders .transaction-cart .transaction-payment p:not(.trans-label) {
+    font-size: 14px; }
+  .transaction-orders .transaction-cart .transaction-payment .trans-cash-price > p:not(.trans-cash-recipt) {
+    font-size: 14px; }
+  .transaction-orders .transaction-item .trans-item-list-wrapper {
+    max-height: 11rem;
+    overflow-y: auto; }
+    .transaction-orders .transaction-item .trans-item-list-wrapper .trans-item-list {
+      grid-template-columns: 1fr; }
+      .transaction-orders .transaction-item .trans-item-list-wrapper .trans-item-list .trans-menu-item {
+        grid-template-columns: auto 1fr; }
+      .transaction-orders .transaction-item .trans-item-list-wrapper .trans-item-list .trans-menu-replace {
+        grid-template-columns: 1fr auto;
+        margin-bottom: 0.625rem; }
+  .transaction-orders .main-orders {
+    height: 100vh; }
+    .transaction-orders .main-orders .main-orders-total {
+      padding: 0; }
+      .transaction-orders .main-orders .main-orders-total .total-wrapper {
+        margin-bottom: -10rem; } }
 
 /*# sourceMappingURL=style.css.map */
