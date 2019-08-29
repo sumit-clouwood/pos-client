@@ -80,21 +80,26 @@ const actions = {
       }
     })
   },
-  logout({ commit, rootGetters }) {
+  logout({ commit }) {
     localStorage.setItem('token', '')
     localStorage.setItem('brand_id', '')
     localStorage.setItem('store_id', '')
-    AuthService.logout().then(() => {
-      commit('context/RESET', null, { root: true })
-      DataService.setContext({
-        brand: rootGetters['context/brand'],
-        store: rootGetters['context/store'],
-      })
 
-      commit('sync/reset', {}, { root: true })
+    commit(mutation.RESET)
 
-      commit(mutation.SET_TOKEN, false)
+    commit('order/RESET', null, { root: true })
+    commit('checkout/RESET', null, { root: true })
+    commit('context/RESET', null, { root: true })
+    commit('customer/reset', null, { root: true })
+    commit('sync/reset', {}, { root: true })
+    commit('location/RESET', true, { root: true })
+
+    DataService.setContext({
+      brand: null,
+      store: null,
     })
+
+    AuthService.logout().then(() => {})
   },
 
   getUserDetails({ commit }, userId) {
@@ -128,6 +133,14 @@ const mutations = {
   },
   [mutation.USER_DETAILS](state, userDetails) {
     state.userDetails = userDetails
+  },
+  [mutation.RESET](state) {
+    state.token = null
+    state.deviceId = null
+    state.refreshToken = null
+    state.rolePermissions = null
+    state.userDetails = false
+    state.permissions = false
   },
 }
 
