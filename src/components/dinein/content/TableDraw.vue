@@ -60,7 +60,14 @@
                           class="cursor-pointer text-danger reservation-cancel"
                           @click="cancelReservation(orderData.reservationId)"
                         >
-                          ✖
+                          <span class="dlt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">
+                              <g fill="none" fill-rule="evenodd" stroke="#DE3C3C">
+                                  <path d="M2.278 4.808V15.23a1.5 1.5 0 0 0 1.5 1.5h8.444a1.5 1.5 0 0 0 1.5-1.5V4.808H2.278zM6.727 1.654l.079.57H1.723a1.223 1.223 0 0 0 0 2.445h12.554a1.223 1.223 0 0 0                       0-2.446H9.194l.079-.569a.509.509 0 0 0 .005-.07V1a.5.5 0 0 0-.5-.5H7.222a.5.5 0 0 0-.5.5v.585c0 .023.002.047.005.07z"></path>
+                                  <rect width="1" height="4.169" x="5.833" y="8.254" fill="#D8D8D8" rx=".5"></rect>
+                                  <rect width="1" height="4.169" x="10.278" y="8.254" fill="#D8D8D8" rx=".5"></rect>
+                              </g>
+                                </svg>
+                          </span>
                         </span>
                       </div>
                     </div>
@@ -77,7 +84,14 @@
                         class="cursor-pointer text-danger reservation-cancel"
                         @click="cancelReservation(orderData.reservationId)"
                       >
-                        ✖
+                         <span class="dlt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">
+                              <g fill="none" fill-rule="evenodd" stroke="#DE3C3C">
+                                  <path d="M2.278 4.808V15.23a1.5 1.5 0 0 0 1.5 1.5h8.444a1.5 1.5 0 0 0 1.5-1.5V4.808H2.278zM6.727 1.654l.079.57H1.723a1.223 1.223 0 0 0 0 2.445h12.554a1.223 1.223 0 0 0                       0-2.446H9.194l.079-.569a.509.509 0 0 0 .005-.07V1a.5.5 0 0 0-.5-.5H7.222a.5.5 0 0 0-.5.5v.585c0 .023.002.047.005.07z"></path>
+                                  <rect width="1" height="4.169" x="5.833" y="8.254" fill="#D8D8D8" rx=".5"></rect>
+                                  <rect width="1" height="4.169" x="10.278" y="8.254" fill="#D8D8D8" rx=".5"></rect>
+                              </g>
+                                </svg>
+                          </span>
                       </span>
                     </div>
                   </div>
@@ -103,8 +117,11 @@
     <div class="modal" id="confirmModal" style="display: none; z-index: 1050;">
       <div class="modal-dialog">
         <div class="modal-content">
+          <div class="modal-header customer-header">
+            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+            <h4 class="customer-title">{{ _t('Do you want to cancel this reservation') }} ?</h4>
+          </div>
           <div class="modal-body" id="confirmMessage">
-            <b>{{ _t('Do you want to cancel this reservation') }} ?</b>
           </div>
           <div class="modal-footer">
             <button
@@ -765,50 +782,4 @@ export default {
   },
 }
 </script>
-<style scoped lang="scss">
-svg#dine-in-area {
-  background: #f8fbff;
-}
-.tooltip-c-range {
-  margin-bottom: 0;
-  font-weight: 600;
-}
-.dropdown-content {
-  box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
-  transition: all 0.2s ease-out;
-  width: auto;
-}
-#tooltipdata {
-  display: none;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px 0 rgba(187, 187, 187, 0.5);
-  background-color: #f8fbff;
-}
 
-.dinein_table {
-  &:hover {
-    svg {
-      path {
-        fill: #62bb31;
-        stroke: #62bb31;
-      }
-    }
-  }
-}
-g.dinein_table_parent:active {
-  stroke: #62bb31;
-  stroke-width: 2px;
-}
-.modal-dialog {
-  max-width: 30%;
-}
-.table-action {
-  position: relative;
-}
-a.table-popup {
-  display: block;
-  padding: 2px 25px 1px 12px;
-  font-weight: 400;
-}
-</style>
