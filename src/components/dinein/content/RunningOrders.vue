@@ -1,6 +1,6 @@
 <template>
   <div
-    class="container-fluid row running-orders-dinein"
+    class="container-fluid running-orders-dinein"
     id="running-orders-show"
     style=""
   >
