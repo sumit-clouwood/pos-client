@@ -80,43 +80,65 @@ if (workbox) {
   )
 
   self.addEventListener('sync', function(event) {
-    console.log(
-      'sw:',
-      'SYNC EVENT RECEIVED, now online, lets try postofflineorders'
-    )
-    console.log('sw:', event)
+    console.log('browser sync event received', event)
+    // console.log(
+    //   'sw:',
+    //   'SYNC EVENT RECEIVED, now online, lets try postofflineorders'
+    // )
+    // console.log('sw:', event)
+    // if (event.tag === 'postOfflineOrders') {
+    //   console.log('sw:', 'correct event received')
+    //   // event.tag name checked
+    //   // here must be the same as the one used while registering
+    //   // sync`
+    //   // Send our POST request to the server, now that the user is online
+    //   const syncIt = async () => {
+    //     return new Promise(resolve => {
+    //       sendPostToServer()
+    //         .then(() => {
+    //           try {
+    //             notificationOptions.body =
+    //               'Offline orders are synced with server.'
+    //             resolve(
+    //               self.registration.showNotification(
+    //                 'POS synced',
+    //                 notificationOptions
+    //               )
+    //             )
+    //           } catch (e) {
+    //             console.log('sw:', e)
+    //           }
+    //         })
+    //         .catch(err => {
+    //           console.log('sw:', 'Error syncing orders to server', err)
+    //         })
+    //     })
+    //   }
+    //   event.waitUntil(syncIt())
+    // }
+  })
 
-    if (event.tag === 'postOfflineOrders') {
-      console.log('sw:', 'correct event received')
-
-      // event.tag name checked
-      // here must be the same as the one used while registering
-      // sync`
-      // Send our POST request to the server, now that the user is online
-
+  //this is manually sync, we ll remove it later
+  self.addEventListener('message', function(event) {
+    if (event.data.hasOwnProperty('sync')) {
+      console.log('sw:', 'sync event', event.data)
       const syncIt = async () => {
         return new Promise(resolve => {
-          sendPostToServer()
-            .then(() => {
-              try {
-                notificationOptions.body =
-                  'Offline orders are synced with server.'
-                resolve(
-                  self.registration.showNotification(
-                    'POS synced',
-                    notificationOptions
-                  )
-                )
-              } catch (e) {
-                console.log('sw:', e)
-              }
-            })
-            .catch(err => {
-              console.log('sw:', 'Error syncing orders to server', err)
-            })
+          setTimeout(function() {
+            sendPostToServer()
+              .then(() => {
+                self.registration.showNotification('SW Orders synced to server')
+              })
+              .catch(() => {
+                console.log('sw:', 'SW Error syncing orders to server')
+              })
+
+            resolve(
+              self.registration.showNotification('Orders synced to server')
+            )
+          }, 1000 * 10)
         })
       }
-
       event.waitUntil(syncIt())
     }
   })

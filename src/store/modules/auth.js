@@ -1,6 +1,7 @@
 import DataService from '@/services/DataService'
 import AuthService from '@/services/data/AuthService'
 import * as mutation from './user/mutation-types'
+import db from '@/services/network/DB'
 
 // initial state
 const state = {
@@ -51,6 +52,15 @@ const actions = {
           }
           commit(mutation.SET_TOKEN, response.data.token)
           localStorage.setItem('token', response.data.token)
+
+          //update token in the indexeddb/auth
+          db.getBucket('auth').then(bucket => {
+            db.fetch(bucket).then(data => {
+              data[0].token = response.data.token
+              db.put(bucket, data[0])
+            })
+          })
+
           resolve()
         })
         .catch(error => reject(error))

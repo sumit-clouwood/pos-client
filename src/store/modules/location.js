@@ -144,10 +144,6 @@ const actions = {
           commit('modules/SET_ENABLED_MODULES', state.brand.enabled_modules, {
             root: true,
           })
-          dispatch('referrals')
-          dispatch('auth/getUserDetails', storedata.data.user_id, {
-            root: true,
-          })
           // dispatch('getUserDetails', storedata.data.user_id)
           //  else if (state.store.default_language) {
           //   locale = state.store.default_language
@@ -168,6 +164,12 @@ const actions = {
             }
           )
           resolve(state.locale)
+
+          dispatch('referrals')
+          dispatch('auth/getUserDetails', storedata.data.user_id, {
+            root: true,
+          })
+
           // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
         })
         .catch(error => {
