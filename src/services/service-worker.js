@@ -75,14 +75,57 @@ if (workbox) {
   )
 
   self.addEventListener('sync', function(event) {
-    console.log(
-      'sw:',
-      'SYNC EVENT RECEIVED, now online, lets try postofflineorders'
-    )
-    console.log('sw:', event)
+    console.log('browser sync event received')
+    console.log(event)
+    // we are going with our manual sync so ignore this event
+    // console.log(
+    //   'sw:',
+    //   'SYNC EVENT RECEIVED, now online, lets try postofflineorders'
+    // )
+    // console.log('sw:', event)
+    // if (event.tag === 'postOfflineOrders') {
+    //   console.log('sw:', 'correct event received')
+    //   // event.tag name checked
+    //   // here must be the same as the one used while registering
+    //   // sync`
+    //   // Send our POST request to the server, now that the user is online
+    //   const syncIt = async () => {
+    //     return new Promise(resolve => {
+    //       sendPostToServer()
+    //         .then(() => {
+    //           try {
+    //             self.registration.showNotification('Orders synced to server')
+    //           } catch (e) {
+    //             console.log('sw:', e)
+    //           }
+    //         })
+    //         .catch(err => {
+    //           console.log('sw:', 'Error syncing orders to server', err)
+    //         })
+    //       try {
+    //         resolve(
+    //           self.registration.showNotification('Orders synced to server')
+    //         )
+    //       } catch (e) {
+    //         console.log('sw:', e)
+    //       }
+    //     })
+    //   }
+    //   event.waitUntil(syncIt())
+    // }
+  })
 
-    if (event.tag === 'postOfflineOrders') {
-      console.log('sw:', 'correct event received')
+  //We ll us this event to sync orders
+  self.addEventListener('message', function(event) {
+    console.log('sync event from app received')
+
+    if (event.data.hasOwnProperty('sync')) {
+      console.log('sw:', 'manual sync event received', event.data)
+
+      console.log(
+        'sw:',
+        'SYNC EVENT RECEIVED, now online, lets try postofflineorders'
+      )
 
       // event.tag name checked
       // here must be the same as the one used while registering
@@ -148,7 +191,10 @@ if (workbox) {
     var clonedRequest = event.request.clone()
     //console.log('I am a request with url: ', clonedRequest.url)
 
-    if (clonedRequest.method === 'POST' || clonedRequest.method === 'OPTIONS') {
+    if (
+      clonedRequest.method === 'POST' &&
+      clonedRequest.url.match('/orders/add')
+    ) {
       // attempt to send request normally
       event.respondWith(
         fetch(clonedRequest).catch(function(error) {
