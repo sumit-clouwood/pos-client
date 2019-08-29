@@ -171,6 +171,7 @@ if (workbox) {
     //console.log('I am a request with url: ', clonedRequest.url)
 
     if (
+      form_data &&
       clonedRequest.method === 'POST' &&
       clonedRequest.url.match('/orders/add')
     ) {
@@ -212,17 +213,21 @@ function savePostRequests(url, payload) {
 
   openDatabase(function(idb) {
     console.log('sw:', 'db opened, adding rec', idb)
-    var request = getObjectStore(ORDER_DOCUMENT, 'readwrite').add({
+    var data = {
+      order_time: payload.real_created_datetime,
       url: url,
       payload: payload,
       method: 'POST',
-    })
+    }
+    var request = getObjectStore(ORDER_DOCUMENT, 'readwrite').add(data)
     request.onsuccess = function(event) {
       console.log(
         'sw:',
         'a new order request has been added to indexedb',
         event
       )
+      //reset form data
+      form_data = null
     }
     request.onerror = function(error) {
       console.error('sw:', "Request can't be send to index db", error)
@@ -237,32 +242,6 @@ function openDatabase(cb) {
   indexedDBOpenRequest.onerror = function(error) {
     // error creating db
     console.error('sw:', 'IndexedDB open error:', error)
-  }
-
-  //this ll be nerver called because we have same version as app and store already created
-  indexedDBOpenRequest.onupgradeneeded = function() {
-    iDB = this.result
-    console.log(
-      'sw:',
-      'db opened for upgrade Create/modify the database schema'
-    )
-    // This should only executes if there's a need to
-    // create/update db.
-    var objectStore = this.result.createObjectStore(ORDER_DOCUMENT, {
-      autoIncrement: true,
-      keyPath: 'id',
-    })
-
-    objectStore.transaction.oncomplete = function() {
-      console.log('sw:', 'create bucket complete', ORDER_DOCUMENT)
-      if (cb) {
-        console.log('sw:', 'calling callback to insert data')
-        cb(iDB)
-      }
-    }
-    objectStore.transaction.onerror = function(event) {
-      console.log('sw:', 'create bucket complete', event, ORDER_DOCUMENT)
-    }
   }
 
   // This will execute each time the database is opened.
@@ -449,8 +428,14 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
           console.log('sw:', 'update good', event)
         }
 
-        console.log('sw:', 'Removing request from index db', savedRequest.id)
-        getObjectStore(ORDER_DOCUMENT, 'readwrite').delete(savedRequest.id)
+        console.log(
+          'sw:',
+          'Removing request from index db',
+          savedRequest.real_created_datetime
+        )
+        getObjectStore(ORDER_DOCUMENT, 'readwrite').delete(
+          savedRequest.payload.real_created_datetime
+        )
 
         resolve(response)
       } else if (response.status == 401) {
