@@ -60,13 +60,39 @@
                           class="cursor-pointer text-danger reservation-cancel"
                           @click="cancelReservation(orderData.reservationId)"
                         >
-                          <span class="dlt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">
-                              <g fill="none" fill-rule="evenodd" stroke="#DE3C3C">
-                                  <path d="M2.278 4.808V15.23a1.5 1.5 0 0 0 1.5 1.5h8.444a1.5 1.5 0 0 0 1.5-1.5V4.808H2.278zM6.727 1.654l.079.57H1.723a1.223 1.223 0 0 0 0 2.445h12.554a1.223 1.223 0 0 0                       0-2.446H9.194l.079-.569a.509.509 0 0 0 .005-.07V1a.5.5 0 0 0-.5-.5H7.222a.5.5 0 0 0-.5.5v.585c0 .023.002.047.005.07z"></path>
-                                  <rect width="1" height="4.169" x="5.833" y="8.254" fill="#D8D8D8" rx=".5"></rect>
-                                  <rect width="1" height="4.169" x="10.278" y="8.254" fill="#D8D8D8" rx=".5"></rect>
+                          <span class="dlt-icon"
+                            ><svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="18"
+                              viewBox="0 0 16 18"
+                            >
+                              <g
+                                fill="none"
+                                fill-rule="evenodd"
+                                stroke="#DE3C3C"
+                              >
+                                <path
+                                  d="M2.278 4.808V15.23a1.5 1.5 0 0 0 1.5 1.5h8.444a1.5 1.5 0 0 0 1.5-1.5V4.808H2.278zM6.727 1.654l.079.57H1.723a1.223 1.223 0 0 0 0 2.445h12.554a1.223 1.223 0 0 0                       0-2.446H9.194l.079-.569a.509.509 0 0 0 .005-.07V1a.5.5 0 0 0-.5-.5H7.222a.5.5 0 0 0-.5.5v.585c0 .023.002.047.005.07z"
+                                ></path>
+                                <rect
+                                  width="1"
+                                  height="4.169"
+                                  x="5.833"
+                                  y="8.254"
+                                  fill="#D8D8D8"
+                                  rx=".5"
+                                ></rect>
+                                <rect
+                                  width="1"
+                                  height="4.169"
+                                  x="10.278"
+                                  y="8.254"
+                                  fill="#D8D8D8"
+                                  rx=".5"
+                                ></rect>
                               </g>
-                                </svg>
+                            </svg>
                           </span>
                         </span>
                       </div>
@@ -84,14 +110,36 @@
                         class="cursor-pointer text-danger reservation-cancel"
                         @click="cancelReservation(orderData.reservationId)"
                       >
-                         <span class="dlt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">
-                              <g fill="none" fill-rule="evenodd" stroke="#DE3C3C">
-                                  <path d="M2.278 4.808V15.23a1.5 1.5 0 0 0 1.5 1.5h8.444a1.5 1.5 0 0 0 1.5-1.5V4.808H2.278zM6.727 1.654l.079.57H1.723a1.223 1.223 0 0 0 0 2.445h12.554a1.223 1.223 0 0 0                       0-2.446H9.194l.079-.569a.509.509 0 0 0 .005-.07V1a.5.5 0 0 0-.5-.5H7.222a.5.5 0 0 0-.5.5v.585c0 .023.002.047.005.07z"></path>
-                                  <rect width="1" height="4.169" x="5.833" y="8.254" fill="#D8D8D8" rx=".5"></rect>
-                                  <rect width="1" height="4.169" x="10.278" y="8.254" fill="#D8D8D8" rx=".5"></rect>
-                              </g>
-                                </svg>
-                          </span>
+                        <span class="dlt-icon"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="18"
+                            viewBox="0 0 16 18"
+                          >
+                            <g fill="none" fill-rule="evenodd" stroke="#DE3C3C">
+                              <path
+                                d="M2.278 4.808V15.23a1.5 1.5 0 0 0 1.5 1.5h8.444a1.5 1.5 0 0 0 1.5-1.5V4.808H2.278zM6.727 1.654l.079.57H1.723a1.223 1.223 0 0 0 0 2.445h12.554a1.223 1.223 0 0 0                       0-2.446H9.194l.079-.569a.509.509 0 0 0 .005-.07V1a.5.5 0 0 0-.5-.5H7.222a.5.5 0 0 0-.5.5v.585c0 .023.002.047.005.07z"
+                              ></path>
+                              <rect
+                                width="1"
+                                height="4.169"
+                                x="5.833"
+                                y="8.254"
+                                fill="#D8D8D8"
+                                rx=".5"
+                              ></rect>
+                              <rect
+                                width="1"
+                                height="4.169"
+                                x="10.278"
+                                y="8.254"
+                                fill="#D8D8D8"
+                                rx=".5"
+                              ></rect>
+                            </g>
+                          </svg>
+                        </span>
                       </span>
                     </div>
                   </div>
@@ -119,10 +167,11 @@
         <div class="modal-content">
           <div class="modal-header customer-header">
             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-            <h4 class="customer-title">{{ _t('Do you want to cancel this reservation') }} ?</h4>
+            <h4 class="customer-title">
+              {{ _t('Do you want to cancel this reservation') }} ?
+            </h4>
           </div>
-          <div class="modal-body" id="confirmMessage">
-          </div>
+          <div class="modal-body" id="confirmMessage"></div>
           <div class="modal-footer">
             <button
               type="button"
@@ -782,4 +831,3 @@ export default {
   },
 }
 </script>
-
