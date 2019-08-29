@@ -234,17 +234,22 @@ function savePostRequests(url, payload) {
 
   openDatabase(function(idb) {
     console.log('sw:', 'db opened, adding rec', idb)
-    var request = getObjectStore(ORDER_DOCUMENT, 'readwrite').add({
+
+    var data = {
+      order_time: payload.real_created_datetime,
       url: url,
       payload: payload,
       method: 'POST',
-    })
+    }
+    var request = getObjectStore(ORDER_DOCUMENT, 'readwrite').add(data)
+
     request.onsuccess = function(event) {
       console.log(
         'sw:',
         'a new order request has been added to indexedb',
         event
       )
+      form_data = null
     }
     request.onerror = function(error) {
       console.error('sw:', "Request can't be send to index db", error)
@@ -473,8 +478,14 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
           console.log('sw:', 'update good', event)
         }
 
-        console.log('sw:', 'Removing request from index db', savedRequest.id)
-        getObjectStore(ORDER_DOCUMENT, 'readwrite').delete(savedRequest.id)
+        console.log(
+          'sw:',
+          'Removing request from index db',
+          savedRequest.payload.real_created_datetime
+        )
+        getObjectStore(ORDER_DOCUMENT, 'readwrite').delete(
+          savedRequest.payload.real_created_datetime
+        )
 
         resolve(response)
       } else if (response.status == 401) {

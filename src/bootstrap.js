@@ -162,7 +162,11 @@ export default {
     }
     if (event.oldVersion === 1) {
       // version 2 -> 3 upgrade
-      db.createBucket('order_post_requests')
+      db.createBucket('order_post_requests', { keyPath: 'order_time' }).then(
+        bucket => {
+          bucket.createIndex('order_time', 'order_time', { unique: true })
+        }
+      )
       this.store.commit('sync/setIdbVersion', 2)
     }
     if (event.oldVersion === 2) {
