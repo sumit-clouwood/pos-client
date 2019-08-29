@@ -85,21 +85,21 @@
                   </span>
                 </div>
                 <div
-                  :key="index"
+                  :key="j"
                   class="order-name"
-                  v-for="(i, index) in orderDetails.items"
+                  v-for="(i, j) in orderDetails.items"
                 >
                   <div class="main-item">
                     {{
-                      typeof orderDetails.items[index] != 'undefined'
-                        ? orderDetails.items[index].name
+                      typeof orderDetails.items[j] != 'undefined'
+                        ? orderDetails.items[j].name
                         : ''
                     }}
                   </div>
                   <div
-                    :key="index"
+                    :key="k"
                     class="modifiers"
-                    v-for="(item, index) in orderDetails.item_modifiers"
+                    v-for="(item, k) in orderDetails.item_modifiers"
                   >
                     <span v-if="item.for_item == i.no">
                       <span v-if="item.qty > 0">+{{ item.qty }}</span>
