@@ -47,7 +47,7 @@
             :key="table._id"
             @click="setTable(table)"
           >
-            {{ table.name }}
+            <span v-html="table.name"></span>
           </span>
         </div>
       </div>
@@ -82,7 +82,8 @@
             v-for="cover in covers"
             :key="cover._id"
             @click="setCover(cover)"
-            >{{ cover.name }}
+          >
+            <span v-html="cover.name"></span>
           </span>
         </div>
       </div>

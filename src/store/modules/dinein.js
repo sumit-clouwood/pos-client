@@ -193,8 +193,9 @@ const actions = {
           status: '',
           name:
             state.areaLookup.dine_in_area._id[value.area_id].name +
-            ' Table Number ' +
-            value.number,
+            ' [ ' +
+            value.number +
+            ' ] ',
           id: value.area_id,
         })
       }
