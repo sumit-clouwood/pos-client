@@ -476,7 +476,8 @@ const actions = {
             ]
             order.covers = table_reservation
           }
-          order.table_reservation_id = rootState.dinein.reservation
+          order.table_reservation_id =
+            rootState.dinein.orderReservationData.reservationId
         }
         //order.app_uniqueid = Crypt.uuid()
         commit(mutation.SET_ORDER, order)
@@ -524,6 +525,7 @@ const actions = {
         //set order id for modify orders or delivery order
         orderId = rootState.order.orderId
         let order = { ...state.order }
+        order.supervisor_password = '1234'
         order.new_real_transition_order_no = ''
         delete order.real_created_datetime
 
