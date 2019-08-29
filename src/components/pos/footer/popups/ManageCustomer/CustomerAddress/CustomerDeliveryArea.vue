@@ -36,8 +36,7 @@
   </div>
   <div v-else>
     <p>
-      Since there is no address linked to the customer, please add address or
-      choose another customer.
+        No address available.
     </p>
   </div>
 </template>
