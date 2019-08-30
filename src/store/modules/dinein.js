@@ -187,16 +187,37 @@ const actions = {
 
   getAvailableTables({ commit, state }) {
     let areaTable = []
+    let orders = []
+    let color = '#62bb31'
     state.tables.forEach(value => {
       if (state.areaLookup.dine_in_area._id[value.area_id] != undefined) {
+        if (state.allBookedTables.orders) {
+          orders = state.allBookedTables.orders.filter(
+            order => order.assigned_table_id === value._id
+          )
+        }
+        if (orders.length) {
+          orders.forEach(order => {
+            if (
+              order.status === CONST.ORDER_STATUS_RESERVED ||
+              order.status === CONST.ORDER_STATUS_IN_PROGRESS
+            ) {
+              color = '#c84c4c'
+            } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
+              color = '#faa03c'
+            }
+          })
+        }
         areaTable.push({
           status: '',
+          color: color,
           name:
             state.areaLookup.dine_in_area._id[value.area_id].name +
             ' [ ' +
             value.number +
             ' ] ',
           id: value.area_id,
+          shape: value.table_shape,
         })
       }
     })
