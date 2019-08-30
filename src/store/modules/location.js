@@ -104,7 +104,7 @@ const actions = {
             commit(mutation.SET_STORE, storedata.data.available_stores[0])
           }
 
-          if (state.store._id) {
+          if (state.store && state.store._id) {
             //set context as well
             commit('context/SET_BRAND_ID', state.brand._id, { root: true })
             commit('context/SET_STORE_ID', state.store._id, { root: true })
