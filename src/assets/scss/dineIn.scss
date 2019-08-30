@@ -517,7 +517,26 @@ svg {
           color: $white;
         }
     }
+  .table-status {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    > span{
+      padding: 0 2px;
+      &:first-child{
+        min-width: $px25;
+      }
+    }
+
+    .fa.fa-rectangle {
+      height: 13px;
+      width: 20px;
+      /*background: rgb(200, 76, 76);*/
+      border-radius: 2px;
+      margin-right: 1px;
+    }
   }
+}
 #tooltipdata {
   display: none;
   height: auto;
@@ -612,21 +631,6 @@ span.dinefor-paynow > a {
     padding: $px5 $px10;
     margin: $px5;
     border-radius: $block-border-radius;
-  }
-}
-span.dropdown {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  > *{
-    padding: 0 2px;
-  }
-  .fa.fa-rectangle {
-    height: 13px;
-    width: 20px;
-    background: rgb(200, 76, 76);
-    border-radius: 2px;
-    margin-right: 1px;
   }
 }
 

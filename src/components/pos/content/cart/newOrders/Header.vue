@@ -42,7 +42,7 @@
             {{ _t('Select Table') }}
           </span>
           <span
-            class="dropdown"
+            class="table-status"
             v-for="table in availableTables"
             :key="table._id"
             v-bind:style="{
@@ -52,16 +52,15 @@
           >
             <span
               :class="'fa fa-' + table.shape"
-              v-bind:style="{
-                color: table.color,
-              }"
+              v-bind:style="
+                table.shape != 'rectangle'
+                  ? {
+                      color: table.color,
+                    }
+                  : { background: table.color }
+              "
             ></span>
-            <span
-              v-bind:style="{
-                color: table.color,
-              }"
-              v-html="table.name"
-            ></span>
+            <span v-html="table.name"></span>
           </span>
         </div>
       </div>
