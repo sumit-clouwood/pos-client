@@ -57,6 +57,9 @@ export default {
     }
   },
   replaceUnderscoreHyphon(str) {
-    return str.replace(/[_-]/g, ' ')
+    if (str) {
+      return str.replace(/[_-]/g, ' ')
+    }
+    return str
   },
 }
