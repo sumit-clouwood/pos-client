@@ -217,6 +217,7 @@ const actions = {
             value.number +
             ' ] ',
           id: value.area_id,
+          shape: value.table_shape,
         })
       }
     })
