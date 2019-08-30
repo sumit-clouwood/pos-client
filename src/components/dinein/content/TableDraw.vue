@@ -167,11 +167,11 @@
         <div class="modal-content">
           <div class="modal-header customer-header">
             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-            <h4 class="customer-title">
-              {{ _t('Do you want to cancel this reservation') }} ?
-            </h4>
+            <h4 class="customer-title">{{ _t('Confirmation!') }}</h4>
           </div>
-          <div class="modal-body" id="confirmMessage"></div>
+          <div class="modal-body font-weight-bold" id="confirmMessage">
+            {{ _t('Do you want to cancel this reservation') }}?
+          </div>
           <div class="modal-footer">
             <button
               type="button"
@@ -255,6 +255,7 @@ export default {
         collection: this.allBookedTables.lookup.orders._id,
         matchWith: orderId,
       })
+      // let order = this.allBookedTables.lookup.orders._id[orderId]
       let customerName = order && order.customer != null ? order.customer : ''
       return order
         ? order.order_no +

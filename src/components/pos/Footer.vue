@@ -489,7 +489,7 @@ export default {
                   root: true,
                 })
               }
-              this.$store.dispatch('dinein/getDineInOrders', {}, { root: true })
+              // this.$store.dispatch('dinein/getDineInOrders', {}, { root: true })
               localStorage.setItem('reservation', false) //Empty Local Storage
               this.$router.replace({ name: 'Dinein' })
             })

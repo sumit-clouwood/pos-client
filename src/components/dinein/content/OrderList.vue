@@ -190,16 +190,17 @@
                   </span>
                 </div>
               </div>
-              <input
+              <!--<input
                 type="hidden"
                 id="ordertime"
                 :value="orderDetails.real_created_datetime.$date.$numberLong"
-              />
+              />-->
               <span
                 :id="orderDetails._id"
                 class="timeago elapsedTime delManTime runningtime"
                 title=""
               >
+                {{ setTime(orderDetails.real_created_datetime) }}
               </span>
             </td>
           </tr>
@@ -213,7 +214,7 @@
 /*global $*/
 import { mapState, mapGetters, mapActions } from 'vuex'
 import DateTime from '@/mixins/DateTime'
-import LookupData from '@/plugins/helpers/LookupData'
+// import LookupData from '@/plugins/helpers/LookupData'
 
 export default {
   name: 'OrderList',
@@ -224,22 +225,22 @@ export default {
   data() {
     return {
       orderDetails: false,
+      timerTime: false,
     }
   },
   updated() {
-    let scope = this
-    $('#running-order tbody .dine-table-content').each(function() {
-      let orderDateTime = $(this)
-        .find('.order-time-det #ordertime')
-        .val()
-      // setInterval(() => {
-      orderDateTime = parseInt($.trim(orderDateTime))
-      let orderTime = scope.timerClock(orderDateTime)
-      $(this)
-        .find('span.runningtime')
-        .html(orderTime)
-      // }, 1000)
-    })
+    // let scope = this
+    // $('#running-order tbody .dine-table-content').each(function() {
+    // let orderDateTime = this.timerTime
+    /*// setInterval(() => {
+    let orderDateTime = parseInt($.trim(this.timerTime))
+    let orderTime = this.timerClock(orderDateTime)
+    $(this)
+      .find('span.runningtime')
+      .html(orderTime)
+    // }, 1000)*/
+    // })
+    // setInterval(() => {}, 1000)
   },
   mixins: [DateTime],
   computed: {
@@ -249,10 +250,22 @@ export default {
     ...mapGetters('dinein', ['getOrderStatus', 'getTableNumber']),
   },
   methods: {
+    setTime(timerTime) {
+      let timeZoneTime =
+        typeof timerTime != 'undefined' ? timerTime.$date.$numberLong : 'false'
+      if (timeZoneTime) {
+        return this.timerClock(parseInt($.trim(timeZoneTime)))
+        /*$(this)
+          .find('span.runningtime')
+          .html(orderTime)*/
+      }
+    },
     ...mapActions('order', ['selectedOrderDetails']),
     ...mapActions('dinein', ['reservationUpdateStatus']),
     getOrderDetails(collection) {
-      this.orderDetails = LookupData.get(collection)
+      // eslint-disable-next-line no-console
+      // console.log(collection)
+      this.orderDetails = collection.collection[collection.matchWith]
     },
     timerClock(datetime) {
       return this.orderTimer(
