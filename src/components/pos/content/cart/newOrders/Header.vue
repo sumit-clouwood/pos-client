@@ -46,12 +46,16 @@
             v-for="table in availableTables"
             :key="table._id"
             v-bind:style="{
-              background: table.bgColor,
               'border-bottom': '1px solid #ccc',
             }"
             @click="setTable(table)"
           >
-            <span v-html="table.name"></span>
+            <span
+              v-bind:style="{
+                color: table.color,
+              }"
+              v-html="table.name"
+            ></span>
           </span>
         </div>
       </div>

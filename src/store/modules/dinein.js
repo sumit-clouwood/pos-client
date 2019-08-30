@@ -188,12 +188,10 @@ const actions = {
   getAvailableTables({ commit, state }) {
     let areaTable = []
     let orders = []
-    let bgColor = '#62bb31'
-    // eslint-disable-next-line no-console
-    console.log(state, 'rajeev')
+    let color = '#62bb31'
     state.tables.forEach(value => {
       if (state.areaLookup.dine_in_area._id[value.area_id] != undefined) {
-        if (state.allBookedTables) {
+        if (state.allBookedTables.orders) {
           orders = state.allBookedTables.orders.filter(
             order => order.assigned_table_id === value._id
           )
@@ -204,15 +202,15 @@ const actions = {
               order.status === CONST.ORDER_STATUS_RESERVED ||
               order.status === CONST.ORDER_STATUS_IN_PROGRESS
             ) {
-              bgColor = '#c84c4c'
+              color = '#c84c4c'
             } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
-              bgColor = '#faa03c'
+              color = '#faa03c'
             }
           })
         }
         areaTable.push({
           status: '',
-          bgColor: bgColor,
+          color: color,
           name:
             state.areaLookup.dine_in_area._id[value.area_id].name +
             ' [ ' +
