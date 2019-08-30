@@ -652,7 +652,7 @@ export default {
           })
           .attr('x', function(d) {
             // d.x = that.viewsCoordinates.right_view.x
-            return d.x
+            return parseInt(d.x) + 254
           })
           .attr('y', function(d) {
             // d.y = that.viewsCoordinates.right_view.y
@@ -725,7 +725,7 @@ export default {
           })
           .attr('y', function(d) {
             // d.y = that.viewsCoordinates.bottom_view.y
-            return d.y
+            return parseInt(d.y) - 43
           })
           .attr('height', d => d.height)
           .attr('width', d => d.width)
