@@ -48,11 +48,24 @@
             {{ _t('Select Table') }}
           </span>
           <span
-            class="dropdown"
+            class="table-status"
             v-for="table in availableTables"
             :key="table._id"
+            v-bind:style="{
+              'border-bottom': '1px solid #ccc',
+            }"
             @click="setTable(table)"
           >
+            <span
+              :class="'fa fa-' + table.shape"
+              v-bind:style="
+                table.shape != 'rectangle'
+                  ? {
+                      color: table.color,
+                    }
+                  : { background: table.color }
+              "
+            ></span>
             <span v-html="table.name"></span>
           </span>
         </div>
@@ -118,6 +131,9 @@ export default {
     return {
       OrderSelectedCover: 'Select Cover',
       selectedTable: '',
+      myStyle: {
+        backgroundColor: '#fff',
+      },
     }
   },
   computed: {
