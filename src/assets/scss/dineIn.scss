@@ -263,7 +263,7 @@ span#dine-bottom {
 #sitting-dinein-table {
   display: grid;
   grid-template-columns: 1fr;
-  height: calc(100vh - 315px);
+  height: calc(100vh - 275px);
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
@@ -311,13 +311,15 @@ table#running-order {
     display: inline-block;
     overflow: hidden;
     vertical-align: middle;
+    padding: $px4 $px10;
+    line-height: 1.45;
   }
   span.dinefor-paynow {
     width: auto;
     border-radius: $px4;
     background-color: $blue-middle;
     display: inline-block;
-    padding: $px7;
+    padding: $px6 $px10;
     margin-left: $px8;
     color: $white;
     font-weight: 600;
@@ -378,7 +380,6 @@ td.order-time-det {
     font-weight: normal !important;
     display: inline-block !important;
     vertical-align: middle;
-    width: $px140;
   }
 }
 .dine-table-heading {
@@ -560,3 +561,72 @@ div{
     }
   }
 }
+span.open-details-popup.cursor-pointer.font-weight-bold.running-order-details {
+  background-color: #e73030;
+  color: #fff;
+  border-radius: $block-border-radius;
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 100;
+}
+.pay_now {
+  color: #fff;
+  font-size: 12px;
+  line-height: normal;
+  font-weight: normal;
+}
+.running-actions {
+  margin-top: 5px;
+  display: grid;
+  grid-template-columns: auto $px128;
+  text-align: center;
+  align-items: center;
+
+}
+.action-status {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+}
+
+span.dinefor-paynow svg {
+  height: 14px;
+}
+
+span.dinefor-paynow > a {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+.table-order-view-wrapper {
+  max-height: 150px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  > .table-order-view{
+    box-shadow: 0px 0px 1px 0 rgba(0,0,0,0.2), 0 6px 8px 0 rgba(0,0,0,0.19);
+    height: $px100;
+    overflow: hidden;
+    padding: $px5 $px10;
+    margin: $px5;
+    border-radius: $block-border-radius;
+  }
+}
+span.dropdown {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  > *{
+    padding: 0 2px;
+  }
+  .fa.fa-rectangle {
+    height: 13px;
+    width: 20px;
+    background: rgb(200, 76, 76);
+    border-radius: 2px;
+    margin-right: 1px;
+  }
+}
+
