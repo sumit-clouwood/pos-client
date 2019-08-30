@@ -36,7 +36,7 @@
   </div>
   <div v-else>
     <p>
-        No address available.
+      No address available.
     </p>
   </div>
 </template>
