@@ -45,6 +45,10 @@
             class="dropdown"
             v-for="table in availableTables"
             :key="table._id"
+            v-bind:style="{
+              background: table.bgColor,
+              'border-bottom': '1px solid #ccc',
+            }"
             @click="setTable(table)"
           >
             <span v-html="table.name"></span>
@@ -109,6 +113,9 @@ export default {
     return {
       OrderSelectedCover: 'Select Cover',
       selectedTable: '',
+      myStyle: {
+        backgroundColor: '#fff',
+      },
     }
   },
   computed: {
