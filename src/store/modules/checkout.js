@@ -539,7 +539,10 @@ const actions = {
             order.modify_reason = 'Updated from POS'
             break
         }
-        if (rootState.order.order_status != 'completed') {
+        if (rootState.order.order_status !== 'completed') {
+          delete order.new_real_transition_order_no
+          delete order.modify_reason
+          order.order_system_status = 'normal'
           response = OrderService.updateOrderItems(
             order,
             rootState.order.orderId,
