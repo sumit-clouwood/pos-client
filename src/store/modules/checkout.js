@@ -478,14 +478,6 @@ const actions = {
 
         //Added a new parameter if dine-in order.
         if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
-          /*if (rootState.dinein.selectedCover) {
-            let table_reservation = [
-              {
-                entity_id: rootState.dinein.selectedCover._id,
-                name: rootState.dinein.selectedCover.name,
-              },
-            ]
-          }*/
           order.covers = orderCovers
           order.table_reservation_id = localStorage.getItem('reservationId')
         }

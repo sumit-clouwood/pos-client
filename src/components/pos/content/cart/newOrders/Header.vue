@@ -87,7 +87,7 @@
         </div>
       </div>
       <div
-        v-if="cartType !== 'hold' && orderType.OTApi === 'dine_in'"
+        v-if="cartType !== 'hold'"
         id="holdorder"
         class="orders-button-large color-main color-text"
         @click="hold"

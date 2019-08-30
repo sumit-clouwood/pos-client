@@ -75,8 +75,8 @@
         <li v-if="permitted('crm', 'root')">
           <a :href="crm">{{ _t('CRM') }}</a>
         </li>
-        <li v-if="permitted('dinein', 'root')">
-          <a :href="dinein">{{ _t('Dine In') }}</a>
+        <li>
+          <a :href="dinein" target="_self">{{ _t('Dine In') }}</a>
         </li>
         <li v-if="permitted('menu', 'root')">
           <a :href="menu">{{ _t('Menu Setup') }}</a>
@@ -113,6 +113,7 @@ export default {
       dashboard: this.baseurl('dashboard'),
       crm: this.baseurl('crm') + '/brand_customers',
       menu: this.baseurl('menu'),
+      dinein: this.dineInUrl('dine-in'),
       brand: this.baseurl('brands'),
     }
   },
@@ -167,6 +168,9 @@ export default {
         window.location.href.replace(new RegExp('/pos/.*'), '/' + link) +
         this.$store.getters['context/brand']
       )
+    },
+    dineInUrl(link) {
+      return window.location.href.replace(new RegExp('/dine-in/.*'), '/' + link)
     },
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },

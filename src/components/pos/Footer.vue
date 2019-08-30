@@ -558,7 +558,7 @@ export default {
       nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
       prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
     })
-    $('.next-btn').click()
+    $('.back-btn').click()
   },
 
   updated() {
