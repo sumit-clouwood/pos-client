@@ -79,9 +79,6 @@ const actions = {
       return Promise.reject('Fake order or an order already in progress')
     }
 
-    //reset order start time
-    commit('order/RESET_ORDER_TIME', null, { root: true })
-
     return new Promise((resolve, reject) => {
       let validPayment = false
       const totalPayable = rootGetters['checkoutForm/orderTotal']
@@ -460,6 +457,9 @@ const actions = {
 
         dispatch('createOrder', action)
           .then(response => {
+            //reset order start time
+            commit('order/RESET_ORDER_TIME', null, { root: true })
+
             resolve(response)
           })
           .catch(response => {
@@ -617,6 +617,9 @@ const actions = {
                   root: true,
                 }
               )
+              //reset order start time
+              commit('order/RESET_ORDER_TIME', null, { root: true })
+
               commit(mutation.PRINT, true)
             } else {
               var err_msg = ''
