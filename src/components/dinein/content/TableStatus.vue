@@ -75,9 +75,9 @@ export default {
         let transform = d3.zoomIdentity
           .scale(that.transform.k)
           .translate(that.transform.x, that.transform.y)
-        that.zoomPercent += 10
         d3.select(a[i]).attr('transform', transform)
       })
+      that.zoomPercent += 10
     },
     zoomOut() {
       let that = this
@@ -86,9 +86,9 @@ export default {
         let transform = d3.zoomIdentity
           .scale(that.transform.k)
           .translate(that.transform.x, that.transform.y)
-        that.zoomPercent -= 10
         d3.select(a[i]).attr('transform', transform)
       })
+      that.zoomPercent -= 10
     },
     moveRight() {
       let that = this

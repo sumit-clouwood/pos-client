@@ -196,7 +196,7 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
-import LookupData from '@/plugins/helpers/LookupData'
+// import LookupData from '@/plugins/helpers/LookupData'
 import Header from './Header'
 import DateTime from '@/mixins/DateTime'
 
@@ -232,7 +232,7 @@ export default {
       selectedTableId: false,
       svgCoordinates: {},
       viewsCoordinates: {},
-      addOrSplit: 'Click here to add order',
+      addOrSplit: 'Click to book table',
       order: false,
       selectedReservationId: '',
       componentKey: 0,
@@ -251,11 +251,11 @@ export default {
       return window.location.href.replace('dine-in', 'dine-in/' + link)
     },*/
     getOrderNo(orderId) {
-      let order = LookupData.get({
+      /*let order = LookupData.get({
         collection: this.allBookedTables.lookup.orders._id,
         matchWith: orderId,
-      })
-      // let order = this.allBookedTables.lookup.orders._id[orderId]
+      })*/
+      let order = this.allBookedTables.lookup.orders._id[orderId]
       let customerName = order && order.customer != null ? order.customer : ''
       return order
         ? order.order_no +
@@ -814,8 +814,8 @@ export default {
       )
       this.addOrSplit =
         this.orderDetails.length > 0
-          ? 'Click here to split table'
-          : 'Click here to add order'
+          ? 'Click to split table'
+          : 'Click to book table'
       this.selectedTableId = datum._id
       let range = $('#range')
       range
