@@ -23,6 +23,7 @@ const state = {
   // pastOrder: false,
   orderStatus: null,
   cartType: 'new',
+  startTime: null,
 }
 
 // getters
@@ -953,6 +954,14 @@ const mutations = {
 
   [mutation.SET_CART_TYPE](state, cartType) {
     state.cartType = cartType
+  },
+
+  [mutation.START_ORDER](state) {
+    state.startTime = new Date().getTime()
+  },
+
+  [mutation.RESET_ORDER_TIME](state) {
+    state.startTime = null
   },
 }
 
