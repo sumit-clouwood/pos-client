@@ -193,6 +193,7 @@ export default {
           .divide-block {
             margin: 0;
             border: none;
+            display: grid;
 
             .customer-block-info {
               padding: 0;

@@ -31,7 +31,7 @@ export default {
         id: 0,
         name: 'Aisyah Zidni',
         img: 'testUserImg-3.jpg',
-        key: 1234,
+        key: 1,
       },
       {
         id: 1,

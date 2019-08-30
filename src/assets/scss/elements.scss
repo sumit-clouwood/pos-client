@@ -402,8 +402,10 @@ h6 {
   .modal-details {
     padding: 0 20px !important;
   }
-  .modal {
-    position: absolute !important;
+  .fade,
+  .show {
+    position: fixed !important;
+    width: 100% !important;
     height: 100% !important;
     overflow: hidden !important;
     border: none !important;
@@ -411,9 +413,24 @@ h6 {
     transition: none !important;
     animation: none !important;
     opacity: 1 !important;
+    max-width: none;
+  }
+  .modal {
+    position: absolute !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    border: none !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+    opacity: 1 !important;
+    max-width: none;
 
     .modal-dialog {
+      max-width: none;
       min-height: 100% !important;
+      width: 100% !important;
       height: 100% !important;
       border: none !important;
       transform: none !important;
@@ -422,9 +439,12 @@ h6 {
       opacity: 1 !important;
 
       .modal-content {
+
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: max-content 1fr max-content;
+        width: 100% !important;
+        max-width: none;
         min-height: 100% !important;
         height: 100%;
         border: none !important;
@@ -442,7 +462,7 @@ h6 {
         .modal-footer {
           .btn-announce {
             button {
-              //height: 50px !important;
+              height: 50px !important;
               font-size: 14px !important;
 
               &#discount-save {

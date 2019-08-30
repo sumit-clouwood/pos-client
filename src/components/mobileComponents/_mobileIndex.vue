@@ -54,7 +54,9 @@ export default {
 <style lang="scss">
 @import "../../assets/scss/variables.scss";
 @import "../../assets/scss/mixins.scss";
-
+.mobile-components {
+  display: none;
+}
 @include responsive(mobile) {
   .mobile-components {
     z-index: 50;

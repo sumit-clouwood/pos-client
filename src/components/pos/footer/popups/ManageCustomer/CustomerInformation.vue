@@ -200,6 +200,7 @@ div#display-order .modal-dialog {
                 ul {
                   li {
                     margin: 0 !important;
+                    text-align: center;
                   }
                 }
               }

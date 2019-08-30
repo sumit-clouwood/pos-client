@@ -109,7 +109,7 @@
           />
           <span class="color-text">{{ modifier.name }}</span>
           <div
-            class="color-text"
+            class="color-text dis"
             v-if="Num.toPrice(modifier.value)"
           >({{ formatPrice(modifier.value) }})</div>
         </label>
@@ -255,7 +255,10 @@ export default {
               }
             }
           }
-
+          .dis {
+            padding-top: 0px;
+            padding-left: 27px;
+          }
           .borderCheck {
             display: none;
             position: absolute;

@@ -117,6 +117,7 @@ export default {
       align-items: center;
       margin: 0;
       #holdorder {
+        height: 35px;
         width: 30%;
         background-color: $green-middle;
       }

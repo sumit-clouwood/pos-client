@@ -45,6 +45,7 @@ export default {
   right: -100vw;
   bottom: 0;
   width: 100vw;
+  height: 100%;
   z-index: 50;
   background-color: #fff;
   display: none;
