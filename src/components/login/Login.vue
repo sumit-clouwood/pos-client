@@ -79,6 +79,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import Progress from '@/components/util/Progress'
+import DataService from '@/services/DataService'
 
 export default {
   computed: {
@@ -103,6 +104,13 @@ export default {
         this.login_in_progress = true
         this.login_success_message = ''
         this.login_fail_message = ''
+
+        this.$store.commit('context/RESET', null, { root: true })
+        DataService.setContext({
+          brand: this.$store.getters['context/brand'],
+          store: this.$store.getters['context/store'],
+        })
+
         this.$store
           .dispatch('auth/login', {
             email: this.email,

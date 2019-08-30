@@ -36,6 +36,7 @@ const state = {
   // pastOrder: false,
   orderStatus: null,
   cartType: 'new',
+  startTime: null,
 }
 
 // getters
@@ -1113,6 +1114,9 @@ const mutations = {
     state.orderStatus = null
     state.orderId = null
     state.orderNote = null
+    // to be fool proof we don't reset startTime here, start time ll be reset when
+    // some one clicks on an item
+    // state.startTime = null
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
@@ -1147,6 +1151,14 @@ const mutations = {
 
   [mutation.SET_CART_TYPE](state, cartType) {
     state.cartType = cartType
+  },
+
+  [mutation.START_ORDER](state) {
+    state.startTime = new Date().getTime()
+  },
+
+  [mutation.RESET_ORDER_TIME](state) {
+    state.startTime = null
   },
 }
 

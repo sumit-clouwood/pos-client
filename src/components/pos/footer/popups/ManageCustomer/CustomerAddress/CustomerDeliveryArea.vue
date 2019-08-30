@@ -34,6 +34,11 @@
       </div>
     </div>
   </div>
+  <div v-else>
+    <p>
+      No address available.
+    </p>
+  </div>
 </template>
 
 <script>

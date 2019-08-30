@@ -144,6 +144,7 @@ export default {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
     modifyOrder() {
+      this.$store.commit('order/START_ORDER')
       this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
         this.$router.push({ path: this.$store.getters['context/store'] })
       })
