@@ -225,7 +225,7 @@ export default {
       page: null,
       svg: null,
       width: 'auto',
-      height: '700px',
+      height: '750px',
       svgWidth: 250,
       svgHeight: 100,
       orderDetails: [],
@@ -380,7 +380,7 @@ export default {
             return d.number
           })
 
-        this.manageViews()
+        // this.manageViews()
         d3.select(a[i])
           .append('rect')
           .attr('x', function(d) {
