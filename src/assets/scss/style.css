@@ -4768,7 +4768,7 @@ span#dine-bottom {
 #sitting-dinein-table {
   display: grid;
   grid-template-columns: 1fr;
-  height: calc(100vh - 315px);
+  height: calc(100vh - 275px);
   overflow-y: auto;
   overflow-x: hidden;
   position: relative; }
