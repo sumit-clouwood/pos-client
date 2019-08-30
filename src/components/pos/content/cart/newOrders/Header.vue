@@ -50,7 +50,12 @@
             }"
             @click="setTable(table)"
           >
-            <span :class="table.shape"></span>
+            <span
+              :class="'fa fa-' + table.shape"
+              v-bind:style="{
+                color: table.color,
+              }"
+            ></span>
             <span
               v-bind:style="{
                 color: table.color,
