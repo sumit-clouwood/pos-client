@@ -33,6 +33,7 @@ const state = {
   referral: false,
   selectedOrder: false,
   orderId: null,
+  orderData: false,
   // pastOrder: false,
   orderStatus: null,
   cartType: 'new',
@@ -877,6 +878,8 @@ const actions = {
     return new Promise(resolve => {
       dispatch('reset')
       commit(mutation.SET_ORDER_ID, order._id)
+      let orderData = { _id: order._id, order_no: order.order_no }
+      commit(mutation.SET_ORDER_DATA, orderData)
 
       order.items.forEach((orderItem, key) => {
         rootState.category.items.forEach(categoryItem => {
@@ -1154,6 +1157,9 @@ const mutations = {
   },
   [mutation.SET_ORDER_ID](state, id) {
     state.orderId = id
+  },
+  [mutation.SET_ORDER_DATA](state, data) {
+    state.orderData = data
   },
   [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId, orderDetails }) {
     localStorage.setItem('onlineOrders', JSON.stringify(orderDetails))

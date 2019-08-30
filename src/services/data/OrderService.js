@@ -48,7 +48,7 @@ export default {
   ) {
     let customer = customerId != '' ? '&customer=' + customerId : ''
     return DataService.get(
-      `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}&order_status=${orderStatus}&order_type=${orderType}&store_id=${storeId}${customer}`
+      `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=1&orderBy=${orderBy}&order_status=${orderStatus}&order_type=${orderType}&store_id=${storeId}${customer}`
     )
   },
   getGlobalDetails(modal, id, action) {

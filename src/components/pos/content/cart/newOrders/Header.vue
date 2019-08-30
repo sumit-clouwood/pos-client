@@ -1,7 +1,13 @@
 <template>
   <div class="main-orders-contacts color-text">
     <div class="main-oreders-title">
-      {{ cartType == 'hold' ? _t('Hold Orders') : _t('New Orders') }}
+      {{
+        cartType == 'hold'
+          ? _t('Hold Orders')
+          : orderData
+          ? orderType.OTview + ' #' + orderData.order_no
+          : _t('New Order')
+      }}
       <div class="main-oreders-date">{{ DateToday }}</div>
     </div>
     <div class="main-oreders-email" v-if="selectedCustomer">
@@ -73,7 +79,10 @@
             @click="showDropdown"
           />
         </form>
-        <div id="my-dropdown" class="dropdown-content cursor-pointer">
+        <div
+          id="my-dropdown"
+          class="available-covers dropdown-content cursor-pointer"
+        >
           <span class="dropdown" :key="0" @click="setCover(null)">
             {{ _t('Select Cover') }}
           </span>
@@ -114,7 +123,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapGetters('dinein', ['getAllCovers']),
-    ...mapState('order', ['items', 'cartType', 'orderType']),
+    ...mapState('order', ['items', 'cartType', 'orderType', 'orderData']),
     ...mapState('checkoutForm', ['msg']),
     ...mapState('dinein', ['selectedCover', 'covers', 'availableTables']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
@@ -125,9 +134,11 @@ export default {
       this.$store.dispatch('customer/resetCustomer')
     },
     showDropdown: function() {
-      $('.dropdown-content').toggle()
+      $('.available-tables').hide()
+      $('.available-covers').toggle()
     },
     showTableList: function() {
+      $('.available-covers').hide()
       $('.available-tables').toggle()
     },
     setCover: function(cover) {
