@@ -21,11 +21,12 @@ const state = {
   orderOnTables: {},
   availableTables: false,
   reservation: false,
+  reservationId: false,
   orderType: { OTview: 'Dine In', OTApi: 'dine_in' },
   covers: false,
   selectedCover: '',
   POSMoveTableSelection: '',
-  allBookedTables: {},
+  allBookedTables: { orders: false, lookup: false },
   orderReservationData: {},
 }
 const getters = {
@@ -53,11 +54,11 @@ const getters = {
 const actions = {
   fetchAll({ dispatch, commit }) {
     commit(mutation.LOADING, true)
-    dispatch('getCovers')
     dispatch('getBookedTables')
-    dispatch('dineInRunningOrders')
+    // dispatch('dineInRunningOrders')
     dispatch('getDineInTables')
     dispatch('getDineInArea')
+    dispatch('getCovers')
     commit(mutation.LOADING, false)
   },
   getDineInOrders({ dispatch }) {
@@ -70,7 +71,8 @@ const actions = {
     const params = [reservationData.reservationId, reservationData.status]
     DineInService.updateReservationStatus(...params).then(response => {
       commit(mutation.RESERVATION_ID, response.data)
-      dispatch('getDineInOrders')
+      dispatch('getBookedTables')
+      dispatch('getTableStatus')
     })
   },
   getBookedTables({ commit }) {
@@ -126,7 +128,7 @@ const actions = {
         let tableDetails = { id: table._id, number: table.number, status: {} }
 
         if (state.allBookedTables) {
-          orders = state.allBookedTables.filter(
+          orders = state.allBookedTables.orders.filter(
             order => order.assigned_table_id === table._id
           )
         }
@@ -191,8 +193,9 @@ const actions = {
           status: '',
           name:
             state.areaLookup.dine_in_area._id[value.area_id].name +
-            ' Table Number ' +
-            value.number,
+            ' [ ' +
+            value.number +
+            ' ] ',
           id: value.area_id,
         })
       }
@@ -211,7 +214,7 @@ const actions = {
           start_date: moment().format('YYYY-MM-DD'),
           start_time: moment().format('hh:mm'),
           assigned_table_id: tableId,
-          number_of_guests: 1,
+          number_of_guests: 0,
           customers: [],
         },
       ]
@@ -289,9 +292,11 @@ const mutations = {
   },
   [mutation.RESERVATION_ID](state, reservationId) {
     state.reservation = reservationId
+    localStorage.setItem('reservationId', reservationId)
   },
   [mutation.BOOKED_TABLES](state, bookedTables) {
-    state.allBookedTables = bookedTables.data
+    state.allBookedTables.orders = bookedTables.data
+    state.allBookedTables.lookup = bookedTables.page_lookups
   },
   [mutation.PAGE_LOOKUP](state, lookups) {
     state.areaLookup = lookups
@@ -300,7 +305,8 @@ const mutations = {
     state.POSMoveTableSelection = tableDetails
   },
   [mutation.RESERVATION_RESPONSE](state, reservation) {
-    state.reservation = reservation.id
+    state.reservationId = reservation.id
+    localStorage.setItem('reservationId', reservation.id)
   },
   [mutation.ORDER_RESERVATION_DATA](state, reservationData) {
     state.orderReservationData = reservationData

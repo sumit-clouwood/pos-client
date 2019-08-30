@@ -530,7 +530,7 @@ g.dinein_table_parent {
     stroke-width: 2px;
   }
   .dinein_table {
-    &:active {
+    &:hover {
       svg {
         path {
           fill: $green;

@@ -226,6 +226,7 @@ const actions = {
         let itemModifiers = []
         let item_discounts = []
         //let itemDiscountedTax = 0
+        let orderCovers = []
         order.items = rootState.order.items.map(item => {
           let orderItem = {
             name: item.name,
@@ -239,9 +240,18 @@ const actions = {
           if (
             rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN
           ) {
-            let itemCover = item.cover_no
-              ? item.cover_no
+            let itemCover = item.coverNo
+              ? item.coverNo
               : rootState.dinein.selectedCover._id
+            let itemCoverName = item.cover_name
+              ? item.cover_name
+              : rootState.dinein.selectedCover.name
+            if (
+              orderCovers.filter(item => item.entity_id == itemCover).length ==
+              0
+            ) {
+              orderCovers.push({ entity_id: itemCover, name: itemCoverName })
+            }
             orderItem = {
               name: item.name,
               entity_id: item._id,
@@ -250,6 +260,7 @@ const actions = {
               price: item.netPrice,
               qty: item.quantity,
               cover_no: itemCover,
+              cover_name: itemCoverName,
             }
           }
 
@@ -467,20 +478,19 @@ const actions = {
 
         //Added a new parameter if dine-in order.
         if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
-          if (rootState.dinein.selectedCover) {
+          /*if (rootState.dinein.selectedCover) {
             let table_reservation = [
               {
                 entity_id: rootState.dinein.selectedCover._id,
                 name: rootState.dinein.selectedCover.name,
               },
             ]
-            order.covers = table_reservation
-          }
-          order.table_reservation_id = rootState.dinein.reservation
+          }*/
+          order.covers = orderCovers
+          order.table_reservation_id = localStorage.getItem('reservationId')
         }
         //order.app_uniqueid = Crypt.uuid()
         commit(mutation.SET_ORDER, order)
-
         dispatch('createOrder', action)
           .then(response => {
             resolve(response)
@@ -537,12 +547,19 @@ const actions = {
             order.modify_reason = 'Updated from POS'
             break
         }
-
-        response = OrderService.modifyOrder(
-          order,
-          rootState.order.orderId,
-          modifyType
-        )
+        if (rootState.order.order_status != 'completed') {
+          response = OrderService.updateOrderItems(
+            order,
+            rootState.order.orderId,
+            modifyType
+          )
+        } else {
+          response = OrderService.modifyOrder(
+            order,
+            rootState.order.orderId,
+            modifyType
+          )
+        }
       } else {
         response = OrderService.saveOrder(
           state.order,

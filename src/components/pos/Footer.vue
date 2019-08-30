@@ -35,7 +35,7 @@
           v-if="cartType === 'new'"
           @click="viewHoldOrders"
           class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
-          :class="{ active: vbutton == 'hold' }"
+          :class="{ active: vbutton === 'hold' }"
           id="hold-order-box"
         >
           <a
@@ -66,8 +66,8 @@
           v-else
           @click="newOrders"
           class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
-          :class="{ active: vbutton == 'new' }"
-          id="hold-order-box"
+          :class="{ active: vbutton === 'new' }"
+          id="new-order-box"
         >
           <a
             class="footer-slider-list-item-link color-text-invert"
@@ -453,7 +453,7 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapState('dinein', ['selectedCover']),
+    ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('customer', ['responseInformation']),
     ...mapState('order', ['orderType', 'cartType', 'items']),
     ...mapState('sync', ['online']),
@@ -472,7 +472,7 @@ export default {
   methods: {
     payNowDirect() {
       let validationError = {}
-      let flash_msg = 'Please add items.'
+      let flash_msg = this._t('Please add items.')
       if (this.items.length > 0) {
         flash_msg = ''
         if (this.selectedCover && this.selectedCover.name) {
@@ -483,18 +483,42 @@ export default {
               /*this.$router.push({
                 path: this.$store.getters['context/store'] + '/dine-in',
               })*/
+              let dineInAreas = this.$store.state.order.areas
+              if (typeof dineInAreas != 'undefined') {
+                this.$store.dispatch('dinein/selectedArea', dineInAreas[0], {
+                  root: true,
+                })
+              }
+              // this.$store.dispatch('dinein/getDineInOrders', {}, { root: true })
+              localStorage.setItem('reservation', false) //Empty Local Storage
               this.$router.replace({ name: 'Dinein' })
             })
-            .catch(() => {
-              setTimeout(() => {
-                $('#payment-msg').modal('hide')
-                $('#payment-screen-footer').prop('disabled', false)
-              }, 500)
+            .catch(response => {
+              let validationError = {}
+              let errors = ''
+              if (response.status == 'form_errors') {
+                for (let i in response.form_errors) {
+                  response.form_errors[i].forEach(err => (errors += ' ' + err))
+                }
+              } else if (response.error) {
+                errors = response.error
+              }
+              if (errors != '') {
+                validationError = {
+                  status: 'flash_message',
+                  flash_message: errors,
+                }
+                this.$store.commit(
+                  'customer/SET_RESPONSE_MESSAGES',
+                  validationError
+                )
+                $('#information-popup').modal('show')
+              }
             })
         } else {
           validationError = {
             status: 'flash_message',
-            flash_message: 'Please select a cover.',
+            flash_message: this._t('Please select a cover.'),
           }
           this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
           $('#information-popup').modal('show')
@@ -509,11 +533,7 @@ export default {
       }
     },
     payNowClick() {
-      if (this.orderType.OTApi !== 'dine_in') {
-        clickPayNow()
-      } else {
-        clickPayNow()
-      }
+      clickPayNow()
     },
     viewHoldOrders() {
       this.vbutton = 'new'
@@ -528,7 +548,7 @@ export default {
       this.$store.commit('order/SET_CART_TYPE', 'new')
     },
   },
-  updated() {
+  mounted() {
     $('ul.ullist-icons').slick({
       slidesToShow: 5,
       slidesToScroll: 1,
@@ -538,9 +558,10 @@ export default {
       nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
       prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
     })
+    $('.next-btn').click()
   },
 
-  mounted() {
+  updated() {
     $('ul.ullist-icons').slick({
       slidesToShow: 5,
       slidesToScroll: 1,

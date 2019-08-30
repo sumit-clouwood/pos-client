@@ -34,18 +34,21 @@
             @click="showTableList"
           />
         </form>
-        <div id="available-tables" class="available-tables cursor-pointer hide">
+        <div
+          id="available-tables"
+          class="dropdown-content available-tables cursor-pointer hide"
+        >
           <span class="dropdown" @click="setTable(null)">
             {{ _t('Select Table') }}
           </span>
-          <div
+          <span
             class="dropdown"
             v-for="table in availableTables"
             :key="table._id"
             @click="setTable(table)"
           >
-            {{ table.name }}
-          </div>
+            <span v-html="table.name"></span>
+          </span>
         </div>
       </div>
       <!--<div
@@ -79,7 +82,8 @@
             v-for="cover in covers"
             :key="cover._id"
             @click="setCover(cover)"
-            >{{ cover.name }}
+          >
+            <span v-html="cover.name"></span>
           </span>
         </div>
       </div>

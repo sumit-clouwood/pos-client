@@ -85,6 +85,8 @@ export default {
     }
   },
   created() {
+    DataService.setStore(this.$store)
+
     if (this.$route.params.brand_id) {
       this.$store.commit('context/SET_BRAND_ID', this.$route.params.brand_id)
       localStorage.setItem('brand_id', this.$route.params.brand_id)
