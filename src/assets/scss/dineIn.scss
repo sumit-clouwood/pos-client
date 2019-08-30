@@ -380,7 +380,6 @@ td.order-time-det {
     font-weight: normal !important;
     display: inline-block !important;
     vertical-align: middle;
-    width: $px140;
   }
 }
 .dine-table-heading {
@@ -615,3 +614,19 @@ span.dinefor-paynow > a {
     border-radius: $block-border-radius;
   }
 }
+span.dropdown {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  > *{
+    padding: 0 2px;
+  }
+  .fa.fa-rectangle {
+    height: 13px;
+    width: 20px;
+    background: rgb(200, 76, 76);
+    border-radius: 2px;
+    margin-right: 1px;
+  }
+}
+

@@ -4858,8 +4858,7 @@ td.order-time-det > span {
   font-size: 0.875rem !important;
   font-weight: normal !important;
   display: inline-block !important;
-  vertical-align: middle;
-  width: 8.75rem; }
+  vertical-align: middle; }
 
 .dine-table-heading th {
   border-top: medium none;
@@ -5050,6 +5049,19 @@ span.dinefor-paynow > a {
     padding: 0.3125rem 0.625rem;
     margin: 0.3125rem;
     border-radius: 4px; }
+
+span.dropdown {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center; }
+  span.dropdown > * {
+    padding: 0 2px; }
+  span.dropdown .fa.fa-rectangle {
+    height: 13px;
+    width: 20px;
+    background: #c84c4c;
+    border-radius: 2px;
+    margin-right: 1px; }
 
 .new-transaction {
   display: grid;
