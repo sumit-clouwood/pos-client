@@ -24,13 +24,18 @@
                 id="range"
                 :key="componentKey"
               >
-                <a
-                  role="button"
-                  class="table-popup bg-success font-weight-bold"
-                  @click="newOrder()"
-                >
-                  {{ _t(addOrSplit) }}
-                </a>
+                <div class="display-table-details">
+                  <a
+                    role="button"
+                    class="table-popup bg-success font-weight-bold"
+                    @click="newOrder()"
+                  >
+                    {{ _t(addOrSplit) }}
+                  </a>
+                  <span class="close-table-details" @click="hideTableDetails"
+                    >X</span
+                  >
+                </div>
                 <div v-if="orderDetails">
                   <div
                     v-for="orderData in orderDetails"
@@ -199,6 +204,7 @@ import TableStatus from './TableStatus'
 // import LookupData from '@/plugins/helpers/LookupData'
 import Header from './Header'
 import DateTime from '@/mixins/DateTime'
+// import Status from '../../mobileComponents/mobileElements/status'
 
 export default {
   name: 'TableDraw',
@@ -267,6 +273,11 @@ export default {
             ' | ' +
             customerName
         : ''
+    },
+    hideTableDetails() {
+      $('#range')
+        .parent('div')
+        .hide()
     },
     newOrder() {
       let URL = this.store + '/dine-in/' + this.selectedTableId
@@ -832,3 +843,15 @@ export default {
   },
 }
 </script>
+<style scoped>
+.display-table-details {
+  display: grid;
+  grid-template-columns: 3fr auto;
+  /*align-items: center;*/
+  align-content: center;
+}
+.close-table-details {
+  background: red;
+  color: #fff;
+}
+</style>
