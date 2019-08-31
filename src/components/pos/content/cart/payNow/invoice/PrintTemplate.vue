@@ -279,7 +279,9 @@ export default {
       currentBrand: this.$store.state.location.brand,
       currentStore: this.$store.state.location.store,
       current_locale: this.$store.state.location.locale,
-      company_logo: this.$store.state.location.brand.company_logo,
+      company_logo: this.$store.state.location.brand.company_logo
+        ? this.$store.state.location.brand.company_logo
+        : '',
     }
   },
   mounted() {

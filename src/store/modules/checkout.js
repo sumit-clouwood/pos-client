@@ -542,7 +542,7 @@ const actions = {
         if (rootState.order.order_status !== 'completed') {
           delete order.new_real_transition_order_no
           delete order.modify_reason
-          order.order_system_status = 'normal'
+          delete order.order_system_status
           response = OrderService.updateOrderItems(
             order,
             rootState.order.orderId,

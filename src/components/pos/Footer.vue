@@ -472,9 +472,7 @@ export default {
   methods: {
     payNowDirect() {
       let validationError = {}
-      let flash_msg = this._t('Please add items.')
       if (this.items.length > 0) {
-        flash_msg = ''
         if (this.selectedCover && this.selectedCover.name) {
           this.$store
             .dispatch('checkout/pay', this.orderType.OTApi)
@@ -527,7 +525,7 @@ export default {
       } else {
         validationError = {
           status: 'flash_message',
-          flash_message: flash_msg,
+          flash_message: this._t('Please add items.'),
         }
         this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
         $('#information-popup').modal('show')
@@ -559,7 +557,10 @@ export default {
       nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
       prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
     })
-    $('.back-btn').click()
+    $('.next-btn').click()
+    setTimeout(function() {
+      $('.back-btn').click()
+    }, 1000)
   },
 
   updated() {

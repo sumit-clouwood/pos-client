@@ -26,7 +26,9 @@
     </div>
     <div class="main-oreders-buttons" v-if="items.length">
       <div
-        v-if="availableTables && orderType.OTApi === 'dine_in'"
+        v-if="
+          availableTables && orderType.OTApi === 'dine_in' && cartType !== 'hold'
+        "
         class="driver-container"
       >
         <form>
@@ -78,7 +80,7 @@
         {{ _t('Split Table') }}
       </div>-->
       <div
-        v-if="covers && orderType.OTApi === 'dine_in'"
+        v-if="covers && orderType.OTApi === 'dine_in' && cartType !== 'hold'"
         class="driver-container"
       >
         <form>

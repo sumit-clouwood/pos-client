@@ -409,7 +409,7 @@ export default {
   },
   beforeMount() {
     // eslint-disable-next-line no-console
-    console.log(this.fetchDeliveryAreas)
+    // console.log(this.fetchDeliveryAreas)
   },
 }
 </script>
