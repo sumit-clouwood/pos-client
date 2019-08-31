@@ -111,7 +111,7 @@
         </p>
       </div>
     </div>
-    <div v-if="orderDetails.item">
+    <div v-if="orderDetails.item && orderDetails.item.order_type !== 'dine_in'">
       <div class="details-item">
         <span class="details-item-name color-text-invert">{{
           _t('Delivery Area:')
