@@ -88,6 +88,7 @@ export default {
               this.$store.state.checkoutForm.action == 'pay'
             ) {
               if (this.$store.getters['checkoutForm/validate']) {
+                this.$store.commit('order/IS_PAY', 1)
                 this.$store
                   .dispatch(
                     'checkout/pay',
