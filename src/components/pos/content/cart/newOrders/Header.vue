@@ -27,7 +27,9 @@
     <div class="main-oreders-buttons" v-if="items.length">
       <div
         v-if="
-          availableTables && orderType.OTApi === 'dine_in' && cartType !== 'hold'
+          availableTables &&
+            orderType.OTApi === 'dine_in' &&
+            cartType !== 'hold'
         "
         class="driver-container"
       >
