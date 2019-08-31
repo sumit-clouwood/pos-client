@@ -37,6 +37,7 @@ const state = {
   // pastOrder: false,
   orderStatus: null,
   cartType: 'new',
+  is_pay: 0,
 }
 
 // getters
@@ -1178,6 +1179,9 @@ const mutations = {
 
   [mutation.SET_CART_TYPE](state, cartType) {
     state.cartType = cartType
+  },
+  [mutation.IS_PAY](state, val) {
+    state.is_pay = val
   },
 }
 

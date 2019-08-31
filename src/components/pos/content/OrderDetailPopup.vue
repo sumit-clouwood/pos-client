@@ -72,7 +72,7 @@
           <button
             type="button"
             class="button text-button btn btn-success color-main color-text-invert"
-            @click="modifyOrder"
+            @click="modifyOrder(selectedOrder.item)"
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
@@ -148,9 +148,23 @@ export default {
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
-    modifyOrder() {
+    modifyOrder(order) {
       this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
-        this.$router.push({ path: this.$store.getters['context/store'] })
+        let order_type = order.order_type
+        if (order_type === 'dine_in') {
+          let orderId = order._id
+          let table_reservation_id = order.table_reservation_id
+          this.$router.push({
+            path:
+              this.$store.getters['context/store'] +
+              '/dine-in/' +
+              table_reservation_id +
+              '/' +
+              orderId,
+          })
+        } else {
+          this.$router.push({ path: this.$store.getters['context/store'] })
+        }
       })
     },
   },

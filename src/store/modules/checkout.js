@@ -247,7 +247,7 @@ const actions = {
               ? item.cover_name
               : rootState.dinein.selectedCover.name
             if (
-              orderCovers.filter(item => item.entity_id == itemCover).length ==
+              orderCovers.filter(item => item.entity_id == itemCover).length ===
               0
             ) {
               orderCovers.push({ entity_id: itemCover, name: itemCoverName })
@@ -540,6 +540,7 @@ const actions = {
             break
         }
         if (rootState.order.order_status !== 'completed') {
+          alert(rootState.order.is_pay)
           delete order.new_real_transition_order_no
           delete order.modify_reason
           delete order.order_system_status
