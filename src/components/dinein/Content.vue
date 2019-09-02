@@ -3,7 +3,8 @@
     <div
       class="table-holder container-fluid running-orders-dinein active"
       id="all-tables-show"
-      v-if="tablesOnArea"
+      v-if="tablesOnArea && dineInTabType === 'all'"
+      style="display: block"
     >
       <TableDraw />
     </div>
@@ -27,7 +28,7 @@ import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 export default {
   name: 'Content',
   computed: {
-    ...mapState('dinein', ['tablesOnArea']),
+    ...mapState('dinein', ['tablesOnArea', 'dineInTabType']),
   },
   components: {
     RunningOrders,

@@ -1,8 +1,9 @@
 <template>
   <div
+    v-if="dineInTabType === 'reservation'"
     class="container-fluid running-orders-dinein"
     id="reservation-orders-show"
-    style=""
+    style="display: block"
   >
     <div class="completed-order-wrap">
       <div class="rinning-order-title">
@@ -17,8 +18,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'Reservation',
+  computed: {
+    ...mapState('dinein', ['dineInTabType']),
+  },
 }
 </script>
 

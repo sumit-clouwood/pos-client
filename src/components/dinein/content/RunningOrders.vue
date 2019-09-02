@@ -1,8 +1,9 @@
 <template>
   <div
+    v-if="dineInTabType === 'running'"
     class="container-fluid running-orders-dinein"
     id="running-orders-show"
-    style=""
+    style="display: block"
   >
     <div class="running-order-wrap">
       <div class="rinning-order-title">
@@ -15,11 +16,14 @@
 
 <script>
 import OrderList from './OrderList'
-
+import { mapState } from 'vuex'
 export default {
   name: 'RunningOrders',
   components: {
     OrderList,
+  },
+  computed: {
+    ...mapState('dinein', ['dineInTabType']),
   },
 }
 </script>

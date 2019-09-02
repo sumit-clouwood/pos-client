@@ -14,7 +14,7 @@
         @click="
           updateDineInOrderStatus({
             title: 'all',
-            pageId: 'dinein/getBookedTables',
+            pageId: 'getBookedTables',
             dataRelated: 'all-tables-show',
           })
         "
@@ -59,7 +59,7 @@
         @click="
           updateDineInOrderStatus({
             title: 'running',
-            pageId: 'dinein/dineInRunningOrders',
+            pageId: 'dineInRunningOrders',
             dataRelated: 'running-orders-show',
           })
         "
@@ -74,7 +74,7 @@
         @click="
           updateDineInOrderStatus({
             title: 'completed',
-            pageId: 'dinein/dineInCompleteOrders',
+            pageId: 'dineInCompleteOrders',
             dataRelated: 'completed-orders-show',
           })
         "
@@ -165,7 +165,7 @@
 </template>
 
 <script>
-/*global posConfigLinks, $*/
+/*global posConfigLinks*/
 import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 export default {
@@ -204,21 +204,7 @@ export default {
   },
   methods: {
     updateDineInOrderStatus: function(orderStatus) {
-      this.$store.commit('dinein/DINE_IN_TAB_TYPE', orderStatus.title)
-      this.$store.commit('dinein/LOADING', true)
-      this.$store.dispatch(orderStatus.pageId)
-      let id = orderStatus.dataRelated
-      $('div#dm-content-wrapper div.container-fluid').each(function() {
-        $(this)
-          .removeClass('active')
-          .hide()
-        if ($(this).attr('id') === id) {
-          $(this)
-            .addClass('active')
-            .css('display', 'grid')
-        }
-      })
-      this.$store.commit('dinein/LOADING', false)
+      this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
     },
     ...mapActions('auth', ['logout']),
     changeLanguage(locale) {
