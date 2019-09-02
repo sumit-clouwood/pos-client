@@ -139,7 +139,7 @@ li#circle-table-shape {
 }
 #available-seat {
   >span {
-    background-color: $blue-middle;
+    background-color: $green;
     @include seat_avail;
   }
 }
@@ -515,6 +515,9 @@ svg {
           padding: 6px 25px 1px 12px;
           font-weight: 400;
           color: $white;
+          &:hover{
+            color: #fff;
+          }
         }
     }
   .table-status {
@@ -625,12 +628,43 @@ span.dinefor-paynow > a {
   display: grid;
   grid-template-columns: 1fr 1fr;
   > .table-order-view{
-    box-shadow: 0px 0px 1px 0 rgba(0,0,0,0.2), 0 6px 8px 0 rgba(0,0,0,0.19);
+    box-shadow: 0px 0px 1px 0 rgba(0,0,0,0.2), 0 0px 6px 0 rgba(0,0,0,0.19);
     height: $px100;
     overflow: hidden;
     padding: $px5 $px10;
     margin: $px5;
     border-radius: $block-border-radius;
+    position: relative;
+    transition: 0.3s ease-in-out;
+    &.active{
+      height: auto;
+      transition: 0.3s ease-in-out;
+      .order-down-arrow{
+        transform: rotate(180deg);
+        transition: 0.3s ease-in-out;
+      }
+    }
+    .order-down-arrow {
+      position: absolute;
+      bottom: 5px;
+      right: 10px;
+      cursor: pointer;
+    }
   }
 }
 
+#available-tables {
+  > .table-status{
+    &:hover{
+      background: #E3E7F2;
+    }
+  }
+}
+#my-dropdown  {
+  > .dropdown{
+    border-bottom: 1px solid rgb(204, 204, 204);
+    > span{
+      padding: 0;
+    }
+  }
+}

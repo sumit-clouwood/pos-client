@@ -149,6 +149,7 @@ export default {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
     modifyOrder(order) {
+      this.$store.commit('order/START_ORDER')
       this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
         let order_type = order.order_type
         if (order_type === 'dine_in') {

@@ -851,7 +851,7 @@ export default {
   align-content: center;
 }
 .close-table-details {
-  background: red;
+  background: #cc3232;
   color: #fff;
 }
 </style>

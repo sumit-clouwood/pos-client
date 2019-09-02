@@ -61,7 +61,7 @@ export default {
         console.log('iframe laoded, do print called, next tick called')
         console.log('print', this.print)
         if (this.print && this.iframe_body) {
-          console.log('print singal received')
+          console.log('print signal received')
           this.$store.commit('checkout/PRINT', false)
 
           try {
@@ -76,7 +76,7 @@ export default {
             this.$refs.iframe.contentWindow.print()
             //this.$refs.iframe.contentWindow.print()
           } catch (e) {
-            console.log('print ifrmae error orccured')
+            console.log('print iframe error occurred')
             console.log(e)
           }
 

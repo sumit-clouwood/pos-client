@@ -10,8 +10,7 @@
     display: none; }
   .main-orders .main-orders-contacts {
     display: grid;
-    grid-template-columns: auto max-content;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto;
     align-items: center;
     margin-bottom: 1.25rem; }
     .main-orders .main-orders-contacts .main-oreders-title {

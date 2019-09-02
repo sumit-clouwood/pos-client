@@ -231,9 +231,18 @@ export default {
       menuShowMore()
     },
     baseurl(link) {
+      /*DeliveryManager, Dinein*/
+      let replaceURI = ''
+      if (this.$router.currentRoute.name === 'DeliveryManager') {
+        replaceURI = '/pos/delivery-manager/'
+      } else if (this.$router.currentRoute.name === 'Dinein') {
+        replaceURI = '/'
+      }
+      // eslint-disable-next-line no-console
+      console.log(replaceURI)
       return (
         window.location.href.replace(
-          new RegExp('/pos/delivery-manager/.*'),
+          new RegExp("'" + replaceURI + "'" + '.*'),
           '/' + link
         ) + this.$store.getters['context/brand']
       )

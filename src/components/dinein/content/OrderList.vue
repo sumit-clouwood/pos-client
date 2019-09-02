@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div class="running-order-table-wrap">
+    <Preloader v-if="loading" />
+    <div v-else class="running-order-table-wrap">
       <table class="table" id="running-order">
         <thead>
           <tr class="dine-table-heading">
@@ -108,6 +109,13 @@
                       </span>
                     </div>
                   </div>
+                  <span
+                    class="order-down-arrow"
+                    :id="'id_' + orderId"
+                    @click="showMoreOrderItems(orderId)"
+                  >
+                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                  </span>
                 </div>
               </div>
             </td>
@@ -125,7 +133,7 @@
                       : 'btn btn-danger'
                   "
                 >
-                  {{ orderTable.status }}
+                  {{ LookupData.replaceUnderscoreHyphon(orderTable.status) }}
                 </div>
                 <div>
                   <span
@@ -216,13 +224,16 @@
 /*global $*/
 import { mapState, mapGetters, mapActions } from 'vuex'
 import DateTime from '@/mixins/DateTime'
-// import LookupData from '@/plugins/helpers/LookupData'
+import Preloader from '@/components/util/Preloader'
 
 export default {
   name: 'OrderList',
   props: {
     tabName: String,
     lookup: String,
+  },
+  components: {
+    Preloader,
   },
   data() {
     return {
@@ -248,7 +259,7 @@ export default {
   computed: {
     ...mapState('location', ['timezoneString']),
     ...mapGetters('location', ['_t']),
-    ...mapState('dinein', ['orders']),
+    ...mapState('dinein', ['orders', 'loading']),
     ...mapGetters('dinein', ['getOrderStatus', 'getTableNumber']),
   },
   methods: {
@@ -278,6 +289,12 @@ export default {
     payNow(orderId) {
       // eslint-disable-next-line no-console
       console.log(orderId, this.$store)
+    },
+    showMoreOrderItems(id) {
+      // $('.table-order-view').removeClass('active')
+      $('#id_' + id)
+        .closest('.table-order-view')
+        .toggleClass('active')
     },
   },
 }

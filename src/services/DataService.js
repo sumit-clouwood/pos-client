@@ -134,7 +134,8 @@ export default {
           if (response) {
             resolve(response)
           } else {
-            reject(`No data found in both live and local for url ${absUrl}`)
+            //reject(`No data found in both live and local for url ${absUrl}`)
+            resolve({ data: null })
           }
         })
       })
