@@ -17,7 +17,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .preloader {
-  margin-top: 0 !important;
+  margin-top: 35% !important;
   text-align: center;
   display: grid;
   align-items: start;

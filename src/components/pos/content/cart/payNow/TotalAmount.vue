@@ -97,7 +97,7 @@
       />
       <div class="total-amount-method-title">{{ param.title }}</div>
       <div class="total-amount-method-btn" @click="MethodGhangeHendler">
-        Ghange
+        Change
       </div>
     </div>
   </div>

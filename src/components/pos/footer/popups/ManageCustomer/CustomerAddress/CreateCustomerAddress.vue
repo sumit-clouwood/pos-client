@@ -256,13 +256,13 @@ export default {
 
       .modal-body {
         margin: 0;
-        display: grid;
+        /*display: grid;*/
         grid-template-rows: max-content 1fr max-content;
         overflow-y: auto;
 
         .left-form,
         .right-form {
-          padding: 0;
+          padding: 10px;
 
           .name-from {
             display: grid;

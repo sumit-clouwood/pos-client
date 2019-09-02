@@ -68,6 +68,9 @@
       }
     }
   }
+  >.modal-footer{
+      display: none;
+    }
 }
 
 @include responsive(mobile) {
