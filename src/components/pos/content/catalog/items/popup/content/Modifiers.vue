@@ -247,7 +247,7 @@ export default {
                 span {
                   background-color: $blue-middle;
                   border: none;
-                  border-radius: 3px;
+                  border-radius: 50%;
                   @include responsive(mobile) {
                     background-color: $green-middle;
                   }
@@ -275,10 +275,11 @@ export default {
 
             .customradioc {
               position: absolute;
-              top: -2px;
-              right: -2px;
+              top: 5px;
+              right: 5px;
               margin: 0;
               color: #fff;
+              border-radius: 50%;
 
               .checkBox {
                 width: 20px;
@@ -292,14 +293,16 @@ export default {
                 border: none;
 
                 &:before {
-                  font-family: "FontAwesome";
-                  content: "\F00C";
                   position: static !important;
                   display: flex;
                   align-items: center;
                   justify-content: center;
-                  font-size: 14px !important;
+                  width: 10px;
+                  height: 10px;
+                  background-color: #fff;
+                  border-radius: 50%;
                   border: none;
+                  overflow: hidden;
                 }
               }
             }

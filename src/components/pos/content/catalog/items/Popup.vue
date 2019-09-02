@@ -101,7 +101,7 @@ export default {
               }
 
               .POSItemOptions_label {
-                display: none;
+                /*display: none;*/
               }
             }
           }
