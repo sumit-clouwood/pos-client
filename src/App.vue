@@ -207,9 +207,11 @@ export default {
           })
         }, 3000)
       } else {
+        //logged out
         if (!newVal && newVal !== oldVal) {
           this.loading = true
           this.progressIncrement = 0
+          this.$router.replace('/')
         }
       }
     },

@@ -127,15 +127,13 @@ if (workbox) {
           setTimeout(function() {
             sendPostToServer()
               .then(() => {
-                self.registration.showNotification('SW Orders synced to server')
+                resolve(
+                  self.registration.showNotification('Orders synced to server')
+                )
               })
               .catch(() => {
                 console.log('sw:', 'SW Error syncing orders to server')
               })
-
-            resolve(
-              self.registration.showNotification('Orders synced to server')
-            )
           }, 1000 * 10)
         })
       }
