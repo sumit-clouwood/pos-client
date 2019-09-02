@@ -12,13 +12,13 @@
       </div>
     </div>
 
-    <div :class="['user-login', { active: userLoginHendler }]" @click="openUserHendlerGhange">
+    <div :class="['user-login', { active: userLoginHendler }]" @click="openUserHendlerChange">
       <div class="cashier-list-header">
         <user :param="user" />
       </div>
       <div class="cashier-list-body"></div>
       <div class="cashier-list-footer">
-        <date-time @click.native="userLoginHendlerGhange" />
+        <date-time @click.native="userLoginHendlerChange" />
       </div>
     </div>
 
@@ -29,7 +29,7 @@
       <div class="user-calc-body">
         <div class="user-calc-body-input">
           <input type="number" v-model="userPin" placeholder="1234" />
-          <div class="user-calc-body-input-btn" @click="userLoginHendlerGhange">UnLock</div>
+          <div class="user-calc-body-input-btn" @click="userLoginHendlerChange">UnLock</div>
         </div>
         <div class="pin-input">
           <div class="pin-input-item" @click="inputPin(1)">1</div>
@@ -85,7 +85,7 @@ export default {
   methods: {
     openUser(user) {
       this.user = user;
-      this.$store.dispatch("userCalcHendlerGhange");
+      this.$store.dispatch("userCalcHendlerChange");
       this.userPin = [];
       this.userKey = user.key;
     },
@@ -97,14 +97,14 @@ export default {
     inputDel() {
       this.userPin = this.userPin.substring(0, this.userPin.length - 1);
     },
-    userLoginHendlerGhange() {
+    userLoginHendlerChange() {
       if (this.userPin == this.userKey) {
-        this.$store.dispatch("userLoginHendlerGhange");
+        this.$store.dispatch("userLoginHendlerChange");
       }
     },
-    openUserHendlerGhange() {
-      this.$store.dispatch("openUserHendlerGhange");
-      this.$store.dispatch("userLoginHendlerGhange");
+    openUserHendlerChange() {
+      this.$store.dispatch("openUserHendlerChange");
+      this.$store.dispatch("userLoginHendlerChange");
     }
   }
 };
@@ -145,7 +145,6 @@ export default {
 
     &.active {
       right: 0;
-
     }
 
     .cashier-list-header {
@@ -192,7 +191,6 @@ export default {
     .cashier-list-footer {
       padding: 20px;
       /*margin-top: auto;*/
-
 
       .date-time {
         a {

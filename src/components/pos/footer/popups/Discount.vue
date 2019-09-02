@@ -78,7 +78,7 @@
               class="btn btn-danger btn-large color-text-invert color-button"
               type="button"
               data-dismiss="modal"
-              @click="discountHendlerGhange"
+              @click="discountHendlerChange"
             >
               {{ _t('Close') }}
             </button>
@@ -97,7 +97,7 @@
               class="btn btn-danger btn-large color-text-invert color-button"
               type="button"
               data-dismiss="modal"
-              @click="discountHendlerGhange"
+              @click="discountHendlerChange"
             >
               {{ _t('Close') }}
             </button>-->
@@ -134,10 +134,10 @@ export default {
           hideModal('#select-discount')
         })
         .catch()
-      this.$store.dispatch('discountHendlerGhange')
+      this.$store.dispatch('discountHendlerChange')
     },
-    discountHendlerGhange() {
-      this.$store.dispatch('discountHendlerGhange')
+    discountHendlerChange() {
+      this.$store.dispatch('discountHendlerChange')
     },
     selectOrderDiscount: function(discount) {
       this.$store.dispatch('discount/selectOrderDiscount', discount)

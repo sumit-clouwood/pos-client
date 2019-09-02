@@ -3,7 +3,7 @@
     <div class="pay-header-title">{{ param.title }}</div>
     <div class="pay-header-subtitle">{{ param.subtitle }}</div>
     <div class="pay-header-buttons">
-      <div class="button-cancel" @click="paymentMethodsGhange">
+      <div class="button-cancel" @click="paymentMethodsChange">
         <div>Cancel</div>
         <svg
           width="8"
@@ -26,36 +26,36 @@
 </template>
 
 <script>
-import totalAmount from '../pos/content/cart/payNow/TotalAmount.vue'
+import totalAmount from "../pos/content/cart/payNow/TotalAmount.vue";
 
 export default {
-  name: 'mobilePayHeader',
-  props: ['param'],
+  name: "mobilePayHeader",
+  props: ["param"],
   components: {
-    totalAmount,
+    totalAmount
   },
   methods: {
-    paymentMethodsGhange() {
-      if (this.param.method == 'closePayMethods') {
-        this.$store.dispatch('paymentMethodsGhange')
-      } else if (this.param.method == 'calcHendler') {
-        this.$store.dispatch('payNowCalcHendlerGhange')
-      } else if (this.param.method == 'cardInput') {
-        this.$store.dispatch('cardInputHendlerGhange')
-      } else if (this.param.method == 'successfull') {
-        this.$store.dispatch('successfullHendlerGhange')
+    paymentMethodsChange() {
+      if (this.param.method == "closePayMethods") {
+        this.$store.dispatch("paymentMethodsChange");
+      } else if (this.param.method == "calcHendler") {
+        this.$store.dispatch("payNowCalcHendlerChange");
+      } else if (this.param.method == "cardInput") {
+        this.$store.dispatch("cardInputHendlerChange");
+      } else if (this.param.method == "successfull") {
+        this.$store.dispatch("successfullHendlerChange");
       }
     },
-    QRMethodGhangeHendler() {
-      this.$store.dispatch('QRMethodGhangeHendler')
-    },
-  },
-}
+    QRMethodChangeHendler() {
+      this.$store.dispatch("QRMethodChangeHendler");
+    }
+  }
+};
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import "../../assets/scss/variables.scss";
+@import "../../assets/scss/mixins.scss";
 
 .pay-header {
   display: grid;

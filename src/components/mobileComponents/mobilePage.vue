@@ -10,7 +10,7 @@
           </div>
         </div>
       </div>
-      <div class="btn-menu" @click="profileHendlerGhange">
+      <div class="btn-menu" @click="profileHendlerChange">
         <svg
           width="20"
           height="14"
@@ -76,11 +76,11 @@ export default {
     ...mapGetters('order', ['items']),
   },
   methods: {
-    profileHendlerGhange() {
-      this.$store.dispatch('profileHendlerGhange')
+    profileHendlerChange() {
+      this.$store.dispatch('profileHendlerChange')
     },
-    footerMenuHendlerGhange() {
-      this.$store.dispatch('footerMenuHendlerGhange')
+    footerMenuHendlerChange() {
+      this.$store.dispatch('footerMenuHendlerChange')
     },
   },
 }

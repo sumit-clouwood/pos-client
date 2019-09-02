@@ -123,10 +123,10 @@ export default {
           showPaymentBreak()
         }
       })
-      this.$store.dispatch('successfullHendlerGhange')
-      this.$store.dispatch('payNowCalcHendlerGhange')
-      this.$store.dispatch('paymentMethodsGhange')
-      this.$store.dispatch('mainOrdersHendlerGhange')
+      this.$store.dispatch('successfullHendlerChange')
+      this.$store.dispatch('payNowCalcHendlerChange')
+      this.$store.dispatch('paymentMethodsChange')
+      this.$store.dispatch('mainOrdersHendlerChange')
     },
   },
 }

@@ -46,10 +46,7 @@
           d="M27.7987 16.1861C28.6364 15.8101 29.0099 14.8245 28.633 13.9848C28.2561 13.145 27.2714 12.7691 26.4337 13.1451C25.5959 13.5212 25.2224 14.5067 25.5993 15.3465C25.9762 16.1862 26.9609 16.5622 27.7987 16.1861Z"
           fill="#1B5E20"
         />
-        <path
-          d="M29.3333 15.3333H5.33331V28.6667H29.3333V15.3333Z"
-          fill="#A5D6A7"
-        />
+        <path d="M29.3333 15.3333H5.33331V28.6667H29.3333V15.3333Z" fill="#A5D6A7" />
         <path
           d="M5.33331 15.3333V28.6667H29.3333V15.3333H5.33331ZM6.66665 27.3333V16.6667H28V27.3333H6.66665Z"
           fill="#388E3C"
@@ -96,36 +93,34 @@
         width="62"
       />
       <div class="total-amount-method-title">{{ param.title }}</div>
-      <div class="total-amount-method-btn" @click="MethodGhangeHendler">
-        Change
-      </div>
+      <div class="total-amount-method-btn" @click="MethodChangeHendler">Change</div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from "vuex";
 
 export default {
-  name: 'TotalAmount',
-  props: ['param'],
+  name: "TotalAmount",
+  props: ["param"],
   computed: {
-    ...mapGetters('order', ['orderTotal']),
-    ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapState('checkoutForm', ['tipAmount']),
+    ...mapGetters("order", ["orderTotal"]),
+    ...mapGetters("location", ["formatPrice", "_t"]),
+    ...mapState("checkoutForm", ["tipAmount"])
   },
   methods: {
-    MethodGhangeHendler() {
-      if (this.param.title == 'Gift Card') {
-        this.$store.dispatch('QRMethodGhangeHendler')
-      } else if (this.param.title == 'Cash') {
-        this.$store.dispatch('payNowCalcHendlerGhange')
-      } else if (this.param.title == 'Mastercard') {
-        this.$store.dispatch('methodCardHendlerGhange')
+    MethodChangeHendler() {
+      if (this.param.title == "Gift Card") {
+        this.$store.dispatch("QRMethodChangeHendler");
+      } else if (this.param.title == "Cash") {
+        this.$store.dispatch("payNowCalcHendlerChange");
+      } else if (this.param.title == "Mastercard") {
+        this.$store.dispatch("methodCardHendlerChange");
       }
-    },
-  },
-}
+    }
+  }
+};
 </script>
 <style lang="scss">
 .total-amount {

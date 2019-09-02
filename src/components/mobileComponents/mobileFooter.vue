@@ -1,9 +1,6 @@
 <template>
   <div class="mobile-footer">
-    <div
-      :class="['btn-cart', { disable: !items.length }]"
-      @click="mainOrdersHendlerGhange"
-    >
+    <div :class="['btn-cart', { disable: !items.length }]" @click="mainOrdersHendlerChange">
       <svg
         width="18"
         height="16"
@@ -16,15 +13,10 @@
           fill="white"
         />
       </svg>
-      <div class="text">
-        {{ items.length ? `Cart ${items.length}` : 'Cart is empty' }}
-      </div>
+      <div class="text">{{ items.length ? `Cart ${items.length}` : 'Cart is empty' }}</div>
     </div>
     <div class="main-orders-buttons">
-      <div
-        :class="['btn-menu', { active: footerMenuHendler }]"
-        @click="footerMenuHendlerGhange"
-      >
+      <div :class="['btn-menu', { active: footerMenuHendler }]" @click="footerMenuHendlerChange">
         <svg
           width="24"
           height="24"
@@ -54,18 +46,18 @@
       </div>
       <div
         :class="['btn-menu-close', { active: !footerMenuHendler }]"
-        @click="footerMenuHendlerGhange"
+        @click="footerMenuHendlerChange"
       >
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <div class="btn-chatge" @click="paymentMethodsGhange">
+      <div class="btn-chatge" @click="paymentMethodsChange">
         <div class="btn-chatge-amount">{{ formatPrice(orderTotal || 0) }}</div>
         <div class="btn-chatge-title">CHARGE</div>
       </div>
     </div>
     <div class="btn-next" @click="footerBtnMethod">Next</div>
     <div class="btn-next btn-next-s" @click="footerBtnMethodS">Next</div>
-    <div class="btn-Cancel" @click="methodCardHendlerGhange">Cancel</div>
+    <div class="btn-Cancel" @click="methodCardHendlerChange">Cancel</div>
     <div class="qr-voucher-code">
       <div class="title">Voucher code</div>
       <input type="text" placeholder="Enter voucher code" />
@@ -73,62 +65,62 @@
   </div>
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 
 export default {
-  props: ['param'],
+  props: ["param"],
   computed: {
-    ...mapGetters('order', ['items', 'orderTotal']),
-    ...mapGetters('location', ['formatPrice']),
-    ...mapGetters(['footerMenuHendler', 'payMethod']),
+    ...mapGetters("order", ["items", "orderTotal"]),
+    ...mapGetters("location", ["formatPrice"]),
+    ...mapGetters(["footerMenuHendler", "payMethod"]),
     ...mapState({
       selectedModal: state =>
-        state.location.setModal == '#loyalty-payment'
-          ? '#manage-customer'
-          : state.location.setModal,
-    }),
+        state.location.setModal == "#loyalty-payment"
+          ? "#manage-customer"
+          : state.location.setModal
+    })
   },
   methods: {
-    mainOrdersHendlerGhange() {
+    mainOrdersHendlerChange() {
       if (this.items.length) {
-        this.$store.dispatch('mainOrdersHendlerGhange')
-        this.$store.dispatch('footerButtonHendlerGhange')
+        this.$store.dispatch("mainOrdersHendlerChange");
+        this.$store.dispatch("footerButtonHendlerChange");
       }
     },
-    footerMenuHendlerGhange() {
-      this.$store.dispatch('footerMenuHendlerGhange')
+    footerMenuHendlerChange() {
+      this.$store.dispatch("footerMenuHendlerChange");
     },
-    payNowCalcHendlerGhange() {
-      if (this.payMethod == 'Gift Card') {
-        this.$store.dispatch('payNowCalcHendlerGhange')
+    payNowCalcHendlerChange() {
+      if (this.payMethod == "Gift Card") {
+        this.$store.dispatch("payNowCalcHendlerChange");
       }
     },
-    paymentMethodsGhange() {
-      this.$store.dispatch('paymentMethodsGhange')
+    paymentMethodsChange() {
+      this.$store.dispatch("paymentMethodsChange");
     },
-    methodCardHendlerGhange() {
-      this.$store.dispatch('methodCardHendlerGhange')
+    methodCardHendlerChange() {
+      this.$store.dispatch("methodCardHendlerChange");
     },
     footerBtnMethod() {
-      if (this.payMethod == '1') {
-        this.$store.dispatch('payNowCalcHendlerGhange')
-      } else if (this.payMethod == '2') {
-        this.$store.dispatch('loyaltyPaymentHendlerGhange')
-      } else if (this.payMethod == '3') {
-        this.$store.dispatch('methodCardHendlerGhange')
-      } else if (this.payMethod == '4') {
-        this.$store.dispatch('QRMethodGhangeHendler')
+      if (this.payMethod == "1") {
+        this.$store.dispatch("payNowCalcHendlerChange");
+      } else if (this.payMethod == "2") {
+        this.$store.dispatch("loyaltyPaymentHendlerChange");
+      } else if (this.payMethod == "3") {
+        this.$store.dispatch("methodCardHendlerChange");
+      } else if (this.payMethod == "4") {
+        this.$store.dispatch("QRMethodChangeHendler");
       }
     },
     footerBtnMethodS() {
-      this.$store.dispatch('successfullHendlerGhange')
-    },
-  },
-}
+      this.$store.dispatch("successfullHendlerChange");
+    }
+  }
+};
 </script>
 <style lang="scss">
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import "../../assets/scss/variables.scss";
+@import "../../assets/scss/mixins.scss";
 
 @include responsive(mobile) {
   .mobile-footer {

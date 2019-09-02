@@ -4,12 +4,12 @@
       'profile-sidebar-overlay',
       profileHendler ? 'active' : 'notActive',
     ]"
-    @click.self="profileHendlerGhange"
+    @click.self="profileHendlerChange"
   >
     <div class="profile-sidebar">
       <div class="profile-sidebar-header">
         <avatar />
-        <div class="btn-close" @click="profileHendlerGhange">✖</div>
+        <div class="btn-close" @click="profileHendlerChange">✖</div>
         <date-time />
         <div class="separator"></div>
         <online-counter />
@@ -118,14 +118,14 @@ export default {
     ...mapActions( ['logout']),
   },
   methods: {
-    profileHendlerGhange() {
-      this.$store.dispatch('profileHendlerGhange')
+    profileHendlerChange() {
+      this.$store.dispatch('profileHendlerChange')
     },
     mlogout() {
       this.$store.dispatch('mobileLogout')
-      this.$store.dispatch('userCalcHendlerGhange')
-      this.$store.dispatch('openUserHendlerGhange')
-      this.$store.dispatch('profileHendlerGhange')
+      this.$store.dispatch('userCalcHendlerChange')
+      this.$store.dispatch('openUserHendlerChange')
+      this.$store.dispatch('profileHendlerChange')
       this.logout()
     },
   },
