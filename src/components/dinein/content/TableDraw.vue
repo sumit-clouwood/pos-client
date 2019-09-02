@@ -175,17 +175,28 @@
             <h4 class="customer-title">{{ _t('Confirmation!') }}</h4>
           </div>
           <div class="modal-body font-weight-bold" id="confirmMessage">
-            {{ _t('Do you want to cancel this reservation') }}?
+            {{ cancelReservationMsg }}
           </div>
           <div class="modal-footer">
             <button
               type="button"
               id="confirm"
+              v-if="!moveReservation"
               class="btn btn-success"
               data-dismiss="modal"
-              @click="confirmReservation()"
+              @click="confirmCancelReservation()"
             >
               {{ _t('Ok') }}
+            </button>
+            <button
+              v-if="moveReservation"
+              type="button"
+              id="running_order"
+              class="btn btn-success"
+              data-dismiss="modal"
+              @click="moveRunningOrder()"
+            >
+              {{ _t('Running Orders') }}
             </button>
             <button type="button" class="btn btn-danger" data-dismiss="modal">
               {{ _t('Close') }}
@@ -239,9 +250,11 @@ export default {
       svgCoordinates: {},
       viewsCoordinates: {},
       addOrSplit: 'Click to book table',
+      cancelReservationMsg: 'Do you want to cancel this reservation?',
       order: false,
       selectedReservationId: '',
       componentKey: 0,
+      moveReservation: false,
     }
   },
   mounted() {
@@ -252,7 +265,7 @@ export default {
     this.updateTableOnArea()
   },
   methods: {
-    ...mapActions('dinein', ['reservationUpdateStatus']),
+    ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
     /*baseURL(link) {
       return window.location.href.replace('dine-in', 'dine-in/' + link)
     },*/
@@ -305,6 +318,10 @@ export default {
     /*orderTypeWalkIn: function(orderType) {
       this.$store.commit('order/ORDER_TYPE', orderType)
     },*/
+    moveRunningOrder() {
+      this.moveReservation = false
+      this.dineInRunningOrders()
+    },
     updateTableOnArea() {
       let dis = this
       let svgWidth = []
@@ -546,10 +563,19 @@ export default {
         .node()
         .getBBox()
     },
-    confirmReservation() {
+    confirmCancelReservation() {
       this.reservationUpdateStatus({
         reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
+      }).then(response => {
+        if (response.status == 'form_errors') {
+          this.moveReservation = true
+          // eslint-disable-next-line no-console
+          if (this.moveReservation) {
+            this.cancelReservationMsg = response.form_errors.status[0]
+            $('#confirmModal').modal('show')
+          }
+        }
       })
       this.componentKey += 1
       $('#range')
@@ -557,6 +583,8 @@ export default {
         .hide()
     },
     cancelReservation(id) {
+      this.cancelReservationMsg = 'Do you want to cancel this reservation?'
+      this.moveReservation = false
       $('#confirmModal').modal('show')
       this.selectedReservationId = id
     },

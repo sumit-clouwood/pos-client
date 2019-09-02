@@ -68,11 +68,16 @@ const actions = {
   },
 
   reservationUpdateStatus({ dispatch, commit }, reservationData) {
-    const params = [reservationData.reservationId, reservationData.status]
-    DineInService.updateReservationStatus(...params).then(response => {
-      commit(mutation.RESERVATION_ID, response.data)
-      dispatch('getBookedTables')
-      dispatch('getTableStatus')
+    return new Promise((resolve, reject) => {
+      const params = [reservationData.reservationId, reservationData.status]
+      DineInService.updateReservationStatus(...params)
+        .then(response => {
+          commit(mutation.RESERVATION_ID, response.data)
+          dispatch('getBookedTables')
+          dispatch('getTableStatus')
+          resolve(response.data)
+        })
+        .catch(er => reject(er))
     })
   },
   getBookedTables({ commit }) {
@@ -81,6 +86,7 @@ const actions = {
     })
   },
   dineInRunningOrders({ commit }) {
+    alert('hello')
     DineInService.dineInRunningOrders().then(response => {
       commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
     })

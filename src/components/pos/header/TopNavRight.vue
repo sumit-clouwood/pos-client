@@ -40,7 +40,7 @@
       </li>
     </ul>
     <div class="curent-sale hideBigScreen">
-      <div class="curent-sale-title">Current Sale</div>
+      <div class="curent-sale-title">{{ _t('Current Sale') }}</div>
       <div class="curent-sale-item">
         <div class="text">Item</div>
         <div class="num">x3</div>
