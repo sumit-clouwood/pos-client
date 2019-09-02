@@ -125,7 +125,7 @@
                       : 'btn btn-danger'
                   "
                 >
-                  {{ orderTable.status }}
+                  {{ LookupData.replaceUnderscoreHyphon(orderTable.status) }}
                 </div>
                 <div>
                   <span
