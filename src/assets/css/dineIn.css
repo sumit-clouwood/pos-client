@@ -112,7 +112,7 @@ li#circle-table-shape {
   text-align: center; }
 
 #available-seat > span {
-  background-color: #5056CA;
+  background-color: #62bb31;
   display: inline-block;
   border-radius: 0.25rem;
   padding: 0.3125rem 0;
@@ -524,7 +524,7 @@ span.dinefor-paynow > a {
   display: grid;
   grid-template-columns: 1fr 1fr; }
   .table-order-view-wrapper > .table-order-view {
-    box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.2), 0 6px 8px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.2), 0 0px 6px 0 rgba(0, 0, 0, 0.19);
     height: 6.25rem;
     overflow: hidden;
     padding: 0.3125rem 0.625rem;

@@ -139,7 +139,7 @@ li#circle-table-shape {
 }
 #available-seat {
   >span {
-    background-color: $blue-middle;
+    background-color: $green;
     @include seat_avail;
   }
 }
@@ -628,7 +628,7 @@ span.dinefor-paynow > a {
   display: grid;
   grid-template-columns: 1fr 1fr;
   > .table-order-view{
-    box-shadow: 0px 0px 1px 0 rgba(0,0,0,0.2), 0 6px 8px 0 rgba(0,0,0,0.19);
+    box-shadow: 0px 0px 1px 0 rgba(0,0,0,0.2), 0 0px 6px 0 rgba(0,0,0,0.19);
     height: $px100;
     overflow: hidden;
     padding: $px5 $px10;
