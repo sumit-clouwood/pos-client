@@ -5,47 +5,79 @@
         <span class="">{{ username }}</span>
       </a>
     </div>
-    <div class="all-tables-wrap">
+    <div class="">
       <button
         type=""
         id="all-tables"
-        data-related="all-tables-show"
-        class="tables-btn-style active"
-        @click="getBookedTables"
+        class="tables-btn-style"
+        :class="{ active: dineInTabType === 'all' }"
+        @click="
+          updateDineInOrderStatus({
+            title: 'all',
+            pageId: 'dinein/getBookedTables',
+            dataRelated: 'all-tables-show',
+          })
+        "
       >
         {{ _t('All Tables') }}
       </button>
       <button
         type=""
         id="waiting-dinein"
-        data-related="waiting-dinein-show"
         class="tables-btn-style"
+        :class="{ active: dineInTabType === 'waiting' }"
+        @click="
+          updateDineInOrderStatus({
+            title: 'waiting',
+            pageId: '',
+            dataRelated: 'waiting-dinein-show',
+          })
+        "
       >
         {{ _t('Waiting') }}
       </button>
       <button
         type=""
         id="resrvation-orders"
-        data-related="reservation-orders-show"
         class="tables-btn-style"
+        :class="{ active: dineInTabType === 'reservation' }"
+        @click="
+          updateDineInOrderStatus({
+            title: 'reservation',
+            pageId: '',
+            dataRelated: 'reservation-orders-show',
+          })
+        "
       >
         {{ _t('Reservation') }}
       </button>
       <button
         type=""
         id="running-orders"
-        data-related="running-orders-show"
         class="tables-btn-style"
-        @click="dineInRunningOrders"
+        :class="{ active: dineInTabType === 'running' }"
+        @click="
+          updateDineInOrderStatus({
+            title: 'running',
+            pageId: 'dinein/dineInRunningOrders',
+            dataRelated: 'running-orders-show',
+          })
+        "
       >
         {{ _t('Running Orders') }}
       </button>
       <button
         type=""
         id="completed-orders"
-        data-related="completed-orders-show"
         class="tables-btn-style"
-        @click="dineInCompleteOrders"
+        :class="{ active: dineInTabType === 'completed' }"
+        @click="
+          updateDineInOrderStatus({
+            title: 'completed',
+            pageId: 'dinein/dineInCompleteOrders',
+            dataRelated: 'completed-orders-show',
+          })
+        "
       >
         {{ _t('Completed Orders') }}
       </button>
@@ -133,7 +165,7 @@
 </template>
 
 <script>
-/*global posConfigLinks*/
+/*global posConfigLinks, $*/
 import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 export default {
@@ -160,6 +192,7 @@ export default {
     },
     ...mapGetters('context', ['store']),
     ...mapState('location', ['availableLanguages', 'language']),
+    ...mapState('dinein', ['dineInTabType']),
     ...mapState('sync', ['online']),
     ...mapState({
       latestOnlineOrders: state =>
@@ -170,12 +203,24 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    updateDineInOrderStatus: function(orderStatus) {
+      this.$store.commit('dinein/DINE_IN_TAB_TYPE', orderStatus.title)
+      this.$store.commit('dinein/LOADING', true)
+      this.$store.dispatch(orderStatus.pageId)
+      let id = orderStatus.dataRelated
+      $('div#dm-content-wrapper div.container-fluid').each(function() {
+        $(this)
+          .removeClass('active')
+          .hide()
+        if ($(this).attr('id') === id) {
+          $(this)
+            .addClass('active')
+            .css('display', 'grid')
+        }
+      })
+      this.$store.commit('dinein/LOADING', false)
+    },
     ...mapActions('auth', ['logout']),
-    ...mapActions('dinein', [
-      'getBookedTables',
-      'dineInRunningOrders',
-      'dineInCompleteOrders',
-    ]),
     changeLanguage(locale) {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
       bootstrap.loadUI(this.$store)

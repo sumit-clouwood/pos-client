@@ -10,19 +10,31 @@
       }}
       <div class="main-oreders-date">{{ DateToday }}</div>
     </div>
-    <div class="main-oreders-email" v-if="selectedCustomer">
-      <span class="cursor-pointer color-text" @click="removeSelectedCustomer()">
-        <i class="fa fa-times" aria-hidden="true"></i>
-      </span>
-      <p v-if="selectedCustomer.email != ''">
-        {{ _t('Email') }} : {{ selectedCustomer.email }}
-      </p>
-      <p v-if="selectedCustomer.name != '' && selectedCustomer.email == ''">
-        {{ _t('Name') }} : {{ selectedCustomer.name }}
-      </p>
-      <div v-if="selectedCustomer.phone_number">
-        {{ _t('Phone') }} : {{ selectedCustomer.phone_number }}
-      </div>
+    <div
+      v-if="
+        selectedAddress &&
+          selectedCustomer &&
+          selectedCustomer.customer_addresses.length > 0
+      "
+      class="main-oreders-email"
+    >
+      <template>
+        <span
+          class="cursor-pointer color-text"
+          @click="removeSelectedCustomer()"
+        >
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+        <p v-if="selectedCustomer.email != ''">
+          {{ _t('Email') }} : {{ selectedCustomer.email }}
+        </p>
+        <p v-if="selectedCustomer.name != '' && selectedCustomer.email == ''">
+          {{ _t('Name') }} : {{ selectedCustomer.name }}
+        </p>
+        <div v-if="selectedCustomer.phone_number">
+          {{ _t('Phone') }} : {{ selectedCustomer.phone_number }}
+        </div>
+      </template>
     </div>
     <div class="main-oreders-buttons" v-if="items.length">
       <div
@@ -38,7 +50,7 @@
             autocomplete="off"
             type="text"
             placeholder="Move Table"
-            class="input-search-driver"
+            class="input-search-driver shorten-sentence"
             id="get-available-tables-list"
             v-model="selectedTable"
             @click="showTableList"
@@ -90,7 +102,7 @@
             autocomplete="off"
             type="text"
             placeholder="Select Cover"
-            class="input-search-driver"
+            class="input-search-driver shorten-sentence"
             id="get-customer-list"
             v-model="OrderSelectedCover"
             @click="showDropdown"
@@ -147,6 +159,7 @@ export default {
     ...mapState('checkoutForm', ['msg']),
     ...mapState('dinein', ['selectedCover', 'covers', 'availableTables']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
+    ...mapState({ selectedAddress: state => state.customer.address }),
   },
   methods: {
     removeSelectedCustomer() {
@@ -178,6 +191,12 @@ export default {
       // this.$store.commit('dinein/AVAILABLE_TABLES', table)
       $('.available-tables').hide()
     },
+    /*documentClick(){
+          let $trigger = $(".dropdown");
+          if($trigger !== event.target && !$trigger.has(event.target).length){
+              $(".dropdown-menu").slideUp("fast");
+          }
+      },*/
     hold() {
       $('#holdorder').hide()
       this.$store

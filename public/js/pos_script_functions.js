@@ -12,6 +12,12 @@ $('*').click(function(e) {
   $('#searchDropdown').hide()
   // }
 })
+$(document).on('click', function(event) {
+  let $trigger = $('.driver-container')
+  if ($trigger !== event.target && !$trigger.has(event.target).length) {
+    $('#available-tables, .available-covers').slideUp('fast')
+  }
+})
 function showModal(modalName) {
   $(modalName).modal('show')
 }

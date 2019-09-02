@@ -4135,8 +4135,7 @@ body {
     display: none; }
   .main-orders .main-orders-contacts {
     display: grid;
-    grid-template-columns: auto max-content;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto;
     align-items: center;
     margin-bottom: 1.25rem; }
     .main-orders .main-orders-contacts .main-oreders-title {
@@ -4969,9 +4968,25 @@ svg #dine-in-area {
     font-weight: 600; }
     .dropdown-content .tooltip-c-range .table-popup {
       display: block;
-      padding: 2px 25px 1px 12px;
+      padding: 6px 25px 1px 12px;
       font-weight: 400;
       color: #fff; }
+      .dropdown-content .tooltip-c-range .table-popup:hover {
+        color: #fff; }
+  .dropdown-content .table-status {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center; }
+    .dropdown-content .table-status > span {
+      padding: 0 2px; }
+      .dropdown-content .table-status > span:first-child {
+        min-width: 1.5625rem; }
+    .dropdown-content .table-status .fa.fa-rectangle {
+      height: 13px;
+      width: 20px;
+      /*background: rgb(200, 76, 76);*/
+      border-radius: 2px;
+      margin-right: 1px; }
 
 #tooltipdata {
   display: none;
@@ -5049,19 +5064,19 @@ span.dinefor-paynow > a {
     padding: 0.3125rem 0.625rem;
     margin: 0.3125rem;
     border-radius: 4px; }
+    .table-order-view-wrapper > .table-order-view .order-down-arrow {
+      position: absolute;
+      bottom: 5px;
+      right: 10px;
+      cursor: pointer; }
 
-span.dropdown {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center; }
-  span.dropdown > * {
-    padding: 0 2px; }
-  span.dropdown .fa.fa-rectangle {
-    height: 13px;
-    width: 20px;
-    background: #c84c4c;
-    border-radius: 2px;
-    margin-right: 1px; }
+#available-tables > .table-status:hover {
+  background: #E3E7F2; }
+
+#my-dropdown > .dropdown {
+  border-bottom: 1px solid #cccccc; }
+  #my-dropdown > .dropdown > span {
+    padding: 0; }
 
 .new-transaction {
   display: grid;

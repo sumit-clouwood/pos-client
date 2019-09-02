@@ -28,6 +28,7 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'AmountCalculator',
   computed: {
+    ...mapState('checkout', ['changedAmount']),
     ...mapGetters('location', ['_t']),
     ...mapState('checkoutForm', ['method']),
     ...mapGetters(['payNowCalcHendler']),

@@ -82,13 +82,15 @@ const actions = {
     })
   },
 
-  fetchAll({ commit }) {
-    SurchargeService.fetchAll().then(response => {
-      //If Surcharges available for location.
-      if (response.data.data.length) {
-        commit(mutation.SET_SURCHARGES, response.data.data)
+  fetchAll({ commit, rootState }) {
+    SurchargeService.fetchAll(rootState.order.orderType.OTApi).then(
+      response => {
+        //If Surcharges available for location.
+        if (response.data.data.length) {
+          commit(mutation.SET_SURCHARGES, response.data.data)
+        }
       }
-    })
+    )
   },
 
   // using this function for hold order

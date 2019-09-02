@@ -4135,8 +4135,7 @@ body {
     display: none; }
   .main-orders .main-orders-contacts {
     display: grid;
-    grid-template-columns: auto max-content;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto;
     align-items: center;
     margin-bottom: 1.25rem; }
     .main-orders .main-orders-contacts .main-oreders-title {
@@ -4647,7 +4646,7 @@ li#circle-table-shape {
   text-align: center; }
 
 #available-seat > span {
-  background-color: #5056CA;
+  background-color: #62bb31;
   display: inline-block;
   border-radius: 0.25rem;
   padding: 0.3125rem 0;
@@ -4972,6 +4971,8 @@ svg #dine-in-area {
       padding: 6px 25px 1px 12px;
       font-weight: 400;
       color: #fff; }
+      .dropdown-content .tooltip-c-range .table-popup:hover {
+        color: #fff; }
   .dropdown-content .table-status {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -5057,12 +5058,33 @@ span.dinefor-paynow > a {
   display: grid;
   grid-template-columns: 1fr 1fr; }
   .table-order-view-wrapper > .table-order-view {
-    box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.2), 0 6px 8px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.2), 0 0px 6px 0 rgba(0, 0, 0, 0.19);
     height: 6.25rem;
     overflow: hidden;
     padding: 0.3125rem 0.625rem;
     margin: 0.3125rem;
-    border-radius: 4px; }
+    border-radius: 4px;
+    position: relative;
+    transition: 0.3s ease-in-out; }
+    .table-order-view-wrapper > .table-order-view.active {
+      height: auto;
+      transition: 0.3s ease-in-out; }
+      .table-order-view-wrapper > .table-order-view.active .order-down-arrow {
+        transform: rotate(180deg);
+        transition: 0.3s ease-in-out; }
+    .table-order-view-wrapper > .table-order-view .order-down-arrow {
+      position: absolute;
+      bottom: 5px;
+      right: 10px;
+      cursor: pointer; }
+
+#available-tables > .table-status:hover {
+  background: #E3E7F2; }
+
+#my-dropdown > .dropdown {
+  border-bottom: 1px solid #cccccc; }
+  #my-dropdown > .dropdown > span {
+    padding: 0; }
 
 .new-transaction {
   display: grid;

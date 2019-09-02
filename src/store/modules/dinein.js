@@ -28,6 +28,7 @@ const state = {
   POSMoveTableSelection: '',
   allBookedTables: { orders: false, lookup: false },
   orderReservationData: {},
+  dineInTabType: 'all',
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -74,6 +75,7 @@ const actions = {
         .then(response => {
           commit(mutation.RESERVATION_ID, response.data)
           dispatch('getBookedTables')
+          dispatch('dineInRunningOrders')
           dispatch('getTableStatus')
           resolve(response.data)
         })
@@ -86,7 +88,6 @@ const actions = {
     })
   },
   dineInRunningOrders({ commit }) {
-    alert('hello')
     DineInService.dineInRunningOrders().then(response => {
       commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
     })
@@ -337,6 +338,9 @@ const mutations = {
   },
   [mutation.ORDER_RESERVATION_DATA](state, reservationData) {
     state.orderReservationData = reservationData
+  },
+  [mutation.DINE_IN_TAB_TYPE](state, reservationData) {
+    state.dineInTabType = reservationData
   },
 }
 

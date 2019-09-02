@@ -316,11 +316,33 @@ export default {
       d3.selectAll('#dine-in-area > *').remove()
     },
     /*orderTypeWalkIn: function(orderType) {
-      this.$store.commit('order/ORDER_TYPE', orderType)
-    },*/
-    moveRunningOrder() {
+          this.$store.commit('order/ORDER_TYPE', orderType)
+        },*/
+    moveRunningOrder: function() {
+      let runningOrder = {
+        title: 'running',
+        pageId: 'dinein/dineInRunningOrders',
+        dataRelated: 'running-orders-show',
+      }
+
+      this.$store.commit('dinein/DINE_IN_TAB_TYPE', runningOrder.title)
+      this.$store.commit('dinein/LOADING', true)
+      this.$store.dispatch(runningOrder.pageId)
+      // it is temporary code we will update it later.
+      let id = runningOrder.dataRelated
+      $('div#dm-content-wrapper div.container-fluid').each(function() {
+        $(this)
+          .removeClass('active')
+          .hide()
+        if ($(this).attr('id') === id) {
+          $(this)
+            .addClass('active')
+            .css('display', 'grid')
+        }
+      })
+      this.$store.commit('dinein/LOADING', false)
+
       this.moveReservation = false
-      this.dineInRunningOrders()
     },
     updateTableOnArea() {
       let dis = this
@@ -879,7 +901,7 @@ export default {
   align-content: center;
 }
 .close-table-details {
-  background: red;
+  background: #cc3232;
   color: #fff;
 }
 </style>

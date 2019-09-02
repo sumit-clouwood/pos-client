@@ -5,6 +5,9 @@
       <div v-if="!customerDetails.length">
         {{ _t('No matching customer found') }}
       </div>
+      <div v-if="error">
+        {{ _t(error) }}
+      </div>
       <table class="table table-responsive color-tables-background" v-else>
         <thead>
           <tr>
@@ -80,7 +83,7 @@
                 v-if="!customer.active"
                 class="btn btn-default order-add deactive-table-btn color-text-invert"
               >
-                {{ _t('Add to Order') }}
+                {{ _t('Deactivated') }}
               </button>
               <button
                 v-else
@@ -103,7 +106,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import Preloader from '@/components/util/Preloader'
 /* global $ */
 export default {
@@ -123,7 +126,10 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   data: function() {
-    return { activeIndex: '' }
+    return {
+      activeIndex: '',
+      error: false,
+    }
   },
   updated() {
     if (this.activeIndex != '') {
@@ -142,7 +148,15 @@ export default {
         return customerAddress[0].city
       }
     },
-    ...mapActions('customer', ['fetchSelectedCustomer']),
+    fetchSelectedCustomer(id) {
+      this.$store
+        .dispatch('customer/fetchSelectedCustomer', id)
+        .then(() => (this.error = false))
+        .catch(error => {
+          this.error = error
+          this.$store.commit('customer/SET_CUSTOMER_LOADING', false)
+        })
+    },
   },
 }
 </script>
