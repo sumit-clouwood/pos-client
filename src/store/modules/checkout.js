@@ -70,10 +70,20 @@ const actions = {
     { commit, getters, rootGetters, rootState, dispatch, state },
     { action }
   ) {
+    //if no order start time then reject otherwise
+    //reset order start time
+
+    if (!rootState.order.startTime) {
+      // eslint-disable-next-line no-console
+      console.log('Fake order or an order already in progress')
+      return Promise.reject('Fake order or an order already in progress')
+    }
+
     return new Promise((resolve, reject) => {
       let validPayment = false
       const totalPayable = rootGetters['checkoutForm/orderTotal']
       commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
+
       if (
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN ||
@@ -485,6 +495,9 @@ const actions = {
         commit(mutation.SET_ORDER, order)
         dispatch('createOrder', action)
           .then(response => {
+            //reset order start time
+            commit('order/RESET_ORDER_TIME', null, { root: true })
+
             resolve(response)
           })
           .catch(response => {
@@ -663,6 +676,9 @@ const actions = {
                   root: true,
                 }
               )
+              //reset order start time
+              commit('order/RESET_ORDER_TIME', null, { root: true })
+
               commit(mutation.PRINT, true)
             } else {
               var err_msg = ''

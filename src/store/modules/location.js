@@ -5,6 +5,7 @@ import DataService from '@/services/DataService'
 import Num from '@/plugins/helpers/Num'
 import db from '@/services/network/DB'
 import TimezoneService from '@/services/data/TimezoneService'
+import * as CONST from '@/constants'
 
 // initial state
 const state = {
@@ -63,7 +64,7 @@ const getters = {
     return str
   },
   currency: state => state.currency,
-  timezone: state => state.store.timezone,
+  timezone: state => (state.store ? state.store.timezone : null),
   timezoneString: state => state.timezoneString,
 }
 
@@ -108,7 +109,7 @@ const actions = {
             commit(mutation.SET_STORE, storedata.data.available_stores[0])
           }
 
-          if (state.store._id) {
+          if (state.store && state.store._id) {
             //set context as well
             commit('context/SET_BRAND_ID', state.brand._id, { root: true })
             commit('context/SET_STORE_ID', state.store._id, { root: true })
@@ -133,24 +134,18 @@ const actions = {
           userDetails.avatar = storedata.data.avatar
           commit(mutation.USER_SHORT_DETAILS, userDetails)
 
-          TimezoneService.getTimezoneData(state.store.timezone)
-            .then(timezoneData => {
+          TimezoneService.getTimezoneData(state.store.timezone).then(
+            timezoneData => {
               let timezoneName = timezoneData.data.item.name.split(' ')
               if (timezoneName[0] != undefined) {
                 commit(mutation.SET_TIMEZONE_STRING, timezoneName[0])
               } else {
                 commit(mutation.SET_TIMEZONE_STRING, 'Asia/Dubai')
               }
-            })
-            .catch(error => {
-              reject(error)
-            })
+            }
+          )
 
           commit('modules/SET_ENABLED_MODULES', state.brand.enabled_modules, {
-            root: true,
-          })
-          dispatch('referrals')
-          dispatch('auth/getUserDetails', storedata.data.user_id, {
             root: true,
           })
           // dispatch('getUserDetails', storedata.data.user_id)
@@ -159,20 +154,49 @@ const actions = {
           // }
           // take out else part,as discussed with Alex language ll be dependent on cashier login
 
-          LocationService.registerDevice(rootState.auth.deviceId).then(
-            response => {
-              const data = {
-                id: 1,
-                token: localStorage.getItem('token'),
-                branch_n: state.store.branch_n,
-                terminal_code: response.data.id,
-              }
-              db.getBucket('auth').then(bucket => {
-                db.put(bucket, data)
-              })
+          if (!rootGetters['modules/enabled'](CONST.MODULE_POS)) {
+            console.log('Point of sale not available.')
+            reject('Point of sale not available.')
+          } else {
+            if (rootGetters['modules/enabled'](CONST.MODULE_CASHIER_APP)) {
+              LocationService.registerDevice(rootState.auth.deviceId)
+                .then(response => {
+                  const data = {
+                    id: 1,
+                    token: localStorage.getItem('token'),
+                    branch_n: state.store.branch_n,
+                    terminal_code: response.data.id,
+                  }
+                  db.getBucket('auth')
+                    .then(bucket => {
+                      db.put(bucket, data)
+                    })
+                    .catch(error => {
+                      reject(error)
+                    })
+
+                  resolve(state.locale)
+
+                  dispatch('referrals')
+                  dispatch('auth/getUserDetails', storedata.data.user_id, {
+                    root: true,
+                  })
+                })
+                .catch(error => {
+                  console.log('device registration failed')
+                  if (typeof error.data !== 'undefined') {
+                    reject(error.data.error)
+                  } else {
+                    reject(
+                      'Device registration not permitted for current login'
+                    )
+                  }
+                })
+            } else {
+              console.log('Cashier apps not allowed')
+              reject('Cashier apps not allowed')
             }
-          )
-          resolve(state.locale)
+          }
           // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
         })
         .catch(error => {

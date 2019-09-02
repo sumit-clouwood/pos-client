@@ -95,32 +95,37 @@ export default {
               brand: this.store.getters['context/brand'],
             })
 
-            this.initLoadUI().then(() => {
-              //lets resolve the promise so pos can be loaded, other things ll be loaded later
-              resolve()
+            this.initLoadUI()
+              .then(() => {
+                //lets resolve the promise so pos can be loaded, other things ll be loaded later
+                resolve()
 
-              setTimeout(() => {
-                console.log('delayed loading catalog data started')
-                this.loadApiData('catalog').then(() =>
-                  console.log('delayed loading catalog data done')
-                )
-              }, 3000)
+                setTimeout(() => {
+                  console.log('delayed loading catalog data started')
+                  this.loadApiData('catalog').then(() =>
+                    console.log('delayed loading catalog data done')
+                  )
+                }, 3000)
 
-              setTimeout(() => {
-                console.log('delayed loading customer data started')
-                this.loadApiData('customer').then(() =>
-                  console.log('delayed loading customer data done')
-                )
-              }, 4000)
+                setTimeout(() => {
+                  console.log('delayed loading customer data started')
+                  this.loadApiData('customer').then(() =>
+                    console.log('delayed loading customer data done')
+                  )
+                }, 4000)
 
-              //delayed loading data
-              setTimeout(() => {
-                console.log('delayed loading order data started')
-                this.loadApiData('order').then(() =>
-                  console.log('delayed loading order data done')
-                )
-              }, 8000)
-            })
+                //delayed loading data
+                setTimeout(() => {
+                  console.log('delayed loading order data started')
+                  this.loadApiData('order').then(() =>
+                    console.log('delayed loading order data done')
+                  )
+                }, 8000)
+              })
+              .catch(error => {
+                console.log('UI Failed', error)
+                reject(error)
+              })
             // store.dispatch('loyalty/fetchAll', response)
             // store.dispatch(
             //   'deliveryManager/fetchDMOrderDetail',
@@ -220,7 +225,13 @@ export default {
       if (event.oldVersion === 1) {
         // version 2 -> 3 upgrade
         console.log('creating bucket order_post_requests')
-        db.createBucket('order_post_requests')
+        db.createBucket(
+          'order_post_requests',
+          { keyPath: 'order_time' },
+          bucket => {
+            bucket.createIndex('order_time', 'order_time', { unique: true })
+          }
+        )
           .then(() => {
             console.log('created bucket order_post_requests')
             this.store.commit('sync/setIdbVersion', 2)

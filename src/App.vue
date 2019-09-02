@@ -183,7 +183,14 @@ export default {
               require('@/../public/js/pos_script.js')
             }, 2000)
           })
-          .catch(error => (this.errored = error))
+          .catch(error => {
+            this.errored = error
+            setTimeout(() => {
+              this.$store.dispatch('auth/logout')
+              this.errored = ''
+            }, 1000 * 10)
+            console.log('some catch ', error)
+          })
 
         setTimeout(() => {
           navigator.serviceWorker.addEventListener('message', event => {
@@ -191,7 +198,6 @@ export default {
             if (event.data.msg == 'token') {
               console.log('setting new token to client')
               localStorage.setItem('token', event.data.data)
-              //DataService.setMiddleware()
               bootstrap.loadUI().then(() => {
                 setTimeout(() => {
                   this.loading = false
@@ -202,9 +208,11 @@ export default {
           })
         }, 3000)
       } else {
+        //logged out
         if (!newVal && newVal !== oldVal) {
           this.loading = true
           this.progressIncrement = 0
+          this.$router.replace('/')
         }
       }
     },
