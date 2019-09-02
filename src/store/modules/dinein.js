@@ -53,6 +53,12 @@ const getters = {
 }
 
 const actions = {
+  updateDineInOrderStatus({ dispatch, commit }, orderStatus) {
+    commit(mutation.LOADING, true)
+    commit(mutation.DINE_IN_TAB_TYPE, orderStatus.title)
+    dispatch(orderStatus.pageId)
+    commit(mutation.LOADING, false)
+  },
   fetchAll({ dispatch, commit }) {
     commit(mutation.LOADING, true)
     dispatch('getBookedTables')
