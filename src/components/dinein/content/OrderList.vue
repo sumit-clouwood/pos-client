@@ -109,7 +109,11 @@
                       </span>
                     </div>
                   </div>
-                  <span class="order-down-arrow" @click="showMoreOrderItems">
+                  <span
+                    class="order-down-arrow"
+                    :id="'id_' + orderId"
+                    @click="showMoreOrderItems(orderId)"
+                  >
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                   </span>
                 </div>
@@ -286,12 +290,11 @@ export default {
       // eslint-disable-next-line no-console
       console.log(orderId, this.$store)
     },
-    showMoreOrderItems() {
-      alert('dd')
-      $(this)
-        .parent()
+    showMoreOrderItems(id) {
+      // $('.table-order-view').removeClass('active')
+      $('#id_' + id)
+        .closest('.table-order-view')
         .toggleClass('active')
-      alert($(this))
     },
   },
 }

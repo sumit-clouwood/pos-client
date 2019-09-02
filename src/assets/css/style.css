@@ -5064,7 +5064,14 @@ span.dinefor-paynow > a {
     padding: 0.3125rem 0.625rem;
     margin: 0.3125rem;
     border-radius: 4px;
-    position: relative; }
+    position: relative;
+    transition: 0.3s ease-in-out; }
+    .table-order-view-wrapper > .table-order-view.active {
+      height: auto;
+      transition: 0.3s ease-in-out; }
+      .table-order-view-wrapper > .table-order-view.active .order-down-arrow {
+        transform: rotate(180deg);
+        transition: 0.3s ease-in-out; }
     .table-order-view-wrapper > .table-order-view .order-down-arrow {
       position: absolute;
       bottom: 5px;

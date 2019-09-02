@@ -635,6 +635,15 @@ span.dinefor-paynow > a {
     margin: $px5;
     border-radius: $block-border-radius;
     position: relative;
+    transition: 0.3s ease-in-out;
+    &.active{
+      height: auto;
+      transition: 0.3s ease-in-out;
+      .order-down-arrow{
+        transform: rotate(180deg);
+        transition: 0.3s ease-in-out;
+      }
+    }
     .order-down-arrow {
       position: absolute;
       bottom: 5px;
