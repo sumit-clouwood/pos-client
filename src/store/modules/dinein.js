@@ -28,6 +28,7 @@ const state = {
   POSMoveTableSelection: '',
   allBookedTables: { orders: false, lookup: false },
   orderReservationData: {},
+  dineInTabType: 'all',
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -331,6 +332,9 @@ const mutations = {
   },
   [mutation.ORDER_RESERVATION_DATA](state, reservationData) {
     state.orderReservationData = reservationData
+  },
+  [mutation.DINE_IN_TAB_TYPE](state, reservationData) {
+    state.dineInTabType = reservationData
   },
 }
 
