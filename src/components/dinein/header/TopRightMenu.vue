@@ -9,9 +9,8 @@
       <button
         type=""
         id="all-tables"
-        data-related="all-tables-show"
-        :class="{ active: dineInTabType === 'all' }"
         class="tables-btn-style"
+        :class="{ active: dineInTabType === 'all' }"
         @click="
           updateDineInOrderStatus({
             title: 'all',
@@ -25,23 +24,36 @@
       <button
         type=""
         id="waiting-dinein"
-        data-related="waiting-dinein-show"
         class="tables-btn-style"
+        :class="{ active: dineInTabType === 'waiting' }"
+        @click="
+          updateDineInOrderStatus({
+            title: 'waiting',
+            pageId: '',
+            dataRelated: 'waiting-dinein-show',
+          })
+        "
       >
         {{ _t('Waiting') }}
       </button>
       <button
         type=""
         id="resrvation-orders"
-        data-related="reservation-orders-show"
         class="tables-btn-style"
+        :class="{ active: dineInTabType === 'reservation' }"
+        @click="
+          updateDineInOrderStatus({
+            title: 'reservation',
+            pageId: '',
+            dataRelated: 'reservation-orders-show',
+          })
+        "
       >
         {{ _t('Reservation') }}
       </button>
       <button
         type=""
         id="running-orders"
-        data-related="running-orders-show"
         class="tables-btn-style"
         :class="{ active: dineInTabType === 'running' }"
         @click="
@@ -57,7 +69,6 @@
       <button
         type=""
         id="completed-orders"
-        data-related="completed-orders-show"
         class="tables-btn-style"
         :class="{ active: dineInTabType === 'completed' }"
         @click="
