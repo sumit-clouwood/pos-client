@@ -178,6 +178,12 @@ export default {
       // this.$store.commit('dinein/AVAILABLE_TABLES', table)
       $('.available-tables').hide()
     },
+    /*documentClick(){
+          let $trigger = $(".dropdown");
+          if($trigger !== event.target && !$trigger.has(event.target).length){
+              $(".dropdown-menu").slideUp("fast");
+          }
+      },*/
     hold() {
       $('#holdorder').hide()
       this.$store

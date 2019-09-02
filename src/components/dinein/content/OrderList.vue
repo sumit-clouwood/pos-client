@@ -108,6 +108,9 @@
                       </span>
                     </div>
                   </div>
+                  <span class="order-down-arrow" @click="showMoreOrderItems">
+                    <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                  </span>
                 </div>
               </div>
             </td>
@@ -278,6 +281,13 @@ export default {
     payNow(orderId) {
       // eslint-disable-next-line no-console
       console.log(orderId, this.$store)
+    },
+    showMoreOrderItems() {
+      alert('dd')
+      $(this)
+        .parent()
+        .toggleClass('active')
+      alert($(this))
     },
   },
 }
