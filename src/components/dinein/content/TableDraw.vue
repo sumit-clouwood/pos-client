@@ -242,7 +242,7 @@ export default {
       page: null,
       svg: null,
       width: 'auto',
-      height: '750px',
+      height: '1000px',
       svgWidth: 250,
       svgHeight: 100,
       orderDetails: [],
