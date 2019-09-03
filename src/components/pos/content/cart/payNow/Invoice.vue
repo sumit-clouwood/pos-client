@@ -56,17 +56,17 @@ export default {
 
   methods: {
     doPrint() {
-      console.log('iframe laoded, do print called')
+      //console.log('iframe laoded, do print called')
       this.$nextTick(() => {
-        console.log('iframe laoded, do print called, next tick called')
-        console.log('print', this.print)
+        //console.log('iframe laoded, do print called, next tick called')
+        //console.log('print', this.print)
         if (this.print && this.iframe_body) {
-          console.log('print singal received')
+          //console.log('print singal received')
           this.$store.commit('checkout/PRINT', false)
 
           try {
             //2. to print in new window
-            console.log('printing iframe')
+            //console.log('printing iframe')
             // const w = window.open()
             // w.document.write(this.iframe_body)
             // w.print()
@@ -76,8 +76,8 @@ export default {
             this.$refs.iframe.contentWindow.print()
             //this.$refs.iframe.contentWindow.print()
           } catch (e) {
-            console.log('print ifrmae error orccured')
-            console.log(e)
+            //console.log('print ifrmae error orccured')
+            //console.log(e)
           }
 
           this.$store.dispatch('checkout/reset')
@@ -93,9 +93,9 @@ export default {
       })
     },
     print_ready() {
-      console.log(this.print)
+      //console.log(this.print)
       this.invoiceHtml = this.$refs.print_template.$el.outerHTML
-      console.log('in print ready html length', this.invoiceHtml.length)
+      //console.log('in print ready html length', this.invoiceHtml.length)
       var body = `<html><head><title>${
         this.order_title
       }</title><style lang="css" scoped>
