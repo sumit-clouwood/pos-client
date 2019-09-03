@@ -51,9 +51,47 @@
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
       <div class="btn-chatge" @click="paymentMethodsChange">
-        <div class="btn-chatge-amount">{{ formatPrice(orderTotal || 0) }}</div>
-        <div class="btn-chatge-title">CHARGE</div>
+        <div class="btn-chatge-amount" v-show="orderType.OTApi !== 'call_center'">{{ formatPrice(orderTotal || 0) }}</div>
+        <div class="btn-chatge-title" v-show="orderType.OTApi !== 'call_center'">CHARGE</div>
+        <li
+            v-show="orderType.OTApi === 'call_center'"
+            class="footer-slider-list-item color-secondary"
+            data-toggle="modal"
+            :data-target="selectedModal"
+            data-dismiss="modal"
+          >
+            <a
+              class="footer-slider-list-item-link color-text-invert"
+              role="button"
+              @click="
+                setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
+              "
+            >
+              <!--<img src="images/footer-images/d_2.png" alt="customer">-->
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                data-prefix="fas"
+                data-icon="suitcase"
+                role="img"
+                width="1.875rem"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                class="svg-inline--fa fa-suitcase fa-w-16 fa-2x"
+              >
+                <path
+                  fill="currentColor"
+                  d="M128 480h256V80c0-26.5-21.5-48-48-48H176c-26.5 0-48 21.5-48 48v400zm64-384h128v32H192V96zm320 80v256c0 26.5-21.5 48-48 48h-48V128h48c26.5 0 48 21.5 48 48zM96 480H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48h48v352z"
+                  class
+                ></path>
+              </svg>
+              <span>{{ _t('Send to Delivery') }}</span>
+            </a>
+          </li>
       </div>
+
+
+
     </div>
     <div class="btn-next" @click="footerBtnMethod">Next</div>
     <div class="btn-next btn-next-s" @click="footerBtnMethodS">Next</div>
@@ -70,6 +108,20 @@ import { mapState, mapGetters } from "vuex";
 export default {
   props: ["param"],
   computed: {
+      ...mapState('checkout', ['print']),
+    ...mapState('order', ['orderType', 'cartType']),
+    ...mapState('sync', ['online']),
+    ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapState({
+      selectedModal: state =>
+        state.location.setModal == '#loyalty-payment'
+          ? '#manage-customer'
+          : state.location.setModal,
+    }),
+    ...mapState({
+      loyaltyCard: state => state.customer.loyalty.card,
+    }),
+    ...mapState({ selectedCustomer: state => state.customer.customer.name }),
     ...mapGetters("order", ["items", "orderTotal"]),
     ...mapGetters("location", ["formatPrice"]),
     ...mapGetters(["footerMenuHendler", "payMethod"]),
@@ -197,7 +249,7 @@ export default {
 
       .btn-chatge {
         display: grid;
-        align-items: flex-end;
+        align-items: center;
         background-color: $green-middle;
         border-radius: $btn-border-radius;
         height: 50px;
@@ -205,6 +257,29 @@ export default {
         justify-content: center;
         text-align: center;
         padding: 5px;
+          &.send{
+              display: grid;
+              grid-template-columns: 1fr;
+              align-items: stretch;
+              justify-content: stretch;
+              width: 100%;
+                        li{
+              width: 100%;
+              height: 100%;
+              display: flex;
+              align-items: center;
+              a{
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 14px;
+                  width: 100%;
+                  svg{
+                      margin-right: 10px;
+                  }
+              }
+          }
+          }
 
         .btn-chatge-amount {
           margin-bottom: -5px;

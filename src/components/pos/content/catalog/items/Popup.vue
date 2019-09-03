@@ -47,6 +47,7 @@ export default {
     padding: 0;
     width: 100vw;
     max-width: none;
+    // position: fixed;
 
     .modal-dialog {
       width: 100vw;

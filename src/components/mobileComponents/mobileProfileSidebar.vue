@@ -177,6 +177,7 @@ export default {
     bottom: 0;
     display: grid;
     grid-template-rows: min-content 1fr min-content;
+    height: 100%;
 
     .profile-sidebar-header {
       display: grid;
