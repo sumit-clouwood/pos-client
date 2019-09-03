@@ -552,4 +552,8 @@ span.dinefor-paynow > a {
   #my-dropdown > .dropdown > span {
     padding: 0; }
 
+svg .active > path {
+  stroke: green;
+  stroke-width: 1.5; }
+
 /*# sourceMappingURL=dineIn.css.map */
