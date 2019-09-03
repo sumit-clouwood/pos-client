@@ -172,14 +172,17 @@ export default {
           this.createDb(2).then(idb => {
             idb.close()
             this.createDb(3).then(idb => {
-              resolve(idb)
+              idb.close()
+              this.createDb(4).then(idb => {
+                resolve(idb)
+              })
             })
           })
         })
         .catch(event => {
           if (event.target.error.code === 0) {
             //db has been created already so try with a recent version
-            const version = 3
+            const version = 4
             db.openDatabase(version).then(({ idb, flag }) => {
               if (flag === 'open') {
                 this.store.commit('sync/setIdbVersion', version)
@@ -249,6 +252,37 @@ export default {
             this.store.commit('sync/setIdbVersion', 3)
 
             resolve(3)
+          })
+          .catch(error => reject(error))
+      }
+      if (event.oldVersion === 3) {
+        // initial database creation
+        // (your code does nothing here)
+        console.log('creating bucket logs')
+        db.createBucket(
+          'log',
+          {
+            autoIncrement: true,
+            keyPath: 'id',
+          },
+          bucket => {
+            bucket.createIndex('log_time', 'log_time', { unique: false })
+            bucket.createIndex('event_time', 'event_time', {
+              unique: false,
+            })
+            bucket.createIndex('event_type', 'event_type', {
+              unique: false,
+            })
+            bucket.createIndex('event_data', 'event_data', {
+              unique: false,
+            })
+          }
+        )
+          .then(() => {
+            console.log('created bucket events')
+            this.store.commit('sync/setIdbVersion', 4)
+
+            resolve(4)
           })
           .catch(error => reject(error))
       }

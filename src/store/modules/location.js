@@ -53,7 +53,7 @@ const getters = {
 
   },*/
   _t: state => str => {
-    if (state.translations[str]) {
+    if (state.translations && state.translations[str]) {
       return state.translations[str]
     }
     return str
