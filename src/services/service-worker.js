@@ -9,6 +9,8 @@ var IDB_VERSION = 3
 var ORDER_DOCUMENT = 'order_post_requests'
 
 var client = null
+var SYNC_AFTER_SECONDS = 60 * 5
+var lastSynced = new Date().getTime()
 
 if (workbox) {
   openDatabase()
@@ -131,32 +133,51 @@ if (workbox) {
       // here must be the same as the one used while registering
       // sync`
       // Send our POST request to the server, now that the user is online
+      var nowTime = new Date().getTime()
+      console.log(
+        'sw:',
+        'last synced',
+        lastSynced,
+        'sync received',
+        nowTime,
+        'seconds passed last sync',
+        (nowTime - lastSynced) / 1000
+      )
 
-      const syncIt = async () => {
-        return new Promise(resolve => {
-          sendPostToServer()
-            .then(() => {
-              try {
+      if (nowTime - lastSynced > SYNC_AFTER_SECONDS * 1000) {
+        console.log(SYNC_AFTER_SECONDS, ' seconds passed, syncing now')
+        lastSynced = nowTime
+        const syncIt = async () => {
+          return new Promise(resolve => {
+            sendPostToServer()
+              .then(() => {
+                try {
+                  self.registration.showNotification('Orders synced to server')
+                } catch (e) {
+                  console.log('sw:', e)
+                }
+              })
+              .catch(err => {
+                console.log('sw:', 'Error syncing orders to server', err)
+              })
+
+            try {
+              resolve(
                 self.registration.showNotification('Orders synced to server')
-              } catch (e) {
-                console.log('sw:', e)
-              }
-            })
-            .catch(err => {
-              console.log('sw:', 'Error syncing orders to server', err)
-            })
+              )
+            } catch (e) {
+              console.log('sw:', e)
+            }
+          })
+        }
 
-          try {
-            resolve(
-              self.registration.showNotification('Orders synced to server')
-            )
-          } catch (e) {
-            console.log('sw:', e)
-          }
-        })
+        event.waitUntil(syncIt())
+      } else {
+        console.log(
+          SYNC_AFTER_SECONDS,
+          ' not passed from last sync, do not sync now'
+        )
       }
-
-      event.waitUntil(syncIt())
     }
   })
 
