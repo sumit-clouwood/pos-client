@@ -96,10 +96,12 @@ const actions = {
           commit(mutation.SET_PERMISSION, storedata.data.menu)
           commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
           commit(mutation.SET_TRASLATIONS, storedata.data.translations)
-          commit(
-            mutation.SET_AVAILABLE_LANGUAGES,
-            storedata.data.available_lang
-          )
+          if (!state.availableLanguages) {
+            commit(
+              mutation.SET_AVAILABLE_LANGUAGES,
+              storedata.data.available_lang
+            )
+          }
 
           if (storedata.data.store) {
             commit(mutation.SET_STORE, storedata.data.store)

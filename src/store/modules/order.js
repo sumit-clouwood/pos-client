@@ -1029,6 +1029,9 @@ const actions = {
               break
           }
         }
+      },
+      errors => {
+        alert(errors.data.error)
       }
     )
   },
