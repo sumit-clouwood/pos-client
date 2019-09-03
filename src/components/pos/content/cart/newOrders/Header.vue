@@ -161,7 +161,12 @@ export default {
     ...mapState('checkoutForm', ['msg']),
     ...mapState('customer', ['deliveryAreas']),
     ...mapState('dinein', ['selectedCover', 'covers', 'availableTables']),
-    ...mapState({ selectedCustomer: state => state.customer.customer }),
+    ...mapState({
+      selectedCustomer: state =>
+        state.customer.customer
+          ? state.customer.customer
+          : state.order.orderData.customer,
+    }),
     ...mapState({ selectedAddress: state => state.customer.address }),
   },
   methods: {
