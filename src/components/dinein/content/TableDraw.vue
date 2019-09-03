@@ -109,7 +109,8 @@
                         class="dropdown-item"
                       >
                         {{ orderData.tableNumber }} #Reserved |
-                        {{ orderData.startDate }}, {{ orderData.startTime }}
+                        {{ created_date(orderData.startDate) }},
+                        {{ created_time(orderData.startTime) }}
                       </a>
                       <span
                         class="cursor-pointer text-danger reservation-cancel"
@@ -273,18 +274,24 @@ export default {
       // $('#id' + this.selectedTableId).addClass('class', 'dinein_table active')
       d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
     },*/
+    created_time(time) {
+      return this.convertDatetime(time, this.timezoneString, 'h:mm:ss')
+      // return this.current_time.format('h:mm A')
+    },
+    created_date(date) {
+      return this.convertDatetime(date, this.timezoneString, 'Do MMMM YYYY')
+      // return this.current_time.format('Do MMMM YYYY')
+    },
     getOrderNo(orderId) {
       let order = this.allBookedTables.lookup.orders._id[orderId]
-      let customerName = order && order.customer != null ? order.customer : ''
+      // let customerName = order && order.customer != null ? order.customer : ''
       return order
         ? order.order_no +
             ' | ' +
             this.convertDatetime(
               order.real_created_datetime,
               this.timezoneString
-            ) +
-            ' | ' +
-            customerName
+            )
         : ''
     },
     hideTableDetails() {
