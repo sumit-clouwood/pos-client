@@ -296,26 +296,12 @@
           </li>
           <li
             class="pay-now color-dashboard-background color-main"
-            v-show="
-              orderType.OTApi !== 'call_center' && orderType.OTApi !== 'dine_in'
-            "
+            v-show="orderType.OTApi !== 'call_center'"
             @click="payNowClick()"
           >
             <a role="button">
               <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
               <span class="pay-btn color-text-invert">{{ _t('Pay Now') }}</span>
-            </a>
-          </li>
-          <li
-            class="pay-now color-dashboard-background color-main"
-            v-show="orderType.OTApi === 'dine_in'"
-            @click="payNowClick()"
-          >
-            <a role="button">
-              <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
-              <span class="pay-btn color-text-invert">
-                {{ _t('Pay Now') }}
-              </span>
             </a>
           </li>
         </ul>

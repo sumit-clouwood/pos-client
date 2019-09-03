@@ -154,6 +154,9 @@ const actions = {
           // eslint-disable-next-line no-console
           console.log(e)
         }
+        if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_DINE_IN) {
+          order.customer = rootState.customer.customerId
+        }
         if (
           rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER
         ) {

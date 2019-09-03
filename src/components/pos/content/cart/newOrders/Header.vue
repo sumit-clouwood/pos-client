@@ -12,9 +12,11 @@
     </div>
     <div
       v-if="
-        selectedAddress &&
-          selectedCustomer &&
-          selectedCustomer.customer_addresses.length > 0
+        (selectedCustomer && orderType.OTApi === 'dine_in') ||
+          (orderType.OTApi !== 'dine_in' &&
+            selectedAddress &&
+            selectedCustomer &&
+            selectedCustomer.customer_addresses.length > 0)
       "
       class="main-oreders-email"
     >
@@ -157,8 +159,14 @@ export default {
     ...mapGetters('dinein', ['getAllCovers']),
     ...mapState('order', ['items', 'cartType', 'orderType', 'orderData']),
     ...mapState('checkoutForm', ['msg']),
+    ...mapState('customer', ['deliveryAreas']),
     ...mapState('dinein', ['selectedCover', 'covers', 'availableTables']),
-    ...mapState({ selectedCustomer: state => state.customer.customer }),
+    ...mapState({
+      selectedCustomer: state =>
+        state.customer.customer
+          ? state.customer.customer
+          : state.order.orderData.customer,
+    }),
     ...mapState({ selectedAddress: state => state.customer.address }),
   },
   methods: {
