@@ -132,9 +132,11 @@ export default {
   computed: {
     payableAmount: {
       get() {
-        return this.$store.state.checkoutForm.amount
-          ? this.$store.state.checkoutForm.amount
-          : 0
+        if (this.$store.state.checkoutForm.amount > 0) {
+          return this.$store.state.checkoutForm.amount
+        } else {
+          return 0
+        }
       },
       set(amount) {
         this.$store.dispatch('checkoutForm/setAmount', amount)

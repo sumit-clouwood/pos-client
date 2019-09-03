@@ -24,12 +24,15 @@ const getters = {
         }
       })
 
-      if (state.templates && templateId) {
-        return state.templates.data.data.find(
-          template => template._id == templateId
-        )
+      if (state.templates) {
+        if (templateId) {
+          return state.templates.data.data.find(
+            template => template._id == templateId
+          )
+        } else {
+          return state.templates.data.data[0]
+        }
       }
-      return false
     }
   },
 }
