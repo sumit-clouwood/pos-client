@@ -135,7 +135,8 @@ const actions = {
         commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
       })
       CustomerService.customerBuildings().then(buildingAreas => {
-        commit(mutation.BUILDING_AREA, buildingAreas.data.data)
+        let obj = Object.values(buildingAreas.data.data)
+        commit(mutation.BUILDING_AREA, obj)
       })
     })
   },
