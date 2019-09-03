@@ -78,7 +78,20 @@
                 {{ getCustomerLocation(customer.customer_addresses) }}
               </span>
             </td>
-            <td class="color-text">
+            <td v-if="orderType.OTApi === 'dine_in'">
+              <button
+                @click="selectCustomer(customer._id)"
+                data-toggle="modal"
+                data-dismiss="modal"
+                class="br-table-btn edit-info color-icon-table-neutral-button color-text-invert"
+              >
+                {{ _t('Select Customer') }}
+              </button>
+              <span>
+                {{ getCustomerLocation(customer.customer_addresses) }}
+              </span>
+            </td>
+            <td class="color-text" v-else>
               <button
                 v-if="!customer.active"
                 class="btn btn-default order-add deactive-table-btn color-text-invert"
@@ -123,6 +136,7 @@ export default {
       customerDetails: state => state.customer.customer_list,
     }),
     ...mapState('customer', ['loading']),
+    ...mapState('order', ['orderType']),
     ...mapGetters('location', ['_t']),
   },
   data: function() {
@@ -147,6 +161,15 @@ export default {
       if (customerAddress.length) {
         return customerAddress[0].city
       }
+    },
+    selectCustomer(id) {
+      this.$store
+        .dispatch('customer/fetchSelectedCustomer', id)
+        .then(() => (this.error = false))
+        .catch(error => {
+          this.error = error
+          this.$store.commit('customer/SET_CUSTOMER_LOADING', false)
+        })
     },
     fetchSelectedCustomer(id) {
       this.$store
