@@ -12,7 +12,7 @@
             <div class="sitting-image">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="100%"
+                width="94vw"
                 height="100%"
                 id="dine-in-area"
                 ref="dine-in-area"
@@ -28,7 +28,22 @@
                 preserveAspectRatio="xMidYMid meet"
               ></svg>
             </div>
-            <div id="tooltipdata" class="dropdown-content cursor-pointer">
+            <div
+              id="tooltipdata"
+              class="dropdown-content cursor-pointer"
+              width="94vw"
+              ref="dine-in-area"
+              :viewBox="
+                viewBox.x +
+                  ' ' +
+                  viewBox.y +
+                  ' ' +
+                  viewBox.width +
+                  ' ' +
+                  viewBox.height
+              "
+              preserveAspectRatio="xMidYMid meet"
+            >
               <div
                 class="dropdown tooltip-c-range"
                 id="range"
@@ -278,13 +293,6 @@ export default {
     this.updateTableOnArea()
     /*if (this.selectedTableD3)
       d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
-    window.onresize = function() {
-      alert('f')
-      let win = $(this) //this = window
-      if (win.width() < 600) {
-        alert(screen.availWidth)
-      }
-    }
   },
   methods: {
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
