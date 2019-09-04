@@ -140,7 +140,7 @@ const actions = {
         let orders = []
         let tableDetails = { id: table._id, number: table.number, status: {} }
 
-        if (state.allBookedTables) {
+        if (state.allBookedTables && state.allBookedTables.orders) {
           orders = state.allBookedTables.orders.filter(
             order => order.assigned_table_id === table._id
           )
