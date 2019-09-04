@@ -12,7 +12,7 @@
     </div>
     <div
       v-if="
-        (selectedCustomer && orderType.OTApi === 'dine_in' ||
+        (selectedCustomer && orderType.OTApi === 'dine_in') ||
           (orderType.OTApi !== 'dine_in' &&
             selectedAddress &&
             selectedCustomer &&
