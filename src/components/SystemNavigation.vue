@@ -238,8 +238,6 @@ export default {
       } else if (this.$router.currentRoute.name === 'Dinein') {
         replaceURI = '/'
       }
-      // eslint-disable-next-line no-console
-      console.log(replaceURI)
       return (
         window.location.href.replace(
           new RegExp("'" + replaceURI + "'" + '.*'),
@@ -251,13 +249,13 @@ export default {
   data() {
     return {
       // dm: '/delivery-manager' + this.$store.getters['context/store'],
-      dm: this.baseurl('delivery') + '/delivery_home/new',
-      dashboard: this.baseurl('dashboard'),
-      crm: this.baseurl('crm') + '/brand_customers',
-      menu: this.baseurl('menu'),
-      brand: this.baseurl('brands'),
-      store: this.baseurl('locations'),
-      dispatch: this.baseurl('dispatch'),
+      dm: this.$store.getters['context/store'] + '/delivery_home/new',
+      dashboard: this.$store.getters['context/store'] + '/dashboard',
+      crm: this.$store.getters['context/store'] + '/crm/brand_customers',
+      menu: this.$store.getters['context/store'] + '/menu',
+      brand: this.$store.getters['context/store'] + '/brands',
+      store: this.$store.getters['context/store'] + '/locations',
+      dispatch: this.$store.getters['context/store'] + '/dispatch',
       sadmin: '/super-admin',
     }
   },
