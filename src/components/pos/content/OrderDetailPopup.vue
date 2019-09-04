@@ -158,8 +158,8 @@ export default {
           let table_reservation_id = order.table_reservation_id
           this.$router.push({
             path:
-              this.$store.getters['context/store'] +
               '/dine-in/' +
+              this.$store.getters['context/store'] +
               table_reservation_id +
               '/' +
               orderId,

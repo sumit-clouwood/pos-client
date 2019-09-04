@@ -314,10 +314,9 @@ export default {
       return order
         ? order.order_no +
             ' | ' +
-            this.convertDatetime(
-              order.real_created_datetime,
-              this.timezoneString
-            )
+            this.created_date(order.real_created_datetime) +
+            ', ' +
+            this.created_time(order.real_created_datetime)
         : ''
     },
     hideTableDetails() {
@@ -326,7 +325,7 @@ export default {
         .hide()
     },
     newOrder() {
-      let URL = this.store + '/dine-in/' + this.selectedTableId
+      let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
       this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
         root: true,
       })
@@ -335,7 +334,12 @@ export default {
     updateOrder(data) {
       this.$store.commit('dinein/ORDER_RESERVATION_DATA', data.orderData)
       let URL =
-        this.store + '/dine-in/' + this.selectedTableId + '/' + data.orderId
+        '/dine-in/' +
+        this.store +
+        '/' +
+        this.selectedTableId +
+        '/' +
+        data.orderId
       this.$store.dispatch('dinein/getSelectedOrder', data.orderId, {
         root: true,
       })
