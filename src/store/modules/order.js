@@ -880,6 +880,9 @@ const actions = {
     return new Promise(resolve => {
       dispatch('reset')
       commit(mutation.SET_ORDER_ID, order._id)
+      dispatch('customer/fetchSelectedCustomer', order.customer, {
+        root: true,
+      })
       let orderData = {
         _id: order._id,
         order_no: order.order_no,

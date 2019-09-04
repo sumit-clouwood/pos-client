@@ -12,7 +12,7 @@
     </div>
     <div
       v-if="
-        (selectedCustomer && orderType.OTApi === 'dine_in') ||
+        (selectedCustomer && orderType.OTApi === 'dine_in' ||
           (orderType.OTApi !== 'dine_in' &&
             selectedAddress &&
             selectedCustomer &&
@@ -162,10 +162,7 @@ export default {
     ...mapState('customer', ['deliveryAreas']),
     ...mapState('dinein', ['selectedCover', 'covers', 'availableTables']),
     ...mapState({
-      selectedCustomer: state =>
-        state.customer.customer
-          ? state.customer.customer
-          : state.order.orderData.customer,
+      selectedCustomer: state => state.customer.customer,
     }),
     ...mapState({ selectedAddress: state => state.customer.address }),
   },
