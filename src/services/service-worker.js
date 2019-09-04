@@ -347,8 +347,7 @@ function sendToServer() {
               authData = authData[0]
 
               var authToken = authData.token
-              var branch_n = authData.branch_n
-              var terminal_code = authData.terminal_code
+
               //var lastOrderNo = parseInt(authData.lastOrderNo) || 0
 
               for (let savedRequest of savedRequests) {
