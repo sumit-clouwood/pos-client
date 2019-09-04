@@ -1,4 +1,4 @@
-@import "variables.scss";
+@import 'variables.scss';
 
 .loyaltyApplied {
   background-color: $orange-dark !important;
@@ -26,12 +26,10 @@
     padding-right: $px30;
 
     .footer-slider-list {
-
       .slick-slide {
-        margin-right: 15px;
+        margin-right: 20px;
         border-radius: $btn-border-radius;
         overflow: hidden;
-
         .footer-slider-list-item {
           cursor: pointer;
           background-color: $btn-bg-black;
@@ -46,7 +44,8 @@
           justify-content: center;
           transition: 0.2s linear;
 
-          &.active, &:hover {
+          &.active,
+          &:hover {
             background-color: $blue-dark;
           }
 
@@ -82,7 +81,6 @@
           }
         }
       }
-
     }
 
     .slick-slider {
@@ -100,7 +98,6 @@
         }
 
         &.next-btn {
-
         }
       }
 
@@ -138,7 +135,6 @@
       color: #fff;
       transition: 0.2s linear;
 
-
       ul {
         display: grid;
         grid-template-columns: 1fr;
@@ -156,8 +152,8 @@
             vertical-align: middle;
           }
           svg {
-              display:inline-block;
-              vertical-align:middle;
+            display: inline-block;
+            vertical-align: middle;
           }
         }
       }

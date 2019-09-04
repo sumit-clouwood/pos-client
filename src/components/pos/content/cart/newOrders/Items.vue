@@ -133,7 +133,7 @@ export default {
     removeCurrentOrder(param) {
       this.removeFromOrder(param)
       if (!this.items.length) {
-        this.$store.dispatch('mainOrdersHendlerGhange')
+        this.$store.dispatch('mainOrdersHendlerChange')
       }
     },
   },

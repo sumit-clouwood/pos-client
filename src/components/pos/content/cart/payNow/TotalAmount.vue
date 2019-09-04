@@ -96,8 +96,8 @@
         width="62"
       />
       <div class="total-amount-method-title">{{ param.title }}</div>
-      <div class="total-amount-method-btn" @click="MethodGhangeHendler">
-        Ghange
+      <div class="total-amount-method-btn" @click="MethodChangeHendler">
+        Change
       </div>
     </div>
   </div>
@@ -115,13 +115,13 @@ export default {
     ...mapState('checkoutForm', ['tipAmount']),
   },
   methods: {
-    MethodGhangeHendler() {
+    MethodChangeHendler() {
       if (this.param.title == 'Gift Card') {
-        this.$store.dispatch('QRMethodGhangeHendler')
+        this.$store.dispatch('QRMethodChangeHendler')
       } else if (this.param.title == 'Cash') {
-        this.$store.dispatch('payNowCalcHendlerGhange')
+        this.$store.dispatch('payNowCalcHendlerChange')
       } else if (this.param.title == 'Mastercard') {
-        this.$store.dispatch('methodCardHendlerGhange')
+        this.$store.dispatch('methodCardHendlerChange')
       }
     },
   },

@@ -1,5 +1,5 @@
-@import "pixels_rem.scss";
-@import "variables.scss";
+@import 'pixels_rem.scss';
+@import 'variables.scss';
 
 .navigation {
   grid-row-start: 1;
@@ -43,7 +43,7 @@
       padding: 0 0 $px30 0;
       transition: 0.5s ease-out;
       @include responsive(mobile) {
-        top: 65px;
+        // top: 65px;
       }
 
       &.toggle {
@@ -78,7 +78,8 @@
             padding: 0 5px;
           }
 
-          &.active, &:hover {
+          &.active,
+          &:hover {
             background-color: $blue-light !important;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
           }
@@ -166,7 +167,7 @@
         width: $px75;
         white-space: nowrap;
         text-overflow: ellipsis;
-        overflow: hidden
+        overflow: hidden;
       }
     }
   }
@@ -176,8 +177,8 @@
   .navigation {
     grid-template-rows: $header-height 1fr $px60 $dm-nav-footer-height;
     width: $px75;
-    -webkit-transition: .3s ease-out;
-    transition: .3s ease-out;
+    -webkit-transition: 0.3s ease-out;
+    transition: 0.3s ease-out;
 
     &.collapse-menu {
       width: $px200;
@@ -248,7 +249,6 @@
   .navigation-list {
     li {
       max-width: $px196 !important;
-
     }
   }
 }

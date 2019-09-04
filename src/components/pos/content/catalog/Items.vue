@@ -4,6 +4,7 @@
     v-if="items.length"
     :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
   >
+    <!-- <div class="bg">bg</div> -->
     <div
       :class="{
         'food-menu-item': true,
@@ -176,7 +177,14 @@ export default {
     left: 0;
     overflow: auto;
     background-color: transparent;
-
+    .bg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: darkblue;
+    }
     &.active {
       top: 0;
       transition: 0.7s ease-out;
@@ -212,7 +220,7 @@ export default {
         // padding-left: 85px;
         padding-right: 0;
         // color: #fff;
-        height: 66px;
+        height: 40px;
 
         .food-menu-item-price {
           justify-self: end;

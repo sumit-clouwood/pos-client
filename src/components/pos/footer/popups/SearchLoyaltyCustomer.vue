@@ -4,7 +4,7 @@
     class="modal fade"
     id="search-loyalty-customer"
     role="dialog"
-    @click.self="loyaltyHendlerGhange"
+    @click.self="loyaltyHendlerChange"
   >
     <div class="modal-dialog">
       <!-- Modal content-->
@@ -85,7 +85,7 @@
               type="button"
               class="btn btn-danger cancel-announce color-text-invert color-button"
               data-dismiss="modal"
-              @click="loyaltyHendlerGhange"
+              @click="loyaltyHendlerChange"
             >
               {{ _t('Cancel') }}
             </button>
@@ -131,8 +131,8 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
-    loyaltyHendlerGhange() {
-      this.$store.dispatch('loyaltyHendlerGhange')
+    loyaltyHendlerChange() {
+      this.$store.dispatch('loyaltyHendlerChange')
     },
     loyaltyAddCustomer: function(target) {
       this.$store.commit('loyalty/LOYALTY', true)
