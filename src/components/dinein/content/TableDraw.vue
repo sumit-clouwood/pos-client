@@ -109,7 +109,8 @@
                         class="dropdown-item"
                       >
                         {{ orderData.tableNumber }} #Reserved |
-                        {{ orderData.startDate }}, {{ orderData.startTime }}
+                        {{ created_date(orderData.startDate) }},
+                        {{ created_time(orderData.startTime) }}
                       </a>
                       <span
                         class="cursor-pointer text-danger reservation-cancel"
@@ -242,7 +243,8 @@ export default {
       page: null,
       svg: null,
       width: 'auto',
-      height: '1000px',
+      height: '950px',
+      selectedTableD3: '',
       svgWidth: 250,
       svgHeight: 100,
       orderDetails: [],
@@ -263,28 +265,33 @@ export default {
   updated() {
     this.clearTableArea()
     this.updateTableOnArea()
+    /*if (this.selectedTableD3)
+      d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
   },
   methods: {
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
-    /*baseURL(link) {
-      return window.location.href.replace('dine-in', 'dine-in/' + link)
+    /*showActive() {
+      // $('#id' + this.selectedTableId).addClass('class', 'dinein_table active')
+      d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
     },*/
+    created_time(time) {
+      return this.convertDatetime(time, this.timezoneString, 'h:mm:ss')
+      // return this.current_time.format('h:mm A')
+    },
+    created_date(date) {
+      return this.convertDatetime(date, this.timezoneString, 'Do MMMM YYYY')
+      // return this.current_time.format('Do MMMM YYYY')
+    },
     getOrderNo(orderId) {
-      /*let order = LookupData.get({
-        collection: this.allBookedTables.lookup.orders._id,
-        matchWith: orderId,
-      })*/
       let order = this.allBookedTables.lookup.orders._id[orderId]
-      let customerName = order && order.customer != null ? order.customer : ''
+      // let customerName = order && order.customer != null ? order.customer : ''
       return order
         ? order.order_no +
             ' | ' +
             this.convertDatetime(
               order.real_created_datetime,
               this.timezoneString
-            ) +
-            ' | ' +
-            customerName
+            )
         : ''
     },
     hideTableDetails() {
@@ -397,8 +404,12 @@ export default {
         .attr('xlink:href', function(d) {
           return `#dinein_${d.table_shape}_${d.chairs}`
         })
-        .on('click', d => this.showOptions(d))
+        .on('click', function(d, i, a) {
+          dis.showOptions(d, i, a)
+        })
         .attr('fill', 'green')
+      if (this.selectedTableD3)
+        d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
         let dineInTableWidth = 0
         if (
@@ -472,6 +483,315 @@ export default {
           .attr('height', '15')
       })
       this.drawViews()
+    },
+    confirmCancelReservation() {
+      this.reservationUpdateStatus({
+        reservationId: this.selectedReservationId,
+        status: 'cancelled_reservation',
+      }).then(response => {
+        if (response.status == 'form_errors') {
+          this.moveReservation = true
+          if (this.moveReservation) {
+            this.cancelReservationMsg = response.form_errors.status[0]
+            $('#confirmModal').modal('show')
+          }
+        }
+      })
+      this.componentKey += 1
+      $('#range')
+        .parent('div')
+        .hide()
+    },
+    cancelReservation(id) {
+      this.cancelReservationMsg = 'Do you want to cancel this reservation?'
+      this.moveReservation = false
+      $('#confirmModal').modal('show')
+      this.selectedReservationId = id
+    },
+    mainViewCalc() {
+      this.svgCoordinates = d3
+        .select('#svgContainter')
+        .node()
+        .getBoundingClientRect()
+    },
+    showOptions(datum, i, a) {
+      // eslint-disable-next-line no-console
+      console.log(a[i])
+      this.selectedTableD3 = a[i]
+      this.orderDetails = this.orderOnTables.filter(
+        order => order.tableId === datum._id
+      )
+      this.addOrSplit =
+        this.orderDetails.length > 0
+          ? 'Click to split table'
+          : 'Click to book table'
+      this.selectedTableId = datum._id
+      let range = $('#range')
+      range
+        .parent('div')
+        .attr(
+          'style',
+          'top:' +
+            (datum.table_position_coordinate.y || 0) +
+            'px; left:' +
+            (datum.table_position_coordinate.x || 100) +
+            'px; display:block'
+        )
+    },
+    drawViews() {
+      this.activeArea.top_view.forEach((element, i) => {
+        d3.select(this.$el)
+          .select('#dine-in-area > g')
+          .datum(element)
+          .append('g')
+          .attr('index_id', i)
+          .attr('view_type', d => d.name)
+          .attr('view_side', 'top_view')
+          .attr('class', 'side_view_block')
+          .attr('x', function(d) {
+            // d.x = that.viewsCoordinates.top_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCoordinates.top_view.y
+            return d.y
+          })
+          .append('image')
+          .attr('preserveAspectRatio', 'none')
+          .attr('xlink:href', function(d) {
+            return `/img/dinein/area-view/${d.name}_view_h.jpg`
+            // return `/img/dinein/area-view/city_view_h.jpg`
+          })
+          .attr('x', function(d) {
+            // d.x = that.viewsCoordinates.top_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCoordinates.top_view.y
+            return d.y
+          })
+          .attr('height', d => d.height)
+          .attr('width', d => d.width)
+          .attr('index_id', i)
+          .attr('stroke', d => {
+            if (d.name == 'sea') {
+              return 'blue'
+            }
+            if (d.name == 'green') {
+              return 'green'
+            }
+            if (d.name == 'city') {
+              return 'yellow'
+            }
+            if (d.name == 'none') {
+              return 'gray'
+            }
+          })
+          .attr('fill', d => {
+            if (d.name == 'sea') {
+              return 'blue'
+            }
+            if (d.name == 'green') {
+              return 'green'
+            }
+            if (d.name == 'city') {
+              return 'yellow'
+            }
+            if (d.name == 'none') {
+              return 'gray'
+            }
+          })
+          .call(
+            d3
+              .drag()
+              .on('start', d => this.drag_start(d))
+              .on('drag', (d, ia, a) =>
+                this.drag_view_horizontal_drag(d, ia, a)
+              )
+              .on('end', this.drag_view_end)
+          )
+      })
+      this.activeArea.right_view.forEach((element, i) => {
+        d3.select(this.$el)
+          .select('#dine-in-area > g')
+          .datum(element)
+          .append('g')
+          .attr('index_id', i)
+          .attr('class', 'side_view_block')
+          .attr('view_type', d => d.name)
+          .attr('view_side', 'right_view')
+          .attr('x', function(d) {
+            // d.x = that.viewsCoordinates.right_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCoordinates.right_view.y
+            return d.y
+          })
+          .append('image')
+          .attr('preserveAspectRatio', 'none')
+          .attr('xlink:href', function(d) {
+            return `/img/dinein/area-view/${d.name}_view_v.jpg`
+          })
+          .attr('x', function(d) {
+            // d.x = that.viewsCoordinates.right_view.x
+            return parseInt(d.x)
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCoordinates.right_view.y
+            return d.y
+          })
+          .attr('height', d => d.height)
+          .attr('width', d => d.width)
+          .attr('index_id', i)
+          .attr('stroke', d => {
+            if (d.name == 'sea') {
+              return 'blue'
+            }
+            if (d.name == 'green') {
+              return 'green'
+            }
+            if (d.name == 'city') {
+              return 'yellow'
+            }
+            if (d.name == 'none') {
+              return 'gray'
+            }
+          })
+          .attr('fill', d => {
+            if (d.name == 'sea') {
+              return 'blue'
+            }
+            if (d.name == 'green') {
+              return 'green'
+            }
+            if (d.name == 'city') {
+              return 'yellow'
+            }
+            if (d.name == 'none') {
+              return 'gray'
+            }
+          })
+          .call(
+            d3
+              .drag()
+              .on('start', d => this.drag_start(d))
+              .on('drag', (d, i, a) => this.drag_view_vertical_drag(d, i, a))
+              .on('end', this.drag_view_end)
+          )
+      })
+      this.activeArea.bottom_view.forEach((element, i) => {
+        d3.select(this.$el)
+          .select('#dine-in-area > g')
+          .datum(element)
+          .append('g')
+          .attr('index_id', i)
+          .attr('class', 'side_view_block')
+          .attr('view_type', d => d.name)
+          .attr('view_side', 'bottom_view')
+
+          .attr('x', function(d) {
+            // d.x = that.viewsCoordinates.bottom_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCoordinates.bottom_view.y
+            return d.y
+          })
+          .append('image')
+          .attr('preserveAspectRatio', 'none')
+          .attr('xlink:href', function(d) {
+            return `/img/dinein/area-view/${d.name}_view_h.jpg`
+          })
+          .attr('x', function(d) {
+            // d.x = that.viewsCoordinates.bottom_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCoordinates.bottom_view.y
+            return parseInt(d.y)
+          })
+          .attr('height', d => d.height)
+          .attr('width', d => d.width)
+          .attr('index_id', i)
+          .call(
+            d3
+              .drag()
+              .on('start', d => this.drag_start(d))
+              .on('drag', (d, i, a) => this.drag_view_horizontal_drag(d, i, a))
+              .on('end', this.drag_view_end)
+          )
+      })
+      this.activeArea.left_view.forEach((element, i) => {
+        d3.select(this.$el)
+          .select('#dine-in-area > g')
+          .datum(element)
+          .append('g')
+          .attr('index_id', i)
+          .attr('class', 'side_view_block')
+          .attr('view_type', d => d.name)
+          .attr('view_side', 'left_view')
+          .attr('x', function(d) {
+            // d.x = that.viewsCoordinates.left_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCoordinates.left_view.y
+            return d.y
+          })
+          .append('image')
+          .attr('preserveAspectRatio', 'none')
+          .attr('xlink:href', function(d) {
+            return `/img/dinein/area-view/${d.name}_view_v.jpg`
+          })
+          .attr('x', function(d) {
+            // d.x = that.viewsCoordinates.left_view.x
+            return d.x
+          })
+          .attr('y', function(d) {
+            // d.y = that.viewsCoordinates.left_view.y
+            return d.y
+          })
+          .attr('height', d => d.height)
+          .attr('width', d => d.width)
+          .attr('index_id', i)
+
+          .attr('stroke', d => {
+            if (d.name == 'sea') {
+              return 'blue'
+            }
+            if (d.name == 'green') {
+              return 'green'
+            }
+            if (d.name == 'city') {
+              return 'yellow'
+            }
+            if (d.name == 'none') {
+              return 'gray'
+            }
+          })
+          .attr('fill', d => {
+            if (d.name == 'sea') {
+              return 'blue'
+            }
+            if (d.name == 'green') {
+              return 'green'
+            }
+            if (d.name == 'city') {
+              return 'yellow'
+            }
+            if (d.name == 'none') {
+              return 'gray'
+            }
+          })
+          .call(
+            d3
+              .drag()
+              .on('start', d => this.drag_start(d))
+              .on('drag', (d, i, a) => this.drag_view_vertical_drag(d, i, a))
+              .on('end', this.drag_view_end)
+          )
+      })
     },
     manageViews() {
       let that = this
@@ -586,311 +906,6 @@ export default {
         .select('#dine-in-area > g > .side-view-left')
         .node()
         .getBBox()
-    },
-    confirmCancelReservation() {
-      this.reservationUpdateStatus({
-        reservationId: this.selectedReservationId,
-        status: 'cancelled_reservation',
-      }).then(response => {
-        if (response.status == 'form_errors') {
-          this.moveReservation = true
-          // eslint-disable-next-line no-console
-          if (this.moveReservation) {
-            this.cancelReservationMsg = response.form_errors.status[0]
-            $('#confirmModal').modal('show')
-          }
-        }
-      })
-      this.componentKey += 1
-      $('#range')
-        .parent('div')
-        .hide()
-    },
-    cancelReservation(id) {
-      this.cancelReservationMsg = 'Do you want to cancel this reservation?'
-      this.moveReservation = false
-      $('#confirmModal').modal('show')
-      this.selectedReservationId = id
-    },
-    mainViewCalc() {
-      this.svgCoordinates = d3
-        .select('#svgContainter')
-        .node()
-        .getBoundingClientRect()
-    },
-    drawViews() {
-      this.activeArea.top_view.forEach((element, i) => {
-        d3.select(this.$el)
-          .select('#dine-in-area > g')
-          .datum(element)
-          .append('g')
-          .attr('index_id', i)
-          .attr('view_type', d => d.name)
-          .attr('view_side', 'top_view')
-          .attr('class', 'side_view_block')
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.top_view.x
-            return d.x
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.top_view.y
-            return d.y
-          })
-          .append('image')
-          .attr('xlink:href', function(d) {
-            // eslint-disable-next-line no-console
-            console.log(d.name)
-            return `/img/dinein/area-view/${d.name}_view_h.jpg`
-            // return `/img/dinein/area-view/city_view_h.jpg`
-          })
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.top_view.x
-            return d.x
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.top_view.y
-            return d.y
-          })
-          .attr('height', d => d.height)
-          .attr('width', d => d.width)
-          .attr('index_id', i)
-          .attr('stroke', d => {
-            if (d.name == 'sea') {
-              return 'blue'
-            }
-            if (d.name == 'green') {
-              return 'green'
-            }
-            if (d.name == 'city') {
-              return 'yellow'
-            }
-            if (d.name == 'none') {
-              return 'gray'
-            }
-          })
-          .attr('fill', d => {
-            if (d.name == 'sea') {
-              return 'blue'
-            }
-            if (d.name == 'green') {
-              return 'green'
-            }
-            if (d.name == 'city') {
-              return 'yellow'
-            }
-            if (d.name == 'none') {
-              return 'gray'
-            }
-          })
-          .call(
-            d3
-              .drag()
-              .on('start', d => this.drag_start(d))
-              .on('drag', (d, ia, a) =>
-                this.drag_view_horizontal_drag(d, ia, a)
-              )
-              .on('end', this.drag_view_end)
-          )
-      })
-      this.activeArea.right_view.forEach((element, i) => {
-        d3.select(this.$el)
-          .select('#dine-in-area > g')
-          .datum(element)
-          .append('g')
-          .attr('index_id', i)
-          .attr('class', 'side_view_block')
-          .attr('view_type', d => d.name)
-          .attr('view_side', 'right_view')
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.right_view.x
-            return d.x
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.right_view.y
-            return d.y
-          })
-          .append('image')
-          .attr('xlink:href', function(d) {
-            return `/img/dinein/area-view/${d.name}_view_v.jpg`
-          })
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.right_view.x
-            return parseInt(d.x) + 254
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.right_view.y
-            return d.y
-          })
-          .attr('height', d => d.height)
-          .attr('width', d => d.width)
-          .attr('index_id', i)
-          .attr('stroke', d => {
-            if (d.name == 'sea') {
-              return 'blue'
-            }
-            if (d.name == 'green') {
-              return 'green'
-            }
-            if (d.name == 'city') {
-              return 'yellow'
-            }
-            if (d.name == 'none') {
-              return 'gray'
-            }
-          })
-          .attr('fill', d => {
-            if (d.name == 'sea') {
-              return 'blue'
-            }
-            if (d.name == 'green') {
-              return 'green'
-            }
-            if (d.name == 'city') {
-              return 'yellow'
-            }
-            if (d.name == 'none') {
-              return 'gray'
-            }
-          })
-          .call(
-            d3
-              .drag()
-              .on('start', d => this.drag_start(d))
-              .on('drag', (d, i, a) => this.drag_view_vertical_drag(d, i, a))
-              .on('end', this.drag_view_end)
-          )
-      })
-      this.activeArea.bottom_view.forEach((element, i) => {
-        d3.select(this.$el)
-          .select('#dine-in-area > g')
-          .datum(element)
-          .append('g')
-          .attr('index_id', i)
-          .attr('class', 'side_view_block')
-          .attr('view_type', d => d.name)
-          .attr('view_side', 'bottom_view')
-
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.bottom_view.x
-            return d.x
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.bottom_view.y
-            return d.y
-          })
-          .append('image')
-          .attr('xlink:href', function(d) {
-            return `/img/dinein/area-view/${d.name}_view_h.jpg`
-          })
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.bottom_view.x
-            return d.x
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.bottom_view.y
-            return parseInt(d.y) - 43
-          })
-          .attr('height', d => d.height)
-          .attr('width', d => d.width)
-          .attr('index_id', i)
-          .call(
-            d3
-              .drag()
-              .on('start', d => this.drag_start(d))
-              .on('drag', (d, i, a) => this.drag_view_horizontal_drag(d, i, a))
-              .on('end', this.drag_view_end)
-          )
-      })
-      this.activeArea.left_view.forEach((element, i) => {
-        d3.select(this.$el)
-          .select('#dine-in-area > g')
-          .datum(element)
-          .append('g')
-          .attr('index_id', i)
-          .attr('class', 'side_view_block')
-          .attr('view_type', d => d.name)
-          .attr('view_side', 'left_view')
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.left_view.x
-            return d.x
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.left_view.y
-            return d.y
-          })
-          .append('image')
-          .attr('xlink:href', function(d) {
-            return `/img/dinein/area-view/${d.name}_view_v.jpg`
-          })
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.left_view.x
-            return d.x
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.left_view.y
-            return d.y
-          })
-          .attr('height', d => d.height)
-          .attr('width', d => d.width)
-          .attr('index_id', i)
-
-          .attr('stroke', d => {
-            if (d.name == 'sea') {
-              return 'blue'
-            }
-            if (d.name == 'green') {
-              return 'green'
-            }
-            if (d.name == 'city') {
-              return 'yellow'
-            }
-            if (d.name == 'none') {
-              return 'gray'
-            }
-          })
-          .attr('fill', d => {
-            if (d.name == 'sea') {
-              return 'blue'
-            }
-            if (d.name == 'green') {
-              return 'green'
-            }
-            if (d.name == 'city') {
-              return 'yellow'
-            }
-            if (d.name == 'none') {
-              return 'gray'
-            }
-          })
-          .call(
-            d3
-              .drag()
-              .on('start', d => this.drag_start(d))
-              .on('drag', (d, i, a) => this.drag_view_vertical_drag(d, i, a))
-              .on('end', this.drag_view_end)
-          )
-      })
-    },
-    showOptions(datum) {
-      this.orderDetails = this.orderOnTables.filter(
-        order => order.tableId === datum._id
-      )
-      this.addOrSplit =
-        this.orderDetails.length > 0
-          ? 'Click to split table'
-          : 'Click to book table'
-      this.selectedTableId = datum._id
-      let range = $('#range')
-      range
-        .parent('div')
-        .attr(
-          'style',
-          'top:' +
-            (datum.table_position_coordinate.y || 0) +
-            'px; left:' +
-            (datum.table_position_coordinate.x || 100) +
-            'px; display:block'
-        )
     },
   },
 }
