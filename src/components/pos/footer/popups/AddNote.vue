@@ -80,7 +80,7 @@ export default {
     },
     ...mapActions('order', ['addOrderNote']),
     addNoteHendler() {
-      this.$store.dispatch('addNoteHendlerGhange')
+      this.$store.dispatch('addNoteHendlerChange')
     },
   },
 }

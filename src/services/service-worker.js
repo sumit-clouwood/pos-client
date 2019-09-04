@@ -5,10 +5,13 @@ var clientUrl = ''
 
 var iDB
 var form_data
-var IDB_VERSION = 3
+var IDB_VERSION = 4
 var ORDER_DOCUMENT = 'order_post_requests'
-
+var LOG_DOCUMENT = 'log'
 var client = null
+var SYNC_AFTER_SECONDS = 30 //5sec, 60 * 5 = 5 min
+var lastSynced = new Date().getTime()
+
 var notificationOptions = {
   body: '',
   icon: './img/icons/favicon.png',
@@ -121,23 +124,45 @@ if (workbox) {
   //this is manually sync, we ll remove it later
   self.addEventListener('message', function(event) {
     if (event.data.hasOwnProperty('sync')) {
-      console.log('sw:', 'sync event', event.data)
-      const syncIt = async () => {
-        return new Promise(resolve => {
-          setTimeout(function() {
-            sendPostToServer()
-              .then(() => {
-                resolve(
-                  self.registration.showNotification('Orders synced to server')
-                )
-              })
-              .catch(() => {
-                console.log('sw:', 'SW Error syncing orders to server')
-              })
-          }, 1000 * 10)
-        })
+      console.log('sw:', 'sync event received ', event.data)
+      var nowTime = new Date().getTime()
+      console.log(
+        'sw:',
+        'last synced',
+        lastSynced,
+        'sync received',
+        nowTime,
+        'seconds passed last sync',
+        (nowTime - lastSynced) / 1000
+      )
+
+      if (nowTime - lastSynced > SYNC_AFTER_SECONDS * 1000) {
+        console.log(SYNC_AFTER_SECONDS, ' seconds passed, syncing now')
+        lastSynced = nowTime
+        const syncIt = async () => {
+          return new Promise(resolve => {
+            setTimeout(function() {
+              sendPostToServer()
+                .then(() => {
+                  resolve(
+                    self.registration.showNotification(
+                      'Orders synced to server'
+                    )
+                  )
+                })
+                .catch(() => {
+                  console.log('sw:', 'SW Error syncing orders to server')
+                })
+            }, 1000 * 10)
+          })
+        }
+        event.waitUntil(syncIt())
+      } else {
+        console.log(
+          SYNC_AFTER_SECONDS,
+          ' not passed from last sync, do not sync now'
+        )
       }
-      event.waitUntil(syncIt())
     }
   })
 
@@ -224,6 +249,13 @@ function savePostRequests(url, payload) {
         'a new order request has been added to indexedb',
         event
       )
+
+      log({
+        event_time: payload.real_created_datetime,
+        event_type: 'order_save_offline',
+        event_data: payload,
+      })
+
       //reset form data
       form_data = null
     }
@@ -315,23 +347,25 @@ function sendToServer() {
               authData = authData[0]
 
               var authToken = authData.token
-              var branch_n = authData.branch_n
-              var terminal_code = authData.terminal_code
+
               //var lastOrderNo = parseInt(authData.lastOrderNo) || 0
 
               for (let savedRequest of savedRequests) {
                 const orderUrl = savedRequest.url
                 const contextUrl = orderUrl.replace(new RegExp('/model/.*'), '')
-                const time = savedRequest.payload.real_created_datetime
+                //const time = savedRequest.payload.real_created_datetime
                 //lastOrderNo++
-                var transitionOrderNo =
-                  branch_n + '-' + terminal_code + '-' + time
+                //var transitionOrderNo =
+                //  branch_n + '-' + terminal_code + '-' + time
 
-                console.log('transition order number: ', transitionOrderNo)
+                console.log(
+                  'transition order number: ',
+                  savedRequest.payload.transition_order_no
+                )
 
                 // send them to the server one after the other
 
-                savedRequest.payload.transition_order_no = transitionOrderNo
+                //savedRequest.payload.transition_order_no = transitionOrderNo
                 savedRequest.payload.order_mode = 'offline'
 
                 var headers = {
@@ -409,34 +443,52 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
     method: method,
     body: payload,
   })
+    //.then(response => response.json())
     .then(function(response) {
-      console.log('sw:', 'server response', response)
-      if (response.status < 400) {
-        // If sending the POST request was successful, then
-        // remove it from the IndexedDB.
-        //increment in the order number
+      console.log('sw:', 'server response 1', response)
+      if (response.status == 200) {
+        response.json().then(response => {
+          if (response.status === 'ok' && response.id) {
+            console.log(
+              'order synced successfully 2',
+              savedRequest.payload.real_created_datetime,
+              response
+            )
+            var requestUpdate = getObjectStore(
+              ORDER_DOCUMENT,
+              'readwrite'
+            ).delete(savedRequest.payload.real_created_datetime)
 
-        var requestUpdate = getObjectStore('auth', 'readwrite').put(authData)
+            requestUpdate.onerror = function(event) {
+              console.log('sw:', 'order delete failed 3', event)
+            }
+            requestUpdate.onsuccess = function(event) {
+              // Success - the data is updated!
+              console.log('sw:', 'order delted successfully 3', event)
+            }
 
-        requestUpdate.onerror = function(event) {
-          console.log('sw:', 'update failed', event)
-        }
-        requestUpdate.onsuccess = function(event) {
-          // Success - the data is updated!
-          console.log('sw:', 'update good', event)
-        }
-
-        console.log(
-          'sw:',
-          'Removing request from index db',
-          savedRequest.real_created_datetime
-        )
-        getObjectStore(ORDER_DOCUMENT, 'readwrite').delete(
-          savedRequest.payload.real_created_datetime
-        )
-
+            log({
+              event_time: savedRequest.payload.real_created_datetime,
+              event_type: 'order_synced',
+              event_data: { request: savedRequest.payload, response: response },
+            })
+          } else {
+            console.log('order sync failed 2', response)
+            log({
+              event_time: savedRequest.payload.real_created_datetime,
+              event_type: 'order_sync_failed',
+              event_data: { request: savedRequest.payload, response: response },
+            })
+          }
+        })
         resolve(response)
       } else if (response.status == 401) {
+        log({
+          event_time: savedRequest.payload.real_created_datetime,
+          event_type: 'order_sync_token_failed',
+          event_data: { request: payload, response: response },
+        })
+
         console.log(
           'sw: ',
           'Token expired, unauthorized access, get refresh token'
@@ -448,6 +500,11 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
         })
           .then(response => response.json())
           .then(response => {
+            log({
+              event_time: savedRequest.payload.real_created_datetime,
+              event_type: 'order_sync_token_refreshed',
+              event_data: { request: payload, response: response },
+            })
             console.log('sw: ', 'refresh token response', response)
             headers.token = response.token
             authData.token = response.token
@@ -461,14 +518,13 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
           })
       }
     })
-    .catch(function(error) {
-      // This will be triggered if the network is still down.
-      // The request will be replayed again
-      // the next time the service worker starts up.
-      console.error('sw:', 'Send to Server failed:', error)
-      // since we are in a catch, it is important an error is
-      //thrown,so the background sync knows to keep retrying
-      // the send to server
+    .catch(error => {
+      console.log('error sending request for sync, network failed', error)
+      log({
+        event_time: savedRequest.payload.real_created_datetime,
+        event_type: 'order_sync_network_fail',
+        event_data: { request: payload, response: 'Network not available' },
+      })
       reject(error)
     })
 }
@@ -527,4 +583,28 @@ var createCustomer = function(headers, payload, contextUrl, authData) {
       }
     })
   })
+}
+function log(data) {
+  console.log(data)
+  var format = function(num) {
+    if (num < 10) {
+      return '0' + num
+    }
+    return num
+  }
+  var today = new Date()
+  var date =
+    today.getFullYear() +
+    '-' +
+    format(today.getMonth() + 1) +
+    '-' +
+    format(today.getDate())
+  var time =
+    format(today.getHours()) +
+    ':' +
+    format(today.getMinutes()) +
+    ':' +
+    format(today.getSeconds())
+  data.log_time = date + ' ' + time
+  getObjectStore(LOG_DOCUMENT, 'readwrite').add(data)
 }

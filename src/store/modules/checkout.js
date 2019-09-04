@@ -117,12 +117,19 @@ const actions = {
       if (validPayment) {
         //send order for payment
         let order = {}
+        const orderPlacementTime = DateTime.getUTCDateTime()
+
         try {
           order = {
             customer: '',
             customer_address_id: '',
             referral: '',
-            transition_order_no: '',
+            transition_order_no:
+              rootState.location.store.branch_n +
+              '-' +
+              rootState.location.terminalCode +
+              '-' +
+              orderPlacementTime,
             currency: rootState.location.currency,
             order_status:
               action === CONSTANTS.ORDER_STATUS_ON_HOLD
@@ -132,7 +139,7 @@ const actions = {
             order_type: rootState.order.orderType.OTApi,
             order_mode: 'online',
             //this time can be used to indentify offline order
-            real_created_datetime: DateTime.getUTCDateTime(),
+            real_created_datetime: orderPlacementTime,
             // order_mode: 'online',
             //remove the modifiers prices from subtotal
             print_count: 0,

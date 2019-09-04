@@ -21,30 +21,33 @@
 </template>
 
 <script>
-import Header from './popup/Header'
-import HeaderDetails from './popup/header/HeaderDetails'
-import Content from './popup/Content'
-import Footer from './popup/Footer'
+import Header from "./popup/Header";
+import HeaderDetails from "./popup/header/HeaderDetails";
+import Content from "./popup/Content";
+import Footer from "./popup/Footer";
 
 export default {
-  name: 'Popup',
+  name: "Popup",
   props: {},
   components: {
     Content,
     Header,
     HeaderDetails,
-    Footer,
-  },
-}
+    Footer
+  }
+};
 </script>
 <style lang="scss">
-@import '../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../assets/scss/variables.scss';
-@import '../../../../../assets/scss/mixins.scss';
+@import "../../../../../assets/scss/pixels_rem.scss";
+@import "../../../../../assets/scss/variables.scss";
+@import "../../../../../assets/scss/mixins.scss";
 
 @include responsive(mobile) {
   .POSItemOptions {
     padding: 0;
+    width: 100vw;
+    max-width: none;
+    // position: fixed;
 
     .modal-dialog {
       width: 100vw;
@@ -92,12 +95,14 @@ export default {
                   button {
                     height: 50px;
                     background-color: $green-middle;
+                    width: auto;
+                    padding: 0 25px;
                   }
                 }
               }
 
               .POSItemOptions_label {
-                display: none;
+                /*display: none;*/
               }
             }
           }
@@ -164,7 +169,7 @@ export default {
                   }
 
                   input {
-                    &[type='checkbox'] {
+                    &[type="checkbox"] {
                       &:checked + div {
                         display: block;
 
@@ -189,8 +194,8 @@ export default {
                     border: none;
 
                     &:before {
-                      font-family: 'FontAwesome';
-                      content: '\f00c';
+                      font-family: "FontAwesome";
+                      content: "\f00c";
                       position: static !important;
                       display: flex;
                       align-items: center;

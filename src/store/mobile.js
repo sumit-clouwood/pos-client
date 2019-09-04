@@ -15,7 +15,7 @@ export default {
     itemFood: [],
     payMethod: 1,
     methodCardHendler: false,
-    QRMethodGhange: false,
+    QRMethodChange: false,
     loyaltyHendler: false,
     discountHendler: false,
     addNoteHendler: false,
@@ -55,215 +55,214 @@ export default {
   },
   mutations: {
     CLOSE_CATEGORY_AND_SUB_CATEGORY: state => {
-      state.allCategoryHendler = false
-      state.subCategoryHendler = false
-      state.foodMenuHendler = true
+      state.allCategoryHendler = false;
+      state.subCategoryHendler = false;
+      state.foodMenuHendler = true;
     },
     SEARCH_HENDLER_CHANGE: state => {
-      state.searchHendler = !state.searchHendler
+      state.searchHendler = !state.searchHendler;
     },
     ALL_CATEGORY_HENDLER_CHANGE: state => {
-      state.allCategoryHendler = !state.allCategoryHendler
-      state.subCategoryHendler = false
-      state.foodMenuHendler = false
+      state.allCategoryHendler = !state.allCategoryHendler;
+      state.subCategoryHendler = false;
+      state.foodMenuHendler = false;
     },
     BACK_CATEGORY: state => {
-      state.allCategoryHendler = !state.allCategoryHendler
-      state.subCategoryHendler = false
-      state.foodMenuHendler = !state.foodMenuHendler
+      state.allCategoryHendler = !state.allCategoryHendler;
+      state.subCategoryHendler = false;
+      state.foodMenuHendler = !state.foodMenuHendler;
     },
     BACK_SUB_CATEGORY: state => {
-      state.allCategoryHendler = !state.allCategoryHendler
-      state.subCategoryHendler = false
-      state.foodMenuHendler = false
+      state.allCategoryHendler = !state.allCategoryHendler;
+      state.subCategoryHendler = false;
+      state.foodMenuHendler = false;
     },
     SUB_CATEGORY_HENDLER_CHANGE: state => {
-      state.allCategoryHendler = false
-      state.subCategoryHendler = !state.subCategoryHendler
-      state.foodMenuHendler = false
+      state.allCategoryHendler = false;
+      state.subCategoryHendler = !state.subCategoryHendler;
+      state.foodMenuHendler = false;
     },
-    FOOD_MENU_HENDLER_GHANGE: state => {
-      state.foodMenuHendler = true
-      state.allCategoryHendler = false
-      state.subCategoryHendler = false
+    FOOD_MENU_HENDLER_CHANGE: state => {
+      state.foodMenuHendler = true;
+      state.allCategoryHendler = false;
+      state.subCategoryHendler = false;
     },
-    MAIN_ORDERS_HENDLER_GHANGE: state => {
-      state.allCategoryHendler = false
-      state.subCategoryHendler = false
-      state.mainOrdersHendler = !state.mainOrdersHendler
+    MAIN_ORDERS_HENDLER_CHANGE: state => {
+      state.allCategoryHendler = false;
+      state.subCategoryHendler = false;
+      state.mainOrdersHendler = !state.mainOrdersHendler;
     },
     CART_CLOSE: state => {
-      state.mainOrdersHendler = false
-      state.footerButtonHendler = false
+      state.mainOrdersHendler = false;
+      state.footerButtonHendler = false;
     },
-    TOTAL_WRAPPER_HENDLER_GHANGE: state => {
-      state.totalWrapperHendler = !state.totalWrapperHendler
+    TOTAL_WRAPPER_HENDLER_CHANGE: state => {
+      state.totalWrapperHendler = !state.totalWrapperHendler;
     },
-    FOOTER_BUTTON_HENDLER_GHANGE: state => {
-      state.footerButtonHendler = !state.footerButtonHendler
+    FOOTER_BUTTON_HENDLER_CHANGE: state => {
+      state.footerButtonHendler = !state.footerButtonHendler;
     },
-    PAY_NOW_CALC_HANDLER_GHANGE: state => {
-      state.payNowCalcHendler = !state.payNowCalcHendler
+    PAY_NOW_CALC_HANDLER_CHANGE: state => {
+      state.payNowCalcHendler = !state.payNowCalcHendler;
     },
-    FOOTER_MENU_HENDLER_GHANGE: state => {
-      state.footerMenuHendler = !state.footerMenuHendler
+    FOOTER_MENU_HENDLER_CHANGE: state => {
+      state.footerMenuHendler = !state.footerMenuHendler;
     },
-    PROFILE_HENDLER_GHANGE: state => {
-      state.profileHendler = !state.profileHendler
+    PROFILE_HENDLER_CHANGE: state => {
+      state.profileHendler = !state.profileHendler;
     },
-    PAYMENT_METHODS_GHANGE: state => {
-      state.paymentMethodsHendler = !state.paymentMethodsHendler
-      state.payNowCalcHendler = false
+    PAYMENT_METHODS_CHANGE: state => {
+      state.paymentMethodsHendler = !state.paymentMethodsHendler;
+      state.payNowCalcHendler = false;
     },
     OPEN_MANAGE_CUSTOMER: state => {
-      state.openManageCustomerHendler = !state.openManageCustomerHendler
+      state.openManageCustomerHendler = !state.openManageCustomerHendler;
     },
     ADD_ITEM_FOOD: (state, payLoad) => {
       if (!state.itemFood.some(item => item.name === payLoad.name)) {
         state.itemFood.unshift({
           name: payLoad.name,
           count: 1,
-        })
+        });
       } else {
         state.itemFood.forEach(item => {
           if (item.name == payLoad.name) {
-            item.count++
+            item.count++;
           }
-        })
+        });
       }
     },
     METHOD_CARD_HENDLER_CHANGE: state => {
-      state.methodCardHendler = !state.methodCardHendler
+      state.methodCardHendler = !state.methodCardHendler;
     },
-    QR_METHOD_GHANGE_HENDLER: state => {
-      state.QRMethodGhange = !state.QRMethodGhange
+    QR_METHOD_CHANGE_HENDLER: state => {
+      state.QRMethodChange = !state.QRMethodChange;
     },
-    LOYALTY_HENDLER_GHANGE: state => {
-      state.loyaltyHendler = !state.loyaltyHendler
+    LOYALTY_HENDLER_CHANGE: state => {
+      state.loyaltyHendler = !state.loyaltyHendler;
     },
-    DISCOUNT_HENDLER_GHANGE: state => {
-      state.discountHendler = !state.discountHendler
+    DISCOUNT_HENDLER_CHANGE: state => {
+      state.discountHendler = !state.discountHendler;
     },
-    ADD_NOTE_HENDLER_GHANGE: state => {
-      state.addNoteHendler = !state.addNoteHendler
+    ADD_NOTE_HENDLER_CHANGE: state => {
+      state.addNoteHendler = !state.addNoteHendler;
     },
-    LOYALTY_PAYMMENT_HENDLER_GHANGE: state => {
-      state.loyaltyPaymentHendler = !state.loyaltyPaymentHendler
+    LOYALTY_PAYMMENT_HENDLER_CHANGE: state => {
+      state.loyaltyPaymentHendler = !state.loyaltyPaymentHendler;
     },
-    CARD_INPUT_HENDLER_GHANGE: state => {
-      state.cardInputHendler = !state.cardInputHendler
+    CARD_INPUT_HENDLER_CHANGE: state => {
+      state.cardInputHendler = !state.cardInputHendler;
     },
-    SUCCESSFULL_HENDLER_GHANGE: state => {
-      state.successfullHendler = !state.successfullHendler
+    SUCCESSFULL_HENDLER_CHANGE: state => {
+      state.successfullHendler = !state.successfullHendler;
     },
-    OPEN_USER_HENDLER_GHANGE: state => {
-      state.openUserHendler = !state.openUserHendler
+    OPEN_USER_HENDLER_CHANGE: state => {
+      state.openUserHendler = !state.openUserHendler;
     },
     USER_LOGIN_HENDLER_CHANGE: state => {
-      state.userLoginHendler = !state.userLoginHendler
+      state.userLoginHendler = !state.userLoginHendler;
     },
     USER_CALC_HENDLER_CHANGE: state => {
-      state.userCalcHendler = !state.userCalcHendler
+      state.userCalcHendler = !state.userCalcHendler;
     },
     MOBILE_LOGOUT: state => {
-      state.itemFood = []
-      state.bascketItems = []
+      state.itemFood = [];
+      state.bascketItems = [];
     },
     CHOOSE_CURENT_PAY_METHOD: (state, payLoad) => {
-      state.payMethod = payLoad
-      // console.log(payLoad)
+      state.payMethod = payLoad;
     },
   },
   actions: {
     CloseCategoryAndSubCategory({ commit }) {
-      commit('CLOSE_CATEGORY_AND_SUB_CATEGORY')
+      commit('CLOSE_CATEGORY_AND_SUB_CATEGORY');
     },
     backCategory({ commit }) {
-      commit('BACK_CATEGORY')
+      commit('BACK_CATEGORY');
     },
     backSubCategory({ commit }) {
-      commit('BACK_SUB_CATEGORY')
+      commit('BACK_SUB_CATEGORY');
     },
     searchHendlerChange({ commit }) {
-      commit('SEARCH_HENDLER_CHANGE')
+      commit('SEARCH_HENDLER_CHANGE');
     },
     allCategoryHendlerChange({ commit }) {
-      commit('ALL_CATEGORY_HENDLER_CHANGE')
+      commit('ALL_CATEGORY_HENDLER_CHANGE');
     },
     subCategoryHendlerChange({ commit }) {
-      commit('SUB_CATEGORY_HENDLER_CHANGE')
+      commit('SUB_CATEGORY_HENDLER_CHANGE');
     },
-    foodMenuHendlerGhange({ commit }) {
-      commit('FOOD_MENU_HENDLER_GHANGE')
+    foodMenuHendlerChange({ commit }) {
+      commit('FOOD_MENU_HENDLER_CHANGE');
     },
-    mainOrdersHendlerGhange({ commit }) {
-      commit('MAIN_ORDERS_HENDLER_GHANGE')
+    mainOrdersHendlerChange({ commit }) {
+      commit('MAIN_ORDERS_HENDLER_CHANGE');
     },
     cartClose({ commit }) {
-      commit('CART_CLOSE')
+      commit('CART_CLOSE');
     },
-    totalWrapperHendlerGhange({ commit }) {
-      commit('TOTAL_WRAPPER_HENDLER_GHANGE')
+    totalWrapperHendlerChange({ commit }) {
+      commit('TOTAL_WRAPPER_HENDLER_CHANGE');
     },
-    footerButtonHendlerGhange({ commit }) {
-      commit('FOOTER_BUTTON_HENDLER_GHANGE')
+    footerButtonHendlerChange({ commit }) {
+      commit('FOOTER_BUTTON_HENDLER_CHANGE');
     },
-    payNowCalcHendlerGhange({ commit }) {
-      commit('PAY_NOW_CALC_HANDLER_GHANGE')
+    payNowCalcHendlerChange({ commit }) {
+      commit('PAY_NOW_CALC_HANDLER_CHANGE');
     },
-    footerMenuHendlerGhange({ commit }) {
-      commit('FOOTER_MENU_HENDLER_GHANGE')
+    footerMenuHendlerChange({ commit }) {
+      commit('FOOTER_MENU_HENDLER_CHANGE');
     },
-    profileHendlerGhange({ commit }) {
-      commit('PROFILE_HENDLER_GHANGE')
+    profileHendlerChange({ commit }) {
+      commit('PROFILE_HENDLER_CHANGE');
     },
-    paymentMethodsGhange({ commit }) {
-      commit('PAYMENT_METHODS_GHANGE')
+    paymentMethodsChange({ commit }) {
+      commit('PAYMENT_METHODS_CHANGE');
     },
     openManageCustomer({ commit }) {
-      commit('OPEN_MANAGE_CUSTOMER')
+      commit('OPEN_MANAGE_CUSTOMER');
     },
     addItemFood({ commit }, payLoad) {
-      commit('ADD_ITEM_FOOD', payLoad)
+      commit('ADD_ITEM_FOOD', payLoad);
     },
-    methodCardHendlerGhange({ commit }) {
-      commit('METHOD_CARD_HENDLER_CHANGE')
+    methodCardHendlerChange({ commit }) {
+      commit('METHOD_CARD_HENDLER_CHANGE');
     },
-    QRMethodGhangeHendler({ commit }) {
-      commit('QR_METHOD_GHANGE_HENDLER')
+    QRMethodChangeHendler({ commit }) {
+      commit('QR_METHOD_CHANGE_HENDLER');
     },
-    loyaltyHendlerGhange({ commit }) {
-      commit('LOYALTY_HENDLER_GHANGE')
+    loyaltyHendlerChange({ commit }) {
+      commit('LOYALTY_HENDLER_CHANGE');
     },
-    discountHendlerGhange({ commit }) {
-      commit('DISCOUNT_HENDLER_GHANGE')
+    discountHendlerChange({ commit }) {
+      commit('DISCOUNT_HENDLER_CHANGE');
     },
-    addNoteHendlerGhange({ commit }) {
-      commit('ADD_NOTE_HENDLER_GHANGE')
+    addNoteHendlerChange({ commit }) {
+      commit('ADD_NOTE_HENDLER_CHANGE');
     },
-    loyaltyPaymentHendlerGhange({ commit }) {
-      commit('LOYALTY_PAYMMENT_HENDLER_GHANGE')
+    loyaltyPaymentHendlerChange({ commit }) {
+      commit('LOYALTY_PAYMMENT_HENDLER_CHANGE');
     },
-    cardInputHendlerGhange({ commit }) {
-      commit('CARD_INPUT_HENDLER_GHANGE')
+    cardInputHendlerChange({ commit }) {
+      commit('CARD_INPUT_HENDLER_CHANGE');
     },
-    successfullHendlerGhange({ commit }) {
-      commit('SUCCESSFULL_HENDLER_GHANGE')
+    successfullHendlerChange({ commit }) {
+      commit('SUCCESSFULL_HENDLER_CHANGE');
     },
-    openUserHendlerGhange({ commit }) {
-      commit('OPEN_USER_HENDLER_GHANGE')
+    openUserHendlerChange({ commit }) {
+      commit('OPEN_USER_HENDLER_CHANGE');
     },
-    userLoginHendlerGhange({ commit }) {
-      commit('USER_LOGIN_HENDLER_CHANGE')
+    userLoginHendlerChange({ commit }) {
+      commit('USER_LOGIN_HENDLER_CHANGE');
     },
-    userCalcHendlerGhange({ commit }) {
-      commit('USER_CALC_HENDLER_CHANGE')
+    userCalcHendlerChange({ commit }) {
+      commit('USER_CALC_HENDLER_CHANGE');
     },
     mobileLogout({ commit }) {
-      commit('MOBILE_LOGOUT')
+      commit('MOBILE_LOGOUT');
     },
     chooseCurentPayMethod({ commit }, payLoad) {
-      commit('CHOOSE_CURENT_PAY_METHOD', payLoad)
+      commit('CHOOSE_CURENT_PAY_METHOD', payLoad);
     },
   },
   getters: {
@@ -282,7 +281,7 @@ export default {
     itemFood: state => state.itemFood,
     payMethod: state => state.payMethod,
     methodCardHendler: state => state.methodCardHendler,
-    QRMethodGhange: state => state.QRMethodGhange,
+    QRMethodChange: state => state.QRMethodChange,
     loyaltyHendler: state => state.loyaltyHendler,
     discountHendler: state => state.discountHendler,
     addNoteHendler: state => state.addNoteHendler,
@@ -295,4 +294,4 @@ export default {
     userCalcHendler: state => state.userCalcHendler,
     bascketItems: state => state.bascketItems,
   },
-}
+};

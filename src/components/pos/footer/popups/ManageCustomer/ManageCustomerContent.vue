@@ -128,9 +128,6 @@ export default {
   components: {
     Preloader,
   },
-  // beforeUpdate() {
-  //     console.log(this.customerDetails)
-  // },
   computed: {
     ...mapState({
       customerDetails: state => state.customer.customer_list,

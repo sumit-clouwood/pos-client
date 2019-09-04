@@ -1,9 +1,6 @@
 <template>
   <div class="mobile-footer">
-    <div
-      :class="['btn-cart', { disable: !items.length }]"
-      @click="mainOrdersHendlerGhange"
-    >
+    <div :class="['btn-cart', { disable: !items.length }]" @click="mainOrdersHendlerChange">
       <svg
         width="18"
         height="16"
@@ -16,15 +13,10 @@
           fill="white"
         />
       </svg>
-      <div class="text">
-        {{ items.length ? `Cart ${items.length}` : 'Cart is empty' }}
-      </div>
+      <div class="text">{{ items.length ? `Cart ${items.length}` : 'Cart is empty' }}</div>
     </div>
     <div class="main-orders-buttons">
-      <div
-        :class="['btn-menu', { active: footerMenuHendler }]"
-        @click="footerMenuHendlerGhange"
-      >
+      <div :class="['btn-menu', { active: footerMenuHendler }]" @click="footerMenuHendlerChange">
         <svg
           width="24"
           height="24"
@@ -54,18 +46,56 @@
       </div>
       <div
         :class="['btn-menu-close', { active: !footerMenuHendler }]"
-        @click="footerMenuHendlerGhange"
+        @click="footerMenuHendlerChange"
       >
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <div class="btn-chatge" @click="paymentMethodsGhange">
-        <div class="btn-chatge-amount">{{ formatPrice(orderTotal || 0) }}</div>
-        <div class="btn-chatge-title">CHARGE</div>
+      <div class="btn-chatge" @click="paymentMethodsChange">
+        <div class="btn-chatge-amount" v-show="orderType.OTApi !== 'call_center'">{{ formatPrice(orderTotal || 0) }}</div>
+        <div class="btn-chatge-title" v-show="orderType.OTApi !== 'call_center'">CHARGE</div>
+        <li
+            v-show="orderType.OTApi === 'call_center'"
+            class="footer-slider-list-item color-secondary"
+            data-toggle="modal"
+            :data-target="selectedModal"
+            data-dismiss="modal"
+          >
+            <a
+              class="footer-slider-list-item-link color-text-invert"
+              role="button"
+              @click="
+                setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
+              "
+            >
+              <!--<img src="images/footer-images/d_2.png" alt="customer">-->
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                data-prefix="fas"
+                data-icon="suitcase"
+                role="img"
+                width="1.875rem"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                class="svg-inline--fa fa-suitcase fa-w-16 fa-2x"
+              >
+                <path
+                  fill="currentColor"
+                  d="M128 480h256V80c0-26.5-21.5-48-48-48H176c-26.5 0-48 21.5-48 48v400zm64-384h128v32H192V96zm320 80v256c0 26.5-21.5 48-48 48h-48V128h48c26.5 0 48 21.5 48 48zM96 480H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48h48v352z"
+                  class
+                ></path>
+              </svg>
+              <span>{{ _t('Send to Delivery') }}</span>
+            </a>
+          </li>
       </div>
+
+
+
     </div>
     <div class="btn-next" @click="footerBtnMethod">Next</div>
     <div class="btn-next btn-next-s" @click="footerBtnMethodS">Next</div>
-    <div class="btn-Cancel" @click="methodCardHendlerGhange">Cancel</div>
+    <div class="btn-Cancel" @click="methodCardHendlerChange">Cancel</div>
     <div class="qr-voucher-code">
       <div class="title">Voucher code</div>
       <input type="text" placeholder="Enter voucher code" />
@@ -73,65 +103,76 @@
   </div>
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 
 export default {
-  props: ['param'],
+  props: ["param"],
   computed: {
-    ...mapGetters('order', ['items', 'orderTotal', 'subTotal', 'totalTax']),
-    ...mapGetters('surcharge', ['surcharge']),
+      ...mapState('checkout', ['print']),
+    ...mapState('order', ['orderType', 'cartType']),
+    ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapGetters(['footerMenuHendler', 'payMethod']),
-    ...mapState('order', ['orderType']),
     ...mapState({
       selectedModal: state =>
         state.location.setModal == '#loyalty-payment'
           ? '#manage-customer'
           : state.location.setModal,
     }),
+    ...mapState({
+      loyaltyCard: state => state.customer.loyalty.card,
+    }),
+    ...mapState({ selectedCustomer: state => state.customer.customer.name }),
+    ...mapGetters("order", ["items", "orderTotal"]),
+    ...mapGetters("location", ["formatPrice"]),
+    ...mapGetters(["footerMenuHendler", "payMethod"]),
+    ...mapState({
+      selectedModal: state =>
+        state.location.setModal == "#loyalty-payment"
+          ? "#manage-customer"
+          : state.location.setModal
+    })
   },
   methods: {
-    mainOrdersHendlerGhange() {
+    mainOrdersHendlerChange() {
       if (this.items.length) {
-        this.$store.dispatch('mainOrdersHendlerGhange')
-        this.$store.dispatch('footerButtonHendlerGhange')
+        this.$store.dispatch("mainOrdersHendlerChange");
+        this.$store.dispatch("footerButtonHendlerChange");
       }
     },
-    footerMenuHendlerGhange() {
-      this.$store.dispatch('footerMenuHendlerGhange')
+    footerMenuHendlerChange() {
+      this.$store.dispatch("footerMenuHendlerChange");
     },
-    payNowCalcHendlerGhange() {
-      if (this.payMethod == 'Gift Card') {
-        this.$store.dispatch('payNowCalcHendlerGhange')
+    payNowCalcHendlerChange() {
+      if (this.payMethod == "Gift Card") {
+        this.$store.dispatch("payNowCalcHendlerChange");
       }
     },
-    paymentMethodsGhange() {
-      this.$store.dispatch('paymentMethodsGhange')
+    paymentMethodsChange() {
+      this.$store.dispatch("paymentMethodsChange");
     },
-    methodCardHendlerGhange() {
-      this.$store.dispatch('methodCardHendlerGhange')
+    methodCardHendlerChange() {
+      this.$store.dispatch("methodCardHendlerChange");
     },
     footerBtnMethod() {
-      if (this.payMethod == '1') {
-        this.$store.dispatch('payNowCalcHendlerGhange')
-      } else if (this.payMethod == '2') {
-        this.$store.dispatch('loyaltyPaymentHendlerGhange')
-      } else if (this.payMethod == '3') {
-        this.$store.dispatch('methodCardHendlerGhange')
-      } else if (this.payMethod == '4') {
-        this.$store.dispatch('QRMethodGhangeHendler')
+      if (this.payMethod == "1") {
+        this.$store.dispatch("payNowCalcHendlerChange");
+      } else if (this.payMethod == "2") {
+        this.$store.dispatch("loyaltyPaymentHendlerChange");
+      } else if (this.payMethod == "3") {
+        this.$store.dispatch("methodCardHendlerChange");
+      } else if (this.payMethod == "4") {
+        this.$store.dispatch("QRMethodChangeHendler");
       }
     },
     footerBtnMethodS() {
-      this.$store.dispatch('successfullHendlerGhange')
-    },
-  },
-}
+      this.$store.dispatch("successfullHendlerChange");
+    }
+  }
+};
 </script>
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import "../../assets/scss/variables.scss";
+@import "../../assets/scss/mixins.scss";
 
 @include responsive(mobile) {
   .mobile-footer {
@@ -208,7 +249,7 @@ export default {
 
       .btn-chatge {
         display: grid;
-        align-items: flex-end;
+        align-items: center;
         background-color: $green-middle;
         border-radius: $btn-border-radius;
         height: 50px;
@@ -216,6 +257,29 @@ export default {
         justify-content: center;
         text-align: center;
         padding: 5px;
+          &.send{
+              display: grid;
+              grid-template-columns: 1fr;
+              align-items: stretch;
+              justify-content: stretch;
+              width: 100%;
+                        li{
+              width: 100%;
+              height: 100%;
+              display: flex;
+              align-items: center;
+              a{
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 14px;
+                  width: 100%;
+                  svg{
+                      margin-right: 10px;
+                  }
+              }
+          }
+          }
 
         .btn-chatge-amount {
           margin-bottom: -5px;
