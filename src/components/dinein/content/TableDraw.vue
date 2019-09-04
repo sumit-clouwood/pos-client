@@ -11,11 +11,21 @@
           <div class="sitting-dine-wrap disable-sorting" v-if="tablesOnArea">
             <div class="sitting-image">
               <svg
-                :height="height"
+                xmlns="http://www.w3.org/2000/svg"
                 width="100%"
+                height="100%"
                 id="dine-in-area"
                 ref="dine-in-area"
-                xmlns="http://www.w3.org/2000/svg"
+                :viewBox="
+                  viewBox.x +
+                    ' ' +
+                    viewBox.y +
+                    ' ' +
+                    viewBox.width +
+                    ' ' +
+                    viewBox.height
+                "
+                preserveAspectRatio="xMidYMid meet"
               ></svg>
             </div>
             <div id="tooltipdata" class="dropdown-content cursor-pointer">
@@ -243,6 +253,7 @@ export default {
       page: null,
       svg: null,
       width: 'auto',
+      viewBox: { x: 0, y: 0, width: 1560, height: 950 },
       height: '950px',
       selectedTableD3: '',
       svgWidth: 250,
@@ -267,6 +278,13 @@ export default {
     this.updateTableOnArea()
     /*if (this.selectedTableD3)
       d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
+    window.onresize = function() {
+      alert('f')
+      let win = $(this) //this = window
+      if (win.width() < 600) {
+        alert(screen.availWidth)
+      }
+    }
   },
   methods: {
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
@@ -362,7 +380,7 @@ export default {
         .select('#dine-in-area')
         .append('g')
         .attr('class', 'tables')
-        .attr('transform', 'translate(110,10)')
+        .attr('transform', 'translate(10,10)')
         .selectAll('.dinein_table')
         .data(this.tablesOnArea)
         .enter() //data from state tables

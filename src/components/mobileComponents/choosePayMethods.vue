@@ -37,20 +37,20 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   .mobile-payment-methods {
     z-index: 1051;
-    position: fixed;
+    position: absolute;
     top: 0;
     right: -100vw;
     bottom: 0;
     background-color: #fff;
-    display: grid;
-    grid-template-rows: 90px 1fr max-content;
+    display: flex;
+    flex-direction: column;
+    grid-template-rows: max-content 1fr max-content;
     width: 100vw;
     transition: 0.5s ease-out;
 
@@ -71,7 +71,7 @@ export default {
       padding-bottom: 0;
       display: grid;
       grid-template-rows: max-content 1fr;
-      overflow: auto;
+      overflow: hidden;
 
       #payment-method {
         margin: 0;
@@ -159,7 +159,6 @@ export default {
     display: grid;
     grid-template-columns: 1fr max-content;
     font-weight: 600;
-
     .payment-amount-title {
       display: flex;
       justify-content: center;

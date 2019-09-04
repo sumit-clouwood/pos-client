@@ -247,6 +247,9 @@ export default {
       position: absolute;
       right: 0;
       left: 0;
+      .back {
+        display: none;
+      }
 
       &::-webkit-scrollbar {
         width: 8px;

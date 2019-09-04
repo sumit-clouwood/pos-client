@@ -4,7 +4,7 @@
       v-for="(method, key) in methods"
       :key="key"
       :class="{ active: activeMethod == method.name, 'color-secondary': true }"
-      @click=";[setMethod(method), methodCardHendlerGhange(method.priority)]"
+      @click=";[setMethod(method), methodCardHendlerChange(method.priority)]"
       class="method"
       :data-toggle="getToggle(method)"
       :data-target="getTarget(method)"
@@ -59,7 +59,7 @@ export default {
       return ''
     },
     ...mapActions('checkoutForm', ['setMethod']),
-    methodCardHendlerGhange(e) {
+    methodCardHendlerChange(e) {
       this.$store.dispatch('chooseCurentPayMethod', e)
     },
   },

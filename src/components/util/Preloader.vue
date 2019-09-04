@@ -16,15 +16,25 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import '../../assets/scss/pixels_rem.scss';
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
+
 .preloader {
-  margin-top: 0 !important;
   text-align: center;
   display: grid;
   align-items: start;
   align-content: start;
   justify-content: center;
+
   img {
     width: 100%;
+  }
+}
+
+@include responsive(mobile) {
+  .preloader {
+    /*margin-top: 35% !important;*/
   }
 }
 </style>

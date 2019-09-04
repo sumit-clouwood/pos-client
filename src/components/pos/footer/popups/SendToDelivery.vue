@@ -86,6 +86,7 @@ export default {
     .modal-dialog {
       margin: 0;
       width: auto !important;
+      max-width: none !important;
 
       .modal-content {
         .order-header {
@@ -111,7 +112,9 @@ export default {
           .order-table {
             max-height: none;
             width: 100%;
-
+            .table-responsive {
+              margin: 0;
+            }
             table {
               width: auto;
               display: grid;
