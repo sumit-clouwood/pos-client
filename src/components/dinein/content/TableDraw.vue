@@ -362,6 +362,7 @@ export default {
         .select('#dine-in-area')
         .append('g')
         .attr('class', 'tables')
+        .attr('transform', 'translate(110,10)')
         .selectAll('.dinein_table')
         .data(this.tablesOnArea)
         .enter() //data from state tables
