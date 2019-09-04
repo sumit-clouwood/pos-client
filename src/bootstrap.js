@@ -7,6 +7,10 @@ import * as CONST from '@/constants'
 
 export default {
   store: null,
+
+  lastSynced: null,
+  syncInterval: 300, //300 sec = 5 min
+
   setup(store) {
     this.store = store
     return new Promise((resolve, reject) => {
@@ -293,12 +297,33 @@ export default {
     NetworkService.status((status, msg) => {
       this.store.commit('sync/status', status)
       if (process.env.NODE_ENV === 'production' && msg === 'on') {
-        console.log('force sync in 10 sec from app')
-        setTimeout(function() {
-          navigator.serviceWorker.controller.postMessage({
-            sync: 1,
-          })
-        }, 1000 * 10)
+        const nowTime = new Date().getTime() //miliseconds
+
+        console.log(
+          'sw:',
+          'last synced',
+          this.lastSynced,
+          'sync received',
+          nowTime,
+          'seconds passed last sync',
+          (nowTime - this.lastSynced) / 1000
+        )
+
+        if (nowTime - this.lastSynced > this.syncInterval * 1000) {
+          this.lastSynced = nowTime
+
+          console.log(
+            this.syncInterval,
+            ' passed, force sync in 10 sec from app'
+          )
+          setTimeout(function() {
+            navigator.serviceWorker.controller.postMessage({
+              sync: 1,
+            })
+          }, 1000 * 10)
+        } else {
+          console.log(this.syncInterval, ' not passed yet')
+        }
       }
     })
   },

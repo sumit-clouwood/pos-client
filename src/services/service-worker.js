@@ -354,16 +354,19 @@ function sendToServer() {
               for (let savedRequest of savedRequests) {
                 const orderUrl = savedRequest.url
                 const contextUrl = orderUrl.replace(new RegExp('/model/.*'), '')
-                const time = savedRequest.payload.real_created_datetime
+                //const time = savedRequest.payload.real_created_datetime
                 //lastOrderNo++
-                var transitionOrderNo =
-                  branch_n + '-' + terminal_code + '-' + time
+                //var transitionOrderNo =
+                //  branch_n + '-' + terminal_code + '-' + time
 
-                console.log('transition order number: ', transitionOrderNo)
+                console.log(
+                  'transition order number: ',
+                  savedRequest.payload.transition_order_no
+                )
 
                 // send them to the server one after the other
 
-                savedRequest.payload.transition_order_no = transitionOrderNo
+                //savedRequest.payload.transition_order_no = transitionOrderNo
                 savedRequest.payload.order_mode = 'offline'
 
                 var headers = {
@@ -521,7 +524,7 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
       log({
         event_time: savedRequest.payload.real_created_datetime,
         event_type: 'order_sync_network_fail',
-        event_data: { request: payload, response: error },
+        event_data: { request: payload, response: 'Network not available' },
       })
       reject(error)
     })

@@ -24,6 +24,7 @@ const state = {
   userShortDetails: false,
   permissions: false,
   apiDate: '',
+  terminalCode: null,
 }
 
 // getters
@@ -131,11 +132,13 @@ const actions = {
 
           TimezoneService.getTimezoneData(state.store.timezone).then(
             timezoneData => {
-              let timezoneName = timezoneData.data.item.name.split(' ')
-              if (timezoneName[0] != undefined) {
-                commit(mutation.SET_TIMEZONE_STRING, timezoneName[0])
-              } else {
-                commit(mutation.SET_TIMEZONE_STRING, 'Asia/Dubai')
+              if (timezoneData.data) {
+                let timezoneName = timezoneData.data.item.name.split(' ')
+                if (timezoneName[0] != undefined) {
+                  commit(mutation.SET_TIMEZONE_STRING, timezoneName[0])
+                } else {
+                  commit(mutation.SET_TIMEZONE_STRING, 'Asia/Dubai')
+                }
               }
             }
           )
@@ -156,11 +159,12 @@ const actions = {
             if (rootGetters['modules/enabled'](CONST.MODULE_CASHIER_APP)) {
               LocationService.registerDevice(rootState.auth.deviceId)
                 .then(response => {
+                  commit(mutation.SET_TERMINAL_CODE, response.data.id)
                   const data = {
                     id: 1,
                     token: localStorage.getItem('token'),
                     branch_n: state.store.branch_n,
-                    terminal_code: response.data.id,
+                    terminal_code: state.terminalCode,
                   }
                   db.getBucket('auth')
                     .then(bucket => {
@@ -311,6 +315,9 @@ const mutations = {
   },
   [mutation.SET_DATE](state, dateAPI) {
     state.apiDate = dateAPI
+  },
+  [mutation.SET_TERMINAL_CODE](state, terminalCode) {
+    state.terminalCode = terminalCode
   },
 }
 
