@@ -29,7 +29,7 @@
                 <div
                   v-for="(orderId, i) in orderTable.related_orders_ids"
                   :key="i"
-                  class="table-order-view"
+                  :class="isOrderCancelledClass"
                 >
                   {{
                     getOrderDetails({
@@ -248,6 +248,7 @@ export default {
     return {
       orderDetails: false,
       timerTime: false,
+      isOrderCancelledClass: 'table-order-view',
     }
   },
   updated() {
@@ -286,8 +287,12 @@ export default {
     ...mapActions('dinein', ['reservationUpdateStatus']),
     getOrderDetails(collection) {
       // eslint-disable-next-line no-console
-      // console.log(collection)
       this.orderDetails = collection.collection[collection.matchWith]
+      // console.log(collection)
+      this.isOrderCancelledClass =
+        this.orderDetails.order_system_status !== 'cancelled'
+          ? 'table-order-view'
+          : 'table-order-view'
     },
     timerClock(datetime) {
       return this.orderTimer(
