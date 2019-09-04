@@ -25,6 +25,7 @@ const state = {
   permissions: false,
   apiDate: '',
   terminalCode: null,
+  timezones: [],
 }
 
 // getters
@@ -132,13 +133,13 @@ const actions = {
 
           TimezoneService.getTimezoneData(state.store.timezone).then(
             timezoneData => {
-              if (timezoneData.data) {
-                let timezoneName = timezoneData.data.item.name.split(' ')
-                if (timezoneName[0] != undefined) {
-                  commit(mutation.SET_TIMEZONE_STRING, timezoneName[0])
-                } else {
-                  commit(mutation.SET_TIMEZONE_STRING, 'Asia/Dubai')
-                }
+              commit(mutation.SET_TIMEZONES, timezoneData.data)
+              const timezoneStr = state.timezones.data.find(
+                timezone => timezone._id == state.store.timezone
+              )
+              if (timezoneStr) {
+                const timezone = timezoneStr.name.replace(/\s+(GMT|GTM).*/g, '')
+                commit(mutation.SET_TIMEZONE_STRING, timezone)
               }
             }
           )
@@ -292,6 +293,9 @@ const mutations = {
   },
   [mutation.SET_REFERRALS](state, referrals) {
     state.referrals = referrals
+  },
+  [mutation.SET_TIMEZONES](state, timezones) {
+    state.timezones = timezones
   },
   [mutation.RESET](state, full = false) {
     state.setModal = '#manage-customer'
