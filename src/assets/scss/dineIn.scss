@@ -391,8 +391,7 @@ td.order-time-det {
 }
 .running-order-table-wrap {
   height: calc(100vh - 105px);
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: auto;
   -webkit-overflow-scrolling: touch;
   touch-action: auto;
 }
@@ -671,4 +670,62 @@ span.dinefor-paynow > a {
 svg .active > path {
   stroke: green;
   stroke-width:1.5
+}
+
+//Media Queries
+@include responsive(mobile){
+  body{
+    &#page-top{
+      &.dm-manager{
+        .header{
+          .header-main{
+            grid-template-columns: 1fr;
+          }
+        }
+        &.sticky-footer{
+          overflow-y: hidden;
+          overflow-x: auto !important;
+        }
+      }
+    }
+    .table-order-view-wrapper{
+      grid-template-columns: 1fr;
+      .table-order-view{
+        height: $px160;
+        .running-actions{
+          grid-template-columns: 1fr;
+          grid-row-gap: $px10;
+          .dinefor-paynow{
+            margin-left: 0 !important;
+            > a{
+              display: inline-block;
+              vertical-align: middle;
+              > svg{
+                vertical-align: middle;
+              }
+            }
+          }
+        }
+      }
+    }
+    .running-order-table-wrap{
+      .action-status{
+        grid-template-columns: 1fr;
+        grid-row-gap: $px10;
+        .dinefor-paynow{
+          margin-left: 0 !important;
+           > svg{
+             margin-right: 2px;
+           }
+        }
+      }
+    }
+    .dine-in-tabel-wrapper{
+      .inner-dinein-table {
+        .dinein-table-control{
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
 }
