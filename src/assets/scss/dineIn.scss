@@ -674,20 +674,29 @@ svg .active > path {
 
 //Media Queries
 @include responsive(mobile){
-  body{
-    &#page-top{
-      &.dm-manager{
-        .header{
-          .header-main{
-            grid-template-columns: 1fr;
+  body {
+    &#page-top {
+      &.dm-manager {
+        .header {
+          .header-main {
+            //grid-template-columns: 1fr;
+            //height: auto;
           }
         }
-        &.sticky-footer{
-          overflow-y: hidden;
-          overflow-x: auto !important;
+        &.sticky-footer {
+          //overflow-y: hidden;
+          //overflow-x: auto !important;
         }
+          .new-pos{
+            padding: 0 $px20;
+            .running-orders-dinein{
+              padding: 0;
+            }
+          }
+
       }
     }
+  }
     .table-order-view-wrapper{
       grid-template-columns: 1fr;
       .table-order-view{
@@ -723,7 +732,79 @@ svg .active > path {
     .dine-in-tabel-wrapper{
       .inner-dinein-table {
         .dinein-table-control{
-          grid-template-columns: 1fr;
+          padding: 0 $px10;
+          .ullist-dinein-table{
+            > li{
+              &:first-child{
+                margin-left: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+    .all-booking-btns{
+      &.hide-below-sm{
+        display: none;
+      }
+    }
+    .hideBigScreen{
+      .all-booking-btns{
+        display: none;
+        &.active{
+          display: block;
+          transition: 0.3s ease-in-out;
+        }
+      }
+      .hideBigIcon{
+        position: fixed;
+        top: 75px;
+        right: 20px;
+        cursor: pointer;
+        i{
+          font-size: 20px;
+          cursor: pointer;
+        }
+      }
+    }
+}
+@media only screen and (max-width: 600px) {
+  .floor-section-wrap{
+    grid-template-columns: 1fr;
+    grid-row-gap: $px10;
+     .ullist-floor{
+       > li{
+         &:first-child{
+           margin-left: 0;
+         }
+       }
+     }
+     .form-inline{
+       .inner-addon{
+         overflow: hidden;
+         display: grid;
+         grid-template-columns: auto 1fr;
+         align-items: center;
+         width: 100%;
+         text-align: left;
+       }
+     }
+  }
+  .dine-in-tabel-wrapper{
+    .inner-dinein-table {
+      .dinein-table-control{
+        grid-template-columns: 1fr;
+        .zoom-wrap-dinein{
+          text-align: center;
+          margin-top: $px20;
+        }
+        .ullist-dinein-table{
+          text-align: center;
+          > li{
+            &:first-child{
+              margin-left: 0;
+            }
+          }
         }
       }
     }

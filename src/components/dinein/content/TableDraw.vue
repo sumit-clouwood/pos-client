@@ -278,13 +278,6 @@ export default {
     this.updateTableOnArea()
     /*if (this.selectedTableD3)
       d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
-    window.onresize = function() {
-      alert('f')
-      let win = $(this) //this = window
-      if (win.width() < 600) {
-        alert(screen.availWidth)
-      }
-    }
   },
   methods: {
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
