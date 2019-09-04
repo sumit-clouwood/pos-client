@@ -15,7 +15,7 @@ const state = {
   areaLookup: false,
   tables: false,
   activeArea: false,
-  loading: false,
+  loading: true,
   tablesOnArea: false,
   tableStatus: {},
   orderOnTables: {},
@@ -89,18 +89,24 @@ const actions = {
     })
   },
   getBookedTables({ commit }) {
+    commit(mutation.LOADING, true)
     DineInService.getAllBookedTables().then(response => {
       commit(mutation.BOOKED_TABLES, response.data)
+      commit(mutation.LOADING, false)
     })
   },
   dineInRunningOrders({ commit }) {
+    commit(mutation.LOADING, true)
     DineInService.dineInRunningOrders().then(response => {
       commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
+      commit(mutation.LOADING, false)
     })
   },
   dineInCompleteOrders({ commit }) {
+    commit(mutation.LOADING, true)
     DineInService.dineInCompleteOrders().then(response => {
       commit(mutation.DINE_IN_COMPLETED_ORDERS, response.data)
+      commit(mutation.LOADING, false)
     })
   },
   getDineInArea({ commit, dispatch }) {
