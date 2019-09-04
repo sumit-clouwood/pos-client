@@ -5,7 +5,7 @@
       v-if="items.length"
       :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
     >
-    <!-- <div class="bg">bg</div> -->
+      <!-- <div class="bg">bg</div> -->
       <div
         :class="{
           'food-menu-item': true,
@@ -27,12 +27,12 @@
         <div
           class="food-menu-item-text color-text"
           :class="item.image === '' ? 'item-image-only' : ''"
-      >
-        {{ dt(item) }}
-      </div>
-      <div class="food-menu-item-price">
-        {{ currency }} {{ item.value || 0 }}
-      </div>
+        >
+          {{ dt(item) }}
+        </div>
+        <div class="food-menu-item-price">
+          {{ currency }} {{ item.value || 0 }}
+        </div>
       </div>
       <Popup />
     </div>
