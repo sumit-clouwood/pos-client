@@ -243,7 +243,7 @@ export default {
       page: null,
       svg: null,
       width: 'auto',
-      height: '900px',
+      height: '950px',
       selectedTableD3: '',
       svgWidth: 250,
       svgHeight: 100,
@@ -557,6 +557,7 @@ export default {
             return d.y
           })
           .append('image')
+          .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
             return `/img/dinein/area-view/${d.name}_view_h.jpg`
             // return `/img/dinein/area-view/city_view_h.jpg`
@@ -628,12 +629,13 @@ export default {
             return d.y
           })
           .append('image')
+          .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
             return `/img/dinein/area-view/${d.name}_view_v.jpg`
           })
           .attr('x', function(d) {
             // d.x = that.viewsCoordinates.right_view.x
-            return parseInt(d.x) + 254
+            return parseInt(d.x)
           })
           .attr('y', function(d) {
             // d.y = that.viewsCoordinates.right_view.y
@@ -697,6 +699,7 @@ export default {
             return d.y
           })
           .append('image')
+          .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
             return `/img/dinein/area-view/${d.name}_view_h.jpg`
           })
@@ -706,7 +709,7 @@ export default {
           })
           .attr('y', function(d) {
             // d.y = that.viewsCoordinates.bottom_view.y
-            return parseInt(d.y) - 43
+            return parseInt(d.y)
           })
           .attr('height', d => d.height)
           .attr('width', d => d.width)
@@ -737,6 +740,7 @@ export default {
             return d.y
           })
           .append('image')
+          .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
             return `/img/dinein/area-view/${d.name}_view_v.jpg`
           })
