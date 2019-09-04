@@ -82,7 +82,7 @@
               </button>
             </div>
           </div>
-          <div class="pay-now-btn-next" @click="payNowCalcHendlerGhange">
+          <div class="pay-now-btn-next" @click="payNowCalcHendlerChange">
             Next
           </div>
         </div>
@@ -174,8 +174,8 @@ export default {
         $event.preventDefault()
       }
     },
-    payNowCalcHendlerGhange() {
-      this.$store.dispatch('payNowCalcHendlerGhange')
+    payNowCalcHendlerChange() {
+      this.$store.dispatch('payNowCalcHendlerChange')
     },
   },
 }

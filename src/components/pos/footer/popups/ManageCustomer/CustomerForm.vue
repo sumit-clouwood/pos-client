@@ -407,10 +407,6 @@ export default {
       return re.test(email)
     },
   },
-  beforeMount() {
-    // eslint-disable-next-line no-console
-    console.log(this.fetchDeliveryAreas)
-  },
 }
 </script>
 <style scoped lang="css">

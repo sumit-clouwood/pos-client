@@ -1,8 +1,6 @@
 <template>
-  <div :class="['qr-method', { active: QRMethodGhange }]">
-    <mobile-pay-header
-      :param="{ title: 'Order Payment', subtitle: 'Order ID #0213232' }"
-    />
+  <div :class="['qr-method', { active: QRMethodChange }]">
+    <mobile-pay-header :param="{ title: 'Order Payment', subtitle: 'Order ID #0213232' }" />
     <div class="qr-method-body">
       <div class="subtitle">Use camera to scan QR code</div>
     </div>
@@ -11,26 +9,25 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import mobilePayHeader from './mobilePayHeader.vue'
-import mobileFooter from './mobileFooter.vue'
+import { mapGetters } from "vuex";
+import mobilePayHeader from "./mobilePayHeader.vue";
+import mobileFooter from "./mobileFooter.vue";
 
 export default {
-  name: 'QRMethod',
+  name: "QRMethod",
   components: {
     mobilePayHeader,
-    mobileFooter,
+    mobileFooter
   },
   computed: {
-    ...mapGetters(['QRMethodGhange']),
-  },
-}
+    ...mapGetters(["QRMethodChange"])
+  }
+};
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import "../../assets/scss/variables.scss";
+@import "../../assets/scss/mixins.scss";
 
 .qr-method {
   position: fixed;

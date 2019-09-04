@@ -27,7 +27,7 @@
     </div>
     <div class="total color-text">
       <div class="sub-total-text">{{ _t('Total') }}</div>
-      <div class="sub-total-num" @click="totalWrapperHendlerGhange">
+      <div class="sub-total-num" @click="totalWrapperHendlerChange">
         {{ formatPrice(orderTotal || 0) }}
         <i
           aria-hidden="true"
@@ -53,8 +53,8 @@ export default {
     ...mapGetters(['totalWrapperHendler']),
   },
   methods: {
-    totalWrapperHendlerGhange() {
-      this.$store.dispatch('totalWrapperHendlerGhange')
+    totalWrapperHendlerChange() {
+      this.$store.dispatch('totalWrapperHendlerChange')
     },
   },
 }

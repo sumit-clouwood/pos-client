@@ -12,16 +12,13 @@
       </div>
     </div>
 
-    <div
-      :class="['user-login', { active: userLoginHendler }]"
-      @click="openUserHendlerGhange"
-    >
+    <div :class="['user-login', { active: userLoginHendler }]" @click="openUserHendlerChange">
       <div class="cashier-list-header">
         <user :param="user" />
       </div>
       <div class="cashier-list-body"></div>
       <div class="cashier-list-footer">
-        <date-time @click.native="userLoginHendlerGhange" />
+        <date-time @click.native="userLoginHendlerChange" />
       </div>
     </div>
 
@@ -32,9 +29,7 @@
       <div class="user-calc-body">
         <div class="user-calc-body-input">
           <input type="number" v-model="userPin" placeholder="1234" />
-          <div class="user-calc-body-input-btn" @click="userLoginHendlerGhange">
-            UnLock
-          </div>
+          <div class="user-calc-body-input-btn" @click="userLoginHendlerChange">UnLock</div>
         </div>
         <div class="pin-input">
           <div class="pin-input-item" @click="inputPin(1)">1</div>
@@ -53,9 +48,7 @@
           </div>
         </div>
         <div class="pin-footer">
-          <div class="pin-footer-btn" @click="openUser">
-            Clock In&nbsp;/&nbsp;
-          </div>
+          <div class="pin-footer-btn" @click="openUser">Clock In&nbsp;/&nbsp;</div>
           <div class="pin-footer-btn" @click="openUser">Clock Out</div>
         </div>
       </div>
@@ -64,64 +57,62 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import dateTime from './mobileElements/dateTime.vue'
-import user from './mobileElements/user'
+import { mapGetters } from "vuex";
+import dateTime from "./mobileElements/dateTime.vue";
+import user from "./mobileElements/user";
 
 export default {
-  name: 'cashierList',
+  name: "cashierList",
   data() {
     return {
-      user: '',
+      user: "",
       userPin: [],
-      userKey: null,
-    }
+      userKey: null
+    };
   },
   computed: {
     ...mapGetters([
-      'testUsers',
-      'openUserHendler',
-      'userCalcHendler',
-      'userLoginHendler',
-      'userListHendler',
-    ]),
+      "testUsers",
+      "openUserHendler",
+      "userCalcHendler",
+      "userLoginHendler"
+    ])
   },
   components: {
     dateTime,
-    user,
+    user
   },
   methods: {
     openUser(user) {
-      this.user = user
-      this.$store.dispatch('userCalcHendlerGhange')
-      this.userPin = []
-      this.userKey = user.key
+      this.user = user;
+      this.$store.dispatch("userCalcHendlerChange");
+      this.userPin = [];
+      this.userKey = user.key;
     },
     inputPin(e) {
       if (this.userPin.length < 4) {
-        this.userPin = this.userPin + e
+        this.userPin = this.userPin + e;
       }
     },
     inputDel() {
-      this.userPin = this.userPin.substring(0, this.userPin.length - 1)
+      this.userPin = this.userPin.substring(0, this.userPin.length - 1);
     },
-    userLoginHendlerGhange() {
+    userLoginHendlerChange() {
       if (this.userPin == this.userKey) {
-        this.$store.dispatch('userLoginHendlerGhange')
+        this.$store.dispatch("userLoginHendlerChange");
       }
     },
-    openUserHendlerGhange() {
-      this.$store.dispatch('openUserHendlerGhange')
-      this.$store.dispatch('userLoginHendlerGhange')
-    },
-  },
-}
+    openUserHendlerChange() {
+      this.$store.dispatch("openUserHendlerChange");
+      this.$store.dispatch("userLoginHendlerChange");
+    }
+  }
+};
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import "../../assets/scss/variables.scss";
+@import "../../assets/scss/mixins.scss";
 
 .cashier {
   position: fixed;
@@ -137,13 +128,15 @@ export default {
 
   .user-login {
     display: grid;
+    flex-direction: column;
     grid-template-rows: max-content 1fr max-content;
     position: absolute;
     top: 0;
     right: -100vw;
     bottom: 0;
     width: 100vw;
-    background-image: url('../../assets/images/bg.jpg');
+    height: 100%;
+    background-image: url("../../assets/images/bg.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -192,10 +185,12 @@ export default {
     }
 
     .cashier-list-body {
+      /*margin-top: auto;*/
     }
 
     .cashier-list-footer {
       padding: 20px;
+      /*margin-top: auto;*/
 
       .date-time {
         a {
@@ -229,7 +224,7 @@ export default {
     bottom: 0;
     width: 100vw;
     padding: 70px 20px;
-    background-image: url('../../assets/images/bg.jpg');
+    background-image: url("../../assets/images/bg.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -259,7 +254,7 @@ export default {
     bottom: 0;
     width: 100vw;
     padding: 20px;
-    background-image: url('../../assets/images/bg.jpg');
+    background-image: url("../../assets/images/bg.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;

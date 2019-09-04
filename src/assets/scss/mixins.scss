@@ -22,7 +22,7 @@ $lg: 1920px;
 //@include responsive(lg){}
 @mixin responsive($media) {
   @if $media==mobile {
-    @media only screen and (min-width: $mobile ) and (max-width: $xs) {
+    @media only screen and (min-width: $mobile ) and (max-width: $sm) {
       @content;
     }
   } @else if $media==xs {

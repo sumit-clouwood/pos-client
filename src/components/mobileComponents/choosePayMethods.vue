@@ -17,40 +17,40 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-import mobileFooter from './mobileFooter.vue'
-import mobilePayHeader from './mobilePayHeader.vue'
-import paymentMethods from '../pos/content/cart/payNow/PaymentMethods.vue'
-import totalAmount from '../pos/content/cart/payNow/TotalAmount.vue'
+import { mapGetters } from "vuex";
+import mobileFooter from "./mobileFooter.vue";
+import mobilePayHeader from "./mobilePayHeader.vue";
+import paymentMethods from "../pos/content/cart/payNow/PaymentMethods.vue";
+import totalAmount from "../pos/content/cart/payNow/TotalAmount.vue";
 
 export default {
   components: {
     mobileFooter,
     paymentMethods,
     totalAmount,
-    mobilePayHeader,
+    mobilePayHeader
   },
   computed: {
-    ...mapGetters(['paymentMethodsHendler']),
+    ...mapGetters(["paymentMethodsHendler"])
   },
-  methods: {},
-}
+  methods: {}
+};
 </script>
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import "../../assets/scss/variables.scss";
+@import "../../assets/scss/mixins.scss";
 
 @include responsive(mobile) {
   .mobile-payment-methods {
     z-index: 1051;
-    position: fixed;
+    position: absolute;
     top: 0;
     right: -100vw;
     bottom: 0;
     background-color: #fff;
-    display: grid;
-    grid-template-rows: 90px 1fr max-content;
+    display: flex;
+    flex-direction: column;
+    grid-template-rows: max-content 1fr max-content;
     width: 100vw;
     transition: 0.5s ease-out;
 
@@ -71,7 +71,7 @@ export default {
       padding-bottom: 0;
       display: grid;
       grid-template-rows: max-content 1fr;
-      overflow: auto;
+      overflow: hidden;
 
       #payment-method {
         margin: 0;
@@ -102,7 +102,7 @@ export default {
               display: flex;
               align-items: center;
               justify-content: center;
-              content: '\f00c';
+              content: "\f00c";
               font-family: FontAwesome;
               position: absolute;
               width: 20px;
@@ -159,7 +159,6 @@ export default {
     display: grid;
     grid-template-columns: 1fr max-content;
     font-weight: 600;
-
     .payment-amount-title {
       display: flex;
       justify-content: center;

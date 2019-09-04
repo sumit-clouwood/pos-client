@@ -4,9 +4,8 @@
     <profile-sidebar />
     <mobile-page />
     <mobile-payment-methods />
-    <mobile-orders />
+    <cart />
     <mobile-calc />
-    <mobile-manage-customer />
     <payment-successfull />
     <cashier />
     <method-card />
@@ -18,21 +17,20 @@
   </div>
 </template>
 <script>
-import mobileNotification from './mobileNotification.vue'
-import profileSidebar from './mobileProfileSidebar.vue'
-import mobilePaymentMethods from './choosePayMethods.vue'
-import mobilePage from './mobilePage.vue'
-import mobileOrders from './mobileOrders.vue'
-import mobileCalc from './mobileCalc.vue'
-import mobileManageCustomer from './mobileManageCustomer.vue'
-import paymentSuccessfull from './paymentSuccessfull.vue'
-import cashier from './cashier.vue'
-import methodCard from './methodCard.vue'
-import QRMethod from './QRMethod.vue'
-import loyalty from './loyalty.vue'
-import selectDiscount from './selectDiscount.vue'
-import addNote from './addNote.vue'
-import cartInput from './cartInput.vue'
+import mobileNotification from "./mobileNotification.vue";
+import profileSidebar from "./mobileProfileSidebar.vue";
+import mobilePaymentMethods from "./choosePayMethods.vue";
+import mobilePage from "./mobilePage.vue";
+import cart from "../pos/content/Cart";
+import mobileCalc from "./mobileCalc.vue";
+import paymentSuccessfull from "./paymentSuccessfull.vue";
+import cashier from "./cashier.vue";
+import methodCard from "./methodCard.vue";
+import QRMethod from "./QRMethod.vue";
+import loyalty from "./loyalty.vue";
+import selectDiscount from "./selectDiscount.vue";
+import addNote from "./addNote.vue";
+import cartInput from "./cartInput.vue";
 
 export default {
   components: {
@@ -40,9 +38,8 @@ export default {
     profileSidebar,
     mobilePage,
     mobilePaymentMethods,
-    mobileOrders,
+    cart,
     mobileCalc,
-    mobileManageCustomer,
     paymentSuccessfull,
     cashier,
     methodCard,
@@ -50,15 +47,16 @@ export default {
     loyalty,
     selectDiscount,
     addNote,
-    cartInput,
-  },
-}
+    cartInput
+  }
+};
 </script>
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
-
+@import "../../assets/scss/variables.scss";
+@import "../../assets/scss/mixins.scss";
+.mobile-components {
+  display: none;
+}
 @include responsive(mobile) {
   .mobile-components {
     z-index: 50;

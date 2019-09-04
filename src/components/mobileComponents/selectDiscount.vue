@@ -19,7 +19,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
 
@@ -41,7 +40,6 @@ export default {
     bottom: 0;
     z-index: 1060;
     background-color: #fff;
-    /*transition: 0.5s ease-out;*/
 
     &.active {
       right: 0;
