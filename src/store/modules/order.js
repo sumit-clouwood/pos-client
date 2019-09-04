@@ -889,6 +889,7 @@ const actions = {
         customer: order.customer,
       }
       commit(mutation.SET_ORDER_DATA, orderData)
+      let allCovers = rootState.dinein.covers
 
       order.items.forEach((orderItem, key) => {
         rootState.category.items.forEach(categoryItem => {
@@ -902,14 +903,12 @@ const actions = {
             )
             if (coverNo.length) {
               item.coverNo = coverNo[0].cover_no
-              if (item.coverNo !== '' && rootState.dinein.covers) {
-                let coverDetail = rootState.dinein.covers.filter(
+              if (allCovers !== false && item.coverNo !== '') {
+                let coverDetail = allCovers.filter(
                   cover => cover._id === item.coverNo
                 )
                 item.cover_name =
                   coverDetail.length > 0 ? coverDetail[0].name : ''
-                /*item.cover_no =
-                  coverDetail.length > 0 ? coverDetail[0].cover_no : ''*/
               }
             }
           }
