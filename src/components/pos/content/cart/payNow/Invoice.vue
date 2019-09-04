@@ -76,8 +76,8 @@ export default {
             this.$refs.iframe.contentWindow.print()
             //this.$refs.iframe.contentWindow.print()
           } catch (e) {
-            //console.log('print ifrmae error orccured')
-            //console.log(e)
+            console.log('print ifrmae error orccured')
+            console.log(e)
           }
 
           this.$store.dispatch('checkout/reset')
