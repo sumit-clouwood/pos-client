@@ -115,7 +115,7 @@ export default {
   },
   computed: {
     ...mapGetters(['profileHendler']),
-    ...mapActions( ['logout']),
+    ...mapActions(['logout']),
   },
   methods: {
     profileHendlerChange() {

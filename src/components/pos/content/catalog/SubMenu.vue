@@ -25,7 +25,9 @@
           :src="item.sub_category_image"
           :alt="dt(item)"
         />
-        <div class="food-categories-item-text" :title="dt(item)">{{ dt(item) }}</div>
+        <div class="food-categories-item-text" :title="dt(item)">
+          {{ dt(item) }}
+        </div>
         <div class="food-categories-item-check color-dashboard-background">
           <i class="fa fa-check color-text-invert" aria-hidden="true"></i>
         </div>
@@ -36,39 +38,39 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
-import btnBack from "../../../mobileComponents/mobileElements/btnBack";
+import { mapState, mapGetters } from 'vuex'
+import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
 export default {
-  name: "SubMenu",
+  name: 'SubMenu',
   components: {
-    btnBack
+    btnBack,
   },
   props: {},
   computed: {
     ...mapState({
-      currentSubcategory: state => state.category.subcategory._id
+      currentSubcategory: state => state.category.subcategory._id,
     }),
-    ...mapGetters("category", ["subcategories"]),
-    ...mapGetters(["subCategoryHendler", "foodMenuHendler"])
+    ...mapGetters('category', ['subcategories']),
+    ...mapGetters(['subCategoryHendler', 'foodMenuHendler']),
   },
   methods: {
     getSubCatItems(item) {
       // eslint-disable-next-line no-undef
-      $(".breadcrumbs").show();
+      $('.breadcrumbs').show()
       // eslint-disable-next-line no-undef
-      $(".search-field-input").val("");
-      this.$store.dispatch("category/getItems", item);
-      this.$store.dispatch("foodMenuHendlerChange");
-    }
+      $('.search-field-input').val('')
+      this.$store.dispatch('category/getItems', item)
+      this.$store.dispatch('foodMenuHendlerChange')
+    },
     // ...mapActions('category', ['getItems']),
-  }
-};
+  },
+}
 </script>
 <style lang="scss" scoped>
-@import "../../../../assets/scss/pixels_rem.scss";
-@import "../../../../assets/scss/variables.scss";
-@import "../../../../assets/scss/mixins.scss";
+@import '../../../../assets/scss/pixels_rem.scss';
+@import '../../../../assets/scss/variables.scss';
+@import '../../../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   .food-categories-wrapper {

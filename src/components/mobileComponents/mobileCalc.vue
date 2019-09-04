@@ -41,49 +41,49 @@
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import mobileFooter from "./mobileFooter";
-import mobilePayHeader from "./mobilePayHeader.vue";
-import totalAmount from "../pos/content/cart/payNow/TotalAmount.vue";
-import amountCalculator from "../pos/content/cart/payNow/AmountCalculator.vue";
+import { mapGetters } from 'vuex'
+import mobileFooter from './mobileFooter'
+import mobilePayHeader from './mobilePayHeader.vue'
+import totalAmount from '../pos/content/cart/payNow/TotalAmount.vue'
+import amountCalculator from '../pos/content/cart/payNow/AmountCalculator.vue'
 
 export default {
   components: {
     mobileFooter,
     totalAmount,
     mobilePayHeader,
-    amountCalculator
+    amountCalculator,
   },
   computed: {
     payableAmount: {
       get() {
         return this.$store.state.checkoutForm.amount > 0
           ? this.$store.state.checkoutForm.amount
-          : 0;
+          : 0
       },
       set(amount) {
-        this.$store.dispatch("checkoutForm/setAmount", amount);
-      }
+        this.$store.dispatch('checkoutForm/setAmount', amount)
+      },
     },
-    ...mapGetters(["payNowCalcHendler"]),
-    ...mapGetters("location", ["formatPrice", "_t"]),
-    ...mapGetters("checkoutForm", ["payable"])
+    ...mapGetters(['payNowCalcHendler']),
+    ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('checkoutForm', ['payable']),
   },
   methods: {
     showCalculator() {
-      this.$store.commit("checkoutForm/showCalc", true);
-    }
+      this.$store.commit('checkoutForm/showCalc', true)
+    },
   },
   watch: {
     payable(newVal) {
-      this.payableAmount = parseFloat(newVal).toFixed(2);
-    }
-  }
-};
+      this.payableAmount = parseFloat(newVal).toFixed(2)
+    },
+  },
+}
 </script>
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-@import "../../assets/scss/mixins.scss";
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   .mobile-calc {

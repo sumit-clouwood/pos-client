@@ -1,5 +1,8 @@
 <template>
-  <div :class="['navigation', allCategoryHendler ? 'active' : 'notActive']" class="color-main">
+  <div
+    :class="['navigation', allCategoryHendler ? 'active' : 'notActive']"
+    class="color-main"
+  >
     <div class="logo" title="logo">
       <a class="logo-link" role="button">
         <!--<router-link :to="'/delivery-manager' + store">-->
@@ -29,7 +32,11 @@
             }"
             @click.prevent="browse(item)"
           >
-            <img v-if="item.category_image != ''" :src="item.category_image" :alt="dt(item)" />
+            <img
+              v-if="item.category_image != ''"
+              :src="item.category_image"
+              :alt="dt(item)"
+            />
             <span class="nav-link-text">{{ dt(item) }}</span>
           </a>
         </li>
@@ -55,125 +62,137 @@
           "
           alt="profile"
         />
-        <div class="nav-link-user-name color-text-invert">{{ userDetails.item.name }}</div>
+        <div class="nav-link-user-name color-text-invert">
+          {{ userDetails.item.name }}
+        </div>
       </a>
     </div>
     <div v-if="getImages">
-      <link v-for="(url, key) in getImages" rel="prefetch" :href="url" :key="key" />
+      <link
+        v-for="(url, key) in getImages"
+        rel="prefetch"
+        :href="url"
+        :key="key"
+      />
     </div>
     <div v-if="modifierImages">
-      <link v-for="(url, key) in modifierImages" rel="prefetch" :href="url" :key="key" />
+      <link
+        v-for="(url, key) in modifierImages"
+        rel="prefetch"
+        :href="url"
+        :key="key"
+      />
     </div>
   </div>
 </template>
 
 <script>
 /* global  $ */
-import bootstrap from "@/bootstrap";
-import btnBack from "../mobileComponents/mobileElements/btnBack";
+import bootstrap from '@/bootstrap'
+import btnBack from '../mobileComponents/mobileElements/btnBack'
 
-import { mapState, mapActions, mapGetters } from "vuex";
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: "Menu",
+  name: 'Menu',
   data() {
     return {
       topHeight: 0,
-      counter: 0
-    };
+      counter: 0,
+    }
   },
   components: {
-    btnBack
+    btnBack,
   },
   computed: {
     ...mapState({
-      currentCategory: state => state.category.category._id
+      currentCategory: state => state.category.category._id,
     }),
-    ...mapGetters("context", ["store"]),
-    ...mapState("auth", ["userDetails"]),
-    ...mapGetters(["allCategoryHendler", "subCategoryHendler"]),
-    ...mapGetters("category", ["categories", "getImages"]),
-    ...mapGetters("modifier", {
-      modifierImages: "getImages"
-    }) //to preftech modifier images, todo
+    ...mapGetters('context', ['store']),
+    ...mapState('auth', ['userDetails']),
+    ...mapGetters(['allCategoryHendler', 'subCategoryHendler']),
+    ...mapGetters('category', ['categories', 'getImages']),
+    ...mapGetters('modifier', {
+      modifierImages: 'getImages',
+    }), //to preftech modifier images, todo
   },
   methods: {
     browse(item) {
       // eslint-disable-next-line no-undef
-      $(".breadcrumbs").show();
-      $(".search-field-input").val("");
-      this.$store.commit("sync/reload", true);
-      bootstrap.loadUI().then(() => {});
-      this.$store.dispatch("category/browse", item);
+      $('.breadcrumbs').show()
+      $('.search-field-input').val('')
+      this.$store.commit('sync/reload', true)
+      bootstrap.loadUI().then(() => {})
+      this.$store.dispatch('category/browse', item)
     },
     showMore() {
       // menuShowMore()
       let navigationListY =
-        document.querySelector(".navigation-list").getBoundingClientRect().top +
-        document.querySelector(".navigation-list").getBoundingClientRect()
-          .height;
+        document.querySelector('.navigation-list').getBoundingClientRect().top +
+        document.querySelector('.navigation-list').getBoundingClientRect()
+          .height
       let navigationListWrapperY =
         document
-          .querySelector(".navigation-list-wrapper")
+          .querySelector('.navigation-list-wrapper')
           .getBoundingClientRect().top +
         document
-          .querySelector(".navigation-list-wrapper")
-          .getBoundingClientRect().height;
+          .querySelector('.navigation-list-wrapper')
+          .getBoundingClientRect().height
       if (
         this.counter <= this.categories.length &&
         navigationListY + 5 >= navigationListWrapperY
       ) {
-        this.topHeight += document.querySelector(".nav-item").offsetHeight;
-        this.topHeight += 10;
-        this.counter++;
+        this.topHeight += document.querySelector('.nav-item').offsetHeight
+        this.topHeight += 10
+        this.counter++
       } else {
-        this.topHeight = 0;
-        this.counter = 0;
+        this.topHeight = 0
+        this.counter = 0
       }
-      document.querySelector(
-        ".navigation-list"
-      ).style.top = `-${this.topHeight}px`;
+      document.querySelector('.navigation-list').style.top = `-${
+        this.topHeight
+      }px`
     },
-    ...mapActions("category", ["browse"]),
+    ...mapActions('category', ['browse']),
     subCategoryHendlerChange() {
-      this.$store.dispatch("subCategoryHendlerChange");
-    }
+      this.$store.dispatch('subCategoryHendlerChange')
+    },
   },
   updated() {
-    $("li.nav-item.arrow-bottom > a > .bt-arrow").click(function(e) {
-      e.preventDefault();
-      let menuHeight = 0;
-      $("#menuAccordion li").each(function() {
-        menuHeight = menuHeight + $(this).innerHeight();
-      });
-      let accordionHeight = $("#menuAccordion").innerHeight();
+    $('li.nav-item.arrow-bottom > a > .bt-arrow').click(function(e) {
+      e.preventDefault()
+      let menuHeight = 0
+      $('#menuAccordion li').each(function() {
+        menuHeight = menuHeight + $(this).innerHeight()
+      })
+      let accordionHeight = $('#menuAccordion').innerHeight()
       if (menuHeight > accordionHeight) {
-        $("#menuAccordion")
+        $('#menuAccordion')
           .stop()
-          .animate({ top: accordionHeight - (menuHeight + 60) + "px" }, 800);
+          .animate({ top: accordionHeight - (menuHeight + 60) + 'px' }, 800)
       } else {
-        $(".top-arrow").css("display", "none");
+        $('.top-arrow').css('display', 'none')
       }
-      $(".bt-arrow").css("display", "none");
-      $(".top-arrow").css("display", "block");
-      return false;
+      $('.bt-arrow').css('display', 'none')
+      $('.top-arrow').css('display', 'block')
+      return false
     }),
-      $("li.nav-item.arrow-bottom > a > .top-arrow").click(function(e) {
-        e.preventDefault();
-        $("#menuAccordion")
+      $('li.nav-item.arrow-bottom > a > .top-arrow').click(function(e) {
+        e.preventDefault()
+        $('#menuAccordion')
           .stop()
-          .animate({ top: 0 + "px" }, 800);
-        $(".bt-arrow").css("display", "block");
-        $(".top-arrow").css("display", "none");
-        return false;
-      });
-  }
-};
+          .animate({ top: 0 + 'px' }, 800)
+        $('.bt-arrow').css('display', 'block')
+        $('.top-arrow').css('display', 'none')
+        return false
+      })
+  },
+}
 </script>
 <style lang="scss" scoped>
-@import "../../assets/scss/pixels_rem.scss";
-@import "../../assets/scss/variables.scss";
-@import "../../assets/scss/mixins.scss";
+@import '../../assets/scss/pixels_rem.scss';
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
 
 .category {
   a {

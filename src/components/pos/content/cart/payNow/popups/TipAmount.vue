@@ -117,7 +117,6 @@ export default {
         grid-template-rows: 1fr max-content;
       }
     }
-
   }
 }
 </style>
