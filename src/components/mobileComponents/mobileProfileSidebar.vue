@@ -4,12 +4,12 @@
       'profile-sidebar-overlay',
       profileHendler ? 'active' : 'notActive',
     ]"
-    @click.self="profileHendlerGhange"
+    @click.self="profileHendlerChange"
   >
     <div class="profile-sidebar">
       <div class="profile-sidebar-header">
         <avatar />
-        <div class="btn-close" @click="profileHendlerGhange">✖</div>
+        <div class="btn-close" @click="profileHendlerChange">✖</div>
         <date-time />
         <div class="separator"></div>
         <online-counter />
@@ -115,24 +115,23 @@ export default {
   },
   computed: {
     ...mapGetters(['profileHendler']),
-    ...mapActions('auth', ['logout']),
+    ...mapActions(['logout']),
   },
   methods: {
-    profileHendlerGhange() {
-      this.$store.dispatch('profileHendlerGhange')
+    profileHendlerChange() {
+      this.$store.dispatch('profileHendlerChange')
     },
     mlogout() {
       this.$store.dispatch('mobileLogout')
-      this.$store.dispatch('userCalcHendlerGhange')
-      this.$store.dispatch('openUserHendlerGhange')
-      this.$store.dispatch('profileHendlerGhange')
+      this.$store.dispatch('userCalcHendlerChange')
+      this.$store.dispatch('openUserHendlerChange')
+      this.$store.dispatch('profileHendlerChange')
       this.logout()
     },
   },
 }
 </script>
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
 
@@ -178,6 +177,7 @@ export default {
     bottom: 0;
     display: grid;
     grid-template-rows: min-content 1fr min-content;
+    height: 100%;
 
     .profile-sidebar-header {
       display: grid;

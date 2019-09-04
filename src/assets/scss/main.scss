@@ -198,11 +198,12 @@
         }
 
         .food-menu {
-          display: flex;
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax($px150, 1fr));
           flex-wrap: wrap;
           align-items: stretch;
-          align-content: flex-start;
-          overflow-y: hidden;
+          align-content: start;
+          overflow-y: auto;
 
           .food-menu-wrapper {
             overflow: auto;
@@ -283,8 +284,8 @@
           .food-menu-item {
             padding: 10px;
             cursor: pointer;
-            width: calc(7.5vmax + 20px);
-            min-height: 7.5vmax;
+            // width: calc(7.5vmax + 20px);
+            // min-height: 7.5vmax;
             border: $px1 solid #ddd;
             border-radius: $px5;
             justify-self: center;
@@ -300,7 +301,7 @@
             margin-bottom: $px20;
             -webkit-transition: 0.2s linear;
             transition: 0.2s linear;
-            font-size: $px18;
+            font-size: $px16;
             position: relative;
 
             &:not(.color-dashboard-background) {
@@ -333,8 +334,9 @@
             .food-menu-item-img {
               margin: 0 auto;
               border-radius: $px3;
-              width: 7.5vmax;
-              height: 7.5vmax;
+              width: 100%;
+              // width: 7.5vmax;
+              // height: 7.5vmax;
 
               margin-bottom: auto;
             }
@@ -347,7 +349,7 @@
               text-transform: capitalize;
               line-height: $px20;
               margin: 5px 0;
-              padding: 0 $px10;
+              // padding: 0 $px10;
               min-height: $px48;
               display: flex;
               align-items: center;
@@ -355,7 +357,7 @@
             }
 
             .item-image-only {
-              min-height: 104px;
+              // min-height: 104px;
             }
 
             .food-menu-item-price {

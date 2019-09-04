@@ -1,4 +1,4 @@
-@import "../variables.scss";
+@import '../variables.scss';
 
 #tip-amount {
   .modal-dialog {
@@ -68,6 +68,9 @@
       }
     }
   }
+  > .modal-footer {
+    display: none;
+  }
 }
 
 @include responsive(mobile) {
@@ -89,29 +92,23 @@
       display: grid;
 
       .modal-content {
-
         border-radius: 0;
         display: grid;
         grid-template-rows: max-content max-content;
         //margin-bottom: 100px;
-        position: static;
+        position: absolute;
         margin-top: auto;
 
         .modal-body {
-
           .dining-option-block {
             .select-discount-option {
-
-
               > div {
-
               }
             }
           }
 
           .tip-amount-wrap {
             > p {
-
             }
 
             input {
@@ -127,10 +124,7 @@
 
           .btn-announce {
             #add-top {
-
-
               > span {
-
               }
             }
           }

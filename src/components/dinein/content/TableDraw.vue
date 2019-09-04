@@ -11,14 +11,39 @@
           <div class="sitting-dine-wrap disable-sorting" v-if="tablesOnArea">
             <div class="sitting-image">
               <svg
-                :height="height"
-                width="100%"
+                xmlns="http://www.w3.org/2000/svg"
+                width="94vw"
+                height="100%"
                 id="dine-in-area"
                 ref="dine-in-area"
-                xmlns="http://www.w3.org/2000/svg"
+                :viewBox="
+                  viewBox.x +
+                    ' ' +
+                    viewBox.y +
+                    ' ' +
+                    viewBox.width +
+                    ' ' +
+                    viewBox.height
+                "
+                preserveAspectRatio="xMidYMid meet"
               ></svg>
             </div>
-            <div id="tooltipdata" class="dropdown-content cursor-pointer">
+            <div
+              id="tooltipdata"
+              class="dropdown-content cursor-pointer"
+              width="94vw"
+              ref="dine-in-area"
+              :viewBox="
+                viewBox.x +
+                  ' ' +
+                  viewBox.y +
+                  ' ' +
+                  viewBox.width +
+                  ' ' +
+                  viewBox.height
+              "
+              preserveAspectRatio="xMidYMid meet"
+            >
               <div
                 class="dropdown tooltip-c-range"
                 id="range"
@@ -243,6 +268,7 @@ export default {
       page: null,
       svg: null,
       width: 'auto',
+      viewBox: { x: 0, y: 0, width: 1560, height: 950 },
       height: '950px',
       selectedTableD3: '',
       svgWidth: 250,
@@ -362,6 +388,7 @@ export default {
         .select('#dine-in-area')
         .append('g')
         .attr('class', 'tables')
+        .attr('transform', 'translate(10,10)')
         .selectAll('.dinein_table')
         .data(this.tablesOnArea)
         .enter() //data from state tables

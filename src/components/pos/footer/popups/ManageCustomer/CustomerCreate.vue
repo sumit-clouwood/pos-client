@@ -184,12 +184,16 @@ export default {
 
         form {
           overflow-y: auto;
+          overflow-x: hidden;
+          width: 100vw;
         }
 
         .modal-body {
+          width: 100vw;
           .divide-block {
             margin: 0;
             border: none;
+            display: grid;
 
             .customer-block-info {
               padding: 0;
