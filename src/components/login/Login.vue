@@ -105,11 +105,14 @@ export default {
         this.login_success_message = ''
         this.login_fail_message = ''
 
-        this.$store.commit('context/RESET', null, { root: true })
-        DataService.setContext({
-          brand: this.$store.getters['context/brand'],
-          store: this.$store.getters['context/store'],
-        })
+        //reset context only when there is no brand/store id in login
+        if (!this.$route.params.brand_id) {
+          this.$store.commit('context/RESET', null, { root: true })
+          DataService.setContext({
+            brand: this.$store.getters['context/brand'],
+            store: this.$store.getters['context/store'],
+          })
+        }
 
         this.$store
           .dispatch('auth/login', {
