@@ -333,6 +333,9 @@ export default {
           root: true,
         })
       }
+      // this.$store.commit('dinein/RESERVATION_ID', this.selectedTableId)
+      // alert(reservationId)
+      // alert(this.selectedTableId)
       this.$router.push({ path: URL })
     },
     updateOrder(data) {
@@ -537,7 +540,7 @@ export default {
           area._id == that.activeArea
           return area
         })
-        this.$store.dispatch('dinein/selectedArea', this.selectedAreaObj)
+        this.$store.dispatch('dinein/fetchAll')
       })
       this.componentKey += 1
       $('#range')
