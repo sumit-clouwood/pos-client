@@ -251,6 +251,7 @@ const actions = {
 
   addReservation({ commit, state, dispatch }, tableId) {
     dispatch('order/reset', {}, { root: true })
+    dispatch('checkout/reset', {}, { root: true })
     if (!state.reservation) {
       const params = [
         {
@@ -275,6 +276,7 @@ const actions = {
   },
   getSelectedOrder({ dispatch, commit, state, rootState }, orderId) {
     dispatch('order/reset', {}, { root: true })
+    dispatch('checkout/reset', {}, { root: true })
     dispatch('order/selectedOrderDetails', orderId, {
       root: true,
     }).then(() => {
