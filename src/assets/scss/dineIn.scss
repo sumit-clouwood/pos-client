@@ -755,7 +755,17 @@ svg .active > path {
       .all-booking-btns{
         display: none;
         &.active{
-          display: block;
+          position: fixed;
+          left: 0;
+          display: grid;
+          background: rgba(0,0,0,0.2);
+          width: 100%;
+          right: 0;
+          margin: 0 auto;
+          z-index: 99;
+          grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+          overflow: scroll;
+          top: 95px;
           transition: 0.3s ease-in-out;
         }
       }
@@ -764,9 +774,16 @@ svg .active > path {
         top: 75px;
         right: 20px;
         cursor: pointer;
+        &.active{
+          i{
+            transition: 0.3s ease-in-out;
+            transform: rotate(180deg);
+          }
+        }
         i{
           font-size: 20px;
           cursor: pointer;
+          transition: 0.3s ease-in-out;
         }
       }
     }
@@ -808,6 +825,23 @@ svg .active > path {
               margin-left: 0;
             }
           }
+        }
+      }
+    }
+  }
+  html{
+    font-size: 10px;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .dm-manager{
+    .header{
+      .header-main{
+        grid-template-columns: 1fr;
+        text-align: center;
+        height: auto;
+        .header-main-left, .header-main-right{
+          justify-content: center;
         }
       }
     }
