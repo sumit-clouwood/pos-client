@@ -1,6 +1,5 @@
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
-import DateTime from '@/mixins/DateTime.js'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 
@@ -72,7 +71,6 @@ const actions = {
   ) {
     //if no order start time then reject otherwise
     //reset order start time
-
     if (!rootState.order.startTime) {
       // eslint-disable-next-line no-console
       console.log('Fake order or an order already in progress')
@@ -116,7 +114,7 @@ const actions = {
       if (validPayment) {
         //send order for payment
         let order = {}
-        const orderPlacementTime = DateTime.getUTCDateTime()
+        const orderPlacementTime = rootState.order.startTime
 
         try {
           order = {
