@@ -201,6 +201,8 @@ const actions = {
         commit(mutation.ORDER_ON_TABLES, orderOnTable)
       })
     }
+    // eslint-disable-next-line no-console
+    console.log(tableStatus, 'Rajeev')
     commit(mutation.TABLE_STATUS, tableStatus)
   },
 

@@ -5,7 +5,7 @@
         <span class="">{{ username }}</span>
       </a>
     </div>
-    <div class="">
+    <div class="all-booking-btns hide-below-sm">
       <button
         type=""
         id="all-tables"
@@ -101,11 +101,81 @@
       </li>
     </ul>
     <div class="curent-sale hideBigScreen">
-      <div class="curent-sale-title">Current Sale</div>
-      <div class="curent-sale-item">
-        <div class="text">Item</div>
-        <div class="num">x3</div>
+      <div class="all-booking-btns">
+        <button
+          type=""
+          id="all-tables"
+          class="tables-btn-style"
+          :class="{ active: dineInTabType === 'all' }"
+          @click="
+            updateDineInOrderStatus({
+              title: 'all',
+              pageId: 'getBookedTables',
+            })
+          "
+        >
+          {{ _t('All Tables') }}
+        </button>
+        <button
+          type=""
+          id="waiting-dinein"
+          class="tables-btn-style"
+          :class="{ active: dineInTabType === 'waiting' }"
+          @click="
+            updateDineInOrderStatus({
+              title: 'waiting',
+              pageId: '',
+            })
+          "
+        >
+          {{ _t('Waiting') }}
+        </button>
+        <button
+          type=""
+          id="resrvation-orders"
+          class="tables-btn-style"
+          :class="{ active: dineInTabType === 'reservation' }"
+          @click="
+            updateDineInOrderStatus({
+              title: 'reservation',
+              pageId: '',
+            })
+          "
+        >
+          {{ _t('Reservation') }}
+        </button>
+        <button
+          type=""
+          id="running-orders"
+          class="tables-btn-style"
+          :class="{ active: dineInTabType === 'running' }"
+          @click="
+            updateDineInOrderStatus({
+              title: 'running',
+              pageId: 'dineInRunningOrders',
+            })
+          "
+        >
+          {{ _t('Running Orders') }}
+        </button>
+        <button
+          type=""
+          id="completed-orders"
+          class="tables-btn-style"
+          :class="{ active: dineInTabType === 'completed' }"
+          @click="
+            updateDineInOrderStatus({
+              title: 'completed',
+              pageId: 'dineInCompleteOrders',
+            })
+          "
+        >
+          {{ _t('Completed Orders') }}
+        </button>
       </div>
+      <span class="hideBigIcon" @click="showBookingBtn">
+        <i aria-hidden="true" class="fa fa-chevron-down"></i>
+      </span>
     </div>
     <li
       class="nav-icon nav-item setting-icon color-main color-text-invert"
@@ -160,6 +230,7 @@
 </template>
 
 <script>
+/* global $ */
 /*global posConfigLinks*/
 import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
@@ -231,6 +302,9 @@ export default {
         window.location.href.replace(new RegExp('/pos/.*'), '/' + link) +
         this.$store.getters['context/brand']
       )
+    },
+    showBookingBtn() {
+      $('.hideBigScreen .all-booking-btns').toggleClass('active')
     },
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },
