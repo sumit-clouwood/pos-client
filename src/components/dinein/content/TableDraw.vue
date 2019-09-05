@@ -527,7 +527,7 @@ export default {
         reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
       }).then(response => {
-        if (response.status == 'form_errors') {
+        if (response.status === 'form_errors') {
           this.moveReservation = true
           if (this.moveReservation) {
             this.cancelReservationMsg = response.form_errors.status[0]
