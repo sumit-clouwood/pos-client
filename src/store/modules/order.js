@@ -1152,6 +1152,7 @@ const mutations = {
     state.item = false
     state.orderStatus = null
     state.orderId = null
+    state.orderData = null
     state.orderNote = null
     // to be fool proof we don't reset startTime here, start time ll be reset when
     // some one clicks on an item
