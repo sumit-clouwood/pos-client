@@ -277,6 +277,9 @@ export default {
             bucket.createIndex('event_type', 'event_type', {
               unique: false,
             })
+            bucket.createIndex('event_title', 'event_title', {
+              unique: false,
+            })
             bucket.createIndex('event_data', 'event_data', {
               unique: false,
             })

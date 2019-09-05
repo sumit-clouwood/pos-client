@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import DataService from '@/services/DataService'
+import Logger from '@/services/network/Logger'
 
 export default {
   saveOrder(data, userdata) {
@@ -21,7 +22,30 @@ export default {
       console.log("Couldn't send msg to service worker in dev", e, msg)
     }
     delete data.user
-    return DataService.post('/model/orders/add', data)
+    return new Promise((resolve, reject) => {
+      DataService.post('/model/orders/add', data)
+        .then(response => {
+          Logger.log({
+            event_time: data.real_created_datetime,
+            event_title: data.balance_due,
+            event_type: 'pos_order_success',
+            event_data: { request: data, response: response.data },
+          })
+          resolve(response)
+        })
+        .catch(error => {
+          Logger.log({
+            event_time: data.real_created_datetime,
+            event_title: data.balance_due,
+            event_type: 'pos_order_failed',
+            event_data: {
+              request: data,
+              response: { message: error.message },
+            },
+          })
+          reject(error)
+        })
+    })
   },
 
   // deleteOrder(orderId) {
