@@ -204,10 +204,13 @@ const actions = {
       commit(mutation.SET_CUSTOMER_ID, customerId)
       CustomerService.fetchCustomer(customerId)
         .then(response => {
-          let totalPages = Math.ceil(
-            parseInt(response.data.item.total_orders) /
-              parseInt(state.params.page_size)
-          )
+          let totalPages = 0
+          if (response.data.item.total_orders) {
+            totalPages = Math.ceil(
+              parseInt(response.data.item.total_orders) /
+                parseInt(state.params.page_size)
+            )
+          }
           commit(mutation.PAST_ORDER_PAGINATE_DETAILS, totalPages)
           commit(
             mutation.PAGE_LOOKUP,

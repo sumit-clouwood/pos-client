@@ -29,7 +29,7 @@
                 <div
                   v-for="(orderId, i) in orderTable.related_orders_ids"
                   :key="i"
-                  class="table-order-view"
+                  :class="isOrderCancelledClass"
                 >
                   {{
                     getOrderDetails({
@@ -59,12 +59,17 @@
                         v-if="tabName !== 'completed'"
                       >
                         <a
-                          :href="
-                            $route.path +
-                              '/' +
-                              orderTable.assigned_table_id +
-                              '/' +
-                              orderId
+                          @click="
+                            setRouter({
+                              url:
+                                $route.path +
+                                '/' +
+                                orderTable.assigned_table_id +
+                                '/' +
+                                orderId,
+                              orderId: orderId,
+                              orderData: orderTable,
+                            })
                           "
                         >
                           <svg
@@ -248,6 +253,7 @@ export default {
     return {
       orderDetails: false,
       timerTime: false,
+      isOrderCancelledClass: 'table-order-view',
     }
   },
   updated() {
@@ -286,8 +292,12 @@ export default {
     ...mapActions('dinein', ['reservationUpdateStatus']),
     getOrderDetails(collection) {
       // eslint-disable-next-line no-console
-      // console.log(collection)
       this.orderDetails = collection.collection[collection.matchWith]
+      // console.log(collection)
+      this.isOrderCancelledClass =
+        this.orderDetails.order_system_status !== 'cancelled'
+          ? 'table-order-view'
+          : 'table-order-view'
     },
     timerClock(datetime) {
       return this.orderTimer(
@@ -304,6 +314,17 @@ export default {
       $('#id_' + id)
         .closest('.table-order-view')
         .toggleClass('active')
+    },
+    setRouter(data) {
+      this.$store.commit('dinein/ORDER_RESERVATION_DATA', data.orderData)
+      this.$store.dispatch('dinein/getSelectedOrder', data.orderId, {
+        root: true,
+      })
+      this.$store.dispatch('order/updateOrderType', {
+        OTview: 'Dine In',
+        OTApi: 'dine_in',
+      })
+      this.$router.push({ path: data.url })
     },
   },
 }

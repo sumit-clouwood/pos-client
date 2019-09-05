@@ -11,14 +11,39 @@
           <div class="sitting-dine-wrap disable-sorting" v-if="tablesOnArea">
             <div class="sitting-image">
               <svg
-                :height="height"
-                width="100%"
+                xmlns="http://www.w3.org/2000/svg"
+                width="94vw"
+                height="100%"
                 id="dine-in-area"
                 ref="dine-in-area"
-                xmlns="http://www.w3.org/2000/svg"
+                :viewBox="
+                  viewBox.x +
+                    ' ' +
+                    viewBox.y +
+                    ' ' +
+                    viewBox.width +
+                    ' ' +
+                    viewBox.height
+                "
+                preserveAspectRatio="xMidYMid meet"
               ></svg>
             </div>
-            <div id="tooltipdata" class="dropdown-content cursor-pointer">
+            <div
+              id="tooltipdata"
+              class="dropdown-content cursor-pointer"
+              width="94vw"
+              ref="dine-in-area"
+              :viewBox="
+                viewBox.x +
+                  ' ' +
+                  viewBox.y +
+                  ' ' +
+                  viewBox.width +
+                  ' ' +
+                  viewBox.height
+              "
+              preserveAspectRatio="xMidYMid meet"
+            >
               <div
                 class="dropdown tooltip-c-range"
                 id="range"
@@ -243,7 +268,8 @@ export default {
       page: null,
       svg: null,
       width: 'auto',
-      height: '900px',
+      viewBox: { x: 0, y: 0, width: 1560, height: 950 },
+      height: '950px',
       selectedTableD3: '',
       svgWidth: 250,
       svgHeight: 100,
@@ -288,10 +314,9 @@ export default {
       return order
         ? order.order_no +
             ' | ' +
-            this.convertDatetime(
-              order.real_created_datetime,
-              this.timezoneString
-            )
+            this.created_date(order.real_created_datetime) +
+            ', ' +
+            this.created_time(order.real_created_datetime)
         : ''
     },
     hideTableDetails() {
@@ -300,7 +325,7 @@ export default {
         .hide()
     },
     newOrder() {
-      let URL = this.store + '/dine-in/' + this.selectedTableId
+      let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
       this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
         root: true,
       })
@@ -309,7 +334,12 @@ export default {
     updateOrder(data) {
       this.$store.commit('dinein/ORDER_RESERVATION_DATA', data.orderData)
       let URL =
-        this.store + '/dine-in/' + this.selectedTableId + '/' + data.orderId
+        '/dine-in/' +
+        this.store +
+        '/' +
+        this.selectedTableId +
+        '/' +
+        data.orderId
       this.$store.dispatch('dinein/getSelectedOrder', data.orderId, {
         root: true,
       })
@@ -362,6 +392,7 @@ export default {
         .select('#dine-in-area')
         .append('g')
         .attr('class', 'tables')
+        .attr('transform', 'translate(10,10)')
         .selectAll('.dinein_table')
         .data(this.tablesOnArea)
         .enter() //data from state tables
@@ -557,6 +588,7 @@ export default {
             return d.y
           })
           .append('image')
+          .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
             return `/img/dinein/area-view/${d.name}_view_h.jpg`
             // return `/img/dinein/area-view/city_view_h.jpg`
@@ -628,12 +660,13 @@ export default {
             return d.y
           })
           .append('image')
+          .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
             return `/img/dinein/area-view/${d.name}_view_v.jpg`
           })
           .attr('x', function(d) {
             // d.x = that.viewsCoordinates.right_view.x
-            return parseInt(d.x) + 254
+            return parseInt(d.x)
           })
           .attr('y', function(d) {
             // d.y = that.viewsCoordinates.right_view.y
@@ -697,6 +730,7 @@ export default {
             return d.y
           })
           .append('image')
+          .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
             return `/img/dinein/area-view/${d.name}_view_h.jpg`
           })
@@ -706,7 +740,7 @@ export default {
           })
           .attr('y', function(d) {
             // d.y = that.viewsCoordinates.bottom_view.y
-            return parseInt(d.y) - 43
+            return parseInt(d.y)
           })
           .attr('height', d => d.height)
           .attr('width', d => d.width)
@@ -737,6 +771,7 @@ export default {
             return d.y
           })
           .append('image')
+          .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
             return `/img/dinein/area-view/${d.name}_view_v.jpg`
           })

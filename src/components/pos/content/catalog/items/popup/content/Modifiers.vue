@@ -115,7 +115,7 @@
             }"
           />
           <span class="color-text">{{ modifier.name }}</span>
-          <div class="color-text" v-if="Num.toPrice(modifier.value)">
+          <div class="color-text dis" v-if="Num.toPrice(modifier.value)">
             ({{ formatPrice(modifier.value) }})
           </div>
         </label>
@@ -226,7 +226,7 @@ export default {
     position: relative;
     .text-danger {
       position: absolute;
-      bottom: 0px;
+      bottom: -15px;
       font-size: 12px;
       z-index: 10;
     }
@@ -255,7 +255,7 @@ export default {
                 span {
                   background-color: $blue-middle;
                   border: none;
-                  border-radius: 3px;
+                  border-radius: 50%;
                   @include responsive(mobile) {
                     background-color: $green-middle;
                   }
@@ -263,7 +263,10 @@ export default {
               }
             }
           }
-
+          .dis {
+            padding-top: 0px;
+            padding-left: 27px;
+          }
           .borderCheck {
             display: none;
             position: absolute;
@@ -280,10 +283,11 @@ export default {
 
             .customradioc {
               position: absolute;
-              top: -2px;
-              right: -2px;
+              top: 5px;
+              right: 5px;
               margin: 0;
               color: #fff;
+              border-radius: 50%;
 
               .checkBox {
                 width: 20px;
@@ -297,14 +301,16 @@ export default {
                 border: none;
 
                 &:before {
-                  font-family: 'FontAwesome';
-                  content: '\F00C';
                   position: static !important;
                   display: flex;
                   align-items: center;
                   justify-content: center;
-                  font-size: 14px !important;
+                  width: 10px;
+                  height: 10px;
+                  background-color: #fff;
+                  border-radius: 50%;
                   border: none;
+                  overflow: hidden;
                 }
               }
             }

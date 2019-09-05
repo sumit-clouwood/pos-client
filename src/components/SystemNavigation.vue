@@ -236,10 +236,8 @@ export default {
       if (this.$router.currentRoute.name === 'DeliveryManager') {
         replaceURI = '/pos/delivery-manager/'
       } else if (this.$router.currentRoute.name === 'Dinein') {
-        replaceURI = '/'
+        replaceURI = '/pos/dine-in/'
       }
-      // eslint-disable-next-line no-console
-      console.log(replaceURI)
       return (
         window.location.href.replace(
           new RegExp("'" + replaceURI + "'" + '.*'),
