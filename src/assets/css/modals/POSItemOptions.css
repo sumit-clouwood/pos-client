@@ -118,6 +118,8 @@
           padding: 10px;
           border-radius: 5px;
           position: relative; }
+          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .borderCheck {
+            display: none; }
           .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc {
             position: absolute;
             top: -1px;
@@ -181,6 +183,19 @@
             vertical-align: middle;
             margin: 0;
             border: 2px solid #E3E7F2; }
+            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label input {
+              display: none;
+              /* &[type="checkbox"] {
+                   &:checked + span {
+                       background-color: $green-middle;
+                   }
+               }*/ }
+              .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label input[type="checkbox"]:checked + div {
+                display: block; }
+                .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label input[type="checkbox"]:checked + div span {
+                  background-color: #5056CA;
+                  border: none;
+                  border-radius: 3px; }
             .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label img {
               margin-right: 0.3125rem;
               display: inline-block;
@@ -196,6 +211,35 @@
             display: inline-block;
             vertical-align: middle;
             margin-right: 0.3125rem; }
+            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .customradioc .checkBox {
+              width: 20px;
+              height: 20px;
+              line-height: inherit;
+              border-top: none;
+              border-right: none;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              border: none; }
+              .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .customradioc .checkBox:before {
+                font-family: "FontAwesome";
+                content: "\f00c";
+                position: static !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px !important;
+                border: none; }
+          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .borderCheck {
+            display: none;
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            bottom: -2px;
+            left: -2px;
+            border: 2px solid #5056CA;
+            border-radius: 3px;
+            pointer-events: none; }
     .POSItemOptions .modal-dialog .modal-content .modal-footer {
       padding: 0;
       padding-top: 1.5625rem !important; }

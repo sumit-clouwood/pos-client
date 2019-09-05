@@ -36,7 +36,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
 
@@ -46,12 +45,16 @@ export default {
   right: -100vw;
   bottom: 0;
   width: 100vw;
+  height: 100%;
   z-index: 50;
   background-color: #fff;
   display: none;
   grid-template-rows: max-content 1fr max-content;
   z-index: 1060;
   transition: 0.5s ease-out;
+  .btn-next-s {
+    display: flex !important;
+  }
   @include responsive(mobile) {
     display: grid;
   }

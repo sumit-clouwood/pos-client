@@ -3,7 +3,7 @@
     <div class="pay-header-title">{{ param.title }}</div>
     <div class="pay-header-subtitle">{{ param.subtitle }}</div>
     <div class="pay-header-buttons">
-      <div class="button-cancel" @click="paymentMethodsHendlerGhange">
+      <div class="button-cancel" @click="paymentMethodsChange">
         <div>Cancel</div>
         <svg
           width="8"
@@ -35,26 +35,25 @@ export default {
     totalAmount,
   },
   methods: {
-    paymentMethodsHendlerGhange() {
+    paymentMethodsChange() {
       if (this.param.method == 'closePayMethods') {
-        this.$store.dispatch('paymentMethodsHendlerGhange')
+        this.$store.dispatch('paymentMethodsChange')
       } else if (this.param.method == 'calcHendler') {
-        this.$store.dispatch('payNowCalcHendlerGhange')
+        this.$store.dispatch('payNowCalcHendlerChange')
       } else if (this.param.method == 'cardInput') {
-        this.$store.dispatch('cardInputHendlerGhange')
+        this.$store.dispatch('cardInputHendlerChange')
       } else if (this.param.method == 'successfull') {
-        this.$store.dispatch('successfullHendlerGhange')
+        this.$store.dispatch('successfullHendlerChange')
       }
     },
-    QRMethodGhangeHendler() {
-      this.$store.dispatch('QRMethodGhangeHendler')
+    QRMethodChangeHendler() {
+      this.$store.dispatch('QRMethodChangeHendler')
     },
   },
 }
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
 

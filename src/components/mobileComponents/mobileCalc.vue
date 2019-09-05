@@ -82,7 +82,6 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
 
@@ -90,6 +89,7 @@ export default {
   .mobile-calc {
     z-index: 1052;
     width: 100vw;
+    height: 100%;
     position: fixed;
     top: 0;
     right: -100vw;
@@ -164,6 +164,7 @@ export default {
         margin-top: auto;
         height: 50px;
         border-radius: $btn-border-radius;
+        align-self: unset;
 
         input {
           border: none;
@@ -178,6 +179,12 @@ export default {
 
     .calc-footer {
       .mobile-footer {
+        .btn-next {
+          display: none;
+          &.btn-next-s {
+            display: flex !important;
+          }
+        }
         .btn-cart {
           display: none;
         }

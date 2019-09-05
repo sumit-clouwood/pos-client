@@ -4,6 +4,7 @@
     v-if="items.length"
     :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
   >
+    <!-- <div class="bg">bg</div> -->
     <div
       :class="{
         'food-menu-item': true,
@@ -29,7 +30,7 @@
         {{ dt(item) }}
       </div>
       <div class="food-menu-item-price">
-        {{ choosePrice(item.price_availability) }}
+        {{ currency }} {{ item.value || 0 }}
       </div>
     </div>
     <Popup />
@@ -39,7 +40,7 @@
 <script>
 /* global $, showModal  */
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Popup from './items/Popup'
 
 export default {
@@ -51,6 +52,7 @@ export default {
     Popup,
   },
   computed: {
+    ...mapState('location', ['currency']),
     ...mapGetters('category', ['items']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
@@ -67,6 +69,7 @@ export default {
     },
     addToOrder(item) {
       this.$store.commit('order/SET_CART_TYPE', 'new')
+      this.$store.commit('order/START_ORDER')
       $('#POSItemOptions .modifier-option-radio').prop('checked', false)
       $('.food-menu-item').removeClass('active')
       $(this).addClass('active')
@@ -174,7 +177,14 @@ export default {
     left: 0;
     overflow: auto;
     background-color: transparent;
-
+    .bg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: darkblue;
+    }
     &.active {
       top: 0;
       transition: 0.7s ease-out;
@@ -207,14 +217,14 @@ export default {
       transition: 0.1s ease-out;
 
       &:not(.color-dashboard-background) {
-        padding-left: 85px;
+        // padding-left: 85px;
         padding-right: 0;
-        color: #fff;
-        height: 66px;
+        // color: #fff;
+        height: 40px;
 
         .food-menu-item-price {
           justify-self: end;
-          color: #fff;
+          color: #444;
         }
       }
 

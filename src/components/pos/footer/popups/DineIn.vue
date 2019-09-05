@@ -17,10 +17,8 @@
               :class="{ active: selectedOrderType.OTApi === 'dine_in' }"
               @click="setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })"
             >
-              <img src="img/pos/dine-in.svg" /><span
-                class="color-text-invert"
-                >{{ _t('Dine In') }}</span
-              >
+              <img src="img/pos/dine-in.svg" />
+              <span class="color-text-invert">{{ _t('Dine In') }}</span>
             </div>
             <div
               class="option-contain"
@@ -32,11 +30,8 @@
                 })
               "
             >
-              <img src="img/pos/take-away.svg" /><span
-                class="color-text-invert"
-              >
-                {{ _t('Take Away') }}
-              </span>
+              <img src="img/pos/take-away.svg" />
+              <span class="color-text-invert">{{ _t('Take Away') }}</span>
             </div>
             <div
               class="option-contain"
@@ -45,30 +40,26 @@
                 setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
               "
             >
-              <img src="img/pos/delivery-icon.svg" /><span
-                class="color-text-invert"
-              >
-                {{ _t('Delivery') }}
-              </span>
+              <img src="img/pos/delivery-icon.svg" />
+              <span class="color-text-invert">{{ _t('Delivery') }}</span>
             </div>
             <div
               class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'event' }"
               @click="setOrderType({ OTview: 'Event', OTApi: 'event' })"
             >
-              <img src="img/pos/event.svg" /><span class="color-text-invert">{{
-                _t('Event')
-              }}</span>
+              <img src="img/pos/event.svg" />
+              <span class="color-text-invert">
+                {{ _t('Event') }}
+              </span>
             </div>
             <div
               class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'walk_in' }"
               @click="setOrderType({ OTview: 'Walk In', OTApi: 'walk_in' })"
             >
-              <img src="img/pos/walkin.svg" width="35" /><span
-                class="color-text-invert"
-                >{{ _t('Walk In') }}</span
-              >
+              <img src="img/pos/walkin.svg" width="35" />
+              <span class="color-text-invert">{{ _t('Walk In') }}</span>
             </div>
           </div>
         </div>
@@ -90,7 +81,7 @@
                           @click="setOrderType({ OTview: 'Walk In', OTApi: 'walk_in' })"
                         >
                           {{ _t('Walk In') }}
-                        </button>-->
+            </button>-->
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
@@ -186,14 +177,14 @@ export default {
                 border: 2px solid $green-middle;
 
                 &::after {
-                  content: '✔';
+                  content: '\F00C';
+                  font-family: FontAwesome;
                   color: #fff;
                   background-color: $green-middle;
                   position: absolute;
-                  top: 0;
-                  right: 0;
-                  border-radius: 0;
-                  border-bottom-left-radius: 3px;
+                  top: -2px;
+                  right: -2px;
+                  border-radius: 3px;
                 }
               }
             }
@@ -205,6 +196,7 @@ export default {
             button {
               background-color: $green-middle;
               border: none;
+              padding: 0 25px;
             }
           }
         }

@@ -36,6 +36,7 @@ const state = {
   // pastOrder: false,
   orderStatus: null,
   cartType: 'new',
+  startTime: null,
 }
 
 // getters
@@ -747,6 +748,8 @@ const actions = {
               discountErrors[item.orderIndex] = item
               item.discount = false
               item.discountRate = 0
+              item.discountedTax = false
+              item.discountedNetPrice = false
             } else {
               const itemNetPriceWithModifiers = getters.itemNetPrice(item)
 
@@ -766,11 +769,15 @@ const actions = {
               //percentage based discount, use discount.rate here, not discount.value
               //apply discount with modifier price
               item.discountRate = discount.discount.rate
+              item.discountedTax = false
+              item.discountedNetPrice = false
             } else {
               //discount error
               item.discount = false
               discountErrors[item.orderIndex] = item
               item.discountRate = 0
+              item.discountedTax = false
+              item.discountedNetPrice = false
             }
           }
         } else {
@@ -1124,6 +1131,9 @@ const mutations = {
     state.orderStatus = null
     state.orderId = null
     state.orderNote = null
+    // to be fool proof we don't reset startTime here, start time ll be reset when
+    // some one clicks on an item
+    // state.startTime = null
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
@@ -1158,6 +1168,14 @@ const mutations = {
 
   [mutation.SET_CART_TYPE](state, cartType) {
     state.cartType = cartType
+  },
+
+  [mutation.START_ORDER](state) {
+    state.startTime = new Date().getTime()
+  },
+
+  [mutation.RESET_ORDER_TIME](state) {
+    state.startTime = null
   },
 }
 

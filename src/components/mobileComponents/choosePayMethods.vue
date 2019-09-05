@@ -37,29 +37,25 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   .mobile-payment-methods {
     z-index: 1051;
-    position: fixed;
+    position: absolute;
     top: 0;
     right: -100vw;
     bottom: 0;
     background-color: #fff;
-    display: grid;
-    grid-template-rows: 90px 1fr max-content;
+    display: flex;
+    flex-direction: column;
+    grid-template-rows: max-content 1fr max-content;
     width: 100vw;
     transition: 0.5s ease-out;
 
     &.active {
       right: 0;
-    }
-
-    .pay-header {
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
     .pay-body {
@@ -68,6 +64,14 @@ export default {
       display: grid;
       grid-template-rows: max-content 1fr;
       overflow: auto;
+    }
+
+    .pay-body {
+      padding: 20px;
+      padding-bottom: 0;
+      display: grid;
+      grid-template-rows: max-content 1fr;
+      overflow: hidden;
 
       #payment-method {
         margin: 0;
@@ -77,16 +81,39 @@ export default {
         grid-gap: 15px;
         margin-top: 20px;
 
+        &::-webkit-scrollbar {
+          width: 0;
+        }
+
         > div {
           display: grid;
           grid-template-columns: max-content 1fr;
           align-items: center;
           grid-gap: 20px;
-          //border: 1px solid $gray-middle;
+          border: 2px solid $gray-middle;
           transition: 0.3s ease-out;
+          border-radius: 5px;
+          position: relative;
 
           &.active {
-            //border: 1px solid $green-middle;
+            border: 2px solid $green-middle;
+
+            &:after {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              content: '\f00c';
+              font-family: FontAwesome;
+              position: absolute;
+              width: 20px;
+              height: 20px;
+              top: -2px;
+              right: -2px;
+              border-bottom-left-radius: 3px;
+              border-top-right-radius: 3px;
+              background-color: $green-middle;
+              color: #fff;
+            }
           }
 
           &:active {
@@ -104,8 +131,10 @@ export default {
           }
 
           img {
-            width: 63px;
-            height: 63px;
+            width: 50px;
+            height: 50px;
+            margin-left: 5px;
+            border-radius: 3px;
           }
         }
       }
@@ -130,7 +159,6 @@ export default {
     display: grid;
     grid-template-columns: 1fr max-content;
     font-weight: 600;
-
     .payment-amount-title {
       display: flex;
       justify-content: center;

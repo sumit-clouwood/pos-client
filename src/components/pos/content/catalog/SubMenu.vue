@@ -29,7 +29,7 @@
           {{ dt(item) }}
         </div>
         <div class="food-categories-item-check color-dashboard-background">
-          <i class="fa fa-check color-text-invert " aria-hidden="true"></i>
+          <i class="fa fa-check color-text-invert" aria-hidden="true"></i>
         </div>
       </div>
     </div>
@@ -61,7 +61,7 @@ export default {
       // eslint-disable-next-line no-undef
       $('.search-field-input').val('')
       this.$store.dispatch('category/getItems', item)
-      this.$store.dispatch('foodMenuHendlerGhange')
+      this.$store.dispatch('foodMenuHendlerChange')
     },
     // ...mapActions('category', ['getItems']),
   },

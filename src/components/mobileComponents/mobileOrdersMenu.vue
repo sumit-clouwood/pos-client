@@ -1,7 +1,7 @@
 <template>
   <div
     :class="['orders-menu-overlay', { active: !footerMenuHendler }]"
-    @click.self="footerMenuHendlerGhange"
+    @click.self="footerMenuHendlerChange"
   >
     <div class="orders-menu">
       <li
@@ -97,7 +97,7 @@
         data-toggle="modal"
         data-target="#select-discount"
         id="discount-footer"
-        @click="discountHendlerGhange"
+        @click="discountHendlerChange"
       >
         <svg
           width="21"
@@ -147,7 +147,7 @@
         data-target="#search-loyalty-customer"
         class="footer-slider-list-item"
         :class="{ loyaltyApplied: loyaltyCard }"
-        @click="loyaltyHendlerGhange"
+        @click="loyaltyHendlerChange"
       >
         <svg
           width="22"
@@ -234,8 +234,8 @@ export default {
   },
   methods: {
     ...mapActions('discount', ['validateOrderDiscounts']),
-    footerMenuHendlerGhange() {
-      this.$store.dispatch('footerMenuHendlerGhange')
+    footerMenuHendlerChange() {
+      this.$store.dispatch('footerMenuHendlerChange')
     },
     setOrderType(opt) {
       this.$store.commit('order/ORDER_TYPE', opt)
@@ -243,26 +243,25 @@ export default {
     openManageCustomer() {
       this.$store.dispatch('openManageCustomer')
     },
-    discountHendlerGhange() {
-      this.$store.dispatch('discountHendlerGhange')
+    discountHendlerChange() {
+      this.$store.dispatch('discountHendlerChange')
     },
-    loyaltyHendlerGhange() {
-      this.$store.dispatch('loyaltyHendlerGhange')
+    loyaltyHendlerChange() {
+      this.$store.dispatch('loyaltyHendlerChange')
     },
-    addNoteHendlerGhange() {
-      this.$store.dispatch('addNoteHendlerGhange')
+    addNoteHendlerChange() {
+      this.$store.dispatch('addNoteHendlerChange')
     },
     viewHoldOrders() {
       this.vbutton = 'new'
       this.$store.commit('order/SET_CART_TYPE', 'hold')
       this.$store.dispatch('holdOrders/getHoldOrders')
-      this.$store.dispatch('footerMenuHendlerGhange')
+      this.$store.dispatch('footerMenuHendlerChange')
     },
   },
 }
 </script>
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
 
@@ -283,7 +282,6 @@ export default {
       display: flex;
       flex-direction: column;
       background-color: rgba(0, 0, 0, 0);
-      /*background-color: #fff;*/
       border-left: 1px solid #ddd;
       z-index: 50;
       pointer-events: none;
@@ -294,21 +292,14 @@ export default {
         transition: 0.5s ease-out;
         pointer-events: auto;
         background-color: rgba(0, 0, 0, 0.5);
-        /*.orders-menu{*/
-        /*transition: 0.5s ease-out;*/
-        /*margin-bottom: 0;*/
-        /*}*/
       }
 
       .orders-menu {
-        /*transition: 0.5s ease-out;*/
         background-color: #fff;
         width: 100vw;
         align-items: end;
         margin-top: auto;
-        /*margin-bottom: auto;*/
         overflow-y: auto;
-        //margin-bottom: -455px;
 
         .footer-slider-list-item {
           border-bottom: 1px solid $gray-middle;

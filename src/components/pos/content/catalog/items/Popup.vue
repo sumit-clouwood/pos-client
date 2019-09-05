@@ -45,6 +45,9 @@ export default {
 @include responsive(mobile) {
   .POSItemOptions {
     padding: 0;
+    width: 100vw;
+    max-width: none;
+    // position: fixed;
 
     .modal-dialog {
       width: 100vw;
@@ -54,9 +57,6 @@ export default {
       .modal-content {
         display: flex;
         flex-direction: column;
-
-        /*display: grid;*/
-        /*grid-template-rows: max-content max-content 1fr max-content;*/
 
         .modal-header {
           height: 70px;
@@ -85,7 +85,6 @@ export default {
               padding: 20px;
               box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
               width: 100%;
-              // height: 75px;
               background-color: #fff;
               z-index: 1;
 
@@ -96,12 +95,14 @@ export default {
                   button {
                     height: 50px;
                     background-color: $green-middle;
+                    width: auto;
+                    padding: 0 25px;
                   }
                 }
               }
 
               .POSItemOptions_label {
-                display: none;
+                /*display: none;*/
               }
             }
           }
@@ -109,7 +110,6 @@ export default {
 
         .modal-body {
           margin: 0;
-          /*border-top: 1px solid #ccc;*/
           max-height: none;
           order: 4;
           margin-bottom: 75px;
@@ -134,7 +134,7 @@ export default {
               display: grid;
               grid-template-columns: 1fr 1fr;
               grid-gap: 20px;
-
+              position: relative;
               .POSItemOptions_choose_choice {
                 width: auto;
                 margin-bottom: 0;
@@ -166,39 +166,55 @@ export default {
                     position: absolute;
                     width: 20px;
                     height: 20px;
+                  }
 
-                    input {
-                      display: none;
+                  input {
+                    &[type='checkbox'] {
+                      &:checked + div {
+                        display: block;
 
-                      &[type='checkbox'] {
-                        &:checked + span {
+                        span {
                           background-color: $green-middle;
+                          border: none;
+                          border-radius: 3px;
                         }
                       }
                     }
+                  }
 
-                    span {
-                      width: 20px;
-                      height: 20px;
-                      line-height: inherit;
-                      border-top: none;
-                      border-right: none;
-                      display: inline-flex;
+                  .checkBox {
+                    width: 20px;
+                    height: 20px;
+                    line-height: inherit;
+                    border-top: none;
+                    border-right: none;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    border: none;
+
+                    &:before {
+                      font-family: 'FontAwesome';
+                      content: '\f00c';
+                      position: static !important;
+                      display: flex;
                       align-items: center;
                       justify-content: center;
+                      font-size: 14px !important;
                       border: none;
-
-                      &:before {
-                        font-family: 'FontAwesome';
-                        content: '\f00c';
-                        position: static !important;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: 14px !important;
-                        border: none;
-                      }
                     }
+                  }
+
+                  .borderCheck {
+                    display: none;
+                    position: absolute;
+                    top: -2px;
+                    right: -2px;
+                    bottom: -2px;
+                    left: -2px;
+                    border: 2px solid $green-middle;
+                    border-radius: 3px;
+                    pointer-events: none;
                   }
                 }
               }

@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="['main-orders', { active: mainOrdersHendler }]"
+    :class="['main-orders', { active: items.length && mainOrdersHendler }]"
     class="main-orders color-dashboard-background"
   >
     <div class="main-orders-title">
@@ -39,6 +39,7 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['order']),
+    ...mapGetters('order', ['items']),
     ...mapGetters(['mainOrdersHendler']),
     ...mapState('order', ['cartType']),
   },
@@ -62,7 +63,8 @@ export default {
 @import '../../../assets/scss/pixels_rem.scss';
 @import '../../../assets/scss/variables.scss';
 @import '../../../assets/scss/mixins.scss';
-
+.main-orders {
+}
 @include responsive(mobile) {
   .main-orders {
     position: fixed;
@@ -81,18 +83,6 @@ export default {
     grid-column-start: 1;
     grid-column-end: 2;
     z-index: 50;
-
-    .mobile-footer {
-      padding-top: 0;
-
-      .btn-cart {
-        display: none;
-      }
-
-      .main-orders-buttons {
-        display: grid;
-      }
-    }
 
     &.active {
       right: 0px;
@@ -227,10 +217,19 @@ export default {
     }
 
     .mobile-footer {
+      padding-top: 0;
       background-color: #fff;
       z-index: 10;
       padding-top: 20px;
       box-shadow: none;
+
+      .btn-cart {
+        display: none;
+      }
+
+      .main-orders-buttons {
+        display: grid;
+      }
 
       .btn-next {
         display: none;

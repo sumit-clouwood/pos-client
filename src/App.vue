@@ -85,6 +85,8 @@ export default {
     }
   },
   created() {
+    DataService.setStore(this.$store)
+
     if (this.$route.params.brand_id) {
       this.$store.commit('context/SET_BRAND_ID', this.$route.params.brand_id)
       localStorage.setItem('brand_id', this.$route.params.brand_id)
@@ -178,10 +180,16 @@ export default {
 
             setTimeout(() => {
               require('@/../public/js/pos_script.js')
-              require('@/../public/js/pos_script_functions.js')
             }, 2000)
           })
-          .catch(error => (this.errored = error))
+          .catch(error => {
+            this.errored = error
+            setTimeout(() => {
+              this.$store.dispatch('auth/logout')
+              this.errored = ''
+            }, 1000 * 10)
+            console.log('some catch ', error)
+          })
 
         setTimeout(() => {
           navigator.serviceWorker.addEventListener('message', event => {
@@ -189,7 +197,6 @@ export default {
             if (event.data.msg == 'token') {
               console.log('setting new token to client')
               localStorage.setItem('token', event.data.data)
-              //DataService.setMiddleware()
               bootstrap.loadUI().then(() => {
                 setTimeout(() => {
                   this.loading = false
@@ -199,6 +206,13 @@ export default {
             }
           })
         }, 3000)
+      } else {
+        //logged out
+        if (!newVal && newVal !== oldVal) {
+          this.loading = true
+          this.progressIncrement = 0
+          this.$router.replace('/')
+        }
       }
     },
   },

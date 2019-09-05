@@ -312,7 +312,13 @@ h1, h2, h3, h4, h5, h6 {
         opacity: 1 !important; }
         .modal .modal-dialog .modal-content .modal-body {
           width: 100vw;
-          border: none !important; }
+          border: none !important;
+          padding: 20px !important; }
+        .modal .modal-dialog .modal-content .modal-footer .btn-announce button {
+          font-size: 14px !important; }
+          .modal .modal-dialog .modal-content .modal-footer .btn-announce button#discount-save {
+            background-color: #64C434 !important;
+            border: none !important; }
       .modal .modal-dialog .preloader {
         position: fixed;
         top: 0;

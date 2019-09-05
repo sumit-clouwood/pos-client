@@ -1,5 +1,5 @@
 <template>
-  <div :class="['qr-method', { active: QRMethodGhange }]">
+  <div :class="['qr-method', { active: QRMethodChange }]">
     <mobile-pay-header
       :param="{ title: 'Order Payment', subtitle: 'Order ID #0213232' }"
     />
@@ -22,13 +22,12 @@ export default {
     mobileFooter,
   },
   computed: {
-    ...mapGetters(['QRMethodGhange']),
+    ...mapGetters(['QRMethodChange']),
   },
 }
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
 

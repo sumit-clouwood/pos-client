@@ -82,7 +82,7 @@
               </button>
             </div>
           </div>
-          <div class="pay-now-btn-next" @click="payNowCalcHendlerGhange">
+          <div class="pay-now-btn-next" @click="payNowCalcHendlerChange">
             Next
           </div>
         </div>
@@ -132,9 +132,11 @@ export default {
   computed: {
     payableAmount: {
       get() {
-        return this.$store.state.checkoutForm.amount
-          ? this.$store.state.checkoutForm.amount
-          : 0
+        if (this.$store.state.checkoutForm.amount > 0) {
+          return this.$store.state.checkoutForm.amount
+        } else {
+          return 0
+        }
       },
       set(amount) {
         this.$store.dispatch('checkoutForm/setAmount', amount)
@@ -172,8 +174,8 @@ export default {
         $event.preventDefault()
       }
     },
-    payNowCalcHendlerGhange() {
-      this.$store.dispatch('payNowCalcHendlerGhange')
+    payNowCalcHendlerChange() {
+      this.$store.dispatch('payNowCalcHendlerChange')
     },
   },
 }

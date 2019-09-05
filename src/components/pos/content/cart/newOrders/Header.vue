@@ -4,19 +4,31 @@
       {{ cartType == 'hold' ? _t('Hold Orders') : _t('New Orders') }}
       <div class="main-oreders-date">{{ DateToday }}</div>
     </div>
-    <div class="main-oreders-email" v-if="selectedCustomer">
-      <span class="cursor-pointer color-text" @click="removeSelectedCustomer()">
-        <i class="fa fa-times" aria-hidden="true"></i>
-      </span>
-      <p v-if="selectedCustomer.email != ''">
-        {{ _t('Email') }} : {{ selectedCustomer.email }}
-      </p>
-      <p v-if="selectedCustomer.name != '' && selectedCustomer.email == ''">
-        {{ _t('Name') }} : {{ selectedCustomer.name }}
-      </p>
-      <div v-if="selectedCustomer.phone_number">
-        {{ _t('Phone') }} : {{ selectedCustomer.phone_number }}
-      </div>
+    <div
+      v-if="
+        selectedAddress &&
+          selectedCustomer &&
+          selectedCustomer.customer_addresses.length > 0
+      "
+      class="main-oreders-email"
+    >
+      <template>
+        <span
+          class="cursor-pointer color-text"
+          @click="removeSelectedCustomer()"
+        >
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+        <p v-if="selectedCustomer.email != ''">
+          {{ _t('Email') }} : {{ selectedCustomer.email }}
+        </p>
+        <p v-if="selectedCustomer.name != '' && selectedCustomer.email == ''">
+          {{ _t('Name') }} : {{ selectedCustomer.name }}
+        </p>
+        <div v-if="selectedCustomer.phone_number">
+          {{ _t('Phone') }} : {{ selectedCustomer.phone_number }}
+        </div>
+      </template>
     </div>
     <div class="main-oreders-buttons" v-if="items.length">
       <!--<div class="orders-button-large" disabled="disable">
@@ -50,6 +62,7 @@ export default {
     ...mapState('order', ['items', 'cartType']),
     ...mapState('checkoutForm', ['msg']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
+    ...mapState({ selectedAddress: state => state.customer.address }),
   },
   methods: {
     removeSelectedCustomer() {
@@ -117,6 +130,7 @@ export default {
       align-items: center;
       margin: 0;
       #holdorder {
+        height: 35px;
         width: 30%;
         background-color: $green-middle;
       }

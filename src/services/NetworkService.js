@@ -9,7 +9,8 @@ export default {
         process.env.BASE_URL + 'img/icons/favicon.png' + '?' + Math.random()
       img.onload = event => {
         console.log('onload hearbeat status', this.netstatus, true)
-        if (!this.netstatus) {
+        //if (!this.netstatus)
+        {
           this.netstatus = true
           cb(true, 'on', event)
         }

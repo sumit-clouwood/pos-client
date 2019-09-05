@@ -16,6 +16,7 @@
                   <button
                     class="color-button color-main color-text-invert"
                     id="place-new-order"
+                    data-dismiss="modal"
                     @click="
                       updateModalSelection(
                         '#order-confirmation',
@@ -136,7 +137,7 @@ div#display-order .modal-dialog {
         overflow: auto;
 
         .modal-body {
-          padding: 0;
+          padding: 0 !important;
 
           .crm-details-wrap {
             display: grid;
@@ -200,6 +201,7 @@ div#display-order .modal-dialog {
                 ul {
                   li {
                     margin: 0 !important;
+                    text-align: center;
                   }
                 }
               }

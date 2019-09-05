@@ -70,10 +70,20 @@ const actions = {
     { commit, getters, rootGetters, rootState, dispatch, state },
     { action }
   ) {
+    //if no order start time then reject otherwise
+    //reset order start time
+
+    if (!rootState.order.startTime) {
+      // eslint-disable-next-line no-console
+      console.log('Fake order or an order already in progress')
+      return Promise.reject('Fake order or an order already in progress')
+    }
+
     return new Promise((resolve, reject) => {
       let validPayment = false
       const totalPayable = rootGetters['checkoutForm/orderTotal']
       commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
+
       if (
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
         action === CONSTANTS.ORDER_STATUS_ON_HOLD
@@ -106,12 +116,19 @@ const actions = {
       if (validPayment) {
         //send order for payment
         let order = {}
+        const orderPlacementTime = DateTime.getUTCDateTime()
+
         try {
           order = {
             customer: '',
             customer_address_id: '',
             referral: '',
-            transition_order_no: '',
+            transition_order_no:
+              rootState.location.store.branch_n +
+              '-' +
+              rootState.location.terminalCode +
+              '-' +
+              orderPlacementTime,
             currency: rootState.location.currency,
             order_status:
               action === CONSTANTS.ORDER_STATUS_ON_HOLD
@@ -121,7 +138,7 @@ const actions = {
             order_type: rootState.order.orderType.OTApi,
             order_mode: 'online',
             //this time can be used to indentify offline order
-            real_created_datetime: DateTime.getUTCDateTime(),
+            real_created_datetime: orderPlacementTime,
             // order_mode: 'online',
             //remove the modifiers prices from subtotal
             print_count: 0,
@@ -447,6 +464,9 @@ const actions = {
 
         dispatch('createOrder', action)
           .then(response => {
+            //reset order start time
+            commit('order/RESET_ORDER_TIME', null, { root: true })
+
             resolve(response)
           })
           .catch(response => {
@@ -609,6 +629,9 @@ const actions = {
                   root: true,
                 }
               )
+              //reset order start time
+              commit('order/RESET_ORDER_TIME', null, { root: true })
+
               commit(mutation.PRINT, true)
               dispatch(
                 'transactionOrders/getTransactionOrders',
