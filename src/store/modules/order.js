@@ -921,6 +921,29 @@ const actions = {
       commit(mutation.ORDER_TYPE, { OTview: 'Delivery', OTApi: 'call_center' })
     })
   },
+
+  modifyOrderTransaction({ rootState, dispatch, commit }) {
+    let orderData = rootState.order.selectedOrder.item
+    let orderType = orderData.order_type
+    dispatch('addOrderToCart', orderData).then(() => {
+      if (orderType === 'dine_in') {
+        commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_PROGRESS)
+        commit(mutation.ORDER_TYPE, { OTview: 'Dine In', OTApi: 'dine_in' })
+      } else if (orderType === 'walk-in') {
+        commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_PROGRESS)
+        commit(mutation.ORDER_TYPE, { OTview: 'Walk In', OTApi: 'walk_in' })
+      } else if (orderType === 'takeaway') {
+        commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_PROGRESS)
+        commit(mutation.ORDER_TYPE, { OTview: 'Take Away', OTApi: 'takeaway' })
+      } else {
+        commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_DELIVERY)
+        commit(mutation.ORDER_TYPE, {
+          OTview: 'Delivery',
+          OTApi: 'call_center',
+        })
+      }
+    })
+  },
   selectedOrderDetails({ commit }, orderId) {
     return new Promise((resolve, reject) => {
       const params = ['orders', orderId, '']

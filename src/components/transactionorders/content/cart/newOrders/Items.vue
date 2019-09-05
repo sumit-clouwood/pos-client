@@ -37,7 +37,7 @@
             }}</span>
           </div>
           <div class="replace-btn">
-            <a href="javascript:void" @click="modifyOrder">{{
+            <a href="javascript:void" @click="modifyThisOrder">{{
               _t('Replace')
             }}</a>
           </div>
@@ -81,7 +81,7 @@ export default {
     },
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
-    modifyOrder() {
+    modifyThisOrder() {
       this.$store.dispatch('order/modifyOrderTransaction').then(() => {
         this.$router.push({ path: this.$store.getters['context/store'] })
       })
