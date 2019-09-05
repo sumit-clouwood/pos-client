@@ -333,9 +333,6 @@ export default {
           root: true,
         })
       }
-      // this.$store.commit('dinein/RESERVATION_ID', this.selectedTableId)
-      // alert(reservationId)
-      // alert(this.selectedTableId)
       this.$router.push({ path: URL })
     },
     updateOrder(data) {
