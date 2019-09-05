@@ -129,7 +129,7 @@
                     </div>
                     <div v-else class="table-action">
                       <a
-                        @click="newOrder()"
+                        @click="newOrder(orderData.reservationId)"
                         role="button"
                         class="dropdown-item"
                       >
@@ -251,6 +251,7 @@ export default {
     ...mapState('dinein', [
       'tablesOnArea',
       'activeArea',
+      'areas',
       'orderOnTables',
       'tableStatus',
       'allBookedTables',
@@ -280,6 +281,7 @@ export default {
       addOrSplit: 'Click to book table',
       cancelReservationMsg: 'Do you want to cancel this reservation?',
       order: false,
+      selectedAreaObj: '',
       selectedReservationId: '',
       componentKey: 0,
       moveReservation: false,
@@ -324,11 +326,13 @@ export default {
         .parent('div')
         .hide()
     },
-    newOrder() {
+    newOrder(reservationId = null) {
       let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
-      this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
-        root: true,
-      })
+      if (reservationId == null) {
+        this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
+          root: true,
+        })
+      }
       this.$router.push({ path: URL })
     },
     updateOrder(data) {
@@ -525,8 +529,15 @@ export default {
           if (this.moveReservation) {
             this.cancelReservationMsg = response.form_errors.status[0]
             $('#confirmModal').modal('show')
+            return false
           }
         }
+        let that = this
+        this.selectedAreaObj = this.areas.find(area => {
+          area._id == that.activeArea
+          return area
+        })
+        this.$store.dispatch('dinein/selectedArea', this.selectedAreaObj)
       })
       this.componentKey += 1
       $('#range')
