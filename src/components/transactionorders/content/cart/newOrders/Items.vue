@@ -1,40 +1,46 @@
 <template>
   <div class="transaction-item">
     <h3 class="trans_head">{{ _t('ITEMS') }}</h3>
-    <div class="trans-item-list" v-for="(item, index) in items" :key="index">
-      <div class="trans-menu-item">
-        <div class="trans-menu-image">
-          <img :src="getItemImage(item.name)" :alt="_t('Image')" />
-        </div>
-        <div class="trans-menu-list">
-          <div class="orders-name">
-            <p>{{ item.name }}</p>
-            <p class="price-qty">
-              @ {{ item.price }} x {{ item.qty }} &nbsp;
-              {{ getItemDiscountValue(order.item_discounts).name }}
-            </p>
-            <a
-              href="javascript:void"
-              v-for="(modifier, indexNo) in order.item_modifiers"
-              :key="indexNo"
-              class="trans-item-btn"
-            >
-              <span v-if="modifier.for_item == index">{{ modifier.name }}</span>
-            </a>
+    <div class="trans-item-list-wrapper">
+      <div class="trans-item-list" v-for="(item, index) in items" :key="index">
+        <div class="trans-menu-item">
+          <div class="trans-menu-image">
+            <img :src="getItemImage(item.name)" :alt="_t('Image')" />
+          </div>
+          <div class="trans-menu-list">
+            <div class="orders-name">
+              <p>{{ item.name }}</p>
+              <p class="price-qty">
+                @ {{ item.price }} x {{ item.qty }} &nbsp;
+                {{ getItemDiscountValue(order.item_discounts).name }}
+              </p>
+              <a
+                href="javascript:void"
+                v-for="(modifier, indexNo) in order.item_modifiers"
+                :key="indexNo"
+                class="trans-item-btn"
+              >
+                <span v-if="modifier.for_item == index">{{
+                  modifier.name
+                }}</span>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="trans-menu-replace">
-        <div class="aed-amt">
-          <span>{{
-            formatPrice(
-              item.price * item.qty -
-                getItemDiscountValue(order.item_discounts).value || 0
-            )
-          }}</span>
-        </div>
-        <div class="replace-btn">
-          <a href="javascript:void" @click="modifyOrder">{{ _t('Replace') }}</a>
+        <div class="trans-menu-replace">
+          <div class="aed-amt">
+            <span>{{
+              formatPrice(
+                item.price * item.qty -
+                  getItemDiscountValue(order.item_discounts).value || 0
+              )
+            }}</span>
+          </div>
+          <div class="replace-btn">
+            <a href="javascript:void" @click="modifyOrder">{{
+              _t('Replace')
+            }}</a>
+          </div>
         </div>
       </div>
     </div>

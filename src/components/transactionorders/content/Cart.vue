@@ -4,19 +4,18 @@
     :class="['main-orders', { active: mainOrdersHendler }]"
     class="main-orders color-dashboard-background"
   >
-    <div class="main-orders-title">
-      <div class="text">{{ _t('Current Sale Detail') }}</div>
-      <div class="button" @click="cartClose">
-        <i class="fa fa-angle-right" aria-hidden="true"></i>
-      </div>
-    </div>
+    <!--<div class="main-orders-title">-->
+    <!--<div class="text">{{ _t('Current Sale Detail') }}</div>-->
+    <!--<div class="button" @click="cartClose">-->
+    <!--<i class="fa fa-angle-right" aria-hidden="true"></i>-->
+    <!--</div>-->
+    <!--</div>-->
     <Header :order="selectedOrder.item" />
     <div class="main-orders-list-wrapper">
       <Items :order="selectedOrder.item" :items="selectedOrder.item.items" />
     </div>
     <!--<PayNow :order="selectedOrder.item" />-->
     <Footer :order="selectedOrder.item" />
-    <mobile-footer />
     <orders-menu />
   </div>
   <div class="food-block" v-else>
@@ -31,7 +30,6 @@ import Header from './cart/newOrders/Header.vue'
 import Footer from './cart/Footer'
 import Items from './cart/newOrders/Items.vue'
 import ordersMenu from '../../mobileComponents/mobileOrdersMenu.vue'
-import mobileFooter from '../../mobileComponents/mobileFooter.vue'
 
 import { mapState, mapGetters } from 'vuex'
 
@@ -57,7 +55,6 @@ export default {
     Footer,
     // PayNow,
     ordersMenu,
-    mobileFooter,
   },
 }
 </script>
