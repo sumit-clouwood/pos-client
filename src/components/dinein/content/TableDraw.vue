@@ -109,7 +109,8 @@
                         class="dropdown-item"
                       >
                         {{ orderData.tableNumber }} #Reserved |
-                        {{ orderData.startDate }}, {{ orderData.startTime }}
+                        {{ created_date(orderData.startDate) }},
+                        {{ created_time(orderData.startTime) }}
                       </a>
                       <span
                         class="cursor-pointer text-danger reservation-cancel"
@@ -242,7 +243,8 @@ export default {
       page: null,
       svg: null,
       width: 'auto',
-      height: '750px',
+      height: '900px',
+      selectedTableD3: '',
       svgWidth: 250,
       svgHeight: 100,
       orderDetails: [],
@@ -263,28 +265,33 @@ export default {
   updated() {
     this.clearTableArea()
     this.updateTableOnArea()
+    /*if (this.selectedTableD3)
+      d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
   },
   methods: {
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
-    /*baseURL(link) {
-      return window.location.href.replace('dine-in', 'dine-in/' + link)
+    /*showActive() {
+      // $('#id' + this.selectedTableId).addClass('class', 'dinein_table active')
+      d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
     },*/
+    created_time(time) {
+      return this.convertDatetime(time, this.timezoneString, 'h:mm:ss')
+      // return this.current_time.format('h:mm A')
+    },
+    created_date(date) {
+      return this.convertDatetime(date, this.timezoneString, 'Do MMMM YYYY')
+      // return this.current_time.format('Do MMMM YYYY')
+    },
     getOrderNo(orderId) {
-      /*let order = LookupData.get({
-        collection: this.allBookedTables.lookup.orders._id,
-        matchWith: orderId,
-      })*/
       let order = this.allBookedTables.lookup.orders._id[orderId]
-      let customerName = order && order.customer != null ? order.customer : ''
+      // let customerName = order && order.customer != null ? order.customer : ''
       return order
         ? order.order_no +
             ' | ' +
             this.convertDatetime(
               order.real_created_datetime,
               this.timezoneString
-            ) +
-            ' | ' +
-            customerName
+            )
         : ''
     },
     hideTableDetails() {
@@ -397,8 +404,12 @@ export default {
         .attr('xlink:href', function(d) {
           return `#dinein_${d.table_shape}_${d.chairs}`
         })
-        .on('click', d => this.showOptions(d))
+        .on('click', function(d, i, a) {
+          dis.showOptions(d, i, a)
+        })
         .attr('fill', 'green')
+      if (this.selectedTableD3)
+        d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
         let dineInTableWidth = 0
         if (
@@ -473,120 +484,6 @@ export default {
       })
       this.drawViews()
     },
-    manageViews() {
-      let that = this
-      this.mainViewCalc()
-      d3.select('#dine-in-area > g')
-        .append('g')
-        .lower()
-        .attr('class', 'side-view-left views')
-        .attr('fill', 'white')
-        .attr('stroke', '#9b9fb8')
-        .on('click', (d, i, a) => {
-          /*that.clearSelection()*/
-          d3.select(a[i])
-            .attr('class', ' selected_view side-view-bottom views')
-            .attr('stroke', '#b2b5c1')
-            .attr('fill', '#b2b5c1')
-        })
-        .attr('side', 'left_view')
-        .append('rect')
-        .attr('x', 10)
-        .attr('y', 10)
-        .attr('width', 60)
-        .attr('height', that.svgCoordinates.height - 20)
-        .attr('stroke-width', 0.5)
-        .attr('stroke-dasharray', '10.5')
-
-      this.mainViewCalc()
-
-      d3.select('#dine-in-area > g')
-        .append('g')
-        .lower()
-        .attr('class', 'side-view-top views')
-        .attr('fill', 'white')
-        .attr('stroke', '#9b9fb8')
-        .on('click', (d, i, a) => {
-          /*that.clearSelection()*/
-          d3.select(a[i])
-            .attr('class', ' selected_view side-view-bottom views')
-            .attr('stroke', '#b2b5c1')
-            .attr('fill', '#b2b5c1')
-        })
-        .attr('side', 'top_view')
-        .append('rect')
-        .attr('x', 90)
-        .attr('y', 10)
-        .attr('width', that.svgCoordinates.width - 200)
-        .attr('height', 60)
-        .attr('stroke-width', 0.5)
-        .attr('stroke-dasharray', '10.5')
-
-      this.mainViewCalc()
-
-      d3.select('#dine-in-area > g')
-        .append('g')
-        .lower()
-        .attr('class', 'side-view-right views')
-        .attr('fill', 'white')
-        .attr('stroke', '#9b9fb8')
-        .on('click', (d, i, a) => {
-          /*that.clearSelection()*/
-          d3.select(a[i])
-            .attr('class', ' selected_view side-view-bottom views')
-            .attr('stroke', '#b2b5c1')
-            .attr('fill', '#b2b5c1')
-        })
-        .attr('side', 'right_view')
-        .append('rect')
-        .attr('x', that.svgCoordinates.width - 90)
-        .attr('y', 10)
-        .attr('width', 60)
-        .attr('height', that.svgCoordinates.height - 20)
-        .attr('stroke-width', 0.5)
-        .attr('stroke-dasharray', '10.5')
-
-      this.mainViewCalc()
-
-      d3.select('#dine-in-area > g')
-        .append('g')
-        .lower()
-        .attr('class', 'side-view-bottom views')
-        .attr('fill', 'white')
-        .attr('stroke', '#9b9fb8')
-        .on('click', (d, i, a) => {
-          /*that.clearSelection()*/
-          d3.select(a[i])
-            .attr('class', ' selected_view side-view-bottom views')
-            .attr('stroke', '#b2b5c1')
-            .attr('fill', '#b2b5c1')
-        })
-        .attr('side', 'bottom_view')
-        .append('rect')
-        .attr('x', 90)
-        .attr('y', that.svgCoordinates.height - 70)
-        .attr('width', that.svgCoordinates.width - 200)
-        .attr('height', 60)
-        .attr('stroke-width', 0.5)
-        .attr('stroke-dasharray', '10.5')
-
-      this.viewsCoordinates.bottom_view = d3
-        .select('#dine-in-area > g > .side-view-bottom')
-        .node()
-        .getBBox()
-      this.viewsCoordinates.right_view = d3
-        .select('#dine-in-area > g > .side-view-right')
-        .node()
-        .getBBox()
-      this.viewsCoordinates.top_view = d3
-        .select('#dine-in-area > g > .side-view-top')
-        .node()
-        .getBBox()
-      this.viewsCoordinates.left_view = d3
-        .select('#dine-in-area > g > .side-view-left')
-        .node()
-        .getBBox()
-    },
     confirmCancelReservation() {
       this.reservationUpdateStatus({
         reservationId: this.selectedReservationId,
@@ -594,7 +491,6 @@ export default {
       }).then(response => {
         if (response.status == 'form_errors') {
           this.moveReservation = true
-          // eslint-disable-next-line no-console
           if (this.moveReservation) {
             this.cancelReservationMsg = response.form_errors.status[0]
             $('#confirmModal').modal('show')
@@ -618,6 +514,30 @@ export default {
         .node()
         .getBoundingClientRect()
     },
+    showOptions(datum, i, a) {
+      // eslint-disable-next-line no-console
+      console.log(a[i])
+      this.selectedTableD3 = a[i]
+      this.orderDetails = this.orderOnTables.filter(
+        order => order.tableId === datum._id
+      )
+      this.addOrSplit =
+        this.orderDetails.length > 0
+          ? 'Click to split table'
+          : 'Click to book table'
+      this.selectedTableId = datum._id
+      let range = $('#range')
+      range
+        .parent('div')
+        .attr(
+          'style',
+          'top:' +
+            (datum.table_position_coordinate.y || 0) +
+            'px; left:' +
+            (datum.table_position_coordinate.x || 100) +
+            'px; display:block'
+        )
+    },
     drawViews() {
       this.activeArea.top_view.forEach((element, i) => {
         d3.select(this.$el)
@@ -638,8 +558,6 @@ export default {
           })
           .append('image')
           .attr('xlink:href', function(d) {
-            // eslint-disable-next-line no-console
-            console.log(d.name)
             return `/img/dinein/area-view/${d.name}_view_h.jpg`
             // return `/img/dinein/area-view/city_view_h.jpg`
           })
@@ -871,26 +789,119 @@ export default {
           )
       })
     },
-    showOptions(datum) {
-      this.orderDetails = this.orderOnTables.filter(
-        order => order.tableId === datum._id
-      )
-      this.addOrSplit =
-        this.orderDetails.length > 0
-          ? 'Click to split table'
-          : 'Click to book table'
-      this.selectedTableId = datum._id
-      let range = $('#range')
-      range
-        .parent('div')
-        .attr(
-          'style',
-          'top:' +
-            (datum.table_position_coordinate.y || 0) +
-            'px; left:' +
-            (datum.table_position_coordinate.x || 100) +
-            'px; display:block'
-        )
+    manageViews() {
+      let that = this
+      this.mainViewCalc()
+      d3.select('#dine-in-area > g')
+        .append('g')
+        .lower()
+        .attr('class', 'side-view-left views')
+        .attr('fill', 'white')
+        .attr('stroke', '#9b9fb8')
+        .on('click', (d, i, a) => {
+          /*that.clearSelection()*/
+          d3.select(a[i])
+            .attr('class', ' selected_view side-view-bottom views')
+            .attr('stroke', '#b2b5c1')
+            .attr('fill', '#b2b5c1')
+        })
+        .attr('side', 'left_view')
+        .append('rect')
+        .attr('x', 10)
+        .attr('y', 10)
+        .attr('width', 60)
+        .attr('height', that.svgCoordinates.height - 20)
+        .attr('stroke-width', 0.5)
+        .attr('stroke-dasharray', '10.5')
+
+      this.mainViewCalc()
+
+      d3.select('#dine-in-area > g')
+        .append('g')
+        .lower()
+        .attr('class', 'side-view-top views')
+        .attr('fill', 'white')
+        .attr('stroke', '#9b9fb8')
+        .on('click', (d, i, a) => {
+          /*that.clearSelection()*/
+          d3.select(a[i])
+            .attr('class', ' selected_view side-view-bottom views')
+            .attr('stroke', '#b2b5c1')
+            .attr('fill', '#b2b5c1')
+        })
+        .attr('side', 'top_view')
+        .append('rect')
+        .attr('x', 90)
+        .attr('y', 10)
+        .attr('width', that.svgCoordinates.width - 200)
+        .attr('height', 60)
+        .attr('stroke-width', 0.5)
+        .attr('stroke-dasharray', '10.5')
+
+      this.mainViewCalc()
+
+      d3.select('#dine-in-area > g')
+        .append('g')
+        .lower()
+        .attr('class', 'side-view-right views')
+        .attr('fill', 'white')
+        .attr('stroke', '#9b9fb8')
+        .on('click', (d, i, a) => {
+          /*that.clearSelection()*/
+          d3.select(a[i])
+            .attr('class', ' selected_view side-view-bottom views')
+            .attr('stroke', '#b2b5c1')
+            .attr('fill', '#b2b5c1')
+        })
+        .attr('side', 'right_view')
+        .append('rect')
+        .attr('x', that.svgCoordinates.width - 90)
+        .attr('y', 10)
+        .attr('width', 60)
+        .attr('height', that.svgCoordinates.height - 20)
+        .attr('stroke-width', 0.5)
+        .attr('stroke-dasharray', '10.5')
+
+      this.mainViewCalc()
+
+      d3.select('#dine-in-area > g')
+        .append('g')
+        .lower()
+        .attr('class', 'side-view-bottom views')
+        .attr('fill', 'white')
+        .attr('stroke', '#9b9fb8')
+        .on('click', (d, i, a) => {
+          /*that.clearSelection()*/
+          d3.select(a[i])
+            .attr('class', ' selected_view side-view-bottom views')
+            .attr('stroke', '#b2b5c1')
+            .attr('fill', '#b2b5c1')
+        })
+        .attr('side', 'bottom_view')
+        .append('rect')
+        .attr('x', 90)
+        .attr('y', that.svgCoordinates.height - 70)
+        .attr('width', that.svgCoordinates.width - 200)
+        .attr('height', 60)
+        .attr('stroke-width', 0.5)
+        .attr('stroke-dasharray', '10.5')
+
+      this.viewsCoordinates.bottom_view = d3
+        .select('#dine-in-area > g > .side-view-bottom')
+        .node()
+        .getBBox()
+      this.viewsCoordinates.right_view = d3
+        .select('#dine-in-area > g > .side-view-right')
+        .node()
+        .getBBox()
+      this.viewsCoordinates.top_view = d3
+        .select('#dine-in-area > g > .side-view-top')
+        .node()
+        .getBBox()
+      this.viewsCoordinates.left_view = d3
+        .select('#dine-in-area > g > .side-view-left')
+        .node()
+        .getBBox()
     },
   },
 }

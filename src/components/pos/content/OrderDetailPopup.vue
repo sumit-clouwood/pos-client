@@ -80,6 +80,7 @@
             </div>
           </button>
           <button
+            v-if="selectedOrder.customer"
             type="button"
             class="button past-order-buttons btn btn-success color-main color-text-invert"
           >

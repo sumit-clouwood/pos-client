@@ -245,8 +245,13 @@ const actions = {
     if (!state.reservation) {
       const params = [
         {
-          start_date: moment().format('YYYY-MM-DD'),
-          start_time: moment().format('hh:mm'),
+          //need to set UTC
+          start_date: moment()
+            .utc()
+            .format('YYYY-MM-DD'),
+          start_time: moment()
+            .utc()
+            .format('hh:mm'),
           assigned_table_id: tableId,
           number_of_guests: 0,
           customers: [],

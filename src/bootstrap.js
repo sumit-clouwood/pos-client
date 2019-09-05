@@ -142,10 +142,10 @@ export default {
     return new Promise(resolve => {
       switch (api) {
         case 'catalog':
-          this.store.dispatch('dinein/fetchAll')
           this.store.dispatch('surcharge/fetchAll').then(() => {})
           this.store.dispatch('discount/fetchAll').then(() => {})
           this.store.dispatch('payment/fetchAll').then(() => {})
+          this.store.dispatch('dinein/fetchAll')
           resolve()
           break
         case 'customer':

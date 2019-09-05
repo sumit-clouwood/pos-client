@@ -15,7 +15,6 @@
           updateDineInOrderStatus({
             title: 'all',
             pageId: 'getBookedTables',
-            dataRelated: 'all-tables-show',
           })
         "
       >
@@ -30,7 +29,6 @@
           updateDineInOrderStatus({
             title: 'waiting',
             pageId: '',
-            dataRelated: 'waiting-dinein-show',
           })
         "
       >
@@ -45,7 +43,6 @@
           updateDineInOrderStatus({
             title: 'reservation',
             pageId: '',
-            dataRelated: 'reservation-orders-show',
           })
         "
       >
@@ -60,7 +57,6 @@
           updateDineInOrderStatus({
             title: 'running',
             pageId: 'dineInRunningOrders',
-            dataRelated: 'running-orders-show',
           })
         "
       >
@@ -75,7 +71,6 @@
           updateDineInOrderStatus({
             title: 'completed',
             pageId: 'dineInCompleteOrders',
-            dataRelated: 'completed-orders-show',
           })
         "
       >

@@ -880,7 +880,11 @@ const actions = {
     return new Promise(resolve => {
       dispatch('reset')
       commit(mutation.SET_ORDER_ID, order._id)
-      let orderData = { _id: order._id, order_no: order.order_no }
+      let orderData = {
+        _id: order._id,
+        order_no: order.order_no,
+        customer: order.customer,
+      }
       commit(mutation.SET_ORDER_DATA, orderData)
 
       order.items.forEach((orderItem, key) => {
