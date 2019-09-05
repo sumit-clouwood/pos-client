@@ -643,7 +643,10 @@ const actions = {
                 CONSTANTS.ORDER_TYPE_DINE_IN &&
               rootState.order.is_pay !== 1
             ) {
-              alert('Item added to order successfully.')
+              let dineinsuccmsg = rootGetters['location/_t'](
+                'Item added to order successfully'
+              )
+              alert(dineinsuccmsg)
               dispatch('reset')
             } else {
               commit(mutation.PRINT, true)
