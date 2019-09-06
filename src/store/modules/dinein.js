@@ -258,7 +258,7 @@ const actions = {
   addReservation({ commit, state, dispatch }, tableId) {
     dispatch('order/reset', {}, { root: true })
     dispatch('checkout/reset', {}, { root: true })
-    if (!state.reservation) {
+    if (!state.reservationId) {
       const params = [
         {
           //need to set UTC

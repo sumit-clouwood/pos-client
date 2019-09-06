@@ -241,6 +241,7 @@ export default {
       'tableStatus',
       'allBookedTables',
       'reservationId',
+      'lastActiveArea',
     ]),
     ...mapGetters('context', ['store']),
   },
@@ -313,6 +314,7 @@ export default {
     },
     newOrder(reservationId = null) {
       let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
+      this.$store.commit('dinein/RESERVATION_ID', reservationId)
       if (reservationId == null) {
         this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
           root: true,
@@ -531,6 +533,8 @@ export default {
         .hide()
     },
     cancelReservation(id) {
+      // // eslint-disable-next-line no-console
+      // console.log(id, '==>', this.lastActiveArea, 'Rajeev')
       this.cancelReservationMsg = 'Do you want to cancel this reservation?'
       this.moveReservation = false
       $('#confirmModal').modal('show')
