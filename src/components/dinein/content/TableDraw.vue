@@ -317,6 +317,8 @@ export default {
         this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
           root: true,
         })
+      } else {
+        this.$store.commit('dinein/RESERVATION_ID', reservationId)
       }
       this.$router.push({ path: URL })
     },
