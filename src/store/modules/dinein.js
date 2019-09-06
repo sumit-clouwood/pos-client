@@ -294,7 +294,7 @@ const mutations = {
   [mutation.DINE_IN_AREAS](state, areas) {
     state.areas = areas.data
     if (areas.count > 0) {
-      state.activeArea = state.areas[0]
+      state.activeArea = state.activeArea ? state.activeArea : state.areas[0]
       state.tablesOnArea = false
       state.tablesOnArea =
         state.tables.length > 0

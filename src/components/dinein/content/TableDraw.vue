@@ -532,20 +532,21 @@ export default {
             return false
           }
         }
-        let that = this
-        this.selectedAreaObj = this.areas.find(area => {
+        // let that = this
+        /*this.selectedAreaObj = this.areas.find(area => {
           area._id == that.activeArea
           return area
-        })
+        })*/
+        //this.selectedAreaObj = this.$store.state.dinein.activeArea
         this.$store.dispatch('dinein/updateDineInOrderStatus', {
           title: 'all',
           pageId: 'getBookedTables',
         })
-        this.$store.dispatch('dinein/getTableStatus')
-        this.$store.dispatch('dinein/selectedArea', this.selectedAreaObj)
-          this.$store.dispatch('dinein/getBookedTables', false)
-          this.$store.dispatch('dinein/getDineInTables')
-          this.$store.dispatch('dinein/getDineInArea', false)
+        // this.$store.dispatch('dinein/getTableStatus')
+        // this.$store.dispatch('dinein/getBookedTables', false)
+        // this.$store.dispatch('dinein/getDineInTables')
+        this.$store.dispatch('dinein/getDineInArea', false)
+        // this.$store.dispatch('dinein/selectedArea', this.selectedAreaObj)
       })
       this.componentKey += 1
       $('#range')
@@ -566,7 +567,7 @@ export default {
     },
     showOptions(datum, i, a) {
       // eslint-disable-next-line no-console
-      console.log(a[i])
+      // console.log(a[i])
       this.selectedTableD3 = a[i]
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
