@@ -45,7 +45,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Header',
   computed: {
-    ...mapState('dinein', ['areas', 'activeArea', 'loading']),
+    ...mapState('dinein', ['areas', 'activeArea', 'loading', 'lastActiveArea']),
     ...mapGetters('location', ['_t']),
   },
   methods: {
@@ -54,6 +54,7 @@ export default {
         .parent('div')
         .hide()
       this.selectedArea(area)
+      this.$store.commit('dinein/DINE_IN_LAST_ACTIVE_AREA', area)
     },
     ...mapActions('dinein', ['selectedArea']),
   },

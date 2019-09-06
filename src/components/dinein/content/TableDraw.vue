@@ -256,6 +256,7 @@ export default {
       'tableStatus',
       'allBookedTables',
       'reservationId',
+      'lastActiveArea',
     ]),
     ...mapGetters('context', ['store']),
   },
@@ -549,6 +550,8 @@ export default {
         .hide()
     },
     cancelReservation(id) {
+      // // eslint-disable-next-line no-console
+      // console.log(id, '==>', this.lastActiveArea, 'Rajeev')
       this.cancelReservationMsg = 'Do you want to cancel this reservation?'
       this.moveReservation = false
       $('#confirmModal').modal('show')
