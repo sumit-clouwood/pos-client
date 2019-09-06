@@ -38,6 +38,16 @@ export default {
     Waiting,
     OrderDetailsPopup,
   },
+  mounted() {
+    //When POS to Dinein update every table status.
+    this.selectedAreaObj = this.$store.state.dinein.activeArea
+    this.$store.dispatch('dinein/updateDineInOrderStatus', {
+      title: 'all',
+      pageId: 'getBookedTables',
+    })
+    this.$store.dispatch('dinein/getDineInArea', false)
+    this.$store.dispatch('dinein/selectedArea', this.selectedAreaObj)
+  },
 }
 </script>
 <style scoped>
