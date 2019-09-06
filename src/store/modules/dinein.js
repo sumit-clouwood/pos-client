@@ -74,37 +74,37 @@ const actions = {
     dispatch('dineInCompleteOrders')
   },
 
-  reservationUpdateStatus({ commit }, reservationData) {
+  reservationUpdateStatus({ dispatch, commit }, reservationData) {
     return new Promise((resolve, reject) => {
       const params = [reservationData.reservationId, reservationData.status]
       DineInService.updateReservationStatus(...params)
         .then(response => {
           commit(mutation.RESERVATION_ID, reservationData.reservationId)
-          // dispatch('getBookedTables')
+            resolve(response.data)
+            dispatch('getBookedTables', false)
           // dispatch('dineInRunningOrders')
-          // dispatch('getTableStatus')
-          resolve(response.data)
+          dispatch('getTableStatus')
         })
         .catch(er => reject(er))
     })
   },
-  getBookedTables({ commit }) {
-    commit(mutation.LOADING, true)
+  getBookedTables({ commit }, loader = true) {
+    commit(mutation.LOADING, loader)
     localStorage.setItem('reservationId', false)
     DineInService.getAllBookedTables().then(response => {
       commit(mutation.BOOKED_TABLES, response.data)
       commit(mutation.LOADING, false)
     })
   },
-  dineInRunningOrders({ commit }) {
-    commit(mutation.LOADING, true)
+  dineInRunningOrders({ commit }, loader = true) {
+    commit(mutation.LOADING, loader)
     DineInService.dineInRunningOrders().then(response => {
       commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
       commit(mutation.LOADING, false)
     })
   },
-  dineInCompleteOrders({ commit }) {
-    commit(mutation.LOADING, true)
+  dineInCompleteOrders({ commit }, loader = true) {
+    commit(mutation.LOADING, loader)
     DineInService.dineInCompleteOrders().then(response => {
       commit(mutation.DINE_IN_COMPLETED_ORDERS, response.data)
       commit(mutation.LOADING, false)
@@ -202,8 +202,6 @@ const actions = {
         commit(mutation.ORDER_ON_TABLES, orderOnTable)
       })
     }
-    // eslint-disable-next-line no-console
-    console.log(tableStatus, 'Rajeev')
     commit(mutation.TABLE_STATUS, tableStatus)
   },
 

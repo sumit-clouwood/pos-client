@@ -1,7 +1,7 @@
 export default {
   state: {
     searchHendler: false,
-    allCategoryHendler: false,
+    allCategoryHendler: true,
     subCategoryHendler: false,
     foodMenuHendler: true,
     mainOrdersHendler: false,

@@ -543,6 +543,9 @@ export default {
         })
         this.$store.dispatch('dinein/getTableStatus')
         this.$store.dispatch('dinein/selectedArea', this.selectedAreaObj)
+          this.$store.dispatch('dinein/getBookedTables', false)
+          this.$store.dispatch('dinein/getDineInTables')
+          this.$store.dispatch('dinein/getDineInArea', false)
       })
       this.componentKey += 1
       $('#range')

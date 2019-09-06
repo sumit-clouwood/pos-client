@@ -19,6 +19,7 @@ import * as mutation from './order/mutation-types'
 import OrderService from '../../services/data/OrderService'
 import * as CONST from '@/constants'
 import Num from '@/plugins/helpers/Num.js'
+import DateTime from '@/mixins/DateTime.js'
 
 // initial state
 const state = {
@@ -1200,7 +1201,7 @@ const mutations = {
   },
 
   [mutation.START_ORDER](state) {
-    state.startTime = new Date().getTime()
+    state.startTime = DateTime.getUTCDateTime()
   },
 
   [mutation.RESET_ORDER_TIME](state) {

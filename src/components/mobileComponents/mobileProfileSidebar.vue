@@ -126,7 +126,8 @@ export default {
       this.$store.dispatch('userCalcHendlerChange')
       this.$store.dispatch('openUserHendlerChange')
       this.$store.dispatch('profileHendlerChange')
-      this.logout()
+      // this.logout()
+      this.$store.dispatch('auth/logout')
     },
   },
 }
