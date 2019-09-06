@@ -1,9 +1,9 @@
 import DataService from '@/services/DataService'
 
 export default {
-  dineInRunningOrders() {
+  dineInRunningOrders(page, limit) {
     return DataService.get(
-      `/model/reservations?page_id=running_orders&query=&limit=10&ascending=1&page=1`
+      `/model/reservations?page_id=running_orders&query=&limit=${limit}&ascending=1&page=${page}`
     )
   },
   dineInCompleteOrders() {

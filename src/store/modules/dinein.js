@@ -29,6 +29,7 @@ const state = {
   allBookedTables: { orders: false, lookup: false },
   orderReservationData: {},
   dineInTabType: 'all',
+  totalReservations: { totalPages: 0, pageNumber: 1, limit: 10 },
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -96,10 +97,15 @@ const actions = {
       commit(mutation.LOADING, false)
     })
   },
-  dineInRunningOrders({ commit }, loader = true) {
+  dineInRunningOrders({ commit, state }, loader = true) {
     commit(mutation.LOADING, loader)
-    DineInService.dineInRunningOrders().then(response => {
+    const params = [
+      state.totalReservations.pageNumber,
+      state.totalReservations.limit,
+    ]
+    DineInService.dineInRunningOrders(...params).then(response => {
       commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
+      commit(mutation.TOTAL_RESERVATION, response.data)
       commit(mutation.LOADING, false)
     })
   },
@@ -107,6 +113,7 @@ const actions = {
     commit(mutation.LOADING, loader)
     DineInService.dineInCompleteOrders().then(response => {
       commit(mutation.DINE_IN_COMPLETED_ORDERS, response.data)
+      commit(mutation.TOTAL_RESERVATION, response.data)
       commit(mutation.LOADING, false)
     })
   },
@@ -285,6 +292,14 @@ const actions = {
       })
     })
   },
+  fetchMoreReservations({ commit, dispatch }, pageNumber, tabName) {
+    commit(mutation.SET_PAGE_NO, pageNumber)
+    if (tabName === 'running') {
+      dispatch('dineInRunningOrders')
+    } else {
+      dispatch('dineInCompleteOrders')
+    }
+  },
 }
 
 const mutations = {
@@ -308,6 +323,15 @@ const mutations = {
   },
   [mutation.DINE_IN_TABLES](state, tables) {
     state.tables = tables.data
+  },
+  [mutation.SET_PAGE_NO](state, pageNumber) {
+    state.totalReservations.pageNumber = pageNumber
+  },
+  [mutation.TOTAL_RESERVATION](state, totalReservations) {
+    state.totalReservations.totalPages = Math.ceil(
+      parseInt(totalReservations.count) /
+        parseInt(totalReservations.data.length)
+    )
   },
   [mutation.DINE_IN_RUNNING_ORDERS](state, orders) {
     state.orders.running = orders.data

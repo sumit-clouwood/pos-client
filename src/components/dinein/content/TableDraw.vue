@@ -28,22 +28,7 @@
                 preserveAspectRatio="xMidYMid meet"
               ></svg>
             </div>
-            <div
-              id="tooltipdata"
-              class="dropdown-content cursor-pointer"
-              width="94vw"
-              ref="dine-in-area"
-              :viewBox="
-                viewBox.x +
-                  ' ' +
-                  viewBox.y +
-                  ' ' +
-                  viewBox.width +
-                  ' ' +
-                  viewBox.height
-              "
-              preserveAspectRatio="xMidYMid meet"
-            >
+            <div id="tooltipdata" class="dropdown-content cursor-pointer">
               <div
                 class="dropdown tooltip-c-range"
                 id="range"
@@ -578,9 +563,9 @@ export default {
         .attr(
           'style',
           'top:' +
-            (datum.table_position_coordinate.y || 0) +
+            (datum.table_position_coordinate.y + 20 || 0) +
             'px; left:' +
-            (datum.table_position_coordinate.x || 100) +
+            (datum.table_position_coordinate.x + 35 || 100) +
             'px; display:block'
         )
     },
