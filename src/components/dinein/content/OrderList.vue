@@ -238,17 +238,18 @@
           </tr>
         </tbody>
       </table>
-      <paginate
-        v-if="totalReservations.totalPages"
-        :page-count="totalReservations.totalPages"
-        :page-range="1"
-        :margin-pages="1"
-        :clickHandler="fetchMore"
-        :prev-text="_t('Prev')"
-        :next-text="_t('Next')"
-        :container-class="''"
-        :page-class="_t('page-item')"
-      ></paginate>
+      <div class="pagination-customer-details">
+        <paginate
+          :page-count="totalReservations.totalPages"
+          :page-range="1"
+          :margin-pages="2"
+          :clickHandler="fetchMore"
+          :prev-text="_t('Prev')"
+          :next-text="_t('Next')"
+          :container-class="''"
+          :page-class="_t('page-item')"
+        ></paginate>
+      </div>
     </div>
   </div>
 </template>
@@ -310,7 +311,8 @@ export default {
       }
     },
     fetchMore(pageNumber) {
-      this.fetchMoreReservations(pageNumber, this.tabName)
+      let pageInformation = { pageNumber: pageNumber, tabName: this.tabName }
+      this.fetchMoreReservations(pageInformation)
     },
     ...mapActions('order', ['selectedOrderDetails']),
     ...mapActions('dinein', [
