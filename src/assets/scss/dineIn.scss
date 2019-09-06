@@ -771,7 +771,7 @@ svg .active > path {
       }
       .hideBigIcon{
         position: fixed;
-        top: 75px;
+        top: 65px;
         right: 20px;
         cursor: pointer;
         &.active{
@@ -840,8 +840,26 @@ svg .active > path {
         grid-template-columns: 1fr;
         text-align: center;
         height: auto;
-        .header-main-left, .header-main-right{
-          justify-content: center;
+         .header-main-right{
+        }
+        .header-main-left{
+          justify-content: space-between;
+          text-align:left;
+          display: grid;
+          .subtitle{
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+          }
+          .change-location {
+          > button{
+            margin-right:0;
+          }
+          }
+        }
+        .hideBigIcon {
+          left: 10px !important;
+          right: unset;
         }
       }
     }
