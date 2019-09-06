@@ -482,14 +482,14 @@ export default {
             .catch(response => {
               let validationError = {}
               let errors = ''
-              if (response.status == 'form_errors') {
+              if (response.status === 'form_errors') {
                 for (let i in response.form_errors) {
                   response.form_errors[i].forEach(err => (errors += ' ' + err))
                 }
               } else if (response.error) {
                 errors = response.error
               }
-              if (errors != '') {
+              if (errors !== '') {
                 validationError = {
                   status: 'flash_message',
                   flash_message: errors,

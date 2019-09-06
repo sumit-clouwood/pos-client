@@ -28,22 +28,7 @@
                 preserveAspectRatio="xMidYMid meet"
               ></svg>
             </div>
-            <div
-              id="tooltipdata"
-              class="dropdown-content cursor-pointer"
-              width="94vw"
-              ref="dine-in-area"
-              :viewBox="
-                viewBox.x +
-                  ' ' +
-                  viewBox.y +
-                  ' ' +
-                  viewBox.width +
-                  ' ' +
-                  viewBox.height
-              "
-              preserveAspectRatio="xMidYMid meet"
-            >
+            <div id="tooltipdata" class="dropdown-content cursor-pointer">
               <div
                 class="dropdown tooltip-c-range"
                 id="range"
@@ -329,6 +314,7 @@ export default {
     },
     newOrder(reservationId = null) {
       let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
+      this.$store.commit('dinein/RESERVATION_ID', reservationId)
       if (reservationId == null) {
         this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
           root: true,
@@ -337,7 +323,7 @@ export default {
       this.$router.push({ path: URL })
     },
     updateOrder(data) {
-      this.$store.commit('dinein/ORDER_RESERVATION_DATA', data.orderData)
+      this.$store.commit('dinein/RESERVATION_ID', data.orderData.reservationId)
       let URL =
         '/dine-in/' +
         this.store +
@@ -525,8 +511,6 @@ export default {
         reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
       }).then(response => {
-        // eslint-disable-next-line no-console
-        console.log(response.status)
         if (response.status === 'form_errors') {
           this.moveReservation = true
           if (this.moveReservation) {
@@ -535,14 +519,21 @@ export default {
             return false
           }
         }
-        let that = this
-        this.selectedAreaObj = this.areas.find(area => {
+        // let that = this
+        /*this.selectedAreaObj = this.areas.find(area => {
           area._id == that.activeArea
           return area
+        })*/
+        //this.selectedAreaObj = this.$store.state.dinein.activeArea
+        this.$store.dispatch('dinein/updateDineInOrderStatus', {
+          title: 'all',
+          pageId: 'getBookedTables',
         })
-        this.$store.dispatch('dinein/getBookedTables', false)
-        this.$store.dispatch('dinein/getDineInTables')
+        // this.$store.dispatch('dinein/getTableStatus')
+        // this.$store.dispatch('dinein/getBookedTables', false)
+        // this.$store.dispatch('dinein/getDineInTables')
         this.$store.dispatch('dinein/getDineInArea', false)
+        // this.$store.dispatch('dinein/selectedArea', this.selectedAreaObj)
       })
       this.componentKey += 1
       $('#range')
@@ -565,7 +556,7 @@ export default {
     },
     showOptions(datum, i, a) {
       // eslint-disable-next-line no-console
-      console.log(a[i])
+      // console.log(a[i])
       this.selectedTableD3 = a[i]
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
@@ -581,9 +572,9 @@ export default {
         .attr(
           'style',
           'top:' +
-            (datum.table_position_coordinate.y || 0) +
+            (datum.table_position_coordinate.y + 20 || 0) +
             'px; left:' +
-            (datum.table_position_coordinate.x || 100) +
+            (datum.table_position_coordinate.x + 35 || 100) +
             'px; display:block'
         )
     },

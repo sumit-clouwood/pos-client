@@ -100,6 +100,55 @@
         </select>
       </li>
     </ul>
+    <li
+      class="nav-icon nav-item setting-icon color-main color-text-invert"
+      id="setting-icon"
+      @click="openConfigLinks()"
+    >
+      <a class="nav-link color-text-invert">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="21"
+          viewBox="0 0 24 21"
+        >
+          <path
+            fill="#FFF"
+            fill-rule="nonzero"
+            d="M0 0h24v3H0V0zm0 9h24v3H0V9zm0 9h24v3H0v-3z"
+          />
+        </svg>
+      </a>
+      <ul class="setting-dropdown">
+        <li>
+          <a role="button" class="cursor-pointer">{{ _t('Printers') }}</a>
+        </li>
+        <li v-if="permitted('dashboard', 'root')">
+          <a :href="dashboard">{{ _t('Dashboard') }}</a>
+        </li>
+        <li v-if="permitted('crm', 'root')">
+          <a :href="crm">{{ _t('CRM') }}</a>
+        </li>
+        <li v-if="permitted('menu', 'root')">
+          <a :href="menu">{{ _t('Menu Setup') }}</a>
+        </li>
+        <li v-if="permitted('delivery', 'root')">
+          <a role="button" class="cursor-pointer">
+            <router-link :to="'/delivery-manager' + store">
+              {{ _t('Delivery Manager') }}
+            </router-link>
+          </a>
+        </li>
+        <li v-if="permitted('brand', 'root')">
+          <a :href="brand">{{ _t('Settings') }}</a>
+        </li>
+        <li>
+          <a role="button" class="cursor-pointer" @click="logout()">{{
+            _t('Logout')
+          }}</a>
+        </li>
+      </ul>
+    </li>
     <div class="curent-sale hideBigScreen">
       <div class="all-booking-btns">
         <button
@@ -177,55 +226,6 @@
         <i aria-hidden="true" class="fa fa-chevron-down"></i>
       </span>
     </div>
-    <li
-      class="nav-icon nav-item setting-icon color-main color-text-invert"
-      id="setting-icon"
-      @click="openConfigLinks()"
-    >
-      <a class="nav-link color-text-invert">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="21"
-          viewBox="0 0 24 21"
-        >
-          <path
-            fill="#FFF"
-            fill-rule="nonzero"
-            d="M0 0h24v3H0V0zm0 9h24v3H0V9zm0 9h24v3H0v-3z"
-          />
-        </svg>
-      </a>
-      <ul class="setting-dropdown">
-        <li>
-          <a role="button" class="cursor-pointer">{{ _t('Printers') }}</a>
-        </li>
-        <li v-if="permitted('dashboard', 'root')">
-          <a :href="dashboard">{{ _t('Dashboard') }}</a>
-        </li>
-        <li v-if="permitted('crm', 'root')">
-          <a :href="crm">{{ _t('CRM') }}</a>
-        </li>
-        <li v-if="permitted('menu', 'root')">
-          <a :href="menu">{{ _t('Menu Setup') }}</a>
-        </li>
-        <li v-if="permitted('delivery', 'root')">
-          <a role="button" class="cursor-pointer">
-            <router-link :to="'/delivery-manager' + store">
-              {{ _t('Delivery Manager') }}
-            </router-link>
-          </a>
-        </li>
-        <li v-if="permitted('brand', 'root')">
-          <a :href="brand">{{ _t('Settings') }}</a>
-        </li>
-        <li>
-          <a role="button" class="cursor-pointer" @click="logout()">{{
-            _t('Logout')
-          }}</a>
-        </li>
-      </ul>
-    </li>
   </div>
 </template>
 
@@ -305,6 +305,7 @@ export default {
     },
     showBookingBtn() {
       $('.hideBigScreen .all-booking-btns').toggleClass('active')
+      $('.hideBigIcon').toggleClass('active')
     },
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },
