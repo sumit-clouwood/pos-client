@@ -290,10 +290,13 @@ table#running-order {
     td {
       >span {
         letter-spacing: 0.5px;
-        color: #3d3f43;
+        color: #fff;
         font-size: $px18;
         font-weight: 600;
         display: block;
+      }
+      .runningtime {
+        color: #000;
       }
       border-top: $px2 solid #e5e9f4;
       height: $px110;
@@ -368,13 +371,19 @@ table#running-order {
 }
 td.dine-order-tabel {
   >span {
-    width: $px60;
-    height: $px60;
-    border-radius: $px4;
-    background-color: #e4e8f1;
+    width: $px86;
+    height: $px86;
+    border-radius: 10%;
+    box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
     display: inline-block;
     text-align: center;
     padding-top: $px15;
+  }
+  .running {
+    background-color: #e73030;
+  }
+  .completed {
+    background-color: $green;
   }
 }
 td.order-time-det {

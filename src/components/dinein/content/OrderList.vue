@@ -9,7 +9,7 @@
             <th width="200px">{{ _t('AMOUNT') }}</th>
             <!--<th width="100px">{{ _t('STATUS') }}</th>-->
             <th width="450px">{{ _t('ORDERS') }}</th>
-            <th width="250px">{{ _t('STATUS') }}</th>
+            <th width="250px">{{ _t('TABLE BOOKED TIME') }}</th>
           </tr>
         </thead>
         <tbody v-if="orders[lookup].orders">
@@ -19,9 +19,16 @@
             v-for="(orderTable, index) in orders[tabName]"
           >
             <td class="dine-order-tabel">
-              <span>{{ orderTable.number }}</span>
+              <span :class="tabName">
+                {{ orderTable.number }}
+                <p>
+                  <small class="text-capitalize font-weight-bold ">
+                    {{ LookupData.replaceUnderscoreHyphon(orderTable.status) }}
+                  </small>
+                </p>
+              </span>
             </td>
-            <td class="dine-order-amt">
+            <td class="dine-order-amt font-weight-bold">
               {{ orderDetails.balance_due + ' ' + orderDetails.currency }}
             </td>
             <td class="dine-order-details">
@@ -147,7 +154,7 @@
             <!--<td><span>{{ order.order_status }}</span></td>-->
             <td class="order-time-det">
               <div class="action-status">
-                <div
+                <!--<div
                   class="dining-for-button"
                   :class="
                     orderTable.status === 'completed'
@@ -156,7 +163,7 @@
                   "
                 >
                   {{ LookupData.replaceUnderscoreHyphon(orderTable.status) }}
-                </div>
+                </div>-->
                 <div>
                   <span
                     class="dinefor-paynow"
@@ -240,6 +247,7 @@
       </table>
       <div class="pagination-customer-details">
         <paginate
+          v-if="totalReservations.totalPages"
           :page-count="totalReservations.totalPages"
           :page-range="1"
           :margin-pages="2"
