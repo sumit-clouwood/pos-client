@@ -47,7 +47,9 @@ export default {
     order_title() {
       return (
         this._t('ORDER_DIALOG_TITLE_PREFIX') +
-        (this.orderId ? this.orderId : this.order.real_created_datetime) +
+        (this.orderId
+          ? this.orderId
+          : this.order.real_created_datetime.replace(/[\s-:]/g, '')) +
         this._t('ORDER_DIALOG_TITLE_SUFFIX') +
         this.order.order_mode
       )

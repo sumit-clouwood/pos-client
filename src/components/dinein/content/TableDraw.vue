@@ -524,6 +524,8 @@ export default {
         reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
       }).then(response => {
+        // eslint-disable-next-line no-console
+        console.log(response.status)
         if (response.status === 'form_errors') {
           this.moveReservation = true
           if (this.moveReservation) {
@@ -537,7 +539,9 @@ export default {
           area._id == that.activeArea
           return area
         })
-        this.$store.dispatch('dinein/fetchAll')
+        this.$store.dispatch('dinein/getBookedTables', false)
+        this.$store.dispatch('dinein/getDineInTables')
+        this.$store.dispatch('dinein/getDineInArea', false)
       })
       this.componentKey += 1
       $('#range')
