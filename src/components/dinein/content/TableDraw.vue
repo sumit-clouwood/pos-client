@@ -595,8 +595,8 @@ export default {
           .append('image')
           .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
-            return `/img/dinein/area-view/${d.name}_view_h.jpg`
-            // return `/img/dinein/area-view/city_view_h.jpg`
+            return `img/dinein/area-view/${d.name}_view_h.jpg`
+            // return `img/dinein/area-view/city_view_h.jpg`
           })
           .attr('x', function(d) {
             // d.x = that.viewsCoordinates.top_view.x
@@ -667,7 +667,7 @@ export default {
           .append('image')
           .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
-            return `/img/dinein/area-view/${d.name}_view_v.jpg`
+            return `img/dinein/area-view/${d.name}_view_v.jpg`
           })
           .attr('x', function(d) {
             // d.x = that.viewsCoordinates.right_view.x
@@ -737,7 +737,7 @@ export default {
           .append('image')
           .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
-            return `/img/dinein/area-view/${d.name}_view_h.jpg`
+            return `img/dinein/area-view/${d.name}_view_h.jpg`
           })
           .attr('x', function(d) {
             // d.x = that.viewsCoordinates.bottom_view.x
@@ -778,7 +778,7 @@ export default {
           .append('image')
           .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
-            return `/img/dinein/area-view/${d.name}_view_v.jpg`
+            return `img/dinein/area-view/${d.name}_view_v.jpg`
           })
           .attr('x', function(d) {
             // d.x = that.viewsCoordinates.left_view.x
