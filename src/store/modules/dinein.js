@@ -55,10 +55,10 @@ const getters = {
 
 const actions = {
   updateDineInOrderStatus({ dispatch, commit }, orderStatus) {
-    commit(mutation.LOADING, true)
     commit(mutation.DINE_IN_TAB_TYPE, orderStatus.title)
-    dispatch(orderStatus.pageId)
-    commit(mutation.LOADING, false)
+    if (orderStatus.pageId) {
+      dispatch(orderStatus.pageId)
+    }
   },
   fetchAll({ dispatch, commit }) {
     commit(mutation.LOADING, true)
@@ -292,7 +292,7 @@ const actions = {
       })
     })
   },
-  fetchMoreReservations({ commit, dispatch }, pageNumber, tabName) {
+  fetchMoreReservations({ commit, dispatch }, { pageNumber, tabName }) {
     commit(mutation.SET_PAGE_NO, pageNumber)
     if (tabName === 'running') {
       dispatch('dineInRunningOrders')
