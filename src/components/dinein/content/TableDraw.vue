@@ -537,7 +537,7 @@ export default {
           area._id == that.activeArea
           return area
         })
-        this.$store.dispatch('dinein/selectedArea', this.selectedAreaObj)
+        this.$store.dispatch('dinein/fetchAll')
       })
       this.componentKey += 1
       $('#range')

@@ -277,6 +277,7 @@ const actions = {
               name: item.name,
               entity_id: item._id,
               no: item.orderIndex,
+              status: 'in-progress',
               tax: item.tax,
               price: item.netPrice,
               qty: item.quantity,
