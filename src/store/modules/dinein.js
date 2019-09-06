@@ -81,8 +81,8 @@ const actions = {
       DineInService.updateReservationStatus(...params)
         .then(response => {
           commit(mutation.RESERVATION_ID, reservationData.reservationId)
-            resolve(response.data)
-            dispatch('getBookedTables', false)
+          resolve(response.data)
+          dispatch('getBookedTables', false)
           // dispatch('dineInRunningOrders')
           dispatch('getTableStatus')
         })
