@@ -74,15 +74,15 @@ const actions = {
     dispatch('dineInCompleteOrders')
   },
 
-  reservationUpdateStatus({ dispatch, commit }, reservationData) {
+  reservationUpdateStatus({ commit }, reservationData) {
     return new Promise((resolve, reject) => {
       const params = [reservationData.reservationId, reservationData.status]
       DineInService.updateReservationStatus(...params)
         .then(response => {
           commit(mutation.RESERVATION_ID, response.data)
-          dispatch('getBookedTables')
-          dispatch('dineInRunningOrders')
-          dispatch('getTableStatus')
+          // dispatch('getBookedTables')
+          // dispatch('dineInRunningOrders')
+          // dispatch('getTableStatus')
           resolve(response.data)
         })
         .catch(er => reject(er))
@@ -90,6 +90,7 @@ const actions = {
   },
   getBookedTables({ commit }) {
     commit(mutation.LOADING, true)
+    localStorage.setItem('reservationId', false)
     DineInService.getAllBookedTables().then(response => {
       commit(mutation.BOOKED_TABLES, response.data)
       commit(mutation.LOADING, false)
