@@ -517,21 +517,11 @@ export default {
             return false
           }
         }
-        // let that = this
-        /*this.selectedAreaObj = this.areas.find(area => {
-          area._id == that.activeArea
-          return area
-        })*/
-        //this.selectedAreaObj = this.$store.state.dinein.activeArea
         this.$store.dispatch('dinein/updateDineInOrderStatus', {
           title: 'all',
           pageId: 'getBookedTables',
         })
-        // this.$store.dispatch('dinein/getTableStatus')
-        // this.$store.dispatch('dinein/getBookedTables', false)
-        // this.$store.dispatch('dinein/getDineInTables')
         this.$store.dispatch('dinein/getDineInArea', false)
-        // this.$store.dispatch('dinein/selectedArea', this.selectedAreaObj)
       })
       this.componentKey += 1
       $('#range')
