@@ -42,6 +42,7 @@ export default {
     //When POS to Dinein update every table status.
     this.$store.dispatch('dinein/getBookedTables', false)
     this.$store.dispatch('dinein/getDineInArea', false)
+    this.$store.commit('dinein/RESERVATION_ID', false)
     this.selectedAreaObj = this.$store.state.dinein.activeArea
     this.$store.dispatch('dinein/selectedArea', this.selectedAreaObj)
   },
