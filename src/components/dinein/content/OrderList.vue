@@ -17,7 +17,7 @@
             :key="index"
             class="dine-table-content"
             v-for="(orderTable, index) in orders[tabName]"
-            v-show="orderTable.number != 'cancelled'"
+            v-show="orderTable.status != 'cancelled'"
           >
             <td class="dine-order-tabel">
               <span>{{ orderTable.number }}</span>
