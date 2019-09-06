@@ -252,6 +252,7 @@ function savePostRequests(url, payload) {
 
       log({
         event_time: payload.real_created_datetime,
+        event_title: payload.balance_due,
         event_type: 'order_save_offline',
         event_data: payload,
       })
@@ -261,6 +262,12 @@ function savePostRequests(url, payload) {
     }
     request.onerror = function(error) {
       console.error('sw:', "Request can't be send to index db", error)
+      log({
+        event_time: payload.real_created_datetime,
+        event_title: payload.balance_due,
+        event_type: 'error_order_save_offline',
+        event_data: { request: payload, error: error },
+      })
     }
   })
 }
@@ -448,43 +455,58 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
       console.log('sw:', 'server response 1', response)
       if (response.status == 200) {
         response.json().then(response => {
+          var requestUpdate
           if (response.status === 'ok' && response.id) {
             console.log(
               'order synced successfully 2',
               savedRequest.payload.real_created_datetime,
               response
             )
-            var requestUpdate = getObjectStore(
-              ORDER_DOCUMENT,
-              'readwrite'
-            ).delete(savedRequest.payload.real_created_datetime)
+            requestUpdate = getObjectStore(ORDER_DOCUMENT, 'readwrite').delete(
+              savedRequest.payload.real_created_datetime
+            )
 
             requestUpdate.onerror = function(event) {
-              console.log('sw:', 'order delete failed 3', event)
+              console.log('sw:', 'order delete failed', event)
             }
             requestUpdate.onsuccess = function(event) {
               // Success - the data is updated!
-              console.log('sw:', 'order delted successfully 3', event)
+              console.log('sw:', 'order delted successfully', event)
             }
 
             log({
               event_time: savedRequest.payload.real_created_datetime,
+              event_title: savedRequest.payload.balance_due,
               event_type: 'order_synced',
               event_data: { request: savedRequest.payload, response: response },
             })
           } else {
-            console.log('order sync failed 2', response)
+            console.log('order sync failed 2', response.form_errors, response)
             log({
               event_time: savedRequest.payload.real_created_datetime,
-              event_type: 'order_sync_failed',
+              event_title: savedRequest.payload.balance_due,
+              event_type: 'order_sync_failed_delete',
               event_data: { request: savedRequest.payload, response: response },
             })
+
+            requestUpdate = getObjectStore(ORDER_DOCUMENT, 'readwrite').delete(
+              savedRequest.payload.real_created_datetime
+            )
+
+            requestUpdate.onerror = function(event) {
+              console.log('sw:', 'order delete failed', event)
+            }
+            requestUpdate.onsuccess = function(event) {
+              // Success - the data is updated!
+              console.log('sw:', 'order delted successfully', event)
+            }
           }
         })
         resolve(response)
       } else if (response.status == 401) {
         log({
           event_time: savedRequest.payload.real_created_datetime,
+          event_title: savedRequest.payload.balance_due,
           event_type: 'order_sync_token_failed',
           event_data: { request: payload, response: response },
         })
@@ -502,6 +524,7 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
           .then(response => {
             log({
               event_time: savedRequest.payload.real_created_datetime,
+              event_title: savedRequest.payload.balance_due,
               event_type: 'order_sync_token_refreshed',
               event_data: { request: payload, response: response },
             })
@@ -522,6 +545,7 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
       console.log('error sending request for sync, network failed', error)
       log({
         event_time: savedRequest.payload.real_created_datetime,
+        event_title: savedRequest.payload.balance_due,
         event_type: 'order_sync_network_fail',
         event_data: { request: payload, response: 'Network not available' },
       })

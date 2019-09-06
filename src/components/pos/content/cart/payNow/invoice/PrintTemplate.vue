@@ -16,7 +16,9 @@
       <div class="main-title">{{ template.title_label }}</div>
       <div class="main-subtitle">
         {{ template.invoice_number_label }}
-        {{ orderId ? orderId : order.real_created_datetime }}
+        {{
+          orderId ? orderId : order.real_created_datetime.replace(/[\s-:]/g, '')
+        }}
       </div>
       <table class="print-invoice-table">
         <thead>
