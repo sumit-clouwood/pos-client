@@ -336,7 +336,7 @@ export default {
       this.$router.push({ path: URL })
     },
     updateOrder(data) {
-      this.$store.commit('dinein/ORDER_RESERVATION_DATA', data.orderData)
+      this.$store.commit('dinein/RESERVATION_ID', data.orderData.reservationId)
       let URL =
         '/dine-in/' +
         this.store +
@@ -537,6 +537,11 @@ export default {
           area._id == that.activeArea
           return area
         })
+        this.$store.dispatch('dinein/updateDineInOrderStatus', {
+          title: 'all',
+          pageId: 'getBookedTables',
+        })
+        this.$store.dispatch('dinein/getTableStatus')
         this.$store.dispatch('dinein/selectedArea', this.selectedAreaObj)
       })
       this.componentKey += 1
