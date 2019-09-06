@@ -80,9 +80,9 @@ const actions = {
       const params = [reservationData.reservationId, reservationData.status]
       DineInService.updateReservationStatus(...params)
         .then(response => {
-          commit(mutation.RESERVATION_ID, response.data)
-          resolve(response.data)
-          dispatch('getBookedTables', false)
+          commit(mutation.RESERVATION_ID, reservationData.reservationId)
+            resolve(response.data)
+            dispatch('getBookedTables', false)
           // dispatch('dineInRunningOrders')
           dispatch('getTableStatus')
         })
@@ -309,7 +309,7 @@ const mutations = {
   [mutation.DINE_IN_AREAS](state, areas) {
     state.areas = areas.data
     if (areas.count > 0) {
-      state.activeArea = state.areas[0]
+      state.activeArea = state.activeArea ? state.activeArea : state.areas[0]
       state.tablesOnArea = false
       state.tablesOnArea =
         state.tables.length > 0
