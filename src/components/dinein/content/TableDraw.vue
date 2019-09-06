@@ -541,7 +541,7 @@ export default {
         })
         this.$store.dispatch('dinein/getBookedTables', false)
         this.$store.dispatch('dinein/getDineInTables')
-        this.$store.dispatch('dinein/getDineInArea', false)
+        this.$store.dispatch('dinein/getDineInArea')
       })
       this.componentKey += 1
       $('#range')
