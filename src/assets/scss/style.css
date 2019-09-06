@@ -4780,6 +4780,8 @@ span#dine-bottom {
   position: relative; }
   #sitting-dinein-table .sitting-dine-wrap {
     position: relative; }
+    #sitting-dinein-table .sitting-dine-wrap .sitting-image {
+      width: 94vw; }
 
 table#running-order {
   border-collapse: separate;
@@ -5136,16 +5138,30 @@ svg .active > path {
   .hideBigScreen .all-booking-btns {
     display: none; }
     .hideBigScreen .all-booking-btns.active {
-      display: block;
+      position: fixed;
+      left: 0;
+      display: grid;
+      background: rgba(0, 0, 0, 0.2);
+      width: 100%;
+      right: 0;
+      margin: 0 auto;
+      z-index: 99;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      overflow: scroll;
+      top: 95px;
       transition: 0.3s ease-in-out; }
   .hideBigScreen .hideBigIcon {
     position: fixed;
     top: 75px;
     right: 20px;
     cursor: pointer; }
+    .hideBigScreen .hideBigIcon.active i {
+      transition: 0.3s ease-in-out;
+      transform: rotate(180deg); }
     .hideBigScreen .hideBigIcon i {
       font-size: 20px;
-      cursor: pointer; } }
+      cursor: pointer;
+      transition: 0.3s ease-in-out; } }
 @media only screen and (max-width: 600px) {
   .floor-section-wrap {
     grid-template-columns: 1fr;
@@ -5168,7 +5184,17 @@ svg .active > path {
     .dine-in-tabel-wrapper .inner-dinein-table .dinein-table-control .ullist-dinein-table {
       text-align: center; }
       .dine-in-tabel-wrapper .inner-dinein-table .dinein-table-control .ullist-dinein-table > li:first-child {
-        margin-left: 0; } }
+        margin-left: 0; }
+
+  html {
+    font-size: 10px; } }
+@media only screen and (max-width: 400px) {
+  .dm-manager .header .header-main {
+    grid-template-columns: 1fr;
+    text-align: center;
+    height: auto; }
+    .dm-manager .header .header-main .header-main-left, .dm-manager .header .header-main .header-main-right {
+      justify-content: center; } }
 .new-transaction {
   display: grid;
   grid-template-columns: 25% 75%;

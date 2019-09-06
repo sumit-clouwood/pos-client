@@ -29,6 +29,7 @@ const state = {
   allBookedTables: { orders: false, lookup: false },
   orderReservationData: {},
   dineInTabType: 'all',
+  totalReservations: { totalPages: 0, pageNumber: 1, limit: 10 },
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -54,10 +55,10 @@ const getters = {
 
 const actions = {
   updateDineInOrderStatus({ dispatch, commit }, orderStatus) {
-    commit(mutation.LOADING, true)
     commit(mutation.DINE_IN_TAB_TYPE, orderStatus.title)
-    dispatch(orderStatus.pageId)
-    commit(mutation.LOADING, false)
+    if (orderStatus.pageId) {
+      dispatch(orderStatus.pageId)
+    }
   },
   fetchAll({ dispatch, commit }) {
     commit(mutation.LOADING, true)
@@ -79,7 +80,7 @@ const actions = {
       const params = [reservationData.reservationId, reservationData.status]
       DineInService.updateReservationStatus(...params)
         .then(response => {
-          commit(mutation.RESERVATION_ID, response.data)
+          commit(mutation.RESERVATION_ID, reservationData.reservationId)
           resolve(response.data)
           dispatch('getBookedTables', false)
           // dispatch('dineInRunningOrders')
@@ -96,10 +97,15 @@ const actions = {
       commit(mutation.LOADING, false)
     })
   },
-  dineInRunningOrders({ commit }, loader = true) {
+  dineInRunningOrders({ commit, state }, loader = true) {
     commit(mutation.LOADING, loader)
-    DineInService.dineInRunningOrders().then(response => {
+    const params = [
+      state.totalReservations.pageNumber,
+      state.totalReservations.limit,
+    ]
+    DineInService.dineInRunningOrders(...params).then(response => {
       commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
+      commit(mutation.TOTAL_RESERVATION, response.data)
       commit(mutation.LOADING, false)
     })
   },
@@ -107,6 +113,7 @@ const actions = {
     commit(mutation.LOADING, loader)
     DineInService.dineInCompleteOrders().then(response => {
       commit(mutation.DINE_IN_COMPLETED_ORDERS, response.data)
+      commit(mutation.TOTAL_RESERVATION, response.data)
       commit(mutation.LOADING, false)
     })
   },
@@ -285,6 +292,14 @@ const actions = {
       })
     })
   },
+  fetchMoreReservations({ commit, dispatch }, { pageNumber, tabName }) {
+    commit(mutation.SET_PAGE_NO, pageNumber)
+    if (tabName === 'running') {
+      dispatch('dineInRunningOrders')
+    } else {
+      dispatch('dineInCompleteOrders')
+    }
+  },
 }
 
 const mutations = {
@@ -294,7 +309,7 @@ const mutations = {
   [mutation.DINE_IN_AREAS](state, areas) {
     state.areas = areas.data
     if (areas.count > 0) {
-      state.activeArea = state.areas[0]
+      state.activeArea = state.activeArea ? state.activeArea : state.areas[0]
       state.tablesOnArea = false
       state.tablesOnArea =
         state.tables.length > 0
@@ -308,6 +323,15 @@ const mutations = {
   },
   [mutation.DINE_IN_TABLES](state, tables) {
     state.tables = tables.data
+  },
+  [mutation.SET_PAGE_NO](state, pageNumber) {
+    state.totalReservations.pageNumber = pageNumber
+  },
+  [mutation.TOTAL_RESERVATION](state, totalReservations) {
+    state.totalReservations.totalPages = Math.ceil(
+      parseInt(totalReservations.count) /
+        parseInt(totalReservations.data.length)
+    )
   },
   [mutation.DINE_IN_RUNNING_ORDERS](state, orders) {
     state.orders.running = orders.data

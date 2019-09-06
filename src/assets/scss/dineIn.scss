@@ -393,7 +393,7 @@ td.order-time-det {
   }
 }
 .running-order-table-wrap {
-  height: calc(100vh - 105px);
+  height: calc(100vh - 175px);
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   touch-action: auto;
@@ -755,18 +755,35 @@ svg .active > path {
       .all-booking-btns{
         display: none;
         &.active{
-          display: block;
+          position: fixed;
+          left: 0;
+          display: grid;
+          background: rgba(0,0,0,0.2);
+          width: 100%;
+          right: 0;
+          margin: 0 auto;
+          z-index: 99;
+          grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+          overflow: scroll;
+          top: 95px;
           transition: 0.3s ease-in-out;
         }
       }
       .hideBigIcon{
         position: fixed;
-        top: 75px;
+        top: 65px;
         right: 20px;
         cursor: pointer;
+        &.active{
+          i{
+            transition: 0.3s ease-in-out;
+            transform: rotate(180deg);
+          }
+        }
         i{
           font-size: 20px;
           cursor: pointer;
+          transition: 0.3s ease-in-out;
         }
       }
     }
@@ -808,6 +825,41 @@ svg .active > path {
               margin-left: 0;
             }
           }
+        }
+      }
+    }
+  }
+  html{
+    font-size: 10px;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .dm-manager{
+    .header{
+      .header-main{
+        grid-template-columns: 1fr;
+        text-align: center;
+        height: auto;
+         .header-main-right{
+        }
+        .header-main-left{
+          justify-content: space-between;
+          text-align:left;
+          display: grid;
+          .subtitle{
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+          }
+          .change-location {
+          > button{
+            margin-right:0;
+          }
+          }
+        }
+        .hideBigIcon {
+          left: 10px !important;
+          right: unset;
         }
       }
     }
