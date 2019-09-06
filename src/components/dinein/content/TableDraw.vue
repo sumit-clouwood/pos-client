@@ -38,7 +38,7 @@
                   <a
                     role="button"
                     class="table-popup bg-success font-weight-bold"
-                    @click="newOrder()"
+                    @click="newOrder(false)"
                   >
                     {{ _t(addOrSplit) }}
                   </a>
@@ -241,7 +241,6 @@ export default {
       'tableStatus',
       'allBookedTables',
       'reservationId',
-      'lastActiveArea',
     ]),
     ...mapGetters('context', ['store']),
   },
@@ -312,10 +311,9 @@ export default {
         .parent('div')
         .hide()
     },
-    newOrder(reservationId = null) {
+    newOrder(reservationId) {
       let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
-      this.$store.commit('dinein/RESERVATION_ID', reservationId)
-      if (reservationId == null) {
+      if (!reservationId) {
         this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
           root: true,
         })
