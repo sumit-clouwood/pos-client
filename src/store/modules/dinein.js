@@ -29,7 +29,6 @@ const state = {
   allBookedTables: { orders: false, lookup: false },
   orderReservationData: {},
   dineInTabType: 'all',
-  lastActiveArea: '',
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -369,9 +368,6 @@ const mutations = {
   },
   [mutation.DINE_IN_TAB_TYPE](state, reservationData) {
     state.dineInTabType = reservationData
-  },
-  [mutation.DINE_IN_LAST_ACTIVE_AREA](state, area) {
-    state.lastActiveArea = area
   },
 }
 
