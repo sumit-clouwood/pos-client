@@ -117,13 +117,10 @@ export default {
           this.saveEventOffline({
             request: absUrl,
             response: response.data,
+          }).then(() => {
+            this.setLastUpdate(absUrl, new Date())
           })
-            .then(() => {
-              this.setLastUpdate(absUrl, new Date())
-            })
-            .catch(error => {
-              reject(error)
-            })
+
           resolve(response)
         } else {
           reject(response)
@@ -135,7 +132,7 @@ export default {
             resolve(response)
           } else {
             //reject(`No data found in both live and local for url ${absUrl}`)
-            resolve({ data: null })
+            resolve({ data: {} })
           }
         })
       })

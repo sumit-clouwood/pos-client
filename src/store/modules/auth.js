@@ -42,7 +42,7 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  login({ commit }, data) {
+  login({ commit, dispatch }, data) {
     return new Promise((resolve, reject) => {
       AuthService.login(data)
         .then(response => {
@@ -50,10 +50,16 @@ const actions = {
             reject(response.data.error)
             return false
           }
-          commit(mutation.SET_TOKEN, response.data.token)
-          localStorage.setItem('token', response.data.token)
 
-          resolve()
+          localStorage.setItem('token', response.data.token)
+          //wait for localstorage to be updated
+          setTimeout(() => {
+            dispatch('location/setContext', null, { root: true }).then(() => {
+              commit(mutation.SET_TOKEN, response.data.token)
+              resolve()
+            })
+          }, 100)
+          //resolve()
         })
         .catch(error => reject(error))
     })
@@ -83,25 +89,27 @@ const actions = {
     })
   },
   logout({ commit }) {
-    localStorage.setItem('token', '')
-    localStorage.setItem('brand_id', '')
-    localStorage.setItem('store_id', '')
+    if (localStorage.getItem('token')) {
+      localStorage.setItem('token', '')
+      localStorage.setItem('brand_id', '')
+      localStorage.setItem('store_id', '')
 
-    commit(mutation.RESET)
+      commit(mutation.RESET)
 
-    commit('order/RESET', null, { root: true })
-    commit('checkout/RESET', null, { root: true })
-    commit('context/RESET', null, { root: true })
-    commit('customer/RESET', null, { root: true })
-    commit('sync/reset', {}, { root: true })
-    commit('location/RESET', true, { root: true })
+      commit('order/RESET', null, { root: true })
+      commit('checkout/RESET', null, { root: true })
+      commit('context/RESET', null, { root: true })
+      commit('customer/RESET', null, { root: true })
+      commit('sync/reset', {}, { root: true })
+      commit('location/RESET', true, { root: true })
 
-    DataService.setContext({
-      brand: null,
-      store: null,
-    })
+      DataService.setContext({
+        brand: null,
+        store: null,
+      })
 
-    AuthService.logout().then(() => {})
+      AuthService.logout().then(() => {})
+    }
   },
 
   getUserDetails({ commit }, userId) {
