@@ -463,20 +463,8 @@ export default {
           this.$store
             .dispatch('checkout/pay', this.orderType.OTApi)
             .then(() => {
-              //set router ondemand
-              /*this.$router.push({
-                path: this.$store.getters['context/store'] + '/dine-in',
-              })*/
-              let dineInAreas = this.$store.state.order.areas
-              if (typeof dineInAreas != 'undefined') {
-                this.$store.dispatch('dinein/selectedArea', dineInAreas[0], {
-                  root: true,
-                })
-              }
-              this.$store.dispatch('dinein/getDineInOrders', {}, { root: true })
-              //Empty Local Storage
-              localStorage.setItem('reservation', false)
-              localStorage.setItem('reservationId', false)
+              //Reset Cart and set states and redirect to dine in.
+              this.$store.dispatch('order/beforeRedirectResetCartDineIn')
               this.$router.replace({ name: 'Dinein' })
             })
             .catch(response => {
