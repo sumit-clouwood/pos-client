@@ -350,6 +350,7 @@ export default {
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
     },
     moveRunningOrder: function() {
+      this.$store.commit('dinein/SET_PAGE_NO', 1)
       this.moveReservation = false
       let runningOrder = {
         title: 'running',

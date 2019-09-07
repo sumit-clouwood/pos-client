@@ -113,10 +113,23 @@ const actions = {
   },
   dineInCompleteOrders({ commit }, loader = true) {
     commit(mutation.LOADING, loader)
-    DineInService.dineInCompleteOrders().then(response => {
-      commit(mutation.DINE_IN_COMPLETED_ORDERS, response.data)
-      commit(mutation.TOTAL_RESERVATION, response.data)
-      commit(mutation.LOADING, false)
+    const params = [
+      state.totalReservations.pageNumber,
+      state.totalReservations.limit,
+    ]
+    // eslint-disable-next-line no-unused-vars
+    return new Promise(() => {
+      DineInService.dineInCompleteOrders(...params)
+        .then(response => {
+          commit(mutation.DINE_IN_COMPLETED_ORDERS, response.data)
+          commit(mutation.TOTAL_RESERVATION, response.data)
+          commit(mutation.LOADING, false)
+        })
+        .catch(() => {
+          // eslint-disable-next-line no-console
+          console.log('fail')
+          commit(mutation.LOADING, false)
+        })
     })
   },
   getDineInArea({ commit, dispatch }) {
@@ -332,7 +345,7 @@ const mutations = {
   [mutation.TOTAL_RESERVATION](state, totalReservations) {
     state.totalReservations.totalPages = Math.ceil(
       parseInt(totalReservations.count) /
-        parseInt(totalReservations.data.length)
+        parseInt(state.totalReservations.limit)
     )
   },
   [mutation.DINE_IN_RUNNING_ORDERS](state, orders) {
