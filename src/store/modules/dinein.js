@@ -59,8 +59,8 @@ const actions = {
   updateDineInOrderStatus({ dispatch, commit }, orderStatus) {
     commit(mutation.DINE_IN_TAB_TYPE, orderStatus.title)
     if (orderStatus.pageId) {
-      let loader = orderStatus.loader ? orderStatus.loader : true
-      dispatch(orderStatus.pageId, loader)
+      // let loader = orderStatus.loader ? orderStatus.loader : true
+      dispatch(orderStatus.pageId)
     }
   },
   fetchAll({ dispatch, commit }) {
