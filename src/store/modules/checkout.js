@@ -562,10 +562,7 @@ const actions = {
             order.modify_reason = 'Updated from POS'
             break
         }
-        if (
-          rootState.order.order_status !== 'completed' &&
-          rootState.order.is_pay !== 1
-        ) {
+        if (rootState.order.order_status !== 'completed') {
           delete order.new_real_transition_order_no
           delete order.modify_reason
           delete order.order_system_status

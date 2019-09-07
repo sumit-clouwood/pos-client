@@ -74,6 +74,7 @@ export default {
           this.store
             .dispatch('category/fetchAll')
             .then(() => {
+              this.store.dispatch('dinein/fetchAll')
               // this.store.dispatch('dinein/getCovers')
               this.updateLoading('catalog')
               this.store.dispatch('modifier/fetchAll').then(() => {
@@ -149,7 +150,6 @@ export default {
           this.store.dispatch('surcharge/fetchAll').then(() => {})
           this.store.dispatch('discount/fetchAll').then(() => {})
           this.store.dispatch('payment/fetchAll').then(() => {})
-          this.store.dispatch('dinein/fetchAll')
           resolve()
           break
         case 'customer':

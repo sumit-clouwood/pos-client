@@ -91,6 +91,11 @@ export default {
           if (this.$store.state.order.orderType.OTApi === 'call_center') {
             this.$router.replace({ name: 'DeliveryManager' })
           }
+          //Reset Cart and set states and redirect to dine in.
+          if (this.$store.state.order.orderType.OTApi === 'dine_in') {
+            this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+            this.$router.replace({ name: 'Dinein' })
+          }
         }
       })
     },

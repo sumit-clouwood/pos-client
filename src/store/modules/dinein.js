@@ -38,6 +38,8 @@ const getters = {
       order_status === CONST.ORDER_STATUS_IN_PROGRESS
     ) {
       return 'running-order-details'
+    } else if (order_status === CONST.ORDER_STATUS_FINISHED) {
+      return 'finished-order'
     } else {
       return 'done-soon-order'
     }
@@ -81,10 +83,10 @@ const actions = {
       DineInService.updateReservationStatus(...params)
         .then(response => {
           commit(mutation.RESERVATION_ID, false)
-          resolve(response.data)
-          dispatch('getBookedTables', false)
-          // dispatch('dineInRunningOrders')
+          // dispatch('getBookedTables', false)
+          dispatch('dineInRunningOrders')
           dispatch('getTableStatus')
+          resolve(response.data)
         })
         .catch(er => reject(er))
     })

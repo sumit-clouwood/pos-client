@@ -342,6 +342,18 @@ table#running-order {
       padding: $px5;
     }
   }
+  td {
+    .running-actions {
+      > span.finished-order {
+        border-radius: $px4;
+        background-color: $green;
+        display: inline-block !important;
+        font-size: $px12 !important;
+        color: $white !important;
+        padding: $px5;
+      }
+    }
+  }
   td.running-order-details {
     >span {
       border-radius: $px4;
