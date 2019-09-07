@@ -77,10 +77,8 @@
             <span
               :class="'fa fa-' + table.shape"
               v-bind:style="
-                table.shape != 'rectangle'
-                  ? {
-                      color: table.color,
-                    }
+                table.shape !== 'rectangle'
+                  ? { color: table.color }
                   : { background: table.color }
               "
             ></span>

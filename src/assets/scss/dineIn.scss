@@ -721,6 +721,18 @@ svg .active > path {
             .running-orders-dinein{
               padding: 0;
             }
+            #sitting-dinein-table{
+              .dropdown-content{
+                right: 0 !important;
+                left: 0 !important;
+                width: 210px !important;
+                top: 30% !important;
+                margin: 0 auto !important;
+                background: #f8fbff !important;
+                max-height: 74px !important;
+                overflow: auto;
+              }
+            }
           }
 
       }
