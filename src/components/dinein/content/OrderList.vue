@@ -43,7 +43,7 @@
                       matchWith: orderId,
                     })
                   }}
-                  <div>
+                  <div v-if="orderDetails">
                     <div class="running-actions">
                       <span
                         v-if="orderDetails.order_system_status !== 'cancelled'"
@@ -297,6 +297,7 @@ export default {
       timerTime: false,
       isOrderCancelledClass: 'table-order-view',
       page: 1,
+      orderAdded: [],
     }
   },
   updated() {
@@ -346,8 +347,15 @@ export default {
     ]),
     getOrderDetails(collection) {
       // this.orderDetails = collection.collection[collection.matchWith]
-      // eslint-disable-next-line no-console
-      console.log(collection)
+      if (!this.orderAdded.includes(collection.matchWith)) {
+        this.orderAdded.push(collection.matchWith)
+        // eslint-disable-next-line no-console
+        console.log(this.orderAdded.includes(collection.matchWith))
+        this.orderDetails = Object.values(collection.collection).filter(
+          order => order._id === collection.matchWith
+        )
+      }
+
       this.isOrderCancelledClass =
         this.orderDetails.order_system_status !== 'cancelled'
           ? 'table-order-view'
