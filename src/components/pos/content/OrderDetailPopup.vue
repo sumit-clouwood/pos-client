@@ -72,7 +72,7 @@
           <button
             v-if="
               selectedOrder.item.order_type === 'dine_in' &&
-                selectedOrder.item.order_status === 'completed'
+                selectedOrder.item.order_status === 'finished'
             "
             type="button"
             class="button text-button btn btn-success color-main color-text-invert"
