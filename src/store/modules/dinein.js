@@ -96,19 +96,27 @@ const actions = {
     localStorage.setItem('reservationId', false)
     DineInService.getAllBookedTables().then(response => {
       commit(mutation.BOOKED_TABLES, response.data)
-      commit(mutation.LOADING, false)
+      if (loader) commit(mutation.LOADING, false)
     })
   },
   dineInRunningOrders({ commit, state }, loader = true) {
     commit(mutation.LOADING, loader)
-    const params = [
-      state.totalReservations.pageNumber,
-      state.totalReservations.limit,
-    ]
-    DineInService.dineInRunningOrders(...params).then(response => {
-      commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
-      commit(mutation.TOTAL_RESERVATION, response.data)
-      commit(mutation.LOADING, false)
+    return new Promise(() => {
+      const params = [
+        state.totalReservations.pageNumber,
+        state.totalReservations.limit,
+      ]
+      DineInService.dineInRunningOrders(...params)
+        .then(response => {
+          commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
+          commit(mutation.TOTAL_RESERVATION, response.data)
+          if (loader) commit(mutation.LOADING, false)
+        })
+        .catch(() => {
+          // eslint-disable-next-line no-console
+          console.log('fail')
+          if (loader) commit(mutation.LOADING, false)
+        })
     })
   },
   dineInCompleteOrders({ commit }, loader = true) {
@@ -123,12 +131,12 @@ const actions = {
         .then(response => {
           commit(mutation.DINE_IN_COMPLETED_ORDERS, response.data)
           commit(mutation.TOTAL_RESERVATION, response.data)
-          commit(mutation.LOADING, false)
+          if (loader) commit(mutation.LOADING, false)
         })
         .catch(() => {
           // eslint-disable-next-line no-console
           console.log('fail')
-          commit(mutation.LOADING, false)
+          if (loader) commit(mutation.LOADING, false)
         })
     })
   },
