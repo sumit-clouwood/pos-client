@@ -1043,6 +1043,18 @@ const actions = {
       }
     )
   },
+  beforeRedirectResetCartDineIn({ dispatch, rootState }) {
+    let dineInAreas = rootState.order.areas
+    if (typeof dineInAreas != 'undefined') {
+      dispatch('dinein/selectedArea', dineInAreas[0], {
+        root: true,
+      })
+    }
+    dispatch('dinein/getDineInOrders', {}, { root: true })
+    //Empty Local Storage
+    localStorage.setItem('reservation', false)
+    localStorage.setItem('reservationId', false)
+  },
 }
 
 function playSound(locationId, onlineOrders) {

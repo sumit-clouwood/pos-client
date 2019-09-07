@@ -290,10 +290,13 @@ table#running-order {
     td {
       >span {
         letter-spacing: 0.5px;
-        color: #3d3f43;
+        color: #fff;
         font-size: $px18;
         font-weight: 600;
         display: block;
+      }
+      .runningtime {
+        color: #000;
       }
       border-top: $px2 solid #e5e9f4;
       height: $px110;
@@ -339,6 +342,18 @@ table#running-order {
       padding: $px5;
     }
   }
+  td {
+    .running-actions {
+      > span.finished-order {
+        border-radius: $px4;
+        background-color: $green;
+        display: inline-block !important;
+        font-size: $px12 !important;
+        color: $white !important;
+        padding: $px5;
+      }
+    }
+  }
   td.running-order-details {
     >span {
       border-radius: $px4;
@@ -368,13 +383,19 @@ table#running-order {
 }
 td.dine-order-tabel {
   >span {
-    width: $px60;
-    height: $px60;
-    border-radius: $px4;
-    background-color: #e4e8f1;
+    width: $px86;
+    height: $px86;
+    border-radius: 10%;
+    box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
     display: inline-block;
     text-align: center;
     padding-top: $px15;
+  }
+  .running {
+    background-color: #e73030;
+  }
+  .completed {
+    background-color: $green;
   }
 }
 td.order-time-det {
@@ -694,6 +715,18 @@ svg .active > path {
             padding: 0 $px20;
             .running-orders-dinein{
               padding: 0;
+            }
+            #sitting-dinein-table{
+              .dropdown-content{
+                right: 0 !important;
+                left: 0 !important;
+                width: 210px !important;
+                top: 30% !important;
+                margin: 0 auto !important;
+                background: #f8fbff !important;
+                max-height: 74px !important;
+                overflow: auto;
+              }
             }
           }
 

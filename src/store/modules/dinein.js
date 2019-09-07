@@ -38,6 +38,8 @@ const getters = {
       order_status === CONST.ORDER_STATUS_IN_PROGRESS
     ) {
       return 'running-order-details'
+    } else if (order_status === CONST.ORDER_STATUS_FINISHED) {
+      return 'finished-order'
     } else {
       return 'done-soon-order'
     }
@@ -57,7 +59,8 @@ const actions = {
   updateDineInOrderStatus({ dispatch, commit }, orderStatus) {
     commit(mutation.DINE_IN_TAB_TYPE, orderStatus.title)
     if (orderStatus.pageId) {
-      dispatch(orderStatus.pageId)
+      let loader = orderStatus.loader ? orderStatus.loader : true
+      dispatch(orderStatus.pageId, loader)
     }
   },
   fetchAll({ dispatch, commit }) {
@@ -80,11 +83,10 @@ const actions = {
       const params = [reservationData.reservationId, reservationData.status]
       DineInService.updateReservationStatus(...params)
         .then(response => {
-          commit(mutation.RESERVATION_ID, reservationData.reservationId)
+          commit(mutation.RESERVATION_ID, false)
+          dispatch('dineInRunningOrders', false)
+          dispatch('getTableStatus', false)
           resolve(response.data)
-          dispatch('getBookedTables', false)
-          // dispatch('dineInRunningOrders')
-          dispatch('getTableStatus')
         })
         .catch(er => reject(er))
     })

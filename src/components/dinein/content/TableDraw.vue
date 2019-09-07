@@ -38,7 +38,7 @@
                   <a
                     role="button"
                     class="table-popup bg-success font-weight-bold"
-                    @click="newOrder()"
+                    @click="newOrder(false)"
                   >
                     {{ _t(addOrSplit) }}
                   </a>
@@ -311,12 +311,14 @@ export default {
         .parent('div')
         .hide()
     },
-    newOrder(reservationId = null) {
+    newOrder(reservationId) {
       let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
-      if (reservationId == null) {
+      if (!reservationId) {
         this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
           root: true,
         })
+      } else {
+        this.$store.commit('dinein/RESERVATION_ID', reservationId)
       }
       this.$router.push({ path: URL })
     },
@@ -517,21 +519,12 @@ export default {
             return false
           }
         }
-        // let that = this
-        /*this.selectedAreaObj = this.areas.find(area => {
-          area._id == that.activeArea
-          return area
-        })*/
-        //this.selectedAreaObj = this.$store.state.dinein.activeArea
         this.$store.dispatch('dinein/updateDineInOrderStatus', {
           title: 'all',
           pageId: 'getBookedTables',
+          loader: false,
         })
-        // this.$store.dispatch('dinein/getTableStatus')
-        // this.$store.dispatch('dinein/getBookedTables', false)
-        // this.$store.dispatch('dinein/getDineInTables')
         this.$store.dispatch('dinein/getDineInArea', false)
-        // this.$store.dispatch('dinein/selectedArea', this.selectedAreaObj)
       })
       this.componentKey += 1
       $('#range')
@@ -539,6 +532,8 @@ export default {
         .hide()
     },
     cancelReservation(id) {
+      // // eslint-disable-next-line no-console
+      // console.log(id, '==>', this.lastActiveArea, 'Rajeev')
       this.cancelReservationMsg = 'Do you want to cancel this reservation?'
       this.moveReservation = false
       $('#confirmModal').modal('show')
@@ -595,8 +590,8 @@ export default {
           .append('image')
           .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
-            return `/img/dinein/area-view/${d.name}_view_h.jpg`
-            // return `/img/dinein/area-view/city_view_h.jpg`
+            return `img/dinein/area-view/${d.name}_view_h.jpg`
+            // return `img/dinein/area-view/city_view_h.jpg`
           })
           .attr('x', function(d) {
             // d.x = that.viewsCoordinates.top_view.x
@@ -667,7 +662,7 @@ export default {
           .append('image')
           .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
-            return `/img/dinein/area-view/${d.name}_view_v.jpg`
+            return `img/dinein/area-view/${d.name}_view_v.jpg`
           })
           .attr('x', function(d) {
             // d.x = that.viewsCoordinates.right_view.x
@@ -737,7 +732,7 @@ export default {
           .append('image')
           .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
-            return `/img/dinein/area-view/${d.name}_view_h.jpg`
+            return `img/dinein/area-view/${d.name}_view_h.jpg`
           })
           .attr('x', function(d) {
             // d.x = that.viewsCoordinates.bottom_view.x
@@ -778,7 +773,7 @@ export default {
           .append('image')
           .attr('preserveAspectRatio', 'none')
           .attr('xlink:href', function(d) {
-            return `/img/dinein/area-view/${d.name}_view_v.jpg`
+            return `img/dinein/area-view/${d.name}_view_v.jpg`
           })
           .attr('x', function(d) {
             // d.x = that.viewsCoordinates.left_view.x
