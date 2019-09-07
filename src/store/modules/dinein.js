@@ -259,6 +259,7 @@ const actions = {
             value.number +
             ' ] ',
           id: value.area_id,
+          table_id: value._id,
           shape: value.table_shape,
         })
       }
@@ -314,6 +315,12 @@ const actions = {
     } else {
       dispatch('dineInCompleteOrders')
     }
+  },
+  moveTable({ commit }, data) {
+    const params = [data.reservationid, 'move_table', { table_id: data.table }]
+    DineInService.updateReservationTable(...params).then(() => {
+      commit(mutation.RESERVATION_ID, data.reservationid)
+    })
   },
 }
 

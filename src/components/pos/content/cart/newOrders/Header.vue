@@ -68,7 +68,7 @@
           <span
             class="table-status"
             v-for="table in availableTables"
-            :key="table._id"
+            :key="table.id"
             v-bind:style="{
               'border-bottom': '1px solid #ccc',
             }"
@@ -188,6 +188,16 @@ export default {
       if (table) {
         this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
         this.selectedTable = table.name
+        // let coverId = table.id
+        let tableId = table.table_id
+        let reservationId = localStorage.getItem('reservationId')
+        //Move Table Functionality.
+        let data = {
+          table: tableId,
+          reservationid: reservationId,
+          status: 'move_table',
+        }
+        this.$store.dispatch('dinein/moveTable', data)
       } else {
         this.selectedTable = 'Select Table'
       }
