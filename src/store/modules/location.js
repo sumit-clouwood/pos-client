@@ -202,7 +202,7 @@ const actions = {
                   })
                 })
                 .catch(error => {
-                  console.log('device registration failed')
+                  console.log('device registration failed', error)
                   if (typeof error.data !== 'undefined') {
                     reject(error.data.error)
                   } else {

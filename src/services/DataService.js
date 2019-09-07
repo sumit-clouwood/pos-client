@@ -104,7 +104,7 @@ export default {
   getLive(url, resolve, reject) {
     if (!localStorage.getItem('token')) {
       Promise.reject('token expired or not found, logout')
-      return this.store.dispatch('auth/logout')
+      return this.store.dispatch('auth/logout', 'token_not_exists')
     }
 
     //const newDate = new DateTime()

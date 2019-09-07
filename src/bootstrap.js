@@ -108,14 +108,14 @@ export default {
                   this.loadApiData('catalog').then(() =>
                     console.log('delayed loading catalog data done')
                   )
-                }, 3000)
+                }, 100)
 
                 setTimeout(() => {
                   console.log('delayed loading customer data started')
                   this.loadApiData('customer').then(() =>
                     console.log('delayed loading customer data done')
                   )
-                }, 4000)
+                }, 150)
 
                 //delayed loading data
                 setTimeout(() => {
@@ -123,7 +123,7 @@ export default {
                   this.loadApiData('order').then(() =>
                     console.log('delayed loading order data done')
                   )
-                }, 8000)
+                }, 200)
               })
               .catch(error => {
                 console.log('UI Failed', error)

@@ -88,7 +88,7 @@ const actions = {
       }
     })
   },
-  logout({ commit }) {
+  logout({ commit }, msg) {
     if (localStorage.getItem('token')) {
       localStorage.setItem('token', '')
       localStorage.setItem('brand_id', '')
@@ -108,7 +108,7 @@ const actions = {
         store: null,
       })
 
-      AuthService.logout().then(() => {})
+      AuthService.logout(msg).then(() => {})
     }
   },
 

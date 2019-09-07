@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import SurchargeService from '@/services/data/SurchargeService'
 import * as mutation from './surcharge/mutation-types'
 import * as CONST from '@/constants'
@@ -71,7 +70,6 @@ const actions = {
                   (applidSurcharge.amount * surcharge.tax_sum) / 100
                 )
               }
-              console.log('applidSurcharge', applidSurcharge)
               totalSurcharges.push(applidSurcharge)
             }
           })
@@ -93,7 +91,6 @@ const actions = {
 
   // using this function for hold order
   /*setSurcharges({ commit, dispatch }, surcharges) {
-    console.log(surcharges)
     commit(mutation.SET_SURCHARGES, surcharges)
     dispatch('calculate')
   },*/
