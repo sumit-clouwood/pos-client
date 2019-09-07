@@ -70,6 +70,21 @@
             </div>
           </button>
           <button
+            v-if="
+              selectedOrder.item.order_type === 'dine_in' &&
+                selectedOrder.item.order_status === 'completed'
+            "
+            type="button"
+            class="button text-button btn btn-success color-main color-text-invert"
+            @click="modifyOrder(selectedOrder.item)"
+          >
+            <div class="button-content-container">
+              <div class="button-icon-container"></div>
+              <div class="button-caption">{{ _t('Modify Order') }}</div>
+            </div>
+          </button>
+          <button
+            v-if="selectedOrder.item.order_type !== 'dine_in'"
             type="button"
             class="button text-button btn btn-success color-main color-text-invert"
             @click="modifyOrder(selectedOrder.item)"

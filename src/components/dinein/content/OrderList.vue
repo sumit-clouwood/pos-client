@@ -364,6 +364,7 @@ export default {
         .toggleClass('active')
     },
     setRouter(data) {
+      this.$store.commit('dinein/RESERVATION_ID', data.orderData._id)
       this.$store.commit('dinein/ORDER_RESERVATION_DATA', data.orderData)
       this.$store.dispatch('dinein/getSelectedOrder', data.orderId, {
         root: true,
