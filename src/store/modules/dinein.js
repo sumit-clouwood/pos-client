@@ -65,7 +65,7 @@ const actions = {
   },
   fetchAll({ dispatch, commit }) {
     commit(mutation.LOADING, true)
-    dispatch('getBookedTables')
+    dispatch('getBookedTables', false)
     // dispatch('dineInRunningOrders')
     dispatch('getDineInTables')
     dispatch('getDineInArea')
@@ -92,7 +92,7 @@ const actions = {
     })
   },
   getBookedTables({ commit }, loader = true) {
-    commit(mutation.LOADING, loader)
+    if (loader) commit(mutation.LOADING, loader)
     localStorage.setItem('reservationId', false)
     DineInService.getAllBookedTables().then(response => {
       commit(mutation.BOOKED_TABLES, response.data)
@@ -100,27 +100,19 @@ const actions = {
     })
   },
   dineInRunningOrders({ commit, state }, loader = true) {
-    commit(mutation.LOADING, loader)
-    return new Promise(() => {
-      const params = [
-        state.totalReservations.pageNumber,
-        state.totalReservations.limit,
-      ]
-      DineInService.dineInRunningOrders(...params)
-        .then(response => {
-          commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
-          commit(mutation.TOTAL_RESERVATION, response.data)
-          if (loader) commit(mutation.LOADING, false)
-        })
-        .catch(() => {
-          // eslint-disable-next-line no-console
-          console.log('fail')
-          if (loader) commit(mutation.LOADING, false)
-        })
+    if (loader) commit(mutation.LOADING, loader)
+    const params = [
+      state.totalReservations.pageNumber,
+      state.totalReservations.limit,
+    ]
+    DineInService.dineInRunningOrders(...params).then(response => {
+      commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
+      commit(mutation.TOTAL_RESERVATION, response.data)
+      if (loader) commit(mutation.LOADING, false)
     })
   },
   dineInCompleteOrders({ commit }, loader = true) {
-    commit(mutation.LOADING, loader)
+    if (loader) commit(mutation.LOADING, loader)
     const params = [
       state.totalReservations.pageNumber,
       state.totalReservations.limit,
@@ -376,6 +368,8 @@ const mutations = {
         : false
   },
   [mutation.LOADING](state, loadingStatus) {
+    // eslint-disable-next-line no-console
+    console.log(loadingStatus)
     state.loading = loadingStatus
   },
   [mutation.ORDER_ON_TABLES](state, orderOnTables) {
