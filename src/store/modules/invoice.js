@@ -11,7 +11,7 @@ const state = {
 // getters
 const getters = {
   template: (state, getters, rootState) => {
-    if (state.rules) {
+    if (state.rules && typeof state.rules.data !== 'undefined') {
       let templateId = null
       if (state.templateId) {
         //template id already selected
@@ -30,7 +30,7 @@ const getters = {
         })
       }
 
-      if (state.templates) {
+      if (state.templates && state.templates.data) {
         if (templateId) {
           return state.templates.data.data.find(
             template => template._id == templateId
