@@ -34,10 +34,10 @@ export default {
         })
     })
   },
-  logout() {
+  logout(msg) {
     return new Promise((resolve, reject) => {
       DataService.factory()
-        .post(process.env.VUE_APP_API_ENDPOINT + '/logout')
+        .post(process.env.VUE_APP_API_ENDPOINT + '/logout?' + msg)
         .then(response => {
           DataService.removeMiddleware()
           resolve(response)

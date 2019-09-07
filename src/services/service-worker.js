@@ -508,7 +508,7 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
           event_time: savedRequest.payload.real_created_datetime,
           event_title: savedRequest.payload.balance_due,
           event_type: 'order_sync_token_failed',
-          event_data: { request: payload, response: response },
+          event_data: { request: payload, response: 'auth token failed' },
         })
 
         console.log(

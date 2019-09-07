@@ -12,7 +12,7 @@
         class="tables-btn-style"
         :class="{ active: dineInTabType === 'all' }"
         @click="
-          updateDineInOrderStatus({
+          fetchOrdersWithTableDetails({
             title: 'all',
             pageId: 'getBookedTables',
           })
@@ -26,7 +26,7 @@
         class="tables-btn-style"
         :class="{ active: dineInTabType === 'waiting' }"
         @click="
-          updateDineInOrderStatus({
+          fetchOrdersWithTableDetails({
             title: 'waiting',
             pageId: '',
           })
@@ -40,7 +40,7 @@
         class="tables-btn-style"
         :class="{ active: dineInTabType === 'reservation' }"
         @click="
-          updateDineInOrderStatus({
+          fetchOrdersWithTableDetails({
             title: 'reservation',
             pageId: '',
           })
@@ -54,7 +54,7 @@
         class="tables-btn-style"
         :class="{ active: dineInTabType === 'running' }"
         @click="
-          updateDineInOrderStatus({
+          fetchOrdersWithTableDetails({
             title: 'running',
             pageId: 'dineInRunningOrders',
           })
@@ -68,7 +68,7 @@
         class="tables-btn-style"
         :class="{ active: dineInTabType === 'completed' }"
         @click="
-          updateDineInOrderStatus({
+          fetchOrdersWithTableDetails({
             title: 'completed',
             pageId: 'dineInCompleteOrders',
           })
@@ -157,7 +157,7 @@
           class="tables-btn-style"
           :class="{ active: dineInTabType === 'all' }"
           @click="
-            updateDineInOrderStatus({
+            fetchOrdersWithTableDetails({
               title: 'all',
               pageId: 'getBookedTables',
             })
@@ -171,7 +171,7 @@
           class="tables-btn-style"
           :class="{ active: dineInTabType === 'waiting' }"
           @click="
-            updateDineInOrderStatus({
+            fetchOrdersWithTableDetails({
               title: 'waiting',
               pageId: '',
             })
@@ -185,7 +185,7 @@
           class="tables-btn-style"
           :class="{ active: dineInTabType === 'reservation' }"
           @click="
-            updateDineInOrderStatus({
+            fetchOrdersWithTableDetails({
               title: 'reservation',
               pageId: '',
             })
@@ -199,7 +199,7 @@
           class="tables-btn-style"
           :class="{ active: dineInTabType === 'running' }"
           @click="
-            updateDineInOrderStatus({
+            fetchOrdersWithTableDetails({
               title: 'running',
               pageId: 'dineInRunningOrders',
             })
@@ -213,7 +213,7 @@
           class="tables-btn-style"
           :class="{ active: dineInTabType === 'completed' }"
           @click="
-            updateDineInOrderStatus({
+            fetchOrdersWithTableDetails({
               title: 'completed',
               pageId: 'dineInCompleteOrders',
             })
@@ -269,7 +269,7 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
-    updateDineInOrderStatus: function(orderStatus) {
+    fetchOrdersWithTableDetails: function(orderStatus) {
       this.$store.commit('dinein/SET_PAGE_NO', 1)
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
     },
