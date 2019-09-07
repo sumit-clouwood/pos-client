@@ -217,8 +217,8 @@ const actions = {
   getAvailableTables({ commit, state }) {
     let areaTable = []
     let orders = []
-    let color = '#62bb31'
     state.tables.forEach(value => {
+      let color = '#62bb31'
       if (state.areaLookup.dine_in_area._id[value.area_id] != undefined) {
         if (state.allBookedTables.orders) {
           orders = state.allBookedTables.orders.filter(
