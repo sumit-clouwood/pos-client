@@ -245,19 +245,19 @@
           </tr>
         </tbody>
       </table>
-      <div class="pagination-customer-details">
-        <paginate
-          v-if="totalReservations.totalPages"
-          :page-count="totalReservations.totalPages"
-          :page-range="1"
-          :margin-pages="2"
-          :clickHandler="fetchMore"
-          :prev-text="_t('Prev')"
-          :next-text="_t('Next')"
-          :container-class="''"
-          :page-class="_t('page-item')"
-        ></paginate>
-      </div>
+    </div>
+    <div class="pagination-customer-details">
+      <paginate
+        v-if="totalReservations.totalPages"
+        :page-count="totalReservations.totalPages"
+        :page-range="1"
+        :margin-pages="2"
+        :clickHandler="fetchMore"
+        :prev-text="_t('Prev')"
+        :next-text="_t('Next')"
+        :container-class="''"
+        :page-class="_t('page-item')"
+      ></paginate>
     </div>
   </div>
 </template>
