@@ -71,7 +71,8 @@
           </button>
           <button
             v-if="
-              selectedOrder.item.order_type === 'dine_in' &&
+              typeof selectedOrder.item.order_type !== 'undefined' &&
+                selectedOrder.item.order_type === 'dine_in' &&
                 selectedOrder.item.order_status === 'finished'
             "
             type="button"
@@ -84,7 +85,10 @@
             </div>
           </button>
           <button
-            v-if="selectedOrder.item.order_type !== 'dine_in'"
+            v-if="
+              typeof selectedOrder.item.order_type !== 'undefined' &&
+                selectedOrder.item.order_type !== 'dine_in'
+            "
             type="button"
             class="button text-button btn btn-success color-main color-text-invert"
             @click="modifyOrder(selectedOrder.item)"

@@ -307,12 +307,15 @@ const actions = {
       })
     })
   },
-  fetchMoreReservations({ commit, dispatch }, { pageNumber, tabName }) {
+  fetchMoreReservations(
+    { commit, dispatch },
+    { pageNumber, tabName, loader = true }
+  ) {
     commit(mutation.SET_PAGE_NO, pageNumber)
     if (tabName === 'running') {
-      dispatch('dineInRunningOrders')
+      dispatch('dineInRunningOrders', loader)
     } else {
-      dispatch('dineInCompleteOrders')
+      dispatch('dineInCompleteOrders', loader)
     }
   },
 }

@@ -332,8 +332,11 @@ export default {
       }
     },
     fetchMore(pageNumber) {
-      this.page = pageNumber
-      let pageInformation = { pageNumber: pageNumber, tabName: this.tabName }
+      let pageInformation = {
+        pageNumber: pageNumber,
+        tabName: this.tabName,
+        loader: true,
+      }
       this.fetchMoreReservations(pageInformation)
     },
     ...mapActions('order', ['selectedOrderDetails']),
