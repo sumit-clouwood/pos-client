@@ -313,6 +313,11 @@ table#running-order {
     }
 
   }
+  .action-status {
+    span.dinefor-paynow {
+      margin-left: 0;
+    }
+  }
   .dining-for-button {
     display: inline-block;
     overflow: hidden;
