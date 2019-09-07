@@ -186,7 +186,8 @@ export default {
           .catch(error => {
             this.errored = error
             setTimeout(() => {
-              this.$store.dispatch('auth/logout')
+              console.log(error, ', dispatch logout')
+              this.$store.dispatch('auth/logout', error)
               this.errored = ''
             }, 1000 * 10)
             console.log('some catch ', error)
