@@ -98,6 +98,7 @@ export default {
         store: this.$store.getters['context/store'],
       })
     }
+    /*else if (!this.$store.state.context.storeId) {}*/
     this.$store
       .dispatch('auth/checkLogin')
       .then(() => {

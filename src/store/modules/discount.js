@@ -84,10 +84,10 @@ const getters = {
 
 // actions
 const actions = {
-  async fetchAll({ commit }) {
+  async fetchAll({ commit, rootState }) {
     const [orderDiscounts, itemDiscounts] = await Promise.all([
-      DiscountService.fetchOrderDiscounts(),
-      DiscountService.fetchItemDiscounts(),
+      DiscountService.fetchOrderDiscounts(rootState.order.orderType.OTApi),
+      DiscountService.fetchItemDiscounts(rootState.order.orderType.OTApi),
     ])
 
     commit(mutation.SET_ORDER_DISCOUNTS, orderDiscounts)

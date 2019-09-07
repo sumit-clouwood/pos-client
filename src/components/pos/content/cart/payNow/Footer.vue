@@ -99,6 +99,7 @@ export default {
           $('#payment-screen-footer').prop('disabled', true)
           this.$store.commit('checkoutForm/setAction', 'pay')
           $('#payment-msg').modal('show')
+          this.$store.commit('order/IS_PAY', 1)
           this.$store
             .dispatch('checkout/pay', this.$store.state.order.orderType.OTApi)
             .then(() => {

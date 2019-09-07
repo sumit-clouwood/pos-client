@@ -275,20 +275,11 @@ const actions = {
       }
     )
   },
-
-  printInvoice({ rootState, dispatch, commit }, template) {
-    dispatch(
-      'invoice/fetchTemplate',
-      {
-        orderId: rootState.order.selectedOrder.item._id,
-        templateId: template._id,
-      },
-      {
-        root: true,
-      }
-    ).then(() => {
-      commit('checkout/PRINT', true, { root: true })
-    })
+  printInvoice({ commit }, { templateId, order }) {
+    commit('invoice/SET_TEMPLATE_ID', templateId, { root: true })
+    commit('checkout/SET_ORDER', order.item, { root: true })
+    commit('order/SET_ORDER_ID', order.item._id, { root: true })
+    commit('checkout/PRINT', true, { root: true })
   },
 
   modifyOrder({ rootState, commit, dispatch }) {

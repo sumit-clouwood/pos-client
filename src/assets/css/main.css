@@ -15,7 +15,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #FD3C83; }
+      background-color: #fd3c83; }
       .main .main-news .main-news-title .main-news-title-link {
         color: #fff;
         display: flex;
@@ -78,7 +78,7 @@
             .main .main-body .food-wrapper .food-categories .food-categories-item:hover .food-categories-item-check, .main .main-body .food-wrapper .food-categories .food-categories-item.active .food-categories-item-check {
               opacity: 1; }
           .main .main-body .food-wrapper .food-categories .food-categories-item.bg {
-            background-color: #F99C32;
+            background-color: #f99c32;
             color: #fff;
             font-size: 0.75rem; }
           .main .main-body .food-wrapper .food-categories .food-categories-item .food-categories-item-img {
@@ -150,7 +150,7 @@
           flex-wrap: wrap;
           align-items: stretch;
           align-content: flex-start;
-          overflow: auto; }
+          overflow-y: hidden; }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-wrapper {
             overflow: auto;
             display: flex;
@@ -158,7 +158,8 @@
             align-content: flex-start;
             padding-right: 1.875rem;
             height: calc(100vh - 26.25rem); }
-          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
+          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before,
+          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
             box-sizing: inherit;
             content: '';
             position: absolute;
@@ -166,14 +167,17 @@
             height: 100%;
             z-index: 99; }
             @media only screen and (min-width: 320px) and (max-width: 600px) {
-              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before,
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
                 display: none; } }
-          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
+          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before,
+          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
             border: 2px solid transparent;
             width: 0;
             height: 0; }
             @media only screen and (min-width: 320px) and (max-width: 600px) {
-              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before,
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
                 display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before {
             top: 0;
@@ -192,11 +196,13 @@
             @media only screen and (min-width: 320px) and (max-width: 600px) {
               .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover p.remove-bottom {
                 display: none; } }
-          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
+          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before,
+          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
             width: 100%;
             height: 100%; }
             @media only screen and (min-width: 320px) and (max-width: 600px) {
-              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before,
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
                 display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before {
             border-top-color: #5056CA;
@@ -210,8 +216,8 @@
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item {
             padding: 10px;
             cursor: pointer;
-            width: calc(7vmax + 20px);
-            min-height: 7vmax;
+            width: calc(7.5vmax + 20px);
+            min-height: 7.5vmax;
             border: 0.0625rem solid #ddd;
             border-radius: 0.3125rem;
             justify-self: center;
@@ -225,12 +231,10 @@
             justify-content: center;
             margin-right: 1.25rem;
             margin-bottom: 1.25rem;
-            -webkit-transition: .2s linear;
-            transition: .2s linear;
+            -webkit-transition: 0.2s linear;
+            transition: 0.2s linear;
             font-size: 1.125rem;
             position: relative; }
-            .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:not(.color-dashboard-background) {
-              color: #fff; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
               border-bottom-color: #5056CA;
               border-left-color: #5056CA;
@@ -241,7 +245,7 @@
                 .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
                   display: none; } }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item.bg {
-              background-color: #56CCF2;
+              background-color: #56ccf2;
               color: #fff;
               font-size: 0.875rem; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item.active {
@@ -249,8 +253,8 @@
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-img {
               margin: 0 auto;
               border-radius: 0.1875rem;
-              width: 7vmax;
-              height: 7vmax;
+              width: 7.5vmax;
+              height: 7.5vmax;
               margin-bottom: auto; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-text {
               word-break: break-word;

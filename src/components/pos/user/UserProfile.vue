@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade" id="user-details" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog" v-if="user">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
@@ -124,7 +124,9 @@ export default {
       rootBrandRoles: state =>
         state.auth.userDetails.collected_data.page_lookups.root_brand_roles,
       brands: state =>
-        state.auth.userDetails.collected_data.page_lookups.brands,
+        state.auth.userDetails
+          ? state.auth.userDetails.collected_data.page_lookups.brands
+          : false,
     }),
     ...mapGetters('location', ['_t']),
   },

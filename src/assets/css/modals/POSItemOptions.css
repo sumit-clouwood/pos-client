@@ -1,14 +1,14 @@
 .POSItemOptions {
   padding-right: 0.625rem; }
   .POSItemOptions .modal-title {
-    color: #3D3F43;
+    color: #3d3f43;
     font-size: 1.125rem;
     font-weight: bold;
     letter-spacing: 0.64px; }
   .POSItemOptions .modal-dialog {
     margin: 0 auto;
     line-height: 1;
-    min-height: calc(100% - (.5rem * 2));
+    min-height: calc(100% - (0.5rem * 2));
     max-width: 600px;
     width: 600px; }
     .POSItemOptions .modal-dialog .modal-content .modal-header {
@@ -16,7 +16,7 @@
       border: 0 none;
       margin-bottom: 1.125rem; }
     .POSItemOptions .modal-dialog .modal-content .modal-details {
-      border-bottom: 1px solid #E3E7F2;
+      border-bottom: 1px solid #e3e7f2;
       padding-bottom: 0.75rem;
       /*margin-bottom: $px20;*/ }
       .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity {
@@ -25,7 +25,7 @@
         .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_price {
           width: 36%; }
           .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_price .POSItemOptions_label {
-            color: #3D3F43;
+            color: #3d3f43;
             font-size: 0.875rem;
             font-weight: normal;
             letter-spacing: 0.5px; }
@@ -38,7 +38,7 @@
         .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity {
           width: 64%; }
           .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_label {
-            color: #3D3F43;
+            color: #3d3f43;
             font-size: 0.875rem;
             font-weight: normal;
             letter-spacing: 0.5px; }
@@ -62,7 +62,7 @@
                 width: 33.33%;
                 text-align: center;
                 outline: none;
-                color: #3D3F43;
+                color: #3d3f43;
                 font-size: 1rem;
                 font-weight: 600;
                 height: 2.5rem;
@@ -80,166 +80,12 @@
               border: 0 none; }
     .POSItemOptions .modal-dialog .modal-content .modal-body {
       padding-top: 0;
-      border-color: #E3E7F2;
+      border-color: #e3e7f2;
       max-height: 28.75rem;
       overflow-y: scroll;
       margin-right: 0.625rem;
       -webkit-overflow-scrolling: touch;
       touch-action: auto; }
-      .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_type {
-        position: relative; }
-        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_type .POSItemOptions_typehead {
-          color: #222;
-          font-size: 12px;
-          font-weight: normal;
-          letter-spacing: 0.43px;
-          margin: 0;
-          background-color: #fff;
-          padding-right: 0.9375rem;
-          display: inline-block;
-          vertical-align: middle;
-          position: relative;
-          z-index: 2; }
-        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_type .POSItemOptions_typeline {
-          position: absolute;
-          top: 50%;
-          left: 0;
-          right: 0;
-          width: 100%;
-          height: 1px;
-          background-color: #E3E7F2;
-          z-index: 1; }
-      .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose {
-        margin-top: 1.875rem;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, 150px);
-        grid-gap: 10px; }
-        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label {
-          padding: 10px;
-          border-radius: 5px;
-          position: relative; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .borderCheck {
-            display: none; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc {
-            position: absolute;
-            top: -1px;
-            right: -1px;
-            margin-right: 0 !important;
-            width: 20px;
-            height: 20px; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input {
-              display: none; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc span {
-              position: absolute;
-              top: 0;
-              right: 0;
-              bottom: 0;
-              left: 0;
-              border: 2px solid #E3E7F2;
-              border-radius: 100%;
-              display: inline-flex;
-              align-items: center;
-              justify-content: center;
-              vertical-align: middle;
-              text-align: center;
-              color: #3D3F43;
-              font-size: 0.75rem;
-              font-weight: normal;
-              letter-spacing: 0.43px;
-              width: 20px;
-              height: 20px; }
-              .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc span:before {
-                width: 15px !important;
-                height: 15px !important;
-                color: #fff; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox]:checked + span {
-              background: #5056CA;
-              border-color: #5056CA;
-              position: relative; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox] {
-              opacity: 0;
-              position: absolute;
-              top: 4px;
-              width: 0.625rem;
-              height: 0.625rem; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox]:checked + span:before {
-              font-family: "FontAwesome";
-              content: "\f00c";
-              width: 0.75rem;
-              height: 0.75rem;
-              color: #fff;
-              line-height: 0;
-              position: absolute;
-              top: 7.5px;
-              left: 0.5px;
-              font-size: 0.9375rem !important; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox] + span {
-              border-radius: 2px; }
-        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice {
-          display: inline-block;
-          margin-bottom: 1.125rem; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label {
-            display: inline-block;
-            vertical-align: middle;
-            margin: 0;
-            border: 2px solid #E3E7F2; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label input {
-              display: none;
-              /* &[type="checkbox"] {
-                   &:checked + span {
-                       background-color: $green-middle;
-                   }
-               }*/ }
-              .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label input[type="checkbox"]:checked + div {
-                display: block; }
-                .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label input[type="checkbox"]:checked + div span {
-                  background-color: #5056CA;
-                  border: none;
-                  border-radius: 3px; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label img {
-              margin-right: 0.3125rem;
-              display: inline-block;
-              vertical-align: middle;
-              width: 2.1875rem;
-              height: 2.1875rem;
-              border-radius: 50%; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label span {
-              display: inline-block;
-              vertical-align: middle;
-              line-height: 1.3; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .customradioc {
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 0.3125rem; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .customradioc .checkBox {
-              width: 20px;
-              height: 20px;
-              line-height: inherit;
-              border-top: none;
-              border-right: none;
-              display: inline-flex;
-              align-items: center;
-              justify-content: center;
-              border: none; }
-              .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .customradioc .checkBox:before {
-                font-family: "FontAwesome";
-                content: "\f00c";
-                position: static !important;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 14px !important;
-                border: none; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .borderCheck {
-            display: none;
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            bottom: -2px;
-            left: -2px;
-            border: 2px solid #5056CA;
-            border-radius: 3px;
-            pointer-events: none; }
     .POSItemOptions .modal-dialog .modal-content .modal-footer {
       padding: 0;
       padding-top: 1.5625rem !important; }
@@ -256,7 +102,7 @@
         height: 2.5rem;
         padding: 0 1.5625rem; }
       .POSItemOptions .modal-dialog .modal-content .modal-footer .taxbutton {
-        background: #CC3232;
+        background: #cc3232;
         border-radius: 3px;
         box-shadow: 0 2px 2px 0 rgba(232, 150, 150, 0.5);
         height: 2.5rem;

@@ -64,6 +64,7 @@ export default {
     limit,
     orderBy,
     orderStatus,
+    orderType,
     page,
     pageId,
     storeId,
@@ -71,7 +72,7 @@ export default {
   ) {
     let customer = customerId != '' ? '&customer=' + customerId : ''
     return DataService.get(
-      `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}&order_status=${orderStatus}&store_id=${storeId}${customer}`
+      `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=1&orderBy=${orderBy}&order_status=${orderStatus}&order_type=${orderType}&store_id=${storeId}${customer}`
     )
   },
   getGlobalDetails(modal, id, action) {
@@ -84,9 +85,7 @@ export default {
   },
 
   updateOrderAction(id, action, params) {
-    let setBrand = ['cancel_order', 'delivery_ready'].includes(action)
-      ? 'brand'
-      : ''
+    let setBrand = ['delivery_ready'].includes(action) ? 'brand' : ''
     return DataService.post(
       `/model/orders/id/${id}/${action}`,
       params,
@@ -101,5 +100,13 @@ export default {
       type = ''
     }
     return DataService.post(`/model/orders/id/${id}/modify_${type}order`, order)
+  },
+  updateOrderItems(order, id, type) {
+    if (type) {
+      type += '_'
+    } else {
+      type = ''
+    }
+    return DataService.post(`/model/orders/id/${id}/update_order_items`, order)
   },
 }

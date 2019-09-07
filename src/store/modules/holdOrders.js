@@ -19,12 +19,13 @@ const state = {
 const getters = {}
 
 const actions = {
-  getHoldOrders({ commit, state }) {
+  getHoldOrders({ commit, state, rootState }) {
     const params = [
       state.params.query,
       state.params.limit,
       state.params.orderBy,
       state.params.orderStatus,
+      rootState.order.orderType.OTApi,
       state.params.page,
       'orders_main_tbl',
       '',

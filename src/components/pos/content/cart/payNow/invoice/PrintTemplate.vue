@@ -281,7 +281,9 @@ export default {
       currentBrand: this.$store.state.location.brand,
       currentStore: this.$store.state.location.store,
       current_locale: this.$store.state.location.locale,
-      company_logo: this.$store.state.location.brand.company_logo,
+      company_logo: this.$store.state.location.brand.company_logo
+        ? this.$store.state.location.brand.company_logo
+        : '',
     }
   },
   mounted() {
@@ -314,7 +316,11 @@ export default {
       return false
     },
     crm_module_enabled: function() {
-      for (var module of this.currentBrand.enabled_modules) {
+      let cb =
+        typeof this.currentBrand == 'undefined'
+          ? this.$store.state.location.brand
+          : this.currentBrand
+      for (var module of cb.enabled_modules) {
         //TODO - make constant
         if (module == 'CRM') {
           return true

@@ -53,28 +53,8 @@
             id="runningtime"
             class="timeago elapsedTime delManTime"
             title=""
-          ></span>
-          <span
-            class="customtime left"
-            :id="
-              'createdOrder-' +
-                convertDatetime(
-                  orderDetails.item.real_created_datetime,
-                  timezoneString
-                )
-            "
-            style="display: none"
-          ></span>
-          <input
-            type="hidden"
-            id="storerunningtime"
-            :value="
-              convertDatetime(
-                orderDetails.item.real_created_datetime,
-                timezoneString
-              )
-            "
-          />
+          >
+          </span>
         </p>
       </div>
       <div class="details-item">
@@ -131,7 +111,7 @@
         </p>
       </div>
     </div>
-    <div v-if="orderDetails.item">
+    <div v-if="orderDetails.item && orderDetails.item.order_type !== 'dine_in'">
       <div class="details-item">
         <span class="details-item-name color-text-invert">{{
           _t('Delivery Area:')
@@ -190,15 +170,21 @@ export default {
     ...mapState('location', ['timezoneString']),
   },
   updated() {
-    $('#runningtime').text('')
     setInterval(() => {
-      let orderTime = $('#storerunningtime').val()
-      let timer = this.orderTimer(orderTime, this.timezoneString)
-      $('#runningtime').text(timer)
+      $('#runningtime').text(this.timerClock())
     }, 1000)
   },
   mixins: [DateTime],
   methods: {
+    timerClock: function() {
+      return this.orderTimer(
+        this.convertDatetime(
+          this.orderDetails.item.real_created_datetime,
+          this.timezoneString
+        ),
+        this.timezoneString
+      )
+    },
     getLookupData: function(lookup) {
       let setData = this.orderDetails.lookups[lookup.lookupFrom]._id
       let selection =

@@ -40,6 +40,8 @@ export default {
 </style>
 <!--style lang="stylus">
  img
+            height: 310px
+            margin-bottom: -50px
             width: 100%
             /*-webkit-animation-name: spinner*/
             /*-webkit-animation-timing-function: linear*/

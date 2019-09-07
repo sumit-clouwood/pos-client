@@ -37,19 +37,22 @@ const getters = {
 
   permitted: state => (pageId, parentId) => {
     typeof parentId == 'undefined' ? null : parentId
-    let routeMenus = state.permissions.filter(
-      permission =>
-        permission.meta.parent_id == parentId && permission.page_id == pageId
-    )
-    let getChildren = routeMenus
-    if (routeMenus.length) {
-      if (routeMenus[0].type == 'BlockMenuPage') {
-        getChildren = state.permissions.filter(
-          permission => permission.meta.parent_id == routeMenus[0].page_id
-        )
+    if (state.permissions) {
+      let routeMenus = state.permissions.filter(
+        permission =>
+          permission.meta.parent_id == parentId && permission.page_id == pageId
+      )
+      let getChildren = routeMenus
+      if (routeMenus.length) {
+        if (routeMenus[0].type == 'BlockMenuPage') {
+          getChildren = state.permissions.filter(
+            permission => permission.meta.parent_id == routeMenus[0].page_id
+          )
+        }
       }
+      return getChildren.length
     }
-    return getChildren.length
+    return false
   },
   /*collectRouteMenu: state => {
 
@@ -93,10 +96,12 @@ const actions = {
           commit(mutation.SET_PERMISSION, storedata.data.menu)
           commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
           commit(mutation.SET_TRASLATIONS, storedata.data.translations)
-          commit(
-            mutation.SET_AVAILABLE_LANGUAGES,
-            storedata.data.available_lang
-          )
+          if (!state.availableLanguages) {
+            commit(
+              mutation.SET_AVAILABLE_LANGUAGES,
+              storedata.data.available_lang
+            )
+          }
 
           if (storedata.data.store) {
             commit(mutation.SET_STORE, storedata.data.store)
