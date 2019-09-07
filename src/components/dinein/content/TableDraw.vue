@@ -522,6 +522,7 @@ export default {
         this.$store.dispatch('dinein/updateDineInOrderStatus', {
           title: 'all',
           pageId: 'getBookedTables',
+          loader: false,
         })
         this.$store.dispatch('dinein/getDineInArea', false)
       })
