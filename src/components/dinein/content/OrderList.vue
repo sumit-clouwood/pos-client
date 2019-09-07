@@ -261,13 +261,14 @@
       <paginate
         v-if="totalReservations.totalPages"
         :page-count="totalReservations.totalPages"
-        :page-range="1"
+        :page-range="2"
         :margin-pages="2"
         :clickHandler="fetchMore"
         :prev-text="_t('Prev')"
         :next-text="_t('Next')"
         :container-class="''"
         :page-class="_t('page-item')"
+        v-model="page"
       ></paginate>
     </div>
   </div>
@@ -295,6 +296,7 @@ export default {
       orderDetails: false,
       timerTime: false,
       isOrderCancelledClass: 'table-order-view',
+      page: 1,
     }
   },
   updated() {
@@ -330,6 +332,7 @@ export default {
       }
     },
     fetchMore(pageNumber) {
+      this.page = pageNumber
       let pageInformation = { pageNumber: pageNumber, tabName: this.tabName }
       this.fetchMoreReservations(pageInformation)
     },

@@ -6,9 +6,9 @@ export default {
       `/model/reservations?page_id=running_orders&query=&limit=${limit}&ascending=1&page=${page}`
     )
   },
-  dineInCompleteOrders() {
+  dineInCompleteOrders(page, limit) {
     return DataService.get(
-      `/model/reservations?page_id=reservations_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=1&status=completed`
+      `/model/reservations?page_id=reservations_main_tbl&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&status=completed`
     )
   },
 

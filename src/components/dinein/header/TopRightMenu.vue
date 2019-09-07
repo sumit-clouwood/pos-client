@@ -270,6 +270,7 @@ export default {
   },
   methods: {
     updateDineInOrderStatus: function(orderStatus) {
+      this.$store.commit('dinein/SET_PAGE_NO', 1)
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
     },
     ...mapActions('auth', ['logout']),
