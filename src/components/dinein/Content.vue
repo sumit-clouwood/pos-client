@@ -41,6 +41,7 @@ export default {
   mounted() {
     //When POS to Dinein update every table status.
     if (localStorage.getItem('reservationId') !== false) {
+      this.$store.dispatch('checkout/reset')
       this.$store.dispatch('dinein/getBookedTables', false)
       this.$store.dispatch('dinein/getDineInArea', false)
       this.$store.commit('dinein/RESERVATION_ID', false)
