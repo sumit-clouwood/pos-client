@@ -12,7 +12,9 @@
             <th width="250px">{{ _t('TABLE BOOKED TIME') }}</th>
           </tr>
         </thead>
-        <tbody v-if="orders[lookup].orders">
+        <tbody
+          v-if="orders[lookup].orders && orders[lookup].orders._id.length !== 0"
+        >
           <tr
             :key="index"
             class="dine-table-content"
@@ -241,6 +243,15 @@
               >
                 {{ setTime(orderDetails.real_created_datetime) }}
               </span>
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr>
+            <td colspan="4">
+              <p class="font-weight-bold text-danger text-center color-warning">
+                {{ _t('No order found') }}
+              </p>
             </td>
           </tr>
         </tbody>
