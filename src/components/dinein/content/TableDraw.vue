@@ -331,6 +331,14 @@ export default {
         this.$store.commit('dinein/RESERVATION_ID', reservationId)
       }
       if (pos || this.orderDetails.length > 0) this.$router.push({ path: URL })
+      if (!reservationId) {
+        this.$store.dispatch('dinein/updateDineInOrderStatus', {
+          title: 'all',
+          pageId: 'getBookedTables',
+          loader: false,
+        })
+        this.$store.dispatch('dinein/getDineInArea', false)
+      }
     },
     updateOrder(data) {
       this.$store.commit('dinein/RESERVATION_ID', data.orderData.reservationId)
