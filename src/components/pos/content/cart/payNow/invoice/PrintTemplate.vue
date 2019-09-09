@@ -17,7 +17,9 @@
       <div class="main-subtitle">
         {{ template.invoice_number_label }}
         {{
-          orderId ? orderId : order.real_created_datetime.replace(/[\s-:]/g, '')
+          order.orderNumber
+            ? order.orderNumber
+            : order.real_created_datetime.replace(/[\s-:]/g, '')
         }}
       </div>
       <table class="print-invoice-table">
@@ -306,7 +308,6 @@ export default {
   computed: {
     ...mapState('checkout', ['print']),
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['orderId']),
     ...mapState('location', ['timezoneString']),
 
     dataBeingLoaded() {

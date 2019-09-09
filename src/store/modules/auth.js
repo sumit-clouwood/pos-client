@@ -102,6 +102,7 @@ const actions = {
       commit('customer/RESET', null, { root: true })
       commit('sync/reset', {}, { root: true })
       commit('location/RESET', true, { root: true })
+      commit('holdOrders/RESET', true, { root: true })
 
       DataService.setContext({
         brand: null,
