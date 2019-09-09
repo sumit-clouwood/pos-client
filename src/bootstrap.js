@@ -304,15 +304,15 @@ export default {
       if (process.env.NODE_ENV === 'production' && msg === 'on') {
         const nowTime = new Date().getTime() //miliseconds
 
-        console.log(
-          'sw:',
-          'last synced',
-          this.lastSynced,
-          'sync received',
-          nowTime,
-          'seconds passed last sync',
-          (nowTime - this.lastSynced) / 1000
-        )
+        // console.log(
+        //   'sw:',
+        //   'last synced',
+        //   this.lastSynced,
+        //   'sync received',
+        //   nowTime,
+        //   'seconds passed last sync',
+        //   (nowTime - this.lastSynced) / 1000
+        // )
 
         if (nowTime - this.lastSynced > this.syncInterval * 1000) {
           this.lastSynced = nowTime
@@ -327,7 +327,7 @@ export default {
             })
           }, 1000 * 10)
         } else {
-          console.log(this.syncInterval, ' not passed yet')
+          //console.log(this.syncInterval, ' not passed yet')
         }
       }
     })
