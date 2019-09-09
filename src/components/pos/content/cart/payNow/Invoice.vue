@@ -40,15 +40,14 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print', 'order']),
-    ...mapState('order', ['orderId']),
     ...mapState('context', ['brandId']),
     ...mapGetters('invoice', ['template']),
     ...mapGetters('location', ['_t']),
     order_title() {
       return (
         this._t('ORDER_DIALOG_TITLE_PREFIX') +
-        (this.orderId
-          ? this.orderId
+        (this.order.orderNumber
+          ? this.order.orderNumber
           : this.order.real_created_datetime.replace(/[\s-:]/g, '')) +
         this._t('ORDER_DIALOG_TITLE_SUFFIX') +
         this.order.order_mode
