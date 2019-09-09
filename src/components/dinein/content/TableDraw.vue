@@ -555,7 +555,7 @@ export default {
       )
       this.addOrSplit =
         this.orderDetails.length > 0
-          ? 'Click to split table'
+          ? 'Click to split bill'
           : 'Click to book table'
       this.selectedTableId = datum._id
       let range = $('#range')
