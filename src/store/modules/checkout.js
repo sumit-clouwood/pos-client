@@ -11,6 +11,7 @@ const state = {
   pendingAmount: 0,
   changedAmount: 0,
   print: false,
+  loading: false,
   orderNumber: null,
 }
 
@@ -779,6 +780,9 @@ const mutations = {
     let order = { ...state.order }
     order.orderNumber = state.orderNumber
     state.order = order
+  },
+  [mutation.LOADING](state, loadingStatus) {
+    state.loading = loadingStatus
   },
   [mutation.RESET](state) {
     state.order = false
