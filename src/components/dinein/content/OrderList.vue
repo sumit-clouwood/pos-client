@@ -6,70 +6,61 @@
         <thead>
           <tr class="dine-table-heading">
             <th width="200px">{{ _t('TABLE NUMBER') }}</th>
-            <th width="200px">{{ _t('AMOUNT') }}</th>
             <!--<th width="100px">{{ _t('STATUS') }}</th>-->
             <th width="450px">{{ _t('ORDERS') }}</th>
+            <th width="200px">{{ _t('AMOUNT') }}</th>
             <th width="250px">{{ _t('TABLE BOOKED TIME') }}</th>
           </tr>
         </thead>
-        <tbody
-          v-if="orders[lookup].orders && orders[lookup].orders._id.length !== 0"
-        >
+        <tbody v-if="orderDetails">
           <tr
             :key="index"
             class="dine-table-content"
-            v-for="(orderTable, index) in orders[tabName]"
+            v-for="(orderTable, index) in orderDetails"
           >
             <td class="dine-order-tabel">
               <span :class="tabName">
-                {{ orderTable.number }}
+                {{ orderTable.table.number }}
                 <p>
                   <small class="text-capitalize font-weight-bold ">
-                    {{ LookupData.replaceUnderscoreHyphon(orderTable.status) }}
+                    {{
+                      LookupData.replaceUnderscoreHyphon(
+                        orderTable.table.status
+                      )
+                    }}
                   </small>
                 </p>
               </span>
             </td>
-            <td class="dine-order-amt font-weight-bold">
-              {{ orderDetails.balance_due + ' ' + orderDetails.currency }}
-            </td>
             <td class="dine-order-details">
               <div class="table-order-view-wrapper">
                 <div
-                  v-for="(orderId, i) in orderTable.related_orders_ids"
+                  v-for="(order, i) in orderTable.orders"
                   :key="i"
                   :class="isOrderCancelledClass"
                 >
-                  {{
-                    getOrderDetails({
-                      collection: orders[lookup].orders._id,
-                      matchWith: orderId,
-                    })
-                  }}
-                  <div>
+                  <div v-if="order">
                     <div class="running-actions">
                       <span
-                        v-if="orderDetails.order_system_status !== 'cancelled'"
-                        @click="selectedOrderDetails(orderId)"
+                        v-if="order.order_system_status !== 'cancelled'"
+                        @click="selectedOrderDetails(order._id)"
                         class="open-details-popup cursor-pointer font-weight-bold text-capitalize"
-                        :class="getOrderStatus(orderDetails.order_status)"
+                        :class="getOrderStatus(order.order_status)"
                         data-dismiss="modal"
                         data-target=".bd-example-modal-lg"
                         data-toggle="modal"
                       >
-                        #{{ orderDetails.order_no }} |
+                        #{{ order.order_no }} |
                         {{
-                          LookupData.replaceUnderscoreHyphon(
-                            orderDetails.order_status
-                          )
+                          LookupData.replaceUnderscoreHyphon(order.order_status)
                         }}
                       </span>
                       <span
                         v-else
                         class="open-details-popup cursor-pointer font-weight-bold text-capitalize"
-                        :class="getOrderStatus(orderDetails.order_status)"
+                        :class="getOrderStatus(order.order_status)"
                       >
-                        #{{ orderDetails.order_no }} | {{ _t('Cancelled') }}
+                        #{{ order.order_no }} | {{ _t('Cancelled') }}
                       </span>
                       <span
                         class="dinefor-paynow"
@@ -81,11 +72,11 @@
                               url:
                                 $route.path +
                                 '/' +
-                                orderTable.assigned_table_id +
+                                orderTable.table.assigned_table_id +
                                 '/' +
-                                orderId,
-                              orderId: orderId,
-                              orderData: orderTable,
+                                order._id,
+                              orderId: order._id,
+                              orderData: orderTable.table,
                             })
                           "
                         >
@@ -111,27 +102,28 @@
                               <path
                                 d="M25.21 19.19a1.2 1.2 0 0 1-.851.355H2.675a1.2 1.2 0 0 1-.851-.355 1.2 1.2 0 0 1-.355-.851V5.69c0-.331.134-.63.355-.851a1.2 1.2 0 0 1 .851-.355V3.283A2.413 2.413 0 0 0 .267 5.69v12.65a2.413 2.413 0 0 0 2.408 2.407H24.36a2.413 2.413 0 0 0 2.407-2.408h-1.201c0 .33-.135.63-.355.851z"
                               ></path>
-                            </g></svg
-                          ><span class="pay_now">{{ _t('Pay Now') }}</span></a
+                            </g>
+                          </svg>
+                          <span class="pay_now">{{ _t('Pay Now') }}</span></a
                         >
                       </span>
                     </div>
                     <div
                       :key="j"
                       class="order-name"
-                      v-for="(i, j) in orderDetails.items"
+                      v-for="(i, j) in order.items"
                     >
                       <div class="main-item">
                         {{
-                          typeof orderDetails.items[j] != 'undefined'
-                            ? orderDetails.items[j].name
+                          typeof order.items[j] != 'undefined'
+                            ? order.items[j].name
                             : ''
                         }}
                       </div>
                       <div
                         :key="k"
                         class="modifiers"
-                        v-for="(item, k) in orderDetails.item_modifiers"
+                        v-for="(item, k) in order.item_modifiers"
                       >
                         <span v-if="item.for_item == i.no">
                           <span v-if="item.qty > 0">+{{ item.qty }}</span>
@@ -141,8 +133,8 @@
                     </div>
                     <span
                       class="order-down-arrow"
-                      :id="'id_' + orderId"
-                      @click="showMoreOrderItems(orderId)"
+                      :id="'id_' + order._id"
+                      @click="showMoreOrderItems(order._id)"
                     >
                       <i class="fa fa-chevron-down" aria-hidden="true"></i>
                     </span>
@@ -150,29 +142,18 @@
                 </div>
               </div>
             </td>
-            <!--<td :class="getOrderStatus(orderDetails.order_status)">
-            <span>{{ orderDetails.order_status }}</span>
-          </td>-->
-            <!--<td><span>{{ order.order_status }}</span></td>-->
+            <td class="dine-order-amt font-weight-bold">
+              {{ orderTable.amount }}
+            </td>
             <td class="order-time-det">
               <div class="action-status">
-                <!--<div
-                  class="dining-for-button"
-                  :class="
-                    orderTable.status === 'completed'
-                      ? 'btn btn-success'
-                      : 'btn btn-danger'
-                  "
-                >
-                  {{ LookupData.replaceUnderscoreHyphon(orderTable.status) }}
-                </div>-->
                 <div>
                   <span
                     class="dinefor-paynow"
-                    v-if="orderTable.status == 'in-progress'"
+                    v-if="orderTable.table.status == 'in-progress'"
                     @click="
                       reservationUpdateStatus({
-                        reservationId: orderTable._id,
+                        reservationId: orderTable.table._id,
                         status: 'dine_in_about_to_finish',
                       })
                     "
@@ -195,15 +176,16 @@
                         <path
                           d="M25.21 19.19a1.2 1.2 0 0 1-.851.355H2.675a1.2 1.2 0 0 1-.851-.355 1.2 1.2 0 0 1-.355-.851V5.69c0-.331.134-.63.355-.851a1.2 1.2 0 0 1 .851-.355V3.283A2.413 2.413 0 0 0 .267 5.69v12.65a2.413 2.413 0 0 0 2.408 2.407H24.36a2.413 2.413 0 0 0 2.407-2.408h-1.201c0 .33-.135.63-.355.851z"
                         ></path>
-                      </g></svg
-                    ><span class="pay_now">{{ _t('About to Finish') }}</span>
+                      </g>
+                    </svg>
+                    <span class="pay_now">{{ _t('About to Finish') }}</span>
                   </span>
                   <span
                     class="dinefor-paynow"
-                    v-if="orderTable.status == 'on-a-way'"
+                    v-if="orderTable.table.status == 'on-a-way'"
                     @click="
                       reservationUpdateStatus({
-                        reservationId: orderTable._id,
+                        reservationId: orderTable.table._id,
                         status: 'dine_in_order_finished',
                       })
                     "
@@ -226,22 +208,18 @@
                         <path
                           d="M25.21 19.19a1.2 1.2 0 0 1-.851.355H2.675a1.2 1.2 0 0 1-.851-.355 1.2 1.2 0 0 1-.355-.851V5.69c0-.331.134-.63.355-.851a1.2 1.2 0 0 1 .851-.355V3.283A2.413 2.413 0 0 0 .267 5.69v12.65a2.413 2.413 0 0 0 2.408 2.407H24.36a2.413 2.413 0 0 0 2.407-2.408h-1.201c0 .33-.135.63-.355.851z"
                         ></path>
-                      </g></svg
-                    ><span class="pay_now">{{ _t('Complete') }}</span>
+                      </g>
+                    </svg>
+                    <span class="pay_now">{{ _t('Complete') }}</span>
                   </span>
                 </div>
               </div>
-              <!--<input
-                type="hidden"
-                id="ordertime"
-                :value="orderDetails.real_created_datetime.$date.$numberLong"
-              />-->
-              <span
-                :id="orderDetails._id"
-                class="timeago elapsedTime delManTime runningtime"
-                title=""
-              >
-                {{ setTime(orderDetails.real_created_datetime) }}
+              <span class="timeago elapsedTime delManTime runningtime" title="">
+                {{
+                  orderTable.table.start_date +
+                    ', ' +
+                    orderTable.table.start_time
+                }}
               </span>
             </td>
           </tr>
@@ -293,10 +271,10 @@ export default {
   },
   data() {
     return {
-      orderDetails: false,
       timerTime: false,
       isOrderCancelledClass: 'table-order-view',
       page: 1,
+      orderAdded: [],
     }
   },
   updated() {
@@ -317,7 +295,7 @@ export default {
   computed: {
     ...mapState('location', ['timezoneString']),
     ...mapGetters('location', ['_t']),
-    ...mapState('dinein', ['orders', 'loading', 'totalReservations']),
+    ...mapState('dinein', ['orderDetails', 'loading', 'totalReservations']),
     ...mapGetters('dinein', ['getOrderStatus', 'getTableNumber']),
   },
   methods: {
@@ -332,8 +310,11 @@ export default {
       }
     },
     fetchMore(pageNumber) {
-      this.page = pageNumber
-      let pageInformation = { pageNumber: pageNumber, tabName: this.tabName }
+      let pageInformation = {
+        pageNumber: pageNumber,
+        tabName: this.tabName,
+        loader: true,
+      }
       this.fetchMoreReservations(pageInformation)
     },
     ...mapActions('order', ['selectedOrderDetails']),
@@ -341,12 +322,9 @@ export default {
       'reservationUpdateStatus',
       'fetchMoreReservations',
     ]),
-    getOrderDetails(collection) {
-      // eslint-disable-next-line no-console
-      this.orderDetails = collection.collection[collection.matchWith]
-      // console.log(collection)
+    getOrderDetails(order) {
       this.isOrderCancelledClass =
-        this.orderDetails.order_system_status !== 'cancelled'
+        order.order_system_status !== 'cancelled'
           ? 'table-order-view'
           : 'table-order-view'
     },
