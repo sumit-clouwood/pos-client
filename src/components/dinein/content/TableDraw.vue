@@ -35,26 +35,20 @@
                 :key="componentKey"
               >
                 <div class="display-table-details">
-                  <a
-                    role="button"
+                  <span
+                    data-toggle="modal"
+                    data-target="#placeOrder"
+                    data-dismiss="modal"
                     class="table-popup bg-success font-weight-bold"
-                    @click="newOrder(false, false)"
                   >
-                    {{ _t(addOrSplit) }}
-                  </a>
-                  <a
-                    role="button"
-                    class="table-popup bg-success font-weight-bold"
-                    @click="newOrder(false, true)"
-                  >
-                    {{ _t('Place Order') }}
-                  </a>
-                  <a
-                    role="button"
+                    {{ _t('Book Table') }}
+                  </span>
+                  <span
                     class=" table-popup font-weight-bold close-table-details"
                     @click="hideTableDetails"
-                    >X</a
                   >
+                    X
+                  </span>
                 </div>
                 <div v-if="orderDetails">
                   <div
@@ -63,67 +57,41 @@
                   >
                     <div v-if="orderData.orderIds.length">
                       <div
-                        class="table-action"
+                        class="table-action order-details-with-action"
                         v-for="orderId in orderData.orderIds"
                         :key="orderId"
                       >
-                        <a
+                        <div
                           @click="
                             updateOrder({
                               orderId: orderId,
                               orderData: orderData,
                             })
                           "
-                          role="button"
                           class="dropdown-item text-capitalize"
                           v-if="allBookedTables.lookup.orders._id"
                         >
                           {{ orderData.tableNumber }}
                           #{{ getOrderNo(orderId) }}
-                        </a>
-                        <span
+                        </div>
+                        <div
+                          class="table-popup bg-success font-weight-bold"
+                          @click="newOrder(orderData.reservationId, false)"
+                        >
+                          {{ _t(addOrSplit) }}
+                        </div>
+                        <div
                           class="cursor-pointer text-danger reservation-cancel"
                           @click="cancelReservation(orderData.reservationId)"
                         >
-                          <span class="dlt-icon"
-                            ><svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="18"
-                              viewBox="0 0 16 18"
-                            >
-                              <g
-                                fill="none"
-                                fill-rule="evenodd"
-                                stroke="#DE3C3C"
-                              >
-                                <path
-                                  d="M2.278 4.808V15.23a1.5 1.5 0 0 0 1.5 1.5h8.444a1.5 1.5 0 0 0 1.5-1.5V4.808H2.278zM6.727 1.654l.079.57H1.723a1.223 1.223 0 0 0 0 2.445h12.554a1.223 1.223 0 0 0                       0-2.446H9.194l.079-.569a.509.509 0 0 0 .005-.07V1a.5.5 0 0 0-.5-.5H7.222a.5.5 0 0 0-.5.5v.585c0 .023.002.047.005.07z"
-                                ></path>
-                                <rect
-                                  width="1"
-                                  height="4.169"
-                                  x="5.833"
-                                  y="8.254"
-                                  fill="#D8D8D8"
-                                  rx=".5"
-                                ></rect>
-                                <rect
-                                  width="1"
-                                  height="4.169"
-                                  x="10.278"
-                                  y="8.254"
-                                  fill="#D8D8D8"
-                                  rx=".5"
-                                ></rect>
-                              </g>
-                            </svg>
+                          <span class="dlt-icon">
+                            <img src="img/pos/delete-icon.svg" />
                           </span>
-                        </span>
+                        </div>
                       </div>
                     </div>
-                    <div v-else class="table-action">
-                      <a
+                    <div v-else class="table-action order-details-with-action">
+                      <div
                         @click="newOrder(orderData.reservationId)"
                         role="button"
                         class="dropdown-item"
@@ -131,42 +99,21 @@
                         {{ orderData.tableNumber }} #Reserved |
                         {{ created_date(orderData.startDate) }},
                         {{ created_time(orderData.startTime) }}
-                      </a>
-                      <span
+                      </div>
+                      <div
+                        class="table-popup bg-success font-weight-bold"
+                        @click="newOrder(orderData.reservationId, false)"
+                      >
+                        {{ _t(addOrSplit) }}
+                      </div>
+                      <div
                         class="cursor-pointer text-danger reservation-cancel"
                         @click="cancelReservation(orderData.reservationId)"
                       >
-                        <span class="dlt-icon"
-                          ><svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="18"
-                            viewBox="0 0 16 18"
-                          >
-                            <g fill="none" fill-rule="evenodd" stroke="#DE3C3C">
-                              <path
-                                d="M2.278 4.808V15.23a1.5 1.5 0 0 0 1.5 1.5h8.444a1.5 1.5 0 0 0 1.5-1.5V4.808H2.278zM6.727 1.654l.079.57H1.723a1.223 1.223 0 0 0 0 2.445h12.554a1.223 1.223 0 0 0                       0-2.446H9.194l.079-.569a.509.509 0 0 0 .005-.07V1a.5.5 0 0 0-.5-.5H7.222a.5.5 0 0 0-.5.5v.585c0 .023.002.047.005.07z"
-                              ></path>
-                              <rect
-                                width="1"
-                                height="4.169"
-                                x="5.833"
-                                y="8.254"
-                                fill="#D8D8D8"
-                                rx=".5"
-                              ></rect>
-                              <rect
-                                width="1"
-                                height="4.169"
-                                x="10.278"
-                                y="8.254"
-                                fill="#D8D8D8"
-                                rx=".5"
-                              ></rect>
-                            </g>
-                          </svg>
+                        <span class="dlt-icon">
+                          <img src="img/pos/delete-icon.svg" />
                         </span>
-                      </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -226,6 +173,45 @@
         </div>
       </div>
     </div>
+    <div class="modal" id="placeOrder" style="display: none; z-index: 1050;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header customer-header">
+            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+            <h4 class="customer-title">
+              {{ _t('Please add number of guests') }}
+            </h4>
+          </div>
+          <div class="modal-body font-weight-bold">
+            <!--{{ _t('Please add number of guest') }}-->
+            <input type="text" value="0" v-model="guests" />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              id="placeConfirm"
+              class="btn btn-success"
+              data-dismiss="modal"
+              @click="newOrder(false, true)"
+            >
+              {{ _t('Place order') }}
+            </button>
+            <button
+              type="button"
+              id="BookedTable"
+              class="btn btn-success"
+              data-dismiss="modal"
+              @click="newOrder(false, false)"
+            >
+              {{ _t('Book Table') }}
+            </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+              {{ _t('Close') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -262,6 +248,7 @@ export default {
   data() {
     return {
       page: null,
+      guests: 0,
       svg: null,
       width: 'auto',
       viewBox: { x: 0, y: 0, width: 1560, height: 950 },
@@ -323,6 +310,7 @@ export default {
     },
     newOrder(reservationId, pos) {
       let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
+      this.$store.commit('dinein/NUMBER_GUESTS', this.guests)
       if (!reservationId) {
         this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
           root: true,
@@ -956,7 +944,7 @@ export default {
 <style scoped>
 .display-table-details {
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: 3fr auto;
   /*align-items: center;*/
   align-content: center;
 }
@@ -968,5 +956,9 @@ a.table-popup.bg-success.font-weight-bold {
 .close-table-details {
   background: #cc3232;
   margin: 1px;
+}
+.order-details-with-action {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
 }
 </style>
