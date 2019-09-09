@@ -85,6 +85,7 @@
           >
             <!--<img src="images/footer-images/d_2.png" alt="customer">-->
             <svg
+              style="width: 0.65em;"
               aria-hidden="true"
               focusable="false"
               data-prefix="fas"
