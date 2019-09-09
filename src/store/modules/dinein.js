@@ -10,6 +10,7 @@ const state = {
     lookup_running: false,
     lookup_completed: false,
   },
+  orderDetails: false,
   completedOrderDetails: {},
   areas: false,
   areaLookup: false,
@@ -68,7 +69,7 @@ const actions = {
     dispatch('getBookedTables', false)
     // dispatch('dineInRunningOrders')
     dispatch('getDineInTables')
-    dispatch('getDineInArea')
+    // dispatch('getDineInArea')
     dispatch('getCovers')
     commit(mutation.LOADING, false)
   },
@@ -99,37 +100,53 @@ const actions = {
       if (loader) commit(mutation.LOADING, false)
     })
   },
-  dineInRunningOrders({ commit, state }, loader = true) {
+  seOrderData({ commit }, response) {
+    let orderDetails = []
+    let responseData = response.data.data
+    responseData.forEach(table => {
+      let order = []
+      let balanceDue = 0
+      let currency = ''
+      table.related_orders_ids.forEach(order_Id => {
+        let od = response.data.page_lookups.orders._id[order_Id]
+        order.push(od)
+        balanceDue += parseInt(od.balance_due)
+        currency = od.currency
+      })
+      orderDetails.push({
+        table: table,
+        orders: order,
+        amount: balanceDue + ' ' + currency,
+      })
+    })
+    commit(mutation.ORDER_DETAILS, {
+      tableData: responseData,
+      orderDetails: orderDetails,
+    })
+  },
+  dineInRunningOrders({ commit, state, dispatch }, loader = true) {
     if (loader) commit(mutation.LOADING, loader)
     const params = [
       state.totalReservations.pageNumber,
       state.totalReservations.limit,
     ]
+
     DineInService.dineInRunningOrders(...params).then(response => {
-      commit(mutation.DINE_IN_RUNNING_ORDERS, response.data)
+      dispatch('seOrderData', response)
       commit(mutation.TOTAL_RESERVATION, response.data)
       if (loader) commit(mutation.LOADING, false)
     })
   },
-  dineInCompleteOrders({ commit }, loader = true) {
+  dineInCompleteOrders({ commit, dispatch }, loader = true) {
     if (loader) commit(mutation.LOADING, loader)
     const params = [
       state.totalReservations.pageNumber,
       state.totalReservations.limit,
     ]
-    // eslint-disable-next-line no-unused-vars
-    return new Promise(() => {
-      DineInService.dineInCompleteOrders(...params)
-        .then(response => {
-          commit(mutation.DINE_IN_COMPLETED_ORDERS, response.data)
-          commit(mutation.TOTAL_RESERVATION, response.data)
-          if (loader) commit(mutation.LOADING, false)
-        })
-        .catch(() => {
-          // eslint-disable-next-line no-console
-          console.log('fail')
-          if (loader) commit(mutation.LOADING, false)
-        })
+    DineInService.dineInCompleteOrders(...params).then(response => {
+      dispatch('seOrderData', response)
+      commit(mutation.TOTAL_RESERVATION, response.data)
+      if (loader) commit(mutation.LOADING, false)
     })
   },
   getDineInArea({ commit, dispatch }) {
@@ -351,14 +368,13 @@ const mutations = {
         parseInt(state.totalReservations.limit)
     )
   },
-  [mutation.DINE_IN_RUNNING_ORDERS](state, orders) {
-    state.orders.running = orders.data
-    state.orders.lookup_running = orders.page_lookups
+  [mutation.ORDER_DETAILS](state, data) {
+    state.orderDetails = data.orderDetails
   },
-  [mutation.DINE_IN_COMPLETED_ORDERS](state, orders) {
+  /*[mutation.DINE_IN_COMPLETED_ORDERS](state, orders) {
     state.orders.completed = orders.data
     state.orders.lookup_completed = orders.page_lookups
-  },
+  },*/
   [mutation.SELECTED_AREA](state, activeArea) {
     state.tablesOnArea = false
     state.activeArea = activeArea

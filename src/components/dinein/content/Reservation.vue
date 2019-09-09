@@ -11,7 +11,7 @@
       </div>
 
       <div class="running-order-table-wrap">
-        blank
+        Coming soon...
       </div>
     </div>
   </div>
