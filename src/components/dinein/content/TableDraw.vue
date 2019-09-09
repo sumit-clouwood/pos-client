@@ -42,6 +42,13 @@
                   >
                     {{ _t(addOrSplit) }}
                   </a>
+                  <a
+                    role="button"
+                    class="table-popup bg-success font-weight-bold"
+                    @click="newOrder(false)"
+                  >
+                    {{ _t('Place Order') }}
+                  </a>
                   <span class="close-table-details" @click="hideTableDetails"
                     >X</span
                   >
@@ -263,7 +270,7 @@ export default {
       selectedTableId: false,
       svgCoordinates: {},
       viewsCoordinates: {},
-      addOrSplit: 'Click to book table',
+      addOrSplit: 'Book Table',
       cancelReservationMsg: 'Do you want to cancel this reservation?',
       order: false,
       selectedAreaObj: '',
@@ -554,9 +561,7 @@ export default {
         order => order.tableId === datum._id
       )
       this.addOrSplit =
-        this.orderDetails.length > 0
-          ? 'Click to split bill'
-          : 'Click to book table'
+        this.orderDetails.length > 0 ? 'Split Bill' : 'Book Table'
       this.selectedTableId = datum._id
       let range = $('#range')
       range
