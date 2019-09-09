@@ -38,19 +38,22 @@
                   <a
                     role="button"
                     class="table-popup bg-success font-weight-bold"
-                    @click="newOrder(false)"
+                    @click="newOrder(false, false)"
                   >
                     {{ _t(addOrSplit) }}
                   </a>
                   <a
                     role="button"
                     class="table-popup bg-success font-weight-bold"
-                    @click="newOrder(false)"
+                    @click="newOrder(false, true)"
                   >
                     {{ _t('Place Order') }}
                   </a>
-                  <span class="close-table-details" @click="hideTableDetails"
-                    >X</span
+                  <a
+                    role="button"
+                    class=" table-popup font-weight-bold close-table-details"
+                    @click="hideTableDetails"
+                    >X</a
                   >
                 </div>
                 <div v-if="orderDetails">
@@ -318,7 +321,7 @@ export default {
         .parent('div')
         .hide()
     },
-    newOrder(reservationId) {
+    newOrder(reservationId, pos) {
       let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
       if (!reservationId) {
         this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
@@ -327,7 +330,7 @@ export default {
       } else {
         this.$store.commit('dinein/RESERVATION_ID', reservationId)
       }
-      this.$router.push({ path: URL })
+      if (pos || this.orderDetails.length > 0) this.$router.push({ path: URL })
     },
     updateOrder(data) {
       this.$store.commit('dinein/RESERVATION_ID', data.orderData.reservationId)
@@ -487,6 +490,9 @@ export default {
               rectleft += 10
             }
             return (d.table_position_coordinate.x || 0) + rectleft
+          })
+          .on('click', function(d, i, a) {
+            dis.showOptions(d, i, a)
           })
           .attr('y', function(d) {
             let rectTop = 5
@@ -950,12 +956,17 @@ export default {
 <style scoped>
 .display-table-details {
   display: grid;
-  grid-template-columns: 3fr auto;
+  grid-template-columns: 1fr 1fr auto;
   /*align-items: center;*/
   align-content: center;
 }
+a.table-popup.bg-success.font-weight-bold {
+  margin: 1px;
+  box-shadow: 0 0px 0.1875rem rgba(23, 23, 32, 0.05),
+    0 0px 0.625rem rgba(23, 23, 32, 0.05), 0 0px 1.25rem rgba(23, 23, 32, 0.05);
+}
 .close-table-details {
   background: #cc3232;
-  color: #fff;
+  margin: 1px;
 }
 </style>

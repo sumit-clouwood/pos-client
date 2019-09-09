@@ -3,12 +3,12 @@ import DataService from '@/services/DataService'
 export default {
   dineInRunningOrders(page, limit) {
     return DataService.get(
-      `/model/reservations?page_id=running_orders&query=&limit=${limit}&ascending=1&page=${page}`
+      `/model/reservations?page_id=running_orders&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&orderBy=priority`
     )
   },
   dineInCompleteOrders(page, limit) {
     return DataService.get(
-      `/model/reservations?page_id=reservations_main_tbl&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&status=completed`
+      `/model/reservations?page_id=reservations_main_tbl&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&status=completed&byColumn=1&orderBy=priority`
     )
   },
 
