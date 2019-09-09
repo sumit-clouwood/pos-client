@@ -959,6 +959,13 @@ a.table-popup.bg-success.font-weight-bold {
 }
 .order-details-with-action {
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: 3fr 1fr auto;
+}
+div#tooltipdata
+  .table-action.order-details-with-action
+  .cursor-pointer.text-danger.reservation-cancel {
+  position: static;
+  border: 1px solid;
+  margin: 1px;
 }
 </style>
