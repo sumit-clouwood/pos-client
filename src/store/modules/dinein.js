@@ -10,6 +10,7 @@ const state = {
     lookup_running: false,
     lookup_completed: false,
   },
+  guests: 0,
   orderDetails: false,
   completedOrderDetails: {},
   areas: false,
@@ -301,7 +302,7 @@ const actions = {
             .utc()
             .format('hh:mm'),
           assigned_table_id: tableId,
-          number_of_guests: 0,
+          number_of_guests: state.guests,
           customers: [],
         },
       ]
@@ -403,6 +404,9 @@ const mutations = {
   [mutation.RESERVATION_ID](state, reservationId) {
     state.reservation = reservationId
     localStorage.setItem('reservationId', reservationId)
+  },
+  [mutation.NUMBER_GUESTS](state, guest) {
+    state.guests = guest
   },
   [mutation.BOOKED_TABLES](state, bookedTables) {
     state.allBookedTables.orders = bookedTables.data

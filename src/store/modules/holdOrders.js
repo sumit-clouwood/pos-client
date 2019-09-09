@@ -28,7 +28,7 @@ const actions = {
       rootState.order.orderType.OTApi,
       state.params.page,
       'orders_main_tbl',
-      '',
+      rootState.location.store._id,
       '',
     ]
     commit(mutation.LOADING, false)
@@ -97,6 +97,11 @@ const mutations = {
   },
   [mutation.REMOVE_ORDER](state, index) {
     state.getHoldOrders.splice(index, 1)
+  },
+  [mutation.RESET](state) {
+    state.getHoldOrders = false
+    state.orderDetails = {}
+    state.pageLookups = {}
   },
 }
 

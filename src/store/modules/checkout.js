@@ -595,6 +595,9 @@ const actions = {
             if (typeof response.data.id !== 'undefined') {
               //this is walk in order
               orderId = response.data.id
+              if (typeof response.data.order_no !== 'undefined') {
+                commit('SET_ORDER_NUMBER', response.data.order_no)
+              }
             }
             //check what is order status, hold or modifying delivery
             switch (rootState.order.orderStatus) {
@@ -774,6 +777,9 @@ const mutations = {
   },
   [mutation.SET_ORDER_NUMBER](state, orderNumber) {
     state.orderNumber = orderNumber
+    let order = { ...state.order }
+    order.orderNumber = state.orderNumber
+    state.order = order
   },
   [mutation.LOADING](state, loadingStatus) {
     state.loading = loadingStatus

@@ -20,7 +20,7 @@
           >
             <td class="dine-order-tabel">
               <span :class="tabName">
-                {{ orderTable.table.number }}
+                {{ _t('Table No') }} : {{ orderTable.table.number }}
                 <p>
                   <small class="text-capitalize font-weight-bold ">
                     {{
