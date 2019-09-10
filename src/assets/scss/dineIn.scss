@@ -548,7 +548,7 @@ svg {
           text-align: center;
           justify-content: center;
           color: $white;
-          margin: $px1;
+          margin: 0.0325rem;
           align-items: center;
           &:hover{
             background: rgba(40,147,69,0.7) !important;
@@ -605,6 +605,7 @@ g.dinein_table_parent {
   position: relative;
   .dropdown-item{
     padding: $px5 $px25 $px5 $px5 ;
+    border-bottom: $px1 solid rgba(12, 19, 12, 0.1);
   }
 }
 div{
