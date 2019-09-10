@@ -225,7 +225,7 @@ export default {
         // padding-left: 85px;
         padding-right: 0;
         // color: #fff;
-        height: 40px;
+        height: 80px;
 
         .food-menu-item-price {
           justify-self: end;
