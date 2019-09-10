@@ -76,9 +76,9 @@
                         </div>
                         <div
                           class="table-popup bg-success font-weight-bold"
-                          @click="newOrder(orderData.reservationId, false)"
+                          @click="newOrder(orderData.reservationId, true)"
                         >
-                          {{ _t(addOrSplit) }}
+                          {{ _t('Split Bill') }}
                         </div>
                         <div
                           class="cursor-pointer text-danger reservation-cancel"
