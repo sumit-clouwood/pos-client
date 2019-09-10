@@ -38,12 +38,13 @@
         </div>
       </template>
     </div>
-    <div class="main-oreders-buttons" v-if="items.length">
+    <div class="main-oreders-buttons">
       <div
         v-if="
           availableTables &&
             orderType.OTApi === 'dine_in' &&
-            cartType !== 'hold'
+            cartType !== 'hold' &&
+            items.length
         "
         class="driver-container"
       >
@@ -54,7 +55,7 @@
             placeholder="Move Table"
             class="input-search-driver shorten-sentence"
             id="get-available-tables-list"
-            v-model="selectedTable"
+            v-model="selectedTableMove"
             @click="showTableList"
           />
         </form>
@@ -86,15 +87,13 @@
           </span>
         </div>
       </div>
-      <!--<div
-        class="orders-button-large"
-        disabled="disable"
-        v-if="orderType.OTApi === 'dine_in'"
-      >
-        {{ _t('Split Table') }}
-      </div>-->
       <div
-        v-if="covers && orderType.OTApi === 'dine_in' && cartType !== 'hold'"
+        v-if="
+          covers &&
+            orderType.OTApi === 'dine_in' &&
+            cartType !== 'hold' &&
+            items.length
+        "
         class="driver-container"
       >
         <form>
@@ -126,12 +125,26 @@
         </div>
       </div>
       <div
-        v-if="cartType !== 'hold' && orderType.OTApi !== 'dine_in'"
+        v-if="
+          cartType !== 'hold' && orderType.OTApi !== 'dine_in' && items.length
+        "
         id="holdorder"
         class="orders-button-large color-main color-text"
         @click="hold"
       >
         {{ _t('Hold') }}
+      </div>
+      <div
+        v-if="orderType.OTApi === 'dine_in'"
+        class="color-main color-text dine-in-table-guest-details-pos"
+      >
+        <span class="tables-draw"
+          ><img src="img/dinein/dine-intable.svg" />
+          <b> {{ selectedTable.number }}</b></span
+        >
+        <span class="tables-draw"
+          ><img src="img/dinein/guest-user.svg" /> <b> {{ guests }}</b></span
+        >
       </div>
     </div>
   </div>
@@ -146,7 +159,7 @@ export default {
   data() {
     return {
       OrderSelectedCover: 'Select Cover',
-      selectedTable: '',
+      selectedTableMove: '',
       myStyle: {
         backgroundColor: '#fff',
       },
@@ -158,7 +171,13 @@ export default {
     ...mapState('order', ['items', 'cartType', 'orderType', 'orderData']),
     ...mapState('checkoutForm', ['msg']),
     ...mapState('customer', ['deliveryAreas']),
-    ...mapState('dinein', ['selectedCover', 'covers', 'availableTables']),
+    ...mapState('dinein', [
+      'selectedCover',
+      'covers',
+      'availableTables',
+      'guests',
+      'selectedTable',
+    ]),
     ...mapState({
       selectedCustomer: state => state.customer.customer,
     }),
@@ -187,7 +206,7 @@ export default {
     setTable: function(table) {
       if (table) {
         this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
-        this.selectedTable = table.name
+        this.selectedTableMove = table.name
         // let coverId = table.id
         let tableId = table.table_id
         let reservationId = localStorage.getItem('reservationId')
@@ -199,7 +218,7 @@ export default {
         }
         this.$store.dispatch('dinein/moveTable', data)
       } else {
-        this.selectedTable = 'Select Table'
+        this.selectedTableMove = 'Select Table'
       }
       // this.$store.commit('dinein/AVAILABLE_TABLES', table)
       $('.available-tables').hide()

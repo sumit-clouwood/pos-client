@@ -334,6 +334,7 @@ export default {
     newOrder(reservationId, pos) {
       let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
       this.$store.commit('dinein/NUMBER_GUESTS', this.guests)
+      this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       if (!reservationId) {
         this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
           root: true,
@@ -561,7 +562,7 @@ export default {
     },
     showOptions(datum, i, a) {
       // eslint-disable-next-line no-console
-      console.log(datum.chairs)
+      console.log(datum)
       this.selectedTableData = datum
       this.guests = ''
       this.validationErrors = ''

@@ -22,6 +22,7 @@ const state = {
   tableStatus: {},
   orderOnTables: {},
   availableTables: false,
+  selectedTable: false,
   reservation: false,
   reservationId: false,
   orderType: { OTview: 'Dine In', OTApi: 'dine_in' },
@@ -434,6 +435,9 @@ const mutations = {
   },
   [mutation.DINE_IN_TAB_TYPE](state, reservationData) {
     state.dineInTabType = reservationData
+  },
+  [mutation.SELECTED_TABLE](state, selectedTable) {
+    state.selectedTable = selectedTable
   },
 }
 

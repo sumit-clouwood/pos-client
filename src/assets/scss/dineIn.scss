@@ -911,3 +911,14 @@ svg .active > path {
     }
   }
 }
+.dine-in-table-guest-details-pos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: center;
+  /* justify-content: center; */
+  text-align: center;
+}
+.tables-draw {
+  border: $px1 dashed;
+  margin: $px2;
+}
