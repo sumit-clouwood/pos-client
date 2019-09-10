@@ -44,7 +44,7 @@
                     {{ _t('Book Table') }}
                   </span>
                   <span
-                    class=" table-popup font-weight-bold close-table-details"
+                    class="font-weight-bold close-table-details"
                     @click="hideTableDetails"
                   >
                     X
@@ -92,7 +92,7 @@
                     </div>
                     <div v-else class="table-action order-details-with-action">
                       <div
-                        @click="newOrder(orderData.reservationId)"
+                        @click="newOrder(orderData.reservationId, true)"
                         role="button"
                         class="dropdown-item"
                       >
@@ -102,7 +102,7 @@
                       </div>
                       <div
                         class="table-popup bg-success font-weight-bold"
-                        @click="newOrder(orderData.reservationId, false)"
+                        @click="newOrder(orderData.reservationId, true)"
                       >
                         {{ _t(addOrSplit) }}
                       </div>
@@ -178,13 +178,19 @@
         <div class="modal-content">
           <div class="modal-header customer-header">
             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-            <h4 class="customer-title">
-              {{ _t('Please add number of guests') }}
-            </h4>
+            <h5 class="customer-title">
+              {{ _t('Please add number of guests.') }}
+            </h5>
           </div>
           <div class="modal-body font-weight-bold">
             <!--{{ _t('Please add number of guest') }}-->
-            <input type="text" value="0" v-model="guests" />
+            <label>{{ _t('Number of guest') }} : </label>
+            <input
+              type="text"
+              value="0"
+              v-model="guests"
+              class="form-control"
+            />
           </div>
           <div class="modal-footer">
             <button
@@ -318,7 +324,7 @@ export default {
       } else {
         this.$store.commit('dinein/RESERVATION_ID', reservationId)
       }
-      if (pos || this.orderDetails.length > 0) this.$router.push({ path: URL })
+      if (pos) this.$router.push({ path: URL })
       if (!reservationId) {
         this.$store.dispatch('dinein/updateDineInOrderStatus', {
           title: 'all',
@@ -963,6 +969,7 @@ a.table-popup.bg-success.font-weight-bold {
 }
 .close-table-details {
   background: #cc3232;
+  color: #fff;
   margin: 1px;
 }
 .order-details-with-action {
@@ -973,7 +980,10 @@ div#tooltipdata
   .table-action.order-details-with-action
   .cursor-pointer.text-danger.reservation-cancel {
   position: static;
-  border: 1px solid;
   margin: 1px;
+  border-bottom: 1px solid rgba(204, 50, 50, 0.5);
+}
+.modal .modal-dialog .modal-content .modal-footer {
+  display: unset;
 }
 </style>

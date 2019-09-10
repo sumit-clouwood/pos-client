@@ -516,10 +516,13 @@ input.qty {
   color: #fff;
   right: 0;
   padding: 5px !important;
+  &:hover{
+    background: rgba(0,0,0,0.2);
+  }
   .dlt-icon{
     padding: 0;
     cursor: pointer;
-    > svg{
+    > img{
       display: inline-block;
       vertical-align: middle;
     }
@@ -539,15 +542,16 @@ svg {
       margin-bottom: 0;
       font-weight: 600;
         .table-popup {
-          display: block;
+          display: grid;
           //padding: 6px 25px 1px 12px;
           font-weight: 400;
           text-align: center;
           justify-content: center;
           color: $white;
           margin: $px1;
+          align-items: center;
           &:hover{
-            color: #fff;
+            background: rgba(40,147,69,0.7) !important;
           }
         }
     }
