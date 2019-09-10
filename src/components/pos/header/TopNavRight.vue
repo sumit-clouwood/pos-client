@@ -76,10 +76,12 @@
           <a :href="crm">{{ _t('CRM') }}</a>
         </li>
         <li>
-          <a role="button">
-            <router-link :to="'/dine-in' + store">
-              {{ _t('Dine In') }}
-            </router-link>
+          <a
+            role="button"
+            @click="$router.push('/dine-in' + store)"
+            :to="'/dine-in' + store"
+          >
+            {{ _t('Dine In') }}
           </a>
         </li>
         <li v-if="permitted('menu', 'root')">

@@ -247,6 +247,7 @@ export default {
       'tableStatus',
       'allBookedTables',
       'reservationId',
+      'getAvailableTables',
     ]),
     ...mapGetters('context', ['store']),
   },
@@ -350,6 +351,7 @@ export default {
           loader: false,
         })
         this.$store.dispatch('dinein/getDineInArea', false)
+        this.$store.dispatch('dinein/getDineInTables', false)
       }
     },
     updateOrder(data) {
