@@ -107,8 +107,8 @@
         </li>
       </div>
     </div>
-    <div class="btn-next btn-next-s" @click="footerBtnMethod">Next</div>
-    <div class="btn-next" @click="footerBtnMethodS">Next</div>
+    <div class="btn-next" @click="footerBtnMethod">Nexst</div>
+    <div class="btn-next btn-next-s" @click="footerBtnMethodS">Next</div>
     <div class="btn-Cancel" @click="methodCardHendlerChange">Cancel</div>
     <div class="qr-voucher-code">
       <div class="title">Voucher code</div>
@@ -118,6 +118,7 @@
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
+import * as CONST from '@/constants'
 
 export default {
   props: ['param'],
@@ -139,6 +140,7 @@ export default {
     ...mapGetters('order', ['items', 'orderTotal']),
     ...mapGetters('location', ['formatPrice']),
     ...mapGetters(['footerMenuHendler', 'payMethod']),
+    ...mapState('checkoutForm', ['msg', 'error', 'method']),
     ...mapState({
       selectedModal: state =>
         state.location.setModal == '#loyalty-payment'
@@ -168,15 +170,17 @@ export default {
       this.$store.dispatch('methodCardHendlerChange')
     },
     footerBtnMethod() {
-      if (this.payMethod == '1') {
-        this.$store.dispatch('payNowCalcHendlerChange')
-      } else if (this.payMethod == '2') {
-        this.$store.dispatch('loyaltyPaymentHendlerChange')
-      } else if (this.payMethod == '3') {
-        this.$store.dispatch('methodCardHendlerChange')
-      } else if (this.payMethod == '4') {
-        this.$store.dispatch('QRMethodChangeHendler')
-      }
+      /* eslint-disable */
+      this.$store.dispatch('checkoutForm/validatePayment').then(() => {
+        if (this.method.type == CONST.GIFT_CARD) {
+          this.$store.dispatch('loyaltyPaymentHendlerChange')
+        } else if (this.method.reference_code) {
+          this.$store.dispatch('methodCardHendlerChange')
+        } else {
+          //cash payments
+          this.$store.dispatch('payNowCalcHendlerChange')
+        }
+      })
     },
     footerBtnMethodS() {
       this.$store.dispatch('successfullHendlerChange')
