@@ -41,10 +41,10 @@
                     data-dismiss="modal"
                     class="table-popup bg-success font-weight-bold"
                   >
-                    {{ _t('Book Table') }}
+                    {{ _t(addOrSplit) }}
                   </span>
                   <span
-                    class=" table-popup font-weight-bold close-table-details"
+                    class="font-weight-bold close-table-details"
                     @click="hideTableDetails"
                   >
                     X
@@ -76,9 +76,9 @@
                         </div>
                         <div
                           class="table-popup bg-success font-weight-bold"
-                          @click="newOrder(orderData.reservationId, false)"
+                          @click="newOrder(orderData.reservationId, true)"
                         >
-                          {{ _t(addOrSplit) }}
+                          {{ _t('Split Bill') }}
                         </div>
                         <div
                           class="cursor-pointer text-danger reservation-cancel"
@@ -92,7 +92,7 @@
                     </div>
                     <div v-else class="table-action order-details-with-action">
                       <div
-                        @click="newOrder(orderData.reservationId)"
+                        @click="newOrder(orderData.reservationId, true)"
                         role="button"
                         class="dropdown-item"
                       >
@@ -102,9 +102,9 @@
                       </div>
                       <div
                         class="table-popup bg-success font-weight-bold"
-                        @click="newOrder(orderData.reservationId, false)"
+                        @click="newOrder(orderData.reservationId, true)"
                       >
-                        {{ _t(addOrSplit) }}
+                        {{ _t('Split Bill') }}
                       </div>
                       <div
                         class="cursor-pointer text-danger reservation-cancel"
@@ -178,13 +178,23 @@
         <div class="modal-content">
           <div class="modal-header customer-header">
             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-            <h4 class="customer-title">
-              {{ _t('Please add number of guests') }}
-            </h4>
+            <h5 class="customer-title">
+              {{ _t('Please add number of guests.') }}
+            </h5>
           </div>
           <div class="modal-body font-weight-bold">
             <!--{{ _t('Please add number of guest') }}-->
-            <input type="text" value="0" v-model="guests" />
+            <label>{{ _t('Number of guest') }} : </label>
+            <input
+              type="number"
+              v-model.number="guests"
+              @keyup="chairsValidation"
+              @change="chairsValidation"
+              class="form-control"
+            />
+            <span v-if="validationErrors" class="text-danger">{{
+              validationErrors
+            }}</span>
           </div>
           <div class="modal-footer">
             <button
@@ -203,7 +213,7 @@
               data-dismiss="modal"
               @click="newOrder(false, false)"
             >
-              {{ _t('Book Table') }}
+              {{ _t(addOrSplit) }}
             </button>
             <button type="button" class="btn btn-danger" data-dismiss="modal">
               {{ _t('Close') }}
@@ -248,12 +258,13 @@ export default {
   data() {
     return {
       page: null,
-      guests: 0,
+      guests: '',
       svg: null,
       width: 'auto',
       viewBox: { x: 0, y: 0, width: 1560, height: 950 },
       height: '950px',
       selectedTableD3: '',
+      selectedTableData: false,
       svgWidth: 250,
       svgHeight: 100,
       orderDetails: [],
@@ -267,6 +278,7 @@ export default {
       selectedReservationId: '',
       componentKey: 0,
       moveReservation: false,
+      validationErrors: false,
     }
   },
   mounted() {
@@ -284,6 +296,17 @@ export default {
       // $('#id' + this.selectedTableId).addClass('class', 'dinein_table active')
       d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
     },*/
+    chairsValidation() {
+      if (this.guests > this.selectedTableData.chairs) {
+        this.validationErrors =
+          'Sorry you cannot add more then ' +
+          this.selectedTableData.chairs +
+          ' guests on this table'
+        this.guests = this.selectedTableData.chairs
+      } else {
+        this.validationErrors = false
+      }
+    },
     created_time(time) {
       return this.convertDatetime(time, this.timezoneString, 'h:mm:ss')
       // return this.current_time.format('h:mm A')
@@ -318,7 +341,7 @@ export default {
       } else {
         this.$store.commit('dinein/RESERVATION_ID', reservationId)
       }
-      if (pos || this.orderDetails.length > 0) this.$router.push({ path: URL })
+      if (pos) this.$router.push({ path: URL })
       if (!reservationId) {
         this.$store.dispatch('dinein/updateDineInOrderStatus', {
           title: 'all',
@@ -349,9 +372,6 @@ export default {
     clearTableArea() {
       d3.selectAll('#dine-in-area > *').remove()
     },
-    /*orderTypeWalkIn: function(orderType) {
-          this.$store.commit('order/ORDER_TYPE', orderType)
-        },*/
     updateDineInOrderStatus: function(orderStatus) {
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
     },
@@ -364,22 +384,6 @@ export default {
         dataRelated: 'running-orders-show',
       }
       this.updateDineInOrderStatus(runningOrder)
-      // this.$store.commit('dinein/DINE_IN_TAB_TYPE', runningOrder.title)
-      // this.$store.commit('dinein/LOADING', true)
-      // this.$store.dispatch(runningOrder.pageId)
-      // // it is temporary code we will update it later.
-      // let id = runningOrder.dataRelated
-      // $('div#dm-content-wrapper div.container-fluid').each(function() {
-      //   $(this)
-      //     .removeClass('active')
-      //     .hide()
-      //   if ($(this).attr('id') === id) {
-      //     $(this)
-      //       .addClass('active')
-      //       .css('display', 'grid')
-      //   }
-      // })
-      // this.$store.commit('dinein/LOADING', false)
     },
     updateTableOnArea() {
       let dis = this
@@ -557,13 +561,16 @@ export default {
     },
     showOptions(datum, i, a) {
       // eslint-disable-next-line no-console
-      // console.log(a[i])
+      console.log(datum.chairs)
+      this.selectedTableData = datum
+      this.guests = ''
+      this.validationErrors = ''
       this.selectedTableD3 = a[i]
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
       this.addOrSplit =
-        this.orderDetails.length > 0 ? 'Split Bill' : 'Book Table'
+        this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
       this.selectedTableId = datum._id
       let range = $('#range')
       range
@@ -957,13 +964,14 @@ export default {
   align-content: center;
 }
 a.table-popup.bg-success.font-weight-bold {
-  margin: 1px;
+  margin: 0.0325rem;
   box-shadow: 0 0px 0.1875rem rgba(23, 23, 32, 0.05),
-    0 0px 0.625rem rgba(23, 23, 32, 0.05), 0 0px 1.25rem rgba(23, 23, 32, 0.05);
+    0 0px 0.625rem rgba(23, 23, 32, 0.05), 0 0 1.25rem rgba(23, 23, 32, 0.05);
 }
 .close-table-details {
   background: #cc3232;
-  margin: 1px;
+  color: #fff;
+  margin: 0.0325rem;
 }
 .order-details-with-action {
   display: grid;
@@ -973,7 +981,10 @@ div#tooltipdata
   .table-action.order-details-with-action
   .cursor-pointer.text-danger.reservation-cancel {
   position: static;
-  border: 1px solid;
   margin: 1px;
+  border-bottom: 1px solid rgba(204, 50, 50, 0.2);
+}
+.modal .modal-dialog .modal-content .modal-footer {
+  display: unset;
 }
 </style>

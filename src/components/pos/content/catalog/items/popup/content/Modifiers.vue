@@ -256,6 +256,7 @@ export default {
                   background-color: $blue-middle;
                   border: none;
                   border-radius: 50%;
+                  width: inherit;
                   @include responsive(mobile) {
                     background-color: $green-middle;
                   }
