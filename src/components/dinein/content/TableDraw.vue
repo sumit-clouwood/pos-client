@@ -334,14 +334,15 @@ export default {
     },
     newOrder(reservationId, pos) {
       let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
-      this.$store.commit('dinein/NUMBER_GUESTS', this.guests)
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       if (!reservationId) {
+        this.$store.commit('dinein/NUMBER_GUESTS', this.guests)
         this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
           root: true,
         })
       } else {
         this.$store.commit('dinein/RESERVATION_ID', reservationId)
+        this.$store.commit('dinein/NUMBER_GUESTS', false)
       }
       if (pos) this.$router.push({ path: URL })
       if (!reservationId) {
@@ -572,6 +573,8 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
+      // eslint-disable-next-line no-console
+      console.log(this.orderDetails)
       this.addOrSplit =
         this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
       this.selectedTableId = datum._id
