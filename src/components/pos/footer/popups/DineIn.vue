@@ -106,6 +106,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('order', ['orderType']),
+    ...mapGetters('context', ['store']),
   },
   watch: {
     orderType(newVal, oldVal) {
@@ -135,6 +136,9 @@ export default {
     },
     updateOrderType() {
       this.$store.dispatch('order/updateOrderType', this.selectedOrderType)
+      if (this.selectedOrderType.OTApi == 'dine_in') {
+        this.$router.push('/dine-in' + this.store)
+      }
     },
   },
 }

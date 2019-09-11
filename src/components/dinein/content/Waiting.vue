@@ -11,7 +11,7 @@
       </div>
 
       <div class="running-order-table-wrap">
-        Coming soon...
+        <CommingSoon />
       </div>
     </div>
   </div>
@@ -19,8 +19,10 @@
 
 <script>
 import { mapState } from 'vuex'
+import CommingSoon from '../../util/CommingSoon'
 export default {
   name: 'Waiting',
+  components: { CommingSoon },
   computed: {
     ...mapState('dinein', ['dineInTabType']),
   },

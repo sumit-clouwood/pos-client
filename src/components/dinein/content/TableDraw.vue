@@ -76,7 +76,12 @@
                         </div>
                         <div
                           class="table-popup bg-success font-weight-bold"
-                          @click="newOrder(orderData.reservationId, true)"
+                          @click="
+                            updateOrder({
+                              orderId: orderId,
+                              orderData: orderData,
+                            })
+                          "
                         >
                           {{ _t('Split Bill') }}
                         </div>
