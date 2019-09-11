@@ -259,7 +259,7 @@ export default {
   data() {
     return {
       page: null,
-      guests: '',
+      guests: 1,
       svg: null,
       width: 'auto',
       viewBox: { x: 0, y: 0, width: 1560, height: 950 },
@@ -304,6 +304,9 @@ export default {
           this.selectedTableData.chairs +
           ' guests on this table'
         this.guests = this.selectedTableData.chairs
+      } else if (this.guests < 1) {
+        this.validationErrors = 'Minimum 1 guest is required'
+        this.guests = 1
       } else {
         this.validationErrors = false
       }
@@ -567,7 +570,7 @@ export default {
       // eslint-disable-next-line no-console
       console.log(datum)
       this.selectedTableData = datum
-      this.guests = ''
+      this.guests = 1
       this.validationErrors = ''
       this.selectedTableD3 = a[i]
       this.orderDetails = this.orderOnTables.filter(
