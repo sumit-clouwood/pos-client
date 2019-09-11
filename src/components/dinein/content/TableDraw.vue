@@ -96,7 +96,7 @@
                         role="button"
                         class="dropdown-item"
                       >
-                        {{ orderData.tableNumber }} #Reserved |
+                        {{ orderData.tableNumber }} #R |
                         {{ created_date(orderData.startDate) }},
                         {{ created_time(orderData.startTime) }}
                       </div>
@@ -259,7 +259,7 @@ export default {
   data() {
     return {
       page: null,
-      guests: '',
+      guests: 1,
       svg: null,
       width: 'auto',
       viewBox: { x: 0, y: 0, width: 1560, height: 950 },
@@ -304,6 +304,9 @@ export default {
           this.selectedTableData.chairs +
           ' guests on this table'
         this.guests = this.selectedTableData.chairs
+      } else if (this.guests < 1) {
+        this.validationErrors = 'Minimum 1 guest is required'
+        this.guests = 1
       } else {
         this.validationErrors = false
       }
@@ -424,6 +427,7 @@ export default {
           return d.table_position_coordinate.y || 0
         })
         .attr('table_id', d => d._id)
+        .attr('id', d => 'id_' + d._id)
         .attr('table_shape', d => d.table_shape)
         .attr('table_number', d => d.number)
         .attr('chairs', d => d.chairs)
@@ -567,7 +571,7 @@ export default {
       // eslint-disable-next-line no-console
       console.log(datum)
       this.selectedTableData = datum
-      this.guests = ''
+      this.guests = 1
       this.validationErrors = ''
       this.selectedTableD3 = a[i]
       this.orderDetails = this.orderOnTables.filter(
@@ -579,15 +583,37 @@ export default {
         this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
       this.selectedTableId = datum._id
       let range = $('#range')
+      let top = datum.table_position_coordinate.y + 20 || 0
+      // let left = datum.table_position_coordinate.x + 35 || 100
+      // $('#id_' + datum._id).click(function(e) {
+      let posX = $('#id_' + datum._id).offset().left
+      // let posY = $('#id_' + datum._id).offset().top
+      /*let tableWidth = $('#id_' + datum._id)
+        .find('svg')
+        .width()*/
+      let getWidth = 361 / 2
+      if (this.orderDetails.length === 0) {
+        getWidth = 155 / 2
+      } else if (this.orderDetails.length > 0) {
+        let orderCount = 0
+        this.orderDetails.forEach(order => {
+          if (order.orderIds.length > 0) {
+            orderCount += 1
+          }
+        })
+        if (orderCount > 0) {
+          getWidth = 445 / 2
+        }
+      }
+      // let tooltipWidth = parseInt($('#tooltipdata').width()) / 2
+      // alert(event.pageX + ' , ' + posX + ' , ' + event.pageY + ' , ' + posY)
+      // })
+
       range
         .parent('div')
         .attr(
           'style',
-          'top:' +
-            (datum.table_position_coordinate.y + 20 || 0) +
-            'px; left:' +
-            (datum.table_position_coordinate.x - 35 || 100) +
-            'px; display:block'
+          'top:' + top + 'px; left:' + (posX - getWidth) + 'px; display:block'
         )
     },
     drawViews() {
