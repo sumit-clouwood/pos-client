@@ -364,7 +364,9 @@ export default {
       }
     },
     updateOrder(data) {
+      this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       this.$store.commit('dinein/RESERVATION_ID', data.orderData.reservationId)
+      this.$store.commit('dinein/NUMBER_GUESTS', false)
       let URL =
         '/dine-in/' +
         this.store +
