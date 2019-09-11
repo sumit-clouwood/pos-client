@@ -583,7 +583,7 @@ export default {
           'top:' +
             (datum.table_position_coordinate.y + 20 || 0) +
             'px; left:' +
-            (datum.table_position_coordinate.x + 35 || 100) +
+            (datum.table_position_coordinate.x - 35 || 100) +
             'px; display:block'
         )
     },
