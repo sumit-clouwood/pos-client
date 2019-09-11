@@ -119,7 +119,12 @@
           />
         </svg>
       </a>
-      <ul class="setting-dropdown">
+      <ul class="setting-dropdown1">
+        <li>
+          <a role="button" @click="$router.push(store)">
+            {{ _t('Walk In') }}
+          </a>
+        </li>
         <li>
           <a role="button" class="cursor-pointer">{{ _t('Printers') }}</a>
         </li>
