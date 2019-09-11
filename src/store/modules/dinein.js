@@ -32,7 +32,7 @@ const state = {
   allBookedTables: { orders: false, lookup: false },
   orderReservationData: {},
   dineInTabType: 'all',
-  split: true,
+  split: false,
   totalReservations: { totalPages: 0, pageNumber: 1, limit: 10 },
 }
 const getters = {
@@ -449,6 +449,9 @@ const mutations = {
   },
   [mutation.SELECTED_TABLE](state, selectedTable) {
     state.selectedTable = selectedTable
+  },
+  [mutation.TABLE_SPLIT](state, slitStatus) {
+    state.split = slitStatus
   },
 }
 
