@@ -314,20 +314,16 @@ export default {
         //   (nowTime - this.lastSynced) / 1000
         // )
 
-        if (nowTime - this.lastSynced > this.syncInterval * 1000) {
+        //if (nowTime - this.lastSynced > this.syncInterval * 1000)
+        {
           this.lastSynced = nowTime
 
-          console.log(
-            this.syncInterval,
-            ' passed, force sync in 10 sec from app'
-          )
+          console.log(nowTime, ' force sync from app')
           setTimeout(function() {
             navigator.serviceWorker.controller.postMessage({
               sync: 1,
             })
-          }, 1000 * 10)
-        } else {
-          //console.log(this.syncInterval, ' not passed yet')
+          }, 1000 * 5)
         }
       }
     })

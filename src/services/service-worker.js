@@ -139,38 +139,36 @@ var EventListener = {
       //this is manually sync, we ll remove it later
       else if (event.data.hasOwnProperty('sync')) {
         console.log('sw:', 'sync event received ', event.data)
-        var nowTime = new Date().getTime()
-        console.log(
-          'sw:',
-          'last synced',
-          Sync.lastSynced,
-          'sync received',
-          nowTime,
-          'seconds passed last sync',
-          (nowTime - Sync.lastSynced) / 1000
-        )
 
-        if (nowTime - Sync.lastSynced > Sync.SYNC_AFTER_SECONDS * 1000) {
-          console.log(
-            'sw:',
-            Sync.SYNC_AFTER_SECONDS,
-            ' seconds passed, syncing now'
-          )
-          Sync.lastSynced = nowTime
-          const syncIt = async () => {
-            return new Promise(resolve => {
-              setTimeout(function() {
-                console.log('sw:', 'background sync starts')
-                Sync.backgroudSync(resolve)
-              }, 1000 * 10)
-            })
-          }
-          event.waitUntil(syncIt())
+        if (Sync.inprocess) {
+          console.log('sw:', 'A sync already in progress')
         } else {
+          Sync.inprocess = true
+
+          var nowTime = new Date().getTime()
           // console.log(
-          //   Sync.SYNC_AFTER_SECONDS,
-          //   ' not passed from last sync, do not sync now'
+          //   'sw:',
+          //   'last synced',
+          //   Sync.lastSynced,
+          //   'sync received',
+          //   nowTime,
+          //   'seconds passed last sync',
+          //   (nowTime - Sync.lastSynced) / 1000
           // )
+
+          //if (nowTime - Sync.lastSynced > Sync.SYNC_AFTER_SECONDS * 1000)
+          {
+            console.log('sw:', 'No sync in process, Sync starts...')
+            Sync.lastSynced = nowTime
+            const syncIt = async () => {
+              return new Promise(resolve => {
+                setTimeout(function() {
+                  Sync.backgroudSync(resolve)
+                }, 1000 * 1)
+              })
+            }
+            event.waitUntil(syncIt())
+          }
         }
       }
     })
@@ -217,6 +215,22 @@ var EventListener = {
   _sync() {
     self.addEventListener('sync', function(event) {
       console.log('sw:', 'browser sync event received', event)
+      if (Sync.inprocess) {
+        console.log('sw:', 'A sync already in progress')
+      } else {
+        Sync.inprocess = true
+        var nowTime = new Date().getTime()
+        console.log('sw:', 'No sync in process, browser Sync starts...')
+        Sync.lastSynced = nowTime
+        const syncIt = async () => {
+          return new Promise(resolve => {
+            setTimeout(function() {
+              Sync.backgroudSync(resolve)
+            }, 1000 * 1)
+          })
+        }
+        event.waitUntil(syncIt())
+      }
     })
   },
 }
@@ -272,6 +286,7 @@ var DB = {
 }
 
 var Sync = {
+  inprocess: false,
   formData: null,
   headers: null,
   dbAuthData: null,
@@ -287,6 +302,7 @@ var Sync = {
   },
 
   backgroudSync: async function(resolve) {
+    Sync.inprocess = true
     DB.open(async () => {
       console.log('sw:', 'db opened for sync')
       //open db before sync, db is opened only when insertion, there might be a case when
@@ -295,9 +311,20 @@ var Sync = {
       Factory.syncHandlers().forEach(obj => {
         syncedObjects.push(obj.sync())
       })
-      await Promise.all(syncedObjects)
-      console.log('sw:', 'All synced')
-      resolve()
+      try {
+        await Promise.all(syncedObjects)
+        Sync.inprocess = false
+        console.log(1, 'sw:', 'All synced', 'sync inprocess', Sync.inprocess)
+        resolve()
+      } catch (error) {
+        Sync.inprocess = false
+        console.log(
+          'sw:',
+          'Sync error, complete cycle',
+          'sync inprocess',
+          Sync.inprocess
+        )
+      }
     })
   },
   auth() {
@@ -576,10 +603,10 @@ var Order = {
           //console.log('sw:', 'Saved Reqeusts', savedRequests)
 
           if (!savedRequests.length) {
-            console.log('sw:', 'No request found')
+            console.log('sw:', 'No offline order found')
             return resolve()
           }
-
+          let syncedObjects = []
           for (let savedRequest of savedRequests) {
             const orderUrl = savedRequest.url
             const contextUrl = orderUrl.replace(new RegExp('/model/.*'), '')
@@ -591,145 +618,166 @@ var Order = {
             )
 
             savedRequest.payload.order_mode = 'offline'
-            var payload = savedRequest.payload
 
             //check if delivery order
-            if (payload.order_type == 'call_center' && !payload.customer) {
-              console.log(
-                'sw:',
-                'no customer was selected so need to create a customer'
+            if (
+              savedRequest.payload.order_type == 'call_center' &&
+              !savedRequest.payload.customer
+            ) {
+              syncedObjects.push(
+                Order.createOrderWithCustomer(contextUrl, savedRequest)
               )
-              var customerPayload = payload.user
-              //payload.user is always available either its online or offline
-              console.log('sw:', 'delivery order')
-              //create customer uses fetch which returns promise
-              console.log('sw:', 'creating customer')
-
-              delete customerPayload.city
-              delete customerPayload.country
-
-              Customer.createCustomer(customerPayload, contextUrl)
-                .then(response => {
-                  console.log('sw:', 'customer created ', response)
-                  //customer created
-
-                  //modify the original payload to be sent to order
-                  savedRequest.payload.customer = response.id
-
-                  Order.createOrder(resolve, reject, savedRequest)
-                })
-                .catch(err => {
-                  console.log(
-                    'sw:',
-                    'Request to save customer failed with error ',
-                    err,
-                    customerPayload
-                  )
-                  reject(err)
-                })
             } else {
               //app_uniqueid
               //transition_order_no
               console.log('sw:', 'Not delivery order')
-              Order.createOrder(resolve, reject, savedRequest)
+              syncedObjects.push(Order.createOrder(savedRequest))
             }
+          }
+
+          try {
+            await Promise.all(syncedObjects)
+            notificationOptions.body = 'Offline orders synced successfully.'
+            self.registration.showNotification(
+              'POS synced',
+              notificationOptions
+            )
+            resolve()
+          } catch (error) {
+            reject(error)
           }
         }
       }
     })
   },
+  createOrderWithCustomer(contextUrl, savedRequest) {
+    return new Promise((resolve, reject) => {
+      console.log(
+        'sw:',
+        'no customer was selected so need to create a customer'
+      )
+      var customerPayload = savedRequest.payload.user
+      //payload.user is always available either its online or offline
+      console.log('sw:', 'delivery order')
+      //create customer uses fetch which returns promise
+      console.log('sw:', 'creating customer')
 
-  createOrder: function(resolve, reject, savedRequest) {
-    var method = savedRequest.method
-    var requestUrl = savedRequest.url
-    var payload = savedRequest.payload
-    delete payload.user
-    console.log('sw:', 'Sending sync to server')
-    Sync.request(requestUrl, method, payload)
-      .then(response => {
-        console.log('sw:', 'server response', response)
-        var requestUpdate
-        if (response.status === 'ok' && response.id) {
-          console.log(
-            'sw:',
-            'order synced successfully',
-            savedRequest.payload.real_created_datetime,
-            response
-          )
-          requestUpdate = DB.getBucket(ORDER_DOCUMENT, 'readwrite').delete(
-            savedRequest.payload.real_created_datetime
-          )
+      delete customerPayload.city
+      delete customerPayload.country
 
-          requestUpdate.onerror = function(event) {
-            console.log('sw:', 'order delete failed', event)
-          }
-          requestUpdate.onsuccess = function(event) {
-            // Success - the data is updated!
-            console.log('sw:', 'order deleted successfully', event)
-          }
+      Customer.createCustomer(customerPayload, contextUrl)
+        .then(response => {
+          console.log('sw:', 'customer created ', response)
+          //customer created
 
-          Logger.log({
-            event_time: savedRequest.payload.real_created_datetime,
-            event_title: savedRequest.payload.balance_due,
-            event_type: 'sw:order_synced',
-            event_data: {
-              request: savedRequest.payload,
-              response: response,
-            },
-          })
+          //modify the original payload to be sent to order
+          savedRequest.payload.customer = response.id
 
-          notificationOptions.body = 'Offline orders synced successfully.'
-          resolve(
-            self.registration.showNotification(
-              'POS synced',
-              notificationOptions
-            )
-          )
-        } else {
-          console.log(
-            'sw:',
-            'order sync failed but it is not network error so remove error from indexed db',
-            response.form_errors,
-            response
-          )
-          Logger.log({
-            event_time: savedRequest.payload.real_created_datetime,
-            event_title: savedRequest.payload.balance_due,
-            event_type: 'sw:order_sync_failed_deleteit',
-            event_data: {
-              request: savedRequest.payload,
-              response: response,
-            },
-          })
-
-          requestUpdate = DB.getBucket(ORDER_DOCUMENT, 'readwrite').delete(
-            savedRequest.payload.real_created_datetime
-          )
-
-          requestUpdate.onerror = function(event) {
-            console.log('sw:', 'order delete failed', event)
-          }
-          requestUpdate.onsuccess = function(event) {
-            // Success - the data is updated!
-            console.log('sw:', 'errored order deleted successfully', event)
-            resolve(response)
-          }
-        }
-      })
-      .catch(error => {
-        console.log(
-          'sw:',
-          'error sending request for sync, network failed, dont worry sync ll repeat it again',
-          error
-        )
-        Logger.log({
-          event_time: savedRequest.payload.real_created_datetime,
-          event_title: savedRequest.payload.balance_due,
-          event_type: 'sw:order_sync_network_fail',
-          event_data: { request: payload, response: 'Network not available' },
+          Order.createOrder(savedRequest)
+            .then(() => {
+              resolve()
+            })
+            .catch(error => {
+              reject(error)
+            })
         })
-        reject(error)
-      })
+        .catch(err => {
+          console.log(
+            'sw:',
+            'Request to save customer failed with error ',
+            err,
+            customerPayload
+          )
+          reject(err)
+        })
+    })
+  },
+  createOrder: function(savedRequest) {
+    return new Promise((resolve, reject) => {
+      var method = savedRequest.method
+      var requestUrl = savedRequest.url
+      var payload = savedRequest.payload
+      delete payload.user
+      console.log('sw:', 'Sending sync to server')
+      Sync.request(requestUrl, method, payload)
+        .then(response => {
+          console.log('sw:', 'server response', response)
+          var requestUpdate
+          if (response.status === 'ok' && response.id) {
+            console.log(
+              'sw:',
+              'order synced successfully',
+              savedRequest.payload.real_created_datetime,
+              response
+            )
+            requestUpdate = DB.getBucket(ORDER_DOCUMENT, 'readwrite').delete(
+              savedRequest.payload.real_created_datetime
+            )
+
+            requestUpdate.onerror = function(event) {
+              console.log('sw:', 'order delete failed', event)
+            }
+            requestUpdate.onsuccess = function(event) {
+              // Success - the data is updated!
+              console.log('sw:', 'order deleted successfully', event)
+              resolve()
+            }
+
+            Logger.log({
+              event_time: savedRequest.payload.real_created_datetime,
+              event_title: savedRequest.payload.balance_due,
+              event_type: 'sw:order_synced',
+              event_data: {
+                request: savedRequest.payload,
+                response: response,
+              },
+            })
+          } else {
+            console.log(
+              'sw:',
+              'order sync failed but it is not network error so remove error from indexed db',
+              response.form_errors,
+              response
+            )
+            Logger.log({
+              event_time: savedRequest.payload.real_created_datetime,
+              event_title: savedRequest.payload.balance_due,
+              event_type: 'sw:order_sync_failed_deleteit',
+              event_data: {
+                request: savedRequest.payload,
+                response: response,
+              },
+            })
+
+            requestUpdate = DB.getBucket(ORDER_DOCUMENT, 'readwrite').delete(
+              savedRequest.payload.real_created_datetime
+            )
+
+            requestUpdate.onerror = function(event) {
+              console.log('sw:', 'order delete failed', event)
+            }
+            requestUpdate.onsuccess = function(event) {
+              // Success - the data is updated!
+              console.log('sw:', 'errored order deleted successfully', event)
+              resolve(response)
+            }
+          }
+        })
+        .catch(error => {
+          console.log(
+            'sw:',
+            'error sending request for sync, network failed, dont worry sync ll repeat it again',
+            error
+          )
+          Logger.log({
+            event_time: savedRequest.payload.real_created_datetime,
+            event_title: savedRequest.payload.balance_due,
+            event_type: 'sw:order_sync_network_fail',
+            event_data: { request: payload, response: 'Network not available' },
+          })
+          reject(error)
+        })
+    })
   },
 }
 
