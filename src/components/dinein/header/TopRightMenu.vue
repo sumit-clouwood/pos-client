@@ -119,7 +119,12 @@
           />
         </svg>
       </a>
-      <ul class="setting-dropdown">
+      <ul class="setting-dropdown1">
+        <li>
+          <a role="button" @click="walkOrder()">
+            {{ _t('Walk In') }}
+          </a>
+        </li>
         <li>
           <a role="button" class="cursor-pointer">{{ _t('Printers') }}</a>
         </li>
@@ -231,7 +236,6 @@
 
 <script>
 /* global $ */
-/*global posConfigLinks*/
 import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 export default {
@@ -269,6 +273,10 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    walkOrder() {
+      this.$router.push(this.store)
+      this.$store.commit('order/ORDER_TYPE', 'walk_in')
+    },
     fetchOrdersWithTableDetails: function(orderStatus) {
       this.$store.commit('dinein/SET_PAGE_NO', 1)
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
@@ -280,7 +288,9 @@ export default {
       this.$store.dispatch('location/changeLanguage', locale)
     },
     openConfigLinks() {
-      posConfigLinks()
+      $('.setting-dropdown1').show()
+      $('.setting-dropdown1').addClass('animated zoomIn')
+      //posConfigLinks()
     },
     onlineOrders() {
       if (this.latestOnlineOrders == 0) {
@@ -312,6 +322,7 @@ export default {
   },
   mounted() {
     this.onlineOrders()
+    $('.setting-dropdown1').hide()
   },
 }
 </script>

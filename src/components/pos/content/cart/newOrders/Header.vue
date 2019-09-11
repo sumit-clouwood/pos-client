@@ -68,8 +68,8 @@
           </span>
           <span
             class="table-status"
-            v-for="table in availableTables"
-            :key="table.id"
+            v-for="(table, i) in availableTables"
+            :key="table.id + i"
             v-bind:style="{
               'border-bottom': '1px solid #ccc',
             }"
@@ -116,8 +116,8 @@
           </span>
           <span
             class="dropdown"
-            v-for="cover in covers"
-            :key="cover._id"
+            v-for="(cover, index) in covers"
+            :key="cover._id + index"
             @click="setCover(cover)"
           >
             <span v-html="cover.name"></span>

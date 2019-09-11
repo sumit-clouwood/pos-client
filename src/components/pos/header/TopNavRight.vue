@@ -76,11 +76,7 @@
           <a :href="crm">{{ _t('CRM') }}</a>
         </li>
         <li>
-          <a
-            role="button"
-            @click="$router.push('/dine-in' + store)"
-            :to="'/dine-in' + store"
-          >
+          <a role="button" @click="moveDineSection()">
             {{ _t('Dine In') }}
           </a>
         </li>
@@ -106,7 +102,7 @@
 </template>
 
 <script>
-/*global posConfigLinks*/
+/*global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 export default {
@@ -144,13 +140,19 @@ export default {
   },
   methods: {
     ...mapActions('auth', ['logout']),
+    moveDineSection() {
+      this.$router.push('/dine-in' + this.store)
+      $('.setting-dropdown').css('display', 'none')
+    },
     changeLanguage(locale) {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
       bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
     },
     openConfigLinks() {
-      posConfigLinks()
+      $('.setting-dropdown').show()
+      $('.setting-dropdown').addClass('animated zoomIn')
+      // posConfigLinks()
     },
     onlineOrders() {
       if (this.latestOnlineOrders == 0) {
@@ -181,6 +183,7 @@ export default {
   },
   mounted() {
     this.onlineOrders()
+    $('.setting-dropdown').hide()
   },
 }
 </script>

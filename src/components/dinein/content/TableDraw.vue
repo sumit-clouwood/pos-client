@@ -76,7 +76,12 @@
                         </div>
                         <div
                           class="table-popup bg-success font-weight-bold"
-                          @click="newOrder(orderData.reservationId, true)"
+                          @click="
+                            updateOrder({
+                              orderId: orderId,
+                              orderData: orderData,
+                            })
+                          "
                         >
                           {{ _t('Split Bill') }}
                         </div>
@@ -102,7 +107,12 @@
                       </div>
                       <div
                         class="table-popup bg-success font-weight-bold"
-                        @click="newOrder(orderData.reservationId, true)"
+                        @click="
+                          updateOrder({
+                            orderId: orderId,
+                            orderData: orderData,
+                          })
+                        "
                       >
                         {{ _t('Split Bill') }}
                       </div>
@@ -337,6 +347,7 @@ export default {
     },
     newOrder(reservationId, pos) {
       let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
+      this.$store.commit('dinein/TABLE_SPLIT', false)
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       if (!reservationId) {
         this.$store.commit('dinein/NUMBER_GUESTS', this.guests)
@@ -359,7 +370,10 @@ export default {
       }
     },
     updateOrder(data) {
+      this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       this.$store.commit('dinein/RESERVATION_ID', data.orderData.reservationId)
+      this.$store.commit('dinein/NUMBER_GUESTS', false)
+      this.$store.commit('dinein/TABLE_SPLIT', true)
       let URL =
         '/dine-in/' +
         this.store +

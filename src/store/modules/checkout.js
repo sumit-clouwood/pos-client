@@ -272,6 +272,7 @@ const actions = {
             ) {
               orderCovers.push({ entity_id: itemCover, name: itemCoverName })
             }
+            let guest_no = rootState.dinein.guests
             orderItem = {
               name: item.name,
               entity_id: item._id,
@@ -281,6 +282,7 @@ const actions = {
               price: item.netPrice,
               qty: item.quantity,
               cover_no: itemCover,
+              guest: guest_no,
               cover_name: itemCoverName,
             }
           }

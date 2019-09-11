@@ -9,7 +9,7 @@ var IDB_VERSION = 4
 var ORDER_DOCUMENT = 'order_post_requests'
 var LOG_DOCUMENT = 'log'
 var client = null
-var SYNC_AFTER_SECONDS = 30 //5sec, 60 * 5 = 5 min
+var SYNC_AFTER_SECONDS = 0 //5sec, 60 * 5 = 5 min
 var lastSynced = new Date().getTime()
 
 var notificationOptions = {
