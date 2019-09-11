@@ -347,6 +347,7 @@ export default {
     },
     newOrder(reservationId, pos) {
       let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
+      this.$store.commit('dinein/TABLE_SPLIT', false)
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       if (!reservationId) {
         this.$store.commit('dinein/NUMBER_GUESTS', this.guests)
