@@ -414,7 +414,17 @@ const mutations = {
     localStorage.setItem('reservationId', reservationId)
   },
   [mutation.NUMBER_GUESTS](state, guest) {
-    state.guests = guest
+    if (guest) {
+      state.guests = guest
+    } else {
+      let reservation = state.allBookedTables.orders.filter(
+        order => order._id === state.reservation
+      )
+      state.guests =
+        typeof reservation[0] != 'undefined'
+          ? reservation[0].number_of_guests
+          : 0
+    }
   },
   [mutation.BOOKED_TABLES](state, bookedTables) {
     state.allBookedTables.orders = bookedTables.data
