@@ -49,10 +49,27 @@
           </svg>
         </div>
       </div>
-      <div class="main-orders-list-item-subtitle color-text-invert">
-        @ {{ formatPrice(itemGrossPrice(item)) }} x
-        {{ item.quantity }}
-        {{ discountInfo(item) }}
+      <div
+        class="main-orders-list-item-subtitle color-text-invert item-exclude"
+      >
+        <div>
+          @ {{ formatPrice(itemGrossPrice(item)) }} x
+          {{ item.quantity }}
+          {{ discountInfo(item) }}
+        </div>
+        <!--add condition here split true-->
+        <div
+          class="align-right text-right"
+          v-if="orderType.OTApi === 'dine_in' && split"
+        >
+          <label class="pos-container">
+            <input
+              type="checkbox"
+              @click="splitItems({ item: item, e: $event, key: index })"
+            />
+            <span class="checkmark"></span>
+          </label>
+        </div>
       </div>
       <div
         class="main-orders-list-item-subtitle color-text-invert"
@@ -101,9 +118,14 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Items',
-  props: {},
+  data() {
+    return {
+      splitedItems: [],
+      newItemList: [],
+    }
+  },
   computed: {
-    ...mapState('dinein', ['covers']),
+    ...mapState('dinein', ['covers', 'split']),
     ...mapState({
       currentItem: state => state.order.item._id,
     }),
@@ -121,6 +143,23 @@ export default {
   methods: {
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
+    splitItems(data) {
+      if (data.e.target.checked) {
+        this.splitedItems.push(data.item)
+      } else {
+        this.splitedItems.splice(data.key, 1)
+      }
+      this.newItemList = this.items
+      if (this.splitedItems.length > 0) {
+        this.newItemList = this.items.filter(
+          item => !this.splitedItems.includes(item)
+        )
+      }
+      // eslint-disable-next-line no-console
+      console.log(this.splitedItems)
+      // eslint-disable-next-line no-console
+      console.log(this.newItemList)
+    },
     discountInfo(item) {
       if (item.discount) {
         return (

@@ -32,6 +32,7 @@ const state = {
   allBookedTables: { orders: false, lookup: false },
   orderReservationData: {},
   dineInTabType: 'all',
+  split: true,
   totalReservations: { totalPages: 0, pageNumber: 1, limit: 10 },
 }
 const getters = {
