@@ -102,7 +102,7 @@
 </template>
 
 <script>
-/*global $ posConfigLinks*/
+/*global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 export default {
@@ -150,7 +150,9 @@ export default {
       this.$store.dispatch('location/changeLanguage', locale)
     },
     openConfigLinks() {
-      posConfigLinks()
+      $('.setting-dropdown').show()
+      $('.setting-dropdown').addClass('animated zoomIn')
+      // posConfigLinks()
     },
     onlineOrders() {
       if (this.latestOnlineOrders == 0) {
@@ -181,6 +183,7 @@ export default {
   },
   mounted() {
     this.onlineOrders()
+    $('.setting-dropdown').hide()
   },
 }
 </script>

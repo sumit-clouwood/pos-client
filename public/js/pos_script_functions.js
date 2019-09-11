@@ -80,9 +80,7 @@ function posConfigLinks() {
     body.addClass('active-body')
   }
   $('.setting-dropdown').toggle()
-  $('.setting-dropdown1').toggle()
   $('.setting-dropdown').addClass('animated zoomIn')
-  $('.setting-dropdown1').addClass('animated zoomIn')
 }
 
 function deliveryTabs(id) {
