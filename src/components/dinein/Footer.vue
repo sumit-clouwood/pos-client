@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="display:none">
     <footer class="sticky-footer">
       <div class="container">
         <div class="dinein-footer-icon">

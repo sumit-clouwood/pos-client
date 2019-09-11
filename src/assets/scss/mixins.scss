@@ -15,6 +15,13 @@ $lg: 1920px;
   font-size: $px18;
   color: $white;
 }
+@mixin seat_avail{
+  display: inline-block;
+  border-radius: $px4;
+  padding: $px5 0;
+  min-width: $px28;
+  text-align: center;
+}
 //@include responsive(mobile){}
 //@include responsive(xs){}
 //@include responsive(sm){}
@@ -22,7 +29,7 @@ $lg: 1920px;
 //@include responsive(lg){}
 @mixin responsive($media) {
   @if $media==mobile {
-    @media only screen and (min-width: $mobile ) and (max-width: $xs) {
+    @media only screen and (min-width: $mobile ) and (max-width: $sm) {
       @content;
     }
   } @else if $media==xs {

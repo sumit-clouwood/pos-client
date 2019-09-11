@@ -45,6 +45,9 @@ export default {
 @include responsive(mobile) {
   .POSItemOptions {
     padding: 0;
+    width: 100vw;
+    max-width: none;
+    // position: fixed;
 
     .modal-dialog {
       width: 100vw;
@@ -92,12 +95,14 @@ export default {
                   button {
                     height: 50px;
                     background-color: $green-middle;
+                    width: auto;
+                    padding: 0 25px;
                   }
                 }
               }
 
               .POSItemOptions_label {
-                display: none;
+                /*display: none;*/
               }
             }
           }
@@ -129,7 +134,7 @@ export default {
               display: grid;
               grid-template-columns: 1fr 1fr;
               grid-gap: 20px;
-
+              position: relative;
               .POSItemOptions_choose_choice {
                 width: auto;
                 margin-bottom: 0;

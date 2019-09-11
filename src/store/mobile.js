@@ -1,7 +1,7 @@
 export default {
   state: {
     searchHendler: false,
-    allCategoryHendler: false,
+    allCategoryHendler: true,
     subCategoryHendler: false,
     foodMenuHendler: true,
     mainOrdersHendler: false,
@@ -13,9 +13,9 @@ export default {
     paymentMethodsHendler: false,
     openManageCustomerHendler: false,
     itemFood: [],
-    payMethod: 'Gift Card',
+    payMethod: 1,
     methodCardHendler: false,
-    QRMethodGhange: false,
+    QRMethodChange: false,
     loyaltyHendler: false,
     discountHendler: false,
     addNoteHendler: false,
@@ -82,12 +82,12 @@ export default {
       state.subCategoryHendler = !state.subCategoryHendler
       state.foodMenuHendler = false
     },
-    FOOD_MENU_HENDLER_GHANGE: state => {
+    FOOD_MENU_HENDLER_CHANGE: state => {
       state.foodMenuHendler = true
       state.allCategoryHendler = false
       state.subCategoryHendler = false
     },
-    MAIN_ORDERS_HENDLER_GHANGE: state => {
+    MAIN_ORDERS_HENDLER_CHANGE: state => {
       state.allCategoryHendler = false
       state.subCategoryHendler = false
       state.mainOrdersHendler = !state.mainOrdersHendler
@@ -96,22 +96,22 @@ export default {
       state.mainOrdersHendler = false
       state.footerButtonHendler = false
     },
-    TOTAL_WRAPPER_HENDLER_GHANGE: state => {
+    TOTAL_WRAPPER_HENDLER_CHANGE: state => {
       state.totalWrapperHendler = !state.totalWrapperHendler
     },
-    FOOTER_BUTTON_HENDLER_GHANGE: state => {
+    FOOTER_BUTTON_HENDLER_CHANGE: state => {
       state.footerButtonHendler = !state.footerButtonHendler
     },
-    PAY_NOW_CALC_HANDLER_GHANGE: state => {
+    PAY_NOW_CALC_HANDLER_CHANGE: state => {
       state.payNowCalcHendler = !state.payNowCalcHendler
     },
-    FOOTER_MENU_HENDLER_GHANGE: state => {
+    FOOTER_MENU_HENDLER_CHANGE: state => {
       state.footerMenuHendler = !state.footerMenuHendler
     },
-    PROFILE_HENDLER_GHANGE: state => {
+    PROFILE_HENDLER_CHANGE: state => {
       state.profileHendler = !state.profileHendler
     },
-    PAYMENT_METHODS_HENDLER_GHANGE: state => {
+    PAYMENT_METHODS_CHANGE: state => {
       state.paymentMethodsHendler = !state.paymentMethodsHendler
       state.payNowCalcHendler = false
     },
@@ -135,28 +135,28 @@ export default {
     METHOD_CARD_HENDLER_CHANGE: state => {
       state.methodCardHendler = !state.methodCardHendler
     },
-    QR_METHOD_GHANGE_HENDLER: state => {
-      state.QRMethodGhange = !state.QRMethodGhange
+    QR_METHOD_CHANGE_HENDLER: state => {
+      state.QRMethodChange = !state.QRMethodChange
     },
-    LOYALTY_HENDLER_GHANGE: state => {
+    LOYALTY_HENDLER_CHANGE: state => {
       state.loyaltyHendler = !state.loyaltyHendler
     },
-    DISCOUNT_HENDLER_GHANGE: state => {
+    DISCOUNT_HENDLER_CHANGE: state => {
       state.discountHendler = !state.discountHendler
     },
-    ADD_NOTE_HENDLER_GHANGE: state => {
+    ADD_NOTE_HENDLER_CHANGE: state => {
       state.addNoteHendler = !state.addNoteHendler
     },
-    LOYALTY_PAYMMENT_HENDLER_GHANGE: state => {
+    LOYALTY_PAYMMENT_HENDLER_CHANGE: state => {
       state.loyaltyPaymentHendler = !state.loyaltyPaymentHendler
     },
-    CARD_INPUT_HENDLER_GHANGE: state => {
+    CARD_INPUT_HENDLER_CHANGE: state => {
       state.cardInputHendler = !state.cardInputHendler
     },
-    SUCCESSFULL_HENDLER_GHANGE: state => {
+    SUCCESSFULL_HENDLER_CHANGE: state => {
       state.successfullHendler = !state.successfullHendler
     },
-    OPEN_USER_HENDLER_GHANGE: state => {
+    OPEN_USER_HENDLER_CHANGE: state => {
       state.openUserHendler = !state.openUserHendler
     },
     USER_LOGIN_HENDLER_CHANGE: state => {
@@ -171,7 +171,6 @@ export default {
     },
     CHOOSE_CURENT_PAY_METHOD: (state, payLoad) => {
       state.payMethod = payLoad
-      // console.log(payLoad)
     },
   },
   actions: {
@@ -193,32 +192,32 @@ export default {
     subCategoryHendlerChange({ commit }) {
       commit('SUB_CATEGORY_HENDLER_CHANGE')
     },
-    foodMenuHendlerGhange({ commit }) {
-      commit('FOOD_MENU_HENDLER_GHANGE')
+    foodMenuHendlerChange({ commit }) {
+      commit('FOOD_MENU_HENDLER_CHANGE')
     },
-    mainOrdersHendlerGhange({ commit }) {
-      commit('MAIN_ORDERS_HENDLER_GHANGE')
+    mainOrdersHendlerChange({ commit }) {
+      commit('MAIN_ORDERS_HENDLER_CHANGE')
     },
     cartClose({ commit }) {
       commit('CART_CLOSE')
     },
-    totalWrapperHendlerGhange({ commit }) {
-      commit('TOTAL_WRAPPER_HENDLER_GHANGE')
+    totalWrapperHendlerChange({ commit }) {
+      commit('TOTAL_WRAPPER_HENDLER_CHANGE')
     },
-    footerButtonHendlerGhange({ commit }) {
-      commit('FOOTER_BUTTON_HENDLER_GHANGE')
+    footerButtonHendlerChange({ commit }) {
+      commit('FOOTER_BUTTON_HENDLER_CHANGE')
     },
-    payNowCalcHendlerGhange({ commit }) {
-      commit('PAY_NOW_CALC_HANDLER_GHANGE')
+    payNowCalcHendlerChange({ commit }) {
+      commit('PAY_NOW_CALC_HANDLER_CHANGE')
     },
-    footerMenuHendlerGhange({ commit }) {
-      commit('FOOTER_MENU_HENDLER_GHANGE')
+    footerMenuHendlerChange({ commit }) {
+      commit('FOOTER_MENU_HENDLER_CHANGE')
     },
-    profileHendlerGhange({ commit }) {
-      commit('PROFILE_HENDLER_GHANGE')
+    profileHendlerChange({ commit }) {
+      commit('PROFILE_HENDLER_CHANGE')
     },
-    paymentMethodsHendlerGhange({ commit }) {
-      commit('PAYMENT_METHODS_HENDLER_GHANGE')
+    paymentMethodsChange({ commit }) {
+      commit('PAYMENT_METHODS_CHANGE')
     },
     openManageCustomer({ commit }) {
       commit('OPEN_MANAGE_CUSTOMER')
@@ -226,37 +225,37 @@ export default {
     addItemFood({ commit }, payLoad) {
       commit('ADD_ITEM_FOOD', payLoad)
     },
-    methodCardHendlerGhange({ commit }) {
+    methodCardHendlerChange({ commit }) {
       commit('METHOD_CARD_HENDLER_CHANGE')
     },
-    QRMethodGhangeHendler({ commit }) {
-      commit('QR_METHOD_GHANGE_HENDLER')
+    QRMethodChangeHendler({ commit }) {
+      commit('QR_METHOD_CHANGE_HENDLER')
     },
-    loyaltyHendlerGhange({ commit }) {
-      commit('LOYALTY_HENDLER_GHANGE')
+    loyaltyHendlerChange({ commit }) {
+      commit('LOYALTY_HENDLER_CHANGE')
     },
-    discountHendlerGhange({ commit }) {
-      commit('DISCOUNT_HENDLER_GHANGE')
+    discountHendlerChange({ commit }) {
+      commit('DISCOUNT_HENDLER_CHANGE')
     },
-    addNoteHendlerGhange({ commit }) {
-      commit('ADD_NOTE_HENDLER_GHANGE')
+    addNoteHendlerChange({ commit }) {
+      commit('ADD_NOTE_HENDLER_CHANGE')
     },
-    loyaltyPaymentHendlerGhange({ commit }) {
-      commit('LOYALTY_PAYMMENT_HENDLER_GHANGE')
+    loyaltyPaymentHendlerChange({ commit }) {
+      commit('LOYALTY_PAYMMENT_HENDLER_CHANGE')
     },
-    cardInputHendlerGhange({ commit }) {
-      commit('CARD_INPUT_HENDLER_GHANGE')
+    cardInputHendlerChange({ commit }) {
+      commit('CARD_INPUT_HENDLER_CHANGE')
     },
-    successfullHendlerGhange({ commit }) {
-      commit('SUCCESSFULL_HENDLER_GHANGE')
+    successfullHendlerChange({ commit }) {
+      commit('SUCCESSFULL_HENDLER_CHANGE')
     },
-    openUserHendlerGhange({ commit }) {
-      commit('OPEN_USER_HENDLER_GHANGE')
+    openUserHendlerChange({ commit }) {
+      commit('OPEN_USER_HENDLER_CHANGE')
     },
-    userLoginHendlerGhange({ commit }) {
+    userLoginHendlerChange({ commit }) {
       commit('USER_LOGIN_HENDLER_CHANGE')
     },
-    userCalcHendlerGhange({ commit }) {
+    userCalcHendlerChange({ commit }) {
       commit('USER_CALC_HENDLER_CHANGE')
     },
     mobileLogout({ commit }) {
@@ -282,7 +281,7 @@ export default {
     itemFood: state => state.itemFood,
     payMethod: state => state.payMethod,
     methodCardHendler: state => state.methodCardHendler,
-    QRMethodGhange: state => state.QRMethodGhange,
+    QRMethodChange: state => state.QRMethodChange,
     loyaltyHendler: state => state.loyaltyHendler,
     discountHendler: state => state.discountHendler,
     addNoteHendler: state => state.addNoteHendler,

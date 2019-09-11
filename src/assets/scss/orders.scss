@@ -16,8 +16,8 @@
 
   .main-orders-contacts {
     display: grid;
-    grid-template-columns: auto max-content;
-    grid-template-rows: auto auto 1fr;
+    //grid-template-columns: auto max-content;
+    grid-template-rows: auto auto;
     align-items: center;
     margin-bottom: $px20;
 

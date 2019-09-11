@@ -4,9 +4,8 @@
     <profile-sidebar />
     <mobile-page />
     <mobile-payment-methods />
-    <mobile-orders />
+    <cart />
     <mobile-calc />
-    <mobile-manage-customer />
     <payment-successfull />
     <cashier />
     <method-card />
@@ -22,9 +21,8 @@ import mobileNotification from './mobileNotification.vue'
 import profileSidebar from './mobileProfileSidebar.vue'
 import mobilePaymentMethods from './choosePayMethods.vue'
 import mobilePage from './mobilePage.vue'
-import mobileOrders from './mobileOrders.vue'
+import cart from '../pos/content/Cart'
 import mobileCalc from './mobileCalc.vue'
-import mobileManageCustomer from './mobileManageCustomer.vue'
 import paymentSuccessfull from './paymentSuccessfull.vue'
 import cashier from './cashier.vue'
 import methodCard from './methodCard.vue'
@@ -40,9 +38,8 @@ export default {
     profileSidebar,
     mobilePage,
     mobilePaymentMethods,
-    mobileOrders,
+    cart,
     mobileCalc,
-    mobileManageCustomer,
     paymentSuccessfull,
     cashier,
     methodCard,
@@ -55,10 +52,11 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
-
+.mobile-components {
+  display: none;
+}
 @include responsive(mobile) {
   .mobile-components {
     z-index: 50;

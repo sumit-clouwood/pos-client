@@ -1,47 +1,43 @@
 <template>
-  <div>
-    <div class="contain-body-class">
-      <nav
-        class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"
-        id="mainNav"
-      >
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <Header />
-          <Menu />
-        </div>
-      </nav>
-      <div class="content-wrapper full-dinein" id="dine-in-wrapper">
-        <div class="container-fluid row all-tables-dinein" id="all-tables-show">
-          <Content />
-        </div>
+  <div class="new-pos">
+    <div class="dm-screen-wrap toggle-nav-content">
+      <Header />
+    </div>
+    <SystemNavigation />
+    <!-- Breadcrumbs-->
+    <div class="content-wrapper toggle-nav-content" id="dm-content-wrapper">
+      <div class="inner-content-dm">
+        <Preloader v-if="loading" />
+        <Content v-else />
+        <Footer />
       </div>
     </div>
-    <Footer />
+    <div class="modal-backdrop fade show" id="transparent-screen"></div>
   </div>
 </template>
 
 <script>
-// /* global $ */
-
-import Menu from '@/components/dinein/Menu.vue'
+/* global $ */
+import SystemNavigation from '@/components/SystemNavigation'
 import Header from '@/components/dinein/Header.vue'
 import Content from '@/components/dinein/Content'
 import Footer from '@/components/dinein/Footer'
+import Preloader from '@/components/util/Preloader'
+import { mapState } from 'vuex'
+
 export default {
   name: 'Dinein',
-  computed: {},
   components: {
     Header,
-    Menu,
+    SystemNavigation,
     Content,
     Footer,
+    Preloader,
   },
-
   //store private data in component using data
   data: function() {
     return {
       info: null,
-      loading: true, //async loading indicator
       errored: false, //either request had error
     }
   },
@@ -50,9 +46,13 @@ export default {
   props: {
     msg: String,
   },
+  computed: {
+    ...mapState('dinein', ['loading']),
+  },
   mounted() {
-    /*$('body').removeAttr('class')
-    $('body').attr('class', 'fixed-nav sticky-footer bg-dark dinein')*/
+    let getBody = $('body')
+    getBody.removeAttr('class')
+    getBody.attr('class', 'fixed-nav sticky-footer dm-manager')
   },
 }
 </script>
@@ -60,5 +60,5 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
 <style scoped>
-/*@import '../assets/sass/dine-in/dineIn.css';*/
+/*@import '../assets/scss/dine-in/dineIn.css';*/
 </style>

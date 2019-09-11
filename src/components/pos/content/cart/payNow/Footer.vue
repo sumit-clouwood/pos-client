@@ -99,12 +99,19 @@ export default {
           $('#payment-screen-footer').prop('disabled', true)
           this.$store.commit('checkoutForm/setAction', 'pay')
           $('#payment-msg').modal('show')
+          this.$store.commit('order/IS_PAY', 1)
           this.$store
             .dispatch('checkout/pay', this.$store.state.order.orderType.OTApi)
             .then(() => {
+              $('#payment-msg').modal('show')
               if (this.changedAmount >= 0.1) {
-                $('#payment-msg').modal('hide')
-                $('#change-amount').modal('show')
+                //alert('change amount is due')
+                setTimeout(() => {
+                  $('#payment-msg').modal('hide')
+                  setTimeout(() => {
+                    $('#change-amount').modal('show')
+                  }, 500)
+                }, 500)
               } else if (this.msg) {
                 $('#payment-msg').modal('show')
               }
@@ -123,10 +130,10 @@ export default {
           showPaymentBreak()
         }
       })
-      this.$store.dispatch('successfullHendlerGhange')
-      this.$store.dispatch('payNowCalcHendlerGhange')
-      this.$store.dispatch('paymentMethodsHendlerGhange')
-      this.$store.dispatch('mainOrdersHendlerGhange')
+      this.$store.dispatch('successfullHendlerChange')
+      this.$store.dispatch('payNowCalcHendlerChange')
+      this.$store.dispatch('paymentMethodsChange')
+      this.$store.dispatch('mainOrdersHendlerChange')
     },
   },
 }

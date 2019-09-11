@@ -10,7 +10,7 @@
           </div>
         </div>
       </div>
-      <div class="btn-menu" @click="profileHendlerGhange">
+      <div class="btn-menu" @click="profileHendlerChange">
         <svg
           width="20"
           height="14"
@@ -73,28 +73,19 @@ export default {
     mobileFooter,
   },
   computed: {
-    ...mapGetters('category', ['subcategories', 'items']),
-    ...mapGetters(['footerButtonHendler', 'footerMenuHendler', 'itemFood']),
-    ...mapGetters('location', ['formatPrice']),
-    ...mapGetters('order', [
-      'items',
-      'itemGrossPriceDiscounted',
-      'itemGrossPrice',
-      'orderModifiers',
-    ]),
+    ...mapGetters('order', ['items']),
   },
   methods: {
-    profileHendlerGhange() {
-      this.$store.dispatch('profileHendlerGhange')
+    profileHendlerChange() {
+      this.$store.dispatch('profileHendlerChange')
     },
-    footerMenuHendlerGhange() {
-      this.$store.dispatch('footerMenuHendlerGhange')
+    footerMenuHendlerChange() {
+      this.$store.dispatch('footerMenuHendlerChange')
     },
   },
 }
 </script>
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
 
@@ -110,7 +101,7 @@ export default {
     grid-template-columns: 1fr max-content;
     align-items: center;
     background-color: #fafafa;
-    z-index: 1;
+    z-index: 2;
 
     .current-sale {
       .title {

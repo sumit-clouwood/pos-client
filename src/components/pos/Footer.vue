@@ -35,7 +35,7 @@
           v-if="cartType === 'new'"
           @click="viewHoldOrders"
           class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
-          :class="{ active: vbutton == 'hold' }"
+          :class="{ active: vbutton === 'hold' }"
           id="hold-order-box"
         >
           <a
@@ -66,8 +66,8 @@
           v-else
           @click="newOrders"
           class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
-          :class="{ active: vbutton == 'new' }"
-          id="hold-order-box"
+          :class="{ active: vbutton === 'new' }"
+          id="new-order-box"
         >
           <a
             class="footer-slider-list-item-link color-text-invert"
@@ -251,7 +251,12 @@
         </li>
       </ul>
     </div>
-    <div class="footer-buttons color-dashboard-background">
+    <div
+      class="footer-buttons color-dashboard-background"
+      :style="
+        orderType.OTApi === 'dine_in' ? 'grid-template-columns: 1fr 1fr' : ''
+      "
+    >
       <div class="button">
         <ul class="template-btn">
           <li
@@ -301,6 +306,22 @@
           </li>
         </ul>
       </div>
+      <div class="button" v-show="orderType.OTApi === 'dine_in'">
+        <ul class="template-btn">
+          <li
+            class="pay-now color-dashboard-background color-main"
+            v-show="orderType.OTApi === 'dine_in'"
+            @click="payNowDirect()"
+          >
+            <a role="button">
+              <img src="img/pos/payment.svg" :alt="_t('Place Order')" />
+              <span class="pay-btn color-text-invert">
+                {{ _t('Place Order') }}
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <div class="modal-backdrop fade show" id="transparent-screen"></div>
@@ -334,6 +355,7 @@
     <Invoice />
     <OrderDetailsPopup />
     <UserProfile />
+    <InformationPopup :responseInformation="this.message" :title="this.title" />
   </div>
 </template>
 
@@ -366,6 +388,7 @@ import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
 import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import UserProfile from '@/components/pos/user/UserProfile'
+import InformationPopup from '@/components/pos/content/InformationPopup'
 
 import { mapState, mapGetters } from 'vuex'
 /* global $, clickPayNow */
@@ -401,15 +424,24 @@ export default {
     Invoice,
     OrderDetailsPopup,
     UserProfile,
+    InformationPopup,
   },
   data() {
+    if (window.location.href.indexOf('dine-in') > -1) {
+      this.setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })
+    }
     return {
       vbutton: '',
+      title: '',
+      status: 0,
+      message: '',
     }
   },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapState('order', ['orderType', 'cartType']),
+    ...mapState('dinein', ['selectedCover', 'orderReservationData']),
+    ...mapState('customer', ['responseInformation']),
+    ...mapState('order', ['orderType', 'cartType', 'items']),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
@@ -424,6 +456,56 @@ export default {
     ...mapState({ selectedCustomer: state => state.customer.customer.name }),
   },
   methods: {
+    payNowDirect() {
+      let validationError = {}
+      if (this.items.length > 0) {
+        if (this.selectedCover && this.selectedCover.name) {
+          this.$store
+            .dispatch('checkout/pay', this.orderType.OTApi)
+            .then(() => {
+              //Reset Cart and set states and redirect to dine in.
+              this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+              this.$router.replace({ name: 'Dinein' })
+            })
+            .catch(response => {
+              let validationError = {}
+              let errors = ''
+              if (response.status === 'form_errors') {
+                for (let i in response.form_errors) {
+                  response.form_errors[i].forEach(err => (errors += ' ' + err))
+                }
+              } else if (response.error) {
+                errors = response.error
+              }
+              if (errors !== '') {
+                validationError = {
+                  status: 'flash_message',
+                  flash_message: errors,
+                }
+                this.$store.commit(
+                  'customer/SET_RESPONSE_MESSAGES',
+                  validationError
+                )
+                $('#information-popup').modal('show')
+              }
+            })
+        } else {
+          validationError = {
+            status: 'flash_message',
+            flash_message: this._t('Please select a cover.'),
+          }
+          this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+          $('#information-popup').modal('show')
+        }
+      } else {
+        validationError = {
+          status: 'flash_message',
+          flash_message: this._t('Please add items.'),
+        }
+        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+        $('#information-popup').modal('show')
+      }
+    },
     payNowClick() {
       clickPayNow()
     },
@@ -440,7 +522,7 @@ export default {
       this.$store.commit('order/SET_CART_TYPE', 'new')
     },
   },
-  updated() {
+  mounted() {
     $('ul.ullist-icons').slick({
       slidesToShow: 5,
       slidesToScroll: 1,
@@ -450,9 +532,13 @@ export default {
       nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
       prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
     })
+    $('.next-btn').click()
+    setTimeout(function() {
+      $('.back-btn').click()
+    }, 1000)
   },
 
-  mounted() {
+  updated() {
     $('ul.ullist-icons').slick({
       slidesToShow: 5,
       slidesToScroll: 1,
@@ -465,3 +551,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.displayBlock {
+  display: inline-block;
+}
+</style>

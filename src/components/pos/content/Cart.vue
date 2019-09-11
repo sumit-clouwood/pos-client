@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="['main-orders', { active: mainOrdersHendler }]"
+    :class="['main-orders', { active: items.length && mainOrdersHendler }]"
     class="main-orders color-dashboard-background"
   >
     <div class="main-orders-title">
@@ -39,6 +39,7 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['order']),
+    ...mapGetters('order', ['items']),
     ...mapGetters(['mainOrdersHendler']),
     ...mapState('order', ['cartType']),
   },
@@ -62,7 +63,8 @@ export default {
 @import '../../../assets/scss/pixels_rem.scss';
 @import '../../../assets/scss/variables.scss';
 @import '../../../assets/scss/mixins.scss';
-
+.main-orders {
+}
 @include responsive(mobile) {
   .main-orders {
     position: fixed;

@@ -1,7 +1,7 @@
 <template>
   <div class="header-main-left-info color-text-invert">
     <p class="title">{{ _t(orderType.OTview) }}</p>
-    <p class="subtitle">{{ locationName.name }}</p>
+    <p class="subtitle" v-if="locationName">{{ locationName.name }}</p>
   </div>
 </template>
 

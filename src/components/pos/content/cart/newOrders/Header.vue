@@ -1,30 +1,130 @@
 <template>
   <div class="main-orders-contacts color-text">
     <div class="main-oreders-title">
-      {{ cartType == 'hold' ? _t('Hold Orders') : _t('New Orders') }}
+      {{
+        cartType == 'hold'
+          ? _t('Hold Orders')
+          : orderData
+          ? orderType.OTview + ' #' + orderData.order_no
+          : _t('New Order')
+      }}
       <div class="main-oreders-date">{{ DateToday }}</div>
     </div>
-    <div class="main-oreders-email" v-if="selectedCustomer">
-      <span class="cursor-pointer color-text" @click="removeSelectedCustomer()">
-        <i class="fa fa-times" aria-hidden="true"></i>
-      </span>
-      <p v-if="selectedCustomer.email != ''">
-        {{ _t('Email') }} : {{ selectedCustomer.email }}
-      </p>
-      <p v-if="selectedCustomer.name != '' && selectedCustomer.email == ''">
-        {{ _t('Name') }} : {{ selectedCustomer.name }}
-      </p>
-      <div v-if="selectedCustomer.phone_number">
-        {{ _t('Phone') }} : {{ selectedCustomer.phone_number }}
-      </div>
+    <div
+      v-if="
+        (selectedCustomer && orderType.OTApi === 'dine_in') ||
+          (orderType.OTApi !== 'dine_in' &&
+            selectedAddress &&
+            selectedCustomer &&
+            selectedCustomer.customer_addresses.length > 0)
+      "
+      class="main-oreders-email"
+    >
+      <template>
+        <span
+          class="cursor-pointer color-text"
+          @click="removeSelectedCustomer()"
+        >
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+        <p v-if="selectedCustomer.email != ''">
+          {{ _t('Email') }} : {{ selectedCustomer.email }}
+        </p>
+        <p v-if="selectedCustomer.name != '' && selectedCustomer.email == ''">
+          {{ _t('Name') }} : {{ selectedCustomer.name }}
+        </p>
+        <div v-if="selectedCustomer.phone_number">
+          {{ _t('Phone') }} : {{ selectedCustomer.phone_number }}
+        </div>
+      </template>
     </div>
     <div class="main-oreders-buttons" v-if="items.length">
-      <!--<div class="orders-button-large" disabled="disable">
-              {{ _t('Move Table') }}
-            </div>
-            <div class="orders-button-large" disabled="disable">
-              {{ _t('Split Table') }}
-            </div>-->
+      <div
+        v-if="
+          availableTables &&
+            orderType.OTApi === 'dine_in' &&
+            cartType !== 'hold'
+        "
+        class="driver-container"
+      >
+        <form>
+          <input
+            autocomplete="off"
+            type="text"
+            placeholder="Move Table"
+            class="input-search-driver shorten-sentence"
+            id="get-available-tables-list"
+            v-model="selectedTable"
+            @click="showTableList"
+          />
+        </form>
+        <div
+          id="available-tables"
+          class="dropdown-content available-tables cursor-pointer hide"
+        >
+          <span class="dropdown" @click="setTable(null)">
+            {{ _t('Select Table') }}
+          </span>
+          <span
+            class="table-status"
+            v-for="table in availableTables"
+            :key="table._id"
+            v-bind:style="{
+              'border-bottom': '1px solid #ccc',
+            }"
+            @click="setTable(table)"
+          >
+            <span
+              :class="'fa fa-' + table.shape"
+              v-bind:style="
+                table.shape !== 'rectangle'
+                  ? { color: table.color }
+                  : { background: table.color }
+              "
+            ></span>
+            <span v-html="table.name"></span>
+          </span>
+        </div>
+      </div>
+      <!--<div
+        class="orders-button-large"
+        disabled="disable"
+        v-if="orderType.OTApi === 'dine_in'"
+      >
+        {{ _t('Split Table') }}
+      </div>-->
+      <div
+        v-if="covers && orderType.OTApi === 'dine_in' && cartType !== 'hold'"
+        class="driver-container"
+      >
+        <form>
+          <input
+            autocomplete="off"
+            type="text"
+            placeholder="Select Cover"
+            class="input-search-driver shorten-sentence"
+            id="get-customer-list"
+            v-model="OrderSelectedCover"
+            @click="showDropdown"
+          />
+        </form>
+        <div
+          id="my-dropdown"
+          class="available-covers dropdown-content cursor-pointer"
+        >
+          <span class="dropdown" :key="0" @click="setCover(null)">
+            {{ _t('Select Cover') }}
+          </span>
+          <span
+            class="dropdown"
+            v-for="cover in covers"
+            :key="cover._id"
+            @click="setCover(cover)"
+          >
+            <span v-html="cover.name"></span>
+          </span>
+        </div>
+      </div>
       <div
         v-if="cartType !== 'hold'"
         id="holdorder"
@@ -43,19 +143,63 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'Header',
-  props: {},
-
+  data() {
+    return {
+      OrderSelectedCover: 'Select Cover',
+      selectedTable: '',
+      myStyle: {
+        backgroundColor: '#fff',
+      },
+    }
+  },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['items', 'cartType']),
+    ...mapGetters('dinein', ['getAllCovers']),
+    ...mapState('order', ['items', 'cartType', 'orderType', 'orderData']),
     ...mapState('checkoutForm', ['msg']),
-    ...mapState({ selectedCustomer: state => state.customer.customer }),
+    ...mapState('customer', ['deliveryAreas']),
+    ...mapState('dinein', ['selectedCover', 'covers', 'availableTables']),
+    ...mapState({
+      selectedCustomer: state => state.customer.customer,
+    }),
+    ...mapState({ selectedAddress: state => state.customer.address }),
   },
   methods: {
     removeSelectedCustomer() {
       this.$store.commit('location/SET_MODAL', '#manage-customer')
       this.$store.dispatch('customer/resetCustomer')
     },
+    showDropdown: function() {
+      $('.available-tables').hide()
+      $('.available-covers').toggle()
+    },
+    showTableList: function() {
+      $('.available-covers').hide()
+      $('.available-tables').toggle()
+    },
+    setCover: function(cover) {
+      if (cover) {
+        this.OrderSelectedCover = cover.name
+      }
+      this.$store.commit('dinein/SET_COVER', cover)
+      $('.dropdown-content').hide()
+    },
+    setTable: function(table) {
+      if (table) {
+        this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
+        this.selectedTable = table.name
+      } else {
+        this.selectedTable = 'Select Table'
+      }
+      // this.$store.commit('dinein/AVAILABLE_TABLES', table)
+      $('.available-tables').hide()
+    },
+    /*documentClick(){
+          let $trigger = $(".dropdown");
+          if($trigger !== event.target && !$trigger.has(event.target).length){
+              $(".dropdown-menu").slideUp("fast");
+          }
+      },*/
     hold() {
       $('#holdorder').hide()
       this.$store
@@ -117,6 +261,7 @@ export default {
       align-items: center;
       margin: 0;
       #holdorder {
+        height: 35px;
         width: 30%;
         background-color: $green-middle;
       }

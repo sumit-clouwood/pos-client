@@ -34,6 +34,21 @@ export default {
   computed: {
     ...mapState('category', ['categories']),
   },
+  created() {
+    if (localStorage.getItem('token')) {
+      let user_session_loop = setInterval(() => {
+        let user_token = this.$store.state.auth.token
+        if (user_token && user_token !== localStorage.getItem('token')) {
+          this.$store.dispatch('auth/logout', 'tab logout reset')
+        }
+        // eslint-disable-next-line
+        //console.log('user_token is ' + user_token + 'Ls token is ' + localStorage.getItem('token'))
+        if (localStorage.getItem('token') === '') {
+          clearInterval(user_session_loop)
+        }
+      }, 5000)
+    }
+  },
   components: {
     Menu,
     Header,

@@ -159,7 +159,7 @@
               display: flex;
               justify-content: center;
               align-items: center;
-              background-color: #E3E9F0;
+              background-color: #e3e9f0;
               margin-right: 0.3125rem;
               cursor: pointer; }
       #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .cu-loyality-points {
@@ -446,7 +446,8 @@ div#display-order {
 .ullist-business-slider {
   text-align: center;
   display: flex;
-  align-items: center; }
+  align-items: center;
+  justify-content: center; }
   .ullist-business-slider > li {
     display: inline-grid;
     justify-content: center;
@@ -534,7 +535,8 @@ ul.fav-item-slider > li > img {
   opacity: 0.8;
   cursor: pointer; }
 
-.br-table-btn, .deactive-table-btn {
+.br-table-btn,
+.deactive-table-btn {
   display: none; }
 
 tr.referal-code-customer {
@@ -597,7 +599,7 @@ label.container-radio-btn span {
 label.container-radio-btn img {
   display: inline-block;
   vertical-align: middle;
-  margin-right: 0.3125rem;
+  margin-right: 0.625rem;
   width: 2.1875rem;
   height: 2.1875rem; }
 
@@ -692,7 +694,10 @@ p.itm-price {
   border: solid 1px #e3e7f2;
   margin-bottom: 0.625rem;
   padding: 0.3125rem 0.9375rem;
-  margin: 0 0.625rem 0.625rem; }
+  margin: 0 0.625rem 0.625rem;
+  display: grid;
+  grid-template-columns: 1fr max-content max-content;
+  grid-gap: 10px; }
 
 .wrappers-orders > .orders-name > span {
   cursor: pointer; }
@@ -703,7 +708,7 @@ p.itm-price {
   cursor: pointer; }
 
 .wrappers-orders .aed-amt {
-  width: 24%; }
+  width: auto; }
 
 .wrappers-orders .orders-name {
   width: 72%; }

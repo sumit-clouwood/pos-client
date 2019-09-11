@@ -40,7 +40,7 @@
       </li>
     </ul>
     <div class="curent-sale hideBigScreen">
-      <div class="curent-sale-title">Current Sale</div>
+      <div class="curent-sale-title">{{ _t('Current Sale') }}</div>
       <div class="curent-sale-item">
         <div class="text">Item</div>
         <div class="num">x3</div>
@@ -74,6 +74,13 @@
         </li>
         <li v-if="permitted('crm', 'root')">
           <a :href="crm">{{ _t('CRM') }}</a>
+        </li>
+        <li>
+          <a role="button">
+            <router-link :to="'/dine-in' + store">
+              {{ _t('Dine In') }}
+            </router-link>
+          </a>
         </li>
         <li v-if="permitted('menu', 'root')">
           <a :href="menu">{{ _t('Menu Setup') }}</a>
@@ -165,6 +172,9 @@ export default {
         this.$store.getters['context/brand']
       )
     },
+    /*dineInUrl(link) {
+      return window.location.href.replace(new RegExp('/dine-in/.*'), '/' + link)
+    },*/
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },
   mounted() {

@@ -2,7 +2,7 @@
   <div class="preloader">
     <link rel="prefetch" href="/pos/img/icons/apple-touch-icon.png" />
     <div>
-      <img src="img/icons/apple-touch-icon.png" id="slidecaption" />
+      <img src="img/pos/DimsLogo.gif" id="slidecaption" />
     </div>
     <div v-if="msg">{{ msg }}</div>
   </div>
@@ -15,25 +15,46 @@ export default {
   },
 }
 </script>
-<style lang="sass" scoped>
-.preloader
-    /*margin-top: 220px*/
-    text-align: center
+<style lang="scss" scoped>
+@import '../../assets/scss/pixels_rem.scss';
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
 
-    img
-        height: 120px
-        -webkit-animation-name: spinner
-        -webkit-animation-timing-function: linear
-        -webkit-animation-iteration-count: infinite
-        -webkit-animation-duration: 2s
-        animation-name: spinner
-        animation-timing-function: linear
-        animation-iteration-count: infinite
-        animation-duration: 2s
-        -webkit-transform-style: preserve-3d
-        -moz-transform-style: preserve-3d
-        -ms-transform-style: preserve-3d
-        transform-style: preserve-3d
+.preloader {
+  text-align: center;
+  display: grid;
+  align-items: start;
+  align-content: start;
+  justify-content: center;
+
+  img {
+    width: 100%;
+  }
+}
+
+@include responsive(mobile) {
+  .preloader {
+    /*margin-top: 35% !important;*/
+  }
+}
+</style>
+<!--style lang="stylus">
+ img
+            height: 310px
+            margin-bottom: -50px
+            width: 100%
+            /*-webkit-animation-name: spinner*/
+            /*-webkit-animation-timing-function: linear*/
+            /*-webkit-animation-iteration-count: infinite*/
+            /*-webkit-animation-duration: 2s*/
+            /*animation-name: spinner*/
+            /*animation-timing-function: linear*/
+            /*animation-iteration-count: infinite*/
+            /*animation-duration: 2s*/
+            /*-webkit-transform-style: preserve-3d*/
+            /*-moz-transform-style: preserve-3d*/
+            /*-ms-transform-style: preserve-3d*/
+            /*transform-style: preserve-3d*/
 
     @-webkit-keyframes spinner
         from
@@ -49,4 +70,4 @@ export default {
     -moz-transform: rotateY(-360deg)
     -ms-transform: rotateY(-360deg)
     transform: rotateY(-360deg)*/
-</style>
+</!--style -->

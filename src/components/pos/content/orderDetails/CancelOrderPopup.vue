@@ -26,9 +26,7 @@
           <div class="upper">
             <div class="autocomplete-container" v-if="cancellationReason">
               <div class="driver-container">
-                <div class="select-driver">
-                  {{ _t('Cancellation Reason') }}
-                </div>
+                <div class="select-driver">{{ _t('Cancellation Reason') }}</div>
                 <form>
                   <input
                     autocomplete="off"
@@ -48,17 +46,12 @@
                     >{{ reason.name }}</span
                   >
                 </div>
-                <p
-                  v-if="errors && errors.cancel_reason.length"
-                  class="text-danger"
-                >
+                <p v-if="errors && errors.cancel_reason" class="text-danger">
                   {{ errors.cancel_reason }}
                 </p>
               </div>
               <div>
-                <div class="select-driver">
-                  {{ _t('Supervisor Password') }}
-                </div>
+                <div class="select-driver">{{ _t('Supervisor Password') }}</div>
                 <div>
                   <input
                     autocomplete="off"
@@ -68,7 +61,7 @@
                   />
                 </div>
                 <p
-                  v-if="errors && errors.supervisor_password.length"
+                  v-if="errors && errors.supervisor_password"
                   class="text-danger"
                 >
                   {{ errors.supervisor_password.toString() }}
@@ -147,6 +140,12 @@ export default {
 @import '../../../../assets/scss/pixels_rem.scss';
 @import '../../../../assets/scss/variables.scss';
 @import '../../../../assets/scss/mixins.scss';
+
+#cancellationReason {
+  .modal-dialog {
+    /*margin: 0;*/
+  }
+}
 
 #cancellationReason {
   .modal-dialog {

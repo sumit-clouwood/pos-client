@@ -19,15 +19,16 @@ const state = {
 const getters = {}
 
 const actions = {
-  getHoldOrders({ commit, state }) {
+  getHoldOrders({ commit, state, rootState }) {
     const params = [
       state.params.query,
       state.params.limit,
       state.params.orderBy,
       state.params.orderStatus,
+      rootState.order.orderType.OTApi,
       state.params.page,
       'orders_main_tbl',
-      '',
+      rootState.location.store._id,
       '',
     ]
     commit(mutation.LOADING, false)
@@ -96,6 +97,11 @@ const mutations = {
   },
   [mutation.REMOVE_ORDER](state, index) {
     state.getHoldOrders.splice(index, 1)
+  },
+  [mutation.RESET](state) {
+    state.getHoldOrders = false
+    state.orderDetails = {}
+    state.pageLookups = {}
   },
 }
 

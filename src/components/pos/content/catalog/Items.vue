@@ -1,45 +1,51 @@
 <template>
-  <div
-    class="color-dashboard-background"
-    v-if="items.length"
-    :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
-  >
+  <div>
     <div
-      :class="{
-        'food-menu-item': true,
-        ' color-dashboard-background': item.image != '',
-      }"
-      :style="{ background: item.image == '' ? item.item_color : '' }"
-      v-for="item in items"
-      :key="item._id"
-      :value="dt(item)"
-      @click.prevent="addToOrder(item)"
+      class="color-dashboard-background"
+      v-if="items.length"
+      :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
     >
-      <img
-        v-if="item.image != ''"
-        class="food-menu-item-img"
-        :src="item.image"
-        :alt="dt(item)"
-        @error="imageLoadError()"
-      />
+      <!-- <div class="bg">bg</div> -->
       <div
-        class="food-menu-item-text color-text"
-        :class="item.image === '' ? 'item-image-only' : ''"
+        :class="{
+          'food-menu-item': true,
+          ' color-dashboard-background': item.image != '',
+        }"
+        :style="{ background: item.image == '' ? item.item_color : '' }"
+        v-for="item in items"
+        :key="item._id"
+        :value="dt(item)"
+        @click.prevent="addToOrder(item)"
       >
-        {{ dt(item) }}
+        <img
+          v-if="item.image != ''"
+          class="food-menu-item-img"
+          :src="item.image"
+          :alt="dt(item)"
+          @error="imageLoadError()"
+        />
+        <div
+          class="food-menu-item-text color-text"
+          :class="item.image === '' ? 'item-image-only' : ''"
+        >
+          {{ dt(item) }}
+        </div>
+        <div class="food-menu-item-price">
+          {{ currency }} {{ item.value || 0 }}
+        </div>
       </div>
-      <div class="food-menu-item-price">
-        {{ choosePrice(item.price_availability) }}
-      </div>
+      <Popup />
     </div>
-    <Popup />
+    <div class="color-dashboard-background" v-if="!items.length">
+      No menu item found
+    </div>
   </div>
 </template>
 
 <script>
 /* global $, showModal  */
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Popup from './items/Popup'
 
 export default {
@@ -51,6 +57,7 @@ export default {
     Popup,
   },
   computed: {
+    ...mapState('location', ['currency']),
     ...mapGetters('category', ['items']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
@@ -67,6 +74,7 @@ export default {
     },
     addToOrder(item) {
       this.$store.commit('order/SET_CART_TYPE', 'new')
+      this.$store.commit('order/START_ORDER')
       $('#POSItemOptions .modifier-option-radio').prop('checked', false)
       $('.food-menu-item').removeClass('active')
       $(this).addClass('active')
@@ -174,7 +182,14 @@ export default {
     left: 0;
     overflow: auto;
     background-color: transparent;
-
+    .bg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: darkblue;
+    }
     &.active {
       top: 0;
       transition: 0.7s ease-out;
@@ -207,14 +222,14 @@ export default {
       transition: 0.1s ease-out;
 
       &:not(.color-dashboard-background) {
-        padding-left: 85px;
+        // padding-left: 85px;
         padding-right: 0;
-        color: #fff;
-        height: 66px;
+        // color: #fff;
+        height: 40px;
 
         .food-menu-item-price {
           justify-self: end;
-          color: #fff;
+          color: #444;
         }
       }
 

@@ -19,14 +19,11 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   .add-note {
-    /*background-color: rgba(0, 0, 0, 0.3);*/
-
     #add-note {
       display: none !important;
       background-color: transparent;

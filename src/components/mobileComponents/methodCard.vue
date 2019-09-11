@@ -22,12 +22,8 @@
             fill="#B0B2BB"
           />
         </svg>
-        <div class="title">
-          Please insert a card
-        </div>
-        <div class="subtitle">
-          or NFC
-        </div>
+        <div class="title">Please insert a card</div>
+        <div class="subtitle">or NFC</div>
       </div>
     </div>
     <mobile-footer :param="{ method: 'cardInput' }" />
@@ -54,7 +50,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
 
@@ -71,6 +66,15 @@ export default {
   height: 100%;
   display: none;
   grid-template-rows: max-content 1fr max-content;
+
+  .btn-next {
+    display: none;
+  }
+
+  .btn-next-s {
+    display: flex !important;
+  }
+
   @include responsive(mobile) {
     display: grid;
   }

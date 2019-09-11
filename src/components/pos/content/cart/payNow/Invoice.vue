@@ -40,14 +40,15 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print', 'order']),
-    ...mapState('order', ['orderId']),
     ...mapState('context', ['brandId']),
     ...mapGetters('invoice', ['template']),
     ...mapGetters('location', ['_t']),
     order_title() {
       return (
         this._t('ORDER_DIALOG_TITLE_PREFIX') +
-        (this.orderId ? this.orderId : this.order.real_created_datetime) +
+        (this.order.orderNumber
+          ? this.order.orderNumber
+          : this.order.real_created_datetime.replace(/[\s-:]/g, '')) +
         this._t('ORDER_DIALOG_TITLE_SUFFIX') +
         this.order.order_mode
       )
@@ -56,17 +57,17 @@ export default {
 
   methods: {
     doPrint() {
-      console.log('iframe laoded, do print called')
+      //console.log('iframe laoded, do print called')
       this.$nextTick(() => {
-        console.log('iframe laoded, do print called, next tick called')
-        console.log('print', this.print)
+        //console.log('iframe laoded, do print called, next tick called')
+        //console.log('print', this.print)
         if (this.print && this.iframe_body) {
-          console.log('print singal received')
+          //console.log('print singal received')
           this.$store.commit('checkout/PRINT', false)
 
           try {
             //2. to print in new window
-            console.log('printing iframe')
+            //console.log('printing iframe')
             // const w = window.open()
             // w.document.write(this.iframe_body)
             // w.print()
@@ -89,13 +90,18 @@ export default {
           if (this.$store.state.order.orderType.OTApi === 'call_center') {
             this.$router.replace({ name: 'DeliveryManager' })
           }
+          //Reset Cart and set states and redirect to dine in.
+          if (this.$store.state.order.orderType.OTApi === 'dine_in') {
+            this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+            this.$router.replace({ name: 'Dinein' })
+          }
         }
       })
     },
     print_ready() {
-      console.log(this.print)
+      //console.log(this.print)
       this.invoiceHtml = this.$refs.print_template.$el.outerHTML
-      console.log('in print ready html length', this.invoiceHtml.length)
+      //console.log('in print ready html length', this.invoiceHtml.length)
       var body = `<html><head><title>${
         this.order_title
       }</title><style lang="css" scoped>

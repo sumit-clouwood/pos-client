@@ -1,16 +1,16 @@
-/*or example tax for an item is 2.467 
+/*or example tax for an item is 2.467
 suppose quantity is 3
 2.467 * 3 = 7.401
 
 but if round it before adding
-2.47 * 3 = 7.41 
+2.47 * 3 = 7.41
 
 It is 7.41 - 7.40 = 0.01
 
-Both have difference of 0.01 that can have a huge impact as we grow in orders 
+Both have difference of 0.01 that can have a huge impact as we grow in orders
 
 badr, 12:02 PM
-yes but you should not charge 7.41 
+yes but you should not charge 7.41
 you should charge 7.40
 
 */
@@ -19,6 +19,7 @@ import * as mutation from './order/mutation-types'
 import OrderService from '../../services/data/OrderService'
 import * as CONST from '@/constants'
 import Num from '@/plugins/helpers/Num.js'
+import DateTime from '@/mixins/DateTime.js'
 
 // initial state
 const state = {
@@ -33,9 +34,12 @@ const state = {
   referral: false,
   selectedOrder: false,
   orderId: null,
+  orderData: false,
   // pastOrder: false,
   orderStatus: null,
   cartType: 'new',
+  is_pay: 0,
+  startTime: null,
 }
 
 // getters
@@ -728,6 +732,7 @@ const actions = {
         const discount = rootState.discount.appliedItemDiscounts.find(
           discount => discount.item.orderIndex == item.orderIndex
         )
+        item.cover_no = false
 
         if (discount) {
           item.discount = {
@@ -747,6 +752,8 @@ const actions = {
               discountErrors[item.orderIndex] = item
               item.discount = false
               item.discountRate = 0
+              item.discountedTax = false
+              item.discountedNetPrice = false
             } else {
               const itemNetPriceWithModifiers = getters.itemNetPrice(item)
 
@@ -766,11 +773,15 @@ const actions = {
               //percentage based discount, use discount.rate here, not discount.value
               //apply discount with modifier price
               item.discountRate = discount.discount.rate
+              item.discountedTax = false
+              item.discountedNetPrice = false
             } else {
               //discount error
               item.discount = false
               discountErrors[item.orderIndex] = item
               item.discountRate = 0
+              item.discountedTax = false
+              item.discountedNetPrice = false
             }
           }
         } else {
@@ -870,10 +881,39 @@ const actions = {
     return new Promise(resolve => {
       dispatch('reset')
       commit(mutation.SET_ORDER_ID, order._id)
+      commit(mutation.START_ORDER)
+      dispatch('customer/fetchSelectedCustomer', order.customer, {
+        root: true,
+      })
+      let orderData = {
+        _id: order._id,
+        order_no: order.order_no,
+        customer: order.customer,
+      }
+      commit(mutation.SET_ORDER_DATA, orderData)
+      let allCovers = rootState.dinein.covers
 
       order.items.forEach((orderItem, key) => {
         rootState.category.items.forEach(categoryItem => {
           let item = { ...categoryItem }
+          if (
+            state.selectedOrder &&
+            state.selectedOrder.item.order_type === 'dine_in'
+          ) {
+            let coverNo = state.selectedOrder.item.items.filter(
+              data => data.entity_id === item._id
+            )
+            if (coverNo.length) {
+              item.coverNo = coverNo[0].cover_no
+              if (allCovers !== false && item.coverNo !== '') {
+                let coverDetail = allCovers.filter(
+                  cover => cover._id === item.coverNo
+                )
+                item.cover_name =
+                  coverDetail.length > 0 ? coverDetail[0].name : ''
+              }
+            }
+          }
           if (orderItem.entity_id === categoryItem._id) {
             item.quantity = orderItem.qty
             let modifiers = []
@@ -911,11 +951,16 @@ const actions = {
   addDeliveryOrder({ dispatch, commit }, orderData) {
     dispatch('addOrderToCart', orderData.item).then(() => {
       commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_DELIVERY)
-      commit(mutation.ORDER_TYPE, { OTview: 'Delivery', OTApi: 'call_center' })
+      if (!state.orderType.OTApi) {
+        commit(mutation.ORDER_TYPE, {
+          OTview: 'Delivery',
+          OTApi: 'call_center',
+        })
+      }
     })
   },
 
-  selectedOrderDetails({ commit }, orderId) {
+  selectedOrderDetails: function({ commit }, orderId) {
     return new Promise((resolve, reject) => {
       const params = ['orders', orderId, '']
       OrderService.getGlobalDetails(...params)
@@ -927,7 +972,6 @@ const actions = {
               resolve()
             })
             .catch(error => reject(error))
-
           orderDetails.item = response.data.item
           orderDetails.customer = response.data.collected_data.customer
           orderDetails.lookups = response.data.collected_data.page_lookups
@@ -993,8 +1037,23 @@ const actions = {
               break
           }
         }
+      },
+      errors => {
+        alert(errors.data.error)
       }
     )
+  },
+  beforeRedirectResetCartDineIn({ dispatch, rootState }) {
+    let dineInAreas = rootState.order.areas
+    if (typeof dineInAreas != 'undefined') {
+      dispatch('dinein/selectedArea', dineInAreas[0], {
+        root: true,
+      })
+    }
+    dispatch('dinein/getDineInOrders', {}, { root: true })
+    //Empty Local Storage
+    localStorage.setItem('reservation', false)
+    localStorage.setItem('reservationId', false)
   },
 }
 
@@ -1106,7 +1165,11 @@ const mutations = {
     state.item = false
     state.orderStatus = null
     state.orderId = null
+    state.orderData = null
     state.orderNote = null
+    // to be fool proof we don't reset startTime here, start time ll be reset when
+    // some one clicks on an item
+    // state.startTime = null
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
@@ -1123,6 +1186,9 @@ const mutations = {
   },
   [mutation.SET_ORDER_ID](state, id) {
     state.orderId = id
+  },
+  [mutation.SET_ORDER_DATA](state, data) {
+    state.orderData = data
   },
   [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId, orderDetails }) {
     localStorage.setItem('onlineOrders', JSON.stringify(orderDetails))
@@ -1141,6 +1207,17 @@ const mutations = {
 
   [mutation.SET_CART_TYPE](state, cartType) {
     state.cartType = cartType
+  },
+  [mutation.IS_PAY](state, val) {
+    state.is_pay = val
+  },
+
+  [mutation.START_ORDER](state) {
+    state.startTime = DateTime.getUTCDateTime()
+  },
+
+  [mutation.RESET_ORDER_TIME](state) {
+    state.startTime = null
   },
 }
 

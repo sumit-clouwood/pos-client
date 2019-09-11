@@ -12,7 +12,7 @@
         </div>
         <div
           class="orders-close"
-          @click.prevent="removeFromOrder({ item: item, index: index })"
+          @click.prevent="removeCurrentOrder({ item: item, index: index })"
         >
           <svg
             class="color-text-invert"
@@ -53,6 +53,14 @@
         @ {{ formatPrice(itemGrossPrice(item)) }} x
         {{ item.quantity }}
         {{ discountInfo(item) }}
+      </div>
+      <div
+        class="main-orders-list-item-subtitle color-text-invert"
+        v-if="orderType.OTApi === 'dine_in'"
+      >
+        <p class="selectedCoverName">
+          {{ item.cover_name }}
+        </p>
       </div>
       <div class="main-orders-list-item-buttons">
         <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
@@ -95,10 +103,11 @@ export default {
   name: 'Items',
   props: {},
   computed: {
+    ...mapState('dinein', ['covers']),
     ...mapState({
       currentItem: state => state.order.item._id,
     }),
-    ...mapState('order', ['orderType']),
+    ...mapState('order', ['orderType', 'selectedOrder']),
     ...mapGetters('category', ['subcategoryImage']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters('order', [
@@ -107,7 +116,7 @@ export default {
       'itemGrossPrice',
       'orderModifiers',
     ]),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('location', ['formatPrice', '_t']),
   },
   methods: {
     ...mapActions('category', ['getItems']),
@@ -129,6 +138,12 @@ export default {
         )
       }
       return ''
+    },
+    removeCurrentOrder(param) {
+      this.removeFromOrder(param)
+      if (!this.items.length) {
+        this.$store.dispatch('mainOrdersHendlerChange')
+      }
     },
   },
   components: {

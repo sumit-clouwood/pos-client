@@ -1,7 +1,8 @@
-@import "../variables.scss";
-@import "../mixins.scss";
+@import '../variables.scss';
+@import '../mixins.scss';
 
-#customer, #manage-customer {
+#customer,
+#manage-customer {
   .modal-dialog {
     max-width: $px1180;
 
@@ -10,6 +11,7 @@
         background: #dee2e9;
         padding: $px15 $px30;
         border-bottom-color: #dee2e9;
+        box-shadow: none;
 
         .customer-title {
           font-size: $px16;
@@ -39,7 +41,7 @@
           padding-left: $px15;
 
           &.selectpicker {
-            background-image: url("/assets/images/select-arrow.png");
+            background-image: url('/assets/images/select-arrow.png');
             background-repeat: no-repeat;
             background-position: center right $px10;
             -webkit-appearance: none;
@@ -155,7 +157,6 @@
       }
 
       .modal-footer {
-
       }
     }
   }
@@ -178,7 +179,6 @@
   font-weight: bold;
   text-transform: capitalize;
 }
-
 
 // media queries
 @include responsive(mobile) {
@@ -204,7 +204,6 @@
           z-index: 1;
 
           .customer-title {
-
           }
         }
 
@@ -222,20 +221,15 @@
           }
 
           select {
-
-
             &.selectpicker {
-
             }
           }
 
           .dob {
             > select:nth-child(2) {
-
             }
 
             > select:nth-child(3) {
-
             }
 
             > select:nth-child(4) {
@@ -257,18 +251,15 @@
               }
 
               > label {
-
               }
 
               label {
                 padding: 0;
 
                 > span {
-
                 }
               }
             }
-
           }
 
           .right-form {
@@ -328,7 +319,6 @@
       border-left: 1px solid #ddd;
 
       .modal-content {
-
         .modal-header {
           border-radius: 0;
           padding: 10px 20px;
