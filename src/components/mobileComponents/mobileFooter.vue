@@ -107,7 +107,7 @@
         </li>
       </div>
     </div>
-    <div class="btn-next" @click="footerBtnMethod">Nexst</div>
+    <div class="btn-next" @click="footerBtnMethod">Next</div>
     <div class="btn-next btn-next-s" @click="footerBtnMethodS">Next</div>
     <div class="btn-Cancel" @click="methodCardHendlerChange">Cancel</div>
     <div class="qr-voucher-code">
