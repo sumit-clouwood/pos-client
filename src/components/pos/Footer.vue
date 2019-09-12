@@ -464,6 +464,7 @@ export default {
             .dispatch('checkout/pay', this.orderType.OTApi)
             .then(() => {
               //Reset Cart and set states and redirect to dine in.
+              this.$store.commit('dinein/SET_COVER', '')
               this.$store.dispatch('order/beforeRedirectResetCartDineIn')
               this.$router.replace({ name: 'Dinein' })
             })
