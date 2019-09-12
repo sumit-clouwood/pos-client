@@ -8,7 +8,7 @@
       }"
     />
     <div class="calc-body">
-      <total-amount :param="{ totalAmountBlock: true, title: 'Cash' }" />
+      <total-amount />
       <div class="imput-block">
         <svg
           width="28"
@@ -34,6 +34,7 @@
         />
       </div>
       <amount-calculator />
+      <PaymentBreakdown v-show="showPayBreak" />
     </div>
     <div class="calc-footer">
       <mobile-footer :param="{ method: 'successfull' }" />
@@ -41,11 +42,12 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import mobileFooter from './mobileFooter'
 import mobilePayHeader from './mobilePayHeader.vue'
 import totalAmount from '../pos/content/cart/payNow/TotalAmount.vue'
 import amountCalculator from '../pos/content/cart/payNow/AmountCalculator.vue'
+import PaymentBreakdown from '../pos/content/cart/payNow/PaymentBreakdown'
 
 export default {
   components: {
@@ -53,6 +55,7 @@ export default {
     totalAmount,
     mobilePayHeader,
     amountCalculator,
+    PaymentBreakdown,
   },
   computed: {
     payableAmount: {
@@ -68,6 +71,7 @@ export default {
     ...mapGetters(['payNowCalcHendler']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('checkoutForm', ['payable']),
+    ...mapState('checkoutForm', ['error', 'showCalc', 'showPayBreak']),
   },
   methods: {
     showCalculator() {

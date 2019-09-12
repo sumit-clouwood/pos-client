@@ -118,7 +118,6 @@
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
-import * as CONST from '@/constants'
 
 export default {
   props: ['param'],
@@ -171,7 +170,7 @@ export default {
     },
     footerBtnMethod() {
       /* eslint-disable */
-      this.$store.dispatch('checkoutForm/validatePayment').then(() => {
+      /*this.$store.dispatch('checkoutForm/validatePayment').then(() => {
         if (this.method.type == CONST.GIFT_CARD) {
           this.$store.dispatch('loyaltyPaymentHendlerChange')
         } else if (this.method.reference_code) {
@@ -180,7 +179,8 @@ export default {
           //cash payments
           this.$store.dispatch('payNowCalcHendlerChange')
         }
-      })
+      })*/
+      this.$store.dispatch('payNowCalcHendlerChange')
     },
     footerBtnMethodS() {
       this.$store.dispatch('successfullHendlerChange')
