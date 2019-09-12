@@ -68,12 +68,12 @@
               @click="splitItems({ item: item, e: $event, key: index })"
             />
             <span class="checkmark"></span>
-            <select class="">
+            <!--<select class="">
               <option>Select Guest</option>
               <option v-for="guest in guests" :key="guest"
                 >Guest {{ guest }}</option
               >
-            </select>
+            </select>-->
           </label>
         </div>
       </div>
