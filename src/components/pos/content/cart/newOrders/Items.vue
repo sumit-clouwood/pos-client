@@ -15,7 +15,7 @@
           class="orders-close"
           @click.prevent="removeCurrentOrder({ item: item, index: index })"
         >
-         <span class="dlt-icon">
+          <span class="dlt-icon">
             <img src="img/pos/delete-icon.svg" />
           </span>
         </div>
