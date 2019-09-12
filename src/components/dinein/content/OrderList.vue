@@ -313,7 +313,7 @@ export default {
       let pageInformation = {
         pageNumber: pageNumber,
         tabName: this.tabName,
-        loader: true,
+        loader: false,
       }
       this.fetchMoreReservations(pageInformation)
     },

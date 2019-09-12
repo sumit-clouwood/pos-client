@@ -1,5 +1,5 @@
 import DataService from '@/services/DataService'
-
+import DateTime from '@/mixins/DateTime'
 export default {
   dineInRunningOrders(page, limit) {
     return DataService.get(
@@ -7,8 +7,9 @@ export default {
     )
   },
   dineInCompleteOrders(page, limit) {
+    let currentDate = DateTime.getPreviousDayUTCDate()
     return DataService.get(
-      `/model/reservations?page_id=reservations_main_tbl&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&status=completed&byColumn=1&orderBy=priority`
+      `/model/reservations?page_id=reservations_main_tbl&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&status=completed&byColumn=1&orderBy=priority&start_date=${currentDate}~gte`
     )
   },
 
