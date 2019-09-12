@@ -4,15 +4,15 @@
       <ul class="ullist-dinein-table" v-if="tableStatus">
         <li id="unavailable-seat">
           <span>{{ tableStatus.unavailableCount }}</span
-          >Unavailable
+          >{{ _t('Unavailable') }}
         </li>
         <li id="available-soon-seat">
           <span>{{ tableStatus.availableSoonCount }}</span
-          >Available Soon
+          >{{ _t('Available Soon') }}
         </li>
         <li id="available-seat">
           <span>{{ getAvailableTableCount(tableStatus) }}</span
-          >Available
+          >{{ _t('Available') }}
         </li>
       </ul>
     </div>
@@ -50,12 +50,13 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import * as d3 from 'd3'
 export default {
   name: 'TableStatus',
   computed: {
     ...mapState('dinein', ['tableStatus']),
+    ...mapGetters('location', ['_t']),
   },
   data() {
     return {
