@@ -1,6 +1,5 @@
 <template>
   <div class="main-orders-list" v-if="items">
-    no
     <div
       class="main-orders-list-item color-dashboard-background"
       v-for="(item, index) in items"
@@ -59,6 +58,32 @@
           {{ discountInfo(item) }}
         </div>
         <!--add condition here split true-->
+        <div
+          class="align-right text-right"
+          v-if="orderType.OTApi === 'dine_in' && split"
+        >
+          <label class="pos-container">
+            <input
+              type="checkbox"
+              @click="splitItems({ item: item, e: $event, key: index })"
+            />
+            <span class="checkmark"></span>
+            <select class="">
+              <option>Select Guest</option>
+              <option v-for="guest in guests" :key="guest"
+                >Guest {{ guest }}</option
+              >
+            </select>
+          </label>
+        </div>
+      </div>
+      <div
+        class="main-orders-list-item-subtitle color-text-invert"
+        v-if="orderType.OTApi === 'dine_in'"
+      >
+        <p class="selectedCoverName">
+          {{ item.cover_name }}
+        </p>
       </div>
       <div class="main-orders-list-item-buttons">
         <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
@@ -93,7 +118,7 @@
 </template>
 
 <script>
-import Modifiers from './items/Modifiers.vue'
+import Modifiers from '@/components/pos/content/cart/newOrders/items/Modifiers.vue'
 import * as CONST from '@/constants'
 import { mapState, mapActions, mapGetters } from 'vuex'
 
@@ -106,6 +131,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('dinein', ['covers', 'split', 'guests']),
     ...mapState({
       currentItem: state => state.order.item._id,
     }),
@@ -181,9 +207,9 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../assets/scss/variables.scss';
-@import '../../../../../assets/scss/mixins.scss';
+@import '../../../assets/scss/pixels_rem.scss';
+@import '../../../assets/scss/variables.scss';
+@import '../../../assets/scss/mixins.scss';
 
 .button-plus-icon {
   width: 23px;
