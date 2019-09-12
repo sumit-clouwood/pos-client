@@ -205,7 +205,8 @@ const actions = {
       CustomerService.fetchCustomer(customerId)
         .then(response => {
           let totalPages = 0
-          if (response.data.item.total_orders) {
+          let totleOrders = response.data.item.total_orders || false
+          if (totleOrders) {
             totalPages = Math.ceil(
               parseInt(response.data.item.total_orders) /
                 parseInt(state.params.page_size)

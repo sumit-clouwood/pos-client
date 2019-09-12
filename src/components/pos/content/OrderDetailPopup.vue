@@ -71,7 +71,7 @@
           </button>
           <button
             v-if="
-              typeof selectedOrder.item.order_type !== 'undefined' &&
+              typeof selectedOrder.item !== 'undefined' &&
                 selectedOrder.item.order_type === 'dine_in' &&
                 selectedOrder.item.order_status === 'finished'
             "
@@ -86,7 +86,7 @@
           </button>
           <button
             v-if="
-              typeof selectedOrder.item.order_type !== 'undefined' &&
+              typeof selectedOrder.item !== 'undefined' &&
                 selectedOrder.item.order_type !== 'dine_in'
             "
             type="button"
@@ -171,7 +171,7 @@ export default {
     modifyOrder(order) {
       this.$store.commit('order/START_ORDER')
       this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
-        let order_type = order.order_type
+        let order_type = order.order_type || ''
         if (order_type === 'dine_in') {
           let orderId = order._id
           let table_reservation_id = order.table_reservation_id
