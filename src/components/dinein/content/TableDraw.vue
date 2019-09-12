@@ -425,8 +425,8 @@ export default {
             d.table_position_coordinate.angle = 0
           }
           transform = `rotate(${d.table_position_coordinate.angle},${d
-            .table_position_coordinate.x + 110},${d.table_position_coordinate
-            .y + 45})`
+            .table_position_coordinate.x + 45},${d.table_position_coordinate.y +
+            45})`
           return transform
         })
         .attr('x', function(d) {
@@ -473,30 +473,30 @@ export default {
         d3.select(a[i])
           .append('text')
           .attr('class', 'dinein_table_number')
-          .attr('x', function(d, i, a) {
-            let tableCordinates = d3
-              .select(d3.select(a[i]).node().parentNode)
-              .select('.dinein_table')
-              .node()
-              .getBBox()
-            return tableCordinates.width / 2 + tableCordinates.x
-            // let xPosition = svgWidth[i] <= 100 ? 5 : 0
-            // if (d.table_shape === 'circle') {
-            //   xPosition += 5
-            // }
-            // return (
-            //   (d.table_position_coordinate.x + xPosition || 0) +
-            //   dineInTableWidth / 2
-            // )
+          .attr('x', function(d) {
+            // let tableCordinates = d3
+            //   .select(d3.select(a[i]).node().parentNode)
+            //   .select('.dinein_table')
+            //   .node()
+            //   .getBBox()
+            // return tableCordinates.width / 2 + tableCordinates.x
+            let xPosition = svgWidth[i] <= 100 ? 5 : 0
+            if (d.table_shape === 'circle') {
+              xPosition += 5
+            }
+            return (
+              (d.table_position_coordinate.x + xPosition || 0) +
+              dineInTableWidth / 2
+            )
           })
-          .attr('y', function(d, i, a) {
-            let tableCordinates = d3
-              .select(d3.select(a[i]).node().parentNode)
-              .select('.dinein_table')
-              .node()
-              .getBBox()
-            return tableCordinates.height / 2 + tableCordinates.y
-            // return (d.table_position_coordinate.y || 0) + dis.svgHeight / 2
+          .attr('y', function(d) {
+            // let tableCordinates = d3
+            //   .select(d3.select(a[i]).node().parentNode)
+            //   .select('.dinein_table')
+            //   .node()
+            //   .getBBox()
+            // return tableCordinates.height / 2 + tableCordinates.y
+            return (d.table_position_coordinate.y || 0) + dis.svgHeight / 2
           })
           .style('fill', 'black')
           .style('font-size', '18px')
