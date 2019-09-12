@@ -64,6 +64,7 @@
           data-target="#POSOrderItemOptions"
         >
           <div
+            v-if="typeof item.cover_name === 'undefined'"
             class="button-plus-icon"
             @click="setActiveItem({ orderItem: item, index: index })"
           >
