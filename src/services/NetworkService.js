@@ -22,7 +22,7 @@ export default {
           cb(false, 'off', event)
         }
       }
-    }, 1000 * 60 * 2)
+    }, 1000 * 60 * 1)
 
     window.addEventListener(
       'load',

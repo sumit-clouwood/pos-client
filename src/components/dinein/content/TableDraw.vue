@@ -107,14 +107,9 @@
                       </div>
                       <div
                         class="table-popup bg-success font-weight-bold"
-                        @click="
-                          updateOrder({
-                            orderId: orderId,
-                            orderData: orderData,
-                          })
-                        "
+                        @click="newOrder(orderData.reservationId, true)"
                       >
-                        {{ _t('Split Bill') }}
+                        {{ _t('Add Order') }}
                       </div>
                       <div
                         class="cursor-pointer text-danger reservation-cancel"
@@ -347,6 +342,7 @@ export default {
     },
     newOrder(reservationId, pos) {
       let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
+      this.$store.commit('dinein/TABLE_SPLIT', false)
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       if (!reservationId) {
         this.$store.commit('dinein/NUMBER_GUESTS', this.guests)
@@ -1034,7 +1030,7 @@ a.table-popup.bg-success.font-weight-bold {
 }
 .order-details-with-action {
   display: grid;
-  grid-template-columns: 3fr 1fr auto;
+  grid-template-columns: 2fr 1fr auto;
 }
 div#tooltipdata
   .table-action.order-details-with-action

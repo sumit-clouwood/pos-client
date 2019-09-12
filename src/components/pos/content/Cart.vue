@@ -10,9 +10,13 @@
       </div>
     </div>
     <Header />
-    <div class="main-orders-list-wrapper">
+    <div class="main-orders-list-wrapper" v-if="orderType.OTApi !== 'dine_in'">
       <HoldingOrders v-if="cartType === 'hold'" />
       <Items v-else />
+    </div>
+    <div class="main-orders-list-wrapper" v-else>
+      <HoldingOrders v-if="cartType === 'hold'" />
+      <dineInItems v-else />
     </div>
     <PayNow />
     <Footer />
@@ -29,6 +33,7 @@ import PayNow from './cart/PayNow'
 import Items from './cart/newOrders/Items.vue'
 import ordersMenu from '../../mobileComponents/mobileOrdersMenu.vue'
 import mobileFooter from '../../mobileComponents/mobileFooter.vue'
+import dineInItems from '@/components/dinein/cart/Items.vue'
 
 import { mapState, mapGetters } from 'vuex'
 
@@ -41,7 +46,7 @@ export default {
     ...mapState('checkout', ['order']),
     ...mapGetters('order', ['items']),
     ...mapGetters(['mainOrdersHendler']),
-    ...mapState('order', ['cartType']),
+    ...mapState('order', ['cartType', 'orderType']),
   },
   methods: {
     cartClose() {
@@ -55,6 +60,7 @@ export default {
     Footer,
     PayNow,
     ordersMenu,
+    dineInItems,
     mobileFooter,
   },
 }

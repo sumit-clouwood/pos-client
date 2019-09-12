@@ -10,7 +10,7 @@ const state = {
     lookup_running: false,
     lookup_completed: false,
   },
-  guests: 0,
+  guests: 1,
   orderDetails: false,
   completedOrderDetails: {},
   areas: false,
@@ -284,11 +284,11 @@ const actions = {
         })
       }
     })
-    let availableTables = areaTable
+    // let availableTables = areaTable
     /*state.tables.length > 0
       ? state.tables.filter(table => table.area_id === state.activeArea._id)
       : false*/
-    commit(mutation.AVAILABLE_TABLES, availableTables)
+    commit(mutation.AVAILABLE_TABLES, areaTable)
   },
 
   addReservation({ commit, state, dispatch }, tableId) {
