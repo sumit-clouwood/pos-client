@@ -83,7 +83,8 @@
                             })
                           "
                         >
-                          {{ _t('Split Bill') }}
+                          {{ _t('Update') }}
+                          <!--Split Bill-->
                         </div>
                         <div
                           class="cursor-pointer text-danger reservation-cancel"
