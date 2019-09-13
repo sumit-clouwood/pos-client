@@ -4,7 +4,7 @@
       class="table-holder container-fluid running-orders-dinein active"
       id="all-tables-show"
       v-if="tablesOnArea && dineInTabType === 'all'"
-      style="display: block"
+      style="display: block; padding-right: 0;"
     >
       <TableDraw />
     </div>
