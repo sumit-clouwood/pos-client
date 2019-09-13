@@ -187,7 +187,7 @@ const actions = {
         let is_unavail = 0
         let is_avail_soon = 0
         let orders = []
-        let tableDetails = { id: table._id, number: table.number, status: {} }
+        let table_details = { id: table._id, number: table.number, status: {} }
 
         if (state.allBookedTables && state.allBookedTables.orders) {
           orders = state.allBookedTables.orders.filter(
@@ -205,17 +205,23 @@ const actions = {
                 is_unavail = 1
               }
               // tableStatus.unavailableCount += 1
-              tableDetails.status.color = '#c84c4c'
-              tableDetails.status.text = 'unavailable'
-              tableStatus.table.push(tableDetails)
+              table_details.status.color = '#c84c4c'
+              table_details.status.text = 'unavailable'
+              tableStatus.table.push(table_details)
             } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
               if (order.assigned_table_id == table._id) {
                 is_avail_soon = 1
+
+                orders.forEach(order => {
+                  if (order.status !== CONST.ORDER_STATUS_ON_WAY) {
+                    is_avail_soon = 0
+                  }
+                })
               }
               // tableStatus.availableSoonCount += 1
-              tableDetails.status.color = '#faa03c'
-              tableDetails.status.text = 'available_soon'
-              tableStatus.table.push(tableDetails)
+              table_details.status.color = '#faa03c'
+              table_details.status.text = 'available_soon'
+              tableStatus.table.push(table_details)
             }
             orderOnTable.push({
               tableId: table._id,
@@ -237,9 +243,9 @@ const actions = {
           /*-
           parseInt(tableStatus.unavailableCount) +
           parseInt(tableStatus.availableSoonCount)*/
-          tableDetails.status.color = '#62bb31'
-          tableDetails.status.text = 'available'
-          tableStatus.table.push(tableDetails)
+          table_details.status.color = '#62bb31'
+          table_details.status.text = 'available'
+          tableStatus.table.push(table_details)
         }
         commit(mutation.ORDER_ON_TABLES, orderOnTable)
       })
