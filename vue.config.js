@@ -1,6 +1,8 @@
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? '/pos/' : '/',
-
+  css: {
+    sourceMap: true,
+  },
   chainWebpack: config => {
     config.module
       .rule('i18n')
@@ -18,10 +20,6 @@ module.exports = {
       enableInSFC: true,
     },
   },
-  css: {
-    sourceMap: true,
-  },
-  productionSourceMap: false,
   devServer: {
     port: 8081,
     host: '0.0.0.0',
