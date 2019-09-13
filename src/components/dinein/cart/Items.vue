@@ -38,13 +38,13 @@
               type="checkbox"
               @click="splitItems({ item: item, e: $event, key: index })"
             />
-            <span class="checkmark"></span>
-            &lt;!&ndash;<select class="">
+            &lt;!&ndash;            <span class="checkmark"></span>&ndash;&gt;
+            <select class="">
               <option>Select Guest</option>
               <option v-for="guest in guests" :key="guest"
                 >Guest {{ guest }}</option
               >
-            </select>&ndash;&gt;
+            </select>
           </label>-->
         </div>
       </div>
@@ -59,6 +59,7 @@
       <div class="main-orders-list-item-buttons">
         <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
         <div
+          v-if="typeof item.cover_name === 'undefined'"
           class="button-plus"
           data-toggle="modal"
           data-target="#POSOrderItemOptions"
