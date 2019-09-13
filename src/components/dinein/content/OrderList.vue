@@ -183,12 +183,7 @@
                   <span
                     class="dinefor-paynow"
                     v-if="orderTable.table.status == 'on-a-way'"
-                    @click="
-                      reservationUpdateStatus({
-                        reservationId: orderTable.table._id,
-                        status: 'dine_in_order_finished',
-                      })
-                    "
+                    @click="completeOrder(orderTable.table._id)"
                   >
                     <svg
                       height="21"
@@ -289,7 +284,7 @@ export default {
       .html(orderTime)
     // }, 1000)*/
     // })
-    // setInterval(() => {}, 1000)
+    // setInterval(() => {}, 1000) 
   },
   mixins: [DateTime],
   computed: {
@@ -299,6 +294,16 @@ export default {
     ...mapGetters('dinein', ['getOrderStatus', 'getTableNumber']),
   },
   methods: {
+    completeOrder(tableId) {
+      this.reservationUpdateStatus({
+        reservationId: tableId,
+        status: 'dine_in_order_finished',
+      })
+        .then()
+        .catch(error => {
+          alert(error.data.error)
+        })
+    },
     setTime(timerTime) {
       let timeZoneTime =
         typeof timerTime != 'undefined' ? timerTime.$date.$numberLong : 'false'
