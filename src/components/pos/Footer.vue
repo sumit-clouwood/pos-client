@@ -463,8 +463,6 @@ export default {
           element.cover_name == 'undefined' || element.cover_name == undefined
         )
       })
-      // eslint-disable-next-line no-console
-      console.log(checkCovers, this.selectedCover, 'Rajeev Items')
       if (this.items.length > 0) {
         if (
           checkCovers == undefined ||

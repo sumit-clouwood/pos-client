@@ -110,6 +110,7 @@
         <div
           id="my-dropdown"
           class="available-covers dropdown-content cursor-pointer"
+          v-if="items.find(element => element.cover_name == undefined)"
         >
           <span class="dropdown" :key="0" @click="setCover(null)">
             {{ _t('Select Cover') }}
