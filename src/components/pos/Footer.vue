@@ -458,12 +458,24 @@ export default {
   methods: {
     payNowDirect() {
       let validationError = {}
+      let checkCovers = this.items.find(element => {
+        return (
+          element.cover_name == 'undefined' || element.cover_name == undefined
+        )
+      })
+      // eslint-disable-next-line no-console
+      console.log(checkCovers, this.selectedCover, 'Rajeev Items')
       if (this.items.length > 0) {
-        if (this.selectedCover && this.selectedCover.name) {
+        if (
+          checkCovers == undefined ||
+          checkCovers == 'undefined' ||
+          this.selectedCover
+        ) {
           this.$store
             .dispatch('checkout/pay', this.orderType.OTApi)
             .then(() => {
               //Reset Cart and set states and redirect to dine in.
+              this.$store.commit('dinein/SET_COVER', '')
               this.$store.dispatch('order/beforeRedirectResetCartDineIn')
               this.$router.replace({ name: 'Dinein' })
             })

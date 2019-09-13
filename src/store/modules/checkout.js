@@ -648,6 +648,7 @@ const actions = {
               let dineinsuccmsg = rootGetters['location/_t'](
                 'Item added to order successfully'
               )
+
               alert(dineinsuccmsg)
               dispatch('reset')
             } else {

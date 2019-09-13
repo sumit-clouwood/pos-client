@@ -120,8 +120,8 @@
         </svg>
       </a>
       <ul class="setting-dropdown1">
-        <li>
-          <a role="button" @click="walkOrder()">
+        <li @click="walkOrder()">
+          <a role="button">
             {{ _t('Walk In') }}
           </a>
         </li>

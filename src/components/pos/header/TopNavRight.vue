@@ -75,8 +75,8 @@
         <li v-if="permitted('crm', 'root')">
           <a :href="crm">{{ _t('CRM') }}</a>
         </li>
-        <li>
-          <a role="button" @click="moveDineSection()">
+        <li @click="moveDineSection()">
+          <a role="button">
             {{ _t('Dine In') }}
           </a>
         </li>

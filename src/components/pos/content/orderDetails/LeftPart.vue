@@ -63,11 +63,8 @@
         }}</span>
         <p class="color-text">
           {{
-            orderDetails.item.order_history.length
-              ? getLookupData({
-                  lookupFrom: 'users',
-                  id: orderDetails.item.order_history[0].user,
-                })
+            Object.keys(orderDetails.item.order_history).length
+              ? getPlacedBy(orderDetails)
               : 'N/A'
           }}
         </p>
@@ -189,11 +186,19 @@ export default {
       let setData = this.orderDetails.lookups[lookup.lookupFrom]._id
       let selection =
         lookup.lookupFrom == 'brand_loyalty_cards' ? false : 'name'
+      // eslint-disable-next-line no-console
+      console.log(setData, selection, 'Rajeev Lookup')
       return LookupData.get({
         collection: setData,
         matchWith: lookup.id,
         selection: selection,
       })
+    },
+    getPlacedBy(orderDetail) {
+      let createdBy = orderDetail.item.order_history.find(element => {
+        return element.name == 'ORDER_HISTORY_TYPE_RECORD_NEW'
+      })
+      return orderDetail.lookups.users._id[createdBy.user].name
     },
     getLoyaltyPoint(orderItem) {
       return orderItem.loyalty_cards_with_points.length
