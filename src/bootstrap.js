@@ -74,8 +74,6 @@ export default {
           this.store
             .dispatch('category/fetchAll')
             .then(() => {
-              this.store.dispatch('dinein/fetchAll')
-              // this.store.dispatch('dinein/getCovers')
               this.updateLoading('catalog')
               this.store.dispatch('modifier/fetchAll').then(() => {
                 this.updateLoading('modifiers')
@@ -110,14 +108,14 @@ export default {
                   this.loadApiData('catalog').then(() =>
                     console.log('delayed loading catalog data done')
                   )
-                }, 100)
+                }, 3000)
 
                 setTimeout(() => {
                   console.log('delayed loading customer data started')
                   this.loadApiData('customer').then(() =>
                     console.log('delayed loading customer data done')
                   )
-                }, 150)
+                }, 4000)
 
                 //delayed loading data
                 setTimeout(() => {
@@ -125,7 +123,7 @@ export default {
                   this.loadApiData('order').then(() =>
                     console.log('delayed loading order data done')
                   )
-                }, 200)
+                }, 6000)
               })
               .catch(error => {
                 console.log('UI Failed', error)
