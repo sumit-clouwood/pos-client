@@ -1,6 +1,5 @@
 <template>
   <div class="main-orders-list" v-if="items">
-    no
     <div
       class="main-orders-list-item color-dashboard-background"
       v-for="(item, index) in items"
@@ -28,7 +27,6 @@
           {{ item.quantity }}
           {{ discountInfo(item) }}
         </div>
-        <!--add condition here split true-->
       </div>
       <div class="main-orders-list-item-buttons">
         <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
