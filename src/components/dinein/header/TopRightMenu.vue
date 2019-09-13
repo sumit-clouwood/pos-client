@@ -275,7 +275,10 @@ export default {
   methods: {
     walkOrder() {
       this.$router.push(this.store)
-      this.$store.commit('order/ORDER_TYPE', 'walk_in')
+      this.$store.commit('order/ORDER_TYPE', {
+        OTview: 'Walk In',
+        OTApi: 'walk_in',
+      })
     },
     fetchOrdersWithTableDetails: function(orderStatus) {
       this.$store.commit('dinein/SET_PAGE_NO', 1)
