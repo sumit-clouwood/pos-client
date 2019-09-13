@@ -284,7 +284,7 @@ export default {
       .html(orderTime)
     // }, 1000)*/
     // })
-    // setInterval(() => {}, 1000) 
+    // setInterval(() => {}, 1000)
   },
   mixins: [DateTime],
   computed: {
