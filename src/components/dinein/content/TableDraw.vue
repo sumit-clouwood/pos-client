@@ -267,7 +267,7 @@ export default {
       guests: 1,
       svg: null,
       width: 'auto',
-      viewBox: { x: 0, y: 0, width: 1560, height: 950 },
+      viewBox: { x: 0, y: 0, width: 1540, height: 910 },
       height: '950px',
       selectedTableD3: '',
       selectedTableData: false,
@@ -410,7 +410,7 @@ export default {
         .select('#dine-in-area')
         .append('g')
         .attr('class', 'tables')
-        .attr('transform', 'translate(10,10)')
+        /*.attr('transform', 'translate(10,10)')*/
         .selectAll('.dinein_table')
         .data(this.tablesOnArea)
         .enter() //data from state tables
@@ -1030,7 +1030,7 @@ a.table-popup.bg-success.font-weight-bold {
 }
 .order-details-with-action {
   display: grid;
-  grid-template-columns: 2fr 1fr auto;
+  grid-template-columns: 2fr 80px auto;
 }
 div#tooltipdata
   .table-action.order-details-with-action
