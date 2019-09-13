@@ -165,7 +165,7 @@ export default {
               }, 3000)
             }
 
-            if (this.orderId) {
+            if (this.orderId && this.$route.name === 'UpdateDeliveryOrder') {
               this.$store
                 .dispatch('order/selectedOrderDetails', this.orderId)
                 .then(() => {
