@@ -192,11 +192,11 @@ export default {
       // eslint-disable-next-line no-console
       console.log(orderDetail)
       let name = 'N/A'
-      /*if (orderDetail) {
+      if (orderDetail) {
         Object.values(orderDetail.lookups.users._id).forEach(details => {
           name = details.name
         })
-      }*/
+      }
       return name
     },
     getLoyaltyPoint(orderItem) {
