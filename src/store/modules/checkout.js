@@ -648,7 +648,13 @@ const actions = {
               let dineinsuccmsg = rootGetters['location/_t'](
                 'Item added to order successfully'
               )
-              alert(dineinsuccmsg)
+              commit(
+                'checkoutForm/SET_MSG',
+                { result: '', message: dineinsuccmsg },
+                {
+                  root: true,
+                }
+              )
               dispatch('reset')
             } else {
               commit(mutation.PRINT, true)
