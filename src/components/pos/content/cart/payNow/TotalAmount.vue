@@ -14,7 +14,7 @@
       v-if="typeof param !== 'undefined' && param.totalAmountBlock"
     >
       <img :src="method.icon" height="41" width="62" />
-      <!--<div class="total-amount-method-title">{{ method.name }}</div>-->
+      <div class="total-amount-method-title">{{ method.name }}</div>
       <div class="total-amount-method-btn" @click="MethodChangeHendler">
         Change
       </div>
