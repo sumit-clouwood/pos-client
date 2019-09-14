@@ -85,7 +85,7 @@ const actions = {
 
       if (
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
-        //rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN ||
+        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN ||
         action === CONSTANTS.ORDER_STATUS_ON_HOLD
       ) {
         validPayment = true
@@ -112,7 +112,6 @@ const actions = {
           validPayment = true
         }
       }
-
       if (validPayment) {
         //send order for payment
         let order = {}

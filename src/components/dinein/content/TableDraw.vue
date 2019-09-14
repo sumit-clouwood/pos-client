@@ -1060,6 +1060,7 @@ export default {
   /*align-items: center;*/
   background: #e5e9ed;
   align-content: center;
+  border-radius: 6px;
 }
 a.table-popup.bg-success.font-weight-bold {
   margin: 0.0325rem;
@@ -1069,6 +1070,7 @@ a.table-popup.bg-success.font-weight-bold {
 .close-table-details {
   background: #cc3232;
   color: #fff;
+  border-radius: 0 6px 0 0;
 }
 .order-details-with-action {
   display: grid;
@@ -1086,7 +1088,7 @@ div#tooltipdata
 div#tooltipdata .dropdown:hover {
   background-color: #fff;
 }
-div#tooltipdata .dropdown-content {
+div#tooltipdata.dropdown-content {
   overflow: unset;
 }
 </style>
