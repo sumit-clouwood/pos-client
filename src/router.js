@@ -26,17 +26,17 @@ const router = new Router({
     },
     {
       path: '/dine-in/:brand_id/:store_id/:table_id/:order_id',
-      name: 'Home',
+      name: 'DineinOrder',
       component: Home,
     },
     {
       path: '/dine-in/:brand_id/:store_id/:table_id/',
-      name: 'Home',
+      name: 'DineinTable',
       component: Home,
     },
     {
       path: '/:brand_id/:store_id/:order_id',
-      name: 'Home',
+      name: 'UpdateDeliveryOrder',
       component: Home,
     },
     {

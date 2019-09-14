@@ -331,7 +331,7 @@ const actions = {
       root: true,
     }).then(() => {
       commit('order/ORDER_TYPE', state.orderType, { root: true })
-      return dispatch('order/addDeliveryOrder', rootState.order.selectedOrder, {
+      return dispatch('order/addDiningOrder', rootState.order.selectedOrder, {
         root: true,
       })
     })
