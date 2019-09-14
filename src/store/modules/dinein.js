@@ -67,13 +67,13 @@ const actions = {
       dispatch(orderStatus.pageId, loader)
     }
   },
-  fetchAll({ dispatch, commit }) {
+  async fetchAll({ dispatch, commit }) {
     commit(mutation.LOADING, true)
-    dispatch('getBookedTables', false)
-    // dispatch('dineInRunningOrders')
-    dispatch('getDineInTables')
-    // dispatch('getDineInArea')
-    dispatch('getCovers')
+    await Promise.all([
+      dispatch('getDineInTables'),
+      dispatch('getCovers'),
+      dispatch('getBookedTables', false),
+    ])
     commit(mutation.LOADING, false)
   },
   getDineInOrders({ dispatch }) {
@@ -95,16 +95,17 @@ const actions = {
         .catch(er => reject(er))
     })
   },
-  getBookedTables({ commit }, loader = true) {
+  async getBookedTables({ commit }, loader = true) {
     // eslint-disable-next-line no-console
     console.log('all bookend table')
     if (loader) commit(mutation.LOADING, loader)
     localStorage.setItem('reservationId', false)
-    DineInService.getAllBookedTables().then(response => {
-      commit(mutation.BOOKED_TABLES, response.data)
-      if (loader) commit(mutation.LOADING, false)
-    })
+    const response = await DineInService.getAllBookedTables()
+    commit(mutation.BOOKED_TABLES, response.data)
+    if (loader) commit(mutation.LOADING, false)
+    return Promise.resolve()
   },
+
   seOrderData({ commit }, response) {
     let orderDetails = []
     let responseData = response.data.data
@@ -161,20 +162,28 @@ const actions = {
     })
   },
   getDineInTables({ commit, dispatch }) {
-    DineInService.dineTables().then(response => {
-      commit(mutation.DINE_IN_TABLES, response.data)
-      commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
-      dispatch('getAvailableTables')
+    return new Promise((resolve, reject) => {
+      DineInService.dineTables()
+        .then(response => {
+          commit(mutation.DINE_IN_TABLES, response.data)
+          commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
+          dispatch('getAvailableTables')
+            .then(() => {
+              resolve()
+            })
+            .catch(error => reject(error))
+        })
+        .catch(error => reject(error))
     })
   },
   selectedArea({ commit, dispatch }, area) {
     commit(mutation.SELECTED_AREA, area)
     dispatch('getTableStatus')
   },
-  getCovers({ commit }) {
-    DineInService.dineInCovers().then(response => {
-      commit(mutation.COVERS, response.data)
-    })
+  async getCovers({ commit }) {
+    const response = await DineInService.dineInCovers()
+    commit(mutation.COVERS, response.data)
+    return Promise.resolve()
   },
   getTableStatus({ commit, state }) {
     let tableStatus = {
@@ -297,6 +306,7 @@ const actions = {
       ? state.tables.filter(table => table.area_id === state.activeArea._id)
       : false*/
     commit(mutation.AVAILABLE_TABLES, areaTable)
+    return Promise.resolve()
   },
 
   addReservation({ commit, state, dispatch }, tableId) {
