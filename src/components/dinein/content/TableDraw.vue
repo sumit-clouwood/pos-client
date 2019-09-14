@@ -35,6 +35,19 @@
                 :key="componentKey"
               >
                 <div class="display-table-details">
+                  <div class="table-header-border-bottom">
+                    <h5 class="customer-title align-items-center pl-2 pt-2">
+                      {{ _t('Table information') }}
+                    </h5>
+                  </div>
+                  <span
+                    class="font-weight-bold close-table-details"
+                    @click="hideTableDetails"
+                  >
+                    X
+                  </span>
+                </div>
+                <div class="m-1">
                   <span
                     data-toggle="modal"
                     data-target="#placeOrder"
@@ -43,14 +56,8 @@
                   >
                     {{ _t(addOrSplit) }}
                   </span>
-                  <span
-                    class="font-weight-bold close-table-details"
-                    @click="hideTableDetails"
-                  >
-                    X
-                  </span>
                 </div>
-                <div v-if="orderDetails">
+                <div class="m-1" v-if="orderDetails">
                   <div
                     v-for="orderData in orderDetails"
                     :key="orderData.reservationId"
@@ -62,12 +69,6 @@
                         :key="orderId"
                       >
                         <div
-                          @click="
-                            updateOrder({
-                              orderId: orderId,
-                              orderData: orderData,
-                            })
-                          "
                           class="dropdown-item text-capitalize"
                           v-if="allBookedTables.lookup.orders._id"
                         >
@@ -87,21 +88,17 @@
                           <!--Split Bill-->
                         </div>
                         <div
-                          class="cursor-pointer text-danger reservation-cancel"
+                          class="cursor-pointer text-danger reservation-cancel btn btn-danger"
                           @click="cancelReservation(orderData.reservationId)"
                         >
                           <span class="dlt-icon">
-                            <img src="img/pos/delete-icon.svg" />
+                            <img src="img/pos/delete-icon-reservation.svg" />
                           </span>
                         </div>
                       </div>
                     </div>
                     <div v-else class="table-action order-details-with-action">
-                      <div
-                        @click="newOrder(orderData.reservationId, true)"
-                        role="button"
-                        class="dropdown-item"
-                      >
+                      <div class="dropdown-item">
                         {{ orderData.tableNumber }} #R |
                         {{ created_date(orderData.startDate) }},
                         {{ created_time(orderData.startTime) }}
@@ -113,11 +110,11 @@
                         {{ _t('Add Order') }}
                       </div>
                       <div
-                        class="cursor-pointer text-danger reservation-cancel"
+                        class="cursor-pointer text-danger reservation-cancel  btn btn-danger"
                         @click="cancelReservation(orderData.reservationId)"
                       >
                         <span class="dlt-icon">
-                          <img src="img/pos/delete-icon.svg" />
+                          <img src="img/pos/delete-icon-reservation.svg" />
                         </span>
                       </div>
                     </div>
@@ -649,16 +646,16 @@ export default {
         this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
       this.selectedTableId = datum._id
       let range = $('#range')
-      let top = datum.table_position_coordinate.y
+      let top = datum.table_position_coordinate.y + 20 || 0
       // let left = datum.table_position_coordinate.x + 35 || 100
       // $('#id_' + datum._id).click(function(e) {
-      let posX = datum.table_position_coordinate.x
+      let posX = $('#id_' + datum._id).offset().left
       // let posY = $('#id_' + datum._id).offset().top
       /*let tableWidth = $('#id_' + datum._id)
         .find('svg')
         .width()*/
-      // let getWidth = 361 / 2
-      /*if (this.orderDetails.length === 0) {
+      let getWidth = 361 / 2
+      if (this.orderDetails.length === 0) {
         getWidth = 155 / 2
       } else if (this.orderDetails.length > 0) {
         let orderCount = 0
@@ -670,14 +667,17 @@ export default {
         if (orderCount > 0) {
           getWidth = 445 / 2
         }
-      }*/
+      }
       // let tooltipWidth = parseInt($('#tooltipdata').width()) / 2
       // alert(event.pageX + ' , ' + posX + ' , ' + event.pageY + ' , ' + posY)
       // })
 
       range
         .parent('div')
-        .attr('style', 'top:' + top + 'px; left:' + posX + 'px; display:block')
+        .attr(
+          'style',
+          'top:' + top + 'px; left:' + (posX - getWidth) + 'px; display:block'
+        )
     },
     drawViews() {
       this.activeArea.top_view.forEach((element, i) => {
@@ -1066,7 +1066,6 @@ a.table-popup.bg-success.font-weight-bold {
 .close-table-details {
   background: #cc3232;
   color: #fff;
-  margin: 0.0325rem;
 }
 .order-details-with-action {
   display: grid;
@@ -1077,7 +1076,6 @@ div#tooltipdata
   .cursor-pointer.text-danger.reservation-cancel {
   position: static;
   margin: 1px;
-  border-bottom: 1px solid rgba(204, 50, 50, 0.2);
 }
 .modal .modal-dialog .modal-content .modal-footer {
   display: unset;

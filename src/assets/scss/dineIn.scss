@@ -518,7 +518,7 @@ input.qty {
   right: 0;
   padding: 5px !important;
   &:hover{
-    background: rgba(0,0,0,0.2);
+    background: rgb(203, 0, 14);
   }
   .dlt-icon{
     padding: 0;
@@ -551,8 +551,10 @@ svg {
           color: $white;
           margin: 0.0325rem;
           align-items: center;
+          border-radius: 4px;
+          margin-bottom: 1px;
           &:hover{
-            background: rgba(40,147,69,0.7) !important;
+            background: rgb(0, 147, 0) !important;
           }
         }
     }
@@ -580,9 +582,9 @@ svg {
   display: none;
   height: auto;
   border-radius: 8px;
-  box-shadow: 0 2px 4px 0 rgba(187, 187, 187, 0.5);
-  background-color: #f8fbff;
-  min-width: 151px;
+  box-shadow: 0 3px 3px 0 rgba(187, 187, 187, 0.9);
+  background-color: #e5e9ed;
+  min-width: 200px;
 }
 g.dinein_table_parent {
   &.active{
@@ -608,6 +610,8 @@ g.dinein_table_parent {
   .dropdown-item{
     padding: $px5 $px25 $px5 $px5 ;
     border-bottom: $px1 solid rgba(12, 19, 12, 0.1);
+    cursor: default;
+    &:hover{ background: unset }
   }
 }
 div{
@@ -923,4 +927,8 @@ svg .active > path {
 .tables-draw {
   border: $px1 dashed;
   margin: $px2;
+}
+.table-header-border-bottom {
+  border-bottom: 1px solid #ccc6c6;
+  cursor: default;
 }
