@@ -10,10 +10,15 @@ const state = {
 // getters
 const getters = {
   methods: state => (state.methods.data ? state.methods.data : []),
-  cash: state =>
-    typeof state.methods.data != 'undefined'
-      ? state.methods.data.find(method => method.type == 'regular')
-      : 0,
+  cash: state => {
+    let method = ''
+    if (typeof state.methods.data != 'undefined') {
+      method = state.methods.data.find(method => method.name.match(/cash/i))
+      if (!method) {
+        method = state.methods.data.find(method => method.type == 'regular')
+      }
+    }
+  },
 }
 
 // actions
