@@ -583,7 +583,7 @@ svg {
   height: auto;
   border-radius: 8px;
   box-shadow: 0 3px 3px 0 rgba(187, 187, 187, 0.9);
-  background-color: #e5e9ed;
+  background-color: #ffffff;
   min-width: 200px;
 }
 g.dinein_table_parent {
@@ -931,4 +931,8 @@ svg .active > path {
 .table-header-border-bottom {
   border-bottom: 1px solid #ccc6c6;
   cursor: default;
+}
+.table-order-content {
+  overflow: auto;
+  max-height: $px115;
 }

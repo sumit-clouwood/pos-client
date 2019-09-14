@@ -47,17 +47,7 @@
                     X
                   </span>
                 </div>
-                <div class="m-1">
-                  <span
-                    data-toggle="modal"
-                    data-target="#placeOrder"
-                    data-dismiss="modal"
-                    class="table-popup bg-success font-weight-bold"
-                  >
-                    {{ _t(addOrSplit) }}
-                  </span>
-                </div>
-                <div class="m-1" v-if="orderDetails">
+                <div class="m-1 table-order-content" v-if="orderDetails">
                   <div
                     v-for="orderData in orderDetails"
                     :key="orderData.reservationId"
@@ -118,6 +108,18 @@
                         </span>
                       </div>
                     </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="m-1">
+                    <span
+                      data-toggle="modal"
+                      data-target="#placeOrder"
+                      data-dismiss="modal"
+                      class="table-popup bg-success font-weight-bold"
+                    >
+                      {{ _t(addOrSplit) }}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1056,6 +1058,7 @@ export default {
   display: grid;
   grid-template-columns: 3fr auto;
   /*align-items: center;*/
+  background: #e5e9ed;
   align-content: center;
 }
 a.table-popup.bg-success.font-weight-bold {
@@ -1079,5 +1082,11 @@ div#tooltipdata
 }
 .modal .modal-dialog .modal-content .modal-footer {
   display: unset;
+}
+div#tooltipdata .dropdown:hover {
+  background-color: #fff;
+}
+div#tooltipdata .dropdown-content {
+  overflow: unset;
 }
 </style>
