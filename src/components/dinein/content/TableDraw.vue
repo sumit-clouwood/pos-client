@@ -426,8 +426,8 @@ export default {
             d.table_position_coordinate.angle = 0
           }
           transform = `rotate(${d.table_position_coordinate.angle},${d
-            .table_position_coordinate.x + (d.chairs > 5 ? 120 : 60)},${d
-            .table_position_coordinate.y + (d.chairs > 5 ? 120 : 60)})`
+            .table_position_coordinate.x + (d.chairs > 5 ? 109 : 60)},${d
+            .table_position_coordinate.y + (d.chairs > 5 ? 109 : 60)})`
           return transform
         })
         .attr('x', function(d) {
@@ -530,8 +530,8 @@ export default {
               d.table_position_coordinate.angle = 0
             }
             transform = `rotate(${d.table_position_coordinate.angle},${d
-              .table_position_coordinate.x + (d.chairs > 5 ? 120 : 60)},${d
-              .table_position_coordinate.y + (d.chairs > 5 ? 120 : 60)})`
+              .table_position_coordinate.x + (d.chairs > 5 ? 109 : 60)},${d
+              .table_position_coordinate.y + (d.chairs > 5 ? 109 : 60)})`
             return transform
           })
           .attr('x', function(d, i, a) {
@@ -542,7 +542,7 @@ export default {
               .select('.dinein_table')
               .node()
               .getBBox()
-            return tableCordinates.width / 10 + tableCordinates.x
+            return tableCordinates.width / 6 + tableCordinates.x
             /*let rectleft = 10
             if (d.table_shape === 'rectangle') {
               rectleft += d.chairs > 5 ? 5 : 0
@@ -565,7 +565,7 @@ export default {
               .select('.dinein_table')
               .node()
               .getBBox()
-            return tableCordinates.height / 3 + tableCordinates.y
+            return tableCordinates.height / 2 + tableCordinates.y
             /*let rectTop = 5
             if (d.table_shape === 'square') {
               rectTop = 0
@@ -630,6 +630,10 @@ export default {
         .getBoundingClientRect()
     },
     showOptions(datum, i, a) {
+      /*d3.select(d3.select(a[i]).parentNode)
+        .selectAll('path')
+        .style('stroke', 'green')
+        .style('stroke-width', '1')*/
       // eslint-disable-next-line no-console
       console.log(datum)
       this.selectedTableData = datum
@@ -645,16 +649,16 @@ export default {
         this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
       this.selectedTableId = datum._id
       let range = $('#range')
-      let top = datum.table_position_coordinate.y + 20 || 0
+      let top = datum.table_position_coordinate.y
       // let left = datum.table_position_coordinate.x + 35 || 100
       // $('#id_' + datum._id).click(function(e) {
-      let posX = $('#id_' + datum._id).offset().left
+      let posX = datum.table_position_coordinate.x
       // let posY = $('#id_' + datum._id).offset().top
       /*let tableWidth = $('#id_' + datum._id)
         .find('svg')
         .width()*/
-      let getWidth = 361 / 2
-      if (this.orderDetails.length === 0) {
+      // let getWidth = 361 / 2
+      /*if (this.orderDetails.length === 0) {
         getWidth = 155 / 2
       } else if (this.orderDetails.length > 0) {
         let orderCount = 0
@@ -666,17 +670,14 @@ export default {
         if (orderCount > 0) {
           getWidth = 445 / 2
         }
-      }
+      }*/
       // let tooltipWidth = parseInt($('#tooltipdata').width()) / 2
       // alert(event.pageX + ' , ' + posX + ' , ' + event.pageY + ' , ' + posY)
       // })
 
       range
         .parent('div')
-        .attr(
-          'style',
-          'top:' + top + 'px; left:' + (posX - getWidth) + 'px; display:block'
-        )
+        .attr('style', 'top:' + top + 'px; left:' + posX + 'px; display:block')
     },
     drawViews() {
       this.activeArea.top_view.forEach((element, i) => {
