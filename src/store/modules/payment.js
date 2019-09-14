@@ -18,12 +18,13 @@ const getters = {
         method = state.methods.data.find(method => method.type == 'regular')
       }
     }
+    return method
   },
 }
 
 // actions
 const actions = {
-  async fetchAll({ commit, rootGetters }) {
+  async fetchAll({ commit, getters, rootGetters }) {
     const paymentMethods = await PaymentService.fetchMethods()
 
     let methods = []
@@ -49,7 +50,8 @@ const actions = {
 
     paymentMethods.data = methods
     commit(mutation.SET_METHODS, paymentMethods)
-    commit('checkoutForm/setMethod', state.methods.data[0], { root: true })
+    //commit('checkoutForm/setMethod', state.methods.data[0], { root: true })
+    commit('checkoutForm/setMethod', getters.cash, { root: true })
   },
 }
 
