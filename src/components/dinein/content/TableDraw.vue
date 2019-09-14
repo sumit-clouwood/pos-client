@@ -426,8 +426,8 @@ export default {
             d.table_position_coordinate.angle = 0
           }
           transform = `rotate(${d.table_position_coordinate.angle},${d
-            .table_position_coordinate.x + 45},${d.table_position_coordinate.y +
-            45})`
+            .table_position_coordinate.x + (d.chairs > 5 ? 120 : 60)},${d
+            .table_position_coordinate.y + (d.chairs > 5 ? 120 : 60)})`
           return transform
         })
         .attr('x', function(d) {
@@ -442,16 +442,25 @@ export default {
         .attr('table_number', d => d.number)
         .attr('chairs', d => d.chairs)
         .attr('width', function(d) {
-          let tableWidth = 90
-          if (d.table_shape === 'rectangle') {
+          let tableWidth = d.chairs > 5 ? 220 : 120
+          /*if (d.table_shape === 'rectangle') {
             tableWidth = d.chairs > 5 ? 220 : 120
-          } /*else if (d.table_shape === 'circle') {
+          } /!*else if (d.table_shape === 'circle') {
             tableWidth += 5
-          }*/
+          }*!/*/
           svgWidth.push(tableWidth)
           return tableWidth
         })
-        .attr('height', this.svgHeight)
+        .attr('height', function(d) {
+          let tableWidth = d.chairs > 5 ? 220 : 120
+          /*if (d.table_shape === 'rectangle') {
+            tableWidth = d.chairs > 5 ? 220 : 120
+          } /!*else if (d.table_shape === 'circle') {
+            tableWidth += 5
+          }*!/*/
+          svgWidth.push(tableWidth)
+          return tableWidth
+        })
         .attr('xlink:href', function(d) {
           return `#dinein_${d.table_shape}_${d.chairs}`
         })
@@ -474,30 +483,34 @@ export default {
         d3.select(a[i])
           .append('text')
           .attr('class', 'dinein_table_number')
-          .attr('x', function(d) {
-            // let tableCordinates = d3
-            //   .select(d3.select(a[i]).node().parentNode)
-            //   .select('.dinein_table')
-            //   .node()
-            //   .getBBox()
-            // return tableCordinates.width / 2 + tableCordinates.x
-            let xPosition = svgWidth[i] <= 100 ? 5 : 0
-            if (d.table_shape === 'circle') {
-              xPosition += 5
-            }
-            return (
-              (d.table_position_coordinate.x + xPosition || 0) +
-              dineInTableWidth / 2
-            )
+          .attr('x', function(d, i, a) {
+            // eslint-disable-next-line no-console
+            console.log(d)
+            let tableCordinates = d3
+              .select(d3.select(a[i]).node().parentNode)
+              .select('.dinein_table')
+              .node()
+              .getBBox()
+            return tableCordinates.width / 2 + tableCordinates.x
+            // let xPosition = svgWidth[i] <= 100 ? 5 : 0
+            // if (d.table_shape === 'circle') {
+            //   xPosition += 5
+            // }
+            // return (
+            //   (d.table_position_coordinate.x + xPosition || 0) +
+            //   dineInTableWidth / 2
+            // )
           })
-          .attr('y', function(d) {
-            // let tableCordinates = d3
-            //   .select(d3.select(a[i]).node().parentNode)
-            //   .select('.dinein_table')
-            //   .node()
-            //   .getBBox()
-            // return tableCordinates.height / 2 + tableCordinates.y
-            return (d.table_position_coordinate.y || 0) + dis.svgHeight / 2
+          .attr('y', function(d, i, a) {
+            // eslint-disable-next-line no-console
+            console.log(d)
+            let tableCordinates = d3
+              .select(d3.select(a[i]).node().parentNode)
+              .select('.dinein_table')
+              .node()
+              .getBBox()
+            return tableCordinates.height / 2 + tableCordinates.y
+            // return (d.table_position_coordinate.y || 0) + dis.svgHeight / 2
           })
           .style('fill', 'black')
           .style('font-size', '18px')
@@ -511,8 +524,26 @@ export default {
         // this.manageViews()
         d3.select(a[i])
           .append('rect')
-          .attr('x', function(d) {
-            let rectleft = 10
+          .attr('transform', d => {
+            let transform
+            if (!d.table_position_coordinate.angle) {
+              d.table_position_coordinate.angle = 0
+            }
+            transform = `rotate(${d.table_position_coordinate.angle},${d
+              .table_position_coordinate.x + (d.chairs > 5 ? 120 : 60)},${d
+              .table_position_coordinate.y + (d.chairs > 5 ? 120 : 60)})`
+            return transform
+          })
+          .attr('x', function(d, i, a) {
+            // eslint-disable-next-line no-console
+            console.log(d, i, a)
+            let tableCordinates = d3
+              .select(d3.select(a[i]).node().parentNode)
+              .select('.dinein_table')
+              .node()
+              .getBBox()
+            return tableCordinates.width / 10 + tableCordinates.x
+            /*let rectleft = 10
             if (d.table_shape === 'rectangle') {
               rectleft += d.chairs > 5 ? 5 : 0
             } else if (
@@ -521,20 +552,29 @@ export default {
             ) {
               rectleft += 10
             }
-            return (d.table_position_coordinate.x || 0) + rectleft
+            return (d.table_position_coordinate.x || 0) + rectleft*/
           })
           .on('click', function(d, i, a) {
             dis.showOptions(d, i, a)
           })
-          .attr('y', function(d) {
-            let rectTop = 5
+          .attr('y', function(d, i, a) {
+            // eslint-disable-next-line no-console
+            console.log(console.log(d, i, a))
+            let tableCordinates = d3
+              .select(d3.select(a[i]).node().parentNode)
+              .select('.dinein_table')
+              .node()
+              .getBBox()
+            return tableCordinates.height / 3 + tableCordinates.y
+            /*let rectTop = 5
             if (d.table_shape === 'square') {
               rectTop = 0
             }
-            return (d.table_position_coordinate.y || 0) + rectTop + 50 / 2
+            return (d.table_position_coordinate.y || 0) + rectTop + 50 / 2*/
           })
           .attr('rx', '20')
-          .attr('ry', '3')
+          .attr('ry', '8')
+          .attr('dy', '.35em')
           .style('fill', function(d) {
             let fillcolor = '#c84c4c'
             dis.tableStatus.table.filter(ts => {
