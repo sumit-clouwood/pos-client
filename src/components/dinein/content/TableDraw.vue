@@ -378,14 +378,13 @@ export default {
               .then(() => {
                 this.$store.dispatch('dinein/getDineInArea', false)
                 this.$store.dispatch('dinein/getDineInTables', false)
-                if (pos) {
-                  let URL =
-                    '/dine-in/' + this.store + '/' + this.selectedTableId
-                  this.$router.push({ path: URL })
-                }
               })
           })
       } else {
+        if (pos) {
+          let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
+          this.$router.push({ path: URL })
+        }
         this.$store.commit('dinein/RESERVATION_ID', reservationId)
         this.$store.commit('dinein/NUMBER_GUESTS', false)
       }
