@@ -2,7 +2,7 @@
   <div class="mobile-page">
     <div class="mobile-header">
       <div class="current-sale">
-        <div class="title">Current Sale</div>
+        <div class="title">Current Sale ({{ _t(orderType.OTview) }})</div>
         <div class="list">
           <div class="items" v-if="items[items.length - 1]">
             <div class="items-text">{{ items[items.length - 1].name }}</div>
@@ -57,7 +57,7 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import search from '../pos/content/catalog/Search.vue'
 import submenu from '../pos/content/catalog/SubMenu.vue'
 import posmenu from '../pos/Menu.vue'
@@ -74,6 +74,8 @@ export default {
   },
   computed: {
     ...mapGetters('order', ['items']),
+    ...mapGetters('location', ['_t']),
+    ...mapState('order', ['orderType']),
   },
   methods: {
     profileHendlerChange() {
