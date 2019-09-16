@@ -435,6 +435,7 @@ export default {
       title: '',
       status: 0,
       message: '',
+      checkCover: true,
     }
   },
   computed: {
@@ -517,7 +518,30 @@ export default {
       }
     },
     payNowClick() {
-      clickPayNow()
+      let validationError = {}
+      this.items.find(element => {
+        if (typeof element.cover_name == 'undefined') {
+          this.checkCover = false
+        }
+      })
+      // eslint-disable-next-line no-console
+      console.log(this.checkCover)
+      // eslint-disable-next-line no-console
+      console.log(typeof this.selectedCover, this.orderType.OTApi)
+      if (
+        this.checkCover ||
+        typeof this.selectedCover == 'object' ||
+        this.orderType.OTApi !== 'dine_in'
+      ) {
+        clickPayNow()
+      } else {
+        validationError = {
+          status: 'flash_message',
+          flash_message: this._t('Please select a cover for new item.'),
+        }
+        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+        $('#information-popup').modal('show')
+      }
     },
     viewHoldOrders() {
       this.vbutton = 'new'

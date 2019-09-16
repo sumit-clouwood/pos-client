@@ -960,6 +960,10 @@ const actions = {
     })
   },
 
+  addDiningOrder({ dispatch }, orderData) {
+    dispatch('addOrderToCart', orderData.item).then(() => {})
+  },
+
   selectedOrderDetails: function({ commit }, orderId) {
     return new Promise((resolve, reject) => {
       const params = ['orders', orderId, '']

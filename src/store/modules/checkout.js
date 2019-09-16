@@ -112,7 +112,6 @@ const actions = {
           validPayment = true
         }
       }
-
       if (validPayment) {
         //send order for payment
         let order = {}
@@ -545,7 +544,21 @@ const actions = {
       // without waiting for a button to be clicked
 
       //order.order is a hold order, state.order contains current order
-      if (
+      if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
+        if (rootState.order.order_status !== 'completed') {
+          let order = { ...state.order }
+          delete order.new_real_transition_order_no
+          delete order.modify_reason
+          delete order.order_system_status
+          delete order.real_created_datetime
+
+          response = OrderService.updateOrderItems(
+            order,
+            rootState.order.orderId,
+            ''
+          )
+        }
+      } else if (
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
       ) {
@@ -565,22 +578,12 @@ const actions = {
             order.modify_reason = 'Updated from POS'
             break
         }
-        if (rootState.order.order_status !== 'completed') {
-          delete order.new_real_transition_order_no
-          delete order.modify_reason
-          delete order.order_system_status
-          response = OrderService.updateOrderItems(
-            order,
-            rootState.order.orderId,
-            modifyType
-          )
-        } else {
-          response = OrderService.modifyOrder(
-            order,
-            rootState.order.orderId,
-            modifyType
-          )
-        }
+
+        response = OrderService.modifyOrder(
+          order,
+          rootState.order.orderId,
+          modifyType
+        )
       } else {
         response = OrderService.saveOrder(
           state.order,
@@ -648,7 +651,13 @@ const actions = {
               let dineinsuccmsg = rootGetters['location/_t'](
                 'Item added to order successfully'
               )
-              alert(dineinsuccmsg)
+              commit(
+                'checkoutForm/SET_MSG',
+                { result: '', message: dineinsuccmsg },
+                {
+                  root: true,
+                }
+              )
               dispatch('reset')
             } else {
               commit(mutation.PRINT, true)
