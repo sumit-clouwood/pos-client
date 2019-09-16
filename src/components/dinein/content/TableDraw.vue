@@ -36,9 +36,9 @@
               >
                 <div class="display-table-details">
                   <div class="table-header-border-bottom">
-                    <h5 class="customer-title align-items-center pl-2 pt-2">
+                    <h6 class="customer-title align-items-center pl-2 pt-2">
                       {{ _t('Table information') }}
-                    </h5>
+                    </h6>
                   </div>
                   <span
                     class="font-weight-bold close-table-details"
