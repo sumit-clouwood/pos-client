@@ -553,11 +553,18 @@ const actions = {
           delete order.order_system_status
           delete order.real_created_datetime
 
-          response = OrderService.updateOrderItems(
-            order,
-            rootState.order.orderId,
-            ''
-          )
+          if (rootState.order.orderId) {
+            response = OrderService.updateOrderItems(
+              order,
+              rootState.order.orderId,
+              ''
+            )
+          } else {
+            response = OrderService.saveOrder(
+              state.order,
+              rootState.customer.customer
+            )
+          }
         }
       } else if (
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
