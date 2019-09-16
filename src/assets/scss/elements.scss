@@ -404,6 +404,15 @@ h6 {
         background-color: #fff;
       }
     }
+    .mobile-components {
+      .payment-breakdown-title h1 {
+        font-size: 1.5em;
+        padding-top: 10px;
+      }
+      .payment-method-block .fa-trash {
+        font-size: 1.25em;
+      }
+    }
   }
   .modal-header {
     padding: 20px !important;
