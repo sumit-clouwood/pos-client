@@ -58,7 +58,7 @@
 <script>
 /*global deliveryTabs*/
 // import Branches from '@/components/deliveryManager/partial/Branches'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'DMMenu',
@@ -67,18 +67,18 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t', 'permitted']),
+    ...mapState('deliveryManager', ['section']),
   },
   methods: {
     updateOrderStatus: function(orderStatus) {
       this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
       this.$store.commit('deliveryManager/SECTION', orderStatus.section)
-      this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
-      deliveryTabs(orderStatus.dataRelated)
+      if (this.section) {
+        this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
+        deliveryTabs(orderStatus.dataRelated)
+      }
     },
     ...mapActions('deliveryManager', ['updateDMOrderStatus']),
-  },
-  computed: {
-    ...mapGetters('location', ['_t']),
   },
 }
 </script>

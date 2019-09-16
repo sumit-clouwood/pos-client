@@ -150,18 +150,30 @@ const actions = {
       state.params.pageId,
       state.selectedStores,
     ]
+    let section = 'delivery_home'
+    if (state.section === 'takeaway') {
+      section = 'delivery_take_away'
+    }
+    if (state.section === 'future') {
+      section = 'delivery'
+    }
     let checkAPIPermission = rootGetters['location/permitted'](
       state.params.pageId,
-      'delivery_home'
+      section
     )
     if (checkAPIPermission) {
       DMService.getDMOrderDetails(...params)
         .then(response => {
-          console.log('inside edge')
-          commit(mutation.SET_DM_ORDERS, response.data)
-          commit(mutation.SET_TOTAL_ORDER, response.data.count)
-          commit(mutation.SET_LOADING, false)
-          dispatch('getDrivers')
+          commit(mutation.SET_LOADING, true)
+          if (response.data) {
+            commit(mutation.SET_DM_ORDERS, response.data)
+            commit(mutation.SET_TOTAL_ORDER, response.data.count)
+            commit(mutation.SET_LOADING, false)
+            if (state.section === 'delivery_home') {
+              dispatch('getDrivers')
+            }
+          }
+          console.log(state.orders)
         })
         .catch(() => {
           commit(mutation.SET_LOADING, false)

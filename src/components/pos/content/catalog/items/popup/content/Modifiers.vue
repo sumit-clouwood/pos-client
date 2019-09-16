@@ -37,7 +37,11 @@
               <span class="checkBox"></span>
             </span>
           </div>
-          <img :src="modifier.item_modifier_image" alt v-if="modifier.item_modifier_image != ''" />
+          <img
+            :src="modifier.item_modifier_image"
+            alt
+            v-if="modifier.item_modifier_image != ''"
+          />
           <img
             v-else
             :style="{
@@ -48,10 +52,9 @@
             }"
           />
           <span class="color-text">{{ modifier.name }}</span>
-          <div
-            class="color-text itm-price"
-            v-if="Num.toPrice(modifier.value)"
-          >({{ formatPrice(modifier.value) }})</div>
+          <div class="color-text itm-price" v-if="Num.toPrice(modifier.value)">
+            ({{ formatPrice(modifier.value) }})
+          </div>
         </label>
 
         <label class="container-radio-btn" v-else>
@@ -97,7 +100,11 @@
               }"
             ></span>
           </span>
-          <img v-if="modifier.item_modifier_image != ''" :src="modifier.item_modifier_image" alt />
+          <img
+            v-if="modifier.item_modifier_image != ''"
+            :src="modifier.item_modifier_image"
+            alt
+          />
           <img
             v-else
             :style="{
@@ -108,77 +115,78 @@
             }"
           />
           <span class="color-text">{{ modifier.name }}</span>
-          <div
-            class="color-text dis"
-            v-if="Num.toPrice(modifier.value)"
-          >({{ formatPrice(modifier.value) }})</div>
+          <div class="color-text dis" v-if="Num.toPrice(modifier.value)">
+            ({{ formatPrice(modifier.value) }})
+          </div>
         </label>
       </div>
       <div
         class="text-danger color-warning"
         v-if="subgroup.item_type == 'mandatory'"
         v-show="error"
-      >{{ error }}</div>
+      >
+        {{ error }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable no-console */
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters } from 'vuex'
 
 export default {
-  name: "Modifiers",
+  name: 'Modifiers',
   props: {
-    subgroup: Object
+    subgroup: Object,
   },
   data() {
     return {
-      itemId: null
-    };
+      itemId: null,
+    }
   },
   computed: {
     checkboxes: {
       get() {
-        return this.$store.state.orderForm.checkboxes;
+        return this.$store.state.orderForm.checkboxes
       },
       set(vmodel) {
-        this.$store.commit("orderForm/setCheckboxes", vmodel);
-      }
+        this.$store.commit('orderForm/setCheckboxes', vmodel)
+      },
     },
-    ...mapState("location", ["currency"]),
-    ...mapState("modifier", ["item"]),
-    ...mapState("orderForm", ["error", "radios"]),
-    ...mapGetters("orderForm", ["isSelected"]),
-    ...mapGetters("modifier", ["itemModifiers"]),
-    ...mapGetters("location", ["formatPrice"])
+    ...mapState('location', ['currency']),
+    ...mapState('modifier', ['item']),
+    ...mapState('orderForm', ['error', 'radios']),
+    ...mapGetters('orderForm', ['isSelected']),
+    ...mapGetters('modifier', ['itemModifiers']),
+    ...mapGetters('location', ['formatPrice']),
   },
   mounted() {},
   methods: {
     addClass(index) {
-      if (this.subgroup.modifiers[index].class !== "active") {
-        this.subgroup.modifiers[index].class = "active";
+      if (this.subgroup.modifiers[index].class !== 'active') {
+        this.subgroup.modifiers[index].class = 'active'
       } else {
-        this.subgroup.modifiers[index].class = "";
+        this.subgroup.modifiers[index].class = ''
       }
 
-      console.log(this.subgroup.modifiers[index]);
+      console.log(this.subgroup.modifiers[index])
     },
     setRadio(itemId, groupId, modifierId) {
-      this.$store.commit("orderForm/setRadios", {
+      this.$store.commit('orderForm/setRadios', {
         itemId: itemId,
         groupId: groupId,
-        modifierId: modifierId
-      });
-      this.$store.commit("orderForm/setError", false);
-    }
-  }
-};
+        modifierId: modifierId,
+      })
+      this.$store.commit('orderForm/setError', false)
+    },
+  },
+}
 </script>
 <style lang="scss">
-@import "../../../../../../../assets/scss/pixels_rem.scss";
-@import "../../../../../../../assets/scss/variables.scss";
-@import "../../../../../../../assets/scss/mixins.scss";
+@import '../../../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../../../assets/scss/variables.scss';
+@import '../../../../../../../assets/scss/mixins.scss';
 
 .POSItemOption {
   .POSItemOptions_type {
@@ -238,7 +246,7 @@ export default {
           input {
             display: none;
 
-            &[type="radio"] {
+            &[type='radio'] {
               background: #fff;
 
               &:checked + div {
@@ -332,8 +340,8 @@ export default {
               justify-content: center;
 
               &:after {
-                font-family: "FontAwesome";
-                content: "\F00C";
+                font-family: 'FontAwesome';
+                content: '\F00C';
                 background-color: transparent;
                 color: #fff;
                 top: 0;
@@ -406,13 +414,13 @@ export default {
           }
         }
 
-        input[type="checkbox"]:checked + span {
+        input[type='checkbox']:checked + span {
           background: $blue-middle;
           border-color: $blue-middle;
           position: relative;
         }
 
-        input[type="checkbox"] {
+        input[type='checkbox'] {
           opacity: 0;
           position: absolute;
           top: 4px;
@@ -420,9 +428,9 @@ export default {
           height: $px10;
         }
 
-        input[type="checkbox"]:checked + span:before {
-          font-family: "FontAwesome";
-          content: "\f00c";
+        input[type='checkbox']:checked + span:before {
+          font-family: 'FontAwesome';
+          content: '\f00c';
           width: $px12;
           height: $px12;
           color: #fff;
@@ -433,7 +441,7 @@ export default {
           font-size: $px15 !important;
         }
 
-        input[type="checkbox"] + span {
+        input[type='checkbox'] + span {
           border-radius: 2px;
         }
       }
@@ -456,7 +464,7 @@ export default {
                                          background-color: $green-middle;
                                      }
                                  }*/
-          &[type="checkbox"] {
+          &[type='checkbox'] {
             &:checked + div {
               display: block;
 
@@ -502,8 +510,8 @@ export default {
           border: none;
 
           &:before {
-            font-family: "FontAwesome";
-            content: "\f00c";
+            font-family: 'FontAwesome';
+            content: '\f00c';
             position: static !important;
             display: flex;
             align-items: center;

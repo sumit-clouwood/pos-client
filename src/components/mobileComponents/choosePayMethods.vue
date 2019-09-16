@@ -17,28 +17,28 @@
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import mobileFooter from "./mobileFooter.vue";
-import mobilePayHeader from "./mobilePayHeader.vue";
-import paymentMethods from "../pos/content/cart/payNow/PaymentMethods.vue";
-import totalAmount from "../pos/content/cart/payNow/TotalAmount.vue";
+import { mapGetters } from 'vuex'
+import mobileFooter from './mobileFooter.vue'
+import mobilePayHeader from './mobilePayHeader.vue'
+import paymentMethods from '../pos/content/cart/payNow/PaymentMethods.vue'
+import totalAmount from '../pos/content/cart/payNow/TotalAmount.vue'
 
 export default {
   components: {
     mobileFooter,
     paymentMethods,
     totalAmount,
-    mobilePayHeader
+    mobilePayHeader,
   },
   computed: {
-    ...mapGetters(["paymentMethodsHendler"])
+    ...mapGetters(['paymentMethodsHendler']),
   },
-  methods: {}
-};
+  methods: {},
+}
 </script>
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-@import "../../assets/scss/mixins.scss";
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   .mobile-payment-methods {
@@ -102,7 +102,7 @@ export default {
               display: flex;
               align-items: center;
               justify-content: center;
-              content: "\f00c";
+              content: '\f00c';
               font-family: FontAwesome;
               position: absolute;
               width: 20px;

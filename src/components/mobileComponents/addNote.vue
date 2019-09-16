@@ -24,7 +24,6 @@ export default {
 
 @include responsive(mobile) {
   .add-note {
-
     #add-note {
       display: none !important;
       background-color: transparent;

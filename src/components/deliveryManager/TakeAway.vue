@@ -5,7 +5,11 @@
     style="display: grid;"
   >
     <DMTakeAwaySubMenu />
-    <div class="dm-ready-order-wrapper" id="new-Collections">
+    <div
+      class="dm-ready-order-wrapper"
+      id="new-Collections"
+      style="display: grid"
+    >
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
       <!--suppress XmlDuplicatedId -->
       <div id="dm-new-order" v-else>
