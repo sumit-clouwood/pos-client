@@ -29,11 +29,7 @@
               ></svg>
             </div>
             <div id="tooltipdata" class="dropdown-content cursor-pointer">
-              <div
-                class="dropdown tooltip-c-range"
-                id="range"
-                :key="componentKey"
-              >
+              <div class="tooltip-c-range" id="range" :key="componentKey">
                 <div class="display-table-details">
                   <div class="table-header-border-bottom">
                     <h6 class="customer-title align-items-center pl-2 pt-2">
@@ -59,7 +55,7 @@
                         :key="orderId"
                       >
                         <div
-                          class="dropdown-item text-capitalize"
+                          class="text-capitalize dt-items"
                           v-if="allBookedTables.lookup.orders._id"
                         >
                           {{ orderData.tableNumber }}
@@ -1099,6 +1095,9 @@ a.table-popup.bg-success.font-weight-bold {
   display: grid;
   grid-template-columns: 2fr 1fr;
 }
+div#tooltipdata .dropdown-content {
+  max-height: 13.5rem;
+}
 div#tooltipdata
   .table-action.order-details-with-action
   .cursor-pointer.text-danger.reservation-cancel {
@@ -1119,10 +1118,17 @@ div#tooltipdata.dropdown-content {
 }
 </style>
 <style lang="sass" scoped>
+.dt-items
+  font-weight: 400
+  color: #212529
+  display: grid
+  align-items: center
+  padding: 0 5px
+
 .table-order-footer
   border-top: 1px solid #eee
   .buttons
-    display: flex;
+    display: flex
     justify-content: flex-end
     padding-right: 6px
 .table-action
