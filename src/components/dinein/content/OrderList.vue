@@ -64,7 +64,10 @@
                       </span>
                       <span
                         class="dinefor-paynow"
-                        v-if="tabName !== 'completed'"
+                        v-if="
+                          tabName !== 'completed' &&
+                            order.order_status !== 'finished'
+                        "
                       >
                         <a
                           @click="
