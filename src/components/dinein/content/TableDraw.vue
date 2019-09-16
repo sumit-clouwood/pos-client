@@ -66,24 +66,40 @@
                           #{{ getOrderNo(orderId) }}
                         </div>
                         <div
-                          class="table-popup bg-success font-weight-bold"
-                          @click="
-                            updateOrder({
-                              orderId: orderId,
-                              orderData: orderData,
-                            })
-                          "
+                          class="order-details-with-action"
+                          v-if="orderStatus(orderId) !== 'finished'"
                         >
-                          {{ _t('Update') }}
-                          <!--Split Bill-->
+                          <div
+                            class="table-popup bg-success font-weight-bold"
+                            @click="
+                              updateOrder({
+                                orderId: orderId,
+                                orderData: orderData,
+                              })
+                            "
+                          >
+                            {{ _t('Update') }}
+                            <!--Split Bill-->
+                          </div>
+                          <div
+                            class="cursor-pointer text-danger reservation-cancel btn btn-danger"
+                            @click="cancelReservation(orderData.reservationId)"
+                          >
+                            <span class="dlt-icon">
+                              <img src="img/pos/delete-icon-reservation.svg" />
+                            </span>
+                          </div>
                         </div>
-                        <div
-                          class="cursor-pointer text-danger reservation-cancel btn btn-danger"
-                          @click="cancelReservation(orderData.reservationId)"
-                        >
-                          <span class="dlt-icon">
-                            <img src="img/pos/delete-icon-reservation.svg" />
-                          </span>
+                        <div v-else>
+                          <div
+                            class="paid-amount-msg text-center font-weight-bold"
+                          >
+                            <img
+                              src="img/dinein/paid-icon.png"
+                              style="width:33px"
+                            />
+                            Paid
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -93,19 +109,21 @@
                         {{ created_date(orderData.startDate) }},
                         {{ created_time(orderData.startTime) }}
                       </div>
-                      <div
-                        class="table-popup bg-success font-weight-bold"
-                        @click="newOrder(orderData.reservationId, true)"
-                      >
-                        {{ _t('Add Order') }}
-                      </div>
-                      <div
-                        class="cursor-pointer text-danger reservation-cancel  btn btn-danger"
-                        @click="cancelReservation(orderData.reservationId)"
-                      >
-                        <span class="dlt-icon">
-                          <img src="img/pos/delete-icon-reservation.svg" />
-                        </span>
+                      <div class="order-details-with-action">
+                        <div
+                          class="table-popup bg-success font-weight-bold"
+                          @click="newOrder(orderData.reservationId, true)"
+                        >
+                          {{ _t('Add Order') }}
+                        </div>
+                        <div
+                          class="cursor-pointer text-danger reservation-cancel  btn btn-danger"
+                          @click="cancelReservation(orderData.reservationId)"
+                        >
+                          <span class="dlt-icon">
+                            <img src="img/pos/delete-icon-reservation.svg" />
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -335,6 +353,11 @@ export default {
             this.created_time(order.real_created_datetime)
         : ''
     },
+    orderStatus(orderId) {
+      // eslint-disable-next-line no-console
+      console.log(this.allBookedTables.lookup.orders._id[orderId])
+      return this.allBookedTables.lookup.orders._id[orderId].order_status
+    },
     hideTableDetails() {
       $('#range')
         .parent('div')
@@ -470,7 +493,7 @@ export default {
       if (this.selectedTableD3)
         d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
-        let dineInTableWidth = 0
+        /*let dineInTableWidth = 0
         // eslint-disable-next-line no-console
         console.log(dineInTableWidth)
         if (
@@ -478,13 +501,13 @@ export default {
           $('.dinein_table').length
         ) {
           dineInTableWidth = $('.dinein_table')[i].getBoundingClientRect().width
-        }
+        }*/
         d3.select(a[i])
           .append('text')
           .attr('class', 'dinein_table_number')
           .attr('x', function(d, i, a) {
             // eslint-disable-next-line no-console
-            console.log(d)
+            // console.log(d)
             let tableCordinates = d3
               .select(d3.select(a[i]).node().parentNode)
               .select('.dinein_table')
@@ -502,7 +525,7 @@ export default {
           })
           .attr('y', function(d, i, a) {
             // eslint-disable-next-line no-console
-            console.log(d)
+            // console.log(d)
             let tableCordinates = d3
               .select(d3.select(a[i]).node().parentNode)
               .select('.dinein_table')
@@ -535,7 +558,7 @@ export default {
           })
           .attr('x', function(d, i, a) {
             // eslint-disable-next-line no-console
-            console.log(d, i, a)
+            // console.log(d, i, a)
             let tableCordinates = d3
               .select(d3.select(a[i]).node().parentNode)
               .select('.dinein_table')
@@ -558,7 +581,7 @@ export default {
           })
           .attr('y', function(d, i, a) {
             // eslint-disable-next-line no-console
-            console.log(console.log(d, i, a))
+            // console.log(console.log(d, i, a))
             let tableCordinates = d3
               .select(d3.select(a[i]).node().parentNode)
               .select('.dinein_table')
@@ -566,7 +589,7 @@ export default {
               .getBBox()
             return tableCordinates.height / 2 + tableCordinates.y
             /*let rectTop = 5
-            if (d.table_shape === 'square') {
+            if (d.d.table_shape === 'square') {
               rectTop = 0
             }
             return (d.table_position_coordinate.y || 0) + rectTop + 50 / 2*/
@@ -634,7 +657,7 @@ export default {
         .style('stroke', 'green')
         .style('stroke-width', '1')*/
       // eslint-disable-next-line no-console
-      console.log(datum)
+      // console.log(datum)
       this.selectedTableData = datum
       this.guests = 1
       this.validationErrors = ''
@@ -1074,7 +1097,7 @@ a.table-popup.bg-success.font-weight-bold {
 }
 .order-details-with-action {
   display: grid;
-  grid-template-columns: 2fr 80px auto;
+  grid-template-columns: 2fr 1fr;
 }
 div#tooltipdata
   .table-action.order-details-with-action
@@ -1090,6 +1113,9 @@ div#tooltipdata .dropdown:hover {
 }
 div#tooltipdata.dropdown-content {
   overflow: unset;
+}
+.paid-amount-msg {
+  color: #7ac241;
 }
 </style>
 <style lang="sass" scoped>
