@@ -293,7 +293,12 @@ export default {
   computed: {
     ...mapState('location', ['timezoneString']),
     ...mapGetters('location', ['_t']),
-    ...mapState('dinein', ['orderDetails', 'loading', 'totalReservations']),
+    ...mapState('dinein', [
+      'orderDetails',
+      'loading',
+      'totalReservations',
+      'tables',
+    ]),
     ...mapGetters('dinein', ['getOrderStatus', 'getTableNumber']),
   },
   methods: {
@@ -353,6 +358,10 @@ export default {
         .toggleClass('active')
     },
     setRouter(data) {
+      let tableData = this.tables.find(
+        table => table._id === data.orderData.assigned_table_id
+      )
+      this.$store.commit('dinein/SELECTED_TABLE', tableData)
       this.$store.commit('dinein/RESERVATION_ID', data.orderData._id)
       this.$store.commit('dinein/ORDER_RESERVATION_DATA', data.orderData)
       this.$store.dispatch('dinein/getSelectedOrder', data.orderId, {

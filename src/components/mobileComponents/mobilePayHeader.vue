@@ -4,7 +4,7 @@
     <div class="pay-header-subtitle">{{ param.subtitle }}</div>
     <div class="pay-header-buttons">
       <div class="button-cancel" @click="paymentMethodsChange">
-        <div>Cancel</div>
+        <div>Back</div>
         <svg
           width="8"
           height="14"
