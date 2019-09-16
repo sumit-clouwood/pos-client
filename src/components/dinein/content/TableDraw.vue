@@ -98,7 +98,7 @@
                               src="img/dinein/paid-icon.png"
                               style="width:33px"
                             />
-                            Paid
+                            {{ _t('Paid') }}
                           </div>
                         </div>
                       </div>
