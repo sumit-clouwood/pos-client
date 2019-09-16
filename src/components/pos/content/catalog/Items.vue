@@ -1,39 +1,44 @@
 <template>
-  <div
-    class="color-dashboard-background"
-    v-if="items.length"
-    :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
-  >
-    <!-- <div class="bg">bg</div> -->
+  <div>
     <div
-      :class="{
-        'food-menu-item': true,
-        ' color-dashboard-background': item.image != '',
-      }"
-      :style="{ background: item.image == '' ? item.item_color : '' }"
-      v-for="item in items"
-      :key="item._id"
-      :value="dt(item)"
-      @click.prevent="addToOrder(item)"
+      class="color-dashboard-background"
+      v-if="items.length"
+      :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
     >
-      <img
-        v-if="item.image != ''"
-        class="food-menu-item-img"
-        :src="item.image"
-        :alt="dt(item)"
-        @error="imageLoadError()"
-      />
+      <!-- <div class="bg">bg</div> -->
       <div
-        class="food-menu-item-text color-text"
-        :class="item.image === '' ? 'item-image-only' : ''"
+        :class="{
+          'food-menu-item': true,
+          ' color-dashboard-background': item.image != '',
+        }"
+        :style="{ background: item.image == '' ? item.item_color : '' }"
+        v-for="item in items"
+        :key="item._id"
+        :value="dt(item)"
+        @click.prevent="addToOrder(item)"
       >
-        {{ dt(item) }}
+        <img
+          v-if="item.image != ''"
+          class="food-menu-item-img"
+          :src="item.image"
+          :alt="dt(item)"
+          @error="imageLoadError()"
+        />
+        <div
+          class="food-menu-item-text color-text"
+          :class="item.image === '' ? 'item-image-only' : ''"
+        >
+          {{ dt(item) }}
+        </div>
+        <div class="food-menu-item-price">
+          {{ currency }} {{ item.value || 0 }}
+        </div>
       </div>
-      <div class="food-menu-item-price">
-        {{ currency }} {{ item.value || 0 }}
-      </div>
+      <Popup />
     </div>
-    <Popup />
+    <div class="color-dashboard-background" v-if="!items.length">
+      No menu item found
+    </div>
   </div>
 </template>
 
@@ -220,7 +225,7 @@ export default {
         // padding-left: 85px;
         padding-right: 0;
         // color: #fff;
-        height: 40px;
+        height: 80px;
 
         .food-menu-item-price {
           justify-self: end;

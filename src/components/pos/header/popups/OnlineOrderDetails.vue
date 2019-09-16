@@ -9,8 +9,11 @@
             <div class="sidebar-past-order">
               <h4 class="color-text-invert">Placed By</h4>
 
-              <p class="color-text">
-                {{ getOrderDetails.customer.customer_name }}
+              <p class="color-text" v-if="getOrderDetails.customer">
+                {{
+                  getOrderDetails.customer ||
+                    getOrderDetails.customer.customer_name
+                }}
               </p>
             </div>
             <div class="sidebar-past-order">

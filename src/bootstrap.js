@@ -7,6 +7,10 @@ import * as CONST from '@/constants'
 
 export default {
   store: null,
+
+  lastSynced: null,
+  syncInterval: 60, //300 sec = 5 min
+
   setup(store) {
     this.store = store
     return new Promise((resolve, reject) => {
@@ -119,7 +123,7 @@ export default {
                   this.loadApiData('order').then(() =>
                     console.log('delayed loading order data done')
                   )
-                }, 8000)
+                }, 6000)
               })
               .catch(error => {
                 console.log('UI Failed', error)
@@ -172,14 +176,17 @@ export default {
           this.createDb(2).then(idb => {
             idb.close()
             this.createDb(3).then(idb => {
-              resolve(idb)
+              idb.close()
+              this.createDb(4).then(idb => {
+                resolve(idb)
+              })
             })
           })
         })
         .catch(event => {
           if (event.target.error.code === 0) {
             //db has been created already so try with a recent version
-            const version = 3
+            const version = 4
             db.openDatabase(version).then(({ idb, flag }) => {
               if (flag === 'open') {
                 this.store.commit('sync/setIdbVersion', version)
@@ -252,6 +259,40 @@ export default {
           })
           .catch(error => reject(error))
       }
+      if (event.oldVersion === 3) {
+        // initial database creation
+        // (your code does nothing here)
+        console.log('creating bucket logs')
+        db.createBucket(
+          'log',
+          {
+            autoIncrement: true,
+            keyPath: 'id',
+          },
+          bucket => {
+            bucket.createIndex('log_time', 'log_time', { unique: false })
+            bucket.createIndex('event_time', 'event_time', {
+              unique: false,
+            })
+            bucket.createIndex('event_type', 'event_type', {
+              unique: false,
+            })
+            bucket.createIndex('event_title', 'event_title', {
+              unique: false,
+            })
+            bucket.createIndex('event_data', 'event_data', {
+              unique: false,
+            })
+          }
+        )
+          .then(() => {
+            console.log('created bucket events')
+            this.store.commit('sync/setIdbVersion', 4)
+
+            resolve(4)
+          })
+          .catch(error => reject(error))
+      }
     })
   },
 
@@ -259,12 +300,33 @@ export default {
     NetworkService.status((status, msg) => {
       this.store.commit('sync/status', status)
       if (process.env.NODE_ENV === 'production' && msg === 'on') {
-        console.log('force sync in 10 sec from app')
-        setTimeout(function() {
-          navigator.serviceWorker.controller.postMessage({
-            sync: 1,
-          })
-        }, 1000 * 10)
+        const nowTime = new Date().getTime() //miliseconds
+
+        // console.log(
+        //   'sw:',
+        //   'last synced',
+        //   this.lastSynced,
+        //   'sync received',
+        //   nowTime,
+        //   'seconds passed last sync',
+        //   (nowTime - this.lastSynced) / 1000
+        // )
+
+        if (nowTime - this.lastSynced > this.syncInterval * 1000) {
+          this.lastSynced = nowTime
+
+          console.log(
+            this.syncInterval,
+            ' passed, force sync in 10 sec from app'
+          )
+          setTimeout(function() {
+            navigator.serviceWorker.controller.postMessage({
+              sync: 1,
+            })
+          }, 1000 * 10)
+        } else {
+          //console.log(this.syncInterval, ' not passed yet')
+        }
       }
     })
   },

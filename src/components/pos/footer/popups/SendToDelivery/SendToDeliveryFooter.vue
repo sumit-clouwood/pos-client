@@ -17,7 +17,7 @@
       ><!--<span><img src="images/referal-down.png"></span>-->
       <div class="dropdown-menu" v-if="getReferrals">
         <a
-          class="dropdown-item color-text"
+          class="dropdown-item color-text cursor-pointer"
           :class="{ active: referral._id === orderReferralId }"
           data-value="Call Center"
           role="button"

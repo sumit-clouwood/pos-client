@@ -29,7 +29,7 @@
           </li>
         </ul>
       </div>
-      <div class="insight-last-order">
+      <div class="insight-last-order" v-if="insight">
         <ul class="ullist-business-slider">
           <li class="color-text-invert">
             {{ _t('Total Business') }}

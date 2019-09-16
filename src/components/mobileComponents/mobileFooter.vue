@@ -58,17 +58,15 @@
       >
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <div class="btn-chatge">
+      <div class="btn-chatge" @click="paymentMethodsChange">
         <div
           class="btn-chatge-amount"
-          @click="paymentMethodsChange"
           v-show="orderType.OTApi !== 'call_center'"
         >
           {{ formatPrice(orderTotal || 0) }}
         </div>
         <div
           class="btn-chatge-title"
-          @click="paymentMethodsChange"
           v-show="orderType.OTApi !== 'call_center'"
         >
           CHARGE
@@ -87,6 +85,7 @@
           >
             <!--<img src="images/footer-images/d_2.png" alt="customer">-->
             <svg
+              style="width: 0.65em;"
               aria-hidden="true"
               focusable="false"
               data-prefix="fas"
@@ -140,6 +139,7 @@ export default {
     ...mapGetters('order', ['items', 'orderTotal']),
     ...mapGetters('location', ['formatPrice']),
     ...mapGetters(['footerMenuHendler', 'payMethod']),
+    ...mapState('checkoutForm', ['msg', 'error', 'method']),
     ...mapState({
       selectedModal: state =>
         state.location.setModal == '#loyalty-payment'
@@ -169,15 +169,18 @@ export default {
       this.$store.dispatch('methodCardHendlerChange')
     },
     footerBtnMethod() {
-      if (this.payMethod == '1') {
-        this.$store.dispatch('payNowCalcHendlerChange')
-      } else if (this.payMethod == '2') {
-        this.$store.dispatch('loyaltyPaymentHendlerChange')
-      } else if (this.payMethod == '3') {
-        this.$store.dispatch('methodCardHendlerChange')
-      } else if (this.payMethod == '4') {
-        this.$store.dispatch('QRMethodChangeHendler')
-      }
+      /* eslint-disable */
+      /*this.$store.dispatch('checkoutForm/validatePayment').then(() => {
+        if (this.method.type == CONST.GIFT_CARD) {
+          this.$store.dispatch('loyaltyPaymentHendlerChange')
+        } else if (this.method.reference_code) {
+          this.$store.dispatch('methodCardHendlerChange')
+        } else {
+          //cash payments
+          this.$store.dispatch('payNowCalcHendlerChange')
+        }
+      })*/
+      this.$store.dispatch('payNowCalcHendlerChange')
     },
     footerBtnMethodS() {
       this.$store.dispatch('successfullHendlerChange')
@@ -269,31 +272,26 @@ export default {
         border-radius: $btn-border-radius;
         height: 50px;
         color: #fff;
-        justify-content: stretch;
+        justify-content: center;
         text-align: center;
         padding: 5px;
-
         &.send {
           display: grid;
           grid-template-columns: 1fr;
           align-items: stretch;
           justify-content: stretch;
           width: 100%;
-
           li {
             width: 100%;
             height: 100%;
             display: flex;
             align-items: center;
-            justify-content: center;
-
             a {
               display: flex;
               align-items: center;
               justify-content: center;
               font-size: 14px;
               width: 100%;
-
               svg {
                 margin-right: 10px;
               }

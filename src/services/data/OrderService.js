@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import DataService from '@/services/DataService'
+import Logger from '@/services/network/Logger'
 
 export default {
   saveOrder(data, userdata) {
@@ -21,7 +22,30 @@ export default {
       console.log("Couldn't send msg to service worker in dev", e, msg)
     }
     delete data.user
-    return DataService.post('/model/orders/add', data)
+    return new Promise((resolve, reject) => {
+      DataService.post('/model/orders/add', data)
+        .then(response => {
+          Logger.log({
+            event_time: data.real_created_datetime,
+            event_title: data.balance_due,
+            event_type: 'pos_order_success',
+            event_data: { request: data, response: response.data },
+          })
+          resolve(response)
+        })
+        .catch(error => {
+          Logger.log({
+            event_time: data.real_created_datetime,
+            event_title: data.balance_due,
+            event_type: 'pos_order_failed',
+            event_data: {
+              request: data,
+              response: { message: error.message },
+            },
+          })
+          reject(error)
+        })
+    })
   },
 
   // deleteOrder(orderId) {
@@ -40,6 +64,7 @@ export default {
     limit,
     orderBy,
     orderStatus,
+    orderType,
     page,
     pageId,
     storeId,
@@ -47,7 +72,7 @@ export default {
   ) {
     let customer = customerId != '' ? '&customer=' + customerId : ''
     return DataService.get(
-      `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}&order_status=${orderStatus}&store_id=${storeId}${customer}`
+      `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=1&orderBy=${orderBy}&order_status=${orderStatus}&order_type=${orderType}&store_id=${storeId}${customer}`
     )
   },
   getGlobalDetails(modal, id, action) {
@@ -60,9 +85,7 @@ export default {
   },
 
   updateOrderAction(id, action, params) {
-    let setBrand = ['cancel_order', 'delivery_ready'].includes(action)
-      ? 'brand'
-      : ''
+    let setBrand = ['delivery_ready'].includes(action) ? 'brand' : ''
     return DataService.post(
       `/model/orders/id/${id}/${action}`,
       params,
@@ -77,5 +100,13 @@ export default {
       type = ''
     }
     return DataService.post(`/model/orders/id/${id}/modify_${type}order`, order)
+  },
+  updateOrderItems(order, id, type) {
+    if (type) {
+      type += '_'
+    } else {
+      type = ''
+    }
+    return DataService.post(`/model/orders/id/${id}/update_order_items`, order)
   },
 }

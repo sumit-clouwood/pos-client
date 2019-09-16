@@ -1,21 +1,55 @@
 <template>
-  <div class="col-md-8 left-container">
-    <Header />
-    <div class="table-hodler">
-      <Tables />
+  <div class="left-container">
+    <div
+      class="table-holder container-fluid running-orders-dinein active"
+      id="all-tables-show"
+      v-if="tablesOnArea && dineInTabType === 'all'"
+      style="display: block; padding-right: 0;"
+    >
+      <TableDraw />
     </div>
+    <OrderDetailsPopup />
+    <RunningOrders />
+    <Waiting />
+    <Reservation />
+    <CompletedOrders />
   </div>
 </template>
 
 <script>
-import Header from './content/Header'
-import Tables from './content/Tables'
+import RunningOrders from './content/RunningOrders'
+import Reservation from './content/Reservation'
+import Waiting from './content/Waiting'
+import CompletedOrders from './content/CompletedOrders'
+import TableDraw from './content/TableDraw'
+import { mapState } from 'vuex'
+import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
+
 export default {
   name: 'Content',
-  props: {},
+  computed: {
+    ...mapState('dinein', ['tablesOnArea', 'dineInTabType']),
+  },
   components: {
-    Header,
-    Tables,
+    RunningOrders,
+    Reservation,
+    CompletedOrders,
+    TableDraw,
+    Waiting,
+    OrderDetailsPopup,
+  },
+  mounted() {
+    this.$store.commit('dinein/SET_COVER', '')
+    //When POS to Dinein update every table status.
+    const reservationId = localStorage.getItem('reservationId')
+    if (reservationId !== false) {
+      this.$store.dispatch('checkout/reset')
+      this.$store.dispatch('dinein/getBookedTables', false)
+      this.$store.dispatch('dinein/getDineInArea', false)
+      this.$store.commit('dinein/RESERVATION_ID', false)
+      this.selectedAreaObj = this.$store.state.dinein.activeArea
+      this.$store.dispatch('dinein/selectedArea', this.selectedAreaObj)
+    }
   },
 }
 </script>

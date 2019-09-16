@@ -98,6 +98,7 @@ export default {
         store: this.$store.getters['context/store'],
       })
     }
+    /*else if (!this.$store.state.context.storeId) {}*/
     this.$store
       .dispatch('auth/checkLogin')
       .then(() => {
@@ -154,7 +155,7 @@ export default {
                     console.log('servie worker is ready')
                     Notification.requestPermission()
                     console.log('asking service worker to sync')
-                    return registration.sync.register('postOfflineOrders')
+                    return registration.sync.register('syncpos')
                   })
                   .then(function() {})
                   .catch(function() {
@@ -164,7 +165,7 @@ export default {
               }, 3000)
             }
 
-            if (this.orderId) {
+            if (this.orderId && this.$route.name === 'UpdateDeliveryOrder') {
               this.$store
                 .dispatch('order/selectedOrderDetails', this.orderId)
                 .then(() => {
@@ -185,7 +186,8 @@ export default {
           .catch(error => {
             this.errored = error
             setTimeout(() => {
-              this.$store.dispatch('auth/logout')
+              console.log(error, ', dispatch logout')
+              this.$store.dispatch('auth/logout', error)
               this.errored = ''
             }, 1000 * 10)
             console.log('some catch ', error)
