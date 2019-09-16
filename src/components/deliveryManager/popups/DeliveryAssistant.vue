@@ -12,7 +12,7 @@
             <p>
               Did you know that Broccoli has a mobile interface for your
               delivery boys to help them manage deliveries? Simply fire up
-              <a href="javascript:void(0)" class="da-link"
+              <a role="button" class="da-link"
                 >http://app.broccoli.com/deliveryassistant</a
               >
               on a smartphone and give your delivery boys credentials to log in.

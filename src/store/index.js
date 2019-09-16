@@ -21,6 +21,7 @@ import loyalty from './modules/loyalty'
 import context from './modules/context'
 import modules from './modules/modules'
 import deliveryManager from './modules/deliveryManager'
+import mobile from './mobile'
 import Datetime from 'vue-datetime'
 // You need a specific loader for CSS files
 import 'vue-datetime/dist/vue-datetime.css'
@@ -56,6 +57,7 @@ const store = new Vuex.Store({
     loyalty,
     context,
     modules,
+    mobile,
   },
   strict: false,
   //plugins: debug ? [createLogger()] : [],

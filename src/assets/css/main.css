@@ -29,7 +29,7 @@
       align-items: center;
       font-size: 1rem; }
   .main .main-body {
-    border-right: 1px solid #ddd;
+    border-right: 1px solid #E3E7F2;
     height: calc(100vh - 14.0625rem);
     overflow: hidden;
     display: grid;
@@ -43,6 +43,11 @@
       grid-template-rows: auto;
       grid-gap: 0.625rem;
       height: calc(100vh - 21.5625rem); }
+      .main .main-body .food-wrapper .food-categories-wrapper {
+        overflow: auto;
+        height: inherit;
+        display: grid;
+        grid-template-columns: auto 1fr; }
       .main .main-body .food-wrapper .food-categories {
         border-bottom: none;
         border-left: none;
@@ -56,7 +61,7 @@
         .main .main-body .food-wrapper .food-categories .food-categories-item {
           width: 6.25rem;
           min-height: 6.25rem;
-          border: 1px solid #ddd;
+          border: 1px solid #E3E7F2;
           border-radius: 5px;
           display: grid;
           grid-template-columns: auto;
@@ -66,7 +71,8 @@
           transition: 0.2s linear;
           position: relative;
           font-size: 1.125rem;
-          background-color: #fff; }
+          background-color: #fff;
+          padding: 2px 2px 2px 2px; }
           .main .main-body .food-wrapper .food-categories .food-categories-item:hover, .main .main-body .food-wrapper .food-categories .food-categories-item.active {
             box-shadow: inset 0 0 0px 2px #5056CA; }
             .main .main-body .food-wrapper .food-categories .food-categories-item:hover .food-categories-item-check, .main .main-body .food-wrapper .food-categories .food-categories-item.active .food-categories-item-check {
@@ -76,15 +82,18 @@
             color: #fff;
             font-size: 0.75rem; }
           .main .main-body .food-wrapper .food-categories .food-categories-item .food-categories-item-img {
-            width: 3.125rem;
+            width: 100%;
             margin: 0 auto;
-            margin-top: 0.3125rem;
-            height: 3.125rem; }
+            margin-bottom: 0.3125rem;
+            border-radius: 0.1875rem; }
           .main .main-body .food-wrapper .food-categories .food-categories-item .food-categories-item-text {
             text-align: center;
             font-weight: 600;
             user-select: none;
-            word-break: break-word; }
+            padding: 0 0.3125rem;
+            word-break: break-word;
+            line-height: 1.25rem;
+            font-size: 12px; }
           .main .main-body .food-wrapper .food-categories .food-categories-item .food-categories-item-check {
             width: 1.25rem;
             height: 1.25rem;
@@ -104,14 +113,16 @@
             font-size: 0.75rem; }
       .main .main-body .food-wrapper .food-block {
         height: calc(100vh - 21.5625rem);
-        border-left: 1px solid #ddd;
+        border-left: 1px solid #E3E7F2;
         padding-left: 1.875rem;
         display: grid;
-        grid-template-rows: 4.6875rem 1fr; }
+        grid-template-rows: auto 1fr;
+        grid-gap: 20px;
+        overflow-y: auto; }
         .main .main-body .food-wrapper .food-block .breadcrumbs {
           padding: 0px 1.25rem;
           height: 3.125rem;
-          border: 1px solid #ddd;
+          border: 1px solid #E3E7F2;
           border-radius: 5px;
           display: inline-grid;
           grid-template-columns: max-content max-content max-content;
@@ -135,20 +146,18 @@
               width: 0.375rem;
               margin: 0 0.625rem 0 1.5625rem; }
         .main .main-body .food-wrapper .food-block .food-menu {
-          overflow: auto;
           display: flex;
           flex-wrap: wrap;
+          align-items: stretch;
           align-content: flex-start;
-          padding-right: 1.875rem;
-          height: calc(100vh - 26.25rem); }
-          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item {
-            background: none;
-            border: 0;
-            box-sizing: border-box;
-            font-size: inherit;
-            position: relative;
-            cursor: pointer;
-            background-color: #fff; }
+          overflow: auto; }
+          .main .main-body .food-wrapper .food-block .food-menu .food-menu-wrapper {
+            overflow: auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            padding-right: 1.875rem;
+            height: calc(100vh - 26.25rem); }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
             box-sizing: inherit;
             content: '';
@@ -156,52 +165,81 @@
             width: 100%;
             height: 100%;
             z-index: 99; }
-          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item {
-            -webkit-transition: color 0.25s;
-            transition: color 0.25s; }
+            @media only screen and (min-width: 320px) and (max-width: 600px) {
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
+                display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
             border: 2px solid transparent;
             width: 0;
             height: 0; }
+            @media only screen and (min-width: 320px) and (max-width: 600px) {
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
+                display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before {
             top: 0;
             left: 0; }
+            @media only screen and (min-width: 320px) and (max-width: 600px) {
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::before {
+                display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
             bottom: 0;
             right: 0; }
+            @media only screen and (min-width: 320px) and (max-width: 600px) {
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item::after {
+                display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover p.remove-bottom {
             color: #5056CA; }
+            @media only screen and (min-width: 320px) and (max-width: 600px) {
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover p.remove-bottom {
+                display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
             width: 100%;
             height: 100%; }
+            @media only screen and (min-width: 320px) and (max-width: 600px) {
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before, .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
+                display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before {
             border-top-color: #5056CA;
             border-right-color: #5056CA;
             -webkit-transition: width 0.25s ease-out, height 0.25s ease-out 0.25s;
             transition: width 0.25s ease-out, height 0.25s ease-out 0.25s;
             border-radius: 5px; }
-          .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
-            border-bottom-color: #5056CA;
-            border-left-color: #5056CA;
-            -webkit-transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
-            transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
-            border-radius: 5px; }
+            @media only screen and (min-width: 320px) and (max-width: 600px) {
+              .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::before {
+                display: none; } }
           .main .main-body .food-wrapper .food-block .food-menu .food-menu-item {
+            padding: 10px;
             cursor: pointer;
-            width: 10rem;
-            height: 14rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            width: calc(7vmax + 20px);
+            min-height: 7vmax;
+            border: 0.0625rem solid #ddd;
+            border-radius: 0.3125rem;
             justify-self: center;
             display: grid;
             grid-template-columns: auto;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
             align-items: center;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
             justify-content: center;
             margin-right: 1.25rem;
             margin-bottom: 1.25rem;
-            padding: 1.25rem;
-            transition: 0.2s linear;
-            font-size: 1.125rem; }
+            -webkit-transition: .2s linear;
+            transition: .2s linear;
+            font-size: 1.125rem;
+            position: relative; }
+            .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:not(.color-dashboard-background) {
+              color: #fff; }
+            .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
+              border-bottom-color: #5056CA;
+              border-left-color: #5056CA;
+              -webkit-transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
+              transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
+              border-radius: 5px; }
+              @media only screen and (min-width: 320px) and (max-width: 600px) {
+                .main .main-body .food-wrapper .food-block .food-menu .food-menu-item:hover::after {
+                  display: none; } }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item.bg {
               background-color: #56CCF2;
               color: #fff;
@@ -209,14 +247,48 @@
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item.active {
               box-shadow: inset 0 0 0px 2px #5056CA; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-img {
-              width: 6.25rem;
               margin: 0 auto;
-              max-height: 5.625rem; }
+              border-radius: 0.1875rem;
+              width: 7vmax;
+              height: 7vmax;
+              margin-bottom: auto; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-text {
               word-break: break-word;
               text-align: center;
               font-weight: 600;
               user-select: none;
-              text-transform: capitalize; }
+              text-transform: capitalize;
+              line-height: 1.25rem;
+              margin: 5px 0;
+              padding: 0 0.625rem;
+              min-height: 3rem;
+              display: flex;
+              align-items: center;
+              justify-content: center; }
+            .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .item-image-only {
+              min-height: 104px; }
+            .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-price {
+              display: none; }
+
+@media only screen and (min-width: 320px) and (max-width: 600px) {
+  .ullist-inventory-location {
+    padding: 0 !important;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0; }
+    .ullist-inventory-location .p-3 {
+      background-color: #fff;
+      display: grid;
+      height: 100%;
+      grid-template-rows: 1fr;
+      padding: 20px !important; }
+      .ullist-inventory-location .p-3 .margin220 {
+        height: 100%;
+        display: grid;
+        grid-template-rows: 1fr max-content max-content; }
+        .ullist-inventory-location .p-3 .margin220 .loading-modules {
+          width: 100%; } }
 
 /*# sourceMappingURL=main.css.map */

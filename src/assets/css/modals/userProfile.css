@@ -1,0 +1,59 @@
+.profile-container {
+  grid-template-columns: auto 1fr;
+  margin: auto;
+  border-radius: 4px;
+  padding: 1.875rem;
+  line-height: 2rem;
+  display: grid;
+  grid-column-gap: 1.875rem;
+  -webkit-box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
+  box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05); }
+
+div#user-details .modal-dialog {
+  max-width: 40%; }
+
+.profile-container .items {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-column-gap: 1.25rem; }
+
+.profile-container .items .caption, .profile-brand-container .items .caption {
+  text-transform: uppercase;
+  color: rgba(29, 27, 27, 0.6); }
+
+.caption {
+  font-size: 12px !important;
+  font-weight: 400; }
+
+.profile-brand-container {
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  grid-template-columns: auto 1fr;
+  margin: auto;
+  border-radius: 4px;
+  padding: 1.875rem;
+  line-height: 2rem;
+  display: grid;
+  -webkit-box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
+  box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05); }
+
+.profile-brand-container .items {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-column-gap: 1.25rem; }
+
+.profile-picture-container > img {
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  /* width: 100%; */
+  padding: 10px; }
+
+.profile-brand-container > .buttons {
+  grid-column-start: 1;
+  grid-column-end: 3; }
+
+.profile-content {
+  margin: 0 auto;
+  width: 95%; }
+
+/*# sourceMappingURL=userProfile.css.map */

@@ -78,6 +78,7 @@
               class="btn btn-danger btn-large color-text-invert color-button"
               type="button"
               data-dismiss="modal"
+              @click="discountHendlerChange"
             >
               {{ _t('Close') }}
             </button>
@@ -91,6 +92,15 @@
             >
               {{ _t('Ok') }}
             </button>
+            <!--<button
+              v-show="orderError"
+              class="btn btn-danger btn-large color-text-invert color-button"
+              type="button"
+              data-dismiss="modal"
+              @click="discountHendlerChange"
+            >
+              {{ _t('Close') }}
+            </button>-->
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
@@ -124,6 +134,10 @@ export default {
           hideModal('#select-discount')
         })
         .catch()
+      this.$store.dispatch('discountHendlerChange')
+    },
+    discountHendlerChange() {
+      this.$store.dispatch('discountHendlerChange')
     },
     selectOrderDiscount: function(discount) {
       this.$store.dispatch('discount/selectOrderDiscount', discount)

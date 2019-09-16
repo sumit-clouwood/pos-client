@@ -70,11 +70,20 @@ const actions = {
     { commit, getters, rootGetters, rootState, dispatch, state },
     { action }
   ) {
+    //if no order start time then reject otherwise
+    //reset order start time
+
+    if (!rootState.order.startTime) {
+      // eslint-disable-next-line no-console
+      console.log('Fake order or an order already in progress')
+      return Promise.reject('Fake order or an order already in progress')
+    }
+
     return new Promise((resolve, reject) => {
       let validPayment = false
       const totalPayable = rootGetters['checkoutForm/orderTotal']
       commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
-      commit('invoice/RESET', null, { root: true })
+
       if (
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
         action === CONSTANTS.ORDER_STATUS_ON_HOLD
@@ -121,6 +130,7 @@ const actions = {
             order_source: CONSTANTS.ORDER_SOURCE_POS,
             order_type: rootState.order.orderType.OTApi,
             order_mode: 'online',
+            //this time can be used to indentify offline order
             real_created_datetime: DateTime.getUTCDateTime(),
             // order_mode: 'online',
             //remove the modifiers prices from subtotal
@@ -163,7 +173,20 @@ const actions = {
               rootState.order.selectedOrder.item.order_country
             order.order_delivery_area =
               rootState.order.selectedOrder.item.order_delivery_area
+          } else if (rootState.customer.offlineData) {
+            //offline data was saved
+            order.customer = ''
+            const address = rootState.customer.offlineData
+            // address.delivery_area
+            order.order_building = address.building
+            order.order_street = address.street
+            order.order_flat_number = address.flat_number
+            order.order_nearest_landmark = address.nearest_landmark
+            order.order_city = address.city
+            order.order_country = address.country
+            order.order_delivery_area = address.delivery_area_id
           } else {
+            //network online
             order.customer = rootState.customer.customerId
             const address = rootState.customer.address
             // address.delivery_area
@@ -227,15 +250,33 @@ const actions = {
           //item discount as total of both discounts
 
           if (item.discount) {
+            let itemDiscountedTax = Num.round(
+              rootGetters['order/itemTaxDiscount'](item)
+            )
+
+            if (item.discountedNetPrice) {
+              const modifiersTax = rootGetters['order/itemModifiersTax'](item)
+              itemDiscountedTax = item.tax + modifiersTax - item.discountedTax
+            }
+
+            const modifiersDiscountedTax = Num.round(
+              rootGetters['order/itemModifierTaxDiscount'](item)
+            )
+
             let itemDiscount = item.discount
             itemDiscount.itemId = item._id
             itemDiscount.itemNo = item.orderIndex
             itemDiscount.quantity = item.quantity
             //undiscountedTax is without modifiers
-            itemDiscount.tax = Num.round(
-              Num.round(rootGetters['order/itemTaxDiscount'](item)) +
-                Num.round(rootGetters['order/itemModifierTaxDiscount'](item))
-            )
+
+            if (item.discountedNetPrice) {
+              //don't round fixed discount calculations
+              itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
+            } else {
+              itemDiscount.tax = Num.round(
+                itemDiscountedTax + modifiersDiscountedTax
+              )
+            }
             itemDiscount.price =
               rootGetters['order/itemNetDiscount'](item) +
               rootGetters['order/itemModifierDiscount'](item)
@@ -305,23 +346,26 @@ const actions = {
         if (rootState.checkoutForm.payments.length) {
           order.order_payments = rootState.checkoutForm.payments.map(
             payment => {
-              let { orderaAmount, orderPoints } = {}
+              let orderPoints = 0
+              const amount = !isNaN(payment.amount) ? payment.amount : 0
+
+              //where is CONSTANTS.ORDER_PAYMENT_TYPE defined ?
               if (payment.method.name == CONSTANTS.ORDER_PAYMENT_TYPE) {
-                orderaAmount = payment.amount
                 orderPoints = rootState.checkoutForm.loyaltyPoints
               } else {
-                orderaAmount = payment.amount
-                orderPoints = payment.amount
+                orderPoints = amount
               }
+
               let paymentPart = {
                 entity_id: payment.method._id,
                 name: payment.method.name,
-                collected: isNaN(orderaAmount) ? 0 : orderaAmount,
+                collected: amount,
                 param1: payment.cardId,
                 param2: orderPoints,
                 param3: payment.code,
               }
-              totalPaid += payment.amount
+
+              totalPaid += amount
               //Yuvraj, have a check here
               if (payment.method.type == CONSTANTS.LOYALTY) {
                 if (parseFloat(rootState.customer.loyalty.balance) > 0) {
@@ -413,6 +457,9 @@ const actions = {
 
         dispatch('createOrder', action)
           .then(response => {
+            //reset order start time
+            commit('order/RESET_ORDER_TIME', null, { root: true })
+
             resolve(response)
           })
           .catch(response => {
@@ -477,6 +524,8 @@ const actions = {
         response = OrderService.saveOrder(
           state.order,
           rootState.customer.offlineData
+            ? rootState.customer.offlineData
+            : rootState.customer.customer
         )
       }
 
@@ -526,44 +575,7 @@ const actions = {
               }
             )
 
-            resolve(response.data)
-
-            dispatch('invoice/printRules', null, { root: true }).then(() => {
-              //get print rules
-              //get invoice template
-              const templateId = rootGetters['invoice/templateId']
-              dispatch(
-                'invoice/fetchTemplate',
-                {
-                  orderId: orderId,
-                  templateId: templateId,
-                },
-                {
-                  root: true,
-                }
-              )
-                .then(() => {
-                  //invoice print is triggered by the success ok button
-                  commit(mutation.PRINT, true)
-                })
-                .catch(error => {
-                  commit(
-                    'checkoutForm/SET_MSG',
-                    { result: 'error', message: error },
-                    {
-                      root: true,
-                    }
-                  )
-                })
-            })
-
-            commit(
-              'checkoutForm/SET_MSG',
-              { result: 'success', message: msgStr },
-              {
-                root: true,
-              }
-            )
+            commit(mutation.PRINT, true)
             resolve(response.data)
           } else {
             let error = ''
@@ -605,7 +617,10 @@ const actions = {
                   root: true,
                 }
               )
-              dispatch('reset')
+              //reset order start time
+              commit('order/RESET_ORDER_TIME', null, { root: true })
+
+              commit(mutation.PRINT, true)
             } else {
               var err_msg = ''
               if (
@@ -626,13 +641,13 @@ const actions = {
                 )
               }
             }
-            resolve(response.data)
+            resolve(response)
           }
         })
     })
   },
-  generateInvoice({ commit }) {
-    commit(mutation.PRINT, true)
+  generateInvoice() {
+    //commit(mutation.PRINT, true)
   },
   reset({ commit, dispatch }) {
     commit(mutation.RESET)

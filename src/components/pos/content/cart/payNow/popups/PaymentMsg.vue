@@ -77,6 +77,7 @@ import { mapGetters } from 'vuex'
 /* global $ */
 import { mapState } from 'vuex'
 import Preloader from '@/components/util/Preloader'
+
 export default {
   name: 'PaymentMsg',
   components: {
@@ -106,3 +107,31 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+@import '../../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../../assets/scss/variables.scss';
+@import '../../../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  #payment-msg {
+    .modal-dialog {
+      margin: 0;
+
+      .modal-content {
+        .modal-header {
+          height: 80px;
+          background-color: #fff;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          border: none;
+        }
+
+        .modal-body {
+        }
+
+        .modal-footer {
+        }
+      }
+    }
+  }
+}
+</style>

@@ -32,7 +32,8 @@ export default {
       status: CONST.LOADING_STATUS_DONE,
     })
   },
-
+  //this function is called when we recieve msg from service worker i.e token updated
+  // also loaded when we click on a category to load new data
   loadUI() {
     DataService.setLang(this.store.state.location.locale)
     return new Promise((resolve, reject) => {
@@ -46,10 +47,10 @@ export default {
                 this.store.commit('sync/loaded', true)
                 resolve()
 
-                this.store.dispatch('auth/getUserDetails')
                 this.store.dispatch('surcharge/fetchAll').then(() => {})
                 this.store.dispatch('discount/fetchAll').then(() => {})
                 this.store.dispatch('payment/fetchAll').then(() => {})
+                this.store.dispatch('auth/fetchRoles').then(() => {})
               })
             })
             .catch(error => reject(error))
@@ -58,7 +59,7 @@ export default {
       //continue loading other service in parallel
     })
   },
-
+  //this function is loaded when pos is loaded, called from App
   initLoadUI() {
     DataService.setLang(this.store.state.location.locale)
     return new Promise((resolve, reject) => {
@@ -74,13 +75,6 @@ export default {
                 this.updateLoading('modifiers')
                 this.store.commit('sync/loaded', true)
                 resolve()
-
-                this.store.dispatch('auth/getUserDetails')
-                this.store.dispatch('customer/fetchAll').then(() => {})
-                this.store.dispatch('surcharge/fetchAll').then(() => {})
-                this.store.dispatch('discount/fetchAll').then(() => {})
-                this.store.dispatch('payment/fetchAll').then(() => {})
-                this.store.dispatch('announcement/fetchAll').then(() => {})
               })
             })
             .catch(error => reject(error))
@@ -100,8 +94,37 @@ export default {
               brand: this.store.getters['context/brand'],
             })
 
-            this.initLoadUI().then(() => resolve())
+            this.initLoadUI()
+              .then(() => {
+                //lets resolve the promise so pos can be loaded, other things ll be loaded later
+                resolve()
 
+                setTimeout(() => {
+                  console.log('delayed loading catalog data started')
+                  this.loadApiData('catalog').then(() =>
+                    console.log('delayed loading catalog data done')
+                  )
+                }, 3000)
+
+                setTimeout(() => {
+                  console.log('delayed loading customer data started')
+                  this.loadApiData('customer').then(() =>
+                    console.log('delayed loading customer data done')
+                  )
+                }, 4000)
+
+                //delayed loading data
+                setTimeout(() => {
+                  console.log('delayed loading order data started')
+                  this.loadApiData('order').then(() =>
+                    console.log('delayed loading order data done')
+                  )
+                }, 8000)
+              })
+              .catch(error => {
+                console.log('UI Failed', error)
+                reject(error)
+              })
             // store.dispatch('loyalty/fetchAll', response)
             // store.dispatch(
             //   'deliveryManager/fetchDMOrderDetail',
@@ -111,6 +134,33 @@ export default {
           })
           .catch(error => reject(error))
       })
+    })
+  },
+
+  loadApiData(api) {
+    return new Promise(resolve => {
+      switch (api) {
+        case 'catalog':
+          this.store.dispatch('surcharge/fetchAll').then(() => {})
+          this.store.dispatch('discount/fetchAll').then(() => {})
+          this.store.dispatch('payment/fetchAll').then(() => {})
+          resolve()
+          break
+        case 'customer':
+          this.store.dispatch('announcement/fetchAll').then(() => {})
+          this.store.dispatch('auth/getUserDetails')
+          this.store.dispatch('customer/fetchAll').then(() => {})
+          this.store.dispatch('auth/fetchRoles').then(() => {})
+
+          resolve()
+          break
+        case 'order':
+          this.store.dispatch('invoice/printRules').then(() => {
+            this.store.dispatch('invoice/fetchTemplates')
+          })
+          resolve()
+          break
+      }
     })
   },
 
@@ -173,7 +223,13 @@ export default {
       if (event.oldVersion === 1) {
         // version 2 -> 3 upgrade
         console.log('creating bucket order_post_requests')
-        db.createBucket('order_post_requests')
+        db.createBucket(
+          'order_post_requests',
+          { keyPath: 'order_time' },
+          bucket => {
+            bucket.createIndex('order_time', 'order_time', { unique: true })
+          }
+        )
           .then(() => {
             console.log('created bucket order_post_requests')
             this.store.commit('sync/setIdbVersion', 2)

@@ -23,6 +23,7 @@
 // eslint-disable-next-line no-unused-vars
 /* global $ */
 import { mapGetters, mapState, mapActions } from 'vuex'
+
 export default {
   name: 'Items',
   props: {
@@ -34,6 +35,7 @@ export default {
   },
   methods: {
     setHoldOrderCart: function(orderData) {
+      this.$store.commit('order/START_ORDER')
       this.$store.commit('order/SET_CART_TYPE', 'new')
       this.$store.dispatch('holdOrders/fetchOrder', orderData)
       if (orderData.customer != null) {
@@ -61,3 +63,36 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  .wrappers-orders {
+    display: grid;
+    grid-template-columns: 1fr max-content max-content;
+    grid-gap: 20px;
+    align-items: center;
+    height: 65px;
+    margin: 0;
+    padding: 0 10px;
+    margin-bottom: 10px;
+
+    .orders-name {
+      width: auto;
+    }
+
+    .aed-amt {
+      width: auto;
+    }
+
+    .dlt-btn {
+      width: auto;
+      i {
+        color: $red;
+      }
+    }
+  }
+}
+</style>

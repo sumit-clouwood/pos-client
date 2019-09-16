@@ -36,6 +36,7 @@ const state = {
   // pastOrder: false,
   orderStatus: null,
   cartType: 'new',
+  startTime: null,
 }
 
 // getters
@@ -172,15 +173,24 @@ const getters = {
     }
   },
 
-  itemNetDiscount: () => item => {
+  itemNetDiscount: (state, getters) => item => {
     if (item.discountRate) {
+      if (item.discountedNetPrice) {
+        return getters.itemNetPrice(item) - item.discountedNetPrice
+      }
       return Num.round((item.netPrice * item.discountRate) / 100)
     } else {
       return 0
     }
   },
 
-  itemTaxDiscount: () => item => {
+  itemTaxDiscount: (state, getters) => item => {
+    if (item.discountedNetPrice) {
+      const modifiersTax = getters.itemModifiersTax(item)
+      const totalTaxDiscount = item.tax + modifiersTax - item.discountedTax
+      return totalTaxDiscount
+    }
+
     if (item.discountRate) {
       return Num.round((item.tax * item.discountRate) / 100)
     }
@@ -188,6 +198,10 @@ const getters = {
   },
 
   itemModifierDiscount: () => item => {
+    if (item.discountedNetPrice) {
+      return 0
+    }
+
     if (item.discountRate && item.modifiersData && item.modifiersData.length) {
       return item.modifiersData.reduce((discount, modifier) => {
         return discount + Num.round((modifier.price * item.discountRate) / 100)
@@ -198,6 +212,9 @@ const getters = {
 
   itemModifierTaxDiscount: () => item => {
     if (item.discountRate && item.modifiersData && item.modifiersData.length) {
+      if (item.discountedNetPrice) {
+        return 0
+      }
       return item.modifiersData.reduce((discount, modifier) => {
         return discount + Num.round((modifier.tax * item.discountRate) / 100)
       }, 0)
@@ -219,6 +236,15 @@ const getters = {
     //add modifier tax to modifier price to make it gross price
     const modifiersTax = getters.itemModifiersTax(item)
     return itemPrice + item.tax + modifiersPrice + modifiersTax
+  },
+
+  itemNetPrice: (state, getters) => item => {
+    const itemPrice = item.netPrice
+    //gross price is inclusive of tax but modifier price is not including tax
+    const modifiersPrice = getters.itemModifiersPrice(item)
+    //add modifier tax to modifier price to make it gross price
+    //const modifiersTax = getters.itemModifiersTax(item)
+    return itemPrice + modifiersPrice
   },
 
   orderModifiers: () => item => {
@@ -640,7 +666,7 @@ const actions = {
           //without surcharge
           //apply offtotal discount, don't calculate discount on surcharge
           //we are not including surcharge tax in total tax for discount
-          totalTax = getters.totalTaxWithoutOrderDiscount
+          totalTax = getters.totalItemsTax
           //const totalSurcharge = rootGetters['surcharge/surcharge']
           if (orderDiscount.type === CONST.VALUE) {
             if (orderDiscount.value > subtotal) {
@@ -675,6 +701,7 @@ const actions = {
               (subtotal * orderDiscount.rate) / 100
             )
             //const subtotalWithDiscount = subtotal - orderTotalDiscount
+            totalTax = getters.totalItemsTax
             taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
             surchargeTotalDiscount = 0
             const discountData = {
@@ -692,7 +719,7 @@ const actions = {
     })
   },
 
-  recalculateItemPrices({ commit, rootState, dispatch }) {
+  recalculateItemPrices({ commit, rootState, getters, dispatch }) {
     commit('discount/SET_ORDER_ERROR', false, { root: true })
     return new Promise((resolve, reject) => {
       let discountErrors = {}
@@ -713,35 +740,52 @@ const actions = {
           }
 
           if (discount.discount.type === CONST.VALUE) {
-            if (discount.discount.value > item.netPrice * item.quantity) {
+            if (
+              discount.discount.value >
+              getters.itemNetPrice(item) * item.quantity
+            ) {
               //discount error
               discountErrors[item.orderIndex] = item
               item.discount = false
               item.discountRate = 0
+              item.discountedTax = false
+              item.discountedNetPrice = false
             } else {
-              //discount should be applied after tax price
-              item.discountRate =
-                (discount.discount.value / (item.grossPrice * item.quantity)) *
-                100
-              //now we got discount rate in percent, we can apply it on net price and tax
+              const itemNetPriceWithModifiers = getters.itemNetPrice(item)
+
+              const itemsNetPriceWithModifiers =
+                itemNetPriceWithModifiers * item.quantity
+              const itemsDiscountedPrice =
+                itemsNetPriceWithModifiers - discount.discount.value
+
+              item.discountedTax =
+                (itemsDiscountedPrice * item.tax_sum) / 100 / item.quantity
+              item.discountedNetPrice = itemsDiscountedPrice / item.quantity
+              item.discountRate = discount.discount.value
             }
           } else {
             //percentage discount can be applied only non free (> 0 priced) items
-            if (item.netPrice * item.quantity > 0) {
+            if (getters.itemNetPrice(item) * item.quantity > 0) {
               //percentage based discount, use discount.rate here, not discount.value
               //apply discount with modifier price
               item.discountRate = discount.discount.rate
+              item.discountedTax = false
+              item.discountedNetPrice = false
             } else {
               //discount error
               item.discount = false
               discountErrors[item.orderIndex] = item
               item.discountRate = 0
+              item.discountedTax = false
+              item.discountedNetPrice = false
             }
           }
         } else {
           //remove already applied discount
           item.discount = false
           item.discountRate = 0
+          item.discountedTax = false
+          item.discountedNetPrice = false
         }
         return item
       })
@@ -879,22 +923,27 @@ const actions = {
   },
 
   selectedOrderDetails({ commit }, orderId) {
-    const params = ['orders', orderId, '']
-    OrderService.getGlobalDetails(...params).then(response => {
-      let orderDetails = {}
-      OrderService.getModalDetails('brand_cancellation_reasons').then(
-        responseData => {
-          commit(mutation.SET_CANCELLATION_REASON, responseData.data.data)
-        }
-      )
+    return new Promise((resolve, reject) => {
+      const params = ['orders', orderId, '']
+      OrderService.getGlobalDetails(...params)
+        .then(response => {
+          let orderDetails = {}
+          OrderService.getModalDetails('brand_cancellation_reasons')
+            .then(responseData => {
+              commit(mutation.SET_CANCELLATION_REASON, responseData.data.data)
+              resolve()
+            })
+            .catch(error => reject(error))
 
-      orderDetails.item = response.data.item
-      orderDetails.customer = response.data.collected_data.customer
-      orderDetails.lookups = response.data.collected_data.page_lookups
-      orderDetails.store_name = response.data.collected_data.store_name
-      orderDetails.invoice =
-        response.data.collected_data.store_invoice_templates
-      commit(mutation.SET_ORDER_DETAILS, orderDetails)
+          orderDetails.item = response.data.item
+          orderDetails.customer = response.data.collected_data.customer
+          orderDetails.lookups = response.data.collected_data.page_lookups
+          orderDetails.store_name = response.data.collected_data.store_name
+          orderDetails.invoice =
+            response.data.collected_data.store_invoice_templates
+          commit(mutation.SET_ORDER_DETAILS, orderDetails)
+        })
+        .catch(error => reject(error))
     })
   },
   removeOrder({ dispatch }, { order, orderType }) {
@@ -1065,6 +1114,9 @@ const mutations = {
     state.orderStatus = null
     state.orderId = null
     state.orderNote = null
+    // to be fool proof we don't reset startTime here, start time ll be reset when
+    // some one clicks on an item
+    // state.startTime = null
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
@@ -1099,6 +1151,14 @@ const mutations = {
 
   [mutation.SET_CART_TYPE](state, cartType) {
     state.cartType = cartType
+  },
+
+  [mutation.START_ORDER](state) {
+    state.startTime = new Date().getTime()
+  },
+
+  [mutation.RESET_ORDER_TIME](state) {
+    state.startTime = null
   },
 }
 

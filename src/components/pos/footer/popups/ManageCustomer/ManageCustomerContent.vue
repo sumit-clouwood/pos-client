@@ -5,6 +5,9 @@
       <div v-if="!customerDetails.length">
         {{ _t('No matching customer found') }}
       </div>
+      <div v-if="error">
+        {{ _t(error) }}
+      </div>
       <table class="table table-responsive color-tables-background" v-else>
         <thead>
           <tr>
@@ -45,14 +48,14 @@
             <td class="color-text">{{ customer.email }}</td>
             <td class="color-text">
               <!-- <button
-                data-toggle="modal"
-                data-target="#display-order"
-                data-dismiss="modal"
-                @click="fetchSelectedCustomer(customer._id)"
-                class="br-table-btn display-order color-icon-table-neutral-button color-text-invert"
-              >
-                {{ _t('Display Order') }}
-              </button>-->
+                          data-toggle="modal"
+                          data-target="#display-order"
+                          data-dismiss="modal"
+                          @click="fetchSelectedCustomer(customer._id)"
+                          class="br-table-btn display-order color-icon-table-neutral-button color-text-invert"
+                        >
+                          {{ _t('Display Order') }}
+                        </button>-->
             </td>
             <td>
               <button
@@ -80,7 +83,7 @@
                 v-if="!customer.active"
                 class="btn btn-default order-add deactive-table-btn color-text-invert"
               >
-                {{ _t('Add to Order') }}
+                {{ _t('Deactivated') }}
               </button>
               <button
                 v-else
@@ -94,6 +97,7 @@
               </button>
               <span>{{ customer.active ? 'Activated' : 'Deactivated' }}</span>
             </td>
+            <!--<td class="color-text more-button">More</td>-->
           </tr>
         </tbody>
       </table>
@@ -102,7 +106,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import Preloader from '@/components/util/Preloader'
 /* global $ */
 export default {
@@ -119,7 +123,10 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   data: function() {
-    return { activeIndex: '' }
+    return {
+      activeIndex: '',
+      error: false,
+    }
   },
   updated() {
     if (this.activeIndex != '') {
@@ -138,7 +145,29 @@ export default {
         return customerAddress[0].city
       }
     },
-    ...mapActions('customer', ['fetchSelectedCustomer']),
+    fetchSelectedCustomer(id) {
+      this.$store
+        .dispatch('customer/fetchSelectedCustomer', id)
+        .then(() => (this.error = false))
+        .catch(error => {
+          this.error = error
+          this.$store.commit('customer/SET_CUSTOMER_LOADING', false)
+        })
+    },
   },
 }
 </script>
+<style lang="scss">
+.more-button {
+  background-color: #4b4e53;
+  grid-column-start: 2 !important;
+  grid-column-end: 3 !important;
+  grid-row-start: 3;
+  grid-row-end: 4;
+  color: #fff !important;
+  font-weight: bold;
+  opacity: 1;
+  align-items: center;
+  justify-content: center;
+}
+</style>

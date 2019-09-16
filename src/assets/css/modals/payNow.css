@@ -151,11 +151,11 @@
               border: solid 2px #5056ca !important; }
           #pay-now .modal-dialog .modal-content .modal-body .slick-slider.active {
             border: solid 2px #5056ca !important; }
-        #pay-now .modal-dialog .modal-content .modal-body .payemnt-input-block {
+        #pay-now .modal-dialog .modal-content .modal-body .payment-input-block {
           overflow: hidden;
           padding: 0.9375rem 0 2.1875rem 0;
           position: relative; }
-          #pay-now .modal-dialog .modal-content .modal-body .payemnt-input-block > input {
+          #pay-now .modal-dialog .modal-content .modal-body .payment-input-block > input {
             width: 31.375rem;
             height: 3.75rem;
             border-radius: 3px;
@@ -297,5 +297,150 @@
               font-weight: 600;
               letter-spacing: 0.5px;
               color: #fff; }
+        #pay-now .modal-dialog .modal-content .modal-body .pay-now-btn-next {
+          display: none; }
+
+@media only screen and (min-width: 320px) and (max-width: 600px) {
+  .margin220 {
+    display: grid;
+    grid-template-rows: max-content 1fr max-content; }
+
+  /**/
+  .modal, #pay-now {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0; }
+    .modal .modal-dialog, #pay-now .modal-dialog {
+      min-height: 100vh; }
+      .modal .modal-dialog .modal-content, #pay-now .modal-dialog .modal-content {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        border: none;
+        border-radius: 0; }
+        .modal .modal-dialog .modal-content .modal-body, #pay-now .modal-dialog .modal-content .modal-body {
+          padding: 0; }
+
+  #pay-now .modal-dialog .modal-content .modal-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column; }
+    #pay-now .modal-dialog .modal-content .modal-body > div {
+      display: flex;
+      flex-direction: column; }
+    #pay-now .modal-dialog .modal-content .modal-body .order-payment {
+      margin: 0; }
+      #pay-now .modal-dialog .modal-content .modal-body .order-payment .order-id {
+        width: 65%; }
+      #pay-now .modal-dialog .modal-content .modal-body .order-payment .hide-btn {
+        width: 35%;
+        overflow: hidden; }
+        #pay-now .modal-dialog .modal-content .modal-body .order-payment .hide-btn #hide-paynow {
+          width: 100%;
+          background-color: #CC3232; }
+    #pay-now .modal-dialog .modal-content .modal-body .total-amount {
+      border: 2px dotted #64C434;
+      padding: 10px;
+      padding-bottom: 0; }
+      #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-title {
+        width: 35%;
+        color: #42891B; }
+        #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-title .tip-amopunt {
+          color: #333;
+          font-weight: 600; }
+        #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-title .total-amt {
+          color: #64C434; }
+      #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-digit {
+        width: 65%; }
+        #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-digit p {
+          color: #333;
+          font-weight: 600; }
+        #pay-now .modal-dialog .modal-content .modal-body .total-amount .payment-amount-digit h2 {
+          margin: 0;
+          font-size: 18px;
+          color: #64C434;
+          margin-top: 5px; }
+    #pay-now .modal-dialog .modal-content .modal-body #payment-method .slick-dots {
+      display: none !important; }
+    #pay-now .modal-dialog .modal-content .modal-body .payment-method-title {
+      border: none;
+      margin: 0; }
+      #pay-now .modal-dialog .modal-content .modal-body .payment-method-title h2 {
+        margin: 0; }
+    #pay-now .modal-dialog .modal-content .modal-body .slick-initialized {
+      width: 100%;
+      height: calc(100vh - 255px);
+      margin: 0;
+      display: none; }
+      #pay-now .modal-dialog .modal-content .modal-body .slick-initialized.activePayMethod {
+        display: grid; }
+      #pay-now .modal-dialog .modal-content .modal-body .slick-initialized .slick-list {
+        display: grid;
+        width: 100%;
+        overflow: auto; }
+        #pay-now .modal-dialog .modal-content .modal-body .slick-initialized .slick-list .slick-track {
+          display: flex;
+          flex-direction: column;
+          width: 100% !important;
+          transform: none !important; }
+          #pay-now .modal-dialog .modal-content .modal-body .slick-initialized .slick-list .slick-track .slick-slide {
+            width: 100% !important;
+            margin-bottom: 10px; }
+            #pay-now .modal-dialog .modal-content .modal-body .slick-initialized .slick-list .slick-track .slick-slide div {
+              width: 100% !important; }
+              #pay-now .modal-dialog .modal-content .modal-body .slick-initialized .slick-list .slick-track .slick-slide div div {
+                display: grid !important;
+                grid-template-columns: max-content min-content 1fr;
+                align-items: center;
+                justify-content: center;
+                min-height: auto; }
+                #pay-now .modal-dialog .modal-content .modal-body .slick-initialized .slick-list .slick-track .slick-slide div div img {
+                  margin-right: 10px; }
+                #pay-now .modal-dialog .modal-content .modal-body .slick-initialized .slick-list .slick-track .slick-slide div div label {
+                  width: 100%;
+                  padding-right: 10px;
+                  text-align: left;
+                  margin: 0;
+                  font-size: 12px; }
+      #pay-now .modal-dialog .modal-content .modal-body .slick-initialized .slick-dots {
+        display: none !important; }
+    #pay-now .modal-dialog .modal-content .modal-body .payment-input-block {
+      display: none;
+      padding: 0 0 20px 0; }
+      #pay-now .modal-dialog .modal-content .modal-body .payment-input-block img {
+        top: 13px; }
+      #pay-now .modal-dialog .modal-content .modal-body .payment-input-block input {
+        width: 100%; }
+      #pay-now .modal-dialog .modal-content .modal-body .payment-input-block.paymentInputActive {
+        display: block; }
+    #pay-now .modal-dialog .modal-content .modal-body .amount-keypad {
+      display: none !important;
+      width: 100%;
+      min-width: 100%;
+      grid-template-columns: 1fr 1fr 1fr 1fr; }
+      #pay-now .modal-dialog .modal-content .modal-body .amount-keypad.amountKeypadActive {
+        display: grid !important; }
+      #pay-now .modal-dialog .modal-content .modal-body .amount-keypad > div {
+        width: 100% !important;
+        height: 40px;
+        font-size: 18px;
+        border-radius: 3px; }
+        #pay-now .modal-dialog .modal-content .modal-body .amount-keypad > div img {
+          width: 50%; }
+    #pay-now .modal-dialog .modal-content .modal-body .payment-screen-footer {
+      display: none; }
+    #pay-now .modal-dialog .modal-content .modal-body .pay-now-btn-next {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #64C434;
+      color: #fff;
+      border-radius: 3px;
+      margin-top: auto;
+      height: 3.125rem; } }
 
 /*# sourceMappingURL=payNow.css.map */

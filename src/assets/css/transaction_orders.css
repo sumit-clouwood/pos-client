@@ -58,7 +58,7 @@
         grid-template-columns: min-content 1fr;
         grid-gap: 1.25rem; }
         .transaction-orders .transaction-orders-list .order-list .order .order-img {
-          border: 1px solid #ddd;
+          border: 1px solid #E3E7F2;
           border-radius: 5px;
           width: 6.25rem;
           height: 5rem;

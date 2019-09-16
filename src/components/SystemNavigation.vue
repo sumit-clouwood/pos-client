@@ -1,7 +1,7 @@
 <template>
   <div class="navigation toggle-navigation">
     <div class="logo" @click="collapseExpend">
-      <a class="logo-link" href="javascript:void(0)">
+      <a class="logo-link" role="button">
         <img src="img/other/icon.png" alt="icon" />
       </a>
     </div>
@@ -183,7 +183,7 @@
         </li>
       </ul>
     </div>
-    <div class="slider-btn">
+    <div class="slider-btn" @click="showMore">
       <i aria-hidden="true" class="fa fa-chevron-down"></i>
     </div>
     <div
@@ -193,17 +193,13 @@
       data-target="#user-details"
       data-dismiss="modal"
     >
-      <a
-        class="nav-link"
-        href="javascript:void(0)"
-        :title="userDetails.item.name"
-      >
+      <a class="nav-link" role="button" :title="userDetails.item.name">
         <img
           v-if="typeof userDetails.item != 'undefined'"
           :src="
             userDetails.item.avatar
               ? userDetails.item.avatar
-              : userShortDetails.avatar
+              : 'img/profile/default_avatar.jpg'
           "
           alt="profile"
         />
@@ -212,12 +208,6 @@
         </div>
       </a>
     </div>
-    <!--<div class="navigation-avatar color-secondary" v-else>
-      <a class="nav-link" href="">
-        <img :src="profileImage" alt="profile" />
-        <div class="nav-link-user-name color-text-invert">Admin</div>
-      </a>
-    </div>-->
     <!--top Menu-->
     <UserProfile />
   </div>
@@ -226,7 +216,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import UserProfile from '@/components/pos/user/UserProfile'
-/* global $ */
+/* global $, menuShowMore */
 export default {
   name: 'SystemNavigation',
   components: {
@@ -236,6 +226,9 @@ export default {
     collapseExpend() {
       $('.navigation').toggleClass('collapse-menu')
       $('.toggle-nav-content').toggleClass('collapse-container')
+    },
+    showMore() {
+      menuShowMore()
     },
     baseurl(link) {
       return (
@@ -261,16 +254,15 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t', 'permitted']),
-    ...mapState('location', ['userShortDetails']),
     ...mapState('auth', ['userDetails']),
-    ...mapState({
+    /*...mapState({
       profileImage: state =>
         state.auth.userDetails && state.auth.userDetails.image
           ? process.env.VUE_APP_API_ENDPOINT +
             '/profile_pic/' +
             state.auth.userDetails.image
-          : 'img/pos/profile-pic.png',
-    }),
+          : '/img/pos/default_avatar.jpg',
+    }),*/
   },
 }
 </script>

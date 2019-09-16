@@ -10,9 +10,13 @@
   background-color: $gray-bg-light;
   grid-column-start: 2;
 
+  .main-orders-title {
+    display: none;
+  }
+
   .main-orders-contacts {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto max-content;
     grid-template-rows: auto auto 1fr;
     align-items: center;
     margin-bottom: $px20;
@@ -188,6 +192,10 @@
       .sub-total-num {
         font-size: $px16;
         font-weight: 700;
+
+        .fa {
+          display: none;
+        }
       }
     }
 
@@ -209,7 +217,22 @@
       .sub-total-num {
         font-size: $px20;
         font-weight: 700;
+        .fa{
+          display: none;
+        }
       }
     }
   }
+
+  .main-orders-buttons {
+    display: none;
+  }
+}
+
+.orders-menu-overlay {
+  display: none;
+}
+
+.mobile-footer {
+  display: none;
 }

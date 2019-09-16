@@ -71,3 +71,12 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+.POSItemOptions_quantity_submit {
+  button {
+    img {
+      margin-right: 5px;
+    }
+  }
+}
+</style>

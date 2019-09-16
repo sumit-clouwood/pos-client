@@ -33,12 +33,19 @@
         data-toggle="modal"
         data-target="#online-order"
       >
-        <a class="btn-part color-text-invert" href="javascript:void(0)">
+        <a class="btn-part color-text-invert" role="button">
           {{ _t('Online') }}
           <span class="online-digit color-secondary">2</span>
         </a>
       </li>
     </ul>
+    <div class="curent-sale hideBigScreen">
+      <div class="curent-sale-title">Current Sale</div>
+      <div class="curent-sale-item">
+        <div class="text">Item</div>
+        <div class="num">x3</div>
+      </div>
+    </div>
     <li
       class="nav-icon nav-item setting-icon color-main color-text-invert"
       id="setting-icon"
@@ -60,7 +67,7 @@
       </a>
       <ul class="setting-dropdown">
         <li>
-          <a href="javascript:void(0)">{{ _t('Printers') }}</a>
+          <a role="button">{{ _t('Printers') }}</a>
         </li>
         <li v-if="permitted('dashboard', 'root')">
           <a :href="dashboard">{{ _t('Dashboard') }}</a>
@@ -72,7 +79,7 @@
           <a :href="menu">{{ _t('Menu Setup') }}</a>
         </li>
         <li v-if="permitted('delivery', 'root')">
-          <a href="javascript:void(0)">
+          <a role="button">
             <router-link :to="'/delivery-manager' + store">
               {{ _t('Delivery Manager') }}
             </router-link>
@@ -82,7 +89,7 @@
           <a :href="brand">{{ _t('Settings') }}</a>
         </li>
         <li>
-          <a href="javascript:void(0)" @click="logout()">{{ _t('Logout') }}</a>
+          <a role="button" @click="logout()">{{ _t('Logout') }}</a>
         </li>
       </ul>
     </li>

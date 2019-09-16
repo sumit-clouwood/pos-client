@@ -144,7 +144,7 @@ div#total-order-wrap {
   padding-right: 1.5625rem; }
 
 button.btn.referal-btn {
-  background: url(../images/referal-down.png);
+  background: url(/assets/images/referal-down.png);
   background-position: center right 8px;
   background-repeat: no-repeat; }
 
@@ -171,16 +171,19 @@ button.btn.referal-btn {
 .vdatetime > input {
   background: url(/pos/img/pos/schedule-icon.png);
   background-repeat: no-repeat;
-  background-position: center right 10px;
-  width: 19.6875rem;
+  background-position: center right 0.375rem;
+  width: 11.5625rem;
   height: 3.125rem;
   border-radius: 3px;
   background-color: #ffffff;
   border: solid 1px #e4e7eb;
-  padding: 0.625rem; }
+  padding: 0.625rem;
+  margin-left: 0.625rem;
+  text-align: left; }
 
-.right-shift input.vdatetime-input.btn.schedule-input.btn-large.datepicker-here {
-  width: 18.3125rem; }
+.customer-group .vdatetime > input.vdatetime-input {
+  width: 19.6875rem;
+  margin-left: 0; }
 
 div#order-confirmation .modal-footer {
   padding: 0.625rem 2.1875rem 2.1875rem 2.1875rem; }

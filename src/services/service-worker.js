@@ -9,10 +9,15 @@ var IDB_VERSION = 3
 var ORDER_DOCUMENT = 'order_post_requests'
 
 var client = null
+var notificationOptions = {
+  body: '',
+  icon: './img/icons/favicon.png',
+  image: './img/icons/favicon.png',
+  vibrate: [300, 200, 300],
+  badge: './img/icons/favicon.png',
+}
 
 if (workbox) {
-  openDatabase()
-
   console.log('sw:', 'workbox found ')
 
   // adjust log level for displaying workbox logs
@@ -75,46 +80,42 @@ if (workbox) {
   )
 
   self.addEventListener('sync', function(event) {
-    console.log(
-      'sw:',
-      'SYNC EVENT RECEIVED, now online, lets try postofflineorders'
-    )
-    console.log('sw:', event)
-
-    if (event.tag === 'postOfflineOrders') {
-      console.log('sw:', 'correct event received')
-
-      // event.tag name checked
-      // here must be the same as the one used while registering
-      // sync`
-      // Send our POST request to the server, now that the user is online
-
-      const syncIt = async () => {
-        return new Promise(resolve => {
-          sendPostToServer()
-            .then(() => {
-              try {
-                self.registration.showNotification('Orders synced to server')
-              } catch (e) {
-                console.log('sw:', e)
-              }
-            })
-            .catch(err => {
-              console.log('sw:', 'Error syncing orders to server', err)
-            })
-
-          try {
-            resolve(
-              self.registration.showNotification('Orders synced to server')
-            )
-          } catch (e) {
-            console.log('sw:', e)
-          }
-        })
-      }
-
-      event.waitUntil(syncIt())
-    }
+    console.log('browser sync event received', event)
+    // console.log(
+    //   'sw:',
+    //   'SYNC EVENT RECEIVED, now online, lets try postofflineorders'
+    // )
+    // console.log('sw:', event)
+    // if (event.tag === 'postOfflineOrders') {
+    //   console.log('sw:', 'correct event received')
+    //   // event.tag name checked
+    //   // here must be the same as the one used while registering
+    //   // sync`
+    //   // Send our POST request to the server, now that the user is online
+    //   const syncIt = async () => {
+    //     return new Promise(resolve => {
+    //       sendPostToServer()
+    //         .then(() => {
+    //           try {
+    //             notificationOptions.body =
+    //               'Offline orders are synced with server.'
+    //             resolve(
+    //               self.registration.showNotification(
+    //                 'POS synced',
+    //                 notificationOptions
+    //               )
+    //             )
+    //           } catch (e) {
+    //             console.log('sw:', e)
+    //           }
+    //         })
+    //         .catch(err => {
+    //           console.log('sw:', 'Error syncing orders to server', err)
+    //         })
+    //     })
+    //   }
+    //   event.waitUntil(syncIt())
+    // }
   })
 
   //this is manually sync, we ll remove it later
@@ -126,15 +127,13 @@ if (workbox) {
           setTimeout(function() {
             sendPostToServer()
               .then(() => {
-                self.registration.showNotification('SW Orders synced to server')
+                resolve(
+                  self.registration.showNotification('Orders synced to server')
+                )
               })
               .catch(() => {
                 console.log('sw:', 'SW Error syncing orders to server')
               })
-
-            resolve(
-              self.registration.showNotification('Orders synced to server')
-            )
           }, 1000 * 10)
         })
       }
@@ -149,15 +148,11 @@ if (workbox) {
       data = e.data.json()
     }
 
-    const options = {
-      body: data.body,
-      icon: '/img/icons/android-chrome-192x192.png',
-      image: '/img/autumn-forest.png',
-      vibrate: [300, 200, 300],
-      badge: '/img/icons/plint-badge-96x96.png',
-    }
+    notificationOptions.body = data.body
 
-    e.waitUntil(self.registration.showNotification(data.title, options))
+    e.waitUntil(
+      self.registration.showNotification(data.title, notificationOptions)
+    )
   })
 
   self.addEventListener('message', function(event) {
@@ -173,7 +168,11 @@ if (workbox) {
     var clonedRequest = event.request.clone()
     //console.log('I am a request with url: ', clonedRequest.url)
 
-    if (clonedRequest.method === 'POST' || clonedRequest.method === 'OPTIONS') {
+    if (
+      form_data &&
+      clonedRequest.method === 'POST' &&
+      clonedRequest.url.match('/orders/add')
+    ) {
       // attempt to send request normally
       event.respondWith(
         fetch(clonedRequest).catch(function(error) {
@@ -186,7 +185,6 @@ if (workbox) {
       )
     }
 
-    console.log('sw: ', 'Event fetch: ', event)
     if (!event.clientId) {
       return
     }
@@ -213,17 +211,21 @@ function savePostRequests(url, payload) {
 
   openDatabase(function(idb) {
     console.log('sw:', 'db opened, adding rec', idb)
-    var request = getObjectStore(ORDER_DOCUMENT, 'readwrite').add({
+    var data = {
+      order_time: payload.real_created_datetime,
       url: url,
       payload: payload,
       method: 'POST',
-    })
+    }
+    var request = getObjectStore(ORDER_DOCUMENT, 'readwrite').add(data)
     request.onsuccess = function(event) {
       console.log(
         'sw:',
         'a new order request has been added to indexedb',
         event
       )
+      //reset form data
+      form_data = null
     }
     request.onerror = function(error) {
       console.error('sw:', "Request can't be send to index db", error)
@@ -238,32 +240,6 @@ function openDatabase(cb) {
   indexedDBOpenRequest.onerror = function(error) {
     // error creating db
     console.error('sw:', 'IndexedDB open error:', error)
-  }
-
-  //this ll be nerver called because we have same version as app and store already created
-  indexedDBOpenRequest.onupgradeneeded = function() {
-    iDB = this.result
-    console.log(
-      'sw:',
-      'db opened for upgrade Create/modify the database schema'
-    )
-    // This should only executes if there's a need to
-    // create/update db.
-    var objectStore = this.result.createObjectStore(ORDER_DOCUMENT, {
-      autoIncrement: true,
-      keyPath: 'id',
-    })
-
-    objectStore.transaction.oncomplete = function() {
-      console.log('sw:', 'create bucket complete', ORDER_DOCUMENT)
-      if (cb) {
-        console.log('sw:', 'calling callback to insert data')
-        cb(iDB)
-      }
-    }
-    objectStore.transaction.onerror = function(event) {
-      console.log('sw:', 'create bucket complete', event, ORDER_DOCUMENT)
-    }
   }
 
   // This will execute each time the database is opened.
@@ -286,7 +262,24 @@ function openDatabase(cb) {
     // and it didn't close immediately.
   }
 }
+
 function sendPostToServer() {
+  return new Promise((resolve, reject) => {
+    if (!iDB) {
+      openDatabase(() => {
+        sendToServer()
+          .then(() => resolve())
+          .catch(e => reject(e))
+      })
+    } else {
+      sendToServer()
+        .then(() => resolve())
+        .catch(e => reject(e))
+    }
+  })
+}
+
+function sendToServer() {
   return new Promise((resolve, reject) => {
     var savedRequests = []
     var req = getObjectStore(ORDER_DOCUMENT).openCursor() // FOLDERNAME
@@ -318,11 +311,8 @@ function sendPostToServer() {
             authData.push(cursor.value)
             cursor.continue()
           } else {
-            console.log('sw:', authData)
-
             if (authData && authData[0]) {
               authData = authData[0]
-              console.log('sw:', 'auth data from db', authData)
 
               var authToken = authData.token
               var branch_n = authData.branch_n
@@ -332,7 +322,7 @@ function sendPostToServer() {
               for (let savedRequest of savedRequests) {
                 const orderUrl = savedRequest.url
                 const contextUrl = orderUrl.replace(new RegExp('/model/.*'), '')
-                const time = new Date().getTime()
+                const time = savedRequest.payload.real_created_datetime
                 //lastOrderNo++
                 var transitionOrderNo =
                   branch_n + '-' + terminal_code + '-' + time
@@ -340,7 +330,6 @@ function sendPostToServer() {
                 console.log('transition order number: ', transitionOrderNo)
 
                 // send them to the server one after the other
-                console.log('sw:', 'saved request', savedRequest)
 
                 savedRequest.payload.transition_order_no = transitionOrderNo
                 savedRequest.payload.order_mode = 'offline'
@@ -355,14 +344,14 @@ function sendPostToServer() {
 
                 //check if delivery order
                 if (payload.order_type == 'call_center' && !payload.customer) {
+                  console.log(
+                    'no customer was selected so need to create a customer'
+                  )
                   var customerPayload = payload.user
-
+                  //payload.user is always available either its online or offline
                   console.log('sw:', 'delivery order')
                   //create customer uses fetch which returns promise
                   console.log('sw:', 'creating customer')
-
-                  savedRequest.payload.order_city = customerPayload.city
-                  savedRequest.payload.order_country = customerPayload.country
 
                   delete customerPayload.city
                   delete customerPayload.country
@@ -375,17 +364,6 @@ function sendPostToServer() {
 
                       //modify the original payload to be sent to order
                       savedRequest.payload.customer = response.id
-
-                      savedRequest.payload.order_building =
-                        customerPayload.building
-                      savedRequest.payload.order_street = customerPayload.street
-                      savedRequest.payload.order_flat_number =
-                        customerPayload.flat_number
-                      savedRequest.payload.order_nearest_landmark =
-                        customerPayload.nearest_landmark
-
-                      savedRequest.payload.order_delivery_area =
-                        customerPayload.delivery_area_id
 
                       createOrder(
                         resolve,
@@ -420,13 +398,11 @@ function sendPostToServer() {
 }
 
 var createOrder = function(resolve, reject, headers, authData, savedRequest) {
-  console.log('received params', headers, authData, savedRequest)
   var method = savedRequest.method
   var requestUrl = savedRequest.url
   var payload = savedRequest.payload
   delete payload.user
   payload = JSON.stringify(payload)
-  console.log('Sending to server', method, requestUrl, payload)
 
   fetch(requestUrl, {
     headers: headers,
@@ -450,8 +426,14 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
           console.log('sw:', 'update good', event)
         }
 
-        console.log('sw:', 'Removing request from index db', savedRequest.id)
-        getObjectStore(ORDER_DOCUMENT, 'readwrite').delete(savedRequest.id)
+        console.log(
+          'sw:',
+          'Removing request from index db',
+          savedRequest.real_created_datetime
+        )
+        getObjectStore(ORDER_DOCUMENT, 'readwrite').delete(
+          savedRequest.payload.real_created_datetime
+        )
 
         resolve(response)
       } else if (response.status == 401) {

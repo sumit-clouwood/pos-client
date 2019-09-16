@@ -4,6 +4,7 @@
     <Header />
     <Content />
     <Footer />
+    <mobileIndex />
   </div>
 </template>
 
@@ -25,7 +26,9 @@ import Menu from './pos/Menu.vue'
 import Header from './pos/Header.vue'
 import Content from './pos/Content.vue'
 import Footer from './pos/Footer'
+import mobileIndex from './mobileComponents/_mobileIndex.vue'
 import { mapState } from 'vuex'
+
 export default {
   name: 'Pos',
   computed: {
@@ -36,6 +39,7 @@ export default {
     Header,
     Content,
     Footer,
+    mobileIndex,
   },
   //store private data in component using data
 

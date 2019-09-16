@@ -147,6 +147,10 @@
         position: relative;
         cursor: pointer;
         .nav-link{
+          padding: 0;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
           svg{
             width: $px25;
             height: $px25;

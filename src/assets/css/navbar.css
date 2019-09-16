@@ -19,15 +19,18 @@
       width: 0; }
     .navigation .navigation-list-wrapper .navigation-list {
       position: absolute;
-      top: 0;
+      top: 0px;
       left: 0;
       right: 0;
       overflow: hidden;
       display: grid;
       grid-template-rows: auto;
-      grid-gap: 1.25rem;
+      grid-gap: 10px;
       padding: 0 0 1.875rem 0;
       transition: 0.5s ease-out; }
+      @media only screen and (min-width: 320px) and (max-width: 600px) {
+        .navigation .navigation-list-wrapper .navigation-list {
+          top: 65px; } }
       .navigation .navigation-list-wrapper .navigation-list.toggle {
         top: -95%; }
       .navigation .navigation-list-wrapper .navigation-list .nav-item {
@@ -47,19 +50,27 @@
           cursor: pointer;
           font-weight: 600;
           border-radius: 3px;
-          padding: 0.625rem; }
+          transition: 0.2s linear; }
+          .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav.activebg {
+            padding: 0 5px; }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav.active, .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav:hover {
             background-color: #767DFF !important;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav img {
-            width: 2.1875rem;
-            height: 2.1875rem;
-            margin: 0 auto 0.3125rem auto; }
+            width: 5rem;
+            margin: 0 auto;
+            height: 5rem;
+            margin-bottom: 0.3125rem;
+            border-radius: 0.1875rem;
+            margin-top: 0.4375rem; }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav .nav-link-text {
-            font-size: 1.125rem;
+            font-size: 12px;
             text-align: center;
-            display: block;
-            word-break: break-word; }
+            word-break: break-word;
+            /*min-height: $px75;*/
+            display: flex;
+            align-items: center;
+            justify-content: center; }
   .navigation .slider-btn {
     color: #fff;
     margin: 0 auto;

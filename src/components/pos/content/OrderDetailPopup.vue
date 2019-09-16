@@ -43,7 +43,7 @@
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <a
                     class="dropdown-item"
-                    href="javascript:void(0)"
+                    role="button"
                     v-for="(template, index) in selectedOrder.invoice"
                     :key="index"
                     @click="printInvoice(template)"
@@ -61,9 +61,7 @@
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
-              <div class="button-caption">
-                {{ _t('Cancel Order') }}
-              </div>
+              <div class="button-caption">{{ _t('Cancel Order') }}</div>
             </div>
           </button>
           <button
@@ -73,9 +71,7 @@
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
-              <div class="button-caption">
-                {{ _t('Modify Order') }}
-              </div>
+              <div class="button-caption">{{ _t('Modify Order') }}</div>
             </div>
           </button>
           <button
@@ -101,9 +97,7 @@
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
-              <div class="button-caption">
-                {{ _t('Close') }}
-              </div>
+              <div class="button-caption">{{ _t('Close') }}</div>
             </div>
           </button>
         </div>
@@ -150,6 +144,7 @@ export default {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
     modifyOrder() {
+      this.$store.commit('order/START_ORDER')
       this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
         this.$router.push({ path: this.$store.getters['context/store'] })
       })
@@ -160,5 +155,106 @@ export default {
 <style scoped lang="scss">
 #orderDetailsPopup .modal-dialog {
   max-width: 70%;
+}
+</style>
+<style lang="scss">
+@import '../../../assets/scss/pixels_rem.scss';
+@import '../../../assets/scss/variables.scss';
+@import '../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  #orderDetailsPopup {
+    .modal-dialog {
+      margin: 0;
+      width: 100%;
+      max-width: 100% !important;
+      overflow: auto;
+
+      .dialog-body {
+        display: block;
+        position: static;
+        overflow: auto;
+
+        .details {
+          display: grid;
+          grid-template-columns: 1fr;
+          grid-gap: 20px;
+
+          > div {
+            padding: 0 0 20px 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            align-content: start;
+            align-items: flex-start;
+
+            .details-item {
+              border-bottom: 1px solid $gray-middle;
+              padding-bottom: 10px;
+              display: grid;
+              grid-template-columns: max-content max-content;
+              grid-gap: 10px;
+            }
+          }
+        }
+
+        .left-part,
+        .right-part {
+          border: none;
+          height: auto;
+        }
+
+        .right-part {
+          #nav-tabContent {
+            #nav-home {
+              padding: 0;
+
+              .table {
+                padding: 0;
+              }
+
+              .receipt-summary {
+                text-align: left;
+                font-weight: bold;
+              }
+            }
+          }
+        }
+
+        .buttons {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-gap: 5px;
+
+          button.button {
+            margin: 0;
+          }
+
+          .v-menu {
+            display: block;
+            margin-right: 0;
+
+            .dropdown {
+              display: block;
+              width: 100%;
+
+              .dropdown-menu {
+                overflow: hidden;
+              }
+
+              button {
+                display: block;
+                width: 100%;
+              }
+            }
+          }
+
+          .btn-danger {
+            grid-column-start: 1;
+            grid-column-end: 3;
+          }
+        }
+      }
+    }
+  }
 }
 </style>

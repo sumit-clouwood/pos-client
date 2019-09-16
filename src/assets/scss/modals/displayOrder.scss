@@ -3,6 +3,13 @@
 #display-order {
   .slick-dots {
     bottom: $px10;
+    position: static;
+    display: grid !important;
+    grid-template-columns: max-content max-content max-content;
+    justify-content: center;
+    margin-bottom: 20px;
+    grid-column-start: 1;
+    grid-column-end: 4;
   }
 
   .modal-dialog {
@@ -21,7 +28,7 @@
             overflow: hidden;
             margin: 0 auto;
             float: left;
-            width: 70%;
+            width: 60%;
 
             #delivery-area-address {
               overflow: hidden;
@@ -72,15 +79,35 @@
 
             .ullist-profile {
               display: grid;
-              grid-template-columns: max-content max-content max-content 1fr;
-              grid-gap: $px10;
+              flex-wrap: wrap;
+              grid-template-columns: max-content 1fr;
+              grid-gap: $px20;
               border-bottom: 2px solid #efefef;
               padding: $px20;
 
               li {
+                padding: 0;
                 display: grid;
                 grid-template-rows: min-content min-content min-content;
                 grid-template-columns: max-content;
+
+                &:nth-child(3) {
+                  grid-column-start: 2;
+                  grid-column-end: 3;
+                }
+
+                &:nth-child(4) {
+                  //display: grid;
+                  //grid-template-columns: 1fr 1fr;
+                  align-self: end;
+                  grid-column-start: 1;
+                  grid-column-end: 2;
+                  grid-row-start: 2;
+                  grid-row-end: 3;
+
+                  a {
+                  }
+                }
 
                 img {
                   width: $px95;
@@ -156,6 +183,15 @@
                 text-align: left;
                 font-size: $px14;
                 cursor: pointer;
+                &.active {
+                  border: 2px solid $green-middle;
+                  &:after {
+                    background-color: $green-middle;
+                    border: 2px solid $green-middle !important;
+                    top: -1px;
+                    right: -1px;
+                  }
+                }
 
                 > p {
                   span {
@@ -188,7 +224,7 @@
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    background-color: #E3E9F0;
+                    background-color: #e3e9f0;
                     margin-right: $px5;
                     cursor: pointer;
                   }
@@ -255,10 +291,9 @@
 
           .customer-insight {
             float: left;
-            width: 30%;
+            width: 40%;
             padding: $px20;
             border-left: 2px solid #efefef;
-
 
             .title-cu {
               padding: 0 $px10 $px10 $px10;
@@ -280,7 +315,6 @@
               display: grid;
               grid-template-columns: min-content 1fr min-content;
               align-items: center;
-              max-height: $px160;
 
               .slick-track {
                 display: flex;
@@ -519,11 +553,11 @@
 .order-location.option-contain.cu-delivery-area-location {
   &.active {
     &:after {
+      @include check_symbol;
       width: $px25;
       height: $px25;
       border-radius: $btn-border-radius;
       border: solid 2px #e4e7eb;
-      content: '';
       position: absolute;
       display: flex;
       align-items: center;
@@ -531,7 +565,7 @@
       right: $px10;
       top: $px10;
       background-color: $blue-light;
-      color: $blue-dark;
+      //color: $blue-dark;
     }
   }
 }
@@ -572,7 +606,6 @@ div#display-order .manage-customer-table {
   border: solid 1px #cbcfd3;
 }
 
-
 div#display-order .past-order {
   font-size: $px22;
   font-weight: 600;
@@ -593,9 +626,11 @@ div#display-order {
   text-align: center;
   display: flex;
   align-items: center;
+  justify-content: center;
 
   > li {
-    display: inline-block;
+    display: inline-grid;
+    justify-content: center;
     font-size: $px10;
     font-weight: 600;
     font-style: normal;
@@ -607,6 +642,8 @@ div#display-order {
     width: $px125;
     padding: 0 $px10;
     white-space: normal;
+    text-align: center;
+    grid-gap: 5px;
 
     > span {
       display: block;
@@ -699,7 +736,8 @@ ul.fav-item-slider > li > img {
   cursor: pointer;
 }
 
-.br-table-btn, .deactive-table-btn {
+.br-table-btn,
+.deactive-table-btn {
   display: none;
 }
 
@@ -721,7 +759,6 @@ tr.referal-code-customer {
   }
 }
 
-
 button#schedule-btn {
   position: relative;
 }
@@ -739,7 +776,7 @@ button.qtyminus.value-qty:focus {
 }
 
 div#select-discount-item .dining-option-block.select-discount-option > div {
-  min-height: $px90;
+  //min-height: $px90;
 }
 
 .container-radio-btn input {
@@ -749,8 +786,8 @@ div#select-discount-item .dining-option-block.select-discount-option > div {
 }
 
 .container-radio-btn input:checked ~ .checkmark-radio-btn {
-  background-color: $blue-middle ;
-  border-color: $blue-middle ;
+  background-color: $blue-middle;
+  border-color: $blue-middle;
 }
 
 .checkmark-radio-btn:after {
@@ -788,7 +825,7 @@ label.container-radio-btn span {
 label.container-radio-btn img {
   display: inline-block;
   vertical-align: middle;
-  margin-right: $px5;
+  margin-right: $px10;
   width: $px35;
   height: $px35;
 }
@@ -796,7 +833,6 @@ label.container-radio-btn img {
 button:focus {
   box-shadow: none !important;
 }
-
 
 .order-address-details button#cu-add-address {
   margin-right: $px10;
@@ -861,7 +897,7 @@ button#gift-card-btn {
   background: #fff;
   padding: 0 $px15;
   border: 1px solid #e4e7eb;
-  background-image: url(../images/select-arrow.png);
+  background-image: url(/assets/images/select-arrow.png);
   background-repeat: no-repeat;
   background-position: center right $px10;
   -webkit-appearance: none;
@@ -901,6 +937,9 @@ p.itm-price {
   margin-bottom: $px10;
   padding: $px5 $px15;
   margin: 0 $px10 $px10;
+  display: grid;
+  grid-template-columns: 1fr max-content max-content;
+  grid-gap: 10px;
 }
 
 .wrappers-orders > .orders-name > span {
@@ -914,7 +953,7 @@ p.itm-price {
 }
 
 .wrappers-orders .aed-amt {
-  width: 24%;
+  width: auto;
 }
 
 .wrappers-orders .orders-name {

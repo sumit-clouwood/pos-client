@@ -1,6 +1,11 @@
 <template>
   <!-- Add Note -->
-  <div class="modal fade" id="search-loyalty-customer" role="dialog">
+  <div
+    class="modal fade"
+    id="search-loyalty-customer"
+    role="dialog"
+    @click.self="loyaltyHendlerChange"
+  >
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
@@ -24,23 +29,23 @@
               @keypress="$event.keyCode == 13 ? $event.preventDefault() : true"
             />
             <!--<button
-              type="button"
-              class="btn btnSuccess color-main color-text-invert"
-              id="load"
-              v-on:click="search()"
-            >
-              <span
-                class="spinner-border spinner-border-sm color-main color-text-invert"
-                role="status"
-                aria-hidden="true"
-                ><i
-                  class="fa fa-circle-o-notch fa-spin"
-                  id="searchLoader"
-                  v-if="searchTerm.length"
-                ></i>
-                {{ _t('Search') }}</span
-              >
-            </button>-->
+                          type="button"
+                          class="btn btnSuccess color-main color-text-invert"
+                          id="load"
+                          v-on:click="search()"
+                        >
+                          <span
+                            class="spinner-border spinner-border-sm color-main color-text-invert"
+                            role="status"
+                            aria-hidden="true"
+                            ><i
+                              class="fa fa-circle-o-notch fa-spin"
+                              id="searchLoader"
+                              v-if="searchTerm.length"
+                            ></i>
+                            {{ _t('Search') }}</span
+                          >
+                        </button>-->
           </div>
           <span
             class="loyalty-error text-danger loyalty-customer-error color-warning"
@@ -64,7 +69,6 @@
                 </span>
               </span>
             </div>
-            <!--            <small>{{searchTerm}}</small>-->
           </div>
         </form>
         <div class="modal-footer">
@@ -81,6 +85,7 @@
               type="button"
               class="btn btn-danger cancel-announce color-text-invert color-button"
               data-dismiss="modal"
+              @click="loyaltyHendlerChange"
             >
               {{ _t('Cancel') }}
             </button>
@@ -106,6 +111,7 @@
 <script>
 /* global $ */
 import { mapState, mapActions, mapGetters } from 'vuex'
+
 export default {
   name: 'SearchLoyaltyCustomer',
   props: {},
@@ -125,6 +131,9 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
+    loyaltyHendlerChange() {
+      this.$store.dispatch('loyaltyHendlerChange')
+    },
     loyaltyAddCustomer: function(target) {
       this.$store.commit('loyalty/LOYALTY', true)
       this.addCustomer()
@@ -182,13 +191,15 @@ export default {
 }
 </script>
 
-<style scoped lang="css">
+<style scoped lang="scss">
 .dropdown {
   position: relative;
 }
-#searchLoader, .dropdown-content {
-  /*display:none;*/
+
+#searchLoader,
+.dropdown-content {
 }
+
 .dropdown-content {
   display: block;
   position: absolute;
@@ -197,8 +208,8 @@ export default {
   overflow: auto;
   border: 1px solid #ddd;
   z-index: 1;
-  margin-top:3px;
-  max-height:200px;
+  margin-top: 3px;
+  max-height: 200px;
 }
 
 .dropdown-content span {
@@ -207,16 +218,100 @@ export default {
   text-decoration: none;
   display: block;
 }
-.inputSearch{
-  /*width: 337px;*/
+
+.inputSearch {
   padding-bottom: 11px;
   height: 48px;
   border-radius: 5px 0px 0px 5px;
 }
-.btnSuccess{
+
+.btnSuccess {
   color: #fff;
   height: 47px;
   border-radius: 0px 5px 5px 0px;
 }
-.dropdown span:hover {background-color: #ddd;}
+
+.dropdown span:hover {
+  background-color: #ddd;
+}
+</style>
+<style lang="scss">
+@import '../../../../assets/scss/pixels_rem.scss';
+@import '../../../../assets/scss/variables.scss';
+@import '../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  .loyalty {
+    background-color: transparent !important;
+    border: none !important;
+  }
+  #search-loyalty-customer {
+    border: none;
+    .modal-dialog {
+      border: none;
+      .modal-content {
+        border: none;
+        /*top: auto;*/
+        .modal-header {
+          height: 80px;
+          background-color: #fff;
+          display: grid !important;
+          align-items: center;
+          padding: 20px;
+          border: none;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-body {
+          display: grid;
+          grid-template-rows: max-content max-content max-content 1fr max-content;
+          padding-bottom: 0;
+
+          .add-note-area {
+            height: 50px;
+
+            .inputSearch {
+              /*width: 100vw !important;*/
+              border-radius: 0;
+              /*margin-top: 20px;*/
+              outline: none;
+              margin-bottom: 0;
+            }
+          }
+        }
+
+        .modal-footer {
+          .cursor-pointer {
+            background-color: $green-middle;
+            height: 50px;
+            color: #fff;
+            border-radius: 3px;
+            display: grid;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+          }
+
+          .btn-announce {
+            .btn-danger {
+              width: 0;
+              height: 0 !important;
+              border: none;
+              position: absolute;
+              top: 32px;
+              right: 40px;
+
+              &:after {
+                content: '✖';
+                position: absolute;
+                right: -10px;
+                color: #444;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 </style>

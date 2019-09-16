@@ -5,10 +5,10 @@ const state = {
 }
 
 const actions = {
-  fetchAll: function({ commit, rootGetters, rootState }) {
-    let role = rootGetters['auth/getRole']('pos')
-    if (role) {
-      const params = [role._id, rootState.location.apiDate]
+  fetchAll: function({ commit, rootState }) {
+    let user = rootState.auth.userDetails
+    if (user) {
+      const params = [user.item.brand_role, rootState.location.apiDate]
       AnnouncementService.fetchAll(...params).then(response => {
         commit(mutation.SET_ANNOUNCEMENT, response.data.data)
       })

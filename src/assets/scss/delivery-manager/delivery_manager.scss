@@ -1,9 +1,9 @@
 @import "../pixels_rem.scss";
 @import "../variables.scss";
-
 .da-image {
   text-align: center;
 }
+
 
 #delivery-assistant .btn-announce {
   text-align: right;
@@ -169,8 +169,7 @@ div#delivery-manager {
   }
 
   .modal-footer {
-    padding-top: 0;
-    padding-left: $px35;
+
   }
 }
 

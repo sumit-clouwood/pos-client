@@ -14,7 +14,7 @@
         <div v-else class="modal-body add-to-order">
           <CustomerDeliveryArea :buttons="false" classAccess="addOrders" />
           <!--<div class="error" v-else-if="error">No address found.</div>
-          <div class="loading" v-else><Preloader /></div>-->
+                    <div class="loading" v-else><Preloader /></div>-->
         </div>
         <div class="modal-footer">
           <div class="btn-announce">
@@ -62,6 +62,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import Preloader from '@/components/util/Preloader'
 import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
+
 export default {
   name: 'SelectCustomerAddress',
   components: {
@@ -88,3 +89,66 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+@import '../../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../../assets/scss/variables.scss';
+@import '../../../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  #add-to-order {
+    .modal-dialog {
+      margin: 0;
+
+      .modal-content {
+        .modal-header {
+          height: 80px;
+          min-height: 80px;
+          background-color: #fff;
+          border: none;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-body {
+          overflow: auto;
+
+          .location-delivery-area-address {
+            .order-location {
+              &.active {
+                border: 2px solid $green-middle;
+                &:after {
+                  border: 2px solid $green-middle !important;
+                }
+              }
+
+              &:after {
+                background-color: $green-middle;
+                border: 2px solid $green-middle;
+                top: -2px;
+                right: -2px;
+              }
+            }
+          }
+
+          .addOrders {
+            max-height: none;
+          }
+        }
+
+        .modal-footer {
+          .btn-announce {
+            display: grid;
+            grid-template-columns: max-content max-content max-content;
+            grid-gap: 10px;
+
+            button {
+              width: auto;
+              margin: 0;
+              padding: 0 20px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</style>

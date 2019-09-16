@@ -1,5 +1,5 @@
-@import "pixels_rem.scss";
-@import "variables.scss";
+@import 'pixels_rem.scss';
+@import 'variables.scss';
 
 .navigation {
   grid-row-start: 1;
@@ -25,6 +25,7 @@
   .navigation-list-wrapper {
     overflow: hidden;
     position: relative;
+    //overflow-y: auto;
 
     &::-webkit-scrollbar {
       width: 0;
@@ -32,15 +33,18 @@
 
     .navigation-list {
       position: absolute;
-      top: 0;
+      top: 0px;
       left: 0;
       right: 0;
       overflow: hidden;
       display: grid;
       grid-template-rows: auto;
-      grid-gap: $px20;
+      grid-gap: 10px;
       padding: 0 0 $px30 0;
       transition: 0.5s ease-out;
+      @include responsive(mobile) {
+        // top: 65px;
+      }
 
       &.toggle {
         top: -95%;
@@ -68,24 +72,35 @@
           cursor: pointer;
           font-weight: 600;
           border-radius: $btn-border-radius;
-          padding: $px10;
+          transition: 0.2s linear;
 
-          &.active, &:hover {
+          &.activebg {
+            padding: 0 5px;
+          }
+
+          &.active,
+          &:hover {
             background-color: $blue-light !important;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
           }
 
           img {
-            width: $px35;
-            height: $px35;
-            margin: 0 auto $px5 auto;
+            width: $px80;
+            margin: 0 auto;
+            height: $px80;
+            margin-bottom: $px5;
+            border-radius: $px3;
+            margin-top: $px7;
           }
 
           .nav-link-text {
-            font-size: $px18;
+            font-size: 12px;
             text-align: center;
-            display: block;
-            word-break:break-word;
+            word-break: break-word;
+            /*min-height: $px75;*/
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
         }
       }
@@ -138,7 +153,8 @@
         width: $nav-link-size;
         height: $nav-link-size;
         transition: 0.2s ease-out;
-        &:hover{
+
+        &:hover {
           transform: scale(1.1);
         }
       }
@@ -151,27 +167,32 @@
         width: $px75;
         white-space: nowrap;
         text-overflow: ellipsis;
-        overflow: hidden
+        overflow: hidden;
       }
     }
   }
 }
-.dm-manager{
+
+.dm-manager {
   .navigation {
     grid-template-rows: $header-height 1fr $px60 $dm-nav-footer-height;
     width: $px75;
-    -webkit-transition: .3s ease-out;
-    transition: .3s ease-out;
-    &.collapse-menu{
-      width:$px200;
+    -webkit-transition: 0.3s ease-out;
+    transition: 0.3s ease-out;
+
+    &.collapse-menu {
+      width: $px200;
     }
-    .logo{
+
+    .logo {
       width: $px75;
     }
-    .navigation-list-wrapper{
-      .navigation-list{
-          grid-gap: 0;
-        .nav-item{
+
+    .navigation-list-wrapper {
+      .navigation-list {
+        grid-gap: 0;
+
+        .nav-item {
           -ms-flex-align: center;
           -webkit-box-pack: start;
           -ms-flex-pack: start;
@@ -180,7 +201,7 @@
           display: list-item;
           transition: 0.3s ease-out;
 
-          .nav-link-nav{
+          .nav-link-nav {
             width: unset;
             min-height: auto;
             /* padding: 0.625rem 0.9375rem 0.625rem 0.9375rem; */
@@ -195,19 +216,22 @@
             transition: 0.3s ease-out;
             padding: $px10 $px15 $px10 $px15;
             margin: 0 $px7 $px10 $px10;
-            .nav-link-text{
+
+            .nav-link-text {
               display: -webkit-box;
               display: -ms-flexbox;
               display: flex;
               -webkit-box-align: center;
               -ms-flex-align: center;
               align-items: center;
+
               svg {
                 width: $px25;
                 height: $px25;
                 fill: $white;
               }
             }
+
             .nav-link-name {
               white-space: nowrap;
               overflow: hidden;
@@ -220,11 +244,11 @@
     }
   }
 }
-.collapse-menu{
-  .navigation-list{
-    li{
-      max-width: $px196 !important;
 
+.collapse-menu {
+  .navigation-list {
+    li {
+      max-width: $px196 !important;
     }
   }
 }

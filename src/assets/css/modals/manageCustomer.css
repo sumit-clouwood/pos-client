@@ -74,11 +74,11 @@
     color: #4b4e53;
     font-size: 0.875rem;
     font-weight: 400;
-    letter-spacing: 0.47px;
+    letter-spacing: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 9.0625rem;
+    width: 20rem;
     max-width: 7.8125rem;
     vertical-align: middle; }
   .manage-customer-wrap table tr th {
@@ -107,5 +107,66 @@
 
 .receipt-table thead th {
   font-weight: bold !important; }
+
+@media only screen and (min-width: 320px) and (max-width: 600px) {
+  #manage-customer {
+    opacity: 1;
+    position: absolute;
+    top: 0px;
+    right: -100vw;
+    bottom: 0;
+    left: auto;
+    width: 100vw;
+    transition: 0.5s ease-out;
+    border-left: 1px solid #ddd; }
+    #manage-customer.show {
+      right: 0; }
+    #manage-customer .modal-dialog {
+      position: absolute;
+      top: 0px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      min-height: 100% !important;
+      transform: none;
+      opacity: 1;
+      max-width: none; }
+      #manage-customer .modal-dialog .modal-content {
+        display: grid;
+        grid-template-rows: max-content 1fr max-content;
+        min-height: 100vh;
+        overflow: auto; }
+        #manage-customer .modal-dialog .modal-content .modal-header {
+          padding: 10px 20px;
+          height: 80px;
+          border-bottom: 1px solid #E3E7F2;
+          background-color: #fff; }
+        #manage-customer .modal-dialog .modal-content .modal-body {
+          padding: 20px 20px;
+          margin: 0;
+          overflow: auto;
+          width: 100vw; }
+          #manage-customer .modal-dialog .modal-content .modal-body .search-field {
+            height: auto;
+            margin: 0;
+            border-bottom: 1px solid #E3E7F2; }
+            #manage-customer .modal-dialog .modal-content .modal-body .search-field label {
+              margin: 0; }
+        #manage-customer .modal-dialog .modal-content .modal-footer {
+          padding: 10px 20px 20px; }
+          #manage-customer .modal-dialog .modal-content .modal-footer .btn-announce {
+            display: flex;
+            justify-content: flex-end;
+            margin: 0;
+            width: 100%; }
+            #manage-customer .modal-dialog .modal-content .modal-footer .btn-announce button {
+              margin: 0;
+              padding: 0 10px;
+              font-size: 14px;
+              margin-left: 10px;
+              height: 50px; }
+              #manage-customer .modal-dialog .modal-content .modal-footer .btn-announce button#cust-new {
+                background-color: #64C434; } }
 
 /*# sourceMappingURL=manageCustomer.css.map */

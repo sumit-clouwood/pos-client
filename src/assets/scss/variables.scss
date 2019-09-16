@@ -1,6 +1,5 @@
 @import "pixels_rem.scss";
 @import "mixins.scss";
-// navigation
 $logo-link-size: $px30;
 $navigation-width: $px130;
 $dm-navigation-width: $px75;
@@ -9,13 +8,10 @@ $dm-nav-link-width: $px52;
 $dm-nav-link-height: $px37;
 $nav-link-height: $px85;
 $nav-link-size: $px40;
-// header
 $header-height: $px85;
 $dm-header-height: $px100;
 $header-btn-height: $px50;
-// orders
 $main-orders-buttons-height: $px40;
-// main
 $main-body-search-height: $px110;
 $main-body-search-input: $px55;
 $breadcrumbs-height: $px50;
@@ -24,12 +20,10 @@ $food-menu-item-width: $px160;
 $food-menu-item-height: $px224;
 $food-categories-item-width: $px100;
 $food-categories-item-height: $px100;
-// footer
 $footer-height: $px100;
 $dm-nav-footer-height: $px117;
 $dm-footer-height: $px20;
 $footer-btn-height: $px60;
-//
 $main-body-height: $px225;
 $food-wrapper-height: $px345;
 $food-menu-height: $px420;
@@ -37,11 +31,10 @@ $btn-border-radius: 3px;
 $card-border-radius: 5px;
 $block-border-radius: 4px;
 
-// color
 $black: #000;
 $white: #fff;
 $btn-bg-black: #4B4E53;
-$red: tomato;
+$red: #CC3232;
 $blue-light: #767DFF;
 $blue-middle: #5056CA;
 $green: #62bb31;
@@ -49,14 +42,14 @@ $blue-dark: #3A3E9F;
 $orange-light: #EF9550;
 $orange-middle: #EF7F2A;
 $orange-dark: #EF6A05;
-$green-light: #F6FFF0;
+$green-light: #EEFAE7;
 $green-middle: #64C434;
-$green-dark: #58AC2E;
+$green-dark: #42891B;
 $gray-light: #eee;
-$gray-middle: #ddd;
+$gray-middle: #E3E7F2;
 $gray-dark: #888;
 $gray-bg-light: #F1F3F6;
 $gray-bg-middle: #E3E7F2;
 $gray-bg-dark: #D7DCE2;
 $header-gray-light: #a4a4a4;
-$assets-address: '../fonts/';
+$assets-address: '/assets/fonts/'

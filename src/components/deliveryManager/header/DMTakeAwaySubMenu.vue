@@ -16,7 +16,7 @@
             })
           "
         >
-          <a href="javascript:void(0)">New Order</a
+          <a role="button">New Order</a
           ><span v-if="orderCount">{{ orderCount.take_away.new_order }}</span>
         </li>
         <li
@@ -34,7 +34,7 @@
             })
           "
         >
-          <a href="javascript:void(0)">Waiting for Collections</a
+          <a role="button">Waiting for Collections</a
           ><span v-if="orderCount">{{
             orderCount.take_away.Waiting_for_collection
           }}</span>
@@ -54,7 +54,7 @@
             })
           "
         >
-          <a href="javascript:void(0)">Collected</a
+          <a role="button">Collected</a
           ><span v-if="orderCount">{{ orderCount.take_away.collected }}</span>
         </li>
       </ul>

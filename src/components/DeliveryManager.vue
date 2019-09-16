@@ -9,13 +9,13 @@
               <a :href="baseurl('delivery')">{{ _t('DELIVERY') }}</a>
             </li>
             <li>
-              <a href="javascript:void(0)">{{ brand.name }}</a>
+              <a role="button">{{ brand.name }}</a>
             </li>
             <li>
-              <a href="javascript:void(0)">{{ _t('HOME DELIVERIES') }}</a>
+              <a role="button">{{ _t('HOME DELIVERIES') }}</a>
             </li>
             <li class="active">
-              <a href="javascript:void(0)">{{ listType }}</a>
+              <a role="button">{{ listType }}</a>
             </li>
           </ul>
         </div>

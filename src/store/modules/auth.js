@@ -1,5 +1,7 @@
+import DataService from '@/services/DataService'
 import AuthService from '@/services/data/AuthService'
 import * as mutation from './user/mutation-types'
+//import db from '@/services/network/DB'
 
 // initial state
 const state = {
@@ -14,17 +16,12 @@ const state = {
 // getters
 const getters = {
   getRole: state => startPath => {
-    return state.rolePermissions.find(user => user.start_path === startPath)
+    if (state.rolePermissions) {
+      return state.rolePermissions.find(user => user.start_path === startPath)
+    }
   },
-  loggedIn: (state, gettters, rootState, rootGetters) => {
-    if (!rootGetters['context/store']) {
-      return false
-    }
-    if (!localStorage.getItem('token')) {
-      return false
-    }
-
-    return true
+  loggedIn: state => {
+    return state.token
   },
 }
 
@@ -38,9 +35,6 @@ const actions = {
             reject(response.data.error)
             return false
           }
-          AuthService.getRoles().then(rolesPermissions => {
-            commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
-          })
           commit(mutation.SET_TOKEN, response.data.token)
           commit(mutation.SET_DEVICE_CODE, deviceId)
           resolve(response)
@@ -48,10 +42,66 @@ const actions = {
         .catch(error => reject(error))
     })
   },
+  login({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      AuthService.login(data)
+        .then(response => {
+          if (!response.data.token) {
+            reject(response.data.error)
+            return false
+          }
+          commit(mutation.SET_TOKEN, response.data.token)
+          localStorage.setItem('token', response.data.token)
 
-  logout() {
+          resolve()
+        })
+        .catch(error => reject(error))
+    })
+  },
+  checkLogin({ commit, rootGetters }) {
+    return new Promise((resolve, reject) => {
+      if (localStorage.getItem('token')) {
+        commit(mutation.SET_TOKEN, localStorage.getItem('token'))
+
+        if (localStorage.getItem('brand_id')) {
+          commit('context/SET_BRAND_ID', localStorage.getItem('brand_id'), {
+            root: true,
+          })
+          commit('context/SET_STORE_ID', localStorage.getItem('store_id'), {
+            root: true,
+          })
+        }
+
+        DataService.setContext({
+          brand: rootGetters['context/brand'],
+          store: rootGetters['context/store'],
+        })
+        resolve()
+      } else {
+        reject('No token found in localstorage')
+      }
+    })
+  },
+  logout({ commit }) {
     localStorage.setItem('token', '')
-    AuthService.logout().then(() => (window.location = '/'))
+    localStorage.setItem('brand_id', '')
+    localStorage.setItem('store_id', '')
+
+    commit(mutation.RESET)
+
+    commit('order/RESET', null, { root: true })
+    commit('checkout/RESET', null, { root: true })
+    commit('context/RESET', null, { root: true })
+    commit('customer/RESET', null, { root: true })
+    commit('sync/reset', {}, { root: true })
+    commit('location/RESET', true, { root: true })
+
+    DataService.setContext({
+      brand: null,
+      store: null,
+    })
+
+    AuthService.logout().then(() => {})
   },
 
   getUserDetails({ commit }, userId) {
@@ -60,6 +110,11 @@ const actions = {
         commit(mutation.USER_DETAILS, response.data)
       })
     }
+  },
+  fetchRoles({ commit }) {
+    AuthService.getRoles().then(rolesPermissions => {
+      commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
+    })
   },
 }
 
@@ -80,6 +135,14 @@ const mutations = {
   },
   [mutation.USER_DETAILS](state, userDetails) {
     state.userDetails = userDetails
+  },
+  [mutation.RESET](state) {
+    state.token = null
+    state.deviceId = null
+    state.refreshToken = null
+    state.rolePermissions = null
+    state.userDetails = false
+    state.permissions = false
   },
 }
 

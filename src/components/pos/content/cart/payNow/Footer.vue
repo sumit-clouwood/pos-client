@@ -123,11 +123,26 @@ export default {
           showPaymentBreak()
         }
       })
+      this.$store.dispatch('successfullHendlerChange')
+      this.$store.dispatch('payNowCalcHendlerChange')
+      this.$store.dispatch('paymentMethodsChange')
+      this.$store.dispatch('mainOrdersHendlerChange')
     },
   },
 }
 </script>
 <style lang="sass" scoped>
 .payment-screen-footer
-  min-width: 518px
+    min-width: 518px
+</style>
+<style lang="scss">
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  .payment-screen-footer {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+}
 </style>

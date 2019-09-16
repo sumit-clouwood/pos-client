@@ -1,27 +1,34 @@
 <template>
-  <div class="food-categories" v-if="subcategories && subcategories.length">
-    <div
-      class="food-categories-item box-shadow-selected"
-      v-for="item in subcategories"
-      :style="{
-        background:
-          item.sub_category_image == '' ? item.sub_category_color : '',
-      }"
-      :key="item._id"
-      :class="{ active: currentSubcategory === item._id }"
-      @click.prevent="getSubCatItems(item)"
-    >
-      <img
-        v-if="item.sub_category_image != ''"
-        class="food-categories-item-img"
-        :src="item.sub_category_image"
-        :alt="dt(item)"
-      />
-      <div class="food-categories-item-text" :title="dt(item)">
-        {{ dt(item) }}
-      </div>
-      <div class="food-categories-item-check color-dashboard-background">
-        <i class="fa fa-check color-text-invert " aria-hidden="true"></i>
+  <div
+    v-if="subcategories && subcategories.length"
+    :class="[
+      'food-categories-wrapper',
+      subCategoryHendler ? 'foodCatigoriesActive' : 'foodCatigoriesNotActive',
+    ]"
+  >
+    <btnBack :param="'subcategory'" />
+    <div :class="['food-categories']" v-if="subcategories.length">
+      <div
+        class="food-categories-item box-shadow-selected"
+        v-for="item in subcategories"
+        :style="{
+          background:
+            item.sub_category_image == '' ? item.sub_category_color : '',
+        }"
+        :key="item._id"
+        :class="{ active: currentSubcategory === item._id }"
+        @click.prevent="getSubCatItems(item)"
+      >
+        <img
+          v-if="item.sub_category_image != ''"
+          class="food-categories-item-img"
+          :src="item.sub_category_image"
+          :alt="dt(item)"
+        />
+        <div class="food-categories-item-text" :title="dt(item)">{{ dt(item) }}</div>
+        <div class="food-categories-item-check color-dashboard-background">
+          <i class="fa fa-check color-text-invert" aria-hidden="true"></i>
+        </div>
       </div>
     </div>
   </div>
@@ -29,27 +36,112 @@
 </template>
 
 <script>
-/*Global $*/
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
+import btnBack from "../../../mobileComponents/mobileElements/btnBack";
 
 export default {
-  name: 'SubMenu',
+  name: "SubMenu",
+  components: {
+    btnBack
+  },
   props: {},
   computed: {
     ...mapState({
-      currentSubcategory: state => state.category.subcategory._id,
+      currentSubcategory: state => state.category.subcategory._id
     }),
-    ...mapGetters('category', ['subcategories']),
+    ...mapGetters("category", ["subcategories"]),
+    ...mapGetters(["subCategoryHendler", "foodMenuHendler"])
   },
   methods: {
     getSubCatItems(item) {
       // eslint-disable-next-line no-undef
-      $('.breadcrumbs').show()
+      $(".breadcrumbs").show();
       // eslint-disable-next-line no-undef
-      $('.search-field-input').val('')
-      this.$store.dispatch('category/getItems', item)
-    },
+      $(".search-field-input").val("");
+      this.$store.dispatch("category/getItems", item);
+      this.$store.dispatch("foodMenuHendlerChange");
+    }
     // ...mapActions('category', ['getItems']),
-  },
-}
+  }
+};
 </script>
+<style lang="scss" scoped>
+@import "../../../../assets/scss/pixels_rem.scss";
+@import "../../../../assets/scss/variables.scss";
+@import "../../../../assets/scss/mixins.scss";
+
+@include responsive(mobile) {
+  .food-categories-wrapper {
+    grid-template-columns: 1fr;
+    height: 100%;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 2;
+    background-color: transparent;
+
+    &.foodCatigoriesActive {
+      transition: 0.7s ease-out;
+      top: 0;
+    }
+
+    &.foodCatigoriesNotActive {
+      transition: 0.7s ease-out;
+      top: -100%;
+    }
+
+    .food-categories {
+      padding: 0;
+      grid-gap: 0;
+      overflow: auto;
+
+      .food-categories-item {
+        display: grid;
+        align-items: center;
+        width: auto;
+        height: 50px;
+        border-radius: 0;
+        border: none;
+        padding: 0 10px 0 10px;
+        min-height: 80px;
+        grid-template-columns: 65px 1fr;
+        grid-gap: 20px;
+        border-bottom: 1px solid $gray-middle;
+        background-color: #fafafa;
+        background-color: #fff !important;
+
+        .food-categories-item-text {
+          font-size: 14px;
+          text-align: left;
+          font-weight: 600;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        img {
+          margin: 0;
+          width: 64px;
+          height: 64px;
+          border-radius: 2px;
+        }
+
+        .food-categories-item-check {
+          display: none;
+        }
+
+        &.active {
+          box-shadow: none;
+
+          .food-categories-item-check {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
+</style>

@@ -29,7 +29,7 @@
                 </button>
               </div>
             </div>
-            <TotalAmount />
+            <TotalAmount :param="{ totalAmountBlock: true }" />
             <div class="payment-method-title">
               <h2 class="color-text">{{ _t('Payment Method') }}</h2>
             </div>
@@ -40,7 +40,7 @@
               </p>
             </div>
             <form>
-              <div class="payemnt-input-block">
+              <div class="payment-input-block">
                 <input
                   type="text"
                   name="payment"
@@ -82,6 +82,9 @@
               </button>
             </div>
           </div>
+          <div class="pay-now-btn-next" @click="payNowCalcHendlerChange">
+            Next
+          </div>
         </div>
       </div>
     </div>
@@ -96,6 +99,7 @@ import PaymentMethods from './payNow/PaymentMethods'
 import AmountCalculator from './payNow/AmountCalculator'
 import PaymentBreakdown from './payNow/PaymentBreakdown'
 import { mapState, mapGetters } from 'vuex'
+
 export default {
   name: 'PayNow',
   components: {
@@ -128,9 +132,11 @@ export default {
   computed: {
     payableAmount: {
       get() {
-        return this.$store.state.checkoutForm.amount
-          ? this.$store.state.checkoutForm.amount
-          : 0
+        if (this.$store.state.checkoutForm.amount > 0) {
+          return this.$store.state.checkoutForm.amount
+        } else {
+          return 0
+        }
       },
       set(amount) {
         this.$store.dispatch('checkoutForm/setAmount', amount)
@@ -141,6 +147,7 @@ export default {
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('order', ['orderTotal']),
     ...mapGetters('checkoutForm', ['payable']),
+    ...mapGetters(['payNowCalcHendler']),
   },
   methods: {
     closePayNowError() {
@@ -167,6 +174,18 @@ export default {
         $event.preventDefault()
       }
     },
+    payNowCalcHendlerChange() {
+      this.$store.dispatch('payNowCalcHendlerChange')
+    },
   },
 }
 </script>
+<style lang="scss">
+#pay-now {
+  /* left: -100%;*/
+
+  &.show {
+    /*left: auto;*/
+  }
+}
+</style>

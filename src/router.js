@@ -2,11 +2,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home'
-import ModifyOrder from './views/ModifyOrder.vue'
 import DineIn from './views/Dinein'
 import DeliveryManagerInit from './views/DeliveryManagerInit'
 import DispatchScreenInit from './views/DispatchScreenInit'
-import NotFoundComponent from './views/NotFoundComponent'
 
 Vue.use(Router)
 
@@ -16,19 +14,24 @@ const router = new Router({
 
   routes: [
     {
-      path: '/:brand_id/:store_id/',
-      name: 'BrandHome',
-      component: Home,
-    },
-    {
       path: '/delivery-manager/:brand_id/:store_id/',
       name: 'DeliveryManager',
       component: DeliveryManagerInit,
     },
     {
+      path: '/:brand_id/:store_id/dine-in',
+      name: 'Dinein',
+      component: DineIn,
+    },
+    {
       path: '/:brand_id/:store_id/:order_id',
-      name: 'ModifyOrder',
-      component: ModifyOrder,
+      name: 'Home',
+      component: Home,
+    },
+    {
+      path: '/:brand_id/:store_id/',
+      name: 'BrandHome',
+      component: Home,
     },
     {
       path: '/about',
@@ -40,17 +43,15 @@ const router = new Router({
       // 	import(/* webpackChunkName: "about" */ './views/About.vue'),
     },
     {
-      path: '/dine-in',
-      name: 'Dinein',
-      component: DineIn,
-    },
-
-    {
       path: '/dispatch-screen',
       name: 'DispatchScreen',
       component: DispatchScreenInit,
     },
-    { path: '*', component: NotFoundComponent },
+    {
+      path: '*',
+      name: 'Any',
+      component: Home,
+    },
   ],
 })
 

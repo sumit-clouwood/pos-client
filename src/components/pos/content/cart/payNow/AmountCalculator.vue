@@ -1,5 +1,5 @@
 <template>
-  <div class="amount-keypad">
+  <div :class="['amount-keypad', { amountKeypadActive: payNowCalcHendler }]">
     <div class="payment-key" @click="set(7)">7</div>
     <div class="payment-key" @click="set(8)">8</div>
     <div class="payment-key" @click="set(9)">9</div>
@@ -28,8 +28,10 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'AmountCalculator',
   computed: {
+    ...mapState('checkout', ['changedAmount']),
     ...mapGetters('location', ['_t']),
     ...mapState('checkoutForm', ['method']),
+    ...mapGetters(['payNowCalcHendler']),
   },
   data() {
     return {

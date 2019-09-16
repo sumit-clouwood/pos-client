@@ -25,6 +25,13 @@ export default {
     return DataService.get(`/model/brand_customers/id/${customerId}`, 'brand')
   },
 
+  customerBuildings() {
+    return DataService.get(
+      `/model/brand_customers/get_customer_buildings`,
+      'brand'
+    )
+  },
+
   customerGroupList() {
     return DataService.get(
       '/model/brand_customer_groups?no_limit=true',

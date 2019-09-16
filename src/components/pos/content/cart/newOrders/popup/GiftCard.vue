@@ -124,7 +124,50 @@ export default {
   },
 }
 </script>
-<style lang="sass" scoped>
-.msg
-  padding-top: 20px
+<style lang="scss" scoped>
+@import '../../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../../assets/scss/variables.scss';
+@import '../../../../../../assets/scss/mixins.scss';
+
+.msg {
+  padding-top: 20px;
+}
+
+@include responsive(mobile) {
+  #Gift-card-payemnt {
+    padding: 0 !important;
+
+    .modal-dialog {
+      position: fixed;
+      top: auto;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      transform: none;
+      animation: none;
+
+      .modal-content {
+        top: auto;
+
+        .modal-header {
+          height: 80px;
+          background-color: #fff;
+          padding: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          border: none;
+        }
+        .modal-footer {
+          padding: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          .btn-announce {
+            #gift-card-btn {
+              background-color: $green-middle;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 </style>

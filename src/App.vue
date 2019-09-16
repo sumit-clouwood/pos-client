@@ -1,4 +1,4 @@
-<!-- 
+<!--
 The App.vue file is the root component that all other components are nested within.
 -->
 
@@ -8,7 +8,7 @@ The App.vue file is the root component that all other components are nested with
     <!--<router-link to="/">Home</router-link> |-->
     <!--<router-link to="/about">About</router-link>-->
     <!--</div>-->
-    <div v-if="loggedIn">
+    <div v-if="loggedIn && storeContext">
       <section v-if="errored">
         <p>
           We're sorry, we're not able to proceed at the moment, please try back
@@ -36,12 +36,12 @@ The App.vue file is the root component that all other components are nested with
                       aria-valuenow="50"
                       aria-valuemin="1"
                       aria-valuemax="100"
-                      v-bind:style="{ width: progressIncrement }"
+                      v-bind:style="{ width: progressIncrement + '%' }"
                     >
-                      {{ progressIncrement }}
+                      {{ progressIncrement }} %
                     </div>
                   </div>
-                  <span> {{ val }} </span>
+                  <span>{{ val }}</span>
                 </li>
               </ul>
             </span>
@@ -67,7 +67,7 @@ import Login from '@/components/login/Login'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
-  name: 'Location',
+  name: 'App',
   props: {},
   components: {
     Preloader,
@@ -76,27 +76,144 @@ export default {
   mixins: [Cookie],
   data: function() {
     return {
+      storeContext: true,
       loading: true,
       errored: false,
-      progressIncrement: '0%',
+      progressIncrement: 0,
+      orderId: null,
+      tableId: null,
     }
   },
   created() {
+    DataService.setStore(this.$store)
+
     if (this.$route.params.brand_id) {
       this.$store.commit('context/SET_BRAND_ID', this.$route.params.brand_id)
+      localStorage.setItem('brand_id', this.$route.params.brand_id)
       this.$store.commit('context/SET_STORE_ID', this.$route.params.store_id)
+
+      localStorage.setItem('store_id', this.$route.params.store_id)
       DataService.setContext({
         brand: this.$store.getters['context/brand'],
         store: this.$store.getters['context/store'],
       })
-    } else {
-      this.errored = 'Please provide brand id and store id in url'
+    }
+    this.$store
+      .dispatch('auth/checkLogin')
+      .then(() => {
+        if (!this.$store.state.context.storeId) {
+          this.errored = 'Please provide brand id and store id in url'
+          this.storeContext = false
+        } else {
+          this.storeContext = true
+        }
+      })
+      .catch(error => console.log(error))
+
+    if (this.$route.params.order_id) {
+      this.orderId = this.$route.params.order_id
+    }
+    if (this.$route.params.table_id) {
+      this.tableId = this.$route.params.table_id
     }
   },
   watch: {
     $route(to, from) {
       // react to route changes...
       console.log('route changed ', to, from)
+    },
+    loggedIn(newVal, oldVal) {
+      if (newVal && newVal !== oldVal) {
+        const interval = setInterval(() => {
+          this.progressIncrement += 10
+          if (this.progressIncrement > 100) {
+            this.progressIncrement = 0
+          }
+        }, 1000)
+
+        bootstrap
+          .setup(this.$store)
+          .then(() => {
+            setTimeout(() => {
+              clearInterval(interval)
+              this.progressIncrement = 100
+            }, 100)
+
+            setTimeout(() => {
+              this.loading = false
+            }, 300)
+
+            console.log('bootstrap done, delayed loading')
+
+            if ('serviceWorker' in navigator && 'SyncManager' in window) {
+              console.log('service worker and syncmanager are in window')
+              setTimeout(() => {
+                console.log('waiting for servicer worker ready')
+                navigator.serviceWorker.ready
+                  .then(registration => {
+                    console.log('servie worker is ready')
+                    Notification.requestPermission()
+                    console.log('asking service worker to sync')
+                    return registration.sync.register('postOfflineOrders')
+                  })
+                  .then(function() {})
+                  .catch(function() {
+                    // system was unable to register for a sync,
+                    // this could be an OS-level restriction
+                  })
+              }, 3000)
+            }
+
+            if (this.orderId) {
+              this.$store
+                .dispatch('order/selectedOrderDetails', this.orderId)
+                .then(() => {
+                  this.$store.dispatch(
+                    'order/addDeliveryOrder',
+                    this.$store.state.order.selectedOrder,
+                    {
+                      root: true,
+                    }
+                  )
+                })
+            }
+
+            setTimeout(() => {
+              require('@/../public/js/pos_script.js')
+            }, 2000)
+          })
+          .catch(error => {
+            this.errored = error
+            setTimeout(() => {
+              this.$store.dispatch('auth/logout')
+              this.errored = ''
+            }, 1000 * 10)
+            console.log('some catch ', error)
+          })
+
+        setTimeout(() => {
+          navigator.serviceWorker.addEventListener('message', event => {
+            console.log('*** event received from service worker', event)
+            if (event.data.msg == 'token') {
+              console.log('setting new token to client')
+              localStorage.setItem('token', event.data.data)
+              bootstrap.loadUI().then(() => {
+                setTimeout(() => {
+                  this.loading = false
+                  this.progressIncrement = '100%'
+                }, 100)
+              })
+            }
+          })
+        }, 3000)
+      } else {
+        //logged out
+        if (!newVal && newVal !== oldVal) {
+          this.loading = true
+          this.progressIncrement = 0
+          this.$router.replace('/')
+        }
+      }
     },
   },
 
@@ -114,61 +231,11 @@ export default {
       this.loading = false
       return
     }
-    if (this.$store.state.context.brandId) {
-      bootstrap
-        .setup(this.$store)
-        .then(() => {
-          this.progressIncrement = '10%'
-          setTimeout(() => {
-            this.loading = false
-            this.progressIncrement = '100%'
-          }, 100)
-          // this.progressIncrement = '100%'
-          setTimeout(() => {
-            require('@/../public/js/pos_script.js')
-            require('@/../public/js/pos_script_functions.js')
-          }, 2000)
-        })
-        .catch(error => (this.errored = error))
-
-      setTimeout(() => {
-        navigator.serviceWorker.addEventListener('message', event => {
-          console.log('*** event received from service worker', event)
-          if (event.data.msg == 'token') {
-            console.log('setting new token to client')
-            localStorage.setItem('token', event.data.data)
-            //DataService.setMiddleware()
-            bootstrap.loadUI().then(() => {
-              setTimeout(() => {
-                this.loading = false
-                this.progressIncrement = '100%'
-              }, 100)
-            })
-          }
-        })
-      }, 3000)
-    }
   },
 }
 
 //vanilla js
-if ('serviceWorker' in navigator && 'SyncManager' in window) {
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      navigator.serviceWorker.ready
-        .then(registration => {
-          Notification.requestPermission()
-          return registration.sync.register('postOfflineOrders')
-        })
-        .then(function() {})
-        .catch(function() {
-          // system was unable to register for a sync,
-          // this could be an OS-level restriction
-        })
-    }, 3000)
-  })
-}
 </script>
-<style lang="css">
-@import './assets/css/style.css?var=1.0';
+<style lang="scss">
+@import './assets/scss/style.scss';
 </style>
