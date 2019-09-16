@@ -109,10 +109,25 @@ const actions = {
   seOrderData({ commit }, response) {
     let orderDetails = []
     let responseData = response.data.data
+    //state.areas = this.getDineInArea
     responseData.forEach(table => {
       let order = []
       let balanceDue = 0
       let currency = ''
+      // eslint-disable-next-line no-console
+      console.log(
+        response.data.page_lookups.dine_in_tables._id[table.assigned_table_id]
+          .area_id,
+        'Rajeev Sir'
+      )
+
+      let areaName = state.areas.find(element => {
+        return element._id ==
+          response.data.page_lookups.dine_in_tables._id[table.assigned_table_id]
+            .area_id
+          ? element.name
+          : ''
+      })
       table.related_orders_ids.forEach(order_Id => {
         let od = response.data.page_lookups.orders._id[order_Id]
         order.push(od)
@@ -123,6 +138,7 @@ const actions = {
         table: table,
         orders: order,
         amount: balanceDue + ' ' + currency,
+        areaName: areaName.name.toUpperCase(),
       })
     })
     commit(mutation.ORDER_DETAILS, {
