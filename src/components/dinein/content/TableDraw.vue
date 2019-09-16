@@ -110,13 +110,13 @@
                     </div>
                   </div>
                 </div>
-                <div>
-                  <div class="m-1">
+                <div class="table-order-footer">
+                  <div class="m-1 buttons">
                     <span
                       data-toggle="modal"
                       data-target="#placeOrder"
                       data-dismiss="modal"
-                      class="table-popup bg-success font-weight-bold"
+                      class="table-popup popbtn bg-success font-weight-bold"
                     >
                       {{ _t(addOrSplit) }}
                     </span>
@@ -673,13 +673,13 @@ export default {
       // let tooltipWidth = parseInt($('#tooltipdata').width()) / 2
       // alert(event.pageX + ' , ' + posX + ' , ' + event.pageY + ' , ' + posY)
       // })
+      if (top < 0) top = 0
+      let left = posX - getWidth
+      if (left < 0) left = 0
 
       range
         .parent('div')
-        .attr(
-          'style',
-          'top:' + top + 'px; left:' + (posX - getWidth) + 'px; display:block'
-        )
+        .attr('style', 'top:' + top + 'px; left:' + left + 'px; display:block')
     },
     drawViews() {
       this.activeArea.top_view.forEach((element, i) => {
@@ -1091,4 +1091,16 @@ div#tooltipdata .dropdown:hover {
 div#tooltipdata.dropdown-content {
   overflow: unset;
 }
+</style>
+<style lang="sass" scoped>
+.table-order-footer
+  border-top: 1px solid #eee
+  .buttons
+    display: flex;
+    justify-content: flex-end
+    padding-right: 6px
+.table-action
+  .dropdown-item
+    &:last-chid
+      border-bottom: 0 !important
 </style>
