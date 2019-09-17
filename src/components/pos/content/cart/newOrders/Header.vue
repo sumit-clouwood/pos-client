@@ -54,7 +54,7 @@
           data-toggle="modal"
           id="get-available-tables-list"
         >
-          Select Table
+          {{ _t('Select Table') }}
         </button>
         <DineInTableSelection />
       </div>
