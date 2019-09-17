@@ -291,6 +291,9 @@ div#nav-tabContent {
       justify-content: center;
       text-align: center;
       color: $btn-bg-black;
+      @include responsive(mobile) {
+        font-size: 1.25em;
+      }
 
       &.active {
         border-bottom: 2px solid $blue-middle !important;

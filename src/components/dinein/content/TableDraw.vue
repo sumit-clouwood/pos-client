@@ -100,7 +100,7 @@
                       </div>
                     </div>
                     <div v-else class="table-action order-details-with-action">
-                      <div class="dropdown-item">
+                      <div class="text-capitalize dt-items">
                         {{ orderData.tableNumber }} #R |
                         {{ created_date(orderData.startDate) }},
                         {{ created_time(orderData.startTime) }}
@@ -317,13 +317,14 @@ export default {
       d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
     },*/
     chairsValidation() {
-      if (this.guests > this.selectedTableData.chairs) {
+      /*if (this.guests > this.selectedTableData.chairs) {
         this.validationErrors =
           'Sorry you cannot add more then ' +
           this.selectedTableData.chairs +
           ' guests on this table'
         this.guests = this.selectedTableData.chairs
-      } else if (this.guests < 1) {
+      } else */
+      if (this.guests < 1) {
         this.validationErrors = 'Minimum 1 guest is required'
         this.guests = 1
       } else {
@@ -1079,66 +1080,7 @@ export default {
 }
 </script>
 <style scoped>
-.display-table-details {
-  display: grid;
-  grid-template-columns: 3fr auto;
-  /*align-items: center;*/
-  background: #e5e9ed;
-  align-content: center;
-  border-radius: 6px;
-}
-a.table-popup.bg-success.font-weight-bold {
-  margin: 0.0325rem;
-  box-shadow: 0 0px 0.1875rem rgba(23, 23, 32, 0.05),
-    0 0px 0.625rem rgba(23, 23, 32, 0.05), 0 0 1.25rem rgba(23, 23, 32, 0.05);
-}
-.close-table-details {
-  background: #cc3232;
-  color: #fff;
-  border-radius: 0 6px 0 0;
-}
-.order-details-with-action {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-}
-div#tooltipdata .dropdown-content {
-  max-height: 13.5rem;
-}
-div#tooltipdata
-  .table-action.order-details-with-action
-  .cursor-pointer.text-danger.reservation-cancel {
-  position: static;
-  margin: 1px;
-}
 .modal .modal-dialog .modal-content .modal-footer {
-  display: unset;
+  display: list-item;
 }
-div#tooltipdata .dropdown:hover {
-  background-color: #fff;
-}
-div#tooltipdata.dropdown-content {
-  overflow: unset;
-}
-.paid-amount-msg {
-  color: #7ac241;
-}
-</style>
-<style lang="sass" scoped>
-.dt-items
-  font-weight: 400
-  color: #212529
-  display: grid
-  align-items: center
-  padding: 0 5px
-
-.table-order-footer
-  border-top: 1px solid #eee
-  .buttons
-    display: flex
-    justify-content: flex-end
-    padding-right: 6px
-.table-action
-  .dropdown-item
-    &:last-chid
-      border-bottom: 0 !important
 </style>

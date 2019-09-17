@@ -342,10 +342,11 @@ table#running-order {
     >span {
       border-radius: $px4;
       background-color: #faa03c;
-      display: inline-block !important;
-      font-size: $px12 !important;
+      display: grid !important;
+      font-size: $px16 !important;
       color: $white !important;
       padding: $px5;
+      align-items: center;
     }
   }
   td {
@@ -364,10 +365,11 @@ table#running-order {
     >span {
       border-radius: $px4;
       background-color: #e73030;
-      display: inline-block !important;
-      font-size: $px12 !important;
+      display: grid !important;
+      font-size: $px16 !important;
       color: $white !important;
       padding: $px5;
+      align-items: center;
     }
   }
   border-spacing: 0 $px30;
@@ -389,7 +391,7 @@ table#running-order {
 }
 td.dine-order-tabel {
   >span {
-    width: $px125;
+    width: $px160;
     height: $px86;
     border-radius: 5%;
     box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
@@ -539,52 +541,83 @@ svg {
   box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
   transition: all 0.2s ease-out;
   width: auto !important;
+  &#tooltipdata{
+    overflow: unset;
+    max-height: 13.5rem;
+    display: none;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 3px 3px 0 rgba(187, 187, 187, 0.9);
+    background-color: #ffffff;
+    min-width: 200px;
     .tooltip-c-range {
       margin-bottom: 0;
       font-weight: 600;
-        .table-popup {
+      .display-table-details {
+        display: grid;
+        grid-template-columns: 3fr auto;
+        background: #e5e9ed;
+        align-content: center;
+        border-radius: 6px;
+        .close-table-details {
+          background: $red;
+          color: #fff;
+          border-radius: 0 6px 0 0;
+        }
+        .table-header-border-bottom {
+          border-bottom: 1px solid #ccc6c6;
+          cursor: default;
+        }
+      }
+      .table-order-footer {
+        border-top: 1px solid #eee;
+        .buttons {
+          display: flex;
+          justify-content: flex-end;
+          padding-right: 6px;
+        }
+      }
+      .table-order-content {
+        overflow: auto;
+        max-height: $px100;
+        padding: $px5;
+        .order-details-with-action {
           display: grid;
-          //padding: 6px 25px 1px 12px;
-          font-weight: 400;
-          text-align: center;
-          justify-content: center;
-          color: $white;
-          margin: 0.0325rem;
-          align-items: center;
-          border-radius: 4px;
-          margin-bottom: 1px;
-          &:hover{
-            background: rgb(0, 147, 0) !important;
+          grid-template-columns: 1fr auto;
+          .dt-items{
+            font-weight: 400;
+            color: #212529;
+            display: grid;
+            align-items: center;
+            padding: 0 5px;
+          }
+          .paid-amount-msg {
+            color: #7ac241;
+          }
+          .reservation-cancel{
+            position: static;
+            margin: 1px;
           }
         }
-    }
-  .table-status {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    > span{
-      padding: 0 2px;
-      &:first-child{
-        min-width: $px25;
+      }
+      .table-popup {
+        display: grid;
+        font-weight: 400;
+        text-align: center;
+        justify-content: center;
+        color: $white;
+        margin: 0.0325rem;
+        align-items: center;
+        border-radius: $px4;
+        margin-bottom: $px1;
+        min-width: $px90;
+        &:hover{
+          background: rgb(0, 147, 0) !important;
+        }
       }
     }
-
-    .fa.fa-rectangle {
-      height: 13px;
-      width: 20px;
-      /*background: rgb(200, 76, 76);*/
-      border-radius: 2px;
-      margin-right: 1px;
-    }
   }
-}
-#tooltipdata {
-  display: none;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 3px 3px 0 rgba(187, 187, 187, 0.9);
-  background-color: #ffffff;
-  min-width: 200px;
+
 }
 g.dinein_table_parent {
   &.active{
@@ -921,19 +954,83 @@ svg .active > path {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-content: center;
-  /* justify-content: center; */
   text-align: center;
 }
 .tables-draw {
   border: $px1 dashed;
   margin: $px2;
 }
-.table-header-border-bottom {
-  border-bottom: 1px solid #ccc6c6;
-  cursor: default;
+.table-action{
+  .dropdown-item{
+    &:last-child{
+      border-bottom: 0 !important;
+    }
+  }
 }
-.table-order-content {
-  overflow: auto;
-  max-height: $px100;
-  padding: $px5;
+#available-tables{
+  width: 100%;
+  .table-status-container {
+    display: grid;
+    grid-gap: 1.25rem;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+    max-height: 255px;
+    overflow-y: auto;
+    .table-status {
+      border: 2px solid #e0e3e6 !important;
+      padding: $px12 $px5;
+      position: relative;
+      border-radius: 4px;
+      > span{
+        padding: 0 2px !important;
+        display: block !important;
+        color: #72777c;
+        font-size: $px16;
+        font-weight: 600;
+        &.fa{
+          margin-bottom: $px7;
+        }
+        &.table-status-number {
+          position: absolute;
+          top: -14px;
+          font-size: $px64 !important;
+          right: $px35;
+          margin: 0 auto;
+          text-align: center;
+          color: rgba(0,0,0,0.1);
+        }
+        &:first-child{
+          min-width: $px25;
+        }
+      }
+      .fa-rectangle {
+        height: 13px;
+        width: 20px;
+        border-radius: 2px;
+        margin-right: 1px;
+      }
+      &.active{
+        border-color: $blue-middle !important;
+        &:after{
+          content: "\F00C";
+          font-family: FontAwesome;
+          font-size: 1.125rem;
+          color: #fff;
+          position: absolute;
+          text-align: center;
+          height: 1.5625rem;
+          width: 1.5625rem;
+          background-repeat: no-repeat;
+          top: 0.625rem;
+          right: 0.625rem;
+          border-radius: 3px;
+          background-color: #767DFF;
+          background-position: center center;
+          border-color: #767DFF !important;
+        }
+      }
+    }
+  }
 }
+
+

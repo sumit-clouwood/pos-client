@@ -15,7 +15,7 @@ $('*').click(function(e) {
 $(document).on('click', function(event) {
   let $trigger = $('.driver-container')
   if ($trigger !== event.target && !$trigger.has(event.target).length) {
-    $('#available-tables, .available-covers').slideUp('fast')
+    $('.available-covers').slideUp('fast')
   }
 })
 function showModal(modalName) {
