@@ -127,6 +127,13 @@ export default {
     return moment.utc().format('YYYY-MM-DD HH:mm:ss')
   },
 
+  getPreviousDayUTCDate() {
+    return moment
+      .utc()
+      .subtract(1, 'day')
+      .format('YYYY-MM-DD')
+  },
+
   getTimezoneTime(timezone, format) {
     let momentUTC = moment.tz(this.getUTCDateTime(), 'UTC')
     if (format == undefined) {

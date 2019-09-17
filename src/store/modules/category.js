@@ -6,6 +6,7 @@ import * as CONSTANTS from '@/constants'
 const state = {
   categoryImagePath: '',
   subcategoryImagePath: '',
+  searchItemTerm: '',
   itemImagePath: '',
   categories: [],
   category: {},
@@ -59,8 +60,7 @@ const getters = {
     let items = []
     const categoryItems = getters.categoryItems
     const subcategoryItems = getters.subcategoryItems
-
-    if (state.searchItems.length) {
+    if (state.searchItemTerm) {
       items = state.searchItems
     } else {
       if (categoryItems.length) {
@@ -116,7 +116,9 @@ const actions = {
 
   collectSearchItems({ commit, state }, searchTerm) {
     let searchedItems = []
+    state.searchItemTerm = ''
     if (searchTerm.length > 0) {
+      state.searchItemTerm = searchTerm
       state.items.map(item => {
         if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
           searchedItems.push(item)

@@ -56,6 +56,7 @@ export default {
               //&&
               //this.$store.state.checkoutForm.payments.length == 1
             ) {
+              this.$store.commit('order/IS_PAY', 1)
               this.$store.commit('checkoutForm/setAction', 'pay')
               $('#payment-screen-footer').prop('disabled', true)
               $('#payment-msg').modal('show')
@@ -66,8 +67,8 @@ export default {
                   this.$store.state.order.orderType.OTApi
                 )
                 .then(() => {
-                  // eslint-disable-next-line
-                  //debugger
+                  $('#payment-msg').modal('show')
+
                   if (this.changedAmount >= 0.1) {
                     //alert('change amount is due')
                     setTimeout(() => {

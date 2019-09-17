@@ -46,7 +46,12 @@
                     role="button"
                     v-for="(template, index) in selectedOrder.invoice"
                     :key="index"
-                    @click="printInvoice(template)"
+                    @click="
+                      printInvoice({
+                        templateId: template._id,
+                        order: selectedOrder,
+                      })
+                    "
                     >{{ template.name }}</a
                   >
                 </div>
@@ -65,9 +70,14 @@
             </div>
           </button>
           <button
+            v-if="
+              typeof selectedOrder.item !== 'undefined' &&
+                selectedOrder.item.order_type === 'dine_in' &&
+                selectedOrder.item.order_status === 'finished'
+            "
             type="button"
             class="button text-button btn btn-success color-main color-text-invert"
-            @click="modifyOrder"
+            @click="modifyOrder(selectedOrder.item)"
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
@@ -75,6 +85,21 @@
             </div>
           </button>
           <button
+            v-if="
+              typeof selectedOrder.item !== 'undefined' &&
+                selectedOrder.item.order_type !== 'dine_in'
+            "
+            type="button"
+            class="button text-button btn btn-success color-main color-text-invert"
+            @click="modifyOrder(selectedOrder.item)"
+          >
+            <div class="button-content-container">
+              <div class="button-icon-container"></div>
+              <div class="button-caption">{{ _t('Modify Order') }}</div>
+            </div>
+          </button>
+          <button
+            v-if="selectedOrder.customer"
             type="button"
             class="button past-order-buttons btn btn-success color-main color-text-invert"
           >
@@ -143,10 +168,24 @@ export default {
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
-    modifyOrder() {
+    modifyOrder(order) {
       this.$store.commit('order/START_ORDER')
       this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
-        this.$router.push({ path: this.$store.getters['context/store'] })
+        let order_type = order.order_type || ''
+        if (order_type === 'dine_in') {
+          let orderId = order._id
+          let table_reservation_id = order.table_reservation_id
+          this.$router.push({
+            path:
+              '/dine-in/' +
+              this.$store.getters['context/store'] +
+              table_reservation_id +
+              '/' +
+              orderId,
+          })
+        } else {
+          this.$router.push({ path: this.$store.getters['context/store'] })
+        }
       })
     },
   },

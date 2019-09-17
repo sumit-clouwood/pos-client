@@ -149,7 +149,11 @@
           }
         }
       }
-
+      .noSubCategory {
+        ~.food-block {
+          border-left: none;
+        }
+      }
       .food-block {
         height: calc(100vh - #{$food-wrapper-height});
         border-left: 1px solid $gray-middle;
@@ -335,6 +339,7 @@
               margin: 0 auto;
               border-radius: $px3;
               width: 100%;
+              max-height: $px130;
               // width: 7.5vmax;
               // height: 7.5vmax;
 
@@ -357,7 +362,8 @@
             }
 
             .item-image-only {
-              // min-height: 104px;
+              width: 100px;
+              padding: 10px;
             }
 
             .food-menu-item-price {

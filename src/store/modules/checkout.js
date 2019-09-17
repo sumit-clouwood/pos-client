@@ -12,6 +12,7 @@ const state = {
   pendingAmount: 0,
   changedAmount: 0,
   print: false,
+  loading: false,
   orderNumber: null,
 }
 
@@ -72,7 +73,6 @@ const actions = {
   ) {
     //if no order start time then reject otherwise
     //reset order start time
-
     if (!rootState.order.startTime) {
       // eslint-disable-next-line no-console
       console.log('Fake order or an order already in progress')
@@ -86,6 +86,7 @@ const actions = {
 
       if (
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
+        action == 'dine-in-place-order' ||
         action === CONSTANTS.ORDER_STATUS_ON_HOLD
       ) {
         validPayment = true
@@ -112,11 +113,10 @@ const actions = {
           validPayment = true
         }
       }
-
       if (validPayment) {
         //send order for payment
         let order = {}
-        const orderPlacementTime = DateTime.getUTCDateTime()
+        const orderPlacementTime = rootState.order.startTime
 
         try {
           order = {
@@ -159,6 +159,9 @@ const actions = {
         } catch (e) {
           // eslint-disable-next-line no-console
           console.log(e)
+        }
+        if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_DINE_IN) {
+          order.customer = rootState.customer.customerId
         }
         if (
           rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER
@@ -242,15 +245,46 @@ const actions = {
         let itemModifiers = []
         let item_discounts = []
         //let itemDiscountedTax = 0
+        let orderCovers = []
         order.items = rootState.order.items.map(item => {
           let orderItem = {
             name: item.name,
             entity_id: item._id,
             no: item.orderIndex,
+            status: 'in-progress',
             //itemTax.undiscountedTax is without modifiers
             tax: item.tax,
             price: item.netPrice,
             qty: item.quantity,
+          }
+          if (
+            rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN
+          ) {
+            let itemCover = item.coverNo
+              ? item.coverNo
+              : rootState.dinein.selectedCover._id
+            let itemCoverName = item.cover_name
+              ? item.cover_name
+              : rootState.dinein.selectedCover.name
+            if (
+              orderCovers.filter(item => item.entity_id == itemCover).length ===
+              0
+            ) {
+              orderCovers.push({ entity_id: itemCover, name: itemCoverName })
+            }
+            let guest_no = rootState.dinein.guests
+            orderItem = {
+              name: item.name,
+              entity_id: item._id,
+              no: item.orderIndex,
+              status: 'in-progress',
+              tax: item.tax,
+              price: item.netPrice,
+              qty: item.quantity,
+              cover_no: itemCover,
+              guest: guest_no,
+              cover_name: itemCoverName,
+            }
           }
 
           //we are sending item price and modifier prices separtely but sending
@@ -357,7 +391,7 @@ const actions = {
               const amount = !isNaN(payment.amount) ? payment.amount : 0
 
               //where is CONSTANTS.ORDER_PAYMENT_TYPE defined ?
-              if (payment.method.name == CONSTANTS.ORDER_PAYMENT_TYPE) {
+              if (payment.method.name === CONSTANTS.ORDER_PAYMENT_TYPE) {
                 orderPoints = rootState.checkoutForm.loyaltyPoints
               } else {
                 orderPoints = amount
@@ -397,16 +431,20 @@ const actions = {
           //do something here
         } else {
           const method = rootGetters['payment/cash']
-          order.order_payments = [
-            {
-              entity_id: method._id,
-              name: method.name,
-              collected: '0.00',
-              param1: '',
-              param2: '',
-              param3: '',
-            },
-          ]
+          if (
+            rootState.order.orderType.OTApi !== CONSTANTS.ORDER_TYPE_DINE_IN
+          ) {
+            order.order_payments = [
+              {
+                entity_id: method._id,
+                name: method.name,
+                collected: '0.00',
+                param1: '',
+                param2: '',
+                param3: '',
+              },
+            ]
+          }
         }
 
         order.item_discounts = order.item_discounts.map(discount => {
@@ -440,10 +478,12 @@ const actions = {
           return item
         })
 
-        order.order_payments = order.order_payments.map(item => {
-          item.collected = Num.round(item.collected).toFixed(2)
-          return item
-        })
+        if (rootState.order.orderType.OTApi !== CONSTANTS.ORDER_TYPE_DINE_IN) {
+          order.order_payments = order.order_payments.map(item => {
+            item.collected = Num.round(item.collected).toFixed(2)
+            return item
+          })
+        }
 
         const orderData = getters.calculateOrderTotals(order)
 
@@ -459,9 +499,13 @@ const actions = {
         order.amount_changed = Num.round(order.amount_changed).toFixed(2)
         order.tip_amount = Num.round(order.tip_amount).toFixed(2)
 
+        //Added a new parameter if dine-in order.
+        if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
+          order.covers = orderCovers
+          order.table_reservation_id = localStorage.getItem('reservationId')
+        }
         //order.app_uniqueid = Crypt.uuid()
         commit(mutation.SET_ORDER, order)
-
         dispatch('createOrder', action)
           .then(response => {
             //reset order start time
@@ -501,7 +545,28 @@ const actions = {
       // without waiting for a button to be clicked
 
       //order.order is a hold order, state.order contains current order
-      if (
+      if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
+        if (rootState.order.order_status !== 'completed') {
+          let order = { ...state.order }
+          delete order.new_real_transition_order_no
+          delete order.modify_reason
+          delete order.order_system_status
+          delete order.real_created_datetime
+
+          if (rootState.order.orderId) {
+            response = OrderService.updateOrderItems(
+              order,
+              rootState.order.orderId,
+              ''
+            )
+          } else {
+            response = OrderService.saveOrder(
+              state.order,
+              rootState.customer.customer
+            )
+          }
+        }
+      } else if (
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
       ) {
@@ -543,6 +608,9 @@ const actions = {
             if (typeof response.data.id !== 'undefined') {
               //this is walk in order
               orderId = response.data.id
+              if (typeof response.data.order_no !== 'undefined') {
+                commit('SET_ORDER_NUMBER', response.data.order_no)
+              }
             }
             //check what is order status, hold or modifying delivery
             switch (rootState.order.orderStatus) {
@@ -582,12 +650,26 @@ const actions = {
               }
             )
 
-            commit(mutation.PRINT, true)
-            dispatch(
-              'transactionOrders/getTransactionOrders',
-              {},
-              { root: true }
-            )
+            //In case if order is not dine in, print out the invoice.
+            if (
+              rootState.order.orderType.OTApi ===
+                CONSTANTS.ORDER_TYPE_DINE_IN &&
+              rootState.order.is_pay !== 1
+            ) {
+              let dineinsuccmsg = rootGetters['location/_t'](
+                'Item added to order successfully'
+              )
+              commit(
+                'checkoutForm/SET_MSG',
+                { result: '', message: dineinsuccmsg },
+                {
+                  root: true,
+                }
+              )
+              dispatch('reset')
+            } else {
+              commit(mutation.PRINT, true)
+            }
             resolve(response.data)
           } else {
             let error = ''
@@ -719,6 +801,12 @@ const mutations = {
   },
   [mutation.SET_ORDER_NUMBER](state, orderNumber) {
     state.orderNumber = orderNumber
+    let order = { ...state.order }
+    order.orderNumber = state.orderNumber
+    state.order = order
+  },
+  [mutation.LOADING](state, loadingStatus) {
+    state.loading = loadingStatus
   },
   [mutation.RESET](state) {
     state.order = false

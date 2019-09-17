@@ -40,14 +40,15 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print', 'order']),
-    ...mapState('order', ['orderId']),
     ...mapState('context', ['brandId']),
     ...mapGetters('invoice', ['template']),
     ...mapGetters('location', ['_t']),
     order_title() {
       return (
         this._t('ORDER_DIALOG_TITLE_PREFIX') +
-        (this.orderId ? this.orderId : this.order.real_created_datetime) +
+        (this.order.orderNumber
+          ? this.order.orderNumber
+          : this.order.real_created_datetime.replace(/[\s-:]/g, '')) +
         this._t('ORDER_DIALOG_TITLE_SUFFIX') +
         this.order.order_mode
       )
@@ -88,6 +89,11 @@ export default {
 
           if (this.$store.state.order.orderType.OTApi === 'call_center') {
             this.$router.replace({ name: 'DeliveryManager' })
+          }
+          //Reset Cart and set states and redirect to dine in.
+          if (this.$store.state.order.orderType.OTApi === 'dine_in') {
+            this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+            this.$router.replace({ name: 'Dinein' })
           }
         }
       })

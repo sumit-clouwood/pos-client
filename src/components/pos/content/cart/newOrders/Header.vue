@@ -1,14 +1,22 @@
 <template>
   <div class="main-orders-contacts color-text">
     <div class="main-oreders-title">
-      {{ cartType == 'hold' ? _t('Hold Orders') : _t('New Orders') }}
+      {{
+        cartType == 'hold'
+          ? _t('Hold Orders')
+          : orderData
+          ? orderType.OTview + ' #' + orderData.order_no
+          : _t('New Order')
+      }}
       <div class="main-oreders-date">{{ DateToday }}</div>
     </div>
     <div
       v-if="
-        selectedAddress &&
-          selectedCustomer &&
-          selectedCustomer.customer_addresses.length > 0
+        (selectedCustomer && orderType.OTApi === 'dine_in') ||
+          (orderType.OTApi !== 'dine_in' &&
+            selectedAddress &&
+            selectedCustomer &&
+            selectedCustomer.customer_addresses.length > 0)
       "
       class="main-oreders-email"
     >
@@ -30,20 +38,114 @@
         </div>
       </template>
     </div>
-    <div class="main-oreders-buttons" v-if="items.length">
-      <!--<div class="orders-button-large" disabled="disable">
-              {{ _t('Move Table') }}
-            </div>
-            <div class="orders-button-large" disabled="disable">
-              {{ _t('Split Table') }}
-            </div>-->
+    <div class="main-oreders-buttons">
       <div
-        v-if="cartType !== 'hold'"
+        v-if="
+          availableTables &&
+            orderType.OTApi === 'dine_in' &&
+            cartType !== 'hold' &&
+            items.length
+        "
+        class="driver-container"
+      >
+        <form>
+          <input
+            autocomplete="off"
+            type="text"
+            placeholder="Move Table"
+            class="input-search-driver shorten-sentence"
+            id="get-available-tables-list"
+            v-model="selectedTableMove"
+            @click="showTableList"
+          />
+        </form>
+        <div
+          id="available-tables"
+          class="dropdown-content available-tables cursor-pointer hide"
+        >
+          <span class="dropdown" @click="setTable(null)">
+            {{ _t('Select Table') }}
+          </span>
+          <span
+            class="table-status"
+            v-for="(table, i) in availableTables"
+            :key="table.id + i"
+            v-bind:style="{
+              'border-bottom': '1px solid #ccc',
+            }"
+            @click="setTable(table)"
+          >
+            <span
+              :class="'fa fa-' + table.shape"
+              v-bind:style="
+                table.shape !== 'rectangle'
+                  ? { color: table.color }
+                  : { background: table.color }
+              "
+            ></span>
+            <span v-html="table.name"></span>
+          </span>
+        </div>
+      </div>
+      <div
+        v-if="
+          covers &&
+            orderType.OTApi === 'dine_in' &&
+            cartType !== 'hold' &&
+            items.length
+        "
+        class="driver-container"
+      >
+        <form>
+          <input
+            autocomplete="off"
+            type="text"
+            placeholder="Select Cover"
+            class="input-search-driver shorten-sentence"
+            id="get-customer-list"
+            v-model="OrderSelectedCover"
+            @click="showDropdown"
+          />
+        </form>
+        <div
+          id="my-dropdown"
+          class="available-covers dropdown-content cursor-pointer"
+          v-if="items.find(element => element.cover_name == undefined)"
+        >
+          <span class="dropdown" :key="0" @click="setCover(null)">
+            {{ _t('Select Cover') }}
+          </span>
+          <span
+            class="dropdown"
+            v-for="(cover, index) in covers"
+            :key="cover._id + index"
+            @click="setCover(cover)"
+          >
+            <span v-html="cover.name"></span>
+          </span>
+        </div>
+      </div>
+      <div
+        v-if="
+          cartType !== 'hold' && orderType.OTApi !== 'dine_in' && items.length
+        "
         id="holdorder"
         class="orders-button-large color-main color-text"
         @click="hold"
       >
         {{ _t('Hold') }}
+      </div>
+      <div
+        v-if="orderType.OTApi === 'dine_in'"
+        class="color-main color-text dine-in-table-guest-details-pos"
+      >
+        <span class="tables-draw"
+          ><img src="img/dinein/dine-intable.svg" />
+          <b> {{ selectedTable.number }}</b></span
+        >
+        <span class="tables-draw"
+          ><img src="img/dinein/guest-user.svg" /> <b> {{ guests }}</b></span
+        >
       </div>
     </div>
   </div>
@@ -55,13 +157,31 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'Header',
-  props: {},
-
+  data() {
+    return {
+      OrderSelectedCover: 'Select Cover',
+      selectedTableMove: '',
+      myStyle: {
+        backgroundColor: '#fff',
+      },
+    }
+  },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['items', 'cartType']),
+    ...mapGetters('dinein', ['getAllCovers']),
+    ...mapState('order', ['items', 'cartType', 'orderType', 'orderData']),
     ...mapState('checkoutForm', ['msg']),
-    ...mapState({ selectedCustomer: state => state.customer.customer }),
+    ...mapState('customer', ['deliveryAreas']),
+    ...mapState('dinein', [
+      'selectedCover',
+      'covers',
+      'availableTables',
+      'guests',
+      'selectedTable',
+    ]),
+    ...mapState({
+      selectedCustomer: state => state.customer.customer,
+    }),
     ...mapState({ selectedAddress: state => state.customer.address }),
   },
   methods: {
@@ -69,6 +189,47 @@ export default {
       this.$store.commit('location/SET_MODAL', '#manage-customer')
       this.$store.dispatch('customer/resetCustomer')
     },
+    showDropdown: function() {
+      $('.available-tables').hide()
+      $('.available-covers').toggle()
+    },
+    showTableList: function() {
+      $('.available-covers').hide()
+      $('.available-tables').toggle()
+    },
+    setCover: function(cover) {
+      if (cover) {
+        this.OrderSelectedCover = cover.name
+      }
+      this.$store.commit('dinein/SET_COVER', cover)
+      $('.dropdown-content').hide()
+    },
+    setTable: function(table) {
+      if (table) {
+        this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
+        this.selectedTableMove = table.name
+        // let coverId = table.id
+        let tableId = table.table_id
+        let reservationId = localStorage.getItem('reservationId')
+        //Move Table Functionality.
+        let data = {
+          table: tableId,
+          reservationid: reservationId,
+          status: 'move_table',
+        }
+        this.$store.dispatch('dinein/moveTable', data)
+      } else {
+        this.selectedTableMove = 'Select Table'
+      }
+      // this.$store.commit('dinein/AVAILABLE_TABLES', table)
+      $('.available-tables').hide()
+    },
+    /*documentClick(){
+          let $trigger = $(".dropdown");
+          if($trigger !== event.target && !$trigger.has(event.target).length){
+              $(".dropdown-menu").slideUp("fast");
+          }
+      },*/
     hold() {
       $('#holdorder').hide()
       this.$store

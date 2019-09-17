@@ -23,6 +23,7 @@ import context from './modules/context'
 import modules from './modules/modules'
 import deliveryManager from './modules/deliveryManager'
 import mobile from './mobile'
+import dinein from './modules/dinein'
 import Datetime from 'vue-datetime'
 // You need a specific loader for CSS files
 import 'vue-datetime/dist/vue-datetime.css'
@@ -60,6 +61,7 @@ const store = new Vuex.Store({
     context,
     modules,
     mobile,
+    dinein,
   },
   strict: false,
   //plugins: debug ? [createLogger()] : [],

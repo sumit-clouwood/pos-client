@@ -9,7 +9,7 @@ export default {
   store: null,
 
   lastSynced: null,
-  syncInterval: 300, //300 sec = 5 min
+  syncInterval: 60, //300 sec = 5 min
 
   setup(store) {
     this.store = store
@@ -123,7 +123,7 @@ export default {
                   this.loadApiData('order').then(() =>
                     console.log('delayed loading order data done')
                   )
-                }, 8000)
+                }, 6000)
               })
               .catch(error => {
                 console.log('UI Failed', error)
@@ -277,6 +277,9 @@ export default {
             bucket.createIndex('event_type', 'event_type', {
               unique: false,
             })
+            bucket.createIndex('event_title', 'event_title', {
+              unique: false,
+            })
             bucket.createIndex('event_data', 'event_data', {
               unique: false,
             })
@@ -299,15 +302,15 @@ export default {
       if (process.env.NODE_ENV === 'production' && msg === 'on') {
         const nowTime = new Date().getTime() //miliseconds
 
-        console.log(
-          'sw:',
-          'last synced',
-          this.lastSynced,
-          'sync received',
-          nowTime,
-          'seconds passed last sync',
-          (nowTime - this.lastSynced) / 1000
-        )
+        // console.log(
+        //   'sw:',
+        //   'last synced',
+        //   this.lastSynced,
+        //   'sync received',
+        //   nowTime,
+        //   'seconds passed last sync',
+        //   (nowTime - this.lastSynced) / 1000
+        // )
 
         if (nowTime - this.lastSynced > this.syncInterval * 1000) {
           this.lastSynced = nowTime
@@ -322,7 +325,7 @@ export default {
             })
           }, 1000 * 10)
         } else {
-          console.log(this.syncInterval, ' not passed yet')
+          //console.log(this.syncInterval, ' not passed yet')
         }
       }
     })

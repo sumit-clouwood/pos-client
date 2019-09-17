@@ -46,10 +46,7 @@
                     >{{ reason.name }}</span
                   >
                 </div>
-                <p
-                  v-if="errors && errors.cancel_reason.length"
-                  class="text-danger"
-                >
+                <p v-if="errors && errors.cancel_reason" class="text-danger">
                   {{ errors.cancel_reason }}
                 </p>
               </div>
@@ -64,7 +61,7 @@
                   />
                 </div>
                 <p
-                  v-if="errors && errors.supervisor_password.length"
+                  v-if="errors && errors.supervisor_password"
                   class="text-danger"
                 >
                   {{ errors.supervisor_password.toString() }}
@@ -152,7 +149,7 @@ export default {
 
 #cancellationReason {
   .modal-dialog {
-    margin: 0;
+    /*margin: 0;*/
 
     .modal-content {
       .modal-header {

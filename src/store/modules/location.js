@@ -37,19 +37,22 @@ const getters = {
 
   permitted: state => (pageId, parentId) => {
     typeof parentId == 'undefined' ? null : parentId
-    let routeMenus = state.permissions.filter(
-      permission =>
-        permission.meta.parent_id == parentId && permission.page_id == pageId
-    )
-    let getChildren = routeMenus
-    if (routeMenus.length) {
-      if (routeMenus[0].type == 'BlockMenuPage') {
-        getChildren = state.permissions.filter(
-          permission => permission.meta.parent_id == routeMenus[0].page_id
-        )
+    if (state.permissions) {
+      let routeMenus = state.permissions.filter(
+        permission =>
+          permission.meta.parent_id == parentId && permission.page_id == pageId
+      )
+      let getChildren = routeMenus
+      if (routeMenus.length) {
+        if (routeMenus[0].type == 'BlockMenuPage') {
+          getChildren = state.permissions.filter(
+            permission => permission.meta.parent_id == routeMenus[0].page_id
+          )
+        }
       }
+      return getChildren.length
     }
-    return getChildren.length
+    return false
   },
   /*collectRouteMenu: state => {
 
@@ -67,6 +70,43 @@ const getters = {
 
 // actions
 const actions = {
+  //coming from login
+  setContext({ state, commit, rootGetters }) {
+    return new Promise(resolve => {
+      LocationService.getLocationData().then(storedata => {
+        commit(mutation.SET_BRAND, storedata.data.brand)
+
+        if (storedata.data.store) {
+          commit(mutation.SET_STORE, storedata.data.store)
+        } else if (storedata.data.available_stores.length) {
+          commit(mutation.SET_STORE, storedata.data.available_stores[0])
+          const brand = storedata.data.available_brands.find(
+            brand => brand._id == state.store.brand_id
+          )
+          if (brand) {
+            commit(mutation.SET_BRAND, brand)
+          }
+        }
+
+        if (state.store && state.store._id) {
+          //set context as well
+          commit('context/SET_BRAND_ID', state.brand._id, { root: true })
+          commit('context/SET_STORE_ID', state.store._id, { root: true })
+
+          localStorage.setItem('brand_id', state.brand._id)
+          localStorage.setItem('store_id', state.store._id)
+
+          DataService.setContext({
+            brand: rootGetters['context/brand'],
+            store: rootGetters['context/store'],
+          })
+        }
+
+        resolve()
+      })
+    })
+  },
+  //got through brand/store
   fetch({ state, commit, dispatch, rootState, rootGetters }) {
     dispatch('formatDate')
     return new Promise((resolve, reject) => {
@@ -74,36 +114,20 @@ const actions = {
         .then(storedata => {
           if (storedata.data.brand) {
             commit(mutation.SET_BRAND, storedata.data.brand)
-          } else {
-            //user coming through login
-            //get store from available brands
-            if (storedata.data.available_stores.length) {
-              commit(
-                mutation.SET_BRAND,
-                storedata.data.available_brands.find(
-                  brand =>
-                    brand._id == storedata.data.available_stores[0].brand_id
-                )
-              )
-            } else {
-              commit(mutation.SET_BRAND, storedata.data.available_brands[0])
-            }
           }
 
           commit(mutation.SET_PERMISSION, storedata.data.menu)
           commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
           commit(mutation.SET_TRASLATIONS, storedata.data.translations)
-          commit(
-            mutation.SET_AVAILABLE_LANGUAGES,
-            storedata.data.available_lang
-          )
+          if (!state.availableLanguages) {
+            commit(
+              mutation.SET_AVAILABLE_LANGUAGES,
+              storedata.data.available_lang
+            )
+          }
 
           if (storedata.data.store) {
             commit(mutation.SET_STORE, storedata.data.store)
-          } else if (storedata.data.available_stores.length) {
-            //user coming through login
-            //get store from available stores
-            commit(mutation.SET_STORE, storedata.data.available_stores[0])
           }
 
           if (state.store && state.store._id) {
@@ -183,7 +207,7 @@ const actions = {
                   })
                 })
                 .catch(error => {
-                  console.log('device registration failed')
+                  console.log('device registration failed', error)
                   if (typeof error.data !== 'undefined') {
                     reject(error.data.error)
                   } else {

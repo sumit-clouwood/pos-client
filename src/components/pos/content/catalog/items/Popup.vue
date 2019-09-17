@@ -9,7 +9,10 @@
     aria-hidden="true"
   >
     <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content color-dashboard-background footerStyle">
+      <div
+        class="modal-content color-dashboard-background footerStyle"
+        style="bottom: 0"
+      >
         <Header />
         <HeaderDetails />
         <Content />

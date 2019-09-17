@@ -149,9 +149,8 @@ export default {
         this.topHeight = 0
         this.counter = 0
       }
-      document.querySelector('.navigation-list').style.top = `-${
-        this.topHeight
-      }px`
+      let myElement = document.querySelector('.navigation-list-wrapper')
+      myElement.scrollTop += 20
     },
     ...mapActions('category', ['browse']),
     subCategoryHendlerChange() {

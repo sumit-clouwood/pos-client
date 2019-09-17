@@ -118,7 +118,9 @@ const actions = {
               parseInt(response.data.count) / parseInt(state.params.page_size)
             )
             commit(mutation.PAGINATE_DETAILS, totalPages)
-            commit(mutation.LAST_ORDERS, response.data.page_lookups.orders)
+            if (response.data.page_lookups) {
+              commit(mutation.LAST_ORDERS, response.data.page_lookups.orders)
+            }
             commit(mutation.CUSTOMER_LIST, response.data.data)
             resolve(response.data.data)
           } else {
@@ -204,15 +206,25 @@ const actions = {
       commit(mutation.SET_CUSTOMER_ID, customerId)
       CustomerService.fetchCustomer(customerId)
         .then(response => {
-          let totalPages = Math.ceil(
-            parseInt(response.data.item.total_orders) /
-              parseInt(state.params.page_size)
-          )
+          let totalPages = 0
+          let totleOrders = false
+          if (response.data.item && response.data.item.total_orders) {
+            totleOrders = response.data.item.total_orders
+          }
+
+          if (totleOrders) {
+            totalPages = Math.ceil(
+              parseInt(response.data.item.total_orders) /
+                parseInt(state.params.page_size)
+            )
+          }
           commit(mutation.PAST_ORDER_PAGINATE_DETAILS, totalPages)
-          commit(
-            mutation.PAGE_LOOKUP,
-            response.data.collected_data.page_lookups
-          )
+          if (response.data.collected_data) {
+            commit(
+              mutation.PAGE_LOOKUP,
+              response.data.collected_data.page_lookups
+            )
+          }
           let loyalty = {},
             orderType = null,
             orderCurrency = null,
@@ -221,7 +233,9 @@ const actions = {
           orderCurrency = rootGetters['location/currency']
           orderAmount = rootGetters['checkoutForm/orderTotal']
 
-          loyalty.card = response.data.collected_data.loyalty_cards
+          if (response.data.collected_data) {
+            loyalty.card = response.data.collected_data.loyalty_cards
+          }
           loyalty.details = state.lookups.brand_loyalty_programs
 
           commit(mutation.LOYALTY, loyalty)
@@ -233,10 +247,13 @@ const actions = {
           })
           commit(mutation.SELECTED_CUSTOMER, {
             customerData: response.data.item,
-            pastOrders: response.data.collected_data.orders,
-            deliveryAreas:
-              response.data.collected_data.page_lookups.store_delivery_areas
-                ._id,
+            pastOrders: response.data.collected_data
+              ? response.data.collected_data.orders
+              : [],
+            deliveryAreas: response.data.collected_data
+              ? response.data.collected_data.page_lookups.store_delivery_areas
+                  ._id
+              : null,
           })
           commit(mutation.SET_CUSTOMER_LOADING, false)
           resolve(response.data.item)
@@ -452,13 +469,18 @@ const mutations = {
   },
   [mutation.LOYALTY](state, loyalty) {
     if (loyalty) {
-      state.loyalty.card = loyalty.card.length ? loyalty.card[0] : false
-      let loyaltyDetails = LookupData.get({
-        collection: loyalty.details._id,
-        matchWith: state.loyalty.card.program,
-        selection: false,
-      })
-      state.loyalty.details = loyaltyDetails ? loyaltyDetails : false
+      if (loyalty.card && loyalty.card.length) {
+        state.loyalty.card = loyalty.card[0]
+      }
+
+      if (loyalty.details) {
+        let loyaltyDetails = LookupData.get({
+          collection: loyalty.details._id,
+          matchWith: state.loyalty.card.program,
+          selection: false,
+        })
+        state.loyalty.details = loyaltyDetails ? loyaltyDetails : false
+      }
     } else {
       state.loyalty.card = false
       state.loyalty.details = false

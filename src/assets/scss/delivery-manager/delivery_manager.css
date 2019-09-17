@@ -606,10 +606,8 @@ div.order-address {
   height: 2.5rem;
   border: medium none;
   border-bottom: 0.0625rem solid #E3E7F2;
-  padding: 0; }
-
-.dropdown:hover {
-  background-color: #E3E7F2; }
+  padding: 0;
+  cursor: pointer; }
 
 .driver-container {
   position: relative; }

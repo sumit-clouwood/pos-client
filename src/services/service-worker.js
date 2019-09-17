@@ -9,7 +9,7 @@ var IDB_VERSION = 4
 var ORDER_DOCUMENT = 'order_post_requests'
 var LOG_DOCUMENT = 'log'
 var client = null
-var SYNC_AFTER_SECONDS = 30 //5sec, 60 * 5 = 5 min
+var SYNC_AFTER_SECONDS = 0 //5sec, 60 * 5 = 5 min
 var lastSynced = new Date().getTime()
 
 var notificationOptions = {
@@ -83,7 +83,7 @@ if (workbox) {
   )
 
   self.addEventListener('sync', function(event) {
-    console.log('browser sync event received', event)
+    console.log('sw:', 'browser sync event received', event)
     // console.log(
     //   'sw:',
     //   'SYNC EVENT RECEIVED, now online, lets try postofflineorders'
@@ -124,20 +124,20 @@ if (workbox) {
   //this is manually sync, we ll remove it later
   self.addEventListener('message', function(event) {
     if (event.data.hasOwnProperty('sync')) {
-      console.log('sw:', 'sync event received ', event.data)
+      //console.log('sw:', 'sync event received ', event.data)
       var nowTime = new Date().getTime()
-      console.log(
-        'sw:',
-        'last synced',
-        lastSynced,
-        'sync received',
-        nowTime,
-        'seconds passed last sync',
-        (nowTime - lastSynced) / 1000
-      )
+      // console.log(
+      //   'sw:',
+      //   'last synced',
+      //   lastSynced,
+      //   'sync received',
+      //   nowTime,
+      //   'seconds passed last sync',
+      //   (nowTime - lastSynced) / 1000
+      // )
 
       if (nowTime - lastSynced > SYNC_AFTER_SECONDS * 1000) {
-        console.log(SYNC_AFTER_SECONDS, ' seconds passed, syncing now')
+        console.log('sw:', SYNC_AFTER_SECONDS, ' seconds passed, syncing now')
         lastSynced = nowTime
         const syncIt = async () => {
           return new Promise(resolve => {
@@ -158,10 +158,10 @@ if (workbox) {
         }
         event.waitUntil(syncIt())
       } else {
-        console.log(
-          SYNC_AFTER_SECONDS,
-          ' not passed from last sync, do not sync now'
-        )
+        // console.log(
+        //   SYNC_AFTER_SECONDS,
+        //   ' not passed from last sync, do not sync now'
+        // )
       }
     }
   })
@@ -181,10 +181,11 @@ if (workbox) {
   })
 
   self.addEventListener('message', function(event) {
-    console.log('sw:', 'form data', event.data)
+    //console.log('sw:', 'form data', event.data)
     if (event.data.hasOwnProperty('form_data')) {
       // receives form data from script.js upon submission
       form_data = event.data.form_data
+      console.log('sw:', 'assigned form data to service worker', form_data)
     }
   })
 
@@ -232,10 +233,10 @@ function getObjectStore(storeName, mode) {
 }
 function savePostRequests(url, payload) {
   // get object_store and save our payload inside it
-  console.log('sw:', 'try open db')
+  //console.log('sw:', 'try open db')
 
   openDatabase(function(idb) {
-    console.log('sw:', 'db opened, adding rec', idb)
+    console.log('sw:', 'db opened, adding offline order to indexeddb', idb)
     var data = {
       order_time: payload.real_created_datetime,
       url: url,
@@ -252,7 +253,8 @@ function savePostRequests(url, payload) {
 
       log({
         event_time: payload.real_created_datetime,
-        event_type: 'order_save_offline',
+        event_title: payload.balance_due,
+        event_type: 'sw:order_save_offline',
         event_data: payload,
       })
 
@@ -261,12 +263,18 @@ function savePostRequests(url, payload) {
     }
     request.onerror = function(error) {
       console.error('sw:', "Request can't be send to index db", error)
+      log({
+        event_time: payload.real_created_datetime,
+        event_title: payload.balance_due,
+        event_type: 'sw:error_order_save_offline',
+        event_data: { request: payload, error: error },
+      })
     }
   })
 }
 
 function openDatabase(cb) {
-  console.log('sw:', 'opening database')
+  //console.log('sw:', 'opening database')
   var indexedDBOpenRequest = indexedDB.open('dim-pos', IDB_VERSION)
 
   indexedDBOpenRequest.onerror = function(error) {
@@ -276,13 +284,13 @@ function openDatabase(cb) {
 
   // This will execute each time the database is opened.
   indexedDBOpenRequest.onsuccess = function() {
-    console.log(
-      'sw:',
-      'db opened for success . Save your database handler, for example something, DB_HANDLER = event.target.result'
-    )
+    // console.log(
+    //   'sw:',
+    //   'db opened for success . Save your database handler, for example something, DB_HANDLER = event.target.result'
+    // )
     iDB = this.result
     if (cb) {
-      console.log('sw:', 'calling callback to insert data')
+      //console.log('sw:', 'calling callback to insert data')
       cb(iDB)
     }
   }
@@ -326,7 +334,7 @@ function sendToServer() {
       } else {
         // At this point, we have collected all the post requests in
         // indexedb.
-        console.log('sw:', 'Saved Reqeusts', savedRequests)
+        //console.log('sw:', 'Saved Reqeusts', savedRequests)
 
         if (!savedRequests.length) {
           console.log('sw:', 'No request found')
@@ -359,6 +367,7 @@ function sendToServer() {
                 //  branch_n + '-' + terminal_code + '-' + time
 
                 console.log(
+                  'sw:',
                   'transition order number: ',
                   savedRequest.payload.transition_order_no
                 )
@@ -379,6 +388,7 @@ function sendToServer() {
                 //check if delivery order
                 if (payload.order_type == 'call_center' && !payload.customer) {
                   console.log(
+                    'sw:',
                     'no customer was selected so need to create a customer'
                   )
                   var customerPayload = payload.user
@@ -445,48 +455,69 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
   })
     //.then(response => response.json())
     .then(function(response) {
-      console.log('sw:', 'server response 1', response)
+      console.log('sw:', 'server response', response)
       if (response.status == 200) {
         response.json().then(response => {
+          var requestUpdate
           if (response.status === 'ok' && response.id) {
             console.log(
-              'order synced successfully 2',
+              'sw:',
+              'order synced successfully',
               savedRequest.payload.real_created_datetime,
               response
             )
-            var requestUpdate = getObjectStore(
-              ORDER_DOCUMENT,
-              'readwrite'
-            ).delete(savedRequest.payload.real_created_datetime)
+            requestUpdate = getObjectStore(ORDER_DOCUMENT, 'readwrite').delete(
+              savedRequest.payload.real_created_datetime
+            )
 
             requestUpdate.onerror = function(event) {
-              console.log('sw:', 'order delete failed 3', event)
+              console.log('sw:', 'order delete failed', event)
             }
             requestUpdate.onsuccess = function(event) {
               // Success - the data is updated!
-              console.log('sw:', 'order delted successfully 3', event)
+              console.log('sw:', 'order delted successfully', event)
             }
 
             log({
               event_time: savedRequest.payload.real_created_datetime,
-              event_type: 'order_synced',
+              event_title: savedRequest.payload.balance_due,
+              event_type: 'sw:order_synced',
               event_data: { request: savedRequest.payload, response: response },
             })
           } else {
-            console.log('order sync failed 2', response)
+            console.log(
+              'sw:',
+              'order sync failed',
+              response.form_errors,
+              response
+            )
             log({
               event_time: savedRequest.payload.real_created_datetime,
-              event_type: 'order_sync_failed',
+              event_title: savedRequest.payload.balance_due,
+              event_type: 'sw:order_sync_failed_delete',
               event_data: { request: savedRequest.payload, response: response },
             })
+
+            requestUpdate = getObjectStore(ORDER_DOCUMENT, 'readwrite').delete(
+              savedRequest.payload.real_created_datetime
+            )
+
+            requestUpdate.onerror = function(event) {
+              console.log('sw:', 'order delete failed', event)
+            }
+            requestUpdate.onsuccess = function(event) {
+              // Success - the data is updated!
+              console.log('sw:', 'order delted successfully', event)
+            }
           }
         })
         resolve(response)
       } else if (response.status == 401) {
         log({
           event_time: savedRequest.payload.real_created_datetime,
-          event_type: 'order_sync_token_failed',
-          event_data: { request: payload, response: response },
+          event_title: savedRequest.payload.balance_due,
+          event_type: 'sw:order_sync_token_failed',
+          event_data: { request: payload, response: 'auth token failed' },
         })
 
         console.log(
@@ -502,7 +533,8 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
           .then(response => {
             log({
               event_time: savedRequest.payload.real_created_datetime,
-              event_type: 'order_sync_token_refreshed',
+              event_title: savedRequest.payload.balance_due,
+              event_type: 'sw:order_sync_token_refreshed',
               event_data: { request: payload, response: response },
             })
             console.log('sw: ', 'refresh token response', response)
@@ -510,7 +542,7 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
             authData.token = response.token
             sendTokenToClient('token', response.token)
             getObjectStore('auth', 'readwrite').put(authData)
-            console.log('second request to create order')
+            console.log('sw:', 'second request to create order')
             createOrder(resolve, reject, headers, authData, savedRequest)
           })
           .catch(function(response) {
@@ -519,10 +551,15 @@ var createOrder = function(resolve, reject, headers, authData, savedRequest) {
       }
     })
     .catch(error => {
-      console.log('error sending request for sync, network failed', error)
+      console.log(
+        'sw:',
+        'error sending request for sync, network failed',
+        error
+      )
       log({
         event_time: savedRequest.payload.real_created_datetime,
-        event_type: 'order_sync_network_fail',
+        event_title: savedRequest.payload.balance_due,
+        event_type: 'sw:order_sync_network_fail',
         event_data: { request: payload, response: 'Network not available' },
       })
       reject(error)
@@ -573,7 +610,7 @@ var createCustomer = function(headers, payload, contextUrl, authData) {
             authData.token = response.token
             getObjectStore('auth', 'readwrite').put(authData)
             sendTokenToClient('token', response.token)
-            console.log('second request to create order')
+            console.log('sw:', 'second request to create order')
             createCustomer(headers, payload, contextUrl, authData)
           })
           .catch(function(response) {
@@ -585,7 +622,7 @@ var createCustomer = function(headers, payload, contextUrl, authData) {
   })
 }
 function log(data) {
-  console.log(data)
+  console.log('sw:', data)
   var format = function(num) {
     if (num < 10) {
       return '0' + num
