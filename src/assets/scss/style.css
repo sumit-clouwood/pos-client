@@ -5400,7 +5400,7 @@ svg .active > path {
         border-radius: 2px;
         margin-right: 1px; }
       #available-tables .table-status-container .table-status.active {
-        border-color: #5056CA; }
+        border-color: #5056CA !important; }
         #available-tables .table-status-container .table-status.active:after {
           content: "\F00C";
           font-family: FontAwesome;

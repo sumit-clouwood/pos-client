@@ -18,11 +18,9 @@
             <div class="table-status-container">
               <span
                 class="table-status"
+                :class="selectedTableMove == table.table_id ? 'active' : ''"
                 v-for="(table, i) in availableTables"
                 :key="table.id + i"
-                v-bind:style="{
-                  'border-bottom': '1px solid #ccc',
-                }"
                 @click="setTable(table)"
               >
                 <span
@@ -74,6 +72,11 @@
 import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'DineInTableSelection',
+  data() {
+    return {
+      selectedTableMove: '',
+    }
+  },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('dinein', ['availableTables', 'selectedTable']),
@@ -82,7 +85,7 @@ export default {
     setTable: function(table) {
       if (table) {
         this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
-        //        this.selectedTableMove = table.name
+        this.selectedTableMove = table.table_id
         // let coverId = table.id
         let tableId = table.table_id
         let reservationId = localStorage.getItem('reservationId')
@@ -94,7 +97,7 @@ export default {
         }
         this.$store.dispatch('dinein/moveTable', data)
       } else {
-        //        this.selectedTableMove = 'Select Table'
+        this.selectedTableMove = ''
       }
       // this.$store.commit('dinein/AVAILABLE_TABLES', table)
       //      $('.available-tables').hide()
