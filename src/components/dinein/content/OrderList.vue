@@ -30,6 +30,9 @@
                     }}
                   </small>
                 </p>
+                <small class="text-capitalize font-weight-bold ">
+                  Area: {{ orderTable.areaName }}
+                </small>
               </span>
             </td>
             <td class="dine-order-details">
@@ -382,3 +385,8 @@ export default {
   },
 }
 </script>
+<style scoped>
+td.dine-order-tabel > span {
+  height: 7.375rem;
+}
+</style>
