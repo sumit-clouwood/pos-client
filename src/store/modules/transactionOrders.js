@@ -37,6 +37,7 @@ const actions = {
       state.params.limit,
       '',
       '',
+      '',
       state.params.page,
       state.params.pageId,
       rootState.context.storeId,
@@ -47,7 +48,10 @@ const actions = {
       commit(mutation.ALL_TRANSACTIONS, response.data)
       commit(mutation.LOADING, true)
       commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
-      if (state.transactionOrders.length > 0) {
+      if (
+        typeof state.transactionOrders !== undefined &&
+        state.transactionOrders
+      ) {
         dispatch('setTransactionOrders', '') //Set Sorted & Group Order List
         let firstOrder = state.transactionOrders[0]._id
         dispatch('order/selectedOrderDetails', firstOrder, { root: true }) //Set First Order as Selected

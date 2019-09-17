@@ -1,3 +1,4 @@
+import moment from 'moment-timezone'
 export default {
   /*get(details) {
     const collectionItems = Object.entries(details.collection)
