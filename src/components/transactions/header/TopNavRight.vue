@@ -144,6 +144,11 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    orderTypeWalkIn: function(orderType) {
+      this.$store.commit('order/ORDER_TYPE', orderType)
+      this.$store.commit('location/SET_MODAL', '#manage-customer')
+      this.$store.dispatch('customer/resetCustomer')
+    },
     ...mapActions('auth', ['logout']),
     changeLanguage(locale) {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
@@ -154,7 +159,7 @@ export default {
       posConfigLinks()
     },
     onlineOrders() {
-      if (this.latestOnlineOrders == 0) {
+      if (this.latestOnlineOrders === 0) {
         if (
           localStorage.getItem('onlineOrders') != 'undefined' &&
           JSON.parse(localStorage.getItem('onlineOrders')) != null
