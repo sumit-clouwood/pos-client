@@ -980,6 +980,7 @@ svg .active > path {
       border: 2px solid #e0e3e6 !important;
       padding: $px12 $px5;
       position: relative;
+      border-radius: 4px;
       > span{
         padding: 0 2px !important;
         display: block !important;
@@ -1007,6 +1008,26 @@ svg .active > path {
         width: 20px;
         border-radius: 2px;
         margin-right: 1px;
+      }
+      &.active{
+        border-color: $blue-middle !important;
+        &:after{
+          content: "\F00C";
+          font-family: FontAwesome;
+          font-size: 1.125rem;
+          color: #fff;
+          position: absolute;
+          text-align: center;
+          height: 1.5625rem;
+          width: 1.5625rem;
+          background-repeat: no-repeat;
+          top: 0.625rem;
+          right: 0.625rem;
+          border-radius: 3px;
+          background-color: #767DFF;
+          background-position: center center;
+          border-color: #767DFF !important;
+        }
       }
     }
   }
