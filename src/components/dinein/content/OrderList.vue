@@ -26,6 +26,7 @@
                 {{ _t('Table No') }} : {{ orderTable.table.number }}
                 <p>
                   <small class="text-capitalize font-weight-bold ">
+                    Status:
                     {{
                       LookupData.replaceUnderscoreHyphon(
                         orderTable.table.status
@@ -389,7 +390,7 @@ export default {
 }
 </script>
 <style scoped>
-td.dine-order-tabel > span {
+/*td.dine-order-tabel > span {
   height: 7.375rem;
-}
+}*/
 </style>

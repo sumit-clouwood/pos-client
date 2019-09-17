@@ -971,7 +971,7 @@ svg .active > path {
   grid-template-columns: auto 1fr;
   align-items: center;
   > span{
-    padding: 0 2px;
+    padding: 0 2px !important;
     &:first-child{
       min-width: $px25;
     }
