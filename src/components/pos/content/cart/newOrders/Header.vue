@@ -162,7 +162,7 @@ export default {
       this.$store.dispatch('customer/resetCustomer')
     },
     showDropdown: function() {
-      $('.available-tables').hide()
+      //      $('.available-tables').hide()
       $('.available-covers').toggle()
     },
     /*showTableList: function() {

@@ -967,20 +967,47 @@ svg .active > path {
     }
   }
 }
-.table-status {
-  display: grid !important;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  > span{
-    padding: 0 2px !important;
-    &:first-child{
-      min-width: $px25;
+#available-tables{
+  width: 100%;
+  .table-status-container {
+    display: grid;
+    grid-gap: 1.25rem;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+    max-height: 255px;
+    overflow-y: auto;
+    .table-status {
+      border: 2px solid #e0e3e6 !important;
+      padding: 5px;
+      position: relative;
+      > span{
+        padding: 0 2px !important;
+        display: block !important;
+        color: #72777c;
+        font-size: 0.875rem;
+        font-weight: 400;
+        &.table-status-number {
+          position: absolute;
+          top: -14px;
+          font-size: 50px !important;
+          left: 0;
+          right: 0;
+          margin: 0 auto;
+          text-align: center;
+          color: #f5f5f5 !important;
+        }
+        &:first-child{
+          min-width: $px25;
+        }
+      }
+      .fa-rectangle {
+        height: 13px;
+        width: 20px;
+        border-radius: 2px;
+        margin-right: 1px;
+      }
     }
   }
-  .fa-rectangle {
-    height: 13px;
-    width: 20px;
-    border-radius: 2px;
-    margin-right: 1px;
-  }
 }
+
+

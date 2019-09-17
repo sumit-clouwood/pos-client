@@ -11,32 +11,35 @@
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
-          <div
-            id="available-tables"
-            class="available-tables cursor-pointer hide"
-          >
-            <span @click="setTable(null)">
-              {{ _t('Select Table') }}
-            </span>
-            <span
-              class="table-status"
-              v-for="(table, i) in availableTables"
-              :key="table.id + i"
-              v-bind:style="{
-                'border-bottom': '1px solid #ccc',
-              }"
-              @click="setTable(table)"
-            >
+          <div id="available-tables" class="available-tables cursor-pointer">
+            <!--<span @click="setTable(null)">-->
+            <!--{{ _t('Select Table') }}-->
+            <!--</span>-->
+            <div class="table-status-container">
               <span
-                :class="'fa fa-' + table.shape"
-                v-bind:style="
-                  table.shape !== 'rectangle'
-                    ? { color: table.color }
-                    : { background: table.color }
-                "
-              ></span>
-              <span v-html="table.name"></span>
-            </span>
+                class="table-status"
+                v-for="(table, i) in availableTables"
+                :key="table.id + i"
+                v-bind:style="{
+                  'border-bottom': '1px solid #ccc',
+                }"
+                @click="setTable(table)"
+              >
+                <span
+                  :class="'fa fa-' + table.shape"
+                  v-bind:style="
+                    table.shape !== 'rectangle'
+                      ? { color: table.color }
+                      : { background: table.color }
+                  "
+                ></span>
+                <span v-html="table.name"></span>
+                <span
+                  class="table-status-number"
+                  v-html="table.table_number"
+                ></span>
+              </span>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -45,6 +48,7 @@
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="discount-save-btn"
+              data-dismiss="modal"
             >
               {{ _t('Ok') }}
             </button>
@@ -67,7 +71,6 @@
 </template>
 
 <script>
-/* global $ */
 import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'DineInTableSelection',
@@ -94,7 +97,7 @@ export default {
         //        this.selectedTableMove = 'Select Table'
       }
       // this.$store.commit('dinein/AVAILABLE_TABLES', table)
-      $('.available-tables').hide()
+      //      $('.available-tables').hide()
     },
   },
 }
