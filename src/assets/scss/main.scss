@@ -149,7 +149,11 @@
           }
         }
       }
-
+      .noSubCategory {
+        ~.food-block {
+          border-left: none;
+        }
+      }
       .food-block {
         height: calc(100vh - #{$food-wrapper-height});
         border-left: 1px solid $gray-middle;

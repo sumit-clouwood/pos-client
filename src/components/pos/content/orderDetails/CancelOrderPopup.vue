@@ -149,7 +149,7 @@ export default {
 
 #cancellationReason {
   .modal-dialog {
-    margin: 0;
+    /*margin: 0;*/
 
     .modal-content {
       .modal-header {
