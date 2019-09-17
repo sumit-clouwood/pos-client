@@ -247,6 +247,7 @@
         v-model="page"
       ></paginate>
     </div>
+    <InformationPopup :responseInformation="this.msg" title="Alert" />
   </div>
 </template>
 
@@ -256,6 +257,7 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 import Preloader from '@/components/util/Preloader'
 import paginate from 'vuejs-paginate'
+import InformationPopup from '@/components/pos/content/InformationPopup'
 
 export default {
   name: 'OrderList',
@@ -266,6 +268,7 @@ export default {
   components: {
     Preloader,
     paginate,
+    InformationPopup,
   },
   data() {
     return {
@@ -273,6 +276,7 @@ export default {
       isOrderCancelledClass: 'table-order-view',
       page: 1,
       orderAdded: [],
+      msg: null,
     }
   },
   updated() {
@@ -309,7 +313,9 @@ export default {
       })
         .then()
         .catch(error => {
-          alert(error.data.error)
+          this.msg = error
+          //alert(error.data.error)
+          $('#information-popup').modal('show')
         })
     },
     setTime(timerTime) {
