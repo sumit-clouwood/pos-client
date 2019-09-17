@@ -100,7 +100,7 @@
                       </div>
                     </div>
                     <div v-else class="table-action order-details-with-action">
-                      <div class="dropdown-item">
+                      <div class="text-capitalize dt-items">
                         {{ orderData.tableNumber }} #R |
                         {{ created_date(orderData.startDate) }},
                         {{ created_time(orderData.startTime) }}
@@ -317,13 +317,14 @@ export default {
       d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
     },*/
     chairsValidation() {
-      if (this.guests > this.selectedTableData.chairs) {
+      /*if (this.guests > this.selectedTableData.chairs) {
         this.validationErrors =
           'Sorry you cannot add more then ' +
           this.selectedTableData.chairs +
           ' guests on this table'
         this.guests = this.selectedTableData.chairs
-      } else if (this.guests < 1) {
+      } else */
+      if (this.guests < 1) {
         this.validationErrors = 'Minimum 1 guest is required'
         this.guests = 1
       } else {
@@ -1078,3 +1079,8 @@ export default {
   },
 }
 </script>
+<style scoped>
+.modal .modal-dialog .modal-content .modal-footer {
+  display: list-item;
+}
+</style>

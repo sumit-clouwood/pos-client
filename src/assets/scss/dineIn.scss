@@ -583,7 +583,7 @@ svg {
         padding: $px5;
         .order-details-with-action {
           display: grid;
-          grid-template-columns: 2fr 1fr;
+          grid-template-columns: 1fr auto;
           .dt-items{
             font-weight: 400;
             color: #212529;
@@ -608,8 +608,9 @@ svg {
         color: $white;
         margin: 0.0325rem;
         align-items: center;
-        border-radius: 4px;
-        margin-bottom: 1px;
+        border-radius: $px4;
+        margin-bottom: $px1;
+        min-width: $px90;
         &:hover{
           background: rgb(0, 147, 0) !important;
         }
