@@ -978,23 +978,22 @@ svg .active > path {
     overflow-y: auto;
     .table-status {
       border: 2px solid #e0e3e6 !important;
-      padding: 5px;
+      padding: $px12 $px5;
       position: relative;
       > span{
         padding: 0 2px !important;
         display: block !important;
         color: #72777c;
-        font-size: 0.875rem;
-        font-weight: 400;
+        font-size: $px16;
+        font-weight: 600;
         &.table-status-number {
           position: absolute;
           top: -14px;
-          font-size: 50px !important;
-          left: 0;
-          right: 0;
+          font-size: $px64 !important;
+          right: $px35;
           margin: 0 auto;
           text-align: center;
-          color: #f5f5f5 !important;
+          color: rgba(0,0,0,0.1);
         }
         &:first-child{
           min-width: $px25;
