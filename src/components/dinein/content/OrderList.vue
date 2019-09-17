@@ -18,16 +18,25 @@
             class="dine-table-content"
             v-for="(orderTable, index) in orderDetails"
           >
-            <td class="dine-order-tabel">
+            <td
+              class="dine-order-tabel"
+              :class="getOrderStatus(orderTable.table.status)"
+            >
               <span :class="tabName">
                 {{ _t('Table No') }} : {{ orderTable.table.number }}
                 <p>
-                  <small class="text-capitalize font-weight-bold ">
+                  <small class="text-uppercase font-weight-bold ">
+                    {{ _t('Status') }}:
                     {{
                       LookupData.replaceUnderscoreHyphon(
                         orderTable.table.status
                       )
                     }}
+                  </small>
+                </p>
+                <p>
+                  <small class="text-uppercase font-weight-bold ">
+                    {{ _t('Area') }}: {{ orderTable.areaName }}
                   </small>
                 </p>
               </span>
@@ -146,7 +155,7 @@
               </div>
             </td>
             <td class="dine-order-amt font-weight-bold">
-              {{ orderTable.amount }}
+              {{ formatPrice(orderTable.amount) }}
             </td>
             <td class="order-time-det">
               <div class="action-status">
@@ -247,6 +256,7 @@
         v-model="page"
       ></paginate>
     </div>
+    <InformationPopup :responseInformation="this.msg" title="Alert" />
   </div>
 </template>
 
@@ -256,6 +266,7 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 import Preloader from '@/components/util/Preloader'
 import paginate from 'vuejs-paginate'
+import InformationPopup from '@/components/pos/content/InformationPopup'
 
 export default {
   name: 'OrderList',
@@ -266,6 +277,7 @@ export default {
   components: {
     Preloader,
     paginate,
+    InformationPopup,
   },
   data() {
     return {
@@ -273,6 +285,7 @@ export default {
       isOrderCancelledClass: 'table-order-view',
       page: 1,
       orderAdded: [],
+      msg: null,
     }
   },
   updated() {
@@ -292,7 +305,7 @@ export default {
   mixins: [DateTime],
   computed: {
     ...mapState('location', ['timezoneString']),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('dinein', [
       'orderDetails',
       'loading',
@@ -309,7 +322,11 @@ export default {
       })
         .then()
         .catch(error => {
-          alert(error.data.error)
+          this.msg = error.data.error
+          // eslint-disable-next-line no-console
+          console.log(this.msg)
+          //alert(error.data.error)
+          $('#information-popup').modal('show')
         })
     },
     setTime(timerTime) {
@@ -376,3 +393,8 @@ export default {
   },
 }
 </script>
+<style scoped>
+/*td.dine-order-tabel > span {
+  height: 7.375rem;
+}*/
+</style>

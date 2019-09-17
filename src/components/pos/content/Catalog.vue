@@ -3,6 +3,7 @@
     <search />
     <div :class="['food-wrapper', subCategoryHendler ? 'active' : 'notActive']">
       <SubMenu v-if="subcategories.length" />
+      <div v-else class="noSubCategory" />
       <div class="food-block">
         <Breadcrumbs />
         <div v-if="!categories.length" class="text-danger">
