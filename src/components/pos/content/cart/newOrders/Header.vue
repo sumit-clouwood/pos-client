@@ -48,44 +48,15 @@
         "
         class="driver-container"
       >
-        <form>
-          <input
-            autocomplete="off"
-            type="text"
-            placeholder="Move Table"
-            class="input-search-driver shorten-sentence"
-            id="get-available-tables-list"
-            v-model="selectedTableMove"
-            @click="showTableList"
-          />
-        </form>
-        <div
-          id="available-tables"
-          class="dropdown-content available-tables cursor-pointer hide"
+        <button
+          class="btn btn-success"
+          data-target="#dine-in-table-selection"
+          data-toggle="modal"
+          id="get-available-tables-list"
         >
-          <span class="dropdown" @click="setTable(null)">
-            {{ _t('Select Table') }}
-          </span>
-          <span
-            class="table-status"
-            v-for="(table, i) in availableTables"
-            :key="table.id + i"
-            v-bind:style="{
-              'border-bottom': '1px solid #ccc',
-            }"
-            @click="setTable(table)"
-          >
-            <span
-              :class="'fa fa-' + table.shape"
-              v-bind:style="
-                table.shape !== 'rectangle'
-                  ? { color: table.color }
-                  : { background: table.color }
-              "
-            ></span>
-            <span v-html="table.name"></span>
-          </span>
-        </div>
+          Select Table
+        </button>
+        <DineInTableSelection :availableTables="availableTables" />
       </div>
       <div
         v-if="
@@ -154,13 +125,16 @@
 <script>
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
-
+import DineInTableSelection from './popup/DineInTableSelection'
 export default {
   name: 'Header',
+  component: {
+    DineInTableSelection,
+  },
   data() {
     return {
       OrderSelectedCover: 'Select Cover',
-      selectedTableMove: '',
+      //      selectedTableMove: '',
       myStyle: {
         backgroundColor: '#fff',
       },
@@ -193,10 +167,10 @@ export default {
       $('.available-tables').hide()
       $('.available-covers').toggle()
     },
-    showTableList: function() {
+    /*showTableList: function() {
       $('.available-covers').hide()
       $('.available-tables').toggle()
-    },
+    },*/
     setCover: function(cover) {
       if (cover) {
         this.OrderSelectedCover = cover.name
@@ -204,26 +178,7 @@ export default {
       this.$store.commit('dinein/SET_COVER', cover)
       $('.dropdown-content').hide()
     },
-    setTable: function(table) {
-      if (table) {
-        this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
-        this.selectedTableMove = table.name
-        // let coverId = table.id
-        let tableId = table.table_id
-        let reservationId = localStorage.getItem('reservationId')
-        //Move Table Functionality.
-        let data = {
-          table: tableId,
-          reservationid: reservationId,
-          status: 'move_table',
-        }
-        this.$store.dispatch('dinein/moveTable', data)
-      } else {
-        this.selectedTableMove = 'Select Table'
-      }
-      // this.$store.commit('dinein/AVAILABLE_TABLES', table)
-      $('.available-tables').hide()
-    },
+
     /*documentClick(){
           let $trigger = $(".dropdown");
           if($trigger !== event.target && !$trigger.has(event.target).length){
