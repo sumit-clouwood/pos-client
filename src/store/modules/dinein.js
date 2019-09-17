@@ -109,10 +109,19 @@ const actions = {
   seOrderData({ commit }, response) {
     let orderDetails = []
     let responseData = response.data.data
+    //state.areas = this.getDineInArea
     responseData.forEach(table => {
       let order = []
       let balanceDue = 0
       let currency = ''
+
+      let areaName = state.areas.find(element => {
+        return element._id ==
+          response.data.page_lookups.dine_in_tables._id[table.assigned_table_id]
+            .area_id
+          ? element.name
+          : ''
+      })
       table.related_orders_ids.forEach(order_Id => {
         let od = response.data.page_lookups.orders._id[order_Id]
         order.push(od)
@@ -123,6 +132,7 @@ const actions = {
         table: table,
         orders: order,
         amount: balanceDue + ' ' + currency,
+        areaName: areaName.name.toUpperCase(),
       })
     })
     commit(mutation.ORDER_DETAILS, {
@@ -310,29 +320,37 @@ const actions = {
   },
 
   addReservation({ commit, state, dispatch }, tableId) {
+    commit(mutation.LOADING, true)
     dispatch('order/reset', {}, { root: true })
     dispatch('checkout/reset', {}, { root: true })
-    if (!state.reservation) {
-      const params = [
-        {
-          //need to set UTC
-          start_date: moment()
-            .utc()
-            .format('YYYY-MM-DD'),
-          start_time: moment()
-            .utc()
-            .format('hh:mm'),
-          assigned_table_id: tableId,
-          number_of_guests: state.guests,
-          customers: [],
-        },
-      ]
-      DineInService.reservationOperation(...params, 'add').then(response => {
-        commit(mutation.RESERVATION_RESPONSE, response.data)
-        dispatch('getCovers')
-        commit('order/ORDER_TYPE', state.orderType, { root: true })
-      })
-    }
+    return new Promise((resolve, reject) => {
+      if (!state.reservation) {
+        const params = [
+          {
+            //need to set UTC
+            start_date: moment()
+              .utc()
+              .format('YYYY-MM-DD'),
+            start_time: moment()
+              .utc()
+              .format('hh:mm'),
+            assigned_table_id: tableId,
+            number_of_guests: state.guests,
+            customers: [],
+          },
+        ]
+        DineInService.reservationOperation(...params, 'add')
+          .then(response => {
+            commit(mutation.RESERVATION_RESPONSE, response.data)
+            dispatch('getCovers').then(() => {
+              resolve()
+              commit(mutation.LOADING, false)
+            })
+            commit('order/ORDER_TYPE', state.orderType, { root: true })
+          })
+          .catch(error => reject(error))
+      }
+    })
   },
   getSelectedOrder({ dispatch, commit, state, rootState }, orderId) {
     dispatch('order/reset', {}, { root: true })

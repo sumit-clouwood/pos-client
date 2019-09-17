@@ -360,27 +360,33 @@ export default {
         .hide()
     },
     newOrder(reservationId, pos) {
-      let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
       this.$store.commit('dinein/TABLE_SPLIT', false)
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       if (!reservationId) {
         this.$store.commit('dinein/NUMBER_GUESTS', this.guests)
-        this.$store.dispatch('dinein/addReservation', this.selectedTableId, {
-          root: true,
-        })
+        this.$store
+          .dispatch('dinein/addReservation', this.selectedTableId, {
+            root: true,
+          })
+          .then(() => {
+            this.$store
+              .dispatch('dinein/updateDineInOrderStatus', {
+                title: 'all',
+                pageId: 'getBookedTables',
+                loader: false,
+              })
+              .then(() => {
+                this.$store.dispatch('dinein/getDineInArea', false)
+                this.$store.dispatch('dinein/getDineInTables', false)
+              })
+          })
       } else {
+        if (pos) {
+          let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
+          this.$router.push({ path: URL })
+        }
         this.$store.commit('dinein/RESERVATION_ID', reservationId)
         this.$store.commit('dinein/NUMBER_GUESTS', false)
-      }
-      if (pos) this.$router.push({ path: URL })
-      if (!reservationId) {
-        this.$store.dispatch('dinein/updateDineInOrderStatus', {
-          title: 'all',
-          pageId: 'getBookedTables',
-          loader: false,
-        })
-        this.$store.dispatch('dinein/getDineInArea', false)
-        this.$store.dispatch('dinein/getDineInTables', false)
       }
     },
     updateOrder(data) {

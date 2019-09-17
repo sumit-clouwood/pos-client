@@ -458,6 +458,7 @@ export default {
   },
   methods: {
     payNowDirect() {
+      //dine in order
       let validationError = {}
       let checkCovers = this.items.find(element => {
         return (
@@ -471,7 +472,7 @@ export default {
           this.selectedCover
         ) {
           this.$store
-            .dispatch('checkout/pay', this.orderType.OTApi)
+            .dispatch('checkout/pay', { action: 'dine-in-place-order' })
             .then(() => {
               //Reset Cart and set states and redirect to dine in.
               this.$store.commit('dinein/SET_COVER', '')
