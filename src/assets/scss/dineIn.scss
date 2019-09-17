@@ -342,10 +342,11 @@ table#running-order {
     >span {
       border-radius: $px4;
       background-color: #faa03c;
-      display: inline-block !important;
-      font-size: $px12 !important;
+      display: grid !important;
+      font-size: $px16 !important;
       color: $white !important;
       padding: $px5;
+      align-items: center;
     }
   }
   td {
@@ -364,10 +365,11 @@ table#running-order {
     >span {
       border-radius: $px4;
       background-color: #e73030;
-      display: inline-block !important;
-      font-size: $px12 !important;
+      display: grid !important;
+      font-size: $px16 !important;
       color: $white !important;
       padding: $px5;
+      align-items: center;
     }
   }
   border-spacing: 0 $px30;
@@ -542,6 +544,12 @@ svg {
   &#tooltipdata{
     overflow: unset;
     max-height: 13.5rem;
+    display: none;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 3px 3px 0 rgba(187, 187, 187, 0.9);
+    background-color: #ffffff;
+    min-width: 200px;
     .tooltip-c-range {
       margin-bottom: 0;
       font-weight: 600;
@@ -607,33 +615,8 @@ svg {
         }
       }
     }
-    .table-status {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      align-items: center;
-      > span{
-        padding: 0 2px;
-        &:first-child{
-          min-width: $px25;
-        }
-      }
-      .fa-rectangle {
-        height: 13px;
-        width: 20px;
-        border-radius: 2px;
-        margin-right: 1px;
-      }
-    }
   }
 
-}
-#tooltipdata {
-  display: none;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 3px 3px 0 rgba(187, 187, 187, 0.9);
-  background-color: #ffffff;
-  min-width: 200px;
 }
 g.dinein_table_parent {
   &.active{
@@ -983,5 +966,20 @@ svg .active > path {
     }
   }
 }
-
-
+.table-status {
+  display: grid !important;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  > span{
+    padding: 0 2px;
+    &:first-child{
+      min-width: $px25;
+    }
+  }
+  .fa-rectangle {
+    height: 13px;
+    width: 20px;
+    border-radius: 2px;
+    margin-right: 1px;
+  }
+}

@@ -4906,10 +4906,11 @@ table#running-order {
   table#running-order td.done-soon-order > span {
     border-radius: 0.25rem;
     background-color: #faa03c;
-    display: inline-block !important;
-    font-size: 0.75rem !important;
+    display: grid !important;
+    font-size: 1rem !important;
     color: #fff !important;
-    padding: 0.3125rem; }
+    padding: 0.3125rem;
+    align-items: center; }
   table#running-order td .running-actions > span.finished-order {
     border-radius: 0.25rem;
     background-color: #62bb31;
@@ -4920,10 +4921,11 @@ table#running-order {
   table#running-order td.running-order-details > span {
     border-radius: 0.25rem;
     background-color: #e73030;
-    display: inline-block !important;
-    font-size: 0.75rem !important;
+    display: grid !important;
+    font-size: 1rem !important;
     color: #fff !important;
-    padding: 0.3125rem; }
+    padding: 0.3125rem;
+    align-items: center; }
 
 .rinning-order-title > h2 {
   color: #3d3f43;
@@ -5063,7 +5065,13 @@ svg #dine-in-area {
   width: auto !important; }
   .dropdown-content#tooltipdata {
     overflow: unset;
-    max-height: 13.5rem; }
+    max-height: 13.5rem;
+    display: none;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 3px 3px 0 rgba(187, 187, 187, 0.9);
+    background-color: #ffffff;
+    min-width: 200px; }
     .dropdown-content#tooltipdata .tooltip-c-range {
       margin-bottom: 0;
       font-weight: 600; }
@@ -5116,27 +5124,6 @@ svg #dine-in-area {
         margin-bottom: 1px; }
         .dropdown-content#tooltipdata .tooltip-c-range .table-popup:hover {
           background: #009300 !important; }
-    .dropdown-content#tooltipdata .table-status {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      align-items: center; }
-      .dropdown-content#tooltipdata .table-status > span {
-        padding: 0 2px; }
-        .dropdown-content#tooltipdata .table-status > span:first-child {
-          min-width: 1.5625rem; }
-      .dropdown-content#tooltipdata .table-status .fa-rectangle {
-        height: 13px;
-        width: 20px;
-        border-radius: 2px;
-        margin-right: 1px; }
-
-#tooltipdata {
-  display: none;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 3px 3px 0 rgba(187, 187, 187, 0.9);
-  background-color: #ffffff;
-  min-width: 200px; }
 
 g.dinein_table_parent.active {
   stroke: #62bb31;
@@ -5366,6 +5353,20 @@ svg .active > path {
 
 .table-action .dropdown-item:last-child {
   border-bottom: 0 !important; }
+
+.table-status {
+  display: grid !important;
+  grid-template-columns: auto 1fr;
+  align-items: center; }
+  .table-status > span {
+    padding: 0 2px; }
+    .table-status > span:first-child {
+      min-width: 1.5625rem; }
+  .table-status .fa-rectangle {
+    height: 13px;
+    width: 20px;
+    border-radius: 2px;
+    margin-right: 1px; }
 
 .new-transaction {
   display: grid;
