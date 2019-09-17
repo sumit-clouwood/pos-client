@@ -25,8 +25,8 @@
               <span :class="tabName">
                 {{ _t('Table No') }} : {{ orderTable.table.number }}
                 <p>
-                  <small class="text-capitalize font-weight-bold ">
-                    Status:
+                  <small class="text-uppercase font-weight-bold ">
+                    {{ _t('Status') }}:
                     {{
                       LookupData.replaceUnderscoreHyphon(
                         orderTable.table.status
@@ -34,9 +34,11 @@
                     }}
                   </small>
                 </p>
-                <small class="text-capitalize font-weight-bold ">
-                  Area: {{ orderTable.areaName }}
-                </small>
+                <p>
+                  <small class="text-uppercase font-weight-bold ">
+                    {{ _t('Area') }}: {{ orderTable.areaName }}
+                  </small>
+                </p>
               </span>
             </td>
             <td class="dine-order-details">
@@ -320,7 +322,9 @@ export default {
       })
         .then()
         .catch(error => {
-          this.msg = error
+          this.msg = error.data.error
+          // eslint-disable-next-line no-console
+          console.log(this.msg)
           //alert(error.data.error)
           $('#information-popup').modal('show')
         })
