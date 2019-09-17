@@ -22,7 +22,9 @@ export default {
   },
   //get the customer along with all previous orders and other required info
   fetchCustomer(customerId) {
-    return DataService.get(`/model/brand_customers/id/${customerId}`, 'brand')
+    if (customerId !== null) {
+      return DataService.get(`/model/brand_customers/id/${customerId}`, 'brand')
+    }
   },
 
   customerBuildings() {
