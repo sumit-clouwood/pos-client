@@ -1,6 +1,5 @@
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
-import DateTime from '@/mixins/DateTime.js'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 

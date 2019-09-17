@@ -982,9 +982,9 @@ const actions = {
       }
     })
   },
-    addDiningOrder({ dispatch }, orderData) {
-        dispatch('addOrderToCart', orderData.item).then(() => {})
-    },
+  addDiningOrder({ dispatch }, orderData) {
+    dispatch('addOrderToCart', orderData.item).then(() => {})
+  },
   selectedOrderDetails({ commit }, orderId) {
     return new Promise((resolve, reject) => {
       const params = ['orders', orderId, '']

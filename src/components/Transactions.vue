@@ -19,8 +19,8 @@
 </i18n>
 
 <script>
-import Header from './transactionorders/Header.vue'
-import Content from './transactionorders/Content.vue'
+import Header from './transactions/Header.vue'
+import Content from './transactions/Content.vue'
 export default {
   name: 'Pos',
   components: {
