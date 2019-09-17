@@ -56,7 +56,7 @@
         >
           Select Table
         </button>
-        <DineInTableSelection :availableTables="availableTables" />
+        <DineInTableSelection />
       </div>
       <div
         v-if="
@@ -128,9 +128,7 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import DineInTableSelection from './popup/DineInTableSelection'
 export default {
   name: 'Header',
-  component: {
-    DineInTableSelection,
-  },
+  components: { DineInTableSelection },
   data() {
     return {
       OrderSelectedCover: 'Select Cover',

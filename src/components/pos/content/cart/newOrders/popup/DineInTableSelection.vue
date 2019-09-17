@@ -13,9 +13,9 @@
         <div class="modal-body row dining-options-block select-discount">
           <div
             id="available-tables"
-            class="dropdown-content available-tables cursor-pointer hide"
+            class="available-tables cursor-pointer hide"
           >
-            <span class="dropdown" @click="setTable(null)">
+            <span @click="setTable(null)">
               {{ _t('Select Table') }}
             </span>
             <span
@@ -68,17 +68,14 @@
 
 <script>
 /* global $ */
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'DineInTableSelection',
-  props: { availableTables: Object },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('dinein', ['availableTables', 'selectedTable']),
   },
-  mounted() {
-    alert('d')
-  },
-  method: {
+  methods: {
     setTable: function(table) {
       if (table) {
         this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
