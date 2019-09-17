@@ -986,6 +986,9 @@ svg .active > path {
         color: #72777c;
         font-size: $px16;
         font-weight: 600;
+        &.fa{
+          margin-bottom: $px7;
+        }
         &.table-status-number {
           position: absolute;
           top: -14px;
