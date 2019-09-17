@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import CancelOrderPopup from '@/components/transactionorders/content/orderDetails/CancelOrderPopup'
+import CancelOrderPopup from '@/components/transactions/content/orderDetails/CancelOrderPopup'
 import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'CartFooter',
