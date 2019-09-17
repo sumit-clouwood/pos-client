@@ -294,10 +294,17 @@ h6 {
   body {
     margin: 0;
     height: 100%;
-    overflow: hidden; }
+    overflow: scroll; }
     html .dropdown:hover,
     body .dropdown:hover {
       background-color: #fff; }
+    html .mobile-components .payment-breakdown-title h1,
+    body .mobile-components .payment-breakdown-title h1 {
+      font-size: 1.5em;
+      padding-top: 10px; }
+    html .mobile-components .payment-method-block .fa-trash,
+    body .mobile-components .payment-method-block .fa-trash {
+      font-size: 1.25em; }
 
   .modal-header {
     padding: 20px !important; }
@@ -332,8 +339,6 @@ h6 {
         grid-template-rows: max-content 1fr max-content;
         width: 100% !important;
         max-width: none;
-        min-height: 100% !important;
-        height: 100%;
         border: none !important;
         transform: none !important;
         transition: none !important;
@@ -497,7 +502,7 @@ h6 {
           .header .header-main .header-main-right .nav-icon .nav-link svg {
             width: 1.5625rem;
             height: 1.5625rem; }
-      .header .header-main .header-main-right .setting-dropdown {
+      .header .header-main .header-main-right .setting-dropdown, .header .header-main .header-main-right .setting-dropdown1 {
         display: none;
         background: #fff;
         font-weight: 600;
@@ -513,11 +518,11 @@ h6 {
         color: #000;
         z-index: 10;
         font-size: 1rem; }
-        .header .header-main .header-main-right .setting-dropdown li {
+        .header .header-main .header-main-right .setting-dropdown li, .header .header-main .header-main-right .setting-dropdown1 li {
           padding: 5px 20px; }
-          .header .header-main .header-main-right .setting-dropdown li:hover {
+          .header .header-main .header-main-right .setting-dropdown li:hover, .header .header-main .header-main-right .setting-dropdown1 li:hover {
             background: #ddd; }
-          .header .header-main .header-main-right .setting-dropdown li a {
+          .header .header-main .header-main-right .setting-dropdown li a, .header .header-main .header-main-right .setting-dropdown1 li a {
             font-size: 1.125rem;
             color: #555;
             font-weight: 400; }
@@ -656,6 +661,71 @@ h6 {
   border-radius: 50%;
   border: 1px solid #979797;
   margin-right: 0.625rem; }
+
+.item-exclude {
+  display: grid;
+  grid-template-columns: 1fr auto; }
+
+/* The container */
+.pos-container {
+  display: block;
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+/* Hide the browser's default checkbox */
+.pos-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0; }
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border: 1px solid; }
+
+/* On mouse-over, add a grey background color */
+.pos-container:hover input ~ .checkmark {
+  background-color: #ccc; }
+
+/* When the checkbox is checked, add a blue background */
+.pos-container input:checked ~ .checkmark {
+  background-color: #2196F3; }
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none; }
+
+/* Show the checkmark when checked */
+.pos-container input:checked ~ .checkmark:after {
+  display: block; }
+
+/* Style the checkmark/indicator */
+.pos-container .checkmark:after {
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+  left: 8px;
+  top: 3px;
+  width: 5px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 3px 3px 0; }
 
 #customer .modal-dialog,
 #manage-customer .modal-dialog {
@@ -1261,7 +1331,6 @@ h6 {
         position: absolute;
         top: 0;
         right: 0;
-        bottom: 0;
         left: 0;
         border: none;
         border-radius: 0; }
@@ -1598,7 +1667,6 @@ button#schedule-btn > span {
   margin-left: 0px; }
 
 button#confirm_announcement {
-  width: 6.875rem;
   height: 3.125rem;
   box-shadow: 0 2px 2px #d1e6c5;
   border-radius: 3px;
@@ -2166,7 +2234,7 @@ a:hover {
       bottom: 0;
       left: 0;
       margin: 0;
-      /*min-height: 100% !important;*/
+      min-height: 100% !important;
       transform: none;
       opacity: 1;
       max-width: none; }
@@ -2856,7 +2924,8 @@ label.container-radio-btn span {
   display: inline-block;
   vertical-align: middle;
   letter-spacing: 0.6px;
-  line-height: 1.3; }
+  line-height: 1.3;
+  width: 67%; }
 
 label.container-radio-btn img {
   display: inline-block;
@@ -3680,7 +3749,7 @@ body {
       width: 1.875rem;
       height: 1.875rem; }
   .navigation .navigation-list-wrapper {
-    overflow: hidden;
+    overflow-y: scroll;
     position: relative; }
     .navigation .navigation-list-wrapper::-webkit-scrollbar {
       width: 0; }
@@ -3952,6 +4021,8 @@ body {
             align-items: center;
             justify-content: center;
             font-size: 0.75rem; }
+      .main .main-body .food-wrapper .noSubCategory ~ .food-block {
+        border-left: none; }
       .main .main-body .food-wrapper .food-block {
         height: calc(100vh - 21.5625rem);
         border-left: 1px solid #E3E7F2;
@@ -4094,6 +4165,7 @@ body {
               margin: 0 auto;
               border-radius: 0.1875rem;
               width: 100%;
+              max-height: 8.125rem;
               margin-bottom: auto; }
             .main .main-body .food-wrapper .food-block .food-menu .food-menu-item .food-menu-item-text {
               word-break: break-word;
@@ -4678,7 +4750,8 @@ li#circle-table-shape {
       display: grid;
       grid-template-columns: 1fr auto;
       align-items: center;
-      margin-bottom: 0.9375rem; }
+      margin-bottom: 0.9375rem;
+      padding-right: 2.625rem; }
 
 .round-dinein-circle {
   position: relative;
@@ -4801,14 +4874,18 @@ table#running-order {
     border-bottom: 0.125rem solid #e5e9f4; }
     table#running-order tr td > span {
       letter-spacing: 0.5px;
-      color: #3d3f43;
+      color: #fff;
       font-size: 1.125rem;
       font-weight: 600;
       display: block; }
+    table#running-order tr td .runningtime {
+      color: #000; }
   table#running-order tr > td:first-child {
     border-left: 0.125rem solid #e5e9f4; }
   table#running-order tr > td:last-child {
     border-right: 0.125rem solid #e5e9f4; }
+  table#running-order .action-status span.dinefor-paynow {
+    margin-left: 0; }
   table#running-order .dining-for-button {
     display: inline-block;
     overflow: hidden;
@@ -4829,6 +4906,13 @@ table#running-order {
   table#running-order td.done-soon-order > span {
     border-radius: 0.25rem;
     background-color: #faa03c;
+    display: inline-block !important;
+    font-size: 0.75rem !important;
+    color: #fff !important;
+    padding: 0.3125rem; }
+  table#running-order td .running-actions > span.finished-order {
+    border-radius: 0.25rem;
+    background-color: #62bb31;
     display: inline-block !important;
     font-size: 0.75rem !important;
     color: #fff !important;
@@ -4854,13 +4938,17 @@ table#running-order {
   padding: 0 0.9375rem; }
 
 td.dine-order-tabel > span {
-  width: 3.75rem;
-  height: 3.75rem;
-  border-radius: 0.25rem;
-  background-color: #e4e8f1;
+  width: 7.8125rem;
+  height: 5.375rem;
+  border-radius: 5%;
+  box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
   display: inline-block;
   text-align: center;
   padding-top: 0.9375rem; }
+td.dine-order-tabel .running {
+  background-color: #e73030; }
+td.dine-order-tabel .completed {
+  background-color: #62bb31; }
 
 td.order-time-det > span {
   font-size: 0.875rem !important;
@@ -4874,7 +4962,7 @@ td.order-time-det > span {
   padding-bottom: 1.25rem; }
 
 .running-order-table-wrap {
-  height: calc(100vh - 105px);
+  height: calc(100vh - 175px);
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   touch-action: auto; }
@@ -4957,10 +5045,12 @@ input.qty {
   color: #fff;
   right: 0;
   padding: 5px !important; }
+  .reservation-cancel:hover {
+    background: #cb000e; }
   .reservation-cancel .dlt-icon {
     padding: 0;
     cursor: pointer; }
-    .reservation-cancel .dlt-icon > svg {
+    .reservation-cancel .dlt-icon > img {
       display: inline-block;
       vertical-align: middle; }
 
@@ -4971,37 +5061,82 @@ svg #dine-in-area {
   box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
   transition: all 0.2s ease-out;
   width: auto !important; }
-  .dropdown-content .tooltip-c-range {
-    margin-bottom: 0;
-    font-weight: 600; }
-    .dropdown-content .tooltip-c-range .table-popup {
-      display: block;
-      padding: 6px 25px 1px 12px;
-      font-weight: 400;
-      color: #fff; }
-      .dropdown-content .tooltip-c-range .table-popup:hover {
-        color: #fff; }
-  .dropdown-content .table-status {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center; }
-    .dropdown-content .table-status > span {
-      padding: 0 2px; }
-      .dropdown-content .table-status > span:first-child {
-        min-width: 1.5625rem; }
-    .dropdown-content .table-status .fa.fa-rectangle {
-      height: 13px;
-      width: 20px;
-      /*background: rgb(200, 76, 76);*/
-      border-radius: 2px;
-      margin-right: 1px; }
+  .dropdown-content#tooltipdata {
+    overflow: unset;
+    max-height: 13.5rem; }
+    .dropdown-content#tooltipdata .tooltip-c-range {
+      margin-bottom: 0;
+      font-weight: 600; }
+      .dropdown-content#tooltipdata .tooltip-c-range .display-table-details {
+        display: grid;
+        grid-template-columns: 3fr auto;
+        background: #e5e9ed;
+        align-content: center;
+        border-radius: 6px; }
+        .dropdown-content#tooltipdata .tooltip-c-range .display-table-details .close-table-details {
+          background: #CC3232;
+          color: #fff;
+          border-radius: 0 6px 0 0; }
+        .dropdown-content#tooltipdata .tooltip-c-range .display-table-details .table-header-border-bottom {
+          border-bottom: 1px solid #ccc6c6;
+          cursor: default; }
+      .dropdown-content#tooltipdata .tooltip-c-range .table-order-footer {
+        border-top: 1px solid #eee; }
+        .dropdown-content#tooltipdata .tooltip-c-range .table-order-footer .buttons {
+          display: flex;
+          justify-content: flex-end;
+          padding-right: 6px; }
+      .dropdown-content#tooltipdata .tooltip-c-range .table-order-content {
+        overflow: auto;
+        max-height: 6.25rem;
+        padding: 0.3125rem; }
+        .dropdown-content#tooltipdata .tooltip-c-range .table-order-content .order-details-with-action {
+          display: grid;
+          grid-template-columns: 2fr 1fr; }
+          .dropdown-content#tooltipdata .tooltip-c-range .table-order-content .order-details-with-action .dt-items {
+            font-weight: 400;
+            color: #212529;
+            display: grid;
+            align-items: center;
+            padding: 0 5px; }
+          .dropdown-content#tooltipdata .tooltip-c-range .table-order-content .order-details-with-action .paid-amount-msg {
+            color: #7ac241; }
+          .dropdown-content#tooltipdata .tooltip-c-range .table-order-content .order-details-with-action .reservation-cancel {
+            position: static;
+            margin: 1px; }
+      .dropdown-content#tooltipdata .tooltip-c-range .table-popup {
+        display: grid;
+        font-weight: 400;
+        text-align: center;
+        justify-content: center;
+        color: #fff;
+        margin: 0.0325rem;
+        align-items: center;
+        border-radius: 4px;
+        margin-bottom: 1px; }
+        .dropdown-content#tooltipdata .tooltip-c-range .table-popup:hover {
+          background: #009300 !important; }
+    .dropdown-content#tooltipdata .table-status {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center; }
+      .dropdown-content#tooltipdata .table-status > span {
+        padding: 0 2px; }
+        .dropdown-content#tooltipdata .table-status > span:first-child {
+          min-width: 1.5625rem; }
+      .dropdown-content#tooltipdata .table-status .fa-rectangle {
+        height: 13px;
+        width: 20px;
+        border-radius: 2px;
+        margin-right: 1px; }
 
 #tooltipdata {
   display: none;
   height: auto;
   border-radius: 8px;
-  box-shadow: 0 2px 4px 0 rgba(187, 187, 187, 0.5);
-  background-color: #f8fbff; }
+  box-shadow: 0 3px 3px 0 rgba(187, 187, 187, 0.9);
+  background-color: #ffffff;
+  min-width: 200px; }
 
 g.dinein_table_parent.active {
   stroke: #62bb31;
@@ -5016,7 +5151,11 @@ g.dinein_table_parent .dinein_table:hover svg path {
 .table-action {
   position: relative; }
   .table-action .dropdown-item {
-    padding: 0.3125rem 1.5625rem 0.3125rem 0.3125rem; }
+    padding: 0.3125rem 1.5625rem 0.3125rem 0.3125rem;
+    border-bottom: 0.0625rem solid rgba(12, 19, 12, 0.1);
+    cursor: default; }
+    .table-action .dropdown-item:hover {
+      background: unset; }
 
 div#confirmModal .modal-footer {
   justify-content: flex-end !important; }
@@ -5103,6 +5242,15 @@ svg .active > path {
     padding: 0 1.25rem; }
     body#page-top.dm-manager .new-pos .running-orders-dinein {
       padding: 0; }
+    body#page-top.dm-manager .new-pos #sitting-dinein-table .dropdown-content {
+      right: 0 !important;
+      left: 0 !important;
+      width: 210px !important;
+      top: 30% !important;
+      margin: 0 auto !important;
+      background: #f8fbff !important;
+      max-height: 74px !important;
+      overflow: auto; }
 
   .table-order-view-wrapper {
     grid-template-columns: 1fr; }
@@ -5152,7 +5300,7 @@ svg .active > path {
       transition: 0.3s ease-in-out; }
   .hideBigScreen .hideBigIcon {
     position: fixed;
-    top: 75px;
+    top: 65px;
     right: 20px;
     cursor: pointer; }
     .hideBigScreen .hideBigIcon.active i {
@@ -5193,8 +5341,32 @@ svg .active > path {
     grid-template-columns: 1fr;
     text-align: center;
     height: auto; }
-    .dm-manager .header .header-main .header-main-left, .dm-manager .header .header-main .header-main-right {
-      justify-content: center; } }
+    .dm-manager .header .header-main .header-main-left {
+      justify-content: space-between;
+      text-align: left;
+      display: grid; }
+      .dm-manager .header .header-main .header-main-left .subtitle {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; }
+      .dm-manager .header .header-main .header-main-left .change-location > button {
+        margin-right: 0; }
+    .dm-manager .header .header-main .hideBigIcon {
+      left: 10px !important;
+      right: unset; } }
+.dine-in-table-guest-details-pos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: center;
+  text-align: center; }
+
+.tables-draw {
+  border: 0.0625rem dashed;
+  margin: 0.125rem; }
+
+.table-action .dropdown-item:last-child {
+  border-bottom: 0 !important; }
+
 .new-transaction {
   display: grid;
   grid-template-columns: 25% 75%;
