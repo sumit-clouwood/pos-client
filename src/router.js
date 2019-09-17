@@ -14,6 +14,11 @@ const router = new Router({
 
   routes: [
     {
+      path: '/:brand_id/:store_id/update/:order_id',
+      name: 'ModifyBackendOrder',
+      component: Home,
+    },
+    {
       path: '/delivery-manager/:brand_id/:store_id/',
       name: 'DeliveryManager',
       component: DeliveryManagerInit,

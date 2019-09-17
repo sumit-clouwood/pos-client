@@ -567,7 +567,8 @@ const actions = {
         }
       } else if (
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
-        rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
+        rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY ||
+        rootState.order.orderToModify
       ) {
         //set order id for modify orders or delivery order
         orderId = rootState.order.orderId
@@ -584,6 +585,10 @@ const actions = {
           case CONSTANTS.ORDER_STATUS_IN_DELIVERY:
             order.modify_reason = 'Updated from POS'
             break
+        }
+
+        if (rootState.order.orderToModify) {
+          order.modify_reason = 'Updated from Backend'
         }
 
         response = OrderService.modifyOrder(
@@ -604,6 +609,8 @@ const actions = {
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
           if (response.data.status === 'ok') {
+            commit('ORDER_TO_MODIFY', null)
+
             if (typeof response.data.id !== 'undefined') {
               //this is walk in order
               orderId = response.data.id
