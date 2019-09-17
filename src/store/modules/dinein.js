@@ -114,12 +114,6 @@ const actions = {
       let order = []
       let balanceDue = 0
       let currency = ''
-      // eslint-disable-next-line no-console
-      console.log(
-        response.data.page_lookups.dine_in_tables._id[table.assigned_table_id]
-          .area_id,
-        'Rajeev Sir'
-      )
 
       let areaName = state.areas.find(element => {
         return element._id ==
