@@ -18,7 +18,10 @@
             class="dine-table-content"
             v-for="(orderTable, index) in orderDetails"
           >
-            <td class="dine-order-tabel">
+            <td
+              class="dine-order-tabel"
+              :class="getOrderStatus(orderTable.table.status)"
+            >
               <span :class="tabName">
                 {{ _t('Table No') }} : {{ orderTable.table.number }}
                 <p>
@@ -149,7 +152,7 @@
               </div>
             </td>
             <td class="dine-order-amt font-weight-bold">
-              {{ orderTable.amount }}
+              {{ formatPrice(orderTable.amount) }}
             </td>
             <td class="order-time-det">
               <div class="action-status">
@@ -299,7 +302,7 @@ export default {
   mixins: [DateTime],
   computed: {
     ...mapState('location', ['timezoneString']),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('dinein', [
       'orderDetails',
       'loading',
