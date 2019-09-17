@@ -5374,7 +5374,8 @@ svg .active > path {
     #available-tables .table-status-container .table-status {
       border: 2px solid #e0e3e6 !important;
       padding: 0.75rem 0.3125rem;
-      position: relative; }
+      position: relative;
+      border-radius: 4px; }
       #available-tables .table-status-container .table-status > span {
         padding: 0 2px !important;
         display: block !important;
@@ -5398,9 +5399,9 @@ svg .active > path {
         width: 20px;
         border-radius: 2px;
         margin-right: 1px; }
-      #available-tables .table-status-container .table-status .active {
+      #available-tables .table-status-container .table-status.active {
         border-color: #5056CA; }
-        #available-tables .table-status-container .table-status .active:after {
+        #available-tables .table-status-container .table-status.active:after {
           content: "\F00C";
           font-family: FontAwesome;
           font-size: 1.125rem;

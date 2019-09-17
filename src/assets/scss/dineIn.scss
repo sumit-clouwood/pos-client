@@ -980,6 +980,7 @@ svg .active > path {
       border: 2px solid #e0e3e6 !important;
       padding: $px12 $px5;
       position: relative;
+      border-radius: 4px;
       > span{
         padding: 0 2px !important;
         display: block !important;
@@ -1008,8 +1009,8 @@ svg .active > path {
         border-radius: 2px;
         margin-right: 1px;
       }
-      .active{
-        border-color: $blue-middle;
+      &.active{
+        border-color: $blue-middle !important;
         &:after{
           content: "\F00C";
           font-family: FontAwesome;
