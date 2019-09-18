@@ -58,7 +58,7 @@
       >
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <div class="btn-chatge" @click="paymentMethodsChange">
+      <div class="btn-chatge">
         <div
           class="btn-chatge-amount"
           v-show="orderType.OTApi !== 'call_center'"
@@ -68,6 +68,7 @@
         <div
           class="btn-chatge-title"
           v-show="orderType.OTApi !== 'call_center'"
+          @click="paymentMethodsChange"
         >
           CHARGE
         </div>
@@ -181,6 +182,9 @@ export default {
         }
       })*/
       this.$store.dispatch('payNowCalcHendlerChange')
+    },
+    setOrderType(opt) {
+      this.$store.commit('order/ORDER_TYPE', opt)
     },
     footerBtnMethodS() {
       this.$store.dispatch('successfullHendlerChange')
