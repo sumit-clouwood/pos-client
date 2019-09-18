@@ -300,12 +300,9 @@ const actions = {
         areaTable.push({
           status: '',
           color: color,
-          name:
-            state.areaLookup.dine_in_area._id[value.area_id].name +
-            ' [ ' +
-            value.number +
-            ' ] ',
+          name: state.areaLookup.dine_in_area._id[value.area_id].name,
           id: value.area_id,
+          table_number: value.number,
           table_id: value._id,
           shape: value.table_shape,
         })

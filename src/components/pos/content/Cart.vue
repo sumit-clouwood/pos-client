@@ -9,7 +9,9 @@
         <i class="fa fa-angle-right" aria-hidden="true"></i>
       </div>
     </div>
-    <Header />
+    <Header v-if="orderType.OTApi !== 'dine_in'" />
+    <dineInHeader v-else />
+
     <div class="main-orders-list-wrapper" v-if="orderType.OTApi !== 'dine_in'">
       <HoldingOrders v-if="cartType === 'hold'" />
       <Items v-else />
@@ -26,14 +28,15 @@
 </template>
 
 <script>
-import Header from './cart/newOrders/Header.vue'
+import Header from './cart/newOrders/Header'
 import HoldingOrders from './cart/HoldingOrders'
 import Footer from './cart/Footer'
 import PayNow from './cart/PayNow'
-import Items from './cart/newOrders/Items.vue'
-import ordersMenu from '../../mobileComponents/mobileOrdersMenu.vue'
-import mobileFooter from '../../mobileComponents/mobileFooter.vue'
-import dineInItems from '@/components/dinein/cart/Items.vue'
+import Items from './cart/newOrders/Items'
+import ordersMenu from '../../mobileComponents/mobileOrdersMenu'
+import mobileFooter from '../../mobileComponents/mobileFooter'
+import dineInItems from '@/components/dinein/cart/Items'
+import dineInHeader from '@/components/dinein/cart/Header'
 
 import { mapState, mapGetters } from 'vuex'
 
@@ -55,6 +58,7 @@ export default {
   },
   components: {
     Header,
+    dineInHeader,
     Items,
     HoldingOrders,
     Footer,
