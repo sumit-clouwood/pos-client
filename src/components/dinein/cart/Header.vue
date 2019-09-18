@@ -86,14 +86,14 @@
           </span>
         </div>
       </div>
-      <div
+      <!--<div
         v-if="cartType !== 'hold' && items.length"
         id="holdorder"
         class="orders-button-large color-main color-text"
         @click="hold"
       >
         {{ _t('Hold') }}
-      </div>
+      </div>-->
       <div class="color-main color-text dine-in-table-guest-details-pos">
         <span class="tables-draw">
           <img src="img/dinein/dine-intable.svg" />
