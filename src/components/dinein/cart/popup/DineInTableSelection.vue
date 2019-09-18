@@ -7,14 +7,11 @@
         <div class="modal-header customer-header color-secondary">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title color-text-invert">
-            {{ _t('Select') + ' ' + _t('Table') }}
+            {{ _t('Move') + ' ' + _t('Table') }}
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
           <div id="available-tables" class="available-tables cursor-pointer">
-            <!--<span @click="setTable(null)">-->
-            <!--{{ _t('Select Table') }}-->
-            <!--</span>-->
             <div class="table-status-container">
               <span
                 class="table-status"
@@ -50,17 +47,7 @@
             >
               {{ _t('Ok') }}
             </button>
-            <!--<button
-                          v-show="orderError"
-                          class="btn btn-danger btn-large color-text-invert color-button"
-                          type="button"
-                          data-dismiss="modal"
-                          @click="discountHendlerChange"
-                        >
-                          {{ _t('Close') }}
-                        </button>-->
           </div>
-          <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
       </div>
     </div>
