@@ -119,6 +119,7 @@ const actions = {
 
         try {
           order = {
+            cashier_id: rootState.auth.userDetails.item._id,
             customer: '',
             customer_address_id: '',
             referral: '',
