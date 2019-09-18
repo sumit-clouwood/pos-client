@@ -110,8 +110,10 @@ $(document).ready(function() {
   })
 
   $(document).mouseup(function(e) {
-    var popup = $('.setting-dropdown, #setting-icon')
-    var icons = $('.setting-dropdown')
+    var popup = $(
+      '.setting-dropdown, .setting-dropdown-transaction, #setting-icon'
+    )
+    var icons = $('.setting-dropdown, .setting-dropdown-transaction')
 
     // var datesassign =$(".datepicker");
     if (

@@ -49,13 +49,6 @@
         </router-link>
       </button>
     </div>
-    <!--<div class="curent-sale hideBigScreen">-->
-    <!--<div class="curent-sale-title">Current Sale</div>-->
-    <!--<div class="curent-sale-item">-->
-    <!--<div class="text">Item</div>-->
-    <!--<div class="num">x3</div>-->
-    <!--</div>-->
-    <!--</div>-->
     <li
       class="nav-icon nav-item setting-icon color-main color-text-invert"
       id="setting-icon"
@@ -75,7 +68,7 @@
           />
         </svg>
       </a>
-      <ul class="setting-dropdown">
+      <ul class="setting-dropdown-transaction">
         <li>
           <a href="javascript:void(0)">{{ _t('Printers') }}</a>
         </li>
@@ -84,6 +77,11 @@
         </li>
         <li v-if="permitted('crm', 'root')">
           <a :href="crm">{{ _t('CRM') }}</a>
+        </li>
+        <li @click="moveDineSection()">
+          <a role="button">
+            {{ _t('Dine In') }}
+          </a>
         </li>
         <li v-if="permitted('menu', 'root')">
           <a :href="menu">{{ _t('Menu Setup') }}</a>
@@ -107,7 +105,7 @@
 </template>
 
 <script>
-/*global posConfigLinks*/
+/*global $*/
 import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 export default {
@@ -144,6 +142,10 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    moveDineSection() {
+      this.$router.push('/dine-in' + this.store)
+      $('.setting-dropdown-transaction').css('display', 'none')
+    },
     orderTypeWalkIn: function(orderType) {
       this.$store.commit('order/ORDER_TYPE', orderType)
       this.$store.commit('location/SET_MODAL', '#manage-customer')
@@ -156,7 +158,9 @@ export default {
       this.$store.dispatch('location/changeLanguage', locale)
     },
     openConfigLinks() {
-      posConfigLinks()
+      $('.setting-dropdown-transaction').toggle()
+      $('.setting-dropdown-transaction').toggleClass('animated zoomIn')
+      // posConfigLinks()
     },
     onlineOrders() {
       if (this.latestOnlineOrders === 0) {

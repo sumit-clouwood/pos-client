@@ -72,10 +72,13 @@
         <li v-if="permitted('dashboard', 'root')">
           <a :href="dashboard">{{ _t('Dashboard') }}</a>
         </li>
-        <li v-if="permitted('transactional_orders')">
-          <router-link :to="store + '/transactions'">
+        <li
+          v-if="permitted('transactional_orders')"
+          @click="moveTransactionSection(this)"
+        >
+          <a role="button">
             {{ _t('Transactions') }}
-          </router-link>
+          </a>
         </li>
         <li v-if="permitted('crm', 'root')">
           <a :href="crm">{{ _t('CRM') }}</a>
@@ -148,6 +151,9 @@ export default {
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
       $('.setting-dropdown').css('display', 'none')
+    },
+    moveTransactionSection() {
+      this.$router.push(this.store + '/transactions')
     },
     changeLanguage(locale) {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
