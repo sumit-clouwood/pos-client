@@ -9,6 +9,17 @@
   >
     <div class="modal-dialog modal-lg">
       <div class="dialog-body modal-content color-dashboard-background">
+        <div class="modal-header mobile">
+          <h3 class="modal-title">Order Detail</h3>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
         <div class="left-part">
           <LeftPart :orderDetails="selectedOrder" />
         </div>
