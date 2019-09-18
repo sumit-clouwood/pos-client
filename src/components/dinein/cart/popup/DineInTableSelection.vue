@@ -85,6 +85,7 @@ export default {
     moveSelectedTable() {
       let table = this.moveTableDetails
       if (table) {
+        this.$store.commit('dinein/SELECTED_TABLE', table)
         this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
         // let coverId = table.id
         let tableId = table.table_id
@@ -102,6 +103,8 @@ export default {
     },
     removeSelectedTable: function() {
       this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', this.selectedTable)
+      this.$store.commit('dinein/SELECTED_TABLE', this.selectedTable)
+
       this.selectedTableMove = ''
       // let coverId = table.id
       let reservationId = localStorage.getItem('reservationId')
