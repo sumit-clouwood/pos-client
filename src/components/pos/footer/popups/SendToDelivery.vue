@@ -111,37 +111,38 @@ export default {
 
           .order-table {
             max-height: none;
-            width: 100%;
+            /*width: 100%;*/
             .table-responsive {
               margin: 0;
             }
             table {
               width: auto;
-              display: grid;
-              grid-template-columns: 1fr 1fr;
-              grid-gap: 10px;
-              justify-content: space-between;
+              /*display: grid;*/
+              /*grid-template-columns: 1fr 1fr;*/
+              /*grid-gap: 10px;*/
+              /*justify-content: space-between;*/
 
               tr {
-                display: grid;
+                /*display: grid;*/
                 border: 1px solid #eee;
                 border-radius: 3px;
                 padding: 0 10px;
 
-                &:first-child {
-                  display: none;
-                }
+                /*&:first-child {*/
+                /*  display: none;*/
+                /*}*/
 
                 th,
                 td {
                   text-align: left;
-                  width: auto !important;
+                  /*width: auto !important;*/
                   border-bottom: 1px solid $gray-middle !important;
                   border-top: none !important;
                   height: 40px;
-                  padding: 0;
-                  display: flex;
-                  align-items: center;
+                  /*padding: 0;*/
+                  line-height: 40px;
+                  /*display: flex;*/
+                  /*align-items: center;*/
                 }
 
                 td {

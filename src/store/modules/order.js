@@ -40,6 +40,7 @@ const state = {
   cartType: 'new',
   is_pay: 0,
   startTime: null,
+  orderToModify: null,
 }
 
 // getters
@@ -876,6 +877,25 @@ const actions = {
     commit(mutation.ORDER_TYPE, orderType)
     dispatch('surchargeCalculation')
   },
+
+  modifyOrder({ commit, dispatch }, orderId) {
+    commit(mutation.ORDER_TO_MODIFY, orderId)
+    commit(mutation.START_ORDER)
+
+    const params = ['orders', orderId, '']
+    OrderService.getGlobalDetails(...params).then(response => {
+      let orderDetails = {}
+
+      orderDetails.item = response.data.item
+      orderDetails.customer = response.data.collected_data.customer
+      orderDetails.lookups = response.data.collected_data.page_lookups
+      orderDetails.store_name = response.data.collected_data.store_name
+      orderDetails.invoice =
+        response.data.collected_data.store_invoice_templates
+      commit(mutation.SET_ORDER_DETAILS, orderDetails)
+      dispatch('addOrderToCart', orderDetails.item)
+    })
+  },
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
   addOrderToCart({ rootState, commit, dispatch }, order) {
     return new Promise(resolve => {
@@ -1222,6 +1242,10 @@ const mutations = {
 
   [mutation.RESET_ORDER_TIME](state) {
     state.startTime = null
+  },
+
+  [mutation.ORDER_TO_MODIFY](state, orderId) {
+    state.orderToModify = orderId
   },
 }
 
