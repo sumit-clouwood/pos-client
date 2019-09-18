@@ -610,7 +610,7 @@ const actions = {
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
           if (response.data.status === 'ok') {
-            commit('ORDER_TO_MODIFY', null)
+            commit('order/ORDER_TO_MODIFY', null, { root: true })
 
             if (typeof response.data.id !== 'undefined') {
               //this is walk in order
