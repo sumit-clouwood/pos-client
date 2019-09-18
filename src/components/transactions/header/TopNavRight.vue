@@ -68,7 +68,7 @@
           />
         </svg>
       </a>
-      <ul class="setting-dropdown-transaction">
+      <ul class="setting-dropdown1 setting-dropdown-transaction">
         <li>
           <a href="javascript:void(0)">{{ _t('Printers') }}</a>
         </li>
