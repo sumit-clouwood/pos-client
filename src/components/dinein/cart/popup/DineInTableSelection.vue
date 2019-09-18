@@ -5,7 +5,6 @@
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
-          <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title color-text-invert">
             {{ _t('Move') + ' ' + _t('Table') }}
           </h4>
@@ -44,8 +43,17 @@
               type="button"
               id="discount-save-btn"
               data-dismiss="modal"
+              @click="moveSelectedTable"
             >
               {{ _t('Ok') }}
+            </button>
+            <button
+              @click="removeSelectedTable"
+              type="button"
+              class="btn btn-danger"
+              data-dismiss="modal"
+            >
+              {{ _t('Cancel') }}
             </button>
           </div>
         </div>
@@ -62,6 +70,7 @@ export default {
   data() {
     return {
       selectedTableMove: '',
+      moveTableDetails: '',
     }
   },
   computed: {
@@ -70,9 +79,13 @@ export default {
   },
   methods: {
     setTable: function(table) {
+      this.moveTableDetails = table
+      this.selectedTableMove = table.table_id
+    },
+    moveSelectedTable() {
+      let table = this.moveTableDetails
       if (table) {
         this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
-        this.selectedTableMove = table.table_id
         // let coverId = table.id
         let tableId = table.table_id
         let reservationId = localStorage.getItem('reservationId')
@@ -86,8 +99,19 @@ export default {
       } else {
         this.selectedTableMove = ''
       }
-      // this.$store.commit('dinein/AVAILABLE_TABLES', table)
-      //      $('.available-tables').hide()
+    },
+    removeSelectedTable: function() {
+      this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', this.selectedTable)
+      this.selectedTableMove = ''
+      // let coverId = table.id
+      let reservationId = localStorage.getItem('reservationId')
+
+      let data = {
+        table: this.selectedTable.table_id,
+        reservationid: reservationId,
+        status: 'move_table',
+      }
+      this.$store.dispatch('dinein/moveTable', data)
     },
   },
 }
