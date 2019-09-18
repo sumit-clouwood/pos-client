@@ -20,11 +20,7 @@
             class="detailed_block"
             v-if="typeof orders != 'undefined' && orders != null"
           >
-            <div
-              v-for="order in orders"
-              @click="getSelectedOrder(order)"
-              :key="order._id"
-            >
+            <div v-for="order in orders" :key="order._id">
               <div
                 v-if="order.order_date == key"
                 class="left_info_block"
@@ -121,7 +117,14 @@ export default {
     Search,
   },
   mounted() {
-    this.$store.dispatch('transactionOrders/getTransactionOrders')
+    let scope = this
+    this.$store
+      .dispatch('transactionOrders/getTransactionOrders')
+      .then(function() {
+        scope.$store.dispatch('transactionOrders/selectFirstTransactionOrder', {
+          root: true,
+        })
+      })
   },
   computed: {
     ...mapState('location', ['timezoneString']),

@@ -1049,24 +1049,36 @@ const actions = {
     { dispatch, commit },
     { order, orderType, actionTrigger, params }
   ) {
-    OrderService.updateOrderAction(order.order._id, actionTrigger, params).then(
-      response => {
-        if (response.status == 200) {
-          switch (orderType) {
-            case 'hold':
-              dispatch('holdOrders/remove', order, { root: true })
-              break
-            case 'call_center':
-              commit(mutation.SET_ERRORS, response.data.form_errors)
-              dispatch('deliveryManager/fetchDMOrderDetail', {}, { root: true })
-              break
+    return new Promise((resolve, reject) => {
+      OrderService.updateOrderAction(order.order._id, actionTrigger, params)
+        .then(
+          response => {
+            if (response.status == 200) {
+              switch (orderType) {
+                case 'hold':
+                  dispatch('holdOrders/remove', order, { root: true })
+                  break
+                case 'call_center':
+                  commit(mutation.SET_ERRORS, response.data.form_errors)
+                  dispatch(
+                    'deliveryManager/fetchDMOrderDetail',
+                    {},
+                    { root: true }
+                  )
+                  break
+              }
+            }
+            resolve(response)
+          },
+          errors => {
+            reject(errors.data.error)
+            // alert(errors.data.error)
           }
-        }
-      },
-      errors => {
-        alert(errors.data.error)
-      }
-    )
+        )
+        .catch(response => {
+          reject(response.data.form_errors)
+        })
+    })
   },
   beforeRedirectResetCartDineIn({ dispatch, rootState }) {
     let dineInAreas = rootState.order.areas

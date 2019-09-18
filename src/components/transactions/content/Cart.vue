@@ -4,17 +4,10 @@
     :class="['main-orders', { active: mainOrdersHendler }]"
     class="main-orders color-dashboard-background"
   >
-    <!--<div class="main-orders-title">-->
-    <!--<div class="text">{{ _t('Current Sale Detail') }}</div>-->
-    <!--<div class="button" @click="cartClose">-->
-    <!--<i class="fa fa-angle-right" aria-hidden="true"></i>-->
-    <!--</div>-->
-    <!--</div>-->
     <Header :order="selectedOrder.item" />
     <div class="main-orders-list-wrapper">
       <Items :order="selectedOrder.item" :items="selectedOrder.item.items" />
     </div>
-    <!--<PayNow :order="selectedOrder.item" />-->
     <Footer :order="selectedOrder.item" />
     <orders-menu />
   </div>

@@ -15,7 +15,7 @@
                 {{ getItemDiscountValue(order.item_discounts).name }}
               </p>
               <a
-                href="javascript:void"
+                href="javascript:void(0)"
                 v-for="(modifier, indexNo) in order.item_modifiers"
                 :key="indexNo"
                 class="trans-item-btn"
@@ -37,7 +37,7 @@
             }}</span>
           </div>
           <div class="replace-btn">
-            <a href="javascript:void" @click="modifyThisOrder">{{
+            <a href="javascript:void(0)" @click="modifyThisOrder">{{
               _t('Replace')
             }}</a>
           </div>

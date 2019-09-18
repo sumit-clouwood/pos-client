@@ -28,7 +28,14 @@
         <p class="trans-label">{{ _t('Receipt') }}</p>
       </div>
       <div class="trans-cash-price">
-        <p class="trans-cash-recipt">#{{ order.order_no }}</p>
+        <p class="trans-cash-recipt">
+          {{
+            order.order_type.replace(/[_-]/g, ' ').replace(/^./, function(t) {
+              return t.toUpperCase()
+            })
+          }}
+          #{{ order.order_no }}
+        </p>
       </div>
     </div>
   </div>

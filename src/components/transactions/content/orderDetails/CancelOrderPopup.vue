@@ -55,12 +55,6 @@
                       >{{ reason.name }}</span
                     >
                   </div>
-                  <!--<p
-                    v-if="errors && errors.cancel_reason.length"
-                    class="text-danger"
-                  >
-                    {{ errors.cancel_reason }}
-                  </p>-->
                 </div>
                 <div>
                   <div class="select-driver">
@@ -148,18 +142,24 @@
         </div>
       </div>
     </div>
+    <InformationPopup :responseInformation="this.msg" title="Alert" />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex'
+import InformationPopup from '@/components/pos/content/InformationPopup'
 /* global $ */
 export default {
   name: 'CancelOrderPopup',
+  components: {
+    InformationPopup,
+  },
   data() {
     return {
       showSelectedReason: '',
       supervisorPassword: '',
+      msg: null,
     }
   },
   props: {
@@ -183,18 +183,49 @@ export default {
         supervisor_password: this.supervisorPassword,
       }
       let orderType = order.order.order_type
+      let orderId = order.order._id
       let actionTrigger = 'cancel_order'
       this.updateOrderCancelAction({
         order,
         orderType,
         actionTrigger,
         params: data,
-      }).then(response => {
-        if (response.status.length > 0 && response.status == 'ok') {
-          closeModal('#cancellationReason')
-          showModal('#successCancel')
-        }
       })
+        .then(response => {
+          if (response.status.length > 0 && response.status == 'ok') {
+            //Reload order list again.
+            let scope = this
+            scope.$store
+              .dispatch('transactionOrders/getTransactionOrders', {
+                root: true,
+              })
+              .then(function() {
+                scope.$store.dispatch('order/selectedOrderDetails', orderId)
+              })
+            closeModal('#cancellationReason')
+            showModal('#successCancel')
+          } else {
+            let error = ''
+            if (response.data.status == 'form_errors') {
+              for (let i in response.data.form_errors) {
+                response.data.form_errors[i].forEach(
+                  err => (error += ' ' + err)
+                )
+              }
+            } else {
+              error =
+                typeof response.data.error !== 'undefined'
+                  ? response.data.error
+                  : response.data.message
+            }
+            this.msg = error
+            $('#information-popup').modal('show')
+          }
+        })
+        .catch(error => {
+          this.msg = error
+          $('#information-popup').modal('show')
+        })
     },
     ...mapActions('order', ['updateOrderCancelAction']),
   },

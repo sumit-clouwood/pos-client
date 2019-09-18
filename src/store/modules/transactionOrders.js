@@ -32,32 +32,48 @@ const getters = {
 
 const actions = {
   getTransactionOrders({ commit, state, rootState, dispatch }) {
-    const params = [
-      state.params.query,
-      state.params.limit,
-      '',
-      '',
-      '',
-      state.params.page,
-      state.params.pageId,
-      rootState.context.storeId,
-      state.params.customerId,
-    ]
-    commit(mutation.LOADING, false)
-    OrderService.getOrders(...params).then(response => {
-      commit(mutation.ALL_TRANSACTIONS, response.data)
-      commit(mutation.LOADING, true)
-      commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
-      if (
-        typeof state.transactionOrders !== undefined &&
-        state.transactionOrders
-      ) {
-        dispatch('setTransactionOrders', '') //Set Sorted & Group Order List
-        let firstOrder = state.transactionOrders[0]._id
-        dispatch('order/selectedOrderDetails', firstOrder, { root: true }) //Set First Order as Selected
-      }
+    return new Promise((resolve, reject) => {
+      const params = [
+        state.params.query,
+        state.params.limit,
+        '',
+        '',
+        '',
+        state.params.page,
+        state.params.pageId,
+        rootState.context.storeId,
+        state.params.customerId,
+      ]
+      commit(mutation.LOADING, false)
+      OrderService.getOrders(...params)
+        .then(response => {
+          commit(mutation.ALL_TRANSACTIONS, response.data)
+          commit(mutation.LOADING, true)
+          commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
+          if (
+            typeof state.transactionOrders !== undefined &&
+            state.transactionOrders
+          ) {
+            dispatch('setTransactionOrders', '') //Set Sorted & Group Order List
+          }
+          resolve(state.transactionOrders)
+        })
+        .catch(error => {
+          reject(error)
+        })
     })
   },
+
+  selectFirstTransactionOrder({ dispatch }) {
+    if (
+      typeof state.transactionOrders !== undefined &&
+      state.transactionOrders
+    ) {
+      let firstOrder = state.transactionOrders[0]._id
+      dispatch('order/selectedOrderDetails', firstOrder, { root: true }) //Set First Order as Selected
+    }
+  },
+
   setTransactionOrders({ commit, state, rootState }, searchTerm) {
     let finalArr = {}
     let result = []
