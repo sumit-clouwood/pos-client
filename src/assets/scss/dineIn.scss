@@ -1032,5 +1032,8 @@ svg .active > path {
     }
   }
 }
-
-
+.driver-container {
+  > button{
+    width: 100%;
+  }
+}
