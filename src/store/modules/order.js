@@ -1002,7 +1002,22 @@ const actions = {
       }
     })
   },
-  addDiningOrder({ dispatch }, orderData) {
+  addDiningOrder({ dispatch, rootGetters, commit }, orderData) {
+    //set discounts here
+    if (
+      orderData.item.order_discounts &&
+      orderData.item.order_discounts.length
+    ) {
+      orderData.item.order_discounts.forEach(orderDiscount => {
+        const discount = rootGetters['discount/orderDiscount'](
+          orderDiscount.entity_id
+        )
+        if (discount) {
+          commit('discount/SET_ACTIVE_ORDER_DISCOUNT', discount, { root: true })
+          commit('discount/APPLY_ORDER_DISCOUNT', discount, { root: true })
+        }
+      })
+    }
     dispatch('addOrderToCart', orderData.item).then(() => {})
   },
   selectedOrderDetails({ commit }, orderId) {

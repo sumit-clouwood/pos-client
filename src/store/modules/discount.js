@@ -80,6 +80,9 @@ const getters = {
       discount => discount[rootState.order.orderType.OTApi]
     )
   },
+  orderDiscount: (state, getters) => discountId => {
+    return getters.orderDiscounts.find(discount => discount._id == discountId)
+  },
 }
 
 // actions
