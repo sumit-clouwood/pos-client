@@ -83,6 +83,9 @@ const getters = {
   orderDiscount: (state, getters) => discountId => {
     return getters.orderDiscounts.find(discount => discount._id == discountId)
   },
+  itemDiscount: (state, getters) => discountId => {
+    return getters.itemDiscounts.find(discount => discount._id == discountId)
+  },
 }
 
 // actions
