@@ -42,7 +42,10 @@ const getters = {
       order_status === CONST.ORDER_STATUS_IN_PROGRESS
     ) {
       return 'running-order-details'
-    } else if (order_status === CONST.ORDER_STATUS_FINISHED) {
+    } else if (
+      order_status === CONST.ORDER_STATUS_FINISHED ||
+      order_status === CONST.ORDER_STATUS_COMPLETED
+    ) {
       return 'finished-order'
     } else {
       return 'done-soon-order'
@@ -79,7 +82,7 @@ const actions = {
   getDineInOrders({ dispatch }) {
     dispatch('getBookedTables')
     dispatch('dineInRunningOrders')
-    dispatch('dineInCompleteOrders')
+    // dispatch('dineInCompleteOrders')
   },
 
   reservationUpdateStatus({ dispatch, commit }, reservationData) {
