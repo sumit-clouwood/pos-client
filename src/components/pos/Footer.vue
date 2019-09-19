@@ -130,8 +130,8 @@
         <li
           class="footer-slider-list-item color-secondary"
           data-toggle="modal"
-          :data-target="selectedModal"
           data-dismiss="modal"
+          @click="add_customer_address"
         >
           <!--<a
             class="footer-slider-list-item-link"
@@ -446,10 +446,12 @@ export default {
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
-      selectedModal: state =>
-        state.location.setModal == '#loyalty-payment'
+      selectedModal: state => {
+        // $('#manage-customer').modal()
+        return state.location.setModal == '#loyalty-payment'
           ? '#manage-customer'
-          : state.location.setModal,
+          : state.location.setModal
+      },
     }),
     ...mapState({
       loyaltyCard: state => state.customer.loyalty.card,
@@ -555,6 +557,13 @@ export default {
     newOrders() {
       this.vbutton = 'hold'
       this.$store.commit('order/SET_CART_TYPE', 'new')
+    },
+    add_customer_address() {
+      if (this.$store.state.customer.address === false) {
+        $('#manage-customer').modal()
+      } else {
+        $('#order-confirmation').modal()
+      }
     },
   },
   mounted() {

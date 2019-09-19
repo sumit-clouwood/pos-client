@@ -68,8 +68,8 @@
       <li
         class="footer-slider-list-item"
         data-toggle="modal"
-        :data-target="selectedModal"
         data-dismiss="modal"
+        @click="add_customer_address"
       >
         <svg
           width="17"
@@ -87,7 +87,7 @@
         </svg>
         <a
           class="footer-slider-list-item-link"
-          @click="setOrderType('delivery')"
+          @click="setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })"
         >
           <span>{{ _t('Send to Delivery') }}</span>
         </a>
@@ -257,6 +257,13 @@ export default {
       this.$store.commit('order/SET_CART_TYPE', 'hold')
       this.$store.dispatch('holdOrders/getHoldOrders')
       this.$store.dispatch('footerMenuHendlerChange')
+    },
+    add_customer_address() {
+      if (this.$store.state.customer.address === false) {
+        $('#manage-customer').modal()
+      } else {
+        $('#order-confirmation').modal()
+      }
     },
   },
 }
