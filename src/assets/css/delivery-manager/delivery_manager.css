@@ -586,7 +586,7 @@ div.order-address {
 /*search driver*/
 .dropdown-content {
   display: none;
-  position: absolute;
+  position: inherit;
   background-color: #f6f6f6;
   width: 100%;
   overflow: auto;
@@ -971,7 +971,7 @@ tr.dataContentStyle > td > a {
 @media only screen and (max-width: 599px) {
   .with-drivers-filter .drivers-filter {
     overflow: auto;
-    height: calc(100vh - 25rem);
+    height: 40vh;
     border-left: 0.0625rem solid rgba(63, 74, 74, 0.3);
     position: fixed;
     bottom: 0;
