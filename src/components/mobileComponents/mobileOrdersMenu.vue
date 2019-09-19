@@ -207,6 +207,7 @@
   </div>
 </template>
 <script>
+/* global $ */
 import { mapActions, mapState, mapGetters } from 'vuex'
 import mobileFooter from './mobileFooter.vue'
 
