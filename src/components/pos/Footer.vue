@@ -1,5 +1,6 @@
 <template>
   <div class="footer">
+    <!--{{ cartType + ' dd ' + orderType.OTApi }}-->
     <div class="footer-slider color-dashboard-background">
       <ul class="footer-slider-list ullist-icons">
         <li
@@ -35,7 +36,10 @@
           v-if="cartType === 'new'"
           @click="viewHoldOrders"
           class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
-          :class="{ active: vbutton === 'hold' }"
+          :class="{
+            active: vbutton === 'hold',
+            hide: orderType.OTApi === 'dine_in',
+          }"
           id="hold-order-box"
         >
           <a
@@ -66,7 +70,10 @@
           v-else
           @click="newOrders"
           class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
-          :class="{ active: vbutton === 'new' }"
+          :class="{
+            active: vbutton === 'new',
+            hide: orderType.OTApi === 'dine_in',
+          }"
           id="new-order-box"
         >
           <a
@@ -130,8 +137,8 @@
         <li
           class="footer-slider-list-item color-secondary"
           data-toggle="modal"
-          :data-target="selectedModal"
           data-dismiss="modal"
+          @click="add_customer_address"
         >
           <!--<a
             class="footer-slider-list-item-link"
@@ -446,10 +453,12 @@ export default {
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
-      selectedModal: state =>
-        state.location.setModal == '#loyalty-payment'
+      selectedModal: state => {
+        // $('#manage-customer').modal()
+        return state.location.setModal == '#loyalty-payment'
           ? '#manage-customer'
-          : state.location.setModal,
+          : state.location.setModal
+      },
     }),
     ...mapState({
       loyaltyCard: state => state.customer.loyalty.card,
@@ -556,6 +565,13 @@ export default {
       this.vbutton = 'hold'
       this.$store.commit('order/SET_CART_TYPE', 'new')
     },
+    add_customer_address() {
+      if (this.$store.state.customer.address === false) {
+        $('#manage-customer').modal()
+      } else {
+        $('#order-confirmation').modal()
+      }
+    },
   },
   mounted() {
     $('ul.ullist-icons').slick({
@@ -590,5 +606,8 @@ export default {
 <style scoped>
 .displayBlock {
   display: inline-block;
+}
+.hide {
+  display: none;
 }
 </style>
