@@ -33,13 +33,10 @@
           </a>
         </li>
         <li
-          v-if="cartType === 'new'"
+          v-if="cartType === 'new' && orderType.OTApi !== 'dine_in'"
           @click="viewHoldOrders"
           class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
-          :class="{
-            active: vbutton === 'hold',
-            hide: orderType.OTApi === 'dine_in',
-          }"
+          :class="{ active: vbutton === 'hold' }"
           id="hold-order-box"
         >
           <a
