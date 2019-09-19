@@ -209,7 +209,7 @@
               <button
                 class="qtyminus value-qty"
                 @click="updateGuestCount('-')"
-                :disabled="this.guests <= 2"
+                :disabled="this.guests <= 1"
               >
                 <i class="fa fa-minus" aria-hidden="true"></i>
               </button>
