@@ -211,6 +211,7 @@
               </button>
               <input
                 type="number"
+                min="1"
                 v-model.number="guests"
                 @keyup="chairsValidation"
                 @change="chairsValidation"

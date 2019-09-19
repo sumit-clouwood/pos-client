@@ -42,11 +42,10 @@ const getters = {
       order_status === CONST.ORDER_STATUS_IN_PROGRESS
     ) {
       return 'running-order-details'
-    } else if (
-      order_status === CONST.ORDER_STATUS_FINISHED ||
-      order_status === CONST.ORDER_STATUS_COMPLETED
-    ) {
+    } else if (order_status === CONST.ORDER_STATUS_FINISHED) {
       return 'finished-order'
+    } else if (order_status === CONST.ORDER_STATUS_COMPLETED) {
+      return 'completed-order'
     } else {
       return 'done-soon-order'
     }
