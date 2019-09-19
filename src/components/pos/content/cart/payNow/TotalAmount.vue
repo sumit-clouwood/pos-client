@@ -54,8 +54,6 @@ export default {
       }
     },
     GetPaymentMethod() {
-      // eslint-disable-next-line
-      // debugger
       this.$store.dispatch('checkoutForm/validatePayment').then(() => {
         if (this.method.type == CONST.GIFT_CARD) {
           this.$store.dispatch('loyaltyPaymentHendlerChange')
