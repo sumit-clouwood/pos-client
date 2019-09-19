@@ -120,7 +120,35 @@
                 </div>
               </div>
               <div class="order-footer">
-                <div class="runningtime">
+                <p class="color-text">
+                  <span
+                    id="runningtime"
+                    class="timeago elapsedTime delManTime"
+                    title=""
+                  ></span>
+                  <span
+                    class="customtime left"
+                    :id="
+                      'createdOrder-' +
+                        convertDatetime(
+                          order.real_created_datetime,
+                          timezoneString
+                        )
+                    "
+                    style="display: none"
+                  ></span>
+                  <input
+                    type="hidden"
+                    id="storerunningtime"
+                    :value="
+                      convertDatetime(
+                        order.real_created_datetime,
+                        timezoneString
+                      )
+                    "
+                  />
+                </p>
+                <div class="runningtimes">
                   <div class="order-delivery-area"></div>
                   <div class="order-address">
                     {{ order.order_flat_number }}, {{ order.order_building }},
@@ -151,20 +179,19 @@ export default {
       orderCount: 2,
     }
   },
-  mixins: [DateTime],
-
   props: {
     actionDetails: Object,
   },
+  mixins: [DateTime],
   computed: {
+    ...mapGetters('location', ['_t']),
+    ...mapState('location', ['timezoneString']),
     ...mapState({
       orderStatus: state => state.deliveryManager.deliveryOrderStatus,
     }),
     ...mapState({
       branch: state => state.deliveryManager.availableStores,
     }),
-    ...mapGetters('location', ['_t']),
-    ...mapState('location', ['timezoneString']),
     ...mapGetters('deliveryManager', ['orders']),
   },
   methods: {

@@ -722,6 +722,11 @@ const actions = {
               commit('order/RESET_ORDER_TIME', null, { root: true })
 
               commit(mutation.PRINT, true)
+              dispatch(
+                'transactionOrders/getTransactionOrders',
+                {},
+                { root: true }
+              )
             } else {
               var err_msg = ''
               if (
