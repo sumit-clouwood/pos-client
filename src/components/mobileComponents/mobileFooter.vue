@@ -58,7 +58,7 @@
       >
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <div class="btn-chatge" @click="paymentMethodsChange">
+      <div class="btn-chatge">
         <div
           class="btn-chatge-amount"
           v-show="orderType.OTApi !== 'call_center'"
@@ -68,6 +68,7 @@
         <div
           class="btn-chatge-title"
           v-show="orderType.OTApi !== 'call_center'"
+          @click="paymentMethodsChange"
         >
           CHARGE
         </div>
@@ -75,8 +76,8 @@
           v-show="orderType.OTApi === 'call_center'"
           class="footer-slider-list-item color-secondary"
           data-toggle="modal"
-          :data-target="selectedModal"
           data-dismiss="modal"
+          @click="add_customer_address"
         >
           <a
             class="footer-slider-list-item-link color-text-invert"
@@ -127,10 +128,12 @@ export default {
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
-      selectedModal: state =>
-        state.location.setModal == '#loyalty-payment'
+      selectedModal: state => {
+        // $('#manage-customer').modal()
+        return state.location.setModal == '#loyalty-payment'
           ? '#manage-customer'
-          : state.location.setModal,
+          : state.location.setModal
+      },
     }),
     ...mapState({
       loyaltyCard: state => state.customer.loyalty.card,
@@ -182,8 +185,18 @@ export default {
       })*/
       this.$store.dispatch('payNowCalcHendlerChange')
     },
+    setOrderType(opt) {
+      this.$store.commit('order/ORDER_TYPE', opt)
+    },
     footerBtnMethodS() {
       this.$store.dispatch('successfullHendlerChange')
+    },
+    add_customer_address() {
+      if (this.$store.state.customer.address === false) {
+        $('#manage-customer').modal()
+      } else {
+        $('#order-confirmation').modal()
+      }
     },
   },
 }

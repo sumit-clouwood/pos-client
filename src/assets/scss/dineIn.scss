@@ -300,7 +300,6 @@ table#running-order {
         color: #000;
       }
       border-top: $px2 solid #e5e9f4;
-      height: $px110;
       vertical-align: middle;
       border-bottom: $px2 solid #e5e9f4;
     }
@@ -349,6 +348,19 @@ table#running-order {
       align-items: center;
     }
   }
+  td{
+    &.completed-order{
+      > span{
+        border-radius: $px4;
+        background-color: $green;
+        display: grid !important;
+        font-size: $px16 !important;
+        color: $white !important;
+        padding: $px5;
+        align-items: center;
+      }
+    }
+  }
   td {
     .running-actions {
       > span.finished-order {
@@ -392,7 +404,6 @@ table#running-order {
 td.dine-order-tabel {
   >span {
     width: $px160;
-    height: $px86;
     border-radius: 5%;
     box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
     display: inline-block;
@@ -550,6 +561,7 @@ svg {
     box-shadow: 0 3px 3px 0 rgba(187, 187, 187, 0.9);
     background-color: #ffffff;
     min-width: 200px;
+    position:absolute;
     .tooltip-c-range {
       margin-bottom: 0;
       font-weight: 600;
@@ -764,7 +776,7 @@ svg .active > path {
           //overflow-x: auto !important;
         }
           .new-pos{
-            padding: 0 $px20;
+            padding: 0;
             .running-orders-dinein{
               padding: 0;
             }
@@ -1032,5 +1044,40 @@ svg .active > path {
     }
   }
 }
+.driver-container {
+  > button{
+    width: 100%;
+  }
+}
+#placeOrder{
+  .POSItemOptions_quantity_inputs {
+    width: 100%;
+    .value-qty {
+      height: $px60;
+      &.qtyminus{
+        background: linear-gradient(45deg, rgba(164, 151, 151, 0.3), #fff);
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+      }
+      &.qtyplus{
+        background: linear-gradient(235deg, rgba(164, 151, 151, 0.3), #fff);
+      }
+    }
+    input{
+      &.qty {
+        border: 1px solid #d8dce1;
+        height: $px60;
+        &:focus{
+          box-shadow: none;
+        }
+      }
+    }
+  }
+}
 
-
+.POSItemOptions_quantity_inputs > [type='button'] {
+  cursor: pointer;
+}
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}

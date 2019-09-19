@@ -381,6 +381,11 @@ h6 {
   width: 25px;
   text-align: center;
 }
+@include responsive(xs) {
+  .modal .modal-dialog .modal-content .modal-header.mobile {
+    display: none;
+  }
+}
 
 @include responsive(mobile) {
   .footer-slider-list-item-link{

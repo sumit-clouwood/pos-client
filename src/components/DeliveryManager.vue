@@ -30,12 +30,11 @@
     <div class="content-wrapper toggle-nav-content" id="dm-content-wrapper">
       <div class="inner-content-dm">
         <DMMenu />
+        <HomeDelivery v-if="section === 'crm'" />
 
-        <HomeDelivery />
+        <TakeAway v-if="section === 'takeaway'" />
 
-        <TakeAway />
-
-        <FutureOrder />
+        <FutureOrder v-if="section === 'future'" />
       </div>
     </div>
 
@@ -80,6 +79,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('deliveryManager', ['listType']),
+    ...mapState('deliveryManager', ['section']),
     ...mapState('location', ['brand']),
   },
 }

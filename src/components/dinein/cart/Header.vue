@@ -49,7 +49,7 @@
           data-toggle="modal"
           id="get-available-tables-list"
         >
-          {{ _t('Select Table') }}
+          {{ _t('Move Table') }}
         </button>
         <DineInTableSelection />
       </div>
@@ -57,43 +57,24 @@
         v-if="covers && cartType !== 'hold' && items.length"
         class="driver-container"
       >
-        <form>
-          <input
-            autocomplete="off"
-            type="text"
-            placeholder="Select Cover"
-            class="input-search-driver shorten-sentence"
-            id="get-customer-list"
-            v-model="OrderSelectedCover"
-            @click="showDropdown"
-          />
-        </form>
-        <div
-          id="my-dropdown"
-          class="available-covers dropdown-content cursor-pointer"
-          v-if="items.find(element => element.cover_name == undefined)"
+        <button
+          class="btn btn-success"
+          data-target="#dine-in-cover-selection"
+          data-toggle="modal"
+          id="get-available-cover-list"
         >
-          <span class="dropdown" :key="0" @click="setCover(null)">
-            {{ _t('Select Cover') }}
-          </span>
-          <span
-            class="dropdown"
-            v-for="(cover, index) in covers"
-            :key="cover._id + index"
-            @click="setCover(cover)"
-          >
-            <span v-html="cover.name"></span>
-          </span>
-        </div>
+          {{ selectedCover.name ? _t(selectedCover.name) : _t('Select Cover') }}
+        </button>
+        <DineInCoverSelection />
       </div>
-      <div
+      <!--<div
         v-if="cartType !== 'hold' && items.length"
         id="holdorder"
         class="orders-button-large color-main color-text"
         @click="hold"
       >
         {{ _t('Hold') }}
-      </div>
+      </div>-->
       <div class="color-main color-text dine-in-table-guest-details-pos">
         <span class="tables-draw">
           <img src="img/dinein/dine-intable.svg" />
@@ -111,9 +92,10 @@
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
 import DineInTableSelection from './popup/DineInTableSelection'
+import DineInCoverSelection from './popup/DineInCoverSelection'
 export default {
   name: 'Header',
-  components: { DineInTableSelection },
+  components: { DineInTableSelection, DineInCoverSelection },
   data() {
     return {
       OrderSelectedCover: 'Select Cover',
@@ -147,13 +129,6 @@ export default {
     },
     showDropdown: function() {
       $('.available-covers').toggle()
-    },
-    setCover: function(cover) {
-      if (cover) {
-        this.OrderSelectedCover = cover.name
-      }
-      this.$store.commit('dinein/SET_COVER', cover)
-      $('.dropdown-content').hide()
     },
     hold() {
       $('#holdorder').hide()

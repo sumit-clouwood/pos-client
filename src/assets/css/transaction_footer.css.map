@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAGA,mBAAoB;EAClB,UAAU,EAAE,iBAAwB;EACpC,WAAW,EAAE,iBAAwB;EACrC,iBAAiB,EAAE,CAAC;EACpB,eAAe,EAAE,CAAC;EAClB,OAAO,EAAE,gBAAW;EACpB,OAAO,EAAE,IAAI;EACb,eAAe,EAAE,QAAQ;EACzB,WAAW,EAAE,MAAM;EACnB,wCAAoB;IAClB,OAAO,EAAE,WAAO;IAChB,MAAM,ECEW,QAAK",
-"sources": ["../scss/transaction_footer.scss","../scss/variables.scss"],
-"names": [],
-"file": "transaction_footer.css"
-}

@@ -5,12 +5,12 @@
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
-          <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title color-text-invert">
             {{ _t('Move') + ' ' + _t('Table') }}
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
+          <span class="error">{{ tableBookedAlert }}</span>
           <div id="available-tables" class="available-tables cursor-pointer">
             <div class="table-status-container">
               <span
@@ -44,8 +44,17 @@
               type="button"
               id="discount-save-btn"
               data-dismiss="modal"
+              @click="moveSelectedTable"
             >
               {{ _t('Ok') }}
+            </button>
+            <button
+              @click="removeSelectedTable"
+              type="button"
+              class="btn btn-danger"
+              data-dismiss="modal"
+            >
+              {{ _t('Cancel') }}
             </button>
           </div>
         </div>
@@ -62,6 +71,8 @@ export default {
   data() {
     return {
       selectedTableMove: '',
+      moveTableDetails: '',
+      tableBookedAlert: '',
     }
   },
   computed: {
@@ -70,9 +81,25 @@ export default {
   },
   methods: {
     setTable: function(table) {
+      this.moveTableDetails = table
+      this.selectedTableMove = table.table_id
+      if (
+        table.color == '#c84c4c' &&
+        table.table_id != this.selectedTable._id
+      ) {
+        this.tableBookedAlert = 'This table already have orders'
+      } else {
+        this.tableBookedAlert = ''
+      }
+    },
+    moveSelectedTable() {
+      let table = this.moveTableDetails
       if (table) {
+        if (table.table_number) {
+          table.number = table.table_number
+        }
+        this.$store.commit('dinein/SELECTED_TABLE', table)
         this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
-        this.selectedTableMove = table.table_id
         // let coverId = table.id
         let tableId = table.table_id
         let reservationId = localStorage.getItem('reservationId')
@@ -86,8 +113,24 @@ export default {
       } else {
         this.selectedTableMove = ''
       }
-      // this.$store.commit('dinein/AVAILABLE_TABLES', table)
-      //      $('.available-tables').hide()
+    },
+    removeSelectedTable: function() {
+      if (this.selectedTable) {
+        this.selectedTable.number = this.selectedTable.table_number
+      }
+      this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', this.selectedTable)
+      this.$store.commit('dinein/SELECTED_TABLE', this.selectedTable)
+
+      this.selectedTableMove = ''
+      // let coverId = table.id
+      let reservationId = localStorage.getItem('reservationId')
+
+      let data = {
+        table: this.selectedTable.table_id,
+        reservationid: reservationId,
+        status: 'move_table',
+      }
+      this.$store.dispatch('dinein/moveTable', data)
     },
   },
 }
@@ -95,5 +138,10 @@ export default {
 <style lang="sass" scoped>
 .error
     width: 100%
+    color: #c84c4c;
+    padding-bottom: 5px;
+    font-weight: bold;
+    position: relative;
+    bottom: 10px
 /*padding: 40px 5px 10px 5px*/
 </style>

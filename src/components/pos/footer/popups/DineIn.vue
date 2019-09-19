@@ -119,12 +119,9 @@ export default {
 
   methods: {
     setOrderType(orderType) {
-      if (orderType.OTApi == 'walk_in') {
-        this.updateOrderType()
-      }
-      if (orderType.OTApi != 'call_center') {
-        this.$store.commit('order/ORDER_TYPE', orderType)
+      if (orderType.OTApi !== 'call_center') {
         this.$store.commit('location/SET_MODAL', '#manage-customer')
+        //Remove customer entity
         this.$store.dispatch('customer/resetCustomer')
       }
       if (this.selectedOrderType === orderType.OTApi) {
@@ -135,9 +132,15 @@ export default {
       }
     },
     updateOrderType() {
-      this.$store.dispatch('order/updateOrderType', this.selectedOrderType)
-      if (this.selectedOrderType.OTApi == 'dine_in') {
+      if (
+        this.selectedOrderType.OTApi === 'dine_in' &&
+        this.$store.state.dinein.covers == false
+      ) {
+        //Redirect to dinein screen
         this.$router.push('/dine-in' + this.store)
+      } else {
+        //Set state and recalculate the cart
+        this.$store.dispatch('order/updateOrderType', this.selectedOrderType)
       }
     },
   },
