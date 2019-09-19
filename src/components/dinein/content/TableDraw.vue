@@ -203,7 +203,7 @@
           </div>
           <div class="modal-body font-weight-bold">
             <!--{{ _t('Please add number of guest') }}-->
-            <label>{{ _t('Number of guest') }} : </label>
+            <label><!--{{ _t('Number of guest') }} : --></label>
             <div class="POSItemOptions_quantity_inputs">
               <!-- <input type='button' value='-' class='qtyminus value-qty' field='quantity'/> -->
               <button class="qtyminus value-qty" @click="updateGuestCount('-')">
@@ -349,7 +349,7 @@ export default {
         if (symbol === '+') {
           this.guests += 1
         } else {
-          if (this.guests != 1) this.guests -= 1
+          if (this.guests > 1) this.guests -= 1
         }
       }
     },
