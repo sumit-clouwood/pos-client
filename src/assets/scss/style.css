@@ -281,6 +281,9 @@ h6 {
   width: 25px;
   text-align: center; }
 
+@media only screen and (min-width: 599px) {
+  .modal .modal-dialog .modal-content .modal-header.mobile {
+    display: none; } }
 @media only screen and (min-width: 320px) and (max-width: 960px) {
   .footer-slider-list-item-link > span {
     display: flex;
@@ -374,6 +377,9 @@ h6 {
       .modal .modal-dialog .modal-content .modal-header {
         padding: 20px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        .modal .modal-dialog .modal-content .modal-header.mobile {
+          background: none;
+          box-shadow: none; }
         .modal .modal-dialog .modal-content .modal-header .customer-title {
           font-size: 18px;
           color: #3f4146; }
@@ -4876,7 +4882,6 @@ table#running-order {
     font-size: 0.875rem; }
   table#running-order tr td {
     border-top: 0.125rem solid #e5e9f4;
-    height: 6.875rem;
     vertical-align: middle;
     border-bottom: 0.125rem solid #e5e9f4; }
     table#running-order tr td > span {
@@ -4948,7 +4953,6 @@ table#running-order {
 
 td.dine-order-tabel > span {
   width: 10rem;
-  height: 5.375rem;
   border-radius: 5%;
   box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
   display: inline-block;
@@ -5417,6 +5421,28 @@ svg .active > path {
           background-color: #767DFF;
           background-position: center center;
           border-color: #767DFF !important; }
+
+.driver-container > button {
+  width: 100%; }
+
+#placeOrder .POSItemOptions_quantity_inputs {
+  width: 100%; }
+  #placeOrder .POSItemOptions_quantity_inputs .value-qty {
+    height: 3.75rem; }
+    #placeOrder .POSItemOptions_quantity_inputs .value-qty.qtyminus {
+      background: linear-gradient(45deg, rgba(164, 151, 151, 0.3), #fff); }
+    #placeOrder .POSItemOptions_quantity_inputs .value-qty.qtyplus {
+      background: linear-gradient(235deg, rgba(164, 151, 151, 0.3), #fff); }
+  #placeOrder .POSItemOptions_quantity_inputs input.qty {
+    border: 1px solid #d8dce1; }
+    #placeOrder .POSItemOptions_quantity_inputs input.qty:focus {
+      box-shadow: none; }
+
+.POSItemOptions_quantity_inputs > [type='button'] {
+  cursor: pointer; }
+
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none; }
 
 .new-transaction {
   display: grid;
