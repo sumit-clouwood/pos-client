@@ -113,7 +113,6 @@ export default {
         grid-gap: 20px;
         border-bottom: 1px solid $gray-middle;
         background-color: #fafafa;
-        background-color: #fff !important;
 
         .food-categories-item-text {
           font-size: 14px;
