@@ -51,11 +51,25 @@ export default {
     return {
       OrderSelectedCover: 'Select Cover',
       OrderSelectedCoverId: '',
+      defaultCover: '',
     }
   },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('dinein', ['selectedCover', 'covers']),
+    ...mapState('order', ['items', 'orderId']),
+  },
+  mounted() {
+    if (this.orderId == null) {
+      this.defaultCover = this.covers.find(element => {
+        return element.priority == 0
+      })
+      if (this.defaultCover) {
+        this.OrderSelectedCover = this.defaultCover.name
+        this.OrderSelectedCoverId = this.defaultCover._id
+      }
+      this.$store.commit('dinein/SET_COVER', this.defaultCover)
+    }
   },
   methods: {
     setCover: function(cover) {

@@ -63,7 +63,7 @@
           data-toggle="modal"
           id="get-available-cover-list"
         >
-          {{ _t('Select Cover') }}
+          {{ selectedCover.name ? _t(selectedCover.name) : _t('Select Cover') }}
         </button>
         <DineInCoverSelection />
       </div>
