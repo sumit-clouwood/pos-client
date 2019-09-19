@@ -76,16 +76,24 @@ export default {
       this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
       deliveryTabs(orderStatus.dataRelated)
       var gt = this
-      $('.dm-ready-order-wrapper table tbody tr').each(function() {
-        let orderTime = $(this)
-          .find('#storerunningtime')
-          .val()
-        let orderTimer = gt.getTimer(orderTime)
-        $(this)
-          .find('.order-delivery-area')
-          .text(orderTimer)
-        // eslint-disable-next-line no-console
-        console.log(orderTimer)
+      $('.dm-ready-order-wrapper').each(function() {
+        let scope = this
+        if ($(scope).css('display') !== 'none') {
+          $(scope)
+            .find('table tbody tr')
+            .each(function() {
+              scope = this
+              let orderTime = $(scope)
+                .find('#storerunningtime')
+                .val()
+              let orderTimer = gt.getTimer(orderTime)
+              $(scope)
+                .find('.runningtimes')
+                .text(orderTimer)
+              // eslint-disable-next-line no-console
+              console.log(orderTimer)
+            })
+        }
       })
     },
     getTimer(dateTime) {
