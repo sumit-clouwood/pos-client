@@ -109,6 +109,7 @@ export default {
       currentItem: state => state.order.item._id,
     }),
     ...mapState('order', ['orderType', 'selectedOrder']),
+    ...mapState('discount', ['itemDiscounts']),
     ...mapGetters('category', ['subcategoryImage']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters('order', [
@@ -155,6 +156,7 @@ export default {
           ' )'
         )
       }
+
       return ''
     },
     removeCurrentOrder(param) {
