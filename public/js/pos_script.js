@@ -110,8 +110,10 @@ $(document).ready(function() {
   })
 
   $(document).mouseup(function(e) {
-    var popup = $('.setting-dropdown, #setting-icon')
-    var icons = $('.setting-dropdown')
+    var popup = $(
+      '.setting-dropdown, .setting-dropdown-transaction, #setting-icon'
+    )
+    var icons = $('.setting-dropdown, .setting-dropdown-transaction')
 
     // var datesassign =$(".datepicker");
     if (
@@ -284,12 +286,12 @@ $(document).ready(function() {
   // End More text-show
 
   // li dropdown
-  $('div.dm-ready-order-wrapper').each(function() {
+  /*$('div.dm-ready-order-wrapper').each(function() {
     $(this).hide()
     if ($(this).attr('id') == 'dm-new-order') {
       $(this).show()
     }
-  })
+  })*/
 
   $('.all-tables-wrap > button').on('click', function(e) {
     e.preventDefault(e)
