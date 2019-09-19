@@ -72,6 +72,14 @@
         <li v-if="permitted('dashboard', 'root')">
           <a :href="dashboard">{{ _t('Dashboard') }}</a>
         </li>
+        <li
+          v-if="permitted('transactional_orders')"
+          @click="moveTransactionSection(this)"
+        >
+          <a role="button">
+            {{ _t('Transactions') }}
+          </a>
+        </li>
         <li v-if="permitted('crm', 'root')">
           <a :href="crm">{{ _t('CRM') }}</a>
         </li>
@@ -127,7 +135,7 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
-    ...mapGetters('context', ['store']),
+    ...mapGetters('context', ['store', 'transactions']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('sync', ['online']),
     ...mapState({
@@ -143,6 +151,9 @@ export default {
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
       $('.setting-dropdown').css('display', 'none')
+    },
+    moveTransactionSection() {
+      this.$router.push(this.store + '/transactions')
     },
     changeLanguage(locale) {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code

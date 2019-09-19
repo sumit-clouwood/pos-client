@@ -192,3 +192,15 @@
     }
   }
 }
+.transaction-orders{
+  .header-main{
+    .header-main-right{
+      .walkin-btn-design{
+        > .walkin-btn{
+          height: $px50;
+          margin-left: $px20;
+        }
+      }
+    }
+  }
+}

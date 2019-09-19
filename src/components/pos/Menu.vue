@@ -273,7 +273,7 @@ export default {
             padding: 0 20px 0 10px;
             display: grid;
             grid-template-columns: min-content 1fr;
-            background-color: #fff !important;
+            background-color: #fff;
 
             .nav-link-text {
               font-size: 14px;

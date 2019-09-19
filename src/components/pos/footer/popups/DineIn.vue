@@ -119,7 +119,7 @@ export default {
 
   methods: {
     setOrderType(orderType) {
-      if (orderType.OTApi == 'walk_in') {
+      if (orderType.OTApi === 'walk_in') {
         this.updateOrderType()
       }
       if (orderType.OTApi != 'call_center') {
@@ -136,7 +136,7 @@ export default {
     },
     updateOrderType() {
       this.$store.dispatch('order/updateOrderType', this.selectedOrderType)
-      if (this.selectedOrderType.OTApi == 'dine_in') {
+      if (this.selectedOrderType.OTApi === 'dine_in') {
         this.$router.push('/dine-in' + this.store)
       }
     },
