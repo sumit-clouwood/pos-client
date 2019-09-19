@@ -204,13 +204,25 @@
           <div class="modal-body font-weight-bold">
             <!--{{ _t('Please add number of guest') }}-->
             <label>{{ _t('Number of guest') }} : </label>
-            <input
-              type="number"
-              v-model.number="guests"
-              @keyup="chairsValidation"
-              @change="chairsValidation"
-              class="form-control"
-            />
+            <div class="POSItemOptions_quantity_inputs">
+              <!-- <input type='button' value='-' class='qtyminus value-qty' field='quantity'/> -->
+              <button class="qtyminus value-qty">
+                <i class="fa fa-minus" aria-hidden="true"></i>
+              </button>
+              <input
+                type="number"
+                v-model.number="guests"
+                @keyup="chairsValidation"
+                @change="chairsValidation"
+                class="form-control qty"
+                name="quantity"
+              />
+              <!--<input type="text" name="quantity" value="1" min="1" class="qty">-->
+              <button class="qtyplus value-qty">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
+              <!-- <input type='button' value='+' class='qtyplus value-qty' field='quantity'/> -->
+            </div>
             <span v-if="validationErrors" class="text-danger">{{
               validationErrors
             }}</span>
@@ -1086,5 +1098,59 @@ export default {
 <style scoped>
 .modal .modal-dialog .modal-content .modal-footer {
   display: list-item;
+}
+.POSItemOptions_quantity_inputs {
+  width: 100%;
+  border-radius: 5px 5px 5px 5px;
+}
+
+button.qtyminus.value-qty {
+  border: 1px solid #d8dce1;
+  border-right: medium none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  background: linear-gradient(45deg, rgba(164, 151, 151, 0.3), #fff);
+}
+
+input.qty {
+  border: 1px solid #d8dce1;
+  border-left: medium none;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-right: medium none;
+  border-radius: 0;
+}
+
+button.qtyplus.value-qty {
+  border: 1px solid #d8dce1;
+  border-left: medium none;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  background: linear-gradient(235deg, rgba(164, 151, 151, 0.3), #fff);
+}
+
+.POSItemOptions_quantity_inputs > * {
+  border: 0 none;
+  background-color: #fff;
+  float: left;
+  width: 33.33%;
+  text-align: center;
+  outline: none;
+  color: #3d3f43;
+  font-size: 16px;
+  font-weight: 600;
+  height: 60px;
+  letter-spacing: 0;
+  line-height: 40px;
+  vertical-align: middle;
+  padding: 0;
+  border-radius: 5px 5px 5px 5px;
+}
+
+.POSItemOptions_quantity_inputs > [type='button'] {
+  cursor: pointer;
+}
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
 }
 </style>
