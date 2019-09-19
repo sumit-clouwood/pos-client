@@ -203,14 +203,26 @@
           </div>
           <div class="modal-body font-weight-bold">
             <!--{{ _t('Please add number of guest') }}-->
-            <label>{{ _t('Number of guest') }} : </label>
-            <input
-              type="number"
-              v-model.number="guests"
-              @keyup="chairsValidation"
-              @change="chairsValidation"
-              class="form-control"
-            />
+            <label><!--{{ _t('Number of guest') }} : --></label>
+            <div class="POSItemOptions_quantity_inputs">
+              <!-- <input type='button' value='-' class='qtyminus value-qty' field='quantity'/> -->
+              <button class="qtyminus value-qty" @click="updateGuestCount('-')">
+                <i class="fa fa-minus" aria-hidden="true"></i>
+              </button>
+              <input
+                type="number"
+                v-model.number="guests"
+                @keyup="chairsValidation"
+                @change="chairsValidation"
+                class="form-control qty"
+                name="quantity"
+              />
+              <!--<input type="text" name="quantity" value="1" min="1" class="qty">-->
+              <button class="qtyplus value-qty" @click="updateGuestCount('+')">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
+              <!-- <input type='button' value='+' class='qtyplus value-qty' field='quantity'/> -->
+            </div>
             <span v-if="validationErrors" class="text-danger">{{
               validationErrors
             }}</span>
@@ -329,6 +341,16 @@ export default {
         this.guests = 1
       } else {
         this.validationErrors = false
+      }
+    },
+    updateGuestCount(symbol) {
+      this.chairsValidation()
+      if (!this.validationErrors) {
+        if (symbol === '+') {
+          this.guests += 1
+        } else {
+          if (this.guests > 1) this.guests -= 1
+        }
       }
     },
     created_time(time) {
