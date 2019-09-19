@@ -36,11 +36,11 @@
               )
             }}</span>
           </div>
-          <div class="replace-btn">
+          <!--<div class="replace-btn">
             <a href="javascript:void(0)" @click="modifyThisOrder">{{
               _t('Replace')
             }}</a>
-          </div>
+          </div>-->
         </div>
       </div>
     </div>

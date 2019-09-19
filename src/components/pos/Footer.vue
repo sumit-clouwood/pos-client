@@ -1,5 +1,6 @@
 <template>
   <div class="footer">
+    <!--{{ cartType + ' dd ' + orderType.OTApi }}-->
     <div class="footer-slider color-dashboard-background">
       <ul class="footer-slider-list ullist-icons">
         <li
@@ -35,7 +36,10 @@
           v-if="cartType === 'new'"
           @click="viewHoldOrders"
           class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
-          :class="{ active: vbutton === 'hold' }"
+          :class="{
+            active: vbutton === 'hold',
+            hide: orderType.OTApi === 'dine_in',
+          }"
           id="hold-order-box"
         >
           <a
@@ -66,7 +70,10 @@
           v-else
           @click="newOrders"
           class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
-          :class="{ active: vbutton === 'new' }"
+          :class="{
+            active: vbutton === 'new',
+            hide: orderType.OTApi === 'dine_in',
+          }"
           id="new-order-box"
         >
           <a
@@ -599,5 +606,8 @@ export default {
 <style scoped>
 .displayBlock {
   display: inline-block;
+}
+.hide {
+  display: none;
 }
 </style>
