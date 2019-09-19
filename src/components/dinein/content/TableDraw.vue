@@ -203,14 +203,26 @@
           </div>
           <div class="modal-body font-weight-bold">
             <!--{{ _t('Please add number of guest') }}-->
-            <label>{{ _t('Number of guest') }} : </label>
-            <input
-              type="number"
-              v-model.number="guests"
-              @keyup="chairsValidation"
-              @change="chairsValidation"
-              class="form-control"
-            />
+            <label><!--{{ _t('Number of guest') }} : --></label>
+            <div class="POSItemOptions_quantity_inputs">
+              <!-- <input type='button' value='-' class='qtyminus value-qty' field='quantity'/> -->
+              <button class="qtyminus value-qty" @click="updateGuestCount('-')">
+                <i class="fa fa-minus" aria-hidden="true"></i>
+              </button>
+              <input
+                type="number"
+                v-model.number="guests"
+                @keyup="chairsValidation"
+                @change="chairsValidation"
+                class="form-control qty"
+                name="quantity"
+              />
+              <!--<input type="text" name="quantity" value="1" min="1" class="qty">-->
+              <button class="qtyplus value-qty" @click="updateGuestCount('+')">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
+              <!-- <input type='button' value='+' class='qtyplus value-qty' field='quantity'/> -->
+            </div>
             <span v-if="validationErrors" class="text-danger">{{
               validationErrors
             }}</span>
@@ -329,6 +341,16 @@ export default {
         this.guests = 1
       } else {
         this.validationErrors = false
+      }
+    },
+    updateGuestCount(symbol) {
+      this.chairsValidation()
+      if (!this.validationErrors) {
+        if (symbol === '+') {
+          this.guests += 1
+        } else {
+          if (this.guests > 1) this.guests -= 1
+        }
       }
     },
     created_time(time) {
@@ -708,259 +730,263 @@ export default {
         .attr('style', 'top:' + top + 'px; left:' + left + 'px; display:block')
     },
     drawViews() {
-      this.activeArea.top_view.forEach((element, i) => {
-        d3.select(this.$el)
-          .select('#dine-in-area > g')
-          .datum(element)
-          .append('g')
-          .attr('index_id', i)
-          .attr('view_type', d => d.name)
-          .attr('view_side', 'top_view')
-          .attr('class', 'side_view_block')
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.top_view.x
-            return d.x
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.top_view.y
-            return d.y
-          })
-          .append('image')
-          .attr('preserveAspectRatio', 'none')
-          .attr('xlink:href', function(d) {
-            return `img/dinein/area-view/${d.name}_view_h.jpg`
-            // return `img/dinein/area-view/city_view_h.jpg`
-          })
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.top_view.x
-            return d.x
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.top_view.y
-            return d.y
-          })
-          .attr('height', d => d.height)
-          .attr('width', d => d.width)
-          .attr('index_id', i)
-          .attr('stroke', d => {
-            if (d.name == 'sea') {
-              return 'blue'
-            }
-            if (d.name == 'green') {
-              return 'green'
-            }
-            if (d.name == 'city') {
-              return 'yellow'
-            }
-            if (d.name == 'none') {
-              return 'gray'
-            }
-          })
-          .attr('fill', d => {
-            if (d.name == 'sea') {
-              return 'blue'
-            }
-            if (d.name == 'green') {
-              return 'green'
-            }
-            if (d.name == 'city') {
-              return 'yellow'
-            }
-            if (d.name == 'none') {
-              return 'gray'
-            }
-          })
-          .call(
-            d3
-              .drag()
-              .on('start', d => this.drag_start(d))
-              .on('drag', (d, ia, a) =>
-                this.drag_view_horizontal_drag(d, ia, a)
-              )
-              .on('end', this.drag_view_end)
-          )
-      })
-      this.activeArea.right_view.forEach((element, i) => {
-        d3.select(this.$el)
-          .select('#dine-in-area > g')
-          .datum(element)
-          .append('g')
-          .attr('index_id', i)
-          .attr('class', 'side_view_block')
-          .attr('view_type', d => d.name)
-          .attr('view_side', 'right_view')
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.right_view.x
-            return d.x
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.right_view.y
-            return d.y
-          })
-          .append('image')
-          .attr('preserveAspectRatio', 'none')
-          .attr('xlink:href', function(d) {
-            return `img/dinein/area-view/${d.name}_view_v.jpg`
-          })
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.right_view.x
-            return parseInt(d.x)
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.right_view.y
-            return d.y
-          })
-          .attr('height', d => d.height)
-          .attr('width', d => d.width)
-          .attr('index_id', i)
-          .attr('stroke', d => {
-            if (d.name == 'sea') {
-              return 'blue'
-            }
-            if (d.name == 'green') {
-              return 'green'
-            }
-            if (d.name == 'city') {
-              return 'yellow'
-            }
-            if (d.name == 'none') {
-              return 'gray'
-            }
-          })
-          .attr('fill', d => {
-            if (d.name == 'sea') {
-              return 'blue'
-            }
-            if (d.name == 'green') {
-              return 'green'
-            }
-            if (d.name == 'city') {
-              return 'yellow'
-            }
-            if (d.name == 'none') {
-              return 'gray'
-            }
-          })
-          .call(
-            d3
-              .drag()
-              .on('start', d => this.drag_start(d))
-              .on('drag', (d, i, a) => this.drag_view_vertical_drag(d, i, a))
-              .on('end', this.drag_view_end)
-          )
-      })
-      this.activeArea.bottom_view.forEach((element, i) => {
-        d3.select(this.$el)
-          .select('#dine-in-area > g')
-          .datum(element)
-          .append('g')
-          .attr('index_id', i)
-          .attr('class', 'side_view_block')
-          .attr('view_type', d => d.name)
-          .attr('view_side', 'bottom_view')
+      if (this.activeArea) {
+        this.activeArea.top_view.forEach((element, i) => {
+          d3.select(this.$el)
+            .select('#dine-in-area > g')
+            .datum(element)
+            .append('g')
+            .attr('index_id', i)
+            .attr('view_type', d => d.name)
+            .attr('view_side', 'top_view')
+            .attr('class', 'side_view_block')
+            .attr('x', function(d) {
+              // d.x = that.viewsCoordinates.top_view.x
+              return d.x
+            })
+            .attr('y', function(d) {
+              // d.y = that.viewsCoordinates.top_view.y
+              return d.y
+            })
+            .append('image')
+            .attr('preserveAspectRatio', 'none')
+            .attr('xlink:href', function(d) {
+              return `img/dinein/area-view/${d.name}_view_h.jpg`
+              // return `img/dinein/area-view/city_view_h.jpg`
+            })
+            .attr('x', function(d) {
+              // d.x = that.viewsCoordinates.top_view.x
+              return d.x
+            })
+            .attr('y', function(d) {
+              // d.y = that.viewsCoordinates.top_view.y
+              return d.y
+            })
+            .attr('height', d => d.height)
+            .attr('width', d => d.width)
+            .attr('index_id', i)
+            .attr('stroke', d => {
+              if (d.name == 'sea') {
+                return 'blue'
+              }
+              if (d.name == 'green') {
+                return 'green'
+              }
+              if (d.name == 'city') {
+                return 'yellow'
+              }
+              if (d.name == 'none') {
+                return 'gray'
+              }
+            })
+            .attr('fill', d => {
+              if (d.name == 'sea') {
+                return 'blue'
+              }
+              if (d.name == 'green') {
+                return 'green'
+              }
+              if (d.name == 'city') {
+                return 'yellow'
+              }
+              if (d.name == 'none') {
+                return 'gray'
+              }
+            })
+            .call(
+              d3
+                .drag()
+                .on('start', d => this.drag_start(d))
+                .on('drag', (d, ia, a) =>
+                  this.drag_view_horizontal_drag(d, ia, a)
+                )
+                .on('end', this.drag_view_end)
+            )
+        })
+        this.activeArea.right_view.forEach((element, i) => {
+          d3.select(this.$el)
+            .select('#dine-in-area > g')
+            .datum(element)
+            .append('g')
+            .attr('index_id', i)
+            .attr('class', 'side_view_block')
+            .attr('view_type', d => d.name)
+            .attr('view_side', 'right_view')
+            .attr('x', function(d) {
+              // d.x = that.viewsCoordinates.right_view.x
+              return d.x
+            })
+            .attr('y', function(d) {
+              // d.y = that.viewsCoordinates.right_view.y
+              return d.y
+            })
+            .append('image')
+            .attr('preserveAspectRatio', 'none')
+            .attr('xlink:href', function(d) {
+              return `img/dinein/area-view/${d.name}_view_v.jpg`
+            })
+            .attr('x', function(d) {
+              // d.x = that.viewsCoordinates.right_view.x
+              return parseInt(d.x)
+            })
+            .attr('y', function(d) {
+              // d.y = that.viewsCoordinates.right_view.y
+              return d.y
+            })
+            .attr('height', d => d.height)
+            .attr('width', d => d.width)
+            .attr('index_id', i)
+            .attr('stroke', d => {
+              if (d.name == 'sea') {
+                return 'blue'
+              }
+              if (d.name == 'green') {
+                return 'green'
+              }
+              if (d.name == 'city') {
+                return 'yellow'
+              }
+              if (d.name == 'none') {
+                return 'gray'
+              }
+            })
+            .attr('fill', d => {
+              if (d.name == 'sea') {
+                return 'blue'
+              }
+              if (d.name == 'green') {
+                return 'green'
+              }
+              if (d.name == 'city') {
+                return 'yellow'
+              }
+              if (d.name == 'none') {
+                return 'gray'
+              }
+            })
+            .call(
+              d3
+                .drag()
+                .on('start', d => this.drag_start(d))
+                .on('drag', (d, i, a) => this.drag_view_vertical_drag(d, i, a))
+                .on('end', this.drag_view_end)
+            )
+        })
+        this.activeArea.bottom_view.forEach((element, i) => {
+          d3.select(this.$el)
+            .select('#dine-in-area > g')
+            .datum(element)
+            .append('g')
+            .attr('index_id', i)
+            .attr('class', 'side_view_block')
+            .attr('view_type', d => d.name)
+            .attr('view_side', 'bottom_view')
 
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.bottom_view.x
-            return d.x
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.bottom_view.y
-            return d.y
-          })
-          .append('image')
-          .attr('preserveAspectRatio', 'none')
-          .attr('xlink:href', function(d) {
-            return `img/dinein/area-view/${d.name}_view_h.jpg`
-          })
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.bottom_view.x
-            return d.x
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.bottom_view.y
-            return parseInt(d.y)
-          })
-          .attr('height', d => d.height)
-          .attr('width', d => d.width)
-          .attr('index_id', i)
-          .call(
-            d3
-              .drag()
-              .on('start', d => this.drag_start(d))
-              .on('drag', (d, i, a) => this.drag_view_horizontal_drag(d, i, a))
-              .on('end', this.drag_view_end)
-          )
-      })
-      this.activeArea.left_view.forEach((element, i) => {
-        d3.select(this.$el)
-          .select('#dine-in-area > g')
-          .datum(element)
-          .append('g')
-          .attr('index_id', i)
-          .attr('class', 'side_view_block')
-          .attr('view_type', d => d.name)
-          .attr('view_side', 'left_view')
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.left_view.x
-            return d.x
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.left_view.y
-            return d.y
-          })
-          .append('image')
-          .attr('preserveAspectRatio', 'none')
-          .attr('xlink:href', function(d) {
-            return `img/dinein/area-view/${d.name}_view_v.jpg`
-          })
-          .attr('x', function(d) {
-            // d.x = that.viewsCoordinates.left_view.x
-            return d.x
-          })
-          .attr('y', function(d) {
-            // d.y = that.viewsCoordinates.left_view.y
-            return d.y
-          })
-          .attr('height', d => d.height)
-          .attr('width', d => d.width)
-          .attr('index_id', i)
+            .attr('x', function(d) {
+              // d.x = that.viewsCoordinates.bottom_view.x
+              return d.x
+            })
+            .attr('y', function(d) {
+              // d.y = that.viewsCoordinates.bottom_view.y
+              return d.y
+            })
+            .append('image')
+            .attr('preserveAspectRatio', 'none')
+            .attr('xlink:href', function(d) {
+              return `img/dinein/area-view/${d.name}_view_h.jpg`
+            })
+            .attr('x', function(d) {
+              // d.x = that.viewsCoordinates.bottom_view.x
+              return d.x
+            })
+            .attr('y', function(d) {
+              // d.y = that.viewsCoordinates.bottom_view.y
+              return parseInt(d.y)
+            })
+            .attr('height', d => d.height)
+            .attr('width', d => d.width)
+            .attr('index_id', i)
+            .call(
+              d3
+                .drag()
+                .on('start', d => this.drag_start(d))
+                .on('drag', (d, i, a) =>
+                  this.drag_view_horizontal_drag(d, i, a)
+                )
+                .on('end', this.drag_view_end)
+            )
+        })
+        this.activeArea.left_view.forEach((element, i) => {
+          d3.select(this.$el)
+            .select('#dine-in-area > g')
+            .datum(element)
+            .append('g')
+            .attr('index_id', i)
+            .attr('class', 'side_view_block')
+            .attr('view_type', d => d.name)
+            .attr('view_side', 'left_view')
+            .attr('x', function(d) {
+              // d.x = that.viewsCoordinates.left_view.x
+              return d.x
+            })
+            .attr('y', function(d) {
+              // d.y = that.viewsCoordinates.left_view.y
+              return d.y
+            })
+            .append('image')
+            .attr('preserveAspectRatio', 'none')
+            .attr('xlink:href', function(d) {
+              return `img/dinein/area-view/${d.name}_view_v.jpg`
+            })
+            .attr('x', function(d) {
+              // d.x = that.viewsCoordinates.left_view.x
+              return d.x
+            })
+            .attr('y', function(d) {
+              // d.y = that.viewsCoordinates.left_view.y
+              return d.y
+            })
+            .attr('height', d => d.height)
+            .attr('width', d => d.width)
+            .attr('index_id', i)
 
-          .attr('stroke', d => {
-            if (d.name == 'sea') {
-              return 'blue'
-            }
-            if (d.name == 'green') {
-              return 'green'
-            }
-            if (d.name == 'city') {
-              return 'yellow'
-            }
-            if (d.name == 'none') {
-              return 'gray'
-            }
-          })
-          .attr('fill', d => {
-            if (d.name == 'sea') {
-              return 'blue'
-            }
-            if (d.name == 'green') {
-              return 'green'
-            }
-            if (d.name == 'city') {
-              return 'yellow'
-            }
-            if (d.name == 'none') {
-              return 'gray'
-            }
-          })
-          .call(
-            d3
-              .drag()
-              .on('start', d => this.drag_start(d))
-              .on('drag', (d, i, a) => this.drag_view_vertical_drag(d, i, a))
-              .on('end', this.drag_view_end)
-          )
-      })
+            .attr('stroke', d => {
+              if (d.name == 'sea') {
+                return 'blue'
+              }
+              if (d.name == 'green') {
+                return 'green'
+              }
+              if (d.name == 'city') {
+                return 'yellow'
+              }
+              if (d.name == 'none') {
+                return 'gray'
+              }
+            })
+            .attr('fill', d => {
+              if (d.name == 'sea') {
+                return 'blue'
+              }
+              if (d.name == 'green') {
+                return 'green'
+              }
+              if (d.name == 'city') {
+                return 'yellow'
+              }
+              if (d.name == 'none') {
+                return 'gray'
+              }
+            })
+            .call(
+              d3
+                .drag()
+                .on('start', d => this.drag_start(d))
+                .on('drag', (d, i, a) => this.drag_view_vertical_drag(d, i, a))
+                .on('end', this.drag_view_end)
+            )
+        })
+      }
     },
     manageViews() {
       let that = this

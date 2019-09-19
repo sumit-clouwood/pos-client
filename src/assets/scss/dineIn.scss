@@ -300,7 +300,6 @@ table#running-order {
         color: #000;
       }
       border-top: $px2 solid #e5e9f4;
-      height: $px110;
       vertical-align: middle;
       border-bottom: $px2 solid #e5e9f4;
     }
@@ -392,7 +391,6 @@ table#running-order {
 td.dine-order-tabel {
   >span {
     width: $px160;
-    height: $px86;
     border-radius: 5%;
     box-shadow: 0 6px 8px rgba(52, 73, 94, 0.2), 0 1px 1px rgba(52, 73, 94, 0.1);
     display: inline-block;
@@ -1032,5 +1030,38 @@ svg .active > path {
     }
   }
 }
+.driver-container {
+  > button{
+    width: 100%;
+  }
+}
+#placeOrder{
+  .POSItemOptions_quantity_inputs {
+    width: 100%;
+    .value-qty {
+      height: $px60;
+      &.qtyminus{
+        background: linear-gradient(45deg, rgba(164, 151, 151, 0.3), #fff);
+      }
+      &.qtyplus{
+        background: linear-gradient(235deg, rgba(164, 151, 151, 0.3), #fff);
+      }
+    }
+    input{
+      &.qty {
+        border: 1px solid #d8dce1;
+        height: $px60;
+        &:focus{
+          box-shadow: none;
+        }
+      }
+    }
+  }
+}
 
-
+.POSItemOptions_quantity_inputs > [type='button'] {
+  cursor: pointer;
+}
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
