@@ -206,7 +206,7 @@
             <label>{{ _t('Number of guest') }} : </label>
             <div class="POSItemOptions_quantity_inputs">
               <!-- <input type='button' value='-' class='qtyminus value-qty' field='quantity'/> -->
-              <button class="qtyminus value-qty">
+              <button class="qtyminus value-qty" @click="updateGuestCount('-')">
                 <i class="fa fa-minus" aria-hidden="true"></i>
               </button>
               <input
@@ -218,7 +218,7 @@
                 name="quantity"
               />
               <!--<input type="text" name="quantity" value="1" min="1" class="qty">-->
-              <button class="qtyplus value-qty">
+              <button class="qtyplus value-qty" @click="updateGuestCount('+')">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
               <!-- <input type='button' value='+' class='qtyplus value-qty' field='quantity'/> -->
@@ -341,6 +341,16 @@ export default {
         this.guests = 1
       } else {
         this.validationErrors = false
+      }
+    },
+    updateGuestCount(symbol) {
+      this.chairsValidation()
+      if (!this.validationErrors) {
+        if (symbol === '+') {
+          this.guests += 1
+        } else {
+          if (this.guests != 1) this.guests -= 1
+        }
       }
     },
     created_time(time) {
