@@ -153,7 +153,7 @@ const actions = {
             order_delivery_area: '',
             item_discounts: [],
             item_modifiers: '',
-            order_surcharges: '',
+            order_surcharges: [],
             order_discounts: [],
             order_payments: [],
           }
