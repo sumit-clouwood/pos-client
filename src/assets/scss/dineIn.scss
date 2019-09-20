@@ -348,6 +348,19 @@ table#running-order {
       align-items: center;
     }
   }
+  td{
+    &.completed-order{
+      > span{
+        border-radius: $px4;
+        background-color: $green;
+        display: grid !important;
+        font-size: $px16 !important;
+        color: $white !important;
+        padding: $px5;
+        align-items: center;
+      }
+    }
+  }
   td {
     .running-actions {
       > span.finished-order {
@@ -548,6 +561,7 @@ svg {
     box-shadow: 0 3px 3px 0 rgba(187, 187, 187, 0.9);
     background-color: #ffffff;
     min-width: 200px;
+    position:absolute;
     .tooltip-c-range {
       margin-bottom: 0;
       font-weight: 600;
@@ -1042,6 +1056,8 @@ svg .active > path {
       height: $px60;
       &.qtyminus{
         background: linear-gradient(45deg, rgba(164, 151, 151, 0.3), #fff);
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
       }
       &.qtyplus{
         background: linear-gradient(235deg, rgba(164, 151, 151, 0.3), #fff);

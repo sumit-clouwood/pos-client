@@ -51,7 +51,7 @@ export default {
   methods: {
     generateInvoice() {
       $('#pay-now').modal('hide')
-      this.$store.dispatch('checkout/generateInvoice')
+      this.$store.commit('checkout/CHANGE_AMOUNT_STATUS', true)
     },
   },
 }
