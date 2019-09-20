@@ -617,6 +617,11 @@ const actions = {
               if (typeof response.data.order_no !== 'undefined') {
                 commit('SET_ORDER_NUMBER', response.data.order_no)
               }
+            } else if (rootState.order.selectedOrder.item.order_no) {
+              commit(
+                'SET_ORDER_NUMBER',
+                rootState.order.selectedOrder.item.order_no
+              )
             }
             //check what is order status, hold or modifying delivery
             switch (rootState.order.orderStatus) {
