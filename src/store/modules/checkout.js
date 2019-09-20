@@ -432,9 +432,7 @@ const actions = {
           //do something here
         } else {
           const method = rootGetters['payment/cash']
-          if (
-            rootState.order.orderType.OTApi !== CONSTANTS.ORDER_TYPE_DINE_IN
-          ) {
+          if (action != 'dine-in-place-order') {
             order.order_payments = [
               {
                 entity_id: method._id,
