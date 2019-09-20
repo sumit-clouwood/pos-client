@@ -40,7 +40,7 @@
     </div>
     <div class="main-oreders-buttons">
       <div
-        v-if="availableTables && cartType !== 'hold' && items.length"
+        v-if="availableTables && cartType !== 'hold'"
         class="driver-container"
       >
         <button
@@ -53,10 +53,7 @@
         </button>
         <DineInTableSelection />
       </div>
-      <div
-        v-if="covers && cartType !== 'hold' && items.length"
-        class="driver-container"
-      >
+      <div v-if="covers && cartType !== 'hold'" class="driver-container">
         <button
           class="btn btn-success"
           data-target="#dine-in-cover-selection"
@@ -104,6 +101,15 @@ export default {
       },
     }
   },
+  mounted() {
+    if (!this.selectedTable) {
+      this.$router.push(this.store)
+      this.$store.commit('order/ORDER_TYPE', {
+        OTview: 'Walk In',
+        OTApi: 'walk_in',
+      })
+    }
+  },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapGetters('dinein', ['getAllCovers']),
@@ -121,6 +127,7 @@ export default {
       selectedCustomer: state => state.customer.customer,
     }),
     ...mapState({ selectedAddress: state => state.customer.address }),
+    ...mapGetters('context', ['store']),
   },
   methods: {
     removeSelectedCustomer() {
