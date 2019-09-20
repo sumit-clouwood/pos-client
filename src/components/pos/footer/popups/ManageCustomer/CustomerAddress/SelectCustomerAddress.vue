@@ -98,7 +98,7 @@ export default {
   #add-to-order {
     .modal-dialog {
       margin: 0;
-
+      max-width: 100%;
       .modal-content {
         .modal-header {
           height: 80px;

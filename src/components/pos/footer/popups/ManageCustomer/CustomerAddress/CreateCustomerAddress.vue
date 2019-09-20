@@ -316,6 +316,7 @@ export default {
   #add_address {
     .modal-dialog {
       margin: 0;
+      max-width: 100%;
 
       .modal-content {
         .modal-header {

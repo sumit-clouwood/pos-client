@@ -387,6 +387,10 @@
     bottom: 0;
     left: 0;
 
+    &.loading-view .p-3 .margin220 {
+      display: block;
+    }
+
     .p-3 {
       background-color: #fff;
       display: grid;
@@ -403,6 +407,7 @@
           width: 100%;
         }
       }
+
     }
   }
 }
