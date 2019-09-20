@@ -121,17 +121,21 @@ export default {
       this.$store
         .dispatch('order/modifyOrderTransaction', is_modify)
         .then(response => {
+          let scope = this
           if (response.order_type === 'dine_in') {
-            let orderId = response._id
-            let table_reservation_id = response.table_reservation_id
-            this.$router.push({
-              path:
-                '/dine-in/' +
-                this.$store.getters['context/store'] +
-                '/' +
-                table_reservation_id +
-                '/' +
-                orderId,
+            this.$store.dispatch('dinein/getDineInTables')
+            this.$store.dispatch('dinein/getCovers').then(function() {
+              let orderId = response._id
+              let table_reservation_id = response.table_reservation_id
+              scope.$router.push({
+                path:
+                  '/dine-in/' +
+                  scope.$store.getters['context/store'] +
+                  '/' +
+                  table_reservation_id +
+                  '/' +
+                  orderId,
+              })
             })
           } else {
             this.$router.push({ path: this.$store.getters['context/store'] })

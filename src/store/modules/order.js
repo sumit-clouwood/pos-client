@@ -902,9 +902,11 @@ const actions = {
       dispatch('reset')
       commit(mutation.SET_ORDER_ID, order._id)
       commit(mutation.START_ORDER)
-      dispatch('customer/fetchSelectedCustomer', order.customer, {
-        root: true,
-      })
+      if (order.customer) {
+        dispatch('customer/fetchSelectedCustomer', order.customer, {
+          root: true,
+        })
+      }
       let orderData = {
         _id: order._id,
         order_no: order.order_no,
@@ -957,7 +959,6 @@ const actions = {
           }
         })
       })
-
       resolve()
     })
   },
@@ -1004,43 +1005,7 @@ const actions = {
     })
     return orderData
   },
-  addDiningOrder({ dispatch, rootGetters, commit }, orderData) {
-    //set discounts here
-    let discount = null
-    if (
-      orderData.item.order_discounts &&
-      orderData.item.order_discounts.length
-    ) {
-      orderData.item.order_discounts.forEach(orderDiscount => {
-        discount = rootGetters['discount/orderDiscount'](
-          orderDiscount.entity_id
-        )
-        if (discount) {
-          commit('discount/SET_ACTIVE_ORDER_DISCOUNT', discount, { root: true })
-          commit('discount/APPLY_ORDER_DISCOUNT', discount, { root: true })
-        }
-      })
-    }
-    if (orderData.item.item_discounts && orderData.item.item_discounts.length) {
-      let item = {}
-      let orderItem = {}
-      orderData.item.item_discounts.forEach(itemDiscount => {
-        discount = rootGetters['discount/itemDiscount'](itemDiscount.entity_id)
-        if (discount) {
-          orderItem = orderData.item.items[itemDiscount.for_item]
-          item = {
-            orderIndex: itemDiscount.for_item,
-            _id: orderItem.entity_id,
-          }
-
-          commit(
-            'discount/APPLY_ITEM_DISCOUNT',
-            { item: item, discount: discount },
-            { root: true }
-          )
-        }
-      })
-    }
+  addDiningOrder({ dispatch }, orderData) {
     dispatch('addOrderToCart', orderData.item).then(() => {})
   },
   selectedOrderDetails({ commit }, orderId) {
@@ -1130,7 +1095,6 @@ const actions = {
           },
           errors => {
             reject(errors.data.error)
-            // alert(errors.data.error)
           }
         )
         .catch(response => {
