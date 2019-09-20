@@ -261,10 +261,10 @@
         orderType.OTApi === 'dine_in' ? 'grid-template-columns: 1fr 1fr' : ''
       "
     >
-      <div class="button">
+      <div class="button" v-if="is_pay === 1">
         <ul class="template-btn">
           <li
-            v-show="orderType.OTApi === 'call_center'"
+            v-show="orderType.OTApi === 'call_center' && is_pay === 1"
             class="footer-slider-list-item color-secondary"
             data-toggle="modal"
             :data-target="selectedModal"
@@ -300,7 +300,7 @@
           </li>
           <li
             class="pay-now color-dashboard-background color-main"
-            v-show="orderType.OTApi !== 'call_center'"
+            v-show="orderType.OTApi !== 'call_center' && is_pay === 1"
             @click="payNowClick()"
           >
             <a role="button">
@@ -310,11 +310,13 @@
           </li>
         </ul>
       </div>
-      <div class="button" v-show="orderType.OTApi === 'dine_in'">
+      <div
+        class="button"
+        v-show="orderType.OTApi === 'dine_in' || is_pay === 0"
+      >
         <ul class="template-btn">
           <li
             class="pay-now color-dashboard-background color-main"
-            v-show="orderType.OTApi === 'dine_in'"
             @click="payNowDirect()"
           >
             <a role="button">
@@ -446,7 +448,7 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('customer', ['responseInformation']),
-    ...mapState('order', ['orderType', 'cartType', 'items']),
+    ...mapState('order', ['orderType', 'cartType', 'items', 'is_pay']),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({

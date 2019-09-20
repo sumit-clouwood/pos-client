@@ -38,7 +38,7 @@ const state = {
   // pastOrder: false,
   orderStatus: null,
   cartType: 'new',
-  is_pay: 0,
+  is_pay: 1,
   startTime: null,
   orderToModify: null,
 }
@@ -980,7 +980,8 @@ const actions = {
     })
   },
 
-  modifyOrderTransaction({ rootState, dispatch, commit }) {
+  modifyOrderTransaction({ rootState, dispatch, commit }, is_modify) {
+    commit(mutation.IS_PAY, is_modify)
     let orderData = rootState.order.selectedOrder.item
     let orderType = orderData.order_type
     dispatch('addOrderToCart', orderData).then(() => {
@@ -1001,6 +1002,7 @@ const actions = {
         })
       }
     })
+    return orderData
   },
   addDiningOrder({ dispatch }, orderData) {
     dispatch('addOrderToCart', orderData.item).then(() => {})
@@ -1224,6 +1226,7 @@ const mutations = {
     state.orderId = null
     state.orderData = null
     state.orderNote = null
+    state.is_pay = 1
     // to be fool proof we don't reset startTime here, start time ll be reset when
     // some one clicks on an item
     // state.startTime = null

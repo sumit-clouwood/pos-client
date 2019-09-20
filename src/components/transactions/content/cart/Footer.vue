@@ -37,20 +37,47 @@
       </div>
     </div>
     <div class="btn-transaction text-right">
-      <button
-        class="pos-button-design btn btn-success"
-        v-if="order.order_system_status === 'cancelled'"
-        @click="modifyOrder"
+      <span
+        v-if="
+          order.order_type === 'dine_in' && order.order_status === 'finished'
+        "
       >
-        {{ _t('Modify Transaction') }}
-      </button>
+        <button
+          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
+          data-toggle="modal"
+          v-if="order.order_system_status !== 'cancelled'"
+          data-target=".cancel-order"
+        >
+          {{ _t('Cancel Transaction') }}
+        </button>
+        <button
+          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
+          @click="modifyOrder(1)"
+        >
+          {{ _t('Modify Transaction') }}
+        </button>
+      </span>
+      <span v-if="order.order_type !== 'dine_in'">
+        <button
+          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
+          data-toggle="modal"
+          v-if="order.order_system_status !== 'cancelled'"
+          data-target=".cancel-order"
+        >
+          {{ _t('Cancel Transaction') }}
+        </button>
+        <button
+          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
+          @click="modifyOrder(1)"
+        >
+          {{ _t('Modify Transaction') }}
+        </button>
+      </span>
       <button
-        class="pos-button-design btn btn-success"
-        data-toggle="modal"
-        v-if="order.order_system_status != 'cancelled'"
-        data-target=".cancel-order"
+        class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
+        @click="modifyOrder(0)"
       >
-        {{ _t('Cancel Transaction') }}
+        {{ _t('Add More Items') }}
       </button>
     </div>
     <CancelOrderPopup :order="order" />
@@ -90,10 +117,26 @@ export default {
     totalWrapperHendlerGhange() {
       this.$store.dispatch('totalWrapperHendlerGhange')
     },
-    modifyOrder() {
-      this.$store.dispatch('order/modifyOrderTransaction').then(() => {
-        this.$router.push({ path: this.$store.getters['context/store'] })
-      })
+    modifyOrder(is_modify) {
+      this.$store
+        .dispatch('order/modifyOrderTransaction', is_modify)
+        .then(response => {
+          if (response.order_type === 'dine_in') {
+            let orderId = response._id
+            let table_reservation_id = response.table_reservation_id
+            this.$router.push({
+              path:
+                '/dine-in/' +
+                this.$store.getters['context/store'] +
+                '/' +
+                table_reservation_id +
+                '/' +
+                orderId,
+            })
+          } else {
+            this.$router.push({ path: this.$store.getters['context/store'] })
+          }
+        })
     },
   },
 }
