@@ -314,7 +314,11 @@ export default {
     },
     getPrintDataTime() {
       let order = this.order
-      let orderNo = order.order_no ? order.order_no : false
+      let orderNo = order.order_no
+        ? order.order_no
+        : order.orderNumber
+        ? order.orderNumber
+        : false
       let dateTime =
         order.real_created_datetime ||
         order.real_created_datetime.replace(/[\s-:]/g, '')
