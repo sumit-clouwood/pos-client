@@ -121,6 +121,7 @@ export default {
           display: grid;
           grid-template-rows: max-content 1fr;
           padding-bottom: 0;
+          height: calc(100vh - 250px);
         }
 
         .modal-body {

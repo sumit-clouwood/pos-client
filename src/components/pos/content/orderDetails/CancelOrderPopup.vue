@@ -91,11 +91,13 @@
         </div>
       </div>
     </div>
+    <InformationPopup :responseInformation="this.errorMessage" title="Alert" />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex'
+import InformationPopup from '@/components/pos/content/InformationPopup'
 /* global $ */
 export default {
   name: 'CancelOrderPopup',
@@ -103,7 +105,11 @@ export default {
     return {
       showSelectedReason: '',
       supervisorPassword: '',
+      errorMessage: '',
     }
+  },
+  components: {
+    InformationPopup,
   },
   computed: {
     ...mapGetters('location', ['_t']),
@@ -130,6 +136,15 @@ export default {
         actionTrigger,
         params: data,
       })
+        .then(res => {
+          if (res.data.status != 'form_errors') {
+            $('#cancellationReason').hide()
+          }
+        })
+        .catch(response => {
+          this.errorMessage = response
+          $('#information-popup').modal('show')
+        })
     },
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderCancelAction']),
   },
