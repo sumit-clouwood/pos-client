@@ -17,7 +17,7 @@ The App.vue file is the root component that all other components are nested with
         <p>Technical info: {{ errored }}</p>
       </section>
       <div v-else-if="loading">
-        <ul class="ullist-inventory-location pl-0 pt-2">
+        <ul class="ullist-inventory-location loading-view pl-0 pt-2">
           <li class="p-3">
             <span class="margin220">
               <Preloader />
