@@ -206,11 +206,16 @@
             <label><!--{{ _t('Number of guest') }} : --></label>
             <div class="POSItemOptions_quantity_inputs">
               <!-- <input type='button' value='-' class='qtyminus value-qty' field='quantity'/> -->
-              <button class="qtyminus value-qty" @click="updateGuestCount('-')">
+              <button
+                class="qtyminus value-qty"
+                @click="updateGuestCount('-')"
+                :disabled="this.guests <= 1"
+              >
                 <i class="fa fa-minus" aria-hidden="true"></i>
               </button>
               <input
                 type="number"
+                min="1"
                 v-model.number="guests"
                 @keyup="chairsValidation"
                 @change="chairsValidation"

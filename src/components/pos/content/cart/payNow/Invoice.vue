@@ -39,7 +39,12 @@ export default {
     PrintTemplate,
   },
   computed: {
-    ...mapState('checkout', ['print', 'order']),
+    ...mapState('checkout', [
+      'print',
+      'order',
+      'changedAmount',
+      'changeAmountStatus',
+    ]),
     ...mapState('context', ['brandId']),
     ...mapGetters('invoice', ['template']),
     ...mapGetters('location', ['_t']),
@@ -87,13 +92,17 @@ export default {
           $('#order-confirmation').hide()
           hidePayNow()
 
+          //redirect only if there is not changed amount
           if (this.$store.state.order.orderType.OTApi === 'call_center') {
             this.$router.replace({ name: 'DeliveryManager' })
           }
-          //Reset Cart and set states and redirect to dine in.
-          if (this.$store.state.order.orderType.OTApi === 'dine_in') {
-            this.$store.dispatch('order/beforeRedirectResetCartDineIn')
-            this.$router.replace({ name: 'Dinein' })
+
+          if (!this.changedAmount) {
+            //Reset Cart and set states and redirect to dine in.
+            if (this.$store.state.order.orderType.OTApi === 'dine_in') {
+              this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+              this.$router.replace({ name: 'Dinein' })
+            }
           }
         }
       })
@@ -361,6 +370,18 @@ export default {
       this.iframe_body = body
       //1. to print in new window
       //this.doPrint()
+    },
+  },
+  watch: {
+    changeAmountStatus(newVal) {
+      if (newVal) {
+        //Reset Cart and set states and redirect to dine in.
+        if (this.$store.state.order.orderType.OTApi === 'dine_in') {
+          this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+          this.$router.replace({ name: 'Dinein' })
+        }
+        this.$store.commit('checkout/CHANGE_AMOUNT_STATUS', false)
+      }
     },
   },
 }

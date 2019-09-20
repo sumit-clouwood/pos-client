@@ -13,6 +13,7 @@ const state = {
   print: false,
   loading: false,
   orderNumber: null,
+  changeAmountStatus: false,
 }
 
 // getters
@@ -814,6 +815,9 @@ const mutations = {
   },
   [mutation.LOADING](state, loadingStatus) {
     state.loading = loadingStatus
+  },
+  [mutation.CHANGE_AMOUNT_STATUS](state, status) {
+    state.changeAmountStatus = status
   },
   [mutation.RESET](state) {
     state.order = false

@@ -44,6 +44,8 @@ const getters = {
       return 'running-order-details'
     } else if (order_status === CONST.ORDER_STATUS_FINISHED) {
       return 'finished-order'
+    } else if (order_status === CONST.ORDER_STATUS_COMPLETED) {
+      return 'completed-order'
     } else {
       return 'done-soon-order'
     }
@@ -79,7 +81,7 @@ const actions = {
   getDineInOrders({ dispatch }) {
     dispatch('getBookedTables')
     dispatch('dineInRunningOrders')
-    dispatch('dineInCompleteOrders')
+    // dispatch('dineInCompleteOrders')
   },
 
   reservationUpdateStatus({ dispatch, commit }, reservationData) {
@@ -217,7 +219,13 @@ const actions = {
         }
 
         if (orders.length) {
+          let tableArray = []
           orders.forEach(order => {
+            // // eslint-disable-next-line no-console
+            // console.log(order, 'Rajeev')
+            if (tableArray[order.assigned_table_id] == undefined)
+              tableArray[order.assigned_table_id] = []
+            tableArray[order.assigned_table_id].push(order.status)
             if (
               order.status === CONST.ORDER_STATUS_RESERVED ||
               order.status === CONST.ORDER_STATUS_IN_PROGRESS
@@ -226,9 +234,9 @@ const actions = {
                 is_unavail = 1
               }
               // tableStatus.unavailableCount += 1
-              table_details.status.color = '#c84c4c'
-              table_details.status.text = 'unavailable'
-              tableStatus.table.push(table_details)
+              // table_details.status.color = '#c84c4c'
+              // table_details.status.text = 'unavailable'
+              // tableStatus.table.push(table_details)
             } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
               if (order.assigned_table_id == table._id) {
                 is_avail_soon = 1
@@ -240,9 +248,11 @@ const actions = {
                 })
               }
               // tableStatus.availableSoonCount += 1
-              table_details.status.color = '#faa03c'
-              table_details.status.text = 'available_soon'
-              tableStatus.table.push(table_details)
+              // table_details.status.color = '#faa03c'
+              // table_details.status.text = 'available_soon'
+              // tableStatus.table.push(table_details)
+              // eslint-disable-next-line no-console
+              // console.log(table_details, 'Rajeev')
             }
             orderOnTable.push({
               tableId: table._id,
@@ -253,6 +263,26 @@ const actions = {
               startTime: order.start_time,
             })
           })
+          if (
+            tableArray[table_details.id].includes(
+              CONST.ORDER_STATUS_RESERVED
+            ) ||
+            tableArray[table_details.id].includes(
+              CONST.ORDER_STATUS_IN_PROGRESS
+            )
+          ) {
+            table_details.status.color = '#c84c4c'
+            table_details.status.text = 'unavailable'
+          } else if (
+            tableArray[table_details.id].includes(CONST.ORDER_STATUS_ON_WAY)
+          ) {
+            table_details.status.color = '#faa03c'
+            table_details.status.text = 'available_soon'
+          } else {
+            table_details.status.color = '#62bb31'
+            table_details.status.text = 'available'
+          }
+          tableStatus.table.push(table_details)
           if (is_unavail == 1) {
             tableStatus.unavailableCount += 1
           }
@@ -266,6 +296,8 @@ const actions = {
           parseInt(tableStatus.availableSoonCount)*/
           table_details.status.color = '#62bb31'
           table_details.status.text = 'available'
+          // eslint-disable-next-line no-console
+          // console.log(table_details, 'Rajeev')
           tableStatus.table.push(table_details)
         }
         commit(mutation.ORDER_ON_TABLES, orderOnTable)
