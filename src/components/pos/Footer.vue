@@ -1,6 +1,5 @@
 <template>
   <div class="footer">
-    <!--{{ cartType + ' dd ' + orderType.OTApi }}-->
     <div class="footer-slider color-dashboard-background">
       <ul class="footer-slider-list ullist-icons">
         <li
