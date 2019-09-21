@@ -179,3 +179,9 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+.showpropermsg .text-danger {
+  display: flex;
+  align-items: center;
+}
+</style>

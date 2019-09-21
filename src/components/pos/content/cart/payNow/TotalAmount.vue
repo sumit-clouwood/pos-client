@@ -9,16 +9,6 @@
       <h2 class="color-text-invert">{{ formatPrice(orderTotal) }}</h2>
     </div>
     <hr v-if="typeof param !== 'undefined' && param.totalAmountBlock" />
-    <div
-      class="total-amount-method"
-      v-if="typeof param !== 'undefined' && param.totalAmountBlock"
-    >
-      <img :src="method.icon" height="41" width="62" />
-      <div class="total-amount-method-title">{{ method.name }}</div>
-      <div class="total-amount-method-btn" @click="MethodChangeHendler">
-        Change
-      </div>
-    </div>
   </div>
 </template>
 
