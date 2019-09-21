@@ -39,6 +39,7 @@
               class="btn btn-success btn-large"
               type="button"
               id="dining-opt"
+              data-dismiss="modal"
               @click="closeModal()"
             >
               {{ _t('Ok') }}
