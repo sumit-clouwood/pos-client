@@ -327,7 +327,7 @@ export default {
           // eslint-disable-next-line no-console
           console.log(this.msg)
           //alert(error.data.error)
-          $('#information-popup').modal('show')
+          $('.information-popup').modal('show')
         })
     },
     setTime(timerTime) {

@@ -1,6 +1,10 @@
 <template>
   <!-- response change -->
-  <div class="modal fade blur-background" id="information-popup" role="dialog">
+  <div
+    class="modal fade blur-background information-popup"
+    id="information-popup"
+    role="dialog"
+  >
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
