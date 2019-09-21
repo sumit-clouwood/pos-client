@@ -76,6 +76,7 @@
                         v-if="
                           tabName !== 'completed' &&
                             order.order_status !== 'finished'
+                          /*&& order.order_status !== 'cancelled'*/
                         "
                       >
                         <a

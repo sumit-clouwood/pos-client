@@ -80,6 +80,7 @@
                 width="20"
                 height="13"
                 viewBox="0 0 20 13"
+                class="eye_past_orders"
               >
                 <g fill="#27A83D" fill-rule="nonzero">
                   <path
@@ -138,5 +139,9 @@ export default {
       background-color: #fff;
     }
   }
+}
+td.show-details-his > span > .eye_past_orders {
+  width: 15px;
+  margin-right: 0;
 }
 </style>

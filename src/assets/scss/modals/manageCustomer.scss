@@ -117,7 +117,13 @@
 
 .manage-customer-wrap {
   padding: $px10 $px30;
-
+  .manage-customer-table {
+    span svg {
+      /*@include responsive(xs) {
+        display: none;
+      }*/
+    }
+  }
   tr {
     td {
       padding: 0;
