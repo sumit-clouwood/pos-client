@@ -139,6 +139,10 @@ export default {
         .then(res => {
           if (res.data.status != 'form_errors') {
             $('#cancellationReason').hide()
+            if (this.selectedOrder.item.order_type == 'dine_in')
+              this.dineInRunningOrders()
+            else if (this.selectedOrder.item.order_type == 'call_center')
+              this.deliveryOrder()
           }
         })
         .catch(response => {
@@ -147,6 +151,7 @@ export default {
         })
     },
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderCancelAction']),
+    ...mapActions('dinein', ['dineInRunningOrders', 'deliveryOrder']),
   },
 }
 </script>

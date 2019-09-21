@@ -1048,6 +1048,9 @@ svg .active > path {
   > button{
     width: 100%;
   }
+  .dropdown-content{
+    position: absolute;
+  }
 }
 #placeOrder{
   .POSItemOptions_quantity_inputs {
