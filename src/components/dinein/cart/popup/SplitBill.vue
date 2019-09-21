@@ -39,15 +39,16 @@
 
               <div id="available-tables">
                 <div class="table-status-container">
-                  <span
+                  <div
                     class="table-status"
+                    :class="{ active: guestInBillItem(item, guest) }"
                     style="text-align:center"
                     v-for="guest in guests"
                     :key="guest"
-                    @click="selectGuest(guest, item)"
+                    @click="selectGuest(item, guest)"
                   >
                     <span>{{ guest }} </span>
-                  </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -68,7 +69,7 @@
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="discount-save-btn"
-              @click="attachCustomers"
+              @click="splitBill"
             >
               {{ _t('Ok') }}
             </button>
@@ -82,7 +83,7 @@
 
 <script>
 import Modifiers from '@/components/pos/content/cart/newOrders/items/Modifiers.vue'
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'SplitBill',
   components: {
@@ -92,13 +93,17 @@ export default {
   computed: {
     ...mapState('order', ['items']),
     ...mapGetters('location', ['_t']),
-    ...mapState('dinein', ['guests']),
+    ...mapGetters('dinein', ['guestInBillItem']),
+    ...mapState('dinein', ['guests', 'bills']),
   },
   methods: {
-    attachCustomers() {},
+    ...mapActions('dinein', ['splitBill']),
 
-    selectCustomers(item, customer) {
-      return item + customer
+    selectGuest(item, guest) {
+      this.$store.dispatch('dinein/updateItemGuest', {
+        item: item.orderIndex,
+        guest: guest,
+      })
     },
   },
 }
@@ -116,4 +121,7 @@ export default {
   border-bottom: 1px solid #ccc
   padding-bottom: 10px
   margin-bottom: 10px
+
+.table-status
+  cursor: pointer
 </style>

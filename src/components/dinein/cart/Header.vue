@@ -64,14 +64,17 @@
         </button>
         <DineInCoverSelection />
       </div>
-      <!--<div
-        v-if="cartType !== 'hold' && items.length"
-        id="holdorder"
-        class="orders-button-large color-main color-text"
-        @click="hold"
-      >
-        {{ _t('Hold') }}
-      </div>-->
+      <div v-if="covers && cartType !== 'hold'" class="driver-container">
+        <button
+          class="btn btn-success"
+          data-target="#split-bill-popup"
+          data-toggle="modal"
+          id="split-bill-button"
+        >
+          {{ _t('Split') }} {{ _t('Bill') }}
+        </button>
+        <split-bill />
+      </div>
       <div class="color-main color-text dine-in-table-guest-details-pos">
         <span class="tables-draw">
           <img src="img/dinein/dine-intable.svg" />
@@ -88,11 +91,12 @@
 <script>
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
+import SplitBill from './popup/SplitBill'
 import DineInTableSelection from './popup/DineInTableSelection'
 import DineInCoverSelection from './popup/DineInCoverSelection'
 export default {
   name: 'Header',
-  components: { DineInTableSelection, DineInCoverSelection },
+  components: { DineInTableSelection, DineInCoverSelection, SplitBill },
   data() {
     return {
       OrderSelectedCover: 'Select Cover',

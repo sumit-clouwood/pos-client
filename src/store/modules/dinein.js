@@ -10,6 +10,7 @@ const state = {
     lookup_running: false,
     lookup_completed: false,
   },
+  bills: null,
   guests: 1,
   orderDetails: false,
   completedOrderDetails: {},
@@ -34,6 +35,7 @@ const state = {
   dineInTabType: 'all',
   split: false,
   totalReservations: { totalPages: 0, pageNumber: 1, limit: 10 },
+  billSplit: null,
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -58,6 +60,16 @@ const getters = {
       }
     })
     return tableNumber
+  },
+  guestInBillItem: state => (item, guest) => {
+    if (
+      state.bills &&
+      state.bills[item.orderIndex] &&
+      state.bills[item.orderIndex].includes(guest)
+    ) {
+      return true
+    }
+    return false
   },
 }
 
@@ -410,6 +422,33 @@ const actions = {
       commit(mutation.RESERVATION_ID, data.reservationid)
     })
   },
+  updateItemGuest({ state, commit }, { item, guest }) {
+    let action = 'add'
+    if (state.bills && state.bills[item]) {
+      //check if guest already exists with item then remove it
+      if (state.bills[item].includes(guest)) {
+        action = 'remove'
+      } else {
+        action = 'update'
+      }
+    }
+    commit(mutation.UPDATE_ITEM_GUEST, {
+      item: item,
+      guest: guest,
+      action: action,
+    })
+  },
+  splitBill({ state, commit }) {
+    let groups = {}
+    for (let [item, guests] of Object.entries(state.bills)) {
+      let key = guests.sort().join('-')
+      if (!groups[key]) {
+        groups[key] = []
+      }
+      groups[key].push(item)
+    }
+    commit(mutation.SPLIT_BILLS, groups)
+  },
 }
 
 const mutations = {
@@ -430,6 +469,9 @@ const mutations = {
             )
           : false
     }
+  },
+  [mutation.SPLIT_BILLS](state, groups) {
+    state.billSplit = groups
   },
   [mutation.DINE_IN_TABLES](state, tables) {
     state.tables = tables.data
@@ -517,6 +559,35 @@ const mutations = {
   },
   [mutation.TABLE_SPLIT](state, slitStatus) {
     state.split = slitStatus
+  },
+  [mutation.UPDATE_ITEM_GUEST](state, { item, guest, action }) {
+    switch (action) {
+      case 'add':
+        {
+          let bills = {}
+          if (state.bills) {
+            bills = { ...state.bills }
+          }
+          bills[item] = []
+          bills[item].push(guest)
+          state.bills = bills
+        }
+        break
+      case 'update':
+        {
+          let bills = { ...state.bills }
+          bills[item].push(guest)
+          state.bills = bills
+        }
+        break
+      case 'remove': {
+        let bills = { ...state.bills }
+        const itemGuests = bills[item].filter(itemGuest => itemGuest != guest)
+        bills[item] = itemGuests
+        state.bills = bills
+        break
+      }
+    }
   },
 }
 
