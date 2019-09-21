@@ -2,6 +2,7 @@ import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
+import LookupData from '../../plugins/helpers/LookupData'
 
 // initial state
 const state = {
@@ -609,6 +610,8 @@ const actions = {
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
           if (response.data.status === 'ok') {
+            //Call function to send request to API.
+            //dispatch('printingServerInvoiceRaw', response.data)
             commit('order/ORDER_TO_MODIFY', null, { root: true })
 
             if (typeof response.data.id !== 'undefined') {
@@ -758,6 +761,86 @@ const actions = {
           }
         })
     })
+  },
+
+  /*
+   * ToDo: Create A JSON Request to send in Local Server API for Generating Invoices from a software.
+   * Nidhishanker Modi
+   * 21 September 2019
+   */
+  printingServerInvoiceRaw({ state, rootState, dispatch }, response) {
+    state.order._id = response.id
+    state.order.order_no = response.order_no
+    let staff = rootState.auth.userDetails
+    let orderData = state.order
+    let customerId = state.order.customer
+    let customerData = []
+    if (customerId) {
+      //get customer name by customer id
+      dispatch('customer/fetchSelectedCustomer', customerId, {
+        root: true,
+      }).then(customer => {
+        customerData.push(customer.first())
+      })
+    }
+    let menu_items = [
+      {
+        _id: '5d160fe1ef76a038432fb8bc',
+        category: '5d160fe1ef76a038432fb89d',
+        kitchen: null,
+      },
+    ]
+
+    let timezoneString = rootState.location.timezoneString
+    let created_date = LookupData.convertDatetimeCustom(
+      state.order.real_created_datetime,
+      timezoneString,
+      'dddd L'
+    )
+    let created_time = LookupData.convertDatetimeCustom(
+      state.order.real_created_datetime,
+      timezoneString,
+      'HH:mm A'
+    )
+    let stateOrderType = state.order.order_type
+    let orderType = 'DINEIN'
+    if (stateOrderType === 'walk_in') {
+      orderType = 'WALKIN'
+    } else if (stateOrderType === 'call_center') {
+      orderType = 'DELIVERY'
+    } else if (stateOrderType === 'takeaway') {
+      orderType = 'TAKEAWAY'
+    } else if (stateOrderType === 'future') {
+      orderType = 'FUTURE'
+    }
+    let jsonResponse = {
+      status: 'ok',
+      brand_logo: rootState.location.brand.company_logo
+        ? rootState.location.brand.company_logo
+        : '',
+      order: orderData,
+      menu_items: menu_items,
+      staff: staff.item.name,
+      customer: customerData,
+      delivery_area: state.order.order_delivery_area,
+      template: {},
+      order_type: orderType,
+      created_date: created_date,
+      created_time: created_time,
+      translations: rootState.location.translations,
+      crm_module_enabled: true,
+      default_header_brand: rootState.location.brand,
+      default_header_branch: rootState.location.store.name,
+      default_header_phone: 'Tel No. 71234567890',
+      generate_time: state.order.real_created_datetime,
+      flash_message: 'Order Details',
+    }
+    if (jsonResponse) {
+      // eslint-disable-next-line no-console
+      console.log('Final')
+      // eslint-disable-next-line no-console
+      console.log(jsonResponse)
+    }
   },
   generateInvoice() {
     //commit(mutation.PRINT, true)
