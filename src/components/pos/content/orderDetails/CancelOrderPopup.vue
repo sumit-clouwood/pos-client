@@ -139,6 +139,7 @@ export default {
         .then(res => {
           if (res.data.status != 'form_errors') {
             $('#cancellationReason').hide()
+            this.dineInRunningOrders()
           }
         })
         .catch(response => {
@@ -147,6 +148,7 @@ export default {
         })
     },
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderCancelAction']),
+    ...mapActions('dinein', ['dineInRunningOrders']),
   },
 }
 </script>
