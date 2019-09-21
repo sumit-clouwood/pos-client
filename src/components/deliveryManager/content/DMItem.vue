@@ -75,13 +75,7 @@
                   </div>
                 </div>
                 <div>
-                  {{
-                    LookupData.get({
-                      collection: branch,
-                      matchWith: order.store_id,
-                      selection: 'name',
-                    })
-                  }}
+                  {{ branch[order.store_id]['name'] }}
                 </div>
                 <div></div>
               </div>
@@ -121,11 +115,7 @@
               </div>
               <div class="order-footer">
                 <p class="color-text">
-                  <span
-                    id="runningtime"
-                    class="timeago elapsedTime delManTime"
-                    title=""
-                  ></span>
+                  <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
                   <span
                     class="customtime left"
                     :id="

@@ -16,11 +16,7 @@
       <div class="main-title">{{ template.title_label }}</div>
       <div class="main-subtitle">
         {{ template.invoice_number_label }}
-        {{
-          order.orderNumber
-            ? order.orderNumber
-            : order.real_created_datetime.replace(/[\s-:]/g, '')
-        }}
+        {{ getPrintDataTime }}
       </div>
       <table class="print-invoice-table">
         <thead>
@@ -315,6 +311,22 @@ export default {
         return true
       }
       return false
+    },
+    getPrintDataTime() {
+      let order = this.order
+      let orderNo = order.order_no
+        ? order.order_no
+        : order.orderNumber
+        ? order.orderNumber
+        : false
+      let dateTime =
+        order.real_created_datetime ||
+        order.real_created_datetime.replace(/[\s-:]/g, '')
+      if (orderNo) {
+        return orderNo
+      } else {
+        return dateTime
+      }
     },
     crm_module_enabled: function() {
       let cb =
