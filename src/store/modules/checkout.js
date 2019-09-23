@@ -521,6 +521,87 @@ const actions = {
     })
   },
 
+  getModifyOrder({state, rootState}) {
+    orderId = rootState.order.orderId
+    let order = { ...state.order }
+    order.new_real_transition_order_no =
+      rootState.location.store.branch_n +
+      '-' +
+      rootState.location.terminalCode +
+      '-' +
+      rootState.order.startTime
+    delete order.real_created_datetime
+    return Prmomise.reslove(order)
+  },
+  modifyHoldOrder() {
+    modifyType = 'hold'
+    response = OrderService.modifyOrder(
+      order,
+      rootState.order.orderId,
+      modifyType
+    )
+  },
+
+  modifyDeliveryOrder() {
+    order.modify_reason = 'Updated from POS'
+    response = OrderService.modifyOrder(
+      order,
+      rootState.order.orderId,
+      modifyType
+    )
+  },
+
+  modifyDininOrder() {
+    response = OrderService.modifyOrder(
+      order,
+      rootState.order.orderId,
+      modifyType
+    )
+  },
+
+  createOrder() {
+
+  },
+
+  createDeliveryOrder() {
+
+  }
+
+  createDineOrder() {
+    //dispatch('splitDineinOrders')
+    if (rootState.order.order_status !== 'completed') {
+      let order = { ...state.order }
+      delete order.new_real_transition_order_no
+      delete order.modify_reason
+      delete order.order_system_status
+      delete order.real_created_datetime
+
+      if (rootState.order.orderId) {
+        response = OrderService.updateOrderItems(
+          order,
+          rootState.order.orderId,
+          ''
+        )
+      } else {
+        response = OrderService.saveOrder(
+          state.order,
+          rootState.customer.customer
+        )
+      }
+    }
+  }
+  modifyBackendOrder() {
+    order.modify_reason = 'Updated from Backend'
+    response = OrderService.modifyOrder(
+      order,
+      rootState.order.orderId,
+      modifyType
+    )
+  }
+
+  splitDineinOrders() {
+
+  }
   createOrder({ state, commit, rootState, rootGetters, dispatch }, action) {
     commit(
       'checkoutForm/SET_MSG',
@@ -545,62 +626,22 @@ const actions = {
 
       //order.order is a hold order, state.order contains current order
       if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
-        if (rootState.order.order_status !== 'completed') {
-          let order = { ...state.order }
-          delete order.new_real_transition_order_no
-          delete order.modify_reason
-          delete order.order_system_status
-          delete order.real_created_datetime
-
-          if (rootState.order.orderId) {
-            response = OrderService.updateOrderItems(
-              order,
-              rootState.order.orderId,
-              ''
-            )
-          } else {
-            response = OrderService.saveOrder(
-              state.order,
-              rootState.customer.customer
-            )
-          }
-        }
-      } else if (
-        rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
-        rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY ||
-        rootState.order.orderToModify
-      ) {
+        return this.dispatch('createDineinOrder')
+      } else if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+        return this.dispatch('modifyHoldOrder')
+      } else if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY) {
+        return this.dispatch('modifyDeliveryOrder')
+      } else if (rootState.order.orderToModify) {
+        return this.dispatch('modifyBackendOrder')
+      } else {
         //set order id for modify orders or delivery order
-        orderId = rootState.order.orderId
-        let order = { ...state.order }
-        order.new_real_transition_order_no =
-          rootState.location.store.branch_n +
-          '-' +
-          rootState.location.terminalCode +
-          '-' +
-          rootState.order.startTime
-        delete order.real_created_datetime
+        
 
         let modifyType = ''
 
-        switch (rootState.order.orderStatus) {
-          case CONSTANTS.ORDER_STATUS_ON_HOLD:
-            modifyType = 'hold'
-            break
-          case CONSTANTS.ORDER_STATUS_IN_DELIVERY:
-            order.modify_reason = 'Updated from POS'
-            break
-        }
+         
 
-        if (rootState.order.orderToModify) {
-          order.modify_reason = 'Updated from Backend'
-        }
-
-        response = OrderService.modifyOrder(
-          order,
-          rootState.order.orderId,
-          modifyType
-        )
+       
       } else {
         response = OrderService.saveOrder(
           state.order,
