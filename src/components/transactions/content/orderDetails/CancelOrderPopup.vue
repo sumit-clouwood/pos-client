@@ -192,7 +192,10 @@ export default {
         params: data,
       })
         .then(response => {
-          if (response.status.length > 0 && response.status == 'ok') {
+          if (
+            response.statusText == 'OK' &&
+            response.data.status != 'form_errors'
+          ) {
             //Reload order list again.
             let scope = this
             scope.$store
@@ -218,8 +221,10 @@ export default {
                   ? response.data.error
                   : response.data.message
             }
-            this.msg = error
-            $('#information-popup').modal('show')
+            if (response.data.status != 'ok') {
+              this.msg = error
+              $('#information-popup').modal('show')
+            }
           }
         })
         .catch(error => {
