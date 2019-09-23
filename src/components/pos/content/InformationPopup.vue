@@ -1,6 +1,10 @@
 <template>
   <!-- response change -->
-  <div class="modal fade blur-background" id="information-popup" role="dialog">
+  <div
+    class="modal fade blur-background information-popup"
+    id="information-popup"
+    role="dialog"
+  >
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
@@ -35,6 +39,7 @@
               class="btn btn-success btn-large"
               type="button"
               id="dining-opt"
+              data-dismiss="modal"
               @click="closeModal()"
             >
               {{ _t('Ok') }}

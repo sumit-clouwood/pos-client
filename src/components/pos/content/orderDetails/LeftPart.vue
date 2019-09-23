@@ -158,26 +158,34 @@ export default {
   props: {
     orderDetails: {},
   },
+  data() {
+    return {
+      datetime: '',
+    }
+  },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('location', ['timezoneString']),
   },
   updated() {
+    this.makeDate()
     setInterval(() => {
-      $('#runningtime').text(this.timerClock())
+      $('#runningtime').text(
+        this.orderTimer(this.datetime, this.timezoneString)
+      )
     }, 1000)
   },
   mixins: [DateTime],
   methods: {
-    timerClock: function() {
-      return this.orderTimer(
-        this.convertDatetime(
-          this.orderDetails.item.real_created_datetime,
-          this.timezoneString
-        ),
+    makeDate() {
+      this.datetime = this.convertDatetime(
+        this.orderDetails.item.real_created_datetime,
         this.timezoneString
       )
     },
+    /*timerClock: function() {
+      return this.orderTimer(this.datetime, this.timezoneString)
+    },*/
     getLookupData: function(lookup) {
       let setData = this.orderDetails.lookups[lookup.lookupFrom]._id
       let selection =
