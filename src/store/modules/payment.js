@@ -60,6 +60,9 @@ const mutations = {
   [mutation.SET_METHODS](state, methods) {
     state.methods = methods
   },
+  [mutation.RESET](state) {
+    state.methods = {}
+  },
 }
 
 export default {
