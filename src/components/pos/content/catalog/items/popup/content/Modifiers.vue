@@ -231,7 +231,7 @@ export default {
     position: relative;
     .text-danger {
       position: absolute;
-      bottom: -15px;
+      bottom: -30px;
       font-size: 12px;
       z-index: 10;
     }
