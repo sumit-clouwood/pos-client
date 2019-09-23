@@ -57,11 +57,15 @@
           {{ _t('Modify Transaction') }}
         </button>
       </span>
-      <span v-if="order.order_type !== 'dine_in'">
+      <span
+        v-if="
+          order.order_type !== 'dine_in' &&
+            order.order_system_status !== 'cancelled'
+        "
+      >
         <button
           class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
           data-toggle="modal"
-          v-if="order.order_system_status !== 'cancelled'"
           data-target=".cancel-order"
         >
           {{ _t('Cancel Transaction') }}
@@ -73,12 +77,12 @@
           {{ _t('Modify Transaction') }}
         </button>
       </span>
-      <button
+      <!--<button
         class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
         @click="modifyOrder(0)"
       >
         {{ _t('Add More Items') }}
-      </button>
+      </button>-->
     </div>
     <CancelOrderPopup :order="order" />
   </div>
