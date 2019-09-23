@@ -110,6 +110,7 @@ export default {
 
         .modal-body {
           overflow: auto;
+          height: calc(100vh - 200px);
 
           .location-delivery-area-address {
             .order-location {
