@@ -458,6 +458,9 @@ export default {
         margin: 0;
         border: 2px solid $gray-middle;
         width: 100%;
+        display: flex;
+        align-items: center;
+        height: 100%;
         .color-text {
           width: 67%;
           height: 100%;
