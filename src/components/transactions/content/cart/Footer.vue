@@ -39,13 +39,13 @@
     <div class="btn-transaction text-right">
       <button
         class="pos-button-design btn btn-success"
-        v-if="order.order_system_status === 'cancelled'"
+        v-if="order.order_system_status != 'cancelled'"
         @click="modifyOrder"
       >
         {{ _t('Modify Transaction') }}
       </button>
       <button
-        class="pos-button-design btn btn-success"
+        class="pos-button-design btn btn-success ml-2"
         data-toggle="modal"
         v-if="order.order_system_status != 'cancelled'"
         data-target=".cancel-order"
