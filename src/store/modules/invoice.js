@@ -78,8 +78,10 @@ const mutations = {
   [mutation.SET_RULES](state, rules) {
     state.rules = rules
   },
-  [mutation.SET_RULES](state, rules) {
-    state.rules = rules
+  [mutation.RESET](state) {
+    state.rules = null
+    state.templates = null
+    state.templateId = null
   },
   [mutation.SET_TEMPLATE_ID](state, templateId) {
     state.templateId = templateId
