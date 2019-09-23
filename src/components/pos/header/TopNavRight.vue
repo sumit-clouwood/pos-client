@@ -161,8 +161,12 @@ export default {
       this.$store.dispatch('location/changeLanguage', locale)
     },
     openConfigLinks() {
-      $('.setting-dropdown').show()
-      $('.setting-dropdown').addClass('animated zoomIn')
+      if ($('.setting-dropdown:visible').length > 0) {
+        $('.setting-dropdown').hide()
+      } else {
+        $('.setting-dropdown').show()
+        $('.setting-dropdown').addClass('animated zoomIn')
+      }
       // posConfigLinks()
     },
     onlineOrders() {

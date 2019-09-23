@@ -14,7 +14,7 @@
         class="POSItemOptions_choose_choice"
       >
         <label
-          :class="['POSItemOptions_choose_label', modifier.class]"
+          :class="['container-radio-btn', modifier.class]"
           v-if="subgroup.no_of_selection > 1"
         >
           <input
