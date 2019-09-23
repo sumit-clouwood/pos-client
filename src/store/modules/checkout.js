@@ -577,7 +577,12 @@ const actions = {
         //set order id for modify orders or delivery order
         orderId = rootState.order.orderId
         let order = { ...state.order }
-        order.new_real_transition_order_no = ''
+        order.new_real_transition_order_no =
+          rootState.location.store.branch_n +
+          '-' +
+          rootState.location.terminalCode +
+          '-' +
+          rootState.order.startTime
         delete order.real_created_datetime
 
         let modifyType = ''
