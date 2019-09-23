@@ -14,7 +14,7 @@
         class="POSItemOptions_choose_choice"
       >
         <label
-          :class="['container-radio-btn', modifier.class]"
+          :class="['POSItemOptions_choose_label', modifier.class]"
           v-if="subgroup.no_of_selection > 1"
         >
           <input
@@ -457,6 +457,13 @@ export default {
         vertical-align: middle;
         margin: 0;
         border: 2px solid $gray-middle;
+        width: 100%;
+        .color-text {
+          width: 67%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
 
         input {
           display: none;
