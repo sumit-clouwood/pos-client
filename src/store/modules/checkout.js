@@ -85,6 +85,7 @@ const actions = {
       const totalPayable = rootGetters['checkoutForm/orderTotal']
       commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
 
+      //If order type is dine-in and order placed not paid or order is hold
       if (
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
         action == 'dine-in-place-order' ||
@@ -553,6 +554,8 @@ const actions = {
           delete order.order_system_status
           delete order.real_created_datetime
 
+          //Invoice APP API Call with Custom Request - for DineIn order
+          dispatch('printingServerInvoiceRaw', order)
           if (rootState.order.orderId) {
             response = OrderService.updateOrderItems(
               order,
@@ -591,6 +594,10 @@ const actions = {
         if (rootState.order.orderToModify) {
           order.modify_reason = 'Updated from Backend'
         }
+        // order.supervisor_password = '12345'
+
+        //Invoice APP API Call with Custom Request - for Modify order
+        dispatch('printingServerInvoiceRaw', order)
 
         response = OrderService.modifyOrder(
           order,
@@ -780,8 +787,14 @@ const actions = {
       dispatch('customer/fetchSelectedCustomer', customerId, {
         root: true,
       }).then(customer => {
-        customerData.push(customer.first())
+        customerData.push(customer)
       })
+    }
+    let delivery_area = {}
+    if (state.order.order_delivery_area && rootState.customer.deliveryAreas) {
+      delivery_area = Object.values(rootState.customer.deliveryAreas).find(
+        delivery_area => delivery_area._id == state.order.order_delivery_area
+      )
     }
     let menu_items = [
       {
@@ -795,7 +808,7 @@ const actions = {
     let created_date = LookupData.convertDatetimeCustom(
       state.order.real_created_datetime,
       timezoneString,
-      'dddd L'
+      'DD-MMM-YYYY'
     )
     let created_time = LookupData.convertDatetimeCustom(
       state.order.real_created_datetime,
@@ -813,6 +826,14 @@ const actions = {
     } else if (stateOrderType === 'future') {
       orderType = 'FUTURE'
     }
+
+    let crm_module_enabled = false
+    let cb = rootState.location.brand
+    for (var module of cb.enabled_modules) {
+      if (module == 'CRM') {
+        crm_module_enabled = true
+      }
+    }
     let jsonResponse = {
       status: 'ok',
       brand_logo: rootState.location.brand.company_logo
@@ -822,13 +843,13 @@ const actions = {
       menu_items: menu_items,
       staff: staff.item.name,
       customer: customerData,
-      delivery_area: state.order.order_delivery_area,
+      delivery_area: delivery_area,
       template: {},
       order_type: orderType,
       created_date: created_date,
       created_time: created_time,
+      crm_module_enabled: crm_module_enabled,
       translations: rootState.location.translations,
-      crm_module_enabled: true,
       default_header_brand: rootState.location.brand,
       default_header_branch: rootState.location.store.name,
       default_header_phone: 'Tel No. 71234567890',
@@ -836,10 +857,9 @@ const actions = {
       flash_message: 'Order Details',
     }
     if (jsonResponse) {
+      OrderService.invoiceAPI(jsonResponse)
       // eslint-disable-next-line no-console
-      console.log('Final')
-      // eslint-disable-next-line no-console
-      console.log(jsonResponse)
+      console.log('Invoice APP Api successfully hit.')
     }
   },
   generateInvoice() {
