@@ -234,13 +234,13 @@ export default {
       /*DeliveryManager, Dinein*/
       let replaceURI = ''
       if (this.$router.currentRoute.name === 'DeliveryManager') {
-        replaceURI = '/pos/delivery-manager/'
+        replaceURI = '/delivery-manager/'
       } else if (this.$router.currentRoute.name === 'Dinein') {
-        replaceURI = '/pos/dine-in/'
+        replaceURI = '/dine-in/'
       }
       return (
         window.location.href.replace(
-          new RegExp("'" + replaceURI + "'" + '.*'),
+          new RegExp('(/pos)?' + replaceURI + '.*'),
           '/' + link
         ) + this.$store.getters['context/brand']
       )

@@ -171,6 +171,23 @@ const mutations = {
   [mutation.SET_ITEM](state, item) {
     state.item = item
   },
+  [mutation.RESET](state) {
+    state.categoryImagePath = ''
+    state.subcategoryImagePath = ''
+    state.searchItemTerm = ''
+    state.itemImagePath = ''
+    state.categories = []
+    state.category = {}
+    state.subcategories = []
+    state.subcategory = null
+    state.categoryItems = []
+    state.subcategoryItems = []
+    state.item = null
+    state.items = []
+    state.taxData = []
+    state.taxAmount = {}
+    state.searchItems = {}
+  },
   [mutation.SET_SEARCH_ITEMS](state, items) {
     if (items.items.length > 0) {
       state.searchItems = items.items
