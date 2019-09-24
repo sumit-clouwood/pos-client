@@ -518,6 +518,10 @@ const mutations = {
   [mutation.TABLE_SPLIT](state, slitStatus) {
     state.split = slitStatus
   },
+  [mutation.RESET](state) {
+    state.areas = false
+    state.dineInTabType = 'all'
+  },
 }
 
 export default {
