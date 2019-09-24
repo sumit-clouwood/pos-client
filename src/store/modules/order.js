@@ -924,17 +924,16 @@ const actions = {
           street: order.order_street,
           _id: order._id,
         })
-        dispatch('customer/selectedAddress', orderAddress, {
-          root: true,
-        })
-        commit('customer/SET_CUSTOMER_LOADING', true)
-        dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
-          root: true,
-        })
-        // commit('location/SET_MODAL', '#order-confirmation')
         dispatch('customer/fetchSelectedCustomer', order.customer, {
           root: true,
         })
+        if (orderAddress.length) {
+          dispatch('customer/selectedAddress', orderAddress, {
+            root: true,
+          })
+          commit('location/SET_MODAL', '#order-confirmation')
+        }
+        // commit('location/SET_MODAL', '#order-confirmation')
       }
       let orderData = {
         _id: order._id,
