@@ -135,7 +135,7 @@
           <a :href="crm">{{ _t('CRM') }}</a>
         </li>
         <li v-if="permitted('menu', 'root')">
-          {{ menu }}
+          <a :href="menu">{{ _t('Menu') }}</a>
         </li>
         <li v-if="permitted('delivery', 'root')">
           <a role="button" class="cursor-pointer">
@@ -247,7 +247,7 @@ export default {
       dm: this.baseurl('delivery') + '/delivery_home/new',
       dashboard: this.baseurl('dashboard'),
       crm: this.baseurl('crm') + '/brand_customers',
-      menu: this.baseurl('/'),
+      menu: this.baseurl('menu'),
       brand: this.baseurl('brands'),
     }
   },
