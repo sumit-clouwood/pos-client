@@ -110,20 +110,16 @@ $(document).ready(function() {
   })
 
   $(document).mouseup(function(e) {
+    // eslint-disable-next-line
+    // debugger
     var popup = $(
       '.setting-dropdown, .setting-dropdown-transaction, #setting-icon'
     )
     var icons = $('.setting-dropdown, .setting-dropdown-transaction')
 
     // var datesassign =$(".datepicker");
-    if (
-      !$('#setting-icon').is(e.target) &&
-      !popup.is(e.target) &&
-      popup.has(e.target).length == 0
-    ) {
-      icons.hide(500)
-      $('body').removeClass('active-body')
-    }
+    icons.hide(500)
+    $('body').removeClass('active-body')
   })
 
   $('.input-image').click(function() {
