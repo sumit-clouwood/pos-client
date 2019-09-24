@@ -75,6 +75,7 @@ const actions = {
       dispatch('getDineInTables'),
       dispatch('getCovers'),
       dispatch('getBookedTables', false),
+      dispatch('getDineInArea'),
     ])
     commit(mutation.LOADING, false)
   },
