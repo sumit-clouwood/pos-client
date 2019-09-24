@@ -1,4 +1,3 @@
-<!-- this is the main entry point for vuejs used by webpack -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +5,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="icon" href="img/icons/favicon-16x16.png">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="DimsPos">
+    <link rel="apple-touch-icon" href="/images/icons/favicon.png">
+
     <title>pos</title>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -28,6 +33,8 @@
 <!--    <link href="css/deliveryManager.css" rel="stylesheet">-->
 <!--    <link href="@/assets/css/style.css" rel="stylesheet">-->
 <!--    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i" rel="stylesheet">-->
+</head>
+<body id="page-top">
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="0" height="0"
          style="position:absolute">
         <symbol id="dinein_square_1" viewBox="0 0 100 100">
@@ -349,22 +356,20 @@ h320.09c10.75,0,19.47,9.102,19.47,20.331v60.646H381.256z"/>
             <path fill="#d4dae5" d="M4.267,60.904L16.336,31C16.336,31-7.356,38.262,4.267,60.904z"/>
         </symbol>
     </svg>
-</head>
-<body id="page-top">
-<noscript><strong>We're sorry but pos doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript>
+    <noscript><strong>We're sorry but pos doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript>
 
-<!-- add app component to show as main component -->
-<div id="app"></div>
+    <!-- add app component to show as main component -->
+    <div id="app"></div>
 
-<div class="modal-backdrop fade show" id="transparent-screen"></div>
+    <div class="modal-backdrop fade show" id="transparent-screen"></div>
 
-<!-- built files will be auto injected -->
-<script src="<%= BASE_URL %>js/jquery.js" type="text/javascript"></script>
-<script src="<%= BASE_URL %>js/jquery-ui.js" type="text/javascript"></script>
-<script src="<%= BASE_URL %>js/bootstrap.bundle.js" type="text/javascript"></script>
-<script src="<%= BASE_URL %>js/slick.js" type="text/javascript"></script>
-<script src="<%= BASE_URL %>js/pos_script_functions.js" type="text/javascript"></script>
-<script src="https://int.erp-pos.com/js/socket.io.js" type="text/javascript"></script>
-<link rel="apple-touch-icon" sizes="180x180" href="/pos/img/icons/favicon.png">
+    <!-- built files will be auto injected -->
+    <script src="<%= BASE_URL %>js/jquery.js" type="text/javascript"></script>
+    <script src="<%= BASE_URL %>js/jquery-ui.js" type="text/javascript"></script>
+    <script src="<%= BASE_URL %>js/bootstrap.bundle.js" type="text/javascript"></script>
+    <script src="<%= BASE_URL %>js/slick.js" type="text/javascript"></script>
+    <script src="<%= BASE_URL %>js/pos_script_functions.js" type="text/javascript"></script>
+    <script src="https://int.erp-pos.com/js/socket.io.js" type="text/javascript"></script>
+
 </body>
 </html>
