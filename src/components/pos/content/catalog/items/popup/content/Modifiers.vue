@@ -51,9 +51,14 @@
                   : '',
             }"
           />
-          <span class="color-text">{{ modifier.name }}</span>
-          <div class="color-text itm-price" v-if="Num.toPrice(modifier.value)">
-            ({{ formatPrice(modifier.value) }})
+          <div class="label-text">
+            <span class="color-text">{{ modifier.name }}</span>
+            <div
+              class="color-text-price itm-price"
+              v-if="Num.toPrice(modifier.value)"
+            >
+              ({{ formatPrice(modifier.value) }})
+            </div>
           </div>
         </label>
 
@@ -226,7 +231,7 @@ export default {
     position: relative;
     .text-danger {
       position: absolute;
-      bottom: -15px;
+      bottom: -30px;
       font-size: 12px;
       z-index: 10;
     }
@@ -461,11 +466,12 @@ export default {
         display: flex;
         align-items: center;
         height: 100%;
+        .label-text {
+        }
         .color-text {
           width: 67%;
           height: 100%;
-          display: flex;
-          align-items: center;
+          display: contents;
         }
 
         input {
