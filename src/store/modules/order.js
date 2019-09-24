@@ -906,7 +906,32 @@ const actions = {
       dispatch('reset')
       commit(mutation.SET_ORDER_ID, order._id)
       commit(mutation.START_ORDER)
+      let orderAddress = []
       if (order.customer) {
+        let deliveryAreaDetails = Object.values(
+          rootState.order.selectedOrder.lookups.store_delivery_areas._id
+        ).find(deliveryArea => deliveryArea._id === order.order_delivery_area)
+        orderAddress.push({
+          building: order.order_building,
+          city: order.order_city,
+          country: order.order_country,
+          created_at: order.created_at,
+          delivery_area: deliveryAreaDetails.name,
+          delivery_area_id: order.order_delivery_area,
+          flat_number: order.order_flat_number,
+          nearest_landmark: order.order_nearest_landmark,
+          store_id: order.store_id,
+          street: order.order_street,
+          _id: order._id,
+        })
+        dispatch('customer/selectedAddress', orderAddress, {
+          root: true,
+        })
+        commit('customer/SET_CUSTOMER_LOADING', true)
+        dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
+          root: true,
+        })
+        // commit('location/SET_MODAL', '#order-confirmation')
         dispatch('customer/fetchSelectedCustomer', order.customer, {
           root: true,
         })

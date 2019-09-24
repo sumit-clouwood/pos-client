@@ -263,7 +263,7 @@
       <div class="button" v-if="is_pay === 1">
         <ul class="template-btn">
           <li
-            v-show="orderType.OTApi === 'call_center' && is_pay === 1"
+            v-show="orderType.OTApi === 'call_center'"
             class="footer-slider-list-item color-secondary"
             data-toggle="modal"
             :data-target="selectedModal"
@@ -299,7 +299,7 @@
           </li>
           <li
             class="pay-now color-dashboard-background color-main"
-            v-show="orderType.OTApi !== 'call_center' && is_pay === 1"
+            v-show="orderType.OTApi !== 'call_center'"
             @click="payNowClick()"
           >
             <a role="button">
