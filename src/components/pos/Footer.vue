@@ -1,6 +1,5 @@
 <template>
   <div class="footer">
-    <!--{{ cartType + ' dd ' + orderType.OTApi }}-->
     <div class="footer-slider color-dashboard-background">
       <ul class="footer-slider-list ullist-icons">
         <li
@@ -261,7 +260,7 @@
         orderType.OTApi === 'dine_in' ? 'grid-template-columns: 1fr 1fr' : ''
       "
     >
-      <div class="button">
+      <div class="button" v-if="is_pay === 1">
         <ul class="template-btn">
           <li
             v-show="orderType.OTApi === 'call_center'"
@@ -310,11 +309,13 @@
           </li>
         </ul>
       </div>
-      <div class="button" v-show="orderType.OTApi === 'dine_in'">
+      <div
+        class="button"
+        v-show="orderType.OTApi === 'dine_in' || is_pay === 0"
+      >
         <ul class="template-btn">
           <li
             class="pay-now color-dashboard-background color-main"
-            v-show="orderType.OTApi === 'dine_in'"
             @click="payNowDirect()"
           >
             <a role="button">
@@ -446,7 +447,7 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('customer', ['responseInformation']),
-    ...mapState('order', ['orderType', 'cartType', 'items']),
+    ...mapState('order', ['orderType', 'cartType', 'items', 'is_pay']),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({

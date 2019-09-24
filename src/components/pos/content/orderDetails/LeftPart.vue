@@ -202,8 +202,6 @@ export default {
       })
     },
     getPlacedBy(orderDetail) {
-      // eslint-disable-next-line no-console
-      console.log(orderDetail)
       let name = 'N/A'
       if (orderDetail) {
         Object.values(orderDetail.lookups.users._id).forEach(details => {
