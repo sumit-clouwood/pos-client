@@ -256,7 +256,7 @@ $(document).ready(function() {
       content:
         '<div class="text-center innter-tooltip-pos">' +
         $this.text() +
-        '<div class="text-center"><a href="javascript:void(0)" data-dismiss="alert" class="btn btn-success btn-block btn-sm btn-rouded remove-bottom-close ">Add Item</a></div></div>',
+        '<div class="text-center"><a role="button" data-dismiss="alert" class="btn btn-success btn-block btn-sm btn-rouded remove-bottom-close ">Add Item</a></div></div>',
     })
   })
 

@@ -37,21 +37,52 @@
       </div>
     </div>
     <div class="btn-transaction text-right">
-      <button
-        class="pos-button-design btn btn-success"
-        v-if="order.order_system_status === 'cancelled'"
-        @click="modifyOrder"
+      <span
+        v-if="
+          order.order_type === 'dine_in' && order.order_status === 'finished'
+        "
       >
-        {{ _t('Modify Transaction') }}
-      </button>
-      <button
-        class="pos-button-design btn btn-success"
-        data-toggle="modal"
-        v-if="order.order_system_status != 'cancelled'"
-        data-target=".cancel-order"
+        <button
+          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design ml-2"
+          data-toggle="modal"
+          v-if="order.order_system_status !== 'cancelled'"
+          data-target=".cancel-order"
+        >
+          {{ _t('Cancel Transaction') }}
+        </button>
+        <button
+          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
+          @click="modifyOrder(1)"
+        >
+          {{ _t('Modify Transaction') }}
+        </button>
+      </span>
+      <span
+        v-if="
+          order.order_type !== 'dine_in' &&
+            order.order_system_status !== 'cancelled'
+        "
       >
-        {{ _t('Cancel Transaction') }}
-      </button>
+        <button
+          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
+          data-toggle="modal"
+          data-target=".cancel-order"
+        >
+          {{ _t('Cancel Transaction') }}
+        </button>
+        <button
+          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
+          @click="modifyOrder(1)"
+        >
+          {{ _t('Modify Transaction') }}
+        </button>
+      </span>
+      <!--<button
+        class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
+        @click="modifyOrder(0)"
+      >
+        {{ _t('Add More Items') }}
+      </button>-->
     </div>
     <CancelOrderPopup :order="order" />
   </div>
@@ -90,9 +121,39 @@ export default {
     totalWrapperHendlerGhange() {
       this.$store.dispatch('totalWrapperHendlerGhange')
     },
-    modifyOrder() {
-      this.$store.dispatch('order/modifyOrderTransaction').then(() => {
-        this.$router.push({ path: this.$store.getters['context/store'] })
+    modifyOrder(is_modify) {
+      this.$store.commit('order/IS_PAY', is_modify)
+      this.$store.dispatch('order/modifyOrderTransaction').then(order => {
+        let scope = this
+        if (order.order_type === 'dine_in') {
+          this.$store.dispatch('dinein/getDineInTables')
+          this.$store.dispatch('dinein/getCovers').then(function() {
+            let orderId = order._id
+            let table_reservation_id = order.table_reservation_id
+            if (scope.$store.state.dinein.tables && order.assigned_table_id) {
+              let tableData = scope.$store.state.dinein.tables.find(
+                table => table._id === order.assigned_table_id
+              )
+              scope.$store.commit('dinein/SELECTED_TABLE', tableData)
+            }
+            scope.$store.commit('dinein/RESERVATION_ID', table_reservation_id)
+            scope.$store.commit('dinein/ORDER_RESERVATION_DATA', order)
+            scope.$store.dispatch('dinein/getSelectedOrder', orderId, {
+              root: true,
+            })
+            scope.$router.push({
+              path:
+                '/dine-in/' +
+                scope.$store.getters['context/store'] +
+                '/' +
+                table_reservation_id +
+                '/' +
+                orderId,
+            })
+          })
+        } else {
+          this.$router.push({ path: this.$store.getters['context/store'] })
+        }
       })
     },
   },

@@ -135,7 +135,7 @@
           <a :href="crm">{{ _t('CRM') }}</a>
         </li>
         <li v-if="permitted('menu', 'root')">
-          <a :href="menu">{{ _t('Menu Setup') }}</a>
+          <a :href="menu">{{ _t('Menu') }}</a>
         </li>
         <li v-if="permitted('delivery', 'root')">
           <a role="button" class="cursor-pointer">
@@ -313,7 +313,7 @@ export default {
     },
     baseurl(link) {
       return (
-        window.location.href.replace(new RegExp('/pos/.*'), '/' + link) +
+        window.location.href.replace(new RegExp('/dine-in/.*'), '/' + link) +
         this.$store.getters['context/brand']
       )
     },

@@ -52,7 +52,7 @@ export default {
       OrderSelectedCover: 'Select Cover',
       OrderSelectedCoverId: '',
       defaultCover: '',
-      // isNewItem: '',
+      isNewItem: '',
     }
   },
   computed: {
@@ -60,18 +60,20 @@ export default {
     ...mapState('dinein', ['selectedCover', 'covers']),
     ...mapState('order', ['items', 'orderId']),
   },
-  /*watch: {
+  watch: {
     items: function(element) {
-      this.isNewItem = element.filter(item => {
-        return typeof item.coverNo === 'undefined' ? true : false
-      })
-      if (this.isNewItem.length > 0) {
-        this.$store.commit('dinein/SET_COVER', false)
-      } else {
-        this.$store.commit('dinein/SET_COVER', this.defaultCover)
+      if (this.orderId != null) {
+        this.isNewItem = element.filter(item => {
+          return typeof item.coverNo === 'undefined' ? true : false
+        })
+        if (this.isNewItem.length > 0) {
+          this.$store.commit('dinein/SET_COVER', false)
+        } else {
+          this.$store.commit('dinein/SET_COVER', this.defaultCover)
+        }
       }
     },
-  },*/
+  },
   mounted() {
     if (this.orderId == null) {
       this.defaultCover = this.covers.find(element => {

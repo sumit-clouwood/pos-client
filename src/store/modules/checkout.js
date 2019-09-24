@@ -544,26 +544,27 @@ const actions = {
       // without waiting for a button to be clicked
 
       //order.order is a hold order, state.order contains current order
-      if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
-        if (rootState.order.order_status !== 'completed') {
-          let order = { ...state.order }
-          delete order.new_real_transition_order_no
-          delete order.modify_reason
-          delete order.order_system_status
-          delete order.real_created_datetime
+      if (
+        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN &&
+        rootState.order.order_status !== 'completed'
+      ) {
+        let order = { ...state.order }
+        delete order.new_real_transition_order_no
+        delete order.modify_reason
+        delete order.order_system_status
+        delete order.real_created_datetime
 
-          if (rootState.order.orderId) {
-            response = OrderService.updateOrderItems(
-              order,
-              rootState.order.orderId,
-              ''
-            )
-          } else {
-            response = OrderService.saveOrder(
-              state.order,
-              rootState.customer.customer
-            )
-          }
+        if (rootState.order.orderId) {
+          response = OrderService.updateOrderItems(
+            order,
+            rootState.order.orderId,
+            ''
+          )
+        } else {
+          response = OrderService.saveOrder(
+            state.order,
+            rootState.customer.customer
+          )
         }
       } else if (
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
