@@ -9,6 +9,13 @@
     </div>
     <div class="POSItemOptions_choose POSItemOptions_choose_radio">
       <div
+        class="text-danger color-warning"
+        v-if="subgroup.item_type == 'mandatory'"
+        v-show="error"
+      >
+        {{ error }}
+      </div>
+      <div
         v-for="modifier in subgroup.modifiers"
         :key="modifier._id"
         class="POSItemOptions_choose_choice"
@@ -125,13 +132,6 @@
           </div>
         </label>
       </div>
-      <div
-        class="text-danger color-warning"
-        v-if="subgroup.item_type == 'mandatory'"
-        v-show="error"
-      >
-        {{ error }}
-      </div>
     </div>
   </div>
 </template>
@@ -231,7 +231,7 @@ export default {
     position: relative;
     .text-danger {
       position: absolute;
-      bottom: -30px;
+      top: -22px;
       font-size: 12px;
       z-index: 10;
     }
