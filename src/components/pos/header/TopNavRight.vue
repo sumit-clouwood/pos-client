@@ -161,6 +161,15 @@ export default {
       this.$store.dispatch('location/changeLanguage', locale)
     },
     openConfigLinks() {
+      /*if ($('.setting-dropdown:visible').length > 0) {
+        // $('.setting-dropdown').hide()
+        let icons = $('.setting-dropdown, .setting-dropdown-transaction')
+        icons.hide(500)
+        $('body').removeClass('active-body')
+      } else {
+        $('.setting-dropdown').show()
+        $('.setting-dropdown').addClass('animated zoomIn')
+      }*/
       $('.setting-dropdown').show()
       $('.setting-dropdown').addClass('animated zoomIn')
       // posConfigLinks()

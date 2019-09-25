@@ -9,6 +9,13 @@
     </div>
     <div class="POSItemOptions_choose POSItemOptions_choose_radio">
       <div
+        class="text-danger color-warning"
+        v-if="subgroup.item_type == 'mandatory'"
+        v-show="error"
+      >
+        {{ error }}
+      </div>
+      <div
         v-for="modifier in subgroup.modifiers"
         :key="modifier._id"
         class="POSItemOptions_choose_choice"
@@ -51,9 +58,14 @@
                   : '',
             }"
           />
-          <span class="color-text">{{ modifier.name }}</span>
-          <div class="color-text itm-price" v-if="Num.toPrice(modifier.value)">
-            ({{ formatPrice(modifier.value) }})
+          <div class="label-text">
+            <span class="color-text">{{ modifier.name }}</span>
+            <div
+              class="color-text-price itm-price"
+              v-if="Num.toPrice(modifier.value)"
+            >
+              ({{ formatPrice(modifier.value) }})
+            </div>
           </div>
         </label>
 
@@ -119,13 +131,6 @@
             ({{ formatPrice(modifier.value) }})
           </div>
         </label>
-      </div>
-      <div
-        class="text-danger color-warning"
-        v-if="subgroup.item_type == 'mandatory'"
-        v-show="error"
-      >
-        {{ error }}
       </div>
     </div>
   </div>
@@ -226,7 +231,7 @@ export default {
     position: relative;
     .text-danger {
       position: absolute;
-      bottom: -15px;
+      top: -22px;
       font-size: 12px;
       z-index: 10;
     }
@@ -457,6 +462,17 @@ export default {
         vertical-align: middle;
         margin: 0;
         border: 2px solid $gray-middle;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        .label-text {
+        }
+        .color-text {
+          width: 67%;
+          height: 100%;
+          display: contents;
+        }
 
         input {
           display: none;

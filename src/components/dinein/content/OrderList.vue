@@ -224,9 +224,11 @@
               </div>
               <span class="timeago elapsedTime delManTime runningtime" title="">
                 {{
-                  orderTable.table.start_date +
-                    ', ' +
-                    orderTable.table.start_time
+                  storeDateTime(
+                    orderTable.table.start_date +
+                      ', ' +
+                      orderTable.table.start_time
+                  )
                 }}
               </span>
             </td>
@@ -327,7 +329,7 @@ export default {
           // eslint-disable-next-line no-console
           console.log(this.msg)
           //alert(error.data.error)
-          $('#information-popup').modal('show')
+          $('.information-popup').modal('show')
         })
     },
     setTime(timerTime) {
@@ -364,6 +366,14 @@ export default {
         this.convertDatetime(datetime, this.timezoneString),
         this.timezoneString
       )
+    },
+    storeDateTime(orderDateTime) {
+      return this.convertDatetime(
+        orderDateTime,
+        this.timezoneString,
+        'YYYY-MM-DD HH:mm'
+      )
+      // return orderDateTime + 'yyyu'
     },
     payNow(orderId) {
       // eslint-disable-next-line no-console

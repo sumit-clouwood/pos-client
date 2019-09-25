@@ -52,12 +52,27 @@ export default {
       OrderSelectedCover: 'Select Cover',
       OrderSelectedCoverId: '',
       defaultCover: '',
+      isNewItem: '',
     }
   },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('dinein', ['selectedCover', 'covers']),
     ...mapState('order', ['items', 'orderId']),
+  },
+  watch: {
+    items: function(element) {
+      if (this.orderId != null) {
+        this.isNewItem = element.filter(item => {
+          return typeof item.coverNo === 'undefined' ? true : false
+        })
+        if (this.isNewItem.length > 0) {
+          this.$store.commit('dinein/SET_COVER', false)
+        } else {
+          this.$store.commit('dinein/SET_COVER', this.defaultCover)
+        }
+      }
+    },
   },
   mounted() {
     if (this.orderId == null) {

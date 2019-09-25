@@ -248,6 +248,14 @@ const mutations = {
   [mutation.SET_ITEM](state, item) {
     state.item = item
   },
+  [mutation.RESET](state) {
+    state.groups = []
+    state.subgroups = []
+    state.modifiers = []
+    state.item = false
+    state.itemModifiers = []
+    state.foodIcons = []
+  },
 
   [mutation.SET_ITEM_MODIFIERS](state, { itemId, modifiers, item }) {
     state.itemModifiers.push({

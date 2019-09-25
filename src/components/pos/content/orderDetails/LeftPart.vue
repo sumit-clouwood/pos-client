@@ -161,6 +161,7 @@ export default {
   data() {
     return {
       datetime: '',
+      orderTime: '',
     }
   },
   computed: {
@@ -168,12 +169,16 @@ export default {
     ...mapState('location', ['timezoneString']),
   },
   updated() {
+    clearInterval(this.orderTime)
     this.makeDate()
-    setInterval(() => {
+    this.orderTime = setInterval(() => {
       $('#runningtime').text(
         this.orderTimer(this.datetime, this.timezoneString)
       )
     }, 1000)
+  },
+  destroyed() {
+    clearInterval(this.orderTime)
   },
   mixins: [DateTime],
   methods: {
@@ -197,8 +202,6 @@ export default {
       })
     },
     getPlacedBy(orderDetail) {
-      // eslint-disable-next-line no-console
-      console.log(orderDetail)
       let name = 'N/A'
       if (orderDetail) {
         Object.values(orderDetail.lookups.users._id).forEach(details => {

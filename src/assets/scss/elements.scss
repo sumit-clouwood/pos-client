@@ -72,6 +72,11 @@ body {
         display: none;
       }
     }
+    @include responsive(mobile) {
+      .breadcrump-wrapper {
+        padding-top: 5px;
+      }
+    }
   }
 }
 

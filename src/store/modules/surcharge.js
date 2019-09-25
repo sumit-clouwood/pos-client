@@ -108,7 +108,11 @@ const mutations = {
   [mutation.SET_SURCHARGE_AMOUNT](state, amount) {
     state.surchargeAmounts = amount
   },
-  [mutation.RESET](state) {
+  [mutation.RESET](state, full = false) {
+    //full used only when logout
+    if (full) {
+      state.surcharges = []
+    }
     state.surchargeAmounts = []
   },
 }

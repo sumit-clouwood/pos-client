@@ -87,6 +87,7 @@ const actions = {
       dispatch('getDineInTables'),
       dispatch('getCovers'),
       dispatch('getBookedTables', false),
+      dispatch('getDineInArea'),
     ])
     commit(mutation.LOADING, false)
   },
@@ -560,34 +561,9 @@ const mutations = {
   [mutation.TABLE_SPLIT](state, slitStatus) {
     state.split = slitStatus
   },
-  [mutation.UPDATE_ITEM_GUEST](state, { item, guest, action }) {
-    switch (action) {
-      case 'add':
-        {
-          let bills = {}
-          if (state.bills) {
-            bills = { ...state.bills }
-          }
-          bills[item] = []
-          bills[item].push(guest)
-          state.bills = bills
-        }
-        break
-      case 'update':
-        {
-          let bills = { ...state.bills }
-          bills[item].push(guest)
-          state.bills = bills
-        }
-        break
-      case 'remove': {
-        let bills = { ...state.bills }
-        const itemGuests = bills[item].filter(itemGuest => itemGuest != guest)
-        bills[item] = itemGuests
-        state.bills = bills
-        break
-      }
-    }
+  [mutation.RESET](state) {
+    state.areas = false
+    state.dineInTabType = 'all'
   },
 }
 

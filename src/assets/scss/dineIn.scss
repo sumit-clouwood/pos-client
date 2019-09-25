@@ -1033,9 +1033,9 @@ svg .active > path {
           height: 1.5625rem;
           width: 1.5625rem;
           background-repeat: no-repeat;
-          top: 0.625rem;
-          right: 0.625rem;
-          border-radius: 3px;
+          right: 0rem;
+          top: 0rem;
+          border-radius: 0px 0px 0px 3px;
           background-color: #767DFF;
           background-position: center center;
           border-color: #767DFF !important;
@@ -1047,6 +1047,9 @@ svg .active > path {
 .driver-container {
   > button{
     width: 100%;
+  }
+  .dropdown-content{
+    position: absolute;
   }
 }
 #placeOrder{

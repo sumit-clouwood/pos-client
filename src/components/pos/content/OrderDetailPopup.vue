@@ -174,18 +174,28 @@ export default {
   },
   computed: {
     ...mapState('order', ['selectedOrder']),
+    ...mapState('dinein', ['tables']),
     ...mapGetters('location', ['_t']),
   },
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
     modifyOrder(order) {
-      this.$store.commit('order/START_ORDER')
+      this.$store.dispatch('order/startOrder')
       this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
         let order_type = order.order_type || ''
         if (order_type === 'dine_in') {
+          let tableData = this.tables.find(
+            table => table._id === order.assigned_table_id
+          )
           let orderId = order._id
           let table_reservation_id = order.table_reservation_id
+          this.$store.commit('dinein/SELECTED_TABLE', tableData)
+          this.$store.commit('dinein/RESERVATION_ID', table_reservation_id)
+          this.$store.commit('dinein/ORDER_RESERVATION_DATA', order)
+          this.$store.dispatch('dinein/getSelectedOrder', orderId, {
+            root: true,
+          })
           this.$router.push({
             path:
               '/dine-in/' +

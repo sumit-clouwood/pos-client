@@ -31,6 +31,9 @@ const mutations = {
       state.announcements = announcementsList
     }
   },
+  [mutation.RESET](state) {
+    state.announcements = false
+  },
 }
 
 export default {

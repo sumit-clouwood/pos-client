@@ -169,9 +169,9 @@ const actions = {
             commit(mutation.SET_DM_ORDERS, response.data)
             commit(mutation.SET_TOTAL_ORDER, response.data.count)
             commit(mutation.SET_LOADING, false)
-            if (state.section === 'delivery_home') {
-              dispatch('getDrivers')
-            }
+            /*if (section === 'delivery_home') {*/
+            dispatch('getDrivers')
+            // }
           }
           console.log(state.orders)
         })
