@@ -56,7 +56,11 @@
                     >
                   </div>
                 </div>
-                <div>
+                <div
+                  v-if="
+                    this.$store.state.location.brand.mandatory_password === true
+                  "
+                >
                   <div class="select-driver">
                     {{ _t('Supervisor Password') }}
                   </div>
