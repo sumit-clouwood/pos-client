@@ -884,7 +884,7 @@ const actions = {
 
   modifyOrder({ commit, dispatch }, orderId) {
     commit(mutation.ORDER_TO_MODIFY, orderId)
-    commit(mutation.START_ORDER)
+    dispatch('startOrder')
 
     const params = ['orders', orderId, '']
     OrderService.getGlobalDetails(...params).then(response => {
@@ -905,7 +905,7 @@ const actions = {
     return new Promise(resolve => {
       dispatch('reset')
       commit(mutation.SET_ORDER_ID, order._id)
-      commit(mutation.START_ORDER)
+      dispatch('startOrder')
       let orderAddress = []
       if (order.customer) {
         let deliveryAreaDetails = Object.values(
@@ -1191,6 +1191,10 @@ const actions = {
     //Empty Local Storage
     localStorage.setItem('reservation', false)
     localStorage.setItem('reservationId', false)
+  },
+  startOrder({ commit }) {
+    commit(mutation.START_ORDER)
+    commit('checkout/SET_PROCESSING', false, { root: true })
   },
 }
 
