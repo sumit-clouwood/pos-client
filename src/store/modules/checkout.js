@@ -628,14 +628,15 @@ const actions = {
 
   splitDineinOrders() {},
 
-  createWalkinOrder({ dispatch, commit }) {
+  createWalkinOrder({ dispatch, commit, rootGetters }) {
     return new Promise((resolve, reject) => {
       OrderService.saveOrder(state.order)
         .then(response => {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
-            dispatch('postCreateOrder', response).then(() => {
+            const msg = rootGetters['location/_t']('Order placed Successfully')
+            dispatch('postCreateOrder', msg).then(() => {
               commit(mutation.PRINT, true)
               resolve(response.data)
             })
@@ -711,10 +712,10 @@ const actions = {
     }
   },
 
-  postCreateOrder({ commit }) {
+  postCreateOrder({ commit }, msg) {
     commit(
       'checkoutForm/SET_MSG',
-      { message: '', result: 'loading' },
+      { message: msg, result: 'loading' },
       {
         root: true,
       }
