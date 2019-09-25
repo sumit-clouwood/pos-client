@@ -521,8 +521,7 @@ const actions = {
     })
   },
 
-  getModifyOrder({state, rootState}) {
-    orderId = rootState.order.orderId
+  getModifyOrder({ state, rootState }) {
     let order = { ...state.order }
     order.new_real_transition_order_no =
       rootState.location.store.branch_n +
@@ -531,78 +530,164 @@ const actions = {
       '-' +
       rootState.order.startTime
     delete order.real_created_datetime
-    return Prmomise.reslove(order)
+    return Promise.reslove(order)
   },
-  modifyHoldOrder() {
-    modifyType = 'hold'
-    response = OrderService.modifyOrder(
-      order,
-      rootState.order.orderId,
-      modifyType
+
+  modifyHoldOrder({ dispatch, rootState, rootGetters, commit }) {
+    dispatch('getModifyOrder').then(order => {
+      OrderService.modifyOrder(order, rootState.order.orderId, 'hold').then(
+        () => {
+          dispatch('holdOrders/getHoldOrders', {}, { root: true })
+          let msgStr = rootGetters['location/_t'](
+            'Order has been hold Successfully'
+          )
+          commit(
+            'checkoutForm/SET_MSG',
+            { result: '', message: msgStr },
+            {
+              root: true,
+            }
+          )
+        }
+      )
+    })
+  },
+
+  modifyDeliveryOrder({ dispatch, rootState }) {
+    dispatch('getModifyOrder').then(order => {
+      order.modify_reason = 'Updated from POS'
+      OrderService.modifyOrder(order, rootState.order.orderId)
+    })
+  },
+
+  modifyDininOrder({ dispatch, rootState }) {
+    dispatch('getModifyOrder').then(order => {
+      const modifyType = ''
+      OrderService.modifyOrder(order, rootState.order.orderId, modifyType)
+    })
+  },
+
+  createDeliveryOrder({ rootState, commit, dispatch }) {
+    OrderService.saveOrder(
+      state.order,
+      rootState.customer.offlineData
+        ? rootState.customer.offlineData
+        : rootState.customer.customer
     )
+      .then(response => {
+        if (response.data.status === 'ok') {
+          commit('SET_ORDER_ID', response.data.id)
+          commit('SET_ORDER_NUMBER', response.data.order_no)
+        } else {
+          dispatch('handleSystemErrors')
+        }
+      })
+      .catch(error => error)
   },
 
-  modifyDeliveryOrder() {
-    order.modify_reason = 'Updated from POS'
-    response = OrderService.modifyOrder(
-      order,
-      rootState.order.orderId,
-      modifyType
-    )
-  },
-
-  modifyDininOrder() {
-    response = OrderService.modifyOrder(
-      order,
-      rootState.order.orderId,
-      modifyType
-    )
-  },
-
-  createOrder() {
-
-  },
-
-  createDeliveryOrder() {
-
-  }
-
-  createDineOrder() {
+  createDineOrder({ rootState }) {
     //dispatch('splitDineinOrders')
     if (rootState.order.order_status !== 'completed') {
-      let order = { ...state.order }
+      OrderService.saveOrder(state.order, rootState.customer.customer)
+    }
+  },
+
+  modifyDineOrder({ dispatch, rootState }) {
+    dispatch('getModifyOrder').then(order => {
       delete order.new_real_transition_order_no
       delete order.modify_reason
       delete order.order_system_status
       delete order.real_created_datetime
+      OrderService.updateOrderItems(order, rootState.order.orderId, '')
+    })
+  },
+  modifyBackendOrder({ dispatch, rootState, commit }) {
+    dispatch('getModifyOrder').then(order => {
+      order.modify_reason = 'Updated from Backend'
+      OrderService.modifyOrder(order, rootState.order.orderId)
+        .then(response => {
+          if (response.status == 'ok') {
+            commit('order/ORDER_TO_MODIFY', null, { root: true })
+          }
+        })
+        .catch(error => error)
+    })
+  },
 
-      if (rootState.order.orderId) {
-        response = OrderService.updateOrderItems(
-          order,
-          rootState.order.orderId,
-          ''
-        )
-      } else {
-        response = OrderService.saveOrder(
-          state.order,
-          rootState.customer.customer
-        )
+  splitDineinOrders() {},
+
+  createWalkinOrder({ dispatch, commit }) {
+    OrderService.saveOrder(state.order)
+      .then(response => {
+        if (response.data.status === 'ok') {
+          commit('SET_ORDER_ID', response.data.id)
+          commit('SET_ORDER_NUMBER', response.data.order_no)
+        } else {
+          dispatch('handleSystemErrors')
+        }
+      })
+      .catch(error => dispatch('handleRejectedResponse', error))
+  },
+
+  handleSystemErrors({ commit }, response) {
+    let error = ''
+    if (response.data.status == 'form_errors') {
+      for (let i in response.data.form_errors) {
+        response.data.form_errors[i].forEach(err => (error += ' ' + err))
       }
+    } else {
+      error =
+        typeof response.data.error !== 'undefined'
+          ? response.data.error
+          : response.data.message
     }
-  }
-  modifyBackendOrder() {
-    order.modify_reason = 'Updated from Backend'
-    response = OrderService.modifyOrder(
-      order,
-      rootState.order.orderId,
-      modifyType
+    commit(
+      'checkoutForm/SET_ERROR',
+      `Order Failed, Server Response: ${error}`,
+      { root: true }
     )
-  }
+    return Promise.reject(response.data)
+  },
 
-  splitDineinOrders() {
+  handleNetworkError({ rootGetters, commit }) {
+    let errorMsg = rootGetters['location/_t'](
+      'System went offline. Order is queued for sending later'
+    )
+    commit(
+      'checkoutForm/SET_MSG',
+      { result: '', message: errorMsg },
+      {
+        root: true,
+      }
+    )
+    //reset order start time
+    commit('order/RESET_ORDER_TIME', null, { root: true })
 
-  }
-  createOrder({ state, commit, rootState, rootGetters, dispatch }, action) {
+    commit(mutation.PRINT, true)
+  },
+
+  handleRejectedResponse({ commit }, response) {
+    var err_msg = ''
+    if (
+      response.data &&
+      response.data[response.data.status] &&
+      typeof response.data[response.data.status] != 'undefined'
+    ) {
+      response.data[response.data.status].forEach(value => {
+        err_msg += value + ' '
+      })
+
+      commit(
+        'checkoutForm/SET_MSG',
+        { result: '', message: err_msg },
+        {
+          root: true,
+        }
+      )
+    }
+  },
+
+  postCreateOrder({ commit }) {
     commit(
       'checkoutForm/SET_MSG',
       { message: '', result: 'loading' },
@@ -610,200 +695,31 @@ const actions = {
         root: true,
       }
     )
-    return new Promise((resolve, reject) => {
-      let response = null
+  },
 
-      //set order id to be used for invoicing
-      let orderId = null
+  createOrder({ rootState }) {
+    //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
+    //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
+    //                already but we want to modify it from delivery manager
 
-      //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
-      //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
-      //                already but we want to modify it from delivery manager
+    //order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER means its a new delivery order
+    // we send user directly to delivery manager after printing invoice so we auto print inoivce
+    // without waiting for a button to be clicked
 
-      //order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER means its a new delivery order
-      // we send user directly to delivery manager after printing invoice so we auto print inoivce
-      // without waiting for a button to be clicked
-
-      //order.order is a hold order, state.order contains current order
-      if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
-        return this.dispatch('createDineinOrder')
-      } else if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD) {
-        return this.dispatch('modifyHoldOrder')
-      } else if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY) {
-        return this.dispatch('modifyDeliveryOrder')
-      } else if (rootState.order.orderToModify) {
-        return this.dispatch('modifyBackendOrder')
-      } else {
-        //set order id for modify orders or delivery order
-        
-
-        let modifyType = ''
-
-         
-
-       
-      } else {
-        response = OrderService.saveOrder(
-          state.order,
-          rootState.customer.offlineData
-            ? rootState.customer.offlineData
-            : rootState.customer.customer
-        )
-      }
-
-      response
-        .then(response => {
-          //remove current order from hold list as it might be processed, refetching ll do it
-          if (response.data.status === 'ok') {
-            commit('order/ORDER_TO_MODIFY', null, { root: true })
-
-            if (typeof response.data.id !== 'undefined') {
-              //this is walk in order
-              orderId = response.data.id
-              if (typeof response.data.order_no !== 'undefined') {
-                commit('SET_ORDER_NUMBER', response.data.order_no)
-              }
-            } else if (
-              rootState.order.selectedOrder &&
-              rootState.order.selectedOrder.item.order_no
-            ) {
-              commit(
-                'SET_ORDER_NUMBER',
-                rootState.order.selectedOrder.item.order_no
-              )
-            }
-            //check what is order status, hold or modifying delivery
-            switch (rootState.order.orderStatus) {
-              case CONSTANTS.ORDER_STATUS_ON_HOLD:
-                dispatch('holdOrders/getHoldOrders', {}, { root: true })
-                break
-            }
-
-            //check action, either wants to modify or hold
-            if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
-              let msgStr = rootGetters['location/_t'](
-                'Order has been hold Successfully'
-              )
-              commit(
-                'checkoutForm/SET_MSG',
-                { result: '', message: msgStr },
-                {
-                  root: true,
-                }
-              )
-              resolve()
-              dispatch('reset')
-              return true
-            }
-
-            if (!rootState.order.orderId) {
-              commit('order/SET_ORDER_ID', orderId, { root: true })
-            }
-
-            let msgStr = rootGetters['location/_t']('Order placed Successfully')
-
-            commit(
-              'checkoutForm/SET_MSG',
-              { result: 'success', message: msgStr },
-              {
-                root: true,
-              }
-            )
-
-            //In case if order is not dine in, print out the invoice.
-            if (
-              rootState.order.orderType.OTApi ===
-                CONSTANTS.ORDER_TYPE_DINE_IN &&
-              rootState.order.is_pay !== 1
-            ) {
-              let dineinsuccmsg = rootGetters['location/_t'](
-                'Item added to order successfully'
-              )
-              commit(
-                'checkoutForm/SET_MSG',
-                { result: '', message: dineinsuccmsg },
-                {
-                  root: true,
-                }
-              )
-              dispatch('reset')
-            } else {
-              commit(mutation.PRINT, true)
-            }
-            resolve(response.data)
-          } else {
-            let error = ''
-            if (response.data.status == 'form_errors') {
-              for (let i in response.data.form_errors) {
-                response.data.form_errors[i].forEach(
-                  err => (error += ' ' + err)
-                )
-              }
-            } else {
-              error =
-                typeof response.data.error !== 'undefined'
-                  ? response.data.error
-                  : response.data.message
-            }
-            commit(
-              'checkoutForm/SET_ERROR',
-              `Order Failed, Server Response: ${error}`,
-              { root: true }
-            )
-            reject(response.data)
-          }
-        })
-        .catch(response => {
-          if (response.data && response.data.status === 'fail') {
-            commit('checkoutForm/SET_ERROR', response.data.error, {
-              root: true,
-            })
-            reject(response.data.error)
-          } else {
-            if (response.message === 'Network Error') {
-              let errorMsg = rootGetters['location/_t'](
-                'System went offline. Order is queued for sending later'
-              )
-              commit(
-                'checkoutForm/SET_MSG',
-                { result: '', message: errorMsg },
-                {
-                  root: true,
-                }
-              )
-              //reset order start time
-              commit('order/RESET_ORDER_TIME', null, { root: true })
-
-              commit(mutation.PRINT, true)
-              dispatch(
-                'transactionOrders/getTransactionOrders',
-                {},
-                { root: true }
-              )
-            } else {
-              var err_msg = ''
-              if (
-                response.data &&
-                response.data[response.data.status] &&
-                typeof response.data[response.data.status] != 'undefined'
-              ) {
-                response.data[response.data.status].forEach(value => {
-                  err_msg += value + ' '
-                })
-
-                commit(
-                  'checkoutForm/SET_MSG',
-                  { result: '', message: err_msg },
-                  {
-                    root: true,
-                  }
-                )
-              }
-            }
-            resolve(response)
-          }
-        })
-    })
+    //order.order is a hold order, state.order contains current order
+    if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
+      return this.dispatch('createDineinOrder')
+    } else if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+      return this.dispatch('modifyHoldOrder')
+    } else if (
+      rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
+    ) {
+      return this.dispatch('modifyDeliveryOrder')
+    } else if (rootState.order.orderToModify) {
+      return this.dispatch('modifyBackendOrder')
+    } else {
+      return this.dispatch('createOrder')
+    }
   },
   generateInvoice() {
     //commit(mutation.PRINT, true)
