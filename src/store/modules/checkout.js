@@ -638,20 +638,20 @@ const actions = {
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('postCreateOrder', {
               result: 'success',
-              message: msg,
+              msg: msg,
             }).then(() => {
               commit(mutation.PRINT, true)
               resolve(response.data)
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => {
-              reject(response)
+              reject(response.data)
             })
           }
         })
         .catch(error => {
           dispatch('handleRejectedResponse', error).then(() => {
-            reject(error)
+            resolve(error)
           })
         })
     })
@@ -674,7 +674,7 @@ const actions = {
       `Order Failed, Server Response: ${error}`,
       { root: true }
     )
-    return Promise.reject(response.data)
+    return Promise.resolve(response.data)
   },
 
   handleNetworkError({ rootGetters, commit }) {
