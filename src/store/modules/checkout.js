@@ -579,24 +579,6 @@ const actions = {
     })
   },
 
-  createDeliveryOrder({ rootState, commit, dispatch }) {
-    OrderService.saveOrder(
-      state.order,
-      rootState.customer.offlineData
-        ? rootState.customer.offlineData
-        : rootState.customer.customer
-    )
-      .then(response => {
-        if (response.data.status === 'ok') {
-          commit('SET_ORDER_ID', response.data.id)
-          commit('SET_ORDER_NUMBER', response.data.order_no)
-        } else {
-          dispatch('handleSystemErrors')
-        }
-      })
-      .catch(error => error)
-  },
-
   createDineOrder({ rootState }) {
     //dispatch('splitDineinOrders')
     if (rootState.order.order_status !== 'completed') {
@@ -641,15 +623,54 @@ const actions = {
               result: 'success',
               msg: msg,
             }).then(() => {
-              commit(mutation.PRINT, true)
               resolve(response.data)
+              commit(mutation.PRINT, true)
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
           }
         })
         .catch(error => {
-          dispatch('handleRejectedResponse', error).then(() => resolve())
+          dispatch('handleRejectedResponse', error)
+            .then(() => {
+              commit(mutation.PRINT, true)
+              resolve()
+            })
+            .catch(() => resolve())
+        })
+        .finally(() => {
+          commit('order/RESET_ORDER_TIME', null, { root: true })
+        })
+    })
+  },
+
+  createDeliveryOrder({ rootGetters, commit, dispatch }) {
+    return new Promise(resolve => {
+      OrderService.saveOrder(state.order)
+        .then(response => {
+          if (response.data.status === 'ok') {
+            commit('order/SET_ORDER_ID', response.data.id, { root: true })
+            commit('SET_ORDER_NUMBER', response.data.order_no)
+
+            const msg = rootGetters['location/_t']('Order placed Successfully')
+            dispatch('setMessage', {
+              result: 'success',
+              msg: msg,
+            }).then(() => {
+              resolve(response.data)
+              commit(mutation.PRINT, true)
+            })
+          } else {
+            dispatch('handleSystemErrors', response).then(() => resolve())
+          }
+        })
+        .catch(error => {
+          dispatch('handleRejectedResponse', error)
+            .then(() => {
+              commit(mutation.PRINT, true)
+              resolve()
+            })
+            .catch(() => resolve())
         })
         .finally(() => {
           commit('order/RESET_ORDER_TIME', null, { root: true })
@@ -689,10 +710,11 @@ const actions = {
         err_msg += value + ' '
       })
 
-      return dispatch('setMessage', {
+      dispatch('setMessage', {
         result: 'error',
         message: err_msg,
       })
+      return Promise.reject()
     }
   },
   handleNetworkError({ rootGetters, commit }) {
