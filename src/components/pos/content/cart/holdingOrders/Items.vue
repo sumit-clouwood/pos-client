@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     setHoldOrderCart: function(orderData) {
-      this.$store.commit('order/START_ORDER')
+      this.$store.dispatch('order/startOrder')
       this.$store.commit('order/SET_CART_TYPE', 'new')
       this.$store.dispatch('holdOrders/fetchOrder', orderData)
       if (orderData.customer != null) {
