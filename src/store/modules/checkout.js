@@ -629,14 +629,15 @@ const actions = {
   splitDineinOrders() {},
 
   createWalkinOrder({ dispatch, commit, rootGetters }) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       OrderService.saveOrder(state.order)
         .then(response => {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
+
             const msg = rootGetters['location/_t']('Order placed Successfully')
-            dispatch('postCreateOrder', {
+            dispatch('setMessage', {
               result: 'success',
               msg: msg,
             }).then(() => {
@@ -644,20 +645,19 @@ const actions = {
               resolve(response.data)
             })
           } else {
-            dispatch('handleSystemErrors', response).then(() => {
-              reject(response.data)
-            })
+            dispatch('handleSystemErrors', response).then(() => resolve())
           }
         })
         .catch(error => {
-          dispatch('handleRejectedResponse', error).then(() => {
-            resolve(error)
-          })
+          dispatch('handleRejectedResponse', error).then(() => resolve())
+        })
+        .finally(() => {
+          commit('order/RESET_ORDER_TIME', null, { root: true })
         })
     })
   },
 
-  handleSystemErrors({ commit }, response) {
+  handleSystemErrors({ dispatch }, response) {
     let error = ''
     if (response.data.status == 'form_errors') {
       for (let i in response.data.form_errors) {
@@ -669,14 +669,32 @@ const actions = {
           ? response.data.error
           : response.data.message
     }
-    commit(
-      'checkoutForm/SET_ERROR',
-      `Order Failed, Server Response: ${error}`,
-      { root: true }
-    )
-    return Promise.resolve(response.data)
-  },
 
+    return dispatch('setMessage', {
+      result: 'error',
+      msg: error,
+    })
+  },
+  handleRejectedResponse({ dispatch }, response) {
+    if (response.message == 'Network Error') {
+      return dispatch('handleNetworkError', response)
+    }
+    var err_msg = ''
+    if (
+      response.data &&
+      response.data[response.data.status] &&
+      typeof response.data[response.data.status] != 'undefined'
+    ) {
+      response.data[response.data.status].forEach(value => {
+        err_msg += value + ' '
+      })
+
+      return dispatch('setMessage', {
+        result: 'error',
+        message: err_msg,
+      })
+    }
+  },
   handleNetworkError({ rootGetters, commit }) {
     let errorMsg = rootGetters['location/_t'](
       'System went offline. Order is queued for sending later'
@@ -688,34 +706,10 @@ const actions = {
         root: true,
       }
     )
-    //reset order start time
-    commit('order/RESET_ORDER_TIME', null, { root: true })
-
-    commit(mutation.PRINT, true)
+    return Promise.resolve()
   },
 
-  handleRejectedResponse({ commit }, response) {
-    var err_msg = ''
-    if (
-      response.data &&
-      response.data[response.data.status] &&
-      typeof response.data[response.data.status] != 'undefined'
-    ) {
-      response.data[response.data.status].forEach(value => {
-        err_msg += value + ' '
-      })
-
-      commit(
-        'checkoutForm/SET_MSG',
-        { result: '', message: err_msg },
-        {
-          root: true,
-        }
-      )
-    }
-  },
-
-  postCreateOrder({ commit }, { result, msg = '' }) {
+  setMessage({ commit }, { result, msg = '' }) {
     commit(
       'checkoutForm/SET_MSG',
       { message: msg, result: result },
@@ -726,7 +720,14 @@ const actions = {
     return Promise.resolve()
   },
 
-  createOrder({ rootState, dispatch }) {
+  createOrder({ rootState, dispatch, commit }) {
+    commit(
+      'checkoutForm/SET_MSG',
+      { message: '', result: 'loading' },
+      {
+        root: true,
+      }
+    )
     //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
     //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
     //                already but we want to modify it from delivery manager
