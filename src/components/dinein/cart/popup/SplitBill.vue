@@ -82,8 +82,9 @@
 </template>
 
 <script>
+/* global hideModal */
 import Modifiers from '@/components/pos/content/cart/newOrders/items/Modifiers.vue'
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'SplitBill',
   components: {
@@ -97,8 +98,12 @@ export default {
     ...mapState('dinein', ['guests', 'bills']),
   },
   methods: {
-    ...mapActions('dinein', ['splitBill']),
-
+    //...mapActions('dinein', ['']),
+    splitBill() {
+      this.$store.dispatch('dinein/splitBill').then(() => {
+        hideModal('#split-bill-popup')
+      })
+    },
     selectGuest(item, guest) {
       this.$store.dispatch('dinein/updateItemGuest', {
         item: item.orderIndex,

@@ -629,16 +629,27 @@ const actions = {
   splitDineinOrders() {},
 
   createWalkinOrder({ dispatch, commit }) {
-    OrderService.saveOrder(state.order)
-      .then(response => {
-        if (response.data.status === 'ok') {
-          commit('SET_ORDER_ID', response.data.id)
-          commit('SET_ORDER_NUMBER', response.data.order_no)
-        } else {
-          dispatch('handleSystemErrors')
-        }
-      })
-      .catch(error => dispatch('handleRejectedResponse', error))
+    return new Promise((resolve, reject) => {
+      OrderService.saveOrder(state.order)
+        .then(response => {
+          if (response.data.status === 'ok') {
+            commit('SET_ORDER_ID', response.data.id)
+            commit('SET_ORDER_NUMBER', response.data.order_no)
+            dispatch('postCreateOrder', response).then(() => {
+              resolve(response)
+            })
+          } else {
+            dispatch('handleSystemErrors', response).then(() => {
+              reject(response)
+            })
+          }
+        })
+        .catch(error => {
+          dispatch('handleRejectedResponse', error).then(() => {
+            reject(error)
+          })
+        })
+    })
   },
 
   handleSystemErrors({ commit }, response) {
@@ -709,7 +720,7 @@ const actions = {
     )
   },
 
-  createOrder({ rootState }) {
+  createOrder({ rootState, dispatch }) {
     //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
     //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
     //                already but we want to modify it from delivery manager
@@ -720,17 +731,17 @@ const actions = {
 
     //order.order is a hold order, state.order contains current order
     if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
-      return this.dispatch('createDineinOrder')
+      return dispatch('createDineinOrder')
     } else if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD) {
-      return this.dispatch('modifyHoldOrder')
+      return dispatch('modifyHoldOrder')
     } else if (
       rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
     ) {
-      return this.dispatch('modifyDeliveryOrder')
+      return dispatch('modifyDeliveryOrder')
     } else if (rootState.order.orderToModify) {
-      return this.dispatch('modifyBackendOrder')
+      return dispatch('modifyBackendOrder')
     } else {
-      return this.dispatch('createOrder')
+      return dispatch('createWalkinOrder')
     }
   },
   generateInvoice() {

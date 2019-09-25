@@ -438,6 +438,7 @@ const actions = {
       guest: guest,
       action: action,
     })
+    return Promise.resolve()
   },
   splitBill({ state, commit }) {
     let groups = {}
@@ -564,6 +565,35 @@ const mutations = {
   [mutation.RESET](state) {
     state.areas = false
     state.dineInTabType = 'all'
+  },
+  [mutation.UPDATE_ITEM_GUEST](state, { item, guest, action }) {
+    switch (action) {
+      case 'add':
+        {
+          let bills = {}
+          if (state.bills) {
+            bills = { ...state.bills }
+          }
+          bills[item] = []
+          bills[item].push(guest)
+          state.bills = bills
+        }
+        break
+      case 'update':
+        {
+          let bills = { ...state.bills }
+          bills[item].push(guest)
+          state.bills = bills
+        }
+        break
+      case 'remove': {
+        let bills = { ...state.bills }
+        const itemGuests = bills[item].filter(itemGuest => itemGuest != guest)
+        bills[item] = itemGuests
+        state.bills = bills
+        break
+      }
+    }
   },
 }
 
