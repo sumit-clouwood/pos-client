@@ -636,7 +636,10 @@ const actions = {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
             const msg = rootGetters['location/_t']('Order placed Successfully')
-            dispatch('postCreateOrder', msg).then(() => {
+            dispatch('postCreateOrder', {
+              result: 'success',
+              message: msg,
+            }).then(() => {
               commit(mutation.PRINT, true)
               resolve(response.data)
             })
@@ -712,10 +715,10 @@ const actions = {
     }
   },
 
-  postCreateOrder({ commit }, msg) {
+  postCreateOrder({ commit }, { result, msg = '' }) {
     commit(
       'checkoutForm/SET_MSG',
-      { message: msg, result: 'loading' },
+      { message: msg, result: result },
       {
         root: true,
       }
