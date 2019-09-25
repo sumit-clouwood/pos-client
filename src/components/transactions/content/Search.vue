@@ -112,7 +112,7 @@ export default {
       .search-field-input {
         position: absolute;
         top: 0;
-        right: -100%;
+        right: 0;
         bottom: 0;
         height: 100%;
         width: 100%;

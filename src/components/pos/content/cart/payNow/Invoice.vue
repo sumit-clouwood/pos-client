@@ -96,7 +96,9 @@ export default {
 
           //redirect only if there is not changed amount
           if (this.$store.state.order.orderType.OTApi === 'call_center') {
-            this.$router.replace({ name: 'DeliveryManager' })
+            setTimeout(() => {
+              this.$router.replace({ name: 'DeliveryManager' })
+            }, 500)
           }
 
           if (!this.changedAmount) {
