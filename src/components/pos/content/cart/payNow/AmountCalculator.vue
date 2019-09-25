@@ -67,7 +67,7 @@ export default {
                   this.$store.state.order.orderType.OTApi
                 )
                 .then(() => {
-                  $('#payment-msg').modal('show')
+                  //  $('#payment-msg').modal('show')
 
                   if (this.changedAmount >= 0.1) {
                     //alert('change amount is due')

@@ -633,10 +633,11 @@ const actions = {
       OrderService.saveOrder(state.order)
         .then(response => {
           if (response.data.status === 'ok') {
-            commit('SET_ORDER_ID', response.data.id)
+            commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
             dispatch('postCreateOrder', response).then(() => {
-              resolve(response)
+              commit(mutation.PRINT, true)
+              resolve(response.data)
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => {
@@ -718,6 +719,7 @@ const actions = {
         root: true,
       }
     )
+    return Promise.resolve()
   },
 
   createOrder({ rootState, dispatch }) {
