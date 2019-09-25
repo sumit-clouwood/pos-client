@@ -678,6 +678,42 @@ const actions = {
     })
   },
 
+  createHoldOrder({ dispatch, commit, rootGetters }) {
+    return new Promise(resolve => {
+      OrderService.saveOrder(state.order)
+        .then(response => {
+          if (response.data.status === 'ok') {
+            commit('order/SET_ORDER_ID', response.data.id, { root: true })
+            commit('SET_ORDER_NUMBER', response.data.order_no)
+            //we are not printing so reset manually here
+            dispatch('reset')
+
+            const msg = rootGetters['location/_t'](
+              'Order has been put on hold.'
+            )
+            dispatch('setMessage', {
+              result: 'success',
+              msg: msg,
+            }).then(() => {
+              resolve(response.data)
+              dispatch('holdOrders/getHoldOrders', {}, { root: true })
+            })
+          } else {
+            dispatch('handleSystemErrors', response).then(() => resolve())
+          }
+        })
+        .catch(error => {
+          dispatch('handleRejectedResponse', error)
+            .then(() => {
+              resolve()
+            })
+            .catch(() => resolve())
+        })
+        .finally(() => {
+          commit('order/RESET_ORDER_TIME', null, { root: true })
+        })
+    })
+  },
   handleSystemErrors({ dispatch }, response) {
     let error = ''
     if (response.data.status == 'form_errors') {
@@ -697,7 +733,7 @@ const actions = {
     })
   },
   handleRejectedResponse({ dispatch }, response) {
-    if (response.message == 'Network Error') {
+    if (response.message === 'Network Error') {
       return dispatch('handleNetworkError', response)
     }
     var err_msg = ''
@@ -714,7 +750,7 @@ const actions = {
         result: 'error',
         message: err_msg,
       })
-      return Promise.reject()
+      return Promise.reject(err_msg)
     }
   },
   handleNetworkError({ rootGetters, commit }) {
@@ -742,7 +778,7 @@ const actions = {
     return Promise.resolve()
   },
 
-  createOrder({ rootState, dispatch, commit }) {
+  createOrder({ rootState, dispatch, commit }, action) {
     commit(
       'checkoutForm/SET_MSG',
       { message: '', result: 'loading' },
@@ -759,9 +795,7 @@ const actions = {
     // without waiting for a button to be clicked
 
     //order.order is a hold order, state.order contains current order
-    if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
-      return dispatch('createDineinOrder')
-    } else if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+    if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD) {
       return dispatch('modifyHoldOrder')
     } else if (
       rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
@@ -769,6 +803,20 @@ const actions = {
       return dispatch('modifyDeliveryOrder')
     } else if (rootState.order.orderToModify) {
       return dispatch('modifyBackendOrder')
+    } else if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+      return dispatch('createHoldOrder')
+    } else if (
+      rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER
+    ) {
+      return dispatch('createDeliveryOrder')
+    } else if (
+      rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN
+    ) {
+      if (action == 'dine-in-place-order') {
+        return dispatch('modifyDineinOrder')
+      } else {
+        return dispatch('createDineinOrder')
+      }
     } else {
       return dispatch('createWalkinOrder')
     }
