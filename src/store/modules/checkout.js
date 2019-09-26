@@ -568,59 +568,132 @@ const actions = {
             }
           })
           .catch(error => {
-            dispatch('handleRejectedResponse', error)
+            dispatch('handleRejectedResponse', {
+              response: error,
+              offline: false,
+            })
               .then(() => {
                 resolve()
               })
               .catch(() => resolve())
           })
-          .finally(() => {
-            resolve()
+      })
+    })
+  },
+
+  modifyDeliveryOrder({ dispatch, rootState, rootGetters, commit }) {
+    return new Promise(resolve => {
+      dispatch('getModifyOrder').then(order => {
+        order.modify_reason = 'Updated from POS'
+        OrderService.modifyOrder(order, rootState.order.orderId)
+          .then(response => {
+            if (response.data.status === 'ok') {
+              let msgStr = rootGetters['location/_t'](
+                'Delivery order has been modified.'
+              )
+              commit(
+                'checkoutForm/SET_MSG',
+                { result: '', message: msgStr },
+                {
+                  root: true,
+                }
+              )
+              dispatch('reset')
+            } else {
+              dispatch('handleSystemErrors', response).then(() => resolve())
+            }
+          })
+          .catch(error => {
+            dispatch('handleRejectedResponse', {
+              response: error,
+              offline: false,
+            })
+              .then(() => {
+                resolve()
+              })
+              .catch(() => resolve())
           })
       })
     })
   },
 
-  modifyDeliveryOrder({ dispatch, rootState }) {
-    dispatch('getModifyOrder').then(order => {
-      order.modify_reason = 'Updated from POS'
-      OrderService.modifyOrder(order, rootState.order.orderId)
+  modifyDineOrder({ dispatch, rootState, rootGetters, commit }) {
+    return new Promise(resolve => {
+      dispatch('getModifyOrder').then(order => {
+        //delete order.order_system_status
+        //delete order.new_real_transition_order_no
+        //delete order.modify_reason
+        //delete order.order_system_status
+        //delete order.real_created_datetime
+
+        OrderService.updateOrderItems(order, rootState.order.orderId)
+          .then(response => {
+            if (response.data.status === 'ok') {
+              let msgStr = rootGetters['location/_t'](
+                'Delivery order has been modified.'
+              )
+              commit(
+                'checkoutForm/SET_MSG',
+                { result: '', message: msgStr },
+                {
+                  root: true,
+                }
+              )
+              dispatch('reset')
+            } else {
+              dispatch('handleSystemErrors', response).then(() => resolve())
+            }
+          })
+          .catch(error => {
+            dispatch('handleRejectedResponse', {
+              response: error,
+              offline: false,
+            })
+              .then(() => {
+                resolve()
+              })
+              .catch(() => {
+                resolve()
+              })
+          })
+      })
     })
   },
-
-  modifyDininOrder({ dispatch, rootState }) {
-    dispatch('getModifyOrder').then(order => {
-      const modifyType = ''
-      OrderService.modifyOrder(order, rootState.order.orderId, modifyType)
-    })
-  },
-
-  createDineOrder({ rootState }) {
-    //dispatch('splitDineinOrders')
-    if (rootState.order.order_status !== 'completed') {
-      OrderService.saveOrder(state.order, rootState.customer.customer)
-    }
-  },
-
-  modifyDineOrder({ dispatch, rootState }) {
-    dispatch('getModifyOrder').then(order => {
-      delete order.new_real_transition_order_no
-      delete order.modify_reason
-      delete order.order_system_status
-      delete order.real_created_datetime
-      OrderService.updateOrderItems(order, rootState.order.orderId, '')
-    })
-  },
-  modifyBackendOrder({ dispatch, rootState, commit }) {
-    dispatch('getModifyOrder').then(order => {
-      order.modify_reason = 'Updated from Backend'
-      OrderService.modifyOrder(order, rootState.order.orderId)
-        .then(response => {
-          if (response.status == 'ok') {
-            commit('order/ORDER_TO_MODIFY', null, { root: true })
-          }
-        })
-        .catch(error => error)
+  modifyBackendOrder({ dispatch, rootState, rootGetters, commit }) {
+    return new Promise(resolve => {
+      dispatch('getModifyOrder').then(order => {
+        order.modify_reason = 'Updated from backend'
+        OrderService.modifyOrder(order, rootState.order.orderId)
+          .then(response => {
+            if (response.data.status === 'ok') {
+              let msgStr = rootGetters['location/_t'](
+                'Delivery order has been modified.'
+              )
+              commit(
+                'checkoutForm/SET_MSG',
+                { result: '', message: msgStr },
+                {
+                  root: true,
+                }
+              )
+              dispatch('reset')
+            } else {
+              dispatch('handleSystemErrors', response).then(() => resolve())
+            }
+          })
+          .catch(error => {
+            dispatch('handleRejectedResponse', {
+              response: error,
+              offline: false,
+            })
+              .then(() => {
+                resolve()
+              })
+              .catch(() => {
+                resolve()
+              })
+          })
+      })
     })
   },
 
@@ -647,15 +720,15 @@ const actions = {
           }
         })
         .catch(error => {
-          dispatch('handleRejectedResponse', error)
+          dispatch('handleRejectedResponse', {
+            response: error,
+            offline: true,
+          })
             .then(() => {
               commit(mutation.PRINT, true)
               resolve()
             })
             .catch(() => resolve())
-        })
-        .finally(() => {
-          resolve()
         })
     })
   },
@@ -681,15 +754,15 @@ const actions = {
           }
         })
         .catch(error => {
-          dispatch('handleRejectedResponse', error)
+          dispatch('handleRejectedResponse', {
+            response: error,
+            offline: true,
+          })
             .then(() => {
               commit(mutation.PRINT, true)
               resolve()
             })
             .catch(() => resolve())
-        })
-        .finally(() => {
-          resolve()
         })
     })
   },
@@ -719,17 +792,56 @@ const actions = {
           }
         })
         .catch(error => {
-          dispatch('handleRejectedResponse', error)
+          dispatch('handleRejectedResponse', {
+            response: error,
+            offline: false,
+          })
             .then(() => {
               resolve()
             })
             .catch(() => resolve())
         })
-        .finally(() => {
-          resolve()
+    })
+  },
+
+  createDineOrder({ dispatch, commit, rootState, rootGetters }) {
+    //dispatch('splitDineinOrders')
+    if (rootState.order.order_status === 'completed') {
+      return Promise.reject('Order already completed')
+    }
+    return new Promise(resolve => {
+      OrderService.saveOrder(state.order)
+        .then(response => {
+          if (response.data.status === 'ok') {
+            commit('order/SET_ORDER_ID', response.data.id, { root: true })
+            commit('SET_ORDER_NUMBER', response.data.order_no)
+            //we are not printing so reset manually here
+            dispatch('reset')
+
+            const msg = rootGetters['location/_t']('Order has been placed')
+            dispatch('setMessage', {
+              result: 'success',
+              msg: msg,
+            }).then(() => {
+              resolve(response.data)
+            })
+          } else {
+            dispatch('handleSystemErrors', response).then(() => resolve())
+          }
+        })
+        .catch(error => {
+          dispatch('handleRejectedResponse', {
+            response: error,
+            offline: false,
+          })
+            .then(() => {
+              resolve()
+            })
+            .catch(() => resolve())
         })
     })
   },
+
   handleSystemErrors({ dispatch }, response) {
     let error = ''
     if (response.data.status == 'form_errors') {
@@ -748,8 +860,8 @@ const actions = {
       msg: error,
     })
   },
-  handleRejectedResponse({ dispatch }, response) {
-    if (response.message === 'Network Error') {
+  handleRejectedResponse({ dispatch }, { response, offline = false }) {
+    if (offline && response.message === 'Network Error') {
       return dispatch('handleNetworkError', response)
     }
     var err_msg = ''
@@ -761,13 +873,17 @@ const actions = {
       response.data[response.data.status].forEach(value => {
         err_msg += value + ' '
       })
-
-      dispatch('setMessage', {
-        result: 'error',
-        message: err_msg,
-      })
-      return Promise.reject(err_msg)
     }
+
+    if (response.data && response.data.error) {
+      err_msg = response.data.error
+    }
+
+    dispatch('setMessage', {
+      result: 'error',
+      msg: err_msg,
+    })
+    return Promise.reject(err_msg)
   },
   handleNetworkError({ rootGetters, commit }) {
     let errorMsg = rootGetters['location/_t'](
@@ -829,9 +945,9 @@ const actions = {
       rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN
     ) {
       if (action == 'dine-in-place-order') {
-        return dispatch('modifyDineinOrder')
+        return dispatch('modifyDineOrder')
       } else {
-        return dispatch('createDineinOrder')
+        return dispatch('createDineOrder')
       }
     } else {
       return dispatch('createWalkinOrder')
