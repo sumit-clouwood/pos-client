@@ -638,6 +638,10 @@ const actions = {
                 dispatch('reset')
               } else {
                 commit(mutation.PRINT, true)
+                commit(
+                  'SET_ORDER_NUMBER',
+                  rootState.order.selectedOrder.item.order_no
+                )
               }
 
               commit(
@@ -811,7 +815,7 @@ const actions = {
     })
   },
 
-  createDineOrder({ dispatch, commit, rootGetters }) {
+  createDineOrder({ dispatch, commit, rootGetters }, action) {
     return new Promise(resolve => {
       OrderService.saveOrder(state.order)
         .then(response => {
@@ -819,9 +823,14 @@ const actions = {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
             //we are not printing so reset manually here
-            dispatch('reset')
+            let msg = rootGetters['location/_t']('Order has been placed')
+            if (action === 'dine-in-place-order') {
+              msg = rootGetters['location/_t']('Order has been added')
+              dispatch('reset')
+            } else {
+              commit(mutation.PRINT, true)
+            }
 
-            const msg = rootGetters['location/_t']('Order has been placed')
             dispatch('setMessage', {
               result: 'success',
               msg: msg,
@@ -953,7 +962,7 @@ const actions = {
         if (rootState.order.orderId) {
           return dispatch('modifyDineOrder', action)
         } else {
-          return dispatch('createDineOrder')
+          return dispatch('createDineOrder', action)
         }
       }
     } else {
