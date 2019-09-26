@@ -18,7 +18,14 @@
           <div class="add-note-area">
             <p class="color-text-invert">{{ _t('Enter Gift Card Code') }}</p>
             <form>
-              <input type="text" class="add-email-from" v-model="code" />
+              <input
+                type="text"
+                class="add-email-from"
+                v-model="code"
+                @keypress="
+                  $event.keyCode == 13 ? $event.preventDefault() : true
+                "
+              />
             </form>
           </div>
           <div v-show="error" class="msg">
@@ -83,6 +90,7 @@ export default {
             this.$store.state.checkoutForm.action == 'pay'
           ) {
             if (this.$store.getters['checkoutForm/validate']) {
+              this.$store.commit('order/IS_PAY', 1)
               this.error = null
               this.$store
                 .dispatch(
@@ -117,7 +125,50 @@ export default {
   },
 }
 </script>
-<style lang="sass" scoped>
-.msg
-  padding-top: 20px
+<style lang="scss" scoped>
+@import '../../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../../assets/scss/variables.scss';
+@import '../../../../../../assets/scss/mixins.scss';
+
+.msg {
+  padding-top: 20px;
+}
+
+@include responsive(mobile) {
+  #Gift-card-payemnt {
+    padding: 0 !important;
+
+    .modal-dialog {
+      position: fixed;
+      top: auto;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      transform: none;
+      animation: none;
+
+      .modal-content {
+        top: auto;
+
+        .modal-header {
+          height: 80px;
+          background-color: #fff;
+          padding: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          border: none;
+        }
+        .modal-footer {
+          padding: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          .btn-announce {
+            #gift-card-btn {
+              background-color: $green-middle;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 </style>

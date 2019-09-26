@@ -55,7 +55,7 @@ export default {
     ...mapActions('deliveryManager', ['updateDispatchPageNumber']),
   },
   updated() {
-    this.pageCount = Math.ceil(this.dispatchOrderCount / 8)
+    this.pageCount = 1 //Math.ceil(this.dispatchOrderCount / 8)
   },
 }
 </script>

@@ -1,2 +1,6 @@
-export const SET_TEMPLATE_HTML = 'SET_TEMPLATE_HTML'
+//export const SET_TEMPLATE = 'SET_TEMPLATE'
+export const SET_PRINT_TEMPLATES = 'SET_PRINT_TEMPLATES'
+//export const SET_TEMPLATE_HTML = 'SET_TEMPLATE_HTML'
 export const SET_RULES = 'SET_RULES'
+export const SET_TEMPLATE_ID = 'SET_TEMPLATE_ID'
+export const RESET = 'RESET'

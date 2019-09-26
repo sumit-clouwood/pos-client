@@ -7,6 +7,10 @@ import * as CONST from '@/constants'
 
 export default {
   store: null,
+
+  lastSynced: null,
+  syncInterval: 60, //300 sec = 5 min
+
   setup(store) {
     this.store = store
     return new Promise((resolve, reject) => {
@@ -32,7 +36,8 @@ export default {
       status: CONST.LOADING_STATUS_DONE,
     })
   },
-
+  //this function is called when we recieve msg from service worker i.e token updated
+  // also loaded when we click on a category to load new data
   loadUI() {
     DataService.setLang(this.store.state.location.locale)
     return new Promise((resolve, reject) => {
@@ -46,10 +51,10 @@ export default {
                 this.store.commit('sync/loaded', true)
                 resolve()
 
-                this.store.dispatch('auth/getUserDetails')
                 this.store.dispatch('surcharge/fetchAll').then(() => {})
                 this.store.dispatch('discount/fetchAll').then(() => {})
                 this.store.dispatch('payment/fetchAll').then(() => {})
+                this.store.dispatch('auth/fetchRoles').then(() => {})
               })
             })
             .catch(error => reject(error))
@@ -58,7 +63,7 @@ export default {
       //continue loading other service in parallel
     })
   },
-
+  //this function is loaded when pos is loaded, called from App
   initLoadUI() {
     DataService.setLang(this.store.state.location.locale)
     return new Promise((resolve, reject) => {
@@ -74,13 +79,6 @@ export default {
                 this.updateLoading('modifiers')
                 this.store.commit('sync/loaded', true)
                 resolve()
-
-                this.store.dispatch('auth/getUserDetails')
-                this.store.dispatch('customer/fetchAll').then(() => {})
-                this.store.dispatch('surcharge/fetchAll').then(() => {})
-                this.store.dispatch('discount/fetchAll').then(() => {})
-                this.store.dispatch('payment/fetchAll').then(() => {})
-                this.store.dispatch('announcement/fetchAll').then(() => {})
               })
             })
             .catch(error => reject(error))
@@ -100,8 +98,37 @@ export default {
               brand: this.store.getters['context/brand'],
             })
 
-            this.initLoadUI().then(() => resolve())
+            this.initLoadUI()
+              .then(() => {
+                //lets resolve the promise so pos can be loaded, other things ll be loaded later
+                resolve()
 
+                setTimeout(() => {
+                  console.log('delayed loading catalog data started')
+                  this.loadApiData('catalog').then(() =>
+                    console.log('delayed loading catalog data done')
+                  )
+                }, 3000)
+
+                setTimeout(() => {
+                  console.log('delayed loading customer data started')
+                  this.loadApiData('customer').then(() =>
+                    console.log('delayed loading customer data done')
+                  )
+                }, 4000)
+
+                //delayed loading data
+                setTimeout(() => {
+                  console.log('delayed loading order data started')
+                  this.loadApiData('order').then(() =>
+                    console.log('delayed loading order data done')
+                  )
+                }, 6000)
+              })
+              .catch(error => {
+                console.log('UI Failed', error)
+                reject(error)
+              })
             // store.dispatch('loyalty/fetchAll', response)
             // store.dispatch(
             //   'deliveryManager/fetchDMOrderDetail',
@@ -114,6 +141,33 @@ export default {
     })
   },
 
+  loadApiData(api) {
+    return new Promise(resolve => {
+      switch (api) {
+        case 'catalog':
+          this.store.dispatch('surcharge/fetchAll').then(() => {})
+          this.store.dispatch('discount/fetchAll').then(() => {})
+          this.store.dispatch('payment/fetchAll').then(() => {})
+          resolve()
+          break
+        case 'customer':
+          this.store.dispatch('announcement/fetchAll').then(() => {})
+          this.store.dispatch('auth/getUserDetails')
+          this.store.dispatch('customer/fetchAll').then(() => {})
+          this.store.dispatch('auth/fetchRoles').then(() => {})
+
+          resolve()
+          break
+        case 'order':
+          this.store.dispatch('invoice/printRules').then(() => {
+            this.store.dispatch('invoice/fetchTemplates')
+          })
+          resolve()
+          break
+      }
+    })
+  },
+
   setupDB() {
     return new Promise(resolve => {
       this.createDb(1)
@@ -122,14 +176,17 @@ export default {
           this.createDb(2).then(idb => {
             idb.close()
             this.createDb(3).then(idb => {
-              resolve(idb)
+              idb.close()
+              this.createDb(4).then(idb => {
+                resolve(idb)
+              })
             })
           })
         })
         .catch(event => {
           if (event.target.error.code === 0) {
             //db has been created already so try with a recent version
-            const version = 3
+            const version = 4
             db.openDatabase(version).then(({ idb, flag }) => {
               if (flag === 'open') {
                 this.store.commit('sync/setIdbVersion', version)
@@ -146,7 +203,10 @@ export default {
         .then(({ idb, flag, event }) => {
           if (flag === 'upgrade') {
             this.createBuckets(event)
-            resolve(idb)
+              .then(() => {
+                resolve(idb)
+              })
+              .catch(error => reject(error))
           } else {
             reject(event)
           }
@@ -155,40 +215,118 @@ export default {
     })
   },
   createBuckets(event) {
-    if (event.oldVersion === 0) {
-      // version 1 -> 2 upgrade
-      db.createBucket('auth')
-      this.store.commit('sync/setIdbVersion', 1)
-    }
-    if (event.oldVersion === 1) {
-      // version 2 -> 3 upgrade
-      db.createBucket('order_post_requests', { keyPath: 'order_time' }).then(
-        bucket => {
-          bucket.createIndex('order_time', 'order_time', { unique: true })
-        }
-      )
-      this.store.commit('sync/setIdbVersion', 2)
-    }
-    if (event.oldVersion === 2) {
-      // initial database creation
-      // (your code does nothing here)
-      db.createBucket('events', { keyPath: 'url' }).then(bucket => {
-        bucket.createIndex('url', 'url', { unique: true })
-      })
-      this.store.commit('sync/setIdbVersion', 3)
-    }
+    return new Promise((resolve, reject) => {
+      if (event.oldVersion === 0) {
+        // version 1 -> 2 upgrade
+        console.log('creating bucket auth')
+        db.createBucket('auth')
+          .then(() => {
+            console.log('created bucket auth')
+            this.store.commit('sync/setIdbVersion', 1)
+            resolve(1)
+          })
+          .catch(error => reject(error))
+      }
+      if (event.oldVersion === 1) {
+        // version 2 -> 3 upgrade
+        console.log('creating bucket order_post_requests')
+        db.createBucket(
+          'order_post_requests',
+          { keyPath: 'order_time' },
+          bucket => {
+            bucket.createIndex('order_time', 'order_time', { unique: true })
+          }
+        )
+          .then(() => {
+            console.log('created bucket order_post_requests')
+            this.store.commit('sync/setIdbVersion', 2)
+            resolve(2)
+          })
+          .catch(error => reject(error))
+      }
+      if (event.oldVersion === 2) {
+        // initial database creation
+        // (your code does nothing here)
+        console.log('creating bucket events')
+        db.createBucket('events', { keyPath: 'url' }, bucket => {
+          bucket.createIndex('url', 'url', { unique: true })
+        })
+          .then(() => {
+            console.log('created bucket events')
+            this.store.commit('sync/setIdbVersion', 3)
+
+            resolve(3)
+          })
+          .catch(error => reject(error))
+      }
+      if (event.oldVersion === 3) {
+        // initial database creation
+        // (your code does nothing here)
+        console.log('creating bucket logs')
+        db.createBucket(
+          'log',
+          {
+            autoIncrement: true,
+            keyPath: 'id',
+          },
+          bucket => {
+            bucket.createIndex('log_time', 'log_time', { unique: false })
+            bucket.createIndex('event_time', 'event_time', {
+              unique: false,
+            })
+            bucket.createIndex('event_type', 'event_type', {
+              unique: false,
+            })
+            bucket.createIndex('event_title', 'event_title', {
+              unique: false,
+            })
+            bucket.createIndex('event_data', 'event_data', {
+              unique: false,
+            })
+          }
+        )
+          .then(() => {
+            console.log('created bucket events')
+            this.store.commit('sync/setIdbVersion', 4)
+
+            resolve(4)
+          })
+          .catch(error => reject(error))
+      }
+    })
   },
 
   setNetwork() {
     NetworkService.status((status, msg) => {
       this.store.commit('sync/status', status)
       if (process.env.NODE_ENV === 'production' && msg === 'on') {
-        console.log('force sync in 10 sec from app')
-        setTimeout(function() {
-          navigator.serviceWorker.controller.postMessage({
-            sync: 1,
-          })
-        }, 1000 * 10)
+        const nowTime = new Date().getTime() //miliseconds
+
+        // console.log(
+        //   'sw:',
+        //   'last synced',
+        //   this.lastSynced,
+        //   'sync received',
+        //   nowTime,
+        //   'seconds passed last sync',
+        //   (nowTime - this.lastSynced) / 1000
+        // )
+
+        if (nowTime - this.lastSynced > this.syncInterval * 1000) {
+          this.lastSynced = nowTime
+
+          console.log(
+            this.syncInterval,
+            ' passed, force sync in 10 sec from app'
+          )
+          setTimeout(function() {
+            navigator.serviceWorker.controller.postMessage({
+              sync: 1,
+            })
+          }, 1000 * 10)
+        } else {
+          //console.log(this.syncInterval, ' not passed yet')
+        }
       }
     })
   },

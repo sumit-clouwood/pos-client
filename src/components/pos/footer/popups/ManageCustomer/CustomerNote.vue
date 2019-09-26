@@ -65,3 +65,36 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  #admin-popup {
+    .modal-dialog {
+      margin: 0;
+
+      .modal-content {
+        .modal-header {
+          height: 80px;
+          background-color: #fff;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          border: none;
+        }
+
+        .modal-body {
+          .add-note-area {
+            textarea {
+              padding: 10px;
+            }
+          }
+        }
+
+        .modal-footer {
+        }
+      }
+    }
+  }
+}
+</style>

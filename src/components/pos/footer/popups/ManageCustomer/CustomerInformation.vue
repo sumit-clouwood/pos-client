@@ -16,6 +16,7 @@
                   <button
                     class="color-button color-main color-text-invert"
                     id="place-new-order"
+                    data-dismiss="modal"
                     @click="
                       updateModalSelection(
                         '#order-confirmation',
@@ -45,8 +46,7 @@
               :next-text="_t('Next')"
               :container-class="''"
               :page-class="_t('page-item')"
-            >
-            </paginate>
+            ></paginate>
             <!--</template>-->
           </div>
           <div class="btn-announce">
@@ -116,5 +116,156 @@ export default {
 <style scoped lang="scss">
 div#display-order .modal-dialog {
   max-width: 70%;
+}
+</style>
+<style lang="scss">
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  #display-order {
+    .modal-dialog {
+      margin: 0;
+      width: 100vw;
+      max-width: none !important;
+      transform: none;
+      animation: none;
+      transition: none;
+
+      .modal-content {
+        overflow: auto;
+
+        .modal-body {
+          padding: 0 !important;
+
+          .crm-details-wrap {
+            display: grid;
+            border: none;
+
+            #order-profile {
+              width: 100%;
+
+              .ullist-profile {
+                grid-template-columns: max-content 1fr;
+
+                li {
+                  &:nth-child(3) {
+                    grid-column-start: 2;
+                    grid-column-end: 3;
+
+                    a {
+                      margin-top: 0 !important;
+                    }
+                  }
+
+                  &:nth-child(4) {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    grid-gap: 10px;
+                    grid-template-columns: 1fr;
+                    justify-self: start;
+                  }
+
+                  a {
+                    margin: 0 !important;
+                  }
+
+                  .name-confrimation {
+                    display: grid;
+                  }
+                }
+              }
+
+              #delivery-area-address {
+                .location-delivery-area-address {
+                  max-height: none;
+                  grid-template-columns: 1fr;
+                }
+              }
+
+              .cu-loyality-points {
+                display: grid;
+                grid-template-columns: 1fr;
+              }
+            }
+
+            .customer-insight {
+              width: 100%;
+
+              .title-cu {
+                padding: 10px 0;
+              }
+
+              .dob-customer-insight {
+                ul {
+                  li {
+                    margin: 0 !important;
+                    text-align: center;
+                  }
+                }
+              }
+
+              .last-order-wrap {
+                max-height: none;
+                margin-bottom: 20px;
+              }
+
+              .title-cu {
+                padding-top: 0;
+              }
+
+              .customer-insights-notes {
+                .table {
+                  thead {
+                    border: none;
+
+                    tr {
+                      th {
+                        border: none;
+                      }
+                    }
+                  }
+
+                  tbody {
+                    tr {
+                      border: none;
+
+                      td {
+                        border: none;
+                        padding-left: 10px;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          .past-order {
+            padding: 0 20px 20px 20px;
+          }
+
+          .manage-customer-table {
+            padding: 0 20px;
+
+            .table {
+              tbody {
+                .referal-code-customer {
+                  .show-details-his {
+                    width: auto;
+                    max-width: none;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        .modal-footer {
+        }
+      }
+    }
+  }
 }
 </style>

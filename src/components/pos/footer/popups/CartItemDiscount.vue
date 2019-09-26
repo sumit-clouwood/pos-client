@@ -33,12 +33,14 @@
                     : formatPrice(discount.value)
                 }}
               </p>
-              <span class="more">{{ dt(discount) }}</span>
+              <span class="mores">{{ dt(discount) }}</span>
             </div>
           </div>
           <div class="error mx-auto" v-show="appliedOrderDiscount">
             <p class="text-danger text-center">
-              Please remove order discount first to apply item discount.
+              {{
+                _t('Please remove order discount first to apply item discount.')
+              }}
             </p>
           </div>
           <div class="error mx-auto" v-show="itemError">
@@ -111,10 +113,3 @@ export default {
   },
 }
 </script>
-<!--<style lang="sass" scoped>
-.discount-item.each
-  display:inline-block
-.error
-  width: 100%;
-  padding: 40px 5px 0px 5px;
-</style>-->

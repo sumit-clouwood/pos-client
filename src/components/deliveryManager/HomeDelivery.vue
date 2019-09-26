@@ -118,7 +118,7 @@
     <OrderDetailsPopup />
     <div class="pagination-customer-details" v-if="!loading">
       <paginate
-        v-if="params.totalPages"
+        v-if="params.totalPages > 1"
         :page-count="params.totalPages"
         :page-range="1"
         :margin-pages="1"
@@ -127,6 +127,7 @@
         :next-text="_t('Next')"
         :container-class="paginationDirection"
         :page-class="_t('page-item')"
+        v-model="page"
       >
       </paginate>
     </div>
@@ -175,6 +176,7 @@ export default {
       },
       selectedUser: '',
       paginationDirection: 'holdorders',
+      page: 1,
     }
   },
   components: {
@@ -216,7 +218,7 @@ export default {
       $('.dropdown-content').hide()
     },
     showDropdown: function() {
-      $('.dropdown-content').show()
+      $('.dropdown-content').toggle()
     },
     moreOrder: function(pageNumber) {
       this.$store.commit('deliveryManager/SET_DM_PAGE', pageNumber)

@@ -1,6 +1,6 @@
 <template>
-  <div class="table-responsive" v-if="orders">
-    <table class="table table-block-page">
+  <div class="table-responsive">
+    <table v-if="orders.length" class="table table-block-page">
       <!--<thead>
                       <tr>
                         <th class="sortable ">
@@ -75,13 +75,7 @@
                   </div>
                 </div>
                 <div>
-                  {{
-                    LookupData.get({
-                      collection: branch,
-                      matchWith: order.store_id,
-                      selection: 'name',
-                    })
-                  }}
+                  {{ branch[order.store_id]['name'] }}
                 </div>
                 <div></div>
               </div>
@@ -120,7 +114,31 @@
                 </div>
               </div>
               <div class="order-footer">
-                <div class="runningtime">
+                <p class="color-text">
+                  <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
+                  <span
+                    class="customtime left"
+                    :id="
+                      'createdOrder-' +
+                        convertDatetime(
+                          order.real_created_datetime,
+                          timezoneString
+                        )
+                    "
+                    style="display: none"
+                  ></span>
+                  <input
+                    type="hidden"
+                    id="storerunningtime"
+                    :value="
+                      convertDatetime(
+                        order.real_created_datetime,
+                        timezoneString
+                      )
+                    "
+                  />
+                </p>
+                <div class="runningtimes">
                   <div class="order-delivery-area"></div>
                   <div class="order-address">
                     {{ order.order_flat_number }}, {{ order.order_building }},
@@ -134,6 +152,9 @@
         </tr>
       </tbody>
     </table>
+    <h5 v-else class="center-block text-center pt-5">
+      {{ _t('No Orders Found') }}
+    </h5>
   </div>
 </template>
 
@@ -148,20 +169,19 @@ export default {
       orderCount: 2,
     }
   },
-  mixins: [DateTime],
-
   props: {
     actionDetails: Object,
   },
+  mixins: [DateTime],
   computed: {
+    ...mapGetters('location', ['_t']),
+    ...mapState('location', ['timezoneString']),
     ...mapState({
       orderStatus: state => state.deliveryManager.deliveryOrderStatus,
     }),
     ...mapState({
       branch: state => state.deliveryManager.availableStores,
     }),
-    ...mapGetters('location', ['_t']),
-    ...mapState('location', ['timezoneString']),
     ...mapGetters('deliveryManager', ['orders']),
   },
   methods: {

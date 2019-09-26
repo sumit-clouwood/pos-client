@@ -29,7 +29,7 @@
         margin: 0 auto;
         text-align: center;
         color: #4B4E53;
-        border: 1px solid #ddd;
+        border: 1px solid #E3E7F2;
         margin-top: 0.625rem; }
     #tip-amount .modal-dialog .modal-content .modal-footer .btn-announce #add-top {
       width: 6.875rem;
@@ -40,5 +40,34 @@
       border-color: #5056ca; }
       #tip-amount .modal-dialog .modal-content .modal-footer .btn-announce #add-top > span {
         padding-right: 0.625rem; }
+
+@media only screen and (min-width: 320px) and (max-width: 600px) {
+  #tip-amount {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-height: 100vh; }
+    #tip-amount .modal-dialog {
+      margin: 0;
+      width: 100vw;
+      max-width: none;
+      transform: none !important;
+      max-height: 100vh;
+      height: 100vh;
+      display: grid; }
+      #tip-amount .modal-dialog .modal-content {
+        border-radius: 0;
+        display: grid;
+        grid-template-rows: max-content max-content;
+        position: static;
+        margin-top: auto; }
+        #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap input {
+          text-align: left;
+          padding: 0 20px; }
+        #tip-amount .modal-dialog .modal-content .modal-footer {
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          padding: 20px; } }
 
 /*# sourceMappingURL=tipAmount.css.map */

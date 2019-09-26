@@ -1,11 +1,11 @@
 import * as mutation from './holdOrders/mutation-types'
 import OrderService from '@/services/data/OrderService'
-// import OrderService from '../../services/data/OrderService'
 
 const state = {
   getHoldOrders: false,
   orderDetails: {},
   pageLookups: {},
+  loading: false,
   params: {
     query: '',
     limit: 10,
@@ -19,18 +19,22 @@ const state = {
 const getters = {}
 
 const actions = {
-  getHoldOrders({ commit, state }) {
+  getHoldOrders({ commit, state, rootState }) {
     const params = [
       state.params.query,
       state.params.limit,
       state.params.orderBy,
       state.params.orderStatus,
+      rootState.order.orderType.OTApi,
       state.params.page,
       'orders_main_tbl',
+      rootState.location.store._id,
       '',
     ]
+    commit(mutation.LOADING, false)
     OrderService.getOrders(...params).then(response => {
       commit(mutation.GET_HOLD_ORDERS, response.data)
+      commit(mutation.LOADING, true)
       commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
     })
   },
@@ -42,6 +46,19 @@ const actions = {
   fetchOrder({ commit, dispatch }, selectedOrder) {
     commit(mutation.GET_HOLD_ORDER_DETAILS, selectedOrder)
     dispatch('order/addHoldOrder', selectedOrder, { root: true })
+    if (selectedOrder.customer != null) {
+      dispatch('customer/fetchSelectedCustomer', selectedOrder.customer, {
+        root: true,
+      }).then(() => {
+        dispatch(
+          'customer/setCustomerAddressById',
+          selectedOrder.customer_address_id,
+          {
+            root: true,
+          }
+        )
+      })
+    }
   },
 
   holdOrder({ commit }) {
@@ -66,6 +83,9 @@ const mutations = {
   [mutation.GET_MORE_ORDER](state, pageNumber) {
     state.params.page = pageNumber
   },
+  [mutation.LOADING](state, status) {
+    state.loading = status
+  },
   [mutation.GET_HOLD_ORDER_DETAILS](state, order) {
     state.orderDetails = order
   },
@@ -77,6 +97,11 @@ const mutations = {
   },
   [mutation.REMOVE_ORDER](state, index) {
     state.getHoldOrders.splice(index, 1)
+  },
+  [mutation.RESET](state) {
+    state.getHoldOrders = false
+    state.orderDetails = {}
+    state.pageLookups = {}
   },
 }
 

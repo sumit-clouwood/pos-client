@@ -1,9 +1,5 @@
-/* eslint-disable no-console */
 import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
-//import db from '@/services/network/DB'
-//import Crypt from '@/plugins/helpers/Crypt.js'
-import DateTime from '@/mixins/DateTime.js'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 
@@ -15,18 +11,78 @@ const state = {
   pendingAmount: 0,
   changedAmount: 0,
   print: false,
+  loading: false,
   orderNumber: null,
+  changeAmountStatus: false,
+  processing: false,
 }
 
 // getters
-const getters = {}
+const getters = {
+  calculateOrderTotals: () => order => {
+    let data = {
+      subTotal: 0,
+      totalTax: 0,
+      totalSurcharge: 0,
+      balanceDue: 0,
+      surchargeTax: 0,
+      totalDiscount: 0,
+    }
+
+    order.items.forEach(item => {
+      data.subTotal += Num.round(Num.round(item.price) * Num.round(item.qty))
+      data.totalTax += Num.round(Num.round(item.tax) * Num.round(item.qty))
+    })
+
+    order.item_modifiers.forEach(modifier => {
+      data.subTotal += Num.round(
+        Num.round(modifier.price) * Num.round(modifier.qty)
+      )
+      data.totalTax += Num.round(
+        Num.round(modifier.tax) * Num.round(modifier.qty)
+      )
+    })
+
+    order.order_surcharges.forEach(surcharge => {
+      data.totalSurcharge += Num.round(surcharge.price)
+      data.surchargeTax += Num.round(surcharge.tax)
+      data.totalTax += Num.round(surcharge.tax)
+    })
+
+    order.item_discounts.forEach(discount => {
+      data.subTotal -= Num.round(discount.price)
+      data.totalTax -= Num.round(discount.tax)
+    })
+
+    order.order_discounts.forEach(discount => {
+      data.totalDiscount += Num.round(discount.price)
+      data.totalTax -= Num.round(discount.tax)
+    })
+
+    data.balanceDue =
+      data.subTotal + data.totalTax + data.totalSurcharge - data.totalDiscount
+
+    return data
+  },
+}
 
 // actions
 const actions = {
-  pay({ commit, rootGetters, rootState, dispatch, state }, { action }) {
+  pay(
+    { commit, getters, rootGetters, rootState, dispatch, state },
+    { action }
+  ) {
+    if (state.processing === true) {
+      // eslint-disable-next-line no-console
+      console.log('Dual event detected')
+      return Promise.reject('Dual event detected')
+    }
+
+    // set the async state
+    commit(mutation.SET_PROCESSING, true)
+
     //if no order start time then reject otherwise
     //reset order start time
-
     if (!rootState.order.startTime) {
       // eslint-disable-next-line no-console
       console.log('Fake order or an order already in progress')
@@ -40,6 +96,7 @@ const actions = {
 
       if (
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
+        action == 'dine-in-place-order' ||
         action === CONSTANTS.ORDER_STATUS_ON_HOLD
       ) {
         validPayment = true
@@ -66,16 +123,23 @@ const actions = {
           validPayment = true
         }
       }
-
       if (validPayment) {
         //send order for payment
         let order = {}
+        const orderPlacementTime = rootState.order.startTime
 
         try {
           order = {
+            cashier_id: rootState.auth.userDetails.item._id,
             customer: '',
+            customer_address_id: '',
             referral: '',
-            transition_order_no: '',
+            transition_order_no:
+              rootState.location.store.branch_n +
+              '-' +
+              rootState.location.terminalCode +
+              '-' +
+              orderPlacementTime,
             currency: rootState.location.currency,
             order_status:
               action === CONSTANTS.ORDER_STATUS_ON_HOLD
@@ -84,15 +148,12 @@ const actions = {
             order_source: CONSTANTS.ORDER_SOURCE_POS,
             order_type: rootState.order.orderType.OTApi,
             order_mode: 'online',
-            real_created_datetime: DateTime.getUTCDateTime(),
+            //this time can be used to indentify offline order
+            real_created_datetime: orderPlacementTime,
             // order_mode: 'online',
             //remove the modifiers prices from subtotal
-            sub_total: Num.round(rootGetters['order/subTotal']),
-            total_discount: Num.round(
-              rootGetters['discount/orderDiscountWithoutTax']
-            ),
             print_count: 0,
-            amount_changed: Num.round(state.changedAmount),
+            amount_changed: state.changedAmount,
             order_building: '',
             order_street: '',
             order_flat_number: '',
@@ -102,12 +163,16 @@ const actions = {
             order_delivery_area: '',
             item_discounts: [],
             item_modifiers: '',
-            order_surcharges: '',
+            order_surcharges: [],
             order_discounts: [],
             order_payments: [],
           }
         } catch (e) {
+          // eslint-disable-next-line no-console
           console.log(e)
+        }
+        if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_DINE_IN) {
+          order.customer = rootState.customer.customerId
         }
         if (
           rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER
@@ -129,7 +194,20 @@ const actions = {
               rootState.order.selectedOrder.item.order_country
             order.order_delivery_area =
               rootState.order.selectedOrder.item.order_delivery_area
+          } else if (rootState.customer.offlineData) {
+            //offline data was saved
+            order.customer = ''
+            const address = rootState.customer.offlineData
+            // address.delivery_area
+            order.order_building = address.building
+            order.order_street = address.street
+            order.order_flat_number = address.flat_number
+            order.order_nearest_landmark = address.nearest_landmark
+            order.order_city = address.city
+            order.order_country = address.country
+            order.order_delivery_area = address.delivery_area_id
           } else {
+            //network online
             order.customer = rootState.customer.customerId
             const address = rootState.customer.address
             // address.delivery_area
@@ -143,14 +221,6 @@ const actions = {
           }
         }
 
-        //ORDER SURCHARGES
-        //get surcharge for an order
-        order.total_surcharge = Num.round(rootGetters['surcharge/surcharge'])
-        //add surcharge tax
-        order.surcharge_tax = Num.round(rootState.tax.surchargeTax)
-
-        //adding surcharge data
-
         order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
           appliedSurcharge => {
             const surcharge = rootState.surcharge.surcharges.find(
@@ -160,9 +230,9 @@ const actions = {
               entity_id: surcharge._id,
               name: surcharge.name,
               type: surcharge.type,
-              price: Num.round(appliedSurcharge.amount),
+              price: appliedSurcharge.amount,
               rate: surcharge.rate,
-              tax: Num.round(appliedSurcharge.tax),
+              tax: appliedSurcharge.tax,
               tax_rate: surcharge.tax_sum,
               taxable: surcharge.tax_sum ? true : false,
             }
@@ -186,99 +256,117 @@ const actions = {
         let itemModifiers = []
         let item_discounts = []
         //let itemDiscountedTax = 0
-        let itemNumber = 0
+        let orderCovers = []
         order.items = rootState.order.items.map(item => {
-          const itemTax = rootState.tax.itemsTaxData.find(
-            taxData => taxData.itemId == item._id
-          )
-
           let orderItem = {
             name: item.name,
             entity_id: item._id,
-            no: itemNumber,
-            tax: itemTax ? Num.round(itemTax.undiscountedTax) : 0,
-            price: Num.round(parseFloat(item.undiscountedNetPrice)),
+            no: item.orderIndex,
+            status: 'in-progress',
+            //itemTax.undiscountedTax is without modifiers
+            tax: item.tax,
+            price: item.netPrice,
             qty: item.quantity,
           }
-
-          //reduce modifier prices and taxes from item before sending it to checkout
-          const modifiers = rootGetters['tax/itemModifiersTaxData'](item._id)
-          if (modifiers) {
-            orderItem.price -= modifiers.reduce((total, modifier) => {
-              return total + modifier.price
-            }, 0)
-            orderItem.tax -= modifiers.reduce((total, modifier) => {
-              return total + modifier.tax
-            }, 0)
+          if (
+            rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN
+          ) {
+            let itemCover = item.coverNo
+              ? item.coverNo
+              : rootState.dinein.selectedCover._id
+            let itemCoverName = item.cover_name
+              ? item.cover_name
+              : rootState.dinein.selectedCover.name
+            if (
+              orderCovers.filter(item => item.entity_id == itemCover).length ===
+              0
+            ) {
+              orderCovers.push({ entity_id: itemCover, name: itemCoverName })
+            }
+            let guest_no = rootState.dinein.guests
+            orderItem = {
+              name: item.name,
+              entity_id: item._id,
+              no: item.orderIndex,
+              status: 'in-progress',
+              tax: item.tax,
+              price: item.netPrice,
+              qty: item.quantity,
+              cover_no: itemCover,
+              guest: guest_no,
+              cover_name: itemCoverName,
+            }
           }
 
+          //we are sending item price and modifier prices separtely but sending
+          //item discount as total of both discounts
+
           if (item.discount) {
+            let itemDiscountedTax = Num.round(
+              rootGetters['order/itemTaxDiscount'](item)
+            )
+
+            if (item.discountedNetPrice) {
+              const modifiersTax = rootGetters['order/itemModifiersTax'](item)
+              itemDiscountedTax = item.tax + modifiersTax - item.discountedTax
+            }
+
+            const modifiersDiscountedTax = Num.round(
+              rootGetters['order/itemModifierTaxDiscount'](item)
+            )
+
             let itemDiscount = item.discount
             itemDiscount.itemId = item._id
-            itemDiscount.itemNo = itemNumber
+            itemDiscount.itemNo = item.orderIndex
             itemDiscount.quantity = item.quantity
-            itemDiscount.tax = itemTax
-              ? Num.round(itemTax.undiscountedTax) - Num.round(itemTax.tax)
-              : 0
-            //itemDiscountedTax += itemDiscount.tax
+            //undiscountedTax is without modifiers
+
+            if (item.discountedNetPrice) {
+              //don't round fixed discount calculations
+              itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
+            } else {
+              itemDiscount.tax = Num.round(
+                itemDiscountedTax + modifiersDiscountedTax
+              )
+            }
+            itemDiscount.price =
+              rootGetters['order/itemNetDiscount'](item) +
+              rootGetters['order/itemModifierDiscount'](item)
             item_discounts.push(itemDiscount)
           }
 
-          if (item.modifiers.length) {
-            item.modifiers.forEach(modifierId => {
-              const subgroups = rootGetters['modifier/itemModifiers'](item._id)
-              subgroups.forEach(subgroup => {
-                subgroup.modifiers.forEach(modifier => {
-                  if (modifier._id === modifierId) {
-                    const modfierTaxData = rootGetters['tax/modifierTaxData']({
-                      itemId: item._id,
-                      modifierId: modifierId,
-                    })
-                    itemModifiers.push({
-                      entity_id: modifierId,
-                      for_item: itemNumber,
-                      price: modfierTaxData.price,
-                      tax: Num.round(modfierTaxData.tax),
-                      name: modifier.name,
-                      qty: item.quantity,
-                      type: subgroup.item_type,
-                    })
-                  }
-                })
+          if (item.modifiersData && item.modifiersData.length) {
+            item.modifiersData.forEach(modifier => {
+              itemModifiers.push({
+                entity_id: modifier.modifierId,
+                for_item: item.orderIndex,
+                price: modifier.price,
+                tax: modifier.tax,
+                name: modifier.name,
+                qty: item.quantity,
+                type: modifier.type,
               })
             })
             //get all modifiers by modifier ids attached to item
           }
-          itemNumber++
           return orderItem
         })
 
-        //adding final tax
-        const itemsTax = rootState.tax.itemsTaxData.reduce((totalTax, item) => {
-          return totalTax + item.tax * item.quantity
-        }, 0)
-        const surchargeTax = rootState.surcharge.surchargeAmounts.reduce(
-          (totalTax, item) => {
-            return totalTax + item.tax
-          },
-          0
-        )
+        order.item_discounts = item_discounts.map(itemDiscount => {
+          return {
+            name: itemDiscount.name,
+            type: itemDiscount.type,
+            rate:
+              itemDiscount.type === CONSTANTS.VALUE
+                ? itemDiscount.value
+                : itemDiscount.rate,
+            price: itemDiscount.price * itemDiscount.quantity,
+            tax: itemDiscount.tax * itemDiscount.quantity,
+            for_item: itemDiscount.itemNo,
+            entity_id: itemDiscount.id,
+          }
+        })
 
-        if (rootState.discount.appliedOrderDiscount) {
-          //order discount was applied
-          order.total_tax = rootGetters['tax/totalTax']
-        } else {
-          //no order discount, may be  item discount applied
-          order.total_tax = surchargeTax + itemsTax
-        }
-        order.total_tax = Num.round(order.total_tax)
-        //add discounted tax
-        // order.total_tax +=
-        //   +rootState.discount.taxDiscountAmount + itemDiscountedTax
-
-        //discount already applied on tax
-        order.balance_due = Num.round(rootGetters['order/orderTotal'])
-        //modifiers
         order.item_modifiers = itemModifiers
 
         //order level discount
@@ -289,7 +377,7 @@ const actions = {
           const orderDiscount = {
             name: discount.name,
             price: Num.round(rootGetters['discount/orderDiscountWithoutTax']),
-            tax: Num.round(rootState.discount.taxDiscountAmount),
+            tax: rootState.discount.taxDiscountAmount,
             type: discount.type,
             rate:
               discount.type === CONSTANTS.VALUE
@@ -301,22 +389,6 @@ const actions = {
           order.order_discounts.push(orderDiscount)
         }
 
-        //addint item discounts
-
-        order.item_discounts = item_discounts.map(itemDiscount => {
-          return {
-            name: itemDiscount.name,
-            type: itemDiscount.type,
-            rate:
-              itemDiscount.type === CONSTANTS.VALUE
-                ? itemDiscount.value
-                : itemDiscount.rate,
-            price: Num.round(itemDiscount.discount) * itemDiscount.quantity,
-            tax: Num.round(itemDiscount.tax) * itemDiscount.quantity,
-            for_item: itemDiscount.itemNo,
-            entity_id: itemDiscount.id,
-          }
-        })
         //adding tip amount
         order.tip_amount = rootState.checkoutForm.tipAmount
 
@@ -326,23 +398,26 @@ const actions = {
         if (rootState.checkoutForm.payments.length) {
           order.order_payments = rootState.checkoutForm.payments.map(
             payment => {
-              let { orderaAmount, orderPoints } = {}
-              if (payment.method.name == CONSTANTS.ORDER_PAYMENT_TYPE) {
-                orderaAmount = payment.amount
+              let orderPoints = 0
+              const amount = !isNaN(payment.amount) ? payment.amount : 0
+
+              //where is CONSTANTS.ORDER_PAYMENT_TYPE defined ?
+              if (payment.method.name === CONSTANTS.ORDER_PAYMENT_TYPE) {
                 orderPoints = rootState.checkoutForm.loyaltyPoints
               } else {
-                orderaAmount = payment.amount
-                orderPoints = payment.amount
+                orderPoints = amount
               }
+
               let paymentPart = {
                 entity_id: payment.method._id,
                 name: payment.method.name,
-                collected: isNaN(orderaAmount) ? 0 : orderaAmount,
+                collected: amount,
                 param1: payment.cardId,
                 param2: orderPoints,
                 param3: payment.code,
               }
-              totalPaid += payment.amount
+
+              totalPaid += amount
               //Yuvraj, have a check here
               if (payment.method.type == CONSTANTS.LOYALTY) {
                 if (parseFloat(rootState.customer.loyalty.balance) > 0) {
@@ -361,81 +436,95 @@ const actions = {
             CONSTANTS.ORDER_TYPE_CALL_CENTER ||
           action === CONSTANTS.ORDER_STATUS_ON_HOLD
         ) {
+          if (rootState.customer.address) {
+            order.customer_address_id = rootState.customer.address._id.$oid
+          }
           //do something here
         } else {
           const method = rootGetters['payment/cash']
-          order.order_payments = [
-            {
-              entity_id: method._id,
-              name: method.name,
-              collected: '0.00',
-              param1: '',
-              param2: '',
-              param3: '',
-            },
-          ]
+          if (action != 'dine-in-place-order') {
+            order.order_payments = [
+              {
+                entity_id: method._id,
+                name: method.name,
+                collected: '0.00',
+                param1: '',
+                param2: '',
+                param3: '',
+              },
+            ]
+          }
         }
 
-        order.total_paid = Num.round(totalPaid)
-
-        //applying Fixing
-
-        order.sub_total = order.sub_total.toFixed(2)
-        order.total_discount = order.total_discount.toFixed(2)
-        order.total_surcharge = order.total_surcharge.toFixed(2)
-        order.total_tax = order.total_tax.toFixed(2)
-        order.amount_changed = order.amount_changed.toFixed(2)
-        order.tip_amount = parseFloat(order.tip_amount).toFixed(2)
-        order.total_paid = order.total_paid.toFixed(2)
-        order.surcharge_tax = order.surcharge_tax.toFixed(2)
-        order.balance_due = order.balance_due.toFixed(2)
-
         order.item_discounts = order.item_discounts.map(discount => {
-          discount.rate = discount.rate.toFixed(2)
-          discount.price = discount.price.toFixed(2)
-          discount.tax = discount.tax.toFixed(2)
+          discount.rate = Num.round(discount.rate).toFixed(2)
+          discount.price = Num.round(discount.price).toFixed(2)
+          discount.tax = Num.round(discount.tax).toFixed(2)
           return discount
         })
 
         order.order_surcharges = order.order_surcharges.map(surcharge => {
           surcharge.rate = surcharge.rate
-            ? surcharge.rate.toFixed(2)
+            ? Num.round(surcharge.rate).toFixed(2)
             : surcharge.rate
-          surcharge.price = surcharge.price.toFixed(2)
-          surcharge.tax = surcharge.tax.toFixed(2)
+          surcharge.price = Num.round(surcharge.price).toFixed(2)
+          surcharge.tax = Num.round(surcharge.tax).toFixed(2)
           surcharge.tax_rate = surcharge.tax_rate
-            ? surcharge.tax_rate.toFixed(2)
+            ? Num.round(surcharge.tax_rate).toFixed(2)
             : surcharge.tax_rate
           return surcharge
         })
 
         order.items = order.items.map(item => {
-          item.price = item.price.toFixed(2)
-          item.tax = item.tax.toFixed(2)
+          item.price = Num.round(item.price).toFixed(2)
+          item.tax = Num.round(item.tax).toFixed(2)
           return item
         })
 
         order.item_modifiers = order.item_modifiers.map(item => {
-          item.price = item.price.toFixed(2)
-          item.tax = item.tax.toFixed(2)
+          item.price = Num.round(item.price).toFixed(2)
+          item.tax = Num.round(item.tax).toFixed(2)
           return item
         })
 
-        order.order_payments = order.order_payments.map(item => {
-          item.collected = parseFloat(item.collected).toFixed(2)
-          return item
-        })
+        if (rootState.order.orderType.OTApi !== CONSTANTS.ORDER_TYPE_DINE_IN) {
+          order.order_payments = order.order_payments.map(item => {
+            item.collected = Num.round(item.collected).toFixed(2)
+            return item
+          })
+        }
 
+        const orderData = getters.calculateOrderTotals(order)
+
+        order.sub_total = orderData.subTotal.toFixed(2)
+        order.total_surcharge = orderData.totalSurcharge.toFixed(2)
+        order.surcharge_tax = orderData.surchargeTax.toFixed(2)
+        order.total_discount = orderData.totalDiscount.toFixed(2)
+        order.total_tax = orderData.totalTax.toFixed(2)
+        order.balance_due = Num.round(orderData.balanceDue).toFixed(2)
+
+        //applying Fixing
+        order.total_paid = Num.round(totalPaid).toFixed(2)
+        order.amount_changed = Num.round(order.amount_changed).toFixed(2)
+        order.tip_amount = Num.round(order.tip_amount).toFixed(2)
+
+        //Added a new parameter if dine-in order.
+        if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
+          order.covers = orderCovers
+          order.table_reservation_id = localStorage.getItem('reservationId')
+        }
         //order.app_uniqueid = Crypt.uuid()
         commit(mutation.SET_ORDER, order)
         dispatch('createOrder', action)
           .then(response => {
             //reset order start time
             commit('order/RESET_ORDER_TIME', null, { root: true })
+            commit(mutation.SET_PROCESSING, false)
 
             resolve(response)
           })
           .catch(response => {
+            commit(mutation.SET_PROCESSING, false)
             reject(response)
           })
       } else {
@@ -468,13 +557,41 @@ const actions = {
 
       //order.order is a hold order, state.order contains current order
       if (
+        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN &&
+        rootState.order.order_status !== 'completed'
+      ) {
+        let order = { ...state.order }
+        delete order.new_real_transition_order_no
+        delete order.modify_reason
+        delete order.order_system_status
+        delete order.real_created_datetime
+
+        if (rootState.order.orderId) {
+          response = OrderService.updateOrderItems(
+            order,
+            rootState.order.orderId,
+            ''
+          )
+        } else {
+          response = OrderService.saveOrder(
+            state.order,
+            rootState.customer.customer
+          )
+        }
+      } else if (
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
-        rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
+        rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY ||
+        rootState.order.orderToModify
       ) {
         //set order id for modify orders or delivery order
         orderId = rootState.order.orderId
         let order = { ...state.order }
-        order.new_real_transition_order_no = ''
+        order.new_real_transition_order_no =
+          rootState.location.store.branch_n +
+          '-' +
+          rootState.location.terminalCode +
+          '-' +
+          rootState.order.startTime
         delete order.real_created_datetime
 
         let modifyType = ''
@@ -488,6 +605,10 @@ const actions = {
             break
         }
 
+        if (rootState.order.orderToModify) {
+          order.modify_reason = 'Updated from Backend'
+        }
+
         response = OrderService.modifyOrder(
           order,
           rootState.order.orderId,
@@ -497,6 +618,8 @@ const actions = {
         response = OrderService.saveOrder(
           state.order,
           rootState.customer.offlineData
+            ? rootState.customer.offlineData
+            : rootState.customer.customer
         )
       }
 
@@ -504,9 +627,22 @@ const actions = {
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
           if (response.data.status === 'ok') {
+            commit('order/ORDER_TO_MODIFY', null, { root: true })
+
             if (typeof response.data.id !== 'undefined') {
               //this is walk in order
               orderId = response.data.id
+              if (typeof response.data.order_no !== 'undefined') {
+                commit('SET_ORDER_NUMBER', response.data.order_no)
+              }
+            } else if (
+              rootState.order.selectedOrder &&
+              rootState.order.selectedOrder.item.order_no
+            ) {
+              commit(
+                'SET_ORDER_NUMBER',
+                rootState.order.selectedOrder.item.order_no
+              )
             }
             //check what is order status, hold or modifying delivery
             switch (rootState.order.orderStatus) {
@@ -546,34 +682,26 @@ const actions = {
               }
             )
 
-            resolve(response.data)
-
-            dispatch('invoice/printRules', null, { root: true }).then(() => {
-              //get print rules
-              //get invoice template
-              const templateId = rootGetters['invoice/templateId']
-              dispatch(
-                'invoice/fetchTemplate',
-                {
-                  orderId: orderId,
-                  templateId: templateId,
-                },
+            //In case if order is not dine in, print out the invoice.
+            if (
+              rootState.order.orderType.OTApi ===
+                CONSTANTS.ORDER_TYPE_DINE_IN &&
+              rootState.order.is_pay !== 1
+            ) {
+              let dineinsuccmsg = rootGetters['location/_t'](
+                'Item added to order successfully'
+              )
+              commit(
+                'checkoutForm/SET_MSG',
+                { result: '', message: dineinsuccmsg },
                 {
                   root: true,
                 }
-              ).then(() => {
-                //invoice print is triggered by the success ok button
-                commit(mutation.PRINT, true)
-              })
-            })
-
-            commit(
-              'checkoutForm/SET_MSG',
-              { result: 'success', message: msgStr },
-              {
-                root: true,
-              }
-            )
+              )
+              dispatch('reset')
+            } else {
+              commit(mutation.PRINT, true)
+            }
             resolve(response.data)
           } else {
             let error = ''
@@ -617,8 +745,13 @@ const actions = {
               )
               //reset order start time
               commit('order/RESET_ORDER_TIME', null, { root: true })
-
-              dispatch('reset')
+              commit(mutation.SET_PROCESSING, false)
+              commit(mutation.PRINT, true)
+              dispatch(
+                'transactionOrders/getTransactionOrders',
+                {},
+                { root: true }
+              )
             } else {
               var err_msg = ''
               if (
@@ -639,19 +772,18 @@ const actions = {
                 )
               }
             }
-            resolve(response.data)
+            resolve(response)
           }
         })
     })
   },
-  generateInvoice({ commit }) {
-    commit(mutation.PRINT, true)
+  generateInvoice() {
+    //commit(mutation.PRINT, true)
   },
   reset({ commit, dispatch }) {
     commit(mutation.RESET)
     dispatch('checkoutForm/reset', {}, { root: true })
     dispatch('order/reset', {}, { root: true })
-    dispatch('tax/reset', {}, { root: true })
     dispatch('discount/reset', {}, { root: true })
     dispatch('surcharge/reset', {}, { root: true })
     dispatch('customer/reset', {}, { root: true })
@@ -701,6 +833,18 @@ const mutations = {
   },
   [mutation.SET_ORDER_NUMBER](state, orderNumber) {
     state.orderNumber = orderNumber
+    let order = { ...state.order }
+    order.orderNumber = state.orderNumber
+    state.order = order
+  },
+  [mutation.LOADING](state, loadingStatus) {
+    state.loading = loadingStatus
+  },
+  [mutation.CHANGE_AMOUNT_STATUS](state, status) {
+    state.changeAmountStatus = status
+  },
+  [mutation.SET_PROCESSING](state, status) {
+    state.processing = status
   },
   [mutation.RESET](state) {
     state.order = false

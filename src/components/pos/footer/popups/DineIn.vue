@@ -17,10 +17,8 @@
               :class="{ active: selectedOrderType.OTApi === 'dine_in' }"
               @click="setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })"
             >
-              <img src="img/pos/dine-in.svg" /><span
-                class="color-text-invert"
-                >{{ _t('Dine In') }}</span
-              >
+              <img src="img/pos/dine-in.svg" />
+              <span class="color-text-invert">{{ _t('Dine In') }}</span>
             </div>
             <div
               class="option-contain"
@@ -32,11 +30,8 @@
                 })
               "
             >
-              <img src="img/pos/take-away.svg" /><span
-                class="color-text-invert"
-              >
-                {{ _t('Take Away') }}
-              </span>
+              <img src="img/pos/take-away.svg" />
+              <span class="color-text-invert">{{ _t('Take Away') }}</span>
             </div>
             <div
               class="option-contain"
@@ -45,30 +40,26 @@
                 setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
               "
             >
-              <img src="img/pos/delivery-icon.svg" /><span
-                class="color-text-invert"
-              >
-                {{ _t('Delivery') }}
-              </span>
+              <img src="img/pos/delivery-icon.svg" />
+              <span class="color-text-invert">{{ _t('Delivery') }}</span>
             </div>
             <div
               class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'event' }"
               @click="setOrderType({ OTview: 'Event', OTApi: 'event' })"
             >
-              <img src="img/pos/event.svg" /><span class="color-text-invert">{{
-                _t('Event')
-              }}</span>
+              <img src="img/pos/event.svg" />
+              <span class="color-text-invert">
+                {{ _t('Event') }}
+              </span>
             </div>
             <div
               class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'walk_in' }"
               @click="setOrderType({ OTview: 'Walk In', OTApi: 'walk_in' })"
             >
-              <img src="img/pos/walkin.svg" width="35" /><span
-                class="color-text-invert"
-                >{{ _t('Walk In') }}</span
-              >
+              <img src="img/pos/walkin.svg" width="35" />
+              <span class="color-text-invert">{{ _t('Walk In') }}</span>
             </div>
           </div>
         </div>
@@ -84,12 +75,12 @@
               {{ _t('Ok') }}
             </button>
             <!--<button
-              class="btn btn-large"
-              type="button"
-              :class="{ active: selectedOrderType.OTApi === 'event' }"
-              @click="setOrderType({ OTview: 'Walk In', OTApi: 'walk_in' })"
-            >
-              {{ _t('Walk In') }}
+                          class="btn btn-large"
+                          type="button"
+                          :class="{ active: selectedOrderType.OTApi === 'event' }"
+                          @click="setOrderType({ OTview: 'Walk In', OTApi: 'walk_in' })"
+                        >
+                          {{ _t('Walk In') }}
             </button>-->
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -103,6 +94,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import * as CONST from '@/constants'
+
 export default {
   name: 'DineIn',
   props: {},
@@ -114,6 +106,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('order', ['orderType']),
+    ...mapGetters('context', ['store']),
   },
   watch: {
     orderType(newVal, oldVal) {
@@ -126,8 +119,10 @@ export default {
 
   methods: {
     setOrderType(orderType) {
-      if (orderType.OTApi == 'walk_in') {
-        this.updateOrderType()
+      if (orderType.OTApi !== 'call_center') {
+        this.$store.commit('location/SET_MODAL', '#manage-customer')
+        //Remove customer entity
+        this.$store.dispatch('customer/resetCustomer')
       }
       if (this.selectedOrderType === orderType.OTApi) {
         //toggle
@@ -137,8 +132,83 @@ export default {
       }
     },
     updateOrderType() {
-      this.$store.dispatch('order/updateOrderType', this.selectedOrderType)
+      if (
+        this.selectedOrderType.OTApi === 'dine_in' &&
+        this.$store.state.dinein.covers == false
+      ) {
+        //Redirect to dinein screen
+        this.$router.push('/dine-in' + this.store)
+      } else {
+        //Set state and recalculate the cart
+        this.$store.dispatch('order/updateOrderType', this.selectedOrderType)
+      }
     },
   },
 }
 </script>
+<style lang="scss">
+@import '../../../../assets/scss/pixels_rem.scss';
+@import '../../../../assets/scss/variables.scss';
+@import '../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  #dining-option {
+    .modal-dialog {
+      margin: 0;
+      transform: none;
+      animation: none;
+      transition: none;
+      max-width: none;
+
+      .modal-content {
+        display: grid;
+        grid-template-rows: max-content 1fr max-content;
+
+        .modal-header {
+          height: 80px;
+          background-color: #fff;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          border: none;
+          padding: 20px;
+        }
+
+        .modal-body {
+          padding: 20px;
+          overflow-y: auto;
+
+          .dining-option-block {
+            .option-contain {
+              position: relative;
+
+              &.active {
+                border: 2px solid $green-middle;
+
+                &::after {
+                  content: '\F00C';
+                  font-family: FontAwesome;
+                  color: #fff;
+                  background-color: $green-middle;
+                  position: absolute;
+                  top: -2px;
+                  right: -2px;
+                  border-radius: 3px;
+                }
+              }
+            }
+          }
+        }
+
+        .modal-footer {
+          .btn-announce {
+            button {
+              background-color: $green-middle;
+              border: none;
+              padding: 0 25px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</style>

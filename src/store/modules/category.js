@@ -6,6 +6,7 @@ import * as CONSTANTS from '@/constants'
 const state = {
   categoryImagePath: '',
   subcategoryImagePath: '',
+  searchItemTerm: '',
   itemImagePath: '',
   categories: [],
   category: {},
@@ -59,8 +60,7 @@ const getters = {
     let items = []
     const categoryItems = getters.categoryItems
     const subcategoryItems = getters.subcategoryItems
-
-    if (state.searchItems.length) {
+    if (state.searchItemTerm) {
       items = state.searchItems
     } else {
       if (categoryItems.length) {
@@ -75,7 +75,6 @@ const getters = {
 
   getImages() {
     //for caching
-    //document.getElementsByTagName('a')[0].__vue__.$store.state
     let images = []
 
     state.categories.forEach(category => {
@@ -83,6 +82,10 @@ const getters = {
     })
     state.subcategories.forEach(subcat => {
       images.push(subcat.sub_category_image)
+    })
+
+    state.items.forEach(item => {
+      images.push(item.image)
     })
     return images
   },
@@ -113,7 +116,9 @@ const actions = {
 
   collectSearchItems({ commit, state }, searchTerm) {
     let searchedItems = []
+    state.searchItemTerm = ''
     if (searchTerm.length > 0) {
+      state.searchItemTerm = searchTerm
       state.items.map(item => {
         if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
           searchedItems.push(item)
@@ -165,6 +170,23 @@ const mutations = {
 
   [mutation.SET_ITEM](state, item) {
     state.item = item
+  },
+  [mutation.RESET](state) {
+    state.categoryImagePath = ''
+    state.subcategoryImagePath = ''
+    state.searchItemTerm = ''
+    state.itemImagePath = ''
+    state.categories = []
+    state.category = {}
+    state.subcategories = []
+    state.subcategory = null
+    state.categoryItems = []
+    state.subcategoryItems = []
+    state.item = null
+    state.items = []
+    state.taxData = []
+    state.taxAmount = {}
+    state.searchItems = {}
   },
   [mutation.SET_SEARCH_ITEMS](state, items) {
     if (items.items.length > 0) {

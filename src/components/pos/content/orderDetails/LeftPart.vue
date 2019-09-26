@@ -53,28 +53,8 @@
             id="runningtime"
             class="timeago elapsedTime delManTime"
             title=""
-          ></span>
-          <span
-            class="customtime left"
-            :id="
-              'createdOrder-' +
-                convertDatetime(
-                  orderDetails.item.real_created_datetime,
-                  timezoneString
-                )
-            "
-            style="display: none"
-          ></span>
-          <input
-            type="hidden"
-            id="storerunningtime"
-            :value="
-              convertDatetime(
-                orderDetails.item.real_created_datetime,
-                timezoneString
-              )
-            "
-          />
+          >
+          </span>
         </p>
       </div>
       <div class="details-item">
@@ -82,14 +62,7 @@
           _t('Placed By:')
         }}</span>
         <p class="color-text">
-          {{
-            orderDetails.item.order_history.length
-              ? getLookupData({
-                  lookupFrom: 'users',
-                  id: orderDetails.item.order_history[0].user,
-                })
-              : 'N/A'
-          }}
+          {{ getPlacedBy(orderDetails) }}
         </p>
       </div>
     </div>
@@ -131,7 +104,7 @@
         </p>
       </div>
     </div>
-    <div v-if="orderDetails.item">
+    <div v-if="orderDetails.item && orderDetails.item.order_type !== 'dine_in'">
       <div class="details-item">
         <span class="details-item-name color-text-invert">{{
           _t('Delivery Area:')
@@ -185,20 +158,39 @@ export default {
   props: {
     orderDetails: {},
   },
+  data() {
+    return {
+      datetime: '',
+      orderTime: '',
+    }
+  },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('location', ['timezoneString']),
   },
   updated() {
-    $('#runningtime').text('')
-    setInterval(() => {
-      let orderTime = $('#storerunningtime').val()
-      let timer = this.orderTimer(orderTime, this.timezoneString)
-      $('#runningtime').text(timer)
+    clearInterval(this.orderTime)
+    this.makeDate()
+    this.orderTime = setInterval(() => {
+      $('#runningtime').text(
+        this.orderTimer(this.datetime, this.timezoneString)
+      )
     }, 1000)
+  },
+  destroyed() {
+    clearInterval(this.orderTime)
   },
   mixins: [DateTime],
   methods: {
+    makeDate() {
+      this.datetime = this.convertDatetime(
+        this.orderDetails.item.real_created_datetime,
+        this.timezoneString
+      )
+    },
+    /*timerClock: function() {
+      return this.orderTimer(this.datetime, this.timezoneString)
+    },*/
     getLookupData: function(lookup) {
       let setData = this.orderDetails.lookups[lookup.lookupFrom]._id
       let selection =
@@ -208,6 +200,15 @@ export default {
         matchWith: lookup.id,
         selection: selection,
       })
+    },
+    getPlacedBy(orderDetail) {
+      let name = 'N/A'
+      if (orderDetail) {
+        Object.values(orderDetail.lookups.users._id).forEach(details => {
+          name = details.name
+        })
+      }
+      return name
     },
     getLoyaltyPoint(orderItem) {
       return orderItem.loyalty_cards_with_points.length

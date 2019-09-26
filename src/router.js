@@ -2,10 +2,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home'
+import Transactions from './views/Transactions'
 import DineIn from './views/Dinein'
 import DeliveryManagerInit from './views/DeliveryManagerInit'
 import DispatchScreenInit from './views/DispatchScreenInit'
-import NotFoundComponent from './views/NotFoundComponent'
 
 Vue.use(Router)
 
@@ -15,14 +15,45 @@ const router = new Router({
 
   routes: [
     {
-      path: '/:brand_id/:store_id/',
-      name: 'BrandHome',
+      path: '/:brand_id/:store_id/update/:order_id',
+      name: 'ModifyBackendOrder',
       component: Home,
+    },
+    {
+      path: '/:brand_id/:store_id/transactions',
+      name: 'Transactions',
+      component: Transactions,
     },
     {
       path: '/delivery-manager/:brand_id/:store_id/',
       name: 'DeliveryManager',
       component: DeliveryManagerInit,
+    },
+    {
+      //view dine in
+      path: '/dine-in/:brand_id/:store_id',
+      name: 'Dinein',
+      component: DineIn,
+    },
+    {
+      path: '/dine-in/:brand_id/:store_id/:table_id/:order_id',
+      name: 'DineinOrder',
+      component: Home,
+    },
+    {
+      path: '/dine-in/:brand_id/:store_id/:table_id/',
+      name: 'DineinTable',
+      component: Home,
+    },
+    {
+      path: '/:brand_id/:store_id/:order_id',
+      name: 'UpdateDeliveryOrder',
+      component: Home,
+    },
+    {
+      path: '/:brand_id/:store_id/',
+      name: 'BrandHome',
+      component: Home,
     },
     {
       path: '/about',
@@ -34,17 +65,15 @@ const router = new Router({
       // 	import(/* webpackChunkName: "about" */ './views/About.vue'),
     },
     {
-      path: '/dine-in',
-      name: 'Dinein',
-      component: DineIn,
-    },
-
-    {
       path: '/dispatch-screen',
       name: 'DispatchScreen',
       component: DispatchScreenInit,
     },
-    { path: '*', component: NotFoundComponent },
+    {
+      path: '*',
+      name: 'Any',
+      component: Home,
+    },
   ],
 })
 

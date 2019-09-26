@@ -9,6 +9,7 @@ const state = {
   orders: [],
   orderCounts: 0,
   listType: 'New Orders',
+  section: 'crm',
   selectedOrder: false,
   selectedDriver: false,
   deliveredOrderGroup: [],
@@ -137,35 +138,55 @@ const getters = {
 }
 
 const actions = {
-  fetchDMOrderDetail({ commit, state, dispatch }) {
+  fetchDMOrderDetail({ commit, state, dispatch, rootGetters }) {
     commit(mutation.SET_LOADING, true)
     // return new Promise((resolve, reject) => {
     const params = [
       state.params.query,
       state.params.limit,
       state.params.orderBy,
-      state.deliveryOrderStatus,
+      // state.deliveryOrderStatus,
       state.params.page,
       state.params.pageId,
       state.selectedStores,
     ]
-
-    DMService.getDMOrderDetails(...params)
-      .then(response => {
-        commit(mutation.SET_DM_ORDERS, response.data)
-        commit(mutation.SET_TOTAL_ORDER, response.data.count)
-        commit(mutation.SET_LOADING, false)
-        dispatch('getDrivers')
-      })
-      .catch(() => {
-        commit(mutation.SET_LOADING, false)
-      })
+    let section = 'delivery_home'
+    if (state.section === 'takeaway') {
+      section = 'delivery_take_away'
+    }
+    if (state.section === 'future') {
+      section = 'delivery'
+    }
+    let checkAPIPermission = rootGetters['location/permitted'](
+      state.params.pageId,
+      section
+    )
+    if (checkAPIPermission) {
+      DMService.getDMOrderDetails(...params)
+        .then(response => {
+          commit(mutation.SET_LOADING, true)
+          if (response.data) {
+            commit(mutation.SET_DM_ORDERS, response.data)
+            commit(mutation.SET_TOTAL_ORDER, response.data.count)
+            commit(mutation.SET_LOADING, false)
+            /*if (section === 'delivery_home') {*/
+            dispatch('getDrivers')
+            // }
+          }
+          console.log(state.orders)
+        })
+        .catch(() => {
+          commit(mutation.SET_LOADING, false)
+        })
+    } else {
+      commit(mutation.SET_LOADING, false)
+    }
   },
   getDrivers({ commit, rootGetters }) {
     let role = rootGetters['auth/getRole']('delivery_home')
-
     if (role) {
       DMService.getUsers(role._id).then(response => {
+        console.log(response.data.data)
         commit(mutation.DRIVERS, response.data.data)
       })
     }
@@ -267,20 +288,11 @@ const actions = {
       }
     )
   },
-
-  printInvoice({ rootState, dispatch, commit }, template) {
-    dispatch(
-      'invoice/fetchTemplate',
-      {
-        orderId: rootState.order.selectedOrder.item._id,
-        templateId: template._id,
-      },
-      {
-        root: true,
-      }
-    ).then(() => {
-      commit('checkout/PRINT', true, { root: true })
-    })
+  printInvoice({ commit }, { templateId, order }) {
+    commit('invoice/SET_TEMPLATE_ID', templateId, { root: true })
+    commit('checkout/SET_ORDER', order.item, { root: true })
+    commit('order/SET_ORDER_ID', order.item._id, { root: true })
+    commit('checkout/PRINT', true, { root: true })
   },
 
   modifyOrder({ rootState, commit, dispatch }) {
@@ -303,6 +315,9 @@ const actions = {
 const mutations = {
   [mutation.LIST_TYPE](state, listType) {
     state.listType = listType
+  },
+  [mutation.SECTION](state, section) {
+    state.section = section
   },
   [mutation.SET_DM_ORDER_COLLECTION](state, OrderDetailsUpdate) {
     if (!state.deliveredOrderCollection[OrderDetailsUpdate.driverId]) {

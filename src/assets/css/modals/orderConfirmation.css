@@ -144,7 +144,7 @@ div#total-order-wrap {
   padding-right: 1.5625rem; }
 
 button.btn.referal-btn {
-  background: url(../images/referal-down.png);
+  background: url(/assets/images/referal-down.png);
   background-position: center right 8px;
   background-repeat: no-repeat; }
 

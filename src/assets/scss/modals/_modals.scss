@@ -165,12 +165,11 @@ button {
   }
 
   &.br-table-btn.order-add {
-    margin-left: $px10;
+    //margin-left: $px10;
   }
 
   &.popup-btn-save {
     height: $px50;
-    box-shadow: 0 2px 2px #d1e6c5;
     border-radius: $btn-border-radius;
     background-color: #5056ca;
     border-color: #5056ca;
@@ -272,6 +271,10 @@ button {
     padding: 0 $px25;
     color: #ffffff;
     justify-self: end;
+    @include responsive(xs) {
+      padding: 0 5px;
+      font-size: 8px;
+    }
   }
 
   &#customer-notes-add {
@@ -314,6 +317,9 @@ input {
   left: 41%;
   font-size: $px12;
   color: #f44040;
+   @include responsive(mobile) {
+                position: static;
+              }
 }
 
 

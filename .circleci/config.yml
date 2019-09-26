@@ -21,6 +21,7 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               echo "export ENVIRONMENT=production" >> $BASH_ENV
               echo "export EBENVIRONMENT=prod" >> $BASH_ENV
+              echo "export SITE=dm-prod-pos" >> $BASH_ENV
               echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_PROD" >> $BASH_ENV
               echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_PROD" >> $BASH_ENV
             elif [ "${CIRCLE_BRANCH}" == "staging" ]; then
@@ -31,6 +32,7 @@ jobs:
             elif [ "${CIRCLE_BRANCH}" == "integration" ] || [ "${CIRCLE_BRANCH}" == "monitoring" ]; then
               echo "export ENVIRONMENT=integration" >> $BASH_ENV
               echo "export EBENVIRONMENT=int" >> $BASH_ENV
+              echo "export SITE=dm-int-pos" >> $BASH_ENV
               echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_INT" >> $BASH_ENV
               echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_INT" >> $BASH_ENV
             fi
@@ -104,6 +106,8 @@ jobs:
             # MOVE FILES TO ALLOW BEANSTALK TO READ THEM
             cp .circleci/Dockerrun.aws.json Dockerrun.aws.json
             cp .circleci/nginx/nginx.conf nginx.conf
+
+            sed -i "s/<SITE>/$SITE/" .ebextensions/002_papertrail.config
 
             # FIX ISSUE https://github.com/aws/aws-cli/issues/2639
             find ./node_modules -mtime +10950 -exec touch {} \;

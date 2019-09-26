@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <form>
     <div class="modal-body form-block color-dashboard-background">
       <div class="divide-block row">
         <h5 class="customer-block-info color-text-invert">
@@ -10,7 +10,12 @@
             <label class="color-text-invert"
               >{{ _t('Name') }} <span>*</span></label
             >
-            <input type="text" name="name" v-model="newCustomerDetails.name" />
+            <input
+              type="text"
+              autocomplete="off"
+              name="name"
+              v-model="newCustomerDetails.name"
+            />
             <span class="validation-error" v-if="errors.name">{{
               errors.name
             }}</span>
@@ -22,6 +27,7 @@
             </label>
             <input
               type="text"
+              autocomplete="off"
               name="phone_number"
               @keypress="Num.toNumberOnly($event)"
               v-model="newCustomerDetails.phone_number"
@@ -46,6 +52,7 @@
             </label>
             <input
               type="email"
+              autocomplete="off"
               name="email"
               v-model="newCustomerDetails.email"
             />
@@ -67,6 +74,7 @@
               </label>
               <input
                 type="text"
+                autocomplete="off"
                 name="alternate-phone-from"
                 v-model="newCustomerDetails.alternative_phone"
               />
@@ -81,8 +89,8 @@
                 :phrases="{ ok: _t('Continue'), cancel: _t('Exit') }"
               ></datetime>
               <!--<span class="validation-error" v-if="errors.birthday">{{
-                errors.birthday
-              }}</span>-->
+                              errors.birthday
+                            }}</span>-->
             </div>
           </div>
           <div class="col-md-12 left-form">
@@ -131,18 +139,32 @@
                 errors.delivery_area_id
               }}</span>
             </div>
-            <div class="alternate-phone-from">
+            <div class="Building">
               <label class="color-text-invert"
                 >{{ _t('Building/Villa') }} <span>*</span></label
               >
               <input
                 type="text"
+                autocomplete="off"
                 name="building"
                 v-model="newCustomerDetails.building"
+                v-on:keyup="search(newCustomerDetails.building)"
               />
               <span class="validation-error" v-if="errors.building">{{
                 errors.building
               }}</span>
+              <div class="dropdown" v-if="filterBuildingArea">
+                <div id="searchDropdown" class="dropdown-content">
+                  <span
+                    class="showItem color-dashboard-background"
+                    v-for="(area, index) in filterBuildingArea"
+                    :key="index"
+                    v-on:click="selectBuilding(area)"
+                  >
+                    {{ area }}
+                  </span>
+                </div>
+              </div>
             </div>
             <div class="gender">
               <label class="color-text-invert"
@@ -150,6 +172,7 @@
               >
               <input
                 type="text"
+                autocomplete="off"
                 name="street"
                 v-model="newCustomerDetails.street"
               />
@@ -165,6 +188,7 @@
               >
               <input
                 type="text"
+                autocomplete="off"
                 name="flat_number"
                 v-model="newCustomerDetails.flat_number"
               />
@@ -178,6 +202,7 @@
               >
               <input
                 type="text"
+                autocomplete="off"
                 name="nearest_landmark"
                 v-model="newCustomerDetails.nearest_landmark"
               />
@@ -189,7 +214,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </form>
 </template>
 
 <script>
@@ -218,6 +243,7 @@ export default {
       months:
         'January,February,March,April,May,June,July,August,September,October,November,December',
       errors: {},
+      filterBuildingArea: false,
     }
   },
   computed: {
@@ -225,6 +251,7 @@ export default {
     ...mapState({
       newCustomerDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
+      buildingAreas: state => state.customer.buildingAreas,
       loyalty: state => state.loyalty.loyalty,
       fetchDeliveryAreas: state =>
         state.customer.fetchDeliveryAreas
@@ -242,6 +269,25 @@ export default {
     }),
   },
   methods: {
+    search(searchTerm) {
+      $('#searchLoader').attr('style', 'display:block')
+      $('#searchDropdown').show()
+      let searchedItems = []
+      if (searchTerm.length > 0) {
+        this.buildingAreas.map(item => {
+          if (item.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
+            searchedItems.push(item)
+          }
+        })
+        this.filterBuildingArea = searchedItems
+      } else {
+        this.filterBuildingArea = this.buildingAreas
+      }
+    },
+    selectBuilding(selectedArea) {
+      this.newCustomerDetails.building = selectedArea
+      $('#searchDropdown').hide()
+    },
     getAreaId: function(e) {
       if (e.target.options.selectedIndex > -1) {
         this.add_delivery_area = $('.getAreaId')
@@ -268,12 +314,12 @@ export default {
         this.errors.count = 1
       }
       /*if (
-        !this.newCustomerDetails.email ||
-        !getWithoutSpaceLength(this.newCustomerDetails.email)
-      ) {
-        this.errors.email = this._t('Email') + ' ' + this._t('is required.')
-        this.errors.count = 1
-      }*/
+                  !this.newCustomerDetails.email ||
+                  !getWithoutSpaceLength(this.newCustomerDetails.email)
+                ) {
+                  this.errors.email = this._t('Email') + ' ' + this._t('is required.')
+                  this.errors.count = 1
+                }*/
       if (
         !this.newCustomerDetails.phone_number ||
         !getWithoutSpaceLength(this.newCustomerDetails.phone_number)
@@ -357,9 +403,76 @@ export default {
       return this.newCustomerDetails
     },
     validEmail: function(email) {
-      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       return re.test(email)
     },
   },
 }
 </script>
+<style scoped lang="css">
+.dropdown {
+    position: relative;
+}
+
+.dropdown-content {
+    display: block;
+    position: absolute;
+    background-color: #f6f6f6;
+    width: 57%;
+    right: 14px;
+    overflow: auto;
+    border: 1px solid #ddd;
+    z-index: 1;
+    margin-top: 3px;
+    max-height: 200px;
+}
+
+.dropdown-content span {
+    color: black;
+    padding: 6px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown span:hover {
+    background-color: #ddd;
+}
+</style>
+<style lang="scss">
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  .dropdown-content {
+    margin: 0 !important;
+    border: none !important;
+    background-color: transparent !important;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-height: 100% !important;
+
+    .showItem {
+      padding: 0 !important;
+      display: grid !important;
+      grid-template-columns: 1fr max-content;
+      align-items: center;
+      background-color: transparent;
+      height: 65px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr max-content;
+      align-items: center;
+      border-bottom: 1px solid #ccc;
+      margin: 0 10px;
+
+      &:last-child {
+        border: none !important;
+      }
+    }
+  }
+}
+</style>

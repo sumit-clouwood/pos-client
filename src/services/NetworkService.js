@@ -8,8 +8,9 @@ export default {
       img.src =
         process.env.BASE_URL + 'img/icons/favicon.png' + '?' + Math.random()
       img.onload = event => {
-        console.log('onload hearbeat status', this.netstatus, true)
-        if (!this.netstatus) {
+        //console.log('onload hearbeat status', this.netstatus, true)
+        //if (!this.netstatus)
+        {
           this.netstatus = true
           cb(true, 'on', event)
         }
@@ -21,7 +22,7 @@ export default {
           cb(false, 'off', event)
         }
       }
-    }, 1000 * 60 * 2)
+    }, 1000 * 60 * 1)
 
     window.addEventListener(
       'load',

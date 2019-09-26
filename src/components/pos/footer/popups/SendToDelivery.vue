@@ -68,9 +68,154 @@ export default {
 <style lang="scss" scoped>
 .error-dialog {
   height: 280px !important;
+
   .order-header {
     p {
       font-size: inherit;
+    }
+  }
+}
+</style>
+<style lang="scss">
+@import '../../../../assets/scss/pixels_rem.scss';
+@import '../../../../assets/scss/variables.scss';
+@import '../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  #order-confirmation {
+    .modal-dialog {
+      margin: 0;
+      width: auto !important;
+      max-width: none !important;
+
+      .modal-content {
+        .order-header {
+          margin: 0;
+          padding: 20px;
+          height: 80px;
+          min-height: 80px;
+          border-bottom: 1px solid $gray-middle;
+          align-items: flex-start;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          border: none;
+
+          h4 {
+            text-align: left;
+          }
+        }
+
+        .modal-body {
+          width: 100vw;
+          overflow: auto;
+          padding: 20px;
+
+          .order-table {
+            max-height: none;
+            /*width: 100%;*/
+            .table-responsive {
+              margin: 0;
+            }
+            table {
+              width: auto;
+              /*display: grid;*/
+              /*grid-template-columns: 1fr 1fr;*/
+              /*grid-gap: 10px;*/
+              /*justify-content: space-between;*/
+
+              tr {
+                /*display: grid;*/
+                border: 1px solid #eee;
+                border-radius: 3px;
+                padding: 0 10px;
+
+                /*&:first-child {*/
+                /*  display: none;*/
+                /*}*/
+
+                th,
+                td {
+                  text-align: left;
+                  /*width: auto !important;*/
+                  border-bottom: 1px solid $gray-middle !important;
+                  border-top: none !important;
+                  height: 40px;
+                  /*padding: 0;*/
+                  line-height: 40px;
+                  /*display: flex;*/
+                  /*align-items: center;*/
+                }
+
+                td {
+                  box-sizing: content-box;
+
+                  &:last-child {
+                    border-bottom: none !important;
+                  }
+
+                  &:nth-child(1) {
+                    box-sizing: border-box;
+                  }
+                }
+              }
+            }
+          }
+
+          #total-order-wrap {
+            .order-notes {
+              width: 100%;
+            }
+
+            #total-confirm-order {
+              margin: 20px 0 0 0;
+              width: 100%;
+
+              .order-amt-charges {
+                p {
+                  justify-content: flex-end;
+                }
+              }
+
+              p {
+                display: flex;
+                align-items: center;
+              }
+            }
+          }
+        }
+
+        .modal-footer {
+          display: grid;
+          grid-template-columns: 1fr;
+          width: 100vw;
+          grid-gap: 10px;
+          border: none;
+
+          .referal {
+            display: grid;
+            margin: 0;
+            grid-template-columns: max-content 1fr;
+            grid-gap: 10px;
+
+            .vdatetime {
+              order: 1;
+
+              input {
+                margin: 0;
+                width: 100%;
+              }
+            }
+          }
+
+          .btn-announce {
+            btn-announce {
+              margin-left: auto;
+            }
+
+            .btn-danger {
+            }
+          }
+        }
+      }
     }
   }
 }

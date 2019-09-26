@@ -33,6 +33,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
+
 export default {
   name: 'SendToDeliveryContentPaymentDetails',
   props: {},
@@ -40,8 +41,7 @@ export default {
     ...mapState({
       orderNotes: state => state.order.orderNote,
     }),
-    ...mapGetters('order', ['orderTotal', 'subTotal']),
-    ...mapGetters('tax', ['totalTax']),
+    ...mapGetters('order', ['orderTotal', 'subTotal', 'totalTax']),
     ...mapGetters('surcharge', ['surcharge']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', ['orderDiscountWithoutTax']),
@@ -55,5 +55,13 @@ export default {
   padding-top: 0 !important;
   margin-top: 0 !important;
   height: 30px !important;
+}
+</style>
+<style lang="scss">
+@import '../../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../../assets/scss/variables.scss';
+@import '../../../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
 }
 </style>

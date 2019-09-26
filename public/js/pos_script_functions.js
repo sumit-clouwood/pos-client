@@ -7,6 +7,17 @@ function closeModal(modalName) {
   $(modalName).modal('hide')
 }
 
+$('*').click(function(e) {
+  // if(e.target.id != 'menu') {
+  $('#searchDropdown').hide()
+  // }
+})
+$(document).on('click', function(event) {
+  let $trigger = $('.driver-container')
+  if ($trigger !== event.target && !$trigger.has(event.target).length) {
+    $('.available-covers').slideUp('fast')
+  }
+})
 function showModal(modalName) {
   $(modalName).modal('show')
 }
@@ -45,7 +56,7 @@ function clickPayNow() {
 
   $('body').addClass('modal-open')
   $('div#pay-now').addClass('show')
-  $('div#pay-now').addClass('animated fadeInLeft')
+  $('div#pay-now').addClass('animated fadeInRight')
   $('.modal-body.pay-now-block').css('opacity', '1')
 
   setTimeout(function() {
@@ -82,4 +93,22 @@ function deliveryTabs(id) {
         .css('display', 'grid')
     }
   })
+}
+
+function menuShowMore() {
+  var heightTop = parseInt($('.navigation-list').css('top'))
+  heightTop = heightTop + 60
+  if (
+    $('.navigation-list-wrapper').offset().top <
+    $('.navigation-list').offset().top +
+      $('.navigation-list').height() -
+      $('.navigation-list-wrapper').height()
+  ) {
+    $('.navigation-list').css('top', -heightTop + '%')
+    $('.slider-btn').addClass('toggle')
+  } else {
+    $('.navigation-list').css('top', 0 + 'px')
+    heightTop = 0
+    $('.slider-btn').removeClass('toggle')
+  }
 }

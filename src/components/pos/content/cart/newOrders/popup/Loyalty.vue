@@ -88,6 +88,7 @@
 </template>
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
+
 export default {
   name: 'Loyalty',
   computed: {
@@ -130,3 +131,23 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+#loyalty-payment {
+  padding: 0 !important;
+  .modal-dialog {
+    margin: 0;
+    .modal-content {
+      .modal-header {
+        min-height: 80px;
+        background-color: #fff;
+      }
+
+      .modal-body {
+      }
+
+      .modal-footer {
+      }
+    }
+  }
+}
+</style>

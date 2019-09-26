@@ -99,12 +99,19 @@ export default {
           $('#payment-screen-footer').prop('disabled', true)
           this.$store.commit('checkoutForm/setAction', 'pay')
           $('#payment-msg').modal('show')
+          this.$store.commit('order/IS_PAY', 1)
           this.$store
             .dispatch('checkout/pay', this.$store.state.order.orderType.OTApi)
             .then(() => {
+              $('#payment-msg').modal('show')
               if (this.changedAmount >= 0.1) {
-                $('#payment-msg').modal('hide')
-                $('#change-amount').modal('show')
+                //alert('change amount is due')
+                setTimeout(() => {
+                  $('#payment-msg').modal('hide')
+                  setTimeout(() => {
+                    $('#change-amount').modal('show')
+                  }, 500)
+                }, 500)
               } else if (this.msg) {
                 $('#payment-msg').modal('show')
               }
@@ -123,11 +130,26 @@ export default {
           showPaymentBreak()
         }
       })
+      this.$store.dispatch('successfullHendlerChange')
+      this.$store.dispatch('payNowCalcHendlerChange')
+      this.$store.dispatch('paymentMethodsChange')
+      this.$store.dispatch('mainOrdersHendlerChange')
     },
   },
 }
 </script>
 <style lang="sass" scoped>
 .payment-screen-footer
-  min-width: 518px
+    min-width: 518px
+</style>
+<style lang="scss">
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  .payment-screen-footer {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+}
 </style>

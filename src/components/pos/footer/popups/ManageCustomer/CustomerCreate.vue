@@ -133,11 +133,80 @@ export default {
           $('#information-popup').modal('show')
         }
         /*if (
-          this.customerCreateStatus &&
-          this.customerCreateStatus.status === 'ok'
-        ) {}*/
+                      this.customerCreateStatus &&
+                      this.customerCreateStatus.status === 'ok'
+                    ) {}*/
       }
     },
   },
 }
 </script>
+<style lang="scss">
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  #post_announcement {
+    background-color: $green-middle;
+    border: none;
+  }
+  #customer {
+    position: fixed;
+    top: 0;
+    right: -100vw;
+    bottom: 0;
+    left: auto;
+    width: 100vw;
+    opacity: 1;
+    transform: none;
+    transition: 0.5s ease-out;
+    display: block;
+
+    &.show {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: auto;
+    }
+
+    .modal-dialog {
+      transform: none;
+
+      .modal-content {
+        display: grid;
+        grid-template-rows: max-content 1fr max-content;
+
+        .modal-header {
+          height: 80px;
+          background-color: #fff;
+        }
+
+        form {
+          overflow-y: auto;
+          overflow-x: hidden;
+          width: 100vw;
+        }
+
+        .modal-body {
+          width: 100vw;
+          .divide-block {
+            margin: 0;
+            border: none;
+            display: grid;
+
+            .customer-block-info {
+              padding: 0;
+              position: static;
+            }
+          }
+        }
+
+        .modal-footer {
+          z-index: 1;
+        }
+      }
+    }
+  }
+}
+</style>

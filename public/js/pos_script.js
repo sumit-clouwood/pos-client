@@ -61,11 +61,6 @@ $(document).ready(function() {
     $('button.btn.referal-btn').text(selText)
   })
 
-  /*  $('[data-toggle="tooltip"]').tooltip();
-    $("button#schedule-btn").click(function () {
-        $('button#schedule-btn .datepicker').show();
-    });*/
-
   $(document).mouseup(function(e) {
     var popup = $('#schedule-btn .datepicker, #schedule-btn')
     // var datesassign =$(".datepicker");
@@ -87,12 +82,6 @@ $(document).ready(function() {
   $(
     '.order-wrappers-panel, div#dm-order-history-rec, button#recipt-history'
   ).addClass('animated zoomIn')
-  // $('.holding-order-panel').addClass('animated zoomIn');
-
-  // $('#hide-paynow').click(function(){
-  // $('#pay-now').hide();
-  // $('#pay-now').addClass('animated fadeInLeft');
-  // });
 
   // Increase amount
   $('.value-qty').on('click', function() {
@@ -121,60 +110,38 @@ $(document).ready(function() {
   })
 
   $(document).mouseup(function(e) {
-    var popup = $('.setting-dropdown, #setting-icon')
-    var icons = $('.setting-dropdown')
+    // eslint-disable-next-line
+    // debugger
+    var popup = $(
+      '.setting-dropdown, .setting-dropdown-transaction, #setting-icon'
+    )
+    var icons = $('.setting-dropdown, .setting-dropdown-transaction')
 
     // var datesassign =$(".datepicker");
-    if (
-      !$('#setting-icon').is(e.target) &&
-      !popup.is(e.target) &&
-      popup.has(e.target).length == 0
-    ) {
-      icons.hide(500)
-      $('body').removeClass('active-body')
-    }
+    icons.hide(500)
+    $('body').removeClass('active-body')
   })
 
   $('.input-image').click(function() {
     $('.amount-keypad').toggle()
   })
 
-  $('#payment-method')
-    .not('.slick-initialized')
-    .slick({
-      arrows: false,
-      infinite: true,
-      slidesToShow: 4,
-      slidesToScroll: 4,
-      dots: true,
-    })
+  // $('#payment-method')
+  //   .not('.slick-initialized')
+  //   .slick({
+  //     arrows: false,
+  //     infinite: true,
+  //     slidesToShow: 4,
+  //     slidesToScroll: 4,
+  //     dots: true,
+  //   })
 
-  var heightTop = parseInt($('.navigation-list').css('top'))
-  $('.slider-btn').click(function() {
-    heightTop = heightTop + 60
-    if (
-      $('.navigation-list-wrapper').offset().top <
-      $('.navigation-list').offset().top +
-        $('.navigation-list').height() -
-        $('.navigation-list-wrapper').height()
-    ) {
-      $('.navigation-list').css('top', -heightTop + '%')
-      $('.slider-btn').addClass('toggle')
-    } else {
-      $('.navigation-list').css('top', 0 + 'px')
-      heightTop = 0
-      $('.slider-btn').removeClass('toggle')
-    }
-  })
   $('.referal-code-customer').click(function() {
     $(this)
       .addClass('active')
       .siblings()
       .removeClass('active')
   })
-  // $('.referal-code-customer').click(function () {
-  //   $(this).addClass('active').siblings().removeClass('active');
-  // });
 
   $(
     'div#navbarResponsive.delivery-manager-st ul#exampleAccordion > li.nav-item > a'
@@ -198,12 +165,6 @@ $(document).ready(function() {
     $(this).addClass('active')
   })
 
-  /*$('.wrappers-orders .dlt-btn').click(function() {
-    $(this)
-      .parent()
-      .addClass('active')
-    $('.wrappers-orders.active').hide(800)
-  })*/
   $('button.ready > a').click(function() {
     $(this)
       .parent()
@@ -321,12 +282,12 @@ $(document).ready(function() {
   // End More text-show
 
   // li dropdown
-  $('div.dm-ready-order-wrapper').each(function() {
+  /*$('div.dm-ready-order-wrapper').each(function() {
     $(this).hide()
     if ($(this).attr('id') == 'dm-new-order') {
       $(this).show()
     }
-  })
+  })*/
 
   $('.all-tables-wrap > button').on('click', function(e) {
     e.preventDefault(e)
@@ -433,12 +394,7 @@ $(document).ready(function() {
     prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
   })
 
-  $('li#pay-now').click(function() {
-    $('#payment-method .VueCarousel-inner').removeAttr('style')
-  })
-
   $('.br-table-btn').click(function() {
-    // $("#payment-method").trigger();
     $('.last-order-wrap')[0].slick.refresh()
   })
 })
@@ -447,29 +403,6 @@ $(document).ready(function() {
 $(document).ready(function() {
   if ($(window).width() >= 320 && $(window).width() <= 991) {
     $('.cross').hide()
-    //   $( ".left-btn-wrap" ).hide();
-    //   $( ".hamburger" ).click(function() {
-    //   $( ".left-btn-wrap" ).slideToggle( "slow", function() {
-    //   $( ".hamburger" ).hide();
-    //   $( ".cross" ).show();
-    // });
-    // });
-
-    // $( ".cross" ).click(function() {
-    //   $( ".left-btn-wrap" ).slideToggle( "slow", function() {
-    //   $( ".cross" ).hide();
-    //   $( ".hamburger" ).show();
-    //   });
-    // });
-
-    // $('.dm-btn').click(function() {
-    //       $( ".left-btn-wrap" ).hide();
-    //   $( ".left-btn-wrap" ).slideUp(400);
-    //   $( ".cross" ).hide();
-    //   $( ".hamburger" ).show();
-
-    // });
-
     $('div#left-fixed-menu').click(function() {
       $('div.delivery-manager-st#navbarResponsive > ul').show(400)
     })
@@ -486,88 +419,6 @@ $(document).ready(function() {
 })
 
 $(document).ready(function() {
-  /*    $('.dine-in-tabel-wrapper').draggable({
-        start: function () {
-
-            $(this).animate({
-                opacity: '0.5'
-            }, 1000);
-        },
-        stop: function () {
-
-
-            $(this).animate({
-                opacity: '1'
-            }, 1000);
-
-        }
-
-    });
-    $('.sitting-dine-wrap.disable-sorting').sortable('disable');
-    $(".sitting-dine-wrap").sortable();
-    $("#sitting-dinein-table").sortable();*/
-})
-
-var currFFZoom = 1
-var currIEZoom = 100
-var step = 0.02
-$('.zoom-wrap-dinein .qtyplus').on('click', function() {
-  if ($.browser) {
-    step = 0.02
-    currFFZoom += step
-    $('#sitting-dinein-table').css('MozTransform', 'scale(' + currFFZoom + ')')
-  } else {
-    step = 2
-    currIEZoom += step
-    $('#sitting-dinein-table').css('zoom', ' ' + currIEZoom + '%')
-  }
-})
-
-$('.zoom-wrap-dinein .qtyminus').on('click', function() {
-  if ($.browser) {
-    step = 0.02
-    currFFZoom -= step
-    $('#sitting-dinein-table').css('MozTransform', 'scale(' + currFFZoom + ')')
-  } else {
-    step = 2
-    currIEZoom -= step
-    $('#sitting-dinein-table').css('zoom', ' ' + currIEZoom + '%')
-  }
-})
-
-$(document).ready(function() {
-  //left arrow key
-  $('#dine-left').click(function() {
-    $('#sitting-dinein-table').animate({
-      left: '-=50',
-    })
-  })
-  //up arrow key
-  $('#dine-top').click(function() {
-    $('#sitting-dinein-table')
-      .finish()
-      .animate({
-        top: '-=50',
-      })
-  })
-  //right arrow key
-  $('#dine-right').click(function() {
-    $('#sitting-dinein-table')
-      .finish()
-      .animate({
-        left: '+=50',
-      })
-  })
-  //bottom arrow key
-  $('#dine-bottom').click(function() {
-    $('#sitting-dinein-table')
-      .finish()
-      .animate({
-        top: '+=50',
-      })
-  })
-})
-$(document).ready(function() {
   $('.sitting-image .tbl-number').click(function() {
     $('#dine-in-wrapper .orders-panel').animate({ right: '0' }, 400)
     $('#dine-in-wrapper').removeClass('full-dinein')
@@ -579,69 +430,8 @@ $(document).ready(function() {
   })
 })
 
-// Mouse rotate table
-
-$(document).ready(function() {
-  /*  $('.sitting-dinein-table').droppable({
-        accept: '#long-table-shape, #square-table-shape, #circle-table-shape',
-        drop: function (event, ui) {
-            var $clone = ui.helper.last().clone();
-            if (!$clone.is('.inside-drop-zone')) {
-                $(this).append($clone.addClass('inside-drop-zone').draggable({
-                    containment: '.sitting-dinein-table'
-                }));
-            }
-        }
-    });
-
-    $('#long-table-shape, #square-table-shape, #circle-table-shape').draggable({
-        helper: 'clone'
-    });*/
-  // window.onload = function () {
-  /*var getUrl = window.location.hash.substr(1)
-  if (getUrl == '/dm') {
-    $('body').addClass('dm-manager')
-    $('body').removeClass('dinein')
-  } else if (getUrl == '/dine-in/') {
-    $('body').removeClass('dm-manager')
-    $('body').addClass('dinein')
-  } else {
-    $('body').removeClass('dm-manager')
-    $('body').removeClass('dinein')
-  }*/
-  // }
-})
-
 // view image rotateble
 
-$(function() {
-  // Prepare extra handles
-  var nw = $('<div>', {
-    class: 'ui-rotatable-handle',
-  })
-  var ne = nw.clone()
-  var se = nw.clone()
-  /*
-     You can also combine this plugin with the jQuery UI built-in resizable() and draggable(), although the latter works best when applied to a container with the rotatable inside it. See the Demo page for some examples.
-     */
-  // Assign Draggable
-  /*    $('.box-wrapper').draggable({
-        cancel: ".ui-rotatable-handle"
-    });
-    // Assign Rotatable
-    $('span.editable-view').resizable().rotatable().sortable();
-    // Assign coordinate classes to handles
-    $('span.editable-view div.ui-rotatable-handle').addClass("ui-rotatable-handle-sw");
-    nw.addClass("ui-rotatable-handle-nw");
-    ne.addClass("ui-rotatable-handle-ne");
-    se.addClass("ui-rotatable-handle-se");
-    // Assign handles to box
-    $("span.editable-view").append(nw, ne, se);
-    // Assigning bindings for rotation event
-    $("span.editable-view div[class*='ui-rotatable-handle-']").bind("mousedown", function (e) {
-        $('span.editable-view').rotatable("instance").startRotate(e);
-    });*/
-})
 $(function() {
   $('.autotbl').click(function() {
     $('ul.dp-dropdown-content.edit-tbl-nmbr').stop()
@@ -682,7 +472,7 @@ $(document).ready(function() {
       .siblings()
       .removeClass('active')
   })
-  $('li.pay-now').click(function() {
-    $('#payment-method')[0].slick.refresh()
-  })
+  /*$('li.pay-now').click(function() {
+    //$('#payment-method')[0].slick.refresh()
+  })*/
 })

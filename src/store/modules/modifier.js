@@ -15,9 +15,29 @@ const state = {
 // getters, computed properties
 const getters = {
   //before item click there is no itemModifiers data available so get it direclty from groups
-  hasModifiers: state => item => {
+  hasModifiers: (state, getters) => item => {
     return state.groups.some(group => {
-      return group.for_items.includes(item._id)
+      if (group.for_items.includes(item._id)) {
+        //check its subgroups if active
+        const subgroups = getters.subgroups(group)
+        if (subgroups.length) {
+          //check if any of the subgroup has modifiers
+          let subgroupHasModifiers = false
+
+          subgroups.forEach(subgroup => {
+            const modifiers = state.modifiers.filter(
+              modifier =>
+                modifier.modifier_group === group._id &&
+                modifier.modifier_sub_group === subgroup._id
+            )
+            if (modifiers.length) {
+              subgroupHasModifiers = true
+            }
+          })
+          return subgroupHasModifiers
+        }
+      }
+      return false
     })
   },
 
@@ -127,8 +147,16 @@ const getters = {
   },
 
   /* for prefetch only */
-  getImages: state => {
+  getImages: (state, getters) => {
     let images = []
+    state.itemModifiers.forEach(item => {
+      const itemModifierSubgroups = getters.itemModifiers(item.itemId)
+      itemModifierSubgroups.forEach(subgroup => {
+        subgroup.modifiers.forEach(submod => {
+          images.push(submod.item_modifier_image)
+        })
+      })
+    })
 
     return state ? images : []
   },
@@ -219,6 +247,14 @@ const mutations = {
 
   [mutation.SET_ITEM](state, item) {
     state.item = item
+  },
+  [mutation.RESET](state) {
+    state.groups = []
+    state.subgroups = []
+    state.modifiers = []
+    state.item = false
+    state.itemModifiers = []
+    state.foodIcons = []
   },
 
   [mutation.SET_ITEM_MODIFIERS](state, { itemId, modifiers, item }) {

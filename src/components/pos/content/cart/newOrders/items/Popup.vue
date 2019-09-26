@@ -27,6 +27,7 @@ import Header from './popup/Header.vue'
 import Content from '@/components/pos/content/catalog/items/popup/Content.vue'
 import Footer from './popup/Footer.vue'
 import { mapState } from 'vuex'
+
 export default {
   name: 'Popup',
   props: {},
@@ -40,9 +41,15 @@ export default {
   },
 }
 </script>
-<style lang="sass" scoped>
-.POSItemOptions
-  .modal-body
-    height : auto !important;
-    max-height: 460px
+<style lang="scss" scoped>
+@import '../../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../../assets/scss/variables.scss';
+@import '../../../../../../assets/scss/mixins.scss';
+
+.POSItemOptions {
+  .modal-body {
+    height: auto !important;
+    max-height: 460px;
+  }
+}
 </style>

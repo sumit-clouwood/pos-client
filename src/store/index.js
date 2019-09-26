@@ -7,7 +7,6 @@ import order from './modules/order'
 import sync from './modules/sync'
 import location from './modules/location'
 import orderForm from './modules/order/form'
-import tax from './modules/tax'
 import surcharge from './modules/surcharge'
 import customer from './modules/customer'
 import discount from './modules/discount'
@@ -16,12 +15,15 @@ import checkoutForm from './modules/checkout/form'
 import giftcard from './modules/giftcard'
 import announcement from './modules/announcement'
 import holdOrders from './modules/holdOrders'
+import transactionOrders from './modules/transactionOrders'
 import payment from './modules/payment'
 import invoice from './modules/invoice'
 import loyalty from './modules/loyalty'
 import context from './modules/context'
 import modules from './modules/modules'
 import deliveryManager from './modules/deliveryManager'
+import mobile from './mobile'
+import dinein from './modules/dinein'
 import Datetime from 'vue-datetime'
 // You need a specific loader for CSS files
 import 'vue-datetime/dist/vue-datetime.css'
@@ -36,7 +38,6 @@ Vue.use(Datetime)
 
 const store = new Vuex.Store({
   modules: {
-    tax,
     auth,
     sync,
     location,
@@ -53,11 +54,14 @@ const store = new Vuex.Store({
     giftcard,
     announcement,
     holdOrders,
+    transactionOrders,
     invoice,
     payment,
     loyalty,
     context,
     modules,
+    mobile,
+    dinein,
   },
   strict: false,
   //plugins: debug ? [createLogger()] : [],

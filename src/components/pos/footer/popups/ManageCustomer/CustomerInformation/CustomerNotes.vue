@@ -69,7 +69,7 @@
 import { mapState } from 'vuex'
 
 function getCustomerList(state) {
-  return state.customer.customer.customer_list
+  return state.customer.customer ? state.customer.customer.customer_list : false
 }
 
 export default {

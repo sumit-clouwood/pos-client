@@ -1,6 +1,10 @@
 <template>
   <!-- response change -->
-  <div class="modal fade blur-background" id="information-popup" role="dialog">
+  <div
+    class="modal fade blur-background information-popup"
+    id="information-popup"
+    role="dialog"
+  >
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
@@ -35,6 +39,7 @@
               class="btn btn-success btn-large"
               type="button"
               id="dining-opt"
+              data-dismiss="modal"
               @click="closeModal()"
             >
               {{ _t('Ok') }}
@@ -52,6 +57,7 @@
 <script>
 /* global $ */
 import { mapGetters } from 'vuex'
+
 export default {
   name: 'InformationPopup',
   props: {
@@ -76,3 +82,23 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+@import '../../../assets/scss/pixels_rem.scss';
+@import '../../../assets/scss/variables.scss';
+@import '../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  #information-popup {
+    .modal-dialog {
+      margin: 0;
+
+      .modal-content {
+        .modal-header {
+          height: 80px;
+          background-color: #fff;
+        }
+      }
+    }
+  }
+}
+</style>

@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="table-delivery table-responsive table-responsive-delivered-table "
-  >
+  <div class="table-delivery table-responsive table-responsive-delivered-table">
     <div class="all-driver-main-div">
       <div class="clearfix all-driver-dropdown">
         <div class="select-driver" v-if="drivers">
@@ -20,9 +18,9 @@
                   />
                 </form>
                 <div id="my-dropdown" class="dropdown-content cursor-pointer">
-                  <span class="dropdown" :key="0" @click="setDriver(null)">
-                    {{ _t('Select Driver') }}
-                  </span>
+                  <span class="dropdown" :key="0" @click="setDriver(null)">{{
+                    _t('Select Driver')
+                  }}</span>
                   <span
                     class="dropdown"
                     v-for="dri in drivers"
@@ -37,15 +35,15 @@
           <div class="average-time">
             <p class="lead">
               {{ _t('Average Delivery Time') }}:
-              <span id="avg_time" v-if="driverOrders"
-                >{{ averageDeliveryTime().time }}
-              </span>
+              <span id="avg_time" v-if="driverOrders">{{
+                averageDeliveryTime().time
+              }}</span>
             </p>
             <p class="lead total-order-sum">
               {{ _t('Total') }}:
-              <span id="total">
-                {{ formatPrice(averageDeliveryTime().amount) }}</span
-              >
+              <span id="total">{{
+                formatPrice(averageDeliveryTime().amount)
+              }}</span>
             </p>
           </div>
           <!-- <p>Show Available Drivers</p> -->
@@ -70,9 +68,7 @@
       <tbody>
         <template v-for="(driOrders, deliveryDriver) in driverOrders">
           <tr class="dataContentStyle" :key="deliveryDriver">
-            <td class="driverNameContainer showMore">
-              {{ deliveryDriver }}
-            </td>
+            <td class="driverNameContainer showMore">{{ deliveryDriver }}</td>
             <td>{{ driOrders.orders.length }}</td>
             <td>{{ driOrders.amountToCollect.toFixed(2) }}</td>
             <td>{{ driOrders.cashPayment.toFixed(2) }}</td>
@@ -80,9 +76,7 @@
             <td id="driverInHandAmount">
               {{ driOrders.totalAmount.toFixed(2) }}
             </td>
-            <td>
-              {{ avgTime(driOrders) }}
-            </td>
+            <td>{{ avgTime(driOrders) }}</td>
             <td class="align-right">
               <a
                 id="open-collect-money-modal"
@@ -91,15 +85,19 @@
                 :driver-id="deliveryDriver"
                 total-orders="4"
                 cash="271.98"
-                ><i class="fa fa-refresh fa"></i> {{ _t('Collect Money') }}</a
               >
+                <i class="fa fa-refresh fa"></i>
+                {{ _t('Collect Money') }}
+              </a>
               &nbsp;
               <a
                 :id="'refresh_data-' + driOrders.driverId"
-                href=""
+                href
                 class="btn btn-success btn-large btnRefreshDetails btn-data-refresh"
                 style="display: none;"
-                ><i class="fa fa-refresh fa"></i> {{ _t('Refresh Data') }}</a
+              >
+                <i class="fa fa-refresh fa"></i>
+                {{ _t('Refresh Data') }} </a
               >&nbsp;
               <a
                 :id="'driver_details-' + driOrders.driverId"
@@ -117,15 +115,15 @@
                     <g fill="#fff" fill-rule="nonzero">
                       <path
                         d="M10 12.971c-2.229 0-4.621-1.053-6.921-3.063A19.21 19.21 0 0 1 .263 6.884a.526.526 0 0 1 0-.608A19.21 19.21 0 0 1 3.08 3.25C5.379 1.245 7.77.187 10 .187s4.621 1.052 6.921 3.063a19.21 19.21 0 0 1 2.816 3.024.526.526 0 0 1 0 .608 19.21 19.21 0 0 1-2.816 3.026c-2.3 2.005-4.692 3.063-6.921 3.063zM1.363 6.58c.924 1.174 4.492 5.34 8.637 5.34 4.145 0 7.716-4.164 8.637-5.34-.924-1.174-4.492-5.34-8.637-5.34-4.145 0-7.716 4.164-8.637 5.34z"
-                      ></path>
+                      />
                       <path
                         d="M10 10.39a3.81 3.81 0 1 1 3.713-3.811A3.766 3.766 0 0 1 10 10.389zm0-6.58a2.758 2.758 0 1 0 2.66 2.769A2.713 2.713 0 0 0 10 3.82v-.01z"
-                      ></path>
+                      />
                     </g>
                   </svg>
                 </span>
-                {{ _t('Show Details') }}</a
-              >
+                {{ _t('Show Details') }}
+              </a>
               <a
                 :class="'driver_details_hide-' + driOrders.driverId"
                 role="button"
@@ -227,7 +225,7 @@ export default {
       }
     },
     showDropdown: function() {
-      $('.dropdown-content').show()
+      $('.dropdown-content').toggle()
     },
     setDriver: function(driver) {
       if (driver) {
@@ -300,3 +298,11 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+.align-right {
+  a {
+    font-size: 12px;
+    color: #fff;
+  }
+}
+</style>

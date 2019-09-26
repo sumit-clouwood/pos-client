@@ -20,7 +20,10 @@
         </div>
       </div>
       <div class="change-location">
-        <button class="btn btn-success">
+        <button
+          class="btn btn-success"
+          v-if="permitted('brand_settings', 'brand')"
+        >
           <a :href="baseurl('delivery')">{{ _t('Change Brand') }}</a>
         </button>
         <button
@@ -65,7 +68,6 @@
     </div>
   </div>
 </template>
-
 <script>
 /* eslint-disable no-console  */
 /* global $ */
@@ -85,7 +87,7 @@ export default {
     },
     ...mapGetters('context', ['store']),
     ...mapState('location', ['availableLanguages', 'language']),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
     orderTypeWalkIn: function(orderType) {

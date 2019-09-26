@@ -37,4 +37,64 @@
   display: grid;
   grid-template-columns: 4fr 1fr; }
 
+@media only screen and (min-width: 320px) and (max-width: 600px) {
+  #add-note {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 100vh;
+    max-height: 100vh; }
+    #add-note.show .modal-dialog {
+      max-width: none; }
+      #add-note.show .modal-dialog .modal-content {
+        margin-bottom: 0; }
+    #add-note .modal-dialog {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      width: auto;
+      min-height: auto;
+      overflow-y: hidden;
+      animation: none;
+      transform: none; }
+      #add-note .modal-dialog .modal-content {
+        top: auto;
+        margin-bottom: -362px;
+        animation: none;
+        transform: none;
+        transition: 0.3s ease-out;
+        position: static; }
+        #add-note .modal-dialog .modal-content .modal-header {
+          border-radius: 0;
+          padding: 10px 20px;
+          background-color: #fff;
+          min-height: 80px; }
+          #add-note .modal-dialog .modal-content .modal-header .customer-title {
+            font-size: 16px;
+            font-weight: 600; }
+        #add-note .modal-dialog .modal-content .modal-body {
+          padding: 10px 20px; }
+          #add-note .modal-dialog .modal-content .modal-body .add-note-area {
+            display: flex;
+            flex-direction: column; }
+            #add-note .modal-dialog .modal-content .modal-body .add-note-area p {
+              font-weight: 600; }
+            #add-note .modal-dialog .modal-content .modal-body .add-note-area .add-note-form {
+              width: auto; }
+        #add-note .modal-dialog .modal-content .modal-footer .btn-announce {
+          margin: 0;
+          display: flex;
+          justify-content: space-between;
+          width: 100%; }
+          #add-note .modal-dialog .modal-content .modal-footer .btn-announce button {
+            margin: 0;
+            flex-grow: 1; }
+            #add-note .modal-dialog .modal-content .modal-footer .btn-announce button#save-note {
+              border-color: #64C434;
+              background-color: #64C434; } }
+
 /*# sourceMappingURL=addNote.css.map */

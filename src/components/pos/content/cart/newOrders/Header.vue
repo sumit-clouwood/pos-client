@@ -59,9 +59,9 @@ export default {
         .dispatch('checkout/pay', { action: 'on-hold' })
         .then(() => {
           /*if (this.changedAmount >= 0.1) {
-            $('#payment-msg').modal('hide')
-            $('#change-amount').modal('show')
-          } else*/
+                    $('#payment-msg').modal('hide')
+                    $('#change-amount').modal('show')
+                  } else*/
           if (this.msg) {
             $('#payment-msg').modal('show')
           }

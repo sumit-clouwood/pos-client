@@ -26,9 +26,7 @@
           <div class="upper">
             <div class="autocomplete-container" v-if="cancellationReason">
               <div class="driver-container">
-                <div class="select-driver">
-                  {{ _t('Cancellation Reason') }}
-                </div>
+                <div class="select-driver">{{ _t('Cancellation Reason') }}</div>
                 <form>
                   <input
                     autocomplete="off"
@@ -48,17 +46,12 @@
                     >{{ reason.name }}</span
                   >
                 </div>
-                <p
-                  v-if="errors && errors.cancel_reason.length"
-                  class="text-danger"
-                >
+                <p v-if="errors && errors.cancel_reason" class="text-danger">
                   {{ errors.cancel_reason }}
                 </p>
               </div>
               <div>
-                <div class="select-driver">
-                  {{ _t('Supervisor Password') }}
-                </div>
+                <div class="select-driver">{{ _t('Supervisor Password') }}</div>
                 <div>
                   <input
                     autocomplete="off"
@@ -68,7 +61,7 @@
                   />
                 </div>
                 <p
-                  v-if="errors && errors.supervisor_password.length"
+                  v-if="errors && errors.supervisor_password"
                   class="text-danger"
                 >
                   {{ errors.supervisor_password.toString() }}
@@ -98,11 +91,13 @@
         </div>
       </div>
     </div>
+    <InformationPopup :responseInformation="this.errorMessage" title="Alert" />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex'
+import InformationPopup from '@/components/pos/content/InformationPopup'
 /* global $ */
 export default {
   name: 'CancelOrderPopup',
@@ -110,7 +105,11 @@ export default {
     return {
       showSelectedReason: '',
       supervisorPassword: '',
+      errorMessage: '',
     }
+  },
+  components: {
+    InformationPopup,
   },
   computed: {
     ...mapGetters('location', ['_t']),
@@ -122,7 +121,7 @@ export default {
       $('.dropdown-content').hide()
     },
     showDropdown: function() {
-      $('.dropdown-content').show()
+      $('.dropdown-content').toggle()
     },
     cancelOrderAction: function(order) {
       let data = {
@@ -137,10 +136,74 @@ export default {
         actionTrigger,
         params: data,
       })
+        .then(res => {
+          if (res.data.status != 'form_errors') {
+            $('#cancellationReason').hide()
+            if (this.selectedOrder.item.order_type == 'dine_in')
+              this.dineInRunningOrders()
+            else if (this.selectedOrder.item.order_type == 'call_center')
+              this.deliveryOrder()
+          }
+        })
+        .catch(response => {
+          this.errorMessage = response
+          $('#information-popup').modal('show')
+        })
     },
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderCancelAction']),
+    ...mapActions('dinein', ['dineInRunningOrders', 'deliveryOrder']),
   },
 }
 </script>
 
-<style scoped></style>
+<style lang="scss">
+@import '../../../../assets/scss/pixels_rem.scss';
+@import '../../../../assets/scss/variables.scss';
+@import '../../../../assets/scss/mixins.scss';
+
+#cancellationReason {
+  .modal-dialog {
+    /*margin: 0;*/
+  }
+}
+
+#cancellationReason {
+  .modal-dialog {
+    /*margin: 0;*/
+
+    .modal-content {
+      .modal-header {
+        height: 80px;
+        background-color: #fff;
+      }
+
+      .modal-body {
+      }
+
+      .modal-footer {
+      }
+    }
+  }
+}
+
+@include responsive(mobile) {
+  #cancellationReason {
+    .modal-dialog {
+      .modal-content {
+        .modal-header {
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          border: none;
+        }
+
+        .modal-body {
+        }
+
+        .modal-footer {
+          padding: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
+}
+</style>

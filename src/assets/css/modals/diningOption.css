@@ -17,8 +17,11 @@
       #dining-option .modal-dialog .modal-content .modal-body .dining-option-block .option-contain.active {
         border: solid 2px #5056ca; }
         #dining-option .modal-dialog .modal-content .modal-body .dining-option-block .option-contain.active:after {
-          content: '';
-          background-image: url(../images/check-mark.svg);
+          content: "\f00c";
+          font-family: FontAwesome;
+          font-size: 1.125rem;
+          color: #fff;
+          background-image: url(/assets/images/dine-right.png);
           position: absolute;
           height: 1.5625rem;
           width: 1.5625rem;

@@ -1,5 +1,8 @@
-@import "../variables";
-#customer, #manage-customer {
+@import '../variables.scss';
+@import '../mixins.scss';
+
+#customer,
+#manage-customer {
   .modal-dialog {
     max-width: $px1180;
 
@@ -8,6 +11,7 @@
         background: #dee2e9;
         padding: $px15 $px30;
         border-bottom-color: #dee2e9;
+        box-shadow: none;
 
         .customer-title {
           font-size: $px16;
@@ -17,6 +21,9 @@
           line-height: normal;
           letter-spacing: 0.6px;
           color: #3f4146;
+          @include responsive(mobile) {
+            font-size: 18px;
+          }
         }
       }
 
@@ -34,7 +41,7 @@
           padding-left: $px15;
 
           &.selectpicker {
-            background-image: url("../images/select-arrow.png");
+            background-image: url('/assets/images/select-arrow.png');
             background-repeat: no-repeat;
             background-position: center right $px10;
             -webkit-appearance: none;
@@ -52,17 +59,17 @@
             margin: 0 4px;
           }
 
-           select:nth-child(4) {
+          select:nth-child(4) {
             width: $px100;
           }
         }
 
         .left-form {
-           div {
+          > div {
             margin-bottom: $px25;
             position: relative;
 
-             input {
+            input {
               width: $px315;
               height: $px50;
               border-radius: $btn-border-radius;
@@ -71,7 +78,7 @@
               padding: $px10;
             }
 
-             select {
+            select {
               width: $px315;
               height: $px50;
               border-radius: $btn-border-radius;
@@ -79,7 +86,7 @@
               border: solid 1px #e4e7eb;
             }
 
-             label {
+            label {
               width: $px215;
               padding: 0 $px25;
               font-size: $px14;
@@ -94,7 +101,7 @@
           }
 
           label {
-             span {
+            span {
               color: #f44040;
               font-size: $px24;
             }
@@ -102,7 +109,7 @@
         }
 
         .right-form {
-           div {
+          > div {
             margin-bottom: $px25;
             position: relative;
 
@@ -115,13 +122,14 @@
               padding: $px10;
             }
 
-             select {
+            select {
               width: $px315;
               height: $px50;
               border-radius: $btn-border-radius;
               background-color: #ffffff;
               border: solid 1px #e4e7eb;
             }
+
             /*> select.selectpicker{
               width: $px889;
             }*/
@@ -149,17 +157,18 @@
       }
 
       .modal-footer {
-
       }
     }
   }
 }
+
 .divide-block {
   border-top: 1px solid #ddd;
   padding: $px25 0;
   margin-top: 0;
 }
-.customer-block-info{
+
+.customer-block-info {
   position: absolute;
   margin-top: -$px35;
   left: $px35;
@@ -169,4 +178,178 @@
   padding: 0 15px;
   font-weight: bold;
   text-transform: capitalize;
+}
+
+// media queries
+@include responsive(mobile) {
+  #customer {
+    .modal-dialog {
+      max-width: none;
+      min-height: auto;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      margin: 0;
+
+      .modal-content {
+        display: grid;
+        grid-template-rows: max-content 1fr max-content;
+
+        .modal-header {
+          border: none;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+          z-index: 1;
+
+          .customer-title {
+          }
+        }
+
+        .modal-body {
+          margin: 0;
+          padding: 20px;
+          background-color: #fff;
+
+          .divide-block {
+            padding: 0;
+
+            h5 {
+              margin: 0;
+            }
+          }
+
+          select {
+            &.selectpicker {
+            }
+          }
+
+          .dob {
+            > select:nth-child(2) {
+            }
+
+            > select:nth-child(3) {
+            }
+
+            > select:nth-child(4) {
+            }
+          }
+
+          .left-form {
+            padding: 0;
+
+            > div {
+              margin-bottom: 10px;
+
+              > input {
+                width: 100%;
+              }
+
+              > select {
+                width: 100%;
+              }
+
+              > label {
+              }
+
+              label {
+                padding: 0;
+
+                > span {
+                }
+              }
+            }
+          }
+
+          .right-form {
+            padding: 0;
+
+            > div {
+              margin-bottom: 10px;
+
+              > input {
+                width: 100%;
+              }
+
+              > select {
+                width: 100%;
+              }
+
+              > label {
+                padding: 0;
+              }
+            }
+
+            .customer-group {
+              .right-shift {
+                padding: 0;
+
+                .vdatetime {
+                  width: 100%;
+
+                  input {
+                    margin: 0;
+                    width: 100%;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        .modal-footer {
+        }
+      }
+    }
+  }
+}
+
+//
+@include responsive(mobile) {
+  #search-loyalty-customer {
+    .modal-dialog {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      min-height: auto;
+      border-left: 1px solid #ddd;
+
+      .modal-content {
+        .modal-header {
+          border-radius: 0;
+          padding: 10px 20px;
+        }
+
+        .modal-body {
+          padding: 20px;
+
+          > .color-text-invert {
+            margin-bottom: 10px;
+          }
+
+          .add-note-area {
+            input {
+              width: 100%;
+            }
+          }
+
+          .inputSearch {
+            margin-bottom: 10px;
+          }
+
+          button {
+            margin-bottom: 10px;
+            border-radius: $btn-border-radius;
+          }
+        }
+
+        .modal-footer {
+        }
+      }
+    }
+  }
 }

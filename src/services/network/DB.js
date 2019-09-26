@@ -32,7 +32,7 @@ export default {
       }
     })
   },
-  createBucket(bucket, options) {
+  createBucket(bucket, options, cb) {
     return new Promise((resolve, reject) => {
       const objectStore = this.idb.createObjectStore(
         bucket,
@@ -44,7 +44,13 @@ export default {
             }
       )
 
-      resolve(objectStore)
+      if (cb) {
+        cb(objectStore)
+      }
+
+      objectStore.transaction.oncomplete = function() {
+        resolve(objectStore)
+      }
 
       objectStore.transaction.onerror = function(event) {
         reject(event)
@@ -59,12 +65,20 @@ export default {
 
     return new Promise((resolve, reject) => {
       try {
-        const bucket = this.idb
-          .transaction(bucketName, mode)
-          .objectStore(bucketName)
-        resolve(bucket)
+        const transaction = this.idb.transaction(bucketName, mode)
+
+        if (transaction) {
+          const bucket = transaction.objectStore(bucketName)
+          resolve(bucket)
+
+          transaction.onerror = function(event) {
+            reject(`Bucket ${bucketName} failed, ${transaction}, ${event}`)
+          }
+        } else {
+          reject(`Bucket ${bucketName} failed, ${transaction}`)
+        }
       } catch (e) {
-        reject(e)
+        reject(`Bucket ${bucketName} failed, ${e}`)
       }
     })
   },

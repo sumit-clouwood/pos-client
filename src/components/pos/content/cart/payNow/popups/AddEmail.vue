@@ -43,6 +43,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+
 export default {
   name: 'AddEmail',
   computed: {
@@ -50,3 +51,23 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+#add-email {
+  .modal-dialog {
+    .modal-content {
+      .modal-header {
+        border: none;
+        background-color: #fff;
+        padding: 20px;
+        padding-bottom: 0;
+      }
+
+      .modal-body {
+        padding: 20px;
+      }
+      POSItemOptions_choose_label .modal-footer {
+      }
+    }
+  }
+}
+</style>

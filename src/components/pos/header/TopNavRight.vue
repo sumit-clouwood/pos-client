@@ -39,6 +39,13 @@
         </a>
       </li>
     </ul>
+    <div class="curent-sale hideBigScreen">
+      <div class="curent-sale-title">{{ _t('Current Sale') }}</div>
+      <div class="curent-sale-item">
+        <div class="text">Item</div>
+        <div class="num">x3</div>
+      </div>
+    </div>
     <li
       class="nav-icon nav-item setting-icon color-main color-text-invert"
       id="setting-icon"
@@ -58,27 +65,52 @@
           />
         </svg>
       </a>
-    </li>
-    <ul class="setting-dropdown">
-      <li>
-        <a role="button">{{ _t('Printers') }}</a>
-      </li>
-      <li>
-        <a role="button"
-          ><router-link :to="'/delivery-manager' + store">{{
-            _t('Delivery Manager')
-          }}</router-link></a
+      <ul class="setting-dropdown">
+        <li>
+          <a role="button">{{ _t('Printers') }}</a>
+        </li>
+        <li v-if="permitted('dashboard', 'root')">
+          <a :href="dashboard">{{ _t('Dashboard') }}</a>
+        </li>
+        <li
+          v-if="permitted('transactional_orders')"
+          @click="moveTransactionSection(this)"
         >
-      </li>
-      <li>
-        <a role="button" @click="logout()">{{ _t('Logout') }}</a>
-      </li>
-    </ul>
+          <a role="button">
+            {{ _t('Transactions') }}
+          </a>
+        </li>
+        <li v-if="permitted('crm', 'root')">
+          <a :href="crm">{{ _t('CRM') }}</a>
+        </li>
+        <li @click="moveDineSection()">
+          <a role="button">
+            {{ _t('Dine In') }}
+          </a>
+        </li>
+        <li v-if="permitted('menu', 'root')">
+          <a :href="menu">{{ _t('Menu Setup') }}</a>
+        </li>
+        <li v-if="permitted('delivery', 'root')">
+          <a role="button">
+            <router-link :to="'/delivery-manager' + store">
+              {{ _t('Delivery Manager') }}
+            </router-link>
+          </a>
+        </li>
+        <li v-if="permitted('brand', 'root')">
+          <a :href="brand">{{ _t('Settings') }}</a>
+        </li>
+        <li>
+          <a role="button" @click="logout()">{{ _t('Logout') }}</a>
+        </li>
+      </ul>
+    </li>
   </div>
 </template>
 
 <script>
-/*global posConfigLinks*/
+/*global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 export default {
@@ -87,6 +119,11 @@ export default {
   data: function() {
     return {
       onlineOrdersCount: 0,
+      dm: this.baseurl('delivery') + '/delivery_home/new',
+      dashboard: this.baseurl('dashboard'),
+      crm: this.baseurl('crm') + '/brand_customers',
+      menu: this.baseurl('menu'),
+      brand: this.baseurl('brands'),
     }
   },
   computed: {
@@ -98,7 +135,7 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
-    ...mapGetters('context', ['store']),
+    ...mapGetters('context', ['store', 'transactions']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('sync', ['online']),
     ...mapState({
@@ -107,17 +144,35 @@ export default {
       username: state =>
         state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
     ...mapActions('auth', ['logout']),
+    moveDineSection() {
+      this.$router.push('/dine-in' + this.store)
+      $('.setting-dropdown').css('display', 'none')
+    },
+    moveTransactionSection() {
+      this.$router.push(this.store + '/transactions')
+    },
     changeLanguage(locale) {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
       bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
     },
     openConfigLinks() {
-      posConfigLinks()
+      /*if ($('.setting-dropdown:visible').length > 0) {
+        // $('.setting-dropdown').hide()
+        let icons = $('.setting-dropdown, .setting-dropdown-transaction')
+        icons.hide(500)
+        $('body').removeClass('active-body')
+      } else {
+        $('.setting-dropdown').show()
+        $('.setting-dropdown').addClass('animated zoomIn')
+      }*/
+      $('.setting-dropdown').show()
+      $('.setting-dropdown').addClass('animated zoomIn')
+      // posConfigLinks()
     },
     onlineOrders() {
       if (this.latestOnlineOrders == 0) {
@@ -135,10 +190,20 @@ export default {
         this.onlineOrdersCount = this.latestOnlineOrders
       }
     },
+    baseurl(link) {
+      return (
+        window.location.href.replace(new RegExp('/pos/.*'), '/' + link) +
+        this.$store.getters['context/brand']
+      )
+    },
+    /*dineInUrl(link) {
+      return window.location.href.replace(new RegExp('/dine-in/.*'), '/' + link)
+    },*/
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },
   mounted() {
     this.onlineOrders()
+    $('.setting-dropdown').hide()
   },
 }
 </script>

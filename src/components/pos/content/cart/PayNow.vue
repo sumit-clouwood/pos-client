@@ -29,7 +29,7 @@
                 </button>
               </div>
             </div>
-            <TotalAmount />
+            <TotalAmount :param="{ totalAmountBlock: true }" />
             <div class="payment-method-title">
               <h2 class="color-text">{{ _t('Payment Method') }}</h2>
             </div>
@@ -40,12 +40,13 @@
               </p>
             </div>
             <form>
-              <div class="payemnt-input-block">
+              <div class="payment-input-block">
                 <input
                   type="text"
                   name="payment"
                   v-model.number="payableAmount"
                   id="input"
+                  @keypress="filterInput"
                   autocomplete="off"
                   @click="showCalculator()"
                   :placeholder="formatPrice(0.0)"
@@ -81,6 +82,9 @@
               </button>
             </div>
           </div>
+          <div class="pay-now-btn-next" @click="payNowCalcHendlerChange">
+            Next
+          </div>
         </div>
       </div>
     </div>
@@ -95,6 +99,7 @@ import PaymentMethods from './payNow/PaymentMethods'
 import AmountCalculator from './payNow/AmountCalculator'
 import PaymentBreakdown from './payNow/PaymentBreakdown'
 import { mapState, mapGetters } from 'vuex'
+
 export default {
   name: 'PayNow',
   components: {
@@ -113,13 +118,25 @@ export default {
         hidePayNow()
       }
     },
+    payableAmount(newVal) {
+      //handle backspace/delete
+      const str = '' + newVal
+      if (!str.match(/\./g)) {
+        this.$store.commit('checkoutForm/SET_DECIMAL', false)
+      }
+    },
+  },
+  data() {
+    return {}
   },
   computed: {
     payableAmount: {
       get() {
-        return this.$store.state.checkoutForm.amount > 0
-          ? this.$store.state.checkoutForm.amount
-          : 0
+        if (this.$store.state.checkoutForm.amount > 0) {
+          return this.$store.state.checkoutForm.amount
+        } else {
+          return 0
+        }
       },
       set(amount) {
         this.$store.dispatch('checkoutForm/setAmount', amount)
@@ -130,6 +147,7 @@ export default {
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('order', ['orderTotal']),
     ...mapGetters('checkoutForm', ['payable']),
+    ...mapGetters(['payNowCalcHendler']),
   },
   methods: {
     closePayNowError() {
@@ -142,6 +160,32 @@ export default {
       $('#payment-breakdown').hide()
       this.$store.commit('checkoutForm/showCalc', true)
     },
+    filterInput($event) {
+      // eslint-disable-next-line no-console
+      const keyCode = $event.keyCode ? $event.keyCode : $event.which
+      if (keyCode === 46) {
+        if (!this.$store.state.checkoutForm.decimalExists) {
+          this.$store.commit('checkoutForm/SET_DECIMAL', true)
+          return true
+        }
+      }
+      if (keyCode < 48 || keyCode > 57) {
+        // 46 is dot
+        $event.preventDefault()
+      }
+    },
+    payNowCalcHendlerChange() {
+      this.$store.dispatch('payNowCalcHendlerChange')
+    },
   },
 }
 </script>
+<style lang="scss">
+#pay-now {
+  /* left: -100%;*/
+
+  &.show {
+    /*left: auto;*/
+  }
+}
+</style>

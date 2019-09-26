@@ -18,6 +18,7 @@ const state = {
   loyaltyPoints: 0,
   action: 'add',
   loyaltyCard: {},
+  decimalExists: false,
 }
 
 // getters
@@ -413,8 +414,17 @@ const actions = {
 // mutations
 const mutations = {
   appendAmount(state, val) {
-    if (parseInt(val) < 10 || val == '.') {
+    if (parseInt(val) < 10) {
       state.amount = '' + (state.amount ? state.amount : '') + val
+    } else if (val == '.') {
+      state.decimalExists = true
+      if (state.amount) {
+        if (!state.amount.match(/\./g)) {
+          state.amount = state.amount + '.'
+        }
+      } else {
+        state.amount = '0.'
+      }
     } else {
       state.amount = val
     }
@@ -448,6 +458,7 @@ const mutations = {
     state.showCalc = true
   },
   addAmount(state, { amount, method }) {
+    state.decimalExists = false
     const index = state.payments.findIndex(type => type === method)
     if (index !== -1) {
       let type = state.payments[index]
@@ -545,6 +556,10 @@ const mutations = {
   },
   SET_MSG(state, msg) {
     state.msg = msg
+  },
+
+  SET_DECIMAL(state, decimal) {
+    state.decimalExists = decimal
   },
 
   RESET(state, status = 'complete') {

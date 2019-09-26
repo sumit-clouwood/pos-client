@@ -1,8 +1,9 @@
 <template>
   <div class="main-body color-dashboard-background color-text">
     <search />
-    <div class="food-wrapper">
-      <SubMenu />
+    <div :class="['food-wrapper', subCategoryHendler ? 'active' : 'notActive']">
+      <SubMenu v-if="subcategories.length" />
+      <div v-else class="noSubCategory" />
       <div class="food-block">
         <Breadcrumbs />
         <div v-if="!categories.length" class="text-danger">
@@ -33,6 +34,7 @@ export default {
     SubMenu,
   },
   computed: {
+    ...mapGetters(['subCategoryHendler']),
     ...mapGetters('category', ['categories', 'subcategories', 'items']),
     ...mapGetters('location', ['_t']),
   },

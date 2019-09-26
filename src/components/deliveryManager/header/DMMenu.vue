@@ -11,40 +11,43 @@
             pageId: 'home_delivery_new',
             title: _t('New Orders'),
             dataRelated: 'dm-new-order',
+            section: 'crm',
           })
         "
       >
-        Home Delivery Orders
+        {{ _t('Home Delivery Orders') }}
       </button>
       <button
         class="btn btn-success"
-        data-related="take-away-order"
+        data-related="new-Collections"
         @click="
-          updateDMOrderStatus({
-            orderStatus: 'new',
+          updateOrderStatus({
+            orderStatus: 'in-progress',
             collected: 'no',
             pageId: 'takeaway_new',
-            title: _t('New Orders'),
-            dataRelated: 'take-away-order',
+            title: _t('NEW TAKEAWAY ORDERS'),
+            dataRelated: 'new-Collections',
+            section: 'takeaway',
           })
         "
       >
-        Take Away Orders
+        {{ _t('Take Away Orders') }}
       </button>
       <button
         class="btn btn-success"
         data-related="future-order"
         @click="
-          updateDMOrderStatus({
+          updateOrderStatus({
             orderStatus: 'future-order',
             collected: 'no',
             pageId: 'future',
             title: _t('Future Orders'),
             dataRelated: 'future-order',
+            section: 'future',
           })
         "
       >
-        Future Orders
+        {{ _t('Future Orders') }}
       </button>
     </div>
 
@@ -53,15 +56,28 @@
 </template>
 
 <script>
+/*global deliveryTabs*/
 // import Branches from '@/components/deliveryManager/partial/Branches'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'DMMenu',
   components: {
     // Branches,
   },
+  computed: {
+    ...mapGetters('location', ['_t', 'permitted']),
+    ...mapState('deliveryManager', ['section']),
+  },
   methods: {
+    updateOrderStatus: function(orderStatus) {
+      this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
+      this.$store.commit('deliveryManager/SECTION', orderStatus.section)
+      if (this.section) {
+        this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
+        deliveryTabs(orderStatus.dataRelated)
+      }
+    },
     ...mapActions('deliveryManager', ['updateDMOrderStatus']),
   },
 }
