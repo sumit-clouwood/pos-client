@@ -151,9 +151,9 @@
 </template>
 
 <script>
+/* global $ */
 import { mapGetters, mapState, mapActions } from 'vuex'
 import InformationPopup from '@/components/pos/content/InformationPopup'
-/* global $ */
 export default {
   name: 'CancelOrderPopup',
   components: {
@@ -184,7 +184,12 @@ export default {
     cancelOrderAction: function(order) {
       let data = {
         cancel_reason: this.showSelectedReason,
-        supervisor_password: this.supervisorPassword,
+      }
+      if (this.$store.state.location.brand.mandatory_password === true) {
+        data = {
+          cancel_reason: this.showSelectedReason,
+          supervisor_password: this.supervisorPassword,
+        }
       }
       let orderType = order.order.order_type
       let orderId = order.order._id
