@@ -50,7 +50,11 @@
                   {{ errors.cancel_reason }}
                 </p>
               </div>
-              <div>
+              <div
+                v-if="
+                  this.$store.state.location.brand.mandatory_password === true
+                "
+              >
                 <div class="select-driver">{{ _t('Supervisor Password') }}</div>
                 <div>
                   <input
@@ -126,7 +130,12 @@ export default {
     cancelOrderAction: function(order) {
       let data = {
         cancel_reason: this.showSelectedReason,
-        supervisor_password: this.supervisorPassword,
+      }
+      if (this.$store.state.location.brand.mandatory_password === true) {
+        data = {
+          cancel_reason: this.showSelectedReason,
+          supervisor_password: this.supervisorPassword,
+        }
       }
       let orderType = 'call_center'
       let actionTrigger = 'cancel_order'

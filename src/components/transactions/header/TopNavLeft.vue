@@ -33,3 +33,18 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+@import '../../../assets/scss/pixels_rem.scss';
+@import '../../../assets/scss/variables.scss';
+@import '../../../assets/scss/mixins.scss';
+@include responsive(mobile) {
+  .transaction-orders
+    .header
+    .header-main
+    .header-main-left
+    .header-main-left-time {
+    display: none;
+  }
+}
+</style>
