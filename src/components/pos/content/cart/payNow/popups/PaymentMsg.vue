@@ -63,6 +63,7 @@
               type="button"
               class="btn btn-success btn-large"
               data-dismiss="modal"
+              @click="acceptMsg()"
             >
               {{ _t('Ok') }}
             </button>
@@ -87,7 +88,11 @@ export default {
     Preloader,
   },
   methods: {
+    acceptMsg() {
+      this.$store.commit('checkout/PAYMENT_MSG_STATUS', true)
+    },
     generateInvoice() {
+      this.$store.commit('checkout/PAYMENT_MSG_STATUS', true)
       $('#pay-now').modal('hide')
       this.$store.dispatch('checkout/generateInvoice')
       $('#transparent-screen').hide()

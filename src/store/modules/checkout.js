@@ -14,6 +14,7 @@ const state = {
   loading: false,
   orderNumber: null,
   changeAmountStatus: false,
+  paymentMsgStatus: false,
   processing: false,
 }
 
@@ -617,21 +618,28 @@ const actions = {
     })
   },
 
-  modifyDineOrder({ dispatch, rootState, rootGetters, commit }) {
+  modifyDineOrder({ dispatch, rootState, rootGetters, commit }, action) {
     return new Promise(resolve => {
       dispatch('getModifyOrder').then(order => {
         //delete order.order_system_status
-        //delete order.new_real_transition_order_no
-        //delete order.modify_reason
-        //delete order.order_system_status
+        delete order.new_real_transition_order_no
         //delete order.real_created_datetime
 
         OrderService.updateOrderItems(order, rootState.order.orderId)
           .then(response => {
             if (response.data.status === 'ok') {
               let msgStr = rootGetters['location/_t'](
-                'Delivery order has been modified.'
+                'Dinein order has been placed.'
               )
+              if (action === 'dine-in-place-order') {
+                msgStr = rootGetters['location/_t'](
+                  'Dinein order has been modified.'
+                )
+                dispatch('reset')
+              } else {
+                commit(mutation.PRINT, true)
+              }
+
               commit(
                 'checkoutForm/SET_MSG',
                 { result: '', message: msgStr },
@@ -639,7 +647,6 @@ const actions = {
                   root: true,
                 }
               )
-              dispatch('reset')
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
             }
@@ -804,11 +811,7 @@ const actions = {
     })
   },
 
-  createDineOrder({ dispatch, commit, rootState, rootGetters }) {
-    //dispatch('splitDineinOrders')
-    if (rootState.order.order_status === 'completed') {
-      return Promise.reject('Order already completed')
-    }
+  createDineOrder({ dispatch, commit, rootGetters }) {
     return new Promise(resolve => {
       OrderService.saveOrder(state.order)
         .then(response => {
@@ -898,7 +901,6 @@ const actions = {
     )
     return Promise.resolve()
   },
-
   setMessage({ commit }, { result, msg = '' }) {
     commit(
       'checkoutForm/SET_MSG',
@@ -918,6 +920,9 @@ const actions = {
         root: true,
       }
     )
+
+    commit(mutation.PAYMENT_MSG_STATUS, false)
+
     //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
     //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
     //                already but we want to modify it from delivery manager
@@ -944,10 +949,12 @@ const actions = {
     } else if (
       rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN
     ) {
-      if (action == 'dine-in-place-order') {
-        return dispatch('modifyDineOrder')
-      } else {
-        return dispatch('createDineOrder')
+      if (rootState.order.order_status !== 'completed') {
+        if (rootState.order.orderId) {
+          return dispatch('modifyDineOrder', action)
+        } else {
+          return dispatch('createDineOrder')
+        }
       }
     } else {
       return dispatch('createWalkinOrder')
@@ -1018,6 +1025,9 @@ const mutations = {
   },
   [mutation.CHANGE_AMOUNT_STATUS](state, status) {
     state.changeAmountStatus = status
+  },
+  [mutation.PAYMENT_MSG_STATUS](state, status) {
+    state.paymentMsgStatus = status
   },
   [mutation.SET_PROCESSING](state, status) {
     state.processing = status
