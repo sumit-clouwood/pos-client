@@ -64,54 +64,72 @@ export default {
 
   methods: {
     doPrint() {
+      // eslint-disable-next-line
+      debugger
       //console.log('iframe laoded, do print called')
-      this.$nextTick(() => {
-        //console.log('iframe laoded, do print called, next tick called')
-        //console.log('print', this.print)
-        if (this.print && this.iframe_body) {
-          //console.log('print singal received')
-          this.$store.commit('checkout/PRINT', false)
+      // this.$nextTick(() => {
+      //console.log('iframe laoded, do print called, next tick called')
+      //console.log('print', this.print)
+      if (this.print && this.iframe_body) {
+        //console.log('print signal received')
+        this.$store.commit('checkout/PRINT', false)
 
-          try {
-            //2. to print in new window
-            //console.log('printing iframe')
-            // const w = window.open()
-            // w.document.write(this.iframe_body)
-            // w.print()
-            // w.close()
+        try {
+          //2. to print in new window
+          //console.log('printing iframe')
+          // const w = window.open()
+          // w.document.write(this.iframe_body)
+          // w.print()
+          // w.close()
 
-            //1. print in iframe
-            this.$refs.iframe.contentWindow.print()
-            //this.$refs.iframe.contentWindow.print()
-          } catch (e) {
-            console.log('print ifrmae error orccured')
-            console.log(e)
-          }
+          //1. print in iframe
+          // alert('about to print')
+          // eslint-disable-next-line
+          debugger
+          console.log('print iframe about to print')
+          console.log('--------------------')
+          console.log('--------------------')
+          console.log('--------------------')
+          console.log('--------------------')
+          let w = this.$refs.iframe.contentWindow
+          w.focus()
+          w.print()
+          //this.$refs.iframe.contentWindow.print()
+        } catch (e) {
+          // eslint-disable-next-line
+          debugger
+          console.log('print iframe error occurred')
+          console.log(e)
+        }
 
-          this.$store.dispatch('checkout/reset')
+        this.$store.dispatch('checkout/reset')
 
-          $('.modal-backdrop').remove()
-          $('#order-confirmation').hide()
-          hidePayNow()
+        $('.modal-backdrop').remove()
+        $('#order-confirmation').hide()
+        hidePayNow()
 
-          //redirect only if there is not changed amount
-          if (this.$store.state.order.orderType.OTApi === 'call_center') {
-            setTimeout(() => {
-              this.$router.replace({ name: 'DeliveryManager' })
-            }, 500)
-          }
+        //redirect only if there is not changed amount
+        if (this.$store.state.order.orderType.OTApi === 'call_center') {
+          setTimeout(() => {
+            // eslint-disable-next-line
+            debugger
+            this.$router.replace({ name: 'DeliveryManager' })
+          }, 5000)
+        }
 
-          if (!this.changedAmount) {
-            //Reset Cart and set states and redirect to dine in.
-            if (this.$store.state.order.orderType.OTApi === 'dine_in') {
-              this.$store.dispatch('order/beforeRedirectResetCartDineIn')
-              this.$router.replace({ name: 'Dinein' })
-            }
+        if (!this.changedAmount) {
+          //Reset Cart and set states and redirect to dine in.
+          if (this.$store.state.order.orderType.OTApi === 'dine_in') {
+            this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+            this.$router.replace({ name: 'Dinein' })
           }
         }
-      })
+      }
+      // })
     },
     print_ready() {
+      // eslint-disable-next-line
+      debugger
       //console.log(this.print)
       this.invoiceHtml = this.$refs.print_template.$el.outerHTML
       //console.log('in print ready html length', this.invoiceHtml.length)
