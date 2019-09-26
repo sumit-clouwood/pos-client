@@ -616,7 +616,9 @@ const actions = {
 
         //Invoice APP API Call with Custom Request - for Modify order
         dispatch('printingServerInvoiceRaw', order)
+        return false
 
+        // eslint-disable-next-line no-unreachable
         response = OrderService.modifyOrder(
           order,
           rootState.order.orderId,
@@ -833,6 +835,7 @@ const actions = {
       timezoneString,
       'HH:mm A'
     )
+    //Template
     let stateOrderType = state.order.order_type
     let orderType = 'DINEIN'
     if (stateOrderType === 'walk_in') {
@@ -875,7 +878,7 @@ const actions = {
       flash_message: 'Order Details',
     }
     if (jsonResponse) {
-      OrderService.invoiceAPI(jsonResponse)
+      //OrderService.invoiceAPI(jsonResponse)
       // eslint-disable-next-line no-console
       console.log('Invoice APP Api successfully hit.')
     }
