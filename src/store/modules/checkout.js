@@ -542,26 +542,42 @@ const actions = {
       '-' +
       rootState.order.startTime
     delete order.real_created_datetime
-    return Promise.reslove(order)
+    return Promise.resolve(order)
   },
 
   modifyHoldOrder({ dispatch, rootState, rootGetters, commit }) {
-    dispatch('getModifyOrder').then(order => {
-      OrderService.modifyOrder(order, rootState.order.orderId, 'hold').then(
-        () => {
-          dispatch('holdOrders/getHoldOrders', {}, { root: true })
-          let msgStr = rootGetters['location/_t'](
-            'Order has been hold Successfully'
-          )
-          commit(
-            'checkoutForm/SET_MSG',
-            { result: '', message: msgStr },
-            {
-              root: true,
+    return new Promise(resolve => {
+      dispatch('getModifyOrder').then(order => {
+        OrderService.modifyOrder(order, rootState.order.orderId, 'hold')
+          .then(response => {
+            if (response.data.status === 'ok') {
+              let msgStr = rootGetters['location/_t'](
+                'Hold order has been modified.'
+              )
+              commit(
+                'checkoutForm/SET_MSG',
+                { result: '', message: msgStr },
+                {
+                  root: true,
+                }
+              )
+              dispatch('reset')
+              dispatch('holdOrders/getHoldOrders', {}, { root: true })
+            } else {
+              dispatch('handleSystemErrors', response).then(() => resolve())
             }
-          )
-        }
-      )
+          })
+          .catch(error => {
+            dispatch('handleRejectedResponse', error)
+              .then(() => {
+                resolve()
+              })
+              .catch(() => resolve())
+          })
+          .finally(() => {
+            resolve()
+          })
+      })
     })
   },
 
@@ -639,7 +655,7 @@ const actions = {
             .catch(() => resolve())
         })
         .finally(() => {
-          commit('order/RESET_ORDER_TIME', null, { root: true })
+          resolve()
         })
     })
   },
@@ -673,7 +689,7 @@ const actions = {
             .catch(() => resolve())
         })
         .finally(() => {
-          commit('order/RESET_ORDER_TIME', null, { root: true })
+          resolve()
         })
     })
   },
@@ -710,7 +726,7 @@ const actions = {
             .catch(() => resolve())
         })
         .finally(() => {
-          commit('order/RESET_ORDER_TIME', null, { root: true })
+          resolve()
         })
     })
   },
