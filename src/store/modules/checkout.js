@@ -15,6 +15,7 @@ const state = {
   loading: false,
   orderNumber: null,
   changeAmountStatus: false,
+  processing: false,
 }
 
 // getters
@@ -72,6 +73,15 @@ const actions = {
     { commit, getters, rootGetters, rootState, dispatch, state },
     { action }
   ) {
+    if (state.processing === true) {
+      // eslint-disable-next-line no-console
+      console.log('Dual event detected')
+      return Promise.reject('Dual event detected')
+    }
+
+    // set the async state
+    commit(mutation.SET_PROCESSING, true)
+
     //if no order start time then reject otherwise
     //reset order start time
     if (!rootState.order.startTime) {
@@ -511,10 +521,12 @@ const actions = {
           .then(response => {
             //reset order start time
             commit('order/RESET_ORDER_TIME', null, { root: true })
+            commit(mutation.SET_PROCESSING, false)
 
             resolve(response)
           })
           .catch(response => {
+            commit(mutation.SET_PROCESSING, false)
             reject(response)
           })
       } else {
@@ -743,7 +755,7 @@ const actions = {
               )
               //reset order start time
               commit('order/RESET_ORDER_TIME', null, { root: true })
-
+              commit(mutation.SET_PROCESSING, false)
               commit(mutation.PRINT, true)
               dispatch(
                 'transactionOrders/getTransactionOrders',
@@ -933,6 +945,9 @@ const mutations = {
   },
   [mutation.CHANGE_AMOUNT_STATUS](state, status) {
     state.changeAmountStatus = status
+  },
+  [mutation.SET_PROCESSING](state, status) {
+    state.processing = status
   },
   [mutation.RESET](state) {
     state.order = false

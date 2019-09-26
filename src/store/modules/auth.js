@@ -110,6 +110,7 @@ const actions = {
       commit('payment/RESET', true, { root: true })
       commit('surcharge/RESET', true, { root: true })
       commit('invoice/RESET', true, { root: true })
+      commit('dinein/RESET', null, { root: true })
 
       DataService.setContext({
         brand: null,

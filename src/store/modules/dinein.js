@@ -75,6 +75,7 @@ const actions = {
       dispatch('getDineInTables'),
       dispatch('getCovers'),
       dispatch('getBookedTables', false),
+      dispatch('getDineInArea'),
     ])
     commit(mutation.LOADING, false)
   },
@@ -517,6 +518,10 @@ const mutations = {
   },
   [mutation.TABLE_SPLIT](state, slitStatus) {
     state.split = slitStatus
+  },
+  [mutation.RESET](state) {
+    state.areas = false
+    state.dineInTabType = 'all'
   },
 }
 

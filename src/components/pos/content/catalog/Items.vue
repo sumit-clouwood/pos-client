@@ -74,7 +74,7 @@ export default {
     },
     addToOrder(item) {
       this.$store.commit('order/SET_CART_TYPE', 'new')
-      this.$store.commit('order/START_ORDER')
+      this.$store.dispatch('order/startOrder')
       $('#POSItemOptions .modifier-option-radio').prop('checked', false)
       $('.food-menu-item').removeClass('active')
       $(this).addClass('active')
