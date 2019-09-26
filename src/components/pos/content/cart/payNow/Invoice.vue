@@ -64,9 +64,6 @@ export default {
 
   methods: {
     doPrint() {
-      // eslint-disable-next-line
-      debugger
-      //console.log('iframe laoded, do print called')
       // this.$nextTick(() => {
       //console.log('iframe laoded, do print called, next tick called')
       //console.log('print', this.print)
