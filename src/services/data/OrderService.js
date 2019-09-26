@@ -81,7 +81,11 @@ export default {
   },
 
   getModalDetails(model) {
-    return DataService.get(`/model/${model}?no_limit=true`, 'brand')
+    let query =
+      model === 'brand_cancellation_reasons'
+        ? '?no_limit=true&byColumn=1&item_status=true'
+        : '?no_limit=true'
+    return DataService.get(`/model/${model}${query}`, 'brand')
   },
 
   updateOrderAction(id, action, params) {
