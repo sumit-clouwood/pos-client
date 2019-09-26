@@ -5,13 +5,7 @@
         <div class="store-info">
           <div class="store-name">
             {{ _t('From Store') }}:
-            {{
-              LookupData.get({
-                collection: driverBucket,
-                matchWith: order.store_id,
-                selection: 'name',
-              })
-            }}
+            {{ getStoreName() }}
           </div>
           <div class="store-address">
             {{ _t('Address') }}: {{ order.order_city }}
@@ -67,6 +61,7 @@ export default {
   computed: {
     ...mapState('deliveryManager', ['driverBucket']),
     ...mapGetters('location', ['_t']),
+    ...mapState('location', ['store']),
   },
   methods: {
     removeAssignedOrder: function(order) {
@@ -74,6 +69,12 @@ export default {
         'deliveryManager/removeOrderFromDriverBucket',
         order._id
       )
+    },
+    getStoreName: function() {
+      /*let data = this.driverBucket.find(bucket => bucket.store_id == storeId)
+      return data.order_city*/
+      // eslint-disable-next-line no-console
+      return this.store.name
     },
   },
 }
