@@ -86,13 +86,18 @@ export default {
           // alert('about to print')
           // eslint-disable-next-line
           debugger
-          setTimeout(() => {
-            this.$refs.iframe.contentWindow.print()
-          }, 500)
+          console.log('print iframe about to print')
+          console.log('--------------------')
+          console.log('--------------------')
+          console.log('--------------------')
+          console.log('--------------------')
+          let w = this.$refs.iframe.contentWindow
+          w.focus()
+          w.print()
           //this.$refs.iframe.contentWindow.print()
         } catch (e) {
           // eslint-disable-next-line
-            debugger
+          debugger
           console.log('print iframe error occurred')
           console.log(e)
         }
@@ -109,7 +114,7 @@ export default {
             // eslint-disable-next-line
             debugger
             this.$router.replace({ name: 'DeliveryManager' })
-          }, 500)
+          }, 5000)
         }
 
         if (!this.changedAmount) {
