@@ -118,9 +118,6 @@ const actions = {
   },
   fetchAll({ commit, dispatch, rootState }) {
     return new Promise((resolve, reject) => {
-      //Fetch all kitchens & Printing Servers on POS and save into states.
-      dispatch('fetchAllKitchens')
-      dispatch('fetchAllPrintingServers')
       CategoryService.categories()
         .then(response => {
           commit(mutation.SET_CATEGORIES, response.data.data)
@@ -135,6 +132,9 @@ const actions = {
               resolve()
             })
           })
+          //Fetch all kitchens & Printing Servers on POS and save into states.
+          dispatch('fetchAllKitchens')
+          dispatch('fetchAllPrintingServers')
         })
         .catch(error => reject(error))
     })
