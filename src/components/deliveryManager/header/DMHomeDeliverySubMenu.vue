@@ -74,7 +74,7 @@
             })
           "
         >
-          <a role="button">{{ _t('Delivered') }}</a
+          <a role="button">{{ _t('Delivery - Finished') }}</a
           ><span v-if="orderCount">{{ orderCount.delivered }}</span>
         </li>
       </ul>

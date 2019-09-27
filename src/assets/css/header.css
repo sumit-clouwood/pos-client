@@ -115,7 +115,7 @@
           .header .header-main .header-main-right .nav-icon .nav-link svg {
             width: 1.5625rem;
             height: 1.5625rem; }
-      .header .header-main .header-main-right .setting-dropdown {
+      .header .header-main .header-main-right .setting-dropdown, .header .header-main .header-main-right .setting-dropdown1 {
         display: none;
         background: #fff;
         font-weight: 600;
@@ -131,11 +131,11 @@
         color: #000;
         z-index: 10;
         font-size: 1rem; }
-        .header .header-main .header-main-right .setting-dropdown li {
+        .header .header-main .header-main-right .setting-dropdown li, .header .header-main .header-main-right .setting-dropdown1 li {
           padding: 5px 20px; }
-          .header .header-main .header-main-right .setting-dropdown li:hover {
+          .header .header-main .header-main-right .setting-dropdown li:hover, .header .header-main .header-main-right .setting-dropdown1 li:hover {
             background: #ddd; }
-          .header .header-main .header-main-right .setting-dropdown li a {
+          .header .header-main .header-main-right .setting-dropdown li a, .header .header-main .header-main-right .setting-dropdown1 li a {
             font-size: 1.125rem;
             color: #555;
             font-weight: 400; }
@@ -144,6 +144,6 @@
 
 .transaction-orders .header-main .header-main-right .walkin-btn-design > .walkin-btn {
   height: 3.125rem;
-  margin-left: 0.9375rem; }
+  margin-left: 1.25rem; }
 
 /*# sourceMappingURL=header.css.map */

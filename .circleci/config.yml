@@ -1,11 +1,12 @@
-version: 2
+cd diversion: 2
 jobs:
   build:
     branches:
       only:
         - master
+        - staging
         - integration
-        - monitoring
+
     docker:
        - image: circleci/node:11.4.0
 
@@ -23,6 +24,11 @@ jobs:
               echo "export SITE=dm-prod-pos" >> $BASH_ENV
               echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_PROD" >> $BASH_ENV
               echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_PROD" >> $BASH_ENV
+            elif [ "${CIRCLE_BRANCH}" == "staging" ]; then
+              echo "export ENVIRONMENT=staging" >> $BASH_ENV
+              echo "export EBENVIRONMENT=stg" >> $BASH_ENV
+              echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_PROD" >> $BASH_ENV
+              echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_PROD" >> $BASH_ENV
             elif [ "${CIRCLE_BRANCH}" == "integration" ] || [ "${CIRCLE_BRANCH}" == "monitoring" ]; then
               echo "export ENVIRONMENT=integration" >> $BASH_ENV
               echo "export EBENVIRONMENT=int" >> $BASH_ENV
@@ -30,7 +36,7 @@ jobs:
               echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_INT" >> $BASH_ENV
               echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_INT" >> $BASH_ENV
             fi
-            
+
       - run:
           name: "PRINT CURRENT CACHE KEY"
           command: |
