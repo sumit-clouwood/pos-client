@@ -41,6 +41,7 @@ const state = {
   is_pay: 1,
   startTime: null,
   orderToModify: null,
+  splitBill: false,
 }
 
 // getters
@@ -281,6 +282,9 @@ const getters = {
 
 // actions
 const actions = {
+  setSplitBill({ commit }) {
+    commit('SET_SPLIT_BILL')
+  },
   addToOrder({ state, getters, commit, dispatch }, stateItem) {
     commit('checkoutForm/RESET', 'process', { root: true })
     let item = { ...stateItem }
@@ -1362,6 +1366,9 @@ const mutations = {
 
   [mutation.ORDER_TO_MODIFY](state, orderId) {
     state.orderToModify = orderId
+  },
+  [mutation.SET_SPLIT_BILL](state) {
+    state.splitBill = state.splitBill ? false : true
   },
 }
 

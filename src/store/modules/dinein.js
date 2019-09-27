@@ -36,6 +36,7 @@ const state = {
   split: false,
   totalReservations: { totalPages: 0, pageNumber: 1, limit: 10 },
   billSplit: null,
+  processingSplit: false,
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -565,6 +566,9 @@ const mutations = {
   [mutation.RESET](state) {
     state.areas = false
     state.dineInTabType = 'all'
+  },
+  [mutation.PROCESSING_SPLIT](state, status) {
+    state.processingSplit = status
   },
   [mutation.UPDATE_ITEM_GUEST](state, { item, guest, action }) {
     switch (action) {

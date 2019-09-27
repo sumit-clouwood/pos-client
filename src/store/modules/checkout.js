@@ -670,6 +670,7 @@ const actions = {
       })
     })
   },
+
   modifyBackendOrder({ dispatch, rootState, rootGetters, commit }) {
     return new Promise(resolve => {
       dispatch('getModifyOrder').then(order => {
@@ -707,8 +708,6 @@ const actions = {
       })
     })
   },
-
-  splitDineinOrders() {},
 
   createWalkinOrder({ dispatch, commit, rootGetters }) {
     return new Promise(resolve => {
