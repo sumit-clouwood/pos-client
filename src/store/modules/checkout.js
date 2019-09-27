@@ -616,15 +616,14 @@ const actions = {
 
         //Invoice APP API Call with Custom Request - for Modify order
         dispatch('printingServerInvoiceRaw', order)
-        return false
-
-        // eslint-disable-next-line no-unreachable
         response = OrderService.modifyOrder(
           order,
           rootState.order.orderId,
           modifyType
         )
       } else {
+        //Invoice APP API Call with Custom Request - for DineIn order
+        dispatch('printingServerInvoiceRaw', state.order)
         response = OrderService.saveOrder(
           state.order,
           rootState.customer.offlineData
@@ -798,91 +797,105 @@ const actions = {
    * 21 September 2019
    */
   printingServerInvoiceRaw({ state, rootState, dispatch }, response) {
-    state.order._id = response.id
-    state.order.order_no = response.order_no
-    let staff = rootState.auth.userDetails
-    let orderData = state.order
-    let customerId = state.order.customer
-    let customerData = []
-    if (customerId) {
-      //get customer name by customer id
-      dispatch('customer/fetchSelectedCustomer', customerId, {
-        root: true,
-      }).then(customer => {
-        customerData.push(customer)
-      })
-    }
-    let delivery_area = {}
-    if (state.order.order_delivery_area && rootState.customer.deliveryAreas) {
-      delivery_area = Object.values(rootState.customer.deliveryAreas).find(
-        delivery_area => delivery_area._id == state.order.order_delivery_area
-      )
-    }
-    let menu_items = [
-      {
-        _id: '5d160fe1ef76a038432fb8bc',
-        category: '5d160fe1ef76a038432fb89d',
-        kitchen: null,
-      },
-    ]
+    let printingServers = rootState.category.printingservers //Get All Printing Servers
+    if (printingServers) {
+      state.order._id = response.id //Order Id is stored in State
+      state.order.order_no = response.order_no //Order No is stored in State
+      let staff = rootState.auth.userDetails
+      let orderData = state.order
+      let customerId = state.order.customer
+      let customerData = [] //Customer Information
+      let delivery_area = {} //Delivery Area
+      let kitchen_menu_items = []
 
-    let timezoneString = rootState.location.timezoneString
-    let created_date = LookupData.convertDatetimeCustom(
-      state.order.real_created_datetime,
-      timezoneString,
-      'DD-MMM-YYYY'
-    )
-    let created_time = LookupData.convertDatetimeCustom(
-      state.order.real_created_datetime,
-      timezoneString,
-      'HH:mm A'
-    )
-    //Template
-    let stateOrderType = state.order.order_type
-    let orderType = 'DINEIN'
-    if (stateOrderType === 'walk_in') {
-      orderType = 'WALKIN'
-    } else if (stateOrderType === 'call_center') {
-      orderType = 'DELIVERY'
-    } else if (stateOrderType === 'takeaway') {
-      orderType = 'TAKEAWAY'
-    } else if (stateOrderType === 'future') {
-      orderType = 'FUTURE'
-    }
-
-    let crm_module_enabled = false
-    let cb = rootState.location.brand
-    for (var module of cb.enabled_modules) {
-      if (module == 'CRM') {
-        crm_module_enabled = true
+      //Customer Data
+      if (customerId) {
+        //get customer name by customer id
+        dispatch('customer/fetchSelectedCustomer', customerId, {
+          root: true,
+        }).then(customer => {
+          customerData.push(customer)
+        })
+        if (
+          state.order.order_delivery_area &&
+          rootState.customer.deliveryAreas
+        ) {
+          delivery_area = Object.values(rootState.customer.deliveryAreas).find(
+            delivery_area =>
+              delivery_area._id == state.order.order_delivery_area
+          )
+        }
       }
-    }
-    let jsonResponse = {
-      status: 'ok',
-      brand_logo: rootState.location.brand.company_logo
-        ? rootState.location.brand.company_logo
-        : '',
-      order: orderData,
-      menu_items: menu_items,
-      staff: staff.item.name,
-      customer: customerData,
-      delivery_area: delivery_area,
-      template: {},
-      order_type: orderType,
-      created_date: created_date,
-      created_time: created_time,
-      crm_module_enabled: crm_module_enabled,
-      translations: rootState.location.translations,
-      default_header_brand: rootState.location.brand,
-      default_header_branch: rootState.location.store.name,
-      default_header_phone: 'Tel No. 71234567890',
-      generate_time: state.order.real_created_datetime,
-      flash_message: 'Order Details',
-    }
-    if (jsonResponse) {
-      //OrderService.invoiceAPI(jsonResponse)
-      // eslint-disable-next-line no-console
-      console.log('Invoice APP Api successfully hit.')
+      //Item according to Kitchens Sections
+      let kitchenSectionsItems = rootState.category.kitchenitems
+      if (kitchenSectionsItems) {
+        state.order.items.map(item => {
+          let itemKitchen = kitchenSectionsItems.find(
+            kitchenItem => kitchenItem._id === item.entity_id
+          )
+          kitchen_menu_items._id = itemKitchen._id
+          kitchen_menu_items.category = itemKitchen.category
+          kitchen_menu_items.kitchen = itemKitchen.kitchen
+        })
+      }
+      //Created Date
+      let timezoneString = rootState.location.timezoneString
+      let created_date = LookupData.convertDatetimeCustom(
+        state.order.real_created_datetime,
+        timezoneString,
+        'DD-MMM-YYYY'
+      )
+      //Created Time
+      let created_time = LookupData.convertDatetimeCustom(
+        state.order.real_created_datetime,
+        timezoneString,
+        'HH:mm A'
+      )
+      //Crm Module Permission
+      let crm_module_enabled = false
+      let cb = rootState.location.brand
+      for (var module of cb.enabled_modules) {
+        if (module == 'CRM') {
+          crm_module_enabled = true
+        }
+      }
+      //Invoice
+      let invoiceTemplate = rootState.invoice.templates.data.data.find(
+        invoice => invoice
+      )
+      //Order Type
+      let orderType = `${invoiceTemplate}_label`
+      //Final JSON
+      let jsonResponse = {
+        status: 'ok',
+        brand_logo: rootState.location.brand.company_logo
+          ? rootState.location.brand.company_logo
+          : '',
+        order: orderData,
+        menu_items: kitchen_menu_items,
+        staff: staff.item.name,
+        customer: customerData,
+        delivery_area: delivery_area,
+        template: invoiceTemplate,
+        order_type: orderType,
+        created_date: created_date,
+        created_time: created_time,
+        crm_module_enabled: crm_module_enabled,
+        translations: rootState.location.translations, //Unstable
+        default_header_brand: rootState.location.brand.name,
+        default_header_branch: rootState.location.store.name,
+        default_header_phone: rootState.location.brand.contact_phone,
+        generate_time: state.order.real_created_datetime,
+        flash_message: 'Order Details',
+      }
+      if (jsonResponse) {
+        printingServers.forEach(item => {
+          let APIURL = item.ip_address
+          OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
+        })
+        // eslint-disable-next-line no-console
+        console.log(jsonResponse)
+      }
     }
   },
   generateInvoice() {

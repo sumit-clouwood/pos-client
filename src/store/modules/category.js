@@ -19,6 +19,8 @@ const state = {
   taxData: [],
   taxAmount: {},
   searchItems: {},
+  kitchenitems: {},
+  printingservers: {},
 }
 
 // getters, computed properties
@@ -93,8 +95,32 @@ const getters = {
 
 // actions, often async
 const actions = {
+  //Fetch printing servers Ips
+  fetchAllPrintingServers({ commit }) {
+    return new Promise((resolve, reject) => {
+      CategoryService.allKitchenServers()
+        .then(response => {
+          commit(mutation.SET_PRINTING_SERVERS, response.data.data)
+          resolve()
+        })
+        .catch(error => reject(error))
+    })
+  },
+  fetchAllKitchens({ commit }) {
+    return new Promise((resolve, reject) => {
+      CategoryService.allKitchenSectionsItems()
+        .then(response => {
+          commit(mutation.SET_KITCHENS_ITEMS, response.data.menu_items)
+          resolve()
+        })
+        .catch(error => reject(error))
+    })
+  },
   fetchAll({ commit, dispatch, rootState }) {
     return new Promise((resolve, reject) => {
+      //Fetch all kitchens & Printing Servers on POS and save into states.
+      dispatch('fetchAllKitchens')
+      dispatch('fetchAllPrintingServers')
       CategoryService.categories()
         .then(response => {
           commit(mutation.SET_CATEGORIES, response.data.data)
@@ -195,6 +221,12 @@ const mutations = {
       state.searchItems = {}
       state.item = null
     }
+  },
+  [mutation.SET_KITCHENS_ITEMS](state, kitchenitems) {
+    state.kitchenitems = kitchenitems
+  },
+  [mutation.SET_PRINTING_SERVERS](state, printingservers) {
+    state.printingservers = printingservers
   },
 }
 
