@@ -204,61 +204,63 @@ const actions = {
     })
     return new Promise((resolve, reject) => {
       commit(mutation.SET_CUSTOMER_ID, customerId)
-      CustomerService.fetchCustomer(customerId)
-        .then(response => {
-          let totalPages = 0
-          let totleOrders = false
-          if (response.data.item && response.data.item.total_orders) {
-            totleOrders = response.data.item.total_orders
-          }
+      if (customerId) {
+        CustomerService.fetchCustomer(customerId)
+          .then(response => {
+            let totalPages = 0
+            let totleOrders = false
+            if (response.data.item && response.data.item.total_orders) {
+              totleOrders = response.data.item.total_orders
+            }
 
-          if (totleOrders) {
-            totalPages = Math.ceil(
-              parseInt(response.data.item.total_orders) /
-                parseInt(state.params.page_size)
-            )
-          }
-          commit(mutation.PAST_ORDER_PAGINATE_DETAILS, totalPages)
-          if (response.data.collected_data) {
-            commit(
-              mutation.PAGE_LOOKUP,
-              response.data.collected_data.page_lookups
-            )
-          }
-          let loyalty = {},
-            orderType = null,
-            orderCurrency = null,
-            orderAmount = null
-          orderType = rootGetters['order/orderType']
-          orderCurrency = rootGetters['location/currency']
-          orderAmount = rootGetters['checkoutForm/orderTotal']
+            if (totleOrders) {
+              totalPages = Math.ceil(
+                parseInt(response.data.item.total_orders) /
+                  parseInt(state.params.page_size)
+              )
+            }
+            commit(mutation.PAST_ORDER_PAGINATE_DETAILS, totalPages)
+            if (response.data.collected_data) {
+              commit(
+                mutation.PAGE_LOOKUP,
+                response.data.collected_data.page_lookups
+              )
+            }
+            let loyalty = {},
+              orderType = null,
+              orderCurrency = null,
+              orderAmount = null
+            orderType = rootGetters['order/orderType']
+            orderCurrency = rootGetters['location/currency']
+            orderAmount = rootGetters['checkoutForm/orderTotal']
 
-          if (response.data.collected_data) {
-            loyalty.card = response.data.collected_data.loyalty_cards
-          }
-          loyalty.details = state.lookups.brand_loyalty_programs
+            if (response.data.collected_data) {
+              loyalty.card = response.data.collected_data.loyalty_cards
+            }
+            loyalty.details = state.lookups.brand_loyalty_programs
 
-          commit(mutation.LOYALTY, loyalty)
-          commit(mutation.LOYALTY_FILTER, {
-            loyalty,
-            orderType,
-            orderCurrency,
-            orderAmount,
+            commit(mutation.LOYALTY, loyalty)
+            commit(mutation.LOYALTY_FILTER, {
+              loyalty,
+              orderType,
+              orderCurrency,
+              orderAmount,
+            })
+            commit(mutation.SELECTED_CUSTOMER, {
+              customerData: response.data.item,
+              pastOrders: response.data.collected_data
+                ? response.data.collected_data.orders
+                : [],
+              deliveryAreas: response.data.collected_data
+                ? response.data.collected_data.page_lookups.store_delivery_areas
+                    ._id
+                : null,
+            })
+            commit(mutation.SET_CUSTOMER_LOADING, false)
+            resolve(response.data.item)
           })
-          commit(mutation.SELECTED_CUSTOMER, {
-            customerData: response.data.item,
-            pastOrders: response.data.collected_data
-              ? response.data.collected_data.orders
-              : [],
-            deliveryAreas: response.data.collected_data
-              ? response.data.collected_data.page_lookups.store_delivery_areas
-                  ._id
-              : null,
-          })
-          commit(mutation.SET_CUSTOMER_LOADING, false)
-          resolve(response.data.item)
-        })
-        .catch(error => reject(error))
+          .catch(error => reject(error))
+      }
     })
   },
   resetCustomer({ commit, dispatch }) {

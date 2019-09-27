@@ -40,8 +40,10 @@
       border-color: #5056ca; }
       #tip-amount .modal-dialog .modal-content .modal-footer .btn-announce #add-top > span {
         padding-right: 0.625rem; }
+#tip-amount > .modal-footer {
+  display: none; }
 
-@media only screen and (min-width: 320px) and (max-width: 600px) {
+@media only screen and (min-width: 320px) and (max-width: 960px) {
   #tip-amount {
     position: fixed;
     top: 0;
@@ -61,7 +63,7 @@
         border-radius: 0;
         display: grid;
         grid-template-rows: max-content max-content;
-        position: static;
+        position: absolute;
         margin-top: auto; }
         #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap input {
           text-align: left;

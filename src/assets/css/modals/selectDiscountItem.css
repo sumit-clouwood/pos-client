@@ -36,7 +36,7 @@
   letter-spacing: 0.5px;
   border-color: #5056ca; }
 
-@media only screen and (min-width: 320px) and (max-width: 600px) {
+@media only screen and (min-width: 320px) and (max-width: 960px) {
   #select-discount-item {
     padding: 0 !important; }
     #select-discount-item .modal-dialog {

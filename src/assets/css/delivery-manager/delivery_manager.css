@@ -52,7 +52,7 @@ div#dm-content-wrapper {
     border-color: #CC3232 !important; }
 
 .dm-order-details-wrap {
-  overflow: hidden;
+  /*overflow: hidden;*/
   margin-left: 2.5rem;
   margin-right: 2.5rem;
   padding-top: 0.875rem;
@@ -70,6 +70,7 @@ ul.dm-ullist > li {
     color: rgba(63, 74, 74, 0.8);
     padding: 0.625rem 0.3125rem;
     opacity: 0.7;
+    cursor: pointer;
     font-weight: 600; }
   ul.dm-ullist > li.active > a {
     color: rgba(63, 74, 74, 0.8);
@@ -586,7 +587,7 @@ div.order-address {
 /*search driver*/
 .dropdown-content {
   display: none;
-  position: inherit;
+  position: absolute;
   background-color: #f6f6f6;
   width: 100%;
   overflow: auto;
@@ -608,9 +609,6 @@ div.order-address {
   border-bottom: 0.0625rem solid #E3E7F2;
   padding: 0;
   cursor: pointer; }
-
-.dropdown:hover {
-  background-color: #E3E7F2; }
 
 .driver-container {
   position: relative; }
@@ -971,7 +969,7 @@ tr.dataContentStyle > td > a {
 @media only screen and (max-width: 599px) {
   .with-drivers-filter .drivers-filter {
     overflow: auto;
-    height: 40vh;
+    height: calc(100vh - 25rem);
     border-left: 0.0625rem solid rgba(63, 74, 74, 0.3);
     position: fixed;
     bottom: 0;

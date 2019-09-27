@@ -1,40 +1,41 @@
 <template>
-  <div class="modal-footer showpropermsg">
-    <div class="referal">
-      <p v-if="errors !== ''" class="text-danger">{{ errors }}</p>
-      <p v-if="msg" class="text-info">{{ msg }}</p>
-
-      <button
-        type="button"
-        data-value=""
-        id="referal-btn"
-        class="btn referal-btn dropdown-toggle shorten-sentence color-text color-secondary"
-        data-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        {{ changedReferral.referralName }}</button
-      ><!--<span><img src="images/referal-down.png"></span>-->
-      <div class="dropdown-menu" v-if="getReferrals">
-        <a
-          class="dropdown-item color-text cursor-pointer"
-          :class="{ active: referral._id === orderReferralId }"
-          data-value="Call Center"
-          role="button"
-          v-for="referral in getReferrals"
-          @click="
-            selectedReferral({
-              referralName: referral.name,
-              referralId: referral._id,
-            })
-          "
-          :referralType="referral.name"
-          :key="referral._id"
-          >{{ referral.name }}
-        </a>
-      </div>
-      <div class="dropdown-menu color-text-invert" v-if="!getReferrals">
-        Nothing found
+  <div>
+    <div class="modal-footer showpropermsg">
+      <div class="referal">
+        <button
+          type="button"
+          data-value=""
+          id="referal-btn"
+          class="btn referal-btn dropdown-toggle shorten-sentence color-text color-secondary"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          {{ changedReferral.referralName }}</button
+        ><!--<span><img src="images/referal-down.png"></span>-->
+        <p v-if="errors !== ''" class="text-danger">{{ errors }}</p>
+        <p v-if="msg" class="text-info">{{ msg }}</p>
+        <div class="dropdown-menu" v-if="getReferrals">
+          <a
+            class="dropdown-item color-text cursor-pointer"
+            :class="{ active: referral._id === orderReferralId }"
+            data-value="Call Center"
+            role="button"
+            v-for="referral in getReferrals"
+            @click="
+              selectedReferral({
+                referralName: referral.name,
+                referralId: referral._id,
+              })
+            "
+            :referralType="referral.name"
+            :key="referral._id"
+            >{{ referral.name }}
+          </a>
+        </div>
+        <div class="dropdown-menu color-text-invert" v-if="!getReferrals">
+          Nothing found
+        </div>
       </div>
       <datetime
         type="datetime"
@@ -60,6 +61,7 @@
         use12-hour
         auto
       ></datetime>
+      <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
     </div>
     <div class="btn-announce">
       <button
@@ -78,8 +80,6 @@
         {{ _t('Confirm') }}
       </button>
     </div>
-
-    <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
   </div>
 </template>
 
@@ -181,7 +181,35 @@ export default {
 </script>
 <style lang="scss">
 .showpropermsg .text-danger {
-  display: flex;
-  align-items: center;
+  display: initial;
+  padding: 6px;
+}
+
+#order-confirmation {
+  .btn-announce {
+    text-align: right;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+}
+
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  #order-confirmation {
+    .vdatetime > input {
+      width: 100%;
+    }
+    .referal {
+      position: relative;
+    }
+    .showpropermsg .text-danger {
+      position: absolute;
+      left: 23%;
+      top: 13%;
+    }
+  }
 }
 </style>

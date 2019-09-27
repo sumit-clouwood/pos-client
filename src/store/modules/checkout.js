@@ -2,6 +2,7 @@ import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
+import LookupData from '../../plugins/helpers/LookupData'
 
 // initial state
 const state = {
@@ -94,6 +95,7 @@ const actions = {
       const totalPayable = rootGetters['checkoutForm/orderTotal']
       commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
 
+      //If order type is dine-in and order placed not paid or order is hold
       if (
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
         action == 'dine-in-place-order' ||
@@ -566,6 +568,8 @@ const actions = {
         delete order.order_system_status
         delete order.real_created_datetime
 
+          //Invoice APP API Call with Custom Request - for DineIn order
+          dispatch('printingServerInvoiceRaw', order)
         if (rootState.order.orderId) {
           response = OrderService.updateOrderItems(
             order,
@@ -608,6 +612,8 @@ const actions = {
         if (rootState.order.orderToModify) {
           order.modify_reason = 'Updated from Backend'
         }
+        //Invoice APP API Call with Custom Request - for Modify order
+        dispatch('printingServerInvoiceRaw', order)
 
         response = OrderService.modifyOrder(
           order,
@@ -746,8 +752,6 @@ const actions = {
               //reset order start time
               commit('order/RESET_ORDER_TIME', null, { root: true })
               commit(mutation.SET_PROCESSING, false)
-              // eslint-disable-next-line
-              debugger
               commit(mutation.PRINT, true)
               dispatch(
                 'transactionOrders/getTransactionOrders',
@@ -778,6 +782,99 @@ const actions = {
           }
         })
     })
+  },
+
+  /*
+   * ToDo: Create A JSON Request to send in Local Server API for Generating Invoices from a software.
+   * Nidhishanker Modi
+   * 21 September 2019
+   */
+  printingServerInvoiceRaw({ state, rootState, dispatch }, response) {
+    state.order._id = response.id
+    state.order.order_no = response.order_no
+    let staff = rootState.auth.userDetails
+    let orderData = state.order
+    let customerId = state.order.customer
+    let customerData = []
+    if (customerId) {
+      //get customer name by customer id
+      dispatch('customer/fetchSelectedCustomer', customerId, {
+        root: true,
+      }).then(customer => {
+        customerData.push(customer)
+      })
+    }
+    let delivery_area = {}
+    if (state.order.order_delivery_area && rootState.customer.deliveryAreas) {
+      delivery_area = Object.values(rootState.customer.deliveryAreas).find(
+        delivery_area => delivery_area._id == state.order.order_delivery_area
+      )
+    }
+    let menu_items = [
+      {
+        _id: '5d160fe1ef76a038432fb8bc',
+        category: '5d160fe1ef76a038432fb89d',
+        kitchen: null,
+      },
+    ]
+
+    let timezoneString = rootState.location.timezoneString
+    let created_date = LookupData.convertDatetimeCustom(
+      state.order.real_created_datetime,
+      timezoneString,
+      'DD-MMM-YYYY'
+    )
+    let created_time = LookupData.convertDatetimeCustom(
+      state.order.real_created_datetime,
+      timezoneString,
+      'HH:mm A'
+    )
+    let stateOrderType = state.order.order_type
+    let orderType = 'DINEIN'
+    if (stateOrderType === 'walk_in') {
+      orderType = 'WALKIN'
+    } else if (stateOrderType === 'call_center') {
+      orderType = 'DELIVERY'
+    } else if (stateOrderType === 'takeaway') {
+      orderType = 'TAKEAWAY'
+    } else if (stateOrderType === 'future') {
+      orderType = 'FUTURE'
+    }
+
+    let crm_module_enabled = false
+    let cb = rootState.location.brand
+    for (var module of cb.enabled_modules) {
+      if (module == 'CRM') {
+        crm_module_enabled = true
+      }
+    }
+    let jsonResponse = {
+      status: 'ok',
+      brand_logo: rootState.location.brand.company_logo
+        ? rootState.location.brand.company_logo
+        : '',
+      order: orderData,
+      menu_items: menu_items,
+      staff: staff.item.name,
+      customer: customerData,
+      delivery_area: delivery_area,
+      template: {},
+      order_type: orderType,
+      created_date: created_date,
+      created_time: created_time,
+      crm_module_enabled: crm_module_enabled,
+      translations: rootState.location.translations,
+      default_header_brand: rootState.location.brand,
+      default_header_branch: rootState.location.store.name,
+      default_header_phone: 'Tel No. 71234567890',
+      generate_time: state.order.real_created_datetime,
+      flash_message: 'Order Details',
+    }
+    if (jsonResponse) {
+      OrderService.invoiceAPI(jsonResponse)
+      // eslint-disable-next-line no-console
+      console.log('Invoice APP Api successfully hit.')
+    }
   },
   generateInvoice() {
     //commit(mutation.PRINT, true)
