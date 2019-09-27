@@ -532,37 +532,38 @@ export default {
         ) {
           dineInTableWidth = $('.dinein_table')[i].getBoundingClientRect().width
         }*/
+        let parentNodeDim
+        parentNodeDim = d3
+          .select(a[i])
+          .select('.dinein_table')
+          .node()
+          .getBBox()
         d3.select(a[i])
           .append('text')
           .attr('class', 'dinein_table_number')
-          .attr('x', function(d, i, a) {
-            // eslint-disable-next-line no-console
-            // console.log(d)
-            let tableCordinates = d3
-              .select(d3.select(a[i]).node().parentNode)
-              .select('.dinein_table')
-              .node()
-              .getBBox()
-            return tableCordinates.width / 2 + tableCordinates.x
-            // let xPosition = svgWidth[i] <= 100 ? 5 : 0
-            // if (d.table_shape === 'circle') {
-            //   xPosition += 5
-            // }
-            // return (
-            //   (d.table_position_coordinate.x + xPosition || 0) +
-            //   dineInTableWidth / 2
-            // )
+          .attr('x', function() {
+            if (dis.isSupported()) {
+              return (
+                parseInt(parentNodeDim.width) / 2 + parseInt(parentNodeDim.x)
+              )
+            } else {
+              return (
+                parseInt(parentNodeDim.width) / 2 +
+                parseInt(d.table_position_coordinate.x)
+              )
+            }
           })
-          .attr('y', function(d, i, a) {
-            // eslint-disable-next-line no-console
-            // console.log(d)
-            let tableCordinates = d3
-              .select(d3.select(a[i]).node().parentNode)
-              .select('.dinein_table')
-              .node()
-              .getBBox()
-            return tableCordinates.height / 2 + tableCordinates.y
-            // return (d.table_position_coordinate.y || 0) + dis.svgHeight / 2
+          .attr('y', function(d) {
+            if (dis.isSupported()) {
+              return (
+                parseInt(parentNodeDim.height) / 2 + parseInt(parentNodeDim.y)
+              )
+            } else {
+              return (
+                parseInt(parentNodeDim.height) / 2 +
+                parseInt(d.table_position_coordinate.y)
+              )
+            }
           })
           .style('fill', 'black')
           .style('font-size', '18px')
@@ -586,38 +587,30 @@ export default {
               .table_position_coordinate.y + (d.chairs > 5 ? 109 : 60)})`
             return transform
           })
-          .attr('x', function(d, i, a) {
-            // eslint-disable-next-line no-console
-            // console.log(d, i, a)
-            let tableCordinates = d3
-              .select(d3.select(a[i]).node().parentNode)
-              .select('.dinein_table')
-              .node()
-              .getBBox()
-            return tableCordinates.width / 6 + tableCordinates.x
-            /*let rectleft = 10
-            if (d.table_shape === 'rectangle') {
-              rectleft += d.chairs > 5 ? 5 : 0
-            } else if (
-              d.table_shape === 'circle' ||
-              d.table_shape === 'square'
-            ) {
-              rectleft += 10
+          .attr('x', function(d) {
+            if (dis.isSupported()) {
+              return parentNodeDim.width / 6 + parentNodeDim.x
+            } else {
+              return (
+                parseInt(parentNodeDim.width) / 2 +
+                parseInt(d.table_position_coordinate.x)
+              )
             }
-            return (d.table_position_coordinate.x || 0) + rectleft*/
           })
           .on('click', function(d, i, a) {
             dis.showOptions(d, i, a)
           })
-          .attr('y', function(d, i, a) {
-            // eslint-disable-next-line no-console
-            // console.log(console.log(d, i, a))
-            let tableCordinates = d3
-              .select(d3.select(a[i]).node().parentNode)
-              .select('.dinein_table')
-              .node()
-              .getBBox()
-            return tableCordinates.height / 2 + tableCordinates.y
+          .attr('y', function(d) {
+            if (dis.isSupported()) {
+              return (
+                parseInt(parentNodeDim.height) / 2 + parseInt(parentNodeDim.y)
+              )
+            } else {
+              return (
+                parseInt(parentNodeDim.height) / 2 +
+                parseInt(d.table_position_coordinate.y)
+              )
+            }
             /*let rectTop = 5
             if (d.d.table_shape === 'square') {
               rectTop = 0
@@ -643,6 +636,28 @@ export default {
           .attr('height', '15')
       })
       this.drawViews()
+    },
+    isSupported() {
+      let ua = navigator.userAgent.toLowerCase()
+      if (ua.indexOf('safari') != -1) {
+        if (ua.indexOf('ipad') > -1) {
+          return false
+        } else if (ua.indexOf('Safari') > -1) {
+          return false
+        } else if (ua.indexOf('macintosh') > -1 && ua.indexOf('chrome') > -1) {
+          return true
+        } else if (ua.indexOf('macintosh') > -1) {
+          return false
+        } else if (ua.indexOf('chrome') > -1) {
+          return true
+        } else if (ua.indexOf('mozilla') > -1) {
+          return false
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
     },
     confirmCancelReservation() {
       this.reservationUpdateStatus({
