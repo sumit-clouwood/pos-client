@@ -201,10 +201,9 @@ export default {
         params: data,
       })
         .then(response => {
-          if (
-            response.statusText == 'OK' &&
-            response.data.status != 'form_errors'
-          ) {
+          // eslint-disable-next-line no-console
+          console.log(response)
+          if (response.data.status != 'fail') {
             //Reload order list again.
             let scope = this
             scope.$store
