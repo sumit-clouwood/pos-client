@@ -204,8 +204,8 @@ export default {
           // eslint-disable-next-line no-console
           console.log(response)
           if (
-            response.data.status != 'fail' &&
-            response.data.status != 'form_errors'
+            response.data.status !== 'fail' &&
+            response.data.status !== 'form_errors'
           ) {
             //Reload order list again.
             let scope = this
