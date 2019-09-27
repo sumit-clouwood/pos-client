@@ -25,6 +25,9 @@ import * as CONSTANTS from '@/constants'
 
 export default {
   name: 'PaymentMethods',
+  date() {
+    // count_methods: null
+  },
   computed: {
     ...mapGetters('payment', ['methods']),
     ...mapGetters(['payNowCalcHendler']),
@@ -52,7 +55,7 @@ export default {
               slidesToScroll: 4,
               dots: true,
             })
-        }, 1000)
+        }, 500)
         /*if ($('body').find('#payment-method').length > 0) {
           $('#payment-method')[0].slick.refresh()
         }*/
