@@ -467,11 +467,13 @@ export default {
   watch: {
     paymentMsgStatus(newVal) {
       if (newVal) {
-        if (this.$store.state.order.orderType.OTApi === 'dine_in') {
-          $('#payment-msg').modal('hide')
-          this.$router.replace({ name: 'Dinein' })
+        if (this.$store.getters['checkout/complete']) {
+          if (this.$store.state.order.orderType.OTApi === 'dine_in') {
+            $('#payment-msg').modal('hide')
+            this.$router.replace({ name: 'Dinein' })
+          }
+          this.$store.commit('checkout/PAYMENT_MSG_STATUS', false)
         }
-        this.$store.commit('checkout/PAYMENT_MSG_STATUS', false)
       }
     },
   },
@@ -494,9 +496,11 @@ export default {
           this.$store
             .dispatch('checkout/pay', { action: 'dine-in-place-order' })
             .then(() => {
-              //Reset Cart and set states and redirect to dine in.
-              this.$store.commit('dinein/SET_COVER', '')
-              this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+              if (this.$store.getters['checkout/complete']) {
+                //Reset Cart and set states and redirect to dine in.
+                this.$store.commit('dinein/SET_COVER', '')
+                this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+              }
             })
             .catch(response => {
               let validationError = {}

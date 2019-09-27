@@ -64,7 +64,7 @@ export default {
   },
   watch: {
     paymentMsgStatus(newVal) {
-      if (newVal) {
+      if (newVal && this.$store.getters['checkout/complete']) {
         if (this.$store.state.order.orderType.OTApi === 'dine_in') {
           this.$store.dispatch('order/beforeRedirectResetCartDineIn')
           this.$router.replace({ name: 'Dinein' })
@@ -75,7 +75,7 @@ export default {
       }
     },
     changeAmountStatus(newVal) {
-      if (newVal) {
+      if (newVal && this.$store.getters['checkout/complete']) {
         //Reset Cart and set states and redirect to dine in.
         if (this.$store.state.order.orderType.OTApi === 'dine_in') {
           this.$store.dispatch('order/beforeRedirectResetCartDineIn')
@@ -100,8 +100,12 @@ export default {
           console.log('print iframe error occurred')
           console.log(e)
         }
+        let resetFull = false
+        if (this.$store.getters['checkout/complete']) {
+          resetFull = true
+        }
 
-        this.$store.dispatch('checkout/reset')
+        this.$store.dispatch('checkout/reset', resetFull)
 
         $('.modal-backdrop').remove()
         $('#order-confirmation').hide()

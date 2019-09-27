@@ -1,6 +1,5 @@
 <template>
   <div class="main-orders-list" v-if="items">
-    {{ splitedItems }}
     <div
       class="main-orders-list-item color-dashboard-background"
       v-for="(item, index) in items"
@@ -68,9 +67,12 @@
           </div>
         </div>
         <check-box
-          v-model="splitedItems"
-          v-bind:title="'Split'"
-          v-if="splitBill"
+          v-bind:value="index"
+          v-bind:index="index"
+          v-bind:title="'Pay'"
+          v-if="splitBill && item.paid !== true"
+          v-model="splittedItems[index]"
+          @change="markSplit"
         ></check-box>
       </div>
     </div>
@@ -87,11 +89,15 @@ export default {
   name: 'Items',
   data() {
     return {
-      splitedItems: [],
       newItemList: [],
     }
   },
   computed: {
+    splittedItems: {
+      get() {
+        return this.$store.state.order.splittedItems
+      },
+    },
     ...mapState('dinein', ['covers', 'split', 'guests']),
     ...mapState({
       currentItem: state => state.order.item._id,
@@ -111,7 +117,10 @@ export default {
   methods: {
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
-
+    markSplit(item) {
+      this.$set(this.splittedItems, item.index, item.checked)
+      this.$store.commit('order/SPLIT_ITEMS', this.splittedItems)
+    },
     discountInfo(item) {
       if (item.discount) {
         return (

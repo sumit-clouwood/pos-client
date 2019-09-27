@@ -42,6 +42,7 @@ const state = {
   startTime: null,
   orderToModify: null,
   splitBill: false,
+  splittedItems: {},
 }
 
 // getters
@@ -66,9 +67,9 @@ const getters = {
     return Num.round(item.value)
   },
 
-  totalItemsTax: state => {
+  totalItemsTax: (state, getters) => {
     let itemsTax = 0
-    state.items.forEach(item => {
+    getters.splitItems.forEach(item => {
       itemsTax += Num.round(item.tax) * item.quantity
     })
     return itemsTax
@@ -76,7 +77,7 @@ const getters = {
 
   totalModifiersTax: (state, getters) => {
     let modifiersTax = 0
-    state.items.forEach(item => {
+    getters.splitItems.forEach(item => {
       if (item.modifiersData && item.modifiersData.length) {
         modifiersTax += getters.itemModifiersTax(item) * item.quantity
       }
@@ -86,7 +87,7 @@ const getters = {
 
   totalItemTaxDiscount: (state, getters) => {
     let itemTaxDiscount = 0
-    state.items.forEach(item => {
+    getters.splitItems.forEach(item => {
       itemTaxDiscount += Num.round(
         getters.itemTaxDiscount(item) * item.quantity
       )
@@ -96,7 +97,7 @@ const getters = {
 
   totalModifierTaxDiscount: (state, getters) => {
     let modifiersTaxDiscount = 0
-    state.items.forEach(item => {
+    getters.splitItems.forEach(item => {
       modifiersTaxDiscount += Num.round(
         getters.itemModifierTaxDiscount(item) * item.quantity
       )
@@ -154,7 +155,7 @@ const getters = {
 
   subTotal: (state, getters) => {
     let subTotal = 0
-    state.items.forEach(item => {
+    getters.splitItems.forEach(item => {
       const itemPrice = Num.round(item.netPrice) * item.quantity
       const modifiersPrice = getters.itemModifiersPrice(item) * item.quantity
       const itemDiscount = getters.itemNetDiscount(item) * item.quantity
@@ -275,6 +276,16 @@ const getters = {
     }
   },
 
+  splitItems: state => {
+    if (state.splitBill) {
+      return state.items.filter(
+        item => item.split === true && item.paid === false
+      )
+    } else {
+      return state.items
+    }
+  },
+
   items: state => state.items,
 
   orderType: state => state.orderType.OTApi,
@@ -285,9 +296,14 @@ const actions = {
   setSplitBill({ commit }) {
     commit('SET_SPLIT_BILL')
   },
+  markSplitItemsPaid({ commit }) {
+    commit(mutation.MARK_SPLIT_ITEMS_PAID)
+  },
   addToOrder({ state, getters, commit, dispatch }, stateItem) {
     commit('checkoutForm/RESET', 'process', { root: true })
     let item = { ...stateItem }
+    item.split = false
+    item.paid = false
     //item gross price is inclusive of tax
     item.grossPrice = getters.grossPrice(item)
     //net price is exclusive of tax, getter ll send unrounded price that is real one
@@ -325,6 +341,8 @@ const actions = {
       if (!item) {
         item = { ...rootState.modifier.item }
       }
+      item.split = false
+      item.paid = false
       //this comes through the modifier popup
       item.grossPrice = getters.grossPrice(item)
       //getter will send un rounded value
@@ -1369,6 +1387,29 @@ const mutations = {
   },
   [mutation.SET_SPLIT_BILL](state) {
     state.splitBill = state.splitBill ? false : true
+  },
+  [mutation.MARK_SPLIT_ITEMS_PAID](state) {
+    const newitems = state.items.map(item => {
+      if (state.splittedItems[item.orderIndex] === true) {
+        item.paid = true
+      } else {
+        item.paid = false
+      }
+      return item
+    })
+    state.items = newitems
+  },
+  [mutation.SPLIT_ITEMS](state, items) {
+    state.splittedItems = items
+    const newitems = state.items.map(item => {
+      if (state.splittedItems[item.orderIndex] === true) {
+        item.split = true
+      } else {
+        item.split = false
+      }
+      return item
+    })
+    state.items = newitems
   },
 }
 

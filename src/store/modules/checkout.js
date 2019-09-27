@@ -20,6 +20,12 @@ const state = {
 
 // getters
 const getters = {
+  complete: (state, getters, rootState) => {
+    if (!rootState.order.splitBill) {
+      return true
+    }
+    return !rootState.order.items.some(item => item.paid === false)
+  },
   calculateOrderTotals: () => order => {
     let data = {
       subTotal: 0,
@@ -258,99 +264,113 @@ const actions = {
         let item_discounts = []
         //let itemDiscountedTax = 0
         let orderCovers = []
-        order.items = rootState.order.items.map(item => {
-          let orderItem = {
-            name: item.name,
-            entity_id: item._id,
-            no: item.orderIndex,
-            status: 'in-progress',
-            //itemTax.undiscountedTax is without modifiers
-            tax: item.tax,
-            price: item.netPrice,
-            qty: item.quantity,
-          }
-          if (
-            rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN
-          ) {
-            let itemCover = item.coverNo
-              ? item.coverNo
-              : rootState.dinein.selectedCover._id
-            let itemCoverName = item.cover_name
-              ? item.cover_name
-              : rootState.dinein.selectedCover.name
-            if (
-              orderCovers.filter(item => item.entity_id == itemCover).length ===
-              0
-            ) {
-              orderCovers.push({ entity_id: itemCover, name: itemCoverName })
+
+        order.items = []
+
+        rootState.order.items.forEach(oitem => {
+          let item = null
+          if (rootState.order.splitBill) {
+            if (oitem.split && oitem.paid === false) {
+              item = oitem
             }
-            let guest_no = rootState.dinein.guests
-            orderItem = {
+          } else {
+            item = oitem
+          }
+
+          if (item) {
+            let orderItem = {
               name: item.name,
               entity_id: item._id,
               no: item.orderIndex,
               status: 'in-progress',
+              //itemTax.undiscountedTax is without modifiers
               tax: item.tax,
               price: item.netPrice,
               qty: item.quantity,
-              cover_no: itemCover,
-              guest: guest_no,
-              cover_name: itemCoverName,
             }
-          }
-
-          //we are sending item price and modifier prices separtely but sending
-          //item discount as total of both discounts
-
-          if (item.discount) {
-            let itemDiscountedTax = Num.round(
-              rootGetters['order/itemTaxDiscount'](item)
-            )
-
-            if (item.discountedNetPrice) {
-              const modifiersTax = rootGetters['order/itemModifiersTax'](item)
-              itemDiscountedTax = item.tax + modifiersTax - item.discountedTax
-            }
-
-            const modifiersDiscountedTax = Num.round(
-              rootGetters['order/itemModifierTaxDiscount'](item)
-            )
-
-            let itemDiscount = item.discount
-            itemDiscount.itemId = item._id
-            itemDiscount.itemNo = item.orderIndex
-            itemDiscount.quantity = item.quantity
-            //undiscountedTax is without modifiers
-
-            if (item.discountedNetPrice) {
-              //don't round fixed discount calculations
-              itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
-            } else {
-              itemDiscount.tax = Num.round(
-                itemDiscountedTax + modifiersDiscountedTax
-              )
-            }
-            itemDiscount.price =
-              rootGetters['order/itemNetDiscount'](item) +
-              rootGetters['order/itemModifierDiscount'](item)
-            item_discounts.push(itemDiscount)
-          }
-
-          if (item.modifiersData && item.modifiersData.length) {
-            item.modifiersData.forEach(modifier => {
-              itemModifiers.push({
-                entity_id: modifier.modifierId,
-                for_item: item.orderIndex,
-                price: modifier.price,
-                tax: modifier.tax,
-                name: modifier.name,
+            if (
+              rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN
+            ) {
+              let itemCover = item.coverNo
+                ? item.coverNo
+                : rootState.dinein.selectedCover._id
+              let itemCoverName = item.cover_name
+                ? item.cover_name
+                : rootState.dinein.selectedCover.name
+              if (
+                orderCovers.filter(item => item.entity_id == itemCover)
+                  .length === 0
+              ) {
+                orderCovers.push({ entity_id: itemCover, name: itemCoverName })
+              }
+              let guest_no = rootState.dinein.guests
+              orderItem = {
+                name: item.name,
+                entity_id: item._id,
+                no: item.orderIndex,
+                status: 'in-progress',
+                tax: item.tax,
+                price: item.netPrice,
                 qty: item.quantity,
-                type: modifier.type,
+                cover_no: itemCover,
+                guest: guest_no,
+                cover_name: itemCoverName,
+              }
+            }
+
+            //we are sending item price and modifier prices separtely but sending
+            //item discount as total of both discounts
+
+            if (item.discount) {
+              let itemDiscountedTax = Num.round(
+                rootGetters['order/itemTaxDiscount'](item)
+              )
+
+              if (item.discountedNetPrice) {
+                const modifiersTax = rootGetters['order/itemModifiersTax'](item)
+                itemDiscountedTax = item.tax + modifiersTax - item.discountedTax
+              }
+
+              const modifiersDiscountedTax = Num.round(
+                rootGetters['order/itemModifierTaxDiscount'](item)
+              )
+
+              let itemDiscount = item.discount
+              itemDiscount.itemId = item._id
+              itemDiscount.itemNo = item.orderIndex
+              itemDiscount.quantity = item.quantity
+              //undiscountedTax is without modifiers
+
+              if (item.discountedNetPrice) {
+                //don't round fixed discount calculations
+                itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
+              } else {
+                itemDiscount.tax = Num.round(
+                  itemDiscountedTax + modifiersDiscountedTax
+                )
+              }
+              itemDiscount.price =
+                rootGetters['order/itemNetDiscount'](item) +
+                rootGetters['order/itemModifierDiscount'](item)
+              item_discounts.push(itemDiscount)
+            }
+
+            if (item.modifiersData && item.modifiersData.length) {
+              item.modifiersData.forEach(modifier => {
+                itemModifiers.push({
+                  entity_id: modifier.modifierId,
+                  for_item: item.orderIndex,
+                  price: modifier.price,
+                  tax: modifier.tax,
+                  name: modifier.name,
+                  qty: item.quantity,
+                  type: modifier.type,
+                })
               })
-            })
-            //get all modifiers by modifier ids attached to item
+              //get all modifiers by modifier ids attached to item
+            }
+            order.items.push(orderItem)
           }
-          return orderItem
         })
 
         order.item_discounts = item_discounts.map(itemDiscount => {
@@ -631,17 +651,31 @@ const actions = {
               let msgStr = rootGetters['location/_t'](
                 'Dinein order has been placed.'
               )
+
               if (action === 'dine-in-place-order') {
                 msgStr = rootGetters['location/_t'](
                   'Dinein order has been modified.'
                 )
-                dispatch('reset')
+                let resetFull = false
+                if (getters.complete) {
+                  resetFull = true
+                }
+                dispatch('reset', resetFull)
               } else {
                 commit(mutation.PRINT, true)
                 commit(
                   'SET_ORDER_NUMBER',
                   rootState.order.selectedOrder.item.order_no
                 )
+                if (rootState.order.splitBill) {
+                  //mark items as paid in current execution
+                  dispatch('order/markSplitItemsPaid', null, { root: true })
+                }
+                if (!getters.complete) {
+                  dispatch('createDineOrder').then(() => {
+                    //set order table to items which are not paid yet
+                  })
+                }
               }
 
               commit(
@@ -651,6 +685,7 @@ const actions = {
                   root: true,
                 }
               )
+              resolve()
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
             }
@@ -971,14 +1006,17 @@ const actions = {
   generateInvoice() {
     //commit(mutation.PRINT, true)
   },
-  reset({ commit, dispatch }) {
+  reset({ commit, dispatch }, full = true) {
     commit(mutation.RESET)
+
     dispatch('checkoutForm/reset', {}, { root: true })
-    dispatch('order/reset', {}, { root: true })
     dispatch('discount/reset', {}, { root: true })
     dispatch('surcharge/reset', {}, { root: true })
     dispatch('customer/reset', {}, { root: true })
     dispatch('location/reset', {}, { root: true })
+    if (full) {
+      dispatch('order/reset', {}, { root: true })
+    }
   },
 
   updateOrderStatus(
@@ -1041,11 +1079,11 @@ const mutations = {
     state.processing = status
   },
   [mutation.RESET](state) {
-    state.order = false
     state.paidAmount = 0
     state.payableAmount = 0
     state.pendingAmount = 0
     state.print = false
+    state.order = false
   },
 }
 

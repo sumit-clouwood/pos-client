@@ -5,14 +5,17 @@
         <input
           type="checkbox"
           v-bind:value="value"
-          v-on:click="$emit('click', $event.target.value)"
+          v-on:change="
+            $emit('change', { index: index, checked: $event.target.checked })
+          "
+          v-on:input="$emit('input', $event.target.checked)"
         />
         <div class="borderCheck">
           <span class="customradioc">
             <span class="checkBox"></span>
           </span>
         </div>
-        <span class="color-text">{{ title }}</span>
+        <span class="color-text"> {{ title }}</span>
       </label>
     </div>
   </div>
@@ -23,7 +26,7 @@
 export default {
   name: 'Radio',
   components: {},
-  props: ['value', 'title'],
+  props: ['value', 'title', 'index'],
 }
 </script>
 <style lang="scss" scoped>
@@ -32,7 +35,7 @@ export default {
   margin-top: $px10;
   margin-left: $px10;
   display: grid;
-  grid-template-columns: repeat(auto-fill, 74px);
+  grid-template-columns: repeat(auto-fill, 60px);
   grid-gap: 10px;
   position: relative;
   .text-danger {
