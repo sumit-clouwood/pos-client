@@ -5,6 +5,7 @@ import db from '@/services/network/DB'
 import DateTime from '@/plugins/helpers/DateTime.js'
 
 const apiURL = process.env.VUE_APP_API_ENDPOINT
+const invoiceAppApiURL = process.env.INVOICE_APP_API_ENDPOINT
 
 console.log('api url', process.env.NODE_ENV, apiURL)
 
@@ -201,6 +202,21 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .post(apiURL + url, data)
+        .then(response => {
+          if (this.isValidResponse(response)) {
+            resolve(response)
+          } else {
+            reject(response)
+          }
+        })
+        .catch(error => reject(error))
+    })
+  },
+
+  invoiceapp(url, data) {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(invoiceAppApiURL + url, data)
         .then(response => {
           if (this.isValidResponse(response)) {
             resolve(response)
