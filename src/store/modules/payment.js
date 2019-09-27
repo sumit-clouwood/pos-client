@@ -5,6 +5,7 @@ import * as CONST from '@/constants'
 // initial state
 const state = {
   methods: {},
+  appInvoiceData: {},
 }
 
 // getters
@@ -107,6 +108,7 @@ const actions = {
       brand_order_discounts: allOrderDiscounts,
       brand_payment_types: allPaymentTypes,
     }
+    commit(mutation.APPINVOICEDATA, translationsOnly)
     // eslint-disable-next-line no-console
     console.log(translationsOnly)
   },
@@ -116,6 +118,9 @@ const actions = {
 const mutations = {
   [mutation.SET_METHODS](state, methods) {
     state.methods = methods
+  },
+  [mutation.APPINVOICEDATA](state, printInvoiceData) {
+    state.appInvoiceData = printInvoiceData
   },
   [mutation.RESET](state) {
     state.methods = {}

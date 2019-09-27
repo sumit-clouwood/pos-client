@@ -857,8 +857,7 @@ const actions = {
       let invoiceTemplate = rootState.invoice.templates.data.data.find(
         invoice => invoice
       )
-      //Order Type
-      let orderType = `${invoiceTemplate}_label`
+      let orderTypeLabel = state.order.order_type + '_label'
       //Final JSON
       let jsonResponse = {
         status: 'ok',
@@ -871,11 +870,11 @@ const actions = {
         customer: customerData,
         delivery_area: delivery_area,
         template: invoiceTemplate,
-        order_type: orderType,
+        order_type: invoiceTemplate[orderTypeLabel],
         created_date: created_date,
         created_time: created_time,
         crm_module_enabled: crm_module_enabled,
-        translations: rootState.location.translations, //Unstable
+        translations: rootState.payment.appInvoiceData, //Unstable
         default_header_brand: rootState.location.brand.name,
         default_header_branch: rootState.location.store.name,
         default_header_phone: rootState.location.brand.contact_phone,
