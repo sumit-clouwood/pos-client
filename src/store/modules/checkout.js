@@ -746,8 +746,6 @@ const actions = {
               //reset order start time
               commit('order/RESET_ORDER_TIME', null, { root: true })
               commit(mutation.SET_PROCESSING, false)
-              // eslint-disable-next-line
-              debugger
               commit(mutation.PRINT, true)
               dispatch(
                 'transactionOrders/getTransactionOrders',
