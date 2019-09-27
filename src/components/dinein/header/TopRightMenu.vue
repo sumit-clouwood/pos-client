@@ -128,6 +128,14 @@
         <li>
           <a role="button" class="cursor-pointer">{{ _t('Printers') }}</a>
         </li>
+        <li
+          v-if="permitted('transactional_orders')"
+          @click="moveTransactionSection(this)"
+        >
+          <a role="button">
+            {{ _t('Transactions') }}
+          </a>
+        </li>
         <li v-if="permitted('dashboard', 'root')">
           <a :href="dashboard">{{ _t('Dashboard') }}</a>
         </li>
@@ -251,6 +259,9 @@ export default {
       brand: this.baseurl('brands'),
     }
   },
+  updated() {
+    $('.setting-dropdown1').hide()
+  },
   computed: {
     vlocale: {
       get() {
@@ -280,6 +291,9 @@ export default {
         OTApi: 'walk_in',
       })
     },
+    moveTransactionSection() {
+      this.$router.push(this.store + '/transactions')
+    },
     fetchOrdersWithTableDetails: function(orderStatus) {
       this.$store.commit('dinein/SET_PAGE_NO', 1)
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
@@ -291,7 +305,7 @@ export default {
       this.$store.dispatch('location/changeLanguage', locale)
     },
     openConfigLinks() {
-      $('.setting-dropdown1').show()
+      $('.setting-dropdown1').toggle()
       $('.setting-dropdown1').addClass('animated zoomIn')
       //posConfigLinks()
     },

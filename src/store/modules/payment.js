@@ -9,7 +9,11 @@ const state = {
 
 // getters
 const getters = {
-  methods: state => (state.methods.data ? state.methods.data : []),
+  methods: state => {
+    // eslint-disable-next-line
+    // debugger
+    return state.methods.data ? state.methods.data : []
+  },
   cash: state => {
     let method = ''
     if (typeof state.methods.data != 'undefined') {

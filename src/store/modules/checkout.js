@@ -612,8 +612,6 @@ const actions = {
         if (rootState.order.orderToModify) {
           order.modify_reason = 'Updated from Backend'
         }
-        // order.supervisor_password = '12345'
-
         //Invoice APP API Call with Custom Request - for Modify order
         dispatch('printingServerInvoiceRaw', order)
         response = OrderService.modifyOrder(
@@ -636,8 +634,6 @@ const actions = {
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
           if (response.data.status === 'ok') {
-            //Call function to send request to API.
-            //dispatch('printingServerInvoiceRaw', response.data)
             commit('order/ORDER_TO_MODIFY', null, { root: true })
 
             if (typeof response.data.id !== 'undefined') {
