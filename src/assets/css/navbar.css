@@ -13,7 +13,7 @@
       width: 1.875rem;
       height: 1.875rem; }
   .navigation .navigation-list-wrapper {
-    overflow: hidden;
+    overflow-y: scroll;
     position: relative; }
     .navigation .navigation-list-wrapper::-webkit-scrollbar {
       width: 0; }
@@ -28,9 +28,6 @@
       grid-gap: 10px;
       padding: 0 0 1.875rem 0;
       transition: 0.5s ease-out; }
-      @media only screen and (min-width: 320px) and (max-width: 600px) {
-        .navigation .navigation-list-wrapper .navigation-list {
-          top: 65px; } }
       .navigation .navigation-list-wrapper .navigation-list.toggle {
         top: -95%; }
       .navigation .navigation-list-wrapper .navigation-list .nav-item {
@@ -124,8 +121,8 @@
 .dm-manager .navigation {
   grid-template-rows: 5.3125rem 1fr 3.75rem 7.3125rem;
   width: 4.6875rem;
-  -webkit-transition: .3s ease-out;
-  transition: .3s ease-out; }
+  -webkit-transition: 0.3s ease-out;
+  transition: 0.3s ease-out; }
   .dm-manager .navigation.collapse-menu {
     width: 12.5rem; }
   .dm-manager .navigation .logo {
