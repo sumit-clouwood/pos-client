@@ -296,8 +296,6 @@ export default {
   props: ['template', 'order_to_print'],
   watch: {
     all_data_fully_loaded: function(new_value) {
-      // eslint-disable-next-line
-      debugger
       if (new_value == true) {
         this.$nextTick(() => this.$emit('print_ready'))
       }

@@ -81,20 +81,11 @@ export default {
 
           //1. print in iframe
           // alert('about to print')
-          // eslint-disable-next-line
-          debugger
-          console.log('print iframe about to print')
-          console.log('--------------------')
-          console.log('--------------------')
-          console.log('--------------------')
-          console.log('--------------------')
           let w = this.$refs.iframe.contentWindow
           w.focus()
           w.print()
           //this.$refs.iframe.contentWindow.print()
         } catch (e) {
-          // eslint-disable-next-line
-          debugger
           console.log('print iframe error occurred')
           console.log(e)
         }
@@ -108,8 +99,6 @@ export default {
         //redirect only if there is not changed amount
         if (this.$store.state.order.orderType.OTApi === 'call_center') {
           setTimeout(() => {
-            // eslint-disable-next-line
-            debugger
             this.$router.replace({ name: 'DeliveryManager' })
           }, 5000)
         }
@@ -125,8 +114,6 @@ export default {
       // })
     },
     print_ready() {
-      // eslint-disable-next-line
-      debugger
       //console.log(this.print)
       this.invoiceHtml = this.$refs.print_template.$el.outerHTML
       //console.log('in print ready html length', this.invoiceHtml.length)
