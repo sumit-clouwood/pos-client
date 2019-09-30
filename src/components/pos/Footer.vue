@@ -319,7 +319,7 @@
             @click="payNowDirect()"
           >
             <a role="button">
-              <img src="img/pos/payment.svg" :alt="_t('Place Order')" />
+              <img src="img/pos/place_order.svg" :alt="_t('Place Order')" />
               <span class="pay-btn color-text-invert">
                 {{ _t('Place Order') }}
               </span>
