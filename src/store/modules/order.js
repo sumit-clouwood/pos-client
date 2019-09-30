@@ -1328,6 +1328,7 @@ const mutations = {
       state.orderStatus = null
       state.orderNote = null
     }
+    state.splittedItems = {}
     state.item = false
     state.orderId = null
     state.orderData = null
