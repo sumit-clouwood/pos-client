@@ -80,9 +80,6 @@ export default {
       let itemData = this.catItems.find(
         data => data.name.toLowerCase() === itemName.toLowerCase()
       )
-      // eslint-disable-next-line no-console
-      console.log(itemData[column])
-      // this.itemData = itemData
       return itemData[column]
     },
     getItemDiscountValue(discounts) {
