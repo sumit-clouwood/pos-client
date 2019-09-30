@@ -41,7 +41,7 @@ const state = {
   is_pay: 1,
   startTime: null,
   orderToModify: null,
-  splitBill: false,
+  splitBill: null,
   splittedItems: {},
 }
 
@@ -1385,8 +1385,17 @@ const mutations = {
   [mutation.ORDER_TO_MODIFY](state, orderId) {
     state.orderToModify = orderId
   },
-  [mutation.SET_SPLIT_BILL](state) {
-    state.splitBill = state.splitBill ? false : true
+  [mutation.SET_SPLIT_BILL](state, status = -1) {
+    if (status !== -1) {
+      //changed from checkout
+      state.splitBill = status
+    } else if (state.splitBill === null) {
+      //if comming first time
+      state.splitBill = true
+    } else {
+      //toggle here
+      state.splitBill = state.splitBill ? false : true
+    }
   },
   [mutation.MARK_SPLIT_ITEMS_PAID](state) {
     const newitems = state.items.map(item => {

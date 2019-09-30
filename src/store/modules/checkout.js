@@ -270,8 +270,16 @@ const actions = {
         rootState.order.items.forEach(oitem => {
           let item = null
           if (rootState.order.splitBill) {
-            if (oitem.split && oitem.paid === false) {
-              item = oitem
+            if (action === 'dine-in-place-order') {
+              //place order
+              if (oitem.paid === false) {
+                item = oitem
+              }
+            } else {
+              //pay for order
+              if (oitem.split && oitem.paid === false) {
+                item = oitem
+              }
             }
           } else {
             item = oitem
@@ -541,6 +549,7 @@ const actions = {
             //reset order start time
             commit('order/RESET_ORDER_TIME', null, { root: true })
             commit(mutation.SET_PROCESSING, false)
+            commit('order/SET_SPLIT_BILL', null, { root: true })
 
             resolve(response)
           })
@@ -638,7 +647,10 @@ const actions = {
     })
   },
 
-  modifyDineOrder({ dispatch, rootState, rootGetters, commit }, action) {
+  modifyDineOrder(
+    { dispatch, rootState, getters, rootGetters, commit },
+    action
+  ) {
     return new Promise(resolve => {
       dispatch('getModifyOrder').then(order => {
         //delete order.order_system_status
@@ -662,6 +674,7 @@ const actions = {
                 }
                 dispatch('reset', resetFull)
               } else {
+                //order paid
                 commit(mutation.PRINT, true)
                 commit(
                   'SET_ORDER_NUMBER',
@@ -671,10 +684,11 @@ const actions = {
                   //mark items as paid in current execution
                   dispatch('order/markSplitItemsPaid', null, { root: true })
                 }
-                if (!getters.complete) {
-                  dispatch('createDineOrder').then(() => {
-                    //set order table to items which are not paid yet
-                  })
+                if (getters.complete) {
+                  resolve()
+                } else {
+                  //create another order with same reservation id but with remaining items
+                  dispatch('splitOrder').then(() => resolve())
                 }
               }
 
@@ -685,7 +699,6 @@ const actions = {
                   root: true,
                 }
               )
-              resolve()
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
             }
@@ -849,6 +862,16 @@ const actions = {
     })
   },
 
+  splitOrder({ dispatch, commit }) {
+    // const unpaidItems = rootState.order.items.filter(
+    //   item => item.paid === false
+    // )
+    // commit(mutation.UPDATE_ITEMS, unpaidItems)
+    commit(mutation.SET_PROCESSING, false)
+    commit('order/SET_ORDER_ID', null, { root: true })
+    return dispatch('pay', { action: 'dine-in-place-order' })
+  },
+
   createDineOrder({ dispatch, commit, rootGetters }, action) {
     return new Promise(resolve => {
       OrderService.saveOrder(state.order)
@@ -857,9 +880,9 @@ const actions = {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
             //we are not printing so reset manually here
-            let msg = rootGetters['location/_t']('Order has been placed')
+            let msg = rootGetters['location/_t']('Dinein Order has been paid')
             if (action === 'dine-in-place-order') {
-              msg = rootGetters['location/_t']('Order has been added')
+              msg = rootGetters['location/_t']('Dinein Order has been placed')
               dispatch('reset')
             } else {
               commit(mutation.PRINT, true)
@@ -1077,6 +1100,9 @@ const mutations = {
   },
   [mutation.SET_PROCESSING](state, status) {
     state.processing = status
+  },
+  [mutation.UPDATE_ITEMS](state, items) {
+    state.order.items = items
   },
   [mutation.RESET](state) {
     state.paidAmount = 0

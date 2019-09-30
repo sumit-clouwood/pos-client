@@ -386,7 +386,7 @@ const actions = {
           .then(response => {
             commit(mutation.RESERVATION_RESPONSE, response.data)
             dispatch('getCovers').then(() => {
-              resolve()
+              resolve(response)
               commit(mutation.LOADING, false)
             })
             commit('order/ORDER_TYPE', state.orderType, { root: true })
