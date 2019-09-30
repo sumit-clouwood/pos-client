@@ -6,7 +6,11 @@
   >
     <Header :order="selectedOrder.item" />
     <div class="main-orders-list-wrapper">
-      <Items :order="selectedOrder.item" :items="selectedOrder.item.items" />
+      <Items
+        :order="selectedOrder.item"
+        :items="selectedOrder.item.items"
+        :catItems="catItems"
+      />
     </div>
     <Footer :order="selectedOrder.item" />
     <orders-menu />
@@ -30,6 +34,11 @@ export default {
   name: 'Cart',
   props: {
     msg: String,
+  },
+  data() {
+    return {
+      catItems: this.$store.state.category.items,
+    }
   },
   computed: {
     ...mapState('order', ['cartType', 'selectedOrder']),

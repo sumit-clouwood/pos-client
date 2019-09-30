@@ -8,14 +8,14 @@
             class="trans-menu-image"
             :style="{
               background:
-                getItemImage(item.name).image === ''
-                  ? getItemImage(item.name).item_color
+                getItemImage(item.name, 'image') === ''
+                  ? getItemImage(item.name, 'item_color')
                   : '',
             }"
           >
             <img
-              v-if="getItemImage(item.name).image !== ''"
-              :src="getItemImage(item.name).image"
+              v-if="getItemImage(item.name, 'image') !== ''"
+              :src="getItemImage(item.name, 'image')"
               :alt="_t('Image')"
             />
           </div>
@@ -67,11 +67,7 @@ export default {
   props: {
     items: Array,
     order: Object,
-  },
-  data() {
-    return {
-      itemData: '',
-    }
+    catItems: Object,
   },
   computed: {
     ...mapState({
@@ -80,14 +76,14 @@ export default {
     ...mapGetters('location', ['formatPrice', '_t']),
   },
   methods: {
-    getItemImage(itemName) {
-      let itemData = this.$store.state.category.items.find(
+    getItemImage(itemName, column) {
+      let itemData = this.catItems.find(
         data => data.name.toLowerCase() === itemName.toLowerCase()
       )
       // eslint-disable-next-line no-console
-      console.log(itemData)
+      console.log(itemData[column])
       // this.itemData = itemData
-      return itemData
+      return itemData[column]
     },
     getItemDiscountValue(discounts) {
       let value = ''
