@@ -620,7 +620,7 @@ const actions = {
           modifyType
         )
       } else {
-        //Invoice APP API Call with Custom Request - for DineIn order
+        //Invoice APP API Call with Custom Request - not for DineIn order
         dispatch('printingServerInvoiceRaw', state.order)
         response = OrderService.saveOrder(
           state.order,
@@ -880,10 +880,13 @@ const actions = {
         default_header_phone: rootState.location.brand.contact_phone,
         generate_time: state.order.real_created_datetime,
         flash_message: 'Order Details',
+        store_id: rootState.context.storeId,
       }
       if (jsonResponse) {
         printingServers.forEach(item => {
           let APIURL = item.ip_address
+          // eslint-disable-next-line no-console
+          console.log(APIURL)
           OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
         // eslint-disable-next-line no-console
