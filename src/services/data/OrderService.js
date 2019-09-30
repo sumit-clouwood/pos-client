@@ -114,7 +114,7 @@ export default {
     }
     return DataService.post(`/model/orders/id/${id}/update_order_items`, order)
   },
-  invoiceAPI(order) {
-    return DataService.invoiceapp(`/printorder`, order)
+  invoiceAPI(order, apiurl) {
+    return DataService.invoiceapp(apiurl + `/printorder`, order)
   },
 }
