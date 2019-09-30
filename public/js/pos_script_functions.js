@@ -39,7 +39,7 @@ function showPaymentBreak() {
 }
 
 function clickPayNow() {
-  /*$('#payment-method')
+  $('#payment-method')
     .not('.slick-initialized')
     .slick({
       arrows: false,
@@ -47,7 +47,7 @@ function clickPayNow() {
       slidesToShow: 4,
       slidesToScroll: 4,
       dots: true,
-    })*/
+    })
   // $('body').append("<div class="modal-backdrop fade show"></div>");
   $('div#pay-now').animate({ right: '0' }, 800)
   $('div#pay-now').addClass('effect-screen')
