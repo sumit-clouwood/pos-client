@@ -8,12 +8,14 @@
             class="trans-menu-image"
             :style="{
               background:
-                getItemImage(item.name).image === '' ? itemData.item_color : '',
+                getItemImage(item.name).image === ''
+                  ? getItemImage(item.name).item_color
+                  : '',
             }"
           >
             <img
-              v-if="itemData.image !== ''"
-              :src="itemData.image"
+              v-if="getItemImage(item.name).image !== ''"
+              :src="getItemImage(item.name).image"
               :alt="_t('Image')"
             />
           </div>
@@ -84,7 +86,7 @@ export default {
       )
       // eslint-disable-next-line no-console
       console.log(itemData)
-      this.itemData = itemData
+      // this.itemData = itemData
       return itemData
     },
     getItemDiscountValue(discounts) {
