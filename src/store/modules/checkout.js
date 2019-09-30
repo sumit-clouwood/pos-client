@@ -568,8 +568,8 @@ const actions = {
         delete order.order_system_status
         delete order.real_created_datetime
 
-          //Invoice APP API Call with Custom Request - for DineIn order
-          dispatch('printingServerInvoiceRaw', order)
+        //Invoice APP API Call with Custom Request - for DineIn order
+        dispatch('printingServerInvoiceRaw', order)
         if (rootState.order.orderId) {
           response = OrderService.updateOrderItems(
             order,
