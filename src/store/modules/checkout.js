@@ -547,9 +547,11 @@ const actions = {
         dispatch('createOrder', action)
           .then(response => {
             //reset order start time
-            commit('order/RESET_ORDER_TIME', null, { root: true })
-            commit(mutation.SET_PROCESSING, false)
-            commit('order/SET_SPLIT_BILL', null, { root: true })
+            if (getters.complete) {
+              commit('order/RESET_ORDER_TIME', null, { root: true })
+              commit(mutation.SET_PROCESSING, false)
+              commit('order/SET_SPLIT_BILL', null, { root: true })
+            }
 
             resolve(response)
           })
@@ -684,12 +686,15 @@ const actions = {
                   //mark items as paid in current execution
                   dispatch('order/markSplitItemsPaid', null, { root: true })
                 }
-                if (getters.complete) {
-                  resolve()
-                } else {
-                  //create another order with same reservation id but with remaining items
-                  dispatch('splitOrder').then(() => resolve())
-                }
+
+                resolve()
+
+                // if (getters.complete) {
+                //   resolve()
+                // } else {
+                //   //create another order with same reservation id but with remaining items
+                //   //dispatch('splitOrder').then(() => resolve())
+                // }
               }
 
               commit(
@@ -871,9 +876,8 @@ const actions = {
     dispatch('checkoutForm/reset', {}, { root: true })
     dispatch('discount/reset', {}, { root: true })
     dispatch('surcharge/reset', {}, { root: true })
-    dispatch('customer/reset', {}, { root: true })
-    dispatch('order/startOrder', null, { root: true })
 
+    dispatch('order/startOrder', null, { root: true })
     commit(mutation.UPDATE_ITEMS, unpaidItems)
     return dispatch('pay', { action: 'dine-in-place-order' })
   },
@@ -1036,7 +1040,7 @@ const actions = {
     //commit(mutation.PRINT, true)
   },
   reset({ commit, dispatch }, full = true) {
-    commit(mutation.RESET)
+    commit(mutation.RESET, full)
 
     dispatch('checkoutForm/reset', {}, { root: true })
     dispatch('discount/reset', {}, { root: true })
@@ -1110,12 +1114,14 @@ const mutations = {
   [mutation.UPDATE_ITEMS](state, items) {
     state.order.items = items
   },
-  [mutation.RESET](state) {
+  [mutation.RESET](state, full = true) {
     state.paidAmount = 0
     state.payableAmount = 0
     state.pendingAmount = 0
     state.print = false
-    state.order = false
+    if (full) {
+      state.order = false
+    }
   },
 }
 

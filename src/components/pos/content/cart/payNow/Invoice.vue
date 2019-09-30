@@ -93,6 +93,11 @@ export default {
         try {
           setTimeout(() => {
             this.$refs.iframe.contentWindow.print()
+            if (!this.$store.getters['checkout/complete']) {
+              this.$store.dispatch('checkout/splitOrder').then(() => {
+                this.$store.commit('order/SET_SPLIT_BILL', null, { root: true })
+              })
+            }
           }, 500)
           //this.$refs.iframe.contentWindow.print()
         } catch (e) {
