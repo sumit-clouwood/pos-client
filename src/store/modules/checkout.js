@@ -862,13 +862,19 @@ const actions = {
     })
   },
 
-  splitOrder({ dispatch, commit }) {
-    // const unpaidItems = rootState.order.items.filter(
-    //   item => item.paid === false
-    // )
-    // commit(mutation.UPDATE_ITEMS, unpaidItems)
-    commit(mutation.SET_PROCESSING, false)
-    commit('order/SET_ORDER_ID', null, { root: true })
+  splitOrder({ dispatch, rootState, commit }) {
+    const unpaidItems = rootState.order.items.filter(
+      item => item.paid === false
+    )
+
+    commit('order/RESET', false, { root: true })
+    dispatch('checkoutForm/reset', {}, { root: true })
+    dispatch('discount/reset', {}, { root: true })
+    dispatch('surcharge/reset', {}, { root: true })
+    dispatch('customer/reset', {}, { root: true })
+    dispatch('order/startOrder', null, { root: true })
+
+    commit(mutation.UPDATE_ITEMS, unpaidItems)
     return dispatch('pay', { action: 'dine-in-place-order' })
   },
 

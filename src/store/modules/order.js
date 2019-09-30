@@ -1322,16 +1322,15 @@ const mutations = {
     })
   },
 
-  [mutation.RESET](state) {
-    state.items = []
+  [mutation.RESET](state, full = true) {
+    if (full) {
+      state.items = []
+      state.orderStatus = null
+      state.orderNote = null
+    }
     state.item = false
-    state.orderStatus = null
     state.orderId = null
     state.orderData = null
-    state.orderNote = null
-    // to be fool proof we don't reset startTime here, start time ll be reset when
-    // some one clicks on an item
-    // state.startTime = null
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
