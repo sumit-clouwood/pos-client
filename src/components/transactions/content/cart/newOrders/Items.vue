@@ -119,5 +119,8 @@ export default {
     fill: #fff;
     width: 13px;
   }
+  .trans-item-btn:empty {
+    display: none !important;
+  }
 }
 </style>
