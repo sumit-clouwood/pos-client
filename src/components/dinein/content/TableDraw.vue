@@ -233,7 +233,7 @@
             }}</span>
           </div>
           <div class="modal-footer">
-            <button
+            <!--<button
               type="button"
               id="placeConfirm"
               class="btn btn-success"
@@ -241,7 +241,7 @@
               @click="newOrder(false, true)"
             >
               {{ _t('Place order') }}
-            </button>
+            </button>-->
             <button
               type="button"
               id="BookedTable"
