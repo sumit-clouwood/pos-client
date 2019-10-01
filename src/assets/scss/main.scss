@@ -64,7 +64,6 @@
 
       .food-categories-wrapper {
         overflow: auto;
-        height: inherit;
         display: grid;
         grid-template-columns: auto 1fr;
       }
@@ -73,10 +72,10 @@
         border-bottom: none;
         border-left: none;
         padding-right: $px12;
-        overflow: auto;
-        height: auto;
+        //overflow: auto;
+        //height: auto;
         display: grid;
-        grid-template-rows: repeat(100, min-content);
+        //grid-template-rows: repeat(100, min-content);
         grid-template-columns: auto;
         grid-gap: $px20;
 
