@@ -327,8 +327,10 @@ export default {
     },
     baseurl(link) {
       return (
-        window.location.href.replace(new RegExp('/dine-in/.*'), '/' + link) +
-        this.$store.getters['context/brand']
+        window.location.href.replace(
+          new RegExp('/(dine-in|pos)/.*'),
+          '/' + link
+        ) + this.$store.getters['context/brand']
       )
     },
     showBookingBtn() {
