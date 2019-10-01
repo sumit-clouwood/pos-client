@@ -52,7 +52,8 @@
               </div>
               <div
                 v-if="
-                  this.$store.state.location.brand.mandatory_password === true
+                  this.$store.state.location.brand &&
+                    this.$store.state.location.brand.mandatory_password === true
                 "
               >
                 <div class="select-driver">{{ _t('Supervisor Password') }}</div>
@@ -131,7 +132,10 @@ export default {
       let data = {
         cancel_reason: this.showSelectedReason,
       }
-      if (this.$store.state.location.brand.mandatory_password === true) {
+      if (
+        this.$store.state.location.brand &&
+        this.$store.state.location.brand.mandatory_password === true
+      ) {
         data = {
           cancel_reason: this.showSelectedReason,
           supervisor_password: this.supervisorPassword,

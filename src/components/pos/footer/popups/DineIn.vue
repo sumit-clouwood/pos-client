@@ -134,7 +134,8 @@ export default {
     updateOrderType() {
       if (
         this.selectedOrderType.OTApi === 'dine_in' &&
-        this.$store.state.dinein.covers == false
+        (typeof this.$store.state.dinein.covers === 'undefined' ||
+          this.$store.state.dinein.covers === false)
       ) {
         //Redirect to dinein screen
         this.$router.push('/dine-in' + this.store)
