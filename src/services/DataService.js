@@ -197,6 +197,11 @@ export default {
   },
 
   post(url, data, level) {
+    if (!localStorage.getItem('token')) {
+      this.store.dispatch('auth/logout', 'token_not_exists')
+      return Promise.reject('token expired or not found, logout')
+    }
+
     url = this.getContextUrl(url, level)
     return new Promise((resolve, reject) => {
       axios

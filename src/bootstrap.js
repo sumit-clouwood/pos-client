@@ -192,6 +192,8 @@ export default {
                 this.store.commit('sync/setIdbVersion', version)
                 resolve(idb)
               }
+            }).catch(error => {
+              console.log(error)
             })
           }
         })
