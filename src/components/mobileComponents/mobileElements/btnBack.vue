@@ -33,6 +33,8 @@ export default {
         this.$store.dispatch('backCategory')
       } else if (this.param === 'subcategory') {
         this.$store.dispatch('backSubCategory')
+      } else if (this.param === 'item') {
+        this.$store.dispatch('backItem')
       }
     },
   },

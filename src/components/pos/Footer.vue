@@ -101,6 +101,7 @@
           data-target="#search-loyalty-customer"
           class="footer-slider-list-item color-secondary"
           :class="{ loyaltyApplied: loyaltyCard }"
+          @click="loyaltyHendlerChange"
         >
           <a
             role="button"
@@ -558,6 +559,9 @@ export default {
     },
     setOrderType(opt) {
       this.$store.commit('order/ORDER_TYPE', opt)
+    },
+    loyaltyHendlerChange() {
+      this.$store.dispatch('loyaltyHendlerChange')
     },
     newOrders() {
       this.vbutton = 'hold'
