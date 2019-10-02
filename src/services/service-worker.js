@@ -14,9 +14,27 @@ var lastSynced = new Date().getTime()
 
 var notificationOptions = {
   body: '',
-  icon: './img/icons/favicon.png',
-  image: './img/icons/favicon.png',
-  vibrate: [300, 200, 300],
+  icon: './img/icons/apple-icon.png',
+  image: '',
+  vibrate: [
+    500,
+    110,
+    500,
+    110,
+    450,
+    110,
+    200,
+    110,
+    170,
+    40,
+    450,
+    110,
+    200,
+    110,
+    170,
+    40,
+    500,
+  ],
   badge: './img/icons/favicon.png',
 }
 
@@ -144,9 +162,11 @@ if (workbox) {
             setTimeout(function() {
               sendPostToServer()
                 .then(() => {
+                  notificationOptions.body = 'Offline orders are synced'
                   resolve(
                     self.registration.showNotification(
-                      'Orders synced to server'
+                      'POS synced',
+                      notificationOptions
                     )
                   )
                 })
