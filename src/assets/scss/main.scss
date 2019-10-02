@@ -74,14 +74,15 @@
         padding-right: $px12;
         //overflow: auto;
         //height: auto;
-        display: grid;
+        //display: grid;
         //grid-template-rows: repeat(100, min-content);
-        grid-template-columns: auto;
-        grid-gap: $px20;
+        //grid-template-columns: auto;
+        //grid-gap: $px20;
 
         .food-categories-item {
           width: $food-categories-item-width;
           min-height: $food-categories-item-height;
+          max-height: 9.25rem;
           border: 1px solid $gray-middle;
           border-radius: $card-border-radius;
           display: grid;
@@ -94,6 +95,7 @@
           font-size: $px18;
           background-color: #fff;
           padding: 2px 2px 2px 2px;
+          margin-top: 10px;
 
           &:hover,
           &.active {
