@@ -302,6 +302,17 @@ export default {
 
   setNetwork() {
     NetworkService.status((status, msg) => {
+      //this function below ll be called every one minutes because it
+      //is set as interval in netwrokserivce to run every one minute
+      // so call back ll run every minute
+      if (!localStorage.getItem('token')) {
+        console.log(
+          1,
+          'we do not have token or data cleared, do not sync and do not create idb'
+        )
+        return
+      }
+
       this.store.commit('sync/status', status)
       if (process.env.NODE_ENV === 'production' && msg === 'on') {
         const nowTime = new Date().getTime() //miliseconds

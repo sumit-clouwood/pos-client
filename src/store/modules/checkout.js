@@ -545,9 +545,8 @@ const actions = {
     )
     return new Promise((resolve, reject) => {
       let response = null
-
-      //set order id to be used for invoicing
       let orderId = null
+      let orderNo = null
 
       //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
       //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
@@ -568,8 +567,6 @@ const actions = {
         delete order.order_system_status
         delete order.real_created_datetime
 
-        //Invoice APP API Call with Custom Request - for DineIn order
-        dispatch('printingServerInvoiceRaw', order)
         if (rootState.order.orderId) {
           response = OrderService.updateOrderItems(
             order,
@@ -587,8 +584,6 @@ const actions = {
         rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY ||
         rootState.order.orderToModify
       ) {
-        //set order id for modify orders or delivery order
-        orderId = rootState.order.orderId
         let order = { ...state.order }
         order.new_real_transition_order_no =
           rootState.location.store.branch_n +
@@ -612,16 +607,12 @@ const actions = {
         if (rootState.order.orderToModify) {
           order.modify_reason = 'Updated from Backend'
         }
-        //Invoice APP API Call with Custom Request - for Modify order
-        dispatch('printingServerInvoiceRaw', order)
         response = OrderService.modifyOrder(
           order,
           rootState.order.orderId,
           modifyType
         )
       } else {
-        //Invoice APP API Call with Custom Request - not for DineIn order
-        dispatch('printingServerInvoiceRaw', state.order)
         response = OrderService.saveOrder(
           state.order,
           rootState.customer.offlineData
@@ -629,16 +620,24 @@ const actions = {
             : rootState.customer.customer
         )
       }
-
       response
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
           if (response.data.status === 'ok') {
+            //set order id and order No
+            orderId = response.data.id
+            orderNo = response.data.order_no
+            //Invoice APP API Call with Custom Request
+            dispatch('printingServerInvoiceRaw', {
+              orderId: orderId,
+              orderNo: orderNo,
+            })
             commit('order/ORDER_TO_MODIFY', null, { root: true })
 
             if (typeof response.data.id !== 'undefined') {
               //this is walk in order
               orderId = response.data.id
+              orderNo = response.data.order_no
               if (typeof response.data.order_no !== 'undefined') {
                 commit('SET_ORDER_NUMBER', response.data.order_no)
               }
@@ -790,11 +789,13 @@ const actions = {
    * Nidhishanker Modi
    * 21 September 2019
    */
-  printingServerInvoiceRaw({ state, rootState, dispatch }, response) {
+  printingServerInvoiceRaw({ state, rootState, dispatch }, data) {
+    // eslint-disable-next-line no-console
+    console.log(data)
     let printingServers = rootState.category.printingservers //Get All Printing Servers
     if (printingServers) {
-      state.order._id = response.id //Order Id is stored in State
-      state.order.order_no = response.order_no //Order No is stored in State
+      state.order._id = data.orderId //Order Id is stored in State
+      state.order.order_no = data.orderNo //Order No is stored in State
       let staff = rootState.auth.userDetails
       let orderData = state.order
       let customerId = state.order.customer
@@ -881,7 +882,8 @@ const actions = {
         translations: rootState.payment.appInvoiceData, //Unstable
         default_header_brand: rootState.location.brand.name,
         default_header_branch: rootState.location.store.name,
-        default_header_phone: rootState.location.brand.contact_phone,
+        default_header_phone:
+          'Tel No. ' + rootState.location.brand.contact_phone,
         generate_time: state.order.real_created_datetime,
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
