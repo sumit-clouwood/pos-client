@@ -382,12 +382,12 @@ const actions = {
 
   injectDineInItemsData({ rootState }, order) {
     let orderCovers = []
-    order.items = order.items.map(item => {
-      let itemCover = item.coverNo
-        ? item.coverNo
+    order.items = order.items.map(oitem => {
+      let itemCover = oitem.coverNo
+        ? oitem.coverNo
         : rootState.dinein.selectedCover._id
-      let itemCoverName = item.cover_name
-        ? item.cover_name
+      let itemCoverName = oitem.cover_name
+        ? oitem.cover_name
         : rootState.dinein.selectedCover.name
       if (
         orderCovers.filter(item => item.entity_id == itemCover).length === 0
@@ -395,9 +395,10 @@ const actions = {
         orderCovers.push({ entity_id: itemCover, name: itemCoverName })
       }
 
-      item.cover_no = itemCover
-      item.guest = rootState.dinein.guests
-      item.cover_name = itemCoverName
+      oitem.cover_no = itemCover
+      oitem.guest = rootState.dinein.guests
+      oitem.cover_name = itemCoverName
+      return oitem
     })
     order.covers = orderCovers
     return Promise.resolve(order)
