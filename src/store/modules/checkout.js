@@ -801,7 +801,7 @@ const actions = {
       let customerId = state.order.customer
       let customerData = [] //Customer Information
       let delivery_area = {} //Delivery Area
-      let kitchen_menu_items = []
+      let kitchen_menu_items = {}
 
       //Customer Data
       if (customerId) {
@@ -823,14 +823,16 @@ const actions = {
       }
       //Item according to Kitchens Sections
       let kitchenSectionsItems = rootState.category.kitchenitems
-      if (kitchenSectionsItems) {
-        state.order.items.map(item => {
+      if (kitchenSectionsItems.length) {
+        state.order.items.forEach(item => {
           let itemKitchen = kitchenSectionsItems.find(
             kitchenItem => kitchenItem._id === item.entity_id
           )
-          kitchen_menu_items._id = itemKitchen._id
-          kitchen_menu_items.category = itemKitchen.category
-          kitchen_menu_items.kitchen = itemKitchen.kitchen
+          if (itemKitchen) {
+            kitchen_menu_items._id = itemKitchen._id
+            kitchen_menu_items.category = itemKitchen.category
+            kitchen_menu_items.kitchen = itemKitchen.kitchen
+          }
         })
       }
       //Created Date

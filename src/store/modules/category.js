@@ -19,8 +19,8 @@ const state = {
   taxData: [],
   taxAmount: {},
   searchItems: {},
-  kitchenitems: {},
-  printingservers: {},
+  kitchenitems: [],
+  printingservers: [],
 }
 
 // getters, computed properties
@@ -100,7 +100,9 @@ const actions = {
     return new Promise((resolve, reject) => {
       CategoryService.allKitchenServers()
         .then(response => {
-          commit(mutation.SET_PRINTING_SERVERS, response.data.data)
+          if (response.data.data) {
+            commit(mutation.SET_PRINTING_SERVERS, response.data.data)
+          }
           resolve()
         })
         .catch(error => reject(error))
@@ -110,7 +112,9 @@ const actions = {
     return new Promise((resolve, reject) => {
       CategoryService.allKitchenSectionsItems()
         .then(response => {
-          commit(mutation.SET_KITCHENS_ITEMS, response.data.menu_items)
+          if (response.data.menu_items) {
+            commit(mutation.SET_KITCHENS_ITEMS, response.data.menu_items)
+          }
           resolve()
         })
         .catch(error => reject(error))
