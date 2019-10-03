@@ -240,8 +240,6 @@ const actions = {
         return paymentPart
       })
 
-      order.total_paid = Num.round(totalPaid).toFixed(2)
-
       if (rootState.order.orderType.OTApi !== CONSTANTS.ORDER_TYPE_DINE_IN) {
         order.order_payments = order.order_payments.map(item => {
           item.collected = Num.round(item.collected).toFixed(2)
@@ -263,6 +261,7 @@ const actions = {
         ]
       }
     }
+    order.total_paid = Num.round(totalPaid).toFixed(2)
     return Promise.resolve(order)
   },
 
@@ -581,7 +580,10 @@ const actions = {
 
                 dispatch('preOrderHook', { action: action, order: order })
                   .then(order => {
-                    dispatch('paymentsHook', order).then(order => {
+                    dispatch('paymentsHook', {
+                      order: order,
+                      action: action,
+                    }).then(order => {
                       commit(mutation.SET_ORDER, order)
                       dispatch('createOrder', action)
                         .then(response => {
