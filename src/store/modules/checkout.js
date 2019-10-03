@@ -186,6 +186,7 @@ const actions = {
   injectDineinData({ rootState }, order) {
     order.table_reservation_id =
       localStorage.getItem('reservationId') || rootState.dinein.reserverationId
+    return Promise.resolve(order)
   },
 
   preOrderHook({ rootState, dispatch }, { order, action }) {
