@@ -645,23 +645,41 @@ const actions = {
     return Promise.resolve(order)
   },
 
-  modifyHoldOrder({ dispatch, rootState, rootGetters, commit }) {
+  modifyHoldOrder({ dispatch, rootState, rootGetters, commit }, action) {
     return new Promise(resolve => {
       dispatch('getModifyOrder').then(order => {
         OrderService.modifyOrder(order, rootState.order.orderId, 'hold')
           .then(response => {
             if (response.data.status === 'ok') {
-              let msgStr = rootGetters['location/_t'](
-                'Hold order has been modified.'
-              )
-              commit(
-                'checkoutForm/SET_MSG',
-                { result: '', message: msgStr },
-                {
+              if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+                let msgStr = rootGetters['location/_t'](
+                  'Hold order has been modified.'
+                )
+                commit(
+                  'checkoutForm/SET_MSG',
+                  { result: '', message: msgStr },
+                  {
+                    root: true,
+                  }
+                )
+                dispatch('reset')
+                resolve()
+              } else {
+                commit('order/SET_ORDER_ID', rootState.order.orderId, {
                   root: true,
-                }
-              )
-              dispatch('reset')
+                })
+                commit('SET_ORDER_NUMBER', rootState.order.orderData.order_no)
+                const msg = rootGetters['location/_t'](
+                  'Order placed Successfully'
+                )
+                dispatch('setMessage', {
+                  result: 'success',
+                  msg: msg,
+                }).then(() => {
+                  resolve(response.data)
+                  commit(mutation.PRINT, true)
+                })
+              }
               dispatch('holdOrders/getHoldOrders', {}, { root: true })
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
@@ -699,6 +717,7 @@ const actions = {
                 }
               )
               dispatch('reset')
+              resolve()
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
             }
@@ -743,6 +762,7 @@ const actions = {
                   resetFull = true
                 }
                 dispatch('reset', resetFull)
+                resolve()
               } else {
                 //order paid
                 commit(mutation.PRINT, true)
@@ -810,6 +830,7 @@ const actions = {
                 }
               )
               dispatch('reset')
+              resolve()
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
             }
@@ -1077,7 +1098,7 @@ const actions = {
 
     //order.order is a hold order, state.order contains current order
     if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD) {
-      return dispatch('modifyHoldOrder')
+      return dispatch('modifyHoldOrder', action)
     } else if (
       rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
     ) {
