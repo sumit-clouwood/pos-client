@@ -187,14 +187,16 @@ export default {
           if (event.target.error.code === 0) {
             //db has been created already so try with a recent version
             const version = 4
-            db.openDatabase(version).then(({ idb, flag }) => {
-              if (flag === 'open') {
-                this.store.commit('sync/setIdbVersion', version)
-                resolve(idb)
-              }
-            }).catch(error => {
-              console.log(error)
-            })
+            db.openDatabase(version)
+              .then(({ idb, flag }) => {
+                if (flag === 'open') {
+                  this.store.commit('sync/setIdbVersion', version)
+                  resolve(idb)
+                }
+              })
+              .catch(error => {
+                console.log(error)
+              })
           }
         })
     })
