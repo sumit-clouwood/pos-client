@@ -180,6 +180,7 @@ const actions = {
     if (rootState.customer.address) {
       order.customer_address_id = rootState.customer.address._id.$oid
     }
+    return Promise.resolve(order)
   },
 
   injectDineinData({ rootState }, order) {
@@ -246,6 +247,11 @@ const actions = {
           return item
         })
       }
+    } else if (
+      rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
+      action === CONSTANTS.ORDER_STATUS_ON_HOLD
+    ) {
+      //do something here
     } else {
       const method = rootGetters['payment/cash']
       if (action != 'dine-in-place-order') {
