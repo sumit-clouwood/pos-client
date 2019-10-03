@@ -624,14 +624,6 @@ const actions = {
         .then(response => {
           //remove current order from hold list as it might be processed, refetching ll do it
           if (response.data.status === 'ok') {
-            //set order id and order No
-            orderId = response.data.id
-            orderNo = response.data.order_no
-            //Invoice APP API Call with Custom Request
-            dispatch('printingServerInvoiceRaw', {
-              orderId: orderId,
-              orderNo: orderNo,
-            })
             commit('order/ORDER_TO_MODIFY', null, { root: true })
 
             if (typeof response.data.id !== 'undefined') {
@@ -709,6 +701,15 @@ const actions = {
               commit(mutation.PRINT, true)
             }
             resolve(response.data)
+            //Code to run API for Printing Server
+            //set order id and order No
+            orderId = response.data.id
+            orderNo = response.data.order_no
+            //Invoice APP API Call with Custom Request JSON
+            dispatch('printingServerInvoiceRaw', {
+              orderId: orderId,
+              orderNo: orderNo,
+            })
           } else {
             let error = ''
             if (response.data.status == 'form_errors') {
@@ -790,8 +791,6 @@ const actions = {
    * 21 September 2019
    */
   printingServerInvoiceRaw({ state, rootState, dispatch }, data) {
-    // eslint-disable-next-line no-console
-    console.log(data)
     let printingServers = rootState.category.printingservers //Get All Printing Servers
     if (printingServers) {
       state.order._id = data.orderId //Order Id is stored in State
@@ -817,7 +816,7 @@ const actions = {
         ) {
           delivery_area = Object.values(rootState.customer.deliveryAreas).find(
             delivery_area =>
-              delivery_area._id == state.order.order_delivery_area
+              delivery_area._id === state.order.order_delivery_area
           )
         }
       }
@@ -859,7 +858,6 @@ const actions = {
       if (!rootState.invoice.templates) {
         return
       }
-
       //Invoice
       let invoiceTemplate = rootState.invoice.templates.data.data.find(
         invoice => invoice
@@ -883,7 +881,7 @@ const actions = {
         crm_module_enabled: crm_module_enabled,
         translations: rootState.payment.appInvoiceData, //Unstable
         default_header_brand: rootState.location.brand.name,
-        default_header_branch: rootState.location.store.name,
+        default_header_branch: rootState.location.store.city + ' Branch',
         default_header_phone:
           'Tel No. ' + rootState.location.brand.contact_phone,
         generate_time: state.order.real_created_datetime,
@@ -893,8 +891,6 @@ const actions = {
       if (jsonResponse) {
         printingServers.forEach(item => {
           let APIURL = item.ip_address
-          // eslint-disable-next-line no-console
-          console.log(APIURL)
           OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
         // eslint-disable-next-line no-console
