@@ -854,6 +854,10 @@ const actions = {
           crm_module_enabled = true
         }
       }
+      if (!rootState.invoice.templates) {
+        return
+      }
+
       //Invoice
       let invoiceTemplate = rootState.invoice.templates.data.data.find(
         invoice => invoice
