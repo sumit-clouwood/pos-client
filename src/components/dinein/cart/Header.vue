@@ -64,7 +64,10 @@
         </button>
         <DineInCoverSelection />
       </div>
-      <div v-if="covers && cartType !== 'hold'" class="driver-container">
+      <div
+        v-if="orderId && covers && cartType !== 'hold'"
+        class="driver-container"
+      >
         <button
           class="btn btn-success"
           @click="showSplitBill"
@@ -121,7 +124,13 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapGetters('dinein', ['getAllCovers']),
-    ...mapState('order', ['items', 'cartType', 'orderType', 'orderData']),
+    ...mapState('order', [
+      'items',
+      'orderId',
+      'cartType',
+      'orderType',
+      'orderData',
+    ]),
     ...mapState('checkoutForm', ['msg']),
     ...mapState('customer', ['deliveryAreas']),
     ...mapState('dinein', [
