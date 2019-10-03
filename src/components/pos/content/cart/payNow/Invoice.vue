@@ -92,7 +92,11 @@ export default {
 
         try {
           setTimeout(() => {
-            this.$refs.iframe.contentWindow.print()
+            //this.$refs.iframe.contentWindow.print()
+            let w = this.$refs.iframe.contentWindow
+            w.focus()
+            w.print()
+
             if (!this.$store.getters['checkout/complete']) {
               this.$store.dispatch('checkout/splitOrder').then(() => {
                 this.$store.commit('order/SET_SPLIT_BILL', null, { root: true })

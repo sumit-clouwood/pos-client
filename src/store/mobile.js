@@ -77,6 +77,11 @@ export default {
       state.subCategoryHendler = false
       state.foodMenuHendler = false
     },
+    BACK_ITEM: state => {
+      state.allCategoryHendler = false
+      state.subCategoryHendler = true
+      state.foodMenuHendler = false
+    },
     SUB_CATEGORY_HENDLER_CHANGE: state => {
       state.allCategoryHendler = false
       state.subCategoryHendler = !state.subCategoryHendler
@@ -182,6 +187,9 @@ export default {
     },
     backSubCategory({ commit }) {
       commit('BACK_SUB_CATEGORY')
+    },
+    backItem({ commit }) {
+      commit('BACK_ITEM')
     },
     searchHendlerChange({ commit }) {
       commit('SEARCH_HENDLER_CHANGE')

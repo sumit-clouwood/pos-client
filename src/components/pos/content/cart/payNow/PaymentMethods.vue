@@ -25,6 +25,9 @@ import * as CONSTANTS from '@/constants'
 
 export default {
   name: 'PaymentMethods',
+  date() {
+    // count_methods: null
+  },
   computed: {
     ...mapGetters('payment', ['methods']),
     ...mapGetters(['payNowCalcHendler']),
@@ -34,6 +37,30 @@ export default {
     ...mapState({
       selectedModal: state => state.location.setModal,
     }),
+  },
+  watch: {
+    methods(newVal) {
+      // eslint-disable-next-line
+      // debugger
+      if (newVal.length > 0) {
+        // eslint-disable-next-line no-unused-vars
+        /* global $  */
+        setTimeout(() => {
+          $('#payment-method')
+            .not('.slick-initialized')
+            .slick({
+              arrows: false,
+              infinite: true,
+              slidesToShow: 4,
+              slidesToScroll: 4,
+              dots: true,
+            })
+        }, 500)
+        /*if ($('body').find('#payment-method').length > 0) {
+          $('#payment-method')[0].slick.refresh()
+        }*/
+      }
+    },
   },
   methods: {
     getToggle(method) {

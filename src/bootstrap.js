@@ -187,12 +187,16 @@ export default {
           if (event.target.error.code === 0) {
             //db has been created already so try with a recent version
             const version = 4
-            db.openDatabase(version).then(({ idb, flag }) => {
-              if (flag === 'open') {
-                this.store.commit('sync/setIdbVersion', version)
-                resolve(idb)
-              }
-            })
+            db.openDatabase(version)
+              .then(({ idb, flag }) => {
+                if (flag === 'open') {
+                  this.store.commit('sync/setIdbVersion', version)
+                  resolve(idb)
+                }
+              })
+              .catch(error => {
+                console.log(error)
+              })
           }
         })
     })
@@ -298,6 +302,17 @@ export default {
 
   setNetwork() {
     NetworkService.status((status, msg) => {
+      //this function below ll be called every one minutes because it
+      //is set as interval in netwrokserivce to run every one minute
+      // so call back ll run every minute
+      if (!localStorage.getItem('token')) {
+        console.log(
+          1,
+          'we do not have token or data cleared, do not sync and do not create idb'
+        )
+        return
+      }
+
       this.store.commit('sync/status', status)
       if (process.env.NODE_ENV === 'production' && msg === 'on') {
         const nowTime = new Date().getTime() //miliseconds

@@ -210,13 +210,15 @@
 
     }
     .trans-menu-image {
+      width: $px70;
+      height: $px70;
       background: $white;
       border: 1px solid #D7DCE2;
       border-radius: $block-border-radius;
        > img{
          border-radius: 50%;
-         width: $px60;
-         height: $px60;
+         width: 100%;
+         max-width: 100%;
          object-fit: cover;
        }
     }

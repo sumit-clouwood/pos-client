@@ -89,7 +89,7 @@ const actions = {
     })
   },
   logout({ commit }, msg) {
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('token') || msg == 'token_not_exists') {
       localStorage.setItem('token', '')
       localStorage.setItem('brand_id', '')
       localStorage.setItem('store_id', '')

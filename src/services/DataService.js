@@ -197,10 +197,30 @@ export default {
   },
 
   post(url, data, level) {
+    if (!localStorage.getItem('token')) {
+      this.store.dispatch('auth/logout', 'token_not_exists')
+      return Promise.reject('token expired or not found, logout')
+    }
+
     url = this.getContextUrl(url, level)
     return new Promise((resolve, reject) => {
       axios
         .post(apiURL + url, data)
+        .then(response => {
+          if (this.isValidResponse(response)) {
+            resolve(response)
+          } else {
+            reject(response)
+          }
+        })
+        .catch(error => reject(error))
+    })
+  },
+
+  invoiceapp(url, data) {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(url, data)
         .then(response => {
           if (this.isValidResponse(response)) {
             resolve(response)

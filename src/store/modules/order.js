@@ -1038,7 +1038,7 @@ const actions = {
       if (orderType === 'dine_in') {
         commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_PROGRESS)
         commit(mutation.ORDER_TYPE, { OTview: 'Dine In', OTApi: 'dine_in' })
-      } else if (orderType === 'walk-in') {
+      } else if (orderType === 'walk_in') {
         commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_PROGRESS)
         commit(mutation.ORDER_TYPE, { OTview: 'Walk In', OTApi: 'walk_in' })
       } else if (orderType === 'takeaway') {

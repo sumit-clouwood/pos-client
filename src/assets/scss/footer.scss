@@ -144,6 +144,7 @@
           display: flex;
           align-items: center;
           justify-content: center;
+          padding: 0 10px;
           span {
             color: #fff;
             padding-left: $px10;
@@ -177,7 +178,7 @@
             }
 
             .pay-btn {
-              font-size: $px26;
+              font-size: $px22;
               display: flex;
               align-items: center;
             }

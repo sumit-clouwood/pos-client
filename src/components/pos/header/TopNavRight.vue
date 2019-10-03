@@ -92,7 +92,7 @@
           <a :href="menu">{{ _t('Menu Setup') }}</a>
         </li>
         <li v-if="permitted('delivery', 'root')">
-          <a role="button">
+          <a role="button" @click="setDeliveryManageState()">
             <router-link :to="'/delivery-manager' + store">
               {{ _t('Delivery Manager') }}
             </router-link>
@@ -151,6 +151,19 @@ export default {
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
       $('.setting-dropdown').css('display', 'none')
+    },
+    setDeliveryManageState() {
+      let orderStatus = {
+        orderStatus: 'in-progress',
+        collected: 'no',
+        pageId: 'home_delivery_new',
+        title: 'New Orders',
+        dataRelated: 'dm-new-order',
+        section: 'crm',
+      }
+      this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
+      this.$store.commit('deliveryManager/SECTION', orderStatus.section)
+      this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
     },
     moveTransactionSection() {
       this.$router.push(this.store + '/transactions')

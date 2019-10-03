@@ -4,8 +4,20 @@
     <div class="trans-item-list-wrapper">
       <div class="trans-item-list" v-for="(item, index) in items" :key="index">
         <div class="trans-menu-item">
-          <div class="trans-menu-image">
-            <img :src="getItemImage(item.name)" :alt="_t('Image')" />
+          <div
+            class="trans-menu-image"
+            :style="{
+              background:
+                getItemImage(item.name, 'image') === ''
+                  ? getItemImage(item.name, 'item_color')
+                  : '',
+            }"
+          >
+            <img
+              v-if="getItemImage(item.name, 'image') !== ''"
+              :src="getItemImage(item.name, 'image')"
+              :alt="_t('Image')"
+            />
           </div>
           <div class="trans-menu-list">
             <div class="orders-name">
@@ -55,6 +67,7 @@ export default {
   props: {
     items: Array,
     order: Object,
+    catItems: Array,
   },
   computed: {
     ...mapState({
@@ -63,11 +76,11 @@ export default {
     ...mapGetters('location', ['formatPrice', '_t']),
   },
   methods: {
-    getItemImage(itemName) {
-      let itemData = this.$store.state.category.items.filter(
+    getItemImage(itemName, column) {
+      let itemData = this.catItems.find(
         data => data.name.toLowerCase() === itemName.toLowerCase()
       )
-      return itemData[0].image
+      return itemData[column]
     },
     getItemDiscountValue(discounts) {
       let value = ''
@@ -106,5 +119,8 @@ export default {
     fill: #fff;
     width: 13px;
   }
+}
+.trans-item-btn:empty {
+  display: none !important;
 }
 </style>

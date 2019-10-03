@@ -101,6 +101,7 @@
           data-target="#search-loyalty-customer"
           class="footer-slider-list-item color-secondary"
           :class="{ loyaltyApplied: loyaltyCard }"
+          @click="loyaltyHendlerChange"
         >
           <a
             role="button"
@@ -319,7 +320,7 @@
             @click="payNowDirect()"
           >
             <a role="button">
-              <img src="img/pos/payment.svg" :alt="_t('Place Order')" />
+              <img src="img/pos/place_order.svg" :alt="_t('Place Order')" />
               <span class="pay-btn color-text-invert">
                 {{ _t('Place Order') }}
               </span>
@@ -574,6 +575,9 @@ export default {
     },
     setOrderType(opt) {
       this.$store.commit('order/ORDER_TYPE', opt)
+    },
+    loyaltyHendlerChange() {
+      this.$store.dispatch('loyaltyHendlerChange')
     },
     newOrders() {
       this.vbutton = 'hold'

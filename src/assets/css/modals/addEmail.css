@@ -1,7 +1,7 @@
 #add-email .modal-dialog {
   max-width: 25rem; }
 
-@media only screen and (min-width: 320px) and (max-width: 600px) {
+@media only screen and (min-width: 320px) and (max-width: 960px) {
   #add-email .modal-dialog {
     margin: 0;
     width: 100vw;

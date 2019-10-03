@@ -16,7 +16,7 @@
       line-height: normal;
       letter-spacing: 0.6px;
       color: #3f4146; }
-      @media only screen and (min-width: 320px) and (max-width: 600px) {
+      @media only screen and (min-width: 320px) and (max-width: 960px) {
         #customer .modal-dialog .modal-content .modal-header .customer-title,
         #manage-customer .modal-dialog .modal-content .modal-header .customer-title {
           font-size: 18px; } }
@@ -140,7 +140,7 @@
   font-weight: bold;
   text-transform: capitalize; }
 
-@media only screen and (min-width: 320px) and (max-width: 600px) {
+@media only screen and (min-width: 320px) and (max-width: 960px) {
   #customer .modal-dialog {
     max-width: none;
     min-height: auto;
@@ -193,7 +193,7 @@
               #customer .modal-dialog .modal-content .modal-body .right-form .customer-group .right-shift .vdatetime input {
                 margin: 0;
                 width: 100%; } }
-@media only screen and (min-width: 320px) and (max-width: 600px) {
+@media only screen and (min-width: 320px) and (max-width: 960px) {
   #search-loyalty-customer .modal-dialog {
     position: absolute;
     top: 50%;
