@@ -92,10 +92,10 @@ export default {
       this.$store.commit('checkout/PAYMENT_MSG_STATUS', true)
     },
     generateInvoice() {
-      this.$store.commit('checkout/PAYMENT_MSG_STATUS', true)
       $('#pay-now').modal('hide')
       this.$store.dispatch('checkout/generateInvoice')
       $('#transparent-screen').hide()
+      this.$store.commit('checkout/PAYMENT_MSG_STATUS', true)
     },
     confirmDelete(resultLoad) {
       if (resultLoad.flag === 'hold order') {
