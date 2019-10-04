@@ -1,6 +1,7 @@
 // custom service-worker.js
 /* global workbox */
 /* eslint-disable no-console */
+var appVersion = 2.1
 var clientUrl = ''
 
 var ORDER_DOCUMENT = 'order_post_requests'
@@ -30,7 +31,7 @@ var notificationOptions = {
     40,
     500,
   ],
-  badge: './img/icons/favicon.png',
+  badge: './img/icons/favicon.png?v=' + appVersion,
 }
 
 function setupCache() {
