@@ -1,7 +1,7 @@
 // custom service-worker.js
 /* global workbox */
 /* eslint-disable no-console */
-var appVersion = 2.1
+var appVersion = 2.2
 var clientUrl = ''
 
 var ORDER_DOCUMENT = 'order_post_requests'
