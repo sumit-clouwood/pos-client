@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { register } from 'register-service-worker'
-
+let refreshing = false
 if (process.env.NODE_ENV === 'production') {
   console.log(`${process.env.BASE_URL}service-worker.js`)
   register(`${process.env.BASE_URL}service-worker.js`, {
@@ -19,10 +19,17 @@ if (process.env.NODE_ENV === 'production') {
     },
     updatefound() {
       console.log('Update found, New content is downloading.')
+      refreshing = false
+      console.log('setting refreshing status false')
     },
     updated() {
+      console.log('refreshing status', refreshing)
       console.log('New content is available; please refresh.')
       console.log('Reloading to get new content')
+      if (refreshing) {
+        return false
+      }
+      refreshing = true
       window.location.reload(true)
     },
     offline() {
