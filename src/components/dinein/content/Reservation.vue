@@ -9,11 +9,8 @@
       <div class="pos-reservation-header">
         <div class="reservation-date-format">
           <p>Select Date</p>
-          <input
-            type="hidden"
-            id="selectedDates"
-            value="2014-8-13,2014-8-10,2014-8-27,2014-7-27,2014-9-25,2014-9-20"
-          />
+          <input type="hidden" id="selectedDates" value="" />
+          <span id="wtf"></span>
           <div id="page" class="page">
             <section id="main">
               <div class="wrapperHor"></div>
@@ -38,20 +35,27 @@
               :key="index"
             >
               <td>
-                {{ reservation.start_date }} : {{ reservation.start_time }}
+                {{ reservation.start_date }}, {{ reservation.start_time }}
               </td>
-              <td>Area / {{ reservation.assigned_table_id }}</td>
+              <td>
+                {{ getAreaName(reservation.assigned_table_id) }} /
+                {{ reservation.number }}
+              </td>
               <td>
                 <span class="fa fa-user"></span
                 >{{ reservation.number_of_guests }}
               </td>
               <td>{{ reservation.customers }}</td>
-              <td>
-                <span class="fa fa-edit"></span>
-                <span class="dlt-icon"
-                  ><img src="img/pos/delete-icon.svg"
-                /></span>
-                <span class="fa fa-right"></span>
+              <td class="mr-1">
+                <button class="btn btn-warning">
+                  <span class="fa fa-edit"></span>
+                </button>
+                <button class="btn btn-danger">
+                  <span class="dlt-icon">
+                    <img src="img/pos/delete-icon-reservation.svg" />
+                  </span>
+                </button>
+                <button class="btn btn-success">Confirm</button>
               </td>
             </tr>
           </tbody>
@@ -73,14 +77,23 @@ export default {
   name: 'Reservation',
   components: { TableDraw },
   computed: {
-    ...mapState('dinein', ['tablesOnArea', 'dineInTabType', 'allBookedTables']),
+    ...mapState('dinein', [
+      'tablesOnArea',
+      'dineInTabType',
+      'allBookedTables',
+      'availableTables',
+    ]),
+    ...mapState('dineinReservation', ['reservations']),
   },
   updated() {
     this.cal()
   },
   methods: {
-    /* calendar   --*/
+    getAreaName: function(tableId) {
+      return this.availableTables.find(table => table.table_id === tableId).name
+    },
     cal: function() {
+      let scope = this
       // Use the settings object to change the theme
       $(function() {
         $('#main, #projects .wrapper').height($(window).height())
@@ -120,63 +133,18 @@ export default {
         doubleDigitsDays: true,
         allowSelectSpans: true,
         callback: function(cal) {
+          scope.$store.dispatch(
+            'dineinReservation/getReservationByDate',
+            cal.currentDate
+          )
+          // eslint-disable-next-line no-console
+          console.log(cal.currentDate)
           $('#wtf').html('Selected date: ' + cal.currentDate)
         },
       })
-      let _gaq = _gaq || []
-      _gaq.push(['_setAccount', 'UA-36251023-1'])
-      _gaq.push(['_setDomainName', 'jqueryscript.net'])
-      _gaq.push(['_trackPageview'])(function() {
-        var ga = document.createElement('script')
-        ga.type = 'text/javascript'
-        ga.async = true
-        ga.src =
-          ('https:' == document.location.protocol
-            ? 'https://ssl'
-            : 'http://www') + '.google-analytics.com/ga.js'
-        var s = document.getElementsByTagName('script')[0]
-        s.parentNode.insertBefore(ga, s)
-      })()
     },
   },
 }
 </script>
 
-<style scoped>
-.fixed-reservation {
-  position: fixed;
-  right: 0;
-  background: #fff;
-  z-index: 9;
-  height: 90vh;
-  box-shadow: 0 25px 30px 0 rgba(0, 0, 0, 0.2), 0 28px 5px 0 rgba(0, 0, 0, 0.19);
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  grid-row-gap: 20px;
-  width: 600px;
-}
-.fixed-reservation th {
-  color: #a4a4a4;
-  font-weight: normal;
-}
-.fixed-reservation td {
-  color: #3a3d44;
-}
-.pos-reservation-footer {
-  display: grid;
-  align-items: flex-end;
-  padding: 20px;
-}
-.reservation-date-format p {
-  color: #7c7e85;
-  font-weight: 600;
-}
-.pos-reservation-table {
-  padding: 20px;
-}
-.pos-reservation-header {
-  min-height: 100px;
-  background: #f1f3f6;
-  padding: 20px;
-}
-</style>
+<style scoped></style>

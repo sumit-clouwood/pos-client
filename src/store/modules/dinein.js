@@ -222,8 +222,6 @@ const actions = {
         if (orders.length) {
           let tableArray = []
           orders.forEach(order => {
-            // // eslint-disable-next-line no-console
-            // console.log(order, 'Rajeev')
             if (tableArray[order.assigned_table_id] == undefined)
               tableArray[order.assigned_table_id] = []
             tableArray[order.assigned_table_id].push(order.status)
@@ -234,10 +232,6 @@ const actions = {
               if (order.assigned_table_id == table._id) {
                 is_unavail = 1
               }
-              // tableStatus.unavailableCount += 1
-              // table_details.status.color = '#c84c4c'
-              // table_details.status.text = 'unavailable'
-              // tableStatus.table.push(table_details)
             } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
               if (order.assigned_table_id == table._id) {
                 is_avail_soon = 1
@@ -248,12 +242,6 @@ const actions = {
                   }
                 })
               }
-              // tableStatus.availableSoonCount += 1
-              // table_details.status.color = '#faa03c'
-              // table_details.status.text = 'available_soon'
-              // tableStatus.table.push(table_details)
-              // eslint-disable-next-line no-console
-              // console.log(table_details, 'Rajeev')
             }
             orderOnTable.push({
               tableId: table._id,
@@ -462,8 +450,6 @@ const mutations = {
         : false
   },
   [mutation.LOADING](state, loadingStatus) {
-    // eslint-disable-next-line no-console
-    console.log(loadingStatus)
     state.loading = loadingStatus
   },
   [mutation.ORDER_ON_TABLES](state, orderOnTables) {

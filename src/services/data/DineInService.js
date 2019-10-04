@@ -76,4 +76,9 @@ export default {
     // action: add, move_waiting_to_reservation
     return DataService.post(`/model/reservations/${action}`, data)
   },
+  bookings(page, limit, UTC_Date) {
+    return DataService.get(
+      `/model/reservations?page_id=reservations_main_tbl&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&status=reserved&byColumn=1&orderBy=priority&start_date=${UTC_Date}`
+    )
+  },
 }

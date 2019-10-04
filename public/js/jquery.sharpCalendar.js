@@ -246,12 +246,13 @@ jQuery.fn.SharpCalendar = jQuery.fn.SC = function(options) {
           ) {
             div.addClass('SCSel')
           }
-          console.log(options.selectedDatesObj)
+          let selDateVal = $('#' + options.selectedDatesObj).val()
           if (
             options.selectedDatesObj !== '' &&
-            $('#' + options.selectedDatesObj)
-              .val()
-              .indexOf(d.getFullYear() + '-' + (d.getMonth() + 1) + '-') >= 0
+            typeof selDateVal !== 'undefined' &&
+            selDateVal.indexOf(
+              d.getFullYear() + '-' + (d.getMonth() + 1) + '-'
+            ) >= 0
           ) {
             div.addClass('SCMarked')
           }
@@ -328,14 +329,13 @@ jQuery.fn.SharpCalendar = jQuery.fn.SC = function(options) {
           ) {
             div.addClass('SCSel')
           }
-
+          let selDateVal = $('#' + options.selectedDatesObj).val()
           if (
             options.selectedDatesObj !== '' &&
-            $('#' + options.selectedDatesObj)
-              .val()
-              .indexOf(
-                d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-              ) >= 0
+            typeof selDateVal !== 'undefined' &&
+            selDateVal.indexOf(
+              d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+            ) >= 0
           ) {
             div.addClass('SCMarked')
           }

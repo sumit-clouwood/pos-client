@@ -79,6 +79,45 @@
 section#main {
  height: auto !important;
 }
+.fixed-reservation {
+ position: fixed;
+ right: 0;
+ background: #fff;
+ z-index: 9;
+ height: 90vh;
+ box-shadow: 0 25px 30px 0 rgba(0, 0, 0, 0.2), 0 28px 5px 0 rgba(0, 0, 0, 0.19);
+ display: grid;
+ grid-template-rows: auto 1fr auto;
+ grid-row-gap: 20px;
+ width: 600px;
+}
+.fixed-reservation th {
+ color: #a4a4a4;
+ font-weight: normal;
+}
+.fixed-reservation td {
+ color: #3a3d44;
+}
+.pos-reservation-footer {
+ display: grid;
+ align-items: flex-end;
+ padding: 20px;
+}
+.reservation-date-format p {
+ color: #7c7e85;
+ font-weight: 600;
+}
+.pos-reservation-table {
+ padding: 20px;
+}
+.pos-reservation-header {
+ min-height: 100px;
+ background: #f1f3f6;
+ padding: 20px;
+}
 .SCYear {
  display: none !important;
+}
+.SCMonth {
+ /*display: none !important;*/
 }
