@@ -1,5 +1,10 @@
 <template>
-  <div class="main-body-transaction color-dashboard-background color-text">
+  <div
+    class="main-body-transaction color-dashboard-background color-text"
+    :style="{
+      display: device === 'mobile' && transactionDetailView ? 'none' : '',
+    }"
+  >
     <div class="search-trans-wrapper">
       <div class="back-trans-button">
         <button class="btn btn-success" v-on:click="getReferPath()">
@@ -8,6 +13,7 @@
       </div>
       <search />
     </div>
+
     <div :class="['food-wrapper', 'active']">
       <div v-if="displayTransactionOrders" class="left_size_details">
         <div
@@ -122,6 +128,7 @@ export default {
         scope.$store.dispatch('transactionOrders/selectFirstTransactionOrder', {
           root: true,
         })
+        this.$store.dispatch('transactionDetail')
       })
   },
   computed: {
@@ -129,6 +136,7 @@ export default {
     ...mapState('transactionOrders', ['displayTransactionOrders']),
     ...mapState('order', ['selectedOrder']),
     ...mapGetters('location', ['_t', 'timezoneString']),
+    ...mapGetters(['transactionDetailView', 'transactionListView', 'device']),
     ...mapGetters('transactionOrders', [
       'getOrderItemsStr',
       'setSelectedOrder',
@@ -158,6 +166,7 @@ export default {
         .dispatch('order/selectedOrderDetails', order._id)
         .then(() => {})
         .catch()
+      this.$store.dispatch('transactionDetail')
     },
     getReferPath() {
       history.go(-1)
