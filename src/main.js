@@ -22,7 +22,6 @@ import Translate from './mixins/global/Translate'
 import './plugins/constants_mixin'
 import './plugins/helper_mixin'
 
-Vue.config.productionTip = false
 Vue.mixin(Translate)
 
 //create new vue isntance to use store and routers and render App to root component
