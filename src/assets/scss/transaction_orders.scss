@@ -121,6 +121,11 @@
   .main-orders{
     height: calc(100vh - #{$header-height});
     padding: 0;
+    @include responsive(mobile) {
+      right: 0;
+      position: relative;
+      transition: 0.7s ease-out;
+    }
     .main-orders-list-wrapper{
       padding-right: 0;
     }

@@ -85,9 +85,11 @@ export default {
       state.subCategoryHendler = true
       state.foodMenuHendler = false
     },
+    TRANSACTION_DETAIL: state => {
+      state.transactionDetailView = true
+    },
     TRANSACTION_LIST: state => {
       state.transactionDetailView = false
-      state.transactionListView = true
     },
     SUB_CATEGORY_HENDLER_CHANGE: state => {
       state.allCategoryHendler = false
@@ -204,6 +206,9 @@ export default {
     transactionList({ commit }) {
       commit('TRANSACTION_LIST')
     },
+    transactionDetail({ commit }) {
+      commit('TRANSACTION_DETAIL')
+    },
     searchHendlerChange({ commit }) {
       commit('SEARCH_HENDLER_CHANGE')
     },
@@ -319,5 +324,6 @@ export default {
     userLoginHendler: state => state.userLoginHendler,
     userCalcHendler: state => state.userCalcHendler,
     bascketItems: state => state.bascketItems,
+    device: state => state.device,
   },
 }
