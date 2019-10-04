@@ -2,7 +2,6 @@ import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
-import LookupData from '../../plugins/helpers/LookupData'
 
 // initial state
 const state = {
@@ -546,7 +545,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       let response = null
       let orderId = null
-      let orderNo = null
 
       //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
       //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
@@ -565,7 +563,7 @@ const actions = {
         delete order.new_real_transition_order_no
         delete order.modify_reason
         delete order.order_system_status
-        delete order.real_created_datetime
+        // delete order.real_created_datetime
 
         if (rootState.order.orderId) {
           response = OrderService.updateOrderItems(
@@ -591,7 +589,7 @@ const actions = {
           rootState.location.terminalCode +
           '-' +
           rootState.order.startTime
-        delete order.real_created_datetime
+        // delete order.real_created_datetime
 
         let modifyType = ''
 
@@ -625,11 +623,7 @@ const actions = {
           //remove current order from hold list as it might be processed, refetching ll do it
           if (response.data.status === 'ok') {
             commit('order/ORDER_TO_MODIFY', null, { root: true })
-
             if (typeof response.data.id !== 'undefined') {
-              //this is walk in order
-              orderId = response.data.id
-              orderNo = response.data.order_no
               if (typeof response.data.order_no !== 'undefined') {
                 commit('SET_ORDER_NUMBER', response.data.order_no)
               }
@@ -701,15 +695,6 @@ const actions = {
               commit(mutation.PRINT, true)
             }
             resolve(response.data)
-            //Code to run API for Printing Server
-            //set order id and order No
-            orderId = response.data.id
-            orderNo = response.data.order_no
-            //Invoice APP API Call with Custom Request JSON
-            dispatch('printingServerInvoiceRaw', {
-              orderId: orderId,
-              orderNo: orderNo,
-            })
           } else {
             let error = ''
             if (response.data.status == 'form_errors') {
@@ -785,119 +770,6 @@ const actions = {
     })
   },
 
-  /*
-   * ToDo: Create A JSON Request to send in Local Server API for Generating Invoices from a software.
-   * Nidhishanker Modi
-   * 21 September 2019
-   */
-  printingServerInvoiceRaw({ state, rootState, dispatch }, data) {
-    let printingServers = rootState.category.printingservers //Get All Printing Servers
-    if (printingServers) {
-      state.order._id = data.orderId //Order Id is stored in State
-      state.order.order_no = data.orderNo //Order No is stored in State
-      let staff = rootState.auth.userDetails
-      let orderData = state.order
-      let customerId = state.order.customer
-      let customerData = [] //Customer Information
-      let delivery_area = {} //Delivery Area
-      let kitchen_menu_items = {}
-
-      //Customer Data
-      if (customerId) {
-        //get customer name by customer id
-        dispatch('customer/fetchSelectedCustomer', customerId, {
-          root: true,
-        }).then(customer => {
-          customerData.push(customer)
-        })
-        if (
-          state.order.order_delivery_area &&
-          rootState.customer.deliveryAreas
-        ) {
-          delivery_area = Object.values(rootState.customer.deliveryAreas).find(
-            delivery_area =>
-              delivery_area._id === state.order.order_delivery_area
-          )
-        }
-      }
-      //Item according to Kitchens Sections
-      let kitchenSectionsItems = rootState.category.kitchenitems
-      if (kitchenSectionsItems.length) {
-        state.order.items.forEach(item => {
-          let itemKitchen = kitchenSectionsItems.find(
-            kitchenItem => kitchenItem._id === item.entity_id
-          )
-          if (itemKitchen) {
-            kitchen_menu_items._id = itemKitchen._id
-            kitchen_menu_items.category = itemKitchen.category
-            kitchen_menu_items.kitchen = itemKitchen.kitchen
-          }
-        })
-      }
-      //Created Date
-      let timezoneString = rootState.location.timezoneString
-      let created_date = LookupData.convertDatetimeCustom(
-        state.order.real_created_datetime,
-        timezoneString,
-        'DD-MMM-YYYY'
-      )
-      //Created Time
-      let created_time = LookupData.convertDatetimeCustom(
-        state.order.real_created_datetime,
-        timezoneString,
-        'HH:mm A'
-      )
-      //Crm Module Permission
-      let crm_module_enabled = false
-      let cb = rootState.location.brand
-      for (var module of cb.enabled_modules) {
-        if (module == 'CRM') {
-          crm_module_enabled = true
-        }
-      }
-      if (!rootState.invoice.templates) {
-        return
-      }
-      //Invoice
-      let invoiceTemplate = rootState.invoice.templates.data.data.find(
-        invoice => invoice
-      )
-      let orderTypeLabel = state.order.order_type + '_label'
-      //Final JSON
-      let jsonResponse = {
-        status: 'ok',
-        brand_logo: rootState.location.brand.company_logo
-          ? rootState.location.brand.company_logo
-          : '',
-        order: orderData,
-        menu_items: kitchen_menu_items,
-        staff: staff.item.name,
-        customer: customerData,
-        delivery_area: delivery_area,
-        template: invoiceTemplate,
-        order_type: invoiceTemplate[orderTypeLabel],
-        created_date: created_date,
-        created_time: created_time,
-        crm_module_enabled: crm_module_enabled,
-        translations: rootState.payment.appInvoiceData, //Unstable
-        default_header_brand: rootState.location.brand.name,
-        default_header_branch: rootState.location.store.city + ' Branch',
-        default_header_phone:
-          'Tel No. ' + rootState.location.brand.contact_phone,
-        generate_time: state.order.real_created_datetime,
-        flash_message: 'Order Details',
-        store_id: rootState.context.storeId,
-      }
-      if (jsonResponse) {
-        printingServers.forEach(item => {
-          let APIURL = item.ip_address
-          OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
-        })
-        // eslint-disable-next-line no-console
-        console.log(jsonResponse)
-      }
-    }
-  },
   generateInvoice() {
     //commit(mutation.PRINT, true)
   },

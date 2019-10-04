@@ -84,6 +84,22 @@ export default {
           let w = this.$refs.iframe.contentWindow
           w.focus()
           w.print()
+          //Code to run API for Printing Server
+          let orderId = this.order.id
+          let orderNo = this.order.order_no
+          let orderDatas = {
+            orderId: orderId,
+            orderNo: orderNo,
+          }
+          //Invoice APP API Call with Custom Request JSON
+          this.$store.dispatch(
+            'printingServer/printingServerInvoiceRaw',
+            orderDatas,
+            {
+              root: true,
+            }
+          )
+
           //this.$refs.iframe.contentWindow.print()
         } catch (e) {
           console.log('print iframe error occurred')
