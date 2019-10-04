@@ -1,23 +1,29 @@
 <template>
-  <div
-    v-if="selectedOrder"
-    :class="['main-orders', { active: mainOrdersHendler }]"
-    class="main-orders color-dashboard-background"
-  >
-    <Header :order="selectedOrder.item" />
-    <div class="main-orders-list-wrapper">
-      <Items
-        :order="selectedOrder.item"
-        :items="selectedOrder.item.items"
-        :catItems="catItems"
-      />
+  <div>
+    <btnBack
+      v-if="device == 'mobile' && transactionDetailView"
+      :param="'transaction'"
+    />
+    <div
+      v-if="selectedOrder"
+      :class="['main-orders', { active: mainOrdersHendler }]"
+      class="main-orders color-dashboard-background"
+    >
+      <Header :order="selectedOrder.item" />
+      <div class="main-orders-list-wrapper">
+        <Items
+          :order="selectedOrder.item"
+          :items="selectedOrder.item.items"
+          :catItems="catItems"
+        />
+      </div>
+      <Footer :order="selectedOrder.item" />
+      <orders-menu />
     </div>
-    <Footer :order="selectedOrder.item" />
-    <orders-menu />
-  </div>
-  <div class="food-block" v-else>
-    <div class="text-danger text-center font-weight-bold">
-      {{ _t('No orders found.') }}
+    <div class="food-block" v-else>
+      <div class="text-danger text-center font-weight-bold">
+        {{ _t('No orders found.') }}
+      </div>
     </div>
   </div>
 </template>
@@ -27,6 +33,7 @@ import Header from './cart/newOrders/Header.vue'
 import Footer from './cart/Footer'
 import Items from './cart/newOrders/Items.vue'
 import ordersMenu from '../../mobileComponents/mobileOrdersMenu.vue'
+import btnBack from '../../mobileComponents/mobileElements/btnBack'
 
 import { mapState, mapGetters } from 'vuex'
 
@@ -45,6 +52,7 @@ export default {
     ...mapState('checkout', ['order']),
     ...mapGetters(['mainOrdersHendler']),
     ...mapGetters('location', ['_t']),
+    ...mapGetters(['transactionDetailView', 'transactionListView', 'device']),
   },
   methods: {
     cartClose() {
@@ -57,6 +65,7 @@ export default {
     Footer,
     // PayNow,
     ordersMenu,
+    btnBack,
   },
 }
 </script>

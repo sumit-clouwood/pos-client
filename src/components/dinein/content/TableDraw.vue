@@ -478,8 +478,8 @@ export default {
             d.table_position_coordinate.angle = 0
           }
           transform = `rotate(${d.table_position_coordinate.angle},${d
-            .table_position_coordinate.x + (d.chairs > 5 ? 109 : 60)},${d
-            .table_position_coordinate.y + (d.chairs > 5 ? 109 : 60)})`
+            .table_position_coordinate.x + (d.chairs > 6 ? 109 : 60)},${d
+            .table_position_coordinate.y + (d.chairs > 6 ? 109 : 60)})`
           return transform
         })
         .attr('x', function(d) {
@@ -494,7 +494,7 @@ export default {
         .attr('table_number', d => d.number)
         .attr('chairs', d => d.chairs)
         .attr('width', function(d) {
-          let tableWidth = d.chairs > 5 ? 220 : 120
+          let tableWidth = d.chairs > 6 ? 220 : 120
           /*if (d.table_shape === 'rectangle') {
             tableWidth = d.chairs > 5 ? 220 : 120
           } /!*else if (d.table_shape === 'circle') {
@@ -504,7 +504,7 @@ export default {
           return tableWidth
         })
         .attr('height', function(d) {
-          let tableWidth = d.chairs > 5 ? 220 : 120
+          let tableWidth = d.chairs > 6 ? 220 : 120
           /*if (d.table_shape === 'rectangle') {
             tableWidth = d.chairs > 5 ? 220 : 120
           } /!*else if (d.table_shape === 'circle') {
@@ -583,8 +583,8 @@ export default {
               d.table_position_coordinate.angle = 0
             }
             transform = `rotate(${d.table_position_coordinate.angle},${d
-              .table_position_coordinate.x + (d.chairs > 5 ? 109 : 60)},${d
-              .table_position_coordinate.y + (d.chairs > 5 ? 109 : 60)})`
+              .table_position_coordinate.x + (d.chairs > 6 ? 109 : 60)},${d
+              .table_position_coordinate.y + (d.chairs > 6 ? 109 : 60)})`
             return transform
           })
           .attr('x', function(d) {
