@@ -1,0 +1,84 @@
+/* Sharp Calendar */
+.wrapper,
+.wrapperHor{
+ background-color: #f2eeee;
+ padding: 5px;
+}
+
+.SCElement {
+ font-size:24px;
+ background-color:#f1f3f6;
+ color:#333;
+ opacity:1;
+}
+/*
+.wrapperHor .SCElement {
+    border: 2px solid #444;
+}
+*/
+
+.SCSel,
+.wrapperHor .SCSel {
+ color: #333;
+ font-weight: 400;
+ /*border: 2px solid #333;*/
+ border-radius: 0;
+}
+
+.SCMarked>div {
+ position: relative;
+}
+
+.wd_0 .SCElement, .wd_6 .SCElement {
+ background-color: #0DA4D3;
+}
+
+.SCElement:hover {
+ opacity: 0.5;
+}
+
+.SCToday {
+ background-color:#009300;
+}
+
+.SCSel {
+ /*border-left: 2px solid #F77565;*/
+}
+
+.SCMarked>div:before {
+ content: "";
+ position: absolute;
+ top: 0%;
+ right: 0%;
+ width: 0px;
+ height: 0px;
+ border-bottom: 8px solid #eee;
+ border-right: 8px solid transparent;
+}
+
+.SCMarked>div:after {
+ content: "";
+ position: absolute;
+ top: 0%;
+ right: 0%;
+ width: 0px;
+ height: 0px;
+ border-top: 7px solid #fff;
+ border-left: 7px solid transparent;
+}
+
+.SCYear .SCElement > div {
+ width: 168px !important;
+}
+.SCMonth .SCElement > div {
+ width: 70px !important;
+}
+.SCDay .SCElement > div {
+ width: 70px !important;
+}
+section#main {
+ height: auto !important;
+}
+.SCYear {
+ display: none !important;
+}

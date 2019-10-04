@@ -9,12 +9,15 @@
       <div class="pos-reservation-header">
         <div class="reservation-date-format">
           <p>Select Date</p>
-          <div mbsc-page class="demo-week-view">
-            <div mbsc-form>
-              <div class="mbsc-form-group">
-                <div id="demo-one-week" />
-              </div>
-            </div>
+          <input
+            type="hidden"
+            id="selectedDates"
+            value="2014-8-13,2014-8-10,2014-8-27,2014-7-27,2014-9-25,2014-9-20"
+          />
+          <div id="page" class="page">
+            <section id="main">
+              <div class="wrapperHor"></div>
+            </section>
           </div>
         </div>
       </div>
@@ -23,9 +26,10 @@
           <thead>
             <tr>
               <th>Time</th>
-              <th>Table Number</th>
+              <th>Area/Table</th>
               <th>Guests</th>
-              <th>Customer Name</th>
+              <th>Customer</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -36,12 +40,19 @@
               <td>
                 {{ reservation.start_date }} : {{ reservation.start_time }}
               </td>
-              <td>{{ reservation.assigned_table_id }}</td>
+              <td>Area / {{ reservation.assigned_table_id }}</td>
               <td>
                 <span class="fa fa-user"></span
                 >{{ reservation.number_of_guests }}
               </td>
               <td>{{ reservation.customers }}</td>
+              <td>
+                <span class="fa fa-edit"></span>
+                <span class="dlt-icon"
+                  ><img src="img/pos/delete-icon.svg"
+                /></span>
+                <span class="fa fa-right"></span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -57,9 +68,7 @@
 <script>
 import { mapState } from 'vuex'
 import TableDraw from '../content/TableDraw'
-/* calendar   --*/
-
-/* global mobiscroll */
+/* global $ */
 export default {
   name: 'Reservation',
   components: { TableDraw },
@@ -67,33 +76,73 @@ export default {
     ...mapState('dinein', ['tablesOnArea', 'dineInTabType', 'allBookedTables']),
   },
   updated() {
-    /* calendar   --*/
-    window.isMbscDemo = true
     this.cal()
   },
   methods: {
     /* calendar   --*/
     cal: function() {
       // Use the settings object to change the theme
-      mobiscroll.settings = {
-        lang: 'en', // Specify language like: lang: 'pl' or omit setting to use default
-        theme: 'ios', // Specify theme like: theme: 'ios' or omit setting to use default
-      }
-
-      mobiscroll.calendar('#demo-one-week', {
-        display: 'inline', // Specify display mode like: display: 'bottom' or omit setting to use default
-        weeks: 1, // More info about weeks: https://docs.mobiscroll.com/4-8-3/javascript/calendar#opt-weeks
+      $(function() {
+        $('#main, #projects .wrapper').height($(window).height())
+        $(window).on('resize', function() {
+          $('#main, #projects .wrapper').height($(window).height())
+        })
       })
+      $('.wrapperHor').SC({
+        selectedDatesObj: 'selectedDates',
+        animate: true,
+        useWheel: true,
+        vertical: false,
+        sizes: 'auto',
+        callbackDelay: 500,
+        years: 1,
+        months: 3,
+        days: 3,
+        invert: false,
+        combineMonthYear: false,
+        showDayArrows: false,
+        showDayNames: true,
+        monthNames: [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ],
+        dayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        doubleDigitsDays: true,
+        allowSelectSpans: true,
+        callback: function(cal) {
+          $('#wtf').html('Selected date: ' + cal.currentDate)
+        },
+      })
+      let _gaq = _gaq || []
+      _gaq.push(['_setAccount', 'UA-36251023-1'])
+      _gaq.push(['_setDomainName', 'jqueryscript.net'])
+      _gaq.push(['_trackPageview'])(function() {
+        var ga = document.createElement('script')
+        ga.type = 'text/javascript'
+        ga.async = true
+        ga.src =
+          ('https:' == document.location.protocol
+            ? 'https://ssl'
+            : 'http://www') + '.google-analytics.com/ga.js'
+        var s = document.getElementsByTagName('script')[0]
+        s.parentNode.insertBefore(ga, s)
+      })()
     },
   },
 }
 </script>
 
 <style scoped>
-/* calendar   --*/
-[mbsc-form] {
-  visibility: visible !important;
-}
 .fixed-reservation {
   position: fixed;
   right: 0;
@@ -104,7 +153,7 @@ export default {
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-row-gap: 20px;
-  width: 500px;
+  width: 600px;
 }
 .fixed-reservation th {
   color: #a4a4a4;
