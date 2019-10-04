@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import auth from './modules/auth'
+import printingServer from './modules/printingServer'
 import category from './modules/category'
 import modifier from './modules/modifier'
 import order from './modules/order'
@@ -44,6 +45,7 @@ const store = new Vuex.Store({
     location,
     modifier,
     customer,
+    printingServer,
     category,
     orderForm,
     surcharge,

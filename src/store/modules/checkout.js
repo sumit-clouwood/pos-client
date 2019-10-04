@@ -2,7 +2,6 @@ import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
-import LookupData from '../../plugins/helpers/LookupData'
 
 // initial state
 const state = {
@@ -15,11 +14,18 @@ const state = {
   loading: false,
   orderNumber: null,
   changeAmountStatus: false,
+  paymentMsgStatus: false,
   processing: false,
 }
 
 // getters
 const getters = {
+  complete: (state, getters, rootState) => {
+    if (!rootState.order.splitBill) {
+      return true
+    }
+    return !rootState.order.items.some(item => item.paid === false)
+  },
   calculateOrderTotals: () => order => {
     let data = {
       subTotal: 0,
@@ -69,18 +75,46 @@ const getters = {
 
 // actions
 const actions = {
-  pay(
-    { commit, getters, rootGetters, rootState, dispatch, state },
-    { action }
-  ) {
+  validatePayment({ rootState, rootGetters, commit }, action) {
+    const totalPayable = rootGetters['checkoutForm/orderTotal']
+    commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
+
+    if (
+      rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
+      action == 'dine-in-place-order' ||
+      action === CONSTANTS.ORDER_STATUS_ON_HOLD
+    ) {
+      return Promise.resolve()
+    }
+
+    const paid = rootGetters['checkoutForm/paid']
+    commit(mutation.SET_PAID_AMOUNT, paid)
+
+    let pendingAmount = totalPayable - paid
+    pendingAmount = parseFloat(pendingAmount).toFixed(2)
+    if (pendingAmount >= 0.01) {
+      commit(mutation.SET_PENDING_AMOUNT, pendingAmount)
+      commit(
+        'checkoutForm/SET_ERROR',
+        'Please add pending amount of ' +
+          pendingAmount +
+          ' before proceeding further.',
+        { root: true }
+      )
+      return Promise.reject()
+    }
+    // see if there is a change amount
+    const changedAmount = paid - totalPayable
+    commit(mutation.SET_CHANGED_AMOUNT, changedAmount)
+    return Promise.resolve()
+  },
+
+  validateEvent({ commit, rootState }) {
     if (state.processing === true) {
       // eslint-disable-next-line no-console
       console.log('Dual event detected')
       return Promise.reject('Dual event detected')
     }
-
-    // set the async state
-    commit(mutation.SET_PROCESSING, true)
 
     //if no order start time then reject otherwise
     //reset order start time
@@ -90,577 +124,592 @@ const actions = {
       return Promise.reject('Fake order or an order already in progress')
     }
 
-    return new Promise((resolve, reject) => {
-      let validPayment = false
-      const totalPayable = rootGetters['checkoutForm/orderTotal']
-      commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
+    // set the async state
+    commit(mutation.SET_PROCESSING, true)
+    return Promise.resolve()
+  },
 
-      //If order type is dine-in and order placed not paid or order is hold
-      if (
-        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
-        action == 'dine-in-place-order' ||
-        action === CONSTANTS.ORDER_STATUS_ON_HOLD
-      ) {
-        validPayment = true
-      } else {
-        const paid = rootGetters['checkoutForm/paid']
-        commit(mutation.SET_PAID_AMOUNT, paid)
+  injectCrmData({ rootState }, order) {
+    if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY) {
+      //order was modifying from delivery so no need to overwrite info
+      order.customer = rootState.order.selectedOrder.item.customer
+      order.order_building = rootState.order.selectedOrder.item.order_building
+      order.order_street = rootState.order.selectedOrder.item.order_street
+      order.order_flat_number =
+        rootState.order.selectedOrder.item.order_flat_number
+      order.order_nearest_landmark =
+        rootState.order.selectedOrder.item.order_nearest_landmark
+      order.order_city = rootState.order.selectedOrder.item.order_city
+      order.order_country = rootState.order.selectedOrder.item.order_country
+      order.order_delivery_area =
+        rootState.order.selectedOrder.item.order_delivery_area
+    } else if (rootState.customer.offlineData) {
+      //offline data was saved
+      order.customer = ''
+      const address = rootState.customer.offlineData
+      // address.delivery_area
+      order.order_building = address.building
+      order.order_street = address.street
+      order.order_flat_number = address.flat_number
+      order.order_nearest_landmark = address.nearest_landmark
+      order.order_city = address.city
+      order.order_country = address.country
+      order.order_delivery_area = address.delivery_area_id
+    } else {
+      //network online
+      order.customer = rootState.customer.customerId
+      const address = rootState.customer.address
+      // address.delivery_area
+      order.order_building = address.building
+      order.order_street = address.street
+      order.order_flat_number = address.flat_number
+      order.order_nearest_landmark = address.nearest_landmark
+      order.order_city = address.city
+      order.order_country = address.country
+      order.order_delivery_area = address.delivery_area_id
+    }
 
-        let pendingAmount = totalPayable - paid
-        pendingAmount = parseFloat(pendingAmount).toFixed(2)
-        if (pendingAmount >= 0.01) {
-          commit(mutation.SET_PENDING_AMOUNT, pendingAmount)
-          commit(
-            'checkoutForm/SET_ERROR',
-            'Please add pending amount of ' +
-              pendingAmount +
-              ' before proceeding further.',
-            { root: true }
-          )
+    if (rootState.customer.address) {
+      order.customer_address_id = rootState.customer.address._id.$oid
+    }
+
+    return Promise.resolve(order)
+  },
+
+  injectHoldOrderData({ rootState }, order) {
+    if (rootState.customer.address) {
+      order.customer_address_id = rootState.customer.address._id.$oid
+    }
+    return Promise.resolve(order)
+  },
+
+  injectDineinData({ rootState }, order) {
+    order.table_reservation_id =
+      localStorage.getItem('reservationId') || rootState.dinein.reserverationId
+    return Promise.resolve(order)
+  },
+
+  preOrderHook({ rootState, dispatch }, { order, action }) {
+    if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER) {
+      return dispatch('injectCrmData', order)
+    }
+
+    if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
+      return dispatch('injectDineinData', order)
+    }
+
+    if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+      return dispatch('injectHoldOrderData', order)
+    }
+
+    return Promise.resolve(order)
+  },
+
+  paymentsHook({ rootState, rootGetters }, { action, order }) {
+    let totalPaid = 0
+
+    if (rootState.checkoutForm.payments.length) {
+      order.order_payments = rootState.checkoutForm.payments.map(payment => {
+        let orderPoints = 0
+        const amount = !isNaN(payment.amount) ? payment.amount : 0
+
+        if (payment.method.name === CONSTANTS.ORDER_PAYMENT_TYPE_LOYALTY) {
+          orderPoints = rootState.checkoutForm.loyaltyPoints
         } else {
-          // see if there is a change amount
-          const changedAmount = paid - totalPayable
-          commit(mutation.SET_CHANGED_AMOUNT, changedAmount)
-
-          validPayment = true
+          orderPoints = amount
         }
-      }
-      if (validPayment) {
-        //send order for payment
-        let order = {}
-        const orderPlacementTime = rootState.order.startTime
 
-        try {
-          order = {
-            cashier_id: rootState.auth.userDetails.item._id,
-            customer: '',
-            customer_address_id: '',
-            referral: '',
-            transition_order_no:
-              rootState.location.store.branch_n +
-              '-' +
-              rootState.location.terminalCode +
-              '-' +
-              orderPlacementTime,
-            currency: rootState.location.currency,
-            order_status:
-              action === CONSTANTS.ORDER_STATUS_ON_HOLD
-                ? CONSTANTS.ORDER_STATUS_ON_HOLD
-                : CONSTANTS.ORDER_STATUS_IN_PROGRESS,
-            order_source: CONSTANTS.ORDER_SOURCE_POS,
-            order_type: rootState.order.orderType.OTApi,
-            order_mode: 'online',
-            //this time can be used to indentify offline order
-            real_created_datetime: orderPlacementTime,
-            // order_mode: 'online',
-            //remove the modifiers prices from subtotal
-            print_count: 0,
-            amount_changed: state.changedAmount,
-            order_building: '',
-            order_street: '',
-            order_flat_number: '',
-            order_nearest_landmark: '',
-            order_city: '',
-            order_country: '',
-            order_delivery_area: '',
-            item_discounts: [],
-            item_modifiers: '',
-            order_surcharges: [],
-            order_discounts: [],
-            order_payments: [],
+        let paymentPart = {
+          entity_id: payment.method._id,
+          name: payment.method.name,
+          collected: amount,
+          param1: payment.cardId,
+          param2: orderPoints,
+          param3: payment.code,
+        }
+
+        totalPaid += amount
+        //Yuvraj, have a check here
+        if (payment.method.type == CONSTANTS.LOYALTY) {
+          if (parseFloat(rootState.customer.loyalty.balance) > 0) {
+            order.loyalty_customer = {
+              balance: rootState.customer.loyalty.balance,
+              redeemed_amount_value: rootState.checkoutForm.loyaltyAmount,
+            }
           }
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.log(e)
-        }
-        if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_DINE_IN) {
           order.customer = rootState.customer.customerId
         }
-        if (
-          rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER
-        ) {
-          if (
-            rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
-          ) {
-            //order was modifying from delivery so no need to overwrite info
-            order.customer = rootState.order.selectedOrder.item.customer
-            order.order_building =
-              rootState.order.selectedOrder.item.order_building
-            order.order_street = rootState.order.selectedOrder.item.order_street
-            order.order_flat_number =
-              rootState.order.selectedOrder.item.order_flat_number
-            order.order_nearest_landmark =
-              rootState.order.selectedOrder.item.order_nearest_landmark
-            order.order_city = rootState.order.selectedOrder.item.order_city
-            order.order_country =
-              rootState.order.selectedOrder.item.order_country
-            order.order_delivery_area =
-              rootState.order.selectedOrder.item.order_delivery_area
-          } else if (rootState.customer.offlineData) {
-            //offline data was saved
-            order.customer = ''
-            const address = rootState.customer.offlineData
-            // address.delivery_area
-            order.order_building = address.building
-            order.order_street = address.street
-            order.order_flat_number = address.flat_number
-            order.order_nearest_landmark = address.nearest_landmark
-            order.order_city = address.city
-            order.order_country = address.country
-            order.order_delivery_area = address.delivery_area_id
+        return paymentPart
+      })
+
+      if (rootState.order.orderType.OTApi !== CONSTANTS.ORDER_TYPE_DINE_IN) {
+        order.order_payments = order.order_payments.map(item => {
+          item.collected = Num.round(item.collected).toFixed(2)
+          return item
+        })
+      }
+    } else if (
+      rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
+      action === CONSTANTS.ORDER_STATUS_ON_HOLD
+    ) {
+      //do something here
+    } else {
+      const method = rootGetters['payment/cash']
+      if (action != 'dine-in-place-order') {
+        order.order_payments = [
+          {
+            entity_id: method._id,
+            name: method.name,
+            collected: '0.00',
+            param1: '',
+            param2: '',
+            param3: '',
+          },
+        ]
+      }
+    }
+    order.total_paid = Num.round(totalPaid).toFixed(2)
+    return Promise.resolve(order)
+  },
+
+  addItemsToOrder({ rootState, rootGetters, dispatch }, { order, action }) {
+    let itemModifiers = []
+    let item_discounts = []
+
+    order.items = []
+    rootState.order.items.forEach(oitem => {
+      let item = null
+      if (rootState.order.splitBill) {
+        if (action === 'dine-in-place-order') {
+          //place order
+          if (oitem.paid === false) {
+            item = oitem
+          }
+        } else {
+          //pay for order
+          if (oitem.split && oitem.paid === false) {
+            item = oitem
+          }
+        }
+      } else {
+        item = oitem
+      }
+
+      if (item) {
+        let orderItem = {
+          name: item.name,
+          entity_id: item._id,
+          no: item.orderIndex,
+          status: 'in-progress',
+          //itemTax.undiscountedTax is without modifiers
+          tax: item.tax,
+          price: item.netPrice,
+          qty: item.quantity,
+        }
+
+        //we are sending item price and modifier prices separtely but sending
+        //item discount as total of both discounts
+
+        if (item.discount) {
+          let itemDiscountedTax = Num.round(
+            rootGetters['order/itemTaxDiscount'](item)
+          )
+
+          if (item.discountedNetPrice) {
+            const modifiersTax = rootGetters['order/itemModifiersTax'](item)
+            itemDiscountedTax = item.tax + modifiersTax - item.discountedTax
+          }
+
+          const modifiersDiscountedTax = Num.round(
+            rootGetters['order/itemModifierTaxDiscount'](item)
+          )
+
+          let itemDiscount = item.discount
+          itemDiscount.itemId = item._id
+          itemDiscount.itemNo = item.orderIndex
+          itemDiscount.quantity = item.quantity
+          //undiscountedTax is without modifiers
+
+          if (item.discountedNetPrice) {
+            //don't round fixed discount calculations
+            itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
           } else {
-            //network online
-            order.customer = rootState.customer.customerId
-            const address = rootState.customer.address
-            // address.delivery_area
-            order.order_building = address.building
-            order.order_street = address.street
-            order.order_flat_number = address.flat_number
-            order.order_nearest_landmark = address.nearest_landmark
-            order.order_city = address.city
-            order.order_country = address.country
-            order.order_delivery_area = address.delivery_area_id
-          }
-        }
-
-        order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
-          appliedSurcharge => {
-            const surcharge = rootState.surcharge.surcharges.find(
-              surcharge => surcharge._id === appliedSurcharge.id
+            itemDiscount.tax = Num.round(
+              itemDiscountedTax + modifiersDiscountedTax
             )
-            return {
-              entity_id: surcharge._id,
-              name: surcharge.name,
-              type: surcharge.type,
-              price: appliedSurcharge.amount,
-              rate: surcharge.rate,
-              tax: appliedSurcharge.tax,
-              tax_rate: surcharge.tax_sum,
-              taxable: surcharge.tax_sum ? true : false,
-            }
           }
-        )
-
-        //add order note
-        order.order_note = rootState.order.orderNote
-        //add referral
-        if (rootState.order.referral) {
-          //order.referral = rootState.order.referral.referralName
-          order.referral = rootState.order.referral.referralId
-        }
-        //add future order
-        if (rootState.order.futureOrder) {
-          order.future_order = 1
-          order.future_order_date = rootState.order.futureOrder
+          itemDiscount.price =
+            rootGetters['order/itemNetDiscount'](item) +
+            rootGetters['order/itemModifierDiscount'](item)
+          item_discounts.push(itemDiscount)
         }
 
-        //adding item data
-        let itemModifiers = []
-        let item_discounts = []
-        //let itemDiscountedTax = 0
-        let orderCovers = []
-        order.items = rootState.order.items.map(item => {
-          let orderItem = {
-            name: item.name,
-            entity_id: item._id,
-            no: item.orderIndex,
-            status: 'in-progress',
-            //itemTax.undiscountedTax is without modifiers
-            tax: item.tax,
-            price: item.netPrice,
-            qty: item.quantity,
-          }
-          if (
-            rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN
-          ) {
-            let itemCover = item.coverNo
-              ? item.coverNo
-              : rootState.dinein.selectedCover._id
-            let itemCoverName = item.cover_name
-              ? item.cover_name
-              : rootState.dinein.selectedCover.name
-            if (
-              orderCovers.filter(item => item.entity_id == itemCover).length ===
-              0
-            ) {
-              orderCovers.push({ entity_id: itemCover, name: itemCoverName })
-            }
-            let guest_no = rootState.dinein.guests
-            orderItem = {
-              name: item.name,
-              entity_id: item._id,
-              no: item.orderIndex,
-              status: 'in-progress',
-              tax: item.tax,
-              price: item.netPrice,
+        if (item.modifiersData && item.modifiersData.length) {
+          item.modifiersData.forEach(modifier => {
+            itemModifiers.push({
+              entity_id: modifier.modifierId,
+              for_item: item.orderIndex,
+              price: modifier.price,
+              tax: modifier.tax,
+              name: modifier.name,
               qty: item.quantity,
-              cover_no: itemCover,
-              guest: guest_no,
-              cover_name: itemCoverName,
-            }
-          }
-
-          //we are sending item price and modifier prices separtely but sending
-          //item discount as total of both discounts
-
-          if (item.discount) {
-            let itemDiscountedTax = Num.round(
-              rootGetters['order/itemTaxDiscount'](item)
-            )
-
-            if (item.discountedNetPrice) {
-              const modifiersTax = rootGetters['order/itemModifiersTax'](item)
-              itemDiscountedTax = item.tax + modifiersTax - item.discountedTax
-            }
-
-            const modifiersDiscountedTax = Num.round(
-              rootGetters['order/itemModifierTaxDiscount'](item)
-            )
-
-            let itemDiscount = item.discount
-            itemDiscount.itemId = item._id
-            itemDiscount.itemNo = item.orderIndex
-            itemDiscount.quantity = item.quantity
-            //undiscountedTax is without modifiers
-
-            if (item.discountedNetPrice) {
-              //don't round fixed discount calculations
-              itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
-            } else {
-              itemDiscount.tax = Num.round(
-                itemDiscountedTax + modifiersDiscountedTax
-              )
-            }
-            itemDiscount.price =
-              rootGetters['order/itemNetDiscount'](item) +
-              rootGetters['order/itemModifierDiscount'](item)
-            item_discounts.push(itemDiscount)
-          }
-
-          if (item.modifiersData && item.modifiersData.length) {
-            item.modifiersData.forEach(modifier => {
-              itemModifiers.push({
-                entity_id: modifier.modifierId,
-                for_item: item.orderIndex,
-                price: modifier.price,
-                tax: modifier.tax,
-                name: modifier.name,
-                qty: item.quantity,
-                type: modifier.type,
-              })
+              type: modifier.type,
             })
-            //get all modifiers by modifier ids attached to item
-          }
-          return orderItem
-        })
-
-        order.item_discounts = item_discounts.map(itemDiscount => {
-          return {
-            name: itemDiscount.name,
-            type: itemDiscount.type,
-            rate:
-              itemDiscount.type === CONSTANTS.VALUE
-                ? itemDiscount.value
-                : itemDiscount.rate,
-            price: itemDiscount.price * itemDiscount.quantity,
-            tax: itemDiscount.tax * itemDiscount.quantity,
-            for_item: itemDiscount.itemNo,
-            entity_id: itemDiscount.id,
-          }
-        })
-
-        order.item_modifiers = itemModifiers
-
-        //order level discount
-        order.order_discounts = []
-
-        if (rootState.discount.appliedOrderDiscount) {
-          const discount = rootState.discount.appliedOrderDiscount
-          const orderDiscount = {
-            name: discount.name,
-            price: Num.round(rootGetters['discount/orderDiscountWithoutTax']),
-            tax: rootState.discount.taxDiscountAmount,
-            type: discount.type,
-            rate:
-              discount.type === CONSTANTS.VALUE
-                ? discount.value
-                : discount.rate,
-            include_surcharge: discount.include_surcharge,
-            entity_id: discount._id,
-          }
-          order.order_discounts.push(orderDiscount)
+          })
+          //get all modifiers by modifier ids attached to item
         }
+        order.items.push(orderItem)
+      }
+    })
+    order.item_discounts = item_discounts.map(itemDiscount => {
+      return {
+        name: itemDiscount.name,
+        type: itemDiscount.type,
+        rate:
+          itemDiscount.type === CONSTANTS.VALUE
+            ? itemDiscount.value
+            : itemDiscount.rate,
+        price: itemDiscount.price * itemDiscount.quantity,
+        tax: itemDiscount.tax * itemDiscount.quantity,
+        for_item: itemDiscount.itemNo,
+        entity_id: itemDiscount.id,
+      }
+    })
 
-        //adding tip amount
-        order.tip_amount = rootState.checkoutForm.tipAmount
+    order.item_modifiers = itemModifiers
 
-        //adding payment breakdown
-        let totalPaid = 0
+    return dispatch('orderItemsHook', order)
+  },
 
-        if (rootState.checkoutForm.payments.length) {
-          order.order_payments = rootState.checkoutForm.payments.map(
-            payment => {
-              let orderPoints = 0
-              const amount = !isNaN(payment.amount) ? payment.amount : 0
+  injectDineInItemsData({ rootState }, order) {
+    let orderCovers = []
+    order.items = order.items.map(oitem => {
+      let itemCover = oitem.coverNo
+        ? oitem.coverNo
+        : rootState.dinein.selectedCover._id
+      let itemCoverName = oitem.cover_name
+        ? oitem.cover_name
+        : rootState.dinein.selectedCover.name
+      if (
+        orderCovers.filter(item => item.entity_id == itemCover).length === 0
+      ) {
+        orderCovers.push({ entity_id: itemCover, name: itemCoverName })
+      }
 
-              //where is CONSTANTS.ORDER_PAYMENT_TYPE defined ?
-              if (payment.method.name === CONSTANTS.ORDER_PAYMENT_TYPE) {
-                orderPoints = rootState.checkoutForm.loyaltyPoints
-              } else {
-                orderPoints = amount
+      oitem.cover_no = itemCover
+      oitem.guest = rootState.dinein.guests
+      oitem.cover_name = itemCoverName
+      return oitem
+    })
+    order.covers = orderCovers
+    return Promise.resolve(order)
+  },
+
+  orderItemsHook({ rootState, dispatch }, order) {
+    if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
+      return dispatch('injectDineInItemsData', order)
+    }
+    return Promise.resolve(order)
+  },
+
+  pay(
+    { commit, getters, rootGetters, rootState, dispatch, state },
+    { action }
+  ) {
+    return new Promise((resolve, reject) => {
+      dispatch('validateEvent')
+        .then(() => {
+          dispatch('validatePayment', action)
+            .then(() => {
+              //send order for payment
+              let order = {}
+              const orderPlacementTime = rootState.order.startTime
+
+              try {
+                const transitionOrderNo =
+                  rootState.location.store.branch_n +
+                  '-' +
+                  rootState.location.terminalCode +
+                  '-' +
+                  orderPlacementTime
+
+                let orderStatus = CONSTANTS.ORDER_STATUS_IN_PROGRESS
+
+                if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+                  orderStatus = CONSTANTS.ORDER_STATUS_ON_HOLD
+                }
+
+                order = {
+                  cashier_id: rootState.auth.userDetails.item._id,
+                  customer: '',
+                  customer_address_id: '',
+                  referral: '',
+                  transition_order_no: transitionOrderNo,
+                  currency: rootState.location.currency,
+                  order_status: orderStatus,
+
+                  order_source: CONSTANTS.ORDER_SOURCE_POS,
+                  order_type: rootState.order.orderType.OTApi,
+                  order_mode: 'online',
+                  //this time can be used to indentify offline order
+                  real_created_datetime: orderPlacementTime,
+                  // order_mode: 'online',
+                  //remove the modifiers prices from subtotal
+                  print_count: 0,
+                  amount_changed: state.changedAmount,
+                  order_building: '',
+                  order_street: '',
+                  order_flat_number: '',
+                  order_nearest_landmark: '',
+                  order_city: '',
+                  order_country: '',
+                  order_delivery_area: '',
+                  item_discounts: [],
+                  item_modifiers: '',
+                  order_surcharges: [],
+                  order_discounts: [],
+                  order_payments: [],
+                }
+              } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log(e)
               }
 
-              let paymentPart = {
-                entity_id: payment.method._id,
-                name: payment.method.name,
-                collected: amount,
-                param1: payment.cardId,
-                param2: orderPoints,
-                param3: payment.code,
-              }
-
-              totalPaid += amount
-              //Yuvraj, have a check here
-              if (payment.method.type == CONSTANTS.LOYALTY) {
-                if (parseFloat(rootState.customer.loyalty.balance) > 0) {
-                  order.loyalty_customer = {
-                    balance: rootState.customer.loyalty.balance,
-                    redeemed_amount_value: rootState.checkoutForm.loyaltyAmount,
+              order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
+                appliedSurcharge => {
+                  const surcharge = rootState.surcharge.surcharges.find(
+                    surcharge => surcharge._id === appliedSurcharge.id
+                  )
+                  return {
+                    entity_id: surcharge._id,
+                    name: surcharge.name,
+                    type: surcharge.type,
+                    price: appliedSurcharge.amount,
+                    rate: surcharge.rate,
+                    tax: appliedSurcharge.tax,
+                    tax_rate: surcharge.tax_sum,
+                    taxable: surcharge.tax_sum ? true : false,
                   }
                 }
-                order.customer = rootState.customer.customerId
+              )
+
+              //add order note
+              order.order_note = rootState.order.orderNote
+              //add referral
+              if (rootState.order.referral) {
+                //order.referral = rootState.order.referral.referralName
+                order.referral = rootState.order.referral.referralId
               }
-              return paymentPart
-            }
-          )
-        } else if (
-          rootState.order.orderType.OTApi ===
-            CONSTANTS.ORDER_TYPE_CALL_CENTER ||
-          action === CONSTANTS.ORDER_STATUS_ON_HOLD
-        ) {
-          if (rootState.customer.address) {
-            order.customer_address_id = rootState.customer.address._id.$oid
-          }
-          //do something here
-        } else {
-          const method = rootGetters['payment/cash']
-          if (action != 'dine-in-place-order') {
-            order.order_payments = [
-              {
-                entity_id: method._id,
-                name: method.name,
-                collected: '0.00',
-                param1: '',
-                param2: '',
-                param3: '',
-              },
-            ]
-          }
-        }
+              //add future order
+              if (rootState.order.futureOrder) {
+                order.future_order = 1
+                order.future_order_date = rootState.order.futureOrder
+              }
 
-        order.item_discounts = order.item_discounts.map(discount => {
-          discount.rate = Num.round(discount.rate).toFixed(2)
-          discount.price = Num.round(discount.price).toFixed(2)
-          discount.tax = Num.round(discount.tax).toFixed(2)
-          return discount
+              order.order_discounts = []
+
+              if (rootState.discount.appliedOrderDiscount) {
+                const discount = rootState.discount.appliedOrderDiscount
+                const orderDiscount = {
+                  name: discount.name,
+                  price: Num.round(
+                    rootGetters['discount/orderDiscountWithoutTax']
+                  ),
+                  tax: rootState.discount.taxDiscountAmount,
+                  type: discount.type,
+                  rate:
+                    discount.type === CONSTANTS.VALUE
+                      ? discount.value
+                      : discount.rate,
+                  include_surcharge: discount.include_surcharge,
+                  entity_id: discount._id,
+                }
+                order.order_discounts.push(orderDiscount)
+              }
+
+              //adding tip amount
+              order.tip_amount = rootState.checkoutForm.tipAmount
+
+              dispatch('addItemsToOrder', {
+                order: order,
+                action: action,
+              }).then(order => {
+                //order level discount
+
+                order.item_discounts = order.item_discounts.map(discount => {
+                  discount.rate = Num.round(discount.rate).toFixed(2)
+                  discount.price = Num.round(discount.price).toFixed(2)
+                  discount.tax = Num.round(discount.tax).toFixed(2)
+                  return discount
+                })
+
+                order.order_surcharges = order.order_surcharges.map(
+                  surcharge => {
+                    surcharge.rate = surcharge.rate
+                      ? Num.round(surcharge.rate).toFixed(2)
+                      : surcharge.rate
+                    surcharge.price = Num.round(surcharge.price).toFixed(2)
+                    surcharge.tax = Num.round(surcharge.tax).toFixed(2)
+                    surcharge.tax_rate = surcharge.tax_rate
+                      ? Num.round(surcharge.tax_rate).toFixed(2)
+                      : surcharge.tax_rate
+                    return surcharge
+                  }
+                )
+
+                //formatting
+                order.items = order.items.map(item => {
+                  item.price = Num.round(item.price).toFixed(2)
+                  item.tax = Num.round(item.tax).toFixed(2)
+                  return item
+                })
+
+                order.item_modifiers = order.item_modifiers.map(item => {
+                  item.price = Num.round(item.price).toFixed(2)
+                  item.tax = Num.round(item.tax).toFixed(2)
+                  return item
+                })
+
+                const orderData = getters.calculateOrderTotals(order)
+
+                order.sub_total = orderData.subTotal.toFixed(2)
+                order.total_surcharge = orderData.totalSurcharge.toFixed(2)
+                order.surcharge_tax = orderData.surchargeTax.toFixed(2)
+                order.total_discount = orderData.totalDiscount.toFixed(2)
+                order.total_tax = orderData.totalTax.toFixed(2)
+                order.balance_due = Num.round(orderData.balanceDue).toFixed(2)
+
+                //applying Fixing
+
+                order.amount_changed = Num.round(order.amount_changed).toFixed(
+                  2
+                )
+                order.tip_amount = Num.round(order.tip_amount).toFixed(2)
+
+                dispatch('preOrderHook', { action: action, order: order })
+                  .then(order => {
+                    dispatch('paymentsHook', {
+                      order: order,
+                      action: action,
+                    }).then(order => {
+                      commit(mutation.SET_ORDER, order)
+                      dispatch('createOrder', action)
+                        .then(response => {
+                          //reset order start time
+                          if (getters.complete) {
+                            commit('order/RESET_ORDER_TIME', null, {
+                              root: true,
+                            })
+                            commit(mutation.SET_PROCESSING, false)
+                            commit('order/SET_SPLIT_BILL', null, { root: true })
+                          }
+
+                          resolve(response)
+                          dispatch('postOrderHook')
+                        })
+                        .catch(response => {
+                          commit(mutation.SET_PROCESSING, false)
+                          reject(response)
+                        })
+                    })
+                  })
+                  .catch(() => {
+                    reject()
+                  })
+              })
+            })
+            .catch(error => {
+              reject(error)
+            })
         })
-
-        order.order_surcharges = order.order_surcharges.map(surcharge => {
-          surcharge.rate = surcharge.rate
-            ? Num.round(surcharge.rate).toFixed(2)
-            : surcharge.rate
-          surcharge.price = Num.round(surcharge.price).toFixed(2)
-          surcharge.tax = Num.round(surcharge.tax).toFixed(2)
-          surcharge.tax_rate = surcharge.tax_rate
-            ? Num.round(surcharge.tax_rate).toFixed(2)
-            : surcharge.tax_rate
-          return surcharge
+        .catch(error => {
+          reject(error)
         })
-
-        order.items = order.items.map(item => {
-          item.price = Num.round(item.price).toFixed(2)
-          item.tax = Num.round(item.tax).toFixed(2)
-          return item
-        })
-
-        order.item_modifiers = order.item_modifiers.map(item => {
-          item.price = Num.round(item.price).toFixed(2)
-          item.tax = Num.round(item.tax).toFixed(2)
-          return item
-        })
-
-        if (rootState.order.orderType.OTApi !== CONSTANTS.ORDER_TYPE_DINE_IN) {
-          order.order_payments = order.order_payments.map(item => {
-            item.collected = Num.round(item.collected).toFixed(2)
-            return item
-          })
-        }
-
-        const orderData = getters.calculateOrderTotals(order)
-
-        order.sub_total = orderData.subTotal.toFixed(2)
-        order.total_surcharge = orderData.totalSurcharge.toFixed(2)
-        order.surcharge_tax = orderData.surchargeTax.toFixed(2)
-        order.total_discount = orderData.totalDiscount.toFixed(2)
-        order.total_tax = orderData.totalTax.toFixed(2)
-        order.balance_due = Num.round(orderData.balanceDue).toFixed(2)
-
-        //applying Fixing
-        order.total_paid = Num.round(totalPaid).toFixed(2)
-        order.amount_changed = Num.round(order.amount_changed).toFixed(2)
-        order.tip_amount = Num.round(order.tip_amount).toFixed(2)
-
-        //Added a new parameter if dine-in order.
-        if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
-          order.covers = orderCovers
-          order.table_reservation_id = localStorage.getItem('reservationId')
-        }
-        //order.app_uniqueid = Crypt.uuid()
-        commit(mutation.SET_ORDER, order)
-        dispatch('createOrder', action)
-          .then(response => {
-            //reset order start time
-            commit('order/RESET_ORDER_TIME', null, { root: true })
-            commit(mutation.SET_PROCESSING, false)
-
-            resolve(response)
-          })
-          .catch(response => {
-            commit(mutation.SET_PROCESSING, false)
-            reject(response)
-          })
-      } else {
-        reject()
-      }
+      //If order type is dine-in and order placed not paid or order is hold
     })
   },
 
-  createOrder({ state, commit, rootState, rootGetters, dispatch }, action) {
-    commit(
-      'checkoutForm/SET_MSG',
-      { message: '', result: 'loading' },
-      {
-        root: true,
-      }
-    )
-    return new Promise((resolve, reject) => {
-      let response = null
-      let orderId = null
-      let orderNo = null
+  postOrderHook({ dispatch }) {
+    dispatch('transactionOrders/getTransactionOrders', null, {
+      root: true,
+    })
+  },
 
-      //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
-      //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
-      //                already but we want to modify it from delivery manager
+  getModifyOrder({ state, rootState }) {
+    let order = { ...state.order }
+    order.new_real_transition_order_no =
+      rootState.location.store.branch_n +
+      '-' +
+      rootState.location.terminalCode +
+      '-' +
+      rootState.order.startTime
+    delete order.real_created_datetime
+    return Promise.resolve(order)
+  },
 
-      //order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER means its a new delivery order
-      // we send user directly to delivery manager after printing invoice so we auto print inoivce
-      // without waiting for a button to be clicked
-
-      //order.order is a hold order, state.order contains current order
-      if (
-        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN &&
-        rootState.order.order_status !== 'completed'
-      ) {
-        let order = { ...state.order }
-        delete order.new_real_transition_order_no
-        delete order.modify_reason
-        delete order.order_system_status
-        delete order.real_created_datetime
-
-        if (rootState.order.orderId) {
-          response = OrderService.updateOrderItems(
-            order,
-            rootState.order.orderId,
-            ''
-          )
-        } else {
-          response = OrderService.saveOrder(
-            state.order,
-            rootState.customer.customer
-          )
-        }
-      } else if (
-        rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD ||
-        rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY ||
-        rootState.order.orderToModify
-      ) {
-        let order = { ...state.order }
-        order.new_real_transition_order_no =
-          rootState.location.store.branch_n +
-          '-' +
-          rootState.location.terminalCode +
-          '-' +
-          rootState.order.startTime
-        delete order.real_created_datetime
-
-        let modifyType = ''
-
-        switch (rootState.order.orderStatus) {
-          case CONSTANTS.ORDER_STATUS_ON_HOLD:
-            modifyType = 'hold'
-            break
-          case CONSTANTS.ORDER_STATUS_IN_DELIVERY:
-            order.modify_reason = 'Updated from POS'
-            break
-        }
-
-        if (rootState.order.orderToModify) {
-          order.modify_reason = 'Updated from Backend'
-        }
-        response = OrderService.modifyOrder(
-          order,
-          rootState.order.orderId,
-          modifyType
-        )
-      } else {
-        response = OrderService.saveOrder(
-          state.order,
-          rootState.customer.offlineData
-            ? rootState.customer.offlineData
-            : rootState.customer.customer
-        )
-      }
-      response
-        .then(response => {
-          //remove current order from hold list as it might be processed, refetching ll do it
-          if (response.data.status === 'ok') {
-            //set order id and order No
-            orderId = response.data.id
-            orderNo = response.data.order_no
-            //Invoice APP API Call with Custom Request
-            dispatch('printingServerInvoiceRaw', {
-              orderId: orderId,
-              orderNo: orderNo,
-            })
-            commit('order/ORDER_TO_MODIFY', null, { root: true })
-
-            if (typeof response.data.id !== 'undefined') {
-              //this is walk in order
-              orderId = response.data.id
-              orderNo = response.data.order_no
-              if (typeof response.data.order_no !== 'undefined') {
-                commit('SET_ORDER_NUMBER', response.data.order_no)
+  modifyHoldOrder({ dispatch, rootState, rootGetters, commit }, action) {
+    return new Promise(resolve => {
+      dispatch('getModifyOrder').then(order => {
+        OrderService.modifyOrder(order, rootState.order.orderId, 'hold')
+          .then(response => {
+            if (response.data.status === 'ok') {
+              if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+                let msgStr = rootGetters['location/_t'](
+                  'Hold order has been modified.'
+                )
+                commit(
+                  'checkoutForm/SET_MSG',
+                  { result: '', message: msgStr },
+                  {
+                    root: true,
+                  }
+                )
+                dispatch('reset')
+                resolve()
+              } else {
+                commit('order/SET_ORDER_ID', rootState.order.orderId, {
+                  root: true,
+                })
+                commit('SET_ORDER_NUMBER', rootState.order.orderData.order_no)
+                const msg = rootGetters['location/_t'](
+                  'Order placed Successfully'
+                )
+                dispatch('setMessage', {
+                  result: 'success',
+                  msg: msg,
+                }).then(() => {
+                  resolve(response.data)
+                  commit(mutation.PRINT, true)
+                })
               }
-            } else if (
-              rootState.order.selectedOrder &&
-              rootState.order.selectedOrder.item.order_no
-            ) {
-              commit(
-                'SET_ORDER_NUMBER',
-                rootState.order.selectedOrder.item.order_no
-              )
+              dispatch('holdOrders/getHoldOrders', {}, { root: true })
+            } else {
+              dispatch('handleSystemErrors', response).then(() => resolve())
             }
-            //check what is order status, hold or modifying delivery
-            switch (rootState.order.orderStatus) {
-              case CONSTANTS.ORDER_STATUS_ON_HOLD:
-                dispatch('holdOrders/getHoldOrders', {}, { root: true })
-                break
-            }
+          })
+          .catch(error => {
+            dispatch('handleRejectedResponse', {
+              response: error,
+              offline: false,
+            })
+              .then(() => {
+                resolve()
+              })
+              .catch(() => resolve())
+          })
+      })
+    })
+  },
 
-            //check action, either wants to modify or hold
-            if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+  modifyDeliveryOrder({ dispatch, rootState, rootGetters, commit }) {
+    return new Promise(resolve => {
+      dispatch('getModifyOrder').then(order => {
+        order.modify_reason = 'Updated from POS'
+        OrderService.modifyOrder(order, rootState.order.orderId)
+          .then(response => {
+            if (response.data.status === 'ok') {
               let msgStr = rootGetters['location/_t'](
-                'Order has been hold Successfully'
+                'Delivery order has been modified.'
               )
               commit(
                 'checkoutForm/SET_MSG',
@@ -669,250 +718,430 @@ const actions = {
                   root: true,
                 }
               )
-              resolve()
               dispatch('reset')
-              return true
+              resolve()
+            } else {
+              dispatch('handleSystemErrors', response).then(() => resolve())
             }
+          })
+          .catch(error => {
+            dispatch('handleRejectedResponse', {
+              response: error,
+              offline: false,
+            })
+              .then(() => {
+                resolve()
+              })
+              .catch(() => resolve())
+          })
+      })
+    })
+  },
 
-            if (!rootState.order.orderId) {
-              commit('order/SET_ORDER_ID', orderId, { root: true })
-            }
+  modifyDineOrder(
+    { dispatch, rootState, getters, rootGetters, commit },
+    action
+  ) {
+    return new Promise(resolve => {
+      dispatch('getModifyOrder').then(order => {
+        //delete order.order_system_status
+        delete order.new_real_transition_order_no
+        //delete order.real_created_datetime
 
-            let msgStr = rootGetters['location/_t']('Order placed Successfully')
+        OrderService.updateOrderItems(order, rootState.order.orderId)
+          .then(response => {
+            if (response.data.status === 'ok') {
+              let msgStr = rootGetters['location/_t'](
+                'Dinein order has been placed.'
+              )
 
-            commit(
-              'checkoutForm/SET_MSG',
-              { result: 'success', message: msgStr },
-              {
-                root: true,
+              if (action === 'dine-in-place-order') {
+                msgStr = rootGetters['location/_t'](
+                  'Dinein order has been modified.'
+                )
+                let resetFull = false
+                if (getters.complete) {
+                  resetFull = true
+                }
+                dispatch('reset', resetFull)
+                resolve()
+              } else {
+                //order paid
+                commit(mutation.PRINT, true)
+                commit(
+                  'SET_ORDER_NUMBER',
+                  rootState.order.selectedOrder.item.order_no
+                )
+                if (rootState.order.splitBill) {
+                  //mark items as paid in current execution
+                  dispatch('order/markSplitItemsPaid', null, { root: true })
+                }
+
+                resolve()
+
+                // if (getters.complete) {
+                //   resolve()
+                // } else {
+                //   //create another order with same reservation id but with remaining items
+                //   //dispatch('splitOrder').then(() => resolve())
+                // }
               }
-            )
 
-            //In case if order is not dine in, print out the invoice.
-            if (
-              rootState.order.orderType.OTApi ===
-                CONSTANTS.ORDER_TYPE_DINE_IN &&
-              rootState.order.is_pay !== 1
-            ) {
-              let dineinsuccmsg = rootGetters['location/_t'](
-                'Item added to order successfully'
+              commit(
+                'checkoutForm/SET_MSG',
+                { result: '', message: msgStr },
+                {
+                  root: true,
+                }
+              )
+            } else {
+              dispatch('handleSystemErrors', response).then(() => resolve())
+            }
+          })
+          .catch(error => {
+            dispatch('handleRejectedResponse', {
+              response: error,
+              offline: false,
+            })
+              .then(() => {
+                resolve()
+              })
+              .catch(() => {
+                resolve()
+              })
+          })
+      })
+    })
+  },
+
+  modifyBackendOrder({ dispatch, rootState, rootGetters, commit }) {
+    return new Promise(resolve => {
+      dispatch('getModifyOrder').then(order => {
+        order.modify_reason = 'Updated from backend'
+        OrderService.modifyOrder(order, rootState.order.orderId)
+          .then(response => {
+            if (response.data.status === 'ok') {
+              let msgStr = rootGetters['location/_t'](
+                'Delivery order has been modified.'
               )
               commit(
                 'checkoutForm/SET_MSG',
-                { result: '', message: dineinsuccmsg },
+                { result: '', message: msgStr },
                 {
                   root: true,
                 }
               )
               dispatch('reset')
+              resolve()
             } else {
+              dispatch('handleSystemErrors', response).then(() => resolve())
+            }
+          })
+          .catch(error => {
+            dispatch('handleRejectedResponse', {
+              response: error,
+              offline: false,
+            })
+              .then(() => {
+                resolve()
+              })
+              .catch(() => {
+                resolve()
+              })
+          })
+      })
+    })
+  },
+
+  createWalkinOrder({ dispatch, commit, rootGetters }) {
+    return new Promise(resolve => {
+      OrderService.saveOrder(state.order)
+        .then(response => {
+          if (response.data.status === 'ok') {
+            commit('order/SET_ORDER_ID', response.data.id, { root: true })
+            commit('SET_ORDER_NUMBER', response.data.order_no)
+
+            const msg = rootGetters['location/_t']('Order placed Successfully')
+            dispatch('setMessage', {
+              result: 'success',
+              msg: msg,
+            }).then(() => {
+              resolve(response.data)
               commit(mutation.PRINT, true)
-            }
-            resolve(response.data)
+            })
           } else {
-            let error = ''
-            if (response.data.status == 'form_errors') {
-              for (let i in response.data.form_errors) {
-                response.data.form_errors[i].forEach(
-                  err => (error += ' ' + err)
-                )
-              }
-            } else {
-              error =
-                typeof response.data.error !== 'undefined'
-                  ? response.data.error
-                  : response.data.message
-            }
-            commit(
-              'checkoutForm/SET_ERROR',
-              `Order Failed, Server Response: ${error}`,
-              { root: true }
-            )
-            reject(response.data)
+            dispatch('handleSystemErrors', response).then(() => resolve())
           }
         })
-        .catch(response => {
-          if (response.data && response.data.status === 'fail') {
-            commit('checkoutForm/SET_ERROR', response.data.error, {
-              root: true,
-            })
-            reject(response.data.error)
-          } else {
-            if (response.message === 'Network Error') {
-              let errorMsg = rootGetters['location/_t'](
-                'System went offline. Order is queued for sending later'
-              )
-              commit(
-                'checkoutForm/SET_MSG',
-                { result: '', message: errorMsg },
-                {
-                  root: true,
-                }
-              )
-              //reset order start time
-              commit('order/RESET_ORDER_TIME', null, { root: true })
-              commit(mutation.SET_PROCESSING, false)
+        .catch(error => {
+          dispatch('handleRejectedResponse', {
+            response: error,
+            offline: true,
+          })
+            .then(() => {
               commit(mutation.PRINT, true)
-              dispatch(
-                'transactionOrders/getTransactionOrders',
-                {},
-                { root: true }
-              )
-            } else {
-              var err_msg = ''
-              if (
-                response.data &&
-                response.data[response.data.status] &&
-                typeof response.data[response.data.status] != 'undefined'
-              ) {
-                response.data[response.data.status].forEach(value => {
-                  err_msg += value + ' '
-                })
-
-                commit(
-                  'checkoutForm/SET_MSG',
-                  { result: '', message: err_msg },
-                  {
-                    root: true,
-                  }
-                )
-              }
-            }
-            resolve(response)
-          }
+              resolve()
+            })
+            .catch(() => resolve())
         })
     })
   },
 
-  /*
-   * ToDo: Create A JSON Request to send in Local Server API for Generating Invoices from a software.
-   * Nidhishanker Modi
-   * 21 September 2019
-   */
-  printingServerInvoiceRaw({ state, rootState, dispatch }, data) {
-    // eslint-disable-next-line no-console
-    console.log(data)
-    let printingServers = rootState.category.printingservers //Get All Printing Servers
-    if (printingServers) {
-      state.order._id = data.orderId //Order Id is stored in State
-      state.order.order_no = data.orderNo //Order No is stored in State
-      let staff = rootState.auth.userDetails
-      let orderData = state.order
-      let customerId = state.order.customer
-      let customerData = [] //Customer Information
-      let delivery_area = {} //Delivery Area
-      let kitchen_menu_items = {}
+  createDeliveryOrder({ rootGetters, commit, dispatch }) {
+    return new Promise(resolve => {
+      OrderService.saveOrder(state.order)
+        .then(response => {
+          if (response.data.status === 'ok') {
+            commit('order/SET_ORDER_ID', response.data.id, { root: true })
+            commit('SET_ORDER_NUMBER', response.data.order_no)
 
-      //Customer Data
-      if (customerId) {
-        //get customer name by customer id
-        dispatch('customer/fetchSelectedCustomer', customerId, {
-          root: true,
-        }).then(customer => {
-          customerData.push(customer)
-        })
-        if (
-          state.order.order_delivery_area &&
-          rootState.customer.deliveryAreas
-        ) {
-          delivery_area = Object.values(rootState.customer.deliveryAreas).find(
-            delivery_area =>
-              delivery_area._id == state.order.order_delivery_area
-          )
-        }
-      }
-      //Item according to Kitchens Sections
-      let kitchenSectionsItems = rootState.category.kitchenitems
-      if (kitchenSectionsItems.length) {
-        state.order.items.forEach(item => {
-          let itemKitchen = kitchenSectionsItems.find(
-            kitchenItem => kitchenItem._id === item.entity_id
-          )
-          if (itemKitchen) {
-            kitchen_menu_items._id = itemKitchen._id
-            kitchen_menu_items.category = itemKitchen.category
-            kitchen_menu_items.kitchen = itemKitchen.kitchen
+            const msg = rootGetters['location/_t']('Order placed Successfully')
+            dispatch('setMessage', {
+              result: 'success',
+              msg: msg,
+            }).then(() => {
+              resolve(response.data)
+              commit(mutation.PRINT, true)
+            })
+          } else {
+            dispatch('handleSystemErrors', response).then(() => resolve())
           }
         })
+        .catch(error => {
+          dispatch('handleRejectedResponse', {
+            response: error,
+            offline: true,
+          })
+            .then(() => {
+              commit(mutation.PRINT, true)
+              resolve()
+            })
+            .catch(() => resolve())
+        })
+    })
+  },
+
+  createHoldOrder({ dispatch, commit, rootGetters }) {
+    return new Promise(resolve => {
+      OrderService.saveOrder(state.order)
+        .then(response => {
+          if (response.data.status === 'ok') {
+            commit('order/SET_ORDER_ID', response.data.id, { root: true })
+            commit('SET_ORDER_NUMBER', response.data.order_no)
+            //we are not printing so reset manually here
+            dispatch('reset')
+
+            const msg = rootGetters['location/_t'](
+              'Order has been put on hold.'
+            )
+            dispatch('setMessage', {
+              result: 'success',
+              msg: msg,
+            }).then(() => {
+              resolve(response.data)
+              dispatch('holdOrders/getHoldOrders', {}, { root: true })
+            })
+          } else {
+            dispatch('handleSystemErrors', response).then(() => resolve())
+          }
+        })
+        .catch(error => {
+          dispatch('handleRejectedResponse', {
+            response: error,
+            offline: false,
+          })
+            .then(() => {
+              resolve()
+            })
+            .catch(() => resolve())
+        })
+    })
+  },
+
+  splitOrder({ dispatch, rootState, commit }) {
+    const unpaidItems = rootState.order.items.filter(
+      item => item.paid === false
+    )
+
+    commit('order/RESET', false, { root: true })
+    dispatch('checkoutForm/reset', {}, { root: true })
+    dispatch('discount/reset', {}, { root: true })
+    dispatch('surcharge/reset', {}, { root: true })
+
+    dispatch('order/startOrder', null, { root: true })
+    commit(mutation.UPDATE_ITEMS, unpaidItems)
+    return dispatch('pay', { action: 'dine-in-place-order' })
+  },
+
+  createDineOrder({ dispatch, commit, rootGetters }, action) {
+    return new Promise(resolve => {
+      OrderService.saveOrder(state.order)
+        .then(response => {
+          if (response.data.status === 'ok') {
+            commit('order/SET_ORDER_ID', response.data.id, { root: true })
+            commit('SET_ORDER_NUMBER', response.data.order_no)
+            //we are not printing so reset manually here
+            let msg = rootGetters['location/_t']('Dinein Order has been paid')
+            if (action === 'dine-in-place-order') {
+              msg = rootGetters['location/_t']('Dinein Order has been placed')
+              dispatch('reset')
+            } else {
+              commit(mutation.PRINT, true)
+            }
+
+            dispatch('setMessage', {
+              result: 'success',
+              msg: msg,
+            }).then(() => {
+              resolve(response.data)
+            })
+          } else {
+            dispatch('handleSystemErrors', response).then(() => resolve())
+          }
+        })
+        .catch(error => {
+          dispatch('handleRejectedResponse', {
+            response: error,
+            offline: false,
+          })
+            .then(() => {
+              resolve()
+            })
+            .catch(() => resolve())
+        })
+    })
+  },
+
+  handleSystemErrors({ dispatch }, response) {
+    let error = ''
+    if (response.data.status == 'form_errors') {
+      for (let i in response.data.form_errors) {
+        response.data.form_errors[i].forEach(err => (error += ' ' + err))
       }
-      //Created Date
-      let timezoneString = rootState.location.timezoneString
-      let created_date = LookupData.convertDatetimeCustom(
-        state.order.real_created_datetime,
-        timezoneString,
-        'DD-MMM-YYYY'
-      )
-      //Created Time
-      let created_time = LookupData.convertDatetimeCustom(
-        state.order.real_created_datetime,
-        timezoneString,
-        'HH:mm A'
-      )
-      //Crm Module Permission
-      let crm_module_enabled = false
-      let cb = rootState.location.brand
-      for (var module of cb.enabled_modules) {
-        if (module == 'CRM') {
-          crm_module_enabled = true
+    } else {
+      error =
+        typeof response.data.error !== 'undefined'
+          ? response.data.error
+          : response.data.message
+    }
+
+    return dispatch('setMessage', {
+      result: 'error',
+      msg: error,
+    })
+  },
+  handleRejectedResponse({ dispatch }, { response, offline = false }) {
+    if (offline && response.message === 'Network Error') {
+      return dispatch('handleNetworkError', response)
+    }
+    var err_msg = ''
+    if (
+      response.data &&
+      response.data[response.data.status] &&
+      typeof response.data[response.data.status] != 'undefined'
+    ) {
+      response.data[response.data.status].forEach(value => {
+        err_msg += value + ' '
+      })
+    }
+
+    if (response.data && response.data.error) {
+      err_msg = response.data.error
+    }
+
+    dispatch('setMessage', {
+      result: 'error',
+      msg: err_msg,
+    })
+    return Promise.reject(err_msg)
+  },
+  handleNetworkError({ rootGetters, commit }) {
+    let errorMsg = rootGetters['location/_t'](
+      'System went offline. Order is queued for sending later'
+    )
+    commit(
+      'checkoutForm/SET_MSG',
+      { result: '', message: errorMsg },
+      {
+        root: true,
+      }
+    )
+    return Promise.resolve()
+  },
+  setMessage({ commit }, { result, msg = '' }) {
+    commit(
+      'checkoutForm/SET_MSG',
+      { message: msg, result: result },
+      {
+        root: true,
+      }
+    )
+    return Promise.resolve()
+  },
+
+  createOrder({ rootState, dispatch, commit }, action) {
+    commit(
+      'checkoutForm/SET_MSG',
+      { message: '', result: 'loading' },
+      {
+        root: true,
+      }
+    )
+
+    commit(mutation.PAYMENT_MSG_STATUS, false)
+
+    //orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD means order was on hold and we want to modify it
+    //orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY means this order was made as delivery order
+    //                already but we want to modify it from delivery manager
+
+    //order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER means its a new delivery order
+    // we send user directly to delivery manager after printing invoice so we auto print inoivce
+    // without waiting for a button to be clicked
+
+    //order.order is a hold order, state.order contains current order
+    if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+      return dispatch('modifyHoldOrder', action)
+    } else if (
+      rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
+    ) {
+      return dispatch('modifyDeliveryOrder')
+    } else if (rootState.order.orderToModify) {
+      return dispatch('modifyBackendOrder')
+    } else if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
+      return dispatch('createHoldOrder')
+    } else if (
+      rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER
+    ) {
+      return dispatch('createDeliveryOrder')
+    } else if (
+      rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN
+    ) {
+      if (rootState.order.order_status !== 'completed') {
+        if (rootState.order.orderId) {
+          return dispatch('modifyDineOrder', action)
+        } else {
+          return dispatch('createDineOrder', action)
         }
       }
-      if (!rootState.invoice.templates) {
-        return
-      }
-
-      //Invoice
-      let invoiceTemplate = rootState.invoice.templates.data.data.find(
-        invoice => invoice
-      )
-      let orderTypeLabel = state.order.order_type + '_label'
-      //Final JSON
-      let jsonResponse = {
-        status: 'ok',
-        brand_logo: rootState.location.brand.company_logo
-          ? rootState.location.brand.company_logo
-          : '',
-        order: orderData,
-        menu_items: kitchen_menu_items,
-        staff: staff.item.name,
-        customer: customerData,
-        delivery_area: delivery_area,
-        template: invoiceTemplate,
-        order_type: invoiceTemplate[orderTypeLabel],
-        created_date: created_date,
-        created_time: created_time,
-        crm_module_enabled: crm_module_enabled,
-        translations: rootState.payment.appInvoiceData, //Unstable
-        default_header_brand: rootState.location.brand.name,
-        default_header_branch: rootState.location.store.name,
-        default_header_phone:
-          'Tel No. ' + rootState.location.brand.contact_phone,
-        generate_time: state.order.real_created_datetime,
-        flash_message: 'Order Details',
-        store_id: rootState.context.storeId,
-      }
-      if (jsonResponse) {
-        printingServers.forEach(item => {
-          let APIURL = item.ip_address
-          // eslint-disable-next-line no-console
-          console.log(APIURL)
-          OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
-        })
-        // eslint-disable-next-line no-console
-        console.log(jsonResponse)
-      }
+    } else {
+      return dispatch('createWalkinOrder')
     }
   },
+
   generateInvoice() {
     //commit(mutation.PRINT, true)
   },
-  reset({ commit, dispatch }) {
-    commit(mutation.RESET)
+  reset({ commit, dispatch }, full = true) {
+    commit(mutation.RESET, full)
+
     dispatch('checkoutForm/reset', {}, { root: true })
-    dispatch('order/reset', {}, { root: true })
     dispatch('discount/reset', {}, { root: true })
     dispatch('surcharge/reset', {}, { root: true })
     dispatch('customer/reset', {}, { root: true })
     dispatch('location/reset', {}, { root: true })
+    if (full) {
+      dispatch('order/reset', {}, { root: true })
+    }
   },
 
   updateOrderStatus(
@@ -968,15 +1197,23 @@ const mutations = {
   [mutation.CHANGE_AMOUNT_STATUS](state, status) {
     state.changeAmountStatus = status
   },
+  [mutation.PAYMENT_MSG_STATUS](state, status) {
+    state.paymentMsgStatus = status
+  },
   [mutation.SET_PROCESSING](state, status) {
     state.processing = status
   },
-  [mutation.RESET](state) {
-    state.order = false
+  [mutation.UPDATE_ITEMS](state, items) {
+    state.order.items = items
+  },
+  [mutation.RESET](state, full = true) {
     state.paidAmount = 0
     state.payableAmount = 0
     state.pendingAmount = 0
     state.print = false
+    if (full) {
+      state.order = false
+    }
   },
 }
 

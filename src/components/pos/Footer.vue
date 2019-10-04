@@ -445,7 +445,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('checkout', ['print']),
+    ...mapState('checkout', ['print', 'paymentMsgStatus']),
     ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('customer', ['responseInformation']),
     ...mapState('order', ['orderType', 'cartType', 'items', 'is_pay']),
@@ -464,6 +464,20 @@ export default {
     }),
     ...mapState({ selectedCustomer: state => state.customer.customer.name }),
   },
+
+  watch: {
+    // paymentMsgStatus(newVal) {
+    //   if (newVal) {
+    //     if (this.$store.getters['checkout/complete']) {
+    //       if (this.$store.state.order.orderType.OTApi === 'dine_in') {
+    //         $('#payment-msg').modal('hide')
+    //         this.$router.replace({ name: 'Dinein' })
+    //       }
+    //       this.$store.commit('checkout/PAYMENT_MSG_STATUS', false)
+    //     }
+    //   }
+    // },
+  },
   methods: {
     payNowDirect() {
       //dine in order
@@ -479,13 +493,15 @@ export default {
           checkCovers == 'undefined' ||
           this.selectedCover
         ) {
+          $('#payment-msg').modal('show')
           this.$store
             .dispatch('checkout/pay', { action: 'dine-in-place-order' })
             .then(() => {
-              //Reset Cart and set states and redirect to dine in.
-              this.$store.commit('dinein/SET_COVER', '')
-              this.$store.dispatch('order/beforeRedirectResetCartDineIn')
-              this.$router.replace({ name: 'Dinein' })
+              if (this.$store.getters['checkout/complete']) {
+                //Reset Cart and set states and redirect to dine in.
+                this.$store.commit('dinein/SET_COVER', '')
+                this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+              }
             })
             .catch(response => {
               let validationError = {}

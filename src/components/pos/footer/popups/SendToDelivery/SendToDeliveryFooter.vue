@@ -131,6 +131,7 @@ export default {
         $('#confirm_announcement').prop('disabled', true)
         this.msg = 'Sending order for delivery...'
         this.errors = ''
+        $('#payment-msg').modal('show')
         this.deliveryOrder({
           referral: this.changedReferral,
           futureOrder:
@@ -144,7 +145,6 @@ export default {
             }
             // $('#order-confirmation').modal('hide')
             $('#order-confirmation').modal('hide')
-            $('#payment-msg').modal('show')
             setTimeout(function() {
               $('#confirm_announcement').prop('disabled', false)
             }, 1000)
