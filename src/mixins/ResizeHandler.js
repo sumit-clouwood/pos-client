@@ -1,7 +1,7 @@
 import store from '../store'
 
 const { body } = document
-const WIDTH = 992 // refer to Bootstrap's responsive design
+const WIDTH = 960 // refer to Bootstrap's responsive design
 
 export default {
   beforeMount() {

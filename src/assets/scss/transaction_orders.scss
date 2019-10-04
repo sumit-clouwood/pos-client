@@ -125,6 +125,7 @@
       right: 0;
       position: relative;
       transition: 0.7s ease-out;
+      display: block;
     }
     .main-orders-list-wrapper{
       padding-right: 0;
@@ -289,7 +290,7 @@
     }
     .transaction-item{
       .trans-item-list-wrapper {
-        max-height: $px176;
+        //max-height: $px176;
         overflow-y: auto;
         .trans-item-list{
           grid-template-columns: 1fr;
