@@ -64,14 +64,18 @@
         </button>
         <DineInCoverSelection />
       </div>
-      <!--<div
-        v-if="cartType !== 'hold' && items.length"
-        id="holdorder"
-        class="orders-button-large color-main color-text"
-        @click="hold"
+      <div
+        v-if="orderId && covers && cartType !== 'hold'"
+        class="driver-container"
       >
-        {{ _t('Hold') }}
-      </div>-->
+        <button
+          class="btn btn-success"
+          @click="showSplitBill"
+          id="split-bill-button"
+        >
+          {{ _t('Split') }} {{ _t('Bill') }}
+        </button>
+      </div>
       <div class="color-main color-text dine-in-table-guest-details-pos">
         <span class="tables-draw">
           <img src="img/dinein/dine-intable.svg" />
@@ -88,11 +92,18 @@
 <script>
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
+//import SplitBill from './popup/SplitBill'
+//import PreviewSplit from './popup/PreviewSplit.vue'
 import DineInTableSelection from './popup/DineInTableSelection'
 import DineInCoverSelection from './popup/DineInCoverSelection'
 export default {
   name: 'Header',
-  components: { DineInTableSelection, DineInCoverSelection },
+  components: {
+    DineInTableSelection,
+    DineInCoverSelection,
+    //SplitBill,
+    //PreviewSplit,
+  },
   data() {
     return {
       OrderSelectedCover: 'Select Cover',
@@ -113,7 +124,13 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapGetters('dinein', ['getAllCovers']),
-    ...mapState('order', ['items', 'cartType', 'orderType', 'orderData']),
+    ...mapState('order', [
+      'items',
+      'orderId',
+      'cartType',
+      'orderType',
+      'orderData',
+    ]),
     ...mapState('checkoutForm', ['msg']),
     ...mapState('customer', ['deliveryAreas']),
     ...mapState('dinein', [
@@ -130,6 +147,9 @@ export default {
     ...mapGetters('context', ['store']),
   },
   methods: {
+    showSplitBill() {
+      this.$store.dispatch('order/setSplitBill')
+    },
     removeSelectedCustomer() {
       this.$store.commit('location/SET_MODAL', '#manage-customer')
       this.$store.dispatch('customer/resetCustomer')
