@@ -106,6 +106,7 @@ var EventListener = {
     this._message()
     this._push()
     this._fetch()
+    this._statechange()
   },
 
   _install() {
@@ -116,6 +117,18 @@ var EventListener = {
 
   _activate() {
     self.addEventListener('activate', function(event) {
+      var cacheWhitelist = ['pages-cache-v1', 'blog-posts-cache-v1']
+      event.waitUntil(
+        caches.keys().then(function(cacheNames) {
+          return Promise.all(
+            cacheNames.map(function(cacheName) {
+              if (cacheWhitelist.indexOf(cacheName) === -1) {
+                return caches.delete(cacheName)
+              }
+            })
+          )
+        })
+      )
       event.waitUntil(self.clients.claim()) // Become available to all pages
     })
   },
@@ -136,6 +149,19 @@ var EventListener = {
     })
   },
 
+  _statechange() {
+    self.addEventListener('statechange', e => {
+      switch (e.target.state) {
+        case 'installed':
+          if (self.controller) {
+            // new update available
+            showUpdateBar()
+          }
+          // No update available
+          break
+      }
+    })
+  },
   //we send form data earlier before sending the actual request
   //if request was failed we get form data and add that to indexedb for offline
   //otherwise don't don any thing
