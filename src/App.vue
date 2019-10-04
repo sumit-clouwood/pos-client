@@ -61,6 +61,7 @@ The App.vue file is the root component that all other components are nested with
 import DataService from '@/services/DataService'
 
 import Cookie from '@/mixins/Cookie'
+import ResizeMixin from '@/mixins/ResizeHandler'
 import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
 import Login from '@/components/login/Login'
@@ -73,7 +74,7 @@ export default {
     Preloader,
     Login,
   },
-  mixins: [Cookie],
+  mixins: [Cookie, ResizeMixin],
   data: function() {
     return {
       storeContext: true,
