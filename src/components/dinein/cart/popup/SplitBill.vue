@@ -18,9 +18,9 @@
               <p>{{ _t('Guests') }}</p>
             </div>
           </div>
-          <div class="select-items-option" v-if="items">
+          <div class="select-items-option" v-if="orignalItems">
             <div
-              v-for="(item, index) in items"
+              v-for="(item, index) in orignalItems"
               :key="index + '-' + item._id"
               class="split-bill-block"
             >
@@ -39,15 +39,16 @@
 
               <div id="available-tables">
                 <div class="table-status-container">
-                  <span
+                  <div
                     class="table-status"
+                    :class="{ active: guestInBillItem(item, guest) }"
                     style="text-align:center"
                     v-for="guest in guests"
                     :key="guest"
-                    @click="selectGuest(guest, item)"
+                    @click="selectGuest(item, guest)"
                   >
                     <span>{{ guest }} </span>
-                  </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -64,11 +65,11 @@
             </button>
 
             <button
-              v-if="items.length"
+              v-if="orignalItems.length"
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="discount-save-btn"
-              @click="attachCustomers"
+              @click="splitBill"
             >
               {{ _t('Ok') }}
             </button>
@@ -81,24 +82,39 @@
 </template>
 
 <script>
+/* global showModal, hideModal */
 import Modifiers from '@/components/pos/content/cart/newOrders/items/Modifiers.vue'
+//import PreviewSplit from './PreviewSplit.vue'
 import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'SplitBill',
   components: {
     Modifiers,
+    //  PreviewSplit,
   },
   props: {},
   computed: {
-    ...mapState('order', ['items']),
+    ...mapGetters('order', ['orignalItems']),
     ...mapGetters('location', ['_t']),
-    ...mapState('dinein', ['guests']),
+    ...mapGetters('dinein', ['guestInBillItem']),
+    ...mapState('dinein', ['guests', 'bills']),
   },
   methods: {
-    attachCustomers() {},
-
-    selectCustomers(item, customer) {
-      return item + customer
+    //...mapActions('dinein', ['']),
+    splitBill() {
+      this.$store.dispatch('dinein/splitBill').then(() => {
+        if (this.$store.state.dinein.billSplit) {
+          showModal('#preview-split-popup')
+        } else {
+          hideModal('#split-bill-popup')
+        }
+      })
+    },
+    selectGuest(item, guest) {
+      this.$store.dispatch('dinein/updateItemGuest', {
+        item: item.orderIndex,
+        guest: guest,
+      })
     },
   },
 }
@@ -116,4 +132,7 @@ export default {
   border-bottom: 1px solid #ccc
   padding-bottom: 10px
   margin-bottom: 10px
+
+.table-status
+  cursor: pointer
 </style>

@@ -44,6 +44,7 @@ export default {
       'order',
       'changedAmount',
       'changeAmountStatus',
+      'paymentMsgStatus',
     ]),
     ...mapState('context', ['brandId']),
     ...mapGetters('invoice', ['template']),
@@ -61,60 +62,66 @@ export default {
       )
     },
   },
-
+  watch: {
+    paymentMsgStatus(newVal) {
+      if (newVal && this.$store.getters['checkout/complete']) {
+        if (this.$store.state.order.orderType.OTApi === 'dine_in') {
+          this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+          this.$router.replace({ name: 'Dinein' })
+        } else if (this.$store.state.order.orderType.OTApi === 'call_center') {
+          this.$router.replace({ name: 'DeliveryManager' })
+        }
+        this.$store.commit('checkout/PAYMENT_MSG_STATUS', false)
+      }
+    },
+    changeAmountStatus(newVal) {
+      if (newVal && this.$store.getters['checkout/complete']) {
+        //Reset Cart and set states and redirect to dine in.
+        if (this.$store.state.order.orderType.OTApi === 'dine_in') {
+          this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+          this.$router.replace({ name: 'Dinein' })
+        }
+        this.$store.commit('checkout/CHANGE_AMOUNT_STATUS', false)
+      }
+    },
+  },
   methods: {
     doPrint() {
-      // this.$nextTick(() => {
-      //console.log('iframe laoded, do print called, next tick called')
-      //console.log('print', this.print)
       if (this.print && this.iframe_body) {
-        //console.log('print signal received')
         this.$store.commit('checkout/PRINT', false)
 
         try {
-          //2. to print in new window
-          //console.log('printing iframe')
-          // const w = window.open()
-          // w.document.write(this.iframe_body)
-          // w.print()
-          // w.close()
+          setTimeout(() => {
+            //this.$refs.iframe.contentWindow.print()
+            let w = this.$refs.iframe.contentWindow
+            w.focus()
+            w.print()
 
-          //1. print in iframe
-          // alert('about to print')
-          let w = this.$refs.iframe.contentWindow
-          w.focus()
-          w.print()
+            if (!this.$store.getters['checkout/complete']) {
+              this.$store.dispatch('checkout/splitOrder').then(() => {
+                this.$store.commit('order/SET_SPLIT_BILL', null, { root: true })
+              })
+            }
+          }, 500)
           //this.$refs.iframe.contentWindow.print()
         } catch (e) {
+          // eslint-disable-next-line
           console.log('print iframe error occurred')
           console.log(e)
         }
+        let resetFull = false
+        if (this.$store.getters['checkout/complete']) {
+          resetFull = true
+        }
 
-        this.$store.dispatch('checkout/reset')
+        this.$store.dispatch('checkout/reset', resetFull)
 
         $('.modal-backdrop').remove()
         $('#order-confirmation').hide()
         hidePayNow()
-
-        //redirect only if there is not changed amount
-        if (this.$store.state.order.orderType.OTApi === 'call_center') {
-          setTimeout(() => {
-            this.$router.replace({ name: 'DeliveryManager' })
-          }, 5000)
-        }
-
-        if (!this.changedAmount) {
-          //Reset Cart and set states and redirect to dine in.
-          if (this.$store.state.order.orderType.OTApi === 'dine_in') {
-            this.$store.dispatch('order/beforeRedirectResetCartDineIn')
-            this.$router.replace({ name: 'Dinein' })
-          }
-        }
       }
-      // })
     },
     print_ready() {
-      //console.log(this.print)
       this.invoiceHtml = this.$refs.print_template.$el.outerHTML
       //console.log('in print ready html length', this.invoiceHtml.length)
       var body = `<html><head><title>${
@@ -376,18 +383,6 @@ export default {
       this.iframe_body = body
       //1. to print in new window
       //this.doPrint()
-    },
-  },
-  watch: {
-    changeAmountStatus(newVal) {
-      if (newVal) {
-        //Reset Cart and set states and redirect to dine in.
-        if (this.$store.state.order.orderType.OTApi === 'dine_in') {
-          this.$store.dispatch('order/beforeRedirectResetCartDineIn')
-          this.$router.replace({ name: 'Dinein' })
-        }
-        this.$store.commit('checkout/CHANGE_AMOUNT_STATUS', false)
-      }
     },
   },
 }

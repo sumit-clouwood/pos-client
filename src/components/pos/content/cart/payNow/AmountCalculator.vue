@@ -61,6 +61,8 @@ export default {
               $('#payment-screen-footer').prop('disabled', true)
               $('#payment-msg').modal('show')
 
+              this.$store.dispatch('order/startOrder')
+
               this.$store
                 .dispatch(
                   'checkout/pay',

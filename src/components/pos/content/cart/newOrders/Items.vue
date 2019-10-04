@@ -68,10 +68,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Items',
   data() {
-    return {
-      splitedItems: [],
-      newItemList: [],
-    }
+    return {}
   },
   computed: {
     ...mapState({
@@ -91,23 +88,7 @@ export default {
   methods: {
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
-    splitItems(data) {
-      if (data.e.target.checked) {
-        this.splitedItems.push(data.item)
-      } else {
-        this.splitedItems.splice(data.key, 1)
-      }
-      this.newItemList = this.items
-      if (this.splitedItems.length > 0) {
-        this.newItemList = this.items.filter(
-          item => !this.splitedItems.includes(item)
-        )
-      }
-      // eslint-disable-next-line no-console
-      console.log(this.splitedItems)
-      // eslint-disable-next-line no-console
-      console.log(this.newItemList)
-    },
+
     discountInfo(item) {
       if (item.discount) {
         return (

@@ -7,7 +7,7 @@
         <div class="modal-header customer-header color-secondary">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title color-text-invert">
-            {{ _t('Order') }}
+            {{ msg.result === 'error' ? _t('Error') : _t('Order') }}
           </h4>
         </div>
         <div class="modal-body change-amount-option">
@@ -22,7 +22,10 @@
           </div>
         </div>
         <div class="modal-footer">
-          <div class="btn-announce" v-if="msg.result === 'success'">
+          <div
+            class="btn-announce"
+            v-if="msg.result === 'success' || msg.result === 'error'"
+          >
             <button
               class="btn btn-success btn-large color-main"
               type="button"
@@ -60,6 +63,7 @@
               type="button"
               class="btn btn-success btn-large"
               data-dismiss="modal"
+              @click="acceptMsg()"
             >
               {{ _t('Ok') }}
             </button>
@@ -84,10 +88,14 @@ export default {
     Preloader,
   },
   methods: {
+    acceptMsg() {
+      this.$store.commit('checkout/PAYMENT_MSG_STATUS', true)
+    },
     generateInvoice() {
       $('#pay-now').modal('hide')
       this.$store.dispatch('checkout/generateInvoice')
       $('#transparent-screen').hide()
+      this.$store.commit('checkout/PAYMENT_MSG_STATUS', true)
     },
     confirmDelete(resultLoad) {
       if (resultLoad.flag === 'hold order') {
