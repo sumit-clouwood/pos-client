@@ -1,6 +1,7 @@
 // custom service-worker.js
 /* global workbox */
 /* eslint-disable no-console */
+var appVersion = 2.3
 var clientUrl = ''
 
 var ORDER_DOCUMENT = 'order_post_requests'
@@ -30,7 +31,7 @@ var notificationOptions = {
     40,
     500,
   ],
-  badge: './img/icons/favicon.png',
+  badge: './img/icons/favicon.png?v=' + appVersion,
 }
 
 function setupCache() {
@@ -110,15 +111,12 @@ var EventListener = {
 
   _install() {
     self.addEventListener('install', function(event) {
-      console.log('sw:', 'installed')
-
       event.waitUntil(self.skipWaiting()) // Activate worker immediately
     })
   },
 
   _activate() {
     self.addEventListener('activate', function(event) {
-      console.log('sw:', 'activated')
       event.waitUntil(self.clients.claim()) // Become available to all pages
     })
   },
