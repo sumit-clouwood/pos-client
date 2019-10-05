@@ -1,7 +1,7 @@
 import * as mutation from './printingServer/mutation-type'
 import OrderService from '@/services/data/OrderService'
 import PrintingServerService from '@/services/data/PrintingServerService'
-import LookupData from '../../plugins/helpers/LookupData'
+import LookupData from '@/plugins/helpers/LookupData'
 
 const state = {
   kitchenitems: [],
@@ -40,15 +40,10 @@ const actions = {
   },
 
   //Create A JSON Request to send in Local Server API for Generating Invoices from a software.
-  printingServerInvoiceRaw({ state, rootState, dispatch }, data) {
+  printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
     let printingServers = state.printingservers //Get All Printing Servers
-    if (printingServers) {
-      rootState.order._id = data.orderId //Order Id is stored in State
-      rootState.order.order_no = data.orderNo //Order No is stored in State
+    if (printingServers && orderData) {
       let staff = rootState.auth.userDetails
-      // eslint-disable-next-line no-console
-      console.log(rootState.order)
-      let orderData = rootState.order
       let customerDetails = rootState.customer
       let locationData = rootState.location
       let customerId = orderData.customer
@@ -112,7 +107,7 @@ const actions = {
       let invoiceTemplate = rootState.invoice.templates.data.data.find(
         invoice => invoice
       )
-      let orderTypeLabel = orderData.orderType.OTApi + '_label'
+      let orderTypeLabel = orderData.order_type + '_label'
       //Final JSON
       let jsonResponse = {
         status: 'ok',
