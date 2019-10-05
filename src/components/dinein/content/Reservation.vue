@@ -8,7 +8,7 @@
     <div class="fixed-reservation">
       <div class="pos-reservation-header">
         <div class="reservation-date-format">
-          <p>Select Date</p>
+          <p>{{ _t('Select Date') }}</p>
           <input type="hidden" id="selectedDates" value="" />
           <span id="wtf"></span>
           <div id="page" class="page">
@@ -22,10 +22,10 @@
         <table class="table table-hover">
           <thead>
             <tr>
-              <th>Time</th>
-              <th>Area/Table</th>
-              <th>Guests</th>
-              <th>Customer</th>
+              <th>{{ _t('Time') }}</th>
+              <th>{{ _t('Area/Table') }}</th>
+              <th>{{ _t('Guests') }}</th>
+              <th>{{ _t('Customer') }}</th>
               <th></th>
             </tr>
           </thead>
@@ -55,27 +55,35 @@
                     <img src="img/pos/delete-icon-reservation.svg" />
                   </span>
                 </button>
-                <button class="btn btn-success">Confirm</button>
+                <button class="btn btn-success">{{ _t('Confirm') }}</button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="pos-reservation-footer">
-        <button class="btn btn-success">New Reservation</button>
+        <button
+          class="btn btn-success"
+          data-toggle="modal"
+          data-target="#NewReservation"
+        >
+          {{ _t('New Reservation') }}
+        </button>
       </div>
     </div>
     <TableDraw />
+    <NewReservation />
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import TableDraw from '../content/TableDraw'
+import NewReservation from './reservation/popup/NewReservation'
 /* global $ */
 export default {
   name: 'Reservation',
-  components: { TableDraw },
+  components: { TableDraw, NewReservation },
   computed: {
     ...mapState('dinein', [
       'tablesOnArea',
@@ -83,6 +91,7 @@ export default {
       'allBookedTables',
       'availableTables',
     ]),
+    ...mapGetters('location', ['_t']),
     ...mapState('dineinReservation', ['reservations']),
   },
   updated() {
