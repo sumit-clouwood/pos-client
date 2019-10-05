@@ -163,7 +163,7 @@ jQuery.fn.SharpCalendar = jQuery.fn.SC = function(options) {
       Days.append($('<div>'))
       Days = Days.find('div')
     }
-  }())
+  })()
   // -------------------------- End Initializations --------------------------------
 
   /* Change de focused date of the calendar */
@@ -523,6 +523,7 @@ jQuery.fn.SharpCalendar = jQuery.fn.SC = function(options) {
   sharpCContainer.click(function(ev) {
     var el = $(ev.target).closest('.SCElement'),
       old_d = new Date(calendar.currentDate.getTime()),
+      // eslint-disable-next-line no-unused-vars
       aux_d,
       new_d,
       time
