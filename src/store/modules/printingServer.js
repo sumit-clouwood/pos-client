@@ -49,7 +49,7 @@ const actions = {
       let customerId = orderData.customer
       let customerData = [] //Customer Information
       let delivery_area = {} //Delivery Area
-      let kitchen_menu_items = {}
+      let kitchen_menu_items = []
 
       //Customer Data
       if (customerId) {
@@ -73,9 +73,11 @@ const actions = {
             kitchenItem => kitchenItem._id === item.entity_id
           )
           if (itemKitchen) {
-            kitchen_menu_items._id = itemKitchen._id
-            kitchen_menu_items.category = itemKitchen.category
-            kitchen_menu_items.kitchen = itemKitchen.kitchen
+            kitchen_menu_items.push({
+              _id: itemKitchen._id,
+              category: itemKitchen.category,
+              kitchen: itemKitchen.kitchen,
+            })
           }
         })
       }
