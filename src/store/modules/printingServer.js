@@ -110,6 +110,7 @@ const actions = {
         invoice => invoice
       )
       let orderTypeLabel = orderData.order_type + '_label'
+      orderData.order_no = orderData.orderNumber //Custom Order No to give appropriate field for Habib
       //Final JSON
       let jsonResponse = {
         status: 'ok',
