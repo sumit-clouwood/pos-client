@@ -1,89 +1,154 @@
 <template>
-  <div
-    v-if="tablesOnArea && dineInTabType === 'reservation'"
-    class="table-holder container-fluid running-orders-dinein active"
-    id="all-tables-show"
-    style="display: block; padding-right: 0;"
-  >
-    <div class="fixed-reservation">
-      <div class="pos-reservation-header">
-        <div class="reservation-date-format">
-          <p>{{ _t('Select Date') }}</p>
-          <input type="hidden" id="selectedDates" value="" />
-          <span id="wtf"></span>
-          <div id="page" class="page">
-            <section id="main">
-              <div class="wrapperHor"></div>
-            </section>
+  <div>
+    <div
+      v-if="tablesOnArea && dineInTabType === 'reservation'"
+      class="table-holder container-fluid running-orders-dinein active"
+      id="all-tables-show"
+      style="display: block; padding-right: 0;"
+    >
+      <div class="fixed-reservation">
+        <div class="pos-reservation-header">
+          <div class="reservation-date-format">
+            <p>{{ _t('Select Date') }}</p>
+            <input type="hidden" id="selectedDates" value="" />
+            <span id="wtf"></span>
+            <div id="page" class="page">
+              <section id="main">
+                <div class="wrapperHor"></div>
+              </section>
+            </div>
+          </div>
+        </div>
+        <div class="pos-reservation-table" v-if="newDetails">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>{{ _t('Time') }}</th>
+                <th>{{ _t('Area/Table') }}</th>
+                <th>{{ _t('Guests') }}</th>
+                <th>{{ _t('Customer') }}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <!--<tbody v-if="!reservations">
+              <tr>
+                <td colspan="5">
+                  <Preloader />
+                </td>
+              </tr>
+            </tbody>-->
+            <tbody>
+              <tr v-for="(reservation, index) in reservations" :key="index">
+                <td>
+                  {{ reservation.start_date }}, {{ reservation.start_time }}
+                </td>
+                <td>
+                  {{ getAreaName(reservation.assigned_table_id) }} /
+                  {{ reservation.number }}
+                </td>
+                <td>
+                  <span class="fa fa-user"></span
+                  >{{ reservation.number_of_guests }}
+                </td>
+                <td>{{ reservation.customers }}</td>
+                <td class="mr-1">
+                  <button class="btn btn-warning">
+                    <span class="fa fa-edit"></span>
+                  </button>
+                  <button
+                    class="btn btn-danger"
+                    @click="cancelReservation(reservation._id)"
+                  >
+                    <span class="dlt-icon">
+                      <img src="img/pos/delete-icon-reservation.svg" />
+                    </span>
+                  </button>
+                  <button class="btn btn-success">{{ _t('Confirm') }}</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pos-reservation-table" v-else>No Data</div>
+        <div class="pos-reservation-footer">
+          <button
+            class="btn btn-success"
+            data-toggle="modal"
+            data-target="#NewReservation"
+          >
+            {{ _t('New Reservation') }}
+          </button>
+        </div>
+      </div>
+      <TableDraw />
+      <NewReservation />
+      <div
+        class="modal"
+        id="confirmReservation"
+        style="display: none; z-index: 1050;"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header customer-header">
+              <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+              <h4 class="customer-title">{{ _t('Confirmation!') }}</h4>
+            </div>
+            <div class="modal-body font-weight-bold" id="confirmMessage">
+              {{ cancelReservationMsg }}
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                id="confirm"
+                class="btn btn-success"
+                data-dismiss="modal"
+                @click="confirmCancelReservation()"
+              >
+                {{ _t('Ok') }}
+              </button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">
+                {{ _t('Close') }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="pos-reservation-table">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th>{{ _t('Time') }}</th>
-              <th>{{ _t('Area/Table') }}</th>
-              <th>{{ _t('Guests') }}</th>
-              <th>{{ _t('Customer') }}</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(reservation, index) in allBookedTables.orders"
-              :key="index"
-            >
-              <td>
-                {{ reservation.start_date }}, {{ reservation.start_time }}
-              </td>
-              <td>
-                {{ getAreaName(reservation.assigned_table_id) }} /
-                {{ reservation.number }}
-              </td>
-              <td>
-                <span class="fa fa-user"></span
-                >{{ reservation.number_of_guests }}
-              </td>
-              <td>{{ reservation.customers }}</td>
-              <td class="mr-1">
-                <button class="btn btn-warning">
-                  <span class="fa fa-edit"></span>
-                </button>
-                <button class="btn btn-danger">
-                  <span class="dlt-icon">
-                    <img src="img/pos/delete-icon-reservation.svg" />
-                  </span>
-                </button>
-                <button class="btn btn-success">{{ _t('Confirm') }}</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="pos-reservation-footer">
-        <button
-          class="btn btn-success"
-          data-toggle="modal"
-          data-target="#NewReservation"
-        >
-          {{ _t('New Reservation') }}
-        </button>
-      </div>
     </div>
-    <TableDraw />
-    <NewReservation />
+    <div class="pagination-customer-details">
+      <!--<paginate
+            v-if="totalReservations.totalPages"
+            :page-count="totalReservations.totalPages"
+            :page-range="2"
+            :margin-pages="2"
+            :clickHandler="fetchMore"
+            :prev-text="_t('Prev')"
+            :next-text="_t('Next')"
+            :container-class="''"
+            :page-class="_t('page-item')"
+            v-model="page"
+          ></paginate>-->
+    </div>
+    <InformationPopup :responseInformation="msg" title="Alert" />
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import TableDraw from '../content/TableDraw'
 import NewReservation from './reservation/popup/NewReservation'
+// import Preloader from '@/components/util/Preloader'
+// import paginate from 'vuejs-paginate'
+import InformationPopup from '@/components/pos/content/InformationPopup'
 /* global $ */
 export default {
   name: 'Reservation',
-  components: { TableDraw, NewReservation },
+  components: {
+    TableDraw,
+    NewReservation,
+    // Preloader,
+    // paginate,
+    InformationPopup,
+  },
   computed: {
     ...mapState('dinein', [
       'tablesOnArea',
@@ -94,13 +159,50 @@ export default {
     ...mapGetters('location', ['_t']),
     ...mapState('dineinReservation', ['reservations']),
   },
+  data() {
+    return {
+      calendarOpen: false,
+      newDetails: false,
+      selectedDate: '',
+      msg: '',
+      selectedReservationId: '',
+      cancelReservationMsg: 'Do you want to cancel this reservation?',
+    }
+  },
   updated() {
-    this.cal()
+    if (!this.calendarOpen && this.dineInTabType == 'reservation') this.cal()
   },
   methods: {
+    cancelReservation(id) {
+      this.cancelReservationMsg = 'Do you want to cancel this reservation?'
+      $('#confirmReservation').modal('show')
+      this.selectedReservationId = id
+    },
+
+    confirmCancelReservation() {
+      this.reservationUpdateStatus({
+        reservationId: this.selectedReservationId,
+        status: 'cancelled_reservation',
+      }).then(response => {
+        if (response.status === 'form_errors') {
+          this.cancelReservationMsg = response.form_errors.status[0]
+          $('#confirmReservation').modal('show')
+          return false
+        }
+        this.getReservationByDate(this.selectedDate)
+        this.$store.dispatch('dinein/updateDineInOrderStatus', {
+          title: 'all',
+          pageId: 'getBookedTables',
+          loader: false,
+        })
+        this.$store.dispatch('dinein/getDineInArea', false)
+      })
+    },
+
     getAreaName: function(tableId) {
       return this.availableTables.find(table => table.table_id === tableId).name
     },
+
     cal: function() {
       let scope = this
       // Use the settings object to change the theme
@@ -142,16 +244,25 @@ export default {
         doubleDigitsDays: true,
         allowSelectSpans: true,
         callback: function(cal) {
-          scope.$store.dispatch(
-            'dineinReservation/getReservationByDate',
-            cal.currentDate
-          )
-          // eslint-disable-next-line no-console
-          console.log(cal.currentDate)
-          $('#wtf').html('Selected date: ' + cal.currentDate)
+          scope.selectedDate = cal.currentDate
+          scope.calendarOpen = true
+          scope.getReservationByDate(cal.currentDate)
+          // $('#wtf').html('Selected date: ' + cal.currentDate)
         },
       })
     },
+    getReservationByDate: function(date) {
+      let scope = this
+      this.$store
+        .dispatch('dineinReservation/getReservationByDate', date)
+        .then(details => {
+          scope.newDetails = details
+        })
+        .catch(details => {
+          scope.newDetails = details
+        })
+    },
+    ...mapActions('dinein', ['reservationUpdateStatus']),
   },
 }
 </script>

@@ -16,14 +16,25 @@ const getters = {
 }
 
 const actions = {
-  getReservationByDate({ commit, getters }, selectedDate) {
-    let UTC_Date = getters.getUTCDate(selectedDate)
-    // eslint-disable-next-line no-console
-    console.log(UTC_Date)
-    commit(mutation.SELECTED_RESERVATION_DATE, UTC_Date)
-    const params = [state.params.page, state.params.limit, UTC_Date]
-    DineInService.bookings(...params).then(response => {
-      commit(mutation.ALL_RESERVATIONS, response.data.data)
+  async getReservationByDate({ commit, getters }, selectedDate) {
+    return await new Promise((resolve, reject) => {
+      let UTC_Date = getters.getUTCDate(selectedDate)
+      // eslint-disable-next-line no-console
+      console.log(UTC_Date)
+      commit(mutation.SELECTED_RESERVATION_DATE, UTC_Date)
+      const params = [state.params.page, state.params.limit, UTC_Date]
+      DineInService.bookings(...params)
+        .then(response => {
+          if (response.data.count == 0) {
+            reject()
+          } else {
+            commit(mutation.ALL_RESERVATIONS, response.data.data)
+            resolve(true)
+          }
+        })
+        .catch(() => {
+          reject(false)
+        })
     })
   },
 }
