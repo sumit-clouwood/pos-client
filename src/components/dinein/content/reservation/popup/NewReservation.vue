@@ -12,7 +12,35 @@
 
         <!-- Modal body -->
         <div class="modal-body">
-          Coming soon..
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Select Number of guests</label>
+                <div
+                  id="exampleInputEmail1"
+                  class="btn-group btn-group-toggle"
+                  data-toggle="buttons"
+                >
+                  <label v-for="(n, i) in 8" :key="n" class="btn btn-secondary">
+                    <input
+                      type="radio"
+                      name="options"
+                      :id="'option' + i"
+                      autocomplete="off"
+                    />
+                    {{ i + 1 }} {{ n === 8 ? '+' : '' }}
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="exampleInputEmail1">Select Number of guests</label>
+                <div class="row">
+                  <div class="col-sm-3"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">v</div>
+          </div>
         </div>
 
         <!-- Modal footer -->
