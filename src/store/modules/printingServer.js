@@ -1,13 +1,15 @@
 import * as mutation from './printingServer/mutation-type'
 import OrderService from '@/services/data/OrderService'
 import PrintingServerService from '@/services/data/PrintingServerService'
-import LookupData from '@/plugins/helpers/LookupData'
+// import LookupData from '@/plugins/helpers/LookupData'
+import moment from 'moment-timezone'
 
 const state = {
   kitchenitems: [],
   printingservers: [],
   orderDetails: {},
   pageLookups: {},
+  createdDateTime: { date: '', time: '' },
 }
 
 const actions = {
@@ -25,6 +27,29 @@ const actions = {
     })
   },
 
+  convertDatetime({ rootState, commit }, { datetime, format }) {
+    let tz = rootState.location.timezoneString
+    moment.locale(tz)
+    let value =
+      datetime != null && typeof datetime.$date != 'undefined'
+        ? parseInt(datetime.$date.$numberLong)
+        : datetime
+    let result = ''
+    if (value) {
+      if (!moment.utc(value).isValid()) return ''
+      var fmt_in = moment(value)._f
+      result = moment
+        .utc(value, fmt_in)
+        .tz(tz)
+        .format(format)
+    }
+    if (format == 'h:mm:ss A') {
+      commit(mutation.CREATED_TIME, result)
+    } else {
+      commit(mutation.CREATED_DATE, result)
+    }
+    return result
+  },
   //Fetch All Kitchens
   fetchAllKitchens({ commit }) {
     return new Promise((resolve, reject) => {
@@ -81,19 +106,19 @@ const actions = {
           }
         })
       }
+      dispatch('convertDatetime', {
+        datetime: orderData.real_created_datetime,
+        format: 'Do MMMM YYYY',
+      })
+      dispatch('convertDatetime', {
+        datetime: orderData.real_created_datetime,
+        format: 'h:mm:ss A',
+      })
       //Created Date
-      let timezoneString = locationData.timezoneString
-      let created_date = LookupData.convertDatetimeCustom(
-        orderData.real_created_datetime,
-        timezoneString,
-        'DD-MMM-YYYY'
-      )
+      // let timezoneString = locationData.timezoneString
+      let created_date = state.createdDateTime.date
       //Created Time
-      let created_time = LookupData.convertDatetimeCustom(
-        orderData.real_created_datetime,
-        timezoneString,
-        'HH:mm A'
-      )
+      let created_time = state.createdDateTime.time
       //Crm Module Permission
       let crm_module_enabled = false
       let cb = locationData.brand
@@ -153,6 +178,12 @@ const mutations = {
   },
   [mutation.SET_PRINTING_SERVERS](state, printingservers) {
     state.printingservers = printingservers
+  },
+  [mutation.CREATED_DATE](state, date) {
+    state.createdDateTime.date = date
+  },
+  [mutation.CREATED_TIME](state, time) {
+    state.createdDateTime.time = time
   },
 }
 
