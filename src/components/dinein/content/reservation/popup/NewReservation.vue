@@ -44,7 +44,7 @@
                 <div class="row">
                   <div class="select_date">
                     <div>
-                      <datetime
+                      <!--<datetime
                         type="datetime"
                         title="Schedule"
                         placeholder="Schedule"
@@ -67,11 +67,17 @@
                         :week-start="7"
                         use12-hour
                         auto
-                      ></datetime>
+                      ></datetime>-->
+                    </div>
+                    <div class="arrow" @click="next_week">
+                      &lt;
                     </div>
                     <div v-for="(val, key) in days" :key="key">
                       <span>{{ val.day }}</span>
                       <span>{{ val.date }}</span>
+                    </div>
+                    <div class="arrow" @click="next_week">
+                      &gt;
                     </div>
                   </div>
                 </div>
@@ -203,12 +209,12 @@
 <script>
 // eslint-disable-next-line
 import moment from 'moment-timezone'
-import { Datetime } from 'vue-datetime'
+// import { Datetime } from 'vue-datetime'
 
 export default {
   name: 'NewReservation',
   components: {
-    Datetime,
+    // Datetime,
   },
   data() {
     return {
@@ -296,15 +302,26 @@ export default {
         },
       ],
       days: [],
+      week_no: null,
+      week_diff: null,
+      curr_week_no: 0,
     }
   },
   created() {
-    this.days = this.current_week()
+    this.week_no = moment().week()
+    // eslint-disable-next-line
+    console.log("curr Week no " + this.week_no)
+    this.week_diff = 0
+    this.days = this.get_days_of_week()
   },
   methods: {
-    current_week() {
-      var startOfWeek = moment().startOf('isoWeek')
-      var endOfWeek = moment().endOf('isoWeek')
+    get_days_of_week() {
+      var startOfWeek = moment()
+        .add(this.week_diff, 'weeks')
+        .startOf('isoWeek')
+      var endOfWeek = moment()
+        .add(this.week_diff, 'weeks')
+        .endOf('isoWeek')
 
       var days = []
       var day = startOfWeek
@@ -321,6 +338,14 @@ export default {
       // eslint-disable-next-line
       console.log(days)
       return days
+    },
+    next_week() {
+      this.week_diff = this.week_diff + 1
+      this.days = this.get_days_of_week()
+    },
+    prev_week() {
+      this.week_diff = this.week_diff - 1
+      this.days = this.get_days_of_week()
     },
   },
 }
@@ -346,6 +371,10 @@ export default {
     > span:first-child {
       font-size: 10px;
     }
+  }
+  .arrow {
+    justify-content: center;
+    cursor: pointer;
   }
 }
 .time_slot_block {
