@@ -91,7 +91,7 @@
 import bootstrap from '@/bootstrap'
 import btnBack from '../mobileComponents/mobileElements/btnBack'
 
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Menu',
@@ -152,7 +152,6 @@ export default {
       let myElement = document.querySelector('.navigation-list-wrapper')
       myElement.scrollTop += 20
     },
-    ...mapActions('category', ['browse']),
     subCategoryHendlerChange() {
       this.$store.dispatch('subCategoryHendlerChange')
     },
