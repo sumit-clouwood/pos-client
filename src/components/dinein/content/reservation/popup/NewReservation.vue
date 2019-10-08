@@ -69,7 +69,7 @@
                         auto
                       ></datetime>-->
                     </div>
-                    <div class="arrow" @click="next_week">
+                    <div class="arrow" @click="prev_week">
                       &lt;
                     </div>
                     <div v-for="(val, key) in days" :key="key">
