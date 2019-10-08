@@ -1,7 +1,7 @@
 import * as mutation from './printingServer/mutation-type'
 import OrderService from '@/services/data/OrderService'
 import PrintingServerService from '@/services/data/PrintingServerService'
-import LookupData from '../../plugins/helpers/LookupData'
+import LookupData from '@/plugins/helpers/LookupData'
 
 const state = {
   kitchenitems: [],
@@ -40,21 +40,16 @@ const actions = {
   },
 
   //Create A JSON Request to send in Local Server API for Generating Invoices from a software.
-  printingServerInvoiceRaw({ state, rootState, dispatch }, data) {
+  printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
     let printingServers = state.printingservers //Get All Printing Servers
-    if (printingServers) {
-      rootState.order._id = data.orderId //Order Id is stored in State
-      rootState.order.order_no = data.orderNo //Order No is stored in State
+    if (printingServers && orderData) {
       let staff = rootState.auth.userDetails
-      // eslint-disable-next-line no-console
-      console.log(rootState.order)
-      let orderData = rootState.order
       let customerDetails = rootState.customer
       let locationData = rootState.location
       let customerId = orderData.customer
       let customerData = [] //Customer Information
       let delivery_area = {} //Delivery Area
-      let kitchen_menu_items = {}
+      let kitchen_menu_items = []
 
       //Customer Data
       if (customerId) {
@@ -78,9 +73,11 @@ const actions = {
             kitchenItem => kitchenItem._id === item.entity_id
           )
           if (itemKitchen) {
-            kitchen_menu_items._id = itemKitchen._id
-            kitchen_menu_items.category = itemKitchen.category
-            kitchen_menu_items.kitchen = itemKitchen.kitchen
+            kitchen_menu_items.push({
+              _id: itemKitchen._id,
+              category: itemKitchen.category,
+              kitchen: itemKitchen.kitchen,
+            })
           }
         })
       }
@@ -112,7 +109,8 @@ const actions = {
       let invoiceTemplate = rootState.invoice.templates.data.data.find(
         invoice => invoice
       )
-      let orderTypeLabel = orderData.orderType.OTApi + '_label'
+      let orderTypeLabel = orderData.order_type + '_label'
+      orderData.order_no = orderData.orderNumber //Custom Order No to give appropriate field for Habib
       //Final JSON
       let jsonResponse = {
         status: 'ok',

@@ -109,8 +109,6 @@ const actions = {
       brand_payment_types: allPaymentTypes,
     }
     commit(mutation.APPINVOICEDATA, translationsOnly)
-    // eslint-disable-next-line no-console
-    console.log(translationsOnly)
   },
 }
 
