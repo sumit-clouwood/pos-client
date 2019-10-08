@@ -150,12 +150,7 @@ export default {
     InformationPopup,
   },
   computed: {
-    ...mapState('dinein', [
-      'tablesOnArea',
-      'dineInTabType',
-      'allBookedTables',
-      'availableTables',
-    ]),
+    ...mapState('dinein', ['tablesOnArea', 'dineInTabType', 'availableTables']),
     ...mapGetters('location', ['_t']),
     ...mapState('dineinReservation', ['reservations']),
   },

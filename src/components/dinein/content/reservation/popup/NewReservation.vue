@@ -28,6 +28,7 @@
                       'btn-secondary',
                       { active: no_of_guest === n },
                     ]"
+                    class="cursor-pointer"
                   >
                     <input
                       type="radio"
@@ -35,50 +36,22 @@
                       :id="'option' + i"
                       autocomplete="off"
                     />
-                    {{ i + 1 }} {{ n === 8 ? '+' : '' }}
+                    <span @click="getSelectedGuest(n)"
+                      >{{ i + 1 }} {{ n === 8 ? '+' : '' }}</span
+                    >
                   </label>
                 </div>
               </div>
               <div class="form-group">
                 <label>Select Date</label>
-                <div class="row">
-                  <div class="select_date">
-                    <div>
-                      <!--<datetime
-                        type="datetime"
-                        title="Schedule"
-                        placeholder="Schedule"
-                        v-model="futureDateTime"
-                        input-class="btn schedule-input btn-large datepicker-here color-dashboard-background"
-                        :value-zone="timeZone"
-                        :zone="timeZone"
-                        :format="{
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: 'numeric',
-                          minute: '2-digit',
-                        }"
-                        :phrases="{ ok: 'Continue', cancel: 'Exit' }"
-                        :hour-step="1"
-                        :minute-step="10"
-                        :min-datetime="minDatetime"
-                        :max-datetime="maxDatetime"
-                        :week-start="7"
-                        use12-hour
-                        auto
-                      ></datetime>-->
-                    </div>
-                    <div class="arrow" @click="next_week">
-                      &lt;
-                    </div>
-                    <div v-for="(val, key) in days" :key="key">
-                      <span>{{ val.day }}</span>
-                      <span>{{ val.date }}</span>
-                    </div>
-                    <div class="arrow" @click="next_week">
-                      &gt;
-                    </div>
+                <div class="reservation-date-format">
+                  <p>{{ _t('Select Date') }}</p>
+                  <input type="hidden" id="newReservationDate" value="" />
+                  <span id="wtf"></span>
+                  <div id="page" class="page">
+                    <section id="main">
+                      <div class="wrapperNew"></div>
+                    </section>
                   </div>
                 </div>
               </div>
@@ -209,15 +182,28 @@
 <script>
 // eslint-disable-next-line
 import moment from 'moment-timezone'
+import { mapState, mapGetters } from 'vuex'
 // import { Datetime } from 'vue-datetime'
+/* global $ */
 
 export default {
   name: 'NewReservation',
   components: {
     // Datetime,
   },
+  computed: {
+    ...mapState('dinein', ['tablesOnArea', 'dineInTabType', 'availableTables']),
+    ...mapGetters('location', ['_t']),
+  },
+  updated() {
+    alert(this.calendarOpen + '>>' + this.dineInTabType)
+    if (!this.calendarOpen && this.dineInTabType == 'reservation') this.cal()
+  },
   data() {
     return {
+      calendarOpen: false,
+      newDetails: false,
+      selectedDate: '',
       no_of_guest: 5,
       time_slots: [
         {
@@ -308,44 +294,70 @@ export default {
     }
   },
   created() {
-    this.week_no = moment().week()
-    // eslint-disable-next-line
-    console.log("curr Week no " + this.week_no)
-    this.week_diff = 0
-    this.days = this.get_days_of_week()
+    // if (!this.calendarOpen && this.dineInTabType == 'reservation') this.cal()
   },
   methods: {
-    get_days_of_week() {
-      var startOfWeek = moment()
-        .add(this.week_diff, 'weeks')
-        .startOf('isoWeek')
-      var endOfWeek = moment()
-        .add(this.week_diff, 'weeks')
-        .endOf('isoWeek')
-
-      var days = []
-      var day = startOfWeek
-
-      while (day <= endOfWeek) {
-        let day_obj = {}
-        day_obj.day = day.format('ddd')
-        day_obj.date = day.format('DD')
-        day_obj.month = day.format('MM')
-        // day_obj.push(day.toDate())
-        days.push(day_obj)
-        day = day.clone().add(1, 'd')
-      }
-      // eslint-disable-next-line
-      console.log(days)
-      return days
+    getSelectedGuest: function(numberOfGuest) {
+      alert(numberOfGuest)
     },
-    next_week() {
-      this.week_diff = this.week_diff + 1
-      this.days = this.get_days_of_week()
+    cal: function() {
+      let scope = this
+      // Use the settings object to change the theme
+      $(function() {
+        $('#main, #projects .wrapper').height($(window).height())
+        $(window).on('resize', function() {
+          $('#main, #projects .wrapper').height($(window).height())
+        })
+      })
+      $('.wrapperNew').SC({
+        selectedDatesObj: 'newReservationDate',
+        animate: true,
+        useWheel: true,
+        vertical: false,
+        sizes: 'auto',
+        callbackDelay: 500,
+        years: 1,
+        months: 3,
+        days: 3,
+        invert: false,
+        combineMonthYear: false,
+        showDayArrows: false,
+        showDayNames: true,
+        monthNames: [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ],
+        dayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        doubleDigitsDays: true,
+        allowSelectSpans: true,
+        callback: function(cal) {
+          scope.selectedDate = cal.currentDate
+          scope.calendarOpen = true
+          scope.getReservationByDate(cal.currentDate)
+          // $('#wtf').html('Selected date: ' + cal.currentDate)
+        },
+      })
     },
-    prev_week() {
-      this.week_diff = this.week_diff - 1
-      this.days = this.get_days_of_week()
+    getReservationByDate: function(date) {
+      let scope = this
+      this.$store
+        .dispatch('dineinReservation/getReservationByDate', date)
+        .then(details => {
+          scope.newDetails = details
+        })
+        .catch(details => {
+          scope.newDetails = details
+        })
     },
   },
 }
