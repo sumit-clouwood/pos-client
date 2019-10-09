@@ -400,6 +400,9 @@ export default {
     padding: 5px 0;
     border: 1px solid #ccc;
     height: 80px;
+    .active {
+      background: rgba(189, 189, 189, 0.6);
+    }
     .is_available {
       color: green;
       font-weight: 900;
