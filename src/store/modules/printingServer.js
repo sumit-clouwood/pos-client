@@ -1,13 +1,15 @@
 import * as mutation from './printingServer/mutation-type'
 import OrderService from '@/services/data/OrderService'
 import PrintingServerService from '@/services/data/PrintingServerService'
-import LookupData from '../../plugins/helpers/LookupData'
+// import LookupData from '@/plugins/helpers/LookupData'
+import moment from 'moment-timezone'
 
 const state = {
   kitchenitems: [],
   printingservers: [],
   orderDetails: {},
   pageLookups: {},
+  createdDateTime: { date: '', time: '' },
 }
 
 const actions = {
@@ -25,6 +27,29 @@ const actions = {
     })
   },
 
+  convertDatetime({ rootState, commit }, { datetime, format }) {
+    let tz = rootState.location.timezoneString
+    moment.locale(tz)
+    let value =
+      datetime != null && typeof datetime.$date != 'undefined'
+        ? parseInt(datetime.$date.$numberLong)
+        : datetime
+    let result = ''
+    if (value) {
+      if (!moment.utc(value).isValid()) return ''
+      var fmt_in = moment(value)._f
+      result = moment
+        .utc(value, fmt_in)
+        .tz(tz)
+        .format(format)
+    }
+    if (format == 'h:mm:ss A') {
+      commit(mutation.CREATED_TIME, result)
+    } else {
+      commit(mutation.CREATED_DATE, result)
+    }
+    return result
+  },
   //Fetch All Kitchens
   fetchAllKitchens({ commit }) {
     return new Promise((resolve, reject) => {
@@ -40,21 +65,16 @@ const actions = {
   },
 
   //Create A JSON Request to send in Local Server API for Generating Invoices from a software.
-  printingServerInvoiceRaw({ state, rootState, dispatch }, data) {
+  printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
     let printingServers = state.printingservers //Get All Printing Servers
-    if (printingServers) {
-      rootState.order._id = data.orderId //Order Id is stored in State
-      rootState.order.order_no = data.orderNo //Order No is stored in State
+    if (printingServers && orderData) {
       let staff = rootState.auth.userDetails
-      // eslint-disable-next-line no-console
-      console.log(rootState.order)
-      let orderData = rootState.order
       let customerDetails = rootState.customer
       let locationData = rootState.location
       let customerId = orderData.customer
       let customerData = [] //Customer Information
       let delivery_area = {} //Delivery Area
-      let kitchen_menu_items = {}
+      let kitchen_menu_items = []
 
       //Customer Data
       if (customerId) {
@@ -78,25 +98,27 @@ const actions = {
             kitchenItem => kitchenItem._id === item.entity_id
           )
           if (itemKitchen) {
-            kitchen_menu_items._id = itemKitchen._id
-            kitchen_menu_items.category = itemKitchen.category
-            kitchen_menu_items.kitchen = itemKitchen.kitchen
+            kitchen_menu_items.push({
+              _id: itemKitchen._id,
+              category: itemKitchen.category,
+              kitchen: itemKitchen.kitchen,
+            })
           }
         })
       }
+      dispatch('convertDatetime', {
+        datetime: orderData.real_created_datetime,
+        format: 'Do MMMM YYYY',
+      })
+      dispatch('convertDatetime', {
+        datetime: orderData.real_created_datetime,
+        format: 'h:mm:ss A',
+      })
       //Created Date
-      let timezoneString = locationData.timezoneString
-      let created_date = LookupData.convertDatetimeCustom(
-        orderData.real_created_datetime,
-        timezoneString,
-        'DD-MMM-YYYY'
-      )
+      // let timezoneString = locationData.timezoneString
+      let created_date = state.createdDateTime.date
       //Created Time
-      let created_time = LookupData.convertDatetimeCustom(
-        orderData.real_created_datetime,
-        timezoneString,
-        'HH:mm A'
-      )
+      let created_time = state.createdDateTime.time
       //Crm Module Permission
       let crm_module_enabled = false
       let cb = locationData.brand
@@ -112,7 +134,8 @@ const actions = {
       let invoiceTemplate = rootState.invoice.templates.data.data.find(
         invoice => invoice
       )
-      let orderTypeLabel = orderData.orderType.OTApi + '_label'
+      let orderTypeLabel = orderData.order_type + '_label'
+      orderData.order_no = orderData.orderNumber //Custom Order No to give appropriate field for Habib
       //Final JSON
       let jsonResponse = {
         status: 'ok',
@@ -155,6 +178,12 @@ const mutations = {
   },
   [mutation.SET_PRINTING_SERVERS](state, printingservers) {
     state.printingservers = printingservers
+  },
+  [mutation.CREATED_DATE](state, date) {
+    state.createdDateTime.date = date
+  },
+  [mutation.CREATED_TIME](state, time) {
+    state.createdDateTime.time = time
   },
 }
 

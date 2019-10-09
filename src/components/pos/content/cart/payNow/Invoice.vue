@@ -87,6 +87,7 @@ export default {
   },
   methods: {
     doPrint() {
+      let orderData = this.order
       if (this.print && this.iframe_body) {
         this.$store.commit('checkout/PRINT', false)
 
@@ -102,20 +103,10 @@ export default {
                 this.$store.commit('order/SET_SPLIT_BILL', null, { root: true })
               })
             }
-            //Code to run API for Printing Server
-            let orderId = this.order.id
-            let orderNo = this.order.order_no
-            let orderDatas = {
-              orderId: orderId,
-              orderNo: orderNo,
-            }
             //Invoice APP API Call with Custom Request JSON
             this.$store.dispatch(
               'printingServer/printingServerInvoiceRaw',
-              orderDatas,
-              {
-                root: true,
-              }
+              orderData
             )
           }, 500)
           //this.$refs.iframe.contentWindow.print()
@@ -153,7 +144,6 @@ export default {
               box-sizing: border-box;
               font-size: 11px;
           }
-
           .invoice-body .loading {
               padding: 05em;
           }
@@ -308,8 +298,8 @@ export default {
           }
 
           .invoice-body .header p {
-              margin-top: 1em;
-              margin-bottom: 1em;
+              margin-top: 0;
+              margin-bottom: 0;
           }
 
           .invoice-body .header-img {

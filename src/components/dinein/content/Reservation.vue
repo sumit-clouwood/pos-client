@@ -9,7 +9,6 @@
       <div class="fixed-reservation">
         <div class="pos-reservation-header">
           <div class="reservation-date-format">
-            <p>{{ _t('Select Date') }}</p>
             <input type="hidden" id="selectedDates" value="" />
             <span id="wtf"></span>
             <div id="page" class="page">
@@ -51,7 +50,8 @@
                   >{{ reservation.number_of_guests }}
                 </td>
                 <td>{{ reservation.customers }}</td>
-                <td class="mr-1">
+                <td class="mr-1 reservation-actions">
+                  <button class="btn btn-success">{{ _t('Confirm') }}</button>
                   <button class="btn btn-warning">
                     <span class="fa fa-edit"></span>
                   </button>
@@ -63,7 +63,6 @@
                       <img src="img/pos/delete-icon-reservation.svg" />
                     </span>
                   </button>
-                  <button class="btn btn-success">{{ _t('Confirm') }}</button>
                 </td>
               </tr>
             </tbody>
@@ -150,12 +149,7 @@ export default {
     InformationPopup,
   },
   computed: {
-    ...mapState('dinein', [
-      'tablesOnArea',
-      'dineInTabType',
-      'allBookedTables',
-      'availableTables',
-    ]),
+    ...mapState('dinein', ['tablesOnArea', 'dineInTabType', 'availableTables']),
     ...mapGetters('location', ['_t']),
     ...mapState('dineinReservation', ['reservations']),
   },
@@ -207,6 +201,7 @@ export default {
       let scope = this
       // Use the settings object to change the theme
       $(function() {
+        // $('.SCElement')
         $('#main, #projects .wrapper').height($(window).height())
         $(window).on('resize', function() {
           $('#main, #projects .wrapper').height($(window).height())
@@ -218,13 +213,13 @@ export default {
         useWheel: true,
         vertical: false,
         sizes: 'auto',
-        callbackDelay: 500,
+        callbackDelay: 50,
         years: 1,
         months: 3,
         days: 3,
         invert: false,
-        combineMonthYear: false,
-        showDayArrows: false,
+        combineMonthYear: true,
+        showDayArrows: true,
         showDayNames: true,
         monthNames: [
           'Jan',
@@ -244,6 +239,14 @@ export default {
         doubleDigitsDays: true,
         allowSelectSpans: true,
         callback: function(cal) {
+          $('.SCToday')
+            .parent()
+            .parent()
+            .prevAll()
+            .find('.SCElement')
+            .parent()
+            .parent()
+            .addClass('disabled')
           scope.selectedDate = cal.currentDate
           scope.calendarOpen = true
           scope.getReservationByDate(cal.currentDate)
