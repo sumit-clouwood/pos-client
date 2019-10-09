@@ -5,17 +5,30 @@ export default {
     const msNow = moment()
       .utc()
       .valueOf()
-    const itemStartDateTime = moment(item.from_date + ' ' + item.from).valueOf()
-    const itemEndtDateTime = moment(
-      item.until_date + ' ' + item.until
-    ).valueOf()
+    const itemStartDateTime = moment(item.from_date).valueOf()
+    let endDate = moment(item.until_date).valueOf()
+
+    if (item.until === '00:00') {
+      //that means next date
+      endDate = moment(item.until_date)
+        .add(1, 'days')
+        .valueOf()
+    }
+
+    const itemEndtDateTime = moment(endDate).valueOf()
 
     if (msNow < itemStartDateTime || msNow > itemEndtDateTime) {
       return false
     }
 
     const itemStartTime = moment(item.from, 'HH:mm').valueOf()
-    const itemEndTime = moment(item.until, 'HH:mm').valueOf()
+    let itemEndTime = moment(item.until, 'HH:mm').valueOf()
+
+    if (item.until === '00:00') {
+      itemEndTime = moment(item.until, 'HH:mm')
+        .add(1, 'days')
+        .valueOf()
+    }
 
     if (msNow < itemStartTime || msNow > itemEndTime) {
       return false
