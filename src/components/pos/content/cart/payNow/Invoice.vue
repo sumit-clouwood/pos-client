@@ -144,7 +144,6 @@ export default {
               box-sizing: border-box;
               font-size: 11px;
           }
-
           .invoice-body .loading {
               padding: 05em;
           }
@@ -299,8 +298,8 @@ export default {
           }
 
           .invoice-body .header p {
-              margin-top: 1em;
-              margin-bottom: 1em;
+              margin-top: 0;
+              margin-bottom: 0;
           }
 
           .invoice-body .header-img {
