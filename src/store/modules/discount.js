@@ -1,6 +1,7 @@
 import * as mutation from './discount/mutation-types'
 import DiscountService from '@/services/data/DiscountService'
 import Num from '@/plugins/helpers/Num.js'
+import Availability from '@/plugins/helpers/Availability.js'
 import * as CONST from '@/constants'
 //const DISCOUNT_ITEM_ERROR = "Item discount can't be applied."
 
@@ -67,18 +68,22 @@ const getters = {
     if (!state.itemDiscounts.data) {
       return state.itemDiscounts
     }
-    return state.itemDiscounts.data.filter(
-      discount => discount[rootState.order.orderType.OTApi]
-    )
+    return state.itemDiscounts.data.filter(discount => {
+      if (discount[rootState.order.orderType.OTApi]) {
+        return Availability.available(discount)
+      }
+    })
   },
 
   orderDiscounts: (state, getters, rootState) => {
     if (!state.itemDiscounts.data) {
       return state.orderDiscounts
     }
-    return state.orderDiscounts.filter(
-      discount => discount[rootState.order.orderType.OTApi]
-    )
+    return state.orderDiscounts.filter(discount => {
+      if (discount[rootState.order.orderType.OTApi]) {
+        return Availability.available(discount)
+      }
+    })
   },
   orderDiscount: (state, getters) => discountId => {
     return getters.orderDiscounts.find(discount => discount._id == discountId)
