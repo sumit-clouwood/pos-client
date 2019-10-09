@@ -126,6 +126,17 @@
       position: relative;
       transition: 0.7s ease-out;
       display: block;
+      overflow: visible;
+    }
+    #cancellationReason {
+      .modal-dialog {
+        @include responsive(mobile) {
+          max-width: 100%;
+        }
+        .autocomplete-container {
+          grid-gap: 10px;
+        }
+      }
     }
     .main-orders-list-wrapper{
       padding-right: 0;
