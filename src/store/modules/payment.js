@@ -27,14 +27,16 @@ const getters = {
   },
 }
 
-function makeTransFormat(datas) {
+function makeTransFormat(translations) {
   let modifiedTrans = []
-  datas.find(data => {
+  translations.find(data => {
     let modifiedTransFinal = []
     if (typeof data.translations_dict != 'undefined') {
       Object.entries(data.translations_dict.name).forEach(trans => {
-        let arr = { language: trans[0], value: trans[1] }
-        modifiedTransFinal.push(arr)
+        if (trans.length) {
+          let arr = { language: trans[0], value: trans[1] }
+          modifiedTransFinal.push(arr)
+        }
       })
       modifiedTrans.push({
         _id: data._id,
