@@ -131,7 +131,9 @@ export default {
               box-sizing: border-box;
               font-size: 11px;
           }
-
+          .invoice-body p {
+            margin:0;
+          }
           .invoice-body .loading {
               padding: 05em;
           }
