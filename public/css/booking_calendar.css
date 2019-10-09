@@ -121,7 +121,7 @@ section#main {
  position: fixed;
  right: 0;
  background: #fff;
- z-index: 9;
+ z-index: 1;
  height: 90vh;
  box-shadow: 0 0px 3px 0px rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
  display: grid;
@@ -178,4 +178,13 @@ section#main {
  font-size: 25px;
  left:-45px;
  position:absolute;
+}
+.SCTbl.disabled {
+ pointer-events: none !important;
+}
+.SCHor .prev.disabled .SCDayNum:after {
+ pointer-events: none !important;
+}
+.prev.disabled {
+ pointer-events: none !important;
 }

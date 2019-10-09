@@ -239,6 +239,14 @@ export default {
         doubleDigitsDays: true,
         allowSelectSpans: true,
         callback: function(cal) {
+          $('.SCToday')
+            .parent()
+            .parent()
+            .prevAll()
+            .find('.SCElement')
+            .parent()
+            .parent()
+            .addClass('disabled')
           scope.selectedDate = cal.currentDate
           scope.calendarOpen = true
           scope.getReservationByDate(cal.currentDate)
