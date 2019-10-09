@@ -14,6 +14,13 @@ export default {
       return false
     }
 
+    const itemStartTime = moment(item.from, 'HH:mm').valueOf()
+    const itemEndTime = moment(item.until, 'HH:mm').valueOf()
+
+    if (msNow < itemStartTime || msNow > itemEndTime) {
+      return false
+    }
+
     let dayToday = moment()
       .utc()
       .day()
