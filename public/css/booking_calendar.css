@@ -181,10 +181,13 @@ section#main {
 }
 .SCTbl.disabled {
  pointer-events: none !important;
+ opacity: 0.5;
 }
 .SCHor .prev.disabled .SCDayNum:after {
  pointer-events: none !important;
+ opacity: 0.5;
 }
 .prev.disabled {
  pointer-events: none !important;
+ opacity: 0.5;
 }

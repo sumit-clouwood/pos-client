@@ -7,6 +7,7 @@
           <h4 class="modal-title">Make a reservation</h4>
           <button type="button" class="close" data-dismiss="modal">
             &times;
+            <span class="hide-text">{{ dateSelector }}</span>
           </button>
         </div>
 
@@ -191,12 +192,14 @@ export default {
   components: {
     // Datetime,
   },
+  props: {
+    dateSelector: Boolean,
+  },
   computed: {
     ...mapState('dinein', ['tablesOnArea', 'dineInTabType', 'availableTables']),
     ...mapGetters('location', ['_t']),
   },
   updated() {
-    alert(this.calendarOpen + '>>' + this.dineInTabType)
     if (!this.calendarOpen && this.dineInTabType == 'reservation') this.cal()
   },
   data() {
@@ -293,9 +296,6 @@ export default {
       curr_week_no: 0,
     }
   },
-  created() {
-    // if (!this.calendarOpen && this.dineInTabType == 'reservation') this.cal()
-  },
   methods: {
     getSelectedGuest: function(numberOfGuest) {
       alert(numberOfGuest)
@@ -315,13 +315,13 @@ export default {
         useWheel: true,
         vertical: false,
         sizes: 'auto',
-        callbackDelay: 500,
+        callbackDelay: 50,
         years: 1,
         months: 3,
         days: 3,
         invert: false,
-        combineMonthYear: false,
-        showDayArrows: false,
+        combineMonthYear: true,
+        showDayArrows: true,
         showDayNames: true,
         monthNames: [
           'Jan',
@@ -341,6 +341,14 @@ export default {
         doubleDigitsDays: true,
         allowSelectSpans: true,
         callback: function(cal) {
+          $('.SCToday')
+            .parent()
+            .parent()
+            .prevAll()
+            .find('.SCElement')
+            .parent()
+            .parent()
+            .addClass('disabled')
           scope.selectedDate = cal.currentDate
           scope.calendarOpen = true
           scope.getReservationByDate(cal.currentDate)
@@ -388,6 +396,9 @@ export default {
     justify-content: center;
     cursor: pointer;
   }
+}
+.hide-text {
+  display: none;
 }
 .time_slot_block {
   height: 320px;

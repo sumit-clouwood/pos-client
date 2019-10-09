@@ -68,19 +68,21 @@
             </tbody>
           </table>
         </div>
-        <div class="pos-reservation-table" v-else>No Data</div>
+        <div class="pos-reservation-table" v-else>
+          {{ _t('No reservations found') }}
+        </div>
         <div class="pos-reservation-footer">
           <button
             class="btn btn-success"
             data-toggle="modal"
-            data-target="#NewReservation"
+            @click="activeDateSelector"
           >
             {{ _t('New Reservation') }}
           </button>
         </div>
       </div>
       <TableDraw />
-      <NewReservation />
+      <NewReservation :dateSelector="newDtPicker" />
       <div
         class="modal"
         id="confirmReservation"
@@ -155,6 +157,7 @@ export default {
   },
   data() {
     return {
+      newDtPicker: false,
       calendarOpen: false,
       newDetails: false,
       selectedDate: '',
@@ -167,6 +170,10 @@ export default {
     if (!this.calendarOpen && this.dineInTabType == 'reservation') this.cal()
   },
   methods: {
+    activeDateSelector() {
+      this.newDtPicker = true
+      $('#NewReservation').modal('show')
+    },
     cancelReservation(id) {
       this.cancelReservationMsg = 'Do you want to cancel this reservation?'
       $('#confirmReservation').modal('show')
@@ -199,14 +206,6 @@ export default {
 
     cal: function() {
       let scope = this
-      // Use the settings object to change the theme
-      $(function() {
-        // $('.SCElement')
-        $('#main, #projects .wrapper').height($(window).height())
-        $(window).on('resize', function() {
-          $('#main, #projects .wrapper').height($(window).height())
-        })
-      })
       $('.wrapperHor').SC({
         selectedDatesObj: 'selectedDates',
         animate: true,
