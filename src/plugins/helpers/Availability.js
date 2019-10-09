@@ -1,32 +1,68 @@
+/* eslint-disable no-console */
 import moment from 'moment-timezone'
 
 export default {
-  available(item) {
+  available(item, timezone) {
     const msNow = moment()
       .utc()
       .valueOf()
-    const itemStartDateTime = moment(item.from_date).valueOf()
-    let endDate = moment(item.until_date).valueOf()
+
+    console.log('now time utc', new Date(msNow).toString())
+
+    //we are getting store time, convert it to utc according to store timezone
+    const itemStartDateTime = moment
+      .tz(item.from_date + ' ' + item.from, 'YYYY-MM-DD HH:mm', timezone)
+      .utc()
+      .valueOf()
+
+    console.log(
+      'store start datetime in utc ',
+      new Date(itemStartDateTime).toString()
+    )
+
+    let itemEndtDateTime = moment
+      .tz(item.until_date + ' ' + item.until, 'YYYY-MM-DD HH:mm', timezone)
+      .utc()
+      .valueOf()
+
+    console.log(
+      'store end datetime in utc ',
+      new Date(itemEndtDateTime).toString()
+    )
 
     if (item.until === '00:00') {
       //that means next date
-      endDate = moment(item.until_date)
+      itemEndtDateTime = moment
+        .tz(item.until_date + ' ' + item.until, 'YYYY-MM-DD HH:mm', timezone)
         .add(1, 'days')
+        .utc()
         .valueOf()
     }
 
-    const itemEndtDateTime = moment(endDate).valueOf()
+    console.log(
+      'store end datetime after adjust in utc ',
+      new Date(itemEndtDateTime).toString()
+    )
 
     if (msNow < itemStartDateTime || msNow > itemEndtDateTime) {
       return false
     }
 
-    const itemStartTime = moment(item.from, 'HH:mm').valueOf()
-    let itemEndTime = moment(item.until, 'HH:mm').valueOf()
+    const itemStartTime = moment
+      .tz(item.from, 'HH:mm', timezone)
+      .utc()
+      .valueOf()
+
+    let itemEndTime = moment
+      .tz(item.until, 'HH:mm', timezone)
+      .utc()
+      .valueOf()
 
     if (item.until === '00:00') {
-      itemEndTime = moment(item.until, 'HH:mm')
+      itemEndTime = moment
+        .tz(item.until, 'HH:mm', timezone)
         .add(1, 'days')
+        .utc()
         .valueOf()
     }
 
@@ -34,9 +70,15 @@ export default {
       return false
     }
 
+    console.log('item start time utc', new Date(itemStartTime).toString())
+    console.log('item end time utc', new Date(itemEndTime).toString())
+
     let dayToday = moment()
       .utc()
+      .tz(timezone)
       .day()
+
+    console.log('day today:', dayToday)
 
     dayToday -= 1
     if (dayToday < 0) {
