@@ -83,6 +83,7 @@
                     Select View
                   </button>
                 </div>
+                {{ selectedTable }}
                 <div class="col-md-6">
                   <button
                     type="button"
@@ -200,7 +201,12 @@ export default {
     dateSelector: Boolean,
   },
   computed: {
-    ...mapState('dinein', ['tablesOnArea', 'dineInTabType', 'availableTables']),
+    ...mapState('dinein', [
+      'tablesOnArea',
+      'dineInTabType',
+      'availableTables',
+      'selectedTable',
+    ]),
     ...mapGetters('location', ['_t']),
   },
   updated() {

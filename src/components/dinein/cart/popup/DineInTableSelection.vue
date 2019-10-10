@@ -43,7 +43,6 @@
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="discount-save-btn"
-              data-dismiss="modal"
               @click="moveSelectedTable"
             >
               {{ _t('Ok') }}
@@ -113,6 +112,7 @@ export default {
       } else {
         this.selectedTableMove = ''
       }
+      $('#dine-in-table-selection').modal('hide')
     },
     removeSelectedTable: function() {
       if (this.selectedTable) {
