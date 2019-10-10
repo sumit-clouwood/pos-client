@@ -37,7 +37,7 @@
                       :id="'option' + i"
                       autocomplete="off"
                     />
-                    <span @click="getSelectedGuest(n)"
+                    <span @click="getSelectedGuest(i)"
                       >{{ i + 1 }} {{ n === 8 ? '+' : '' }}</span
                     >
                   </label>
@@ -98,25 +98,25 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label>Phone</label>
-                    <input type="email" class="form-control" />
+                    <input type="email" class="form-control txt-box" />
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     <label>First Name</label>
-                    <input type="text" class="form-control" />
+                    <input type="text" class="form-control txt-box" />
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     <label>Email</label>
-                    <input type="email" class="form-control" />
+                    <input type="email" class="form-control txt-box" />
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     <label>Last Name</label>
-                    <input type="text" class="form-control" />
+                    <input type="text" class="form-control txt-box" />
                   </div>
                 </div>
               </div>
@@ -159,7 +159,7 @@
                 <div class="col-md-12">
                   <div class="form-group" style="margin-top: 10px">
                     <label>Visit Notes</label>
-                    <textarea class="form-control" rows="3"></textarea>
+                    <textarea class="form-control txt-box" rows="3"></textarea>
                   </div>
                 </div>
               </div>
