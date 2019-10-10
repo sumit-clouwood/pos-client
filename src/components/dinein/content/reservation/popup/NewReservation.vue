@@ -164,7 +164,7 @@
                 <div class="col-md-12">
                   <div class="form-group" style="margin-top: 10px">
                     <label>Visit Notes</label>
-                    <textarea class="form-control txt-box" rows="3"></textarea>
+                    <textarea class="form-control" rows="3"></textarea>
                   </div>
                 </div>
               </div>
@@ -459,5 +459,15 @@ export default {
 label.cursor-pointer.btn.btn-secondary {
   border-right: 1px solid #fff !important;
   border-left: 1px solid #fff !important;
+}
+#NewReservation section#main {
+  justify-content: left;
+  margin-left: 40px;
+}
+.wrapperNew .SCDay .SCElement > div {
+  width: 80px !important;
+}
+.wrapperNew .SCMonth .SCElement > div {
+  width: 80px !important;
 }
 </style>
