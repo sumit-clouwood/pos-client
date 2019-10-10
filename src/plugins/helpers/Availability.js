@@ -1,15 +1,10 @@
-/* eslint-disable no-console */
 import moment from 'moment-timezone'
 
 export default {
   available(item, timezone) {
-    console.log(item)
-
     const msNow = moment()
       .utc()
       .valueOf()
-
-    console.log('now time utc', new Date(msNow).toString())
 
     //we are getting store time, convert it to utc according to store timezone
     const itemStartDateTime = moment
@@ -17,20 +12,10 @@ export default {
       .utc()
       .valueOf()
 
-    console.log(
-      'store start datetime in utc ',
-      new Date(itemStartDateTime).toString()
-    )
-
     let itemEndtDateTime = moment
       .tz(item.until_date + ' ' + item.until, 'YYYY-MM-DD HH:mm', timezone)
       .utc()
       .valueOf()
-
-    console.log(
-      'store end datetime in utc ',
-      new Date(itemEndtDateTime).toString()
-    )
 
     if (item.until === '00:00') {
       //that means next date
@@ -41,11 +26,6 @@ export default {
         .valueOf()
     }
 
-    console.log(
-      'store end datetime after adjust in utc ',
-      new Date(itemEndtDateTime).toString()
-    )
-
     if (msNow < itemStartDateTime || msNow > itemEndtDateTime) {
       return false
     }
@@ -54,7 +34,6 @@ export default {
       .tz(timezone)
       .format('YYYY-MM-DD')
 
-    console.log('today date in store time', todayStoreDate)
     const itemStartTime = moment
       .tz(todayStoreDate + ' ' + item.from, 'YYYY-MM-DD HH:mm', timezone)
       .utc()
@@ -73,11 +52,8 @@ export default {
         .valueOf()
     }
 
-    console.log('item start time utc', new Date(itemStartTime).toString())
-    console.log('item end time utc', new Date(itemEndTime).toString())
-
     if (item.from === '00:00' && item.until === '00:00') {
-      console.log('24 hours open discount')
+      //console.log('24 hours open discount')
     } else if (msNow < itemStartTime || msNow > itemEndTime) {
       return false
     }
@@ -86,8 +62,6 @@ export default {
       .utc()
       .tz(timezone)
       .day()
-
-    console.log('day today:', dayToday)
 
     dayToday -= 1
     if (dayToday < 0) {
