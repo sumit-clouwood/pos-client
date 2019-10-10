@@ -51,18 +51,42 @@ export default {
     }
 
     const itemStartTime = moment
-      .tz(item.from, 'HH:mm', timezone)
+      .tz(
+        moment()
+          .tz(timezone)
+          .format('YYYY-MM-DD') +
+          ' ' +
+          item.from,
+        'HH:mm',
+        timezone
+      )
       .utc()
       .valueOf()
 
     let itemEndTime = moment
-      .tz(item.until, 'HH:mm', timezone)
+      .tz(
+        moment()
+          .tz(timezone)
+          .format('YYYY-MM-DD') +
+          ' ' +
+          item.until,
+        'HH:mm',
+        timezone
+      )
       .utc()
       .valueOf()
 
     if (item.until === '00:00') {
       itemEndTime = moment
-        .tz(item.until, 'HH:mm', timezone)
+        .tz(
+          moment()
+            .tz(timezone)
+            .format('YYYY-MM-DD') +
+            ' ' +
+            item.until,
+          'HH:mm',
+          timezone
+        )
         .add(1, 'days')
         .utc()
         .valueOf()
