@@ -44,9 +44,8 @@
                 </div>
               </div>
               <div class="form-group">
-                <label>Select Date</label>
+                <label>{{ _t('Select Date') }}</label>
                 <div class="reservation-date-format">
-                  <p>{{ _t('Select Date') }}</p>
                   <input type="hidden" id="newReservationDate" value="" />
                   <span id="wtf"></span>
                   <div id="page" class="page">
@@ -374,19 +373,16 @@ export default {
 <style lang="scss">
 .num_guests {
   display: block;
-  text-align: center;
   .btn {
     padding: 1.175rem 1.75rem;
   }
 }
 .select_date {
   display: flex;
-  justify-content: center;
   width: 100%;
   > div {
     display: flex;
     flex-direction: column;
-    align-items: center;
     padding: 12px;
     > span:first-child {
       font-size: 10px;
