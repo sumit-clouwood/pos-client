@@ -415,8 +415,11 @@ export default {
   padding: 10px;
   border-radius: 10%;
   margin-right: 10px;
+  background-color: #b1b1b1;
+  color: #383838;
   &.active {
-    background-color: #62bb31;
+    background-color: #000;
+    color: #fff;
   }
 }
 </style>
