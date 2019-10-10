@@ -19,8 +19,6 @@ const actions = {
   async getReservationByDate({ commit, getters }, selectedDate) {
     return await new Promise((resolve, reject) => {
       let UTC_Date = getters.getUTCDate(selectedDate)
-      // eslint-disable-next-line no-console
-      console.log(UTC_Date)
       commit(mutation.SELECTED_RESERVATION_DATE, UTC_Date)
       const params = [state.params.page, state.params.limit, UTC_Date]
       DineInService.bookings(...params)

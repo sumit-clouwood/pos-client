@@ -52,7 +52,10 @@
                 <td>{{ reservation.customers }}</td>
                 <td class="mr-1 reservation-actions">
                   <button class="btn btn-success">{{ _t('Confirm') }}</button>
-                  <button class="btn btn-warning">
+                  <button
+                    class="btn btn-warning"
+                    @click="editReservation(reservation._id)"
+                  >
                     <span class="fa fa-edit"></span>
                   </button>
                   <button
@@ -177,6 +180,10 @@ export default {
     cancelReservation(id) {
       this.cancelReservationMsg = 'Do you want to cancel this reservation?'
       $('#confirmReservation').modal('show')
+      this.selectedReservationId = id
+    },
+    editReservation(id) {
+      this.activeDateSelector()
       this.selectedReservationId = id
     },
 
