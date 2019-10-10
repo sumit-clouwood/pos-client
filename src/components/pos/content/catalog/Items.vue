@@ -52,6 +52,7 @@
 /* global $, showModal  */
 
 import { mapGetters, mapState } from 'vuex'
+import bootstrap from '@/bootstrap'
 import Popup from './items/Popup'
 import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
@@ -81,6 +82,8 @@ export default {
       }
     },
     addToOrder(item) {
+      bootstrap.loadUI().then(() => {})
+
       this.$store.commit('order/SET_CART_TYPE', 'new')
       this.$store.dispatch('order/startOrder')
       $('#POSItemOptions .modifier-option-radio').prop('checked', false)

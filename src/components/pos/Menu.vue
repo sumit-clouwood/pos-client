@@ -88,7 +88,7 @@
 
 <script>
 /* global  $ */
-import bootstrap from '@/bootstrap'
+//import bootstrap from '@/bootstrap'
 import btnBack from '../mobileComponents/mobileElements/btnBack'
 
 import { mapState, mapGetters } from 'vuex'
@@ -122,7 +122,7 @@ export default {
       $('.breadcrumbs').show()
       $('.search-field-input').val('')
       this.$store.commit('sync/reload', true)
-      bootstrap.loadUI().then(() => {})
+      //bootstrap.loadUI().then(() => {})
       this.$store.dispatch('category/browse', item)
     },
     showMore() {

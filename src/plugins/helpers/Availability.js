@@ -1,21 +1,66 @@
 import moment from 'moment-timezone'
 
 export default {
-  available(item) {
+  available(item, timezone) {
     const msNow = moment()
       .utc()
       .valueOf()
-    const itemStartDateTime = moment(item.from_date + ' ' + item.from).valueOf()
-    const itemEndtDateTime = moment(
-      item.until_date + ' ' + item.until
-    ).valueOf()
+
+    //we are getting store time, convert it to utc according to store timezone
+    const itemStartDateTime = moment
+      .tz(item.from_date + ' ' + item.from, 'YYYY-MM-DD HH:mm', timezone)
+      .utc()
+      .valueOf()
+
+    let itemEndtDateTime = moment
+      .tz(item.until_date + ' ' + item.until, 'YYYY-MM-DD HH:mm', timezone)
+      .utc()
+      .valueOf()
+
+    if (item.until === '00:00') {
+      //that means next date
+      itemEndtDateTime = moment
+        .tz(item.until_date + ' ' + item.until, 'YYYY-MM-DD HH:mm', timezone)
+        .add(1, 'days')
+        .utc()
+        .valueOf()
+    }
 
     if (msNow < itemStartDateTime || msNow > itemEndtDateTime) {
       return false
     }
 
+    const todayStoreDate = moment()
+      .tz(timezone)
+      .format('YYYY-MM-DD')
+
+    const itemStartTime = moment
+      .tz(todayStoreDate + ' ' + item.from, 'YYYY-MM-DD HH:mm', timezone)
+      .utc()
+      .valueOf()
+
+    let itemEndTime = moment
+      .tz(todayStoreDate + ' ' + item.until, 'YYYY-MM-DD HH:mm', timezone)
+      .utc()
+      .valueOf()
+
+    if (item.until === '00:00') {
+      itemEndTime = moment
+        .tz(todayStoreDate + ' ' + item.until, 'YYYY-MM-DD HH:mm', timezone)
+        .add(1, 'days')
+        .utc()
+        .valueOf()
+    }
+
+    if (item.from === '00:00' && item.until === '00:00') {
+      //console.log('24 hours open discount')
+    } else if (msNow < itemStartTime || msNow > itemEndTime) {
+      return false
+    }
+
     let dayToday = moment()
       .utc()
+      .tz(timezone)
       .day()
 
     dayToday -= 1
