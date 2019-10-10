@@ -3,6 +3,8 @@ import moment from 'moment-timezone'
 
 export default {
   available(item, timezone) {
+    console.log(item)
+
     const msNow = moment()
       .utc()
       .valueOf()
