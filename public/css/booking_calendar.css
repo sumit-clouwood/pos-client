@@ -29,7 +29,7 @@
 }
 
 .wd_0 .SCElement, .wd_6 .SCElement {
- background-color: #CC3232;
+ /*background-color: #CC3232;*/
 }
 
 .SCElement:hover {
@@ -37,7 +37,7 @@
 }
 
 .SCToday {
- background-color:#009300;
+ background-color: #898989;
 }
 
 .SCSel {
@@ -93,7 +93,7 @@ td.reservation-actions > .btn {
  font-weight: bold;
 }
 .SCElement.SCSel {
- background: #62bb31;
+ background: #444;
 }
 .SCElement.SCSel > div{
  color: #fff
@@ -160,7 +160,7 @@ section#main {
  /*display: none !important;*/
 }
  .SCToday > div, .wd_0 .SCElement, .wd_6 .SCElement {
- color: #fff;
+ /*color: #fff;*/
 }
 .pos-reservation-footer button {
  height: 52px;

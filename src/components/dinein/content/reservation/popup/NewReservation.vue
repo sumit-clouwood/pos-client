@@ -407,9 +407,6 @@ export default {
     padding: 5px 0;
     border: 1px solid #ccc;
     height: 80px;
-    .active {
-      background: rgba(189, 189, 189, 0.6);
-    }
     .is_available {
       color: green;
       font-weight: 900;
@@ -425,8 +422,11 @@ export default {
   padding: 10px;
   border-radius: 10%;
   margin-right: 10px;
+  background-color: #b1b1b1;
+  color: #383838;
   &.active {
-    background-color: #62bb31;
+    background-color: #000;
+    color: #fff;
   }
 }
 </style>
