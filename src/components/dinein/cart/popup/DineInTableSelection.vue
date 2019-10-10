@@ -52,7 +52,6 @@
               @click="removeSelectedTable"
               type="button"
               class="btn btn-danger"
-              data-dismiss="modal"
             >
               {{ _t('Cancel') }}
             </button>
@@ -65,6 +64,7 @@
 </template>
 
 <script>
+/*global $*/
 import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'DineInTableSelection',
@@ -131,6 +131,7 @@ export default {
         status: 'move_table',
       }
       this.$store.dispatch('dinein/moveTable', data)
+      $('#dine-in-table-selection').modal('hide')
     },
   },
 }

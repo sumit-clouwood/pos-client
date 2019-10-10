@@ -86,6 +86,8 @@
                 <div class="col-md-6">
                   <button
                     type="button"
+                    data-target="#dine-in-table-selection"
+                    data-toggle="modal"
                     class="btn btn-secondary btn-lg btn-block"
                   >
                     Select Table
@@ -176,6 +178,7 @@
         </div>
       </div>
     </div>
+    <DineInTableSelection />
   </div>
 </template>
 
@@ -183,6 +186,7 @@
 // eslint-disable-next-line
 import moment from 'moment-timezone'
 import { mapState, mapGetters } from 'vuex'
+import DineInTableSelection from '@/components/dinein/cart/popup/DineInTableSelection'
 // import { Datetime } from 'vue-datetime'
 /* global $ */
 
@@ -190,6 +194,7 @@ export default {
   name: 'NewReservation',
   components: {
     // Datetime,
+    DineInTableSelection,
   },
   props: {
     dateSelector: Boolean,
