@@ -66,7 +66,9 @@ export default {
         .valueOf()
     }
 
-    if (msNow < itemStartTime || msNow > itemEndTime) {
+    if (item.from === '00:00' && item.until === '00:00') {
+      console.log('24 hours open discount')
+    } else if (msNow < itemStartTime || msNow > itemEndTime) {
       return false
     }
 
