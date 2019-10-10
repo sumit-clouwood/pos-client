@@ -129,12 +129,19 @@
       overflow: visible;
     }
     #cancellationReason {
-      .modal-dialog {
+      .modal-dialog, .modal-header {
         @include responsive(mobile) {
-          max-width: 100%;
+          max-width: 97%;
         }
+      }
+      .modal-dialog {
         .autocomplete-container {
           grid-gap: 10px;
+        }
+        .driver-container .dropdown-content {
+          @include responsive(mobile) {
+            margin-top: 40px !important;
+          }
         }
       }
     }
@@ -142,6 +149,9 @@
       padding-right: 0;
     }
     .main-orders-total{
+      @include responsive(mobile) {
+        position: initial;
+      }
       .total-wrapper, .total{
         padding: $px20 $px30 0;
       }
