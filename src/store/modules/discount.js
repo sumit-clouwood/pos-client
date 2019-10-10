@@ -70,10 +70,12 @@ const getters = {
     }
     return state.itemDiscounts.data.filter(discount => {
       if (discount[rootState.order.orderType.OTApi]) {
-        return Availability.available(
-          discount,
-          rootState.location.timezoneString
-        )
+        if (discount.for_items.includes(rootState.order.item._id)) {
+          return Availability.available(
+            discount,
+            rootState.location.timezoneString
+          )
+        }
       }
     })
   },
