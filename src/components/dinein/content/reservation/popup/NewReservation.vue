@@ -83,7 +83,6 @@
                     Select View
                   </button>
                 </div>
-                {{ selectedTable }}
                 <div class="col-md-6">
                   <button
                     type="button"
@@ -91,7 +90,7 @@
                     data-toggle="modal"
                     class="btn btn-secondary btn-lg btn-block"
                   >
-                    Select Table
+                    {{ tableText }}
                   </button>
                 </div>
               </div>
@@ -101,7 +100,10 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label>Phone</label>
-                    <input type="email" class="form-control txt-box" />
+                    <div class="input-group">
+                      <span class="lbl-txt-box">INR</span>
+                      <input type="email" class="form-control txt-box" />
+                    </div>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -210,10 +212,14 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   updated() {
+    alert('sel')
+    // eslint-disable-next-line no-console
+    console.log(this.selectedTable)
     if (!this.calendarOpen && this.dineInTabType == 'reservation') this.cal()
   },
   data() {
     return {
+      tableText: 'Select Table',
       calendarOpen: false,
       newDetails: false,
       selectedDate: '',
@@ -439,5 +445,15 @@ export default {
     background-color: #000;
     color: #fff;
   }
+}
+.lbl-txt-box {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px 0 0 4px;
+  border: solid 1px #dce0e5;
+  color: #7a808a;
+  background-color: #f4f5f8;
+  text-align: center;
+  padding: 12px;
 }
 </style>
