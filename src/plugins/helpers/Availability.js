@@ -50,43 +50,24 @@ export default {
       return false
     }
 
+    const todayStoreDate = moment()
+      .tz(timezone)
+      .format('YYYY-MM-DD')
+
+    console.log('today date in store time', todayStoreDate)
     const itemStartTime = moment
-      .tz(
-        moment()
-          .tz(timezone)
-          .format('YYYY-MM-DD') +
-          ' ' +
-          item.from,
-        'HH:mm',
-        timezone
-      )
+      .tz(todayStoreDate + ' ' + item.from, 'YYYY-MM-DD HH:mm', timezone)
       .utc()
       .valueOf()
 
     let itemEndTime = moment
-      .tz(
-        moment()
-          .tz(timezone)
-          .format('YYYY-MM-DD') +
-          ' ' +
-          item.until,
-        'HH:mm',
-        timezone
-      )
+      .tz(todayStoreDate + ' ' + item.until, 'YYYY-MM-DD HH:mm', timezone)
       .utc()
       .valueOf()
 
     if (item.until === '00:00') {
       itemEndTime = moment
-        .tz(
-          moment()
-            .tz(timezone)
-            .format('YYYY-MM-DD') +
-            ' ' +
-            item.until,
-          'HH:mm',
-          timezone
-        )
+        .tz(todayStoreDate + ' ' + item.until, 'YYYY-MM-DD HH:mm', timezone)
         .add(1, 'days')
         .utc()
         .valueOf()
