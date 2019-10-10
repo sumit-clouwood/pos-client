@@ -66,14 +66,14 @@ export default {
         .valueOf()
     }
 
+    console.log('item start time utc', new Date(itemStartTime).toString())
+    console.log('item end time utc', new Date(itemEndTime).toString())
+
     if (item.from === '00:00' && item.until === '00:00') {
       console.log('24 hours open discount')
     } else if (msNow < itemStartTime || msNow > itemEndTime) {
       return false
     }
-
-    console.log('item start time utc', new Date(itemStartTime).toString())
-    console.log('item end time utc', new Date(itemEndTime).toString())
 
     let dayToday = moment()
       .utc()
