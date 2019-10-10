@@ -2,7 +2,7 @@
   <div class="cashierlogin">
     <div class="user-list">
       <div class="title">Please Select User</div>
-      <div class="list">
+      <div class="user-grid">
         <user
           v-for="(user, key) in testUsers"
           :key="key"
@@ -27,7 +27,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import dateTime from '@/components/mobileComponents/mobileElements/dateTime.vue'
-import user from '@/components/mobileComponents/mobileElements/user'
+import user from './User'
 
 export default {
   name: 'cashierList',
@@ -64,4 +64,15 @@ export default {
   font-size: 20px;
   opacity: 0.61;
   background-color: #212121;
+
+.user-grid
+  border: 1px solid red
+  display: grid
+  justify-content: center
+  grid-auto-rows: 150px /*size of row */
+  grid-gap: 10px
+  grid-template-columns: repeat(auto-fill, 200px)
+
+  .user
+    border: 1px solid #f00
 </style>
