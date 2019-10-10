@@ -6,6 +6,7 @@ var clientUrl = ''
 var iDB
 var form_data
 var IDB_VERSION = 4
+var APP_VERSION = 3
 var ORDER_DOCUMENT = 'order_post_requests'
 var LOG_DOCUMENT = 'log'
 var client = null
@@ -35,7 +36,7 @@ var notificationOptions = {
     40,
     500,
   ],
-  badge: './img/icons/favicon.png',
+  badge: './img/icons/favicon.png?v=' + APP_VERSION,
 }
 
 if (workbox) {
