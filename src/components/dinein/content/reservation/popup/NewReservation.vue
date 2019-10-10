@@ -22,7 +22,7 @@
                   data-toggle="buttons"
                 >
                   <label
-                    v-for="(n, i) in 8"
+                    v-for="(n, i) in 10"
                     :key="n"
                     :class="[
                       'btn',
@@ -38,7 +38,7 @@
                       autocomplete="off"
                     />
                     <span @click="getSelectedGuest(i)"
-                      >{{ i + 1 }} {{ n === 8 ? '+' : '' }}</span
+                      >{{ i + 1 }} {{ n === 10 ? '+' : '' }}</span
                     >
                   </label>
                 </div>
@@ -455,5 +455,9 @@ export default {
   background-color: #f4f5f8;
   text-align: center;
   padding: 12px;
+}
+label.cursor-pointer.btn.btn-secondary {
+  border-right: 1px solid #fff !important;
+  border-left: 1px solid #fff !important;
 }
 </style>
