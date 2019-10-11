@@ -6,7 +6,7 @@
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
           <h4 class="customer-title color-text-invert">
-            {{ _t('Move') + ' ' + _t('Table') }}
+            {{ _t(tableHeaderName) }}
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
@@ -73,6 +73,16 @@ export default {
       moveTableDetails: '',
       tableBookedAlert: '',
     }
+  },
+  props: {
+    tableHeaderName: {
+      type: String,
+      default: 'Move Table',
+    },
+    tableStatusByDate: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
     ...mapGetters('location', ['_t']),

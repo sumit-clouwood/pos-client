@@ -409,10 +409,16 @@ const actions = {
     }
   },
   moveTable({ commit }, data) {
-    const params = [data.reservationid, 'move_table', { table_id: data.table }]
-    DineInService.updateReservationTable(...params).then(() => {
-      commit(mutation.RESERVATION_ID, data.reservationid)
-    })
+    if (data.reservationid != 'false') {
+      const params = [
+        data.reservationid,
+        'move_table',
+        { table_id: data.table },
+      ]
+      DineInService.updateReservationTable(...params).then(() => {
+        commit(mutation.RESERVATION_ID, data.reservationid)
+      })
+    }
   },
   updateItemGuest({ state, commit }, { item, guest }) {
     let action = 'add'

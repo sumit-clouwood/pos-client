@@ -90,7 +90,13 @@
                     data-toggle="modal"
                     class="btn btn-secondary btn-lg btn-block"
                   >
-                    {{ tableText }}
+                    {{
+                      selectedTable != false
+                        ? selectedTable.name +
+                          ' / ' +
+                          selectedTable.table_number
+                        : tableText
+                    }}
                   </button>
                 </div>
               </div>
@@ -154,11 +160,21 @@
                 <div class="col-md-12">
                   <label style="margin-top: 10px">Tags</label>
                   <div style="display: block">
-                    <span class="badge badge-secondary active">VIP</span>
-                    <span class="badge badge-secondary active">Birthday</span>
-                    <span class="badge badge-secondary">Anniversary</span>
-                    <span class="badge badge-secondary">Private Dining</span>
-                    <span class="badge badge-secondary">First Time</span>
+                    <span
+                      class="button-checkbox"
+                      v-for="(badge, index) in badges"
+                      :key="index"
+                    >
+                      <button
+                        type="button"
+                        class="btn"
+                        @click="updateBadge(badge)"
+                        data-color="primary"
+                      >
+                        {{ badge }}
+                      </button>
+                      <input type="checkbox" class="hidden" checked />
+                    </span>
                   </div>
                 </div>
                 <div class="col-md-12">
@@ -181,7 +197,7 @@
         </div>
       </div>
     </div>
-    <DineInTableSelection />
+    <DineInTableSelection tableHeaderName="Select Table" />
   </div>
 </template>
 
@@ -212,14 +228,18 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   updated() {
-    alert('sel')
-    // eslint-disable-next-line no-console
-    console.log(this.selectedTable)
     if (!this.calendarOpen && this.dineInTabType == 'reservation') this.cal()
   },
   data() {
     return {
       tableText: 'Select Table',
+      badges: [
+        'VIP',
+        'Birthday',
+        'Anniversary',
+        'Private Dining',
+        'First Time',
+      ],
       calendarOpen: false,
       newDetails: false,
       selectedDate: '',
@@ -310,6 +330,7 @@ export default {
       week_no: null,
       week_diff: null,
       curr_week_no: 0,
+      settings: '',
     }
   },
   methods: {
@@ -371,6 +392,9 @@ export default {
           // $('#wtf').html('Selected date: ' + cal.currentDate)
         },
       })
+    },
+    updateBadge: function(badge) {
+      alert(badge)
     },
     getReservationByDate: function(date) {
       let scope = this
@@ -469,5 +493,15 @@ label.cursor-pointer.btn.btn-secondary {
 }
 .wrapperNew .SCMonth .SCElement > div {
   width: 80px !important;
+}
+.next {
+  width: 40px !important;
+}
+.prev {
+  width: 40px !important;
+}
+.pre .SCDayNum {
+  width: 80px;
+  line-height: 40px;
 }
 </style>
