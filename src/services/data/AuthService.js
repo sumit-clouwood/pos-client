@@ -20,6 +20,11 @@ export default {
   getRoles() {
     return DataService.get('/model/brand_roles?no_limit=true')
   },
+  getUsers(roleId) {
+    return DataService.get(
+      `/model/users?no_limit=true&byColumn=0&brand_role=${roleId}`
+    )
+  },
 
   login(data) {
     return new Promise((resolve, reject) => {

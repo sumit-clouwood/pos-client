@@ -1,43 +1,46 @@
 <template>
   <ul class="ullist-admin">
-    <li data-placement="above">
+    <li data-placement="above" v-for="cashier in cashiers" :key="cashier._id">
       <img
         class="transform-img"
         src="@/assets/images/broccoli-profile.jpg"
-        alt="admin"
-      /><span>Nirmala Azalea</span>
-    </li>
-    <li data-placement="above">
-      <img
-        class="transform-img"
-        src="@/assets/images/broccoli-profile.jpg"
-        alt="admin"
-      /><span>Bena Kane</span>
+        alt="cashier.name"
+      /><span>{{ cashier.name }}</span>
     </li>
   </ul>
 </template>
 
 <script>
 /* global $ */
+import { mapState } from 'vuex'
 
 export default {
   name: 'Users',
+  computed: {
+    ...mapState('auth', ['cashiers']),
+  },
   props: {
     params: Object,
   },
-  mounted() {
-    $('.ullist-admin > li > img').click(function() {
-      $(this)
-        .parent('li')
-        .addClass('position-set')
-        .siblings('.position-set')
-        .removeClass('position-set')
+  watch: {
+    cashiers(newVal) {
+      if (newVal) {
+        this.$nextTick(() => {
+          $('.ullist-admin > li > img').click(function() {
+            $(this)
+              .parent('li')
+              .addClass('position-set')
+              .siblings('.position-set')
+              .removeClass('position-set')
 
-      $('.position-set').append($('#popover_content_wrapper'))
-      $('.position-set').append($('#absent-content'))
-      $('#popover_content_wrapper').addClass('animated zoomIn')
-      $('#popover_content_wrapper').show()
-    })
+            $('.position-set').append($('#popover_content_wrapper'))
+            $('.position-set').append($('#absent-content'))
+            $('#popover_content_wrapper').addClass('animated zoomIn')
+            $('#popover_content_wrapper').show()
+          })
+        })
+      }
+    },
   },
 }
 </script>

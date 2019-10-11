@@ -11,6 +11,7 @@ const state = {
   rolePermissions: null,
   userDetails: false,
   permissions: false,
+  cashiers: [],
 }
 
 // getters
@@ -128,9 +129,13 @@ const actions = {
       })
     }
   },
-  fetchRoles({ commit }) {
+  fetchRoles({ commit, getters }) {
     AuthService.getRoles().then(rolesPermissions => {
       commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
+      const cashierRole = getters.getRole('pos')
+      AuthService.getUsers(cashierRole._id).then(cashiers => {
+        commit(mutation.SET_CASHIERS, cashiers.data.data)
+      })
     })
   },
 }
@@ -152,6 +157,9 @@ const mutations = {
   },
   [mutation.USER_DETAILS](state, userDetails) {
     state.userDetails = userDetails
+  },
+  [mutation.SET_CASHIERS](state, cashiers) {
+    state.cashiers = cashiers
   },
   [mutation.RESET](state) {
     state.token = null
