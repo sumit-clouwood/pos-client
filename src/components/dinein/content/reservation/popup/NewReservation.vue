@@ -29,6 +29,7 @@
                       'btn-secondary',
                       { active: no_of_guest === n },
                     ]"
+                    @click="getSelectedGuest(i)"
                     class="cursor-pointer"
                   >
                     <input
@@ -36,9 +37,10 @@
                       name="options"
                       :id="'option' + i"
                       autocomplete="off"
+                      v-model="reservationInformation.guest"
                     />
-                    <span @click="getSelectedGuest(i)"
-                      >{{ i + 1 }} {{ n === 10 ? '+' : '' }}</span
+                    <label :for="'option' + i"
+                      >{{ i + 1 }} {{ n === 10 ? '+' : '' }}</label
                     >
                   </label>
                 </div>
@@ -62,6 +64,7 @@
                     v-for="(val, key) in time_slots"
                     :key="key"
                     class="col-sm-3 time_slot"
+                    @click="getSelectedTimeSlot(val)"
                   >
                     <div
                       :class="['is_available', { not_available: val.occupied }]"
@@ -108,26 +111,42 @@
                     <label>Phone</label>
                     <div class="input-group">
                       <span class="lbl-txt-box">INR</span>
-                      <input type="email" class="form-control txt-box" />
+                      <input
+                        type="email"
+                        class="form-control txt-box"
+                        v-model="reservationInformation.phone"
+                      />
                     </div>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     <label>First Name</label>
-                    <input type="text" class="form-control txt-box" />
+                    <input
+                      type="text"
+                      class="form-control txt-box"
+                      v-model="reservationInformation.first_name"
+                    />
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     <label>Email</label>
-                    <input type="email" class="form-control txt-box" />
+                    <input
+                      type="email"
+                      class="form-control txt-box"
+                      v-model="reservationInformation.email"
+                    />
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     <label>Last Name</label>
-                    <input type="text" class="form-control txt-box" />
+                    <input
+                      type="text"
+                      class="form-control txt-box"
+                      v-model="reservationInformation.last_name"
+                    />
                   </div>
                 </div>
               </div>
@@ -162,25 +181,32 @@
                   <div style="display: block">
                     <span
                       class="button-checkbox"
-                      v-for="(badge, index) in badges"
+                      v-for="(tag, index) in tags"
                       :key="index"
                     >
-                      <button
-                        type="button"
-                        class="btn"
-                        @click="updateBadge(badge)"
-                        data-color="primary"
+                      <input
+                        type="checkbox"
+                        :id="tag.replace(/ +/g, '')"
+                        class="hidden"
+                      />
+                      <label
+                        class="btn btn-secondary"
+                        :for="tag.replace(/ +/g, '')"
+                        @click="updateTag({ name: tag, key: index })"
                       >
-                        {{ badge }}
-                      </button>
-                      <input type="checkbox" class="hidden" checked />
+                        {{ tag }}
+                      </label>
                     </span>
                   </div>
                 </div>
                 <div class="col-md-12">
                   <div class="form-group" style="margin-top: 10px">
                     <label>Visit Notes</label>
-                    <textarea class="form-control" rows="3"></textarea>
+                    <textarea
+                      class="form-control"
+                      rows="3"
+                      v-model="reservationInformation.visit_note"
+                    ></textarea>
                   </div>
                 </div>
               </div>
@@ -193,7 +219,13 @@
           <button type="button" class="btn btn-danger" data-dismiss="modal">
             Cancel
           </button>
-          <button type="button" class="btn btn-success">Add Reservation</button>
+          <button
+            type="button"
+            class="btn btn-success"
+            @click="addNewReservation"
+          >
+            Add Reservation
+          </button>
         </div>
       </div>
     </div>
@@ -202,9 +234,7 @@
 </template>
 
 <script>
-// eslint-disable-next-line
-import moment from 'moment-timezone'
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import DineInTableSelection from '@/components/dinein/cart/popup/DineInTableSelection'
 // import { Datetime } from 'vue-datetime'
 /* global $ */
@@ -233,13 +263,7 @@ export default {
   data() {
     return {
       tableText: 'Select Table',
-      badges: [
-        'VIP',
-        'Birthday',
-        'Anniversary',
-        'Private Dining',
-        'First Time',
-      ],
+      tags: ['VIP', 'Birthday', 'Anniversary', 'Private Dining', 'First Time'],
       calendarOpen: false,
       newDetails: false,
       selectedDate: '',
@@ -331,11 +355,21 @@ export default {
       week_diff: null,
       curr_week_no: 0,
       settings: '',
+      selectedTags: [],
+      reservationInformation: {},
     }
   },
   methods: {
+    addNewReservation: function() {
+      this.reservationInformation.table = this.selectedTable
+      // eslint-disable-next-line no-console
+      console.log(this.reservationInformation)
+    },
     getSelectedGuest: function(numberOfGuest) {
-      alert(numberOfGuest)
+      this.reservationInformation.numberOfGuest = numberOfGuest + 1
+    },
+    getSelectedTimeSlot: function(selectedTimeSlot) {
+      this.reservationInformation.selectedTimeSlot = selectedTimeSlot
     },
     cal: function() {
       let scope = this
@@ -389,12 +423,33 @@ export default {
           scope.selectedDate = cal.currentDate
           scope.calendarOpen = true
           scope.getReservationByDate(cal.currentDate)
+          scope.reservationInformation.datetime = cal.currentDate
           // $('#wtf').html('Selected date: ' + cal.currentDate)
         },
       })
     },
-    updateBadge: function(badge) {
-      alert(badge)
+    updateTag: function(tag) {
+      let id = '#' + tag.name.replace(/ +/g, '')
+      this.selectedTags = this.selectedTags.filter(bdg => {
+        return bdg.name != tag.name
+      })
+      if (this.selectedTags.includes(tag.name)) {
+        this.selectedTags.splice(tag.key, 1)
+      }
+      if ($(id).is(':checked')) {
+        $(id).attr('checked', '')
+        $(id)
+          .siblings('label')
+          .removeClass('selected')
+        this.selectedTags.splice(tag.key, 1)
+      } else {
+        $(id).attr('checked', 'checked')
+        $(id)
+          .siblings('label')
+          .addClass('selected')
+        this.selectedTags.push(tag)
+      }
+      this.reservationInformation.tags = this.selectedTags
     },
     getReservationByDate: function(date) {
       let scope = this
@@ -448,6 +503,7 @@ export default {
     padding: 5px 0;
     border: 1px solid #ccc;
     height: 80px;
+    max-width: 23.5%;
     .is_available {
       color: green;
       font-weight: 900;
@@ -459,7 +515,7 @@ export default {
     }
   }
 }
-.badge-secondary {
+.tag-secondary {
   padding: 10px;
   border-radius: 10%;
   margin-right: 10px;
@@ -503,5 +559,21 @@ label.cursor-pointer.btn.btn-secondary {
 .pre .SCDayNum {
   width: 80px;
   line-height: 40px;
+}
+
+span.button-checkbox {
+  background: #ddd;
+  overflow: hidden;
+  padding: 10px 0;
+  margin-left: 5px;
+}
+
+.hidden {
+  display: none;
+}
+
+.selected {
+  background: #62bb31;
+  color: #ffffff;
 }
 </style>
