@@ -18,10 +18,26 @@
 </template>
 
 <script>
+/* global $ */
+
 export default {
   name: 'Users',
   props: {
     params: Object,
+  },
+  mounted() {
+    $('.ullist-admin > li > img').click(function() {
+      $(this)
+        .parent('li')
+        .addClass('position-set')
+        .siblings('.position-set')
+        .removeClass('position-set')
+
+      $('.position-set').append($('#popover_content_wrapper'))
+      $('.position-set').append($('#absent-content'))
+      $('#popover_content_wrapper').addClass('animated zoomIn')
+      $('#popover_content_wrapper').show()
+    })
   },
 }
 </script>

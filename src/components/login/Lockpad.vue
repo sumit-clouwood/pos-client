@@ -31,6 +31,7 @@
 </template>
 
 <script>
+/* global $ */
 export default {
   name: 'Lockpad',
   data() {
@@ -39,11 +40,26 @@ export default {
   computed: {},
   components: {},
   methods: {},
+  mounted() {
+    $('.number-dig').click(function() {
+      var value = $('#input-value').val()
+      var valThis = $(this).text()
+      var res = value.concat(valThis)
+      $('#input-value').val(res)
+    })
+    $('#backspace').click(function() {
+      var value = $('#input-value').val()
+      $('#input-value').val('' + value.substr(0, value.length - 1) + '')
+    })
+  },
 }
 </script>
 
 <style lang="sass" scoped>
 .lockpad
+  button
+    cursor: pointer;
+
   background: transparent
 
   input::placeholder
@@ -127,8 +143,6 @@ export default {
       letter-spacing: 2px
       color: #ffffff
       cursor: pointer
-
-
 
   .modal-footer-block
 
