@@ -198,12 +198,12 @@ export default {
           return false
         }
         this.getReservationByDate(this.selectedDate)
-        this.$store.dispatch('dinein/updateDineInOrderStatus', {
+        /*this.$store.dispatch('dinein/updateDineInOrderStatus', {
           title: 'all',
           pageId: 'getBookedTables',
           loader: false,
-        })
-        this.$store.dispatch('dinein/getDineInArea', false)
+        })*/
+        this.$store.dispatch('dinein/getBookedTables', false)
       })
     },
 

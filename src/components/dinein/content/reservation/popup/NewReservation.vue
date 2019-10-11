@@ -75,6 +75,23 @@
                     <div>am</div>
                   </div>
                 </div>
+                <div class="slot-symbol" style="display: flex;">
+                  <div class="is_available">
+                    <span
+                      class="fa fa-square"
+                      style="color: rgb(98, 187, 49);"
+                    ></span>
+                    <span> Open</span>
+                  </div>
+                  &nbsp;
+                  <div class="is_available not_available">
+                    <span
+                      class="fa fa-square"
+                      style="color: rgb(200, 76, 76);"
+                    ></span>
+                    <span> Closed</span>
+                  </div>
+                </div>
               </div>
               <label>Table Assignment</label>
               <div class="row">
