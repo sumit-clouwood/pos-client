@@ -57,4 +57,16 @@ export default {
     right: 8px
     top: 295px
     display: none
+
+  .admin-login-wrapper
+    overflow:  hidden
+    margin:  0 auto
+    width:  100%
+    background: rgba(33,33,33, 0.61)
+    height: 100vh
+
+    .login-wrapper
+      width:  1180px
+      max-width: 100%
+      margin:  0 auto
 </style>

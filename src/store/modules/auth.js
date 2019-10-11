@@ -138,6 +138,10 @@ const actions = {
       })
     })
   },
+  pinlogin({ commit, state }, pin) {
+    commit(mutation.USER_DETAILS, state.userDetails)
+    return Promise.reject(pin)
+  },
 }
 
 // mutations

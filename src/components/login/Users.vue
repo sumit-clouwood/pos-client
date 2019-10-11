@@ -3,7 +3,7 @@
     <li data-placement="above" v-for="cashier in cashiers" :key="cashier._id">
       <img
         class="transform-img"
-        src="@/assets/images/broccoli-profile.jpg"
+        :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
         alt="cashier.name"
       /><span>{{ cashier.name }}</span>
     </li>

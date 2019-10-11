@@ -6,22 +6,32 @@
         placeholder="Enter PIN"
         name="PIN"
         id="input-value"
-      /><a href="/cashier-login/absent-login.html" class="unlock">Unlock</a>
+        v-model="pincode"
+        :maxlength="pincodeLength"
+      />
+      <button class="unlock" @click="login" :disabled="processing">
+        Unlock
+      </button>
     </div>
-    <div class="modal-body-digits">
-      <div class="dig number-dig">1</div>
-      <div class="dig number-dig">2</div>
-      <div class="dig number-dig">3</div>
-      <div class="dig number-dig">4</div>
-      <div class="dig number-dig">5</div>
-      <div class="dig number-dig">6</div>
-      <div class="dig number-dig">7</div>
-      <div class="dig number-dig">8</div>
-      <div class="dig number-dig">9</div>
-      <div class="dig number-dig blank"></div>
-      <div class="dig number-dig">0</div>
-      <div class="dig number-dig" id="backspace">
-        <img src="~@/assets/images/close.png" alt="back" />
+    <transition name="errortrans">
+      <div class="modal-header text-danger" v-show="showError">
+        {{ error }}
+      </div>
+    </transition>
+    <div class="modal-body-digits" @click="addDigit">
+      <div class="dig number-dig num">1</div>
+      <div class="dig number-dig num">2</div>
+      <div class="dig number-dig num">3</div>
+      <div class="dig number-dig num">4</div>
+      <div class="dig number-dig num">5</div>
+      <div class="dig number-dig num">6</div>
+      <div class="dig number-dig num">7</div>
+      <div class="dig number-dig num">8</div>
+      <div class="dig number-dig num">9</div>
+      <div class="dig number-dig num blank"></div>
+      <div class="dig number-dig num">0</div>
+      <div class="dig number-dig rem" id="backspace">
+        <img src="~@/assets/images/close.png" class="rem" alt="back" />
       </div>
     </div>
     <div class="modal-footer-block">
@@ -31,31 +41,62 @@
 </template>
 
 <script>
-/* global $ */
 export default {
   name: 'Lockpad',
   data() {
-    return {}
+    return {
+      error: false,
+      showError: false,
+      pincode: '',
+      pincodeLength: 4,
+      processing: false,
+    }
   },
   computed: {},
   components: {},
-  methods: {},
-  mounted() {
-    $('.number-dig').click(function() {
-      var value = $('#input-value').val()
-      var valThis = $(this).text()
-      var res = value.concat(valThis)
-      $('#input-value').val(res)
-    })
-    $('#backspace').click(function() {
-      var value = $('#input-value').val()
-      $('#input-value').val('' + value.substr(0, value.length - 1) + '')
-    })
+  methods: {
+    addDigit(event) {
+      if (event.target.classList.contains('num')) {
+        if (this.pincode.length < this.pincodeLength) {
+          this.pincode = this.pincode.concat(event.target.innerHTML)
+        }
+      } else if (event.target.classList.contains('rem')) {
+        this.pincode = this.pincode.substr(0, this.pincode.length - 1)
+      }
+    },
+    login() {
+      this.processing = true
+      this.$store
+        .dispatch('auth/pinlogin', this.pincode)
+        .then(() => {})
+        .catch(error => {
+          this.error = error
+          this.showError = true
+          setTimeout(() => {
+            this.showError = false
+          }, 3000)
+        })
+        .finally(() => {
+          this.processing = false
+        })
+    },
   },
+  mounted() {},
 }
 </script>
 
 <style lang="sass" scoped>
+errortrans-enter-active
+  transition: all .4s ease
+
+.errortrans-leave-active
+  transition: all 1s cubic-bezier(1.0, 0.5, 0.8, 1.0)
+
+.errortrans-enter, .errortrans-leave-to
+  transform: translateY(-20px)
+  opacity: 0
+
+
 .lockpad
   button
     cursor: pointer;
