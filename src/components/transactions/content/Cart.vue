@@ -1,9 +1,12 @@
 <template>
   <div>
-    <btnBack
+    <button
       v-if="device == 'mobile' && transactionDetailView"
-      :param="'transaction'"
-    />
+      class="btn btn-success"
+      v-on:click="getReferPath()"
+    >
+      &lt; {{ _t('Back') }}
+    </button>
     <div
       v-if="selectedOrder"
       :class="['main-orders', { active: mainOrdersHendler }]"
@@ -33,7 +36,6 @@ import Header from './cart/newOrders/Header.vue'
 import Footer from './cart/Footer'
 import Items from './cart/newOrders/Items.vue'
 import ordersMenu from '../../mobileComponents/mobileOrdersMenu.vue'
-import btnBack from '../../mobileComponents/mobileElements/btnBack'
 
 import { mapState, mapGetters } from 'vuex'
 
@@ -58,6 +60,9 @@ export default {
     cartClose() {
       this.$store.dispatch('cartClose')
     },
+    getReferPath() {
+      this.$store.dispatch('transactionList')
+    },
   },
   components: {
     Header,
@@ -65,7 +70,6 @@ export default {
     Footer,
     // PayNow,
     ordersMenu,
-    btnBack,
   },
 }
 </script>

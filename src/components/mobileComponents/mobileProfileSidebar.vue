@@ -35,7 +35,12 @@
                 />
               </svg>
             </div>
-            <div class="profile-menu-item-text">Transactions</div>
+            <div
+              class="profile-menu-item-text"
+              @click="moveTransactionSection(this)"
+            >
+              Transactions
+            </div>
           </div>
           <div class="profile-menu-item">
             <div class="profile-menu-item-icon">
@@ -116,10 +121,14 @@ export default {
   computed: {
     ...mapGetters(['profileHendler']),
     ...mapActions(['logout']),
+    ...mapGetters('context', ['store', 'transactions']),
   },
   methods: {
     profileHendlerChange() {
       this.$store.dispatch('profileHendlerChange')
+    },
+    moveTransactionSection() {
+      this.$router.push(this.store + '/transactions')
     },
     mlogout() {
       this.$store.dispatch('mobileLogout')
