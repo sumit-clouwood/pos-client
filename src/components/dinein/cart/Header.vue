@@ -214,7 +214,7 @@ export default {
     }
 
     .main-oreders-buttons {
-      display: flex !important;
+      display: grid !important;
       align-items: center;
       margin: 0;
       #holdorder {

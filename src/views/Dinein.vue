@@ -1,5 +1,5 @@
 <template>
-  <div class="new-pos">
+  <div class="new-pos dine-in-wrapper">
     <div class="dm-screen-wrap toggle-nav-content">
       <Header />
     </div>
