@@ -1,7 +1,7 @@
 /* Sharp Calendar */
 .wrapper,
 .wrapperHor{
- background-color: #f1f3f6;
+ background-color: #f8f8f8;
  padding: 5px;
 }
 
@@ -37,13 +37,15 @@
 }
 
 .SCToday {
- background-color: #898989;
+ background-color: #e6ebf3;
 }
 
 .SCSel {
  /*border-left: 2px solid #F77565;*/
 }
-
+span.button-checkbox .btn-secondary {
+ color: #fff !important;
+}
 .SCMarked>div:before {
  content: "";
  position: absolute;
@@ -93,19 +95,18 @@ td.reservation-actions > .btn {
  font-weight: bold;
 }
 .SCElement.SCSel {
- background: #444;
+ background: #f1f3f6;
 }
 .SCElement.SCSel > div{
- color: #fff
- 
+ color: #3a3d44;
 }
 .SCMonth .SCTbl {
- border-right: 1px dashed #ddd;
- border-bottom: 1px dashed #ddd;
+ border-right: 1px dashed #d7dce2;
+ border-bottom: 1px dashed #d7dce2;
  padding-bottom:3px;
 }
 .SCDay .SCTbl {
- border-right: 1px dashed #ddd;
+ border-right: 1px dashed #d7dce2;
  margin-top: 1px;
 }
 
@@ -150,7 +151,7 @@ section#main {
 }
 .pos-reservation-header {
  min-height: 100px;
- background: #f1f3f6;
+ background: #f8f8f8;
  padding: 20px;
 }
 .SCYear {
@@ -195,4 +196,10 @@ section#main {
  height: 50px;
  border-radius: 4px;
  border: solid 1px #dce0e5;
+}
+.modal .modal-dialog .modal-content .modal-footer.modal-footer-reservation {
+ justify-content: flex-end;
+}
+.num_guests label {
+ margin-bottom: 0;
 }

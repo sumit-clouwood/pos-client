@@ -3,18 +3,21 @@
     <div class="modal-dialog" style="max-width: 80%">
       <div class="modal-content">
         <!-- Modal Header -->
-        <div class="modal-header">
+        <!--<div class="modal-header">
           <h4 class="modal-title">Make a reservation</h4>
           <button type="button" class="close" data-dismiss="modal">
             &times;
             <span class="hide-text">{{ dateSelector }}</span>
           </button>
-        </div>
+        </div>-->
 
         <!-- Modal body -->
         <div class="modal-body">
           <div class="row">
+            <span class="hide-text">{{ dateSelector }}</span>
             <div class="col-md-6">
+              <h6>New Reservation</h6>
+              <hr />
               <div class="form-group">
                 <label>Select Number of guests</label>
                 <div
@@ -58,7 +61,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label>Time slot available</label>
+                <label>Available Time Slots</label>
                 <div class="row time_slot_block" style="margin: 0">
                   <div
                     v-for="(val, key) in time_slots"
@@ -66,44 +69,40 @@
                     class="col-sm-3 time_slot"
                     @click="getSelectedTimeSlot(val)"
                   >
-                    <div
-                      :class="['is_available', { not_available: val.occupied }]"
-                    >
-                      -
+                    <div v-if="val.occupied">
+                      <span
+                        class="fa fa-square"
+                        style="color: rgb(200, 76, 76);"
+                      ></span>
                     </div>
-                    <div>{{ val.time }}</div>
-                    <div>am</div>
+                    <div v-else>
+                      <span
+                        class="fa fa-square"
+                        style="color: rgb(98, 187, 49);"
+                      ></span>
+                    </div>
+                    <div>{{ val.time }} AM</div>
                   </div>
                 </div>
-                <div class="slot-symbol" style="display: flex;">
+                <div class="slot-symbol">
                   <div class="is_available">
                     <span
                       class="fa fa-square"
                       style="color: rgb(98, 187, 49);"
                     ></span>
-                    <span> Open</span>
+                    <span> Open </span>
                   </div>
-                  &nbsp;
                   <div class="is_available not_available">
                     <span
                       class="fa fa-square"
                       style="color: rgb(200, 76, 76);"
                     ></span>
-                    <span> Closed</span>
+                    <span> Closed </span>
                   </div>
                 </div>
               </div>
-              <label>Table Assignment</label>
               <div class="row">
-                <div class="col-md-6">
-                  <button
-                    type="button"
-                    class="btn btn-secondary btn-lg btn-block"
-                  >
-                    Select View
-                  </button>
-                </div>
-                <div class="col-md-6">
+                <div class="col-md-5">
                   <button
                     type="button"
                     data-target="#dine-in-table-selection"
@@ -111,7 +110,8 @@
                     class="btn btn-secondary btn-lg btn-block"
                   >
                     {{
-                      selectedTable != false
+                      selectedTable != false &&
+                      typeof selectedTable.name != 'undefined'
                         ? selectedTable.name +
                           ' / ' +
                           selectedTable.table_number
@@ -119,19 +119,46 @@
                     }}
                   </button>
                 </div>
+                <div class="col-md-5">
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-lg btn-block"
+                  >
+                    Taken By
+                  </button>
+                  <!-- <div class="form-group">
+                    <label>Taken By</label>
+                    <select
+                      class="form-control txt-box"
+                      v-model="reservationInformation.taken_by"
+                    >
+                      <option>User A</option>
+                    </select>
+                    &lt;!&ndash;<input
+                      type="text"
+                      class="form-control txt-box"
+                      v-model="reservationInformation.taken_by"
+                    />&ndash;&gt;
+                  </div>-->
+                </div>
               </div>
             </div>
             <div class="col-md-6">
+              <h6>Guest Details</h6>
+              <hr />
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
                     <label>Phone</label>
                     <div class="input-group">
-                      <span class="lbl-txt-box">INR</span>
+                      <span class="lbl-txt-box">IN</span>
                       <input
                         type="email"
                         class="form-control txt-box"
                         v-model="reservationInformation.phone"
+                        @focusout="
+                          getUserDetailsByMobile(reservationInformation.phone)
+                        "
                       />
                     </div>
                   </div>
@@ -167,7 +194,7 @@
                   </div>
                 </div>
               </div>
-              <div class="row">
+              <div class="row lh-30">
                 <div class="col-md-12">
                   <label>Guest History</label>
                   <table class="table table-bordered">
@@ -226,13 +253,29 @@
                     ></textarea>
                   </div>
                 </div>
+                <!--<div class="col-md-12">
+                  <div class="form-group">
+                    <label>Taken By</label>
+                    <select
+                      class="form-control txt-box"
+                      v-model="reservationInformation.taken_by"
+                    >
+                      <option>User A</option>
+                    </select>
+                    &lt;!&ndash;<input
+                      type="text"
+                      class="form-control txt-box"
+                      v-model="reservationInformation.taken_by"
+                    />&ndash;&gt;
+                  </div>
+                </div>-->
               </div>
             </div>
           </div>
         </div>
 
         <!-- Modal footer -->
-        <div class="modal-footer">
+        <div class="modal-footer modal-footer-reservation">
           <button type="button" class="btn btn-danger" data-dismiss="modal">
             Cancel
           </button>
@@ -377,6 +420,9 @@ export default {
     }
   },
   methods: {
+    getUserDetailsByMobile: function(mobileNo) {
+      this.$store.dispatch('dineinReservation/getUserDetails', mobileNo)
+    },
     addNewReservation: function() {
       this.reservationInformation.table = this.selectedTable
       // eslint-disable-next-line no-console
@@ -511,7 +557,8 @@ export default {
 }
 .time_slot_block {
   height: 320px;
-  overflow-y: scroll;
+  overflow-y: auto;
+  margin-right: 40px !important;
   .time_slot {
     display: flex;
     justify-content: center;
@@ -520,7 +567,7 @@ export default {
     padding: 5px 0;
     border: 1px solid #ccc;
     height: 80px;
-    max-width: 23.5%;
+    max-width: 24.9%;
     .is_available {
       color: green;
       font-weight: 900;
@@ -547,15 +594,29 @@ export default {
   width: 50px;
   height: 50px;
   border-radius: 4px 0 0 4px;
-  border: solid 1px #dce0e5;
+  border: solid 1px #d7dce2;
   color: #7a808a;
   background-color: #f4f5f8;
   text-align: center;
   padding: 12px;
 }
-label.cursor-pointer.btn.btn-secondary {
-  border-right: 1px solid #fff !important;
-  border-left: 1px solid #fff !important;
+div#NewReservation label {
+  color: #989898;
+  font-size: 15px;
+  font-weight: normal;
+}
+
+div#NewReservation .num_guests .btn-secondary {
+  background: #fff;
+  border: 1px solid #d7dce2;
+}
+div#NewReservation .num_guests .btn-secondary label {
+  color: #3d3f43;
+  font-weight: bold;
+}
+div#NewReservation .num_guests .btn-secondary.active {
+  background: #f1f3f6;
+  border: 1px solid #d7dce2;
 }
 #NewReservation section#main {
   justify-content: left;
@@ -590,7 +651,14 @@ span.button-checkbox {
 }
 
 .selected {
-  background: #62bb31;
-  color: #ffffff;
+  background: #5056ca;
+  border-color: #5056ca;
+  box-shadow: none;
+}
+.slot-symbol {
+  display: grid;
+  margin: 10px 0;
+  grid-template-columns: auto 1fr;
+  grid-gap: 10px;
 }
 </style>

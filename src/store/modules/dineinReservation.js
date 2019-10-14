@@ -4,6 +4,8 @@ import DineInService from '@/services/data/DineInService'
 const state = {
   selectedReservationDate: false,
   reservations: false,
+  userDetails: false,
+  storeUsers: false,
   params: { page: 1, limit: 10 },
 }
 const getters = {
@@ -35,6 +37,16 @@ const actions = {
         })
     })
   },
+  getUserDetails({ commit }, mobileNo) {
+    DineInService.getDetails(mobileNo).then(resource => {
+      commit(mutation.USER_DETAILS, resource.data)
+    })
+  },
+  getTakenBy({ commit }) {
+    DineInService.storeUsers().then(response => {
+      commit(mutation.TAKEN_BY_LIST, response.data)
+    })
+  },
 }
 
 const mutations = {
@@ -43,6 +55,12 @@ const mutations = {
   },
   [mutation.ALL_RESERVATIONS](state, reservationData) {
     state.reservations = reservationData
+  },
+  [mutation.USER_DETAILS](state, userDetails) {
+    state.userDetails = userDetails
+  },
+  [mutation.TAKEN_BY_LIST](state, storeUsers) {
+    state.storeUsers = storeUsers
   },
 }
 

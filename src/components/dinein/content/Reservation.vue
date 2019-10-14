@@ -46,8 +46,9 @@
                   {{ reservation.number }}
                 </td>
                 <td>
-                  <span class="fa fa-user"></span
-                  >{{ reservation.number_of_guests }}
+                  <span class="fa fa-user"></span>&nbsp;{{
+                    reservation.number_of_guests
+                  }}
                 </td>
                 <td>{{ reservation.customers }}</td>
                 <td class="mr-1 reservation-actions">
@@ -100,7 +101,7 @@
             <div class="modal-body font-weight-bold" id="confirmMessage">
               {{ cancelReservationMsg }}
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer modal-footer-reservation">
               <button
                 type="button"
                 id="confirm"
@@ -176,6 +177,7 @@ export default {
     activeDateSelector() {
       this.newDtPicker = true
       $('#NewReservation').modal('show')
+      this.$store.dispatch('dineinReservation/getTakenBy')
     },
     cancelReservation(id) {
       this.cancelReservationMsg = 'Do you want to cancel this reservation?'
