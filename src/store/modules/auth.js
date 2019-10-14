@@ -12,6 +12,7 @@ const state = {
   userDetails: false,
   permissions: false,
   cashiers: [],
+  cashierEmail: '',
 }
 
 // getters
@@ -63,6 +64,33 @@ const actions = {
           //resolve()
         })
         .catch(error => reject(error))
+    })
+  },
+  pinlogin({ commit, dispatch, state }, cashierpin) {
+    return new Promise((resolve, reject) => {
+      AuthService.pinlogin({
+        email: state.cashierEmail,
+        swipe_card: cashierpin,
+      })
+        .then(response => {
+          if (!response.data.token) {
+            reject(response.data.error)
+            return false
+          }
+
+          localStorage.setItem('token', response.data.token)
+          //wait for localstorage to be updated
+          setTimeout(() => {
+            dispatch('location/setContext', null, { root: true }).then(() => {
+              commit(mutation.SET_TOKEN, response.data.token)
+              resolve()
+            })
+          }, 100)
+          //resolve()
+        })
+        .catch(error => {
+          reject(error)
+        })
     })
   },
   checkLogin({ commit, rootGetters }) {
@@ -138,16 +166,16 @@ const actions = {
       })
     })
   },
-  pinlogin({ commit, state }, pin) {
-    commit(mutation.USER_DETAILS, state.userDetails)
-    return Promise.reject(pin)
-  },
 }
 
 // mutations
 const mutations = {
   [mutation.SET_TOKEN](state, token) {
     state.token = token
+  },
+
+  [mutation.SET_CASHIER_EMAIL](state, email) {
+    state.cashierEmail = email
   },
 
   [mutation.SET_REFRESH_TOKEN](state, { token }) {

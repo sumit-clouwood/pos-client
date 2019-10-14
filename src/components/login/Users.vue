@@ -2,6 +2,7 @@
   <ul class="ullist-admin">
     <li data-placement="above" v-for="cashier in cashiers" :key="cashier._id">
       <img
+        @click.prevent="setCashier(cashier.email)"
         class="transform-img"
         :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
         alt="cashier.name"
@@ -19,6 +20,11 @@ export default {
   computed: {
     ...mapState('auth', ['cashiers']),
   },
+  data() {
+    return {
+      jQuery: false,
+    }
+  },
   props: {
     params: Object,
   },
@@ -26,21 +32,40 @@ export default {
     cashiers(newVal) {
       if (newVal) {
         this.$nextTick(() => {
-          $('.ullist-admin > li > img').click(function() {
-            $(this)
-              .parent('li')
-              .addClass('position-set')
-              .siblings('.position-set')
-              .removeClass('position-set')
-
-            $('.position-set').append($('#popover_content_wrapper'))
-            $('.position-set').append($('#absent-content'))
-            $('#popover_content_wrapper').addClass('animated zoomIn')
-            $('#popover_content_wrapper').show()
-          })
+          this.bindJquery()
         })
       }
     },
+  },
+  methods: {
+    setCashier(email) {
+      this.$store.commit('auth/SET_CASHIER_EMAIL', email)
+    },
+    bindJquery() {
+      if (this.jQuery) {
+        return true
+      }
+      this.jQuery = true
+      $('.ullist-admin > li > img').click(function() {
+        $(this)
+          .parent('li')
+          .addClass('position-set')
+          .siblings('.position-set')
+          .removeClass('position-set')
+
+        $('.position-set').append($('#popover_content_wrapper'))
+        $('.position-set').append($('#absent-content'))
+        $('#popover_content_wrapper').addClass('animated zoomIn')
+        $('#popover_content_wrapper').show()
+        $('#popover_content_wrapper #cashierpin').focus()
+      })
+      $('.ullist-admin > li:first-child  > img').trigger('click')
+    },
+  },
+  mounted() {
+    if (this.cashiers.length) {
+      this.bindJquery()
+    }
   },
 }
 </script>

@@ -5,9 +5,10 @@
         type="text"
         placeholder="Enter PIN"
         name="PIN"
-        id="input-value"
+        id="cashierpin"
         v-model="pincode"
         :maxlength="pincodeLength"
+        autofocus
       />
       <button class="unlock" @click="login" :disabled="processing">
         Unlock
@@ -65,10 +66,15 @@ export default {
       }
     },
     login() {
+      if (!this.pincode) {
+        return false
+      }
       this.processing = true
       this.$store
         .dispatch('auth/pinlogin', this.pincode)
-        .then(() => {})
+        .then(() => {
+          this.$router.replace({ name: 'Home' })
+        })
         .catch(error => {
           this.error = error
           this.showError = true
@@ -90,10 +96,14 @@ errortrans-enter-active
   transition: all .4s ease
 
 .errortrans-leave-active
-  transition: all 1s cubic-bezier(1.0, 0.5, 0.8, 1.0)
+  transition: all 2s cubic-bezier(1.0, 0.5, 0.8, 1.0)
 
-.errortrans-enter, .errortrans-leave-to
-  transform: translateY(-20px)
+.errortrans-enter
+  transform: translateY(10px)
+  opacity: 0
+
+.errortrans-leave-to
+  transform: translateY(-10px)
   opacity: 0
 
 
