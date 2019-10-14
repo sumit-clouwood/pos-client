@@ -37,6 +37,7 @@ export default {
 
 <style lang="sass" scoped>
 .content-wrapper
+  user-select: none
   overflow: hidden
   height: 100vh
   background: url(~@/assets/images/mask@2x.jpg)

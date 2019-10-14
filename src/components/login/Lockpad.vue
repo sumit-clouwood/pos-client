@@ -18,7 +18,7 @@
       <Progress />
     </div>
     <transition name="errortrans">
-      <div class="modal-header text-danger" v-show="showError">
+      <div class="text-danger" v-show="showError">
         {{ error }}
       </div>
     </transition>
@@ -105,18 +105,21 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-errortrans-enter-active
-  transition: all .4s ease
+.text-danger
+  padding: 2px 14px
+
+.errortrans-enter-active
+  transition: all .1s ease
 
 .errortrans-leave-active
-  transition: all 2s cubic-bezier(1.0, 0.5, 0.8, 1.0)
+  transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0)
 
 .errortrans-enter
-  transform: translateY(10px)
+  transform: translateY(2px)
   opacity: 0
 
 .errortrans-leave-to
-  transform: translateY(-10px)
+  transform: translateY(-2px)
   opacity: 0
 
 
@@ -135,6 +138,10 @@ errortrans-enter-active
     letter-spacing: 0.7px
     color: #91949d
 
+  .text-danger
+    background: #fff
+    border-radius: 0
+    font-size: 18px
 
   .modal-header
     background: #fff
