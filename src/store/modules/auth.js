@@ -25,6 +25,12 @@ const getters = {
   loggedIn: state => {
     return state.token
   },
+  cashiers: (state, getters, rootState) =>
+    state.cashiers.filter(cashier =>
+      cashier.brand_stores.includes(rootState.context.storeId)
+    ),
+  cashier: state => loginInfo =>
+    state.cashiers.find(cashier => cashier._id === loginInfo.user_id),
 }
 
 // actions
@@ -66,27 +72,20 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  pinlogin({ commit, dispatch, state }, cashierpin) {
+  pinlogin({ commit, state, getters }, cashierpin) {
     return new Promise((resolve, reject) => {
       AuthService.pinlogin({
         email: state.cashierEmail,
         swipe_card: cashierpin,
       })
         .then(response => {
-          if (!response.data.token) {
-            reject(response.data.error)
-            return false
-          }
-
           localStorage.setItem('token', response.data.token)
-          //wait for localstorage to be updated
-          setTimeout(() => {
-            dispatch('location/setContext', null, { root: true }).then(() => {
-              commit(mutation.SET_TOKEN, response.data.token)
-              resolve()
-            })
-          }, 100)
-          //resolve()
+          commit(mutation.SET_TOKEN, response.data.token)
+
+          commit(mutation.USER_DETAILS, {
+            item: getters.cashier(response.data.user),
+          })
+          resolve()
         })
         .catch(error => {
           reject(error)
@@ -151,11 +150,16 @@ const actions = {
   },
 
   getUserDetails({ commit }, userId) {
-    if (userId) {
-      AuthService.userDetails(userId).then(response => {
-        commit(mutation.USER_DETAILS, response.data)
-      })
-    }
+    return new Promise((resolve, reject) => {
+      if (userId) {
+        AuthService.userDetails(userId).then(response => {
+          commit(mutation.USER_DETAILS, response.data)
+          resolve()
+        })
+      } else {
+        reject()
+      }
+    })
   },
   fetchRoles({ commit, getters }) {
     AuthService.getRoles().then(rolesPermissions => {

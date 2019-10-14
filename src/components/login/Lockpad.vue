@@ -14,6 +14,9 @@
         Unlock
       </button>
     </div>
+    <div class="progress-container" v-show="processing">
+      <Progress />
+    </div>
     <transition name="errortrans">
       <div class="modal-header text-danger" v-show="showError">
         {{ error }}
@@ -36,12 +39,19 @@
       </div>
     </div>
     <div class="modal-footer-block">
-      <p>Clock In / Clock Out</p>
+      <p>
+        <router-link :to="store">
+          Clock In / Clock Out
+        </router-link>
+      </p>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import Progress from '@/components/util/Progress'
+
 export default {
   name: 'Lockpad',
   data() {
@@ -53,8 +63,10 @@ export default {
       processing: false,
     }
   },
-  computed: {},
-  components: {},
+  computed: {
+    ...mapGetters('context', ['store']),
+  },
+  components: { Progress },
   methods: {
     addDigit(event) {
       if (event.target.classList.contains('num')) {
@@ -78,6 +90,7 @@ export default {
         .catch(error => {
           this.error = error
           this.showError = true
+          this.pincode = ''
           setTimeout(() => {
             this.showError = false
           }, 3000)
@@ -199,14 +212,18 @@ errortrans-enter-active
 
     background: #fff
     text-align: center
+
+    a
+      color: #515256
+
     > p
       font-size: 14px
       font-weight: 600
       font-style: normal
       font-stretch: normal
+      color: #515256
       line-height: normal
       letter-spacing: 0.6px
-      color: #515256
       margin-bottom: 0
       padding: 18px 0
       cursor: pointer

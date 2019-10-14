@@ -4,6 +4,7 @@
       <img
         @click.prevent="setCashier(cashier.email)"
         class="transform-img"
+        :id="cashier._id"
         :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
         alt="cashier.name"
       /><span>{{ cashier.name }}</span>
@@ -13,12 +14,13 @@
 
 <script>
 /* global $ */
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'Users',
   computed: {
-    ...mapState('auth', ['cashiers']),
+    ...mapGetters('auth', ['cashiers']),
+    ...mapState('auth', ['userDetails']),
   },
   data() {
     return {
@@ -59,7 +61,14 @@ export default {
         $('#popover_content_wrapper').show()
         $('#popover_content_wrapper #cashierpin').focus()
       })
-      $('.ullist-admin > li:first-child  > img').trigger('click')
+
+      //$('.ullist-admin > li:first-child  > img').trigger('click')
+      const jqElem = $('img#' + this.userDetails.item._id).parent('li')
+      let jqLi = jqElem.next()
+      if (!jqLi.length) {
+        jqLi = jqElem.siblings('li:first')
+      }
+      jqLi.find('img').trigger('click')
     },
   },
   mounted() {
