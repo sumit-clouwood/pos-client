@@ -57,7 +57,9 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
-              v-show="!appliedOrderDiscount && !itemError"
+              v-show="
+                itemDiscounts.length && !appliedOrderDiscount && !itemError
+              "
               class="btn btn-success btn-large"
               type="button"
               id="discount-save"
@@ -66,7 +68,9 @@
               {{ _t('Apply') }}
             </button>
             <button
-              v-show="appliedOrderDiscount || itemError"
+              v-show="
+                appliedOrderDiscount || itemError || !itemDiscounts.length
+              "
               class="btn btn-danger btn-large"
               type="button"
               data-dismiss="modal"

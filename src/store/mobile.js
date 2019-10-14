@@ -3,6 +3,8 @@ export default {
     searchHendler: false,
     allCategoryHendler: true,
     subCategoryHendler: false,
+    transactionDetailView: false,
+    transactionListView: true,
     foodMenuHendler: true,
     mainOrdersHendler: false,
     totalWrapperHendler: false,
@@ -26,6 +28,7 @@ export default {
     userLoginHendler: false,
     userCalcHendler: false,
     bascketItems: [],
+    device: 'desktop',
     testUsers: [
       {
         id: 0,
@@ -76,6 +79,17 @@ export default {
       state.allCategoryHendler = !state.allCategoryHendler
       state.subCategoryHendler = false
       state.foodMenuHendler = false
+    },
+    BACK_ITEM: state => {
+      state.allCategoryHendler = false
+      state.subCategoryHendler = true
+      state.foodMenuHendler = false
+    },
+    TRANSACTION_DETAIL: state => {
+      state.transactionDetailView = true
+    },
+    TRANSACTION_LIST: state => {
+      state.transactionDetailView = false
     },
     SUB_CATEGORY_HENDLER_CHANGE: state => {
       state.allCategoryHendler = false
@@ -172,6 +186,9 @@ export default {
     CHOOSE_CURENT_PAY_METHOD: (state, payLoad) => {
       state.payMethod = payLoad
     },
+    TOGGLE_DEVICE: (state, device) => {
+      state.device = device
+    },
   },
   actions: {
     CloseCategoryAndSubCategory({ commit }) {
@@ -182,6 +199,15 @@ export default {
     },
     backSubCategory({ commit }) {
       commit('BACK_SUB_CATEGORY')
+    },
+    backItem({ commit }) {
+      commit('BACK_ITEM')
+    },
+    transactionList({ commit }) {
+      commit('TRANSACTION_LIST')
+    },
+    transactionDetail({ commit }) {
+      commit('TRANSACTION_DETAIL')
     },
     searchHendlerChange({ commit }) {
       commit('SEARCH_HENDLER_CHANGE')
@@ -264,11 +290,16 @@ export default {
     chooseCurentPayMethod({ commit }, payLoad) {
       commit('CHOOSE_CURENT_PAY_METHOD', payLoad)
     },
+    toggleDevice({ commit }, device) {
+      commit('TOGGLE_DEVICE', device)
+    },
   },
   getters: {
     searchHendler: state => state.searchHendler,
     allCategoryHendler: state => state.allCategoryHendler,
     subCategoryHendler: state => state.subCategoryHendler,
+    transactionDetailView: state => state.transactionDetailView,
+    transactionListView: state => state.transactionListView,
     foodMenuHendler: state => state.foodMenuHendler,
     mainOrdersHendler: state => state.mainOrdersHendler,
     totalWrapperHendler: state => state.totalWrapperHendler,
@@ -293,5 +324,6 @@ export default {
     userLoginHendler: state => state.userLoginHendler,
     userCalcHendler: state => state.userCalcHendler,
     bascketItems: state => state.bascketItems,
+    device: state => state.device,
   },
 }

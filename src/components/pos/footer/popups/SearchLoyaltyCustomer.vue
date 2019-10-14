@@ -148,6 +148,7 @@ export default {
         this.searchCustomerErr = ''
         $('.text-danger').hide()
         $('#search-loyalty-customer').modal('toggle')
+        this.loyaltyHendlerChange()
         this.fetchSelectedCustomer(this.customerId)
       } else {
         this.searchCustomerErr = 'Please Select Customer'

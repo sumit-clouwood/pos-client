@@ -61,6 +61,7 @@ The App.vue file is the root component that all other components are nested with
 import DataService from '@/services/DataService'
 
 import Cookie from '@/mixins/Cookie'
+import ResizeMixin from '@/mixins/ResizeHandler'
 import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
 import Login from '@/components/login/Login'
@@ -73,7 +74,7 @@ export default {
     Preloader,
     Login,
   },
-  mixins: [Cookie],
+  mixins: [Cookie, ResizeMixin],
   data: function() {
     return {
       storeContext: true,
@@ -188,12 +189,12 @@ export default {
             }, 2000)
           })
           .catch(error => {
-            this.errored = error
-            setTimeout(() => {
-              console.log(error, ', dispatch logout')
-              this.$store.dispatch('auth/logout', error)
-              this.errored = ''
-            }, 1000 * 10)
+            //this.errored = error
+            //setTimeout(() => {
+            console.log(error, ', dispatch logout')
+            this.$store.dispatch('auth/logout', error)
+            this.errored = ''
+            //}, 1000 * 10)
             console.log('some catch ', error)
           })
 
