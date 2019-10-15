@@ -69,13 +69,13 @@ export default {
       if (that.transform.k < 0.9) {
         $('#tooltipdata').hide()
         that.transform.k += 0.1
-      d3.selectAll('.dinein_table_parent').each((d, i, a) => {
-        let transform = d3.zoomIdentity
-          .scale(that.transform.k)
-          .translate(that.transform.x, that.transform.y)
-        d3.select(a[i]).attr('transform', transform)
-      })
-      that.zoomPercent += 10
+        d3.selectAll('.dinein_table_parent').each((d, i, a) => {
+          let transform = d3.zoomIdentity
+            .scale(that.transform.k)
+            .translate(that.transform.x, that.transform.y)
+          d3.select(a[i]).attr('transform', transform)
+        })
+        that.zoomPercent += 10
         localStorage.setItem('scaleVal', that.transform.k)
       }
     },
@@ -84,13 +84,13 @@ export default {
       if (that.transform.k > 0.51) {
         $('#tooltipdata').hide()
         that.transform.k -= 0.1
-      d3.selectAll('.dinein_table_parent').each((d, i, a) => {
-        let transform = d3.zoomIdentity
-          .scale(that.transform.k)
-          .translate(that.transform.x, that.transform.y)
-        d3.select(a[i]).attr('transform', transform)
-      })
-      that.zoomPercent -= 10
+        d3.selectAll('.dinein_table_parent').each((d, i, a) => {
+          let transform = d3.zoomIdentity
+            .scale(that.transform.k)
+            .translate(that.transform.x, that.transform.y)
+          d3.select(a[i]).attr('transform', transform)
+        })
+        that.zoomPercent -= 10
         localStorage.setItem('scaleVal', that.transform.k)
       }
     },
