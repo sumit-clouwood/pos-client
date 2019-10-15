@@ -403,14 +403,14 @@ var Sync = {
             .then(response => {
               console.log('sw: ', 'refresh token response', response)
 
-              this.headers.authorization = 'Bearer ' + response.token
-              this.dbAuthData.token = response.token
+              Sync.headers.authorization = 'Bearer ' + response.token
+              Sync.dbAuthData.token = response.token
 
-              DB.getBucket('auth', 'readwrite').put(this.dbAuthData)
+              DB.getBucket('auth', 'readwrite').put(Sync.dbAuthData)
 
-              this.sendTokenToClient(response.token)
+              Sync.sendTokenToClient(response.token)
               console.log('sw:', 'second request to create order')
-              resolve(this.headers)
+              resolve(Sync.headers)
             })
             .catch(function(response) {
               console.log('sw: ', 'Second request Error ', response)
