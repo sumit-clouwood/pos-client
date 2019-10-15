@@ -59,7 +59,7 @@ export default {
         y: 0,
         k: 0.5,
       },
-      zoomPercent: 50,
+      zoomPercent: 100,
     }
   },
   methods: {
@@ -74,6 +74,7 @@ export default {
           d3.select(a[i]).attr('transform', transform)
         })
         that.zoomPercent += 10
+        localStorage.setItem('scaleVal', that.transform.k)
       }
     },
     zoomOut() {
@@ -87,6 +88,7 @@ export default {
           d3.select(a[i]).attr('transform', transform)
         })
         that.zoomPercent -= 10
+        localStorage.setItem('scaleVal', that.transform.k)
       }
     },
     moveRight() {

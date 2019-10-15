@@ -316,6 +316,7 @@ export default {
       componentKey: 0,
       moveReservation: false,
       validationErrors: false,
+      scale: 0.5,
     }
   },
   mounted() {
@@ -469,7 +470,7 @@ export default {
         .enter() //data from state tables
         .append('g')
         .attr('class', 'dinein_table_parent')
-        .attr('transform', d3.zoomIdentity.scale(0.5).translate(0, 0))
+        .attr('transform', d3.zoomIdentity.scale(dis.scale).translate(0, 0))
         .append('use')
         .attr('class', 'dinein_table')
         .attr('draggable', 'true')
@@ -697,25 +698,17 @@ export default {
         .node()
         .getBoundingClientRect()
     },
-    zoom(scale, transform) {
-      let that = this
-      d3.selectAll('.dinein_table_parent').each((d, i, a) => {
-        let zoomIdentity = d3.zoomIdentity
-          .scale(scale)
-          .translate(transform.x, transform.y)
-        d3.select(a[i]).attr('transform', zoomIdentity)
-      })
-      that.zoomPercent = 100
-    },
-    // eslint-disable-next-line no-unused-vars
     showOptions(datum, i, a) {
       /*d3.select(d3.select(a[i]).parentNode)
         .selectAll('path')
         .style('stroke', 'green')
         .style('stroke-width', '1')*/
-      // eslint-disable-next-line no-console
-      // console.log(datum)
+      let scaleVal =
+        localStorage.getItem('scaleVal') !== null
+          ? localStorage.getItem('scaleVal')
+          : 0.5
 
+      this.scale = scaleVal
       this.selectedTableData = datum
       this.guests = 1
       this.validationErrors = ''
@@ -723,10 +716,14 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
+      // let scope = this
+      /*setTimeout(function() {
+        scope.zoom(0.8, { x: 10, y: 10 })
+      }, 500)*/
       /*let transform = { x: 10, y: 10 }
       this.zoom(1, transform)*/
       // eslint-disable-next-line no-console
-      console.log(this.orderDetails)
+      // console.log(this.orderDetails)
       this.addOrSplit =
         this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
       this.selectedTableId = datum._id
@@ -753,9 +750,6 @@ export default {
           getWidth = 445 / 2
         }
       }
-      // let tooltipWidth = parseInt($('#tooltipdata').width()) / 2
-      // alert(event.pageX + ' , ' + posX + ' , ' + event.pageY + ' , ' + posY)
-      // })
       if (top < 0) top = 0
       let left = posX - getWidth
       if (left < 0) left = 0
