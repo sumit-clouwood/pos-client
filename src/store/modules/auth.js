@@ -11,6 +11,8 @@ const state = {
   rolePermissions: null,
   userDetails: false,
   permissions: false,
+  cashiers: [],
+  cashierEmail: '',
 }
 
 // getters
@@ -23,6 +25,12 @@ const getters = {
   loggedIn: state => {
     return state.token
   },
+  cashiers: (state, getters, rootState) =>
+    state.cashiers.filter(cashier =>
+      cashier.brand_stores.includes(rootState.context.storeId)
+    ),
+  cashier: state => loginInfo =>
+    state.cashiers.find(cashier => cashier._id === loginInfo.user_id),
 }
 
 // actions
@@ -62,6 +70,26 @@ const actions = {
           //resolve()
         })
         .catch(error => reject(error))
+    })
+  },
+  pinlogin({ commit, state, getters }, cashierpin) {
+    return new Promise((resolve, reject) => {
+      AuthService.pinlogin({
+        email: state.cashierEmail,
+        swipe_card: cashierpin,
+      })
+        .then(response => {
+          localStorage.setItem('token', response.data.token)
+          commit(mutation.SET_TOKEN, response.data.token)
+
+          commit(mutation.USER_DETAILS, {
+            item: getters.cashier(response.data.user),
+          })
+          resolve()
+        })
+        .catch(error => {
+          reject(error)
+        })
     })
   },
   checkLogin({ commit, rootGetters }) {
@@ -122,15 +150,24 @@ const actions = {
   },
 
   getUserDetails({ commit }, userId) {
-    if (userId) {
-      AuthService.userDetails(userId).then(response => {
-        commit(mutation.USER_DETAILS, response.data)
-      })
-    }
+    return new Promise((resolve, reject) => {
+      if (userId) {
+        AuthService.userDetails(userId).then(response => {
+          commit(mutation.USER_DETAILS, response.data)
+          resolve()
+        })
+      } else {
+        reject()
+      }
+    })
   },
-  fetchRoles({ commit }) {
+  fetchRoles({ commit, getters }) {
     AuthService.getRoles().then(rolesPermissions => {
       commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
+      const cashierRole = getters.getRole('pos')
+      AuthService.getUsers(cashierRole._id).then(cashiers => {
+        commit(mutation.SET_CASHIERS, cashiers.data.data)
+      })
     })
   },
 }
@@ -139,6 +176,10 @@ const actions = {
 const mutations = {
   [mutation.SET_TOKEN](state, token) {
     state.token = token
+  },
+
+  [mutation.SET_CASHIER_EMAIL](state, email) {
+    state.cashierEmail = email
   },
 
   [mutation.SET_REFRESH_TOKEN](state, { token }) {
@@ -152,6 +193,9 @@ const mutations = {
   },
   [mutation.USER_DETAILS](state, userDetails) {
     state.userDetails = userDetails
+  },
+  [mutation.SET_CASHIERS](state, cashiers) {
+    state.cashiers = cashiers
   },
   [mutation.RESET](state) {
     state.token = null
