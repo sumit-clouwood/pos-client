@@ -93,6 +93,16 @@
           </div>
         </div>
         <div class="modal-footer">
+          <router-link :to="'/cashier-login' + store">
+            <button
+              id="switch-user-btn-profile"
+              type="button"
+              class="btn btn-danger cancel-announce color-icon-table-neutral-button font-weight-bold"
+            >
+              {{ _t('Switch Cashier') }}
+            </button>
+          </router-link>
+
           <button
             type="button"
             class="btn btn-danger cancel-announce color-icon-table-neutral-button font-weight-bold logout"
@@ -108,6 +118,7 @@
 
 <script>
 import DateTime from '@/mixins/DateTime'
+
 import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
   name: 'UserProfile',
@@ -116,6 +127,7 @@ export default {
     ...mapActions('auth', ['logout']),
   },
   computed: {
+    ...mapGetters('context', ['store']),
     ...mapState({
       user: state => state.auth.userDetails.item,
       collectedData: state => state.auth.userDetails.collected_data,
@@ -132,3 +144,11 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+@import '~@/assets/scss/variables.scss';
+
+#switch-user-btn-profile {
+  background: $blue-light;
+  border-color: $blue-light;
+}
+</style>

@@ -19,13 +19,7 @@
     <div class="zoom-wrap-dinein">
       <div class="POSItemOptions_quantity_inputs">
         <button class="qtyminus value-qty" @click="zoomOut()">-</button>
-        <input
-          class="qty"
-          min="1"
-          name="quantity"
-          type="text"
-          :value="zoomPercent"
-        />
+        <span class="qty">{{ zoomPercent }}</span>
         <button class="qtyplus value-qty" @click="zoomIn()">+</button>
       </div>
       <div class="round-dinein-circle">
@@ -71,25 +65,29 @@ export default {
   methods: {
     zoomIn() {
       let that = this
-      that.transform.k += 0.2
-      d3.selectAll('.dinein_table_parent').each((d, i, a) => {
-        let transform = d3.zoomIdentity
-          .scale(that.transform.k)
-          .translate(that.transform.x, that.transform.y)
-        d3.select(a[i]).attr('transform', transform)
-      })
-      that.zoomPercent += 10
+      if (that.transform.k < 1) {
+        that.transform.k += 0.1
+        d3.selectAll('.dinein_table_parent').each((d, i, a) => {
+          let transform = d3.zoomIdentity
+            .scale(that.transform.k)
+            .translate(that.transform.x, that.transform.y)
+          d3.select(a[i]).attr('transform', transform)
+        })
+        that.zoomPercent += 10
+      }
     },
     zoomOut() {
       let that = this
-      that.transform.k -= 0.2
-      d3.selectAll('.dinein_table_parent').each((d, i, a) => {
-        let transform = d3.zoomIdentity
-          .scale(that.transform.k)
-          .translate(that.transform.x, that.transform.y)
-        d3.select(a[i]).attr('transform', transform)
-      })
-      that.zoomPercent -= 10
+      if (that.transform.k > 0.51) {
+        that.transform.k -= 0.1
+        d3.selectAll('.dinein_table_parent').each((d, i, a) => {
+          let transform = d3.zoomIdentity
+            .scale(that.transform.k)
+            .translate(that.transform.x, that.transform.y)
+          d3.select(a[i]).attr('transform', transform)
+        })
+        that.zoomPercent -= 10
+      }
     },
     moveRight() {
       let that = this

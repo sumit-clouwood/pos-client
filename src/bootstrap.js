@@ -44,6 +44,8 @@ export default {
       this.store
         .dispatch('location/fetch')
         .then(() => {
+          this.store.dispatch('auth/fetchRoles').then(() => {})
+
           this.store
             .dispatch('category/fetchAll')
             .then(() => {
@@ -54,7 +56,6 @@ export default {
                 this.store.dispatch('surcharge/fetchAll').then(() => {})
                 this.store.dispatch('discount/fetchAll').then(() => {})
                 this.store.dispatch('payment/fetchAll').then(() => {})
-                this.store.dispatch('auth/fetchRoles').then(() => {})
               })
             })
             .catch(error => reject(error))
@@ -102,6 +103,7 @@ export default {
               .then(() => {
                 //lets resolve the promise so pos can be loaded, other things ll be loaded later
                 resolve()
+                this.store.dispatch('auth/fetchRoles').then(() => {})
 
                 setTimeout(() => {
                   console.log('delayed loading catalog data started')
@@ -154,7 +156,6 @@ export default {
           this.store.dispatch('announcement/fetchAll').then(() => {})
           this.store.dispatch('auth/getUserDetails')
           this.store.dispatch('customer/fetchAll').then(() => {})
-          this.store.dispatch('auth/fetchRoles').then(() => {})
 
           resolve()
           break

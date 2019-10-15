@@ -102,6 +102,11 @@
           <a :href="brand">{{ _t('Settings') }}</a>
         </li>
         <li>
+          <router-link :to="'/cashier-login' + store">
+            {{ _t('Switch Cashier') }}
+          </router-link>
+        </li>
+        <li>
           <a role="button" @click="logout()">{{ _t('Logout') }}</a>
         </li>
       </ul>
