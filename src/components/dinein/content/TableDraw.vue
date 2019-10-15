@@ -316,6 +316,7 @@ export default {
       componentKey: 0,
       moveReservation: false,
       validationErrors: false,
+      scale: 0.5,
     }
   },
   mounted() {
@@ -469,6 +470,7 @@ export default {
         .enter() //data from state tables
         .append('g')
         .attr('class', 'dinein_table_parent')
+        .attr('transform', d3.zoomIdentity.scale(dis.scale).translate(0, 0))
         .append('use')
         .attr('class', 'dinein_table')
         .attr('draggable', 'true')
@@ -478,8 +480,8 @@ export default {
             d.table_position_coordinate.angle = 0
           }
           transform = `rotate(${d.table_position_coordinate.angle},${d
-            .table_position_coordinate.x + (d.chairs > 5 ? 109 : 60)},${d
-            .table_position_coordinate.y + (d.chairs > 5 ? 109 : 60)})`
+            .table_position_coordinate.x + (d.chairs > 6 ? 109 : 60)},${d
+            .table_position_coordinate.y + (d.chairs > 6 ? 109 : 60)})`
           return transform
         })
         .attr('x', function(d) {
@@ -494,7 +496,7 @@ export default {
         .attr('table_number', d => d.number)
         .attr('chairs', d => d.chairs)
         .attr('width', function(d) {
-          let tableWidth = d.chairs > 5 ? 220 : 120
+          let tableWidth = d.chairs > 6 ? 220 : 120
           /*if (d.table_shape === 'rectangle') {
             tableWidth = d.chairs > 5 ? 220 : 120
           } /!*else if (d.table_shape === 'circle') {
@@ -504,7 +506,7 @@ export default {
           return tableWidth
         })
         .attr('height', function(d) {
-          let tableWidth = d.chairs > 5 ? 220 : 120
+          let tableWidth = d.chairs > 6 ? 220 : 120
           /*if (d.table_shape === 'rectangle') {
             tableWidth = d.chairs > 5 ? 220 : 120
           } /!*else if (d.table_shape === 'circle') {
@@ -583,8 +585,8 @@ export default {
               d.table_position_coordinate.angle = 0
             }
             transform = `rotate(${d.table_position_coordinate.angle},${d
-              .table_position_coordinate.x + (d.chairs > 5 ? 109 : 60)},${d
-              .table_position_coordinate.y + (d.chairs > 5 ? 109 : 60)})`
+              .table_position_coordinate.x + (d.chairs > 6 ? 109 : 60)},${d
+              .table_position_coordinate.y + (d.chairs > 6 ? 109 : 60)})`
             return transform
           })
           .attr('x', function(d) {
@@ -701,8 +703,12 @@ export default {
         .selectAll('path')
         .style('stroke', 'green')
         .style('stroke-width', '1')*/
-      // eslint-disable-next-line no-console
-      // console.log(datum)
+      let scaleVal =
+        localStorage.getItem('scaleVal') !== null
+          ? localStorage.getItem('scaleVal')
+          : 0.5
+
+      this.scale = scaleVal
       this.selectedTableData = datum
       this.guests = 1
       this.validationErrors = ''
@@ -710,8 +716,14 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
+      // let scope = this
+      /*setTimeout(function() {
+        scope.zoom(0.8, { x: 10, y: 10 })
+      }, 500)*/
+      /*let transform = { x: 10, y: 10 }
+      this.zoom(1, transform)*/
       // eslint-disable-next-line no-console
-      console.log(this.orderDetails)
+      // console.log(this.orderDetails)
       this.addOrSplit =
         this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
       this.selectedTableId = datum._id
@@ -738,16 +750,16 @@ export default {
           getWidth = 445 / 2
         }
       }
-      // let tooltipWidth = parseInt($('#tooltipdata').width()) / 2
-      // alert(event.pageX + ' , ' + posX + ' , ' + event.pageY + ' , ' + posY)
-      // })
       if (top < 0) top = 0
       let left = posX - getWidth
       if (left < 0) left = 0
 
       range
         .parent('div')
-        .attr('style', 'top:' + top + 'px; left:' + left + 'px; display:block')
+        .attr(
+          'style',
+          'top:' + top * scaleVal + 'px; left:' + left + 'px; display:block'
+        )
     },
     drawViews() {
       if (this.activeArea) {

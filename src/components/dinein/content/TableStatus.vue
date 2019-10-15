@@ -19,13 +19,7 @@
     <div class="zoom-wrap-dinein">
       <div class="POSItemOptions_quantity_inputs">
         <button class="qtyminus value-qty" @click="zoomOut()">-</button>
-        <input
-          class="qty"
-          min="1"
-          name="quantity"
-          type="text"
-          :value="zoomPercent"
-        />
+        <span class="qty">{{ zoomPercent }}</span>
         <button class="qtyplus value-qty" @click="zoomIn()">+</button>
       </div>
       <div class="round-dinein-circle">
@@ -50,6 +44,7 @@
 </template>
 
 <script>
+/* global $ */
 import { mapState, mapGetters } from 'vuex'
 import * as d3 from 'd3'
 export default {
@@ -63,7 +58,7 @@ export default {
       transform: {
         x: 0,
         y: 0,
-        k: 1,
+        k: 0.5,
       },
       zoomPercent: 100,
     }
@@ -71,7 +66,9 @@ export default {
   methods: {
     zoomIn() {
       let that = this
-      that.transform.k += 0.2
+      if (that.transform.k < 0.9) {
+        $('#tooltipdata').hide()
+        that.transform.k += 0.1
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
         let transform = d3.zoomIdentity
           .scale(that.transform.k)
@@ -79,10 +76,14 @@ export default {
         d3.select(a[i]).attr('transform', transform)
       })
       that.zoomPercent += 10
+        localStorage.setItem('scaleVal', that.transform.k)
+      }
     },
     zoomOut() {
       let that = this
-      that.transform.k -= 0.2
+      if (that.transform.k > 0.51) {
+        $('#tooltipdata').hide()
+        that.transform.k -= 0.1
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
         let transform = d3.zoomIdentity
           .scale(that.transform.k)
@@ -90,6 +91,8 @@ export default {
         d3.select(a[i]).attr('transform', transform)
       })
       that.zoomPercent -= 10
+        localStorage.setItem('scaleVal', that.transform.k)
+      }
     },
     moveRight() {
       let that = this
