@@ -57,15 +57,15 @@ export default {
       transform: {
         x: 0,
         y: 0,
-        k: 1,
+        k: 0.5,
       },
-      zoomPercent: 100,
+      zoomPercent: 50,
     }
   },
   methods: {
     zoomIn() {
       let that = this
-      if (that.transform.k < 1) {
+      if (that.transform.k < 0.9) {
         that.transform.k += 0.1
         d3.selectAll('.dinein_table_parent').each((d, i, a) => {
           let transform = d3.zoomIdentity

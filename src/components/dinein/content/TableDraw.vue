@@ -469,6 +469,7 @@ export default {
         .enter() //data from state tables
         .append('g')
         .attr('class', 'dinein_table_parent')
+        .attr('transform', d3.zoomIdentity.scale(0.5).translate(0, 0))
         .append('use')
         .attr('class', 'dinein_table')
         .attr('draggable', 'true')
@@ -696,6 +697,17 @@ export default {
         .node()
         .getBoundingClientRect()
     },
+    zoom(scale, transform) {
+      let that = this
+      d3.selectAll('.dinein_table_parent').each((d, i, a) => {
+        let zoomIdentity = d3.zoomIdentity
+          .scale(scale)
+          .translate(transform.x, transform.y)
+        d3.select(a[i]).attr('transform', zoomIdentity)
+      })
+      that.zoomPercent = 100
+    },
+    // eslint-disable-next-line no-unused-vars
     showOptions(datum, i, a) {
       /*d3.select(d3.select(a[i]).parentNode)
         .selectAll('path')
@@ -703,6 +715,7 @@ export default {
         .style('stroke-width', '1')*/
       // eslint-disable-next-line no-console
       // console.log(datum)
+
       this.selectedTableData = datum
       this.guests = 1
       this.validationErrors = ''
@@ -710,6 +723,8 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
+      /*let transform = { x: 10, y: 10 }
+      this.zoom(1, transform)*/
       // eslint-disable-next-line no-console
       console.log(this.orderDetails)
       this.addOrSplit =
