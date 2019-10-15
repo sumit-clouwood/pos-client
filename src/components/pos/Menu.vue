@@ -265,7 +265,8 @@ export default {
           .nav-link-nav {
             color: #333;
             width: auto;
-            height: 80px;
+            height: 4rem;
+            min-height: auto;
             flex-direction: row;
             justify-content: flex-start;
             border-bottom: 1px solid $gray-middle;
@@ -285,8 +286,8 @@ export default {
             }
 
             img {
-              width: 64px;
-              height: 64px;
+              width: 3rem;
+              height: 3rem;
               margin-bottom: 0;
               border-radius: 2px;
               margin: 0;
