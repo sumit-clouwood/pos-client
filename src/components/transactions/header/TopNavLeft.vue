@@ -43,7 +43,8 @@ export default {
     .header
     .header-main
     .header-main-left
-    .header-main-left-time {
+    .header-main-left-time,
+  .walkin-btn-design {
     display: none;
   }
 }
