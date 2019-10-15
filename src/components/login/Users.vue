@@ -120,6 +120,8 @@ ul.ullist-admin
         margin-bottom: 15px
 
     > img
+      width: 208px
+      height: 208px
       cursor: pointer
       -webkit-transform: scale(0.5, 0.5)
       -moz-transform: scale(0.5, 0.5)
