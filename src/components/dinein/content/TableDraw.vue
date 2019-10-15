@@ -756,7 +756,10 @@ export default {
 
       range
         .parent('div')
-        .attr('style', 'top:' + top + 'px; left:' + left + 'px; display:block')
+        .attr(
+          'style',
+          'top:' + top * scaleVal + 'px; left:' + left + 'px; display:block'
+        )
     },
     drawViews() {
       if (this.activeArea) {

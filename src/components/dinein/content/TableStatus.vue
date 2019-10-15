@@ -44,6 +44,7 @@
 </template>
 
 <script>
+/* global $ */
 import { mapState, mapGetters } from 'vuex'
 import * as d3 from 'd3'
 export default {
@@ -66,6 +67,7 @@ export default {
     zoomIn() {
       let that = this
       if (that.transform.k < 0.9) {
+        $('#tooltipdata').hide()
         that.transform.k += 0.1
         d3.selectAll('.dinein_table_parent').each((d, i, a) => {
           let transform = d3.zoomIdentity
@@ -80,6 +82,7 @@ export default {
     zoomOut() {
       let that = this
       if (that.transform.k > 0.51) {
+        $('#tooltipdata').hide()
         that.transform.k -= 0.1
         d3.selectAll('.dinein_table_parent').each((d, i, a) => {
           let transform = d3.zoomIdentity
