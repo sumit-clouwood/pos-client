@@ -20,7 +20,9 @@ export default {
   },
 
   dineTables() {
-    return DataService.get(`/model/dine_in_tables?byColumn=1&item_status=true`)
+    return DataService.get(
+      `/model/dine_in_tables?byColumn=1&item_status=true&limit=999`
+    )
   },
 
   waitingLists() {
