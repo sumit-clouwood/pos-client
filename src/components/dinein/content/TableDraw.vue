@@ -284,6 +284,7 @@ export default {
       'allBookedTables',
       'reservationId',
       'getAvailableTables',
+      'tableZoomScale',
     ]),
     ...mapGetters('context', ['store']),
   },
@@ -316,7 +317,6 @@ export default {
       componentKey: 0,
       moveReservation: false,
       validationErrors: false,
-      scale: 0.5,
     }
   },
   mounted() {
@@ -470,7 +470,10 @@ export default {
         .enter() //data from state tables
         .append('g')
         .attr('class', 'dinein_table_parent')
-        .attr('transform', d3.zoomIdentity.scale(dis.scale).translate(0, 0))
+        .attr(
+          'transform',
+          d3.zoomIdentity.scale(dis.tableZoomScale).translate(0, 0)
+        )
         .append('use')
         .attr('class', 'dinein_table')
         .attr('draggable', 'true')
@@ -703,12 +706,6 @@ export default {
         .selectAll('path')
         .style('stroke', 'green')
         .style('stroke-width', '1')*/
-      let scaleVal =
-        localStorage.getItem('scaleVal') !== null
-          ? localStorage.getItem('scaleVal')
-          : 0.5
-
-      this.scale = scaleVal
       this.selectedTableData = datum
       this.guests = 1
       this.validationErrors = ''
@@ -758,7 +755,11 @@ export default {
         .parent('div')
         .attr(
           'style',
-          'top:' + top * scaleVal + 'px; left:' + left + 'px; display:block'
+          'top:' +
+            top * this.tableZoomScale +
+            'px; left:' +
+            left +
+            'px; display:block'
         )
     },
     drawViews() {
