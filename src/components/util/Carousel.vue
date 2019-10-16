@@ -59,7 +59,6 @@ export default {
     slides: Array,
     perPage: Number,
     width: Number,
-    event: Function,
   },
   data() {
     return {
@@ -86,7 +85,6 @@ export default {
     // eslint-disable-next-line no-unused-vars
     selectSlide({ index, slide }) {
       this.currentSlide = index
-      //this.$parent.selectMethod({ index: index, slide: slide })
     },
     movePage(page) {
       let toMove = (page - 1) * this.perPage * this.slideWidth
@@ -195,6 +193,7 @@ export default {
 
       li
         display: inline-block
+        margin-right: 10px
 
         button
           font-size: 0
