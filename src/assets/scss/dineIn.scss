@@ -272,6 +272,7 @@ span#dine-bottom {
     position: relative;
     .sitting-image{
       width: 94vw;
+      background: #e8f1fc;
     }
   }
 }
@@ -455,10 +456,10 @@ span.dinefor-paynow {
 }
 
 button.qtyminus.value-qty {
-  border: $px1 solid #D8DCE1;
+  /*border: $px1 solid #D8DCE1;
   border-right:  medium none;
   border-top-right-radius:  0;
-  border-bottom-right-radius:  0;
+  border-bottom-right-radius:  0;*/
 }
 
 input.qty {
@@ -486,7 +487,7 @@ input.qty {
     border-radius: $px5;
   }
  .value-qty{
-   border: $px1 solid #D8DCE1;
+   //border: $px1 solid #D8DCE1;
    border-left:  medium none;
    border-top-left-radius:  0;
    border-bottom-left-radius:  0;
