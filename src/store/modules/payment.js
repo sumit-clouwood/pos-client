@@ -11,8 +11,6 @@ const state = {
 // getters
 const getters = {
   methods: state => {
-    // eslint-disable-next-line
-    // debugger
     return state.methods.data ? state.methods.data : []
   },
   cash: state => {
