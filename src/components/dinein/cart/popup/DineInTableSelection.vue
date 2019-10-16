@@ -122,7 +122,7 @@ export default {
       } else {
         this.selectedTableMove = ''
       }
-      $('#dine-in-table-selection').modal('hide')
+      $('#dine-in-table-selection').modal('toggle')
     },
     removeSelectedTable: function() {
       if (this.selectedTable) {

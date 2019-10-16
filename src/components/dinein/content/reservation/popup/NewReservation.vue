@@ -66,8 +66,11 @@
                   <div
                     v-for="(val, key) in time_slots"
                     :key="key"
-                    class="col-sm-3 time_slot"
-                    @click="getSelectedTimeSlot(val)"
+                    class="col-sm-3 time_slot cursor-pointer"
+                    :class="'selected_time_slot_' + key"
+                    @click="
+                      getSelectedTimeSlot(val, '.selected_time_slot_' + key)
+                    "
                   >
                     <div v-if="val.occupied">
                       <span
@@ -119,7 +122,7 @@
                     }}
                   </button>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-5" style="display: none">
                   <button
                     type="button"
                     class="btn btn-secondary btn-lg btn-block"
@@ -327,7 +330,7 @@ export default {
       calendarOpen: false,
       newDetails: false,
       selectedDate: '',
-      no_of_guest: 5,
+      no_of_guest: 1,
       time_slots: [
         {
           occupied: true,
@@ -431,7 +434,9 @@ export default {
     getSelectedGuest: function(numberOfGuest) {
       this.reservationInformation.numberOfGuest = numberOfGuest + 1
     },
-    getSelectedTimeSlot: function(selectedTimeSlot) {
+    getSelectedTimeSlot: function(selectedTimeSlot, scope) {
+      $('.time_slot').removeClass('active')
+      $(scope).addClass('active')
       this.reservationInformation.selectedTimeSlot = selectedTimeSlot
     },
     cal: function() {
@@ -530,6 +535,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '../../../../../assets/scss/variables';
+
 .num_guests {
   display: block;
   .btn {
@@ -560,6 +567,22 @@ export default {
   overflow-y: auto;
   margin-right: 40px !important;
   .time_slot {
+    &.active {
+      border: solid 2px #5056ca;
+      &:after {
+        @include check_symbol;
+        width: $px25;
+        height: $px25;
+        border-radius: $btn-border-radius;
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        right: $px10;
+        top: $px10;
+        background-color: $blue-light;
+      }
+    }
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -609,15 +632,35 @@ div#NewReservation label {
 div#NewReservation .num_guests .btn-secondary {
   background: #fff;
   border: 1px solid #d7dce2;
+  &.active {
+    &.focus {
+      box-shadow: 0 0 0 0 rgba(108, 117, 125, 0.5);
+    }
+    background: #f1f3f6;
+    border: solid 2px #5056ca;
+    &:after {
+      //@include check_symbol;
+      width: $px23;
+      height: $px23;
+      border-radius: $btn-border-radius;
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      right: $px2;
+      top: $px2;
+      background-color: $blue-light;
+    }
+  }
 }
 div#NewReservation .num_guests .btn-secondary label {
   color: #3d3f43;
   font-weight: bold;
 }
-div#NewReservation .num_guests .btn-secondary.active {
+/*div#NewReservation .num_guests .btn-secondary.active {
   background: #f1f3f6;
   border: 1px solid #d7dce2;
-}
+}*/
 #NewReservation section#main {
   justify-content: left;
   margin-left: 40px;
