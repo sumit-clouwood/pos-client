@@ -48,16 +48,14 @@ export default {
 
           this.store
             .dispatch('category/fetchAll')
-            .then(async () => {
-              await Promise.all([
-                this.store.dispatch('payment/fetchAll'),
-                this.store.dispatch('modifier/fetchAll'),
-                this.store.dispatch('surcharge/fetchAll'),
-                this.store.dispatch('discount/fetchAll'),
-              ])
-
-              this.store.commit('sync/loaded', true)
-              resolve()
+            .then(() => {
+              this.store.dispatch('modifier/fetchAll').then(() => {
+                this.store.commit('sync/loaded', true)
+                resolve()
+                this.store.dispatch('payment/fetchAll').then(() => {})
+                this.store.dispatch('surcharge/fetchAll').then(() => {})
+                this.store.dispatch('discount/fetchAll').then(() => {})
+              })
             })
             .catch(error => reject(error))
         })
@@ -140,6 +138,9 @@ export default {
     return new Promise(resolve => {
       switch (api) {
         case 'catalog':
+          this.store.dispatch('payment/fetchAll').then(() => {})
+          this.store.dispatch('surcharge/fetchAll').then(() => {})
+          this.store.dispatch('discount/fetchAll').then(() => {})
           resolve()
           break
         case 'customer':
