@@ -6,14 +6,13 @@
         :perPage="4"
         :width="456"
         @click="selectMethod"
-        :data-toggle="getToggle"
-        :data-target="getTarget"
       ></carousel>
     </div>
   </div>
 </template>
 
 <script>
+/* global showModal */
 import { mapActions, mapGetters, mapState } from 'vuex'
 import * as CONSTANTS from '@/constants'
 import Carousel from '@/components/util/Carousel.vue'
@@ -45,19 +44,18 @@ export default {
   methods: {
     // eslint-disable-next-line no-unused-vars
     selectMethod({ index, slide }) {
-      this.setMethod(slide), this.methodCardHendlerChange(slide.priority)
-      this.getToggle = ''
-      if (slide.type == CONSTANTS.LOYALTY) {
-        this.getToggle = 'modal'
-      }
+      //const event = window.event
+      //event.preventDefault()
+      this.setMethod(slide)
+      this.methodCardHendlerChange(slide.priority)
 
       if (this.$store.getters['checkoutForm/payable'] > 0) {
         if (slide.type == CONSTANTS.LOYALTY) {
           if (this.selectedModal == '#manage-customer') {
-            this.getTarget = '#search-loyalty-customer'
+            showModal('#search-loyalty-customer')
           } else {
             this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
-            this.getTarget = '#loyalty-payment'
+            showModal('#loyalty-payment')
           }
         }
       }
