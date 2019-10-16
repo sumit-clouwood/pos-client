@@ -60,7 +60,7 @@
                   </div>
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group pt-2">
                 <label>Available Time Slots</label>
                 <div class="row time_slot_block" style="margin: 0">
                   <div
