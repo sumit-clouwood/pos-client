@@ -50,11 +50,9 @@ export default {
               this.store.dispatch('modifier/fetchAll').then(() => {
                 this.store.commit('sync/loaded', true)
                 resolve()
-
+                this.store.dispatch('payment/fetchAll').then(() => {})
                 this.store.dispatch('surcharge/fetchAll').then(() => {})
                 this.store.dispatch('discount/fetchAll').then(() => {})
-                this.store.dispatch('payment/fetchAll').then(() => {})
-                this.store.dispatch('auth/fetchRoles').then(() => {})
               })
             })
             .catch(error => reject(error))
@@ -145,9 +143,9 @@ export default {
     return new Promise(resolve => {
       switch (api) {
         case 'catalog':
+          this.store.dispatch('payment/fetchAll').then(() => {})
           this.store.dispatch('surcharge/fetchAll').then(() => {})
           this.store.dispatch('discount/fetchAll').then(() => {})
-          this.store.dispatch('payment/fetchAll').then(() => {})
           resolve()
           break
         case 'customer':
