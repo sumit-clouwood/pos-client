@@ -4,6 +4,9 @@
       <transition name="slider">
         <ul
           :style="{ transform: 'translate3d(' + positionX + 'px, 0px, 0px)' }"
+          @mousedown="startDrag"
+          @mousemove="doDrag"
+          @mouseup="stopDrag"
         >
           <li
             v-for="(slide, key) in slides"
@@ -12,8 +15,12 @@
             :style="{
               width: slideWidth + 'px',
             }"
-            @click="selectSlide(key)"
-            v-on:click="$emit('click', { index: key, slide: slide })"
+            @click.stop="
+              ;[
+                selectSlide({ index: key, slide: slide }),
+                $emit('click', { index: key, slide: slide }),
+              ]
+            "
           >
             <div
               class="slide"
@@ -50,12 +57,16 @@ export default {
     slides: Array,
     perPage: Number,
     width: Number,
+    event: Function,
   },
   data() {
     return {
       currentPage: 1,
       currentSlide: 0,
       positionX: 0,
+      dragging: false,
+      dragX: '',
+      dragY: '',
     }
   },
   computed: {
@@ -66,10 +77,14 @@ export default {
       return this.width / this.perPage
     },
   },
-  mounted() {},
+  mounted() {
+    window.addEventListener('mouseup', this.stopDrag)
+  },
   methods: {
-    selectSlide(slideNo) {
-      this.currentSlide = slideNo
+    // eslint-disable-next-line no-unused-vars
+    selectSlide({ index, slide }) {
+      this.currentSlide = index
+      //this.$parent.selectMethod({ index: index, slide: slide })
     },
     movePage(page) {
       let toMove = (page - 1) * this.perPage * this.slideWidth
@@ -83,6 +98,39 @@ export default {
       }
       this.positionX = -toMove
       this.currentPage = page
+    },
+    startDrag(event) {
+      event = event || window.event
+      event.preventDefault()
+      this.dragging = true
+      this.x = this.y = 0
+    },
+    stopDrag(event) {
+      event = event || window.event
+      event.preventDefault()
+      this.dragging = false
+      this.x = this.y = ''
+      document.onmouseup = null
+      document.onmousemove = null
+    },
+    doDrag(event) {
+      event = event || window.event
+      event.preventDefault()
+      if (this.dragging) {
+        if (event.clientX > this.x) {
+          //drag to right
+          if (this.currentPage - 1 >= 1) {
+            this.movePage(this.currentPage - 1)
+          }
+        } else if (event.clientX < this.x) {
+          //drag to left
+          if (this.currentPage + 1 <= this.totalPages) {
+            this.movePage(this.currentPage + 1)
+          }
+        }
+        this.x = event.clientX
+        this.y = event.clientY
+      }
     },
   },
 }
@@ -99,8 +147,8 @@ export default {
 
     ul
       opacity: 1
-      width: 1596px
-      transition: transform 1.5s ease-in-out
+      width: 2200px
+      transition: transform 0.9s ease-in-out
 
       li
         display: inline-block
