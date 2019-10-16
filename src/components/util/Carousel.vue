@@ -29,7 +29,9 @@
               }"
             >
               <img :src="slide.icon" />
-              <label :title="slide.name">{{ slide.name }}</label>
+              <label class="shorten-sentence" :title="slide.name">
+                {{ slide.name }}
+              </label>
             </div>
           </li>
         </ul>
@@ -223,4 +225,46 @@ export default {
             opacity: .25
             color: black
             -webkit-font-smoothing: antialiased
+</style>
+<style lang="scss">
+@import '../../assets/scss/pixels_rem.scss';
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  .mobile-payment-methods .pay-body #payment-method {
+    > div {
+      img {
+        margin: 0 !important;
+      }
+    }
+    .paging {
+      display: none;
+    }
+    ul {
+      width: 100%;
+      display: grid;
+      grid-template-rows: 1fr;
+      grid-row-gap: 1em;
+      li {
+        width: 100% !important;
+        .slide {
+          width: 100% !important;
+          display: flex;
+          justify-content: left;
+          flex-direction: row;
+          label {
+            align-self: center;
+            padding-left: 2em;
+          }
+        }
+      }
+    }
+    .carousel-container {
+      .carousel {
+        overflow: inherit;
+      }
+    }
+  }
+}
 </style>

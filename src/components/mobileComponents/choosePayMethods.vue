@@ -80,6 +80,9 @@ export default {
         grid-template-rows: repeat(20, 65px);
         grid-gap: 15px;
         margin-top: 20px;
+        @include responsive(mobile) {
+          width: 100%;
+        }
 
         &::-webkit-scrollbar {
           width: 0;
@@ -88,6 +91,10 @@ export default {
         > div {
           display: grid;
           grid-template-columns: max-content 1fr;
+          @include responsive(mobile) {
+            grid-template-columns: 1fr;
+            border: none;
+          }
           align-items: center;
           grid-gap: 20px;
           border: 2px solid $gray-middle;
