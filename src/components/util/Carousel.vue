@@ -15,12 +15,7 @@
             :style="{
               width: slideWidth + 'px',
             }"
-            @click.stop="
-              ;[
-                selectSlide({ index: key, slide: slide }),
-                $emit('click', { index: key, slide: slide }),
-              ]
-            "
+            @click.stop=";[selectSlide({ index: key, slide: slide })]"
           >
             <div
               class="slide"
@@ -84,6 +79,10 @@ export default {
   methods: {
     // eslint-disable-next-line no-unused-vars
     selectSlide({ index, slide }) {
+      this.currentSlide = index
+      this.$emit('click', { index: index, slide: slide })
+    },
+    setActive(index) {
       this.currentSlide = index
     },
     movePage(page) {
