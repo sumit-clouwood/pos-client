@@ -457,7 +457,6 @@ export default {
     },
     updateTableOnArea() {
       let dis = this
-      let svgWidth = []
       this.page = d3.select(this.$el).select('#dine-in-area')
       this.svg = d3
         .select(this.$el)
@@ -480,8 +479,8 @@ export default {
             d.table_position_coordinate.angle = 0
           }
           transform = `rotate(${d.table_position_coordinate.angle},${d
-            .table_position_coordinate.x + (d.chairs > 6 ? 109 : 60)},${d
-            .table_position_coordinate.y + (d.chairs > 6 ? 109 : 60)})`
+            .table_position_coordinate.x + 109},${d.table_position_coordinate
+            .y + 109})`
           return transform
         })
         .attr('x', function(d) {
@@ -495,32 +494,24 @@ export default {
         .attr('table_shape', d => d.table_shape)
         .attr('table_number', d => d.number)
         .attr('chairs', d => d.chairs)
-        .attr('width', function(d) {
-          let tableWidth = d.chairs > 6 ? 220 : 120
-          /*if (d.table_shape === 'rectangle') {
-            tableWidth = d.chairs > 5 ? 220 : 120
-          } /!*else if (d.table_shape === 'circle') {
-            tableWidth += 5
-          }*!/*/
-          svgWidth.push(tableWidth)
-          return tableWidth
+        .attr('width', d => {
+          if (d.table_shape === 'square') return 250
+          if (d.table_shape === 'circle') return 260
+          if (d.table_shape === 'rectangle') return null
         })
-        .attr('height', function(d) {
-          let tableWidth = d.chairs > 6 ? 220 : 120
-          /*if (d.table_shape === 'rectangle') {
-            tableWidth = d.chairs > 5 ? 220 : 120
-          } /!*else if (d.table_shape === 'circle') {
-            tableWidth += 5
-          }*!/*/
-          svgWidth.push(tableWidth)
-          return tableWidth
+        .attr('height', d => {
+          if (d.table_shape === 'square') return 250
+          if (d.table_shape === 'circle') return 260
+          if (d.table_shape === 'rectangle') return null
         })
         .attr('xlink:href', function(d) {
           return `#dinein_${d.table_shape}_${d.chairs}`
         })
+        /*.select('text')
+        .text(`#${d.number}`)
         .on('click', function(d, i, a) {
           dis.showOptions(d, i, a)
-        })
+        })*/
         .attr('fill', 'green')
       if (this.selectedTableD3)
         d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
@@ -573,6 +564,9 @@ export default {
           .attr('dy', '.35em')
           .attr('text-anchor', 'middle')
           .text(function(d) {
+            /*d3.select(d3.select(`#dinein_${d.table_shape}_${d.chairs}`).node())
+             .select('text')
+             .text(`#${d.number}`)*/
             return d.number
           })
 
@@ -585,8 +579,8 @@ export default {
               d.table_position_coordinate.angle = 0
             }
             transform = `rotate(${d.table_position_coordinate.angle},${d
-              .table_position_coordinate.x + (d.chairs > 6 ? 109 : 60)},${d
-              .table_position_coordinate.y + (d.chairs > 6 ? 109 : 60)})`
+              .table_position_coordinate.x + 109},${d.table_position_coordinate
+              .y + 109})`
             return transform
           })
           .attr('x', function(d) {
@@ -613,11 +607,6 @@ export default {
                 parseInt(d.table_position_coordinate.y)
               )
             }
-            /*let rectTop = 5
-            if (d.d.table_shape === 'square') {
-              rectTop = 0
-            }
-            return (d.table_position_coordinate.y || 0) + rectTop + 50 / 2*/
           })
           .attr('rx', '20')
           .attr('ry', '8')
