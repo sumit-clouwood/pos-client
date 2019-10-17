@@ -2,6 +2,7 @@
   <div>
     <div id="payment-method" :class="{ activePayMethod: !payNowCalcHendler }">
       <carousel
+        ref="paymentmethods"
         :slides="pmethods"
         :perPage="4"
         :width="456"
@@ -29,6 +30,15 @@ export default {
       getToggle: '',
       getTarget: '',
     }
+  },
+  watch: {
+    activeMethod(newVal, oldVal) {
+      if (newVal != oldVal && newVal == 'Cash') {
+        this.$refs.paymentmethods.setActive(
+          this.pmethods.findIndex(pm => pm.name == newVal)
+        )
+      }
+    },
   },
   computed: {
     ...mapState({
