@@ -160,11 +160,16 @@ const actions = {
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
       }
+      /*let x = JSON.stringify(jsonResponse)
+      let b = new Buffer(x)
+      let s = b.toString('base64')*/
       if (jsonResponse) {
         printingServers.forEach(item => {
           let APIURL = item.ip_address
           OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
+        // eslint-disable-next-line no-console
+        // console.log(x.length, s)
         // eslint-disable-next-line no-console
         console.log(jsonResponse)
       }
