@@ -189,8 +189,6 @@ const actions = {
 
   // eslint-disable-next-line no-empty-pattern
   centeredPopup({}, details) {
-    // eslint-disable-next-line no-console
-    console.log(details, screen)
     let LeftPosition = screen.width ? (screen.width - details.w) / 2 : 0
     let TopPosition = screen.height ? (screen.height - details.h) / 2 : 0
     let settings =
@@ -205,7 +203,10 @@ const actions = {
       ',scrollbars=' +
       scroll +
       ',resizable'
-    window.open(details.url, details.winName, settings)
+    let win = window.open(details.url, details.winName, settings)
+    setTimeout(function() {
+      win.close()
+    }, 5000)
   },
 }
 
