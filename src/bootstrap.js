@@ -9,7 +9,7 @@ export default {
   store: null,
 
   lastSynced: null,
-  syncInterval: 60, //300 sec = 5 min
+  syncInterval: 10, //300 sec = 5 min
 
   setup(store) {
     this.store = store

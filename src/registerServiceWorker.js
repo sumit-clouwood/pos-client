@@ -1,7 +1,20 @@
 /* eslint-disable no-console */
 
 import { register } from 'register-service-worker'
-let refreshing = false
+
+// eslint-disable-next-line no-unused-vars
+const notifyUserAboutUpdate = worker => {
+  const today = new Date()
+  const date =
+    today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate()
+  const time = today.getHours()
+  const dateTime = date + ' ' + time
+  if (localStorage.getItem('pos_version_updated_on') != dateTime) {
+    localStorage.setItem('pos_version_updated_on', dateTime)
+    // window.location.reload(true)
+  }
+}
+
 if (process.env.NODE_ENV === 'production') {
   console.log(`${process.env.BASE_URL}service-worker.js`)
   register(`${process.env.BASE_URL}service-worker.js`, {
@@ -19,18 +32,10 @@ if (process.env.NODE_ENV === 'production') {
     },
     updatefound() {
       console.log('Update found, New content is downloading.')
-      refreshing = false
-      console.log('setting refreshing status false')
     },
-    updated() {
-      console.log('refreshing status', refreshing)
+    updated(registration) {
       console.log('New content is available; please refresh.')
-      console.log('Reloading to get new content')
-      if (refreshing) {
-        return false
-      }
-      refreshing = true
-      window.location.reload(true)
+      notifyUserAboutUpdate(registration.waiting)
     },
     offline() {
       console.log(
@@ -41,4 +46,16 @@ if (process.env.NODE_ENV === 'production') {
       console.error('Error during service worker registration:', error)
     },
   })
+
+  // var refreshing = false
+  // navigator.serviceWorker.addEventListener('controllerchange', () => {
+  //   if (refreshing) {
+  //     console.log('already refreshing')
+  //   } else {
+  //     console.log('refreshing page')
+  //     window.location.reload()
+  //     console.log('page reloaded')
+  //     refreshing = true
+  //   }
+  // })
 }
