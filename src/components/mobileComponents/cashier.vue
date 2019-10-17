@@ -1,10 +1,18 @@
 <template>
   <div class="cashier" v-if="openUserHendler">
     <div class="user-list">
+      <div class="headwrap">
+        <div class="head">
+          <div class="search">
+            <span class="fa fa-search"></span>
+            <input type="text" v-model="searchKeyword" />
+          </div>
+        </div>
+      </div>
       <div class="list">
         <user
           class="user"
-          v-for="(user, key) in testUsers"
+          v-for="(user, key) in cashiers"
           :key="key"
           :param="user"
           @click.native="openUser(user)"
@@ -31,8 +39,17 @@
       </div>
       <div class="user-calc-body">
         <div class="user-calc-body-input">
-          <input type="number" v-model="userPin" placeholder="1234" />
-          <div class="user-calc-body-input-btn" @click="userLoginHendlerChange">
+          <input
+            type="number"
+            v-model="userPin"
+            placeholder="1234"
+            :maxlength="pincodeLength"
+          />
+          <div
+            class="user-calc-body-input-btn"
+            :class="{ active: userPin.length > 3 }"
+            @click="userLoginHendlerChange"
+          >
             UnLock
           </div>
         </div>
@@ -52,11 +69,21 @@
             <i class="fa fa-angle-left" aria-hidden="true"></i>
           </div>
         </div>
-        <div class="pin-footer">
-          <div class="pin-footer-btn" @click="openUser">
-            Clock In&nbsp;/&nbsp;
+        <transition name="errortrans">
+          <div class="error text-danger" v-show="showError">
+            {{ error }}
           </div>
-          <div class="pin-footer-btn" @click="openUser">Clock Out</div>
+        </transition>
+        <div class="progress-container" v-show="processing">
+          <Progress />
+        </div>
+        <div class="pin-footer">
+          <div class="pin-footer-btn">
+            <router-link :to="store">Clock In</router-link>&nbsp;/&nbsp;
+          </div>
+          <div class="pin-footer-btn">
+            <router-link :to="store">Clock Out</router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -67,47 +94,86 @@
 import { mapGetters } from 'vuex'
 import dateTime from './mobileElements/dateTime.vue'
 import user from './mobileElements/user'
+import Progress from '@/components/util/Progress'
 
 export default {
   name: 'cashierList',
   data() {
     return {
       user: '',
-      userPin: [],
+      userPin: '',
       userKey: null,
+      error: false,
+      showError: false,
+      pincodeLength: 4,
+      processing: false,
     }
   },
   computed: {
-    ...mapGetters([
-      'testUsers',
-      'openUserHendler',
-      'userCalcHendler',
-      'userLoginHendler',
-    ]),
+    searchKeyword: {
+      get() {
+        return this.$store.state.auth.searchKeyword
+      },
+      set(value) {
+        this.$store.commit('auth/setSearchKeyword', value)
+      },
+    },
+    ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['cashiers']),
+    ...mapGetters(['openUserHendler', 'userCalcHendler', 'userLoginHendler']),
   },
   components: {
     dateTime,
     user,
+    Progress,
+  },
+  mounted() {
+    this.$store.dispatch('userCalcHendlerChange', false)
   },
   methods: {
     openUser(user) {
       this.user = user
       this.$store.dispatch('userCalcHendlerChange')
-      this.userPin = []
-      this.userKey = user.key
+      this.userPin = ''
+      this.userKey = user.email
     },
     inputPin(e) {
-      if (this.userPin.length < 4) {
+      if (this.userPin.length < this.pincodeLength) {
         this.userPin = this.userPin + e
       }
     },
     inputDel() {
       this.userPin = this.userPin.substring(0, this.userPin.length - 1)
     },
-    userLoginHendlerChange() {
-      if (this.userPin == this.userKey) {
-        this.$store.dispatch('userLoginHendlerChange')
+    login() {
+      if (!this.userPin) {
+        return false
       }
+      this.processing = true
+      this.$store
+        .dispatch('auth/pinlogin', { email: this.userKey, pin: this.userPin })
+        .then(() => {
+          this.$store.dispatch('userCalcHendlerChange', false)
+          this.$router.replace({ name: 'Home' })
+        })
+        .catch(error => {
+          this.error = error
+          this.showError = true
+          this.userPin = ''
+          setTimeout(() => {
+            this.showError = false
+          }, 3000)
+        })
+        .finally(() => {
+          this.processing = false
+        })
+    },
+
+    userLoginHendlerChange() {
+      // if (this.userPin == this.userKey) {
+      //   this.$store.dispatch('userLoginHendlerChange')
+      // }
+      this.login()
     },
     openUserHendlerChange() {
       this.$store.dispatch('openUserHendlerChange')
@@ -116,11 +182,79 @@ export default {
   },
 }
 </script>
+<style lang="sass" scoped>
+.error
+  background: #fff
+  border-bottom: 1px solid #ccc
+  text-align: center
 
+.errortrans-enter-active
+  transition: all .1s ease
+
+.errortrans-leave-active
+  transition: all 1s cubic-bezier(1.0, 0.5, 0.8, 1.0)
+
+.errortrans-enter
+  transform: translateY(2px)
+  opacity: 0
+
+.errortrans-leave-to
+  transform: translateY(2px)
+  opacity: 0
+</style>
 <style lang="scss">
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
+::-webkit-scrollbar {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #555;
+}
+.headwrap {
+  width: 100%;
+  .head {
+    width: 70%;
+    margin: 0 auto;
+    margin: 0 auto;
 
+    .search {
+      height: 40px;
+      line-height: 40px;
+      width: 100%;
+      position: relative;
+      color: #757575;
+      display: inline-block;
+
+      input {
+        color: #757575;
+        width: 100%;
+        height: 40px;
+        background: #fcfcfc;
+        border: 1px solid #aaa;
+        border-radius: 5px;
+        box-shadow: 0 0 3px #ccc, 0 10px 15px #ebebeb inset;
+        padding-right: 30px;
+        padding-left: 10px;
+        box-sizing: border-box;
+
+        &:focus {
+          outline: none;
+        }
+      }
+      .fa-search {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+
+        &:before {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}
 .cashier {
   position: fixed;
   top: 0;
@@ -241,10 +375,7 @@ export default {
       display: flex;
       font-size: 20px;
       flex-wrap: wrap;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
+      overflow: auto;
 
       .user {
         padding: 20px;
@@ -283,9 +414,6 @@ export default {
       color: #fff;
     }
 
-    .user {
-    }
-
     .user-calc-body {
       .user-calc-body-input {
         margin-top: auto;
@@ -315,10 +443,20 @@ export default {
           display: flex;
           align-items: center;
           justify-content: center;
-          background-color: #b0b2bb;
+
           border-radius: 3px;
           padding: 0 20px;
           font-size: 16px;
+          background-color: #b0b2bb;
+
+          &.active {
+            cursor: pointer;
+            background: rgba(98, 187, 49, 0.85);
+            &:hover {
+              background: rgba(98, 187, 49, 0.6);
+              text-decoration: none;
+            }
+          }
         }
       }
 
