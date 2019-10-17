@@ -470,7 +470,7 @@ export default {
         .append('g')
         .attr('class', 'dinein_table_parent')
         .attr('transform', d3.zoomIdentity.scale(dis.scale).translate(0, 0))
-        .append('use')
+        .append('svg')
         .attr('class', 'dinein_table')
         .attr('draggable', 'true')
         .attr('transform', d => {
@@ -504,129 +504,43 @@ export default {
           if (d.table_shape === 'circle') return 260
           if (d.table_shape === 'rectangle') return null
         })
-        .attr('xlink:href', function(d) {
-          return `#dinein_${d.table_shape}_${d.chairs}`
+        .html(d => {
+          return d3.select(`#dinein_${d.table_shape}_${d.chairs}`).html()
         })
-        /*.select('text')
-        .text(`#${d.number}`)
-        .on('click', function(d, i, a) {
-          dis.showOptions(d, i, a)
-        })*/
-        .attr('fill', 'green')
+      /*.attr('fill', 'green')*/
       if (this.selectedTableD3)
         d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
-      d3.selectAll('.dinein_table_parent').each((d, i, a) => {
-        /*let dineInTableWidth = 0
-        // eslint-disable-next-line no-console
-        console.log(dineInTableWidth)
-        if (
-          typeof $('.dinein_table') != 'undefined' &&
-          $('.dinein_table').length
-        ) {
-          dineInTableWidth = $('.dinein_table')[i].getBoundingClientRect().width
-        }*/
-        let parentNodeDim
-        parentNodeDim = d3
-          .select(a[i])
-          .select('.dinein_table')
-          .node()
-          .getBBox()
+      d3.selectAll('.dinein_table_parent').each(() => {
+        this.drawViews()
+        this.setTableProperties()
+      })
+    },
+    setTableProperties() {
+      let dis = this
+      d3.selectAll('.dinein_table').each((d, i, a) => {
         d3.select(a[i])
-          .append('text')
-          .attr('class', 'dinein_table_number')
-          .attr('x', function() {
-            if (dis.isSupported()) {
-              return (
-                parseInt(parentNodeDim.width) / 2 + parseInt(parentNodeDim.x)
-              )
-            } else {
-              return (
-                parseInt(parentNodeDim.width) / 2 +
-                parseInt(d.table_position_coordinate.x)
-              )
-            }
-          })
-          .attr('y', function(d) {
-            if (dis.isSupported()) {
-              return (
-                parseInt(parentNodeDim.height) / 2 + parseInt(parentNodeDim.y)
-              )
-            } else {
-              return (
-                parseInt(parentNodeDim.height) / 2 +
-                parseInt(d.table_position_coordinate.y)
-              )
-            }
-          })
-          .style('fill', 'black')
-          .style('font-size', '18px')
-          .style('font-weight', 'bold')
-          .attr('dy', '.35em')
-          .attr('text-anchor', 'middle')
-          .text(function(d) {
-            /*d3.select(d3.select(`#dinein_${d.table_shape}_${d.chairs}`).node())
-             .select('text')
-             .text(`#${d.number}`)*/
-            return d.number
-          })
-
-        // this.manageViews()
+          .select('text')
+          .text(`#${d.number}`)
+        let data = d
         d3.select(a[i])
-          .append('rect')
-          .attr('transform', d => {
-            let transform
-            if (!d.table_position_coordinate.angle) {
-              d.table_position_coordinate.angle = 0
-            }
-            transform = `rotate(${d.table_position_coordinate.angle},${d
-              .table_position_coordinate.x + 109},${d.table_position_coordinate
-              .y + 109})`
-            return transform
-          })
-          .attr('x', function(d) {
-            if (dis.isSupported()) {
-              return parentNodeDim.width / 6 + parentNodeDim.x
-            } else {
-              return (
-                parseInt(parentNodeDim.width) / 2 +
-                parseInt(d.table_position_coordinate.x)
-              )
-            }
-          })
           .on('click', function(d, i, a) {
             dis.showOptions(d, i, a)
           })
-          .attr('y', function(d) {
-            if (dis.isSupported()) {
-              return (
-                parseInt(parentNodeDim.height) / 2 + parseInt(parentNodeDim.y)
-              )
-            } else {
-              return (
-                parseInt(parentNodeDim.height) / 2 +
-                parseInt(d.table_position_coordinate.y)
-              )
-            }
-          })
-          .attr('rx', '20')
-          .attr('ry', '8')
-          .attr('dy', '.35em')
-          .style('fill', function(d) {
+          .selectAll('path')
+          .attr('fill', function() {
             let fillcolor = '#c84c4c'
             dis.tableStatus.table.filter(ts => {
-              if (ts.id === d._id) {
-                fillcolor = ts.status.color
+              if (ts.id === data._id) {
+                if (ts.status.color == '#61bb31') {
+                  fillcolor = ''
+                } else {
+                  fillcolor = ts.status.color
+                }
               }
             })
             return fillcolor
           })
-          .style('stroke', 'gray')
-          .style('opacity', '1')
-          .style('stroke-width', '0.5')
-          .attr('width', '15')
-          .attr('height', '15')
       })
-      this.drawViews()
     },
     isSupported() {
       let ua = navigator.userAgent.toLowerCase()
