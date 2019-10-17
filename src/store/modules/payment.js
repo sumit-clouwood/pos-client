@@ -23,6 +23,17 @@ const getters = {
     }
     return method
   },
+
+  getImages: (state, getters) => {
+    //for caching
+    let images = []
+
+    getters.methods.forEach(method => {
+      images.push(method.icon)
+    })
+
+    return images
+  },
 }
 
 function makeTransFormat(datas) {
