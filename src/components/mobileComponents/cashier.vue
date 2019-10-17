@@ -1,9 +1,9 @@
 <template>
-  <div class="cashier" v-if="openUserHendler && false">
+  <div class="cashier" v-if="openUserHendler">
     <div class="user-list">
-      <div class="title">Please Select User</div>
       <div class="list">
         <user
+          class="user"
           v-for="(user, key) in testUsers"
           :key="key"
           :param="user"
@@ -131,7 +131,6 @@ export default {
   color: #fff;
   z-index: 1060;
   font-size: 20px;
-  display: none;
 
   .user-login {
     display: grid;
@@ -191,10 +190,6 @@ export default {
       }
     }
 
-    .cashier-list-body {
-      /*margin-top: auto;*/
-    }
-
     .cashier-list-footer {
       padding: 20px;
       /*margin-top: auto;*/
@@ -243,13 +238,17 @@ export default {
     }
 
     .list {
-      display: grid;
-      grid-gap: 20px;
-      overflow: auto;
+      display: flex;
       font-size: 20px;
+      flex-wrap: wrap;
 
       &::-webkit-scrollbar {
         display: none;
+      }
+
+      .user {
+        padding: 20px;
+        width: 320px;
       }
     }
   }
