@@ -220,6 +220,8 @@ export default {
   invoiceapp(url, data) {
     return new Promise((resolve, reject) => {
       axios
+        /*.get(url + '?data=' + data)
+        .headers[{ 'Content-Encoding': 'gzip' }].then(response => {*/
         .post(url, data)
         .then(response => {
           if (this.isValidResponse(response)) {
