@@ -189,6 +189,8 @@ const actions = {
 
   // eslint-disable-next-line no-empty-pattern
   centeredPopup({}, details) {
+    // eslint-disable-next-line no-console
+    console.log(details)
     let LeftPosition = screen.width ? (screen.width - details.w) / 2 : 0
     let TopPosition = screen.height ? (screen.height - details.h) / 2 : 0
     let settings =
