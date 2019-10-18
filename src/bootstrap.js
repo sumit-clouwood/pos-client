@@ -47,14 +47,13 @@ export default {
           this.store
             .dispatch('category/fetchAll')
             .then(() => {
+              this.store.dispatch('payment/fetchAll').then(() => {})
+
               this.store.dispatch('modifier/fetchAll').then(() => {
                 this.store.commit('sync/loaded', true)
                 resolve()
-
                 this.store.dispatch('surcharge/fetchAll').then(() => {})
                 this.store.dispatch('discount/fetchAll').then(() => {})
-                this.store.dispatch('payment/fetchAll').then(() => {})
-                this.store.dispatch('auth/fetchRoles').then(() => {})
               })
             })
             .catch(error => reject(error))
@@ -75,6 +74,8 @@ export default {
             .dispatch('category/fetchAll')
             .then(() => {
               this.updateLoading('catalog')
+              this.store.dispatch('payment/fetchAll').then(() => {})
+
               this.store.dispatch('modifier/fetchAll').then(() => {
                 this.updateLoading('modifiers')
                 this.store.commit('sync/loaded', true)
@@ -147,7 +148,6 @@ export default {
         case 'catalog':
           this.store.dispatch('surcharge/fetchAll').then(() => {})
           this.store.dispatch('discount/fetchAll').then(() => {})
-          this.store.dispatch('payment/fetchAll').then(() => {})
           resolve()
           break
         case 'customer':

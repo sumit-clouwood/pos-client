@@ -114,6 +114,14 @@ export default {
         this.$store.dispatch('customer/reset')
       }
       this.selectedOrderType = newVal
+
+      if (newVal.OTApi !== oldVal.OTApi) {
+        if (this.$store.state.discount.appliedOrderDiscount) {
+          this.$store.dispatch('discount/clearOrderDiscount')
+        } else {
+          this.$store.dispatch('discount/clearItemDiscount')
+        }
+      }
     },
   },
 

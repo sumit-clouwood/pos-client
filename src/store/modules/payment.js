@@ -11,8 +11,6 @@ const state = {
 // getters
 const getters = {
   methods: state => {
-    // eslint-disable-next-line
-    // debugger
     return state.methods.data ? state.methods.data : []
   },
   cash: state => {
@@ -24,6 +22,17 @@ const getters = {
       }
     }
     return method
+  },
+
+  getImages: (state, getters) => {
+    //for caching
+    let images = []
+
+    getters.methods.forEach(method => {
+      images.push(method.icon)
+    })
+
+    return images
   },
 }
 

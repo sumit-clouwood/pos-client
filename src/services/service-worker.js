@@ -184,6 +184,9 @@ if (workbox) {
         //   ' not passed from last sync, do not sync now'
         // )
       }
+    } else if (event.data.action == 'skipWaiting') {
+      console.log(2, 'wait for skip')
+      event.waitUntil(self.skipWaiting())
     }
   })
 
@@ -245,6 +248,23 @@ if (workbox) {
 
   self.addEventListener('activate', function(event) {
     event.waitUntil(self.clients.claim()) // Become available to all pages
+    event.waitUntil(
+      caches.keys().then(function(cacheNames) {
+        return Promise.all(
+          cacheNames
+            // eslint-disable-next-line no-unused-vars
+            .filter(function(cacheName) {
+              return true
+              // Return true if you want to remove this cache,
+              // but remember that caches are shared across
+              // the whole origin
+            })
+            .map(function(cacheName) {
+              return caches.delete(cacheName)
+            })
+        )
+      })
+    )
   })
 }
 

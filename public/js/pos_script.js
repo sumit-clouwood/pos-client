@@ -126,16 +126,6 @@ $(document).ready(function() {
     $('.amount-keypad').toggle()
   })
 
-  // $('#payment-method')
-  //   .not('.slick-initialized')
-  //   .slick({
-  //     arrows: false,
-  //     infinite: true,
-  //     slidesToShow: 4,
-  //     slidesToScroll: 4,
-  //     dots: true,
-  //   })
-
   $('.referal-code-customer').click(function() {
     $(this)
       .addClass('active')
@@ -472,7 +462,4 @@ $(document).ready(function() {
       .siblings()
       .removeClass('active')
   })
-  /*$('li.pay-now').click(function() {
-    //$('#payment-method')[0].slick.refresh()
-  })*/
 })
