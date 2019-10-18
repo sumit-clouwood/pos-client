@@ -523,18 +523,35 @@ export default {
           .text(`#${d.number}`)
         let data = d
         d3.select(a[i])
+          .select('svg>g:last-child')
+          .selectAll('path')
+          .attr('fill', function() {
+            let fc = '#CC3232'
+            dis.tableStatus.table.filter(ts => {
+              if (ts.id === data._id) {
+                if (ts.status.color == '#62bb31') {
+                  fc = '#009900'
+                } else if (ts.status.color == '#faa03c') {
+                  fc = '#fa9304'
+                }
+              }
+            })
+            return fc
+          })
+        d3.select(a[i])
           .on('click', function(d, i, a) {
             dis.showOptions(d, i, a)
           })
+          .select('g')
           .selectAll('path')
           .attr('fill', function() {
-            let fillcolor = '#c84c4c'
+            let fillcolor = '#ff5b56'
             dis.tableStatus.table.filter(ts => {
               if (ts.id === data._id) {
-                if (ts.status.color == '#61bb31') {
-                  fillcolor = ''
-                } else {
-                  fillcolor = ts.status.color
+                if (ts.status.color == '#62bb31') {
+                  fillcolor = '#71d04d'
+                } else if (ts.status.color == '#faa03c') {
+                  fillcolor = '#facc64'
                 }
               }
             })

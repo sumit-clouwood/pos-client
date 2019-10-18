@@ -545,7 +545,7 @@ input.qty {
 //--------------
 svg {
   #dine-in-area{
-    background: #f8fbff;
+    background: #ffffff;
   }
 }
 .dropdown-content {
@@ -640,8 +640,8 @@ g.dinein_table_parent {
     &:hover {
       svg {
         path {
-          fill: $green;
-          stroke: $green;
+          //fill: $green;
+          //stroke: $green;
         }
       }
     }
@@ -755,10 +755,10 @@ span.dinefor-paynow > a {
     }
   }
 }
-svg .active > path {
+/*svg .active > path {
   stroke: green;
   stroke-width:1.5
-}
+}*/
 
 //Media Queries
 @include responsive(mobile){
