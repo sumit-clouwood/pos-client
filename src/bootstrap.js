@@ -44,8 +44,6 @@ export default {
       this.store
         .dispatch('location/fetch')
         .then(() => {
-          this.store.dispatch('auth/fetchRoles').then(() => {})
-
           this.store
             .dispatch('category/fetchAll')
             .then(async () => {
