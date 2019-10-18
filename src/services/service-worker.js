@@ -184,6 +184,9 @@ if (workbox) {
         //   ' not passed from last sync, do not sync now'
         // )
       }
+    } else if (event.data.action == 'skipWaiting') {
+      console.log(2, 'wait for skip')
+      event.waitUntil(self.skipWaiting())
     }
   })
 
