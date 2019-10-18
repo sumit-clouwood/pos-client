@@ -11,7 +11,7 @@ const notifyUserAboutUpdate = worker => {
   const dateTime = date + ' ' + time
   if (localStorage.getItem('pos_version_updated_on') != dateTime) {
     localStorage.setItem('pos_version_updated_on', dateTime)
-    // window.location.reload(true)
+    window.location.reload(true)
   }
 }
 
