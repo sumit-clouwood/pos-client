@@ -544,6 +544,8 @@ input.qty {
 }
 //--------------
 svg {
+  -webkit-filter: drop-shadow(12px 12px 7px rgba(0,0,0,0.5));
+  filter: drop-shadow(1px 4px 1px rgba(0,0,0,0.5));
   #dine-in-area{
     background: #ffffff;
   }
@@ -637,14 +639,14 @@ g.dinein_table_parent {
     stroke-width: 2px;
   }
   .dinein_table {
-    &:hover {
       svg {
+        -webkit-filter: drop-shadow(12px 12px 7px rgba(0,0,0,0.5));
+        filter: drop-shadow(1px 4px 1px rgba(0,0,0,0.5));
         path {
           //fill: $green;
           //stroke: $green;
         }
       }
-    }
   }
 }
 .modal-dialog {
