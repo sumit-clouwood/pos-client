@@ -1,6 +1,11 @@
 <template>
   <div class="cashier" v-if="openUserHendler">
-    <div class="user-list">
+    <div
+      class="user-list"
+      :style="{
+        'background-image': 'url(' + bg + ')',
+      }"
+    >
       <div class="headwrap">
         <div class="head">
           <div class="search">
@@ -21,6 +26,7 @@
     </div>
 
     <div
+      :style="{ 'background-image': 'url(' + bg + ')' }"
       :class="['user-login', { active: userLoginHendler }]"
       @click="openUserHendlerChange"
     >
@@ -33,7 +39,12 @@
       </div>
     </div>
 
-    <div :class="['user-calc', { active: userCalcHendler }]">
+    <div
+      :class="['user-calc', { active: userCalcHendler }]"
+      :style="{
+        'background-image': 'url(' + bg + ')',
+      }"
+    >
       <div class="user-calc-header">
         <user :param="user" />
       </div>
@@ -110,6 +121,11 @@ export default {
     }
   },
   computed: {
+    bg() {
+      return (
+        this.$store.getters['location/bgImage'] || '../../assets/images/bg.jpg'
+      )
+    },
     searchKeyword: {
       get() {
         return this.$store.state.auth.searchKeyword
@@ -276,7 +292,7 @@ export default {
     bottom: 0;
     width: 100vw;
     height: 100%;
-    background-image: url('../../assets/images/bg.jpg');
+
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -360,7 +376,6 @@ export default {
     bottom: 0;
     width: 100vw;
     padding: 70px 20px;
-    background-image: url('../../assets/images/bg.jpg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -391,7 +406,6 @@ export default {
     bottom: 0;
     width: 100vw;
     padding: 20px;
-    background-image: url('../../assets/images/bg.jpg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;

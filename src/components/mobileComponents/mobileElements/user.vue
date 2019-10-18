@@ -1,6 +1,9 @@
 <template>
   <div class="user">
-    <img class="image" :src="param.avatar || 'img/pos/testUserImg-1.jpg'" />
+    <img
+      class="image"
+      :src="param.avatar || 'img/profile/default_avatar.jpg'"
+    />
     <div class="name">{{ param.name }}</div>
   </div>
 </template>
