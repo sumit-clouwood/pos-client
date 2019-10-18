@@ -545,13 +545,13 @@ export default {
           .select('g')
           .selectAll('path')
           .attr('fill', function() {
-            let fillcolor = '#ff5b56'
+            let fillcolor = '#FF9C9A'
             dis.tableStatus.table.filter(ts => {
               if (ts.id === data._id) {
                 if (ts.status.color == '#62bb31') {
-                  fillcolor = '#71d04d'
+                  fillcolor = '#99CA86'
                 } else if (ts.status.color == '#faa03c') {
-                  fillcolor = '#facc64'
+                  fillcolor = '#FAD580'
                 }
               }
             })
