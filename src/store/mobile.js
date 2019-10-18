@@ -54,6 +54,168 @@ export default {
         img: 'testUserImg-0.jpg',
         key: 1234,
       },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
     ],
   },
   mutations: {
@@ -176,8 +338,12 @@ export default {
     USER_LOGIN_HENDLER_CHANGE: state => {
       state.userLoginHendler = !state.userLoginHendler
     },
-    USER_CALC_HENDLER_CHANGE: state => {
-      state.userCalcHendler = !state.userCalcHendler
+    USER_CALC_HENDLER_CHANGE: (state, option) => {
+      if (option == -1) {
+        state.userCalcHendler = !state.userCalcHendler
+      } else {
+        state.userCalcHendler = option
+      }
     },
     MOBILE_LOGOUT: state => {
       state.itemFood = []
@@ -281,8 +447,8 @@ export default {
     userLoginHendlerChange({ commit }) {
       commit('USER_LOGIN_HENDLER_CHANGE')
     },
-    userCalcHendlerChange({ commit }) {
-      commit('USER_CALC_HENDLER_CHANGE')
+    userCalcHendlerChange({ commit }, option = -1) {
+      commit('USER_CALC_HENDLER_CHANGE', option)
     },
     mobileLogout({ commit }) {
       commit('MOBILE_LOGOUT')
