@@ -111,8 +111,6 @@ export default {
               .then(() => {
                 //lets resolve the promise so pos can be loaded, other things ll be loaded later
                 resolve()
-                this.store.dispatch('auth/fetchRoles').then(() => {})
-
                 this.loadApiData('catalog')
 
                 this.loadApiData('customer')
