@@ -209,7 +209,7 @@ const actions = {
     let win = window.open(details.url, details.winName, settings)
     setTimeout(function() {
       win.close()
-    }, 5000)
+    }, 60000)
   },
 }
 
