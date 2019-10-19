@@ -268,10 +268,11 @@ const actions = {
   },
   setMethod({ commit, getters, rootGetters }, method) {
     //check if payable is greater than 0 else set cash as method
-    if (getters['payable'] > 0) {
-      commit('setMethod', method)
-    } else {
-      commit('setMethod', rootGetters['payment/cash'])
+    commit('setMethod', method)
+    if (getters['payable'] <= 0) {
+      setTimeout(() => {
+        commit('setMethod', rootGetters['payment/cash'])
+      }, 100)
     }
   },
 
