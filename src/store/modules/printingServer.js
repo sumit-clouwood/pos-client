@@ -3,7 +3,7 @@ import * as mutation from './printingServer/mutation-type'
 import PrintingServerService from '@/services/data/PrintingServerService'
 // import LookupData from '@/plugins/helpers/LookupData'
 import moment from 'moment-timezone'
-import { compress } from 'lz-string'
+import { compressToBase64 } from 'lz-string'
 const state = {
   kitchenitems: [],
   printingservers: [],
@@ -163,8 +163,9 @@ const actions = {
       let x = JSON.stringify(jsonResponse)
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')
-      let decodedData = compress(x)
+      let decodedData = compressToBase64(x)
       // eslint-disable-next-line no-console
+      console.log(decodedData)
       // console.log(JSON.parse(decompress(decodedData)))
       if (jsonResponse) {
         printingServers.forEach(item => {
