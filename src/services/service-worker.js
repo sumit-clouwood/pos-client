@@ -6,7 +6,7 @@ var clientUrl = ''
 var iDB
 var form_data
 var IDB_VERSION = 4
-var APP_VERSION = 5.1
+var APP_VERSION = 5.3
 var ORDER_DOCUMENT = 'order_post_requests'
 var LOG_DOCUMENT = 'log'
 var client = null
