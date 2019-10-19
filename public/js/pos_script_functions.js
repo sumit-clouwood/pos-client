@@ -39,15 +39,6 @@ function showPaymentBreak() {
 }
 
 function clickPayNow() {
-  $('#payment-method')
-    .not('.slick-initialized')
-    .slick({
-      arrows: false,
-      infinite: true,
-      slidesToShow: 4,
-      slidesToScroll: 4,
-      dots: true,
-    })
   // $('body').append("<div class="modal-backdrop fade show"></div>");
   $('div#pay-now').animate({ right: '0' }, 800)
   $('div#pay-now').addClass('effect-screen')
@@ -58,18 +49,6 @@ function clickPayNow() {
   $('div#pay-now').addClass('show')
   $('div#pay-now').addClass('animated fadeInRight')
   $('.modal-body.pay-now-block').css('opacity', '1')
-
-  setTimeout(function() {
-    $('.payment-method-block table td img').click(function() {
-      if ($('.payment-method-block').length) {
-        $('.payment-method-block').addClass('active')
-        //$('.payment-method-block').hide(800)
-      }
-    })
-  }, 300)
-  if ($('body').find('#payment-method').length > 0) {
-    $('#payment-method')[0].slick.refresh()
-  }
 }
 
 function posConfigLinks() {

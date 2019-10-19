@@ -1,6 +1,7 @@
 export const DINE_IN_TABLES = 'DINE_IN_TABLES'
 export const DINE_IN_AREAS = 'DINE_IN_AREAS'
 export const SELECTED_AREA = 'SELECTED_AREA'
+export const TABLE_SCALE = 'TABLE_SCALE'
 export const COVERS = 'COVERS'
 export const AVAILABLE_TABLES = 'AVAILABLE_TABLES'
 export const TABLE_STATUS = 'TABLE_STATUS'

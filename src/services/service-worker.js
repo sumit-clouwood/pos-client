@@ -6,7 +6,7 @@ var clientUrl = ''
 var iDB
 var form_data
 var IDB_VERSION = 4
-var APP_VERSION = 3
+var APP_VERSION = 5.1
 var ORDER_DOCUMENT = 'order_post_requests'
 var LOG_DOCUMENT = 'log'
 var client = null
@@ -184,6 +184,9 @@ if (workbox) {
         //   ' not passed from last sync, do not sync now'
         // )
       }
+    } else if (event.data.action == 'skipWaiting') {
+      console.log(2, 'wait for skip')
+      event.waitUntil(self.skipWaiting())
     }
   })
 
@@ -245,6 +248,23 @@ if (workbox) {
 
   self.addEventListener('activate', function(event) {
     event.waitUntil(self.clients.claim()) // Become available to all pages
+    event.waitUntil(
+      caches.keys().then(function(cacheNames) {
+        return Promise.all(
+          cacheNames
+            // eslint-disable-next-line no-unused-vars
+            .filter(function(cacheName) {
+              return true
+              // Return true if you want to remove this cache,
+              // but remember that caches are shared across
+              // the whole origin
+            })
+            .map(function(cacheName) {
+              return caches.delete(cacheName)
+            })
+        )
+      })
+    )
   })
 }
 

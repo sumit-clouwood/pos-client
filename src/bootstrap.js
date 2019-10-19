@@ -46,16 +46,16 @@ export default {
         .then(() => {
           this.store
             .dispatch('category/fetchAll')
-            .then(() => {
-              this.store.dispatch('modifier/fetchAll').then(() => {
-                this.store.commit('sync/loaded', true)
-                resolve()
+            .then(async () => {
+              await Promise.all([
+                this.store.dispatch('payment/fetchAll'),
+                this.store.dispatch('modifier/fetchAll'),
+                this.store.dispatch('surcharge/fetchAll'),
+                this.store.dispatch('discount/fetchAll'),
+              ])
 
-                this.store.dispatch('surcharge/fetchAll').then(() => {})
-                this.store.dispatch('discount/fetchAll').then(() => {})
-                this.store.dispatch('payment/fetchAll').then(() => {})
-                this.store.dispatch('auth/fetchRoles').then(() => {})
-              })
+              this.store.commit('sync/loaded', true)
+              resolve()
             })
             .catch(error => reject(error))
         })
@@ -71,12 +71,20 @@ export default {
         .dispatch('location/fetch')
         .then(() => {
           this.updateLoading('store')
+          this.store.dispatch('payment/fetchAll').then(() => {})
+          this.store.dispatch('discount/fetchAll').then(() => {})
+          this.store.dispatch('surcharge/fetchAll').then(() => {})
+          this.store.dispatch('auth/fetchRoles').then(() => {})
+          this.store.dispatch('announcement/fetchAll').then(() => {})
+
           this.store
             .dispatch('category/fetchAll')
             .then(() => {
               this.updateLoading('catalog')
+
               this.store.dispatch('modifier/fetchAll').then(() => {
                 this.updateLoading('modifiers')
+
                 this.store.commit('sync/loaded', true)
                 resolve()
               })
@@ -103,27 +111,12 @@ export default {
                 //lets resolve the promise so pos can be loaded, other things ll be loaded later
                 resolve()
 
-                setTimeout(() => {
-                  console.log('delayed loading catalog data started')
-                  this.loadApiData('catalog').then(() =>
-                    console.log('delayed loading catalog data done')
-                  )
-                }, 3000)
+                this.loadApiData('catalog')
 
-                setTimeout(() => {
-                  console.log('delayed loading customer data started')
-                  this.loadApiData('customer').then(() =>
-                    console.log('delayed loading customer data done')
-                  )
-                }, 4000)
+                this.loadApiData('customer')
 
                 //delayed loading data
-                setTimeout(() => {
-                  console.log('delayed loading order data started')
-                  this.loadApiData('order').then(() =>
-                    console.log('delayed loading order data done')
-                  )
-                }, 6000)
+                this.loadApiData('order')
               })
               .catch(error => {
                 console.log('UI Failed', error)
@@ -145,17 +138,10 @@ export default {
     return new Promise(resolve => {
       switch (api) {
         case 'catalog':
-          this.store.dispatch('surcharge/fetchAll').then(() => {})
-          this.store.dispatch('discount/fetchAll').then(() => {})
-          this.store.dispatch('payment/fetchAll').then(() => {})
           resolve()
           break
         case 'customer':
-          this.store.dispatch('announcement/fetchAll').then(() => {})
-          this.store.dispatch('auth/getUserDetails')
           this.store.dispatch('customer/fetchAll').then(() => {})
-          this.store.dispatch('auth/fetchRoles').then(() => {})
-
           resolve()
           break
         case 'order':
