@@ -4,6 +4,7 @@ import store from './store'
 // eslint-disable-next-line no-unused-vars
 const notifyUserAboutUpdate = worker => {
   store.commit('sync/setAppUpdateNotification', true)
+  localStorage.setItem('update_available', true)
 }
 
 if (process.env.NODE_ENV === 'production') {

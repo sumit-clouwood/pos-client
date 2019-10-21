@@ -95,6 +95,7 @@ export default {
   },
   methods: {
     reloadWindow() {
+      localStorage.setItem('update_available', false)
       window.location.reload(true)
     },
 
@@ -103,6 +104,12 @@ export default {
     },
   },
   created() {
+    if (!this.appUpdateNotification) {
+      this.$store.commit(
+        'sync/setAppUpdateNotification',
+        localStorage.getItem('update_available') === 'true' ? true : false
+      )
+    }
     DataService.setStore(this.$store)
 
     if (this.$route.params.brand_id) {
