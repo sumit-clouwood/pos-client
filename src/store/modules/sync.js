@@ -45,6 +45,8 @@ const mutations = {
   },
 
   loaded(state, loaded) {
+    // eslint-disable-next-line no-console
+    console.log('loaded', loaded)
     state.loaded = loaded
   },
 

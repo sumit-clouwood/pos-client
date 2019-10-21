@@ -1,19 +1,17 @@
 <template>
   <div class="user">
-    <img class="image" :src="'img/pos/' + param.img" />
+    <img
+      class="image"
+      :src="param.avatar || 'img/profile/default_avatar.jpg'"
+    />
     <div class="name">{{ param.name }}</div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
 export default {
   name: 'user',
   props: ['param'],
-  computed: {
-    ...mapGetters(['testUsers']),
-  },
 }
 </script>
 

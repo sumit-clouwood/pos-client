@@ -218,7 +218,7 @@ export default {
 
     .food-menu-item {
       width: 100%;
-      height: 80px;
+      height: 4em;
       padding: 0 10px;
       margin: 0;
       display: grid;
@@ -236,7 +236,7 @@ export default {
         // padding-left: 85px;
         padding-right: 0;
         // color: #fff;
-        height: 80px;
+        height: 4em;
 
         .food-menu-item-price {
           justify-self: end;
@@ -253,8 +253,8 @@ export default {
       }
 
       img {
-        width: 65px;
-        height: 65px;
+        width: 3em;
+        height: 3em;
         border-radius: 2px;
       }
 

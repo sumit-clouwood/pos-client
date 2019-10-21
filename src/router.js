@@ -6,6 +6,7 @@ import Transactions from './views/Transactions'
 import DineIn from './views/Dinein'
 import DeliveryManagerInit from './views/DeliveryManagerInit'
 import DispatchScreenInit from './views/DispatchScreenInit'
+import CashierLogin from './views/CashierLogin'
 
 Vue.use(Router)
 
@@ -14,6 +15,11 @@ const router = new Router({
   base: '',
 
   routes: [
+    {
+      path: '/cashier-login/*',
+      name: 'cashierLogin',
+      component: CashierLogin,
+    },
     {
       path: '/:brand_id/:store_id/update/:order_id',
       name: 'ModifyBackendOrder',
@@ -71,7 +77,7 @@ const router = new Router({
     },
     {
       path: '*',
-      name: 'Any',
+      name: 'Home',
       component: Home,
     },
   ],

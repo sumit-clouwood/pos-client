@@ -1,5 +1,6 @@
 import DataService from '@/services/DataService'
 const authUrl = process.env.VUE_APP_API_ENDPOINT + '/login'
+const pinloginUrl = process.env.VUE_APP_API_ENDPOINT + '/swipe_login'
 
 export default {
   getAccess() {
@@ -20,7 +21,25 @@ export default {
   getRoles() {
     return DataService.get('/model/brand_roles?no_limit=true')
   },
+  getUsers(roleId) {
+    return DataService.get(
+      `/model/users?no_limit=true&byColumn=0&brand_role=${roleId}`
+    )
+  },
 
+  pinlogin(data) {
+    return new Promise((resolve, reject) => {
+      DataService.factory()
+        .post(pinloginUrl, data)
+        .then(response => {
+          //temporary values
+          return resolve(response)
+        })
+        .catch(response => {
+          return reject(response.response.data.error)
+        })
+    })
+  },
   login(data) {
     return new Promise((resolve, reject) => {
       DataService.factory()

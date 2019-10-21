@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "xyz.appmaker.dwlevs",
+      "sha256_cert_fingerprints": ["62:82:6D:12:AD:69:B2:8C:87:E7:C6:D8:34:AF:6A:B4:7D:23:C0:5C:D2:92:95:24:D2:5A:DF:C3:96:B6:37:94"]
+    }
+  }
+]

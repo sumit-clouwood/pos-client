@@ -1081,16 +1081,16 @@ const actions = {
         let item = {}
         let orderItem = {}
         orderData.item.item_discounts.forEach(itemDiscount => {
+          orderItem = orderData.item.items[itemDiscount.for_item]
+          item = {
+            orderIndex: itemDiscount.for_item,
+            _id: orderItem.entity_id,
+          }
+          commit(mutation.SET_ITEM, item)
           discount = rootGetters['discount/itemDiscount'](
             itemDiscount.entity_id
           )
           if (discount) {
-            orderItem = orderData.item.items[itemDiscount.for_item]
-            item = {
-              orderIndex: itemDiscount.for_item,
-              _id: orderItem.entity_id,
-            }
-
             commit(
               'discount/APPLY_ITEM_DISCOUNT',
               { item: item, discount: discount },
