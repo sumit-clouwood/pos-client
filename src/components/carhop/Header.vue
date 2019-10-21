@@ -9,7 +9,7 @@
 
 <script>
 import Topbar from '@/components/carhop/header/Topbar'
-import TopRightMenu from '@/components/pos/header/TopRightMenu'
+import TopRightMenu from '@/components/pos/header/TopNavRight'
 
 export default {
   name: 'Header',
