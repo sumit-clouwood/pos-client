@@ -126,7 +126,7 @@ export default {
   },
   computed: {
     bg() {
-      return this.$store.getters['location/bgImage'] || '/img/bg.jpg'
+      return this.$store.getters['location/bgImage'] || 'img/bg.jpg'
     },
     searchKeyword: {
       get() {
