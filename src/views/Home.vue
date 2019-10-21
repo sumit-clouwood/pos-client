@@ -38,7 +38,8 @@ export default {
       let images = [bgImage]
 
       this.cashiers.forEach(cashier => images.push[cashier.avatar])
-      return images
+
+      return [...images, ...this.$store.getters['payment/getImages']]
     },
   },
   mounted() {

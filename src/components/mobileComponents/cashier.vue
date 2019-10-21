@@ -14,7 +14,7 @@
           </div>
         </div>
       </div>
-      <div class="list">
+      <div class="list" v-if="cashiers.length">
         <user
           class="user"
           v-for="(user, key) in cashiers"
@@ -22,6 +22,10 @@
           :param="user"
           @click.native="openUser(user)"
         />
+      </div>
+      <div v-else class="no-user">
+        <div>No cashier found in store.</div>
+        <router-link :to="store"> Back </router-link>
       </div>
     </div>
 
@@ -122,9 +126,7 @@ export default {
   },
   computed: {
     bg() {
-      return (
-        this.$store.getters['location/bgImage'] || '../../assets/images/bg.jpg'
-      )
+      return this.$store.getters['location/bgImage'] || '/img/bg.jpg'
     },
     searchKeyword: {
       get() {
@@ -227,6 +229,10 @@ export default {
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: #555;
+}
+.no-user {
+  text-align: center;
+  padding-top: 30px;
 }
 .headwrap {
   width: 100%;
