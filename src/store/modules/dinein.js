@@ -12,6 +12,7 @@ const state = {
   },
   bills: null,
   guests: 1,
+  tableZoomScale: 0.5,
   orderDetails: false,
   completedOrderDetails: {},
   areas: false,
@@ -204,6 +205,7 @@ const actions = {
   },
   selectedArea({ commit, dispatch }, area) {
     commit(mutation.SELECTED_AREA, area)
+    commit(mutation.TABLE_SCALE, 0.5)
     dispatch('getTableStatus')
   },
   async getCovers({ commit }) {
@@ -512,6 +514,9 @@ const mutations = {
   },
   [mutation.ORDER_ON_TABLES](state, orderOnTables) {
     state.orderOnTables = orderOnTables
+  },
+  [mutation.TABLE_SCALE](state, scale) {
+    state.tableZoomScale = scale
   },
   [mutation.TABLE_STATUS](state, tableStatus) {
     state.tableStatus = tableStatus
