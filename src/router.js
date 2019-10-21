@@ -7,6 +7,7 @@ import DineIn from './views/Dinein'
 import DeliveryManagerInit from './views/DeliveryManagerInit'
 import DispatchScreenInit from './views/DispatchScreenInit'
 import CashierLogin from './views/CashierLogin'
+import Carhop from './views/Carhop'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ const router = new Router({
       path: '/delivery-manager/:brand_id/:store_id/',
       name: 'DeliveryManager',
       component: DeliveryManagerInit,
+    },
+    {
+      path: '/carhop/:brand_id/:store_id',
+      name: 'Carhop',
+      component: Carhop,
     },
     {
       //view dine in

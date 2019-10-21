@@ -98,6 +98,13 @@
             </router-link>
           </a>
         </li>
+        <li>
+          <a role="button" class="cursor-pointer">
+            <router-link :to="'/carhop' + store">
+              {{ _t('Carhop') }}
+            </router-link>
+          </a>
+        </li>
         <li v-if="permitted('brand', 'root')">
           <a :href="brand">{{ _t('Settings') }}</a>
         </li>
