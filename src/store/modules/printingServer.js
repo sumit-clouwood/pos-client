@@ -185,13 +185,13 @@ const actions = {
           })
           setTimeout(function() {
             // eslint-disable-next-line no-console
-            console.log(state.kitchenInvoiceResponse)
-            if (!state.kitchenInvoiceResponse) {
+            console.log(state.kitchenInvoiceResponse.closed)
+            if (!state.kitchenInvoiceResponse.closed) {
               // eslint-disable-next-line no-console
               console.log('close')
-              window.close()
+              state.kitchenInvoiceResponse.close()
             }
-          }, 200)
+          }, 3000)
           // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
       }
@@ -218,7 +218,7 @@ const actions = {
         scroll +
         ',resizable'
       let win = window.open(details.url, details.winName, settings)
-      commit(mutation.KITCHEN_RESPONSE, win.closed)
+      commit(mutation.KITCHEN_RESPONSE, win)
     }, 100)
   },
 }
