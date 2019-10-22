@@ -1,15 +1,29 @@
 <template>
-  <ul class="ullist-admin">
-    <li data-placement="above" v-for="cashier in cashiers" :key="cashier._id">
-      <img
-        @click.prevent="setCashier(cashier.email)"
-        class="transform-img"
-        :id="cashier._id"
-        :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
-        alt="cashier.name"
-      /><span>{{ cashier.name }}</span>
-    </li>
-  </ul>
+  <div>
+    <div class="headwrap">
+      <div class="head">
+        <div class="search">
+          <span class="fa fa-search"></span>
+          <input type="text" v-model="searchKeyword" />
+        </div>
+      </div>
+    </div>
+    <ul class="ullist-admin" v-if="cashiers.length">
+      <li data-placement="above" v-for="cashier in cashiers" :key="cashier._id">
+        <img
+          @click.prevent="setCashier(cashier.email)"
+          class="transform-img"
+          :id="cashier._id"
+          :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
+          alt="cashier.name"
+        /><span>{{ cashier.name }}</span>
+      </li>
+    </ul>
+    <div v-else class="no-user">
+      <div>No cashier found in store.</div>
+      <router-link :to="store"> Back </router-link>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -21,6 +35,14 @@ export default {
   computed: {
     ...mapGetters('auth', ['cashiers']),
     ...mapState('auth', ['userDetails']),
+    searchKeyword: {
+      get() {
+        return this.$store.state.auth.searchKeyword
+      },
+      set(value) {
+        this.$store.commit('auth/setSearchKeyword', value)
+      },
+    },
   },
   data() {
     return {
@@ -34,6 +56,7 @@ export default {
     cashiers(newVal) {
       if (newVal) {
         this.$nextTick(() => {
+          this.jQuery = false
           this.bindJquery()
         })
       }
@@ -78,7 +101,58 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.no-user {
+  text-align: center;
+  padding-top: 30px;
+  color: #fff;
+}
 
+.headwrap {
+  width: 100%;
+  .head {
+    width: 70%;
+    margin: 0 auto;
+    margin: 0 auto;
+
+    .search {
+      margin-top: 30px;
+      height: 40px;
+      line-height: 40px;
+      width: 100%;
+      position: relative;
+      color: #757575;
+      display: inline-block;
+
+      input {
+        color: #757575;
+        width: 100%;
+        height: 40px;
+        background: #fcfcfc;
+        border: 1px solid #aaa;
+        border-radius: 5px;
+        box-shadow: 0 0 3px #ccc, 0 10px 15px #ebebeb inset;
+        padding-right: 30px;
+        padding-left: 10px;
+        box-sizing: border-box;
+
+        &:focus {
+          outline: none;
+        }
+      }
+      .fa-search {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+
+        &:before {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}
+</style>
 <style lang="sass" scoped>
 
 ul.ullist-admin
@@ -88,7 +162,7 @@ ul.ullist-admin
 
   > li
     display: inline-block
-    padding: 50px 0
+    padding: 2px 0
 
     &:nth-child(2)
       > img

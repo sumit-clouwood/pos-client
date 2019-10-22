@@ -78,11 +78,11 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  pinlogin({ commit, getters }, { email: email, pin: pin }) {
+  pinlogin({ commit, state, getters }, cashierpin) {
     return new Promise((resolve, reject) => {
       AuthService.pinlogin({
-        email: email,
-        swipe_card: pin,
+        email: state.cashierEmail,
+        swipe_card: cashierpin,
       })
         .then(response => {
           localStorage.setItem('token', response.data.token)

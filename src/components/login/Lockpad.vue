@@ -41,7 +41,7 @@
     <div class="modal-footer-block">
       <p>
         <router-link :to="store">
-          Clock In / Clock Out
+          Login
         </router-link>
       </p>
     </div>
