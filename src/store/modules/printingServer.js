@@ -191,7 +191,7 @@ const actions = {
               console.log('close')
               state.kitchenInvoiceResponse.close()
             }
-          }, 3000)
+          }, 5000)
           // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
       }
