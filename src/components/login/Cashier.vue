@@ -58,11 +58,8 @@ export default {
     background-position: center center
 
   div#popover_content_wrapper
-    width: 365px
-    position: absolute
-    left: -70px
-    right: 8px
-    top: 295px
+    width: 23.3em
+    margin-top: 1em
     display: none
 
   .admin-login-wrapper

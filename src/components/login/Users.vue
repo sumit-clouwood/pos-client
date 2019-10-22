@@ -158,7 +158,7 @@ export default {
 ul.ullist-admin
   margin: 0 auto
   text-align: center
-  padding-top: 5px
+  padding-top: 2em
 
   > li
     display: inline-block
@@ -171,6 +171,9 @@ ul.ullist-admin
 
     &.position-set
       position: relative
+      display: flex
+      flex-direction: column
+      align-items: center
 
       >
         .transform
@@ -185,37 +188,26 @@ ul.ullist-admin
         display: block !important
 
       > img
-        -webkit-transform: scale(0.7, 0.7)
-        -moz-transform: scale(0.7, 0.7)
-        -o-transform: scale(0.7, 0.7)
-        -ms-transform: scale(0.7, 0.7)
-        transform: scale(0.7, 0.7)
+        width: 8em
+        height: 8em
         transition: all 0.4s ease
-        margin-bottom: 15px
+        margin-bottom: 0em
 
     > img
-      width: 208px
-      height: 208px
+      width: 7em
+      height: 7em
       cursor: pointer
-      -webkit-transform: scale(0.5, 0.5)
-      -moz-transform: scale(0.5, 0.5)
-      -o-transform: scale(0.5, 0.5)
-      -ms-transform: scale(0.5, 0.5)
-      transform: scale(0.5, 0.5)
-      margin-bottom: 15px
+      margin-bottom: 0em
       transition: all 1s ease-in-out
       margin: 0 auto
       border-radius: 50%
       border: 4px solid rgba(255, 255, 255, 0.7)
 
       &:hover
-        -webkit-transform: scale(0.7, 0.7)
-        -moz-transform: scale(0.7, 0.7)
-        -o-transform: scale(0.7, 0.7)
-        -ms-transform: scale(0.7, 0.7)
-        transform: scale(0.7, 0.7)
+        width: 8em
+        height: 8em
         transition: all 0.6s ease
-        margin-bottom: 15px
+        margin-bottom: 0em
 
     > span
       cursor: pointer
@@ -228,7 +220,7 @@ ul.ullist-admin
       color: #ffffff
       display: block
       position: relative
-      top: -40px
+      padding-top: 0.5em;
 
   img
     &.transform

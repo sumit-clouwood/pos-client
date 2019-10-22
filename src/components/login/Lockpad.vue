@@ -125,7 +125,7 @@ export default {
 
 .lockpad
   button
-    cursor: pointer;
+    cursor: pointer
 
   background: transparent
 
@@ -152,8 +152,7 @@ export default {
       content: ''
       position: absolute
       top: -4%
-      left: 57%
-      margin-left: -50px
+      left: 45%
       width: 0
       height: 0
       border-bottom: solid 20px #fff
@@ -166,18 +165,17 @@ export default {
       background-color: #e7e9ea
       box-shadow: none
       padding-left: 20px
-      height: 60px
-      width: 204px
+      height: 2.5em
+      width: 10em
       border: medium none
 
     .unlock
       background: rgba(98, 187, 49, 0.85)
-      height: 60px
+      height: 2.5em
       border: medium none
-      width: 116px
+      width: 5em
       border-radius: 4px
       color: #fff
-      padding: 18px 0
 
       &:hover
         background: rgba(98, 187, 49, 0.6)
@@ -198,9 +196,9 @@ export default {
           background: rgba(25, 25, 25, 0.85)
 
     > div
-      width: 121px
+      width: 3em
       float: left
-      padding: 15px 10px
+      padding: 10px 10px
       text-align: center
       border-right: solid 1px #2c2c2c
       text-align: center
