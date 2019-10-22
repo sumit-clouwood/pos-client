@@ -100,6 +100,13 @@
         </li>
         <li>
           <a role="button" class="cursor-pointer">
+            <router-link :to="'/' + store">
+              {{ _t('Walk-In') }}
+            </router-link>
+          </a>
+        </li>
+        <li>
+          <a role="button" class="cursor-pointer">
             <router-link :to="'/carhop' + store">
               {{ _t('Carhop') }}
             </router-link>

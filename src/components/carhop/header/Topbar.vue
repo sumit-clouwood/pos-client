@@ -3,26 +3,16 @@
     <button
       type=""
       class="tables-btn-style"
-      :class="{ active: orderType === 'running' }"
-      @click="
-        fetchOrders({
-          type: 'running',
-          pageId: 'carhopInRunningOrders',
-        })
-      "
+      :class="{ active: orderStatus === 'in-progress' }"
+      @click="fetchOrders({ orderStatus: 'in-progress', page: 1 })"
     >
       {{ _t('Running Orders') }}
     </button>
     <button
       type=""
       class="tables-btn-style"
-      :class="{ active: orderType === 'completed' }"
-      @click="
-        fetchOrders({
-          type: 'completed',
-          pageId: 'carhopCompleteOrders',
-        })
-      "
+      :class="{ active: orderStatus === 'finished' }"
+      @click="fetchOrders({ orderStatus: 'finished', page: 1 })"
     >
       {{ _t('Completed Orders') }}
     </button>
@@ -30,21 +20,20 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-//import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'TopNavRight',
   props: {},
   data: function() {
-    return {
-      orderType: 'running',
-    }
+    return {}
   },
-  updated() {},
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('carhop', ['orderStatus']),
   },
-  methods: {},
+  methods: {
+    ...mapActions('carhop', ['fetchOrders']),
+  },
   mounted() {},
 }
 </script>

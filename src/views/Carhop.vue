@@ -6,8 +6,7 @@
     <SystemNavigation />
     <div class="content-wrapper toggle-nav-content" id="dm-content-wrapper">
       <div class="inner-content-dm">
-        <Preloader v-if="loading" />
-        <Content v-else />
+        <Content />
         <Footer />
       </div>
     </div>
@@ -21,8 +20,6 @@ import SystemNavigation from '@/components/SystemNavigation'
 import Header from '@/components/carhop/Header.vue'
 import Content from '@/components/carhop/Content'
 import Footer from '@/components/carhop/Footer'
-import Preloader from '@/components/util/Preloader'
-import { mapState } from 'vuex'
 
 export default {
   name: 'Dinein',
@@ -31,21 +28,15 @@ export default {
     SystemNavigation,
     Content,
     Footer,
-    Preloader,
   },
   data: function() {
-    return {
-      info: null,
-      errored: false, //either request had error
-    }
+    return {}
   },
 
   props: {
     msg: String,
   },
-  computed: {
-    ...mapState('dinein', ['loading']),
-  },
+  computed: {},
   mounted() {
     let getBody = $('body')
     getBody.removeAttr('class')
