@@ -1,15 +1,16 @@
 import * as mutation from './printingServer/mutation-type'
-import OrderService from '@/services/data/OrderService'
+// import OrderService from '@/services/data/OrderService'
 import PrintingServerService from '@/services/data/PrintingServerService'
 // import LookupData from '@/plugins/helpers/LookupData'
 import moment from 'moment-timezone'
-
+import { compressToBase64 } from 'lz-string'
 const state = {
   kitchenitems: [],
   printingservers: [],
   orderDetails: {},
   pageLookups: {},
   createdDateTime: { date: '', time: '' },
+  kitchenInvoiceResponse: true,
 }
 
 const actions = {
@@ -160,15 +161,65 @@ const actions = {
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
       }
+      let x = JSON.stringify(jsonResponse)
+      // let b = new Buffer(x)
+      // let stringifyResponse = b.toString('base64')
+      let decodedData = compressToBase64(x)
+      // eslint-disable-next-line no-console
+      console.log(decodedData)
+      // console.log(JSON.parse(decompress(decodedData)))
       if (jsonResponse) {
         printingServers.forEach(item => {
           let APIURL = item.ip_address
-          OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
+          dispatch('centeredPopup', {
+            url:
+              APIURL +
+              `/printorder?len=` +
+              decodedData.length +
+              `&data=` +
+              decodedData,
+            winName: 'Kitchen invoice printing',
+            w: '700',
+            h: '300',
+            scroll: 'yes ',
+          })
+          setTimeout(function() {
+            // eslint-disable-next-line no-console
+            console.log(state.kitchenInvoiceResponse.closed)
+            if (!state.kitchenInvoiceResponse.closed) {
+              // eslint-disable-next-line no-console
+              console.log('close')
+              state.kitchenInvoiceResponse.close()
+            }
+          }, 5000)
+          // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
-        // eslint-disable-next-line no-console
-        console.log(jsonResponse)
       }
     }
+  },
+
+  // eslint-disable-next-line no-empty-pattern
+  centeredPopup({ commit }, details) {
+    // eslint-disable-next-line no-console
+    console.log(details)
+    setTimeout(function() {
+      let LeftPosition = screen.width ? (screen.width - details.w) / 2 : 0
+      let TopPosition = screen.height ? (screen.height - details.h) / 2 : 0
+      let settings =
+        'height=' +
+        details.h +
+        ',width=' +
+        details.w +
+        ',top=' +
+        TopPosition +
+        ',left=' +
+        LeftPosition +
+        ',scrollbars=' +
+        scroll +
+        ',resizable'
+      let win = window.open(details.url, details.winName, settings)
+      commit(mutation.KITCHEN_RESPONSE, win)
+    }, 100)
   },
 }
 
@@ -184,6 +235,9 @@ const mutations = {
   },
   [mutation.CREATED_TIME](state, time) {
     state.createdDateTime.time = time
+  },
+  [mutation.KITCHEN_RESPONSE](state, status) {
+    state.kitchenInvoiceResponse = status
   },
 }
 

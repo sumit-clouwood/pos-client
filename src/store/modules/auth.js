@@ -13,6 +13,7 @@ const state = {
   permissions: false,
   cashiers: [],
   cashierEmail: '',
+  searchKeyword: '',
 }
 
 // getters
@@ -26,9 +27,14 @@ const getters = {
     return state.token
   },
   cashiers: (state, getters, rootState) =>
-    state.cashiers.filter(cashier =>
-      cashier.brand_stores.includes(rootState.context.storeId)
-    ),
+    state.cashiers.filter(cashier => {
+      if (state.searchKeyword) {
+        if (cashier.name.toLowerCase().indexOf(state.searchKeyword) == -1) {
+          return false
+        }
+      }
+      return cashier.brand_stores.includes(rootState.context.storeId)
+    }),
   cashier: state => loginInfo =>
     state.cashiers.find(cashier => cashier._id === loginInfo.user_id),
 }
@@ -196,6 +202,9 @@ const mutations = {
   },
   [mutation.SET_CASHIERS](state, cashiers) {
     state.cashiers = cashiers
+  },
+  setSearchKeyword(state, value) {
+    state.searchKeyword = value
   },
   [mutation.RESET](state) {
     state.token = null

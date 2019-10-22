@@ -1,6 +1,8 @@
 //entry point: The main.js file is what renders our App.vue component (and everything nested within it) and mounts it to the DOM.
 
 //imort vue
+import '@babel/polyfill'
+
 import Vue from 'vue'
 
 //import main component

@@ -1,18 +1,10 @@
 /* eslint-disable no-console */
-
 import { register } from 'register-service-worker'
-
+import store from './store'
 // eslint-disable-next-line no-unused-vars
 const notifyUserAboutUpdate = worker => {
-  const today = new Date()
-  const date =
-    today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate()
-  const time = today.getHours()
-  const dateTime = date + ' ' + time
-  if (localStorage.getItem('pos_version_updated_on') != dateTime) {
-    localStorage.setItem('pos_version_updated_on', dateTime)
-    // window.location.reload(true)
-  }
+  store.commit('sync/setAppUpdateNotification', true)
+  localStorage.setItem('update_available', true)
 }
 
 if (process.env.NODE_ENV === 'production') {

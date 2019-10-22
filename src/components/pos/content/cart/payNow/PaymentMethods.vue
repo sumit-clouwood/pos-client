@@ -1,89 +1,79 @@
 <template>
-  <div id="payment-method" :class="{ activePayMethod: !payNowCalcHendler }">
-    <div
-      v-for="(method, key) in methods"
-      :key="key"
-      :class="{ active: activeMethod == method.name, 'color-secondary': true }"
-      @click=";[setMethod(method), methodCardHendlerChange(method.priority)]"
-      class="method"
-      :data-toggle="getToggle(method)"
-      :data-target="getTarget(method)"
-    >
-      <img :src="image(method.icon)" :alt="method.name" :title="method.name" />
-      <label
-        class="shorten-sentence text-center color-text-inverse"
-        :title="method.name"
-        >{{ method.name }}</label
-      >
+  <div>
+    <div id="payment-method" :class="{ activePayMethod: !payNowCalcHendler }">
+      <carousel
+        ref="paymentmethods"
+        :slides="pmethods"
+        :perPage="4"
+        :width="456"
+        @click="selectMethod"
+      ></carousel>
     </div>
   </div>
 </template>
 
 <script>
+/* global showModal */
 import { mapActions, mapGetters, mapState } from 'vuex'
 import * as CONSTANTS from '@/constants'
+import Carousel from '@/components/util/Carousel.vue'
 
 export default {
   name: 'PaymentMethods',
-  date() {
-    // count_methods: null
+  components: {
+    Carousel,
   },
-  computed: {
-    ...mapGetters('payment', ['methods']),
-    ...mapGetters(['payNowCalcHendler']),
-    ...mapState({
-      activeMethod: state => state.checkoutForm.method.name,
-    }),
-    ...mapState({
-      selectedModal: state => state.location.setModal,
-    }),
+
+  data() {
+    return {
+      jqInit: false,
+      getToggle: '',
+      getTarget: '',
+    }
   },
   watch: {
-    methods(newVal) {
-      // eslint-disable-next-line
-      // debugger
-      if (newVal.length > 0) {
-        // eslint-disable-next-line no-unused-vars
-        /* global $  */
-        setTimeout(() => {
-          $('#payment-method')
-            .not('.slick-initialized')
-            .slick({
-              arrows: false,
-              infinite: true,
-              slidesToShow: 4,
-              slidesToScroll: 4,
-              dots: true,
-            })
-        }, 500)
-        /*if ($('body').find('#payment-method').length > 0) {
-          $('#payment-method')[0].slick.refresh()
-        }*/
+    activeMethod(newVal, oldVal) {
+      if (newVal != oldVal && newVal == 'Cash') {
+        this.$refs.paymentmethods.setActive(
+          this.pmethods.findIndex(pm => pm.name == newVal)
+        )
       }
     },
   },
+  computed: {
+    ...mapState({
+      activeMethod: state => state.checkoutForm.method.name,
+      selectedModal: state => state.location.setModal,
+    }),
+    ...mapGetters(['payNowCalcHendler']),
+    ...mapGetters({
+      pmethods: 'payment/methods',
+    }),
+  },
+
   methods: {
-    getToggle(method) {
-      if (method.type == CONSTANTS.LOYALTY) {
-        return 'modal'
-      }
-      return ''
-    },
-    image(imgPath) {
-      return imgPath
-    },
-    getTarget(method) {
+    // eslint-disable-next-line no-unused-vars
+    selectMethod({ index, slide }) {
+      //const event = window.event
+      //event.preventDefault()
+      this.setMethod(slide)
+      this.methodCardHendlerChange(slide.priority)
+
       if (this.$store.getters['checkoutForm/payable'] > 0) {
-        if (method.type == CONSTANTS.LOYALTY) {
+        if (slide.type == CONSTANTS.LOYALTY) {
           if (this.selectedModal == '#manage-customer') {
-            return '#search-loyalty-customer'
+            showModal('#search-loyalty-customer')
           } else {
             this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
-            return '#loyalty-payment'
+            showModal('#loyalty-payment')
           }
         }
       }
       return ''
+    },
+
+    image(imgPath) {
+      return imgPath
     },
     ...mapActions('checkoutForm', ['setMethod']),
     methodCardHendlerChange(e) {
@@ -93,85 +83,11 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../assets/scss/variables.scss';
-@import '../../../../../assets/scss/mixins.scss';
-
 #payment-method {
+  width: 456px;
+
   img {
     height: 46px;
-  }
-  /*display: flex;*/
-  /*align-items: center;*/
-  /*justify-content: flex-start;*/
-  /*user-select: none;*/
-}
-
-@include responsive(mobile) {
-  #payment-method {
-    margin: 0;
-    overflow: auto;
-    display: grid;
-    grid-template-rows: repeat(20, 65px);
-    grid-gap: 15px;
-    margin-top: 20px;
-
-    &::-webkit-scrollbar {
-      width: 0;
-    }
-
-    > div {
-      display: grid;
-      grid-template-columns: max-content 1fr;
-      align-items: center;
-      grid-gap: 20px;
-      border: 2px solid $gray-middle;
-      transition: 0.3s ease-out;
-      border-radius: 5px;
-      position: relative;
-
-      &.active {
-        border: 2px solid $green-middle;
-
-        &:after {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          content: '\f00c';
-          font-family: FontAwesome;
-          position: absolute;
-          width: 20px;
-          height: 20px;
-          top: -2px;
-          right: -2px;
-          border-bottom-left-radius: 3px;
-          border-top-right-radius: 3px;
-          background-color: $green-middle;
-          color: #fff;
-        }
-      }
-
-      &:active {
-        background-color: #eee;
-      }
-
-      br {
-        display: none;
-      }
-
-      label {
-        width: auto;
-        text-align: left !important;
-        margin: 0;
-      }
-
-      img {
-        width: 50px;
-        height: 50px;
-        margin-left: 5px;
-        border-radius: 3px;
-      }
-    }
   }
 }
 </style>

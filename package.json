@@ -13,6 +13,7 @@
     "d3": "^5.11.0",
     "fingerprintjs2": "^2.0.6",
     "luxon": "^1.12.1",
+    "lz-string": "^1.4.4",
     "moment-timezone": "^0.5.25",
     "regenerator-runtime": "^0.13.3",
     "register-service-worker": "^1.6.2",
