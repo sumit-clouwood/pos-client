@@ -166,7 +166,7 @@ const actions = {
       // let stringifyResponse = b.toString('base64')
       let decodedData = compressToBase64(x)
       // eslint-disable-next-line no-console
-      console.log(decodedData)
+      // console.log(decodedData)
       // console.log(JSON.parse(decompress(decodedData)))
       if (jsonResponse) {
         printingServers.forEach(item => {
@@ -178,21 +178,22 @@ const actions = {
               decodedData.length +
               `&data=` +
               decodedData,
-            winName: 'Kitchen invoice printing',
+            winName: 'kitchen Invoice Response',
             w: '700',
             h: '300',
             scroll: 'yes ',
+            ipUrl: APIURL + '/test',
           })
-          setTimeout(function() {
-            // eslint-disable-next-line no-console
-            console.log(state.kitchenInvoiceResponse.closed)
+          // setTimeout(function() {
+          // eslint-disable-next-line no-console
+          /* console.log(state.kitchenInvoiceResponse.closed)
             if (!state.kitchenInvoiceResponse.closed) {
               // eslint-disable-next-line no-console
               console.log('close')
               state.kitchenInvoiceResponse.close()
-            }
-          }, 5000)
-          // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
+            }*/
+          // }, 5000)
+          //Run API for sending invoice to Window APP
         })
       }
     }
@@ -217,9 +218,57 @@ const actions = {
         ',scrollbars=' +
         scroll +
         ',resizable'
-      let win = window.open(details.url, details.winName, settings)
+      /*OrderService.invoiceAPI(details.ipUrl)
+        .then(response => {
+          // eslint-disable-next-line no-console
+          console.log(response)
+        })
+        .cache(err => {
+          // eslint-disable-next-line no-console
+          console.log(err)
+        })*/
+      // let win = window.open(details.url, details.winName, settings)
+      let win = false
+      try {
+        win = window.open(details.url, details.winName, settings)
+        // eslint-disable-next-line no-console
+        console.log(details.ipUrl)
+        win.onerror = function(msg, url, lineNo, columnNo, error) {
+          // ... handle error ...
+          // eslint-disable-next-line no-console
+          console.log(msg, url, lineNo, columnNo, error)
+          return false
+        }
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e)
+      }
+
+      // var doc = win.document
+      // var script = document.createElement('script')
+      let doc = win.document
+      var script = document.createElement('script')
+      script.innerHTML =
+        'window.onload = alert("printing failed trying for another server..");'
+      // 'window.onload = &lt;h2&gt;("Invoice print failed. Please update IP Address in configuration?")&lt;/h2&gt;'
+      doc.body.appendChild(script)
+      /*let h = document.createElement('H1') // Create a <h1> element
+      let t = document.createTextNode(
+        'printing failed trying for another server..'
+      ) // Create a text node
+      h.appendChild(t)
+      doc.body.appendChild(h)*/
+      // eslint-disable-next-line no-console
+      console.log(win.document)
       commit(mutation.KITCHEN_RESPONSE, win)
-    }, 100)
+    }, 10)
+  },
+  DeleteUser() {
+    if (confirm('Do you really want to delete?')) {
+      alert('hello')
+    } else {
+      alert(2)
+    }
   },
 }
 
