@@ -254,12 +254,13 @@ const actions = {
       }
     } else if (
       rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
-      action === CONSTANTS.ORDER_STATUS_ON_HOLD
+      action === CONSTANTS.ORDER_STATUS_ON_HOLD ||
+      action === 'carhop-place-order'
     ) {
       //do something here
     } else {
       const method = rootGetters['payment/cash']
-      if (['dine-in-place-order', 'carhop-place-order'].includes(action)) {
+      if (['dine-in-place-order'].includes(action)) {
         order.order_payments = [
           {
             entity_id: method._id,
@@ -824,9 +825,9 @@ const actions = {
       dispatch('getModifyOrder').then(order => {
         //delete order.order_system_status
         //delete order.real_created_datetime
-        order.modify_reason = 'Pay for carhop order'
+        delete order.new_real_transition_order_no
 
-        OrderService.modifyOrder(order, rootState.order.orderId)
+        OrderService.updateOrderItems(order, rootState.order.orderId)
           .then(response => {
             if (response.data.status === 'ok') {
               let msgStr = rootGetters['location/_t'](

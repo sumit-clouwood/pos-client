@@ -33,7 +33,7 @@ const actions = {
       }
     )
     CarhopService.fetchOrders('finished', 1, state.limit).then(response => {
-      commit(mutation.SET_ORDERS, { data: response.data, type: 'in-progress' })
+      commit(mutation.SET_ORDERS, { data: response.data, type: 'finished' })
       commit(mutation.SET_LOADING, false)
     })
   },
