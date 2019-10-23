@@ -82,6 +82,7 @@ const actions = {
     if (
       rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
       action == 'dine-in-place-order' ||
+      action == 'carhop-place-order' ||
       action === CONSTANTS.ORDER_STATUS_ON_HOLD
     ) {
       return Promise.resolve()
@@ -253,12 +254,13 @@ const actions = {
       }
     } else if (
       rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
-      action === CONSTANTS.ORDER_STATUS_ON_HOLD
+      action === CONSTANTS.ORDER_STATUS_ON_HOLD ||
+      action === 'carhop-place-order'
     ) {
       //do something here
     } else {
       const method = rootGetters['payment/cash']
-      if (action != 'dine-in-place-order') {
+      if (['dine-in-place-order'].includes(action)) {
         order.order_payments = [
           {
             entity_id: method._id,
@@ -817,6 +819,61 @@ const actions = {
     })
   },
 
+  // eslint-disable-next-line no-unused-vars
+  modifyCarhopOrder({ dispatch, rootState, rootGetters, commit }, action) {
+    return new Promise(resolve => {
+      dispatch('getModifyOrder').then(order => {
+        //delete order.order_system_status
+        //delete order.real_created_datetime
+        delete order.new_real_transition_order_no
+
+        OrderService.updateOrderItems(order, rootState.order.orderId)
+          .then(response => {
+            if (response.data.status === 'ok') {
+              let msgStr = rootGetters['location/_t'](
+                'Carhop order has been placed.'
+              )
+
+              //order paid
+              commit(mutation.PRINT, true)
+              commit(
+                'SET_ORDER_NUMBER',
+                rootState.order.selectedOrder.item.order_no
+              )
+              if (rootState.order.splitBill) {
+                //mark items as paid in current execution
+                dispatch('order/markSplitItemsPaid', null, { root: true })
+              }
+
+              resolve()
+
+              commit(
+                'checkoutForm/SET_MSG',
+                { result: '', message: msgStr },
+                {
+                  root: true,
+                }
+              )
+            } else {
+              dispatch('handleSystemErrors', response).then(() => resolve())
+            }
+          })
+          .catch(error => {
+            dispatch('handleRejectedResponse', {
+              response: error,
+              offline: false,
+            })
+              .then(() => {
+                resolve()
+              })
+              .catch(() => {
+                resolve()
+              })
+          })
+      })
+    })
+  },
+
   modifyBackendOrder({ dispatch, rootState, rootGetters, commit }) {
     return new Promise(resolve => {
       dispatch('getModifyOrder').then(order => {
@@ -1015,6 +1072,44 @@ const actions = {
     })
   },
 
+  // eslint-disable-next-line no-unused-vars
+  createCarhopOrder({ dispatch, commit, rootGetters }, action) {
+    return new Promise(resolve => {
+      OrderService.saveOrder(state.order)
+        .then(response => {
+          if (response.data.status === 'ok') {
+            commit('order/SET_ORDER_ID', response.data.id, { root: true })
+            commit('SET_ORDER_NUMBER', response.data.order_no)
+            //we are not printing so reset manually here
+
+            const msg = rootGetters['location/_t'](
+              'Carhop Order has been placed'
+            )
+            dispatch('reset')
+
+            dispatch('setMessage', {
+              result: 'success',
+              msg: msg,
+            }).then(() => {
+              resolve(response.data)
+            })
+          } else {
+            dispatch('handleSystemErrors', response).then(() => resolve())
+          }
+        })
+        .catch(error => {
+          dispatch('handleRejectedResponse', {
+            response: error,
+            offline: false,
+          })
+            .then(() => {
+              resolve()
+            })
+            .catch(() => resolve())
+        })
+    })
+  },
+
   handleSystemErrors({ dispatch }, response) {
     let error = ''
     if (response.data.status == 'form_errors') {
@@ -1125,6 +1220,14 @@ const actions = {
         } else {
           return dispatch('createDineOrder', action)
         }
+      }
+    } else if (
+      rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CARHOP
+    ) {
+      if (action === 'carhop-place-order') {
+        return dispatch('createCarhopOrder', action)
+      } else {
+        return dispatch('modifyCarhopOrder', action)
       }
     } else {
       return dispatch('createWalkinOrder')

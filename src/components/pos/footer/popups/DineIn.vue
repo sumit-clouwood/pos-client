@@ -61,6 +61,21 @@
               <img src="img/pos/walkin.svg" width="35" />
               <span class="color-text-invert">{{ _t('Walk In') }}</span>
             </div>
+            <div
+              class="option-contain carhop"
+              :class="{
+                active: selectedOrderType.OTApi === CONST.ORDER_TYPE_CARHOP,
+              }"
+              @click="
+                setOrderType({
+                  OTview: 'Carhop',
+                  OTApi: CONST.ORDER_TYPE_CARHOP,
+                })
+              "
+            >
+              <img src="img/pos/carhop.svg" width="35" />
+              <span class="color-text-invert">{{ _t('Carhop') }}</span>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -161,6 +176,12 @@ export default {
 @import '../../../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
+  .carhop {
+    padding: 10px;
+    img {
+      width: 50px;
+    }
+  }
   #dining-option {
     .modal-dialog {
       margin: 0;

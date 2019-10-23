@@ -25,6 +25,11 @@ import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'home',
+  data() {
+    return {
+      orderId: null,
+    }
+  },
   components: {
     Pos,
     Location,
@@ -47,6 +52,13 @@ export default {
     getBody.removeAttr('class')
     getBody.attr('class', 'fixed-nav sticky-footer')
     // BrandColor.applyDynamicRules(this.brand)
+    if (this.$route.params.order_id) {
+      this.orderId = this.$route.params.order_id
+    }
+
+    if (this.orderId && this.$route.name === 'CarhopOrderPay') {
+      this.$store.dispatch('order/loadCarhopOrder', this.orderId)
+    }
   },
 }
 </script>

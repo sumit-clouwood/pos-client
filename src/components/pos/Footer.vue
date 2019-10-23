@@ -300,12 +300,30 @@
           </li>
           <li
             class="pay-now color-dashboard-background color-main"
-            v-show="orderType.OTApi !== 'call_center'"
+            :class="{ inactive: items.length === 0 }"
+            v-show="
+              !['call_center', CONST.ORDER_TYPE_CARHOP].includes(
+                orderType.OTApi
+              ) || orderId
+            "
             @click="payNowClick()"
           >
             <a role="button">
               <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
               <span class="pay-btn color-text-invert">{{ _t('Pay Now') }}</span>
+            </a>
+          </li>
+          <li
+            class="pay-now color-dashboard-background color-main"
+            :class="{ inactive: items.length === 0 }"
+            v-show="orderType.OTApi === CONST.ORDER_TYPE_CARHOP && !orderId"
+            @click="placeCarhop"
+          >
+            <a role="button">
+              <img src="img/pos/payment.svg" :alt="_t('Place Order')" />
+              <span class="pay-btn color-text-invert">{{
+                _t('Place Order')
+              }}</span>
             </a>
           </li>
         </ul>
@@ -317,6 +335,7 @@
         <ul class="template-btn">
           <li
             class="pay-now color-dashboard-background color-main"
+            :class="{ inactive: items.length === 0 }"
             @click="payNowDirect()"
           >
             <a role="button">
@@ -448,7 +467,13 @@ export default {
     ...mapState('checkout', ['print', 'paymentMsgStatus']),
     ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('customer', ['responseInformation']),
-    ...mapState('order', ['orderType', 'cartType', 'items', 'is_pay']),
+    ...mapState('order', [
+      'orderType',
+      'cartType',
+      'items',
+      'is_pay',
+      'orderId',
+    ]),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
@@ -479,6 +504,19 @@ export default {
     // },
   },
   methods: {
+    placeCarhop() {
+      if (this.items.length === 0) {
+        return false
+      }
+
+      $('#payment-msg').modal('show')
+      this.$store.dispatch('order/startOrder')
+      this.$store
+        .dispatch('checkout/pay', { action: 'carhop-place-order' })
+        .then(() => {})
+        .catch(() => {})
+    },
+
     payNowDirect() {
       //dine in order
       let validationError = {}
@@ -628,4 +666,10 @@ export default {
 .hide {
   display: none;
 }
+</style>
+<style lang="sass" scoped>
+.button
+  .inactive
+    background-color: #ccc
+    cursor: not-allowed
 </style>
