@@ -27,7 +27,7 @@
         </select>
       </li>
     </ul>
-    <ul class="online-counter color-main">
+    <ul class="online-counter color-main" v-if="enabled">
       <li
         class="nav-item online-data "
         data-toggle="modal"
@@ -39,7 +39,7 @@
         </a>
       </li>
     </ul>
-    <div class="curent-sale hideBigScreen">
+    <div class="curent-sale hideBigScreen" v-if="enabled">
       <div class="curent-sale-title">{{ _t('Current Sale') }}</div>
       <div class="curent-sale-item">
         <div class="text">Item</div>
@@ -67,39 +67,39 @@
           </svg>
         </a>
         <ul class="setting-dropdown">
-          <li>
+          <li v-if="enabled">
             <a role="button">{{ _t('Printers') }}</a>
           </li>
-          <li v-if="permitted('dashboard', 'root')">
+          <li v-if="enabled && permitted('dashboard', 'root')">
             <a :href="dashboard">{{ _t('Dashboard') }}</a>
           </li>
           <li
-            v-if="permitted('transactional_orders')"
+            v-if="enabled && permitted('transactional_orders')"
             @click="moveTransactionSection(this)"
           >
             <a role="button">
               {{ _t('Transactions') }}
             </a>
           </li>
-          <li v-if="permitted('crm', 'root')">
+          <li v-if="enabled && permitted('crm', 'root')">
             <a :href="crm">{{ _t('CRM') }}</a>
           </li>
-          <li @click="moveDineSection()">
+          <li v-if="enabled" @click="moveDineSection()">
             <a role="button">
               {{ _t('Dine In') }}
             </a>
           </li>
-          <li v-if="permitted('menu', 'root')">
+          <li v-if="enabled && permitted('menu', 'root')">
             <a :href="menu">{{ _t('Menu Setup') }}</a>
           </li>
-          <li v-if="permitted('delivery', 'root')">
+          <li v-if="enabled && permitted('delivery', 'root')">
             <a role="button" @click="setDeliveryManageState()">
               <router-link :to="'/delivery-manager' + store">
                 {{ _t('Delivery Manager') }}
               </router-link>
             </a>
           </li>
-          <li>
+          <li v-if="enabled">
             <a role="button" class="cursor-pointer">
               <router-link :to="'/' + store">
                 {{ _t('Walk-In') }}
@@ -111,10 +111,15 @@
               {{ _t('Carhop') }}
             </router-link>
           </li>
-          <li v-if="permitted('brand', 'root')">
+          <li>
+            <router-link :to="'/carhop-orders' + store">
+              {{ _t('Carhop Orders') }}
+            </router-link>
+          </li>
+          <li v-if="enabled && permitted('brand', 'root')">
             <a :href="brand">{{ _t('Settings') }}</a>
           </li>
-          <li>
+          <li v-if="enabled">
             <router-link :to="'/cashier-login' + store">
               {{ _t('Switch Cashier') }}
             </router-link>
@@ -131,6 +136,8 @@
 <script>
 /*global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
+import * as CONST from '@/constants'
+
 import bootstrap from '@/bootstrap'
 export default {
   name: 'TopNavRight',
@@ -147,6 +154,12 @@ export default {
   },
   watch: {},
   computed: {
+    enabled() {
+      if (this.$route.name.match('Carhop')) {
+        return false
+      }
+      return true
+    },
     vlocale: {
       get() {
         return this.$store.state.location.locale
@@ -158,6 +171,7 @@ export default {
     ...mapGetters('context', ['store', 'transactions']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('sync', ['online']),
+    ...mapState('order', ['orderType']),
     ...mapState({
       latestOnlineOrders: state =>
         state.order.onlineOrders ? state.order.onlineOrders.length : 0,
@@ -236,8 +250,15 @@ export default {
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },
   mounted() {
-    this.onlineOrders()
-    $('.setting-dropdown').hide()
+    if (this.$route.name.match('Carhop')) {
+      this.$store.commit('order/ORDER_TYPE', {
+        OTview: 'Carhop',
+        OTApi: CONST.ORDER_TYPE_CARHOP,
+      })
+    } else {
+      this.onlineOrders()
+      $('.setting-dropdown').hide()
+    }
   },
 }
 </script>
