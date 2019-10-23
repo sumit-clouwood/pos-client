@@ -23,7 +23,12 @@ import CompletedOrders from './content/CompletedOrders'
 export default {
   name: 'Content',
   computed: {
-    ...mapState('carhop', ['loading', 'orderStatus', 'orders']),
+    ...mapState('carhop', [
+      'loading',
+      'loadingSilent',
+      'orderStatus',
+      'orders',
+    ]),
   },
   components: {
     Preloader,

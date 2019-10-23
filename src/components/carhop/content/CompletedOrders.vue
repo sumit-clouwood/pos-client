@@ -58,7 +58,7 @@
       </div>
     </div>
     <div v-else>
-      <span class="not-found">All orders are completed.</span>
+      <span class="not-found">No orders for today yet.</span>
     </div>
   </div>
 </template>
