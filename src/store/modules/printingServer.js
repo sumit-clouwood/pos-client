@@ -166,7 +166,7 @@ const actions = {
       // let stringifyResponse = b.toString('base64')
       let decodedData = compressToBase64(x)
       // eslint-disable-next-line no-console
-      // console.log(decodedData)
+      console.log(decodedData)
       // console.log(JSON.parse(decompress(decodedData)))
       if (jsonResponse) {
         printingServers.forEach(item => {
@@ -178,22 +178,17 @@ const actions = {
               decodedData.length +
               `&data=` +
               decodedData,
-            winName: 'kitchen Invoice Response',
+            winName: 'Kitchen invoice printing',
             w: '700',
             h: '300',
             scroll: 'yes ',
-            ipUrl: APIURL + '/test',
           })
-          // setTimeout(function() {
           // eslint-disable-next-line no-console
-          /* console.log(state.kitchenInvoiceResponse.closed)
-            if (!state.kitchenInvoiceResponse.closed) {
-              // eslint-disable-next-line no-console
-              console.log('close')
-              state.kitchenInvoiceResponse.close()
-            }*/
-          // }, 5000)
-          //Run API for sending invoice to Window APP
+          console.log(state.kitchenInvoiceResponse)
+          setTimeout(function() {
+            if (!state.kitchenInvoiceResponse) window.close()
+          }, 3500)
+          // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
       }
     }
@@ -203,72 +198,24 @@ const actions = {
   centeredPopup({ commit }, details) {
     // eslint-disable-next-line no-console
     console.log(details)
+    let LeftPosition = screen.width ? (screen.width - details.w) / 2 : 0
+    let TopPosition = screen.height ? (screen.height - details.h) / 2 : 0
+    let settings =
+      'height=' +
+      details.h +
+      ',width=' +
+      details.w +
+      ',top=' +
+      TopPosition +
+      ',left=' +
+      LeftPosition +
+      ',scrollbars=' +
+      scroll +
+      ',resizable'
+    let win = window.open(details.url, details.winName, settings)
     setTimeout(function() {
-      let LeftPosition = screen.width ? (screen.width - details.w) / 2 : 0
-      let TopPosition = screen.height ? (screen.height - details.h) / 2 : 0
-      let settings =
-        'height=' +
-        details.h +
-        ',width=' +
-        details.w +
-        ',top=' +
-        TopPosition +
-        ',left=' +
-        LeftPosition +
-        ',scrollbars=' +
-        scroll +
-        ',resizable'
-      /*OrderService.invoiceAPI(details.ipUrl)
-        .then(response => {
-          // eslint-disable-next-line no-console
-          console.log(response)
-        })
-        .cache(err => {
-          // eslint-disable-next-line no-console
-          console.log(err)
-        })*/
-      // let win = window.open(details.url, details.winName, settings)
-      let win = false
-      try {
-        win = window.open(details.url, details.winName, settings)
-        // eslint-disable-next-line no-console
-        console.log(details.ipUrl)
-        win.onerror = function(msg, url, lineNo, columnNo, error) {
-          // ... handle error ...
-          // eslint-disable-next-line no-console
-          console.log(msg, url, lineNo, columnNo, error)
-          return false
-        }
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log(e)
-      }
-
-      // var doc = win.document
-      // var script = document.createElement('script')
-      let doc = win.document
-      var script = document.createElement('script')
-      script.innerHTML =
-        'window.onload = alert("printing failed trying for another server..");'
-      // 'window.onload = &lt;h2&gt;("Invoice print failed. Please update IP Address in configuration?")&lt;/h2&gt;'
-      doc.body.appendChild(script)
-      /*let h = document.createElement('H1') // Create a <h1> element
-      let t = document.createTextNode(
-        'printing failed trying for another server..'
-      ) // Create a text node
-      h.appendChild(t)
-      doc.body.appendChild(h)*/
-      // eslint-disable-next-line no-console
-      console.log(win.document)
-      commit(mutation.KITCHEN_RESPONSE, win)
-    }, 10)
-  },
-  DeleteUser() {
-    if (confirm('Do you really want to delete?')) {
-      alert('hello')
-    } else {
-      alert(2)
-    }
+      commit(mutation.KITCHEN_RESPONSE, win.closed)
+    }, 100)
   },
 }
 
