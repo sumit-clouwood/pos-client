@@ -166,7 +166,7 @@ export default {
       box-shadow: none
       padding-left: 20px
       height: 2.5em
-      width: 10em
+      width: 9em
       border: medium none
 
     .unlock

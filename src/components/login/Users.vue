@@ -9,15 +9,28 @@
       </div>
     </div>
     <ul class="ullist-admin" v-if="cashiers.length">
-      <li data-placement="above" v-for="cashier in cashiers" :key="cashier._id">
-        <img
-          @click.prevent="setCashier(cashier.email)"
-          class="transform-img"
-          :id="cashier._id"
-          :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
-          alt="cashier.name"
-        /><span>{{ cashier.name }}</span>
-      </li>
+      <carousel :perPageCustom="[[480, 3], [768, 6], [1024, 8]]">
+        <slide v-for="cashier in cashiers" :key="cashier._id">
+          <popper
+            trigger="clickToOpen"
+            :options="{
+              placement: 'top',
+              modifiers: { offset: { offset: '0,10px' } },
+            }"
+          >
+            <lockpad></lockpad>
+            <div slot="reference">
+              <img
+                @click.prevent="setCashier(cashier.email)"
+                class="transform-img"
+                :id="cashier._id"
+                :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
+                alt="cashier.name"
+              /><span>{{ cashier.name }}</span>
+            </div>
+          </popper>
+        </slide>
+      </carousel>
     </ul>
     <div v-else class="no-user">
       <div>No cashier found in store.</div>
@@ -29,9 +42,18 @@
 <script>
 /* global $ */
 import { mapGetters, mapState } from 'vuex'
+import { Carousel, Slide } from 'vue-carousel'
+import Popper from 'vue-popperjs'
+import Lockpad from './Lockpad'
 
 export default {
   name: 'Users',
+  components: {
+    Carousel,
+    Slide,
+    popper: Popper,
+    Lockpad,
+  },
   computed: {
     ...mapGetters('auth', ['cashiers']),
     ...mapState('auth', ['userDetails']),
@@ -71,7 +93,7 @@ export default {
         return true
       }
       this.jQuery = true
-      $('.ullist-admin > li > img').click(function() {
+      $('.ullist-admin .VueCarousel-slide > img').click(function() {
         $(this)
           .parent('li')
           .addClass('position-set')
@@ -91,7 +113,7 @@ export default {
       if (!jqLi.length) {
         jqLi = jqElem.siblings('li:first')
       }
-      jqLi.find('img').trigger('click')
+      // jqLi.find('img').trigger('click')
     },
   },
   mounted() {
@@ -101,6 +123,11 @@ export default {
   },
 }
 </script>
+<style>
+.VueCarousel-inner {
+  justify-content: center;
+}
+</style>
 <style lang="scss" scoped>
 .no-user {
   text-align: center;
@@ -160,9 +187,9 @@ ul.ullist-admin
   text-align: center
   padding-top: 2em
 
-  > li
+  .VueCarousel-slide
     display: inline-block
-    padding: 2px 0
+    padding: 1em
 
     &:nth-child(2)
       > img

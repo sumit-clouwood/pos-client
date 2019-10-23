@@ -6,10 +6,6 @@
     <div class="admin-login-wrapper">
       <div class="login-wrapper">
         <users></users>
-        <div id="popover_content_wrapper">
-          <!-- Modal content-->
-          <lockpad></lockpad>
-        </div>
       </div>
     </div>
   </div>
@@ -17,7 +13,6 @@
 
 <script>
 //import dateTime from '@/components/mobileComponents/mobileElements/dateTime.vue'
-import Lockpad from './Lockpad'
 import Users from './Users'
 
 export default {
@@ -36,7 +31,6 @@ export default {
   },
   components: {
     Users,
-    Lockpad,
   },
   methods: {},
   mounted() {},
