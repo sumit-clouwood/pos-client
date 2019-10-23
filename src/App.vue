@@ -58,6 +58,7 @@ The App.vue file is the root component that all other components are nested with
 
 <script>
 /* eslint-disable no-console */
+/* global $ */
 import DataService from '@/services/DataService'
 
 import Cookie from '@/mixins/Cookie'
@@ -123,6 +124,10 @@ export default {
     $route(to, from) {
       // react to route changes...
       console.log('route changed ', to, from)
+      setTimeout(() => {
+        $('.setting-dropdown').hide()
+        $('.setting-dropdown').addClass('animated zoomIn')
+      }, 200)
     },
     loggedIn(newVal, oldVal) {
       if (newVal && newVal !== oldVal) {

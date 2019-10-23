@@ -25,6 +25,7 @@
 /* eslint-disable no-console */
 import { mapState, mapGetters } from 'vuex'
 import PrintTemplate from './invoice/PrintTemplate'
+import * as CONST from '@/constants'
 
 export default {
   name: 'Invoice',
@@ -33,6 +34,7 @@ export default {
     return {
       iframe_body: null,
       invoiceHtml: null,
+      isPrint: false,
     }
   },
   components: {
@@ -70,6 +72,13 @@ export default {
           this.$router.replace({ name: 'Dinein' })
         } else if (this.$store.state.order.orderType.OTApi === 'call_center') {
           this.$router.replace({ name: 'DeliveryManager' })
+        } else if (this.isPrint) {
+          this.isPrint = false
+          if (
+            this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_CARHOP
+          ) {
+            this.$router.replace({ name: 'Carhop' })
+          }
         }
         this.$store.commit('checkout/PAYMENT_MSG_STATUS', false)
       }
@@ -80,6 +89,13 @@ export default {
         if (this.$store.state.order.orderType.OTApi === 'dine_in') {
           this.$store.dispatch('order/beforeRedirectResetCartDineIn')
           this.$router.replace({ name: 'Dinein' })
+        } else if (this.isPrint) {
+          this.isPrint = false
+          if (
+            this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_CARHOP
+          ) {
+            this.$router.replace({ name: 'Carhop' })
+          }
         }
         this.$store.commit('checkout/CHANGE_AMOUNT_STATUS', false)
       }
@@ -90,7 +106,7 @@ export default {
       let orderData = this.order
       if (this.print && this.iframe_body) {
         this.$store.commit('checkout/PRINT', false)
-
+        this.isPrint = true
         try {
           setTimeout(() => {
             //this.$refs.iframe.contentWindow.print()

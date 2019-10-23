@@ -39,6 +39,11 @@ export default {
 @import '../../assets/scss/variables.scss';
 
 .orders {
+  .carhop-running-orders-wrapper {
+    overflow: auto;
+    width: calc(100vw - 20px);
+  }
+
   span.dinefor-paynow {
     width: auto;
     border-radius: 0.25rem;

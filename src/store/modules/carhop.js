@@ -6,8 +6,8 @@ const state = {
   loading: false,
   limit: 10,
   orders: {
-    'in-progress': {},
-    finished: {},
+    'in-progress': null,
+    finished: null,
   },
   page: {
     'in-progress': 1,
@@ -20,7 +20,9 @@ const getters = {
 
 const actions = {
   initFetch({ commit }) {
-    commit(mutation.SET_LOADING, true)
+    if (!state.orders['in-progress'] || !state.orders['finished']) {
+      commit(mutation.SET_LOADING, true)
+    }
     commit(mutation.SET_ORDER_STATUS, 'in-progress')
 
     CarhopService.fetchOrders(state.orderStatus, 1, state.limit).then(

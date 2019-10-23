@@ -1,6 +1,6 @@
 <template>
   <div class="carhop-running-orders-wrapper">
-    <div v-if="orders.data.length">
+    <div v-if="orders.data && orders.data.length">
       <div class="carhop-running-orders">
         <table class="responsive-table">
           <thead>
@@ -85,7 +85,7 @@
       </div>
     </div>
     <div v-else>
-      <span class="not-found">No orders today.</span>
+      <span class="not-found">No running order found.</span>
     </div>
   </div>
 </template>

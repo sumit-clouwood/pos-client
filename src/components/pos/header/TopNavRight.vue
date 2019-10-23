@@ -46,85 +46,85 @@
         <div class="num">x3</div>
       </div>
     </div>
-    <li
-      class="nav-icon nav-item setting-icon color-main color-text-invert"
-      id="setting-icon"
-      @click="openConfigLinks()"
-    >
-      <a class="nav-link color-text-invert">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="21"
-          viewBox="0 0 24 21"
-        >
-          <path
-            fill="#FFF"
-            fill-rule="nonzero"
-            d="M0 0h24v3H0V0zm0 9h24v3H0V9zm0 9h24v3H0v-3z"
-          />
-        </svg>
-      </a>
-      <ul class="setting-dropdown">
-        <li>
-          <a role="button">{{ _t('Printers') }}</a>
-        </li>
-        <li v-if="permitted('dashboard', 'root')">
-          <a :href="dashboard">{{ _t('Dashboard') }}</a>
-        </li>
-        <li
-          v-if="permitted('transactional_orders')"
-          @click="moveTransactionSection(this)"
-        >
-          <a role="button">
-            {{ _t('Transactions') }}
-          </a>
-        </li>
-        <li v-if="permitted('crm', 'root')">
-          <a :href="crm">{{ _t('CRM') }}</a>
-        </li>
-        <li @click="moveDineSection()">
-          <a role="button">
-            {{ _t('Dine In') }}
-          </a>
-        </li>
-        <li v-if="permitted('menu', 'root')">
-          <a :href="menu">{{ _t('Menu Setup') }}</a>
-        </li>
-        <li v-if="permitted('delivery', 'root')">
-          <a role="button" @click="setDeliveryManageState()">
-            <router-link :to="'/delivery-manager' + store">
-              {{ _t('Delivery Manager') }}
-            </router-link>
-          </a>
-        </li>
-        <li>
-          <a role="button" class="cursor-pointer">
-            <router-link :to="'/' + store">
-              {{ _t('Walk-In') }}
-            </router-link>
-          </a>
-        </li>
-        <li>
-          <a role="button" class="cursor-pointer">
+    <ul>
+      <li
+        class="nav-icon nav-item setting-icon color-main color-text-invert"
+        id="setting-icon"
+        @click="openConfigLinks()"
+      >
+        <a class="nav-link color-text-invert">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="21"
+            viewBox="0 0 24 21"
+          >
+            <path
+              fill="#FFF"
+              fill-rule="nonzero"
+              d="M0 0h24v3H0V0zm0 9h24v3H0V9zm0 9h24v3H0v-3z"
+            />
+          </svg>
+        </a>
+        <ul class="setting-dropdown">
+          <li>
+            <a role="button">{{ _t('Printers') }}</a>
+          </li>
+          <li v-if="permitted('dashboard', 'root')">
+            <a :href="dashboard">{{ _t('Dashboard') }}</a>
+          </li>
+          <li
+            v-if="permitted('transactional_orders')"
+            @click="moveTransactionSection(this)"
+          >
+            <a role="button">
+              {{ _t('Transactions') }}
+            </a>
+          </li>
+          <li v-if="permitted('crm', 'root')">
+            <a :href="crm">{{ _t('CRM') }}</a>
+          </li>
+          <li @click="moveDineSection()">
+            <a role="button">
+              {{ _t('Dine In') }}
+            </a>
+          </li>
+          <li v-if="permitted('menu', 'root')">
+            <a :href="menu">{{ _t('Menu Setup') }}</a>
+          </li>
+          <li v-if="permitted('delivery', 'root')">
+            <a role="button" @click="setDeliveryManageState()">
+              <router-link :to="'/delivery-manager' + store">
+                {{ _t('Delivery Manager') }}
+              </router-link>
+            </a>
+          </li>
+          <li>
+            <a role="button" class="cursor-pointer">
+              <router-link :to="'/' + store">
+                {{ _t('Walk-In') }}
+              </router-link>
+            </a>
+          </li>
+          <li>
             <router-link :to="'/carhop' + store">
               {{ _t('Carhop') }}
             </router-link>
-          </a>
-        </li>
-        <li v-if="permitted('brand', 'root')">
-          <a :href="brand">{{ _t('Settings') }}</a>
-        </li>
-        <li>
-          <router-link :to="'/cashier-login' + store">
-            {{ _t('Switch Cashier') }}
-          </router-link>
-        </li>
-        <li>
-          <a role="button" @click="logout()">{{ _t('Logout') }}</a>
-        </li>
-      </ul>
-    </li>
+          </li>
+          <li v-if="permitted('brand', 'root')">
+            <a :href="brand">{{ _t('Settings') }}</a>
+          </li>
+          <li>
+            <router-link :to="'/cashier-login' + store">
+              {{ _t('Switch Cashier') }}
+            </router-link>
+          </li>
+          <li>
+            <a role="button" @click="logout()">{{ _t('Logout') }}</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -145,6 +145,7 @@ export default {
       brand: this.baseurl('brands'),
     }
   },
+  watch: {},
   computed: {
     vlocale: {
       get() {
@@ -206,6 +207,7 @@ export default {
       $('.setting-dropdown').addClass('animated zoomIn')
       // posConfigLinks()
     },
+
     onlineOrders() {
       if (this.latestOnlineOrders == 0) {
         if (
