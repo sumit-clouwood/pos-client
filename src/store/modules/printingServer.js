@@ -183,11 +183,15 @@ const actions = {
             h: '300',
             scroll: 'yes ',
           })
-          // eslint-disable-next-line no-console
-          console.log(state.kitchenInvoiceResponse)
           setTimeout(function() {
-            if (!state.kitchenInvoiceResponse) window.close()
-          }, 3500)
+            // eslint-disable-next-line no-console
+            console.log(state.kitchenInvoiceResponse.closed)
+            if (!state.kitchenInvoiceResponse.closed) {
+              // eslint-disable-next-line no-console
+              console.log('close')
+              state.kitchenInvoiceResponse.close()
+            }
+          }, 2500)
           // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
       }
@@ -198,23 +202,23 @@ const actions = {
   centeredPopup({ commit }, details) {
     // eslint-disable-next-line no-console
     console.log(details)
-    let LeftPosition = screen.width ? (screen.width - details.w) / 2 : 0
-    let TopPosition = screen.height ? (screen.height - details.h) / 2 : 0
-    let settings =
-      'height=' +
-      details.h +
-      ',width=' +
-      details.w +
-      ',top=' +
-      TopPosition +
-      ',left=' +
-      LeftPosition +
-      ',scrollbars=' +
-      scroll +
-      ',resizable'
-    let win = window.open(details.url, details.winName, settings)
     setTimeout(function() {
-      commit(mutation.KITCHEN_RESPONSE, win.closed)
+      let LeftPosition = screen.width ? (screen.width - details.w) / 2 : 0
+      let TopPosition = screen.height ? (screen.height - details.h) / 2 : 0
+      let settings =
+        'height=' +
+        details.h +
+        ',width=' +
+        details.w +
+        ',top=' +
+        TopPosition +
+        ',left=' +
+        LeftPosition +
+        ',scrollbars=' +
+        scroll +
+        ',resizable'
+      let win = window.open(details.url, details.winName, settings)
+      commit(mutation.KITCHEN_RESPONSE, win)
     }, 100)
   },
 }
