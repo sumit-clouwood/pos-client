@@ -11,7 +11,10 @@
           </h4>
         </div>
         <div class="modal-body dining-options-block">
-          <div class="dining-option-block">
+          <div
+            class="dining-option-block"
+            v-show="orderType.OTApi !== CONST.ORDER_TYPE_CARHOP"
+          >
             <div
               class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'dine_in' }"
@@ -61,6 +64,11 @@
               <img src="img/pos/walkin.svg" width="35" />
               <span class="color-text-invert">{{ _t('Walk In') }}</span>
             </div>
+          </div>
+          <div
+            class="dining-option-block"
+            v-show="orderType.OTApi === CONST.ORDER_TYPE_CARHOP"
+          >
             <div
               class="option-contain carhop"
               :class="{
