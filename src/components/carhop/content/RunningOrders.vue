@@ -6,21 +6,35 @@
           <thead>
             <tr>
               <th class="table_header">Order No</th>
+              <th class="table_header">Items</th>
               <th class="table_header">Amount</th>
               <th class="table_header">Status</th>
-              <th class="table_header">Action</th>
+              <th class="table_header text-center">Action</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="order in orders.data" :key="order._id">
-              <td>{{ order.order_no }}</td>
+              <td>
+                <span class="in-progress order-number"
+                  >Order # {{ order.order_no }}</span
+                >
+              </td>
+              <td>
+                <div
+                  v-for="item in order.items"
+                  :key="item.no"
+                  class="item-name"
+                >
+                  <span>{{ item.name }} ({{ item.qty }})</span>
+                </div>
+              </td>
               <td class="font-weight-bold">
                 {{ order.currency }} {{ order.balance_due }}
               </td>
               <td>
-                <span class="finished">Completed</span>
+                <span class="in-progress">Running</span>
               </td>
-              <td>
+              <td class="text-center">
                 <span class="dinefor-paynow">
                   <svg
                     height="21"
@@ -42,7 +56,11 @@
                       ></path>
                     </g>
                   </svg>
-                  <span class="pay_now">{{ _t('Pay Now') }}</span>
+                  <span class="pay_now">
+                    <router-link :to="'/carhop' + store + '/' + order._id">
+                      {{ _t('Pay Now') }}
+                    </router-link>
+                  </span>
                 </span>
               </td>
             </tr>
@@ -90,6 +108,7 @@ export default {
   computed: {
     ...mapState('carhop', ['limit']),
     ...mapGetters('location', ['_t']),
+    ...mapGetters('context', ['store']),
     page: {
       get() {
         return this.$store.getters['carhop/page']('finished')
@@ -118,7 +137,14 @@ export default {
   .carhop-running-orders
     display: block
     overflow: hidden
+  .pay_now
+    a
+      display: inherit
 </style>
 <style lang="scss" scoped>
 @import '../../../assets/scss/responsive_table.scss';
+.responsive-table {
+  @extend %responive-tables;
+  @include responive-tables('ORDER NO', 'ITEMS', 'AMOUNT', 'STATUS', 'ACTION');
+}
 </style>

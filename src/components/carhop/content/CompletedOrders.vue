@@ -113,4 +113,8 @@ export default {
 </style>
 <style lang="scss" scoped>
 @import '../../../assets/scss/responsive_table.scss';
+.responsive-table {
+  @extend %responive-tables;
+  @include responive-tables('ORDER NO', 'ITEMS', 'AMOUNT', 'STATUS');
+}
 </style>

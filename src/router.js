@@ -42,6 +42,11 @@ const router = new Router({
       component: Carhop,
     },
     {
+      path: '/carhop/:brand_id/:store_id/:order_id',
+      name: 'CarhopOrderPay',
+      component: Home,
+    },
+    {
       //view dine in
       path: '/dine-in/:brand_id/:store_id',
       name: 'Dinein',

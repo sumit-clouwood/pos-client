@@ -207,14 +207,23 @@ table {
 	$list: $headings;
 
 	@each $list-headings in $list {
-		$i: index($list, $list-headings);
+    $i: index($list, $list-headings);
+    
 		tbody tr td:nth-of-type(#{$i}):before { 
-			content: $list-headings; 
+      content: $list-headings; 
+      text-align: left;
 		}
-		
+    
+    @media screen and (max-width: $medium-up) { 
+      tbody tr td {
+        text-align: left !important;
+      }
+    }
+    
 		@media screen and (min-width: $medium-up) { 
-			tbody tr td:nth-of-type(#{$i}):before { 
-				content: ''; 
+     	tbody tr td:nth-of-type(#{$i}):before { 
+        content: ''; 
+        text-align: left;
 			}
 		}
 

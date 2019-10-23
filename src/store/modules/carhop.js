@@ -23,12 +23,17 @@ const actions = {
     commit(mutation.SET_LOADING, true)
     commit(mutation.SET_ORDER_STATUS, 'in-progress')
 
-    CarhopService.fetchOrders(state.orderStatus).then(response => {
+    CarhopService.fetchOrders(state.orderStatus, 1, state.limit).then(
+      response => {
+        commit(mutation.SET_ORDERS, {
+          data: response.data,
+          type: 'in-progress',
+        })
+        commit(mutation.SET_LOADING, false)
+      }
+    )
+    CarhopService.fetchOrders('finished', 1, state.limit).then(response => {
       commit(mutation.SET_ORDERS, { data: response.data, type: 'in-progress' })
-      commit(mutation.SET_LOADING, false)
-    })
-    CarhopService.fetchOrders('finished').then(response => {
-      commit(mutation.SET_ORDERS, { data: response.data, type: 'finished' })
       commit(mutation.SET_LOADING, false)
     })
   },
