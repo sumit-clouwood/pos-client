@@ -67,17 +67,11 @@ table {
 
 		thead {
 			border-bottom: 3px solid $primary-color;
-			th {
-			}
-			
 		}
 
 		tbody {
 			tr {
 				border-bottom: 1px solid #ddd;
-				td {
-					
-				}
 			}
 		}
 	}
@@ -125,15 +119,7 @@ table {
 			}
 		}
 
-		tr:nth-of-type(even) {
-			//background: $gray-color;
-			td {
-				
-				&:before {
-					
-				}
-			}
-		}
+		
 }
 
 @mixin rwd-second {
@@ -176,12 +162,6 @@ table {
 
 	tr:nth-of-type(even) {
 		background:none;
-		td {
-			
-			&:before {
-				
-			}
-		}
 	}
 }
 
@@ -219,7 +199,7 @@ table {
         text-align: left !important;
       }
     }
-    
+
 		@media screen and (min-width: $medium-up) { 
      	tbody tr td:nth-of-type(#{$i}):before { 
         content: ''; 

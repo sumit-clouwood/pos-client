@@ -88,7 +88,6 @@ export default {
     overflow: hidden;
   }
   .order-number {
-    line-height: 3.25rem;
     padding: 0.25rem 1.25rem;
   }
   .item-name {

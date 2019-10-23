@@ -31,7 +31,10 @@
                 {{ order.currency }} {{ order.balance_due }}
               </td>
               <td class="text-center">
-                <span class="finished">Completed</span>
+                <div class="paid-amount-msg text-center font-weight-bold">
+                  <img src="img/dinein/paid-icon.png" style="width:33px" />
+                  {{ _t('Paid') }}
+                </div>
               </td>
             </tr>
           </tbody>
@@ -105,11 +108,15 @@ export default {
 
   .carhop-completed-orders
     display: block
-    overflow: hidden
+    height: calc(100vh - 180px);
+    overflow: auto;
 
   .pagination-wrapper
     display: block
     overflow: hidden
+
+  .paid-amount-msg
+    color: #7ac241;
 </style>
 <style lang="scss" scoped>
 @import '../../../assets/scss/responsive_table.scss';

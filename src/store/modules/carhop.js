@@ -4,7 +4,7 @@ import CarhopService from '@/services/data/CarhopService'
 const state = {
   orderStatus: 'in-progress',
   loading: false,
-  limit: 6,
+  limit: 10,
   orders: {
     'in-progress': {},
     finished: {},

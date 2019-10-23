@@ -136,7 +136,8 @@ export default {
 
   .carhop-running-orders
     display: block
-    overflow: hidden
+    height: calc(100vh - 180px);
+    overflow: auto;
   .pay_now
     a
       display: inherit

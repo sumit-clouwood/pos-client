@@ -1019,6 +1019,33 @@ const actions = {
     })
   },
 
+  loadCarhopOrder({ commit, dispatch }, orderId) {
+    commit(mutation.ORDER_TYPE, {
+      OTview: 'Carhop',
+      OTApi: CONST.ORDER_TYPE_CARHOP,
+    })
+    commit(mutation.SET_ORDER_ID, orderId)
+
+    dispatch('startOrder')
+
+    const params = ['orders', orderId, '']
+    OrderService.getGlobalDetails(...params).then(response => {
+      let orderDetails = {}
+
+      orderDetails.item = response.data.item
+      orderDetails.customer = response.data.collected_data.customer
+      orderDetails.lookups = response.data.collected_data.page_lookups
+      orderDetails.store_name = response.data.collected_data.store_name
+      orderDetails.invoice =
+        response.data.collected_data.store_invoice_templates
+      commit(mutation.SET_ORDER_DETAILS, orderDetails)
+
+      dispatch('setDiscounts', orderDetails).then(() => {
+        dispatch('addOrderToCart', orderDetails.item).then(() => {})
+      })
+    })
+  },
+
   addDeliveryOrder({ dispatch, commit }, orderData) {
     dispatch('addOrderToCart', orderData.item).then(() => {
       commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_DELIVERY)
