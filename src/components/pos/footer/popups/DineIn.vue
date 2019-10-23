@@ -171,17 +171,19 @@ export default {
 }
 </script>
 <style lang="scss">
+.carhop {
+  padding: 10px !important;
+
+  img {
+    width: 50px;
+  }
+}
+
 @import '../../../../assets/scss/pixels_rem.scss';
 @import '../../../../assets/scss/variables.scss';
 @import '../../../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
-  .carhop {
-    padding: 10px;
-    img {
-      width: 50px;
-    }
-  }
   #dining-option {
     .modal-dialog {
       margin: 0;
