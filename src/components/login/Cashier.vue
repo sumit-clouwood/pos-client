@@ -1,5 +1,8 @@
 <template>
-  <div class="content-wrapper">
+  <div
+    class="content-wrapper"
+    :style="{ 'background-image': 'url(' + bg + ')' }"
+  >
     <div class="admin-login-wrapper">
       <div class="login-wrapper">
         <users></users>
@@ -25,7 +28,12 @@ export default {
       userKey: null,
     }
   },
-  computed: {},
+
+  computed: {
+    bg() {
+      return this.$store.getters['location/bgImage'] || 'img/bg.jpg'
+    },
+  },
   components: {
     Users,
     Lockpad,
@@ -40,14 +48,12 @@ export default {
   user-select: none
   overflow: hidden
   height: 100vh
-  background: url(~@/assets/images/mask@2x.jpg)
   background-repeat: no-repeat
   background-size: cover
   background-position: center center
 
   &.full-bg
     background-size: contain !important
-    background: #000 url(~@/assets/images/mask@2xy.jpg)
     background-repeat: no-repeat
     background-position: center center
 
