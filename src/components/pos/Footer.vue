@@ -500,6 +500,18 @@ export default {
   },
 
   watch: {
+    $route(to, from) {
+      // react to route changes...
+      if (to !== from) {
+        if (this.$route.name.match('Carhop')) {
+          this.$store.commit('order/ORDER_TYPE', {
+            OTview: 'Carhop',
+            OTApi: CONST.ORDER_TYPE_CARHOP,
+          })
+        }
+        this.slicker()
+      }
+    },
     // paymentMsgStatus(newVal) {
     //   if (newVal) {
     //     if (this.$store.getters['checkout/complete']) {
@@ -639,7 +651,7 @@ export default {
     },
     slicker() {
       let carhop = false
-      if (this.orderType.OTApi === CONST.ORDER_TYPE_CARHOP) {
+      if (this.$route.name.match('Carhop')) {
         carhop = true
       }
 
@@ -668,7 +680,7 @@ export default {
     },
   },
   mounted() {
-    if (this.orderType.OTApi === CONST.ORDER_TYPE_CARHOP) {
+    if (this.$route.name.match('Carhop')) {
       this.displayClass = 'hide'
     }
 
