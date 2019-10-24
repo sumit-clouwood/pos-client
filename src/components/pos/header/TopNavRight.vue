@@ -27,7 +27,7 @@
         </select>
       </li>
     </ul>
-    <ul class="online-counter color-main">
+    <ul class="online-counter color-main" v-if="enabled">
       <li
         class="nav-item online-data "
         data-toggle="modal"
@@ -39,84 +39,105 @@
         </a>
       </li>
     </ul>
-    <div class="curent-sale hideBigScreen">
+    <div class="curent-sale hideBigScreen" v-if="enabled">
       <div class="curent-sale-title">{{ _t('Current Sale') }}</div>
       <div class="curent-sale-item">
         <div class="text">Item</div>
         <div class="num">x3</div>
       </div>
     </div>
-    <li
-      class="nav-icon nav-item setting-icon color-main color-text-invert"
-      id="setting-icon"
-      @click="openConfigLinks()"
-    >
-      <a class="nav-link color-text-invert">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="21"
-          viewBox="0 0 24 21"
-        >
-          <path
-            fill="#FFF"
-            fill-rule="nonzero"
-            d="M0 0h24v3H0V0zm0 9h24v3H0V9zm0 9h24v3H0v-3z"
-          />
-        </svg>
-      </a>
-      <ul class="setting-dropdown">
-        <li>
-          <a role="button">{{ _t('Printers') }}</a>
-        </li>
-        <li v-if="permitted('dashboard', 'root')">
-          <a :href="dashboard">{{ _t('Dashboard') }}</a>
-        </li>
-        <li
-          v-if="permitted('transactional_orders')"
-          @click="moveTransactionSection(this)"
-        >
-          <a role="button">
-            {{ _t('Transactions') }}
-          </a>
-        </li>
-        <li v-if="permitted('crm', 'root')">
-          <a :href="crm">{{ _t('CRM') }}</a>
-        </li>
-        <li @click="moveDineSection()">
-          <a role="button">
-            {{ _t('Dine In') }}
-          </a>
-        </li>
-        <li v-if="permitted('menu', 'root')">
-          <a :href="menu">{{ _t('Menu Setup') }}</a>
-        </li>
-        <li v-if="permitted('delivery', 'root')">
-          <a role="button" @click="setDeliveryManageState()">
-            <router-link :to="'/delivery-manager' + store">
-              {{ _t('Delivery Manager') }}
+    <ul>
+      <li
+        class="nav-icon nav-item setting-icon color-main color-text-invert"
+        id="setting-icon"
+        @click="openConfigLinks()"
+      >
+        <a class="nav-link color-text-invert">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="21"
+            viewBox="0 0 24 21"
+          >
+            <path
+              fill="#FFF"
+              fill-rule="nonzero"
+              d="M0 0h24v3H0V0zm0 9h24v3H0V9zm0 9h24v3H0v-3z"
+            />
+          </svg>
+        </a>
+        <ul class="setting-dropdown">
+          <li v-if="enabled">
+            <a role="button">{{ _t('Printers') }}</a>
+          </li>
+          <li v-if="enabled && permitted('dashboard', 'root')">
+            <a :href="dashboard">{{ _t('Dashboard') }}</a>
+          </li>
+          <li
+            v-if="enabled && permitted('transactional_orders')"
+            @click="moveTransactionSection(this)"
+          >
+            <a role="button">
+              {{ _t('Transactions') }}
+            </a>
+          </li>
+          <li v-if="enabled && permitted('crm', 'root')">
+            <a :href="crm">{{ _t('CRM') }}</a>
+          </li>
+          <li v-if="enabled" @click="moveDineSection()">
+            <a role="button">
+              {{ _t('Dine In') }}
+            </a>
+          </li>
+          <li v-if="enabled && permitted('menu', 'root')">
+            <a :href="menu">{{ _t('Menu Setup') }}</a>
+          </li>
+          <li v-if="enabled && permitted('delivery', 'root')">
+            <a role="button" @click="setDeliveryManageState()">
+              <router-link :to="'/delivery-manager' + store">
+                {{ _t('Delivery Manager') }}
+              </router-link>
+            </a>
+          </li>
+          <li v-if="enabled">
+            <a role="button" class="cursor-pointer">
+              <router-link :to="'/' + store">
+                {{ _t('Walk-In') }}
+              </router-link>
+            </a>
+          </li>
+          <li>
+            <router-link :to="'/carhop' + store">
+              {{ _t('Carhop') }}
             </router-link>
-          </a>
-        </li>
-        <li v-if="permitted('brand', 'root')">
-          <a :href="brand">{{ _t('Settings') }}</a>
-        </li>
-        <li>
-          <router-link :to="'/cashier-login' + store">
-            {{ _t('Switch Cashier') }}
-          </router-link>
-        </li>
-        <li>
-          <a role="button" @click="logout()">{{ _t('Logout') }}</a>
-        </li>
-      </ul>
-    </li>
+          </li>
+          <li>
+            <router-link :to="'/carhop-orders' + store">
+              {{ _t('Carhop Orders') }}
+            </router-link>
+          </li>
+          <li v-if="enabled && permitted('brand', 'root')">
+            <a :href="brand">{{ _t('Settings') }}</a>
+          </li>
+          <li v-if="enabledModule('switchCashier')">
+            <router-link :to="'/cashier-login' + store">
+              {{ _t('Switch Cashier') }}
+            </router-link>
+          </li>
+          <li>
+            <a role="button" @click="logout()">{{ _t('Logout') }}</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
 /*global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
+import * as CONST from '@/constants'
+
 import bootstrap from '@/bootstrap'
 export default {
   name: 'TopNavRight',
@@ -131,7 +152,14 @@ export default {
       brand: this.baseurl('brands'),
     }
   },
+  watch: {},
   computed: {
+    enabled() {
+      if (this.$route.name.match('Carhop')) {
+        return false
+      }
+      return true
+    },
     vlocale: {
       get() {
         return this.$store.state.location.locale
@@ -143,6 +171,7 @@ export default {
     ...mapGetters('context', ['store', 'transactions']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('sync', ['online']),
+    ...mapState('order', ['orderType']),
     ...mapState({
       latestOnlineOrders: state =>
         state.order.onlineOrders ? state.order.onlineOrders.length : 0,
@@ -152,6 +181,13 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    enabledModule(option) {
+      switch (option) {
+        case 'switchCashier':
+          return false
+      }
+    },
+
     ...mapActions('auth', ['logout']),
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
@@ -192,6 +228,7 @@ export default {
       $('.setting-dropdown').addClass('animated zoomIn')
       // posConfigLinks()
     },
+
     onlineOrders() {
       if (this.latestOnlineOrders == 0) {
         if (
@@ -220,8 +257,15 @@ export default {
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },
   mounted() {
-    this.onlineOrders()
-    $('.setting-dropdown').hide()
+    if (this.$route.name.match('Carhop')) {
+      this.$store.commit('order/ORDER_TYPE', {
+        OTview: 'Carhop',
+        OTApi: CONST.ORDER_TYPE_CARHOP,
+      })
+    } else {
+      this.onlineOrders()
+      $('.setting-dropdown').hide()
+    }
   },
 }
 </script>
