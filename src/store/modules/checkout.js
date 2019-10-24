@@ -266,7 +266,7 @@ const actions = {
         actions.includes(action) ||
         orderTypes.includes(rootState.order.orderType.OTApi)
       ) {
-        //do something here
+        order.order_payments = []
       } else {
         //if not in above orders, possibility is it is 100% discount so send cash 0 payment
         const method = rootGetters['payment/cash']
