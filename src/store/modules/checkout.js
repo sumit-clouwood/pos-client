@@ -254,24 +254,25 @@ const actions = {
       }
     } else if (
       rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
-      action === CONSTANTS.ORDER_STATUS_ON_HOLD ||
-      action === 'carhop-place-order'
+      [
+        ('dine-in-place-order',
+        'carhop-place-order',
+        CONSTANTS.ORDER_STATUS_ON_HOLD),
+      ].includes(action)
     ) {
       //do something here
     } else {
       const method = rootGetters['payment/cash']
-      if (['dine-in-place-order'].includes(action)) {
-        order.order_payments = [
-          {
-            entity_id: method._id,
-            name: method.name,
-            collected: '0.00',
-            param1: '',
-            param2: '',
-            param3: '',
-          },
-        ]
-      }
+      order.order_payments = [
+        {
+          entity_id: method._id,
+          name: method.name,
+          collected: '0.00',
+          param1: '',
+          param2: '',
+          param3: '',
+        },
+      ]
     }
     order.total_paid = Num.round(totalPaid).toFixed(2)
     return Promise.resolve(order)
