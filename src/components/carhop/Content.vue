@@ -1,5 +1,6 @@
 <template>
   <div class="left-container orders">
+    <OrderDetailsPopup />
     <Preloader v-if="loading" />
     <div v-else>
       <running-orders
@@ -19,7 +20,7 @@ import { mapState } from 'vuex'
 import Preloader from '@/components/util/Preloader'
 import RunningOrders from './content/RunningOrders'
 import CompletedOrders from './content/CompletedOrders'
-
+import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 export default {
   name: 'Content',
   computed: {
@@ -34,6 +35,7 @@ export default {
     Preloader,
     RunningOrders,
     CompletedOrders,
+    OrderDetailsPopup,
   },
   mounted() {
     this.$store.dispatch('carhop/initFetch')

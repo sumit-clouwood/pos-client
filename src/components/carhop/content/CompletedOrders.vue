@@ -14,7 +14,12 @@
           <tbody>
             <tr v-for="order in orders.data" :key="order._id">
               <td>
-                <span class="in-progress order-number"
+                <span
+                  class="in-progress order-number open-details-popup cursor-pointer font-weight-bold text-capitalize"
+                  @click="selectedOrderDetails(order._id)"
+                  data-dismiss="modal"
+                  data-target=".bd-example-modal-lg"
+                  data-toggle="modal"
                   >Order # {{ order.order_no }}</span
                 >
               </td>
@@ -96,6 +101,7 @@ export default {
 
   methods: {
     ...mapActions('carhop', ['fetchOrders']),
+    ...mapActions('order', ['selectedOrderDetails']),
     fetchMore(page) {
       this.fetchOrders({ orderStatus: 'finished', page: page })
     },
