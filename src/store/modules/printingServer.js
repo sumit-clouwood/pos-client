@@ -191,7 +191,7 @@ const actions = {
               console.log('close')
               state.kitchenInvoiceResponse.close()
             }
-          }, 5000)
+          }, 20000)
           // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
       }
@@ -217,7 +217,22 @@ const actions = {
         ',scrollbars=' +
         scroll +
         ',resizable'
-      let win = window.open(details.url, details.winName, settings)
+      let win = false
+      try {
+        win = window.open(details.url, details.winName, settings)
+        // eslint-disable-next-line no-console
+        console.log(details.ipUrl)
+        win.onerror = function(msg, url, lineNo, columnNo, error) {
+          // ... handle error ...
+          // eslint-disable-next-line no-console
+          console.log(msg, url, lineNo, columnNo, error)
+          return false
+        }
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e)
+      }
+      // let win = window.open(details.url, details.winName, settings)
       commit(mutation.KITCHEN_RESPONSE, win)
     }, 100)
   },

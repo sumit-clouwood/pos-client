@@ -21,10 +21,16 @@
 import Pos from '@/components/Pos.vue'
 import Location from '@/components/Location.vue'
 import { mapState, mapGetters } from 'vuex'
+import * as CONST from '@/constants'
 // import BrandColor from '@/plugins/helpers/BrandColor'
 
 export default {
   name: 'home',
+  data() {
+    return {
+      orderId: null,
+    }
+  },
   components: {
     Pos,
     Location,
@@ -47,6 +53,20 @@ export default {
     getBody.removeAttr('class')
     getBody.attr('class', 'fixed-nav sticky-footer')
     // BrandColor.applyDynamicRules(this.brand)
+
+    if (this.$route.name.match('Carhop')) {
+      this.$store.commit('order/ORDER_TYPE', {
+        OTview: 'Carhop',
+        OTApi: CONST.ORDER_TYPE_CARHOP,
+      })
+    }
+    if (this.$route.params.order_id) {
+      this.orderId = this.$route.params.order_id
+    }
+
+    if (this.orderId && this.$route.name === 'CarhopOrderPay') {
+      this.$store.dispatch('order/loadCarhopOrder', this.orderId)
+    }
   },
 }
 </script>

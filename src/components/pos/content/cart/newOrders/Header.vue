@@ -26,7 +26,9 @@
         {{ _t('Split Table') }}
       </div>-->
       <div
-        v-if="cartType !== 'hold'"
+        v-if="
+          cartType !== 'hold' && orderType.OTApi !== CONST.ORDER_TYPE_CARHOP
+        "
         class="orders-button-large color-main color-text"
         @click="hold"
       >
@@ -45,7 +47,7 @@ export default {
 
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['items', 'cartType']),
+    ...mapState('order', ['items', 'cartType', 'orderType']),
     ...mapState('checkoutForm', ['msg']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
   },
