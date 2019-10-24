@@ -229,9 +229,80 @@
   }
 }
 
-.orders-menu-overlay {
-  display: none;
+.main-orders {
+  .orders-menu-overlay {
+    display: none;
+  }
 }
+
+@include responsive(mobile) {
+  .main-orders {
+    .pagination-customer-details {
+      margin-bottom: 20px;
+    }
+
+    .orders-menu-overlay {
+      position: fixed;
+      top: 0;
+      right: -100vw;
+      right: 0;
+      bottom: -100vh;
+      left: auto;
+      transition: 0.5s ease-out;
+      flex-direction: column;
+      background-color: rgba(0, 0, 0, 0);
+      border-left: 1px solid #ddd;
+      z-index: 50;
+      pointer-events: none;
+
+      &.active {
+        bottom: 85px;
+        right: 0;
+        transition: 0.5s ease-out;
+        pointer-events: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+      }
+
+      .orders-menu {
+        background-color: #fff;
+        width: 100vw;
+        align-items: end;
+        margin-top: auto;
+        overflow-y: auto;
+
+        .footer-slider-list-item {
+          border-bottom: 1px solid $gray-middle;
+          padding: 20px;
+          display: flex;
+          align-items: center;
+          height: 65px;
+
+          a {
+            color: #333;
+          }
+
+          svg {
+            margin-right: 20px;
+          }
+        }
+
+        .mobile-footer {
+          padding-top: 20px;
+        }
+      }
+
+      .mobile-footer {
+        padding-top: 20px;
+        background-color: #fff;
+        align-items: end;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: none;
+      }
+    }
+  }
+}
+
 
 .mobile-footer {
   display: none;
