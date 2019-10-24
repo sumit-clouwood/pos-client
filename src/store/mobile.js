@@ -255,7 +255,7 @@ export default {
     },
     SUB_CATEGORY_HENDLER_CHANGE: state => {
       state.allCategoryHendler = false
-      state.subCategoryHendler = !state.subCategoryHendler
+      state.subCategoryHendler = true
       state.foodMenuHendler = false
     },
     FOOD_MENU_HENDLER_CHANGE: state => {
