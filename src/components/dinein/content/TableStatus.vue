@@ -74,11 +74,25 @@ export default {
       if (that.transform.k < 0.9) {
         $('#tooltipdata').hide()
         that.transform.k += 0.1
+
         d3.selectAll('.dinein_table_parent').each((d, i, a) => {
+          let nodeDims = d3
+            .select(a[i])
+            .node()
+            .parentNode.getBBox()
+          let data = d
+          let x = parseFloat(data.table_position_coordinate.x)
+          let y = parseFloat(data.table_position_coordinate.y)
+          let midX = nodeDims.width / 8 + x
+          let midY = nodeDims.height / 8 + y
           let transform = d3.zoomIdentity
             .scale(that.transform.k)
             .translate(that.transform.x, that.transform.y)
-          d3.select(a[i]).attr('transform', transform)
+          d3.select(a[i]).attr(
+            'transform',
+            transform +
+              `rotate(${data.table_position_coordinate.angle},${midX},${midY})`
+          )
         })
         that.zoomPercent += 10
         that.$store.commit('dinein/TABLE_SCALE', that.transform.k)
@@ -90,10 +104,23 @@ export default {
         $('#tooltipdata').hide()
         that.transform.k -= 0.1
         d3.selectAll('.dinein_table_parent').each((d, i, a) => {
+          let nodeDims = d3
+            .select(a[i])
+            .node()
+            .parentNode.getBBox()
+          let data = d
+          let x = parseFloat(data.table_position_coordinate.x)
+          let y = parseFloat(data.table_position_coordinate.y)
+          let midX = nodeDims.width / 8 + x
+          let midY = nodeDims.height / 8 + y
           let transform = d3.zoomIdentity
             .scale(that.transform.k)
             .translate(that.transform.x, that.transform.y)
-          d3.select(a[i]).attr('transform', transform)
+          d3.select(a[i]).attr(
+            'transform',
+            transform +
+              `rotate(${data.table_position_coordinate.angle},${midX},${midY})`
+          )
         })
         that.zoomPercent -= 10
         that.$store.commit('dinein/TABLE_SCALE', that.transform.k)

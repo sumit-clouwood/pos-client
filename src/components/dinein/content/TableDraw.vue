@@ -584,9 +584,9 @@ export default {
           /*if (data.table_position_coordinate.angle) {
             data.table_position_coordinate.angle = 0
           }*/
-          return `rotate(${
+          return `scale(0.4) translate(0, 0) rotate(${
             data.table_position_coordinate.angle
-          },${midX},${midY}) scale(0.4) translate(0, 0)`
+          },${midX},${midY})`
         })
         /*.attr(
             'transform',
