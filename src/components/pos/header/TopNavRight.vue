@@ -119,7 +119,7 @@
           <li v-if="enabled && permitted('brand', 'root')">
             <a :href="brand">{{ _t('Settings') }}</a>
           </li>
-          <li v-if="enabled">
+          <li v-if="enabledModule('switchCashier')">
             <router-link :to="'/cashier-login' + store">
               {{ _t('Switch Cashier') }}
             </router-link>
@@ -181,6 +181,13 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    enabledModule(option) {
+      switch (option) {
+        case 'switchCashier':
+          return false
+      }
+    },
+
     ...mapActions('auth', ['logout']),
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
