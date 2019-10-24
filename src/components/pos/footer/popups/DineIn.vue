@@ -11,7 +11,10 @@
           </h4>
         </div>
         <div class="modal-body dining-options-block">
-          <div class="dining-option-block">
+          <div
+            class="dining-option-block"
+            v-show="orderType.OTApi !== CONST.ORDER_TYPE_CARHOP"
+          >
             <div
               class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'dine_in' }"
@@ -60,6 +63,26 @@
             >
               <img src="img/pos/walkin.svg" width="35" />
               <span class="color-text-invert">{{ _t('Walk In') }}</span>
+            </div>
+          </div>
+          <div
+            class="dining-option-block"
+            v-show="orderType.OTApi === CONST.ORDER_TYPE_CARHOP"
+          >
+            <div
+              class="option-contain carhop"
+              :class="{
+                active: selectedOrderType.OTApi === CONST.ORDER_TYPE_CARHOP,
+              }"
+              @click="
+                setOrderType({
+                  OTview: 'Carhop',
+                  OTApi: CONST.ORDER_TYPE_CARHOP,
+                })
+              "
+            >
+              <img src="img/pos/carhop.svg" width="35" />
+              <span class="color-text-invert">{{ _t('Carhop') }}</span>
             </div>
           </div>
         </div>
@@ -142,7 +165,8 @@ export default {
     updateOrderType() {
       if (
         this.selectedOrderType.OTApi === 'dine_in' &&
-        this.$store.state.dinein.covers == false
+        (typeof this.$store.state.dinein.covers === 'undefined' ||
+          this.$store.state.dinein.covers === false)
       ) {
         //Redirect to dinein screen
         this.$router.push('/dine-in' + this.store)
@@ -155,6 +179,14 @@ export default {
 }
 </script>
 <style lang="scss">
+.carhop {
+  padding: 10px !important;
+
+  img {
+    width: 50px;
+  }
+}
+
 @import '../../../../assets/scss/pixels_rem.scss';
 @import '../../../../assets/scss/variables.scss';
 @import '../../../../assets/scss/mixins.scss';

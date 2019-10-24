@@ -2,13 +2,15 @@
   <div>
     <Location v-show="!loaded" msg="Broccoli POS" />
     <Pos v-show="loaded" msg="Broccoli POS" />
-    <div v-if="getImages" class="payment-images">
-      <link
-        v-for="(url, key) in getImages"
-        rel="prefetch"
-        :href="url"
-        :key="key"
-      />
+    <div class="prefetch">
+      <div v-if="getImages">
+        <link
+          v-for="(url, key) in getImages"
+          rel="prefetch"
+          :href="url"
+          :key="key"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -19,10 +21,16 @@
 import Pos from '@/components/Pos.vue'
 import Location from '@/components/Location.vue'
 import { mapState, mapGetters } from 'vuex'
+import * as CONST from '@/constants'
 // import BrandColor from '@/plugins/helpers/BrandColor'
 
 export default {
   name: 'home',
+  data() {
+    return {
+      orderId: null,
+    }
+  },
   components: {
     Pos,
     Location,
@@ -30,13 +38,35 @@ export default {
   computed: {
     ...mapState('sync', ['loaded']),
     ...mapState('location', ['brand']),
-    ...mapGetters('payment', ['getImages']),
+    ...mapGetters('auth', ['cashiers']),
+    getImages() {
+      let bgImage = this.$store.getters['location/bgImage'] || 'img/bg.jpg'
+      let images = [bgImage]
+
+      this.cashiers.forEach(cashier => images.push[cashier.avatar])
+
+      return [...images, ...this.$store.getters['payment/getImages']]
+    },
   },
   mounted() {
     let getBody = $('body')
     getBody.removeAttr('class')
     getBody.attr('class', 'fixed-nav sticky-footer')
     // BrandColor.applyDynamicRules(this.brand)
+
+    if (this.$route.name.match('Carhop')) {
+      this.$store.commit('order/ORDER_TYPE', {
+        OTview: 'Carhop',
+        OTApi: CONST.ORDER_TYPE_CARHOP,
+      })
+    }
+    if (this.$route.params.order_id) {
+      this.orderId = this.$route.params.order_id
+    }
+
+    if (this.orderId && this.$route.name === 'CarhopOrderPay') {
+      this.$store.dispatch('order/loadCarhopOrder', this.orderId)
+    }
   },
 }
 </script>

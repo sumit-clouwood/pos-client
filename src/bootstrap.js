@@ -9,7 +9,7 @@ export default {
   store: null,
 
   lastSynced: null,
-  syncInterval: 60, //300 sec = 5 min
+  syncInterval: 10, //300 sec = 5 min
 
   setup(store) {
     this.store = store
@@ -81,7 +81,6 @@ export default {
             .dispatch('category/fetchAll')
             .then(() => {
               this.updateLoading('catalog')
-
               this.store.dispatch('modifier/fetchAll').then(() => {
                 this.updateLoading('modifiers')
 
@@ -110,7 +109,6 @@ export default {
               .then(() => {
                 //lets resolve the promise so pos can be loaded, other things ll be loaded later
                 resolve()
-
                 this.loadApiData('catalog')
 
                 this.loadApiData('customer')

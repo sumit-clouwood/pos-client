@@ -3,6 +3,7 @@
     <div class="footer-slider color-dashboard-background">
       <ul class="footer-slider-list ullist-icons">
         <li
+          :class="displayClass"
           class="footer-slider-list-item color-secondary"
           data-toggle="modal"
           data-target="#manage-customer"
@@ -35,7 +36,7 @@
           v-if="cartType === 'new' && orderType.OTApi !== 'dine_in'"
           @click="viewHoldOrders"
           class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
-          :class="{ active: vbutton === 'hold' }"
+          :class="[displayClass, { active: vbutton === 'hold' }]"
           id="hold-order-box"
         >
           <a
@@ -66,10 +67,13 @@
           v-else
           @click="newOrders"
           class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
-          :class="{
-            active: vbutton === 'new',
-            hide: orderType.OTApi === 'dine_in',
-          }"
+          :class="[
+            displayClass,
+            {
+              active: vbutton === 'new',
+              hide: orderType.OTApi === 'dine_in',
+            },
+          ]"
           id="new-order-box"
         >
           <a
@@ -100,7 +104,8 @@
           data-toggle="modal"
           data-target="#search-loyalty-customer"
           class="footer-slider-list-item color-secondary"
-          :class="{ loyaltyApplied: loyaltyCard }"
+          :class="[displayClass, { loyaltyApplied: loyaltyCard }]"
+          @click="loyaltyHendlerChange"
         >
           <a
             role="button"
@@ -134,6 +139,7 @@
           class="footer-slider-list-item color-secondary"
           data-toggle="modal"
           data-dismiss="modal"
+          :class="displayClass"
           @click="add_customer_address"
         >
           <!--<a
@@ -166,6 +172,36 @@
           </a>
         </li>
         <li
+          class="footer-slider-list-item color-secondary"
+          data-toggle="modal"
+          data-target="#dining-option"
+          :class="displayClass"
+        >
+          <a
+            class="footer-slider-list-item-link color-text-invert"
+            role="button"
+          >
+            <!--<img src="images/footer-images/group_9.png" alt="customer">-->
+            <svg
+              aria-hidden="true"
+              focusable="false"
+              data-prefix="fas"
+              data-icon="utensils"
+              role="img"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 416 512"
+              class="svg-inline--fa fa-utensils fa-w-13 fa-2x"
+            >
+              <path
+                fill="currentColor"
+                d="M207.9 15.2c.8 4.7 16.1 94.5 16.1 128.8 0 52.3-27.8 89.6-68.9 104.6L168 486.7c.7 13.7-10.2 25.3-24 25.3H80c-13.7 0-24.7-11.5-24-25.3l12.9-238.1C27.7 233.6 0 196.2 0 144 0 109.6 15.3 19.9 16.1 15.2 19.3-5.1 61.4-5.4 64 16.3v141.2c1.3 3.4 15.1 3.2 16 0 1.4-25.3 7.9-139.2 8-141.8 3.3-20.8 44.7-20.8 47.9 0 .2 2.7 6.6 116.5 8 141.8.9 3.2 14.8 3.4 16 0V16.3c2.6-21.6 44.8-21.4 48-1.1zm119.2 285.7l-15 185.1c-1.2 14 9.9 26 23.9 26h56c13.3 0 24-10.7 24-24V24c0-13.2-10.7-24-24-24-82.5 0-221.4 178.5-64.9 300.9z"
+                class
+              ></path>
+            </svg>
+            <span>{{ _t('Dinning Options') }}</span>
+          </a>
+        </li>
+        <li
           class="footer-slider-list-item color-secondary active"
           data-toggle="modal"
           data-target="#select-discount"
@@ -192,35 +228,6 @@
               ></path>
             </svg>
             <span>{{ _t('Select') + ' ' + _t('Discount') }}</span>
-          </a>
-        </li>
-        <li
-          class="footer-slider-list-item color-secondary"
-          data-toggle="modal"
-          data-target="#dining-option"
-        >
-          <a
-            class="footer-slider-list-item-link color-text-invert"
-            role="button"
-          >
-            <!--<img src="images/footer-images/group_9.png" alt="customer">-->
-            <svg
-              aria-hidden="true"
-              focusable="false"
-              data-prefix="fas"
-              data-icon="utensils"
-              role="img"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 416 512"
-              class="svg-inline--fa fa-utensils fa-w-13 fa-2x"
-            >
-              <path
-                fill="currentColor"
-                d="M207.9 15.2c.8 4.7 16.1 94.5 16.1 128.8 0 52.3-27.8 89.6-68.9 104.6L168 486.7c.7 13.7-10.2 25.3-24 25.3H80c-13.7 0-24.7-11.5-24-25.3l12.9-238.1C27.7 233.6 0 196.2 0 144 0 109.6 15.3 19.9 16.1 15.2 19.3-5.1 61.4-5.4 64 16.3v141.2c1.3 3.4 15.1 3.2 16 0 1.4-25.3 7.9-139.2 8-141.8 3.3-20.8 44.7-20.8 47.9 0 .2 2.7 6.6 116.5 8 141.8.9 3.2 14.8 3.4 16 0V16.3c2.6-21.6 44.8-21.4 48-1.1zm119.2 285.7l-15 185.1c-1.2 14 9.9 26 23.9 26h56c13.3 0 24-10.7 24-24V24c0-13.2-10.7-24-24-24-82.5 0-221.4 178.5-64.9 300.9z"
-                class
-              ></path>
-            </svg>
-            <span>{{ _t('Dinning Options') }}</span>
           </a>
         </li>
         <li
@@ -299,12 +306,30 @@
           </li>
           <li
             class="pay-now color-dashboard-background color-main"
-            v-show="orderType.OTApi !== 'call_center'"
+            :class="{ inactive: items.length === 0 }"
+            v-show="
+              !['call_center', CONST.ORDER_TYPE_CARHOP].includes(
+                orderType.OTApi
+              ) || orderId
+            "
             @click="payNowClick()"
           >
             <a role="button">
               <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
               <span class="pay-btn color-text-invert">{{ _t('Pay Now') }}</span>
+            </a>
+          </li>
+          <li
+            class="pay-now color-dashboard-background color-main"
+            :class="{ inactive: items.length === 0 }"
+            v-show="orderType.OTApi === CONST.ORDER_TYPE_CARHOP && !orderId"
+            @click="placeCarhop"
+          >
+            <a role="button">
+              <img src="img/pos/payment.svg" :alt="_t('Place Order')" />
+              <span class="pay-btn color-text-invert">{{
+                _t('Place Order')
+              }}</span>
             </a>
           </li>
         </ul>
@@ -316,6 +341,7 @@
         <ul class="template-btn">
           <li
             class="pay-now color-dashboard-background color-main"
+            :class="{ inactive: items.length === 0 }"
             @click="payNowDirect()"
           >
             <a role="button">
@@ -395,6 +421,8 @@ import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import UserProfile from '@/components/pos/user/UserProfile'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 
+import * as CONST from '@/constants'
+
 import { mapState, mapGetters } from 'vuex'
 /* global $, clickPayNow */
 export default {
@@ -436,6 +464,7 @@ export default {
       this.setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })
     }
     return {
+      displayClass: '',
       vbutton: '',
       title: '',
       status: 0,
@@ -444,10 +473,16 @@ export default {
     }
   },
   computed: {
-    ...mapState('checkout', ['print']),
+    ...mapState('checkout', ['print', 'paymentMsgStatus']),
     ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('customer', ['responseInformation']),
-    ...mapState('order', ['orderType', 'cartType', 'items', 'is_pay']),
+    ...mapState('order', [
+      'orderType',
+      'cartType',
+      'items',
+      'is_pay',
+      'orderId',
+    ]),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
@@ -463,7 +498,46 @@ export default {
     }),
     ...mapState({ selectedCustomer: state => state.customer.customer.name }),
   },
+
+  watch: {
+    $route(to, from) {
+      // react to route changes...
+      if (to !== from) {
+        if (this.$route.name.match('Carhop')) {
+          this.$store.commit('order/ORDER_TYPE', {
+            OTview: 'Carhop',
+            OTApi: CONST.ORDER_TYPE_CARHOP,
+          })
+        }
+        this.slicker()
+      }
+    },
+    // paymentMsgStatus(newVal) {
+    //   if (newVal) {
+    //     if (this.$store.getters['checkout/complete']) {
+    //       if (this.$store.state.order.orderType.OTApi === 'dine_in') {
+    //         $('#payment-msg').modal('hide')
+    //         this.$router.replace({ name: 'Dinein' })
+    //       }
+    //       this.$store.commit('checkout/PAYMENT_MSG_STATUS', false)
+    //     }
+    //   }
+    // },
+  },
   methods: {
+    placeCarhop() {
+      if (this.items.length === 0) {
+        return false
+      }
+
+      $('#payment-msg').modal('show')
+      this.$store.dispatch('order/startOrder')
+      this.$store
+        .dispatch('checkout/pay', { action: 'carhop-place-order' })
+        .then(() => {})
+        .catch(() => {})
+    },
+
     payNowDirect() {
       //dine in order
       let validationError = {}
@@ -478,13 +552,15 @@ export default {
           checkCovers == 'undefined' ||
           this.selectedCover
         ) {
+          $('#payment-msg').modal('show')
           this.$store
             .dispatch('checkout/pay', { action: 'dine-in-place-order' })
             .then(() => {
-              //Reset Cart and set states and redirect to dine in.
-              this.$store.commit('dinein/SET_COVER', '')
-              this.$store.dispatch('order/beforeRedirectResetCartDineIn')
-              this.$router.replace({ name: 'Dinein' })
+              if (this.$store.getters['checkout/complete']) {
+                //Reset Cart and set states and redirect to dine in.
+                this.$store.commit('dinein/SET_COVER', '')
+                this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+              }
             })
             .catch(response => {
               let validationError = {}
@@ -559,6 +635,9 @@ export default {
     setOrderType(opt) {
       this.$store.commit('order/ORDER_TYPE', opt)
     },
+    loyaltyHendlerChange() {
+      this.$store.dispatch('loyaltyHendlerChange')
+    },
     newOrders() {
       this.vbutton = 'hold'
       this.$store.commit('order/SET_CART_TYPE', 'new')
@@ -570,33 +649,53 @@ export default {
         $('#order-confirmation').modal()
       }
     },
+    slicker() {
+      let carhop = false
+      if (this.$route.name.match('Carhop')) {
+        carhop = true
+      }
+
+      $('ul.ullist-icons').slick({
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        accessibility: false,
+        dots: false,
+        arrows: true,
+        nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
+        prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+      })
+
+      if (carhop) {
+        var slider = $('ul.ullist-icons')
+        slider.slick('slickFilter', ':not(.hide)')
+        slider.slick('slickSetOption', 'accessibility', false)
+        slider.slick('slickSetOption', 'draggable', false)
+        slider.slick('slickSetOption', 'swipe', false)
+        slider.slick('slickSetOption', 'touchMove', false)
+        slider.slick('slickSetOption', 'arrows', false)
+        slider.slick('slickSetOption', 'nextArrow', false)
+
+        $('img.next-btn.slick-arrow').hide()
+      }
+    },
   },
   mounted() {
-    $('ul.ullist-icons').slick({
-      slidesToShow: 5,
-      slidesToScroll: 1,
-      accessibility: false,
-      dots: false,
-      arrows: true,
-      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
-      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
-    })
-    $('.next-btn').click()
-    setTimeout(function() {
-      $('.back-btn').click()
-    }, 1000)
+    if (this.$route.name.match('Carhop')) {
+      this.displayClass = 'hide'
+    }
+
+    this.slicker()
+
+    if (this.displayClass != 'hide') {
+      $('.next-btn').click()
+      setTimeout(function() {
+        $('.back-btn').click()
+      }, 1000)
+    }
   },
 
   updated() {
-    $('ul.ullist-icons').slick({
-      slidesToShow: 5,
-      slidesToScroll: 1,
-      accessibility: false,
-      dots: false,
-      arrows: true,
-      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
-      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
-    })
+    this.slicker()
   },
 }
 </script>
@@ -606,6 +705,12 @@ export default {
   display: inline-block;
 }
 .hide {
-  display: none;
+  display: none !important;
 }
+</style>
+<style lang="sass" scoped>
+.button
+  .inactive
+    background-color: #ccc
+    cursor: not-allowed
 </style>

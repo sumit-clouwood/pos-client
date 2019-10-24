@@ -30,6 +30,7 @@ const state = {
 
 // getters
 const getters = {
+  bgImage: state => state.brand.brand_background,
   formatPrice: state => price => {
     if (!price) price = 0.0
     return state.currency + ' ' + Num.round(price, 2).toFixed(2)

@@ -3,13 +3,9 @@ import DataService from '@/services/DataService'
 import Logger from '@/services/network/Logger'
 
 export default {
-  saveOrder(data, userdata) {
+  saveOrder(data) {
     let msg = {
       form_data: data,
-    }
-
-    if (userdata) {
-      msg.form_data.user = userdata
     }
 
     try {
@@ -21,7 +17,10 @@ export default {
     } catch (e) {
       console.log("Couldn't send msg to service worker in dev", e, msg)
     }
+
+    //remove offline data
     delete data.user
+
     return new Promise((resolve, reject) => {
       DataService.post('/model/orders/add', data)
         .then(response => {

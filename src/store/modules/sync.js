@@ -8,6 +8,7 @@ const state = {
   idb: null,
   idbVersion: 1,
   reloaded: false,
+  appUpdateNotification: false,
 
   modules: {
     store: CONST.LOADING_STATUS_LOADING,
@@ -45,6 +46,8 @@ const mutations = {
   },
 
   loaded(state, loaded) {
+    // eslint-disable-next-line no-console
+    console.log('loaded', loaded)
     state.loaded = loaded
   },
 
@@ -56,6 +59,9 @@ const mutations = {
   },
   reload(state, val) {
     state.reloaded = val
+  },
+  setAppUpdateNotification(state, val) {
+    state.appUpdateNotification = val
   },
   reset(state) {
     state.modules.store = CONST.LOADING_STATUS_LOADING

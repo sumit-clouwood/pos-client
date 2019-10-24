@@ -67,7 +67,7 @@ export default {
   props: {
     items: Array,
     order: Object,
-    catItems: Object,
+    catItems: Array,
   },
   computed: {
     ...mapState({

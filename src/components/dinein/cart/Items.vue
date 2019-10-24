@@ -32,21 +32,7 @@
         <div
           class="align-right text-right"
           v-if="orderType.OTApi === 'dine_in' && split"
-        >
-          <!--<label class="pos-container">
-            <input
-              type="checkbox"
-              @click="splitItems({ item: item, e: $event, key: index })"
-            />
-            &lt;!&ndash;            <span class="checkmark"></span>&ndash;&gt;
-            <select class="">
-              <option>Select Guest</option>
-              <option v-for="guest in guests" :key="guest"
-                >Guest {{ guest }}</option
-              >
-            </select>
-          </label>-->
-        </div>
+        ></div>
       </div>
       <div
         class="main-orders-list-item-subtitle color-text-invert"
@@ -79,12 +65,15 @@
               />
             </svg>
           </div>
-          <!--<img-->
-          <!--src="img/pos/plus-icon.png"-->
-          <!--alt="plus"-->
-          <!--@click="setActiveItem({ orderItem: item, index: index })"-->
-          <!--/>-->
         </div>
+        <check-box
+          v-bind:value="index"
+          v-bind:index="index"
+          v-bind:title="'Pay'"
+          v-if="splitBill && item.paid !== true"
+          v-model="splittedItems[index]"
+          @change="markSplit"
+        ></check-box>
       </div>
     </div>
   </div>
@@ -92,6 +81,7 @@
 
 <script>
 import Modifiers from '@/components/pos/content/cart/newOrders/items/Modifiers.vue'
+import CheckBox from '@/components/util/form/CheckBox.vue'
 import * as CONST from '@/constants'
 import { mapState, mapActions, mapGetters } from 'vuex'
 
@@ -99,16 +89,20 @@ export default {
   name: 'Items',
   data() {
     return {
-      splitedItems: [],
       newItemList: [],
     }
   },
   computed: {
+    splittedItems: {
+      get() {
+        return this.$store.state.order.splittedItems
+      },
+    },
     ...mapState('dinein', ['covers', 'split', 'guests']),
     ...mapState({
       currentItem: state => state.order.item._id,
     }),
-    ...mapState('order', ['orderType', 'selectedOrder']),
+    ...mapState('order', ['orderType', 'selectedOrder', 'splitBill']),
     ...mapState('discount', ['itemDiscounts']),
     ...mapGetters('category', ['subcategoryImage']),
     ...mapGetters('modifier', ['hasModifiers']),
@@ -123,22 +117,9 @@ export default {
   methods: {
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
-    splitItems(data) {
-      if (data.e.target.checked) {
-        this.splitedItems.push(data.item)
-      } else {
-        this.splitedItems.splice(data.key, 1)
-      }
-      this.newItemList = this.items
-      if (this.splitedItems.length > 0) {
-        this.newItemList = this.items.filter(
-          item => !this.splitedItems.includes(item)
-        )
-      }
-      // eslint-disable-next-line no-console
-      console.log(this.splitedItems)
-      // eslint-disable-next-line no-console
-      console.log(this.newItemList)
+    markSplit(item) {
+      this.$set(this.splittedItems, item.index, item.checked)
+      this.$store.commit('order/SPLIT_ITEMS', this.splittedItems)
     },
     discountInfo(item) {
       if (item.discount) {
@@ -168,6 +149,7 @@ export default {
   },
   components: {
     Modifiers,
+    CheckBox,
   },
   watch: {
     orderType(newVal, previousVal) {

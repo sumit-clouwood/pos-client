@@ -10,8 +10,9 @@ const state = {
     lookup_running: false,
     lookup_completed: false,
   },
+  bills: null,
   guests: 1,
-  tableZoomScale: 0.5,
+  tableZoomScale: 0.4,
   orderDetails: false,
   completedOrderDetails: {},
   areas: false,
@@ -35,6 +36,8 @@ const state = {
   dineInTabType: 'all',
   split: false,
   totalReservations: { totalPages: 0, pageNumber: 1, limit: 10 },
+  billSplit: null,
+  processingSplit: false,
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -59,6 +62,16 @@ const getters = {
       }
     })
     return tableNumber
+  },
+  guestInBillItem: state => (item, guest) => {
+    if (
+      state.bills &&
+      state.bills[item.orderIndex] &&
+      state.bills[item.orderIndex].includes(guest)
+    ) {
+      return true
+    }
+    return false
   },
 }
 
@@ -192,7 +205,7 @@ const actions = {
   },
   selectedArea({ commit, dispatch }, area) {
     commit(mutation.SELECTED_AREA, area)
-    commit(mutation.TABLE_SCALE, 0.5)
+    commit(mutation.TABLE_SCALE, 0.4)
     dispatch('getTableStatus')
   },
   async getCovers({ commit }) {
@@ -312,37 +325,39 @@ const actions = {
   getAvailableTables({ commit, state }) {
     let areaTable = []
     let orders = []
-    state.tables.forEach(value => {
-      let color = '#62bb31'
-      if (state.areaLookup.dine_in_area._id[value.area_id] != undefined) {
-        if (state.allBookedTables.orders) {
-          orders = state.allBookedTables.orders.filter(
-            order => order.assigned_table_id === value._id
-          )
-        }
-        if (orders.length) {
-          orders.forEach(order => {
-            if (
-              order.status === CONST.ORDER_STATUS_RESERVED ||
-              order.status === CONST.ORDER_STATUS_IN_PROGRESS
-            ) {
-              color = '#c84c4c'
-            } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
-              color = '#faa03c'
-            }
+    if (state.tables) {
+      state.tables.forEach(value => {
+        let color = '#62bb31'
+        if (state.areaLookup.dine_in_area._id[value.area_id] != undefined) {
+          if (state.allBookedTables.orders) {
+            orders = state.allBookedTables.orders.filter(
+              order => order.assigned_table_id === value._id
+            )
+          }
+          if (orders.length) {
+            orders.forEach(order => {
+              if (
+                order.status === CONST.ORDER_STATUS_RESERVED ||
+                order.status === CONST.ORDER_STATUS_IN_PROGRESS
+              ) {
+                color = '#c84c4c'
+              } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
+                color = '#faa03c'
+              }
+            })
+          }
+          areaTable.push({
+            status: '',
+            color: color,
+            name: state.areaLookup.dine_in_area._id[value.area_id].name,
+            id: value.area_id,
+            table_number: value.number,
+            table_id: value._id,
+            shape: value.table_shape,
           })
         }
-        areaTable.push({
-          status: '',
-          color: color,
-          name: state.areaLookup.dine_in_area._id[value.area_id].name,
-          id: value.area_id,
-          table_number: value.number,
-          table_id: value._id,
-          shape: value.table_shape,
-        })
-      }
-    })
+      })
+    }
     // let availableTables = areaTable
     /*state.tables.length > 0
       ? state.tables.filter(table => table.area_id === state.activeArea._id)
@@ -375,7 +390,7 @@ const actions = {
           .then(response => {
             commit(mutation.RESERVATION_RESPONSE, response.data)
             dispatch('getCovers').then(() => {
-              resolve()
+              resolve(response)
               commit(mutation.LOADING, false)
             })
             commit('order/ORDER_TYPE', state.orderType, { root: true })
@@ -413,6 +428,34 @@ const actions = {
       commit(mutation.RESERVATION_ID, data.reservationid)
     })
   },
+  updateItemGuest({ state, commit }, { item, guest }) {
+    let action = 'add'
+    if (state.bills && state.bills[item]) {
+      //check if guest already exists with item then remove it
+      if (state.bills[item].includes(guest)) {
+        action = 'remove'
+      } else {
+        action = 'update'
+      }
+    }
+    commit(mutation.UPDATE_ITEM_GUEST, {
+      item: item,
+      guest: guest,
+      action: action,
+    })
+    return Promise.resolve()
+  },
+  splitBill({ state, commit }) {
+    let groups = {}
+    for (let [item, guests] of Object.entries(state.bills)) {
+      let key = guests.sort().join('-')
+      if (!groups[key]) {
+        groups[key] = []
+      }
+      groups[key].push(item)
+    }
+    commit(mutation.SPLIT_BILLS, groups)
+  },
 }
 
 const mutations = {
@@ -425,7 +468,7 @@ const mutations = {
       state.activeArea = state.activeArea ? state.activeArea : state.areas[0]
       state.tablesOnArea = false
       state.tablesOnArea =
-        state.tables.length > 0
+        state.tables && state.tables.length > 0
           ? state.tables.filter(
               table =>
                 table.item_status != 'false' &&
@@ -433,6 +476,9 @@ const mutations = {
             )
           : false
     }
+  },
+  [mutation.SPLIT_BILLS](state, groups) {
+    state.billSplit = groups
   },
   [mutation.DINE_IN_TABLES](state, tables) {
     state.tables = tables.data
@@ -457,7 +503,7 @@ const mutations = {
     state.tablesOnArea = false
     state.activeArea = activeArea
     state.tablesOnArea =
-      state.tables.length > 0
+      state.tables && state.tables.length > 0
         ? state.tables.filter(table => table.area_id === activeArea._id)
         : false
   },
@@ -527,6 +573,38 @@ const mutations = {
   [mutation.RESET](state) {
     state.areas = false
     state.dineInTabType = 'all'
+  },
+  [mutation.PROCESSING_SPLIT](state, status) {
+    state.processingSplit = status
+  },
+  [mutation.UPDATE_ITEM_GUEST](state, { item, guest, action }) {
+    switch (action) {
+      case 'add':
+        {
+          let bills = {}
+          if (state.bills) {
+            bills = { ...state.bills }
+          }
+          bills[item] = []
+          bills[item].push(guest)
+          state.bills = bills
+        }
+        break
+      case 'update':
+        {
+          let bills = { ...state.bills }
+          bills[item].push(guest)
+          state.bills = bills
+        }
+        break
+      case 'remove': {
+        let bills = { ...state.bills }
+        const itemGuests = bills[item].filter(itemGuest => itemGuest != guest)
+        bills[item] = itemGuests
+        state.bills = bills
+        break
+      }
+    }
   },
 }
 

@@ -1,17 +1,24 @@
 /* eslint-disable no-console */
-
 import { register } from 'register-service-worker'
+import store from './store'
 
-// eslint-disable-next-line no-unused-vars
 const notifyUserAboutUpdate = worker => {
+  console.log('posting message to sw')
+  worker.postMessage({ action: 'skipWaiting' })
+  console.log('msg posted to sw for skipwait')
+
   const today = new Date()
+  console.log('update available', today)
+
   const date =
     today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate()
   const time = today.getHours()
   const dateTime = date + ' ' + time
   if (localStorage.getItem('pos_version_updated_on') != dateTime) {
+    console.log('update notification')
     localStorage.setItem('pos_version_updated_on', dateTime)
-    window.location.reload(true)
+    store.commit('sync/setAppUpdateNotification', true)
+    localStorage.setItem('update_available', true)
   }
 }
 

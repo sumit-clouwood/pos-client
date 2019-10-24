@@ -1,6 +1,8 @@
 //entry point: The main.js file is what renders our App.vue component (and everything nested within it) and mounts it to the DOM.
 
 //imort vue
+import '@babel/polyfill'
+
 import Vue from 'vue'
 
 //import main component
@@ -22,7 +24,6 @@ import Translate from './mixins/global/Translate'
 import './plugins/constants_mixin'
 import './plugins/helper_mixin'
 
-Vue.config.productionTip = false
 Vue.mixin(Translate)
 
 //create new vue isntance to use store and routers and render App to root component

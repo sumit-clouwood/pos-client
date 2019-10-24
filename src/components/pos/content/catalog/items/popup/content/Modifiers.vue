@@ -234,6 +234,10 @@ export default {
       top: -22px;
       font-size: 12px;
       z-index: 10;
+      @include responsive(mobile) {
+        position: absolute;
+        right: 0;
+      }
     }
 
     &.POSItemOptions_choose_radio {

@@ -35,6 +35,9 @@
     </div>
   </div>
   <!--add class bg if image not found => class="food-categories-item bg"-->
+  <div v-else>
+    <btnBack :param="'subcategory'" />
+  </div>
 </template>
 
 <script>
@@ -108,7 +111,7 @@ export default {
         border-radius: 0;
         border: none;
         padding: 0 10px 0 10px;
-        min-height: 80px;
+        min-height: 4em;
         grid-template-columns: 65px 1fr;
         grid-gap: 20px;
         border-bottom: 1px solid $gray-middle;
@@ -125,8 +128,8 @@ export default {
 
         img {
           margin: 0;
-          width: 64px;
-          height: 64px;
+          width: 3em;
+          height: 3em;
           border-radius: 2px;
         }
 

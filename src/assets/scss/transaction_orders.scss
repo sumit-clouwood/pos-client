@@ -118,13 +118,43 @@
   }
 }
 .transaction-orders{
+  .btn.btn-success {
+    margin: 6px 5px 0px;
+  }
   .main-orders{
     height: calc(100vh - #{$header-height});
     padding: 0;
+    @include responsive(mobile) {
+      right: 0;
+      position: relative;
+      transition: 0.7s ease-out;
+      display: block;
+      overflow: visible;
+    }
+    #cancellationReason {
+      .modal-dialog, .modal-header {
+        @include responsive(mobile) {
+          max-width: 97%;
+        }
+      }
+      .modal-dialog {
+        .autocomplete-container {
+          grid-gap: 10px;
+        }
+        .driver-container .dropdown-content {
+          @include responsive(mobile) {
+            margin-top: 40px !important;
+          }
+        }
+      }
+    }
     .main-orders-list-wrapper{
       padding-right: 0;
     }
     .main-orders-total{
+      @include responsive(mobile) {
+        position: initial;
+      }
       .total-wrapper, .total{
         padding: $px20 $px30 0;
       }
@@ -284,7 +314,7 @@
     }
     .transaction-item{
       .trans-item-list-wrapper {
-        max-height: $px176;
+        //max-height: $px176;
         overflow-y: auto;
         .trans-item-list{
           grid-template-columns: 1fr;

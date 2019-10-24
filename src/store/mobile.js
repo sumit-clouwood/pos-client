@@ -3,6 +3,8 @@ export default {
     searchHendler: false,
     allCategoryHendler: true,
     subCategoryHendler: false,
+    transactionDetailView: false,
+    transactionListView: true,
     foodMenuHendler: true,
     mainOrdersHendler: false,
     totalWrapperHendler: false,
@@ -26,6 +28,7 @@ export default {
     userLoginHendler: false,
     userCalcHendler: false,
     bascketItems: [],
+    device: 'desktop',
     testUsers: [
       {
         id: 0,
@@ -43,6 +46,168 @@ export default {
         id: 2,
         name: 'Bena Kane',
         img: 'testUserImg-2.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
+        key: 1234,
+      },
+      {
+        id: 3,
+        name: 'Firmino Kudo',
+        img: 'testUserImg-0.jpg',
         key: 1234,
       },
       {
@@ -77,9 +242,20 @@ export default {
       state.subCategoryHendler = false
       state.foodMenuHendler = false
     },
+    BACK_ITEM: state => {
+      state.allCategoryHendler = false
+      state.subCategoryHendler = true
+      state.foodMenuHendler = false
+    },
+    TRANSACTION_DETAIL: state => {
+      state.transactionDetailView = true
+    },
+    TRANSACTION_LIST: state => {
+      state.transactionDetailView = false
+    },
     SUB_CATEGORY_HENDLER_CHANGE: state => {
       state.allCategoryHendler = false
-      state.subCategoryHendler = !state.subCategoryHendler
+      state.subCategoryHendler = true
       state.foodMenuHendler = false
     },
     FOOD_MENU_HENDLER_CHANGE: state => {
@@ -162,8 +338,12 @@ export default {
     USER_LOGIN_HENDLER_CHANGE: state => {
       state.userLoginHendler = !state.userLoginHendler
     },
-    USER_CALC_HENDLER_CHANGE: state => {
-      state.userCalcHendler = !state.userCalcHendler
+    USER_CALC_HENDLER_CHANGE: (state, option) => {
+      if (option == -1) {
+        state.userCalcHendler = !state.userCalcHendler
+      } else {
+        state.userCalcHendler = option
+      }
     },
     MOBILE_LOGOUT: state => {
       state.itemFood = []
@@ -171,6 +351,9 @@ export default {
     },
     CHOOSE_CURENT_PAY_METHOD: (state, payLoad) => {
       state.payMethod = payLoad
+    },
+    TOGGLE_DEVICE: (state, device) => {
+      state.device = device
     },
   },
   actions: {
@@ -182,6 +365,15 @@ export default {
     },
     backSubCategory({ commit }) {
       commit('BACK_SUB_CATEGORY')
+    },
+    backItem({ commit }) {
+      commit('BACK_ITEM')
+    },
+    transactionList({ commit }) {
+      commit('TRANSACTION_LIST')
+    },
+    transactionDetail({ commit }) {
+      commit('TRANSACTION_DETAIL')
     },
     searchHendlerChange({ commit }) {
       commit('SEARCH_HENDLER_CHANGE')
@@ -255,8 +447,8 @@ export default {
     userLoginHendlerChange({ commit }) {
       commit('USER_LOGIN_HENDLER_CHANGE')
     },
-    userCalcHendlerChange({ commit }) {
-      commit('USER_CALC_HENDLER_CHANGE')
+    userCalcHendlerChange({ commit }, option = -1) {
+      commit('USER_CALC_HENDLER_CHANGE', option)
     },
     mobileLogout({ commit }) {
       commit('MOBILE_LOGOUT')
@@ -264,11 +456,16 @@ export default {
     chooseCurentPayMethod({ commit }, payLoad) {
       commit('CHOOSE_CURENT_PAY_METHOD', payLoad)
     },
+    toggleDevice({ commit }, device) {
+      commit('TOGGLE_DEVICE', device)
+    },
   },
   getters: {
     searchHendler: state => state.searchHendler,
     allCategoryHendler: state => state.allCategoryHendler,
     subCategoryHendler: state => state.subCategoryHendler,
+    transactionDetailView: state => state.transactionDetailView,
+    transactionListView: state => state.transactionListView,
     foodMenuHendler: state => state.foodMenuHendler,
     mainOrdersHendler: state => state.mainOrdersHendler,
     totalWrapperHendler: state => state.totalWrapperHendler,
@@ -293,5 +490,6 @@ export default {
     userLoginHendler: state => state.userLoginHendler,
     userCalcHendler: state => state.userCalcHendler,
     bascketItems: state => state.bascketItems,
+    device: state => state.device,
   },
 }
