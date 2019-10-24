@@ -118,6 +118,7 @@
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: auto auto 1fr;
+        margin-top: $px20;
 
         .main-orders-list-item-title {
           display: grid;
@@ -152,6 +153,9 @@
           flex-wrap: wrap;
           align-items: center;
         }
+      }
+      .main-orders-list-item:first-child {
+        margin-top: unset;
       }
     }
 
