@@ -1,8 +1,12 @@
 /* eslint-disable no-console */
 import { register } from 'register-service-worker'
 import store from './store'
-// eslint-disable-next-line no-unused-vars
+
 const notifyUserAboutUpdate = worker => {
+  console.log('posting message to sw')
+  worker.postMessage({ action: 'skipWaiting' })
+  console.log('msg posted to sw for skipwait')
+
   const today = new Date()
   console.log('update available', today)
 

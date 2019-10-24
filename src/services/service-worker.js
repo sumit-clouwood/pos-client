@@ -1,7 +1,7 @@
 // custom service-worker.js
 /* global workbox */
 /* eslint-disable no-console */
-var appVersion = '6.0.4'
+var appVersion = '6.0.11'
 
 var clientUrl = ''
 
@@ -118,19 +118,24 @@ var EventListener = {
 
   _activate() {
     self.addEventListener('activate', function(event) {
-      event.waitUntil(self.clients.claim()) // Become available to all pages
+      console.log(1, 'sw:', 'in activation')
       event.waitUntil(
         caches.keys().then(function(cacheNames) {
+          console.log('cachenames', cacheNames)
+          self.clients.claim()
+          console.log('update cachenames', cacheNames)
           return Promise.all(
             cacheNames
               // eslint-disable-next-line no-unused-vars
               .filter(function(cacheName) {
+                console.log('clear this one? ', cacheName)
                 return true
                 // Return true if you want to remove this cache,
                 // but remember that caches are shared across
                 // the whole origin
               })
               .map(function(cacheName) {
+                console.log('clearing ', cacheName)
                 return caches.delete(cacheName)
               })
           )
