@@ -58,13 +58,13 @@ export default {
       transform: {
         x: 0,
         y: 0,
-        k: 0.5,
+        k: 0.4,
       },
       zoomPercent: 100,
     }
   },
   updated() {
-    if (this.tableZoomScale === 0.5) {
+    if (this.tableZoomScale === 0.4) {
       this.zoomPercent = 100
     }
   },
@@ -86,7 +86,7 @@ export default {
     },
     zoomOut() {
       let that = this
-      if (that.transform.k > 0.51) {
+      if (that.transform.k > 0.41) {
         $('#tooltipdata').hide()
         that.transform.k -= 0.1
         d3.selectAll('.dinein_table_parent').each((d, i, a) => {
