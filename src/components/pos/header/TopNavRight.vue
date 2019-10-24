@@ -119,11 +119,11 @@
           <li v-if="enabled && permitted('brand', 'root')">
             <a :href="brand">{{ _t('Settings') }}</a>
           </li>
-          <li v-if="enabledModule('switchCashier')">
+          <!--<li v-if="enabledModule('switchCashier')">
             <router-link :to="'/cashier-login' + store">
               {{ _t('Switch Cashier') }}
             </router-link>
-          </li>
+          </li>-->
           <li>
             <a role="button" @click="logout()">{{ _t('Logout') }}</a>
           </li>

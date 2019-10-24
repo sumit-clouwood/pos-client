@@ -93,7 +93,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <router-link
+          <!--<router-link
             :to="'/cashier-login' + store"
             v-if="enabledModule('switchCashier')"
           >
@@ -104,7 +104,7 @@
             >
               {{ _t('Switch Cashier') }}
             </button>
-          </router-link>
+          </router-link>-->
 
           <button
             type="button"
