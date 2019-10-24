@@ -209,7 +209,7 @@ const actions = {
     return Promise.resolve(order)
   },
 
-  paymentsHook({ rootState }, { action, order }) {
+  paymentsHook({ rootState, rootGetters }, { action, order }) {
     let totalPaid = 0
 
     if (rootState.checkoutForm.payments.length) {
@@ -252,26 +252,35 @@ const actions = {
           return item
         })
       }
-    } else if (
-      rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
-      action === CONSTANTS.ORDER_STATUS_ON_HOLD ||
-      ['carhop-place-order', 'dine-in-place-order'].includes(action)
-    ) {
-      //do something here
     } else {
-      // const method = rootGetters['payment/cash']
-      // if (['dine-in-place-order'].includes(action)) {
-      //   order.order_payments = [
-      //     {
-      //       entity_id: method._id,
-      //       name: method.name,
-      //       collected: '0.00',
-      //       param1: '',
-      //       param2: '',
-      //       param3: '',
-      //     },
-      //   ]
-      // }
+      //don't send any payment info for these orders below
+
+      const actions = [
+        'dine-in-place-order',
+        'carhop-place-order',
+        CONSTANTS.ORDER_STATUS_ON_HOLD,
+      ]
+      const orderTypes = [CONSTANTS.ORDER_TYPE_CALL_CENTER]
+
+      if (
+        actions.includes(action) ||
+        orderTypes.includes(rootState.order.orderType.OTApi)
+      ) {
+        //do something here
+      } else {
+        //if not in above orders, possibility is it is 100% discount so send cash 0 payment
+        const method = rootGetters['payment/cash']
+        order.order_payments = [
+          {
+            entity_id: method._id,
+            name: method.name,
+            collected: '0.00',
+            param1: '',
+            param2: '',
+            param3: '',
+          },
+        ]
+      }
     }
     order.total_paid = Num.round(totalPaid).toFixed(2)
     return Promise.resolve(order)
