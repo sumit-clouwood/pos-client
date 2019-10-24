@@ -132,12 +132,19 @@ const actions = {
   },
 
   //get subcategories and items based on main category
-  browse({ commit, getters }, category) {
+  browse({ commit, getters, dispatch }, category) {
     let subcategory = []
     commit(mutation.SET_CATEGORY, category)
     if (typeof getters.subcategories != 'undefined') {
       subcategory = getters.subcategories[0]
     }
+
+    if (subcategory) {
+      dispatch('subCategoryHendlerChange', null, { root: true })
+    } else {
+      dispatch('foodMenuHendlerChange', null, { root: true })
+    }
+
     commit(mutation.SET_SUBCATEGORY, subcategory)
     //reload the ui
   },

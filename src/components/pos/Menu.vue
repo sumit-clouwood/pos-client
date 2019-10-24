@@ -153,7 +153,7 @@ export default {
       myElement.scrollTop += 20
     },
     subCategoryHendlerChange() {
-      this.$store.dispatch('subCategoryHendlerChange')
+      //this.$store.dispatch('subCategoryHendlerChange')
     },
   },
   updated() {
