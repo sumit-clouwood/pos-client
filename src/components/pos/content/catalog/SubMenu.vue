@@ -35,6 +35,9 @@
     </div>
   </div>
   <!--add class bg if image not found => class="food-categories-item bg"-->
+  <div v-else>
+    <btnBack :param="'subcategory'" />
+  </div>
 </template>
 
 <script>
