@@ -118,19 +118,23 @@ var EventListener = {
 
   _activate() {
     self.addEventListener('activate', function(event) {
+      console.log(1, 'sw:', 'activate sw')
       event.waitUntil(self.clients.claim()) // Become available to all pages
+      console.log(1, 'sw:', 'sw claimed')
       event.waitUntil(
         caches.keys().then(function(cacheNames) {
           return Promise.all(
             cacheNames
               // eslint-disable-next-line no-unused-vars
               .filter(function(cacheName) {
+                console.log(1, 'sw:', 'cleaing to cache', cacheName)
                 return true
                 // Return true if you want to remove this cache,
                 // but remember that caches are shared across
                 // the whole origin
               })
               .map(function(cacheName) {
+                console.log(1, 'sw:', 'deleting cache', cacheName)
                 return caches.delete(cacheName)
               })
           )
