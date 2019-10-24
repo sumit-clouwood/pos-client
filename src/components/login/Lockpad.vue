@@ -151,7 +151,7 @@ export default {
     &:after
       content: ''
       position: absolute
-      top: -4%
+      top: -2%
       left: 45%
       width: 0
       height: 0

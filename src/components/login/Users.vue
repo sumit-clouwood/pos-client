@@ -11,15 +11,8 @@
     <ul class="ullist-admin" v-if="cashiers.length">
       <carousel :perPageCustom="[[480, 3], [768, 6], [1024, 8]]">
         <slide v-for="cashier in cashiers" :key="cashier._id">
-          <popper
-            trigger="clickToOpen"
-            :options="{
-              placement: 'top',
-              modifiers: { offset: { offset: '0,10px' } },
-            }"
-          >
-            <lockpad></lockpad>
-            <div slot="reference">
+          <tippy trigger="click" theme="cashier_login">
+            <template v-slot:trigger>
               <img
                 @click.prevent="setCashier(cashier.email)"
                 class="transform-img"
@@ -27,8 +20,20 @@
                 :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
                 alt="cashier.name"
               /><span>{{ cashier.name }}</span>
-            </div>
-          </popper>
+            </template>
+
+            <lockpad></lockpad>
+          </tippy>
+          <!--<lockpad></lockpad>
+          <div slot="reference">
+            <img
+              @click.prevent="setCashier(cashier.email)"
+              class="transform-img"
+              :id="cashier._id"
+              :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
+              alt="cashier.name"
+            /><span>{{ cashier.name }}</span>
+          </div>-->
         </slide>
       </carousel>
     </ul>
@@ -43,7 +48,11 @@
 /* global $ */
 import { mapGetters, mapState } from 'vuex'
 import { Carousel, Slide } from 'vue-carousel'
-import Popper from 'vue-popperjs'
+import { TippyComponent } from 'vue-tippy'
+import 'tippy.js/themes/light.css'
+import 'tippy.js/themes/light-border.css'
+import 'tippy.js/themes/google.css'
+import 'tippy.js/themes/translucent.css'
 import Lockpad from './Lockpad'
 
 export default {
@@ -51,7 +60,7 @@ export default {
   components: {
     Carousel,
     Slide,
-    popper: Popper,
+    tippy: TippyComponent,
     Lockpad,
   },
   computed: {
@@ -123,9 +132,35 @@ export default {
   },
 }
 </script>
-<style>
+<style lang="scss">
+@import '../../assets/scss/pixels_rem.scss';
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
+
 .VueCarousel-inner {
-  justify-content: center;
+  /*justify-content: center;*/
+}
+.VueCarousel-dot-container {
+  margin-top: 0px !important;
+  button {
+    margin-top: 0px !important;
+    padding: 0px !important;
+  }
+}
+.tippy-backdrop {
+  background-color: transparent;
+}
+.cashier_login-theme {
+  .lockpad {
+    @include responsive(mobile) {
+      .modal-header {
+        padding: 0.5em !important;
+      }
+      .modal-body-digits > div {
+        padding: 0.15em;
+      }
+    }
+  }
 }
 </style>
 <style lang="scss" scoped>
@@ -220,7 +255,7 @@ ul.ullist-admin
         transition: all 0.4s ease
         margin-bottom: 0em
 
-    > img
+    img
       width: 7em
       height: 7em
       cursor: pointer
@@ -247,7 +282,7 @@ ul.ullist-admin
       color: #ffffff
       display: block
       position: relative
-      padding-top: 0.5em;
+      padding-top: 0.5em
 
   img
     &.transform
