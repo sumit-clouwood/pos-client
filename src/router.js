@@ -6,7 +6,7 @@ import Transactions from './views/Transactions'
 import DineIn from './views/Dinein'
 import DeliveryManagerInit from './views/DeliveryManagerInit'
 import DispatchScreenInit from './views/DispatchScreenInit'
-import CashierLogin from './views/CashierLogin'
+//import CashierLogin from './views/CashierLogin'
 import Carhop from './views/Carhop'
 
 Vue.use(Router)
@@ -16,11 +16,11 @@ const router = new Router({
   base: '',
 
   routes: [
-    {
-      path: '/cashier-login/*',
-      name: 'cashierLogin',
-      component: CashierLogin,
-    },
+    // {
+    //   path: '/cashier-login/*',
+    //   name: 'cashierLogin',
+    //   component: CashierLogin,
+    // },
     {
       path: '/:brand_id/:store_id/update/:order_id',
       name: 'ModifyBackendOrder',
