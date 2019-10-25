@@ -53,7 +53,11 @@ export default {
     ...mapGetters('checkoutForm', ['validate']),
     ...mapGetters('location', ['_t']),
   },
-
+  data() {
+    return {
+      processing: false,
+    }
+  },
   mounted() {
     $('#payment-msg').modal({
       backdrop: 'static',
@@ -94,6 +98,11 @@ export default {
       })
     },
     pay() {
+      if (this.processing) {
+        return false
+      }
+      this.processing = true
+
       this.addAmount().then(payable => {
         if (payable <= 0.1) {
           $('#payment-screen-footer').prop('disabled', true)
@@ -125,6 +134,9 @@ export default {
                 $('#payment-msg').modal('hide')
                 $('#payment-screen-footer').prop('disabled', false)
               }, 500)
+            })
+            .finally(() => {
+              this.processing = false
             })
         } else {
           //show payment breakdown
