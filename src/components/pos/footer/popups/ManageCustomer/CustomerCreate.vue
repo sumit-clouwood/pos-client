@@ -151,6 +151,9 @@ export default {
     background-color: $green-middle;
     border: none;
   }
+  .new-pos #customer {
+    display: none;
+  }
   #customer {
     position: fixed;
     top: 0;
