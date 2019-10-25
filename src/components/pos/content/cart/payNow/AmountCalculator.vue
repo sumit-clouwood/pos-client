@@ -36,6 +36,7 @@ export default {
   data() {
     return {
       init: false,
+      processing: false,
     }
   },
   methods: {
@@ -56,6 +57,12 @@ export default {
               //&&
               //this.$store.state.checkoutForm.payments.length == 1
             ) {
+              if (this.processing) {
+                return false
+              }
+
+              this.processing = true
+
               this.$store.commit('order/IS_PAY', 1)
               this.$store.commit('checkoutForm/setAction', 'pay')
               $('#payment-screen-footer').prop('disabled', true)
@@ -91,6 +98,9 @@ export default {
                     $('#payment-msg').modal('hide')
                     $('#payment-screen-footer').prop('disabled', false)
                   }, 500)
+                })
+                .finally(() => {
+                  this.processing = false
                 })
             }
           })

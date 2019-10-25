@@ -464,6 +464,7 @@ export default {
       this.setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })
     }
     return {
+      processing: false,
       displayClass: '',
       vbutton: '',
       title: '',
@@ -526,6 +527,12 @@ export default {
   },
   methods: {
     placeCarhop() {
+      if (this.processing) {
+        return false
+      }
+
+      this.processing = true
+
       if (this.items.length === 0) {
         return false
       }
@@ -536,6 +543,9 @@ export default {
         .dispatch('checkout/pay', { action: 'carhop-place-order' })
         .then(() => {})
         .catch(() => {})
+        .finally(() => {
+          this.processing = false
+        })
     },
 
     payNowDirect() {
