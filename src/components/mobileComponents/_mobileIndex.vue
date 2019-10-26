@@ -7,8 +7,8 @@
     <cart />
     <mobile-calc />
     <payment-successfull />
-    <!--    <cashier />-->
-    <method-card />
+    <!-- <cashier />
+    <method-card /> -->
     <QRMethod />
     <loyalty />
     <selectDiscount />
@@ -24,8 +24,8 @@ import mobilePage from './mobilePage.vue'
 import cart from '../pos/content/Cart'
 import mobileCalc from './mobileCalc.vue'
 import paymentSuccessfull from './paymentSuccessfull.vue'
-// import cashier from './cashier.vue'
-import methodCard from './methodCard.vue'
+//import cashier from './cashier.vue'
+//import methodCard from './methodCard.vue'
 import QRMethod from './QRMethod.vue'
 import loyalty from './loyalty.vue'
 import selectDiscount from './selectDiscount.vue'
@@ -41,8 +41,8 @@ export default {
     cart,
     mobileCalc,
     paymentSuccessfull,
-    // cashier,
-    methodCard,
+    //cashier,
+    // methodCard,
     QRMethod,
     loyalty,
     selectDiscount,

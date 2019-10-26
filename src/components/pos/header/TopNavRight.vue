@@ -93,18 +93,18 @@
             <a :href="menu">{{ _t('Menu Setup') }}</a>
           </li>
           <li v-if="enabled && permitted('delivery', 'root')">
-            <a role="button" @click="setDeliveryManageState()">
-              <router-link :to="'/delivery-manager' + store">
-                {{ _t('Delivery Manager') }}
-              </router-link>
-            </a>
+            <router-link
+              :to="'/delivery-manager' + store"
+              role="button"
+              @click="setDeliveryManageState()"
+            >
+              {{ _t('Delivery Manager') }}
+            </router-link>
           </li>
           <li v-if="enabled">
-            <a role="button" class="cursor-pointer">
-              <router-link :to="'/' + store">
-                {{ _t('Walk-In') }}
-              </router-link>
-            </a>
+            <router-link :to="'/' + store" role="button" class="cursor-pointer">
+              {{ _t('Walk-In') }}
+            </router-link>
           </li>
           <li>
             <router-link :to="'/carhop' + store">
@@ -269,3 +269,15 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.setting-dropdown {
+  li {
+    padding: 0 !important;
+    a {
+      display: block;
+      width: 100%;
+      padding: 5px 20px;
+    }
+  }
+}
+</style>

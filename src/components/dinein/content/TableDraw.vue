@@ -284,6 +284,7 @@ export default {
       'allBookedTables',
       'reservationId',
       'getAvailableTables',
+      'tableZoomScale',
     ]),
     ...mapGetters('context', ['store']),
   },
@@ -316,7 +317,35 @@ export default {
       componentKey: 0,
       moveReservation: false,
       validationErrors: false,
-      scale: 0.5,
+      zoomLevel: {
+        zoomOut: [
+          {
+            x: 1830 - 100,
+            y: 1010 - 100,
+            level: 0.7,
+          },
+          {
+            x: 2100 - 100,
+            y: 1195 - 100,
+            level: 0.6,
+          },
+          {
+            x: 2446 - 100,
+            y: 1360 - 100,
+            level: 0.5,
+          },
+          {
+            x: 2930 - 100,
+            y: 1630 - 100,
+            level: 0.4,
+          },
+          {
+            x: 3677 - 100,
+            y: 2100 - 100,
+            level: 0.4,
+          },
+        ],
+      },
     }
   },
   mounted() {
@@ -325,6 +354,7 @@ export default {
   updated() {
     this.clearTableArea()
     this.updateTableOnArea()
+    this.setTableProperties()
     /*if (this.selectedTableD3)
       d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
   },
@@ -469,20 +499,13 @@ export default {
         .enter() //data from state tables
         .append('g')
         .attr('class', 'dinein_table_parent')
-        .attr('transform', d3.zoomIdentity.scale(dis.scale).translate(0, 0))
+        .attr(
+          'transform',
+          d3.zoomIdentity.scale(dis.tableZoomScale).translate(0, 0)
+        )
         .append('svg')
         .attr('class', 'dinein_table')
         .attr('draggable', 'true')
-        .attr('transform', d => {
-          let transform
-          if (!d.table_position_coordinate.angle) {
-            d.table_position_coordinate.angle = 0
-          }
-          transform = `rotate(${d.table_position_coordinate.angle},${d
-            .table_position_coordinate.x + 109},${d.table_position_coordinate
-            .y + 109})`
-          return transform
-        })
         .attr('x', function(d) {
           return d.table_position_coordinate.x || 0
         })
@@ -494,16 +517,6 @@ export default {
         .attr('table_shape', d => d.table_shape)
         .attr('table_number', d => d.number)
         .attr('chairs', d => d.chairs)
-        .attr('width', d => {
-          if (d.table_shape === 'square') return 250
-          if (d.table_shape === 'circle') return 260
-          if (d.table_shape === 'rectangle') return null
-        })
-        .attr('height', d => {
-          if (d.table_shape === 'square') return 250
-          if (d.table_shape === 'circle') return 260
-          if (d.table_shape === 'rectangle') return null
-        })
         .html(d => {
           return d3.select(`#dinein_${d.table_shape}_${d.chairs}`).html()
         })
@@ -557,6 +570,30 @@ export default {
             })
             return fillcolor
           })
+        let nodeDims = d3
+          .select(a[i])
+          .node()
+          .parentNode.getBBox()
+        let x = parseFloat(data.table_position_coordinate.x)
+        let y = parseFloat(data.table_position_coordinate.y)
+        let midX = nodeDims.width / 2 + x
+        let midY = nodeDims.height / 2 + y
+        d3.select(d3.select(a[i]).node().parentNode).attr('transform', () => {
+          // eslint-disable-next-line no-console
+          // console.log(data.table_position_coordinate.angle, 'xxxxx')
+          /*if (data.table_position_coordinate.angle) {
+            data.table_position_coordinate.angle = 0
+          }*/
+          return `scale(0.4) translate(0, 0) rotate(${
+            data.table_position_coordinate.angle
+          },${midX},${midY})`
+        })
+        /*.attr(
+            'transform',
+            d3.zoomIdentity.scale(dis.tableZoomScale).translate(0, 0)
+          )*/
+        // .zoomIdentity.scale(dis.tableZoomScale)
+        // .translate(0, 0)
       })
     },
     isSupported() {
@@ -623,12 +660,7 @@ export default {
         .selectAll('path')
         .style('stroke', 'green')
         .style('stroke-width', '1')*/
-      let scaleVal =
-        localStorage.getItem('scaleVal') !== null
-          ? localStorage.getItem('scaleVal')
-          : 0.5
 
-      this.scale = scaleVal
       this.selectedTableData = datum
       this.guests = 1
       this.validationErrors = ''
@@ -678,7 +710,11 @@ export default {
         .parent('div')
         .attr(
           'style',
-          'top:' + top * scaleVal + 'px; left:' + left + 'px; display:block'
+          'top:' +
+            top * this.tableZoomScale +
+            'px; left:' +
+            left +
+            'px; display:block'
         )
     },
     drawViews() {
