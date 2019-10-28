@@ -178,6 +178,18 @@ export default {
     overflow: hidden;
     position: relative;
     background-color: #fafafa;
+    .navigation
+      .navigation-list-wrapper
+      .navigation-list
+      .nav-item
+      .nav-link-nav.active,
+    .navigation
+      .navigation-list-wrapper
+      .navigation-list
+      .nav-item
+      .nav-link-nav:hover {
+      background-color: rgba(158, 158, 158, 0.1) !important;
+    }
   }
 
   .mobile-footer {
