@@ -108,18 +108,20 @@ export default {
       })
 
       ////$('.ullist-admin > li:first-child  > img').trigger('click')
-      const jqElem = $('img#' + this.userDetails.item._id).parent('li')
+      const jqElem = $('img#' + this.userDetails.item._id).parent()
       let jqLi = jqElem.next()
       if (!jqLi.length) {
-        jqLi = jqElem.siblings('li:first')
+        jqLi = jqElem.siblings(':first')
       }
       jqLi.find('img').trigger('click')
     },
+    hideCalc() {},
   },
   mounted() {
     if (this.cashiers.length) {
       this.bindJquery()
     }
+    window.addEventListener('mouseup', this.hideCalc)
   },
 }
 </script>
