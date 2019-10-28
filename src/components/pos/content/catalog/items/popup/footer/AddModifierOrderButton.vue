@@ -1,5 +1,5 @@
 <template>
-  <div class="btn-announce">
+  <div class="btn-announce apply_btn">
     <button
       type="button"
       class="buttoned colorwhite donebutton color-main"

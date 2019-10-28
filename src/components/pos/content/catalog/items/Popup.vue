@@ -85,7 +85,7 @@ export default {
               bottom: 0;
               right: 0;
               left: 0;
-              padding: 20px;
+              padding: 1em;
               box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
               width: 100%;
               background-color: #fff;
@@ -247,6 +247,9 @@ export default {
             justify-content: space-between;
             grid-gap: 10px;
             width: 100%;
+            &.apply_btn {
+              grid-template-columns: 1fr;
+            }
 
             button {
               margin: 0;
