@@ -584,7 +584,7 @@ export default {
           /*if (data.table_position_coordinate.angle) {
             data.table_position_coordinate.angle = 0
           }*/
-          return `scale(0.4) translate(0, 0) rotate(${
+          return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${
             data.table_position_coordinate.angle
           },${midX},${midY})`
         })
