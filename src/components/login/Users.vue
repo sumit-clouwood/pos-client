@@ -8,8 +8,18 @@
         </div>
       </div>
     </div>
-    <div v-if="cashiers.length">
-      <slider class="slider" :perPage="5" :arrows="true" :slideMinWidth="300">
+    <div v-if="cashiers.length" class="users-slider">
+      <slider
+        class="slider"
+        :perPage="5"
+        :arrows="true"
+        :responsive="[
+          { screen: 480, perPage: 1 },
+          { screen: 600, perPage: 2 },
+          { screen: 900, perPage: 3 },
+          { screen: 1124, perPage: 4 },
+        ]"
+      >
         <slide
           v-for="cashier in cashiers"
           :key="cashier._id"
@@ -99,11 +109,24 @@ export default {
           .parent()
           .addClass('position-set')
         setTimeout(() => {
+          const sliderWidth = $('.users-slider').outerWidth()
           const slideWidth = $('.position-set').outerWidth()
           const slideLeft = $('.position-set').offset().left
           const calcWidth = $('#popover_content_wrapper').outerWidth()
           const diff = (calcWidth - slideWidth) / 2
-          $('#popover_content_wrapper').css('left', slideLeft - diff + 'px')
+          let lockLeft = slideLeft - diff
+          if (lockLeft <= 3) {
+            lockLeft = 4
+          }
+          let lockRight = lockLeft + calcWidth
+          $('#popover_content_wrapper').css('left', lockLeft + 'px')
+
+          if (lockRight > sliderWidth) {
+            $('#popover_content_wrapper').css(
+              'left',
+              sliderWidth - calcWidth - 4 + 'px'
+            )
+          }
         }, 100)
 
         $('#popover_content_wrapper').addClass('animated zoomIn')

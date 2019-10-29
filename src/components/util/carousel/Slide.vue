@@ -15,27 +15,25 @@ export default {
     return {
       slideWidth: 0,
       arrowWidth: 0,
+      slidesInPage: 0,
     }
   },
   computed: {},
   mounted() {
     this.$nextTick(() => {
-      this.slideWidth =
-        (this.$parent.$el.clientWidth - this.$parent.arrowWidth) /
-        this.$parent.perPage
-      let perPage = this.$parent.perPage
+      this.$parent.responsive.forEach(res => {
+        if (!this.slidesInPage && this.$parent.$el.clientWidth <= res.screen) {
+          this.slidesInPage = res.perPage
+        }
+      })
 
-      const actualSlideWidth = this.slideWidth
-
-      if (actualSlideWidth < this.$parent.slideMinWidth) {
-        perPage = Math.floor(
-          (this.$parent.$el.clientWidth - this.$parent.arrowWidth) /
-            this.$parent.slideMinWidth
-        )
+      if (!this.slidesInPage) {
+        this.slidesInPage = this.$parent.perPage
       }
 
       this.slideWidth =
-        (this.$parent.$el.clientWidth - this.$parent.arrowWidth) / perPage
+        (this.$parent.$el.clientWidth - this.$parent.arrowWidth) /
+        this.slidesInPage
     })
   },
 

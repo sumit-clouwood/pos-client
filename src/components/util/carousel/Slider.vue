@@ -48,7 +48,7 @@ export default {
     perPage: Number,
     dots: Boolean,
     arrows: Boolean,
-    slideMinWidth: Number,
+    responsive: Array,
   },
   data() {
     return {
@@ -97,20 +97,22 @@ export default {
   },
   methods: {
     slider() {
+      //responsive
+
+      this.responsive.forEach(res => {
+        if (
+          !this.slidesInPage &&
+          this.$refs.container.clientWidth <= res.screen
+        ) {
+          this.slidesInPage = res.perPage
+        }
+      })
+
       if (!this.slidesInPage) {
         this.slidesInPage = this.perPage
       }
       this.containerWidth = this.$refs.container.clientWidth
       this.slideTotal = this.$refs.carousel.children.length
-
-      const actualSlideWidth =
-        (this.containerWidth - this.arrowWidth) / this.slidesInPage
-
-      if (actualSlideWidth < this.slideMinWidth) {
-        this.slidesInPage = Math.floor(
-          (this.containerWidth - this.arrowWidth) / this.slideMinWidth
-        )
-      }
 
       this.slideWidth =
         (this.containerWidth - this.arrowWidth) / this.slidesInPage
