@@ -6,7 +6,7 @@ const state = {
   reservations: false,
   userDetails: false,
   storeUsers: false,
-  params: { page: 1, limit: 10 },
+  params: { page: 1, limit: 9999 },
 }
 const getters = {
   getUTCDate: () => selectedDate => {
