@@ -23,8 +23,22 @@ export default {
       this.slideWidth =
         (this.$parent.$el.clientWidth - this.$parent.arrowWidth) /
         this.$parent.perPage
+      let perPage = this.$parent.perPage
+
+      const actualSlideWidth = this.slideWidth
+
+      if (actualSlideWidth < this.$parent.slideMinWidth) {
+        perPage = Math.floor(
+          (this.$parent.$el.clientWidth - this.$parent.arrowWidth) /
+            this.$parent.slideMinWidth
+        )
+      }
+
+      this.slideWidth =
+        (this.$parent.$el.clientWidth - this.$parent.arrowWidth) / perPage
     })
   },
+
   methods: {
     // eslint-disable-next-line no-unused-vars
     selectSlide() {

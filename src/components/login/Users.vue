@@ -9,7 +9,7 @@
       </div>
     </div>
     <div v-if="cashiers.length">
-      <slider class="slider" :perPage="4" :arrows="true">
+      <slider class="slider" :perPage="5" :arrows="true" :slideMinWidth="300">
         <slide
           v-for="cashier in cashiers"
           :key="cashier._id"
@@ -98,22 +98,37 @@ export default {
           .parent()
           .parent()
           .addClass('position-set')
+        setTimeout(() => {
+          const slideWidth = $('.position-set').outerWidth()
+          const slideLeft = $('.position-set').offset().left
+          const calcWidth = $('#popover_content_wrapper').outerWidth()
+          const diff = (calcWidth - slideWidth) / 2
+          $('#popover_content_wrapper').css('left', slideLeft - diff + 'px')
+        }, 100)
 
-        $('#popover_content_wrapper').css({
-          left: $('.position-set').offset().left - 25 + 'px',
-        })
         $('#popover_content_wrapper').addClass('animated zoomIn')
         $('#popover_content_wrapper').show()
         $('#popover_content_wrapper #cashierpin').focus()
       })
 
       ////$('.ullist-admin > li:first-child  > img').trigger('click')
-      const jqElem = $('img#' + this.userDetails.item._id).parent()
-      let jqLi = jqElem.next()
-      if (!jqLi.length) {
-        jqLi = jqElem.siblings(':first')
+      let jqElem = $('img#' + this.userDetails.item._id)
+      if (!jqElem.length) {
+        jqElem = $('img.transform-img:first')
       }
-      jqLi.find('img').trigger('click')
+      // let slide = jqElem
+      //   .parent()
+      //   .parent()
+      //   .parent()
+
+      // if (slide.next().length) {
+      //   slide = slide.next()
+      // } else {
+      //   slide = slide.siblings(':first')
+      // }
+      //slide.addClass('position-set')
+      //slide.find('img.transform-img').trigger('click')
+      jqElem.trigger('click')
     },
     hideCalc() {},
   },

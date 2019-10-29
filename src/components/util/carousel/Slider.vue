@@ -48,10 +48,12 @@ export default {
     perPage: Number,
     dots: Boolean,
     arrows: Boolean,
+    slideMinWidth: Number,
   },
   data() {
     return {
       slideTotal: '',
+      slidesInPage: 0,
       slideWidth: '',
       currentPage: 1,
       positionX: 0,
@@ -71,8 +73,16 @@ export default {
     },
 
     totalPages() {
-      return Math.ceil(this.slideTotal / this.perPage)
+      return Math.ceil(this.slideTotal / this.slidesInPage)
     },
+  },
+  watch: {
+    // slideTotal(newVal, oldVal) {
+    //   if (newVal != oldVal) {
+    //     this.currentPage = 1
+    //     this.startPage()
+    //   }
+    // },
   },
   mounted() {
     this.$nextTick(() => {
@@ -87,13 +97,29 @@ export default {
   },
   methods: {
     slider() {
-      this.slideTotal = this.$refs.carousel.children.length
+      if (!this.slidesInPage) {
+        this.slidesInPage = this.perPage
+      }
       this.containerWidth = this.$refs.container.clientWidth
-      this.slideWidth = (this.containerWidth - this.arrowWidth) / this.perPage
-      if (this.slideTotal < this.perPage) {
+      this.slideTotal = this.$refs.carousel.children.length
+
+      const actualSlideWidth =
+        (this.containerWidth - this.arrowWidth) / this.slidesInPage
+
+      if (actualSlideWidth < this.slideMinWidth) {
+        this.slidesInPage = Math.floor(
+          (this.containerWidth - this.arrowWidth) / this.slideMinWidth
+        )
+      }
+
+      this.slideWidth =
+        (this.containerWidth - this.arrowWidth) / this.slidesInPage
+
+      if (this.slideTotal < this.slidesInPage) {
         this.slideWidth =
           (this.containerWidth - this.arrowWidth) / this.slideTotal
       }
+
       if (!this.dots && !this.arrows) {
         this.showDots = true
       }
@@ -125,15 +151,18 @@ export default {
       }
     },
     // eslint-disable-next-line no-unused-vars
+    startPage() {
+      this.positionX = 0
+    },
     movePage(page) {
-      let toMove = (page - 1) * this.perPage * this.slideWidth
+      let toMove = (page - 1) * this.slidesInPage * this.slideWidth
 
       if (page == this.totalPages) {
         //last page
         let noOfSlidesToMove =
-          this.$refs.carousel.children.length % this.perPage
+          this.$refs.carousel.children.length % this.slidesInPage
         if (noOfSlidesToMove != 0) {
-          toMove -= (this.perPage - noOfSlidesToMove) * this.slideWidth
+          toMove -= (this.slidesInPage - noOfSlidesToMove) * this.slideWidth
         }
       }
       this.positionX = -toMove
