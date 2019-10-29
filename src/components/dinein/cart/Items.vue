@@ -1,5 +1,5 @@
 <template>
-  <div class="main-orders-list" v-if="items">
+  <div class="main-orders-list dine-cart-items" v-if="items">
     <div
       class="main-orders-list-item color-dashboard-background"
       v-for="(item, index) in items"
@@ -24,24 +24,33 @@
         class="main-orders-list-item-subtitle color-text-invert item-exclude"
       >
         <div>
-          @ {{ formatPrice(itemGrossPrice(item)) }} x
-          {{ item.quantity }}
-          {{ discountInfo(item) }}
+          <div>
+            @ {{ formatPrice(itemGrossPrice(item)) }} x
+            {{ item.quantity }}
+            {{ discountInfo(item) }}
+          </div>
+          <div
+            class="main-orders-list-item-subtitle color-text-invert"
+            v-if="orderType.OTApi === 'dine_in'"
+          >
+            <p class="selectedCoverName">
+              {{ item.cover_name }}
+            </p>
+          </div>
         </div>
         <!--add condition here split true-->
-        <div
-          class="align-right text-right"
-          v-if="orderType.OTApi === 'dine_in' && split"
-        ></div>
+        <div class="pay-split">
+          <check-box
+            v-bind:value="index"
+            v-bind:index="index"
+            v-bind:title="'Pay'"
+            v-if="splitBill && item.paid !== true"
+            v-model="splittedItems[index]"
+            @change="markSplit"
+          ></check-box>
+        </div>
       </div>
-      <div
-        class="main-orders-list-item-subtitle color-text-invert"
-        v-if="orderType.OTApi === 'dine_in'"
-      >
-        <p class="selectedCoverName">
-          {{ item.cover_name }}
-        </p>
-      </div>
+
       <div class="main-orders-list-item-buttons">
         <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
         <div
@@ -66,14 +75,6 @@
             </svg>
           </div>
         </div>
-        <check-box
-          v-bind:value="index"
-          v-bind:index="index"
-          v-bind:title="'Pay'"
-          v-if="splitBill && item.paid !== true"
-          v-model="splittedItems[index]"
-          @change="markSplit"
-        ></check-box>
       </div>
     </div>
   </div>
@@ -119,7 +120,7 @@ export default {
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
     markSplit(item) {
       this.$set(this.splittedItems, item.index, item.checked)
-      this.$store.commit('order/SPLIT_ITEMS', this.splittedItems)
+      this.$store.dispatch('order/splitItems', this.splittedItems)
     },
     discountInfo(item) {
       if (item.discount) {
@@ -167,7 +168,14 @@ export default {
 @import '../../../assets/scss/pixels_rem.scss';
 @import '../../../assets/scss/variables.scss';
 @import '../../../assets/scss/mixins.scss';
-
+.dine-cart-items {
+  .selectedCoverName {
+    margin-top: 10px;
+  }
+  .main-orders-list-item-subtitle {
+    margin-bottom: 0 !important;
+  }
+}
 .button-plus-icon {
   width: 23px;
   height: 23px;
