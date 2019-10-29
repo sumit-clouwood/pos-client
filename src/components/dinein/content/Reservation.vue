@@ -22,10 +22,10 @@
           <table class="table table-hover">
             <thead>
               <tr>
+                <th>{{ _t('Customer') }}</th>
                 <th>{{ _t('Time') }}</th>
                 <th>{{ _t('Area/Table') }}</th>
                 <th>{{ _t('Guests') }}</th>
-                <th>{{ _t('Customer') }}</th>
                 <th></th>
               </tr>
             </thead>
@@ -38,6 +38,7 @@
             </tbody>-->
             <tbody>
               <tr v-for="(reservation, index) in reservations" :key="index">
+                <td>Dummy customers {{ reservation.customers }}</td>
                 <td>
                   {{ reservation.start_date }}, {{ reservation.start_time }}
                 </td>
@@ -50,7 +51,6 @@
                     reservation.number_of_guests
                   }}
                 </td>
-                <td>{{ reservation.customers }}</td>
                 <td class="mr-1 reservation-actions">
                   <button class="btn btn-success">{{ _t('Confirm') }}</button>
                   <button
@@ -171,7 +171,9 @@ export default {
     }
   },
   updated() {
-    if (!this.calendarOpen && this.dineInTabType == 'reservation') this.cal()
+    let isCalendarhasData = $('.wrapperHor').text().length
+    if (isCalendarhasData == 0 && this.dineInTabType == 'reservation')
+      this.cal()
   },
   methods: {
     activeDateSelector() {
@@ -205,7 +207,17 @@ export default {
           pageId: 'getBookedTables',
           loader: false,
         })*/
-        this.$store.dispatch('dinein/getBookedTables', false)
+        this.$store
+          .dispatch('dinein/updateDineInOrderStatus', {
+            title: 'reservation',
+            pageId: 'getBookedTables',
+            loader: false,
+          })
+          .then(() => {
+            this.$store.dispatch('dinein/getDineInArea', false)
+            this.$store.dispatch('dinein/getDineInTables', false)
+          })
+        // this.$store.dispatch('dinein/getBookedTables', false)
       })
     },
 

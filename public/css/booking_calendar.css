@@ -146,13 +146,32 @@ section#main {
  color: #7c7e85;
  font-weight: 600;
 }
-.pos-reservation-table {
- padding: 20px;
+.pos-reservation-table table > thead {
+ /*padding: 20px;*/
+ top: 0;
+ display: table-caption;
+ position: sticky;
+ z-index: 1;
+ background: #fff;
+}
+.pos-reservation-table table > thead th:first-child{
+ width: 195px;
+}
+.pos-reservation-table table > thead th:nth-child(2){
+ width: 170px;
+}
+
+.pos-reservation-table table > thead th:last-child{
+ width: 205px;
+}
+.pos-reservation-table{
+ overflow-y:auto;
+ overflow-x:hidden;
 }
 .pos-reservation-header {
  min-height: 100px;
  background: #f8f8f8;
- padding: 20px;
+ padding: 20px 0 0 0;
 }
 .SCYear {
  display: none !important;

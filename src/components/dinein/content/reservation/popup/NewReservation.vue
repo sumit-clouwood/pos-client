@@ -321,7 +321,9 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   updated() {
-    if (!this.calendarOpen && this.dineInTabType == 'reservation') this.cal()
+    let isCalendarhasData = $('.wrapperNew').text().length
+    if (isCalendarhasData == 0 && this.dineInTabType == 'reservation')
+      this.cal()
   },
   data() {
     return {

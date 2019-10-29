@@ -79,12 +79,12 @@ const actions = {
   updateDineInOrderStatus({ dispatch, commit }, orderStatus) {
     commit(mutation.DINE_IN_TAB_TYPE, orderStatus.title)
     if (orderStatus.pageId) {
-      let loader = orderStatus.loader ? orderStatus.loader : true
+      let loader = orderStatus.loader ? orderStatus.loader : false
       dispatch(orderStatus.pageId, loader)
     }
   },
   async fetchAll({ dispatch, commit }) {
-    commit(mutation.LOADING, true)
+    commit(mutation.LOADING, false)
     await Promise.all([
       dispatch('getDineInTables'),
       dispatch('getCovers'),
@@ -355,7 +355,7 @@ const actions = {
   },
 
   addReservation({ commit, state, dispatch }, tableId) {
-    commit(mutation.LOADING, true)
+    commit(mutation.LOADING, false)
     dispatch('order/reset', {}, { root: true })
     dispatch('checkout/reset', {}, { root: true })
     return new Promise((resolve, reject) => {
