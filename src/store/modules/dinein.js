@@ -12,7 +12,7 @@ const state = {
   },
   bills: null,
   guests: 1,
-  tableZoomScale: 0.5,
+  tableZoomScale: 0.4,
   orderDetails: false,
   completedOrderDetails: {},
   areas: false,
@@ -205,7 +205,7 @@ const actions = {
   },
   selectedArea({ commit, dispatch }, area) {
     commit(mutation.SELECTED_AREA, area)
-    commit(mutation.TABLE_SCALE, 0.5)
+    commit(mutation.TABLE_SCALE, 0.4)
     dispatch('getTableStatus')
   },
   async getCovers({ commit }) {

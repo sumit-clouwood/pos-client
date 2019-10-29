@@ -65,7 +65,7 @@
         <DineInCoverSelection />
       </div>
       <div
-        v-if="orderId && covers && cartType !== 'hold'"
+        v-if="enabledSplitBill && orderId && covers && cartType !== 'hold'"
         class="driver-container"
       >
         <button
@@ -106,6 +106,7 @@ export default {
   },
   data() {
     return {
+      enabledSplitBill: false,
       OrderSelectedCover: 'Select Cover',
       myStyle: {
         backgroundColor: '#fff',

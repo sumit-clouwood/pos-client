@@ -93,7 +93,10 @@
           </div>
         </div>
         <div class="modal-footer">
-          <router-link :to="'/cashier-login' + store">
+          <router-link
+            :to="'/cashier-login' + store"
+            v-if="enabledModule('switchCashier')"
+          >
             <button
               id="switch-user-btn-profile"
               type="button"
@@ -125,6 +128,12 @@ export default {
   mixins: [DateTime],
   methods: {
     ...mapActions('auth', ['logout']),
+    enabledModule(option) {
+      switch (option) {
+        case 'switchCashier':
+          return false
+      }
+    },
   },
   computed: {
     ...mapGetters('context', ['store']),

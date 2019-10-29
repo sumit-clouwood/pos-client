@@ -53,7 +53,11 @@ export default {
     ...mapGetters('checkoutForm', ['validate']),
     ...mapGetters('location', ['_t']),
   },
-
+  data() {
+    return {
+      processing: false,
+    }
+  },
   mounted() {
     $('#payment-msg').modal({
       backdrop: 'static',
@@ -94,11 +98,17 @@ export default {
       })
     },
     pay() {
+      if (this.processing) {
+        return false
+      }
+      this.processing = true
+
       this.addAmount().then(payable => {
         if (payable <= 0.1) {
           $('#payment-screen-footer').prop('disabled', true)
           this.$store.commit('checkoutForm/setAction', 'pay')
           $('#payment-msg').modal('show')
+          this.$store.dispatch('order/startOrder')
           this.$store.commit('order/IS_PAY', 1)
           this.$store
             .dispatch('checkout/pay', this.$store.state.order.orderType.OTApi)
@@ -124,6 +134,9 @@ export default {
                 $('#payment-msg').modal('hide')
                 $('#payment-screen-footer').prop('disabled', false)
               }, 500)
+            })
+            .finally(() => {
+              this.processing = false
             })
         } else {
           //show payment breakdown

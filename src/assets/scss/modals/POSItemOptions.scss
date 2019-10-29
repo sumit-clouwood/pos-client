@@ -34,7 +34,9 @@
           flex-flow: row wrap;
 
           .POSItemOptions_price {
-            width: 36%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
 
             .POSItemOptions_label {
               color: #3d3f43;

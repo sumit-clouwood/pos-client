@@ -1,26 +1,79 @@
 <template>
-  <ul class="ullist-admin">
-    <li data-placement="above" v-for="cashier in cashiers" :key="cashier._id">
-      <img
-        @click.prevent="setCashier(cashier.email)"
-        class="transform-img"
-        :id="cashier._id"
-        :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
-        alt="cashier.name"
-      /><span>{{ cashier.name }}</span>
-    </li>
-  </ul>
+  <div>
+    <div class="headwrap">
+      <div class="head">
+        <div class="search">
+          <span class="fa fa-search"></span>
+          <input type="text" v-model="searchKeyword" />
+        </div>
+      </div>
+    </div>
+    <ul class="ullist-admin" v-if="cashiers.length">
+      <carousel :perPageCustom="[[480, 3], [768, 6], [1024, 8]]">
+        <slide v-for="cashier in cashiers" :key="cashier._id">
+          <tippy trigger="click" theme="cashier_login">
+            <template v-slot:trigger>
+              <img
+                @click.prevent="setCashier(cashier.email)"
+                class="transform-img"
+                :id="cashier._id"
+                :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
+                alt="cashier.name"
+              /><span>{{ cashier.name }}</span>
+            </template>
+
+            <lockpad></lockpad>
+          </tippy>
+          <!--<lockpad></lockpad>
+          <div slot="reference">
+            <img
+              @click.prevent="setCashier(cashier.email)"
+              class="transform-img"
+              :id="cashier._id"
+              :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
+              alt="cashier.name"
+            /><span>{{ cashier.name }}</span>
+          </div>-->
+        </slide>
+      </carousel>
+    </ul>
+    <div v-else class="no-user">
+      <div>No cashier found in store.</div>
+      <router-link :to="store"> Back </router-link>
+    </div>
+  </div>
 </template>
 
 <script>
 /* global $ */
 import { mapGetters, mapState } from 'vuex'
+import { Carousel, Slide } from 'vue-carousel'
+import { TippyComponent } from 'vue-tippy'
+import 'tippy.js/themes/light.css'
+import 'tippy.js/themes/light-border.css'
+import 'tippy.js/themes/google.css'
+import 'tippy.js/themes/translucent.css'
+import Lockpad from './Lockpad'
 
 export default {
   name: 'Users',
+  components: {
+    Carousel,
+    Slide,
+    tippy: TippyComponent,
+    Lockpad,
+  },
   computed: {
     ...mapGetters('auth', ['cashiers']),
     ...mapState('auth', ['userDetails']),
+    searchKeyword: {
+      get() {
+        return this.$store.state.auth.searchKeyword
+      },
+      set(value) {
+        this.$store.commit('auth/setSearchKeyword', value)
+      },
+    },
   },
   data() {
     return {
@@ -34,6 +87,7 @@ export default {
     cashiers(newVal) {
       if (newVal) {
         this.$nextTick(() => {
+          this.jQuery = false
           this.bindJquery()
         })
       }
@@ -48,7 +102,7 @@ export default {
         return true
       }
       this.jQuery = true
-      $('.ullist-admin > li > img').click(function() {
+      $('.ullist-admin .VueCarousel-slide > img').click(function() {
         $(this)
           .parent('li')
           .addClass('position-set')
@@ -68,7 +122,7 @@ export default {
       if (!jqLi.length) {
         jqLi = jqElem.siblings('li:first')
       }
-      jqLi.find('img').trigger('click')
+      // jqLi.find('img').trigger('click')
     },
   },
   mounted() {
@@ -78,17 +132,99 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+@import '../../assets/scss/pixels_rem.scss';
+@import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
 
+.VueCarousel-inner {
+  /*justify-content: center;*/
+}
+.VueCarousel-dot-container {
+  margin-top: 0px !important;
+  button {
+    margin-top: 0px !important;
+    padding: 0px !important;
+  }
+}
+.tippy-backdrop {
+  background-color: transparent;
+}
+.cashier_login-theme {
+  .lockpad {
+    @include responsive(mobile) {
+      .modal-header {
+        padding: 0.5em !important;
+      }
+      .modal-body-digits > div {
+        padding: 0.15em;
+      }
+    }
+  }
+}
+</style>
+<style lang="scss" scoped>
+.no-user {
+  text-align: center;
+  padding-top: 30px;
+  color: #fff;
+}
+
+.headwrap {
+  width: 100%;
+  .head {
+    width: 70%;
+    margin: 0 auto;
+    margin: 0 auto;
+
+    .search {
+      margin-top: 30px;
+      height: 40px;
+      line-height: 40px;
+      width: 100%;
+      position: relative;
+      color: #757575;
+      display: inline-block;
+
+      input {
+        color: #757575;
+        width: 100%;
+        height: 40px;
+        background: #fcfcfc;
+        border: 1px solid #aaa;
+        border-radius: 5px;
+        box-shadow: 0 0 3px #ccc, 0 10px 15px #ebebeb inset;
+        padding-right: 30px;
+        padding-left: 10px;
+        box-sizing: border-box;
+
+        &:focus {
+          outline: none;
+        }
+      }
+      .fa-search {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+
+        &:before {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}
+</style>
 <style lang="sass" scoped>
 
 ul.ullist-admin
   margin: 0 auto
   text-align: center
-  padding-top: 5px
+  padding-top: 2em
 
-  > li
+  .VueCarousel-slide
     display: inline-block
-    padding: 50px 0
+    padding: 1em
 
     &:nth-child(2)
       > img
@@ -97,6 +233,9 @@ ul.ullist-admin
 
     &.position-set
       position: relative
+      display: flex
+      flex-direction: column
+      align-items: center
 
       >
         .transform
@@ -111,37 +250,26 @@ ul.ullist-admin
         display: block !important
 
       > img
-        -webkit-transform: scale(0.7, 0.7)
-        -moz-transform: scale(0.7, 0.7)
-        -o-transform: scale(0.7, 0.7)
-        -ms-transform: scale(0.7, 0.7)
-        transform: scale(0.7, 0.7)
+        width: 8em
+        height: 8em
         transition: all 0.4s ease
-        margin-bottom: 15px
+        margin-bottom: 0em
 
-    > img
-      width: 208px
-      height: 208px
+    img
+      width: 7em
+      height: 7em
       cursor: pointer
-      -webkit-transform: scale(0.5, 0.5)
-      -moz-transform: scale(0.5, 0.5)
-      -o-transform: scale(0.5, 0.5)
-      -ms-transform: scale(0.5, 0.5)
-      transform: scale(0.5, 0.5)
-      margin-bottom: 15px
+      margin-bottom: 0em
       transition: all 1s ease-in-out
       margin: 0 auto
       border-radius: 50%
       border: 4px solid rgba(255, 255, 255, 0.7)
 
       &:hover
-        -webkit-transform: scale(0.7, 0.7)
-        -moz-transform: scale(0.7, 0.7)
-        -o-transform: scale(0.7, 0.7)
-        -ms-transform: scale(0.7, 0.7)
-        transform: scale(0.7, 0.7)
+        width: 8em
+        height: 8em
         transition: all 0.6s ease
-        margin-bottom: 15px
+        margin-bottom: 0em
 
     > span
       cursor: pointer
@@ -154,7 +282,7 @@ ul.ullist-admin
       color: #ffffff
       display: block
       position: relative
-      top: -40px
+      padding-top: 0.5em
 
   img
     &.transform
