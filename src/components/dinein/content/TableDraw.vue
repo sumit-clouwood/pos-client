@@ -584,7 +584,7 @@ export default {
           /*if (data.table_position_coordinate.angle) {
             data.table_position_coordinate.angle = 0
           }*/
-          return `scale(0.4) translate(0, 0) rotate(${
+          return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${
             data.table_position_coordinate.angle
           },${midX},${midY})`
         })
@@ -596,7 +596,7 @@ export default {
         // .translate(0, 0)
       })
     },
-    isSupported() {
+    /*isSupported() {
       let ua = navigator.userAgent.toLowerCase()
       if (ua.indexOf('safari') != -1) {
         if (ua.indexOf('ipad') > -1) {
@@ -617,7 +617,7 @@ export default {
       } else {
         return false
       }
-    },
+    },*/
     confirmCancelReservation() {
       this.reservationUpdateStatus({
         reservationId: this.selectedReservationId,

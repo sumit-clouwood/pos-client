@@ -222,10 +222,10 @@ const actions = {
         win = window.open(details.url, details.winName, settings)
         // eslint-disable-next-line no-console
         console.log(details.ipUrl)
-        win.onerror = function(msg, url, lineNo, columnNo, error) {
+        win.onerror = function(msg, url, lineNo, columnNo) {
           // ... handle error ...
           // eslint-disable-next-line no-console
-          console.log(msg, url, lineNo, columnNo, error)
+          console.log(msg, url, lineNo, columnNo)
           return false
         }
       } catch (e) {
