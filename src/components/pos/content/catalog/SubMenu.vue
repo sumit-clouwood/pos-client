@@ -50,6 +50,9 @@ export default {
     btnBack,
   },
   props: {},
+  created() {
+    this.$store.dispatch('showMainCategory')
+  },
   computed: {
     ...mapState({
       currentSubcategory: state => state.category.subcategory._id,
