@@ -120,7 +120,7 @@ export default {
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
     markSplit(item) {
       this.$set(this.splittedItems, item.index, item.checked)
-      this.$store.commit('order/SPLIT_ITEMS', this.splittedItems)
+      this.$store.dispatch('order/splitItems', this.splittedItems)
     },
     discountInfo(item) {
       if (item.discount) {

@@ -293,8 +293,16 @@ const getters = {
 
 // actions
 const actions = {
-  setSplitBill({ commit }) {
+  setSplitBill({ commit, dispatch }) {
     commit('SET_SPLIT_BILL')
+    dispatch('surchargeCalculation')
+  },
+  splitItems({ commit, dispatch }, items) {
+    commit('SPLIT_ITEMS', items)
+
+    dispatch('recalculateItemPrices')
+    dispatch('recalculateOrderTotals')
+    dispatch('surchargeCalculation')
   },
   markSplitItemsPaid({ commit }) {
     commit(mutation.MARK_SPLIT_ITEMS_PAID)
@@ -1437,6 +1445,9 @@ const mutations = {
   },
   [mutation.SPLIT_ITEMS](state, items) {
     state.splittedItems = items
+    //remove item / order discounts
+    //remove tax and surcharges
+
     const newitems = state.items.map(item => {
       if (state.splittedItems[item.orderIndex] === true) {
         item.split = true
