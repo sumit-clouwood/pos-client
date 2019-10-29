@@ -4,20 +4,24 @@
       :class="['btn-cart', { disable: !items.length }]"
       @click="mainOrdersHendlerChange"
     >
-      <svg
-        width="18"
-        height="16"
-        viewBox="0 0 18 16"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M6.99999 16C6.46956 16 5.96085 15.7893 5.58578 15.4142C5.21071 15.0391 4.99999 14.5304 4.99999 14C4.99999 13.4696 5.21071 12.9609 5.58578 12.5858C5.96085 12.2107 6.46956 12 6.99999 12C7.53043 12 8.03913 12.2107 8.41421 12.5858C8.78928 12.9609 8.99999 13.4696 8.99999 14C8.99999 14.5304 8.78928 15.0391 8.41421 15.4142C8.03913 15.7893 7.53043 16 6.99999 16ZM14 16C13.4696 16 12.9609 15.7893 12.5858 15.4142C12.2107 15.0391 12 14.5304 12 14C12 13.4696 12.2107 12.9609 12.5858 12.5858C12.9609 12.2107 13.4696 12 14 12C14.5304 12 15.0391 12.2107 15.4142 12.5858C15.7893 12.9609 16 13.4696 16 14C16 14.5304 15.7893 15.0391 15.4142 15.4142C15.0391 15.7893 14.5304 16 14 16ZM0.961994 1.923C0.712355 1.91495 0.475635 1.81012 0.301892 1.63068C0.128149 1.45125 0.0310059 1.21127 0.0310059 0.9615C0.0310059 0.711732 0.128149 0.471755 0.301892 0.292318C0.475635 0.11288 0.712355 0.00805181 0.961994 0L2.11299 0C3.01499 0 3.79499 0.626 3.99099 1.506L5.24399 7.148C5.43999 8.028 6.21999 8.654 7.12199 8.654H14.634L16.076 2.884H6.73099C6.4837 2.87272 6.25028 2.76654 6.07928 2.58755C5.90827 2.40857 5.81285 2.17055 5.81285 1.923C5.81285 1.67545 5.90827 1.43743 6.07928 1.25845C6.25028 1.07946 6.4837 0.973284 6.73099 0.962H16.076C16.3683 0.961914 16.6568 1.02848 16.9196 1.15663C17.1823 1.28479 17.4124 1.47116 17.5923 1.70158C17.7722 1.93201 17.8972 2.20041 17.9578 2.4864C18.0184 2.77238 18.013 3.06842 17.942 3.352L16.5 9.12C16.396 9.5362 16.1559 9.90568 15.8178 10.1697C15.4797 10.4337 15.063 10.5771 14.634 10.577H7.12199C6.24679 10.5771 5.39772 10.2787 4.71501 9.7311C4.0323 9.18348 3.55678 8.41938 3.36699 7.565L2.11299 1.923H0.961994Z"
-          fill="white"
-        />
-      </svg>
+      <div class="icon-cart">
+        <svg
+          :class="[{ shake: item_added_flag }]"
+          width="36"
+          height="32"
+          viewBox="0 0 18 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6.99999 16C6.46956 16 5.96085 15.7893 5.58578 15.4142C5.21071 15.0391 4.99999 14.5304 4.99999 14C4.99999 13.4696 5.21071 12.9609 5.58578 12.5858C5.96085 12.2107 6.46956 12 6.99999 12C7.53043 12 8.03913 12.2107 8.41421 12.5858C8.78928 12.9609 8.99999 13.4696 8.99999 14C8.99999 14.5304 8.78928 15.0391 8.41421 15.4142C8.03913 15.7893 7.53043 16 6.99999 16ZM14 16C13.4696 16 12.9609 15.7893 12.5858 15.4142C12.2107 15.0391 12 14.5304 12 14C12 13.4696 12.2107 12.9609 12.5858 12.5858C12.9609 12.2107 13.4696 12 14 12C14.5304 12 15.0391 12.2107 15.4142 12.5858C15.7893 12.9609 16 13.4696 16 14C16 14.5304 15.7893 15.0391 15.4142 15.4142C15.0391 15.7893 14.5304 16 14 16ZM0.961994 1.923C0.712355 1.91495 0.475635 1.81012 0.301892 1.63068C0.128149 1.45125 0.0310059 1.21127 0.0310059 0.9615C0.0310059 0.711732 0.128149 0.471755 0.301892 0.292318C0.475635 0.11288 0.712355 0.00805181 0.961994 0L2.11299 0C3.01499 0 3.79499 0.626 3.99099 1.506L5.24399 7.148C5.43999 8.028 6.21999 8.654 7.12199 8.654H14.634L16.076 2.884H6.73099C6.4837 2.87272 6.25028 2.76654 6.07928 2.58755C5.90827 2.40857 5.81285 2.17055 5.81285 1.923C5.81285 1.67545 5.90827 1.43743 6.07928 1.25845C6.25028 1.07946 6.4837 0.973284 6.73099 0.962H16.076C16.3683 0.961914 16.6568 1.02848 16.9196 1.15663C17.1823 1.28479 17.4124 1.47116 17.5923 1.70158C17.7722 1.93201 17.8972 2.20041 17.9578 2.4864C18.0184 2.77238 18.013 3.06842 17.942 3.352L16.5 9.12C16.396 9.5362 16.1559 9.90568 15.8178 10.1697C15.4797 10.4337 15.063 10.5771 14.634 10.577H7.12199C6.24679 10.5771 5.39772 10.2787 4.71501 9.7311C4.0323 9.18348 3.55678 8.41938 3.36699 7.565L2.11299 1.923H0.961994Z"
+            fill="white"
+          />
+        </svg>
+        <div :class="['ball', { animate: item_added_flag }]"></div>
+      </div>
       <div class="text">
-        {{ items.length ? `Cart ${items.length}` : 'Cart is empty' }}
+        {{ items.length ? `Items in Cart : ${items.length}` : 'Cart is empty' }}
       </div>
     </div>
     <div class="main-orders-buttons">
@@ -122,6 +126,11 @@ import { mapState, mapGetters } from 'vuex'
 
 export default {
   props: ['param'],
+  data() {
+    return {
+      item_added_flag: 0,
+    }
+  },
   computed: {
     ...mapState('checkout', ['print']),
     ...mapState('order', ['orderType', 'cartType']),
@@ -149,6 +158,17 @@ export default {
           ? '#manage-customer'
           : state.location.setModal,
     }),
+  },
+  watch: {
+    items(newVal) {
+      // alert('value changed' + newVal)
+      // eslint-disable-next-line
+      console.log(newVal)
+      this.item_added_flag = 1
+      setTimeout(() => {
+        this.item_added_flag = 0
+      }, 1000)
+    },
   },
   methods: {
     mainOrdersHendlerChange() {
@@ -239,128 +259,281 @@ export default {
       }
     }
 
-    .main-orders-buttons {
-      display: grid;
-      grid-template-columns: max-content 1fr;
-      grid-gap: 20px;
-      display: none;
+    .btn-cart {
       width: 100%;
-
-      .btn-menu {
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: $btn-border-radius;
-        background-color: $btn-bg-black;
-        display: none;
-
-        &.active {
-          display: flex;
-        }
-      }
-
-      .btn-menu-close {
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: $btn-border-radius;
-        background-color: $red;
-        color: #fff !important;
-        display: none;
-
-        &.active {
-          display: flex;
-          color: #fff;
-        }
-      }
-
-      .btn-chatge {
-        display: grid;
-        align-items: center;
-        background-color: $green-middle;
-        border-radius: $btn-border-radius;
-        height: 50px;
-        color: #fff;
-        justify-content: center;
-        text-align: center;
-        padding: 5px;
-        &.send {
-          display: grid;
-          grid-template-columns: 1fr;
-          align-items: stretch;
-          justify-content: stretch;
-          width: 100%;
-          li {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            a {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-size: 14px;
-              width: 100%;
-              svg {
-                margin-right: 10px;
-              }
-            }
-          }
-        }
-
-        .btn-chatge-amount {
-          margin-bottom: -5px;
-
-          strong {
-            letter-spacing: 1px;
-          }
-        }
-      }
+      background-color: rgb(100, 196, 52);
+      display: inline-flex;
+      border-radius: 3px;
+      position: relative;
     }
 
-    .btn-next {
-      width: 100%;
+    .icon-cart {
       height: 50px;
       color: #fff;
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      background-color: #64C434;
+      letter-spacing: 1px;
+      border-radius: 3px;
+      padding: 0 25px;
+
+      font-size: 22px;
+      /*position: absolute;*/
+      /*top: 4px;*/
+      /*left: -1px;*/
+      z-index: 9999;
+
+      ~ .text {
+        color: #fff;
+        width: 100%;
+        font-size: 1.25em;
+        background-color: #64C434;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+}
+
+.main-orders-buttons {
+display: grid;
+grid-template-columns: max-content 1fr;
+grid-gap: 20px;
+display: none;
+width: 100%;
+
+.btn-menu {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $btn-border-radius;
+  background-color: $btn-bg-black;
+  display: none;
+
+  &.active {
+    display: flex;
+  }
+}
+
+.btn-menu-close {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $btn-border-radius;
+  background-color: $red;
+  color: #fff !important;
+  display: none;
+
+  &.active {
+    display: flex;
+    color: #fff;
+  }
+}
+
+.btn-chatge {
+  display: grid;
+  align-items: center;
+  background-color: $green-middle;
+  border-radius: $btn-border-radius;
+  height: 50px;
+  color: #fff;
+  justify-content: center;
+  text-align: center;
+  padding: 5px;
+  &.send {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    justify-content: stretch;
+    width: 100%;
+    li {
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
-      justify-content: center;
-      background-color: $green-middle;
-      letter-spacing: 1px;
-      border-radius: $btn-border-radius;
-      padding: 0 25px;
-    }
-
-    .btn-Cancel {
-      display: none;
-    }
-
-    .qr-voucher-code {
-      display: none;
-      width: 100%;
-
-      .title {
-        font-size: 16px;
-        font-weight: 600;
-        margin-bottom: 10px;
-      }
-
-      input {
-        height: 50px;
+      a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
         width: 100%;
-        border-radius: $btn-border-radius;
-        border: 2px solid $gray-middle;
-        padding: 0 20px;
-
-        &:focus {
-          outline: 0;
+        svg {
+          margin-right: 10px;
         }
       }
     }
   }
+
+  .btn-chatge-amount {
+    margin-bottom: -5px;
+
+    strong {
+      letter-spacing: 1px;
+    }
+  }
+}
+}
+
+.btn-next {
+width: 100%;
+height: 50px;
+color: #fff;
+display: flex;
+align-items: center;
+justify-content: center;
+background-color: $green-middle;
+letter-spacing: 1px;
+border-radius: $btn-border-radius;
+padding: 0 25px;
+}
+
+.btn-Cancel {
+display: none;
+}
+
+.qr-voucher-code {
+display: none;
+width: 100%;
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+input {
+  height: 50px;
+  width: 100%;
+  border-radius: $btn-border-radius;
+  border: 2px solid $gray-middle;
+  padding: 0 20px;
+
+  &:focus {
+    outline: 0;
+  }
+}
+}
+
+$green: #5ea000;
+
+.animate {
+-webkit-animation: itemAdd .6s;
+}
+
+.animate-out {
+-webkit-animation: itemAdd .6s;
+-webkit-animation-direction: reverse;
+}
+
+.cart-button {
+background-color: $green;
+display: inline-block;
+width: 45px;
+height: 35px;
+border-radius: 2px;
+text-align: center;
+position: absolute;
+z-index: 1;
+top: 0;
+right: 0;
+}
+
+.total {
+font-family: "proxima-nova-soft",sans-serif;
+font-style: normal;
+font-weight: 400;
+display: inline-block;
+margin-right: 5px;
+height: 35px;
+font-size: 21px;
+color: $green;
+padding-top: 5px;
+text-align: right;
+position: absolute;
+right: 50px;
+top: 0;
+
+}
+
+@-webkit-keyframes itemAdd {
+0% {
+  opacity: 0;
+}
+20% {
+  opacity: 1;
+}
+70% {
+  opacity: 1;
+  top: 10px;
+}
+100% {
+  opacity: 0;
+  top: 10px;
+
+}
+}
+
+button {
+border: none;
+background-color: white;
+color: #515151;
+font-size: 16px;
+padding: 5px 10px;
+height: 40px;
+border: 2px solid #d7d7d7;
+border-radius: 2px;
+display: block;
+clear: both;
+margin-top: 20px;
+}
+
+.ball {
+content: "";
+height: 10px;
+width: 10px;
+background-color: orange;
+top: -10px;
+left: 65px;
+z-index: 101;
+position: absolute;
+opacity: 0;
+border-radius: 1px;
+
+}
+
+svg {
+fill: white;
+}
+
+.shake {
+-webkit-animation: cartShake .3s;
+-webkit-animation-delay: 200ms;
+}
+
+@-webkit-keyframes cartShake {
+0% {
+  transform: rotate(0deg);
+}
+50% {
+  transform: rotate(0deg);
+}
+70% {
+  transform: rotate(-10deg);
+}
+90% {
+  transform: rotate(10deg);
+}
+100% {
+  transform: rotate(0deg);
+}
+}
+}
 }
 </style>

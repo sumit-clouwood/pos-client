@@ -112,7 +112,7 @@ const actions = {
 
   validateEvent({ commit, rootState }) {
     if (state.processing === true) {
-      // eslint-disable-next-line no-console
+      // eslint-disable-next-line
       console.log('Dual event detected')
       return Promise.reject('Dual event detected')
     }
