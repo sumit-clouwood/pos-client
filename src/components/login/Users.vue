@@ -131,7 +131,7 @@ export default {
 
         $('#popover_content_wrapper').addClass('animated zoomIn')
         $('#popover_content_wrapper').show()
-        $('#popover_content_wrapper #cashierpin').focus()
+        //$('#popover_content_wrapper #cashierpin').focus()
       })
 
       ////$('.ullist-admin > li:first-child  > img').trigger('click')
