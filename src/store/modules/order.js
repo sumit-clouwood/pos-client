@@ -293,8 +293,16 @@ const getters = {
 
 // actions
 const actions = {
-  setSplitBill({ commit }) {
+  setSplitBill({ commit, dispatch }) {
     commit('SET_SPLIT_BILL')
+    dispatch('surchargeCalculation')
+  },
+  splitItems({ commit, dispatch }, items) {
+    commit('SPLIT_ITEMS', items)
+
+    dispatch('recalculateItemPrices')
+    dispatch('recalculateOrderTotals')
+    dispatch('surchargeCalculation')
   },
   markSplitItemsPaid({ commit }) {
     commit(mutation.MARK_SPLIT_ITEMS_PAID)
@@ -326,8 +334,11 @@ const actions = {
     commit(mutation.SET_ITEM, item)
 
     commit(mutation.ADD_ORDER_ITEM, state.item)
-
-    dispatch('surchargeCalculation')
+    //if dine in modify then calculate surcharges after every item has been added so
+    //it won't clear discounts while validating
+    if (!['dine-in-modify'].includes(state.cartType)) {
+      dispatch('surchargeCalculation')
+    }
   },
 
   //this function re-adds an item to order if item is in edit mode, it just replaces exiting item in cart
@@ -537,7 +548,9 @@ const actions = {
         })
       }
 
-      dispatch('surchargeCalculation')
+      if (!['dine-in-modify'].includes(state.cartType)) {
+        dispatch('surchargeCalculation')
+      }
       //reset the modifier form
       commit('orderForm/clearSelection', null, { root: true })
       resolve()
@@ -1009,6 +1022,8 @@ const actions = {
           }
         })
       })
+
+      //if modifying from dine in then calculate totals once every order has been added, it ll be when all have been resolved
       resolve()
     })
   },
@@ -1129,9 +1144,12 @@ const actions = {
       resolve()
     })
   },
-  addDiningOrder({ dispatch }, orderData) {
+  addDiningOrder({ dispatch, commit }, orderData) {
+    commit('SET_CART_TYPE', 'dine-in-modify')
     dispatch('setDiscounts', orderData).then(() => {
-      dispatch('addOrderToCart', orderData.item).then(() => {})
+      dispatch('addOrderToCart', orderData.item).then(() => {
+        dispatch('surchargeCalculation')
+      })
     })
   },
   selectedOrderDetails({ commit }, orderId) {
@@ -1437,6 +1455,9 @@ const mutations = {
   },
   [mutation.SPLIT_ITEMS](state, items) {
     state.splittedItems = items
+    //remove item / order discounts
+    //remove tax and surcharges
+
     const newitems = state.items.map(item => {
       if (state.splittedItems[item.orderIndex] === true) {
         item.split = true
