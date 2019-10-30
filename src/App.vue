@@ -68,6 +68,7 @@ The App.vue file is the root component that all other components are nested with
 /* eslint-disable no-console */
 /* global $ */
 import DataService from '@/services/DataService'
+import * as CONST from '@/constants'
 
 import Cookie from '@/mixins/Cookie'
 import ResizeMixin from '@/mixins/ResizeHandler'
@@ -146,6 +147,30 @@ export default {
   },
   watch: {
     $route(to, from) {
+      let orderType = {
+        OTview: 'Walk In',
+        OTApi: 'walk_in',
+      }
+
+      //{ OTview: 'Delivery', OTApi: 'call_center' }
+
+      switch (to.name) {
+        case 'Dinein':
+          orderType = {
+            OTview: 'Dine In',
+            OTApi: 'dine_in',
+          }
+          break
+
+        case 'Carhop':
+          orderType = {
+            OTview: 'Carhop',
+            OTApi: CONST.ORDER_TYPE_CARHOP,
+          }
+          break
+      }
+
+      this.$store.commit('order/ORDER_TYPE', orderType)
       // react to route changes...
       console.log('route changed ', to, from)
       setTimeout(() => {
