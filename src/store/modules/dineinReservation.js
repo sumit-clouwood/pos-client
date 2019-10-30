@@ -6,6 +6,7 @@ const state = {
   reservations: false,
   userDetails: false,
   storeUsers: false,
+  tags: false,
   params: { page: 1, limit: 9999 },
 }
 const getters = {
@@ -18,13 +19,14 @@ const getters = {
 }
 
 const actions = {
-  async getReservationByDate({ commit, getters }, selectedDate) {
+  async getReservationByDate({ commit, getters, dispatch }, selectedDate) {
     return await new Promise((resolve, reject) => {
       let UTC_Date = getters.getUTCDate(selectedDate)
       commit(mutation.SELECTED_RESERVATION_DATE, UTC_Date)
       const params = [state.params.page, state.params.limit, UTC_Date]
       DineInService.bookings(...params)
         .then(response => {
+          dispatch('getTags')
           if (response.data.count == 0) {
             reject()
           } else {
@@ -47,6 +49,11 @@ const actions = {
       commit(mutation.TAKEN_BY_LIST, response.data)
     })
   },
+  getTags({ commit }) {
+    DineInService.getReservationTags().then(response => {
+       commit(mutation.TAGS, response.data)
+    })
+  },
 }
 
 const mutations = {
@@ -61,6 +68,9 @@ const mutations = {
   },
   [mutation.TAKEN_BY_LIST](state, storeUsers) {
     state.storeUsers = storeUsers
+  },
+  [mutation.TAGS](state, tags) {
+    state.tags = tags.data
   },
 }
 

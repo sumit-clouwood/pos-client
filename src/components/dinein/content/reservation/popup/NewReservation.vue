@@ -233,15 +233,15 @@
                     >
                       <input
                         type="checkbox"
-                        :id="tag.replace(/ +/g, '')"
+                        :id="tag.name.replace(/ +/g, '')"
                         class="hidden"
                       />
                       <label
                         class="btn btn-secondary"
-                        :for="tag.replace(/ +/g, '')"
-                        @click="updateTag({ name: tag, key: index })"
+                        :for="tag.name.replace(/ +/g, '')"
+                        @click="updateTag({ name: tag.name, key: index })"
                       >
-                        {{ tag }}
+                        {{ tag.name }}
                       </label>
                     </span>
                   </div>
@@ -318,6 +318,7 @@ export default {
       'availableTables',
       'selectedTable',
     ]),
+    ...mapState('dineinReservation', ['tags']),
     ...mapGetters('location', ['_t']),
   },
   updated() {
@@ -328,7 +329,6 @@ export default {
   data() {
     return {
       tableText: 'Select Table',
-      tags: ['VIP', 'Birthday', 'Anniversary', 'Private Dining', 'First Time'],
       calendarOpen: false,
       newDetails: false,
       selectedDate: '',

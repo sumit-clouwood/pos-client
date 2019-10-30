@@ -93,4 +93,9 @@ export default {
       '/model/store_users?page_id=store_users_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=name&brand_role=&undefined='
     )
   },
+  getReservationTags() {
+    return DataService.get(
+      '/model/reservation_tags?page_id=reservation_tags_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=priority'
+    )
+  },
 }
