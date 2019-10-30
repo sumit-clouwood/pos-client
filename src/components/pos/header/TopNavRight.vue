@@ -119,7 +119,7 @@
           <li v-if="enabled && permitted('brand', 'root')">
             <a :href="brand">{{ _t('Settings') }}</a>
           </li>
-          <li v-if="enabledModule('switchCashier')">
+          <li v-if="enabledModule('switchCashier') && enabled">
             <router-link :to="'/cashier-login' + store">
               {{ _t('Switch Cashier') }}
             </router-link>
@@ -155,7 +155,15 @@ export default {
   watch: {},
   computed: {
     enabled() {
-      if (this.$route.name.match('Carhop')) {
+      let isCarhopUser = false
+      const roleId = this.$store.state.auth.userDetails.item.brand_role
+      const role = this.$store.state.auth.rolePermissions.find(
+        role => role._id === roleId
+      )
+      if (role && role.name === 'Carhop User') {
+        isCarhopUser = true
+      }
+      if (isCarhopUser) {
         return false
       }
       return true
