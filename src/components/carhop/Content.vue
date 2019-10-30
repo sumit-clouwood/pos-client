@@ -54,15 +54,8 @@ export default {
   mounted() {
     this.$store.dispatch('carhop/initFetch')
     this.interval = setInterval(() => {
-      this.$store.dispatch('carhop/fetchOrders', {
-        orderStatus: 'in-progress',
-        page: 1,
-      })
-      this.$store.dispatch('carhop/fetchOrders', {
-        orderStatus: 'finished',
-        page: 1,
-      })
-    }, 1000 * 60 * 1)
+      this.$store.dispatch('carhop/initFetch', false)
+    }, 1000 * 20)
   },
   destroyed() {
     clearInterval(this.interval)
