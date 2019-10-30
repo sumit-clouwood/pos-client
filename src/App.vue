@@ -320,75 +320,75 @@ export default {
   z-index: 990
 
   .close
-    align-items: center;
-    border: none;
-    display: inline-flex;
-    justify-content: center;
-    outline: none;
-    z-index: 0;
-    cursor: pointer;
-    position: absolute;
-    right: 16px;
-    top: 16px;
+    align-items: center
+    border: none
+    display: inline-flex
+    justify-content: center
+    outline: none
+    z-index: 0
+    cursor: pointer
+    position: absolute
+    right: 16px
+    top: 16px
 
     .btn
-      height: 20px;
-      opacity: .54;
-      width: 20px;
-      opacity: .7;
-      background-image: url("/img/icons/close.png");
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: 20px;
+      height: 20px
+      opacity: .54
+      width: 20px
+      opacity: .7
+      background-image: url("/img/icons/close.png")
+      background-position: center
+      background-repeat: no-repeat
+      background-size: 20px
     &:before
-      content: '';
-      display: block;
-      opacity: 0;
-      position: absolute;
-      transition-duration: .15s;
-      transition-timing-function: cubic-bezier(0.4,0.0,0.2,1);
-      z-index: -1;
-      bottom: -10px;
-      left: -10px;
-      right: -10px;
-      top: -10px;
-      background: none;
-      border-radius: 50%;
-      box-sizing: border-box;
-      transform: scale(0);
-      transition-property: transform,opacity;
+      content: ''
+      display: block
+      opacity: 0
+      position: absolute
+      transition-duration: .15s
+      transition-timing-function: cubic-bezier(0.4,0.0,0.2,1)
+      z-index: -1
+      bottom: -10px
+      left: -10px
+      right: -10px
+      top: -10px
+      background: none
+      border-radius: 50%
+      box-sizing: border-box
+      transform: scale(0)
+      transition-property: transform,opacity
 
     &:after
-      content: '';
-      height: 200%;
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
+      content: ''
+      height: 200%
+      position: absolute
+      top: -50%
+      left: -50%
+      width: 200%
 
   .button
-    align-items: center;
-    border: none;
-    display: inline-flex;
-    justify-content: center;
-    outline: none;
-    position: relative;
-    z-index: 0;
-    -webkit-font-smoothing: antialiased;
-    font-family: 'Google Sans',Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
-    font-size: .875rem;
-    letter-spacing: .25px;
-    background: none;
-    border-radius: 4px;
-    box-sizing: border-box;
-    color: #5f6368;
-    cursor: pointer;
-    font-weight: 500;
-    height: 36px;
-    outline: none;
-    color: #8ab4f8;
-    margin-left: 8px;
-    min-width: auto;
-    padding: 0 8px;
-    text-decoration: none;
+    align-items: center
+    border: none
+    display: inline-flex
+    justify-content: center
+    outline: none
+    position: relative
+    z-index: 0
+    -webkit-font-smoothing: antialiased
+    font-family: 'Google Sans',Roboto,RobotoDraft,Helvetica,Arial,sans-serif
+    font-size: .875rem
+    letter-spacing: .25px
+    background: none
+    border-radius: 4px
+    box-sizing: border-box
+    color: #5f6368
+    cursor: pointer
+    font-weight: 500
+    height: 36px
+    outline: none
+    color: #8ab4f8
+    margin-left: 8px
+    min-width: auto
+    padding: 0 8px
+    text-decoration: none
 </style>
