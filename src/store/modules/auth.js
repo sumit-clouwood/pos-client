@@ -70,7 +70,7 @@ const actions = {
           setTimeout(() => {
             dispatch('location/setContext', null, { root: true }).then(() => {
               commit(mutation.SET_TOKEN, response.data.token)
-              resolve()
+              resolve(response.data.token)
             })
           }, 100)
           //resolve()

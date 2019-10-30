@@ -151,7 +151,13 @@ export default {
       //     }
       //   })
       //   .catch(error => reject(error))
-      return this.getLive(url, resolve, reject)
+      if (process.env.VUE_APP_CACHE_FIRST) {
+        this.getCacheable(url)
+          .then(response => resolve(response))
+          .catch(error => reject(error))
+      } else {
+        return this.getLive(url, resolve, reject)
+      }
     })
   },
 
@@ -160,8 +166,7 @@ export default {
     return this.get(url, level)
   },
 
-  getCacheable(url, level) {
-    url = this.getContextUrl(url, level)
+  getCacheable(url) {
     const absUrl = this.getAbsUrl(url)
     return new Promise((resolve, reject) => {
       this.getOfflineEventData(absUrl)
@@ -178,11 +183,7 @@ export default {
 
             if (days > 1) {
               //resync time greater than 1 day, get live, we ll change this later
-              this.getLive(
-                absUrl + '&last_sync_date=' + newDate.getDate(),
-                resolve,
-                reject
-              )
+              this.getLive(absUrl, resolve, reject)
             } else {
               this.syncDate = newDate.getDate()
               resolve(response)
