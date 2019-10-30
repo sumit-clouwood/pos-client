@@ -150,12 +150,12 @@ export default {
     ...mapGetters('context', ['store']),
     page: {
       get() {
-        return this.$store.getters['carhop/page']('finished')
+        return this.$store.getters['carhop/page']('in-process')
       },
       set(page) {
         this.$store.commit('carhop/SET_PAGE', {
           page: page,
-          orderStatus: 'finished',
+          orderStatus: 'in-process',
         })
       },
     },
@@ -166,7 +166,7 @@ export default {
     ...mapActions('order', ['selectedOrderDetails']),
     ...mapActions('deliveryManager', ['printInvoice']),
     fetchMore(page) {
-      this.fetchOrders({ orderStatus: 'finished', page: page })
+      this.fetchOrders({ orderStatus: 'in-process', page: page })
     },
   },
 }
