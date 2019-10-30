@@ -184,7 +184,7 @@ export default {
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
-          return false
+          return true
       }
     },
 
