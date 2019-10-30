@@ -190,16 +190,6 @@ export default {
         bootstrap
           .setup(this.$store)
           .then(() => {
-            const roleId = this.$store.state.auth.userDetails.item.brand_role
-            const role = this.$store.state.auth.rolePermissions.find(
-              role => role._id === roleId
-            )
-            if (role && role.name === 'Waiter') {
-              this.$router.replace({ name: 'Dinein' })
-            } else if (role && role.name === 'Carhop User') {
-              this.$router.replace({ name: 'Carhop' })
-            }
-
             setTimeout(() => {
               clearInterval(interval)
               this.progressIncrement = 100
