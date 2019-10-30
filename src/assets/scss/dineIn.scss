@@ -1127,3 +1127,36 @@ span.dinefor-paynow > a {
 input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
+.button-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: auto;
+  justify-content: center;
+  margin: 0 auto;
+  > a {
+    text-align:right;
+    span{
+      &.dinefor-paynow{
+        border: 1px solid transparent;
+        padding: .375rem .75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        border-radius: .25rem;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+      }
+
+    }
+    .pay_now{
+      font-size: 1rem;
+    }
+  }
+}
+.carhop-wrapper {
+  .header-main {
+  > div{
+    &:first-child{
+      justify-content:flex-start;
+    }
+  }
+  }
+}
