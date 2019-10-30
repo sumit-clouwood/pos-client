@@ -78,7 +78,7 @@
                       aria-haspopup="true"
                       aria-expanded="false"
                     >
-                      {{ _t('Reprint') }}
+                      {{ _t('Print') }}
                     </button>
                     <div
                       class="dropdown-menu"
