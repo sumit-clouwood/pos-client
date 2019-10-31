@@ -1,7 +1,6 @@
 <!--
 The App.vue file is the root component that all other components are nested within.
 -->
-
 <template>
   <div>
     <!--<div id="nav">-->
@@ -63,20 +62,17 @@ The App.vue file is the root component that all other components are nested with
     </div>
   </div>
 </template>
-
 <script>
 /* eslint-disable no-console */
 /* global $ */
 import DataService from '@/services/DataService'
 import * as CONST from '@/constants'
-
 import Cookie from '@/mixins/Cookie'
 import ResizeMixin from '@/mixins/ResizeHandler'
 import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
 import Login from '@/components/login/Login'
 import { mapState, mapGetters } from 'vuex'
-
 export default {
   name: 'App',
   props: {},
@@ -100,7 +96,6 @@ export default {
       localStorage.setItem('update_available', false)
       window.location.reload(true)
     },
-
     closeNotification() {
       this.$store.commit('sync/setAppUpdateNotification', false)
     },
@@ -113,12 +108,10 @@ export default {
       )
     }
     DataService.setStore(this.$store)
-
     if (this.$route.params.brand_id) {
       this.$store.commit('context/SET_BRAND_ID', this.$route.params.brand_id)
       localStorage.setItem('brand_id', this.$route.params.brand_id)
       this.$store.commit('context/SET_STORE_ID', this.$route.params.store_id)
-
       localStorage.setItem('store_id', this.$route.params.store_id)
       DataService.setContext({
         brand: this.$store.getters['context/brand'],
@@ -137,7 +130,6 @@ export default {
         }
       })
       .catch(error => console.log(error))
-
     if (this.$route.params.order_id) {
       this.orderId = this.$route.params.order_id
     }
@@ -151,9 +143,7 @@ export default {
         OTview: 'Walk In',
         OTApi: 'walk_in',
       }
-
       //{ OTview: 'Delivery', OTApi: 'call_center' }
-
       switch (to.name) {
         case 'Dinein':
           orderType = {
@@ -161,7 +151,6 @@ export default {
             OTApi: 'dine_in',
           }
           break
-
         case 'Carhop':
           orderType = {
             OTview: 'Carhop',
@@ -169,7 +158,6 @@ export default {
           }
           break
       }
-
       this.$store.commit('order/ORDER_TYPE', orderType)
       // react to route changes...
       console.log('route changed ', to, from)
@@ -186,7 +174,6 @@ export default {
             this.progressIncrement = 0
           }
         }, 1000)
-
         bootstrap
           .setup(this.$store)
           .then(() => {
@@ -194,13 +181,10 @@ export default {
               clearInterval(interval)
               this.progressIncrement = 100
             }, 100)
-
             setTimeout(() => {
               this.loading = false
             }, 300)
-
             console.log('bootstrap done, delayed loading')
-
             if ('serviceWorker' in navigator && 'SyncManager' in window) {
               console.log('service worker and syncmanager are in window')
               setTimeout(() => {
@@ -219,7 +203,6 @@ export default {
                   })
               }, 3000)
             }
-
             if (this.orderId && this.$route.name === 'UpdateDeliveryOrder') {
               this.$store
                 .dispatch('order/selectedOrderDetails', this.orderId)
@@ -233,11 +216,9 @@ export default {
                   )
                 })
             }
-
             if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
               this.$store.dispatch('order/modifyOrder', this.orderId)
             }
-
             setTimeout(() => {
               require('@/../public/js/pos_script.js')
             }, 2000)
@@ -251,7 +232,6 @@ export default {
             //}, 1000 * 10)
             console.log('some catch ', error)
           })
-
         setTimeout(() => {
           navigator.serviceWorker.addEventListener('message', event => {
             console.log('*** event received from service worker', event)
@@ -277,7 +257,6 @@ export default {
       }
     },
   },
-
   computed: {
     ...mapState({
       defaultLanguage: state =>
@@ -294,7 +273,6 @@ export default {
     }
   },
 }
-
 //vanilla js
 </script>
 <style lang="scss">
@@ -333,77 +311,73 @@ export default {
   top: auto
   white-space: normal
   z-index: 990
-
   .close
-    align-items: center;
-    border: none;
-    display: inline-flex;
-    justify-content: center;
-    outline: none;
-    z-index: 0;
-    cursor: pointer;
-    position: absolute;
-    right: 16px;
-    top: 16px;
-
+    align-items: center
+    border: none
+    display: inline-flex
+    justify-content: center
+    outline: none
+    z-index: 0
+    cursor: pointer
+    position: absolute
+    right: 16px
+    top: 16px
     .btn
-      height: 20px;
-      opacity: .54;
-      width: 20px;
-      opacity: .7;
-      background-image: url("/img/icons/close.png");
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: 20px;
+      height: 20px
+      opacity: .54
+      width: 20px
+      opacity: .7
+      background-image: url("/img/icons/close.png")
+      background-position: center
+      background-repeat: no-repeat
+      background-size: 20px
     &:before
-      content: '';
-      display: block;
-      opacity: 0;
-      position: absolute;
-      transition-duration: .15s;
-      transition-timing-function: cubic-bezier(0.4,0.0,0.2,1);
-      z-index: -1;
-      bottom: -10px;
-      left: -10px;
-      right: -10px;
-      top: -10px;
-      background: none;
-      border-radius: 50%;
-      box-sizing: border-box;
-      transform: scale(0);
-      transition-property: transform,opacity;
-
+      content: ''
+      display: block
+      opacity: 0
+      position: absolute
+      transition-duration: .15s
+      transition-timing-function: cubic-bezier(0.4,0.0,0.2,1)
+      z-index: -1
+      bottom: -10px
+      left: -10px
+      right: -10px
+      top: -10px
+      background: none
+      border-radius: 50%
+      box-sizing: border-box
+      transform: scale(0)
+      transition-property: transform,opacity
     &:after
-      content: '';
-      height: 200%;
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-
+      content: ''
+      height: 200%
+      position: absolute
+      top: -50%
+      left: -50%
+      width: 200%
   .button
-    align-items: center;
-    border: none;
-    display: inline-flex;
-    justify-content: center;
-    outline: none;
-    position: relative;
-    z-index: 0;
-    -webkit-font-smoothing: antialiased;
-    font-family: 'Google Sans',Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
-    font-size: .875rem;
-    letter-spacing: .25px;
-    background: none;
-    border-radius: 4px;
-    box-sizing: border-box;
-    color: #5f6368;
-    cursor: pointer;
-    font-weight: 500;
-    height: 36px;
-    outline: none;
-    color: #8ab4f8;
-    margin-left: 8px;
-    min-width: auto;
-    padding: 0 8px;
-    text-decoration: none;
+    align-items: center
+    border: none
+    display: inline-flex
+    justify-content: center
+    outline: none
+    position: relative
+    z-index: 0
+    -webkit-font-smoothing: antialiased
+    font-family: 'Google Sans',Roboto,RobotoDraft,Helvetica,Arial,sans-serif
+    font-size: .875rem
+    letter-spacing: .25px
+    background: none
+    border-radius: 4px
+    box-sizing: border-box
+    color: #5f6368
+    cursor: pointer
+    font-weight: 500
+    height: 36px
+    outline: none
+    color: #8ab4f8
+    margin-left: 8px
+    min-width: auto
+    padding: 0 8px
+    text-decoration: none
 </style>
