@@ -442,14 +442,14 @@ export default {
                 this.$store.dispatch('dinein/getDineInArea', false)
                 this.$store.dispatch('dinein/getDineInTables', false)
                 $('#tooltipdata').hide()
-                // this.updateTableOnArea()
                 /*this.clearTableArea()
                 this.setTableProperties()*/
                 setTimeout(function() {
+                  this.updateTableOnArea()
                   $(makeId)
                     .find('g')
                     .removeAttr('style')
-                }, 350)
+                }, 450)
               })
           })
       } else {

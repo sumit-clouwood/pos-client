@@ -6,20 +6,17 @@
       v-if="tablesOnArea && dineInTabType === 'all'"
       style="display: block; padding-right: 0;"
     >
-      <Preloader v-if="loading" />
-      <TableDraw v-else />
+      <TableDraw />
     </div>
     <OrderDetailsPopup />
     <RunningOrders />
     <Waiting />
     <Reservation />
-    <Preloader v-if="loading" />
-    <CompletedOrders v-else />
+    <CompletedOrders />
   </div>
 </template>
 
 <script>
-import Preloader from '@/components/util/Progress'
 import RunningOrders from './content/RunningOrders'
 import Reservation from './content/Reservation'
 import Waiting from './content/Waiting'
@@ -40,7 +37,6 @@ export default {
     TableDraw,
     Waiting,
     OrderDetailsPopup,
-    Preloader,
   },
   mounted() {
     this.$store.commit('dinein/SET_COVER', '')
