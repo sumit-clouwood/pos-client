@@ -442,7 +442,7 @@ export default {
                 this.$store.dispatch('dinein/getDineInArea', false)
                 this.$store.dispatch('dinein/getDineInTables', false)
                 $('#tooltipdata').hide()
-                this.updateTableOnArea()
+                // this.updateTableOnArea()
                 /*this.clearTableArea()
                 this.setTableProperties()*/
                 setTimeout(function() {
@@ -650,7 +650,7 @@ export default {
           loader: false,
         })
         this.$store.dispatch('dinein/getDineInArea', false)
-        this.updateTableOnArea()
+        // this.updateTableOnArea()
         /*this.clearTableArea()
         this.setTableProperties()*/
       })
