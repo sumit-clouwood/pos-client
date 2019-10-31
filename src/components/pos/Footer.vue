@@ -267,7 +267,7 @@
         orderType.OTApi === 'dine_in' ? 'grid-template-columns: 1fr 1fr' : ''
       "
     >
-      <div class="button" v-if="is_pay === 1">
+      <div class="button" v-if="is_pay === 1" :class="{ waiter: waiter }">
         <ul class="template-btn">
           <li
             v-show="orderType.OTApi === 'call_center'"
@@ -308,9 +308,11 @@
             class="pay-now color-dashboard-background color-main"
             :class="{ inactive: items.length === 0 }"
             v-show="
-              !['call_center', CONST.ORDER_TYPE_CARHOP].includes(
-                orderType.OTApi
-              ) || orderId
+              !waiter &&
+                (!['call_center', CONST.ORDER_TYPE_CARHOP].includes(
+                  orderType.OTApi
+                ) ||
+                  orderId)
             "
             @click="payNowClick()"
           >
@@ -498,6 +500,19 @@ export default {
       loyaltyCard: state => state.customer.loyalty.card,
     }),
     ...mapState({ selectedCustomer: state => state.customer.customer.name }),
+    role() {
+      const roleId = this.$store.state.auth.userDetails.item.brand_role
+      if (roleId && this.$store.state.auth.rolePermissions) {
+        const role = this.$store.state.auth.rolePermissions.find(
+          role => role._id === roleId
+        )
+        return role ? role.name : ''
+      }
+      return ''
+    },
+    waiter() {
+      return this.role === 'Waiter'
+    },
   },
 
   watch: {
@@ -723,4 +738,13 @@ export default {
   .inactive
     background-color: #ccc
     cursor: not-allowed
+  .waiter
+    background-color: #fff
+</style>
+<style lang="scss" scoped>
+.button {
+  &.waiter {
+    background-color: #fff !important;
+  }
+}
 </style>
