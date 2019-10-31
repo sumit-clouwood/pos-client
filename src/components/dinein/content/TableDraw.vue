@@ -445,7 +445,7 @@ export default {
                   .then(() => {
                     /*this.clearTableArea()
                   this.setTableProperties()*/
-                    this.updateTableOnArea()
+                    this.setTableProperties()
                     $(makeId)
                       .find('g')
                       .removeAttr('style')
@@ -637,7 +637,6 @@ export default {
       $(makeId)
         .find('g')
         .attr('style', 'opacity:0.5')
-      alert('f')
       this.reservationUpdateStatus({
         reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
@@ -659,7 +658,7 @@ export default {
           .then(() => {
             /*this.clearTableArea()
         this.setTableProperties()*/
-            this.updateTableOnArea()
+            this.setTableProperties()
             $(makeId)
               .find('g')
               .removeAttr('style')
