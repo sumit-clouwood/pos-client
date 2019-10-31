@@ -437,6 +437,7 @@ export default {
               .then(() => {
                 this.$store.dispatch('dinein/getDineInArea', false)
                 this.$store.dispatch('dinein/getDineInTables', false)
+                $('#tooltipdata').hide()
               })
           })
       } else {
