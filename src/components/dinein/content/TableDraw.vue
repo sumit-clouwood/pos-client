@@ -440,16 +440,17 @@ export default {
               })
               .then(() => {
                 this.$store.dispatch('dinein/getDineInArea', false)
-                this.$store.dispatch('dinein/getDineInTables', false)
+                this.$store
+                  .dispatch('dinein/getDineInTables', false)
+                  .then(() => {
+                    /*this.clearTableArea()
+                  this.setTableProperties()*/
+                    this.updateTableOnArea()
+                    $(makeId)
+                      .find('g')
+                      .removeAttr('style')
+                  })
                 $('#tooltipdata').hide()
-                /*this.clearTableArea()
-                this.setTableProperties()*/
-                setTimeout(function() {
-                  this.updateTableOnArea()
-                  $(makeId)
-                    .find('g')
-                    .removeAttr('style')
-                }, 450)
               })
           })
       } else {
@@ -632,6 +633,11 @@ export default {
       }
     },*/
     confirmCancelReservation() {
+      let makeId = '#id_' + this.selectedTableId
+      $(makeId)
+        .find('g')
+        .attr('style', 'opacity:0.5')
+      alert('f')
       this.reservationUpdateStatus({
         reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
@@ -644,12 +650,23 @@ export default {
             return false
           }
         }
-        this.$store.dispatch('dinein/updateDineInOrderStatus', {
-          title: 'all',
-          pageId: 'getBookedTables',
-          loader: false,
-        })
+        this.$store
+          .dispatch('dinein/updateDineInOrderStatus', {
+            title: 'all',
+            pageId: 'getBookedTables',
+            loader: false,
+          })
+          .then(() => {
+            /*this.clearTableArea()
+        this.setTableProperties()*/
+            this.updateTableOnArea()
+            $(makeId)
+              .find('g')
+              .removeAttr('style')
+          })
         this.$store.dispatch('dinein/getDineInArea', false)
+
+        $('#tooltipdata').hide()
         // this.updateTableOnArea()
         /*this.clearTableArea()
         this.setTableProperties()*/
