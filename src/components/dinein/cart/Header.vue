@@ -146,8 +146,7 @@ export default {
     ...mapState({ selectedAddress: state => state.customer.address }),
     ...mapGetters('context', ['store']),
     enabledSplitBill() {
-      //return this.items.length > 1
-      return false
+      return this.items.length > 1
     },
   },
   methods: {

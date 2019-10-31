@@ -66,7 +66,8 @@ export default {
   },
   watch: {
     paymentMsgStatus(newVal) {
-      if (newVal && this.$store.getters['checkout/complete']) {
+      //if (newVal && this.$store.getters['checkout/complete']) {
+      if (newVal) {
         if (this.$store.state.order.orderType.OTApi === 'dine_in') {
           this.$store.dispatch('order/beforeRedirectResetCartDineIn')
           this.$router.replace({ name: 'Dinein' })
@@ -84,7 +85,8 @@ export default {
       }
     },
     changeAmountStatus(newVal) {
-      if (newVal && this.$store.getters['checkout/complete']) {
+      //if (newVal && this.$store.getters['checkout/complete']) {
+      if (newVal) {
         //Reset Cart and set states and redirect to dine in.
         if (this.$store.state.order.orderType.OTApi === 'dine_in') {
           this.$store.dispatch('order/beforeRedirectResetCartDineIn')
