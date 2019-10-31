@@ -70,7 +70,7 @@ const actions = {
           setTimeout(() => {
             dispatch('location/setContext', null, { root: true }).then(() => {
               commit(mutation.SET_TOKEN, response.data.token)
-              resolve()
+              resolve(response.data.token)
             })
           }, 100)
           //resolve()
@@ -130,8 +130,8 @@ const actions = {
 
       commit(mutation.RESET)
 
-      commit('order/RESET', null, { root: true })
-      commit('checkout/RESET', null, { root: true })
+      commit('order/RESET', true, { root: true })
+      commit('checkout/RESET', true, { root: true })
       commit('context/RESET', null, { root: true })
       commit('customer/RESET', null, { root: true })
       commit('sync/reset', {}, { root: true })

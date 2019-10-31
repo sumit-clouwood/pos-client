@@ -50,6 +50,37 @@
                 >
                   <div v-if="order">
                     <div class="running-actions">
+                      <div class="dropdown">
+                        <button
+                          class="button btn btn-success color-main color-text-invert dropdown-toggle"
+                          type="button"
+                          id="dropdownMenuButton"
+                          @click="selectedOrderDetails(order._id)"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                        >
+                          {{ _t('Print') }}
+                        </button>
+                        <div
+                          class="dropdown-menu"
+                          aria-labelledby="dropdownMenuButton"
+                        >
+                          <a
+                            class="dropdown-item"
+                            role="button"
+                            v-for="(template, index) in selectedOrder.invoice"
+                            :key="index"
+                            @click="
+                              printInvoice({
+                                templateId: template._id,
+                                order: selectedOrder,
+                              })
+                            "
+                            >{{ template.name }}</a
+                          >
+                        </div>
+                      </div>
                       <span
                         v-if="order.order_system_status !== 'cancelled'"
                         @click="selectedOrderDetails(order._id)"
@@ -74,7 +105,8 @@
                       <span
                         class="dinefor-paynow"
                         v-if="
-                          tabName !== 'completed' &&
+                          !waiter &&
+                            tabName !== 'completed' &&
                             order.order_status !== 'finished'
                           /*&& order.order_status !== 'cancelled'*/
                         "
@@ -307,8 +339,22 @@ export default {
   },
   mixins: [DateTime],
   computed: {
+    role() {
+      const roleId = this.$store.state.auth.userDetails.item.brand_role
+      if (roleId && this.$store.state.auth.rolePermissions) {
+        const role = this.$store.state.auth.rolePermissions.find(
+          role => role._id === roleId
+        )
+        return role ? role.name : ''
+      }
+      return ''
+    },
+    waiter() {
+      return this.role === 'Waiter'
+    },
     ...mapState('location', ['timezoneString']),
     ...mapGetters('location', ['_t', 'formatPrice']),
+    ...mapState('order', ['selectedOrder']),
     ...mapState('dinein', [
       'orderDetails',
       'loading',
@@ -351,6 +397,7 @@ export default {
       this.fetchMoreReservations(pageInformation)
     },
     ...mapActions('order', ['selectedOrderDetails']),
+    ...mapActions('deliveryManager', ['printInvoice']),
     ...mapActions('dinein', [
       'reservationUpdateStatus',
       'fetchMoreReservations',
@@ -408,4 +455,12 @@ export default {
 /*td.dine-order-tabel > span {
   height: 7.375rem;
 }*/
+.running-actions .dropdown {
+  text-align: left;
+}
+
+button#dropdownMenuButton {
+  padding: 3px 10px;
+  font-size: 12px;
+}
 </style>

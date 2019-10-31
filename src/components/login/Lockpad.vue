@@ -230,8 +230,11 @@ export default {
       line-height: normal
       letter-spacing: 0.6px
       margin-bottom: 0
-      padding: 18px 0
       cursor: pointer
+
+      a
+        display: block
+        padding: 18px 0
 
       &:hover
         background: rgba(98, 187, 49, 0.85);

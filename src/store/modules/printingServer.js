@@ -186,12 +186,15 @@ const actions = {
           setTimeout(function() {
             // eslint-disable-next-line no-console
             console.log(state.kitchenInvoiceResponse.closed)
-            if (!state.kitchenInvoiceResponse.closed) {
+            if (
+              typeof state.kitchenInvoiceResponse.closed != 'undefined' &&
+              !state.kitchenInvoiceResponse.closed
+            ) {
               // eslint-disable-next-line no-console
               console.log('close')
               state.kitchenInvoiceResponse.close()
             }
-          }, 20000)
+          }, 5000)
           // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
       }

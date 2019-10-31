@@ -1042,7 +1042,7 @@ const actions = {
     return dispatch('pay', { action: 'dine-in-place-order' })
   },
 
-  createDineOrder({ dispatch, commit, rootGetters }, action) {
+  createDineOrder({ dispatch, commit, rootGetters, state }, action) {
     return new Promise(resolve => {
       OrderService.saveOrder(state.order)
         .then(response => {
@@ -1053,6 +1053,10 @@ const actions = {
             let msg = rootGetters['location/_t']('Dinein Order has been paid')
             if (action === 'dine-in-place-order') {
               msg = rootGetters['location/_t']('Dinein Order has been placed')
+              //Invoice APP API Call with Custom Request JSON
+              dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+                root: true,
+              })
               dispatch('reset')
             } else {
               commit(mutation.PRINT, true)
@@ -1082,7 +1086,7 @@ const actions = {
   },
 
   // eslint-disable-next-line no-unused-vars
-  createCarhopOrder({ dispatch, commit, rootGetters }, action) {
+  createCarhopOrder({ dispatch, commit, rootGetters, state }, action) {
     return new Promise(resolve => {
       OrderService.saveOrder(state.order)
         .then(response => {
@@ -1094,6 +1098,10 @@ const actions = {
             const msg = rootGetters['location/_t'](
               'Carhop Order has been placed'
             )
+            //Invoice APP API Call with Custom Request JSON
+            dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+              root: true,
+            })
             dispatch('reset')
 
             dispatch('setMessage', {

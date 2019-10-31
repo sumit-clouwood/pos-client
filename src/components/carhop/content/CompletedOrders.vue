@@ -35,10 +35,43 @@
               <td class="font-weight-bold">
                 {{ order.currency }} {{ order.balance_due }}
               </td>
-              <td class="text-center">
-                <div class="paid-amount-msg text-center font-weight-bold">
-                  <img src="img/dinein/paid-icon.png" style="width:33px" />
-                  {{ _t('Paid') }}
+              <td>
+                <div class="button-wrapper">
+                  <div class="dropdown text-right">
+                    <button
+                      class="button btn btn-success color-main color-text-invert dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton"
+                      @click="selectedOrderDetails(order._id)"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                    >
+                      {{ _t('Print') }}
+                    </button>
+                    <div
+                      class="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton"
+                    >
+                      <a
+                        class="dropdown-item"
+                        role="button"
+                        v-for="(template, index) in selectedOrder.invoice"
+                        :key="index"
+                        @click="
+                          printInvoice({
+                            templateId: template._id,
+                            order: selectedOrder,
+                          })
+                        "
+                        >{{ template.name }}</a
+                      >
+                    </div>
+                  </div>
+                  <div class="paid-amount-msg text-left font-weight-bold">
+                    <img src="img/dinein/paid-icon.png" style="width:33px" />
+                    {{ _t('Paid') }}
+                  </div>
                 </div>
               </td>
             </tr>
@@ -85,6 +118,7 @@ export default {
   },
   computed: {
     ...mapState('carhop', ['limit']),
+    ...mapState('order', ['selectedOrder']),
     ...mapGetters('location', ['_t']),
     page: {
       get() {
@@ -102,6 +136,7 @@ export default {
   methods: {
     ...mapActions('carhop', ['fetchOrders']),
     ...mapActions('order', ['selectedOrderDetails']),
+    ...mapActions('deliveryManager', ['printInvoice']),
     fetchMore(page) {
       this.fetchOrders({ orderStatus: 'finished', page: page })
     },
@@ -114,15 +149,18 @@ export default {
 
   .carhop-completed-orders
     display: block
-    height: calc(100vh - 180px);
-    overflow: auto;
+    height: calc(100vh - 205px)
+    overflow: auto
 
   .pagination-wrapper
     display: block
     overflow: hidden
 
+  .button-wrapper
+    grid-gap: 15px
+
   .paid-amount-msg
-    color: #7ac241;
+    color: #7ac241
 </style>
 <style lang="scss" scoped>
 @import '../../../assets/scss/responsive_table.scss';

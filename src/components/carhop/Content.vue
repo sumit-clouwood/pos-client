@@ -3,6 +3,13 @@
     <OrderDetailsPopup />
     <Preloader v-if="loading" />
     <div v-else>
+      <progressbar
+        v-if="loadingSilent"
+        :init="10"
+        :step="10"
+        :interval="100"
+        :range="150"
+      ></progressbar>
       <running-orders
         :orders="orders['in-progress']"
         v-if="orderStatus == 'in-progress'"
@@ -18,6 +25,7 @@
 <script>
 import { mapState } from 'vuex'
 import Preloader from '@/components/util/Preloader'
+import progressbar from '@/components/util/progressbar'
 import RunningOrders from './content/RunningOrders'
 import CompletedOrders from './content/CompletedOrders'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
@@ -33,12 +41,24 @@ export default {
   },
   components: {
     Preloader,
+    progressbar,
     RunningOrders,
     CompletedOrders,
     OrderDetailsPopup,
   },
+  data() {
+    return {
+      interval: null,
+    }
+  },
   mounted() {
     this.$store.dispatch('carhop/initFetch')
+    this.interval = setInterval(() => {
+      this.$store.dispatch('carhop/initFetch', false)
+    }, 1000 * 20)
+  },
+  destroyed() {
+    clearInterval(this.interval)
   },
 }
 </script>
