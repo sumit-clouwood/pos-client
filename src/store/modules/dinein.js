@@ -79,12 +79,12 @@ const actions = {
   updateDineInOrderStatus({ dispatch, commit }, orderStatus) {
     commit(mutation.DINE_IN_TAB_TYPE, orderStatus.title)
     if (orderStatus.pageId) {
-      let loader = orderStatus.loader ? orderStatus.loader : false
+      let loader = orderStatus.loader
       dispatch(orderStatus.pageId, loader)
     }
   },
   async fetchAll({ dispatch, commit }) {
-    commit(mutation.LOADING, false)
+    commit(mutation.LOADING, true)
     await Promise.all([
       dispatch('getDineInTables'),
       dispatch('getCovers'),
@@ -115,6 +115,7 @@ const actions = {
   async getBookedTables({ commit }, loader = true) {
     // eslint-disable-next-line no-console
     console.log('all bookend table')
+
     if (loader) commit(mutation.LOADING, loader)
     localStorage.setItem('reservationId', false)
     const response = await DineInService.getAllBookedTables()
