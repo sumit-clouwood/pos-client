@@ -22,7 +22,7 @@ import SystemNavigation from '@/components/SystemNavigation'
 import Header from '@/components/dinein/Header.vue'
 import Content from '@/components/dinein/Content'
 import Footer from '@/components/dinein/Footer'
-import Preloader from '@/components/util/Progress'
+import Preloader from '@/components/util/progressbar'
 // import Preloader from '@/components/util/Preloader'
 import { mapState } from 'vuex'
 
