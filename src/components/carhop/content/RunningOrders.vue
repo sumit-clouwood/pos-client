@@ -30,7 +30,10 @@
                   :key="item.no"
                   class="item-name"
                 >
-                  <span>{{ item.name }} ({{ item.qty }})</span>
+                  <span>
+                    {{ item.name }} ({{ item.qty }})
+                    <span v-if="item.no + 1 !== order.items.length">,</span>
+                  </span>
                 </div>
               </td>
               <td class="font-weight-bold">
