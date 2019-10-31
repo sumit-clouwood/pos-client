@@ -44,8 +44,10 @@ export default {
     )
     console.log(role)
     if (role && role.name === 'Waiter') {
-      console.log('replace with waiter dinein')
-      this.$router.replace('/dine-in' + this.store + '/')
+      console.log('replace with waiter dinein', this.$route)
+      if (!this.$router.path.match('dine-in')) {
+        this.$router.replace('/dine-in' + this.store + '/')
+      }
     } else if (role && role.name === 'Carhop User') {
       console.log('replace with carhop')
       this.$router.replace('/carhop' + this.store + '/')
