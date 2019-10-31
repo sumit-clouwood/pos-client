@@ -446,7 +446,7 @@ export default {
                   $(makeId)
                     .find('g')
                     .removeAttr('style')
-                }, 450)
+                }, 350)
               })
           })
       } else {
