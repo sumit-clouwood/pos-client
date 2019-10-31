@@ -442,6 +442,9 @@ export default {
                 this.$store.dispatch('dinein/getDineInArea', false)
                 this.$store.dispatch('dinein/getDineInTables', false)
                 $('#tooltipdata').hide()
+                this.clearTableArea()
+                this.updateTableOnArea()
+                this.setTableProperties()
                 setTimeout(function() {
                   $(makeId)
                     .find('g')
@@ -647,6 +650,9 @@ export default {
           loader: false,
         })
         this.$store.dispatch('dinein/getDineInArea', false)
+        this.clearTableArea()
+        this.updateTableOnArea()
+        this.setTableProperties()
       })
       this.componentKey += 1
       $('#range')
