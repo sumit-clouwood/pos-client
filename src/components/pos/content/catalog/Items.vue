@@ -6,7 +6,7 @@
       :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
     >
       <!-- <div class="bg">bg</div> -->
-      <btnBack :param="'item'" />
+      <!--      <btnBack :param="'item'" />-->
       <div
         :class="{
           'food-menu-item': true,
@@ -42,7 +42,7 @@
       v-if="!items.length"
       :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
     >
-      <btnBack :param="'item'" />
+      <!--<btnBack :param="'item'" />-->
       No menu item found
     </div>
   </div>
@@ -54,7 +54,7 @@
 import { mapGetters, mapState } from 'vuex'
 import bootstrap from '@/bootstrap'
 import Popup from './items/Popup'
-import btnBack from '../../../mobileComponents/mobileElements/btnBack'
+// import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
 export default {
   name: 'Items',
@@ -63,7 +63,7 @@ export default {
   },
   components: {
     Popup,
-    btnBack,
+    // btnBack,
   },
   computed: {
     ...mapState('location', ['currency']),
@@ -229,7 +229,7 @@ export default {
       border: none;
       border-bottom: 1px solid $gray-middle;
       padding-right: 20px;
-      background-color: #fafafa;
+      background: linear-gradient(141deg, #fcfcff 0%, #d7e0e1 51%, #ecebeb 75%);
       transition: 0.1s ease-out;
 
       &:not(.color-dashboard-background) {

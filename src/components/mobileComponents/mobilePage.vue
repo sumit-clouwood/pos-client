@@ -1,6 +1,11 @@
 <template>
   <div class="mobile-page">
     <div class="mobile-header">
+      <btnBack
+        v-if="foodMenuHendler || subCategoryHendler"
+        :param="navigateTo"
+      />
+      <div v-else></div>
       <div class="current-sale">
         <div class="title">Current Sale ({{ _t(orderType.OTview) }})</div>
         <div class="list">
@@ -12,35 +17,26 @@
       </div>
       <div class="btn-menu" @click="profileHendlerChange">
         <svg
-          width="20"
-          height="14"
-          viewBox="0 0 20 14"
-          fill="none"
+          version="1.1"
+          id="Capa_1"
           xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          width="25px"
+          height="25px"
+          viewBox="0 0 124 124"
+          style="enable-background:new 0 0 25 25;"
+          xml:space="preserve"
         >
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M0 5C0 4.44772 0.447715 4 1 4H19C19.5523 4 20 4.44772 20 5C20 5.55228 19.5523 6 19 6H1C0.447715 6 0 5.55228 0 5Z"
-            fill="white"
+            d="M112,6H12C5.4,6,0,11.4,0,18s5.4,12,12,12h100c6.6,0,12-5.4,12-12S118.6,6,112,6z"
           />
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M0 1C0 0.447715 0.447715 0 1 0H19C19.5523 0 20 0.447715 20 1C20 1.55228 19.5523 2 19 2H1C0.447715 2 0 1.55228 0 1Z"
-            fill="white"
+            d="M112,50H12C5.4,50,0,55.4,0,62c0,6.6,5.4,12,12,12h100c6.6,0,12-5.4,12-12C124,55.4,118.6,50,112,50z"
           />
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M0 9C0 8.44771 0.447715 8 1 8H19C19.5523 8 20 8.44771 20 9C20 9.55229 19.5523 10 19 10H1C0.447715 10 0 9.55229 0 9Z"
-            fill="white"
-          />
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M0 13C0 12.4477 0.447715 12 1 12H19C19.5523 12 20 12.4477 20 13C20 13.5523 19.5523 14 19 14H1C0.447715 14 0 13.5523 0 13Z"
-            fill="white"
+            d="M112,94H12c-6.6,0-12,5.4-12,12s5.4,12,12,12h100c6.6,0,12-5.4,12-12S118.6,94,112,94z"
           />
         </svg>
       </div>
@@ -63,6 +59,7 @@ import submenu from '../pos/content/catalog/SubMenu.vue'
 import posmenu from '../pos/Menu.vue'
 import items from '../pos/content/catalog/Items.vue'
 import mobileFooter from './mobileFooter.vue'
+import btnBack from '../mobileComponents/mobileElements/btnBack'
 
 export default {
   components: {
@@ -71,11 +68,26 @@ export default {
     submenu,
     items,
     mobileFooter,
+    btnBack,
   },
   computed: {
     ...mapGetters('order', ['items']),
     ...mapGetters('location', ['_t']),
     ...mapState('order', ['orderType']),
+    ...mapGetters([
+      'allCategoryHendler',
+      'subCategoryHendler',
+      'foodMenuHendler',
+    ]),
+    navigateTo() {
+      if (this.allCategoryHendler) {
+        return 'category'
+      }
+      if (this.subCategoryHendler) {
+        return 'subcategory'
+      }
+      return 'item'
+    },
   },
   methods: {
     profileHendlerChange() {
@@ -100,7 +112,7 @@ export default {
   .mobile-header {
     padding: 20px;
     display: grid;
-    grid-template-columns: 1fr max-content;
+    grid-template-columns: 4em max-content 2em;
     align-items: center;
     background-color: #fafafa;
     z-index: 2;
@@ -158,7 +170,12 @@ export default {
     .btn-menu {
       width: 50px;
       height: 50px;
-      background-color: $btn-bg-black;
+      /*background-color: $btn-bg-black;*/
+      background: linear-gradient(
+        0deg,
+        rgb(230, 225, 225) 0%,
+        rgb(236, 232, 232) 100%
+      );
       border-radius: $btn-border-radius;
       display: flex;
       align-items: center;
@@ -172,6 +189,7 @@ export default {
     padding: 10px 0;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1;
+    background: linear-gradient(90deg, #e6e6e8 0%, #dfdfe0 35%, #eaeeef 100%);
   }
 
   .mobile-body {
