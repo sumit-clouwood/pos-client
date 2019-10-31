@@ -40,8 +40,11 @@
                 <span class="in-progress">Running</span>
               </td>
               <td>
-                <div class="button-wrapper" v-if="canPay">
-                  <router-link :to="'/carhop' + store + '/' + order._id">
+                <div class="button-wrapper">
+                  <router-link
+                    v-if="canPay"
+                    :to="'/carhop' + store + '/' + order._id"
+                  >
                     <span class="dinefor-paynow">
                       <svg
                         height="21"
