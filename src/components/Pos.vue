@@ -22,17 +22,46 @@
 </i18n>
 
 <script>
+/* eslint-disable no-console */
 import Menu from './pos/Menu.vue'
 import Header from './pos/Header.vue'
 import Content from './pos/Content.vue'
 import Footer from './pos/Footer'
 import mobileIndex from './mobileComponents/_mobileIndex.vue'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Pos',
   computed: {
     ...mapState('category', ['categories']),
+    ...mapGetters('context', ['store']),
+  },
+  mounted() {
+    console.log('in mounted')
+    const roleId = this.$store.state.auth.userDetails.item.brand_role
+    const role = this.$store.state.auth.rolePermissions.find(
+      role => role._id === roleId
+    )
+    console.log(role)
+    console.log(role.name)
+    console.log(this.$route)
+
+    if (role && role.name === 'Waiter') {
+      console.log('replace with waiter dinein', this.$route)
+      if (
+        this.$route.path !== 'undefined' &&
+        !this.$route.path.match('dine-in')
+      ) {
+        console.log('path dine in matched')
+        this.$router.replace('/dine-in' + this.store + '/')
+      }
+    } else if (role && role.name === 'Carhop User') {
+      console.log('replace with carhop')
+      this.$router.replace('/carhop' + this.store + '/')
+    } else {
+      console.log(' no role matched')
+      this.$router.replace('/' + this.store + '/')
+    }
   },
   created() {
     // if (localStorage.getItem('token')) {

@@ -105,7 +105,8 @@
                       <span
                         class="dinefor-paynow"
                         v-if="
-                          tabName !== 'completed' &&
+                          !waiter &&
+                            tabName !== 'completed' &&
                             order.order_status !== 'finished'
                           /*&& order.order_status !== 'cancelled'*/
                         "
@@ -338,6 +339,19 @@ export default {
   },
   mixins: [DateTime],
   computed: {
+    role() {
+      const roleId = this.$store.state.auth.userDetails.item.brand_role
+      if (roleId && this.$store.state.auth.rolePermissions) {
+        const role = this.$store.state.auth.rolePermissions.find(
+          role => role._id === roleId
+        )
+        return role ? role.name : ''
+      }
+      return ''
+    },
+    waiter() {
+      return this.role === 'Waiter'
+    },
     ...mapState('location', ['timezoneString']),
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('order', ['selectedOrder']),

@@ -419,6 +419,10 @@ export default {
         .hide()
     },
     newOrder(reservationId, pos) {
+      let makeId = '#id_' + this.selectedTableId
+      $(makeId)
+        .find('g')
+        .attr('style', 'opacity:0.5')
       this.$store.commit('dinein/TABLE_SPLIT', false)
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       if (!reservationId) {
@@ -437,6 +441,12 @@ export default {
               .then(() => {
                 this.$store.dispatch('dinein/getDineInArea', false)
                 this.$store.dispatch('dinein/getDineInTables', false)
+                $('#tooltipdata').hide()
+                setTimeout(function() {
+                  $(makeId)
+                    .find('g')
+                    .removeAttr('style')
+                }, 350)
               })
           })
       } else {
