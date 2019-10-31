@@ -60,6 +60,7 @@ export default {
       this.$router.replace('/carhop' + this.store + '/')
     } else {
       console.log(' no role matched')
+      this.$router.replace('/' + this.store + '/')
     }
   },
   created() {
