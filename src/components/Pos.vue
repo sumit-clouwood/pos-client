@@ -58,6 +58,9 @@ export default {
     } else if (role && role.name === 'Carhop User') {
       console.log('replace with carhop')
       this.$router.replace('/carhop' + this.store + '/')
+    } else if (role && role.name === 'Cashier') {
+      console.log('replace with carhop')
+      this.$router.replace('' + this.store + '/')
     } else {
       console.log(' no role matched')
       //this.$router.replace('/' + this.store + '/')
