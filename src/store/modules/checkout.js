@@ -839,13 +839,6 @@ const actions = {
                 }
 
                 resolve()
-
-                // if (getters.complete) {
-                //   resolve()
-                // } else {
-                //   //create another order with same reservation id but with remaining items
-                //   //dispatch('splitOrder').then(() => resolve())
-                // }
               }
 
               commit(
@@ -1080,17 +1073,19 @@ const actions = {
     )
 
     commit('order/RESET', false, { root: true })
-    commit('order/SET_SPLIT_BILL', -1)
+
     dispatch('checkoutForm/reset', 'complete', { root: true })
     dispatch('discount/reset', {}, { root: true })
     dispatch('surcharge/reset', {}, { root: true })
 
     dispatch('order/startOrder', null, { root: true })
-    //commit(mutation.UPDATE_ITEMS, unpaidItems)
+
     commit('order/UPDATE_ITEMS', unpaidItems, { root: true })
     // eslint-disable-next-line no-unused-vars
     return dispatch('pay', { action: 'dine-in-place-order' }).then(response => {
-      //set back order id
+      //new order has been created with remaining orders,
+      //order items have same old order indexes so we need to update them before next order isplaced
+      commit('order/REINDEX_ITEMS', unpaidItems, { root: true })
     })
   },
   // eslint-disable-next-line no-unused-vars

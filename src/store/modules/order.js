@@ -1369,6 +1369,15 @@ const mutations = {
   [mutation.UPDATE_ITEMS](state, items) {
     state.items = items
   },
+  [mutation.REINDEX_ITEMS](state, items) {
+    //reset item order index, THIS IS DONE when some of orders are paid and again added to cart
+    items = items.map((item, key) => {
+      item.orderIndex = key
+      return item
+    })
+
+    state.items = items
+  },
   [mutation.RESET](state, full = true) {
     if (full) {
       state.items = []
@@ -1434,15 +1443,11 @@ const mutations = {
     state.orderToModify = orderId
   },
   [mutation.SET_SPLIT_BILL](state, status = -1) {
-    if (status !== -1) {
-      //changed from checkout
-      state.splitBill = status
-    } else if (state.splitBill === null) {
-      //if comming first time
-      state.splitBill = true
-    } else {
-      //toggle here
+    //if -1 then toggle it, if true assign true, if false assign false, if null then assign null
+    if (status === -1) {
       state.splitBill = state.splitBill ? false : true
+    } else {
+      state.splitBill = status
     }
   },
   [mutation.MARK_SPLIT_ITEMS_PAID](state) {
