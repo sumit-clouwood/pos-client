@@ -21,11 +21,14 @@ const state = {
 // getters
 const getters = {
   complete: (state, getters, rootState) => {
-    if (!rootState.order.splitBill) {
-      return true
+    //if order was never splitted means it is completed
+    if (rootState.order.splitted) {
+      //once splitted then check items
+      const allPaid = !rootState.order.items.some(item => item.paid === false)
+      return allPaid
     }
-    const notPaid = !rootState.order.items.some(item => item.paid === false)
-    return notPaid
+    //never splitted
+    return true
   },
   calculateOrderTotals: () => order => {
     let data = {
@@ -828,16 +831,18 @@ const actions = {
                 resolve()
               } else {
                 //order paid
-                commit(mutation.PRINT, true)
                 commit(
                   'SET_ORDER_NUMBER',
                   rootState.order.selectedOrder.item.order_no
                 )
-                if (rootState.order.splitBill) {
+                if (rootState.order.splitted || rootState.order.splitBill) {
+                  commit('order/SET_SPLITTED', true, { root: true })
                   //mark items as paid in current execution
                   dispatch('order/markSplitItemsPaid', null, { root: true })
+                  //if splitted once
                 }
 
+                commit(mutation.PRINT, true)
                 resolve()
               }
 
@@ -1086,6 +1091,7 @@ const actions = {
       //new order has been created with remaining orders,
       //order items have same old order indexes so we need to update them before next order isplaced
       commit('order/REINDEX_ITEMS', unpaidItems, { root: true })
+      commit('order/SET_SPLIT_BILL', false, { root: true })
     })
   },
   // eslint-disable-next-line no-unused-vars
