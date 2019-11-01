@@ -1057,7 +1057,11 @@ const actions = {
               dispatch('printingServer/printingServerInvoiceRaw', state.order, {
                 root: true,
               })
-              dispatch('reset')
+              let resetFull = false
+              if (getters.complete) {
+                resetFull = true
+              }
+              dispatch('reset', resetFull)
             } else {
               commit(mutation.PRINT, true)
             }
@@ -1254,7 +1258,7 @@ const actions = {
   generateInvoice() {
     //commit(mutation.PRINT, true)
   },
-  reset({ commit, dispatch }, full = true) {
+  reset({ commit, dispatch, getters }, full = true) {
     commit(mutation.RESET, full)
 
     dispatch('checkoutForm/reset', {}, { root: true })
@@ -1262,7 +1266,7 @@ const actions = {
     dispatch('surcharge/reset', {}, { root: true })
     dispatch('customer/reset', {}, { root: true })
     dispatch('location/reset', {}, { root: true })
-    if (full) {
+    if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
     }
   },
