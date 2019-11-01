@@ -356,7 +356,7 @@ export default {
   },
   updated() {
     // eslint-disable-next-line no-console
-    console.log(!this.selectedArea, this.selectedArea, this.activeArea._id)
+    console.log(this.selectedArea, this.activeArea._id)
     if (this.selectedArea != this.activeArea._id) {
       this.clearTableArea()
       this.updateTableOnArea()
@@ -456,10 +456,12 @@ export default {
                   .then(() => {
                     /*this.clearTableArea()
                   this.setTableProperties()*/
-                    dis.setTableColour(
+                    /*dis.setTableColour(
                       dis.selectedTableD3,
                       dis.selectedTableData
-                    )
+                    )*/
+                    this.clearTableArea()
+                    this.updateTableOnArea()
                     $(makeId)
                       .find('g')
                       .removeAttr('style')
