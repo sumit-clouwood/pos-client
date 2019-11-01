@@ -677,7 +677,9 @@ export default {
           })
           .then(() => {
             this.$store.dispatch('dinein/getDineInTables', false).then(() => {
-              this.setTableColour(this.selectedTableD3, this.selectedTableData)
+              /*this.setTableColour(this.selectedTableD3, this.selectedTableData)*/
+              this.clearTableArea()
+              this.updateTableOnArea()
               $(makeId)
                 .find('g')
                 .removeAttr('style')
