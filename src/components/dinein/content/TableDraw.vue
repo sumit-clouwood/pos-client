@@ -450,27 +450,28 @@ export default {
                 loader: false,
               })
               .then(() => {
-                dis.$store.dispatch('dinein/getDineInArea', false)
-                dis.$store
-                  .dispatch('dinein/getDineInTables', false)
-                  .then(() => {
-                    /*this.clearTableArea()
-                  this.setTableProperties()*/
-                    dis.setTableColour(
-                      dis.selectedTableD3,
-                      dis.selectedTableData
-                    )
-                    // this.clearTableArea()
-                    /*d3.selectAll('.dinein_table_parent').each(() => {
-                      this.drawViews()
-                      this.setTableProperties()
-                    })*/
-                    // this.updateTableOnArea()
-                    $(makeId)
-                      .find('g')
-                      .removeAttr('style')
-                  })
-                $('#tooltipdata').hide()
+                dis.$store.dispatch('dinein/getDineInArea', false).then(() => {
+                  dis.$store
+                    .dispatch('dinein/getDineInTables', false)
+                    .then(() => {
+                      /*this.clearTableArea()
+                    this.setTableProperties()*/
+                      dis.setTableColour(
+                        dis.selectedTableD3,
+                        dis.selectedTableData
+                      )
+                      // this.clearTableArea()
+                      /*d3.selectAll('.dinein_table_parent').each(() => {
+                        this.drawViews()
+                        this.setTableProperties()
+                      })*/
+                      // this.updateTableOnArea()
+                      $(makeId)
+                        .find('g')
+                        .removeAttr('style')
+                    })
+                  $('#tooltipdata').hide()
+                })
               })
           })
       } else {
@@ -680,21 +681,24 @@ export default {
             loader: false,
           })
           .then(() => {
-            this.$store.dispatch('dinein/getDineInTables', false).then(() => {
-              this.setTableColour(this.selectedTableD3, this.selectedTableData)
-              // this.clearTableArea()
-              // this.updateTableOnArea()
-              /*d3.selectAll('.dinein_table_parent').each(() => {
-                this.drawViews()
-                this.setTableProperties()
-              })*/
-              $(makeId)
-                .find('g')
-                .removeAttr('style')
+            this.$store.dispatch('dinein/getDineInArea', false).then(() => {
+              this.$store.dispatch('dinein/getDineInTables', false).then(() => {
+                this.setTableColour(
+                  this.selectedTableD3,
+                  this.selectedTableData
+                )
+                // this.clearTableArea()
+                // this.updateTableOnArea()
+                /*d3.selectAll('.dinein_table_parent').each(() => {
+                  this.drawViews()
+                  this.setTableProperties()
+                })*/
+                $(makeId)
+                  .find('g')
+                  .removeAttr('style')
+              })
             })
           })
-        this.$store.dispatch('dinein/getDineInArea', false)
-
         $('#tooltipdata').hide()
         // this.updateTableOnArea()
         /*this.clearTableArea()
