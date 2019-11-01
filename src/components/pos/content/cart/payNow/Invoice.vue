@@ -110,9 +110,7 @@ export default {
             w.print()
 
             if (!this.$store.getters['checkout/complete']) {
-              this.$store.dispatch('checkout/splitOrder').then(() => {
-                this.$store.commit('order/SET_SPLIT_BILL', null, { root: true })
-              })
+              this.$store.dispatch('checkout/splitOrder').then(() => {})
             }
             //Invoice APP API Call with Custom Request JSON
             this.$store.dispatch(

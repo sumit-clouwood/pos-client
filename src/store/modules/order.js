@@ -1366,13 +1366,16 @@ const mutations = {
       return item
     })
   },
-
+  [mutation.UPDATE_ITEMS](state, items) {
+    state.items = items
+  },
   [mutation.RESET](state, full = true) {
     if (full) {
       state.items = []
       state.orderStatus = null
       state.orderNote = null
     }
+
     state.splittedItems = {}
     state.item = false
     state.orderId = null

@@ -24,7 +24,8 @@ const getters = {
     if (!rootState.order.splitBill) {
       return true
     }
-    return !rootState.order.items.some(item => item.paid === false)
+    const notPaid = !rootState.order.items.some(item => item.paid === false)
+    return notPaid
   },
   calculateOrderTotals: () => order => {
     let data = {
@@ -752,6 +753,52 @@ const actions = {
     })
   },
 
+  createDineOrder({ dispatch, commit, rootGetters, state }, action) {
+    return new Promise(resolve => {
+      OrderService.saveOrder(state.order)
+        .then(response => {
+          if (response.data.status === 'ok') {
+            commit('order/SET_ORDER_ID', response.data.id, { root: true })
+            commit('SET_ORDER_NUMBER', response.data.order_no)
+            //we are not printing so reset manually here
+            let msg = rootGetters['location/_t']('Dinein Order has been paid')
+            if (action === 'dine-in-place-order') {
+              msg = rootGetters['location/_t']('Dinein Order has been placed')
+              //Invoice APP API Call with Custom Request JSON
+              dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+                root: true,
+              })
+              let resetFull = false
+              if (getters.complete) {
+                resetFull = true
+              }
+              dispatch('reset', resetFull)
+            } else {
+              commit(mutation.PRINT, true)
+            }
+
+            dispatch('setMessage', {
+              result: 'success',
+              msg: msg,
+            }).then(() => {
+              resolve(response.data)
+            })
+          } else {
+            dispatch('handleSystemErrors', response).then(() => resolve())
+          }
+        })
+        .catch(error => {
+          dispatch('handleRejectedResponse', {
+            response: error,
+            offline: false,
+          })
+            .then(() => {
+              resolve()
+            })
+            .catch(() => resolve())
+        })
+    })
+  },
   modifyDineOrder(
     { dispatch, rootState, getters, rootGetters, commit },
     action
@@ -1033,62 +1080,19 @@ const actions = {
     )
 
     commit('order/RESET', false, { root: true })
-    dispatch('checkoutForm/reset', {}, { root: true })
+    commit('order/SET_SPLIT_BILL', -1)
+    dispatch('checkoutForm/reset', 'complete', { root: true })
     dispatch('discount/reset', {}, { root: true })
     dispatch('surcharge/reset', {}, { root: true })
 
     dispatch('order/startOrder', null, { root: true })
-    commit(mutation.UPDATE_ITEMS, unpaidItems)
-    return dispatch('pay', { action: 'dine-in-place-order' })
-  },
-
-  createDineOrder({ dispatch, commit, rootGetters, state }, action) {
-    return new Promise(resolve => {
-      OrderService.saveOrder(state.order)
-        .then(response => {
-          if (response.data.status === 'ok') {
-            commit('order/SET_ORDER_ID', response.data.id, { root: true })
-            commit('SET_ORDER_NUMBER', response.data.order_no)
-            //we are not printing so reset manually here
-            let msg = rootGetters['location/_t']('Dinein Order has been paid')
-            if (action === 'dine-in-place-order') {
-              msg = rootGetters['location/_t']('Dinein Order has been placed')
-              //Invoice APP API Call with Custom Request JSON
-              dispatch('printingServer/printingServerInvoiceRaw', state.order, {
-                root: true,
-              })
-              let resetFull = false
-              if (getters.complete) {
-                resetFull = true
-              }
-              dispatch('reset', resetFull)
-            } else {
-              commit(mutation.PRINT, true)
-            }
-
-            dispatch('setMessage', {
-              result: 'success',
-              msg: msg,
-            }).then(() => {
-              resolve(response.data)
-            })
-          } else {
-            dispatch('handleSystemErrors', response).then(() => resolve())
-          }
-        })
-        .catch(error => {
-          dispatch('handleRejectedResponse', {
-            response: error,
-            offline: false,
-          })
-            .then(() => {
-              resolve()
-            })
-            .catch(() => resolve())
-        })
+    //commit(mutation.UPDATE_ITEMS, unpaidItems)
+    commit('order/UPDATE_ITEMS', unpaidItems, { root: true })
+    // eslint-disable-next-line no-unused-vars
+    return dispatch('pay', { action: 'dine-in-place-order' }).then(response => {
+      //set back order id
     })
   },
-
   // eslint-disable-next-line no-unused-vars
   createCarhopOrder({ dispatch, commit, rootGetters, state }, action) {
     return new Promise(resolve => {
