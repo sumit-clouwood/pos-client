@@ -695,9 +695,9 @@ export default {
             this.$store.dispatch('dinein/getDineInArea', false).then(() => {
               this.$store.dispatch('dinein/getDineInTables', false).then(() => {
                 let dis = this
-                setTimeout(function() {
-                  dis.setTableColour(dis.selectedTableD3, dis.selectedTableData)
-                }, 250)
+                // setTimeout(function() {
+                dis.setTableColour(dis.selectedTableD3, dis.selectedTableData)
+                // }, 250)
                 // this.clearTableArea()
                 // this.updateTableOnArea()
                 /*d3.selectAll('.dinein_table_parent').each(() => {
