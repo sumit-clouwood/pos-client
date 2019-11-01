@@ -66,44 +66,37 @@ export default {
   },
   watch: {
     paymentMsgStatus(newVal) {
-      //if (newVal && this.$store.getters['checkout/complete']) {
-      if (newVal) {
-        if (this.$store.state.order.orderType.OTApi === 'dine_in') {
-          this.$store.dispatch('order/beforeRedirectResetCartDineIn')
-          this.$router.replace({ name: 'Dinein' })
-        } else if (this.$store.state.order.orderType.OTApi === 'call_center') {
-          this.$router.replace({ name: 'DeliveryManager' })
-        } else if (this.isPrint) {
-          this.isPrint = false
-          if (
-            this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_CARHOP
-          ) {
-            this.$router.replace({ name: 'Carhop' })
-          }
-        }
+      if (newVal && this.$store.getters['checkout/complete']) {
+        //if (newVal) {
+        this.postRedirect()
         this.$store.commit('checkout/PAYMENT_MSG_STATUS', false)
       }
     },
     changeAmountStatus(newVal) {
-      //if (newVal && this.$store.getters['checkout/complete']) {
-      if (newVal) {
+      if (newVal && this.$store.getters['checkout/complete']) {
+        //if (newVal) {
         //Reset Cart and set states and redirect to dine in.
-        if (this.$store.state.order.orderType.OTApi === 'dine_in') {
-          this.$store.dispatch('order/beforeRedirectResetCartDineIn')
-          this.$router.replace({ name: 'Dinein' })
-        } else if (this.isPrint) {
-          this.isPrint = false
-          if (
-            this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_CARHOP
-          ) {
-            this.$router.replace({ name: 'Carhop' })
-          }
-        }
+        this.postRedirect()
         this.$store.commit('checkout/CHANGE_AMOUNT_STATUS', false)
       }
     },
   },
   methods: {
+    postRedirect() {
+      if (this.$store.state.order.orderType.OTApi === 'dine_in') {
+        this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+        this.$router.replace({ name: 'Dinein' })
+      } else if (this.$store.state.order.orderType.OTApi === 'call_center') {
+        this.$router.replace({ name: 'DeliveryManager' })
+      } else if (this.isPrint) {
+        this.isPrint = false
+        if (
+          this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_CARHOP
+        ) {
+          this.$router.replace({ name: 'Carhop' })
+        }
+      }
+    },
     doPrint() {
       let orderData = this.order
       if (this.print && this.iframe_body) {

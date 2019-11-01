@@ -151,16 +151,10 @@ export default {
     ...mapState('carhop', ['limit']),
     ...mapGetters('location', ['_t']),
     ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['waiter', 'carhop']),
+
     canPay() {
-      let isCarhopUser = false
-      const roleId = this.$store.state.auth.userDetails.item.brand_role
-      const role = this.$store.state.auth.rolePermissions.find(
-        role => role._id === roleId
-      )
-      if (role && role.name === 'Carhop User') {
-        isCarhopUser = true
-      }
-      return !isCarhopUser
+      return !this.carhop && !this.waiter
     },
     page: {
       get() {
