@@ -141,8 +141,7 @@
           </div>
         </div>
       </div>
-      <Preloader v-if="loading" />
-      <div id="svgContainter">
+      <!--<div v-else id="svgContainter">
         <div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -152,7 +151,7 @@
             ref="dine-in-area"
           />
         </div>
-      </div>
+      </div>-->
     </div>
     <!-- Modal confirm -->
     <div class="modal" id="confirmModal" style="display: none; z-index: 1050;">
@@ -266,7 +265,6 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
-import Preloader from '@/components/util/progressbar'
 
 // import LookupData from '@/plugins/helpers/LookupData'
 import Header from './Header'
@@ -296,7 +294,6 @@ export default {
   components: {
     Header,
     TableStatus,
-    Preloader,
   },
   data() {
     return {
