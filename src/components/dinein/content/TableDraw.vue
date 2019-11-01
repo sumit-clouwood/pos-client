@@ -443,6 +443,8 @@ export default {
             root: true,
           })
           .then(() => {
+            // eslint-disable-next-line no-console
+            console.log('step 1')
             this.$store
               .dispatch('dinein/updateDineInOrderStatus', {
                 title: 'all',
@@ -450,10 +452,16 @@ export default {
                 loader: false,
               })
               .then(() => {
+                // eslint-disable-next-line no-console
+                console.log('step 2')
                 dis.$store.dispatch('dinein/getDineInArea', false).then(() => {
+                  // eslint-disable-next-line no-console
+                  console.log('step 3')
                   dis.$store
                     .dispatch('dinein/getDineInTables', false)
                     .then(() => {
+                      // eslint-disable-next-line no-console
+                      console.log('step 4')
                       /*this.clearTableArea()
                     this.setTableProperties()*/
                       dis.setTableColour(
@@ -564,39 +572,43 @@ export default {
       })
     },
     setTableColour(selectedItem, data) {
-      let dis = this
-      d3.select(selectedItem)
-        .select('svg>g:last-child')
-        .selectAll('path')
-        .attr('fill', function() {
-          let fc = '#CC3232'
-          dis.tableStatus.table.filter(ts => {
-            if (ts.id === data._id) {
-              if (ts.status.color == '#62bb31') {
-                fc = '#009900'
-              } else if (ts.status.color == '#faa03c') {
-                fc = '#fa9304'
+      this.$nextTick(() => {
+        // eslint-disable-next-line no-console
+        console.log('nxt tick')
+        let dis = this
+        d3.select(selectedItem)
+          .select('svg>g:last-child')
+          .selectAll('path')
+          .attr('fill', function() {
+            let fc = '#CC3232'
+            dis.tableStatus.table.filter(ts => {
+              if (ts.id === data._id) {
+                if (ts.status.color == '#62bb31') {
+                  fc = '#009900'
+                } else if (ts.status.color == '#faa03c') {
+                  fc = '#fa9304'
+                }
               }
-            }
+            })
+            return fc
           })
-          return fc
-        })
-      d3.select(selectedItem)
-        .select('g')
-        .selectAll('path')
-        .attr('fill', function() {
-          let fillcolor = '#FF9C9A'
-          dis.tableStatus.table.filter(ts => {
-            if (ts.id === data._id) {
-              if (ts.status.color == '#62bb31') {
-                fillcolor = '#99CA86'
-              } else if (ts.status.color == '#faa03c') {
-                fillcolor = '#FAD580'
+        d3.select(selectedItem)
+          .select('g')
+          .selectAll('path')
+          .attr('fill', function() {
+            let fillcolor = '#FF9C9A'
+            dis.tableStatus.table.filter(ts => {
+              if (ts.id === data._id) {
+                if (ts.status.color == '#62bb31') {
+                  fillcolor = '#99CA86'
+                } else if (ts.status.color == '#faa03c') {
+                  fillcolor = '#FAD580'
+                }
               }
-            }
+            })
+            return fillcolor
           })
-          return fillcolor
-        })
+      })
     },
     setTableProperties() {
       let dis = this
