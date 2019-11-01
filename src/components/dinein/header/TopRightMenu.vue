@@ -377,6 +377,8 @@ export default {
     },
     fetchOrdersWithTableDetails: function(orderStatus) {
       this.$store.commit('dinein/SET_PAGE_NO', 1)
+      // eslint-disable-next-line no-console
+      console.log(orderStatus)
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
     },
     ...mapActions('auth', ['logout']),

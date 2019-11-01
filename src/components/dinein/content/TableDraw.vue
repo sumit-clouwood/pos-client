@@ -355,18 +355,11 @@ export default {
     // this.updateTableOnArea()
   },
   updated() {
-    // eslint-disable-next-line no-console
-    console.log(this.selectedArea, this.activeArea._id)
     if (this.selectedArea != this.activeArea._id) {
       this.clearTableArea()
       this.updateTableOnArea()
       this.selectedArea = this.activeArea._id
     }
-    /*this.clearTableArea()*/
-    /*this.updateTableOnArea()*/
-    /*this.setTableProperties()*/
-    /*if (this.selectedTableD3)
-      d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
   },
   methods: {
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
@@ -419,8 +412,6 @@ export default {
         : ''
     },
     orderStatus(orderId) {
-      // eslint-disable-next-line no-console
-      console.log(this.allBookedTables.lookup.orders._id[orderId])
       return this.allBookedTables.lookup.orders._id[orderId].order_status
     },
     hideTableDetails() {
@@ -443,8 +434,6 @@ export default {
             root: true,
           })
           .then(() => {
-            // eslint-disable-next-line no-console
-            console.log('step 1')
             this.$store
               .dispatch('dinein/updateDineInOrderStatus', {
                 title: 'all',
@@ -452,28 +441,14 @@ export default {
                 loader: false,
               })
               .then(() => {
-                // eslint-disable-next-line no-console
-                console.log('step 2')
                 dis.$store.dispatch('dinein/getDineInArea', false).then(() => {
-                  // eslint-disable-next-line no-console
-                  console.log('step 3')
                   dis.$store
                     .dispatch('dinein/getDineInTables', false)
                     .then(() => {
-                      // eslint-disable-next-line no-console
-                      console.log('step 4')
-                      /*this.clearTableArea()
-                    this.setTableProperties()*/
                       dis.setTableColour(
                         dis.selectedTableD3,
                         dis.selectedTableData
                       )
-                      // this.clearTableArea()
-                      /*d3.selectAll('.dinein_table_parent').each(() => {
-                        this.drawViews()
-                        this.setTableProperties()
-                      })*/
-                      // this.updateTableOnArea()
                       $(makeId)
                         .find('g')
                         .removeAttr('style')
@@ -606,38 +581,32 @@ export default {
             })
             return fillcolor
           })
-        d3.select(selectedItem).on('click', function(d, i, a) {
+      })
+    },
+    setTableProperties() {
+      let dis = this
+      d3.selectAll('.dinein_table').each((d, i, a) => {
+        d3.select(a[i])
+          .select('text')
+          .text(`#${d.number}`)
+        let data = d
+        this.setTableColour(a[i], data)
+        d3.select(a[i]).on('click', function(d, i, a) {
           dis.showOptions(d, i, a)
         })
         let nodeDims = d3
-          .select(selectedItem)
+          .select(a[i])
           .node()
           .parentNode.getBBox()
         let x = parseFloat(data.table_position_coordinate.x)
         let y = parseFloat(data.table_position_coordinate.y)
         let midX = nodeDims.width / 2 + x
         let midY = nodeDims.height / 2 + y
-        d3.select(d3.select(selectedItem).node().parentNode).attr(
-          'transform',
-          () => {
-            // eslint-disable-next-line no-console
-            // console.log(data.table_position_coordinate.angle, 'xxxxx')
-            /*if (data.table_position_coordinate.angle) {
-            data.table_position_coordinate.angle = 0
-          }*/
-            return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${
-              data.table_position_coordinate.angle
-            },${midX},${midY})`
-          }
-        )
-      })
-    },
-    setTableProperties() {
-      d3.selectAll('.dinein_table').each((d, i, a) => {
-        d3.select(a[i])
-          .select('text')
-          .text(`#${d.number}`)
-        this.setTableColour(a[i], d)
+        d3.select(d3.select(a[i]).node().parentNode).attr('transform', () => {
+          return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${
+            data.table_position_coordinate.angle
+          },${midX},${midY})`
+        })
         /*.attr(
             'transform',
             d3.zoomIdentity.scale(dis.tableZoomScale).translate(0, 0)
@@ -745,14 +714,6 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
-      // let scope = this
-      /*setTimeout(function() {
-        scope.zoom(0.8, { x: 10, y: 10 })
-      }, 500)*/
-      /*let transform = { x: 10, y: 10 }
-      this.zoom(1, transform)*/
-      // eslint-disable-next-line no-console
-      // console.log(this.orderDetails)
       this.addOrSplit =
         this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
       this.selectedTableId = datum._id
