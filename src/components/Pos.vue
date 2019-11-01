@@ -43,17 +43,24 @@ export default {
       role => role._id === roleId
     )
     console.log(role)
+    console.log(role.name)
+    console.log(this.$route)
+
     if (role && role.name === 'Waiter') {
       console.log('replace with waiter dinein', this.$route)
       if (
-        this.$router.path !== 'undefined' &&
-        !this.$router.path.match('dine-in')
+        this.$route.path !== 'undefined' &&
+        !this.$route.path.match('dine-in')
       ) {
+        console.log('path dine in matched')
         this.$router.replace('/dine-in' + this.store + '/')
       }
     } else if (role && role.name === 'Carhop User') {
       console.log('replace with carhop')
       this.$router.replace('/carhop' + this.store + '/')
+    } else {
+      console.log(' no role matched')
+      //this.$router.replace('/' + this.store + '/')
     }
   },
   created() {

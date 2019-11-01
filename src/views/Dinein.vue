@@ -17,6 +17,8 @@
 
 <script>
 /* global $ */
+/* eslint-disable no-console */
+
 import SystemNavigation from '@/components/SystemNavigation'
 import Header from '@/components/dinein/Header.vue'
 import Content from '@/components/dinein/Content'
@@ -50,6 +52,22 @@ export default {
     ...mapState('dinein', ['loading']),
   },
   mounted() {
+    console.log('in mounted')
+    const roleId = this.$store.state.auth.userDetails.item.brand_role
+    const role = this.$store.state.auth.rolePermissions.find(
+      role => role._id === roleId
+    )
+    console.log(role)
+    console.log(role.name)
+    console.log(this.$route)
+
+    if (role && role.name === 'Carhop User') {
+      console.log('replace with carhop')
+      this.$router.replace('/carhop' + this.store + '/')
+    } else {
+      console.log(' no role matched')
+      //this.$router.replace('/' + this.store + '/')
+    }
     this.$store.dispatch('dinein/fetchAll')
     let getBody = $('body')
     getBody.removeAttr('class')
