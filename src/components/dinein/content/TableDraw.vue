@@ -464,10 +464,12 @@ export default {
                       console.log('step 4')
                       /*this.clearTableArea()
                     this.setTableProperties()*/
-                      dis.setTableColour(
-                        dis.selectedTableD3,
-                        dis.selectedTableData
-                      )
+                      setTimeout(function() {
+                        dis.setTableColour(
+                          dis.selectedTableD3,
+                          dis.selectedTableData
+                        )
+                      }, 500)
                       // this.clearTableArea()
                       /*d3.selectAll('.dinein_table_parent').each(() => {
                         this.drawViews()
@@ -573,8 +575,6 @@ export default {
     },
     setTableColour(selectedItem, data) {
       this.$nextTick(() => {
-        // eslint-disable-next-line no-console
-        console.log('nxt tick')
         let dis = this
         d3.select(selectedItem)
           .select('svg>g:last-child')
@@ -695,10 +695,12 @@ export default {
           .then(() => {
             this.$store.dispatch('dinein/getDineInArea', false).then(() => {
               this.$store.dispatch('dinein/getDineInTables', false).then(() => {
-                this.setTableColour(
-                  this.selectedTableD3,
-                  this.selectedTableData
-                )
+                setTimeout(function() {
+                  this.setTableColour(
+                    this.selectedTableD3,
+                    this.selectedTableData
+                  )
+                }, 500)
                 // this.clearTableArea()
                 // this.updateTableOnArea()
                 /*d3.selectAll('.dinein_table_parent').each(() => {
