@@ -456,15 +456,15 @@ export default {
                   .then(() => {
                     /*this.clearTableArea()
                   this.setTableProperties()*/
-                    /*dis.setTableColour(
+                    dis.setTableColour(
                       dis.selectedTableD3,
                       dis.selectedTableData
-                    )*/
+                    )
                     // this.clearTableArea()
-                    d3.selectAll('.dinein_table_parent').each(() => {
+                    /*d3.selectAll('.dinein_table_parent').each(() => {
                       this.drawViews()
                       this.setTableProperties()
-                    })
+                    })*/
                     // this.updateTableOnArea()
                     $(makeId)
                       .find('g')
@@ -681,13 +681,13 @@ export default {
           })
           .then(() => {
             this.$store.dispatch('dinein/getDineInTables', false).then(() => {
-              /*this.setTableColour(this.selectedTableD3, this.selectedTableData)*/
+              this.setTableColour(this.selectedTableD3, this.selectedTableData)
               // this.clearTableArea()
               // this.updateTableOnArea()
-              d3.selectAll('.dinein_table_parent').each(() => {
+              /*d3.selectAll('.dinein_table_parent').each(() => {
                 this.drawViews()
                 this.setTableProperties()
-              })
+              })*/
               $(makeId)
                 .find('g')
                 .removeAttr('style')
