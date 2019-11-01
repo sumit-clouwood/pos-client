@@ -317,6 +317,7 @@ export default {
       componentKey: 0,
       moveReservation: false,
       validationErrors: false,
+      selectedArea: this.activeArea._id,
       zoomLevel: {
         zoomOut: [
           {
@@ -352,9 +353,16 @@ export default {
     this.updateTableOnArea()
   },
   updated() {
-    this.clearTableArea()
-    this.updateTableOnArea()
-    this.setTableProperties()
+    if (this.selectedArea != this.activeArea._id) {
+      this.clearTableArea()
+      this.updateTableOnArea()
+      // eslint-disable-next-line no-console
+      console.log(this.selectedArea)
+      this.selectedArea = this.activeArea._id
+    }
+    /*this.clearTableArea()*/
+    /*this.updateTableOnArea()*/
+    /*this.setTableProperties()*/
     /*if (this.selectedTableD3)
       d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
   },
@@ -443,9 +451,13 @@ export default {
                 this.$store
                   .dispatch('dinein/getDineInTables', false)
                   .then(() => {
+                    alert('f')
                     /*this.clearTableArea()
                   this.setTableProperties()*/
-                    this.setTableProperties()
+                    this.setTableColour(
+                      this.selectedTableD3,
+                      this.selectedTableData
+                    )()
                     $(makeId)
                       .find('g')
                       .removeAttr('style')
@@ -535,12 +547,33 @@ export default {
           return d3.select(`#dinein_${d.table_shape}_${d.chairs}`).html()
         })
       /*.attr('fill', 'green')*/
-      if (this.selectedTableD3)
-        d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
+      /*if (this.selectedTableD3)
+        d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
       d3.selectAll('.dinein_table_parent').each(() => {
         this.drawViews()
         this.setTableProperties()
       })
+    },
+    setTableColour(selectedItem, data) {
+      let dis = this
+      d3.select(selectedItem)
+        .select('svg>g:last-child')
+        .selectAll('path')
+        .attr('fill', function() {
+          let fc = '#CC3232'
+          dis.tableStatus.table.filter(ts => {
+            if (ts.id === data._id) {
+              if (ts.status.color == '#62bb31') {
+                fc = '#009900'
+              } else if (ts.status.color == '#faa03c') {
+                fc = '#fa9304'
+              }
+            }
+          })
+          // eslint-disable-next-line no-console
+          console.log(fc)
+          return fc
+        })
     },
     setTableProperties() {
       let dis = this
@@ -549,22 +582,7 @@ export default {
           .select('text')
           .text(`#${d.number}`)
         let data = d
-        d3.select(a[i])
-          .select('svg>g:last-child')
-          .selectAll('path')
-          .attr('fill', function() {
-            let fc = '#CC3232'
-            dis.tableStatus.table.filter(ts => {
-              if (ts.id === data._id) {
-                if (ts.status.color == '#62bb31') {
-                  fc = '#009900'
-                } else if (ts.status.color == '#faa03c') {
-                  fc = '#fa9304'
-                }
-              }
-            })
-            return fc
-          })
+        this.setTableColour(a[i], data)
         d3.select(a[i])
           .on('click', function(d, i, a) {
             dis.showOptions(d, i, a)
