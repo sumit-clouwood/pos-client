@@ -694,11 +694,9 @@ export default {
           .then(() => {
             this.$store.dispatch('dinein/getDineInArea', false).then(() => {
               this.$store.dispatch('dinein/getDineInTables', false).then(() => {
+                let dis = this
                 setTimeout(function() {
-                  this.setTableColour(
-                    this.selectedTableD3,
-                    this.selectedTableData
-                  )
+                  dis.setTableColour(dis.selectedTableD3, dis.selectedTableData)
                 }, 250)
                 // this.clearTableArea()
                 // this.updateTableOnArea()
