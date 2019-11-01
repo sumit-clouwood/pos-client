@@ -7,8 +7,7 @@
     <!-- Breadcrumbs-->
     <div class="content-wrapper toggle-nav-content" id="dm-content-wrapper">
       <div class="inner-content-dm">
-        <Preloader v-if="loading" />
-        <Content v-else />
+        <Content />
         <Footer />
       </div>
     </div>
@@ -23,7 +22,7 @@ import Header from '@/components/dinein/Header.vue'
 import Content from '@/components/dinein/Content'
 import Footer from '@/components/dinein/Footer'
 import { mapState, mapGetters } from 'vuex'
-import Preloader from '@/components/util/progressbar'
+// import Preloader from '@/components/util/progressbar'
 // import Preloader from '@/components/util/Preloader'
 
 export default {
@@ -33,7 +32,7 @@ export default {
     SystemNavigation,
     Content,
     Footer,
-    Preloader,
+    // Preloader,
   },
   //store private data in component using data
   data: function() {

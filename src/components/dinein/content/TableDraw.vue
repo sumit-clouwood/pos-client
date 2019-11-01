@@ -9,6 +9,7 @@
           id="sitting-dinein-table"
         >
           <div class="sitting-dine-wrap disable-sorting" v-if="tablesOnArea">
+            <Preloader v-if="loading" />
             <div class="sitting-image">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -270,6 +271,7 @@ import TableStatus from './TableStatus'
 import Header from './Header'
 import DateTime from '@/mixins/DateTime'
 // import Status from '../../mobileComponents/mobileElements/status'
+import Preloader from '@/components/util/progressbar'
 
 export default {
   name: 'TableDraw',
@@ -294,6 +296,7 @@ export default {
   components: {
     Header,
     TableStatus,
+    Preloader,
   },
   data() {
     return {
