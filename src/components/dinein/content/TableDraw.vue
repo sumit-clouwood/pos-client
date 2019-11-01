@@ -460,8 +460,12 @@ export default {
                       dis.selectedTableD3,
                       dis.selectedTableData
                     )*/
-                    this.clearTableArea()
-                    this.updateTableOnArea()
+                    // this.clearTableArea()
+                    d3.selectAll('.dinein_table_parent').each(() => {
+                      this.drawViews()
+                      this.setTableProperties()
+                    })
+                    // this.updateTableOnArea()
                     $(makeId)
                       .find('g')
                       .removeAttr('style')
@@ -500,7 +504,7 @@ export default {
       this.$router.push({ path: URL })
     },
     clearTableArea() {
-      d3.selectAll('#dine-in-area > *').remove()
+      d3.selectAll('.dinein_table_parent > *').remove()
     },
     updateDineInOrderStatus: function(orderStatus) {
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
@@ -678,8 +682,12 @@ export default {
           .then(() => {
             this.$store.dispatch('dinein/getDineInTables', false).then(() => {
               /*this.setTableColour(this.selectedTableD3, this.selectedTableData)*/
-              this.clearTableArea()
-              this.updateTableOnArea()
+              // this.clearTableArea()
+              // this.updateTableOnArea()
+              d3.selectAll('.dinein_table_parent').each(() => {
+                this.drawViews()
+                this.setTableProperties()
+              })
               $(makeId)
                 .find('g')
                 .removeAttr('style')
