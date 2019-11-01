@@ -96,6 +96,7 @@ export default {
           this.$router.replace({ name: 'Carhop' })
         }
       }
+      this.$store.commit('order/SET_SPLITTED', false)
     },
     doPrint() {
       let orderData = this.order
