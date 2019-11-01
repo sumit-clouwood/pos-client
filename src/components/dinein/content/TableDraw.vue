@@ -141,6 +141,7 @@
           </div>
         </div>
       </div>
+      <Preloader v-if="loading" />
       <div id="svgContainter">
         <div>
           <svg
@@ -265,6 +266,8 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
+import Preloader from '@/components/util/progressbar'
+
 // import LookupData from '@/plugins/helpers/LookupData'
 import Header from './Header'
 import DateTime from '@/mixins/DateTime'
@@ -285,6 +288,7 @@ export default {
       'reservationId',
       'getAvailableTables',
       'tableZoomScale',
+      'loading',
     ]),
     ...mapGetters('context', ['store']),
   },
@@ -292,6 +296,7 @@ export default {
   components: {
     Header,
     TableStatus,
+    Preloader,
   },
   data() {
     return {
@@ -312,12 +317,12 @@ export default {
       addOrSplit: 'Book Table',
       cancelReservationMsg: 'Do you want to cancel this reservation?',
       order: false,
-      selectedAreaObj: '',
       selectedReservationId: '',
       componentKey: 0,
+      c: 1,
       moveReservation: false,
       validationErrors: false,
-      selectedArea: this.activeArea._id,
+      selectedArea: false,
       zoomLevel: {
         zoomOut: [
           {
@@ -350,14 +355,14 @@ export default {
     }
   },
   mounted() {
-    this.updateTableOnArea()
+    // this.updateTableOnArea()
   },
   updated() {
+    // eslint-disable-next-line no-console
+    console.log(!this.selectedArea, this.selectedArea, this.activeArea._id)
     if (this.selectedArea != this.activeArea._id) {
       this.clearTableArea()
       this.updateTableOnArea()
-      // eslint-disable-next-line no-console
-      console.log(this.selectedArea)
       this.selectedArea = this.activeArea._id
     }
     /*this.clearTableArea()*/
@@ -434,6 +439,7 @@ export default {
       this.$store.commit('dinein/TABLE_SPLIT', false)
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       if (!reservationId) {
+        let dis = this
         this.$store.commit('dinein/NUMBER_GUESTS', this.guests)
         this.$store
           .dispatch('dinein/addReservation', this.selectedTableId, {
@@ -447,17 +453,16 @@ export default {
                 loader: false,
               })
               .then(() => {
-                this.$store.dispatch('dinein/getDineInArea', false)
-                this.$store
+                dis.$store.dispatch('dinein/getDineInArea', false)
+                dis.$store
                   .dispatch('dinein/getDineInTables', false)
                   .then(() => {
-                    alert('f')
                     /*this.clearTableArea()
                   this.setTableProperties()*/
-                    this.setTableColour(
-                      this.selectedTableD3,
-                      this.selectedTableData
-                    )()
+                    dis.setTableColour(
+                      dis.selectedTableD3,
+                      dis.selectedTableData
+                    )
                     $(makeId)
                       .find('g')
                       .removeAttr('style')
@@ -570,9 +575,23 @@ export default {
               }
             }
           })
-          // eslint-disable-next-line no-console
-          console.log(fc)
           return fc
+        })
+      d3.select(selectedItem)
+        .select('g')
+        .selectAll('path')
+        .attr('fill', function() {
+          let fillcolor = '#FF9C9A'
+          dis.tableStatus.table.filter(ts => {
+            if (ts.id === data._id) {
+              if (ts.status.color == '#62bb31') {
+                fillcolor = '#99CA86'
+              } else if (ts.status.color == '#faa03c') {
+                fillcolor = '#FAD580'
+              }
+            }
+          })
+          return fillcolor
         })
     },
     setTableProperties() {
@@ -583,25 +602,9 @@ export default {
           .text(`#${d.number}`)
         let data = d
         this.setTableColour(a[i], data)
-        d3.select(a[i])
-          .on('click', function(d, i, a) {
-            dis.showOptions(d, i, a)
-          })
-          .select('g')
-          .selectAll('path')
-          .attr('fill', function() {
-            let fillcolor = '#FF9C9A'
-            dis.tableStatus.table.filter(ts => {
-              if (ts.id === data._id) {
-                if (ts.status.color == '#62bb31') {
-                  fillcolor = '#99CA86'
-                } else if (ts.status.color == '#faa03c') {
-                  fillcolor = '#FAD580'
-                }
-              }
-            })
-            return fillcolor
-          })
+        d3.select(a[i]).on('click', function(d, i, a) {
+          dis.showOptions(d, i, a)
+        })
         let nodeDims = d3
           .select(a[i])
           .node()
@@ -674,12 +677,12 @@ export default {
             loader: false,
           })
           .then(() => {
-            /*this.clearTableArea()
-        this.setTableProperties()*/
-            this.setTableProperties()
-            $(makeId)
-              .find('g')
-              .removeAttr('style')
+            this.$store.dispatch('dinein/getDineInTables', false).then(() => {
+              this.setTableColour(this.selectedTableD3, this.selectedTableData)
+              $(makeId)
+                .find('g')
+                .removeAttr('style')
+            })
           })
         this.$store.dispatch('dinein/getDineInArea', false)
 
