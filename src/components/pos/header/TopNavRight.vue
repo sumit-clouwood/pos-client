@@ -236,7 +236,7 @@ export default {
           return true
         case 'switchCashier':
           if (this.waiter || this.carhop) {
-            return false
+            return true
           }
           return true
         default:
@@ -246,7 +246,7 @@ export default {
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
-          return false
+          return true
       }
     },
 
