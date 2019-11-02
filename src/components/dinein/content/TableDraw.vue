@@ -424,6 +424,7 @@ export default {
       $(makeId)
         .find('g')
         .attr('style', 'opacity:0.5')
+
       this.$store.commit('dinein/TABLE_SPLIT', false)
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       if (!reservationId) {
@@ -445,10 +446,12 @@ export default {
                   dis.$store
                     .dispatch('dinein/getDineInTables', false)
                     .then(() => {
-                      dis.setTableColour(
+                      /*dis.setTableColour(
                         dis.selectedTableD3,
                         dis.selectedTableData
-                      )
+                      )*/
+                      dis.updateTableOnArea()
+                      // container.datum(dis.selectedTableD3).call(updateFunction)
                       $(makeId)
                         .find('g')
                         .removeAttr('style')
@@ -663,9 +666,10 @@ export default {
           .then(() => {
             this.$store.dispatch('dinein/getDineInArea', false).then(() => {
               this.$store.dispatch('dinein/getDineInTables', false).then(() => {
-                let dis = this
+                // let dis = this
                 // setTimeout(function() {
-                dis.setTableColour(dis.selectedTableD3, dis.selectedTableData)
+                // dis.setTableColour(dis.selectedTableD3, dis.selectedTableData)
+                this.updateTableOnArea()
                 // }, 250)
                 // this.clearTableArea()
                 // this.updateTableOnArea()
