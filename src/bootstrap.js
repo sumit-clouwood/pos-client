@@ -48,7 +48,6 @@ export default {
             .dispatch('category/fetchAll')
             .then(async () => {
               await Promise.all([
-                this.store.dispatch('payment/fetchAll'),
                 this.store.dispatch('modifier/fetchAll'),
                 this.store.dispatch('surcharge/fetchAll'),
                 this.store.dispatch('discount/fetchAll'),
