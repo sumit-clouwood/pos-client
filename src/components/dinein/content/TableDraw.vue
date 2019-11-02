@@ -450,11 +450,11 @@ export default {
                         dis.selectedTableD3,
                         dis.selectedTableData
                       )*/
-                      dis.updateTableOnArea()
                       // container.datum(dis.selectedTableD3).call(updateFunction)
                       $(makeId)
                         .find('g')
                         .removeAttr('style')
+                      dis.updateTableOnArea()
                     })
                   $('#tooltipdata').hide()
                 })
@@ -669,7 +669,6 @@ export default {
                 // let dis = this
                 // setTimeout(function() {
                 // dis.setTableColour(dis.selectedTableD3, dis.selectedTableData)
-                this.updateTableOnArea()
                 // }, 250)
                 // this.clearTableArea()
                 // this.updateTableOnArea()
@@ -680,6 +679,7 @@ export default {
                 $(makeId)
                   .find('g')
                   .removeAttr('style')
+                this.updateTableOnArea()
               })
             })
           })
