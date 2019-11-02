@@ -451,9 +451,10 @@ export default {
                         dis.selectedTableData
                       )*/
                       // container.datum(dis.selectedTableD3).call(updateFunction)
-                      $(makeId)
+                      /*$(makeId)
                         .find('g')
-                        .removeAttr('style')
+                        .removeAttr('style')*/
+                      dis.clearTableArea()
                       dis.updateTableOnArea()
                     })
                   $('#tooltipdata').hide()
@@ -610,6 +611,10 @@ export default {
             data.table_position_coordinate.angle
           },${midX},${midY})`
         })
+        let makeId = '#id_' + dis.selectedTableId
+        $(makeId)
+          .find('g')
+          .removeAttr('style')
         /*.attr(
             'transform',
             d3.zoomIdentity.scale(dis.tableZoomScale).translate(0, 0)
@@ -676,9 +681,7 @@ export default {
                   this.drawViews()
                   this.setTableProperties()
                 })*/
-                $(makeId)
-                  .find('g')
-                  .removeAttr('style')
+                this.clearTableArea()
                 this.updateTableOnArea()
               })
             })
