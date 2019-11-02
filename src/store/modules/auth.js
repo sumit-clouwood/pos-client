@@ -18,6 +18,19 @@ const state = {
 
 // getters
 const getters = {
+  roleName: state => {
+    if (!state.auth.userDetails) {
+      return ''
+    }
+    const roleId = state.auth.userDetails.item.brand_role
+    if (roleId && state.auth.rolePermissions) {
+      const role = state.auth.rolePermissions.find(role => role._id === roleId)
+      return role ? role.name : ''
+    }
+    return ''
+  },
+  waiter: (state, getters) => getters.role === 'Waiter',
+  carhop: (state, getters) => getters.role === 'Carhop User',
   getRole: state => startPath => {
     if (state.rolePermissions) {
       return state.rolePermissions.find(user => user.start_path === startPath)

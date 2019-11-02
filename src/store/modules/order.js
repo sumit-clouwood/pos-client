@@ -43,6 +43,7 @@ const state = {
   orderToModify: null,
   splitBill: null,
   splittedItems: {},
+  splitted: false,
 }
 
 // getters
@@ -294,7 +295,7 @@ const getters = {
 // actions
 const actions = {
   setSplitBill({ commit, dispatch }) {
-    commit('SET_SPLIT_BILL')
+    commit('SET_SPLIT_BILL', -1)
     dispatch('surchargeCalculation')
   },
   splitItems({ commit, dispatch }, items) {
@@ -1366,14 +1367,25 @@ const mutations = {
       return item
     })
   },
+  [mutation.UPDATE_ITEMS](state, items) {
+    state.items = items
+  },
+  [mutation.REINDEX_ITEMS](state, items) {
+    //reset item order index, THIS IS DONE when some of orders are paid and again added to cart
+    items = items.map((item, key) => {
+      item.orderIndex = key
+      return item
+    })
 
+    state.items = items
+  },
   [mutation.RESET](state, full = true) {
     if (full) {
       state.items = []
       state.orderStatus = null
       state.orderNote = null
     }
-    state.splitBill = null
+
     state.splittedItems = {}
     state.item = false
     state.orderId = null
@@ -1428,27 +1440,31 @@ const mutations = {
     state.startTime = null
   },
 
+  [mutation.SET_SPLITTED](state, status) {
+    state.splitted = status
+  },
+
   [mutation.ORDER_TO_MODIFY](state, orderId) {
     state.orderToModify = orderId
   },
   [mutation.SET_SPLIT_BILL](state, status = -1) {
-    if (status !== -1) {
-      //changed from checkout
-      state.splitBill = status
-    } else if (state.splitBill === null) {
-      //if comming first time
-      state.splitBill = true
-    } else {
-      //toggle here
+    //if -1 then toggle it, if true assign true, if false assign false, if null then assign null
+    if (status === -1) {
       state.splitBill = state.splitBill ? false : true
+    } else {
+      state.splitBill = status
     }
   },
   [mutation.MARK_SPLIT_ITEMS_PAID](state) {
     const newitems = state.items.map(item => {
-      if (state.splittedItems[item.orderIndex] === true) {
-        item.paid = true
+      if (Object.keys(state.splittedItems).length) {
+        if (state.splittedItems[item.orderIndex] === true) {
+          item.paid = true
+        } else {
+          item.paid = false
+        }
       } else {
-        item.paid = false
+        item.paid = true
       }
       return item
     })

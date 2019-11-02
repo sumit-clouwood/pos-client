@@ -18,12 +18,14 @@
 
 <script>
 /* global $ */
+/* eslint-disable no-console */
+
 import SystemNavigation from '@/components/SystemNavigation'
 import Header from '@/components/dinein/Header.vue'
 import Content from '@/components/dinein/Content'
 import Footer from '@/components/dinein/Footer'
 import Preloader from '@/components/util/Preloader'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Dinein',
@@ -48,8 +50,14 @@ export default {
   },
   computed: {
     ...mapState('dinein', ['loading']),
+    ...mapGetters('auth', ['carhop', 'waiter']),
   },
   mounted() {
+    if (this.carhop) {
+      this.$router.replace('/carhop' + this.store + '/')
+    } else {
+      //this.$router.replace('/' + this.store + '/')
+    }
     this.$store.dispatch('dinein/fetchAll')
     let getBody = $('body')
     getBody.removeAttr('class')
