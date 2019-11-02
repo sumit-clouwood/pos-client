@@ -389,15 +389,23 @@ const actions = {
     })
   },
   getSelectedOrder({ dispatch, commit, state, rootState }, orderId) {
-    dispatch('order/reset', {}, { root: true })
-    dispatch('checkout/reset', {}, { root: true })
-    dispatch('order/selectedOrderDetails', orderId, {
-      root: true,
-    }).then(() => {
-      commit('order/ORDER_TYPE', state.orderType, { root: true })
-      return dispatch('order/addDiningOrder', rootState.order.selectedOrder, {
+    return new Promise((resolve, reject) => {
+      dispatch('order/reset', {}, { root: true })
+      dispatch('checkout/reset', {}, { root: true })
+      dispatch('order/selectedOrderDetails', orderId, {
         root: true,
       })
+        .then(() => {
+          commit('order/ORDER_TYPE', state.orderType, { root: true })
+          dispatch('order/addDiningOrder', rootState.order.selectedOrder, {
+            root: true,
+          })
+            .then(() => {
+              resolve()
+            })
+            .catch(error => reject(error))
+        })
+        .catch(error => reject(error))
     })
   },
   fetchMoreReservations(

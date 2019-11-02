@@ -325,9 +325,9 @@ const actions = {
       item.orderIndex = getters.orderIndex
     }
 
-    // if (stateItem.no) {
-    //   item.orderIndex = stateItem.no
-    // }
+    if (stateItem.no) {
+      item.orderIndex = stateItem.no
+    }
 
     //this comes directly from the items menu without modifiers
     item.modifiable = false
@@ -374,9 +374,9 @@ const actions = {
         item.orderIndex = getters.orderIndex
       }
 
-      // if (item.no) {
-      //   item.orderIndex = item.no
-      // }
+      if (item.no) {
+        item.orderIndex = item.no
+      }
 
       item.modifiable = true
 
@@ -990,7 +990,7 @@ const actions = {
       order.items.forEach((orderItem, key) => {
         rootState.category.items.forEach(categoryItem => {
           let item = { ...categoryItem }
-          //item.no = orderItem.no
+          item.no = orderItem.no
 
           if (
             state.selectedOrder &&
@@ -1156,11 +1156,18 @@ const actions = {
     })
   },
   addDiningOrder({ dispatch, commit }, orderData) {
-    commit('SET_CART_TYPE', 'dine-in-modify')
-    dispatch('setDiscounts', orderData).then(() => {
-      dispatch('addOrderToCart', orderData.item).then(() => {
-        dispatch('surchargeCalculation')
-      })
+    return new Promise((resolve, reject) => {
+      commit('SET_CART_TYPE', 'dine-in-modify')
+      dispatch('setDiscounts', orderData)
+        .then(() => {
+          dispatch('addOrderToCart', orderData.item)
+            .then(() => {
+              dispatch('surchargeCalculation')
+              resolve()
+            })
+            .catch(error => reject(error))
+        })
+        .catch(error => reject(error))
     })
   },
   selectedOrderDetails({ commit }, orderId) {
