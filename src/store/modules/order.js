@@ -325,6 +325,10 @@ const actions = {
       item.orderIndex = getters.orderIndex
     }
 
+    // if (stateItem.no) {
+    //   item.orderIndex = stateItem.no
+    // }
+
     //this comes directly from the items menu without modifiers
     item.modifiable = false
 
@@ -369,6 +373,10 @@ const actions = {
       if (typeof item.orderIndex === 'undefined') {
         item.orderIndex = getters.orderIndex
       }
+
+      // if (item.no) {
+      //   item.orderIndex = item.no
+      // }
 
       item.modifiable = true
 
@@ -982,6 +990,8 @@ const actions = {
       order.items.forEach((orderItem, key) => {
         rootState.category.items.forEach(categoryItem => {
           let item = { ...categoryItem }
+          //item.no = orderItem.no
+
           if (
             state.selectedOrder &&
             state.selectedOrder.item.order_type === 'dine_in'
@@ -1263,6 +1273,12 @@ const actions = {
     commit(mutation.START_ORDER)
     commit('checkout/SET_PROCESSING', false, { root: true })
   },
+  reindexItems({ dispatch }) {
+    //commit(mutation.REINDEX_ITEMS, unpaidItems)
+    //we don't need to reindex modifiers as they are in built with item
+    //reindex discounts needs to be done because they are no built inside item, kept separately
+    dispatch('discount/reindexItemDiscounts', state.items, { root: true })
+  },
 }
 
 function playSound(locationId, onlineOrders) {
@@ -1303,11 +1319,13 @@ const mutations = {
 
   [mutation.ADD_ORDER_ITEM](state, item) {
     item.modifiers = []
-    state.items.push(item)
+    //state.items.push(item)
+    state.items.splice(item.orderIndex, 0, item)
   },
 
   [mutation.ADD_ORDER_ITEM_WITH_MODIFIERS](state, item) {
-    state.items.push(item)
+    state.items.splice(item.orderIndex, 0, item)
+    //state.items.push(item)
   },
 
   [mutation.INCREMENT_ORDER_ITEM_QUANTITY](state, index) {
@@ -1373,12 +1391,14 @@ const mutations = {
   [mutation.REINDEX_ITEMS](state, items) {
     //reset item order index, THIS IS DONE when some of orders are paid and again added to cart
     items = items.map((item, key) => {
+      item.oldIndex = item.no
       item.orderIndex = key
       return item
     })
 
     state.items = items
   },
+
   [mutation.RESET](state, full = true) {
     if (full) {
       state.items = []
@@ -1474,7 +1494,7 @@ const mutations = {
     state.splittedItems = items
     //remove item / order discounts
     //remove tax and surcharges
-
+    //problem here
     const newitems = state.items.map(item => {
       if (state.splittedItems[item.orderIndex] === true) {
         item.split = true

@@ -113,6 +113,19 @@ const actions = {
     commit(mutation.SET_ITEM_DISCOUNTS, itemDiscounts)
   },
 
+  reindexItemDiscounts({ commit }, items) {
+    const newAppliedItemDiscounts = state.appliedItemDiscounts.map(
+      itemDiscount => {
+        items.forEach(orderItem => {
+          if (orderItem.oldIndex === itemDiscount.item.orderIndex) {
+            itemDiscount.item.orderIndex = orderItem.orderIndex
+          }
+        })
+        return itemDiscount
+      }
+    )
+    commit(mutation.REPLACE_ITEM_DISCOUNTS, newAppliedItemDiscounts)
+  },
   applyItemDiscount({ commit, state, rootState, dispatch }) {
     commit('checkoutForm/RESET', 'process', { root: true })
     return new Promise((resolve, reject) => {
@@ -286,6 +299,9 @@ const mutations = {
   },
   [mutation.REMOVE_ORDER_DISCOUNT](state) {
     state.currentActiveOrderDiscount = false
+  },
+  [mutation.REPLACE_ITEM_DISCOUNTS](state, discounts) {
+    state.appliedItemDiscounts = discounts
   },
   [mutation.APPLY_ITEM_DISCOUNT](state, { item, discount }) {
     let discounts = state.appliedItemDiscounts.filter(
