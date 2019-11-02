@@ -19,6 +19,7 @@ const state = {
   action: 'add',
   loyaltyCard: {},
   decimalExists: false,
+  forceCash: false,
 }
 
 // getters
@@ -190,6 +191,7 @@ const actions = {
     } else {
       //set method as cash if amount is zero for card
       const method = rootGetters['payment/cash']
+      commit('forceCash', true)
       commit('setMethod', method)
       return dispatch('addAmount')
     }
@@ -270,9 +272,8 @@ const actions = {
     //check if payable is greater than 0 else set cash as method
     commit('setMethod', method)
     if (getters['payable'] <= 0) {
-      setTimeout(() => {
-        commit('setMethod', rootGetters['payment/cash'])
-      }, 100)
+      commit('setMethod', rootGetters['payment/cash'])
+      commit('forceCash', true)
     }
   },
 
@@ -546,6 +547,10 @@ const mutations = {
   },
   showPayBreak(state, flag) {
     state.showPayBreak = flag
+  },
+
+  forceCash(state, status) {
+    state.forceCash = status
   },
 
   setGiftAmount(state, amount) {
