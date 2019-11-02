@@ -40,6 +40,11 @@ export default {
         this.$store.commit('checkoutForm/forceCash', false)
       }
     },
+    payable(newval) {
+      if (!newval) {
+        this.$store.commit('checkoutForm/forceCash', true)
+      }
+    },
   },
   computed: {
     ...mapState({
@@ -50,6 +55,7 @@ export default {
     ...mapGetters(['payNowCalcHendler']),
     ...mapGetters({
       pmethods: 'payment/methods',
+      payable: 'checkoutForm/payable',
     }),
   },
 
