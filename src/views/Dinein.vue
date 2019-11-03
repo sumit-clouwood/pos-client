@@ -52,6 +52,11 @@ export default {
     ...mapState('dinein', ['loading']),
   },
   mounted() {
+    this.$store.dispatch('dinein/fetchAll')
+    let getBody = $('body')
+    getBody.removeAttr('class')
+    getBody.attr('class', 'fixed-nav sticky-footer dm-manager')
+
     console.log('in mounted')
     const roleId = this.$store.state.auth.userDetails.item.brand_role
     const role = this.$store.state.auth.rolePermissions.find(
@@ -68,10 +73,6 @@ export default {
       console.log(' no role matched')
       //this.$router.replace('/' + this.store + '/')
     }
-    this.$store.dispatch('dinein/fetchAll')
-    let getBody = $('body')
-    getBody.removeAttr('class')
-    getBody.attr('class', 'fixed-nav sticky-footer dm-manager')
   },
 }
 </script>
