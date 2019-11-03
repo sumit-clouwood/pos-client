@@ -53,15 +53,14 @@ export default {
     ...mapGetters('auth', ['carhop', 'waiter']),
   },
   mounted() {
-    if (this.carhop) {
-      this.$router.replace('/carhop' + this.store + '/')
-    } else {
-      //this.$router.replace('/' + this.store + '/')
-    }
     this.$store.dispatch('dinein/fetchAll')
     let getBody = $('body')
     getBody.removeAttr('class')
     getBody.attr('class', 'fixed-nav sticky-footer dm-manager')
+
+    if (this.carhop) {
+      this.$router.replace('/carhop' + this.store + '/')
+    }
   },
 }
 </script>
