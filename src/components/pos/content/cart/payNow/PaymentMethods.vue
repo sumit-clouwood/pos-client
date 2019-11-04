@@ -42,6 +42,7 @@ export default {
     },
     payable(newval) {
       if (!newval) {
+        //this method ll call the forcash inside
         this.$store.dispatch('checkoutForm/setCashMethod')
       }
     },
