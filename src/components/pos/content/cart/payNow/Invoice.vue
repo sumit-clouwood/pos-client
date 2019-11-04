@@ -313,10 +313,10 @@ export default {
           }
 
           .invoice-body .header-img {
-              width: 50%;
-              min-width: 50%;
               display: inline-block;
               margin: 0 auto 1.2em;
+              max-height: 80px;
+              min-height: 50px;
           }
 
           .invoice-body .main {
