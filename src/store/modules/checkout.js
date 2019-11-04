@@ -823,6 +823,13 @@ const actions = {
                 msgStr = rootGetters['location/_t'](
                   'Dinein order has been modified.'
                 )
+                dispatch(
+                  'printingServer/printingServerInvoiceRaw',
+                  state.order,
+                  {
+                    root: true,
+                  }
+                )
                 let resetFull = false
                 if (getters.complete) {
                   resetFull = true
