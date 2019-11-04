@@ -55,7 +55,7 @@ export default {
 @import '../../../assets/scss/mixins.scss';
 
 .back {
-  width: 100%;
+  /*width: 100%;*/
   height: 65px;
   /*background-color: red;*/
   border-bottom: 1px solid #eee;

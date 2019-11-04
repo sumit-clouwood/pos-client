@@ -110,9 +110,9 @@ export default {
   grid-template-rows: max-content 55px 1fr max-content;
 
   .mobile-header {
-    padding: 20px;
-    display: grid;
-    grid-template-columns: 4em max-content 2em;
+    padding: 10px 0px;
+    display: flex;
+    justify-content: space-around;
     align-items: center;
     background-color: #fafafa;
     z-index: 2;

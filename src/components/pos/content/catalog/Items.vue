@@ -274,8 +274,17 @@ export default {
       }
     }
   }
-  .no_item {
+  /*.no_item {
     padding: 5em;
+    h2 {
+      width: max-content;
+    }
+  }*/
+}
+.no_item {
+  padding: 5em;
+  h2 {
+    width: max-content;
   }
 }
 </style>

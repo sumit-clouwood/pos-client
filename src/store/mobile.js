@@ -196,8 +196,12 @@ export default {
     backSubCategory({ commit }) {
       commit('BACK_SUB_CATEGORY')
     },
-    backItem({ commit }) {
-      commit('BACK_ITEM')
+    backItem({ commit, rootState }) {
+      if (!rootState.category.subcategory) {
+        commit('BACK_SUB_CATEGORY')
+      } else {
+        commit('BACK_ITEM')
+      }
     },
     transactionList({ commit }) {
       commit('TRANSACTION_LIST')
