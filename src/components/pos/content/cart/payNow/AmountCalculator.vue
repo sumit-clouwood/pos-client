@@ -57,9 +57,9 @@ export default {
               //&&
               //this.$store.state.checkoutForm.payments.length == 1
             ) {
-              if (this.processing) {
-                return false
-              }
+              // if (this.processing) {
+              //   return false
+              // }
 
               this.processing = true
 

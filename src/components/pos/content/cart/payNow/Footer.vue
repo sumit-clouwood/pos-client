@@ -98,9 +98,9 @@ export default {
       })
     },
     pay() {
-      if (this.processing) {
-        return false
-      }
+      // if (this.processing) {
+      //   return false
+      // }
       this.processing = true
 
       this.addAmount().then(payable => {
