@@ -321,8 +321,8 @@ export default {
           }
 
           .invoice-body .header-img {
-              width: 50%;
-              min-width: 50%;
+              max-height: 180px !important;
+              min-height: 120px !important;
               display: inline-block;
               margin: 0 auto 1.2em;
           }
