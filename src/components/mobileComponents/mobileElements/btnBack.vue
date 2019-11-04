@@ -66,8 +66,8 @@ export default {
   }
 
   svg {
-    width: 65px;
-    margin-right: 20px;
+    width: 35px;
+    /*margin-right: 20px;*/
   }
 }
 </style>

@@ -1,6 +1,10 @@
 <template>
   <div
-    :class="['main-orders', { active: items.length && mainOrdersHendler }]"
+    :class="[
+      'main-orders',
+      'walkinPOScart',
+      { active: items.length && mainOrdersHendler },
+    ]"
     class="main-orders color-dashboard-background"
   >
     <div class="main-orders-title">
@@ -76,7 +80,7 @@ export default {
 .main-orders {
 }
 @include responsive(mobile) {
-  .main-orders {
+  .main-orders.walkinPOScart {
     position: fixed;
     top: 0;
     right: -100vw;
@@ -117,11 +121,13 @@ export default {
 
     .main-orders-contacts {
       margin: 0;
-      padding: 0 20px 20px 20px;
+      padding: 0;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       z-index: 1;
 
       .main-oreders-title {
+        width: 100%;
+        padding: 10px;
         font-size: 14px;
         font-weight: normal;
         display: flex;
