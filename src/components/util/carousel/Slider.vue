@@ -364,7 +364,7 @@ export default {
     }
     .carousel-container {
       .carousel {
-        overflow: inherit;
+        /*overflow: inherit;*/
       }
     }
   }
