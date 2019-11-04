@@ -109,7 +109,7 @@ export default {
     .carousel-container
     .carousel {
     overflow-y: scroll;
-    height: 50vh;
+    height: 40vh;
   }
 }
 </style>
