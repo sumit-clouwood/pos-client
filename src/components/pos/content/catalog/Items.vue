@@ -43,7 +43,7 @@
       :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
     >
       <!--<btnBack :param="'item'" />-->
-      No menu item found
+      <div class="no_item"><h2>No menu item found</h2></div>
     </div>
   </div>
 </template>
@@ -273,6 +273,9 @@ export default {
         white-space: nowrap;
       }
     }
+  }
+  .no_item {
+    padding: 5em;
   }
 }
 </style>
