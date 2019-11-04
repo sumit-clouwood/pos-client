@@ -315,8 +315,8 @@ export default {
           .invoice-body .header-img {
               display: inline-block;
               margin: 0 auto 1.2em;
-              max-height: 80px;
-              min-height: 50px;
+              max-height: 120px;
+              min-height: 100px;
           }
 
           .invoice-body .main {
