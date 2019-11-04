@@ -11,7 +11,7 @@
       </a>
     </div>
     <div class="navigation-list-wrapper">
-      <btnBack :param="'category'" />
+      <!--<btnBack :param="'category'" />-->
       <ul class="navigation-list" v-if="categories.length">
         <li
           class="nav-item active-opacity color-text-invert"
@@ -89,7 +89,7 @@
 <script>
 /* global  $ */
 //import bootstrap from '@/bootstrap'
-import btnBack from '../mobileComponents/mobileElements/btnBack'
+// import btnBack from '../mobileComponents/mobileElements/btnBack'
 
 import { mapState, mapGetters } from 'vuex'
 
@@ -102,7 +102,7 @@ export default {
     }
   },
   components: {
-    btnBack,
+    // btnBack,
   },
   computed: {
     ...mapState({
@@ -253,6 +253,18 @@ export default {
         width: 8px;
       }
 
+      @keyframes gradientBG {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
       .navigation-list {
         overflow: auto;
         grid-gap: 0;
@@ -273,7 +285,14 @@ export default {
             padding: 0 20px 0 10px;
             display: grid;
             grid-template-columns: min-content 1fr;
-            background-color: #fff;
+            cursor: pointer;
+            background: linear-gradient(
+              141deg,
+              #fcfcff 0%,
+              #d7e0e1 51%,
+              #ecebeb 75%
+            );
+            animation: gradientBG 15s ease infinite;
 
             .nav-link-text {
               font-size: 14px;

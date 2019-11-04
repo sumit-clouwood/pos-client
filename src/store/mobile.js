@@ -63,6 +63,10 @@ export default {
       state.subCategoryHendler = false
       state.foodMenuHendler = !state.foodMenuHendler
     },
+    SHOW_MAIN_CATEGORY: state => {
+      state.allCategoryHendler = true
+      state.subCategoryHendler = false
+    },
     BACK_SUB_CATEGORY: state => {
       state.allCategoryHendler = !state.allCategoryHendler
       state.subCategoryHendler = false
@@ -192,8 +196,12 @@ export default {
     backSubCategory({ commit }) {
       commit('BACK_SUB_CATEGORY')
     },
-    backItem({ commit }) {
-      commit('BACK_ITEM')
+    backItem({ commit, rootState }) {
+      if (!rootState.category.subcategory) {
+        commit('BACK_SUB_CATEGORY')
+      } else {
+        commit('BACK_ITEM')
+      }
     },
     transactionList({ commit }) {
       commit('TRANSACTION_LIST')
@@ -206,6 +214,9 @@ export default {
     },
     allCategoryHendlerChange({ commit }) {
       commit('ALL_CATEGORY_HENDLER_CHANGE')
+    },
+    showMainCategory({ commit }) {
+      commit('SHOW_MAIN_CATEGORY')
     },
     subCategoryHendlerChange({ commit }) {
       commit('SUB_CATEGORY_HENDLER_CHANGE')

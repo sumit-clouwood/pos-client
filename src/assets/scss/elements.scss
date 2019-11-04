@@ -208,7 +208,7 @@ img {
   border-radius: 5px;
   margin: 0px;
   align-self: start;
-  background-color: #fff;
+  //background-color: #fff;
   overflow: hidden;
 
   .search-field-icon {
@@ -217,6 +217,11 @@ img {
     justify-content: center;
     border-right: 1px solid $gray-middle;
     height: $px35;
+    @include responsive(mobile) {
+      svg path {
+        fill: #000
+      }
+    }
 
     .search-field-img {
       width: $px20;
