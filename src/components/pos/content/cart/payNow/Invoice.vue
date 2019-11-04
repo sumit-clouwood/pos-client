@@ -313,10 +313,10 @@ export default {
           }
 
           .invoice-body .header-img {
+              max-height: 180px !important;
+              min-height: 120px !important;
               display: inline-block;
               margin: 0 auto 1.2em;
-              max-height: 140px;
-              min-height: 120px;
           }
 
           .invoice-body .main {
