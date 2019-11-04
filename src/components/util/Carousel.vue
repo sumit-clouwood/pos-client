@@ -84,6 +84,10 @@ export default {
     },
     setActive(index) {
       this.currentSlide = index
+      if (index < this.perPage) {
+        //move to slide one
+        this.movePage(1)
+      }
     },
     movePage(page) {
       let toMove = (page - 1) * this.perPage * this.slideWidth

@@ -39,6 +39,7 @@
               type="button"
               class="btn btn-danger cancel-announce color-button color-text-invert"
               data-dismiss="modal"
+              @click="stopProcess()"
             >
               {{ _t('Cancel') }}
             </button>
@@ -72,10 +73,15 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
+    stopProcess() {
+      this.$store.commit('checkoutForm/SET_PROCESSING', false)
+    },
     payByCard(target) {
       this.error = null
       if (this.code == '') {
         this.error = this._t('Please enter last 4 digit of card')
+        this.$store.commit('checkoutForm/SET_PROCESSING', false)
+
         $(target).modal('show')
       } else {
         this.$store
@@ -88,7 +94,10 @@ export default {
               this.$store.state.checkoutForm.action == 'pay'
             ) {
               if (this.$store.getters['checkoutForm/validate']) {
+                $('#payment-msg').modal('show')
                 this.$store.commit('order/IS_PAY', 1)
+                this.$store.commit('checkoutForm/SET_PROCESSING', true)
+
                 this.$store
                   .dispatch(
                     'checkout/pay',
@@ -105,6 +114,9 @@ export default {
                       $('#payment-msg').modal('hide')
                       $('#payment-screen-footer').prop('disabled', false)
                     }, 500)
+                  })
+                  .finally(() => {
+                    this.$store.commit('checkoutForm/SET_PROCESSING', false)
                   })
               }
               hideModal('#card-payemnt')
