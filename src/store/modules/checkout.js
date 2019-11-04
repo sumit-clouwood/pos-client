@@ -21,10 +21,14 @@ const state = {
 // getters
 const getters = {
   complete: (state, getters, rootState) => {
-    if (!rootState.order.splitBill) {
-      return true
+    //if order was never splitted means it is completed
+    if (rootState.order.splitted) {
+      //once splitted then check items
+      const allPaid = !rootState.order.items.some(item => item.paid === false)
+      return allPaid
     }
-    return !rootState.order.items.some(item => item.paid === false)
+    //never splitted
+    return true
   },
   calculateOrderTotals: () => order => {
     let data = {
@@ -752,6 +756,52 @@ const actions = {
     })
   },
 
+  createDineOrder({ dispatch, commit, rootGetters, state }, action) {
+    return new Promise(resolve => {
+      OrderService.saveOrder(state.order)
+        .then(response => {
+          if (response.data.status === 'ok') {
+            commit('order/SET_ORDER_ID', response.data.id, { root: true })
+            commit('SET_ORDER_NUMBER', response.data.order_no)
+            //we are not printing so reset manually here
+            let msg = rootGetters['location/_t']('Dinein Order has been paid')
+            if (action === 'dine-in-place-order') {
+              msg = rootGetters['location/_t']('Dinein Order has been placed')
+              //Invoice APP API Call with Custom Request JSON
+              dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+                root: true,
+              })
+              let resetFull = false
+              if (getters.complete) {
+                resetFull = true
+              }
+              dispatch('reset', resetFull)
+            } else {
+              commit(mutation.PRINT, true)
+            }
+
+            dispatch('setMessage', {
+              result: 'success',
+              msg: msg,
+            }).then(() => {
+              resolve(response.data)
+            })
+          } else {
+            dispatch('handleSystemErrors', response).then(() => resolve())
+          }
+        })
+        .catch(error => {
+          dispatch('handleRejectedResponse', {
+            response: error,
+            offline: false,
+          })
+            .then(() => {
+              resolve()
+            })
+            .catch(() => resolve())
+        })
+    })
+  },
   modifyDineOrder(
     { dispatch, rootState, getters, rootGetters, commit },
     action
@@ -773,6 +823,13 @@ const actions = {
                 msgStr = rootGetters['location/_t'](
                   'Dinein order has been modified.'
                 )
+                dispatch(
+                  'printingServer/printingServerInvoiceRaw',
+                  state.order,
+                  {
+                    root: true,
+                  }
+                )
                 let resetFull = false
                 if (getters.complete) {
                   resetFull = true
@@ -781,24 +838,19 @@ const actions = {
                 resolve()
               } else {
                 //order paid
-                commit(mutation.PRINT, true)
                 commit(
                   'SET_ORDER_NUMBER',
                   rootState.order.selectedOrder.item.order_no
                 )
-                if (rootState.order.splitBill) {
+                if (rootState.order.splitted || rootState.order.splitBill) {
+                  commit('order/SET_SPLITTED', true, { root: true })
                   //mark items as paid in current execution
                   dispatch('order/markSplitItemsPaid', null, { root: true })
+                  //if splitted once
                 }
 
+                commit(mutation.PRINT, true)
                 resolve()
-
-                // if (getters.complete) {
-                //   resolve()
-                // } else {
-                //   //create another order with same reservation id but with remaining items
-                //   //dispatch('splitOrder').then(() => resolve())
-                // }
               }
 
               commit(
@@ -1033,56 +1085,24 @@ const actions = {
     )
 
     commit('order/RESET', false, { root: true })
-    dispatch('checkoutForm/reset', {}, { root: true })
+
+    dispatch('checkoutForm/reset', 'complete', { root: true })
     dispatch('discount/reset', {}, { root: true })
     dispatch('surcharge/reset', {}, { root: true })
 
     dispatch('order/startOrder', null, { root: true })
-    commit(mutation.UPDATE_ITEMS, unpaidItems)
-    return dispatch('pay', { action: 'dine-in-place-order' })
-  },
 
-  createDineOrder({ dispatch, commit, rootGetters }, action) {
-    return new Promise(resolve => {
-      OrderService.saveOrder(state.order)
-        .then(response => {
-          if (response.data.status === 'ok') {
-            commit('order/SET_ORDER_ID', response.data.id, { root: true })
-            commit('SET_ORDER_NUMBER', response.data.order_no)
-            //we are not printing so reset manually here
-            let msg = rootGetters['location/_t']('Dinein Order has been paid')
-            if (action === 'dine-in-place-order') {
-              msg = rootGetters['location/_t']('Dinein Order has been placed')
-              dispatch('reset')
-            } else {
-              commit(mutation.PRINT, true)
-            }
-
-            dispatch('setMessage', {
-              result: 'success',
-              msg: msg,
-            }).then(() => {
-              resolve(response.data)
-            })
-          } else {
-            dispatch('handleSystemErrors', response).then(() => resolve())
-          }
-        })
-        .catch(error => {
-          dispatch('handleRejectedResponse', {
-            response: error,
-            offline: false,
-          })
-            .then(() => {
-              resolve()
-            })
-            .catch(() => resolve())
-        })
+    commit('order/UPDATE_ITEMS', unpaidItems, { root: true })
+    // eslint-disable-next-line no-unused-vars
+    return dispatch('pay', { action: 'dine-in-place-order' }).then(response => {
+      //new order has been created with remaining orders,
+      //order items have same old order indexes so we need to update them before next order isplaced
+      commit('order/REINDEX_ITEMS', unpaidItems, { root: true })
+      commit('order/SET_SPLIT_BILL', false, { root: true })
     })
   },
-
   // eslint-disable-next-line no-unused-vars
-  createCarhopOrder({ dispatch, commit, rootGetters }, action) {
+  createCarhopOrder({ dispatch, commit, rootGetters, state }, action) {
     return new Promise(resolve => {
       OrderService.saveOrder(state.order)
         .then(response => {
@@ -1094,6 +1114,10 @@ const actions = {
             const msg = rootGetters['location/_t'](
               'Carhop Order has been placed'
             )
+            //Invoice APP API Call with Custom Request JSON
+            dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+              root: true,
+            })
             dispatch('reset')
 
             dispatch('setMessage', {
@@ -1246,7 +1270,7 @@ const actions = {
   generateInvoice() {
     //commit(mutation.PRINT, true)
   },
-  reset({ commit, dispatch }, full = true) {
+  reset({ commit, dispatch, getters }, full = true) {
     commit(mutation.RESET, full)
 
     dispatch('checkoutForm/reset', {}, { root: true })
@@ -1254,7 +1278,7 @@ const actions = {
     dispatch('surcharge/reset', {}, { root: true })
     dispatch('customer/reset', {}, { root: true })
     dispatch('location/reset', {}, { root: true })
-    if (full) {
+    if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
     }
   },

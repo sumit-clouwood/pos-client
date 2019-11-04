@@ -18,6 +18,19 @@ const state = {
 
 // getters
 const getters = {
+  roleName: state => {
+    if (!state.auth.userDetails) {
+      return ''
+    }
+    const roleId = state.auth.userDetails.item.brand_role
+    if (roleId && state.auth.rolePermissions) {
+      const role = state.auth.rolePermissions.find(role => role._id === roleId)
+      return role ? role.name : ''
+    }
+    return ''
+  },
+  waiter: (state, getters) => getters.role === 'Waiter',
+  carhop: (state, getters) => getters.role === 'Carhop User',
   getRole: state => startPath => {
     if (state.rolePermissions) {
       return state.rolePermissions.find(user => user.start_path === startPath)
@@ -70,7 +83,7 @@ const actions = {
           setTimeout(() => {
             dispatch('location/setContext', null, { root: true }).then(() => {
               commit(mutation.SET_TOKEN, response.data.token)
-              resolve()
+              resolve(response.data.token)
             })
           }, 100)
           //resolve()
@@ -130,8 +143,8 @@ const actions = {
 
       commit(mutation.RESET)
 
-      commit('order/RESET', null, { root: true })
-      commit('checkout/RESET', null, { root: true })
+      commit('order/RESET', true, { root: true })
+      commit('checkout/RESET', true, { root: true })
       commit('context/RESET', null, { root: true })
       commit('customer/RESET', null, { root: true })
       commit('sync/reset', {}, { root: true })

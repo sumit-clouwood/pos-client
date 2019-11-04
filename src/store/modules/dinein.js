@@ -79,7 +79,7 @@ const actions = {
   updateDineInOrderStatus({ dispatch, commit }, orderStatus) {
     commit(mutation.DINE_IN_TAB_TYPE, orderStatus.title)
     if (orderStatus.pageId) {
-      let loader = orderStatus.loader ? orderStatus.loader : true
+      let loader = orderStatus.loader
       dispatch(orderStatus.pageId, loader)
     }
   },
@@ -115,6 +115,7 @@ const actions = {
   async getBookedTables({ commit }, loader = true) {
     // eslint-disable-next-line no-console
     console.log('all bookend table')
+
     if (loader) commit(mutation.LOADING, loader)
     localStorage.setItem('reservationId', false)
     const response = await DineInService.getAllBookedTables()
@@ -237,8 +238,6 @@ const actions = {
         if (orders.length) {
           let tableArray = []
           orders.forEach(order => {
-            // // eslint-disable-next-line no-console
-            // console.log(order, 'Rajeev')
             if (tableArray[order.assigned_table_id] == undefined)
               tableArray[order.assigned_table_id] = []
             tableArray[order.assigned_table_id].push(order.status)
@@ -249,10 +248,6 @@ const actions = {
               if (order.assigned_table_id == table._id) {
                 is_unavail = 1
               }
-              // tableStatus.unavailableCount += 1
-              // table_details.status.color = '#c84c4c'
-              // table_details.status.text = 'unavailable'
-              // tableStatus.table.push(table_details)
             } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
               if (order.assigned_table_id == table._id) {
                 is_avail_soon = 1
@@ -263,12 +258,6 @@ const actions = {
                   }
                 })
               }
-              // tableStatus.availableSoonCount += 1
-              // table_details.status.color = '#faa03c'
-              // table_details.status.text = 'available_soon'
-              // tableStatus.table.push(table_details)
-              // eslint-disable-next-line no-console
-              // console.log(table_details, 'Rajeev')
             }
             orderOnTable.push({
               tableId: table._id,
@@ -367,7 +356,7 @@ const actions = {
   },
 
   addReservation({ commit, state, dispatch }, tableId) {
-    commit(mutation.LOADING, true)
+    commit(mutation.LOADING, false)
     dispatch('order/reset', {}, { root: true })
     dispatch('checkout/reset', {}, { root: true })
     return new Promise((resolve, reject) => {
@@ -508,8 +497,6 @@ const mutations = {
         : false
   },
   [mutation.LOADING](state, loadingStatus) {
-    // eslint-disable-next-line no-console
-    console.log(loadingStatus)
     state.loading = loadingStatus
   },
   [mutation.ORDER_ON_TABLES](state, orderOnTables) {

@@ -106,7 +106,6 @@ export default {
   },
   data() {
     return {
-      enabledSplitBill: false,
       OrderSelectedCover: 'Select Cover',
       myStyle: {
         backgroundColor: '#fff',
@@ -146,6 +145,9 @@ export default {
     }),
     ...mapState({ selectedAddress: state => state.customer.address }),
     ...mapGetters('context', ['store']),
+    enabledSplitBill() {
+      return this.items.length > 1
+    },
   },
   methods: {
     showSplitBill() {

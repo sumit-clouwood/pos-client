@@ -119,8 +119,9 @@ export default {
             email: this.email,
             password: this.password,
           })
-          .then(() => {
+          .then(token => {
             this.login_success_message = 'Logged in successfully.'
+            this.$store.commit('auth/SET_TOKEN', token)
           })
           .catch(error => {
             this.login_fail_message = error

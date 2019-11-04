@@ -20,14 +20,17 @@ const getters = {
 }
 
 const actions = {
-  initFetch({ commit }) {
+  initFetch({ commit }, initLoad = true) {
     // if (!state.orders['in-progress'] || !state.orders['finished']) {
     //   commit(mutation.SET_LOADING, true)
     // } else {
     //   commit(mutation.SET_LOADING_SILENT, true)
     // }
-    commit(mutation.SET_LOADING, true)
+    if (initLoad) {
+      commit(mutation.SET_LOADING, true)
+    }
 
+    commit(mutation.SET_LOADING_SILENT, true)
     commit(mutation.SET_ORDER_STATUS, 'in-progress')
 
     CarhopService.fetchOrders(state.orderStatus, 1, state.limit).then(

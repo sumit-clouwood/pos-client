@@ -120,46 +120,53 @@
         </svg>
       </a>
       <ul class="setting-dropdown1">
-        <li @click="walkOrder()">
+        <li v-if="enabled('walkin')" @click="walkOrder()">
           <a role="button">
             {{ _t('Walk In') }}
           </a>
         </li>
-        <li>
+        <li v-if="enabled('printers')">
           <a role="button" class="cursor-pointer">{{ _t('Printers') }}</a>
         </li>
         <li
-          v-if="permitted('transactional_orders')"
+          v-if="enabled('transactions') && permitted('transactional_orders')"
           @click="moveTransactionSection(this)"
         >
           <a role="button">
             {{ _t('Transactions') }}
           </a>
         </li>
-        <li v-if="permitted('dashboard', 'root')">
+        <li v-if="enabled('dashboard') && permitted('dashboard', 'root')">
           <a :href="dashboard">{{ _t('Dashboard') }}</a>
         </li>
-        <li v-if="permitted('crm', 'root')">
+        <li v-if="enabled('crm') && permitted('crm', 'root')">
           <a :href="crm">{{ _t('CRM') }}</a>
         </li>
-        <li v-if="permitted('menu', 'root')">
+        <li v-if="enabled('transactions') && permitted('menu', 'root')">
           <a :href="menu">{{ _t('Menu') }}</a>
         </li>
-        <li v-if="permitted('delivery', 'root')">
+        <li v-if="enabled('delivery') && permitted('delivery', 'root')">
           <a role="button" class="cursor-pointer">
             <router-link :to="'/delivery-manager' + store">
               {{ _t('Delivery Manager') }}
             </router-link>
           </a>
         </li>
-        <li>
+        <li v-if="enabled('carhop')">
           <a role="button" class="cursor-pointer">
             <router-link :to="'/carhop' + store">
               {{ _t('Carhop') }}
             </router-link>
           </a>
         </li>
-        <li v-if="permitted('brand', 'root')">
+        <li v-if="enabled('carhoporders')">
+          <a role="button" class="cursor-pointer">
+            <router-link :to="'/carhop-orders' + store">
+              {{ _t('Carhop Orders') }}
+            </router-link>
+          </a>
+        </li>
+        <li v-if="enabled('brand') && permitted('brand', 'root')">
           <a :href="brand">{{ _t('Settings') }}</a>
         </li>
         <li>
@@ -279,6 +286,7 @@ export default {
       },
     },
     ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['waiter', 'carhop']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType']),
     ...mapState('sync', ['online']),
@@ -291,6 +299,72 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    enabled(option) {
+      switch (option) {
+        case 'printers':
+          if (this.waiter || this.carhop) {
+            return false
+          }
+          return true
+        case 'dashboard':
+          if (this.waiter || this.carhop) {
+            return false
+          }
+          return true
+        case 'transactions':
+          if (this.waiter || this.carhop) {
+            return false
+          }
+          return true
+        case 'crm':
+          if (this.waiter || this.carhop) {
+            return false
+          }
+          return true
+        case 'dinein':
+          if (this.carhop) {
+            return false
+          }
+          return true
+        case 'menusetup':
+          if (this.waiter || this.carhop) {
+            return false
+          }
+          return true
+        case 'delivery':
+          if (this.waiter || this.carhop) {
+            return false
+          }
+          return true
+        case 'walkin':
+          if (this.waiter || this.carhop) {
+            return false
+          }
+          return true
+        case 'carhop':
+          if (this.waiter) {
+            return false
+          }
+          return true
+        case 'carhoporders':
+          if (this.waiter) {
+            return false
+          }
+          return true
+        case 'brand':
+          if (this.waiter || this.carhop) {
+            return false
+          }
+          return true
+        case 'switchCashier':
+          if (this.waiter || this.carhop) {
+            return true
+          }
+          return true
+        default:
+          return true
+      }
+    },
     walkOrder() {
       this.$router.push(this.store)
       this.$store.commit('order/ORDER_TYPE', {
@@ -303,6 +377,8 @@ export default {
     },
     fetchOrdersWithTableDetails: function(orderStatus) {
       this.$store.commit('dinein/SET_PAGE_NO', 1)
+      // eslint-disable-next-line no-console
+      console.log(orderStatus)
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
     },
     ...mapActions('auth', ['logout']),

@@ -22,8 +22,9 @@ import SystemNavigation from '@/components/SystemNavigation'
 import Header from '@/components/dinein/Header.vue'
 import Content from '@/components/dinein/Content'
 import Footer from '@/components/dinein/Footer'
+import { mapState, mapGetters } from 'vuex'
+// import Preloader from '@/components/util/progressbar'
 import Preloader from '@/components/util/Preloader'
-import { mapState } from 'vuex'
 
 export default {
   name: 'Dinein',
@@ -48,12 +49,19 @@ export default {
   },
   computed: {
     ...mapState('dinein', ['loading']),
+    ...mapGetters('auth', ['carhop', 'waiter']),
   },
   mounted() {
     this.$store.dispatch('dinein/fetchAll')
     let getBody = $('body')
     getBody.removeAttr('class')
     getBody.attr('class', 'fixed-nav sticky-footer dm-manager')
+
+    if (this.carhop) {
+      this.$router.replace('/carhop' + this.store + '/')
+    } else {
+      //this.$router.replace('/' + this.store + '/')
+    }
   },
 }
 </script>

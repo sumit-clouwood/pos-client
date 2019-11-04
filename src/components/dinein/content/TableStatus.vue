@@ -47,6 +47,7 @@
 /* global $ */
 import { mapState, mapGetters } from 'vuex'
 import * as d3 from 'd3'
+
 export default {
   name: 'TableStatus',
   computed: {
@@ -69,6 +70,18 @@ export default {
     }
   },
   methods: {
+    rotationAlgo(a, i, d) {
+      let nodeDims = d3
+        .select(a[i])
+        .node()
+        .parentNode.getBBox()
+      let data = d
+      let x = parseFloat(data.table_position_coordinate.x)
+      let y = parseFloat(data.table_position_coordinate.y)
+      let midX = nodeDims.width / 8 + x
+      let midY = nodeDims.height / 8 + y
+      return { data, midX, midY }
+    },
     zoomIn() {
       let that = this
       if (that.transform.k < 0.9) {
@@ -76,15 +89,7 @@ export default {
         that.transform.k += 0.1
 
         d3.selectAll('.dinein_table_parent').each((d, i, a) => {
-          let nodeDims = d3
-            .select(a[i])
-            .node()
-            .parentNode.getBBox()
-          let data = d
-          let x = parseFloat(data.table_position_coordinate.x)
-          let y = parseFloat(data.table_position_coordinate.y)
-          let midX = nodeDims.width / 8 + x
-          let midY = nodeDims.height / 8 + y
+          let { data, midX, midY } = that.rotationAlgo(a, i, d)
           let transform = d3.zoomIdentity
             .scale(that.transform.k)
             .translate(that.transform.x, that.transform.y)
@@ -104,15 +109,7 @@ export default {
         $('#tooltipdata').hide()
         that.transform.k -= 0.1
         d3.selectAll('.dinein_table_parent').each((d, i, a) => {
-          let nodeDims = d3
-            .select(a[i])
-            .node()
-            .parentNode.getBBox()
-          let data = d
-          let x = parseFloat(data.table_position_coordinate.x)
-          let y = parseFloat(data.table_position_coordinate.y)
-          let midX = nodeDims.width / 8 + x
-          let midY = nodeDims.height / 8 + y
+          let { data, midX, midY } = that.rotationAlgo(a, i, d)
           let transform = d3.zoomIdentity
             .scale(that.transform.k)
             .translate(that.transform.x, that.transform.y)
@@ -135,10 +132,15 @@ export default {
         'left'
       )
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
+        let { data, midX, midY } = that.rotationAlgo(a, i, d)
         let transform = d3.zoomIdentity
           .scale(that.transform.k)
           .translate(that.transform.x, that.transform.y)
-        d3.select(a[i]).attr('transform', transform)
+        d3.select(a[i]).attr(
+          'transform',
+          transform +
+            `rotate(${data.table_position_coordinate.angle},${midX},${midY})`
+        )
       })
     },
     moveLeft() {
@@ -150,10 +152,15 @@ export default {
       let that = this
       that.transform.x -= 10
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
+        let { data, midX, midY } = that.rotationAlgo(a, i, d)
         let transform = d3.zoomIdentity
           .scale(that.transform.k)
           .translate(that.transform.x, that.transform.y)
-        d3.select(a[i]).attr('transform', transform)
+        d3.select(a[i]).attr(
+          'transform',
+          transform +
+            `rotate(${data.table_position_coordinate.angle},${midX},${midY})`
+        )
       })
     },
     moveUp() {
@@ -165,10 +172,15 @@ export default {
       let that = this
       that.transform.y -= 10
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
+        let { data, midX, midY } = that.rotationAlgo(a, i, d)
         let transform = d3.zoomIdentity
           .scale(that.transform.k)
           .translate(that.transform.x, that.transform.y)
-        d3.select(a[i]).attr('transform', transform)
+        d3.select(a[i]).attr(
+          'transform',
+          transform +
+            `rotate(${data.table_position_coordinate.angle},${midX},${midY})`
+        )
       })
     },
     moveDown() {
@@ -180,10 +192,15 @@ export default {
         ''
       )
       d3.selectAll('.dinein_table_parent').each((d, i, a) => {
+        let { data, midX, midY } = that.rotationAlgo(a, i, d)
         let transform = d3.zoomIdentity
           .scale(that.transform.k)
           .translate(that.transform.x, that.transform.y)
-        d3.select(a[i]).attr('transform', transform)
+        d3.select(a[i]).attr(
+          'transform',
+          transform +
+            `rotate(${data.table_position_coordinate.angle},${midX},${midY})`
+        )
       })
     },
 

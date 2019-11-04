@@ -186,12 +186,15 @@ const actions = {
           setTimeout(function() {
             // eslint-disable-next-line no-console
             console.log(state.kitchenInvoiceResponse.closed)
-            if (!state.kitchenInvoiceResponse.closed) {
+            if (
+              typeof state.kitchenInvoiceResponse.closed != 'undefined' &&
+              !state.kitchenInvoiceResponse.closed
+            ) {
               // eslint-disable-next-line no-console
               console.log('close')
               state.kitchenInvoiceResponse.close()
             }
-          }, 20000)
+          }, 3000)
           // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
       }
@@ -222,10 +225,10 @@ const actions = {
         win = window.open(details.url, details.winName, settings)
         // eslint-disable-next-line no-console
         console.log(details.ipUrl)
-        win.onerror = function(msg, url, lineNo, columnNo, error) {
+        win.onerror = function(msg, url, lineNo, columnNo) {
           // ... handle error ...
           // eslint-disable-next-line no-console
-          console.log(msg, url, lineNo, columnNo, error)
+          console.log(msg, url, lineNo, columnNo)
           return false
         }
       } catch (e) {
