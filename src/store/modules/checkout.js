@@ -811,7 +811,6 @@ const actions = {
         //delete order.order_system_status
         delete order.new_real_transition_order_no
         //delete order.real_created_datetime
-
         OrderService.updateOrderItems(order, rootState.order.orderId)
           .then(response => {
             if (response.data.status === 'ok') {
@@ -823,13 +822,7 @@ const actions = {
                 msgStr = rootGetters['location/_t'](
                   'Dinein order has been modified.'
                 )
-                dispatch(
-                  'printingServer/printingServerInvoiceRaw',
-                  state.order,
-                  {
-                    root: true,
-                  }
-                )
+                dispatch('createModifyOrderItemList')
                 let resetFull = false
                 if (getters.complete) {
                   resetFull = true
@@ -880,6 +873,32 @@ const actions = {
     })
   },
 
+  createModifyOrderItemList({ rootState, state, dispatch }) {
+    let newItems = []
+    rootState.order.items.filter(item => {
+      if (typeof item.no == 'undefined') {
+        let orderItem = {
+          name: item.name,
+          entity_id: item._id,
+          no: item.orderIndex,
+          status: 'in-progress',
+          //itemTax.undiscountedTax is without modifiers
+          tax: item.tax,
+          price: item.netPrice,
+          qty: item.quantity,
+        }
+        newItems.push(orderItem)
+      }
+    })
+    let order = (state.order.items = newItems)
+    dispatch('injectDineInItemsData', state.order)
+    // eslint-disable-next-line no-console
+    console.log(state.order, newItems, order)
+    dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+      root: true,
+    })
+    /*commit(mutation.NEW_ITEMS, newItems)*/
+  },
   // eslint-disable-next-line no-unused-vars
   modifyCarhopOrder({ dispatch, rootState, rootGetters, commit }, action) {
     return new Promise(resolve => {
