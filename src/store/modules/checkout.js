@@ -131,6 +131,8 @@ const actions = {
 
     // set the async state
     commit(mutation.SET_PROCESSING, true)
+    commit('checkoutForm/SET_PROCESSING', true, { root: true })
+
     return Promise.resolve()
   },
 
@@ -619,6 +621,9 @@ const actions = {
                               root: true,
                             })
                             commit(mutation.SET_PROCESSING, false)
+                            commit('checkoutForm/SET_PROCESSING', false, {
+                              root: true,
+                            })
                             commit('order/SET_SPLIT_BILL', null, { root: true })
                           }
 
@@ -627,6 +632,9 @@ const actions = {
                         })
                         .catch(response => {
                           commit(mutation.SET_PROCESSING, false)
+                          commit('checkoutForm/SET_PROCESSING', false, {
+                            root: true,
+                          })
                           reject(response)
                         })
                     })

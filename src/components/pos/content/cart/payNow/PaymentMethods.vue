@@ -42,7 +42,7 @@ export default {
     },
     payable(newval) {
       if (!newval) {
-        this.$store.commit('checkoutForm/forceCash', true)
+        this.$store.dispatch('checkoutForm/setCashMethod')
       }
     },
   },

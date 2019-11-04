@@ -64,6 +64,7 @@
               type="button"
               class="btn btn-danger cancel-announce color-text-invert color-button"
               data-dismiss="modal"
+              @click="cancelPayment"
             >
               {{ _t('Close') }}
             </button>
@@ -120,6 +121,9 @@ export default {
     }),
   },
   methods: {
+    cancelPayment() {
+      this.$store.commit('checkoutForm/SET_PROCESSING', false)
+    },
     payByLoyalty() {
       this.$store.dispatch('checkoutForm/setAmount', this.amount)
       this.$store.dispatch('checkoutForm/setLoyaltyCard', this.card)
