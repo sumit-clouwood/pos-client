@@ -838,7 +838,13 @@ const actions = {
                 if (rootState.order.splitted || rootState.order.splitBill) {
                   commit('order/SET_SPLITTED', true, { root: true })
                   //mark items as paid in current execution
-                  dispatch('order/markSplitItemsPaid', null, { root: true })
+                  dispatch('order/markSplitItemsPaid', null, {
+                    root: true,
+                  }).then(() => {
+                    // if (!getters.complete) {
+                    //   dispatch('splitOrder').then(() => resolve())
+                    // }
+                  })
                   //if splitted once
                 }
 
@@ -1091,15 +1097,12 @@ const actions = {
     dispatch('order/startOrder', null, { root: true })
 
     commit('order/UPDATE_ITEMS', unpaidItems, { root: true })
-    //dispatch('order/reindexItems', null, { root: true })
 
     // eslint-disable-next-line no-unused-vars
     return new Promise((resolve, reject) => {
       dispatch('pay', { action: 'dine-in-place-order' })
-        .then(response => {
-          // eslint-disable-next-line no-debugger
-          debugger
-          dispatch('dinein/getSelectedOrder', response.data.id, {
+        .then(newOrder => {
+          dispatch('dinein/getSelectedOrder', newOrder.id, {
             root: true,
           })
             .then(() => {

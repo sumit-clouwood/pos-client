@@ -307,6 +307,7 @@ const actions = {
   },
   markSplitItemsPaid({ commit }) {
     commit(mutation.MARK_SPLIT_ITEMS_PAID)
+    return Promise.resolve(1)
   },
   addToOrder({ state, getters, commit, dispatch }, stateItem) {
     commit('checkoutForm/RESET', 'process', { root: true })
@@ -945,8 +946,9 @@ const actions = {
     })
   },
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
-  addOrderToCart({ rootState, commit, dispatch }, order) {
-    return new Promise(resolve => {
+  async addOrderToCart({ rootState, commit, dispatch }, order) {
+    //create cart items indexes so we can sort them when needed
+    return new Promise(async resolve => {
       dispatch('reset')
       commit(mutation.SET_ORDER_ID, order._id)
       dispatch('startOrder')
@@ -986,7 +988,7 @@ const actions = {
       }
       commit(mutation.SET_ORDER_DATA, orderData)
       let allCovers = rootState.dinein.covers
-
+      let promises = []
       order.items.forEach((orderItem, key) => {
         rootState.category.items.forEach(categoryItem => {
           let item = { ...categoryItem }
@@ -1025,15 +1027,17 @@ const actions = {
               dispatch('modifier/assignModifiersToItem', item, {
                 root: true,
               }).then(() => {
-                dispatch('addModifierOrder', item)
+                promises.push(dispatch('addModifierOrder', item))
               })
             } else {
-              dispatch('addToOrder', item)
+              promises.push(dispatch('addToOrder', item))
             }
           }
         })
       })
 
+      await Promise.all(promises)
+      commit(mutation.REINDEX_ITEMS)
       //if modifying from dine in then calculate totals once every order has been added, it ll be when all have been resolved
       resolve()
     })
@@ -1176,12 +1180,6 @@ const actions = {
       OrderService.getGlobalDetails(...params)
         .then(response => {
           let orderDetails = {}
-          OrderService.getModalDetails('brand_cancellation_reasons')
-            .then(responseData => {
-              commit(mutation.SET_CANCELLATION_REASON, responseData.data.data)
-              resolve()
-            })
-            .catch(error => reject(error))
           orderDetails.item = response.data.item
           orderDetails.customer = response.data.collected_data.customer
           orderDetails.lookups = response.data.collected_data.page_lookups
@@ -1189,6 +1187,14 @@ const actions = {
           orderDetails.invoice =
             response.data.collected_data.store_invoice_templates
           commit(mutation.SET_ORDER_DETAILS, orderDetails)
+
+          OrderService.getModalDetails('brand_cancellation_reasons')
+            .then(responseData => {
+              commit(mutation.SET_CANCELLATION_REASON, responseData.data.data)
+            })
+            .catch(error => reject(error))
+
+          resolve(orderDetails)
         })
         .catch(error => reject(error))
     })
@@ -1280,12 +1286,6 @@ const actions = {
     commit(mutation.START_ORDER)
     commit('checkout/SET_PROCESSING', false, { root: true })
   },
-  reindexItems({ dispatch }) {
-    //commit(mutation.REINDEX_ITEMS, unpaidItems)
-    //we don't need to reindex modifiers as they are in built with item
-    //reindex discounts needs to be done because they are no built inside item, kept separately
-    dispatch('discount/reindexItemDiscounts', state.items, { root: true })
-  },
 }
 
 function playSound(locationId, onlineOrders) {
@@ -1326,13 +1326,23 @@ const mutations = {
 
   [mutation.ADD_ORDER_ITEM](state, item) {
     item.modifiers = []
-    //state.items.push(item)
-    state.items.splice(item.orderIndex, 0, item)
+    state.items.push(item)
+    // if (item.orderIndex > state.items.length) {
+    //   for (let i = state.items.length; i < item.orderIndex; i++) {
+    //     state.items.push({})
+    //   }
+    // }
+    // state.items.splice(item.orderIndex, 0, item)
   },
 
   [mutation.ADD_ORDER_ITEM_WITH_MODIFIERS](state, item) {
-    state.items.splice(item.orderIndex, 0, item)
-    //state.items.push(item)
+    // if (item.orderIndex > state.items.length) {
+    //   for (let i = state.items.length; i < item.orderIndex; i++) {
+    //     state.items.push({})
+    //   }
+    // }
+    // state.items.splice(item.orderIndex, 0, item)
+    state.items.push(item)
   },
 
   [mutation.INCREMENT_ORDER_ITEM_QUANTITY](state, index) {
@@ -1395,15 +1405,15 @@ const mutations = {
   [mutation.UPDATE_ITEMS](state, items) {
     state.items = items
   },
-  [mutation.REINDEX_ITEMS](state, items) {
-    //reset item order index, THIS IS DONE when some of orders are paid and again added to cart
-    items = items.map((item, key) => {
-      item.oldIndex = item.no
-      item.orderIndex = key
-      return item
+  [mutation.REINDEX_ITEMS](state) {
+    //reset items according to their order no, THIS IS DONE when some of orders are paid and again added to cart
+    const newItems = []
+    state.items.map(item => {
+      item.orderIndex = item.no
+      newItems[item.no] = item
     })
 
-    state.items = items
+    state.items = newItems
   },
 
   [mutation.RESET](state, full = true) {
