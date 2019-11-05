@@ -20,6 +20,7 @@ const state = {
   loyaltyCard: {},
   decimalExists: false,
   forceCash: false,
+  processing: false,
 }
 
 // getters
@@ -411,6 +412,11 @@ const actions = {
     commit('setAmount', Num.round(getters.payable))
     commit('showCalc', false)
   },
+  setCashMethod({ commit, rootGetters }) {
+    const method = rootGetters['payment/cash']
+    commit('forceCash', true)
+    commit('setMethod', method)
+  },
 }
 
 // mutations
@@ -568,10 +574,15 @@ const mutations = {
     state.decimalExists = decimal
   },
 
+  SET_PROCESSING(state, status) {
+    state.processing = status
+  },
+
   RESET(state, status = 'complete') {
     state.payments = []
     state.LoyaltyPopup = false
     state.error = false
+    state.processing = false
     if (status != 'process') {
       state.amount = 0
       state.tipAmount = 0
