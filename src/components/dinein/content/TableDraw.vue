@@ -593,6 +593,9 @@ export default {
         d3.select(a[i])
           .select('text')
           .text(`#${d.number}`)
+          .attr('style', 'font-size:28px')
+          .attr('style', 'font-weight:bold')
+          // .attr('fill', '#565353')
         let data = d
         this.setTableColour(a[i], data)
         d3.select(a[i]).on('click', function(d, i, a) {
