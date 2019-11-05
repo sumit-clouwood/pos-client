@@ -183,22 +183,16 @@ const actions = {
             h: '300',
             scroll: 'yes ',
           })
-          let ua = navigator.userAgent.toLowerCase()
           setTimeout(function() {
             // eslint-disable-next-line no-console
-            console.log(state.kitchenInvoiceResponse)
-            if (typeof state.kitchenInvoiceResponse != 'undefined') {
+            console.log(state.kitchenInvoiceResponse.closed)
+            if (
+              typeof state.kitchenInvoiceResponse.closed != 'undefined' &&
+              !state.kitchenInvoiceResponse.closed
+            ) {
               // eslint-disable-next-line no-console
-              console.log(ua)
-              if (ua.indexOf('ipad') > -1 && ua.indexOf('safari') > -1) {
-                state.kitchenInvoiceResponse.location.assign(
-                  'http://10.10.10.98:8081'
-                )
-              } else {
-                if (typeof state.kitchenInvoiceResponse.closed != 'undefined') {
-                  state.kitchenInvoiceResponse.close()
-                }
-              }
+              console.log('close')
+              state.kitchenInvoiceResponse.close()
             }
           }, 3000)
           // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
@@ -228,21 +222,9 @@ const actions = {
         ',resizable'
       let win = false
       try {
-        let ua = navigator.userAgent.toLowerCase()
-        if (ua.indexOf('ipad') > -1 && ua.indexOf('safari') > -1) {
-          win = window.location.assign(details.url, details.winName, settings)
-          win.document.write(
-            '<p>' +
-              setTimeout(function() {
-                win.location.assign('https://www.w3schools.com/')
-              }, 3000) +
-              '</p>'
-          )
-        } else {
-          win = window.open(details.url, details.winName, settings)
-        }
+        win = window.open(details.url, details.winName, settings)
         // eslint-disable-next-line no-console
-        console.log(ua + 'ua')
+        console.log(details.ipUrl)
         win.onerror = function(msg, url, lineNo, columnNo) {
           // ... handle error ...
           // eslint-disable-next-line no-console
