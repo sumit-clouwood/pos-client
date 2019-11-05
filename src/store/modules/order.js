@@ -44,6 +44,8 @@ const state = {
   splitBill: null,
   splittedItems: {},
   splitted: false,
+  totalItems: 0,
+  totalItemsPaid: 0,
 }
 
 // getters
@@ -307,6 +309,7 @@ const actions = {
   },
   markSplitItemsPaid({ commit }) {
     commit(mutation.MARK_SPLIT_ITEMS_PAID)
+    return Promise.resolve(1)
   },
   addToOrder({ state, getters, commit, dispatch }, stateItem) {
     commit('checkoutForm/RESET', 'process', { root: true })
@@ -323,6 +326,10 @@ const actions = {
 
     if (typeof item.orderIndex === 'undefined') {
       item.orderIndex = getters.orderIndex
+    }
+
+    if (stateItem.no) {
+      item.orderIndex = stateItem.no
     }
 
     //this comes directly from the items menu without modifiers
@@ -368,6 +375,10 @@ const actions = {
 
       if (typeof item.orderIndex === 'undefined') {
         item.orderIndex = getters.orderIndex
+      }
+
+      if (item.no) {
+        item.orderIndex = item.no
       }
 
       item.modifiable = true
@@ -937,11 +948,16 @@ const actions = {
     })
   },
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
-  addOrderToCart({ rootState, commit, dispatch }, order) {
-    return new Promise(resolve => {
+  async addOrderToCart({ rootState, commit, dispatch }, order) {
+    //create cart items indexes so we can sort them when needed
+    return new Promise(async resolve => {
       dispatch('reset')
       commit(mutation.SET_ORDER_ID, order._id)
       dispatch('startOrder')
+
+      commit(mutation.SET_TOTAL_ITEMS, order.items.length)
+      commit(mutation.SET_TOTAL_ITEMS_PAID, 0)
+
       let orderAddress = []
       if (order.customer) {
         let deliveryAreaDetails = Object.values(
@@ -978,10 +994,12 @@ const actions = {
       }
       commit(mutation.SET_ORDER_DATA, orderData)
       let allCovers = rootState.dinein.covers
-
+      let promises = []
       order.items.forEach((orderItem, key) => {
         rootState.category.items.forEach(categoryItem => {
           let item = { ...categoryItem }
+          item.no = orderItem.no
+
           if (
             state.selectedOrder &&
             state.selectedOrder.item.order_type === 'dine_in'
@@ -1015,15 +1033,17 @@ const actions = {
               dispatch('modifier/assignModifiersToItem', item, {
                 root: true,
               }).then(() => {
-                dispatch('addModifierOrder', item)
+                promises.push(dispatch('addModifierOrder', item))
               })
             } else {
-              dispatch('addToOrder', item)
+              promises.push(dispatch('addToOrder', item))
             }
           }
         })
       })
 
+      await Promise.all(promises)
+      commit(mutation.REINDEX_ITEMS)
       //if modifying from dine in then calculate totals once every order has been added, it ll be when all have been resolved
       resolve()
     })
@@ -1146,11 +1166,18 @@ const actions = {
     })
   },
   addDiningOrder({ dispatch, commit }, orderData) {
-    commit('SET_CART_TYPE', 'dine-in-modify')
-    dispatch('setDiscounts', orderData).then(() => {
-      dispatch('addOrderToCart', orderData.item).then(() => {
-        dispatch('surchargeCalculation')
-      })
+    return new Promise((resolve, reject) => {
+      commit('SET_CART_TYPE', 'dine-in-modify')
+      dispatch('setDiscounts', orderData)
+        .then(() => {
+          dispatch('addOrderToCart', orderData.item)
+            .then(() => {
+              dispatch('surchargeCalculation')
+              resolve()
+            })
+            .catch(error => reject(error))
+        })
+        .catch(error => reject(error))
     })
   },
   selectedOrderDetails({ commit }, orderId) {
@@ -1159,12 +1186,6 @@ const actions = {
       OrderService.getGlobalDetails(...params)
         .then(response => {
           let orderDetails = {}
-          OrderService.getModalDetails('brand_cancellation_reasons')
-            .then(responseData => {
-              commit(mutation.SET_CANCELLATION_REASON, responseData.data.data)
-              resolve()
-            })
-            .catch(error => reject(error))
           orderDetails.item = response.data.item
           orderDetails.customer = response.data.collected_data.customer
           orderDetails.lookups = response.data.collected_data.page_lookups
@@ -1172,6 +1193,14 @@ const actions = {
           orderDetails.invoice =
             response.data.collected_data.store_invoice_templates
           commit(mutation.SET_ORDER_DETAILS, orderDetails)
+
+          OrderService.getModalDetails('brand_cancellation_reasons')
+            .then(responseData => {
+              commit(mutation.SET_CANCELLATION_REASON, responseData.data.data)
+            })
+            .catch(error => reject(error))
+
+          resolve(orderDetails)
         })
         .catch(error => reject(error))
     })
@@ -1304,9 +1333,21 @@ const mutations = {
   [mutation.ADD_ORDER_ITEM](state, item) {
     item.modifiers = []
     state.items.push(item)
+    // if (item.orderIndex > state.items.length) {
+    //   for (let i = state.items.length; i < item.orderIndex; i++) {
+    //     state.items.push({})
+    //   }
+    // }
+    // state.items.splice(item.orderIndex, 0, item)
   },
 
   [mutation.ADD_ORDER_ITEM_WITH_MODIFIERS](state, item) {
+    // if (item.orderIndex > state.items.length) {
+    //   for (let i = state.items.length; i < item.orderIndex; i++) {
+    //     state.items.push({})
+    //   }
+    // }
+    // state.items.splice(item.orderIndex, 0, item)
     state.items.push(item)
   },
 
@@ -1370,15 +1411,17 @@ const mutations = {
   [mutation.UPDATE_ITEMS](state, items) {
     state.items = items
   },
-  [mutation.REINDEX_ITEMS](state, items) {
-    //reset item order index, THIS IS DONE when some of orders are paid and again added to cart
-    items = items.map((item, key) => {
-      item.orderIndex = key
-      return item
+  [mutation.REINDEX_ITEMS](state) {
+    //reset items according to their order no, THIS IS DONE when some of orders are paid and again added to cart
+    const newItems = []
+    state.items.map(item => {
+      item.orderIndex = item.no
+      newItems[item.no] = item
     })
 
-    state.items = items
+    state.items = newItems
   },
+
   [mutation.RESET](state, full = true) {
     if (full) {
       state.items = []
@@ -1436,6 +1479,14 @@ const mutations = {
     state.startTime = DateTime.getUTCDateTime()
   },
 
+  [mutation.SET_TOTAL_ITEMS](state, count) {
+    state.totalItems = count
+  },
+
+  [mutation.SET_TOTAL_ITEMS_PAID](state, count) {
+    state.totalItemsPaid = count
+  },
+
   [mutation.RESET_ORDER_TIME](state) {
     state.startTime = null
   },
@@ -1474,7 +1525,7 @@ const mutations = {
     state.splittedItems = items
     //remove item / order discounts
     //remove tax and surcharges
-
+    //problem here
     const newitems = state.items.map(item => {
       if (state.splittedItems[item.orderIndex] === true) {
         item.split = true

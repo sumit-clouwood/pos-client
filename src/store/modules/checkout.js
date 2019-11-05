@@ -22,13 +22,7 @@ const state = {
 const getters = {
   complete: (state, getters, rootState) => {
     //if order was never splitted means it is completed
-    if (rootState.order.splitted) {
-      //once splitted then check items
-      const allPaid = !rootState.order.items.some(item => item.paid === false)
-      return allPaid
-    }
-    //never splitted
-    return true
+    return rootState.order.totalItems === rootState.order.totalItemsPaid
   },
   calculateOrderTotals: () => order => {
     let data = {
@@ -846,7 +840,18 @@ const actions = {
                 if (rootState.order.splitted || rootState.order.splitBill) {
                   commit('order/SET_SPLITTED', true, { root: true })
                   //mark items as paid in current execution
-                  dispatch('order/markSplitItemsPaid', null, { root: true })
+                  commit(
+                    'order/SET_TOTAL_ITEMS_PAID',
+                    state.order.items.length,
+                    { root: true }
+                  )
+                  dispatch('order/markSplitItemsPaid', null, {
+                    root: true,
+                  }).then(() => {
+                    if (!getters.complete) {
+                      dispatch('splitOrder').then(() => resolve())
+                    }
+                  })
                   //if splitted once
                 }
 
@@ -1081,9 +1086,14 @@ const actions = {
   },
 
   splitOrder({ dispatch, rootState, commit }) {
-    const unpaidItems = rootState.order.items.filter(
-      item => item.paid === false
-    )
+    let unpaidItems = rootState.order.items.filter(item => item.paid === false)
+
+    unpaidItems = unpaidItems.map((item, key) => {
+      item.oldIndex = item.no
+      item.no = key
+      item.orderIndex = key
+      return item
+    })
 
     commit('order/RESET', false, { root: true })
 
@@ -1094,12 +1104,23 @@ const actions = {
     dispatch('order/startOrder', null, { root: true })
 
     commit('order/UPDATE_ITEMS', unpaidItems, { root: true })
+
     // eslint-disable-next-line no-unused-vars
-    return dispatch('pay', { action: 'dine-in-place-order' }).then(response => {
-      //new order has been created with remaining orders,
-      //order items have same old order indexes so we need to update them before next order isplaced
-      commit('order/REINDEX_ITEMS', unpaidItems, { root: true })
-      commit('order/SET_SPLIT_BILL', false, { root: true })
+    return new Promise((resolve, reject) => {
+      dispatch('pay', { action: 'dine-in-place-order' })
+        .then(newOrder => {
+          dispatch('dinein/getSelectedOrder', newOrder.id, {
+            root: true,
+          })
+            .then(() => {
+              resolve()
+            })
+            .catch(error => reject(error))
+          //new order has been created with remaining orders,
+          //order items have same old order indexes so we need to update them before next order isplaced
+          commit('order/SET_SPLIT_BILL', false, { root: true })
+        })
+        .catch(error => reject(error))
     })
   },
   // eslint-disable-next-line no-unused-vars
