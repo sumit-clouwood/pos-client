@@ -28,9 +28,12 @@ export default {
   components: {
     HeaderOrderType,
   },
-  data() {
+  mounted() {
     let orderType = { OTview: 'Dine In', OTApi: 'dine_in' }
     this.$store.dispatch('order/updateOrderType', orderType, { root: true })
+  },
+
+  data() {
     return {
       /*todayDate: moment().format('MMMM Do YYYY'),
       todayTime: moment().format('h:mm:ss a'),*/
