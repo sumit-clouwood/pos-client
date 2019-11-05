@@ -230,17 +230,15 @@ const actions = {
       try {
         let ua = navigator.userAgent.toLowerCase()
         if (ua.indexOf('ipad') > -1 && ua.indexOf('safari') > -1) {
-          alert('1')
           win = window.location.assign(details.url, details.winName, settings)
           win.document.write(
             '<p>' +
-            setTimeout(function() {
-              win.location.assign('https://www.w3schools.com/')
-            }, 3000) +
-            '</p>'
+              setTimeout(function() {
+                win.location.assign('https://www.w3schools.com/')
+              }, 3000) +
+              '</p>'
           )
         } else {
-          alert('2')
           win = window.open(details.url, details.winName, settings)
         }
         // eslint-disable-next-line no-console
