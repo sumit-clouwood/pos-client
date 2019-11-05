@@ -236,7 +236,7 @@ export default {
           return true
         case 'switchcashier':
           if (this.waiter || this.carhop) {
-            return true
+            return false
           }
           return true
         default:
