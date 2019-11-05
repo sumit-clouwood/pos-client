@@ -249,7 +249,7 @@ export default {
             return false
           }
           return true
-        case 'switchCashier':
+        case 'switchcashier':
           if (this.waiter || this.carhop) {
             return false
           }
