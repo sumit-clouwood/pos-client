@@ -70,6 +70,8 @@ export default {
         //if (newVal) {
         this.postRedirect()
         this.$store.commit('checkout/PAYMENT_MSG_STATUS', false)
+      } else {
+        this.postRedirectIncomplete()
       }
     },
     changeAmountStatus(newVal) {
@@ -78,10 +80,13 @@ export default {
         //Reset Cart and set states and redirect to dine in.
         this.postRedirect()
         this.$store.commit('checkout/CHANGE_AMOUNT_STATUS', false)
+      } else {
+        this.postRedirectIncomplete()
       }
     },
   },
   methods: {
+    postRedirectIncomplete() {},
     postRedirect() {
       if (this.$store.state.order.orderType.OTApi === 'dine_in') {
         this.$store.dispatch('order/beforeRedirectResetCartDineIn')
@@ -110,9 +115,9 @@ export default {
             w.focus()
             w.print()
 
-            if (!this.$store.getters['checkout/complete']) {
-              this.$store.dispatch('checkout/splitOrder').then(() => {})
-            }
+            // if (!this.$store.getters['checkout/complete']) {
+            //   this.$store.dispatch('checkout/splitOrder').then(() => {})
+            // }
             //Invoice APP API Call with Custom Request JSON
             this.$store.dispatch(
               'printingServer/printingServerInvoiceRaw',

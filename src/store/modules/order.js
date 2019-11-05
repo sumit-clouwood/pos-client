@@ -44,6 +44,8 @@ const state = {
   splitBill: null,
   splittedItems: {},
   splitted: false,
+  totalItems: 0,
+  totalItemsPaid: 0,
 }
 
 // getters
@@ -952,6 +954,10 @@ const actions = {
       dispatch('reset')
       commit(mutation.SET_ORDER_ID, order._id)
       dispatch('startOrder')
+
+      commit(mutation.SET_TOTAL_ITEMS, order.items.length)
+      commit(mutation.SET_TOTAL_ITEMS_PAID, 0)
+
       let orderAddress = []
       if (order.customer) {
         let deliveryAreaDetails = Object.values(
@@ -1471,6 +1477,14 @@ const mutations = {
 
   [mutation.START_ORDER](state) {
     state.startTime = DateTime.getUTCDateTime()
+  },
+
+  [mutation.SET_TOTAL_ITEMS](state, count) {
+    state.totalItems = count
+  },
+
+  [mutation.SET_TOTAL_ITEMS_PAID](state, count) {
+    state.totalItemsPaid = count
   },
 
   [mutation.RESET_ORDER_TIME](state) {
