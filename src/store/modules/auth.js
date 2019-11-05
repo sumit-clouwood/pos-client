@@ -19,18 +19,18 @@ const state = {
 // getters
 const getters = {
   roleName: state => {
-    if (!state.auth.userDetails) {
+    if (!state.userDetails) {
       return ''
     }
-    const roleId = state.auth.userDetails.item.brand_role
-    if (roleId && state.auth.rolePermissions) {
-      const role = state.auth.rolePermissions.find(role => role._id === roleId)
+    const roleId = state.userDetails.item.brand_role
+    if (roleId && state.rolePermissions) {
+      const role = state.rolePermissions.find(role => role._id === roleId)
       return role ? role.name : ''
     }
     return ''
   },
-  waiter: (state, getters) => getters.role === 'Waiter',
-  carhop: (state, getters) => getters.role === 'Carhop User',
+  waiter: (state, getters) => getters.roleName === 'Waiter',
+  carhop: (state, getters) => getters.roleName === 'Carhop User',
   getRole: state => roleName => {
     if (state.rolePermissions) {
       return state.rolePermissions.find(role => role.name === roleName)
