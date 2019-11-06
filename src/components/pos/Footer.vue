@@ -202,10 +202,11 @@
           </a>
         </li>
         <li
-          class="footer-slider-list-item color-secondary active"
+          class="footer-slider-list-item color-secondary"
           data-toggle="modal"
           data-target="#select-discount"
           id="discount-footer"
+          :class="displayClass"
         >
           <a
             class="footer-slider-list-item-link color-text-invert"
