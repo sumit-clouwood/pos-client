@@ -1,7 +1,7 @@
 <template>
   <div class="modal-footer">
     <div class="btn-announce">
-      <DiscountButton />
+      <DiscountButton v-if="!carhop && !waiter" />
       <!-- <RemoveDiscountButton /> -->
       <RemoveTaxButton />
       <ModifyItemModifiersButton />
@@ -23,6 +23,24 @@ export default {
     //  RemoveDiscountButton,
     RemoveTaxButton,
     ModifyItemModifiersButton,
+  },
+  computed: {
+    role() {
+      const roleId = this.$store.state.auth.userDetails.item.brand_role
+      if (roleId && this.$store.state.auth.rolePermissions) {
+        const role = this.$store.state.auth.rolePermissions.find(
+          role => role._id === roleId
+        )
+        return role ? role.name : ''
+      }
+      return ''
+    },
+    waiter() {
+      return this.role === 'Waiter'
+    },
+    carhop() {
+      return this.role === 'Carhop User'
+    },
   },
 }
 </script>
