@@ -113,7 +113,6 @@ export default {
           .parent()
           .addClass('position-set')
         setTimeout(() => {
-          const sliderWidth = $('.users-slider').outerWidth()
           const slideWidth = $('.position-set').outerWidth()
           const slideLeft = $('.position-set').offset().left
           const calcWidth = $('#popover_content_wrapper').outerWidth()
@@ -122,10 +121,11 @@ export default {
           if (lockLeft <= 3) {
             lockLeft = 4
           }
-          let lockRight = lockLeft + calcWidth
           $('#popover_content_wrapper').css('left', lockLeft + 'px')
+          const sliderWidth = $('.users-slider').outerWidth()
+          let lockRight = lockLeft + calcWidth
 
-          if (lockRight > sliderWidth && lockRight > window.outerWidth) {
+          if (lockRight > sliderWidth && lockRight > window.innerWidth) {
             $('#popover_content_wrapper').css(
               'left',
               sliderWidth - calcWidth - 4 + 'px'
