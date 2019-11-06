@@ -125,7 +125,7 @@ export default {
           let lockRight = lockLeft + calcWidth
           $('#popover_content_wrapper').css('left', lockLeft + 'px')
 
-          if (lockRight > sliderWidth) {
+          if (lockRight > sliderWidth && lockRight > window.outerWidth) {
             $('#popover_content_wrapper').css(
               'left',
               sliderWidth - calcWidth - 4 + 'px'
@@ -241,6 +241,11 @@ $imgmaxh: 140px
     img
       max-width: $imgmaxw
       max-height: $imgmaxh
+      min-height: 140px
+      min-width: 140px
+      height: auto
+      width: auto
+
       cursor: pointer
       -webkit-transform: scale($initzoom, $initzoom)
       -moz-transform: scale($initzoom, $initzoom)
