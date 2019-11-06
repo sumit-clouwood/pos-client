@@ -4,7 +4,11 @@
       <div class="head">
         <div class="search">
           <span class="fa fa-search"></span>
-          <input type="text" v-model="searchKeyword" />
+          <input
+            type="text"
+            v-model="searchKeyword"
+            placeholder="Search Cashier"
+          />
         </div>
       </div>
     </div>
