@@ -41,7 +41,7 @@
     <div class="modal-footer-block">
       <p>
         <router-link :to="store">
-          Login
+          Back to Store
         </router-link>
       </p>
     </div>
