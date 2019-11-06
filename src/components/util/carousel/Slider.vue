@@ -356,6 +356,10 @@ export default {
           justify-content: left;
           flex-direction: row;
           label {
+            width: 72vw;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             align-self: center;
             padding-left: 2em;
           }
