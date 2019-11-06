@@ -63,6 +63,9 @@ export default {
   grid-template-rows: 1fr 1fr;
   align-items: center;
   padding: 20px;
+  @include responsive(mobile) {
+    padding: 5px 10px;
+  }
 
   hr {
     display: none;

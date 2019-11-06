@@ -59,8 +59,6 @@ export default {
 
     if (this.carhop) {
       this.$router.replace('/carhop' + this.store + '/')
-    } else {
-      //this.$router.replace('/' + this.store + '/')
     }
   },
 }
