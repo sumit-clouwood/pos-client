@@ -446,16 +446,16 @@ export default {
                   dis.$store
                     .dispatch('dinein/getDineInTables', false)
                     .then(() => {
-                      /*dis.setTableColour(
+                      dis.setTableColour(
                         dis.selectedTableD3,
                         dis.selectedTableData
-                      )*/
+                      )
                       // container.datum(dis.selectedTableD3).call(updateFunction)
-                      /*$(makeId)
+                      $(makeId)
                         .find('g')
-                        .removeAttr('style')*/
-                      dis.clearTableArea()
-                      dis.updateTableOnArea()
+                        .removeAttr('style')
+                      // dis.clearTableArea()
+                      // dis.updateTableOnArea()
                     })
                   $('#tooltipdata').hide()
                 })
@@ -554,6 +554,27 @@ export default {
       this.$nextTick(() => {
         let dis = this
         d3.select(selectedItem)
+          .select('g')
+          .selectAll('path:nth-of-type(2)')
+          .attr('fill', '#71767a')
+
+        d3.select(selectedItem)
+          .select('svg')
+          .selectAll('path:nth-last-of-type(1)')
+          .attr('fill', function() {
+            let fillcolor = '#FF9C9A'
+            dis.tableStatus.table.filter(ts => {
+              if (ts.id === data._id) {
+                if (ts.status.color == '#62bb31') {
+                  fillcolor = '#99CA86'
+                } else if (ts.status.color == '#faa03c') {
+                  fillcolor = '#FAD580'
+                }
+              }
+            })
+            return fillcolor
+          })
+        d3.select(selectedItem)
           .select('svg>g:last-child')
           .selectAll('path')
           .attr('fill', function() {
@@ -569,22 +590,6 @@ export default {
             })
             return fc
           })
-        d3.select(selectedItem)
-          .select('g')
-          .selectAll('path')
-          .attr('fill', function() {
-            let fillcolor = '#FF9C9A'
-            dis.tableStatus.table.filter(ts => {
-              if (ts.id === data._id) {
-                if (ts.status.color == '#62bb31') {
-                  fillcolor = '#99CA86'
-                } else if (ts.status.color == '#faa03c') {
-                  fillcolor = '#FAD580'
-                }
-              }
-            })
-            return fillcolor
-          })
       })
     },
     setTableProperties() {
@@ -592,10 +597,10 @@ export default {
       d3.selectAll('.dinein_table').each((d, i, a) => {
         d3.select(a[i])
           .select('text')
-          .text(`#${d.number}`)
-          .attr('style', 'font-size:28px')
+          .text(`${d.number}`)
+          .attr('style', 'font-size:50px')
           .attr('style', 'font-weight:bold')
-          // .attr('fill', '#565353')
+        // .attr('fill', '#565353')
         let data = d
         this.setTableColour(a[i], data)
         d3.select(a[i]).on('click', function(d, i, a) {
