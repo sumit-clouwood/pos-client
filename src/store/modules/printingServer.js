@@ -166,8 +166,6 @@ const actions = {
       // let stringifyResponse = b.toString('base64')
       let decodedData = compressToBase64(x)
       // eslint-disable-next-line no-console
-      console.log(decodedData)
-      // console.log(JSON.parse(decompress(decodedData)))
       if (jsonResponse) {
         printingServers.forEach(item => {
           let APIURL = item.ip_address

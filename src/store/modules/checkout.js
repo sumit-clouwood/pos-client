@@ -16,12 +16,19 @@ const state = {
   changeAmountStatus: false,
   paymentMsgStatus: false,
   processing: false,
+  paymentAction: '',
 }
 
 // getters
 const getters = {
   complete: (state, getters, rootState) => {
     //if order was never splitted means it is completed
+    if (
+      ['dine-in-place-order'].includes(state.paymentAction) &&
+      !rootState.order.splitted
+    ) {
+      return true
+    }
     return rootState.order.totalItems === rootState.order.totalItemsPaid
   },
   calculateOrderTotals: () => order => {
@@ -431,6 +438,7 @@ const actions = {
     { action }
   ) {
     return new Promise((resolve, reject) => {
+      commit(mutation.SET_PAYMENT_ACTION, action)
       dispatch('validateEvent')
         .then(() => {
           dispatch('validatePayment', action)
@@ -758,7 +766,7 @@ const actions = {
     })
   },
 
-  createDineOrder({ dispatch, commit, rootGetters, state }, action) {
+  createDineOrder({ dispatch, commit, getters, rootGetters, state }, action) {
     return new Promise(resolve => {
       OrderService.saveOrder(state.order)
         .then(response => {
@@ -768,7 +776,15 @@ const actions = {
             //we are not printing so reset manually here
             let msg = rootGetters['location/_t']('Dinein Order has been paid')
             if (action === 'dine-in-place-order') {
-              msg = rootGetters['location/_t']('Dinein Order has been placed')
+              if (getters.complete) {
+                //after split paid we create a new order with remaining items so at end
+                //it will reach to this add/create dine in method and show split pay msg
+                msg = rootGetters['location/_t']('Dinein Order has been placed')
+              } else {
+                msg = rootGetters['location/_t'](
+                  'Payment done for selected item(s).'
+                )
+              }
               //Invoice APP API Call with Custom Request JSON
               dispatch('printingServer/printingServerInvoiceRaw', state.order, {
                 root: true,
@@ -781,7 +797,6 @@ const actions = {
             } else {
               commit(mutation.PRINT, true)
             }
-
             dispatch('setMessage', {
               result: 'success',
               msg: msg,
@@ -825,11 +840,7 @@ const actions = {
                   'Dinein order has been modified.'
                 )
                 dispatch('createModifyOrderItemList')
-                let resetFull = false
-                if (getters.complete) {
-                  resetFull = true
-                }
-                dispatch('reset', resetFull)
+                dispatch('reset', true)
                 resolve()
               } else {
                 //order paid
@@ -1392,6 +1403,9 @@ const mutations = {
   },
   [mutation.UPDATE_ITEMS](state, items) {
     state.order.items = items
+  },
+  [mutation.SET_PAYMENT_ACTION](state, action) {
+    state.paymentAction = action
   },
   [mutation.RESET](state, full = true) {
     state.paidAmount = 0
