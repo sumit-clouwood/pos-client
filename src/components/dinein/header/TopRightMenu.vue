@@ -277,23 +277,6 @@ export default {
     $('.setting-dropdown1').hide()
   },
   computed: {
-    role() {
-      const roleId = this.$store.state.auth.userDetails.item.brand_role
-      if (roleId && this.$store.state.auth.rolePermissions) {
-        const role = this.$store.state.auth.rolePermissions.find(
-          role => role._id === roleId
-        )
-        return role ? role.name : ''
-      }
-      return ''
-    },
-    waiter() {
-      return this.role === 'Waiter'
-    },
-    carhop() {
-      return this.role === 'Carhop User'
-    },
-
     vlocale: {
       get() {
         return this.$store.state.location.locale
@@ -303,6 +286,7 @@ export default {
       },
     },
     ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['waiter', 'carhop']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType']),
     ...mapState('sync', ['online']),
@@ -374,7 +358,7 @@ export default {
           return true
         case 'switchCashier':
           if (this.waiter || this.carhop) {
-            return false
+            return true
           }
           return true
         default:

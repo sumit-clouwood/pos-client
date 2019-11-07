@@ -35,31 +35,19 @@ export default {
   computed: {
     ...mapState('category', ['categories']),
     ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['carhop', 'waiter']),
   },
   mounted() {
-    console.log('in mounted')
-    const roleId = this.$store.state.auth.userDetails.item.brand_role
-    const role = this.$store.state.auth.rolePermissions.find(
-      role => role._id === roleId
-    )
-    console.log(role)
-    console.log(role.name)
-    console.log(this.$route)
-
-    if (role && role.name === 'Waiter') {
-      console.log('replace with waiter dinein', this.$route)
+    if (this.waiter) {
       if (
         this.$route.path !== 'undefined' &&
         !this.$route.path.match('dine-in')
       ) {
-        console.log('path dine in matched')
         this.$router.replace('/dine-in' + this.store + '/')
       }
-    } else if (role && role.name === 'Carhop User') {
-      console.log('replace with carhop')
+    } else if (this.carhop) {
       this.$router.replace('/carhop' + this.store + '/')
     } else {
-      console.log(' no role matched')
       //this.$router.replace('/' + this.store + '/')
     }
   },

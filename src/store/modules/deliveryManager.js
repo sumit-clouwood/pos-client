@@ -183,7 +183,7 @@ const actions = {
     }
   },
   getDrivers({ commit, rootGetters }) {
-    let role = rootGetters['auth/getRole']('delivery_home')
+    let role = rootGetters['auth/getRole']('Driver')
     if (role) {
       DMService.getUsers(role._id).then(response => {
         console.log(response.data.data)

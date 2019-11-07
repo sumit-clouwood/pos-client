@@ -18,9 +18,22 @@ const state = {
 
 // getters
 const getters = {
-  getRole: state => startPath => {
+  roleName: state => {
+    if (!state.userDetails) {
+      return ''
+    }
+    const roleId = state.userDetails.item.brand_role
+    if (roleId && state.rolePermissions) {
+      const role = state.rolePermissions.find(role => role._id === roleId)
+      return role ? role.name : ''
+    }
+    return ''
+  },
+  waiter: (state, getters) => getters.roleName === 'Waiter',
+  carhop: (state, getters) => getters.roleName === 'Carhop User',
+  getRole: state => roleName => {
     if (state.rolePermissions) {
-      return state.rolePermissions.find(user => user.start_path === startPath)
+      return state.rolePermissions.find(role => role.name === roleName)
     }
   },
   loggedIn: state => {
@@ -170,7 +183,7 @@ const actions = {
   fetchRoles({ commit, getters }) {
     AuthService.getRoles().then(rolesPermissions => {
       commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
-      const cashierRole = getters.getRole('pos')
+      const cashierRole = getters.getRole('Cashier')
       AuthService.getUsers(cashierRole._id).then(cashiers => {
         commit(mutation.SET_CASHIERS, cashiers.data.data)
       })

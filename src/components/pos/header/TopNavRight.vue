@@ -154,22 +154,7 @@ export default {
   },
   watch: {},
   computed: {
-    role() {
-      const roleId = this.$store.state.auth.userDetails.item.brand_role
-      if (roleId && this.$store.state.auth.rolePermissions) {
-        const role = this.$store.state.auth.rolePermissions.find(
-          role => role._id === roleId
-        )
-        return role ? role.name : ''
-      }
-      return ''
-    },
-    waiter() {
-      return this.role === 'Waiter'
-    },
-    carhop() {
-      return this.role === 'Carhop User'
-    },
+    ...mapGetters('auth', ['waiter', 'carhop']),
 
     vlocale: {
       get() {
@@ -249,7 +234,7 @@ export default {
             return false
           }
           return true
-        case 'switchCashier':
+        case 'switchcashier':
           if (this.waiter || this.carhop) {
             return false
           }
@@ -261,7 +246,7 @@ export default {
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
-          return false
+          return true
       }
     },
 

@@ -25,7 +25,7 @@ import Header from '@/components/dinein/Header.vue'
 import Content from '@/components/dinein/Content'
 import Footer from '@/components/dinein/Footer'
 import Preloader from '@/components/util/Preloader'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Dinein',
@@ -50,6 +50,7 @@ export default {
   },
   computed: {
     ...mapState('dinein', ['loading']),
+    ...mapGetters('auth', ['carhop', 'waiter']),
   },
   mounted() {
     this.$store.dispatch('dinein/fetchAll')
@@ -57,21 +58,8 @@ export default {
     getBody.removeAttr('class')
     getBody.attr('class', 'fixed-nav sticky-footer dm-manager')
 
-    console.log('in mounted')
-    const roleId = this.$store.state.auth.userDetails.item.brand_role
-    const role = this.$store.state.auth.rolePermissions.find(
-      role => role._id === roleId
-    )
-    console.log(role)
-    console.log(role.name)
-    console.log(this.$route)
-
-    if (role && role.name === 'Carhop User') {
-      console.log('replace with carhop')
+    if (this.carhop) {
       this.$router.replace('/carhop' + this.store + '/')
-    } else {
-      console.log(' no role matched')
-      //this.$router.replace('/' + this.store + '/')
     }
   },
 }
