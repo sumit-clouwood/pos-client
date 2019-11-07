@@ -316,7 +316,6 @@ export default {
       order: false,
       selectedReservationId: '',
       componentKey: 0,
-      c: 1,
       moveReservation: false,
       validationErrors: false,
       selectedArea: false,
@@ -364,17 +363,17 @@ export default {
   methods: {
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
     /*showActive() {
-      // $('#id' + this.selectedTableId).addClass('class', 'dinein_table active')
-      d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
-    },*/
+        // $('#id' + this.selectedTableId).addClass('class', 'dinein_table active')
+        d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
+      },*/
     chairsValidation() {
       /*if (this.guests > this.selectedTableData.chairs) {
-        this.validationErrors =
-          'Sorry you cannot add more then ' +
-          this.selectedTableData.chairs +
-          ' guests on this table'
-        this.guests = this.selectedTableData.chairs
-      } else */
+          this.validationErrors =
+            'Sorry you cannot add more then ' +
+            this.selectedTableData.chairs +
+            ' guests on this table'
+          this.guests = this.selectedTableData.chairs
+        } else */
       if (this.guests < 1) {
         this.validationErrors = 'Minimum 1 guest is required'
         this.guests = 1
@@ -544,7 +543,7 @@ export default {
         })
       /*.attr('fill', 'green')*/
       /*if (this.selectedTableD3)
-        d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
+          d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
       d3.selectAll('.dinein_table_parent').each(() => {
         this.drawViews()
         this.setTableProperties()
@@ -556,7 +555,7 @@ export default {
         d3.select(selectedItem)
           .select('g')
           .selectAll('path:nth-of-type(2)')
-          .attr('fill', '#71767a')
+          .attr('fill', '#FFF')
 
         d3.select(selectedItem)
           .select('svg')
@@ -624,35 +623,35 @@ export default {
           .find('g')
           .removeAttr('style')
         /*.attr(
-            'transform',
-            d3.zoomIdentity.scale(dis.tableZoomScale).translate(0, 0)
-          )*/
+              'transform',
+              d3.zoomIdentity.scale(dis.tableZoomScale).translate(0, 0)
+            )*/
         // .zoomIdentity.scale(dis.tableZoomScale)
         // .translate(0, 0)
       })
     },
     /*isSupported() {
-      let ua = navigator.userAgent.toLowerCase()
-      if (ua.indexOf('safari') != -1) {
-        if (ua.indexOf('ipad') > -1) {
-          return false
-        } else if (ua.indexOf('Safari') > -1) {
-          return false
-        } else if (ua.indexOf('macintosh') > -1 && ua.indexOf('chrome') > -1) {
-          return true
-        } else if (ua.indexOf('macintosh') > -1) {
-          return false
-        } else if (ua.indexOf('chrome') > -1) {
-          return true
-        } else if (ua.indexOf('mozilla') > -1) {
-          return false
+        let ua = navigator.userAgent.toLowerCase()
+        if (ua.indexOf('safari') != -1) {
+          if (ua.indexOf('ipad') > -1) {
+            return false
+          } else if (ua.indexOf('Safari') > -1) {
+            return false
+          } else if (ua.indexOf('macintosh') > -1 && ua.indexOf('chrome') > -1) {
+            return true
+          } else if (ua.indexOf('macintosh') > -1) {
+            return false
+          } else if (ua.indexOf('chrome') > -1) {
+            return true
+          } else if (ua.indexOf('mozilla') > -1) {
+            return false
+          } else {
+            return false
+          }
         } else {
           return false
         }
-      } else {
-        return false
-      }
-    },*/
+      },*/
     confirmCancelReservation() {
       let makeId = '#id_' + this.selectedTableId
       $(makeId)
@@ -686,9 +685,9 @@ export default {
                 // this.clearTableArea()
                 // this.updateTableOnArea()
                 /*d3.selectAll('.dinein_table_parent').each(() => {
-                  this.drawViews()
-                  this.setTableProperties()
-                })*/
+                          this.drawViews()
+                          this.setTableProperties()
+                        })*/
                 this.clearTableArea()
                 this.updateTableOnArea()
               })
@@ -697,7 +696,7 @@ export default {
         $('#tooltipdata').hide()
         // this.updateTableOnArea()
         /*this.clearTableArea()
-        this.setTableProperties()*/
+          this.setTableProperties()*/
       })
       this.componentKey += 1
       $('#range')
@@ -718,9 +717,9 @@ export default {
     },
     showOptions(datum, i, a) {
       /*d3.select(d3.select(a[i]).parentNode)
-        .selectAll('path')
-        .style('stroke', 'green')
-        .style('stroke-width', '1')*/
+          .selectAll('path')
+          .style('stroke', 'green')
+          .style('stroke-width', '1')*/
 
       this.selectedTableData = datum
       this.guests = 1
@@ -739,8 +738,8 @@ export default {
       let posX = $('#id_' + datum._id).offset().left
       // let posY = $('#id_' + datum._id).offset().top
       /*let tableWidth = $('#id_' + datum._id)
-        .find('svg')
-        .width()*/
+          .find('svg')
+          .width()*/
       let getWidth = 361 / 2
       if (this.orderDetails.length === 0) {
         getWidth = 155 / 2
