@@ -322,9 +322,9 @@ export default {
         : order.orderNumber
         ? order.orderNumber
         : false
-      let dateTime =
-        order.real_created_datetime ||
-        order.real_created_datetime.replace(/[\s-:]/g, '')
+      let dateTime = order.real_created_datetime
+        .toString()
+        .replace(/[\s-:]/g, '')
       if (orderNo) {
         return orderNo
       } else {
