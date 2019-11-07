@@ -250,7 +250,7 @@ export default {
       cursor: pointer
 
     &:before
-      left: -24px
+      left: -16px
       border-color: rgba(194, 225, 245, 0)
       border-right-color: #c2e1f5
       transform: rotate(0deg)
@@ -261,7 +261,7 @@ export default {
       border-right-color: #88b7d5
       transform: rotate(180deg)
       -webkit-transform: rotate(180deg)
-      right: -24px
+      right: -16px
 
 
   .carousel

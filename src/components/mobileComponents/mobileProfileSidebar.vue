@@ -42,7 +42,6 @@
               Transactions
             </div>
           </div>
-
           <div class="profile-menu-item active">
             <div class="profile-menu-item-icon">
               <svg
@@ -68,7 +67,7 @@
               </div>
             </router-link>
           </div>
-          <!--<div class="profile-menu-item">
+          <div class="profile-menu-item">
             <div class="profile-menu-item-icon">
               <svg
                 width="24"
@@ -109,7 +108,8 @@
               </svg>
             </div>
             <div class="profile-menu-item-text">Support</div>
-          </div>--><!--<div class="profile-menu-item">
+          </div>
+          --><!--<div class="profile-menu-item">
             <div class="profile-menu-item-icon">
               <svg
                 width="24"

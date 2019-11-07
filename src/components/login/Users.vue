@@ -4,7 +4,11 @@
       <div class="head">
         <div class="search">
           <span class="fa fa-search"></span>
-          <input type="text" v-model="searchKeyword" />
+          <input
+            type="text"
+            v-model="searchKeyword"
+            placeholder="Search Cashier"
+          />
         </div>
       </div>
     </div>
@@ -109,7 +113,6 @@ export default {
           .parent()
           .addClass('position-set')
         setTimeout(() => {
-          const sliderWidth = $('.users-slider').outerWidth()
           const slideWidth = $('.position-set').outerWidth()
           const slideLeft = $('.position-set').offset().left
           const calcWidth = $('#popover_content_wrapper').outerWidth()
@@ -118,10 +121,11 @@ export default {
           if (lockLeft <= 3) {
             lockLeft = 4
           }
-          let lockRight = lockLeft + calcWidth
           $('#popover_content_wrapper').css('left', lockLeft + 'px')
+          const sliderWidth = $('.users-slider').outerWidth()
+          let lockRight = lockLeft + calcWidth
 
-          if (lockRight > sliderWidth) {
+          if (lockRight > sliderWidth && lockRight > window.innerWidth) {
             $('#popover_content_wrapper').css(
               'left',
               sliderWidth - calcWidth - 4 + 'px'
@@ -237,6 +241,11 @@ $imgmaxh: 140px
     img
       max-width: $imgmaxw
       max-height: $imgmaxh
+      min-height: 140px
+      min-width: 140px
+      height: auto
+      width: auto
+
       cursor: pointer
       -webkit-transform: scale($initzoom, $initzoom)
       -moz-transform: scale($initzoom, $initzoom)

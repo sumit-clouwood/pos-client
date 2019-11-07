@@ -1,7 +1,7 @@
 <template>
   <div class="modal-footer">
     <div class="btn-announce">
-      <DiscountButton />
+      <DiscountButton v-if="!waiter && !carhop" />
       <!-- <RemoveDiscountButton /> -->
       <RemoveTaxButton />
       <ModifyItemModifiersButton />
@@ -15,6 +15,8 @@ import DiscountButton from './footer/DiscountButton'
 //import RemoveDiscountButton from './footer/RemoveDiscountButton'
 import RemoveTaxButton from './footer/RemoveTaxButton'
 import ModifyItemModifiersButton from './footer/ModifyItemModifiersButton'
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'Footer',
   props: {},
@@ -23,6 +25,9 @@ export default {
     //  RemoveDiscountButton,
     RemoveTaxButton,
     ModifyItemModifiersButton,
+  },
+  computed: {
+    ...mapGetters('auth', ['waiter', 'carhop']),
   },
 }
 </script>
