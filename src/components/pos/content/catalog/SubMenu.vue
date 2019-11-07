@@ -80,7 +80,7 @@ export default {
     grid-template-columns: 1fr;
     height: 100%;
     overflow: auto;
-    position: absolute;
+    /*position: absolute;*/
     top: 0;
     right: 0;
     left: 0;

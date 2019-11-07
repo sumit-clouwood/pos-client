@@ -90,7 +90,17 @@ export default {
 <style lang="scss">
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
+.current-sale {
+  display: inline-block;
+  width: auto;
+  max-width: 100%;
+  vertical-align: middle;
+}
 
+.btn-menu {
+  display: inline-block !important;
+  vertical-align: middle;
+}
 .mobile-page {
   background-color: #fff;
   height: 100%;
@@ -99,7 +109,7 @@ export default {
 
   .mobile-header {
     padding: 20px;
-    display: grid;
+    /*display: grid;*/
     grid-template-columns: 1fr max-content;
     align-items: center;
     background-color: #fafafa;
