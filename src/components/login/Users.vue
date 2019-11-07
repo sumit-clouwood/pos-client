@@ -33,6 +33,7 @@
           <img
             :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
             @click.prevent="setCashier(cashier.email)"
+            @touchend.prevent="setCashier(cashier.email)"
             class="transform-img"
             alt="cashier.name"
             :id="cashier._id"
@@ -104,7 +105,7 @@ export default {
         return true
       }
       this.jQuery = true
-      $('img.transform-img').click(function() {
+      $('img.transform-img').bind('click touchstart', function() {
         $('.position-set').removeClass('position-set')
         $('#popover_content_wrapper').hide()
         $(this)

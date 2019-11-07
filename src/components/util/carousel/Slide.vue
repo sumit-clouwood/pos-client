@@ -1,5 +1,9 @@
 <template>
-  <div :style="{ width: slideWidth + 'px' }" @click="selectSlide()">
+  <div
+    :style="{ width: slideWidth + 'px' }"
+    @click="selectSlide()"
+    @touchend="selectSlide()"
+  >
     <div :style="{ width: slideWidth + 'px' }">
       <div :style="{ width: slideWidth - 10 + 'px' }">
         <slot></slot>
@@ -41,6 +45,7 @@ export default {
     // eslint-disable-next-line no-unused-vars
     selectSlide() {
       this.$emit('click')
+      this.$emit('touchend')
     },
   },
 }
