@@ -94,13 +94,12 @@
             </a>
           </li>
           <li
-            v-else
+            v-if="orderType.OTApi !== 'dine_in'"
             @click="newOrders"
             class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
             :class="[
               {
                 active: vbutton === 'new',
-                hide: orderType.OTApi === 'dine_in',
               },
             ]"
             id="new-order-box"
