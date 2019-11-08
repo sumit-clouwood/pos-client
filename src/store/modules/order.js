@@ -46,6 +46,8 @@ const state = {
   splitted: false,
   totalItems: 0,
   totalItemsPaid: 0,
+  orderSource: null,
+  modificationReasons: [],
 }
 
 // getters
@@ -296,6 +298,13 @@ const getters = {
 
 // actions
 const actions = {
+  fetchModificationReasons({ state, commit }) {
+    if (!state.modificationReasons.length) {
+      OrderService.getModifyReasons().then(response => {
+        commit(mutation.SET_MODIFICATION_REASONS, response.data.data)
+      })
+    }
+  },
   setSplitBill({ commit, dispatch }) {
     commit('SET_SPLIT_BILL', -1)
     dispatch('surchargeCalculation')
@@ -931,11 +940,33 @@ const actions = {
 
   modifyOrder({ commit, dispatch }, orderId) {
     commit(mutation.ORDER_TO_MODIFY, orderId)
+    commit(mutation.ORDER_SOURCE, 'backend')
     dispatch('startOrder')
 
     const params = ['orders', orderId, '']
     OrderService.getGlobalDetails(...params).then(response => {
       let orderDetails = {}
+
+      switch (response.data.item.order_type) {
+        case 'dine_in':
+          commit(mutation.ORDER_TYPE, { OTview: 'Dine In', OTApi: 'dine_in' })
+          break
+        case 'walk_in':
+          commit(mutation.ORDER_TYPE, { OTview: 'Walk In', OTApi: 'walk_in' })
+          break
+        case 'takeaway':
+          commit(mutation.ORDER_TYPE, {
+            OTview: 'Take Away',
+            OTApi: 'takeaway',
+          })
+          break
+        case 'crm':
+          commit(mutation.ORDER_TYPE, {
+            OTview: 'Delivery',
+            OTApi: 'call_center',
+          })
+          break
+      }
 
       orderDetails.item = response.data.item
       orderDetails.customer = response.data.collected_data.customer
@@ -993,6 +1024,7 @@ const actions = {
         customer: order.customer,
       }
       commit(mutation.SET_ORDER_DATA, orderData)
+
       let allCovers = rootState.dinein.covers
       let promises = []
       order.items.forEach((orderItem, key) => {
@@ -1433,6 +1465,7 @@ const mutations = {
     state.item = false
     state.orderId = null
     state.orderData = null
+    //reset order souce when order is completed
   },
   [mutation.SET_ORDER_NOTE](state, orderNote) {
     state.orderNote = orderNote
@@ -1483,6 +1516,10 @@ const mutations = {
     state.totalItems = count
   },
 
+  [mutation.SET_MODIFICATION_REASONS](state, reasons) {
+    state.modificationReasons = reasons
+  },
+
   [mutation.SET_TOTAL_ITEMS_PAID](state, count) {
     state.totalItemsPaid = count
   },
@@ -1497,6 +1534,9 @@ const mutations = {
 
   [mutation.ORDER_TO_MODIFY](state, orderId) {
     state.orderToModify = orderId
+  },
+  [mutation.ORDER_SOURCE](state, source) {
+    state.orderSource = source
   },
   [mutation.SET_SPLIT_BILL](state, status = -1) {
     //if -1 then toggle it, if true assign true, if false assign false, if null then assign null

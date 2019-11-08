@@ -87,6 +87,10 @@ export default {
     return DataService.get(`/model/${model}${query}`, 'brand')
   },
 
+  getModifyReasons() {
+    return DataService.get(`/model/brand_modify_reasons?no_limit=true`, 'brand')
+  },
+
   updateOrderAction(id, action, params) {
     let setBrand = ['delivery_ready'].includes(action) ? 'brand' : ''
     return DataService.post(

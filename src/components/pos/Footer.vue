@@ -406,6 +406,8 @@
     <CustomerNotes />
     <CartAddEmail />
     <CartAmountChange />
+    <ModificationPermissions v-if="orderSource === 'backend'" />
+
     <CartPaymentMsg />
     <CartTipAmount />
     <GiftCard />
@@ -450,6 +452,7 @@ import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import UserProfile from '@/components/pos/user/UserProfile'
 import InformationPopup from '@/components/pos/content/InformationPopup'
+import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
 
 import * as CONST from '@/constants'
 
@@ -488,6 +491,7 @@ export default {
     OrderDetailsPopup,
     UserProfile,
     InformationPopup,
+    ModificationPermissions,
   },
   data() {
     if (window.location.href.indexOf('dine-in') > -1) {
@@ -512,6 +516,7 @@ export default {
       'items',
       'is_pay',
       'orderId',
+      'orderSource',
     ]),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
@@ -541,6 +546,13 @@ export default {
           })
         }
       }
+    },
+    orderType() {
+      $('ul.ullist-icons').slick('refresh')
+      $('.next-btn').click()
+      setTimeout(function() {
+        $('.back-btn').click()
+      }, 1000)
     },
     // paymentMsgStatus(newVal) {
     //   if (newVal) {

@@ -142,6 +142,7 @@
     <Invoice />
     <CustomerInformation />
     <CancelOrderPopup />
+    <ModificationPermissions />
   </div>
 </template>
 
@@ -156,6 +157,7 @@ import Payment from '@/components/pos/content/orderDetails/rightContent/Payment'
 import RightPartHeader from '@/components/pos/content/orderDetails/RightPartHeader'
 import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
 import CancelOrderPopup from '@/components/pos/content/orderDetails/CancelOrderPopup'
+import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
 import CustomerInformation from '@/components/pos/footer/popups/ManageCustomer/CustomerInformation'
 
 export default {
@@ -171,6 +173,7 @@ export default {
     Invoice,
     CancelOrderPopup,
     CustomerInformation,
+    ModificationPermissions,
   },
   computed: {
     ...mapState('order', ['selectedOrder']),
