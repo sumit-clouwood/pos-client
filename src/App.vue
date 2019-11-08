@@ -218,6 +218,7 @@ export default {
             }
             if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
               this.$store.dispatch('order/modifyOrder', this.orderId)
+              this.$store.dispatch('order/fetchModificationReasons')
             }
             setTimeout(() => {
               require('@/../public/js/pos_script.js')

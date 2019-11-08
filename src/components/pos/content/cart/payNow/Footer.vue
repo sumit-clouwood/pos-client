@@ -48,8 +48,10 @@ import * as CONST from '@/constants'
 
 export default {
   name: 'PayNowFooter',
+  components: {},
   computed: {
     ...mapState('checkout', ['changedAmount']),
+    ...mapState('order', ['orderSource']),
     ...mapState('checkoutForm', ['msg', 'error', 'method', 'processing']),
     ...mapGetters('checkoutForm', ['validate']),
     ...mapGetters('location', ['_t']),
@@ -107,42 +109,48 @@ export default {
         if (payable <= 0.1) {
           $('#payment-screen-footer').prop('disabled', true)
           this.$store.commit('checkoutForm/setAction', 'pay')
-          $('#payment-msg').modal('show')
           this.$store.dispatch('order/startOrder')
           this.$store.commit('order/IS_PAY', 1)
-          this.$store
-            .dispatch('checkout/pay', this.$store.state.order.orderType.OTApi)
-            .then(() => {
-              console.log('payment success')
 
-              $('#payment-msg').modal('show')
-              if (this.changedAmount >= 0.1) {
-                //alert('change amount is due')
-                setTimeout(() => {
-                  $('#payment-msg').modal('hide')
-                  setTimeout(() => {
-                    $('#change-amount').modal('show')
-                  }, 500)
-                }, 500)
-              } else if (this.msg) {
+          if (this.orderSource === 'backend') {
+            showModal('#modificationReason')
+          } else {
+            $('#payment-msg').modal('show')
+
+            this.$store
+              .dispatch('checkout/pay', this.$store.state.order.orderType.OTApi)
+              .then(() => {
+                console.log('payment success')
+
                 $('#payment-msg').modal('show')
-              }
-              setTimeout(function() {
-                $('#payment-screen-footer').prop('disabled', false)
-              }, 1000)
-            })
-            .catch(() => {
-              setTimeout(() => {
-                console.log('payment fail')
+                if (this.changedAmount >= 0.1) {
+                  //alert('change amount is due')
+                  setTimeout(() => {
+                    $('#payment-msg').modal('hide')
+                    setTimeout(() => {
+                      $('#change-amount').modal('show')
+                    }, 500)
+                  }, 500)
+                } else if (this.msg) {
+                  $('#payment-msg').modal('show')
+                }
+                setTimeout(function() {
+                  $('#payment-screen-footer').prop('disabled', false)
+                }, 1000)
+              })
+              .catch(() => {
+                setTimeout(() => {
+                  console.log('payment fail')
 
-                $('#payment-msg').modal('hide')
-                $('#payment-screen-footer').prop('disabled', false)
-              }, 500)
-            })
-            .finally(() => {
-              console.log('finally processing false')
-              this.$store.commit('checkoutForm/SET_PROCESSING', false)
-            })
+                  $('#payment-msg').modal('hide')
+                  $('#payment-screen-footer').prop('disabled', false)
+                }, 500)
+              })
+              .finally(() => {
+                console.log('finally processing false')
+                this.$store.commit('checkoutForm/SET_PROCESSING', false)
+              })
+          }
         } else {
           //show payment breakdown
           showPaymentBreak()
