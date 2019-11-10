@@ -163,7 +163,10 @@ export default {
           }
         })
         .catch(response => {
-          this.errorMessage = response.data.error
+          this.errorMessage =
+            response.data.error !== 'undefined'
+              ? response.data.error
+              : response.data
         })
         .finally(() => {
           this.$store.commit('checkoutForm/SET_PROCESSING', false)
