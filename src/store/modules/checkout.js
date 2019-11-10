@@ -978,7 +978,7 @@ const actions = {
                   root: true,
                 }
               )
-              dispatch('reset')
+              dispatch('reset', true)
               resolve()
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
