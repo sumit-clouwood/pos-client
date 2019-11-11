@@ -1418,8 +1418,14 @@ const mutations = {
       item.orderIndex = item.no
       newItems[item.no] = item
     })
-
-    state.items = newItems
+    //remove deleted items
+    const filteredItems = newItems.filter(item => {
+      if (typeof item !== 'undefined' && item._id) {
+        return true
+      }
+      return false
+    })
+    state.items = filteredItems
   },
 
   [mutation.RESET](state, full = true) {
