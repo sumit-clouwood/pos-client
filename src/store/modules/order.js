@@ -940,7 +940,6 @@ const actions = {
 
   modifyOrder({ commit, dispatch }, orderId) {
     commit(mutation.ORDER_TO_MODIFY, orderId)
-    commit(mutation.ORDER_SOURCE, 'backend')
     dispatch('startOrder')
 
     const params = ['orders', orderId, '']
