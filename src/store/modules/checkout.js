@@ -963,7 +963,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       dispatch('getModifyOrder').then(order => {
         order.modify_reason = data.modify_reason
-        //order.supervisor_password = data.supervisor_password
+        order.supervisor_password = data.supervisor_password
 
         OrderService.modifyOrder(order, rootState.order.orderId)
           .then(response => {
