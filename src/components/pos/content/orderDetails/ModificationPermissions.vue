@@ -174,6 +174,7 @@ export default {
           this.$store.dispatch('order/reset')
 
           $('#modificationReason').hide()
+          this.$store.commit('order/ORDER_SOURCE', null)
         })
         .catch(response => {
           this.errorMessage =
