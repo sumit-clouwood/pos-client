@@ -113,7 +113,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.selectedTable) {
+    if (!this.selectedTable && !this.orderSource === 'backend') {
       this.$router.push(this.store)
       this.$store.commit('order/ORDER_TYPE', {
         OTview: 'Walk In',
@@ -130,6 +130,7 @@ export default {
       'cartType',
       'orderType',
       'orderData',
+      'orderSource',
     ]),
     ...mapState('checkoutForm', ['msg']),
     ...mapState('customer', ['deliveryAreas']),

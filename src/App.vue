@@ -204,6 +204,7 @@ export default {
               }, 3000)
             }
             if (this.orderId && this.$route.name === 'UpdateDeliveryOrder') {
+              this.$store.commit('order/ORDER_SOURCE', 'deliveryManager')
               this.$store
                 .dispatch('order/selectedOrderDetails', this.orderId)
                 .then(() => {
@@ -217,7 +218,9 @@ export default {
                 })
             }
             if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
+              this.$store.commit('order/ORDER_SOURCE', 'backend')
               this.$store.dispatch('order/modifyOrder', this.orderId)
+              this.$store.dispatch('order/fetchModificationReasons')
             }
             setTimeout(() => {
               require('@/../public/js/pos_script.js')

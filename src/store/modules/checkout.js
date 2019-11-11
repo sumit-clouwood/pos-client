@@ -435,7 +435,7 @@ const actions = {
 
   pay(
     { commit, getters, rootGetters, rootState, dispatch, state },
-    { action }
+    { action, data }
   ) {
     return new Promise((resolve, reject) => {
       commit(mutation.SET_PAYMENT_ACTION, action)
@@ -615,7 +615,7 @@ const actions = {
                       action: action,
                     }).then(order => {
                       commit(mutation.SET_ORDER, order)
-                      dispatch('createOrder', action)
+                      dispatch('createOrder', { action: action, data: data })
                         .then(response => {
                           //reset order start time
                           if (getters.complete) {
@@ -978,15 +978,15 @@ const actions = {
     })
   },
 
-  modifyBackendOrder({ dispatch, rootState, rootGetters, commit }) {
-    return new Promise(resolve => {
+  modifyBackendOrder({ dispatch, rootState, rootGetters, commit }, { data }) {
+    return new Promise((resolve, reject) => {
       dispatch('getModifyOrder').then(order => {
-        order.modify_reason = 'Updated from backend'
+        order = { ...order, ...data }
         OrderService.modifyOrder(order, rootState.order.orderId)
           .then(response => {
             if (response.data.status === 'ok') {
               let msgStr = rootGetters['location/_t'](
-                'Delivery order has been modified.'
+                'Order has been modified.'
               )
               commit(
                 'checkoutForm/SET_MSG',
@@ -995,10 +995,12 @@ const actions = {
                   root: true,
                 }
               )
-              dispatch('reset')
+              dispatch('reset', true)
               resolve()
             } else {
-              dispatch('handleSystemErrors', response).then(() => resolve())
+              dispatch('handleSystemErrors', response).then(() =>
+                reject(response)
+              )
             }
           })
           .catch(error => {
@@ -1007,10 +1009,10 @@ const actions = {
               offline: false,
             })
               .then(() => {
-                resolve()
+                reject(error)
               })
               .catch(() => {
-                resolve()
+                reject(error)
               })
           })
       })
@@ -1269,7 +1271,7 @@ const actions = {
     return Promise.resolve()
   },
 
-  createOrder({ rootState, dispatch, commit }, action) {
+  createOrder({ rootState, dispatch, commit }, { action, data }) {
     commit(
       'checkoutForm/SET_MSG',
       { message: '', result: 'loading' },
@@ -1295,8 +1297,8 @@ const actions = {
       rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
     ) {
       return dispatch('modifyDeliveryOrder')
-    } else if (rootState.order.orderToModify) {
-      return dispatch('modifyBackendOrder')
+    } else if (action === 'modify-backend-order') {
+      return dispatch('modifyBackendOrder', { action: action, data: data })
     } else if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
       return dispatch('createHoldOrder')
     } else if (
