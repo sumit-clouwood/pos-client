@@ -51,7 +51,7 @@
                   {{ errors.modify_reason }}
                 </p>
               </div>
-              <div class="modifyperms-container">
+              <div class="modifyperms-container" v-if="requiredSupervisor">
                 <div class="select-driver">{{ _t('Supervisor Password') }}</div>
                 <div>
                   <input
@@ -115,6 +115,12 @@ export default {
   },
   components: {},
   computed: {
+    requiredSupervisor() {
+      return (
+        this.$store.state.location.brand &&
+        this.$store.state.location.brand.mandatory_password === true
+      )
+    },
     ...mapGetters('location', ['_t']),
     ...mapState('order', ['modificationReasons', 'selectedOrder']),
     ...mapState('checkout', ['processing']),
@@ -134,15 +140,21 @@ export default {
       this.errors = {}
       let data = {
         modify_reason: this.selectedReason,
-        supervisor_password: this.supervisorPassword,
       }
+      if (this.requiredSupervisor) {
+        if (!this.supervisorPassword) {
+          this.errors.supervisor_password =
+            'Please provide supervisor password.'
+        } else {
+          data['supervisor_password'] = this.supervisorPassword
+        }
+      }
+
       if (!data.modify_reason) {
         this.errors.modify_reason = 'Please select modify reason.'
       }
-      if (!data.supervisor_password) {
-        this.errors.supervisor_password = 'Please provide supervisor password.'
-      }
-      if (!(data.modify_reason && data.supervisor_password)) {
+
+      if (this.errors.modify_reason || this.errors.supervisor_password) {
         this.$store.commit('checkoutForm/SET_PROCESSING', false)
         return false
       }
@@ -157,15 +169,20 @@ export default {
           action: 'modify-backend-order',
           data: data,
         })
-        .then(response => {
-          if (response.status != 'form_errors') {
-            $('#modificationReason').hide()
-          }
+        .then(() => {
+          this.$store.dispatch('checkout/reset', true)
+          this.$store.dispatch('order/reset')
+
+          $('#modificationReason').hide()
         })
         .catch(response => {
           this.errorMessage =
             response.data.error !== 'undefined'
               ? response.data.error
+              : response.data.form_errors
+              ? response.data.form_errors[
+                  Object.keys(response.data.form_errors)[0]
+                ][0]
               : response.data
         })
         .finally(() => {

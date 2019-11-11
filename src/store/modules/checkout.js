@@ -962,9 +962,7 @@ const actions = {
   modifyBackendOrder({ dispatch, rootState, rootGetters, commit }, { data }) {
     return new Promise((resolve, reject) => {
       dispatch('getModifyOrder').then(order => {
-        order.modify_reason = data.modify_reason
-        order.supervisor_password = data.supervisor_password
-
+        order = { ...order, ...data }
         OrderService.modifyOrder(order, rootState.order.orderId)
           .then(response => {
             if (response.data.status === 'ok') {
@@ -981,7 +979,9 @@ const actions = {
               dispatch('reset', true)
               resolve()
             } else {
-              dispatch('handleSystemErrors', response).then(() => resolve())
+              dispatch('handleSystemErrors', response).then(() =>
+                reject(response)
+              )
             }
           })
           .catch(error => {
