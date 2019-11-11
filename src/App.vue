@@ -165,6 +165,12 @@ export default {
         $('.setting-dropdown').hide()
         $('.setting-dropdown').addClass('animated zoomIn')
       }, 200)
+
+      if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
+        this.$store.commit('order/ORDER_SOURCE', 'backend')
+        this.$store.dispatch('order/modifyOrder', this.orderId)
+        this.$store.dispatch('order/fetchModificationReasons')
+      }
     },
     loggedIn(newVal, oldVal) {
       if (newVal && newVal !== oldVal) {
