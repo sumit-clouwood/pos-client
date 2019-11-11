@@ -116,6 +116,8 @@ export default {
       // this.$store.commit('checkoutForm/setAction', 'pay')
     },
     set(amount) {
+      this.$store.commit('checkoutForm/SET_PROCESSING', false)
+
       if (!this.init) {
         this.$store.commit('checkoutForm/appendAmount', '')
         this.init = true

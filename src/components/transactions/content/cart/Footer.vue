@@ -153,7 +153,7 @@ export default {
           })
         } else {
           this.$router.push({
-            path: this.$store.getters['context/store'] + 'update/' + order._id,
+            path: this.$store.getters['context/store'] + '/update/' + order._id,
           })
         }
       })
