@@ -644,7 +644,6 @@ const actions = {
                             if (ios) {
                               if (!standalone && !safari) {
                                 //This is  a uiwebview
-                                localStorage.setItem('placedOrderData', x)
                                 alert('this is a test alert for short time.')
                               }
                             }
