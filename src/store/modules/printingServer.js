@@ -167,6 +167,7 @@ const actions = {
         userAgent = window.navigator.userAgent.toLowerCase(),
         safari = /safari/.test(userAgent),
         ios = /iphone|ipod|ipad/.test(userAgent)
+      alert(ios)
 
       if (ios) {
         if (!standalone && !safari) {
