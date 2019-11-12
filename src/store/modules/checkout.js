@@ -634,19 +634,6 @@ const actions = {
                               root: true,
                             })
                             commit('order/SET_SPLIT_BILL', null, { root: true })
-                            //Detect IOS device WebViews
-                            let standalone = window.navigator.standalone,
-                              userAgent = window.navigator.userAgent.toLowerCase(),
-                              safari = /safari/.test(userAgent),
-                              ios = /iphone|ipod|ipad/.test(userAgent)
-                            alert(ios)
-
-                            if (ios) {
-                              if (!standalone && !safari) {
-                                //This is  a uiwebview
-                                alert('this is a test alert for short time.')
-                              }
-                            }
                           }
 
                           resolve(response)
@@ -1292,6 +1279,20 @@ const actions = {
   },
 
   createOrder({ rootState, dispatch, commit }, { action, data }) {
+    //Detect IOS device WebViews
+    let standalone = window.navigator.standalone,
+      userAgent = window.navigator.userAgent.toLowerCase(),
+      safari = /safari/.test(userAgent),
+      ios = /iphone|ipod|ipad/.test(userAgent)
+    alert(ios)
+
+    if (ios) {
+      if (!standalone && !safari) {
+        //This is  a uiwebview
+        alert('this is a test alert for short time.')
+      }
+    }
+
     commit(
       'checkoutForm/SET_MSG',
       { message: '', result: 'loading' },
