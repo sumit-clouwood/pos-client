@@ -1284,7 +1284,7 @@ const actions = {
       userAgent = window.navigator.userAgent.toLowerCase(),
       safari = /safari/.test(userAgent),
       ios = /iphone|ipod|ipad/.test(userAgent)
-    alert(ios)
+    window.location.href = 'print.me'
 
     if (ios) {
       if (!standalone && !safari) {
