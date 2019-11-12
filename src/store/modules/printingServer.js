@@ -162,6 +162,19 @@ const actions = {
         store_id: rootState.context.storeId,
       }
       let x = JSON.stringify(jsonResponse)
+      //Detect IOS device WebViews
+      let standalone = window.navigator.standalone,
+        userAgent = window.navigator.userAgent.toLowerCase(),
+        safari = /safari/.test(userAgent),
+        ios = /iphone|ipod|ipad/.test(userAgent)
+
+      if (ios) {
+        if (!standalone && !safari) {
+          //This is  a uiwebview
+          localStorage.setItem('placedOrderData', x)
+          alert('this is a test alert for short time.')
+        }
+      }
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')
       let decodedData = compressToBase64(x)
