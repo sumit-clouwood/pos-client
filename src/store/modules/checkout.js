@@ -29,6 +29,13 @@ const getters = {
     ) {
       return true
     }
+
+    //if item was never splitted
+    if (!rootState.order.splitted) {
+      return true
+    }
+
+    //if splitted once
     return rootState.order.totalItems === rootState.order.totalItemsPaid
   },
   calculateOrderTotals: () => order => {
