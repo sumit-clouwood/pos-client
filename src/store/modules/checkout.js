@@ -1284,12 +1284,15 @@ const actions = {
       userAgent = window.navigator.userAgent.toLowerCase(),
       safari = /safari/.test(userAgent),
       ios = /iphone|ipod|ipad/.test(userAgent)
-    window.location.href = 'print.me'
 
     if (ios) {
-      if (!standalone && !safari) {
+      if (!standalone && safari ) {
+        window.location.href = 'print.me1'
+      } else if (standalone && !safari) {
+        window.location.href = 'print.me2'
+      } else if (!standalone && !safari) {
         //This is  a uiwebview
-        alert('this is a test alert for short time.')
+        window.location.href = 'print.me3'
       }
     }
 
