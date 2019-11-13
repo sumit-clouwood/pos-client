@@ -144,7 +144,6 @@ export default {
     },
     print_ready() {
       this.invoiceHtml = this.$refs.print_template.$el.outerHTML
-      localStorage.setItem('orderInvoiceData', this.invoiceHtml)
       //console.log('in print ready html length', this.invoiceHtml.length)
       var body = `<html><head><title>${
         this.order_title
@@ -401,6 +400,7 @@ export default {
         </style></head><body style="width:100%">${
           this.invoiceHtml
         }</body></html>`
+      localStorage.setItem('orderInvoiceData', body.toString())
       this.iframe_body = body
       //1. to print in new window
       //this.doPrint()
