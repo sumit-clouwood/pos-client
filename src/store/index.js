@@ -33,6 +33,16 @@ import 'vue-datetime/dist/vue-datetime.css'
 //to take snapshot
 //import createLogger from 'vuex/dist/logger'
 
+import { CoolSelectPlugin } from 'vue-cool-select'
+
+// paste the line below only if you need "bootstrap" theme
+import 'vue-cool-select/dist/themes/bootstrap.css'
+// paste the line below only if you need "material-design" theme
+//import 'vue-cool-select/dist/themes/material-design.css'
+// you can also import your theme
+
+Vue.use(CoolSelectPlugin)
+
 Vue.use(Vuex)
 Vue.use(Datetime)
 
