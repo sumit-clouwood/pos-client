@@ -2,6 +2,7 @@ import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
+import { compressToBase64 } from 'lz-string'
 
 // initial state
 const state = {
@@ -29,6 +30,13 @@ const getters = {
     ) {
       return true
     }
+
+    //if item was never splitted
+    if (!rootState.order.splitted) {
+      return true
+    }
+
+    //if splitted once
     return rootState.order.totalItems === rootState.order.totalItemsPaid
   },
   calculateOrderTotals: () => order => {
@@ -435,7 +443,7 @@ const actions = {
 
   pay(
     { commit, getters, rootGetters, rootState, dispatch, state },
-    { action }
+    { action, data }
   ) {
     return new Promise((resolve, reject) => {
       commit(mutation.SET_PAYMENT_ACTION, action)
@@ -615,7 +623,7 @@ const actions = {
                       action: action,
                     }).then(order => {
                       commit(mutation.SET_ORDER, order)
-                      dispatch('createOrder', action)
+                      dispatch('createOrder', { action: action, data: data })
                         .then(response => {
                           //reset order start time
                           if (getters.complete) {
@@ -978,15 +986,15 @@ const actions = {
     })
   },
 
-  modifyBackendOrder({ dispatch, rootState, rootGetters, commit }) {
-    return new Promise(resolve => {
+  modifyBackendOrder({ dispatch, rootState, rootGetters, commit }, { data }) {
+    return new Promise((resolve, reject) => {
       dispatch('getModifyOrder').then(order => {
-        order.modify_reason = 'Updated from backend'
+        order = { ...order, ...data }
         OrderService.modifyOrder(order, rootState.order.orderId)
           .then(response => {
             if (response.data.status === 'ok') {
               let msgStr = rootGetters['location/_t'](
-                'Delivery order has been modified.'
+                'Order has been modified.'
               )
               commit(
                 'checkoutForm/SET_MSG',
@@ -995,10 +1003,12 @@ const actions = {
                   root: true,
                 }
               )
-              dispatch('reset')
+              dispatch('reset', true)
               resolve()
             } else {
-              dispatch('handleSystemErrors', response).then(() => resolve())
+              dispatch('handleSystemErrors', response).then(() =>
+                reject(response)
+              )
             }
           })
           .catch(error => {
@@ -1007,10 +1017,10 @@ const actions = {
               offline: false,
             })
               .then(() => {
-                resolve()
+                reject(error)
               })
               .catch(() => {
-                resolve()
+                reject(error)
               })
           })
       })
@@ -1032,6 +1042,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
+              dispatch('iosWebviewPrintAction', { orderData: state.order })
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
@@ -1066,6 +1077,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
+              dispatch('iosWebviewPrintAction', { orderData: state.order })
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
@@ -1269,7 +1281,7 @@ const actions = {
     return Promise.resolve()
   },
 
-  createOrder({ rootState, dispatch, commit }, action) {
+  createOrder({ rootState, dispatch, commit }, { action, data }) {
     commit(
       'checkoutForm/SET_MSG',
       { message: '', result: 'loading' },
@@ -1295,8 +1307,8 @@ const actions = {
       rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
     ) {
       return dispatch('modifyDeliveryOrder')
-    } else if (rootState.order.orderToModify) {
-      return dispatch('modifyBackendOrder')
+    } else if (action === 'modify-backend-order') {
+      return dispatch('modifyBackendOrder', { action: action, data: data })
     } else if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
       return dispatch('createHoldOrder')
     } else if (
@@ -1360,6 +1372,130 @@ const actions = {
     dispatch('deliveryManager/fetchOrderCount', null, { root: true })
     /*commit(mutation.SET_ORDER, order)
     dispatch('createOrder')*/
+  },
+
+  iosWebviewPrintAction({ rootState, dispatch }, { orderData }) {
+    //Detect IOS device WebViews
+    let standalone = window.navigator.standalone,
+      userAgent = window.navigator.userAgent.toLowerCase(),
+      safari = /safari/.test(userAgent),
+      ios = /iphone|ipod|ipad/.test(userAgent)
+
+    if (ios) {
+      /*if (!standalone && safari) {
+          window.location.href = 'print.me1'
+        } else if (standalone && !safari) {
+          window.location.href = 'print.me2'
+        } else */
+      if (!standalone && !safari) {
+        //This is  a uiwebview
+        const urlParams = new URLSearchParams(window.location.search)
+        urlParams.set('iosprint', '1')
+        window.location.search = urlParams
+      }
+    }
+    if (orderData) {
+      let staff = rootState.auth.userDetails
+      let customerDetails = rootState.customer
+      let locationData = rootState.location
+      let customerId = orderData.customer
+      let customerData = [] //Customer Information
+      let delivery_area = {} //Delivery Area
+      let kitchen_menu_items = []
+
+      //Customer Data
+      if (customerId) {
+        //get customer name by customer id
+        dispatch('customer/fetchSelectedCustomer', customerId, {
+          root: true,
+        }).then(customer => {
+          customerData.push(customer)
+        })
+        if (orderData.order_delivery_area && customerDetails.deliveryAreas) {
+          delivery_area = Object.values(customerDetails.deliveryAreas).find(
+            delivery_area => delivery_area._id === orderData.order_delivery_area
+          )
+        }
+      }
+      //Item according to Kitchens Sections
+      let kitchenSectionsItems = rootState.printingServer.kitchenitems
+      if (kitchenSectionsItems.length) {
+        orderData.items.forEach(item => {
+          let itemKitchen = kitchenSectionsItems.find(
+            kitchenItem => kitchenItem._id === item.entity_id
+          )
+          if (itemKitchen) {
+            kitchen_menu_items.push({
+              _id: itemKitchen._id,
+              category: itemKitchen.category,
+              kitchen: itemKitchen.kitchen,
+            })
+          }
+        })
+      }
+      dispatch('printingServer/convertDatetime', {
+        datetime: orderData.real_created_datetime,
+        format: 'Do MMMM YYYY',
+      })
+      dispatch('printingServer/convertDatetime', {
+        datetime: orderData.real_created_datetime,
+        format: 'h:mm:ss A',
+      })
+      //Created Date
+      // let timezoneString = locationData.timezoneString
+      let created_date = rootState.printingServer.createdDateTime.date
+      //Created Time
+      let created_time = rootState.printingServer.createdDateTime.time
+      //Crm Module Permission
+      let crm_module_enabled = false
+      let cb = locationData.brand
+      for (var module of cb.enabled_modules) {
+        if (module == 'CRM') {
+          crm_module_enabled = true
+        }
+      }
+      if (!rootState.invoice.templates) {
+        return
+      }
+      //Invoice
+      let invoiceTemplate = rootState.invoice.templates.data.data.find(
+        invoice => invoice
+      )
+      let orderTypeLabel = orderData.order_type + '_label'
+      orderData.order_no = orderData.orderNumber //Custom Order No to give appropriate field for Habib
+      //Final JSON
+      let jsonResponse = {
+        status: 'ok',
+        brand_logo: locationData.brand.company_logo
+          ? locationData.brand.company_logo
+          : '',
+        order: orderData,
+        menu_items: kitchen_menu_items,
+        staff: staff.item.name,
+        customer: customerData,
+        delivery_area: delivery_area,
+        template: invoiceTemplate,
+        order_type: invoiceTemplate[orderTypeLabel],
+        created_date: created_date,
+        created_time: created_time,
+        crm_module_enabled: crm_module_enabled,
+        translations: rootState.payment.appInvoiceData, //Unstable
+        default_header_brand: locationData.brand.name,
+        default_header_branch: locationData.store.city + ' Branch',
+        default_header_phone: 'Tel No. ' + locationData.brand.contact_phone,
+        generate_time: orderData.real_created_datetime,
+        flash_message: 'Order Details',
+        store_id: rootState.context.storeId,
+      }
+      // eslint-disable-next-line no-console
+      console.log(jsonResponse)
+      let x = JSON.stringify(jsonResponse)
+      // let b = new Buffer(x)
+      // let stringifyResponse = b.toString('base64')
+      let decodedData = compressToBase64(x)
+      let url = `printorder?len=` + decodedData.length + `&data=` + decodedData
+      localStorage.setItem('orderKitchenInvoiceData', url) //This localstorage variable hold Kitchen invoice api request collection for IOS Webviews. IOS Webviews does not display default Browser Print Window.
+    }
   },
 }
 

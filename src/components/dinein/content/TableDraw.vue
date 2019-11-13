@@ -481,6 +481,7 @@ export default {
         this.selectedTableId +
         '/' +
         data.orderId
+      this.$store.commit('order/ORDER_SOURCE', 'dinein')
       this.$store.dispatch('dinein/getSelectedOrder', data.orderId, {
         root: true,
       })
