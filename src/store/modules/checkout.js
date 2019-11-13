@@ -88,7 +88,7 @@ const getters = {
 function iosWebviewAction() {
   //Detect IOS device WebViews
   let orderInvoiceData = localStorage.getItem('orderInvoiceData')
-  localStorage.setItem('placedOrderData', orderInvoiceData)
+  localStorage.setItem('placedOrderData', JSON.stringify(orderInvoiceData))
   let standalone = window.navigator.standalone,
     userAgent = window.navigator.userAgent.toLowerCase(),
     safari = /safari/.test(userAgent),
