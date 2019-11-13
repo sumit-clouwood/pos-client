@@ -144,6 +144,7 @@ export default {
     },
     print_ready() {
       this.invoiceHtml = this.$refs.print_template.$el.outerHTML
+      localStorage.setItem('orderInvoiceData', this.invoiceHtml)
       //console.log('in print ready html length', this.invoiceHtml.length)
       var body = `<html><head><title>${
         this.order_title

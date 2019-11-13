@@ -85,9 +85,10 @@ const getters = {
   },
 }
 
-function iosWebviewAction(orderData = '') {
+function iosWebviewAction() {
   //Detect IOS device WebViews
-  localStorage.setItem('placedOrderData', orderData)
+  let orderInvoiceData = localStorage.getItem('orderInvoiceData')
+  localStorage.setItem('placedOrderData', orderInvoiceData)
   let standalone = window.navigator.standalone,
     userAgent = window.navigator.userAgent.toLowerCase(),
     safari = /safari/.test(userAgent),
@@ -1064,7 +1065,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
-              iosWebviewAction('A DUMMY DATA')
+              iosWebviewAction()
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
@@ -1099,7 +1100,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
-              iosWebviewAction('A DUMMY DATA')
+              iosWebviewAction()
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
