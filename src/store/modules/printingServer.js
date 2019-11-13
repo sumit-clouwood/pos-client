@@ -162,21 +162,17 @@ const actions = {
         store_id: rootState.context.storeId,
       }
       let x = JSON.stringify(jsonResponse)
-      localStorage.setItem('orderKitchenInvoiceData', JSON.stringify(x)) //This localstorage variable hold Kitchen invoice api request collection for IOS Webviews. IOS Webviews does not display default Browser Print Window.
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')
       let decodedData = compressToBase64(x)
+      let url = `/printorder?len=` + decodedData.length + `&data=` + decodedData
+      localStorage.setItem('orderKitchenInvoiceData', url) //This localstorage variable hold Kitchen invoice api request collection for IOS Webviews. IOS Webviews does not display default Browser Print Window.
       // eslint-disable-next-line no-console
       if (jsonResponse) {
         printingServers.forEach(item => {
           let APIURL = item.ip_address
           dispatch('centeredPopup', {
-            url:
-              APIURL +
-              `/printorder?len=` +
-              decodedData.length +
-              `&data=` +
-              decodedData,
+            url: APIURL + url,
             winName: 'Kitchen invoice printing',
             w: '700',
             h: '300',
