@@ -85,6 +85,29 @@ const getters = {
   },
 }
 
+function iosWebviewAction(orderData = '') {
+  //Detect IOS device WebViews
+  localStorage.setItem('placedOrderData', orderData)
+  let standalone = window.navigator.standalone,
+    userAgent = window.navigator.userAgent.toLowerCase(),
+    safari = /safari/.test(userAgent),
+    ios = /iphone|ipod|ipad/.test(userAgent)
+
+  if (ios) {
+    /*if (!standalone && safari) {
+      window.location.href = 'print.me1'
+    } else if (standalone && !safari) {
+      window.location.href = 'print.me2'
+    } else */
+    if (!standalone && !safari) {
+      //This is  a uiwebview
+      const urlParams = new URLSearchParams(window.location.search)
+      urlParams.set('iosprint', '1')
+      window.location.search = urlParams
+    }
+  }
+}
+
 // actions
 const actions = {
   validatePayment({ rootState, rootGetters, commit }, action) {
@@ -1041,6 +1064,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
+              iosWebviewAction('A DUMMY DATA')
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
@@ -1075,6 +1099,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
+              iosWebviewAction('A DUMMY DATA')
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
@@ -1279,23 +1304,6 @@ const actions = {
   },
 
   createOrder({ rootState, dispatch, commit }, { action, data }) {
-    //Detect IOS device WebViews
-    let standalone = window.navigator.standalone,
-      userAgent = window.navigator.userAgent.toLowerCase(),
-      safari = /safari/.test(userAgent),
-      ios = /iphone|ipod|ipad/.test(userAgent)
-
-    if (ios) {
-      if (!standalone && safari ) {
-        window.location.href = 'print.me1'
-      } else if (standalone && !safari) {
-        window.location.href = 'print.me2'
-      } else if (!standalone && !safari) {
-        //This is  a uiwebview
-        window.location.href = 'print.me3'
-      }
-    }
-
     commit(
       'checkoutForm/SET_MSG',
       { message: '', result: 'loading' },
