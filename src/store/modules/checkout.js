@@ -85,10 +85,8 @@ const getters = {
   },
 }
 
-function iosWebviewAction() {
+function iosWebviewPrintAction() {
   //Detect IOS device WebViews
-  let orderInvoiceData = localStorage.getItem('orderInvoiceData')
-  localStorage.setItem('placedOrderData', orderInvoiceData)
   let standalone = window.navigator.standalone,
     userAgent = window.navigator.userAgent.toLowerCase(),
     safari = /safari/.test(userAgent),
@@ -1065,7 +1063,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
-              iosWebviewAction()
+              iosWebviewPrintAction()
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
@@ -1100,7 +1098,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
-              iosWebviewAction()
+              iosWebviewPrintAction()
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())

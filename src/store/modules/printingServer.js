@@ -162,6 +162,7 @@ const actions = {
         store_id: rootState.context.storeId,
       }
       let x = JSON.stringify(jsonResponse)
+      localStorage.setItem('orderKitchenInvoiceData', JSON.stringify(x)) //This localstorage variable hold Kitchen invoice api request collection for IOS Webviews. IOS Webviews does not display default Browser Print Window.
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')
       let decodedData = compressToBase64(x)

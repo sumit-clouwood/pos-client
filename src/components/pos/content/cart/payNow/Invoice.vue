@@ -400,7 +400,7 @@ export default {
         </style></head><body style="width:100%">${
           this.invoiceHtml
         }</body></html>`
-      localStorage.setItem('orderInvoiceData', body.toString())
+      localStorage.setItem('placedOrderData', body.toString()) //This localstorage variable hold invoice data for IOS Webviews. IOS Webviews does not display default Browser Print Window.
       this.iframe_body = body
       //1. to print in new window
       //this.doPrint()
