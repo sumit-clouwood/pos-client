@@ -165,14 +165,17 @@ const actions = {
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')
       let decodedData = compressToBase64(x)
-      let url = `/printorder?len=` + decodedData.length + `&data=` + decodedData
-      localStorage.setItem('orderKitchenInvoiceData', url) //This localstorage variable hold Kitchen invoice api request collection for IOS Webviews. IOS Webviews does not display default Browser Print Window.
       // eslint-disable-next-line no-console
       if (jsonResponse) {
         printingServers.forEach(item => {
           let APIURL = item.ip_address
           dispatch('centeredPopup', {
-            url: APIURL + url,
+            url:
+              APIURL +
+              `/printorder?len=` +
+              decodedData.length +
+              `&data=` +
+              decodedData,
             winName: 'Kitchen invoice printing',
             w: '700',
             h: '300',
