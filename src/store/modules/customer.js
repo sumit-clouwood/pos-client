@@ -344,7 +344,7 @@ const actions = {
       let data = response.data.data.filter(function(u) {
         if (
           u.store_id == rootState.context.storeId ||
-          u.stores.includes(rootState.context.storeId)
+          (u.stores && u.stores.includes(rootState.context.storeId))
         ) {
           return u.item_status
         }
