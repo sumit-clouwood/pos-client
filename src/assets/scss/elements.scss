@@ -2,7 +2,7 @@
 @import 'variables.scss';
 @import 'mixins.scss';
 :root {
-  --app-height: 100%;
+  --vh: 100%;
 }
 
 
@@ -41,7 +41,7 @@ html {
 }
 
 html {
-  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
 }
 
 .mobile-components {
@@ -53,14 +53,14 @@ html {
 }
 
 body {
-  height: 100vh;
-  height: -webkit-fill-available;
-  @media not all and (hover:hover) {
-    height: var(--app-height);
-  }
+  //height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  //@media not all and (hover:hover) {
+  //  height: calc(var(--vh, 1vh) * 100);
+  //}
   margin: 0;
   padding: 0;
-  height: 100vh;
+  //height: 100vh;
   overflow: hidden;
   color: #444;
   background-color: #fff;
