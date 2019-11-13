@@ -342,7 +342,10 @@ const actions = {
     CustomerService.fetchDeliveryAreas(query).then(response => {
       //Fetch Delivery Areas in add Customer Address and Add new customer form
       let data = response.data.data.filter(function(u) {
-        if (u.store_id == rootState.context.storeId) {
+        if (
+          u.store_id == rootState.context.storeId ||
+          u.stores.includes(rootState.context.storeId)
+        ) {
           return u.item_status
         }
       })

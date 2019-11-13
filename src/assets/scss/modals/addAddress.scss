@@ -11,7 +11,7 @@
       .modal-body {
         .left-form,
         .right-form {
-          div {
+          > div {
             margin-bottom: $px25;
             position: relative;
             display: flex;
