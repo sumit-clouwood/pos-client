@@ -10,6 +10,7 @@ const state = {
     lookup_running: false,
     lookup_completed: false,
   },
+  kitchenPrint: true,
   bills: null,
   guests: 1,
   tableZoomScale: 0.4,
@@ -571,6 +572,9 @@ const mutations = {
   },
   [mutation.PROCESSING_SPLIT](state, status) {
     state.processingSplit = status
+  },
+  [mutation.KITCHEN_PRINT](state, status) {
+    state.kitchenPrint = status
   },
   [mutation.UPDATE_ITEM_GUEST](state, { item, guest, action }) {
     switch (action) {

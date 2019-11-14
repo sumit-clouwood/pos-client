@@ -12,7 +12,7 @@
         class="popup-btn-save"
         v-if="permitted('brand_settings', 'brand')"
       >
-        <a :href="baseurl('delivery')">{{ _t('Change Brand') }}</a>
+        <a :href="baseurl('dashboard')">{{ _t('Change Brand') }}</a>
       </button>
     </div>
   </div>
@@ -45,7 +45,7 @@ export default {
   methods: {
     baseurl(link) {
       return window.location.href.replace(
-        new RegExp('/pos/delivery-manager/.*'),
+        new RegExp('/pos/dine-in/.*'),
         '/' + link
       )
     },

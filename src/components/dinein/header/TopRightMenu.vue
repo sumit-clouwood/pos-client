@@ -377,6 +377,11 @@ export default {
     },
     fetchOrdersWithTableDetails: function(orderStatus) {
       this.$store.commit('dinein/SET_PAGE_NO', 1)
+      if (orderStatus.title == 'running' || orderStatus.title == 'completed') {
+        this.$store.commit('dinein/KITCHEN_PRINT', false)
+      } else {
+        this.$store.commit('dinein/KITCHEN_PRINT', false)
+      }
       // eslint-disable-next-line no-console
       console.log(orderStatus)
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)

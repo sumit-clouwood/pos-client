@@ -119,6 +119,7 @@ export default {
             //   this.$store.dispatch('checkout/splitOrder').then(() => {})
             // }
             //Invoice APP API Call with Custom Request JSON
+            // commit('checkout/SET_PROCESSING', false, { root: true })
             this.$store.dispatch(
               'printingServer/printingServerInvoiceRaw',
               orderData
