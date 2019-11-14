@@ -94,9 +94,12 @@ const actions = {
 
     if (
       rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
-      action == 'dine-in-place-order' ||
-      action == 'carhop-place-order' ||
-      action === CONSTANTS.ORDER_STATUS_ON_HOLD
+      [
+        'dine-in-place-order',
+        'carhop-place-order',
+        'dine-in-order-preview',
+        CONSTANTS.ORDER_STATUS_ON_HOLD,
+      ].includes(action)
     ) {
       return Promise.resolve()
     }
@@ -273,6 +276,7 @@ const actions = {
       const actions = [
         'dine-in-place-order',
         'carhop-place-order',
+        'dine-in-order-preview',
         CONSTANTS.ORDER_STATUS_ON_HOLD,
       ]
       const orderTypes = [CONSTANTS.ORDER_TYPE_CALL_CENTER]
@@ -634,11 +638,15 @@ const actions = {
                             commit('checkoutForm/SET_PROCESSING', false, {
                               root: true,
                             })
-                            commit('order/SET_SPLIT_BILL', null, { root: true })
+                            if (!['dine-in-order-preview'].includes(action)) {
+                              commit('order/SET_SPLIT_BILL', null, {
+                                root: true,
+                              })
+                            }
                           }
 
                           resolve(response)
-                          dispatch('postOrderHook')
+                          dispatch('postOrderHook', action)
                         })
                         .catch(response => {
                           commit(mutation.SET_PROCESSING, false)
@@ -665,7 +673,10 @@ const actions = {
     })
   },
 
-  postOrderHook({ dispatch }) {
+  postOrderHook({ dispatch }, action) {
+    if (['dine-in-order-preview'].includes(action)) {
+      return
+    }
     dispatch('transactionOrders/getTransactionOrders', null, {
       root: true,
     })
@@ -831,6 +842,12 @@ const actions = {
     { dispatch, rootState, getters, rootGetters, commit },
     action
   ) {
+    if (action === 'dine-in-order-preview') {
+      return new Promise(resolve => {
+        commit(mutation.PRINT, true)
+        resolve()
+      })
+    }
     return new Promise(resolve => {
       dispatch('getModifyOrder').then(order => {
         //delete order.order_system_status
@@ -1319,7 +1336,7 @@ const actions = {
       rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN
     ) {
       if (rootState.order.order_status !== 'completed') {
-        if (rootState.order.orderId) {
+        if (rootState.order.orderId || action === 'dine-in-order-preview') {
           return dispatch('modifyDineOrder', action)
         } else {
           return dispatch('createDineOrder', action)
@@ -1341,7 +1358,10 @@ const actions = {
   generateInvoice() {
     //commit(mutation.PRINT, true)
   },
-  reset({ commit, dispatch, getters }, full = true) {
+  reset({ state, commit, dispatch, getters }, full = true) {
+    if (['dine-in-order-preview'].includes(state.paymentAction)) {
+      return
+    }
     commit(mutation.RESET, full)
 
     dispatch('checkoutForm/reset', {}, { root: true })
