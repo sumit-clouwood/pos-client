@@ -10,7 +10,6 @@ const state = {
     lookup_running: false,
     lookup_completed: false,
   },
-  makeDiscountPopup: '#POSOrderItemOptions',
   bills: null,
   guests: 1,
   tableZoomScale: 0.4,
@@ -80,7 +79,7 @@ const actions = {
   updateDineInOrderStatus({ dispatch, commit }, orderStatus) {
     commit(mutation.DINE_IN_TAB_TYPE, orderStatus.title)
     if (orderStatus.pageId) {
-      let loader = orderStatus.loader
+      let loader = orderStatus.loader ? orderStatus.loader : true
       dispatch(orderStatus.pageId, loader)
     }
   },
@@ -522,13 +521,6 @@ const mutations = {
   },
   [mutation.AVAILABLE_TABLES](state, availableTables) {
     state.availableTables = availableTables
-  },
-  [mutation.DISCOUNT_POPUP](state, item) {
-    let makeDiscountPopup =
-      typeof item.cover_name === 'undefined'
-        ? '#POSOrderItemOptions'
-        : '#select-discount-item'
-    state.makeDiscountPopup = makeDiscountPopup
   },
   [mutation.RESERVATION_ID](state, reservationId) {
     state.reservation = reservationId
