@@ -131,39 +131,6 @@ export default {
 @import '../../../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
-  /*To fix mobile device issue  */
-  .search-field {
-    display: block;
-  }
-
-  .search-field.color-text-invert.color-dashboard-background
-    .search-field-icon {
-    display: inline-block !important;
-    vertical-align: middle;
-  }
-
-  .search-field.color-text-invert.color-dashboard-background form {
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-  .search-field.color-text-invert.color-dashboard-background {
-    padding: 4px 10px;
-  }
-  .mobile-footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden;
-    clear: both;
-  }
-  .mobile-page .mobile-header .btn-menu {
-    height: unset !important;
-    padding: 10px 10px;
-    width: auto !important;
-  }
-  /*...To fix */
   .search-field {
     margin-top: 0;
     border-radius: 0;
@@ -181,11 +148,11 @@ export default {
       }
     }
     .input-wrapper {
-      display: block !important;
+      display: none;
       grid-column-start: 2;
       grid-column-end: 4;
       position: relative;
-      /*display: grid;*/
+      display: grid;
       grid-template-columns: 1fr 1fr;
       height: 100%;
 
