@@ -91,10 +91,10 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  pinlogin({ commit, state, getters }, cashierpin) {
+  pinlogin({ commit, getters }, cashierpin) {
     return new Promise((resolve, reject) => {
       AuthService.pinlogin({
-        email: state.cashierEmail,
+        //email: state.cashierEmail,
         swipe_card: cashierpin,
       })
         .then(response => {
