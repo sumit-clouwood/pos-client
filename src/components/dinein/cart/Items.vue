@@ -54,13 +54,11 @@
       <div class="main-orders-list-item-buttons">
         <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
         <div
-          v-if="typeof item.cover_name === 'undefined'"
           class="button-plus"
           data-toggle="modal"
-          data-target="#POSOrderItemOptions"
+          :data-target="makeDiscountPopup"
         >
           <div
-            v-if="typeof item.cover_name === 'undefined'"
             class="button-plus-icon"
             @click="setActiveItem({ orderItem: item, index: index })"
           >
@@ -91,6 +89,7 @@ export default {
   data() {
     return {
       newItemList: [],
+      showPopupType: '',
     }
   },
   computed: {
@@ -105,6 +104,7 @@ export default {
     }),
     ...mapState('order', ['orderType', 'selectedOrder', 'splitBill']),
     ...mapState('discount', ['itemDiscounts']),
+    ...mapState('dinein', ['makeDiscountPopup']),
     ...mapGetters('category', ['subcategoryImage']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters('order', [
@@ -122,6 +122,12 @@ export default {
       this.$set(this.splittedItems, item.index, item.checked)
       this.$store.dispatch('order/splitItems', this.splittedItems)
     },
+    /*makeDiscountPopup(item) {
+      this.showPopupType =
+        typeof item.cover_name === 'undefined'
+          ? '#POSOrderItemOptions'
+          : '#select-discount-item'
+    },*/
     discountInfo(item) {
       if (item.discount) {
         return (
@@ -138,7 +144,8 @@ export default {
           ' )'
         )
       }
-
+      // eslint-disable-next-line no-console
+      console.log(item.discount)
       return ''
     },
     removeCurrentOrder(param) {
