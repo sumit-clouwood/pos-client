@@ -68,7 +68,7 @@ const actions = {
   //Create A JSON Request to send in Local Server API for Generating Invoices from a software.
   printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
     let printingServers = state.printingservers //Get All Printing Servers
-     if (printingServers && orderData && rootState.dinein.kitchenPrint) {
+    if (printingServers && orderData && rootState.dinein.kitchenPrint) {
       let staff = rootState.auth.userDetails
       let customerDetails = rootState.customer
       let locationData = rootState.location

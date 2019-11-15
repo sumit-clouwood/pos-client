@@ -714,6 +714,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.commit('dinein/KITCHEN_PRINT', true)
     this.slicker()
   },
 
@@ -758,9 +759,9 @@ export default {
     -webkit-transition: .2s linear
     transition: .2s linear
     width: 122px
-    margin-right: 1.875rem;
-    border-radius: 3px;
-    overflow: hidden;
+    margin-right: 1.875rem
+    border-radius: 3px
+    overflow: hidden
 
     &.active
       background-color: #5056ca
@@ -774,8 +775,8 @@ export default {
       text-align: center
 
       svg
-        width: .75rem;
-        margin: .3125rem auto;
+        width: .75rem
+        margin: .3125rem auto
 </style>
 <style lang="scss" scoped>
 .button {
