@@ -38,7 +38,10 @@
         </div>
       </template>
     </div>
-    <div class="main-oreders-buttons">
+    <div
+      class="main-oreders-buttons"
+      :class="{ smallbuttons: enabledSplitBill }"
+    >
       <div
         v-if="availableTables && cartType !== 'hold'"
         class="driver-container"
@@ -74,6 +77,15 @@
           id="split-bill-button"
         >
           {{ _t('Split') }} {{ _t('Bill') }}
+        </button>
+      </div>
+      <div v-if="isSplit" class="driver-container">
+        <button
+          class="btn btn-success"
+          @click="printSplit"
+          id="split-bill-print-button"
+        >
+          {{ _t('Print') }}
         </button>
       </div>
       <div class="color-main color-text dine-in-table-guest-details-pos">
@@ -144,14 +156,34 @@ export default {
     ...mapState({
       selectedCustomer: state => state.customer.customer,
     }),
-    ...mapState({ selectedAddress: state => state.customer.address }),
+    ...mapState({
+      selectedAddress: state => state.customer.address,
+      isSplit: state =>
+        state.order.splitBill && state.order.items.some(item => item.split),
+    }),
     ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['waiter']),
+
     enabledSplitBill() {
       return this.items.length > 1 && !this.waiter
     },
   },
   methods: {
+    printSplit() {
+      this.$store.commit('checkoutForm/SET_PROCESSING', true)
+      this.$store.dispatch('order/startOrder')
+      $('#payment-msg').modal('show')
+      this.$store
+        .dispatch('checkout/pay', { action: 'dine-in-order-preview' })
+        .then(() => {})
+        .catch(() => {})
+        .finally(() => {
+          setTimeout(() => {
+            $('#payment-msg').modal('hide')
+          }, 500)
+          this.$store.commit('checkoutForm/SET_PROCESSING', false)
+        })
+    },
     showSplitBill() {
       this.$store.dispatch('order/setSplitBill')
     },
@@ -194,6 +226,10 @@ export default {
   display: none;
 }
 
+.smallbuttons {
+  button {
+  }
+}
 @include responsive(mobile) {
   .main-orders-contacts {
     display: grid;
