@@ -966,18 +966,19 @@ const actions = {
         OrderService.modifyOrder(order, rootState.order.orderId)
           .then(response => {
             if (response.data.status === 'ok') {
-              let msgStr = rootGetters['location/_t'](
-                'Order has been modified.'
-              )
-              commit(
-                'checkoutForm/SET_MSG',
-                { result: '', message: msgStr },
-                {
-                  root: true,
-                }
-              )
-              dispatch('reset', true)
-              resolve()
+              commit('order/SET_ORDER_ID', rootState.order.orderId, {
+                root: true,
+              })
+              commit('SET_ORDER_NUMBER', rootState.order.orderData.order_no)
+
+              const msg = rootGetters['location/_t']('Order has been modified.')
+              dispatch('setMessage', {
+                result: 'success',
+                msg: msg,
+              }).then(() => {
+                resolve(response.data)
+                commit(mutation.PRINT, true)
+              })
             } else {
               dispatch('handleSystemErrors', response).then(() =>
                 reject(response)
