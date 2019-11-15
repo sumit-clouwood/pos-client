@@ -184,8 +184,8 @@ export default {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
     printInvoiceDisableKitchenPrint(details) {
-      this.$store.commit('dinein/KITCHEN_PRINT', false)
       this.printInvoice(details)
+      this.$store.commit('dinein/KITCHEN_PRINT', false)
     },
     modifyOrder(order) {
       this.$store.dispatch('order/startOrder')
