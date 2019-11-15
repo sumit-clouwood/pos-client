@@ -869,6 +869,7 @@ const actions = {
                 resolve()
               } else {
                 //order paid
+                const selectedCovers = rootState.dinein.selectedCover
                 commit(
                   'SET_ORDER_NUMBER',
                   rootState.order.selectedOrder.item.order_no
@@ -885,7 +886,10 @@ const actions = {
                     root: true,
                   }).then(() => {
                     if (!getters.complete) {
-                      dispatch('splitOrder').then(() => resolve())
+                      dispatch('splitOrder', {
+                        action: action,
+                        data: { selectedCovers: selectedCovers },
+                      }).then(() => resolve())
                     }
                   })
                   //if splitted once
@@ -1151,7 +1155,7 @@ const actions = {
     })
   },
 
-  splitOrder({ dispatch, rootState, commit }) {
+  splitOrder({ dispatch, rootState, commit }, { data }) {
     let unpaidItems = rootState.order.items.filter(item => item.paid === false)
 
     unpaidItems = unpaidItems.map((item, key) => {
@@ -1172,6 +1176,10 @@ const actions = {
     commit('order/UPDATE_ITEMS', unpaidItems, { root: true })
 
     // eslint-disable-next-line no-unused-vars
+
+    //provide previously selected covers
+    commit('dinein/SET_COVER', data.selectedCovers, { root: true })
+
     return new Promise((resolve, reject) => {
       dispatch('pay', { action: 'dine-in-place-order' })
         .then(newOrder => {
