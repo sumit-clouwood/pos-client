@@ -254,8 +254,7 @@ const actions = {
                 ? response.data.collected_data.orders
                 : [],
               deliveryAreas: response.data.collected_data
-                ? response.data.collected_data.page_lookups.store_delivery_areas
-                    ._id
+                ? response.data.collected_data.page_lookups.delivery_areas._id
                 : null,
             })
             commit(mutation.SET_CUSTOMER_LOADING, false)
