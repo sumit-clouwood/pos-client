@@ -342,6 +342,8 @@ const actions = {
     commit(mutation.SET_ITEM, item)
 
     commit(mutation.ADD_ORDER_ITEM, state.item)
+
+    commit(mutation.SET_TOTAL_ITEMS, state.items.length)
     //if dine in modify then calculate surcharges after every item has been added so
     //it won't clear discounts while validating
     if (!['dine-in-modify'].includes(state.cartType)) {
@@ -565,6 +567,9 @@ const actions = {
       }
       //reset the modifier form
       commit('orderForm/clearSelection', null, { root: true })
+
+      commit(mutation.SET_TOTAL_ITEMS, state.items.length)
+
       resolve()
     })
   },
@@ -1510,6 +1515,9 @@ const mutations = {
       state.splitBill = state.splitBill ? false : true
     } else {
       state.splitBill = status
+    }
+    if (state.splitBill) {
+      state.splitted = true
     }
   },
   [mutation.MARK_SPLIT_ITEMS_PAID](state) {
