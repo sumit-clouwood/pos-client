@@ -972,6 +972,27 @@ const actions = {
       let orderDetails = {}
       let promises = []
 
+      switch (response.data.item.order_type) {
+        case 'dine_in':
+          commit(mutation.ORDER_TYPE, { OTview: 'Dine In', OTApi: 'dine_in' })
+          break
+        case 'walk_in':
+          commit(mutation.ORDER_TYPE, { OTview: 'Walk In', OTApi: 'walk_in' })
+          break
+        case 'takeaway':
+          commit(mutation.ORDER_TYPE, {
+            OTview: 'Take Away',
+            OTApi: 'takeaway',
+          })
+          break
+        case 'crm':
+          commit(mutation.ORDER_TYPE, {
+            OTview: 'Delivery',
+            OTApi: 'call_center',
+          })
+          break
+      }
+
       orderDetails.item = response.data.item
       orderDetails.customer = response.data.collected_data.customer
       orderDetails.lookups = response.data.collected_data.page_lookups
