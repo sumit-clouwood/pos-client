@@ -47,6 +47,7 @@ export default {
       'changedAmount',
       'changeAmountStatus',
       'paymentMsgStatus',
+      'paymentAction',
     ]),
     ...mapState('context', ['brandId']),
     ...mapGetters('invoice', ['template']),
@@ -119,10 +120,12 @@ export default {
             //   this.$store.dispatch('checkout/splitOrder').then(() => {})
             // }
             //Invoice APP API Call with Custom Request JSON
-            this.$store.dispatch(
-              'printingServer/printingServerInvoiceRaw',
-              orderData
-            )
+            if (!['dine-in-order-preview'].includes(this.paymentAction)) {
+              this.$store.dispatch(
+                'printingServer/printingServerInvoiceRaw',
+                orderData
+              )
+            }
           }, 500)
           //this.$refs.iframe.contentWindow.print()
         } catch (e) {

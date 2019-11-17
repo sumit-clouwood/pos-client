@@ -58,7 +58,7 @@
                     v-for="(template, index) in selectedOrder.invoice"
                     :key="index"
                     @click="
-                      printInvoice({
+                      printInvoiceDisableKitchenPrint({
                         templateId: template._id,
                         order: selectedOrder,
                       })
@@ -183,6 +183,10 @@ export default {
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
+    printInvoiceDisableKitchenPrint(details) {
+      this.printInvoice(details)
+      this.$store.commit('dinein/KITCHEN_PRINT', false)
+    },
     modifyOrder(order) {
       this.$store.dispatch('order/startOrder')
       this.$store.dispatch('deliveryManager/modifyOrder').then(() => {

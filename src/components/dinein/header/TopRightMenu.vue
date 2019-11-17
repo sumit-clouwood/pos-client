@@ -380,6 +380,11 @@ export default {
       // eslint-disable-next-line no-console
       console.log(orderStatus)
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
+      if (orderStatus.title == 'running' || orderStatus.title == 'completed') {
+        this.$store.commit('dinein/KITCHEN_PRINT', false)
+      } else {
+        this.$store.commit('dinein/KITCHEN_PRINT', true)
+      }
     },
     ...mapActions('auth', ['logout']),
     changeLanguage(locale) {

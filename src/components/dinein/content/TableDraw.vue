@@ -124,12 +124,24 @@
                     </div>
                   </div>
                 </div>
-                <div class="table-order-footer">
+                <div class="table-order-footer" v-if="brand.number_of_guests">
                   <div class="m-1 buttons">
                     <span
                       data-toggle="modal"
                       data-target="#placeOrder"
                       data-dismiss="modal"
+                      class="table-popup popbtn bg-success font-weight-bold"
+                    >
+                      {{ _t(addOrSplit) }}
+                    </span>
+                  </div>
+                </div>
+                <div class="table-order-footer" v-else>
+                  <div class="m-1 buttons">
+                    <span
+                      data-toggle="modal"
+                      data-dismiss="modal"
+                      @click="newOrder(false, brand.book_table)"
                       class="table-popup popbtn bg-success font-weight-bold"
                     >
                       {{ _t(addOrSplit) }}
@@ -247,7 +259,7 @@
               id="BookedTable"
               class="btn btn-success"
               data-dismiss="modal"
-              @click="newOrder(false, false)"
+              @click="newOrder(false, brand.book_table)"
             >
               {{ _t(addOrSplit) }}
             </button>
@@ -275,7 +287,7 @@ export default {
   name: 'TableDraw',
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('location', ['timezoneString']),
+    ...mapState('location', ['timezoneString', 'brand']),
     ...mapState('dinein', [
       'tablesOnArea',
       'activeArea',
@@ -434,6 +446,10 @@ export default {
             root: true,
           })
           .then(() => {
+            if (pos) {
+              let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
+              this.$router.push({ path: URL })
+            }
             this.$store
               .dispatch('dinein/updateDineInOrderStatus', {
                 title: 'all',
