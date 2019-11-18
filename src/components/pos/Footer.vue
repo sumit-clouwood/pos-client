@@ -518,6 +518,7 @@ export default {
       'orderId',
       'orderSource',
     ]),
+    ...mapState('location', ['brand']),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
@@ -599,9 +600,10 @@ export default {
       })
       if (this.items.length > 0) {
         if (
-          checkCovers == undefined ||
-          checkCovers == 'undefined' ||
-          this.selectedCover
+          !this.brand.number_of_covers ||
+          (checkCovers == undefined ||
+            checkCovers == 'undefined' ||
+            this.selectedCover)
         ) {
           $('#payment-msg').modal('show')
           this.$store

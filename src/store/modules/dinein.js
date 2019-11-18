@@ -118,7 +118,7 @@ const actions = {
     console.log('all bookend table')
 
     if (loader) commit(mutation.LOADING, loader)
-    localStorage.setItem('reservationId', false)
+    /*localStorage.setItem('reservationId', false)*/
     const response = await DineInService.getAllBookedTables()
     commit(mutation.BOOKED_TABLES, response.data)
     if (loader) commit(mutation.LOADING, false)

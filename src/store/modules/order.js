@@ -996,7 +996,7 @@ const actions = {
       let orderAddress = []
       if (order.customer) {
         let deliveryAreaDetails = Object.values(
-          rootState.order.selectedOrder.lookups.store_delivery_areas._id
+          rootState.order.selectedOrder.lookups.delivery_areas._id
         ).find(deliveryArea => deliveryArea._id === order.order_delivery_area)
         orderAddress.push({
           building: order.order_building,

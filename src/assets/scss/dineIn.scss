@@ -823,7 +823,9 @@ span.open-details-popup.cursor-pointer.font-weight-bold.running-order-details {
 span.dinefor-paynow svg {
   height: 14px;
 }
-
+.dinein_table svg g:nth-of-type(1) {
+  display: none;
+}
 span.dinefor-paynow > a {
   display: grid;
   grid-template-columns: auto auto;

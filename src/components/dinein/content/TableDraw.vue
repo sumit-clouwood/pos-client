@@ -131,6 +131,7 @@
                       data-target="#placeOrder"
                       data-dismiss="modal"
                       class="table-popup popbtn bg-success font-weight-bold"
+                      @click="closeMyself"
                     >
                       {{ _t(addOrSplit) }}
                     </span>
@@ -378,6 +379,9 @@ export default {
         // $('#id' + this.selectedTableId).addClass('class', 'dinein_table active')
         d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
       },*/
+    closeMyself() {
+      $('#tooltipdata').hide()
+    },
     chairsValidation() {
       /*if (this.guests > this.selectedTableData.chairs) {
           this.validationErrors =
@@ -446,7 +450,7 @@ export default {
             root: true,
           })
           .then(() => {
-            if (pos) {
+            if (!pos) {
               let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
               this.$router.push({ path: URL })
             }
@@ -614,7 +618,7 @@ export default {
         d3.select(a[i])
           .select('text')
           .text(`${d.number}`)
-          .attr('style', 'font-size:50px')
+          .attr('style', 'font-size:60px')
           .attr('style', 'font-weight:bold')
         // .attr('fill', '#565353')
         let data = d
@@ -742,49 +746,58 @@ export default {
       this.guests = 1
       this.validationErrors = ''
       this.selectedTableD3 = a[i]
+      this.selectedTableId = datum._id
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
       this.addOrSplit =
         this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
-      this.selectedTableId = datum._id
-      let range = $('#range')
-      let top = datum.table_position_coordinate.y + 20 || 0
-      // let left = datum.table_position_coordinate.x + 35 || 100
-      // $('#id_' + datum._id).click(function(e) {
-      let posX = $('#id_' + datum._id).offset().left
-      // let posY = $('#id_' + datum._id).offset().top
-      /*let tableWidth = $('#id_' + datum._id)
-          .find('svg')
-          .width()*/
-      let getWidth = 361 / 2
-      if (this.orderDetails.length === 0) {
-        getWidth = 155 / 2
-      } else if (this.orderDetails.length > 0) {
-        let orderCount = 0
-        this.orderDetails.forEach(order => {
-          if (order.orderIds.length > 0) {
-            orderCount += 1
+      if (this.brand.book_table || this.orderDetails.length) {
+        // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
+        let range = $('#range')
+        let top = datum.table_position_coordinate.y + 20 || 0
+        // let left = datum.table_position_coordinate.x + 35 || 100
+        // $('#id_' + datum._id).click(function(e) {
+        let posX = $('#id_' + datum._id).offset().left
+        // let posY = $('#id_' + datum._id).offset().top
+        /*let tableWidth = $('#id_' + datum._id)
+            .find('svg')
+            .width()*/
+        let getWidth = 361 / 2
+        if (this.orderDetails.length === 0) {
+          getWidth = 155 / 2
+        } else if (this.orderDetails.length > 0) {
+          let orderCount = 0
+          this.orderDetails.forEach(order => {
+            if (order.orderIds.length > 0) {
+              orderCount += 1
+            }
+          })
+          if (orderCount > 0) {
+            getWidth = 445 / 2
           }
-        })
-        if (orderCount > 0) {
-          getWidth = 445 / 2
+        }
+        if (top < 0) top = 0
+        let left = posX - getWidth
+        if (left < 0) left = 0
+
+        range
+          .parent('div')
+          .attr(
+            'style',
+            'top:' +
+              top * this.tableZoomScale +
+              'px; left:' +
+              left +
+              'px; display:block'
+          )
+      } else {
+        if (this.brand.number_of_guests) {
+          $('#placeOrder').modal('show')
+        } else {
+          this.newOrder(false, this.brand.book_table)
         }
       }
-      if (top < 0) top = 0
-      let left = posX - getWidth
-      if (left < 0) left = 0
-
-      range
-        .parent('div')
-        .attr(
-          'style',
-          'top:' +
-            top * this.tableZoomScale +
-            'px; left:' +
-            left +
-            'px; display:block'
-        )
     },
     drawViews() {
       if (this.activeArea) {
