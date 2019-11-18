@@ -131,6 +131,7 @@
                       data-target="#placeOrder"
                       data-dismiss="modal"
                       class="table-popup popbtn bg-success font-weight-bold"
+                      @click="closeMyself"
                     >
                       {{ _t(addOrSplit) }}
                     </span>
@@ -144,7 +145,7 @@
                       @click="newOrder(false, brand.book_table)"
                       class="table-popup popbtn bg-success font-weight-bold"
                     >
-                      {{ _t(addOrSplit) }} dd
+                      {{ _t(addOrSplit) }}
                     </span>
                   </div>
                 </div>
@@ -378,6 +379,9 @@ export default {
         // $('#id' + this.selectedTableId).addClass('class', 'dinein_table active')
         d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
       },*/
+    closeMyself() {
+      $('#tooltipdata').hide()
+    },
     chairsValidation() {
       /*if (this.guests > this.selectedTableData.chairs) {
           this.validationErrors =
@@ -746,12 +750,10 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
-      // eslint-disable-next-line no-console
-      console.log(this.selectedTableData, this.orderDetails.length)
+      this.addOrSplit =
+        this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
       if (this.brand.book_table || this.orderDetails.length) {
         // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
-        this.addOrSplit =
-          this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
         let range = $('#range')
         let top = datum.table_position_coordinate.y + 20 || 0
         // let left = datum.table_position_coordinate.x + 35 || 100
@@ -790,7 +792,11 @@ export default {
               'px; display:block'
           )
       } else {
-        this.newOrder(false, this.brand.book_table)
+        if (this.brand.number_of_guests) {
+          $('#placeOrder').modal('show')
+        } else {
+          this.newOrder(false, this.brand.book_table)
+        }
       }
     },
     drawViews() {
