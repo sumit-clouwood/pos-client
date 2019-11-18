@@ -43,7 +43,7 @@
       :class="{ smallbuttons: enabledSplitBill }"
     >
       <div
-        v-if="availableTables && cartType !== 'hold'"
+        v-if="brand.move_table && availableTables && cartType !== 'hold'"
         class="driver-container"
       >
         <button
@@ -56,7 +56,10 @@
         </button>
         <DineInTableSelection />
       </div>
-      <div v-if="covers && cartType !== 'hold'" class="driver-container">
+      <div
+        v-if="brand.number_of_covers && covers && cartType !== 'hold'"
+        class="driver-container"
+      >
         <button
           class="btn btn-success"
           data-target="#dine-in-cover-selection"
@@ -136,6 +139,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapGetters('dinein', ['getAllCovers']),
+    ...mapState('location', ['brand']),
     ...mapState('order', [
       'items',
       'orderId',
@@ -165,7 +169,7 @@ export default {
     ...mapGetters('auth', ['waiter']),
 
     enabledSplitBill() {
-      return this.items.length > 1 && !this.waiter
+      return this.brand.split_bill && this.items.length > 1 && !this.waiter
     },
   },
   methods: {

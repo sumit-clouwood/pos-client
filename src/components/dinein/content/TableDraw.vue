@@ -618,7 +618,7 @@ export default {
         d3.select(a[i])
           .select('text')
           .text(`${d.number}`)
-          .attr('style', 'font-size:50px')
+          .attr('style', 'font-size:60px')
           .attr('style', 'font-weight:bold')
         // .attr('fill', '#565353')
         let data = d
