@@ -80,7 +80,7 @@ const actions = {
   updateDineInOrderStatus({ dispatch, commit }, orderStatus) {
     commit(mutation.DINE_IN_TAB_TYPE, orderStatus.title)
     if (orderStatus.pageId) {
-      let loader = orderStatus.loader ? orderStatus.loader : true
+      let loader = orderStatus.loader /* ? orderStatus.loader : true*/
       dispatch(orderStatus.pageId, loader)
     }
   },
@@ -118,7 +118,7 @@ const actions = {
     console.log('all bookend table')
 
     if (loader) commit(mutation.LOADING, loader)
-    localStorage.setItem('reservationId', false)
+    /*localStorage.setItem('reservationId', false)*/
     const response = await DineInService.getAllBookedTables()
     commit(mutation.BOOKED_TABLES, response.data)
     if (loader) commit(mutation.LOADING, false)
