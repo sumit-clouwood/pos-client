@@ -439,10 +439,19 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 /*td.dine-order-tabel > span {
   height: 7.375rem;
 }*/
+.running-order-table-wrap {
+  .table-order-view-wrapper {
+    grid-template-columns: auto;
+    .running-actions {
+      grid-template-columns: 1fr auto auto;
+    }
+  }
+}
+
 .running-actions .dropdown {
   text-align: left;
 }

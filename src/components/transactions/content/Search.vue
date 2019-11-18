@@ -90,7 +90,7 @@ export default {
 @import '../../../assets/scss/variables.scss';
 @import '../../../assets/scss/mixins.scss';
 
-.search-field-icon.home {
+.transaction-orders .search-field-icon.home {
   display: none;
 }
 
