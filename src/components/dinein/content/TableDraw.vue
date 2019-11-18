@@ -745,8 +745,8 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
-      this.addOrSplit =
-        this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
+      let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
+      this.addOrSplit = this.orderDetails.length > 0 ? 'Split Table' : bookPlace
       this.selectedTableId = datum._id
       let range = $('#range')
       let top = datum.table_position_coordinate.y + 20 || 0
