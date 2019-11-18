@@ -170,6 +170,8 @@ export default {
         this.$store.commit('order/ORDER_SOURCE', 'backend')
         this.$store.dispatch('order/modifyOrder', this.orderId)
         this.$store.dispatch('order/fetchModificationReasons')
+      } else {
+        this.$store.commit('order/ORDER_SOURCE', '')
       }
     },
     loggedIn(newVal, oldVal) {

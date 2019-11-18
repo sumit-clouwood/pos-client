@@ -457,7 +457,7 @@ import ModificationPermissions from '@/components/pos/content/orderDetails/Modif
 import * as CONST from '@/constants'
 
 import { mapState, mapGetters } from 'vuex'
-/* global $, clickPayNow */
+/* global $, clickPayNow showModal */
 export default {
   name: 'Footer',
   props: {},
@@ -603,38 +603,45 @@ export default {
           checkCovers == 'undefined' ||
           this.selectedCover
         ) {
-          $('#payment-msg').modal('show')
-          this.$store
-            .dispatch('checkout/pay', { action: 'dine-in-place-order' })
-            .then(() => {
-              if (this.$store.getters['checkout/complete']) {
-                //Reset Cart and set states and redirect to dine in.
-                this.$store.commit('dinein/SET_COVER', '')
-                this.$store.dispatch('order/beforeRedirectResetCartDineIn')
-              }
-            })
-            .catch(response => {
-              let validationError = {}
-              let errors = ''
-              if (response.status === 'form_errors') {
-                for (let i in response.form_errors) {
-                  response.form_errors[i].forEach(err => (errors += ' ' + err))
+          if (this.orderSource === 'backend') {
+            showModal('#modificationReason')
+          } else {
+            $('#payment-msg').modal('show')
+
+            this.$store
+              .dispatch('checkout/pay', { action: 'dine-in-place-order' })
+              .then(() => {
+                if (this.$store.getters['checkout/complete']) {
+                  //Reset Cart and set states and redirect to dine in.
+                  this.$store.commit('dinein/SET_COVER', '')
+                  this.$store.dispatch('order/beforeRedirectResetCartDineIn')
                 }
-              } else if (response.error) {
-                errors = response.error
-              }
-              if (errors !== '') {
-                validationError = {
-                  status: 'flash_message',
-                  flash_message: errors,
+              })
+              .catch(response => {
+                let validationError = {}
+                let errors = ''
+                if (response.status === 'form_errors') {
+                  for (let i in response.form_errors) {
+                    response.form_errors[i].forEach(
+                      err => (errors += ' ' + err)
+                    )
+                  }
+                } else if (response.error) {
+                  errors = response.error
                 }
-                this.$store.commit(
-                  'customer/SET_RESPONSE_MESSAGES',
-                  validationError
-                )
-                $('#information-popup').modal('show')
-              }
-            })
+                if (errors !== '') {
+                  validationError = {
+                    status: 'flash_message',
+                    flash_message: errors,
+                  }
+                  this.$store.commit(
+                    'customer/SET_RESPONSE_MESSAGES',
+                    validationError
+                  )
+                  $('#information-popup').modal('show')
+                }
+              })
+          }
         } else {
           validationError = {
             status: 'flash_message',

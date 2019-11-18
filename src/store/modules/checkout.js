@@ -95,7 +95,8 @@ const actions = {
       rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
       action == 'dine-in-place-order' ||
       action == 'carhop-place-order' ||
-      action === CONSTANTS.ORDER_STATUS_ON_HOLD
+      action === CONSTANTS.ORDER_STATUS_ON_HOLD ||
+      action === 'modify-backend-order'
     ) {
       return Promise.resolve()
     }
