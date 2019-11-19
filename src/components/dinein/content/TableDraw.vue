@@ -468,14 +468,15 @@ export default {
                   dis.$store
                     .dispatch('dinein/getDineInTables', false)
                     .then(() => {
-                      dis.setTableColour(
+                      /*dis.setTableColour(
                         dis.selectedTableD3,
                         dis.selectedTableData
-                      )
+                      )*/
+                      this.setTableProperties()
                       // container.datum(dis.selectedTableD3).call(updateFunction)
-                      $(makeId)
+                      /*$(makeId)
                         .find('g')
-                        .removeAttr('style')
+                        .removeAttr('style')*/
                       // dis.clearTableArea()
                       // dis.updateTableOnArea()
                     })
@@ -646,36 +647,8 @@ export default {
         $(makeId)
           .find('g')
           .removeAttr('style')
-        /*.attr(
-              'transform',
-              d3.zoomIdentity.scale(dis.tableZoomScale).translate(0, 0)
-            )*/
-        // .zoomIdentity.scale(dis.tableZoomScale)
-        // .translate(0, 0)
       })
     },
-    /*isSupported() {
-        let ua = navigator.userAgent.toLowerCase()
-        if (ua.indexOf('safari') != -1) {
-          if (ua.indexOf('ipad') > -1) {
-            return false
-          } else if (ua.indexOf('Safari') > -1) {
-            return false
-          } else if (ua.indexOf('macintosh') > -1 && ua.indexOf('chrome') > -1) {
-            return true
-          } else if (ua.indexOf('macintosh') > -1) {
-            return false
-          } else if (ua.indexOf('chrome') > -1) {
-            return true
-          } else if (ua.indexOf('mozilla') > -1) {
-            return false
-          } else {
-            return false
-          }
-        } else {
-          return false
-        }
-      },*/
     confirmCancelReservation() {
       let makeId = '#id_' + this.selectedTableId
       $(makeId)
@@ -702,29 +675,11 @@ export default {
           .then(() => {
             this.$store.dispatch('dinein/getDineInArea', false).then(() => {
               this.$store.dispatch('dinein/getDineInTables', false).then(() => {
-                // let dis = this
-                // setTimeout(function() {
-                // dis.setTableColour(dis.selectedTableD3, dis.selectedTableData)
-                // }, 250)
-                // this.clearTableArea()
-                // this.updateTableOnArea()
-                /*d3.selectAll('.dinein_table_parent').each(() => {
-                          this.drawViews()
-                          this.setTableProperties()
-                        })*/
-                // enable only when remove refresh
-                // this.clearTableArea()
                 this.setTableProperties()
-                /*$(makeId)
-                  .find('g')
-                  .removeAttr('style')*/
               })
             })
           })
         $('#tooltipdata').hide()
-        // this.updateTableOnArea()
-        /*this.clearTableArea()
-          this.setTableProperties()*/
       })
       this.componentKey += 1
       $('#range')
@@ -744,11 +699,6 @@ export default {
         .getBoundingClientRect()
     },
     showOptions(datum, i, a) {
-      /*d3.select(d3.select(a[i]).parentNode)
-          .selectAll('path')
-          .style('stroke', 'green')
-          .style('stroke-width', '1')*/
-
       this.selectedTableData = datum
       this.guests = 1
       this.validationErrors = ''
@@ -763,13 +713,7 @@ export default {
         // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
         let range = $('#range')
         let top = datum.table_position_coordinate.y + 20 || 0
-        // let left = datum.table_position_coordinate.x + 35 || 100
-        // $('#id_' + datum._id).click(function(e) {
         let posX = $('#id_' + datum._id).offset().left
-        // let posY = $('#id_' + datum._id).offset().top
-        /*let tableWidth = $('#id_' + datum._id)
-            .find('svg')
-            .width()*/
         let getWidth = 361 / 2
         if (this.orderDetails.length === 0) {
           getWidth = 155 / 2
