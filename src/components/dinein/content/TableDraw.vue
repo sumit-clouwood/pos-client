@@ -124,7 +124,10 @@
                     </div>
                   </div>
                 </div>
-                <div class="table-order-footer" v-if="brand.number_of_guests">
+                <div
+                  class="table-order-footer"
+                  v-if="brand && brand.number_of_guests"
+                >
                   <div class="m-1 buttons">
                     <span
                       data-toggle="modal"
