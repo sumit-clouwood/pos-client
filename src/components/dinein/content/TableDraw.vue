@@ -330,6 +330,7 @@ export default {
       addOrSplit: 'Book Table',
       cancelReservationMsg: 'Do you want to cancel this reservation?',
       order: false,
+      updateTableArea: false,
       selectedReservationId: '',
       componentKey: 0,
       moveReservation: false,
@@ -375,6 +376,14 @@ export default {
       this.updateTableOnArea()
       this.selectedArea = this.activeArea._id
     }
+    // eslint-disable-next-line no-console
+    // console.log(this.updateTableArea)
+    // if (this.updateTableArea) this.setTableProperties()
+    let scope = this
+    setTimeout(function() {
+      scope.setTableProperties()
+      // scope.updateTableArea = false
+    }, 1000)
   },
   methods: {
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
@@ -472,7 +481,8 @@ export default {
                         dis.selectedTableD3,
                         dis.selectedTableData
                       )*/
-                      this.setTableProperties()
+                      this.updateTableArea = true
+                      // this.setTableProperties()
                       // container.datum(dis.selectedTableD3).call(updateFunction)
                       /*$(makeId)
                         .find('g')
@@ -675,7 +685,8 @@ export default {
           .then(() => {
             this.$store.dispatch('dinein/getDineInArea', false).then(() => {
               this.$store.dispatch('dinein/getDineInTables', false).then(() => {
-                this.setTableProperties()
+                /*this.setTableProperties()*/
+                this.updateTableArea = true
               })
             })
           })
