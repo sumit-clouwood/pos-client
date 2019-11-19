@@ -712,8 +712,9 @@ export default {
                           this.drawViews()
                           this.setTableProperties()
                         })*/
-                this.clearTableArea()
-                this.updateTableOnArea()
+                // enable only when remove refresh
+                /*this.clearTableArea()
+                this.updateTableOnArea()*/
               })
             })
           })
