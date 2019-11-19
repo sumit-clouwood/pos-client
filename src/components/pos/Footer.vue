@@ -289,102 +289,31 @@
         </ul>
       </div>
     </div>
-    <div
-      class="footer-buttons color-dashboard-background"
-      :style="
-        orderType.OTApi === 'dine_in' ? 'grid-template-columns: 1fr 1fr' : ''
-      "
-    >
-      <div class="button" v-if="is_pay === 1" :class="{ waiter: waiter }">
-        <ul class="template-btn">
-          <li
-            v-show="orderType.OTApi === 'call_center'"
-            class="footer-slider-list-item color-secondary"
-            data-toggle="modal"
-            :data-target="selectedModal"
-            data-dismiss="modal"
-          >
-            <a
-              class="footer-slider-list-item-link color-text-invert"
-              role="button"
-              @click="
-                setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
-              "
-            >
-              <!--<img src="images/footer-images/d_2.png" alt="customer">-->
-              <svg
-                aria-hidden="true"
-                focusable="false"
-                data-prefix="fas"
-                data-icon="suitcase"
-                role="img"
-                width="1.875rem"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-                class="svg-inline--fa fa-suitcase fa-w-16 fa-2x"
-              >
-                <path
-                  fill="currentColor"
-                  d="M128 480h256V80c0-26.5-21.5-48-48-48H176c-26.5 0-48 21.5-48 48v400zm64-384h128v32H192V96zm320 80v256c0 26.5-21.5 48-48 48h-48V128h48c26.5 0 48 21.5 48 48zM96 480H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48h48v352z"
-                  class
-                ></path>
-              </svg>
-              <span>{{ _t('Send to Delivery') }}</span>
-            </a>
-          </li>
-          <li
-            class="pay-now color-dashboard-background color-main"
-            :class="{ inactive: items.length === 0 }"
-            v-show="
-              !waiter &&
-                (!['call_center', CONST.ORDER_TYPE_CARHOP].includes(
-                  orderType.OTApi
-                ) ||
-                  orderId)
-            "
-            @click="payNowClick()"
-          >
-            <a role="button">
-              <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
-              <span class="pay-btn color-text-invert">{{ _t('Pay Now') }}</span>
-            </a>
-          </li>
-          <li
-            class="pay-now color-dashboard-background color-main"
-            :class="{ inactive: items.length === 0 }"
-            v-show="orderType.OTApi === CONST.ORDER_TYPE_CARHOP && !orderId"
-            @click="placeCarhop"
-          >
-            <a role="button">
-              <img src="img/pos/payment.svg" :alt="_t('Place Order')" />
-              <span class="pay-btn color-text-invert">{{
-                _t('Place Order')
-              }}</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div
-        class="button"
-        v-show="orderType.OTApi === 'dine_in' || is_pay === 0"
-      >
-        <ul class="template-btn">
-          <li
-            class="pay-now color-dashboard-background color-main"
-            :class="{ inactive: items.length === 0 }"
-            @click="payNowDirect()"
-          >
-            <a role="button">
-              <img src="img/pos/place_order.svg" :alt="_t('Place Order')" />
-              <span class="pay-btn color-text-invert">
-                {{ _t('Place Order') }}
-              </span>
-            </a>
-          </li>
-        </ul>
+    <div class="footer-buttons color-dashboard-background">
+      <div :class="{ active: items.length > 0 }">
+        <div
+          v-if="orderType.OTApi === 'dine_in'"
+          class="dinein-order pay-btn-holder"
+        >
+          <dinein-btn></dinein-btn>
+        </div>
+        <div
+          v-else-if="orderType.OTApi === 'call_center'"
+          class="crm-order pay-btn-holder"
+        >
+          <crm-btn></crm-btn>
+        </div>
+        <div
+          v-else-if="orderType.OTApi === 'carhop'"
+          class="carhop-order pay-btn-holder"
+        >
+          <carhop-btn></carhop-btn>
+        </div>
+        <div v-else class="walkin-order template-btn">
+          <walkin-btn></walkin-btn>
+        </div>
       </div>
     </div>
-
     <div class="modal-backdrop fade show" id="transparent-screen"></div>
 
     <!--All popup including online order, because we need to apply few js which are not on header so all popups will be here-->
@@ -453,11 +382,15 @@ import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import UserProfile from '@/components/pos/user/UserProfile'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
+import DineinBtn from './footer/buttons/cart/dinein'
+import CrmBtn from './footer/buttons/cart/crm'
+import WalkinBtn from './footer/buttons/cart/walkin'
+import CarhopBtn from './footer/buttons/cart/carhop'
 
 import * as CONST from '@/constants'
 
 import { mapState, mapGetters } from 'vuex'
-/* global $, clickPayNow showModal */
+/* global $ */
 export default {
   name: 'Footer',
   props: {},
@@ -492,23 +425,21 @@ export default {
     UserProfile,
     InformationPopup,
     ModificationPermissions,
+    DineinBtn,
+    CrmBtn,
+    WalkinBtn,
+    CarhopBtn,
   },
   data() {
-    if (window.location.href.indexOf('dine-in') > -1) {
-      this.setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })
-    }
     return {
-      processing: false,
       vbutton: '',
       title: '',
       status: 0,
       message: '',
-      checkCover: true,
     }
   },
   computed: {
     ...mapState('checkout', ['print', 'paymentMsgStatus']),
-    ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('customer', ['responseInformation']),
     ...mapState('order', [
       'orderType',
@@ -520,14 +451,7 @@ export default {
     ]),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapState({
-      selectedModal: state => {
-        // $('#manage-customer').modal()
-        return state.location.setModal == '#loyalty-payment'
-          ? '#manage-customer'
-          : state.location.setModal
-      },
-    }),
+
     ...mapState({
       loyaltyCard: state => state.customer.loyalty.card,
     }),
@@ -567,128 +491,15 @@ export default {
     // },
   },
   methods: {
-    placeCarhop() {
-      if (this.processing) {
-        return false
-      }
-
-      this.processing = true
-
-      if (this.items.length === 0) {
-        return false
-      }
-
-      $('#payment-msg').modal('show')
-      this.$store.dispatch('order/startOrder')
-      this.$store
-        .dispatch('checkout/pay', { action: 'carhop-place-order' })
-        .then(() => {})
-        .catch(() => {})
-        .finally(() => {
-          this.processing = false
-        })
-    },
-
-    payNowDirect() {
-      //dine in order
-      let validationError = {}
-      let checkCovers = this.items.find(element => {
-        return (
-          element.cover_name == 'undefined' || element.cover_name == undefined
-        )
-      })
-      if (this.items.length > 0) {
-        if (
-          checkCovers == undefined ||
-          checkCovers == 'undefined' ||
-          this.selectedCover
-        ) {
-          if (this.orderSource === 'backend') {
-            showModal('#modificationReason')
-          } else {
-            $('#payment-msg').modal('show')
-
-            this.$store
-              .dispatch('checkout/pay', { action: 'dine-in-place-order' })
-              .then(() => {
-                if (this.$store.getters['checkout/complete']) {
-                  //Reset Cart and set states and redirect to dine in.
-                  this.$store.commit('dinein/SET_COVER', '')
-                  this.$store.dispatch('order/beforeRedirectResetCartDineIn')
-                }
-              })
-              .catch(response => {
-                let validationError = {}
-                let errors = ''
-                if (response.status === 'form_errors') {
-                  for (let i in response.form_errors) {
-                    response.form_errors[i].forEach(
-                      err => (errors += ' ' + err)
-                    )
-                  }
-                } else if (response.error) {
-                  errors = response.error
-                }
-                if (errors !== '') {
-                  validationError = {
-                    status: 'flash_message',
-                    flash_message: errors,
-                  }
-                  this.$store.commit(
-                    'customer/SET_RESPONSE_MESSAGES',
-                    validationError
-                  )
-                  $('#information-popup').modal('show')
-                }
-              })
-          }
-        } else {
-          validationError = {
-            status: 'flash_message',
-            flash_message: this._t('Please select a cover.'),
-          }
-          this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
-          $('#information-popup').modal('show')
-        }
-      } else {
-        validationError = {
-          status: 'flash_message',
-          flash_message: this._t('Please add items.'),
-        }
-        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
-        $('#information-popup').modal('show')
-      }
-    },
-    payNowClick() {
-      let validationError = {}
-      this.items.find(element => {
-        if (typeof element.cover_name == 'undefined') {
-          this.checkCover = false
-        }
-      })
-      if (
-        this.checkCover ||
-        typeof this.selectedCover == 'object' ||
-        this.orderType.OTApi !== 'dine_in'
-      ) {
-        clickPayNow()
-      } else {
-        validationError = {
-          status: 'flash_message',
-          flash_message: this._t('Please select a cover for new item.'),
-        }
-        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
-        $('#information-popup').modal('show')
-      }
+    setOrderType(opt) {
+      this.$store.commit('order/ORDER_TYPE', opt)
     },
     viewHoldOrders() {
       this.vbutton = 'new'
       this.$store.commit('order/SET_CART_TYPE', 'hold')
       this.$store.dispatch('holdOrders/getHoldOrders')
     },
-    setOrderType(opt) {
-      this.$store.commit('order/ORDER_TYPE', opt)
-    },
+
     loyaltyHendlerChange() {
       this.$store.dispatch('loyaltyHendlerChange')
     },
@@ -721,6 +532,10 @@ export default {
     },
   },
   mounted() {
+    if (window.location.href.indexOf('dine-in') > -1) {
+      this.setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })
+    }
+
     this.slicker()
   },
 
