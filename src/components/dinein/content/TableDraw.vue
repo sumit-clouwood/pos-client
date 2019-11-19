@@ -713,8 +713,11 @@ export default {
                           this.setTableProperties()
                         })*/
                 // enable only when remove refresh
-                /*this.clearTableArea()
-                this.updateTableOnArea()*/
+                // this.clearTableArea()
+                this.setTableProperties()
+                /*$(makeId)
+                  .find('g')
+                  .removeAttr('style')*/
               })
             })
           })
