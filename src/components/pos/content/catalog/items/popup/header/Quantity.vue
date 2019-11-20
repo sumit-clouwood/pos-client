@@ -80,3 +80,20 @@ export default {
   }
 }
 </style>
+<style lang="scss" scoped>
+.POSItemOptions
+  .modal-dialog
+  .modal-content
+  .modal-details
+  .POSItemOptions_pricequantity {
+  .POSItemOptions_quantity {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .POSItemOptions_quantity_submit {
+      margin-left: 1em;
+    }
+  }
+}
+</style>

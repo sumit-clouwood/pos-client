@@ -112,7 +112,7 @@
         <p class="color-text">
           {{
             getLookupData({
-              lookupFrom: 'store_delivery_areas',
+              lookupFrom: 'delivery_areas',
               id: orderDetails.item.order_delivery_area,
             })
           }}

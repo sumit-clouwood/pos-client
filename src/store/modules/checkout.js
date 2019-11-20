@@ -2,6 +2,7 @@ import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
+import { compressToBase64 } from 'lz-string'
 
 // initial state
 const state = {
@@ -16,15 +17,27 @@ const state = {
   changeAmountStatus: false,
   paymentMsgStatus: false,
   processing: false,
+  paymentAction: '',
 }
 
 // getters
 const getters = {
   complete: (state, getters, rootState) => {
-    if (!rootState.order.splitBill) {
+    //if order was never splitted means it is completed
+    if (
+      ['dine-in-place-order'].includes(state.paymentAction) &&
+      !rootState.order.splitted
+    ) {
       return true
     }
-    return !rootState.order.items.some(item => item.paid === false)
+
+    //if item was never splitted
+    if (!rootState.order.splitted) {
+      return true
+    }
+
+    //if splitted once
+    return rootState.order.totalItems === rootState.order.totalItemsPaid
   },
   calculateOrderTotals: () => order => {
     let data = {
@@ -81,9 +94,12 @@ const actions = {
 
     if (
       rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER ||
-      action == 'dine-in-place-order' ||
-      action == 'carhop-place-order' ||
-      action === CONSTANTS.ORDER_STATUS_ON_HOLD
+      [
+        'dine-in-place-order',
+        'carhop-place-order',
+        'dine-in-order-preview',
+        CONSTANTS.ORDER_STATUS_ON_HOLD,
+      ].includes(action)
     ) {
       return Promise.resolve()
     }
@@ -127,6 +143,8 @@ const actions = {
 
     // set the async state
     commit(mutation.SET_PROCESSING, true)
+    commit('checkoutForm/SET_PROCESSING', true, { root: true })
+
     return Promise.resolve()
   },
 
@@ -258,6 +276,7 @@ const actions = {
       const actions = [
         'dine-in-place-order',
         'carhop-place-order',
+        'dine-in-order-preview',
         CONSTANTS.ORDER_STATUS_ON_HOLD,
       ]
       const orderTypes = [CONSTANTS.ORDER_TYPE_CALL_CENTER]
@@ -428,9 +447,10 @@ const actions = {
 
   pay(
     { commit, getters, rootGetters, rootState, dispatch, state },
-    { action }
+    { action, data }
   ) {
     return new Promise((resolve, reject) => {
+      commit(mutation.SET_PAYMENT_ACTION, action)
       dispatch('validateEvent')
         .then(() => {
           dispatch('validatePayment', action)
@@ -607,7 +627,7 @@ const actions = {
                       action: action,
                     }).then(order => {
                       commit(mutation.SET_ORDER, order)
-                      dispatch('createOrder', action)
+                      dispatch('createOrder', { action: action, data: data })
                         .then(response => {
                           //reset order start time
                           if (getters.complete) {
@@ -615,14 +635,24 @@ const actions = {
                               root: true,
                             })
                             commit(mutation.SET_PROCESSING, false)
-                            commit('order/SET_SPLIT_BILL', null, { root: true })
+                            commit('checkoutForm/SET_PROCESSING', false, {
+                              root: true,
+                            })
+                            if (!['dine-in-order-preview'].includes(action)) {
+                              commit('order/SET_SPLIT_BILL', null, {
+                                root: true,
+                              })
+                            }
                           }
 
                           resolve(response)
-                          dispatch('postOrderHook')
+                          dispatch('postOrderHook', action)
                         })
                         .catch(response => {
                           commit(mutation.SET_PROCESSING, false)
+                          commit('checkoutForm/SET_PROCESSING', false, {
+                            root: true,
+                          })
                           reject(response)
                         })
                     })
@@ -643,7 +673,10 @@ const actions = {
     })
   },
 
-  postOrderHook({ dispatch }) {
+  postOrderHook({ dispatch }, action) {
+    if (['dine-in-order-preview'].includes(action)) {
+      return
+    }
     dispatch('transactionOrders/getTransactionOrders', null, {
       root: true,
     })
@@ -752,16 +785,74 @@ const actions = {
     })
   },
 
+  createDineOrder({ dispatch, commit, getters, rootGetters, state }, action) {
+    return new Promise(resolve => {
+      OrderService.saveOrder(state.order)
+        .then(response => {
+          if (response.data.status === 'ok') {
+            commit('order/SET_ORDER_ID', response.data.id, { root: true })
+            commit('SET_ORDER_NUMBER', response.data.order_no)
+            //we are not printing so reset manually here
+            let msg = rootGetters['location/_t']('Dinein Order has been paid')
+            if (action === 'dine-in-place-order') {
+              if (getters.complete) {
+                //after split paid we create a new order with remaining items so at end
+                //it will reach to this add/create dine in method and show split pay msg
+                msg = rootGetters['location/_t']('Dinein Order has been placed')
+              } else {
+                msg = rootGetters['location/_t'](
+                  'Payment done for selected item(s).'
+                )
+              }
+              //Invoice APP API Call with Custom Request JSON
+              dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+                root: true,
+              })
+              let resetFull = false
+              if (getters.complete) {
+                resetFull = true
+              }
+              dispatch('reset', resetFull)
+            } else {
+              commit(mutation.PRINT, true)
+            }
+            dispatch('setMessage', {
+              result: 'success',
+              msg: msg,
+            }).then(() => {
+              resolve(response.data)
+            })
+          } else {
+            dispatch('handleSystemErrors', response).then(() => resolve())
+          }
+        })
+        .catch(error => {
+          dispatch('handleRejectedResponse', {
+            response: error,
+            offline: false,
+          })
+            .then(() => {
+              resolve()
+            })
+            .catch(() => resolve())
+        })
+    })
+  },
   modifyDineOrder(
     { dispatch, rootState, getters, rootGetters, commit },
     action
   ) {
+    if (action === 'dine-in-order-preview') {
+      return new Promise(resolve => {
+        commit(mutation.PRINT, true)
+        resolve()
+      })
+    }
     return new Promise(resolve => {
       dispatch('getModifyOrder').then(order => {
         //delete order.order_system_status
         delete order.new_real_transition_order_no
         //delete order.real_created_datetime
-
         OrderService.updateOrderItems(order, rootState.order.orderId)
           .then(response => {
             if (response.data.status === 'ok') {
@@ -773,32 +864,39 @@ const actions = {
                 msgStr = rootGetters['location/_t'](
                   'Dinein order has been modified.'
                 )
-                let resetFull = false
-                if (getters.complete) {
-                  resetFull = true
-                }
-                dispatch('reset', resetFull)
+                dispatch('createModifyOrderItemList')
+                dispatch('reset', true)
                 resolve()
               } else {
                 //order paid
-                commit(mutation.PRINT, true)
+                const selectedCovers = rootState.dinein.selectedCover
                 commit(
                   'SET_ORDER_NUMBER',
                   rootState.order.selectedOrder.item.order_no
                 )
-                if (rootState.order.splitBill) {
+                if (rootState.order.splitted || rootState.order.splitBill) {
+                  commit('order/SET_SPLITTED', true, { root: true })
                   //mark items as paid in current execution
-                  dispatch('order/markSplitItemsPaid', null, { root: true })
+                  commit(
+                    'order/SET_TOTAL_ITEMS_PAID',
+                    state.order.items.length,
+                    { root: true }
+                  )
+                  dispatch('order/markSplitItemsPaid', null, {
+                    root: true,
+                  }).then(() => {
+                    if (!getters.complete) {
+                      dispatch('splitOrder', {
+                        action: action,
+                        data: { selectedCovers: selectedCovers },
+                      }).then(() => resolve())
+                    }
+                  })
+                  //if splitted once
                 }
 
+                commit(mutation.PRINT, true)
                 resolve()
-
-                // if (getters.complete) {
-                //   resolve()
-                // } else {
-                //   //create another order with same reservation id but with remaining items
-                //   //dispatch('splitOrder').then(() => resolve())
-                // }
               }
 
               commit(
@@ -828,6 +926,32 @@ const actions = {
     })
   },
 
+  createModifyOrderItemList({ rootState, state, dispatch }) {
+    let newItems = []
+    rootState.order.items.filter(item => {
+      if (typeof item.no == 'undefined') {
+        let orderItem = {
+          name: item.name,
+          entity_id: item._id,
+          no: item.orderIndex,
+          status: 'in-progress',
+          //itemTax.undiscountedTax is without modifiers
+          tax: item.tax,
+          price: item.netPrice,
+          qty: item.quantity,
+        }
+        newItems.push(orderItem)
+      }
+    })
+    let order = (state.order.items = newItems)
+    dispatch('injectDineInItemsData', state.order)
+    // eslint-disable-next-line no-console
+    console.log(state.order, newItems, order)
+    dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+      root: true,
+    })
+    /*commit(mutation.NEW_ITEMS, newItems)*/
+  },
   // eslint-disable-next-line no-unused-vars
   modifyCarhopOrder({ dispatch, rootState, rootGetters, commit }, action) {
     return new Promise(resolve => {
@@ -883,15 +1007,15 @@ const actions = {
     })
   },
 
-  modifyBackendOrder({ dispatch, rootState, rootGetters, commit }) {
-    return new Promise(resolve => {
+  modifyBackendOrder({ dispatch, rootState, rootGetters, commit }, { data }) {
+    return new Promise((resolve, reject) => {
       dispatch('getModifyOrder').then(order => {
-        order.modify_reason = 'Updated from backend'
+        order = { ...order, ...data }
         OrderService.modifyOrder(order, rootState.order.orderId)
           .then(response => {
             if (response.data.status === 'ok') {
               let msgStr = rootGetters['location/_t'](
-                'Delivery order has been modified.'
+                'Order has been modified.'
               )
               commit(
                 'checkoutForm/SET_MSG',
@@ -900,10 +1024,12 @@ const actions = {
                   root: true,
                 }
               )
-              dispatch('reset')
+              dispatch('reset', true)
               resolve()
             } else {
-              dispatch('handleSystemErrors', response).then(() => resolve())
+              dispatch('handleSystemErrors', response).then(() =>
+                reject(response)
+              )
             }
           })
           .catch(error => {
@@ -912,10 +1038,10 @@ const actions = {
               offline: false,
             })
               .then(() => {
-                resolve()
+                reject(error)
               })
               .catch(() => {
-                resolve()
+                reject(error)
               })
           })
       })
@@ -937,6 +1063,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
+              dispatch('iosWebviewPrintAction', { orderData: state.order })
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
@@ -971,6 +1098,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
+              dispatch('iosWebviewPrintAction', { orderData: state.order })
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
@@ -1027,62 +1155,50 @@ const actions = {
     })
   },
 
-  splitOrder({ dispatch, rootState, commit }) {
-    const unpaidItems = rootState.order.items.filter(
-      item => item.paid === false
-    )
+  splitOrder({ dispatch, rootState, commit }, { data }) {
+    let unpaidItems = rootState.order.items.filter(item => item.paid === false)
+
+    unpaidItems = unpaidItems.map((item, key) => {
+      item.oldIndex = item.no
+      item.no = key
+      item.orderIndex = key
+      return item
+    })
 
     commit('order/RESET', false, { root: true })
-    dispatch('checkoutForm/reset', {}, { root: true })
+
+    dispatch('checkoutForm/reset', 'complete', { root: true })
     dispatch('discount/reset', {}, { root: true })
     dispatch('surcharge/reset', {}, { root: true })
 
     dispatch('order/startOrder', null, { root: true })
-    commit(mutation.UPDATE_ITEMS, unpaidItems)
-    return dispatch('pay', { action: 'dine-in-place-order' })
-  },
 
-  createDineOrder({ dispatch, commit, rootGetters }, action) {
-    return new Promise(resolve => {
-      OrderService.saveOrder(state.order)
-        .then(response => {
-          if (response.data.status === 'ok') {
-            commit('order/SET_ORDER_ID', response.data.id, { root: true })
-            commit('SET_ORDER_NUMBER', response.data.order_no)
-            //we are not printing so reset manually here
-            let msg = rootGetters['location/_t']('Dinein Order has been paid')
-            if (action === 'dine-in-place-order') {
-              msg = rootGetters['location/_t']('Dinein Order has been placed')
-              dispatch('reset')
-            } else {
-              commit(mutation.PRINT, true)
-            }
+    commit('order/UPDATE_ITEMS', unpaidItems, { root: true })
 
-            dispatch('setMessage', {
-              result: 'success',
-              msg: msg,
-            }).then(() => {
-              resolve(response.data)
-            })
-          } else {
-            dispatch('handleSystemErrors', response).then(() => resolve())
-          }
-        })
-        .catch(error => {
-          dispatch('handleRejectedResponse', {
-            response: error,
-            offline: false,
+    // eslint-disable-next-line no-unused-vars
+
+    //provide previously selected covers
+    commit('dinein/SET_COVER', data.selectedCovers, { root: true })
+
+    return new Promise((resolve, reject) => {
+      dispatch('pay', { action: 'dine-in-place-order' })
+        .then(newOrder => {
+          dispatch('dinein/getSelectedOrder', newOrder.id, {
+            root: true,
           })
             .then(() => {
               resolve()
             })
-            .catch(() => resolve())
+            .catch(error => reject(error))
+          //new order has been created with remaining orders,
+          //order items have same old order indexes so we need to update them before next order isplaced
+          commit('order/SET_SPLIT_BILL', false, { root: true })
         })
+        .catch(error => reject(error))
     })
   },
-
   // eslint-disable-next-line no-unused-vars
-  createCarhopOrder({ dispatch, commit, rootGetters }, action) {
+  createCarhopOrder({ dispatch, commit, rootGetters, state }, action) {
     return new Promise(resolve => {
       OrderService.saveOrder(state.order)
         .then(response => {
@@ -1094,6 +1210,10 @@ const actions = {
             const msg = rootGetters['location/_t'](
               'Carhop Order has been placed'
             )
+            //Invoice APP API Call with Custom Request JSON
+            dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+              root: true,
+            })
             dispatch('reset')
 
             dispatch('setMessage', {
@@ -1186,7 +1306,7 @@ const actions = {
     return Promise.resolve()
   },
 
-  createOrder({ rootState, dispatch, commit }, action) {
+  createOrder({ rootState, dispatch, commit }, { action, data }) {
     commit(
       'checkoutForm/SET_MSG',
       { message: '', result: 'loading' },
@@ -1212,8 +1332,8 @@ const actions = {
       rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY
     ) {
       return dispatch('modifyDeliveryOrder')
-    } else if (rootState.order.orderToModify) {
-      return dispatch('modifyBackendOrder')
+    } else if (action === 'modify-backend-order') {
+      return dispatch('modifyBackendOrder', { action: action, data: data })
     } else if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
       return dispatch('createHoldOrder')
     } else if (
@@ -1224,7 +1344,7 @@ const actions = {
       rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN
     ) {
       if (rootState.order.order_status !== 'completed') {
-        if (rootState.order.orderId) {
+        if (rootState.order.orderId || action === 'dine-in-order-preview') {
           return dispatch('modifyDineOrder', action)
         } else {
           return dispatch('createDineOrder', action)
@@ -1246,7 +1366,10 @@ const actions = {
   generateInvoice() {
     //commit(mutation.PRINT, true)
   },
-  reset({ commit, dispatch }, full = true) {
+  reset({ state, commit, dispatch, getters }, full = true) {
+    if (['dine-in-order-preview'].includes(state.paymentAction)) {
+      return
+    }
     commit(mutation.RESET, full)
 
     dispatch('checkoutForm/reset', {}, { root: true })
@@ -1254,7 +1377,7 @@ const actions = {
     dispatch('surcharge/reset', {}, { root: true })
     dispatch('customer/reset', {}, { root: true })
     dispatch('location/reset', {}, { root: true })
-    if (full) {
+    if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
     }
   },
@@ -1277,6 +1400,130 @@ const actions = {
     dispatch('deliveryManager/fetchOrderCount', null, { root: true })
     /*commit(mutation.SET_ORDER, order)
     dispatch('createOrder')*/
+  },
+
+  iosWebviewPrintAction({ rootState, dispatch }, { orderData }) {
+    //Detect IOS device WebViews
+    let standalone = window.navigator.standalone,
+      userAgent = window.navigator.userAgent.toLowerCase(),
+      safari = /safari/.test(userAgent),
+      ios = /iphone|ipod|ipad/.test(userAgent)
+
+    if (ios) {
+      /*if (!standalone && safari) {
+          window.location.href = 'print.me1'
+        } else if (standalone && !safari) {
+          window.location.href = 'print.me2'
+        } else */
+      if (!standalone && !safari) {
+        //This is  a uiwebview
+        const urlParams = new URLSearchParams(window.location.search)
+        urlParams.set('iosprint', '1')
+        window.location.search = urlParams
+      }
+    }
+    if (orderData) {
+      let staff = rootState.auth.userDetails
+      let customerDetails = rootState.customer
+      let locationData = rootState.location
+      let customerId = orderData.customer
+      let customerData = [] //Customer Information
+      let delivery_area = {} //Delivery Area
+      let kitchen_menu_items = []
+
+      //Customer Data
+      if (customerId) {
+        //get customer name by customer id
+        dispatch('customer/fetchSelectedCustomer', customerId, {
+          root: true,
+        }).then(customer => {
+          customerData.push(customer)
+        })
+        if (orderData.order_delivery_area && customerDetails.deliveryAreas) {
+          delivery_area = Object.values(customerDetails.deliveryAreas).find(
+            delivery_area => delivery_area._id === orderData.order_delivery_area
+          )
+        }
+      }
+      //Item according to Kitchens Sections
+      let kitchenSectionsItems = rootState.printingServer.kitchenitems
+      if (kitchenSectionsItems.length) {
+        orderData.items.forEach(item => {
+          let itemKitchen = kitchenSectionsItems.find(
+            kitchenItem => kitchenItem._id === item.entity_id
+          )
+          if (itemKitchen) {
+            kitchen_menu_items.push({
+              _id: itemKitchen._id,
+              category: itemKitchen.category,
+              kitchen: itemKitchen.kitchen,
+            })
+          }
+        })
+      }
+      dispatch('printingServer/convertDatetime', {
+        datetime: orderData.real_created_datetime,
+        format: 'Do MMMM YYYY',
+      })
+      dispatch('printingServer/convertDatetime', {
+        datetime: orderData.real_created_datetime,
+        format: 'h:mm:ss A',
+      })
+      //Created Date
+      // let timezoneString = locationData.timezoneString
+      let created_date = rootState.printingServer.createdDateTime.date
+      //Created Time
+      let created_time = rootState.printingServer.createdDateTime.time
+      //Crm Module Permission
+      let crm_module_enabled = false
+      let cb = locationData.brand
+      for (var module of cb.enabled_modules) {
+        if (module == 'CRM') {
+          crm_module_enabled = true
+        }
+      }
+      if (!rootState.invoice.templates) {
+        return
+      }
+      //Invoice
+      let invoiceTemplate = rootState.invoice.templates.data.data.find(
+        invoice => invoice
+      )
+      let orderTypeLabel = orderData.order_type + '_label'
+      orderData.order_no = orderData.orderNumber //Custom Order No to give appropriate field for Habib
+      //Final JSON
+      let jsonResponse = {
+        status: 'ok',
+        brand_logo: locationData.brand.company_logo
+          ? locationData.brand.company_logo
+          : '',
+        order: orderData,
+        menu_items: kitchen_menu_items,
+        staff: staff.item.name,
+        customer: customerData,
+        delivery_area: delivery_area,
+        template: invoiceTemplate,
+        order_type: invoiceTemplate[orderTypeLabel],
+        created_date: created_date,
+        created_time: created_time,
+        crm_module_enabled: crm_module_enabled,
+        translations: rootState.payment.appInvoiceData, //Unstable
+        default_header_brand: locationData.brand.name,
+        default_header_branch: locationData.store.city + ' Branch',
+        default_header_phone: 'Tel No. ' + locationData.brand.contact_phone,
+        generate_time: orderData.real_created_datetime,
+        flash_message: 'Order Details',
+        store_id: rootState.context.storeId,
+      }
+      // eslint-disable-next-line no-console
+      console.log(jsonResponse)
+      let x = JSON.stringify(jsonResponse)
+      // let b = new Buffer(x)
+      // let stringifyResponse = b.toString('base64')
+      let decodedData = compressToBase64(x)
+      let url = `printorder?len=` + decodedData.length + `&data=` + decodedData
+      localStorage.setItem('orderKitchenInvoiceData', url) //This localstorage variable hold Kitchen invoice api request collection for IOS Webviews. IOS Webviews does not display default Browser Print Window.
+    }
   },
 }
 
@@ -1320,6 +1567,9 @@ const mutations = {
   },
   [mutation.UPDATE_ITEMS](state, items) {
     state.order.items = items
+  },
+  [mutation.SET_PAYMENT_ACTION](state, action) {
+    state.paymentAction = action
   },
   [mutation.RESET](state, full = true) {
     state.paidAmount = 0

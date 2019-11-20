@@ -39,11 +39,13 @@ export default {
     OrderDetailsPopup,
   },
   mounted() {
-    this.$store.commit('dinein/SET_COVER', '')
+    if (this.$store.getters['checkout/complete']) {
+      this.$store.commit('dinein/SET_COVER', '')
+    }
     //When POS to Dinein update every table status.
     const reservationId = localStorage.getItem('reservationId')
     if (reservationId !== false) {
-      this.$store.dispatch('checkout/reset')
+      this.$store.dispatch('checkout/reset', false)
       this.$store.dispatch('dinein/getBookedTables', false)
       this.$store.dispatch('dinein/getDineInArea', false)
       this.$store.commit('dinein/RESERVATION_ID', false)

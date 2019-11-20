@@ -12,29 +12,23 @@
           </h4>
         </div>
         <form class="modal-body row form-block">
-          <div class="col-md-6 left-form add-address-form">
+          <div class="col-md-12 left-form add-address-form">
             <div class="name-from">
               <label>
                 {{ _t('Delivery Area') }}
                 <span>*</span>
               </label>
-              <select
+              <cool-select
                 class="getAreaId"
-                @change="getAreaId"
-                v-model="newAddressDetails.delivery_area_id"
-              >
-                <option
-                  v-for="area in fetchDeliveryAreas"
-                  :value="area._id"
-                  :key="area._id"
-                  :data-deliveryarea="area.name"
-                  >{{ area.name }}</option
-                >
-              </select>
+                v-model="selectedDeliveryArea"
+                :items="deliveryAreas"
+              />
               <span class="validation-error" v-if="errors.delivery_area_id">
                 {{ errors.delivery_area_id }}
               </span>
             </div>
+          </div>
+          <div class="col-md-6 left-form add-address-form">
             <div class="alternate-phone-from">
               <label>
                 {{ _t('Building/Villa') }}
@@ -122,11 +116,16 @@
 /* global $ */
 import { mapState, mapActions, mapGetters } from 'vuex'
 // import InformationPopup from '@/components/pos/content/InformationPopup'
+import { CoolSelect } from 'vue-cool-select'
 export default {
   name: 'CreateCustomerAddress',
   props: {},
+  components: {
+    CoolSelect,
+  },
   data() {
     return {
+      selectedDeliveryArea: null,
       errors: {},
       add_delivery_area: '',
       reOpenAddress: '',
@@ -140,13 +139,23 @@ export default {
       fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
       customerCreateStatus: state => state.customer.responseInformation,
       customerId: state => state.customer.customer._id,
+      deliveryAreas() {
+        if (this.fetchDeliveryAreas) {
+          return this.fetchDeliveryAreas.map(area => {
+            return area.name
+          })
+        } else {
+          return []
+        }
+      },
     }),
+    ...mapState('context', ['storeId']),
   },
   methods: {
     checkForm: function(modalStatus) {
       this.errors = {}
       this.errors.count = 0
-      if (!this.newAddressDetails.delivery_area_id) {
+      if (!this.selectedDeliveryArea) {
         this.errors.delivery_area_id = 'Delivery area required'
         this.errors.count = 1
       }
@@ -181,9 +190,22 @@ export default {
         let addAddress = $('#add_address')
         addAddress.modal('toggle')
         // addAddress.click()
+        let areaId = ''
+        this.fetchDeliveryAreas.forEach(element => {
+          if (this.selectedDeliveryArea === element.name) {
+            areaId = element._id
+          }
+        })
+
+        const formData = {
+          ...this.newAddressDetails,
+          delivery_area_id: areaId,
+          store_id: this.storeId,
+        }
+
         if (modalStatus == 'Add') {
           this.createAction({
-            data: this.newAddressDetails,
+            data: formData,
             model: 'customer_addresses',
             customer: this.customerId,
           })
@@ -195,33 +217,22 @@ export default {
             id: localStorage.getItem('editItemKey'),
             action: 'edit',
             model: 'customer_addresses',
-            data: this.newAddressDetails,
+            data: formData,
           }
           this.updateAction(actionDetails)
           addAddress.modal('toggle')
         }
-        /*if (
-                      this.customerCreateStatus &&
-                      this.customerCreateStatus.status == 'ok'
-                    ) {
+      }
+    },
 
-                    } else {
-                      // $('#information-popup').modal('toggle')
-                    }*/
-      }
-    },
-    getAreaId: function(e) {
-      if (e.target.options.selectedIndex > -1) {
-        this.add_delivery_area = $('.getAreaId')
-          .find(':selected')
-          .text()
-      }
-    },
     ...mapActions('customer', ['createAction', 'updateAction']),
   },
 }
 </script>
 <style lang="scss">
+.getAreaId {
+  width: 55.6795rem !important;
+}
 @import '../../../../../../assets/scss/pixels_rem.scss';
 @import '../../../../../../assets/scss/variables.scss';
 @import '../../../../../../assets/scss/mixins.scss';

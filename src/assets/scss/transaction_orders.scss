@@ -329,7 +329,7 @@
       }
     }
     .main-orders{
-      height: 100vh;
+      height: calc(100vh - 9em);
       .main-orders-total{
         padding: 0;
         .total-wrapper{

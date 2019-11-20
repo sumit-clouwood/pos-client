@@ -124,12 +124,28 @@
                     </div>
                   </div>
                 </div>
-                <div class="table-order-footer">
+                <div
+                  class="table-order-footer"
+                  v-if="brand && brand.number_of_guests"
+                >
                   <div class="m-1 buttons">
                     <span
                       data-toggle="modal"
                       data-target="#placeOrder"
                       data-dismiss="modal"
+                      class="table-popup popbtn bg-success font-weight-bold"
+                      @click="closeMyself"
+                    >
+                      {{ _t(addOrSplit) }}
+                    </span>
+                  </div>
+                </div>
+                <div class="table-order-footer" v-else>
+                  <div class="m-1 buttons">
+                    <span
+                      data-toggle="modal"
+                      data-dismiss="modal"
+                      @click="newOrder(false, brand.book_table)"
                       class="table-popup popbtn bg-success font-weight-bold"
                     >
                       {{ _t(addOrSplit) }}
@@ -141,7 +157,7 @@
           </div>
         </div>
       </div>
-      <div id="svgContainter">
+      <!--<div v-else id="svgContainter">
         <div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +167,7 @@
             ref="dine-in-area"
           />
         </div>
-      </div>
+      </div>-->
     </div>
     <!-- Modal confirm -->
     <div class="modal" id="confirmModal" style="display: none; z-index: 1050;">
@@ -247,7 +263,7 @@
               id="BookedTable"
               class="btn btn-success"
               data-dismiss="modal"
-              @click="newOrder(false, false)"
+              @click="newOrder(false, brand.book_table)"
             >
               {{ _t(addOrSplit) }}
             </button>
@@ -265,6 +281,7 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
+
 // import LookupData from '@/plugins/helpers/LookupData'
 import Header from './Header'
 import DateTime from '@/mixins/DateTime'
@@ -274,7 +291,7 @@ export default {
   name: 'TableDraw',
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('location', ['timezoneString']),
+    ...mapState('location', ['timezoneString', 'brand']),
     ...mapState('dinein', [
       'tablesOnArea',
       'activeArea',
@@ -285,6 +302,7 @@ export default {
       'reservationId',
       'getAvailableTables',
       'tableZoomScale',
+      'dineInTabType',
     ]),
     ...mapGetters('context', ['store']),
   },
@@ -312,11 +330,13 @@ export default {
       addOrSplit: 'Book Table',
       cancelReservationMsg: 'Do you want to cancel this reservation?',
       order: false,
-      selectedAreaObj: '',
+      updateTableArea: 0,
+      deletion: false,
       selectedReservationId: '',
       componentKey: 0,
       moveReservation: false,
       validationErrors: false,
+      selectedArea: false,
       zoomLevel: {
         zoomOut: [
           {
@@ -349,29 +369,46 @@ export default {
     }
   },
   mounted() {
-    this.updateTableOnArea()
+    // this.updateTableOnArea()
   },
   updated() {
-    this.clearTableArea()
-    this.updateTableOnArea()
-    this.setTableProperties()
-    /*if (this.selectedTableD3)
-      d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
+    if (this.selectedArea != this.activeArea._id) {
+      this.clearTableArea()
+      this.updateTableOnArea()
+      this.selectedArea = this.activeArea._id
+    }
+    // eslint-disable-next-line no-console
+    // console.log(this.updateTableArea)
+    // if (this.updateTableArea) this.setTableProperties()
+  },
+  watch: {
+    updateTableArea: function() {
+      /*if (this.deletion || this.brand.book_table) {
+        alert('Updated table status.')
+        this.deletion = false
+      }*/
+      $('#' + this.activeArea._id).click()
+      this.clearTableArea()
+      this.updateTableOnArea()
+    },
   },
   methods: {
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
     /*showActive() {
-      // $('#id' + this.selectedTableId).addClass('class', 'dinein_table active')
-      d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
-    },*/
+        // $('#id' + this.selectedTableId).addClass('class', 'dinein_table active')
+        d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
+      },*/
+    closeMyself() {
+      $('#tooltipdata').hide()
+    },
     chairsValidation() {
       /*if (this.guests > this.selectedTableData.chairs) {
-        this.validationErrors =
-          'Sorry you cannot add more then ' +
-          this.selectedTableData.chairs +
-          ' guests on this table'
-        this.guests = this.selectedTableData.chairs
-      } else */
+          this.validationErrors =
+            'Sorry you cannot add more then ' +
+            this.selectedTableData.chairs +
+            ' guests on this table'
+          this.guests = this.selectedTableData.chairs
+        } else */
       if (this.guests < 1) {
         this.validationErrors = 'Minimum 1 guest is required'
         this.guests = 1
@@ -409,8 +446,6 @@ export default {
         : ''
     },
     orderStatus(orderId) {
-      // eslint-disable-next-line no-console
-      console.log(this.allBookedTables.lookup.orders._id[orderId])
       return this.allBookedTables.lookup.orders._id[orderId].order_status
     },
     hideTableDetails() {
@@ -419,15 +454,25 @@ export default {
         .hide()
     },
     newOrder(reservationId, pos) {
+      let makeId = '#id_' + this.selectedTableId
+      $(makeId)
+        .find('g')
+        .attr('style', 'opacity:0.5')
+
       this.$store.commit('dinein/TABLE_SPLIT', false)
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       if (!reservationId) {
+        let dis = this
         this.$store.commit('dinein/NUMBER_GUESTS', this.guests)
         this.$store
           .dispatch('dinein/addReservation', this.selectedTableId, {
             root: true,
           })
           .then(() => {
+            if (!pos) {
+              let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
+              this.$router.push({ path: URL })
+            }
             this.$store
               .dispatch('dinein/updateDineInOrderStatus', {
                 title: 'all',
@@ -435,9 +480,25 @@ export default {
                 loader: false,
               })
               .then(() => {
-                this.$store.dispatch('dinein/getDineInArea', false)
-                this.$store.dispatch('dinein/getDineInTables', false)
-                $('#tooltipdata').hide()
+                dis.$store.dispatch('dinein/getDineInArea', false).then(() => {
+                  dis.$store
+                    .dispatch('dinein/getDineInTables', false)
+                    .then(() => {
+                      /*dis.setTableColour(
+                        dis.selectedTableD3,
+                        dis.selectedTableData
+                      )*/
+                      this.updateTableArea += 1
+                      // this.setTableProperties()
+                      // container.datum(dis.selectedTableD3).call(updateFunction)
+                      /*$(makeId)
+                        .find('g')
+                        .removeAttr('style')*/
+                      // dis.clearTableArea()
+                      // dis.updateTableOnArea()
+                    })
+                  $('#tooltipdata').hide()
+                })
               })
           })
       } else {
@@ -461,6 +522,7 @@ export default {
         this.selectedTableId +
         '/' +
         data.orderId
+      this.$store.commit('order/ORDER_SOURCE', 'dinein')
       this.$store.dispatch('dinein/getSelectedOrder', data.orderId, {
         root: true,
       })
@@ -471,7 +533,7 @@ export default {
       this.$router.push({ path: URL })
     },
     clearTableArea() {
-      d3.selectAll('#dine-in-area > *').remove()
+      d3.selectAll('.tables').remove()
     },
     updateDineInOrderStatus: function(orderStatus) {
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
@@ -522,21 +584,38 @@ export default {
           return d3.select(`#dinein_${d.table_shape}_${d.chairs}`).html()
         })
       /*.attr('fill', 'green')*/
-      if (this.selectedTableD3)
-        d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
+      /*if (this.selectedTableD3)
+          d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
       d3.selectAll('.dinein_table_parent').each(() => {
         this.drawViews()
         this.setTableProperties()
       })
     },
-    setTableProperties() {
-      let dis = this
-      d3.selectAll('.dinein_table').each((d, i, a) => {
-        d3.select(a[i])
-          .select('text')
-          .text(`#${d.number}`)
-        let data = d
-        d3.select(a[i])
+    setTableColour(selectedItem, data) {
+      this.$nextTick(() => {
+        let dis = this
+        d3.select(selectedItem)
+          .select('g')
+          .selectAll('path:nth-of-type(2)')
+          .attr('fill', '#FFF')
+
+        d3.select(selectedItem)
+          .select('svg')
+          .selectAll('path:nth-last-of-type(1)')
+          .attr('fill', function() {
+            let fillcolor = '#FF9C9A'
+            dis.tableStatus.table.filter(ts => {
+              if (ts.id === data._id) {
+                if (ts.status.color == '#62bb31') {
+                  fillcolor = '#99CA86'
+                } else if (ts.status.color == '#faa03c') {
+                  fillcolor = '#FAD580'
+                }
+              }
+            })
+            return fillcolor
+          })
+        d3.select(selectedItem)
           .select('svg>g:last-child')
           .selectAll('path')
           .attr('fill', function() {
@@ -552,25 +631,22 @@ export default {
             })
             return fc
           })
+      })
+    },
+    setTableProperties() {
+      let dis = this
+      d3.selectAll('.dinein_table').each((d, i, a) => {
         d3.select(a[i])
-          .on('click', function(d, i, a) {
-            dis.showOptions(d, i, a)
-          })
-          .select('g')
-          .selectAll('path')
-          .attr('fill', function() {
-            let fillcolor = '#FF9C9A'
-            dis.tableStatus.table.filter(ts => {
-              if (ts.id === data._id) {
-                if (ts.status.color == '#62bb31') {
-                  fillcolor = '#99CA86'
-                } else if (ts.status.color == '#faa03c') {
-                  fillcolor = '#FAD580'
-                }
-              }
-            })
-            return fillcolor
-          })
+          .select('text')
+          .text(`${d.number}`)
+          .attr('style', 'font-size:60px')
+          .attr('style', 'font-weight:bold')
+        // .attr('fill', '#565353')
+        let data = d
+        this.setTableColour(a[i], data)
+        d3.select(a[i]).on('click', function(d, i, a) {
+          dis.showOptions(d, i, a)
+        })
         let nodeDims = d3
           .select(a[i])
           .node()
@@ -580,46 +656,21 @@ export default {
         let midX = nodeDims.width / 2 + x
         let midY = nodeDims.height / 2 + y
         d3.select(d3.select(a[i]).node().parentNode).attr('transform', () => {
-          // eslint-disable-next-line no-console
-          // console.log(data.table_position_coordinate.angle, 'xxxxx')
-          /*if (data.table_position_coordinate.angle) {
-            data.table_position_coordinate.angle = 0
-          }*/
           return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${
             data.table_position_coordinate.angle
           },${midX},${midY})`
         })
-        /*.attr(
-            'transform',
-            d3.zoomIdentity.scale(dis.tableZoomScale).translate(0, 0)
-          )*/
-        // .zoomIdentity.scale(dis.tableZoomScale)
-        // .translate(0, 0)
+        let makeId = '#id_' + dis.selectedTableId
+        $(makeId)
+          .find('g')
+          .removeAttr('style')
       })
     },
-    /*isSupported() {
-      let ua = navigator.userAgent.toLowerCase()
-      if (ua.indexOf('safari') != -1) {
-        if (ua.indexOf('ipad') > -1) {
-          return false
-        } else if (ua.indexOf('Safari') > -1) {
-          return false
-        } else if (ua.indexOf('macintosh') > -1 && ua.indexOf('chrome') > -1) {
-          return true
-        } else if (ua.indexOf('macintosh') > -1) {
-          return false
-        } else if (ua.indexOf('chrome') > -1) {
-          return true
-        } else if (ua.indexOf('mozilla') > -1) {
-          return false
-        } else {
-          return false
-        }
-      } else {
-        return false
-      }
-    },*/
     confirmCancelReservation() {
+      let makeId = '#id_' + this.selectedTableId
+      $(makeId)
+        .find('g')
+        .attr('style', 'opacity:0.5')
       this.reservationUpdateStatus({
         reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
@@ -632,12 +683,22 @@ export default {
             return false
           }
         }
-        this.$store.dispatch('dinein/updateDineInOrderStatus', {
-          title: 'all',
-          pageId: 'getBookedTables',
-          loader: false,
-        })
-        this.$store.dispatch('dinein/getDineInArea', false)
+        this.$store
+          .dispatch('dinein/updateDineInOrderStatus', {
+            title: 'all',
+            pageId: 'getBookedTables',
+            loader: false,
+          })
+          .then(() => {
+            this.$store.dispatch('dinein/getDineInArea', false).then(() => {
+              this.$store.dispatch('dinein/getDineInTables', false).then(() => {
+                /*this.setTableProperties()*/
+                this.updateTableArea += 1
+                this.deletion = true
+              })
+            })
+          })
+        $('#tooltipdata').hide()
       })
       this.componentKey += 1
       $('#range')
@@ -657,66 +718,56 @@ export default {
         .getBoundingClientRect()
     },
     showOptions(datum, i, a) {
-      /*d3.select(d3.select(a[i]).parentNode)
-        .selectAll('path')
-        .style('stroke', 'green')
-        .style('stroke-width', '1')*/
-
       this.selectedTableData = datum
       this.guests = 1
       this.validationErrors = ''
       this.selectedTableD3 = a[i]
+      this.selectedTableId = datum._id
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
-      // let scope = this
-      /*setTimeout(function() {
-        scope.zoom(0.8, { x: 10, y: 10 })
-      }, 500)*/
-      /*let transform = { x: 10, y: 10 }
-      this.zoom(1, transform)*/
-      // eslint-disable-next-line no-console
-      // console.log(this.orderDetails)
       this.addOrSplit =
         this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
-      this.selectedTableId = datum._id
-      let range = $('#range')
-      let top = datum.table_position_coordinate.y + 20 || 0
-      // let left = datum.table_position_coordinate.x + 35 || 100
-      // $('#id_' + datum._id).click(function(e) {
-      let posX = $('#id_' + datum._id).offset().left
-      // let posY = $('#id_' + datum._id).offset().top
-      /*let tableWidth = $('#id_' + datum._id)
-        .find('svg')
-        .width()*/
-      let getWidth = 361 / 2
-      if (this.orderDetails.length === 0) {
-        getWidth = 155 / 2
-      } else if (this.orderDetails.length > 0) {
-        let orderCount = 0
-        this.orderDetails.forEach(order => {
-          if (order.orderIds.length > 0) {
-            orderCount += 1
+      if (this.brand.book_table || this.orderDetails.length) {
+        // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
+        let range = $('#range')
+        let top = datum.table_position_coordinate.y + 20 || 0
+        let posX = $('#id_' + datum._id).offset().left
+        let getWidth = 361 / 2
+        if (this.orderDetails.length === 0) {
+          getWidth = 155 / 2
+        } else if (this.orderDetails.length > 0) {
+          let orderCount = 0
+          this.orderDetails.forEach(order => {
+            if (order.orderIds.length > 0) {
+              orderCount += 1
+            }
+          })
+          if (orderCount > 0) {
+            getWidth = 445 / 2
           }
-        })
-        if (orderCount > 0) {
-          getWidth = 445 / 2
+        }
+        if (top < 0) top = 0
+        let left = posX - getWidth
+        if (left < 0) left = 0
+
+        range
+          .parent('div')
+          .attr(
+            'style',
+            'top:' +
+              top * this.tableZoomScale +
+              'px; left:' +
+              left +
+              'px; display:block'
+          )
+      } else {
+        if (this.brand.number_of_guests) {
+          $('#placeOrder').modal('show')
+        } else {
+          this.newOrder(false, this.brand.book_table)
         }
       }
-      if (top < 0) top = 0
-      let left = posX - getWidth
-      if (left < 0) left = 0
-
-      range
-        .parent('div')
-        .attr(
-          'style',
-          'top:' +
-            top * this.tableZoomScale +
-            'px; left:' +
-            left +
-            'px; display:block'
-        )
     },
     drawViews() {
       if (this.activeArea) {

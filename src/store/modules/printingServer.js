@@ -166,9 +166,7 @@ const actions = {
       // let stringifyResponse = b.toString('base64')
       let decodedData = compressToBase64(x)
       // eslint-disable-next-line no-console
-      console.log(decodedData)
-      // console.log(JSON.parse(decompress(decodedData)))
-      if (jsonResponse) {
+      if (jsonResponse && rootState.dinein.kitchenPrint) {
         printingServers.forEach(item => {
           let APIURL = item.ip_address
           dispatch('centeredPopup', {
@@ -186,12 +184,15 @@ const actions = {
           setTimeout(function() {
             // eslint-disable-next-line no-console
             console.log(state.kitchenInvoiceResponse.closed)
-            if (!state.kitchenInvoiceResponse.closed) {
+            if (
+              typeof state.kitchenInvoiceResponse.closed != 'undefined' &&
+              !state.kitchenInvoiceResponse.closed
+            ) {
               // eslint-disable-next-line no-console
               console.log('close')
               state.kitchenInvoiceResponse.close()
             }
-          }, 20000)
+          }, 3000)
           // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
       }

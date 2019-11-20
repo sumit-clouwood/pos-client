@@ -33,6 +33,29 @@ export default {
   computed: {
     ...mapGetters(['paymentMethodsHendler']),
   },
+  watch: {
+    paymentMethodsHendler(newVal, oldVal) {
+      if (newVal != oldVal) {
+        const header_height = document
+          .querySelector('.pay-header')
+          .getBoundingClientRect().height
+        const amount_height = document
+          .querySelector('.mobile-payment-methods .pay-body .total-amount')
+          .getBoundingClientRect().height
+        const footer_height = document
+          .querySelector('.pay-footer')
+          .getBoundingClientRect().height
+        let carousel_height =
+          document.body.clientHeight -
+          (header_height + amount_height + footer_height + 20)
+        document
+          .querySelector(
+            '.mobile-payment-methods .pay-body #payment-method .carousel-container .carousel'
+          )
+          .setAttribute('style', 'height:' + carousel_height + 'px')
+      }
+    },
+  },
   methods: {},
 }
 </script>
@@ -59,15 +82,7 @@ export default {
     }
 
     .pay-body {
-      padding: 20px;
-      padding-bottom: 0;
-      display: grid;
-      grid-template-rows: max-content 1fr;
-      overflow: auto;
-    }
-
-    .pay-body {
-      padding: 20px;
+      padding: 5px 10px;
       padding-bottom: 0;
       display: grid;
       grid-template-rows: max-content 1fr;
@@ -161,7 +176,7 @@ export default {
   .total-amount {
     border: 1px dotted $green-middle;
     border-radius: $card-border-radius;
-    padding: 20px;
+    padding: 5px 20px;
     background-color: $green-light;
     display: grid;
     grid-template-columns: 1fr max-content;

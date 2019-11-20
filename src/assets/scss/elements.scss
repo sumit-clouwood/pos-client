@@ -1,6 +1,10 @@
 @import 'pixels_rem.scss';
 @import 'variables.scss';
 @import 'mixins.scss';
+:root {
+  --vh: 100%;
+}
+
 
 @font-face {
   font-family: 'ProximaNova-Regular';
@@ -37,7 +41,7 @@ html {
 }
 
 html {
-  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
 }
 
 .mobile-components {
@@ -49,10 +53,14 @@ html {
 }
 
 body {
-  height: 100vh;
+  //height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  //@media not all and (hover:hover) {
+  //  height: calc(var(--vh, 1vh) * 100);
+  //}
   margin: 0;
   padding: 0;
-  height: 100vh;
+  //height: 100vh;
   overflow: hidden;
   color: #444;
   background-color: #fff;
@@ -208,7 +216,7 @@ img {
   border-radius: 5px;
   margin: 0px;
   align-self: start;
-  background-color: #fff;
+  //background-color: #fff;
   overflow: hidden;
 
   .search-field-icon {
@@ -217,6 +225,11 @@ img {
     justify-content: center;
     border-right: 1px solid $gray-middle;
     height: $px35;
+    @include responsive(mobile) {
+      svg path {
+        fill: #000
+      }
+    }
 
     .search-field-img {
       width: $px20;

@@ -254,8 +254,7 @@ const actions = {
                 ? response.data.collected_data.orders
                 : [],
               deliveryAreas: response.data.collected_data
-                ? response.data.collected_data.page_lookups.store_delivery_areas
-                    ._id
+                ? response.data.collected_data.page_lookups.delivery_areas._id
                 : null,
             })
             commit(mutation.SET_CUSTOMER_LOADING, false)
@@ -342,7 +341,10 @@ const actions = {
     CustomerService.fetchDeliveryAreas(query).then(response => {
       //Fetch Delivery Areas in add Customer Address and Add new customer form
       let data = response.data.data.filter(function(u) {
-        if (u.store_id == rootState.context.storeId) {
+        if (
+          u.store_id == rootState.context.storeId ||
+          (u.stores && u.stores.includes(rootState.context.storeId))
+        ) {
           return u.item_status
         }
       })

@@ -70,12 +70,12 @@
         >
           {{ _t('Cancel Transaction') }}
         </button>
-        <!--<button
+        <button
           class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
           @click="modifyOrder(1)"
         >
           {{ _t('Modify Transaction') }}
-        </button>-->
+        </button>
       </span>
       <!--<button
         class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
@@ -152,7 +152,9 @@ export default {
             })
           })
         } else {
-          this.$router.push({ path: this.$store.getters['context/store'] })
+          this.$router.push({
+            path: this.$store.getters['context/store'] + '/update/' + order._id,
+          })
         }
       })
     },

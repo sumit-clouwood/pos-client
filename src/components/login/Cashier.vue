@@ -5,7 +5,22 @@
   >
     <div class="admin-login-wrapper">
       <div class="login-wrapper">
-        <users></users>
+        <div class="store-info">
+          <ul class="ullist-admin">
+            <li data-placement="above">
+              <div class="img transform-img">
+                <div
+                  class="bgimg"
+                  :style="'background-image:url(' + logo + ')'"
+                ></div>
+              </div>
+              <span>{{ store }}</span>
+            </li>
+          </ul>
+        </div>
+        <div id="popover_content_wrapper">
+          <lockpad></lockpad>
+        </div>
       </div>
     </div>
   </div>
@@ -13,7 +28,8 @@
 
 <script>
 //import dateTime from '@/components/mobileComponents/mobileElements/dateTime.vue'
-import Users from './Users'
+import Lockpad from './Lockpad.vue'
+import { mapState } from 'vuex'
 
 export default {
   name: 'cashierList',
@@ -28,9 +44,21 @@ export default {
     bg() {
       return this.$store.getters['location/bgImage'] || 'img/bg.jpg'
     },
+    ...mapState({
+      brand: state => (state.location.brand ? state.location.brand.name : null),
+      logo: state =>
+        state.location.brand
+          ? state.location.brand.company_logo
+          : 'img/profile/broccoli-profile.jpg',
+      store: state => (state.location.store ? state.location.store.name : null),
+      address: state =>
+        state.location.store
+          ? state.location.store.address + ', ' + state.location.store.city
+          : null,
+    }),
   },
   components: {
-    Users,
+    Lockpad,
   },
   methods: {},
   mounted() {},
@@ -38,6 +66,27 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.bgimg
+    height: 90px
+    width: 90px
+    border-radius: 50%
+    background-repeat: no-repeat
+    background-position: center
+    background-size: cover
+    transition: all 1s ease-in-out
+
+.data
+  cursor: pointer
+  font-size: 18px
+  font-weight: 600
+  font-style: normal
+  font-stretch: normal
+  line-height: normal
+  letter-spacing: 1px
+  color: #ffffff
+  display: block
+  position: relative
+
 .content-wrapper
   user-select: none
   overflow: hidden
@@ -51,10 +100,15 @@ export default {
     background-repeat: no-repeat
     background-position: center center
 
-  div#popover_content_wrapper
+  .store-info
+    margin: 30px auto !important
+    text-align: center
+
+  div#popover_content_wrapper, .store-info
     width: 23.3em
     margin-top: 1em
-    display: none
+    margin: 0 auto
+    top: 300px
 
   .admin-login-wrapper
     overflow:  hidden
@@ -67,4 +121,81 @@ export default {
       width:  1180px
       max-width: 100%
       margin:  0 auto
+
+ul.ullist-admin
+  margin: 0 auto
+  text-align: center
+  padding-top: 2em
+
+  > li
+    display: inline-block
+    padding: 2px 0
+
+    &:nth-child(2)
+      > .img
+        &.transform
+          width: 60%
+
+    &.position-set
+      position: relative
+      display: flex
+      flex-direction: column
+      align-items: center
+
+      >
+        .transform
+          display: block
+          transition: all 1s ease-in-out
+
+
+        .transform-scale
+          display: none
+
+      #popover_content_wrapper
+        display: block !important
+
+      > .img
+        width: 8em
+        height: 8em
+        transition: all 0.4s ease
+        margin-bottom: 0em
+
+    > .img
+      width: 7em
+      height: 7em
+      cursor: pointer
+      margin-bottom: 0em
+      transition: all 1s ease-in-out
+      margin: 0 auto
+      border-radius: 50%
+      border: 4px solid rgba(255, 255, 255, 0.7)
+
+      &:hover
+        width: 8em
+        height: 8em
+        transition: all 0.6s ease
+        margin-bottom: 0em
+
+        .bgimg
+          transition: all 0.6s ease
+          height: 104px
+          width: 104px
+
+    > span
+      cursor: pointer
+      font-size: 18px
+      font-weight: 600
+      font-style: normal
+      font-stretch: normal
+      line-height: normal
+      letter-spacing: 0.7px
+      color: #ffffff
+      display: block
+      position: relative
+      padding-top: 0.5em;
+
+  .img
+    &.transform
+      display: none
+      width: 75%
 </style>

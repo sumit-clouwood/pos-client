@@ -14,7 +14,7 @@
           title="Dashboard"
           v-if="permitted('dashboard', 'root')"
         >
-          <a class="nav-link-nav active" :href="dashboard">
+          <a class="nav-link-nav" :href="dashboard">
             <div class="nav-link-text">
               <svg id="dashboard_icon" viewBox="0 0 24 24">
                 <path

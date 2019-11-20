@@ -3,6 +3,13 @@
     <OrderDetailsPopup />
     <Preloader v-if="loading" />
     <div v-else>
+      <progressbar
+        v-if="loadingSilent"
+        :init="10"
+        :step="10"
+        :interval="100"
+        :range="150"
+      ></progressbar>
       <running-orders
         :orders="orders['in-progress']"
         v-if="orderStatus == 'in-progress'"
@@ -18,6 +25,7 @@
 <script>
 import { mapState } from 'vuex'
 import Preloader from '@/components/util/Preloader'
+import progressbar from '@/components/util/progressbar'
 import RunningOrders from './content/RunningOrders'
 import CompletedOrders from './content/CompletedOrders'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
@@ -33,12 +41,24 @@ export default {
   },
   components: {
     Preloader,
+    progressbar,
     RunningOrders,
     CompletedOrders,
     OrderDetailsPopup,
   },
+  data() {
+    return {
+      interval: null,
+    }
+  },
   mounted() {
     this.$store.dispatch('carhop/initFetch')
+    this.interval = setInterval(() => {
+      this.$store.dispatch('carhop/initFetch', false)
+    }, 1000 * 20)
+  },
+  destroyed() {
+    clearInterval(this.interval)
   },
 }
 </script>
@@ -49,10 +69,14 @@ export default {
   .carhop-running-orders-wrapper {
     overflow: auto;
     width: calc(100vw - 20px);
+
+    .dropdown-menu.show {
+      top: inherit !important;
+    }
   }
 
   span.dinefor-paynow {
-    width: auto;
+    width: 100%;
     border-radius: 0.25rem;
     background-color: $blue-middle;
     display: inline-block;
@@ -83,8 +107,8 @@ export default {
   }
   .in-progress,
   .finished {
-    background-color: #e73030;
-    color: #fff;
+    /*background-color: #e73030;*/
+    /*color: #fff;*/
     border-radius: $px4;
     display: inline-block;
     padding: $px4 $px10;
@@ -104,8 +128,8 @@ export default {
   }
   .item-name {
     padding: 0 0.625rem;
-    background-color: #ef7f2a;
-    color: #fff;
+    /*background-color: #ef7f2a;*/
+    /*color: #fff;*/
     height: 1.875rem;
     line-height: 1.875rem;
     display: inline-block;
@@ -122,5 +146,19 @@ export default {
     -webkit-transition: 0.2s linear;
     transition: 0.2s linear;
   }
+}
+
+.button-wrapper {
+  grid-template-columns: max-content 1fr;
+  > a:first-child {
+    margin-right: 1em;
+  }
+}
+
+.button-wrapper > a span.dinefor-paynow {
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+  margin-right: 1em;
 }
 </style>

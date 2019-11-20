@@ -117,28 +117,22 @@
           <h5 class="customer-block-info color-text-invert">
             {{ _t('Address Details') }}
           </h5>
-          <div class="col-md-6 left-form">
-            <div class="name-from">
+          <div class="col-md-12 left-form">
+            <div class="name-from delivery-area-name">
               <label class="color-text-invert"
                 >{{ _t('Delivery Area') }} <span>*</span></label
               >
-              <select
+              <cool-select
                 class="getAreaId"
-                @change="getAreaId"
-                v-model="newCustomerDetails.delivery_area_id"
-              >
-                <option
-                  v-for="area in fetchDeliveryAreas"
-                  :value="area._id"
-                  :key="area._id"
-                  :data-deliveryarea="area.name"
-                  >{{ area.name }}
-                </option>
-              </select>
+                v-model="selectedDeliveryArea"
+                :items="deliveryAreas"
+              />
               <span class="validation-error" v-if="errors.delivery_area_id">{{
                 errors.delivery_area_id
               }}</span>
             </div>
+          </div>
+          <div class="col-md-6 left-form">
             <div class="Building">
               <label class="color-text-invert"
                 >{{ _t('Building/Villa') }} <span>*</span></label
@@ -220,6 +214,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import { Datetime } from 'vue-datetime'
+import { CoolSelect } from 'vue-cool-select'
 
 function getWithoutSpaceLength(data) {
   if ($.trim(data).length == 0) {
@@ -234,9 +229,11 @@ export default {
   props: {},
   components: {
     Datetime,
+    CoolSelect,
   },
   data() {
     return {
+      selectedDeliveryArea: null,
       add_delivery_area: '',
       selectedDate: '',
       getCurrentYear: new Date().getFullYear().toString(),
@@ -253,15 +250,18 @@ export default {
       customer_title: state => state.customer.modalStatus,
       buildingAreas: state => state.customer.buildingAreas,
       loyalty: state => state.loyalty.loyalty,
-      fetchDeliveryAreas: state =>
-        state.customer.fetchDeliveryAreas
-          ? state.customer.fetchDeliveryAreas.filter(function(u) {
-              //Fetch Delivery Areas in add Customer Form at POS screen
-              if (u.store_id == state.context.storeId) {
-                return u.item_status
-              }
-            })
-          : false,
+      fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
+
+      deliveryAreas() {
+        if (this.fetchDeliveryAreas) {
+          return this.fetchDeliveryAreas.map(area => {
+            return area.name
+          })
+        } else {
+          return []
+        }
+      },
+
       customerCreateStatus: state => state.customer.responseInformation,
       customerId: state => state.customer.customer._id,
       customerGroup: state =>
@@ -313,13 +313,7 @@ export default {
           this._t('Valid email') + ' ' + this._t('is required.')
         this.errors.count = 1
       }
-      /*if (
-                  !this.newCustomerDetails.email ||
-                  !getWithoutSpaceLength(this.newCustomerDetails.email)
-                ) {
-                  this.errors.email = this._t('Email') + ' ' + this._t('is required.')
-                  this.errors.count = 1
-                }*/
+
       if (
         !this.newCustomerDetails.phone_number ||
         !getWithoutSpaceLength(this.newCustomerDetails.phone_number)
@@ -339,7 +333,7 @@ export default {
         this.errors.count = 1
       }
       if (this.customer_title !== 'Edit' && this.loyalty !== true) {
-        if (!this.newCustomerDetails.delivery_area_id) {
+        if (!this.selectedDeliveryArea) {
           this.errors.delivery_area_id = this._t('Delivery area required')
           this.errors.count = 1
         }
@@ -400,7 +394,15 @@ export default {
       return this.errors
     },
     getData() {
-      return this.newCustomerDetails
+      let areaId = ''
+      this.fetchDeliveryAreas.forEach(element => {
+        if (this.selectedDeliveryArea === element.name) {
+          areaId = element._id
+        }
+      })
+
+      let customer = { ...this.newCustomerDetails, delivery_area_id: areaId }
+      return customer
     },
     validEmail: function(email) {
       let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -410,6 +412,13 @@ export default {
 }
 </script>
 <style scoped lang="css">
+.getAreaId {
+  display: inline-block !important;
+  width: 55.6795rem !important;
+}
+.offline .getAreaId {
+  width: 60.8795rem !important;
+}
 .dropdown {
     position: relative;
 }

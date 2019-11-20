@@ -38,9 +38,12 @@
         </div>
       </template>
     </div>
-    <div class="main-oreders-buttons">
+    <div
+      class="main-oreders-buttons"
+      :class="{ smallbuttons: enabledSplitBill }"
+    >
       <div
-        v-if="availableTables && cartType !== 'hold'"
+        v-if="brand.move_table && availableTables && cartType !== 'hold'"
         class="driver-container"
       >
         <button
@@ -53,7 +56,10 @@
         </button>
         <DineInTableSelection />
       </div>
-      <div v-if="covers && cartType !== 'hold'" class="driver-container">
+      <div
+        v-if="brand.number_of_covers && covers && cartType !== 'hold'"
+        class="driver-container"
+      >
         <button
           class="btn btn-success"
           data-target="#dine-in-cover-selection"
@@ -74,6 +80,15 @@
           id="split-bill-button"
         >
           {{ _t('Split') }} {{ _t('Bill') }}
+        </button>
+      </div>
+      <div v-if="isSplit" class="driver-container">
+        <button
+          class="btn btn-success"
+          @click="printSplit"
+          id="split-bill-print-button"
+        >
+          {{ _t('Print') }}
         </button>
       </div>
       <div class="color-main color-text dine-in-table-guest-details-pos">
@@ -106,7 +121,6 @@ export default {
   },
   data() {
     return {
-      enabledSplitBill: false,
       OrderSelectedCover: 'Select Cover',
       myStyle: {
         backgroundColor: '#fff',
@@ -114,7 +128,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.selectedTable) {
+    if (!this.selectedTable && !this.orderSource === 'backend') {
       this.$router.push(this.store)
       this.$store.commit('order/ORDER_TYPE', {
         OTview: 'Walk In',
@@ -125,12 +139,14 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapGetters('dinein', ['getAllCovers']),
+    ...mapState('location', ['brand']),
     ...mapState('order', [
       'items',
       'orderId',
       'cartType',
       'orderType',
       'orderData',
+      'orderSource',
     ]),
     ...mapState('checkoutForm', ['msg']),
     ...mapState('customer', ['deliveryAreas']),
@@ -144,10 +160,34 @@ export default {
     ...mapState({
       selectedCustomer: state => state.customer.customer,
     }),
-    ...mapState({ selectedAddress: state => state.customer.address }),
+    ...mapState({
+      selectedAddress: state => state.customer.address,
+      isSplit: state =>
+        state.order.splitBill && state.order.items.some(item => item.split),
+    }),
     ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['waiter']),
+
+    enabledSplitBill() {
+      return this.brand.split_bill && this.items.length > 1 && !this.waiter
+    },
   },
   methods: {
+    printSplit() {
+      this.$store.commit('checkoutForm/SET_PROCESSING', true)
+      this.$store.dispatch('order/startOrder')
+      $('#payment-msg').modal('show')
+      this.$store
+        .dispatch('checkout/pay', { action: 'dine-in-order-preview' })
+        .then(() => {})
+        .catch(() => {})
+        .finally(() => {
+          setTimeout(() => {
+            $('#payment-msg').modal('hide')
+          }, 500)
+          this.$store.commit('checkoutForm/SET_PROCESSING', false)
+        })
+    },
     showSplitBill() {
       this.$store.dispatch('order/setSplitBill')
     },
@@ -190,6 +230,10 @@ export default {
   display: none;
 }
 
+.smallbuttons {
+  button {
+  }
+}
 @include responsive(mobile) {
   .main-orders-contacts {
     display: grid;

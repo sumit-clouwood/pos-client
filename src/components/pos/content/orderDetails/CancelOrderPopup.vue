@@ -209,6 +209,15 @@ export default {
         }
 
         .modal-body {
+          .autocomplete-container {
+            grid-gap: 3em;
+            .dropdown-content {
+              top: 3em;
+              background-color: #fff !important;
+              max-height: inherit !important;
+              bottom: inherit;
+            }
+          }
         }
 
         .modal-footer {

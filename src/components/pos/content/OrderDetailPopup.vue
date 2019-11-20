@@ -58,7 +58,7 @@
                     v-for="(template, index) in selectedOrder.invoice"
                     :key="index"
                     @click="
-                      printInvoice({
+                      printInvoiceDisableKitchenPrint({
                         templateId: template._id,
                         order: selectedOrder,
                       })
@@ -142,6 +142,7 @@
     <Invoice />
     <CustomerInformation />
     <CancelOrderPopup />
+    <ModificationPermissions />
   </div>
 </template>
 
@@ -156,6 +157,7 @@ import Payment from '@/components/pos/content/orderDetails/rightContent/Payment'
 import RightPartHeader from '@/components/pos/content/orderDetails/RightPartHeader'
 import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
 import CancelOrderPopup from '@/components/pos/content/orderDetails/CancelOrderPopup'
+import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
 import CustomerInformation from '@/components/pos/footer/popups/ManageCustomer/CustomerInformation'
 
 export default {
@@ -171,6 +173,7 @@ export default {
     Invoice,
     CancelOrderPopup,
     CustomerInformation,
+    ModificationPermissions,
   },
   computed: {
     ...mapState('order', ['selectedOrder']),
@@ -180,6 +183,10 @@ export default {
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
+    printInvoiceDisableKitchenPrint(details) {
+      this.printInvoice(details)
+      this.$store.commit('dinein/KITCHEN_PRINT', false)
+    },
     modifyOrder(order) {
       this.$store.dispatch('order/startOrder')
       this.$store.dispatch('deliveryManager/modifyOrder').then(() => {

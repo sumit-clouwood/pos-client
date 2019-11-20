@@ -4,39 +4,47 @@
       <div class="head">
         <div class="search">
           <span class="fa fa-search"></span>
-          <input type="text" v-model="searchKeyword" />
+          <input
+            type="text"
+            v-model="searchKeyword"
+            placeholder="Search Cashier"
+          />
         </div>
       </div>
     </div>
-    <ul class="ullist-admin" v-if="cashiers.length">
-      <carousel :perPageCustom="[[480, 3], [768, 6], [1024, 8]]">
-        <slide v-for="cashier in cashiers" :key="cashier._id">
-          <tippy trigger="click" theme="cashier_login">
-            <template v-slot:trigger>
-              <img
-                @click.prevent="setCashier(cashier.email)"
-                class="transform-img"
-                :id="cashier._id"
-                :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
-                alt="cashier.name"
-              /><span>{{ cashier.name }}</span>
-            </template>
-
-            <lockpad></lockpad>
-          </tippy>
-          <!--<lockpad></lockpad>
-          <div slot="reference">
-            <img
-              @click.prevent="setCashier(cashier.email)"
-              class="transform-img"
-              :id="cashier._id"
-              :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
-              alt="cashier.name"
-            /><span>{{ cashier.name }}</span>
-          </div>-->
+    <div v-if="cashiers.length" class="users-slider">
+      <slider
+        class="slider"
+        :perPage="5"
+        :arrows="true"
+        :responsive="[
+          { screen: 480, perPage: 1 },
+          { screen: 600, perPage: 2 },
+          { screen: 900, perPage: 3 },
+          { screen: 1124, perPage: 4 },
+        ]"
+      >
+        <slide
+          v-for="cashier in cashiers"
+          :key="cashier._id"
+          class="slide"
+          :class="{ 'position-set': cashier.email === cashierEmail }"
+        >
+          <img
+            :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
+            @click.prevent="setCashier(cashier.email)"
+            @touchend.prevent="setCashier(cashier.email)"
+            class="transform-img"
+            alt="cashier.name"
+            :id="cashier._id"
+          />
+          <span class="data">{{ cashier.name }}</span>
         </slide>
-      </carousel>
-    </ul>
+      </slider>
+      <div id="popover_content_wrapper">
+        <lockpad></lockpad>
+      </div>
+    </div>
     <div v-else class="no-user">
       <div>No cashier found in store.</div>
       <router-link :to="store"> Back </router-link>
@@ -47,25 +55,20 @@
 <script>
 /* global $ */
 import { mapGetters, mapState } from 'vuex'
-import { Carousel, Slide } from 'vue-carousel'
-import { TippyComponent } from 'vue-tippy'
-import 'tippy.js/themes/light.css'
-import 'tippy.js/themes/light-border.css'
-import 'tippy.js/themes/google.css'
-import 'tippy.js/themes/translucent.css'
-import Lockpad from './Lockpad'
+import Slider from '@/components/util/carousel/Slider.vue'
+import Slide from '@/components/util/carousel/Slide.vue'
+import Lockpad from './Lockpad.vue'
 
 export default {
   name: 'Users',
   components: {
-    Carousel,
+    Slider,
     Slide,
-    tippy: TippyComponent,
     Lockpad,
   },
   computed: {
     ...mapGetters('auth', ['cashiers']),
-    ...mapState('auth', ['userDetails']),
+    ...mapState('auth', ['userDetails', 'cashierEmail']),
     searchKeyword: {
       get() {
         return this.$store.state.auth.searchKeyword
@@ -102,67 +105,69 @@ export default {
         return true
       }
       this.jQuery = true
-      $('.ullist-admin .VueCarousel-slide > img').click(function() {
+      $('img.transform-img').bind('click touchstart', function() {
+        $('.position-set').removeClass('position-set')
+        $('#popover_content_wrapper').hide()
         $(this)
-          .parent('li')
+          .parent()
+          .parent()
+          .parent()
           .addClass('position-set')
-          .siblings('.position-set')
-          .removeClass('position-set')
+        setTimeout(() => {
+          const slideWidth = $('.position-set').outerWidth()
+          const slideLeft = $('.position-set').offset().left
+          const calcWidth = $('#popover_content_wrapper').outerWidth()
+          const diff = (calcWidth - slideWidth) / 2
+          let lockLeft = slideLeft - diff
+          if (lockLeft <= 3) {
+            lockLeft = 4
+          }
+          $('#popover_content_wrapper').css('left', lockLeft + 'px')
+          const sliderWidth = $('.users-slider').outerWidth()
+          let lockRight = lockLeft + calcWidth
 
-        $('.position-set').append($('#popover_content_wrapper'))
-        $('.position-set').append($('#absent-content'))
+          if (lockRight > sliderWidth && lockRight > window.innerWidth) {
+            $('#popover_content_wrapper').css(
+              'left',
+              sliderWidth - calcWidth - 4 + 'px'
+            )
+          }
+        }, 100)
+
         $('#popover_content_wrapper').addClass('animated zoomIn')
         $('#popover_content_wrapper').show()
-        $('#popover_content_wrapper #cashierpin').focus()
+        //$('#popover_content_wrapper #cashierpin').focus()
       })
 
-      //$('.ullist-admin > li:first-child  > img').trigger('click')
-      const jqElem = $('img#' + this.userDetails.item._id).parent('li')
-      let jqLi = jqElem.next()
-      if (!jqLi.length) {
-        jqLi = jqElem.siblings('li:first')
+      ////$('.ullist-admin > li:first-child  > img').trigger('click')
+      let jqElem = $('img#' + this.userDetails.item._id)
+      if (!jqElem.length) {
+        jqElem = $('img.transform-img:first')
       }
-      // jqLi.find('img').trigger('click')
+      // let slide = jqElem
+      //   .parent()
+      //   .parent()
+      //   .parent()
+
+      // if (slide.next().length) {
+      //   slide = slide.next()
+      // } else {
+      //   slide = slide.siblings(':first')
+      // }
+      //slide.addClass('position-set')
+      //slide.find('img.transform-img').trigger('click')
+      jqElem.trigger('click')
     },
+    hideCalc() {},
   },
   mounted() {
     if (this.cashiers.length) {
       this.bindJquery()
     }
+    window.addEventListener('mouseup', this.hideCalc)
   },
 }
 </script>
-<style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
-
-.VueCarousel-inner {
-  /*justify-content: center;*/
-}
-.VueCarousel-dot-container {
-  margin-top: 0px !important;
-  button {
-    margin-top: 0px !important;
-    padding: 0px !important;
-  }
-}
-.tippy-backdrop {
-  background-color: transparent;
-}
-.cashier_login-theme {
-  .lockpad {
-    @include responsive(mobile) {
-      .modal-header {
-        padding: 0.5em !important;
-      }
-      .modal-body-digits > div {
-        padding: 0.15em;
-      }
-    }
-  }
-}
-</style>
 <style lang="scss" scoped>
 .no-user {
   text-align: center;
@@ -216,62 +221,54 @@ export default {
 }
 </style>
 <style lang="sass" scoped>
+#popover_content_wrapper
+  width: 326px
+  position: absolute
 
-ul.ullist-admin
+$initzoom: 0.6
+$scalezoom: 0.8
+$imgmaxw: 140px
+$imgmaxh: 140px
+
+.slider
   margin: 0 auto
   text-align: center
-  padding-top: 2em
 
-  .VueCarousel-slide
-    display: inline-block
-    padding: 1em
+  height: 180px
 
-    &:nth-child(2)
-      > img
-        &.transform
-          width: 60%
+  padding-top: 5px
 
-    &.position-set
-      position: relative
-      display: flex
-      flex-direction: column
-      align-items: center
-
-      >
-        .transform
-          display: block
-          transition: all 1s ease-in-out
-
-
-        .transform-scale
-          display: none
-
-      #popover_content_wrapper
-        display: block !important
-
-      > img
-        width: 8em
-        height: 8em
-        transition: all 0.4s ease
-        margin-bottom: 0em
-
+  .slide
     img
-      width: 7em
-      height: 7em
+      max-width: $imgmaxw
+      max-height: $imgmaxh
+      min-height: 140px
+      min-width: 140px
+      height: auto
+      width: auto
+
       cursor: pointer
-      margin-bottom: 0em
+      -webkit-transform: scale($initzoom, $initzoom)
+      -moz-transform: scale($initzoom, $initzoom)
+      -o-transform: scale($initzoom, $initzoom)
+      -ms-transform: scale($initzoom, $initzoom)
+      transform: scale($initzoom, $initzoom)
+      margin-bottom: 15px
       transition: all 1s ease-in-out
       margin: 0 auto
       border-radius: 50%
       border: 4px solid rgba(255, 255, 255, 0.7)
 
       &:hover
-        width: 8em
-        height: 8em
+        -webkit-transform: scale($scalezoom, $scalezoom)
+        -moz-transform: scale($scalezoom, $scalezoom)
+        -o-transform: scale($scalezoom, $scalezoom)
+        -ms-transform: scale($scalezoom, $scalezoom)
+        transform: scale($scalezoom, $scalezoom)
         transition: all 0.6s ease
-        margin-bottom: 0em
+        margin-bottom: 15px
 
-    > span
+    span.data
       cursor: pointer
       font-size: 18px
       font-weight: 600
@@ -282,7 +279,35 @@ ul.ullist-admin
       color: #ffffff
       display: block
       position: relative
-      padding-top: 0.5em
+      top: -21px
+
+    &:nth-child(2)
+      > img
+        &.transform
+          width: 60%
+
+    &.position-set
+      position: relative
+
+
+      .transform
+        display: block
+        transition: all 1s ease-in-out
+
+
+      .transform-scale
+        display: none
+
+
+      img
+        -webkit-transform: scale($scalezoom, $scalezoom)
+        -moz-transform: scale($scalezoom, $scalezoom)
+        -o-transform: scale($scalezoom, $scalezoom)
+        -ms-transform: scale($scalezoom, $scalezoom)
+        transform: scale($scalezoom, $scalezoom)
+        transition: all 0.4s ease
+        margin-bottom: 15px
+
 
   img
     &.transform

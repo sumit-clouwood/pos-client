@@ -47,6 +47,7 @@ export default {
       'changedAmount',
       'changeAmountStatus',
       'paymentMsgStatus',
+      'paymentAction',
     ]),
     ...mapState('context', ['brandId']),
     ...mapGetters('invoice', ['template']),
@@ -67,41 +68,42 @@ export default {
   watch: {
     paymentMsgStatus(newVal) {
       if (newVal && this.$store.getters['checkout/complete']) {
-        if (this.$store.state.order.orderType.OTApi === 'dine_in') {
-          this.$store.dispatch('order/beforeRedirectResetCartDineIn')
-          this.$router.replace({ name: 'Dinein' })
-        } else if (this.$store.state.order.orderType.OTApi === 'call_center') {
-          this.$router.replace({ name: 'DeliveryManager' })
-        } else if (this.isPrint) {
-          this.isPrint = false
-          if (
-            this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_CARHOP
-          ) {
-            this.$router.replace({ name: 'Carhop' })
-          }
-        }
+        //if (newVal) {
+        this.postRedirect()
         this.$store.commit('checkout/PAYMENT_MSG_STATUS', false)
+      } else {
+        this.postRedirectIncomplete()
       }
     },
     changeAmountStatus(newVal) {
       if (newVal && this.$store.getters['checkout/complete']) {
+        //if (newVal) {
         //Reset Cart and set states and redirect to dine in.
-        if (this.$store.state.order.orderType.OTApi === 'dine_in') {
-          this.$store.dispatch('order/beforeRedirectResetCartDineIn')
-          this.$router.replace({ name: 'Dinein' })
-        } else if (this.isPrint) {
-          this.isPrint = false
-          if (
-            this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_CARHOP
-          ) {
-            this.$router.replace({ name: 'Carhop' })
-          }
-        }
+        this.postRedirect()
         this.$store.commit('checkout/CHANGE_AMOUNT_STATUS', false)
+      } else {
+        this.postRedirectIncomplete()
       }
     },
   },
   methods: {
+    postRedirectIncomplete() {},
+    postRedirect() {
+      if (this.$store.state.order.orderType.OTApi === 'dine_in') {
+        this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+        this.$router.replace({ name: 'Dinein' })
+      } else if (this.$store.state.order.orderType.OTApi === 'call_center') {
+        this.$router.replace({ name: 'DeliveryManager' })
+      } else if (this.isPrint) {
+        this.isPrint = false
+        if (
+          this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_CARHOP
+        ) {
+          this.$router.replace({ name: 'Carhop' })
+        }
+      }
+      this.$store.commit('order/SET_SPLITTED', false)
+    },
     doPrint() {
       let orderData = this.order
       if (this.print && this.iframe_body) {
@@ -114,16 +116,16 @@ export default {
             w.focus()
             w.print()
 
-            if (!this.$store.getters['checkout/complete']) {
-              this.$store.dispatch('checkout/splitOrder').then(() => {
-                this.$store.commit('order/SET_SPLIT_BILL', null, { root: true })
-              })
-            }
+            // if (!this.$store.getters['checkout/complete']) {
+            //   this.$store.dispatch('checkout/splitOrder').then(() => {})
+            // }
             //Invoice APP API Call with Custom Request JSON
-            this.$store.dispatch(
-              'printingServer/printingServerInvoiceRaw',
-              orderData
-            )
+            if (!['dine-in-order-preview'].includes(this.paymentAction)) {
+              this.$store.dispatch(
+                'printingServer/printingServerInvoiceRaw',
+                orderData
+              )
+            }
           }, 500)
           //this.$refs.iframe.contentWindow.print()
         } catch (e) {
@@ -319,8 +321,8 @@ export default {
           }
 
           .invoice-body .header-img {
-              width: 50%;
-              min-width: 50%;
+              max-height: 180px !important;
+              min-height: 120px !important;
               display: inline-block;
               margin: 0 auto 1.2em;
           }
@@ -401,6 +403,7 @@ export default {
         </style></head><body style="width:100%">${
           this.invoiceHtml
         }</body></html>`
+      localStorage.setItem('placedOrderData', body.toString()) //This localstorage variable hold invoice data for IOS Webviews. IOS Webviews does not display default Browser Print Window.
       this.iframe_body = body
       //1. to print in new window
       //this.doPrint()

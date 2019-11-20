@@ -19,6 +19,8 @@ const state = {
   action: 'add',
   loyaltyCard: {},
   decimalExists: false,
+  forceCash: false,
+  processing: false,
 }
 
 // getters
@@ -190,6 +192,7 @@ const actions = {
     } else {
       //set method as cash if amount is zero for card
       const method = rootGetters['payment/cash']
+      commit('forceCash', true)
       commit('setMethod', method)
       return dispatch('addAmount')
     }
@@ -270,9 +273,8 @@ const actions = {
     //check if payable is greater than 0 else set cash as method
     commit('setMethod', method)
     if (getters['payable'] <= 0) {
-      setTimeout(() => {
-        commit('setMethod', rootGetters['payment/cash'])
-      }, 100)
+      commit('setMethod', rootGetters['payment/cash'])
+      commit('forceCash', true)
     }
   },
 
@@ -409,6 +411,11 @@ const actions = {
     })
     commit('setAmount', Num.round(getters.payable))
     commit('showCalc', false)
+  },
+  setCashMethod({ commit, rootGetters }) {
+    const method = rootGetters['payment/cash']
+    commit('forceCash', true)
+    commit('setMethod', method)
   },
 }
 
@@ -548,6 +555,10 @@ const mutations = {
     state.showPayBreak = flag
   },
 
+  forceCash(state, status) {
+    state.forceCash = status
+  },
+
   setGiftAmount(state, amount) {
     state.giftAmount = amount
   },
@@ -563,10 +574,15 @@ const mutations = {
     state.decimalExists = decimal
   },
 
+  SET_PROCESSING(state, status) {
+    state.processing = status
+  },
+
   RESET(state, status = 'complete') {
     state.payments = []
     state.LoyaltyPopup = false
     state.error = false
+    state.processing = false
     if (status != 'process') {
       state.amount = 0
       state.tipAmount = 0

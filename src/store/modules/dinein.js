@@ -10,6 +10,7 @@ const state = {
     lookup_running: false,
     lookup_completed: false,
   },
+  kitchenPrint: true,
   bills: null,
   guests: 1,
   tableZoomScale: 0.4,
@@ -79,12 +80,12 @@ const actions = {
   updateDineInOrderStatus({ dispatch, commit }, orderStatus) {
     commit(mutation.DINE_IN_TAB_TYPE, orderStatus.title)
     if (orderStatus.pageId) {
-      let loader = orderStatus.loader ? orderStatus.loader : false
+      let loader = orderStatus.loader /*? orderStatus.loader : true*/
       dispatch(orderStatus.pageId, loader)
     }
   },
   async fetchAll({ dispatch, commit }) {
-    commit(mutation.LOADING, false)
+    commit(mutation.LOADING, true)
     await Promise.all([
       dispatch('getDineInTables'),
       dispatch('getCovers'),
@@ -115,8 +116,9 @@ const actions = {
   async getBookedTables({ commit }, loader = true) {
     // eslint-disable-next-line no-console
     console.log('all bookend table')
+
     if (loader) commit(mutation.LOADING, loader)
-    localStorage.setItem('reservationId', false)
+    /*localStorage.setItem('reservationId', false)*/
     const response = await DineInService.getAllBookedTables()
     commit(mutation.BOOKED_TABLES, response.data)
     if (loader) commit(mutation.LOADING, false)
@@ -388,15 +390,23 @@ const actions = {
     })
   },
   getSelectedOrder({ dispatch, commit, state, rootState }, orderId) {
-    dispatch('order/reset', {}, { root: true })
-    dispatch('checkout/reset', {}, { root: true })
-    dispatch('order/selectedOrderDetails', orderId, {
-      root: true,
-    }).then(() => {
-      commit('order/ORDER_TYPE', state.orderType, { root: true })
-      return dispatch('order/addDiningOrder', rootState.order.selectedOrder, {
+    return new Promise((resolve, reject) => {
+      dispatch('order/reset', {}, { root: true })
+      dispatch('checkout/reset', {}, { root: true })
+      dispatch('order/selectedOrderDetails', orderId, {
         root: true,
       })
+        .then(() => {
+          commit('order/ORDER_TYPE', state.orderType, { root: true })
+          dispatch('order/addDiningOrder', rootState.order.selectedOrder, {
+            root: true,
+          })
+            .then(() => {
+              resolve()
+            })
+            .catch(error => reject(error))
+        })
+        .catch(error => reject(error))
     })
   },
   fetchMoreReservations(
@@ -568,6 +578,9 @@ const mutations = {
   },
   [mutation.PROCESSING_SPLIT](state, status) {
     state.processingSplit = status
+  },
+  [mutation.KITCHEN_PRINT](state, status) {
+    state.kitchenPrint = status
   },
   [mutation.UPDATE_ITEM_GUEST](state, { item, guest, action }) {
     switch (action) {

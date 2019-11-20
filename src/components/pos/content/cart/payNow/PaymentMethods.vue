@@ -32,22 +32,31 @@ export default {
     }
   },
   watch: {
-    activeMethod(newVal, oldVal) {
-      if (newVal != oldVal && newVal == 'Cash') {
+    forceCash(newVal) {
+      if (newVal) {
         this.$refs.paymentmethods.setActive(
-          this.pmethods.findIndex(pm => pm.name == newVal)
+          this.pmethods.findIndex(pm => pm.name === 'Cash')
         )
+        this.$store.commit('checkoutForm/forceCash', false)
+      }
+    },
+    payable(newval) {
+      if (!newval) {
+        //this method ll call the forcash inside
+        this.$store.dispatch('checkoutForm/setCashMethod')
       }
     },
   },
   computed: {
     ...mapState({
       activeMethod: state => state.checkoutForm.method.name,
+      forceCash: state => state.checkoutForm.forceCash,
       selectedModal: state => state.location.setModal,
     }),
     ...mapGetters(['payNowCalcHendler']),
     ...mapGetters({
       pmethods: 'payment/methods',
+      payable: 'checkoutForm/payable',
     }),
   },
 
@@ -83,11 +92,25 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
+
 #payment-method {
   width: 456px;
 
   img {
     height: 46px;
+  }
+}
+@include responsive(mobile) {
+  .mobile-payment-methods
+    .pay-body
+    #payment-method
+    .carousel-container
+    .carousel {
+    overflow-y: scroll;
+    height: 40vh;
   }
 }
 </style>

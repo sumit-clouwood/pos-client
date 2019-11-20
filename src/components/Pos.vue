@@ -22,17 +22,34 @@
 </i18n>
 
 <script>
+/* eslint-disable no-console */
 import Menu from './pos/Menu.vue'
 import Header from './pos/Header.vue'
 import Content from './pos/Content.vue'
 import Footer from './pos/Footer'
 import mobileIndex from './mobileComponents/_mobileIndex.vue'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Pos',
   computed: {
     ...mapState('category', ['categories']),
+    ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['carhop', 'waiter']),
+  },
+  mounted() {
+    if (this.waiter) {
+      if (
+        this.$route.path !== 'undefined' &&
+        !this.$route.path.match('dine-in')
+      ) {
+        this.$router.replace('/dine-in' + this.store + '/')
+      }
+    } else if (this.carhop) {
+      this.$router.replace('/carhop' + this.store + '/')
+    } else {
+      //this.$router.replace('/' + this.store + '/')
+    }
   },
   created() {
     // if (localStorage.getItem('token')) {

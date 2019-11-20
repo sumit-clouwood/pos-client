@@ -62,7 +62,7 @@
       >
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <div class="btn-chatge">
+      <div class="btn-chatge" @click="buttonChargeAction()">
         <div
           class="btn-chatge-amount"
           v-show="orderType.OTApi !== 'call_center'"
@@ -72,7 +72,6 @@
         <div
           class="btn-chatge-title"
           v-show="orderType.OTApi !== 'call_center'"
-          @click="paymentMethodsChange"
         >
           CHARGE
         </div>
@@ -81,7 +80,6 @@
           class="footer-slider-list-item color-secondary"
           data-toggle="modal"
           data-dismiss="modal"
-          @click="add_customer_address"
         >
           <a
             class="footer-slider-list-item-link color-text-invert"
@@ -185,7 +183,16 @@ export default {
         this.$store.dispatch('payNowCalcHendlerChange')
       }
     },
+    buttonChargeAction() {
+      if (this.orderType.OTApi !== 'call_center') {
+        this.paymentMethodsChange()
+      } else {
+        this.add_customer_address()
+      }
+    },
     paymentMethodsChange() {
+      // eslint-disable-next-line
+      // debugger
       this.$store.dispatch('paymentMethodsChange')
     },
     methodCardHendlerChange() {
@@ -227,7 +234,7 @@ export default {
 
 @include responsive(mobile) {
   .mobile-footer {
-    padding: 20px 20px 20px 20px;
+    padding: 10px 20px;
     display: flex;
     align-items: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

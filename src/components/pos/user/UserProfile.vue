@@ -131,12 +131,13 @@ export default {
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
-          return false
+          return !this.carhop && !this.waiter
       }
     },
   },
   computed: {
     ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['waiter', 'carhop']),
     ...mapState({
       user: state => state.auth.userDetails.item,
       collectedData: state => state.auth.userDetails.collected_data,

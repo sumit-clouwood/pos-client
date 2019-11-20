@@ -18,9 +18,22 @@ const state = {
 
 // getters
 const getters = {
-  getRole: state => startPath => {
+  roleName: state => {
+    if (!state.userDetails) {
+      return ''
+    }
+    const roleId = state.userDetails.item.brand_role
+    if (roleId && state.rolePermissions) {
+      const role = state.rolePermissions.find(role => role._id === roleId)
+      return role ? role.name : ''
+    }
+    return ''
+  },
+  waiter: (state, getters) => getters.roleName === 'Waiter',
+  carhop: (state, getters) => getters.roleName === 'Carhop User',
+  getRole: state => roleName => {
     if (state.rolePermissions) {
-      return state.rolePermissions.find(user => user.start_path === startPath)
+      return state.rolePermissions.find(role => role.name === roleName)
     }
   },
   loggedIn: state => {
@@ -70,7 +83,7 @@ const actions = {
           setTimeout(() => {
             dispatch('location/setContext', null, { root: true }).then(() => {
               commit(mutation.SET_TOKEN, response.data.token)
-              resolve()
+              resolve(response.data.token)
             })
           }, 100)
           //resolve()
@@ -78,10 +91,11 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  pinlogin({ commit, state, getters }, cashierpin) {
+  pinlogin({ commit, getters, rootState }, cashierpin) {
     return new Promise((resolve, reject) => {
       AuthService.pinlogin({
-        email: state.cashierEmail,
+        //email: state.cashierEmail,
+        brand_id: rootState.context.brandId,
         swipe_card: cashierpin,
       })
         .then(response => {
@@ -130,8 +144,8 @@ const actions = {
 
       commit(mutation.RESET)
 
-      commit('order/RESET', null, { root: true })
-      commit('checkout/RESET', null, { root: true })
+      commit('order/RESET', true, { root: true })
+      commit('checkout/RESET', true, { root: true })
       commit('context/RESET', null, { root: true })
       commit('customer/RESET', null, { root: true })
       commit('sync/reset', {}, { root: true })
@@ -170,7 +184,7 @@ const actions = {
   fetchRoles({ commit, getters }) {
     AuthService.getRoles().then(rolesPermissions => {
       commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
-      const cashierRole = getters.getRole('pos')
+      const cashierRole = getters.getRole('Cashier')
       AuthService.getUsers(cashierRole._id).then(cashiers => {
         commit(mutation.SET_CASHIERS, cashiers.data.data)
       })

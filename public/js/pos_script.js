@@ -375,14 +375,15 @@ $(document).ready(function() {
     return false
   })
 
-  $('.last-order-wrap').slick({
-    arrows: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    dots: true,
-    nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
-    prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
-  })
+  $('.last-order-wrap').length &&
+    $('.last-order-wrap').slick({
+      arrows: true,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      dots: true,
+      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
+      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+    })
 
   $('.br-table-btn').click(function() {
     $('.last-order-wrap')[0].slick.refresh()
