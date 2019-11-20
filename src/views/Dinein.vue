@@ -24,7 +24,7 @@ import Content from '@/components/dinein/Content'
 import Footer from '@/components/dinein/Footer'
 import { mapState, mapGetters } from 'vuex'
 // import Preloader from '@/components/util/progressbar'
-import Preloader from '@/components/util/Preloader'
+import Preloader from '@/components/util/progressbar'
 
 export default {
   name: 'Dinein',
