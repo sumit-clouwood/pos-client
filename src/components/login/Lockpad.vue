@@ -103,7 +103,22 @@ export default {
         this.storeUrl = this.store
         this.brand = this.brandId
       }
+
+      history.pushState(null, null, location.href)
+      window.onpopstate = function() {
+        history.go(1)
+      }
     }
+  },
+
+  destroyed() {
+    window.removeEventListener(
+      'onpopstate',
+      function() {
+        history.go(1)
+      },
+      false
+    )
   },
 }
 </script>
