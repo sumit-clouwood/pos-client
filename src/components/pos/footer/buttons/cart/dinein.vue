@@ -57,7 +57,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapGetters('auth', ['waiter']),
-    ...mapState('order', ['items', 'orderSource']),
+    ...mapState('order', ['items', 'orderSource', 'orderType']),
     ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('checkoutForm', ['processing']),
   },
@@ -74,11 +74,12 @@ export default {
         typeof this.selectedCover == 'object' ||
         this.orderType.OTApi !== 'dine_in'
       ) {
-        if (this.orderSource === 'backend') {
-          showModal('#modificationReason')
-        } else {
-          clickPayNow()
-        }
+        // if (this.orderSource === 'backend') {
+        //   showModal('#modificationReason')
+        // } else {
+        //   clickPayNow()
+        // }
+        clickPayNow()
       } else {
         validationError = {
           status: 'flash_message',
