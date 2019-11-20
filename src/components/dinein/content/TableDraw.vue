@@ -387,7 +387,6 @@ export default {
   },
   watch: {
     updateTableArea: function() {
-      alert(this.updateTableArea)
       this.clearTableArea()
       this.updateTableOnArea()
     },
