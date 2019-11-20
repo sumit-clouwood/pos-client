@@ -387,6 +387,8 @@ export default {
   },
   watch: {
     updateTableArea: function() {
+      // eslint-disable-next-line no-console
+      console.log(this.updateTableArea)
       this.clearTableArea()
       this.updateTableOnArea()
     },
