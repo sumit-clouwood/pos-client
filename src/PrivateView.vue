@@ -1,0 +1,252 @@
+<!--
+The App.vue file is the root component that all other components are nested within.
+-->
+<template>
+  <div>
+    <!--<div id="nav">-->
+    <!--<router-link to="/">Home</router-link> |-->
+    <!--<router-link to="/about">About</router-link>-->
+    <!--</div>-->
+    <div v-if="loggedIn && storeContext">
+      <section v-if="errored">
+        <p>
+          We're sorry, we're not able to proceed at the moment, please try back
+          later
+        </p>
+        <p>Technical info: {{ errored }}</p>
+      </section>
+      <div v-else-if="loading">
+        <ul class="ullist-inventory-location loading-view pl-0 pt-2">
+          <li class="p-3">
+            <span class="margin220">
+              <Preloader />
+              <h2 class="text-center blue-middle">Loading Data...</h2>
+              <ul class="loading-modules">
+                <li
+                  v-for="(val, key) in modules"
+                  :key="key"
+                  style="text-transform:capitalize"
+                >
+                  Loading {{ key }}
+                  <div class="progress">
+                    <div
+                      class="progress-bar progressIncrement"
+                      role="progressbar"
+                      aria-valuenow="50"
+                      aria-valuemin="1"
+                      aria-valuemax="100"
+                      v-bind:style="{ width: progressIncrement + '%' }"
+                    >
+                      {{ progressIncrement }} %
+                    </div>
+                  </div>
+                  <span>{{ val }}</span>
+                </li>
+              </ul>
+            </span>
+          </li>
+        </ul>
+      </div>
+      <router-view v-else />
+    </div>
+  </div>
+</template>
+<script>
+/* eslint-disable no-console */
+/* global $ */
+import * as CONST from '@/constants'
+import Cookie from '@/mixins/Cookie'
+import ResizeMixin from '@/mixins/ResizeHandler'
+import bootstrap from '@/bootstrap'
+import Preloader from '@/components/util/Preloader'
+import { mapState, mapGetters } from 'vuex'
+export default {
+  name: 'PrivateView',
+  props: {},
+  components: {
+    Preloader,
+  },
+  mixins: [Cookie, ResizeMixin],
+  data: function() {
+    return {
+      storeContext: true,
+      loading: true,
+      errored: false,
+      progressIncrement: 0,
+      orderId: null,
+      tableId: null,
+    }
+  },
+  methods: {
+    setupExternalScripts() {
+      setTimeout(() => {
+        require('@/../public/js/pos_script.js')
+      }, 2000)
+    },
+    setupRoutes() {
+      if (this.orderId && this.$route.name === 'UpdateDeliveryOrder') {
+        this.$store.commit('order/ORDER_SOURCE', 'deliveryManager')
+        this.$store
+          .dispatch('order/selectedOrderDetails', this.orderId)
+          .then(() => {
+            this.$store.dispatch(
+              'order/addDeliveryOrder',
+              this.$store.state.order.selectedOrder,
+              {
+                root: true,
+              }
+            )
+          })
+      }
+      if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
+        this.$store.commit('order/ORDER_SOURCE', 'backend')
+        this.$store.dispatch('order/modifyOrder', this.orderId)
+        this.$store.dispatch('order/fetchModificationReasons')
+      }
+    },
+    setupServiceWorker() {
+      if ('serviceWorker' in navigator && 'SyncManager' in window) {
+        console.log('service worker and syncmanager are in window')
+        setTimeout(() => {
+          console.log('waiting for servicer worker ready')
+          navigator.serviceWorker.ready
+            .then(registration => {
+              console.log('servie worker is ready')
+              Notification.requestPermission()
+              console.log('asking service worker to sync')
+              return registration.sync.register('syncpos')
+            })
+            .then(function() {})
+            .catch(function() {
+              // system was unable to register for a sync,
+              // this could be an OS-level restriction
+            })
+        }, 3000)
+      }
+      setTimeout(() => {
+        navigator.serviceWorker.addEventListener('message', event => {
+          console.log('*** event received from service worker', event)
+          if (event.data.msg == 'token') {
+            console.log('setting new token to client')
+            localStorage.setItem('token', event.data.data)
+            bootstrap.loadUI().then(() => {
+              setTimeout(() => {
+                this.loading = false
+                this.progressIncrement = '100%'
+              }, 100)
+            })
+          }
+        })
+      }, 3000)
+    },
+    setup() {
+      const interval = setInterval(() => {
+        this.progressIncrement += 10
+        if (this.progressIncrement > 100) {
+          this.progressIncrement = 0
+        }
+      }, 1000)
+      bootstrap
+        .setup(this.$store)
+        .then(() => {
+          setTimeout(() => {
+            clearInterval(interval)
+            this.progressIncrement = 100
+          }, 100)
+          setTimeout(() => {
+            this.loading = false
+          }, 300)
+          console.log('bootstrap done, delayed loading')
+          this.setupServiceWorker()
+          this.setupRoutes()
+          this.setupExternalScripts()
+        })
+        .catch(error => {
+          //this.errored = error
+          //setTimeout(() => {
+          console.log(error, ', dispatch logout')
+          this.$store.dispatch('auth/logout', error)
+          this.errored = ''
+          //}, 1000 * 10)
+          console.log('some catch ', error)
+        })
+    },
+  },
+  created() {},
+  watch: {
+    $route(to, from) {
+      let orderType = {
+        OTview: 'Walk In',
+        OTApi: 'walk_in',
+      }
+      //{ OTview: 'Delivery', OTApi: 'call_center' }
+      switch (to.name) {
+        case 'Dinein':
+          orderType = {
+            OTview: 'Dine In',
+            OTApi: 'dine_in',
+          }
+          break
+        case 'Carhop':
+          orderType = {
+            OTview: 'Carhop',
+            OTApi: CONST.ORDER_TYPE_CARHOP,
+          }
+          break
+      }
+      this.$store.commit('order/ORDER_TYPE', orderType)
+      // react to route changes...
+      console.log('route changed ', to, from)
+      setTimeout(() => {
+        $('.setting-dropdown').hide()
+        $('.setting-dropdown').addClass('animated zoomIn')
+      }, 200)
+
+      if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
+        this.$store.commit('order/ORDER_SOURCE', 'backend')
+        this.$store.dispatch('order/modifyOrder', this.orderId)
+        this.$store.dispatch('order/fetchModificationReasons')
+      }
+    },
+  },
+  computed: {
+    ...mapState({
+      defaultLanguage: state =>
+        state.location.store ? state.location.store.default_language : false,
+    }),
+    ...mapState('sync', ['modules']),
+    ...mapGetters('auth', ['loggedIn']),
+  },
+  //life cycle hooks
+  mounted() {
+    if (!this.$store.state.context.storeId) {
+      this.errored = 'Please provide brand id and store id in url'
+      this.storeContext = false
+    } else {
+      this.storeContext = true
+    }
+
+    if (this.$route.params.order_id) {
+      this.orderId = this.$route.params.order_id
+    }
+    if (this.$route.params.table_id) {
+      this.tableId = this.$route.params.table_id
+    }
+
+    if (this.$store.state.auth.logoutAction === 'switchCashier') {
+      this.loading = false
+    } else {
+      this.setup()
+    }
+
+    let vh = window.innerHeight * 0.01
+    // Then we set the value in the --vh custom property to the root of the document
+    document.documentElement.style.setProperty('--vh', `${vh}px`)
+    if (this.$router.currentRoute.name === 'Dinein') {
+      this.loading = false
+      return
+    }
+  },
+}
+//vanilla js
+</script>
