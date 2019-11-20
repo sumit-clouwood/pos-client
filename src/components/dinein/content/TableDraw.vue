@@ -391,6 +391,7 @@ export default {
       $('#' + this.activeArea._id).click()
       this.clearTableArea()
       this.updateTableOnArea()
+      $('#all-tables').click()
     },
   },
   methods: {
