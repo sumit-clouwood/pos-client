@@ -331,6 +331,7 @@ export default {
       cancelReservationMsg: 'Do you want to cancel this reservation?',
       order: false,
       updateTableArea: 0,
+      deletion: false,
       selectedReservationId: '',
       componentKey: 0,
       moveReservation: false,
@@ -382,8 +383,10 @@ export default {
   },
   watch: {
     updateTableArea: function() {
-      // eslint-disable-next-line no-console
-      alert('Updated table status.')
+      if (this.deletion || this.brand.book_table) {
+        alert('Updated table status.')
+        this.deletion = false
+      }
       this.clearTableArea()
       this.updateTableOnArea()
     },
@@ -690,6 +693,7 @@ export default {
               this.$store.dispatch('dinein/getDineInTables', false).then(() => {
                 /*this.setTableProperties()*/
                 this.updateTableArea += 1
+                this.deletion = true
               })
             })
           })
