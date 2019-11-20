@@ -379,16 +379,11 @@ export default {
     // eslint-disable-next-line no-console
     // console.log(this.updateTableArea)
     // if (this.updateTableArea) this.setTableProperties()
-    /*let scope = this
-    setTimeout(function() {
-      scope.setTableProperties()
-      // scope.updateTableArea = false
-    }, 1000)*/
   },
   watch: {
     updateTableArea: function() {
       // eslint-disable-next-line no-console
-      console.log(this.updateTableArea)
+      alert('Updated table status.')
       this.clearTableArea()
       this.updateTableOnArea()
     },
