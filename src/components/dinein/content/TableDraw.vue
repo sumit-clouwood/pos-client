@@ -330,7 +330,7 @@ export default {
       addOrSplit: 'Book Table',
       cancelReservationMsg: 'Do you want to cancel this reservation?',
       order: false,
-      updateTableArea: false,
+      updateTableArea: 0,
       selectedReservationId: '',
       componentKey: 0,
       moveReservation: false,
@@ -379,11 +379,18 @@ export default {
     // eslint-disable-next-line no-console
     // console.log(this.updateTableArea)
     // if (this.updateTableArea) this.setTableProperties()
-    let scope = this
+    /*let scope = this
     setTimeout(function() {
       scope.setTableProperties()
       // scope.updateTableArea = false
-    }, 1000)
+    }, 1000)*/
+  },
+  watch: {
+    updateTableArea: function() {
+      alert(this.updateTableArea)
+      this.clearTableArea()
+      this.updateTableOnArea()
+    },
   },
   methods: {
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
@@ -481,7 +488,7 @@ export default {
                         dis.selectedTableD3,
                         dis.selectedTableData
                       )*/
-                      this.updateTableArea = true
+                      this.updateTableArea += 1
                       // this.setTableProperties()
                       // container.datum(dis.selectedTableD3).call(updateFunction)
                       /*$(makeId)
@@ -526,7 +533,7 @@ export default {
       this.$router.push({ path: URL })
     },
     clearTableArea() {
-      d3.selectAll('.dinein_table_parent > *').remove()
+      d3.selectAll('.tables').remove()
     },
     updateDineInOrderStatus: function(orderStatus) {
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
@@ -686,7 +693,7 @@ export default {
             this.$store.dispatch('dinein/getDineInArea', false).then(() => {
               this.$store.dispatch('dinein/getDineInTables', false).then(() => {
                 /*this.setTableProperties()*/
-                this.updateTableArea = true
+                this.updateTableArea += 1
               })
             })
           })
