@@ -4,7 +4,7 @@ The App.vue file is the root component that all other components are nested with
 <template>
   <div>
     <login v-if="!cashierContext" class="login"></login>
-    <router-view />
+    <router-view v-else />
   </div>
 </template>
 <script>
