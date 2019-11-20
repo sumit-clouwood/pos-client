@@ -295,6 +295,7 @@ export default {
     ...mapState('dinein', [
       'tablesOnArea',
       'activeArea',
+      'statusFlag',
       'areas',
       'orderOnTables',
       'tableStatus',
@@ -372,7 +373,7 @@ export default {
     // this.updateTableOnArea()
   },
   updated() {
-    if (this.selectedArea != this.activeArea._id) {
+    if (this.selectedArea != this.activeArea._id || this.statusFlag > 0) {
       this.clearTableArea()
       this.updateTableOnArea()
       this.selectedArea = this.activeArea._id

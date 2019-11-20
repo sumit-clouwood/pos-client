@@ -51,7 +51,7 @@ const actions = {
   },
   getTags({ commit }) {
     DineInService.getReservationTags().then(response => {
-       commit(mutation.TAGS, response.data)
+      commit(mutation.TAGS, response.data)
     })
   },
 }

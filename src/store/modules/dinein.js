@@ -13,6 +13,7 @@ const state = {
   kitchenPrint: true,
   bills: null,
   guests: 1,
+  statusFlag: 0,
   tableZoomScale: 0.4,
   orderDetails: false,
   completedOrderDetails: {},
@@ -513,6 +514,7 @@ const mutations = {
   },
   [mutation.LOADING](state, loadingStatus) {
     state.loading = loadingStatus
+    if (!loadingStatus) state.statusFlag = 0
   },
   [mutation.ORDER_ON_TABLES](state, orderOnTables) {
     state.orderOnTables = orderOnTables
@@ -530,6 +532,7 @@ const mutations = {
     state.availableTables = availableTables
   },
   [mutation.RESERVATION_ID](state, reservationId) {
+    state.statusFlag = Math.random()
     state.reservation = reservationId
     localStorage.setItem('reservationId', reservationId)
   },
@@ -557,6 +560,7 @@ const mutations = {
     state.POSMoveTableSelection = tableDetails
   },
   [mutation.RESERVATION_RESPONSE](state, reservation) {
+    state.statusFlag = Math.random()
     state.reservationId = reservation.id
     localStorage.setItem('reservationId', reservation.id)
   },
