@@ -288,7 +288,7 @@ export default {
     ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['waiter', 'carhop']),
     ...mapState('location', ['availableLanguages', 'language']),
-    ...mapState('dinein', ['dineInTabType']),
+    ...mapState('dinein', ['dineInTabType', 'activeArea']),
     ...mapState('sync', ['online']),
     ...mapState({
       latestOnlineOrders: state =>
@@ -379,7 +379,11 @@ export default {
       this.$store.commit('dinein/SET_PAGE_NO', 1)
       // eslint-disable-next-line no-console
       console.log(orderStatus)
-      this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
+      this.$store
+        .dispatch('dinein/updateDineInOrderStatus', orderStatus)
+        .then(() => {
+          $('#' + this.activeArea._id).click()
+        })
       if (orderStatus.title == 'running' || orderStatus.title == 'completed') {
         this.$store.commit('dinein/KITCHEN_PRINT', false)
       } else {

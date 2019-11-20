@@ -124,13 +124,17 @@
                     </div>
                   </div>
                 </div>
-                <div class="table-order-footer" v-if="brand.number_of_guests">
+                <div
+                  class="table-order-footer"
+                  v-if="brand && brand.number_of_guests"
+                >
                   <div class="m-1 buttons">
                     <span
                       data-toggle="modal"
                       data-target="#placeOrder"
                       data-dismiss="modal"
                       class="table-popup popbtn bg-success font-weight-bold"
+                      @click="closeMyself"
                     >
                       {{ _t(addOrSplit) }}
                     </span>
@@ -144,7 +148,7 @@
                       @click="newOrder(false, brand.book_table)"
                       class="table-popup popbtn bg-success font-weight-bold"
                     >
-                      {{ _t(addOrSplit) }} dd
+                      {{ _t(addOrSplit) }}
                     </span>
                   </div>
                 </div>
@@ -326,6 +330,8 @@ export default {
       addOrSplit: 'Book Table',
       cancelReservationMsg: 'Do you want to cancel this reservation?',
       order: false,
+      updateTableArea: 0,
+      deletion: false,
       selectedReservationId: '',
       componentKey: 0,
       moveReservation: false,
@@ -371,6 +377,20 @@ export default {
       this.updateTableOnArea()
       this.selectedArea = this.activeArea._id
     }
+    // eslint-disable-next-line no-console
+    // console.log(this.updateTableArea)
+    // if (this.updateTableArea) this.setTableProperties()
+  },
+  watch: {
+    updateTableArea: function() {
+      /*if (this.deletion || this.brand.book_table) {
+        alert('Updated table status.')
+        this.deletion = false
+      }*/
+      $('#' + this.activeArea._id).click()
+      this.clearTableArea()
+      this.updateTableOnArea()
+    },
   },
   methods: {
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
@@ -378,6 +398,9 @@ export default {
         // $('#id' + this.selectedTableId).addClass('class', 'dinein_table active')
         d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
       },*/
+    closeMyself() {
+      $('#tooltipdata').hide()
+    },
     chairsValidation() {
       /*if (this.guests > this.selectedTableData.chairs) {
           this.validationErrors =
@@ -461,14 +484,16 @@ export default {
                   dis.$store
                     .dispatch('dinein/getDineInTables', false)
                     .then(() => {
-                      dis.setTableColour(
+                      /*dis.setTableColour(
                         dis.selectedTableD3,
                         dis.selectedTableData
-                      )
+                      )*/
+                      this.updateTableArea += 1
+                      // this.setTableProperties()
                       // container.datum(dis.selectedTableD3).call(updateFunction)
-                      $(makeId)
+                      /*$(makeId)
                         .find('g')
-                        .removeAttr('style')
+                        .removeAttr('style')*/
                       // dis.clearTableArea()
                       // dis.updateTableOnArea()
                     })
@@ -508,7 +533,7 @@ export default {
       this.$router.push({ path: URL })
     },
     clearTableArea() {
-      d3.selectAll('.dinein_table_parent > *').remove()
+      d3.selectAll('.tables').remove()
     },
     updateDineInOrderStatus: function(orderStatus) {
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
@@ -614,7 +639,7 @@ export default {
         d3.select(a[i])
           .select('text')
           .text(`${d.number}`)
-          .attr('style', 'font-size:50px')
+          .attr('style', 'font-size:60px')
           .attr('style', 'font-weight:bold')
         // .attr('fill', '#565353')
         let data = d
@@ -639,36 +664,8 @@ export default {
         $(makeId)
           .find('g')
           .removeAttr('style')
-        /*.attr(
-              'transform',
-              d3.zoomIdentity.scale(dis.tableZoomScale).translate(0, 0)
-            )*/
-        // .zoomIdentity.scale(dis.tableZoomScale)
-        // .translate(0, 0)
       })
     },
-    /*isSupported() {
-        let ua = navigator.userAgent.toLowerCase()
-        if (ua.indexOf('safari') != -1) {
-          if (ua.indexOf('ipad') > -1) {
-            return false
-          } else if (ua.indexOf('Safari') > -1) {
-            return false
-          } else if (ua.indexOf('macintosh') > -1 && ua.indexOf('chrome') > -1) {
-            return true
-          } else if (ua.indexOf('macintosh') > -1) {
-            return false
-          } else if (ua.indexOf('chrome') > -1) {
-            return true
-          } else if (ua.indexOf('mozilla') > -1) {
-            return false
-          } else {
-            return false
-          }
-        } else {
-          return false
-        }
-      },*/
     confirmCancelReservation() {
       let makeId = '#id_' + this.selectedTableId
       $(makeId)
@@ -695,25 +692,13 @@ export default {
           .then(() => {
             this.$store.dispatch('dinein/getDineInArea', false).then(() => {
               this.$store.dispatch('dinein/getDineInTables', false).then(() => {
-                // let dis = this
-                // setTimeout(function() {
-                // dis.setTableColour(dis.selectedTableD3, dis.selectedTableData)
-                // }, 250)
-                // this.clearTableArea()
-                // this.updateTableOnArea()
-                /*d3.selectAll('.dinein_table_parent').each(() => {
-                          this.drawViews()
-                          this.setTableProperties()
-                        })*/
-                this.clearTableArea()
-                this.updateTableOnArea()
+                /*this.setTableProperties()*/
+                this.updateTableArea += 1
+                this.deletion = true
               })
             })
           })
         $('#tooltipdata').hide()
-        // this.updateTableOnArea()
-        /*this.clearTableArea()
-          this.setTableProperties()*/
       })
       this.componentKey += 1
       $('#range')
@@ -733,11 +718,6 @@ export default {
         .getBoundingClientRect()
     },
     showOptions(datum, i, a) {
-      /*d3.select(d3.select(a[i]).parentNode)
-          .selectAll('path')
-          .style('stroke', 'green')
-          .style('stroke-width', '1')*/
-
       this.selectedTableData = datum
       this.guests = 1
       this.validationErrors = ''
@@ -746,21 +726,13 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
-      // eslint-disable-next-line no-console
-      console.log(this.selectedTableData, this.orderDetails.length)
+      this.addOrSplit =
+        this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
       if (this.brand.book_table || this.orderDetails.length) {
         // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
-        this.addOrSplit =
-          this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
         let range = $('#range')
         let top = datum.table_position_coordinate.y + 20 || 0
-        // let left = datum.table_position_coordinate.x + 35 || 100
-        // $('#id_' + datum._id).click(function(e) {
         let posX = $('#id_' + datum._id).offset().left
-        // let posY = $('#id_' + datum._id).offset().top
-        /*let tableWidth = $('#id_' + datum._id)
-            .find('svg')
-            .width()*/
         let getWidth = 361 / 2
         if (this.orderDetails.length === 0) {
           getWidth = 155 / 2
@@ -790,7 +762,11 @@ export default {
               'px; display:block'
           )
       } else {
-        this.newOrder(false, this.brand.book_table)
+        if (this.brand.number_of_guests) {
+          $('#placeOrder').modal('show')
+        } else {
+          this.newOrder(false, this.brand.book_table)
+        }
       }
     },
     drawViews() {

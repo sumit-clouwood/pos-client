@@ -129,7 +129,9 @@ export default {
 @import '../../../../assets/scss/pixels_rem.scss';
 @import '../../../../assets/scss/variables.scss';
 @import '../../../../assets/scss/mixins.scss';
-
+.search-field-icon.home {
+  display: none;
+}
 @include responsive(mobile) {
   .search-field {
     margin-top: 0;
