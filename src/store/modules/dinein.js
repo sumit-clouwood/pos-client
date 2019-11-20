@@ -80,7 +80,7 @@ const actions = {
   updateDineInOrderStatus({ dispatch, commit }, orderStatus) {
     commit(mutation.DINE_IN_TAB_TYPE, orderStatus.title)
     if (orderStatus.pageId) {
-      let loader = false /*orderStatus.loader ? orderStatus.loader : true*/
+      let loader = orderStatus.loader /*? orderStatus.loader : true*/
       dispatch(orderStatus.pageId, loader)
     }
   },
@@ -113,7 +113,7 @@ const actions = {
         .catch(er => reject(er))
     })
   },
-  async getBookedTables({ commit }, loader = true) {
+  async getBookedTables({ commit }, loader = false) {
     // eslint-disable-next-line no-console
     console.log('all bookend table')
 
