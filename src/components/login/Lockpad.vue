@@ -38,13 +38,7 @@
         <img src="~@/assets/images/close.png" class="rem" alt="back" />
       </div>
     </div>
-    <div class="modal-footer-block">
-      <p>
-        <router-link :to="store">
-          Back to Store
-        </router-link>
-      </p>
-    </div>
+    <div class="modal-footer-block"><p>&nbsp;</p></div>
   </div>
 </template>
 
