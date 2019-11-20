@@ -44,7 +44,6 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import Progress from '@/components/util/Progress'
-import AuthService from '@/services/data/AuthService'
 
 export default {
   name: 'Lockpad',
@@ -97,40 +96,14 @@ export default {
         })
     },
   },
+
   mounted() {
     if (this.$route.name === 'cashierLogin') {
       if (this.store) {
         this.storeUrl = this.store
         this.brand = this.brandId
       }
-
-      localStorage.setItem('token', '')
-      this.$store.commit('auth/SET_TOKEN', '')
-      this.$store.commit('auth/LOGOUT_ACTION', 'switchCashier')
-      //this.$router.push({ path: '/cashier-login/' + this.storeUrl })
-      AuthService.logout().then(() => {})
-
-      if (this.$route.name === 'cashierLogin') {
-        history.pushState(null, null, location.href)
-        window.onpopstate = function() {
-          history.go(1)
-        }
-      } else {
-        window.onpopstate = function() {
-          return true
-        }
-      }
     }
-    // this.$router.beforeEach((to, from, next) => {
-    //   if (
-    //     from.name === 'cashierLogin' &&
-    //     to.name !== 'cashierLogin' &&
-    //     !localStorage.getItem('token')
-    //   ) {
-    //     return this.$router.push({ path: '/cashier-login/' + this.storeUrl })
-    //   }
-    //   return next()
-    // })
   },
 }
 </script>

@@ -34,6 +34,7 @@ export default {
   methods: {
     setup() {
       this.setupRouting()
+      this.setupEvents()
       this.$store.dispatch('auth/checkLogin')
     },
     setupRouting() {
@@ -46,6 +47,18 @@ export default {
           brand: this.$store.getters['context/brand'],
           store: this.$store.getters['context/store'],
         })
+      }
+    },
+    setupEvents() {
+      function pushHistory() {
+        history.go(1)
+      }
+      //restrict back button for cashier login only
+      if (this.$route.name === 'cashierLogin') {
+        history.pushState(null, null, location.href)
+        window.addEventListener('onpopstate', pushHistory, false)
+      } else {
+        window.removeEventListener('onpopstate', pushHistory, false)
       }
     },
   },
