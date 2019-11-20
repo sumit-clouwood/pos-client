@@ -113,7 +113,7 @@ const actions = {
         .catch(er => reject(er))
     })
   },
-  async getBookedTables({ commit }, loader = false) {
+  async getBookedTables({ commit }, loader = true) {
     // eslint-disable-next-line no-console
     console.log('all bookend table')
 
