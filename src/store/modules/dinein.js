@@ -114,15 +114,16 @@ const actions = {
         .catch(er => reject(er))
     })
   },
-  async getBookedTables({ commit }, loader = true) {
+  async getBookedTables({ commit }, loader = false) {
     // eslint-disable-next-line no-console
     console.log('all bookend table')
 
     if (loader) commit(mutation.LOADING, loader)
     /*localStorage.setItem('reservationId', false)*/
-    const response = await DineInService.getAllBookedTables()
-    commit(mutation.BOOKED_TABLES, response.data)
-    if (loader) commit(mutation.LOADING, false)
+    await DineInService.getAllBookedTables().then(response => {
+      commit(mutation.BOOKED_TABLES, response.data)
+      if (loader) commit(mutation.LOADING, false)
+    })
     return Promise.resolve()
   },
 
