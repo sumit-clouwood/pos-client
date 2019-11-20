@@ -383,10 +383,10 @@ export default {
   },
   watch: {
     updateTableArea: function() {
-      if (this.deletion || this.brand.book_table) {
+      /*if (this.deletion || this.brand.book_table) {
         alert('Updated table status.')
         this.deletion = false
-      }
+      }*/
       this.clearTableArea()
       this.updateTableOnArea()
     },
