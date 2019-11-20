@@ -383,10 +383,11 @@ export default {
   },
   watch: {
     updateTableArea: function() {
-      if (this.deletion || this.brand.book_table) {
+      /*if (this.deletion || this.brand.book_table) {
         alert('Updated table status.')
         this.deletion = false
-      }
+      }*/
+      $('#' + this.activeArea._id).click()
       this.clearTableArea()
       this.updateTableOnArea()
     },
@@ -549,10 +550,6 @@ export default {
     },
     updateTableOnArea() {
       let dis = this
-      // eslint-disable-next-line no-console
-      console.log('startD3')
-      // eslint-disable-next-line no-console
-      console.log(this.$el)
       this.page = d3.select(this.$el).select('#dine-in-area')
       this.svg = d3
         .select(this.$el)
@@ -573,13 +570,9 @@ export default {
         .attr('class', 'dinein_table')
         .attr('draggable', 'true')
         .attr('x', function(d) {
-          // eslint-disable-next-line no-console
-          console.log('startD3-2', d)
           return d.table_position_coordinate.x || 0
         })
         .attr('y', function(d) {
-          // eslint-disable-next-line no-console
-          console.log('startD3-3', dis.tablesOnArea)
           return d.table_position_coordinate.y || 0
         })
         .attr('table_id', d => d._id)
@@ -594,8 +587,6 @@ export default {
       /*if (this.selectedTableD3)
           d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
       d3.selectAll('.dinein_table_parent').each(() => {
-        // eslint-disable-next-line no-console
-        console.log('startD3-4')
         this.drawViews()
         this.setTableProperties()
       })
@@ -644,8 +635,6 @@ export default {
     },
     setTableProperties() {
       let dis = this
-      // eslint-disable-next-line no-console
-      console.log('startD3-6')
       d3.selectAll('.dinein_table').each((d, i, a) => {
         d3.select(a[i])
           .select('text')
@@ -782,8 +771,6 @@ export default {
     },
     drawViews() {
       if (this.activeArea) {
-        // eslint-disable-next-line no-console
-        console.log('startD3-5')
         this.activeArea.top_view.forEach((element, i) => {
           d3.select(this.$el)
             .select('#dine-in-area > g')

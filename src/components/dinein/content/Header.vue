@@ -8,12 +8,13 @@
       </ul>
       <ul class="ullist-floor" v-if="areas">
         <li
+          v-for="(area, index) in areas"
+          :key="index"
+          :id="area._id"
           :class="{
             active: activeArea._id === area._id,
             'color-dashboard-background': true,
           }"
-          v-for="(area, index) in areas"
-          :key="index"
           @click="areaSelection(area)"
         >
           <a role="button" class="cursor-pointer text-uppercase">
