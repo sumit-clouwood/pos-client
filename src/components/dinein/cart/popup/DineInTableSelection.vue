@@ -6,7 +6,7 @@
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
           <h4 class="customer-title color-text-invert">
-            {{ _t('Move') + ' ' + _t('Table') }}
+            {{ _t(tableHeaderName) }}
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
@@ -43,7 +43,6 @@
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="discount-save-btn"
-              data-dismiss="modal"
               @click="moveSelectedTable"
             >
               {{ _t('Ok') }}
@@ -52,7 +51,6 @@
               @click="removeSelectedTable"
               type="button"
               class="btn btn-danger"
-              data-dismiss="modal"
             >
               {{ _t('Cancel') }}
             </button>
@@ -65,6 +63,7 @@
 </template>
 
 <script>
+/*global $*/
 import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'DineInTableSelection',
@@ -74,6 +73,16 @@ export default {
       moveTableDetails: '',
       tableBookedAlert: '',
     }
+  },
+  props: {
+    tableHeaderName: {
+      type: String,
+      default: 'Move Table',
+    },
+    tableStatusByDate: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
     ...mapGetters('location', ['_t']),
@@ -113,6 +122,7 @@ export default {
       } else {
         this.selectedTableMove = ''
       }
+      $('#dine-in-table-selection').modal('toggle')
     },
     removeSelectedTable: function() {
       if (this.selectedTable) {
@@ -131,6 +141,7 @@ export default {
         status: 'move_table',
       }
       this.$store.dispatch('dinein/moveTable', data)
+      $('#dine-in-table-selection').modal('hide')
     },
   },
 }

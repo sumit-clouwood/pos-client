@@ -515,7 +515,10 @@ span.dinefor-paynow {
     width: $px24;
   }
 }
-
+.dine-in-wrapper > .navigatorHeight {
+  //min-height: calc(138vh - 17rem);
+  min-height: 101vh;
+}
 .table-pos-btn {
   .popup-btn-save {
     height: $px40;

@@ -78,4 +78,24 @@ export default {
     // action: add, move_waiting_to_reservation
     return DataService.post(`/model/reservations/${action}`, data)
   },
+  bookings(page, limit, UTC_Date) {
+    return DataService.get(
+      `/model/reservations?page_id=reservations_main_tbl&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&status=reserved&byColumn=1&orderBy=priority&start_date=${UTC_Date}`
+    )
+  },
+  getDetails(mobileNo) {
+    return DataService.get(
+      `/model/reservations?page_id=reservations_main_tbl&query=&mobile=${mobileNo}`
+    )
+  },
+  storeUsers() {
+    return DataService.get(
+      '/model/store_users?page_id=store_users_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=name&brand_role=&undefined='
+    )
+  },
+  getReservationTags() {
+    return DataService.get(
+      '/model/reservation_tags?page_id=reservation_tags_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=priority'
+    )
+  },
 }

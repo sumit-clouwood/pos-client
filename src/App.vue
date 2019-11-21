@@ -1,395 +1,62 @@
-<!--
-The App.vue file is the root component that all other components are nested within.
--->
 <template>
   <div>
-    <!--<div id="nav">-->
-    <!--<router-link to="/">Home</router-link> |-->
-    <!--<router-link to="/about">About</router-link>-->
-    <!--</div>-->
-    <div v-if="loggedIn && storeContext">
-      <section v-if="errored">
-        <p>
-          We're sorry, we're not able to proceed at the moment, please try back
-          later
-        </p>
-        <p>Technical info: {{ errored }}</p>
-      </section>
-      <div v-else-if="loading">
-        <ul class="ullist-inventory-location loading-view pl-0 pt-2">
-          <li class="p-3">
-            <span class="margin220">
-              <Preloader />
-              <h2 class="text-center blue-middle">Loading Data...</h2>
-              <ul class="loading-modules">
-                <li
-                  v-for="(val, key) in modules"
-                  :key="key"
-                  style="text-transform:capitalize"
-                >
-                  Loading {{ key }}
-                  <div class="progress">
-                    <div
-                      class="progress-bar progressIncrement"
-                      role="progressbar"
-                      aria-valuenow="50"
-                      aria-valuemin="1"
-                      aria-valuemax="100"
-                      v-bind:style="{ width: progressIncrement + '%' }"
-                    >
-                      {{ progressIncrement }} %
-                    </div>
-                  </div>
-                  <span>{{ val }}</span>
-                </li>
-              </ul>
-            </span>
-          </li>
-        </ul>
-      </div>
-      <router-view v-else />
-    </div>
-    <div v-else>
-      <Login />
-    </div>
-    <div class="app-notification" v-show="appUpdateNotification">
-      <span class="title">Application update is available.</span>
-      <button class="button" @click="reloadWindow">UPDATE</button>
-      <button class="button" @click="closeNotification">No thanks</button>
-      <div tabindex="0" role="button" class="close" @click="closeNotification">
-        <div class="btn"></div>
-      </div>
-    </div>
+    <!-- Private view -->
+    <private-view v-if="privateContext" class="private-view"></private-view>
+    <!-- Public view -->
+    <public-view v-else class="public-view"></public-view>
+    <app-notification></app-notification>
   </div>
 </template>
 <script>
-/* eslint-disable no-console */
-/* global $ */
+import PublicView from './PublicView'
+import PrivateView from './PrivateView'
+import AppNotification from './AppNotification'
 import DataService from '@/services/DataService'
-import * as CONST from '@/constants'
-import Cookie from '@/mixins/Cookie'
-import ResizeMixin from '@/mixins/ResizeHandler'
-import bootstrap from '@/bootstrap'
-import Preloader from '@/components/util/Preloader'
-import Login from '@/components/login/Login'
-import { mapState, mapGetters } from 'vuex'
+
 export default {
   name: 'App',
-  props: {},
   components: {
-    Preloader,
-    Login,
-  },
-  mixins: [Cookie, ResizeMixin],
-  data: function() {
-    return {
-      storeContext: true,
-      loading: true,
-      errored: false,
-      progressIncrement: 0,
-      orderId: null,
-      tableId: null,
-    }
-  },
-  methods: {
-    reloadWindow() {
-      localStorage.setItem('update_available', false)
-      window.location.reload(true)
-    },
-    closeNotification() {
-      this.$store.commit('sync/setAppUpdateNotification', false)
-    },
-  },
-  created() {
-    if (!this.appUpdateNotification) {
-      this.$store.commit(
-        'sync/setAppUpdateNotification',
-        localStorage.getItem('update_available') === 'true' ? true : false
-      )
-    }
-    DataService.setStore(this.$store)
-    if (this.$route.params.brand_id) {
-      this.$store.commit('context/SET_BRAND_ID', this.$route.params.brand_id)
-      localStorage.setItem('brand_id', this.$route.params.brand_id)
-      this.$store.commit('context/SET_STORE_ID', this.$route.params.store_id)
-      localStorage.setItem('store_id', this.$route.params.store_id)
-      DataService.setContext({
-        brand: this.$store.getters['context/brand'],
-        store: this.$store.getters['context/store'],
-      })
-    }
-    /*else if (!this.$store.state.context.storeId) {}*/
-    this.$store
-      .dispatch('auth/checkLogin')
-      .then(() => {
-        if (!this.$store.state.context.storeId) {
-          this.errored = 'Please provide brand id and store id in url'
-          this.storeContext = false
-        } else {
-          this.storeContext = true
-        }
-      })
-      .catch(error => console.log(error))
-    if (this.$route.params.order_id) {
-      this.orderId = this.$route.params.order_id
-    }
-    if (this.$route.params.table_id) {
-      this.tableId = this.$route.params.table_id
-    }
-  },
-  watch: {
-    $route(to, from) {
-      let orderType = {
-        OTview: 'Walk In',
-        OTApi: 'walk_in',
-      }
-      //{ OTview: 'Delivery', OTApi: 'call_center' }
-      switch (to.name) {
-        case 'Dinein':
-          orderType = {
-            OTview: 'Dine In',
-            OTApi: 'dine_in',
-          }
-          break
-        case 'Carhop':
-          orderType = {
-            OTview: 'Carhop',
-            OTApi: CONST.ORDER_TYPE_CARHOP,
-          }
-          break
-      }
-      this.$store.commit('order/ORDER_TYPE', orderType)
-      // react to route changes...
-      console.log('route changed ', to, from)
-      setTimeout(() => {
-        $('.setting-dropdown').hide()
-        $('.setting-dropdown').addClass('animated zoomIn')
-      }, 200)
-
-      if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
-        this.$store.commit('order/ORDER_SOURCE', 'backend')
-        this.$store.dispatch('order/modifyOrder', this.orderId)
-        this.$store.dispatch('order/fetchModificationReasons')
-      }
-    },
-    loggedIn(newVal, oldVal) {
-      if (newVal && newVal !== oldVal) {
-        const interval = setInterval(() => {
-          this.progressIncrement += 10
-          if (this.progressIncrement > 100) {
-            this.progressIncrement = 0
-          }
-        }, 1000)
-        bootstrap
-          .setup(this.$store)
-          .then(() => {
-            setTimeout(() => {
-              clearInterval(interval)
-              this.progressIncrement = 100
-            }, 100)
-            setTimeout(() => {
-              this.loading = false
-            }, 300)
-            console.log('bootstrap done, delayed loading')
-            if ('serviceWorker' in navigator && 'SyncManager' in window) {
-              console.log('service worker and syncmanager are in window')
-              setTimeout(() => {
-                console.log('waiting for servicer worker ready')
-                navigator.serviceWorker.ready
-                  .then(registration => {
-                    console.log('servie worker is ready')
-                    Notification.requestPermission()
-                    console.log('asking service worker to sync')
-                    return registration.sync.register('syncpos')
-                  })
-                  .then(function() {})
-                  .catch(function() {
-                    // system was unable to register for a sync,
-                    // this could be an OS-level restriction
-                  })
-              }, 3000)
-            }
-            if (this.orderId && this.$route.name === 'UpdateDeliveryOrder') {
-              this.$store.commit('order/ORDER_SOURCE', 'deliveryManager')
-              this.$store
-                .dispatch('order/selectedOrderDetails', this.orderId)
-                .then(() => {
-                  this.$store.dispatch(
-                    'order/addDeliveryOrder',
-                    this.$store.state.order.selectedOrder,
-                    {
-                      root: true,
-                    }
-                  )
-                })
-            }
-            if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
-              this.$store.commit('order/ORDER_SOURCE', 'backend')
-              this.$store.dispatch('order/modifyOrder', this.orderId)
-              this.$store.dispatch('order/fetchModificationReasons')
-            }
-            setTimeout(() => {
-              require('@/../public/js/pos_script.js')
-            }, 2000)
-          })
-          .catch(error => {
-            //this.errored = error
-            //setTimeout(() => {
-            console.log(error, ', dispatch logout')
-            this.$store.dispatch('auth/logout', error)
-            this.errored = ''
-            //}, 1000 * 10)
-            console.log('some catch ', error)
-          })
-        setTimeout(() => {
-          navigator.serviceWorker.addEventListener('message', event => {
-            console.log('*** event received from service worker', event)
-            if (event.data.msg == 'token') {
-              console.log('setting new token to client')
-              localStorage.setItem('token', event.data.data)
-              bootstrap.loadUI().then(() => {
-                setTimeout(() => {
-                  this.loading = false
-                  this.progressIncrement = '100%'
-                }, 100)
-              })
-            }
-          })
-        }, 3000)
-      } else {
-        //logged out
-        if (!newVal && newVal !== oldVal) {
-          this.loading = true
-          this.progressIncrement = 0
-          this.$router.replace('/')
-        }
-      }
-    },
+    PublicView,
+    PrivateView,
+    AppNotification,
   },
   computed: {
-    ...mapState({
-      defaultLanguage: state =>
-        state.location.store ? state.location.store.default_language : false,
-    }),
-    ...mapState('sync', ['modules', 'appUpdateNotification']),
-    ...mapGetters('auth', ['loggedIn']),
+    privateContext() {
+      return this.$store.state.auth.token
+    },
   },
-  //life cycle hooks
+
+  watch: {
+    privateContext() {
+      this.setupRouting()
+    },
+  },
+
+  methods: {
+    setup() {
+      this.setupRouting()
+      this.$store.dispatch('auth/checkLogin')
+    },
+    setupRouting() {
+      if (this.$route.params.brand_id) {
+        this.$store.commit('context/SET_BRAND_ID', this.$route.params.brand_id)
+        localStorage.setItem('brand_id', this.$route.params.brand_id)
+        this.$store.commit('context/SET_STORE_ID', this.$route.params.store_id)
+        localStorage.setItem('store_id', this.$route.params.store_id)
+        DataService.setContext({
+          brand: this.$store.getters['context/brand'],
+          store: this.$store.getters['context/store'],
+        })
+      }
+    },
+  },
+
   mounted() {
-    let vh = window.innerHeight * 0.01
-    // Then we set the value in the --vh custom property to the root of the document
-    document.documentElement.style.setProperty('--vh', `${vh}px`)
-    if (this.$router.currentRoute.name === 'Dinein') {
-      this.loading = false
-      return
-    }
+    DataService.setStore(this.$store)
+    this.setup()
   },
 }
-//vanilla js
 </script>
 <style lang="scss">
 @import './assets/scss/style.scss';
-</style>
-<style lang="sass" scoped>
-.app-notification
-  -webkit-font-smoothing: antialiased
-  line-height: 100%
-  letter-spacing: .2px
-  -webkit-align-items: center
-  align-items: center
-  background-color: #202124
-  border: none
-  -webkit-border-radius: 4px
-  border-radius: 4px
-  bottom: 0
-  -webkit-box-sizing: border-box
-  box-sizing: border-box
-  color: #fff
-  display: -webkit-box
-  display: -webkit-flex
-  display: flex
-  -webkit-flex-wrap: wrap
-  flex-wrap: wrap
-  font-weight: 400
-  left: 0
-  margin: 24px
-  max-width: 640px
-  min-height: 52px
-  padding: 8px 24px
-  padding-right: 52px
-  position: fixed
-  right: auto
-  text-align: left
-  top: auto
-  white-space: normal
-  z-index: 990
-  .close
-    align-items: center
-    border: none
-    display: inline-flex
-    justify-content: center
-    outline: none
-    z-index: 0
-    cursor: pointer
-    position: absolute
-    right: 16px
-    top: 16px
-    .btn
-      height: 20px
-      opacity: .54
-      width: 20px
-      opacity: .7
-      background-image: url("/img/icons/close.png")
-      background-position: center
-      background-repeat: no-repeat
-      background-size: 20px
-    &:before
-      content: ''
-      display: block
-      opacity: 0
-      position: absolute
-      transition-duration: .15s
-      transition-timing-function: cubic-bezier(0.4,0.0,0.2,1)
-      z-index: -1
-      bottom: -10px
-      left: -10px
-      right: -10px
-      top: -10px
-      background: none
-      border-radius: 50%
-      box-sizing: border-box
-      transform: scale(0)
-      transition-property: transform,opacity
-    &:after
-      content: ''
-      height: 200%
-      position: absolute
-      top: -50%
-      left: -50%
-      width: 200%
-  .button
-    align-items: center
-    border: none
-    display: inline-flex
-    justify-content: center
-    outline: none
-    position: relative
-    z-index: 0
-    -webkit-font-smoothing: antialiased
-    font-family: 'Google Sans',Roboto,RobotoDraft,Helvetica,Arial,sans-serif
-    font-size: .875rem
-    letter-spacing: .25px
-    background: none
-    border-radius: 4px
-    box-sizing: border-box
-    color: #5f6368
-    cursor: pointer
-    font-weight: 500
-    height: 36px
-    outline: none
-    color: #8ab4f8
-    margin-left: 8px
-    min-width: auto
-    padding: 0 8px
-    text-decoration: none
 </style>

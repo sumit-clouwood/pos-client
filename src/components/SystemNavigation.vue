@@ -1,5 +1,5 @@
 <template>
-  <div class="navigation toggle-navigation">
+  <div class="navigation toggle-navigation navigatorHeight">
     <div class="logo" @click="collapseExpend">
       <a class="logo-link" role="button">
         <img src="img/other/icon.png" alt="icon" />

@@ -284,7 +284,7 @@
 /*global $*/
 import { mapState, mapGetters, mapActions } from 'vuex'
 import DateTime from '@/mixins/DateTime'
-import Preloader from '@/components/util/Preloader'
+import Preloader from '@/components/util/progressbar'
 import paginate from 'vuejs-paginate'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 
@@ -463,4 +463,5 @@ button#dropdownMenuButton {
   padding: 3px 10px;
   font-size: 12px;
 }
+/*.running-order-table-wrap,*/
 </style>

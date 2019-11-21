@@ -13,6 +13,7 @@ const state = {
   kitchenPrint: true,
   bills: null,
   guests: 1,
+  statusFlag: 0,
   tableZoomScale: 0.4,
   orderDetails: false,
   completedOrderDetails: {},
@@ -113,15 +114,16 @@ const actions = {
         .catch(er => reject(er))
     })
   },
-  async getBookedTables({ commit }, loader = true) {
+  async getBookedTables({ commit }, loader = false) {
     // eslint-disable-next-line no-console
     console.log('all bookend table')
 
     if (loader) commit(mutation.LOADING, loader)
     /*localStorage.setItem('reservationId', false)*/
-    const response = await DineInService.getAllBookedTables()
-    commit(mutation.BOOKED_TABLES, response.data)
-    if (loader) commit(mutation.LOADING, false)
+    await DineInService.getAllBookedTables().then(response => {
+      commit(mutation.BOOKED_TABLES, response.data)
+      if (loader) commit(mutation.LOADING, false)
+    })
     return Promise.resolve()
   },
 
@@ -421,10 +423,16 @@ const actions = {
     }
   },
   moveTable({ commit }, data) {
-    const params = [data.reservationid, 'move_table', { table_id: data.table }]
-    DineInService.updateReservationTable(...params).then(() => {
-      commit(mutation.RESERVATION_ID, data.reservationid)
-    })
+    if (data.reservationid != 'false') {
+      const params = [
+        data.reservationid,
+        'move_table',
+        { table_id: data.table },
+      ]
+      DineInService.updateReservationTable(...params).then(() => {
+        commit(mutation.RESERVATION_ID, data.reservationid)
+      })
+    }
   },
   updateItemGuest({ state, commit }, { item, guest }) {
     let action = 'add'
@@ -507,6 +515,7 @@ const mutations = {
   },
   [mutation.LOADING](state, loadingStatus) {
     state.loading = loadingStatus
+    if (!loadingStatus) state.statusFlag = 0
   },
   [mutation.ORDER_ON_TABLES](state, orderOnTables) {
     state.orderOnTables = orderOnTables
@@ -524,6 +533,7 @@ const mutations = {
     state.availableTables = availableTables
   },
   [mutation.RESERVATION_ID](state, reservationId) {
+    state.statusFlag = Math.random()
     state.reservation = reservationId
     localStorage.setItem('reservationId', reservationId)
   },
@@ -551,6 +561,7 @@ const mutations = {
     state.POSMoveTableSelection = tableDetails
   },
   [mutation.RESERVATION_RESPONSE](state, reservation) {
+    state.statusFlag = Math.random()
     state.reservationId = reservation.id
     localStorage.setItem('reservationId', reservation.id)
   },

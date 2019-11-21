@@ -1,0 +1,177 @@
+<template>
+  <div>
+    <div v-if="orderSource === 'backend'">
+      <div class="button">
+        <div class="template-btn">
+          <div class="pay-now">
+            <pay class="pay-btn-holder" @pay="payNow"></pay>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else-if="waiter">
+      <div class="button">
+        <div class="template-btn">
+          <div class="pay-now">
+            <save class="pay-btn-holder" @save="save"></save>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else>
+      <div style="grid-template-columns: 1fr 1fr; display: grid;">
+        <div class="button">
+          <div class="template-btn">
+            <div class="pay-now">
+              <pay class="pay-btn-holder" @pay="payNow"></pay>
+            </div>
+          </div>
+        </div>
+        <div class="button">
+          <div class="template-btn">
+            <div class="pay-now">
+              <save class="pay-btn-holder" @save="save"></save>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+/* global $, clickPayNow showModal */
+import { mapGetters, mapState } from 'vuex'
+import pay from './common/pay'
+import save from './common/save'
+export default {
+  name: 'DineinBtn',
+  components: {
+    pay,
+    save,
+  },
+  data() {
+    return {
+      checkCover: true,
+    }
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
+    ...mapGetters('auth', ['waiter']),
+    ...mapState('order', ['items', 'orderSource', 'orderType']),
+    ...mapState('dinein', ['selectedCover', 'orderReservationData']),
+    ...mapState('checkoutForm', ['processing']),
+  },
+  methods: {
+    payNow() {
+      let validationError = {}
+      this.items.find(element => {
+        if (typeof element.cover_name == 'undefined') {
+          this.checkCover = false
+        }
+      })
+      if (
+        this.checkCover ||
+        typeof this.selectedCover == 'object' ||
+        this.orderType.OTApi !== 'dine_in'
+      ) {
+        // if (this.orderSource === 'backend') {
+        //   showModal('#modificationReason')
+        // } else {
+        //   clickPayNow()
+        // }
+        clickPayNow()
+      } else {
+        validationError = {
+          status: 'flash_message',
+          flash_message: this._t('Please select a cover for new item.'),
+        }
+        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+        $('#information-popup').modal('show')
+      }
+    },
+
+    save() {
+      //dine in order
+      let validationError = {}
+      let checkCovers = this.items.find(element => {
+        return (
+          element.cover_name == 'undefined' || element.cover_name == undefined
+        )
+      })
+      if (this.items.length > 0) {
+        if (
+          checkCovers == undefined ||
+          checkCovers == 'undefined' ||
+          this.selectedCover
+        ) {
+          if (this.orderSource === 'backend') {
+            showModal('#modificationReason')
+          } else {
+            if (this.processing) {
+              // eslint-disable-next-line no-console
+              console.log('dual footer click')
+              return false
+            }
+
+            this.$store.dispatch('order/startOrder')
+            this.$store.commit('checkoutForm/SET_PROCESSING', true)
+
+            $('#payment-msg').modal('show')
+
+            this.$store
+              .dispatch('checkout/pay', { action: 'dine-in-place-order' })
+              .then(() => {
+                if (this.$store.getters['checkout/complete']) {
+                  //Reset Cart and set states and redirect to dine in.
+                  this.$store.commit('dinein/SET_COVER', '')
+                  this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+                }
+              })
+              .catch(response => {
+                let validationError = {}
+                let errors = ''
+                if (response.status === 'form_errors') {
+                  for (let i in response.form_errors) {
+                    response.form_errors[i].forEach(
+                      err => (errors += ' ' + err)
+                    )
+                  }
+                } else if (response.error) {
+                  errors = response.error
+                }
+                if (errors !== '') {
+                  validationError = {
+                    status: 'flash_message',
+                    flash_message: errors,
+                  }
+                  this.$store.commit(
+                    'customer/SET_RESPONSE_MESSAGES',
+                    validationError
+                  )
+                  $('#information-popup').modal('show')
+                }
+              })
+              .finally(() => {
+                this.$store.commit('checkoutForm/SET_PROCESSING', false)
+              })
+          }
+        } else {
+          validationError = {
+            status: 'flash_message',
+            flash_message: this._t('Please select a cover.'),
+          }
+          this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+          $('#information-popup').modal('show')
+        }
+      } else {
+        validationError = {
+          status: 'flash_message',
+          flash_message: this._t('Please add items.'),
+        }
+        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+        $('#information-popup').modal('show')
+      }
+    },
+  },
+}
+</script>

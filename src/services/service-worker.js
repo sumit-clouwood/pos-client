@@ -1,7 +1,7 @@
 // custom service-worker.js
 /* global workbox */
 /* eslint-disable no-console */
-var appVersion = '6.3.35'
+var appVersion = '6.3.36'
 
 var clientUrl = ''
 
