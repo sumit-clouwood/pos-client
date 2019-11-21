@@ -103,18 +103,19 @@ export default {
         console.log('dual footer click')
         return false
       }
-      this.$store.commit('checkoutForm/SET_PROCESSING', true)
 
       this.addAmount().then(payable => {
         if (payable <= 0.1) {
           $('#payment-screen-footer').prop('disabled', true)
           this.$store.commit('checkoutForm/setAction', 'pay')
-          this.$store.dispatch('order/startOrder')
           this.$store.commit('order/IS_PAY', 1)
 
           if (this.orderSource === 'backend') {
             showModal('#modificationReason')
           } else {
+            this.$store.dispatch('order/startOrder')
+            this.$store.commit('checkoutForm/SET_PROCESSING', true)
+
             $('#payment-msg').modal('show')
 
             this.$store

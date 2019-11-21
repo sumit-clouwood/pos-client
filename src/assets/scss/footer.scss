@@ -123,12 +123,26 @@
     .footer-button-menu {
       display: none;
     }
+    .template-btn {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+    }
+
+    .active {
+      .button {
+        background-color: $blue-dark;
+        cursor: pointer;
+        &:hover {
+          background-color: $blue-middle;
+        }
+      }
+    }
 
     .button {
       cursor: pointer;
       margin: 0 $px30;
       border-radius: $btn-border-radius;
-      background-color: $blue-dark;
       height: $footer-btn-height;
       display: grid;
       grid-template-columns: 1fr;
@@ -136,17 +150,24 @@
       justify-content: center;
       color: #fff;
       transition: 0.2s linear;
+      background-color: #ccc;
+      cursor: not-allowed;
 
-      ul {
+       
+
+      .pay-btn-holder {
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: 1fr;
+        height: 100%;
 
-        li {
+        .pay-button {
           display: flex;
           align-items: center;
           justify-content: center;
           padding: 0 10px;
+          height: 100%;
+
           span {
             color: #fff;
             padding-left: $px10;
@@ -161,9 +182,7 @@
         }
       }
 
-      &:hover {
-        background-color: $blue-middle;
-      }
+      
 
       .template-btn {
         .pay-now {
