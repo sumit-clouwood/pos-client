@@ -14,6 +14,7 @@ const state = {
   cashiers: [],
   cashierEmail: '',
   searchKeyword: '',
+  logoutAction: '',
 }
 
 // getters
@@ -79,6 +80,7 @@ const actions = {
           }
 
           localStorage.setItem('token', response.data.token)
+          commit(mutation.LOGOUT_ACTION, '')
           //wait for localstorage to be updated
           setTimeout(() => {
             dispatch('location/setContext', null, { root: true }).then(() => {
@@ -91,12 +93,12 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  pinlogin({ commit, getters, rootState }, cashierpin) {
+  pinlogin({ commit, getters }, { pincode, brand }) {
     return new Promise((resolve, reject) => {
       AuthService.pinlogin({
         //email: state.cashierEmail,
-        brand_id: rootState.context.brandId,
-        swipe_card: cashierpin,
+        brand_id: brand,
+        swipe_card: pincode,
       })
         .then(response => {
           localStorage.setItem('token', response.data.token)
@@ -116,6 +118,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       if (localStorage.getItem('token')) {
         commit(mutation.SET_TOKEN, localStorage.getItem('token'))
+        commit(mutation.LOGOUT_ACTION, '')
 
         if (localStorage.getItem('brand_id')) {
           commit('context/SET_BRAND_ID', localStorage.getItem('brand_id'), {
@@ -137,12 +140,13 @@ const actions = {
     })
   },
   logout({ commit }, msg) {
-    if (localStorage.getItem('token') || msg == 'token_not_exists') {
+    return new Promise(resolve => {
       localStorage.setItem('token', '')
       localStorage.setItem('brand_id', '')
       localStorage.setItem('store_id', '')
 
       commit(mutation.RESET)
+      commit(mutation.LOGOUT_ACTION, '')
 
       commit('order/RESET', true, { root: true })
       commit('checkout/RESET', true, { root: true })
@@ -165,8 +169,12 @@ const actions = {
         store: null,
       })
 
-      AuthService.logout(msg).then(() => {})
-    }
+      if (localStorage.getItem('token') || msg == 'token_not_exists') {
+        AuthService.logout(msg).then(() => {})
+      }
+
+      resolve()
+    })
   },
 
   getUserDetails({ commit }, userId) {
@@ -196,6 +204,10 @@ const actions = {
 const mutations = {
   [mutation.SET_TOKEN](state, token) {
     state.token = token
+  },
+
+  [mutation.LOGOUT_ACTION](state, action) {
+    state.logoutAction = action
   },
 
   [mutation.SET_CASHIER_EMAIL](state, email) {
