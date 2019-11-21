@@ -54,13 +54,14 @@ export default {
       pincode: '',
       pincodeLength: 4,
       processing: false,
-      brand: false,
+      brand_id: false,
+      store_id: false,
       storeUrl: false,
     }
   },
   computed: {
     ...mapGetters('context', ['store']),
-    ...mapState('context', ['brandId']),
+    ...mapState('context', ['brandId', 'storeId']),
   },
   components: { Progress },
   methods: {
@@ -77,9 +78,14 @@ export default {
       if (!this.pincode) {
         return false
       }
+
       this.processing = true
       this.$store
-        .dispatch('auth/pinlogin', { pincode: this.pincode, brand: this.brand })
+        .dispatch('auth/pinlogin', {
+          pincode: this.pincode,
+          brand: this.brand_id,
+          store: this.store_id,
+        })
         .then(() => {
           this.$router.replace({ name: 'Home' })
         })
@@ -101,13 +107,29 @@ export default {
     if (this.$route.name === 'cashierLogin') {
       if (this.store) {
         this.storeUrl = this.store
-        this.brand = this.brandId
+        this.brand_id = this.brandId
+        this.store_id = this.storeId
       }
 
       history.pushState(null, null, location.href)
       window.onpopstate = function() {
         history.go(1)
       }
+    }
+    //tackle refresh in cashier login
+    if (!this.brand_id) {
+      if (this.$route.params.brand_id) {
+        this.brand_id = this.$route.params.brand_id
+        this.store_id = this.$route.params.store_id
+      } else if (this.$route.params.pathMatch.match('/')) {
+        const [brand_id, store_id] = this.$route.params.pathMatch.split('/')
+        this.brand_id = brand_id
+        this.store_id = store_id
+      }
+    }
+
+    if (!this.brand_id) {
+      this.$store.commit('auth/LOGOUT_ACTION', '')
     }
   },
 

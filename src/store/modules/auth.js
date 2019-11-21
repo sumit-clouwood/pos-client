@@ -80,7 +80,6 @@ const actions = {
           }
 
           localStorage.setItem('token', response.data.token)
-          commit(mutation.LOGOUT_ACTION, '')
           //wait for localstorage to be updated
           setTimeout(() => {
             dispatch('location/setContext', null, { root: true }).then(() => {
@@ -93,16 +92,29 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  pinlogin({ commit, getters }, { pincode, brand }) {
+  pinlogin({ commit, getters, rootGetters }, { pincode, brand, store }) {
     return new Promise((resolve, reject) => {
       AuthService.pinlogin({
         //email: state.cashierEmail,
+        store_id: store,
         brand_id: brand,
         swipe_card: pincode,
       })
         .then(response => {
           localStorage.setItem('token', response.data.token)
           commit(mutation.SET_TOKEN, response.data.token)
+
+          commit('context/SET_BRAND_ID', brand, {
+            root: true,
+          })
+          commit('context/SET_STORE_ID', store, {
+            root: true,
+          })
+
+          DataService.setContext({
+            brand: rootGetters['context/brand'],
+            store: rootGetters['context/store'],
+          })
 
           commit(mutation.USER_DETAILS, {
             item: getters.cashier(response.data.user),
@@ -118,7 +130,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       if (localStorage.getItem('token')) {
         commit(mutation.SET_TOKEN, localStorage.getItem('token'))
-        commit(mutation.LOGOUT_ACTION, '')
 
         if (localStorage.getItem('brand_id')) {
           commit('context/SET_BRAND_ID', localStorage.getItem('brand_id'), {
@@ -208,6 +219,7 @@ const mutations = {
 
   [mutation.LOGOUT_ACTION](state, action) {
     state.logoutAction = action
+    localStorage.setItem('logoutAction', action)
   },
 
   [mutation.SET_CASHIER_EMAIL](state, email) {
