@@ -164,8 +164,9 @@ export default {
         .catch(error => {
           //this.errored = error
           //setTimeout(() => {
+          this.loading = false
           console.log(error, ', dispatch logout')
-          this.$store.dispatch('auth/logout', error)
+          //this.$store.dispatch('auth/logout', error)
           this.errored = ''
           //}, 1000 * 10)
           console.log('some catch ', error)
@@ -216,6 +217,9 @@ export default {
     }),
     ...mapState('sync', ['modules']),
     ...mapGetters('auth', ['loggedIn']),
+    apisLoaded() {
+      return this.$store.state.location.brand
+    },
   },
   //life cycle hooks
   mounted() {
@@ -233,7 +237,11 @@ export default {
       this.tableId = this.$route.params.table_id
     }
 
-    if (this.$store.state.auth.logoutAction === 'switchCashier') {
+    if (
+      (this.$store.state.auth.logoutAction === 'switchCashier' ||
+        localStorage.getItem('logoutAction') === 'switchCashier') &&
+      this.apisLoaded
+    ) {
       this.loading = false
     } else {
       this.setup()
