@@ -942,14 +942,39 @@ const actions = {
     commit(mutation.ORDER_TYPE, orderType)
     dispatch('surchargeCalculation')
   },
-
+  //prepare dine in order modification
+  prepareModifyDineinOrder({ commit, dispatch, rootState }, order) {
+    return new Promise((resolve, reject) => {
+      dispatch('dinein/getDineInTables', null, { root: true })
+      dispatch('dinein/getCovers', null, { root: true }).then(() => {
+        const tableReservationId = order.table_reservation_id
+        if (rootState.dinein.tables && order.assigned_table_id) {
+          const tableData = rootState.dinein.tables.find(
+            table => table._id === order.assigned_table_id
+          )
+          if (tableData) {
+            commit('dinein/SELECTED_TABLE', tableData, { root: true })
+          }
+        }
+        commit('dinein/RESERVATION_ID', tableReservationId, { root: true })
+        commit('dinein/ORDER_RESERVATION_DATA', order, { root: true })
+        dispatch('dinein/getSelectedOrder', order._id, {
+          root: true,
+        })
+          .then(data => resolve(data))
+          .catch(error => reject(error))
+      })
+    })
+  },
+  //modify order from backend or transaction screen
   modifyOrder({ commit, dispatch }, orderId) {
     commit(mutation.ORDER_TO_MODIFY, orderId)
     dispatch('startOrder')
 
     const params = ['orders', orderId, '']
-    OrderService.getGlobalDetails(...params).then(response => {
+    OrderService.getGlobalDetails(...params).then(async response => {
       let orderDetails = {}
+      let promises = []
 
       switch (response.data.item.order_type) {
         case 'dine_in':
@@ -979,6 +1004,34 @@ const actions = {
       orderDetails.invoice =
         response.data.collected_data.store_invoice_templates
       commit(mutation.SET_ORDER_DETAILS, orderDetails)
+
+      switch (response.data.item.order_type) {
+        case 'dine_in':
+          commit(mutation.ORDER_TYPE, { OTview: 'Dine In', OTApi: 'dine_in' })
+          promises.push(
+            dispatch('prepareModifyDineinOrder', response.data.item)
+          )
+          break
+        case 'walk_in':
+          commit(mutation.ORDER_TYPE, { OTview: 'Walk In', OTApi: 'walk_in' })
+          promises.push(Promise.resolve())
+          break
+        case 'takeaway':
+          commit(mutation.ORDER_TYPE, {
+            OTview: 'Take Away',
+            OTApi: 'takeaway',
+          })
+          promises.push(Promise.resolve())
+          break
+        case 'crm':
+          commit(mutation.ORDER_TYPE, {
+            OTview: 'Delivery',
+            OTApi: 'call_center',
+          })
+          promises.push(Promise.resolve())
+          break
+      }
+      await Promise.all(promises)
       dispatch('addOrderToCart', orderDetails.item)
     })
   },

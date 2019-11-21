@@ -120,7 +120,10 @@
             <a :href="brand">{{ _t('Settings') }}</a>
           </li>
           <li v-if="enabledModule('switchCashier') && enabled('switchcashier')">
-            <router-link :to="'/cashier-login' + store">
+            <router-link
+              :to="'/cashier-login' + store"
+              @click.native="logoutCashier"
+            >
               {{ _t('Switch Cashier') }}
             </router-link>
           </li>
@@ -137,6 +140,7 @@
 /*global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
 import * as CONST from '@/constants'
+import AuthService from '@/services/data/AuthService'
 
 import bootstrap from '@/bootstrap'
 export default {
@@ -177,6 +181,13 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    logoutCashier() {
+      localStorage.setItem('token', '')
+      this.$store.commit('auth/SET_TOKEN', '')
+      this.$store.commit('auth/LOGOUT_ACTION', 'switchCashier')
+      //this.$router.push({ path: '/cashier-login/' + this.storeUrl })
+      AuthService.logout().then(() => {})
+    },
     enabled(option) {
       switch (option) {
         case 'printers':
