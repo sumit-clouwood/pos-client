@@ -460,4 +460,5 @@ button#dropdownMenuButton {
   padding: 3px 10px;
   font-size: 12px;
 }
+/*.running-order-table-wrap,*/
 </style>
