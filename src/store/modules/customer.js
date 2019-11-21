@@ -48,6 +48,12 @@ const getters = {
     }
   },
   checkDeliveryArea: () => (addressId, deliveryAreas) => {
+    if (
+      typeof deliveryAreas._id !== 'undefined' &&
+      deliveryAreas._id === addressId
+    ) {
+      return deliveryAreas.item_status
+    }
     if (typeof deliveryAreas[addressId] !== 'undefined') {
       const area = deliveryAreas[addressId]
       return area.item_status === true ? area : false
@@ -254,8 +260,12 @@ const actions = {
                 ? response.data.collected_data.orders
                 : [],
               deliveryAreas: response.data.collected_data
-                ? response.data.collected_data.page_lookups.store_delivery_areas
-                    ._id
+                ? response.data.collected_data.page_lookups.delivery_areas._id[
+                    Object.keys(
+                      response.data.collected_data.page_lookups.delivery_areas
+                        ._id
+                    )[0]
+                  ]
                 : null,
             })
             commit(mutation.SET_CUSTOMER_LOADING, false)
@@ -282,10 +292,10 @@ const actions = {
     dispatch('order/updateOrderType', orderType, { root: true })
   },
 
-  createAction({ commit, dispatch }, actionDetails) {
+  createAction({ commit, dispatch, rootState }, actionDetails) {
     return new Promise((resolve, reject) => {
       const params = [
-        actionDetails.data,
+        { ...actionDetails.data, store_id: rootState.context.storeId },
         actionDetails.customer,
         actionDetails.model,
       ]
