@@ -150,7 +150,11 @@ const actions = {
   },
 
   injectCrmData({ rootState }, order) {
-    if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY) {
+    if (
+      rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY ||
+      (rootState.order.orderSource === 'backend' &&
+        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER)
+    ) {
       //order was modifying from delivery so no need to overwrite info
       order.customer = rootState.order.selectedOrder.item.customer
       order.order_building = rootState.order.selectedOrder.item.order_building
@@ -193,7 +197,11 @@ const actions = {
     }
 
     if (rootState.customer.address) {
-      order.customer_address_id = rootState.customer.address._id.$oid
+      if (typeof rootState.customer.address[0] !== 'undefined') {
+        order.customer_address_id = rootState.customer.address[0]._id
+      } else {
+        order.customer_address_id = rootState.customer.address._id.$oid
+      }
     }
 
     return Promise.resolve(order)

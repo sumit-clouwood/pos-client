@@ -9,11 +9,15 @@
 </template>
 <script>
 /* global showModal */
+import { mapState } from 'vuex'
 import delivery from './common/delivery'
 export default {
   name: 'CrmBtn',
   components: {
     delivery,
+  },
+  computed: {
+    ...mapState('order', ['orderSource', 'items']),
   },
   methods: {
     delivery() {
@@ -21,11 +25,15 @@ export default {
         OTview: 'Delivery',
         OTApi: 'call_center',
       })
-      const modal =
-        this.$store.state.location.setModal == '#loyalty-payment'
-          ? '#manage-customer'
-          : this.$store.state.location.setModal
-      showModal(modal)
+      if (this.orderSource === 'backend') {
+        showModal('#modificationReason')
+      } else {
+        const modal =
+          this.$store.state.location.setModal == '#loyalty-payment'
+            ? '#manage-customer'
+            : this.$store.state.location.setModal
+        showModal(modal)
+      }
     },
   },
 }
