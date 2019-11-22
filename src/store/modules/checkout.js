@@ -286,6 +286,7 @@ const actions = {
         'dine-in-place-order',
         'carhop-place-order',
         'dine-in-order-preview',
+        'modify-backend-order',
         CONSTANTS.ORDER_STATUS_ON_HOLD,
       ]
       const orderTypes = [CONSTANTS.ORDER_TYPE_CALL_CENTER]
