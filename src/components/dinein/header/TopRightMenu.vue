@@ -1,13 +1,13 @@
 <template>
   <div class="header-main-right color-dashboard-background">
     <div class="user-name">
-      <a class="">
-        <span class="">{{ username }}</span>
+      <a class>
+        <span class>{{ username }}</span>
       </a>
     </div>
     <div class="all-booking-btns hide-below-sm">
       <button
-        type=""
+        type
         id="all-tables"
         class="tables-btn-style"
         :class="{ active: dineInTabType === 'all' }"
@@ -21,7 +21,7 @@
         {{ _t('All Tables') }}
       </button>
       <button
-        type=""
+        type
         id="waiting-dinein"
         class="tables-btn-style"
         :class="{ active: dineInTabType === 'waiting' }"
@@ -35,7 +35,7 @@
         {{ _t('Waiting') }}
       </button>
       <button
-        type=""
+        type
         id="resrvation-orders"
         class="tables-btn-style"
         :class="{ active: dineInTabType === 'reservation' }"
@@ -49,7 +49,7 @@
         {{ _t('Reservation') }}
       </button>
       <button
-        type=""
+        type
         id="running-orders"
         class="tables-btn-style"
         :class="{ active: dineInTabType === 'running' }"
@@ -63,7 +63,7 @@
         {{ _t('Running Orders') }}
       </button>
       <button
-        type=""
+        type
         id="completed-orders"
         class="tables-btn-style"
         :class="{ active: dineInTabType === 'completed' }"
@@ -94,9 +94,8 @@
             v-for="language in availableLanguages"
             :key="language._id"
             :value="language.code"
+            >{{ language.name }}</option
           >
-            {{ language.name }}
-          </option>
         </select>
       </li>
     </ul>
@@ -121,9 +120,7 @@
       </a>
       <ul class="setting-dropdown1">
         <li v-if="enabled('walkin')" @click="walkOrder()">
-          <a role="button">
-            {{ _t('Walk In') }}
-          </a>
+          <a role="button">{{ _t('Walk In') }}</a>
         </li>
         <li v-if="enabled('printers')">
           <a role="button" class="cursor-pointer">{{ _t('Printers') }}</a>
@@ -132,9 +129,7 @@
           v-if="enabled('transactions') && permitted('transactional_orders')"
           @click="moveTransactionSection(this)"
         >
-          <a role="button">
-            {{ _t('Transactions') }}
-          </a>
+          <a role="button">{{ _t('Transactions') }}</a>
         </li>
         <li v-if="enabled('dashboard') && permitted('dashboard', 'root')">
           <a :href="dashboard">{{ _t('Dashboard') }}</a>
@@ -169,6 +164,13 @@
         <li v-if="enabled('brand') && permitted('brand', 'root')">
           <a :href="brand">{{ _t('Settings') }}</a>
         </li>
+        <li v-if="enabledModule('switchCashier') && enabled('switchcashier')">
+          <router-link
+            :to="'/cashier-login' + store"
+            @click.native="logoutCashier"
+            >{{ _t('Switch Cashier') }}</router-link
+          >
+        </li>
         <li>
           <a role="button" class="cursor-pointer" @click="logout()">{{
             _t('Logout')
@@ -179,7 +181,7 @@
     <div class="curent-sale hideBigScreen">
       <div class="all-booking-btns">
         <button
-          type=""
+          type
           id="all-tables"
           class="tables-btn-style"
           :class="{ active: dineInTabType === 'all' }"
@@ -193,7 +195,7 @@
           {{ _t('All Tables') }}
         </button>
         <button
-          type=""
+          type
           id="waiting-dinein"
           class="tables-btn-style"
           :class="{ active: dineInTabType === 'waiting' }"
@@ -207,7 +209,7 @@
           {{ _t('Waiting') }}
         </button>
         <button
-          type=""
+          type
           id="resrvation-orders"
           class="tables-btn-style"
           :class="{ active: dineInTabType === 'reservation' }"
@@ -221,7 +223,7 @@
           {{ _t('Reservation') }}
         </button>
         <button
-          type=""
+          type
           id="running-orders"
           class="tables-btn-style"
           :class="{ active: dineInTabType === 'running' }"
@@ -235,7 +237,7 @@
           {{ _t('Running Orders') }}
         </button>
         <button
-          type=""
+          type
           id="completed-orders"
           class="tables-btn-style"
           :class="{ active: dineInTabType === 'completed' }"
@@ -259,6 +261,7 @@
 <script>
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
+import AuthService from '@/services/data/AuthService'
 import bootstrap from '@/bootstrap'
 export default {
   name: 'TopNavRight',
@@ -358,10 +361,16 @@ export default {
           return true
         case 'switchCashier':
           if (this.waiter || this.carhop) {
-            return true
+            return false
           }
           return true
         default:
+          return true
+      }
+    },
+    enabledModule(option) {
+      switch (option) {
+        case 'switchCashier':
           return true
       }
     },
@@ -426,6 +435,12 @@ export default {
     showBookingBtn() {
       $('.hideBigScreen .all-booking-btns').toggleClass('active')
       $('.hideBigIcon').toggleClass('active')
+    },
+    logoutCashier() {
+      localStorage.setItem('token', '')
+      this.$store.commit('auth/SET_TOKEN', '')
+      this.$store.commit('auth/LOGOUT_ACTION', 'switchCashier')
+      AuthService.logout().then(() => {})
     },
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },
