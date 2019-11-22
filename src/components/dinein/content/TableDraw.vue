@@ -764,6 +764,7 @@ export default {
               'px; display:block'
           )
       } else {
+        this.closeMyself()
         if (this.brand.number_of_guests) {
           $('#placeOrder').modal('show')
         } else {
