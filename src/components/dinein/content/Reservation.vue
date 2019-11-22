@@ -38,9 +38,10 @@
             </tbody>-->
             <tbody>
               <tr v-for="(reservation, index) in reservations" :key="index">
-                <td>Dummy customers {{ reservation.customers }}</td>
+                <td>Dummy {{ reservation.customers }}</td>
                 <td>
-                  {{ reservation.start_date }}, {{ reservation.start_time }}
+                  <!--{{ reservation.start_date }},-->
+                  {{ reservation.start_time }}
                 </td>
                 <td>
                   {{ getAreaName(reservation.assigned_table_id) }} /
@@ -52,7 +53,9 @@
                   }}
                 </td>
                 <td class="mr-1 reservation-actions">
-                  <button class="btn btn-success">{{ _t('Confirm') }}</button>
+                  <button class="btn btn-success">
+                    <span class="fa fa-check"></span>
+                  </button>
                   <button
                     class="btn btn-warning"
                     @click="editReservation(reservation._id)"
@@ -133,7 +136,7 @@
             v-model="page"
           ></paginate>-->
     </div>
-    <InformationPopup :responseInformation="msg" title="Alert" />
+    <!--    <InformationPopup :responseInformation="msg" title="Alert" />-->
   </div>
 </template>
 
@@ -143,7 +146,7 @@ import TableDraw from '../content/TableDraw'
 import NewReservation from './reservation/popup/NewReservation'
 // import Preloader from '@/components/util/Preloader'
 // import paginate from 'vuejs-paginate'
-import InformationPopup from '@/components/pos/content/InformationPopup'
+// import InformationPopup from '@/components/pos/content/InformationPopup'
 /* global $ */
 export default {
   name: 'Reservation',
@@ -152,7 +155,7 @@ export default {
     NewReservation,
     // Preloader,
     // paginate,
-    InformationPopup,
+    // InformationPopup,
   },
   computed: {
     ...mapState('dinein', ['tablesOnArea', 'dineInTabType', 'availableTables']),
