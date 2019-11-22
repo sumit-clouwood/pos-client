@@ -976,27 +976,6 @@ const actions = {
       let orderDetails = {}
       let promises = []
 
-      switch (response.data.item.order_type) {
-        case 'dine_in':
-          commit(mutation.ORDER_TYPE, { OTview: 'Dine In', OTApi: 'dine_in' })
-          break
-        case 'walk_in':
-          commit(mutation.ORDER_TYPE, { OTview: 'Walk In', OTApi: 'walk_in' })
-          break
-        case 'takeaway':
-          commit(mutation.ORDER_TYPE, {
-            OTview: 'Take Away',
-            OTApi: 'takeaway',
-          })
-          break
-        case 'crm':
-          commit(mutation.ORDER_TYPE, {
-            OTview: 'Delivery',
-            OTApi: 'call_center',
-          })
-          break
-      }
-
       orderDetails.item = response.data.item
       orderDetails.customer = response.data.collected_data.customer
       orderDetails.lookups = response.data.collected_data.page_lookups
@@ -1023,10 +1002,17 @@ const actions = {
           })
           promises.push(Promise.resolve())
           break
-        case 'crm':
+        case 'call_center':
           commit(mutation.ORDER_TYPE, {
             OTview: 'Delivery',
             OTApi: 'call_center',
+          })
+          promises.push(Promise.resolve())
+          break
+        case 'carhop':
+          commit(mutation.ORDER_TYPE, {
+            OTview: 'Carhop',
+            OTApi: 'carhop',
           })
           promises.push(Promise.resolve())
           break
@@ -1047,10 +1033,12 @@ const actions = {
       commit(mutation.SET_TOTAL_ITEMS_PAID, 0)
 
       let orderAddress = []
+
       if (order.customer) {
         let deliveryAreaDetails = Object.values(
           rootState.order.selectedOrder.lookups.delivery_areas._id
         ).find(deliveryArea => deliveryArea._id === order.order_delivery_area)
+
         orderAddress.push({
           building: order.order_building,
           city: order.order_city,
