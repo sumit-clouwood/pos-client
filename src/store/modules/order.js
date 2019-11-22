@@ -1009,6 +1009,13 @@ const actions = {
           })
           promises.push(Promise.resolve())
           break
+        case 'carhop':
+          commit(mutation.ORDER_TYPE, {
+            OTview: 'Carhop',
+            OTApi: 'carhop',
+          })
+          promises.push(Promise.resolve())
+          break
       }
       await Promise.all(promises)
       dispatch('addOrderToCart', orderDetails.item)
