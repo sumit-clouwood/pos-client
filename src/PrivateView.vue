@@ -129,7 +129,7 @@ export default {
           if (event.data.msg == 'token') {
             console.log('setting new token to client')
             localStorage.setItem('token', event.data.data)
-            bootstrap.loadUI().then(() => {
+            bootstrap.loadUI('sw').then(() => {
               setTimeout(() => {
                 this.loading = false
                 this.progressIncrement = '100%'

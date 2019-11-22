@@ -38,11 +38,17 @@ export default {
   },
   //this function is called when we recieve msg from service worker i.e token updated
   // also loaded when we click on a category to load new data
-  loadUI() {
+  reloadSystem(caller) {
+    if (caller === 'sw') {
+      //reload ui menu as token updated
+      return this.store.dispatch('location/fetch')
+    }
+    return Promise.resolve()
+  },
+  loadUI(caller) {
     DataService.setLang(this.store.state.location.locale)
     return new Promise((resolve, reject) => {
-      this.store
-        .dispatch('location/fetch')
+      this.reloadSystem(caller)
         .then(() => {
           this.store
             .dispatch('category/fetchAll')
