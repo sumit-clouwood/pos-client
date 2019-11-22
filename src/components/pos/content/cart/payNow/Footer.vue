@@ -1,6 +1,7 @@
 <template>
   <div class="payment-screen-footer" id="payment-screen-footer">
     <div
+      v-if="brand.accept_tips"
       class="footer-wrap color-secondary"
       id="add-tip-amt"
       data-toggle="modal"
@@ -52,6 +53,7 @@ export default {
   computed: {
     ...mapState('checkout', ['changedAmount']),
     ...mapState('order', ['orderSource']),
+    ...mapState('location', ['brand']),
     ...mapState('checkoutForm', ['msg', 'error', 'method', 'processing']),
     ...mapGetters('checkoutForm', ['validate']),
     ...mapGetters('location', ['_t']),
