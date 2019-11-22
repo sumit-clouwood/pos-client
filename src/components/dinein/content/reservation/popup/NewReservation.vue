@@ -16,10 +16,10 @@
           <div class="row">
             <span class="hide-text">{{ dateSelector }}</span>
             <div class="col-md-6">
-              <h6>New Reservation</h6>
+              <h6>{{ _t('New Reservation') }}n</h6>
               <hr />
               <div class="form-group">
-                <label>Select Number of guests</label>
+                <label>{{ _t('Select Number of guests') }}</label>
                 <div
                   class="btn-group btn-group-toggle num_guests"
                   data-toggle="buttons"
@@ -84,7 +84,7 @@
                         style="color: rgb(98, 187, 49);"
                       ></span>
                     </div>
-                    <div>{{ val.time }} AM</div>
+                    <div>{{ val.time }}</div>
                   </div>
                 </div>
                 <div class="slot-symbol">
@@ -147,7 +147,7 @@
               </div>
             </div>
             <div class="col-md-6">
-              <h6>Guest Details</h6>
+              <h6>{{ _t('Guest Details') }}</h6>
               <hr />
               <div class="row">
                 <div class="col-md-6">
@@ -224,7 +224,7 @@
                   </table>
                 </div>
                 <div class="col-md-12">
-                  <label style="margin-top: 10px">Tags</label>
+                  <label style="margin-top: 10px">{{ _t('Tags') }}</label>
                   <div style="display: block">
                     <span
                       class="button-checkbox"
@@ -248,7 +248,7 @@
                 </div>
                 <div class="col-md-12">
                   <div class="form-group" style="margin-top: 10px">
-                    <label>Visit Notes</label>
+                    <label>{{ _t('Visit Notes') }}</label>
                     <textarea
                       class="form-control"
                       rows="3"
@@ -280,14 +280,14 @@
         <!-- Modal footer -->
         <div class="modal-footer modal-footer-reservation">
           <button type="button" class="btn btn-danger" data-dismiss="modal">
-            Cancel
+            {{ _t('Cancel') }}
           </button>
           <button
             type="button"
             class="btn btn-success"
             @click="addNewReservation"
           >
-            Add Reservation
+            {{ _t('Add Reservation') }}
           </button>
         </div>
       </div>
@@ -320,6 +320,7 @@ export default {
     ]),
     ...mapState('dineinReservation', ['tags']),
     ...mapGetters('location', ['_t']),
+    ...mapState('location', ['brand', 'store']),
   },
   updated() {
     let isCalendarhasData = $('.wrapperNew').text().length
@@ -333,88 +334,7 @@ export default {
       newDetails: false,
       selectedDate: '',
       no_of_guest: 1,
-      time_slots: [
-        {
-          occupied: true,
-          time: '0800',
-        },
-        {
-          occupied: null,
-          time: '0815',
-        },
-        {
-          occupied: null,
-          time: '0830',
-        },
-        {
-          occupied: null,
-          time: '0845',
-        },
-        {
-          occupied: null,
-          time: '0900',
-        },
-        {
-          occupied: null,
-          time: '0915',
-        },
-        {
-          occupied: null,
-          time: '0930',
-        },
-        {
-          occupied: null,
-          time: '0945',
-        },
-        {
-          occupied: null,
-          time: '1000',
-        },
-        {
-          occupied: null,
-          time: '1015',
-        },
-        {
-          occupied: null,
-          time: '1030',
-        },
-        {
-          occupied: null,
-          time: '1045',
-        },
-        {
-          occupied: null,
-          time: '1100',
-        },
-        {
-          occupied: null,
-          time: '1115',
-        },
-        {
-          occupied: null,
-          time: '1130',
-        },
-        {
-          occupied: null,
-          time: '1145',
-        },
-        {
-          occupied: null,
-          time: '1200',
-        },
-        {
-          occupied: null,
-          time: '1215',
-        },
-        {
-          occupied: null,
-          time: '1230',
-        },
-        {
-          occupied: null,
-          time: '1245',
-        },
-      ],
+      time_slots: [],
       days: [],
       week_no: null,
       week_diff: null,
@@ -427,6 +347,48 @@ export default {
   methods: {
     getUserDetailsByMobile: function(mobileNo) {
       this.$store.dispatch('dineinReservation/getUserDetails', mobileNo)
+    },
+    getInterval() {
+      let startTime = 0
+      let closedTime = 0
+      let interval = this.timeConvert(this.brand.reservation_interval)
+      if (this.store.open_hours.all_day_long) {
+        startTime = 0
+        closedTime = 24 * 60
+      } else {
+        startTime = this.timeConvert(this.store.open_hours.opens_at)
+        closedTime = this.timeConvert(this.store.open_hours.closes_at)
+      }
+      // eslint-disable-next-line no-console
+      console.log(startTime)
+      let time_slots = []
+      let hh = 0,
+        mm = 0,
+        i = 0,
+        ap = ['AM', 'PM'] // AM-PM
+
+      /*for (let i = startTime; i <= closedTime; i = i + interval) {
+        this.time_slots.push(i)
+      }*/
+      for (i; startTime < closedTime; i++) {
+        hh = Math.floor(startTime / 60) // getting hours of day in 0-24 format
+        mm = startTime % 60 // getting minutes of the hour in 0-55 format
+        var timeSlot =
+          ('0' + (hh % 12)).slice(-2) +
+          ':' +
+          ('0' + mm).slice(-2) +
+          ap[Math.floor(hh / 12)]
+        time_slots.push({ time: timeSlot, occupied: null }) // pushing data in array in [00:00 - 12:00 AM/PM format]
+        startTime = startTime + interval
+      }
+      this.time_slots = time_slots
+
+      // eslint-disable-next-line no-console
+      console.log(time_slots, closedTime, interval)
+    },
+    timeConvert(time, separator = ':') {
+      let timeSplit = time.split(separator)
+      return parseInt(timeSplit[0]) * 60 + parseInt(timeSplit[1])
     },
     addNewReservation: function() {
       this.reservationInformation.table = this.selectedTable
@@ -442,6 +404,7 @@ export default {
       this.reservationInformation.selectedTimeSlot = selectedTimeSlot
     },
     cal: function() {
+      this.getInterval()
       let scope = this
       // Use the settings object to change the theme
       $(function() {
