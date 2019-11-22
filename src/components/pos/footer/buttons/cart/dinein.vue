@@ -60,6 +60,7 @@ export default {
     ...mapState('order', ['items', 'orderSource', 'orderType']),
     ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('checkoutForm', ['processing']),
+    ...mapState('location', ['brand']),
   },
   methods: {
     payNow() {
@@ -102,7 +103,8 @@ export default {
         if (
           checkCovers == undefined ||
           checkCovers == 'undefined' ||
-          this.selectedCover
+          this.selectedCover ||
+          !this.brand.number_of_covers
         ) {
           if (this.orderSource === 'backend') {
             showModal('#modificationReason')
