@@ -348,6 +348,7 @@ const actions = {
           tax: item.tax,
           price: item.netPrice,
           qty: item.quantity,
+          originalItem: item,
         }
 
         //we are sending item price and modifier prices separtely but sending
@@ -427,15 +428,14 @@ const actions = {
   injectDineInItemsData({ rootState }, order) {
     let orderCovers = []
     order.items = order.items.map(oitem => {
-      let itemCover = oitem.coverNo
-        ? oitem.coverNo
+      let itemCover = oitem.originalItem.coverNo
+        ? oitem.originalItem.coverNo
         : rootState.dinein.selectedCover._id
-      let itemCoverName = oitem.cover_name
-        ? oitem.cover_name
+      let itemCoverName = oitem.originalItem.cover_name
+        ? oitem.originalItem.cover_name
         : rootState.dinein.selectedCover.name
-      if (
-        orderCovers.filter(item => item.entity_id == itemCover).length === 0
-      ) {
+
+      if (!orderCovers.some(item => item.entity_id == itemCover)) {
         orderCovers.push({ entity_id: itemCover, name: itemCoverName })
       }
 
@@ -603,6 +603,7 @@ const actions = {
 
                 //formatting
                 order.items = order.items.map(item => {
+                  delete item.originalItem
                   item.price = Num.round(item.price).toFixed(2)
                   item.tax = Num.round(item.tax).toFixed(2)
                   return item
@@ -874,9 +875,10 @@ const actions = {
                 msgStr = rootGetters['location/_t'](
                   'Dinein order has been modified.'
                 )
+                resolve()
+
                 dispatch('createModifyOrderItemList')
                 dispatch('reset', true)
-                resolve()
               } else {
                 //order paid
                 const selectedCovers = rootState.dinein.selectedCover
@@ -938,9 +940,9 @@ const actions = {
 
   createModifyOrderItemList({ rootState, state, dispatch }) {
     let newItems = []
-    rootState.order.items.filter(item => {
-      if (typeof item.no == 'undefined') {
-        let orderItem = {
+    rootState.order.items.forEach(item => {
+      if (typeof item.no === 'undefined') {
+        newItems.push({
           name: item.name,
           entity_id: item._id,
           no: item.orderIndex,
@@ -949,18 +951,24 @@ const actions = {
           tax: item.tax,
           price: item.netPrice,
           qty: item.quantity,
-        }
-        newItems.push(orderItem)
+          originalItem: item,
+        })
       }
     })
-    let order = (state.order.items = newItems)
-    dispatch('injectDineInItemsData', state.order)
-    // eslint-disable-next-line no-console
-    console.log(state.order, newItems, order)
-    dispatch('printingServer/printingServerInvoiceRaw', state.order, {
-      root: true,
-    })
-    /*commit(mutation.NEW_ITEMS, newItems)*/
+    if (newItems.length) {
+      let order = state.order
+      order.items = newItems
+
+      dispatch('injectDineInItemsData', order).then(order => {
+        order.items = order.items.map(item => {
+          delete item.originalItem
+          return item
+        })
+        dispatch('printingServer/printingServerInvoiceRaw', order, {
+          root: true,
+        })
+      })
+    }
   },
   // eslint-disable-next-line no-unused-vars
   modifyCarhopOrder({ dispatch, rootState, rootGetters, commit }, action) {
