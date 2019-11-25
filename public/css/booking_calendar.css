@@ -95,10 +95,14 @@ td.reservation-actions > .btn {
  font-weight: bold;
 }
 .SCElement.SCSel {
- background: #f1f3f6;
+ background-color: #5056ca;
 }
 .SCElement.SCSel > div{
- color: #3a3d44;
+ color: #fff;
+}
+.wrapperNew .SCDay .next .SCElement > div {
+ justify-content: center;
+ height: auto !important;
 }
 .SCMonth .SCTbl {
  border-right: 1px dashed #d7dce2;
@@ -154,15 +158,15 @@ section#main {
  z-index: 1;
  background: #fff;
 }
-.pos-reservation-table table > thead th:first-child{
- width: 195px;
+.pos-reservation-table table > thead th:first-child, .pos-reservation-table table > tbody td:first-child{
+ width: 240px;
 }
-.pos-reservation-table table > thead th:nth-child(2){
- width: 170px;
+.pos-reservation-table table > thead th:nth-child(2), .pos-reservation-table table > tbody td:nth-child(2){
+ width: 110px;
 }
 
-.pos-reservation-table table > thead th:last-child{
- width: 205px;
+.pos-reservation-table table > thead th:last-child, .pos-reservation-table table > tbody td:last-child{
+ width: 165px;
 }
 .pos-reservation-table{
  overflow-y:auto;
@@ -221,4 +225,71 @@ section#main {
 }
 .num_guests label {
  margin-bottom: 0;
+}
+.SCHor .next {
+ right: -25px;
+}
+#NewReservation .num_guests .btn {
+ padding: 13px 1.75rem;
+}
+@media only screen and (min-width: 980px) and (max-width: 1140px){
+ 
+ #NewReservation .modal-dialog {
+  max-width: 85% !important;
+ }
+ #NewReservation  .SCHor .prev .SCDayNum:after {
+  left: -7px;
+  position: absolute;
+ }
+ 
+ /*#NewReservation .SCHor .next .SCDayNum:after {
+  position: relative;
+  right: -28px;
+ }*/
+ 
+ #NewReservation section#main {
+  margin-left: 0 !important;
+ }
+ 
+ #NewReservation .wrapperNew .SCMonth .SCElement > div {
+  width: 50px !important;
+ }
+ #NewReservation .wrapperNew .SCDay .SCElement > div {
+  width: 50px !important;
+ }
+ #NewReservation .wrapperNew .SCDay .next .SCElement > div {
+  width: 35px !important;
+ }
+  #NewReservation .time_slot_block {
+  height: 200px;
+  margin-right: 0 !important;
+ }
+ 
+  #NewReservation .time_slot_block .time_slot {
+  height: 50px;
+ }
+ 
+ .pos-reservation-table table > thead th:first-child, .pos-reservation-table table > tbody td:first-child{
+  width: 300px;
+ }
+ 
+ #NewReservation .SCElement > div {
+  font-size: 13px;
+ }
+ 
+ #NewReservation .num_guests .btn {
+  padding: 8px 14px;
+ }
+ #NewReservation  .lbl-txt-box {
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+ }
+ 
+ #NewReservation  input.form-control.txt-box {
+  height: 40px;
+ }
+ .pos-reservation-table table > thead th:last-child, .pos-reservation-table table > tbody td:last-child{
+  width: 150px;
+ }
 }

@@ -24,7 +24,7 @@ const actions = {
       let UTC_Date = getters.getUTCDate(selectedDate)
       commit(mutation.SELECTED_RESERVATION_DATE, UTC_Date)
       const params = [state.params.page, state.params.limit, UTC_Date]
-      DineInService.bookings(...params)
+      DineInService.bookedTables(...params)
         .then(response => {
           dispatch('getTags')
           if (response.data.count == 0) {

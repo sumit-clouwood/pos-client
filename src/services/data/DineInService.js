@@ -83,6 +83,11 @@ export default {
       `/model/reservations?page_id=reservations_main_tbl&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&status=reserved&byColumn=1&orderBy=priority&start_date=${UTC_Date}`
     )
   },
+  bookedTables(page, limit, UTC_Date) {
+    return DataService.get(
+      `/model/reservations?page_id=tables_booked&limit=${limit}&ascending=1&page=${page}&byColumn=1&start_date=${UTC_Date}`
+    )
+  },
   getDetails(mobileNo) {
     return DataService.get(
       `/model/reservations?page_id=reservations_main_tbl&query=&mobile=${mobileNo}`

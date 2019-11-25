@@ -152,37 +152,11 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label>Phone</label>
-                    <div class="input-group">
-                      <span class="lbl-txt-box">IN</span>
-                      <input
-                        type="email"
-                        class="form-control txt-box"
-                        v-model="reservationInformation.phone"
-                        @focusout="
-                          getUserDetailsByMobile(reservationInformation.phone)
-                        "
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
                     <label>First Name</label>
                     <input
                       type="text"
                       class="form-control txt-box"
-                      v-model="reservationInformation.first_name"
-                    />
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Email</label>
-                    <input
-                      type="email"
-                      class="form-control txt-box"
-                      v-model="reservationInformation.email"
+                      v-model="reservationInformation.guest_fname"
                     />
                   </div>
                 </div>
@@ -192,7 +166,35 @@
                     <input
                       type="text"
                       class="form-control txt-box"
-                      v-model="reservationInformation.last_name"
+                      v-model="reservationInformation.guest_lname"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Phone</label>
+                    <div class="input-group">
+                      <span class="lbl-txt-box">IN</span>
+                      <input
+                        type="text"
+                        class="form-control txt-box"
+                        v-model="reservationInformation.guest_phone"
+                        @focusout="
+                          getUserDetailsByMobile(
+                            reservationInformation.guest_phone
+                          )
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input
+                      type="email"
+                      class="form-control txt-box"
+                      v-model="reservationInformation.guest_email"
                     />
                   </div>
                 </div>
@@ -239,7 +241,13 @@
                       <label
                         class="btn btn-secondary"
                         :for="tag.name.replace(/ +/g, '')"
-                        @click="updateTag({ name: tag.name, key: index })"
+                        @click="
+                          updateTag({
+                            name: tag.name,
+                            key: index,
+                            tagId: tag._id,
+                          })
+                        "
                       >
                         {{ tag.name }}
                       </label>
@@ -252,7 +260,7 @@
                     <textarea
                       class="form-control"
                       rows="3"
-                      v-model="reservationInformation.visit_note"
+                      v-model="reservationInformation.visit_notes"
                     ></textarea>
                   </div>
                 </div>
@@ -320,6 +328,7 @@ export default {
     ]),
     ...mapState('dineinReservation', ['tags']),
     ...mapGetters('location', ['_t']),
+    ...mapGetters('dineinReservation', ['getUTCDate']),
     ...mapState('location', ['brand', 'store']),
   },
   updated() {
@@ -341,7 +350,7 @@ export default {
       curr_week_no: 0,
       settings: '',
       selectedTags: [],
-      reservationInformation: {},
+      reservationInformation: { status: 'booked', customers: [] },
     }
   },
   methods: {
@@ -391,17 +400,21 @@ export default {
       return parseInt(timeSplit[0]) * 60 + parseInt(timeSplit[1])
     },
     addNewReservation: function() {
-      this.reservationInformation.table = this.selectedTable
+      this.reservationInformation.start_date = this.$store.getters[
+        'dineinReservation/getUTCDate'
+      ](this.selectedDate)
+      this.reservationInformation.assigned_table_id =
+        this.selectedTable.id || ''
       // eslint-disable-next-line no-console
       console.log(this.reservationInformation)
     },
     getSelectedGuest: function(numberOfGuest) {
-      this.reservationInformation.numberOfGuest = numberOfGuest + 1
+      this.reservationInformation.number_of_guests = numberOfGuest + 1
     },
     getSelectedTimeSlot: function(selectedTimeSlot, scope) {
       $('.time_slot').removeClass('active')
       $(scope).addClass('active')
-      this.reservationInformation.selectedTimeSlot = selectedTimeSlot
+      this.reservationInformation.start_time = selectedTimeSlot.time
     },
     cal: function() {
       this.getInterval()
@@ -456,32 +469,33 @@ export default {
           scope.selectedDate = cal.currentDate
           scope.calendarOpen = true
           scope.getReservationByDate(cal.currentDate)
-          scope.reservationInformation.datetime = cal.currentDate
-          // $('#wtf').html('Selected date: ' + cal.currentDate)
+          // $('#wtf').html('Selected date: ' + )
         },
       })
     },
     updateTag: function(tag) {
       let id = '#' + tag.name.replace(/ +/g, '')
       this.selectedTags = this.selectedTags.filter(bdg => {
-        return bdg.name != tag.name
+        return bdg.tagId != tag.tagId
       })
-      if (this.selectedTags.includes(tag.name)) {
-        this.selectedTags.splice(tag.key, 1)
+      if (this.selectedTags.includes(tag.tagId)) {
+        this.selectedTags.splice(tag.tagId, 1)
       }
       if ($(id).is(':checked')) {
         $(id).attr('checked', '')
         $(id)
           .siblings('label')
           .removeClass('selected')
-        this.selectedTags.splice(tag.key, 1)
+        this.selectedTags.splice(tag.tagId, 1)
       } else {
         $(id).attr('checked', 'checked')
         $(id)
           .siblings('label')
           .addClass('selected')
-        this.selectedTags.push(tag)
+        this.selectedTags.push(tag.tagId)
       }
+      // eslint-disable-next-line no-console
+      console.log(this.selectedTags)
       this.reservationInformation.tags = this.selectedTags
     },
     getReservationByDate: function(date) {
