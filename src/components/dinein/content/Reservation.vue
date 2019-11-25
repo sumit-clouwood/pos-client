@@ -38,7 +38,9 @@
             </tbody>-->
             <tbody>
               <tr v-for="(reservation, index) in reservations" :key="index">
-                <td>Dummy {{ reservation.customers }}</td>
+                <td>
+                  {{ reservation.guest_fname + ' ' + reservation.guest_lname }}
+                </td>
                 <td>
                   <!--{{ reservation.start_date }},-->
                   {{ reservation.start_time }}
