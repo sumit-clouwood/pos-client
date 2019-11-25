@@ -88,11 +88,11 @@ export default {
       `/model/reservations?page_id=tables_booked&limit=${limit}&ascending=1&page=${page}&byColumn=1&start_date=${UTC_Date}`
     )
   },
-  getDetails(mobileNo) {
+  /*getDetails(mobileNo) {
     return DataService.get(
       `/model/reservations?page_id=reservations_main_tbl&query=&mobile=${mobileNo}`
     )
-  },
+  },*/
   storeUsers() {
     return DataService.get(
       '/model/store_users?page_id=store_users_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=name&brand_role=&undefined='
@@ -101,6 +101,11 @@ export default {
   getReservationTags() {
     return DataService.get(
       '/model/reservation_tags?page_id=reservation_tags_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=priority'
+    )
+  },
+  getReservationByMobile(mobile) {
+    return DataService.get(
+      `/model/reservations?page_id=reservations_main_tbl&page=1&limit=999999&byColumn=1&guest_phone=${mobile}`
     )
   },
 }

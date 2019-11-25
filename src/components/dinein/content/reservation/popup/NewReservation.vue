@@ -209,24 +209,20 @@
                 <div class="col-md-12">
                   <label>Guest History</label>
                   <table class="table table-bordered">
-                    <tbody>
-                      <tr>
-                        <th scope="row">Thu, Sept 16</th>
-                        <td>11:45 am</td>
-                        <td>Nearly Finished</td>
+                    <tbody v-if="history">
+                      <tr
+                        v-for="(reservations, index) in userDetails"
+                        :key="index"
+                      >
+                        <th scope="row">{{ reservations.start_date }}</th>
+                        <td>{{ reservations.start_time }}</td>
+                        <td>{{ reservations.status }}</td>
                         <td>Victoria Pope Daniel</td>
                       </tr>
+                    </tbody>
+                    <tbody v-else>
                       <tr>
-                        <th scope="row">Thu, Sept 16</th>
-                        <td>11:45 am</td>
-                        <td>Finished</td>
-                        <td>Victoria Pope Daniel</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Thu, Sept 16</th>
-                        <td>11:45 am</td>
-                        <td>Finished</td>
-                        <td>Victoria Pope Daniel</td>
+                        <td>No history found</td>
                       </tr>
                     </tbody>
                   </table>
@@ -332,7 +328,7 @@ export default {
       'availableTables',
       'selectedTable',
     ]),
-    ...mapState('dineinReservation', ['tags']),
+    ...mapState('dineinReservation', ['tags', 'userDetails']),
     ...mapGetters('location', ['_t']),
     ...mapGetters('dineinReservation', ['getUTCDate']),
     ...mapState('location', ['brand', 'store']),
@@ -351,6 +347,7 @@ export default {
       no_of_guest: 1,
       time_slots: [],
       days: [],
+      history: false,
       week_no: null,
       week_diff: null,
       curr_week_no: 0,
@@ -365,7 +362,31 @@ export default {
   },
   methods: {
     getUserDetailsByMobile: function(mobileNo) {
-      this.$store.dispatch('dineinReservation/getUserDetails', mobileNo)
+      this.$store
+        .dispatch('dineinReservation/getUserHistory', mobileNo)
+        .then(response => {
+          this.history = true
+          if (response.count) {
+            let guestHistory = this.userDetails[0]
+            if (guestHistory) {
+              this.history = true
+              this.reservationInformation = {
+                guest_email: guestHistory.guest_email,
+                guest_fname: guestHistory.guest_fname,
+                guest_lname: guestHistory.guest_lname,
+                guest_phone: guestHistory.guest_phone,
+              }
+            }
+          } else {
+            this.history = false
+            this.reservationInformation = {
+              guest_email: '',
+              guest_fname: '',
+              guest_lname: '',
+              // guest_phone: guestHistory.guest_phone,
+            }
+          }
+        })
     },
     getInterval() {
       let startTime = 0

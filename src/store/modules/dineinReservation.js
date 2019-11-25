@@ -39,9 +39,16 @@ const actions = {
         })
     })
   },
-  getUserDetails({ commit }, mobileNo) {
-    DineInService.getDetails(mobileNo).then(resource => {
-      commit(mutation.USER_DETAILS, resource.data)
+  getUserHistory({ commit }, mobileNo) {
+    return new Promise((resolve, reject) => {
+      DineInService.getReservationByMobile(mobileNo)
+        .then(response => {
+          commit(mutation.USER_DETAILS, response.data)
+          return resolve(response.data)
+        })
+        .catch(error => {
+          reject(error)
+        })
     })
   },
   getTakenBy({ commit }) {
@@ -64,7 +71,7 @@ const mutations = {
     state.reservations = reservationData
   },
   [mutation.USER_DETAILS](state, userDetails) {
-    state.userDetails = userDetails
+    state.userDetails = userDetails.data
   },
   [mutation.TAKEN_BY_LIST](state, storeUsers) {
     state.storeUsers = storeUsers
