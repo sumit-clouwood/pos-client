@@ -537,12 +537,15 @@ export default {
     if (window.location.href.indexOf('dine-in') > -1) {
       this.setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })
     }
-
-    this.slicker()
+    this.$nextTick(() => {
+      this.slicker()
+    })
   },
 
   updated() {
-    this.slicker()
+    this.$nextTick(() => {
+      this.slicker()
+    })
   },
 }
 </script>
