@@ -76,3 +76,7 @@ export const DISCOUNT_ORDER_ERROR_ITEM_DISCOUNT =
   'Please remove item level discount(s) first to apply order discount.'
 export const DISCOUNT_ORDER_ERROR_TOTAL =
   "Discount can't be greater than total amount of an order."
+export const DISCOUNT_ORDER_ERROR_CART =
+  'Cart amount is less than minimum required for this discount.'
+export const DISCOUNT_ORDER_ERROR_MAX =
+  'Cart amount is greater than maximum allowed for this discount.'
