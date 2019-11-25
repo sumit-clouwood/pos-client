@@ -122,6 +122,7 @@ export default {
       )
     },
     ...mapGetters('location', ['_t']),
+    ...mapGetters('context', ['store']),
     ...mapState('order', ['modificationReasons', 'selectedOrder']),
     ...mapState('checkout', ['processing']),
   },
@@ -175,6 +176,7 @@ export default {
 
           $('#modificationReason').hide()
           this.$store.commit('order/ORDER_SOURCE', null)
+          this.$router.push(this.store)
         })
         .catch(response => {
           this.errorMessage =
