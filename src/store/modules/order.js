@@ -710,26 +710,48 @@ const actions = {
               resolve(discountData)
             }
           } else {
-            orderTotalDiscount = Num.round(
-              (subtotal * orderDiscount.rate) / 100
-            )
-            console.log('order total discount', orderTotalDiscount)
-            taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
+            if (orderDiscount.min_cart_value > subtotal) {
+              dispatch('discount/clearOrderDiscount', null, { root: true })
+              commit(
+                'discount/SET_ORDER_ERROR',
+                CONST.DISCOUNT_ORDER_ERROR_CART,
+                { root: true }
+              )
+              reject(CONST.DISCOUNT_ORDER_ERROR_CART)
+            } else if (orderDiscount.max_discount_value < subtotal) {
+              dispatch('discount/clearOrderDiscount', null, { root: true })
+              commit(
+                'discount/SET_ORDER_ERROR',
+                CONST.DISCOUNT_ORDER_ERROR_MAX,
+                { root: true }
+              )
+              reject(CONST.DISCOUNT_ORDER_ERROR_MAX)
+            } else {
+              orderTotalDiscount = Num.round(
+                (subtotal * orderDiscount.rate) / 100
+              )
+              console.log('order total discount', orderTotalDiscount)
+              taxTotalDiscount = Num.round(
+                (totalTax * orderDiscount.rate) / 100
+              )
 
-            console.log('taxTotalDiscount', taxTotalDiscount)
-            surchargeTotalDiscount = Num.round(
-              (totalSurcharge * orderDiscount.rate) / 100
-            )
-            console.log('surchargeTotalDiscount', surchargeTotalDiscount)
-            const discountData = {
-              orderDiscount: orderTotalDiscount,
-              taxDiscount: taxTotalDiscount,
-              surchargeDiscount: surchargeTotalDiscount,
+              console.log('taxTotalDiscount', taxTotalDiscount)
+              surchargeTotalDiscount = Num.round(
+                (totalSurcharge * orderDiscount.rate) / 100
+              )
+              console.log('surchargeTotalDiscount', surchargeTotalDiscount)
+              const discountData = {
+                orderDiscount: orderTotalDiscount,
+                taxDiscount: taxTotalDiscount,
+                surchargeDiscount: surchargeTotalDiscount,
+              }
+              console.log('order discount data', discountData)
+              dispatch('discount/setOrderDiscount', discountData, {
+                root: true,
+              })
+
+              resolve(discountData)
             }
-            console.log('order discount data', discountData)
-            dispatch('discount/setOrderDiscount', discountData, { root: true })
-
-            resolve(discountData)
           }
         } else {
           //without surcharge
@@ -766,20 +788,42 @@ const actions = {
               })
             }
           } else {
-            orderTotalDiscount = Num.round(
-              (subtotal * orderDiscount.rate) / 100
-            )
-            //const subtotalWithDiscount = subtotal - orderTotalDiscount
-            totalTax = getters.totalItemsTax
-            taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
-            surchargeTotalDiscount = 0
-            const discountData = {
-              orderDiscount: orderTotalDiscount,
-              taxDiscount: taxTotalDiscount,
-              surchargeDiscount: surchargeTotalDiscount,
+            if (orderDiscount.min_cart_value > subtotal) {
+              dispatch('discount/clearOrderDiscount', null, { root: true })
+              commit(
+                'discount/SET_ORDER_ERROR',
+                CONST.DISCOUNT_ORDER_ERROR_CART,
+                { root: true }
+              )
+              reject(CONST.DISCOUNT_ORDER_ERROR_CART)
+            } else if (orderDiscount.max_discount_value < subtotal) {
+              dispatch('discount/clearOrderDiscount', null, { root: true })
+              commit(
+                'discount/SET_ORDER_ERROR',
+                CONST.DISCOUNT_ORDER_ERROR_MAX,
+                { root: true }
+              )
+              reject(CONST.DISCOUNT_ORDER_ERROR_MAX)
+            } else {
+              orderTotalDiscount = Num.round(
+                (subtotal * orderDiscount.rate) / 100
+              )
+              //const subtotalWithDiscount = subtotal - orderTotalDiscount
+              totalTax = getters.totalItemsTax
+              taxTotalDiscount = Num.round(
+                (totalTax * orderDiscount.rate) / 100
+              )
+              surchargeTotalDiscount = 0
+              const discountData = {
+                orderDiscount: orderTotalDiscount,
+                taxDiscount: taxTotalDiscount,
+                surchargeDiscount: surchargeTotalDiscount,
+              }
+              resolve(discountData)
+              dispatch('discount/setOrderDiscount', discountData, {
+                root: true,
+              })
             }
-            resolve(discountData)
-            dispatch('discount/setOrderDiscount', discountData, { root: true })
           }
         }
       } else {
