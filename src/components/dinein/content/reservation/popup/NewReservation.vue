@@ -356,7 +356,11 @@ export default {
       curr_week_no: 0,
       settings: '',
       selectedTags: [],
-      reservationInformation: { status: 'booked', customers: [] },
+      reservationInformation: {
+        status: 'reserved',
+        customers: [],
+        number_of_guests: 1,
+      },
     }
   },
   methods: {
@@ -390,6 +394,7 @@ export default {
           ('0' + (hh % 12)).slice(-2) +
           ':' +
           ('0' + mm).slice(-2) +
+          ' ' +
           ap[Math.floor(hh / 12)]
         time_slots.push({ time: timeSlot, occupied: null }) // pushing data in array in [00:00 - 12:00 AM/PM format]
         startTime = startTime + interval
@@ -403,12 +408,25 @@ export default {
       let timeSplit = time.split(separator)
       return parseInt(timeSplit[0]) * 60 + parseInt(timeSplit[1])
     },
+
+    convertTime12to24(time12h) {
+      const [time, modifier] = time12h.split(' ')
+
+      let [hours, minutes] = time.split(':')
+
+      if (hours === '12') hours = '00'
+
+      if (modifier === 'PM') hours = parseInt(hours, 10) + 12
+
+      return `${hours}:${minutes}`
+    },
+
     addNewReservation: function() {
       this.reservationInformation.start_date = this.$store.getters[
         'dineinReservation/getUTCDate'
       ](this.selectedDate)
       this.reservationInformation.assigned_table_id =
-        this.selectedTable.id || ''
+        this.selectedTable.table_id || ''
 
       this.$store
         .dispatch('dinein/newReservation', this.reservationInformation, {
@@ -432,7 +450,9 @@ export default {
     getSelectedTimeSlot: function(selectedTimeSlot, scope) {
       $('.time_slot').removeClass('active')
       $(scope).addClass('active')
-      this.reservationInformation.start_time = selectedTimeSlot.time
+      this.reservationInformation.start_time = this.convertTime12to24(
+        selectedTimeSlot.time
+      )
     },
     cal: function() {
       this.getInterval()
