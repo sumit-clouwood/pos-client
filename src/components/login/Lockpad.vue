@@ -2,7 +2,7 @@
   <div class="modal-content lockpad">
     <div class="modal-header">
       <input
-        type="text"
+        type="password"
         placeholder="Enter PIN"
         name="PIN"
         id="cashierpin"
