@@ -61,7 +61,11 @@
                 </div>
               </div>
               <div class="form-group pt-2">
-                <label>Available Time Slots</label>
+                <label
+                  >Available Time Slots<span class="text-danger">
+                    *</span
+                  ></label
+                >
                 <div class="row time_slot_block" style="margin: 0">
                   <div
                     v-for="(val, key) in time_slots"
@@ -152,6 +156,36 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
+                    <label>Phone</label>
+                    <div class="input-group">
+                      <span class="lbl-txt-box">IN</span>
+                      <input
+                        type="text"
+                        class="form-control txt-box"
+                        v-model="reservationInformation.guest_phone"
+                        @focusout="
+                          getUserDetailsByMobile(
+                            reservationInformation.guest_phone
+                          )
+                        "
+                      />
+                    </div>
+                    <span class="text-danger"></span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input
+                      type="email"
+                      class="form-control txt-box"
+                      v-model="reservationInformation.guest_email"
+                    />
+                    <span class="text-danger"></span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
                     <label>First Name</label>
                     <input
                       type="text"
@@ -167,34 +201,6 @@
                       type="text"
                       class="form-control txt-box"
                       v-model="reservationInformation.guest_lname"
-                    />
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Phone</label>
-                    <div class="input-group">
-                      <span class="lbl-txt-box">IN</span>
-                      <input
-                        type="text"
-                        class="form-control txt-box"
-                        v-model="reservationInformation.guest_phone"
-                        @focusout="
-                          getUserDetailsByMobile(
-                            reservationInformation.guest_phone
-                          )
-                        "
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Email</label>
-                    <input
-                      type="email"
-                      class="form-control txt-box"
-                      v-model="reservationInformation.guest_email"
                     />
                   </div>
                 </div>
@@ -368,8 +374,6 @@ export default {
         startTime = this.timeConvert(this.store.open_hours.opens_at)
         closedTime = this.timeConvert(this.store.open_hours.closes_at)
       }
-      // eslint-disable-next-line no-console
-      console.log(startTime)
       let time_slots = []
       let hh = 0,
         mm = 0,
@@ -405,6 +409,20 @@ export default {
       ](this.selectedDate)
       this.reservationInformation.assigned_table_id =
         this.selectedTable.id || ''
+
+      this.$store
+        .dispatch('dinein/newReservation', this.reservationInformation, {
+          root: true,
+        })
+        .then(() => {
+          alert('pass')
+          $('#newReservation').modal('hide')
+        })
+        .catch(error => {
+          alert('Please select a time slot')
+          // eslint-disable-next-line no-console
+          console.log(error)
+        })
       // eslint-disable-next-line no-console
       console.log(this.reservationInformation)
     },

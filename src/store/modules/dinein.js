@@ -362,33 +362,36 @@ const actions = {
     commit(mutation.LOADING, false)
     dispatch('order/reset', {}, { root: true })
     dispatch('checkout/reset', {}, { root: true })
+    if (!state.reservation) {
+      const params = [
+        {
+          //need to set UTC
+          start_date: moment()
+            .utc()
+            .format('YYYY-MM-DD'),
+          start_time: moment()
+            .utc()
+            .format('hh:mm'),
+          assigned_table_id: tableId,
+          number_of_guests: state.guests,
+          customers: [],
+        },
+      ]
+      dispatch('newReservation', ...params)
+    }
+  },
+  newReservation({ commit, dispatch }, params) {
     return new Promise((resolve, reject) => {
-      if (!state.reservation) {
-        const params = [
-          {
-            //need to set UTC
-            start_date: moment()
-              .utc()
-              .format('YYYY-MM-DD'),
-            start_time: moment()
-              .utc()
-              .format('hh:mm'),
-            assigned_table_id: tableId,
-            number_of_guests: state.guests,
-            customers: [],
-          },
-        ]
-        DineInService.reservationOperation(...params, 'add')
-          .then(response => {
-            commit(mutation.RESERVATION_RESPONSE, response.data)
-            dispatch('getCovers').then(() => {
-              resolve(response)
-              commit(mutation.LOADING, false)
-            })
-            commit('order/ORDER_TYPE', state.orderType, { root: true })
+      DineInService.reservationOperation(params, 'add')
+        .then(response => {
+          commit(mutation.RESERVATION_RESPONSE, response.data)
+          dispatch('getCovers').then(() => {
+            resolve(response)
+            commit(mutation.LOADING, false)
           })
-          .catch(error => reject(error))
-      }
+          commit('order/ORDER_TYPE', state.orderType, { root: true })
+        })
+        .catch(error => reject(error))
     })
   },
   getSelectedOrder({ dispatch, commit, state, rootState }, orderId) {
