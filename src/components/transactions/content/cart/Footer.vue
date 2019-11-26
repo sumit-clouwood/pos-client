@@ -50,12 +50,12 @@
         >
           {{ _t('Cancel Transaction') }}
         </button>
-        <!--<button
+        <button
           class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
           @click="modifyOrder(1)"
         >
           {{ _t('Modify Transaction') }}
-        </button>-->
+        </button>
       </span>
       <span
         v-if="
@@ -124,38 +124,42 @@ export default {
     modifyOrder(is_modify) {
       this.$store.commit('order/IS_PAY', is_modify)
       this.$store.dispatch('order/modifyOrderTransaction').then(order => {
-        let scope = this
-        if (order.order_type === 'dine_in') {
-          this.$store.dispatch('dinein/getDineInTables')
-          this.$store.dispatch('dinein/getCovers').then(function() {
-            let orderId = order._id
-            let table_reservation_id = order.table_reservation_id
-            if (scope.$store.state.dinein.tables && order.assigned_table_id) {
-              let tableData = scope.$store.state.dinein.tables.find(
-                table => table._id === order.assigned_table_id
-              )
-              scope.$store.commit('dinein/SELECTED_TABLE', tableData)
-            }
-            scope.$store.commit('dinein/RESERVATION_ID', table_reservation_id)
-            scope.$store.commit('dinein/ORDER_RESERVATION_DATA', order)
-            scope.$store.dispatch('dinein/getSelectedOrder', orderId, {
-              root: true,
-            })
-            scope.$router.push({
-              path:
-                '/dine-in/' +
-                scope.$store.getters['context/store'] +
-                '/' +
-                table_reservation_id +
-                '/' +
-                orderId,
-            })
-          })
-        } else {
-          this.$router.push({
-            path: this.$store.getters['context/store'] + '/update/' + order._id,
-          })
-        }
+        //let scope = this
+        this.$router.push({
+          path: this.$store.getters['context/store'] + '/update/' + order._id,
+        })
+
+        // if (order.order_type === 'dine_in') {
+        //   this.$store.dispatch('dinein/getDineInTables')
+        //   this.$store.dispatch('dinein/getCovers').then(function() {
+        //     let orderId = order._id
+        //     let table_reservation_id = order.table_reservation_id
+        //     if (scope.$store.state.dinein.tables && order.assigned_table_id) {
+        //       let tableData = scope.$store.state.dinein.tables.find(
+        //         table => table._id === order.assigned_table_id
+        //       )
+        //       scope.$store.commit('dinein/SELECTED_TABLE', tableData)
+        //     }
+        //     scope.$store.commit('dinein/RESERVATION_ID', table_reservation_id)
+        //     scope.$store.commit('dinein/ORDER_RESERVATION_DATA', order)
+        //     scope.$store.dispatch('dinein/getSelectedOrder', orderId, {
+        //       root: true,
+        //     })
+        //     scope.$router.push({
+        //       path:
+        //         '/dine-in/' +
+        //         scope.$store.getters['context/store'] +
+        //         '/' +
+        //         table_reservation_id +
+        //         '/' +
+        //         orderId,
+        //     })
+        //   })
+        // } else {
+        //   this.$router.push({
+        //     path: this.$store.getters['context/store'] + '/update/' + order._id,
+        //   })
+        // }
       })
     },
   },
