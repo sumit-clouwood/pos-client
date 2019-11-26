@@ -713,7 +713,7 @@ const actions = {
             if (response.data.status === 'ok') {
               if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
                 let msgStr = rootGetters['location/_t'](
-                  'Hold order has been modified.'
+                  'Hold order has been updated.'
                 )
                 commit(
                   'checkoutForm/SET_MSG',
@@ -767,7 +767,7 @@ const actions = {
           .then(response => {
             if (response.data.status === 'ok') {
               let msgStr = rootGetters['location/_t'](
-                'Delivery order has been modified.'
+                'Delivery order has been updated.'
               )
               commit(
                 'checkoutForm/SET_MSG',
@@ -873,7 +873,7 @@ const actions = {
 
               if (action === 'dine-in-place-order') {
                 msgStr = rootGetters['location/_t'](
-                  'Dinein order has been modified.'
+                  'Dinein order has been updated.'
                 )
                 resolve()
 
