@@ -89,7 +89,9 @@ export default {
   },
   methods: {
     acceptMsg() {
-      this.$store.commit('checkout/PAYMENT_MSG_STATUS', true)
+      if (this.msg.result !== 'error') {
+        this.$store.commit('checkout/PAYMENT_MSG_STATUS', true)
+      }
     },
     generateInvoice() {
       $('#pay-now').modal('hide')

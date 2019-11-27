@@ -875,10 +875,10 @@ const actions = {
                 msgStr = rootGetters['location/_t'](
                   'Dinein order has been updated.'
                 )
-                resolve()
 
                 dispatch('createModifyOrderItemList')
                 dispatch('reset', true)
+                resolve()
               } else {
                 //order paid
                 const selectedCovers = rootState.dinein.selectedCover

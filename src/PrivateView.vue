@@ -176,6 +176,8 @@ export default {
   created() {},
   watch: {
     $route(to, from) {
+      this.$store.commit('order/RESET_SPLIT_BILL')
+
       let orderType = {
         OTview: 'Walk In',
         OTApi: 'walk_in',
@@ -232,7 +234,9 @@ export default {
 
     if (this.$route.params.order_id) {
       this.orderId = this.$route.params.order_id
+      this.$store.commit('order/RESET_SPLIT_BILL')
     }
+
     if (this.$route.params.table_id) {
       this.tableId = this.$route.params.table_id
     }

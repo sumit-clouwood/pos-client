@@ -169,7 +169,16 @@ export default {
     ...mapGetters('auth', ['waiter']),
 
     enabledSplitBill() {
-      return this.brand.split_bill && this.items.length > 1 && !this.waiter
+      const newItemsAddedToCart = this.$store.state.order.items.some(
+        item => typeof item.no === 'undefined'
+      )
+
+      return (
+        this.brand.split_bill &&
+        this.items.length > 1 &&
+        !this.waiter &&
+        !newItemsAddedToCart
+      )
     },
   },
   methods: {

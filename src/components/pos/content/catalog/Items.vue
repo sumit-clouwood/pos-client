@@ -86,6 +86,7 @@ export default {
       if (this.splitBill) {
         return false
       }
+      this.$store.commit('order/RESET_SPLIT_BILL')
       bootstrap.loadUI().then(() => {})
 
       this.$store.commit('order/SET_CART_TYPE', 'new')
