@@ -61,13 +61,13 @@ export default {
 </script>
 
 <style scoped lang="css">
-    .dp-right-footer ul.ullist-dp > li > a {
-     color:#fff !important;
+.dp-right-footer ul.ullist-dp > li > a {
+  color: #fff !important;
 }
-.list-style-type{
-    list-style-type:none;
+.list-style-type {
+  list-style-type: none;
 }
-    .dp-right-footer > ul {
-        display: inline-block;
-    }
+.dp-right-footer > ul {
+  display: inline-block;
+}
 </style>

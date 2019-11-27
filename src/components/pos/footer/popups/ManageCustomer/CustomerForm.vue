@@ -420,31 +420,31 @@ export default {
   width: 60.8795rem !important;
 }
 .dropdown {
-    position: relative;
+  position: relative;
 }
 
 .dropdown-content {
-    display: block;
-    position: absolute;
-    background-color: #f6f6f6;
-    width: 57%;
-    right: 14px;
-    overflow: auto;
-    border: 1px solid #ddd;
-    z-index: 1;
-    margin-top: 3px;
-    max-height: 200px;
+  display: block;
+  position: absolute;
+  background-color: #f6f6f6;
+  width: 57%;
+  right: 14px;
+  overflow: auto;
+  border: 1px solid #ddd;
+  z-index: 1;
+  margin-top: 3px;
+  max-height: 200px;
 }
 
 .dropdown-content span {
-    color: black;
-    padding: 6px 16px;
-    text-decoration: none;
-    display: block;
+  color: black;
+  padding: 6px 16px;
+  text-decoration: none;
+  display: block;
 }
 
 .dropdown span:hover {
-    background-color: #ddd;
+  background-color: #ddd;
 }
 </style>
 <style lang="scss">
