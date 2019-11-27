@@ -1534,8 +1534,6 @@ const actions = {
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
       }
-      // eslint-disable-next-line no-console
-      console.log(jsonResponse)
       let x = JSON.stringify(jsonResponse)
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')

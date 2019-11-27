@@ -106,14 +106,10 @@ export default {
     },
     setupServiceWorker() {
       if ('serviceWorker' in navigator && 'SyncManager' in window) {
-        console.log('service worker and syncmanager are in window')
         setTimeout(() => {
-          console.log('waiting for servicer worker ready')
           navigator.serviceWorker.ready
             .then(registration => {
-              console.log('servie worker is ready')
               Notification.requestPermission()
-              console.log('asking service worker to sync')
               return registration.sync.register('syncpos')
             })
             .then(function() {})
@@ -156,7 +152,6 @@ export default {
           setTimeout(() => {
             this.loading = false
           }, 300)
-          console.log('bootstrap done, delayed loading')
           this.setupServiceWorker()
           this.setupRoutes()
           this.setupExternalScripts()
@@ -169,13 +164,12 @@ export default {
           //this.$store.dispatch('auth/logout', error)
           this.errored = ''
           //}, 1000 * 10)
-          console.log('some catch ', error)
         })
     },
   },
   created() {},
   watch: {
-    $route(to, from) {
+    $route(to) {
       this.$store.commit('order/RESET_SPLIT_BILL')
 
       let orderType = {
@@ -199,7 +193,6 @@ export default {
       }
       this.$store.commit('order/ORDER_TYPE', orderType)
       // react to route changes...
-      console.log('route changed ', to, from)
       setTimeout(() => {
         $('.setting-dropdown').hide()
         $('.setting-dropdown').addClass('animated zoomIn')

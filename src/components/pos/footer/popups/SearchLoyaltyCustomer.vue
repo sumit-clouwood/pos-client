@@ -23,7 +23,6 @@
               type="text"
               :placeholder="_t('Search')"
               class="inputSearch"
-              id="getCustomerList"
               v-model="searchTerm"
               v-on:keyup="search()"
               @keypress="$event.keyCode == 13 ? $event.preventDefault() : true"
