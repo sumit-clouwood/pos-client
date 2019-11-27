@@ -405,6 +405,9 @@ export default {
         })
     },
     errorCheck(element) {
+      setTimeout(function() {
+        this.errors = false
+      }, 3000)
       return this.errors && this.errors[element]
         ? this.errors[element][0] || ''
         : ''
