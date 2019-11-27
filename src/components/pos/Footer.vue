@@ -473,11 +473,9 @@ export default {
       }
     },
     orderType() {
-      $('ul.ullist-icons').slick('refresh')
-      $('.next-btn').click()
-      setTimeout(function() {
-        $('.back-btn').click()
-      }, 1000)
+      this.$nextTick(() => {
+        $('ul.ullist-icons').slick('refresh')
+      })
     },
     // paymentMsgStatus(newVal) {
     //   if (newVal) {
@@ -544,7 +542,7 @@ export default {
 
   updated() {
     this.$nextTick(() => {
-      this.slicker()
+      $('ul.ullist-icons').slick('refresh')
     })
   },
 }
