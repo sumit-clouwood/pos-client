@@ -61,11 +61,10 @@
                 </div>
               </div>
               <div class="form-group pt-2">
-                <label
-                  >Available Time Slots<span class="text-danger">
-                    *</span
-                  ></label
-                >
+                <label>
+                  Available Time Slots
+                  <span class="text-danger">* {{ errorCheck('time_slot') }}</span>
+                </label>
                 <div class="row time_slot_block" style="margin: 0">
                   <div
                     v-for="(val, key) in time_slots"
@@ -353,6 +352,7 @@ export default {
       curr_week_no: 0,
       settings: '',
       selectedTags: [],
+      errors: {},
       reservationInformation: {
         status: 'reserved',
         customers: [],
@@ -370,7 +370,7 @@ export default {
             let guestHistory = this.userDetails[0]
             if (guestHistory) {
               this.history = true
-              this.reservationInformation = {
+              this.reservationInformation += {
                 guest_email: guestHistory.guest_email,
                 guest_fname: guestHistory.guest_fname,
                 guest_lname: guestHistory.guest_lname,
@@ -379,14 +379,20 @@ export default {
             }
           } else {
             this.history = false
-            this.reservationInformation = {
+            /*this.reservationInformation += {
               guest_email: '',
               guest_fname: '',
               guest_lname: '',
               // guest_phone: guestHistory.guest_phone,
-            }
+            }*/
           }
+          console.log(this.reservationInformation)
         })
+    },
+    errorCheck(element) {
+      alert(element)
+      console.log(this.errors[element])
+      return this.errors[element] || ''
     },
     getInterval() {
       let startTime = 0
@@ -454,11 +460,10 @@ export default {
           root: true,
         })
         .then(() => {
-          alert('pass')
           $('#newReservation').modal('hide')
         })
         .catch(error => {
-          alert('Please select a time slot')
+          this.errors.start_time = 'Please select a time slot'
           // eslint-disable-next-line no-console
           console.log(error)
         })
