@@ -63,7 +63,9 @@
               <div class="form-group pt-2">
                 <label>
                   Available Time Slots
-                  <span class="text-danger">* {{ errorCheck('time_slot') }}</span>
+                  <span class="text-danger"
+                    >* {{ errorCheck('start_time') }}</span
+                  >
                 </label>
                 <div class="row time_slot_block" style="margin: 0">
                   <div
@@ -124,6 +126,9 @@
                         : tableText
                     }}
                   </button>
+                  <span class="text-danger">
+                    {{ errorCheck('assigned_table_id') }}
+                  </span>
                 </div>
                 <div class="col-md-5" style="display: none">
                   <button
@@ -169,7 +174,9 @@
                         "
                       />
                     </div>
-                    <span class="text-danger"></span>
+                    <span class="text-danger">
+                      {{ errorCheck('guest_phone') }}
+                    </span>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -180,7 +187,9 @@
                       class="form-control txt-box"
                       v-model="reservationInformation.guest_email"
                     />
-                    <span class="text-danger"></span>
+                    <span class="text-danger">{{
+                      errorCheck('guest_email')
+                    }}</span>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -352,7 +361,7 @@ export default {
       curr_week_no: 0,
       settings: '',
       selectedTags: [],
-      errors: {},
+      errors: false,
       reservationInformation: {
         status: 'reserved',
         customers: [],
@@ -365,12 +374,18 @@ export default {
       this.$store
         .dispatch('dineinReservation/getUserHistory', mobileNo)
         .then(response => {
-          this.history = true
+          let fetchedData = {
+            guest_email: '',
+            guest_fname: '',
+            guest_lname: '',
+            // guest_phone: guestHistory.guest_phone,
+          }
           if (response.count) {
+            this.history = true
             let guestHistory = this.userDetails[0]
             if (guestHistory) {
-              this.history = true
-              this.reservationInformation += {
+              // this.history = true
+              fetchedData = {
                 guest_email: guestHistory.guest_email,
                 guest_fname: guestHistory.guest_fname,
                 guest_lname: guestHistory.guest_lname,
@@ -379,20 +394,20 @@ export default {
             }
           } else {
             this.history = false
-            /*this.reservationInformation += {
-              guest_email: '',
-              guest_fname: '',
-              guest_lname: '',
-              // guest_phone: guestHistory.guest_phone,
-            }*/
           }
+          this.reservationInformation = Object.assign(
+            {},
+            this.reservationInformation,
+            fetchedData
+          )
+          // eslint-disable-next-line no-console
           console.log(this.reservationInformation)
         })
     },
     errorCheck(element) {
-      alert(element)
-      console.log(this.errors[element])
-      return this.errors[element] || ''
+      return this.errors && this.errors[element]
+        ? this.errors[element][0] || ''
+        : ''
     },
     getInterval() {
       let startTime = 0
@@ -459,16 +474,17 @@ export default {
         .dispatch('dinein/newReservation', this.reservationInformation, {
           root: true,
         })
-        .then(() => {
+        .then(response => {
+          this.errors = response.data.form_errors || false
           $('#newReservation').modal('hide')
-        })
-        .catch(error => {
-          this.errors.start_time = 'Please select a time slot'
           // eslint-disable-next-line no-console
-          console.log(error)
+          console.log(response.data, this.errors, this.errors['guest_email'])
+        })
+        .catch(() => {
+          this.errors = { start_time: ['Please select a time slot'] }
         })
       // eslint-disable-next-line no-console
-      console.log(this.reservationInformation)
+      console.log(this.errors)
     },
     getSelectedGuest: function(numberOfGuest) {
       this.reservationInformation.number_of_guests = numberOfGuest + 1
