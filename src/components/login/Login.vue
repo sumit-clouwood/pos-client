@@ -83,7 +83,7 @@ import DataService from '@/services/DataService'
 
 export default {
   computed: {
-    ...mapGetters('location', '_t'),
+    ...mapGetters('location', ['_t']),
   },
   name: 'Login',
   data() {

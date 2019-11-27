@@ -189,6 +189,7 @@ export default {
         data = {
           cancel_reason: this.showSelectedReason,
           supervisor_password: this.supervisorPassword,
+          inventory_behavior: 'waste', //ToDo will make it dynamic later
         }
       }
       let orderType = order.order.order_type
