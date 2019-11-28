@@ -43,7 +43,7 @@
                 </td>
                 <td>
                   <!--{{ reservation.start_date }},-->
-                  {{ reservation.start_time }}
+                  {{ DateTime.convertTime24to12(reservation.start_time) }}
                 </td>
                 <td>
                   {{ getAreaName(reservation.assigned_table_id) }} /

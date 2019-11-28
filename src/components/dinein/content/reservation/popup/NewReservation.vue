@@ -319,7 +319,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import DineInTableSelection from '@/components/dinein/cart/popup/DineInTableSelection'
-// import { Datetime } from 'vue-datetime'
+import DateTime from '@/plugins/helpers/DateTime'
 /* global $ */
 
 export default {
@@ -338,7 +338,11 @@ export default {
       'availableTables',
       'selectedTable',
     ]),
-    ...mapState('dineinReservation', ['tags', 'userDetails']),
+    ...mapState('dineinReservation', [
+      'tags',
+      'userDetails',
+      'tableBookedStatus',
+    ]),
     ...mapGetters('location', ['_t']),
     ...mapGetters('dineinReservation', ['getUTCDate']),
     ...mapState('location', ['brand', 'store']),
@@ -352,6 +356,7 @@ export default {
     return {
       tableText: 'Select Table',
       calendarOpen: false,
+      dtObj: new DateTime(),
       newDetails: false,
       selectedDate: '',
       no_of_guest: 1,
@@ -365,7 +370,7 @@ export default {
       selectedTags: [],
       errors: false,
       reservationInformation: {
-        status: 'reserved',
+        status: 'booked',
         customers: [],
         number_of_guests: 1,
       },
@@ -403,10 +408,12 @@ export default {
             fetchedData
           )
           // eslint-disable-next-line no-console
-          console.log(this.reservationInformation)
+          console.log(this.tableBookedStatus, this.time_slots)
         })
     },
     errorCheck(element) {
+      // eslint-disable-next-line no-console
+      // console.log(this.tableBookedStatus)
       setTimeout(function() {
         this.errors = false
       }, 3000)
@@ -426,6 +433,7 @@ export default {
         closedTime = this.timeConvert(this.store.open_hours.closes_at)
       }
       let time_slots = []
+      let occupied = null
       let hh = 0,
         mm = 0,
         i = 0,
@@ -443,20 +451,21 @@ export default {
           ('0' + mm).slice(-2) +
           ' ' +
           ap[Math.floor(hh / 12)]
-        time_slots.push({ time: timeSlot, occupied: null }) // pushing data in array in [00:00 - 12:00 AM/PM format]
+        occupied = this.tableBookedStatus.includes(timeSlot)
+        time_slots.push({ time: timeSlot, occupied: occupied }) // pushing data in array in [00:00 - 12:00 AM/PM format]
         startTime = startTime + interval
       }
       this.time_slots = time_slots
 
       // eslint-disable-next-line no-console
-      console.log(time_slots, closedTime, interval)
+      console.log(time_slots, this.tableBookedStatus)
     },
     timeConvert(time, separator = ':') {
       let timeSplit = time.split(separator)
       return parseInt(timeSplit[0]) * 60 + parseInt(timeSplit[1])
     },
 
-    convertTime12to24(time12h) {
+    /*convertTime12to24(time12h) {
       const [time, modifier] = time12h.split(' ')
 
       let [hours, minutes] = time.split(':')
@@ -466,7 +475,7 @@ export default {
       if (modifier === 'PM') hours = parseInt(hours, 10) + 12
 
       return `${hours}:${minutes}`
-    },
+    },*/
 
     addNewReservation: function() {
       this.reservationInformation.start_date = this.$store.getters[
@@ -497,7 +506,7 @@ export default {
     getSelectedTimeSlot: function(selectedTimeSlot, scope) {
       $('.time_slot').removeClass('active')
       $(scope).addClass('active')
-      this.reservationInformation.start_time = this.convertTime12to24(
+      this.reservationInformation.start_time = this.dtObj.convertTime12to24(
         selectedTimeSlot.time
       )
     },
