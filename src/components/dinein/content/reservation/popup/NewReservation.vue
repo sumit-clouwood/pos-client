@@ -162,7 +162,7 @@
                   <div class="form-group">
                     <label>Phone</label>
                     <div class="input-group">
-                      <span class="lbl-txt-box">IN</span>
+                      <span class="lbl-txt-box">{{ brand.country }}</span>
                       <input
                         type="text"
                         class="form-control txt-box"
@@ -224,8 +224,10 @@
                       >
                         <th scope="row">{{ reservations.start_date }}</th>
                         <td>{{ reservations.start_time }}</td>
-                        <td>{{ reservations.status }}</td>
-                        <td>Victoria Pope Daniel</td>
+                        <td class="text-capitalize">
+                          {{ reservations.status }}
+                        </td>
+                        <td class="text-capitalize">NA</td>
                       </tr>
                     </tbody>
                     <tbody v-else>
@@ -405,6 +407,9 @@ export default {
         })
     },
     errorCheck(element) {
+      setTimeout(function() {
+        this.errors = false
+      }, 3000)
       return this.errors && this.errors[element]
         ? this.errors[element][0] || ''
         : ''
@@ -476,7 +481,7 @@ export default {
         })
         .then(response => {
           this.errors = response.data.form_errors || false
-          $('#newReservation').modal('hide')
+          $('#NewReservation').modal('hide')
           // eslint-disable-next-line no-console
           console.log(response.data, this.errors, this.errors['guest_email'])
         })

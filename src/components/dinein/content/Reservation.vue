@@ -38,8 +38,8 @@
             </tbody>-->
             <tbody>
               <tr v-for="(reservation, index) in reservations" :key="index">
-                <td>
-                  {{ reservation.guest_fname + ' ' + reservation.guest_lname }}
+                <td class="text-capitalize">
+                  {{ customerName(reservation) }}
                 </td>
                 <td>
                   <!--{{ reservation.start_date }},-->
@@ -181,6 +181,11 @@ export default {
       this.cal()
   },
   methods: {
+    customerName(reservation) {
+      return reservation.guest_fname.length
+        ? reservation.guest_fname + ' ' + reservation.guest_lname
+        : 'Anonymous'
+    },
     activeDateSelector() {
       this.newDtPicker = true
       $('#NewReservation').modal('show')
