@@ -1644,6 +1644,10 @@ const mutations = {
       state.splitted = true
     }
   },
+  [mutation.RESET_SPLIT_BILL](state) {
+    state.splitBill = false
+    state.splitted = false
+  },
   [mutation.MARK_SPLIT_ITEMS_PAID](state) {
     const newitems = state.items.map(item => {
       if (Object.keys(state.splittedItems).length) {
