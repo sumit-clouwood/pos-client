@@ -139,6 +139,7 @@ export default {
         data = {
           cancel_reason: this.showSelectedReason,
           supervisor_password: this.supervisorPassword,
+          inventory_behavior: 'waste', //TODO we'll change it dynamically later
         }
       }
       let orderType = 'call_center'

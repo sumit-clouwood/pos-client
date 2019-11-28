@@ -23,6 +23,7 @@ import Translate from './mixins/global/Translate'
 
 import './plugins/constants_mixin'
 import './plugins/helper_mixin'
+import './mixins/global/PermissionsMixin'
 
 Vue.config.performance = true
 
