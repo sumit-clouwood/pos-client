@@ -53,6 +53,16 @@ const actions = {
         })
     })
   },
+  editTable({ dispatch }, data) {
+    return new Promise((resolve, reject) => {
+      DineInService.editTableStatus(data)
+        .then(response => {
+          dispatch('getReservationByDate')
+          return resolve(response)
+        })
+        .catch(er => reject(er))
+    })
+  },
   getTakenBy({ commit }) {
     DineInService.storeUsers().then(response => {
       commit(mutation.TAKEN_BY_LIST, response.data)

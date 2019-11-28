@@ -115,9 +115,6 @@ const actions = {
     })
   },
   async getBookedTables({ commit }, loader = false) {
-    // eslint-disable-next-line no-console
-    console.log('all bookend table')
-
     if (loader) commit(mutation.LOADING, loader)
     /*localStorage.setItem('reservationId', false)*/
     await DineInService.getAllBookedTables().then(response => {
