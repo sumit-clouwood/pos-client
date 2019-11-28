@@ -10,6 +10,7 @@ const state = {
   tags: false,
   params: { page: 1, limit: 9999 },
   tableBookedStatus: [],
+  selectedReservation: false,
 }
 const getters = {
   getUTCDate: () => selectedDate => {

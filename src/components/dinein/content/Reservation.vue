@@ -57,13 +57,17 @@
                 <td class="mr-1 reservation-actions">
                   <button
                     class="btn btn-success"
-                    @click="editReservation(reservation.assigned_table_id)"
+                    @click="
+                      editReservation(reservation.assigned_table_id, false)
+                    "
                   >
                     <span class="fa fa-check"></span>
                   </button>
                   <button
                     class="btn btn-warning"
-                    @click="editReservation(reservation.assigned_table_id)"
+                    @click="
+                      editReservation(reservation.assigned_table_id, true)
+                    "
                   >
                     <span class="fa fa-edit"></span>
                   </button>
@@ -199,8 +203,10 @@ export default {
       $('#confirmReservation').modal('show')
       this.selectedReservationId = id
     },
-    editReservation(id) {
-      // this.activeDateSelector()
+    editReservation(id, popup) {
+      if (popup) {
+        this.activeDateSelector()
+      }
       this.selectedReservationId = id
       let getReservation = this.reservations.find(
         reservation => reservation['assigned_table_id'] == id
