@@ -1175,10 +1175,6 @@ const actions = {
       commit('SET_CART_TYPE', 'dine-in-modify')
       dispatch('setDiscounts', orderData)
         .then(() => {
-          orderData.item.items = orderData.item.items.map(item => {
-            item.kitchen_invoice = 1
-            return item
-          })
           dispatch('addOrderToCart', orderData.item)
             .then(() => {
               dispatch('surchargeCalculation')
