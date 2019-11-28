@@ -55,12 +55,19 @@
                   }}
                 </td>
                 <td class="mr-1 reservation-actions">
-                  <button class="btn btn-success">
+                  <button
+                    class="btn btn-success"
+                    @click="
+                      editReservation(reservation.assigned_table_id, false)
+                    "
+                  >
                     <span class="fa fa-check"></span>
                   </button>
                   <button
                     class="btn btn-warning"
-                    @click="editReservation(reservation._id)"
+                    @click="
+                      editReservation(reservation.assigned_table_id, true)
+                    "
                   >
                     <span class="fa fa-edit"></span>
                   </button>
@@ -196,9 +203,30 @@ export default {
       $('#confirmReservation').modal('show')
       this.selectedReservationId = id
     },
-    editReservation(id) {
-      this.activeDateSelector()
+    editReservation(id, popup) {
+      if (popup) {
+        this.activeDateSelector()
+      }
       this.selectedReservationId = id
+      let getReservation = this.reservations.find(
+        reservation => reservation['assigned_table_id'] == id
+      )
+      let data = {
+        assigned_table_id: id,
+        customers: [],
+        number_of_guests: getReservation.number_of_guests,
+        start_date: getReservation.start_date,
+        start_time: getReservation.start_time,
+        status: 'reserved',
+      }
+      this.$store
+        .dispatch('dineinReservation/editTable', {
+          data: data,
+          id: getReservation._id,
+        })
+        .then(() => {
+          alert('success')
+        })
     },
 
     confirmCancelReservation() {

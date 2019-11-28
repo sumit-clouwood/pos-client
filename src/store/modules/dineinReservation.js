@@ -10,6 +10,7 @@ const state = {
   tags: false,
   params: { page: 1, limit: 9999 },
   tableBookedStatus: [],
+  selectedReservation: false,
 }
 const getters = {
   getUTCDate: () => selectedDate => {
@@ -51,6 +52,16 @@ const actions = {
         .catch(error => {
           reject(error)
         })
+    })
+  },
+  editTable({ dispatch }, data) {
+    return new Promise((resolve, reject) => {
+      DineInService.editTableStatus(data)
+        .then(response => {
+          dispatch('getReservationByDate')
+          return resolve(response)
+        })
+        .catch(er => reject(er))
     })
   },
   getTakenBy({ commit }) {
