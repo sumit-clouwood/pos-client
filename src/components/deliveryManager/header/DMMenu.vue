@@ -66,7 +66,7 @@ export default {
     // Branches,
   },
   computed: {
-    ...mapGetters('location', ['_t', 'permitted']),
+    ...mapGetters('location', ['_t']),
     ...mapState('deliveryManager', ['section']),
   },
   methods: {

@@ -22,7 +22,7 @@
       <div class="change-location">
         <button
           class="btn btn-success"
-          v-if="permitted('brand_settings', 'brand')"
+          v-if="isPermitted(PERMISSIONS.BRANDS_BRAND_SETTINGS)"
         >
           <a :href="baseurl('delivery')">{{ _t('Change Brand') }}</a>
         </button>
@@ -87,7 +87,7 @@ export default {
     },
     ...mapGetters('context', ['store']),
     ...mapState('location', ['availableLanguages', 'language']),
-    ...mapGetters('location', ['_t', 'permitted']),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     orderTypeWalkIn: function(orderType) {

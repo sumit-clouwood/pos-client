@@ -119,52 +119,52 @@
         </svg>
       </a>
       <ul class="setting-dropdown1">
-        <li v-if="enabled('walkin')" @click="walkOrder()">
+        <li v-if="!isWaiter() && !isCarhop()" @click="walkOrder()">
           <a role="button">{{ _t('Walk In') }}</a>
         </li>
-        <li v-if="enabled('printers')">
+        <li v-if="!isWaiter() && !isCarhop()">
           <a role="button" class="cursor-pointer">{{ _t('Printers') }}</a>
         </li>
         <li
-          v-if="enabled('transactions') && permitted('transactional_orders')"
+          v-if="!isWaiter() && !isCarhop() && permitted('transactional_orders')"
           @click="moveTransactionSection(this)"
         >
           <a role="button">{{ _t('Transactions') }}</a>
         </li>
-        <li v-if="enabled('dashboard') && permitted('dashboard', 'root')">
+        <li v-if="!isWaiter() && !isCarhop() && permitted('dashboard', 'root')">
           <a :href="dashboard">{{ _t('Dashboard') }}</a>
         </li>
-        <li v-if="enabled('crm') && permitted('crm', 'root')">
+        <li v-if="!isWaiter() && !isCarhop() && permitted('crm', 'root')">
           <a :href="crm">{{ _t('CRM') }}</a>
         </li>
-        <li v-if="enabled('transactions') && permitted('menu', 'root')">
+        <li v-if="!isWaiter() && !isCarhop() && permitted('menu', 'root')">
           <a :href="menu">{{ _t('Menu') }}</a>
         </li>
-        <li v-if="enabled('delivery') && permitted('delivery', 'root')">
+        <li v-if="!isWaiter() && !isCarhop() && permitted('delivery', 'root')">
           <a role="button" class="cursor-pointer">
             <router-link :to="'/delivery-manager' + store">
               {{ _t('Delivery Manager') }}
             </router-link>
           </a>
         </li>
-        <li v-if="enabled('carhop')">
+        <li v-if="!isWaiter()">
           <a role="button" class="cursor-pointer">
             <router-link :to="'/carhop' + store">
               {{ _t('Carhop') }}
             </router-link>
           </a>
         </li>
-        <li v-if="enabled('carhoporders')">
+        <li v-if="!isWaiter()">
           <a role="button" class="cursor-pointer">
             <router-link :to="'/carhop-orders' + store">
               {{ _t('Carhop Orders') }}
             </router-link>
           </a>
         </li>
-        <li v-if="enabled('brand') && permitted('brand', 'root')">
+        <li v-if="!isWaiter() && !isCarhop() && permitted('brand', 'root')">
           <a :href="brand">{{ _t('Settings') }}</a>
         </li>
-        <li v-if="enabledModule('switchCashier') && enabled('switchcashier')">
+        <li v-if="enabledModule('switchCashier') && !isWaiter() && !isCarhop()">
           <router-link
             :to="'/cashier-login' + store"
             @click.native="logoutCashier"
@@ -302,72 +302,6 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
-    enabled(option) {
-      switch (option) {
-        case 'printers':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'dashboard':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'transactions':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'crm':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'dinein':
-          if (this.carhop) {
-            return false
-          }
-          return true
-        case 'menusetup':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'delivery':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'walkin':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'carhop':
-          if (this.waiter) {
-            return false
-          }
-          return true
-        case 'carhoporders':
-          if (this.waiter) {
-            return false
-          }
-          return true
-        case 'brand':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'switchCashier':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        default:
-          return true
-      }
-    },
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
