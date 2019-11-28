@@ -25,6 +25,8 @@ import './plugins/constants_mixin'
 import './plugins/helper_mixin'
 import './mixins/global/PermissionsMixin'
 
+Vue.config.performance = true
+
 Vue.mixin(Translate)
 
 //create new vue isntance to use store and routers and render App to root component

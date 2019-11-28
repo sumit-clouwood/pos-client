@@ -158,10 +158,8 @@ export default {
     }),
   },
   watch: {
-    items(newVal) {
+    items() {
       // alert('value changed' + newVal)
-      // eslint-disable-next-line
-      console.log(newVal)
       this.item_added_flag = 1
       setTimeout(() => {
         this.item_added_flag = 0

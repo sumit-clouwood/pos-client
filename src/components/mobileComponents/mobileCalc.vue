@@ -28,7 +28,6 @@
           type="text"
           name="payment"
           v-model.number="payableAmount"
-          id="input"
           @click="showCalculator()"
           :placeholder="formatPrice(0.0)"
         />
