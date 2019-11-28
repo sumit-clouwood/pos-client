@@ -334,6 +334,9 @@ const actions = {
           price: item.netPrice,
           qty: item.quantity,
         }
+        if (typeof item.kitchen_invoice !== 'undefined') {
+          orderItem['kitchen_invoice'] = item.kitchen_invoice
+        }
 
         //we are sending item price and modifier prices separtely but sending
         //item discount as total of both discounts
