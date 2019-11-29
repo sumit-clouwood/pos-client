@@ -1179,6 +1179,10 @@ const actions = {
                 }
               })
             }
+            if (typeof orderItem.kitchen_invoice !== 'undefined') {
+              item['kitchen_invoice'] = orderItem.kitchen_invoice
+            }
+
             if (modifiers.length) {
               item.modifiers = modifiers
               dispatch('modifier/assignModifiersToItem', item, {

@@ -127,7 +127,7 @@ const actions = {
     return Promise.resolve()
   },
 
-  validateEvent({ commit, rootState }) {
+  validateEvent({ commit, rootState, dispatch }) {
     if (state.processing === true) {
       // eslint-disable-next-line
       console.log('Dual event detected')
@@ -145,7 +145,16 @@ const actions = {
     // set the async state
     commit(mutation.SET_PROCESSING, true)
     commit('checkoutForm/SET_PROCESSING', true, { root: true })
+    return dispatch('validateOrder')
+  },
 
+  validateOrder({ rootState, commit }) {
+    //check if split order is on but no item was plitted
+    if (rootState.order.splitBill || rootState.order.splitted) {
+      if (rootState.order.items.some(item => item.split === false)) {
+        commit('order/RESET_SPLIT_BILL', null, { root: true })
+      }
+    }
     return Promise.resolve()
   },
 
