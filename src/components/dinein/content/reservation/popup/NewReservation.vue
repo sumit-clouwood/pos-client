@@ -168,7 +168,7 @@
                         class="form-control txt-box"
                         v-model="reservationInformation.guest_phone"
                         @focusout="
-                          getUserDetailsByMobile(
+                          getuserHistoryByMobile(
                             reservationInformation.guest_phone
                           )
                         "
@@ -216,26 +216,28 @@
               <div class="row lh-30">
                 <div class="col-md-12">
                   <label>Guest History</label>
-                  <table class="table table-bordered">
-                    <tbody v-if="history">
-                      <tr
-                        v-for="(reservations, index) in userDetails"
-                        :key="index"
-                      >
-                        <th scope="row">{{ reservations.start_date }}</th>
-                        <td>{{ reservations.start_time }}</td>
-                        <td class="text-capitalize">
-                          {{ reservations.status }}
-                        </td>
-                        <td class="text-capitalize">NA</td>
-                      </tr>
-                    </tbody>
-                    <tbody v-else>
-                      <tr>
-                        <td>No history found</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div class="scroll-history">
+                    <table class="table table-bordered">
+                      <tbody v-if="userHistory">
+                        <tr
+                          v-for="(reservations, index) in userHistory"
+                          :key="index"
+                        >
+                          <th scope="row">{{ reservations.start_date }}</th>
+                          <td>{{ reservations.start_time }}</td>
+                          <td class="text-capitalize">
+                            {{ reservations.status }}
+                          </td>
+                          <td class="text-capitalize">NA</td>
+                        </tr>
+                      </tbody>
+                      <tbody v-else>
+                        <tr>
+                          <td>No history found</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 <div class="col-md-12">
                   <label style="margin-top: 10px">{{ _t('Tags') }}</label>
@@ -351,7 +353,7 @@ export default {
     ]),
     ...mapState('dineinReservation', [
       'tags',
-      'userDetails',
+      'userHistory',
       'tableBookedStatus',
     ]),
     ...mapGetters('location', ['_t']),
@@ -378,7 +380,7 @@ export default {
       no_of_guest: 1,
       time_slots: [],
       days: [],
-      history: false,
+      // history: false,
       week_no: null,
       week_diff: null,
       curr_week_no: 0,
@@ -388,18 +390,17 @@ export default {
     }
   },
   methods: {
-    getUserDetailsByMobile: function(mobileNo) {
-      this.$store
-        .dispatch('dineinReservation/getUserHistory', mobileNo)
-        .then(response => {
-          if (response.count) {
-            this.history = true
-          } else {
-            this.history = false
-          }
-          // eslint-disable-next-line no-console
-          console.log(this.tableBookedStatus, this.time_slots)
-        })
+    getuserHistoryByMobile: function(mobileNo) {
+      this.$store.dispatch('dineinReservation/getUserHistory', mobileNo)
+      /*.then(response => {
+        if (response.count) {
+          this.history = true
+        } else {
+          this.history = false
+        }
+        // eslint-disable-next-line no-console
+        console.log(this.tableBookedStatus, this.time_slots)
+      })*/
     },
     errorCheck(element) {
       // eslint-disable-next-line no-console
@@ -787,5 +788,10 @@ span.button-checkbox {
   margin: 10px 0;
   grid-template-columns: auto 1fr;
   grid-gap: 10px;
+}
+.scroll-history {
+  max-height: 178px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 </style>

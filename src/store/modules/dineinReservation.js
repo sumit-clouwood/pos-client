@@ -5,7 +5,7 @@ import DateTime from '@/plugins/helpers/DateTime'
 const state = {
   selectedReservationDate: false,
   reservations: false,
-  userDetails: false,
+  userHistory: false,
   storeUsers: false,
   tags: false,
   params: { page: 1, limit: 9999 },
@@ -50,7 +50,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       DineInService.getReservationByMobile(mobileNo)
         .then(response => {
-          commit(mutation.USER_DETAILS, response.data)
+          commit(mutation.USER_HISTORY, response.data)
           return resolve(response.data)
         })
         .catch(error => {
@@ -68,11 +68,11 @@ const actions = {
         .catch(er => reject(er))
     })
   },
-  getTakenBy({ commit }) {
+  /*getTakenBy({ commit }) {
     DineInService.storeUsers().then(response => {
       commit(mutation.TAKEN_BY_LIST, response.data)
     })
-  },
+  },*/
   getTags({ commit }) {
     DineInService.getReservationTags().then(response => {
       commit(mutation.TAGS, response.data)
@@ -97,9 +97,17 @@ const mutations = {
     })
     state.tableBookedStatus = bookingStatus
   },
-  [mutation.USER_DETAILS](state, userDetails) {
-    state.userDetails = userDetails.data
-    let guestHistory = state.userDetails[0]
+  [mutation.USER_HISTORY](state, userHistory) {
+    let history = []
+    userHistory.data.forEach(h => {
+      history.push({
+        start_date: h.start_date,
+        start_time: h.start_time,
+        status: h.status,
+        des: 'NA',
+      })
+    })
+    let guestHistory = userHistory.data[0]
     let fetchedData = {
       guest_email: '',
       guest_fname: '',
@@ -119,13 +127,16 @@ const mutations = {
         fetchedData
       )
     }
+    // eslint-disable-next-line no-console
+    console.log(history)
+    state.userHistory = history
   },
   [mutation.SELECTED_RESERVATION](state, selectedReservation) {
     state.selectedReservation = selectedReservation
   },
-  [mutation.TAKEN_BY_LIST](state, storeUsers) {
+  /*[mutation.TAKEN_BY_LIST](state, storeUsers) {
     state.storeUsers = storeUsers
-  },
+  },*/
   [mutation.TAGS](state, tags) {
     state.tags = tags.data
   },
