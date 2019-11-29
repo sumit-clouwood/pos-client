@@ -10,7 +10,11 @@ const state = {
   tags: false,
   params: { page: 1, limit: 9999 },
   tableBookedStatus: [],
-  selectedReservation: false,
+  selectedReservation: {
+    status: 'booked',
+    customers: [],
+    number_of_guests: 1,
+  },
 }
 const getters = {
   getUTCDate: () => selectedDate => {
@@ -95,6 +99,29 @@ const mutations = {
   },
   [mutation.USER_DETAILS](state, userDetails) {
     state.userDetails = userDetails.data
+    let guestHistory = state.userDetails[0]
+    let fetchedData = {
+      guest_email: '',
+      guest_fname: '',
+      guest_lname: '',
+      // guest_phone: guestHistory.guest_phone,
+    }
+    if (guestHistory) {
+      fetchedData = {
+        guest_email: guestHistory.guest_email,
+        guest_fname: guestHistory.guest_fname,
+        guest_lname: guestHistory.guest_lname,
+        guest_phone: guestHistory.guest_phone,
+      }
+      state.selectedReservation = Object.assign(
+        {},
+        state.selectedReservation,
+        fetchedData
+      )
+    }
+  },
+  [mutation.SELECTED_RESERVATION](state, selectedReservation) {
+    state.selectedReservation = selectedReservation
   },
   [mutation.TAKEN_BY_LIST](state, storeUsers) {
     state.storeUsers = storeUsers

@@ -98,7 +98,11 @@
         </div>
       </div>
       <TableDraw />
-      <NewReservation :dateSelector="newDtPicker" />
+      <NewReservation
+        :dateSelector="newDtPicker"
+        :reservationInformation="selectedReservation"
+        :edit="editStatus"
+      />
       <div
         class="modal"
         id="confirmReservation"
@@ -169,10 +173,11 @@ export default {
   computed: {
     ...mapState('dinein', ['tablesOnArea', 'dineInTabType', 'availableTables']),
     ...mapGetters('location', ['_t']),
-    ...mapState('dineinReservation', ['reservations']),
+    ...mapState('dineinReservation', ['reservations', 'selectedReservation']),
   },
   data() {
     return {
+      editStatus: false,
       newDtPicker: false,
       calendarOpen: false,
       newDetails: false,
@@ -204,13 +209,25 @@ export default {
       this.selectedReservationId = id
     },
     editReservation(id, popup) {
-      if (popup) {
-        this.activeDateSelector()
-      }
       this.selectedReservationId = id
+
       let getReservation = this.reservations.find(
         reservation => reservation['assigned_table_id'] == id
       )
+      if (popup) {
+        this.editStatus = popup
+        this.activeDateSelector()
+        this.$store.commit(
+          'dineinReservation/SELECTED_RESERVATION',
+          getReservation
+        )
+        /*alert(getReservation.guest_phone)
+        this.$store.dispatch(
+          'dineinReservation/getUserHistory',
+          getReservation.guest_phone
+        )*/
+        return false
+      }
       let data = {
         assigned_table_id: id,
         customers: [],
@@ -225,7 +242,7 @@ export default {
           id: getReservation._id,
         })
         .then(() => {
-          alert('success')
+          // alert('success')
         })
     },
 

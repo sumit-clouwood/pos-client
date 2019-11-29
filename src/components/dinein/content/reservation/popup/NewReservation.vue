@@ -40,7 +40,7 @@
                       name="options"
                       :id="'option' + i"
                       autocomplete="off"
-                      v-model="reservationInformation.guest"
+                      v-model="reservationInformation.number_of_guests"
                     />
                     <label :for="'option' + i"
                       >{{ i + 1 }} {{ n === 10 ? '+' : '' }}</label
@@ -304,6 +304,15 @@
           </button>
           <button
             type="button"
+            v-if="edit"
+            class="btn btn-success"
+            @click="updateReservation"
+          >
+            {{ _t('Update Reservation') }}
+          </button>
+          <button
+            type="button"
+            v-else
             class="btn btn-success"
             @click="addNewReservation"
           >
@@ -330,6 +339,8 @@ export default {
   },
   props: {
     dateSelector: Boolean,
+    edit: Boolean,
+    reservationInformation: Object,
   },
   computed: {
     ...mapState('dinein', [
@@ -351,6 +362,11 @@ export default {
     let isCalendarhasData = $('.wrapperNew').text().length
     if (isCalendarhasData == 0 && this.dineInTabType == 'reservation')
       this.cal()
+
+    /*this.reservationInformation =
+      this.selectedReservation || this.reservationInformation*/
+    // eslint-disable-next-line no-console
+    console.log(this.reservationInformation)
   },
   data() {
     return {
@@ -369,11 +385,6 @@ export default {
       settings: '',
       selectedTags: [],
       errors: false,
-      reservationInformation: {
-        status: 'booked',
-        customers: [],
-        number_of_guests: 1,
-      },
     }
   },
   methods: {
@@ -381,32 +392,11 @@ export default {
       this.$store
         .dispatch('dineinReservation/getUserHistory', mobileNo)
         .then(response => {
-          let fetchedData = {
-            guest_email: '',
-            guest_fname: '',
-            guest_lname: '',
-            // guest_phone: guestHistory.guest_phone,
-          }
           if (response.count) {
             this.history = true
-            let guestHistory = this.userDetails[0]
-            if (guestHistory) {
-              // this.history = true
-              fetchedData = {
-                guest_email: guestHistory.guest_email,
-                guest_fname: guestHistory.guest_fname,
-                guest_lname: guestHistory.guest_lname,
-                guest_phone: guestHistory.guest_phone,
-              }
-            }
           } else {
             this.history = false
           }
-          this.reservationInformation = Object.assign(
-            {},
-            this.reservationInformation,
-            fetchedData
-          )
           // eslint-disable-next-line no-console
           console.log(this.tableBookedStatus, this.time_slots)
         })
@@ -499,6 +489,27 @@ export default {
         })
       // eslint-disable-next-line no-console
       console.log(this.errors)
+    },
+    updateReservation: function() {
+      // eslint-disable-next-line no-console
+      console.log(this.reservationInformation)
+      let id = this.reservationInformation._id
+      delete this.reservationInformation._id
+      delete this.reservationInformation.number
+      delete this.reservationInformation.end_time
+      delete this.reservationInformation.related_orders_ids
+      delete this.reservationInformation.reservation_history
+      delete this.reservationInformation.created_by
+      this.$store
+        .dispatch('dineinReservation/editTable', {
+          id: id,
+          data: this.reservationInformation,
+        })
+        .then(response => {
+          this.errors = response.data.form_errors || false
+          $('#NewReservation').modal('hide')
+          // alert('success')
+        })
     },
     getSelectedGuest: function(numberOfGuest) {
       this.reservationInformation.number_of_guests = numberOfGuest + 1
