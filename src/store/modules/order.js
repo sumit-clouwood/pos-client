@@ -875,12 +875,15 @@ const actions = {
   },
 
   surchargeCalculation({ rootState, dispatch }) {
-    dispatch('surcharge/calculate', {}, { root: true }).then(() => {
-      if (rootState.discount.appliedOrderDiscount) {
-        dispatch('recalculateOrderTotals')
-      } else {
-        dispatch('recalculateItemPrices')
-      }
+    return new Promise(resolve => {
+      dispatch('surcharge/calculate', {}, { root: true }).then(() => {
+        if (rootState.discount.appliedOrderDiscount) {
+          dispatch('recalculateOrderTotals')
+        } else {
+          dispatch('recalculateItemPrices')
+        }
+        resolve()
+      })
     })
   },
 
@@ -926,7 +929,7 @@ const actions = {
 
   updateOrderType({ commit, dispatch }, orderType) {
     commit(mutation.ORDER_TYPE, orderType)
-    dispatch('surchargeCalculation')
+    return dispatch('surchargeCalculation')
   },
 
   modifyOrder({ commit, dispatch }, orderId) {

@@ -16,6 +16,12 @@ const router = new Router({
   base: '',
 
   routes: [
+    ///5d6cff2d7dc7bf003d15f06b/5d6cff407dc7bf003d15f138/crm-order/5de29617e33e87000c0229de/5de29617e33e87000c0229dd
+    {
+      path: '/:brand_id/:store_id/crm-order/:customer_id/:address_id',
+      name: 'selectAddressForCrmOrder',
+      component: Home,
+    },
     {
       path: '/cashier-login/*',
       name: 'cashierLogin',

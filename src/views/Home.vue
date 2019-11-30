@@ -29,6 +29,8 @@ export default {
   data() {
     return {
       orderId: null,
+      customerId: null,
+      addressId: null,
     }
   },
   components: {
@@ -66,6 +68,15 @@ export default {
 
     if (this.orderId && this.$route.name === 'CarhopOrderPay') {
       this.$store.dispatch('order/loadCarhopOrder', this.orderId)
+    }
+
+    if (this.$route.name.match('selectAddressForCrmOrder')) {
+      this.customerId = this.$route.params.customer_id
+      this.addressId = this.$route.params.address_id
+      this.$store.dispatch('customer/setAddressForDelivery', {
+        customerId: this.customerId,
+        addressId: this.addressId,
+      })
     }
   },
 }
