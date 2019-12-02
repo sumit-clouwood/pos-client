@@ -36,6 +36,8 @@ const state = {
   buildingAreas: false,
 }
 const getters = {
+  deliveryAddress: state => addressId =>
+    state.fetchDeliveryAreas.find(delivery => delivery._id === addressId),
   customer: state => {
     return state.customer
   },
