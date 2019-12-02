@@ -188,6 +188,7 @@ export default {
       this.$store.commit('dinein/KITCHEN_PRINT', false)
     },
     modifyOrder(order) {
+      let orderId = order._id
       this.$store.dispatch('order/startOrder')
       this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
         let order_type = order.order_type || ''
@@ -195,7 +196,6 @@ export default {
           let tableData = this.tables.find(
             table => table._id === order.assigned_table_id
           )
-          let orderId = order._id
           let table_reservation_id = order.table_reservation_id
           this.$store.commit('dinein/SELECTED_TABLE', tableData)
           this.$store.commit('dinein/RESERVATION_ID', table_reservation_id)
@@ -212,7 +212,13 @@ export default {
               orderId,
           })
         } else {
-          this.$router.push({ path: this.$store.getters['context/store'] })
+          this.$store.commit('order/IS_PAY', 1)
+          this.$store.dispatch('order/modifyOrderTransaction').then(order => {
+            this.$router.push({
+              path:
+                this.$store.getters['context/store'] + '/update/' + order._id,
+            })
+          })
         }
       })
     },

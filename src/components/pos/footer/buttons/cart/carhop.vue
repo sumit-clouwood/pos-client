@@ -8,7 +8,7 @@
       </div>
     </div>
   </div>
-  <div v-else-if="carhop">
+  <div v-else-if="isCarhop()">
     <div class="button">
       <div class="template-btn">
         <div class="pay-now">
