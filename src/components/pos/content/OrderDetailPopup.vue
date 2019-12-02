@@ -214,6 +214,7 @@ export default {
         } else {
           this.$store.commit('order/IS_PAY', 1)
           this.$store.dispatch('order/modifyOrderTransaction').then(order => {
+            this.$store.dispatch('order/loadCarhopOrder', order._id)
             this.$router.push({
               path:
                 this.$store.getters['context/store'] + '/update/' + order._id,
