@@ -306,14 +306,20 @@ export default {
         this.errors.count = 1
       }
       if (
-        this.newCustomerDetails.email != '' &&
-        !this.validEmail(this.newCustomerDetails.email)
+        typeof this.newCustomerDetails.email !== 'undefined' &&
+        this.newCustomerDetails.email
       ) {
-        this.errors.email =
-          this._t('Valid email') + ' ' + this._t('is required.')
-        this.errors.count = 1
-      }
+        //validate only when email is there
 
+        if (
+          this.newCustomerDetails.email != '' &&
+          !this.validEmail(this.newCustomerDetails.email)
+        ) {
+          this.errors.email =
+            this._t('Valid email') + ' ' + this._t('is required.')
+          this.errors.count = 1
+        }
+      }
       if (
         !this.newCustomerDetails.phone_number ||
         !getWithoutSpaceLength(this.newCustomerDetails.phone_number)

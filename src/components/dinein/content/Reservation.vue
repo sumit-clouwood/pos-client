@@ -55,12 +55,27 @@
                   }}
                 </td>
                 <td class="mr-1 reservation-actions">
-                  <button class="btn btn-success">
+                  <button
+                    class="btn btn-success"
+                    @click="
+                      editReservation({
+                        id: reservation.assigned_table_id,
+                        popup: false,
+                        reservationId: reservation._id,
+                      })
+                    "
+                  >
                     <span class="fa fa-check"></span>
                   </button>
                   <button
                     class="btn btn-warning"
-                    @click="editReservation(reservation._id)"
+                    @click="
+                      editReservation({
+                        id: reservation.assigned_table_id,
+                        popup: true,
+                        reservationId: reservation._id,
+                      })
+                    "
                   >
                     <span class="fa fa-edit"></span>
                   </button>
@@ -91,7 +106,11 @@
         </div>
       </div>
       <TableDraw />
-      <NewReservation :dateSelector="newDtPicker" />
+      <NewReservation
+        :dateSelector="newDtPicker"
+        :reservationInformation="selectedReservation"
+        :edit="editStatus"
+      />
       <div
         class="modal"
         id="confirmReservation"
@@ -162,10 +181,11 @@ export default {
   computed: {
     ...mapState('dinein', ['tablesOnArea', 'dineInTabType', 'availableTables']),
     ...mapGetters('location', ['_t']),
-    ...mapState('dineinReservation', ['reservations']),
+    ...mapState('dineinReservation', ['reservations', 'selectedReservation']),
   },
   data() {
     return {
+      editStatus: false,
       newDtPicker: false,
       calendarOpen: false,
       newDetails: false,
@@ -189,16 +209,52 @@ export default {
     activeDateSelector() {
       this.newDtPicker = true
       $('#NewReservation').modal('show')
-      this.$store.dispatch('dineinReservation/getTakenBy')
+      // this.$store.dispatch('dineinReservation/getTakenBy')
     },
     cancelReservation(id) {
       this.cancelReservationMsg = 'Do you want to cancel this reservation?'
       $('#confirmReservation').modal('show')
       this.selectedReservationId = id
     },
-    editReservation(id) {
-      this.activeDateSelector()
-      this.selectedReservationId = id
+    editReservation(reservation) {
+      let id = reservation.id
+      let popup = reservation.popup
+      this.selectedReservationId = reservation.reservationId
+
+      let getReservation = this.reservations.find(
+        reservation => reservation['_id'] == this.selectedReservationId
+      )
+      if (popup) {
+        this.editStatus = popup
+        this.activeDateSelector()
+        this.$store.dispatch(
+          'dineinReservation/getUserHistory',
+          getReservation.guest_phone
+        )
+        this.$store.commit(
+          'dineinReservation/SELECTED_RESERVATION',
+          getReservation
+        )
+        // eslint-disable-next-line no-console
+        console.log(getReservation)
+      } else {
+        let data = {
+          assigned_table_id: id,
+          customers: [],
+          number_of_guests: getReservation.number_of_guests,
+          start_date: getReservation.start_date,
+          start_time: getReservation.start_time,
+          status: 'reserved',
+        }
+        this.$store
+          .dispatch('dineinReservation/editTable', {
+            data: data,
+            id: getReservation._id,
+          })
+          .then(() => {
+            // alert('success')
+          })
+      }
     },
 
     confirmCancelReservation() {

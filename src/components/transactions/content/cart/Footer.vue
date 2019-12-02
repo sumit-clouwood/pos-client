@@ -39,13 +39,13 @@
     <div class="btn-transaction text-right">
       <span
         v-if="
-          order.order_type === 'dine_in' && order.order_status === 'finished'
+          order.order_type === 'dine_in' &&
+            order.order_system_status !== 'cancelled'
         "
       >
         <button
           class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design ml-2"
           data-toggle="modal"
-          v-if="order.order_system_status !== 'cancelled'"
           data-target=".cancel-order"
         >
           {{ _t('Cancel Transaction') }}
