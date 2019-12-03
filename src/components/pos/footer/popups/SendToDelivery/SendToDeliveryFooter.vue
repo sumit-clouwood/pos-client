@@ -119,7 +119,7 @@ export default {
     }),
     ...mapState('customer', ['address']),
     ...mapGetters('order', ['subTotal']),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'formatPrice']),
   },
   methods: {
     selectedReferral(referral) {
@@ -191,11 +191,11 @@ export default {
 .showpropermsg .text-danger {
   display: initial;
   padding: 6px;
-}
-.errors {
-  display: block;
-}
 
+  &.errors {
+    display: block;
+  }
+}
 #order-confirmation {
   .btn-announce {
     text-align: right;
