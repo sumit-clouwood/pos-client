@@ -50,12 +50,6 @@ const getters = {
     }
   },
   checkDeliveryArea: () => (addressId, deliveryAreas) => {
-    if (
-      typeof deliveryAreas._id !== 'undefined' &&
-      deliveryAreas._id === addressId
-    ) {
-      return deliveryAreas.item_status
-    }
     if (typeof deliveryAreas[addressId] !== 'undefined') {
       const area = deliveryAreas[addressId]
       return area.item_status === true ? area : false
@@ -311,10 +305,10 @@ const actions = {
     }
   },
 
-  createAction({ commit, dispatch, rootState }, actionDetails) {
+  createAction({ commit, dispatch }, actionDetails) {
     return new Promise((resolve, reject) => {
       const params = [
-        { ...actionDetails.data, store_id: rootState.context.storeId },
+        actionDetails.data,
         actionDetails.customer,
         actionDetails.model,
       ]
