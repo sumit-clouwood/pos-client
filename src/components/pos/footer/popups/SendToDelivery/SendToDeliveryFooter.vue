@@ -13,7 +13,7 @@
         >
           {{ changedReferral.referralName }}</button
         ><!--<span><img src="images/referal-down.png"></span>-->
-        <p v-if="errors !== ''" class="text-danger">{{ errors }}</p>
+        <p v-if="errors !== ''" class="errors text-danger">{{ errors }}</p>
         <p v-if="msg" class="text-info">{{ msg }}</p>
         <div class="dropdown-menu" v-if="getReferrals">
           <a
@@ -117,6 +117,8 @@ export default {
     ...mapState({
       getReferrals: state => state.location.referrals,
     }),
+    ...mapState('customer', ['address']),
+    ...mapGetters('order', ['subTotal']),
     ...mapGetters('location', ['_t']),
   },
   methods: {
@@ -127,6 +129,12 @@ export default {
       hidePayNow()
       if (this.changedReferral.referralName === 'Referral') {
         this.errors = 'Please select referral to proceed.'
+      } else if (
+        typeof this.address.min_order_value !== 'undefined' &&
+        this.address.min_order_value > this.subTotal
+      ) {
+        const minOrderValue = this.formatPrice(this.address.min_order_value)
+        this.errors = `Minimum order values should be ${minOrderValue} for selected delivery address`
       } else {
         $('#confirm_announcement').prop('disabled', true)
         this.msg = 'Sending order for delivery...'
@@ -183,6 +191,9 @@ export default {
 .showpropermsg .text-danger {
   display: initial;
   padding: 6px;
+}
+.errors {
+  display: block;
 }
 
 #order-confirmation {
