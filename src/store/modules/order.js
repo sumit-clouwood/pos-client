@@ -1262,6 +1262,9 @@ const actions = {
       } else if (orderType === 'walk_in') {
         commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_PROGRESS)
         commit(mutation.ORDER_TYPE, { OTview: 'Walk In', OTApi: 'walk_in' })
+      } else if (orderType === 'carhop') {
+        commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_PROGRESS)
+        commit(mutation.ORDER_TYPE, { OTview: 'Carhop', OTApi: 'carhop' })
       } else if (orderType === 'takeaway') {
         commit(mutation.ORDER_STATUS, CONST.ORDER_STATUS_IN_PROGRESS)
         commit(mutation.ORDER_TYPE, { OTview: 'Take Away', OTApi: 'takeaway' })

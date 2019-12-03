@@ -125,6 +125,7 @@ export default {
       this.$store.commit('order/IS_PAY', is_modify)
       this.$store.dispatch('order/modifyOrderTransaction').then(order => {
         //let scope = this
+        this.$store.dispatch('order/loadCarhopOrder', order._id)
         this.$router.push({
           path: this.$store.getters['context/store'] + '/update/' + order._id,
         })

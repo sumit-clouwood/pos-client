@@ -9,7 +9,7 @@
         </div>
       </div>
     </div>
-    <div v-else-if="waiter">
+    <div v-else-if="isWaiter()">
       <div class="button">
         <div class="template-btn">
           <div class="pay-now">

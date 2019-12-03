@@ -139,7 +139,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Receipt',
   props: {
@@ -153,6 +153,12 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t', 'formatPrice']),
+    ...mapState('order', ['orderSource']),
+  },
+  created() {
+    if (this.orderSource == 'backend') {
+      this.$store.dispatch('order/loadCarhopOrder', this.orderDetails._id)
+    }
   },
   methods: {
     getTotalPrice: function(item) {
