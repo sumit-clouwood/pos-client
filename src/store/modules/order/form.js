@@ -103,7 +103,9 @@ const mutations = {
       )
 
       if (addedModifiers.length > model.limit) {
-        state.error = `Can not select more than ${model.limit} modifiers in this group`
+        state.error = `Can not select more than ${
+          model.limit
+        } modifiers in this group`
 
         //reset to previous state
         state.checkboxes = oldState
