@@ -192,11 +192,11 @@ const actions = {
 
     if (rootState.customer.address) {
       order.customer_address_id = rootState.customer.address._id.$oid
-      const delivery = rootGetters['customer/deliveryAddress'](
+      const deliveryArea = rootGetters['customer/findDeliveryArea'](
         rootState.customer.address.delivery_area_id
       )
-      if (delivery.special_order_surcharge) {
-        order.delivery_surcharge = delivery.special_order_surcharge
+      if (deliveryArea.special_order_surcharge) {
+        order.delivery_surcharge = deliveryArea.special_order_surcharge
       }
     }
     //add delivery surcharges
