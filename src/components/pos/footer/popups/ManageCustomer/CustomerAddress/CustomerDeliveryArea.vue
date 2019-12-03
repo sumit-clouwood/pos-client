@@ -29,6 +29,15 @@
           {{ address.flat_number }}, {{ address.building }},
           {{ address.street }},
           {{ address.city }}
+          <span class="color-text-invert" v-if="address.min_order_value">
+            {{ _t('Min order value') }} {{ address.min_order_value }}
+          </span>
+          <span
+            class="color-text-invert"
+            v-if="address.special_order_surcharge"
+          >
+            {{ _t('Delivery Surcharge') }} {{ address.special_order_surcharge }}
+          </span>
         </p>
         <Buttons v-if="buttons" :id="address._id.$oid" />
       </div>
@@ -55,7 +64,7 @@ export default {
     Buttons,
   },
   data: function() {
-    return { activeIndex: null }
+    return { activeIndex: null, error: null }
   },
   computed: {
     ...mapState('location', ['location']),
@@ -84,9 +93,12 @@ export default {
       address.delivery_area = this.getDeliveryArea(address.delivery_area_id)
       this.activeIndex = index
       this.selectedAddress(address)
-      if (this.msg && this.msg.message.length > 0) {
-        this.msg.message = ''
-      }
+        .then(() => {
+          if (this.msg && this.msg.message.length > 0) {
+            this.msg.message = ''
+          }
+        })
+        .catch(error => (this.error = error))
     },
     ...mapActions('customer', ['selectedAddress']),
   },
