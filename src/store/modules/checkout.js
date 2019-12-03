@@ -82,6 +82,9 @@ const getters = {
     data.balanceDue =
       data.subTotal + data.totalTax + data.totalSurcharge - data.totalDiscount
 
+    if (order.delivery_surcharge) {
+      data.balanceDue += Num.round(order.delivery_surcharge)
+    }
     return data
   },
 }
@@ -158,7 +161,7 @@ const actions = {
     return Promise.resolve()
   },
 
-  injectCrmData({ rootState }, order) {
+  injectCrmData({ rootState, rootGetters }, order) {
     if (
       rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY ||
       (rootState.order.orderSource === 'backend' &&
@@ -206,12 +209,15 @@ const actions = {
     }
 
     if (rootState.customer.address) {
-      if (typeof rootState.customer.address[0] !== 'undefined') {
-        order.customer_address_id = rootState.customer.address[0]._id
-      } else {
-        order.customer_address_id = rootState.customer.address._id.$oid
+      order.customer_address_id = rootState.customer.address._id.$oid
+      const deliveryArea = rootGetters['customer/findDeliveryArea'](
+        rootState.customer.address.delivery_area_id
+      )
+      if (deliveryArea.special_order_surcharge) {
+        order.delivery_surcharge = deliveryArea.special_order_surcharge
       }
     }
+    //add delivery surcharges
 
     return Promise.resolve(order)
   },
@@ -245,7 +251,7 @@ const actions = {
     return Promise.resolve(order)
   },
 
-  paymentsHook({ rootState, rootGetters }, { action, order }) {
+  paymentsHook({ rootState, getters, rootGetters }, { action, order }) {
     let totalPaid = 0
 
     if (rootState.checkoutForm.payments.length) {
@@ -320,7 +326,59 @@ const actions = {
         ]
       }
     }
+
+    //order level discount
+
+    order.item_discounts = order.item_discounts.map(discount => {
+      discount.rate = Num.round(discount.rate).toFixed(2)
+      discount.price = Num.round(discount.price).toFixed(2)
+      discount.tax = Num.round(discount.tax).toFixed(2)
+      return discount
+    })
+
+    order.order_surcharges = order.order_surcharges.map(surcharge => {
+      surcharge.rate = surcharge.rate
+        ? Num.round(surcharge.rate).toFixed(2)
+        : surcharge.rate
+      surcharge.price = Num.round(surcharge.price).toFixed(2)
+      surcharge.tax = Num.round(surcharge.tax).toFixed(2)
+      surcharge.tax_rate = surcharge.tax_rate
+        ? Num.round(surcharge.tax_rate).toFixed(2)
+        : surcharge.tax_rate
+      return surcharge
+    })
+
+    //formatting
+    order.items = order.items.map(item => {
+      item.price = Num.round(item.price).toFixed(2)
+      item.tax = Num.round(item.tax).toFixed(2)
+      return item
+    })
+
+    order.item_modifiers = order.item_modifiers.map(item => {
+      item.price = Num.round(item.price).toFixed(2)
+      item.tax = Num.round(item.tax).toFixed(2)
+      return item
+    })
+
+    const orderData = getters.calculateOrderTotals(order)
+
+    order.sub_total = orderData.subTotal.toFixed(2)
+    order.total_surcharge = orderData.totalSurcharge.toFixed(2)
+    order.surcharge_tax = orderData.surchargeTax.toFixed(2)
+    order.total_discount = orderData.totalDiscount.toFixed(2)
+    order.total_tax = orderData.totalTax.toFixed(2)
+    order.balance_due = Num.round(orderData.balanceDue).toFixed(2)
+
+    //applying Fixing
+
+    order.amount_changed = Num.round(order.amount_changed).toFixed(2)
+    order.tip_amount = Num.round(order.tip_amount).toFixed(2)
+
     order.total_paid = Num.round(totalPaid).toFixed(2)
+
+    order.delivery_surcharge = Num.round(order.delivery_surcharge).toFixed(2)
+
     return Promise.resolve(order)
   },
 
@@ -590,59 +648,6 @@ const actions = {
                 order: order,
                 action: action,
               }).then(order => {
-                //order level discount
-
-                order.item_discounts = order.item_discounts.map(discount => {
-                  discount.rate = Num.round(discount.rate).toFixed(2)
-                  discount.price = Num.round(discount.price).toFixed(2)
-                  discount.tax = Num.round(discount.tax).toFixed(2)
-                  return discount
-                })
-
-                order.order_surcharges = order.order_surcharges.map(
-                  surcharge => {
-                    surcharge.rate = surcharge.rate
-                      ? Num.round(surcharge.rate).toFixed(2)
-                      : surcharge.rate
-                    surcharge.price = Num.round(surcharge.price).toFixed(2)
-                    surcharge.tax = Num.round(surcharge.tax).toFixed(2)
-                    surcharge.tax_rate = surcharge.tax_rate
-                      ? Num.round(surcharge.tax_rate).toFixed(2)
-                      : surcharge.tax_rate
-                    return surcharge
-                  }
-                )
-
-                //formatting
-                order.items = order.items.map(item => {
-                  delete item.originalItem
-                  item.price = Num.round(item.price).toFixed(2)
-                  item.tax = Num.round(item.tax).toFixed(2)
-                  return item
-                })
-
-                order.item_modifiers = order.item_modifiers.map(item => {
-                  item.price = Num.round(item.price).toFixed(2)
-                  item.tax = Num.round(item.tax).toFixed(2)
-                  return item
-                })
-
-                const orderData = getters.calculateOrderTotals(order)
-
-                order.sub_total = orderData.subTotal.toFixed(2)
-                order.total_surcharge = orderData.totalSurcharge.toFixed(2)
-                order.surcharge_tax = orderData.surchargeTax.toFixed(2)
-                order.total_discount = orderData.totalDiscount.toFixed(2)
-                order.total_tax = orderData.totalTax.toFixed(2)
-                order.balance_due = Num.round(orderData.balanceDue).toFixed(2)
-
-                //applying Fixing
-
-                order.amount_changed = Num.round(order.amount_changed).toFixed(
-                  2
-                )
-                order.tip_amount = Num.round(order.tip_amount).toFixed(2)
-
                 dispatch('preOrderHook', { action: action, order: order })
                   .then(order => {
                     dispatch('paymentsHook', {
