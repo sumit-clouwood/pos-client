@@ -388,8 +388,12 @@ export default {
         alert('Updated table status.')
         this.deletion = false
       }*/
+      // eslint-disable-next-line no-console
+      console.log(5, this.updateTableArea)
       $('#' + this.activeArea._id).click()
       this.clearTableArea()
+      // eslint-disable-next-line no-console
+      console.log(7, this.updateTableArea)
       this.updateTableOnArea()
       $('#all-tables').click()
     },
@@ -585,6 +589,8 @@ export default {
         .html(d => {
           return d3.select(`#dinein_${d.table_shape}_${d.chairs}`).html()
         })
+      // eslint-disable-next-line no-console
+      console.log(8, this.updateTableArea)
       /*.attr('fill', 'green')*/
       /*if (this.selectedTableD3)
           d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
@@ -658,15 +664,17 @@ export default {
         let midX = nodeDims.width / 2 + x
         let midY = nodeDims.height / 2 + y
         d3.select(d3.select(a[i]).node().parentNode).attr('transform', () => {
-          return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${
-            data.table_position_coordinate.angle
-          },${midX},${midY})`
+          // eslint-disable-next-line no-console
+          console.log(9, this.updateTableArea)
+          return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${data.table_position_coordinate.angle},${midX},${midY})`
         })
         let makeId = '#id_' + dis.selectedTableId
         $(makeId)
           .find('g')
           .removeAttr('style')
       })
+      // eslint-disable-next-line no-console
+      console.log(10, this.updateTableArea)
     },
     confirmCancelReservation() {
       let makeId = '#id_' + this.selectedTableId
@@ -677,6 +685,8 @@ export default {
         reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
       }).then(response => {
+        // eslint-disable-next-line no-console
+        console.log(1, response.status)
         if (response.status === 'form_errors') {
           this.moveReservation = true
           if (this.moveReservation) {
@@ -692,8 +702,14 @@ export default {
             loader: false,
           })
           .then(() => {
+            // eslint-disable-next-line no-console
+            console.log(2, this.tableStatus)
             this.$store.dispatch('dinein/getDineInArea', false).then(() => {
+              // eslint-disable-next-line no-console
+              console.log(3, this.tableStatus)
               this.$store.dispatch('dinein/getDineInTables', false).then(() => {
+                // eslint-disable-next-line no-console
+                console.log(4, this.tableStatus, this.updateTableArea)
                 /*this.setTableProperties()*/
                 this.updateTableArea += 1
                 this.deletion = true
