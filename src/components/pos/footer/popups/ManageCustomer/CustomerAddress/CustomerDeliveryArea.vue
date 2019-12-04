@@ -30,15 +30,20 @@
           {{ address.street }},
           {{ address.city }}
           <span class="color-text-invert" v-if="address.min_order_value">
-            {{ _t('Min order value') }} {{ address.min_order_value }}
+            <br />
+            {{ _t('Min order') }}
+            {{ formatPrice(address.min_order_value) }}
           </span>
           <span
             class="color-text-invert"
             v-if="address.special_order_surcharge"
           >
-            {{ _t('Delivery Surcharge') }} {{ address.special_order_surcharge }}
+            <br />
+            {{ _t('Surcharge') }}
+            {{ formatPrice(address.special_order_surcharge) }}
           </span>
         </p>
+        <div class="text-danger" v-if="error">{{ error }}</div>
         <Buttons v-if="buttons" :id="address._id.$oid" />
       </div>
     </div>
@@ -85,7 +90,7 @@ export default {
           : '',
     }),*/
     ...mapGetters('customer', ['getDeliveryArea']),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapGetters('customer', ['getCustomerAddresses']),
   },
   methods: {
