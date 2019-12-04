@@ -31,6 +31,7 @@ const state = {
   driver: null,
   driverId: null,
   loading: false,
+  processing: false,
 }
 const getters = {
   drivers: (state, getters, rootState) =>
@@ -241,7 +242,7 @@ const actions = {
 
   addOrderToDriverBucket({ commit, dispatch }, order) {
     commit(mutation.ADD_TO_DRIVER_BUCKET, order)
-    dispatch('updateOrder', {
+    return dispatch('updateOrder', {
       orderId: order._id,
       deleted: true,
     })
@@ -267,12 +268,17 @@ const actions = {
     //for delete { index: index, remove: 1 }
     //for update it could be { index: index, remove: 1, insert : {object} }
     commit('DM_UPDATE_ORDERS', { index: index, remove: 1, insert: order })
+    return Promise.resolve()
   },
 
   assignBucketToDriver({ state, commit, dispatch }) {
+    if (state.processing) {
+      return false
+    }
+    commit('SET_PROCESSING', true)
     const orderIds = state.driverBucket.map(order => order._id)
-    DMService.assignOrdersToDriver(state.selectedDriver._id, orderIds).then(
-      response => {
+    DMService.assignOrdersToDriver(state.selectedDriver._id, orderIds)
+      .then(response => {
         if (response.data.status == 'ok') {
           commit('REMOVE_FROM_DRIVER_BUCKET')
           dispatch(
@@ -285,8 +291,8 @@ const actions = {
             { root: true }
           )
         }
-      }
-    )
+      })
+      .finally(() => commit('SET_PROCESSING', false))
   },
   printInvoice({ commit }, { templateId, order }) {
     commit('invoice/SET_TEMPLATE_ID', templateId, { root: true })
@@ -401,6 +407,10 @@ const mutations = {
   [mutation.SET_DRIVER_ID](state, driverId) {
     state.driverId = driverId
   },
+  SET_PROCESSING(state, status) {
+    state.processing = status
+  },
+
   [mutation.REMOVE_FROM_DRIVER_BUCKET](state, orderId) {
     let bucket = []
     if (orderId) {
