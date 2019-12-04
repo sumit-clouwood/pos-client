@@ -654,7 +654,13 @@ const actions = {
                       order: order,
                       action: action,
                     }).then(order => {
+                      //remove unwanted data
+                      order.items = order.items.map(item => {
+                        delete item.originalItem
+                        return item
+                      })
                       commit(mutation.SET_ORDER, order)
+
                       dispatch('createOrder', { action: action, data: data })
                         .then(response => {
                           //reset order start time
