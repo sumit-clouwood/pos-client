@@ -90,6 +90,7 @@ export default {
 
         $('#manage-customer').modal('hide')
         $('#information-popup').modal('show')
+        this.$refs.form.reset()
       }
     },
   },

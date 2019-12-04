@@ -414,6 +414,21 @@ export default {
       let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       return re.test(email)
     },
+    reset() {
+      this.newCustomerDetails.name = null
+      this.newCustomerDetails.phone_number = null
+      this.newCustomerDetails.gender = null
+      this.newCustomerDetails.email = null
+      this.newCustomerDetails.alternative_phone = null
+      this.newCustomerDetails.birthday = null
+      this.newCustomerDetails.customer_group = null
+      this.selectedDeliveryArea = null
+      this.newCustomerDetails.building = ''
+      this.filterBuildingArea = ''
+      this.newCustomerDetails.street = ''
+      this.newCustomerDetails.flat_number = ''
+      this.newCustomerDetails.nearest_landmark = ''
+    },
   },
 }
 </script>
