@@ -230,7 +230,7 @@ section#main {
  right: -25px;
 }
 #NewReservation .num_guests .btn {
- padding: 13px 1.75rem;
+ padding: 13px 0;
 }
 @media only screen and (min-width: 980px) and (max-width: 1140px){
  
@@ -252,10 +252,10 @@ section#main {
  }
  
  #NewReservation .wrapperNew .SCMonth .SCElement > div {
-  width: 50px !important;
+  width: auto !important;
  }
  #NewReservation .wrapperNew .SCDay .SCElement > div {
-  width: 50px !important;
+  width: auto !important;
  }
  #NewReservation .wrapperNew .SCDay .next .SCElement > div {
   width: 35px !important;
@@ -278,7 +278,7 @@ section#main {
  }
  
  #NewReservation .num_guests .btn {
-  padding: 8px 14px;
+  padding: 8px 0;
  }
  #NewReservation  .lbl-txt-box {
   width: 40px;

@@ -83,7 +83,7 @@
       <div v-else>{{ _t('Offline') }}</div>
     </div>
 
-    <ul>
+    <ul class="hide-below-sm">
       <li v-if="availableLanguages" class="color-text-invert">
         <select
           v-model="vlocale"
@@ -179,7 +179,26 @@
       </ul>
     </li>
     <div class="curent-sale hideBigScreen">
+      <span class="hideBigIcon" @click="showBookingBtn">
+        <i aria-hidden="true" class="fa fa-chevron-down"></i>
+      </span>
       <div class="all-booking-btns">
+        <ul>
+          <li v-if="availableLanguages" class="color-text-invert">
+            <select
+              v-model="vlocale"
+              @change="changeLanguage(vlocale)"
+              class="language-button"
+            >
+              <option
+                v-for="language in availableLanguages"
+                :key="language._id"
+                :value="language.code"
+                >{{ language.name }}</option
+              >
+            </select>
+          </li>
+        </ul>
         <button
           type
           id="all-tables"
@@ -251,9 +270,6 @@
           {{ _t('Completed Orders') }}
         </button>
       </div>
-      <span class="hideBigIcon" @click="showBookingBtn">
-        <i aria-hidden="true" class="fa fa-chevron-down"></i>
-      </span>
     </div>
   </div>
 </template>
