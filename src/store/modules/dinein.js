@@ -92,7 +92,7 @@ const actions = {
       dispatch('getDineInTables'),
       dispatch('getCovers'),
       dispatch('getBookedTables', false),
-      dispatch('getDineInArea'),
+      // dispatch('getDineInArea'),
     ])
     commit(mutation.LOADING, false)
   },
@@ -108,14 +108,15 @@ const actions = {
       DineInService.updateReservationStatus(...params)
         .then(response => {
           commit(mutation.RESERVATION_ID, false)
-          dispatch('dineInRunningOrders', false)
-          dispatch('getTableStatus', false)
+          dispatch('getBookedTables', false)
+          /*dispatch('dineInRunningOrders', false)
+          dispatch('getTableStatus', false)*/
           resolve(response.data)
         })
         .catch(er => reject(er))
     })
   },
-  async getBookedTables({ commit }, loader = false) {
+  getBookedTables({ commit, dispatch }, loader = false) {
     return new Promise((resolve, reject) => {
       if (loader) commit(mutation.LOADING, loader)
       /*localStorage.setItem('reservationId', false)*/
@@ -124,8 +125,9 @@ const actions = {
           commit(mutation.BOOKED_TABLES, response.data)
           // eslint-disable-next-line no-console
           console.log(response.data.data, 'boked data')
+          dispatch('getDineInArea')
           if (loader) commit(mutation.LOADING, false)
-          resolve()
+          return resolve()
         })
         .catch(er => reject(er))
     })
@@ -399,6 +401,7 @@ const actions = {
             commit(mutation.LOADING, false)
           })
           commit('order/ORDER_TYPE', state.orderType, { root: true })
+          dispatch('getBookedTables', false)
         })
         .catch(error => reject(error))
     })
@@ -537,7 +540,7 @@ const mutations = {
   },
   [mutation.TABLE_STATUS](state, tableStatus) {
     state.tableStatus = tableStatus
-    // state.updateTableArea = Math.floor(Math.random() * 10000)
+    if (tableStatus) state.updateTableArea = Math.floor(Math.random() * 10000)
   },
   [mutation.COVERS](state, covers) {
     state.covers = covers.data
@@ -566,8 +569,7 @@ const mutations = {
   [mutation.BOOKED_TABLES](state, bookedTables) {
     state.allBookedTables.orders = bookedTables.data
     state.allBookedTables.lookup = bookedTables.page_lookups
-    alert('f')
-    state.updateTableArea = Math.floor(Math.random() * 10000)
+    // state.updateTableArea = Math.floor(Math.random() * 10000)
   },
   [mutation.PAGE_LOOKUP](state, lookups) {
     state.areaLookup = lookups

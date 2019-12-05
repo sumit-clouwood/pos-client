@@ -439,7 +439,7 @@ export default {
       this.$store.commit('dinein/TABLE_SPLIT', false)
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       if (!reservationId) {
-        let dis = this
+        // let dis = this
         this.$store.commit('dinein/NUMBER_GUESTS', this.guests)
         this.$store
           .dispatch('dinein/addReservation', this.selectedTableId, {
@@ -450,27 +450,26 @@ export default {
               let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
               this.$router.push({ path: URL })
             }
-            this.$store
-              .dispatch('dinein/updateDineInOrderStatus', {
-                title: 'all',
-                pageId: 'getBookedTables',
-                loader: false,
-              })
-              .then(() => {
-                dis.$store.dispatch('dinein/getDineInArea', false).then(() => {
-                  // dis.$store.dispatch('dinein/getDineInTables', false).then(() => {
-                  /*dis.setTableColour(
+            /*this.$store.dispatch('dinein/updateDineInOrderStatus', {
+              title: 'all',
+              pageId: 'getBookedTables',
+              loader: false,
+            })*/
+            // .then(() => {
+            //   dis.$store.dispatch('dinein/getDineInArea', false).then(() => {
+            // dis.$store.dispatch('dinein/getDineInTables', false).then(() => {
+            /*dis.setTableColour(
                   dis.selectedTableD3,
                   dis.selectedTableData
                 )*/
-                  // this.updateTableArea += 1
-                  // container.datum(dis.selectedTableD3).call(updateFunction)
-                  /*$(makeId)
+            // this.updateTableArea += 1
+            // container.datum(dis.selectedTableD3).call(updateFunction)
+            /*$(makeId)
                   .find('g')
                   .removeAttr('style')*/
-                  // dis.clearTableArea()
-                })
-              })
+            // dis.clearTableArea()
+            // })
+            // })
             $('#tooltipdata').hide()
           })
         // })
@@ -666,20 +665,19 @@ export default {
             return false
           }
         }
-        this.$store
-          .dispatch('dinein/updateDineInOrderStatus', {
-            title: 'all',
-            pageId: 'getBookedTables',
-            loader: false,
-          })
-          .then(() => {
+        /*this.$store.dispatch('dinein/updateDineInOrderStatus', {
+          title: 'all',
+          pageId: 'getBookedTables',
+          loader: false,
+        })*/
+        /*.then(() => {
             this.$store.dispatch('dinein/getDineInArea', false).then(() => {
               // this.$store.dispatch('dinein/getDineInTables', false).then(() => {
               // this.updateTableArea += 1
               this.deletion = true
               // })
             })
-          })
+          })*/
         $('#tooltipdata').hide()
       })
       this.componentKey += 1
