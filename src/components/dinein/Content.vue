@@ -47,7 +47,7 @@ export default {
     if (reservationId !== false) {
       this.$store.dispatch('checkout/reset', false)
       this.$store.dispatch('dinein/getBookedTables', false)
-      this.$store.dispatch('dinein/getDineInArea', false)
+      //this.$store.dispatch('dinein/getDineInArea', false)
       this.$store.commit('dinein/RESERVATION_ID', false)
       this.selectedAreaObj = this.$store.state.dinein.activeArea
       this.$store.dispatch('dinein/selectedArea', this.selectedAreaObj)
