@@ -625,7 +625,8 @@ export default {
 @import '../../../../../assets/scss/variables';
 
 .num_guests {
-  display: block;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   .btn {
     padding: 1.175rem 1.75rem;
   }
@@ -751,12 +752,19 @@ div#NewReservation .num_guests .btn-secondary label {
 #NewReservation section#main {
   justify-content: left;
   margin-left: 40px;
+  grid-template-columns: 1fr;
 }
 .wrapperNew .SCDay .SCElement > div {
-  width: 80px !important;
+  width: auto !important;
 }
 .wrapperNew .SCMonth .SCElement > div {
-  width: 80px !important;
+  width: auto !important;
+}
+.wrapperNew .SCDay > div,
+.wrapperNew .SCMonth > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  justify-content: center;
 }
 .next {
   width: 40px !important;
