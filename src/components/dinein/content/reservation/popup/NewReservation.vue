@@ -368,7 +368,8 @@ export default {
     /*this.reservationInformation =
       this.selectedReservation || this.reservationInformation*/
     // eslint-disable-next-line no-console
-    console.log(this.reservationInformation)
+    console.log(this.reservationInformation, 'data', this.selectedTags)
+    this.selectedTags = this.reservationInformation.tags || []
   },
   data() {
     return {
@@ -501,6 +502,7 @@ export default {
       delete this.reservationInformation.related_orders_ids
       delete this.reservationInformation.reservation_history
       delete this.reservationInformation.created_by
+      delete this.reservationInformation.assigned_to
       this.$store
         .dispatch('dineinReservation/editTable', {
           id: id,
