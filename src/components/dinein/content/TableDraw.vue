@@ -340,52 +340,23 @@ export default {
   updated() {
     if (this.selectedArea != this.activeArea._id) {
       this.clearTableArea()
-      // eslint-disable-next-line no-console
-      console.log('here it is  -1')
       this.updateTableOnArea()
       this.selectedArea = this.activeArea._id
     }
-    // eslint-disable-next-line no-console
-    console.log(this.updateTableArea)
   },
   watch: {
     updateTableArea: function(newValue, oldValue) {
-      /*if (this.deletion || this.brand.book_table) {
-        alert('Updated table status.')
-        this.deletion = false
-      }*/
-      // eslint-disable-next-line no-console
-      // console.log('here it is ateTableArea => ', newValue, oldValue)
-      /*$('#' + this.activeArea._id).click()
-      $('#all-tables').click()*/
       if (newValue !== oldValue) {
-        /*this.clearTableArea()
-        this.updateTableOnArea()*/
         this.setTableColour(this.selectedTableD3, this.selectedTableData)
-        // eslint-disable-next-line no-console
-        console.log('Running => ')
-        /*$('#' + this.activeArea._id).click()
-        $('#all-tables').click()*/
       }
     },
   },
   methods: {
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
-    /*showActive() {
-        // $('#id' + this.selectedTableId).addClass('class', 'dinein_table active')
-        d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
-      },*/
     closeMyself() {
       $('#tooltipdata').hide()
     },
     chairsValidation() {
-      /*if (this.guests > this.selectedTableData.chairs) {
-          this.validationErrors =
-            'Sorry you cannot add more then ' +
-            this.selectedTableData.chairs +
-            ' guests on this table'
-          this.guests = this.selectedTableData.chairs
-        } else */
       if (this.guests < 1) {
         this.validationErrors = 'Minimum 1 guest is required'
         this.guests = 1
@@ -450,29 +421,8 @@ export default {
               let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
               this.$router.push({ path: URL })
             }
-            /*this.$store.dispatch('dinein/updateDineInOrderStatus', {
-              title: 'all',
-              pageId: 'getBookedTables',
-              loader: false,
-            })*/
-            // .then(() => {
-            //   dis.$store.dispatch('dinein/getDineInArea', false).then(() => {
-            // dis.$store.dispatch('dinein/getDineInTables', false).then(() => {
-            /*dis.setTableColour(
-                  dis.selectedTableD3,
-                  dis.selectedTableData
-                )*/
-            // this.updateTableArea += 1
-            // container.datum(dis.selectedTableD3).call(updateFunction)
-            /*$(makeId)
-                  .find('g')
-                  .removeAttr('style')*/
-            // dis.clearTableArea()
-            // })
-            // })
             $('#tooltipdata').hide()
           })
-        // })
       } else {
         if (pos) {
           let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
@@ -576,30 +526,12 @@ export default {
           .selectAll('path:nth-last-of-type(1)')
           .attr('fill', function() {
             let fillcolor = dis.tableStatus.table.find(ts => ts.id === data._id)
-            /*if (ts.id === data._id) {
-                if (ts.status.color == '#62bb31') {
-                  fillcolor = '#99CA86'
-                } else if (ts.status.color == '#faa03c') {
-                  fillcolor = '#FAD580'
-                } else {
-                  fillcolor = '#FF9C9A'
-                }
-              }
-            })*/
             let colourTable = '#FF9C9A'
             if (fillcolor.status.color == '#62bb31') {
               colourTable = '#99CA86'
             } else if (fillcolor.status.color == '#faa03c') {
               colourTable = '#FAD580'
             }
-
-            // eslint-disable-next-line no-console
-            console.log(
-              fillcolor,
-              'fillcolor->1',
-              fillcolor.number,
-              fillcolor.status.color
-            )
             return colourTable
           })
         d3.select(selectedItem)
@@ -607,8 +539,6 @@ export default {
           .selectAll('path')
           .attr('fill', function() {
             let fc = dis.tableStatus.table.find(ts => ts.id === data._id)
-            /*dis.tableStatus.table.filter(ts => {
-            })*/
             let colourChairs = '#CC3232'
             if (fc.id === data._id) {
               if (fc.status.color == '#62bb31') {
@@ -617,8 +547,6 @@ export default {
                 colourChairs = '#fa9304'
               }
             }
-            // eslint-disable-next-line no-console
-            console.log(fc, 'fc->2')
             return colourChairs
           })
         let makeId = '#id_' + dis.selectedTableId
@@ -671,19 +599,6 @@ export default {
             return false
           }
         }
-        /*this.$store.dispatch('dinein/updateDineInOrderStatus', {
-          title: 'all',
-          pageId: 'getBookedTables',
-          loader: false,
-        })*/
-        /*.then(() => {
-            this.$store.dispatch('dinein/getDineInArea', false).then(() => {
-              // this.$store.dispatch('dinein/getDineInTables', false).then(() => {
-              // this.updateTableArea += 1
-              this.deletion = true
-              // })
-            })
-          })*/
         $('#tooltipdata').hide()
       })
       this.componentKey += 1
