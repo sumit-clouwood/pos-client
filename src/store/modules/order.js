@@ -1236,7 +1236,7 @@ const actions = {
       let data = { driver: state.selectedDriver }
 
       OrderService.updateOrderAction(
-        order ? order._id : null,
+        order._id,
         actionTrigger,
         data
       )

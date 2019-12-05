@@ -271,7 +271,7 @@ const actions = {
     return Promise.resolve()
   },
 
-  assignBucketToDriver({ state, commit, dispatch }) {
+  assignBucketToDriver({ state, commit }) {
     if (state.processing) {
       return false
     }
@@ -281,15 +281,15 @@ const actions = {
       .then(response => {
         if (response.data.status == 'ok') {
           commit('REMOVE_FROM_DRIVER_BUCKET')
-          dispatch(
-            'order/updateOrderAction',
-            {
-              orderStatus: 'ready',
-              collected: 'no',
-              pageId: 'home_delivery_pick',
-            },
-            { root: true }
-          )
+          // dispatch(
+          //   'order/updateOrderAction',
+          //   {
+          //     orderStatus: 'ready',
+          //     collected: 'no',
+          //     pageId: 'home_delivery_pick',
+          //   },
+          //   { root: true }
+          // )
         }
       })
       .finally(() => commit('SET_PROCESSING', false))
