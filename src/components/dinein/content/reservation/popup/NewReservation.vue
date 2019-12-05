@@ -241,7 +241,7 @@
                 </div>
                 <div class="col-md-12">
                   <label style="margin-top: 10px">{{ _t('Tags') }}</label>
-                  <div style="display: block">
+                  <div style="display: block" class="hiddenCB">
                     <span
                       class="button-checkbox"
                       v-for="(tag, index) in tags"
@@ -590,16 +590,16 @@ export default {
         this.selectedTags.splice(tag.tagId, 1)
       }
       if ($(id).is(':checked')) {
-        $(id).attr('checked', '')
+        /*$(id).attr('checked', '')
         $(id)
           .siblings('label')
-          .removeClass('selected')
+          .removeClass('selected')*/
         this.selectedTags.splice(tag.tagId, 1)
       } else {
-        $(id).attr('checked', 'checked')
+        /*$(id).attr('checked', 'checked')
         $(id)
           .siblings('label')
-          .addClass('selected')
+          .addClass('selected')*/
         this.selectedTags.push(tag.tagId)
       }
       // eslint-disable-next-line no-console
@@ -803,5 +803,21 @@ span.button-checkbox {
   max-height: 178px;
   overflow-y: auto;
   overflow-x: hidden;
+}
+.hiddenCB input[type='checkbox'],
+.hiddenCB input[type='radio'] {
+  display: none;
+}
+.hiddenCB label {
+  cursor: pointer;
+}
+.hiddenCB input[type='checkbox'] + label:hover {
+  background: rgba(59, 56, 255, 0.6);
+}
+.hiddenCB input[type='checkbox']:checked + label {
+  background: rgb(80, 86, 202);
+}
+.hiddenCB input[type='checkbox']:checked + label:hover {
+  background: rgba(59, 56, 255, 0.5);
 }
 </style>
