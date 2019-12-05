@@ -416,7 +416,7 @@ export default {
     getInterval() {
       let startTime = 0
       let closedTime = 0
-      let interval = this.timeConvert(this.brand.reservation_interval)
+      let interval = this.timeConvert(this.store.reservation_interval)
       if (this.store.open_hours.all_day_long) {
         startTime = 0
         closedTime = 24 * 60
