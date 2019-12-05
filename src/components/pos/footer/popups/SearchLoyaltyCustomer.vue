@@ -106,7 +106,6 @@
   <!-- Add note -->
   <!-- ====================================== -->
 </template>
-
 <script>
 /* global $ */
 import { mapState, mapActions, mapGetters } from 'vuex'
@@ -190,7 +189,7 @@ export default {
   },
 }
 </script>
-
+<!-- eslint-disable max-len -->
 <style scoped lang="scss">
 .dropdown {
   position: relative;

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export const BRANDS_BRAND_SETTINGS = 'brands.brand_settings'
 export const BRANDS_FEEDBACK = 'brands.feedback'
 export const BRANDS_INVENTORY_SETTINGS = 'brands.inventory_settings'
