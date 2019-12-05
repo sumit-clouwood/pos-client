@@ -586,6 +586,13 @@ export default {
                 }
               }
             })*/
+            let colourTable = '#FF9C9A'
+            if (fillcolor.status.color == '#62bb31') {
+              colourTable = '#99CA86'
+            } else if (fillcolor.status.color == '#faa03c') {
+              colourTable = '#FAD580'
+            }
+
             // eslint-disable-next-line no-console
             console.log(
               fillcolor,
@@ -593,7 +600,7 @@ export default {
               fillcolor.number,
               fillcolor.status.color
             )
-            return fillcolor.status.color
+            return colourTable
           })
         d3.select(selectedItem)
           .select('svg>g:last-child')
@@ -601,18 +608,23 @@ export default {
           .attr('fill', function() {
             let fc = dis.tableStatus.table.find(ts => ts.id === data._id)
             /*dis.tableStatus.table.filter(ts => {
-              if (ts.id === data._id) {
-                if (ts.status.color == '#62bb31') {
-                  fc = '#009900'
-                } else if (ts.status.color == '#faa03c') {
-                  fc = '#fa9304'
-                }
-              }
             })*/
+            let colourChairs = '#CC3232'
+            if (fc.id === data._id) {
+              if (fc.status.color == '#62bb31') {
+                colourChairs = '#009900'
+              } else if (fc.status.color == '#faa03c') {
+                colourChairs = '#fa9304'
+              }
+            }
             // eslint-disable-next-line no-console
             console.log(fc, 'fc->2')
-            return fc.status.color
+            return colourChairs
           })
+        let makeId = '#id_' + dis.selectedTableId
+        $(makeId)
+          .find('g')
+          .removeAttr('style')
       })
     },
     setTableProperties() {
@@ -640,10 +652,6 @@ export default {
         d3.select(d3.select(a[i]).node().parentNode).attr('transform', () => {
           return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${data.table_position_coordinate.angle},${midX},${midY})`
         })
-        let makeId = '#id_' + dis.selectedTableId
-        $(makeId)
-          .find('g')
-          .removeAttr('style')
       })
     },
     confirmCancelReservation() {
@@ -655,8 +663,6 @@ export default {
         reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
       }).then(response => {
-        // eslint-disable-next-line no-console
-        console.log(1, response.status)
         if (response.status === 'form_errors') {
           this.moveReservation = true
           if (this.moveReservation) {
