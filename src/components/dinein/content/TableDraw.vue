@@ -404,8 +404,8 @@ export default {
     newOrder(reservationId, pos) {
       let makeId = '#id_' + this.selectedTableId
       $(makeId)
-        .find('g')
-        .attr('style', 'opacity:0.5')
+        .find('svg')
+        .attr('style', 'opacity:0.3')
 
       this.$store.commit('dinein/TABLE_SPLIT', false)
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
@@ -551,7 +551,7 @@ export default {
           })
         let makeId = '#id_' + dis.selectedTableId
         $(makeId)
-          .find('g')
+          .find('svg')
           .removeAttr('style')
       })
     },
@@ -585,8 +585,8 @@ export default {
     confirmCancelReservation() {
       let makeId = '#id_' + this.selectedTableId
       $(makeId)
-        .find('g')
-        .attr('style', 'opacity:0.5')
+        .find('svg')
+        .attr('style', 'opacity:0.3')
       this.reservationUpdateStatus({
         reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
