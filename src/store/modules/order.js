@@ -1136,7 +1136,9 @@ const actions = {
           dispatch('customer/selectedAddress', orderAddress, {
             root: true,
           })
-          commit('location/SET_MODAL', '#order-confirmation')
+          commit('location/SET_MODAL', '#order-confirmation', {
+            root: true,
+          })
         }
         // commit('location/SET_MODAL', '#order-confirmation')
       }
@@ -1214,10 +1216,12 @@ const actions = {
   },
 
   loadCarhopOrder({ commit, dispatch }, orderId) {
-    commit(mutation.ORDER_TYPE, {
-      OTview: 'Carhop',
-      OTApi: CONST.ORDER_TYPE_CARHOP,
-    })
+    if (state.orderType.OTview == 'Carhop') {
+      commit(mutation.ORDER_TYPE, {
+        OTview: 'Carhop',
+        OTApi: CONST.ORDER_TYPE_CARHOP,
+      })
+    }
     commit(mutation.SET_ORDER_ID, orderId)
 
     dispatch('startOrder')

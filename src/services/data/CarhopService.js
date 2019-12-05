@@ -12,7 +12,7 @@ export default {
     const storeId = Store.state.location.store._id
 
     return DataService.get(
-      `/model/orders?&limit=${limit}&ascending=1&page=${page}&byColumn=1&orderBy=${orderBy}&order_status=${orderStatus}&order_type=carhop&store_id=${storeId}${datequery}`
+      `/model/orders?&limit=${limit}&ascending=1&page=${page}&byColumn=1&orderBy=${orderBy}&order_status=${orderStatus}&order_system_status=normal&order_type=carhop&store_id=${storeId}${datequery}`
     )
   },
 }
