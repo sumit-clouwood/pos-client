@@ -1239,11 +1239,7 @@ const actions = {
     } else {
       let data = { driver: state.selectedDriver }
 
-      OrderService.updateOrderAction(
-        order._id,
-        actionTrigger,
-        data
-      )
+      OrderService.updateOrderAction(order._id, actionTrigger, data)
         .then(response => {
           if (response.status == 200) {
             switch (orderType) {
