@@ -483,6 +483,7 @@ export default {
         .then(response => {
           this.errors = response.data.form_errors || false
           $('#NewReservation').modal('hide')
+          this.getReservationByDate(this.selectedDate)
           // eslint-disable-next-line no-console
           console.log(response.data, this.errors, this.errors['guest_email'])
         })
@@ -511,6 +512,7 @@ export default {
         .then(response => {
           this.errors = response.data.form_errors || false
           $('#NewReservation').modal('hide')
+          this.getReservationByDate(this.selectedDate)
           // alert('success')
         })
     },
