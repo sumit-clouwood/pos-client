@@ -277,7 +277,7 @@ const actions = {
             })
           })
           // eslint-disable-next-line no-console
-          console.log('order->length')
+          // console.log('order->length')
           if (
             tableArray[table_details.id].includes(
               CONST.ORDER_STATUS_RESERVED
@@ -313,7 +313,7 @@ const actions = {
           table_details.status.text = 'available'
           tableStatus.table.push(table_details)
           // eslint-disable-next-line no-console
-          console.log('order no  length')
+          // console.log('order no  length')
         }
         commit(mutation.ORDER_ON_TABLES, orderOnTable)
       })
@@ -537,7 +537,7 @@ const mutations = {
   },
   [mutation.TABLE_STATUS](state, tableStatus) {
     state.tableStatus = tableStatus
-    state.updateTableArea = Math.floor(Math.random() * 10000)
+    // state.updateTableArea = Math.floor(Math.random() * 10000)
   },
   [mutation.COVERS](state, covers) {
     state.covers = covers.data
@@ -566,9 +566,8 @@ const mutations = {
   [mutation.BOOKED_TABLES](state, bookedTables) {
     state.allBookedTables.orders = bookedTables.data
     state.allBookedTables.lookup = bookedTables.page_lookups
-    setTimeout(function() {
-      state.updateTableArea = Math.floor(Math.random() * 10000)
-    }, 1000)
+    alert('f')
+    state.updateTableArea = Math.floor(Math.random() * 10000)
   },
   [mutation.PAGE_LOOKUP](state, lookups) {
     state.areaLookup = lookups

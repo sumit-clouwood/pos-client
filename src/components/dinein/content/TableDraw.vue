@@ -355,7 +355,7 @@ export default {
         this.deletion = false
       }*/
       // eslint-disable-next-line no-console
-      console.log('here it is ateTableArea => ', newValue, oldValue)
+      // console.log('here it is ateTableArea => ', newValue, oldValue)
       /*$('#' + this.activeArea._id).click()
       $('#all-tables').click()*/
       if (newValue !== oldValue) {
