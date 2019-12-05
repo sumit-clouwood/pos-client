@@ -289,20 +289,20 @@ const actions = {
     commit('order/SET_REFERRAL', false, { root: true })
     dispatch('reset')
   },
-  selectedAddress({ commit, dispatch, getters, rootGetters }, address) {
-    let deliveryArea = getters.findDeliveryArea(address.delivery_area_id)
-    const subtotal = rootGetters['order/subTotal']
-    if (deliveryArea.min_order_value > subtotal) {
-      return Promise.reject(
-        rootGetters['location/_t'](
-          `Order amound shoudl be grater than ${subtotal}`
-        )
-      )
-    } else {
-      commit(mutation.SELECTED_CUSTOMER_ADDRESS, address)
-      let orderType = { OTview: 'Delivery', OTApi: 'call_center' }
-      return dispatch('order/updateOrderType', orderType, { root: true })
-    }
+  selectedAddress({ commit, dispatch }, address) {
+    //let deliveryArea = getters.findDeliveryArea(address.delivery_area_id)
+    //const subtotal = rootGetters['order/subTotal']
+    // if (deliveryArea.min_order_value > subtotal) {
+    //   return Promise.reject(
+    //     rootGetters['location/_t'](
+    //       `Order amound should be grater than ${subtotal}`
+    //     )
+    //   )
+    // } else {
+    commit(mutation.SELECTED_CUSTOMER_ADDRESS, address)
+    let orderType = { OTview: 'Delivery', OTApi: 'call_center' }
+    return dispatch('order/updateOrderType', orderType, { root: true })
+    //}
   },
 
   createAction({ commit, dispatch }, actionDetails) {

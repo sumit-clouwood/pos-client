@@ -4,7 +4,7 @@
       {{ cartType == 'hold' ? _t('Hold Orders') : _t('New Orders') }}
       <div class="main-oreders-date">{{ DateToday }}</div>
     </div>
-    <div class="main-oreders-email" v-if="selectedCustomer">
+    <div class="main-oreders-email" v-if="selectedCustomer && online">
       <span class="cursor-pointer color-text" @click="removeSelectedCustomer()">
         X
       </span>
@@ -16,6 +16,20 @@
       </p>
       <div v-if="selectedCustomer.phone_number">
         {{ _t('Phone') }} : {{ selectedCustomer.phone_number }}
+      </div>
+    </div>
+    <div class="main-oreders-email" v-if="offlineCustomer && !online">
+      <span class="cursor-pointer color-text" @click="removeSelectedCustomer()">
+        X
+      </span>
+      <p v-if="offlineCustomer.email != ''">
+        {{ _t('Email') }} : {{ offlineCustomer.email }}
+      </p>
+      <p v-if="offlineCustomer.name != '' && offlineCustomer.email == ''">
+        {{ _t('Name') }} : {{ offlineCustomer.name }}
+      </p>
+      <div v-if="offlineCustomer.phone_number">
+        {{ _t('Phone') }} : {{ offlineCustomer.phone_number }}
       </div>
     </div>
     <div class="main-oreders-buttons" v-if="items.length">
@@ -50,6 +64,8 @@ export default {
     ...mapState('order', ['items', 'cartType', 'orderType']),
     ...mapState('checkoutForm', ['msg']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
+    ...mapState({ offlineCustomer: state => state.customer.offlineData }),
+    ...mapState('sync', ['online']),
   },
   methods: {
     removeSelectedCustomer() {
