@@ -155,7 +155,7 @@ export default {
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('order', ['orderSource']),
   },
-  created() {
+  mounted() {
     if (this.orderSource == 'backend') {
       this.$store.dispatch('order/loadCarhopOrder', this.orderDetails._id)
     }
