@@ -1,5 +1,6 @@
 <!--
-The App.vue file is the root component that all other components are nested within.
+The App.vue file is the root component that all 
+other components are nested within.
 -->
 <template>
   <div>

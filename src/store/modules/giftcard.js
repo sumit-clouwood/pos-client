@@ -52,9 +52,7 @@ const actions = {
                 .catch(error => reject(error))
             } else {
               reject(
-                `Available gift card amount is ${card.currency} ${
-                  card.remaining_amount
-                }, lesser than ${amount}`
+                `Available gift card amount is ${card.currency} ${card.remaining_amount}, lesser than ${amount}`
               )
             }
           } else {
