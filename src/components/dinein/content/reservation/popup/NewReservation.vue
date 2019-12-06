@@ -370,7 +370,7 @@ export default {
       this.updateTagsChecks()
       this.errors = false
       // eslint-disable-next-line no-console
-      console.log(this.reservationInformation, 'data', this.selectedTags)
+      console.log(this.reservationInformation, 'data', this.selectedTable)
     },
   },
   data() {
@@ -572,6 +572,14 @@ export default {
       this.reservationInformation.tags = this.selectedTags
     },
     updateDetails: function() {
+      let selectedTable = false
+      if (this.edit) {
+        selectedTable = this.availableTables.find(
+          at => at.table_id == this.reservationInformation.assigned_table_id
+        )
+      }
+
+      this.$store.commit('dinein/SELECTED_TABLE', selectedTable)
       this.selectedTags = this.reservationInformation.tags || []
       this.no_of_guest = this.reservationInformation.number_of_guests || 1
       let dateTime = new DateTime()

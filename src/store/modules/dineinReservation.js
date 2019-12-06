@@ -47,16 +47,18 @@ const actions = {
     })
   },
   getUserHistory({ commit }, mobileNo) {
-    return new Promise((resolve, reject) => {
-      DineInService.getReservationByMobile(mobileNo)
-        .then(response => {
-          commit(mutation.USER_HISTORY, response.data)
-          return resolve(response.data)
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
+    if (typeof mobileNo !== 'undefined') {
+      return new Promise((resolve, reject) => {
+        DineInService.getReservationByMobile(mobileNo)
+          .then(response => {
+            commit(mutation.USER_HISTORY, response.data)
+            return resolve(response.data)
+          })
+          .catch(error => {
+            reject(error)
+          })
+      })
+    }
   },
   editTable({ dispatch }, data) {
     return new Promise((resolve, reject) => {
