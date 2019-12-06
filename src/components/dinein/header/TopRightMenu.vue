@@ -180,7 +180,7 @@
     </li>
     <div class="curent-sale hideBigScreen">
       <span class="hideBigIcon" @click="showBookingBtn">
-        <i aria-hidden="true" class="fa fa-chevron-down"></i>
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>
       </span>
       <div class="all-booking-btns">
         <ul>
@@ -385,6 +385,7 @@ export default {
     showBookingBtn() {
       $('.hideBigScreen .all-booking-btns').toggleClass('active')
       $('.hideBigIcon').toggleClass('active')
+      $('.dine-in-wrapper').toggleClass('overlay')
     },
     logoutCashier() {
       localStorage.setItem('token', '')
