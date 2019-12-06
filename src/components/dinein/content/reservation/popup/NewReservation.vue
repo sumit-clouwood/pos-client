@@ -72,7 +72,10 @@
                     v-for="(val, key) in time_slots"
                     :key="key"
                     class="col-sm-3 time_slot cursor-pointer"
-                    :class="'selected_time_slot_' + key"
+                    :class="[
+                      'selected_time_slot_' + key,
+                      { active: val.time === startedTime },
+                    ]"
                     @click="
                       getSelectedTimeSlot(val, '.selected_time_slot_' + key)
                     "
@@ -363,7 +366,7 @@ export default {
 
     // eslint-disable-next-line no-console
     console.log(this.reservationInformation, 'data', this.selectedTags)
-    this.selectedTags = this.reservationInformation.tags || []
+    this.updateDetails()
     this.updateTagsChecks()
   },
   data() {
@@ -372,6 +375,7 @@ export default {
       calendarOpen: false,
       dtObj: new DateTime(),
       newDetails: false,
+      startedTime: false,
       selectedDate: '',
       no_of_guest: 1,
       time_slots: [],
@@ -604,6 +608,15 @@ export default {
         this.selectedTags.includes(tag.tagId)
       )
       this.reservationInformation.tags = this.selectedTags
+    },
+    updateDetails: function() {
+      this.selectedTags = this.reservationInformation.tags || []
+      this.no_of_guest = this.reservationInformation.number_of_guests || 1
+      let dateTime = new DateTime()
+      this.startedTime =
+        typeof this.reservationInformation.start_time != 'undefined'
+          ? dateTime.convertTime24to12(this.reservationInformation.start_time)
+          : false
     },
     updateTagsChecks: function() {
       $('.hiddenCB > span')
