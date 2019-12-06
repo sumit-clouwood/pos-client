@@ -341,6 +341,7 @@ export default {
   props: {
     dateSelector: Boolean,
     edit: Boolean,
+    errors: Boolean,
     reservationInformation: Object,
   },
   computed: {
@@ -386,28 +387,13 @@ export default {
       curr_week_no: 0,
       settings: '',
       selectedTags: [],
-      errors: false,
     }
   },
   methods: {
     getuserHistoryByMobile: function(mobileNo) {
       this.$store.dispatch('dineinReservation/getUserHistory', mobileNo)
-      /*.then(response => {
-        if (response.count) {
-          this.history = true
-        } else {
-          this.history = false
-        }
-        // eslint-disable-next-line no-console
-        console.log(this.tableBookedStatus, this.time_slots)
-      })*/
     },
     errorCheck(element) {
-      // eslint-disable-next-line no-console
-      // console.log(this.tableBookedStatus)
-      setTimeout(function() {
-        this.errors = false
-      }, 3000)
       return this.errors && this.errors[element]
         ? this.errors[element][0] || ''
         : ''
@@ -447,26 +433,11 @@ export default {
         startTime = startTime + interval
       }
       this.time_slots = time_slots
-
-      // eslint-disable-next-line no-console
-      console.log(time_slots, this.tableBookedStatus)
     },
     timeConvert(time, separator = ':') {
       let timeSplit = time.split(separator)
       return parseInt(timeSplit[0]) * 60 + parseInt(timeSplit[1])
     },
-
-    /*convertTime12to24(time12h) {
-      const [time, modifier] = time12h.split(' ')
-
-      let [hours, minutes] = time.split(':')
-
-      if (hours === '12') hours = '00'
-
-      if (modifier === 'PM') hours = parseInt(hours, 10) + 12
-
-      return `${hours}:${minutes}`
-    },*/
 
     addNewReservation: function() {
       this.reservationInformation.start_date = this.$store.getters[
@@ -483,18 +454,12 @@ export default {
           this.errors = response.data.form_errors || false
           $('#NewReservation').modal('hide')
           this.getReservationByDate(this.selectedDate)
-          // eslint-disable-next-line no-console
-          console.log(response.data, this.errors, this.errors['guest_email'])
         })
         .catch(() => {
           this.errors = { start_time: ['Please select a time slot'] }
         })
-      // eslint-disable-next-line no-console
-      console.log(this.errors)
     },
     updateReservation: function() {
-      // eslint-disable-next-line no-console
-      console.log(this.reservationInformation)
       let id = this.reservationInformation._id
       delete this.reservationInformation._id
       delete this.reservationInformation.number
@@ -600,13 +565,6 @@ export default {
           .siblings('label')
           .addClass('selected')
       }
-      // this.updateTagsChecks()
-      // eslint-disable-next-line no-console
-      console.log(
-        this.selectedTags,
-        tag.tagId,
-        this.selectedTags.includes(tag.tagId)
-      )
       this.reservationInformation.tags = this.selectedTags
     },
     updateDetails: function() {
