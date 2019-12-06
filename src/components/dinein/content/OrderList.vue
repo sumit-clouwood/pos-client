@@ -458,6 +458,7 @@ export default {
     padding: 0.3em 1.5em;
     border-radius: 0.2em;
     margin: 0.5em 0;
+    cursor: pointer;
   }
 }
 
