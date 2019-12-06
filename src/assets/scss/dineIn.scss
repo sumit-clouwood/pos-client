@@ -1034,38 +1034,57 @@ span.dinefor-paynow > a {
 
   .hideBigScreen {
     .all-booking-btns {
-      display: none;
-
+      right: -999px;
+      z-index: -1;
+      position: fixed;
+      transition: 0.3s ease-in-out;
+      display: block;
+      background: #fff;
+      width: 250px;
+      margin: 0 auto;
+      height: 100vh;
+      top: 0;
+      padding: 20px;
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
       &.active {
         position: fixed;
-        display: block;
-        background: #fff;
-        width: 75%;
         right: 0;
-        margin: 0 auto;
         z-index: 99;
-        height: 100vh;
-        top: 0;
-        transition: 0.3s ease-in-out;
         button{
           display: block;
           min-width: 200px;
+          margin-bottom: 20px;
+        }
+        .language-button{
+          min-width: 200px;
+          margin-left: 0;
+          margin-bottom: 20px;
         }
       }
+
     }
 
     .hideBigIcon {
       position: fixed;
       top: 54px;
-      right: 20px;
+      right: 0;
       cursor: pointer;
+      background: rgba(80, 86, 202, 0.8);
+      padding: 10px 20px;
+      display: grid;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+      transition: 0.3s ease-in-out;
 
       &.active {
         i {
           transition: 0.3s ease-in-out;
           transform: rotate(180deg);
         }
-        right: 75%;
+        right: 250px;
       }
 
       i {
@@ -1347,4 +1366,20 @@ input[type='number']::-webkit-inner-spin-button {
 
 .dropdown-menu.show {
   cursor:pointer;
+}
+@media only screen and (max-width: 960px){
+  #NewReservation{
+    .modal-dialog {
+      max-width: 96% !important;
+      .modal-content{
+         .modal-body{
+           height: 100vh;
+           overflow: auto;
+         }
+      }
+    }
+  }
+  .fixed-reservation{
+    width: auto;
+  }
 }

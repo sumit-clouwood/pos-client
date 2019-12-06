@@ -2,21 +2,21 @@
   <div>
     <Preloader v-if="loading" />
     <div v-else class="running-order-table-wrap">
-      <div class="row header_list hide_sm">
-        <div class="col-md-2">Table No</div>
-        <div class="col-md-4">Orders</div>
-        <div class="col-md-1">Amount</div>
-        <div class="col-md-2">Table Booked Time</div>
-        <div class="col-md-3">Actions</div>
+      <div class="header_list hide_sm">
+        <div class="">Table No</div>
+        <div class="">Orders</div>
+        <div class="">Amount</div>
+        <div class="">Table Booked Time</div>
+        <div class="">Actions</div>
       </div>
       <template v-if="orderDetails">
         <div
           :key="index"
-          class="row dine-table-content"
+          class="dine-table-content"
           v-for="(orderTable, index) in orderDetails"
         >
           <div
-            class="col-md-2 dine-order-tabel"
+            class="dine-order-tabel"
             :class="getOrderStatus(orderTable.table.status)"
           >
             <span :class="tabName">
@@ -36,7 +36,7 @@
               </p>
             </span>
           </div>
-          <div class="col-md-4 dine-order-details">
+          <div class="dine-order-details">
             <div class="table-order-view-wrapper">
               <div
                 v-for="(order, i) in orderTable.orders"
@@ -78,10 +78,10 @@
               </div>
             </div>
           </div>
-          <div class="col-md-1 dine-order-amt font-weight-bold">
+          <div class="dine-order-amt font-weight-bold">
             {{ formatPrice(orderTable.amount) }}
           </div>
-          <div class="col-md-2 order-time-det">
+          <div class="order-time-det">
             <div class="action-status">
               <div>
                 <span
@@ -155,7 +155,7 @@
               }}
             </span>
           </div>
-          <div class="col-md-3">
+          <div class="">
             <div v-for="(order, i) in orderTable.orders" :key="i">
               <template v-if="order">
                 <div class="running-actions">
@@ -469,5 +469,31 @@ button#dropdownMenuButton {
   padding: 3px 10px;
   font-size: 12px;
 }
+.running-order-table-wrap {
+  .dine-table-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto 1fr 1fr;
+    grid-gap: 3rem;
+    grid-area: min-content;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  .header_list {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr auto 1fr 1fr;
+    grid-gap: 3rem;
+  }
+  .running-actions {
+    grid-template-columns: 1fr auto;
+    grid-gap: 5px;
+  }
+  .order-time-det {
+    .runningtime {
+      margin-top: 10px;
+      display: inline-block;
+    }
+  }
+}
+
 /*.running-order-table-wrap,*/
 </style>

@@ -588,20 +588,20 @@ export default {
         this.selectedTags.splice(tag.tagId, 1)
       }
       if ($(id).is(':checked')) {
-        $(id).attr('checked', '')
-        $(id)
-          .siblings('label')
-          .removeClass('selected')
+        /*$(id).attr('checked', '')
+             $(id)
+             .siblings('label')
+             .removeClass('selected')*/
         this.selectedTags.splice(tag.tagId, 1)
       } else {
-        $(id).attr('checked', 'checked')
-        $(id)
-          .siblings('label')
-          .addClass('selected')
+        /*$(id).attr('checked', 'checked')
+             $(id)
+             .siblings('label')
+             .addClass('selected')*/
         this.selectedTags.push(tag.tagId)
       }
       // eslint-disable-next-line no-console
-      console.log(this.selectedTags)
+      console.log(this.selectedTags, 'tagssss')
       this.reservationInformation.tags = this.selectedTags
     },
     getReservationByDate: function(date) {
