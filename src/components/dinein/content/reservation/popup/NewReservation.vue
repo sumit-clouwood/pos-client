@@ -341,7 +341,6 @@ export default {
   props: {
     dateSelector: Boolean,
     edit: Boolean,
-    errors: Boolean,
     reservationInformation: Object,
   },
   computed: {
@@ -364,11 +363,15 @@ export default {
     let isCalendarhasData = $('.wrapperNew').text().length
     if (isCalendarhasData == 0 && this.dineInTabType == 'reservation')
       this.cal()
-
-    // eslint-disable-next-line no-console
-    console.log(this.reservationInformation, 'data', this.selectedTags)
-    this.updateDetails()
-    this.updateTagsChecks()
+  },
+  watch: {
+    edit: function() {
+      this.updateDetails()
+      this.updateTagsChecks()
+      this.errors = false
+      // eslint-disable-next-line no-console
+      console.log(this.reservationInformation, 'data', this.selectedTags)
+    },
   },
   data() {
     return {
@@ -387,6 +390,7 @@ export default {
       curr_week_no: 0,
       settings: '',
       selectedTags: [],
+      errors: false,
     }
   },
   methods: {

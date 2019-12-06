@@ -110,7 +110,6 @@
         :dateSelector="newDtPicker"
         :reservationInformation="selectedReservation"
         :edit="editStatus"
-        :errors="false"
       />
       <div
         class="modal"
