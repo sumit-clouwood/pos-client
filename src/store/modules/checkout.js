@@ -17,6 +17,7 @@ const state = {
   paymentMsgStatus: false,
   processing: false,
   paymentAction: '',
+  splitPaid: false,
 }
 
 // getters
@@ -1134,6 +1135,7 @@ const actions = {
             root: true,
           })
             .then(() => {
+              commit(mutation.SPLIT_PAID, true)
               resolve()
             })
             .catch(error => reject(error))
@@ -1391,6 +1393,9 @@ const mutations = {
   [mutation.SET_PAYMENT_ACTION](state, action) {
     state.paymentAction = action
   },
+  [mutation.SPLIT_PAID](state, action) {
+    state.splitPaid = action
+  },
   [mutation.RESET](state, full = true) {
     state.paidAmount = 0
     state.payableAmount = 0
@@ -1398,6 +1403,7 @@ const mutations = {
     state.print = false
     if (full) {
       state.order = false
+      state.splitPaid = false
     }
   },
 }

@@ -1177,6 +1177,7 @@ const actions = {
         .then(() => {
           dispatch('addOrderToCart', orderData.item)
             .then(() => {
+              commit('checkout/SPLIT_PAID', false, { root: true })
               dispatch('surchargeCalculation')
               resolve()
             })
