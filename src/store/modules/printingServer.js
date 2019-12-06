@@ -2,8 +2,8 @@ import * as mutation from './printingServer/mutation-type'
 // import OrderService from '@/services/data/OrderService'
 import PrintingServerService from '@/services/data/PrintingServerService'
 // import LookupData from '@/plugins/helpers/LookupData'
-import moment from 'moment-timezone'
-import { compressToBase64 } from 'lz-string'
+// import moment from 'moment-timezone'
+// import { compressToBase64 } from 'lz-string'
 const state = {
   kitchenitems: [],
   printingservers: [],
@@ -28,7 +28,7 @@ const actions = {
     })
   },
 
-  convertDatetime({ rootState, commit }, { datetime, format }) {
+  /*convertDatetime({ rootState, commit }, { datetime, format }) {
     let tz = rootState.location.timezoneString
     moment.locale(tz)
     let value =
@@ -50,7 +50,7 @@ const actions = {
       commit(mutation.CREATED_DATE, result)
     }
     return result
-  },
+  },*/
   //Fetch All Kitchens
   fetchAllKitchens({ commit }) {
     return new Promise((resolve, reject) => {
@@ -66,8 +66,12 @@ const actions = {
   },
 
   //Create A JSON Request to send in Local Server API for Generating Invoices from a software.
-  printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
-    let printingServers = state.printingservers //Get All Printing Servers
+  // printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
+  // eslint-disable-next-line no-empty-pattern
+  printingServerInvoiceRaw({}, orderData) {
+    // eslint-disable-next-line no-console
+    console.log(typeof orderData)
+    /*let printingServers = state.printingservers //Get All Printing Servers
     if (printingServers && orderData) {
       let staff = rootState.auth.userDetails
       let customerDetails = rootState.customer
@@ -196,7 +200,7 @@ const actions = {
           // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
       }
-    }
+    }*/
   },
 
   // eslint-disable-next-line no-empty-pattern

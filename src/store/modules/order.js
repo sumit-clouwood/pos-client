@@ -1029,6 +1029,10 @@ const actions = {
                 }
               })
             }
+            if (typeof orderItem.kitchen_invoice !== 'undefined') {
+              item['kitchen_invoice'] = orderItem.kitchen_invoice
+            }
+
             if (modifiers.length) {
               item.modifiers = modifiers
               dispatch('modifier/assignModifiersToItem', item, {
@@ -1235,11 +1239,7 @@ const actions = {
     } else {
       let data = { driver: state.selectedDriver }
 
-      OrderService.updateOrderAction(
-        order._id,
-        actionTrigger,
-        data
-      )
+      OrderService.updateOrderAction(order._id, actionTrigger, data)
         .then(response => {
           if (response.status == 200) {
             switch (orderType) {
