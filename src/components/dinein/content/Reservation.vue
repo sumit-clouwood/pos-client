@@ -99,7 +99,7 @@
           <button
             class="btn btn-success"
             data-toggle="modal"
-            @click="activeDateSelector"
+            @click="newReservation"
           >
             {{ _t('New Reservation') }}
           </button>
@@ -206,10 +206,20 @@ export default {
         ? reservation.guest_fname + ' ' + reservation.guest_lname
         : 'Anonymous'
     },
-    activeDateSelector() {
+    newReservation() {
+      this.editStatus = false
       this.newDtPicker = true
+      let selectedReservation = {
+        status: 'booked',
+        customers: [],
+        number_of_guests: 1,
+      }
+      this.$store.commit(
+        'dineinReservation/SELECTED_RESERVATION',
+        selectedReservation
+      )
+      this.$store.commit('dineinReservation/USER_HISTORY', false)
       $('#NewReservation').modal('show')
-      // this.$store.dispatch('dineinReservation/getTakenBy')
     },
     cancelReservation(id) {
       this.cancelReservationMsg = 'Do you want to cancel this reservation?'
@@ -226,7 +236,7 @@ export default {
       )
       if (popup) {
         this.editStatus = popup
-        this.activeDateSelector()
+        this.newDtPicker = true
         this.$store.dispatch(
           'dineinReservation/getUserHistory',
           getReservation.guest_phone
@@ -235,6 +245,7 @@ export default {
           'dineinReservation/SELECTED_RESERVATION',
           getReservation
         )
+        $('#NewReservation').modal('show')
         // eslint-disable-next-line no-console
         console.log(getReservation)
       } else {

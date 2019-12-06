@@ -62,6 +62,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       DineInService.editTableStatus(data)
         .then(response => {
+          // eslint-disable-next-line no-console
+          console.log(response)
           dispatch('getReservationByDate')
           return resolve(response)
         })
@@ -99,36 +101,38 @@ const mutations = {
   },
   [mutation.USER_HISTORY](state, userHistory) {
     let history = []
-    userHistory.data.forEach(h => {
-      history.push({
-        start_date: h.start_date,
-        start_time: h.start_time,
-        status: h.status,
-        des: 'NA',
-      })
-    })
-    let guestHistory = userHistory.data[0]
-    let fetchedData = {
+    /*let fetchedData = {
       guest_email: '',
       guest_fname: '',
       guest_lname: '',
       // guest_phone: guestHistory.guest_phone,
-    }
-    if (guestHistory) {
-      fetchedData = {
-        guest_email: guestHistory.guest_email,
-        guest_fname: guestHistory.guest_fname,
-        guest_lname: guestHistory.guest_lname,
-        guest_phone: guestHistory.guest_phone,
+    }*/
+    if (userHistory) {
+      userHistory.data.forEach(h => {
+        history.push({
+          start_date: h.start_date,
+          start_time: h.start_time,
+          status: h.status,
+          des: 'NA',
+        })
+      })
+      let guestHistory = userHistory.data[0]
+      if (guestHistory) {
+        let fetchedData = {
+          guest_email: guestHistory.guest_email,
+          guest_fname: guestHistory.guest_fname,
+          guest_lname: guestHistory.guest_lname,
+          guest_phone: guestHistory.guest_phone,
+        }
+        state.selectedReservation = Object.assign(
+          {},
+          state.selectedReservation,
+          fetchedData
+        )
       }
-      state.selectedReservation = Object.assign(
-        {},
-        state.selectedReservation,
-        fetchedData
-      )
     }
     // eslint-disable-next-line no-console
-    console.log(history)
+    console.log(state.userHistory, 'history')
     state.userHistory = history
   },
   [mutation.SELECTED_RESERVATION](state, selectedReservation) {

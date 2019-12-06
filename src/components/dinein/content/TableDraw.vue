@@ -346,7 +346,7 @@ export default {
   },
   watch: {
     updateTableArea: function(newValue, oldValue) {
-      if (newValue !== oldValue) {
+      if (newValue !== oldValue && this.selectedTableData) {
         this.setTableColour(this.selectedTableD3, this.selectedTableData)
       }
     },

@@ -247,14 +247,10 @@
                       v-for="(tag, index) in tags"
                       :key="index"
                     >
-                      <input
-                        type="checkbox"
-                        :id="tag.name.replace(/ +/g, '')"
-                        class="hidden"
-                      />
+                      <input type="checkbox" :id="tag._id" class="hidden" />
                       <label
                         class="btn btn-secondary"
-                        :for="tag.name.replace(/ +/g, '')"
+                        :for="tag._id"
                         @click="
                           updateTag({
                             name: tag.name,
@@ -365,11 +361,10 @@ export default {
     if (isCalendarhasData == 0 && this.dineInTabType == 'reservation')
       this.cal()
 
-    /*this.reservationInformation =
-      this.selectedReservation || this.reservationInformation*/
     // eslint-disable-next-line no-console
     console.log(this.reservationInformation, 'data', this.selectedTags)
     this.selectedTags = this.reservationInformation.tags || []
+    this.updateTagsChecks()
   },
   data() {
     return {
@@ -584,29 +579,43 @@ export default {
       })
     },
     updateTag: function(tag) {
-      let id = '#' + tag.name.replace(/ +/g, '')
+      // let id = '#' + tag.tagId
       this.selectedTags = this.selectedTags.filter(bdg => {
         return bdg.tagId != tag.tagId
       })
-      if (this.selectedTags.includes(tag.tagId)) {
-        this.selectedTags.splice(tag.tagId, 1)
-      }
-      if ($(id).is(':checked')) {
-        /*$(id).attr('checked', '')
-        $(id)
+      let deletionIndex = this.selectedTags.indexOf(tag.tagId)
+      // let deletionIndex = this.selectedTags.indexOf(tag.tagId)
+      if (deletionIndex != '-1') {
+        this.selectedTags.splice(deletionIndex, 1)
+        $('#' + tag.tagId)
           .siblings('label')
-          .removeClass('selected')*/
-        this.selectedTags.splice(tag.tagId, 1)
+          .removeClass('selected')
       } else {
-        /*$(id).attr('checked', 'checked')
-        $(id)
-          .siblings('label')
-          .addClass('selected')*/
         this.selectedTags.push(tag.tagId)
+        $('#' + tag.tagId)
+          .siblings('label')
+          .addClass('selected')
       }
+      // this.updateTagsChecks()
       // eslint-disable-next-line no-console
-      console.log(this.selectedTags)
+      console.log(
+        this.selectedTags,
+        tag.tagId,
+        this.selectedTags.includes(tag.tagId)
+      )
       this.reservationInformation.tags = this.selectedTags
+    },
+    updateTagsChecks: function() {
+      $('.hiddenCB > span')
+        .children()
+        .removeClass('selected')
+      if (this.selectedTags.length > 0) {
+        this.selectedTags.forEach(tagId => {
+          $('#' + tagId)
+            .siblings('label')
+            .addClass('selected')
+        })
+      }
     },
     getReservationByDate: function(date) {
       let scope = this
@@ -791,8 +800,8 @@ span.button-checkbox {
 }
 
 .selected {
-  background: #5056ca;
-  border-color: #5056ca;
+  background: #5056ca !important;
+  border-color: #5056ca !important;
   box-shadow: none;
 }
 .slot-symbol {
@@ -806,8 +815,7 @@ span.button-checkbox {
   overflow-y: auto;
   overflow-x: hidden;
 }
-.hiddenCB input[type='checkbox'],
-.hiddenCB input[type='radio'] {
+.hiddenCB input[type='checkbox'] {
   display: none;
 }
 .hiddenCB label {
@@ -817,7 +825,7 @@ span.button-checkbox {
   background: rgba(59, 56, 255, 0.6);
 }
 .hiddenCB input[type='checkbox']:checked + label {
-  background: rgb(80, 86, 202);
+  background: #6c757d;
 }
 .hiddenCB input[type='checkbox']:checked + label:hover {
   background: rgba(59, 56, 255, 0.5);
