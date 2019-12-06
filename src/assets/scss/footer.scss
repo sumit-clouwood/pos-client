@@ -38,7 +38,6 @@
           display: grid !important;
           align-items: center;
           justify-content: center;
-          display: grid;
           grid-template-columns: auto;
           align-items: center;
           justify-content: center;
@@ -47,6 +46,9 @@
           &.active,
           &:hover {
             background-color: $blue-dark;
+          }
+          &.hide{
+            display: none !important;
           }
 
           img {

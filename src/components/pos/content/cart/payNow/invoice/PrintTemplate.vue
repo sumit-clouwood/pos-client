@@ -279,9 +279,11 @@ export default {
       currentBrand: this.$store.state.location.brand,
       currentStore: this.$store.state.location.store,
       current_locale: this.$store.state.location.locale,
-      company_logo: this.$store.state.location.brand.company_logo
-        ? this.$store.state.location.brand.company_logo
-        : '',
+      company_logo:
+        this.$store.state.location.brand &&
+        this.$store.state.location.brand.company_logo
+          ? this.$store.state.location.brand.company_logo
+          : '',
     }
   },
   mounted() {
@@ -320,9 +322,9 @@ export default {
         : order.orderNumber
         ? order.orderNumber
         : false
-      let dateTime =
-        order.real_created_datetime ||
-        order.real_created_datetime.replace(/[\s-:]/g, '')
+      let dateTime = order.real_created_datetime
+        .toString()
+        .replace(/[\s-:]/g, '')
       if (orderNo) {
         return orderNo
       } else {

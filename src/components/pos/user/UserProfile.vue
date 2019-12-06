@@ -98,6 +98,7 @@
             v-if="enabledModule('switchCashier')"
           >
             <button
+              @click.native="logoutCashier"
               id="switch-user-btn-profile"
               type="button"
               class="btn btn-danger cancel-announce color-icon-table-neutral-button font-weight-bold"
@@ -121,22 +122,31 @@
 
 <script>
 import DateTime from '@/mixins/DateTime'
+import AuthService from '@/services/data/AuthService'
 
 import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
   name: 'UserProfile',
   mixins: [DateTime],
   methods: {
+    logoutCashier() {
+      localStorage.setItem('token', '')
+      this.$store.commit('auth/SET_TOKEN', '')
+      this.$store.commit('auth/LOGOUT_ACTION', 'switchCashier')
+      //this.$router.push({ path: '/cashier-login/' + this.storeUrl })
+      AuthService.logout().then(() => {})
+    },
     ...mapActions('auth', ['logout']),
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
-          return false
+          return !this.carhop && !this.waiter
       }
     },
   },
   computed: {
     ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['waiter', 'carhop']),
     ...mapState({
       user: state => state.auth.userDetails.item,
       collectedData: state => state.auth.userDetails.collected_data,

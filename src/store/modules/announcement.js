@@ -7,7 +7,7 @@ const state = {
 const actions = {
   fetchAll: function({ commit, rootState }) {
     let user = rootState.auth.userDetails
-    if (user) {
+    if (user && user.item) {
       const params = [user.item.brand_role, rootState.location.apiDate]
       AnnouncementService.fetchAll(...params).then(response => {
         commit(mutation.SET_ANNOUNCEMENT, response.data.data)

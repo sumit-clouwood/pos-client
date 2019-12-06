@@ -18,6 +18,9 @@
       <transition name="slider">
         <div
           :style="{ transform: 'translate3d(' + positionX + 'px, 0px, 0px)' }"
+          @touchstart="startDrag"
+          @touchmove="doDrag"
+          @touchend="stopDrag"
           @mousedown="startDrag"
           @mousemove="doDrag"
           ref="carousel"
@@ -126,6 +129,7 @@ export default {
         this.showDots = true
       }
     },
+
     moveSlide(event) {
       // eslint-disable-next-line no-console
       if (
@@ -170,33 +174,66 @@ export default {
       this.positionX = -toMove
       this.currentPage = page
     },
+
+    getClientX() {
+      const event = window.event
+      let x = null
+      if (
+        event.targetTouches &&
+        typeof event.targetTouches[0] !== 'undefined'
+      ) {
+        x = event.targetTouches[0].pageX
+      } else if (event.changedTouches && event.changedTouches.length) {
+        x = event.changedTouches[event.changedTouches.length - 1].pageX
+      } else {
+        x = event.clientX
+      }
+      return x
+    },
+
+    getClientY() {
+      const event = window.event
+      let y = null
+      if (
+        event.targetTouches &&
+        typeof event.targetTouches[0] !== 'undefined'
+      ) {
+        y = event.targetTouches[0].pageY
+      } else if (event.changedTouches && event.changedTouches.length) {
+        event.changedTouches[event.changedTouches.length - 1].pageY
+      } else {
+        y = event.clientY
+      }
+      return y
+    },
+
     startDrag(event) {
       event = event || window.event
       event.preventDefault()
       this.dragging = true
-      this.x = event.clientX
-      this.y = event.clientY
-      this.dx = event.clientX
-      this.dy = event.clientY
+      this.x = this.getClientX()
+      this.y = this.getClientY()
+      this.dx = this.getClientX()
+      this.dy = this.getClientY()
     },
     stopDrag(event) {
       event = event || window.event
       event.preventDefault()
       if (this.dragging) {
-        if (event.clientX < this.x) {
+        if (this.getClientX() < this.x) {
           //drag to left, move right
           if (this.currentPage + 1 <= this.totalPages) {
             this.movePage(this.currentPage + 1)
           }
-        } else if (event.clientX > this.x) {
+        } else if (this.getClientX() > this.x) {
           //drag to right, move right
           if (this.currentPage - 1 >= 1) {
             this.movePage(this.currentPage - 1)
           }
         }
         this.dragging = false
-        // this.x = event.clientX
-        //this.y = event.clientY
+        // this.x = this.getClientX()
+        //this.y = this.getClientY()
       }
 
       document.onmousemove = null
@@ -206,15 +243,15 @@ export default {
       event.preventDefault()
 
       if (this.dragging) {
-        if (event.clientX < this.dx) {
+        if (this.getClientX() < this.dx) {
           //drag to left, move right
           //this.positionX -= 10
-        } else if (event.clientX > this.dx) {
+        } else if (this.getClientX() > this.dx) {
           //drag to right, move right
           //this.positionX += 10
         }
-        this.dx = event.clientX
-        this.dy = event.clientY
+        this.dx = this.getClientX()
+        this.dy = this.getClientY()
       }
     },
   },
@@ -250,7 +287,7 @@ export default {
       cursor: pointer
 
     &:before
-      left: -24px
+      left: -16px
       border-color: rgba(194, 225, 245, 0)
       border-right-color: #c2e1f5
       transform: rotate(0deg)
@@ -261,7 +298,7 @@ export default {
       border-right-color: #88b7d5
       transform: rotate(180deg)
       -webkit-transform: rotate(180deg)
-      right: -24px
+      right: -16px
 
 
   .carousel

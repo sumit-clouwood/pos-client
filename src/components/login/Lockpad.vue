@@ -2,7 +2,7 @@
   <div class="modal-content lockpad">
     <div class="modal-header">
       <input
-        type="text"
+        type="password"
         placeholder="Enter PIN"
         name="PIN"
         id="cashierpin"
@@ -38,18 +38,11 @@
         <img src="~@/assets/images/close.png" class="rem" alt="back" />
       </div>
     </div>
-    <div class="modal-footer-block">
-      <p>
-        <router-link :to="store">
-          Login
-        </router-link>
-      </p>
-    </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Progress from '@/components/util/Progress'
 
 export default {
@@ -61,10 +54,14 @@ export default {
       pincode: '',
       pincodeLength: 4,
       processing: false,
+      brand_id: false,
+      store_id: false,
+      storeUrl: false,
     }
   },
   computed: {
     ...mapGetters('context', ['store']),
+    ...mapState('context', ['brandId', 'storeId']),
   },
   components: { Progress },
   methods: {
@@ -81,9 +78,14 @@ export default {
       if (!this.pincode) {
         return false
       }
+
       this.processing = true
       this.$store
-        .dispatch('auth/pinlogin', this.pincode)
+        .dispatch('auth/pinlogin', {
+          pincode: this.pincode,
+          brand: this.brand_id,
+          store: this.store_id,
+        })
         .then(() => {
           this.$router.replace({ name: 'Home' })
         })
@@ -100,7 +102,46 @@ export default {
         })
     },
   },
-  mounted() {},
+
+  mounted() {
+    if (this.$route.name === 'cashierLogin') {
+      if (this.store) {
+        this.storeUrl = this.store
+        this.brand_id = this.brandId
+        this.store_id = this.storeId
+      }
+
+      history.pushState(null, null, location.href)
+      window.onpopstate = function() {
+        history.go(1)
+      }
+    }
+    //tackle refresh in cashier login
+    if (!this.brand_id) {
+      if (this.$route.params.brand_id) {
+        this.brand_id = this.$route.params.brand_id
+        this.store_id = this.$route.params.store_id
+      } else if (this.$route.params.pathMatch.match('/')) {
+        const [brand_id, store_id] = this.$route.params.pathMatch.split('/')
+        this.brand_id = brand_id
+        this.store_id = store_id
+      }
+    }
+
+    if (!this.brand_id) {
+      this.$store.commit('auth/LOGOUT_ACTION', '')
+    }
+  },
+
+  destroyed() {
+    window.removeEventListener(
+      'onpopstate',
+      function() {
+        history.go(1)
+      },
+      false
+    )
+  },
 }
 </script>
 
@@ -181,17 +222,23 @@ export default {
         background: rgba(98, 187, 49, 0.6)
         text-decoration: none
 
+
+
   .modal-body-digits
     overflow: hidden
     background: rgba(25, 25, 25, 0.85)
 
     .dig.number-dig.blank
-      height: 70px
+      height: 57px
 
     .dig.number-dig
       &:hover
         background: rgba(98, 187, 49, 0.85)
+
       &:last-child
+        &:hover
+          background: rgba(25, 25, 25, 0.85)
+      &:nth-child(10)
         &:hover
           background: rgba(25, 25, 25, 0.85)
 
@@ -230,13 +277,8 @@ export default {
       line-height: normal
       letter-spacing: 0.6px
       margin-bottom: 0
-      cursor: pointer
 
       a
         display: block
         padding: 18px 0
-
-      &:hover
-        background: rgba(98, 187, 49, 0.85);
-        color: #fff;
 </style>

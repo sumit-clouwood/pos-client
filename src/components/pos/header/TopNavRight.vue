@@ -120,7 +120,10 @@
             <a :href="brand">{{ _t('Settings') }}</a>
           </li>
           <li v-if="enabledModule('switchCashier') && enabled('switchcashier')">
-            <router-link :to="'/cashier-login' + store">
+            <router-link
+              :to="'/cashier-login' + store"
+              @click.native="logoutCashier"
+            >
               {{ _t('Switch Cashier') }}
             </router-link>
           </li>
@@ -137,6 +140,7 @@
 /*global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
 import * as CONST from '@/constants'
+import AuthService from '@/services/data/AuthService'
 
 import bootstrap from '@/bootstrap'
 export default {
@@ -154,22 +158,7 @@ export default {
   },
   watch: {},
   computed: {
-    role() {
-      const roleId = this.$store.state.auth.userDetails.item.brand_role
-      if (roleId && this.$store.state.auth.rolePermissions) {
-        const role = this.$store.state.auth.rolePermissions.find(
-          role => role._id === roleId
-        )
-        return role ? role.name : ''
-      }
-      return ''
-    },
-    waiter() {
-      return this.role === 'Waiter'
-    },
-    carhop() {
-      return this.role === 'Carhop User'
-    },
+    ...mapGetters('auth', ['waiter', 'carhop']),
 
     vlocale: {
       get() {
@@ -192,6 +181,13 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    logoutCashier() {
+      localStorage.setItem('token', '')
+      this.$store.commit('auth/SET_TOKEN', '')
+      this.$store.commit('auth/LOGOUT_ACTION', 'switchCashier')
+      //this.$router.push({ path: '/cashier-login/' + this.storeUrl })
+      AuthService.logout().then(() => {})
+    },
     enabled(option) {
       switch (option) {
         case 'printers':
@@ -249,7 +245,7 @@ export default {
             return false
           }
           return true
-        case 'switchCashier':
+        case 'switchcashier':
           if (this.waiter || this.carhop) {
             return false
           }
@@ -261,7 +257,7 @@ export default {
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
-          return false
+          return true
       }
     },
 

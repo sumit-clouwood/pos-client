@@ -42,6 +42,7 @@
 
 <script>
 /* global $ showModal showPaymentBreak */
+/* eslint-disable no-console */
 import { mapGetters, mapState } from 'vuex'
 import * as CONST from '@/constants'
 
@@ -49,14 +50,12 @@ export default {
   name: 'PayNowFooter',
   computed: {
     ...mapState('checkout', ['changedAmount']),
-    ...mapState('checkoutForm', ['msg', 'error', 'method']),
+    ...mapState('checkoutForm', ['msg', 'error', 'method', 'processing']),
     ...mapGetters('checkoutForm', ['validate']),
     ...mapGetters('location', ['_t']),
   },
   data() {
-    return {
-      processing: false,
-    }
+    return {}
   },
   mounted() {
     $('#payment-msg').modal({
@@ -99,9 +98,10 @@ export default {
     },
     pay() {
       if (this.processing) {
+        console.log('dual footer click')
         return false
       }
-      this.processing = true
+      this.$store.commit('checkoutForm/SET_PROCESSING', true)
 
       this.addAmount().then(payable => {
         if (payable <= 0.1) {
@@ -113,6 +113,8 @@ export default {
           this.$store
             .dispatch('checkout/pay', this.$store.state.order.orderType.OTApi)
             .then(() => {
+              console.log('payment success')
+
               $('#payment-msg').modal('show')
               if (this.changedAmount >= 0.1) {
                 //alert('change amount is due')
@@ -131,12 +133,15 @@ export default {
             })
             .catch(() => {
               setTimeout(() => {
+                console.log('payment fail')
+
                 $('#payment-msg').modal('hide')
                 $('#payment-screen-footer').prop('disabled', false)
               }, 500)
             })
             .finally(() => {
-              this.processing = false
+              console.log('finally processing false')
+              this.$store.commit('checkoutForm/SET_PROCESSING', false)
             })
         } else {
           //show payment breakdown

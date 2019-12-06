@@ -36,7 +36,6 @@ export default {
   data() {
     return {
       init: false,
-      processing: false,
     }
   },
   methods: {
@@ -58,11 +57,12 @@ export default {
               //this.$store.state.checkoutForm.payments.length == 1
             ) {
               if (this.processing) {
+                // eslint-disable-next-line no-console
+                console.log('dual click from add button')
                 return false
               }
 
-              this.processing = true
-
+              this.$store.commit('checkoutForm/SET_PROCESSING', true)
               this.$store.commit('order/IS_PAY', 1)
               this.$store.commit('checkoutForm/setAction', 'pay')
               $('#payment-screen-footer').prop('disabled', true)
@@ -100,7 +100,9 @@ export default {
                   }, 500)
                 })
                 .finally(() => {
-                  this.processing = false
+                  // eslint-disable-next-line no-console
+                  console.log('process complete from add button')
+                  this.$store.commit('checkoutForm/SET_PROCESSING', false)
                 })
             }
           })

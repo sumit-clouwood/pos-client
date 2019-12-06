@@ -38,6 +38,7 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
+              @click="cancelPayment"
               type="button"
               class="btn btn-danger cancel-announce color-text-invert color-button"
               data-dismiss="modal"
@@ -77,6 +78,9 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
+    cancelPayment() {
+      this.$store.commit('checkoutForm/SET_PROCESSING', false)
+    },
     payByGiftCard() {
       this.msg = 'Fetching gift card...'
       this.error = null
@@ -92,6 +96,7 @@ export default {
             if (this.$store.getters['checkoutForm/validate']) {
               this.$store.commit('order/IS_PAY', 1)
               this.error = null
+              this.$store.commit('checkoutForm/SET_PROCESSING', true)
               this.$store
                 .dispatch(
                   'checkout/pay',
@@ -109,6 +114,9 @@ export default {
                     $('#payment-screen-footer').prop('disabled', false)
                   }, 500)
                 })
+                .finally(() => {
+                  this.$store.commit('checkoutForm/SET_PROCESSING', false)
+                })
             }
           }
           hideModal('#Gift-card-payemnt')
@@ -120,6 +128,7 @@ export default {
         })
         .finally(() => {
           this.msg = null
+          this.$store.commit('checkoutForm/SET_PROCESSING', false)
         })
     },
   },

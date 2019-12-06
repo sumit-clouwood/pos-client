@@ -32,22 +32,31 @@ export default {
     }
   },
   watch: {
-    activeMethod(newVal, oldVal) {
-      if (newVal != oldVal && newVal == 'Cash') {
+    forceCash(newVal) {
+      if (newVal) {
         this.$refs.paymentmethods.setActive(
-          this.pmethods.findIndex(pm => pm.name == newVal)
+          this.pmethods.findIndex(pm => pm.name === 'Cash')
         )
+        this.$store.commit('checkoutForm/forceCash', false)
+      }
+    },
+    payable(newval) {
+      if (!newval) {
+        //this method ll call the forcash inside
+        this.$store.dispatch('checkoutForm/setCashMethod')
       }
     },
   },
   computed: {
     ...mapState({
       activeMethod: state => state.checkoutForm.method.name,
+      forceCash: state => state.checkoutForm.forceCash,
       selectedModal: state => state.location.setModal,
     }),
     ...mapGetters(['payNowCalcHendler']),
     ...mapGetters({
       pmethods: 'payment/methods',
+      payable: 'checkoutForm/payable',
     }),
   },
 

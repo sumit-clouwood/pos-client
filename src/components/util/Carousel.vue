@@ -84,17 +84,22 @@ export default {
     },
     setActive(index) {
       this.currentSlide = index
+      if (index < this.perPage) {
+        //move to slide one
+        this.movePage(1)
+      }
     },
     movePage(page) {
       let toMove = (page - 1) * this.perPage * this.slideWidth
-
       if (page == this.totalPages) {
-        //last page
-        let noOfSlidesToMove = this.slides.length % this.perPage
-        if (noOfSlidesToMove != 0) {
-          toMove = (page - 1) * noOfSlidesToMove * this.slideWidth
+        const slidesToAdjust = this.slides.length % this.perPage
+        if (slidesToAdjust > 0) {
+          //that means last page has less slides than no of per page
+          const missingSlies = this.perPage - slidesToAdjust
+          toMove -= missingSlies * this.slideWidth
         }
       }
+
       this.positionX = -toMove
       this.currentPage = page
     },

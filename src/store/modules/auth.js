@@ -14,13 +14,27 @@ const state = {
   cashiers: [],
   cashierEmail: '',
   searchKeyword: '',
+  logoutAction: '',
 }
 
 // getters
 const getters = {
-  getRole: state => startPath => {
+  roleName: state => {
+    if (!state.userDetails) {
+      return ''
+    }
+    const roleId = state.userDetails.item.brand_role
+    if (roleId && state.rolePermissions) {
+      const role = state.rolePermissions.find(role => role._id === roleId)
+      return role ? role.name : ''
+    }
+    return ''
+  },
+  waiter: (state, getters) => getters.roleName === 'Waiter',
+  carhop: (state, getters) => getters.roleName === 'Carhop User',
+  getRole: state => roleName => {
     if (state.rolePermissions) {
-      return state.rolePermissions.find(user => user.start_path === startPath)
+      return state.rolePermissions.find(role => role.name === roleName)
     }
   },
   loggedIn: state => {
@@ -78,15 +92,29 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  pinlogin({ commit, state, getters }, cashierpin) {
+  pinlogin({ commit, getters, rootGetters }, { pincode, brand, store }) {
     return new Promise((resolve, reject) => {
       AuthService.pinlogin({
-        email: state.cashierEmail,
-        swipe_card: cashierpin,
+        //email: state.cashierEmail,
+        store_id: store,
+        brand_id: brand,
+        swipe_card: pincode,
       })
         .then(response => {
           localStorage.setItem('token', response.data.token)
           commit(mutation.SET_TOKEN, response.data.token)
+
+          commit('context/SET_BRAND_ID', brand, {
+            root: true,
+          })
+          commit('context/SET_STORE_ID', store, {
+            root: true,
+          })
+
+          DataService.setContext({
+            brand: rootGetters['context/brand'],
+            store: rootGetters['context/store'],
+          })
 
           commit(mutation.USER_DETAILS, {
             item: getters.cashier(response.data.user),
@@ -123,12 +151,13 @@ const actions = {
     })
   },
   logout({ commit }, msg) {
-    if (localStorage.getItem('token') || msg == 'token_not_exists') {
+    return new Promise(resolve => {
       localStorage.setItem('token', '')
       localStorage.setItem('brand_id', '')
       localStorage.setItem('store_id', '')
 
       commit(mutation.RESET)
+      commit(mutation.LOGOUT_ACTION, '')
 
       commit('order/RESET', true, { root: true })
       commit('checkout/RESET', true, { root: true })
@@ -151,8 +180,12 @@ const actions = {
         store: null,
       })
 
-      AuthService.logout(msg).then(() => {})
-    }
+      if (localStorage.getItem('token') || msg == 'token_not_exists') {
+        AuthService.logout(msg).then(() => {})
+      }
+
+      resolve()
+    })
   },
 
   getUserDetails({ commit }, userId) {
@@ -170,7 +203,7 @@ const actions = {
   fetchRoles({ commit, getters }) {
     AuthService.getRoles().then(rolesPermissions => {
       commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
-      const cashierRole = getters.getRole('pos')
+      const cashierRole = getters.getRole('Cashier')
       AuthService.getUsers(cashierRole._id).then(cashiers => {
         commit(mutation.SET_CASHIERS, cashiers.data.data)
       })
@@ -182,6 +215,11 @@ const actions = {
 const mutations = {
   [mutation.SET_TOKEN](state, token) {
     state.token = token
+  },
+
+  [mutation.LOGOUT_ACTION](state, action) {
+    state.logoutAction = action
+    localStorage.setItem('logoutAction', action)
   },
 
   [mutation.SET_CASHIER_EMAIL](state, email) {
