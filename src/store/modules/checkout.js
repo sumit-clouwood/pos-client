@@ -377,7 +377,9 @@ const actions = {
 
     order.total_paid = Num.round(totalPaid).toFixed(2)
 
-    order.delivery_surcharge = Num.round(order.delivery_surcharge).toFixed(2)
+    if (order.delivery_surcharge) {
+      order.delivery_surcharge = Num.round(order.delivery_surcharge).toFixed(2)
+    }
 
     return Promise.resolve(order)
   },
