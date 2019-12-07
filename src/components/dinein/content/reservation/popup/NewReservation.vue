@@ -380,9 +380,6 @@ export default {
         )
       }
     },
-    /*selectedDate: function() {
-      this.getReservationByDate(this.selectedDate)
-    },*/
   },
   data() {
     return {
@@ -590,6 +587,7 @@ export default {
       this.reservationInformation.tags = this.selectedTags
     },
     updateDetails: function() {
+      this.getInterval()
       let selectedTable = false
       if (this.edit) {
         selectedTable = this.availableTables.find(
