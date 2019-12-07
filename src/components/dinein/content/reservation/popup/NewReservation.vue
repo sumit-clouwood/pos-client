@@ -455,11 +455,13 @@ export default {
       let timeSplit = time.split(separator)
       return parseInt(timeSplit[0]) * 60 + parseInt(timeSplit[1])
     },
-
-    addNewReservation: function() {
+    setStartDate: function() {
       this.reservationInformation.start_date = this.$store.getters[
         'dineinReservation/getUTCDate'
       ](this.selectedDate)
+    },
+    addNewReservation: function() {
+      this.setStartDate()
       this.reservationInformation.assigned_table_id =
         this.selectedTable.table_id || ''
 
@@ -477,6 +479,7 @@ export default {
         })
     },
     updateReservation: function() {
+      this.setStartDate()
       let id = this.reservationInformation._id
       delete this.reservationInformation._id
       delete this.reservationInformation.number
@@ -505,6 +508,8 @@ export default {
       this.reservationInformation.start_time = this.dtObj.convertTime12to24(
         selectedTimeSlot.time
       )
+      // eslint-disable-next-line no-console
+      // console.log(selectedTimeSlot, this.reservationInformation)
     },
     // calendar
     cal: function() {
