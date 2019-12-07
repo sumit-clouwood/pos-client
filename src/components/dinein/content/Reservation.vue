@@ -220,6 +220,9 @@ export default {
       )
       this.$store.commit('dineinReservation/USER_HISTORY', false)
       $('#NewReservation').modal('show')
+      /*let obj = new Date()
+      let day = obj.getDay() + 1
+      $('.SCDayNum:contains(' + day + ')').click()*/
     },
     cancelReservation(id) {
       this.cancelReservationMsg = 'Do you want to cancel this reservation?'
@@ -347,7 +350,13 @@ export default {
           scope.selectedDate = cal.currentDate
           scope.calendarOpen = true
           scope.getReservationByDate(cal.currentDate)
-          // $('#wtf').html('Selected date: ' + cal.currentDate)
+
+          // below section for change another calendar date according to this
+          let getUTC = scope.$store.getters['dineinReservation/getUTCDate'](
+            cal.currentDate
+          ).split('-')
+          let getDay = getUTC[2] || false
+          if (getDay) $('.SCDayNum:contains(' + getDay + ')').click()
         },
       })
     },

@@ -380,6 +380,9 @@ export default {
         )
       }
     },
+    /*selectedDate: function() {
+      this.getReservationByDate(this.selectedDate)
+    },*/
   },
   data() {
     return {
@@ -444,6 +447,8 @@ export default {
         time_slots.push({ time: timeSlot, occupied: occupied }) // pushing data in array in [00:00 - 12:00 AM/PM format]
         startTime = startTime + interval
       }
+      // eslint-disable-next-line no-console
+      console.log(time_slots, 'time_slots', this.tableBookedStatus)
       this.time_slots = time_slots
     },
     timeConvert(time, separator = ':') {
@@ -489,7 +494,6 @@ export default {
           this.errors = response.data.form_errors || false
           $('#NewReservation').modal('hide')
           this.getReservationByDate(this.selectedDate)
-          // alert('success')
         })
     },
     getSelectedGuest: function(numberOfGuest) {
@@ -504,7 +508,6 @@ export default {
     },
     // calendar
     cal: function() {
-      this.getInterval()
       let scope = this
       // Use the settings object to change the theme
       $(function() {
@@ -556,7 +559,13 @@ export default {
           scope.selectedDate = cal.currentDate
           scope.calendarOpen = true
           scope.getReservationByDate(cal.currentDate)
-          // $('#wtf').html('Selected date: ' + )
+
+          // below section for change another calendar date according to this
+          let getUTC = scope.$store.getters['dineinReservation/getUTCDate'](
+            cal.currentDate
+          ).split('-')
+          let getDay = getUTC[2] || false
+          if (getDay) $('.SCDayNum:contains(' + getDay + ')').click()
         },
       })
     },
@@ -607,10 +616,26 @@ export default {
     },
     getReservationByDate: function(date) {
       let scope = this
+      let inputDate = new Date(date)
+      let todayDate = new Date()
       this.$store
         .dispatch('dineinReservation/getReservationByDate', date)
         .then(details => {
           scope.newDetails = details
+          if (
+            inputDate.setHours(0, 0, 0, 0) != todayDate.setHours(0, 0, 0, 0)
+          ) {
+            this.startedTime = false
+          } else {
+            let dateTime = new DateTime()
+            this.startedTime =
+              typeof this.reservationInformation.start_time != 'undefined'
+                ? dateTime.convertTime24to12(
+                    this.reservationInformation.start_time
+                  )
+                : false
+          }
+          this.getInterval()
         })
         .catch(details => {
           scope.newDetails = details
