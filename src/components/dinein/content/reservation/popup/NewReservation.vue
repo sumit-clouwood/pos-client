@@ -366,8 +366,11 @@ export default {
   },
   watch: {
     edit: function() {
+      /*this.selectedTags = []
+      // eslint-disable-next-line no-console
+      console.log(this.selectedTags)
+      this.startedTime = false*/
       this.updateDetails()
-      this.updateTagsChecks()
       this.errors = false
       // eslint-disable-next-line no-console
       console.log(this.reservationInformation, 'data', this.selectedTable)
@@ -587,6 +590,7 @@ export default {
         typeof this.reservationInformation.start_time != 'undefined'
           ? dateTime.convertTime24to12(this.reservationInformation.start_time)
           : false
+      this.updateTagsChecks()
     },
     updateTagsChecks: function() {
       $('.hiddenCB > span')

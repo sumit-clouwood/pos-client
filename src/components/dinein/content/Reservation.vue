@@ -226,11 +226,11 @@ export default {
       $('#confirmReservation').modal('show')
       this.selectedReservationId = id
     },
-    editReservation(reservation) {
-      let id = reservation.id
-      let popup = reservation.popup
-      this.selectedReservationId = reservation.reservationId
-
+    editReservation(data) {
+      let id = data.id
+      let popup = data.popup
+      this.selectedReservationId = data.reservationId
+      this.editStatus = this.editStatus ? false : true
       let getReservation = this.reservations.find(
         reservation => reservation['_id'] == this.selectedReservationId
       )
