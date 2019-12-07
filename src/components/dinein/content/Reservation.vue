@@ -99,7 +99,7 @@
           <button
             class="btn btn-success"
             data-toggle="modal"
-            @click="activeDateSelector"
+            @click="newReservation"
           >
             {{ _t('New Reservation') }}
           </button>
@@ -206,27 +206,40 @@ export default {
         ? reservation.guest_fname + ' ' + reservation.guest_lname
         : 'Anonymous'
     },
-    activeDateSelector() {
+    newReservation() {
+      this.editStatus = false
       this.newDtPicker = true
+      let selectedReservation = {
+        status: 'booked',
+        customers: [],
+        number_of_guests: 1,
+      }
+      this.$store.commit(
+        'dineinReservation/SELECTED_RESERVATION',
+        selectedReservation
+      )
+      this.$store.commit('dineinReservation/USER_HISTORY', false)
       $('#NewReservation').modal('show')
-      // this.$store.dispatch('dineinReservation/getTakenBy')
+      /*let obj = new Date()
+      let day = obj.getDay() + 1
+      $('.SCDayNum:contains(' + day + ')').click()*/
     },
     cancelReservation(id) {
       this.cancelReservationMsg = 'Do you want to cancel this reservation?'
       $('#confirmReservation').modal('show')
       this.selectedReservationId = id
     },
-    editReservation(reservation) {
-      let id = reservation.id
-      let popup = reservation.popup
-      this.selectedReservationId = reservation.reservationId
-
+    editReservation(data) {
+      let id = data.id
+      let popup = data.popup
+      this.selectedReservationId = data.reservationId
+      this.editStatus = this.editStatus ? false : true
       let getReservation = this.reservations.find(
         reservation => reservation['_id'] == this.selectedReservationId
       )
       if (popup) {
         this.editStatus = popup
-        this.activeDateSelector()
+        this.newDtPicker = true
         this.$store.dispatch(
           'dineinReservation/getUserHistory',
           getReservation.guest_phone
@@ -235,6 +248,7 @@ export default {
           'dineinReservation/SELECTED_RESERVATION',
           getReservation
         )
+        $('#NewReservation').modal('show')
         // eslint-disable-next-line no-console
         console.log(getReservation)
       } else {
@@ -336,7 +350,13 @@ export default {
           scope.selectedDate = cal.currentDate
           scope.calendarOpen = true
           scope.getReservationByDate(cal.currentDate)
-          // $('#wtf').html('Selected date: ' + cal.currentDate)
+
+          // below section for change another calendar date according to this
+          let getUTC = scope.$store.getters['dineinReservation/getUTCDate'](
+            cal.currentDate
+          ).split('-')
+          let getDay = getUTC[2] || false
+          if (getDay) $('.SCDayNum:contains(' + getDay + ')').click()
         },
       })
     },

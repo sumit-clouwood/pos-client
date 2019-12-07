@@ -274,7 +274,7 @@ h4,
 h5,
 h6 {
   font-weight: 600;
-  color: rgba(63, 74, 74, 0.8);
+  color: #3d3f43;
   margin: 0; }
 
 .top-round-close-button {
@@ -5404,28 +5404,46 @@ span.dinefor-paynow > a {
     display: none; }
 
   .hideBigScreen .all-booking-btns {
-    display: none; }
+    right: -999px;
+    z-index: -1;
+    position: fixed;
+    transition: 0.3s ease-in-out;
+    display: block;
+    background: #fff;
+    width: 250px;
+    margin: 0 auto;
+    height: 100vh;
+    top: 0;
+    padding: 20px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); }
     .hideBigScreen .all-booking-btns.active {
       position: fixed;
-      display: block;
-      background: #fff;
-      width: 75%;
       right: 0;
-      margin: 0 auto;
-      z-index: 99;
-      height: 100vh;
-      top: 0;
-      transition: 0.3s ease-in-out; }
+      z-index: 99; }
       .hideBigScreen .all-booking-btns.active button {
         display: block;
-        min-width: 200px; }
+        min-width: 200px;
+        margin-bottom: 20px; }
+      .hideBigScreen .all-booking-btns.active .language-button {
+        min-width: 200px;
+        margin-left: 0;
+        margin-bottom: 20px; }
   .hideBigScreen .hideBigIcon {
     position: fixed;
     top: 54px;
-    right: 20px;
-    cursor: pointer; }
+    right: 0;
+    cursor: pointer;
+    background: rgba(80, 86, 202, 0.8);
+    padding: 10px 20px;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    transition: 0.3s ease-in-out; }
     .hideBigScreen .hideBigIcon.active {
-      right: 75%; }
+      right: 250px; }
       .hideBigScreen .hideBigIcon.active i {
         transition: 0.3s ease-in-out;
         transform: rotate(180deg); }
@@ -5590,6 +5608,26 @@ input[type='number']::-webkit-inner-spin-button {
 .dropdown-menu.show {
   cursor: pointer; }
 
+button.res-select-table {
+  background: #e4e8f1;
+  border-color: #e4e8f1;
+  color: #3d3f43; }
+
+@media only screen and (max-width: 960px) {
+  #NewReservation .modal-dialog {
+    max-width: 96% !important; }
+    #NewReservation .modal-dialog .modal-content .modal-body {
+      height: 100vh;
+      overflow: auto; }
+
+  .fixed-reservation {
+    width: auto; } }
+@media only screen and (min-width: 961px) and (max-width: 1100px) {
+  #sitting-dinein-table {
+    height: calc(100vh - 210px); } }
+@media only screen and (min-width: 1101px) and (max-width: 1600px) {
+  #sitting-dinein-table {
+    height: calc(100vh - 240px); } }
 .new-transaction {
   display: grid;
   grid-template-columns: 25% 75%;
@@ -5676,8 +5714,6 @@ input[type='number']::-webkit-inner-spin-button {
           .main-body-transaction .left_info_block .detailed_block .left_info_block .price_and_name > p.price_s_desc {
             color: #B0B2BB; }
 
-.transaction-orders .btn.btn-success {
-  margin: 6px 5px 0px; }
 .transaction-orders .main-orders {
   height: calc(100vh - 5.3125rem);
   padding: 0; }

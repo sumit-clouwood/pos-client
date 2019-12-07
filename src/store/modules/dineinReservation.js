@@ -26,20 +26,21 @@ const getters = {
 }
 
 const actions = {
-  async getReservationByDate({ commit, getters, dispatch }, selectedDate) {
-    return await new Promise((resolve, reject) => {
+  getReservationByDate({ commit, getters, dispatch }, selectedDate) {
+    return new Promise((resolve, reject) => {
       let UTC_Date = getters.getUTCDate(selectedDate)
       commit(mutation.SELECTED_RESERVATION_DATE, UTC_Date)
       const params = [state.params.page, state.params.limit, UTC_Date, 'booked']
       DineInService.bookedTables(...params)
         .then(response => {
+          /*I will move latter getTags to dinein for single call*/
           dispatch('getTags')
-          if (response.data.count == 0) {
+          /*if (response.data.count == 0) {
             reject()
-          } else {
-            commit(mutation.ALL_RESERVATIONS, response.data.data)
-            resolve(true)
-          }
+          } else {*/
+          commit(mutation.ALL_RESERVATIONS, response.data.data)
+          resolve(true)
+          // }
         })
         .catch(() => {
           reject(false)
@@ -47,16 +48,18 @@ const actions = {
     })
   },
   getUserHistory({ commit }, mobileNo) {
-    return new Promise((resolve, reject) => {
-      DineInService.getReservationByMobile(mobileNo)
-        .then(response => {
-          commit(mutation.USER_HISTORY, response.data)
-          return resolve(response.data)
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
+    if (typeof mobileNo !== 'undefined') {
+      return new Promise((resolve, reject) => {
+        DineInService.getReservationByMobile(mobileNo)
+          .then(response => {
+            commit(mutation.USER_HISTORY, response.data)
+            return resolve(response.data)
+          })
+          .catch(error => {
+            reject(error)
+          })
+      })
+    }
   },
   editTable({ dispatch }, data) {
     return new Promise((resolve, reject) => {
@@ -99,36 +102,38 @@ const mutations = {
   },
   [mutation.USER_HISTORY](state, userHistory) {
     let history = []
-    userHistory.data.forEach(h => {
-      history.push({
-        start_date: h.start_date,
-        start_time: h.start_time,
-        status: h.status,
-        des: 'NA',
-      })
-    })
-    let guestHistory = userHistory.data[0]
-    let fetchedData = {
+    /*let fetchedData = {
       guest_email: '',
       guest_fname: '',
       guest_lname: '',
       // guest_phone: guestHistory.guest_phone,
-    }
-    if (guestHistory) {
-      fetchedData = {
-        guest_email: guestHistory.guest_email,
-        guest_fname: guestHistory.guest_fname,
-        guest_lname: guestHistory.guest_lname,
-        guest_phone: guestHistory.guest_phone,
+    }*/
+    if (userHistory) {
+      userHistory.data.forEach(h => {
+        history.push({
+          start_date: h.start_date,
+          start_time: h.start_time,
+          status: h.status,
+          des: 'NA',
+        })
+      })
+      let guestHistory = userHistory.data[0]
+      if (guestHistory) {
+        let fetchedData = {
+          guest_email: guestHistory.guest_email,
+          guest_fname: guestHistory.guest_fname,
+          guest_lname: guestHistory.guest_lname,
+          guest_phone: guestHistory.guest_phone,
+        }
+        state.selectedReservation = Object.assign(
+          {},
+          state.selectedReservation,
+          fetchedData
+        )
       }
-      state.selectedReservation = Object.assign(
-        {},
-        state.selectedReservation,
-        fetchedData
-      )
     }
     // eslint-disable-next-line no-console
-    console.log(history)
+    console.log(state.userHistory, 'history')
     state.userHistory = history
   },
   [mutation.SELECTED_RESERVATION](state, selectedReservation) {

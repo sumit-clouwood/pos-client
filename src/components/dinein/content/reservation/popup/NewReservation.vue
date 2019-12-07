@@ -72,7 +72,10 @@
                     v-for="(val, key) in time_slots"
                     :key="key"
                     class="col-sm-3 time_slot cursor-pointer"
-                    :class="'selected_time_slot_' + key"
+                    :class="[
+                      'selected_time_slot_' + key,
+                      { active: val.time === startedTime },
+                    ]"
                     @click="
                       getSelectedTimeSlot(val, '.selected_time_slot_' + key)
                     "
@@ -110,12 +113,12 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-12">
                   <button
                     type="button"
                     data-target="#dine-in-table-selection"
                     data-toggle="modal"
-                    class="btn btn-secondary btn-lg btn-block"
+                    class="btn btn-secondary btn-lg btn-block res-select-table"
                   >
                     {{
                       selectedTable != false &&
@@ -247,14 +250,10 @@
                       v-for="(tag, index) in tags"
                       :key="index"
                     >
-                      <input
-                        type="checkbox"
-                        :id="tag.name.replace(/ +/g, '')"
-                        class="hidden"
-                      />
+                      <input type="checkbox" :id="tag._id" class="hidden" />
                       <label
                         class="btn btn-secondary"
-                        :for="tag.name.replace(/ +/g, '')"
+                        :for="tag._id"
                         @click="
                           updateTag({
                             name: tag.name,
@@ -364,12 +363,26 @@ export default {
     let isCalendarhasData = $('.wrapperNew').text().length
     if (isCalendarhasData == 0 && this.dineInTabType == 'reservation')
       this.cal()
-
-    /*this.reservationInformation =
-      this.selectedReservation || this.reservationInformation*/
-    // eslint-disable-next-line no-console
-    console.log(this.reservationInformation, 'data', this.selectedTags)
-    this.selectedTags = this.reservationInformation.tags || []
+  },
+  watch: {
+    reservationInformation: function(oldvalue, newValue) {
+      if (typeof newValue.assigned_table_id != 'undefined') {
+        // newValue.assigned_table_id != oldvalue.assigned_table_id
+        this.updateDetails()
+        this.errors = false
+        // eslint-disable-next-line no-console
+        console.log(
+          this.reservationInformation,
+          'data',
+          this.selectedTable,
+          oldvalue,
+          newValue
+        )
+      }
+    },
+    /*selectedDate: function() {
+      this.getReservationByDate(this.selectedDate)
+    },*/
   },
   data() {
     return {
@@ -377,6 +390,7 @@ export default {
       calendarOpen: false,
       dtObj: new DateTime(),
       newDetails: false,
+      startedTime: false,
       selectedDate: '',
       no_of_guest: 1,
       time_slots: [],
@@ -393,22 +407,8 @@ export default {
   methods: {
     getuserHistoryByMobile: function(mobileNo) {
       this.$store.dispatch('dineinReservation/getUserHistory', mobileNo)
-      /*.then(response => {
-        if (response.count) {
-          this.history = true
-        } else {
-          this.history = false
-        }
-        // eslint-disable-next-line no-console
-        console.log(this.tableBookedStatus, this.time_slots)
-      })*/
     },
     errorCheck(element) {
-      // eslint-disable-next-line no-console
-      // console.log(this.tableBookedStatus)
-      setTimeout(function() {
-        this.errors = false
-      }, 3000)
       return this.errors && this.errors[element]
         ? this.errors[element][0] || ''
         : ''
@@ -447,32 +447,21 @@ export default {
         time_slots.push({ time: timeSlot, occupied: occupied }) // pushing data in array in [00:00 - 12:00 AM/PM format]
         startTime = startTime + interval
       }
-      this.time_slots = time_slots
-
       // eslint-disable-next-line no-console
-      console.log(time_slots, this.tableBookedStatus)
+      console.log(time_slots, 'time_slots', this.tableBookedStatus)
+      this.time_slots = time_slots
     },
     timeConvert(time, separator = ':') {
       let timeSplit = time.split(separator)
       return parseInt(timeSplit[0]) * 60 + parseInt(timeSplit[1])
     },
-
-    /*convertTime12to24(time12h) {
-      const [time, modifier] = time12h.split(' ')
-
-      let [hours, minutes] = time.split(':')
-
-      if (hours === '12') hours = '00'
-
-      if (modifier === 'PM') hours = parseInt(hours, 10) + 12
-
-      return `${hours}:${minutes}`
-    },*/
-
-    addNewReservation: function() {
+    setStartDate: function() {
       this.reservationInformation.start_date = this.$store.getters[
         'dineinReservation/getUTCDate'
       ](this.selectedDate)
+    },
+    addNewReservation: function() {
+      this.setStartDate()
       this.reservationInformation.assigned_table_id =
         this.selectedTable.table_id || ''
 
@@ -484,18 +473,13 @@ export default {
           this.errors = response.data.form_errors || false
           $('#NewReservation').modal('hide')
           this.getReservationByDate(this.selectedDate)
-          // eslint-disable-next-line no-console
-          console.log(response.data, this.errors, this.errors['guest_email'])
         })
         .catch(() => {
           this.errors = { start_time: ['Please select a time slot'] }
         })
-      // eslint-disable-next-line no-console
-      console.log(this.errors)
     },
     updateReservation: function() {
-      // eslint-disable-next-line no-console
-      console.log(this.reservationInformation)
+      this.setStartDate()
       let id = this.reservationInformation._id
       delete this.reservationInformation._id
       delete this.reservationInformation.number
@@ -513,7 +497,6 @@ export default {
           this.errors = response.data.form_errors || false
           $('#NewReservation').modal('hide')
           this.getReservationByDate(this.selectedDate)
-          // alert('success')
         })
     },
     getSelectedGuest: function(numberOfGuest) {
@@ -525,9 +508,11 @@ export default {
       this.reservationInformation.start_time = this.dtObj.convertTime12to24(
         selectedTimeSlot.time
       )
+      // eslint-disable-next-line no-console
+      // console.log(selectedTimeSlot, this.reservationInformation)
     },
+    // calendar
     cal: function() {
-      this.getInterval()
       let scope = this
       // Use the settings object to change the theme
       $(function() {
@@ -579,41 +564,83 @@ export default {
           scope.selectedDate = cal.currentDate
           scope.calendarOpen = true
           scope.getReservationByDate(cal.currentDate)
-          // $('#wtf').html('Selected date: ' + )
+
+          // below section for change another calendar date according to this
+          let getUTC = scope.$store.getters['dineinReservation/getUTCDate'](
+            cal.currentDate
+          ).split('-')
+          let getDay = getUTC[2] || false
+          if (getDay) $('.SCDayNum:contains(' + getDay + ')').click()
         },
       })
     },
     updateTag: function(tag) {
-      let id = '#' + tag.name.replace(/ +/g, '')
-      this.selectedTags = this.selectedTags.filter(bdg => {
-        return bdg.tagId != tag.tagId
+      let selectedLabel = $('#' + tag.tagId).siblings('label')
+      this.selectedTags = this.selectedTags.filter(tg => {
+        return tg.tagId != tag.tagId
       })
-      if (this.selectedTags.includes(tag.tagId)) {
-        this.selectedTags.splice(tag.tagId, 1)
-      }
-      if ($(id).is(':checked')) {
-        /*$(id).attr('checked', '')
-        $(id)
-          .siblings('label')
-          .removeClass('selected')*/
-        this.selectedTags.splice(tag.tagId, 1)
+      let deletionIndex = this.selectedTags.indexOf(tag.tagId)
+      if (deletionIndex != '-1') {
+        this.selectedTags.splice(deletionIndex, 1)
+        selectedLabel.removeClass('selected')
       } else {
-        /*$(id).attr('checked', 'checked')
-        $(id)
-          .siblings('label')
-          .addClass('selected')*/
         this.selectedTags.push(tag.tagId)
+        selectedLabel.addClass('selected')
       }
-      // eslint-disable-next-line no-console
-      console.log(this.selectedTags)
       this.reservationInformation.tags = this.selectedTags
+    },
+    updateDetails: function() {
+      let selectedTable = false
+      if (this.edit) {
+        selectedTable = this.availableTables.find(
+          at => at.table_id == this.reservationInformation.assigned_table_id
+        )
+      }
+
+      this.$store.commit('dinein/SELECTED_TABLE', selectedTable)
+      this.selectedTags = this.reservationInformation.tags || []
+      this.no_of_guest = this.reservationInformation.number_of_guests || 1
+      let dateTime = new DateTime()
+      this.startedTime =
+        typeof this.reservationInformation.start_time != 'undefined'
+          ? dateTime.convertTime24to12(this.reservationInformation.start_time)
+          : false
+      this.updateTagsChecks()
+    },
+    updateTagsChecks: function() {
+      $('.hiddenCB > span')
+        .children()
+        .removeClass('selected')
+      if (this.selectedTags.length > 0) {
+        this.selectedTags.forEach(tagId => {
+          $('#' + tagId)
+            .siblings('label')
+            .addClass('selected')
+        })
+      }
     },
     getReservationByDate: function(date) {
       let scope = this
+      let inputDate = new Date(date)
+      let todayDate = new Date()
       this.$store
         .dispatch('dineinReservation/getReservationByDate', date)
         .then(details => {
           scope.newDetails = details
+          if (
+            inputDate.setHours(0, 0, 0, 0) != todayDate.setHours(0, 0, 0, 0)
+          ) {
+            this.startedTime = false
+          } else {
+            let dateTime = new DateTime()
+            this.startedTime =
+              typeof this.reservationInformation.start_time != 'undefined'
+                ? dateTime.convertTime24to12(
+                    this.reservationInformation.start_time
+                  )
+                : false
+          }
+          this.getInterval()
         })
         .catch(details => {
           scope.newDetails = details
@@ -655,7 +682,6 @@ export default {
 .time_slot_block {
   height: 320px;
   overflow-y: auto;
-  margin-right: 40px !important;
   .time_slot {
     &.active {
       border: solid 2px #5056ca;
@@ -714,8 +740,8 @@ export default {
   padding: 12px;
 }
 div#NewReservation label {
-  color: #989898;
-  font-size: 15px;
+  color: #a4a4a4;
+  font-size: 14px;
   font-weight: normal;
 }
 
@@ -753,7 +779,7 @@ div#NewReservation .num_guests .btn-secondary label {
 }*/
 #NewReservation section#main {
   justify-content: left;
-  margin-left: 40px;
+  margin-left: 10px;
   grid-template-columns: 1fr;
 }
 .wrapperNew .SCDay .SCElement > div {
@@ -780,21 +806,32 @@ div#NewReservation .num_guests .btn-secondary label {
 }
 
 span.button-checkbox {
-  background: #ddd;
   overflow: hidden;
   padding: 10px 0;
   margin-left: 5px;
 }
+#NewReservation {
+  span {
+    &.button-checkbox {
+      .btn-secondary {
+        background-color: #f4f5f8;
+        border-color: #f4f5f8;
+        color: #7a808a;
+        &.selected {
+          background: #5056ca;
+          border-color: #5056ca;
+          box-shadow: none;
+          color: #fff;
+        }
+      }
+    }
+  }
+}
 
-.hidden {
+span.button-checkbox .btn-secondary .hidden {
   display: none;
 }
 
-.selected {
-  background: #5056ca;
-  border-color: #5056ca;
-  box-shadow: none;
-}
 .slot-symbol {
   display: grid;
   margin: 10px 0;
@@ -806,8 +843,7 @@ span.button-checkbox {
   overflow-y: auto;
   overflow-x: hidden;
 }
-.hiddenCB input[type='checkbox'],
-.hiddenCB input[type='radio'] {
+.hiddenCB input[type='checkbox'] {
   display: none;
 }
 .hiddenCB label {
@@ -815,9 +851,6 @@ span.button-checkbox {
 }
 .hiddenCB input[type='checkbox'] + label:hover {
   background: rgba(59, 56, 255, 0.6);
-}
-.hiddenCB input[type='checkbox']:checked + label {
-  background: rgb(80, 86, 202);
 }
 .hiddenCB input[type='checkbox']:checked + label:hover {
   background: rgba(59, 56, 255, 0.5);
