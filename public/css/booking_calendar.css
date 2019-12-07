@@ -278,9 +278,6 @@ div#NewReservation .SCHor .next, div#NewReservation .SCHor .prev{
  #NewReservation .wrapperNew .SCDay .SCElement > div {
   width: auto !important;
  }
- #NewReservation .wrapperNew .SCDay .next .SCElement > div {
-  width: 35px !important;
- }
   #NewReservation .time_slot_block {
   height: 200px;
   margin-right: 0 !important;
