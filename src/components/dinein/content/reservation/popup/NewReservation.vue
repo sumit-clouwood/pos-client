@@ -365,15 +365,20 @@ export default {
       this.cal()
   },
   watch: {
-    edit: function() {
-      /*this.selectedTags = []
-      // eslint-disable-next-line no-console
-      console.log(this.selectedTags)
-      this.startedTime = false*/
-      this.updateDetails()
-      this.errors = false
-      // eslint-disable-next-line no-console
-      console.log(this.reservationInformation, 'data', this.selectedTable)
+    reservationInformation: function(oldvalue, newValue) {
+      if (typeof newValue.assigned_table_id != 'undefined') {
+        // newValue.assigned_table_id != oldvalue.assigned_table_id
+        this.updateDetails()
+        this.errors = false
+        // eslint-disable-next-line no-console
+        console.log(
+          this.reservationInformation,
+          'data',
+          this.selectedTable,
+          oldvalue,
+          newValue
+        )
+      }
     },
   },
   data() {
@@ -497,6 +502,7 @@ export default {
         selectedTimeSlot.time
       )
     },
+    // calendar
     cal: function() {
       this.getInterval()
       let scope = this
@@ -555,22 +561,17 @@ export default {
       })
     },
     updateTag: function(tag) {
-      // let id = '#' + tag.tagId
-      this.selectedTags = this.selectedTags.filter(bdg => {
-        return bdg.tagId != tag.tagId
+      let selectedLabel = $('#' + tag.tagId).siblings('label')
+      this.selectedTags = this.selectedTags.filter(tg => {
+        return tg.tagId != tag.tagId
       })
       let deletionIndex = this.selectedTags.indexOf(tag.tagId)
-      // let deletionIndex = this.selectedTags.indexOf(tag.tagId)
       if (deletionIndex != '-1') {
         this.selectedTags.splice(deletionIndex, 1)
-        $('#' + tag.tagId)
-          .siblings('label')
-          .removeClass('selected')
+        selectedLabel.removeClass('selected')
       } else {
         this.selectedTags.push(tag.tagId)
-        $('#' + tag.tagId)
-          .siblings('label')
-          .addClass('selected')
+        selectedLabel.addClass('selected')
       }
       this.reservationInformation.tags = this.selectedTags
     },
