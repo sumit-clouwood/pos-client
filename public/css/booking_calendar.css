@@ -43,9 +43,6 @@
 .SCSel {
  /*border-left: 2px solid #F77565;*/
 }
-span.button-checkbox .btn-secondary {
- color: #fff !important;
-}
 .SCMarked>div:before {
  content: "";
  position: absolute;
@@ -151,9 +148,6 @@ section#main {
  left: 0;
  top: 0;
 }
-#NewReservation .SCHor .prev .SCDayNum:after{
- left: -25px;
-}
 div#NewReservation .SCHor .next, div#NewReservation .SCHor .prev{
  top: 0;
  width: auto !important;
@@ -258,16 +252,10 @@ div#NewReservation .SCHor .next, div#NewReservation .SCHor .prev{
  #NewReservation .modal-dialog {
   max-width: 85% !important;
  }
- #NewReservation  .SCHor .prev .SCDayNum:after {
-  left: -7px;
+ #NewReservation  .SCHor .prev .SCDayNum:after,  #NewReservation .SCHor .next .SCDayNum:after {
+  left: -9px;
   position: absolute;
  }
- 
- /*#NewReservation .SCHor .next .SCDayNum:after {
-  position: relative;
-  right: -28px;
- }*/
- 
  #NewReservation section#main {
   margin-left: 0 !important;
  }

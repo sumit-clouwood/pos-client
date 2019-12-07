@@ -113,7 +113,7 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-11">
+                <div class="col-md-12">
                   <button
                     type="button"
                     data-target="#dine-in-table-selection"
@@ -652,7 +652,6 @@ export default {
 .time_slot_block {
   height: 320px;
   overflow-y: auto;
-  margin-right: 40px !important;
   .time_slot {
     &.active {
       border: solid 2px #5056ca;
@@ -781,20 +780,28 @@ span.button-checkbox {
   padding: 10px 0;
   margin-left: 5px;
 }
-span.button-checkbox .btn-secondary {
-  background-color: #f4f5f8;
-  border-color: #f4f5f8;
-  color: #7a808a !important;
+#NewReservation {
+  span {
+    &.button-checkbox {
+      .btn-secondary {
+        background-color: #f4f5f8;
+        border-color: #f4f5f8;
+        color: #7a808a;
+        &.selected {
+          background: #5056ca;
+          border-color: #5056ca;
+          box-shadow: none;
+          color: #fff;
+        }
+      }
+    }
+  }
 }
-.hidden {
+
+span.button-checkbox .btn-secondary .hidden {
   display: none;
 }
 
-.selected {
-  background: #5056ca !important;
-  border-color: #5056ca !important;
-  box-shadow: none;
-}
 .slot-symbol {
   display: grid;
   margin: 10px 0;
@@ -814,10 +821,6 @@ span.button-checkbox .btn-secondary {
 }
 .hiddenCB input[type='checkbox'] + label:hover {
   background: rgba(59, 56, 255, 0.6);
-}
-.hiddenCB input[type='checkbox']:checked + label {
-  background: #6c757d;
-  color: #fff !important;
 }
 .hiddenCB input[type='checkbox']:checked + label:hover {
   background: rgba(59, 56, 255, 0.5);
