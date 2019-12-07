@@ -1178,6 +1178,8 @@ const actions = {
           dispatch('addOrderToCart', orderData.item)
             .then(() => {
               commit('checkout/SPLIT_PAID', false, { root: true })
+              commit(mutation.SET_SPLIT_BILL, false)
+              commit(mutation.SET_SPLITTED, false)
               dispatch('surchargeCalculation')
               resolve()
             })
