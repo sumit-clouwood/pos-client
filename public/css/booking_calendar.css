@@ -100,9 +100,10 @@ td.reservation-actions > .btn {
 .SCElement.SCSel > div{
  color: #fff;
 }
-.wrapperNew .SCDay .next .SCElement > div {
+.wrapperNew .SCDay .next .SCElement > div, .wrapperNew .SCDay .prev .SCElement > div {
  justify-content: center;
  height: auto !important;
+ line-height: 40px !important;
 }
 .SCMonth .SCTbl {
  border-right: 1px dashed #d7dce2;
@@ -133,6 +134,21 @@ section#main {
  grid-template-rows: auto 1fr auto;
  grid-row-gap: 20px;
  width: 680px;
+}
+.fixed-reservation .SCHor .next {
+ right: 0;
+ top: -25px;
+}
+.fixed-reservation .SCHor .prev {
+ left: 10px;
+ top: -23px;
+}
+#NewReservation .SCHor .prev .SCDayNum:after{
+ left: -25px;
+}
+div#NewReservation .SCHor .next, div#NewReservation .SCHor .prev{
+ top: -23px;
+ width: auto !important;
 }
 .fixed-reservation th {
  color: #a4a4a4;

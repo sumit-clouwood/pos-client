@@ -113,12 +113,12 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-11">
                   <button
                     type="button"
                     data-target="#dine-in-table-selection"
                     data-toggle="modal"
-                    class="btn btn-secondary btn-lg btn-block"
+                    class="btn btn-secondary btn-lg btn-block res-select-table"
                   >
                     {{
                       selectedTable != false &&
@@ -710,8 +710,8 @@ export default {
   padding: 12px;
 }
 div#NewReservation label {
-  color: #989898;
-  font-size: 15px;
+  color: #a4a4a4;
+  font-size: 14px;
   font-weight: normal;
 }
 
@@ -749,7 +749,7 @@ div#NewReservation .num_guests .btn-secondary label {
 }*/
 #NewReservation section#main {
   justify-content: left;
-  margin-left: 40px;
+  margin-left: 10px;
   grid-template-columns: 1fr;
 }
 .wrapperNew .SCDay .SCElement > div {
@@ -776,12 +776,15 @@ div#NewReservation .num_guests .btn-secondary label {
 }
 
 span.button-checkbox {
-  background: #ddd;
   overflow: hidden;
   padding: 10px 0;
   margin-left: 5px;
 }
-
+span.button-checkbox .btn-secondary {
+  background-color: #f4f5f8;
+  border-color: #f4f5f8;
+  color: #7a808a !important;
+}
 .hidden {
   display: none;
 }
@@ -813,6 +816,7 @@ span.button-checkbox {
 }
 .hiddenCB input[type='checkbox']:checked + label {
   background: #6c757d;
+  color: #fff !important;
 }
 .hiddenCB input[type='checkbox']:checked + label:hover {
   background: rgba(59, 56, 255, 0.5);
