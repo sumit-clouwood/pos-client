@@ -18,6 +18,7 @@ const state = {
   paymentMsgStatus: false,
   processing: false,
   paymentAction: '',
+  splitPaid: false,
 }
 
 // getters
@@ -130,7 +131,7 @@ const actions = {
     return Promise.resolve()
   },
 
-  validateEvent({ commit, rootState, dispatch }) {
+  validateEvent({ commit, rootState, dispatch }, { action, data }) {
     if (state.processing === true) {
       // eslint-disable-next-line
       console.log('Dual event detected')
@@ -148,14 +149,17 @@ const actions = {
     // set the async state
     commit(mutation.SET_PROCESSING, true)
     commit('checkoutForm/SET_PROCESSING', true, { root: true })
-    return dispatch('validateOrder')
+    return dispatch('validateOrder', { action: action, data: data })
   },
 
-  validateOrder({ rootState, commit }) {
+  validateOrder({ rootState, commit }, { data }) {
     //check if split order is on but no item was plitted
-    if (rootState.order.splitBill || rootState.order.splitted) {
-      if (rootState.order.items.some(item => item.split === false)) {
-        commit('order/RESET_SPLIT_BILL', null, { root: true })
+    //if not coming from split order, because split bill is still under process
+    if (typeof data !== 'undefined' && data.route !== 'splitOrder') {
+      if (rootState.order.splitBill || rootState.order.splitted) {
+        if (rootState.order.items.every(item => item.split === false)) {
+          commit('order/RESET_SPLIT_BILL', null, { root: true })
+        }
       }
     }
     return Promise.resolve()
@@ -377,9 +381,9 @@ const actions = {
 
     order.total_paid = Num.round(totalPaid).toFixed(2)
 
-    if (order.delivery_surcharge) {
-      order.delivery_surcharge = Num.round(order.delivery_surcharge).toFixed(2)
-    }
+    //if (order.delivery_surcharge) {
+    order.delivery_surcharge = Num.round(order.delivery_surcharge).toFixed(2)
+    //}
 
     return Promise.resolve(order)
   },
@@ -418,6 +422,9 @@ const actions = {
           price: item.netPrice,
           qty: item.quantity,
           originalItem: item,
+        }
+        if (typeof item.kitchen_invoice !== 'undefined') {
+          orderItem['kitchen_invoice'] = item.kitchen_invoice
         }
         if (typeof item.kitchen_invoice !== 'undefined') {
           orderItem['kitchen_invoice'] = item.kitchen_invoice
@@ -533,7 +540,7 @@ const actions = {
   ) {
     return new Promise((resolve, reject) => {
       commit(mutation.SET_PAYMENT_ACTION, action)
-      dispatch('validateEvent')
+      dispatch('validateEvent', { action: action, data: data })
         .then(() => {
           dispatch('validatePayment', action)
             .then(() => {
@@ -1225,12 +1232,16 @@ const actions = {
     commit('dinein/SET_COVER', data.selectedCovers, { root: true })
 
     return new Promise((resolve, reject) => {
-      dispatch('pay', { action: 'dine-in-place-order' })
+      dispatch('pay', {
+        action: 'dine-in-place-order',
+        data: { route: 'splitOrder' },
+      })
         .then(newOrder => {
           dispatch('dinein/getSelectedOrder', newOrder.id, {
             root: true,
           })
             .then(() => {
+              commit(mutation.SPLIT_PAID, true)
               resolve()
             })
             .catch(error => reject(error))
@@ -1613,6 +1624,9 @@ const mutations = {
   [mutation.SET_PAYMENT_ACTION](state, action) {
     state.paymentAction = action
   },
+  [mutation.SPLIT_PAID](state, action) {
+    state.splitPaid = action
+  },
   [mutation.RESET](state, full = true) {
     state.paidAmount = 0
     state.payableAmount = 0
@@ -1620,6 +1634,7 @@ const mutations = {
     state.print = false
     if (full) {
       state.order = false
+      state.splitPaid = false
     }
   },
 }
