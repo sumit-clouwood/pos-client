@@ -26,24 +26,32 @@ const getters = {
 }
 
 const actions = {
-  async getReservationByDate({ commit, getters, dispatch }, selectedDate) {
-    return await new Promise((resolve, reject) => {
+  getReservationByDate({ commit, getters, dispatch, state }, selectedDate) {
+    return new Promise((resolve, reject) => {
       let UTC_Date = getters.getUTCDate(selectedDate)
-      commit(mutation.SELECTED_RESERVATION_DATE, UTC_Date)
-      const params = [state.params.page, state.params.limit, UTC_Date, 'booked']
-      DineInService.bookedTables(...params)
-        .then(response => {
-          dispatch('getTags')
-          if (response.data.count == 0) {
-            reject()
-          } else {
+      if (state.selectedReservationDate != UTC_Date) {
+        commit(mutation.SELECTED_RESERVATION_DATE, UTC_Date)
+        const params = [
+          state.params.page,
+          state.params.limit,
+          UTC_Date,
+          'booked',
+        ]
+        DineInService.bookedTables(...params)
+          .then(response => {
+            /*I will move latter getTags to dinein for single call*/
+            dispatch('getTags')
+            /*if (response.data.count == 0) {
+              reject()
+            } else {*/
             commit(mutation.ALL_RESERVATIONS, response.data.data)
             resolve(true)
-          }
-        })
-        .catch(() => {
-          reject(false)
-        })
+            // }
+          })
+          .catch(() => {
+            reject(false)
+          })
+      }
     })
   },
   getUserHistory({ commit }, mobileNo) {
@@ -64,8 +72,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       DineInService.editTableStatus(data)
         .then(response => {
-          // eslint-disable-next-line no-console
-          console.log(response)
           dispatch('getReservationByDate')
           return resolve(response)
         })
