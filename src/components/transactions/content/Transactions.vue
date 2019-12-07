@@ -128,7 +128,7 @@ export default {
         scope.$store.dispatch('transactionOrders/selectFirstTransactionOrder', {
           root: true,
         })
-        this.$store.dispatch('transactionDetail')
+        scope.$store.dispatch('transactionDetail')
       })
   },
   computed: {
