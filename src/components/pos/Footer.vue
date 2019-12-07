@@ -366,7 +366,7 @@
       </div>
       <div
         class="button"
-        v-show="orderType.OTApi === 'dine_in' || is_pay === 0"
+        v-show="(orderType.OTApi === 'dine_in' || is_pay === 0) && !billSplit"
       >
         <ul class="template-btn">
           <li
@@ -528,6 +528,15 @@ export default {
     }),
     ...mapState({ selectedCustomer: state => state.customer.customer.name }),
     ...mapGetters('auth', ['waiter', 'carhop']),
+    billSplit() {
+      if (this.$store.state.checkout.splitPaid) {
+        return true
+      }
+      if (this.$store.state.order.splitBill) {
+        return true
+      }
+      return false
+    },
   },
 
   watch: {
