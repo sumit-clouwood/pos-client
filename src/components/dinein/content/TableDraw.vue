@@ -750,15 +750,15 @@ export default {
                 return 'gray'
               }
             })
-            .call(
-              d3
-                .drag()
-                .on('start', d => this.drag_start(d))
-                .on('drag', (d, ia, a) =>
-                  this.drag_view_horizontal_drag(d, ia, a)
-                )
-                .on('end', this.drag_view_end)
-            )
+          /*.call(
+            d3
+              .drag()
+              .on('start', d => this.drag_start(d))
+              .on('drag', (d, ia, a) =>
+                this.drag_view_horizontal_drag(d, ia, a)
+              )
+              .on('end', this.drag_view_end)
+          )*/
         })
         this.activeArea.right_view.forEach((element, i) => {
           d3.select(this.$el)
