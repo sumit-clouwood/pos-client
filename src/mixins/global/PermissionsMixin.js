@@ -1,12 +1,10 @@
 import Vue from 'vue'
 import store from '@/store'
-import * as BrandPermissions from '@/BrandPermissions'
-import * as StorePermissions from '@/StorePermissions'
+import * as Permissions from '@/Permissions'
 Vue.mixin({
   data() {
     return {
-      BRAND_PERMISSIONS: BrandPermissions,
-      STORE_PERMISSIONS: StorePermissions,
+      PERMISSIONS: Permissions,
     }
   },
   methods: {

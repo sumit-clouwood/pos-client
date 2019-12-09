@@ -10,7 +10,7 @@
     <div class="change-location color-main color-text-invert">
       <button
         class="popup-btn-save"
-        v-if="isPermitted(BRAND_PERMISSIONS.BRANDS_BRAND_SETTINGS)"
+        v-if="isPermitted(PERMISSIONS.BRANDS_BRAND_SETTINGS)"
       >
         <a :href="baseurl('dashboard')">{{ _t('Change Brand') }}</a>
       </button>

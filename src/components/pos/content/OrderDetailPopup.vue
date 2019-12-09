@@ -42,7 +42,7 @@
             <div class="v-menu__activator">
               <div class="dropdown">
                 <button
-                  v-if="isPermitted(STORE_PERMISSIONS.ORDERS_O_REPRINT_ORDER)"
+                  v-if="isPermitted(PERMISSIONS.REPRINT_ORDER)"
                   class="button btn btn-success color-main color-text-invert dropdown-toggle"
                   type="button"
                   id="dropdownMenuButton"
@@ -71,7 +71,7 @@
             </div>
           </div>
           <button
-            v-if="isPermitted(STORE_PERMISSIONS.ORDERS_O_CANCEL_ORDER)"
+            v-if="isPermitted(PERMISSIONS.CANCEL_ORDER)"
             type="button"
             class="button text-button btn btn-success color-main color-text-invert"
             data-toggle="modal"
@@ -84,7 +84,7 @@
           </button>
           <button
             v-if="
-              isPermitted(STORE_PERMISSIONS.ORDERS_O_MODIFY_ORDER) &&
+              isPermitted(PERMISSIONS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
                 selectedOrder.item.order_type === 'dine_in' &&
                 selectedOrder.item.order_status === 'finished'
@@ -100,7 +100,7 @@
           </button>
           <button
             v-if="
-              isPermitted(STORE_PERMISSIONS.ORDERS_O_MODIFY_ORDER) &&
+              isPermitted(PERMISSIONS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
                 selectedOrder.item.order_type !== 'dine_in'
             "
