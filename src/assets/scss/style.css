@@ -4997,7 +4997,7 @@ table#running-order {
     font-weight: 600;
     cursor: pointer;
     vertical-align: middle; }
-  table#running-order td.done-soon-order > span {
+  table#running-order .done-soon-order > span {
     border-radius: 0.25rem;
     background-color: #faa03c;
     display: grid !important;
@@ -5005,7 +5005,7 @@ table#running-order {
     color: #fff !important;
     padding: 0.3125rem;
     align-items: center; }
-  table#running-order td.completed-order > span {
+  table#running-order .completed-order > span {
     border-radius: 0.25rem;
     background-color: #62bb31;
     display: grid !important;
@@ -5013,14 +5013,21 @@ table#running-order {
     color: #fff !important;
     padding: 0.3125rem;
     align-items: center; }
-  table#running-order td .running-actions > span.finished-order {
+  table#running-order .running-actions > span.finished-order {
     border-radius: 0.25rem;
     background-color: #62bb31;
     display: inline-block !important;
     font-size: 0.75rem !important;
     color: #fff !important;
     padding: 0.3125rem; }
-  table#running-order td.running-order-details > span {
+  table#running-order .dine-running-actions span.finished-order {
+    border-radius: 0.25rem;
+    background-color: #62bb31;
+    display: inline-block !important;
+    font-size: 0.75rem !important;
+    color: #fff !important;
+    padding: 0.3125rem; }
+  table#running-order .running-order-details > span {
     border-radius: 0.25rem;
     background-color: #e73030;
     display: grid !important;
@@ -5615,6 +5622,18 @@ button.res-select-table {
   background: #e4e8f1;
   border-color: #e4e8f1;
   color: #3d3f43; }
+
+.finished-order {
+  background: #62bb31;
+  color: #fff;
+  font-size: 12px;
+  padding: 0.625rem;
+  display: grid;
+  align-items: center;
+  width: 115px;
+  border-radius: 4px;
+  line-height: 10px;
+  margin-top: 0.5em; }
 
 @media only screen and (max-width: 960px) {
   #NewReservation .modal-dialog {
