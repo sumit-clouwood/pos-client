@@ -349,9 +349,7 @@ export default {
     },
     default_header: function() {
       if (this.active_store) {
-        return `${this.currentBrand.name} <br/> ${this.active_store.city} ${
-          this.template['branch_label']
-        } <br/> ${this.template['telno_label']} ${this.active_store.phone}`
+        return `${this.currentBrand.name} <br/> ${this.active_store.city} ${this.template['branch_label']} <br/> ${this.template['telno_label']} ${this.active_store.phone}`
       } else {
         return ''
       }
