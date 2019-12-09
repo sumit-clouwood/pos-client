@@ -44,6 +44,8 @@ const state = {
 }
 const getters = {
   getOrderStatus: () => order_status => {
+    // eslint-disable-next-line no-console
+    console.log(order_status)
     if (
       order_status === CONST.ORDER_STATUS_ON_HOLD ||
       order_status === CONST.ORDER_STATUS_IN_PROGRESS
