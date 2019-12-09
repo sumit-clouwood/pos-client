@@ -29,29 +29,24 @@ const actions = {
   getReservationByDate({ commit, getters, dispatch, state }, selectedDate) {
     return new Promise((resolve, reject) => {
       let UTC_Date = getters.getUTCDate(selectedDate)
-      if (state.selectedReservationDate != UTC_Date) {
-        commit(mutation.SELECTED_RESERVATION_DATE, UTC_Date)
-        const params = [
-          state.params.page,
-          state.params.limit,
-          UTC_Date,
-          'booked',
-        ]
-        DineInService.bookedTables(...params)
-          .then(response => {
-            /*I will move latter getTags to dinein for single call*/
-            dispatch('getTags')
-            /*if (response.data.count == 0) {
-              reject()
-            } else {*/
-            commit(mutation.ALL_RESERVATIONS, response.data.data)
-            resolve(true)
-            // }
-          })
-          .catch(() => {
-            reject(false)
-          })
-      }
+      // if (state.selectedReservationDate != UTC_Date) {
+      commit(mutation.SELECTED_RESERVATION_DATE, UTC_Date)
+      const params = [state.params.page, state.params.limit, UTC_Date, 'booked']
+      DineInService.bookedTables(...params)
+        .then(response => {
+          /*I will move latter getTags to dinein for single call*/
+          dispatch('getTags')
+          /*if (response.data.count == 0) {
+            reject()
+          } else {*/
+          commit(mutation.ALL_RESERVATIONS, response.data.data)
+          resolve(true)
+          // }
+        })
+        .catch(() => {
+          reject(false)
+        })
+      // }
     })
   },
   getUserHistory({ commit }, mobileNo) {

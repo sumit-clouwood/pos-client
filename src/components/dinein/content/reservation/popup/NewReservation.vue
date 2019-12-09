@@ -378,6 +378,8 @@ export default {
           oldvalue,
           newValue
         )
+      } else {
+        this.getInterval()
       }
     },
   },
@@ -468,8 +470,10 @@ export default {
         })
         .then(response => {
           this.errors = response.data.form_errors || false
-          $('#NewReservation').modal('hide')
-          this.getReservationByDate(this.selectedDate)
+          if (!this.errors) {
+            $('#NewReservation').modal('hide')
+            this.getReservationByDate(this.selectedDate)
+          }
         })
         .catch(() => {
           this.errors = { start_time: ['Please select a time slot'] }
@@ -587,7 +591,6 @@ export default {
       this.reservationInformation.tags = this.selectedTags
     },
     updateDetails: function() {
-      this.getInterval()
       let selectedTable = false
       if (this.edit) {
         selectedTable = this.availableTables.find(
