@@ -118,6 +118,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapGetters('context', ['store']),
     ...mapState('order', ['cancellationReason', 'selectedOrder', 'errors']),
   },
   methods: {
@@ -153,6 +154,8 @@ export default {
         .then(res => {
           if (res.data.status != 'form_errors') {
             $('#cancellationReason').hide()
+            $('#orderDetailsPopup').hide()
+
             if (this.selectedOrder.item.order_type == 'dine_in')
               this.dineInRunningOrders()
             else if (this.selectedOrder.item.order_type == 'call_center')
