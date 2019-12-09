@@ -78,8 +78,8 @@
           <a class="nav-link color-text-invert">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="21"
+              width="21.88"
+              height="19.94"
               viewBox="0 0 24 21"
             >
               <path
@@ -262,20 +262,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@media only screen and (max-width: 991px) {
-  .dm-screen-wrap .page-header {
-    grid-template-columns: 1fr;
-    position: fixed;
-    z-index: 999;
-    left: 0;
-    right: 0;
-    top: 0;
-    margin: 0 auto;
-    background: #cc3232;
-  }
+.header-main-left-time {
+  width: 250px;
 }
 .button-block {
-  margin-right: -30px;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
 }
 .change-location {
   margin-left: 14px;
@@ -304,7 +297,6 @@ export default {
   align-items: center;
   -webkit-box-pack: center;
   justify-content: center;
-  margin-left: 1.25rem;
   position: relative;
   cursor: pointer;
   display: inline-flex;
