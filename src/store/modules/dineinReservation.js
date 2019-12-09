@@ -63,11 +63,11 @@ const actions = {
       })
     }
   },
-  editTable({ dispatch }, data) {
+  editTable({ dispatch, state }, data) {
     return new Promise((resolve, reject) => {
       DineInService.editTableStatus(data)
         .then(response => {
-          dispatch('getReservationByDate')
+          dispatch('getReservationByDate', state.selectedReservationDate)
           return resolve(response)
         })
         .catch(er => reject(er))

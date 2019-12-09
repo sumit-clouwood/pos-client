@@ -2,7 +2,7 @@
   <div>
     <Preloader v-if="loading" />
     <div v-else class="running-order-table-wrap">
-      <div class="header_list hide_sm">
+      <div class="header_list hide_sm font-weight-bold">
         <div class="">Table No</div>
         <div class="">Orders</div>
         <div class="">Amount</div>
@@ -311,6 +311,7 @@ import DateTime from '@/mixins/DateTime'
 import Preloader from '@/components/util/progressbar'
 import paginate from 'vuejs-paginate'
 import InformationPopup from '@/components/pos/content/InformationPopup'
+import * as CONST from '@/constants'
 
 export default {
   name: 'OrderList',
@@ -357,7 +358,7 @@ export default {
       'totalReservations',
       'tables',
     ]),
-    ...mapGetters('dinein', ['getOrderStatus', 'getTableNumber']),
+    ...mapGetters('dinein', ['getTableNumber']),
     ...mapGetters('auth', ['waiter']),
   },
   methods: {
@@ -374,6 +375,20 @@ export default {
           //alert(error.data.error)
           $('.information-popup').modal('show')
         })
+    },
+    getOrderStatus(order_status) {
+      if (
+        order_status === CONST.ORDER_STATUS_ON_HOLD ||
+        order_status === CONST.ORDER_STATUS_IN_PROGRESS
+      ) {
+        return 'running-order-details'
+      } else if (order_status === CONST.ORDER_STATUS_FINISHED) {
+        return 'finished-order'
+      } else if (order_status === CONST.ORDER_STATUS_COMPLETED) {
+        return 'completed-order'
+      } else {
+        return 'done-soon-order'
+      }
     },
     setTime(timerTime) {
       let timeZoneTime =

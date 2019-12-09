@@ -29,13 +29,14 @@
         display: grid !important;
         align-items: center;
         justify-content: center;
-        display: grid;
         grid-template-columns: auto;
         align-items: center;
         justify-content: center;
         transition: 0.2s linear; }
         .footer .footer-slider .footer-slider-list .slick-slide .footer-slider-list-item.active, .footer .footer-slider .footer-slider-list .slick-slide .footer-slider-list-item:hover {
           background-color: #3A3E9F; }
+        .footer .footer-slider .footer-slider-list .slick-slide .footer-slider-list-item.hide {
+          display: none !important; }
         .footer .footer-slider .footer-slider-list .slick-slide .footer-slider-list-item img {
           margin: 0 auto;
           margin-bottom: 0.3125rem; }
@@ -77,37 +78,48 @@
     justify-content: center; }
     .footer .footer-buttons .footer-button-menu {
       display: none; }
+    .footer .footer-buttons .template-btn {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr; }
+    .footer .footer-buttons .active .button {
+      background-color: #3A3E9F;
+      cursor: pointer; }
+      .footer .footer-buttons .active .button:hover {
+        background-color: #5056CA; }
     .footer .footer-buttons .button {
       cursor: pointer;
       margin: 0 1.875rem;
       border-radius: 3px;
-      background-color: #3A3E9F;
       height: 3.75rem;
       display: grid;
       grid-template-columns: 1fr;
       grid-template-rows: 1fr;
       justify-content: center;
       color: #fff;
-      transition: 0.2s linear; }
-      .footer .footer-buttons .button ul {
+      transition: 0.2s linear;
+      background-color: #ccc;
+      cursor: not-allowed; }
+      .footer .footer-buttons .button .pay-btn-holder {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: 1fr; }
-        .footer .footer-buttons .button ul li {
+        grid-template-rows: 1fr;
+        height: 100%; }
+        .footer .footer-buttons .button .pay-btn-holder .pay-button {
           display: flex;
           align-items: center;
-          justify-content: center; }
-          .footer .footer-buttons .button ul li span {
+          justify-content: center;
+          padding: 0 10px;
+          height: 100%; }
+          .footer .footer-buttons .button .pay-btn-holder .pay-button span {
             color: #fff;
             padding-left: 0.625rem;
             font-size: 1.625rem;
             display: inline-block;
             vertical-align: middle; }
-          .footer .footer-buttons .button ul li svg {
+          .footer .footer-buttons .button .pay-btn-holder .pay-button svg {
             display: inline-block;
             vertical-align: middle; }
-      .footer .footer-buttons .button:hover {
-        background-color: #5056CA; }
       .footer .footer-buttons .button .template-btn .pay-now a {
         display: grid;
         grid-template-columns: min-content max-content;
@@ -118,7 +130,7 @@
           width: 1.875rem;
           /*margin-right: $px10;*/ }
         .footer .footer-buttons .button .template-btn .pay-now a .pay-btn {
-          font-size: 1.625rem;
+          font-size: 1.375rem;
           display: flex;
           align-items: center; }
     .footer .footer-buttons .button-cart {

@@ -634,10 +634,12 @@ export default {
       if (this.brand.book_table || this.orderDetails.length) {
         // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
         let range = $('#range')
-        let top =
+        /*let top =
           datum.table_position_coordinate.y / 2 +
-            $('#id_' + datum._id).offset().top || 0
+            $('#id_' + datum._id).offset().top || 0*/
+        let top = datum.table_position_coordinate.y + 20 || 0
         let posX = $('#id_' + datum._id).offset().left
+        let tableX = $('#id_' + datum._id).attr('x')
         let getWidth = 361 / 2
         if (this.orderDetails.length === 0) {
           getWidth = 155 / 2
@@ -652,14 +654,19 @@ export default {
             getWidth = 445 / 2
           }
         }
-        /*start square screen code*/
-        let posY = $('#id_' + datum._id).offset().top
-        top -= posY
-        /*end square screen code*/
-        if (top < 0) top = 0
         let left = posX - getWidth
-        if (left < 0) left = 0
 
+        let resolution = window.screen
+        if (resolution.availHeight <= 768 && resolution.availWidth <= 1024) {
+          /*start square screen code*/
+          let posY = $('#id_' + datum._id).offset().top
+          top -= posY
+          /*end square screen code*/
+        }
+        if (tableX > 3000) left -= 80
+        // alert(window.screen.availHeight + ' > ' + window.screen.availWidth)
+        if (top < 0) top = 0
+        if (left < 0) left = 0
         range
           .parent('div')
           .attr(
@@ -743,15 +750,15 @@ export default {
                 return 'gray'
               }
             })
-            .call(
-              d3
-                .drag()
-                .on('start', d => this.drag_start(d))
-                .on('drag', (d, ia, a) =>
-                  this.drag_view_horizontal_drag(d, ia, a)
-                )
-                .on('end', this.drag_view_end)
-            )
+          /*.call(
+            d3
+              .drag()
+              .on('start', d => this.drag_start(d))
+              .on('drag', (d, ia, a) =>
+                this.drag_view_horizontal_drag(d, ia, a)
+              )
+              .on('end', this.drag_view_end)
+          )*/
         })
         this.activeArea.right_view.forEach((element, i) => {
           d3.select(this.$el)
