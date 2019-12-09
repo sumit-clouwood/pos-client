@@ -21,7 +21,7 @@
                 v-model="email"
                 type="email"
                 class="login-input"
-                value=""
+                value
                 :placeholder="_t('Email Address')"
               />
               <label>Password</label>
@@ -29,7 +29,7 @@
                 required
                 v-model="password"
                 class="login-input"
-                value=""
+                value
                 type="password"
                 :placeholder="_t('Password')"
               />
@@ -69,7 +69,7 @@
           <div class="login-title login-bottom">
             <!-- <router-link :to="{ name: 'forgot_password' }">
               Forgot your password?
-            </router-link> -->
+            </router-link>-->
           </div>
         </div>
       </div>

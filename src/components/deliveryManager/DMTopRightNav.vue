@@ -87,7 +87,7 @@ export default {
     },
     ...mapGetters('context', ['store']),
     ...mapState('location', ['availableLanguages', 'language']),
-    ...mapGetters('location', ['_t', 'permitted']),
+    ...mapGetters('location', ['_t']),
   },
   methods: {
     orderTypeWalkIn: function(orderType) {

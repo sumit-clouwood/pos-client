@@ -67,6 +67,7 @@ export default {
   },
   computed: {
     ...mapState('location', ['currency']),
+    ...mapState('order', ['splitBill']),
     ...mapGetters('category', ['items']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
@@ -82,6 +83,10 @@ export default {
       }
     },
     addToOrder(item) {
+      if (this.splitBill) {
+        return false
+      }
+      this.$store.commit('order/RESET_SPLIT_BILL')
       bootstrap.loadUI().then(() => {})
 
       this.$store.commit('order/SET_CART_TYPE', 'new')

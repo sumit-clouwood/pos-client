@@ -318,10 +318,6 @@ export default {
         if (nowTime - this.lastSynced > this.syncInterval * 1000) {
           this.lastSynced = nowTime
 
-          console.log(
-            this.syncInterval,
-            ' passed, force sync in 10 sec from app'
-          )
           setTimeout(function() {
             navigator.serviceWorker.controller.postMessage({
               sync: 1,
@@ -359,7 +355,6 @@ export default {
             }
           })
           const murmur = Fingerprint2.x64hash128(values.join(''), 31)
-          console.log('device id', murmur)
           resolve(murmur)
         })
       }, 10)

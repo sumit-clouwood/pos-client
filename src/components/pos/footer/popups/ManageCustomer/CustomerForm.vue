@@ -306,14 +306,20 @@ export default {
         this.errors.count = 1
       }
       if (
-        this.newCustomerDetails.email != '' &&
-        !this.validEmail(this.newCustomerDetails.email)
+        typeof this.newCustomerDetails.email !== 'undefined' &&
+        this.newCustomerDetails.email
       ) {
-        this.errors.email =
-          this._t('Valid email') + ' ' + this._t('is required.')
-        this.errors.count = 1
-      }
+        //validate only when email is there
 
+        if (
+          this.newCustomerDetails.email != '' &&
+          !this.validEmail(this.newCustomerDetails.email)
+        ) {
+          this.errors.email =
+            this._t('Valid email') + ' ' + this._t('is required.')
+          this.errors.count = 1
+        }
+      }
       if (
         !this.newCustomerDetails.phone_number ||
         !getWithoutSpaceLength(this.newCustomerDetails.phone_number)
@@ -408,6 +414,21 @@ export default {
       let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       return re.test(email)
     },
+    reset() {
+      this.newCustomerDetails.name = null
+      this.newCustomerDetails.phone_number = null
+      this.newCustomerDetails.gender = null
+      this.newCustomerDetails.email = null
+      this.newCustomerDetails.alternative_phone = null
+      this.newCustomerDetails.birthday = null
+      this.newCustomerDetails.customer_group = null
+      this.selectedDeliveryArea = null
+      this.newCustomerDetails.building = ''
+      this.filterBuildingArea = ''
+      this.newCustomerDetails.street = ''
+      this.newCustomerDetails.flat_number = ''
+      this.newCustomerDetails.nearest_landmark = ''
+    },
   },
 }
 </script>
@@ -420,31 +441,31 @@ export default {
   width: 60.8795rem !important;
 }
 .dropdown {
-    position: relative;
+  position: relative;
 }
 
 .dropdown-content {
-    display: block;
-    position: absolute;
-    background-color: #f6f6f6;
-    width: 57%;
-    right: 14px;
-    overflow: auto;
-    border: 1px solid #ddd;
-    z-index: 1;
-    margin-top: 3px;
-    max-height: 200px;
+  display: block;
+  position: absolute;
+  background-color: #f6f6f6;
+  width: 57%;
+  right: 14px;
+  overflow: auto;
+  border: 1px solid #ddd;
+  z-index: 1;
+  margin-top: 3px;
+  max-height: 200px;
 }
 
 .dropdown-content span {
-    color: black;
-    padding: 6px 16px;
-    text-decoration: none;
-    display: block;
+  color: black;
+  padding: 6px 16px;
+  text-decoration: none;
+  display: block;
 }
 
 .dropdown span:hover {
-    background-color: #ddd;
+  background-color: #ddd;
 }
 </style>
 <style lang="scss">

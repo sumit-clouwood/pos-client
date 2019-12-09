@@ -6,6 +6,7 @@
         :template="template"
         :order_to_print="order"
         @print_ready="print_ready"
+        preview="preview"
       ></PrintTemplate>
     </div>
 
@@ -53,6 +54,9 @@ export default {
     ...mapGetters('invoice', ['template']),
     ...mapGetters('location', ['_t']),
     order_title() {
+      if (this.preview) {
+        return ''
+      }
       return (
         this._t('ORDER_DIALOG_TITLE_PREFIX') +
         (this.order.orderNumber
@@ -63,6 +67,12 @@ export default {
         this._t('ORDER_DIALOG_TITLE_SUFFIX') +
         this.order.order_mode
       )
+    },
+    preview() {
+      if (this.paymentAction === 'dine-in-order-preview') {
+        return true
+      }
+      return false
     },
   },
   watch: {
@@ -102,7 +112,7 @@ export default {
           this.$router.replace({ name: 'Carhop' })
         }
       }
-      this.$store.commit('order/SET_SPLITTED', false)
+      this.$store.commit('order/RESET_SPLIT_BILL')
     },
     doPrint() {
       let orderData = this.order

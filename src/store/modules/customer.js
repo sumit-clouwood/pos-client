@@ -36,6 +36,8 @@ const state = {
   buildingAreas: false,
 }
 const getters = {
+  findDeliveryArea: state => areaId =>
+    state.fetchDeliveryAreas.find(deliveryArea => deliveryArea._id === areaId),
   customer: state => {
     return state.customer
   },
@@ -48,12 +50,6 @@ const getters = {
     }
   },
   checkDeliveryArea: () => (addressId, deliveryAreas) => {
-    if (
-      typeof deliveryAreas._id !== 'undefined' &&
-      deliveryAreas._id === addressId
-    ) {
-      return deliveryAreas.item_status
-    }
     if (typeof deliveryAreas[addressId] !== 'undefined') {
       const area = deliveryAreas[addressId]
       return area.item_status === true ? area : false
@@ -67,7 +63,7 @@ const getters = {
       selection: 'name',
     })
   },
-  getCustomerAddresses: (state, getters, rootState) => {
+  getCustomerAddresses: (state, getters) => {
     let data = {}
     if (state.customer && state.customer.customer_addresses) {
       data = state.customer.customer_addresses.filter(area => {
@@ -75,7 +71,14 @@ const getters = {
           area.delivery_area_id,
           state.deliveryAreas
         )
-        if (area.store_id == rootState.context.storeId && checkDeliveryArea) {
+        if (checkDeliveryArea) {
+          const deliveryArea = getters.findDeliveryArea(checkDeliveryArea._id)
+          if (deliveryArea.min_order_value) {
+            area.min_order_value = deliveryArea.min_order_value
+          }
+          if (deliveryArea.special_order_surcharge) {
+            area.special_order_surcharge = deliveryArea.special_order_surcharge
+          }
           return area
         }
       })
@@ -84,6 +87,13 @@ const getters = {
   },
 }
 const actions = {
+  setAddressForDelivery({ dispatch, commit }, { customerId, addressId }) {
+    dispatch('fetchSelectedCustomer', customerId).then(() => {
+      dispatch('setCustomerAddressById', addressId).then(() => {
+        commit('location/SET_MODAL', '#order-confirmation', { root: true })
+      })
+    })
+  },
   fetchAllCustomers({ commit, dispatch }) {
     commit(mutation.FETCH_ALL, 'brand_customers_main_tbl')
     dispatch('fetchAll')
@@ -280,17 +290,25 @@ const actions = {
     dispatch('reset')
   },
   selectedAddress({ commit, dispatch }, address) {
-    // eslint-disable-next-line no-console
-    console.log(address)
+    //let deliveryArea = getters.findDeliveryArea(address.delivery_area_id)
+    //const subtotal = rootGetters['order/subTotal']
+    // if (deliveryArea.min_order_value > subtotal) {
+    //   return Promise.reject(
+    //     rootGetters['location/_t'](
+    //       `Order amound should be grater than ${subtotal}`
+    //     )
+    //   )
+    // } else {
     commit(mutation.SELECTED_CUSTOMER_ADDRESS, address)
     let orderType = { OTview: 'Delivery', OTApi: 'call_center' }
-    dispatch('order/updateOrderType', orderType, { root: true })
+    return dispatch('order/updateOrderType', orderType, { root: true })
+    //}
   },
 
-  createAction({ commit, dispatch, rootState }, actionDetails) {
+  createAction({ commit, dispatch }, actionDetails) {
     return new Promise((resolve, reject) => {
       const params = [
-        { ...actionDetails.data, store_id: rootState.context.storeId },
+        actionDetails.data,
         actionDetails.customer,
         actionDetails.model,
       ]
@@ -343,27 +361,21 @@ const actions = {
     commit(mutation.SET_ADD_DETAILS, setDefaultSettings)
   },
 
-  fetchDeliveryArea({ commit, rootState }, query) {
+  fetchDeliveryArea({ commit }, query) {
     CustomerService.fetchDeliveryAreas(query).then(response => {
       //Fetch Delivery Areas in add Customer Address and Add new customer form
-      let data = response.data.data.filter(function(u) {
-        if (
-          u.store_id == rootState.context.storeId ||
-          (u.stores && u.stores.includes(rootState.context.storeId))
-        ) {
-          return u.item_status
-        }
-      })
-      commit(mutation.GET_DELIVERY_AREAS, data)
+      commit(mutation.GET_DELIVERY_AREAS, response.data.data)
     })
   },
 
   setCustomerAddressById({ dispatch, state, getters }, addressId) {
-    let address = state.customer.customer_addresses.find(
-      address => address._id.$oid == addressId
-    )
-    address.delivery_area = getters.getDeliveryArea(address.delivery_area_id)
-    dispatch('selectedAddress', address)
+    return new Promise(resolve => {
+      let address = state.customer.customer_addresses.find(
+        address => address._id.$oid == addressId
+      )
+      address.delivery_area = getters.getDeliveryArea(address.delivery_area_id)
+      dispatch('selectedAddress', address).then(() => resolve())
+    })
   },
 
   setOfflineData({ commit }, data) {

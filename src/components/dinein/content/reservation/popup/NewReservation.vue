@@ -40,7 +40,7 @@
                       name="options"
                       :id="'option' + i"
                       autocomplete="off"
-                      v-model="reservationInformation.guest"
+                      v-model="reservationInformation.number_of_guests"
                     />
                     <label :for="'option' + i"
                       >{{ i + 1 }} {{ n === 10 ? '+' : '' }}</label
@@ -61,17 +61,21 @@
                 </div>
               </div>
               <div class="form-group pt-2">
-                <label
-                  >Available Time Slots<span class="text-danger">
-                    *</span
-                  ></label
-                >
+                <label>
+                  Available Time Slots
+                  <span class="text-danger"
+                    >* {{ errorCheck('start_time') }}</span
+                  >
+                </label>
                 <div class="row time_slot_block" style="margin: 0">
                   <div
                     v-for="(val, key) in time_slots"
                     :key="key"
                     class="col-sm-3 time_slot cursor-pointer"
-                    :class="'selected_time_slot_' + key"
+                    :class="[
+                      'selected_time_slot_' + key,
+                      { active: val.time === startedTime },
+                    ]"
                     @click="
                       getSelectedTimeSlot(val, '.selected_time_slot_' + key)
                     "
@@ -109,12 +113,12 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-12">
                   <button
                     type="button"
                     data-target="#dine-in-table-selection"
                     data-toggle="modal"
-                    class="btn btn-secondary btn-lg btn-block"
+                    class="btn btn-secondary btn-lg btn-block res-select-table"
                   >
                     {{
                       selectedTable != false &&
@@ -125,6 +129,9 @@
                         : tableText
                     }}
                   </button>
+                  <span class="text-danger">
+                    {{ errorCheck('assigned_table_id') }}
+                  </span>
                 </div>
                 <div class="col-md-5" style="display: none">
                   <button
@@ -158,19 +165,21 @@
                   <div class="form-group">
                     <label>Phone</label>
                     <div class="input-group">
-                      <span class="lbl-txt-box">IN</span>
+                      <span class="lbl-txt-box">{{ brand.country }}</span>
                       <input
                         type="text"
                         class="form-control txt-box"
                         v-model="reservationInformation.guest_phone"
                         @focusout="
-                          getUserDetailsByMobile(
+                          getuserHistoryByMobile(
                             reservationInformation.guest_phone
                           )
                         "
                       />
                     </div>
-                    <span class="text-danger"></span>
+                    <span class="text-danger">
+                      {{ errorCheck('guest_phone') }}
+                    </span>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -181,7 +190,9 @@
                       class="form-control txt-box"
                       v-model="reservationInformation.guest_email"
                     />
-                    <span class="text-danger"></span>
+                    <span class="text-danger">{{
+                      errorCheck('guest_email')
+                    }}</span>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -208,41 +219,41 @@
               <div class="row lh-30">
                 <div class="col-md-12">
                   <label>Guest History</label>
-                  <table class="table table-bordered">
-                    <tbody v-if="history">
-                      <tr
-                        v-for="(reservations, index) in userDetails"
-                        :key="index"
-                      >
-                        <th scope="row">{{ reservations.start_date }}</th>
-                        <td>{{ reservations.start_time }}</td>
-                        <td>{{ reservations.status }}</td>
-                        <td>Victoria Pope Daniel</td>
-                      </tr>
-                    </tbody>
-                    <tbody v-else>
-                      <tr>
-                        <td>No history found</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div class="scroll-history">
+                    <table class="table table-bordered">
+                      <tbody v-if="userHistory">
+                        <tr
+                          v-for="(reservations, index) in userHistory"
+                          :key="index"
+                        >
+                          <th scope="row">{{ reservations.start_date }}</th>
+                          <td>{{ reservations.start_time }}</td>
+                          <td class="text-capitalize">
+                            {{ reservations.status }}
+                          </td>
+                          <td class="text-capitalize">NA</td>
+                        </tr>
+                      </tbody>
+                      <tbody v-else>
+                        <tr>
+                          <td>No history found</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 <div class="col-md-12">
                   <label style="margin-top: 10px">{{ _t('Tags') }}</label>
-                  <div style="display: block">
+                  <div style="display: block" class="hiddenCB">
                     <span
                       class="button-checkbox"
                       v-for="(tag, index) in tags"
                       :key="index"
                     >
-                      <input
-                        type="checkbox"
-                        :id="tag.name.replace(/ +/g, '')"
-                        class="hidden"
-                      />
+                      <input type="checkbox" :id="tag._id" class="hidden" />
                       <label
                         class="btn btn-secondary"
-                        :for="tag.name.replace(/ +/g, '')"
+                        :for="tag._id"
                         @click="
                           updateTag({
                             name: tag.name,
@@ -294,6 +305,15 @@
           </button>
           <button
             type="button"
+            v-if="edit"
+            class="btn btn-success"
+            @click="updateReservation"
+          >
+            {{ _t('Update Reservation') }}
+          </button>
+          <button
+            type="button"
+            v-else
             class="btn btn-success"
             @click="addNewReservation"
           >
@@ -309,7 +329,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import DineInTableSelection from '@/components/dinein/cart/popup/DineInTableSelection'
-// import { Datetime } from 'vue-datetime'
+import DateTime from '@/plugins/helpers/DateTime'
 /* global $ */
 
 export default {
@@ -320,6 +340,8 @@ export default {
   },
   props: {
     dateSelector: Boolean,
+    edit: Boolean,
+    reservationInformation: Object,
   },
   computed: {
     ...mapState('dinein', [
@@ -328,7 +350,11 @@ export default {
       'availableTables',
       'selectedTable',
     ]),
-    ...mapState('dineinReservation', ['tags', 'userDetails']),
+    ...mapState('dineinReservation', [
+      'tags',
+      'userHistory',
+      'tableBookedStatus',
+    ]),
     ...mapGetters('location', ['_t']),
     ...mapGetters('dineinReservation', ['getUTCDate']),
     ...mapState('location', ['brand', 'store']),
@@ -338,60 +364,58 @@ export default {
     if (isCalendarhasData == 0 && this.dineInTabType == 'reservation')
       this.cal()
   },
+  watch: {
+    reservationInformation: function(oldvalue, newValue) {
+      if (typeof newValue.assigned_table_id != 'undefined') {
+        // newValue.assigned_table_id != oldvalue.assigned_table_id
+        this.updateDetails()
+        this.errors = false
+        // eslint-disable-next-line no-console
+        console.log(
+          this.reservationInformation,
+          'data',
+          this.selectedTable,
+          oldvalue,
+          newValue
+        )
+      } else {
+        this.getInterval()
+      }
+    },
+  },
   data() {
     return {
       tableText: 'Select Table',
       calendarOpen: false,
+      dtObj: new DateTime(),
       newDetails: false,
+      startedTime: false,
       selectedDate: '',
       no_of_guest: 1,
       time_slots: [],
       days: [],
-      history: false,
+      // history: false,
       week_no: null,
       week_diff: null,
       curr_week_no: 0,
       settings: '',
       selectedTags: [],
-      reservationInformation: {
-        status: 'reserved',
-        customers: [],
-        number_of_guests: 1,
-      },
+      errors: false,
     }
   },
   methods: {
-    getUserDetailsByMobile: function(mobileNo) {
-      this.$store
-        .dispatch('dineinReservation/getUserHistory', mobileNo)
-        .then(response => {
-          this.history = true
-          if (response.count) {
-            let guestHistory = this.userDetails[0]
-            if (guestHistory) {
-              this.history = true
-              this.reservationInformation = {
-                guest_email: guestHistory.guest_email,
-                guest_fname: guestHistory.guest_fname,
-                guest_lname: guestHistory.guest_lname,
-                guest_phone: guestHistory.guest_phone,
-              }
-            }
-          } else {
-            this.history = false
-            this.reservationInformation = {
-              guest_email: '',
-              guest_fname: '',
-              guest_lname: '',
-              // guest_phone: guestHistory.guest_phone,
-            }
-          }
-        })
+    getuserHistoryByMobile: function(mobileNo) {
+      this.$store.dispatch('dineinReservation/getUserHistory', mobileNo)
+    },
+    errorCheck(element) {
+      return this.errors && this.errors[element]
+        ? this.errors[element][0] || ''
+        : ''
     },
     getInterval() {
       let startTime = 0
       let closedTime = 0
-      let interval = this.timeConvert(this.brand.reservation_interval)
+      let interval = this.timeConvert(this.store.reservation_interval)
       if (this.store.open_hours.all_day_long) {
         startTime = 0
         closedTime = 24 * 60
@@ -400,6 +424,7 @@ export default {
         closedTime = this.timeConvert(this.store.open_hours.closes_at)
       }
       let time_slots = []
+      let occupied = null
       let hh = 0,
         mm = 0,
         i = 0,
@@ -417,35 +442,25 @@ export default {
           ('0' + mm).slice(-2) +
           ' ' +
           ap[Math.floor(hh / 12)]
-        time_slots.push({ time: timeSlot, occupied: null }) // pushing data in array in [00:00 - 12:00 AM/PM format]
+        occupied = this.tableBookedStatus.includes(timeSlot)
+        time_slots.push({ time: timeSlot, occupied: occupied }) // pushing data in array in [00:00 - 12:00 AM/PM format]
         startTime = startTime + interval
       }
-      this.time_slots = time_slots
-
       // eslint-disable-next-line no-console
-      console.log(time_slots, closedTime, interval)
+      console.log(time_slots, 'time_slots', this.tableBookedStatus)
+      this.time_slots = time_slots
     },
     timeConvert(time, separator = ':') {
       let timeSplit = time.split(separator)
       return parseInt(timeSplit[0]) * 60 + parseInt(timeSplit[1])
     },
-
-    convertTime12to24(time12h) {
-      const [time, modifier] = time12h.split(' ')
-
-      let [hours, minutes] = time.split(':')
-
-      if (hours === '12') hours = '00'
-
-      if (modifier === 'PM') hours = parseInt(hours, 10) + 12
-
-      return `${hours}:${minutes}`
-    },
-
-    addNewReservation: function() {
+    setStartDate: function() {
       this.reservationInformation.start_date = this.$store.getters[
         'dineinReservation/getUTCDate'
       ](this.selectedDate)
+    },
+    addNewReservation: function() {
+      this.setStartDate()
       this.reservationInformation.assigned_table_id =
         this.selectedTable.table_id || ''
 
@@ -453,17 +468,37 @@ export default {
         .dispatch('dinein/newReservation', this.reservationInformation, {
           root: true,
         })
-        .then(() => {
-          alert('pass')
-          $('#newReservation').modal('hide')
+        .then(response => {
+          this.errors = response.data.form_errors || false
+          if (!this.errors) {
+            $('#NewReservation').modal('hide')
+            this.getReservationByDate(this.selectedDate)
+          }
         })
-        .catch(error => {
-          alert('Please select a time slot')
-          // eslint-disable-next-line no-console
-          console.log(error)
+        .catch(() => {
+          this.errors = { start_time: ['Please select a time slot'] }
         })
-      // eslint-disable-next-line no-console
-      console.log(this.reservationInformation)
+    },
+    updateReservation: function() {
+      this.setStartDate()
+      let id = this.reservationInformation._id
+      delete this.reservationInformation._id
+      delete this.reservationInformation.number
+      delete this.reservationInformation.end_time
+      delete this.reservationInformation.related_orders_ids
+      delete this.reservationInformation.reservation_history
+      delete this.reservationInformation.created_by
+      delete this.reservationInformation.assigned_to
+      this.$store
+        .dispatch('dineinReservation/editTable', {
+          id: id,
+          data: this.reservationInformation,
+        })
+        .then(response => {
+          this.errors = response.data.form_errors || false
+          $('#NewReservation').modal('hide')
+          this.getReservationByDate(this.selectedDate)
+        })
     },
     getSelectedGuest: function(numberOfGuest) {
       this.reservationInformation.number_of_guests = numberOfGuest + 1
@@ -471,12 +506,14 @@ export default {
     getSelectedTimeSlot: function(selectedTimeSlot, scope) {
       $('.time_slot').removeClass('active')
       $(scope).addClass('active')
-      this.reservationInformation.start_time = this.convertTime12to24(
+      this.reservationInformation.start_time = this.dtObj.convertTime12to24(
         selectedTimeSlot.time
       )
+      // eslint-disable-next-line no-console
+      // console.log(selectedTimeSlot, this.reservationInformation)
     },
+    // calendar
     cal: function() {
-      this.getInterval()
       let scope = this
       // Use the settings object to change the theme
       $(function() {
@@ -528,41 +565,83 @@ export default {
           scope.selectedDate = cal.currentDate
           scope.calendarOpen = true
           scope.getReservationByDate(cal.currentDate)
-          // $('#wtf').html('Selected date: ' + )
+
+          // below section for change another calendar date according to this
+          let getUTC = scope.$store.getters['dineinReservation/getUTCDate'](
+            cal.currentDate
+          ).split('-')
+          let getDay = getUTC[2] || false
+          if (getDay) $('.SCDayNum:contains(' + getDay + ')').click()
         },
       })
     },
     updateTag: function(tag) {
-      let id = '#' + tag.name.replace(/ +/g, '')
-      this.selectedTags = this.selectedTags.filter(bdg => {
-        return bdg.tagId != tag.tagId
+      let selectedLabel = $('#' + tag.tagId).siblings('label')
+      this.selectedTags = this.selectedTags.filter(tg => {
+        return tg.tagId != tag.tagId
       })
-      if (this.selectedTags.includes(tag.tagId)) {
-        this.selectedTags.splice(tag.tagId, 1)
-      }
-      if ($(id).is(':checked')) {
-        $(id).attr('checked', '')
-        $(id)
-          .siblings('label')
-          .removeClass('selected')
-        this.selectedTags.splice(tag.tagId, 1)
+      let deletionIndex = this.selectedTags.indexOf(tag.tagId)
+      if (deletionIndex != '-1') {
+        this.selectedTags.splice(deletionIndex, 1)
+        selectedLabel.removeClass('selected')
       } else {
-        $(id).attr('checked', 'checked')
-        $(id)
-          .siblings('label')
-          .addClass('selected')
         this.selectedTags.push(tag.tagId)
+        selectedLabel.addClass('selected')
       }
-      // eslint-disable-next-line no-console
-      console.log(this.selectedTags)
       this.reservationInformation.tags = this.selectedTags
+    },
+    updateDetails: function() {
+      let selectedTable = false
+      if (this.edit) {
+        selectedTable = this.availableTables.find(
+          at => at.table_id == this.reservationInformation.assigned_table_id
+        )
+      }
+
+      this.$store.commit('dinein/SELECTED_TABLE', selectedTable)
+      this.selectedTags = this.reservationInformation.tags || []
+      this.no_of_guest = this.reservationInformation.number_of_guests || 1
+      let dateTime = new DateTime()
+      this.startedTime =
+        typeof this.reservationInformation.start_time != 'undefined'
+          ? dateTime.convertTime24to12(this.reservationInformation.start_time)
+          : false
+      this.updateTagsChecks()
+    },
+    updateTagsChecks: function() {
+      $('.hiddenCB > span')
+        .children()
+        .removeClass('selected')
+      if (this.selectedTags.length > 0) {
+        this.selectedTags.forEach(tagId => {
+          $('#' + tagId)
+            .siblings('label')
+            .addClass('selected')
+        })
+      }
     },
     getReservationByDate: function(date) {
       let scope = this
+      let inputDate = new Date(date)
+      let todayDate = new Date()
       this.$store
         .dispatch('dineinReservation/getReservationByDate', date)
         .then(details => {
           scope.newDetails = details
+          if (
+            inputDate.setHours(0, 0, 0, 0) != todayDate.setHours(0, 0, 0, 0)
+          ) {
+            this.startedTime = false
+          } else {
+            let dateTime = new DateTime()
+            this.startedTime =
+              typeof this.reservationInformation.start_time != 'undefined'
+                ? dateTime.convertTime24to12(
+                    this.reservationInformation.start_time
+                  )
+                : false
+          }
+          this.getInterval()
         })
         .catch(details => {
           scope.newDetails = details
@@ -576,7 +655,8 @@ export default {
 @import '../../../../../assets/scss/variables';
 
 .num_guests {
-  display: block;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   .btn {
     padding: 1.175rem 1.75rem;
   }
@@ -603,7 +683,6 @@ export default {
 .time_slot_block {
   height: 320px;
   overflow-y: auto;
-  margin-right: 40px !important;
   .time_slot {
     &.active {
       border: solid 2px #5056ca;
@@ -662,8 +741,8 @@ export default {
   padding: 12px;
 }
 div#NewReservation label {
-  color: #989898;
-  font-size: 15px;
+  color: #a4a4a4;
+  font-size: 14px;
   font-weight: normal;
 }
 
@@ -701,13 +780,20 @@ div#NewReservation .num_guests .btn-secondary label {
 }*/
 #NewReservation section#main {
   justify-content: left;
-  margin-left: 40px;
+  margin-left: 10px;
+  grid-template-columns: 1fr;
 }
 .wrapperNew .SCDay .SCElement > div {
-  width: 80px !important;
+  width: auto !important;
 }
 .wrapperNew .SCMonth .SCElement > div {
-  width: 80px !important;
+  width: auto !important;
+}
+.wrapperNew .SCDay > div,
+.wrapperNew .SCMonth > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  justify-content: center;
 }
 .next {
   width: 40px !important;
@@ -721,25 +807,53 @@ div#NewReservation .num_guests .btn-secondary label {
 }
 
 span.button-checkbox {
-  background: #ddd;
   overflow: hidden;
   padding: 10px 0;
   margin-left: 5px;
 }
+#NewReservation {
+  span {
+    &.button-checkbox {
+      .btn-secondary {
+        background-color: #f4f5f8;
+        border-color: #f4f5f8;
+        color: #7a808a;
+        &.selected {
+          background: #5056ca;
+          border-color: #5056ca;
+          box-shadow: none;
+          color: #fff;
+        }
+      }
+    }
+  }
+}
 
-.hidden {
+span.button-checkbox .btn-secondary .hidden {
   display: none;
 }
 
-.selected {
-  background: #5056ca;
-  border-color: #5056ca;
-  box-shadow: none;
-}
 .slot-symbol {
   display: grid;
   margin: 10px 0;
   grid-template-columns: auto 1fr;
   grid-gap: 10px;
+}
+.scroll-history {
+  max-height: 178px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.hiddenCB input[type='checkbox'] {
+  display: none;
+}
+.hiddenCB label {
+  cursor: pointer;
+}
+.hiddenCB input[type='checkbox'] + label:hover {
+  background: rgba(59, 56, 255, 0.6);
+}
+.hiddenCB input[type='checkbox']:checked + label:hover {
+  background: rgba(59, 56, 255, 0.5);
 }
 </style>

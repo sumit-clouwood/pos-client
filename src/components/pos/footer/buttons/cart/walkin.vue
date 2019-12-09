@@ -1,15 +1,17 @@
 <template>
-  <div class="button">
-    <div class="template-btn">
-      <div class="pay-now">
-        <pay class="pay-btn-holder" @pay="payNow"></pay>
+  <div>
+    <div class="button">
+      <div class="template-btn">
+        <div class="pay-now">
+          <pay class="pay-btn-holder" @pay="payNow"></pay>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-/* global clickPayNow showModal */
-import { mapState } from 'vuex'
+/* global , clickPayNow */
+import { mapGetters, mapState } from 'vuex'
 import pay from './common/pay'
 export default {
   name: 'WalkinBtn',
@@ -17,13 +19,12 @@ export default {
     pay,
   },
   computed: {
-    ...mapState('order', ['orderSource', 'items']),
+    ...mapGetters('location', ['_t']),
+    ...mapState('order', ['items', 'orderSource']),
   },
   methods: {
     payNow() {
-      if (this.orderSource === 'backend') {
-        showModal('#modificationReason')
-      } else if (this.items.length) {
+      if (this.items.length) {
         clickPayNow()
       }
     },

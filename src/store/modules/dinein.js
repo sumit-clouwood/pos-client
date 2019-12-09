@@ -13,6 +13,7 @@ const state = {
   kitchenPrint: true,
   bills: null,
   guests: 1,
+  updateTableArea: 0,
   statusFlag: 0,
   tableZoomScale: 0.4,
   orderDetails: false,
@@ -23,7 +24,7 @@ const state = {
   activeArea: false,
   loading: true,
   tablesOnArea: false,
-  tableStatus: {},
+  tableStatus: false,
   orderOnTables: {},
   availableTables: false,
   selectedTable: false,
@@ -91,7 +92,7 @@ const actions = {
       dispatch('getDineInTables'),
       dispatch('getCovers'),
       dispatch('getBookedTables', false),
-      dispatch('getDineInArea'),
+      // dispatch('getDineInArea'),
     ])
     commit(mutation.LOADING, false)
   },
@@ -107,24 +108,29 @@ const actions = {
       DineInService.updateReservationStatus(...params)
         .then(response => {
           commit(mutation.RESERVATION_ID, false)
-          dispatch('dineInRunningOrders', false)
-          dispatch('getTableStatus', false)
+          dispatch('getBookedTables', false)
+          /*dispatch('dineInRunningOrders', false)
+          dispatch('getTableStatus', false)*/
           resolve(response.data)
         })
         .catch(er => reject(er))
     })
   },
-  async getBookedTables({ commit }, loader = false) {
-    // eslint-disable-next-line no-console
-    console.log('all bookend table')
-
-    if (loader) commit(mutation.LOADING, loader)
-    /*localStorage.setItem('reservationId', false)*/
-    await DineInService.getAllBookedTables().then(response => {
-      commit(mutation.BOOKED_TABLES, response.data)
-      if (loader) commit(mutation.LOADING, false)
+  getBookedTables({ commit, dispatch }, loader = false) {
+    return new Promise((resolve, reject) => {
+      if (loader) commit(mutation.LOADING, loader)
+      /*localStorage.setItem('reservationId', false)*/
+      DineInService.getAllBookedTables()
+        .then(response => {
+          commit(mutation.BOOKED_TABLES, response.data)
+          // eslint-disable-next-line no-console
+          console.log(response.data.data, 'boked data')
+          dispatch('getDineInArea')
+          if (loader) commit(mutation.LOADING, false)
+          return resolve()
+        })
+        .catch(er => reject(er))
     })
-    return Promise.resolve()
   },
 
   seOrderData({ commit }, response) {
@@ -218,6 +224,7 @@ const actions = {
     return Promise.resolve()
   },
   getTableStatus({ commit, state }) {
+    commit(mutation.TABLE_STATUS, false)
     let tableStatus = {
       availableCount: 0,
       unavailableCount: 0,
@@ -271,6 +278,8 @@ const actions = {
               startTime: order.start_time,
             })
           })
+          // eslint-disable-next-line no-console
+          // console.log('order->length')
           if (
             tableArray[table_details.id].includes(
               CONST.ORDER_STATUS_RESERVED
@@ -304,13 +313,15 @@ const actions = {
           parseInt(tableStatus.availableSoonCount)*/
           table_details.status.color = '#62bb31'
           table_details.status.text = 'available'
-          // eslint-disable-next-line no-console
-          // console.log(table_details, 'Rajeev')
           tableStatus.table.push(table_details)
+          // eslint-disable-next-line no-console
+          // console.log('order no  length')
         }
         commit(mutation.ORDER_ON_TABLES, orderOnTable)
       })
     }
+    // eslint-disable-next-line no-console
+    console.log('order no item length', tableStatus)
     commit(mutation.TABLE_STATUS, tableStatus)
   },
 
@@ -390,6 +401,7 @@ const actions = {
             commit(mutation.LOADING, false)
           })
           commit('order/ORDER_TYPE', state.orderType, { root: true })
+          dispatch('getBookedTables', false)
         })
         .catch(error => reject(error))
     })
@@ -528,6 +540,7 @@ const mutations = {
   },
   [mutation.TABLE_STATUS](state, tableStatus) {
     state.tableStatus = tableStatus
+    if (tableStatus) state.updateTableArea = Math.floor(Math.random() * 10000)
   },
   [mutation.COVERS](state, covers) {
     state.covers = covers.data
@@ -556,6 +569,7 @@ const mutations = {
   [mutation.BOOKED_TABLES](state, bookedTables) {
     state.allBookedTables.orders = bookedTables.data
     state.allBookedTables.lookup = bookedTables.page_lookups
+    // state.updateTableArea = Math.floor(Math.random() * 10000)
   },
   [mutation.PAGE_LOOKUP](state, lookups) {
     state.areaLookup = lookups

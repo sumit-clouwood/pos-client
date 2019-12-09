@@ -38,12 +38,12 @@
             </tbody>-->
             <tbody>
               <tr v-for="(reservation, index) in reservations" :key="index">
-                <td>
-                  {{ reservation.guest_fname + ' ' + reservation.guest_lname }}
+                <td class="text-capitalize">
+                  {{ customerName(reservation) }}
                 </td>
                 <td>
                   <!--{{ reservation.start_date }},-->
-                  {{ reservation.start_time }}
+                  {{ DateTime.convertTime24to12(reservation.start_time) }}
                 </td>
                 <td>
                   {{ getAreaName(reservation.assigned_table_id) }} /
@@ -55,12 +55,27 @@
                   }}
                 </td>
                 <td class="mr-1 reservation-actions">
-                  <button class="btn btn-success">
+                  <button
+                    class="btn btn-success"
+                    @click="
+                      editReservation({
+                        id: reservation.assigned_table_id,
+                        popup: false,
+                        reservationId: reservation._id,
+                      })
+                    "
+                  >
                     <span class="fa fa-check"></span>
                   </button>
                   <button
                     class="btn btn-warning"
-                    @click="editReservation(reservation._id)"
+                    @click="
+                      editReservation({
+                        id: reservation.assigned_table_id,
+                        popup: true,
+                        reservationId: reservation._id,
+                      })
+                    "
                   >
                     <span class="fa fa-edit"></span>
                   </button>
@@ -84,14 +99,18 @@
           <button
             class="btn btn-success"
             data-toggle="modal"
-            @click="activeDateSelector"
+            @click="newReservation"
           >
             {{ _t('New Reservation') }}
           </button>
         </div>
       </div>
       <TableDraw />
-      <NewReservation :dateSelector="newDtPicker" />
+      <NewReservation
+        :dateSelector="newDtPicker"
+        :reservationInformation="selectedReservation"
+        :edit="editStatus"
+      />
       <div
         class="modal"
         id="confirmReservation"
@@ -162,10 +181,11 @@ export default {
   computed: {
     ...mapState('dinein', ['tablesOnArea', 'dineInTabType', 'availableTables']),
     ...mapGetters('location', ['_t']),
-    ...mapState('dineinReservation', ['reservations']),
+    ...mapState('dineinReservation', ['reservations', 'selectedReservation']),
   },
   data() {
     return {
+      editStatus: false,
       newDtPicker: false,
       calendarOpen: false,
       newDetails: false,
@@ -181,19 +201,74 @@ export default {
       this.cal()
   },
   methods: {
-    activeDateSelector() {
+    customerName(reservation) {
+      return reservation.guest_fname.length
+        ? reservation.guest_fname + ' ' + reservation.guest_lname
+        : 'Anonymous'
+    },
+    newReservation() {
+      this.editStatus = false
       this.newDtPicker = true
+      let selectedReservation = {
+        status: 'booked',
+        customers: [],
+        number_of_guests: 1,
+      }
+      this.$store.commit(
+        'dineinReservation/SELECTED_RESERVATION',
+        selectedReservation
+      )
+      this.$store.commit('dineinReservation/USER_HISTORY', false)
       $('#NewReservation').modal('show')
-      this.$store.dispatch('dineinReservation/getTakenBy')
+      /*let obj = new Date()
+      let day = obj.getDay() + 1
+      $('.SCDayNum:contains(' + day + ')').click()*/
     },
     cancelReservation(id) {
       this.cancelReservationMsg = 'Do you want to cancel this reservation?'
       $('#confirmReservation').modal('show')
       this.selectedReservationId = id
     },
-    editReservation(id) {
-      this.activeDateSelector()
-      this.selectedReservationId = id
+    editReservation(data) {
+      let id = data.id
+      let popup = data.popup
+      this.selectedReservationId = data.reservationId
+      this.editStatus = this.editStatus ? false : true
+      let getReservation = this.reservations.find(
+        reservation => reservation['_id'] == this.selectedReservationId
+      )
+      if (popup) {
+        this.editStatus = popup
+        this.newDtPicker = true
+        this.$store.dispatch(
+          'dineinReservation/getUserHistory',
+          getReservation.guest_phone
+        )
+        this.$store.commit(
+          'dineinReservation/SELECTED_RESERVATION',
+          getReservation
+        )
+        $('#NewReservation').modal('show')
+        // eslint-disable-next-line no-console
+        console.log(getReservation)
+      } else {
+        let data = {
+          assigned_table_id: id,
+          customers: [],
+          number_of_guests: getReservation.number_of_guests,
+          start_date: getReservation.start_date,
+          start_time: getReservation.start_time,
+          status: 'reserved',
+        }
+        this.$store
+          .dispatch('dineinReservation/editTable', {
+            data: data,
+            id: getReservation._id,
+          })
+          .then(() => {
+            // alert('success')
+          })
+      }
     },
 
     confirmCancelReservation() {
@@ -275,7 +350,13 @@ export default {
           scope.selectedDate = cal.currentDate
           scope.calendarOpen = true
           scope.getReservationByDate(cal.currentDate)
-          // $('#wtf').html('Selected date: ' + cal.currentDate)
+
+          // below section for change another calendar date according to this
+          let getUTC = scope.$store.getters['dineinReservation/getUTCDate'](
+            cal.currentDate
+          ).split('-')
+          let getDay = getUTC[2] || false
+          if (getDay) $('.SCDayNum:contains(' + getDay + ')').click()
         },
       })
     },

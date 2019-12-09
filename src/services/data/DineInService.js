@@ -83,11 +83,25 @@ export default {
       `/model/reservations?page_id=reservations_main_tbl&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&status=reserved&byColumn=1&orderBy=priority&start_date=${UTC_Date}`
     )
   },
-  bookedTables(page, limit, UTC_Date) {
+  bookedTables(page, limit, UTC_Date, status) {
     return DataService.get(
-      `/model/reservations?page_id=tables_booked&limit=${limit}&ascending=1&page=${page}&byColumn=1&start_date=${UTC_Date}`
+      `/model/reservations?page_id=tables_booked&limit=${limit}&ascending=1&page=${page}&byColumn=1&start_date=${UTC_Date}&status=${status}`
     )
   },
+  editTableStatus(details) {
+    return DataService.post(
+      `/model/reservations/id/${details.id}/edit`,
+      details.data
+    )
+  },
+
+  /*{
+    "assigned_table_id": "5d5e30f2cf561545c62ce4da",
+    "customers": [],
+    "number_of_guests": 5,
+    "start_date": "2019-11-27",
+    "start_time": "11:59"
+  }*/
   /*getDetails(mobileNo) {
     return DataService.get(
       `/model/reservations?page_id=reservations_main_tbl&query=&mobile=${mobileNo}`

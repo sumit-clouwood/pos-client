@@ -8,8 +8,8 @@
 
 @font-face {
   font-family: 'ProximaNova-Regular';
-  src: url('#{$assets-address}ProximaNova-Regular.woff') format('woff');
-  src: url('#{$assets-address}ProximaNova-Regular.woff2') format('woff');
+  src: url('/fonts/ProximaNova-Regular.woff') format('woff');
+  src: url('/fonts/ProximaNova-Regular.woff2') format('woff');
   font-style: normal;
   font-weight: normal;
 }
@@ -384,7 +384,7 @@ h4,
 h5,
 h6 {
   font-weight: 600;
-  color: rgba(63, 74, 74, 0.8);
+  color: #3d3f43;
   margin: 0;
 }
 
