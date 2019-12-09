@@ -119,6 +119,7 @@
                     data-target="#dine-in-table-selection"
                     data-toggle="modal"
                     class="btn btn-secondary btn-lg btn-block res-select-table"
+                    :class="{ activeTable: selectedTable != false }"
                   >
                     {{
                       selectedTable != false &&
@@ -855,5 +856,10 @@ span.button-checkbox .btn-secondary .hidden {
 }
 .hiddenCB input[type='checkbox']:checked + label:hover {
   background: rgba(59, 56, 255, 0.5);
+}
+.res-select-table.activeTable {
+  background: #5056ca;
+  color: #fff;
+  border-color: #5056ca;
 }
 </style>

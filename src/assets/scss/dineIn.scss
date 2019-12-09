@@ -395,7 +395,7 @@ table#running-order {
     vertical-align: middle;
   }
 
-  td.done-soon-order {
+  .done-soon-order {
     > span {
       border-radius: $px4;
       background-color: #faa03c;
@@ -407,8 +407,7 @@ table#running-order {
     }
   }
 
-  td {
-    &.completed-order {
+  .completed-order {
       > span {
         border-radius: $px4;
         background-color: $green;
@@ -419,9 +418,7 @@ table#running-order {
         align-items: center;
       }
     }
-  }
 
-  td {
     .running-actions {
       > span.finished-order {
         border-radius: $px4;
@@ -431,10 +428,19 @@ table#running-order {
         color: $white !important;
         padding: $px5;
       }
-    }
+  }
+    .dine-running-actions {
+       span.finished-order {
+        border-radius: $px4;
+        background-color: $green;
+        display: inline-block !important;
+        font-size: $px12 !important;
+        color: $white !important;
+        padding: $px5;
+      }
   }
 
-  td.running-order-details {
+.running-order-details {
     > span {
       border-radius: $px4;
       background-color: #e73030;
@@ -831,7 +837,10 @@ span.dinefor-paynow svg {
 }
 span.dinefor-paynow > a {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: 28px auto;
+  min-width: 115px;
+  justify-content: center;
+  align-items: center;
 }
 
 .table-order-view-wrapper {
@@ -1371,6 +1380,18 @@ button.res-select-table{
   background: #e4e8f1;
   border-color: #e4e8f1;
   color: #3d3f43;
+}
+.finished-order {
+  background: #62bb31;
+  color: #fff;
+  font-size: 12px;
+  padding: 0.625rem;
+  display: grid;
+  align-items: center;
+  width: 115px;
+  border-radius: 4px;
+  line-height: 10px;
+  margin-top: 0.5em;
 }
 @media only screen and (max-width: 960px){
   #NewReservation{

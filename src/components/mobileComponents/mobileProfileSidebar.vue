@@ -109,7 +109,7 @@
             </div>
             <div class="profile-menu-item-text">Support</div>
           </div>
-          --><!--<div class="profile-menu-item">
+          <!--<div class="profile-menu-item">
             <div class="profile-menu-item-icon">
               <svg
                 width="24"
