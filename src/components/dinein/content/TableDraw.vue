@@ -653,14 +653,20 @@ export default {
             getWidth = 445 / 2
           }
         }
-        /*start square screen code*/
-        let posY = $('#id_' + datum._id).offset().top
-        top -= posY
-        /*end square screen code*/
-        if (top < 0) top = 0
         let left = posX - getWidth
+
+        let resolution = window.screen
+        if (resolution.availHeight <= 768 && resolution.availWidth <= 1024) {
+          /*start square screen code*/
+          let posY = $('#id_' + datum._id).offset().top
+          top -= posY
+          if (tableX > 3000) left -= 80
+          /*end square screen code*/
+        }
+
+        // alert(window.screen.availHeight + ' > ' + window.screen.availWidth)
+        if (top < 0) top = 0
         if (left < 0) left = 0
-        if (tableX > 3000) left -= 80
         range
           .parent('div')
           .attr(
