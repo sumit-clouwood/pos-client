@@ -634,9 +634,10 @@ export default {
       if (this.brand.book_table || this.orderDetails.length) {
         // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
         let range = $('#range')
-        let top =
+        /*let top =
           datum.table_position_coordinate.y / 2 +
-            $('#id_' + datum._id).offset().top || 0
+            $('#id_' + datum._id).offset().top || 0*/
+        let top = datum.table_position_coordinate.y + 20 || 0
         let posX = $('#id_' + datum._id).offset().left
         let tableX = $('#id_' + datum._id).attr('x')
         let getWidth = 361 / 2
@@ -660,10 +661,9 @@ export default {
           /*start square screen code*/
           let posY = $('#id_' + datum._id).offset().top
           top -= posY
-          if (tableX > 3000) left -= 80
           /*end square screen code*/
         }
-
+        if (tableX > 3000) left -= 80
         // alert(window.screen.availHeight + ' > ' + window.screen.availWidth)
         if (top < 0) top = 0
         if (left < 0) left = 0
