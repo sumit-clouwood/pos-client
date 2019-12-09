@@ -395,7 +395,7 @@ table#running-order {
     vertical-align: middle;
   }
 
-  td.done-soon-order {
+  .done-soon-order {
     > span {
       border-radius: $px4;
       background-color: #faa03c;
@@ -407,8 +407,7 @@ table#running-order {
     }
   }
 
-  td {
-    &.completed-order {
+  .completed-order {
       > span {
         border-radius: $px4;
         background-color: $green;
@@ -419,9 +418,7 @@ table#running-order {
         align-items: center;
       }
     }
-  }
 
-  td {
     .running-actions {
       > span.finished-order {
         border-radius: $px4;
@@ -431,10 +428,19 @@ table#running-order {
         color: $white !important;
         padding: $px5;
       }
-    }
+  }
+    .dine-running-actions {
+       span.finished-order {
+        border-radius: $px4;
+        background-color: $green;
+        display: inline-block !important;
+        font-size: $px12 !important;
+        color: $white !important;
+        padding: $px5;
+      }
   }
 
-  td.running-order-details {
+.running-order-details {
     > span {
       border-radius: $px4;
       background-color: #e73030;
