@@ -638,6 +638,7 @@ export default {
           datum.table_position_coordinate.y / 2 +
             $('#id_' + datum._id).offset().top || 0
         let posX = $('#id_' + datum._id).offset().left
+        let tableX = $('#id_' + datum._id).attr('x')
         let getWidth = 361 / 2
         if (this.orderDetails.length === 0) {
           getWidth = 155 / 2
@@ -659,7 +660,7 @@ export default {
         if (top < 0) top = 0
         let left = posX - getWidth
         if (left < 0) left = 0
-
+        if (tableX > 3000) left -= 80
         range
           .parent('div')
           .attr(
