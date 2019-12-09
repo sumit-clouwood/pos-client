@@ -48,6 +48,7 @@ const state = {
   totalItemsPaid: 0,
   orderSource: null,
   modificationReasons: [],
+  processing: false,
 }
 
 // getters
@@ -1337,6 +1338,9 @@ const actions = {
         .then(() => {
           dispatch('addOrderToCart', orderData.item)
             .then(() => {
+              commit('checkout/SPLIT_PAID', false, { root: true })
+              commit(mutation.SET_SPLIT_BILL, false)
+              commit(mutation.SET_SPLITTED, false)
               dispatch('surchargeCalculation')
               resolve()
             })
@@ -1380,15 +1384,27 @@ const actions = {
     dispatch('updateOrderAction', { order, orderType, actionTrigger })
   },
 
-  updateOrderAction({ dispatch }, { order, orderType, actionTrigger }) {
+  updateOrderAction(
+    { dispatch, state, commit },
+    { order, orderType, actionTrigger }
+  ) {
+    if (state.processing) {
+      return false
+    }
+
+    commit('SET_PROCESSING', true)
     if (actionTrigger === 'addToDriverBucket') {
       dispatch('deliveryManager/addOrderToDriverBucket', order, {
         root: true,
       })
+        .then(() => {})
+        .catch(() => {})
+        .finally(() => commit('SET_PROCESSING', false))
     } else {
       let data = { driver: state.selectedDriver }
-      OrderService.updateOrderAction(order._id, actionTrigger, data).then(
-        response => {
+
+      OrderService.updateOrderAction(order._id, actionTrigger, data)
+        .then(response => {
           if (response.status == 200) {
             switch (orderType) {
               case 'hold':
@@ -1403,8 +1419,8 @@ const actions = {
                 break
             }
           }
-        }
-      )
+        })
+        .finally(() => commit('SET_PROCESSING', false))
     }
   },
   updateOrderCancelAction(
@@ -1721,6 +1737,9 @@ const mutations = {
       return item
     })
     state.items = newitems
+  },
+  SET_PROCESSING(state, status) {
+    state.processing = status
   },
 }
 

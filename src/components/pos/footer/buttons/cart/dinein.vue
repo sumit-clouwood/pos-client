@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="orderSource === 'backend'">
+    <div v-if="orderSource === 'backend' || billSplit">
       <div class="button">
         <div class="template-btn">
           <div class="pay-now">
@@ -61,6 +61,15 @@ export default {
     ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('checkoutForm', ['processing']),
     ...mapState('location', ['brand']),
+    billSplit() {
+      if (this.$store.state.checkout.splitPaid) {
+        return true
+      }
+      if (this.$store.state.order.splitBill) {
+        return true
+      }
+      return false
+    },
   },
   methods: {
     payNow() {
