@@ -20,6 +20,7 @@ div#user-details .modal-dialog {
   display: grid;
   grid-template-columns: auto 1fr;
   grid-column-gap: 1.25rem;
+  word-break: break-word;
 }
 .profile-container .items .caption, .profile-brand-container .items .caption {
   text-transform: uppercase;
