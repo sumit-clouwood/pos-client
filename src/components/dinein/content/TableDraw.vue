@@ -578,7 +578,9 @@ export default {
         let midX = nodeDims.width / 2 + x
         let midY = nodeDims.height / 2 + y
         d3.select(d3.select(a[i]).node().parentNode).attr('transform', () => {
-          return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${data.table_position_coordinate.angle},${midX},${midY})`
+          return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${
+            data.table_position_coordinate.angle
+          },${midX},${midY})`
         })
       })
     },

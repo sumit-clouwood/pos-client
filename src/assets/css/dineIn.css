@@ -598,7 +598,6 @@ span.dinefor-paynow svg {
 span.dinefor-paynow > a {
   display: grid;
   grid-template-columns: 28px auto;
-  min-width: 115px;
   justify-content: center;
   align-items: center; }
 

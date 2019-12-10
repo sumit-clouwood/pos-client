@@ -83,27 +83,6 @@
                         </div>
                       </div>
                       <span
-                        v-if="order.order_system_status !== 'cancelled'"
-                        @click="selectedOrderDetails(order._id)"
-                        class="open-details-popup cursor-pointer font-weight-bold text-capitalize"
-                        :class="getOrderStatus(order.order_status)"
-                        data-dismiss="modal"
-                        data-target=".bd-example-modal-lg"
-                        data-toggle="modal"
-                      >
-                        #{{ order.order_no }} |
-                        {{
-                          LookupData.replaceUnderscoreHyphon(order.order_status)
-                        }}
-                      </span>
-                      <span
-                        v-else
-                        class="open-details-popup cursor-pointer font-weight-bold text-capitalize"
-                        :class="getOrderStatus(order.order_status)"
-                      >
-                        #{{ order.order_no }} | {{ _t('Cancelled') }}
-                      </span>
-                      <span
                         class="dinefor-paynow"
                         v-if="
                           !waiter &&
@@ -152,6 +131,27 @@
                           </svg>
                           <span class="pay_now">{{ _t('Pay Now') }}</span></a
                         >
+                      </span>
+                      <span
+                        v-if="order.order_system_status !== 'cancelled'"
+                        @click="selectedOrderDetails(order._id)"
+                        class="open-details-popup cursor-pointer font-weight-bold text-capitalize"
+                        :class="getOrderStatus(order.order_status)"
+                        data-dismiss="modal"
+                        data-target=".bd-example-modal-lg"
+                        data-toggle="modal"
+                      >
+                        #{{ order.order_no }} |
+                        {{
+                          LookupData.replaceUnderscoreHyphon(order.order_status)
+                        }}
+                      </span>
+                      <span
+                        v-else
+                        class="open-details-popup cursor-pointer font-weight-bold text-capitalize"
+                        :class="getOrderStatus(order.order_status)"
+                      >
+                        #{{ order.order_no }} | {{ _t('Cancelled') }}
                       </span>
                     </div>
                     <div
@@ -450,5 +450,6 @@ export default {
 button#dropdownMenuButton {
   padding: 3px 10px;
   font-size: 12px;
+  width: 100%;
 }
 </style>
