@@ -110,6 +110,9 @@ const actions = {
       DineInService.updateReservationStatus(...params)
         .then(response => {
           commit(mutation.RESERVATION_ID, false)
+          if (reservationData.status === 'dine_in_about_to_finish')
+            dispatch('dineInRunningOrders', false)
+
           dispatch('getBookedTables', false)
           /*dispatch('dineInRunningOrders', false)
           dispatch('getTableStatus', false)*/

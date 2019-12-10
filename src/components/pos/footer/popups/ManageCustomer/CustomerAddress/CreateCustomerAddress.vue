@@ -149,7 +149,6 @@ export default {
         }
       },
     }),
-    ...mapState('context', ['storeId']),
   },
   methods: {
     checkForm: function(modalStatus) {
@@ -200,7 +199,6 @@ export default {
         const formData = {
           ...this.newAddressDetails,
           delivery_area_id: areaId,
-          store_id: this.storeId,
         }
 
         if (modalStatus == 'Add') {
