@@ -149,7 +149,6 @@ export default {
         }
       },
     }),
-    ...mapState('context', ['storeId']),
   },
   methods: {
     checkForm: function(modalStatus) {
