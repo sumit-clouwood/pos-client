@@ -98,7 +98,7 @@ export default {
         if (
           this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_CARHOP
         ) {
-          this.$router.replace({ name: 'Carhop' })
+          this.$router.replace({ name: 'CarhopOrders' })
         }
       }
       this.$store.commit('order/SET_SPLITTED', false)
@@ -145,9 +145,7 @@ export default {
     print_ready() {
       this.invoiceHtml = this.$refs.print_template.$el.outerHTML
       //console.log('in print ready html length', this.invoiceHtml.length)
-      var body = `<html><head><title>${
-        this.order_title
-      }</title><style lang="css" scoped>
+      var body = `<html><head><title>${this.order_title}</title><style lang="css" scoped>
           .invoice-body {
               overflow-y: auto;
               height: 100%;
@@ -397,9 +395,7 @@ export default {
               display: table-row-group;
           }
 
-        </style></head><body style="width:100%">${
-          this.invoiceHtml
-        }</body></html>`
+        </style></head><body style="width:100%">${this.invoiceHtml}</body></html>`
       this.iframe_body = body
       //1. to print in new window
       //this.doPrint()
