@@ -146,6 +146,12 @@ const actions = {
   },
 
   injectCrmData({ rootState }, order) {
+    //add referral
+    if (rootState.order.referral) {
+      //order.referral = rootState.order.referral.referralName
+      order.referral = rootState.order.referral.referralId
+    }
+
     if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY) {
       //order was modifying from delivery so no need to overwrite info
       order.customer = rootState.order.selectedOrder.item.customer
@@ -528,11 +534,7 @@ const actions = {
 
               //add order note
               order.order_note = rootState.order.orderNote
-              //add referral
-              if (rootState.order.referral) {
-                //order.referral = rootState.order.referral.referralName
-                order.referral = rootState.order.referral.referralId
-              }
+
               //add future order
               if (rootState.order.futureOrder) {
                 order.future_order = 1
