@@ -73,13 +73,17 @@ const getters = {
         )
         if (checkDeliveryArea) {
           const deliveryArea = getters.findDeliveryArea(checkDeliveryArea._id)
-          if (deliveryArea.min_order_value) {
-            area.min_order_value = deliveryArea.min_order_value
+          if (deliveryArea) {
+            if (deliveryArea.min_order_value) {
+              area.min_order_value = deliveryArea.min_order_value
+            }
+            if (deliveryArea.special_order_surcharge) {
+              area.special_order_surcharge =
+                deliveryArea.special_order_surcharge
+            }
+
+            return area
           }
-          if (deliveryArea.special_order_surcharge) {
-            area.special_order_surcharge = deliveryArea.special_order_surcharge
-          }
-          return area
         }
       })
     }
