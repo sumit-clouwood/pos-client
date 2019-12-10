@@ -59,8 +59,8 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-/* global $ hideModal */
+import { mapGetters, mapState } from 'vuex'
+/* global $ hideModal showModal */
 export default {
   name: 'GiftCard',
   data: function() {
@@ -71,6 +71,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('order', ['orderSource']),
   },
   methods: {
     stopProcess() {
@@ -93,31 +94,35 @@ export default {
               payable <= 0.1 ||
               this.$store.state.checkoutForm.action == 'pay'
             ) {
-              if (this.$store.getters['checkoutForm/validate']) {
-                $('#payment-msg').modal('show')
-                this.$store.commit('order/IS_PAY', 1)
-                this.$store.commit('checkoutForm/SET_PROCESSING', true)
+              if (this.orderSource === 'backend') {
+                showModal('#modificationReason')
+              } else {
+                if (this.$store.getters['checkoutForm/validate']) {
+                  $('#payment-msg').modal('show')
+                  this.$store.commit('order/IS_PAY', 1)
+                  this.$store.commit('checkoutForm/SET_PROCESSING', true)
 
-                this.$store
-                  .dispatch(
-                    'checkout/pay',
-                    this.$store.state.order.orderType.OTApi
-                  )
-                  .then(() => {
-                    $('#payment-msg').modal('show')
-                    setTimeout(function() {
-                      $('#payment-screen-footer').prop('disabled', false)
-                    }, 1000)
-                  })
-                  .catch(() => {
-                    setTimeout(() => {
-                      $('#payment-msg').modal('hide')
-                      $('#payment-screen-footer').prop('disabled', false)
-                    }, 500)
-                  })
-                  .finally(() => {
-                    this.$store.commit('checkoutForm/SET_PROCESSING', false)
-                  })
+                  this.$store
+                    .dispatch(
+                      'checkout/pay',
+                      this.$store.state.order.orderType.OTApi
+                    )
+                    .then(() => {
+                      $('#payment-msg').modal('show')
+                      setTimeout(function() {
+                        $('#payment-screen-footer').prop('disabled', false)
+                      }, 1000)
+                    })
+                    .catch(() => {
+                      setTimeout(() => {
+                        $('#payment-msg').modal('hide')
+                        $('#payment-screen-footer').prop('disabled', false)
+                      }, 500)
+                    })
+                    .finally(() => {
+                      this.$store.commit('checkoutForm/SET_PROCESSING', false)
+                    })
+                }
               }
               hideModal('#card-payemnt')
             }
