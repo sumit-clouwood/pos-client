@@ -82,8 +82,8 @@
                           >
                         </div>
                       </div>
-                      <span
-                        class="dinefor-paynow"
+                      <button
+                        class="dinefor-paynow btn btn-success"
                         v-if="
                           !waiter &&
                             tabName !== 'completed' &&
@@ -131,11 +131,11 @@
                           </svg>
                           <span class="pay_now">{{ _t('Pay Now') }}</span></a
                         >
-                      </span>
-                      <span
+                      </button>
+                      <button
                         v-if="order.order_system_status !== 'cancelled'"
                         @click="selectedOrderDetails(order._id)"
-                        class="open-details-popup cursor-pointer font-weight-bold text-capitalize"
+                        class="open-details-popup text-capitalize btn btn-danger"
                         :class="getOrderStatus(order.order_status)"
                         data-dismiss="modal"
                         data-target=".bd-example-modal-lg"
@@ -145,14 +145,14 @@
                         {{
                           LookupData.replaceUnderscoreHyphon(order.order_status)
                         }}
-                      </span>
-                      <span
+                      </button>
+                      <button
                         v-else
-                        class="open-details-popup cursor-pointer font-weight-bold text-capitalize"
+                        class="open-details-popup btn btn-success text-capitalize"
                         :class="getOrderStatus(order.order_status)"
                       >
                         #{{ order.order_no }} | {{ _t('Cancelled') }}
-                      </span>
+                      </button>
                     </div>
                     <div
                       :key="j"
@@ -194,8 +194,8 @@
             <td class="order-time-det">
               <div class="action-status">
                 <div>
-                  <span
-                    class="dinefor-paynow"
+                  <button
+                    class="dinefor-paynow btn btn-success"
                     v-if="orderTable.table.status == 'in-progress'"
                     @click="
                       reservationUpdateStatus({
@@ -225,9 +225,9 @@
                       </g>
                     </svg>
                     <span class="pay_now">{{ _t('About to Finish') }}</span>
-                  </span>
-                  <span
-                    class="dinefor-paynow"
+                  </button>
+                  <button
+                    class="dinefor-paynow btn btn-success"
                     v-if="orderTable.table.status == 'on-a-way'"
                     @click="completeOrder(orderTable.table._id)"
                   >
@@ -252,7 +252,7 @@
                       </g>
                     </svg>
                     <span class="pay_now">{{ _t('Complete') }}</span>
-                  </span>
+                  </button>
                 </div>
               </div>
               <span class="timeago elapsedTime delManTime runningtime" title="">
@@ -448,8 +448,6 @@ export default {
 }
 
 button#dropdownMenuButton {
-  padding: 3px 10px;
-  font-size: 12px;
   width: 100%;
 }
 </style>
