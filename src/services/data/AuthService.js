@@ -18,8 +18,10 @@ export default {
       }
     })
   },
-  getRoles() {
-    return DataService.get('/model/brand_roles?no_limit=true')
+  getRoles(brandRoleId) {
+    return DataService.get(
+      `/model/brand_roles?no_limit=true&byColumn=1&_id=${brandRoleId}`
+    )
   },
   getUsers(roleId) {
     return DataService.get(

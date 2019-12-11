@@ -188,20 +188,26 @@ const actions = {
     })
   },
 
-  getUserDetails({ commit }, userId) {
+  getUserDetails({ commit, dispatch, state }, userId) {
     return new Promise((resolve, reject) => {
       if (userId) {
         AuthService.userDetails(userId).then(response => {
           commit(mutation.USER_DETAILS, response.data)
-          resolve()
+          dispatch('fetchRoles', state.userDetails.item.brand_role)
+            .then(() => {
+              resolve()
+            })
+            .catch(() => {
+              reject()
+            })
         })
       } else {
         reject()
       }
     })
   },
-  fetchRoles({ commit, getters }) {
-    AuthService.getRoles().then(rolesPermissions => {
+  fetchRoles({ commit, getters }, brandRoleId) {
+    AuthService.getRoles(brandRoleId).then(rolesPermissions => {
       commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
       const cashierRole = getters.getRole('Cashier')
       AuthService.getUsers(cashierRole._id).then(cashiers => {
