@@ -119,11 +119,11 @@
         </svg>
       </a>
       <ul class="setting-dropdown1">
-        <li v-if="!isWaiter() && !isCarhop()" @click="walkOrder()">
-          <a role="button">{{ _t('Walk In') }}</a>
-        </li>
         <li v-if="!isWaiter() && !isCarhop()">
           <a role="button" class="cursor-pointer">{{ _t('Printers') }}</a>
+        </li>
+        <li v-if="!isWaiter() && !isCarhop() && permitted('dashboard', 'root')">
+          <a :href="dashboard">{{ _t('Dashboard') }}</a>
         </li>
         <li
           v-if="!isWaiter() && !isCarhop() && permitted('transactional_orders')"
@@ -131,14 +131,20 @@
         >
           <a role="button">{{ _t('Transactions') }}</a>
         </li>
-        <li v-if="!isWaiter() && !isCarhop() && permitted('dashboard', 'root')">
-          <a :href="dashboard">{{ _t('Dashboard') }}</a>
-        </li>
         <li v-if="!isWaiter() && !isCarhop() && permitted('crm', 'root')">
           <a :href="crm">{{ _t('CRM') }}</a>
         </li>
+        <li v-if="!isCarhop()">
+          <router-link
+            :to="'/dine-in' + store"
+            role="button"
+            class="cursor-pointer"
+          >
+            {{ _t('Dine-In') }}
+          </router-link>
+        </li>
         <li v-if="!isWaiter() && !isCarhop() && permitted('menu', 'root')">
-          <a :href="menu">{{ _t('Menu') }}</a>
+          <a :href="menu">{{ _t('Menu Setup') }}</a>
         </li>
         <li v-if="!isWaiter() && !isCarhop() && permitted('delivery', 'root')">
           <a role="button" class="cursor-pointer">
@@ -146,6 +152,9 @@
               {{ _t('Delivery Manager') }}
             </router-link>
           </a>
+        </li>
+        <li v-if="!isWaiter() && !isCarhop()" @click="walkOrder()">
+          <a role="button">{{ _t('Walk In') }}</a>
         </li>
         <li v-if="!isWaiter()">
           <a role="button" class="cursor-pointer">
@@ -318,6 +327,10 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    moveDineSection() {
+      this.$router.push('/dine-in' + this.store)
+      $('.setting-dropdown').css('display', 'none')
+    },
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
