@@ -1405,7 +1405,7 @@ const actions = {
     } else if (
       rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CARHOP
     ) {
-      if (action === 'carhop-place-order') {
+      if (action === 'carhop-place-order' || !rootState.order.orderId) {
         return dispatch('createCarhopOrder', action)
       } else {
         return dispatch('modifyCarhopOrder', action)
