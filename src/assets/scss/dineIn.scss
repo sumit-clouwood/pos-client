@@ -388,7 +388,6 @@ table#running-order {
     background-color: $blue-middle;
     display: inline-block;
     padding: $px6 $px10;
-    margin-left: $px8;
     color: $white;
     font-weight: 600;
     cursor: pointer;
@@ -426,7 +425,7 @@ table#running-order {
         display: inline-block !important;
         font-size: $px12 !important;
         color: $white !important;
-        padding: $px5;
+        padding: $px8;
       }
   }
     .dine-running-actions {
@@ -436,7 +435,7 @@ table#running-order {
         display: inline-block !important;
         font-size: $px12 !important;
         color: $white !important;
-        padding: $px5;
+        padding: $px8;
       }
   }
 
@@ -817,9 +816,10 @@ span.open-details-popup.cursor-pointer.font-weight-bold.running-order-details {
 .running-actions {
   margin-top: 5px;
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: auto auto auto;
   text-align: center;
   align-items: center;
+  grid-gap: 10px;
 
 }
 
@@ -838,7 +838,6 @@ span.dinefor-paynow svg {
 span.dinefor-paynow > a {
   display: grid;
   grid-template-columns: 28px auto;
-  min-width: 115px;
   justify-content: center;
   align-items: center;
 }
@@ -848,7 +847,7 @@ span.dinefor-paynow > a {
   overflow-y: auto;
   overflow-x: hidden;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr auto;
 
   > .table-order-view {
     box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.2), 0 0px 6px 0 rgba(0, 0, 0, 0.19);
@@ -1381,18 +1380,7 @@ button.res-select-table{
   border-color: #e4e8f1;
   color: #3d3f43;
 }
-.finished-order {
-  background: #62bb31;
-  color: #fff;
-  font-size: 12px;
-  padding: 0.625rem;
-  display: grid;
-  align-items: center;
-  width: 115px;
-  border-radius: 4px;
-  line-height: 10px;
-  margin-top: 0.5em;
-}
+
 @media only screen and (max-width: 960px){
   #NewReservation{
     .modal-dialog {
