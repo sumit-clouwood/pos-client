@@ -85,7 +85,8 @@
                       <span
                         class="dinefor-paynow"
                         v-if="
-                          !waiter &&
+                          !isPermitted(PERMISSIONS.WAITER) &&
+                            isPermitted(PERMISSIONS.CAN_RECEIVE_PAYMENTS) &&
                             tabName !== 'completed' &&
                             order.order_status !== 'finished'
                           /*&& order.order_status !== 'cancelled'*/
@@ -350,7 +351,6 @@ export default {
       'tables',
     ]),
     ...mapGetters('dinein', ['getOrderStatus', 'getTableNumber']),
-    ...mapGetters('auth', ['waiter']),
   },
   methods: {
     completeOrder(tableId) {

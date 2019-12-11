@@ -1,7 +1,12 @@
 <template>
   <div class="footer">
     <div class="footer-slider color-dashboard-background">
-      <div v-show="carhop || waiter">
+      <div
+        v-show="
+          isPermitted(PERMISSIONS.CARHOP_USER) ||
+            isPermitted(PERMISSIONS.WAITER)
+        "
+      >
         <ul class="common-menu">
           <li
             class="color-secondary active"
@@ -31,7 +36,12 @@
           </li>
         </ul>
       </div>
-      <div v-show="!carhop && !waiter">
+      <div
+        v-show="
+          !isPermitted(PERMISSIONS.CARHOP_USER) &&
+            !isPermitted(PERMISSIONS.WAITER)
+        "
+      >
         <ul class="footer-slider-list ullist-icons">
           <li
             class="footer-slider-list-item color-secondary"
@@ -290,7 +300,11 @@
       </div>
     </div>
     <div class="footer-buttons color-dashboard-background">
-      <div :class="{ active: items.length > 0 }">
+      <div
+        :class="{
+          active: items.length > 0 && isActive(),
+        }"
+      >
         <div
           v-if="orderType.OTApi === 'dine_in'"
           class="dinein-order pay-btn-holder"
@@ -457,7 +471,6 @@ export default {
       loyaltyCard: state => state.customer.loyalty.card,
     }),
     ...mapState({ selectedCustomer: state => state.customer.customer.name }),
-    ...mapGetters('auth', ['waiter', 'carhop']),
   },
 
   watch: {
@@ -490,6 +503,12 @@ export default {
     // },
   },
   methods: {
+    isActive() {
+      return (
+        this.isPermitted(this.PERMISSIONS.CAN_RECEIVE_PAYMENTS) ||
+        this.isPermitted(this.PERMISSIONS.ORDERS_PLACE_ORDER)
+      )
+    },
     setOrderType(opt) {
       this.$store.commit('order/ORDER_TYPE', opt)
     },

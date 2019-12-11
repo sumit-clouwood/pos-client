@@ -119,22 +119,43 @@
         </svg>
       </a>
       <ul class="setting-dropdown1">
-        <li v-if="!isWaiter() && !isCarhop()">
+        <li
+          v-if="
+            !isPermitted(PERMISSIONS.WAITER) &&
+              !isPermitted(PERMISSIONS.CARHOP_USER)
+          "
+        >
           <a role="button" class="cursor-pointer">{{ _t('Printers') }}</a>
         </li>
-        <li v-if="!isWaiter() && !isCarhop() && permitted('dashboard', 'root')">
+        <li
+          v-if="
+            !isPermitted(PERMISSIONS.WAITER) &&
+              !isPermitted(PERMISSIONS.CARHOP_USER) &&
+              permitted('dashboard', 'root')
+          "
+        >
           <a :href="dashboard">{{ _t('Dashboard') }}</a>
         </li>
         <li
-          v-if="!isWaiter() && !isCarhop() && permitted('transactional_orders')"
+          v-if="
+            !isPermitted(PERMISSIONS.WAITER) &&
+              !isPermitted(PERMISSIONS.CARHOP_USER) &&
+              permitted('transactional_orders')
+          "
           @click="moveTransactionSection(this)"
         >
           <a role="button">{{ _t('Transactions') }}</a>
         </li>
-        <li v-if="!isWaiter() && !isCarhop() && permitted('crm', 'root')">
+        <li
+          v-if="
+            !isPermitted(PERMISSIONS.WAITER) &&
+              !isPermitted(PERMISSIONS.CARHOP_USER) &&
+              permitted('crm', 'root')
+          "
+        >
           <a :href="crm">{{ _t('CRM') }}</a>
         </li>
-        <li v-if="!isCarhop()">
+        <li v-if="!isPermitted(PERMISSIONS.CARHOP_USER)">
           <router-link
             :to="'/dine-in' + store"
             role="button"
@@ -143,37 +164,66 @@
             {{ _t('Dine-In') }}
           </router-link>
         </li>
-        <li v-if="!isWaiter() && !isCarhop() && permitted('menu', 'root')">
+        <li
+          v-if="
+            !isPermitted(PERMISSIONS.WAITER) &&
+              !isPermitted(PERMISSIONS.CARHOP_USER) &&
+              permitted('menu', 'root')
+          "
+        >
           <a :href="menu">{{ _t('Menu Setup') }}</a>
         </li>
-        <li v-if="!isWaiter() && !isCarhop() && permitted('delivery', 'root')">
+        <li
+          v-if="
+            !isPermitted(PERMISSIONS.WAITER) &&
+              !isPermitted(PERMISSIONS.CARHOP_USER) &&
+              permitted('delivery', 'root')
+          "
+        >
           <a role="button" class="cursor-pointer">
             <router-link :to="'/delivery-manager' + store">
               {{ _t('Delivery Manager') }}
             </router-link>
           </a>
         </li>
-        <li v-if="!isWaiter() && !isCarhop()" @click="walkOrder()">
+        <li
+          v-if="
+            !isPermitted(PERMISSIONS.WAITER) &&
+              !isPermitted(PERMISSIONS.CARHOP_USER)
+          "
+          @click="walkOrder()"
+        >
           <a role="button">{{ _t('Walk In') }}</a>
         </li>
-        <li v-if="!isWaiter()">
+        <li v-if="!isPermitted(PERMISSIONS.WAITER)">
           <a role="button" class="cursor-pointer">
             <router-link :to="'/carhop' + store">
               {{ _t('Carhop') }}
             </router-link>
           </a>
         </li>
-        <li v-if="!isWaiter()">
+        <li v-if="!isPermitted(PERMISSIONS.WAITER)">
           <a role="button" class="cursor-pointer">
             <router-link :to="'/carhop-orders' + store">
               {{ _t('Carhop Orders') }}
             </router-link>
           </a>
         </li>
-        <li v-if="!isWaiter() && !isCarhop() && permitted('brand', 'root')">
+        <li
+          v-if="
+            !isPermitted(PERMISSIONS.WAITER) &&
+              !isPermitted(PERMISSIONS.CARHOP_USER) &&
+              permitted('brand', 'root')
+          "
+        >
           <a :href="brand">{{ _t('Settings') }}</a>
         </li>
-        <li v-if="enabledModule('switchCashier') && !isWaiter() && !isCarhop()">
+        <li
+          v-if="
+            !isPermitted(PERMISSIONS.WAITER) &&
+              !isPermitted(PERMISSIONS.CARHOP_USER)
+          "
+        >
           <router-link
             :to="'/cashier-login' + store"
             @click.native="logoutCashier"
@@ -314,7 +364,6 @@ export default {
       },
     },
     ...mapGetters('context', ['store']),
-    ...mapGetters('auth', ['waiter', 'carhop']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType', 'activeArea']),
     ...mapState('sync', ['online']),
@@ -330,12 +379,6 @@ export default {
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
       $('.setting-dropdown').css('display', 'none')
-    },
-    enabledModule(option) {
-      switch (option) {
-        case 'switchCashier':
-          return true
-      }
     },
     walkOrder() {
       this.$router.push(this.store)

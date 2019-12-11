@@ -9,7 +9,7 @@
         </div>
       </div>
     </div>
-    <div v-else-if="isWaiter()">
+    <div v-else-if="isPermitted(PERMISSIONS.WAITER)">
       <div class="button">
         <div class="template-btn">
           <div class="pay-now">
@@ -56,7 +56,6 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapGetters('auth', ['waiter']),
     ...mapState('order', ['items', 'orderSource', 'orderType']),
     ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('checkoutForm', ['processing']),

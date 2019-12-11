@@ -71,7 +71,13 @@
         <DineInCoverSelection />
       </div>
       <div
-        v-if="enabledSplitBill && orderId && covers && cartType !== 'hold'"
+        v-if="
+          enabledSplitBill &&
+            !isPermitted(PERMISSIONS.WAITER) &&
+            orderId &&
+            covers &&
+            cartType !== 'hold'
+        "
         class="driver-container"
       >
         <button
@@ -166,18 +172,13 @@ export default {
         state.order.splitBill && state.order.items.some(item => item.split),
     }),
     ...mapGetters('context', ['store']),
-    ...mapGetters('auth', ['waiter']),
-
     enabledSplitBill() {
       const newItemsAddedToCart = this.$store.state.order.items.some(
         item => typeof item.no === 'undefined'
       )
 
       return (
-        this.brand.split_bill &&
-        this.items.length > 1 &&
-        !this.waiter &&
-        !newItemsAddedToCart
+        this.brand.split_bill && this.items.length > 1 && !newItemsAddedToCart
       )
     },
   },

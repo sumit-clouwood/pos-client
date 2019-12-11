@@ -95,7 +95,10 @@
         <div class="modal-footer">
           <router-link
             :to="'/cashier-login' + store"
-            v-if="enabledModule('switchCashier')"
+            v-if="
+              !isPermitted(PERMISSIONS.CARHOP_USER) &&
+                !isPermitted(PERMISSIONS.WAITER)
+            "
           >
             <button
               @click.native="logoutCashier"
@@ -137,16 +140,9 @@ export default {
       AuthService.logout().then(() => {})
     },
     ...mapActions('auth', ['logout']),
-    enabledModule(option) {
-      switch (option) {
-        case 'switchCashier':
-          return !this.carhop && !this.waiter
-      }
-    },
   },
   computed: {
     ...mapGetters('context', ['store']),
-    ...mapGetters('auth', ['waiter', 'carhop']),
     ...mapState({
       user: state => state.auth.userDetails.item,
       collectedData: state => state.auth.userDetails.collected_data,
