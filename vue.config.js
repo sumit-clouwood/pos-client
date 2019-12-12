@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: '/pos/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/pos/' : '/',
   css: {
     sourceMap: true,
   },
@@ -21,9 +21,9 @@ module.exports = {
     },
   },
   devServer: {
-    port: 80,
+    port: 8081,
     host: '0.0.0.0',
-    disableHostCheck: true,
+
     //open: process.platform === 'darwin',
     //https: true,
     //hotOnly: false,
