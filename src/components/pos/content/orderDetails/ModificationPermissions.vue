@@ -102,7 +102,7 @@
 
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex'
-/* global $ */
+/* global $ hidePayNow */
 export default {
   name: 'ModificationPermissions',
   data() {
@@ -124,7 +124,7 @@ export default {
     ...mapGetters('location', ['_t']),
     ...mapGetters('context', ['store']),
     ...mapState('order', ['modificationReasons', 'selectedOrder']),
-    ...mapState('checkout', ['processing']),
+    ...mapState('checkout', ['processing', 'changedAmount']),
   },
   methods: {
     cancelPayment() {
@@ -171,6 +171,18 @@ export default {
           data: data,
         })
         .then(() => {
+          if (this.changedAmount >= 0.1) {
+            //alert('change amount is due')
+            setTimeout(() => {
+              $('#payment-msg').modal('hide')
+              setTimeout(() => {
+                $('#change-amount').modal('show')
+              }, 500)
+            }, 500)
+          } else if (this.msg) {
+            $('#payment-msg').modal('show')
+          }
+          hidePayNow()
           this.$store.dispatch('checkout/reset', true)
           this.$store.dispatch('order/reset')
 
