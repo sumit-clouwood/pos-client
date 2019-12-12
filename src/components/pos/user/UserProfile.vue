@@ -93,13 +93,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <router-link
-            :to="'/cashier-login' + store"
-            v-if="
-              !isPermitted(PERMISSIONS.CARHOP_USER) &&
-                !isPermitted(PERMISSIONS.WAITER)
-            "
-          >
+          <router-link :to="'/cashier-login' + store" v-if="canPerformAction()">
             <button
               @click.native="logoutCashier"
               id="switch-user-btn-profile"

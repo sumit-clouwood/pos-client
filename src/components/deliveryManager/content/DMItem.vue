@@ -43,7 +43,7 @@
                   }}
                 </div>
                 <div class="button-block" style="visibility: visible;">
-                  <div v-if="actionDetails.action != ''">
+                  <div v-if="actionDetails.action != '' && canMakeReady">
                     <span
                       v-if="
                         orderStatus == 'ready' && actionDetails.driverId == ''
@@ -183,6 +183,12 @@ export default {
       branch: state => state.deliveryManager.availableStores,
     }),
     ...mapGetters('deliveryManager', ['orders']),
+    canMakeReady() {
+      return (
+        this.isPermitted(this.PERMISSIONS.ORDERS_DELIVERY_READY) ||
+        this.isPermitted(this.PERMISSIONS.ORDERS_TAKEAWAY_READY)
+      )
+    },
   },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),

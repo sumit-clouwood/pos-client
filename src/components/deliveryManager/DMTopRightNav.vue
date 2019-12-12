@@ -90,42 +90,21 @@
             </svg>
           </a>
           <ul class="setting-dropdown" style="display:none">
-            <li
-              v-if="
-                !isPermitted(PERMISSIONS.CARHOP_USER) &&
-                  !isPermitted(PERMISSIONS.WAITER)
-              "
-            >
+            <li v-if="canPerformAction()">
               <a role="button">{{ _t('Printers') }}</a>
             </li>
-            <li
-              v-if="
-                !isPermitted(PERMISSIONS.CARHOP_USER) &&
-                  !isPermitted(PERMISSIONS.WAITER) &&
-                  permitted('dashboard', 'root')
-              "
-            >
+            <li v-if="canPerformAction() && permitted('dashboard', 'root')">
               <a :href="dashboard">{{ _t('Dashboard') }}</a>
             </li>
             <li
-              v-if="
-                !isPermitted(PERMISSIONS.CARHOP_USER) &&
-                  !isPermitted(PERMISSIONS.WAITER) &&
-                  permitted('transactional_orders')
-              "
+              v-if="canPerformAction() && permitted('transactional_orders')"
               @click="moveTransactionSection(this)"
             >
               <a role="button">
                 {{ _t('Transactions') }}
               </a>
             </li>
-            <li
-              v-if="
-                !isPermitted(PERMISSIONS.CARHOP_USER) &&
-                  !isPermitted(PERMISSIONS.WAITER) &&
-                  permitted('crm', 'root')
-              "
-            >
+            <li v-if="canPerformAction() && permitted('crm', 'root')">
               <a :href="crm">{{ _t('CRM') }}</a>
             </li>
             <li
@@ -136,22 +115,10 @@
                 {{ _t('Dine In') }}
               </a>
             </li>
-            <li
-              v-if="
-                !isPermitted(PERMISSIONS.CARHOP_USER) &&
-                  !isPermitted(PERMISSIONS.WAITER) &&
-                  permitted('menu', 'root')
-              "
-            >
+            <li v-if="canPerformAction() && permitted('menu', 'root')">
               <a :href="menu">{{ _t('Menu Setup') }}</a>
             </li>
-            <li
-              v-if="
-                !isPermitted(PERMISSIONS.CARHOP_USER) &&
-                  !isPermitted(PERMISSIONS.WAITER) &&
-                  permitted('delivery', 'root')
-              "
-            >
+            <li v-if="canPerformAction() && permitted('delivery', 'root')">
               <router-link
                 :to="'/delivery-manager' + store"
                 role="button"
@@ -160,12 +127,7 @@
                 {{ _t('Delivery Manager') }}
               </router-link>
             </li>
-            <li
-              v-if="
-                !isPermitted(PERMISSIONS.CARHOP_USER) &&
-                  !isPermitted(PERMISSIONS.WAITER)
-              "
-            >
+            <li v-if="canPerformAction()">
               <router-link
                 :to="'/' + store"
                 role="button"
@@ -184,21 +146,10 @@
                 {{ _t('Carhop Orders') }}
               </router-link>
             </li>
-            <li
-              v-if="
-                !isPermitted(PERMISSIONS.CARHOP_USER) &&
-                  !isPermitted(PERMISSIONS.WAITER) &&
-                  permitted('brand', 'root')
-              "
-            >
+            <li v-if="canPerformAction() && permitted('brand', 'root')">
               <a :href="brand">{{ _t('Settings') }}</a>
             </li>
-            <li
-              v-if="
-                !isPermitted(PERMISSIONS.CARHOP_USER) &&
-                  !isPermitted(PERMISSIONS.WAITER)
-              "
-            >
+            <li v-if="canPerformAction()">
               <router-link
                 :to="'/cashier-login' + store"
                 @click.native="logoutCashier"

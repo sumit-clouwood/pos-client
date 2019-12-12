@@ -3,7 +3,11 @@
     <div class="dm-delivery-details-btn">
       <ul class="dm-ullist">
         <li
-          :class="{ active: listType == _t('NEW TAKEAWAY ORDERS') }"
+          :class="{
+            active:
+              listType == _t('NEW TAKEAWAY ORDERS') &&
+              isPermitted(PERMISSIONS.ORDERS_TAKEAWAY_NEW),
+          }"
           data-related="new-Collections"
           @click="
             updateOrderStatus({
@@ -22,7 +26,11 @@
         <li
           class="pick"
           data-related="Waiting-for-Collections"
-          :class="{ active: listType == _t('WAITING FOR COLLECTION') }"
+          :class="{
+            active:
+              listType == _t('WAITING FOR COLLECTION') &&
+              isPermitted(PERMISSIONS.ORDERS_TAKEAWAY_WAITING),
+          }"
           @click="
             updateOrderStatus({
               orderStatus: 'ready',
@@ -42,7 +50,11 @@
         <li
           class="pick"
           data-related="collected"
-          :class="{ active: listType == _t('COLLECTED') }"
+          :class="{
+            active:
+              listType == _t('COLLECTED') &&
+              isPermitted(PERMISSIONS.ORDERS_TAKEAWAY_COLLECTED),
+          }"
           @click="
             updateOrderStatus({
               orderStatus: 'finished',

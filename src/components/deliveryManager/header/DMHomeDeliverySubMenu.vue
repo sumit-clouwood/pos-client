@@ -5,7 +5,11 @@
         <li
           v-if="permitted('home_delivery_new', 'delivery_home')"
           data-related="dm-new-order"
-          :class="{ active: listType == _t('New Orders') }"
+          :class="{
+            active:
+              listType == _t('New Orders') &&
+              isPermitted(PERMISSIONS.ORDERS_HOME_DELIVERY_NEW),
+          }"
           @click="
             updateOrderStatus({
               orderStatus: 'in-progress',
@@ -24,7 +28,11 @@
           v-if="permitted('home_delivery_pick', 'delivery_home')"
           class="pick"
           data-related="dm-waiting-for-pick"
-          :class="{ active: listType == _t('Waiting for Pick') }"
+          :class="{
+            active:
+              listType == _t('Waiting for Pick') &&
+              isPermitted(PERMISSIONS.ORDERS_HOME_DELIVERY_PICK),
+          }"
           @click="
             updateOrderStatus({
               orderStatus: 'ready',
@@ -42,7 +50,11 @@
         <li
           v-if="permitted('home_delivery_in_progress', 'delivery_home')"
           class="pick"
-          :class="{ active: listType == _t('Delivery - In Progress') }"
+          :class="{
+            active:
+              listType == _t('Delivery - In Progress') &&
+              isPermitted(PERMISSIONS.ORDERS_HOME_DELIVERY_IN_PROGRESS),
+          }"
           data-related="dm-delivery-in-progress"
           @click="
             updateOrderStatus({
@@ -62,7 +74,11 @@
           v-if="permitted('home_delivery_finished', 'delivery_home')"
           class="dm-delivered"
           data-related="dm-delivered"
-          :class="{ active: listType == _t('Delivered') }"
+          :class="{
+            active:
+              listType == _t('Delivered') &&
+              isPermitted(PERMISSIONS.ORDERS_HOME_DELIVERY_FINISHED),
+          }"
           @click="
             updateOrderStatus({
               orderStatus: 'finished',
