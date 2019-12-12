@@ -125,9 +125,6 @@ const actions = {
       )
       return Promise.reject()
     }
-    // see if there is a change amount
-    const changedAmount = paid - totalPayable
-    commit(mutation.SET_CHANGED_AMOUNT, changedAmount)
     return Promise.resolve()
   },
 
@@ -255,7 +252,7 @@ const actions = {
     return Promise.resolve(order)
   },
 
-  paymentsHook({ rootState, getters, rootGetters }, { action, order }) {
+  paymentsHook({ rootState, getters, rootGetters, commit }, { action, order }) {
     let totalPaid = 0
 
     if (rootState.checkoutForm.payments.length) {
@@ -376,7 +373,6 @@ const actions = {
 
     //applying Fixing
 
-    order.amount_changed = Num.round(order.amount_changed).toFixed(2)
     order.tip_amount = Num.round(order.tip_amount).toFixed(2)
 
     order.total_paid = Num.round(totalPaid).toFixed(2)
@@ -384,6 +380,10 @@ const actions = {
     //if (order.delivery_surcharge) {
     order.delivery_surcharge = Num.round(order.delivery_surcharge).toFixed(2)
     //}
+    const changedAmount = totalPaid - orderData.balanceDue
+    commit(mutation.SET_CHANGED_AMOUNT, changedAmount)
+
+    order.amount_changed = Num.round(changedAmount).toFixed(2)
 
     return Promise.resolve(order)
   },
@@ -534,10 +534,7 @@ const actions = {
     return Promise.resolve(order)
   },
 
-  pay(
-    { commit, getters, rootGetters, rootState, dispatch, state },
-    { action, data }
-  ) {
+  pay({ commit, getters, rootGetters, rootState, dispatch }, { action, data }) {
     return new Promise((resolve, reject) => {
       commit(mutation.SET_PAYMENT_ACTION, action)
       dispatch('validateEvent', { action: action, data: data })
@@ -579,7 +576,7 @@ const actions = {
                   // order_mode: 'online',
                   //remove the modifiers prices from subtotal
                   print_count: 0,
-                  amount_changed: state.changedAmount,
+                  amount_changed: 0,
                   order_building: '',
                   order_street: '',
                   order_flat_number: '',
@@ -1408,7 +1405,7 @@ const actions = {
     } else if (
       rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CARHOP
     ) {
-      if (action === 'carhop-place-order') {
+      if (action === 'carhop-place-order' || !rootState.order.orderId) {
         return dispatch('createCarhopOrder', action)
       } else {
         return dispatch('modifyCarhopOrder', action)
