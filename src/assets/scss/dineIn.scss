@@ -367,13 +367,6 @@ table#running-order {
     }
 
   }
-
-  .action-status {
-    span.dinefor-paynow {
-      margin-left: 0;
-    }
-  }
-
   .dining-for-button {
     display: inline-block;
     overflow: hidden;
@@ -381,19 +374,6 @@ table#running-order {
     padding: $px4 $px10;
     line-height: 1.45;
   }
-
-  span.dinefor-paynow {
-    width: auto;
-    border-radius: $px4;
-    background-color: $blue-middle;
-    display: inline-block;
-    padding: $px6 $px10;
-    color: $white;
-    font-weight: 600;
-    cursor: pointer;
-    vertical-align: middle;
-  }
-
   .done-soon-order {
     > span {
       border-radius: $px4;
@@ -425,17 +405,7 @@ table#running-order {
         display: inline-block !important;
         font-size: $px12 !important;
         color: $white !important;
-        padding: $px8;
-      }
-  }
-    .dine-running-actions {
-       span.finished-order {
-        border-radius: $px4;
-        background-color: $green;
-        display: inline-block !important;
-        font-size: $px12 !important;
-        color: $white !important;
-        padding: $px8;
+        padding: $px4 $px10;
       }
   }
 
@@ -513,13 +483,22 @@ td.order-time-det {
   touch-action: auto;
 }
 
-span.dinefor-paynow {
-  > svg {
+.dinefor-paynow {
+   svg {
     margin-right: $px10;
     vertical-align: middle;
     width: $px24;
+    height: $px20;
   }
 }
+  .finished-order {
+    background-color: #62bb31;
+    border-color: #62bb31;
+    &:hover {
+      background-color: rgba(98, 187, 49, 0.8);
+      border-color: rgba(98, 187, 49, 0.8);
+    }
+  }
 .dine-in-wrapper > .navigatorHeight {
   //min-height: calc(138vh - 17rem);
   min-height: 101vh;
@@ -794,18 +773,6 @@ div {
     }
   }
 }
-
-span.open-details-popup.cursor-pointer.font-weight-bold.running-order-details {
-  background-color: #e73030;
-  color: #fff;
-  border-radius: $block-border-radius;
-  display: inline-block;
-  padding: 4px 10px;
-  font-size: 12px;
-  line-height: 1.5;
-  font-weight: 100;
-}
-
 .pay_now {
   color: #fff;
   font-size: 12px;
@@ -828,26 +795,14 @@ span.open-details-popup.cursor-pointer.font-weight-bold.running-order-details {
   grid-template-columns: auto auto;
   align-items: center;
 }
-
-span.dinefor-paynow svg {
-  height: 14px;
-}
 .dinein_table svg g:nth-of-type(1) {
   display: none;
-}
-span.dinefor-paynow > a {
-  display: grid;
-  grid-template-columns: 28px auto;
-  justify-content: center;
-  align-items: center;
 }
 
 .table-order-view-wrapper {
   max-height: 150px;
   overflow-y: auto;
   overflow-x: hidden;
-  display: grid;
-  grid-template-columns: 1fr auto;
 
   > .table-order-view {
     box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.2), 0 0px 6px 0 rgba(0, 0, 0, 0.19);
@@ -928,6 +883,12 @@ span.dinefor-paynow > a {
         top: 5.8em;
       }
     }
+    #dm-content-wrapper {
+      .inner-content-dm{
+        grid-template-columns: 1fr;
+        overflow: auto;
+      }
+    }
 
     .dine-in-tabel-wrapper {
       .inner-dinein-table {
@@ -991,19 +952,6 @@ span.dinefor-paynow > a {
       .running-actions {
         grid-template-columns: 1fr;
         grid-row-gap: $px10;
-
-        .dinefor-paynow {
-          margin-left: 0 !important;
-
-          > a {
-            display: inline-block;
-            vertical-align: middle;
-
-            > svg {
-              vertical-align: middle;
-            }
-          }
-        }
       }
     }
   }
@@ -1011,14 +959,6 @@ span.dinefor-paynow > a {
     .action-status {
       grid-template-columns: 1fr;
       grid-row-gap: $px10;
-
-      .dinefor-paynow {
-        margin-left: 0 !important;
-
-        > svg {
-          margin-right: 2px;
-        }
-      }
     }
   }
   .dine-in-tabel-wrapper {
@@ -1343,19 +1283,6 @@ input[type='number']::-webkit-inner-spin-button {
 
   > a {
     text-align: right;
-
-    span {
-      &.dinefor-paynow {
-        border: 1px solid transparent;
-        padding: .375rem .75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        border-radius: .25rem;
-        transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-      }
-
-    }
-
     .pay_now {
       font-size: 1rem;
     }
