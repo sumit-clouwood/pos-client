@@ -1,10 +1,22 @@
 <template>
-  <div @click="$emit('save')">
+  <div v-if="isPermitted(PERMISSIONS.ORDERS_PLACE_ORDER)">
+    <div @click="$emit('save')">
+      <div class="pay-button">
+        <a role="button">
+          <img src="img/pos/place_order.svg" :alt="_t('Place Order')" />
+          <span class="pay-btn color-text-invert">
+            {{ _t('Place Order') }}
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div v-else>
     <div class="pay-button">
       <a role="button">
         <img src="img/pos/place_order.svg" :alt="_t('Place Order')" />
         <span class="pay-btn color-text-invert">
-          {{ _t('Place Order') }}
+          {{ _t("Can't Place Order") }}
         </span>
       </a>
     </div>

@@ -71,13 +71,7 @@
         <DineInCoverSelection />
       </div>
       <div
-        v-if="
-          enabledSplitBill &&
-            !isPermitted(PERMISSIONS.WAITER) &&
-            orderId &&
-            covers &&
-            cartType !== 'hold'
-        "
+        v-if="enabledSplitBill && orderId && covers && cartType !== 'hold'"
         class="driver-container"
       >
         <button

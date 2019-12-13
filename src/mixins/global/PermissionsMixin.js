@@ -11,16 +11,15 @@ Vue.mixin({
     isPermitted(permission) {
       /* eslint-disable */
       const rolePermissions = store.getters['auth/getPermissionsOfCurrenUser']
-      if (rolePermissions) {
-        if (
-          store.state.auth.userDetails.item.name === 'Super Admin' &&
-          store.getters['auth/roleName'] == ''
-        ) {
-          return (
-            permission == Permissions.CAN_RECEIVE_PAYMENTS ||
-            permission == Permissions.CAN_GIVE_DISCOUNTS
-          )
-        }
+      if (store.state.auth.userDetails.item.name === 'Super Admin' &&
+        store.getters['auth/roleName'] === ''
+      ) {
+        if(permission === Permissions.CARHOP_USER || permission==Permissions.WAITER)
+{        return false
+}
+        return true
+      }
+      if (rolePermissions) {        
         return (rolePermissions.brand_permissions.includes(permission) ||
           rolePermissions.store_permissions.includes(permission)
         )

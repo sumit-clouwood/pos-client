@@ -11,7 +11,7 @@
   <div v-else-if="isPermitted(PERMISSIONS.CARHOP_USER)">
     <div class="button">
       <div class="template-btn">
-        <div class="pay-now abc">
+        <div class="pay-now">
           <save class="pay-btn-holder" @save="placeCarhop"></save>
         </div>
       </div>
