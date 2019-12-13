@@ -36,7 +36,12 @@
           </li>
         </ul>
       </div>
-      <div v-show="canPerformAction()">
+      <div
+        v-show="
+          !isPermitted(PERMISSIONS.CARHOP_USER) &&
+            !isPermitted(PERMISSIONS.WAITER)
+        "
+      >
         <ul class="footer-slider-list ullist-icons">
           <li
             class="footer-slider-list-item color-secondary"

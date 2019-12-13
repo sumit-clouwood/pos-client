@@ -33,10 +33,7 @@
           />
           <DMItem :actionDetails="waitingOrder" v-else />
         </div>
-        <div
-          class="drivers-filter"
-          v-if="isPermitted(PERMISSIONS.ORDERS_ASSIGN_DRIVER)"
-        >
+        <div class="drivers-filter">
           <div class="table-drivers-filter">
             <div class="upper">
               <div class="select-driver">
