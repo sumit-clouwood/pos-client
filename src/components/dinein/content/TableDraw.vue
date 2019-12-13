@@ -526,28 +526,28 @@ export default {
           .selectAll('path:nth-last-of-type(1)')
           .attr('fill', function() {
             let fillcolor = dis.tableStatus.table.find(ts => ts.id === data._id)
-            let colourTable = '#FF9C9A'
+            /*let colourTable = '#FF9C9A'
             if (fillcolor.status.color == '#62bb31') {
               colourTable = '#99CA86'
             } else if (fillcolor.status.color == '#faa03c') {
               colourTable = '#FAD580'
-            }
-            return colourTable
+            }*/
+            return fillcolor.status.color
           })
         d3.select(selectedItem)
           .select('svg>g:last-child')
           .selectAll('path')
           .attr('fill', function() {
             let fc = dis.tableStatus.table.find(ts => ts.id === data._id)
-            let colourChairs = '#CC3232'
+            /*let colourChairs = '#CC3232'
             if (fc.id === data._id) {
               if (fc.status.color == '#62bb31') {
                 colourChairs = '#009900'
               } else if (fc.status.color == '#faa03c') {
                 colourChairs = '#fa9304'
               }
-            }
-            return colourChairs
+            }*/
+            return fc.status.color
           })
         let makeId = '#id_' + dis.selectedTableId
         $(makeId)
@@ -563,7 +563,7 @@ export default {
           .text(`${d.number}`)
           .attr('style', 'font-size:60px')
           .attr('style', 'font-weight:bold')
-        // .attr('fill', '#565353')
+          .attr('fill', '#fff')
         let data = d
         this.setTableColour(a[i], data)
         d3.select(a[i]).on('click', function(d, i, a) {
