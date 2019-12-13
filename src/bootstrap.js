@@ -79,6 +79,7 @@ export default {
           this.store.dispatch('payment/fetchAll').then(() => {})
           this.store.dispatch('discount/fetchAll').then(() => {})
           this.store.dispatch('surcharge/fetchAll').then(() => {})
+          this.store.dispatch('auth/fetchRoles').then(() => {})
           this.store.dispatch('announcement/fetchAll').then(() => {})
 
           this.store
