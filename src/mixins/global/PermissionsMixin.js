@@ -27,7 +27,7 @@ Vue.mixin({
       }
     },
     canPerformAction(){
-      return !this.isPermitted(this.PERMISSIONS.CARHOP_USER) && !this.isPermitted(this.PERMISSIONS.WAITER)
+      return !isPermitted(Permissions.CARHOP_USER) && !isPermitted(Permissions.WAITER)
     }
   },
 })
