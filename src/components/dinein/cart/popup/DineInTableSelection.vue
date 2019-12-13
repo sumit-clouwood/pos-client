@@ -42,7 +42,8 @@
             <button
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
-              id="move-Table--only"
+              id="move-Table-only"
+              v-if="this.$route.name === 'Home'"
               @click="moveSelectedTable(true)"
             >
               {{ _t('Move Table') }}
@@ -131,6 +132,8 @@ export default {
       } else {
         this.selectedTableMove = ''
       }
+      // eslint-disable-next-line no-console
+      console.log(this.$route.name)
       if (moveToDineIn && typeof this.moveTableDetails == 'object')
         this.$router.push('/dine-in' + this.store)
       $('#dine-in-table-selection').modal('toggle')
@@ -160,10 +163,10 @@ export default {
 <style lang="sass" scoped>
 .error
     width: 100%
-    color: #c84c4c;
-    padding-bottom: 5px;
-    font-weight: bold;
-    position: relative;
+    color: #c84c4c
+    padding-bottom: 5px
+    font-weight: bold
+    position: relative
     bottom: 10px
 /*padding: 40px 5px 10px 5px*/
 </style>
