@@ -78,7 +78,7 @@
             </td>
             <td>{{ avgTime(driOrders) }}</td>
             <td class="align-right">
-              <a
+              <button
                 id="open-collect-money-modal"
                 role="button"
                 class="btn btn-success btn-large collect-driver-money-btn"
@@ -88,7 +88,7 @@
               >
                 <i class="fa fa-refresh fa"></i>
                 {{ _t('Collect Money') }}
-              </a>
+              </button>
               &nbsp;
               <a
                 :id="'refresh_data-' + driOrders.driverId"

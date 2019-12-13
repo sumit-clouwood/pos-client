@@ -774,12 +774,14 @@ div {
   }
 }
 .pay_now {
-  color: #fff;
+  /*color: #fff;
   font-size: 12px;
   line-height: normal;
-  font-weight: normal;
+  font-weight: normal;*/
 }
-
+.dinefor-paynow {
+  min-width: 170px;
+}
 .running-actions {
   margin-top: 5px;
   display: grid;
