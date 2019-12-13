@@ -42,8 +42,16 @@
             <button
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
+              id="move-Table--only"
+              @click="moveSelectedTable(true)"
+            >
+              {{ _t('Move Table') }}
+            </button>
+            <button
+              class="btn btn-success btn-large color-main color-text-invert"
+              type="button"
               id="discount-save-btn"
-              @click="moveSelectedTable"
+              @click="moveSelectedTable(false)"
             >
               {{ _t('Ok') }}
             </button>
@@ -87,6 +95,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('dinein', ['availableTables', 'selectedTable']),
+    ...mapGetters('context', ['store']),
   },
   methods: {
     setTable: function(table) {
@@ -101,7 +110,7 @@ export default {
         this.tableBookedAlert = ''
       }
     },
-    moveSelectedTable() {
+    moveSelectedTable(moveToDineIn) {
       let table = this.moveTableDetails
       if (table) {
         if (table.table_number) {
@@ -122,6 +131,8 @@ export default {
       } else {
         this.selectedTableMove = ''
       }
+      if (moveToDineIn && typeof this.moveTableDetails == 'object')
+        this.$router.push('/dine-in' + this.store)
       $('#dine-in-table-selection').modal('toggle')
     },
     removeSelectedTable: function() {
