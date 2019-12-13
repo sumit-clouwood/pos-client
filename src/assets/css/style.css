@@ -3455,7 +3455,8 @@ div#user-details .modal-dialog {
 .profile-container .items {
   display: grid;
   grid-template-columns: auto 1fr;
-  grid-column-gap: 1.25rem; }
+  grid-column-gap: 1.25rem;
+  word-break: break-word; }
 
 .profile-container .items .caption, .profile-brand-container .items .caption {
   text-transform: uppercase;
@@ -4978,25 +4979,12 @@ table#running-order {
     border-left: 0.125rem solid #e5e9f4; }
   table#running-order tr > td:last-child {
     border-right: 0.125rem solid #e5e9f4; }
-  table#running-order .action-status span.dinefor-paynow {
-    margin-left: 0; }
   table#running-order .dining-for-button {
     display: inline-block;
     overflow: hidden;
     vertical-align: middle;
     padding: 0.25rem 0.625rem;
     line-height: 1.45; }
-  table#running-order span.dinefor-paynow {
-    width: auto;
-    border-radius: 0.25rem;
-    background-color: #5056CA;
-    display: inline-block;
-    padding: 0.375rem 0.625rem;
-    margin-left: 0.5rem;
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
-    vertical-align: middle; }
   table#running-order .done-soon-order > span {
     border-radius: 0.25rem;
     background-color: #faa03c;
@@ -5019,14 +5007,7 @@ table#running-order {
     display: inline-block !important;
     font-size: 0.75rem !important;
     color: #fff !important;
-    padding: 0.3125rem; }
-  table#running-order .dine-running-actions span.finished-order {
-    border-radius: 0.25rem;
-    background-color: #62bb31;
-    display: inline-block !important;
-    font-size: 0.75rem !important;
-    color: #fff !important;
-    padding: 0.3125rem; }
+    padding: 0.25rem 0.625rem; }
   table#running-order .running-order-details > span {
     border-radius: 0.25rem;
     background-color: #e73030;
@@ -5077,10 +5058,18 @@ td.order-time-det > span {
   -webkit-overflow-scrolling: touch;
   touch-action: auto; }
 
-span.dinefor-paynow > svg {
+.dinefor-paynow svg {
   margin-right: 0.625rem;
   vertical-align: middle;
-  width: 1.5rem; }
+  width: 1.5rem;
+  height: 1.25rem; }
+
+.finished-order {
+  background-color: #62bb31;
+  border-color: #62bb31; }
+  .finished-order:hover {
+    background-color: rgba(98, 187, 49, 0.8);
+    border-color: rgba(98, 187, 49, 0.8); }
 
 .dine-in-wrapper > .navigatorHeight {
   min-height: 101vh; }
@@ -5167,8 +5156,8 @@ input.qty {
       vertical-align: middle; }
 
 .sitting-image svg {
-  -webkit-filter: drop-shadow(2px 2px 3px #555555);
-  filter: drop-shadow(1px 1PX 2px rgba(41, 39, 39, 0.96)); }
+  -webkit-filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(1px 1PX 2px rgba(0, 0, 0, 0.3)); }
   .sitting-image svg #dine-in-area {
     background: #ffffff; }
 
@@ -5268,53 +5257,35 @@ div#confirmModal .customer-title {
   color: #3f4146;
   font-size: 16px; }
 
-span.open-details-popup.cursor-pointer.font-weight-bold.running-order-details {
-  background-color: #e73030;
-  color: #fff;
-  border-radius: 4px;
-  display: inline-block;
-  padding: 4px 10px;
-  font-size: 12px;
-  line-height: 1.5;
-  font-weight: 100; }
-
 .pay_now {
-  color: #fff;
+  /*color: #fff;
   font-size: 12px;
   line-height: normal;
-  font-weight: normal; }
+  font-weight: normal;*/ }
+
+.dinefor-paynow {
+  min-width: 170px; }
 
 .running-actions {
   margin-top: 5px;
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: auto auto auto;
   text-align: center;
-  align-items: center; }
+  align-items: center;
+  grid-gap: 10px; }
 
 .action-status {
   display: grid;
   grid-template-columns: auto auto;
   align-items: center; }
 
-span.dinefor-paynow svg {
-  height: 14px; }
-
 .dinein_table svg g:nth-of-type(1) {
   display: none; }
-
-span.dinefor-paynow > a {
-  display: grid;
-  grid-template-columns: 28px auto;
-  min-width: 115px;
-  justify-content: center;
-  align-items: center; }
 
 .table-order-view-wrapper {
   max-height: 150px;
   overflow-y: auto;
-  overflow-x: hidden;
-  display: grid;
-  grid-template-columns: 1fr 1fr; }
+  overflow-x: hidden; }
   .table-order-view-wrapper > .table-order-view {
     box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.2), 0 0px 6px 0 rgba(0, 0, 0, 0.19);
     height: 6.25rem;
@@ -5361,6 +5332,9 @@ span.dinefor-paynow > a {
       display: none; }
     .dine-in-wrapper .hideBigScreen .hideBigIcon {
       top: 5.8em; }
+    .dine-in-wrapper #dm-content-wrapper .inner-content-dm {
+      grid-template-columns: 1fr;
+      overflow: auto; }
     .dine-in-wrapper .dine-in-tabel-wrapper .inner-dinein-table {
       padding-top: 5em; }
     .dine-in-wrapper .setting-dropdown1 {
@@ -5389,21 +5363,10 @@ span.dinefor-paynow > a {
       .table-order-view-wrapper .table-order-view .running-actions {
         grid-template-columns: 1fr;
         grid-row-gap: 0.625rem; }
-        .table-order-view-wrapper .table-order-view .running-actions .dinefor-paynow {
-          margin-left: 0 !important; }
-          .table-order-view-wrapper .table-order-view .running-actions .dinefor-paynow > a {
-            display: inline-block;
-            vertical-align: middle; }
-            .table-order-view-wrapper .table-order-view .running-actions .dinefor-paynow > a > svg {
-              vertical-align: middle; }
 
   .running-order-table-wrap .action-status {
     grid-template-columns: 1fr;
     grid-row-gap: 0.625rem; }
-    .running-order-table-wrap .action-status .dinefor-paynow {
-      margin-left: 0 !important; }
-      .running-order-table-wrap .action-status .dinefor-paynow > svg {
-        margin-right: 2px; }
 
   .dine-in-tabel-wrapper .inner-dinein-table .dinein-table-control {
     padding: 0 0.625rem; }
@@ -5602,13 +5565,6 @@ input[type='number']::-webkit-inner-spin-button {
   margin: 0 auto; }
   .button-wrapper > a {
     text-align: right; }
-    .button-wrapper > a span.dinefor-paynow {
-      border: 1px solid transparent;
-      padding: .375rem .75rem;
-      font-size: 1rem;
-      line-height: 1.5;
-      border-radius: .25rem;
-      transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out; }
     .button-wrapper > a .pay_now {
       font-size: 1rem; }
 

@@ -817,7 +817,7 @@ div#dm-delivered {
       letter-spacing: 0.4px;
       color: #a4a4a4;
       font-size: 0.75rem;
-      font-weight: normal;
+      font-weight: bold;
       vertical-align: middle;
       text-transform: uppercase; }
     div#dm-delivered table tr td {
@@ -889,8 +889,14 @@ div#home-delivery-order {
   overflow: auto; }
 
 tr.dataContentStyle > td > a {
-  padding: 0.3125rem;
-  font-size: 0.625rem; }
+  font-size: inherit;
+  line-height: normal;
+  display: inline-block;
+  vertical-align: middle;
+  color: #fff !important; }
+  tr.dataContentStyle > td > a i {
+    color: #fff;
+    font-size: 1.3125rem; }
 
 @media only screen and (max-width: 991px) {
   .top-menu-container .top-menu-icon {
