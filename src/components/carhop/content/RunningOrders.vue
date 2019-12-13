@@ -42,7 +42,7 @@
               <td>
                 <div class="button-wrapper">
                   <router-link
-                    v-if="isPermitted(PERMISSIONS.CAN_RECEIVE_PAYMENTS)"
+                    v-if="canPay"
                     :to="'/carhop' + store + '/' + order._id"
                   >
                     <span class="dinefor-paynow">
@@ -151,6 +151,11 @@ export default {
     ...mapState('carhop', ['limit']),
     ...mapGetters('location', ['_t']),
     ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['waiter', 'carhop']),
+
+    canPay() {
+      return !this.carhop && !this.waiter
+    },
     page: {
       get() {
         return this.$store.getters['carhop/page']('in-progress')

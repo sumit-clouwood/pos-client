@@ -8,10 +8,10 @@
       </div>
     </div>
   </div>
-  <div v-else-if="isPermitted(PERMISSIONS.CARHOP_USER)">
+  <div v-else-if="isCarhop()">
     <div class="button">
       <div class="template-btn">
-        <div class="pay-now abc">
+        <div class="pay-now">
           <save class="pay-btn-holder" @save="placeCarhop"></save>
         </div>
       </div>
@@ -38,7 +38,7 @@
 </template>
 <script>
 /* global $ clickPayNow */
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import save from './common/save'
 import pay from './common/pay'
 export default {
@@ -50,6 +50,7 @@ export default {
   computed: {
     ...mapState('checkoutForm', ['processing']),
     ...mapState('order', ['items', 'orderSource']),
+    ...mapGetters('auth', ['carhop']),
   },
   methods: {
     payNow() {

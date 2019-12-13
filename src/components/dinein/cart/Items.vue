@@ -53,7 +53,7 @@
 
       <div class="main-orders-list-item-buttons">
         <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
-        <div v-if="!isPermitted(PERMISSIONS.WAITER)">
+        <div v-if="!waiter">
           <div
             v-if="typeof item.cover_name === 'undefined'"
             class="button-plus"
@@ -129,6 +129,7 @@ export default {
     ...mapState('discount', ['itemDiscounts']),
     ...mapGetters('category', ['subcategoryImage']),
     ...mapGetters('modifier', ['hasModifiers']),
+    ...mapGetters('auth', ['waiter']),
     ...mapGetters('order', [
       'items',
       'itemGrossPriceDiscounted',

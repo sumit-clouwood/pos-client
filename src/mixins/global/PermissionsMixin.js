@@ -9,22 +9,23 @@ Vue.mixin({
   },
   methods: {
     isPermitted(permission) {
-      /* eslint-disable */
-      const rolePermissions = store.getters['auth/getPermissionsOfCurrenUser']
-      if (rolePermissions) {
-        if (
-          store.state.auth.userDetails.item.name === 'Super Admin' &&
-          store.getters['auth/roleName'] == ''
-        ) {
+      if (store.state.auth.rolePermissions) {
+        return store.state.auth.rolePermissions.some(role => {
           return (
-            permission == Permissions.CAN_RECEIVE_PAYMENTS ||
-            permission == Permissions.CAN_GIVE_DISCOUNTS
+            (role.brand_permissions.includes(permission) ||
+              role.store_permissions.includes(permission)) &&
+            (role.name == store.getters['auth/roleName'] ||
+              (store.state.auth.userDetails.item.name === 'Super Admin' &&
+                store.getters['auth/roleName'] == ''))
           )
-        }
-        return (rolePermissions.brand_permissions.includes(permission) ||
-          rolePermissions.store_permissions.includes(permission)
-        )
+        })
       }
+    },
+    isWaiter() {
+      return store.getters['auth/waiter']
+    },
+    isCarhop() {
+      return store.getters['auth/carhop']
     },
   },
 })
