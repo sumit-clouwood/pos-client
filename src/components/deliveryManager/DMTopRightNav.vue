@@ -136,12 +136,12 @@
                 {{ _t('Walk-In') }}
               </router-link>
             </li>
-            <li v-if="isPermitted(PERMISSIONS.CARHOP_USER)">
+            <li v-if="!isPermitted(PERMISSIONS.WAITER)">
               <router-link :to="'/carhop' + store">
                 {{ _t('Carhop') }}
               </router-link>
             </li>
-            <li v-if="isPermitted(PERMISSIONS.CARHOP_USER)">
+            <li v-if="!isPermitted(PERMISSIONS.WAITER)">
               <router-link :to="'/carhop-orders' + store">
                 {{ _t('Carhop Orders') }}
               </router-link>
