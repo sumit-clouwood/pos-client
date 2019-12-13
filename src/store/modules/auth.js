@@ -15,10 +15,22 @@ const state = {
   cashierEmail: '',
   searchKeyword: '',
   logoutAction: '',
+  role: null,
 }
 
 // getters
 const getters = {
+  allowed: state => resource => {
+    if (resource && state.role) {
+      let allowed = state.role.store_permissions.find(perm => perm === resource)
+      if (!allowed) {
+        //find in brand permissions
+        allowed = state.role.brand_permissions.find(perm => perm === resource)
+      }
+      return allowed
+    }
+    return false
+  },
   roleName: state => {
     if (!state.userDetails) {
       return ''
@@ -188,11 +200,19 @@ const actions = {
     })
   },
 
-  getUserDetails({ commit }, userId) {
+  getUserDetails({ commit, dispatch }, userId) {
     return new Promise((resolve, reject) => {
       if (userId) {
         AuthService.userDetails(userId).then(response => {
           commit(mutation.USER_DETAILS, response.data)
+
+          dispatch('fetchRoles').then(roles => {
+            const currentRole = roles.find(
+              role => role._id === state.userDetails.item.brand_role
+            )
+            commit(mutation.SET_ROLE, currentRole)
+          })
+
           resolve()
         })
       } else {
@@ -201,11 +221,14 @@ const actions = {
     })
   },
   fetchRoles({ commit, getters }) {
-    AuthService.getRoles().then(rolesPermissions => {
-      commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
-      const cashierRole = getters.getRole('Cashier')
-      AuthService.getUsers(cashierRole._id).then(cashiers => {
-        commit(mutation.SET_CASHIERS, cashiers.data.data)
+    return new Promise(resolve => {
+      AuthService.getRoles().then(rolesPermissions => {
+        resolve(rolesPermissions.data.data)
+        commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
+        const cashierRole = getters.getRole('Cashier')
+        AuthService.getUsers(cashierRole._id).then(cashiers => {
+          commit(mutation.SET_CASHIERS, cashiers.data.data)
+        })
       })
     })
   },
@@ -240,6 +263,9 @@ const mutations = {
   },
   [mutation.SET_CASHIERS](state, cashiers) {
     state.cashiers = cashiers
+  },
+  [mutation.SET_ROLE](state, role) {
+    state.role = role
   },
   setSearchKeyword(state, value) {
     state.searchKeyword = value

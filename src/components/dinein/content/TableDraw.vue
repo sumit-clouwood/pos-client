@@ -233,6 +233,15 @@
             >
               {{ _t(addOrSplit) }}
             </button>
+            <button
+              v-if="allowed(PERMS.SWITCH_WAITER)"
+              data-toggle="modal"
+              data-target="#switchWaiter"
+              data-dismiss="modal"
+              class="table-popup popbtn bg-success font-weight-bold"
+            >
+              {{ _t('Switch Waiter') }}
+            </button>
             <button type="button" class="btn btn-danger" data-dismiss="modal">
               {{ _t('Close') }}
             </button>
@@ -274,6 +283,7 @@ export default {
       'updateTableArea',
     ]),
     ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['allowed']),
   },
   mixins: [DateTime],
   components: {
