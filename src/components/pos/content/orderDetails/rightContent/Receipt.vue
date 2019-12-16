@@ -178,15 +178,12 @@ export default {
     },
     itemDiscountPrice(itemNo) {
       let discountPrice = 0
-      /* eslint-disable */
 
-    for (let discount of this.orderDetails.item_discounts) {
-      console.log(discount.for_item)
-      if (discount.for_item === itemNo) {
+      for (let discount of this.orderDetails.item_discounts) {
+        if (discount.for_item === itemNo) {
           discountPrice += discount.price
         }
       }
-      console.log('discount is: ',discountPrice, itemNo)
       return discountPrice
     },
     modifiersPrice(itemNo) {
