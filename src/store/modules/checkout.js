@@ -210,22 +210,25 @@ const actions = {
     }
 
     if (rootState.customer.address) {
-      order.customer_address_id = rootState.customer.address._id.$oid
+      order.customer_address_id =
+        rootState.order.selectedOrder.customer.customer_addresses[0]._id.$oid
       const deliveryArea = rootGetters['customer/findDeliveryArea'](
         rootState.customer.address.delivery_area_id
       )
-      if (deliveryArea.special_order_surcharge) {
-        order.delivery_surcharge = deliveryArea.special_order_surcharge
+      if (deliveryArea) {
+        if (deliveryArea.special_order_surcharge) {
+          order.delivery_surcharge = deliveryArea.special_order_surcharge
+        }
       }
     }
     //add delivery surcharges
-
     return Promise.resolve(order)
   },
 
   injectHoldOrderData({ rootState }, order) {
     if (rootState.customer.address) {
-      order.customer_address_id = rootState.customer.address._id.$oid
+      order.customer_address_id =
+        rootState.order.selectedOrder.customer.customer_addresses[0]._id.$oid
     }
     return Promise.resolve(order)
   },
