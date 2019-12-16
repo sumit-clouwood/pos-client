@@ -19,16 +19,19 @@ const state = {
 
 // getters
 const getters = {
-  roleName: state => {
-    if (!state.userDetails) {
-      return ''
-    }
-    const roleId = state.userDetails.item.brand_role
+  roleName: (state, getters) => {
+    const roleId = getters.brandRoleId
     if (roleId && state.rolePermissions) {
       const role = state.rolePermissions.find(role => role._id === roleId)
       return role ? role.name : ''
     }
     return ''
+  },
+  brandRoleId() {
+    if (!state.userDetails) {
+      return ''
+    }
+    return state.userDetails.item.brand_role
   },
   waiter: (state, getters) => getters.roleName === 'Waiter',
   carhop: (state, getters) => getters.roleName === 'Carhop User',
@@ -188,12 +191,16 @@ const actions = {
     })
   },
 
-  getUserDetails({ commit }, userId) {
+  getUserDetails({ commit, dispatch }, userId) {
     return new Promise((resolve, reject) => {
       if (userId) {
         AuthService.userDetails(userId).then(response => {
           commit(mutation.USER_DETAILS, response.data)
-          resolve()
+          dispatch('announcement/fetchAll', response.data, { root: true }).then(
+            () => {
+              resolve()
+            }
+          )
         })
       } else {
         reject()
