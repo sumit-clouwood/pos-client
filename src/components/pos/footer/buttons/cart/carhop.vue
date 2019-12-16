@@ -47,6 +47,9 @@ export default {
     save,
     pay,
   },
+  beforeDestroy() {
+    this.$store.commit('order/SET_ORDER_DETAILS', false)
+  },
   computed: {
     ...mapState('checkoutForm', ['processing']),
     ...mapState('order', ['items', 'orderSource', 'selectedOrder']),

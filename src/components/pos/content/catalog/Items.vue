@@ -67,7 +67,8 @@ export default {
   },
   computed: {
     ...mapState('location', ['currency']),
-    ...mapState('order', ['splitBill']),
+    ...mapState('order', ['splitBill', 'selectedOrder']),
+    ...mapGetters('order', ['orderType']),
     ...mapGetters('category', ['items']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
@@ -83,6 +84,14 @@ export default {
       }
     },
     addToOrder(item) {
+      if (this.selectedOrder) {
+        if (
+          (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
+          this.selectedOrder.item.order_status == 'in-progress'
+        ) {
+          return
+        }
+      }
       if (this.splitBill) {
         return false
       }

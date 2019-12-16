@@ -1034,6 +1034,7 @@ const actions = {
                   root: true,
                 }
               )
+              commit('order/SET_ORDER_DETAILS', false, { root: true })
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
             }
@@ -1272,6 +1273,7 @@ const actions = {
               result: 'success',
               msg: msg,
             }).then(() => {
+              commit('order/SET_ORDER_DETAILS', false, { root: true })
               resolve(response.data)
             })
           } else {
