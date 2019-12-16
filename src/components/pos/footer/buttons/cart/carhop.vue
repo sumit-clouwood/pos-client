@@ -1,5 +1,5 @@
 <template>
-  <div v-if="orderSource === 'backend'">
+  <div v-if="(orderSource === 'backend' || selectedOrder) && !isCarhop()">
     <div class="button">
       <div class="template-btn">
         <div class="pay-now">
@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     ...mapState('checkoutForm', ['processing']),
-    ...mapState('order', ['items', 'orderSource']),
+    ...mapState('order', ['items', 'orderSource', 'selectedOrder']),
     ...mapGetters('auth', ['carhop']),
   },
   methods: {
