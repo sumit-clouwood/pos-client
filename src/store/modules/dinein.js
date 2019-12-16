@@ -482,6 +482,10 @@ const actions = {
     }
     commit(mutation.SPLIT_BILLS, groups)
   },
+
+  assignWaiter({ state }, waiter) {
+    DineInService.switchWaiter(state.selectedTable, waiter)
+  },
 }
 
 const mutations = {

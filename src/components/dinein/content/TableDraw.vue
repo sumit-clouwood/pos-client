@@ -116,6 +116,15 @@
                   >
                     {{ _t(addOrSplit) }}
                   </span>
+                  <span
+                    v-if="allowed(PERMS.SWITCH_WAITER)"
+                    data-toggle="modal"
+                    data-target="#switchWaiter"
+                    data-dismiss="modal"
+                    class="table-popup popbtn bg-success font-weight-bold"
+                  >
+                    {{ _t('Switch Waiter') }}
+                  </span>
                 </div>
               </div>
               <div class="table-order-footer" v-else>
@@ -127,6 +136,15 @@
                     class="table-popup popbtn bg-success font-weight-bold"
                   >
                     {{ _t(addOrSplit) }}
+                  </span>
+                  <span
+                    v-if="allowed(PERMS.SWITCH_WAITER)"
+                    data-toggle="modal"
+                    data-target="#switchWaiter"
+                    data-dismiss="modal"
+                    class="table-popup popbtn bg-success font-weight-bold"
+                  >
+                    {{ _t('Switch Waiter') }}
                   </span>
                 </div>
               </div>
@@ -233,15 +251,7 @@
             >
               {{ _t(addOrSplit) }}
             </button>
-            <button
-              v-if="allowed(PERMS.SWITCH_WAITER)"
-              data-toggle="modal"
-              data-target="#switchWaiter"
-              data-dismiss="modal"
-              class="table-popup popbtn bg-success font-weight-bold"
-            >
-              {{ _t('Switch Waiter') }}
-            </button>
+
             <button type="button" class="btn btn-danger" data-dismiss="modal">
               {{ _t('Close') }}
             </button>

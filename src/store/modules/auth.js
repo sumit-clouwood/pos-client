@@ -1,6 +1,7 @@
 import DataService from '@/services/DataService'
 import AuthService from '@/services/data/AuthService'
 import * as mutation from './user/mutation-types'
+//import * as PERMS from '@/const/permissions'
 //import db from '@/services/network/DB'
 
 // initial state
@@ -11,6 +12,7 @@ const state = {
   rolePermissions: null,
   userDetails: false,
   permissions: false,
+  waiters: [],
   cashiers: [],
   cashierEmail: '',
   searchKeyword: '',
@@ -47,6 +49,26 @@ const getters = {
   getRole: state => roleName => {
     if (state.rolePermissions) {
       return state.rolePermissions.find(role => role.name === roleName)
+    }
+  },
+  getRoleByPermission: state => permission => {
+    if (state.rolePermissions) {
+      return state.rolePermissions.filter(role => {
+        let allowed = role.store_permissions.find(
+          rolePermission => rolePermission === permission
+        )
+
+        if (!allowed) {
+          //find in brand permissions
+          allowed = role.brand_permissions.find(
+            rolePermission => rolePermission === permission
+          )
+        }
+        if (allowed) {
+          return role
+        }
+        return false
+      })
     }
   },
   loggedIn: state => {
@@ -225,9 +247,10 @@ const actions = {
       AuthService.getRoles().then(rolesPermissions => {
         resolve(rolesPermissions.data.data)
         commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
-        const cashierRole = getters.getRole('Cashier')
-        AuthService.getUsers(cashierRole._id).then(cashiers => {
-          commit(mutation.SET_CASHIERS, cashiers.data.data)
+        //const roles = getters.getRoleByPermission(PERMS.WAITER)
+        const role = getters.getRole('Waiter')
+        AuthService.getUsers(role._id).then(users => {
+          commit(mutation.SET_WAITERS, users.data.data)
         })
       })
     })
@@ -261,8 +284,8 @@ const mutations = {
   [mutation.USER_DETAILS](state, userDetails) {
     state.userDetails = userDetails
   },
-  [mutation.SET_CASHIERS](state, cashiers) {
-    state.cashiers = cashiers
+  [mutation.SET_WAITERS](state, waiters) {
+    state.waiters = waiters
   },
   [mutation.SET_ROLE](state, role) {
     state.role = role

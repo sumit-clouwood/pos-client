@@ -14,10 +14,10 @@
               <span
                 class="table-status"
                 style="text-align:center"
-                :class="{ active: userDetails.item._id === waiter._id }"
+                :class="{ active: selectedWaiter._id === waiter._id }"
                 v-for="waiter in waiters"
                 :key="waiter._id"
-                @click="select(waiter._id)"
+                @click="select(waiter)"
               >
                 <span v-html="waiter.name"></span>
               </span>
@@ -30,7 +30,7 @@
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="discount-save-btn"
-              data-dismiss="modal"
+              @click="assignWaiter"
             >
               {{ _t('Assign') }}
             </button>
@@ -42,23 +42,27 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
   name: 'DineInCoverSelection',
   data() {
     return {
       waiter: null,
+      selectedWaiter: {},
     }
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('auth', ['waiters']),
+    ...mapState('auth', ['waiters', 'userDetails']),
   },
   mounted() {
     this.waiter = this.$store.state.dinein.selectedTable
   },
   methods: {
-    select: function() {},
+    select: function(waiter) {
+      this.selectedWaiter = waiter
+    },
+    ...mapActions('dinein', ['assignWaiter']),
   },
 }
 </script>
