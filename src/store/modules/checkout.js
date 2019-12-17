@@ -208,17 +208,24 @@ const actions = {
       order.order_country = address.country
       order.order_delivery_area = address.delivery_area_id
     }
+    let deliveryAreaId = null
 
-    if (rootState.customer.address) {
-      order.customer_address_id =
-        rootState.order.selectedOrder.customer.customer_addresses[0]._id.$oid
-      const deliveryArea = rootGetters['customer/findDeliveryArea'](
-        rootState.customer.address.delivery_area_id
-      )
-      if (deliveryArea) {
-        if (deliveryArea.special_order_surcharge) {
-          order.delivery_surcharge = deliveryArea.special_order_surcharge
-        }
+    if (
+      rootState.order.selectedOrder &&
+      rootState.order.selectedOrder.customer
+    ) {
+      order.customer_address_id = rootState.customer.address[0]._id
+      deliveryAreaId = rootState.customer.address[0].delivery_area_id
+    } else {
+      order.customer_address_id = rootState.customer.address._id.$oid
+      deliveryAreaId = rootState.customer.address.delivery_area_id
+    }
+    const deliveryArea = rootGetters['customer/findDeliveryArea'](
+      deliveryAreaId
+    )
+    if (deliveryArea) {
+      if (deliveryArea.special_order_surcharge) {
+        order.delivery_surcharge = deliveryArea.special_order_surcharge
       }
     }
     //add delivery surcharges

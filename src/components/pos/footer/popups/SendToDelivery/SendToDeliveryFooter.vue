@@ -84,7 +84,7 @@
 </template>
 
 <script>
-/* global $, hidePayNow */
+/* global $, showModal, hidePayNow */
 import moment from 'moment-timezone'
 
 import { Datetime } from 'vue-datetime'
@@ -118,6 +118,7 @@ export default {
       getReferrals: state => state.location.referrals,
     }),
     ...mapState('customer', ['address']),
+    ...mapState('order', ['orderSource']),
     ...mapGetters('order', ['subTotal']),
     ...mapGetters('location', ['_t', 'formatPrice']),
   },
@@ -136,51 +137,55 @@ export default {
         const minOrderValue = this.formatPrice(this.address.min_order_value)
         this.errors = `Minimum order values should be ${minOrderValue} for selected delivery address`
       } else {
-        $('#confirm_announcement').prop('disabled', true)
-        this.msg = 'Sending order for delivery...'
-        this.errors = ''
-        $('#payment-msg').modal('show')
-        this.deliveryOrder({
-          referral: this.changedReferral,
-          futureOrder:
-            this.futureDateTime != ''
-              ? moment(this.futureDateTime).format('YYYY/MM/DD hh:mm')
-              : null,
-        })
-          .then(response => {
-            if (response.message != 'Network Error') {
-              this.msg = ''
-            }
-            // $('#order-confirmation').modal('hide')
-            $('#order-confirmation').modal('hide')
-            setTimeout(function() {
-              $('#confirm_announcement').prop('disabled', false)
-            }, 1000)
-
-            /*this.$store.commit('order/ORDER_TYPE', {
-              OTview: 'Walk In',
-              OTApi: 'walk_in',
-            })*/
+        if (this.orderSource === 'backend') {
+          showModal('#modificationReason')
+        } else {
+          $('#confirm_announcement').prop('disabled', true)
+          this.msg = 'Sending order for delivery...'
+          this.errors = ''
+          $('#payment-msg').modal('show')
+          this.deliveryOrder({
+            referral: this.changedReferral,
+            futureOrder:
+              this.futureDateTime != ''
+                ? moment(this.futureDateTime).format('YYYY/MM/DD hh:mm')
+                : null,
           })
-          .catch(response => {
-            this.msg = ''
-            let errors = 'Error: '
-
-            if (response.status == 'form_errors') {
-              for (let i in response.form_errors) {
-                response.form_errors[i].forEach(err => (errors += ' ' + err))
+            .then(response => {
+              if (response.message != 'Network Error') {
+                this.msg = ''
               }
-            } else {
-              errors = response.error
-            }
-            this.errors = errors
+              // $('#order-confirmation').modal('hide')
+              $('#order-confirmation').modal('hide')
+              setTimeout(function() {
+                $('#confirm_announcement').prop('disabled', false)
+              }, 1000)
 
-            $('#payment-msg').modal('hide')
-            $('#order-confirmation').modal('show')
-            setTimeout(function() {
-              $('#confirm_announcement').prop('disabled', false)
-            }, 1000)
-          })
+              /*this.$store.commit('order/ORDER_TYPE', {
+                OTview: 'Walk In',
+                OTApi: 'walk_in',
+              })*/
+            })
+            .catch(response => {
+              this.msg = ''
+              let errors = 'Error: '
+
+              if (response.status == 'form_errors') {
+                for (let i in response.form_errors) {
+                  response.form_errors[i].forEach(err => (errors += ' ' + err))
+                }
+              } else {
+                errors = response.error
+              }
+              this.errors = errors
+
+              $('#payment-msg').modal('hide')
+              $('#order-confirmation').modal('show')
+              setTimeout(function() {
+                $('#confirm_announcement').prop('disabled', false)
+              }, 1000)
+            })
+        }
       }
     },
     ...mapActions('order', ['deliveryOrder']),
