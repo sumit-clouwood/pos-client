@@ -24,9 +24,13 @@ const mutations = {
   [mutation.SET_ANNOUNCEMENT](commit, announcements) {
     if (announcements) {
       let announcementsList = ''
+      let currentDate = new Date().toISOString().slice(0, 10)
       announcements.forEach(announcement => {
         announcement.role.forEach(role => {
-          if (role == store.getters['auth/brandRoleId']) {
+          if (
+            role == store.getters['auth/brandRoleId'] &&
+            announcement.to_date >= currentDate
+          ) {
             announcementsList =
               announcementsList != ''
                 ? announcementsList + '  |  ' + announcement.announcement
