@@ -41,6 +41,7 @@ const state = {
   totalReservations: { totalPages: 0, pageNumber: 1, limit: 10 },
   billSplit: null,
   processingSplit: false,
+  reservationData: null,
 }
 const getters = {
   getOrderStatus: () => order_status => {
@@ -281,6 +282,10 @@ const actions = {
               reservationId: order._id,
               startDate: order.start_date,
               startTime: order.start_time,
+              assigned_to: order.assigned_to,
+              created_by: order.created_by,
+              status: order.status,
+              end_time: order.end_time,
             })
           })
           // eslint-disable-next-line no-console
@@ -483,8 +488,18 @@ const actions = {
     commit(mutation.SPLIT_BILLS, groups)
   },
 
-  assignWaiter({ state }, waiter) {
-    DineInService.switchWaiter(state.selectedTable, waiter)
+  switchWaiter({ state, rootGetters }, waiter) {
+    if (!waiter || state.reservationData.assigned_to === waiter._id) {
+      return Promise.reject({
+        message: rootGetters['location/_t'](
+          'Cashier already assigned to table.'
+        ),
+      })
+    }
+    return DineInService.switchWaiter(state.reservationData.reservationId, {
+      switch_from: state.reservationData.assigned_to,
+      switch_to: waiter._id,
+    })
   },
 }
 
@@ -590,6 +605,9 @@ const mutations = {
     state.statusFlag = Math.random()
     state.reservationId = reservation.id
     localStorage.setItem('reservationId', reservation.id)
+  },
+  [mutation.SET_RESERVATION_DATA](state, reservationData) {
+    state.reservationData = reservationData
   },
   [mutation.ORDER_RESERVATION_DATA](state, reservationData) {
     state.orderReservationData = reservationData

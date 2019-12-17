@@ -121,6 +121,7 @@
                     data-toggle="modal"
                     data-target="#switchWaiter"
                     data-dismiss="modal"
+                    @click="setSelectedTable(orderDetails)"
                     class="table-popup popbtn bg-success font-weight-bold"
                   >
                     {{ _t('Switch Waiter') }}
@@ -142,6 +143,7 @@
                     data-toggle="modal"
                     data-target="#switchWaiter"
                     data-dismiss="modal"
+                    @click="setSelectedTable(orderDetails)"
                     class="table-popup popbtn bg-success font-weight-bold"
                   >
                     {{ _t('Switch Waiter') }}
@@ -372,6 +374,20 @@ export default {
     },
   },
   methods: {
+    setSelectedTable(orderDetails) {
+      if (orderDetails) {
+        let tableOrder = null
+        orderDetails.forEach(order => {
+          const orderStatus = this.allBookedTables.lookup.orders._id[
+            order.orderIds[0]
+          ].order_status
+          if (orderStatus !== 'finished') {
+            tableOrder = order
+          }
+        })
+        this.$store.commit('dinein/SET_RESERVATION_DATA', tableOrder)
+      }
+    },
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
     closeMyself() {
       $('#tooltipdata').hide()
@@ -1083,5 +1099,17 @@ export default {
 <style scoped>
 .modal .modal-dialog .modal-content .modal-footer {
   display: list-item;
+}
+</style>
+<style lang="scss">
+.m-1 {
+  &.buttons {
+    span {
+      margin-right: 10px !important;
+      &:last-child {
+        margin-right: 0px !important;
+      }
+    }
+  }
 }
 </style>

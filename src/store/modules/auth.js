@@ -1,7 +1,7 @@
 import DataService from '@/services/DataService'
 import AuthService from '@/services/data/AuthService'
 import * as mutation from './user/mutation-types'
-//import * as PERMS from '@/const/permissions'
+import * as PERMS from '@/const/permissions'
 //import db from '@/services/network/DB'
 
 // initial state
@@ -247,10 +247,11 @@ const actions = {
       AuthService.getRoles().then(rolesPermissions => {
         resolve(rolesPermissions.data.data)
         commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
-        //const roles = getters.getRoleByPermission(PERMS.WAITER)
-        const role = getters.getRole('Waiter')
-        AuthService.getUsers(role._id).then(users => {
-          commit(mutation.SET_WAITERS, users.data.data)
+        const roles = getters.getRoleByPermission(PERMS.WAITER)
+        roles.forEach(role => {
+          AuthService.getUsers(role._id).then(users => {
+            commit(mutation.ADD_WAITERS, users.data.data)
+          })
         })
       })
     })
@@ -284,8 +285,8 @@ const mutations = {
   [mutation.USER_DETAILS](state, userDetails) {
     state.userDetails = userDetails
   },
-  [mutation.SET_WAITERS](state, waiters) {
-    state.waiters = waiters
+  [mutation.ADD_WAITERS](state, waiters) {
+    state.waiters = [...state.waiters, ...waiters]
   },
   [mutation.SET_ROLE](state, role) {
     state.role = role

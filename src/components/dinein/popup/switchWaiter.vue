@@ -14,7 +14,7 @@
               <span
                 class="table-status"
                 style="text-align:center"
-                :class="{ active: selectedWaiter._id === waiter._id }"
+                :class="{ active: assignedWaiter._id === waiter._id }"
                 v-for="waiter in waiters"
                 :key="waiter._id"
                 @click="select(waiter)"
@@ -27,10 +27,18 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
+              type="button"
+              class="btn btn-danger cancel-announce color-button color-text-invert"
+              data-dismiss="modal"
+              @click="resetWaiter"
+            >
+              {{ _t('Cancel') }}
+            </button>
+            <button
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="discount-save-btn"
-              @click="assignWaiter"
+              @click="switchWaiter(selectedWaiter)"
             >
               {{ _t('Assign') }}
             </button>
@@ -38,31 +46,60 @@
         </div>
       </div>
     </div>
+    <information-popup
+      :responseInformation="this.msg"
+      title="Alert"
+    ></information-popup>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapState, mapActions } from 'vuex'
+/* global $ */
+import InformationPopup from '@/components/pos/content/InformationPopup'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'DineInCoverSelection',
   data() {
     return {
-      waiter: null,
-      selectedWaiter: {},
+      selectedWaiter: null,
+      msg: '',
     }
+  },
+  components: {
+    InformationPopup,
   },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('auth', ['waiters', 'userDetails']),
-  },
-  mounted() {
-    this.waiter = this.$store.state.dinein.selectedTable
+    assignedWaiter() {
+      return (
+        this.selectedWaiter || {
+          _id: this.$store.state.dinein.reservationData
+            ? this.$store.state.dinein.reservationData.assigned_to
+            : null,
+        }
+      )
+    },
   },
   methods: {
     select: function(waiter) {
       this.selectedWaiter = waiter
     },
-    ...mapActions('dinein', ['assignWaiter']),
+    resetWaiter() {
+      this.selectedWaiter = null
+    },
+    switchWaiter(waiter) {
+      this.$store
+        .dispatch('dinein/switchWaiter', waiter)
+        .then(() => {
+          //show info popupzx
+          this.msg = 'Cashier assigned to table.'
+        })
+        .catch(error => (this.msg = error.message))
+        .finally(() => {
+          $('.information-popup').modal('show')
+        })
+    },
   },
 }
 </script>

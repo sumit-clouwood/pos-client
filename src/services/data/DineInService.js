@@ -35,8 +35,11 @@ export default {
     return DataService.post(`/model/waiting_lists/add`)
   },
 
-  switchWaiter(tableId, waiterId) {
-    return DataService.post(`/model/switch_waiter/table/${tableId}/waiter/${waiterId}`)
+  switchWaiter(reservationId, payload) {
+    return DataService.post(
+      `/model/reservations/id/${reservationId}/switch_waiter`,
+      payload
+    )
   },
   waitingListsOperation(id, operation) {
     //edit, delete
