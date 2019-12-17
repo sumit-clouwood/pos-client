@@ -378,10 +378,15 @@ export default {
       if (orderDetails) {
         let tableOrder = null
         orderDetails.forEach(order => {
-          const orderStatus = this.allBookedTables.lookup.orders._id[
-            order.orderIds[0]
-          ].order_status
-          if (orderStatus !== 'finished') {
+          if (order.orderIds && order.orderIds.length) {
+            const orderObj = this.allBookedTables.lookup.orders._id[
+              order.orderIds[0]
+            ]
+            const orderStatus = orderObj.order_status
+            if (orderStatus !== 'finished') {
+              tableOrder = order
+            }
+          } else {
             tableOrder = order
           }
         })
@@ -1101,7 +1106,7 @@ export default {
   display: list-item;
 }
 </style>
-<style lang="scss">
+<style lang="scss" scoped>
 .m-1 {
   &.buttons {
     span {
@@ -1110,6 +1115,13 @@ export default {
         margin-right: 0px !important;
       }
     }
+  }
+}
+</style>
+<style lang="scss">
+#switchWaiter {
+  .modal-dialog {
+    max-width: 60% !important;
   }
 }
 </style>
