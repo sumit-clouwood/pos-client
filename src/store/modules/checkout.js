@@ -518,7 +518,9 @@ const actions = {
         : rootState.dinein.selectedCover.name
 
       if (!orderCovers.some(item => item.entity_id == itemCover)) {
-        orderCovers.push({ entity_id: itemCover, name: itemCoverName })
+        if (itemCover) {
+          orderCovers.push({ entity_id: itemCover, name: itemCoverName })
+        }
       }
 
       oitem.cover_no = itemCover
