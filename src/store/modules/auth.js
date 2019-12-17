@@ -1,6 +1,7 @@
 import DataService from '@/services/DataService'
 import AuthService from '@/services/data/AuthService'
 import * as mutation from './user/mutation-types'
+import * as PERMS from '@/const/permissions'
 //import db from '@/services/network/DB'
 
 // initial state
@@ -11,16 +12,32 @@ const state = {
   rolePermissions: null,
   userDetails: false,
   permissions: false,
+  waiters: [],
   cashiers: [],
   cashierEmail: '',
   searchKeyword: '',
   logoutAction: '',
+  role: null,
 }
 
 // getters
 const getters = {
-  roleName: (state, getters) => {
-    const roleId = getters.brandRoleId
+  allowed: state => resource => {
+    if (resource && state.role) {
+      let allowed = state.role.store_permissions.find(perm => perm === resource)
+      if (!allowed) {
+        //find in brand permissions
+        allowed = state.role.brand_permissions.find(perm => perm === resource)
+      }
+      return allowed
+    }
+    return false
+  },
+  roleName: state => {
+    if (!state.userDetails) {
+      return ''
+    }
+    const roleId = state.userDetails.item.brand_role
     if (roleId && state.rolePermissions) {
       const role = state.rolePermissions.find(role => role._id === roleId)
       return role ? role.name : ''
@@ -38,6 +55,26 @@ const getters = {
   getRole: state => roleName => {
     if (state.rolePermissions) {
       return state.rolePermissions.find(role => role.name === roleName)
+    }
+  },
+  getRoleByPermission: state => permission => {
+    if (state.rolePermissions) {
+      return state.rolePermissions.filter(role => {
+        let allowed = role.store_permissions.find(
+          rolePermission => rolePermission === permission
+        )
+
+        if (!allowed) {
+          //find in brand permissions
+          allowed = role.brand_permissions.find(
+            rolePermission => rolePermission === permission
+          )
+        }
+        if (allowed) {
+          return role
+        }
+        return false
+      })
     }
   },
   loggedIn: state => {
@@ -196,11 +233,18 @@ const actions = {
       if (userId) {
         AuthService.userDetails(userId).then(response => {
           commit(mutation.USER_DETAILS, response.data)
-          dispatch('announcement/fetchAll', response.data, { root: true }).then(
-            () => {
-              resolve()
-            }
-          )
+
+          dispatch('fetchRoles').then(roles => {
+            const currentRole = roles.find(
+              role => role._id === state.userDetails.item.brand_role
+            )
+            commit(mutation.SET_ROLE, currentRole)
+          })
+
+          dispatch('announcement/fetchAll', response.data, {
+            root: true,
+          }).then(() => {})
+          resolve()
         })
       } else {
         reject()
@@ -208,11 +252,16 @@ const actions = {
     })
   },
   fetchRoles({ commit, getters }) {
-    AuthService.getRoles().then(rolesPermissions => {
-      commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
-      const cashierRole = getters.getRole('Cashier')
-      AuthService.getUsers(cashierRole._id).then(cashiers => {
-        commit(mutation.SET_CASHIERS, cashiers.data.data)
+    return new Promise(resolve => {
+      AuthService.getRoles().then(rolesPermissions => {
+        resolve(rolesPermissions.data.data)
+        commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
+        const roles = getters.getRoleByPermission(PERMS.WAITER)
+        roles.forEach(role => {
+          AuthService.getUsers(role._id).then(users => {
+            commit(mutation.ADD_WAITERS, users.data.data)
+          })
+        })
       })
     })
   },
@@ -245,8 +294,11 @@ const mutations = {
   [mutation.USER_DETAILS](state, userDetails) {
     state.userDetails = userDetails
   },
-  [mutation.SET_CASHIERS](state, cashiers) {
-    state.cashiers = cashiers
+  [mutation.ADD_WAITERS](state, waiters) {
+    state.waiters = [...state.waiters, ...waiters]
+  },
+  [mutation.SET_ROLE](state, role) {
+    state.role = role
   },
   setSearchKeyword(state, value) {
     state.searchKeyword = value
