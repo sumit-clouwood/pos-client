@@ -33,11 +33,11 @@
           />
           <DMItem :actionDetails="waitingOrder" v-else />
         </div>
-        <div class="drivers-filter">
+        <div class="drivers-filter" :class="{ active: isActive }">
           <div class="table-drivers-filter">
             <div class="upper">
-              <div class="select-driver">
-                {{ _t('Select Driver') }}
+              <div class="select-driver" @click="activateDriveList">
+                {{ _t('Show Driver Details') }}
               </div>
               <div class="autocomplete-container">
                 <div v-if="drivers" class="driver-container">
@@ -149,6 +149,7 @@ export default {
   name: 'HomeDelivery',
   data() {
     return {
+      isActive: false,
       readyDetails: {
         moreDetails: true,
         actionLabel: 'Ready',
@@ -210,6 +211,9 @@ export default {
   },
 
   methods: {
+    activateDriveList() {
+      this.isActive = !this.isActive
+    },
     ...mapActions('order', ['updateOrderAction']),
     selectedDriver: function(driver) {
       this.waitingOrder.driverId = driver._id

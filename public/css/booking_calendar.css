@@ -308,3 +308,9 @@ div#NewReservation .SCHor .next, div#NewReservation .SCHor .prev{
   width: 130px;
  }
 }
+@media only screen and (max-width: 767px){
+ .fixed-reservation .SCMonth > div span {
+  font-size: 12px;
+  padding: 0 4px;
+ }
+}

@@ -16,7 +16,7 @@
           <div class="row">
             <span class="hide-text">{{ dateSelector }}</span>
             <div class="col-md-6">
-              <h6>{{ _t('New Reservation') }}n</h6>
+              <h6>{{ _t('New Reservation') }}</h6>
               <hr />
               <div class="form-group">
                 <label>{{ _t('Select Number of guests') }}</label>
