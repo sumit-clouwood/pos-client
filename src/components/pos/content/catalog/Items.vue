@@ -53,6 +53,7 @@
 
 import { mapGetters, mapState } from 'vuex'
 import bootstrap from '@/bootstrap'
+import { bus } from '@/eventBus'
 import Popup from './items/Popup'
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
@@ -69,9 +70,17 @@ export default {
     ...mapState('location', ['currency']),
     ...mapState('order', ['splitBill', 'selectedOrder']),
     ...mapGetters('order', ['orderType']),
-    ...mapGetters('category', ['items']),
+    ...mapGetters('category', ['items', 'itemByCode']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
+  },
+  created() {
+    bus.$on('itemCodeReceived', itemCode => {
+      const item = this.itemByCode(itemCode)
+      if (item) {
+        this.addToOrder(item)
+      }
+    })
   },
   methods: {
     choosePrice(item) {
