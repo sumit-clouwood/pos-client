@@ -25,15 +25,12 @@ export default {
         OTview: 'Delivery',
         OTApi: 'call_center',
       })
-      if (this.orderSource === 'backend') {
-        showModal('#modificationReason')
-      } else {
-        const modal =
-          this.$store.state.location.setModal == '#loyalty-payment'
-            ? '#manage-customer'
-            : this.$store.state.location.setModal
-        showModal(modal)
-      }
+
+      const modal =
+        this.$store.state.location.setModal == '#loyalty-payment'
+          ? '#manage-customer'
+          : this.$store.state.location.setModal
+      showModal(modal)
     },
   },
 }

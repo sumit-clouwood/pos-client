@@ -208,17 +208,24 @@ const actions = {
       order.order_country = address.country
       order.order_delivery_area = address.delivery_area_id
     }
+    let deliveryAreaId = null
 
-    if (rootState.customer.address) {
-      order.customer_address_id =
-        rootState.order.selectedOrder.customer.customer_addresses[0]._id.$oid
-      const deliveryArea = rootGetters['customer/findDeliveryArea'](
-        rootState.customer.address.delivery_area_id
-      )
-      if (deliveryArea) {
-        if (deliveryArea.special_order_surcharge) {
-          order.delivery_surcharge = deliveryArea.special_order_surcharge
-        }
+    if (
+      rootState.order.selectedOrder &&
+      rootState.order.selectedOrder.customer
+    ) {
+      order.customer_address_id = rootState.customer.address[0]._id
+      deliveryAreaId = rootState.customer.address[0].delivery_area_id
+    } else {
+      order.customer_address_id = rootState.customer.address._id.$oid
+      deliveryAreaId = rootState.customer.address.delivery_area_id
+    }
+    const deliveryArea = rootGetters['customer/findDeliveryArea'](
+      deliveryAreaId
+    )
+    if (deliveryArea) {
+      if (deliveryArea.special_order_surcharge) {
+        order.delivery_surcharge = deliveryArea.special_order_surcharge
       }
     }
     //add delivery surcharges
@@ -383,7 +390,10 @@ const actions = {
     //if (order.delivery_surcharge) {
     order.delivery_surcharge = Num.round(order.delivery_surcharge).toFixed(2)
     //}
-    const changedAmount = totalPaid - orderData.balanceDue
+    let changedAmount = totalPaid - orderData.balanceDue
+    if (changedAmount < 0) {
+      changedAmount = 0
+    }
     commit(mutation.SET_CHANGED_AMOUNT, changedAmount)
 
     order.amount_changed = Num.round(changedAmount).toFixed(2)
@@ -1245,6 +1255,7 @@ const actions = {
           })
             .then(() => {
               commit(mutation.SPLIT_PAID, true)
+              commit('order/SET_SPLITTED', true, { root: true })
               resolve()
             })
             .catch(error => reject(error))
@@ -1434,10 +1445,10 @@ const actions = {
     dispatch('checkoutForm/reset', {}, { root: true })
     dispatch('discount/reset', {}, { root: true })
     dispatch('surcharge/reset', {}, { root: true })
-    dispatch('customer/reset', {}, { root: true })
-    dispatch('location/reset', {}, { root: true })
     if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
+      dispatch('customer/reset', {}, { root: true })
+      dispatch('location/reset', {}, { root: true })
     }
   },
 

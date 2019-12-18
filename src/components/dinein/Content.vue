@@ -13,22 +13,25 @@
     <Waiting />
     <Reservation />
     <CompletedOrders />
+    <switch-waiter v-if="allowed(PERMS.SWITCH_WAITER)"></switch-waiter>
   </div>
 </template>
 
 <script>
+import switchWaiter from './popup/switchWaiter'
 import RunningOrders from './content/RunningOrders'
 import Reservation from './content/Reservation'
 import Waiting from './content/Waiting'
 import CompletedOrders from './content/CompletedOrders'
 import TableDraw from './content/TableDraw'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 
 export default {
   name: 'Content',
   computed: {
     ...mapState('dinein', ['tablesOnArea', 'dineInTabType']),
+    ...mapGetters('auth', ['allowed']),
   },
   components: {
     RunningOrders,
@@ -37,6 +40,7 @@ export default {
     TableDraw,
     Waiting,
     OrderDetailsPopup,
+    switchWaiter,
   },
   mounted() {
     if (this.$store.getters['checkout/complete']) {

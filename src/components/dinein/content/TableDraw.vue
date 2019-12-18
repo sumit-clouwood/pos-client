@@ -116,6 +116,16 @@
                   >
                     {{ _t(addOrSplit) }}
                   </span>
+                  <span
+                    v-if="allowed(PERMS.SWITCH_WAITER)"
+                    data-toggle="modal"
+                    data-target="#switchWaiter"
+                    data-dismiss="modal"
+                    @click="setSelectedTable(orderDetails)"
+                    class="table-popup popbtn bg-success font-weight-bold"
+                  >
+                    {{ _t('Switch Waiter') }}
+                  </span>
                 </div>
               </div>
               <div class="table-order-footer" v-else>
@@ -127,6 +137,16 @@
                     class="table-popup popbtn bg-success font-weight-bold"
                   >
                     {{ _t(addOrSplit) }}
+                  </span>
+                  <span
+                    v-if="allowed(PERMS.SWITCH_WAITER)"
+                    data-toggle="modal"
+                    data-target="#switchWaiter"
+                    data-dismiss="modal"
+                    @click="setSelectedTable(orderDetails)"
+                    class="table-popup popbtn bg-success font-weight-bold"
+                  >
+                    {{ _t('Switch Waiter') }}
                   </span>
                 </div>
               </div>
@@ -233,6 +253,7 @@
             >
               {{ _t(addOrSplit) }}
             </button>
+
             <button type="button" class="btn btn-danger" data-dismiss="modal">
               {{ _t('Close') }}
             </button>
@@ -274,6 +295,7 @@ export default {
       'updateTableArea',
     ]),
     ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['allowed']),
   },
   mixins: [DateTime],
   components: {
@@ -352,6 +374,25 @@ export default {
     },
   },
   methods: {
+    setSelectedTable(orderDetails) {
+      if (orderDetails) {
+        let tableOrder = null
+        orderDetails.forEach(order => {
+          if (order.orderIds && order.orderIds.length) {
+            const orderObj = this.allBookedTables.lookup.orders._id[
+              order.orderIds[0]
+            ]
+            const orderStatus = orderObj.order_status
+            if (orderStatus !== 'finished') {
+              tableOrder = order
+            }
+          } else {
+            tableOrder = order
+          }
+        })
+        this.$store.commit('dinein/SET_RESERVATION_DATA', tableOrder)
+      }
+    },
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
     closeMyself() {
       $('#tooltipdata').hide()
@@ -1063,5 +1104,24 @@ export default {
 <style scoped>
 .modal .modal-dialog .modal-content .modal-footer {
   display: list-item;
+}
+</style>
+<style lang="scss" scoped>
+.m-1 {
+  &.buttons {
+    span {
+      margin-right: 10px !important;
+      &:last-child {
+        margin-right: 0px !important;
+      }
+    }
+  }
+}
+</style>
+<style lang="scss">
+#switchWaiter {
+  .modal-dialog {
+    max-width: 60% !important;
+  }
 }
 </style>
