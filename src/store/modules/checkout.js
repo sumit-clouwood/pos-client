@@ -1442,10 +1442,10 @@ const actions = {
     dispatch('checkoutForm/reset', {}, { root: true })
     dispatch('discount/reset', {}, { root: true })
     dispatch('surcharge/reset', {}, { root: true })
-    dispatch('customer/reset', {}, { root: true })
-    dispatch('location/reset', {}, { root: true })
     if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
+      dispatch('customer/reset', {}, { root: true })
+      dispatch('location/reset', {}, { root: true })
     }
   },
 
