@@ -254,8 +254,15 @@ export default {
 
       deliveryAreas() {
         if (this.fetchDeliveryAreas) {
+          let storeId = this.$store.state.context.storeId
           return this.fetchDeliveryAreas.map(area => {
-            return area.name
+            let DAStatus = area.stores.find(entity => {
+              if (entity.entity_id == storeId && entity.item_status) {
+                return true
+              } else false
+            })
+            if (typeof DAStatus != 'undefined' && DAStatus.item_status)
+              return area.name
           })
         } else {
           return []

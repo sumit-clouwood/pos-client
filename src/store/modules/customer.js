@@ -63,8 +63,9 @@ const getters = {
       selection: 'name',
     })
   },
-  getCustomerAddresses: (state, getters) => {
+  getCustomerAddresses: (state, getters, rootState) => {
     let data = {}
+    let storeId = rootState.context.storeId
     if (state.customer && state.customer.customer_addresses) {
       data = state.customer.customer_addresses.filter(area => {
         let checkDeliveryArea = getters.checkDeliveryArea(
@@ -72,18 +73,33 @@ const getters = {
           state.deliveryAreas
         )
         if (checkDeliveryArea) {
-          const deliveryArea = getters.findDeliveryArea(checkDeliveryArea._id)
-          if (deliveryArea) {
-            if (deliveryArea.min_order_value) {
-              area.min_order_value = deliveryArea.min_order_value
+          // let deliveryArea = getters.findDeliveryArea(checkDeliveryArea._id)
+          let deliveryArea = state.fetchDeliveryAreas.map(area => {
+            if (checkDeliveryArea._id == area._id) {
+              let DAStatus = area.stores.find(entity => {
+                if (entity.entity_id == storeId && entity.item_status) {
+                  return true
+                } else false
+              })
+              if (typeof DAStatus != 'undefined' && DAStatus.item_status) {
+                if (DAStatus.min_order_value) {
+                  area.min_order_value = DAStatus.min_order_value
+                }
+                if (DAStatus.special_order_surcharge) {
+                  area.special_order_surcharge =
+                    DAStatus.special_order_surcharge
+                }
+                return area
+              } else return false
             }
-            if (deliveryArea.special_order_surcharge) {
-              area.special_order_surcharge =
-                deliveryArea.special_order_surcharge
-            }
+          })
 
-            return area
-          }
+          return deliveryArea.find(area => area && typeof area != 'undefined')
+          /*if (typeof deliveryArea != 'undefined') {
+            a = deliveryArea.stores.find(
+              entity => entity.entity_id == storeId && entity.item_status
+            )
+          }*/
         }
       })
     }
