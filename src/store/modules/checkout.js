@@ -1252,6 +1252,7 @@ const actions = {
           })
             .then(() => {
               commit(mutation.SPLIT_PAID, true)
+              commit('order/SET_SPLITTED', true, { root: true })
               resolve()
             })
             .catch(error => reject(error))
