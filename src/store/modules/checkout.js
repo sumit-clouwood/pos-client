@@ -390,7 +390,10 @@ const actions = {
     //if (order.delivery_surcharge) {
     order.delivery_surcharge = Num.round(order.delivery_surcharge).toFixed(2)
     //}
-    const changedAmount = totalPaid - orderData.balanceDue
+    let changedAmount = totalPaid - orderData.balanceDue
+    if (changedAmount < 0) {
+      changedAmount = 0
+    }
     commit(mutation.SET_CHANGED_AMOUNT, changedAmount)
 
     order.amount_changed = Num.round(changedAmount).toFixed(2)
