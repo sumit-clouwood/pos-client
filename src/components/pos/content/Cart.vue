@@ -57,9 +57,9 @@ import { bus } from '@/eventBus'
 
 let options = {
   sound: true, // default is false
-  soundSrc: '/static/sound.wav', // default is blank
-  sensitivity: 300, // default is 100
-  requiredAttr: true, // default is false
+  soundSrc: '/barcode.wav', // default is blank
+  sensitivity: 100, // default is 100
+  requiredAttr: false, // default is false
 }
 Vue.use(VueBarcodeScanner, options)
 
@@ -112,6 +112,9 @@ export default {
     ordersMenu,
     dineInItems,
     mobileFooter,
+  },
+  mounted() {
+    alert('has scanner listening: ' + this.$barcodeScanner.hasListener())
   },
   created() {
     const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, {
