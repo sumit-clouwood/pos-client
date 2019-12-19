@@ -164,7 +164,9 @@
               </router-link>
             </li>
             <li>
-              <a role="button" @click="logout()">{{ _t('Logout') }}</a>
+              <a role="button" @click="logout($router.push('/'))">{{
+                _t('Logout')
+              }}</a>
             </li>
           </ul>
         </li>

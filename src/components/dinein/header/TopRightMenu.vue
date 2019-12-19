@@ -182,9 +182,12 @@
           >
         </li>
         <li>
-          <a role="button" class="cursor-pointer" @click="logout()">{{
-            _t('Logout')
-          }}</a>
+          <a
+            role="button"
+            class="cursor-pointer"
+            @click="logout($router.push('/'))"
+            >{{ _t('Logout') }}</a
+          >
         </li>
       </ul>
     </li>
