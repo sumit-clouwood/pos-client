@@ -13,6 +13,15 @@
         <i class="fa fa-angle-right" aria-hidden="true"></i>
       </div>
     </div>
+    <div v-show="loading">Scanning Barcode...</div>
+    <input
+      type="hidden"
+      autocomplete="new-password"
+      v-model="barcode"
+      autofocus
+      @keypress="addItem"
+      placeholder="Type Barcode"
+    />
     <Header v-if="orderType.OTApi !== 'dine_in'" />
     <dineInHeader v-else />
 
@@ -41,13 +50,29 @@ import ordersMenu from '../../mobileComponents/mobileOrdersMenu'
 import mobileFooter from '../../mobileComponents/mobileFooter'
 import dineInItems from '@/components/dinein/cart/Items'
 import dineInHeader from '@/components/dinein/cart/Header'
-
+import Vue from 'vue'
+import VueBarcodeScanner from 'vue-barcode-scanner'
 import { mapState, mapGetters } from 'vuex'
+import { bus } from '@/eventBus'
+
+let options = {
+  sound: true, // default is false
+  soundSrc: '/barcode.wav', // default is blank
+  sensitivity: 100, // default is 100
+  requiredAttr: false, // default is false
+}
+Vue.use(VueBarcodeScanner, options)
 
 export default {
   name: 'Cart',
   props: {
     msg: String,
+  },
+  data() {
+    return {
+      barcode: '',
+      loading: false,
+    }
   },
   computed: {
     ...mapState('checkout', ['order']),
@@ -56,8 +81,25 @@ export default {
     ...mapState('order', ['cartType', 'orderType']),
   },
   methods: {
+    addItem(event) {
+      if (event.keyCode === 13) {
+        this.addItemToCartByCode(event.target.value)
+      }
+    },
+    addItemToCartByCode(itemCode) {
+      bus.$emit('itemCodeReceived', itemCode)
+    },
     cartClose() {
       this.$store.dispatch('cartClose')
+    },
+    // Create callback function to receive barcode when the scanner is already done
+    onBarcodeScanned(barcode) {
+      this.addItemToCartByCode(barcode)
+    },
+    // Reset to the last barcode before hitting enter (whatever anything in the input box)
+    resetBarcode() {
+      //let barcode = this.$barcodeScanner.getPreviousCode()
+      // do something...
     },
   },
   components: {
@@ -70,6 +112,31 @@ export default {
     ordersMenu,
     dineInItems,
     mobileFooter,
+  },
+  mounted() {
+    //alert('has scanner listening: ' + this.$barcodeScanner.hasListener())
+  },
+  created() {
+    const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, {
+      eventBus: true,
+    })
+
+    if (eventBus) {
+      eventBus.$on('start', () => {
+        this.loading = true
+      })
+      eventBus.$on('finish', () => {
+        this.loading = false
+      })
+    }
+
+    //this.$barcodeScanner.hasListener() // return Boolean
+    //this.$barcodeScanner.getPreviousCode() // return String
+    //this.$barcodeScanner.setSensitivity(200) // sets barcode scanner recognition sensitivity to 200 ms
+  },
+  destroyed() {
+    // Remove listener when component is destroyed
+    this.$barcodeScanner.destroy()
   },
 }
 </script>

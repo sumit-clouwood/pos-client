@@ -390,7 +390,10 @@ const actions = {
     //if (order.delivery_surcharge) {
     order.delivery_surcharge = Num.round(order.delivery_surcharge).toFixed(2)
     //}
-    const changedAmount = totalPaid - orderData.balanceDue
+    let changedAmount = totalPaid - orderData.balanceDue
+    if (changedAmount < 0) {
+      changedAmount = 0
+    }
     commit(mutation.SET_CHANGED_AMOUNT, changedAmount)
 
     order.amount_changed = Num.round(changedAmount).toFixed(2)
@@ -1252,6 +1255,7 @@ const actions = {
           })
             .then(() => {
               commit(mutation.SPLIT_PAID, true)
+              commit('order/SET_SPLITTED', true, { root: true })
               resolve()
             })
             .catch(error => reject(error))
@@ -1441,10 +1445,10 @@ const actions = {
     dispatch('checkoutForm/reset', {}, { root: true })
     dispatch('discount/reset', {}, { root: true })
     dispatch('surcharge/reset', {}, { root: true })
-    dispatch('customer/reset', {}, { root: true })
-    dispatch('location/reset', {}, { root: true })
     if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
+      dispatch('customer/reset', {}, { root: true })
+      dispatch('location/reset', {}, { root: true })
     }
   },
 

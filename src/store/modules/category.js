@@ -26,6 +26,9 @@ const getters = {
   categories: state => {
     return state.categories
   },
+  itemByCode: (state, getters) => itemCode => {
+    return getters.items.find(item => item.code == itemCode)
+  },
   subcategories: state => {
     if (typeof state.category != 'undefined') {
       return state.subcategories.filter(

@@ -489,11 +489,20 @@ const actions = {
   },
 
   switchWaiter({ state, rootGetters }, waiter) {
-    if (!waiter || state.reservationData.assigned_to === waiter._id) {
+    if (
+      !waiter ||
+      (state.reservationData &&
+        state.reservationData.assigned_to === waiter._id)
+    ) {
       return Promise.reject({
         message: rootGetters['location/_t'](
           'Cashier already assigned to table.'
         ),
+      })
+    }
+    if (!state.reservationData) {
+      return Promise.reject({
+        message: rootGetters['location/_t']('No order found on table.'),
       })
     }
     return DineInService.switchWaiter(state.reservationData.reservationId, {
