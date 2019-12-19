@@ -174,7 +174,6 @@ const actions = {
             dispatch('getDrivers')
             // }
           }
-          console.log(state.orders)
         })
         .catch(() => {
           commit(mutation.SET_LOADING, false)
