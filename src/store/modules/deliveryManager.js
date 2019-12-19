@@ -20,7 +20,7 @@ const state = {
   availableStores: false,
   params: {
     query: '',
-    limit: 12,
+    limit: 50,
     orderBy: 'real_created_datetime',
     page: 1,
     totalPages: 10,

@@ -68,8 +68,6 @@ export default {
       this.modification = this.orderDetails.order_history.find(
         history => typeof history.param2 != 'undefined'
       )
-      // eslint-disable-next-line no-console
-      console.log(this.modification)
     },
     getUserName(userId) {
       return LookupData.check({
