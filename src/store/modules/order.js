@@ -313,6 +313,52 @@ const actions = {
     commit(mutation.MARK_SPLIT_ITEMS_PAID)
     return Promise.resolve(1)
   },
+
+  prepareItemTax({ rootState }, item) {
+    return new Promise(resolve => {
+      if (typeof item.tax_sum === 'undefined') {
+        //find tax for this item
+      }
+      resolve(item)
+    })
+  },
+  prepareItem({ commit, getters, dispatch }, item) {
+    return new Promise(resolve => {
+      commit('checkoutForm/RESET', 'process', { root: true })
+      item.split = false
+      item.paid = false
+
+      dispatch('prepareItemTax', item).then(item => {
+        //item gross price is inclusive of tax
+        item.grossPrice = getters.grossPrice(item)
+        //net price is exclusive of tax, getter ll send unrounded price that is real one
+        item.netPrice = getters.netPrice(item)
+
+        //calculated item tax
+        item.tax = Num.round(item.grossPrice - item.netPrice)
+
+        if (typeof item.orderIndex === 'undefined') {
+          item.orderIndex = getters.orderIndex
+        }
+
+        if (typeof item.quantity === 'undefined') {
+          item.quantity = 1
+        }
+        resolve(item)
+      })
+    })
+  },
+  addOpenItem({ dispatch, commit }, item) {
+    dispatch('prepareItem', item).then(item => {
+      //this comes directly from the items menu without modifiers
+      item.modifiable = false
+      commit(mutation.ADD_ORDER_ITEM, item)
+      commit(mutation.SET_TOTAL_ITEMS, state.items.length)
+      //if dine in modify then calculate surcharges after every item has been added so
+      //it won't clear discounts while validating
+      dispatch('surchargeCalculation')
+    })
+  },
   addToOrder({ state, getters, commit, dispatch }, stateItem) {
     commit('checkoutForm/RESET', 'process', { root: true })
     let item = { ...stateItem }

@@ -256,7 +256,6 @@
               <span>{{ _t('Dinning Options') }}</span>
             </a>
           </li>
-
           <li
             class="footer-slider-list-item color-secondary"
             data-toggle="modal"
@@ -286,6 +285,7 @@
               <span>{{ _t('Add Note') }}</span>
             </a>
           </li>
+          <open-item-button></open-item-button>
         </ul>
       </div>
     </div>
@@ -389,6 +389,7 @@
 
     <!--All popup including online order, because we need to apply few js which are not on header so all popups will be here-->
     <DineIn />
+    <openItem />
     <AddNote />
     <Discount />
     <OnlineOrder />
@@ -450,7 +451,8 @@ import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import UserProfile from '@/components/pos/user/UserProfile'
 import InformationPopup from '@/components/pos/content/InformationPopup'
-
+import openItemButton from '@/components/pos/openItem/button'
+import openItem from '@/components/pos/openItem/item'
 import * as CONST from '@/constants'
 
 import { mapState, mapGetters } from 'vuex'
@@ -488,6 +490,8 @@ export default {
     OrderDetailsPopup,
     UserProfile,
     InformationPopup,
+    openItemButton,
+    openItem,
   },
   data() {
     if (window.location.href.indexOf('dine-in') > -1) {
