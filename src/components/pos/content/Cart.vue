@@ -114,7 +114,7 @@ export default {
     mobileFooter,
   },
   mounted() {
-    alert('has scanner listening: ' + this.$barcodeScanner.hasListener())
+    //alert('has scanner listening: ' + this.$barcodeScanner.hasListener())
   },
   created() {
     const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, {
