@@ -5,11 +5,7 @@
         <span class="">{{ username }}</span>
       </a>
     </div>
-    <div class="change-location" v-if="haveMultipleStores">
-      <button class="btn btn-success walkin-btn" @click="showStoresPopup">
-        Switch Stores
-      </button>
-    </div>
+    <SwitchStore />
     <div class="online color-text-invert">
       <div class="fa fa-fw fa-circle" :class="{ online: online }"></div>
       <div v-if="online">{{ _t('Online') }}</div>
@@ -149,8 +145,12 @@
 /*global $*/
 import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
+import SwitchStore from '@/components/commonButtons/SwitchStore'
 export default {
   name: 'TopNavRight',
+  components: {
+    SwitchStore,
+  },
   props: {},
   data: function() {
     return {
@@ -183,9 +183,6 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
-    showStoresPopup() {
-      $('#myModal').modal('show')
-    },
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':

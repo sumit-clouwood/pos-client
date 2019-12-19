@@ -131,6 +131,7 @@ export default {
                     response.data.available_stores.length > 1
                   ) {
                     $('#myModal').modal('show')
+                    $('#myModal').css({ 'background-color': 'grey' })
                     this.$store.commit(
                       'context/SET_STORES_LENGTH',
                       response.data.available_stores.length

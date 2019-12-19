@@ -10,14 +10,6 @@
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header" style="background-color: rgb(245, 245, 245)">
-          <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            @click="pushDefaultStore"
-          >
-            &times;
-          </button>
           <h4 class="modal-title">Select Store</h4>
         </div>
         <div class="modal-body stores-list-container">
@@ -45,10 +37,10 @@
         </div>
         <div class="modal-footer">
           <button
+            v-if="this.$route.params.store_id"
             type="button"
-            class="btn btn-success btnClose"
+            class="tables-btn-style"
             data-dismiss="modal"
-            @click="pushDefaultStore"
           >
             Close
           </button>
@@ -96,69 +88,21 @@ export default {
       $('#myModal').modal('hide')
       this.$router.go(this.$router.currentRoute)
     },
-    pushDefaultStore() {
-      if (!this.$route.params.store_id) this.$router.push(this.defaultStore)
-    },
   },
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .modal-title {
   font-weight: 500;
 }
-.btnClose {
+.tables-btn-style {
   margin-left: 21px;
+  background: #5056ca;
+  color: white;
   width: 10%;
+  border: none;
+  font-size: 12.75px;
 }
-.store-picker-single-item {
-  background-color: rgb(68, 158, 255);
-  display: flex;
-  flex-direction: column;
-  border-radius: 5px;
-  height: 100%;
-  color: #3f4a4a;
-  cursor: pointer;
-  box-shadow: 0 0 5px rgba(23, 23, 32, 0.05), 0 0 15px rgba(23, 23, 32, 0.05);
-  padding: 1.875rem 1.875rem 3.125rem 1.875rem;
-  text-align: left;
-  justify-content: left;
-  &:hover,
-  &.active {
-    color: rgb(255, 255, 255);
-    background: rgb(68, 158, 255);
-    transition: 0.2s ease-out;
-  }
-  .store-name {
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    line-height: 3rem;
-  }
-  .store-address {
-    font-size: 0.85rem;
-    line-height: 1.8rem;
-  }
-  .store-phone {
-    .icon-container {
-      padding: 4px;
-      margin-right: 5px;
-      color: rgb(255, 255, 255);
-      background: rgb(68, 158, 255);
-      border-radius: 4px;
-      .svg-block-icon {
-        width: 1rem;
-        height: 1rem;
-        margin: 0 1px 4px 1px;
-        fill: rgb(255, 255, 255);
-      }
-    }
-    font-size: 1rem;
-    line-height: 3rem;
-    font-weight: bold;
-  }
-}
-</style>
-<style lang="scss" scoped>
 .inner-container {
   width: 100%;
 }
@@ -166,7 +110,7 @@ export default {
   overflow: auto;
 }
 .modal-header {
-  flex-direction: row-reverse;
+  flex-direction: row;
   background-color: rgb(245, 245, 245);
 }
 .store-name {
@@ -196,6 +140,7 @@ export default {
   border-radius: 5px;
   height: 100%;
   cursor: pointer;
+  color: #3f4a4a;
   box-shadow: 0 0 5px rgba(23, 23, 32, 0.05), 0 0 15px rgba(23, 23, 32, 0.05);
   padding: 1.875rem 1.875rem 3.125rem 1.875rem;
   text-align: left;

@@ -5,11 +5,7 @@
         <span class="">{{ username }}</span>
       </a>
     </div>
-    <div class="change-location" v-if="haveMultipleStores">
-      <button class="btn btn-success" @click="showStoresPopup">
-        Switch Stores
-      </button>
-    </div>
+    <SwitchStore />
     <div class="online color-text-invert">
       <div class="fa fa-fw fa-circle" :class="{ online: online }"></div>
       <div v-if="online">{{ _t('Online') }}</div>
@@ -154,11 +150,15 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 import * as CONST from '@/constants'
 import AuthService from '@/services/data/AuthService'
+import SwitchStore from '@/components/commonButtons/SwitchStore'
 
 import bootstrap from '@/bootstrap'
 export default {
   name: 'TopNavRight',
   props: {},
+  components: {
+    SwitchStore,
+  },
   data: function() {
     return {
       onlineOrdersCount: 0,
@@ -181,7 +181,7 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
-    ...mapGetters('context', ['store', 'transactions', 'haveMultipleStores']),
+    ...mapGetters('context', ['store', 'transactions']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('sync', ['online']),
     ...mapState('order', ['orderType']),
@@ -194,9 +194,6 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
-    showStoresPopup() {
-      $('#myModal').modal('show')
-    },
     logoutCashier() {
       localStorage.setItem('token', '')
       this.$store.commit('auth/SET_TOKEN', '')

@@ -5,11 +5,7 @@
         <span class>{{ username }}</span>
       </a>
     </div>
-    <div class="change-location" v-if="haveMultipleStores">
-      <button class="btn btn-success" @click="showStoresPopup">
-        Switch Stores
-      </button>
-    </div>
+    <SwitchStore />
     <div class="all-booking-btns hide-below-sm">
       <button
         type
@@ -293,9 +289,13 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 import AuthService from '@/services/data/AuthService'
 import bootstrap from '@/bootstrap'
+import SwitchStore from '@/components/commonButtons/SwitchStore'
 export default {
   name: 'TopNavRight',
   props: {},
+  components: {
+    SwitchStore,
+  },
   data: function() {
     return {
       onlineOrdersCount: 0,
@@ -318,7 +318,7 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
-    ...mapGetters('context', ['store', 'haveMultipleStores']),
+    ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['waiter', 'carhop']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType', 'activeArea']),
