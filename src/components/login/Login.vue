@@ -77,6 +77,7 @@
   </div>
 </template>
 <script>
+/* global $ */
 import { mapGetters } from 'vuex'
 import Progress from '@/components/util/Progress'
 import DataService from '@/services/DataService'
@@ -122,6 +123,29 @@ export default {
           .then(token => {
             this.login_success_message = 'Logged in successfully.'
             this.$store.commit('auth/SET_TOKEN', token)
+            return new Promise((resolve, reject) => {
+              DataService.getT('/ui_menu?&menu_needed=false')
+                .then(response => {
+                  if (
+                    !this.$route.params.store_id &&
+                    response.data.available_stores.length > 1
+                  ) {
+                    $('#myModal').modal('show')
+                    this.$store.commit(
+                      'context/SET_STORES_LENGTH',
+                      response.data.available_stores.length
+                    )
+                    this.$store.commit(
+                      'context/SET_MULTI_STORES',
+                      response.data.available_stores
+                    )
+                  }
+                  resolve(response)
+                })
+                .catch(error => {
+                  reject(error)
+                })
+            })
           })
           .catch(error => {
             this.login_fail_message = error

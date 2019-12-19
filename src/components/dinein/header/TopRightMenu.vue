@@ -5,6 +5,11 @@
         <span class>{{ username }}</span>
       </a>
     </div>
+    <div class="change-location" v-if="haveMultipleStores">
+      <button class="btn btn-success" @click="showStoresPopup">
+        Switch Stores
+      </button>
+    </div>
     <div class="all-booking-btns hide-below-sm">
       <button
         type
@@ -313,7 +318,7 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
-    ...mapGetters('context', ['store']),
+    ...mapGetters('context', ['store', 'haveMultipleStores']),
     ...mapGetters('auth', ['waiter', 'carhop']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType', 'activeArea']),
@@ -327,6 +332,9 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    showStoresPopup() {
+      $('#myModal').modal('show')
+    },
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
       $('.setting-dropdown').css('display', 'none')

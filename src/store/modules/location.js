@@ -113,6 +113,14 @@ const actions = {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
         .then(storedata => {
+          commit(
+            'context/SET_STORES_LENGTH',
+            storedata.data.available_stores.length,
+            { root: true }
+          )
+          commit('context/SET_MULTI_STORES', storedata.data.available_stores, {
+            root: true,
+          })
           if (storedata.data.brand) {
             commit(mutation.SET_BRAND, storedata.data.brand)
           }

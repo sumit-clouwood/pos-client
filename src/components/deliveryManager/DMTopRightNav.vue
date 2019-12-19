@@ -8,6 +8,11 @@
         </span>
       </div>
     </div>
+    <div class="change-location" v-if="haveMultipleStores">
+      <button class="btn btn-success" @click="showStoresPopup">
+        Switch Stores
+      </button>
+    </div>
     <div class="button-block">
       <div class="top-menu-container">
         <div class="top-menu-icon" @click="showLeftMenu()">
@@ -133,11 +138,7 @@
               </router-link>
             </li>
             <li v-if="!isWaiter() && !isCarhop()">
-              <router-link
-                :to="'/' + store"
-                role="button"
-                class="cursor-pointer"
-              >
+              <router-link :to="store" role="button" class="cursor-pointer">
                 {{ _t('Walk-In') }}
               </router-link>
             </li>
@@ -204,11 +205,14 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
-    ...mapGetters('context', ['store']),
+    ...mapGetters('context', ['store', 'haveMultipleStores']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    showStoresPopup() {
+      $('#myModal').modal('show')
+    },
     openConfigLinks() {
       $('.setting-dropdown').show()
       $('.setting-dropdown').addClass('animated zoomIn')

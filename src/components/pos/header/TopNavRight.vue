@@ -5,6 +5,11 @@
         <span class="">{{ username }}</span>
       </a>
     </div>
+    <div class="change-location" v-if="haveMultipleStores">
+      <button class="btn btn-success" @click="showStoresPopup">
+        Switch Stores
+      </button>
+    </div>
     <div class="online color-text-invert">
       <div class="fa fa-fw fa-circle" :class="{ online: online }"></div>
       <div v-if="online">{{ _t('Online') }}</div>
@@ -108,7 +113,7 @@
             </router-link>
           </li>
           <li v-if="!isWaiter() && !isCarhop()">
-            <router-link :to="'/' + store" role="button" class="cursor-pointer">
+            <router-link :to="store" role="button" class="cursor-pointer">
               {{ _t('Walk-In') }}
             </router-link>
           </li>
@@ -176,7 +181,7 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
-    ...mapGetters('context', ['store', 'transactions']),
+    ...mapGetters('context', ['store', 'transactions', 'haveMultipleStores']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('sync', ['online']),
     ...mapState('order', ['orderType']),
@@ -189,6 +194,9 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    showStoresPopup() {
+      $('#myModal').modal('show')
+    },
     logoutCashier() {
       localStorage.setItem('token', '')
       this.$store.commit('auth/SET_TOKEN', '')
