@@ -107,6 +107,21 @@ const actions = {
       })
     })
   },
+  getUIMenu({ commit }) {
+    return new Promise((resolve, reject) => {
+      LocationService.getLocationData()
+        .then(updateAction => {
+          if (updateAction.data.brand) {
+            commit(mutation.SET_BRAND, updateAction.data.brand)
+          }
+          if (updateAction.data.store) {
+            commit(mutation.SET_STORE, updateAction.data.store)
+          }
+          return resolve(true)
+        })
+        .catch(er => reject(er))
+    })
+  },
   //got through brand/store
   fetch({ state, commit, dispatch, rootState, rootGetters }) {
     dispatch('formatDate')
