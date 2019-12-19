@@ -256,7 +256,6 @@
               <span>{{ _t('Dinning Options') }}</span>
             </a>
           </li>
-
           <li
             class="footer-slider-list-item color-secondary"
             data-toggle="modal"
@@ -286,6 +285,7 @@
               <span>{{ _t('Add Note') }}</span>
             </a>
           </li>
+          <open-item-button></open-item-button>
         </ul>
       </div>
     </div>
@@ -318,6 +318,7 @@
 
     <!--All popup including online order, because we need to apply few js which are not on header so all popups will be here-->
     <DineIn />
+    <openItem />
     <AddNote />
     <Discount />
     <OnlineOrder />
@@ -386,6 +387,8 @@ import DineinBtn from './footer/buttons/cart/dinein'
 import CrmBtn from './footer/buttons/cart/crm'
 import WalkinBtn from './footer/buttons/cart/walkin'
 import CarhopBtn from './footer/buttons/cart/carhop'
+import openItemButton from '@/components/pos/openItem/button'
+import openItem from '@/components/pos/openItem/item'
 
 import * as CONST from '@/constants'
 
@@ -429,6 +432,8 @@ export default {
     CrmBtn,
     WalkinBtn,
     CarhopBtn,
+    openItemButton,
+    openItem,
   },
   data() {
     return {
