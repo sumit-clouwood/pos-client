@@ -97,7 +97,7 @@ export default {
 }
 .tables-btn-style {
   margin-left: 21px;
-  background: #5056ca;
+  background: #cc3232;
   color: white;
   width: 10%;
   border: none;
