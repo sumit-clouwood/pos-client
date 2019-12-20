@@ -16,6 +16,7 @@
     <div v-show="loading">Scanning Barcode...</div>
     <input
       ref="barcode"
+      id="barcode-holder"
       type="hidden"
       autocomplete="new-password"
       v-model="barcode"
@@ -116,6 +117,7 @@ export default {
   mounted() {
     //alert('has scanner listening: ' + this.$barcodeScanner.hasListener())
     this.$refs.barcode.focus()
+    this.$refs.barcode.click()
   },
   created() {
     const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, {
