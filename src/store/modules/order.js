@@ -359,6 +359,7 @@ const actions = {
       //it won't clear discounts while validating
       dispatch('surchargeCalculation')
     })
+    return Promise.resolve()
   },
   addToOrder({ state, getters, commit, dispatch }, stateItem) {
     commit('checkoutForm/RESET', 'process', { root: true })

@@ -62,6 +62,7 @@
 </template>
 
 <script>
+/* global hideModal */
 import { mapGetters, mapState } from 'vuex'
 export default {
   data() {
@@ -93,7 +94,9 @@ export default {
         return false
       }
 
-      this.$store.dispatch('order/addOpenItem', this.item)
+      this.$store
+        .dispatch('order/addOpenItem', this.item)
+        .then(() => hideModal('#open-item'))
     },
   },
 }
