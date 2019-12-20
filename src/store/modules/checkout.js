@@ -17,6 +17,7 @@ const state = {
   paymentMsgStatus: false,
   processing: false,
   paymentAction: '',
+  splitPaid: false,
 }
 
 // getters
@@ -145,6 +146,12 @@ const actions = {
   },
 
   injectCrmData({ rootState }, order) {
+    //add referral
+    if (rootState.order.referral) {
+      //order.referral = rootState.order.referral.referralName
+      order.referral = rootState.order.referral.referralId
+    }
+
     if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY) {
       //order was modifying from delivery so no need to overwrite info
       order.customer = rootState.order.selectedOrder.item.customer
@@ -527,11 +534,7 @@ const actions = {
 
               //add order note
               order.order_note = rootState.order.orderNote
-              //add referral
-              if (rootState.order.referral) {
-                //order.referral = rootState.order.referral.referralName
-                order.referral = rootState.order.referral.referralId
-              }
+
               //add future order
               if (rootState.order.futureOrder) {
                 order.future_order = 1
@@ -1134,6 +1137,7 @@ const actions = {
             root: true,
           })
             .then(() => {
+              commit(mutation.SPLIT_PAID, true)
               resolve()
             })
             .catch(error => reject(error))
@@ -1391,6 +1395,9 @@ const mutations = {
   [mutation.SET_PAYMENT_ACTION](state, action) {
     state.paymentAction = action
   },
+  [mutation.SPLIT_PAID](state, action) {
+    state.splitPaid = action
+  },
   [mutation.RESET](state, full = true) {
     state.paidAmount = 0
     state.payableAmount = 0
@@ -1398,6 +1405,7 @@ const mutations = {
     state.print = false
     if (full) {
       state.order = false
+      state.splitPaid = false
     }
   },
 }

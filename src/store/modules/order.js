@@ -47,6 +47,7 @@ const state = {
   totalItems: 0,
   totalItemsPaid: 0,
   processing: false,
+  inventoryBehavior: ["waste", "return"]
 }
 
 // getters
@@ -1177,6 +1178,9 @@ const actions = {
         .then(() => {
           dispatch('addOrderToCart', orderData.item)
             .then(() => {
+              commit('checkout/SPLIT_PAID', false, { root: true })
+              commit(mutation.SET_SPLIT_BILL, false)
+              commit(mutation.SET_SPLITTED, false)
               dispatch('surchargeCalculation')
               resolve()
             })
