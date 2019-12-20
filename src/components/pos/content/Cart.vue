@@ -15,6 +15,7 @@
     </div>
     <div v-show="loading">Scanning Barcode...</div>
     <input
+      ref="barcode"
       type="hidden"
       autocomplete="new-password"
       v-model="barcode"
@@ -53,7 +54,6 @@ import dineInHeader from '@/components/dinein/cart/Header'
 import Vue from 'vue'
 import VueBarcodeScanner from 'vue-barcode-scanner'
 import { mapState, mapGetters } from 'vuex'
-import { bus } from '@/eventBus'
 
 let options = {
   sound: true, // default is false
@@ -87,7 +87,7 @@ export default {
       }
     },
     addItemToCartByCode(itemCode) {
-      bus.$emit('itemCodeReceived', itemCode)
+      this.$store.commit('category/setBarcode', itemCode)
     },
     cartClose() {
       this.$store.dispatch('cartClose')
@@ -115,6 +115,7 @@ export default {
   },
   mounted() {
     //alert('has scanner listening: ' + this.$barcodeScanner.hasListener())
+    this.$refs.barcode.focus()
   },
   created() {
     const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, {
