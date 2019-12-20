@@ -17,6 +17,7 @@ import { mapState } from 'vuex'
 import status from './status.vue'
 
 export default {
+  name: 'Avatar',
   components: {
     status,
   },
