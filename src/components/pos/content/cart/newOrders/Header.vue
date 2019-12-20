@@ -8,10 +8,7 @@
       <span class="cursor-pointer color-text" @click="removeSelectedCustomer()">
         X
       </span>
-      <p v-if="selectedCustomer.email != ''">
-        {{ _t('Email') }} : {{ selectedCustomer.email }}
-      </p>
-      <p v-if="selectedCustomer.name != '' && selectedCustomer.email == ''">
+      <p v-if="selectedCustomer.name != ''">
         {{ _t('Name') }} : {{ selectedCustomer.name }}
       </p>
       <div v-if="selectedCustomer.phone_number">
@@ -22,10 +19,7 @@
       <span class="cursor-pointer color-text" @click="removeSelectedCustomer()">
         X
       </span>
-      <p v-if="offlineCustomer.email != ''">
-        {{ _t('Email') }} : {{ offlineCustomer.email }}
-      </p>
-      <p v-if="offlineCustomer.name != '' && offlineCustomer.email == ''">
+      <p v-if="offlineCustomer.name != ''">
         {{ _t('Name') }} : {{ offlineCustomer.name }}
       </p>
       <div v-if="offlineCustomer.phone_number">

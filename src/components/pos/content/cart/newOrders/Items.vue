@@ -91,6 +91,7 @@ export default {
       'itemGrossPriceDiscounted',
       'itemGrossPrice',
       'orderModifiers',
+      'orderType',
     ]),
     ...mapGetters('location', ['formatPrice', '_t']),
   },
@@ -117,6 +118,14 @@ export default {
       return ''
     },
     removeCurrentOrder(param) {
+      if (this.selectedOrder || this.orderId) {
+        if (
+          (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
+          this.selectedOrder.item.order_status == 'in-progress'
+        ) {
+          return
+        }
+      }
       this.removeFromOrder(param)
       if (!this.items.length) {
         this.$store.dispatch('mainOrdersHendlerChange')

@@ -445,8 +445,8 @@ input.qty {
       vertical-align: middle; }
 
 .sitting-image svg {
-  -webkit-filter: drop-shadow(2px 2px 3px #555555);
-  filter: drop-shadow(1px 1PX 2px rgba(41, 39, 39, 0.96)); }
+  -webkit-filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(1px 1PX 2px rgba(0, 0, 0, 0.3)); }
   .sitting-image svg #dine-in-area {
     background: #ffffff; }
 
@@ -547,10 +547,13 @@ div#confirmModal .customer-title {
   font-size: 16px; }
 
 .pay_now {
-  color: #fff;
+  /*color: #fff;
   font-size: 12px;
   line-height: normal;
-  font-weight: normal; }
+  font-weight: normal;*/ }
+
+.dinefor-paynow {
+  min-width: 170px; }
 
 .running-actions {
   margin-top: 5px;

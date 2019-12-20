@@ -16,7 +16,11 @@ const state = {
   },
 }
 
-const getters = {}
+const getters = {
+  page: state => {
+    return state.params.page
+  },
+}
 
 const actions = {
   getHoldOrders({ commit, state, rootState }) {
@@ -34,15 +38,12 @@ const actions = {
     commit(mutation.LOADING, false)
     OrderService.getOrders(...params).then(response => {
       commit(mutation.GET_HOLD_ORDERS, response.data)
+      commit(mutation.GET_MORE_ORDER, state.params.page)
       commit(mutation.LOADING, true)
       commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
     })
   },
 
-  moreOrders({ commit, dispatch }, pageNumber) {
-    commit(mutation.GET_MORE_ORDER, pageNumber)
-    dispatch('getHoldOrders')
-  },
   fetchOrder({ commit, dispatch }, selectedOrder) {
     commit(mutation.GET_HOLD_ORDER_DETAILS, selectedOrder)
     dispatch('order/addHoldOrder', selectedOrder, { root: true })

@@ -10,15 +10,16 @@
       />
       <div class="pagination-customer-details">
         <paginate
-          v-if="parms.totalPages"
-          :page-count="parms.totalPages"
-          :page-range="1"
+          v-if="params.totalPages"
+          :page-count="params.totalPages"
+          :page-range="3"
           :margin-pages="1"
-          :clickHandler="moreOrder"
+          :clickHandler="getHoldOrders"
           :prev-text="_t('Prev')"
           :next-text="_t('Next')"
           :container-class="'holdorders'"
           :page-class="_t('page-item')"
+          v-model="page"
         >
         </paginate>
       </div>
@@ -50,19 +51,29 @@ export default {
   props: {},
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState({
-      holdOrderList: state => state.holdOrders.getHoldOrders,
-    }),
     ...mapState('holdOrders', ['loading']),
     ...mapState({
-      parms: state => state.holdOrders.params,
+      params: state => state.holdOrders.params,
     }),
+    page: {
+      get() {
+        return this.$store.getters['holdOrders/page']
+      },
+      set(page) {
+        this.$store.commit('holdOrders/GET_MORE_ORDER', page)
+      },
+    },
+    holdOrderList: {
+      get() {
+        return this.$store.state.holdOrders.getHoldOrders
+      },
+    },
+  },
+  beforeCreate() {
+    this.$store.dispatch('holdOrders/getHoldOrders')
   },
   methods: {
-    moreOrder: function(pageNumber) {
-      this.moreOrders(pageNumber)
-    },
-    ...mapActions('holdOrders', ['moreOrders']),
+    ...mapActions('holdOrders', ['getHoldOrders']),
   },
 }
 </script>

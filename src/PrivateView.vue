@@ -199,6 +199,15 @@ export default {
         $('.setting-dropdown').addClass('animated zoomIn')
       }, 200)
 
+      if (this.$route.params.order_id) {
+        this.orderId = this.$route.params.order_id
+        this.$store.commit('order/RESET_SPLIT_BILL')
+      }
+
+      if (this.$route.params.table_id) {
+        this.tableId = this.$route.params.table_id
+      }
+
       if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
         this.$store.commit('order/ORDER_SOURCE', 'backend')
         this.$store.dispatch('order/modifyOrder', this.orderId)

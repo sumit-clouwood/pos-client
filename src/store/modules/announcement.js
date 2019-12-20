@@ -1,12 +1,14 @@
 import * as mutation from './announcement/mutation-types'
 import AnnouncementService from '@/services/data/AnnouncementService'
+import store from '@/store'
+
 const state = {
   announcements: false,
 }
 
 const actions = {
-  fetchAll: function({ commit, rootState }) {
-    let user = rootState.auth.userDetails
+  fetchAll: function({ commit, rootState }, userDetails) {
+    let user = userDetails
     if (user && user.item) {
       const params = [user.item.brand_role, rootState.location.apiDate]
       AnnouncementService.fetchAll(...params).then(response => {
@@ -22,11 +24,19 @@ const mutations = {
   [mutation.SET_ANNOUNCEMENT](commit, announcements) {
     if (announcements) {
       let announcementsList = ''
+      let currentDate = new Date().toISOString().slice(0, 10)
       announcements.forEach(announcement => {
-        announcementsList =
-          announcementsList != ''
-            ? announcementsList + '  |  ' + announcement.announcement
-            : announcement.announcement
+        announcement.role.forEach(role => {
+          if (
+            role == store.getters['auth/brandRoleId'] &&
+            announcement.to_date >= currentDate
+          ) {
+            announcementsList =
+              announcementsList != ''
+                ? announcementsList + '  |  ' + announcement.announcement
+                : announcement.announcement
+          }
+        })
       })
       state.announcements = announcementsList
     }

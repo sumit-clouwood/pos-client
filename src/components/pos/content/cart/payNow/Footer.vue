@@ -1,7 +1,7 @@
 <template>
   <div class="payment-screen-footer" id="payment-screen-footer">
     <div
-      v-if="brand.accept_tips"
+      v-if="this.orderType !== 'dine_in' || this.brand.accept_tips"
       class="footer-wrap color-secondary"
       id="add-tip-amt"
       data-toggle="modal"
@@ -53,6 +53,7 @@ export default {
   computed: {
     ...mapState('checkout', ['changedAmount']),
     ...mapState('order', ['orderSource']),
+    ...mapGetters('order', ['orderType']),
     ...mapState('location', ['brand']),
     ...mapState('checkoutForm', ['msg', 'error', 'method', 'processing']),
     ...mapGetters('checkoutForm', ['validate']),
@@ -69,6 +70,13 @@ export default {
     })
   },
   methods: {
+    /*getTipAmountAction() {
+      if (this.orderType === 'dine_in') {
+        alert(this.brand.accept_tips)
+        return this.brand.accept_tips
+      }
+      return true
+    },*/
     addAmount() {
       return new Promise((resolve, reject) => {
         if (this.$store.getters['checkoutForm/validate']) {

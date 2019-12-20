@@ -125,9 +125,6 @@ const actions = {
       )
       return Promise.reject()
     }
-    // see if there is a change amount
-    const changedAmount = paid - totalPayable
-    commit(mutation.SET_CHANGED_AMOUNT, changedAmount)
     return Promise.resolve()
   },
 
@@ -211,24 +208,34 @@ const actions = {
       order.order_country = address.country
       order.order_delivery_area = address.delivery_area_id
     }
+    let deliveryAreaId = null
 
-    if (rootState.customer.address) {
+    if (
+      rootState.order.selectedOrder &&
+      rootState.order.selectedOrder.customer
+    ) {
+      order.customer_address_id = rootState.customer.address[0]._id
+      deliveryAreaId = rootState.customer.address[0].delivery_area_id
+    } else {
       order.customer_address_id = rootState.customer.address._id.$oid
-      const deliveryArea = rootGetters['customer/findDeliveryArea'](
-        rootState.customer.address.delivery_area_id
-      )
+      deliveryAreaId = rootState.customer.address.delivery_area_id
+    }
+    const deliveryArea = rootGetters['customer/findDeliveryArea'](
+      deliveryAreaId
+    )
+    if (deliveryArea) {
       if (deliveryArea.special_order_surcharge) {
         order.delivery_surcharge = deliveryArea.special_order_surcharge
       }
     }
     //add delivery surcharges
-
     return Promise.resolve(order)
   },
 
   injectHoldOrderData({ rootState }, order) {
     if (rootState.customer.address) {
-      order.customer_address_id = rootState.customer.address._id.$oid
+      order.customer_address_id =
+        rootState.order.selectedOrder.customer.customer_addresses[0]._id.$oid
     }
     return Promise.resolve(order)
   },
@@ -255,7 +262,7 @@ const actions = {
     return Promise.resolve(order)
   },
 
-  paymentsHook({ rootState, getters, rootGetters }, { action, order }) {
+  paymentsHook({ rootState, getters, rootGetters, commit }, { action, order }) {
     let totalPaid = 0
 
     if (rootState.checkoutForm.payments.length) {
@@ -376,7 +383,6 @@ const actions = {
 
     //applying Fixing
 
-    order.amount_changed = Num.round(order.amount_changed).toFixed(2)
     order.tip_amount = Num.round(order.tip_amount).toFixed(2)
 
     order.total_paid = Num.round(totalPaid).toFixed(2)
@@ -384,6 +390,10 @@ const actions = {
     //if (order.delivery_surcharge) {
     order.delivery_surcharge = Num.round(order.delivery_surcharge).toFixed(2)
     //}
+    const changedAmount = totalPaid - orderData.balanceDue
+    commit(mutation.SET_CHANGED_AMOUNT, changedAmount)
+
+    order.amount_changed = Num.round(changedAmount).toFixed(2)
 
     return Promise.resolve(order)
   },
@@ -515,7 +525,9 @@ const actions = {
         : rootState.dinein.selectedCover.name
 
       if (!orderCovers.some(item => item.entity_id == itemCover)) {
-        orderCovers.push({ entity_id: itemCover, name: itemCoverName })
+        if (itemCover) {
+          orderCovers.push({ entity_id: itemCover, name: itemCoverName })
+        }
       }
 
       oitem.cover_no = itemCover
@@ -534,10 +546,7 @@ const actions = {
     return Promise.resolve(order)
   },
 
-  pay(
-    { commit, getters, rootGetters, rootState, dispatch, state },
-    { action, data }
-  ) {
+  pay({ commit, getters, rootGetters, rootState, dispatch }, { action, data }) {
     return new Promise((resolve, reject) => {
       commit(mutation.SET_PAYMENT_ACTION, action)
       dispatch('validateEvent', { action: action, data: data })
@@ -579,7 +588,7 @@ const actions = {
                   // order_mode: 'online',
                   //remove the modifiers prices from subtotal
                   print_count: 0,
-                  amount_changed: state.changedAmount,
+                  amount_changed: 0,
                   order_building: '',
                   order_street: '',
                   order_flat_number: '',
@@ -1037,6 +1046,7 @@ const actions = {
                   root: true,
                 }
               )
+              commit('order/SET_ORDER_DETAILS', false, { root: true })
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
             }
@@ -1275,6 +1285,7 @@ const actions = {
               result: 'success',
               msg: msg,
             }).then(() => {
+              commit('order/SET_ORDER_DETAILS', false, { root: true })
               resolve(response.data)
             })
           } else {
@@ -1408,7 +1419,7 @@ const actions = {
     } else if (
       rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CARHOP
     ) {
-      if (action === 'carhop-place-order') {
+      if (action === 'carhop-place-order' || !rootState.order.orderId) {
         return dispatch('createCarhopOrder', action)
       } else {
         return dispatch('modifyCarhopOrder', action)

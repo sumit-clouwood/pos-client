@@ -1181,7 +1181,7 @@ div{
           letter-spacing: 0.4px;
           color: $header-gray-light;
           font-size: $px12;
-          font-weight: normal;
+          font-weight: bold;
           vertical-align: middle;
           text-transform: uppercase;
         }
@@ -1289,8 +1289,15 @@ div#home-delivery-order {
 tr.dataContentStyle{
   > td{
     > a{
-      padding: $px5;
-      font-size: $px10;
+      font-size: inherit;
+      line-height: normal;
+      display: inline-block;
+      vertical-align: middle;
+      color: $white !important;
+      i {
+        color: #fff;
+        font-size: $px21;
+      }
     }
   }
 }

@@ -116,6 +116,16 @@
                   >
                     {{ _t(addOrSplit) }}
                   </span>
+                  <span
+                    v-if="allowed(PERMS.SWITCH_WAITER)"
+                    data-toggle="modal"
+                    data-target="#switchWaiter"
+                    data-dismiss="modal"
+                    @click="setSelectedTable(orderDetails)"
+                    class="table-popup popbtn bg-success font-weight-bold"
+                  >
+                    {{ _t('Switch Waiter') }}
+                  </span>
                 </div>
               </div>
               <div class="table-order-footer" v-else>
@@ -127,6 +137,16 @@
                     class="table-popup popbtn bg-success font-weight-bold"
                   >
                     {{ _t(addOrSplit) }}
+                  </span>
+                  <span
+                    v-if="allowed(PERMS.SWITCH_WAITER)"
+                    data-toggle="modal"
+                    data-target="#switchWaiter"
+                    data-dismiss="modal"
+                    @click="setSelectedTable(orderDetails)"
+                    class="table-popup popbtn bg-success font-weight-bold"
+                  >
+                    {{ _t('Switch Waiter') }}
                   </span>
                 </div>
               </div>
@@ -233,6 +253,7 @@
             >
               {{ _t(addOrSplit) }}
             </button>
+
             <button type="button" class="btn btn-danger" data-dismiss="modal">
               {{ _t('Close') }}
             </button>
@@ -274,6 +295,7 @@ export default {
       'updateTableArea',
     ]),
     ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['allowed']),
   },
   mixins: [DateTime],
   components: {
@@ -352,6 +374,25 @@ export default {
     },
   },
   methods: {
+    setSelectedTable(orderDetails) {
+      if (orderDetails) {
+        let tableOrder = null
+        orderDetails.forEach(order => {
+          if (order.orderIds && order.orderIds.length) {
+            const orderObj = this.allBookedTables.lookup.orders._id[
+              order.orderIds[0]
+            ]
+            const orderStatus = orderObj.order_status
+            if (orderStatus !== 'finished') {
+              tableOrder = order
+            }
+          } else {
+            tableOrder = order
+          }
+        })
+        this.$store.commit('dinein/SET_RESERVATION_DATA', tableOrder)
+      }
+    },
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
     closeMyself() {
       $('#tooltipdata').hide()
@@ -526,28 +567,28 @@ export default {
           .selectAll('path:nth-last-of-type(1)')
           .attr('fill', function() {
             let fillcolor = dis.tableStatus.table.find(ts => ts.id === data._id)
-            let colourTable = '#FF9C9A'
+            /*let colourTable = '#FF9C9A'
             if (fillcolor.status.color == '#62bb31') {
               colourTable = '#99CA86'
             } else if (fillcolor.status.color == '#faa03c') {
               colourTable = '#FAD580'
-            }
-            return colourTable
+            }*/
+            return fillcolor.status.color
           })
         d3.select(selectedItem)
           .select('svg>g:last-child')
           .selectAll('path')
           .attr('fill', function() {
             let fc = dis.tableStatus.table.find(ts => ts.id === data._id)
-            let colourChairs = '#CC3232'
+            /*let colourChairs = '#CC3232'
             if (fc.id === data._id) {
               if (fc.status.color == '#62bb31') {
                 colourChairs = '#009900'
               } else if (fc.status.color == '#faa03c') {
                 colourChairs = '#fa9304'
               }
-            }
-            return colourChairs
+            }*/
+            return fc.status.color
           })
         let makeId = '#id_' + dis.selectedTableId
         $(makeId)
@@ -563,7 +604,7 @@ export default {
           .text(`${d.number}`)
           .attr('style', 'font-size:60px')
           .attr('style', 'font-weight:bold')
-        // .attr('fill', '#565353')
+        // .attr('fill', '#fff')
         let data = d
         this.setTableColour(a[i], data)
         d3.select(a[i]).on('click', function(d, i, a) {
@@ -578,9 +619,7 @@ export default {
         let midX = nodeDims.width / 2 + x
         let midY = nodeDims.height / 2 + y
         d3.select(d3.select(a[i]).node().parentNode).attr('transform', () => {
-          return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${
-            data.table_position_coordinate.angle
-          },${midX},${midY})`
+          return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${data.table_position_coordinate.angle},${midX},${midY})`
         })
       })
     },
@@ -1065,5 +1104,24 @@ export default {
 <style scoped>
 .modal .modal-dialog .modal-content .modal-footer {
   display: list-item;
+}
+</style>
+<style lang="scss" scoped>
+.m-1 {
+  &.buttons {
+    span {
+      margin-right: 10px !important;
+      &:last-child {
+        margin-right: 0px !important;
+      }
+    }
+  }
+}
+</style>
+<style lang="scss">
+#switchWaiter {
+  .modal-dialog {
+    max-width: 60% !important;
+  }
 }
 </style>

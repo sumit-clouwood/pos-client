@@ -75,6 +75,17 @@
         <li v-if="permitted('dashboard', 'root')">
           <a :href="dashboard">{{ _t('Dashboard') }}</a>
         </li>
+        <li
+          v-if="!isWaiter() && !isCarhop() && permitted('transactional_orders')"
+        >
+          <router-link
+            :to="store + '/transactions'"
+            role="button"
+            class="cursor-pointer"
+          >
+            {{ _t('Transacttions') }}
+          </router-link>
+        </li>
         <li v-if="permitted('crm', 'root')">
           <a :href="crm">{{ _t('CRM') }}</a>
         </li>
@@ -93,6 +104,11 @@
             </router-link>
           </a>
         </li>
+        <li v-if="!isWaiter() && !isCarhop()">
+          <router-link :to="'/' + store" role="button" class="cursor-pointer">
+            {{ _t('Walk-In') }}
+          </router-link>
+        </li>
         <li>
           <a role="button" class="cursor-pointer">
             <router-link :to="'/carhop' + store">
@@ -100,8 +116,21 @@
             </router-link>
           </a>
         </li>
+        <li v-if="!isWaiter()">
+          <router-link :to="'/carhop-orders' + store">
+            {{ _t('Carhop Orders') }}
+          </router-link>
+        </li>
         <li v-if="permitted('brand', 'root')">
           <a :href="brand">{{ _t('Settings') }}</a>
+        </li>
+        <li v-if="enabledModule('switchCashier') && !isWaiter() && !isCarhop()">
+          <router-link
+            :to="'/cashier-login' + store"
+            @click.native="logoutCashier"
+          >
+            {{ _t('Switch Cashier') }}
+          </router-link>
         </li>
         <li>
           <a href="javascript:void(0)" @click="logout()">{{ _t('Logout') }}</a>
@@ -149,6 +178,15 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    enabledModule(option) {
+      switch (option) {
+        case 'switchCashier':
+          return true
+      }
+    },
+    moveTransactionSection() {
+      this.$router.push(this.store + '/transactions')
+    },
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
       $('.setting-dropdown-transaction').css('display', 'none')
