@@ -8,6 +8,7 @@
         </span>
       </div>
     </div>
+    <SwitchStore />
     <div class="button-block">
       <div class="top-menu-container">
         <div class="top-menu-icon" @click="showLeftMenu()">
@@ -133,11 +134,7 @@
               </router-link>
             </li>
             <li v-if="!isWaiter() && !isCarhop()">
-              <router-link
-                :to="'/' + store"
-                role="button"
-                class="cursor-pointer"
-              >
+              <router-link :to="store" role="button" class="cursor-pointer">
                 {{ _t('Walk-In') }}
               </router-link>
             </li>
@@ -167,7 +164,9 @@
               </router-link>
             </li>
             <li>
-              <a role="button" @click="logout()">{{ _t('Logout') }}</a>
+              <a role="button" @click="logout($router.push('/'))">{{
+                _t('Logout')
+              }}</a>
             </li>
           </ul>
         </li>
@@ -181,8 +180,13 @@
 import moment from 'moment-timezone'
 import { mapGetters, mapState, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
+import SwitchStore from '@/components/commonButtons/SwitchStore'
+
 export default {
   name: 'DMTopRightNav',
+  components: {
+    SwitchStore,
+  },
   data() {
     return {
       todayDate: moment().format('MMMM Do YYYY'),

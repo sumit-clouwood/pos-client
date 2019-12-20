@@ -110,7 +110,7 @@
           <button
             type="button"
             class="btn btn-danger cancel-announce color-icon-table-neutral-button font-weight-bold logout"
-            @click="logout()"
+            @click="logout($router.push('/'))"
           >
             {{ _t('Logout') }}
           </button>
