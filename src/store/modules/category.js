@@ -19,6 +19,7 @@ const state = {
   taxData: [],
   taxAmount: {},
   searchItems: {},
+  barcode: false,
 }
 
 // getters, computed properties
@@ -26,8 +27,10 @@ const getters = {
   categories: state => {
     return state.categories
   },
-  itemByCode: (state, getters) => itemCode => {
-    return getters.items.find(item => item.code == itemCode)
+  itemByCode: state => itemCode => {
+    return state.items.find(
+      item => item.item_code === itemCode || item.barcode === itemCode
+    )
   },
   subcategories: state => {
     if (typeof state.category != 'undefined') {
@@ -207,6 +210,9 @@ const mutations = {
       state.searchItems = {}
       state.item = null
     }
+  },
+  setBarcode(state, code) {
+    state.barcode = code
   },
 }
 
