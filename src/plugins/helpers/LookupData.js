@@ -30,6 +30,24 @@ export default {
     }
     return 'NA'
   },
+
+  getUserAssociatedDetails(details) {
+    const collectionItems = details.collection
+    let length = 0
+    if (typeof collectionItems === 'object') {
+      length = Object.keys(collectionItems).length
+    } else {
+      length = collectionItems.length
+    }
+    if (length > 0 && collectionItems[details.matchWith] != 'undefined') {
+      if (details.selection) {
+        return collectionItems[details.matchWith][details.selection]
+      } else {
+        return collectionItems[details.matchWith]
+      }
+    }
+    return 'NA'
+  },
   /*getPromises(details) {
     const collectionItems = Object.entries(details.collection)
     return new Promise((resolve, reject) => {

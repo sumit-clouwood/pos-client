@@ -186,12 +186,10 @@
     <div class="slider-btn" @click="showMore">
       <i aria-hidden="true" class="fa fa-chevron-down"></i>
     </div>
-    <div
+    <router-link
       class="navigation-avatar color-secondary"
       v-if="userDetails && permitted('profile', 'root')"
-      data-toggle="modal"
-      data-target="#user-details"
-      data-dismiss="modal"
+      :to="'/user-details' + currentStore"
     >
       <a class="nav-link" role="button" :title="userDetails.item.name">
         <img
@@ -207,21 +205,16 @@
           {{ userDetails.item.name }}
         </div>
       </a>
-    </div>
+    </router-link>
     <!--top Menu-->
-    <UserProfile />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import UserProfile from '@/components/pos/user/UserProfile'
 /* global $, menuShowMore */
 export default {
   name: 'SystemNavigation',
-  components: {
-    UserProfile,
-  },
   methods: {
     collapseExpend() {
       $('.navigation').toggleClass('collapse-menu')
@@ -260,6 +253,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      currentStore: ['context/store'],
+    }),
     ...mapGetters('location', ['_t', 'permitted']),
     ...mapState('auth', ['userDetails']),
     /*...mapState({
