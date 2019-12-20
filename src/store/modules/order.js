@@ -322,10 +322,11 @@ const actions = {
     return Promise.resolve(1)
   },
 
-  prepareItemTax({ rootState }, item) {
+  prepareItemTax({ rootGetters }, item) {
     return new Promise(resolve => {
       if (typeof item.tax_sum === 'undefined') {
         //find tax for this item
+        item.tax_sum = rootGetters['tax/applicableTaxes']
       }
       resolve(item)
     })
