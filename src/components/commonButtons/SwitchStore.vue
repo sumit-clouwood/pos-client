@@ -15,7 +15,7 @@ export default {
   },
   methods: {
     showStoresPopup() {
-      $('#myModal').modal('show')
+      $('#multiStoresModal').modal('show')
     },
   },
 }

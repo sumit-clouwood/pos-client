@@ -27,5 +27,13 @@ Vue.mixin({
     isCarhop() {
       return store.getters['auth/carhop']
     },
+    isSuperAdmin() {
+      if (store.state.auth.userDetails) {
+        return (
+          store.state.auth.userDetails.item.name === 'Super Admin' &&
+          store.getters['auth/roleName'] == ''
+        )
+      }
+    },
   },
 })

@@ -335,9 +335,6 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
-    showStoresPopup() {
-      $('#myModal').modal('show')
-    },
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
       $('.setting-dropdown').css('display', 'none')

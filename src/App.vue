@@ -6,8 +6,9 @@
         haveMultipleStores && !isStoreSelected && !this.$route.params.store_id
       "
     />
+    <!-- user is logged in, there is a store id in url or the user is not admin  -->
     <private-view
-      v-if="privateContext && this.$route.params.store_id"
+      v-if="privateContext && (this.$route.params.store_id || !isSuperAdmin())"
       class="private-view"
     ></private-view>
     <!-- Public view -->
