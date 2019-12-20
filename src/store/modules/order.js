@@ -47,6 +47,7 @@ const state = {
   totalItems: 0,
   totalItemsPaid: 0,
   processing: false,
+  inventoryBehavior: ["waste", "return"]
 }
 
 // getters

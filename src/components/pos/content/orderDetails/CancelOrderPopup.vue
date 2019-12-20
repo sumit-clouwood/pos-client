@@ -34,10 +34,10 @@
                     class="input-search-driver"
                     id="get-customer-list"
                     v-model="showSelectedReason"
-                    @click="showDropdown"
+                    @click="showDropdown('my-dropdown')"
                   />
                 </form>
-                <div id="my-dropdown" class="dropdown-content cursor-pointer">
+                <div id="my-dropdown" class="dropdown-content cancel-order-dd cursor-pointer">
                   <span
                     class="dropdown"
                     v-for="reason in cancellationReason"
@@ -48,6 +48,34 @@
                 </div>
                 <p v-if="errors && errors.cancel_reason" class="text-danger">
                   {{ errors.cancel_reason }}
+                </p>
+              </div>
+              <div class="driver-container">
+                <div class="select-driver">{{ _t('Inventory Behavior') }}</div>
+                <form>
+                  <input
+                    autocomplete="off"
+                    type="text"
+                    class="input-search-driver"
+                    id="get-behavior-list"
+                    v-model="showSelectedBehavior"
+                    @click="showDropdown('inventory-dropdown')"
+                  />
+                </form>
+                <div
+                  id="inventory-dropdown"
+                  class="dropdown-content cancel-order-dd cursor-pointer"
+                >
+                  <span
+                    class="dropdown"
+                    v-for="(behavior, i) in inventoryBehavior"
+                    :key="i"
+                    v-on:click="selectedBehavior(behavior)"
+                    >{{ behavior }} </span
+                  >
+                </div>
+                <p v-if="errorMessage.length > 0" class="text-danger">
+                  {{ errorMessage }}
                 </p>
               </div>
               <div
@@ -109,6 +137,7 @@ export default {
   data() {
     return {
       showSelectedReason: '',
+      showSelectedBehavior: '',
       supervisorPassword: '',
       errorMessage: '',
     }
@@ -118,19 +147,28 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['cancellationReason', 'selectedOrder', 'errors']),
+    ...mapState('order', ['cancellationReason', 'selectedOrder', 'errors', 'inventoryBehavior']),
   },
   methods: {
     selectedReason: function(reason) {
-      this.showSelectedReason = reason.name
-      $('.dropdown-content').hide()
+      this.showSelectedReason = reason.name;
+      $(".dropdown-content").hide();
     },
-    showDropdown: function() {
-      $('.dropdown-content').toggle()
+    showDropdown: function(className) {
+      $("#" + className).toggle();
+    },
+    selectedBehavior: function(behavior) {
+      this.showSelectedBehavior = behavior
+      $('.inventory-content').hide()
     },
     cancelOrderAction: function(order) {
+      if (this.showSelectedReason.length == 0) {
+        this.errorMessage = 'Please select an inventory behavior'
+        return false
+      }
       let data = {
         cancel_reason: this.showSelectedReason,
+        inventory_behavior: this.showSelectedBehavior,
       }
       if (
         this.$store.state.location.brand &&
@@ -139,6 +177,7 @@ export default {
         data = {
           cancel_reason: this.showSelectedReason,
           supervisor_password: this.supervisorPassword,
+          inventory_behavior: this.showSelectedBehavior,
         }
       }
       let orderType = 'call_center'
