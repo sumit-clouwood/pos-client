@@ -79,7 +79,7 @@ export default {
           this.updateLoading('store')
           this.store.dispatch('payment/fetchAll').then(() => {})
           this.store.dispatch('discount/fetchAll').then(() => {})
-          this.store.dispatch('tax/fetchAll')
+          this.store.dispatch('tax/openItemTaxes')
           this.store.dispatch('surcharge/fetchAll').then(() => {})
 
           this.store

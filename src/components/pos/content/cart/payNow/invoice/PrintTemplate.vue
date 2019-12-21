@@ -475,6 +475,9 @@ export default {
         item => item._id == orderItem.entity_id
       )
       if (found_item) {
+        if (found_item.name === 'Open Item') {
+          return this.translate_entity(orderItem, 'name')
+        }
         return this.translate_entity(found_item, 'name')
       } else {
         return ''

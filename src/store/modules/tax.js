@@ -2,6 +2,8 @@ import TaxService from '@/services/data/TaxService'
 
 const state = {
   taxes: [],
+  openItemTax: null,
+  openItemId: null,
 }
 
 const getters = {
@@ -46,7 +48,15 @@ const actions = {
       }
     })
   },
-
+  openItemTaxes({ commit }) {
+    TaxService.fetchOpenItemTaxes().then(response => {
+      //If taxes available for location.
+      if (response.data) {
+        commit('SET_OPEN_ITEM_ID', response.data.entity_id)
+        commit('SET_OPEN_ITEM_TAX', response.data.tax_sum)
+      }
+    })
+  },
   reset({ commit }) {
     commit('RESET')
   },
@@ -55,6 +65,12 @@ const actions = {
 const mutations = {
   SET_TAXES(state, taxes) {
     state.taxes = taxes
+  },
+  SET_OPEN_ITEM_ID(state, id) {
+    state.openItemId = id
+  },
+  SET_OPEN_ITEM_TAX(state, tax) {
+    state.openItemTax = tax
   },
   RESET(state) {
     state.taxes = []

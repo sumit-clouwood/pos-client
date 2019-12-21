@@ -94,16 +94,17 @@ export default {
         return false
       }
 
-      this.$store
-        .dispatch('order/addOpenItem', this.item)
-        .then(() => hideModal('#open-item'))
+      this.$store.dispatch('order/addOpenItem', this.item).then(() => {
+        hideModal('#open-item')
+        this.item = {}
+      })
     },
   },
 }
 </script>
 <style lang="sass" scoped>
 .open-item
-  width: 25.2875rem
+  width: 100%
   height: 3.125rem
   border-radius: 3px
   background-color: #ffffff
