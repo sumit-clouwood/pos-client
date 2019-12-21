@@ -55,6 +55,7 @@ export default {
             .then(async () => {
               await Promise.all([
                 this.store.dispatch('modifier/fetchAll'),
+                this.store.dispatch('tax/fetchAll'),
                 this.store.dispatch('surcharge/fetchAll'),
                 this.store.dispatch('discount/fetchAll'),
               ])
@@ -78,6 +79,7 @@ export default {
           this.updateLoading('store')
           this.store.dispatch('payment/fetchAll').then(() => {})
           this.store.dispatch('discount/fetchAll').then(() => {})
+          this.store.dispatch('tax/openItemTaxes')
           this.store.dispatch('surcharge/fetchAll').then(() => {})
 
           this.store
