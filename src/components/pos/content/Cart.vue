@@ -14,16 +14,20 @@
       </div>
     </div>
     <div v-show="loading">Scanning Barcode...</div>
-    <input
-      ref="barcode"
-      id="barcode-holder"
-      type="hidden"
-      autocomplete="new-password"
-      v-model="barcode"
-      autofocus
-      @keypress="addItem"
-      placeholder="Type Barcode"
-    />
+    <!--
+    <form autocomplete="off">
+      <input
+        ref="barcode"
+        id="barcode-holder"
+        type="hidden"
+        autocomplete="new-password"
+        v-model="barcode"
+        autofocus
+        @keypress="addItem"
+        placeholder="Type Barcode"
+      />
+    </form>
+    -->
     <Header v-if="orderType.OTApi !== 'dine_in'" />
     <dineInHeader v-else />
 
@@ -115,7 +119,6 @@ export default {
     mobileFooter,
   },
   mounted() {
-    //alert('has scanner listening: ' + this.$barcodeScanner.hasListener())
     this.$refs.barcode.focus()
     this.$refs.barcode.click()
   },
