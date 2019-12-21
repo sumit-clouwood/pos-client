@@ -126,25 +126,36 @@ export default {
             return new Promise((resolve, reject) => {
               DataService.getT('/ui_menu?&menu_needed=false')
                 .then(response => {
+                  let availabeStores = response.data.available_stores
                   if (
                     !this.$route.params.store_id &&
-                    response.data.available_stores.length > 1
+                    availabeStores.length > 1
                   ) {
                     $('#multiStoresModal').css({ 'background-color': 'grey' })
                     $('#multiStoresModal').modal('show')
                     this.$store.commit(
                       'context/SET_STORES_LENGTH',
-                      response.data.available_stores.length
+                      availabeStores.length
                     )
                     this.$store.commit(
                       'context/SET_MULTI_STORES',
-                      response.data.available_stores
+                      availabeStores
                     )
                   }
-                  this.$store.dispatch(
-                    'auth/getUserDetails',
-                    response.data.user_id
-                  )
+                  let path = response.data.start_path
+                  if (path != null && availabeStores.length === 1) {
+                    if (path === 'delivery_home') {
+                      path = 'delivery-manager'
+                    }
+                    let URL = path + this.$store.getters['context/store']
+                    this.$router.push(URL)
+                    this.$store.dispatch(
+                      'auth/getUserDetails',
+                      response.data.user_id
+                    )
+                  } else {
+                    $('#multiStores').modal.show()
+                  }
                   resolve(response)
                 })
                 .catch(error => {
