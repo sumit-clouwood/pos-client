@@ -21,10 +21,15 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.change-location {
+  margin-left: 10px;
+  margin-right: -10px;
+}
 .tables-btn-style {
   background: #5056ca;
   color: white;
   border: none;
-  font-size: 12.75px;
+  font-size: 14px;
+  font-weight: 500;
 }
 </style>

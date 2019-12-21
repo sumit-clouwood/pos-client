@@ -8,6 +8,7 @@ import DeliveryManagerInit from './views/DeliveryManagerInit'
 import DispatchScreenInit from './views/DispatchScreenInit'
 import CashierLogin from './views/CashierLogin'
 import Carhop from './views/Carhop'
+import UserProfile from './views/UserProfile.vue'
 
 Vue.use(Router)
 
@@ -41,6 +42,11 @@ const router = new Router({
       path: '/delivery-manager/:brand_id/:store_id/',
       name: 'DeliveryManager',
       component: DeliveryManagerInit,
+    },
+    {
+      path: '/user-details/:brand_id/:store_id',
+      name: 'userDetails',
+      component: UserProfile,
     },
     {
       path: '/carhop/:brand_id/:store_id',

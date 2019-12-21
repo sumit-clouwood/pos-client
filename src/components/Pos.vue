@@ -81,3 +81,8 @@ export default {
   },
 }
 </script>
+<style scoped>
+.user-profile {
+  align-self: center;
+}
+</style>

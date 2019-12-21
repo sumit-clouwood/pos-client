@@ -346,7 +346,6 @@
     <Loyalty />
     <Invoice />
     <OrderDetailsPopup />
-    <UserProfile />
     <InformationPopup :responseInformation="this.message" :title="this.title" />
   </div>
 </template>
@@ -379,7 +378,6 @@ import SearchLoyaltyCustomer from '../pos/footer/popups/SearchLoyaltyCustomer'
 import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
 import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
-import UserProfile from '@/components/pos/user/UserProfile'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
 import DineinBtn from './footer/buttons/cart/dinein'
@@ -422,7 +420,6 @@ export default {
     Loyalty,
     Invoice,
     OrderDetailsPopup,
-    UserProfile,
     InformationPopup,
     ModificationPermissions,
     DineinBtn,

@@ -5,7 +5,6 @@
         <span class="">{{ username }}</span>
       </a>
     </div>
-    <SwitchStore />
     <div class="online color-text-invert">
       <div class="fa fa-fw fa-circle" :class="{ online: online }"></div>
       <div v-if="online">{{ _t('Online') }}</div>
@@ -40,6 +39,7 @@
         </a>
       </li>
     </ul>
+    <SwitchStore />
     <div class="curent-sale hideBigScreen">
       <div class="curent-sale-title">{{ _t('Current Sale') }}</div>
       <div class="curent-sale-item">
