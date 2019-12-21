@@ -65,42 +65,57 @@ const getters = {
   },
   getCustomerAddresses: (state, getters, rootState) => {
     let data = {}
+    let valueData = []
     let storeId = rootState.context.storeId
     if (state.customer && state.customer.customer_addresses) {
-      data = state.customer.customer_addresses.filter(area => {
+      data = state.customer.customer_addresses.filter(address => {
         let checkDeliveryArea = getters.checkDeliveryArea(
-          area.delivery_area_id,
+          address.delivery_area_id,
           state.deliveryAreas
         )
         if (checkDeliveryArea) {
           // let deliveryArea = getters.findDeliveryArea(checkDeliveryArea._id)
-          let deliveryArea = state.fetchDeliveryAreas.map(area => {
-            if (checkDeliveryArea._id == area._id) {
-              let DAStatus = area.stores.find(entity => {
+          let deliveryArea = state.fetchDeliveryAreas.map(dArea => {
+            if (checkDeliveryArea._id == dArea._id) {
+              let DAStatus = dArea.stores.find(entity => {
                 if (entity.entity_id == storeId && entity.item_status) {
                   return true
                 } else false
               })
               if (typeof DAStatus != 'undefined' && DAStatus.item_status) {
                 if (DAStatus.min_order_value) {
-                  area.min_order_value = DAStatus.min_order_value
+                  dArea.min_order_value = DAStatus.min_order_value
                 }
                 if (DAStatus.special_order_surcharge) {
-                  area.special_order_surcharge =
+                  dArea.special_order_surcharge =
                     DAStatus.special_order_surcharge
                 }
-                return area
+                return dArea
               } else return false
             }
           })
 
-          return deliveryArea.find(area => area && typeof area != 'undefined')
-          /*if (typeof deliveryArea != 'undefined') {
-            a = deliveryArea.stores.find(
-              entity => entity.entity_id == storeId && entity.item_status
-            )
-          }*/
+          let data = deliveryArea.find(
+            area => area && typeof area != 'undefined'
+          )
+          valueData.push({
+            _id: data._id,
+            special_order_surcharge: data.special_order_surcharge,
+            min_order_value: data.min_order_value,
+          })
+          return data
         }
+      })
+    }
+    if (Object.keys(data).length !== 0) {
+      data.map(area => {
+        valueData.forEach(data => {
+          if (data._id == area.delivery_area_id) {
+            area.min_order_value = data.min_order_value
+            area.special_order_surcharge = data.special_order_surcharge
+          }
+          return area
+        })
       })
     }
     return data

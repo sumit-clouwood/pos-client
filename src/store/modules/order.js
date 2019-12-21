@@ -54,6 +54,12 @@ const state = {
 
 // getters
 const getters = {
+  deliverySurcharge: (state, getters, rootState) => {
+    if (rootState.customer.address) {
+      return rootState.customer.address.special_order_surcharge || 0
+    }
+    return 0
+  },
   orderIndex: state => {
     if (!state.items.length) {
       return 0
@@ -138,6 +144,7 @@ const getters = {
     let amount =
       getters.subTotal +
       getters.totalTax +
+      getters.deliverySurcharge +
       rootGetters['surcharge/surcharge'] -
       rootGetters['discount/orderDiscountWithoutTax']
 
@@ -321,6 +328,56 @@ const actions = {
   markSplitItemsPaid({ commit }) {
     commit(mutation.MARK_SPLIT_ITEMS_PAID)
     return Promise.resolve(1)
+  },
+
+  prepareItemTax({ rootState }, { item, type }) {
+    return new Promise(resolve => {
+      if (type === 'open') {
+        //find tax for this item
+        item.tax_sum = rootState.tax.openItemTax
+        item._id = rootState.tax.openItemId
+        resolve(item)
+      }
+      resolve(item)
+    })
+  },
+  prepareItem({ commit, getters, dispatch }, { item, type }) {
+    return new Promise(resolve => {
+      commit('checkoutForm/RESET', 'process', { root: true })
+      item.split = false
+      item.paid = false
+
+      dispatch('prepareItemTax', { item, type }).then(item => {
+        //item gross price is inclusive of tax
+        item.grossPrice = getters.grossPrice(item)
+        //net price is exclusive of tax, getter ll send unrounded price that is real one
+        item.netPrice = getters.netPrice(item)
+
+        //calculated item tax
+        item.tax = Num.round(item.grossPrice - item.netPrice)
+
+        if (typeof item.orderIndex === 'undefined') {
+          item.orderIndex = getters.orderIndex
+        }
+
+        if (typeof item.quantity === 'undefined') {
+          item.quantity = 1
+        }
+        resolve(item)
+      })
+    })
+  },
+  addOpenItem({ dispatch, commit }, item) {
+    dispatch('prepareItem', { item: item, type: 'open' }).then(item => {
+      //this comes directly from the items menu without modifiers
+      item.modifiable = false
+      commit(mutation.ADD_ORDER_ITEM, item)
+      commit(mutation.SET_TOTAL_ITEMS, state.items.length)
+      //if dine in modify then calculate surcharges after every item has been added so
+      //it won't clear discounts while validating
+      dispatch('surchargeCalculation')
+    })
+    return Promise.resolve()
   },
   addToOrder({ state, getters, commit, dispatch }, stateItem) {
     commit('checkoutForm/RESET', 'process', { root: true })
@@ -966,14 +1023,18 @@ const actions = {
 
   surchargeCalculation({ rootState, dispatch }) {
     return new Promise(resolve => {
-      dispatch('surcharge/calculate', {}, { root: true }).then(() => {
-        if (rootState.discount.appliedOrderDiscount) {
-          dispatch('recalculateOrderTotals')
-        } else {
-          dispatch('recalculateItemPrices')
-        }
-        resolve()
-      })
+      dispatch('surcharge/calculate', {}, { root: true })
+        .then(() => {
+          if (rootState.discount.appliedOrderDiscount) {
+            dispatch('recalculateOrderTotals')
+          } else {
+            dispatch('recalculateItemPrices')
+          }
+          resolve()
+        })
+        .catch(error => {
+          console.log(error)
+        })
     })
   },
 
