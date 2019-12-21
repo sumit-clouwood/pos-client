@@ -54,6 +54,12 @@ const state = {
 
 // getters
 const getters = {
+  deliverySurcharge: (state, getters, rootState) => {
+    if (rootState.customer.address) {
+      return rootState.customer.address.special_order_surcharge || 0
+    }
+    return 0
+  },
   orderIndex: state => {
     if (!state.items.length) {
       return 0
@@ -138,6 +144,7 @@ const getters = {
     let amount =
       getters.subTotal +
       getters.totalTax +
+      getters.deliverySurcharge +
       rootGetters['surcharge/surcharge'] -
       rootGetters['discount/orderDiscountWithoutTax']
 
