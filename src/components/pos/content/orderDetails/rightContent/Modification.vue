@@ -65,9 +65,11 @@ export default {
   },
   methods: {
     modificationDetails() {
-      this.modification = this.orderDetails.order_history.find(
-        history => typeof history.param2 != 'undefined'
-      )
+      if (typeof this.orderDetails != 'undefined') {
+        this.modification = this.orderDetails.order_history.find(
+          history => typeof history.param2 != 'undefined'
+        )
+      }
     },
     getUserName(userId) {
       return LookupData.check({
