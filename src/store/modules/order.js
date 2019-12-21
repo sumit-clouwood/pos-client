@@ -49,6 +49,7 @@ const state = {
   orderSource: null,
   modificationReasons: [],
   processing: false,
+  inventoryBehavior: ["waste", "return"]
 }
 
 // getters
