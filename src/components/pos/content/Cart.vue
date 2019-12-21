@@ -14,14 +14,20 @@
       </div>
     </div>
     <div v-show="loading">Scanning Barcode...</div>
-    <input
-      type="hidden"
-      autocomplete="new-password"
-      v-model="barcode"
-      autofocus
-      @keypress="addItem"
-      placeholder="Type Barcode"
-    />
+    <!--
+    <form autocomplete="off">
+      <input
+        ref="barcode"
+        id="barcode-holder"
+        type="hidden"
+        autocomplete="new-password"
+        v-model="barcode"
+        autofocus
+        @keypress="addItem"
+        placeholder="Type Barcode"
+      />
+    </form>
+    -->
     <Header v-if="orderType.OTApi !== 'dine_in'" />
     <dineInHeader v-else />
 
@@ -53,7 +59,6 @@ import dineInHeader from '@/components/dinein/cart/Header'
 import Vue from 'vue'
 import VueBarcodeScanner from 'vue-barcode-scanner'
 import { mapState, mapGetters } from 'vuex'
-import { bus } from '@/eventBus'
 
 let options = {
   sound: true, // default is false
@@ -87,7 +92,7 @@ export default {
       }
     },
     addItemToCartByCode(itemCode) {
-      bus.$emit('itemCodeReceived', itemCode)
+      this.$store.commit('category/setBarcode', itemCode)
     },
     cartClose() {
       this.$store.dispatch('cartClose')
@@ -114,21 +119,26 @@ export default {
     mobileFooter,
   },
   mounted() {
-    //alert('has scanner listening: ' + this.$barcodeScanner.hasListener())
+    setTimeout(() => {
+      this.$refs.barcode.focus()
+      this.$refs.barcode.click()
+    }, 1000)
   },
   created() {
-    const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, {
-      eventBus: true,
-    })
+    setTimeout(() => {
+      const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, {
+        eventBus: true,
+      })
 
-    if (eventBus) {
-      eventBus.$on('start', () => {
-        this.loading = true
-      })
-      eventBus.$on('finish', () => {
-        this.loading = false
-      })
-    }
+      if (eventBus) {
+        eventBus.$on('start', () => {
+          this.loading = true
+        })
+        eventBus.$on('finish', () => {
+          this.loading = false
+        })
+      }
+    }, 1000)
 
     //this.$barcodeScanner.hasListener() // return Boolean
     //this.$barcodeScanner.getPreviousCode() // return String

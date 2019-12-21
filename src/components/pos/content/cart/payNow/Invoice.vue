@@ -109,7 +109,7 @@ export default {
         if (
           this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_CARHOP
         ) {
-          this.$router.replace({ name: 'Carhop' })
+          this.$router.replace({ name: 'CarhopOrders' })
         }
       }
       this.$store.commit('order/RESET_SPLIT_BILL')

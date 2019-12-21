@@ -107,8 +107,8 @@ export default {
   }
   .in-progress,
   .finished {
-    /*background-color: #e73030;*/
-    /*color: #fff;*/
+    background-color: #e73030;
+    color: #fff;
     border-radius: $px4;
     display: inline-block;
     padding: $px4 $px10;
@@ -128,8 +128,8 @@ export default {
   }
   .item-name {
     padding: 0 0.625rem;
-    /*background-color: #ef7f2a;*/
-    /*color: #fff;*/
+    background-color: #ef7f2a;
+    color: #fff;
     height: 1.875rem;
     line-height: 1.875rem;
     display: inline-block;

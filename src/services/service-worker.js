@@ -1,7 +1,7 @@
 // custom service-worker.js
 /* global workbox */
 /* eslint-disable no-console */
-var appVersion = '6.5.31'
+var appVersion = '6.5.32'
 
 var clientUrl = ''
 
@@ -805,6 +805,9 @@ var Order = {
       var requestUrl = savedRequest.url
       var payload = savedRequest.payload
       delete payload.user
+      if (payload.order_type !== 'call_center') {
+        payload.referral = ''
+      }
       enabledConsole && console.log(1, 'sw:', 'Sending sync to server')
       Sync.request(requestUrl, method, payload)
         .then(response => {
