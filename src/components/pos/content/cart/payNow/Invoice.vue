@@ -125,6 +125,7 @@ export default {
             let w = this.$refs.iframe.contentWindow
             w.focus()
             w.print()
+            this.iframe_body = ''
 
             // if (!this.$store.getters['checkout/complete']) {
             //   this.$store.dispatch('checkout/splitOrder').then(() => {})
