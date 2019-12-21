@@ -57,7 +57,9 @@
                   </div>
                 </div>
                 <div class="driver-container">
-                  <div class="select-driver">{{ _t('Inventory Behavior') }}</div>
+                  <div class="select-driver">
+                    {{ _t('Inventory Behavior') }}
+                  </div>
                   <form>
                     <input
                       autocomplete="off"
@@ -72,13 +74,13 @@
                     id="inventory-dropdown"
                     class="dropdown-content cancel-order-dd cursor-pointer"
                   >
-                  <span
-                    class="dropdown"
-                    v-for="(behavior, i) in inventoryBehavior"
-                    :key="i"
-                    v-on:click="selectedBehavior(behavior)"
-                  >{{ behavior }} </span
-                  >
+                    <span
+                      class="dropdown"
+                      v-for="(behavior, i) in inventoryBehavior"
+                      :key="i"
+                      v-on:click="selectedBehavior(behavior)"
+                      >{{ behavior }}
+                    </span>
                   </div>
                   <p v-if="errorMessage.length > 0" class="text-danger">
                     {{ errorMessage }}
@@ -204,11 +206,11 @@ export default {
   },
   methods: {
     selectedReason: function(reason) {
-      this.showSelectedReason = reason.name;
-      $(".dropdown-content").hide();
+      this.showSelectedReason = reason.name
+      $('.dropdown-content').hide()
     },
     showDropdown: function(className) {
-      $("#" + className).toggle();
+      $('#' + className).toggle()
     },
     selectedBehavior: function(behavior) {
       this.showSelectedBehavior = behavior
