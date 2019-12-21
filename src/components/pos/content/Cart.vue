@@ -14,7 +14,8 @@
       </div>
     </div>
     <div v-show="loading">Scanning Barcode...</div>
-    <!--<form autocomplete="off">
+    <!--
+    <form autocomplete="off">
       <input
         ref="barcode"
         id="barcode-holder"
@@ -25,7 +26,8 @@
         @keypress="addItem"
         placeholder="Type Barcode"
       />
-    </form>-->
+    </form>
+    -->
     <Header v-if="orderType.OTApi !== 'dine_in'" />
     <dineInHeader v-else />
 
@@ -117,21 +119,26 @@ export default {
     mobileFooter,
   },
   mounted() {
-    this.$refs.barcode.focus()
-    this.$refs.barcode.click()
+    setTimeout(() => {
+      this.$refs.barcode.focus()
+      this.$refs.barcode.click()
+    }, 1000)
   },
   created() {
-    const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, {
-      eventBus: true,
-    })
-    if (eventBus) {
-      eventBus.$on('start', () => {
-        this.loading = true
+    setTimeout(() => {
+      const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, {
+        eventBus: true,
       })
-      eventBus.$on('finish', () => {
-        this.loading = false
-      })
-    }
+
+      if (eventBus) {
+        eventBus.$on('start', () => {
+          this.loading = true
+        })
+        eventBus.$on('finish', () => {
+          this.loading = false
+        })
+      }
+    }, 1000)
 
     //this.$barcodeScanner.hasListener() // return Boolean
     //this.$barcodeScanner.getPreviousCode() // return String
