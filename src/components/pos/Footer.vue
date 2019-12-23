@@ -63,7 +63,7 @@
             </a>
           </li>
           <li
-            v-if="orderType.OTApi !== 'dine_in'"
+            v-if="cartType === 'new' && orderType.OTApi !== 'dine_in'"
             @click="viewHoldOrders"
             class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
             :class="[{ active: vbutton === 'hold' }]"
