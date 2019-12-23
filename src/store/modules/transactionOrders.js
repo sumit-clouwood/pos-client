@@ -45,7 +45,7 @@ const actions = {
         state.params.customerId,
       ]
       commit(mutation.LOADING, false)
-      OrderService.getOrders(...params)
+      OrderService.getOrdersForTransactionScreen(...params)
         .then(response => {
           commit(mutation.ALL_TRANSACTIONS, response.data)
           commit(mutation.LOADING, true)

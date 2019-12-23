@@ -498,6 +498,7 @@ export default {
     viewHoldOrders() {
       this.vbutton = 'new'
       this.$store.commit('order/SET_CART_TYPE', 'hold')
+      this.$store.dispatch('holdOrders/getHoldOrders')
     },
 
     loyaltyHendlerChange() {
