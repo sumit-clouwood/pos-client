@@ -37,7 +37,7 @@ const actions = {
         state.params.query,
         state.params.limit,
         '',
-        '',
+        'normal',
         '',
         state.params.page,
         state.params.pageId,
