@@ -38,20 +38,20 @@ export default {
     ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['carhop', 'waiter']),
   },
-  mounted() {
-    if (this.waiter) {
-      if (
-        this.$route.path !== 'undefined' &&
-        !this.$route.path.match('dine-in')
-      ) {
-        this.$router.replace('/dine-in' + this.store + '/')
-      }
-    } else if (this.carhop) {
-      this.$router.replace('/carhop' + this.store + '/')
-    } else {
-      this.$router.replace(this.store)
-    }
-  },
+  // mounted() {
+  //   if (this.waiter) {
+  //     if (
+  //       this.$route.path !== 'undefined' &&
+  //       !this.$route.path.match('dine-in')
+  //     ) {
+  //       this.$router.replace('/dine-in' + this.store + '/')
+  //     }
+  //   } else if (this.carhop) {
+  //     this.$router.replace('/carhop' + this.store + '/')
+  //   } else {
+  //     this.$router.replace(this.store)
+  //   }
+  // },
   created() {
     // if (localStorage.getItem('token')) {
     //   let user_session_loop = setInterval(() => {
