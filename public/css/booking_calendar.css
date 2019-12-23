@@ -105,13 +105,13 @@ td.reservation-actions > .btn {
 .SCMonth .SCTbl {
  border-right: 1px dashed #d7dce2;
  border-bottom: 1px dashed #d7dce2;
- padding-bottom:3px;
 }
 .SCDay .SCTbl {
  border-right: 1px dashed #d7dce2;
- margin-top: 1px;
 }
-
+.SCYear .SCTbl, .SCMonth .SCTbl, .SCDay .SCTbl, .SCDay .prev, .SCDay .next {
+ margin: 0;
+}
 .SCDay .SCTbl:nth-last-child(2), .SCMonth .SCTbl:last-child {
  border-right: medium none !important;
 }

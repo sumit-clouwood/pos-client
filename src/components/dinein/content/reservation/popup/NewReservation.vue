@@ -681,9 +681,14 @@ export default {
 .hide-text {
   display: none;
 }
+#NewReservation .modal-dialog {
+  max-width: 1124px !important;
+}
 .time_slot_block {
   height: 320px;
   overflow-y: auto;
+  border: 1px solid #d7dce2;
+  border-radius: $px4;
   .time_slot {
     &.active {
       border: solid 2px #5056ca;
@@ -706,7 +711,8 @@ export default {
     flex-direction: column;
     align-items: center;
     padding: 5px 0;
-    border: 1px solid #ccc;
+    border-bottom: 1px solid #d7dce2;
+    border-left: 2px solid #d7dce2;
     height: 80px;
     max-width: 24.9%;
     .is_available {
@@ -719,6 +725,9 @@ export default {
       }
     }
   }
+}
+.time_slot_block > div:nth-child(4n + 1) {
+  border-left: medium none;
 }
 .tag-secondary {
   padding: 10px;
