@@ -5,6 +5,7 @@
         <span class>{{ username }}</span>
       </a>
     </div>
+    <SwitchStore />
     <div class="all-booking-btns hide-below-sm">
       <button
         type
@@ -386,9 +387,12 @@
                 fill="#CC3232"
               ></path>
             </svg>
-            <a role="button" class="cursor-pointer" @click="logout()">{{
-              _t('Logout')
-            }}</a>
+            <a
+              role="button"
+              class="cursor-pointer"
+              @click="logout($router.push('/'))"
+            >{{ _t('Logout') }}</a
+            >
           </li>
         </ul>
       </ul>
@@ -545,10 +549,14 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 import AuthService from '@/services/data/AuthService'
 import bootstrap from '@/bootstrap'
+import SwitchStore from '@/components/commonButtons/SwitchStore'
 import avatar from '@/components/mobileComponents/mobileElements/avatar'
 export default {
   name: 'TopNavRight',
   props: {},
+  components: {
+    SwitchStore,
+  },
   data: function() {
     return {
       iconCodeSelection: 'us',
@@ -589,6 +597,9 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    showStoresPopup() {
+      $('#myModal').modal('show')
+    },
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
       $('.setting-dropdown').css('display', 'none')

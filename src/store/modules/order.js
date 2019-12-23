@@ -1702,6 +1702,8 @@ const mutations = {
     }
     if (state.splitBill) {
       state.splitted = true
+    } else {
+      state.splitted = false
     }
   },
   [mutation.RESET_SPLIT_BILL](state) {

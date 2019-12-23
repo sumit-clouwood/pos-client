@@ -5,6 +5,7 @@
         <span class="">{{ username }}</span>
       </a>
     </div>
+    <SwitchStore />
     <div class="online color-text-invert">
       <div class="fa fa-fw fa-circle" :class="{ online: online }"></div>
       <div v-if="online">{{ _t('Online') }}</div>
@@ -108,7 +109,7 @@
             </router-link>
           </li>
           <li v-if="!isWaiter() && !isCarhop()">
-            <router-link :to="'/' + store" role="button" class="cursor-pointer">
+            <router-link :to="store" role="button" class="cursor-pointer">
               {{ _t('Walk-In') }}
             </router-link>
           </li>
@@ -136,7 +137,9 @@
             </router-link>
           </li>
           <li>
-            <a role="button" @click="logout()">{{ _t('Logout') }}</a>
+            <a role="button" @click="logout($router.push('/'))">{{
+              _t('Logout')
+            }}</a>
           </li>
         </ul>
       </li>
@@ -149,11 +152,15 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 import * as CONST from '@/constants'
 import AuthService from '@/services/data/AuthService'
+import SwitchStore from '@/components/commonButtons/SwitchStore'
 
 import bootstrap from '@/bootstrap'
 export default {
   name: 'TopNavRight',
   props: {},
+  components: {
+    SwitchStore,
+  },
   data: function() {
     return {
       onlineOrdersCount: 0,

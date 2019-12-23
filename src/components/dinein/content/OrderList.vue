@@ -419,10 +419,10 @@ export default {
       )
       // return orderDateTime + 'yyyu'
     },
-    payNow(orderId) {
+    /*payNow(orderId) {
       // eslint-disable-next-line no-console
-      console.log(orderId, this.$store)
-    },
+      // console.log(orderId, this.$store)
+    },*/
     showMoreOrderItems(id) {
       // $('.table-order-view').removeClass('active')
       $('#id_' + id)

@@ -1,7 +1,15 @@
 <template>
   <div>
     <!-- Private view -->
-    <private-view v-if="privateContext" class="private-view"></private-view>
+    <MultipleStores
+      v-show="
+        haveMultipleStores && !isStoreSelected && !this.$route.params.store_id
+      "
+    />
+    <private-view
+      v-if="privateContext && this.$route.params.store_id"
+      class="private-view"
+    ></private-view>
     <!-- Public view -->
     <public-view v-else class="public-view"></public-view>
     <app-notification></app-notification>
@@ -11,16 +19,20 @@
 import PublicView from './PublicView'
 import PrivateView from './PrivateView'
 import AppNotification from './AppNotification'
-import DataService from '@/services/DataService'
+import { mapGetters } from 'vuex'
+import MultipleStores from '@/components/MultipleStores'
 
+import DataService from '@/services/DataService'
 export default {
   name: 'App',
   components: {
     PublicView,
     PrivateView,
     AppNotification,
+    MultipleStores,
   },
   computed: {
+    ...mapGetters('context', ['isStoreSelected', 'haveMultipleStores']),
     privateContext() {
       return this.$store.state.auth.token
     },
@@ -50,7 +62,6 @@ export default {
       }
     },
   },
-
   mounted() {
     DataService.setStore(this.$store)
     this.setup()

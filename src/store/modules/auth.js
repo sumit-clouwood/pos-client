@@ -21,6 +21,7 @@ const state = {
 }
 
 // getters
+
 const getters = {
   allowed: state => resource => {
     if (resource && state.role) {

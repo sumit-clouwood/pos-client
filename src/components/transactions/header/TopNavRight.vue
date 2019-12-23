@@ -5,6 +5,7 @@
         <span class="">{{ username }}</span>
       </a>
     </div>
+    <SwitchStore />
     <div class="online color-text-invert">
       <div class="fa fa-fw fa-circle" :class="{ online: online }"></div>
       <div v-if="online">{{ _t('Online') }}</div>
@@ -105,7 +106,7 @@
           </a>
         </li>
         <li v-if="!isWaiter() && !isCarhop()">
-          <router-link :to="'/' + store" role="button" class="cursor-pointer">
+          <router-link :to="store" role="button" class="cursor-pointer">
             {{ _t('Walk-In') }}
           </router-link>
         </li>
@@ -133,7 +134,9 @@
           </router-link>
         </li>
         <li>
-          <a href="javascript:void(0)" @click="logout()">{{ _t('Logout') }}</a>
+          <a role="button" @click="logout($router.push('/'))">{{
+            _t('Logout')
+          }}</a>
         </li>
       </ul>
     </li>
@@ -144,8 +147,12 @@
 /*global $*/
 import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
+import SwitchStore from '@/components/commonButtons/SwitchStore'
 export default {
   name: 'TopNavRight',
+  components: {
+    SwitchStore,
+  },
   props: {},
   data: function() {
     return {
@@ -166,7 +173,7 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
-    ...mapGetters('context', ['store']),
+    ...mapGetters('context', ['store', 'haveMultipleStores']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('sync', ['online']),
     ...mapState({

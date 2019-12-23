@@ -442,7 +442,9 @@ export default {
         .parent('div')
         .hide()
     },
+    ...mapActions('location', ['getUIMenu']),
     newOrder(reservationId, pos) {
+      this.getUIMenu()
       let makeId = '#id_' + this.selectedTableId
       $(makeId)
         .find('svg')
