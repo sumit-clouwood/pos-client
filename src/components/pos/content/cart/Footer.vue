@@ -24,6 +24,10 @@
         <div class="sub-total-text">{{ _t('Tax') }}</div>
         <div class="sub-total-num">{{ formatPrice(totalTax || 0) }}</div>
       </div>
+      <div class="item surcharges" v-if="deliverySurcharge">
+        <div class="sub-total-text">{{ _t('Delivery Surcharge') }}</div>
+        <div class="sub-total-num">{{ formatPrice(deliverySurcharge) }}</div>
+      </div>
     </div>
     <div class="total color-text">
       <div class="sub-total-text">{{ _t('Total') }}</div>
@@ -45,7 +49,12 @@ export default {
   name: 'CartFooter',
   props: {},
   computed: {
-    ...mapGetters('order', ['orderTotal', 'subTotal', 'totalTax']),
+    ...mapGetters('order', [
+      'orderTotal',
+      'subTotal',
+      'totalTax',
+      'deliverySurcharge',
+    ]),
     ...mapGetters('surcharge', ['surcharge']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', ['orderDiscountWithoutTax']),

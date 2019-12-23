@@ -1,6 +1,6 @@
 <template>
   <div
-    id="myModal"
+    id="multiStoresModal"
     class="modal fade"
     role="dialog"
     data-keyboard="false"
@@ -85,7 +85,7 @@ export default {
         brand: this.$store.getters['context/brand'],
         store: this.$store.getters['context/store'],
       })
-      $('#myModal').modal('hide')
+      $('#multiStoresModal').modal('hide')
       this.$router.go(this.$router.currentRoute)
     },
   },
@@ -97,7 +97,7 @@ export default {
 }
 .tables-btn-style {
   margin-left: 21px;
-  background: #5056ca;
+  background: #cc3232;
   color: white;
   width: 10%;
   border: none;

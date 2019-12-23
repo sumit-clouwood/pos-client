@@ -130,8 +130,8 @@ export default {
                     !this.$route.params.store_id &&
                     response.data.available_stores.length > 1
                   ) {
-                    $('#myModal').modal('show')
-                    $('#myModal').css({ 'background-color': 'grey' })
+                    $('#multiStoresModal').css({ 'background-color': 'grey' })
+                    $('#multiStoresModal').modal('show')
                     this.$store.commit(
                       'context/SET_STORES_LENGTH',
                       response.data.available_stores.length
@@ -141,6 +141,10 @@ export default {
                       response.data.available_stores
                     )
                   }
+                  this.$store.dispatch(
+                    'auth/getUserDetails',
+                    response.data.user_id
+                  )
                   resolve(response)
                 })
                 .catch(error => {

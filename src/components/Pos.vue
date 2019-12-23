@@ -34,6 +34,7 @@ export default {
   name: 'Pos',
   computed: {
     ...mapState('category', ['categories']),
+    ...mapState('auth', ['role']),
     ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['carhop', 'waiter']),
   },
@@ -48,7 +49,7 @@ export default {
     } else if (this.carhop) {
       this.$router.replace('/carhop' + this.store + '/')
     } else {
-      //this.$router.replace('/' + this.store + '/')
+      this.$router.replace(this.store)
     }
   },
   created() {
@@ -81,3 +82,8 @@ export default {
   },
 }
 </script>
+<style scoped>
+.user-profile {
+  align-self: center;
+}
+</style>

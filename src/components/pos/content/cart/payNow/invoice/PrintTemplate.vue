@@ -193,6 +193,14 @@
                 {{ format_number(order.surcharge_tax) }}
               </td>
             </tr>
+            <tr v-if="parseFloat(order.delivery_surcharge) > 0">
+              <td colspan="2">
+                {{ _t('Delivery Surcharge') }}
+              </td>
+              <td class="right-aligned">
+                {{ format_number(order.delivery_surcharge) }}
+              </td>
+            </tr>
             <tr class="important">
               <td colspan="3" class="footTotal">
                 {{ template.total_label }}
@@ -349,9 +357,7 @@ export default {
     },
     default_header: function() {
       if (this.active_store) {
-        return `${this.currentBrand.name} <br/> ${this.active_store.city} ${
-          this.template['branch_label']
-        } <br/> ${this.template['telno_label']} ${this.active_store.phone}`
+        return `${this.currentBrand.name} <br/> ${this.active_store.city} ${this.template['branch_label']} <br/> ${this.template['telno_label']} ${this.active_store.phone}`
       } else {
         return ''
       }
@@ -477,6 +483,9 @@ export default {
         item => item._id == orderItem.entity_id
       )
       if (found_item) {
+        if (found_item.name === 'Open Item') {
+          return this.translate_entity(orderItem, 'name')
+        }
         return this.translate_entity(found_item, 'name')
       } else {
         return ''

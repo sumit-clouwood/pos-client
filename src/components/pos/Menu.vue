@@ -45,12 +45,10 @@
     <div class="slider-btn color-secondary" @click="showMore">
       <i class="fa fa-chevron-down color-text-invert" aria-hidden="true"></i>
     </div>
-    <div
+    <router-link
       class="navigation-avatar color-secondary"
       v-if="userDetails"
-      data-toggle="modal"
-      data-target="#user-details"
-      data-dismiss="modal"
+      :to="'/user-details' + store"
     >
       <a class="nav-link" role="button" :title="userDetails.item.name">
         <img
@@ -66,7 +64,7 @@
           {{ userDetails.item.name }}
         </div>
       </a>
-    </div>
+    </router-link>
     <div v-if="getImages">
       <link
         v-for="(url, key) in getImages"
