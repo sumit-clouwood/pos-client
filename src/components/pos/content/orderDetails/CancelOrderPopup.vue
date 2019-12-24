@@ -34,11 +34,11 @@
                     class="input-search-driver"
                     id="get-customer-list"
                     v-model="showSelectedReason"
-                    @click="showDropdown('my-dropdown')"
+                    @click="showDropdown('cancellation-dropdown')"
                   />
                 </form>
                 <div
-                  id="my-dropdown"
+                  id="cancellation-dropdown"
                   class="dropdown-content cancel-order-dd cursor-pointer"
                 >
                   <span
@@ -168,7 +168,7 @@ export default {
     },
     selectedBehavior: function(behavior) {
       this.showSelectedBehavior = behavior
-      $('.inventory-content').hide()
+      $('#inventory-dropdown').hide()
     },
     cancelOrderAction: function(order) {
       if (this.showSelectedReason.length == 0) {
@@ -207,6 +207,9 @@ export default {
             else if (this.selectedOrder.item.order_type == 'call_center')
               this.deliveryOrder()
           }
+          this.showSelectedReason = ''
+          this.showSelectedBehavior = ''
+          this.supervisorPassword = ''
         })
         .catch(response => {
           this.errorMessage = response

@@ -67,110 +67,14 @@
         </a>
       </div>
     </div>
-    <div
-      class="header header-main header-main-right color-dashboard-background"
-    >
-      <ul>
-        <li
-          class="nav-icon nav-item setting-icon color-main color-text-invert"
-          id="setting-icon"
-          @click="openConfigLinks()"
-        >
-          <a class="nav-link color-text-invert">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="21.88"
-              height="19.94"
-              viewBox="0 0 24 21"
-            >
-              <path
-                fill="#FFF"
-                fill-rule="nonzero"
-                d="M0 0h24v3H0V0zm0 9h24v3H0V9zm0 9h24v3H0v-3z"
-              />
-            </svg>
-          </a>
-          <ul class="setting-dropdown" style="display:none">
-            <li v-if="!isWaiter() && !isCarhop()">
-              <a role="button">{{ _t('Printers') }}</a>
-            </li>
-            <li
-              v-if="
-                !isWaiter() && !isCarhop() && permitted('dashboard', 'root')
-              "
-            >
-              <a :href="dashboard">{{ _t('Dashboard') }}</a>
-            </li>
-            <li
-              v-if="
-                !isWaiter() && !isCarhop() && permitted('transactional_orders')
-              "
-              @click="moveTransactionSection(this)"
-            >
-              <a role="button">
-                {{ _t('Transactions') }}
-              </a>
-            </li>
-            <li v-if="!isWaiter() && !isCarhop() && permitted('crm', 'root')">
-              <a :href="crm">{{ _t('CRM') }}</a>
-            </li>
-            <li v-if="!isCarhop()" @click="moveDineSection()">
-              <a role="button">
-                {{ _t('Dine In') }}
-              </a>
-            </li>
-            <li v-if="!isWaiter() && !isCarhop() && permitted('menu', 'root')">
-              <a :href="menu">{{ _t('Menu Setup') }}</a>
-            </li>
-            <li
-              v-if="!isWaiter() && !isCarhop() && permitted('delivery', 'root')"
-            >
-              <router-link
-                :to="'/delivery-manager' + store"
-                role="button"
-                @click="setDeliveryManageState()"
-              >
-                {{ _t('Delivery Manager') }}
-              </router-link>
-            </li>
-            <li v-if="!isWaiter() && !isCarhop()">
-              <router-link :to="store" role="button" class="cursor-pointer">
-                {{ _t('Walk-In') }}
-              </router-link>
-            </li>
-            <li v-if="!isWaiter()">
-              <router-link :to="'/carhop' + store">
-                {{ _t('Carhop') }}
-              </router-link>
-            </li>
-            <li v-if="!isWaiter()">
-              <router-link :to="'/carhop-orders' + store">
-                {{ _t('Carhop Orders') }}
-              </router-link>
-            </li>
-            <li v-if="!isWaiter() && !isCarhop() && permitted('brand', 'root')">
-              <a :href="brand">{{ _t('Settings') }}</a>
-            </li>
-            <li
-              v-if="
-                enabledModule('switchCashier') && !isWaiter() && !isCarhop()
-              "
-            >
-              <router-link
-                :to="'/cashier-login' + store"
-                @click.native="logoutCashier"
-              >
-                {{ _t('Switch Cashier') }}
-              </router-link>
-            </li>
-            <li>
-              <a role="button" @click="logout($router.push('/'))">{{
-                _t('Logout')
-              }}</a>
-            </li>
+    <div class="header">
+      <div class="header-main">
+        <div class="header-main-right color-dashboard-background">
+          <ul>
+            <TopSidebarMenu />
           </ul>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -268,6 +172,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../assets/scss/header';
 .header-main-left-time {
   width: 250px;
   span {
