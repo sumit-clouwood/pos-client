@@ -356,6 +356,12 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    baseurl(link) {
+      return window.location.href.replace(
+        new RegExp('/pos/delivery-manager/.*'),
+        '/' + link
+      )
+    },
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
       $('.setting-dropdown').css('display', 'none')
