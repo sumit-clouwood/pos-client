@@ -657,7 +657,7 @@ export default {
 
 .num_guests {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(10, 1fr);
   .btn {
     padding: 1.175rem 1.75rem;
   }
@@ -683,6 +683,9 @@ export default {
 }
 #NewReservation .modal-dialog {
   max-width: 1124px !important;
+}
+#NewReservation #dine-in-table-selection .modal-dialog {
+  max-width: 100% !important;
 }
 .time_slot_block {
   height: 320px;
@@ -790,7 +793,7 @@ div#NewReservation .num_guests .btn-secondary label {
 }*/
 #NewReservation section#main {
   justify-content: left;
-  margin-left: 10px;
+  margin-left: 0;
   grid-template-columns: 1fr;
 }
 .wrapperNew .SCDay .SCElement > div {
@@ -802,7 +805,7 @@ div#NewReservation .num_guests .btn-secondary label {
 .wrapperNew .SCDay > div,
 .wrapperNew .SCMonth > div {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(7, 1fr);
   justify-content: center;
 }
 .next {

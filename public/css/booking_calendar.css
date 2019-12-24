@@ -123,7 +123,7 @@ section#main {
 }
 .fixed-reservation .SCMonth > div, .fixed-reservation .SCDay > div {
  display: grid;
- grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+ grid-template-columns: repeat(7, 1fr);
  justify-content: center;
  text-align: center;
 }
@@ -198,6 +198,7 @@ div#NewReservation .SCHor .next, div#NewReservation .SCHor .prev{
 .pos-reservation-table{
  overflow-y:auto;
  overflow-x:hidden;
+ padding: 0 5px;
 }
 .pos-reservation-header {
  min-height: 100px;
@@ -312,5 +313,8 @@ div#NewReservation .SCHor .next, div#NewReservation .SCHor .prev{
  .fixed-reservation .SCMonth > div span {
   font-size: 12px;
   padding: 0 4px;
+ }
+ #NewReservation .SCMonth > div span{
+  font-size: 12px;
  }
 }

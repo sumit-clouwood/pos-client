@@ -181,11 +181,13 @@ import moment from 'moment-timezone'
 import { mapGetters, mapState, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
+import TopSidebarMenu from '@/components/util/TopSidebarMenu'
 
 export default {
   name: 'DMTopRightNav',
   components: {
     SwitchStore,
+    TopSidebarMenu,
   },
   data() {
     return {
@@ -268,14 +270,16 @@ export default {
 <style lang="scss" scoped>
 .header-main-left-time {
   width: 250px;
+  span {
+    font-size: 17px;
+    display: block;
+    font-weight: bold;
+  }
 }
 .button-block {
   display: flex;
   justify-content: flex-end;
   width: 100%;
-}
-.change-location {
-  margin-left: 14px;
 }
 .page-header {
   display: flex;
@@ -294,50 +298,25 @@ export default {
 .nav-link {
   background-color: #5056ca;
   width: 3.125rem;
-  height: 3.125rem;
+  height: 51px;
   border-radius: 3px;
-  display: flex;
-  -webkit-box-align: center;
   align-items: center;
-  -webkit-box-pack: center;
   justify-content: center;
   position: relative;
   cursor: pointer;
   display: inline-flex;
-  -webkit-box-align: center;
-  align-items: center;
   -webkit-box-pack: center;
   padding: 0.25px;
-  justify-content: center;
 }
 .setting-dropdown {
   display: none;
-  background: rgb(255, 255, 255);
-  font-weight: 600;
   position: absolute;
   top: 3.375rem;
-  right: 0px;
   width: 13.1875rem;
-  display: none;
   background: #fff;
-  font-weight: 607px;
-  position: absolute;
-  top: 3.375rem;
   right: 0;
-  width: 13.1875rem;
-  -webkit-box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.375rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
-  box-shadow: 12 0px 0.0625rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.375rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
   border: 1px solid #eee;
   border-radius: 3px;
-  background-color: #fff;
   color: #000;
   z-index: 10;
   font-size: 55rem;
@@ -350,16 +329,12 @@ export default {
       font-size: 1.125rem;
       color: #555;
       font-weight: 400;
-      display: block;
-      width: 100%;
       padding: 5px 20px;
       cursor: pointer;
     }
   }
   li:hover,
   a:hover {
-    background: #e3e7f2;
-    background-color: grey;
     color: #555555;
   }
   a:hover {
