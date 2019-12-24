@@ -771,15 +771,6 @@ div {
     }
   }
 }
-.pay_now {
-  /*color: #fff;
-  font-size: 12px;
-  line-height: normal;
-  font-weight: normal;*/
-}
-.dinefor-paynow {
-  min-width: 170px;
-}
 .running-actions {
   margin-top: 5px;
   display: grid;
@@ -859,91 +850,6 @@ div {
     }
   }
 }
-
-/*svg .active > path {
-  stroke: green;
-  stroke-width:1.5
-}*/
-.profile-sidebar-header {
-  display: grid;
-  grid-template-columns: max-content auto max-content;
-  align-items: center;
-  justify-content: space-between;
-  grid-row-gap: 20px;
-  padding: 30.5px 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-  .btn-close {
-    font-size: 18px;
-    justify-self: end;
-    margin-right: 5px;
-  }
-
-  .separator {
-    width: 1px;
-    height: 100%;
-    background-color: #fff;
-  }
-}
-.dine-in-wrapper {
-  .header-main{
-    .header-main-right {
-      .status{
-        .online{
-          height: auto;
-          justify-content: flex-start;
-          margin-left: 0;
-        }
-      }
-      .setting-dropdown1{
-        z-index: 999;
-        position: fixed;
-        width: 16%;
-        top: 0;
-        height: 100vh;
-        ul{
-          &.dine-footer-navmenu {
-            display: flex;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            li{
-              border-bottom: medium none;
-              display: grid;
-              align-items: center;
-              width: 100%;
-              svg{
-                path{
-                  fill: #cc3232;
-                  opacity: 1;
-                }
-              }
-            }
-
-          }
-        }
-        li{
-          display: grid;
-          grid-template-columns: auto 1fr;
-          grid-gap: $px20;
-          padding: $px15 $px20;
-          border-bottom: $px1 solid #e3e7f2;
-          align-items: center;
-          svg{
-            width: $px25;
-            path{
-              fill: #000;
-              opacity: 0.5;
-            }
-          }
-        }
-      }
-    }
-
-  }
-}
-
 //Media Queries
 @include responsive(mobile) {
   #NewReservation{
@@ -986,21 +892,6 @@ div {
     .dine-in-tabel-wrapper {
       .inner-dinein-table {
         padding-top: 1em;
-      }
-    }
-
-    .setting-dropdown1 {
-      z-index: 999;
-      width: 90% !important;
-      overflow: auto;
-      height: calc(100vh - 80px) !important;
-      ul{
-        &.dine-footer-navmenu{
-          position: static !important;
-        }
-      }
-      li{
-        text-align: left;
       }
     }
     table{
@@ -1504,7 +1395,9 @@ button.res-select-table{
   border-color: #e4e8f1;
   color: #3d3f43;
 }
-
+.dine-language {
+  margin-left: $px2;
+}
 @media only screen and (min-width: 961px) and (max-width: 1100px){
   #sitting-dinein-table{
     height: calc(100vh - 210px);

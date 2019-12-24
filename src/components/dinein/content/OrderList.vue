@@ -325,14 +325,7 @@ export default {
     }
   },
   updated() {
-    alert('gf')
     //    if (this.orderTable.orders) {
-    if ($('.table-order-view').innerHeight() < 100) {
-      alert(innerHeight)
-      $('.order-down-arrow').addClass('fixed')
-    } else {
-      $('.order-down-arrow').removeClass('fixed')
-    }
     //    }
     // let scope = this
     // $('#running-order tbody .dine-table-content').each(function() {

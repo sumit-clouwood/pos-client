@@ -181,11 +181,13 @@ import moment from 'moment-timezone'
 import { mapGetters, mapState, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
+import TopSidebarMenu from '@/components/util/TopSidebarMenu'
 
 export default {
   name: 'DMTopRightNav',
   components: {
     SwitchStore,
+    TopSidebarMenu,
   },
   data() {
     return {

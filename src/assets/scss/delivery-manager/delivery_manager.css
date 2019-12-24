@@ -374,12 +374,12 @@ button.v-btn.v-btn--icon.theme--light {
   padding: 0.5rem;
   background: #CC3232;
   border: medium none;
-  border-radius: 3.125rem;
+  border-radius: 4px;
   text-align: center;
   display: flex;
   align-items: center;
-  height: 2.5rem;
-  width: 2.5rem;
+  height: 3.2rem;
+  width: 3.2rem;
   justify-content: center; }
 
 .button-block {
