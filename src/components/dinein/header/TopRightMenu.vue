@@ -19,7 +19,7 @@
           })
         "
       >
-        {{ _t('All Tables') }}
+        {{ _t('Tables') }}
       </button>
       <button
         type
@@ -163,7 +163,7 @@
                 })
               "
             >
-              {{ _t('All Tables') }}
+              {{ _t('Tables') }}
             </button>
             <button
               type

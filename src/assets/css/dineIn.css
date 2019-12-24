@@ -1,3 +1,6 @@
+#dm-content-wrapper {
+  overflow: hidden; }
+
 div#reservation-orders-show .rinning-order-title, #waiting-dinein-show .rinning-order-title {
   padding: 2.8125rem; }
 
@@ -71,21 +74,25 @@ li#circle-table-shape {
 .floor-section-wrap {
   display: grid;
   grid-template-columns: 1fr 16rem;
-  align-items: center; }
+  align-items: center;
+  padding-top: 0.3125rem;
+  margin-left: 0.9375rem;
+  border-bottom: solid 0.125rem #e3e7f2; }
   .floor-section-wrap .ullist-floor {
     padding-left: 0; }
     .floor-section-wrap .ullist-floor > li {
       display: inline-block;
-      margin-left: 1.0625rem;
-      padding-bottom: 0.625rem; }
+      min-width: 3.125rem;
+      text-align: center; }
+      .floor-section-wrap .ullist-floor > li.active {
+        border-bottom: 0.125rem solid #5056CA; }
+        .floor-section-wrap .ullist-floor > li.active > a {
+          color: #3d3f43;
+          font-weight: bold; }
       .floor-section-wrap .ullist-floor > li > a {
         color: #72747b;
-        font-size: 0.875rem; }
-    .floor-section-wrap .ullist-floor > li.active {
-      border-bottom: 0.125rem solid #5056CA; }
-      .floor-section-wrap .ullist-floor > li.active > a {
-        color: #3d3f43;
-        font-weight: bold; }
+        font-size: 0.875rem;
+        padding: 0.3125rem 0; }
 
 .ullist-dinein-table {
   padding-left: 0; }
@@ -128,8 +135,7 @@ li#circle-table-shape {
   width: 100%;
   max-width: 100%; }
   .dine-in-tabel-wrapper .inner-dinein-table {
-    padding-top: 1.25rem;
-    border-top: solid 0.125rem #e3e7f2; }
+    padding-top: 1.25rem; }
     .dine-in-tabel-wrapper .inner-dinein-table .dinein-table-control {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -225,7 +231,7 @@ span#dine-bottom {
   color: #7c7e85; }
   .tables-btn-style.active {
     background-color: #5056CA;
-    border: medium none;
+    border-color: #5056CA;
     color: #fff; }
 
 #sitting-dinein-table {
@@ -546,19 +552,9 @@ div#confirmModal .customer-title {
   color: #3f4146;
   font-size: 16px; }
 
-.pay_now {
-  /*color: #fff;
-  font-size: 12px;
-  line-height: normal;
-  font-weight: normal;*/ }
-
-.dinefor-paynow {
-  min-width: 170px; }
-
 .running-actions {
-  margin-top: 5px;
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: repeat(3, auto);
   text-align: center;
   align-items: center;
   grid-gap: 10px; }
@@ -567,64 +563,65 @@ div#confirmModal .customer-title {
   display: grid;
   grid-template-columns: auto auto;
   align-items: center; }
+  .action-status .btn-progress {
+    background-color: #faa03c;
+    color: #fff; }
+  .action-status .pay_now i {
+    font-size: 18px; }
 
 .dinein_table svg g:nth-of-type(1) {
   display: none; }
 
-.table-order-view-wrapper {
-  max-height: 150px;
-  overflow-y: auto;
-  overflow-x: hidden; }
-  .table-order-view-wrapper > .table-order-view {
-    box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.2), 0 0px 6px 0 rgba(0, 0, 0, 0.19);
-    height: 6.25rem;
-    overflow: hidden;
-    padding: 0.3125rem 0.625rem;
-    margin: 0.3125rem;
-    border-radius: 4px;
-    position: relative;
+.table-order-view-wrapper > .table-order-view {
+  box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.2), 0 0px 6px 0 rgba(0, 0, 0, 0.19);
+  padding: 0.3125rem 0.625rem;
+  margin: 0.3125rem;
+  border-radius: 4px;
+  position: relative;
+  transition: 0.3s ease-in-out; }
+  .table-order-view-wrapper > .table-order-view > div {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-gap: 20px; }
+  .table-order-view-wrapper > .table-order-view .modifiers > span {
+    color: #62bb31;
+    font-weight: bold; }
+  .table-order-view-wrapper > .table-order-view .main-item {
+    font-weight: bold;
+    display: inline-block;
+    background: #ef7f2a;
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 4px; }
+  .table-order-view-wrapper > .table-order-view .order-name {
+    padding-top: 0.3125rem; }
+  .table-order-view-wrapper > .table-order-view.active {
+    height: auto;
     transition: 0.3s ease-in-out; }
-    .table-order-view-wrapper > .table-order-view .order-name {
-      padding-top: 0.3125rem; }
-    .table-order-view-wrapper > .table-order-view.active {
-      height: auto;
-      transition: 0.3s ease-in-out; }
-      .table-order-view-wrapper > .table-order-view.active .order-down-arrow {
-        transform: rotate(180deg);
-        transition: 0.3s ease-in-out;
-        border-bottom-right-radius: 4px; }
-    .table-order-view-wrapper > .table-order-view .order-down-arrow {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      cursor: pointer;
-      background: #767DFF;
-      color: #fff;
-      padding: 2px 7px;
-      border-top-left-radius: 5px; }
 
 #available-tables > .table-status:hover {
   background: #E3E7F2; }
 
-#my-dropdown > .dropdown {
+.cancel-order-dd > .dropdown {
   border-bottom: 1px solid #cccccc; }
-  #my-dropdown > .dropdown > span {
+  .cancel-order-dd > .dropdown > span {
     padding: 0; }
 
-/*svg .active > path {
-  stroke: green;
-  stroke-width:1.5
-}*/
-.dine-in-wrapper .header-main .header-main-right .setting-dropdown1 {
-  z-index: 999; }
-
 @media only screen and (min-width: 320px) and (max-width: 960px) {
+  #NewReservation .modal-dialog {
+    max-width: 96% !important; }
+    #NewReservation .modal-dialog .modal-content .modal-body {
+      height: 100vh;
+      overflow: auto; }
+
+  .fixed-reservation {
+    width: 95vw;
+    height: calc(100vh - 10.8rem); }
+
   .dine-in-wrapper {
     margin: 0 10px;
     font-size: 14px; }
     .dine-in-wrapper .header .header-main .header-main-right .user-name {
-      display: none; }
-    .dine-in-wrapper .header .header-main .header-main-right .online {
       display: none; }
     .dine-in-wrapper .hideBigScreen .hideBigIcon {
       top: 5.8em; }
@@ -632,11 +629,11 @@ div#confirmModal .customer-title {
       grid-template-columns: 1fr;
       overflow: auto; }
     .dine-in-wrapper .dine-in-tabel-wrapper .inner-dinein-table {
-      padding-top: 5em; }
-    .dine-in-wrapper .setting-dropdown1 {
-      z-index: 999; }
-    .dine-in-wrapper .inner-content-dm .left-container .container-fluid:not(#all-tables-show) {
-      padding-top: 4em !important; }
+      padding-top: 1em; }
+    .dine-in-wrapper table#running-order {
+      border-collapse: collapse; }
+    .dine-in-wrapper .running-order-table-wrap {
+      height: calc(100vh - 215px); }
 
   body#page-top.dm-manager .new-pos {
     padding: 0; }
@@ -672,19 +669,34 @@ div#confirmModal .customer-title {
   .hide-below-sm {
     display: none; }
 
-  .hideBigScreen .all-booking-btns {
-    right: -999px;
-    z-index: -1;
+  .hideBigScreen .backgroundOverlay {
     position: fixed;
-    transition: 0.3s ease-in-out;
-    display: block;
-    background: #fff;
-    width: 250px;
-    margin: 0 auto;
-    height: 100vh;
     top: 0;
-    padding: 20px;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); }
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #000000;
+    opacity: .65;
+    filter: alpha(opacity=65);
+    -moz-opacity: .65;
+    z-index: 101;
+    display: none; }
+  .hideBigScreen .all-booking-btns {
+    left: 0;
+    position: fixed;
+    width: 100%;
+    height: 80px;
+    bottom: 0;
+    padding: 5px 10px 20px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    z-index: 999;
+    background: #fff; }
     .hideBigScreen .all-booking-btns.active {
       position: fixed;
       right: 0;
@@ -697,6 +709,64 @@ div#confirmModal .customer-title {
         min-width: 200px;
         margin-left: 0;
         margin-bottom: 20px; }
+    .hideBigScreen .all-booking-btns .dine-language {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center; }
+    .hideBigScreen .all-booking-btns .dine-btn-footer-wrapper {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      background: #fff;
+      width: 100%;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      animation: 0.4s ease-out 0s 1 footerSlideBottom;
+      padding: 20px 0;
+      box-shadow: 0px 1px 6px -7px #bcbcbc; }
+      .hideBigScreen .all-booking-btns .dine-btn-footer-wrapper.active {
+        display: flex;
+        flex-direction: column; }
+      .hideBigScreen .all-booking-btns .dine-btn-footer-wrapper button {
+        display: block;
+        width: 100% !important;
+        border: medium none;
+        text-align: left;
+        font-size: 17px;
+        font-weight: normal;
+        border-bottom: 1px solid #E3E7F2;
+        min-height: 60px;
+        margin: 0;
+        border-radius: 0; }
+    .hideBigScreen .all-booking-btns .footer-slide-menu {
+      width: 50px;
+      height: 50px;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      border-radius: 3px;
+      background-color: #4B4E53; }
+      .hideBigScreen .all-booking-btns .footer-slide-menu.btn-menu-close {
+        background-color: #cc3232;
+        display: none;
+        color: #fff; }
+        .hideBigScreen .all-booking-btns .footer-slide-menu.btn-menu-close.active {
+          display: flex;
+          align-items: center; }
+      .hideBigScreen .all-booking-btns .footer-slide-menu.dine-btn-menu.active {
+        display: none; }
+  @keyframes footerSlideBottom {
+    0% {
+      transform: translateY(100%); }
+    100% {
+      transform: translateY(0); } }
   .hideBigScreen .hideBigIcon {
     position: fixed;
     top: 54px;
@@ -723,7 +793,8 @@ div#confirmModal .customer-title {
 @media only screen and (max-width: 600px) {
   .floor-section-wrap {
     grid-template-columns: 1fr;
-    grid-row-gap: 0.625rem; }
+    grid-row-gap: 0.625rem;
+    margin-left: 0; }
     .floor-section-wrap .ullist-floor > li:first-child {
       margin-left: 0; }
     .floor-section-wrap .form-inline .inner-addon {
@@ -740,7 +811,10 @@ div#confirmModal .customer-title {
       text-align: center;
       margin-top: 1.25rem; }
     .dine-in-tabel-wrapper .inner-dinein-table .dinein-table-control .ullist-dinein-table {
-      text-align: center; }
+      text-align: center;
+      display: grid;
+      grid-template-columns: repeat(3, auto);
+      justify-content: flex-start; }
       .dine-in-tabel-wrapper .inner-dinein-table .dinein-table-control .ullist-dinein-table > li:first-child {
         margin-left: 0; } }
 @media only screen and (max-width: 400px) {
@@ -875,15 +949,9 @@ button.res-select-table {
   border-color: #e4e8f1;
   color: #3d3f43; }
 
-@media only screen and (max-width: 960px) {
-  #NewReservation .modal-dialog {
-    max-width: 96% !important; }
-    #NewReservation .modal-dialog .modal-content .modal-body {
-      height: 100vh;
-      overflow: auto; }
+.dine-language {
+  margin-left: 0.125rem; }
 
-  .fixed-reservation {
-    width: auto; } }
 @media only screen and (min-width: 961px) and (max-width: 1100px) {
   #sitting-dinein-table {
     height: calc(100vh - 210px); } }

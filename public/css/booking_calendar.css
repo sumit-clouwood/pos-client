@@ -314,4 +314,7 @@ div#NewReservation .SCHor .next, div#NewReservation .SCHor .prev{
   font-size: 12px;
   padding: 0 4px;
  }
+ #NewReservation .SCMonth > div span{
+  font-size: 12px;
+ }
 }
