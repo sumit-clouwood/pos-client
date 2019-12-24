@@ -298,7 +298,7 @@ export default {
 .nav-link {
   background-color: #5056ca;
   width: 3.125rem;
-  height: 51px;
+  height: 44px;
   border-radius: 3px;
   align-items: center;
   justify-content: center;
