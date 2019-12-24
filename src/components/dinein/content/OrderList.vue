@@ -26,19 +26,26 @@
               <span :class="tabName">
                 {{ _t('Table No') }} : {{ orderTable.table.number }}
                 <p>
-                  <small class="text-uppercase font-weight-bold ">
-                    {{ _t('Status') }}:
+                    {{ _t('Status') }} :
                     {{
                       LookupData.replaceUnderscoreHyphon(
                         orderTable.table.status
                       )
                     }}
-                  </small>
                 </p>
                 <p>
-                  <small class="text-uppercase font-weight-bold ">
-                    {{ _t('Area') }}: {{ orderTable.areaName }}
-                  </small>
+                    {{ _t('Area') }} : {{ orderTable.areaName }}
+                </p>
+                <p>
+                    <span class="timeago elapsedTime delManTime runningtime" title="">
+                {{
+                        storeDateTime(
+                            orderTable.table.start_date +
+                            ', ' +
+                            orderTable.table.start_time
+                        )
+                      }}
+              </span>
                 </p>
               </span>
             </td>
@@ -50,32 +57,31 @@
                   :class="isOrderCancelledClass"
                 >
                   <div v-if="order">
-                    <div class="order-moifier-wrapper">
-                      <div
-                      :key="j"
-                      class="order-name"
-                      v-for="(i, j) in order.items"
-                    >
-                      <div class="main-item">
-                        {{
-                          typeof order.items[j] != 'undefined'
-                            ? order.items[j].name
-                            : ''
-                        }}
-                      </div>
-                      <div
-                        :key="k"
-                        class="modifiers"
-                        v-for="(item, k) in order.item_modifiers"
+                    <div class="moodifiers-btn-wrapper">
+                      <div class="progress-order-details">
+                      <button
+                              v-if="order.order_system_status !== 'cancelled'"
+                              @click="selectedOrderDetails(order._id)"
+                              class="open-details-popup text-capitalize btn btn-danger"
+                              :class="getOrderStatus(order.order_status)"
+                              data-dismiss="modal"
+                              data-target=".bd-example-modal-lg"
+                              data-toggle="modal"
                       >
-                        <span v-if="item.for_item == i.no">
-                          <span v-if="item.qty > 0">+{{ item.qty }}</span>
-                          {{ item.name }}
-                        </span>
-                      </div>
+                        #{{ order.order_no }} |
+                        {{
+                          LookupData.replaceUnderscoreHyphon(order.order_status)
+                        }}
+                      </button>
+                      <button
+                              v-else
+                              class="open-details-popup btn btn-success text-capitalize"
+                              :class="getOrderStatus(order.order_status)"
+                      >
+                        #{{ order.order_no }} | {{ _t('Cancelled') }}
+                      </button>
                     </div>
-                    </div>
-                    <div class="running-actions">
+                      <div class="running-actions">
                       <div class="dropdown">
                         <button
                                 class="button btn btn-success color-main color-text-invert dropdown-toggle"
@@ -163,27 +169,34 @@
                           <span class="pay_now">{{ _t('Pay Now') }}</span></a
                         >
                       </button>
-                      <button
-                              v-if="order.order_system_status !== 'cancelled'"
-                              @click="selectedOrderDetails(order._id)"
-                              class="open-details-popup text-capitalize btn btn-danger"
-                              :class="getOrderStatus(order.order_status)"
-                              data-dismiss="modal"
-                              data-target=".bd-example-modal-lg"
-                              data-toggle="modal"
+                    </div>
+                    </div>
+                    <div class="modifiers-content">
+                      <div class="order-moifier-wrapper">
+                      <div
+                              :key="j"
+                              class="order-name"
+                              v-for="(i, j) in order.items"
                       >
-                        #{{ order.order_no }} |
-                        {{
-                          LookupData.replaceUnderscoreHyphon(order.order_status)
-                        }}
-                      </button>
-                      <button
-                              v-else
-                              class="open-details-popup btn btn-success text-capitalize"
-                              :class="getOrderStatus(order.order_status)"
-                      >
-                        #{{ order.order_no }} | {{ _t('Cancelled') }}
-                      </button>
+                        <div class="main-item">
+                          {{
+                            typeof order.items[j] != 'undefined'
+                                ? order.items[j].name
+                                : ''
+                          }}
+                        </div>
+                        <div
+                                :key="k"
+                                class="modifiers"
+                                v-for="(item, k) in order.item_modifiers"
+                        >
+                        <span v-if="item.for_item == i.no">
+                          <span v-if="item.qty > 0">+{{ item.qty }}</span>
+                          {{ item.name }}
+                        </span>
+                        </div>
+                      </div>
+                    </div>
                     </div>
                     <!--<span-->
                       <!--class="order-down-arrow"-->
@@ -224,15 +237,6 @@
                   </button>
                 </div>
               </div>
-              <span class="timeago elapsedTime delManTime runningtime" title="">
-                {{
-                  storeDateTime(
-                    orderTable.table.start_date +
-                      ', ' +
-                      orderTable.table.start_time
-                  )
-                }}
-              </span>
             </td>
           </tr>
         </tbody>

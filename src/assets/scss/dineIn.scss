@@ -341,12 +341,11 @@ table#running-order {
         letter-spacing: 0.5px;
         color: #fff;
         font-size: $px18;
-        font-weight: 600;
         display: block;
       }
 
       .runningtime {
-        color: #000;
+        color: #fff;
       }
 
       border-top: $px2 solid #e5e9f4;
@@ -412,10 +411,11 @@ table#running-order {
       border-radius: $px4;
       background-color: #e73030;
       display: grid !important;
-      font-size: $px16 !important;
+      font-size: $px14 !important;
       color: $white !important;
       padding: $px5;
       align-items: center;
+      text-transform: capitalize;
     }
   }
 
@@ -460,7 +460,7 @@ td.dine-order-tabel {
 td.order-time-det {
   > span {
     font-size: $px14 !important;
-    font-weight: normal !important;
+    font-weight: normal;
     display: inline-block !important;
     vertical-align: middle;
   }
@@ -773,10 +773,12 @@ div {
 }
 .running-actions {
   display: grid;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(2, auto);
   text-align: center;
   align-items: center;
   grid-gap: 10px;
+  position: sticky;
+  top: 0;
 
 }
 
@@ -784,13 +786,25 @@ div {
   display: grid;
   grid-template-columns: auto auto;
   align-items: center;
+  .timeago{
+    &.runningtime{
+      padding-top: 5px;
+      font-weight: bold !important;
+    }
+  }
+  .btn{
+    min-width: 152px;
+  }
   .btn-progress {
     background-color: #faa03c;
     color: #fff;
   }
+
   .pay_now {
     i{
       font-size: 18px;
+      display: inline-block;
+      vertical-align: middle;
     }
   }
 }
@@ -799,32 +813,53 @@ div {
 }
 
 .table-order-view-wrapper {
-
+  max-height: 150px;
+  overflow: auto;
   > .table-order-view {
-    box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.2), 0 0px 6px 0 rgba(0, 0, 0, 0.19);
+    border: 0.125rem solid #e5e9f4;;
     padding: $px5 $px10;
     margin: $px5;
     border-radius: $block-border-radius;
     position: relative;
     transition: 0.3s ease-in-out;
+    min-height: 80px;
+    display: grid;
+
       > div{
         display: grid;
-        grid-template-columns: 1fr auto;
-        grid-gap: 20px;
+        grid-template-columns: 1fr;
+        align-items: center;
+        .moodifiers-btn-wrapper {
+          display: grid;
+          grid-template-columns: auto auto;
+          grid-gap: 10px;
+        }
+        .order-moifier-wrapper {
+          display: flex;
+          padding: 5px 0;
+          flex-wrap: wrap;
+           > div{
+             border-right: 1px solid #e5e9f4;
+             padding: 5px 8px;
+           }
+        }
       }
     .modifiers  {
+      display: inline-block;
+      padding-left: $px5;
       > span{
-        color: #62bb31;
-        font-weight: bold;
+        font-weight: normal;
+        display: inline-block;
+        background: #ef7f2a;
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 4px;
       }
     }
     .main-item {
+      color: #3d3f43;
       font-weight: bold;
-      display: inline-block;
-      background: #ef7f2a;
-      color: #fff;
-      padding: 3px 10px;
-      border-radius: 4px;
+      font-size: 14px;
     }
     .order-name{
       padding-top: $px5;

@@ -266,10 +266,9 @@ table#running-order {
       letter-spacing: 0.5px;
       color: #fff;
       font-size: 1.125rem;
-      font-weight: 600;
       display: block; }
     table#running-order tr td .runningtime {
-      color: #000; }
+      color: #fff; }
   table#running-order tr > td:first-child {
     border-left: 0.125rem solid #e5e9f4; }
   table#running-order tr > td:last-child {
@@ -307,10 +306,11 @@ table#running-order {
     border-radius: 0.25rem;
     background-color: #e73030;
     display: grid !important;
-    font-size: 1rem !important;
+    font-size: 0.875rem !important;
     color: #fff !important;
     padding: 0.3125rem;
-    align-items: center; }
+    align-items: center;
+    text-transform: capitalize; }
 
 .rinning-order-title > h2 {
   color: #3d3f43;
@@ -338,7 +338,7 @@ td.dine-order-tabel .completed {
 
 td.order-time-det > span {
   font-size: 0.875rem !important;
-  font-weight: normal !important;
+  font-weight: normal;
   display: inline-block !important;
   vertical-align: middle; }
 
@@ -554,50 +554,79 @@ div#confirmModal .customer-title {
 
 .running-actions {
   display: grid;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(2, auto);
   text-align: center;
   align-items: center;
-  grid-gap: 10px; }
+  grid-gap: 10px;
+  position: sticky;
+  top: 0; }
 
 .action-status {
   display: grid;
   grid-template-columns: auto auto;
   align-items: center; }
+  .action-status .timeago.runningtime {
+    padding-top: 5px;
+    font-weight: bold !important; }
+  .action-status .btn {
+    min-width: 152px; }
   .action-status .btn-progress {
     background-color: #faa03c;
     color: #fff; }
   .action-status .pay_now i {
-    font-size: 18px; }
+    font-size: 18px;
+    display: inline-block;
+    vertical-align: middle; }
 
 .dinein_table svg g:nth-of-type(1) {
   display: none; }
 
-.table-order-view-wrapper > .table-order-view {
-  box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.2), 0 0px 6px 0 rgba(0, 0, 0, 0.19);
-  padding: 0.3125rem 0.625rem;
-  margin: 0.3125rem;
-  border-radius: 4px;
-  position: relative;
-  transition: 0.3s ease-in-out; }
-  .table-order-view-wrapper > .table-order-view > div {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-gap: 20px; }
-  .table-order-view-wrapper > .table-order-view .modifiers > span {
-    color: #62bb31;
-    font-weight: bold; }
-  .table-order-view-wrapper > .table-order-view .main-item {
-    font-weight: bold;
-    display: inline-block;
-    background: #ef7f2a;
-    color: #fff;
-    padding: 3px 10px;
-    border-radius: 4px; }
-  .table-order-view-wrapper > .table-order-view .order-name {
-    padding-top: 0.3125rem; }
-  .table-order-view-wrapper > .table-order-view.active {
-    height: auto;
-    transition: 0.3s ease-in-out; }
+.table-order-view-wrapper {
+  max-height: 150px;
+  overflow: auto; }
+  .table-order-view-wrapper > .table-order-view {
+    border: 0.125rem solid #e5e9f4;
+    padding: 0.3125rem 0.625rem;
+    margin: 0.3125rem;
+    border-radius: 4px;
+    position: relative;
+    transition: 0.3s ease-in-out;
+    min-height: 80px;
+    display: grid; }
+    .table-order-view-wrapper > .table-order-view > div {
+      display: grid;
+      grid-template-columns: 1fr;
+      align-items: center; }
+      .table-order-view-wrapper > .table-order-view > div .moodifiers-btn-wrapper {
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-gap: 10px; }
+      .table-order-view-wrapper > .table-order-view > div .order-moifier-wrapper {
+        display: flex;
+        padding: 5px 0;
+        flex-wrap: wrap; }
+        .table-order-view-wrapper > .table-order-view > div .order-moifier-wrapper > div {
+          border-right: 1px solid #e5e9f4;
+          padding: 5px 8px; }
+    .table-order-view-wrapper > .table-order-view .modifiers {
+      display: inline-block;
+      padding-left: 0.3125rem; }
+      .table-order-view-wrapper > .table-order-view .modifiers > span {
+        font-weight: normal;
+        display: inline-block;
+        background: #ef7f2a;
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 4px; }
+    .table-order-view-wrapper > .table-order-view .main-item {
+      color: #3d3f43;
+      font-weight: bold;
+      font-size: 14px; }
+    .table-order-view-wrapper > .table-order-view .order-name {
+      padding-top: 0.3125rem; }
+    .table-order-view-wrapper > .table-order-view.active {
+      height: auto;
+      transition: 0.3s ease-in-out; }
 
 #available-tables > .table-status:hover {
   background: #E3E7F2; }

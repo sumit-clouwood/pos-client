@@ -26,8 +26,7 @@ export default {
 .tables-btn-style {
   background: #5056ca;
   color: white;
-  border: none;
-  font-size: 14px;
-  font-weight: 500;
+  border-color: #5056ca;
+  display: grid;
 }
 </style>
