@@ -5,7 +5,6 @@
         <span class="">{{ username }}</span>
       </a>
     </div>
-    <SwitchStore />
     <div class="online color-text-invert">
       <div class="fa fa-fw fa-circle" :class="{ online: online }"></div>
       <div v-if="online">{{ _t('Online') }}</div>
@@ -50,6 +49,7 @@
         </router-link>
       </button>
     </div>
+    <SwitchStore />
     <TopSidebarMenu />
   </div>
 </template>
