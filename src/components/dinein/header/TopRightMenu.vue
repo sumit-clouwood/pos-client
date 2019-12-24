@@ -78,7 +78,7 @@
         {{ _t('Completed Orders') }}
       </button>
     </div>
-    <ul class="hide-below-sm">
+    <div class="hide-below-sm">
       <div class="dine-language">
         <button
                 class="v-btn v-btn--icon theme--light dropdown-toggle lang-flag-container"
@@ -113,7 +113,7 @@
           </a>
         </div>
       </div>
-    </ul>
+    </div>
     <TopSidebarMenu />
     <div class="curent-sale hideBigScreen">
       <div id="bkgOverlay" class="backgroundOverlay"></div>
