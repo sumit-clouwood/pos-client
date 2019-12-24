@@ -28,5 +28,6 @@ export default {
   color: white;
   border-color: #5056ca;
   display: grid;
+  margin: 0;
 }
 </style>
