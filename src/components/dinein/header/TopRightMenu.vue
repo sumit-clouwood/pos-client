@@ -5,7 +5,6 @@
         <span class>{{ username }}</span>
       </a>
     </div>
-    <SwitchStore />
     <div class="all-booking-btns hide-below-sm">
       <button
         type
@@ -81,39 +80,38 @@
     <ul class="hide-below-sm">
       <div class="dine-language">
         <button
-                class="v-btn v-btn--icon theme--light dropdown-toggle lang-flag-container"
-                type="button"
-                id="dropdownLanguage"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
+          class="v-btn v-btn--icon theme--light dropdown-toggle lang-flag-container"
+          type="button"
+          id="dropdownLanguage"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
         >
           <img :src="'/img/flag_icon/4x3/' + iconCodeSelection + '.svg'" />
         </button>
         <div
-                aria-labelledby="dropdownLanguage"
-                class="dropdown-menu cursor-pointer"
-                v-if="availableLanguages"
-                @change="changeLanguage(vlocale)"
+          aria-labelledby="dropdownLanguage"
+          class="dropdown-menu cursor-pointer"
+          v-if="availableLanguages"
+          @change="changeLanguage(vlocale)"
         >
           <a
-                  class="dropdown-item"
-                  role="button"
-                  v-for="language in availableLanguages"
-                  :key="language._id"
-                  :value="language.code"
-                  @click="iconCode(language.icon_code)"
+            class="dropdown-item"
+            role="button"
+            v-for="language in availableLanguages"
+            :key="language._id"
+            :value="language.code"
+            @click="iconCode(language.icon_code)"
           >
-              <span>
-                <img
-                        :src="'/img/flag_icon/4x3/' + language.icon_code + '.svg'"
-                />
-              </span>
+            <span>
+              <img :src="'/img/flag_icon/4x3/' + language.icon_code + '.svg'" />
+            </span>
             {{ language.name }}
           </a>
         </div>
       </div>
     </ul>
+    <SwitchStore />
     <TopSidebarMenu />
     <div class="curent-sale hideBigScreen">
       <div id="bkgOverlay" class="backgroundOverlay"></div>
@@ -287,8 +285,7 @@ export default {
       brand: this.baseurl('brands'),
     }
   },
-  updated() {
-  },
+  updated() {},
   computed: {
     vlocale: {
       get() {

@@ -268,6 +268,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
+</style>
+
+<style lang="scss" scoped>
 .header-main-left-time {
   width: 250px;
   span {
