@@ -149,7 +149,7 @@ export default {
 .store-picker-single-item:hover,
 .store-picker-single-item:active {
   color: rgb(255, 255, 255);
-  background: #00b0bd;
+  background: #5056ca;
   -webkit-transition: 0.2s ease-out;
   transition: 0.2s ease-out;
   transform: scale(1.1);
