@@ -67,12 +67,14 @@
         </a>
       </div>
     </div>
-    <div
-      class="header header-main header-main-right color-dashboard-background"
-    >
-      <ul>
-        <TopSidebarMenu />
-      </ul>
+    <div class="header">
+      <div class="header-main">
+        <div class="header-main-right color-dashboard-background">
+          <ul>
+            <TopSidebarMenu />
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -170,7 +172,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/*@import '/src/assets/scss/header.scss';*/
+@import '../../assets/scss/header';
 .header-main-left-time {
   width: 250px;
   span {
