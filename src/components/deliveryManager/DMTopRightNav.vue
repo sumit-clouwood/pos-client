@@ -8,7 +8,6 @@
         </span>
       </div>
     </div>
-    <SwitchStore />
     <div class="button-block">
       <div class="top-menu-container">
         <div class="top-menu-icon" @click="showLeftMenu()">
@@ -70,9 +69,8 @@
     <div class="header">
       <div class="header-main">
         <div class="header-main-right color-dashboard-background">
-          <ul>
-            <TopSidebarMenu />
-          </ul>
+          <SwitchStore />
+          <TopSidebarMenu />
         </div>
       </div>
     </div>
@@ -213,37 +211,5 @@ export default {
   -webkit-box-pack: center;
   padding: 0.25px;
 }
-.setting-dropdown {
-  display: none;
-  position: absolute;
-  top: 3.375rem;
-  width: 13.1875rem;
-  background: #fff;
-  right: 0;
-  border: 1px solid #eee;
-  border-radius: 3px;
-  color: #000;
-  z-index: 10;
-  font-size: 55rem;
-  li {
-    padding: 0 !important;
-    text-decoration: none;
-    a {
-      display: block;
-      width: 100%;
-      font-size: 1.125rem;
-      color: #555;
-      font-weight: 400;
-      padding: 5px 20px;
-      cursor: pointer;
-    }
-  }
-  li:hover,
-  a:hover {
-    color: #555555;
-  }
-  a:hover {
-    background: #f1f1f1;
-  }
-}
+
 </style>
