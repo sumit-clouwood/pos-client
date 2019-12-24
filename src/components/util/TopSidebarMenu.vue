@@ -1,5 +1,6 @@
 <template>
-  <li
+  <ul>
+   <li
     class="nav-icon nav-item setting-icon color-main color-text-invert"
     id="setting-icon"
     @click="openConfigLinks()"
@@ -304,6 +305,7 @@
       </ul>
     </ul>
   </li>
+  </ul>
 </template>
 <script>
 /* global $ */
