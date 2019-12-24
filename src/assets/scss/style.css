@@ -457,7 +457,7 @@ h6 {
         border: 0.0625rem solid #E3E7F2;
         border-radius: 0.25rem;
         padding: 0 0.625rem;
-        margin-left: 0.625rem; }
+        margin: 0 0.625rem; }
       .header .header-main .header-main-right .online {
         height: 3.125rem;
         display: flex;
@@ -482,7 +482,7 @@ h6 {
         border-radius: 3px;
         padding: 0 2.1875rem;
         color: #fff;
-        margin-left: 1.25rem;
+        margin-right: 0.625rem;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -508,7 +508,7 @@ h6 {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: 1.25rem;
+        margin-left: 0.625rem;
         position: relative;
         cursor: pointer; }
         .header .header-main .header-main-right .nav-icon .nav-link {
@@ -539,6 +539,9 @@ h6 {
         background-color: #fff;
         color: #000;
         font-size: 1rem; }
+        .header .header-main .header-main-right .setting-dropdown .setting-menu-wrapper {
+          height: calc(100vh - 160px);
+          overflow: auto; }
         .header .header-main .header-main-right .setting-dropdown ul.dine-footer-navmenu {
           display: flex;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

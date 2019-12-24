@@ -686,6 +686,7 @@ export default {
 }
 #NewReservation #dine-in-table-selection .modal-dialog {
   max-width: 100% !important;
+  width: 430px;
 }
 .time_slot_block {
   height: 320px;
