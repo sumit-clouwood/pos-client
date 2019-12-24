@@ -461,14 +461,14 @@ export default {
           })
           .then(() => {
             if (!pos) {
-              let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
+              let URL = this.$route.path + '/' + this.selectedTableId
               this.$router.push({ path: URL })
             }
             $('#tooltipdata').hide()
           })
       } else {
         if (pos) {
-          let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
+          let URL = this.$route.path + '/' + this.selectedTableId
           this.$router.push({ path: URL })
         }
         this.$store.commit('dinein/RESERVATION_ID', reservationId)
@@ -481,12 +481,7 @@ export default {
       this.$store.commit('dinein/NUMBER_GUESTS', false)
       this.$store.commit('dinein/TABLE_SPLIT', true)
       let URL =
-        '/dine-in/' +
-        this.store +
-        '/' +
-        this.selectedTableId +
-        '/' +
-        data.orderId
+        this.$route.path + '/' + this.selectedTableId + '/' + data.orderId
       this.$store.commit('order/ORDER_SOURCE', 'dinein')
       this.$store.dispatch('dinein/getSelectedOrder', data.orderId, {
         root: true,
