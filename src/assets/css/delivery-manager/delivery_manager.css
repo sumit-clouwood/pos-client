@@ -348,7 +348,8 @@ div#dm-new-order table td {
   grid-template-columns: 1fr 1fr;
   align-items: center; }
   .page-header .button-block > button {
-    margin-right: 0.625rem; }
+    margin-right: 8px;
+    margin-left: 4px; }
   .page-header .current-time {
     font-size: 1.1875rem;
     display: -webkit-box;
@@ -390,7 +391,7 @@ button.v-btn.v-btn--icon.theme--light {
   display: flex;
   justify-content: flex-end; }
   .change-location > button {
-    margin-right: 0.3125rem; }
+    margin: 0 5px; }
     .change-location > button > a {
       color: #fff; }
 

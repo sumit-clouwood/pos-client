@@ -8,7 +8,7 @@
     height: $header-height;
     display: grid;
     grid-template-columns: auto auto;
-    padding: 0 $px30;
+    //padding: 0 $px30;
 
     .header-main-left {
       height: $header-height;
@@ -259,11 +259,12 @@
 }
 .transaction-orders{
   .header-main{
+    padding: 0.625rem 1.25rem 0.9375rem 2.1875rem;
     .header-main-right{
       .walkin-btn-design{
         > .walkin-btn{
           height: $px50;
-          margin-left: $px20;
+          margin-right: $px10;
         }
       }
     }
