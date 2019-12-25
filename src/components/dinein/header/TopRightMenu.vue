@@ -5,7 +5,7 @@
         <span class>{{ username }}</span>
       </a>
     </div>
-      <div class="all-booking-btns hide-below-sm">
+    <div class="all-booking-btns hide-below-sm">
       <button
         type
         id="all-tables"
