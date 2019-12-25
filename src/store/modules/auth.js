@@ -24,7 +24,11 @@ const state = {
 
 const getters = {
   allowed: state => resource => {
-    if (resource && state.role) {
+    if (!state.role) {
+      //super admin
+      return true
+    }
+    if (resource) {
       let allowed = state.role.store_permissions.find(perm => perm === resource)
       if (!allowed) {
         //find in brand permissions

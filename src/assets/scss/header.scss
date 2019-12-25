@@ -217,7 +217,16 @@
           border-bottom: $px1 solid #e3e7f2;
           align-items: center;
           &:hover{
-            background: #ddd;
+            background: #5056CA;
+            svg{
+              path{
+                fill: #fff;
+                opacity: 1;
+              }
+            }
+            a {
+              color: #fff;
+            }
           }
           svg{
             width: $px25;

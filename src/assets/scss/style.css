@@ -567,7 +567,14 @@ h6 {
           border-bottom: 0.0625rem solid #e3e7f2;
           align-items: center; }
           .header .header-main .header-main-right .setting-dropdown li:hover {
-            background: #ddd; }
+            background: #5056CA; }
+            .header .header-main .header-main-right .setting-dropdown li:hover svg {
+              width: 1.5625rem; }
+              .header .header-main .header-main-right .setting-dropdown li:hover svg path {
+                fill: #000;
+                opacity: 0.5; }
+            .header .header-main .header-main-right .setting-dropdown li:hover a {
+              color: #fff; }
           .header .header-main .header-main-right .setting-dropdown li svg {
             width: 1.5625rem; }
             .header .header-main .header-main-right .setting-dropdown li svg path {
@@ -5755,9 +5762,6 @@ button.res-select-table {
   background: #e4e8f1;
   border-color: #e4e8f1;
   color: #3d3f43; }
-
-.change-location > button {
-  min-height: initial !important; }
 
 @media only screen and (min-width: 961px) and (max-width: 1100px) {
   #sitting-dinein-table {
