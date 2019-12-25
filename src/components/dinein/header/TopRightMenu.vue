@@ -347,3 +347,8 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+#dropdownLanguage {
+  margin-right: 0.39rem;
+}
+</style>
