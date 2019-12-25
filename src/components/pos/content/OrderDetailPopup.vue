@@ -74,10 +74,7 @@
             </div>
           </div>
           <button
-            v-if="
-              isPermitted(PERMISSIONS.CANCEL_ORDER) &&
-                selectedOrder.item.order_status === 'in-progress'
-            "
+            v-if="isPermitted(PERMISSIONS.CANCEL_ORDER)"
             type="button"
             class="button text-button btn btn-success color-main color-text-invert"
             data-toggle="modal"
@@ -93,7 +90,7 @@
               isPermitted(PERMISSIONS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
                 selectedOrder.item.order_type === 'dine_in' &&
-                selectedOrder.item.order_status === 'in-progress'
+                selectedOrder.item.order_status === 'finished'
             "
             type="button"
             class="button text-button btn btn-success color-main color-text-invert"
@@ -108,8 +105,7 @@
             v-if="
               isPermitted(PERMISSIONS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
-                selectedOrder.item.order_type !== 'dine_in' &&
-                selectedOrder.item.order_status === 'in-progress'
+                selectedOrder.item.order_type !== 'dine_in'
             "
             type="button"
             class="button text-button btn btn-success color-main color-text-invert"
