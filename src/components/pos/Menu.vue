@@ -47,7 +47,7 @@
     </div>
     <router-link
       class="navigation-avatar color-secondary"
-      v-if="userDetails"
+      v-if="userDetails && userDetails.item"
       :to="'/user-details' + store"
     >
       <a class="nav-link" role="button" :title="userDetails.item.name">

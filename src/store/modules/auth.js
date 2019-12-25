@@ -42,10 +42,12 @@ const getters = {
     if (!state.userDetails) {
       return ''
     }
-    const roleId = state.userDetails.item.brand_role
-    if (roleId && state.rolePermissions) {
-      const role = state.rolePermissions.find(role => role._id === roleId)
-      return role ? role.name : ''
+    if (typeof state.userDetails.item != 'undefined') {
+      const roleId = state.userDetails.item.brand_role
+      if (roleId && state.rolePermissions) {
+        const role = state.rolePermissions.find(role => role._id === roleId)
+        return role ? role.name : ''
+      }
     }
     return ''
   },
