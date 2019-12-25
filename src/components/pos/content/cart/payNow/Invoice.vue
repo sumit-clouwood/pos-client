@@ -6,7 +6,7 @@
         :template="template"
         :order_to_print="order"
         @print_ready="print_ready"
-        preview="preview"
+        :preview="preview"
       ></PrintTemplate>
     </div>
 

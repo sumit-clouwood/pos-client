@@ -838,20 +838,23 @@ const actions = {
           //apply offtotal discount, don't calculate discount on surcharge
           //we are not including surcharge tax in total tax for discount
           totalTax = getters.totalItemsTax
+
           if (
             orderDiscount.max_discount_value &&
             orderDiscount.max_discount_value < subtotal
           ) {
+            orderTotalDiscount = orderDiscount.max_discount_value
             const percentDiscountOnSubTotal = Num.round(
-              (orderDiscount.max_discount_value * 100) / subtotal
+              (orderTotalDiscount * 100) / subtotal
             )
+
             taxTotalDiscount = Num.round(
               (totalTax * percentDiscountOnSubTotal) / 100
             )
             surchargeTotalDiscount = 0
 
             const discountData = {
-              orderDiscount: orderDiscount.value,
+              orderDiscount: orderTotalDiscount,
               taxDiscount: taxTotalDiscount,
               surchargeDiscount: surchargeTotalDiscount,
             }
