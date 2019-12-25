@@ -283,7 +283,7 @@ span#dine-bottom {
 }
 
 .tables-btn-style {
-  margin: $px3;
+  margin-right: $px10;
   height: $px51;
   border-radius: $px4;
   border: solid $px2 #c7c7c7;
@@ -411,7 +411,7 @@ table#running-order {
       border-radius: $px4;
       background-color: #e73030;
       display: grid !important;
-      font-size: $px14 !important;
+      font-size: $px16 !important;
       color: $white !important;
       padding: $px5;
       align-items: center;
@@ -483,7 +483,7 @@ td.order-time-det {
 
 .dinefor-paynow {
    svg {
-    margin-right: $px10;
+    margin-right: $px5;
     vertical-align: middle;
     width: $px24;
     height: $px20;
@@ -1045,12 +1045,17 @@ div {
       width: 100%;
       height: 80px;
       bottom: 0;
-      padding: 5px 10px 20px;
+      padding: 5px 10px;
       display: grid;
       grid-template-columns: auto 1fr;
       box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
       z-index: 999;
       background: #fff;
+      > div{
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+      }
       &.active {
         position: fixed;
         right: 0;
@@ -1065,11 +1070,6 @@ div {
           margin-left: 0;
           margin-bottom: 20px;
         }
-      }
-      .dine-language {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
       }
       .dine-btn-footer-wrapper {
         display: none;
@@ -1437,8 +1437,8 @@ button.res-select-table{
   border-color: #e4e8f1;
   color: #3d3f43;
 }
-.dine-language {
-  margin: 0 $px10 0 $px7;
+.change-location > button{
+  min-height: initial !important;
 }
 @media only screen and (min-width: 961px) and (max-width: 1100px){
   #sitting-dinein-table{
