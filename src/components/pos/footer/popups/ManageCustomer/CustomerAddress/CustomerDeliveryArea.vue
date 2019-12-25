@@ -29,7 +29,21 @@
           {{ address.flat_number }}, {{ address.building }},
           {{ address.street }},
           {{ address.city }}
+          <span class="color-text-invert" v-if="address.min_order_value">
+            <br />
+            {{ _t('Min order') }}
+            {{ formatPrice(address.min_order_value) }}
+          </span>
+          <span
+            class="color-text-invert"
+            v-if="address.special_order_surcharge"
+          >
+            <br />
+            {{ _t('Surcharge') }}
+            {{ formatPrice(address.special_order_surcharge) }}
+          </span>
         </p>
+        <div class="text-danger" v-if="error">{{ error }}</div>
         <Buttons v-if="buttons" :id="address._id.$oid" />
       </div>
     </div>
@@ -55,7 +69,7 @@ export default {
     Buttons,
   },
   data: function() {
-    return { activeIndex: null }
+    return { activeIndex: null, error: null }
   },
   computed: {
     ...mapState('location', ['location']),
@@ -76,7 +90,7 @@ export default {
           : '',
     }),*/
     ...mapGetters('customer', ['getDeliveryArea']),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapGetters('customer', ['getCustomerAddresses']),
   },
   methods: {
@@ -84,9 +98,12 @@ export default {
       address.delivery_area = this.getDeliveryArea(address.delivery_area_id)
       this.activeIndex = index
       this.selectedAddress(address)
-      if (this.msg && this.msg.message.length > 0) {
-        this.msg.message = ''
-      }
+        .then(() => {
+          if (this.msg && this.msg.message.length > 0) {
+            this.msg.message = ''
+          }
+        })
+        .catch(error => (this.error = error))
     },
     ...mapActions('customer', ['selectedAddress']),
   },

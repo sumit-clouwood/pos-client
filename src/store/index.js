@@ -15,6 +15,7 @@ import discount from './modules/discount'
 import checkout from './modules/checkout'
 import checkoutForm from './modules/checkout/form'
 import giftcard from './modules/giftcard'
+import dineinReservation from './modules/dineinReservation'
 import announcement from './modules/announcement'
 import holdOrders from './modules/holdOrders'
 import transactionOrders from './modules/transactionOrders'
@@ -78,6 +79,7 @@ const store = new Vuex.Store({
     mobile,
     dinein,
     carhop,
+    dineinReservation,
   },
   strict: false,
   //plugins: debug ? [createLogger()] : [],

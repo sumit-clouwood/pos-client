@@ -170,7 +170,7 @@ const actions = {
       // let stringifyResponse = b.toString('base64')
       let decodedData = compressToBase64(x)
       // eslint-disable-next-line no-console
-      if (jsonResponse) {
+      if (jsonResponse && rootState.dinein.kitchenPrint) {
         printingServers.forEach(item => {
           let APIURL = item.ip_address
           dispatch('centeredPopup', {

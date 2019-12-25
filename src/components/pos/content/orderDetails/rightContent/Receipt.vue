@@ -56,8 +56,13 @@
                     selector: 'item_discounts',
                   })
                 }}
-                <div v-for="(discount, index) in iteDiscount" :key="index">
-                  {{ discount.name }}
+                <div
+                  v-for="(discount, index) in orderDetails.item_discounts"
+                  :key="index"
+                >
+                  <span v-if="item.no === discount.for_item">
+                    {{ discount.name }} - {{ formatPrice(discount.price) }}
+                  </span>
                 </div>
               </div>
               <div class="modifier" v-if="orderDetails.item_modifiers.length">
@@ -118,7 +123,10 @@
           class="caption color-text-invert"
           v-if="orderDetails.total_discount"
         >
-          {{ _t('Discount') }}:
+          {{ _t('Discount') }}
+          <span v-if="orderDetails.order_discounts.length">
+            ({{ orderDetails.order_discounts[0].name }}):</span
+          >
         </div>
         <div v-if="orderDetails.total_discount" class=" color-text">
           {{ orderDetails.total_discount }}
@@ -139,7 +147,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Receipt',
   props: {
@@ -153,10 +161,39 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t', 'formatPrice']),
+    ...mapState('order', ['orderSource']),
+  },
+  mounted() {
+    if (this.orderSource == 'backend') {
+      this.$store.dispatch('order/loadCarhopOrder', this.orderDetails._id)
+    }
   },
   methods: {
     getTotalPrice: function(item) {
-      return this.formatPrice(item.price * item.qty)
+      return this.formatPrice(
+        item.price * item.qty +
+          this.modifiersPrice(item.no) -
+          this.itemDiscountPrice(item.no)
+      )
+    },
+    itemDiscountPrice(itemNo) {
+      let discountPrice = 0
+
+      for (let discount of this.orderDetails.item_discounts) {
+        if (discount.for_item === itemNo) {
+          discountPrice += discount.price
+        }
+      }
+      return discountPrice
+    },
+    modifiersPrice(itemNo) {
+      let modifierPrice = 0
+      for (let modifier of this.orderDetails.item_modifiers) {
+        if (modifier.for_item === itemNo) {
+          modifierPrice += modifier.qty * modifier.price
+        }
+      }
+      return modifierPrice
     },
     getItemSubsets: function(details) {
       if (details.selector == 'item_modifiers') {
@@ -202,7 +239,7 @@ export default {
 .receipt-heading {
   text-transform: uppercase;
   border-bottom: 1px solid gray;
-  font-weight: 500;
+  font-size: 0.8rem;
 }
 .receipt-summary,
 .payments_summary {

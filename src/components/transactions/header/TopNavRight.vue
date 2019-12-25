@@ -10,23 +10,6 @@
       <div v-if="online">{{ _t('Online') }}</div>
       <div v-else>{{ _t('Offline') }}</div>
     </div>
-    <ul>
-      <li v-if="availableLanguages" class="color-text-invert">
-        <select
-          v-model="vlocale"
-          @change="changeLanguage(vlocale)"
-          class="language-button"
-        >
-          <option
-            v-for="language in availableLanguages"
-            :key="language._id"
-            :value="language.code"
-          >
-            {{ language.name }}
-          </option>
-        </select>
-      </li>
-    </ul>
     <ul class="online-counter color-main">
       <li
         class="nav-item online-data "
@@ -49,74 +32,25 @@
         </router-link>
       </button>
     </div>
-    <li
-      class="nav-icon nav-item setting-icon color-main color-text-invert"
-      id="setting-icon"
-      @click="openConfigLinks()"
-    >
-      <a class="nav-link color-text-invert">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="21"
-          viewBox="0 0 24 21"
-        >
-          <path
-            fill="#FFF"
-            fill-rule="nonzero"
-            d="M0 0h24v3H0V0zm0 9h24v3H0V9zm0 9h24v3H0v-3z"
-          />
-        </svg>
-      </a>
-      <ul class="setting-dropdown1 setting-dropdown-transaction">
-        <li>
-          <a href="javascript:void(0)">{{ _t('Printers') }}</a>
-        </li>
-        <li v-if="permitted('dashboard', 'root')">
-          <a :href="dashboard">{{ _t('Dashboard') }}</a>
-        </li>
-        <li v-if="permitted('crm', 'root')">
-          <a :href="crm">{{ _t('CRM') }}</a>
-        </li>
-        <li @click="moveDineSection()">
-          <a role="button">
-            {{ _t('Dine In') }}
-          </a>
-        </li>
-        <li v-if="permitted('menu', 'root')">
-          <a :href="menu">{{ _t('Menu Setup') }}</a>
-        </li>
-        <li v-if="permitted('delivery', 'root')">
-          <a href="javascript:void(0)">
-            <router-link :to="'/delivery-manager' + store">
-              {{ _t('Delivery Manager') }}
-            </router-link>
-          </a>
-        </li>
-        <li>
-          <a role="button" class="cursor-pointer">
-            <router-link :to="'/carhop' + store">
-              {{ _t('Carhop') }}
-            </router-link>
-          </a>
-        </li>
-        <li v-if="permitted('brand', 'root')">
-          <a :href="brand">{{ _t('Settings') }}</a>
-        </li>
-        <li>
-          <a href="javascript:void(0)" @click="logout()">{{ _t('Logout') }}</a>
-        </li>
-      </ul>
-    </li>
+    <LanguageMenu />
+    <SwitchStore />
+    <TopSidebarMenu />
   </div>
 </template>
 
 <script>
-/*global $*/
 import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
+import SwitchStore from '@/components/commonButtons/SwitchStore'
+import TopSidebarMenu from '@/components/util/TopSidebarMenu'
+import LanguageMenu from '@/components/util/LanguageMenu'
 export default {
   name: 'TopNavRight',
+  components: {
+    SwitchStore,
+    TopSidebarMenu,
+    LanguageMenu,
+  },
   props: {},
   data: function() {
     return {
@@ -137,7 +71,7 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
-    ...mapGetters('context', ['store']),
+    ...mapGetters('context', ['store', 'haveMultipleStores']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('sync', ['online']),
     ...mapState({
@@ -149,9 +83,17 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    enabledModule(option) {
+      switch (option) {
+        case 'switchCashier':
+          return true
+      }
+    },
+    moveTransactionSection() {
+      this.$router.push(this.store + '/transactions')
+    },
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
-      $('.setting-dropdown-transaction').css('display', 'none')
     },
     orderTypeWalkIn: function(orderType) {
       this.$store.commit('order/ORDER_TYPE', orderType)
@@ -163,11 +105,6 @@ export default {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
       bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
-    },
-    openConfigLinks() {
-      $('.setting-dropdown-transaction').toggle()
-      $('.setting-dropdown-transaction').toggleClass('animated zoomIn')
-      // posConfigLinks()
     },
     onlineOrders() {
       if (this.latestOnlineOrders === 0) {

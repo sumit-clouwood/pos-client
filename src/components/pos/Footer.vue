@@ -75,26 +75,22 @@
             >
               <!--<img class="hold-ordes" src="images/hold-order.png" alt="customer">-->
               <svg
-                aria-hidden="true"
-                focusable="false"
-                data-prefix="fas"
-                data-icon="play"
-                role="img"
+                fill="#fff"
+                viewBox="-45 0 327 327"
                 xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                class="svg-inline--fa fa-play fa-w-14 fa-2x"
               >
                 <path
-                  fill="currentColor"
-                  d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"
-                  class
-                ></path>
+                  d="m158 0h71c4.417969 0 8 3.582031 8 8v311c0 4.417969-3.582031 8-8 8h-71c-4.417969 0-8-3.582031-8-8v-311c0-4.417969 3.582031-8 8-8zm0 0"
+                />
+                <path
+                  d="m8 0h71c4.417969 0 8 3.582031 8 8v311c0 4.417969-3.582031 8-8 8h-71c-4.417969 0-8-3.582031-8-8v-311c0-4.417969 3.582031-8 8-8zm0 0"
+                />
               </svg>
               <span>{{ _t('Hold Orders') }}</span>
             </a>
           </li>
           <li
-            v-if="orderType.OTApi !== 'dine_in'"
+            v-else
             @click="newOrders"
             class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
             :class="[
@@ -139,11 +135,56 @@
               role="button"
               class="footer-slider-list-item-link color-text-invert"
             >
-              <img
+              <svg
+                v-if="!loyaltyCard"
+                version="1.1"
+                id="Capa_1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                viewBox="0 0 448 512"
+                style="enable-background:new 0 0 512 512;"
+                xml:space="preserve"
+                fill="#fff"
+              >
+                <g>
+                  <g>
+                    <path
+                      d="M47.054,302h-32c-8.291,0-15,6.709-15,15v180c0,8.291,6.709,15,15,15h32c24.814,0,45-20.186,45-45V347
+			C92.054,322.186,71.869,302,47.054,302z"
+                    />
+                  </g>
+                </g>
+                <g>
+                  <g>
+                    <path
+                      d="M507.554,331.099c-1.8-2.999-4.199-5.4-6.899-7.5c-11.045-9.662-29.654-8.749-40.499,3.001l-68.101,78.6l-2.1,2.399
+			c-8.399,9.3-20.4,14.401-32.999,14.401h-116.4c-8.401,0-15-6.601-15-15c0-8.401,6.599-15,15-15h91.5c16.5,0,30-13.5,30-30v-0.3
+			c-0.3-16.5-13.5-29.7-30-29.7h-54.3c-8.996,0-18.636-3.303-26.4-9.901c-36.599-32.1-90-34.2-129.3-6.899v184.499
+			c29.7,8.101,60.3,12.301,91.199,12.301h133.801c32.999,0,64.2-15.601,84-42.001l72.001-96
+			C513.56,360.21,514.352,341.3,507.554,331.099z"
+                    />
+                  </g>
+                </g>
+                <g>
+                  <g>
+                    <path
+                      d="M402.264,28.995C385.627,10.297,362.564,0,337.324,0c-28.172,0-52.593,13.321-70.622,38.522
+			c-1.352,1.889-2.617,3.779-3.802,5.649c-1.184-1.871-2.449-3.76-3.801-5.649C241.07,13.321,216.649,0,188.477,0
+			c-25.24,0-48.303,10.297-64.939,28.994C107.75,46.738,99.054,70.459,99.054,95.788c0,27.525,10.681,52.924,33.611,79.934
+			c20.009,23.565,48.708,47.788,81.938,75.836c12.28,10.365,24.979,21.083,38.473,32.778c2.819,2.443,6.321,3.665,9.824,3.665
+			c3.502,0,7.005-1.222,9.824-3.665c13.492-11.693,26.189-22.41,38.469-32.773c21.342-18.014,39.773-33.57,55.767-48.66
+			c31.053-29.298,59.787-62.553,59.787-107.114C426.747,70.46,418.052,46.739,402.264,28.995z"
+                    />
+                  </g>
+                </g>
+              </svg>
+              <!--<img
                 src="img/pos/loyalty.svg"
                 :alt="_t('Loyalty')"
                 v-if="!loyaltyCard"
-              />
+              />-->
               <span v-if="!loyaltyCard">{{ _t('Loyalty') }}</span>
               <span v-if="loyaltyCard">
                 <span>
@@ -289,102 +330,31 @@
         </ul>
       </div>
     </div>
-    <div
-      class="footer-buttons color-dashboard-background"
-      :style="
-        orderType.OTApi === 'dine_in' ? 'grid-template-columns: 1fr 1fr' : ''
-      "
-    >
-      <div class="button" v-if="is_pay === 1" :class="{ waiter: waiter }">
-        <ul class="template-btn">
-          <li
-            v-show="orderType.OTApi === 'call_center'"
-            class="footer-slider-list-item color-secondary"
-            data-toggle="modal"
-            :data-target="selectedModal"
-            data-dismiss="modal"
-          >
-            <a
-              class="footer-slider-list-item-link color-text-invert"
-              role="button"
-              @click="
-                setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
-              "
-            >
-              <!--<img src="images/footer-images/d_2.png" alt="customer">-->
-              <svg
-                aria-hidden="true"
-                focusable="false"
-                data-prefix="fas"
-                data-icon="suitcase"
-                role="img"
-                width="1.875rem"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-                class="svg-inline--fa fa-suitcase fa-w-16 fa-2x"
-              >
-                <path
-                  fill="currentColor"
-                  d="M128 480h256V80c0-26.5-21.5-48-48-48H176c-26.5 0-48 21.5-48 48v400zm64-384h128v32H192V96zm320 80v256c0 26.5-21.5 48-48 48h-48V128h48c26.5 0 48 21.5 48 48zM96 480H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48h48v352z"
-                  class
-                ></path>
-              </svg>
-              <span>{{ _t('Send to Delivery') }}</span>
-            </a>
-          </li>
-          <li
-            class="pay-now color-dashboard-background color-main"
-            :class="{ inactive: items.length === 0 }"
-            v-show="
-              !waiter &&
-                (!['call_center', CONST.ORDER_TYPE_CARHOP].includes(
-                  orderType.OTApi
-                ) ||
-                  orderId)
-            "
-            @click="payNowClick()"
-          >
-            <a role="button">
-              <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
-              <span class="pay-btn color-text-invert">{{ _t('Pay Now') }}</span>
-            </a>
-          </li>
-          <li
-            class="pay-now color-dashboard-background color-main"
-            :class="{ inactive: items.length === 0 }"
-            v-show="orderType.OTApi === CONST.ORDER_TYPE_CARHOP && !orderId"
-            @click="placeCarhop"
-          >
-            <a role="button">
-              <img src="img/pos/payment.svg" :alt="_t('Place Order')" />
-              <span class="pay-btn color-text-invert">{{
-                _t('Place Order')
-              }}</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div
-        class="button"
-        v-show="(orderType.OTApi === 'dine_in' || is_pay === 0) && !billSplit"
-      >
-        <ul class="template-btn">
-          <li
-            class="pay-now color-dashboard-background color-main"
-            :class="{ inactive: items.length === 0 }"
-            @click="payNowDirect()"
-          >
-            <a role="button">
-              <img src="img/pos/place_order.svg" :alt="_t('Place Order')" />
-              <span class="pay-btn color-text-invert">
-                {{ _t('Place Order') }}
-              </span>
-            </a>
-          </li>
-        </ul>
+    <div class="footer-buttons color-dashboard-background">
+      <div :class="{ active: items.length > 0 }">
+        <div
+          v-if="orderType.OTApi === 'dine_in'"
+          class="dinein-order pay-btn-holder"
+        >
+          <dinein-btn></dinein-btn>
+        </div>
+        <div
+          v-else-if="orderType.OTApi === 'call_center'"
+          class="crm-order pay-btn-holder"
+        >
+          <crm-btn></crm-btn>
+        </div>
+        <div
+          v-else-if="orderType.OTApi === 'carhop'"
+          class="carhop-order pay-btn-holder"
+        >
+          <carhop-btn></carhop-btn>
+        </div>
+        <div v-else class="walkin-order template-btn">
+          <walkin-btn></walkin-btn>
+        </div>
       </div>
     </div>
-
     <div class="modal-backdrop fade show" id="transparent-screen"></div>
 
     <!--All popup including online order, because we need to apply few js which are not on header so all popups will be here-->
@@ -407,6 +377,8 @@
     <CustomerNotes />
     <CartAddEmail />
     <CartAmountChange />
+    <ModificationPermissions v-if="orderSource === 'backend'" />
+
     <CartPaymentMsg />
     <CartTipAmount />
     <GiftCard />
@@ -416,7 +388,6 @@
     <Loyalty />
     <Invoice />
     <OrderDetailsPopup />
-    <UserProfile />
     <InformationPopup :responseInformation="this.message" :title="this.title" />
   </div>
 </template>
@@ -449,14 +420,19 @@ import SearchLoyaltyCustomer from '../pos/footer/popups/SearchLoyaltyCustomer'
 import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
 import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
-import UserProfile from '@/components/pos/user/UserProfile'
 import InformationPopup from '@/components/pos/content/InformationPopup'
+import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
+import DineinBtn from './footer/buttons/cart/dinein'
+import CrmBtn from './footer/buttons/cart/crm'
+import WalkinBtn from './footer/buttons/cart/walkin'
+import CarhopBtn from './footer/buttons/cart/carhop'
 import openItemButton from '@/components/pos/openItem/button'
 import openItem from '@/components/pos/openItem/item'
+
 import * as CONST from '@/constants'
 
 import { mapState, mapGetters } from 'vuex'
-/* global $, clickPayNow */
+/* global $ */
 export default {
   name: 'Footer',
   props: {},
@@ -488,27 +464,25 @@ export default {
     Loyalty,
     Invoice,
     OrderDetailsPopup,
-    UserProfile,
     InformationPopup,
+    ModificationPermissions,
+    DineinBtn,
+    CrmBtn,
+    WalkinBtn,
+    CarhopBtn,
     openItemButton,
     openItem,
   },
   data() {
-    if (window.location.href.indexOf('dine-in') > -1) {
-      this.setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })
-    }
     return {
-      processing: false,
       vbutton: '',
       title: '',
       status: 0,
       message: '',
-      checkCover: true,
     }
   },
   computed: {
     ...mapState('checkout', ['print', 'paymentMsgStatus']),
-    ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('customer', ['responseInformation']),
     ...mapState('order', [
       'orderType',
@@ -516,31 +490,17 @@ export default {
       'items',
       'is_pay',
       'orderId',
+      'orderSource',
     ]),
+    ...mapState('location', ['brand']),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapState({
-      selectedModal: state => {
-        // $('#manage-customer').modal()
-        return state.location.setModal == '#loyalty-payment'
-          ? '#manage-customer'
-          : state.location.setModal
-      },
-    }),
+
     ...mapState({
       loyaltyCard: state => state.customer.loyalty.card,
     }),
     ...mapState({ selectedCustomer: state => state.customer.customer.name }),
     ...mapGetters('auth', ['waiter', 'carhop']),
-    billSplit() {
-      if (this.$store.state.checkout.splitPaid) {
-        return true
-      }
-      if (this.$store.state.order.splitBill) {
-        return true
-      }
-      return false
-    },
   },
 
   watch: {
@@ -555,6 +515,11 @@ export default {
         }
       }
     },
+    orderType() {
+      this.$nextTick(() => {
+        $('ul.ullist-icons').slick('refresh')
+      })
+    },
     // paymentMsgStatus(newVal) {
     //   if (newVal) {
     //     if (this.$store.getters['checkout/complete']) {
@@ -568,121 +533,15 @@ export default {
     // },
   },
   methods: {
-    placeCarhop() {
-      if (this.processing) {
-        return false
-      }
-
-      this.processing = true
-
-      if (this.items.length === 0) {
-        return false
-      }
-
-      $('#payment-msg').modal('show')
-      this.$store.dispatch('order/startOrder')
-      this.$store
-        .dispatch('checkout/pay', { action: 'carhop-place-order' })
-        .then(() => {})
-        .catch(() => {})
-        .finally(() => {
-          this.processing = false
-        })
-    },
-
-    payNowDirect() {
-      //dine in order
-      let validationError = {}
-      let checkCovers = this.items.find(element => {
-        return (
-          element.cover_name == 'undefined' || element.cover_name == undefined
-        )
-      })
-      if (this.items.length > 0) {
-        if (
-          checkCovers == undefined ||
-          checkCovers == 'undefined' ||
-          this.selectedCover
-        ) {
-          $('#payment-msg').modal('show')
-          this.$store
-            .dispatch('checkout/pay', { action: 'dine-in-place-order' })
-            .then(() => {
-              if (this.$store.getters['checkout/complete']) {
-                //Reset Cart and set states and redirect to dine in.
-                this.$store.commit('dinein/SET_COVER', '')
-                this.$store.dispatch('order/beforeRedirectResetCartDineIn')
-              }
-            })
-            .catch(response => {
-              let validationError = {}
-              let errors = ''
-              if (response.status === 'form_errors') {
-                for (let i in response.form_errors) {
-                  response.form_errors[i].forEach(err => (errors += ' ' + err))
-                }
-              } else if (response.error) {
-                errors = response.error
-              }
-              if (errors !== '') {
-                validationError = {
-                  status: 'flash_message',
-                  flash_message: errors,
-                }
-                this.$store.commit(
-                  'customer/SET_RESPONSE_MESSAGES',
-                  validationError
-                )
-                $('#information-popup').modal('show')
-              }
-            })
-        } else {
-          validationError = {
-            status: 'flash_message',
-            flash_message: this._t('Please select a cover.'),
-          }
-          this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
-          $('#information-popup').modal('show')
-        }
-      } else {
-        validationError = {
-          status: 'flash_message',
-          flash_message: this._t('Please add items.'),
-        }
-        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
-        $('#information-popup').modal('show')
-      }
-    },
-    payNowClick() {
-      let validationError = {}
-      this.items.find(element => {
-        if (typeof element.cover_name == 'undefined') {
-          this.checkCover = false
-        }
-      })
-      if (
-        this.checkCover ||
-        typeof this.selectedCover == 'object' ||
-        this.orderType.OTApi !== 'dine_in'
-      ) {
-        clickPayNow()
-      } else {
-        validationError = {
-          status: 'flash_message',
-          flash_message: this._t('Please select a cover for new item.'),
-        }
-        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
-        $('#information-popup').modal('show')
-      }
+    setOrderType(opt) {
+      this.$store.commit('order/ORDER_TYPE', opt)
     },
     viewHoldOrders() {
       this.vbutton = 'new'
       this.$store.commit('order/SET_CART_TYPE', 'hold')
       this.$store.dispatch('holdOrders/getHoldOrders')
     },
-    setOrderType(opt) {
-      this.$store.commit('order/ORDER_TYPE', opt)
-    },
+
     loyaltyHendlerChange() {
       this.$store.dispatch('loyaltyHendlerChange')
     },
@@ -715,11 +574,19 @@ export default {
     },
   },
   mounted() {
-    this.slicker()
+    this.$store.commit('dinein/KITCHEN_PRINT', true)
+    if (window.location.href.indexOf('dine-in') > -1) {
+      this.setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })
+    }
+    this.$nextTick(() => {
+      this.slicker()
+    })
   },
 
   updated() {
-    this.slicker()
+    this.$nextTick(() => {
+      $('ul.ullist-icons').slick('refresh')
+    })
   },
 }
 </script>
@@ -759,9 +626,9 @@ export default {
     -webkit-transition: .2s linear
     transition: .2s linear
     width: 122px
-    margin-right: 1.875rem;
-    border-radius: 3px;
-    overflow: hidden;
+    margin-right: 1.875rem
+    border-radius: 3px
+    overflow: hidden
 
     &.active
       background-color: #5056ca
@@ -775,8 +642,8 @@ export default {
       text-align: center
 
       svg
-        width: .75rem;
-        margin: .3125rem auto;
+        width: .75rem
+        margin: .3125rem auto
 </style>
 <style lang="scss" scoped>
 .button {

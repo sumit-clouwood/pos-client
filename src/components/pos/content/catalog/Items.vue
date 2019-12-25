@@ -6,7 +6,7 @@
       :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
     >
       <!-- <div class="bg">bg</div> -->
-      <btnBack :param="'item'" />
+      <!--      <btnBack :param="'item'" />-->
       <div
         :class="{
           'food-menu-item': true,
@@ -42,8 +42,8 @@
       v-if="!items.length"
       :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
     >
-      <btnBack :param="'item'" />
-      No menu item found
+      <!--<btnBack :param="'item'" />-->
+      <div class="no_item"><h2>No menu item found</h2></div>
     </div>
   </div>
 </template>
@@ -54,7 +54,7 @@
 import { mapGetters, mapState } from 'vuex'
 import bootstrap from '@/bootstrap'
 import Popup from './items/Popup'
-import btnBack from '../../../mobileComponents/mobileElements/btnBack'
+// import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
 export default {
   name: 'Items',
@@ -63,14 +63,30 @@ export default {
   },
   components: {
     Popup,
-    btnBack,
+    // btnBack,
   },
   computed: {
+    ...mapState('category', ['barcode']),
     ...mapState('location', ['currency']),
-    ...mapGetters('category', ['items']),
+    ...mapState('order', ['splitBill', 'selectedOrder']),
+    ...mapGetters('order', ['orderType']),
+    ...mapGetters('category', ['items', 'itemByCode']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
   },
+  watch: {
+    barcode(itemCode) {
+      if (itemCode) {
+        const item = this.itemByCode(itemCode)
+        if (item) {
+          this.addToOrder(item)
+        }
+        this.$store.commit('category/setBarcode', false)
+      }
+    },
+  },
+  created() {},
+  beforeDestroy() {},
   methods: {
     choosePrice(item) {
       if (item.countries.length !== 0) {
@@ -82,6 +98,19 @@ export default {
       }
     },
     addToOrder(item) {
+      if (this.selectedOrder) {
+        if (
+          (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
+          this.selectedOrder.item.order_status == 'in-progress' &&
+          this.isCarhop()
+        ) {
+          return
+        }
+      }
+      if (this.splitBill) {
+        return false
+      }
+      this.$store.commit('order/RESET_SPLIT_BILL')
       bootstrap.loadUI().then(() => {})
 
       this.$store.commit('order/SET_CART_TYPE', 'new')
@@ -229,7 +258,7 @@ export default {
       border: none;
       border-bottom: 1px solid $gray-middle;
       padding-right: 20px;
-      background-color: #fafafa;
+      background: linear-gradient(141deg, #fcfcff 0%, #d7e0e1 51%, #ecebeb 75%);
       transition: 0.1s ease-out;
 
       &:not(.color-dashboard-background) {
@@ -273,6 +302,18 @@ export default {
         white-space: nowrap;
       }
     }
+  }
+  /*.no_item {
+    padding: 5em;
+    h2 {
+      width: max-content;
+    }
+  }*/
+}
+.no_item {
+  padding: 5em;
+  h2 {
+    width: max-content;
   }
 }
 </style>

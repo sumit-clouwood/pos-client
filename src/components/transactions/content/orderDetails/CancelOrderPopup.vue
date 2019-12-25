@@ -57,7 +57,9 @@
                   </div>
                 </div>
                 <div class="driver-container">
-                  <div class="select-driver">{{ _t('Inventory Behavior') }}</div>
+                  <div class="select-driver">
+                    {{ _t('Inventory Behavior') }}
+                  </div>
                   <form>
                     <input
                       autocomplete="off"
@@ -72,13 +74,13 @@
                     id="inventory-dropdown"
                     class="dropdown-content cancel-order-dd cursor-pointer"
                   >
-                  <span
-                    class="dropdown"
-                    v-for="(behavior, i) in inventoryBehavior"
-                    :key="i"
-                    v-on:click="selectedBehavior(behavior)"
-                  >{{ behavior }} </span
-                  >
+                    <span
+                      class="dropdown"
+                      v-for="(behavior, i) in inventoryBehavior"
+                      :key="i"
+                      v-on:click="selectedBehavior(behavior)"
+                      >{{ behavior }}
+                    </span>
                   </div>
                   <p v-if="errorMessage.length > 0" class="text-danger">
                     {{ errorMessage }}
@@ -174,7 +176,7 @@
         </div>
       </div>
     </div>
-    <InformationPopup :responseInformation="this.msg" title="Alert" />
+    <InformationPopup :responseInformation="this.errorMessage" title="Alert" />
   </div>
 </template>
 
@@ -192,7 +194,7 @@ export default {
       showSelectedReason: '',
       showSelectedBehavior: '',
       supervisorPassword: '',
-      msg: null,
+      errorMessage: '',
     }
   },
   props: {
@@ -204,15 +206,15 @@ export default {
   },
   methods: {
     selectedReason: function(reason) {
-      this.showSelectedReason = reason.name;
-      $(".dropdown-content").hide();
+      this.showSelectedReason = reason.name
+      $('.dropdown-content').hide()
     },
     showDropdown: function(className) {
-      $("#" + className).toggle();
+      $('#' + className).toggle()
     },
     selectedBehavior: function(behavior) {
       this.showSelectedBehavior = behavior
-      $('.inventory-content').hide()
+      $('#inventory-dropdown').hide()
     },
     cancelOrderAction: function(order) {
       if (this.showSelectedReason.length == 0) {
@@ -231,7 +233,6 @@ export default {
         }
       }
       let orderType = order.order.order_type
-      let orderId = order.order._id
       let actionTrigger = 'cancel_order'
       this.updateOrderCancelAction({
         order,
@@ -253,7 +254,9 @@ export default {
                 root: true,
               })
               .then(function() {
-                scope.$store.dispatch('order/selectedOrderDetails', orderId)
+                scope.$store.dispatch(
+                  'transactionOrders/selectFirstTransactionOrder'
+                )
               })
             closeModal('#cancellationReason')
             showModal('#successCancel')
@@ -272,13 +275,17 @@ export default {
                   : response.data.message
             }
             if (response.data.status != 'ok') {
-              this.msg = error
+              this.errorMessage = error
               $('#information-popup').modal('show')
             }
           }
+          this.showSelectedReason = ''
+          this.showSelectedBehavior = ''
+          this.supervisorPassword = ''
         })
         .catch(error => {
           this.msg = error
+          this.errorMessage = error
           $('#information-popup').modal('show')
         })
     },

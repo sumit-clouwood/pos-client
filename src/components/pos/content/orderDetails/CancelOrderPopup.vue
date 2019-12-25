@@ -34,10 +34,13 @@
                     class="input-search-driver"
                     id="get-customer-list"
                     v-model="showSelectedReason"
-                    @click="showDropdown('my-dropdown')"
+                    @click="showDropdown('cancellation-dropdown')"
                   />
                 </form>
-                <div id="my-dropdown" class="dropdown-content cancel-order-dd cursor-pointer">
+                <div
+                  id="cancellation-dropdown"
+                  class="dropdown-content cancel-order-dd cursor-pointer"
+                >
                   <span
                     class="dropdown"
                     v-for="reason in cancellationReason"
@@ -71,8 +74,8 @@
                     v-for="(behavior, i) in inventoryBehavior"
                     :key="i"
                     v-on:click="selectedBehavior(behavior)"
-                    >{{ behavior }} </span
-                  >
+                    >{{ behavior }}
+                  </span>
                 </div>
                 <p v-if="errorMessage.length > 0" class="text-danger">
                   {{ errorMessage }}
@@ -147,19 +150,25 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['cancellationReason', 'selectedOrder', 'errors', 'inventoryBehavior']),
+    ...mapState('order', [
+      'cancellationReason',
+      'selectedOrder',
+      'errors',
+      'inventoryBehavior',
+    ]),
+    ...mapGetters('context', ['store']),
   },
   methods: {
     selectedReason: function(reason) {
-      this.showSelectedReason = reason.name;
-      $(".dropdown-content").hide();
+      this.showSelectedReason = reason.name
+      $('.dropdown-content').hide()
     },
     showDropdown: function(className) {
-      $("#" + className).toggle();
+      $('#' + className).toggle()
     },
     selectedBehavior: function(behavior) {
       this.showSelectedBehavior = behavior
-      $('.inventory-content').hide()
+      $('#inventory-dropdown').hide()
     },
     cancelOrderAction: function(order) {
       if (this.showSelectedReason.length == 0) {
@@ -191,11 +200,16 @@ export default {
         .then(res => {
           if (res.data.status != 'form_errors') {
             $('#cancellationReason').hide()
+            $('#orderDetailsPopup').hide()
+
             if (this.selectedOrder.item.order_type == 'dine_in')
               this.dineInRunningOrders()
             else if (this.selectedOrder.item.order_type == 'call_center')
               this.deliveryOrder()
           }
+          this.showSelectedReason = ''
+          this.showSelectedBehavior = ''
+          this.supervisorPassword = ''
         })
         .catch(response => {
           this.errorMessage = response
@@ -248,6 +262,15 @@ export default {
         }
 
         .modal-body {
+          .autocomplete-container {
+            grid-gap: 3em;
+            .dropdown-content {
+              top: 3em;
+              background-color: #fff !important;
+              max-height: inherit !important;
+              bottom: inherit;
+            }
+          }
         }
 
         .modal-footer {

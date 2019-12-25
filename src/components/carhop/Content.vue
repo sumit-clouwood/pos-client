@@ -83,14 +83,10 @@ export default {
     padding: 0.375rem 0.625rem;
     margin-left: 0.5rem;
     color: #fff;
-    font-weight: 600;
     cursor: pointer;
     vertical-align: middle;
-    svg {
-      height: 14px;
-    }
     > svg {
-      margin-right: 0.625rem;
+      margin-right: $px2;
       vertical-align: middle;
       width: 1.5rem;
     }
@@ -112,9 +108,8 @@ export default {
     border-radius: $px4;
     display: inline-block;
     padding: $px4 $px10;
-    font-size: $px14;
+    font-size: $px16;
     line-height: 1.8;
-    font-weight: 700;
   }
   .finished {
     background-color: $green;

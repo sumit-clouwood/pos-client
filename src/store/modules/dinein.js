@@ -10,8 +10,11 @@ const state = {
     lookup_running: false,
     lookup_completed: false,
   },
+  kitchenPrint: true,
   bills: null,
   guests: 1,
+  updateTableArea: 0,
+  statusFlag: 0,
   tableZoomScale: 0.4,
   orderDetails: false,
   completedOrderDetails: {},
@@ -21,7 +24,7 @@ const state = {
   activeArea: false,
   loading: true,
   tablesOnArea: false,
-  tableStatus: {},
+  tableStatus: false,
   orderOnTables: {},
   availableTables: false,
   selectedTable: false,
@@ -38,9 +41,12 @@ const state = {
   totalReservations: { totalPages: 0, pageNumber: 1, limit: 10 },
   billSplit: null,
   processingSplit: false,
+  reservationData: null,
 }
 const getters = {
   getOrderStatus: () => order_status => {
+    // eslint-disable-next-line no-console
+    console.log(order_status)
     if (
       order_status === CONST.ORDER_STATUS_ON_HOLD ||
       order_status === CONST.ORDER_STATUS_IN_PROGRESS
@@ -79,7 +85,7 @@ const actions = {
   updateDineInOrderStatus({ dispatch, commit }, orderStatus) {
     commit(mutation.DINE_IN_TAB_TYPE, orderStatus.title)
     if (orderStatus.pageId) {
-      let loader = orderStatus.loader ? orderStatus.loader : true
+      let loader = orderStatus.loader /*? orderStatus.loader : true*/
       dispatch(orderStatus.pageId, loader)
     }
   },
@@ -89,7 +95,7 @@ const actions = {
       dispatch('getDineInTables'),
       dispatch('getCovers'),
       dispatch('getBookedTables', false),
-      dispatch('getDineInArea'),
+      // dispatch('getDineInArea'),
     ])
     commit(mutation.LOADING, false)
   },
@@ -105,23 +111,32 @@ const actions = {
       DineInService.updateReservationStatus(...params)
         .then(response => {
           commit(mutation.RESERVATION_ID, false)
-          dispatch('dineInRunningOrders', false)
-          dispatch('getTableStatus', false)
+          if (reservationData.status === 'dine_in_about_to_finish')
+            dispatch('dineInRunningOrders', false)
+
+          dispatch('getBookedTables', false)
+          /*dispatch('dineInRunningOrders', false)
+          dispatch('getTableStatus', false)*/
           resolve(response.data)
         })
         .catch(er => reject(er))
     })
   },
-  async getBookedTables({ commit }, loader = true) {
-    // eslint-disable-next-line no-console
-    console.log('all bookend table')
-
-    if (loader) commit(mutation.LOADING, loader)
-    localStorage.setItem('reservationId', false)
-    const response = await DineInService.getAllBookedTables()
-    commit(mutation.BOOKED_TABLES, response.data)
-    if (loader) commit(mutation.LOADING, false)
-    return Promise.resolve()
+  getBookedTables({ commit, dispatch }, loader = false) {
+    return new Promise((resolve, reject) => {
+      if (loader) commit(mutation.LOADING, loader)
+      /*localStorage.setItem('reservationId', false)*/
+      DineInService.getAllBookedTables()
+        .then(response => {
+          commit(mutation.BOOKED_TABLES, response.data)
+          // eslint-disable-next-line no-console
+          console.log(response.data.data, 'boked data')
+          dispatch('getDineInArea')
+          if (loader) commit(mutation.LOADING, false)
+          return resolve()
+        })
+        .catch(er => reject(er))
+    })
   },
 
   seOrderData({ commit }, response) {
@@ -215,6 +230,7 @@ const actions = {
     return Promise.resolve()
   },
   getTableStatus({ commit, state }) {
+    commit(mutation.TABLE_STATUS, false)
     let tableStatus = {
       availableCount: 0,
       unavailableCount: 0,
@@ -266,8 +282,14 @@ const actions = {
               reservationId: order._id,
               startDate: order.start_date,
               startTime: order.start_time,
+              assigned_to: order.assigned_to,
+              created_by: order.created_by,
+              status: order.status,
+              end_time: order.end_time,
             })
           })
+          // eslint-disable-next-line no-console
+          // console.log('order->length')
           if (
             tableArray[table_details.id].includes(
               CONST.ORDER_STATUS_RESERVED
@@ -301,13 +323,15 @@ const actions = {
           parseInt(tableStatus.availableSoonCount)*/
           table_details.status.color = '#62bb31'
           table_details.status.text = 'available'
-          // eslint-disable-next-line no-console
-          // console.log(table_details, 'Rajeev')
           tableStatus.table.push(table_details)
+          // eslint-disable-next-line no-console
+          // console.log('order no  length')
         }
         commit(mutation.ORDER_ON_TABLES, orderOnTable)
       })
     }
+    // eslint-disable-next-line no-console
+    console.log('order no item length', tableStatus)
     commit(mutation.TABLE_STATUS, tableStatus)
   },
 
@@ -359,33 +383,37 @@ const actions = {
     commit(mutation.LOADING, false)
     dispatch('order/reset', {}, { root: true })
     dispatch('checkout/reset', {}, { root: true })
+    if (!state.reservation) {
+      const params = [
+        {
+          //need to set UTC
+          start_date: moment()
+            .utc()
+            .format('YYYY-MM-DD'),
+          start_time: moment()
+            .utc()
+            .format('hh:mm'),
+          assigned_table_id: tableId,
+          number_of_guests: state.guests,
+          customers: [],
+        },
+      ]
+      dispatch('newReservation', ...params)
+    }
+  },
+  newReservation({ commit, dispatch }, params) {
     return new Promise((resolve, reject) => {
-      if (!state.reservation) {
-        const params = [
-          {
-            //need to set UTC
-            start_date: moment()
-              .utc()
-              .format('YYYY-MM-DD'),
-            start_time: moment()
-              .utc()
-              .format('hh:mm'),
-            assigned_table_id: tableId,
-            number_of_guests: state.guests,
-            customers: [],
-          },
-        ]
-        DineInService.reservationOperation(...params, 'add')
-          .then(response => {
-            commit(mutation.RESERVATION_RESPONSE, response.data)
-            dispatch('getCovers').then(() => {
-              resolve(response)
-              commit(mutation.LOADING, false)
-            })
-            commit('order/ORDER_TYPE', state.orderType, { root: true })
+      DineInService.reservationOperation(params, 'add')
+        .then(response => {
+          commit(mutation.RESERVATION_RESPONSE, response.data)
+          dispatch('getCovers').then(() => {
+            resolve(response)
+            commit(mutation.LOADING, false)
           })
-          .catch(error => reject(error))
-      }
+          commit('order/ORDER_TYPE', state.orderType, { root: true })
+          dispatch('getBookedTables', false)
+        })
+        .catch(error => reject(error))
     })
   },
   getSelectedOrder({ dispatch, commit, state, rootState }, orderId) {
@@ -420,10 +448,16 @@ const actions = {
     }
   },
   moveTable({ commit }, data) {
-    const params = [data.reservationid, 'move_table', { table_id: data.table }]
-    DineInService.updateReservationTable(...params).then(() => {
-      commit(mutation.RESERVATION_ID, data.reservationid)
-    })
+    if (data.reservationid != 'false') {
+      const params = [
+        data.reservationid,
+        'move_table',
+        { table_id: data.table },
+      ]
+      DineInService.updateReservationTable(...params).then(() => {
+        commit(mutation.RESERVATION_ID, data.reservationid)
+      })
+    }
   },
   updateItemGuest({ state, commit }, { item, guest }) {
     let action = 'add'
@@ -452,6 +486,29 @@ const actions = {
       groups[key].push(item)
     }
     commit(mutation.SPLIT_BILLS, groups)
+  },
+
+  switchWaiter({ state, rootGetters }, waiter) {
+    if (
+      !waiter ||
+      (state.reservationData &&
+        state.reservationData.assigned_to === waiter._id)
+    ) {
+      return Promise.reject({
+        message: rootGetters['location/_t'](
+          'Cashier already assigned to table.'
+        ),
+      })
+    }
+    if (!state.reservationData) {
+      return Promise.reject({
+        message: rootGetters['location/_t']('No order found on table.'),
+      })
+    }
+    return DineInService.switchWaiter(state.reservationData.reservationId, {
+      switch_from: state.reservationData.assigned_to,
+      switch_to: waiter._id,
+    })
   },
 }
 
@@ -506,6 +563,7 @@ const mutations = {
   },
   [mutation.LOADING](state, loadingStatus) {
     state.loading = loadingStatus
+    if (!loadingStatus) state.statusFlag = 0
   },
   [mutation.ORDER_ON_TABLES](state, orderOnTables) {
     state.orderOnTables = orderOnTables
@@ -515,6 +573,7 @@ const mutations = {
   },
   [mutation.TABLE_STATUS](state, tableStatus) {
     state.tableStatus = tableStatus
+    if (tableStatus) state.updateTableArea = Math.floor(Math.random() * 10000)
   },
   [mutation.COVERS](state, covers) {
     state.covers = covers.data
@@ -523,6 +582,7 @@ const mutations = {
     state.availableTables = availableTables
   },
   [mutation.RESERVATION_ID](state, reservationId) {
+    state.statusFlag = Math.random()
     state.reservation = reservationId
     localStorage.setItem('reservationId', reservationId)
   },
@@ -542,6 +602,7 @@ const mutations = {
   [mutation.BOOKED_TABLES](state, bookedTables) {
     state.allBookedTables.orders = bookedTables.data
     state.allBookedTables.lookup = bookedTables.page_lookups
+    // state.updateTableArea = Math.floor(Math.random() * 10000)
   },
   [mutation.PAGE_LOOKUP](state, lookups) {
     state.areaLookup = lookups
@@ -550,8 +611,12 @@ const mutations = {
     state.POSMoveTableSelection = tableDetails
   },
   [mutation.RESERVATION_RESPONSE](state, reservation) {
+    state.statusFlag = Math.random()
     state.reservationId = reservation.id
     localStorage.setItem('reservationId', reservation.id)
+  },
+  [mutation.SET_RESERVATION_DATA](state, reservationData) {
+    state.reservationData = reservationData
   },
   [mutation.ORDER_RESERVATION_DATA](state, reservationData) {
     state.orderReservationData = reservationData
@@ -571,6 +636,9 @@ const mutations = {
   },
   [mutation.PROCESSING_SPLIT](state, status) {
     state.processingSplit = status
+  },
+  [mutation.KITCHEN_PRINT](state, status) {
+    state.kitchenPrint = status
   },
   [mutation.UPDATE_ITEM_GUEST](state, { item, guest, action }) {
     switch (action) {

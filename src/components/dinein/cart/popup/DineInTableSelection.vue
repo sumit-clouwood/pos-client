@@ -6,7 +6,7 @@
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
           <h4 class="customer-title color-text-invert">
-            {{ _t('Move') + ' ' + _t('Table') }}
+            {{ _t(tableHeaderName) }}
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
@@ -42,9 +42,17 @@
             <button
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
+              id="move-Table-only"
+              v-if="this.$route.name === 'Home'"
+              @click="moveSelectedTable(true)"
+            >
+              {{ _t('Move Table') }}
+            </button>
+            <button
+              class="btn btn-success btn-large color-main color-text-invert"
+              type="button"
               id="discount-save-btn"
-              data-dismiss="modal"
-              @click="moveSelectedTable"
+              @click="moveSelectedTable(false)"
             >
               {{ _t('Ok') }}
             </button>
@@ -52,7 +60,6 @@
               @click="removeSelectedTable"
               type="button"
               class="btn btn-danger"
-              data-dismiss="modal"
             >
               {{ _t('Cancel') }}
             </button>
@@ -65,6 +72,7 @@
 </template>
 
 <script>
+/*global $*/
 import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'DineInTableSelection',
@@ -75,9 +83,20 @@ export default {
       tableBookedAlert: '',
     }
   },
+  props: {
+    tableHeaderName: {
+      type: String,
+      default: 'Move Table',
+    },
+    tableStatusByDate: {
+      type: String,
+      default: '',
+    },
+  },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('dinein', ['availableTables', 'selectedTable']),
+    ...mapGetters('context', ['store']),
   },
   methods: {
     setTable: function(table) {
@@ -92,7 +111,7 @@ export default {
         this.tableBookedAlert = ''
       }
     },
-    moveSelectedTable() {
+    moveSelectedTable(moveToDineIn) {
       let table = this.moveTableDetails
       if (table) {
         if (table.table_number) {
@@ -113,6 +132,11 @@ export default {
       } else {
         this.selectedTableMove = ''
       }
+      // eslint-disable-next-line no-console
+      console.log(this.$route.name)
+      if (moveToDineIn && typeof this.moveTableDetails == 'object')
+        this.$router.push('/dine-in' + this.store)
+      $('#dine-in-table-selection').modal('toggle')
     },
     removeSelectedTable: function() {
       if (this.selectedTable) {
@@ -131,6 +155,7 @@ export default {
         status: 'move_table',
       }
       this.$store.dispatch('dinein/moveTable', data)
+      $('#dine-in-table-selection').modal('hide')
     },
   },
 }
@@ -138,10 +163,10 @@ export default {
 <style lang="sass" scoped>
 .error
     width: 100%
-    color: #c84c4c;
-    padding-bottom: 5px;
-    font-weight: bold;
-    position: relative;
+    color: #c84c4c
+    padding-bottom: 5px
+    font-weight: bold
+    position: relative
     bottom: 10px
 /*padding: 40px 5px 10px 5px*/
 </style>

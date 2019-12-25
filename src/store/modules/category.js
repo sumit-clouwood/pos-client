@@ -19,12 +19,18 @@ const state = {
   taxData: [],
   taxAmount: {},
   searchItems: {},
+  barcode: false,
 }
 
 // getters, computed properties
 const getters = {
   categories: state => {
     return state.categories
+  },
+  itemByCode: state => itemCode => {
+    return state.items.find(
+      item => item.item_code === itemCode || item.barcode === itemCode
+    )
   },
   subcategories: state => {
     if (typeof state.category != 'undefined') {
@@ -111,7 +117,6 @@ const actions = {
           })
           //Fetch all kitchens & Printing Servers on POS and save into states.
           dispatch('printingServer/fetchAllKitchens', {}, { root: true })
-          dispatch('printingServer/fetchAllPrintingServers', {}, { root: true })
         })
         .catch(error => reject(error))
     })
@@ -205,6 +210,9 @@ const mutations = {
       state.searchItems = {}
       state.item = null
     }
+  },
+  setBarcode(state, code) {
+    state.barcode = code
   },
 }
 

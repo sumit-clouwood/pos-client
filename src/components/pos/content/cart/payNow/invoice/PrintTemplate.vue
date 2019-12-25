@@ -14,7 +14,7 @@
     </div>
     <div class="main">
       <div class="main-title">{{ template.title_label }}</div>
-      <div class="main-subtitle">
+      <div class="main-subtitle" v-if="!preview">
         {{ template.invoice_number_label }}
         {{ getPrintDataTime }}
       </div>
@@ -193,6 +193,14 @@
                 {{ format_number(order.surcharge_tax) }}
               </td>
             </tr>
+            <tr v-if="parseFloat(order.delivery_surcharge) > 0">
+              <td colspan="2">
+                {{ _t('Delivery Surcharge') }}
+              </td>
+              <td class="right-aligned">
+                {{ format_number(order.delivery_surcharge) }}
+              </td>
+            </tr>
             <tr class="important">
               <td colspan="3" class="footTotal">
                 {{ template.total_label }}
@@ -216,7 +224,7 @@
                 {{ format_number(order_payment.collected) }}
               </td>
             </tr>
-            <tr class="important">
+            <tr class="important" v-if="!preview">
               <td colspan="3" class="footTotal">
                 <div>
                   {{ template.total_paid_label }}
@@ -227,7 +235,7 @@
                 </div>
               </td>
             </tr>
-            <tr>
+            <tr v-if="!preview">
               <td colspan="2">
                 {{ template.tips_label }}
               </td>
@@ -235,7 +243,7 @@
                 {{ format_number(order.tip_amount) }}
               </td>
             </tr>
-            <tr>
+            <tr v-if="!preview">
               <td colspan="2">
                 {{ template.changed_label }}
               </td>
@@ -295,7 +303,7 @@ export default {
       'image/png'
     )
   },
-  props: ['template', 'order_to_print'],
+  props: ['template', 'order_to_print', 'preview'],
   watch: {
     all_data_fully_loaded: function(new_value) {
       // eslint-disable-next-line
@@ -349,9 +357,7 @@ export default {
     },
     default_header: function() {
       if (this.active_store) {
-        return `${this.currentBrand.name} <br/> ${this.active_store.city} ${
-          this.template['branch_label']
-        } <br/> ${this.template['telno_label']} ${this.active_store.phone}`
+        return `${this.currentBrand.name} <br/> ${this.active_store.city} ${this.template['branch_label']} <br/> ${this.template['telno_label']} ${this.active_store.phone}`
       } else {
         return ''
       }

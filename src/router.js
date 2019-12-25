@@ -8,6 +8,7 @@ import DeliveryManagerInit from './views/DeliveryManagerInit'
 import DispatchScreenInit from './views/DispatchScreenInit'
 import CashierLogin from './views/CashierLogin'
 import Carhop from './views/Carhop'
+import UserProfile from './views/UserProfile.vue'
 
 Vue.use(Router)
 
@@ -16,6 +17,12 @@ const router = new Router({
   base: '',
 
   routes: [
+    ///5d6cff2d7dc7bf003d15f06b/5d6cff407dc7bf003d15f138/crm-order/5de29617e33e87000c0229de/5de29617e33e87000c0229dd
+    {
+      path: '/:brand_id/:store_id/crm-order/:customer_id/:address_id',
+      name: 'selectAddressForCrmOrder',
+      component: Home,
+    },
     {
       path: '/cashier-login/*',
       name: 'cashierLogin',
@@ -35,6 +42,11 @@ const router = new Router({
       path: '/delivery-manager/:brand_id/:store_id/',
       name: 'DeliveryManager',
       component: DeliveryManagerInit,
+    },
+    {
+      path: '/user-details/:brand_id/:store_id',
+      name: 'userDetails',
+      component: UserProfile,
     },
     {
       path: '/carhop/:brand_id/:store_id',

@@ -10,6 +10,8 @@ export const REFERENCE_FIELD_SUBCATEGORY_TO_ITEM = '_id'
 export const ORDER_HISTORY_TYPE_RECORD_NEW = 'Created'
 export const ORDER_HISTORY_TYPE_RECORD_SENT_TO_KITCHEN =
   'Sent for Cooking/Assembly'
+export const ORDER_HISTORY_TYPE_RECORD_NEW_FROM_MODIFIED =
+  'Order is modified from '
 export const ORDER_HISTORY_TYPE_RECORD_PRINTED = 'Printed'
 export const ORDER_HISTORY_TYPE_RECORD_READY = 'Ready'
 export const ORDER_HISTORY_TYPE_RECORD_DELIVERY_STARTED = 'Delivery Started'
@@ -76,3 +78,7 @@ export const DISCOUNT_ORDER_ERROR_ITEM_DISCOUNT =
   'Please remove item level discount(s) first to apply order discount.'
 export const DISCOUNT_ORDER_ERROR_TOTAL =
   "Discount can't be greater than total amount of an order."
+export const DISCOUNT_ORDER_ERROR_CART =
+  'Cart amount is less than minimum required for this discount.'
+export const DISCOUNT_ORDER_ERROR_MAX =
+  'Cart amount is greater than maximum allowed for this discount.'

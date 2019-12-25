@@ -6,10 +6,22 @@ const state = {
   storeId: process.env.VUE_APP_STORE_ID,
   brand: null,
   store: null,
+  multiStores: null,
+  selectedStore: false,
+  storesLength: 1,
 }
 
 // getters
 const getters = {
+  isStoreSelected(state) {
+    return state.selectedStore
+  },
+  multipleStores: state => {
+    return state.multiStores
+  },
+  haveMultipleStores: state => {
+    return state.storesLength > 1
+  },
   store: state => {
     if (state.brandId) {
       if (state.storeId) {
@@ -51,6 +63,12 @@ const mutations = {
     state.brand = null
     state.storeId = null
     state.brandId = null
+  },
+  [mutation.SET_MULTI_STORES](state, multiStores) {
+    state.multiStores = multiStores
+  },
+  [mutation.SET_STORES_LENGTH](state, storeLength) {
+    state.storesLength = storeLength
   },
 }
 

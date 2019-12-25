@@ -14,6 +14,9 @@
           {{ _t('Order Discount') }} :
         </p>
         <p class="text-uppercase color-text-invert">{{ _t('Tax') }} :</p>
+        <p class="text-uppercase color-text-invert" v-if="deliverySurcharge">
+          {{ _t('Deliver Surcharge') }} :
+        </p>
         <p class="text-uppercase color-text-invert">
           {{ _t('Bill Amount') }} :
         </p>
@@ -25,6 +28,7 @@
           {{ formatPrice(orderDiscountWithoutTax || 0) }}
         </p>
         <p class="color-text">{{ formatPrice(totalTax || 0) }}</p>
+        <p class="color-text">{{ formatPrice(deliverySurcharge || 0) }}</p>
         <p class="color-text">{{ formatPrice(orderTotal || 0) }}</p>
       </div>
     </div>
@@ -41,7 +45,12 @@ export default {
     ...mapState({
       orderNotes: state => state.order.orderNote,
     }),
-    ...mapGetters('order', ['orderTotal', 'subTotal', 'totalTax']),
+    ...mapGetters('order', [
+      'orderTotal',
+      'subTotal',
+      'totalTax',
+      'deliverySurcharge',
+    ]),
     ...mapGetters('surcharge', ['surcharge']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', ['orderDiscountWithoutTax']),

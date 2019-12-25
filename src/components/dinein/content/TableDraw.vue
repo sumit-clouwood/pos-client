@@ -1,119 +1,62 @@
 <template>
   <div class="dine-in-tabel-wrapper">
     <Header />
-    <div class="dine-in-tabel-wrapper">
-      <div class="inner-dinein-table">
-        <TableStatus />
-        <div
-          class="sitting-dinein-table ui-droppable"
-          id="sitting-dinein-table"
-        >
-          <div class="sitting-dine-wrap disable-sorting" v-if="tablesOnArea">
-            <div class="sitting-image">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="94vw"
-                height="100%"
-                id="dine-in-area"
-                ref="dine-in-area"
-                :viewBox="
-                  viewBox.x +
-                    ' ' +
-                    viewBox.y +
-                    ' ' +
-                    viewBox.width +
-                    ' ' +
-                    viewBox.height
-                "
-                preserveAspectRatio="xMidYMid meet"
-              ></svg>
-            </div>
-            <div id="tooltipdata" class="dropdown-content cursor-pointer">
-              <div class="tooltip-c-range" id="range" :key="componentKey">
-                <div class="display-table-details">
-                  <div class="table-header-border-bottom">
-                    <h6 class="customer-title align-items-center pl-2 pt-2">
-                      {{ _t('Table information') }}
-                    </h6>
-                  </div>
-                  <span
-                    class="font-weight-bold close-table-details"
-                    @click="hideTableDetails"
-                  >
-                    X
-                  </span>
+    <div class="inner-dinein-table">
+      <TableStatus />
+      <div class="sitting-dinein-table ui-droppable" id="sitting-dinein-table">
+        <div class="sitting-dine-wrap disable-sorting" v-if="tablesOnArea">
+          <AllTables :viewBox="viewBox" />
+          <div id="tooltipdata" class="dropdown-content cursor-pointer">
+            <div class="tooltip-c-range" id="range" :key="componentKey">
+              <div class="display-table-details">
+                <div class="table-header-border-bottom">
+                  <h6 class="customer-title align-items-center pl-2 pt-2">
+                    {{ _t('Table information') }}
+                  </h6>
                 </div>
-                <div class="m-1 table-order-content" v-if="orderDetails">
-                  <div
-                    v-for="orderData in orderDetails"
-                    :key="orderData.reservationId"
-                  >
-                    <div v-if="orderData.orderIds.length">
+                <span
+                  class="font-weight-bold close-table-details"
+                  @click="hideTableDetails"
+                >
+                  X
+                </span>
+              </div>
+              <div class="m-1 table-order-content" v-if="orderDetails">
+                <div
+                  v-for="orderData in orderDetails"
+                  :key="orderData.reservationId"
+                >
+                  <div v-if="orderData.orderIds.length">
+                    <div
+                      class="table-action order-details-with-action"
+                      v-for="orderId in orderData.orderIds"
+                      :key="orderId"
+                    >
                       <div
-                        class="table-action order-details-with-action"
-                        v-for="orderId in orderData.orderIds"
-                        :key="orderId"
+                        class="text-capitalize dt-items"
+                        v-if="allBookedTables.lookup.orders._id"
+                      >
+                        {{ orderData.tableNumber }}
+                        #{{ getOrderNo(orderId) }}
+                      </div>
+                      <div
+                        class="order-details-with-action"
+                        v-if="orderStatus(orderId) !== 'finished'"
                       >
                         <div
-                          class="text-capitalize dt-items"
-                          v-if="allBookedTables.lookup.orders._id"
-                        >
-                          {{ orderData.tableNumber }}
-                          #{{ getOrderNo(orderId) }}
-                        </div>
-                        <div
-                          class="order-details-with-action"
-                          v-if="orderStatus(orderId) !== 'finished'"
-                        >
-                          <div
-                            class="table-popup bg-success font-weight-bold"
-                            @click="
-                              updateOrder({
-                                orderId: orderId,
-                                orderData: orderData,
-                              })
-                            "
-                          >
-                            {{ _t('Update') }}
-                            <!--Split Bill-->
-                          </div>
-                          <div
-                            class="cursor-pointer text-danger reservation-cancel btn btn-danger"
-                            @click="cancelReservation(orderData.reservationId)"
-                          >
-                            <span class="dlt-icon">
-                              <img src="img/pos/delete-icon-reservation.svg" />
-                            </span>
-                          </div>
-                        </div>
-                        <div v-else>
-                          <div
-                            class="paid-amount-msg text-center font-weight-bold"
-                          >
-                            <img
-                              src="img/dinein/paid-icon.png"
-                              style="width:33px"
-                            />
-                            {{ _t('Paid') }}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div v-else class="table-action order-details-with-action">
-                      <div class="text-capitalize dt-items">
-                        {{ orderData.tableNumber }} #R |
-                        {{ created_date(orderData.startDate) }},
-                        {{ created_time(orderData.startTime) }}
-                      </div>
-                      <div class="order-details-with-action">
-                        <div
                           class="table-popup bg-success font-weight-bold"
-                          @click="newOrder(orderData.reservationId, true)"
+                          @click="
+                            updateOrder({
+                              orderId: orderId,
+                              orderData: orderData,
+                            })
+                          "
                         >
-                          {{ _t('Add Order') }}
+                          {{ _t('Update') }}
+                          <!--Split Bill-->
                         </div>
                         <div
-                          class="cursor-pointer text-danger reservation-cancel  btn btn-danger"
+                          class="cursor-pointer text-danger reservation-cancel btn btn-danger"
                           @click="cancelReservation(orderData.reservationId)"
                         >
                           <span class="dlt-icon">
@@ -121,35 +64,98 @@
                           </span>
                         </div>
                       </div>
+                      <div v-else>
+                        <div
+                          class="paid-amount-msg text-center font-weight-bold"
+                        >
+                          <img
+                            src="img/dinein/paid-icon.png"
+                            style="width:33px"
+                          />
+                          {{ _t('Paid') }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-else class="table-action order-details-with-action">
+                    <div class="text-capitalize dt-items">
+                      {{ orderData.tableNumber }} #R |
+                      {{ created_date(orderData.startDate) }},
+                      {{ created_time(orderData.startTime) }}
+                    </div>
+                    <div class="order-details-with-action">
+                      <div
+                        class="table-popup bg-success font-weight-bold"
+                        @click="newOrder(orderData.reservationId, true)"
+                      >
+                        {{ _t('Add Order') }}
+                      </div>
+                      <div
+                        class="cursor-pointer text-danger reservation-cancel  btn btn-danger"
+                        @click="cancelReservation(orderData.reservationId)"
+                      >
+                        <span class="dlt-icon">
+                          <img src="img/pos/delete-icon-reservation.svg" />
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div class="table-order-footer">
-                  <div class="m-1 buttons">
-                    <span
-                      data-toggle="modal"
-                      data-target="#placeOrder"
-                      data-dismiss="modal"
-                      class="table-popup popbtn bg-success font-weight-bold"
-                    >
-                      {{ _t(addOrSplit) }}
-                    </span>
-                  </div>
+              </div>
+              <div
+                class="table-order-footer"
+                v-if="brand && brand.number_of_guests"
+              >
+                <div class="m-1 buttons">
+                  <span
+                    data-toggle="modal"
+                    data-target="#placeOrder"
+                    data-dismiss="modal"
+                    class="table-popup popbtn bg-success font-weight-bold"
+                    @click="closeMyself"
+                  >
+                    {{ _t(addOrSplit) }}
+                  </span>
+                  <span
+                    v-if="
+                      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API)
+                    "
+                    data-toggle="modal"
+                    data-target="#switchWaiter"
+                    data-dismiss="modal"
+                    @click="setSelectedTable(orderDetails)"
+                    class="table-popup popbtn bg-success font-weight-bold"
+                  >
+                    {{ _t('Switch Waiter') }}
+                  </span>
+                </div>
+              </div>
+              <div class="table-order-footer" v-else>
+                <div class="m-1 buttons">
+                  <span
+                    data-toggle="modal"
+                    data-dismiss="modal"
+                    @click="newOrder(false, brand.book_table)"
+                    class="table-popup popbtn bg-success font-weight-bold"
+                  >
+                    {{ _t(addOrSplit) }}
+                  </span>
+                  <span
+                    v-if="
+                      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API)
+                    "
+                    data-toggle="modal"
+                    data-target="#switchWaiter"
+                    data-dismiss="modal"
+                    @click="setSelectedTable(orderDetails)"
+                    class="table-popup popbtn bg-success font-weight-bold"
+                  >
+                    {{ _t('Switch Waiter') }}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div id="svgContainter">
-        <div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="100%"
-            :height="height"
-            id="dine-in-area"
-            ref="dine-in-area"
-          />
         </div>
       </div>
     </div>
@@ -247,10 +253,11 @@
               id="BookedTable"
               class="btn btn-success"
               data-dismiss="modal"
-              @click="newOrder(false, false)"
+              @click="newOrder(false, brand.book_table)"
             >
               {{ _t(addOrSplit) }}
             </button>
+
             <button type="button" class="btn btn-danger" data-dismiss="modal">
               {{ _t('Close') }}
             </button>
@@ -265,6 +272,8 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
+import AllTables from './AllTables'
+
 // import LookupData from '@/plugins/helpers/LookupData'
 import Header from './Header'
 import DateTime from '@/mixins/DateTime'
@@ -274,10 +283,11 @@ export default {
   name: 'TableDraw',
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('location', ['timezoneString']),
+    ...mapState('location', ['timezoneString', 'brand']),
     ...mapState('dinein', [
       'tablesOnArea',
       'activeArea',
+      'statusFlag',
       'areas',
       'orderOnTables',
       'tableStatus',
@@ -285,13 +295,17 @@ export default {
       'reservationId',
       'getAvailableTables',
       'tableZoomScale',
+      'dineInTabType',
+      'updateTableArea',
     ]),
     ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['allowed']),
   },
   mixins: [DateTime],
   components: {
     Header,
     TableStatus,
+    AllTables,
   },
   data() {
     return {
@@ -312,11 +326,12 @@ export default {
       addOrSplit: 'Book Table',
       cancelReservationMsg: 'Do you want to cancel this reservation?',
       order: false,
-      selectedAreaObj: '',
+      deletion: false,
       selectedReservationId: '',
       componentKey: 0,
       moveReservation: false,
       validationErrors: false,
+      selectedArea: false,
       zoomLevel: {
         zoomOut: [
           {
@@ -348,30 +363,45 @@ export default {
       },
     }
   },
-  mounted() {
-    this.updateTableOnArea()
-  },
   updated() {
-    this.clearTableArea()
-    this.updateTableOnArea()
-    this.setTableProperties()
-    /*if (this.selectedTableD3)
-      d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
+    if (this.selectedArea != this.activeArea._id) {
+      this.clearTableArea()
+      this.updateTableOnArea()
+      this.selectedArea = this.activeArea._id
+    }
+  },
+  watch: {
+    updateTableArea: function(newValue, oldValue) {
+      if (newValue !== oldValue && this.selectedTableData) {
+        this.setTableColour(this.selectedTableD3, this.selectedTableData)
+      }
+    },
   },
   methods: {
+    setSelectedTable(orderDetails) {
+      if (orderDetails) {
+        let tableOrder = null
+        orderDetails.forEach(order => {
+          if (order.orderIds && order.orderIds.length) {
+            const orderObj = this.allBookedTables.lookup.orders._id[
+              order.orderIds[0]
+            ]
+            const orderStatus = orderObj.order_status
+            if (orderStatus !== 'finished') {
+              tableOrder = order
+            }
+          } else {
+            tableOrder = order
+          }
+        })
+        this.$store.commit('dinein/SET_RESERVATION_DATA', tableOrder)
+      }
+    },
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
-    /*showActive() {
-      // $('#id' + this.selectedTableId).addClass('class', 'dinein_table active')
-      d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
-    },*/
+    closeMyself() {
+      $('#tooltipdata').hide()
+    },
     chairsValidation() {
-      /*if (this.guests > this.selectedTableData.chairs) {
-        this.validationErrors =
-          'Sorry you cannot add more then ' +
-          this.selectedTableData.chairs +
-          ' guests on this table'
-        this.guests = this.selectedTableData.chairs
-      } else */
       if (this.guests < 1) {
         this.validationErrors = 'Minimum 1 guest is required'
         this.guests = 1
@@ -409,8 +439,6 @@ export default {
         : ''
     },
     orderStatus(orderId) {
-      // eslint-disable-next-line no-console
-      console.log(this.allBookedTables.lookup.orders._id[orderId])
       return this.allBookedTables.lookup.orders._id[orderId].order_status
     },
     hideTableDetails() {
@@ -418,40 +446,33 @@ export default {
         .parent('div')
         .hide()
     },
+    ...mapActions('location', ['getUIMenu']),
     newOrder(reservationId, pos) {
+      this.getUIMenu()
       let makeId = '#id_' + this.selectedTableId
       $(makeId)
-        .find('g')
-        .attr('style', 'opacity:0.5')
+        .find('svg')
+        .attr('style', 'opacity:0.3')
+
       this.$store.commit('dinein/TABLE_SPLIT', false)
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       if (!reservationId) {
+        // let dis = this
         this.$store.commit('dinein/NUMBER_GUESTS', this.guests)
         this.$store
           .dispatch('dinein/addReservation', this.selectedTableId, {
             root: true,
           })
           .then(() => {
-            this.$store
-              .dispatch('dinein/updateDineInOrderStatus', {
-                title: 'all',
-                pageId: 'getBookedTables',
-                loader: false,
-              })
-              .then(() => {
-                this.$store.dispatch('dinein/getDineInArea', false)
-                this.$store.dispatch('dinein/getDineInTables', false)
-                $('#tooltipdata').hide()
-                setTimeout(function() {
-                  $(makeId)
-                    .find('g')
-                    .removeAttr('style')
-                }, 350)
-              })
+            if (!pos) {
+              let URL = this.$route.path + '/' + this.selectedTableId
+              this.$router.push({ path: URL })
+            }
+            $('#tooltipdata').hide()
           })
       } else {
         if (pos) {
-          let URL = '/dine-in/' + this.store + '/' + this.selectedTableId
+          let URL = this.$route.path + '/' + this.selectedTableId
           this.$router.push({ path: URL })
         }
         this.$store.commit('dinein/RESERVATION_ID', reservationId)
@@ -464,12 +485,8 @@ export default {
       this.$store.commit('dinein/NUMBER_GUESTS', false)
       this.$store.commit('dinein/TABLE_SPLIT', true)
       let URL =
-        '/dine-in/' +
-        this.store +
-        '/' +
-        this.selectedTableId +
-        '/' +
-        data.orderId
+        this.$route.path + '/' + this.selectedTableId + '/' + data.orderId
+      this.$store.commit('order/ORDER_SOURCE', 'dinein')
       this.$store.dispatch('dinein/getSelectedOrder', data.orderId, {
         root: true,
       })
@@ -480,7 +497,7 @@ export default {
       this.$router.push({ path: URL })
     },
     clearTableArea() {
-      d3.selectAll('#dine-in-area > *').remove()
+      d3.selectAll('.tables').remove()
     },
     updateDineInOrderStatus: function(orderStatus) {
       this.$store.dispatch('dinein/updateDineInOrderStatus', orderStatus)
@@ -531,11 +548,53 @@ export default {
           return d3.select(`#dinein_${d.table_shape}_${d.chairs}`).html()
         })
       /*.attr('fill', 'green')*/
-      if (this.selectedTableD3)
-        d3.select(this.selectedTableD3).attr('class', 'dinein_table active')
+      /*if (this.selectedTableD3)
+          d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
       d3.selectAll('.dinein_table_parent').each(() => {
         this.drawViews()
         this.setTableProperties()
+      })
+    },
+    setTableColour(selectedItem, data) {
+      let dis = this
+      this.$nextTick(() => {
+        d3.select(selectedItem)
+          .select('g')
+          .selectAll('path:nth-of-type(2)')
+          .attr('fill', '#FFF')
+
+        d3.select(selectedItem)
+          .select('svg')
+          .selectAll('path:nth-last-of-type(1)')
+          .attr('fill', function() {
+            let fillcolor = dis.tableStatus.table.find(ts => ts.id === data._id)
+            /*let colourTable = '#FF9C9A'
+            if (fillcolor.status.color == '#62bb31') {
+              colourTable = '#99CA86'
+            } else if (fillcolor.status.color == '#faa03c') {
+              colourTable = '#FAD580'
+            }*/
+            return fillcolor.status.color
+          })
+        d3.select(selectedItem)
+          .select('svg>g:last-child')
+          .selectAll('path')
+          .attr('fill', function() {
+            let fc = dis.tableStatus.table.find(ts => ts.id === data._id)
+            /*let colourChairs = '#CC3232'
+            if (fc.id === data._id) {
+              if (fc.status.color == '#62bb31') {
+                colourChairs = '#009900'
+              } else if (fc.status.color == '#faa03c') {
+                colourChairs = '#fa9304'
+              }
+            }*/
+            return fc.status.color
+          })
+        let makeId = '#id_' + dis.selectedTableId
+        $(makeId)
+          .find('svg')
+          .removeAttr('style')
       })
     },
     setTableProperties() {
@@ -543,43 +602,15 @@ export default {
       d3.selectAll('.dinein_table').each((d, i, a) => {
         d3.select(a[i])
           .select('text')
-          .text(`#${d.number}`)
+          .text(`${d.number}`)
+          .attr('style', 'font-size:60px')
+          .attr('style', 'font-weight:bold')
+        // .attr('fill', '#fff')
         let data = d
-        d3.select(a[i])
-          .select('svg>g:last-child')
-          .selectAll('path')
-          .attr('fill', function() {
-            let fc = '#CC3232'
-            dis.tableStatus.table.filter(ts => {
-              if (ts.id === data._id) {
-                if (ts.status.color == '#62bb31') {
-                  fc = '#009900'
-                } else if (ts.status.color == '#faa03c') {
-                  fc = '#fa9304'
-                }
-              }
-            })
-            return fc
-          })
-        d3.select(a[i])
-          .on('click', function(d, i, a) {
-            dis.showOptions(d, i, a)
-          })
-          .select('g')
-          .selectAll('path')
-          .attr('fill', function() {
-            let fillcolor = '#FF9C9A'
-            dis.tableStatus.table.filter(ts => {
-              if (ts.id === data._id) {
-                if (ts.status.color == '#62bb31') {
-                  fillcolor = '#99CA86'
-                } else if (ts.status.color == '#faa03c') {
-                  fillcolor = '#FAD580'
-                }
-              }
-            })
-            return fillcolor
-          })
+        this.setTableColour(a[i], data)
+        d3.select(a[i]).on('click', function(d, i, a) {
+          dis.showOptions(d, i, a)
+        })
         let nodeDims = d3
           .select(a[i])
           .node()
@@ -589,46 +620,15 @@ export default {
         let midX = nodeDims.width / 2 + x
         let midY = nodeDims.height / 2 + y
         d3.select(d3.select(a[i]).node().parentNode).attr('transform', () => {
-          // eslint-disable-next-line no-console
-          // console.log(data.table_position_coordinate.angle, 'xxxxx')
-          /*if (data.table_position_coordinate.angle) {
-            data.table_position_coordinate.angle = 0
-          }*/
-          return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${
-            data.table_position_coordinate.angle
-          },${midX},${midY})`
+          return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${data.table_position_coordinate.angle},${midX},${midY})`
         })
-        /*.attr(
-            'transform',
-            d3.zoomIdentity.scale(dis.tableZoomScale).translate(0, 0)
-          )*/
-        // .zoomIdentity.scale(dis.tableZoomScale)
-        // .translate(0, 0)
       })
     },
-    isSupported() {
-      let ua = navigator.userAgent.toLowerCase()
-      if (ua.indexOf('safari') != -1) {
-        if (ua.indexOf('ipad') > -1) {
-          return false
-        } else if (ua.indexOf('Safari') > -1) {
-          return false
-        } else if (ua.indexOf('macintosh') > -1 && ua.indexOf('chrome') > -1) {
-          return true
-        } else if (ua.indexOf('macintosh') > -1) {
-          return false
-        } else if (ua.indexOf('chrome') > -1) {
-          return true
-        } else if (ua.indexOf('mozilla') > -1) {
-          return false
-        } else {
-          return false
-        }
-      } else {
-        return false
-      }
-    },
     confirmCancelReservation() {
+      let makeId = '#id_' + this.selectedTableId
+      $(makeId)
+        .find('svg')
+        .attr('style', 'opacity:0.3')
       this.reservationUpdateStatus({
         reservationId: this.selectedReservationId,
         status: 'cancelled_reservation',
@@ -641,12 +641,7 @@ export default {
             return false
           }
         }
-        this.$store.dispatch('dinein/updateDineInOrderStatus', {
-          title: 'all',
-          pageId: 'getBookedTables',
-          loader: false,
-        })
-        this.$store.dispatch('dinein/getDineInArea', false)
+        $('#tooltipdata').hide()
       })
       this.componentKey += 1
       $('#range')
@@ -666,66 +661,70 @@ export default {
         .getBoundingClientRect()
     },
     showOptions(datum, i, a) {
-      /*d3.select(d3.select(a[i]).parentNode)
-        .selectAll('path')
-        .style('stroke', 'green')
-        .style('stroke-width', '1')*/
-
       this.selectedTableData = datum
       this.guests = 1
       this.validationErrors = ''
       this.selectedTableD3 = a[i]
+      this.selectedTableId = datum._id
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
-      // let scope = this
-      /*setTimeout(function() {
-        scope.zoom(0.8, { x: 10, y: 10 })
-      }, 500)*/
-      /*let transform = { x: 10, y: 10 }
-      this.zoom(1, transform)*/
-      // eslint-disable-next-line no-console
-      // console.log(this.orderDetails)
       this.addOrSplit =
         this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
-      this.selectedTableId = datum._id
-      let range = $('#range')
-      let top = datum.table_position_coordinate.y + 20 || 0
-      // let left = datum.table_position_coordinate.x + 35 || 100
-      // $('#id_' + datum._id).click(function(e) {
-      let posX = $('#id_' + datum._id).offset().left
-      // let posY = $('#id_' + datum._id).offset().top
-      /*let tableWidth = $('#id_' + datum._id)
-        .find('svg')
-        .width()*/
-      let getWidth = 361 / 2
-      if (this.orderDetails.length === 0) {
-        getWidth = 155 / 2
-      } else if (this.orderDetails.length > 0) {
-        let orderCount = 0
-        this.orderDetails.forEach(order => {
-          if (order.orderIds.length > 0) {
-            orderCount += 1
+      if (this.brand.book_table || this.orderDetails.length) {
+        // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
+        let range = $('#range')
+        /*let top =
+          datum.table_position_coordinate.y / 2 +
+            $('#id_' + datum._id).offset().top || 0*/
+        let top = datum.table_position_coordinate.y + 20 || 0
+        let posX = $('#id_' + datum._id).offset().left
+        let tableX = $('#id_' + datum._id).attr('x')
+        let getWidth = 361 / 2
+        if (this.orderDetails.length === 0) {
+          getWidth = 155 / 2
+        } else if (this.orderDetails.length > 0) {
+          let orderCount = 0
+          this.orderDetails.forEach(order => {
+            if (order.orderIds.length > 0) {
+              orderCount += 1
+            }
+          })
+          if (orderCount > 0) {
+            getWidth = 445 / 2
           }
-        })
-        if (orderCount > 0) {
-          getWidth = 445 / 2
+        }
+        let left = posX - getWidth
+
+        let resolution = window.screen
+        if (resolution.availHeight <= 768 && resolution.availWidth <= 1024) {
+          /*start square screen code*/
+          let posY = $('#id_' + datum._id).offset().top
+          top -= posY
+          /*end square screen code*/
+        }
+        if (tableX > 3000) left -= 80
+        // alert(window.screen.availHeight + ' > ' + window.screen.availWidth)
+        if (top < 0) top = 0
+        if (left < 0) left = 0
+        range
+          .parent('div')
+          .attr(
+            'style',
+            'top:' +
+              top * this.tableZoomScale +
+              'px; left:' +
+              left +
+              'px; display:block'
+          )
+      } else {
+        this.closeMyself()
+        if (this.brand.number_of_guests) {
+          $('#placeOrder').modal('show')
+        } else {
+          this.newOrder(false, this.brand.book_table)
         }
       }
-      if (top < 0) top = 0
-      let left = posX - getWidth
-      if (left < 0) left = 0
-
-      range
-        .parent('div')
-        .attr(
-          'style',
-          'top:' +
-            top * this.tableZoomScale +
-            'px; left:' +
-            left +
-            'px; display:block'
-        )
     },
     drawViews() {
       if (this.activeArea) {
@@ -791,15 +790,15 @@ export default {
                 return 'gray'
               }
             })
-            .call(
-              d3
-                .drag()
-                .on('start', d => this.drag_start(d))
-                .on('drag', (d, ia, a) =>
-                  this.drag_view_horizontal_drag(d, ia, a)
-                )
-                .on('end', this.drag_view_end)
-            )
+          /*.call(
+            d3
+              .drag()
+              .on('start', d => this.drag_start(d))
+              .on('drag', (d, ia, a) =>
+                this.drag_view_horizontal_drag(d, ia, a)
+              )
+              .on('end', this.drag_view_end)
+          )*/
         })
         this.activeArea.right_view.forEach((element, i) => {
           d3.select(this.$el)
@@ -1106,5 +1105,24 @@ export default {
 <style scoped>
 .modal .modal-dialog .modal-content .modal-footer {
   display: list-item;
+}
+</style>
+<style lang="scss" scoped>
+.m-1 {
+  &.buttons {
+    span {
+      margin-right: 10px !important;
+      &:last-child {
+        margin-right: 0px !important;
+      }
+    }
+  }
+}
+</style>
+<style lang="scss">
+#switchWaiter {
+  .modal-dialog {
+    max-width: 60% !important;
+  }
 }
 </style>

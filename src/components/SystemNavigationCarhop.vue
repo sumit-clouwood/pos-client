@@ -32,14 +32,12 @@
     <div class="slider-btn" @click="showMore">
       <i aria-hidden="true" class="fa fa-chevron-down"></i>
     </div>
-    <div
+    <router-link
       class="navigation-avatar color-secondary"
       v-if="userDetails && permitted('profile', 'root')"
-      data-toggle="modal"
-      data-target="#user-details"
-      data-dismiss="modal"
+      :to="'/user-details' + store"
     >
-      <a class="nav-link" role="button" :title="userDetails.item.name">
+      <a class="nav-link" role="button" :title="userDetails.item ? userDetails.item.name : ''">
         <img
           v-if="typeof userDetails.item != 'undefined'"
           :src="
@@ -50,24 +48,19 @@
           alt="profile"
         />
         <div class="nav-link-user-name color-text-invert">
-          {{ userDetails.item.name }}
+          {{ userDetails.item ? userDetails.item.name : '' }}
         </div>
       </a>
-    </div>
+    </router-link>
     <!--top Menu-->
-    <UserProfile />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import UserProfile from '@/components/pos/user/UserProfile'
 /* global $, menuShowMore */
 export default {
   name: 'SystemNavigation',
-  components: {
-    UserProfile,
-  },
   methods: {
     gotoCarhop() {
       this.$router.replace({ name: 'Carhop' })

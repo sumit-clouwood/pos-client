@@ -63,7 +63,7 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 /* global $ showModal, hideModal */
 export default {
   name: 'GiftCard',
@@ -76,6 +76,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('order', ['orderSource']),
   },
   methods: {
     cancelPayment() {
@@ -94,29 +95,33 @@ export default {
             this.$store.state.checkoutForm.action == 'pay'
           ) {
             if (this.$store.getters['checkoutForm/validate']) {
-              this.$store.commit('order/IS_PAY', 1)
-              this.error = null
-              this.$store.commit('checkoutForm/SET_PROCESSING', true)
-              this.$store
-                .dispatch(
-                  'checkout/pay',
-                  this.$store.state.order.orderType.OTApi
-                )
-                .then(() => {
-                  $('#payment-msg').modal('show')
-                  setTimeout(function() {
-                    $('#payment-screen-footer').prop('disabled', false)
-                  }, 1000)
-                })
-                .catch(() => {
-                  setTimeout(() => {
-                    $('#payment-msg').modal('hide')
-                    $('#payment-screen-footer').prop('disabled', false)
-                  }, 500)
-                })
-                .finally(() => {
-                  this.$store.commit('checkoutForm/SET_PROCESSING', false)
-                })
+              if (this.orderSource === 'backend') {
+                showModal('#modificationReason')
+              } else {
+                this.$store.commit('order/IS_PAY', 1)
+                this.error = null
+                this.$store.commit('checkoutForm/SET_PROCESSING', true)
+                this.$store
+                  .dispatch(
+                    'checkout/pay',
+                    this.$store.state.order.orderType.OTApi
+                  )
+                  .then(() => {
+                    $('#payment-msg').modal('show')
+                    setTimeout(function() {
+                      $('#payment-screen-footer').prop('disabled', false)
+                    }, 1000)
+                  })
+                  .catch(() => {
+                    setTimeout(() => {
+                      $('#payment-msg').modal('hide')
+                      $('#payment-screen-footer').prop('disabled', false)
+                    }, 500)
+                  })
+                  .finally(() => {
+                    this.$store.commit('checkoutForm/SET_PROCESSING', false)
+                  })
+              }
             }
           }
           hideModal('#Gift-card-payemnt')

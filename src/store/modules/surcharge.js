@@ -39,11 +39,11 @@ const actions = {
         let allSurcharges = state.surcharges.filter(function(q) {
           if (
             q.availability.incl.all == true ||
-            (q.availability.incl.countries.includes(
+            q.availability.incl.countries.includes(
               rootState.location.store.country
             ) ||
-              (q.availability.incl.stores.includes(rootState.context.storeId) &&
-                q[rootState.order.orderType.OTApi] === true))
+            (q.availability.incl.stores.includes(rootState.context.storeId) &&
+              q[rootState.order.orderType.OTApi] === true)
           ) {
             return q
           }

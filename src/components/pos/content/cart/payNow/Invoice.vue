@@ -6,6 +6,7 @@
         :template="template"
         :order_to_print="order"
         @print_ready="print_ready"
+        preview="preview"
       ></PrintTemplate>
     </div>
 
@@ -47,11 +48,15 @@ export default {
       'changedAmount',
       'changeAmountStatus',
       'paymentMsgStatus',
+      'paymentAction',
     ]),
     ...mapState('context', ['brandId']),
     ...mapGetters('invoice', ['template']),
     ...mapGetters('location', ['_t']),
     order_title() {
+      if (this.preview) {
+        return ''
+      }
       return (
         this._t('ORDER_DIALOG_TITLE_PREFIX') +
         (this.order.orderNumber
@@ -62,6 +67,12 @@ export default {
         this._t('ORDER_DIALOG_TITLE_SUFFIX') +
         this.order.order_mode
       )
+    },
+    preview() {
+      if (this.paymentAction === 'dine-in-order-preview') {
+        return true
+      }
+      return false
     },
   },
   watch: {
@@ -101,7 +112,7 @@ export default {
           this.$router.replace({ name: 'CarhopOrders' })
         }
       }
-      this.$store.commit('order/SET_SPLITTED', false)
+      this.$store.commit('order/RESET_SPLIT_BILL')
     },
     doPrint() {
       let orderData = this.order
@@ -114,15 +125,18 @@ export default {
             let w = this.$refs.iframe.contentWindow
             w.focus()
             w.print()
+            this.iframe_body = ''
 
             // if (!this.$store.getters['checkout/complete']) {
             //   this.$store.dispatch('checkout/splitOrder').then(() => {})
             // }
             //Invoice APP API Call with Custom Request JSON
-            this.$store.dispatch(
-              'printingServer/printingServerInvoiceRaw',
-              orderData
-            )
+            if (!['dine-in-order-preview'].includes(this.paymentAction)) {
+              this.$store.dispatch(
+                'printingServer/printingServerInvoiceRaw',
+                orderData
+              )
+            }
           }, 500)
           //this.$refs.iframe.contentWindow.print()
         } catch (e) {
@@ -396,6 +410,7 @@ export default {
           }
 
         </style></head><body style="width:100%">${this.invoiceHtml}</body></html>`
+      localStorage.setItem('placedOrderData', body.toString()) //This localstorage variable hold invoice data for IOS Webviews. IOS Webviews does not display default Browser Print Window.
       this.iframe_body = body
       //1. to print in new window
       //this.doPrint()

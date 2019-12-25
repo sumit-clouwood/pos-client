@@ -12,7 +12,7 @@
     <div class="payment-key" @click="set(2)">2</div>
     <div class="payment-key" @click="set(3)">3</div>
     <div class="backspace" id="backspace" @click="removeDigit()">
-      <img src="img/pos/close-icon.png" alt="close" />
+      {{ _t('Sub') }}
     </div>
     <div id="clearcalc" class="" @click="reset()">c</div>
     <div class="payment-key" @click="set('0')">0</div>
@@ -29,8 +29,9 @@ export default {
   name: 'AmountCalculator',
   computed: {
     ...mapState('checkout', ['changedAmount']),
+    ...mapState('order', ['orderSource']),
     ...mapGetters('location', ['_t']),
-    ...mapState('checkoutForm', ['method']),
+    ...mapState('checkoutForm', ['method', 'processing']),
     ...mapGetters(['payNowCalcHendler']),
   },
   data() {
@@ -66,44 +67,48 @@ export default {
               this.$store.commit('order/IS_PAY', 1)
               this.$store.commit('checkoutForm/setAction', 'pay')
               $('#payment-screen-footer').prop('disabled', true)
-              $('#payment-msg').modal('show')
 
               this.$store.dispatch('order/startOrder')
+              if (this.orderSource === 'backend') {
+                showModal('#modificationReason')
+              } else {
+                $('#payment-msg').modal('show')
 
-              this.$store
-                .dispatch(
-                  'checkout/pay',
-                  this.$store.state.order.orderType.OTApi
-                )
-                .then(() => {
-                  $('#payment-msg').modal('show')
+                this.$store
+                  .dispatch(
+                    'checkout/pay',
+                    this.$store.state.order.orderType.OTApi
+                  )
+                  .then(() => {
+                    $('#payment-msg').modal('show')
 
-                  if (this.changedAmount >= 0.1) {
-                    //alert('change amount is due')
+                    if (this.changedAmount >= 0.1) {
+                      //alert('change amount is due')
+                      setTimeout(() => {
+                        $('#payment-msg').modal('hide')
+                        setTimeout(() => {
+                          $('#change-amount').modal('show')
+                        }, 500)
+                      }, 500)
+                    } else if (this.msg) {
+                      $('#payment-msg').modal('show')
+                    }
+                    setTimeout(function() {
+                      $('#payment-screen-footer').prop('disabled', false)
+                    }, 1000)
+                  })
+                  .catch(() => {
                     setTimeout(() => {
                       $('#payment-msg').modal('hide')
-                      setTimeout(() => {
-                        $('#change-amount').modal('show')
-                      }, 500)
+                      $('#payment-screen-footer').prop('disabled', false)
                     }, 500)
-                  } else if (this.msg) {
-                    $('#payment-msg').modal('show')
-                  }
-                  setTimeout(function() {
-                    $('#payment-screen-footer').prop('disabled', false)
-                  }, 1000)
-                })
-                .catch(() => {
-                  setTimeout(() => {
-                    $('#payment-msg').modal('hide')
-                    $('#payment-screen-footer').prop('disabled', false)
-                  }, 500)
-                })
-                .finally(() => {
-                  // eslint-disable-next-line no-console
-                  console.log('process complete from add button')
-                  this.$store.commit('checkoutForm/SET_PROCESSING', false)
-                })
+                  })
+                  .finally(() => {
+                    // eslint-disable-next-line no-console
+                    console.log('process complete from add button')
+                    this.$store.commit('checkoutForm/SET_PROCESSING', false)
+                  })
+              }
             }
           })
         }
@@ -111,6 +116,8 @@ export default {
       // this.$store.commit('checkoutForm/setAction', 'pay')
     },
     set(amount) {
+      this.$store.commit('checkoutForm/SET_PROCESSING', false)
+
       if (!this.init) {
         this.$store.commit('checkoutForm/appendAmount', '')
         this.init = true

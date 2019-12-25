@@ -18,14 +18,13 @@
 
 <script>
 /* global $ */
-/* eslint-disable no-console */
-
 import SystemNavigation from '@/components/SystemNavigation'
 import Header from '@/components/dinein/Header.vue'
 import Content from '@/components/dinein/Content'
 import Footer from '@/components/dinein/Footer'
-import Preloader from '@/components/util/Preloader'
 import { mapState, mapGetters } from 'vuex'
+// import Preloader from '@/components/util/progressbar'
+import Preloader from '@/components/util/progressbar'
 
 export default {
   name: 'Dinein',

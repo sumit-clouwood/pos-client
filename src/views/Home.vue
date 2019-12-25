@@ -29,6 +29,8 @@ export default {
   data() {
     return {
       orderId: null,
+      customerId: null,
+      addressId: null,
     }
   },
   components: {
@@ -49,6 +51,16 @@ export default {
     },
   },
   mounted() {
+    // alert('opening page')
+    let vh = window.innerHeight * 0.01
+    // Then we set the value in the --vh custom property to the root of the document
+    document.documentElement.style.setProperty('--vh', `${vh}px`)
+    // We listen to the resize event
+    window.addEventListener('resize', () => {
+      // We execute the same script as before
+      let vh = window.innerHeight * 0.01
+      document.documentElement.style.setProperty('--vh', `${vh}px`)
+    })
     let getBody = $('body')
     getBody.removeAttr('class')
     getBody.attr('class', 'fixed-nav sticky-footer')
@@ -66,6 +78,15 @@ export default {
 
     if (this.orderId && this.$route.name === 'CarhopOrderPay') {
       this.$store.dispatch('order/loadCarhopOrder', this.orderId)
+    }
+
+    if (this.$route.name.match('selectAddressForCrmOrder')) {
+      this.customerId = this.$route.params.customer_id
+      this.addressId = this.$route.params.address_id
+      this.$store.dispatch('customer/setAddressForDelivery', {
+        customerId: this.customerId,
+        addressId: this.addressId,
+      })
     }
   },
 }

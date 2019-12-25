@@ -10,23 +10,6 @@
       <div v-if="online">{{ _t('Online') }}</div>
       <div v-else>{{ _t('Offline') }}</div>
     </div>
-    <ul>
-      <li v-if="availableLanguages" class="color-text-invert">
-        <select
-          v-model="vlocale"
-          @change="changeLanguage(vlocale)"
-          class="language-button"
-        >
-          <option
-            v-for="language in availableLanguages"
-            :key="language._id"
-            :value="language.code"
-          >
-            {{ language.name }}
-          </option>
-        </select>
-      </li>
-    </ul>
     <ul class="online-counter color-main">
       <li
         class="nav-item online-data "
@@ -39,6 +22,8 @@
         </a>
       </li>
     </ul>
+    <LanguageMenu />
+    <SwitchStore />
     <div class="curent-sale hideBigScreen">
       <div class="curent-sale-title">{{ _t('Current Sale') }}</div>
       <div class="curent-sale-item">
@@ -47,91 +32,7 @@
       </div>
     </div>
     <ul>
-      <li
-        class="nav-icon nav-item setting-icon color-main color-text-invert"
-        id="setting-icon"
-        @click="openConfigLinks()"
-      >
-        <a class="nav-link color-text-invert">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="21"
-            viewBox="0 0 24 21"
-          >
-            <path
-              fill="#FFF"
-              fill-rule="nonzero"
-              d="M0 0h24v3H0V0zm0 9h24v3H0V9zm0 9h24v3H0v-3z"
-            />
-          </svg>
-        </a>
-        <ul class="setting-dropdown">
-          <li v-if="enabled('printers')">
-            <a role="button">{{ _t('Printers') }}</a>
-          </li>
-          <li v-if="enabled('dashboard') && permitted('dashboard', 'root')">
-            <a :href="dashboard">{{ _t('Dashboard') }}</a>
-          </li>
-          <li
-            v-if="enabled('transactions') && permitted('transactional_orders')"
-            @click="moveTransactionSection(this)"
-          >
-            <a role="button">
-              {{ _t('Transactions') }}
-            </a>
-          </li>
-          <li v-if="enabled('crm') && permitted('crm', 'root')">
-            <a :href="crm">{{ _t('CRM') }}</a>
-          </li>
-          <li v-if="enabled('dinein')" @click="moveDineSection()">
-            <a role="button">
-              {{ _t('Dine In') }}
-            </a>
-          </li>
-          <li v-if="enabled('menusetup') && permitted('menu', 'root')">
-            <a :href="menu">{{ _t('Menu Setup') }}</a>
-          </li>
-          <li v-if="enabled('delivery') && permitted('delivery', 'root')">
-            <router-link
-              :to="'/delivery-manager' + store"
-              role="button"
-              @click="setDeliveryManageState()"
-            >
-              {{ _t('Delivery Manager') }}
-            </router-link>
-          </li>
-          <li v-if="enabled('walkin')">
-            <router-link :to="'/' + store" role="button" class="cursor-pointer">
-              {{ _t('Walk-In') }}
-            </router-link>
-          </li>
-          <li v-if="enabled('carhop')">
-            <router-link :to="'/carhop' + store">
-              {{ _t('Carhop') }}
-            </router-link>
-          </li>
-          <li v-if="enabled('carhoporders')">
-            <router-link :to="'/carhop-orders' + store">
-              {{ _t('Carhop Orders') }}
-            </router-link>
-          </li>
-          <li v-if="enabled('brand') && permitted('brand', 'root')">
-            <a :href="brand">{{ _t('Settings') }}</a>
-          </li>
-          <li v-if="enabledModule('switchCashier') && enabled('switchcashier')">
-            <router-link
-              :to="'/cashier-login' + store"
-              @click.native="logoutCashier"
-            >
-              {{ _t('Switch Cashier') }}
-            </router-link>
-          </li>
-          <li>
-            <a role="button" @click="logout()">{{ _t('Logout') }}</a>
-          </li>
-        </ul>
-      </li>
+      <TopSidebarMenu />
     </ul>
   </div>
 </template>
@@ -141,11 +42,19 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 import * as CONST from '@/constants'
 import AuthService from '@/services/data/AuthService'
+import SwitchStore from '@/components/commonButtons/SwitchStore'
+import TopSidebarMenu from '@/components/util/TopSidebarMenu'
+import LanguageMenu from '@/components/util/LanguageMenu'
 
 import bootstrap from '@/bootstrap'
 export default {
   name: 'TopNavRight',
   props: {},
+  components: {
+    SwitchStore,
+    TopSidebarMenu,
+    LanguageMenu,
+  },
   data: function() {
     return {
       onlineOrdersCount: 0,
@@ -188,72 +97,6 @@ export default {
       //this.$router.push({ path: '/cashier-login/' + this.storeUrl })
       AuthService.logout().then(() => {})
     },
-    enabled(option) {
-      switch (option) {
-        case 'printers':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'dashboard':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'transactions':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'crm':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'dinein':
-          if (this.carhop) {
-            return false
-          }
-          return true
-        case 'menusetup':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'delivery':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'walkin':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'carhop':
-          if (this.waiter) {
-            return false
-          }
-          return true
-        case 'carhoporders':
-          if (this.waiter) {
-            return false
-          }
-          return true
-        case 'brand':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        case 'switchcashier':
-          if (this.waiter || this.carhop) {
-            return false
-          }
-          return true
-        default:
-          return true
-      }
-    },
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
@@ -286,20 +129,6 @@ export default {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
       bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
-    },
-    openConfigLinks() {
-      /*if ($('.setting-dropdown:visible').length > 0) {
-        // $('.setting-dropdown').hide()
-        let icons = $('.setting-dropdown, .setting-dropdown-transaction')
-        icons.hide(500)
-        $('body').removeClass('active-body')
-      } else {
-        $('.setting-dropdown').show()
-        $('.setting-dropdown').addClass('animated zoomIn')
-      }*/
-      $('.setting-dropdown').show()
-      $('.setting-dropdown').addClass('animated zoomIn')
-      // posConfigLinks()
     },
 
     onlineOrders() {
@@ -337,7 +166,7 @@ export default {
       })
     } else {
       this.onlineOrders()
-      $('.setting-dropdown').hide()
+     $('.setting-dropdown').hide()
     }
   },
 }

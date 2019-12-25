@@ -4,10 +4,10 @@
       <!--<img class="avatar-link-img" :src="profileImage" alt="profile" />-->
       <img
         class="avatar-link-img"
-        :src="user.avatar ? user.avatar : 'img/profile/default_avatar.jpg'"
+        :src="user ? user.avatar : 'img/profile/default_avatar.jpg'"
         alt="profile"
       />
-      <div class="avatar-link-user">{{ user.name }}</div>
+      <div class="avatar-link-user">{{ user ? user.name : '' }}</div>
       <status />
     </a>
   </div>
@@ -17,6 +17,7 @@ import { mapState } from 'vuex'
 import status from './status.vue'
 
 export default {
+  name: 'Avatar',
   components: {
     status,
   },

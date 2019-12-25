@@ -6,8 +6,6 @@ import DateTime from '@/plugins/helpers/DateTime.js'
 
 const apiURL = process.env.VUE_APP_API_ENDPOINT
 
-console.log('api url', process.env.NODE_ENV, apiURL)
-
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.post['Accept'] = 'application/json'
 

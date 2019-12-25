@@ -86,7 +86,8 @@
                   </p>
                   <a :class="setOrderStatus(order.order_system_status).class">{{
                     setOrderStatus(order.order_system_status).label
-                  }}</a>
+                    }}</a
+                  >
                 </div>
               </div>
             </div>
@@ -128,7 +129,7 @@ export default {
         scope.$store.dispatch('transactionOrders/selectFirstTransactionOrder', {
           root: true,
         })
-        this.$store.dispatch('transactionDetail')
+        scope.$store.dispatch('transactionDetail')
       })
   },
   computed: {

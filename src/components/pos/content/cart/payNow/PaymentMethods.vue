@@ -92,11 +92,25 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
+
 #payment-method {
   width: 456px;
 
   img {
     height: 46px;
+  }
+}
+@include responsive(mobile) {
+  .mobile-payment-methods
+    .pay-body
+    #payment-method
+    .carousel-container
+    .carousel {
+    overflow-y: scroll;
+    height: 40vh;
   }
 }
 </style>

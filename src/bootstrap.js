@@ -38,11 +38,17 @@ export default {
   },
   //this function is called when we recieve msg from service worker i.e token updated
   // also loaded when we click on a category to load new data
-  loadUI() {
+  reloadSystem(caller) {
+    if (caller === 'sw') {
+      //reload ui menu as token updated
+      return this.store.dispatch('location/fetch')
+    }
+    return Promise.resolve()
+  },
+  loadUI(caller) {
     DataService.setLang(this.store.state.location.locale)
     return new Promise((resolve, reject) => {
-      this.store
-        .dispatch('location/fetch')
+      this.reloadSystem(caller)
         .then(() => {
           this.store
             .dispatch('category/fetchAll')
@@ -75,8 +81,6 @@ export default {
           this.store.dispatch('discount/fetchAll').then(() => {})
           this.store.dispatch('tax/openItemTaxes')
           this.store.dispatch('surcharge/fetchAll').then(() => {})
-          this.store.dispatch('auth/fetchRoles').then(() => {})
-          this.store.dispatch('announcement/fetchAll').then(() => {})
 
           this.store
             .dispatch('category/fetchAll')
@@ -315,10 +319,6 @@ export default {
         if (nowTime - this.lastSynced > this.syncInterval * 1000) {
           this.lastSynced = nowTime
 
-          console.log(
-            this.syncInterval,
-            ' passed, force sync in 10 sec from app'
-          )
           setTimeout(function() {
             navigator.serviceWorker.controller.postMessage({
               sync: 1,
@@ -356,7 +356,6 @@ export default {
             }
           })
           const murmur = Fingerprint2.x64hash128(values.join(''), 31)
-          console.log('device id', murmur)
           resolve(murmur)
         })
       }, 10)

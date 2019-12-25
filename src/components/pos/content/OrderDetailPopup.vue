@@ -33,7 +33,10 @@
               :orderDetails="selectedOrder.item"
               :userDetails="selectedOrder.lookups"
             />
-            <Modification />
+            <Modification
+              :orderDetails="selectedOrder.item"
+              :userDetails="selectedOrder.lookups"
+            />
             <Payment :orderDetails="selectedOrder.item" />
           </div>
         </div>
@@ -42,6 +45,7 @@
             <div class="v-menu__activator">
               <div class="dropdown">
                 <button
+                  v-if="isPermitted(PERMISSIONS.REPRINT_ORDER)"
                   class="button btn btn-success color-main color-text-invert dropdown-toggle"
                   type="button"
                   id="dropdownMenuButton"
@@ -58,7 +62,7 @@
                     v-for="(template, index) in selectedOrder.invoice"
                     :key="index"
                     @click="
-                      printInvoice({
+                      printInvoiceDisableKitchenPrint({
                         templateId: template._id,
                         order: selectedOrder,
                       })
@@ -70,6 +74,7 @@
             </div>
           </div>
           <button
+            v-if="isPermitted(PERMISSIONS.CANCEL_ORDER)"
             type="button"
             class="button text-button btn btn-success color-main color-text-invert"
             data-toggle="modal"
@@ -82,7 +87,8 @@
           </button>
           <button
             v-if="
-              typeof selectedOrder.item !== 'undefined' &&
+              isPermitted(PERMISSIONS.MODIFY_ORDER) &&
+                typeof selectedOrder.item !== 'undefined' &&
                 selectedOrder.item.order_type === 'dine_in' &&
                 selectedOrder.item.order_status === 'finished'
             "
@@ -97,7 +103,8 @@
           </button>
           <button
             v-if="
-              typeof selectedOrder.item !== 'undefined' &&
+              isPermitted(PERMISSIONS.MODIFY_ORDER) &&
+                typeof selectedOrder.item !== 'undefined' &&
                 selectedOrder.item.order_type !== 'dine_in'
             "
             type="button"
@@ -142,6 +149,7 @@
     <Invoice />
     <CustomerInformation />
     <CancelOrderPopup />
+    <ModificationPermissions />
   </div>
 </template>
 
@@ -156,6 +164,7 @@ import Payment from '@/components/pos/content/orderDetails/rightContent/Payment'
 import RightPartHeader from '@/components/pos/content/orderDetails/RightPartHeader'
 import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
 import CancelOrderPopup from '@/components/pos/content/orderDetails/CancelOrderPopup'
+import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
 import CustomerInformation from '@/components/pos/footer/popups/ManageCustomer/CustomerInformation'
 
 export default {
@@ -171,6 +180,7 @@ export default {
     Invoice,
     CancelOrderPopup,
     CustomerInformation,
+    ModificationPermissions,
   },
   computed: {
     ...mapState('order', ['selectedOrder']),
@@ -180,7 +190,12 @@ export default {
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
+    printInvoiceDisableKitchenPrint(details) {
+      this.printInvoice(details)
+      this.$store.commit('dinein/KITCHEN_PRINT', false)
+    },
     modifyOrder(order) {
+      let orderId = order._id
       this.$store.dispatch('order/startOrder')
       this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
         let order_type = order.order_type || ''
@@ -188,7 +203,6 @@ export default {
           let tableData = this.tables.find(
             table => table._id === order.assigned_table_id
           )
-          let orderId = order._id
           let table_reservation_id = order.table_reservation_id
           this.$store.commit('dinein/SELECTED_TABLE', tableData)
           this.$store.commit('dinein/RESERVATION_ID', table_reservation_id)
@@ -205,7 +219,14 @@ export default {
               orderId,
           })
         } else {
-          this.$router.push({ path: this.$store.getters['context/store'] })
+          this.$store.commit('order/IS_PAY', 1)
+          this.$store.dispatch('order/modifyOrderTransaction').then(order => {
+            this.$store.dispatch('order/loadCarhopOrder', order._id)
+            this.$router.push({
+              path:
+                this.$store.getters['context/store'] + '/update/' + order._id,
+            })
+          })
         }
       })
     },

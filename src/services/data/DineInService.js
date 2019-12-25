@@ -35,6 +35,12 @@ export default {
     return DataService.post(`/model/waiting_lists/add`)
   },
 
+  switchWaiter(reservationId, payload) {
+    return DataService.post(
+      `/model/reservations/id/${reservationId}/switch_waiter`,
+      payload
+    )
+  },
   waitingListsOperation(id, operation) {
     //edit, delete
     return DataService.post(`/model/waiting_lists/id/${id}/${operation}`)
@@ -77,5 +83,49 @@ export default {
   reservationOperation(data, action) {
     // action: add, move_waiting_to_reservation
     return DataService.post(`/model/reservations/${action}`, data)
+  },
+  bookings(page, limit, UTC_Date) {
+    return DataService.get(
+      `/model/reservations?page_id=reservations_main_tbl&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&status=reserved&byColumn=1&orderBy=priority&start_date=${UTC_Date}`
+    )
+  },
+  bookedTables(page, limit, UTC_Date, status) {
+    return DataService.get(
+      `/model/reservations?page_id=tables_booked&limit=${limit}&ascending=1&page=${page}&byColumn=1&start_date=${UTC_Date}&status=${status}`
+    )
+  },
+  editTableStatus(details) {
+    return DataService.post(
+      `/model/reservations/id/${details.id}/edit`,
+      details.data
+    )
+  },
+
+  /*{
+    "assigned_table_id": "5d5e30f2cf561545c62ce4da",
+    "customers": [],
+    "number_of_guests": 5,
+    "start_date": "2019-11-27",
+    "start_time": "11:59"
+  }*/
+  /*getDetails(mobileNo) {
+    return DataService.get(
+      `/model/reservations?page_id=reservations_main_tbl&query=&mobile=${mobileNo}`
+    )
+  },*/
+  storeUsers() {
+    return DataService.get(
+      '/model/store_users?page_id=store_users_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=name&brand_role=&undefined='
+    )
+  },
+  getReservationTags() {
+    return DataService.get(
+      '/model/reservation_tags?page_id=reservation_tags_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=priority'
+    )
+  },
+  getReservationByMobile(mobile) {
+    return DataService.get(
+      `/model/reservations?page_id=reservations_main_tbl&page=1&limit=999999&byColumn=1&guest_phone=${mobile}`
+    )
   },
 }

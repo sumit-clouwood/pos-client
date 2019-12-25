@@ -45,7 +45,6 @@
                   type="text"
                   name="payment"
                   v-model.number="payableAmount"
-                  id="input"
                   @keypress="filterInput"
                   autocomplete="off"
                   @click="showCalculator()"

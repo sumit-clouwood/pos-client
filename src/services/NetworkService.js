@@ -28,10 +28,8 @@ export default {
       'load',
       event => {
         if (navigator.onLine) {
-          console.log('navigator online')
           cb(true, 'on', event)
         } else {
-          console.log('navigator offline')
           cb(false, 'off', event)
         }
       },

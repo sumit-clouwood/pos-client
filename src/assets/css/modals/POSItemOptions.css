@@ -23,7 +23,9 @@
         display: flex;
         flex-flow: row wrap; }
         .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_price {
-          width: 36%; }
+          width: 100%;
+          display: flex;
+          justify-content: space-between; }
           .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_price .POSItemOptions_label {
             color: #3d3f43;
             font-size: 0.875rem;

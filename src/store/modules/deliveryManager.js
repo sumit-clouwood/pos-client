@@ -20,7 +20,7 @@ const state = {
   availableStores: false,
   params: {
     query: '',
-    limit: 12,
+    limit: 50,
     orderBy: 'real_created_datetime',
     page: 1,
     totalPages: 10,
@@ -174,7 +174,6 @@ const actions = {
             dispatch('getDrivers')
             // }
           }
-          console.log(state.orders)
         })
         .catch(() => {
           commit(mutation.SET_LOADING, false)
