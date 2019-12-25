@@ -10,23 +10,6 @@
       <div v-if="online">{{ _t('Online') }}</div>
       <div v-else>{{ _t('Offline') }}</div>
     </div>
-    <ul>
-      <li v-if="availableLanguages" class="color-text-invert">
-        <select
-          v-model="vlocale"
-          @change="changeLanguage(vlocale)"
-          class="language-button"
-        >
-          <option
-            v-for="language in availableLanguages"
-            :key="language._id"
-            :value="language.code"
-          >
-            {{ language.name }}
-          </option>
-        </select>
-      </li>
-    </ul>
     <ul class="online-counter color-main">
       <li
         class="nav-item online-data "
@@ -39,6 +22,7 @@
         </a>
       </li>
     </ul>
+    <LanguageMenu />
     <SwitchStore />
     <div class="curent-sale hideBigScreen">
       <div class="curent-sale-title">{{ _t('Current Sale') }}</div>
@@ -60,6 +44,7 @@ import * as CONST from '@/constants'
 import AuthService from '@/services/data/AuthService'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
 import TopSidebarMenu from '@/components/util/TopSidebarMenu'
+import LanguageMenu from '@/components/util/LanguageMenu'
 
 import bootstrap from '@/bootstrap'
 export default {
@@ -68,6 +53,7 @@ export default {
   components: {
     SwitchStore,
     TopSidebarMenu,
+    LanguageMenu,
   },
   data: function() {
     return {

@@ -1,16 +1,7 @@
 @import "pixels_rem.scss";
 @import "variables.scss";
-.dine-language img {
-  width: 24px;
-}
-.new-pos{
-  .header{
-    padding: 0 20px;
-  }
-}
 .header {
-  /*border-bottom: 1px solid $gray-middle;*/
-
+  padding: 0 $px30;
   .header-main {
     height: $header-height;
     display: grid;
@@ -65,7 +56,12 @@
       align-items: center;
       justify-content: flex-end;
       position: relative;
-
+      .menu-language {
+        margin-right: $px10;
+         img{
+           width: 24px;
+         }
+      }
       .user-name {
         height: $header-btn-height;
         display: flex;
@@ -88,7 +84,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: $px20;
+        margin-right: $px10;
         cursor: pointer;
 
         .fa-circle {
@@ -266,7 +262,6 @@
 }
 .transaction-orders{
   .header-main{
-    padding: 0.625rem 1.25rem 0.9375rem 2.1875rem;
     .header-main-right{
       .walkin-btn-design{
         > .walkin-btn{

@@ -382,16 +382,13 @@ button.v-btn.v-btn--icon.theme--light {
   height: 3.2rem;
   width: 3.2rem;
   justify-content: center; }
-
-.button-block {
-  display: grid;
-  grid-template-columns: 3fr 1fr; }
-
 .change-location {
   display: flex;
   justify-content: flex-end; }
   .change-location > button {
-    margin: 0 5px; }
+    margin-right: 10px;
+    min-height: 51px;
+  }
     .change-location > button > a {
       color: #fff; }
 
@@ -714,12 +711,12 @@ input[type="password"] {
 .dm-screen-wrap {
   display: grid;
   grid-template-columns: 1fr auto;
+  align-items: center;
   -webkit-box-shadow: 0 0px 0.1875rem rgba(23, 23, 32, 0.05), 0 0px 0.625rem rgba(23, 23, 32, 0.05), 0 0px 1.25rem rgba(23, 23, 32, 0.05);
   box-shadow: 0 0px 0.1875rem rgba(23, 23, 32, 0.05), 0 0px 0.625rem rgba(23, 23, 32, 0.05), 0 0px 1.25rem rgba(23, 23, 32, 0.05);
   z-index: 2;
   overflow: hidden;
   background-color: #fff;
-  padding: 0.625rem 1.25rem 0.9375rem 2.1875rem;
   -webkit-transition: .3s ease-out;
   transition: .3s ease-out; }
   .dm-screen-wrap.collapse-container {
@@ -1044,5 +1041,7 @@ div#user-details .customer-header span {
 
 .logout {
   font-size: medium; }
-
+.dm-navbar {
+  padding-left: 30px;
+}
 /*# sourceMappingURL=delivery_manager.css.map */
