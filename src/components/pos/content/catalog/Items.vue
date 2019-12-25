@@ -101,7 +101,8 @@ export default {
       if (this.selectedOrder) {
         if (
           (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
-          this.selectedOrder.item.order_status == 'in-progress'
+          this.selectedOrder.item.order_status == 'in-progress' &&
+          this.isCarhop()
         ) {
           return
         }
