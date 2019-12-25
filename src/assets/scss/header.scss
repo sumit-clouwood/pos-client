@@ -270,7 +270,25 @@
     }
   }
 }
+.header{
+  .header-main{
+    .change-brand-setting {
+      display: none !important;
+    }
+  }
+}
+
 @include responsive(mobile) {
+  .header{
+    .header-main{
+      .change-brand-setting {
+        display: grid !important;
+      }
+      .change-brand-web {
+        display: none;
+      }
+    }
+  }
   .setting-dropdown{
     z-index: 999;
     width: 90% !important;

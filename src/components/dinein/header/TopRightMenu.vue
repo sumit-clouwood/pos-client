@@ -5,7 +5,7 @@
         <span class>{{ username }}</span>
       </a>
     </div>
-    <div class="all-booking-btns hide-below-sm">
+      <div class="all-booking-btns hide-below-sm">
       <button
         type
         id="all-tables"
@@ -111,6 +111,7 @@
         </div>
       </div>
     </div>
+    <SwitchStore />
     <TopSidebarMenu />
     <div class="curent-sale hideBigScreen">
       <div id="bkgOverlay" class="backgroundOverlay"></div>

@@ -21,7 +21,7 @@
       </div>
       <div class="change-location">
         <button
-          class="btn btn-success"
+          class="btn btn-success change-brand-web"
           v-if="isPermitted(PERMISSIONS.BRAND_SETTINGS)"
         >
           <a :href="baseurl('delivery')">{{ _t('Change Brand') }}</a>
