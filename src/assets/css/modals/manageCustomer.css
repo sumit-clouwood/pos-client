@@ -18,7 +18,8 @@
   grid-gap: 2rem;
   display: grid;
   grid-template-columns: 1fr;
-  grid-column-gap: 0.625rem; }
+  grid-column-gap: 0.625rem;
+  padding-top: 0.625rem; }
   .pagination-customer-details > ul {
     padding-left: 0;
     margin-bottom: 0;

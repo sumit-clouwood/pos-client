@@ -7,7 +7,7 @@
         <span>{{ todayDate }}</span>
       </a>
     </div>-->
-    <div class="change-location color-main color-text-invert">
+    <div class="change-location color-main color-text-invert change-brand-web">
       <button
         class="popup-btn-save"
         v-if="isPermitted(PERMISSIONS.BRAND_SETTINGS)"

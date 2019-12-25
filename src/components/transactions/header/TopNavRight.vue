@@ -5,7 +5,6 @@
         <span class="">{{ username }}</span>
       </a>
     </div>
-    <SwitchStore />
     <div class="online color-text-invert">
       <div class="fa fa-fw fa-circle" :class="{ online: online }"></div>
       <div v-if="online">{{ _t('Online') }}</div>
@@ -50,96 +49,8 @@
         </router-link>
       </button>
     </div>
-    <li
-      class="nav-icon nav-item setting-icon color-main color-text-invert"
-      id="setting-icon"
-      @click="openConfigLinks()"
-    >
-      <a class="nav-link color-text-invert">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="21"
-          viewBox="0 0 24 21"
-        >
-          <path
-            fill="#FFF"
-            fill-rule="nonzero"
-            d="M0 0h24v3H0V0zm0 9h24v3H0V9zm0 9h24v3H0v-3z"
-          />
-        </svg>
-      </a>
-      <ul class="setting-dropdown1 setting-dropdown-transaction">
-        <li>
-          <a href="javascript:void(0)">{{ _t('Printers') }}</a>
-        </li>
-        <li v-if="permitted('dashboard', 'root')">
-          <a :href="dashboard">{{ _t('Dashboard') }}</a>
-        </li>
-        <li
-          v-if="!isWaiter() && !isCarhop() && permitted('transactional_orders')"
-        >
-          <router-link
-            :to="store + '/transactions'"
-            role="button"
-            class="cursor-pointer"
-          >
-            {{ _t('Transacttions') }}
-          </router-link>
-        </li>
-        <li v-if="permitted('crm', 'root')">
-          <a :href="crm">{{ _t('CRM') }}</a>
-        </li>
-        <li @click="moveDineSection()">
-          <a role="button">
-            {{ _t('Dine In') }}
-          </a>
-        </li>
-        <li v-if="permitted('menu', 'root')">
-          <a :href="menu">{{ _t('Menu Setup') }}</a>
-        </li>
-        <li v-if="permitted('delivery', 'root')">
-          <a href="javascript:void(0)">
-            <router-link :to="'/delivery-manager' + store">
-              {{ _t('Delivery Manager') }}
-            </router-link>
-          </a>
-        </li>
-        <li v-if="!isWaiter() && !isCarhop()">
-          <router-link :to="store" role="button" class="cursor-pointer">
-            {{ _t('Walk-In') }}
-          </router-link>
-        </li>
-        <li>
-          <a role="button" class="cursor-pointer">
-            <router-link :to="'/carhop' + store">
-              {{ _t('Carhop') }}
-            </router-link>
-          </a>
-        </li>
-        <li v-if="!isWaiter()">
-          <router-link :to="'/carhop-orders' + store">
-            {{ _t('Carhop Orders') }}
-          </router-link>
-        </li>
-        <li v-if="permitted('brand', 'root')">
-          <a :href="brand">{{ _t('Settings') }}</a>
-        </li>
-        <li v-if="enabledModule('switchCashier') && !isWaiter() && !isCarhop()">
-          <router-link
-            :to="'/cashier-login' + store"
-            @click.native="logoutCashier"
-          >
-            {{ _t('Switch Cashier') }}
-          </router-link>
-        </li>
-        <li>
-          <a role="button" @click="logout($router.push('/'))">{{
-            _t('Logout')
-          }}</a>
-        </li>
-      </ul>
-    </li>
+    <SwitchStore />
+    <TopSidebarMenu />
   </div>
 </template>
 
@@ -148,10 +59,12 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
+import TopSidebarMenu from '@/components/util/TopSidebarMenu'
 export default {
   name: 'TopNavRight',
   components: {
     SwitchStore,
+    TopSidebarMenu,
   },
   props: {},
   data: function() {
@@ -196,7 +109,6 @@ export default {
     },
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
-      $('.setting-dropdown-transaction').css('display', 'none')
     },
     orderTypeWalkIn: function(orderType) {
       this.$store.commit('order/ORDER_TYPE', orderType)
@@ -208,11 +120,6 @@ export default {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
       bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
-    },
-    openConfigLinks() {
-      $('.setting-dropdown-transaction').toggle()
-      $('.setting-dropdown-transaction').toggleClass('animated zoomIn')
-      // posConfigLinks()
     },
     onlineOrders() {
       if (this.latestOnlineOrders === 0) {

@@ -67,14 +67,14 @@ export default {
 
 <style lang="sass" scoped>
 .bgimg
-    height: 90px
-    width: 90px
+    height: 100%
+    width: 100%
     border-radius: 50%
     background-repeat: no-repeat
     background-position: center
     background-size: cover
     transition: all 1s ease-in-out
-
+    position: absolute
 .data
   cursor: pointer
   font-size: 18px
@@ -105,7 +105,7 @@ export default {
     text-align: center
 
   div#popover_content_wrapper, .store-info
-    width: 23.3em
+    width: 326px
     margin-top: 1em
     margin: 0 auto
     top: 300px
@@ -169,6 +169,7 @@ ul.ullist-admin
       margin: 0 auto
       border-radius: 50%
       border: 4px solid rgba(255, 255, 255, 0.7)
+      position: relative
 
       &:hover
         width: 8em

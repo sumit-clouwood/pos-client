@@ -348,7 +348,8 @@ div#dm-new-order table td {
   grid-template-columns: 1fr 1fr;
   align-items: center; }
   .page-header .button-block > button {
-    margin-right: 0.625rem; }
+    margin-right: 8px;
+    margin-left: 4px; }
   .page-header .current-time {
     font-size: 1.1875rem;
     display: -webkit-box;
@@ -374,12 +375,12 @@ button.v-btn.v-btn--icon.theme--light {
   padding: 0.5rem;
   background: #CC3232;
   border: medium none;
-  border-radius: 3.125rem;
+  border-radius: 4px;
   text-align: center;
   display: flex;
   align-items: center;
-  height: 2.5rem;
-  width: 2.5rem;
+  height: 3.2rem;
+  width: 3.2rem;
   justify-content: center; }
 
 .button-block {
@@ -390,7 +391,7 @@ button.v-btn.v-btn--icon.theme--light {
   display: flex;
   justify-content: flex-end; }
   .change-location > button {
-    margin-right: 0.3125rem; }
+    margin: 0 5px; }
     .change-location > button > a {
       color: #fff; }
 
@@ -536,6 +537,7 @@ div.order-address {
   overflow: auto;
   height: 100%;
   display: inline-block;
+  animation: 1s ease-out 0s 1 SelectDriveDown;
   width: 100%; }
 
 .block-table-page-container .row {
@@ -789,7 +791,7 @@ div#nav-tabContent {
 
 section.with-drivers-filter {
   display: grid;
-  grid-template-columns: 4fr 1fr; }
+  grid-template-columns: 1fr auto; }
 
 .v-menu__activator .dropdown.show:focus, .v-menu__activator .dropdown:hover {
   background: transparent;
@@ -940,15 +942,17 @@ tr.dataContentStyle > td > a {
     z-index: 99;
     grid-template-columns: 1fr;
     height: 100vh;
-    grid-template-rows: 5fr 1fr 5.75rem 2.25rem;
+    grid-template-rows: 11fr 1fr 5.75rem 0.1rem;
     padding-top: 1.25rem; }
     .dm-manager .navigation .logo {
       display: none; }
 
   .change-location > button, .left-btn-wrap > button {
-    font-size: 0.625rem;
-    padding: 0.3125rem;
-    margin-right: 0.3125rem; }
+    /*font-size: 0.625rem;*/
+    /*padding: 0.3125rem;*/
+    margin: 0.3125rem 0 0.3125rem .3125rem;
+
+  }
 
   .dm-order-details-wrap {
     margin-left: 1.5rem;
@@ -971,16 +975,30 @@ tr.dataContentStyle > td > a {
         display: block; }
 
   div#dm-waiting-for-pick {
-    height: calc(100vh - 27rem); } }
+    height: calc(100vh - 17rem); } }
 @media only screen and (max-width: 599px) {
   .with-drivers-filter .drivers-filter {
     overflow: auto;
     height: calc(100vh - 25rem);
     border-left: 0.0625rem solid rgba(63, 74, 74, 0.3);
     position: fixed;
-    bottom: 0;
+    bottom: -15rem;
     width: 100%;
-    background: #fff; }
+    background: #fff;
+    animation: 1s ease-out 0s 1 SelectDriveDown;
+    cursor: pointer;
+  }
+  .with-drivers-filter .drivers-filter.active {
+    bottom: 0;
+  }
+  @keyframes SelectDriveDown {
+    0% {
+      transform: translateY(100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
 
   section.with-drivers-filter {
     grid-template-columns: 1fr; }

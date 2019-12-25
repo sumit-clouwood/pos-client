@@ -48,101 +48,7 @@
       </div>
     </div>
     <ul>
-      <li
-        class="nav-icon nav-item setting-icon color-main color-text-invert"
-        id="setting-icon"
-        @click="openConfigLinks()"
-      >
-        <a class="nav-link color-text-invert">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="21"
-            viewBox="0 0 24 21"
-          >
-            <path
-              fill="#FFF"
-              fill-rule="nonzero"
-              d="M0 0h24v3H0V0zm0 9h24v3H0V9zm0 9h24v3H0v-3z"
-            />
-          </svg>
-        </a>
-        <ul class="setting-dropdown">
-          <li v-if="!isWaiter() && !isCarhop()">
-            <a role="button">{{ _t('Printers') }}</a>
-          </li>
-          <li
-            v-if="!isWaiter() && !isCarhop() && permitted('dashboard', 'root')"
-          >
-            <a :href="dashboard">{{ _t('Dashboard') }}</a>
-          </li>
-          <li
-            v-if="
-              !isWaiter() && !isCarhop() && permitted('transactional_orders')
-            "
-            @click="moveTransactionSection(this)"
-          >
-            <a role="button">
-              {{ _t('Transactions') }}
-            </a>
-          </li>
-          <li v-if="!isWaiter() && !isCarhop() && permitted('crm', 'root')">
-            <a :href="crm">{{ _t('CRM') }}</a>
-          </li>
-          <li v-if="!isCarhop()" @click="moveDineSection()">
-            <a role="button">
-              {{ _t('Dine In') }}
-            </a>
-          </li>
-          <li v-if="!isWaiter() && !isCarhop() && permitted('menu', 'root')">
-            <a :href="menu">{{ _t('Menu Setup') }}</a>
-          </li>
-          <li
-            v-if="!isWaiter() && !isCarhop() && permitted('delivery', 'root')"
-          >
-            <router-link
-              :to="'/delivery-manager' + store"
-              role="button"
-              @click="setDeliveryManageState()"
-            >
-              {{ _t('Delivery Manager') }}
-            </router-link>
-          </li>
-          <li v-if="!isWaiter() && !isCarhop()">
-            <router-link :to="store" role="button" class="cursor-pointer">
-              {{ _t('Walk-In') }}
-            </router-link>
-          </li>
-          <li v-if="!isWaiter()">
-            <router-link :to="'/carhop' + store">
-              {{ _t('Carhop') }}
-            </router-link>
-          </li>
-          <li v-if="!isWaiter()">
-            <router-link :to="'/carhop-orders' + store">
-              {{ _t('Carhop Orders') }}
-            </router-link>
-          </li>
-          <li v-if="!isWaiter() && !isCarhop() && permitted('brand', 'root')">
-            <a :href="brand">{{ _t('Settings') }}</a>
-          </li>
-          <li
-            v-if="enabledModule('switchCashier') && !isWaiter() && !isCarhop()"
-          >
-            <router-link
-              :to="'/cashier-login' + store"
-              @click.native="logoutCashier"
-            >
-              {{ _t('Switch Cashier') }}
-            </router-link>
-          </li>
-          <li>
-            <a role="button" @click="logout($router.push('/'))">{{
-              _t('Logout')
-            }}</a>
-          </li>
-        </ul>
-      </li>
+      <TopSidebarMenu />
     </ul>
   </div>
 </template>
@@ -153,6 +59,7 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import * as CONST from '@/constants'
 import AuthService from '@/services/data/AuthService'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
+import TopSidebarMenu from '@/components/util/TopSidebarMenu'
 
 import bootstrap from '@/bootstrap'
 export default {
@@ -160,6 +67,7 @@ export default {
   props: {},
   components: {
     SwitchStore,
+    TopSidebarMenu,
   },
   data: function() {
     return {
@@ -235,20 +143,6 @@ export default {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
       bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
-    },
-    openConfigLinks() {
-      /*if ($('.setting-dropdown:visible').length > 0) {
-        // $('.setting-dropdown').hide()
-        let icons = $('.setting-dropdown, .setting-dropdown-transaction')
-        icons.hide(500)
-        $('body').removeClass('active-body')
-      } else {
-        $('.setting-dropdown').show()
-        $('.setting-dropdown').addClass('animated zoomIn')
-      }*/
-      $('.setting-dropdown').show()
-      $('.setting-dropdown').addClass('animated zoomIn')
-      // posConfigLinks()
     },
 
     onlineOrders() {

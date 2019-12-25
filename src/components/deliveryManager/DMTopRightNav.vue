@@ -8,7 +8,6 @@
         </span>
       </div>
     </div>
-    <SwitchStore />
     <div class="button-block">
       <div class="top-menu-container">
         <div class="top-menu-icon" @click="showLeftMenu()">
@@ -22,7 +21,7 @@
       </div>
       <div class="change-location">
         <button
-          class="btn btn-success"
+          class="btn btn-success change-brand-web"
           v-if="isPermitted(PERMISSIONS.BRAND_SETTINGS)"
         >
           <a :href="baseurl('delivery')">{{ _t('Change Brand') }}</a>
@@ -67,110 +66,13 @@
         </a>
       </div>
     </div>
-    <div
-      class="header header-main header-main-right color-dashboard-background"
-    >
-      <ul>
-        <li
-          class="nav-icon nav-item setting-icon color-main color-text-invert"
-          id="setting-icon"
-          @click="openConfigLinks()"
-        >
-          <a class="nav-link color-text-invert">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="21.88"
-              height="19.94"
-              viewBox="0 0 24 21"
-            >
-              <path
-                fill="#FFF"
-                fill-rule="nonzero"
-                d="M0 0h24v3H0V0zm0 9h24v3H0V9zm0 9h24v3H0v-3z"
-              />
-            </svg>
-          </a>
-          <ul class="setting-dropdown" style="display:none">
-            <li v-if="!isWaiter() && !isCarhop()">
-              <a role="button">{{ _t('Printers') }}</a>
-            </li>
-            <li
-              v-if="
-                !isWaiter() && !isCarhop() && permitted('dashboard', 'root')
-              "
-            >
-              <a :href="dashboard">{{ _t('Dashboard') }}</a>
-            </li>
-            <li
-              v-if="
-                !isWaiter() && !isCarhop() && permitted('transactional_orders')
-              "
-              @click="moveTransactionSection(this)"
-            >
-              <a role="button">
-                {{ _t('Transactions') }}
-              </a>
-            </li>
-            <li v-if="!isWaiter() && !isCarhop() && permitted('crm', 'root')">
-              <a :href="crm">{{ _t('CRM') }}</a>
-            </li>
-            <li v-if="!isCarhop()" @click="moveDineSection()">
-              <a role="button">
-                {{ _t('Dine In') }}
-              </a>
-            </li>
-            <li v-if="!isWaiter() && !isCarhop() && permitted('menu', 'root')">
-              <a :href="menu">{{ _t('Menu Setup') }}</a>
-            </li>
-            <li
-              v-if="!isWaiter() && !isCarhop() && permitted('delivery', 'root')"
-            >
-              <router-link
-                :to="'/delivery-manager' + store"
-                role="button"
-                @click="setDeliveryManageState()"
-              >
-                {{ _t('Delivery Manager') }}
-              </router-link>
-            </li>
-            <li v-if="!isWaiter() && !isCarhop()">
-              <router-link :to="store" role="button" class="cursor-pointer">
-                {{ _t('Walk-In') }}
-              </router-link>
-            </li>
-            <li v-if="!isWaiter()">
-              <router-link :to="'/carhop' + store">
-                {{ _t('Carhop') }}
-              </router-link>
-            </li>
-            <li v-if="!isWaiter()">
-              <router-link :to="'/carhop-orders' + store">
-                {{ _t('Carhop Orders') }}
-              </router-link>
-            </li>
-            <li v-if="!isWaiter() && !isCarhop() && permitted('brand', 'root')">
-              <a :href="brand">{{ _t('Settings') }}</a>
-            </li>
-            <li
-              v-if="
-                enabledModule('switchCashier') && !isWaiter() && !isCarhop()
-              "
-            >
-              <router-link
-                :to="'/cashier-login' + store"
-                @click.native="logoutCashier"
-              >
-                {{ _t('Switch Cashier') }}
-              </router-link>
-            </li>
-            <li>
-              <a role="button" @click="logout($router.push('/'))">{{
-                _t('Logout')
-              }}</a>
-            </li>
-          </ul>
-        </li>
-      </ul>
+    <div class="header">
+      <div class="header-main">
+        <div class="header-main-right color-dashboard-background">
+          <SwitchStore />
+          <TopSidebarMenu />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -181,11 +83,13 @@ import moment from 'moment-timezone'
 import { mapGetters, mapState, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
+import TopSidebarMenu from '@/components/util/TopSidebarMenu'
 
 export default {
   name: 'DMTopRightNav',
   components: {
     SwitchStore,
+    TopSidebarMenu,
   },
   data() {
     return {
@@ -266,16 +170,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../assets/scss/header';
 .header-main-left-time {
   width: 250px;
+  span {
+    font-size: 17px;
+    display: block;
+    font-weight: bold;
+  }
 }
 .button-block {
   display: flex;
   justify-content: flex-end;
   width: 100%;
-}
-.change-location {
-  margin-left: 14px;
 }
 .page-header {
   display: flex;
@@ -294,76 +201,15 @@ export default {
 .nav-link {
   background-color: #5056ca;
   width: 3.125rem;
-  height: 3.125rem;
+  height: 44px;
   border-radius: 3px;
-  display: flex;
-  -webkit-box-align: center;
   align-items: center;
-  -webkit-box-pack: center;
   justify-content: center;
   position: relative;
   cursor: pointer;
   display: inline-flex;
-  -webkit-box-align: center;
-  align-items: center;
   -webkit-box-pack: center;
   padding: 0.25px;
-  justify-content: center;
 }
-.setting-dropdown {
-  display: none;
-  background: rgb(255, 255, 255);
-  font-weight: 600;
-  position: absolute;
-  top: 3.375rem;
-  right: 0px;
-  width: 13.1875rem;
-  display: none;
-  background: #fff;
-  font-weight: 607px;
-  position: absolute;
-  top: 3.375rem;
-  right: 0;
-  width: 13.1875rem;
-  -webkit-box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.375rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
-  box-shadow: 12 0px 0.0625rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.375rem 0 rgba(23, 23, 32, 0.05),
-    0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
-  border: 1px solid #eee;
-  border-radius: 3px;
-  background-color: #fff;
-  color: #000;
-  z-index: 10;
-  font-size: 55rem;
-  li {
-    padding: 0 !important;
-    text-decoration: none;
-    a {
-      display: block;
-      width: 100%;
-      font-size: 1.125rem;
-      color: #555;
-      font-weight: 400;
-      display: block;
-      width: 100%;
-      padding: 5px 20px;
-      cursor: pointer;
-    }
-  }
-  li:hover,
-  a:hover {
-    background: #e3e7f2;
-    background-color: grey;
-    color: #555555;
-  }
-  a:hover {
-    background: #f1f1f1;
-  }
-}
+
 </style>

@@ -197,7 +197,7 @@ export default {
       setTimeout(() => {
         $('.setting-dropdown').hide()
         $('.setting-dropdown').addClass('animated zoomIn')
-      }, 200)
+      })
 
       if (this.$route.params.order_id) {
         this.orderId = this.$route.params.order_id

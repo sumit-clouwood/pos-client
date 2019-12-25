@@ -211,7 +211,8 @@
             background-image: linear-gradient(180deg, #5056ca 0%, #2d38aa 100%);
             color: #fff; }
           #pay-now .modal-dialog .modal-content .modal-body .amount-keypad > div:nth-child(12) {
-            background-image: linear-gradient(180deg, #cc3232 0%, #bc2525 100%); }
+            background-image: linear-gradient(180deg, #cc3232 0%, #bc2525 100%);
+            color: #fff; }
           #pay-now .modal-dialog .modal-content .modal-body .amount-keypad > div:nth-child(13) {
             background-image: linear-gradient(180deg, #fac161 0%, #f76b1c 100%);
             color: #fff; }

@@ -16,7 +16,7 @@
           <div class="row">
             <span class="hide-text">{{ dateSelector }}</span>
             <div class="col-md-6">
-              <h6>{{ _t('New Reservation') }}n</h6>
+              <h6>{{ _t('New Reservation') }}</h6>
               <hr />
               <div class="form-group">
                 <label>{{ _t('Select Number of guests') }}</label>
@@ -657,7 +657,7 @@ export default {
 
 .num_guests {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(10, 1fr);
   .btn {
     padding: 1.175rem 1.75rem;
   }
@@ -681,9 +681,18 @@ export default {
 .hide-text {
   display: none;
 }
+#NewReservation .modal-dialog {
+  max-width: 1124px !important;
+}
+#NewReservation #dine-in-table-selection .modal-dialog {
+  max-width: 100% !important;
+  width: 430px;
+}
 .time_slot_block {
   height: 320px;
   overflow-y: auto;
+  border: 1px solid #d7dce2;
+  border-radius: $px4;
   .time_slot {
     &.active {
       border: solid 2px #5056ca;
@@ -706,7 +715,8 @@ export default {
     flex-direction: column;
     align-items: center;
     padding: 5px 0;
-    border: 1px solid #ccc;
+    border-bottom: 1px solid #d7dce2;
+    border-left: 2px solid #d7dce2;
     height: 80px;
     max-width: 24.9%;
     .is_available {
@@ -719,6 +729,9 @@ export default {
       }
     }
   }
+}
+.time_slot_block > div:nth-child(4n + 1) {
+  border-left: medium none;
 }
 .tag-secondary {
   padding: 10px;
@@ -781,7 +794,7 @@ div#NewReservation .num_guests .btn-secondary label {
 }*/
 #NewReservation section#main {
   justify-content: left;
-  margin-left: 10px;
+  margin-left: 0;
   grid-template-columns: 1fr;
 }
 .wrapperNew .SCDay .SCElement > div {
@@ -793,7 +806,7 @@ div#NewReservation .num_guests .btn-secondary label {
 .wrapperNew .SCDay > div,
 .wrapperNew .SCMonth > div {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(7, 1fr);
   justify-content: center;
 }
 .next {

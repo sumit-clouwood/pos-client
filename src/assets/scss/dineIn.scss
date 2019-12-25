@@ -2,6 +2,7 @@
 
 #dm-content-wrapper {
   overflow: hidden;
+//For pagination
 }
 
 div#reservation-orders-show, #waiting-dinein-show {
@@ -112,32 +113,31 @@ li#circle-table-shape {
   display: grid;
   grid-template-columns: 1fr $px256;
   align-items: center;
+  padding-top: $px5;
+  margin-left: $px15;
+  border-bottom: solid $px2 #e3e7f2;
 
   .ullist-floor {
+    padding-left: 0;
     > li {
       display: inline-block;
-      margin-left: $px17;
-      padding-bottom: $px10;
-
+      min-width: $px50;
+      text-align: center;
+      &.active{
+        border-bottom: $px2 solid $blue-middle;
+        > a{
+          color: #3d3f43;
+          font-weight: bold;
+        }
+      }
       > a {
         color: #72747b;
         font-size: $px14;
+        padding: $px5;
       }
-    }
-
-    padding-left: 0;
-
-    > li.active {
-      > a {
-        color: #3d3f43;
-        font-weight: bold;
-      }
-
-      border-bottom: $px2 solid $blue-middle;
     }
   }
 }
-
 .ullist-dinein-table {
   > li {
     display: inline-block;
@@ -183,8 +183,6 @@ li#circle-table-shape {
 
   .inner-dinein-table {
     padding-top: $px20;
-    border-top: solid $px2 #e3e7f2;
-
     .dinein-table-control {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -299,7 +297,7 @@ span#dine-bottom {
 
   &.active {
     background-color: $blue-middle;
-    border: medium none;
+    border-color: $blue-middle;
     color: $white;
   }
 }
@@ -343,12 +341,11 @@ table#running-order {
         letter-spacing: 0.5px;
         color: #fff;
         font-size: $px18;
-        font-weight: 600;
         display: block;
       }
 
       .runningtime {
-        color: #000;
+        color: #fff;
       }
 
       border-top: $px2 solid #e5e9f4;
@@ -414,10 +411,11 @@ table#running-order {
       border-radius: $px4;
       background-color: #e73030;
       display: grid !important;
-      font-size: $px16 !important;
+      font-size: $px14 !important;
       color: $white !important;
       padding: $px5;
       align-items: center;
+      text-transform: capitalize;
     }
   }
 
@@ -462,7 +460,7 @@ td.dine-order-tabel {
 td.order-time-det {
   > span {
     font-size: $px14 !important;
-    font-weight: normal !important;
+    font-weight: normal;
     display: inline-block !important;
     vertical-align: middle;
   }
@@ -773,22 +771,14 @@ div {
     }
   }
 }
-.pay_now {
-  /*color: #fff;
-  font-size: 12px;
-  line-height: normal;
-  font-weight: normal;*/
-}
-.dinefor-paynow {
-  min-width: 170px;
-}
 .running-actions {
-  margin-top: 5px;
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: repeat(2, auto);
   text-align: center;
   align-items: center;
   grid-gap: 10px;
+  position: sticky;
+  top: 0;
 
 }
 
@@ -796,6 +786,27 @@ div {
   display: grid;
   grid-template-columns: auto auto;
   align-items: center;
+  .timeago{
+    &.runningtime{
+      padding-top: 5px;
+      font-weight: bold !important;
+    }
+  }
+  .btn{
+    min-width: 152px;
+  }
+  .btn-progress {
+    background-color: #faa03c;
+    color: #fff;
+  }
+
+  .pay_now {
+    i{
+      font-size: 18px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
 }
 .dinein_table svg g:nth-of-type(1) {
   display: none;
@@ -803,34 +814,60 @@ div {
 
 .table-order-view-wrapper {
   max-height: 150px;
-  overflow-y: auto;
-  overflow-x: hidden;
-
+  overflow: auto;
   > .table-order-view {
-    box-shadow: 0px 0px 1px 0 rgba(0, 0, 0, 0.2), 0 0px 6px 0 rgba(0, 0, 0, 0.19);
-    height: $px100;
-    overflow: hidden;
+    border: 0.125rem solid #e5e9f4;;
     padding: $px5 $px10;
     margin: $px5;
     border-radius: $block-border-radius;
     position: relative;
     transition: 0.3s ease-in-out;
+    min-height: 80px;
+    display: grid;
+
+      > div{
+        display: grid;
+        grid-template-columns: 1fr;
+        align-items: center;
+        .moodifiers-btn-wrapper {
+          display: grid;
+          grid-template-columns: auto auto;
+          grid-gap: 10px;
+        }
+        .order-moifier-wrapper {
+          display: flex;
+          padding: 5px 0;
+          flex-wrap: wrap;
+           > div{
+             border-right: 1px solid #e5e9f4;
+             padding: 5px 8px;
+           }
+        }
+      }
+    .modifiers  {
+      display: inline-block;
+      padding-left: $px5;
+      > span{
+        font-weight: normal;
+        display: inline-block;
+        background: #ef7f2a;
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 4px;
+      }
+    }
+    .main-item {
+      color: #3d3f43;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .order-name{
+      padding-top: $px5;
+    }
 
     &.active {
       height: auto;
       transition: 0.3s ease-in-out;
-
-      .order-down-arrow {
-        transform: rotate(180deg);
-        transition: 0.3s ease-in-out;
-      }
-    }
-
-    .order-down-arrow {
-      position: absolute;
-      bottom: 5px;
-      right: 10px;
-      cursor: pointer;
     }
   }
 }
@@ -852,30 +889,29 @@ div {
     }
   }
 }
-
-/*svg .active > path {
-  stroke: green;
-  stroke-width:1.5
-}*/
-
-.dine-in-wrapper {
-  .header-main .header-main-right .setting-dropdown1 {
-    z-index: 999;
-  }
-}
-
 //Media Queries
 @include responsive(mobile) {
+  #NewReservation{
+    .modal-dialog {
+      max-width: 96% !important;
+      .modal-content{
+        .modal-body{
+          height: 100vh;
+          overflow: auto;
+        }
+      }
+    }
+  }
+  .fixed-reservation{
+    width: 95vw;
+    height: calc(100vh - 10.8rem);
+  }
   .dine-in-wrapper {
     margin: 0 10px;
     font-size: 14px;
 
     .header .header-main .header-main-right {
       .user-name {
-        display: none;
-      }
-
-      .online {
         display: none;
       }
     }
@@ -894,17 +930,20 @@ div {
 
     .dine-in-tabel-wrapper {
       .inner-dinein-table {
-        padding-top: 5em;
+        padding-top: 1em;
       }
     }
-
-    .setting-dropdown1 {
-      z-index: 999;
+    table{
+      &#running-order{
+        border-collapse: collapse;
+      }
     }
-
-    .inner-content-dm .left-container .container-fluid:not(#all-tables-show) {
-      padding-top: 4em !important;
+    .running-order-table-wrap {
+      height: calc(100vh - 215px);
     }
+    //.inner-content-dm .left-container .container-fluid:not(#all-tables-show) {
+    //  padding-top: 4em !important;
+    //}
   }
   body {
     &#page-top {
@@ -983,19 +1022,35 @@ div {
     }
 
   .hideBigScreen {
-    .all-booking-btns {
-      right: -999px;
-      z-index: -1;
+    .backgroundOverlay {
       position: fixed;
-      transition: 0.3s ease-in-out;
-      display: block;
-      background: #fff;
-      width: 250px;
-      margin: 0 auto;
-      height: 100vh;
       top: 0;
-      padding: 20px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      background: #000000;
+      opacity: .65;
+      filter: alpha(opacity=65);
+      -moz-opacity: .65;
+      z-index: 101;
+      display: none;
+    }
+    .all-booking-btns {
+      left: 0;
+      position: fixed;
+      width: 100%;
+      height: 80px;
+      bottom: 0;
+      padding: 5px 10px 20px;
+      display: grid;
+      grid-template-columns: auto 1fr;
       box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+      z-index: 999;
+      background: #fff;
       &.active {
         position: fixed;
         right: 0;
@@ -1011,9 +1066,79 @@ div {
           margin-bottom: 20px;
         }
       }
+      .dine-language {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
+      .dine-btn-footer-wrapper {
+        display: none;
+        position: fixed;
+        bottom: 80px;
+        background: #fff;
+        width: 100%;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        animation: 0.4s ease-out 0s 1 footerSlideBottom;
+        padding: 20px 0;
+        box-shadow: 0px 1px 6px -7px #bcbcbc;
+        &.active{
+          display: flex;
+          flex-direction: column;
+        }
+        button{
+          display: block;
+          width: 100% !important;
+          border: medium none;
+          text-align: left;
+          font-size: 17px;
+          font-weight: normal;
+          border-bottom: 1px solid #E3E7F2;
+          min-height: 60px;
+          margin: 0;
+          border-radius: 0;
+        }
+      }
+      .footer-slide-menu{
+        width: 50px;
+        height: 50px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        border-radius: 3px;
+        background-color: #4B4E53;
+        &.btn-menu-close{
+          background-color: #cc3232;
+          display: none;
+          color: #fff;
+          &.active{
+            display: flex;
+            align-items: center;
+          }
+        }
+        &.dine-btn-menu{
+          &.active{
+            display: none;
+          }
+        }
+      }
 
     }
-
+    @keyframes footerSlideBottom {
+      0% {
+        transform: translateY(100%);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
     .hideBigIcon {
       position: fixed;
       top: 54px;
@@ -1050,6 +1175,7 @@ div {
   .floor-section-wrap {
     grid-template-columns: 1fr;
     grid-row-gap: $px10;
+    margin-left: 0;
 
     .ullist-floor {
       > li {
@@ -1082,7 +1208,9 @@ div {
 
         .ullist-dinein-table {
           text-align: center;
-
+          display: grid;
+          grid-template-columns: repeat(3, auto);
+          justify-content: flex-start;
           > li {
             &:first-child {
               margin-left: 0;
@@ -1309,22 +1437,8 @@ button.res-select-table{
   border-color: #e4e8f1;
   color: #3d3f43;
 }
-
-@media only screen and (max-width: 960px){
-  #NewReservation{
-    .modal-dialog {
-      max-width: 96% !important;
-      .modal-content{
-         .modal-body{
-           height: 100vh;
-           overflow: auto;
-         }
-      }
-    }
-  }
-  .fixed-reservation{
-    width: auto;
-  }
+.dine-language {
+  margin: 0 $px10 0 $px7;
 }
 @media only screen and (min-width: 961px) and (max-width: 1100px){
   #sitting-dinein-table{
