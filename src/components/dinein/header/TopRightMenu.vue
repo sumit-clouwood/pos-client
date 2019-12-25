@@ -249,7 +249,7 @@ export default {
   methods: {
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
-      $('.setting-dropdown').css('display', 'none')
+     $('.setting-dropdown').css('display', 'none')
     },
     enabledModule(option) {
       switch (option) {

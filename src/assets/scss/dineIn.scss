@@ -896,7 +896,6 @@ div {
       max-width: 96% !important;
       .modal-content{
         .modal-body{
-          height: 100vh;
           overflow: auto;
         }
       }
@@ -905,6 +904,11 @@ div {
   .fixed-reservation{
     width: 95vw;
     height: calc(100vh - 10.8rem);
+    .pos-reservation-table{
+      overflow: auto;
+      display: grid;
+      grid-template-columns: max-content;
+    }
   }
   .dine-in-wrapper {
     margin: 0 10px;
