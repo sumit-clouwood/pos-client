@@ -40,7 +40,7 @@
     <div class="profile-brand-container">
       <div class="items">
         <span class="caption">{{ _t('Associated Brand') }}:</span>
-        <span v-if="!isSuperAdmin()">
+        <span v-if="brands">
           {{
             LookupData.getUserAssociatedDetails({
               collection: brands._id,
@@ -49,17 +49,14 @@
             })
           }}
         </span>
-        <span v-else>Not Associated to Brand</span>
-
+        <br v-else />
         <span class="caption">{{ _t('Associated Brand Role') }}:</span>
-        <span v-if="!isSuperAdmin()">
+        <span v-if="role">
           {{ role.name }}
         </span>
-        <span v-else>Not Applicable</span>
-        <span v-if="!isSuperAdmin()" class="caption"
-          >{{ _t('Has Access to') }}:
-        </span>
-        <span v-if="!isSuperAdmin()">
+        <br v-else />
+        <span class="caption"> {{ _t('Has Access to') }}: </span>
+        <span v-if="user.brand_stores && user.brand_stores.length">
           <span v-for="storeId in user.brand_stores" :key="storeId">
             {{ _t('Stores') }}:
             {{

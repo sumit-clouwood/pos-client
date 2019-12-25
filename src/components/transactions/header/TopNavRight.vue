@@ -10,23 +10,6 @@
       <div v-if="online">{{ _t('Online') }}</div>
       <div v-else>{{ _t('Offline') }}</div>
     </div>
-    <ul>
-      <li v-if="availableLanguages" class="color-text-invert">
-        <select
-          v-model="vlocale"
-          @change="changeLanguage(vlocale)"
-          class="language-button"
-        >
-          <option
-            v-for="language in availableLanguages"
-            :key="language._id"
-            :value="language.code"
-          >
-            {{ language.name }}
-          </option>
-        </select>
-      </li>
-    </ul>
     <ul class="online-counter color-main">
       <li
         class="nav-item online-data "
@@ -49,6 +32,7 @@
         </router-link>
       </button>
     </div>
+    <LanguageMenu />
     <SwitchStore />
     <TopSidebarMenu />
   </div>
@@ -59,11 +43,13 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
 import TopSidebarMenu from '@/components/util/TopSidebarMenu'
+import LanguageMenu from '@/components/util/LanguageMenu'
 export default {
   name: 'TopNavRight',
   components: {
     SwitchStore,
     TopSidebarMenu,
+    LanguageMenu,
   },
   props: {},
   data: function() {

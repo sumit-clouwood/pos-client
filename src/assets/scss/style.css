@@ -403,12 +403,11 @@ h6 {
         padding: 20px !important;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); } }
 .header {
-  border-bottom: 1px solid #E3E7F2; }
+  padding: 0 1.875rem; }
   .header .header-main {
     height: 5.3125rem;
     display: grid;
-    grid-template-columns: auto auto;
-    padding: 0 1.875rem; }
+    grid-template-columns: auto auto; }
     .header .header-main .header-main-left {
       height: 5.3125rem;
       display: grid;
@@ -443,6 +442,10 @@ h6 {
       align-items: center;
       justify-content: flex-end;
       position: relative; }
+      .header .header-main .header-main-right .menu-language {
+        margin-right: 0.625rem; }
+        .header .header-main .header-main-right .menu-language img {
+          width: 24px; }
       .header .header-main .header-main-right .user-name {
         height: 3.125rem;
         display: flex;
@@ -463,7 +466,7 @@ h6 {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: 1.25rem;
+        margin-right: 0.625rem;
         cursor: pointer; }
         .header .header-main .header-main-right .online .fa-circle {
           width: 0.9375rem;
@@ -595,9 +598,17 @@ h6 {
 
 .transaction-orders .header-main .header-main-right .walkin-btn-design > .walkin-btn {
   height: 3.125rem;
-  margin-left: 1.25rem; }
+  margin-right: 0.625rem; }
+
+.header .header-main .change-brand-setting {
+  display: none !important; }
 
 @media only screen and (min-width: 320px) and (max-width: 960px) {
+  .header .header-main .change-brand-setting {
+    display: grid !important; }
+  .header .header-main .change-brand-web {
+    display: none; }
+
   .setting-dropdown {
     z-index: 999;
     width: 90% !important;
@@ -3941,6 +3952,7 @@ body {
         margin-top: 0.3125rem;
         text-align: center;
         width: 4.6875rem;
+        padding-left: 0.25rem;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden; }
@@ -4566,7 +4578,7 @@ body {
           .footer .footer-slider .footer-slider-list .slick-slide .footer-slider-list-item .footer-slider-list-item-link img {
             width: 0.75rem; }
           .footer .footer-slider .footer-slider-list .slick-slide .footer-slider-list-item .footer-slider-list-item-link svg {
-            width: 0.75rem;
+            width: 1rem;
             margin: 0.3125rem auto; }
           .footer .footer-slider .footer-slider-list .slick-slide .footer-slider-list-item .footer-slider-list-item-link i {
             font-size: 1rem;
@@ -4858,7 +4870,7 @@ li#circle-table-shape {
       .floor-section-wrap .ullist-floor > li > a {
         color: #72747b;
         font-size: 0.875rem;
-        padding: 0.3125rem 0; }
+        padding: 0.3125rem; }
 
 .ullist-dinein-table {
   padding-left: 0; }
@@ -4984,7 +4996,7 @@ span#dine-bottom {
   clear: both; }
 
 .tables-btn-style {
-  margin: 0.1875rem;
+  margin-right: 0.625rem;
   height: 3.1875rem;
   border-radius: 0.25rem;
   border: solid 0.125rem #c7c7c7;
@@ -5072,7 +5084,7 @@ table#running-order {
     border-radius: 0.25rem;
     background-color: #e73030;
     display: grid !important;
-    font-size: 0.875rem !important;
+    font-size: 1rem !important;
     color: #fff !important;
     padding: 0.3125rem;
     align-items: center;
@@ -5120,7 +5132,7 @@ td.order-time-det > span {
   touch-action: auto; }
 
 .dinefor-paynow svg {
-  margin-right: 0.625rem;
+  margin-right: 0.3125rem;
   vertical-align: middle;
   width: 1.5rem;
   height: 1.25rem; }
@@ -5486,12 +5498,16 @@ div#confirmModal .customer-title {
     width: 100%;
     height: 80px;
     bottom: 0;
-    padding: 5px 10px 20px;
+    padding: 5px 10px;
     display: grid;
     grid-template-columns: auto 1fr;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     z-index: 999;
     background: #fff; }
+    .hideBigScreen .all-booking-btns > div {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end; }
     .hideBigScreen .all-booking-btns.active {
       position: fixed;
       right: 0;
@@ -5504,10 +5520,6 @@ div#confirmModal .customer-title {
         min-width: 200px;
         margin-left: 0;
         margin-bottom: 20px; }
-    .hideBigScreen .all-booking-btns .dine-language {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center; }
     .hideBigScreen .all-booking-btns .dine-btn-footer-wrapper {
       display: none;
       position: fixed;
@@ -5744,8 +5756,8 @@ button.res-select-table {
   border-color: #e4e8f1;
   color: #3d3f43; }
 
-.dine-language {
-  margin-left: 0.125rem; }
+.change-location > button {
+  min-height: initial !important; }
 
 @media only screen and (min-width: 961px) and (max-width: 1100px) {
   #sitting-dinein-table {

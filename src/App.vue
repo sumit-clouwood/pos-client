@@ -7,10 +7,7 @@
       "
     />
     <!-- user is logged in, there is a store id in url or the user is not admin  -->
-    <private-view
-      v-if="privateContext && (this.$route.params.store_id || !isSuperAdmin())"
-      class="private-view"
-    ></private-view>
+    <private-view v-if="privateContext" class="private-view"></private-view>
     <!-- Public view -->
     <public-view v-else class="public-view"></public-view>
     <app-notification></app-notification>

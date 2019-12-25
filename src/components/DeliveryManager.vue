@@ -1,6 +1,6 @@
 <template>
   <div class="new-pos">
-    <div class="dm-screen-wrap toggle-nav-content">
+    <div class="dm-screen-wrap toggle-nav-content dm-navbar">
       <div class="left-fixed-menu">
         <h3 class="page-title" style="">{{ _t('New Orders') }}</h3>
         <div class="breadcrump-wrapper">

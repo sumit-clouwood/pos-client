@@ -9,7 +9,7 @@
             <!--<th width="100px">{{ _t('STATUS') }}</th>-->
             <th width="450px">{{ _t('ORDERS') }}</th>
             <th width="200px">{{ _t('AMOUNT') }}</th>
-            <th width="250px">{{ _t('TABLE BOOKED TIME') }}</th>
+            <th width="250px">{{ _t('ACTION STATUS') }}</th>
           </tr>
         </thead>
         <tbody v-if="orderDetails">
