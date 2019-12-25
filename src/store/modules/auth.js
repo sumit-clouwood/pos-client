@@ -10,7 +10,7 @@ const state = {
   deviceId: null,
   refreshToken: null,
   rolePermissions: null,
-  userDetails: false,
+  userDetails: { item: false },
   permissions: false,
   waiters: [],
   cashiers: [],
@@ -42,7 +42,7 @@ const getters = {
     if (!state.userDetails) {
       return ''
     }
-    if (typeof state.userDetails.item != 'undefined') {
+    if (state.userDetails.item) {
       const roleId = state.userDetails.item.brand_role
       if (roleId && state.rolePermissions) {
         const role = state.rolePermissions.find(role => role._id === roleId)

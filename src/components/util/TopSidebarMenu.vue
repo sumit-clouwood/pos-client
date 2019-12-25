@@ -424,7 +424,7 @@ export default {
       latestOnlineOrders: state =>
         state.order.onlineOrders ? state.order.onlineOrders.length : 0,
       username: state =>
-        state.auth.userDetails ? state.auth.userDetails.name : '',
+        state.auth && state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
     ...mapGetters('location', ['_t', 'permitted']),
   },
