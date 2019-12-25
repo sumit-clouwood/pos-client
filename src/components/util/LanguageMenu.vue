@@ -34,49 +34,49 @@
 </template>
 
 <script>
-    /* global $ */
-    import { mapState, mapGetters, mapActions } from 'vuex'
-    import bootstrap from '@/bootstrap'
-    export default {
-        name: 'LanguageMenu',
-        props: {},
-        components: {
+/* global $ */
+import { mapState, mapGetters, mapActions } from 'vuex'
+import bootstrap from '@/bootstrap'
+export default {
+    name: 'LanguageMenu',
+    props: {},
+    components: {
+    },
+    updated() {},
+    computed: {
+        vlocale: {
+            get() {
+                return this.$store.state.location.locale
+            },
+            set(val) {
+                return this.$store.commit('location/SET_LOCALE', val)
+            },
         },
-        updated() {},
-        computed: {
-            vlocale: {
-                get() {
-                    return this.$store.state.location.locale
-                },
-                set(val) {
-                    return this.$store.commit('location/SET_LOCALE', val)
-                },
-            },
-            ...mapGetters('context', ['store']),
-            ...mapGetters('auth', ['waiter', 'carhop']),
-            ...mapState('location', ['availableLanguages', 'language']),
-            ...mapState('dinein', ['dineInTabType', 'activeArea']),
-            ...mapState('sync', ['online']),
-            ...mapState({
-                latestOnlineOrders: state =>
-                    state.order.onlineOrders ? state.order.onlineOrders.length : 0,
-                username: state =>
-                    state.auth.userDetails ? state.auth.userDetails.name : '',
-            }),
-            ...mapGetters('location', ['_t', 'permitted']),
+        ...mapGetters('context', ['store']),
+        ...mapGetters('auth', ['waiter', 'carhop']),
+        ...mapState('location', ['availableLanguages', 'language']),
+        ...mapState('dinein', ['dineInTabType', 'activeArea']),
+        ...mapState('sync', ['online']),
+        ...mapState({
+            latestOnlineOrders: state =>
+                state.order.onlineOrders ? state.order.onlineOrders.length : 0,
+            username: state =>
+                state.auth.userDetails ? state.auth.userDetails.name : '',
+        }),
+        ...mapGetters('location', ['_t', 'permitted']),
+    },
+    methods: {
+        iconCode: function(iconCode) {
+            this.iconCodeSelection = iconCode
         },
-        methods: {
-            iconCode: function(iconCode) {
-                this.iconCodeSelection = iconCode
-            },
-            ...mapActions('auth', ['logout']),
-            changeLanguage(locale) {
-                // const language = this.languages.find(lang => lang.code === this.vlocale).code
-                bootstrap.loadUI(this.$store)
-                this.$store.dispatch('location/changeLanguage', locale)
-            },
+        ...mapActions('auth', ['logout']),
+        changeLanguage(locale) {
+            // const language = this.languages.find(lang => lang.code === this.vlocale).code
+            bootstrap.loadUI(this.$store)
+            this.$store.dispatch('location/changeLanguage', locale)
+        },
 
-            /*...mapActions('customer', ['fetchCustomerAddress']),*/
-        },
-    }
+        /*...mapActions('customer', ['fetchCustomerAddress']),*/
+    },
+}
 </script>
