@@ -1,6 +1,13 @@
 @import "pixels_rem.scss";
 @import "variables.scss";
-
+.dine-language img {
+  width: 24px;
+}
+.new-pos{
+  .header{
+    padding: 0 20px;
+  }
+}
 .header {
   /*border-bottom: 1px solid $gray-middle;*/
 
