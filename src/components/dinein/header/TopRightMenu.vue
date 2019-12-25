@@ -111,6 +111,7 @@
         </div>
       </div>
     </div>
+    <SwitchStore />
     <TopSidebarMenu />
     <div class="curent-sale hideBigScreen">
       <div id="bkgOverlay" class="backgroundOverlay"></div>
@@ -408,3 +409,8 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+#dropdownLanguage {
+  margin-right: 0.39rem;
+}
+</style>
