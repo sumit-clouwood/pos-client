@@ -211,5 +211,4 @@ export default {
   -webkit-box-pack: center;
   padding: 0.25px;
 }
-
 </style>
