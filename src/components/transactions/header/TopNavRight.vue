@@ -55,7 +55,6 @@
 </template>
 
 <script>
-/*global $*/
 import { mapState, mapGetters, mapActions } from 'vuex'
 import bootstrap from '@/bootstrap'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
