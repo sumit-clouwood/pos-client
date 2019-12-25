@@ -170,7 +170,7 @@ export default {
   },
   created() {},
   watch: {
-    $route(to) {
+    $route(to, from) {
       this.$store.commit('order/RESET_SPLIT_BILL')
 
       let orderType = {
@@ -212,6 +212,13 @@ export default {
         this.$store.commit('order/ORDER_SOURCE', 'backend')
         this.$store.dispatch('order/modifyOrder', this.orderId)
         this.$store.dispatch('order/fetchModificationReasons')
+      }
+      if (
+        ['ModifyBackendOrder', 'DineinOrder', 'DeliveryManager'].includes(
+          from.name
+        )
+      ) {
+        this.$store.dispatch('checkout/reset')
       }
     },
   },
