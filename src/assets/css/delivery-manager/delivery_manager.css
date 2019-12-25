@@ -314,7 +314,7 @@ div#dm-new-order table td {
     display: none; }
 
   div.dm-ready-order-wrapper {
-    height: calc(100vh - 17rem); }
+    height: calc(100vh - 14rem); }
 
   small.delivered-hide > img, .dm-screen-wrap.dine-in-screen {
     display: none; }
@@ -387,7 +387,7 @@ button.v-btn.v-btn--icon.theme--light {
   justify-content: flex-end; }
   .change-location > button {
     margin-right: 10px;
-    min-height: 51px;
+    min-height: 3.3rem;
   }
     .change-location > button > a {
       color: #fff; }
@@ -898,16 +898,12 @@ tr.dataContentStyle > td > a {
     font-size: 1.3125rem; }
 
 @media only screen and (max-width: 991px) {
-  .top-menu-container .top-menu-icon {
-    width: 20px;
-    cursor: pointer; }
-    .top-menu-container .top-menu-icon svg {
-      fill: #fff; }
-
+  .top-menu-container .top-menu-icon {  width: 20px;  cursor: pointer; }
+  .top-menu-container .top-menu-icon svg {  fill: #fff; }
   .dm-screen-wrap {
     grid-template-columns: 1fr;
     box-shadow: none;
-    padding: 0; }
+    padding: 0 !important; }
     .dm-screen-wrap .page-header {
       grid-template-columns: 1fr;
       position: fixed;
@@ -963,7 +959,7 @@ tr.dataContentStyle > td > a {
         overflow-x: auto; }
 
   div.dm-ready-order-wrapper {
-    height: calc(100vh - 17rem);
+    height: calc(100vh - 14rem);
     overflow: auto; }
     div.dm-ready-order-wrapper tbody {
       grid-template-columns: 1fr !important;
