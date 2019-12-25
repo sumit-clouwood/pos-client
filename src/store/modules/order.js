@@ -726,6 +726,8 @@ const actions = {
         const subtotal = getters.subTotal
         let totalTax = 0
 
+        orderTotalDiscount = Num.round((subtotal * orderDiscount.rate) / 100)
+
         if (orderDiscount.include_surcharge) {
           //apply ontotal discount, apply on surcharge and its tax as well
           totalTax = getters.totalTaxWithoutOrderDiscount
@@ -735,7 +737,7 @@ const actions = {
           console.log('total surcharge', totalSurcharge)
           if (
             orderDiscount.max_discount_value &&
-            orderDiscount.max_discount_value < subtotal
+            orderDiscount.max_discount_value < orderTotalDiscount
           ) {
             orderTotalDiscount = orderDiscount.max_discount_value
 
@@ -841,7 +843,7 @@ const actions = {
 
           if (
             orderDiscount.max_discount_value &&
-            orderDiscount.max_discount_value < subtotal
+            orderDiscount.max_discount_value < orderTotalDiscount
           ) {
             orderTotalDiscount = orderDiscount.max_discount_value
             const percentDiscountOnSubTotal = Num.round(
