@@ -10,7 +10,7 @@ const state = {
   deviceId: null,
   refreshToken: null,
   rolePermissions: null,
-  userDetails: { item: false },
+  userDetails: false,
   permissions: false,
   waiters: [],
   cashiers: [],
@@ -42,12 +42,10 @@ const getters = {
     if (!state.userDetails) {
       return ''
     }
-    if (state.userDetails.item) {
-      const roleId = state.userDetails.item.brand_role
-      if (roleId && state.rolePermissions) {
-        const role = state.rolePermissions.find(role => role._id === roleId)
-        return role ? role.name : ''
-      }
+    const roleId = state.userDetails.item.brand_role
+    if (roleId && state.rolePermissions) {
+      const role = state.rolePermissions.find(role => role._id === roleId)
+      return role ? role.name : ''
     }
     return ''
   },

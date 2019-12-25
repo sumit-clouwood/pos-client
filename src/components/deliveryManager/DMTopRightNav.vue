@@ -92,6 +92,10 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    openConfigLinks() {
+      $('.setting-dropdown').show()
+      $('.setting-dropdown').addClass('animated zoomIn')
+    },
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
@@ -132,6 +136,7 @@ export default {
     ...mapActions('auth', ['logout']),
   },
   mounted: function() {
+    $('.setting-dropdown').hide()
     setInterval(() => {
       this.todayTime = moment().format('h:mm:ss a')
     }, 1000)

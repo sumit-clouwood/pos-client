@@ -166,7 +166,7 @@ export default {
       })
     } else {
       this.onlineOrders()
-     $('.setting-dropdown').hide()
+      $('.setting-dropdown').hide()
     }
   },
 }
