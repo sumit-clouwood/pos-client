@@ -910,15 +910,17 @@ tr.dataContentStyle > td > a {
       z-index: 999;
       left: 0;
       right: 0;
-      top: 0;
+      bottom: 0;
       margin: 0 auto;
-      background: #CC3232; }
+      background: #fff;
+      box-shadow: 0 0px 0.1875rem rgba(23, 23, 32, 0.05), 0 0px 0.625rem rgba(23, 23, 32, 0.05), 0 0px 1.25rem rgba(23, 23, 32, 0.05);
+       }
       .dm-screen-wrap .page-header .current-time {
         display: none; }
       .dm-screen-wrap .page-header .button-block {
         display: grid;
-        grid-template-columns: 2fr 2fr 1.5rem;
-        padding: 0 1.25rem;
+        grid-template-columns: auto;
+        padding: 0 10px;
         align-items: center; }
     .dm-screen-wrap .left-fixed-menu {
       -webkit-box-shadow: 0 0px 0.1875rem rgba(23, 23, 32, 0.05), 0 0px 0.625rem rgba(23, 23, 32, 0.05), 0 0px 1.25rem rgba(23, 23, 32, 0.05);
