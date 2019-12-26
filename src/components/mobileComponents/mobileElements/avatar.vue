@@ -9,7 +9,7 @@
         "
         alt="profile"
       />
-      <div class="avatar-link-user">{{ user.name }}</div>
+      <div class="avatar-link-user">{{ user ? user.name : '' }}</div>
       <status />
     </a>
   </div>
