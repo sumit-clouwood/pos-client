@@ -86,8 +86,7 @@
                   </p>
                   <a :class="setOrderStatus(order.order_system_status).class">{{
                     setOrderStatus(order.order_system_status).label
-                    }}</a
-                  >
+                  }}</a>
                 </div>
               </div>
             </div>

@@ -191,7 +191,11 @@
       v-if="userDetails && permitted('profile', 'root')"
       :to="'/user-details' + currentStore"
     >
-      <a class="nav-link" role="button" :title="userDetails.item ? userDetails.item.name : ''">
+      <a
+        class="nav-link"
+        role="button"
+        :title="userDetails.item ? userDetails.item.name : ''"
+      >
         <img
           v-if="typeof userDetails.item != 'undefined'"
           :src="
