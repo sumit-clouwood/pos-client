@@ -204,6 +204,9 @@ const actions = {
     if (typeof collected != 'undefined') {
       commit(mutation.SET_DM_ORDER_COLLECTED, collected)
     }
+    if (pageId == 'home_delivery_pick') {
+      dispatch('restoreOrders')
+    }
     commit(mutation.SET_DM_ORDER_STATUS, orderStatus)
     commit(mutation.SET_DM_PAGE_ID, pageId)
     dispatch('fetchDMOrderDetail')

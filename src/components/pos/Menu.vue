@@ -47,11 +47,16 @@
     </div>
     <router-link
       class="navigation-avatar color-secondary"
-      v-if="userDetails.item"
+      v-if="userDetails"
       :to="'/user-details' + store"
     >
-      <a class="nav-link" role="button" :title="userDetails.item.name">
+      <a
+        class="nav-link"
+        role="button"
+        :title="userDetails.item ? userDetails.item.name : ''"
+      >
         <img
+          v-if="typeof userDetails.item != 'undefined'"
           :src="
             userDetails.item.avatar
               ? userDetails.item.avatar
@@ -60,7 +65,7 @@
           alt="profile"
         />
         <div class="nav-link-user-name color-text-invert">
-          {{ userDetails.item.name }}
+          {{ userDetails.item ? userDetails.item.name : '' }}
         </div>
       </a>
     </router-link>

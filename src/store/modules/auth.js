@@ -10,7 +10,7 @@ const state = {
   deviceId: null,
   refreshToken: null,
   rolePermissions: null,
-  userDetails: { item: false },
+  userDetails: false,
   permissions: false,
   waiters: [],
   cashiers: [],
@@ -42,12 +42,10 @@ const getters = {
     if (!state.userDetails) {
       return ''
     }
-    if (state.userDetails.item) {
-      const roleId = state.userDetails.item.brand_role
-      if (roleId && state.rolePermissions) {
-        const role = state.rolePermissions.find(role => role._id === roleId)
-        return role ? role.name : ''
-      }
+    const roleId = state.userDetails.item.brand_role
+    if (roleId && state.rolePermissions) {
+      const role = state.rolePermissions.find(role => role._id === roleId)
+      return role ? role.name : ''
     }
     return ''
   },
@@ -139,7 +137,7 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  pinlogin({ commit, getters, rootGetters }, { pincode, brand, store }) {
+  pinlogin({ commit, dispatch, rootGetters }, { pincode, brand, store }) {
     return new Promise((resolve, reject) => {
       AuthService.pinlogin({
         //email: state.cashierEmail,
@@ -162,10 +160,7 @@ const actions = {
             brand: rootGetters['context/brand'],
             store: rootGetters['context/store'],
           })
-
-          commit(mutation.USER_DETAILS, {
-            item: getters.cashier(response.data.user),
-          })
+          dispatch('getUserDetails', response.data.user.user_id)
           resolve()
         })
         .catch(error => {

@@ -611,12 +611,10 @@ h6 {
   display: none !important; }
 
 @media only screen and (min-width: 320px) and (max-width: 960px) {
-  .header {
-    padding: 0; }
-    .header .header-main .change-brand-setting {
-      display: grid !important; }
-    .header .header-main .change-brand-web {
-      display: none; }
+  .header .header-main .change-brand-setting {
+    display: grid !important; }
+  .header .header-main .change-brand-web {
+    display: none; }
 
   .setting-dropdown {
     z-index: 999;
