@@ -446,6 +446,8 @@ h6 {
         margin-right: 0.625rem; }
         .header .header-main .header-main-right .menu-language img {
           width: 24px; }
+      .header .header-main .header-main-right .switch-store {
+        padding-right: 0.625rem; }
       .header .header-main .header-main-right .user-name {
         height: 3.125rem;
         display: flex;
@@ -511,7 +513,6 @@ h6 {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: 0.625rem;
         position: relative;
         cursor: pointer; }
         .header .header-main .header-main-right .nav-icon .nav-link {
@@ -567,7 +568,12 @@ h6 {
           border-bottom: 0.0625rem solid #e3e7f2;
           align-items: center; }
           .header .header-main .header-main-right .setting-dropdown li:hover {
-            background: #ddd; }
+            background: #5056CA; }
+            .header .header-main .header-main-right .setting-dropdown li:hover svg path {
+              fill: #fff;
+              opacity: 1; }
+            .header .header-main .header-main-right .setting-dropdown li:hover a {
+              color: #fff; }
           .header .header-main .header-main-right .setting-dropdown li svg {
             width: 1.5625rem; }
             .header .header-main .header-main-right .setting-dropdown li svg path {
@@ -588,7 +594,8 @@ h6 {
         .header .header-main .header-main-right .profile-sidebar-header .btn-close {
           font-size: 18px;
           justify-self: end;
-          margin-right: 5px; }
+          margin-right: 5px;
+          cursor: pointer; }
         .header .header-main .header-main-right .profile-sidebar-header .separator {
           width: 1px;
           height: 100%;
@@ -5418,12 +5425,15 @@ div#confirmModal .customer-title {
   #NewReservation .modal-dialog {
     max-width: 96% !important; }
     #NewReservation .modal-dialog .modal-content .modal-body {
-      height: 100vh;
       overflow: auto; }
 
   .fixed-reservation {
     width: 95vw;
     height: calc(100vh - 10.8rem); }
+    .fixed-reservation .pos-reservation-table {
+      overflow: auto;
+      display: grid;
+      grid-template-columns: max-content; }
 
   .dine-in-wrapper {
     margin: 0 10px;
@@ -5755,9 +5765,6 @@ button.res-select-table {
   background: #e4e8f1;
   border-color: #e4e8f1;
   color: #3d3f43; }
-
-.change-location > button {
-  min-height: initial !important; }
 
 @media only screen and (min-width: 961px) and (max-width: 1100px) {
   #sitting-dinein-table {

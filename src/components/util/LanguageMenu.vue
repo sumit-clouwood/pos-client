@@ -41,6 +41,11 @@ export default {
   props: {},
   components: {},
   updated() {},
+  data() {
+    return {
+      iconCodeSelection: 'us',
+    }
+  },
   computed: {
     vlocale: {
       get() {
