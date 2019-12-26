@@ -212,12 +212,7 @@
           }
         }
         li {
-          display: grid;
-          grid-template-columns: auto 1fr;
-          grid-gap: $px20;
-          padding: $px15 $px20;
-          border-bottom: $px1 solid #e3e7f2;
-          align-items: center;
+
           &:hover{
             background: #5056CA;
             svg{
@@ -241,6 +236,12 @@
             font-size: $px18;
             color: #555;
             font-weight: 400;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-gap: $px20;
+            padding: $px15 $px20;
+            border-bottom: $px1 solid #e3e7f2;
+            align-items: center;
           }
         }
       }
