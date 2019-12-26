@@ -62,6 +62,9 @@
            width: 24px;
          }
       }
+      .switch-store {
+        padding-right: $px10;
+      }
       .user-name {
         height: $header-btn-height;
         display: flex;
@@ -146,7 +149,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: $px10;
         position: relative;
         cursor: pointer;
         .nav-link{
@@ -217,7 +219,16 @@
           border-bottom: $px1 solid #e3e7f2;
           align-items: center;
           &:hover{
-            background: #ddd;
+            background: #5056CA;
+            svg{
+              path{
+                fill: #fff;
+                opacity: 1;
+              }
+            }
+            a {
+              color: #fff;
+            }
           }
           svg{
             width: $px25;
@@ -246,6 +257,7 @@
           font-size: 18px;
           justify-self: end;
           margin-right: 5px;
+          cursor: pointer;
         }
 
         .separator {
@@ -282,6 +294,7 @@
 
 @include responsive(mobile) {
   .header{
+    padding: 0;
     .header-main{
       .change-brand-setting {
         display: grid !important;

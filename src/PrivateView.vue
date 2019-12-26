@@ -195,13 +195,12 @@ export default {
       this.$store.commit('order/ORDER_TYPE', orderType)
       // react to route changes...
       setTimeout(() => {
-        $('.setting-dropdown').hide()
-        $('.setting-dropdown').addClass('animated zoomIn')
+
       })
 
       if (this.$route.params.order_id) {
-        this.orderId = this.$route.params.order_id
-        this.$store.commit('order/RESET_SPLIT_BILL')
+      this.orderId = this.$route.params.order_id
+      this.$store.commit('order/RESET_SPLIT_BILL')
       }
 
       if (this.$route.params.table_id) {
