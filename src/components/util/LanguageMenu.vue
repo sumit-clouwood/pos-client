@@ -39,8 +39,6 @@ import bootstrap from '@/bootstrap'
 export default {
   name: 'LanguageMenu',
   props: {},
-  components: {},
-  updated() {},
   data() {
     return {
       iconCodeSelection: 'us',

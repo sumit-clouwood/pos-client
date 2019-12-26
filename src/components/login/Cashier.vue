@@ -179,9 +179,6 @@ ul.ullist-admin
 
         .bgimg
           transition: all 0.6s ease
-          height: 104px
-          width: 104px
-
     > span
       cursor: pointer
       font-size: 18px
