@@ -4,10 +4,12 @@
       <!--<img class="avatar-link-img" :src="profileImage" alt="profile" />-->
       <img
         class="avatar-link-img"
-        :src="user.avatar ? user.avatar : 'img/profile/default_avatar.jpg'"
+        :src="
+          user && user.avatar ? user.avatar : 'img/profile/default_avatar.jpg'
+        "
         alt="profile"
       />
-      <div class="avatar-link-user">{{ user.name }}</div>
+      <div class="avatar-link-user">{{ user ? user.name : '' }}</div>
       <status />
     </a>
   </div>

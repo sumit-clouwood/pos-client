@@ -3,7 +3,7 @@
     <div class="btn-announce">
       <DiscountButton v-if="!waiter && !carhop" />
       <!-- <RemoveDiscountButton /> -->
-      <RemoveTaxButton />
+      <RemoveTaxButton v-if="!carhop" />
       <ModifyItemModifiersButton />
     </div>
   </div>

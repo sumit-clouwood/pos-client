@@ -30,7 +30,7 @@ module.exports = {
         ignoreUrls: true,
         ignoreComments: true,
         ignorePattern:
-          "d=|src=|class=|href=|points=|<!--|<!--\\n\\r|'|let\\s.+=\\s/",
+          "d=[^>]*|d=|src=|class=|href=|points=|<!--|<!--\\n\\r|'|let\\s.+=\\s/",
       },
     ],
   },

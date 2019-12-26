@@ -1,3 +1,4 @@
+<!-- eslint-disable max-len -->
 <template>
   <li
     class="footer-slider-list-item color-secondary"

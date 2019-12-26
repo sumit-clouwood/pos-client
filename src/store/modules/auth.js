@@ -24,7 +24,11 @@ const state = {
 
 const getters = {
   allowed: state => resource => {
-    if (resource && state.role) {
+    if (!state.role) {
+      //super admin
+      return true
+    }
+    if (resource) {
       let allowed = state.role.store_permissions.find(perm => perm === resource)
       if (!allowed) {
         //find in brand permissions
@@ -133,7 +137,7 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  pinlogin({ commit, getters, rootGetters }, { pincode, brand, store }) {
+  pinlogin({ commit, dispatch, rootGetters }, { pincode, brand, store }) {
     return new Promise((resolve, reject) => {
       AuthService.pinlogin({
         //email: state.cashierEmail,
@@ -156,10 +160,7 @@ const actions = {
             brand: rootGetters['context/brand'],
             store: rootGetters['context/store'],
           })
-
-          commit(mutation.USER_DETAILS, {
-            item: getters.cashier(response.data.user),
-          })
+          dispatch('getUserDetails', response.data.user.user_id)
           resolve()
         })
         .catch(error => {

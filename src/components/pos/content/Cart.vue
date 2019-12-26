@@ -119,10 +119,10 @@ export default {
     mobileFooter,
   },
   mounted() {
-    setTimeout(() => {
-      this.$refs.barcode.focus()
-      this.$refs.barcode.click()
-    }, 1000)
+    // setTimeout(() => {
+    //   //this.$refs.barcode.focus()
+    //   //this.$refs.barcode.click()
+    // }, 1000)
   },
   created() {
     setTimeout(() => {

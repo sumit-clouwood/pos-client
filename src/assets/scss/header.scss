@@ -1,9 +1,7 @@
 @import "pixels_rem.scss";
 @import "variables.scss";
-
 .header {
-  /*border-bottom: 1px solid $gray-middle;*/
-
+  padding: 0 $px30;
   .header-main {
     height: $header-height;
     display: grid;
@@ -58,7 +56,15 @@
       align-items: center;
       justify-content: flex-end;
       position: relative;
-
+      .menu-language {
+        margin-right: $px10;
+         img{
+           width: 24px;
+         }
+      }
+      .switch-store {
+        padding-right: $px10;
+      }
       .user-name {
         height: $header-btn-height;
         display: flex;
@@ -81,7 +87,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: $px20;
+        margin-right: $px10;
         cursor: pointer;
 
         .fa-circle {
@@ -143,7 +149,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: $px10;
         position: relative;
         cursor: pointer;
         .nav-link{
@@ -214,7 +219,16 @@
           border-bottom: $px1 solid #e3e7f2;
           align-items: center;
           &:hover{
-            background: #ddd;
+            background: #5056CA;
+            svg{
+              path{
+                fill: #fff;
+                opacity: 1;
+              }
+            }
+            a {
+              color: #fff;
+            }
           }
           svg{
             width: $px25;
@@ -243,6 +257,7 @@
           font-size: 18px;
           justify-self: end;
           margin-right: 5px;
+          cursor: pointer;
         }
 
         .separator {
@@ -259,7 +274,6 @@
 }
 .transaction-orders{
   .header-main{
-    padding: 0.625rem 1.25rem 0.9375rem 2.1875rem;
     .header-main-right{
       .walkin-btn-design{
         > .walkin-btn{
@@ -270,7 +284,26 @@
     }
   }
 }
+.header{
+  .header-main{
+    .change-brand-setting {
+      display: none !important;
+    }
+  }
+}
+
 @include responsive(mobile) {
+  .header{
+    padding: 0;
+    .header-main{
+      .change-brand-setting {
+        display: grid !important;
+      }
+      .change-brand-web {
+        display: none;
+      }
+    }
+  }
   .setting-dropdown{
     z-index: 999;
     width: 90% !important;

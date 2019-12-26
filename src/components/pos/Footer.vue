@@ -1,3 +1,4 @@
+<!-- eslint-disable max-len -->
 <template>
   <div class="footer">
     <div class="footer-slider color-dashboard-background">

@@ -1,5 +1,5 @@
 <template>
-  <div class="change-location" v-if="haveMultipleStores">
+  <div class="switch-store" v-if="haveMultipleStores">
     <button class="tables-btn-style" @click="showStoresPopup">
       <svg
         xmlns="http://www.w3.org/2000/svg"

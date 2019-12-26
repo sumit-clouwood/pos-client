@@ -117,7 +117,9 @@
                     {{ _t(addOrSplit) }}
                   </span>
                   <span
-                    v-if="allowed(PERMS.SWITCH_WAITER)"
+                    v-if="
+                      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API)
+                    "
                     data-toggle="modal"
                     data-target="#switchWaiter"
                     data-dismiss="modal"
@@ -139,7 +141,9 @@
                     {{ _t(addOrSplit) }}
                   </span>
                   <span
-                    v-if="allowed(PERMS.SWITCH_WAITER)"
+                    v-if="
+                      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API)
+                    "
                     data-toggle="modal"
                     data-target="#switchWaiter"
                     data-dismiss="modal"

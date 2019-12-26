@@ -5,18 +5,20 @@
         <table class="responsive-table">
           <thead>
             <tr>
-              <th class="table_header">Order No</th>
-              <th class="table_header">Items</th>
-              <th class="table_header">Amount</th>
-              <th class="table_header">Status</th>
-              <th class="table_header text-center">Action</th>
+              <th class="table_header" style="width: 150px">Order No</th>
+              <th class="table_header" width="400px">Items</th>
+              <th class="table_header" style="width: 150px">Amount</th>
+              <th class="table_header" style="width: 100px">Status</th>
+              <th class="table_header text-center" style="width: 215px">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="order in orders.data" :key="order._id">
               <td>
                 <span
-                  class="in-progress order-number open-details-popup cursor-pointer font-weight-bold text-capitalize"
+                  class="in-progress order-number open-details-popup cursor-pointer text-capitalize"
                   @click="selectedOrderDetails(order._id)"
                   data-dismiss="modal"
                   data-target=".bd-example-modal-lg"

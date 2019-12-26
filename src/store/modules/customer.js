@@ -98,12 +98,15 @@ const getters = {
           let data = deliveryArea.find(
             area => area && typeof area != 'undefined'
           )
-          valueData.push({
-            _id: data._id,
-            special_order_surcharge: data.special_order_surcharge,
-            min_order_value: data.min_order_value,
-          })
-          return data
+          if (typeof data._id !== 'undefined') {
+            valueData.push({
+              _id: data._id,
+              special_order_surcharge: data.special_order_surcharge,
+              min_order_value: data.min_order_value,
+            })
+            return data
+          }
+          return []
         }
       })
     }
@@ -355,6 +358,10 @@ const actions = {
           } else {
             dispatch('fetchAll')
           }
+          if (typeof response.data.id != 'undefined') {
+            dispatch('fetchSelectedCustomer', response.data.id)
+          }
+
           resolve(response.data)
         })
         .catch(error => reject(error))
