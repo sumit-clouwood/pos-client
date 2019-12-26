@@ -115,21 +115,20 @@ export default {
   data() {
     return {
       todayDate: moment().format('dddd, LL'),
+      interval: null,
     }
   },
   components: {
     Search,
   },
   mounted() {
-    let scope = this
-    this.$store
-      .dispatch('transactionOrders/getTransactionOrders')
-      .then(function() {
-        scope.$store.dispatch('transactionOrders/selectFirstTransactionOrder', {
-          root: true,
-        })
-        scope.$store.dispatch('transactionDetail')
-      })
+    this.fetchOrders()
+    this.interval = setInterval(() => {
+      this.fetchOrders()
+    }, 1000 * 20)
+  },
+  destroyed() {
+    clearInterval(this.interval)
   },
   computed: {
     ...mapState('location', ['timezoneString']),
@@ -143,6 +142,20 @@ export default {
     ]),
   },
   methods: {
+    fetchOrders() {
+      let scope = this
+      this.$store
+        .dispatch('transactionOrders/getTransactionOrders')
+        .then(function() {
+          scope.$store.dispatch(
+            'transactionOrders/selectFirstTransactionOrder',
+            {
+              root: true,
+            }
+          )
+          scope.$store.dispatch('transactionDetail')
+        })
+    },
     setOrderStatus(orderStatus) {
       let statusArr = []
       switch (orderStatus) {
