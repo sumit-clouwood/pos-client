@@ -191,7 +191,7 @@
       v-if="userDetails && permitted('profile', 'root')"
       :to="'/user-details' + currentStore"
     >
-      <a class="nav-link" role="button" :title="userDetails.item ? userDetails.item.name : ''">
+      <a class="nav-link" role="button" :title="userDetails.item.name">
         <img
           v-if="typeof userDetails.item != 'undefined'"
           :src="
@@ -202,7 +202,7 @@
           alt="profile"
         />
         <div class="nav-link-user-name color-text-invert">
-          {{ userDetails.item ? userDetails.item.name : '' }}
+          {{ userDetails.item.name }}
         </div>
       </a>
     </router-link>

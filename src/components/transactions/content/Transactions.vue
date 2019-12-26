@@ -84,8 +84,18 @@
                       )
                     }}
                   </p>
-                  <a :class="setOrderStatus(order.order_system_status).class">{{
-                    setOrderStatus(order.order_system_status).label
+                  <a
+                    :class="
+                      setOrderStatus(
+                        order.order_status,
+                        order.order_system_status
+                      ).class
+                    "
+                    >{{
+                      setOrderStatus(
+                        order.order_status,
+                        order.order_system_status
+                      ).label
                     }}</a
                   >
                 </div>
@@ -144,14 +154,14 @@ export default {
     ]),
   },
   methods: {
-    setOrderStatus(orderStatus) {
+    setOrderStatus(orderStatus, orderSystemStatus) {
       let statusArr = []
-      switch (orderStatus) {
-        case 'normal':
+      switch ((orderSystemStatus, orderStatus)) {
+        case 'normal' && 'in-progress':
           statusArr = { class: 'success', label: 'Success' }
           break
-        case 'cancelled':
-          statusArr = { class: 'canceled', label: 'Canceled' }
+        case 'normal' && 'finished':
+          statusArr = { class: 'completed', label: 'Completed' }
           break
         case 'modified':
           statusArr = { class: 'refunded', label: 'Modified' }
@@ -175,3 +185,9 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.completed {
+  background-color: #faa03c;
+  color: #fff;
+}
+</style>
