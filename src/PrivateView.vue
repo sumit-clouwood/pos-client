@@ -54,7 +54,6 @@ other components are nested within.
 </template>
 <script>
 /* eslint-disable no-console */
-/* global $ */
 import * as CONST from '@/constants'
 import Cookie from '@/mixins/Cookie'
 import ResizeMixin from '@/mixins/ResizeHandler'
@@ -194,13 +193,11 @@ export default {
       }
       this.$store.commit('order/ORDER_TYPE', orderType)
       // react to route changes...
-      setTimeout(() => {
-
-      })
+      setTimeout(() => {})
 
       if (this.$route.params.order_id) {
-      this.orderId = this.$route.params.order_id
-      this.$store.commit('order/RESET_SPLIT_BILL')
+        this.orderId = this.$route.params.order_id
+        this.$store.commit('order/RESET_SPLIT_BILL')
       }
 
       if (this.$route.params.table_id) {

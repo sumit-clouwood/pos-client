@@ -9,7 +9,9 @@
               <th class="table_header" width="400px">Items</th>
               <th class="table_header" style="width: 150px">Amount</th>
               <th class="table_header" style="width: 100px">Status</th>
-              <th class="table_header text-center" style="width: 215px">Action</th>
+              <th class="table_header text-center" style="width: 215px">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
