@@ -749,6 +749,9 @@ const actions = {
       '-' +
       rootState.order.startTime
     delete order.real_created_datetime
+    if (rootState.order.selectedOrder.item.cashier_id) {
+      order.cashier_id = rootState.order.selectedOrder.item.cashier_id
+    }
     return Promise.resolve(order)
   },
 
