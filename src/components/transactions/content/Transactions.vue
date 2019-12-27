@@ -80,7 +80,7 @@
                       LookupData.convertDatetimeCustom(
                         order.real_created_datetime,
                         timezoneString,
-                        'HH:mm A'
+                        'hh:mm a'
                       )
                     }}
                   </p>
