@@ -118,7 +118,8 @@
                   </span>
                   <span
                     v-if="
-                      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API)
+                      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API) &&
+                        tableBooked
                     "
                     data-toggle="modal"
                     data-target="#switchWaiter"
@@ -142,7 +143,8 @@
                   </span>
                   <span
                     v-if="
-                      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API)
+                      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API) &&
+                        tableBooked
                     "
                     data-toggle="modal"
                     data-target="#switchWaiter"
@@ -300,6 +302,9 @@ export default {
     ]),
     ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['allowed']),
+    tableBooked() {
+      return this.orderDetails.length
+    },
   },
   mixins: [DateTime],
   components: {

@@ -93,7 +93,7 @@ export default {
         .dispatch('dinein/switchWaiter', waiter)
         .then(() => {
           //show info popupzx
-          this.msg = 'Cashier assigned to table.'
+          this.msg = 'Waiter assigned to table.'
         })
         .catch(error => (this.msg = error.message))
         .finally(() => {
