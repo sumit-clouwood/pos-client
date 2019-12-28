@@ -1681,7 +1681,10 @@ const mutations = {
     })
     state.items = filteredItems
   },
-
+  CLEAR_SELECTED_ORDER(state) {
+    state.orderSource = null
+    state.selectedOrder = false
+  },
   [mutation.RESET](state, full = true) {
     if (full) {
       state.items = []

@@ -169,7 +169,9 @@ export default {
   },
   created() {},
   watch: {
+    // eslint-disable-next-line no-unused-vars
     $route(to, from) {
+      this.$store.dispatch('checkout/reset')
       this.$store.commit('order/RESET_SPLIT_BILL')
 
       let orderType = {
@@ -204,17 +206,11 @@ export default {
         this.tableId = this.$route.params.table_id
       }
 
+      this.$store.commit('order/CLEAR_SELECTED_ORDER')
       if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
         this.$store.commit('order/ORDER_SOURCE', 'backend')
         this.$store.dispatch('order/modifyOrder', this.orderId)
         this.$store.dispatch('order/fetchModificationReasons')
-      }
-      if (
-        ['ModifyBackendOrder', 'DineinOrder', 'DeliveryManager'].includes(
-          from.name
-        )
-      ) {
-        this.$store.dispatch('checkout/reset')
       }
     },
   },
