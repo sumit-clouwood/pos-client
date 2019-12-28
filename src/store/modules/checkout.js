@@ -769,6 +769,8 @@ const actions = {
                   }
                 )
                 dispatch('reset')
+                commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
+
                 resolve()
               } else {
                 commit('order/SET_ORDER_ID', rootState.order.orderId, {
@@ -783,6 +785,7 @@ const actions = {
                   msg: msg,
                 }).then(() => {
                   resolve(response.data)
+                  commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
                   commit(mutation.PRINT, true)
                 })
               }
@@ -823,6 +826,7 @@ const actions = {
                 }
               )
               dispatch('reset')
+              commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               resolve()
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
@@ -924,6 +928,7 @@ const actions = {
 
                 dispatch('createModifyOrderItemList')
                 dispatch('reset', true)
+                commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
                 resolve()
               } else {
                 //order paid
@@ -948,6 +953,8 @@ const actions = {
                         action: action,
                         data: { selectedCovers: selectedCovers },
                       }).then(() => resolve())
+                    } else {
+                      commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
                     }
                   })
                   //if splitted once
@@ -1032,16 +1039,12 @@ const actions = {
               )
 
               //order paid
-              commit(mutation.PRINT, true)
               commit(
                 'SET_ORDER_NUMBER',
                 rootState.order.selectedOrder.item.order_no
               )
-              if (rootState.order.splitBill) {
-                //mark items as paid in current execution
-                dispatch('order/markSplitItemsPaid', null, { root: true })
-              }
-
+              commit(mutation.PRINT, true)
+              commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               resolve()
 
               commit(
@@ -1051,7 +1054,6 @@ const actions = {
                   root: true,
                 }
               )
-              commit('order/SET_ORDER_DETAILS', false, { root: true })
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
             }
@@ -1091,6 +1093,7 @@ const actions = {
               }).then(() => {
                 resolve(response.data)
                 commit(mutation.PRINT, true)
+                commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               })
             } else {
               dispatch('handleSystemErrors', response).then(() =>
@@ -1291,7 +1294,6 @@ const actions = {
               result: 'success',
               msg: msg,
             }).then(() => {
-              commit('order/SET_ORDER_DETAILS', false, { root: true })
               resolve(response.data)
             })
           } else {

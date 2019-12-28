@@ -8,7 +8,7 @@
       </div>
     </div>
   </div>
-  <div v-else-if="isCarhop()">
+  <div v-else>
     <div class="button">
       <div class="template-btn">
         <div class="pay-now">
@@ -17,7 +17,7 @@
       </div>
     </div>
   </div>
-  <div v-else>
+  <!-- <div v-else>
     <div style="grid-template-columns: 1fr 1fr; display: grid;">
       <div class="button">
         <div class="template-btn">
@@ -34,7 +34,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 <script>
 /* global $ clickPayNow */
@@ -46,9 +46,6 @@ export default {
   components: {
     save,
     pay,
-  },
-  beforeDestroy() {
-    this.$store.commit('order/SET_ORDER_DETAILS', false)
   },
   computed: {
     ...mapState('checkoutForm', ['processing']),
