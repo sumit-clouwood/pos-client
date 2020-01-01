@@ -24,6 +24,11 @@ const router = new Router({
       component: Home,
     },
     {
+      path: '/:brand_id/:store_id/',
+      name: 'BrandHome',
+      component: Home,
+    },
+    {
       path: '/cashier-login/*',
       name: 'cashierLogin',
       component: CashierLogin,
@@ -82,11 +87,6 @@ const router = new Router({
     {
       path: '/:brand_id/:store_id/:order_id',
       name: 'UpdateDeliveryOrder',
-      component: Home,
-    },
-    {
-      path: '/:brand_id/:store_id/',
-      name: 'BrandHome',
       component: Home,
     },
     {
