@@ -45,6 +45,8 @@ export default {
     ...mapActions('location', ['updateModalSelectionDelivery']),
 
     dropHoldOrder: function(data) {
+      /* eslint-disable */
+      console.log(data.orderData)
       $('#payment-msg').modal('show')
       let msgStr = this._t('Are you really want to delete this record?')
       this.$store.commit(
