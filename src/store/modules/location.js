@@ -123,6 +123,7 @@ const actions = {
           }
           let URL = path + rootGetters['context/store']
           router.push(URL)
+          router.go(router.currentRoute)
           dispatch('auth/getUserDetails', storedata.data.user_id, {
             root: true,
           })
