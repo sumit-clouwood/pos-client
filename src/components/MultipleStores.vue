@@ -54,6 +54,8 @@
 /* global $ */
 import { mapGetters, mapState } from 'vuex'
 import DataService from '@/services/DataService'
+import bootstrap from '@/bootstrap'
+
 export default {
   data() {
     return {
@@ -77,7 +79,6 @@ export default {
     selectedStoreId(storeId) {
       this.$store.commit('context/SET_BRAND_ID', this.brand._id, { root: true })
       this.$store.commit('context/SET_STORE_ID', storeId, { root: true })
-      this.$store.commit('context/SET_SELECTED_STORE', true, { root: true })
       localStorage.setItem('brand_id', this.brand._id)
       localStorage.setItem('store_id', storeId)
 
@@ -86,7 +87,8 @@ export default {
         store: this.$store.getters['context/store'],
       })
       $('#multiStoresModal').modal('hide')
-      this.$router.go(this.$router.currentRoute)
+      this.$store.dispatch('location/fetch')
+      bootstrap.loadUI(this.$store)
     },
   },
 }

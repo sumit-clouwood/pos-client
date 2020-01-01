@@ -6,7 +6,9 @@ import Num from '@/plugins/helpers/Num'
 import db from '@/services/network/DB'
 import TimezoneService from '@/services/data/TimezoneService'
 import * as CONST from '@/constants'
+import router from '../../router'
 
+/* global $, showModal */
 // initial state
 const state = {
   currency: 'AED',
@@ -72,9 +74,19 @@ const getters = {
 // actions
 const actions = {
   //coming from login
-  setContext({ state, commit, rootGetters }) {
+  setContext({ state, commit, rootGetters, dispatch }) {
     return new Promise(resolve => {
       LocationService.getLocationData().then(storedata => {
+        let availabeStores = storedata.data.available_stores
+        if (!router.currentRoute.params.store_id && availabeStores.length > 1) {
+          $('#multiStoresModal').css({ 'background-color': 'grey' })
+          $('#multiStoresModal').modal('show')
+          commit('context/SET_STORES_LENGTH', availabeStores.length, {
+            root: true,
+          })
+          commit('context/SET_MULTI_STORES', availabeStores, { root: true })
+        }
+
         commit(mutation.SET_BRAND, storedata.data.brand)
 
         if (storedata.data.store) {
@@ -102,7 +114,21 @@ const actions = {
             store: rootGetters['context/store'],
           })
         }
-
+        let path = storedata.data.start_path
+        if (path != null && availabeStores.length === 1) {
+          if (path === 'delivery_home') {
+            path = 'delivery-manager'
+          } else if (path === 'pos') {
+            path = ''
+          }
+          let URL = path + rootGetters['context/store']
+          router.push(URL)
+          dispatch('auth/getUserDetails', storedata.data.user_id, {
+            root: true,
+          })
+        } else {
+          showModal('#multiStores')
+        }
         resolve()
       })
     })
