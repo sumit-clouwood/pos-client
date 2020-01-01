@@ -88,6 +88,7 @@ export default {
       })
       $('#multiStoresModal').modal('hide')
       this.$store.dispatch('location/fetch')
+      bootstrap.fetchData()
       bootstrap.loadUI(this.$store)
     },
   },
