@@ -396,7 +396,8 @@ const actions = {
     //if (order.delivery_surcharge) {
     order.delivery_surcharge = Num.round(order.delivery_surcharge).toFixed(2)
     //}
-    let changedAmount = totalPaid - orderData.balanceDue
+    let changedAmount =
+      totalPaid - (orderData.balanceDue + parseFloat(order.tip_amount))
     if (changedAmount < 0) {
       changedAmount = 0
     }
