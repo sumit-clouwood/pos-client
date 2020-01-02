@@ -14,7 +14,6 @@
       aria-labelledby="dropdownLanguage"
       class="dropdown-menu cursor-pointer"
       v-if="availableLanguages"
-      @change="changeLanguage(vlocale)"
     >
       <a
         class="dropdown-item"
@@ -22,7 +21,7 @@
         v-for="language in availableLanguages"
         :key="language._id"
         :value="language.code"
-        @click="iconCode(language.icon_code)"
+        @click="iconCode(language)"
       >
         <span>
           <img :src="'/img/flag_icon/4x3/' + language.icon_code + '.svg'" />
@@ -67,14 +66,18 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
-    iconCode: function(iconCode) {
-      this.iconCodeSelection = iconCode
+    iconCode: function(language) {
+      this.iconCodeSelection = language.icon_code
+      this.changeLanguage(language.code)
     },
     ...mapActions('auth', ['logout']),
     changeLanguage(locale) {
+      this.$store.commit('location/SET_LOCALE', locale)
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
-      bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
+      bootstrap.loadUI(this.$store).then(() => {
+        this.$store.dispatch('location/updateTranslations', locale)
+      })
     },
 
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
