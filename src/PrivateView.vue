@@ -169,52 +169,56 @@ export default {
   },
   created() {},
   watch: {
+    // eslint-disable-next-line no-unused-vars
     $route(to, from) {
-      this.$store.commit('order/RESET_SPLIT_BILL')
-
-      let orderType = {
-        OTview: 'Walk In',
-        OTApi: 'walk_in',
-      }
-      //{ OTview: 'Delivery', OTApi: 'call_center' }
-      switch (to.name) {
-        case 'Dinein':
-          orderType = {
-            OTview: 'Dine In',
-            OTApi: 'dine_in',
-          }
-          break
-        case 'Carhop':
-          orderType = {
-            OTview: 'Carhop',
-            OTApi: CONST.ORDER_TYPE_CARHOP,
-          }
-          break
-      }
-      this.$store.commit('order/ORDER_TYPE', orderType)
-      // react to route changes...
-      setTimeout(() => {})
-
       if (this.$route.params.order_id) {
         this.orderId = this.$route.params.order_id
         this.$store.commit('order/RESET_SPLIT_BILL')
+      }
+      //check if orderid exists from previous action
+      if (this.orderId) {
+        this.$store.dispatch('checkout/reset')
+      }
+      // if no order id found in current action reset this.orderId
+      if (!this.$route.params.order_id) {
+        this.orderId = null
+      }
+
+      this.$store.commit('order/RESET_SPLIT_BILL')
+      if (to.name !== 'setOrderType') {
+        //set order type is already set in dinin.vue, don't override here
+
+        let orderType = {
+          OTview: 'Walk In',
+          OTApi: 'walk_in',
+        }
+        //{ OTview: 'Delivery', OTApi: 'call_center' }
+        switch (to.name) {
+          case 'Dinein':
+            orderType = {
+              OTview: 'Dine In',
+              OTApi: 'dine_in',
+            }
+            break
+          case 'Carhop':
+            orderType = {
+              OTview: 'Carhop',
+              OTApi: CONST.ORDER_TYPE_CARHOP,
+            }
+            break
+        }
+        this.$store.commit('order/ORDER_TYPE', orderType)
       }
 
       if (this.$route.params.table_id) {
         this.tableId = this.$route.params.table_id
       }
 
+      this.$store.commit('order/CLEAR_SELECTED_ORDER')
       if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
         this.$store.commit('order/ORDER_SOURCE', 'backend')
         this.$store.dispatch('order/modifyOrder', this.orderId)
         this.$store.dispatch('order/fetchModificationReasons')
-      }
-      if (
-        ['ModifyBackendOrder', 'DineinOrder', 'DeliveryManager'].includes(
-          from.name
-        )
-      ) {
-        this.$store.dispatch('checkout/reset')
       }
     },
   },
