@@ -173,6 +173,13 @@ export default {
       } else {
         //Set state and recalculate the cart
         this.$store.dispatch('order/updateOrderType', this.selectedOrderType)
+        if (this.$route.name === 'ModifyBackendOrder') {
+          this.$store.commit('order/CLEAR_SELECTED_ORDER')
+          this.$store.dispatch('checkout/reset')
+          this.$router.replace(
+            this.store + '/order-type/' + this.selectedOrderType.OTApi
+          )
+        }
       }
     },
   },
