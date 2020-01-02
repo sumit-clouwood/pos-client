@@ -736,6 +736,7 @@ const actions = {
           const totalSurcharge = rootGetters['surcharge/surcharge']
           console.log('total surcharge', totalSurcharge)
           if (
+            orderDiscount.min_cart_value < subtotal &&
             orderDiscount.max_discount_value &&
             orderDiscount.max_discount_value < orderTotalDiscount
           ) {
@@ -806,7 +807,14 @@ const actions = {
                   CONST.DISCOUNT_ORDER_ERROR_CART,
                   { root: true }
                 )
-                reject(CONST.DISCOUNT_ORDER_ERROR_CART)
+                const minCartValue = rootGetters['location/formatPrice'](
+                  orderDiscount.min_cart_value
+                )
+                reject(
+                  rootGetters['location/_t'](
+                    `Minimum cart value should be <strong>${minCartValue}</strong> to apply <strong>${orderDiscount.name}</strong>`
+                  )
+                )
               } else {
                 orderTotalDiscount = Num.round(
                   (subtotal * orderDiscount.rate) / 100
@@ -842,6 +850,7 @@ const actions = {
           totalTax = getters.totalItemsTax
 
           if (
+            orderDiscount.min_cart_value < subtotal &&
             orderDiscount.max_discount_value &&
             orderDiscount.max_discount_value < orderTotalDiscount
           ) {
@@ -902,7 +911,14 @@ const actions = {
                   CONST.DISCOUNT_ORDER_ERROR_CART,
                   { root: true }
                 )
-                reject(CONST.DISCOUNT_ORDER_ERROR_CART)
+                const minCartValue = rootGetters['location/formatPrice'](
+                  orderDiscount.min_cart_value
+                )
+                reject(
+                  rootGetters['location/_t'](
+                    `Minimum cart value should be <strong>${minCartValue}</strong> to apply <strong> ${orderDiscount.name} </strong>`
+                  )
+                )
               } else {
                 orderTotalDiscount = Num.round(
                   (subtotal * orderDiscount.rate) / 100
@@ -1681,7 +1697,10 @@ const mutations = {
     })
     state.items = filteredItems
   },
-
+  CLEAR_SELECTED_ORDER(state) {
+    state.orderSource = null
+    state.selectedOrder = false
+  },
   [mutation.RESET](state, full = true) {
     if (full) {
       state.items = []
