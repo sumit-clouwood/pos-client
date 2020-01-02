@@ -30,10 +30,10 @@ const actions = {
     // }
     if (initLoad) {
       commit(mutation.SET_LOADING, true)
+      commit(mutation.SET_ORDER_STATUS, 'in-progress')
     }
 
     commit(mutation.SET_LOADING_SILENT, true)
-    commit(mutation.SET_ORDER_STATUS, 'in-progress')
 
     CarhopService.fetchOrders(state.orderStatus, 1, state.limit).then(
       response => {
@@ -41,8 +41,8 @@ const actions = {
           let orders = response.data
           //check if allowed to see others orders
           if (!rootGetters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
-            orders = OrderHelper.filter(
-              response.data,
+            orders.data = OrderHelper.userOrders(
+              response.data.data,
               rootState.auth.userDetails.item._id
             )
           }
@@ -61,8 +61,8 @@ const actions = {
         let orders = response.data
         //check if allowed to see others orders
         if (!rootGetters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
-          orders = OrderHelper.filter(
-            response.data,
+          orders.data = OrderHelper.userOrders(
+            response.data.data,
             rootState.auth.userDetails.item._id
           )
         }
@@ -84,8 +84,8 @@ const actions = {
         let orders = response.data
         //check if allowed to see others orders
         if (!rootGetters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
-          orders = OrderHelper.filter(
-            response.data,
+          orders.data = OrderHelper.userOrders(
+            response.data.data,
             rootState.auth.userDetails.item._id
           )
         }
