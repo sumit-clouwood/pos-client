@@ -69,8 +69,10 @@
                         >
                           #{{ order.order_no }} |
                           {{
-                            LookupData.replaceUnderscoreHyphon(
-                              order.order_status
+                            _t(
+                              LookupData.replaceUnderscoreHyphon(
+                                order.order_status
+                              )
                             )
                           }}
                         </button>

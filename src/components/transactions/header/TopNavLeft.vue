@@ -4,8 +4,8 @@
     <div class="header-main-left-time color-main color-text-invert">
       <a href="javascript:void(0)" class="color-text-invert">
         <span class="time">{{ todayTime }}</span>
-        <span>{{ todayDate }}</span></a
-      >
+        <span><DateTimeVue /></span>
+      </a>
     </div>
   </div>
 </template>
@@ -13,12 +13,14 @@
 <script>
 import moment from 'moment-timezone'
 import HeaderOrderType from './HeaderOrderType'
+import DateTimeVue from '@/components/util/DateTimeVue'
 
 export default {
   name: 'NavSidebar',
   props: {},
   components: {
     HeaderOrderType,
+    DateTimeVue,
   },
   data() {
     return {
