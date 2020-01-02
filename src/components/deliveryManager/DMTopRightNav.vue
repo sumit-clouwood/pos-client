@@ -25,7 +25,7 @@
             <div class="change-location">
               <button
                 class="btn btn-success change-brand-web"
-                v-if="isPermitted(PERMISSIONS.BRAND_SETTINGS)"
+                v-if="allowed(PERMS.BRAND_SETTINGS)"
               >
                 <a :href="baseurl('delivery')">{{ _t('Change Brand') }}</a>
               </button>
@@ -88,6 +88,7 @@ export default {
       },
     },
     ...mapGetters('context', ['store']),
+    ...mapGetters('auth', ['allowed']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapGetters('location', ['_t', 'permitted']),
   },
