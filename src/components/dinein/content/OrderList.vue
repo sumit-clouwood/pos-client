@@ -4,7 +4,7 @@
     <div v-else class="running-order-table-wrap">
       <table class="table" id="running-order">
         <thead>
-          <tr class="dine-table-heading">
+          <tr class="dine-table-heading text-capitalize">
             <th width="200px">{{ _t('TABLE NUMBER') }}</th>
             <!--<th width="100px">{{ _t('STATUS') }}</th>-->
             <th width="450px">{{ _t('ORDERS') }}</th>
@@ -28,7 +28,11 @@
                 <p>
                   {{ _t('Status') }} :
                   {{
-                    LookupData.replaceUnderscoreHyphon(orderTable.table.status)
+                    _t(
+                      LookupData.replaceUnderscoreHyphon(
+                        orderTable.table.status
+                      )
+                    )
                   }}
                 </p>
                 <p>{{ _t('Area') }} : {{ orderTable.areaName }}</p>
