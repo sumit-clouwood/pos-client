@@ -745,8 +745,15 @@ export default {
           }
         }
       }
+      if (table.table_shape === 'circle' && chairs == 2 && angle == -45) {
+        transform = {
+          transformOrigin: '120% -10%;',
+          transformRotate: '315deg',
+        }
+      }
       //eslint-disable-next-line no-console
-      console.log(table, transform)
+      console.log(table, transform, angle, transformRotate)
+
       return transform
       // data.table_position_coordinate.angle
     },
