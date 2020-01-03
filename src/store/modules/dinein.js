@@ -2,6 +2,8 @@ import * as mutation from './dinein/mutation-types'
 import DineInService from '@/services/data/DineInService'
 import * as CONST from '@/constants'
 import moment from 'moment-timezone'
+import OrderHelper from '@/plugins/helpers/Order'
+import * as PERMS from '@/const/permissions'
 
 const state = {
   orders: {
@@ -139,7 +141,7 @@ const actions = {
     })
   },
 
-  seOrderData({ commit }, response) {
+  seOrderData({ commit, rootState, rootGetters }, response) {
     let orderDetails = []
     let responseData = response.data.data
     //state.areas = this.getDineInArea
@@ -161,12 +163,22 @@ const actions = {
         balanceDue += parseFloat(od.balance_due)
         currency = od.currency
       })
-      orderDetails.push({
-        table: table,
-        orders: order,
-        amount: balanceDue + ' ' + currency,
-        areaName: areaName.name.toUpperCase(),
-      })
+
+      //restrict waiters to see other's orders
+      if (!rootGetters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
+        order = OrderHelper.userOrders(
+          order,
+          rootState.auth.userDetails.item._id
+        )
+      }
+      if (order) {
+        orderDetails.push({
+          table: table,
+          orders: order,
+          amount: balanceDue + ' ' + currency,
+          areaName: areaName.name.toUpperCase(),
+        })
+      }
     })
     commit(mutation.ORDER_DETAILS, {
       tableData: responseData,
