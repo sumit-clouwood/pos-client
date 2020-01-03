@@ -29,4 +29,18 @@ export default {
         )
     )
   },
+  //pass array of orders
+  assignedToUser(orders, userId) {
+    if (!orders.length) {
+      return true
+    }
+
+    let ownOrder = false
+    orders.forEach(order => {
+      if (order.assigned_to === userId) {
+        ownOrder = true
+      }
+    })
+    return ownOrder
+  },
 }

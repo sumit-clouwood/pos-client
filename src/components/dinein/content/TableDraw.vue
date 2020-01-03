@@ -263,12 +263,15 @@ import switchWaiter from './buttons/switchWaiter'
 import Header from './Header'
 import DateTime from '@/mixins/DateTime'
 // import Status from '../../mobileComponents/mobileElements/status'
+import * as PERMS from '@/const/permissions'
+import OrderHelper from '@/plugins/helpers/Order'
 
 export default {
   name: 'TableDraw',
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('location', ['timezoneString', 'brand']),
+    ...mapState('auth', ['userDetails']),
     ...mapState('dinein', [
       'tablesOnArea',
       'activeArea',
@@ -298,6 +301,7 @@ export default {
   },
   data() {
     return {
+      cssClass: 'allowed',
       page: null,
       guests: 1,
       svg: null,
@@ -639,6 +643,21 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
+
+      if (!this.$store.getters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
+        //check if own order
+        if (
+          !OrderHelper.assignedToUser(
+            this.orderDetails,
+            this.userDetails.item._id
+          )
+        ) {
+          this.cssClass = 'restricted'
+          $('#tooltipdata').hide()
+          return false
+        }
+      }
+      this.cssClass = 'allowed'
       this.addOrSplit =
         this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
       if (this.brand.book_table || this.orderDetails.length) {
