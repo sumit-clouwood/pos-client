@@ -315,6 +315,7 @@ export default {
   data() {
     return {
       page: null,
+      tableTextTransform: true,
       guests: 1,
       svg: null,
       width: 'auto',
@@ -602,16 +603,183 @@ export default {
           .removeAttr('style')
       })
     },
+    setTextRotate(table) {
+      if (!this.tableTextTransform) {
+        return { transformOrigin: '', transformRotate: '' }
+      }
+      let angle = table.table_position_coordinate.angle
+      let chairs = parseInt(table.chairs)
+      let transformRotate = Math.abs(270 - parseInt(angle)) + 'deg'
+      // eslint-disable-next-line no-console
+      // console.log(table)
+      /* angle - 270 will get transformRotate in deg only we need set 315 to 315*/
+      let transform = {}
+      if (angle == 45) {
+        transform = {
+          transformOrigin: '55% 9%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '40% 0%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '44% 5%;',
+              transformRotate: transformRotate,
+            }
+          }
+        }
+        if (table.table_shape === 'square') {
+          transform = {
+            transformOrigin: '52% 16%;',
+            transformRotate: transformRotate,
+          }
+        }
+      }
+      if (angle == 90) {
+        transform = {
+          transformOrigin: '38% 20%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '40% 14%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          transform = {
+            transformOrigin: '33% 17%;',
+            transformRotate: transformRotate,
+          }
+        }
+      }
+      if (angle == 135) {
+        transform = {
+          transformOrigin: '26% 23%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '28% 20%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          transform = {
+            transformOrigin: '27% 32%;',
+            transformRotate: transformRotate,
+          }
+        }
+      }
+      if (angle == 180) {
+        transform = {
+          transformOrigin: '10% 33%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '9% 23%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '17% 56%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '8% 41%;',
+              transformRotate: transformRotate,
+            }
+          }
+        }
+      }
+      if (angle == 225) {
+        transform = {
+          transformOrigin: '-38% 35%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'square') {
+          transform = {
+            transformOrigin: '-33% 46%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '-5% 106%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '-28% 75%;',
+              transformRotate: transformRotate,
+            }
+          }
+        }
+      }
+      if (angle == 270) {
+        transform = {
+          transformOrigin: '',
+          transformRotate: '',
+        }
+      }
+      if (angle == 315) {
+        transform = { transformOrigin: '85% -35%;', transformRotate: '315deg' }
+        if (chairs > 6 && table.table_shape === 'rectangle') {
+          transform = {
+            transformOrigin: '67% -77%;',
+            transformRotate: '315deg',
+          }
+        }
+        if (chairs == 10 && table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '120% -3%;',
+            transformRotate: '315deg',
+          }
+        }
+        if (table.table_shape === 'square') {
+          transform = {
+            transformOrigin: '112% -8%;',
+            transformRotate: '315deg',
+          }
+        }
+      }
+      return transform
+      // data.table_position_coordinate.angle
+    },
     setTableProperties() {
       let dis = this
       d3.selectAll('.dinein_table').each((d, i, a) => {
+        let data = d
+        let angle = data.table_position_coordinate.angle
+        let transform = dis.setTextRotate(data)
+        let writingMode =
+          angle == 360 || angle == 0 || !dis.tableTextTransform
+            ? ''
+            : 'vertical-lr'
         d3.select(a[i])
           .select('text')
           .text(`${d.number}`)
-          .attr('style', 'font-size:60px')
-          .attr('style', 'font-weight:bold')
+          .attr(
+            'style',
+            'font-weight:bold; writing-mode:' +
+              writingMode +
+              '; transform-origin: ' +
+              transform.transformOrigin +
+              'transform: rotate(' +
+              transform.transformRotate +
+              ')'
+          )
         // .attr('fill', '#fff')
-        let data = d
+
         this.setTableColour(a[i], data)
         d3.select(a[i]).on('click', function(d, i, a) {
           dis.showOptions(d, i, a)
