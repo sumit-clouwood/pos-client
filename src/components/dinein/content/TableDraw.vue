@@ -604,14 +604,13 @@ export default {
       })
     },
     setTextRotate(table) {
-      if (!this.tableTextTransform) {
-        return { transformOrigin: '', transformRotate: '' }
-      }
       let angle = table.table_position_coordinate.angle
+
+      if (!this.tableTextTransform || angle == 270) {
+        return { transformOrigin: ';', transformRotate: '' }
+      }
       let chairs = parseInt(table.chairs)
       let transformRotate = Math.abs(270 - parseInt(angle)) + 'deg'
-      // eslint-disable-next-line no-console
-      // console.log(table)
       /* angle - 270 will get transformRotate in deg only we need set 315 to 315*/
       let transform = {}
       if (angle == 45) {
@@ -725,12 +724,6 @@ export default {
           }
         }
       }
-      if (angle == 270) {
-        transform = {
-          transformOrigin: '',
-          transformRotate: '',
-        }
-      }
       if (angle == 315) {
         transform = { transformOrigin: '85% -35%;', transformRotate: '315deg' }
         if (chairs > 6 && table.table_shape === 'rectangle') {
@@ -752,6 +745,8 @@ export default {
           }
         }
       }
+      //eslint-disable-next-line no-console
+      console.log(table, transform)
       return transform
       // data.table_position_coordinate.angle
     },
