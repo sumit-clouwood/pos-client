@@ -116,19 +116,10 @@
                   >
                     {{ _t(addOrSplit) }}
                   </span>
-                  <span
-                    v-if="
-                      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API) &&
-                        tableBooked
-                    "
-                    data-toggle="modal"
-                    data-target="#switchWaiter"
-                    data-dismiss="modal"
-                    @click="setSelectedTable(orderDetails)"
-                    class="table-popup popbtn bg-success font-weight-bold"
-                  >
-                    {{ _t('Switch Waiter') }}
-                  </span>
+                  <switch-waiter
+                    :tableBooked="tableBooked"
+                    :orderDetails="orderDetails"
+                  ></switch-waiter>
                 </div>
               </div>
               <div class="table-order-footer" v-else>
@@ -141,19 +132,10 @@
                   >
                     {{ _t(addOrSplit) }}
                   </span>
-                  <span
-                    v-if="
-                      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API) &&
-                        tableBooked
-                    "
-                    data-toggle="modal"
-                    data-target="#switchWaiter"
-                    data-dismiss="modal"
-                    @click="setSelectedTable(orderDetails)"
-                    class="table-popup popbtn bg-success font-weight-bold"
-                  >
-                    {{ _t('Switch Waiter') }}
-                  </span>
+                  <switch-waiter
+                    :tableBooked="tableBooked"
+                    :orderDetails="orderDetails"
+                  ></switch-waiter>
                 </div>
               </div>
             </div>
@@ -275,17 +257,21 @@ import { mapGetters, mapState, mapActions } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
 import AllTables from './AllTables'
+import switchWaiter from './buttons/switchWaiter'
 
 // import LookupData from '@/plugins/helpers/LookupData'
 import Header from './Header'
 import DateTime from '@/mixins/DateTime'
 // import Status from '../../mobileComponents/mobileElements/status'
+import * as PERMS from '@/const/permissions'
+import OrderHelper from '@/plugins/helpers/Order'
 
 export default {
   name: 'TableDraw',
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('location', ['timezoneString', 'brand']),
+    ...mapState('auth', ['userDetails']),
     ...mapState('dinein', [
       'tablesOnArea',
       'activeArea',
@@ -311,9 +297,11 @@ export default {
     Header,
     TableStatus,
     AllTables,
+    switchWaiter,
   },
   data() {
     return {
+      cssClass: 'allowed',
       page: null,
       tableTextTransform: true,
       guests: 1,
@@ -384,25 +372,6 @@ export default {
     },
   },
   methods: {
-    setSelectedTable(orderDetails) {
-      if (orderDetails) {
-        let tableOrder = null
-        orderDetails.forEach(order => {
-          if (order.orderIds && order.orderIds.length) {
-            const orderObj = this.allBookedTables.lookup.orders._id[
-              order.orderIds[0]
-            ]
-            const orderStatus = orderObj.order_status
-            if (orderStatus !== 'finished') {
-              tableOrder = order
-            }
-          } else {
-            tableOrder = order
-          }
-        })
-        this.$store.commit('dinein/SET_RESERVATION_DATA', tableOrder)
-      }
-    },
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
     closeMyself() {
       $('#tooltipdata').hide()
@@ -844,6 +813,21 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
+
+      if (!this.$store.getters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
+        //check if own order
+        if (
+          !OrderHelper.assignedToUser(
+            this.orderDetails,
+            this.userDetails.item._id
+          )
+        ) {
+          this.cssClass = 'restricted'
+          $('#tooltipdata').hide()
+          return false
+        }
+      }
+      this.cssClass = 'allowed'
       this.addOrSplit =
         this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
       if (this.brand.book_table || this.orderDetails.length) {
