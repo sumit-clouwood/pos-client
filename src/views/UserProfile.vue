@@ -57,9 +57,6 @@ export default {
 .buttons,
 #dm-content-wrapper {
   margin-top: 2%;
-}
-#switch-user-btn-profile {
-  background: $blue-light;
-  border-color: $blue-light;
+  overflow-y: auto;
 }
 </style>
