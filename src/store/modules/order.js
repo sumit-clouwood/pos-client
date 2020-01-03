@@ -725,19 +725,39 @@ const actions = {
 
         const subtotal = getters.subTotal
         let totalTax = 0
+        let totalSurcharge = rootGetters['surcharge/surcharge']
+        let totalOrderDiscount = 0
 
-        orderTotalDiscount = Num.round((subtotal * orderDiscount.rate) / 100)
+        //this is used for max discount only and only works for percentage, actual discount is
+        //calculated below in respective section
+        if (orderDiscount.include_surcharge) {
+          totalTax = getters.totalTaxWithoutOrderDiscount
+          orderTotalDiscount = Num.round((subtotal * orderDiscount.rate) / 100)
+          taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
+          surchargeTotalDiscount = Num.round(
+            (totalSurcharge * orderDiscount.rate) / 100
+          )
+        } else {
+          orderTotalDiscount = Num.round((subtotal * orderDiscount.rate) / 100)
+          totalTax = getters.totalItemsTax
+          taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
+          surchargeTotalDiscount = 0
+        }
+
+        totalOrderDiscount =
+          orderTotalDiscount + taxTotalDiscount + surchargeTotalDiscount
 
         if (orderDiscount.include_surcharge) {
           //apply ontotal discount, apply on surcharge and its tax as well
           totalTax = getters.totalTaxWithoutOrderDiscount
 
           console.log('total tax, ', totalTax)
-          const totalSurcharge = rootGetters['surcharge/surcharge']
+          totalSurcharge = rootGetters['surcharge/surcharge']
           console.log('total surcharge', totalSurcharge)
           if (
+            orderDiscount.min_cart_value < subtotal &&
             orderDiscount.max_discount_value &&
-            orderDiscount.max_discount_value < orderTotalDiscount
+            orderDiscount.max_discount_value < totalOrderDiscount
           ) {
             orderTotalDiscount = orderDiscount.max_discount_value
 
@@ -806,7 +826,14 @@ const actions = {
                   CONST.DISCOUNT_ORDER_ERROR_CART,
                   { root: true }
                 )
-                reject(CONST.DISCOUNT_ORDER_ERROR_CART)
+                const minCartValue = rootGetters['location/formatPrice'](
+                  orderDiscount.min_cart_value
+                )
+                reject(
+                  rootGetters['location/_t'](
+                    `Minimum cart value should be <strong>${minCartValue}</strong> to apply <strong>${orderDiscount.name}</strong>`
+                  )
+                )
               } else {
                 orderTotalDiscount = Num.round(
                   (subtotal * orderDiscount.rate) / 100
@@ -842,8 +869,9 @@ const actions = {
           totalTax = getters.totalItemsTax
 
           if (
+            orderDiscount.min_cart_value < subtotal &&
             orderDiscount.max_discount_value &&
-            orderDiscount.max_discount_value < orderTotalDiscount
+            orderDiscount.max_discount_value < totalOrderDiscount
           ) {
             orderTotalDiscount = orderDiscount.max_discount_value
             const percentDiscountOnSubTotal = Num.round(
@@ -902,7 +930,14 @@ const actions = {
                   CONST.DISCOUNT_ORDER_ERROR_CART,
                   { root: true }
                 )
-                reject(CONST.DISCOUNT_ORDER_ERROR_CART)
+                const minCartValue = rootGetters['location/formatPrice'](
+                  orderDiscount.min_cart_value
+                )
+                reject(
+                  rootGetters['location/_t'](
+                    `Minimum cart value should be <strong>${minCartValue}</strong> to apply <strong> ${orderDiscount.name} </strong>`
+                  )
+                )
               } else {
                 orderTotalDiscount = Num.round(
                   (subtotal * orderDiscount.rate) / 100
@@ -1681,7 +1716,10 @@ const mutations = {
     })
     state.items = filteredItems
   },
-
+  CLEAR_SELECTED_ORDER(state) {
+    state.orderSource = null
+    state.selectedOrder = false
+  },
   [mutation.RESET](state, full = true) {
     if (full) {
       state.items = []

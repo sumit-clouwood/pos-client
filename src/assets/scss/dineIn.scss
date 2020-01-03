@@ -121,8 +121,8 @@ li#circle-table-shape {
     padding-left: 0;
     > li {
       display: inline-block;
-      min-width: $px50;
       text-align: center;
+      margin-right: $px16;
       &.active{
         border-bottom: $px2 solid $blue-middle;
         > a{
@@ -133,7 +133,7 @@ li#circle-table-shape {
       > a {
         color: #72747b;
         font-size: $px14;
-        padding: $px5;
+        padding: $px10 0;
       }
     }
   }

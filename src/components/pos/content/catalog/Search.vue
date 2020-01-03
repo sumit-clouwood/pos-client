@@ -64,7 +64,7 @@
         </div>
       </div>
     </form>
-    <div class="search-field-icon home" @click="goToHome()">
+    <div class="search-field-icon home hideBigScreen" @click="goToHome()">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"

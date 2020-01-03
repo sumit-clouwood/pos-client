@@ -2,12 +2,13 @@
   <div class="date-time">
     <a href="#">
       <span class="time">{{ todayTime }}</span>
-      <span class="date">{{ todayDate }}</span>
+      <span class="date"><DateTimeVue /></span>
     </a>
   </div>
 </template>
 <script>
 import moment from 'moment-timezone'
+import DateTimeVue from '@/components/util/DateTimeVue'
 
 export default {
   data() {
@@ -15,6 +16,9 @@ export default {
       todayDate: moment().format('L'),
       todayTime: moment().format('h:mm:ss a'),
     }
+  },
+  components: {
+    DateTimeVue,
   },
   mounted() {
     setInterval(() => {

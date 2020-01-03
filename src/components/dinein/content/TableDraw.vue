@@ -116,19 +116,10 @@
                   >
                     {{ _t(addOrSplit) }}
                   </span>
-                  <span
-                    v-if="
-                      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API) &&
-                        tableBooked
-                    "
-                    data-toggle="modal"
-                    data-target="#switchWaiter"
-                    data-dismiss="modal"
-                    @click="setSelectedTable(orderDetails)"
-                    class="table-popup popbtn bg-success font-weight-bold"
-                  >
-                    {{ _t('Switch Waiter') }}
-                  </span>
+                  <switch-waiter
+                    :tableBooked="tableBooked"
+                    :orderDetails="orderDetails"
+                  ></switch-waiter>
                 </div>
               </div>
               <div class="table-order-footer" v-else>
@@ -141,19 +132,10 @@
                   >
                     {{ _t(addOrSplit) }}
                   </span>
-                  <span
-                    v-if="
-                      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API) &&
-                        tableBooked
-                    "
-                    data-toggle="modal"
-                    data-target="#switchWaiter"
-                    data-dismiss="modal"
-                    @click="setSelectedTable(orderDetails)"
-                    class="table-popup popbtn bg-success font-weight-bold"
-                  >
-                    {{ _t('Switch Waiter') }}
-                  </span>
+                  <switch-waiter
+                    :tableBooked="tableBooked"
+                    :orderDetails="orderDetails"
+                  ></switch-waiter>
                 </div>
               </div>
             </div>
@@ -275,17 +257,21 @@ import { mapGetters, mapState, mapActions } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
 import AllTables from './AllTables'
+import switchWaiter from './buttons/switchWaiter'
 
 // import LookupData from '@/plugins/helpers/LookupData'
 import Header from './Header'
 import DateTime from '@/mixins/DateTime'
 // import Status from '../../mobileComponents/mobileElements/status'
+import * as PERMS from '@/const/permissions'
+import OrderHelper from '@/plugins/helpers/Order'
 
 export default {
   name: 'TableDraw',
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('location', ['timezoneString', 'brand']),
+    ...mapState('auth', ['userDetails']),
     ...mapState('dinein', [
       'tablesOnArea',
       'activeArea',
@@ -311,10 +297,13 @@ export default {
     Header,
     TableStatus,
     AllTables,
+    switchWaiter,
   },
   data() {
     return {
+      cssClass: 'allowed',
       page: null,
+      tableTextTransform: true,
       guests: 1,
       svg: null,
       width: 'auto',
@@ -383,25 +372,6 @@ export default {
     },
   },
   methods: {
-    setSelectedTable(orderDetails) {
-      if (orderDetails) {
-        let tableOrder = null
-        orderDetails.forEach(order => {
-          if (order.orderIds && order.orderIds.length) {
-            const orderObj = this.allBookedTables.lookup.orders._id[
-              order.orderIds[0]
-            ]
-            const orderStatus = orderObj.order_status
-            if (orderStatus !== 'finished') {
-              tableOrder = order
-            }
-          } else {
-            tableOrder = order
-          }
-        })
-        this.$store.commit('dinein/SET_RESERVATION_DATA', tableOrder)
-      }
-    },
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
     closeMyself() {
       $('#tooltipdata').hide()
@@ -602,16 +572,185 @@ export default {
           .removeAttr('style')
       })
     },
+    setTextRotate(table) {
+      let angle = table.table_position_coordinate.angle
+
+      if (!this.tableTextTransform || angle == 270) {
+        return { transformOrigin: ';', transformRotate: '' }
+      }
+      let chairs = parseInt(table.chairs)
+      let transformRotate = Math.abs(270 - parseInt(angle)) + 'deg'
+      /* angle - 270 will get transformRotate in deg only we need set 315 to 315*/
+      let transform = {}
+      if (angle == 45) {
+        transform = {
+          transformOrigin: '55% 9%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '40% 0%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '44% 5%;',
+              transformRotate: transformRotate,
+            }
+          }
+        }
+        if (table.table_shape === 'square') {
+          transform = {
+            transformOrigin: '52% 16%;',
+            transformRotate: transformRotate,
+          }
+        }
+      }
+      if (angle == 90) {
+        transform = {
+          transformOrigin: '38% 20%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '40% 14%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          transform = {
+            transformOrigin: '33% 17%;',
+            transformRotate: transformRotate,
+          }
+        }
+      }
+      if (angle == 135) {
+        transform = {
+          transformOrigin: '26% 23%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '28% 20%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          transform = {
+            transformOrigin: '27% 32%;',
+            transformRotate: transformRotate,
+          }
+        }
+      }
+      if (angle == 180) {
+        transform = {
+          transformOrigin: '10% 33%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '9% 23%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '17% 56%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '8% 41%;',
+              transformRotate: transformRotate,
+            }
+          }
+        }
+      }
+      if (angle == 225) {
+        transform = {
+          transformOrigin: '-38% 35%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'square') {
+          transform = {
+            transformOrigin: '-33% 46%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '-5% 106%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '-28% 75%;',
+              transformRotate: transformRotate,
+            }
+          }
+        }
+      }
+      if (angle == 315) {
+        transform = { transformOrigin: '85% -35%;', transformRotate: '315deg' }
+        if (chairs > 6 && table.table_shape === 'rectangle') {
+          transform = {
+            transformOrigin: '67% -77%;',
+            transformRotate: '315deg',
+          }
+        }
+        if (chairs == 10 && table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '120% -3%;',
+            transformRotate: '315deg',
+          }
+        }
+        if (table.table_shape === 'square') {
+          transform = {
+            transformOrigin: '112% -8%;',
+            transformRotate: '315deg',
+          }
+        }
+      }
+      if (table.table_shape === 'circle' && chairs == 2 && angle == -45) {
+        transform = {
+          transformOrigin: '120% -10%;',
+          transformRotate: '315deg',
+        }
+      }
+      //eslint-disable-next-line no-console
+      console.log(table, transform, angle, transformRotate)
+
+      return transform
+      // data.table_position_coordinate.angle
+    },
     setTableProperties() {
       let dis = this
       d3.selectAll('.dinein_table').each((d, i, a) => {
+        let data = d
+        let angle = data.table_position_coordinate.angle
+        let transform = dis.setTextRotate(data)
+        let writingMode =
+          angle == 360 || angle == 0 || !dis.tableTextTransform
+            ? ''
+            : 'vertical-lr'
         d3.select(a[i])
           .select('text')
           .text(`${d.number}`)
-          .attr('style', 'font-size:60px')
-          .attr('style', 'font-weight:bold')
+          .attr(
+            'style',
+            'font-weight:bold; writing-mode:' +
+              writingMode +
+              '; transform-origin: ' +
+              transform.transformOrigin +
+              'transform: rotate(' +
+              transform.transformRotate +
+              ')'
+          )
         // .attr('fill', '#fff')
-        let data = d
+
         this.setTableColour(a[i], data)
         d3.select(a[i]).on('click', function(d, i, a) {
           dis.showOptions(d, i, a)
@@ -674,6 +813,21 @@ export default {
       this.orderDetails = this.orderOnTables.filter(
         order => order.tableId === datum._id
       )
+
+      if (!this.$store.getters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
+        //check if own order
+        if (
+          !OrderHelper.assignedToUser(
+            this.orderDetails,
+            this.userDetails.item._id
+          )
+        ) {
+          this.cssClass = 'restricted'
+          $('#tooltipdata').hide()
+          return false
+        }
+      }
+      this.cssClass = 'allowed'
       this.addOrSplit =
         this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
       if (this.brand.book_table || this.orderDetails.length) {

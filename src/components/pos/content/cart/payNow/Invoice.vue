@@ -147,6 +147,7 @@ export default {
         let resetFull = false
         if (this.$store.getters['checkout/complete']) {
           resetFull = true
+          this.$store.commit('order/CLEAR_SELECTED_ORDER')
         }
 
         this.$store.dispatch('checkout/reset', resetFull)

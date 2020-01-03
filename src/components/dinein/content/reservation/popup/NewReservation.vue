@@ -756,7 +756,7 @@ export default {
 }
 div#NewReservation label {
   color: #a4a4a4;
-  font-size: 14px;
+  font-size: $px16;
   font-weight: normal;
 }
 
