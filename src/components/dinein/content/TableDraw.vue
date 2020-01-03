@@ -116,19 +116,10 @@
                   >
                     {{ _t(addOrSplit) }}
                   </span>
-                  <span
-                    v-if="
-                      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API) &&
-                        tableBooked
-                    "
-                    data-toggle="modal"
-                    data-target="#switchWaiter"
-                    data-dismiss="modal"
-                    @click="setSelectedTable(orderDetails)"
-                    class="table-popup popbtn bg-success font-weight-bold"
-                  >
-                    {{ _t('Switch Waiter') }}
-                  </span>
+                  <switch-waiter
+                    :tableBooked="tableBooked"
+                    :orderDetails="orderDetails"
+                  ></switch-waiter>
                 </div>
               </div>
               <div class="table-order-footer" v-else>
@@ -141,19 +132,10 @@
                   >
                     {{ _t(addOrSplit) }}
                   </span>
-                  <span
-                    v-if="
-                      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API) &&
-                        tableBooked
-                    "
-                    data-toggle="modal"
-                    data-target="#switchWaiter"
-                    data-dismiss="modal"
-                    @click="setSelectedTable(orderDetails)"
-                    class="table-popup popbtn bg-success font-weight-bold"
-                  >
-                    {{ _t('Switch Waiter') }}
-                  </span>
+                  <switch-waiter
+                    :tableBooked="tableBooked"
+                    :orderDetails="orderDetails"
+                  ></switch-waiter>
                 </div>
               </div>
             </div>
@@ -275,6 +257,7 @@ import { mapGetters, mapState, mapActions } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
 import AllTables from './AllTables'
+import switchWaiter from './buttons/switchWaiter'
 
 // import LookupData from '@/plugins/helpers/LookupData'
 import Header from './Header'
@@ -311,6 +294,7 @@ export default {
     Header,
     TableStatus,
     AllTables,
+    switchWaiter,
   },
   data() {
     return {
