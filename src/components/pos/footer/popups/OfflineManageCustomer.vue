@@ -75,7 +75,11 @@ export default {
       console.log('form errors', errors)
       if (errors.count === 0) {
         const data = this.$refs.form.getData()
+        if (typeof data.email === 'undefined') {
+          data.email = ''
+        }
         console.log(data)
+
         if (!data.city) {
           data.city = this.$store.state.location.store.city
         }
