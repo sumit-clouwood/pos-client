@@ -573,15 +573,44 @@ export default {
       })
     },
     setTextRotate(table) {
-      let angle = table.table_position_coordinate.angle
-
+      let angleX = parseInt(table.table_position_coordinate.angle)
+      // angleX = angleX > 360 || angleX < -360 ? 360 : angleX
+      let angle = angleX < 0 ? angleX + 360 : angleX
       if (!this.tableTextTransform || angle == 270) {
         return { transformOrigin: ';', transformRotate: '' }
       }
       let chairs = parseInt(table.chairs)
-      let transformRotate = Math.abs(270 - parseInt(angle)) + 'deg'
+      let transformRotate = (angle > 0 ? 270 - angle : angle + 270) + 'deg'
+
+      //eslint-disable-next-line no-console
+      // console.log(table, angle, transformRotate, angleX)
       /* angle - 270 will get transformRotate in deg only we need set 315 to 315*/
       let transform = {}
+      if (angle == 0 || angle == 360) {
+        transform = {
+          transformOrigin: '70% 7%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '73% 7%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '48% -24%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '55% -6%;',
+              transformRotate: transformRotate,
+            }
+          }
+        }
+      }
       if (angle == 45) {
         transform = {
           transformOrigin: '55% 9%;',
@@ -637,13 +666,20 @@ export default {
           }
         }
         if (table.table_shape === 'rectangle') {
-          transform = {
-            transformOrigin: '27% 32%;',
-            transformRotate: transformRotate,
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '27% 32%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '28% 27%;',
+              transformRotate: transformRotate,
+            }
           }
         }
       }
-      if (angle == 180) {
+      if (angle == 180 || angle == -180) {
         transform = {
           transformOrigin: '10% 33%;',
           transformRotate: transformRotate,
@@ -662,7 +698,7 @@ export default {
             }
           } else {
             transform = {
-              transformOrigin: '8% 41%;',
+              transformOrigin: '15% 39%;',
               transformRotate: transformRotate,
             }
           }
@@ -687,7 +723,7 @@ export default {
             }
           } else {
             transform = {
-              transformOrigin: '-28% 75%;',
+              transformOrigin: '-15% 75%;',
               transformRotate: transformRotate,
             }
           }
@@ -701,9 +737,9 @@ export default {
             transformRotate: '315deg',
           }
         }
-        if (chairs == 10 && table.table_shape === 'circle') {
+        if (table.table_shape === 'circle') {
           transform = {
-            transformOrigin: '120% -3%;',
+            transformOrigin: '120% -5%;',
             transformRotate: '315deg',
           }
         }
@@ -714,14 +750,12 @@ export default {
           }
         }
       }
-      if (table.table_shape === 'circle' && chairs == 2 && angle == -45) {
+      if (table.table_shape === 'circle' && angle == -45) {
         transform = {
           transformOrigin: '120% -10%;',
           transformRotate: '315deg',
         }
       }
-      //eslint-disable-next-line no-console
-      console.log(table, transform, angle, transformRotate)
 
       return transform
       // data.table_position_coordinate.angle
@@ -732,8 +766,7 @@ export default {
         let data = d
         let angle = data.table_position_coordinate.angle
         let transform = dis.setTextRotate(data)
-        let writingMode =
-          angle == 360 || angle == 0 || !dis.tableTextTransform
+        let writingMode = !dis.tableTextTransform
             ? ''
             : 'vertical-lr'
         d3.select(a[i])
