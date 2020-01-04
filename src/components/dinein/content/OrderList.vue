@@ -29,8 +29,10 @@
                   <p>
                     {{ _t('Status') }} :
                     {{
-                      LookupData.replaceUnderscoreHyphon(
-                        orderTable.table.status
+                      _t(
+                        LookupData.replaceUnderscoreHyphon(
+                          orderTable.table.status
+                        )
                       )
                     }}
                   </p>
