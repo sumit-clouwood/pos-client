@@ -57,10 +57,12 @@ export default {
       if (this.preview) {
         return ''
       }
+      /* eslint-disable */
+      console.log(this.order.order_no);
       return (
         this._t('ORDER_DIALOG_TITLE_PREFIX') +
-        (this.order.orderNumber
-          ? this.order.orderNumber
+        (this.order.order_no
+          ? this.order.order_no
           : this.order.real_created_datetime
           ? this.order.real_created_datetime
           : '') +

@@ -54,6 +54,15 @@
               <span class="float-right">{{ order_type }}</span>
             </th>
           </tr>
+          <tr
+            class="left-aligned"
+            v-if="tableNumber && orderType.OTApi === 'dine_in'"
+          >
+            <th colspan="3">
+              {{ template.table_number_label }}
+              <span class="float-right">{{ tableNumber }}</span>
+            </th>
+          </tr>
           <tr v-if="crm_module_enabled && customer" class="left-aligned">
             <th colspan="3">
               {{ template.customer_label }}
@@ -324,6 +333,8 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapGetters('location', ['_t']),
     ...mapState('location', ['timezoneString']),
+    ...mapState('invoice', ['tableNumber']),
+    ...mapState('order', ['orderType']),
 
     dataBeingLoaded() {
       if (!this.order_to_print || !this.template) {
