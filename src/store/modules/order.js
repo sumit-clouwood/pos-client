@@ -1464,11 +1464,16 @@ const actions = {
         .then(response => {
           let orderDetails = {}
           orderDetails.item = response.data.item
-          orderDetails.customer = response.data.collected_data.customer
-          orderDetails.lookups = response.data.collected_data.page_lookups
-          orderDetails.store_name = response.data.collected_data.store_name
-          orderDetails.invoice =
-            response.data.collected_data.store_invoice_templates
+          let collectedData = response.data.collected_data
+          orderDetails.customer = collectedData.customer
+          orderDetails.lookups = collectedData.page_lookups
+          orderDetails.store_name = collectedData.store_name
+          orderDetails.invoice = collectedData.store_invoice_templates
+          //Check if there is a table number in order details
+          if (typeof collectedData.table_number != 'undefined') {
+            orderDetails.table_number = collectedData.table_number
+          }
+
           commit(mutation.SET_ORDER_DETAILS, orderDetails)
 
           OrderService.getModalDetails('brand_cancellation_reasons')
