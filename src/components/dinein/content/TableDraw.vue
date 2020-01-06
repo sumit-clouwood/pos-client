@@ -612,7 +612,7 @@ export default {
         }
         if (table.table_shape === 'circle') {
           transform = {
-            transformOrigin: '75% 7%;',
+            transformOrigin: '75% 5%;',
             transformRotate: transformRotate,
           }
         }
@@ -858,6 +858,7 @@ export default {
         .getBoundingClientRect()
     },
     showOptions(datum, i, a) {
+      this.$store.dispatch('dinein/getBookedTables', false, { root: true })
       this.selectedTableData = datum
       this.guests = 1
       this.validationErrors = ''
