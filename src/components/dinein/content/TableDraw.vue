@@ -572,19 +572,67 @@ export default {
           .removeAttr('style')
       })
     },
-    setTextRotate(table) {
-      let angle = table.table_position_coordinate.angle
-
-      if (!this.tableTextTransform || angle == 270) {
+    setTextRotate(table, angle) {
+      // let angleX = parseInt(table.table_position_coordinate.angle)
+      // angleX = angleX > 360 || angleX < -360 ? 360 : angleX
+      // let angle = angleX < 0 ? angleX + 360 : angleX
+      if (!this.tableTextTransform) {
         return { transformOrigin: ';', transformRotate: '' }
       }
+      if (angle == 270) {
+        transform = {
+          transformOrigin: '19% 63%;',
+          transformRotate: '90deg',
+        }
+        if (table.table_shape === 'square') {
+          transform = {
+            transformOrigin: '9% 35%;',
+            transformRotate: '90deg',
+          }
+        }
+
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '10% 29%;',
+            transformRotate: '90deg',
+          }
+        }
+        return transform
+      }
       let chairs = parseInt(table.chairs)
-      let transformRotate = Math.abs(270 - parseInt(angle)) + 'deg'
+      let transformRotate = (angle > 0 ? 270 - angle : angle + 270) + 'deg'
+      //eslint-disable-next-line no-console
+      // console.log(table, angle, transformRotate, angleX)
       /* angle - 270 will get transformRotate in deg only we need set 315 to 315*/
       let transform = {}
+      if (angle == 0 || angle == 360) {
+        transform = {
+          transformOrigin: '69% 8%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '75% 7%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '48% -24%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '55% -6%;',
+              transformRotate: transformRotate,
+            }
+          }
+        }
+      }
       if (angle == 45) {
         transform = {
-          transformOrigin: '55% 9%;',
+          transformOrigin: '55% 10%;',
           transformRotate: transformRotate,
         }
         if (table.table_shape === 'rectangle') {
@@ -614,7 +662,7 @@ export default {
         }
         if (table.table_shape === 'circle') {
           transform = {
-            transformOrigin: '40% 14%;',
+            transformOrigin: '42% 15%;',
             transformRotate: transformRotate,
           }
         }
@@ -627,7 +675,7 @@ export default {
       }
       if (angle == 135) {
         transform = {
-          transformOrigin: '26% 23%;',
+          transformOrigin: '27% 24%;',
           transformRotate: transformRotate,
         }
         if (table.table_shape === 'circle') {
@@ -637,15 +685,22 @@ export default {
           }
         }
         if (table.table_shape === 'rectangle') {
-          transform = {
-            transformOrigin: '27% 32%;',
-            transformRotate: transformRotate,
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '27% 32%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '28% 27%;',
+              transformRotate: transformRotate,
+            }
           }
         }
       }
-      if (angle == 180) {
+      if (angle == 180 || angle == -180) {
         transform = {
-          transformOrigin: '10% 33%;',
+          transformOrigin: '9% 32%;',
           transformRotate: transformRotate,
         }
         if (table.table_shape === 'circle') {
@@ -662,7 +717,7 @@ export default {
             }
           } else {
             transform = {
-              transformOrigin: '8% 41%;',
+              transformOrigin: '15% 39%;',
               transformRotate: transformRotate,
             }
           }
@@ -687,7 +742,7 @@ export default {
             }
           } else {
             transform = {
-              transformOrigin: '-28% 75%;',
+              transformOrigin: '-15% 75%;',
               transformRotate: transformRotate,
             }
           }
@@ -701,27 +756,25 @@ export default {
             transformRotate: '315deg',
           }
         }
-        if (chairs == 10 && table.table_shape === 'circle') {
+        if (table.table_shape === 'circle') {
           transform = {
-            transformOrigin: '120% -3%;',
+            transformOrigin: '120% -5%;',
             transformRotate: '315deg',
           }
         }
         if (table.table_shape === 'square') {
           transform = {
-            transformOrigin: '112% -8%;',
+            transformOrigin: '114% -8%;',
             transformRotate: '315deg',
           }
         }
       }
-      if (table.table_shape === 'circle' && chairs == 2 && angle == -45) {
+      if (table.table_shape === 'circle' && angle == -45) {
         transform = {
           transformOrigin: '120% -10%;',
           transformRotate: '315deg',
         }
       }
-      //eslint-disable-next-line no-console
-      console.log(table, transform, angle, transformRotate)
 
       return transform
       // data.table_position_coordinate.angle
@@ -730,12 +783,12 @@ export default {
       let dis = this
       d3.selectAll('.dinein_table').each((d, i, a) => {
         let data = d
-        let angle = data.table_position_coordinate.angle
-        let transform = dis.setTextRotate(data)
+        let angleX = parseInt(data.table_position_coordinate.angle)
+        // angleX = angleX > 360 || angleX < -360 ? 360 : angleX
+        let angle = angleX < 0 ? angleX + 360 : angleX
+        let transform = dis.setTextRotate(data, angle)
         let writingMode =
-          angle == 360 || angle == 0 || !dis.tableTextTransform
-            ? ''
-            : 'vertical-lr'
+          angle == 270 || !dis.tableTextTransform ? '' : 'vertical-lr'
         d3.select(a[i])
           .select('text')
           .text(`${d.number}`)
