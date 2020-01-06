@@ -30,7 +30,11 @@ export default {
       if (orderDetails) {
         let tableOrder = null
         orderDetails.forEach(order => {
-          if (order.orderIds && order.orderIds.length) {
+          if (
+            order.orderIds &&
+            order.orderIds.length &&
+            typeof this.allBookedTables != 'undefined'
+          ) {
             const orderObj = this.allBookedTables.lookup.orders._id[
               order.orderIds[0]
             ]
