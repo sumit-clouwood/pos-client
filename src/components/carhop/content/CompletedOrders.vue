@@ -82,7 +82,7 @@
         <div class="pagination-customer-details">
           <paginate
             v-if="orders.count"
-            :page-count="Math.ceil(orders.data.length / limit)"
+            :page-count="Math.ceil(orders.count / limit)"
             :page-range="2"
             :margin-pages="2"
             :clickHandler="fetchMore"
