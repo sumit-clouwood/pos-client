@@ -46,16 +46,16 @@ const state = {
   currentTableReservationData: null,
 }
 const getters = {
-  getTableOrders: state => tableId => {
-    return state.orderOnTables.map(tableData => tableData.tableId === tableId)
-  },
   getCurrentTableRunningReservations: state => {
     if (!state.currentTableReservationData) {
       return false
     }
-    return state.currentTableReservationData.map(
-      reservation => reservation.status !== 'completed'
-    )
+    return state.currentTableReservationData.map(reservation => {
+      if (reservation.status !== 'completed') {
+        return reservation
+      }
+      return false
+    })
   },
   getOrderStatus: () => order_status => {
     // eslint-disable-next-line no-console
@@ -531,7 +531,7 @@ const actions = {
   },
 
   switchWaiter({ getters }, waiter) {
-    const reservationsOnTable = getters.getCurrentTableRunningReservations()
+    const reservationsOnTable = getters.getCurrentTableRunningReservations
 
     reservationsOnTable.forEach(reservation => {
       DineInService.switchWaiter(reservation.reservationId, {
