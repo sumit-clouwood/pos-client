@@ -988,7 +988,13 @@ const actions = {
             value: discount.discount.value,
           }
 
-          if (discount.discount.type === CONST.VALUE) {
+          if (discount.discount.type === CONST.FIXED) {
+            const priceDiff = item.grossPrice - discount.discount.value
+            const discountPercentage = (priceDiff * 100) / item.grossPrice
+            item.discountRate = discountPercentage
+            item.discountedTax = false
+            item.discountedNetPrice = false
+          } else if (discount.discount.type === CONST.VALUE) {
             if (
               discount.discount.value >
               getters.itemNetPrice(item) * item.quantity
