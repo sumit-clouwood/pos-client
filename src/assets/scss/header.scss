@@ -186,7 +186,7 @@
         color: #000;
         font-size: $px16;
           .setting-menu-wrapper {
-            height: calc(100vh - 160px);
+            height: calc(100vh - 152px);
             overflow: auto;
           }
         ul{
@@ -307,10 +307,8 @@
     }
   }
   .setting-dropdown{
-    z-index: 999;
+    z-index: 9999;
     width: 90% !important;
-    overflow: auto;
-    height: calc(100vh - 80px) !important;
     ul{
       &.dine-footer-navmenu{
         position: static !important;

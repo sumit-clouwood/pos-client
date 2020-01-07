@@ -544,7 +544,7 @@ h6 {
         color: #000;
         font-size: 1rem; }
         .header .header-main .header-main-right .setting-dropdown .setting-menu-wrapper {
-          height: calc(100vh - 160px);
+          height: calc(100vh - 152px);
           overflow: auto; }
         .header .header-main .header-main-right .setting-dropdown ul.dine-footer-navmenu {
           display: flex;
@@ -619,10 +619,8 @@ h6 {
       display: none; }
 
   .setting-dropdown {
-    z-index: 999;
-    width: 90% !important;
-    overflow: auto;
-    height: calc(100vh - 80px) !important; }
+    z-index: 9999;
+    width: 90% !important; }
     .setting-dropdown ul.dine-footer-navmenu {
       position: static !important; }
     .setting-dropdown li {
