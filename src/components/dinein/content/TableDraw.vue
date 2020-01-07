@@ -584,10 +584,20 @@ export default {
       if (!this.tableTextTransform) {
         return { transformOrigin: ';', transformRotate: '' }
       }
+      let chairs = parseInt(table.chairs)
       if (angle == 270) {
-        transform = {
-          transformOrigin: '19% 63%;',
-          transformRotate: '90deg',
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 5) {
+            transform = {
+              transformOrigin: '19% 63%;',
+              transformRotate: '90deg',
+            }
+          } else {
+            transform = {
+              transformOrigin: '18% 47%;',
+              transformRotate: '90deg',
+            }
+          }
         }
         if (table.table_shape === 'square') {
           transform = {
@@ -604,7 +614,6 @@ export default {
         }
         return transform
       }
-      let chairs = parseInt(table.chairs)
       let transformRotate = (angle > 0 ? 270 - angle : angle + 270) + 'deg'
       //eslint-disable-next-line no-console
       // console.log(table, angle, transformRotate, angleX)
@@ -866,7 +875,6 @@ export default {
       this.$store
         .dispatch('dinein/getBookedTables', false, { root: true })
         .then(() => {
-          this.popupItemLoader = false
           this.selectedTableData = datum
           this.guests = 1
           this.validationErrors = ''
@@ -931,6 +939,7 @@ export default {
             // alert(window.screen.availHeight + ' > ' + window.screen.availWidth)
             if (top < 0) top = 0
             if (left < 0) left = 0
+            this.popupItemLoader = false
             range
               .parent('div')
               .attr(
