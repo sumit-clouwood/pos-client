@@ -2,7 +2,7 @@ import * as mutation from './dinein/mutation-types'
 import DineInService from '@/services/data/DineInService'
 import * as CONST from '@/constants'
 import moment from 'moment-timezone'
-import OrderHelper from '@/plugins/helpers/Order'
+// import OrderHelper from '@/plugins/helpers/Order'
 import * as PERMS from '@/const/permissions'
 
 const state = {
@@ -141,7 +141,7 @@ const actions = {
     })
   },
 
-  seOrderData({ commit, rootState, rootGetters }, response) {
+  seOrderData({ commit }, response) {
     let orderDetails = []
     let responseData = response.data.data
     //state.areas = this.getDineInArea
@@ -164,13 +164,13 @@ const actions = {
         currency = od.currency
       })
 
-      //restrict waiters to see other's orders
-      if (!rootGetters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
-        order = OrderHelper.userOrders(
-          order,
-          rootState.auth.userDetails.item._id
-        )
-      }
+      // //restrict waiters to see other's orders
+      // if (!rootGetters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
+      //   order = OrderHelper.userOrders(
+      //     order,
+      //     rootState.auth.userDetails.item._id
+      //   )
+      // }
       if (order) {
         orderDetails.push({
           table: table,
@@ -185,11 +185,21 @@ const actions = {
       orderDetails: orderDetails,
     })
   },
-  dineInRunningOrders({ commit, state, dispatch }, loader = true) {
+  dineInRunningOrders(
+    { commit, state, dispatch, rootState, rootGetters },
+    loader = true
+  ) {
     if (loader) commit(mutation.LOADING, loader)
+    if (loader) commit(mutation.LOADING, loader)
+
+    let userId = ''
+    if (!rootGetters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
+      userId = rootState.auth.userDetails.item._id
+    }
     const params = [
       state.totalReservations.pageNumber,
       state.totalReservations.limit,
+      userId,
     ]
 
     DineInService.dineInRunningOrders(...params).then(response => {
@@ -198,11 +208,20 @@ const actions = {
       if (loader) commit(mutation.LOADING, false)
     })
   },
-  dineInCompleteOrders({ commit, dispatch }, loader = true) {
+  dineInCompleteOrders(
+    { commit, dispatch, rootGetters, rootState },
+    loader = true
+  ) {
     if (loader) commit(mutation.LOADING, loader)
+    let userId = ''
+    if (!rootGetters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
+      userId = rootState.auth.userDetails.item._id
+    }
+
     const params = [
       state.totalReservations.pageNumber,
       state.totalReservations.limit,
+      userId,
     ]
     DineInService.dineInCompleteOrders(...params).then(response => {
       dispatch('seOrderData', response)
@@ -508,7 +527,7 @@ const actions = {
     ) {
       return Promise.reject({
         message: rootGetters['location/_t'](
-          'Cashier already assigned to table.'
+          'Waiter already assigned to table.'
         ),
       })
     }
