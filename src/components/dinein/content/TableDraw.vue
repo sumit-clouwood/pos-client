@@ -21,42 +21,79 @@
                   X
                 </span>
               </div>
-              <div class="m-1 table-order-content" v-if="orderDetails">
-                <div
-                  v-for="orderData in orderDetails"
-                  :key="orderData.reservationId"
-                >
-                  <div v-if="orderData.orderIds.length">
-                    <div
-                      class="table-action order-details-with-action"
-                      v-for="orderId in orderData.orderIds"
-                      :key="orderId"
-                    >
+              <Preloader v-if="popupItemLoader" />
+              <div v-else>
+                <div class="m-1 table-order-content" v-if="orderDetails">
+                  <div
+                    v-for="orderData in orderDetails"
+                    :key="orderData.reservationId"
+                  >
+                    <div v-if="orderData.orderIds.length">
                       <div
-                        class="text-capitalize dt-items"
-                        v-if="allBookedTables.lookup.orders._id"
-                      >
-                        {{ orderData.tableNumber }}
-                        #{{ getOrderNo(orderId) }}
-                      </div>
-                      <div
-                        class="order-details-with-action"
-                        v-if="orderStatus(orderId) !== 'finished'"
+                        class="table-action order-details-with-action"
+                        v-for="orderId in orderData.orderIds"
+                        :key="orderId"
                       >
                         <div
-                          class="table-popup bg-success font-weight-bold"
-                          @click="
-                            updateOrder({
-                              orderId: orderId,
-                              orderData: orderData,
-                            })
-                          "
+                          class="text-capitalize dt-items"
+                          v-if="allBookedTables.lookup.orders._id"
                         >
-                          {{ _t('Update') }}
-                          <!--Split Bill-->
+                          {{ orderData.tableNumber }}
+                          #{{ getOrderNo(orderId) }}
                         </div>
                         <div
-                          class="cursor-pointer text-danger reservation-cancel btn btn-danger"
+                          class="order-details-with-action"
+                          v-if="orderStatus(orderId) !== 'finished'"
+                        >
+                          <div
+                            class="table-popup bg-success font-weight-bold"
+                            @click="
+                              updateOrder({
+                                orderId: orderId,
+                                orderData: orderData,
+                              })
+                            "
+                          >
+                            {{ _t('Update') }}
+                            <!--Split Bill-->
+                          </div>
+                          <div
+                            class="cursor-pointer text-danger reservation-cancel btn btn-danger"
+                            @click="cancelReservation(orderData.reservationId)"
+                          >
+                            <span class="dlt-icon">
+                              <img src="img/pos/delete-icon-reservation.svg" />
+                            </span>
+                          </div>
+                        </div>
+                        <div v-else>
+                          <div
+                            class="paid-amount-msg text-center font-weight-bold"
+                          >
+                            <img
+                              src="img/dinein/paid-icon.png"
+                              style="width:33px"
+                            />
+                            {{ _t('Paid') }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div v-else class="table-action order-details-with-action">
+                      <div class="text-capitalize dt-items">
+                        {{ orderData.tableNumber }} #R |
+                        {{ created_date(orderData.startDate) }},
+                        {{ created_time(orderData.startTime) }}
+                      </div>
+                      <div class="order-details-with-action">
+                        <div
+                          class="table-popup bg-success font-weight-bold"
+                          @click="newOrder(orderData.reservationId, true)"
+                        >
+                          {{ _t('Add Order') }}
+                        </div>
+                        <div
+                          class="cursor-pointer text-danger reservation-cancel  btn btn-danger"
                           @click="cancelReservation(orderData.reservationId)"
                         >
                           <span class="dlt-icon">
@@ -64,78 +101,44 @@
                           </span>
                         </div>
                       </div>
-                      <div v-else>
-                        <div
-                          class="paid-amount-msg text-center font-weight-bold"
-                        >
-                          <img
-                            src="img/dinein/paid-icon.png"
-                            style="width:33px"
-                          />
-                          {{ _t('Paid') }}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div v-else class="table-action order-details-with-action">
-                    <div class="text-capitalize dt-items">
-                      {{ orderData.tableNumber }} #R |
-                      {{ created_date(orderData.startDate) }},
-                      {{ created_time(orderData.startTime) }}
-                    </div>
-                    <div class="order-details-with-action">
-                      <div
-                        class="table-popup bg-success font-weight-bold"
-                        @click="newOrder(orderData.reservationId, true)"
-                      >
-                        {{ _t('Add Order') }}
-                      </div>
-                      <div
-                        class="cursor-pointer text-danger reservation-cancel  btn btn-danger"
-                        @click="cancelReservation(orderData.reservationId)"
-                      >
-                        <span class="dlt-icon">
-                          <img src="img/pos/delete-icon-reservation.svg" />
-                        </span>
-                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="table-order-footer"
-                v-if="brand && brand.number_of_guests"
-              >
-                <div class="m-1 buttons">
-                  <span
-                    data-toggle="modal"
-                    data-target="#placeOrder"
-                    data-dismiss="modal"
-                    class="table-popup popbtn bg-success font-weight-bold"
-                    @click="closeMyself"
-                  >
-                    {{ _t(addOrSplit) }}
-                  </span>
-                  <switch-waiter
-                    :tableBooked="tableBooked"
-                    :orderDetails="orderDetails"
-                  ></switch-waiter>
+                <div
+                  class="table-order-footer"
+                  v-if="brand && brand.number_of_guests"
+                >
+                  <div class="m-1 buttons">
+                    <span
+                      data-toggle="modal"
+                      data-target="#placeOrder"
+                      data-dismiss="modal"
+                      class="table-popup popbtn bg-success font-weight-bold"
+                      @click="closeMyself"
+                    >
+                      {{ _t(addOrSplit) }}
+                    </span>
+                    <switch-waiter
+                      :tableBooked="tableBooked"
+                      :orderDetails="orderDetails"
+                    ></switch-waiter>
+                  </div>
                 </div>
-              </div>
-              <div class="table-order-footer" v-else>
-                <div class="m-1 buttons">
-                  <span
-                    data-toggle="modal"
-                    data-dismiss="modal"
-                    @click="newOrder(false, brand.book_table)"
-                    class="table-popup popbtn bg-success font-weight-bold"
-                  >
-                    {{ _t(addOrSplit) }}
-                  </span>
-                  <switch-waiter
-                    :tableBooked="tableBooked"
-                    :orderDetails="orderDetails"
-                  ></switch-waiter>
+                <div class="table-order-footer" v-else>
+                  <div class="m-1 buttons">
+                    <span
+                      data-toggle="modal"
+                      data-dismiss="modal"
+                      @click="newOrder(false, brand.book_table)"
+                      class="table-popup popbtn bg-success font-weight-bold"
+                    >
+                      {{ _t(addOrSplit) }}
+                    </span>
+                    <switch-waiter
+                      :tableBooked="tableBooked"
+                      :orderDetails="orderDetails"
+                    ></switch-waiter>
+                  </div>
                 </div>
               </div>
             </div>
@@ -258,7 +261,7 @@ import * as d3 from 'd3'
 import TableStatus from './TableStatus'
 import AllTables from './AllTables'
 import switchWaiter from './buttons/switchWaiter'
-
+import Preloader from '@/components/util/progressbar'
 // import LookupData from '@/plugins/helpers/LookupData'
 import Header from './Header'
 import DateTime from '@/mixins/DateTime'
@@ -298,11 +301,13 @@ export default {
     TableStatus,
     AllTables,
     switchWaiter,
+    Preloader,
   },
   data() {
     return {
       cssClass: 'allowed',
       page: null,
+      popupItemLoader: 'true',
       tableTextTransform: true,
       guests: 1,
       svg: null,
@@ -794,7 +799,7 @@ export default {
           .text(`${d.number}`)
           .attr(
             'style',
-            'font-weight:bold; writing-mode:' +
+            'font-weight:bold; cursor: default; writing-mode:' +
               writingMode +
               '; transform-origin: ' +
               transform.transformOrigin +
@@ -858,86 +863,93 @@ export default {
         .getBoundingClientRect()
     },
     showOptions(datum, i, a) {
-      this.$store.dispatch('dinein/getBookedTables', false, { root: true })
-      this.selectedTableData = datum
-      this.guests = 1
-      this.validationErrors = ''
-      this.selectedTableD3 = a[i]
-      this.selectedTableId = datum._id
-      this.orderDetails = this.orderOnTables.filter(
-        order => order.tableId === datum._id
-      )
-
-      if (!this.$store.getters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
-        //check if own order
-        if (
-          !OrderHelper.assignedToUser(
-            this.orderDetails,
-            this.userDetails.item._id
+      this.$store
+        .dispatch('dinein/getBookedTables', false, { root: true })
+        .then(() => {
+          this.popupItemLoader = false
+          this.selectedTableData = datum
+          this.guests = 1
+          this.validationErrors = ''
+          this.selectedTableD3 = a[i]
+          this.selectedTableId = datum._id
+          this.orderDetails = this.orderOnTables.filter(
+            order => order.tableId === datum._id
           )
-        ) {
-          this.cssClass = 'restricted'
-          $('#tooltipdata').hide()
-          return false
-        }
-      }
-      this.cssClass = 'allowed'
-      this.addOrSplit =
-        this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
-      if (this.brand.book_table || this.orderDetails.length) {
-        // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
-        let range = $('#range')
-        /*let top =
-          datum.table_position_coordinate.y / 2 +
-            $('#id_' + datum._id).offset().top || 0*/
-        let top = datum.table_position_coordinate.y + 20 || 0
-        let posX = $('#id_' + datum._id).offset().left
-        let tableX = $('#id_' + datum._id).attr('x')
-        let getWidth = 361 / 2
-        if (this.orderDetails.length === 0) {
-          getWidth = 155 / 2
-        } else if (this.orderDetails.length > 0) {
-          let orderCount = 0
-          this.orderDetails.forEach(order => {
-            if (order.orderIds.length > 0) {
-              orderCount += 1
+
+          if (!this.$store.getters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
+            //check if own order
+            if (
+              !OrderHelper.assignedToUser(
+                this.orderDetails,
+                this.userDetails.item._id
+              )
+            ) {
+              this.cssClass = 'restricted'
+              $('#tooltipdata').hide()
+              return false
             }
-          })
-          if (orderCount > 0) {
-            getWidth = 445 / 2
           }
-        }
-        let left = posX - getWidth
+          this.cssClass = 'allowed'
+          this.addOrSplit =
+            this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
+          if (this.brand.book_table || this.orderDetails.length) {
+            // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
+            let range = $('#range')
+            /*let top =
+                  datum.table_position_coordinate.y / 2 +
+                    $('#id_' + datum._id).offset().top || 0*/
+            let top = datum.table_position_coordinate.y + 20 || 0
+            let posX = $('#id_' + datum._id).offset().left
+            let tableX = $('#id_' + datum._id).attr('x')
+            let getWidth = 361 / 2
+            if (this.orderDetails.length === 0) {
+              getWidth = 155 / 2
+            } else if (this.orderDetails.length > 0) {
+              let orderCount = 0
+              this.orderDetails.forEach(order => {
+                if (order.orderIds.length > 0) {
+                  orderCount += 1
+                }
+              })
+              if (orderCount > 0) {
+                getWidth = 445 / 2
+              }
+            }
+            let left = posX - getWidth
 
-        let resolution = window.screen
-        if (resolution.availHeight <= 768 && resolution.availWidth <= 1024) {
-          /*start square screen code*/
-          let posY = $('#id_' + datum._id).offset().top
-          top -= posY
-          /*end square screen code*/
-        }
-        if (tableX > 3000) left -= 80
-        // alert(window.screen.availHeight + ' > ' + window.screen.availWidth)
-        if (top < 0) top = 0
-        if (left < 0) left = 0
-        range
-          .parent('div')
-          .attr(
-            'style',
-            'top:' +
-              top * this.tableZoomScale +
-              'px; left:' +
-              left +
-              'px; display:block'
-          )
-      } else {
-        this.closeMyself()
-        if (this.brand.number_of_guests) {
-          $('#placeOrder').modal('show')
-        } else {
-          this.newOrder(false, this.brand.book_table)
-        }
-      }
+            let resolution = window.screen
+            if (
+              resolution.availHeight <= 768 &&
+              resolution.availWidth <= 1024
+            ) {
+              /*start square screen code*/
+              let posY = $('#id_' + datum._id).offset().top
+              top -= posY
+              /*end square screen code*/
+            }
+            if (tableX > 3000) left -= 80
+            // alert(window.screen.availHeight + ' > ' + window.screen.availWidth)
+            if (top < 0) top = 0
+            if (left < 0) left = 0
+            range
+              .parent('div')
+              .attr(
+                'style',
+                'top:' +
+                  top * this.tableZoomScale +
+                  'px; left:' +
+                  left +
+                  'px; display:block'
+              )
+          } else {
+            this.closeMyself()
+            if (this.brand.number_of_guests) {
+              $('#placeOrder').modal('show')
+            } else {
+              this.newOrder(false, this.brand.book_table)
+            }
+          }
+        })
     },
     drawViews() {
       if (this.activeArea) {
