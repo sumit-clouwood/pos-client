@@ -358,6 +358,10 @@ const actions = {
           } else {
             dispatch('fetchAll')
           }
+          if (typeof response.data.id != 'undefined') {
+            dispatch('fetchSelectedCustomer', response.data.id)
+          }
+
           resolve(response.data)
         })
         .catch(error => reject(error))

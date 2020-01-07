@@ -8,7 +8,7 @@
               <th class="table_header">Order No</th>
               <th class="table_header">Items</th>
               <th class="table_header">Amount</th>
-              <th class="table_header text-center">Status</th>
+              <th class="table_header">Status</th>
             </tr>
           </thead>
           <tbody>

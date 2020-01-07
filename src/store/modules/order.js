@@ -726,6 +726,8 @@ const actions = {
         const subtotal = getters.subTotal
         let totalTax = 0
 
+        orderTotalDiscount = Num.round((subtotal * orderDiscount.rate) / 100)
+
         if (orderDiscount.include_surcharge) {
           //apply ontotal discount, apply on surcharge and its tax as well
           totalTax = getters.totalTaxWithoutOrderDiscount
@@ -733,7 +735,11 @@ const actions = {
           console.log('total tax, ', totalTax)
           const totalSurcharge = rootGetters['surcharge/surcharge']
           console.log('total surcharge', totalSurcharge)
-          if (orderDiscount.max_discount_value < subtotal) {
+          if (
+            orderDiscount.min_cart_value < subtotal &&
+            orderDiscount.max_discount_value &&
+            orderDiscount.max_discount_value < orderTotalDiscount
+          ) {
             orderTotalDiscount = orderDiscount.max_discount_value
 
             const percentDiscountOnOrderTotalIncludingSurcharge = Num.round(
@@ -801,7 +807,14 @@ const actions = {
                   CONST.DISCOUNT_ORDER_ERROR_CART,
                   { root: true }
                 )
-                reject(CONST.DISCOUNT_ORDER_ERROR_CART)
+                const minCartValue = rootGetters['location/formatPrice'](
+                  orderDiscount.min_cart_value
+                )
+                reject(
+                  rootGetters['location/_t'](
+                    `Minimum cart value should be <strong>${minCartValue}</strong> to apply <strong>${orderDiscount.name}</strong>`
+                  )
+                )
               } else {
                 orderTotalDiscount = Num.round(
                   (subtotal * orderDiscount.rate) / 100
@@ -835,17 +848,24 @@ const actions = {
           //apply offtotal discount, don't calculate discount on surcharge
           //we are not including surcharge tax in total tax for discount
           totalTax = getters.totalItemsTax
-          if (orderDiscount.max_discount_value < subtotal) {
+
+          if (
+            orderDiscount.min_cart_value < subtotal &&
+            orderDiscount.max_discount_value &&
+            orderDiscount.max_discount_value < orderTotalDiscount
+          ) {
+            orderTotalDiscount = orderDiscount.max_discount_value
             const percentDiscountOnSubTotal = Num.round(
-              (orderDiscount.max_discount_value * 100) / subtotal
+              (orderTotalDiscount * 100) / subtotal
             )
+
             taxTotalDiscount = Num.round(
               (totalTax * percentDiscountOnSubTotal) / 100
             )
             surchargeTotalDiscount = 0
 
             const discountData = {
-              orderDiscount: orderDiscount.value,
+              orderDiscount: orderTotalDiscount,
               taxDiscount: taxTotalDiscount,
               surchargeDiscount: surchargeTotalDiscount,
             }
@@ -891,7 +911,14 @@ const actions = {
                   CONST.DISCOUNT_ORDER_ERROR_CART,
                   { root: true }
                 )
-                reject(CONST.DISCOUNT_ORDER_ERROR_CART)
+                const minCartValue = rootGetters['location/formatPrice'](
+                  orderDiscount.min_cart_value
+                )
+                reject(
+                  rootGetters['location/_t'](
+                    `Minimum cart value should be <strong>${minCartValue}</strong> to apply <strong> ${orderDiscount.name} </strong>`
+                  )
+                )
               } else {
                 orderTotalDiscount = Num.round(
                   (subtotal * orderDiscount.rate) / 100
@@ -1670,7 +1697,10 @@ const mutations = {
     })
     state.items = filteredItems
   },
-
+  CLEAR_SELECTED_ORDER(state) {
+    state.orderSource = null
+    state.selectedOrder = false
+  },
   [mutation.RESET](state, full = true) {
     if (full) {
       state.items = []

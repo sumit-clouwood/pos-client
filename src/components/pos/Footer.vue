@@ -1,3 +1,4 @@
+<!-- eslint-disable max-len -->
 <template>
   <div class="footer">
     <div class="footer-slider color-dashboard-background">
@@ -559,7 +560,7 @@ export default {
     slicker() {
       $('ul.ullist-icons').slick({
         slidesToShow: 5,
-        slidesToScroll: 1,
+        slidesToScroll: 4,
         accessibility: false,
         dots: false,
         arrows: true,

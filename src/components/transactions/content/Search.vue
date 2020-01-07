@@ -99,7 +99,7 @@ export default {
     margin-top: 0;
     border-radius: 0;
     border: none;
-    grid-template-columns: 65px 1fr 65px;
+    grid-template-columns: 65px 1fr 65px !important;
     align-items: stretch;
     height: 100%;
 

@@ -61,7 +61,7 @@
           <th>{{ _t('CREDIT AMOUNT') }}</th>
           <th>{{ _t('AMOUNT TO COLLECT') }}</th>
           <th>{{ _t('AVERAGE DELIVERY TIME') }}</th>
-          <th style="width:215px">&nbsp;</th>
+          <th style="width:235px">&nbsp;</th>
         </tr>
       </thead>
 
