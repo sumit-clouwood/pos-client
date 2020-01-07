@@ -396,7 +396,7 @@ const actions = {
     item.grossPrice = getters.grossPrice(item)
     //net price is exclusive of tax, getter ll send unrounded price that is real one
     item.netPrice = getters.netPrice(item)
-    item.note = ''
+    item.note = stateItem.note ? stateItem.note : ''
     //calculated item tax
     item.tax = Num.round(item.grossPrice - item.netPrice)
 
@@ -450,7 +450,10 @@ const actions = {
 
       //if there is item modifiers data assign it later
       item.modifiersData = []
-      item.note = ''
+      if (!item.note) {
+        item.note = ''
+      }
+
       if (typeof item.orderIndex === 'undefined') {
         item.orderIndex = getters.orderIndex
       }
@@ -1272,7 +1275,7 @@ const actions = {
         rootState.category.items.forEach(categoryItem => {
           let item = { ...categoryItem }
           item.no = orderItem.no
-
+          item.note = orderItem.note
           if (
             state.selectedOrder &&
             state.selectedOrder.item.order_type === 'dine_in'
