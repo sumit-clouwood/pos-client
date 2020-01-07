@@ -112,6 +112,9 @@
                     </div>
                   </template>
                 </template>
+                <div v-if="item.note">
+                  {{ item.note }}
+                </div>
               </td>
               <td class="right-aligned">
                 {{ format_number(item_total(item.no)) }}
