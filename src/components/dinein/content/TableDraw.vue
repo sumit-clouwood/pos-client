@@ -6,7 +6,11 @@
       <div class="sitting-dinein-table ui-droppable" id="sitting-dinein-table">
         <div class="sitting-dine-wrap disable-sorting" v-if="tablesOnArea">
           <AllTables :viewBox="viewBox" />
-          <div id="tooltipdata" class="dropdown-content cursor-pointer">
+          <div
+            id="tooltipdata"
+            v-if="popupItemLoader"
+            class="dropdown-content cursor-pointer"
+          >
             <div class="tooltip-c-range" id="range" :key="componentKey">
               <div class="display-table-details">
                 <div class="table-header-border-bottom">
@@ -303,6 +307,8 @@ export default {
     return {
       cssClass: 'allowed',
       page: null,
+      popupItemLoader: true,
+      tableTextTransform: true,
       guests: 1,
       svg: null,
       width: 'auto',
@@ -523,7 +529,7 @@ export default {
         })
       /*.attr('fill', 'green')*/
       /*if (this.selectedTableD3)
-          d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
+            d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
       d3.selectAll('.dinein_table_parent').each(() => {
         this.drawViews()
         this.setTableProperties()
@@ -543,11 +549,11 @@ export default {
           .attr('fill', function() {
             let fillcolor = dis.tableStatus.table.find(ts => ts.id === data._id)
             /*let colourTable = '#FF9C9A'
-            if (fillcolor.status.color == '#62bb31') {
-              colourTable = '#99CA86'
-            } else if (fillcolor.status.color == '#faa03c') {
-              colourTable = '#FAD580'
-            }*/
+                    if (fillcolor.status.color == '#62bb31') {
+                      colourTable = '#99CA86'
+                    } else if (fillcolor.status.color == '#faa03c') {
+                      colourTable = '#FAD580'
+                    }*/
             return fillcolor.status.color
           })
         d3.select(selectedItem)
@@ -556,13 +562,13 @@ export default {
           .attr('fill', function() {
             let fc = dis.tableStatus.table.find(ts => ts.id === data._id)
             /*let colourChairs = '#CC3232'
-            if (fc.id === data._id) {
-              if (fc.status.color == '#62bb31') {
-                colourChairs = '#009900'
-              } else if (fc.status.color == '#faa03c') {
-                colourChairs = '#fa9304'
-              }
-            }*/
+                    if (fc.id === data._id) {
+                      if (fc.status.color == '#62bb31') {
+                        colourChairs = '#009900'
+                      } else if (fc.status.color == '#faa03c') {
+                        colourChairs = '#fa9304'
+                      }
+                    }*/
             return fc.status.color
           })
         let makeId = '#id_' + dis.selectedTableId
@@ -571,16 +577,247 @@ export default {
           .removeAttr('style')
       })
     },
+    setTextRotate(table, angle) {
+      // let angleX = parseInt(table.table_position_coordinate.angle)
+      // angleX = angleX > 360 || angleX < -360 ? 360 : angleX
+      // let angle = angleX < 0 ? angleX + 360 : angleX
+      if (!this.tableTextTransform) {
+        return { transformOrigin: ';', transformRotate: '' }
+      }
+      let chairs = parseInt(table.chairs)
+      if (angle == 270) {
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 5) {
+            transform = {
+              transformOrigin: '19% 63%;',
+              transformRotate: '90deg',
+            }
+          } else {
+            transform = {
+              transformOrigin: '18% 47%;',
+              transformRotate: '90deg',
+            }
+          }
+        }
+        if (table.table_shape === 'square') {
+          transform = {
+            transformOrigin: '9% 35%;',
+            transformRotate: '90deg',
+          }
+        }
+
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '10% 29%;',
+            transformRotate: '90deg',
+          }
+        }
+        return transform
+      }
+      let transformRotate = (angle > 0 ? 270 - angle : angle + 270) + 'deg'
+      //eslint-disable-next-line no-console
+      // console.log(table, angle, transformRotate, angleX)
+      /* angle - 270 will get transformRotate in deg only we need set 315 to 315*/
+      let transform = {}
+      if (angle == 0 || angle == 360) {
+        transform = {
+          transformOrigin: '69% 8%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '75% 5%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '48% -24%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '55% -6%;',
+              transformRotate: transformRotate,
+            }
+          }
+        }
+      }
+      if (angle == 45) {
+        transform = {
+          transformOrigin: '55% 10%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '40% 0%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '44% 5%;',
+              transformRotate: transformRotate,
+            }
+          }
+        }
+        if (table.table_shape === 'square') {
+          transform = {
+            transformOrigin: '52% 16%;',
+            transformRotate: transformRotate,
+          }
+        }
+      }
+      if (angle == 90) {
+        transform = {
+          transformOrigin: '38% 20%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '42% 15%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          transform = {
+            transformOrigin: '33% 17%;',
+            transformRotate: transformRotate,
+          }
+        }
+      }
+      if (angle == 135) {
+        transform = {
+          transformOrigin: '27% 24%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '28% 20%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '27% 32%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '28% 27%;',
+              transformRotate: transformRotate,
+            }
+          }
+        }
+      }
+      if (angle == 180 || angle == -180) {
+        transform = {
+          transformOrigin: '9% 32%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '9% 23%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '17% 56%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '15% 39%;',
+              transformRotate: transformRotate,
+            }
+          }
+        }
+      }
+      if (angle == 225) {
+        transform = {
+          transformOrigin: '-38% 35%;',
+          transformRotate: transformRotate,
+        }
+        if (table.table_shape === 'square') {
+          transform = {
+            transformOrigin: '-33% 46%;',
+            transformRotate: transformRotate,
+          }
+        }
+        if (table.table_shape === 'rectangle') {
+          if (chairs > 6) {
+            transform = {
+              transformOrigin: '-5% 106%;',
+              transformRotate: transformRotate,
+            }
+          } else {
+            transform = {
+              transformOrigin: '-15% 75%;',
+              transformRotate: transformRotate,
+            }
+          }
+        }
+      }
+      if (angle == 315) {
+        transform = { transformOrigin: '85% -35%;', transformRotate: '315deg' }
+        if (chairs > 6 && table.table_shape === 'rectangle') {
+          transform = {
+            transformOrigin: '67% -77%;',
+            transformRotate: '315deg',
+          }
+        }
+        if (table.table_shape === 'circle') {
+          transform = {
+            transformOrigin: '120% -5%;',
+            transformRotate: '315deg',
+          }
+        }
+        if (table.table_shape === 'square') {
+          transform = {
+            transformOrigin: '114% -8%;',
+            transformRotate: '315deg',
+          }
+        }
+      }
+      if (table.table_shape === 'circle' && angle == -45) {
+        transform = {
+          transformOrigin: '120% -10%;',
+          transformRotate: '315deg',
+        }
+      }
+
+      return transform
+      // data.table_position_coordinate.angle
+    },
     setTableProperties() {
       let dis = this
       d3.selectAll('.dinein_table').each((d, i, a) => {
+        let data = d
+        let angleX = parseInt(data.table_position_coordinate.angle)
+        // angleX = angleX > 360 || angleX < -360 ? 360 : angleX
+        let angle = angleX < 0 ? angleX + 360 : angleX
+        let transform = dis.setTextRotate(data, angle)
+        let writingMode =
+          angle == 270 || !dis.tableTextTransform ? '' : 'vertical-lr'
         d3.select(a[i])
           .select('text')
           .text(`${d.number}`)
-          .attr('style', 'font-size:60px')
-          .attr('style', 'font-weight:bold')
+          .attr(
+            'style',
+            'font-weight:bold; cursor: default; writing-mode:' +
+              writingMode +
+              '; transform-origin: ' +
+              transform.transformOrigin +
+              'transform: rotate(' +
+              transform.transformRotate +
+              ')'
+          )
         // .attr('fill', '#fff')
-        let data = d
+
         this.setTableColour(a[i], data)
         d3.select(a[i]).on('click', function(d, i, a) {
           dis.showOptions(d, i, a)
@@ -635,85 +872,101 @@ export default {
         .getBoundingClientRect()
     },
     showOptions(datum, i, a) {
-      this.selectedTableData = datum
-      this.guests = 1
-      this.validationErrors = ''
-      this.selectedTableD3 = a[i]
-      this.selectedTableId = datum._id
-      this.orderDetails = this.orderOnTables.filter(
-        order => order.tableId === datum._id
-      )
-
-      if (!this.$store.getters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
-        //check if own order
-        if (
-          !OrderHelper.assignedToUser(
-            this.orderDetails,
-            this.userDetails.item._id
+      this.$store
+        .dispatch('dinein/getBookedTables', false, { root: true })
+        .then(() => {
+          this.popupItemLoader = true
+          this.selectedTableData = datum
+          this.guests = 1
+          this.validationErrors = ''
+          this.selectedTableD3 = a[i]
+          this.selectedTableId = datum._id
+          this.orderDetails = this.orderOnTables.filter(
+            order => order.tableId === datum._id
           )
-        ) {
-          this.cssClass = 'restricted'
-          $('#tooltipdata').hide()
-          return false
-        }
-      }
-      this.cssClass = 'allowed'
-      this.addOrSplit =
-        this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
-      if (this.brand.book_table || this.orderDetails.length) {
-        // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
-        let range = $('#range')
-        /*let top =
-          datum.table_position_coordinate.y / 2 +
-            $('#id_' + datum._id).offset().top || 0*/
-        let top = datum.table_position_coordinate.y + 20 || 0
-        let posX = $('#id_' + datum._id).offset().left
-        let tableX = $('#id_' + datum._id).attr('x')
-        let getWidth = 361 / 2
-        if (this.orderDetails.length === 0) {
-          getWidth = 155 / 2
-        } else if (this.orderDetails.length > 0) {
-          let orderCount = 0
-          this.orderDetails.forEach(order => {
-            if (order.orderIds.length > 0) {
-              orderCount += 1
+          // alert(!this.$store.getters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS))
+          // alert(
+          //   !OrderHelper.assignedToUser(
+          //     this.orderDetails,
+          //     this.userDetails.item._id
+          //   )
+          // )
+          if (!this.$store.getters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
+            //check if own order
+            if (
+              !OrderHelper.assignedToUser(
+                this.orderDetails,
+                this.userDetails.item._id
+              )
+            ) {
+              this.popupItemLoader = false
+              this.cssClass = 'restricted'
+              // $('#tooltipdata').hide()
             }
-          })
-          if (orderCount > 0) {
-            getWidth = 445 / 2
           }
-        }
-        let left = posX - getWidth
+          if (this.cssClass == 'restricted') return false
 
-        let resolution = window.screen
-        if (resolution.availHeight <= 768 && resolution.availWidth <= 1024) {
-          /*start square screen code*/
-          let posY = $('#id_' + datum._id).offset().top
-          top -= posY
-          /*end square screen code*/
-        }
-        if (tableX > 3000) left -= 80
-        // alert(window.screen.availHeight + ' > ' + window.screen.availWidth)
-        if (top < 0) top = 0
-        if (left < 0) left = 0
-        range
-          .parent('div')
-          .attr(
-            'style',
-            'top:' +
-              top * this.tableZoomScale +
-              'px; left:' +
-              left +
-              'px; display:block'
-          )
-      } else {
-        this.closeMyself()
-        if (this.brand.number_of_guests) {
-          $('#placeOrder').modal('show')
-        } else {
-          this.newOrder(false, this.brand.book_table)
-        }
-      }
+          this.cssClass = 'allowed'
+          this.addOrSplit =
+            this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
+          if (this.brand.book_table || this.orderDetails.length) {
+            // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
+            let range = $('#range')
+            /*let top =
+                          datum.table_position_coordinate.y / 2 +
+                            $('#id_' + datum._id).offset().top || 0*/
+            let top = datum.table_position_coordinate.y + 20 || 0
+            let posX = $('#id_' + datum._id).offset().left
+            let tableX = $('#id_' + datum._id).attr('x')
+            let getWidth = 361 / 2
+            if (this.orderDetails.length === 0) {
+              getWidth = 155 / 2
+            } else if (this.orderDetails.length > 0) {
+              let orderCount = 0
+              this.orderDetails.forEach(order => {
+                if (order.orderIds.length > 0) {
+                  orderCount += 1
+                }
+              })
+              if (orderCount > 0) {
+                getWidth = 445 / 2
+              }
+            }
+            let left = posX - getWidth
+
+            let resolution = window.screen
+            if (
+              resolution.availHeight <= 768 &&
+              resolution.availWidth <= 1024
+            ) {
+              /*start square screen code*/
+              let posY = $('#id_' + datum._id).offset().top
+              top -= posY
+              /*end square screen code*/
+            }
+            if (tableX > 3000) left -= 80
+            // alert(window.screen.availHeight + ' > ' + window.screen.availWidth)
+            if (top < 0) top = 0
+            if (left < 0) left = 0
+            range
+              .parent('div')
+              .attr(
+                'style',
+                'top:' +
+                  top * this.tableZoomScale +
+                  'px; left:' +
+                  left +
+                  'px; display:block'
+              )
+          } else {
+            this.closeMyself()
+            if (this.brand.number_of_guests) {
+              $('#placeOrder').modal('show')
+            } else {
+              this.newOrder(false, this.brand.book_table)
+            }
+          }
+        })
     },
     drawViews() {
       if (this.activeArea) {
@@ -780,14 +1033,14 @@ export default {
               }
             })
           /*.call(
-            d3
-              .drag()
-              .on('start', d => this.drag_start(d))
-              .on('drag', (d, ia, a) =>
-                this.drag_view_horizontal_drag(d, ia, a)
-              )
-              .on('end', this.drag_view_end)
-          )*/
+              d3
+                .drag()
+                .on('start', d => this.drag_start(d))
+                .on('drag', (d, ia, a) =>
+                  this.drag_view_horizontal_drag(d, ia, a)
+                )
+                .on('end', this.drag_view_end)
+            )*/
         })
         this.activeArea.right_view.forEach((element, i) => {
           d3.select(this.$el)
