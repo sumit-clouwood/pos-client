@@ -43,9 +43,20 @@ const state = {
   totalReservations: { totalPages: 0, pageNumber: 1, limit: 10 },
   billSplit: null,
   processingSplit: false,
-  reservationData: null,
+  currentTableReservationData: null,
 }
 const getters = {
+  getTableOrders: state => tableId => {
+    return state.orderOnTables.map(tableData => tableData.tableId === tableId)
+  },
+  getCurrentTableRunningReservations: state => {
+    if (!state.currentTableReservationData) {
+      return false
+    }
+    return state.currentTableReservationData.map(
+      reservation => reservation.status !== 'completed'
+    )
+  },
   getOrderStatus: () => order_status => {
     // eslint-disable-next-line no-console
     console.log(order_status)
@@ -519,26 +530,14 @@ const actions = {
     commit(mutation.SPLIT_BILLS, groups)
   },
 
-  switchWaiter({ state, rootGetters }, waiter) {
-    if (
-      !waiter ||
-      (state.reservationData &&
-        state.reservationData.assigned_to === waiter._id)
-    ) {
-      return Promise.reject({
-        message: rootGetters['location/_t'](
-          'Waiter already assigned to table.'
-        ),
+  switchWaiter({ getters }, waiter) {
+    const reservationsOnTable = getters.getCurrentTableRunningReservations()
+
+    reservationsOnTable.forEach(reservation => {
+      DineInService.switchWaiter(reservation.reservationId, {
+        switch_from: reservation.assigned_to,
+        switch_to: waiter._id,
       })
-    }
-    if (!state.reservationData) {
-      return Promise.reject({
-        message: rootGetters['location/_t']('No order found on table.'),
-      })
-    }
-    return DineInService.switchWaiter(state.reservationData.reservationId, {
-      switch_from: state.reservationData.assigned_to,
-      switch_to: waiter._id,
     })
   },
 }
@@ -646,8 +645,8 @@ const mutations = {
     state.reservationId = reservation.id
     localStorage.setItem('reservationId', reservation.id)
   },
-  [mutation.SET_RESERVATION_DATA](state, reservationData) {
-    state.reservationData = reservationData
+  [mutation.CURRENT_TABLE_RESERVATION](state, reservationData) {
+    state.currentTableReservationData = reservationData
   },
   [mutation.ORDER_RESERVATION_DATA](state, reservationData) {
     state.orderReservationData = reservationData

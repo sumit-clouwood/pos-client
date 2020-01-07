@@ -120,10 +120,7 @@
                   >
                     {{ _t(addOrSplit) }}
                   </span>
-                  <switch-waiter
-                    :tableBooked="tableBooked"
-                    :orderDetails="orderDetails"
-                  ></switch-waiter>
+                  <switch-waiter v-if="orderDetails.length"></switch-waiter>
                 </div>
               </div>
               <div class="table-order-footer" v-else>
@@ -136,10 +133,7 @@
                   >
                     {{ _t(addOrSplit) }}
                   </span>
-                  <switch-waiter
-                    :tableBooked="tableBooked"
-                    :orderDetails="orderDetails"
-                  ></switch-waiter>
+                  <switch-waiter v-if="orderDetails.length"></switch-waiter>
                 </div>
               </div>
             </div>
@@ -292,9 +286,6 @@ export default {
     ]),
     ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['allowed']),
-    tableBooked() {
-      return this.orderDetails.length
-    },
   },
   mixins: [DateTime],
   components: {
@@ -884,6 +875,12 @@ export default {
           this.orderDetails = this.orderOnTables.filter(
             order => order.tableId === datum._id
           )
+
+          this.$store.commit(
+            'dinein/CURRENT_TABLE_RESERVATION',
+            this.orderDetails
+          )
+
           // alert(!this.$store.getters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS))
           // alert(
           //   !OrderHelper.assignedToUser(
