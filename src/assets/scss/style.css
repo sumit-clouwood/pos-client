@@ -4531,8 +4531,7 @@ body {
       padding-top: 20px;
       background-color: #fff;
       align-items: end;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      display: none; } }
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); } }
 .mobile-footer {
   display: none; }
 
@@ -5340,13 +5339,9 @@ div#confirmModal .customer-title {
   font-size: 16px; }
 
 .running-actions {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
+  display: flex;
   text-align: center;
-  align-items: center;
-  grid-gap: 10px;
-  position: sticky;
-  top: 0; }
+  align-items: center; }
 
 .action-status {
   display: grid;
@@ -5385,9 +5380,11 @@ div#confirmModal .customer-title {
       grid-template-columns: 1fr;
       align-items: center; }
       .table-order-view-wrapper > .table-order-view > div .moodifiers-btn-wrapper {
-        display: grid;
-        grid-template-columns: auto auto;
+        display: flex;
+        justify-content: space-between;
         grid-gap: 10px; }
+        .table-order-view-wrapper > .table-order-view > div .moodifiers-btn-wrapper .running-actions > * {
+          margin-left: 10px; }
       .table-order-view-wrapper > .table-order-view > div .order-moifier-wrapper {
         display: flex;
         padding: 5px 0;
@@ -5747,8 +5744,8 @@ input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none; }
 
 .button-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   width: auto;
   justify-content: center;
   margin: 0 auto; }
