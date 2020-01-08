@@ -1,12 +1,9 @@
 <template>
   <span
-    v-if="
-      allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API) && tableBooked
-    "
+    v-if="allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API)"
     data-toggle="modal"
     data-target="#switchWaiter"
     data-dismiss="modal"
-    @click="setSelectedTable(orderDetails)"
     class="table-popup popbtn bg-success font-weight-bold"
   >
     {{ _t('Switch Waiter') }}
@@ -26,7 +23,7 @@ export default {
     ...mapGetters('location', ['_t']),
   },
   methods: {
-    setSelectedTable(orderDetails) {
+    /*setSelectedTable(orderDetails) {
       if (orderDetails) {
         let tableOrder = null
         orderDetails.forEach(order => {
@@ -48,7 +45,7 @@ export default {
         })
         this.$store.commit('dinein/SET_RESERVATION_DATA', tableOrder)
       }
-    },
+    },*/
   },
 }
 </script>

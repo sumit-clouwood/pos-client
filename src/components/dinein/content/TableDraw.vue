@@ -6,11 +6,7 @@
       <div class="sitting-dinein-table ui-droppable" id="sitting-dinein-table">
         <div class="sitting-dine-wrap disable-sorting" v-if="tablesOnArea">
           <AllTables :viewBox="viewBox" />
-          <div
-            id="tooltipdata"
-            v-if="popupItemLoader"
-            class="dropdown-content cursor-pointer"
-          >
+          <div id="tooltipdata" class="dropdown-content cursor-pointer">
             <div class="tooltip-c-range" id="range" :key="componentKey">
               <div class="display-table-details">
                 <div class="table-header-border-bottom">
@@ -120,10 +116,7 @@
                   >
                     {{ _t(addOrSplit) }}
                   </span>
-                  <switch-waiter
-                    :tableBooked="tableBooked"
-                    :orderDetails="orderDetails"
-                  ></switch-waiter>
+                  <switch-waiter v-if="orderDetails.length"></switch-waiter>
                 </div>
               </div>
               <div class="table-order-footer" v-else>
@@ -136,10 +129,7 @@
                   >
                     {{ _t(addOrSplit) }}
                   </span>
-                  <switch-waiter
-                    :tableBooked="tableBooked"
-                    :orderDetails="orderDetails"
-                  ></switch-waiter>
+                  <switch-waiter v-if="orderDetails.length"></switch-waiter>
                 </div>
               </div>
             </div>
@@ -262,7 +252,7 @@ import * as d3 from 'd3'
 import TableStatus from './TableStatus'
 import AllTables from './AllTables'
 import switchWaiter from './buttons/switchWaiter'
-// import Preloader from '@/components/util/progressbar'
+
 // import LookupData from '@/plugins/helpers/LookupData'
 import Header from './Header'
 import DateTime from '@/mixins/DateTime'
@@ -292,9 +282,6 @@ export default {
     ]),
     ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['allowed']),
-    tableBooked() {
-      return this.orderDetails.length
-    },
   },
   mixins: [DateTime],
   components: {
@@ -305,9 +292,9 @@ export default {
   },
   data() {
     return {
-      cssClass: 'allowed',
+      cssClass: 'restricted',
       page: null,
-      popupItemLoader: true,
+      popupItemLoader: false,
       tableTextTransform: true,
       guests: 1,
       svg: null,
@@ -373,6 +360,8 @@ export default {
     updateTableArea: function(newValue, oldValue) {
       if (newValue !== oldValue && this.selectedTableData) {
         this.setTableColour(this.selectedTableD3, this.selectedTableData)
+        // this.cssClass = 'rest'
+        // this.popupItemLoader = false
       }
     },
   },
@@ -529,7 +518,7 @@ export default {
         })
       /*.attr('fill', 'green')*/
       /*if (this.selectedTableD3)
-          d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
+              d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
       d3.selectAll('.dinein_table_parent').each(() => {
         this.drawViews()
         this.setTableProperties()
@@ -549,11 +538,11 @@ export default {
           .attr('fill', function() {
             let fillcolor = dis.tableStatus.table.find(ts => ts.id === data._id)
             /*let colourTable = '#FF9C9A'
-            if (fillcolor.status.color == '#62bb31') {
-              colourTable = '#99CA86'
-            } else if (fillcolor.status.color == '#faa03c') {
-              colourTable = '#FAD580'
-            }*/
+                            if (fillcolor.status.color == '#62bb31') {
+                              colourTable = '#99CA86'
+                            } else if (fillcolor.status.color == '#faa03c') {
+                              colourTable = '#FAD580'
+                            }*/
             return fillcolor.status.color
           })
         d3.select(selectedItem)
@@ -562,13 +551,13 @@ export default {
           .attr('fill', function() {
             let fc = dis.tableStatus.table.find(ts => ts.id === data._id)
             /*let colourChairs = '#CC3232'
-            if (fc.id === data._id) {
-              if (fc.status.color == '#62bb31') {
-                colourChairs = '#009900'
-              } else if (fc.status.color == '#faa03c') {
-                colourChairs = '#fa9304'
-              }
-            }*/
+                            if (fc.id === data._id) {
+                              if (fc.status.color == '#62bb31') {
+                                colourChairs = '#009900'
+                              } else if (fc.status.color == '#faa03c') {
+                                colourChairs = '#fa9304'
+                              }
+                            }*/
             return fc.status.color
           })
         let makeId = '#id_' + dis.selectedTableId
@@ -875,7 +864,9 @@ export default {
       this.$store
         .dispatch('dinein/getBookedTables', false, { root: true })
         .then(() => {
-          this.popupItemLoader = true
+          $('#tooltipdata').hide()
+          this.cssClass = 'restricted'
+          this.popupItemLoader = false
           this.selectedTableData = datum
           this.guests = 1
           this.validationErrors = ''
@@ -884,6 +875,14 @@ export default {
           this.orderDetails = this.orderOnTables.filter(
             order => order.tableId === datum._id
           )
+          this.setTableColour(a[i], datum)
+          // eslint-disable-next-line no-console
+          console.log(this.orderDetails, 'new sata')
+          this.$store.commit(
+            'dinein/CURRENT_TABLE_RESERVATION',
+            this.orderDetails
+          )
+
           // alert(!this.$store.getters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS))
           // alert(
           //   !OrderHelper.assignedToUser(
@@ -894,27 +893,34 @@ export default {
           if (!this.$store.getters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
             //check if own order
             if (
-              !OrderHelper.assignedToUser(
+              OrderHelper.assignedToUser(
                 this.orderDetails,
                 this.userDetails.item._id
               )
             ) {
+              this.popupItemLoader = true
+              this.cssClass = 'allowed'
+            } else {
               this.popupItemLoader = false
               this.cssClass = 'restricted'
-              // $('#tooltipdata').hide()
+              $('#tooltipdata').hide()
             }
+          } else {
+            this.popupItemLoader = true
+            this.cssClass = 'allowed'
           }
+          // alert(this.popupItemLoader + ' >> ' + this.cssClass)
           if (this.cssClass == 'restricted') return false
-
-          this.cssClass = 'allowed'
+          // $('#tooltipdata').hide()
+          $('#tooltipdata').show()
           this.addOrSplit =
             this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
           if (this.brand.book_table || this.orderDetails.length) {
             // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
             let range = $('#range')
             /*let top =
-                  datum.table_position_coordinate.y / 2 +
-                    $('#id_' + datum._id).offset().top || 0*/
+                                  datum.table_position_coordinate.y / 2 +
+                                    $('#id_' + datum._id).offset().top || 0*/
             let top = datum.table_position_coordinate.y + 20 || 0
             let posX = $('#id_' + datum._id).offset().left
             let tableX = $('#id_' + datum._id).attr('x')
@@ -1033,14 +1039,14 @@ export default {
               }
             })
           /*.call(
-            d3
-              .drag()
-              .on('start', d => this.drag_start(d))
-              .on('drag', (d, ia, a) =>
-                this.drag_view_horizontal_drag(d, ia, a)
-              )
-              .on('end', this.drag_view_end)
-          )*/
+                d3
+                  .drag()
+                  .on('start', d => this.drag_start(d))
+                  .on('drag', (d, ia, a) =>
+                    this.drag_view_horizontal_drag(d, ia, a)
+                  )
+                  .on('end', this.drag_view_end)
+              )*/
         })
         this.activeArea.right_view.forEach((element, i) => {
           d3.select(this.$el)

@@ -229,6 +229,7 @@ const actions = {
     } else {
       deliveryAreaId = order.order_delivery_area
     }
+
     const deliveryArea = rootGetters['customer/findDeliveryArea'](
       deliveryAreaId
     )
