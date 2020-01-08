@@ -48,6 +48,9 @@
               class="color-tables-background color-text"
             >
               <div>{{ item.name }}</div>
+              <div v-if="item.note">
+                <i>{{ item.note }}</i>
+              </div>
               <div class="discount" v-if="orderDetails.item_discounts.length">
                 {{
                   getItemSubsets({

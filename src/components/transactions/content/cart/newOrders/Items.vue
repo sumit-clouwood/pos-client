@@ -21,7 +21,12 @@
           </div>
           <div class="trans-menu-list">
             <div class="orders-name">
-              <p>{{ item.name }}</p>
+              <p>
+                {{ item.name }}
+              </p>
+              <span v-if="item.note">
+                <i>{{ item.note }}</i>
+              </span>
               <p class="price-qty">
                 @ {{ item.price }} x {{ item.qty }} &nbsp;
                 {{ getItemDiscountValue(order.item_discounts).name }}

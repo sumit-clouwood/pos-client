@@ -113,7 +113,7 @@
                   </template>
                 </template>
                 <div v-if="item.note">
-                  {{ item.note }}
+                  <i>{{ item.note }}</i>
                 </div>
               </td>
               <td class="right-aligned">
