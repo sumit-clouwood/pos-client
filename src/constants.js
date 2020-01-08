@@ -62,6 +62,7 @@ export const ORDER_PAYMENT_TYPE_LOYALTY = 'Loyalty Points'
 
 export const PERCENTAGE = 'percentage'
 export const VALUE = 'value'
+export const FIXED = 'fixed_price'
 
 export const LOADING_STATUS_LOADING = 'LOADING...'
 export const LOADING_STATUS_DONE = 'DONE'
