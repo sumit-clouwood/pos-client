@@ -378,7 +378,7 @@
     <CustomerNotes />
     <CartAddEmail />
     <CartAmountChange />
-    <ModificationPermissions v-if="orderSource === 'backend'" />
+    <ModificationPermissions v-if="orderSource === 'backend' || isModified" />
 
     <CartPaymentMsg />
     <CartTipAmount />
@@ -484,6 +484,7 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print', 'paymentMsgStatus']),
+    ...mapState('dinein', ['isModified']),
     ...mapState('customer', ['responseInformation']),
     ...mapState('order', [
       'orderType',
