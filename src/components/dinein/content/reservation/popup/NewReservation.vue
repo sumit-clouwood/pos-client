@@ -689,7 +689,7 @@ export default {
   width: 430px;
 }
 .time_slot_block {
-  height: 320px;
+  max-height: 320px;
   overflow-y: auto;
   border: 1px solid #d7dce2;
   border-radius: $px4;
@@ -716,7 +716,7 @@ export default {
     align-items: center;
     padding: 5px 0;
     border-bottom: 1px solid #d7dce2;
-    border-left: 2px solid #d7dce2;
+    border-right: 2px solid #d7dce2;
     height: 80px;
     max-width: 24.9%;
     .is_available {
@@ -730,8 +730,8 @@ export default {
     }
   }
 }
-.time_slot_block > div:nth-child(4n + 1) {
-  border-left: medium none;
+.time_slot_block > div:nth-child(4n) {
+  border-right: medium none;
 }
 .tag-secondary {
   padding: 10px;
