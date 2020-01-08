@@ -875,6 +875,7 @@ export default {
           this.orderDetails = this.orderOnTables.filter(
             order => order.tableId === datum._id
           )
+          this.setTableColour(a[i], datum)
           // eslint-disable-next-line no-console
           console.log(this.orderDetails, 'new sata')
           this.$store.commit(
