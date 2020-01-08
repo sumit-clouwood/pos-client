@@ -40,8 +40,7 @@
       <span
         v-if="
           order.order_type === 'dine_in' &&
-            order.order_system_status !== 'cancelled' &&
-            order.order_status === 'in-progress'
+            order.order_system_status !== 'cancelled'
         "
       >
         <button
@@ -59,10 +58,9 @@
         </button>
       </span>
       <span
-        v-else-if="
+        v-if="
           order.order_type !== 'dine_in' &&
-            order.order_system_status !== 'cancelled' &&
-            order.order_status === 'in-progress'
+            order.order_system_status !== 'cancelled'
         "
       >
         <button
@@ -79,7 +77,6 @@
           {{ _t('Modify Transaction') }}
         </button>
       </span>
-      <span v-else class="completed">Order Has been Completed</span>
       <!--<button
         class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
         @click="modifyOrder(0)"
@@ -169,9 +166,3 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
-.completed {
-  color: #faa03c;
-  font-size: 30px;
-}
-</style>

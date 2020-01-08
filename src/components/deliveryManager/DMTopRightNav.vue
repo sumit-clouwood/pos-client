@@ -144,7 +144,7 @@ export default {
 .header-main-left-time {
   margin-right: 10px;
   span {
-    font-size: 17px;
+    font-size: $px16;
     display: block;
     font-weight: bold;
   }

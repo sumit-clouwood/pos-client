@@ -147,6 +147,7 @@ export default {
         let resetFull = false
         if (this.$store.getters['checkout/complete']) {
           resetFull = true
+          this.$store.commit('order/CLEAR_SELECTED_ORDER')
         }
 
         this.$store.dispatch('checkout/reset', resetFull)
@@ -332,6 +333,7 @@ export default {
           .invoice-body .header-img {
               max-height: 180px !important;
               min-height: 120px !important;
+              max-width: 96%;
               display: inline-block;
               margin: 0 auto 1.2em;
           }

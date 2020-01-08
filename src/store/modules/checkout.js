@@ -3,6 +3,7 @@ import * as mutation from './checkout/mutation-types'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 import { compressToBase64 } from 'lz-string'
+import OrderHelper from '@/plugins/helpers/Order'
 
 // initial state
 const state = {
@@ -222,9 +223,11 @@ const actions = {
     ) {
       order.customer_address_id = rootState.customer.address[0]._id
       deliveryAreaId = rootState.customer.address[0].delivery_area_id
-    } else {
+    } else if (rootState.customer.address) {
       order.customer_address_id = rootState.customer.address._id.$oid
       deliveryAreaId = rootState.customer.address.delivery_area_id
+    } else {
+      deliveryAreaId = order.order_delivery_area
     }
     const deliveryArea = rootGetters['customer/findDeliveryArea'](
       deliveryAreaId
@@ -396,7 +399,8 @@ const actions = {
     //if (order.delivery_surcharge) {
     order.delivery_surcharge = Num.round(order.delivery_surcharge).toFixed(2)
     //}
-    let changedAmount = totalPaid - orderData.balanceDue
+    let changedAmount =
+      totalPaid - (orderData.balanceDue + parseFloat(order.tip_amount))
     if (changedAmount < 0) {
       changedAmount = 0
     }
@@ -440,6 +444,7 @@ const actions = {
           tax: item.tax,
           price: item.netPrice,
           qty: item.quantity,
+          note: item.note,
           originalItem: item,
         }
         if (typeof item.kitchen_invoice !== 'undefined') {
@@ -748,6 +753,19 @@ const actions = {
       '-' +
       rootState.order.startTime
     delete order.real_created_datetime
+    if (rootState.order.selectedOrder.item.cashier_id) {
+      order.cashier_id = rootState.order.selectedOrder.item.cashier_id
+    } else if (rootState.order.selectedOrder.item.order_history) {
+      const history = OrderHelper.lookup(
+        rootState.order.selectedOrder.item,
+        'order_history',
+        'name',
+        'ORDER_HISTORY_TYPE_RECORD_NEW'
+      )
+      if (history) {
+        order.cashier_id = history.user
+      }
+    }
     return Promise.resolve(order)
   },
 
@@ -769,6 +787,8 @@ const actions = {
                   }
                 )
                 dispatch('reset')
+                commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
+
                 resolve()
               } else {
                 commit('order/SET_ORDER_ID', rootState.order.orderId, {
@@ -783,6 +803,7 @@ const actions = {
                   msg: msg,
                 }).then(() => {
                   resolve(response.data)
+                  commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
                   commit(mutation.PRINT, true)
                 })
               }
@@ -823,6 +844,7 @@ const actions = {
                 }
               )
               dispatch('reset')
+              commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               resolve()
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
@@ -924,6 +946,7 @@ const actions = {
 
                 dispatch('createModifyOrderItemList')
                 dispatch('reset', true)
+                commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
                 resolve()
               } else {
                 //order paid
@@ -948,6 +971,8 @@ const actions = {
                         action: action,
                         data: { selectedCovers: selectedCovers },
                       }).then(() => resolve())
+                    } else {
+                      commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
                     }
                   })
                   //if splitted once
@@ -1032,16 +1057,12 @@ const actions = {
               )
 
               //order paid
-              commit(mutation.PRINT, true)
               commit(
                 'SET_ORDER_NUMBER',
                 rootState.order.selectedOrder.item.order_no
               )
-              if (rootState.order.splitBill) {
-                //mark items as paid in current execution
-                dispatch('order/markSplitItemsPaid', null, { root: true })
-              }
-
+              commit(mutation.PRINT, true)
+              commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               resolve()
 
               commit(
@@ -1051,7 +1072,6 @@ const actions = {
                   root: true,
                 }
               )
-              commit('order/SET_ORDER_DETAILS', false, { root: true })
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
             }
@@ -1091,6 +1111,7 @@ const actions = {
               }).then(() => {
                 resolve(response.data)
                 commit(mutation.PRINT, true)
+                commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               })
             } else {
               dispatch('handleSystemErrors', response).then(() =>
@@ -1291,7 +1312,6 @@ const actions = {
               result: 'success',
               msg: msg,
             }).then(() => {
-              commit('order/SET_ORDER_DETAILS', false, { root: true })
               resolve(response.data)
             })
           } else {

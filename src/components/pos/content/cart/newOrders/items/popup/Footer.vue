@@ -1,6 +1,7 @@
 <template>
   <div class="modal-footer">
     <div class="btn-announce">
+      <note-button></note-button>
       <DiscountButton v-if="!waiter && !carhop" />
       <!-- <RemoveDiscountButton /> -->
       <RemoveTaxButton v-if="!carhop" />
@@ -12,6 +13,7 @@
 <script>
 //this footer ll be called only when we come through order
 import DiscountButton from './footer/DiscountButton'
+import noteButton from './footer/buttons/note'
 //import RemoveDiscountButton from './footer/RemoveDiscountButton'
 import RemoveTaxButton from './footer/RemoveTaxButton'
 import ModifyItemModifiersButton from './footer/ModifyItemModifiersButton'
@@ -22,6 +24,7 @@ export default {
   props: {},
   components: {
     DiscountButton,
+    noteButton,
     //  RemoveDiscountButton,
     RemoveTaxButton,
     ModifyItemModifiersButton,
