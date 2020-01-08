@@ -212,17 +212,16 @@
           }
         }
         li {
-
-          &:hover{
-            background: #5056CA;
-            svg{
-              path{
-                fill: #fff;
-                opacity: 1;
-              }
-            }
-            a {
+          a {
+            &:hover, &.router-link-active{
               color: #fff;
+              background: #5056CA;
+              svg{
+                path{
+                  fill: #fff;
+                  opacity: 1;
+                }
+              }
             }
           }
           svg{
