@@ -24,9 +24,6 @@
               <p>
                 {{ item.name }}
               </p>
-              <span v-if="item.note">
-                <i>{{ item.note }}</i>
-              </span>
               <p class="price-qty">
                 @ {{ item.price }} x {{ item.qty }} &nbsp;
                 {{ getItemDiscountValue(order.item_discounts).name }}
@@ -41,6 +38,10 @@
                   modifier.name
                 }}</span>
               </a>
+              <span v-if="item.note">
+                <span class="item-note">{{ _t('Note') }}: </span>
+                <i> {{ item.note }}</i>
+              </span>
             </div>
           </div>
         </div>
@@ -127,5 +128,10 @@ export default {
 }
 .trans-item-btn:empty {
   display: none !important;
+}
+.item-note {
+  color: #3d3f43;
+  font-size: 0.875rem;
+  font-weight: 600;
 }
 </style>
