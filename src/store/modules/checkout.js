@@ -3,6 +3,7 @@ import * as mutation from './checkout/mutation-types'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 import { compressToBase64 } from 'lz-string'
+import OrderHelper from '@/plugins/helpers/Order'
 
 // initial state
 const state = {
@@ -752,6 +753,19 @@ const actions = {
       '-' +
       rootState.order.startTime
     delete order.real_created_datetime
+    if (rootState.order.selectedOrder.item.cashier_id) {
+      order.cashier_id = rootState.order.selectedOrder.item.cashier_id
+    } else if (rootState.order.selectedOrder.item.order_history) {
+      const history = OrderHelper.lookup(
+        rootState.order.selectedOrder.item,
+        'order_history',
+        'name',
+        'ORDER_HISTORY_TYPE_RECORD_NEW'
+      )
+      if (history) {
+        order.cashier_id = history.user
+      }
+    }
     return Promise.resolve(order)
   },
 
