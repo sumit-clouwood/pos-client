@@ -921,7 +921,7 @@ const actions = {
     dataObject
   ) {
     let action = null
-    if (rootState.dinein.isModified) {
+    if (rootState.dinein.isModified && typeof dataObject != 'undefined') {
       action = dataObject.action
     } else {
       action = dataObject
@@ -934,7 +934,7 @@ const actions = {
     }
     return new Promise(resolve => {
       dispatch('getModifyOrder').then(order => {
-        if (rootState.dinein.isModified) {
+        if (rootState.dinein.isModified && typeof dataObject != 'undefined') {
           order = { ...order, ...dataObject.data }
         }
         //delete order.order_system_status
@@ -955,6 +955,7 @@ const actions = {
                 dispatch('createModifyOrderItemList')
                 dispatch('reset', true)
                 commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
+                commit('dinein/IS_MODIFIED', false, { root: true })
                 resolve()
               } else {
                 //order paid
@@ -981,6 +982,7 @@ const actions = {
                       }).then(() => resolve())
                     } else {
                       commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
+                      commit('dinein/IS_MODIFIED', false, { root: true })
                     }
                   })
                   //if splitted once
@@ -1449,7 +1451,11 @@ const actions = {
     ) {
       if (rootState.order.order_status !== 'completed') {
         if (rootState.order.orderId || action === 'dine-in-order-preview') {
-          return dispatch('modifyDineOrder', action)
+          if (rootState.dinein.isModified) {
+            return dispatch('modifyDineOrder', { action: action, data: data })
+          } else {
+            return dispatch('modifyDineOrder', action)
+          }
         } else {
           return dispatch('createDineOrder', action)
         }
