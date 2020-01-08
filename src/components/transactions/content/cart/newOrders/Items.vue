@@ -38,10 +38,10 @@
                   modifier.name
                 }}</span>
               </a>
-              <span v-if="item.note">
+              <div v-if="item.note">
                 <span class="item-note">{{ _t('Note') }}: </span>
                 <i> {{ item.note }}</i>
-              </span>
+              </div>
             </div>
           </div>
         </div>
