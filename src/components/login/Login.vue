@@ -143,12 +143,15 @@ export default {
                     )
                   }
                   let path = response.data.start_path
+
                   if (path != null && availabeStores.length === 1) {
-                    if (path === 'delivery_home') {
-                      path = 'delivery-manager'
+                    if (path !== 'pos') {
+                      if (path === 'delivery_home') {
+                        path = 'delivery-manager'
+                      }
+                      let URL = path + this.$store.getters['context/store']
+                      this.$router.push(URL)
                     }
-                    let URL = path + this.$store.getters['context/store']
-                    this.$router.push(URL)
                     this.$store.dispatch(
                       'auth/getUserDetails',
                       response.data.user_id
