@@ -97,7 +97,8 @@ export default {
         // } else {
         //   clickPayNow()
         // }
-        clickPayNow()
+
+        this.isModified() ? clickPayNow() : clickPayNow()
       } else {
         this.showErrorMessage('Please select a cover for new item.')
       }
@@ -168,7 +169,7 @@ export default {
       }
     },
     isModified() {
-      let isChanged = null
+      let isChanged = false
       let newItems = this.items.length > 0 ? this.items : false
 
       if (!newItems) {
@@ -195,9 +196,10 @@ export default {
           isChanged = true
         }
       }
-
-      this.$store.commit('dinein/IS_MODIFIED', isChanged)
-      this.$store.dispatch('order/fetchModificationReasons')
+      if (isChanged) {
+        this.$store.commit('dinein/IS_MODIFIED', isChanged)
+        this.$store.dispatch('order/fetchModificationReasons')
+      }
       return isChanged
     },
     showErrorMessage(errorMessage) {

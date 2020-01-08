@@ -52,6 +52,7 @@ export default {
   components: {},
   computed: {
     ...mapState('checkout', ['changedAmount']),
+    ...mapState('dinein', ['isModified']),
     ...mapState('order', ['orderSource']),
     ...mapGetters('order', ['orderType']),
     ...mapState('location', ['brand']),
@@ -119,8 +120,9 @@ export default {
           $('#payment-screen-footer').prop('disabled', true)
           this.$store.commit('checkoutForm/setAction', 'pay')
           this.$store.commit('order/IS_PAY', 1)
-
-          if (this.orderSource === 'backend') {
+          /* eslint-disable */
+          console.log(this.isModified)
+          if (this.orderSource === 'backend' || this.isModified) {
             showModal('#modificationReason')
           } else {
             this.$store.dispatch('order/startOrder')
