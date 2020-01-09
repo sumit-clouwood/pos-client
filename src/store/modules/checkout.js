@@ -445,6 +445,7 @@ const actions = {
           tax: item.tax,
           price: item.netPrice,
           qty: item.quantity,
+          note: item.note,
           originalItem: item,
         }
         if (typeof item.kitchen_invoice !== 'undefined') {

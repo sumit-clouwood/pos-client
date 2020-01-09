@@ -42,67 +42,77 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, key) in orderDetails.items" :key="key">
-            <td
-              style="width: 250px;"
-              class="color-tables-background color-text"
-            >
-              <div>{{ item.name }}</div>
-              <div class="discount" v-if="orderDetails.item_discounts.length">
-                {{
-                  getItemSubsets({
-                    subset: orderDetails.item_discounts,
-                    itemId: item.no,
-                    selector: 'item_discounts',
-                  })
-                }}
-                <div
-                  v-for="(discount, index) in orderDetails.item_discounts"
-                  :key="index"
-                >
-                  <span v-if="item.no === discount.for_item">
-                    {{ discount.name }} - {{ formatPrice(discount.price) }}
-                  </span>
+          <template v-for="(item, key) in orderDetails.items">
+            <tr :key="'item' + key">
+              <td
+                style="width: 250px;"
+                class="color-tables-background color-text"
+              >
+                <div>{{ item.name }}</div>
+                <div class="discount" v-if="orderDetails.item_discounts.length">
+                  {{
+                    getItemSubsets({
+                      subset: orderDetails.item_discounts,
+                      itemId: item.no,
+                      selector: 'item_discounts',
+                    })
+                  }}
+                  <div
+                    v-for="(discount, index) in orderDetails.item_discounts"
+                    :key="index"
+                  >
+                    <span v-if="item.no === discount.for_item">
+                      {{ discount.name }} - {{ formatPrice(discount.price) }}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div class="modifier" v-if="orderDetails.item_modifiers.length">
-                {{
-                  getItemSubsets({
-                    subset: orderDetails.item_modifiers,
-                    itemId: item.no,
-                    selector: 'item_modifiers',
-                  })
-                }}
-                <div
-                  v-for="(modifier, key) in orderDetails.item_modifiers"
-                  :key="key"
-                >
-                  <span v-if="modifier.for_item == item.no">
-                    <span v-if="modifier.qty > 0">+{{ modifier.qty }}</span>
-                    {{ modifier.name }}
-                  </span>
+                <div class="modifier" v-if="orderDetails.item_modifiers.length">
+                  {{
+                    getItemSubsets({
+                      subset: orderDetails.item_modifiers,
+                      itemId: item.no,
+                      selector: 'item_modifiers',
+                    })
+                  }}
+                  <div
+                    v-for="(modifier, key) in orderDetails.item_modifiers"
+                    :key="key"
+                  >
+                    <span v-if="modifier.for_item == item.no">
+                      <span v-if="modifier.qty > 0">+{{ modifier.qty }}</span>
+                      {{ modifier.name }}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td
-              style="width: 150px;"
-              class="base-price color-tables-background color-text"
-            >
-              {{ item.price }}
-            </td>
-            <td
-              style="width: 60px;"
-              class="qty color-tables-background color-text"
-            >
-              {{ item.qty }}
-            </td>
-            <td
-              style="width: 150px;"
-              class="price color-tables-background color-text"
-            >
-              {{ getTotalPrice(item) }}
-            </td>
-          </tr>
+              </td>
+              <td
+                style="width: 150px;"
+                class="base-price color-tables-background color-text"
+              >
+                {{ item.price }}
+              </td>
+              <td
+                style="width: 60px;"
+                class="qty color-tables-background color-text"
+              >
+                {{ item.qty }}
+              </td>
+              <td
+                style="width: 150px;"
+                class="price color-tables-background color-text"
+              >
+                {{ getTotalPrice(item) }}
+              </td>
+            </tr>
+            <tr v-if="item.note" :key="'note' + key">
+              <td colspan="4" class="note-td">
+                <div>
+                  <span class="item-note">{{ _t('Note') }}: </span>
+                  <i>{{ item.note }}</i>
+                </div>
+              </td>
+            </tr>
+          </template>
         </tbody>
       </table>
 
@@ -165,7 +175,9 @@ export default {
   },
   mounted() {
     if (this.orderSource == 'backend') {
-      this.$store.dispatch('order/loadCarhopOrder', this.orderDetails._id)
+      if (this.orderDetails) {
+        this.$store.dispatch('order/loadCarhopOrder', this.orderDetails._id)
+      }
     }
   },
   methods: {
@@ -257,5 +269,15 @@ export default {
 .receipt-summary .caption,
 .payments_summary .caption {
   color: gray;
+}
+.item-note {
+  color: #3d3f43;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.note-td {
+  padding-top: 0;
+  border-top: 0;
+  padding-left: 1.875rem;
 }
 </style>
