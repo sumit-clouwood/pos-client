@@ -11,3 +11,5 @@ export const CHANGE_AVATAR = 'store_users.o.change_avatar.store'
 export const CHANGE_PASSWORD = 'store_users.o.change_pass_action.store'
 export const CHANGE_NAME_EMAIL = 'store_users.o.change_name_email_action.store'
 export const SEE_OTHERS_ORDERS = 'can_see_others_orders'
+
+export const TOKEN_NUMBER = 'stores.o.store_token_screen_form_action_id'

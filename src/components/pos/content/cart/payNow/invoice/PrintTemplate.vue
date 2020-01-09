@@ -6,6 +6,22 @@
     :style="{ direction: template.rtl_supported ? 'rtl' : 'ltr' }"
   >
     <div class="header">
+      <div
+        style="
+          text-align: center;
+          font-weight: 700;
+          padding: 0 0 0.3em 0;
+          font-size: 3em;"
+        v-if="
+          allowed(PERMS.TOKEN_NUMBER) &&
+            isTokenManager &&
+            tokenNumber &&
+            orderType.OTApi === 'walk_in'
+        "
+      >
+        {{ tokenNumber }}
+      </div>
+
       <template v-if="template.show_logo">
         <img class="header-img" :src="company_logo" alt="Logo" />
       </template>
@@ -323,8 +339,9 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapGetters('location', ['_t']),
-    ...mapState('location', ['timezoneString']),
+    ...mapGetters('location', ['_t', 'isTokenManager']),
+    ...mapState('location', ['timezoneString', 'tokenNumber']),
+    ...mapGetters('auth', ['allowed']),
     ...mapState('invoice', ['tableNumber']),
     ...mapState('order', ['orderType']),
 

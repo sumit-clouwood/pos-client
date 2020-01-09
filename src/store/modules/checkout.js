@@ -4,6 +4,7 @@ import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 import { compressToBase64 } from 'lz-string'
 import OrderHelper from '@/plugins/helpers/Order'
+import * as PERMS from '@/const/permissions'
 
 // initial state
 const state = {
@@ -672,6 +673,18 @@ const actions = {
               //adding tip amount
               order.tip_amount = rootState.checkoutForm.tipAmount
 
+              if (
+                rootGetters['location/isTokenManager'] &&
+                rootState.order.orderType.OTApi ===
+                  CONSTANTS.ORDER_TYPE_WALK_IN &&
+                rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER)
+              ) {
+                let tokenNumber = rootState.location.tokeNumber
+                  ? rootState.location.tokeNumber
+                  : localStorage.getItem('token_number')
+                order.token_number = ++tokenNumber
+              }
+
               dispatch('addItemsToOrder', {
                 order: order,
                 action: action,
@@ -1153,7 +1166,12 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
-
+            if (state.order.token_number) {
+              commit('location/SET_TOKEN_NUMBER', state.order.token_number, {
+                root: true,
+              })
+              localStorage.setItem('token_number', state.order.token_number)
+            }
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('setMessage', {
               result: 'success',
