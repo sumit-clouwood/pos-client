@@ -33,7 +33,7 @@ export default {
     ModifyItemModifiersButton,
   },
   computed: {
-    ...mapGetters('auth', ['allowed']),
+    ...mapGetters('auth', ['allowed', 'waiter', 'carhop']),
     ...mapGetters('location', ['_t']),
     ...mapState('order', ['item', 'orderSource']),
   },
@@ -41,7 +41,7 @@ export default {
     show(option) {
       let allowed = true
 
-      if (this.allowed('carop') || this.allowed('waiter')) {
+      if (this.carhop || this.waiter) {
         //carhop or waiter, both ll be always placing order so they can add/change note
         switch (option) {
           case 'removeTax':
