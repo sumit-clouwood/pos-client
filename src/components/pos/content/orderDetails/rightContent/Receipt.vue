@@ -175,7 +175,9 @@ export default {
   },
   mounted() {
     if (this.orderSource == 'backend') {
-      this.$store.dispatch('order/loadCarhopOrder', this.orderDetails._id)
+      if (this.orderDetails) {
+        this.$store.dispatch('order/loadCarhopOrder', this.orderDetails._id)
+      }
     }
   },
   methods: {
