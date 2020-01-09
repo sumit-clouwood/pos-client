@@ -49,6 +49,7 @@ export default {
             allowed = false
             break
           case 'modifiers':
+          case 'note':
             if (typeof this.item.no !== 'undefined') {
               allowed = false
             }
