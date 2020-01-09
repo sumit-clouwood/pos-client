@@ -274,6 +274,7 @@ export default {
   font-weight: 600;
 }
 .note-td {
+  padding-top: 0;
   border-top: 0;
   padding-left: 1.875rem;
 }
