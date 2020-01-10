@@ -7,6 +7,13 @@
   background-color: $blue-middle;
   display: grid;
   grid-template-rows: $header-height 1fr $px60 $footer-height;
+  justify-content: center;
+  grid-template-columns: 1fr;
+  overflow: hidden;
+
+  /*img{
+    max-width: 100%;
+  }*/
 
   .logo {
     display: grid;
