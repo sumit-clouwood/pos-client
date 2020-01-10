@@ -173,13 +173,6 @@ export default {
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('order', ['orderSource']),
   },
-  mounted() {
-    if (this.orderSource == 'backend') {
-      if (this.orderDetails) {
-        this.$store.dispatch('order/loadCarhopOrder', this.orderDetails._id)
-      }
-    }
-  },
   methods: {
     getTotalPrice: function(item) {
       return this.formatPrice(
