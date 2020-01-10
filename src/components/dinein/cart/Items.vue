@@ -24,11 +24,7 @@
         class="main-orders-list-item-subtitle color-text-invert item-exclude"
       >
         <div>
-          <div>
-            @ {{ formatPrice(itemGrossPrice(item)) }} x
-            {{ item.quantity }}
-            {{ discountInfo(item) }}
-          </div>
+          <div v-html="formatItemDiscount(item)"></div>
           <div
             class="main-orders-list-item-subtitle color-text-invert"
             v-if="orderType.OTApi === 'dine_in'"
@@ -83,8 +79,8 @@
 <script>
 import Modifiers from '@/components/pos/content/cart/newOrders/items/Modifiers.vue'
 import CheckBox from '@/components/util/form/CheckBox.vue'
-import * as CONST from '@/constants'
 import { mapState, mapActions, mapGetters } from 'vuex'
+import Discount from '@/mixins/Discount'
 
 export default {
   name: 'Items',
@@ -93,6 +89,7 @@ export default {
       newItemList: [],
     }
   },
+  mixins: [Discount],
   computed: {
     splittedItems: {
       get() {
@@ -123,25 +120,7 @@ export default {
       this.$set(this.splittedItems, item.index, item.checked)
       this.$store.dispatch('order/splitItems', this.splittedItems)
     },
-    discountInfo(item) {
-      if (item.discount) {
-        return (
-          ' - ' +
-          (item.discount.type === CONST.VALUE
-            ? item.discount.value
-            : item.discount.rate + ' %') +
-          ' ( ' +
-          item.discount.name +
-          ' - ' +
-          (item.discount.type == CONST.VALUE
-            ? this.formatPrice(item.discount.value)
-            : item.discount.rate + ' %') +
-          ' )'
-        )
-      }
 
-      return ''
-    },
     removeCurrentOrder(param) {
       this.removeFromOrder(param)
       if (!this.items.length) {

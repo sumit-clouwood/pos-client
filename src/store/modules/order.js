@@ -999,7 +999,13 @@ const actions = {
             value: discount.discount.value,
           }
 
-          if (discount.discount.type === CONST.VALUE) {
+          if (discount.discount.type === CONST.FIXED) {
+            const priceDiff = item.grossPrice - discount.discount.value
+            const discountPercentage = (priceDiff * 100) / item.grossPrice
+            item.discountRate = discountPercentage
+            item.discountedTax = false
+            item.discountedNetPrice = false
+          } else if (discount.discount.type === CONST.VALUE) {
             if (
               discount.discount.value >
               getters.itemNetPrice(item) * item.quantity
@@ -1215,7 +1221,9 @@ const actions = {
           break
       }
       await Promise.all(promises)
-      dispatch('addOrderToCart', orderDetails.item)
+      dispatch('setDiscounts', orderDetails).then(() => {
+        dispatch('addOrderToCart', orderDetails.item)
+      })
     })
   },
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
