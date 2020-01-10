@@ -165,6 +165,16 @@ const actions = {
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
       }
+      if (window.PrintHandle != undefined) {
+			let _order = {};
+			_order["printingServers"] = printingServers;
+			_order["orderData"] = jsonResponse;
+            window.PrintHandle.Print(JSON.stringify(_order), function callbackfunction(data)
+			{
+			//perform your action in case of success or leave empty
+				console.log(data.status);
+			});
+		}
       let x = JSON.stringify(jsonResponse)
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')

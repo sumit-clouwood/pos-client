@@ -229,6 +229,7 @@ const actions = {
     } else {
       deliveryAreaId = order.order_delivery_area
     }
+
     const deliveryArea = rootGetters['customer/findDeliveryArea'](
       deliveryAreaId
     )
@@ -444,6 +445,7 @@ const actions = {
           tax: item.tax,
           price: item.netPrice,
           qty: item.quantity,
+          note: item.note,
           originalItem: item,
         }
         if (typeof item.kitchen_invoice !== 'undefined') {
