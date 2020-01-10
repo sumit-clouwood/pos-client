@@ -5,7 +5,7 @@
         <div class="header-main-right color-dashboard-background">
           <div class="current-time">
             <div class="header-main-left-time">
-              <span>{{ todayDate }} </span>
+              <DateTimeVue />
               <span class="time text-uppercase font-weight-bold">
                 {{ todayTime }}
               </span>
@@ -155,6 +155,7 @@ import bootstrap from '@/bootstrap'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
 import TopSidebarMenu from '@/components/util/TopSidebarMenu'
 import LanguageMenu from '@/components/util/LanguageMenu'
+import DateTimeVue from '@/components/util/DateTimeVue'
 
 export default {
   name: 'DMTopRightNav',
@@ -162,6 +163,7 @@ export default {
     SwitchStore,
     TopSidebarMenu,
     LanguageMenu,
+    DateTimeVue,
   },
   data() {
     return {

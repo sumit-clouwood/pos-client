@@ -307,6 +307,14 @@ const getters = {
 
 // actions
 const actions = {
+  addNoteToItem({ commit }, note) {
+    let item = { ...state.item }
+    item.note = note
+    //replace item in cart
+    commit(mutation.REPLACE_ORDER_ITEM, {
+      item: item,
+    })
+  },
   fetchModificationReasons({ state, commit }) {
     if (!state.modificationReasons.length) {
       OrderService.getModifyReasons().then(response => {
@@ -388,7 +396,7 @@ const actions = {
     item.grossPrice = getters.grossPrice(item)
     //net price is exclusive of tax, getter ll send unrounded price that is real one
     item.netPrice = getters.netPrice(item)
-
+    item.note = stateItem.note ? stateItem.note : ''
     //calculated item tax
     item.tax = Num.round(item.grossPrice - item.netPrice)
 
@@ -442,6 +450,9 @@ const actions = {
 
       //if there is item modifiers data assign it later
       item.modifiersData = []
+      if (!item.note) {
+        item.note = ''
+      }
 
       if (typeof item.orderIndex === 'undefined') {
         item.orderIndex = getters.orderIndex
@@ -725,20 +736,39 @@ const actions = {
 
         const subtotal = getters.subTotal
         let totalTax = 0
+        let totalSurcharge = rootGetters['surcharge/surcharge']
+        let totalOrderDiscount = 0
 
-        orderTotalDiscount = Num.round((subtotal * orderDiscount.rate) / 100)
+        //this is used for max discount only and only works for percentage, actual discount is
+        //calculated below in respective section
+        if (orderDiscount.include_surcharge) {
+          totalTax = getters.totalTaxWithoutOrderDiscount
+          orderTotalDiscount = Num.round((subtotal * orderDiscount.rate) / 100)
+          taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
+          surchargeTotalDiscount = Num.round(
+            (totalSurcharge * orderDiscount.rate) / 100
+          )
+        } else {
+          orderTotalDiscount = Num.round((subtotal * orderDiscount.rate) / 100)
+          totalTax = getters.totalItemsTax
+          taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
+          surchargeTotalDiscount = 0
+        }
+
+        totalOrderDiscount =
+          orderTotalDiscount + taxTotalDiscount + surchargeTotalDiscount
 
         if (orderDiscount.include_surcharge) {
           //apply ontotal discount, apply on surcharge and its tax as well
           totalTax = getters.totalTaxWithoutOrderDiscount
 
           console.log('total tax, ', totalTax)
-          const totalSurcharge = rootGetters['surcharge/surcharge']
+          totalSurcharge = rootGetters['surcharge/surcharge']
           console.log('total surcharge', totalSurcharge)
           if (
             orderDiscount.min_cart_value < subtotal &&
             orderDiscount.max_discount_value &&
-            orderDiscount.max_discount_value < orderTotalDiscount
+            orderDiscount.max_discount_value < totalOrderDiscount
           ) {
             orderTotalDiscount = orderDiscount.max_discount_value
 
@@ -852,7 +882,7 @@ const actions = {
           if (
             orderDiscount.min_cart_value < subtotal &&
             orderDiscount.max_discount_value &&
-            orderDiscount.max_discount_value < orderTotalDiscount
+            orderDiscount.max_discount_value < totalOrderDiscount
           ) {
             orderTotalDiscount = orderDiscount.max_discount_value
             const percentDiscountOnSubTotal = Num.round(
@@ -969,7 +999,13 @@ const actions = {
             value: discount.discount.value,
           }
 
-          if (discount.discount.type === CONST.VALUE) {
+          if (discount.discount.type === CONST.FIXED) {
+            const priceDiff = item.grossPrice - discount.discount.value
+            const discountPercentage = (priceDiff * 100) / item.grossPrice
+            item.discountRate = discountPercentage
+            item.discountedTax = false
+            item.discountedNetPrice = false
+          } else if (discount.discount.type === CONST.VALUE) {
             if (
               discount.discount.value >
               getters.itemNetPrice(item) * item.quantity
@@ -1185,7 +1221,9 @@ const actions = {
           break
       }
       await Promise.all(promises)
-      dispatch('addOrderToCart', orderDetails.item)
+      dispatch('setDiscounts', orderDetails).then(() => {
+        dispatch('addOrderToCart', orderDetails.item)
+      })
     })
   },
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
@@ -1245,7 +1283,7 @@ const actions = {
         rootState.category.items.forEach(categoryItem => {
           let item = { ...categoryItem }
           item.no = orderItem.no
-
+          item.note = orderItem.note
           if (
             state.selectedOrder &&
             state.selectedOrder.item.order_type === 'dine_in'

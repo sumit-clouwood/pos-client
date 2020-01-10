@@ -3,6 +3,7 @@ import * as mutation from './checkout/mutation-types'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 import { compressToBase64 } from 'lz-string'
+import OrderHelper from '@/plugins/helpers/Order'
 
 // initial state
 const state = {
@@ -222,10 +223,13 @@ const actions = {
     ) {
       order.customer_address_id = rootState.customer.address[0]._id
       deliveryAreaId = rootState.customer.address[0].delivery_area_id
-    } else {
+    } else if (rootState.customer.address) {
       order.customer_address_id = rootState.customer.address._id.$oid
       deliveryAreaId = rootState.customer.address.delivery_area_id
+    } else {
+      deliveryAreaId = order.order_delivery_area
     }
+
     const deliveryArea = rootGetters['customer/findDeliveryArea'](
       deliveryAreaId
     )
@@ -441,6 +445,7 @@ const actions = {
           tax: item.tax,
           price: item.netPrice,
           qty: item.quantity,
+          note: item.note,
           originalItem: item,
         }
         if (typeof item.kitchen_invoice !== 'undefined') {
@@ -749,6 +754,19 @@ const actions = {
       '-' +
       rootState.order.startTime
     delete order.real_created_datetime
+    if (rootState.order.selectedOrder.item.cashier_id) {
+      order.cashier_id = rootState.order.selectedOrder.item.cashier_id
+    } else if (rootState.order.selectedOrder.item.order_history) {
+      const history = OrderHelper.lookup(
+        rootState.order.selectedOrder.item,
+        'order_history',
+        'name',
+        'ORDER_HISTORY_TYPE_RECORD_NEW'
+      )
+      if (history) {
+        order.cashier_id = history.user
+      }
+    }
     return Promise.resolve(order)
   },
 

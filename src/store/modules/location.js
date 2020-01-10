@@ -149,6 +149,17 @@ const actions = {
         .catch(er => reject(er))
     })
   },
+  updateTranslations({ commit }) {
+    return new Promise((resolve, reject) => {
+      LocationService.getLocationData()
+        .then(uiMenu => {
+          commit(mutation.SET_TRASLATIONS, uiMenu.data.translations)
+
+          return resolve(true)
+        })
+        .catch(er => reject(er))
+    })
+  },
   //got through brand/store
   fetch({ state, commit, dispatch, rootState, rootGetters }) {
     dispatch('formatDate')

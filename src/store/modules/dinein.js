@@ -2,6 +2,8 @@ import * as mutation from './dinein/mutation-types'
 import DineInService from '@/services/data/DineInService'
 import * as CONST from '@/constants'
 import moment from 'moment-timezone'
+// import OrderHelper from '@/plugins/helpers/Order'
+import * as PERMS from '@/const/permissions'
 
 const state = {
   orders: {
@@ -41,9 +43,20 @@ const state = {
   totalReservations: { totalPages: 0, pageNumber: 1, limit: 10 },
   billSplit: null,
   processingSplit: false,
-  reservationData: null,
+  currentTableReservationData: null,
 }
 const getters = {
+  getCurrentTableRunningReservations: state => {
+    if (!state.currentTableReservationData) {
+      return false
+    }
+    return state.currentTableReservationData.map(reservation => {
+      if (reservation.status !== 'completed') {
+        return reservation
+      }
+      return false
+    })
+  },
   getOrderStatus: () => order_status => {
     // eslint-disable-next-line no-console
     console.log(order_status)
@@ -131,9 +144,10 @@ const actions = {
           commit(mutation.BOOKED_TABLES, response.data)
           // eslint-disable-next-line no-console
           console.log(response.data.data, 'boked data')
-          dispatch('getDineInArea')
+          dispatch('getDineInArea').then(() => {
+            return resolve()
+          })
           if (loader) commit(mutation.LOADING, false)
-          return resolve()
         })
         .catch(er => reject(er))
     })
@@ -161,23 +175,42 @@ const actions = {
         balanceDue += parseFloat(od.balance_due)
         currency = od.currency
       })
-      orderDetails.push({
-        table: table,
-        orders: order,
-        amount: balanceDue + ' ' + currency,
-        areaName: areaName.name.toUpperCase(),
-      })
+
+      // //restrict waiters to see other's orders
+      // if (!rootGetters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
+      //   order = OrderHelper.userOrders(
+      //     order,
+      //     rootState.auth.userDetails.item._id
+      //   )
+      // }
+      if (order) {
+        orderDetails.push({
+          table: table,
+          orders: order,
+          amount: balanceDue + ' ' + currency,
+          areaName: areaName.name.toUpperCase(),
+        })
+      }
     })
     commit(mutation.ORDER_DETAILS, {
       tableData: responseData,
       orderDetails: orderDetails,
     })
   },
-  dineInRunningOrders({ commit, state, dispatch }, loader = true) {
+  dineInRunningOrders(
+    { commit, state, dispatch, rootState, rootGetters },
+    loader = true
+  ) {
     if (loader) commit(mutation.LOADING, loader)
+
+    let userId = ''
+    if (!rootGetters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
+      userId = rootState.auth.userDetails.item._id
+    }
     const params = [
       state.totalReservations.pageNumber,
       state.totalReservations.limit,
+      userId,
     ]
 
     DineInService.dineInRunningOrders(...params).then(response => {
@@ -186,11 +219,20 @@ const actions = {
       if (loader) commit(mutation.LOADING, false)
     })
   },
-  dineInCompleteOrders({ commit, dispatch }, loader = true) {
+  dineInCompleteOrders(
+    { commit, dispatch, rootGetters, rootState },
+    loader = true
+  ) {
     if (loader) commit(mutation.LOADING, loader)
+    let userId = ''
+    if (!rootGetters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
+      userId = rootState.auth.userDetails.item._id
+    }
+
     const params = [
       state.totalReservations.pageNumber,
       state.totalReservations.limit,
+      userId,
     ]
     DineInService.dineInCompleteOrders(...params).then(response => {
       dispatch('seOrderData', response)
@@ -199,9 +241,13 @@ const actions = {
     })
   },
   getDineInArea({ commit, dispatch }) {
-    DineInService.dineAreas().then(response => {
-      commit(mutation.DINE_IN_AREAS, response.data)
-      dispatch('getTableStatus')
+    return new Promise(resolve => {
+      DineInService.dineAreas().then(response => {
+        commit(mutation.DINE_IN_AREAS, response.data)
+        dispatch('getTableStatus').then(() => {
+          return resolve()
+        })
+      })
     })
   },
   getDineInTables({ commit, dispatch }) {
@@ -230,109 +276,116 @@ const actions = {
     return Promise.resolve()
   },
   getTableStatus({ commit, state }) {
-    commit(mutation.TABLE_STATUS, false)
-    let tableStatus = {
-      availableCount: 0,
-      unavailableCount: 0,
-      availableSoonCount: 0,
-      table: [],
-    }
-    let orderOnTable = []
-    if (state.tablesOnArea) {
-      state.tablesOnArea.forEach(table => {
-        let is_unavail = 0
-        let is_avail_soon = 0
-        let orders = []
-        let table_details = { id: table._id, number: table.number, status: {} }
+    return new Promise(resolve => {
+      commit(mutation.TABLE_STATUS, false)
+      let tableStatus = {
+        availableCount: 0,
+        unavailableCount: 0,
+        availableSoonCount: 0,
+        table: [],
+      }
+      let orderOnTable = []
+      if (state.tablesOnArea) {
+        state.tablesOnArea.forEach(table => {
+          let is_unavail = 0
+          let is_avail_soon = 0
+          let orders = []
+          let table_details = {
+            id: table._id,
+            number: table.number,
+            status: {},
+          }
 
-        if (state.allBookedTables && state.allBookedTables.orders) {
-          orders = state.allBookedTables.orders.filter(
-            order => order.assigned_table_id === table._id
-          )
-        }
-
-        if (orders.length) {
-          let tableArray = []
-          orders.forEach(order => {
-            if (tableArray[order.assigned_table_id] == undefined)
-              tableArray[order.assigned_table_id] = []
-            tableArray[order.assigned_table_id].push(order.status)
-            if (
-              order.status === CONST.ORDER_STATUS_RESERVED ||
-              order.status === CONST.ORDER_STATUS_IN_PROGRESS
-            ) {
-              if (order.assigned_table_id == table._id) {
-                is_unavail = 1
-              }
-            } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
-              if (order.assigned_table_id == table._id) {
-                is_avail_soon = 1
-
-                orders.forEach(order => {
-                  if (order.status !== CONST.ORDER_STATUS_ON_WAY) {
-                    is_avail_soon = 0
-                  }
-                })
-              }
-            }
-            orderOnTable.push({
-              tableId: table._id,
-              orderIds: order.related_orders_ids,
-              tableNumber: order.number,
-              reservationId: order._id,
-              startDate: order.start_date,
-              startTime: order.start_time,
-              assigned_to: order.assigned_to,
-              created_by: order.created_by,
-              status: order.status,
-              end_time: order.end_time,
-            })
-          })
-          // eslint-disable-next-line no-console
-          // console.log('order->length')
-          if (
-            tableArray[table_details.id].includes(
-              CONST.ORDER_STATUS_RESERVED
-            ) ||
-            tableArray[table_details.id].includes(
-              CONST.ORDER_STATUS_IN_PROGRESS
+          if (state.allBookedTables && state.allBookedTables.orders) {
+            orders = state.allBookedTables.orders.filter(
+              order => order.assigned_table_id === table._id
             )
-          ) {
-            table_details.status.color = '#c84c4c'
-            table_details.status.text = 'unavailable'
-          } else if (
-            tableArray[table_details.id].includes(CONST.ORDER_STATUS_ON_WAY)
-          ) {
-            table_details.status.color = '#faa03c'
-            table_details.status.text = 'available_soon'
+          }
+
+          if (orders.length) {
+            let tableArray = []
+            orders.forEach(order => {
+              if (tableArray[order.assigned_table_id] == undefined)
+                tableArray[order.assigned_table_id] = []
+              tableArray[order.assigned_table_id].push(order.status)
+              if (
+                order.status === CONST.ORDER_STATUS_RESERVED ||
+                order.status === CONST.ORDER_STATUS_IN_PROGRESS
+              ) {
+                if (order.assigned_table_id == table._id) {
+                  is_unavail = 1
+                }
+              } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
+                if (order.assigned_table_id == table._id) {
+                  is_avail_soon = 1
+
+                  orders.forEach(order => {
+                    if (order.status !== CONST.ORDER_STATUS_ON_WAY) {
+                      is_avail_soon = 0
+                    }
+                  })
+                }
+              }
+              orderOnTable.push({
+                tableId: table._id,
+                orderIds: order.related_orders_ids,
+                tableNumber: order.number,
+                reservationId: order._id,
+                startDate: order.start_date,
+                startTime: order.start_time,
+                assigned_to: order.assigned_to,
+                created_by: order.created_by,
+                status: order.status,
+                end_time: order.end_time,
+              })
+            })
+            // eslint-disable-next-line no-console
+            // console.log('order->length')
+            if (
+              tableArray[table_details.id].includes(
+                CONST.ORDER_STATUS_RESERVED
+              ) ||
+              tableArray[table_details.id].includes(
+                CONST.ORDER_STATUS_IN_PROGRESS
+              )
+            ) {
+              table_details.status.color = '#c84c4c'
+              table_details.status.text = 'unavailable'
+            } else if (
+              tableArray[table_details.id].includes(CONST.ORDER_STATUS_ON_WAY)
+            ) {
+              table_details.status.color = '#faa03c'
+              table_details.status.text = 'available_soon'
+            } else {
+              table_details.status.color = '#62bb31'
+              table_details.status.text = 'available'
+            }
+            tableStatus.table.push(table_details)
+            if (is_unavail == 1) {
+              tableStatus.unavailableCount += 1
+            }
+            if (is_avail_soon == 1) {
+              tableStatus.availableSoonCount += 1
+            }
           } else {
+            tableStatus.availableCount = parseInt(state.tablesOnArea.length)
+            /*-
+            parseInt(tableStatus.unavailableCount) +
+            parseInt(tableStatus.availableSoonCount)*/
             table_details.status.color = '#62bb31'
             table_details.status.text = 'available'
+            tableStatus.table.push(table_details)
           }
-          tableStatus.table.push(table_details)
-          if (is_unavail == 1) {
-            tableStatus.unavailableCount += 1
-          }
-          if (is_avail_soon == 1) {
-            tableStatus.availableSoonCount += 1
-          }
-        } else {
-          tableStatus.availableCount = parseInt(state.tablesOnArea.length)
-          /*-
-          parseInt(tableStatus.unavailableCount) +
-          parseInt(tableStatus.availableSoonCount)*/
-          table_details.status.color = '#62bb31'
-          table_details.status.text = 'available'
-          tableStatus.table.push(table_details)
           // eslint-disable-next-line no-console
-          // console.log('order no  length')
-        }
-        commit(mutation.ORDER_ON_TABLES, orderOnTable)
-      })
-    }
-    // eslint-disable-next-line no-console
-    console.log('order no item length', tableStatus)
-    commit(mutation.TABLE_STATUS, tableStatus)
+          // console.log(orderOnTable, 'order no  length')
+          commit(mutation.ORDER_ON_TABLES, orderOnTable)
+        })
+      }
+      // eslint-disable-next-line no-console
+      console.log('order no item length', tableStatus)
+      commit(mutation.TABLE_STATUS, tableStatus)
+      resolve()
+    })
   },
 
   getAvailableTables({ commit, state }) {
@@ -488,15 +541,25 @@ const actions = {
     commit(mutation.SPLIT_BILLS, groups)
   },
 
-  switchWaiter({ state, rootGetters }, waiter) {
+  switchWaiter({ getters }, waiter) {
+    const reservationsOnTable = getters.getCurrentTableRunningReservations
+
+    reservationsOnTable.forEach(reservation => {
+      DineInService.switchWaiter(reservation.reservationId, {
+        switch_from: reservation.assigned_to,
+        switch_to: waiter._id,
+      })
+    })
+  },
+  /*switchWaiter({ state, rootGetters }, waiter) {
     if (
-      !waiter ||
-      (state.reservationData &&
-        state.reservationData.assigned_to === waiter._id)
+        !waiter ||
+        (state.reservationData &&
+            state.reservationData.assigned_to === waiter._id)
     ) {
       return Promise.reject({
         message: rootGetters['location/_t'](
-          'Cashier already assigned to table.'
+            'Waiter already assigned to table.'
         ),
       })
     }
@@ -509,7 +572,7 @@ const actions = {
       switch_from: state.reservationData.assigned_to,
       switch_to: waiter._id,
     })
-  },
+  },*/
 }
 
 const mutations = {
@@ -615,8 +678,8 @@ const mutations = {
     state.reservationId = reservation.id
     localStorage.setItem('reservationId', reservation.id)
   },
-  [mutation.SET_RESERVATION_DATA](state, reservationData) {
-    state.reservationData = reservationData
+  [mutation.CURRENT_TABLE_RESERVATION](state, reservationData) {
+    state.currentTableReservationData = reservationData
   },
   [mutation.ORDER_RESERVATION_DATA](state, reservationData) {
     state.orderReservationData = reservationData

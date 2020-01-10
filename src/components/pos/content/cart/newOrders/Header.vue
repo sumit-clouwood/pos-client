@@ -2,7 +2,7 @@
   <div class="main-orders-contacts color-text">
     <div class="main-oreders-title">
       {{ cartType == 'hold' ? _t('Hold Orders') : _t('New Orders') }}
-      <div class="main-oreders-date">{{ DateToday }}</div>
+      <DateTimeVue />
     </div>
     <div class="main-oreders-email" v-if="selectedCustomer && online">
       <span class="cursor-pointer color-text" @click="removeSelectedCustomer()">
@@ -49,10 +49,13 @@
 <script>
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
+import DateTimeVue from '@/components/util/DateTimeVue'
 export default {
   name: 'Header',
   props: {},
-
+  components: {
+    DateTimeVue,
+  },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('order', ['items', 'cartType', 'orderType']),
