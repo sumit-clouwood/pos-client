@@ -978,7 +978,7 @@ const actions = {
     })
   },
 
-  recalculateItemPrices({ commit, rootState, getters, dispatch }) {
+  recalculateItemPrices({ commit, rootState, getters, rootGetters, dispatch }) {
     commit('discount/SET_ORDER_ERROR', false, { root: true })
     return new Promise((resolve, reject) => {
       let discountErrors = {}
@@ -1000,11 +1000,28 @@ const actions = {
           }
 
           if (discount.discount.type === CONST.FIXED) {
-            const priceDiff = item.grossPrice - discount.discount.value
-            const discountPercentage = (priceDiff * 100) / item.grossPrice
-            item.discountRate = discountPercentage
-            item.discountedTax = false
-            item.discountedNetPrice = false
+            if (discount.discount.value >= item.grossPrice) {
+              //if discount is equal to or greater than acutal item price
+              discountErrors[item.orderIndex] = {
+                item: item,
+                msg: rootGetters['location/_t'](
+                  `Discount is applicable on item price greater than
+                  ${rootGetters['location/formatPrice'](
+                    discount.discount.value
+                  )}`
+                ),
+              }
+              item.discount = false
+              item.discountRate = 0
+              item.discountedTax = false
+              item.discountedNetPrice = false
+            } else {
+              const priceDiff = item.grossPrice - discount.discount.value
+              const discountPercentage = (priceDiff * 100) / item.grossPrice
+              item.discountRate = discountPercentage
+              item.discountedTax = false
+              item.discountedNetPrice = false
+            }
           } else if (discount.discount.type === CONST.VALUE) {
             if (
               discount.discount.value >

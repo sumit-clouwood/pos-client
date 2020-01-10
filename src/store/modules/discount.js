@@ -160,10 +160,14 @@ const actions = {
               if (item.undiscountedNetPrice <= 0) {
                 commit(mutation.SET_ITEM_ERROR, CONST.DISCOUNT_ITEM_ERROR_FREE)
               } else {
-                commit(
-                  mutation.SET_ITEM_ERROR,
-                  CONST.DISCOUNT_ITEM_ERROR_GREATER
-                )
+                if (typeof item.msg !== 'undefined') {
+                  commit(mutation.SET_ITEM_ERROR, item.msg)
+                } else {
+                  commit(
+                    mutation.SET_ITEM_ERROR,
+                    CONST.DISCOUNT_ITEM_ERROR_GREATER
+                  )
+                }
               }
             }
             commit(mutation.SET_ERROR_CODE, 7)
