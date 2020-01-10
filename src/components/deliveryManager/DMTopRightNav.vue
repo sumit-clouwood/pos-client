@@ -41,6 +41,11 @@
               </button>
             </div>
           </div>
+          <div class="hideSmallScreen">
+            <LanguageMenu />
+            <SwitchStore />
+            <TopSidebarMenu />
+          </div>
           <div class="dm-btn-footer hideBigScreen">
             <!--<div id="bkgOverlay" class="backgroundOverlay"></div>-->
             <div class="dm-footer-wrapper">

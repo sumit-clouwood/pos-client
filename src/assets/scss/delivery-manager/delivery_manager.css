@@ -896,6 +896,7 @@ tr.dataContentStyle > td > a {
     font-size: 1.3125rem; }
 
 @media only screen and (max-width: 991px) {
+  .hideSmallScreen{display: none;}
   .top-menu-container .top-menu-icon {
     width: 20px;
     cursor: pointer; }
