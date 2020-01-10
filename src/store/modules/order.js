@@ -397,7 +397,6 @@ const actions = {
     //net price is exclusive of tax, getter ll send unrounded price that is real one
     item.netPrice = getters.netPrice(item)
     item.note = stateItem.note ? stateItem.note : ''
-
     //calculated item tax
     item.tax = Num.round(item.grossPrice - item.netPrice)
 
