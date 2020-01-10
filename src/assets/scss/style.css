@@ -3848,7 +3848,12 @@ body {
   grid-row-end: 4;
   background-color: #5056CA;
   display: grid;
-  grid-template-rows: 5.3125rem 1fr 3.75rem 6.25rem; }
+  grid-template-rows: 5.3125rem 1fr 3.75rem 6.25rem;
+  justify-content: center;
+  grid-template-columns: 1fr;
+  overflow: hidden; }
+  .navigation img {
+    max-width: 100%; }
   .navigation .logo {
     display: grid;
     grid-template-columns: auto;
