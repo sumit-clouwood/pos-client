@@ -327,7 +327,6 @@
               <span>{{ _t('Add Note') }}</span>
             </a>
           </li>
-          <open-item-button></open-item-button>
         </ul>
       </div>
     </div>
@@ -429,7 +428,6 @@ import DineinBtn from './footer/buttons/cart/dinein'
 import CrmBtn from './footer/buttons/cart/crm'
 import WalkinBtn from './footer/buttons/cart/walkin'
 import CarhopBtn from './footer/buttons/cart/carhop'
-import openItemButton from '@/components/pos/openItem/button'
 import openItem from '@/components/pos/openItem/item'
 
 import * as CONST from '@/constants'
@@ -474,7 +472,6 @@ export default {
     CrmBtn,
     WalkinBtn,
     CarhopBtn,
-    openItemButton,
     openItem,
   },
   data() {
