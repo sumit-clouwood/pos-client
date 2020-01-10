@@ -1221,7 +1221,9 @@ const actions = {
           break
       }
       await Promise.all(promises)
-      dispatch('addOrderToCart', orderDetails.item)
+      dispatch('setDiscounts', orderDetails).then(() => {
+        dispatch('addOrderToCart', orderDetails.item)
+      })
     })
   },
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
