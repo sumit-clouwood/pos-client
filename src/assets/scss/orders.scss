@@ -101,7 +101,7 @@
     .main-orders-list {
       display: grid;
       grid-template-columns: auto;
-      grid-gap: $px20;
+      grid-gap: $px5;
       position: relative;
 
       &.hide {
@@ -154,9 +154,6 @@
           flex-wrap: wrap;
           align-items: center;
         }
-      }
-      .main-orders-list-item:first-child {
-        margin-top: unset;
       }
     }
 

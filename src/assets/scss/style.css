@@ -4392,7 +4392,7 @@ body {
     .main-orders .main-orders-list-wrapper .main-orders-list {
       display: grid;
       grid-template-columns: auto;
-      grid-gap: 1.25rem;
+      grid-gap: 0.3125rem;
       position: relative; }
       .main-orders .main-orders-list-wrapper .main-orders-list.hide {
         display: none; }
@@ -4431,8 +4431,6 @@ body {
           display: flex;
           flex-wrap: wrap;
           align-items: center; }
-      .main-orders .main-orders-list-wrapper .main-orders-list .main-orders-list-item:first-child {
-        margin-top: unset; }
     .main-orders .main-orders-list-wrapper .wrappers-order-block {
       position: absolute;
       left: 0;
