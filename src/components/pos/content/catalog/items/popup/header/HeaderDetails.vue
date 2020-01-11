@@ -1,10 +1,12 @@
 <template>
-  <div class="modal-details">
+  <div class="modal-details color-dashboard-background" v-if="item">
     <div class="POSItemOptions_pricequantity">
       <div class="POSItemOptions_price">
-        <label class="POSItemOptions_label">{{ _t('Price') }}</label>
-        <div class="POSItemOptions_money">
-          {{ formatPrice(item.value) }}
+        <label class="POSItemOptions_label color-text-invert">{{
+          _t('Price')
+        }}</label>
+        <div class="POSItemOptions_money color-text">
+          {{ formatPrice(item.value * quantity) }}
         </div>
       </div>
       <Quantity />
@@ -24,6 +26,7 @@ export default {
       item: state => state.modifier.item,
     }),
     ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('orderForm', ['quantity']),
   },
   components: {
     Quantity,

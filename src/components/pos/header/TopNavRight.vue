@@ -1,81 +1,74 @@
 <template>
-  <div class="header-main-right">
+  <div class="header-main-right color-dashboard-background">
     <div class="user-name">
       <a class="">
         <span class="">{{ username }}</span>
       </a>
     </div>
-    <div class="online">
+    <div class="online color-text-invert">
       <div class="fa fa-fw fa-circle" :class="{ online: online }"></div>
-      <div>{{ _t('Online') }}</div>
+      <div v-if="online">{{ _t('Online') }}</div>
+      <div v-else>{{ _t('Offline') }}</div>
     </div>
-    <ul>
-      <li v-if="availableLanguages">
-        <select
-          v-model="vlocale"
-          @change="changeLanguage(vlocale)"
-          class="language-button"
-        >
-          <option
-            v-for="language in availableLanguages"
-            :key="language._id"
-            :value="language.code"
-          >
-            {{ language.name }}
-          </option>
-        </select>
-      </li>
-    </ul>
-    <ul class="online-counter">
+    <ul class="online-counter color-main">
       <li
-        class="nav-item online-data"
+        class="nav-item online-data "
         data-toggle="modal"
         data-target="#online-order"
       >
-        <a class="btn-part" href="#"
-          >{{ _t('Online') }} <span class="online-digit">2</span></a
-        >
+        <a class="btn-part color-text-invert" role="button">
+          {{ _t('Online') }}
+          <span class="online-digit color-secondary">2</span>
+        </a>
       </li>
     </ul>
-    <li class="nav-icon nav-item setting-icon" id="setting-icon">
-      <a class="nav-link">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="21"
-          viewBox="0 0 24 21"
-        >
-          <path
-            fill="#FFF"
-            fill-rule="nonzero"
-            d="M0 0h24v3H0V0zm0 9h24v3H0V9zm0 9h24v3H0v-3z"
-          />
-        </svg>
-      </a>
-    </li>
-    <ul class="setting-dropdown">
-      <li>
-        <a href="#">{{ _t('Printers') }}</a>
-      </li>
-      <li>
-        <a href="#">{{ _t('Logout') }}</a>
-      </li>
+    <LanguageMenu />
+    <SwitchStore />
+    <div class="curent-sale hideBigScreen">
+      <div class="curent-sale-title">{{ _t('Current Sale') }}</div>
+      <div class="curent-sale-item">
+        <div class="text">Item</div>
+        <div class="num">x3</div>
+      </div>
+    </div>
+    <ul>
+      <TopSidebarMenu />
     </ul>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+/*global $ */
+import { mapState, mapGetters, mapActions } from 'vuex'
+import * as CONST from '@/constants'
+import AuthService from '@/services/data/AuthService'
+import SwitchStore from '@/components/commonButtons/SwitchStore'
+import TopSidebarMenu from '@/components/util/TopSidebarMenu'
+import LanguageMenu from '@/components/util/LanguageMenu'
+
 import bootstrap from '@/bootstrap'
 export default {
   name: 'TopNavRight',
   props: {},
+  components: {
+    SwitchStore,
+    TopSidebarMenu,
+    LanguageMenu,
+  },
   data: function() {
     return {
       onlineOrdersCount: 0,
+      dm: this.baseurl('delivery') + '/delivery_home/new',
+      dashboard: this.baseurl('dashboard'),
+      crm: this.baseurl('crm') + '/brand_customers',
+      menu: this.baseurl('menu'),
+      brand: this.baseurl('brands'),
     }
   },
+  watch: {},
   computed: {
+    ...mapGetters('auth', ['waiter', 'carhop']),
+
     vlocale: {
       get() {
         return this.$store.state.location.locale
@@ -84,22 +77,60 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
+    ...mapGetters('context', ['store', 'transactions']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('sync', ['online']),
+    ...mapState('order', ['orderType']),
     ...mapState({
       latestOnlineOrders: state =>
         state.order.onlineOrders ? state.order.onlineOrders.length : 0,
       username: state =>
         state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    logoutCashier() {
+      localStorage.setItem('token', '')
+      this.$store.commit('auth/SET_TOKEN', '')
+      this.$store.commit('auth/LOGOUT_ACTION', 'switchCashier')
+      //this.$router.push({ path: '/cashier-login/' + this.storeUrl })
+      AuthService.logout().then(() => {})
+    },
+    enabledModule(option) {
+      switch (option) {
+        case 'switchCashier':
+          return true
+      }
+    },
+
+    ...mapActions('auth', ['logout']),
+    moveDineSection() {
+      this.$router.push('/dine-in' + this.store)
+      $('.setting-dropdown').css('display', 'none')
+    },
+    setDeliveryManageState() {
+      let orderStatus = {
+        orderStatus: 'in-progress',
+        collected: 'no',
+        pageId: 'home_delivery_new',
+        title: 'New Orders',
+        dataRelated: 'dm-new-order',
+        section: 'crm',
+      }
+      this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
+      this.$store.commit('deliveryManager/SECTION', orderStatus.section)
+      this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
+    },
+    moveTransactionSection() {
+      this.$router.push(this.store + '/transactions')
+    },
     changeLanguage(locale) {
       // const language = this.languages.find(lang => lang.code === this.vlocale).code
       bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
     },
+
     onlineOrders() {
       if (this.latestOnlineOrders == 0) {
         if (
@@ -116,18 +147,39 @@ export default {
         this.onlineOrdersCount = this.latestOnlineOrders
       }
     },
-    ...mapActions('customer', ['fetchCustomerAddress']),
+    baseurl(link) {
+      return (
+        window.location.href.replace(new RegExp('/pos/.*'), '/' + link) +
+        this.$store.getters['context/brand']
+      )
+    },
+    /*dineInUrl(link) {
+      return window.location.href.replace(new RegExp('/dine-in/.*'), '/' + link)
+    },*/
+    /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },
   mounted() {
-    this.onlineOrders()
+    if (this.$route.name.match('Carhop')) {
+      this.$store.commit('order/ORDER_TYPE', {
+        OTview: 'Carhop',
+        OTApi: CONST.ORDER_TYPE_CARHOP,
+      })
+    } else {
+      this.onlineOrders()
+      $('.setting-dropdown').hide()
+    }
   },
 }
 </script>
 <style lang="scss" scoped>
-/*.fa-circle:before {
-  color: #eb790f;
+.setting-dropdown {
+  li {
+    padding: 0 !important;
+    a {
+      display: block;
+      width: 100%;
+      padding: 5px 20px;
+    }
+  }
 }
-.fa-circle.online:before {
-  color: #62bb31;
-}*/
 </style>

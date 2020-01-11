@@ -1,14 +1,14 @@
 .POSItemOptions {
   padding-right: 0.625rem; }
   .POSItemOptions .modal-title {
-    color: #3D3F43;
+    color: #3d3f43;
     font-size: 1.125rem;
     font-weight: bold;
     letter-spacing: 0.64px; }
   .POSItemOptions .modal-dialog {
     margin: 0 auto;
     line-height: 1;
-    min-height: calc(100% - (.5rem * 2));
+    min-height: calc(100% - (0.5rem * 2));
     max-width: 600px;
     width: 600px; }
     .POSItemOptions .modal-dialog .modal-content .modal-header {
@@ -16,16 +16,18 @@
       border: 0 none;
       margin-bottom: 1.125rem; }
     .POSItemOptions .modal-dialog .modal-content .modal-details {
-      border-bottom: 1px solid #E3E7F2;
+      border-bottom: 1px solid #e3e7f2;
       padding-bottom: 0.75rem;
-      margin-bottom: 1.25rem; }
+      /*margin-bottom: $px20;*/ }
       .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity {
         display: flex;
         flex-flow: row wrap; }
         .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_price {
-          width: 36%; }
+          width: 100%;
+          display: flex;
+          justify-content: space-between; }
           .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_price .POSItemOptions_label {
-            color: #3D3F43;
+            color: #3d3f43;
             font-size: 0.875rem;
             font-weight: normal;
             letter-spacing: 0.5px; }
@@ -37,6 +39,11 @@
             text-align: left; }
         .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity {
           width: 64%; }
+          .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_label {
+            color: #3d3f43;
+            font-size: 0.875rem;
+            font-weight: normal;
+            letter-spacing: 0.5px; }
           .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_quantity_wrapper {
             display: flex;
             flex-flow: row wrap;
@@ -44,12 +51,12 @@
             .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_quantity_wrapper .POSItemOptions_quantity_inputs {
               width: 7.1875rem;
               border-radius: 3px;
-              border: 1px solid #ddd;
+              border: 1px solid #E3E7F2;
               overflow: hidden; }
               .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_quantity_wrapper .POSItemOptions_quantity_inputs input {
                 border-radius: 0;
-                border-left: 1px solid #ddd;
-                border-right: 1px solid #ddd; }
+                border-left: 1px solid #E3E7F2;
+                border-right: 1px solid #E3E7F2; }
               .POSItemOptions .modal-dialog .modal-content .modal-details .POSItemOptions_pricequantity .POSItemOptions_quantity .POSItemOptions_quantity_wrapper .POSItemOptions_quantity_inputs > * {
                 border: 0 none;
                 background-color: #fff;
@@ -57,7 +64,7 @@
                 width: 33.33%;
                 text-align: center;
                 outline: none;
-                color: #3D3F43;
+                color: #3d3f43;
                 font-size: 1rem;
                 font-weight: 600;
                 height: 2.5rem;
@@ -75,94 +82,12 @@
               border: 0 none; }
     .POSItemOptions .modal-dialog .modal-content .modal-body {
       padding-top: 0;
-      border-color: #E3E7F2;
-      height: 28.75rem;
+      border-color: #e3e7f2;
+      max-height: 28.75rem;
       overflow-y: scroll;
       margin-right: 0.625rem;
       -webkit-overflow-scrolling: touch;
       touch-action: auto; }
-      .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_type {
-        position: relative; }
-        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_type .POSItemOptions_typehead {
-          color: #3D3F43;
-          font-size: 0.75rem;
-          font-weight: normal;
-          letter-spacing: 0.43px;
-          margin: 0;
-          background-color: #fff;
-          padding-right: 0.9375rem;
-          display: inline-block;
-          vertical-align: middle;
-          position: relative;
-          z-index: 2; }
-        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_type .POSItemOptions_typeline {
-          position: absolute;
-          top: 50%;
-          left: 0;
-          right: 0;
-          width: 100%;
-          height: 1px;
-          background-color: #E3E7F2;
-          z-index: 1; }
-      .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose {
-        margin-top: 1.875rem; }
-        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc {
-          position: relative; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc span {
-            width: 0.9375rem;
-            height: 0.9375rem;
-            border: 1px solid #979797;
-            border-radius: 100%;
-            display: inline-block;
-            vertical-align: middle;
-            text-align: center;
-            color: #3D3F43;
-            font-size: 0.75rem;
-            font-weight: normal;
-            letter-spacing: 0.43px; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox]:checked + span {
-            background: #5056CA;
-            border-color: #5056CA;
-            position: relative; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox] {
-            opacity: 0;
-            position: absolute;
-            top: 4px;
-            width: 0.625rem;
-            height: 0.625rem; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox]:checked + span:before {
-            content: "\2713";
-            width: 0.75rem;
-            height: 0.75rem;
-            color: #fff;
-            line-height: 0;
-            position: absolute;
-            top: 7.5px;
-            left: 0.5px;
-            font-size: 0.9375rem !important; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_label .customradioc input[type=checkbox] + span {
-            border-radius: 2px; }
-        .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice {
-          width: 32%;
-          display: inline-block;
-          margin-bottom: 1.125rem; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label {
-            display: inline-block;
-            vertical-align: middle;
-            margin: 0; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label img {
-              margin-right: 0.3125rem;
-              display: inline-block;
-              vertical-align: middle;
-              width: 2.1875rem; }
-            .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .POSItemOptions_choose_label span {
-              display: inline-block;
-              vertical-align: middle;
-              line-height: 1.3; }
-          .POSItemOptions .modal-dialog .modal-content .modal-body .POSItemOption .POSItemOptions_choose .POSItemOptions_choose_choice .customradioc {
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 0.3125rem; }
     .POSItemOptions .modal-dialog .modal-content .modal-footer {
       padding: 0;
       padding-top: 1.5625rem !important; }
@@ -179,7 +104,7 @@
         height: 2.5rem;
         padding: 0 1.5625rem; }
       .POSItemOptions .modal-dialog .modal-content .modal-footer .taxbutton {
-        background: #CC3232;
+        background: #cc3232;
         border-radius: 3px;
         box-shadow: 0 2px 2px 0 rgba(232, 150, 150, 0.5);
         height: 2.5rem;
@@ -207,5 +132,70 @@
   border-radius: 50%;
   border: 1px solid #979797;
   margin-right: 0.625rem; }
+
+.item-exclude {
+  display: grid;
+  grid-template-columns: 1fr auto; }
+
+/* The container */
+.pos-container {
+  display: block;
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+/* Hide the browser's default checkbox */
+.pos-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0; }
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border: 1px solid; }
+
+/* On mouse-over, add a grey background color */
+.pos-container:hover input ~ .checkmark {
+  background-color: #ccc; }
+
+/* When the checkbox is checked, add a blue background */
+.pos-container input:checked ~ .checkmark {
+  background-color: #2196F3; }
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none; }
+
+/* Show the checkmark when checked */
+.pos-container input:checked ~ .checkmark:after {
+  display: block; }
+
+/* Style the checkmark/indicator */
+.pos-container .checkmark:after {
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+  left: 8px;
+  top: 3px;
+  width: 5px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 3px 3px 0; }
 
 /*# sourceMappingURL=POSItemOptions.css.map */

@@ -1,9 +1,12 @@
+@import "../variables.scss";
+
 #select-discount-item {
   .modal-dialog {
-    max-width: $px375;
+    //max-width: $px450;
 
     .modal-content {
-      .modal-header {}
+      .modal-header {
+      }
 
       .modal-body {
         .select-discount-option {
@@ -62,6 +65,57 @@
             font-weight: 600;
             letter-spacing: 0.5px;
             border-color: #5056ca;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include responsive(mobile) {
+  #select-discount-item {
+    padding: 0 !important;
+
+    .modal-dialog {
+      margin: 0;
+
+      .modal-content {
+        .modal-header {
+          height: 80px;
+          background-color: #fff;
+        }
+        .modal-body{
+          margin: 0;
+          .dining-option-block{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: repeat(5, max-content);
+            grid-gap: 0;
+            .option-contain{
+              margin-right: 10px;
+              margin-bottom: 20px;
+              &.active{
+                border: 2px solid $green-middle;
+                &:after{
+                  background-color: $green-middle;
+                  position: absolute;
+                  top: -2px;
+                  right: -2px;
+                }
+              }
+              &:nth-child(2n){
+                margin-right: 0px;
+                margin-left: 10px;
+              }
+            }
+          }
+        }
+        .modal-footer{
+          .btn-announce{
+            button{
+              height: 50px !important;
+
+            }
           }
         }
       }

@@ -10,7 +10,7 @@
       <div class="modal-content">
         <div class="modal-header customer-header">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">{{ _t('Discount Item') }}</h4>
+          <h4 class="customer-title">{{ _t('Item Discount') }}</h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
           <div
@@ -33,33 +33,44 @@
                     : formatPrice(discount.value)
                 }}
               </p>
-              <span class="more">{{ dt(discount) }}</span>
+              <span class="mores">{{ dt(discount) }}</span>
             </div>
           </div>
-          <div class="error" v-show="appliedOrderDiscount">
+          <div class="error mx-auto" v-show="appliedOrderDiscount">
             <p class="text-danger text-center">
-              Please remove order discount first to apply item discount.
+              {{
+                _t('Please remove order discount first to apply item discount.')
+              }}
             </p>
           </div>
-          <div class="error" v-show="itemError">
+          <div class="error mx-auto" v-show="itemError">
             <p class="text-danger text-center">
               {{ itemError }}
+            </p>
+          </div>
+          <div class="error mx-auto" v-if="itemDiscounts.length == 0">
+            <p class="text-danger text-center">
+              {{ errors }}
             </p>
           </div>
         </div>
         <div class="modal-footer">
           <div class="btn-announce">
             <button
-              v-show="!appliedOrderDiscount && !itemError"
+              v-show="
+                itemDiscounts.length && !appliedOrderDiscount && !itemError
+              "
               class="btn btn-success btn-large"
               type="button"
               id="discount-save"
               @click="applyItemDiscount()"
             >
-              {{ _t('Save') }}
+              {{ _t('Apply') }}
             </button>
             <button
-              v-show="appliedOrderDiscount || itemError"
+              v-show="
+                appliedOrderDiscount || itemError || !itemDiscounts.length
+              "
               class="btn btn-danger btn-large"
               type="button"
               data-dismiss="modal"
@@ -80,7 +91,11 @@
 import { mapGetters, mapActions, mapState } from 'vuex'
 export default {
   name: 'CartItemDiscount',
-  props: {},
+  data() {
+    return {
+      errors: 'No discount available on this item.',
+    }
+  },
   computed: {
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', ['itemDiscounts', 'activeItemDiscountId']),
@@ -102,10 +117,3 @@ export default {
   },
 }
 </script>
-<!--<style lang="sass" scoped>
-.discount-item.each
-  display:inline-block
-.error
-  width: 100%;
-  padding: 40px 5px 0px 5px;
-</style>-->

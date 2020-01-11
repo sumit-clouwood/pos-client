@@ -1,4 +1,4 @@
-
+@import "../variables.scss";
 a:hover {
   text-decoration: none;
 }
@@ -47,9 +47,10 @@ a:hover {
 }
 
 .option-contain.active:after {
-  content: '\2713';
-  //background-image: url(../images/dine-right.png);
+  @include check_symbol;
+  //background-image: url(/assets/images/check-mark.svg);
   position: absolute;
+  text-align:center;
   height: $px25;
   width: $px25;
   background-repeat: no-repeat;
@@ -92,6 +93,8 @@ a:hover {
   font-size: $px14;
   font-weight: 400;
   letter-spacing: 0.5px;
+  word-break: break-word;
+  line-height: 1.2;
 }
 
 .dining-option-block.select-discount-option > div {
@@ -117,4 +120,75 @@ a:hover {
 .morelink {
   display: inline-block;
   color: #5056ca;
+}
+
+//media queries
+@include responsive(mobile) {
+  #select-discount {
+    .modal-dialog {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      min-height: auto;
+      border-left: 1px solid #ddd;
+
+      .modal-content {
+        .modal-header {
+          border-radius: 0;
+          padding: 10px 20px;
+          min-height: 80px;
+        }
+
+        .modal-body {
+          overflow: auto;
+          padding: 20px;
+          margin-left: 0;
+          margin-right: 0;
+
+          .select-discount-option {
+            .option-contain {
+
+              &.active {
+                border: 2px solid $green-middle;
+
+                &:after {
+                  font-family: "FontAwesome";
+                  content: "\f00c";
+                  color: #fff;
+                  position: absolute;
+                  height: 1.5625rem;
+                  width: 1.5625rem;
+                  top: -2px;
+                  right: -2px;
+                  border-bottom: 1px solid #ddd;
+                  border-left: 1px solid #ddd;
+                  background-repeat: no-repeat;
+                  border-radius: 3px;
+                  background-color: $green-middle;
+                  background-position: center center;
+                  border-color: #dfffcd !important;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                }
+              }
+            }
+          }
+        }
+
+        .modal-footer {
+          z-index: 2;
+          .btn-announce{
+            #discount-save-btn{
+              background-color: $green-middle;
+              border: none;
+            }
+          }
+        }
+      }
+    }
+  }
 }

@@ -1,6 +1,10 @@
 <template>
   <!-- response change -->
-  <div class="modal fade blur-background" id="information-popup" role="dialog">
+  <div
+    class="modal fade blur-background information-popup"
+    id="information-popup"
+    role="dialog"
+  >
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content">
@@ -13,11 +17,19 @@
         <div class="modal-body ">
           <div
             class="amount-change-wrap"
-            v-if="responseInformation"
+            v-if="responseInformation != ''"
             v-on:load="activeClass"
           >
-            <h5 :class="activatedClass" class="text-capitalize">
-              {{ responseInformation.message }}
+            <h5
+              :class="activatedClass"
+              class="text-capitalize"
+              v-if="responseInformation"
+            >
+              {{
+                typeof responseInformation.message !== 'undefined'
+                  ? responseInformation.message
+                  : responseInformation
+              }}
             </h5>
           </div>
         </div>
@@ -27,9 +39,10 @@
               class="btn btn-success btn-large"
               type="button"
               id="dining-opt"
+              data-dismiss="modal"
               @click="closeModal()"
             >
-              Ok
+              {{ _t('Ok') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -43,15 +56,18 @@
 
 <script>
 /* global $ */
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'InformationPopup',
   props: {
-    responseInformation: Object,
+    responseInformation: String,
     title: String,
     activatedClass: String,
   },
-  computed: {},
+  computed: {
+    ...mapGetters('location', ['_t']),
+  },
   methods: {
     closeModal: function() {
       $('#information-popup').modal('toggle')
@@ -66,3 +82,23 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+@import '../../../assets/scss/pixels_rem.scss';
+@import '../../../assets/scss/variables.scss';
+@import '../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  #information-popup {
+    .modal-dialog {
+      margin: 0;
+
+      .modal-content {
+        .modal-header {
+          height: 80px;
+          background-color: #fff;
+        }
+      }
+    }
+  }
+}
+</style>

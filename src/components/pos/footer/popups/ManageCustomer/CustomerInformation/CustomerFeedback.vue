@@ -1,30 +1,31 @@
 <template>
   <div class="customer-insight-feedback">
-    <p>{{ _t('User Feedback:') }}</p>
+    <p class="color-text-invert">{{ _t('User') + ' ' + _t('Feedback') }}:</p>
     <ul class="ullist-feedback">
       <li>
-        <a href="#"
+        <a role="button"
           ><span class="black-smile"><img src="img/pos/unhappy.png"/></span
           ><span class="color-smile"
             ><img src="img/pos/unhappy-color.png"/></span
         ></a>
       </li>
       <li>
-        <a href="#"
-          ><span class="black-smile"><img src="img/pos/unhappy-copy.png"/></span
+        <a role="button">
+          <span class="black-smile">
+            <img src="img/pos/unhappy-copy.png" /> </span
           ><span class="color-smile"
             ><img src="img/pos/unhappy-copy-color.png"/></span
         ></a>
       </li>
       <li>
-        <a href="#"
+        <a role="button"
           ><span class="black-smile"><img src="img/pos/confused.png"/></span
           ><span class="color-smile"
             ><img src="img/pos/confused-color.png"/></span
         ></a>
       </li>
       <li class="active">
-        <a href="#"
+        <a role="button"
           ><span class="black-smile"
             ><img src="img/pos/unhappy-copy-2.png"/></span
           ><span class="color-smile"
@@ -32,7 +33,7 @@
         ></a>
       </li>
       <li>
-        <a href="#"
+        <a role="button"
           ><span class="black-smile"><img src="img/pos/happy.png"/></span
           ><span class="color-smile"><img src="img/pos/happy-color.png"/></span
         ></a>

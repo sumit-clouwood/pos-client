@@ -1,0 +1,284 @@
+<template>
+  <div
+    class="modal fade cancel-order"
+    id="cancellationReason"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">
+            {{ _t('Cancel Order') }}
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="upper">
+            <div class="autocomplete-container" v-if="cancellationReason">
+              <div class="driver-container">
+                <div class="select-driver">{{ _t('Cancellation Reason') }}</div>
+                <form>
+                  <input
+                    autocomplete="off"
+                    type="text"
+                    class="input-search-driver"
+                    id="get-customer-list"
+                    v-model="showSelectedReason"
+                    @click="showDropdown('cancellation-dropdown')"
+                  />
+                </form>
+                <div
+                  id="cancellation-dropdown"
+                  class="dropdown-content cancel-order-dd cursor-pointer"
+                >
+                  <span
+                    class="dropdown"
+                    v-for="reason in cancellationReason"
+                    :key="reason._id"
+                    v-on:click="selectedReason(reason)"
+                    >{{ reason.name }}</span
+                  >
+                </div>
+                <p v-if="errors && errors.cancel_reason" class="text-danger">
+                  {{ errors.cancel_reason }}
+                </p>
+              </div>
+              <div class="driver-container">
+                <div class="select-driver">{{ _t('Inventory Behavior') }}</div>
+                <form>
+                  <input
+                    autocomplete="off"
+                    type="text"
+                    class="input-search-driver"
+                    id="get-behavior-list"
+                    v-model="showSelectedBehavior"
+                    @click="showDropdown('inventory-dropdown')"
+                  />
+                </form>
+                <div
+                  id="inventory-dropdown"
+                  class="dropdown-content cancel-order-dd cursor-pointer"
+                >
+                  <span
+                    class="dropdown"
+                    v-for="(behavior, i) in inventoryBehavior"
+                    :key="i"
+                    v-on:click="selectedBehavior(behavior)"
+                    >{{ behavior }}
+                  </span>
+                </div>
+                <p v-if="errorMessage.length > 0" class="text-danger">
+                  {{ errorMessage }}
+                </p>
+              </div>
+              <div
+                v-if="
+                  this.$store.state.location.brand &&
+                    this.$store.state.location.brand.mandatory_password === true
+                "
+              >
+                <div class="select-driver">{{ _t('Supervisor Password') }}</div>
+                <div>
+                  <input
+                    autocomplete="off"
+                    type="password"
+                    class="input-search-driver"
+                    v-model="supervisorPassword"
+                  />
+                </div>
+                <p
+                  v-if="errors && errors.supervisor_password"
+                  class="text-danger"
+                >
+                  {{ errors.supervisor_password.toString() }}
+                </p>
+              </div>
+            </div>
+            <div v-else class="drivers-list-note">
+              {{ _t('No reason found') }}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">
+            {{ _t('Close') }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-success"
+            @click="
+              cancelOrderAction({
+                order: selectedOrder.item,
+              })
+            "
+          >
+            {{ _t('Submit') }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <InformationPopup :responseInformation="this.errorMessage" title="Alert" />
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapState, mapActions } from 'vuex'
+import InformationPopup from '@/components/pos/content/InformationPopup'
+/* global $ */
+export default {
+  name: 'CancelOrderPopup',
+  data() {
+    return {
+      showSelectedReason: '',
+      showSelectedBehavior: '',
+      supervisorPassword: '',
+      errorMessage: '',
+    }
+  },
+  components: {
+    InformationPopup,
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
+    ...mapState('order', [
+      'cancellationReason',
+      'selectedOrder',
+      'errors',
+      'inventoryBehavior',
+    ]),
+    ...mapGetters('context', ['store']),
+  },
+  methods: {
+    selectedReason: function(reason) {
+      this.showSelectedReason = reason.name
+      $('.dropdown-content').hide()
+    },
+    showDropdown: function(className) {
+      $('#' + className).toggle()
+    },
+    selectedBehavior: function(behavior) {
+      this.showSelectedBehavior = behavior
+      $('#inventory-dropdown').hide()
+    },
+    cancelOrderAction: function(order) {
+      if (this.showSelectedReason.length == 0) {
+        this.errorMessage = 'Please select an inventory behavior'
+        return false
+      }
+      let data = {
+        cancel_reason: this.showSelectedReason,
+        inventory_behavior: this.showSelectedBehavior,
+      }
+      if (
+        this.$store.state.location.brand &&
+        this.$store.state.location.brand.mandatory_password === true
+      ) {
+        data = {
+          cancel_reason: this.showSelectedReason,
+          supervisor_password: this.supervisorPassword,
+          inventory_behavior: this.showSelectedBehavior,
+        }
+      }
+      let orderType = 'call_center'
+      let actionTrigger = 'cancel_order'
+      this.updateOrderCancelAction({
+        order,
+        orderType,
+        actionTrigger,
+        params: data,
+      })
+        .then(res => {
+          if (res.data.status != 'form_errors') {
+            $('#cancellationReason').hide()
+            $('#orderDetailsPopup').hide()
+
+            if (this.selectedOrder.item.order_type == 'dine_in')
+              this.dineInRunningOrders()
+            else if (this.selectedOrder.item.order_type == 'call_center')
+              this.deliveryOrder()
+          }
+          this.showSelectedReason = ''
+          this.showSelectedBehavior = ''
+          this.supervisorPassword = ''
+        })
+        .catch(response => {
+          this.errorMessage = response
+          $('#information-popup').modal('show')
+        })
+    },
+    ...mapActions('order', ['selectedOrderDetails', 'updateOrderCancelAction']),
+    ...mapActions('dinein', ['dineInRunningOrders', 'deliveryOrder']),
+  },
+}
+</script>
+
+<style lang="scss">
+@import '../../../../assets/scss/pixels_rem.scss';
+@import '../../../../assets/scss/variables.scss';
+@import '../../../../assets/scss/mixins.scss';
+
+#cancellationReason {
+  .modal-dialog {
+    /*margin: 0;*/
+  }
+}
+
+#cancellationReason {
+  .modal-dialog {
+    /*margin: 0;*/
+
+    .modal-content {
+      .modal-header {
+        height: 80px;
+        background-color: #fff;
+      }
+
+      .modal-body {
+      }
+
+      .modal-footer {
+      }
+    }
+  }
+}
+
+@include responsive(mobile) {
+  #cancellationReason {
+    .modal-dialog {
+      .modal-content {
+        .modal-header {
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          border: none;
+        }
+
+        .modal-body {
+          .autocomplete-container {
+            grid-gap: 3em;
+            .dropdown-content {
+              top: 3em;
+              background-color: #fff !important;
+              max-height: inherit !important;
+              bottom: inherit;
+            }
+          }
+        }
+
+        .modal-footer {
+          padding: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
+}
+</style>

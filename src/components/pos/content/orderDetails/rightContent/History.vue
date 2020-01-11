@@ -1,7 +1,7 @@
 <template>
   <div
     aria-labelledby="nav-profile-tab"
-    class="tab-pane fade"
+    class="tab-pane fade color-dashboard-background"
     id="nav-profile"
     role="tabpanel"
   >
@@ -9,27 +9,39 @@
       <table class="table table-hover ">
         <thead>
           <tr>
-            <th class="field-type-cr_at field-created_at">
+            <th class="color-secondary field-type-cr_at field-created_at">
               <span title="">{{ _t('Created At') }}</span>
             </th>
-            <th class="field-type-collection_select field-user">
+            <th class="color-secondary field-type-collection_select field-user">
               <span class="" title="">{{ _t('By Whom') }}</span>
             </th>
-            <th class="field-type-select field-name">
+            <th class="color-secondary field-type-select field-name">
               <span class="" title="">{{ _t('Type') }}</span>
             </th>
           </tr>
         </thead>
-        <tbody>
-          <tr v-if="orderDetails">
-            <td class="field-type-cr_at field-created_at">
-              <span> {{ orderDetails.created_at.date }}</span>
+
+        <tbody v-if="orderDetails">
+          <tr
+            v-for="(history, index) in orderDetails.order_history"
+            :key="index"
+          >
+            <td
+              class="color-tables-background field-type-cr_at field-created_at"
+            >
+              <span class="color-text">
+                {{ convertDatetime(history.created_at, timezoneString) }}
+              </span>
             </td>
-            <td class="field-type-collection_select field-user">
-              <span>Seeding</span>
+            <td
+              class="color-tables-background ield-type-collection_select field-user"
+            >
+              <span class="color-text">{{ getUserName(history.user) }}</span>
             </td>
-            <td class="field-type-select field-name">
-              <span>Created as {{ orderDetails.order_mode }} Order</span>
+            <td class="color-tables-background field-type-select field-name">
+              <span class="color-text"
+                >{{ CONST[history.name] }} {{ history.param2 || '' }}</span
+              >
             </td>
           </tr>
           <!---->
@@ -40,14 +52,29 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
+import DateTime from '@/mixins/DateTime'
+import LookupData from '@/plugins/helpers/LookupData'
+
 export default {
   name: 'History',
+  mixins: [DateTime],
   props: {
     orderDetails: {},
+    userDetails: {},
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('location', ['timezoneString']),
+  },
+  methods: {
+    getUserName(userId) {
+      return LookupData.check({
+        collection: this.userDetails.users._id,
+        matchWith: userId,
+        selection: 'name',
+      })
+    },
   },
 }
 </script>

@@ -1,42 +1,28 @@
 import DataService from '@/services/DataService'
+import DateTime from '@/mixins/DateTime'
 
 export default {
-  getDMOrderCount(...[location_id, order_status]) {
+  getDMOrderDetails(...[query, limit, orderBy, page, pageId, storeId]) {
+    let currentDate = DateTime.getPreviousDayUTCDate()
     return DataService.get(
-      `/api/auth/deliveryManager/get/order/?location_id=${location_id}&order_status=${order_status}`
+      `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}&store_id=${storeId}&store_date=${currentDate}~gte`
     )
   },
 
-  getDMOrderDetails(...[page_id, query, limit, page, orderBy]) {
+  getUsers(roleId) {
     return DataService.get(
-      //?page_id=home_delivery_new&query=&limit=99999999&ascending=1&page=1&byColumn=0&orderBy=real_created_datetime
-      // `/api/auth/deliveryManager/get/order/detail?location_id=${location_id}&order_status=${order_status}&collected=${collected}&source=new-pos`
-      `/model/orders?page_id=${page_id}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}`
-    )
-  },
-  dispatchOrders(...[location_id, is_pagination, pageSize, pageNumber]) {
-    return DataService.get(
-      `/api/auth/deliveryManager/dispatch/screen/?location_id=${location_id}&is_pagination=${is_pagination}&pagesize=${pageSize}&pagenumber=${pageNumber}`
+      `/model/users?no_limit=true&byColumn=0&brand_role=${roleId}`
     )
   },
 
-  updateTakeAwayOrder(...[location_id, order_id]) {
-    return DataService.get(
-      `/api/auth/order/dispatch/collected?location_id=${location_id}&order_id=${order_id}`
-    )
+  getGlobalDetails(model) {
+    return DataService.get(`/model/${model}?no_limit=true`, 'brand')
   },
 
-  getMoreOrders(...[location_id, driver_id]) {
-    return DataService.get(
-      `api/auth/deliveryManager/delivered/showData?driver_id=${driver_id}&location_id=${location_id}`
-    )
+  assignOrdersToDriver(driverId, orderIds) {
+    return DataService.post('/model/orders/assign_driver', {
+      driver: driverId,
+      orders: orderIds,
+    })
   },
-
-  assignDriverToOrder(...[location_id, order_id, driver_id, timestamp]) {
-    return DataService.post(
-      `/api/auth/deliveryManager/assign/driver/?location_id=${location_id}&order_id=${order_id}&driver_id=${driver_id}&timestamp=${timestamp}`
-    )
-  },
-
-  // updateOrder available in OrderService: api/auth/deliveryManager/update/order?location_id={location_id}&order_status={order_status}&order_id={order_id}&order_type={order_type}&timestamp={timestamp}
 }

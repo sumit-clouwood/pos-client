@@ -1,15 +1,20 @@
 <template>
-  <div class="wrappers-orders">
-    <div class="orders-name">
-      <p @click="setHoldOrderCart(orderData)" class="cursor-pointer">
+  <div class="wrappers-orders color-dashboard-background">
+    <div
+      class="orders-name cursor-pointer color-text"
+      @click="setHoldOrderCart(orderData)"
+    >
+      <p class="color-text">
         {{ orderData.order_no }}
       </p>
     </div>
     <div class="aed-amt">
-      <span>{{ orderData.currency }} {{ orderData.balance_due }}</span>
+      <span class="color-text">{{
+        formatPrice(orderData.balance_due || 0)
+      }}</span>
     </div>
-    <div class="dlt-btn" @click="dropHoldOrder(orderData)">
-      <img src="img/pos/delete-icon.svg" alt="delete" />
+    <div class="dlt-btn" @click="dropHoldOrder({ orderData: orderData })">
+      <i class="fa fa-trash color-text-invert"></i>
     </div>
   </div>
 </template>
@@ -17,30 +22,77 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 /* global $ */
+import { mapGetters, mapState, mapActions } from 'vuex'
+
 export default {
   name: 'Items',
   props: {
     orderData: Object,
   },
+  computed: {
+    ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapState('checkoutForm', ['msg']),
+  },
   methods: {
     setHoldOrderCart: function(orderData) {
+      this.$store.dispatch('order/startOrder')
+      this.$store.commit('order/SET_CART_TYPE', 'new')
       this.$store.dispatch('holdOrders/fetchOrder', orderData)
-      $('.holding-order-panel').toggle()
-      $('.order-wrappers-panel').toggle()
-      $('ul.ullist-icons > li#hold-order-box').toggleClass('active')
+      if (orderData.customer != null) {
+        this.updateModalSelectionDelivery('#order-confirmation')
+      }
     },
+    ...mapActions('location', ['updateModalSelectionDelivery']),
 
-    dropHoldOrder: function(order) {
-      let actionDetails = {
-        id: order._id,
-        action: 'delete',
-        model: 'orders',
-        data: '',
-      }
-      if (confirm('Are you sure you want to delete this order!')) {
-        this.$store.dispatch('customer/updateAction', actionDetails)
-      }
+    dropHoldOrder: function(data) {
+      $('#payment-msg').modal('show')
+      let msgStr = this._t('Are you really want to delete this record?')
+      this.$store.commit(
+        'checkoutForm/SET_MSG',
+        {
+          result: 'confirm',
+          message: msgStr,
+          record: data.orderData,
+          flag: 'hold order',
+        },
+        {
+          root: true,
+        }
+      )
     },
   },
 }
 </script>
+<style lang="scss">
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  .wrappers-orders {
+    display: grid;
+    grid-template-columns: 1fr max-content max-content;
+    grid-gap: 20px;
+    align-items: center;
+    height: 65px;
+    margin: 0;
+    padding: 0 10px;
+    margin-bottom: 10px;
+
+    .orders-name {
+      width: auto;
+    }
+
+    .aed-amt {
+      width: auto;
+    }
+
+    .dlt-btn {
+      width: auto;
+      i {
+        color: $red;
+      }
+    }
+  }
+}
+</style>

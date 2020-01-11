@@ -9,7 +9,9 @@ Vue.mixin({
     return {
       Num: Num,
       DateToday: new DateTime().dateToday(),
+      DateAPI: new DateTime().getDate(),
       LookupData: LookupData,
+      DateTime: new DateTime(),
       dt: Trans._t,
     }
   },

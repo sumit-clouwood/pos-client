@@ -55,19 +55,19 @@ export default {
     ...mapActions('deliveryManager', ['updateDispatchPageNumber']),
   },
   updated() {
-    this.pageCount = Math.ceil(this.dispatchOrderCount / 8)
+    this.pageCount = 1 //Math.ceil(this.dispatchOrderCount / 8)
   },
 }
 </script>
 
 <style scoped lang="css">
-    .dp-right-footer ul.ullist-dp > li > a {
-     color:#fff !important;
+.dp-right-footer ul.ullist-dp > li > a {
+  color: #fff !important;
 }
-.list-style-type{
-    list-style-type:none;
+.list-style-type {
+  list-style-type: none;
 }
-    .dp-right-footer > ul {
-        display: inline-block;
-    }
+.dp-right-footer > ul {
+  display: inline-block;
+}
 </style>

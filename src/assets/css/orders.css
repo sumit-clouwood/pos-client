@@ -6,10 +6,11 @@
   overflow: hidden;
   background-color: #F1F3F6;
   grid-column-start: 2; }
+  .main-orders .main-orders-title {
+    display: none; }
   .main-orders .main-orders-contacts {
     display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto;
     align-items: center;
     margin-bottom: 1.25rem; }
     .main-orders .main-orders-contacts .main-oreders-title {
@@ -18,11 +19,24 @@
       padding: 0px 0; }
     .main-orders .main-orders-contacts .main-oreders-email {
       color: #3A3E9F;
-      padding: 0px 0;
+      padding: 0.125rem 0.625rem;
       font-weight: 600;
-      text-align: right;
+      text-align: left;
       font-size: 0.875rem;
-      letter-spacing: 1px; }
+      letter-spacing: 0.0625rem;
+      position: relative;
+      border: 0.0625rem dashed #a4a4a4; }
+      .main-orders .main-orders-contacts .main-oreders-email > span {
+        position: absolute;
+        top: -0.75rem;
+        color: #fff;
+        right: -0.625rem;
+        background: red;
+        padding: 0.0625rem;
+        border-radius: 50%;
+        height: 1.25rem;
+        width: 1.25rem;
+        text-align: center; }
     .main-orders .main-orders-contacts .main-oreders-date {
       padding: 0px 0;
       font-size: 0.75rem;
@@ -69,13 +83,14 @@
       .main-orders .main-orders-list-wrapper .main-orders-list .main-orders-list-item {
         min-height: 6.25rem;
         height: 100%;
-        border: 1px solid #ddd;
+        border: 1px solid #E3E7F2;
         border-radius: 5px;
         background-color: #fff;
         padding: 0.9375rem 1.25rem;
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: auto auto 1fr; }
+        grid-template-rows: auto auto 1fr;
+        margin-top: 1.25rem; }
         .main-orders .main-orders-list-wrapper .main-orders-list .main-orders-list-item .main-orders-list-item-title {
           display: grid;
           grid-template-columns: 1fr auto auto;
@@ -90,7 +105,7 @@
             margin-left: 10px;
             cursor: pointer; }
             .main-orders .main-orders-list-wrapper .main-orders-list .main-orders-list-item .main-orders-list-item-title .orders-close i {
-              color: tomato; }
+              color: #CC3232; }
         .main-orders .main-orders-list-wrapper .main-orders-list .main-orders-list-item .main-orders-list-item-subtitle {
           font-size: 0.875rem;
           color: #888;
@@ -100,6 +115,8 @@
           display: flex;
           flex-wrap: wrap;
           align-items: center; }
+      .main-orders .main-orders-list-wrapper .main-orders-list .main-orders-list-item:first-child {
+        margin-top: unset; }
     .main-orders .main-orders-list-wrapper .wrappers-order-block {
       position: absolute;
       left: 0;
@@ -127,6 +144,8 @@
       .main-orders .main-orders-total .item .sub-total-num {
         font-size: 1rem;
         font-weight: 700; }
+        .main-orders .main-orders-total .item .sub-total-num .fa {
+          display: none; }
     .main-orders .main-orders-total .total {
       display: grid;
       grid-template-columns: max-content max-content;
@@ -142,5 +161,62 @@
       .main-orders .main-orders-total .total .sub-total-num {
         font-size: 1.25rem;
         font-weight: 700; }
+        .main-orders .main-orders-total .total .sub-total-num .fa {
+          display: none; }
+  .main-orders .main-orders-buttons {
+    display: none; }
+
+.main-orders .orders-menu-overlay {
+  display: none; }
+
+@media only screen and (min-width: 320px) and (max-width: 960px) {
+  .main-orders .pagination-customer-details {
+    margin-bottom: 20px; }
+  .main-orders .orders-menu-overlay {
+    position: fixed;
+    top: 0;
+    right: -100vw;
+    right: 0;
+    bottom: -100vh;
+    left: auto;
+    transition: 0.5s ease-out;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0);
+    border-left: 1px solid #ddd;
+    z-index: 50;
+    pointer-events: none; }
+    .main-orders .orders-menu-overlay.active {
+      bottom: 85px;
+      right: 0;
+      transition: 0.5s ease-out;
+      pointer-events: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex; }
+    .main-orders .orders-menu-overlay .orders-menu {
+      background-color: #fff;
+      width: 100vw;
+      align-items: end;
+      margin-top: auto;
+      overflow-y: auto; }
+      .main-orders .orders-menu-overlay .orders-menu .footer-slider-list-item {
+        border-bottom: 1px solid #E3E7F2;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        height: 65px; }
+        .main-orders .orders-menu-overlay .orders-menu .footer-slider-list-item a {
+          color: #333; }
+        .main-orders .orders-menu-overlay .orders-menu .footer-slider-list-item svg {
+          margin-right: 20px; }
+      .main-orders .orders-menu-overlay .orders-menu .mobile-footer {
+        padding-top: 20px; }
+    .main-orders .orders-menu-overlay .mobile-footer {
+      padding-top: 20px;
+      background-color: #fff;
+      align-items: end;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none; } }
+.mobile-footer {
+  display: none; }
 
 /*# sourceMappingURL=orders.css.map */

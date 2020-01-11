@@ -1,3 +1,4 @@
+@import "../variables.scss";
 
 .add-note-area > p {
   color: #72777c;
@@ -12,10 +13,21 @@
   padding: 0 $px35;
 }
 
-.add-note-area > input {
-  width: 100%;
-  height: $px50;
-  border-radius: $btn-border-radius;
-  border: 2px solid #efefef;
-  padding: $px10;
+.add-note-area  {
+    > input{
+      width: 100%;
+      height: $px50;
+      border-radius: $btn-border-radius;
+      border: 2px solid #efefef;
+      padding: $px10;
+    }
+    > form {
+       > input{
+         width: 100%;
+         height: $px50;
+         border-radius: $btn-border-radius;
+         border: 2px solid #efefef;
+         padding: $px10;
+      }
+  }
 }

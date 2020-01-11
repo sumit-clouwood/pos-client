@@ -1,13 +1,17 @@
 <template>
   <div class="right-btn-wrap">
-    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
-      All Branches
+    <button
+      type="button"
+      class="btn dropdown-toggle input-search-driver"
+      data-toggle="dropdown"
+    >
+      {{ selectedStore }}
     </button>
     <ul class="dropdown-menu">
-      <li>
-        <a href="#" @click="getLocationOrders(locationId)">{{
-          locationName
-        }}</a>
+      <li v-for="(store, key) in branch" :key="key">
+        <a role="button" @click="getLocationOrders(store)">
+          {{ store.name }}
+        </a>
       </li>
     </ul>
   </div>
@@ -18,18 +22,20 @@
 import { mapState } from 'vuex'
 export default {
   name: 'Branches',
+  data() {
+    return {
+      selectedStore: 'All Store',
+    }
+  },
   computed: {
     ...mapState({
-      locationIds: state => state.location.locationIds,
-      locationName: state => state.location.locationName,
-      locationId: state => state.location.location,
+      branch: state => state.deliveryManager.availableStores,
     }),
   },
   methods: {
-    getLocationOrders: function() {
-      console.log(
-        'update location for other location need to update state of location.location'
-      )
+    getLocationOrders: function(store) {
+      this.$store.dispatch('deliveryManager/fetchStoreOrders', store._id)
+      this.selectedStore = store.name
     },
   },
 }

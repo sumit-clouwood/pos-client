@@ -1,5 +1,5 @@
 <template>
-  <div class="contain-body-class">
+  <div>
     <DeliveryManager />
   </div>
 </template>
@@ -13,12 +13,14 @@ export default {
     DeliveryManager,
   },
   mounted() {
-    $('body').removeAttr('class')
-    $('body').attr('class', 'fixed-nav sticky-footer bg-dark dm-manager')
+    let getBody = $('body')
+    getBody.removeAttr('class')
+    getBody.attr('class', 'fixed-nav sticky-footer dm-manager')
   },
 }
 </script>
 
-<style lang="scss">
-/*@import '../assets/sass/deliveryManager';*/
+<style lang="css">
+/*@import '../../src/assets/css/style.css?var=1.0.0';*/
+@import '../../src/assets/css/delivery-manager/delivery_manager.css?var=1.0.0';
 </style>

@@ -1,8 +1,8 @@
 <template>
-  <div class="header-main-left">
+  <div class="header-main-left color-dashboard-background">
     <HeaderOrderType />
-    <div class="header-main-left-time">
-      <a href="#">
+    <div class="header-main-left-time color-main color-text-invert">
+      <a role="button" class="color-text-invert">
         <span class="time">{{ todayTime }}</span>
         <span>{{ todayDate }}</span></a
       >

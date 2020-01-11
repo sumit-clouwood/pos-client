@@ -1,3 +1,5 @@
+@import '../variables.scss';
+
 #tip-amount {
   .modal-dialog {
     width: $px400;
@@ -14,6 +16,7 @@
             float: unset;
             overflow: hidden;
             width: 100%;
+
             > div {
               float: left;
               width: $px160;
@@ -59,6 +62,70 @@
 
             > span {
               padding-right: $px10;
+            }
+          }
+        }
+      }
+    }
+  }
+  > .modal-footer {
+    display: none;
+  }
+}
+
+@include responsive(mobile) {
+  #tip-amount {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-height: 100vh;
+
+    .modal-dialog {
+      margin: 0;
+      width: 100vw;
+      max-width: none;
+      transform: none !important;
+      max-height: 100vh;
+      height: 100vh;
+      display: grid;
+
+      .modal-content {
+        border-radius: 0;
+        display: grid;
+        grid-template-rows: max-content max-content;
+        //margin-bottom: 100px;
+        position: absolute;
+        margin-top: auto;
+
+        .modal-body {
+          .dining-option-block {
+            .select-discount-option {
+              > div {
+              }
+            }
+          }
+
+          .tip-amount-wrap {
+            > p {
+            }
+
+            input {
+              text-align: left;
+              padding: 0 20px;
+            }
+          }
+        }
+
+        .modal-footer {
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+
+          .btn-announce {
+            #add-top {
+              > span {
+              }
             }
           }
         }

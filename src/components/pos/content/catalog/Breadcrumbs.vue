@@ -1,35 +1,38 @@
 <template>
-  <div class="breadcrumbs">
+  <div class="breadcrumbs color-dashboard-background">
     <div class="breadcrumbs-item breadcrumbs-category">
       <div class="title-box">
-        <div class="breadcrumbs-subtitle">{{ _t('Category') }}</div>
-        <div class="breadcrumbs-title" :title="category">
+        <div class="breadcrumbs-subtitle color-text-invert">
+          {{ _t('Category') }}
+        </div>
+        <div
+          class="breadcrumbs-title shorten-sentence color-text"
+          v-if="category"
+          :title="dt(category)"
+        >
           {{ dt(category) }}
         </div>
       </div>
-      <img
-        class="breadcrumbs-img"
-        src="img/pos/right-arrow.png"
-        alt="right-arrow"
-      />
+      <i class="fa fa-chevron-right color-text-invert"></i>
     </div>
     <div class="breadcrumbs-item breadcrumbs-sub-category" v-if="subcategory">
       <div class="title-box">
         <div class="breadcrumbs-subtitle">{{ _t('Sub Category Name') }}</div>
-        <div class="breadcrumbs-title" :title="subcategory">
+        <div
+          class="breadcrumbs-title shorten-sentence"
+          :title="dt(subcategory)"
+        >
           {{ dt(subcategory) }}
         </div>
       </div>
-      <img
-        class="breadcrumbs-img"
-        src="img/pos/right-arrow.png"
-        alt="right-arrow"
-      />
+      <i class="fa fa-chevron-right color-text-invert"></i>
     </div>
     <div class="breadcrumbs-item breadcrumbs-menu" v-if="item">
       <div class="title-box">
         <div class="breadcrumbs-subtitle">{{ _t('Item') }}</div>
-        <div class="breadcrumbs-title" :title="item">{{ dt(item) }}</div>
+        <div class="breadcrumbs-title shorten-sentence" :title="dt(item)">
+          {{ dt(item) }}
+        </div>
       </div>
     </div>
   </div>
@@ -49,8 +52,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-/*ul.ullist-category {
-  width: 500px !important;
-}*/
-</style>

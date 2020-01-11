@@ -1,3 +1,4 @@
+@import "../variables.scss";
 #dining-option {
   .modal-dialog {
     max-width: $px560;
@@ -29,8 +30,8 @@
               border: solid 2px #5056ca;
 
               &:after {
-                content: '\2713';
-                //background-image: url(../images/dine-right.png);
+                @include check_symbol;
+                background-image: url(/assets/images/dine-right.png);
                 position: absolute;
                 height: $px25;
                 width: $px25;

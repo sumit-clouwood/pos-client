@@ -1,77 +1,75 @@
-/*
-Error: Undefined variable: "$px400".
-        on line 3 of scss/modals/tipAmount.scss
+#tip-amount .modal-dialog {
+  width: 25rem;
+  max-width: 25rem; }
+  #tip-amount .modal-dialog .modal-content {
+    border-radius: 3px; }
+    #tip-amount .modal-dialog .modal-content .modal-body {
+      text-align: center; }
+      #tip-amount .modal-dialog .modal-content .modal-body .dining-option-block .select-discount-option {
+        float: unset;
+        overflow: hidden;
+        width: 100%; }
+        #tip-amount .modal-dialog .modal-content .modal-body .dining-option-block .select-discount-option > div {
+          float: left;
+          width: 10rem;
+          border-radius: 3px;
+          border: 2px solid #e0e3e6;
+          background-color: #ffffff; }
+      #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap > p {
+        font-size: 0.875rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        padding: 1.25rem 0 0 0;
+        text-align: left; }
+      #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap input {
+        height: 3.125rem;
+        width: 100%;
+        border-radius: 3px;
+        border: medium none;
+        margin: 0 auto;
+        text-align: center;
+        color: #4B4E53;
+        border: 1px solid #E3E7F2;
+        margin-top: 0.625rem; }
+    #tip-amount .modal-dialog .modal-content .modal-footer .btn-announce #add-top {
+      width: 6.875rem;
+      height: 3.125rem;
+      border-radius: 3px;
+      background-color: #5056ca;
+      margin-left: 0.625rem;
+      border-color: #5056ca; }
+      #tip-amount .modal-dialog .modal-content .modal-footer .btn-announce #add-top > span {
+        padding-right: 0.625rem; }
+#tip-amount > .modal-footer {
+  display: none; }
 
-1: #tip-amount {
-2:   .modal-dialog {
-3:     width: $px400;
-4:     max-width: $px400;
-5: 
-6:     .modal-content {
-7:       border-radius: $btn-border-radius;
-8: 
+@media only screen and (min-width: 320px) and (max-width: 960px) {
+  #tip-amount {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-height: 100vh; }
+    #tip-amount .modal-dialog {
+      margin: 0;
+      width: 100vw;
+      max-width: none;
+      transform: none !important;
+      max-height: 100vh;
+      height: 100vh;
+      display: grid; }
+      #tip-amount .modal-dialog .modal-content {
+        border-radius: 0;
+        display: grid;
+        grid-template-rows: max-content max-content;
+        position: absolute;
+        margin-top: auto; }
+        #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap input {
+          text-align: left;
+          padding: 0 20px; }
+        #tip-amount .modal-dialog .modal-content .modal-footer {
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          padding: 20px; } }
 
-Backtrace:
-scss/modals/tipAmount.scss:3
-/usr/lib/ruby/vendor_ruby/sass/script/tree/variable.rb:49:in `_perform'
-/usr/lib/ruby/vendor_ruby/sass/script/tree/node.rb:58:in `perform'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:397:in `visit_prop'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block (2 levels) in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:431:in `visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block (2 levels) in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:431:in `visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `block in visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:169:in `block in visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:168:in `visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:188:in `visit_root'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:159:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:8:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:36:in `css_tree'
-/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:29:in `render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/engine.rb:381:in `_render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/engine.rb:298:in `render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:492:in `update_stylesheet'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:209:in `each'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:209:in `update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:294:in `watch'
-/usr/lib/ruby/vendor_ruby/sass/plugin.rb:109:in `method_missing'
-/usr/lib/ruby/vendor_ruby/sass/exec/sass_scss.rb:356:in `watch_or_update'
-/usr/lib/ruby/vendor_ruby/sass/exec/sass_scss.rb:51:in `process_result'
-/usr/lib/ruby/vendor_ruby/sass/exec/base.rb:52:in `parse'
-/usr/lib/ruby/vendor_ruby/sass/exec/base.rb:19:in `parse!'
-/usr/bin/scss:8:in `<main>'
-*/
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Error: Undefined variable: \"$px400\".\A         on line 3 of scss/modals/tipAmount.scss\A \A 1: #tip-amount {\A 2:   .modal-dialog {\A 3:     width: $px400;\A 4:     max-width: $px400;\A 5: \A 6:     .modal-content {\A 7:       border-radius: $btn-border-radius;\A 8: "; }
+/*# sourceMappingURL=tipAmount.css.map */

@@ -10,10 +10,14 @@
   background-color: $gray-bg-light;
   grid-column-start: 2;
 
+  .main-orders-title {
+    display: none;
+  }
+
   .main-orders-contacts {
     display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto 1fr;
+    //grid-template-columns: auto max-content;
+    grid-template-rows: auto auto;
     align-items: center;
     margin-bottom: $px20;
 
@@ -25,11 +29,25 @@
 
     .main-oreders-email {
       color: $blue-dark;
-      padding: 0px 0;
+      padding: $px2 $px10;
       font-weight: 600;
-      text-align: right;
+      text-align: left;
       font-size: $px14;
-      letter-spacing: 1px;
+      letter-spacing: $px1;
+      position: relative;
+      border: $px1 dashed $header-gray-light;
+      > span{
+        position: absolute;
+        top: -$px12;
+        color: #fff;
+        right: -$px10;
+        background: red;
+        padding: $px1;
+        border-radius: 50%;
+        height: $px20;
+        width: $px20;
+        text-align: center;
+      }
     }
 
     .main-oreders-date {
@@ -100,6 +118,7 @@
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: auto auto 1fr;
+        margin-top: $px20;
 
         .main-orders-list-item-title {
           display: grid;
@@ -114,6 +133,7 @@
             align-items: center;
             justify-content: center;
             margin-left: 10px;
+            // padding: 1em;
             cursor: pointer;
 
             i {
@@ -134,6 +154,9 @@
           flex-wrap: wrap;
           align-items: center;
         }
+      }
+      .main-orders-list-item:first-child {
+        margin-top: unset;
       }
     }
 
@@ -174,6 +197,10 @@
       .sub-total-num {
         font-size: $px16;
         font-weight: 700;
+
+        .fa {
+          display: none;
+        }
       }
     }
 
@@ -195,7 +222,93 @@
       .sub-total-num {
         font-size: $px20;
         font-weight: 700;
+        .fa{
+          display: none;
+        }
       }
     }
   }
+
+  .main-orders-buttons {
+    display: none;
+  }
+}
+
+.main-orders {
+  .orders-menu-overlay {
+    display: none;
+  }
+}
+
+@include responsive(mobile) {
+  .main-orders {
+    .pagination-customer-details {
+      margin-bottom: 20px;
+    }
+
+    .orders-menu-overlay {
+      position: fixed;
+      top: 0;
+      right: -100vw;
+      right: 0;
+      bottom: -100vh;
+      left: auto;
+      transition: 0.5s ease-out;
+      flex-direction: column;
+      background-color: rgba(0, 0, 0, 0);
+      border-left: 1px solid #ddd;
+      z-index: 50;
+      pointer-events: none;
+
+      &.active {
+        bottom: 85px;
+        right: 0;
+        transition: 0.5s ease-out;
+        pointer-events: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+      }
+
+      .orders-menu {
+        background-color: #fff;
+        width: 100vw;
+        align-items: end;
+        margin-top: auto;
+        overflow-y: auto;
+
+        .footer-slider-list-item {
+          border-bottom: 1px solid $gray-middle;
+          padding: 20px;
+          display: flex;
+          align-items: center;
+          height: 65px;
+
+          a {
+            color: #333;
+          }
+
+          svg {
+            margin-right: 20px;
+          }
+        }
+
+        .mobile-footer {
+          padding-top: 20px;
+        }
+      }
+
+      .mobile-footer {
+        padding-top: 20px;
+        background-color: #fff;
+        align-items: end;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: none;
+      }
+    }
+  }
+}
+
+
+.mobile-footer {
+  display: none;
 }

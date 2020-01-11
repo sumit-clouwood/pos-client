@@ -3,70 +3,101 @@
     <div class="dm-delivery-details-btn">
       <ul class="dm-ullist">
         <li
-          class="active"
+          v-if="permitted('home_delivery_new', 'delivery_home')"
           data-related="dm-new-order"
+          :class="{ active: listType == _t('New Orders') }"
           @click="
-            updateOrderStatus({ orderStatus: 'running', collected: 'no' })
+            updateOrderStatus({
+              orderStatus: 'in-progress',
+              collected: 'no',
+              pageId: 'home_delivery_new',
+              title: _t('New Orders'),
+              dataRelated: 'dm-new-order',
+              section: 'crm',
+            })
           "
         >
-          <a href="#">New Orders</a
+          <a role="button">{{ _t('New Orders') }}</a
           ><span v-if="orderCount">{{ orderCount.running }}</span>
         </li>
         <li
+          v-if="permitted('home_delivery_pick', 'delivery_home')"
           class="pick"
           data-related="dm-waiting-for-pick"
-          @click="updateOrderStatus({ orderStatus: 'ready', collected: 'no' })"
+          :class="{ active: listType == _t('Waiting for Pick') }"
+          @click="
+            updateOrderStatus({
+              orderStatus: 'ready',
+              collected: 'no',
+              pageId: 'home_delivery_pick',
+              title: _t('Waiting for Pick'),
+              dataRelated: 'dm-waiting-for-pick',
+              section: 'crm',
+            })
+          "
         >
-          <a href="#">Waiting for Pick</a
+          <a role="button">{{ _t('Waiting for Pick') }}</a
           ><span v-if="orderCount">{{ orderCount.ready }}</span>
         </li>
         <li
+          v-if="permitted('home_delivery_in_progress', 'delivery_home')"
           class="pick"
+          :class="{ active: listType == _t('Delivery - In Progress') }"
           data-related="dm-delivery-in-progress"
           @click="
-            updateOrderStatus({ orderStatus: 'in-progress', collected: 'no' })
+            updateOrderStatus({
+              orderStatus: 'on-a-way',
+              collected: 'no',
+              pageId: 'home_delivery_in_progress',
+              title: _t('Delivery - In Progress'),
+              dataRelated: 'dm-delivery-in-progress',
+              section: 'crm',
+            })
           "
         >
-          <a href="#">Delivery - In Progress</a
+          <a role="button">{{ _t('Delivery - In Progress') }}</a
           ><span v-if="orderCount">{{ orderCount['in-progress'] }}</span>
         </li>
         <li
+          v-if="permitted('home_delivery_finished', 'delivery_home')"
           class="dm-delivered"
           data-related="dm-delivered"
+          :class="{ active: listType == _t('Delivered') }"
           @click="
-            updateOrderStatus({ orderStatus: 'delivered', collected: 'no' })
+            updateOrderStatus({
+              orderStatus: 'finished',
+              collected: 'no',
+              pageId: 'home_delivery_finished',
+              title: _t('Delivered'),
+              dataRelated: 'dm-delivered',
+              section: 'crm',
+            })
           "
         >
-          <a href="#">Delivered</a
+          <a role="button">{{ _t('Delivered') }}</a
           ><span v-if="orderCount">{{ orderCount.delivered }}</span>
         </li>
       </ul>
-    </div>
-    <div class="dm-delivery-assistants">
-      <button
-        id="dm-assistant"
-        data-toggle="modal"
-        data-target="#delivery-assistant"
-      >
-        <span
-          ><img src="img/other/delivery-assistant.png" alt="delivery"
-        /></span>
-        Delivery Assistant
-      </button>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+/*global deliveryTabs*/
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'DMHomeDeliverySubMenu',
   methods: {
     updateOrderStatus: function(orderStatus) {
+      this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
+      this.$store.commit('deliveryManager/SECTION', orderStatus.section)
       this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
+      deliveryTabs(orderStatus.dataRelated)
     },
   },
   computed: {
+    ...mapGetters('location', ['_t', 'permitted']),
+    ...mapState('deliveryManager', ['listType']),
     ...mapState({
       orderCount: state => state.deliveryManager.orderCounts,
     }),

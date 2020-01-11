@@ -1,0 +1,5 @@
+export const WAITER = 'waiter'
+export const CARHOP = 'carhop'
+export const SWITCH_WAITER = 'can_switch_between_waiter'
+export const SWITCH_WAITER_API = 'reservations.o.switch_waiter'
+export const SEE_OTHERS_ORDERS = 'can_see_others_orders'

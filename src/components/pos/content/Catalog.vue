@@ -1,11 +1,15 @@
 <template>
-  <div class="main-body">
+  <div class="main-body color-dashboard-background color-text">
     <search />
-    <div class="food-wrapper">
+    <div :class="['food-wrapper', subCategoryHendler ? 'active' : 'notActive']">
       <SubMenu v-if="subcategories.length" />
+      <div v-else class="noSubCategory" />
       <div class="food-block">
         <Breadcrumbs />
-        <Items v-if="items.length" />
+        <div v-if="!categories.length" class="text-danger">
+          {{ _t('Nothing found to order.') }}
+        </div>
+        <Items v-else />
       </div>
     </div>
   </div>
@@ -30,7 +34,9 @@ export default {
     SubMenu,
   },
   computed: {
-    ...mapGetters('category', ['subcategories', 'items']),
+    ...mapGetters(['subCategoryHendler']),
+    ...mapGetters('category', ['categories', 'subcategories', 'items']),
+    ...mapGetters('location', ['_t']),
   },
 }
 </script>

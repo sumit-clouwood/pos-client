@@ -3,130 +3,93 @@ import * as mutation from './invoice/mutation-types'
 
 // initial state
 const state = {
-  templates: false,
-  rules: [],
-  printRuleId: '5ce27959ef76a0108d2a2827',
+  templates: null,
+  rules: null,
+  templateId: null,
 }
 
 // getters
 const getters = {
-  rule: (state, getters, rootState) => {
-    if (!state.rules.data) return false
-
-    let ruleType = null
-
-    switch (rootState.order.orderType) {
-      case 'Walk-in':
-      case 'takeaway':
-        ruleType = 'walk_in_rule'
-        break
-      case 'delivery':
-        ruleType = 'call_center_rule1'
-        break
-      default:
-        ruleType = rootState.order.orderType + '_rule'
-    }
-
-    let rules = state.rules.data.find(rule => {
-      if (rule[ruleType]) {
-        return true
+  template: (state, getters, rootState) => {
+    if (state.rules && typeof state.rules.data !== 'undefined') {
+      let templateId = null
+      if (state.templateId) {
+        //template id already selected
+        templateId = state.templateId
+      } else {
+        state.rules.data.data.forEach(rule => {
+          if (
+            [
+              rootState.order.orderType.OTApi + '_made',
+              rootState.order.orderType.OTApi + '_pays',
+              rootState.order.orderType.OTApi + '_requests',
+            ].includes(rule.when)
+          ) {
+            templateId = rule.invoice_template
+          }
+        })
       }
-    })
 
-    if (!rules) {
-      rules = state.rules.data.find(rule => {
-        if (rule['walk_in_rule']) {
-          return true
+      if (state.templates && state.templates.data) {
+        if (templateId) {
+          return state.templates.data.data.find(
+            template => template._id == templateId
+          )
+        } else {
+          return state.templates.data.data[0]
         }
-      })
-      return rules['walk_in_rule']
-    }
-    return rules[ruleType]
-  },
-  tpl: (state, getters, rootState) => {
-    if (!state.templates) {
-      return false
-    }
-    const orderType = rootState.order.orderType
-    let templates = ''
-    switch (orderType) {
-      case 'Walk-in':
-        templates = state.templates.data['walkin']
-        break
-      default:
-        templates = state.templates.data[orderType]
-        break
-    }
-
-    if (!templates) {
-      templates = state.templates.data['default_template']
-    }
-
-    if (getters.rule.template) {
-      const templateId = getters.rule.template[0][0]
-      let template = templates.find(template => template._id == templateId)
-      if (!template) {
-        template = templates[0]
       }
-      const defaultTemplate = state.templates.data['default_template'][0]
-      let en = state.templates.data.english_labels.find(
-        label => label._id == templateId
-      )
-      if (!en) {
-        en = state.templates.data.english_labels[0]
-      }
-
-      let foreignLang = false
-      if (
-        template.language != 'en_US' ||
-        rootState.location.locale !== 'en_US'
-      ) {
-        foreignLang = true
-      }
-
-      return { template, defaultTemplate, en, foreignLang }
     }
   },
-  logo: state => state.templates.company_logo,
 }
 
 // actions
 const actions = {
-  async fetchAll({ commit, state }) {
-    // let orderType = 'walkin'
-
-    /*switch (rootState.order.orderType) {
-      case 'Walk-in':
-      case 'takeaway':
-        orderType = 'walkin'
-        break
-      default:
-        orderType = rootState.order.orderType
-        break
-    }*/
-
-    const params = [state.printRuleId]
-
-    const [templates] = await Promise.all([
-      // InvoiceService.fetchPrintRules(),
-      InvoiceService.fetchTemplates(...params),
-    ])
-
-    commit(mutation.SET_TEMPLATES, templates.data)
-    // if (rules.data.status === 1) {
-    // commit(mutation.SET_RULES, rules.data)
-    // }
+  async printRules({ commit }) {
+    const rules = await InvoiceService.fetchPrintRules()
+    commit(mutation.SET_RULES, rules)
   },
+
+  async fetchTemplates({ commit }) {
+    const templates = await InvoiceService.fetchTemplates()
+    commit('SET_PRINT_TEMPLATES', templates)
+  },
+
+  setTemplateId({ commit }, templateId) {
+    commit(mutation.SET_TEMPLATE_ID, templateId)
+  },
+  // async fetchTemplate({ commit }, { orderId, templateId }) {
+  //   const templateHtml = await InvoiceService.fetchTemplate(orderId, templateId)
+  //   commit(mutation.SET_TEMPLATE_HTML, templateHtml)
+  // },
 }
 
 // mutations
 const mutations = {
-  [mutation.SET_TEMPLATES](state, templates) {
+  // [mutation.SET_TEMPLATE_HTML](state, templateHtml) {
+  //   state.templateHtml = templateHtml
+  // },
+  // [mutation.SET_TEMPLATE](state, template) {
+  //   state.template = template
+  // },
+  [mutation.SET_PRINT_TEMPLATES](state, templates) {
     state.templates = templates
   },
   [mutation.SET_RULES](state, rules) {
     state.rules = rules
   },
+  [mutation.RESET](state) {
+    state.rules = null
+    state.templates = null
+    state.templateId = null
+  },
+  [mutation.SET_TEMPLATE_ID](state, templateId) {
+    state.templateId = templateId
+  },
+  // [mutation.RESET](state) {
+  //   state.templateHtml = null
+  //   state.rules = []
+  // },
 }
 
 export default {

@@ -8,33 +8,33 @@
           <div class="dm-ready-order-wrap">
             <div class="dm-ready-order-left">
               <div class="dm-ready" v-if="selectedOrder.customer">
-                <p>Customer Name:</p>
+                <p>{{ _t('Customer Name:') }}</p>
                 <h5>{{ selectedOrder.customer.customer_name }}</h5>
               </div>
               <div class="dm-ready" v-if="selectedOrder.customer">
-                <p>Phone Number:</p>
+                <p>{{ _t('Phone Number:') }}</p>
                 <h5>{{ selectedOrder.customer.mobile_number }}</h5>
               </div>
               <div class="dm-ready">
-                <p>Location/Branch:</p>
+                <p>{{ _t('Location/Branch:') }}</p>
                 <h5>{{ locationName }}</h5>
               </div>
               <div class="dm-ready">
-                <p>Staff:</p>
+                <p>{{ _t('Staff:') }}</p>
                 <h5>{{ selectedOrder.created_by }}</h5>
               </div>
             </div>
             <div class="dm-ready-order-right">
               <div class="dm-ready">
-                <p>Order Number:</p>
+                <p>{{ _t('Order Number:') }}</p>
                 <h5>{{ selectedOrder.order_no }}</h5>
               </div>
               <div class="dm-ready" v-if="selectedOrder.delivery_area">
-                <p>Delivery Area:</p>
+                <p>{{ _t('Delivery Area:') }}</p>
                 <h5>{{ selectedOrder.delivery_area }}</h5>
               </div>
               <div class="dm-ready" v-if="selectedOrder.delivery_area">
-                <p>Delivery Address:</p>
+                <p>{{ _t('Delivery Address:') }}</p>
                 <h5>
                   {{ selectedOrder.delivery_area }},
                   {{ selectedOrder.order_address.street }},
@@ -43,14 +43,14 @@
               </div>
             </div>
             <div id="dm-payment-type-order">
-              <p class="payments-title">Payments :</p>
+              <p class="payments-title">{{ _t('Payments :') }}</p>
               <div class="order-table">
                 <table class="table table-responsive">
                   <tr>
-                    <th style="width: 500px">Paid By</th>
-                    <th style="width: 200px">Amount</th>
-                    <th style="width: 150px">Collected</th>
-                    <th style="width: 150px">Returned</th>
+                    <th style="width: 500px">{{ _t('Paid By') }}</th>
+                    <th style="width: 200px">{{ _t('Amount') }}</th>
+                    <th style="width: 150px">{{ _t('Collected') }}</th>
+                    <th style="width: 150px">{{ _t('Returned') }}</th>
                   </tr>
                   <tr
                     class="pay-tot-amt"
@@ -81,14 +81,14 @@
             <div class="order-table">
               <table class="table table-responsive">
                 <tr>
-                  <th style="width: 500px">ITEM NAME</th>
-                  <th style="width: 105px">QTY</th>
-                  <th style="width: 150px">PRICE</th>
-                  <th style="width: 150px">TAX</th>
-                  <th style="width: 200px">SUB-PRICE</th>
+                  <th style="width: 500px">{{ _t('ITEM NAME') }}</th>
+                  <th style="width: 105px">{{ _t('QTY') }}</th>
+                  <th style="width: 150px">{{ _t('PRICE') }}</th>
+                  <th style="width: 150px">{{ _t('TAX') }}</th>
+                  <th style="width: 200px">{{ _t('SUB-PRICE') }}</th>
                 </tr>
                 <!--<tr class="pay-tot-amt modifier-item-item">
-                                    <td colspan="4"><a class="modifier-dm" href="#">Bolognese Sauce</a> <a class="modifier-dm" href="#">Bolognese Sauce</a> <a class="modifier-dm" href="#">Bolognese Sauce</a></td>
+                                    <td colspan="4"><a class="modifier-dm" role="button">Bolognese Sauce</a> <a class="modifier-dm" role="button">Bolognese Sauce</a> <a class="modifier-dm" role="button">Bolognese Sauce</a></td>
                                 </tr>-->
                 <tr
                   v-for="(item, itemIndex) in selectedOrder.items"
@@ -145,11 +145,11 @@
             <div id="dm-order-past-wrap" class="total-order">
               <div class="order-confirm-amt" id="dm-confirm-order-tab">
                 <div class="order-amt-title">
-                  <p>SUBTOTAL :</p>
-                  <p>SURCHARGE :</p>
-                  <p>ORDER DISCOUNT :</p>
-                  <p>TAX :</p>
-                  <p>BILL AMOUNT :</p>
+                  <p>{{ _t('SUBTOTAL :') }}</p>
+                  <p>{{ _t('SURCHARGE :') }}</p>
+                  <p>{{ _t('ORDER DISCOUNT :') }}</p>
+                  <p>{{ _t('TAX :') }}</p>
+                  <p>{{ _t('BILL AMOUNT :') }}</p>
                 </div>
                 <div class="order-amt-charges">
                   <p>
@@ -175,14 +175,14 @@
 
           <div class="dm-order-confirmation" id="dm-order-history-rec">
             <div class="deliver-right-inner">
-              <h3 class="order-history-dm">Order History</h3>
+              <h3 class="order-history-dm">{{ _t('Order History') }}</h3>
               <div class="order-table">
                 <table class="table table-responsive">
                   <thead>
                     <tr>
-                      <th style="width:150px">Status</th>
-                      <th style="width:200px">Staff</th>
-                      <th style="width:500px">Time</th>
+                      <th style="width:150px">{{ _t('Status') }}</th>
+                      <th style="width:200px">{{ _t('Staff') }}</th>
+                      <th style="width:500px">{{ _t('Time') }}</th>
                     </tr>
                   </thead>
                   <tbody
@@ -219,16 +219,18 @@
                 </table>
               </div>
 
-              <h3 class="order-history-dm">Order Modified History</h3>
+              <h3 class="order-history-dm">
+                {{ _t('Order Modified History') }}
+              </h3>
               <div class="order-table">
                 <table class="table table-responsive">
                   <thead>
                     <tr>
-                      <th style="width:150px">Modified Item</th>
-                      <th style="width:150px">What Modified?</th>
-                      <th style="width:150px">Who Modified?</th>
-                      <th style="width:150px">Time</th>
-                      <th style="width:150px">Modified Reason</th>
+                      <th style="width:150px">{{ _t('Modified Item') }}</th>
+                      <th style="width:150px">{{ _t('What Modified?') }}</th>
+                      <th style="width:150px">{{ _t('Who Modified?') }}</th>
+                      <th style="width:150px">{{ _t('Time') }}</th>
+                      <th style="width:150px">{{ _t('Modified Reason') }}</th>
                     </tr>
                   </thead>
                   <tbody v-if="selectedOrder.orderItemModifyArr.length">
@@ -245,7 +247,7 @@
                   </tbody>
                   <tbody v-else>
                     <tr>
-                      <td colspan="5">Order not modified yet</td>
+                      <td colspan="5">{{ _t('Order not modified yet') }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -266,12 +268,12 @@
               aria-haspopup="true"
               aria-expanded="false"
             >
-              Re-Print
+              {{ _t('Re-Print') }}
             </button>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="#" @click="generateInvoice"
-                >Default</a
-              >
+              <a class="dropdown-item" role="button" @click="generateInvoice">{{
+                _t('Default')
+              }}</a>
             </div>
             <!--<div class="referal">
               <button
@@ -298,8 +300,8 @@
               id="status-history"
               @click="toggleHistory()"
             >
-              <span><img src="img/other/status.png" alt="status"/></span>Status
-              History
+              <span><img src="img/other/status.png" alt="status"/></span
+              >{{ _t('Status History') }}
             </button>
             <button
               type="button"
@@ -321,7 +323,7 @@
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
       </div>
-      <InvoiceReprint :order="selectedOrder" />
+      <!-- <InvoiceReprint v-if="selectedOrder" :order="selectedOrder" /> -->
     </div>
   </div>
 </template>
@@ -329,7 +331,7 @@
 <script>
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
-import InvoiceReprint from '@/components/deliveryManager/partial/InvoiceReprint'
+//import InvoiceReprint from '@/components/deliveryManager/partial/InvoiceReprint'
 
 export default {
   name: 'DMOrderDetails',
@@ -343,7 +345,7 @@ export default {
     ...mapGetters('location', ['formatPrice']),
   },
   components: {
-    InvoiceReprint,
+    //InvoiceReprint,
   },
   methods: {
     returnedAmount: function(paymentMode, amountChanged) {

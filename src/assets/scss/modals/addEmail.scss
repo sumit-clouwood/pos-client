@@ -1,16 +1,57 @@
+@import "../variables.scss";
+
 #add-email {
   .modal-dialog {
     max-width: $px400;
-    .modal-content{
-      .modal-header{
+
+    .modal-content {
+      .modal-header {
 
       }
-      .modal-body{
+
+      .modal-body {
 
       }
-      .modal-footer{
-        .btn-announce{
 
+      .modal-footer {
+        .btn-announce {
+
+        }
+      }
+    }
+  }
+}
+
+@include responsive(mobile) {
+  #add-email {
+    .modal-dialog {
+      margin: 0;
+      width: 100vw;
+      max-width: none;
+      transform: none !important;
+
+      .modal-content {
+        top: auto;
+        border-radius: 0;
+
+        .modal-header {
+          border-radius: 0;
+        }
+
+        .modal-body {
+
+        }
+
+        .modal-footer {
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+
+          .btn-announce {
+            #add-email-btn {
+              background-color: $green-middle;
+              border: none;
+            }
+          }
         }
       }
     }

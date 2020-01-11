@@ -6,6 +6,7 @@ import * as CONSTANTS from '@/constants'
 const state = {
   categoryImagePath: '',
   subcategoryImagePath: '',
+  searchItemTerm: '',
   itemImagePath: '',
   categories: [],
   category: {},
@@ -18,6 +19,7 @@ const state = {
   taxData: [],
   taxAmount: {},
   searchItems: {},
+  barcode: false,
 }
 
 // getters, computed properties
@@ -25,12 +27,19 @@ const getters = {
   categories: state => {
     return state.categories
   },
-  subcategories: state => {
-    return state.subcategories.filter(
-      subcategory =>
-        subcategory[CONSTANTS.REFERENCE_FIELD_SUBCATEGORY_TO_CATEGORY] ===
-        state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_SUBCATEGORY]
+  itemByCode: state => itemCode => {
+    return state.items.find(
+      item => item.item_code === itemCode || item.barcode === itemCode
     )
+  },
+  subcategories: state => {
+    if (typeof state.category != 'undefined') {
+      return state.subcategories.filter(
+        subcategory =>
+          subcategory[CONSTANTS.REFERENCE_FIELD_SUBCATEGORY_TO_CATEGORY] ===
+          state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_SUBCATEGORY]
+      )
+    }
   },
   categoryItems: state => {
     return state.items.filter(
@@ -42,6 +51,9 @@ const getters = {
   },
   subcategoryItems: state => {
     if (!state.subcategory) return []
+    //Reset all search results if any category items are fetched
+    state.searchItems = ''
+
     return state.items.filter(
       item =>
         item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_CATEGORY] ===
@@ -54,20 +66,21 @@ const getters = {
     let items = []
     const categoryItems = getters.categoryItems
     const subcategoryItems = getters.subcategoryItems
-
-    if (state.searchItems.length) {
+    if (state.searchItemTerm) {
       items = state.searchItems
-    } else if (categoryItems.length) {
-      items = categoryItems
-    } else if (subcategoryItems.length) {
-      items = subcategoryItems
+    } else {
+      if (categoryItems.length) {
+        items = categoryItems
+      }
+      if (subcategoryItems.length) {
+        items = categoryItems.concat(subcategoryItems)
+      }
     }
     return items
   },
 
   getImages() {
     //for caching
-    //document.getElementsByTagName('a')[0].__vue__.$store.state
     let images = []
 
     state.categories.forEach(category => {
@@ -76,13 +89,17 @@ const getters = {
     state.subcategories.forEach(subcat => {
       images.push(subcat.sub_category_image)
     })
+
+    state.items.forEach(item => {
+      images.push(item.image)
+    })
     return images
   },
 }
 
 // actions, often async
 const actions = {
-  fetchAll({ commit, dispatch }) {
+  fetchAll({ commit, dispatch, rootState }) {
     return new Promise((resolve, reject) => {
       CategoryService.categories()
         .then(response => {
@@ -92,10 +109,14 @@ const actions = {
             commit(mutation.SET_SUBCATEGORIES, response.data.data)
             CategoryService.items().then(response => {
               commit(mutation.SET_ITEMS, response.data.data)
-              dispatch('browse', state.categories[0])
+              if (!rootState.sync.reloaded) {
+                dispatch('browse', state.categories[0])
+              }
               resolve()
             })
           })
+          //Fetch all kitchens & Printing Servers on POS and save into states.
+          dispatch('printingServer/fetchAllKitchens', {}, { root: true })
         })
         .catch(error => reject(error))
     })
@@ -103,18 +124,34 @@ const actions = {
 
   collectSearchItems({ commit, state }, searchTerm) {
     let searchedItems = []
-    state.items.map(item => {
-      if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
-        searchedItems.push(item)
-      }
-    })
+    state.searchItemTerm = ''
+    if (searchTerm.length > 0) {
+      state.searchItemTerm = searchTerm
+      state.items.map(item => {
+        if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
+          searchedItems.push(item)
+        }
+      })
+    }
     commit(mutation.SET_SEARCH_ITEMS, { items: searchedItems })
   },
 
   //get subcategories and items based on main category
-  browse({ commit, getters }, category) {
+  browse({ commit, getters, dispatch }, category) {
+    let subcategory = []
     commit(mutation.SET_CATEGORY, category)
-    commit(mutation.SET_SUBCATEGORY, getters.subcategories[0])
+    if (typeof getters.subcategories != 'undefined') {
+      subcategory = getters.subcategories[0]
+    }
+
+    if (subcategory) {
+      dispatch('subCategoryHendlerChange', null, { root: true })
+    } else {
+      dispatch('foodMenuHendlerChange', null, { root: true })
+    }
+
+    commit(mutation.SET_SUBCATEGORY, subcategory)
+    //reload the ui
   },
   getItems({ commit }, subcategory) {
     commit(mutation.SET_SUBCATEGORY, subcategory)
@@ -130,6 +167,7 @@ const mutations = {
 
   [mutation.SET_CATEGORY](state, category) {
     state.category = category
+    state.subcategory = null
   },
 
   [mutation.SET_SUBCATEGORIES](state, subcategories) {
@@ -138,6 +176,7 @@ const mutations = {
 
   [mutation.SET_SUBCATEGORY](state, subcategory) {
     state.subcategory = subcategory
+    state.item = null
   },
 
   [mutation.SET_ITEMS](state, items) {
@@ -147,8 +186,33 @@ const mutations = {
   [mutation.SET_ITEM](state, item) {
     state.item = item
   },
+  [mutation.RESET](state) {
+    state.categoryImagePath = ''
+    state.subcategoryImagePath = ''
+    state.searchItemTerm = ''
+    state.itemImagePath = ''
+    state.categories = []
+    state.category = {}
+    state.subcategories = []
+    state.subcategory = null
+    state.categoryItems = []
+    state.subcategoryItems = []
+    state.item = null
+    state.items = []
+    state.taxData = []
+    state.taxAmount = {}
+    state.searchItems = {}
+  },
   [mutation.SET_SEARCH_ITEMS](state, items) {
-    state.searchItems = items.items
+    if (items.items.length > 0) {
+      state.searchItems = items.items
+    } else {
+      state.searchItems = {}
+      state.item = null
+    }
+  },
+  setBarcode(state, code) {
+    state.barcode = code
   },
 }
 

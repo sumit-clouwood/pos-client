@@ -1,7 +1,7 @@
 import * as mutation from './customer/mutation-types'
-import customerService from '@/services/data/CustomerService'
-import CustomerService from '../../services/data/CustomerService'
+import CustomerService from '@/services/data/CustomerService'
 import LookupData from '@/plugins/helpers/LookupData'
+import OrderService from '@/services/data/OrderService'
 
 const state = {
   customer_list: [],
@@ -20,40 +20,141 @@ const state = {
     past_order_page_number: 1,
   },
   responseInformation: { status: 0, message: '' },
+  pageId: 'brand_customers_main_tbl',
   address: false,
   allOnlineAddress: false,
   offlineData: null,
   loading: false,
+  customerLoading: false,
   error: false,
-  loyalty: { card: false, details: false },
+  loyalty: { card: false, details: false, points: false },
   deliveryAreas: false,
   fetchDeliveryAreas: false,
   editInformation: {},
   modalStatus: 'Add',
   lookups: false,
+  buildingAreas: false,
 }
 const getters = {
+  findDeliveryArea: state => areaId =>
+    state.fetchDeliveryAreas.find(deliveryArea => deliveryArea._id === areaId),
   customer: state => {
     return state.customer
   },
   selectedAddress: state => {
     if (state.address) {
-      const addressId = state.address.id
+      const addressId = state.address.delivery_area_id
       return state.customer.customer_addresses.find(
         address => address._id.$oid == addressId
       )
     }
   },
+  checkDeliveryArea: () => (addressId, deliveryAreas) => {
+    if (typeof deliveryAreas[addressId] !== 'undefined') {
+      const area = deliveryAreas[addressId]
+      return area.item_status === true ? area : false
+    }
+    return false
+  },
   getDeliveryArea: state => addressId => {
-    return LookupData.get({
+    return LookupData.check({
       collection: state.deliveryAreas,
       matchWith: addressId,
       selection: 'name',
     })
   },
+  getCustomerAddresses: (state, getters, rootState) => {
+    let data = {}
+    let valueData = []
+    let storeId = rootState.context.storeId
+    if (state.customer && state.customer.customer_addresses) {
+      data = state.customer.customer_addresses.filter(address => {
+        let checkDeliveryArea = getters.checkDeliveryArea(
+          address.delivery_area_id,
+          state.deliveryAreas
+        )
+        if (checkDeliveryArea) {
+          // let deliveryArea = getters.findDeliveryArea(checkDeliveryArea._id)
+          let deliveryArea = state.fetchDeliveryAreas.map(dArea => {
+            if (checkDeliveryArea._id == dArea._id) {
+              let DAStatus = dArea.stores.find(entity => {
+                if (entity.entity_id == storeId && entity.item_status) {
+                  return true
+                } else false
+              })
+              if (typeof DAStatus != 'undefined' && DAStatus.item_status) {
+                if (DAStatus.min_order_value) {
+                  dArea.min_order_value = DAStatus.min_order_value
+                }
+                if (DAStatus.special_order_surcharge) {
+                  dArea.special_order_surcharge =
+                    DAStatus.special_order_surcharge
+                }
+                return dArea
+              } else return false
+            }
+          })
+
+          let data = deliveryArea.find(
+            area => area && typeof area != 'undefined'
+          )
+          if (typeof data._id !== 'undefined') {
+            valueData.push({
+              _id: data._id,
+              special_order_surcharge: data.special_order_surcharge,
+              min_order_value: data.min_order_value,
+            })
+            return data
+          }
+          return []
+        }
+      })
+    }
+    if (Object.keys(data).length !== 0) {
+      data.map(area => {
+        valueData.forEach(data => {
+          if (data._id == area.delivery_area_id) {
+            area.min_order_value = data.min_order_value
+            area.special_order_surcharge = data.special_order_surcharge
+          }
+          return area
+        })
+      })
+    }
+    return data
+  },
 }
 const actions = {
+  setAddressForDelivery({ dispatch, commit }, { customerId, addressId }) {
+    dispatch('fetchSelectedCustomer', customerId).then(() => {
+      dispatch('setCustomerAddressById', addressId).then(() => {
+        commit('location/SET_MODAL', '#order-confirmation', { root: true })
+      })
+    })
+  },
+  fetchAllCustomers({ commit, dispatch }) {
+    commit(mutation.FETCH_ALL, 'brand_customers_main_tbl')
+    dispatch('fetchAll')
+  },
+  addCustomer({ dispatch }) {
+    const params = [
+      {
+        nearest_landmark: '',
+        alternative_phone: '',
+        gender: 'undisclosed',
+        birthday: '',
+        customer_group: '',
+        delivery_area_id: '',
+        street: '',
+        building: '',
+        flat_number: '',
+        email: '',
+      },
+    ]
+    dispatch('setDefaultSettingsGlobalAddUpdate', ...params)
+  },
   fetchAll({ commit, rootState, dispatch, state }) {
+    commit(mutation.SET_LOADING, true)
     return new Promise((resolve, reject) => {
       const params = [
         rootState.context.storeId,
@@ -61,29 +162,39 @@ const actions = {
         state.params.page_number /*page_number*/,
         'last_order_datetime',
         state.params.page_size /*page_size*/,
+        state.pageId,
       ]
-      customerService
-        .customerList(...params)
+
+      CustomerService.customerList(...params)
         .then(response => {
-          if (response.data.data.length) {
-            let totalPages = parseInt(
+          if (!isNaN(response.data.count)) {
+            let totalPages = Math.ceil(
               parseInt(response.data.count) / parseInt(state.params.page_size)
             )
-            commit(mutation.CUSTOMER_LIST, response.data.data)
             commit(mutation.PAGINATE_DETAILS, totalPages)
-            commit(mutation.LAST_ORDERS, response.data.page_lookups.orders)
+            if (response.data.page_lookups) {
+              commit(mutation.LAST_ORDERS, response.data.page_lookups.orders)
+            }
+            commit(mutation.CUSTOMER_LIST, response.data.data)
             resolve(response.data.data)
           } else {
             reject(response.data.data)
           }
+          commit(mutation.SET_LOADING, false)
         })
         .catch(error => reject(error))
-
       //fetch customer deliver areas
+      resolve()
       dispatch('fetchDeliveryArea', '')
       // get Customer Group
-      customerService.customerGroupList().then(response => {
+      CustomerService.customerGroupList().then(response => {
         commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
+      })
+      CustomerService.customerBuildings().then(buildingAreas => {
+        if (buildingAreas.data.data) {
+          let obj = Object.values(buildingAreas.data.data)
+          commit(mutation.BUILDING_AREA, obj)
+        }
       })
     })
   },
@@ -101,7 +212,21 @@ const actions = {
     let customerId = state.customer._id
     dispatch('fetchSelectedCustomer', customerId)
   },
-
+  getMorePastOrder({ commit, state }, pageNumber) {
+    const params = [
+      '',
+      state.params.page_size,
+      'real_created_datetime',
+      '',
+      pageNumber,
+      'orders_main_tbl',
+      '',
+      state.customer._id,
+    ]
+    OrderService.getOrders(...params).then(response => {
+      commit(mutation.PAST_ORDERS, response.data.data)
+    })
+  },
   searchCustomer: function({ commit, dispatch }, searchTerms) {
     return new Promise((resolve, reject) => {
       commit(mutation.CUSTOMER_LIST, [])
@@ -111,7 +236,7 @@ const actions = {
         .then(response => {
           resolve(response)
         })
-        .catch(error => reject(error))
+        .catch(error => reject(error, commit(mutation.SET_LOADING, false)))
         .finally(() => commit(mutation.SET_LOADING, false))
     })
   },
@@ -120,7 +245,7 @@ const actions = {
     if (typeof state.customer._id !== 'undefined') {
       let customerNote = { note: note }
       const params = [customerNote, state.customer._id, 'brand_customer_notes']
-      customerService.globalCreate(...params).then(response => {
+      CustomerService.globalCreate(...params).then(response => {
         commit(mutation.SET_RESPONSE_MESSAGES, response.data)
       })
     } else {
@@ -128,75 +253,122 @@ const actions = {
     }
   },
 
-  /*customerLastOrder({ state, commit }, customerId) {
-    let customerLastOrderDetails = false
-    const lastOrder = Object.entries(state.lastOrder._id)
-    for (const [value] of lastOrder) {
-      if (value.customer == customerId) {
-        customerLastOrderDetails = value
-      }
-    }
-    commit(mutation.CUSTOMER_LAST_ORDERS, customerLastOrderDetails)
-  },*/
-  fetchSelectedCustomer({ state, commit, dispatch }, customerId) {
+  fetchSelectedCustomer({ state, commit, dispatch, rootGetters }, customerId) {
+    commit(mutation.SET_CUSTOMER_LOADING, true)
     dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
       root: true,
     })
     return new Promise((resolve, reject) => {
       commit(mutation.SET_CUSTOMER_ID, customerId)
-      customerService
-        .fetchCustomer(customerId)
-        .then(response => {
-          let totalPages = parseInt(
-            parseInt(response.data.item.total_orders) /
-              parseInt(state.params.page_size)
-          )
-          commit(mutation.PAST_ORDER_PAGINATE_DETAILS, totalPages)
-          commit(
-            mutation.PAGE_LOOKUP,
-            response.data.collected_data.page_lookups
-          )
-          let loyalty = {}
-          loyalty.card = response.data.collected_data.loyalty_cards
-          loyalty.details = state.lookups.brand_loyalty_programs
-          commit(mutation.LOYALTY, loyalty)
-          commit(mutation.SELECTED_CUSTOMER, {
-            customerData: response.data.item,
-            pastOrders: response.data.collected_data.orders,
-            deliveryAreas:
-              response.data.collected_data.page_lookups.store_delivery_areas
-                ._id,
+      if (customerId) {
+        CustomerService.fetchCustomer(customerId)
+          .then(response => {
+            let totalPages = 0
+            let totleOrders = false
+            if (response.data.item && response.data.item.total_orders) {
+              totleOrders = response.data.item.total_orders
+            }
+
+            if (totleOrders) {
+              totalPages = Math.ceil(
+                parseInt(response.data.item.total_orders) /
+                  parseInt(state.params.page_size)
+              )
+            }
+            commit(mutation.PAST_ORDER_PAGINATE_DETAILS, totalPages)
+            if (response.data.collected_data) {
+              commit(
+                mutation.PAGE_LOOKUP,
+                response.data.collected_data.page_lookups
+              )
+            }
+            let loyalty = {},
+              orderType = null,
+              orderCurrency = null,
+              orderAmount = null
+            orderType = rootGetters['order/orderType']
+            orderCurrency = rootGetters['location/currency']
+            orderAmount = rootGetters['checkoutForm/orderTotal']
+
+            if (response.data.collected_data) {
+              loyalty.card = response.data.collected_data.loyalty_cards
+            }
+            loyalty.details = state.lookups.brand_loyalty_programs
+
+            commit(mutation.LOYALTY, loyalty)
+            commit(mutation.LOYALTY_FILTER, {
+              loyalty,
+              orderType,
+              orderCurrency,
+              orderAmount,
+            })
+            commit(mutation.SELECTED_CUSTOMER, {
+              customerData: response.data.item,
+              pastOrders: response.data.collected_data
+                ? response.data.collected_data.orders
+                : [],
+              deliveryAreas: response.data.collected_data
+                ? response.data.collected_data.page_lookups.delivery_areas._id
+                : null,
+            })
+            commit(mutation.SET_CUSTOMER_LOADING, false)
+            resolve(response.data.item)
           })
-          resolve(response.data.item)
+          .catch(error => reject(error))
+      }
+    })
+  },
+  resetCustomer({ commit, dispatch }) {
+    let customerDetails = {}
+    customerDetails.customerData = false
+    customerDetails.deliveryAreas = false
+    customerDetails.pastOrders = false
+    commit(mutation.SELECTED_CUSTOMER, customerDetails)
+    commit('order/SET_REFERRAL', false, { root: true })
+    dispatch('reset')
+  },
+  selectedAddress({ commit, dispatch }, address) {
+    //let deliveryArea = getters.findDeliveryArea(address.delivery_area_id)
+    //const subtotal = rootGetters['order/subTotal']
+    // if (deliveryArea.min_order_value > subtotal) {
+    //   return Promise.reject(
+    //     rootGetters['location/_t'](
+    //       `Order amound should be grater than ${subtotal}`
+    //     )
+    //   )
+    // } else {
+    commit(mutation.SELECTED_CUSTOMER_ADDRESS, address)
+    let orderType = { OTview: 'Delivery', OTApi: 'call_center' }
+    return dispatch('order/updateOrderType', orderType, { root: true })
+    //}
+  },
+
+  createAction({ commit, dispatch }, actionDetails) {
+    return new Promise((resolve, reject) => {
+      const params = [
+        actionDetails.data,
+        actionDetails.customer,
+        actionDetails.model,
+      ]
+      CustomerService.globalCreate(...params)
+        .then(response => {
+          commit(mutation.SET_RESPONSE_MESSAGES, response.data)
+          if (actionDetails.customer) {
+            dispatch('fetchSelectedCustomer', actionDetails.customer)
+          } else {
+            dispatch('fetchAll')
+          }
+          if (typeof response.data.id != 'undefined') {
+            dispatch('fetchSelectedCustomer', response.data.id)
+          }
+
+          resolve(response.data)
         })
         .catch(error => reject(error))
     })
   },
 
-  selectedAddress({ commit, dispatch }, area) {
-    commit(mutation.SELECTED_CUSTOMER_ADDRESS, area)
-    dispatch('order/updateOrderType', 'delivery', { root: true })
-  },
-
-  createAction({ commit, dispatch }, actionDetails) {
-    const params = [
-      actionDetails.data,
-      actionDetails.customer,
-      actionDetails.model,
-    ]
-    customerService.globalCreate(...params).then(response => {
-      commit(mutation.SET_RESPONSE_MESSAGES, response.data)
-      if (actionDetails.customer) {
-        dispatch('fetchSelectedCustomer', actionDetails.customer)
-      } else {
-        dispatch('fetchAll')
-      }
-    })
-  },
-
   editAction({ commit }, actionDetails) {
-    // eslint-disable-next-line no-console
-    console.log(actionDetails)
     let customer_id = state.customer._id
     const params = [
       actionDetails.id,
@@ -205,7 +377,7 @@ const actions = {
       actionDetails.action,
     ]
     localStorage.setItem('editItemKey', actionDetails.id)
-    customerService.globalEdit(...params).then(response => {
+    CustomerService.globalEdit(...params).then(response => {
       commit(mutation.SET_EDIT_DETAILS, response.data.item)
     })
   },
@@ -220,9 +392,10 @@ const actions = {
       actionDetails.action,
       actionDetails.data,
     ]
-    customerService.globalUpdate(...params).then(response => {
+    CustomerService.globalUpdate(...params).then(response => {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
       dispatch('fetchSelectedCustomer', customer_id)
+      dispatch('fetchAll')
     })
   },
 
@@ -232,27 +405,19 @@ const actions = {
 
   fetchDeliveryArea({ commit }, query) {
     CustomerService.fetchDeliveryAreas(query).then(response => {
+      //Fetch Delivery Areas in add Customer Address and Add new customer form
       commit(mutation.GET_DELIVERY_AREAS, response.data.data)
     })
   },
-  fetchCustomerAddress({ commit, rootState }) {
-    let allOnlineOrders = false
-    if (JSON.parse(localStorage.getItem('onlineOrders')) != null) {
-      allOnlineOrders = JSON.parse(localStorage.getItem('onlineOrders')).orders
-    }
-    let customerIds = []
-    if (allOnlineOrders) {
-      allOnlineOrders.forEach(order => {
-        // if (customerIds.indexOf(order.customer_id) == -1) {
-        if (customerIds.includes(order.customer_id)) {
-          customerIds.push(order.customer_id)
-        }
-      })
-      const params = [customerIds, rootState.location.location]
-      customerService.getCustomerDetails(...params).then(response => {
-        commit(mutation.FETCH_CUSTOMER_ADDRESSES, response.data.data)
-      })
-    }
+
+  setCustomerAddressById({ dispatch, state, getters }, addressId) {
+    return new Promise(resolve => {
+      let address = state.customer.customer_addresses.find(
+        address => address._id.$oid == addressId
+      )
+      address.delivery_area = getters.getDeliveryArea(address.delivery_area_id)
+      dispatch('selectedAddress', address).then(() => resolve())
+    })
   },
 
   setOfflineData({ commit }, data) {
@@ -262,8 +427,10 @@ const actions = {
   reset({ commit }) {
     commit(mutation.RESET)
     commit(mutation.LOYALTY, false)
+    commit(mutation.LOYALTY_FILTER)
   },
 }
+
 const mutations = {
   [mutation.CUSTOMER_LIST](state, customersDetail) {
     state.customer_list = customersDetail
@@ -272,10 +439,19 @@ const mutations = {
     state.customerId = id
   },
   [mutation.PAGINATE_DETAILS](state, paginateDetails) {
-    state.paginate.totalPages = paginateDetails
+    const paginate = { ...state.paginate }
+    paginate.totalPages = paginateDetails
+    state.paginate = paginate
   },
   [mutation.PAST_ORDER_PAGINATE_DETAILS](state, paginateDetails) {
     state.pastOrdersPaginate.totalPages = paginateDetails
+  },
+  [mutation.SET_CURRENT_PAGE_NO](state, pageNumber) {
+    state.params.page_number = pageNumber
+  },
+  [mutation.FETCH_ALL](state, pageId) {
+    state.pageId = pageId
+    state.params.query = ''
   },
   [mutation.PARAMS](state, paramsCollection) {
     state.params = paramsCollection
@@ -283,17 +459,20 @@ const mutations = {
   [mutation.GET_DELIVERY_AREAS](state, fetchDeliveryAreas) {
     state.fetchDeliveryAreas = fetchDeliveryAreas
   },
-  [mutation.SET_CURRENT_PAGE_NO](state, pageNumber) {
-    state.params.page_number = pageNumber
-  },
   [mutation.SET_PAST_ORDER_CURRENT_PAGE_NO](state, pageNumber) {
     state.params.past_order_page_number = pageNumber
   },
   [mutation.SET_SEARCH_TERMS](state, searchTerms) {
     state.params.query = searchTerms
+    state.pageId = 'brand_customers_main_tbl'
+    //  searchTerms.length > 0 ? 'main_crm_list' : 'brand_customers_main_tbl'
+    state.params.page_number = 1
   },
   [mutation.SET_CUSTOMER_GROUP](state, customerGroup) {
     state.customer_group = customerGroup
+  },
+  [mutation.BUILDING_AREA](state, buildingAreas) {
+    state.buildingAreas = buildingAreas
   },
   [mutation.SET_EDIT_DETAILS](state, details) {
     state.editInformation = details
@@ -315,10 +494,10 @@ const mutations = {
   [mutation.SET_RESPONSE_MESSAGES](state, customerCreateResponse) {
     if (customerCreateResponse.status == 'form_errors') {
       state.responseInformation.status = customerCreateResponse.status
-      state.responseInformation.message = customerCreateResponse.error
+      state.responseInformation.message = customerCreateResponse.form_errors
     } else {
       state.responseInformation.status = customerCreateResponse.status
-      state.responseInformation.message = customerCreateResponse.data
+      state.responseInformation.message = customerCreateResponse
     }
   },
   [mutation.SELECTED_CUSTOMER](state, customerDetails) {
@@ -329,29 +508,101 @@ const mutations = {
   [mutation.SELECTED_CUSTOMER_ADDRESS](state, selectedAddress) {
     state.address = selectedAddress
   },
-  [mutation.FETCH_CUSTOMER_ADDRESSES](state, addressList) {
-    state.allOnlineAddress = addressList
+  [mutation.PAST_ORDERS](state, pastOrders) {
+    state.pastOrders = pastOrders
   },
+  /*[mutation.FETCH_CUSTOMER_ADDRESSES](state, addressList) {
+    state.allOnlineAddress = addressList
+  },*/
   [mutation.SET_OFFLINE_DATA](state, data) {
     state.offlineData = data
   },
   [mutation.RESET](state) {
     state.offlineData = null
+    state.address = false
+    state.customer = false
+    state.customerId = null
+    state.loyalty = { card: false, details: false }
   },
   [mutation.SET_LOADING](state, status) {
     state.loading = status
+  },
+  [mutation.SET_CUSTOMER_LOADING](state, status) {
+    state.customerLoading = status
   },
   [mutation.SET_ERROR](state, error) {
     state.error = error
   },
   [mutation.LOYALTY](state, loyalty) {
-    state.loyalty.card = loyalty.card.length ? loyalty.card[0] : 0
-    let loyaltyDetails = LookupData.get({
-      collection: loyalty.details._id,
-      matchWith: state.loyalty.card.program,
-      selection: false,
-    })
-    state.loyalty.details = loyaltyDetails ? loyaltyDetails : false
+    if (loyalty) {
+      if (loyalty.card && loyalty.card.length) {
+        state.loyalty.card = loyalty.card[0]
+      }
+
+      if (loyalty.details) {
+        let loyaltyDetails = LookupData.get({
+          collection: loyalty.details._id,
+          matchWith: state.loyalty.card.program,
+          selection: false,
+        })
+        state.loyalty.details = loyaltyDetails ? loyaltyDetails : false
+      }
+    } else {
+      state.loyalty.card = false
+      state.loyalty.details = false
+      state.loyalty.points = false
+    }
+  },
+  [mutation.LOYALTY_FILTER](
+    state,
+    { loyalty, orderType, orderCurrency, orderAmount } = {
+      loyalty: null,
+      orderType: null,
+      orderCurrency: null,
+      orderAmount: null,
+    }
+  ) {
+    if (loyalty) {
+      if (
+        orderType == 'walk_in' &&
+        state.loyalty.details.walk_in_spend_points !== true
+      ) {
+        state.loyalty.card = false
+        state.loyalty.details = false
+        state.loyalty.points = false
+      }
+      if (
+        orderType == 'call_center' &&
+        state.loyalty.details.call_center_spend_points !== true
+      ) {
+        state.loyalty.card = false
+        state.loyalty.details = false
+        state.loyalty.points = false
+      }
+      if (
+        orderType == 'dine_in' &&
+        state.loyalty.details.dine_in_spend_points !== true
+      ) {
+        state.loyalty.card = false
+        state.loyalty.details = false
+        state.loyalty.points = false
+      }
+      if (state.loyalty.details.currency != orderCurrency) {
+        state.loyalty.card = false
+        state.loyalty.details = false
+        state.loyalty.points = false
+      } else if (state.loyalty.details.min_order > orderAmount) {
+        state.loyalty.card = false
+        state.loyalty.details = false
+        state.loyalty.points = false
+      } else {
+        /* do noting */
+      }
+    } else {
+      state.loyalty.card = false
+      state.loyalty.details = false
+      state.loyalty.points = false
+    }
   },
 }
 

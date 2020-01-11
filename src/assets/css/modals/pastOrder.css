@@ -1,77 +1,83 @@
-/*
-Error: Undefined variable: "$px925".
-        on line 3 of scss/modals/pastOrder.scss
+#past-order .modal-dialog {
+  max-width: 57.8125rem; }
+  #past-order .modal-dialog .modal-content .modal-body .past-order-details-wrap {
+    overflow: hidden;
+    float: left;
+    width: 26%;
+    border-right: solid 1px #efefef;
+    margin-right: 1.25rem;
+    min-height: 27.8125rem; }
+    #past-order .modal-dialog .modal-content .modal-body .past-order-details-wrap > div {
+      border-bottom: 1px solid #efefef;
+      padding: 1.25rem 0; }
+      #past-order .modal-dialog .modal-content .modal-body .past-order-details-wrap > div:last-child {
+        border: medium none; }
+    #past-order .modal-dialog .modal-content .modal-body .past-order-details-wrap .sidebar-past-order > h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.6px;
+      color: #3a3d44; }
+    #past-order .modal-dialog .modal-content .modal-body .past-order-details-wrap .sidebar-past-order > p {
+      font-size: 0.75rem;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.54;
+      letter-spacing: 0.5px;
+      color: #3a3d44;
+      margin-bottom: 0; }
+  #past-order .modal-dialog .modal-content .modal-body .past-order-confirmation {
+    float: left;
+    width: 70%; }
+    #past-order .modal-dialog .modal-content .modal-body .past-order-confirmation .total-order-past-wrap {
+      padding: 1.5625rem 0; }
+      #past-order .modal-dialog .modal-content .modal-body .past-order-confirmation .total-order-past-wrap #past-confirm-order {
+        width: 50%;
+        float: right !important; }
+        #past-order .modal-dialog .modal-content .modal-body .past-order-confirmation .total-order-past-wrap #past-confirm-order > div {
+          float: left; }
+  #past-order .modal-dialog .modal-content .modal-footer {
+    border-top: 1px solid #efefef;
+    padding-top: 1.875rem; }
 
-1: #past-order {
-2:   .modal-dialog {
-3:     max-width: $px925;
-4: 
-5:     .modal-content {
-6:       .modal-body {
-7:         .past-order-details-wrap {
-8:           overflow: hidden;
+.order-amt-charges {
+  width: 45%; }
+  .order-amt-charges p {
+    color: #4b4e53;
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+    text-align: right; }
+    .order-amt-charges p:last-child {
+      font-weight: bold; }
 
-Backtrace:
-scss/modals/pastOrder.scss:3
-/usr/lib/ruby/vendor_ruby/sass/script/tree/variable.rb:49:in `_perform'
-/usr/lib/ruby/vendor_ruby/sass/script/tree/node.rb:58:in `perform'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:397:in `visit_prop'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block (2 levels) in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:431:in `visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block (2 levels) in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:431:in `visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `block in visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:169:in `block in visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:168:in `visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:188:in `visit_root'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:159:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:8:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:36:in `css_tree'
-/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:29:in `render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/engine.rb:381:in `_render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/engine.rb:298:in `render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:492:in `update_stylesheet'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:209:in `each'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:209:in `update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:294:in `watch'
-/usr/lib/ruby/vendor_ruby/sass/plugin.rb:109:in `method_missing'
-/usr/lib/ruby/vendor_ruby/sass/exec/sass_scss.rb:356:in `watch_or_update'
-/usr/lib/ruby/vendor_ruby/sass/exec/sass_scss.rb:51:in `process_result'
-/usr/lib/ruby/vendor_ruby/sass/exec/base.rb:52:in `parse'
-/usr/lib/ruby/vendor_ruby/sass/exec/base.rb:19:in `parse!'
-/usr/bin/scss:8:in `<main>'
-*/
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Error: Undefined variable: \"$px925\".\A         on line 3 of scss/modals/pastOrder.scss\A \A 1: #past-order {\A 2:   .modal-dialog {\A 3:     max-width: $px925;\A 4: \A 5:     .modal-content {\A 6:       .modal-body {\A 7:         .past-order-details-wrap {\A 8:           overflow: hidden;"; }
+.order-amt-title {
+  width: 55%; }
+  .order-amt-title p {
+    color: #a4a4a4;
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem; }
+    .order-amt-title p:last-child {
+      font-weight: bold; }
+
+div#past-confirm-order {
+  width: 50%;
+  float: right !important; }
+
+div#past-confirm-order > div {
+  float: left; }
+
+div#total-order-past-wrap {
+  padding: 1.5625rem 0; }
+
+.details > div {
+  display: grid;
+  padding: 1.5625rem;
+  grid-template-columns: 1fr 1fr;
+  grid-row-gap: .75rem;
+  grid-column-gap: 1.25rem;
+  border-bottom: 1px solid #E3E7F2; }
+
+/*# sourceMappingURL=pastOrder.css.map */

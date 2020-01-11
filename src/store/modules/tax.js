@@ -1,94 +1,79 @@
-import * as mutation from './tax/mutation-types'
-// initial state
+import TaxService from '@/services/data/TaxService'
+
 const state = {
-  itemsTax: 0,
-  itemsTaxData: [],
-  modifiersTaxData: [],
-  surchargeTax: 0,
+  taxes: [],
+  openItemTax: null,
+  openItemId: null,
 }
 
-// getters
 const getters = {
-  totalTax: (state, getters, rootState) =>
-    state.itemsTax + state.surchargeTax - rootState.discount.taxDiscountAmount,
-  modifierTaxData: state => ({ modifierId, itemId }) => {
-    return state.modifiersTaxData.find(
-      modifier =>
-        modifier.itemId === itemId && modifier.modifierId === modifierId
-    )
-  },
-  itemModifiersTaxData: state => itemId => {
-    return state.modifiersTaxData.filter(modifier => modifier.itemId === itemId)
+  applicableTaxes: (state, getters, rootState) => {
+    const taxes = []
+    state.taxes.forEach(tax => {
+      //check all
+      if (tax.price_availability.all) {
+        taxes.push({ tax: tax, value: tax.price_availability.all })
+      } else if (tax.price_availability.stores.length) {
+        tax.price_availability.stores.forEach(storeTax => {
+          if (storeTax.param === rootState.context.storeId) {
+            taxes.push({ tax: tax, value: storeTax.value })
+          }
+        })
+      } else if (tax.price_availability.cities.length) {
+        tax.price_availability.cities.forEach(storeTax => {
+          if (storeTax.param === rootState.location.store.city) {
+            taxes.push({ tax: tax, value: storeTax.value })
+          }
+        })
+      } else if (tax.price_availability.countries.length) {
+        tax.price_availability.countries.forEach(storeTax => {
+          if (storeTax.param === rootState.location.store.country) {
+            taxes.push({ tax: tax, value: storeTax.value })
+          }
+        })
+      }
+    })
+    if (taxes.length) {
+      return taxes.reduce((totalTax, taxItem) => (totalTax += taxItem.value), 0)
+    }
   },
 }
 
-// actions
 const actions = {
-  calculate({ commit, rootState }) {
-    return new Promise(resolve => {
-      if (rootState.order.items.length) {
-        let itemTaxData = []
-        let itemsTax = rootState.order.items.reduce((totalTax, item) => {
-          //calculate tax here
-          //item.price is now price before tax and discount applied, so need to recalculate the tax
-          itemTaxData.push({
-            quantity: item.quantity,
-            itemId: item._id,
-            tax: item.grossPrice - item.netPrice,
-            undiscountedTax:
-              item.undiscountedGrossPrice - item.undiscountedNetPrice,
-          })
-
-          return totalTax + (item.grossPrice - item.netPrice) * item.quantity
-        }, 0)
-
-        commit(mutation.SET_ITEMS_TAX, itemsTax)
-        commit(mutation.SET_ITEMS_TAX_DATA, itemTaxData)
-
-        //apply tax on surcharge that is calculated earlier
-        if (rootState.surcharge.surchargeAmounts) {
-          const surchargeTax = rootState.surcharge.surchargeAmounts.reduce(
-            (totalTax, surcharge) => {
-              return totalTax + surcharge.tax
-            },
-            0
-          )
-
-          commit(mutation.SET_SURCHARGE_TAX, surchargeTax)
-        } else {
-          commit(mutation.SET_SURCHARGE_TAX, 0)
-        }
+  fetchAll({ commit, rootState }) {
+    TaxService.fetchAll(rootState.order.orderType.OTApi).then(response => {
+      //If taxes available for location.
+      if (response.data.data.length) {
+        commit('SET_TAXES', response.data.data)
       }
-      resolve()
+    })
+  },
+  openItemTaxes({ commit }) {
+    TaxService.fetchOpenItemTaxes().then(response => {
+      //If taxes available for location.
+      if (response.data) {
+        commit('SET_OPEN_ITEM_ID', response.data.entity_id)
+        commit('SET_OPEN_ITEM_TAX', response.data.tax_sum)
+      }
     })
   },
   reset({ commit }) {
-    commit(mutation.RESET)
-  },
-
-  setModifierTaxData({ commit }, modifiersTaxData) {
-    commit(mutation.SET_MODIFIERS_TAX_DATA, modifiersTaxData)
+    commit('RESET')
   },
 }
 
-// mutations
 const mutations = {
-  [mutation.SET_ITEMS_TAX](state, tax) {
-    state.itemsTax = tax
+  SET_TAXES(state, taxes) {
+    state.taxes = taxes
   },
-  [mutation.SET_ITEMS_TAX_DATA](state, taxData) {
-    state.itemsTaxData = taxData
+  SET_OPEN_ITEM_ID(state, id) {
+    state.openItemId = id
   },
-  [mutation.SET_SURCHARGE_TAX](state, tax) {
-    state.surchargeTax = tax
+  SET_OPEN_ITEM_TAX(state, tax) {
+    state.openItemTax = tax
   },
-  [mutation.SET_MODIFIERS_TAX_DATA](state, modifiersTaxData) {
-    state.modifiersTaxData = modifiersTaxData
-  },
-  [mutation.RESET](state) {
-    state.itemsTax = 0
-    state.itemsTaxData = []
-    state.surchargeTax = 0
+  RESET(state) {
+    state.taxes = []
   },
 }
 

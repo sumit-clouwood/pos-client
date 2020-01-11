@@ -2,90 +2,241 @@
   <div class="dm-order-screens dm-order-screen-change" id="home-delivery-order">
     <DMHomeDeliverySubMenu />
     <div class="dm-ready-order-wrapper" id="dm-new-order">
-      <DMItem :actionDetails="readyDetails" />
+      <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
+      <DMItem :actionDetails="readyDetails" v-else />
     </div>
+
     <div class="dm-ready-order-wrapper" id="dm-waiting-for-pick">
-      <div class="select-driver">
-        <button
-          type="button"
-          class="btn dropdown-toggle"
-          data-toggle="dropdown"
-        >
-          Select Driver
-        </button>
-        <ul class="dropdown-menu">
-          <li v-for="(driver, index) in driverList" :key="index">
-            <!--<img
-              :src="driver.driverImagePath"
-              class="pull-left driverImg"
-              @error="imageLoadError()"
-            />-->
-            <a href="#" @click="selectedDriver(driver)">{{ driver.name }}</a>
-          </li>
-        </ul>
-        <!-- <p>Show Available Drivers</p> -->
-      </div>
-
-      <DMItem :actionDetails="waitingOrder" />
+      <section
+        class="with-drivers-filter block-table-page-container pagination_disabled"
+      >
+        <div class="home_delivery_pick">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group form-inline float-left search">
+                <div class="search-field">
+                  <label for="search_AnBPx" class="">{{ _t('Filter') }}:</label
+                  ><input
+                    type="text"
+                    placeholder="Search Waiting For Pick"
+                    id="search_AnBPx"
+                    class="form-control "
+                  />
+                </div>
+              </div>
+              <div class="form-group form-inline float-right limit"></div>
+            </div>
+          </div>
+          <Preloader
+            :msg="_t('Loading waiting for pickup orders') + '...'"
+            v-if="loading"
+          />
+          <DMItem :actionDetails="waitingOrder" v-else />
+        </div>
+        <div class="drivers-filter" :class="{ active: isActive }">
+          <div class="table-drivers-filter">
+            <div class="upper">
+              <div class="select-driver" @click="activateDriveList">
+                {{ _t('Show Driver Details') }}
+              </div>
+              <div class="autocomplete-container">
+                <div v-if="drivers" class="driver-container">
+                  <form>
+                    <input
+                      autocomplete="off"
+                      type="text"
+                      class="input-search-driver"
+                      id="get-customer-list"
+                      v-model="selectedUser"
+                      @click="showDropdown"
+                      @keydown="getSelectUser()"
+                    />
+                  </form>
+                  <div id="my-dropdown" class="dropdown-content cursor-pointer">
+                    <span
+                      class="dropdown"
+                      v-for="driver in drivers"
+                      :key="driver._id"
+                      v-on:click="selectedDriver(driver)"
+                      >{{ driver.name }}</span
+                    >
+                  </div>
+                </div>
+                <div v-else class="drivers-list-note">
+                  {{ _t('No Drivers Available') }}
+                </div>
+              </div>
+            </div>
+            <div class="body">
+              <DMAssignedDriver />
+            </div>
+            <div class="driver-footer">
+              <button
+                type="button"
+                class="button btn btn-success"
+                v-if="driverBucket.length"
+                @click="assignBucketToDriver()"
+              >
+                <div class="button-content-container">
+                  <div class="button-icon-container"><!----></div>
+                  <div class="button-caption">
+                    {{ _t('Assign') }}
+                  </div>
+                </div>
+              </button>
+              <button
+                type="button"
+                class="button btn btn-success"
+                v-if="driverBucket.length"
+                @click="restoreOrders"
+              >
+                <div class="button-content-container">
+                  <div class="button-icon-container"><!----></div>
+                  <div class="button-caption">
+                    {{ _t('Remove All') }}
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
+
     <div class="dm-ready-order-wrapper" id="dm-delivery-in-progress">
-      <DMItem :actionDetails="deliveredDetails" />
+      <Preloader
+        :msg="_t('Loading delivrey in progress orders') + '...'"
+        v-if="loading"
+      />
+      <DMItem :actionDetails="deliveredDetails" v-else />
     </div>
-
-    <DMDeliveredItem />
+    <div class="dm-ready-order-wrapper" id="dm-delivered">
+      <Preloader :msg="_t('Loading delivered orders') + '...'" v-if="loading" />
+      <DMDeliveredItem v-else />
+      <!--<DMItem :actionDetails="delivered" />-->
+    </div>
+    <OrderDetailsPopup />
+    <div class="pagination-customer-details" v-if="!loading">
+      <paginate
+        v-if="params.totalPages > 1"
+        :page-count="params.totalPages"
+        :page-range="1"
+        :margin-pages="1"
+        :clickHandler="moreOrder"
+        :prev-text="_t('Prev')"
+        :next-text="_t('Next')"
+        :container-class="paginationDirection"
+        :page-class="_t('page-item')"
+        v-model="page"
+      >
+      </paginate>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapActions, mapGetters } from 'vuex'
 import DMHomeDeliverySubMenu from '@/components/deliveryManager/header/DMHomeDeliverySubMenu'
 import DMItem from '@/components/deliveryManager/content/DMItem'
 import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredItem'
-import { mapState, mapActions } from 'vuex'
+import DMAssignedDriver from '@/components/deliveryManager/partial/DMAssignedDriver'
+import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
+import paginate from 'vuejs-paginate'
+import Preloader from '@/components/util/Preloader'
 
+/* global $ */
 export default {
   name: 'HomeDelivery',
   data() {
     return {
+      isActive: false,
       readyDetails: {
         moreDetails: true,
-        action: 'Ready',
-        nextOrderStatus: 'ready',
+        actionLabel: 'Ready',
+        action: 'delivery_ready',
+        nextOrderStatus: 'in-progress',
       },
       waitingOrder: {
         moreDetails: false,
-        action: '',
+        actionLabel: 'Assign',
+        action: 'addToDriverBucket',
         driverId: '',
-        nextOrderStatus: 'in-progress',
+        nextOrderStatus: 'Ready',
       },
       deliveredDetails: {
         moreDetails: true,
-        action: 'Ready',
-        nextOrderStatus: 'delivered',
+        actionLabel: 'Delivered',
+        action: 'delivery_done',
+        nextOrderStatus: 'finished',
       },
+      delivered: {
+        moreDetails: false,
+        actionLabel: '',
+        action: '',
+        nextOrderStatus: 'finished',
+      },
+      selectedUser: '',
+      paginationDirection: 'holdorders',
+      page: 1,
     }
   },
   components: {
     DMHomeDeliverySubMenu,
     DMItem,
+    OrderDetailsPopup,
     DMDeliveredItem,
+    DMAssignedDriver,
+    paginate,
+    Preloader,
   },
   computed: {
-    ...mapState({
-      driverList: state => state.location.locationData.drivers,
-    }),
+    ...mapGetters('deliveryManager', ['drivers']),
+    ...mapState('deliveryManager', [
+      'driverBucket',
+      'params',
+      'listType',
+      'loading',
+    ]),
+    ...mapGetters('location', ['_t']),
   },
-
+  updated() {
+    if (this.listType == 'Waiting for Pick') {
+      this.paginationDirection = ''
+    } else {
+      this.paginationDirection = 'holdorders'
+    }
+  },
   mounted() {
     this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
   },
 
   methods: {
-    selectedDriver: function(driver) {
-      this.waitingOrder.action = driver.name
-      this.waitingOrder.driverId = driver._id
-      this.selectDriver(driver)
+    activateDriveList() {
+      this.isActive = !this.isActive
     },
-    ...mapActions('deliveryManager', ['selectDriver']),
+    ...mapActions('order', ['updateOrderAction']),
+    selectedDriver: function(driver) {
+      this.waitingOrder.driverId = driver._id
+      this.selectedUser = driver.name
+      this.selectDriver(driver)
+      $('.dropdown-content').hide()
+    },
+    showDropdown: function() {
+      $('.dropdown-content').toggle()
+    },
+    moreOrder: function(pageNumber) {
+      this.$store.commit('deliveryManager/SET_DM_PAGE', pageNumber)
+      this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+    },
+    getSelectUser: function() {
+      this.selectedUser = $('#get-customer-list').val()
+    },
+
+    ...mapActions('deliveryManager', [
+      'selectDriver',
+      'restoreOrders',
+      'assignBucketToDriver',
+    ]),
     /*imageLoadError() {
       for (let i = 0; i < document.images.length; i++) {
         document.images[i].remove()
@@ -94,10 +245,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.driverImg {
-  padding-left: 14px;
-  float: left;
-}
-</style>

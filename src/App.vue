@@ -1,107 +1,71 @@
-<!-- 
-The App.vue file is the root component that all other components are nested within.
--->
-
 <template>
   <div>
-    <!--<div id="nav">-->
-    <!--<router-link to="/">Home</router-link> |-->
-    <!--<router-link to="/about">About</router-link>-->
-    <!--</div>-->
-    <section v-if="errored">
-      <p>
-        We're sorry, we're not able to proceed at the moment, please try back
-        later
-      </p>
-      <p>Technical info: {{ errored }}</p>
-    </section>
-    <div v-else-if="loading">
-      <ul class="ullist-inventory-location pl-0 pt-2">
-        <li class="p-3">
-          <span>
-            Loading data...
-            <Preloader />
-          </span>
-        </li>
-      </ul>
-    </div>
-    <router-view v-else />
+    <!-- Private view -->
+    <MultipleStores
+      v-show="
+        haveMultipleStores && !isStoreSelected && !this.$route.params.store_id
+      "
+    />
+    <!-- user is logged in, there is a store id in url or the user is not admin  -->
+    <private-view v-if="privateContext" class="private-view"></private-view>
+    <!-- Public view -->
+    <public-view v-else class="public-view"></public-view>
+    <app-notification></app-notification>
   </div>
 </template>
-
 <script>
-import Cookie from '@/mixins/Cookie'
-import bootstrap from '@/bootstrap'
-import Preloader from '@/components/util/Preloader'
-import { mapState } from 'vuex'
+import PublicView from './PublicView'
+import PrivateView from './PrivateView'
+import AppNotification from './AppNotification'
+import { mapGetters } from 'vuex'
+import MultipleStores from '@/components/MultipleStores'
 
+import DataService from '@/services/DataService'
 export default {
-  name: 'Location',
-  props: {},
+  name: 'App',
   components: {
-    Preloader,
-  },
-  mixins: [Cookie],
-  data: function() {
-    return {
-      loading: true,
-      errored: false,
-    }
+    PublicView,
+    PrivateView,
+    AppNotification,
+    MultipleStores,
   },
   computed: {
-    ...mapState({
-      defaultLanguage: state =>
-        state.location.store ? state.location.store.default_language : false,
-    }),
+    ...mapGetters('context', ['isStoreSelected', 'haveMultipleStores']),
+    privateContext() {
+      return this.$store.state.auth.token
+    },
   },
-  //life cycle hooks
+
+  watch: {
+    privateContext() {
+      this.setupRouting()
+    },
+  },
+
+  methods: {
+    setup() {
+      this.setupRouting()
+      this.$store.dispatch('auth/checkLogin')
+    },
+    setupRouting() {
+      if (this.$route.params.brand_id) {
+        this.$store.commit('context/SET_BRAND_ID', this.$route.params.brand_id)
+        localStorage.setItem('brand_id', this.$route.params.brand_id)
+        this.$store.commit('context/SET_STORE_ID', this.$route.params.store_id)
+        localStorage.setItem('store_id', this.$route.params.store_id)
+        DataService.setContext({
+          brand: this.$store.getters['context/brand'],
+          store: this.$store.getters['context/store'],
+        })
+      }
+    },
+  },
   mounted() {
-    if (this.$router.currentRoute.name === 'Dinein') {
-      this.loading = false
-      return
-    }
-
-    bootstrap
-      .setup(this.$store)
-      .then(() => {
-        this.loading = false
-        setTimeout(() => {
-          require('@/../public/js/pos_script.js')
-          require('@/../public/js/pos_script_functions.js')
-        }, 2000)
-      })
-      .catch(error => (this.errored = error))
+    DataService.setStore(this.$store)
+    this.setup()
   },
-}
-
-//vanilla js
-if ('serviceWorker' in navigator && 'SyncManager' in window) {
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      navigator.serviceWorker.ready
-        .then(registration => {
-          Notification.requestPermission()
-          return registration.sync.register('postOfflineOrders')
-        })
-        .then(function() {})
-        .catch(function() {
-          // system was unable to register for a sync,
-          // this could be an OS-level restriction
-        })
-    }, 3000)
-  })
 }
 </script>
-<!--<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  /*text-align: center;*/
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>-->
-<style lang="css">
-@import './assets/css/style.css';
+<style lang="scss">
+@import './assets/scss/style.scss';
 </style>

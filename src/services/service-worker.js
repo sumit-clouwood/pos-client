@@ -1,19 +1,41 @@
 // custom service-worker.js
 /* global workbox */
 /* eslint-disable no-console */
+var appVersion = '6.5.33'
 
-var iDB
-var form_data
-var IDB_VERSION = 3
+var clientUrl = ''
+
 var ORDER_DOCUMENT = 'order_post_requests'
-// var serverUrl = 'https://int.erp-pos.com'
-var clientUrl = 'https://delivery.erp-pos.com'
+var LOG_DOCUMENT = 'log'
+var client = null
+var enabledConsole = false
+var notificationOptions = {
+  body: '',
+  icon: './img/icons/apple-icon.png',
+  image: '',
+  vibrate: [
+    500,
+    110,
+    500,
+    110,
+    450,
+    110,
+    200,
+    110,
+    170,
+    40,
+    450,
+    110,
+    200,
+    110,
+    170,
+    40,
+    500,
+  ],
+  badge: './img/icons/favicon.png?v=' + appVersion,
+}
 
-if (workbox) {
-  openDatabase()
-
-  console.log('sw:', 'workbox found ')
-
+function setupCache() {
   // adjust log level for displaying workbox logs
   workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug)
 
@@ -25,7 +47,7 @@ if (workbox) {
   // Make sure to return a specific response for all navigation requests.
   // Since we have a SPA here, this should be index.html always.
   // https://stackoverflow.com/questions/49963982/vue-router-history-mode-with-pwa-in-offline-mode
-  workbox.routing.registerNavigationRoute(clientUrl + '/vue-pos/index.html')
+  workbox.routing.registerNavigationRoute(clientUrl + '/pos/index.html')
 
   workbox.routing.registerRoute(
     /\.(?:png|gif|jpg|jpeg|svg)$/,
@@ -72,464 +94,854 @@ if (workbox) {
       cacheName: 'fontawesome',
     })
   )
+}
 
-  // const queue = new workbox.backgroundSync.Queue('ordersQueue')
-  // self.addEventListener('fetch', event => {
-  //   // Clone the request to ensure it's save to read when
-  //   // adding to the Queue.
-  //   if (event.request.url.match(/SaveOrder/g)) {
-  //     return queue.addRequest(event.request)
+function setupEventListners() {
+  EventListener.setup()
+}
 
-  //     // const promiseChain = fetch(event.request.clone()).catch(() => {
-  //     //   return queue.addRequest(event.request)
-  //     // })
+var EventListener = {
+  setup: function() {
+    this._install()
+    this._activate()
+    this._sync()
+    this._message()
+    this._push()
+    this._fetch()
+  },
 
-  //     // event.waitUntil(promiseChain)
-  //   }
-  // })
+  _install() {
+    self.addEventListener('install', function(event) {
+      event.waitUntil(self.skipWaiting()) // Activate worker immediately
+    })
+  },
 
-  // self.addEventListener('sync', event => {
-  //   event.waitUntil(
-  //     new Promise(resolve => {
-  //       resolve('hello')
-  //     })
-  //   )
-  // })
+  _activate() {
+    self.addEventListener('activate', function(event) {
+      enabledConsole && console.log(1, 'sw:', 'in activation')
+      event.waitUntil(
+        caches.keys().then(function(cacheNames) {
+          enabledConsole && console.log('cachenames', cacheNames)
+          self.clients.claim()
+          enabledConsole && console.log('update cachenames', cacheNames)
+          return Promise.all(
+            cacheNames
+              // eslint-disable-next-line no-unused-vars
+              .filter(function(cacheName) {
+                enabledConsole && console.log('clear this one? ', cacheName)
+                return true
+                // Return true if you want to remove this cache,
+                // but remember that caches are shared across
+                // the whole origin
+              })
+              .map(function(cacheName) {
+                enabledConsole && console.log('clearing ', cacheName)
+                return caches.delete(cacheName)
+              })
+          )
+        })
+      )
+    })
+  },
 
-  self.addEventListener('sync', function(event) {
-    console.log(
-      'sw:',
-      'SYNC EVENT RECEIVED, now online, lets try postofflineorders'
-    )
-    console.log('sw:', event)
+  _push() {
+    // Listen to Push
+    self.addEventListener('push', e => {
+      let data
+      if (e.data) {
+        data = e.data.json()
+      }
 
-    if (event.tag === 'postOfflineOrders') {
-      console.log('sw:', 'correct event received')
+      notificationOptions.body = data.body
 
-      // event.tag name checked
-      // here must be the same as the one used while registering
-      // sync`
-      // Send our POST request to the server, now that the user is online
+      e.waitUntil(
+        self.registration.showNotification(data.title, notificationOptions)
+      )
+    })
+  },
 
-      const syncIt = async () => {
-        return new Promise(resolve => {
-          sendPostToServer()
-            .then(() => {
-              try {
-                self.registration.showNotification('Orders synced to server')
-              } catch (e) {
-                console.log('sw:', e)
-              }
-            })
-            .catch(err => {
-              console.log('sw:', 'Error syncing orders to server', err)
-            })
+  //we send form data earlier before sending the actual request
+  //if request was failed we get form data and add that to indexedb for offline
+  //otherwise don't don any thing
+  //messages can be received from pos app i.e to store temporary data in variables
+  _message() {
+    //custom events
+    self.addEventListener('message', function(event) {
+      enabledConsole &&
+        console.log(1, 'sw:', 'message received from app', event.data)
+      if (event.data.hasOwnProperty('form_data')) {
+        // receives form data from script.js upon submission
+        Sync.formData = event.data.form_data
+        enabledConsole &&
+          console.log(
+            1,
+            'sw:',
+            'assigned form data to service worker',
+            Sync.formData
+          )
+      }
 
-          try {
-            resolve(
-              self.registration.showNotification('Orders synced to server')
-            )
-          } catch (e) {
-            console.log('sw:', e)
+      //this is manually sync, we ll remove it later
+      else if (event.data.hasOwnProperty('sync')) {
+        enabledConsole &&
+          console.log(1, 'sw:', 'sync event received ', event.data)
+
+        if (Sync.inprocess) {
+          enabledConsole && console.log(1, 'sw:', 'A sync already in progress')
+        } else {
+          Sync.inprocess = true
+
+          var nowTime = new Date().getTime()
+          // enabledConsole && console.log(
+          //   1, 'sw:',
+          //   'last synced',
+          //   Sync.lastSynced,
+          //   'sync received',
+          //   nowTime,
+          //   'seconds passed last sync',
+          //   (nowTime - Sync.lastSynced) / 1000
+          // )
+
+          //if (nowTime - Sync.lastSynced > Sync.SYNC_AFTER_SECONDS * 1000)
+          {
+            enabledConsole &&
+              console.log(1, 'sw:', 'No sync in process, Sync starts...')
+            Sync.lastSynced = nowTime
+            const syncIt = async () => {
+              return new Promise(resolve => {
+                setTimeout(function() {
+                  Sync.backgroudSync(resolve)
+                }, 1000 * 1)
+              })
+            }
+            event.waitUntil(syncIt())
           }
-        })
-      }
-
-      event.waitUntil(syncIt())
-    }
-  })
-
-  //this is manually sync, we ll remove it later
-  self.addEventListener('message', function(event) {
-    if (event.data.hasOwnProperty('sync')) {
-      console.log('sw:', 'sync event', event.data)
-      const syncIt = async () => {
-        return new Promise(resolve => {
-          setTimeout(function() {
-            sendPostToServer()
-              .then(() => {
-                self.registration.showNotification('SW Orders synced to server')
-              })
-              .catch(() => {
-                console.log('sw:', 'SW Error syncing orders to server')
-              })
-
-            resolve(
-              self.registration.showNotification('Orders synced to server')
-            )
-          }, 1000 * 10)
-        })
-      }
-      event.waitUntil(syncIt())
-    }
-  })
-
-  // Listen to Push
-  self.addEventListener('push', e => {
-    let data
-    if (e.data) {
-      data = e.data.json()
-    }
-
-    const options = {
-      body: data.body,
-      icon: '/img/icons/android-chrome-192x192.png',
-      image: '/img/autumn-forest.png',
-      vibrate: [300, 200, 300],
-      badge: '/img/icons/plint-badge-96x96.png',
-    }
-
-    e.waitUntil(self.registration.showNotification(data.title, options))
-  })
-
-  self.addEventListener('message', function(event) {
-    console.log('sw:', 'form data', event.data)
-    if (event.data.hasOwnProperty('form_data')) {
-      // receives form data from script.js upon submission
-      form_data = event.data.form_data
-    }
-  })
-
-  self.addEventListener('fetch', function(event) {
-    // every request from our site, passes through the fetch handler
-    var clonedRequest = event.request.clone()
-    //console.log('I am a request with url: ', clonedRequest.url)
-
-    if (clonedRequest.method === 'POST' || clonedRequest.method === 'OPTIONS') {
-      // attempt to send request normally
-      event.respondWith(
-        fetch(clonedRequest).catch(function(error) {
-          // only save post requests in browser, if an error occurs, GET FROM MSG WE SEND EARLIER
-          //we saved form_data global var from msg
-          console.log('sw:', 'error happened when posting', error)
-          console.log('sw:', 'Save to indexeddb for later send')
-          savePostRequests(clonedRequest.url, form_data)
-        })
-      )
-    }
-  })
-
-  self.addEventListener('install', function(event) {
-    event.waitUntil(self.skipWaiting()) // Activate worker immediately
-  })
-
-  self.addEventListener('activate', function(event) {
-    event.waitUntil(self.clients.claim()) // Become available to all pages
-  })
-}
-
-function getObjectStore(storeName, mode) {
-  // retrieve our object store
-  return iDB.transaction(storeName, mode).objectStore(storeName)
-}
-function savePostRequests(url, payload) {
-  // get object_store and save our payload inside it
-  console.log('sw:', 'try open db')
-
-  openDatabase(function(idb) {
-    console.log('sw:', 'db opened, adding rec', idb)
-    var request = getObjectStore(ORDER_DOCUMENT, 'readwrite').add({
-      url: url,
-      payload: payload,
-      method: 'POST',
-    })
-    request.onsuccess = function(event) {
-      console.log(
-        'sw:',
-        'a new order request has been added to indexedb',
-        event
-      )
-    }
-    request.onerror = function(error) {
-      console.error('sw:', "Request can't be send to index db", error)
-    }
-  })
-}
-
-function openDatabase(cb) {
-  console.log('sw:', 'opening database')
-  var indexedDBOpenRequest = indexedDB.open('dim-pos', IDB_VERSION)
-
-  indexedDBOpenRequest.onerror = function(error) {
-    // error creating db
-    console.error('sw:', 'IndexedDB open error:', error)
-  }
-
-  //this ll be nerver called because we have same version as app and store already created
-  indexedDBOpenRequest.onupgradeneeded = function() {
-    iDB = this.result
-    console.log(
-      'sw:',
-      'db opened for upgrade Create/modify the database schema'
-    )
-    // This should only executes if there's a need to
-    // create/update db.
-    var objectStore = this.result.createObjectStore(ORDER_DOCUMENT, {
-      autoIncrement: true,
-      keyPath: 'id',
-    })
-
-    objectStore.transaction.oncomplete = function() {
-      console.log('sw:', 'create bucket complete', ORDER_DOCUMENT)
-      if (cb) {
-        console.log('sw:', 'calling callback to insert data')
-        cb(iDB)
-      }
-    }
-    objectStore.transaction.onerror = function(event) {
-      console.log('sw:', 'create bucket complete', event, ORDER_DOCUMENT)
-    }
-  }
-
-  // This will execute each time the database is opened.
-  indexedDBOpenRequest.onsuccess = function() {
-    console.log(
-      'sw:',
-      'db opened for success . Save your database handler, for example something, DB_HANDLER = event.target.result'
-    )
-    iDB = this.result
-    if (cb) {
-      console.log('sw:', 'calling callback to insert data')
-      cb(iDB)
-    }
-  }
-
-  indexedDBOpenRequest.onblocked = function(event) {
-    console.log('sw:', 'sw block error not important, already opened', event)
-    iDB = this.result
-    // Another connection is open, preventing the upgrade,
-    // and it didn't close immediately.
-  }
-}
-function sendPostToServer() {
-  return new Promise((resolve, reject) => {
-    var savedRequests = []
-    var req = getObjectStore(ORDER_DOCUMENT).openCursor() // FOLDERNAME
-    // is 'post_requests'
-    req.onsuccess = async function(event) {
-      var cursor = event.target.result
-      if (cursor) {
-        // Keep moving the cursor forward and collecting saved
-        // requests.
-        savedRequests.push(cursor.value)
-        cursor.continue()
-      } else {
-        // At this point, we have collected all the post requests in
-        // indexedb.
-        console.log('sw:', 'Saved Reqeusts', savedRequests)
-
-        if (!savedRequests.length) {
-          console.log('sw:', 'No request found')
         }
-        //add unique id and order id
-        //read from the indexedDB
-        var authreq = getObjectStore('auth').openCursor()
-        var authData = []
-        authreq.onsuccess = async function(event) {
-          var cursor = event.target.result
-          if (cursor) {
-            // Keep moving the cursor forward and collecting saved
-            // requests.
-            authData.push(cursor.value)
-            cursor.continue()
+      } else if (event.data.action == 'skipWaiting') {
+        enabledConsole && console.log(2, 'wait for skip')
+        event.waitUntil(self.skipWaiting())
+      }
+    })
+  },
+
+  //intercept api calls and if no network available then get data from temp variables and store
+  //it to the indexeddb
+
+  _fetch() {
+    self.addEventListener('fetch', function(event) {
+      // every request from our site, passes through the fetch handler
+      var clonedRequest = event.request.clone()
+      //enabledConsole && console.log('I am a request with url: ', clonedRequest.url)
+      //Each request may have different url so we need to get different handler,
+      //for example if it is order/add request then we should get order handler
+      // if it is dm request then it should get DeliveryManger handler
+
+      var handler = Factory.offlineHandler(clonedRequest)
+      if (handler) {
+        // attempt to send request normally
+        event.respondWith(
+          fetch(clonedRequest).catch(function(error) {
+            // only save post requests in browser, if an error occurs, GET FROM MSG WE SEND EARLIER
+            //we saved form_data global var from msg
+            enabledConsole &&
+              console.log(
+                1,
+                'sw:',
+                'Network offline, saving request offline',
+                error
+              )
+            handler
+              .addOfflineEvent(clonedRequest.url, Sync.formData)
+              .then(() => {
+                Sync.formData = null
+              })
+          })
+        )
+      }
+
+      if (!event.clientId) {
+        return
+      }
+
+      self.clients.get(event.clientId).then(thisClient => {
+        if (thisClient) {
+          client = thisClient
+        }
+      })
+    })
+  },
+
+  //sync event, when system comes online, lets sync what we have in indexedDB
+  _sync() {
+    self.addEventListener('sync', function(event) {
+      enabledConsole &&
+        console.log(1, 'sw:', 'browser sync event received', event)
+      if (Sync.inprocess) {
+        enabledConsole && console.log(1, 'sw:', 'A sync already in progress')
+      } else {
+        Sync.inprocess = true
+        var nowTime = new Date().getTime()
+        enabledConsole &&
+          console.log(1, 'sw:', 'No sync in process, browser Sync starts...')
+        Sync.lastSynced = nowTime
+        const syncIt = async () => {
+          return new Promise(resolve => {
+            setTimeout(function() {
+              Sync.backgroudSync(resolve)
+            }, 1000 * 1)
+          })
+        }
+        event.waitUntil(syncIt())
+      }
+    })
+  },
+}
+
+var DB = {
+  iDB: null,
+  getBucket: function(storeName, mode) {
+    // retrieve our object store
+    return this.iDB.transaction(storeName, mode).objectStore(storeName)
+  },
+
+  open: function(cb) {
+    if (this.iDB) {
+      enabledConsole && console.log(1, 'sw:', 'IDB already opened')
+      if (cb) {
+        cb(this.iDB)
+      }
+    } else {
+      enabledConsole && console.log(1, 'sw:', 'opening database')
+      var indexedDBOpenRequest = indexedDB.open('dim-pos')
+
+      indexedDBOpenRequest.onerror = function(error) {
+        // error creating db
+        console.error(1, 'sw:', 'IndexedDB open error:', error)
+      }
+
+      // This will execute each time the database is opened.
+      indexedDBOpenRequest.onsuccess = function() {
+        enabledConsole &&
+          console.log(
+            1,
+            'sw:',
+            'db opened for success . Save your database handler, for example something, DB_HANDLER = event.target.result'
+          )
+        DB.iDB = this.result
+        if (cb) {
+          enabledConsole &&
+            console.log(1, 'sw:', 'calling callback to insert data')
+          cb(DB.iDB)
+        }
+      }
+
+      indexedDBOpenRequest.onblocked = function(event) {
+        enabledConsole &&
+          console.log(
+            1,
+            'sw:',
+            'sw block error not important, already opened',
+            event
+          )
+        DB.iDB = this.result
+        // Another connection is open, preventing the upgrade,
+        // and it didn't close immediately.
+      }
+    }
+  },
+}
+
+var Sync = {
+  inprocess: false,
+  formData: null,
+  headers: null,
+  dbAuthData: null,
+  msg: 'Offline orders are synced with server.',
+  lastSynced: 0,
+  SYNC_AFTER_SECONDS: 0, //5sec, 60 * 5 = 5 min
+
+  sendTokenToClient: function(token) {
+    client.postMessage({
+      msg: 'token',
+      data: token,
+    })
+  },
+
+  backgroudSync: async function(resolve) {
+    Sync.inprocess = true
+    DB.open(async () => {
+      enabledConsole && console.log(1, 'sw:', 'db opened for sync')
+      //open db before sync, db is opened only when insertion, there might be a case when
+      //there is no insertion but sync is needed
+      let syncedObjects = []
+      Factory.syncHandlers().forEach(obj => {
+        syncedObjects.push(obj.sync())
+      })
+      try {
+        await Promise.all(syncedObjects)
+        Sync.inprocess = false
+        enabledConsole &&
+          console.log(
+            1,
+            1,
+            'sw:',
+            'All synced',
+            'sync inprocess',
+            Sync.inprocess
+          )
+        resolve()
+      } catch (error) {
+        Sync.inprocess = false
+        enabledConsole &&
+          console.log(
+            1,
+            'sw:',
+            'Sync error, complete cycle',
+            'sync inprocess',
+            Sync.inprocess
+          )
+      }
+    })
+  },
+  auth() {
+    if (this.headers) {
+      enabledConsole && console.log(1, 'sw:', 'Already authenticated')
+      return Promise.resolve(this.headers)
+    }
+
+    return new Promise((resolve, reject) => {
+      enabledConsole && console.log(1, 'sw:', 'Getting auth from indexeddb')
+
+      var authreq = DB.getBucket('auth').openCursor()
+      var authData = []
+      authreq.onsuccess = async function(event) {
+        var cursor = event.target.result
+        if (cursor) {
+          // Keep moving the cursor forward and collecting saved
+          // requests.
+          authData.push(cursor.value)
+          cursor.continue()
+        } else {
+          if (authData && authData[0]) {
+            this.dbAuthData = authData[0]
+
+            this.headers = {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              authorization: 'Bearer ' + this.dbAuthData.token,
+            }
+            enabledConsole && console.log(1, 'sw:', 'Headers set')
+
+            resolve(this.headers)
           } else {
-            console.log('sw:', authData)
+            reject(event)
+          }
+        }
+      }
+      authreq.onerror = async function(event) {
+        enabledConsole && console.log(1, 'sw:', 'Token not found in indexeddb')
+        reject(event)
+      }
+    })
+  },
 
-            if (authData && authData[0]) {
-              authData = authData[0]
-              console.log('sw:', 'auth data from db', authData)
+  reauth(requestUrl) {
+    return new Promise((resolve, reject) => {
+      enabledConsole && console.log(1, 'sw:', 'Send Reauth')
 
-              var authToken = authData.token
-              var deviceCode = authData.deviceCode
-              var franchiseCode = authData.franchiseCode
-              //var lastOrderNo = parseInt(authData.lastOrderNo) || 0
+      this.auth()
+        .then(headers => {
+          enabledConsole &&
+            console.log(1, 'sw:', 'Sending request to server for re auth')
+          fetch(requestUrl.replace(new RegExp('/api/.*'), '/api/refresh'), {
+            headers: headers,
+            method: 'POST',
+            body: null,
+          })
+            .then(response => response.json())
+            .then(response => {
+              enabledConsole &&
+                console.log('sw: ', 'refresh token response', response)
 
-              for (let savedRequest of savedRequests) {
-                const orderUrl = savedRequest.url
-                const contextUrl = orderUrl.replace(new RegExp('/model/.*'), '')
-                const time = new Date().getTime()
-                //lastOrderNo++
-                var transitionOrderNo =
-                  franchiseCode + '-' + deviceCode + '-' + time
+              Sync.headers.authorization = 'Bearer ' + response.token
+              Sync.dbAuthData.token = response.token
 
-                // send them to the server one after the other
-                console.log('sw:', 'saved request', savedRequest)
+              DB.getBucket('auth', 'readwrite').put(Sync.dbAuthData)
 
-                savedRequest.payload.transition_order_no = transitionOrderNo
-                savedRequest.payload.order_mode = 'offline'
+              Sync.sendTokenToClient(response.token)
+              enabledConsole &&
+                console.log(1, 'sw:', 'second request to create order')
+              resolve(Sync.headers)
+            })
+            .catch(function(response) {
+              enabledConsole &&
+                console.log('sw: ', 'Second request Error ', response)
+              reject(response)
+            })
+        })
+        .catch(error => {
+          enabledConsole && console.log(1, 'sw:', 'Re auth failed', error)
+          reject(error)
+        })
+    })
+  },
+  request(requestUrl, method, payload) {
+    return new Promise((resolve, reject) => {
+      enabledConsole &&
+        console.log(
+          1,
+          'sw:',
+          'Sync request received',
+          requestUrl,
+          method,
+          payload
+        )
 
-                var headers = {
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-                  authorization: 'Bearer ' + authToken,
-                } // if you have any other headers put them here
+      this.auth().then(headers => {
+        enabledConsole &&
+          console.log(
+            1,
+            'sw:',
+            'Sending request to server',
+            requestUrl,
+            method,
+            payload
+          )
 
-                var payload = savedRequest.payload
+        fetch(requestUrl, {
+          headers: headers,
+          method: method,
+          body: JSON.stringify(payload),
+        })
+          .then(response => {
+            enabledConsole && console.log(1, 'sw:', 'server response', response)
+            //handle both code errors and network error
+            if (response.status < 400) {
+              response.json().then(response => {
+                enabledConsole &&
+                  console.log(1, 'sw:', 'server response json', response)
+                resolve(response)
+              })
+            } else if (response.status == 401) {
+              //network / token expired, reauth
+              enabledConsole &&
+                console.log(
+                  'sw: ',
+                  'Token expired, unauthorized access, getting refresh token'
+                )
 
-                //check if delivery order
-                //customer_id
-                //address_id
-                if (
-                  payload.order_type == 'delivery' &&
-                  !(payload.customer_id && payload.address_id)
-                ) {
-                  var customerPayload = payload.user
+              Sync.reauth(requestUrl)
+                .then(() => {
+                  Logger.log({
+                    event_time: null,
+                    event_title: 'Token Refreshed',
+                    event_type: 'sw:order_sync_token_refreshed',
+                    event_data: {
+                      request: payload,
+                      response: 'Token refreshed, resending request',
+                    },
+                  })
+                  enabledConsole &&
+                    console.log(
+                      1,
+                      'sw:',
+                      'New token successful, resend request'
+                    )
+                  this.request(requestUrl, method, payload)
+                })
+                .catch(error => {
+                  enabledConsole &&
+                    console.log(1, 'sw:', 'Token refresh failed')
+                  Logger.log({
+                    event_time: null,
+                    event_title: 'Token Refreshed Failed',
+                    event_type: 'sw:order_sync_token_refresh_fail',
+                    event_data: {
+                      request: payload,
+                      response: 'Token refresh failed, aborting request',
+                    },
+                  })
+                  reject(error)
+                })
+            }
+          })
+          .catch(error => {
+            enabledConsole && console.log(1, 'sw:', 'Fetch error', error)
+          })
+      })
+    })
+  },
+}
 
-                  console.log('sw:', 'delivery order')
-                  //create customer uses fetch which returns promise
-                  console.log('sw:', 'creating customer')
-                  createCustomer(headers, customerPayload, contextUrl)
-                    .then(response => response.json())
-                    .then(response => {
-                      console.log('sw:', 'customer created ', response)
-                      //customer created
-                      console.log('sw:', 'creating customer address')
+var Factory = {
+  syncHandlers() {
+    return [Order, DeliveryManager]
+  },
 
-                      //modify the original payload to be sent to order
-                      savedRequest.payload.customer_id = customerPayload.customer_id =
-                        response.customer_id
+  offlineHandler(request) {
+    switch (request.method) {
+      case 'POST':
+        if (request.url.match('/orders/add')) {
+          return Order
+        }
+        if (request.url.match('/deliveryManager/add')) {
+          return DeliveryManager
+        }
 
-                      /*createAddress(headers, customerPayload)
-                        .then(response => {
-                          console.log('customer address created', response)
-                          //re calculate payload
-                          console.log(
-                            'now sending order with customer_id and address_id'
-                          )
+        break
+      case 'GET':
+        break
+    }
+  },
+}
 
-                          //modify original payload to be sent to order
-                          savedRequest.payload.address_id =
-                            response.data.addressId
+var Logger = {
+  log: function(data) {
+    enabledConsole && console.log(1, 'sw:', data)
+    var format = function(num) {
+      if (num < 10) {
+        return '0' + num
+      }
+      return num
+    }
+    var today = new Date()
+    var date =
+      today.getFullYear() +
+      '-' +
+      format(today.getMonth() + 1) +
+      '-' +
+      format(today.getDate())
+    var time =
+      format(today.getHours()) +
+      ':' +
+      format(today.getMinutes()) +
+      ':' +
+      format(today.getSeconds())
+    data.log_time = date + ' ' + time
+    if (!data.event_time) {
+      data.event_time = data.log_time
+    }
+    DB.getBucket(LOG_DOCUMENT, 'readwrite').add(data)
+  },
+}
 
-                          console.log(
-                            'making call to save order',
-                            savedRequest.payload
-                          )
+var Customer = {
+  createCustomer: function(payload, contextUrl) {
+    var method = 'POST'
+    var requestUrl = contextUrl + '/model/brand_customers/add'
 
-                          createOrder(
-                            resolve,
-                            reject,
-                            headers,
-                            lastOrderNo,
-                            authData,
-                            savedRequest
-                          )
-                        })
-                        .catch(err => {
-                          console.log(
-                            'Request to save customer address failed with error ',
-                            err,
-                            customerPayload
-                          )
-                          reject(err)
-                        })
-                        */
-                      savedRequest.payload.address_id = response.address_id
-                      createOrder(
-                        resolve,
-                        reject,
-                        headers,
-                        authData,
-                        savedRequest
-                      )
-                    })
-                    .catch(err => {
-                      console.log(
-                        'sw:',
-                        'Request to save customer failed with error ',
-                        err,
-                        customerPayload
-                      )
-                      reject(err)
-                    })
-                } else {
-                  //app_uniqueid
-                  //transition_order_no
-                  console.log('sw:', 'Not delivery order')
-                  createOrder(resolve, reject, headers, authData, savedRequest)
-                }
-              }
+    if (!payload.alternative_phone) payload.alternative_phone = null
+    if (!payload.gender) payload.gender = 'undisclosed'
+    if (!payload.customer_group) payload.customer_group = null
+    enabledConsole && console.log(1, requestUrl, method, payload)
+    return Sync.request(requestUrl, method, payload)
+  },
+}
+
+var Order = {
+  addOfflineEvent: function(url, payload) {
+    enabledConsole && console.log(1, 'sw:', payload)
+    return new Promise((resolve, reject) => {
+      // get object_store and save our payload inside it
+      DB.open(() => {
+        enabledConsole &&
+          console.log(1, 'sw:', 'db opened, adding offline order to indexeddb')
+        var data = {
+          order_time: payload.real_created_datetime,
+          url: url,
+          payload: payload,
+          method: 'POST',
+        }
+        var request = DB.getBucket(ORDER_DOCUMENT, 'readwrite').add(data)
+        request.onsuccess = function(event) {
+          enabledConsole &&
+            console.log(
+              1,
+              'sw:',
+              'a new order request has been added to indexedb',
+              event
+            )
+
+          Logger.log({
+            event_time: payload.real_created_datetime,
+            event_title: payload.balance_due,
+            event_type: 'sw:order_save_offline',
+            event_data: payload,
+          })
+          resolve()
+          //reset form data
+        }
+        request.onerror = function(error) {
+          console.error(1, 'sw:', "Request can't be send to index db", error)
+          Logger.log({
+            event_time: payload.real_created_datetime,
+            event_title: payload.balance_due,
+            event_type: 'sw:error_order_save_offline',
+            event_data: { request: payload, error: error },
+          })
+          reject(error)
+        }
+      })
+    })
+  },
+
+  sync: function() {
+    return new Promise((resolve, reject) => {
+      var savedRequests = []
+
+      var req = DB.getBucket(ORDER_DOCUMENT).openCursor() // FOLDERNAME
+      // is 'post_requests'
+      req.onsuccess = async function(event) {
+        var cursor = event.target.result
+        if (cursor) {
+          // Keep moving the cursor forward and collecting saved
+          // requests.
+          savedRequests.push(cursor.value)
+          cursor.continue()
+        } else {
+          // At this point, we have collected all the post requests in
+          // indexedb.
+          //enabledConsole && console.log(1, 'sw:', 'Saved Reqeusts', savedRequests)
+
+          if (!savedRequests.length) {
+            enabledConsole && console.log(1, 'sw:', 'No offline order found')
+            return resolve()
+          }
+          let syncedObjects = []
+          for (let savedRequest of savedRequests) {
+            const orderUrl = savedRequest.url
+            const contextUrl = orderUrl.replace(new RegExp('/model/.*'), '')
+
+            enabledConsole &&
+              console.log(
+                1,
+                'sw:',
+                'transition order number: ',
+                savedRequest.payload.transition_order_no
+              )
+
+            savedRequest.payload.order_mode = 'offline'
+
+            //check if delivery order
+            if (
+              savedRequest.payload.order_type == 'call_center' &&
+              !savedRequest.payload.customer
+            ) {
+              syncedObjects.push(
+                Order.createOrderWithCustomer(contextUrl, savedRequest)
+              )
+            } else {
+              //app_uniqueid
+              //transition_order_no
+              enabledConsole && console.log(1, 'sw:', 'Not delivery order')
+              syncedObjects.push(Order.createOrder(savedRequest))
             }
           }
+
+          try {
+            await Promise.all(syncedObjects)
+            notificationOptions.body = 'Offline orders synced successfully.'
+            self.registration.showNotification(
+              'POS synced',
+              notificationOptions
+            )
+            resolve()
+          } catch (error) {
+            reject(error)
+          }
         }
       }
-    }
-  })
+    })
+  },
+  createOrderWithCustomer(contextUrl, savedRequest) {
+    return new Promise((resolve, reject) => {
+      enabledConsole &&
+        console.log(
+          1,
+          'sw:',
+          'no customer was selected so need to create a customer'
+        )
+      var customerPayload = savedRequest.payload.user
+      //payload.user is always available either its online or offline
+      enabledConsole && console.log(1, 'sw:', 'delivery order', savedRequest)
+      //create customer uses fetch which returns promise
+
+      delete customerPayload.city
+      delete customerPayload.country
+
+      enabledConsole && console.log(1, 'sw:', 'creating customer')
+      Customer.createCustomer(customerPayload, contextUrl)
+        .then(response => {
+          enabledConsole && console.log(1, 'sw:', 'customer created ', response)
+          //customer created
+
+          //modify the original payload to be sent to order
+          savedRequest.payload.customer = response.id
+
+          Order.createOrder(savedRequest)
+            .then(() => {
+              resolve()
+            })
+            .catch(error => {
+              reject(error)
+            })
+        })
+        .catch(err => {
+          enabledConsole &&
+            console.log(
+              1,
+              'sw:',
+              'Request to save customer failed with error ',
+              err,
+              customerPayload
+            )
+          reject(err)
+        })
+    })
+  },
+  createOrder: function(savedRequest) {
+    return new Promise((resolve, reject) => {
+      var method = savedRequest.method
+      var requestUrl = savedRequest.url
+      var payload = savedRequest.payload
+      delete payload.user
+      if (payload.order_type !== 'call_center') {
+        payload.referral = ''
+      }
+      enabledConsole && console.log(1, 'sw:', 'Sending sync to server')
+      Sync.request(requestUrl, method, payload)
+        .then(response => {
+          enabledConsole && console.log(1, 'sw:', 'server response', response)
+          var requestUpdate
+          if (response.status === 'ok' && response.id) {
+            enabledConsole &&
+              console.log(
+                1,
+                'sw:',
+                'order synced successfully',
+                savedRequest.payload.real_created_datetime,
+                response
+              )
+            requestUpdate = DB.getBucket(ORDER_DOCUMENT, 'readwrite').delete(
+              savedRequest.payload.real_created_datetime
+            )
+
+            requestUpdate.onerror = function(event) {
+              enabledConsole &&
+                console.log(1, 'sw:', 'order delete failed', event)
+            }
+            requestUpdate.onsuccess = function(event) {
+              // Success - the data is updated!
+              enabledConsole &&
+                console.log(1, 'sw:', 'order deleted successfully', event)
+              resolve()
+            }
+
+            Logger.log({
+              event_time: savedRequest.payload.real_created_datetime,
+              event_title: savedRequest.payload.balance_due,
+              event_type: 'sw:order_synced',
+              event_data: {
+                request: savedRequest.payload,
+                response: response,
+              },
+            })
+          } else {
+            enabledConsole &&
+              console.log(
+                1,
+                'sw:',
+                'order sync failed but it is not network error so remove error from indexed db',
+                response.form_errors,
+                response
+              )
+            Logger.log({
+              event_time: savedRequest.payload.real_created_datetime,
+              event_title: savedRequest.payload.balance_due,
+              event_type: 'sw:order_sync_failed_deleteit',
+              event_data: {
+                request: savedRequest.payload,
+                response: response,
+              },
+            })
+
+            requestUpdate = DB.getBucket(ORDER_DOCUMENT, 'readwrite').delete(
+              savedRequest.payload.real_created_datetime
+            )
+
+            requestUpdate.onerror = function(event) {
+              enabledConsole &&
+                console.log(1, 'sw:', 'order delete failed', event)
+            }
+            requestUpdate.onsuccess = function(event) {
+              // Success - the data is updated!
+              enabledConsole &&
+                console.log(
+                  1,
+                  'sw:',
+                  'errored order deleted successfully',
+                  event
+                )
+              resolve(response)
+            }
+          }
+        })
+        .catch(error => {
+          enabledConsole &&
+            console.log(
+              1,
+              'sw:',
+              'error sending request for sync, network failed, dont worry sync ll repeat it again',
+              error
+            )
+          Logger.log({
+            event_time: savedRequest.payload.real_created_datetime,
+            event_title: savedRequest.payload.balance_due,
+            event_type: 'sw:order_sync_network_fail',
+            event_data: { request: payload, response: 'Network not available' },
+          })
+          reject(error)
+        })
+    })
+  },
 }
 
-var createOrder = function(resolve, reject, headers, authData, savedRequest) {
-  var method = savedRequest.method
-  var requestUrl = savedRequest.url
-  var payload = JSON.stringify(savedRequest.payload)
+var DeliveryManager = {
+  addOfflineEvent: function(url, payload) {
+    // get object_store and save our payload inside it
+    enabledConsole && console.log(1, 'sw:', 'try open db')
 
-  fetch(requestUrl, {
-    headers: headers,
-    method: method,
-    body: payload,
-  })
-    .then(function(response) {
-      console.log('sw:', 'server response', response)
-      if (response.status < 400) {
-        // If sending the POST request was successful, then
-        // remove it from the IndexedDB.
-        //increment in the order number
-
-        var requestUpdate = getObjectStore('auth', 'readwrite').put(authData)
-
-        requestUpdate.onerror = function(event) {
-          console.log('sw:', 'update failed', event)
-        }
-        requestUpdate.onsuccess = function(event) {
-          // Success - the data is updated!
-          console.log('sw:', 'update good', event)
-        }
-
-        console.log('sw:', 'Removing request from index db', savedRequest.id)
-        getObjectStore(ORDER_DOCUMENT, 'readwrite').delete(savedRequest.id)
-
-        resolve(response)
+    DB.open(function() {
+      enabledConsole && console.log(1, 'sw:', 'db opened, adding rec')
+      var request = DB.getBucket(ORDER_DOCUMENT, 'readwrite').add({
+        url: url,
+        payload: payload,
+        method: 'POST',
+      })
+      request.onsuccess = function(event) {
+        enabledConsole &&
+          console.log(
+            1,
+            'sw:',
+            'a new order request has been added to indexedb',
+            event
+          )
+      }
+      request.onerror = function(error) {
+        console.error(1, 'sw:', "Request can't be send to index db", error)
       }
     })
-    .catch(function(error) {
-      // This will be triggered if the network is still down.
-      // The request will be replayed again
-      // the next time the service worker starts up.
-      console.error('sw:', 'Send to Server failed:', error)
-      // since we are in a catch, it is important an error is
-      //thrown,so the background sync knows to keep retrying
-      // the send to server
-      reject(error)
-    })
+  },
+  sync() {
+    enabledConsole && console.log('DM Synced')
+    return Promise.resolve(1)
+  },
 }
 
-var createCustomer = function(headers, payload, contextUrl) {
-  var method = 'POST'
-  var requestUrl = contextUrl + '/model/crm/create/Customer'
-  return fetch(requestUrl, {
-    headers: headers,
-    method: method,
-    body: JSON.stringify(payload),
-  })
+if (workbox) {
+  enabledConsole && console.log(1, 'sw:', 'workbox found ')
+  setupCache()
+  enabledConsole && console.log(1, 'sw:', 'cache setup complete')
+  setupEventListners()
+  enabledConsole && console.log(1, 'sw:', 'event listner setup complete')
 }
-
-// var createAddress = function(headers, payload) {
-//   var method = 'POST'
-//   var requestUrl = serverUrl + '/api/auth/crm/create/NewCustomerAddress'
-//   var address = {
-//     customer_id: payload.customer_id,
-//     add_delivery_area: payload.delivery_area,
-//     location_id: payload.location_id,
-//     add_building: payload.building,
-//     add_street: payload.street,
-//     add_flat_number: payload.flat_number,
-//     add_landmark: payload.building,
-//     add_city: payload.city,
-//     country: payload.country,
-//   }
-
-//   return fetch(requestUrl, {
-//     headers: headers,
-//     method: method,
-//     body: JSON.stringify(address),
-//   })
-// }

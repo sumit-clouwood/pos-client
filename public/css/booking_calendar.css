@@ -1,0 +1,320 @@
+/* Sharp Calendar */
+.wrapper,
+.wrapperHor{
+ background-color: #f8f8f8;
+ padding: 5px;
+}
+
+.SCElement {
+ font-size:24px;
+ color:#333;
+ opacity:1;
+}
+/*
+.wrapperHor .SCElement {
+    border: 2px solid #444;
+}
+*/
+
+.SCSel,
+.wrapperHor .SCSel {
+ color: #333;
+ font-weight: 400;
+ /*border: 2px solid #333;*/
+ border-radius: 0;
+}
+
+.SCMarked>div {
+ position: relative;
+}
+
+.wd_0 .SCElement, .wd_6 .SCElement {
+ /*background-color: #CC3232;*/
+}
+
+.SCElement:hover {
+ opacity: 0.5;
+}
+
+.SCToday {
+ background-color: #e6ebf3;
+}
+
+.SCSel {
+ /*border-left: 2px solid #F77565;*/
+}
+.SCMarked>div:before {
+ content: "";
+ position: absolute;
+ top: 0%;
+ right: 0%;
+ width: 0px;
+ height: 0px;
+ border-bottom: 8px solid #eee;
+ border-right: 8px solid transparent;
+}
+
+.SCMarked>div:after {
+ content: "";
+ position: absolute;
+ top: 0%;
+ right: 0%;
+ width: 0px;
+ height: 0px;
+ border-top: 7px solid #fff;
+ border-left: 7px solid transparent;
+}
+
+.SCYear .SCElement > div {
+ width: 168px !important;
+}
+.SCMonth .SCElement > div {
+ width: auto !important;
+ height: 30px !important;
+ display: grid;
+ align-items:center;
+}
+.SCDay .SCElement > div {
+ width: auto !important;
+ height: 40px !important;
+ display: grid;
+ align-items: center;
+}
+td.reservation-actions > .btn-warning {
+ margin: 0 5px;
+}
+
+td.reservation-actions > .btn {
+ color: #fff;
+}
+.SCElement > div{
+ font-size: 15px;
+ font-weight: bold;
+}
+.SCElement.SCSel {
+ background-color: #5056ca;
+}
+.SCElement.SCSel > div{
+ color: #fff;
+}
+.wrapperNew .SCDay .next .SCElement > div, .wrapperNew .SCDay .prev .SCElement > div {
+ justify-content: center;
+ height: auto !important;
+ line-height: 40px !important;
+}
+.SCMonth .SCTbl {
+ border-right: 1px dashed #d7dce2;
+ border-bottom: 1px dashed #d7dce2;
+}
+.SCDay .SCTbl {
+ border-right: 1px dashed #d7dce2;
+}
+.SCYear .SCTbl, .SCMonth .SCTbl, .SCDay .SCTbl, .SCDay .prev, .SCDay .next {
+ margin: 0;
+}
+.SCDay .SCTbl:nth-last-child(2), .SCMonth .SCTbl:last-child {
+ border-right: medium none !important;
+}
+section#main {
+ height: auto !important;
+ display: grid;
+ justify-content:center;
+ grid-template-columns: 1fr;
+}
+.fixed-reservation .SCMonth > div, .fixed-reservation .SCDay > div {
+ display: grid;
+ grid-template-columns: repeat(7, 1fr);
+ justify-content: center;
+ text-align: center;
+}
+@keyframes slideInFromLeft {
+ 0% {
+  transform: translateX(100%);
+ }
+ 100% {
+  transform: translateX(0);
+ }
+}
+
+.fixed-reservation {
+ animation: 1s ease-out 0s 1 slideInFromLeft;
+ position: fixed;
+ right: 0;
+ background: #fff;
+ z-index: 1;
+ height: calc(100vh - 6rem);
+ box-shadow: 0 0px 3px 0px rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
+ display: grid;
+ grid-template-rows: auto 1fr auto;
+ grid-row-gap: 20px;
+ width: 600px;
+}
+.fixed-reservation .SCHor .next {
+ right: 0;
+ top: 0;
+}
+.fixed-reservation .SCHor .prev {
+ left: 0;
+ top: 0;
+}
+div#NewReservation .SCHor .next, div#NewReservation .SCHor .prev{
+ top: 0;
+ width: auto !important;
+}
+.fixed-reservation th {
+ color: #a4a4a4;
+ font-weight: normal;
+}
+.fixed-reservation td {
+ color: #3a3d44;
+}
+.pos-reservation-footer {
+ display: grid;
+ align-items: flex-end;
+ padding: 20px;
+}
+.reservation-date-format p {
+ color: #7c7e85;
+ font-weight: 600;
+}
+.pos-reservation-table table > thead {
+ /*padding: 20px;*/
+ top: 0;
+ display: table-caption;
+ position: sticky;
+ z-index: 1;
+ background: #fff;
+}
+.pos-reservation-table table > thead th:first-child, .pos-reservation-table table > tbody td:first-child{
+ width: 175px;
+}
+.pos-reservation-table table > thead th:nth-child(2), .pos-reservation-table table > tbody td:nth-child(2){
+ width: 110px;
+}
+
+.pos-reservation-table table > thead th:last-child, .pos-reservation-table table > tbody td:last-child{
+ width: 160px;
+}
+.pos-reservation-table{
+ overflow-y:auto;
+ overflow-x:hidden;
+ padding: 0 5px;
+}
+.pos-reservation-header {
+ min-height: 100px;
+ background: #f8f8f8;
+ padding: 0;
+ align-items: center;
+ display: grid;
+}
+.SCYear {
+ display: none !important;
+}
+.SCMonth {
+ /*display: none !important;*/
+}
+ .SCToday > div, .wd_0 .SCElement, .wd_6 .SCElement {
+ /*color: #fff;*/
+}
+.pos-reservation-footer button {
+ height: 52px;
+}
+.SCHor .next .SCDayNum:after {
+ content: "\f054";
+ text-align: right;
+ font-size: 25px;
+ font-family: FontAwesome;
+}
+.SCHor .prev .SCDayNum:after {
+ content: "\f053";
+ text-align: left;
+ font-family: FontAwesome;
+ font-size: 25px;
+}
+.SCTbl.disabled {
+ pointer-events: none !important;
+ opacity: 0.5;
+}
+.SCHor .prev.disabled .SCDayNum:after {
+ pointer-events: none !important;
+ opacity: 0.5;
+}
+.prev.disabled {
+ pointer-events: none !important;
+ opacity: 0.5;
+}
+.txt-box {
+ height: 50px;
+ border-radius: 4px;
+ border: solid 1px #dce0e5;
+}
+.modal .modal-dialog .modal-content .modal-footer.modal-footer-reservation {
+ justify-content: flex-end;
+}
+.num_guests label {
+ margin-bottom: 0;
+}
+#NewReservation .num_guests .btn {
+ padding: 12px 0;
+}
+@media only screen and (min-width: 980px) and (max-width: 1140px){
+ 
+ #NewReservation .modal-dialog {
+  max-width: 85% !important;
+ }
+ #NewReservation  .SCHor .prev .SCDayNum:after,  #NewReservation .SCHor .next .SCDayNum:after {
+  left: -9px;
+  position: absolute;
+ }
+ #NewReservation section#main {
+  margin-left: 0 !important;
+ }
+ 
+ #NewReservation .wrapperNew .SCMonth .SCElement > div {
+  width: auto !important;
+ }
+ #NewReservation .wrapperNew .SCDay .SCElement > div {
+  width: auto !important;
+ }
+  #NewReservation .time_slot_block {
+  height: 200px;
+  margin-right: 0 !important;
+ }
+ 
+  #NewReservation .time_slot_block .time_slot {
+  height: 50px;
+ }
+ 
+ .pos-reservation-table table > thead th:first-child, .pos-reservation-table table > tbody td:first-child{
+  width: 210px;
+ }
+ 
+ #NewReservation .SCElement > div {
+  font-size: 13px;
+ }
+ 
+ #NewReservation .num_guests .btn {
+  padding: 8px 0;
+ }
+ #NewReservation  .lbl-txt-box {
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+ }
+ 
+ #NewReservation  input.form-control.txt-box {
+  height: 40px;
+ }
+ .pos-reservation-table table > thead th:last-child, .pos-reservation-table table > tbody td:last-child{
+  width: 130px;
+ }
+}
+@media only screen and (max-width: 767px){
+ .fixed-reservation .SCMonth > div span {
+  font-size: 12px;
+  padding: 0 4px;
+ }
+ #NewReservation .SCMonth > div span{
+  font-size: 12px;
+ }
+}

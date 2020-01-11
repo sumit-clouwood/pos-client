@@ -1,75 +1,118 @@
 <template>
-  <tr id="delivered-data" style="display:none" class="delivered-data">
-    <td colspan="10" class="deliveredOrderDetails">
-      <div class="delivered-data-wrapper">
-        <table class="table table-responsive">
-          <tbody>
-            <tr>
-              <th style="width: 160px;">ORDER NUMBER</th>
-              <th style="width: 160px;">amount</th>
-              <th style="width: 800px;">
-                order performance (preparation | pickup | Delivery)
-              </th>
-              <th style="width: 150px;">total time</th>
-              <th style="width: 160px;">status</th>
-            </tr>
-            <tr
-              class="deliverd-time-table"
-              v-for="(order, index) in orders.driverOrders"
-              :key="index"
-            >
-              <td>{{ order.orderNumber }}</td>
-              <td>{{ order.orderAmount }}</td>
-              <td>
-                <span class="delivery-preptn">{{
-                  order.orderPreparationTimeDifference
-                }}</span>
-                <span class="delivery-pickup"
-                  >{{ order.orderPickupTimeDifference }} Pick</span
+  <div>
+    <div class="historyMainContainer show-table-delivered">
+      <table class="table">
+        <thead>
+          <tr>
+            <th><i class="fa fa-file"></i> {{ _t('Order Number') }}</th>
+            <th><i class="fa fa-asterisk"></i> {{ _t('Amount') }}</th>
+            <th style="width: 650px;">
+              <i class="fa fa-road"></i>
+              {{ _t('Order Performance (Preparation | Pickup | Delivery)') }}
+            </th>
+            <th style="width: 200px;">
+              <i class="fa fa-clock-o"></i> {{ _t('Total Time') }}
+            </th>
+            <th><i class="fa fa-tag"></i> {{ _t('Status') }}</th>
+          </tr>
+        </thead>
+        <tbody v-if="currentDriverOrders.orders">
+          <tr v-for="(order, key) in currentDriverOrders.orders" :key="key">
+            <td class="showOrderContentsButton dashboardStyleLink">
+              <span
+                @click="selectedOrderDetails(order._id)"
+                class="open-details-popup cursor-pointer"
+                data-dismiss="modal"
+                data-target=".bd-example-modal-lg"
+                data-toggle="modal"
+              >
+                <a role="button">#{{ order.order_no }}</a>
+              </span>
+            </td>
+            <td>{{ formatPrice(order.balance_due) }}</td>
+            <td class="perfTD">
+              <div class="perfContainer perfContainer-span">
+                <span class="perfContent prepData prepDataDelivered"
+                  >{{
+                    timeDiff(order.deliveryPlacedTime, order.deliveryReadyTime)
+                  }}
+                  Prep.</span
                 >
-                <span class="delivery-delivered"
-                  >{{ order.orderDeliveryTimeDifference }} Delivery</span
+                <span class="perfContent pickData pickDataDelivered"
+                  >{{
+                    timeDiff(order.deliveryReadyTime, order.deliveryStartTime)
+                  }}Pick</span
                 >
-              </td>
-              <td>{{ order.orderTotalTime }}</td>
-              <td class="delivered-btn">
-                <span>{{ order.orderStatus }}</span>
-              </td>
-            </tr>
+                <span class="perfContent deliData deliDataDelivered"
+                  >{{
+                    timeDiff(order.deliveryStartTime, order.deliveryEndTime)
+                  }}
+                  {{ _t('Delivery') }}</span
+                >
+                <br clear="all" />
+              </div>
+            </td>
+            <td class="">
+              <div class="delManTime">
+                {{ timeDiff(order.deliveryPlacedTime, order.deliveryEndTime) }}
+              </div>
+            </td>
+            <td>
+              <span
+                class="label label-success label-block delManLabelStat Delivered text-center delivered-green-btn"
+                >{{ _t('Delivered') }}</span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-            <tr class="delivery-avg-delivery-time">
-              <td>
-                Total Deliveries :
-                <span class="total-delivery">{{ orders.noOfOrders }}</span>
-              </td>
-              <td>
-                Total :
-                <span class="delivery-time-total">{{ orders.orderSum }}</span>
-              </td>
-              <td>
-                Average Delivery Time :
-                <span class="dm-avg-delivery-time">{{
-                  orders.averageDeliveryTime
-                }}</span>
-              </td>
-              <td></td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="driverSummary" v-if="currentDriverOrders.orders">
+        <div class="row-fluid">
+          <div class="span3 span-driver-one">
+            <span class="span-text-one">{{ _t('Total Deliveries') }}:</span>
+            <br /><span class="driverSummaryTotal totalDelivery">{{
+              currentDriverOrders.orders.length
+            }}</span>
+          </div>
+          <div class="span3">
+            <span class="span-text-two">Total:</span> <br />
+            <span class="driverSummaryTotal">
+              {{ formatPrice(currentDriverOrders.totalAmount) }}
+            </span>
+          </div>
+          <div class="span3 span-driver-three">
+            <span class="span-text-three"
+              >{{ _t('Average Delivery Time') }}:
+            </span>
+            <br /><span class="driverSummaryTotal">{{
+              avgTime(currentDriverOrders)
+            }}</span>
+          </div>
+          <!-- <div class="span3">Average Time: <br><span class="driverSummaryTotal">Static minutes</span></div> -->
+        </div>
       </div>
-    </td>
-  </tr>
+      <div class="driverSummary">
+        <table></table>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'ShowDeliveredOrderDetails',
   computed: {
-    ...mapState({
-      orders: state => state.deliveryManager.moreOrders,
-    }),
+    ...mapGetters('deliveryManager', [
+      'currentDriverOrders',
+      'avgTime',
+      'timeDiff',
+    ]),
+    ...mapGetters('location', ['formatPrice', '_t']),
+  },
+  methods: {
+    ...mapActions('order', ['selectedOrderDetails']),
   },
 }
 </script>

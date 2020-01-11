@@ -1,77 +1,129 @@
-/*
-Error: Undefined variable: "$px1000".
-        on line 3 of scss/modals/onlineOrder.scss
+#online-order .modal-dialog {
+  max-width: 62.5rem;
+  width: 62.5rem;
+  border-radius: 3px;
+  background-color: #ffffff; }
+  #online-order .modal-dialog .modal-content {
+    background-color: #ffffff; }
+    #online-order .modal-dialog .modal-content .modal-body {
+      padding: 1.25rem;
+      max-height: 43.75rem;
+      overflow: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      touch-action: auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-gap: 1.25rem; }
+      #online-order .modal-dialog .modal-content .modal-body .add-order-area {
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-gap: 1.25rem; }
+        #online-order .modal-dialog .modal-content .modal-body .add-order-area .online-order {
+          min-height: 17.5rem;
+          border-radius: 3px;
+          background-color: #ffffff;
+          border: solid 1px #e5e9f4; }
+          #online-order .modal-dialog .modal-content .modal-body .add-order-area .online-order .online-order-header {
+            border-top-left-radius: 4px;
+            background-color: #ebeef3;
+            overflow: hidden;
+            padding: 0.9375rem; }
+            #online-order .modal-dialog .modal-content .modal-body .add-order-area .online-order .online-order-header .online-order-amount.paid-amt {
+              color: #4bac16;
+              background-color: #cdeccf; }
+            #online-order .modal-dialog .modal-content .modal-body .add-order-area .online-order .online-order-header > h4.customer-title {
+              font-size: 0.875rem;
+              font-weight: 600;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: 0.5px;
+              color: #3a3d44;
+              float: left;
+              margin-bottom: 0;
+              padding: 5px 0; }
+            #online-order .modal-dialog .modal-content .modal-body .add-order-area .online-order .online-order-header > p.online-order-amount {
+              font-size: 0.75rem;
+              font-weight: 600;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: 0.4px;
+              text-align: center;
+              color: #cc3232;
+              border-radius: 0.625rem;
+              background-color: #f8d8d8;
+              width: 63px;
+              float: right;
+              margin-bottom: 0;
+              padding: 5px 0; }
+          #online-order .modal-dialog .modal-content .modal-body .add-order-area .online-order .online-order-content {
+            padding: 0.625rem; }
+            #online-order .modal-dialog .modal-content .modal-body .add-order-area .online-order .online-order-content .online-order-content-wrap #online-order-id {
+              font-size: 12px;
+              font-weight: normal;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: 0.5px;
+              color: #5056ca;
+              cursor: pointer; }
+            #online-order .modal-dialog .modal-content .modal-body .add-order-area .online-order .online-order-content .online-order-content-wrap > p {
+              font-size: 12px;
+              font-weight: normal;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: 2;
+              letter-spacing: 0.5px;
+              color: #72777c;
+              margin-bottom: 0; }
+              #online-order .modal-dialog .modal-content .modal-body .add-order-area .online-order .online-order-content .online-order-content-wrap > p > span {
+                font-size: 12px;
+                font-weight: 600;
+                font-style: normal;
+                font-stretch: normal;
+                line-height: 2;
+                letter-spacing: 0.5px;
+                color: #3a3d44;
+                margin-right: 30px;
+                display: inline-block; }
+            #online-order .modal-dialog .modal-content .modal-body .add-order-area .online-order .online-order-content .online-order-address > p {
+              font-size: 0.75rem;
+              font-weight: normal;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: 1.67;
+              letter-spacing: 0.5px;
+              color: #72777c;
+              margin-bottom: 0;
+              padding: 0.625rem 0 1.5625rem 0; }
+            #online-order .modal-dialog .modal-content .modal-body .add-order-area .online-order .online-order-content .online-order-btn .reject-order {
+              font-size: 0.875rem;
+              font-weight: 600;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: 0.5px;
+              text-align: center;
+              color: #cc3232; }
+              #online-order .modal-dialog .modal-content .modal-body .add-order-area .online-order .online-order-content .online-order-btn .reject-order:hover {
+                background: #cc3232;
+                color: #fff;
+                transition: 0.3s ease-in-out; }
+            #online-order .modal-dialog .modal-content .modal-body .add-order-area .online-order .online-order-content .online-order-btn .add-to-delivery {
+              font-size: 0.875rem;
+              font-weight: 600;
+              font-style: normal;
+              font-stretch: normal;
+              line-height: normal;
+              letter-spacing: 0.5px;
+              text-align: center;
+              color: #5056ca; }
+    #online-order .modal-dialog .modal-content .modal-footer {
+      flex: unset !important;
+      display: block;
+      padding-top: 1.875rem; }
 
-1: #online-order {
-2:   .modal-dialog {
-3:     max-width: $px1000;
-4:     width: $px1000;
-5:     border-radius: $btn-border-radius;
-6:     background-color: #ffffff;
-7: 
-8:     .modal-content {
-
-Backtrace:
-scss/modals/onlineOrder.scss:3
-/usr/lib/ruby/vendor_ruby/sass/script/tree/variable.rb:49:in `_perform'
-/usr/lib/ruby/vendor_ruby/sass/script/tree/node.rb:58:in `perform'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:397:in `visit_prop'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block (2 levels) in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:431:in `visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block (2 levels) in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:433:in `block in visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:431:in `visit_rule'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `block in visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:169:in `block in visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:168:in `visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:188:in `visit_root'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:159:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:8:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:36:in `css_tree'
-/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:29:in `render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/engine.rb:381:in `_render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/engine.rb:298:in `render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:492:in `update_stylesheet'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:209:in `each'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:209:in `update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:294:in `watch'
-/usr/lib/ruby/vendor_ruby/sass/plugin.rb:109:in `method_missing'
-/usr/lib/ruby/vendor_ruby/sass/exec/sass_scss.rb:356:in `watch_or_update'
-/usr/lib/ruby/vendor_ruby/sass/exec/sass_scss.rb:51:in `process_result'
-/usr/lib/ruby/vendor_ruby/sass/exec/base.rb:52:in `parse'
-/usr/lib/ruby/vendor_ruby/sass/exec/base.rb:19:in `parse!'
-/usr/bin/scss:8:in `<main>'
-*/
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Error: Undefined variable: \"$px1000\".\A         on line 3 of scss/modals/onlineOrder.scss\A \A 1: #online-order {\A 2:   .modal-dialog {\A 3:     max-width: $px1000;\A 4:     width: $px1000;\A 5:     border-radius: $btn-border-radius;\A 6:     background-color: #ffffff;\A 7: \A 8:     .modal-content {"; }
+/*# sourceMappingURL=onlineOrder.css.map */

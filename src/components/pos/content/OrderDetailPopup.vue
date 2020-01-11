@@ -8,36 +8,164 @@
     id="orderDetailsPopup"
   >
     <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="col-md-5">
-          <div data-v-f6351270="" class="left-part">
-            <LeftPart :orderDetails="selectedOrder" />
-          </div>
+      <div class="dialog-body modal-content color-dashboard-background">
+        <div class="modal-header mobile">
+          <h3 class="modal-title">Order Detail</h3>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-        <div class="col-md-7 right-part">
+        <div class="left-part">
+          <LeftPart :orderDetails="selectedOrder" />
+        </div>
+        <div class="right-part">
           <div class="tab-content" id="nav-tabContent">
             <RightPartHeader />
 
             <!--content-->
             <Receipt :orderDetails="selectedOrder.item" />
-            <History :orderDetails="selectedOrder.item" />
-            <Modification />
+            <History
+              :orderDetails="selectedOrder.item"
+              :userDetails="selectedOrder.lookups"
+            />
+            <Modification
+              :orderDetails="selectedOrder.item"
+              :userDetails="selectedOrder.lookups"
+            />
             <Payment :orderDetails="selectedOrder.item" />
           </div>
         </div>
+        <div class="buttons">
+          <div class="v-menu v-menu--inline">
+            <div class="v-menu__activator">
+              <div class="dropdown">
+                <button
+                  v-if="isPermitted(PERMISSIONS.REPRINT_ORDER)"
+                  class="button btn btn-success color-main color-text-invert dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  {{ _t('Reprint') }}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a
+                    class="dropdown-item"
+                    role="button"
+                    v-for="(template, index) in selectedOrder.invoice"
+                    :key="index"
+                    @click="
+                      printInvoiceDisableKitchenPrint({
+                        templateId: template._id,
+                        order: selectedOrder,
+                      })
+                    "
+                    >{{ template.name }}</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <button
+            v-if="isPermitted(PERMISSIONS.CANCEL_ORDER)"
+            type="button"
+            class="button text-button btn btn-success color-main color-text-invert"
+            data-toggle="modal"
+            data-target=".cancel-order"
+          >
+            <div class="button-content-container">
+              <div class="button-icon-container"></div>
+              <div class="button-caption">{{ _t('Cancel Order') }}</div>
+            </div>
+          </button>
+          <button
+            v-if="
+              isPermitted(PERMISSIONS.MODIFY_ORDER) &&
+                typeof selectedOrder.item !== 'undefined' &&
+                selectedOrder.item.order_type === 'dine_in' &&
+                selectedOrder.item.order_status === 'finished'
+            "
+            type="button"
+            class="button text-button btn btn-success color-main color-text-invert"
+            @click="modifyOrder(selectedOrder.item)"
+          >
+            <div class="button-content-container">
+              <div class="button-icon-container"></div>
+              <div class="button-caption">{{ _t('Modify Order') }}</div>
+            </div>
+          </button>
+          <button
+            v-if="
+              isPermitted(PERMISSIONS.MODIFY_ORDER) &&
+                typeof selectedOrder.item !== 'undefined' &&
+                selectedOrder.item.order_type !== 'dine_in'
+            "
+            type="button"
+            class="button text-button btn btn-success color-main color-text-invert"
+            @click="modifyOrder(selectedOrder.item)"
+          >
+            <div class="button-content-container">
+              <div class="button-icon-container"></div>
+              <div class="button-caption">{{ _t('Modify Order') }}</div>
+            </div>
+          </button>
+          <button
+            v-if="selectedOrder.customer"
+            type="button"
+            class="button past-order-buttons btn btn-success color-main color-text-invert"
+          >
+            <div class="button-content-container">
+              <div class="button-icon-container"></div>
+              <div
+                class="button-caption"
+                data-toggle="modal"
+                data-target="#display-order"
+                @click="fetchSelectedCustomer(selectedOrder.customer._id)"
+              >
+                {{ _t('Open Past Orders') }}
+              </div>
+            </div>
+          </button>
+          <button
+            type="button"
+            class="button btn btn-danger color-button color-text-invert"
+            data-dismiss="modal"
+          >
+            <div class="button-content-container">
+              <div class="button-icon-container"></div>
+              <div class="button-caption">{{ _t('Close') }}</div>
+            </div>
+          </button>
+        </div>
       </div>
     </div>
+    <Invoice />
+    <CustomerInformation />
+    <CancelOrderPopup />
+    <ModificationPermissions />
   </div>
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions } from 'vuex'
+
+import Invoice from '@/components/pos/content/cart/payNow/Invoice'
 import Receipt from '@/components/pos/content/orderDetails/rightContent/Receipt'
 import History from '@/components/pos/content/orderDetails/rightContent/History'
 import Modification from '@/components/pos/content/orderDetails/rightContent/Modification'
 import Payment from '@/components/pos/content/orderDetails/rightContent/Payment'
 import RightPartHeader from '@/components/pos/content/orderDetails/RightPartHeader'
 import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
-import { mapState } from 'vuex'
+import CancelOrderPopup from '@/components/pos/content/orderDetails/CancelOrderPopup'
+import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
+import CustomerInformation from '@/components/pos/footer/popups/ManageCustomer/CustomerInformation'
 
 export default {
   name: 'OrderDetailPopup',
@@ -49,9 +177,59 @@ export default {
     Modification,
     Payment,
     LeftPart,
+    Invoice,
+    CancelOrderPopup,
+    CustomerInformation,
+    ModificationPermissions,
   },
   computed: {
     ...mapState('order', ['selectedOrder']),
+    ...mapState('dinein', ['tables']),
+    ...mapGetters('location', ['_t']),
+  },
+  methods: {
+    ...mapActions('customer', ['fetchSelectedCustomer']),
+    ...mapActions('deliveryManager', ['printInvoice']),
+    printInvoiceDisableKitchenPrint(details) {
+      this.printInvoice(details)
+      this.$store.commit('dinein/KITCHEN_PRINT', false)
+    },
+    modifyOrder(order) {
+      let orderId = order._id
+      this.$store.dispatch('order/startOrder')
+      this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
+        let order_type = order.order_type || ''
+        if (order_type === 'dine_in') {
+          let tableData = this.tables.find(
+            table => table._id === order.assigned_table_id
+          )
+          let table_reservation_id = order.table_reservation_id
+          this.$store.commit('dinein/SELECTED_TABLE', tableData)
+          this.$store.commit('dinein/RESERVATION_ID', table_reservation_id)
+          this.$store.commit('dinein/ORDER_RESERVATION_DATA', order)
+          this.$store.dispatch('dinein/getSelectedOrder', orderId, {
+            root: true,
+          })
+          this.$router.push({
+            path:
+              '/dine-in/' +
+              this.$store.getters['context/store'] +
+              table_reservation_id +
+              '/' +
+              orderId,
+          })
+        } else {
+          this.$store.commit('order/IS_PAY', 1)
+          this.$store.dispatch('order/modifyOrderTransaction').then(order => {
+            this.$store.dispatch('order/loadCarhopOrder', order._id)
+            this.$router.push({
+              path:
+                this.$store.getters['context/store'] + '/update/' + order._id,
+            })
+          })
+        }
+      })
+    },
   },
 }
 </script>
@@ -59,10 +237,105 @@ export default {
 #orderDetailsPopup .modal-dialog {
   max-width: 70%;
 }
-#orderDetailsPopup .modal-content {
-  flex-direction: row;
-}
-div#nav-tabContent {
-  margin: 25px;
+</style>
+<style lang="scss">
+@import '../../../assets/scss/pixels_rem.scss';
+@import '../../../assets/scss/variables.scss';
+@import '../../../assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  #orderDetailsPopup {
+    .modal-dialog {
+      margin: 0;
+      width: 100%;
+      max-width: 100% !important;
+      overflow: auto;
+
+      .dialog-body {
+        display: block;
+        position: static;
+        overflow: auto;
+
+        .details {
+          display: grid;
+          grid-template-columns: 1fr;
+          grid-gap: 20px;
+
+          > div {
+            padding: 0 0 20px 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            align-content: start;
+            align-items: flex-start;
+
+            .details-item {
+              border-bottom: 1px solid $gray-middle;
+              padding-bottom: 10px;
+              display: grid;
+              grid-template-columns: max-content max-content;
+              grid-gap: 10px;
+            }
+          }
+        }
+
+        .left-part,
+        .right-part {
+          border: none;
+          height: auto;
+        }
+
+        .right-part {
+          #nav-tabContent {
+            #nav-home {
+              padding: 0;
+
+              .table {
+                padding: 0;
+              }
+
+              .receipt-summary {
+                text-align: left;
+                font-weight: bold;
+              }
+            }
+          }
+        }
+
+        .buttons {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-gap: 5px;
+
+          button.button {
+            margin: 0;
+          }
+
+          .v-menu {
+            display: block;
+            margin-right: 0;
+
+            .dropdown {
+              display: block;
+              width: 100%;
+
+              .dropdown-menu {
+                overflow: hidden;
+              }
+
+              button {
+                display: block;
+                width: 100%;
+              }
+            }
+          }
+
+          .btn-danger {
+            grid-column-start: 1;
+            grid-column-end: 3;
+          }
+        }
+      }
+    }
+  }
 }
 </style>

@@ -15,11 +15,9 @@ const getters = {
 
 // actions
 const actions = {
-  async fetchAll({ commit, rootState }) {
+  async fetchAll({ commit }, code) {
     return new Promise((resolve, reject) => {
-      const params = [rootState.location.location, rootState.sync.compress]
-
-      GiftCardService.fetchAll(...params)
+      GiftCardService.fetchAll(code)
         .then(response => {
           commit(mutation.SET_GIFT_CARDS, response.data)
           resolve(response.data)
@@ -34,7 +32,7 @@ const actions = {
 
   apply({ commit, dispatch }, { code, amount }) {
     return new Promise((resolve, reject) => {
-      dispatch('fetchAll')
+      dispatch('fetchAll', code)
         .then(() => {
           const card = state.giftcards.data.find(
             card => card.gift_card_code === code
@@ -53,7 +51,9 @@ const actions = {
                 })
                 .catch(error => reject(error))
             } else {
-              reject(`Available giftcard amount is lesser than ${amount}`)
+              reject(
+                `Available gift card amount is ${card.currency} ${card.remaining_amount}, lesser than ${amount}`
+              )
             }
           } else {
             reject('No matching gift card found.')

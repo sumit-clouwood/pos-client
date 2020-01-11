@@ -1,5 +1,5 @@
-@import "pixels_rem.scss";
-@import "variables.scss";
+@import 'pixels_rem.scss';
+@import 'variables.scss';
 
 .navigation {
   grid-row-start: 1;
@@ -7,6 +7,13 @@
   background-color: $blue-middle;
   display: grid;
   grid-template-rows: $header-height 1fr $px60 $footer-height;
+  justify-content: center;
+  grid-template-columns: 1fr;
+  overflow: hidden;
+
+  /*img{
+    max-width: 100%;
+  }*/
 
   .logo {
     display: grid;
@@ -23,8 +30,9 @@
   }
 
   .navigation-list-wrapper {
-    overflow: hidden;
+    overflow-y: scroll;
     position: relative;
+    //overflow-y: auto;
 
     &::-webkit-scrollbar {
       width: 0;
@@ -32,15 +40,18 @@
 
     .navigation-list {
       position: absolute;
-      top: 0;
+      top: 0px;
       left: 0;
       right: 0;
       overflow: hidden;
       display: grid;
       grid-template-rows: auto;
-      grid-gap: $px20;
+      grid-gap: 10px;
       padding: 0 0 $px30 0;
       transition: 0.5s ease-out;
+      @include responsive(mobile) {
+        // top: 65px;
+      }
 
       &.toggle {
         top: -95%;
@@ -54,35 +65,49 @@
         cursor: pointer;
 
         .nav-link-nav {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
+          //display: flex;
+          //flex-direction: column;
+          //align-items: center;
+          //justify-content: center;
           text-align: center;
           font-size: 14px;
           color: #fff;
+          align-items: center;
+          display: grid;
           width: $nav-link-width;
-          height: $nav-link-height;
+          min-height: $nav-link-height;
           cursor: pointer;
           font-weight: 600;
           border-radius: $btn-border-radius;
           transition: 0.2s linear;
-          padding: $px10;
 
-          &.active, &:hover {
-            background-color: $blue-light;
+          &.activebg {
+            padding: 0 5px;
+          }
+
+          &.active,
+          &:hover {
+            background-color: $blue-light !important;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
           }
 
           img {
-            width: $px20;
-            height: auto;
+            width: $px80;
+            margin: 0 auto;
+            height: $px80;
             margin-bottom: $px5;
+            border-radius: $px3;
+            margin-top: $px7;
           }
 
           .nav-link-text {
-            font-size: $px12;
+            font-size: 12px;
             text-align: center;
+            word-break: break-word;
+            /*min-height: $px75;*/
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
         }
       }
@@ -127,6 +152,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
+      padding: $px8 0;
 
       img {
         border: 3px solid #fff;
@@ -134,7 +160,8 @@
         width: $nav-link-size;
         height: $nav-link-size;
         transition: 0.2s ease-out;
-        &:hover{
+
+        &:hover {
           transform: scale(1.1);
         }
       }
@@ -143,7 +170,93 @@
         color: #fff;
         font-size: $px14;
         margin-top: $px5;
+        text-align: center;
+        width: $px75;
+        padding-left: $px4;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
+    }
+  }
+}
+
+.dm-manager {
+  .navigation {
+    grid-template-rows: $header-height 1fr $px60 $dm-nav-footer-height;
+    width: $px75;
+    -webkit-transition: 0.3s ease-out;
+    transition: 0.3s ease-out;
+
+    &.collapse-menu {
+      width: $px200;
+    }
+
+    .logo {
+      width: $px75;
+    }
+
+    .navigation-list-wrapper {
+      .navigation-list {
+        grid-gap: 0;
+
+        .nav-item {
+          -ms-flex-align: center;
+          -webkit-box-pack: start;
+          -ms-flex-pack: start;
+          justify-content: flex-start;
+          max-width: 4.375rem;
+          display: list-item;
+          transition: 0.3s ease-out;
+
+          .nav-link-nav {
+            width: unset;
+            min-height: auto;
+            /* padding: 0.625rem 0.9375rem 0.625rem 0.9375rem; */
+            /* margin: 0 0.4375rem 0.625rem 0.625rem; */
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-transition: 0.3s ease-out;
+            transition: 0.3s ease-out;
+            padding: $px10 $px15 $px10 $px15;
+            margin: 0 $px7 $px10 $px10;
+
+            .nav-link-text {
+              display: -webkit-box;
+              display: -ms-flexbox;
+              display: flex;
+              -webkit-box-align: center;
+              -ms-flex-align: center;
+              align-items: center;
+
+              svg {
+                width: $px25;
+                height: $px25;
+                fill: $white;
+              }
+            }
+
+            .nav-link-name {
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              margin-left: 1.25rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.collapse-menu {
+  .navigation-list {
+    li {
+      max-width: $px196 !important;
     }
   }
 }

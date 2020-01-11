@@ -1,15 +1,17 @@
 <template>
-  <div class="search-field">
+  <div class="search-field color-dashboard-background">
     <label class="search-field-icon">
       <i class="fa fa-search" aria-hidden="true"></i>
     </label>
-    <input
-      type="text"
-      class="search-field-input"
-      :placeholder="_t('Search') + ' ' + _t('customer')"
-      v-model="searchTerms"
-      @keyup="searchCustomer()"
-    />
+    <form>
+      <input
+        type="text"
+        class="search-field-input"
+        :placeholder="_t('Search') + ' ' + _t('customer')"
+        v-model="searchTerms"
+        @keyup="searchCustomer()"
+      />
+    </form>
   </div>
 </template>
 

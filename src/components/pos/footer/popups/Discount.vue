@@ -3,60 +3,104 @@
   <div class="modal fade" id="select-discount" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header customer-header">
+      <div class="modal-content color-dashboard-background">
+        <div class="modal-header customer-header color-secondary">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="customer-title">
+          <h4 class="customer-title color-text-invert">
             {{ _t('Select') + ' ' + _t('Discount') }}
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
-          <div v-if="orderError" class="error">
-            <p class="text-danger text-center">{{ _t(orderError) }}</p>
-          </div>
           <div
-            class="dining-option-block select-discount-option"
-            v-if="!orderError && discounts.length"
+            class="error mx-auto"
+            v-if="
+              appliedItemDiscounts.length || !items.length || !discounts.length
+            "
           >
+            <p class="text-danger text-center">
+              <span v-if="!discounts.length">
+                {{ _t('Order discounts not available.') }}</span
+              >
+              <span v-else-if="!items.length">
+                {{ _t(CONST.DISCOUNT_ORDER_ERROR_ITEM) }}
+              </span>
+              <span v-else-if="appliedItemDiscounts.length">
+                {{ _t(CONST.DISCOUNT_ORDER_ERROR_ITEM_DISCOUNT) }}
+              </span>
+            </p>
+          </div>
+          <div v-else class="dining-option-block select-discount-option">
             <div
               class="option-contain"
               :class="{
                 active: activeOrderDiscountId === discount._id,
+                'color-dashboard-background': true,
               }"
               v-for="discount in discounts"
               :key="discount._id"
               @click.prevent="selectOrderDiscount(discount)"
             >
-              <p>
+              <p class="color-text-invert">
                 {{
                   discount.type == 'percentage'
                     ? discount.rate + '%'
                     : formatPrice(discount.value)
                 }}
               </p>
-              <span class="more">{{ dt(discount) }}</span>
+              <span class="more color-text">{{ dt(discount) }}</span>
             </div>
+          </div>
+          <div
+            class="error mx-auto"
+            v-if="
+              orderError &&
+                !(
+                  appliedItemDiscounts.length ||
+                  !items.length ||
+                  !discounts.length
+                )
+            "
+          >
+            <p>&nbsp;</p>
+            <p class="text-danger text-center">
+              <span v-html="_t(orderError)"></span>
+            </p>
           </div>
         </div>
         <div class="modal-footer">
           <div class="btn-announce">
             <button
-              v-show="!orderError"
-              class="btn btn-success btn-large"
+              v-if="
+                appliedItemDiscounts.length ||
+                  !items.length ||
+                  !discounts.length
+              "
+              class="btn btn-danger btn-large color-text-invert color-button"
+              type="button"
+              data-dismiss="modal"
+              @click="discountHendlerChange"
+            >
+              {{ _t('Close') }}
+            </button>
+
+            <button
+              v-else
+              class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="discount-save-btn"
               @click="applyOrderDiscount()"
             >
               {{ _t('Ok') }}
             </button>
-            <button
+            <!--<button
               v-show="orderError"
-              class="btn btn-danger btn-large"
+              class="btn btn-danger btn-large color-text-invert color-button"
               type="button"
               data-dismiss="modal"
+              @click="discountHendlerChange"
             >
               {{ _t('Close') }}
-            </button>
+            </button>-->
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
@@ -73,7 +117,8 @@ export default {
   name: 'Discount',
   props: {},
   computed: {
-    ...mapState('discount', ['orderError', 'errorCode']),
+    ...mapState('discount', ['orderError', 'appliedItemDiscounts']),
+    ...mapState('order', ['items']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', {
       // map `this.discounts` to `this.$store.discount.getters.orderDiscounts`
@@ -89,6 +134,10 @@ export default {
           hideModal('#select-discount')
         })
         .catch()
+      this.$store.dispatch('discountHendlerChange')
+    },
+    discountHendlerChange() {
+      this.$store.dispatch('discountHendlerChange')
     },
     selectOrderDiscount: function(discount) {
       this.$store.dispatch('discount/selectOrderDiscount', discount)
@@ -99,5 +148,5 @@ export default {
 <style lang="sass" scoped>
 .error
   width: 100%
-  padding: 40px 5px 10px 5px
+  /*padding: 40px 5px 10px 5px*/
 </style>

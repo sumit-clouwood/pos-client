@@ -9,14 +9,35 @@ const state = {
 
   item: false,
   itemModifiers: [],
+  foodIcons: [],
 }
 
 // getters, computed properties
 const getters = {
   //before item click there is no itemModifiers data available so get it direclty from groups
-  hasModifiers: state => item => {
+  hasModifiers: (state, getters) => item => {
     return state.groups.some(group => {
-      return group.for_items.includes(item._id)
+      if (group.for_items.includes(item._id)) {
+        //check its subgroups if active
+        const subgroups = getters.subgroups(group)
+        if (subgroups.length) {
+          //check if any of the subgroup has modifiers
+          let subgroupHasModifiers = false
+
+          subgroups.forEach(subgroup => {
+            const modifiers = state.modifiers.filter(
+              modifier =>
+                modifier.modifier_group === group._id &&
+                modifier.modifier_sub_group === subgroup._id
+            )
+            if (modifiers.length) {
+              subgroupHasModifiers = true
+            }
+          })
+          return subgroupHasModifiers
+        }
+      }
+      return false
     })
   },
 
@@ -74,21 +95,38 @@ const getters = {
     return modifier
   },
 
+  getModifierSubgroup: (state, getters) => modifierId => {
+    let modifier = {}
+    state.itemModifiers.forEach(item => {
+      const itemModifierSubgroups = getters.itemModifiers(item.itemId)
+      itemModifierSubgroups.forEach(subgroup => {
+        subgroup.modifiers.forEach(submod => {
+          if (submod._id == modifierId) {
+            modifier = subgroup
+          }
+        })
+      })
+    })
+    return modifier
+  },
+
   //get modifiers specific to item id from current modifiers list not from groups
   //this getter is used in rendering
   itemModifiers: state => itemId => {
-    let subgroups = []
     const item = state.itemModifiers.find(obj => obj.itemId == itemId)
-    for (let subgroupId in item.modifiers) {
-      let subgroup = item.modifiers[subgroupId].subgroup
-      subgroup.modifiers = []
-      let submodifiers = item.modifiers[subgroupId].modifiers
-      for (let submodId in submodifiers) {
-        subgroup.modifiers.push(submodifiers[submodId])
-      }
+    let subgroups = []
+    if (item) {
+      for (let subgroupId in item.modifiers) {
+        let subgroup = item.modifiers[subgroupId].subgroup
+        subgroup.modifiers = []
+        let submodifiers = item.modifiers[subgroupId].modifiers
+        for (let submodId in submodifiers) {
+          subgroup.modifiers.push(submodifiers[submodId])
+        }
 
-      if (subgroup.modifiers.length) {
-        subgroups.push(subgroup)
+        if (subgroup.modifiers.length) {
+          subgroups.push(subgroup)
+        }
       }
     }
     return subgroups
@@ -98,17 +136,27 @@ const getters = {
   itemMandatoryGroups: (state, getters) => itemId => {
     let mandatoryModifierGroups = []
     const subgroups = getters.itemModifiers(itemId)
-    subgroups.forEach(subgroup => {
-      if (subgroup.item_type === 'mandatory') {
-        mandatoryModifierGroups.push(subgroup._id)
-      }
-    })
+    if (subgroups) {
+      subgroups.forEach(subgroup => {
+        if (subgroup.item_type === 'mandatory') {
+          mandatoryModifierGroups.push(subgroup._id)
+        }
+      })
+    }
     return mandatoryModifierGroups
   },
 
   /* for prefetch only */
-  getImages: state => {
+  getImages: (state, getters) => {
     let images = []
+    state.itemModifiers.forEach(item => {
+      const itemModifierSubgroups = getters.itemModifiers(item.itemId)
+      itemModifierSubgroups.forEach(subgroup => {
+        subgroup.modifiers.forEach(submod => {
+          images.push(submod.item_modifier_image)
+        })
+      })
+    })
 
     return state ? images : []
   },
@@ -117,17 +165,19 @@ const getters = {
 // actions, often async
 const actions = {
   async fetchAll({ commit }) {
-    const [groups, subgroups, modifiers] = await Promise.all([
+    const [groups, subgroups, modifiers, foodIcons] = await Promise.all([
       ModifierService.groups(),
       ModifierService.subgroups(),
       ModifierService.modifiers(),
+      ModifierService.foodIcons(),
     ])
 
     commit(mutation.SET_MODIFIER_GROUPS, groups.data.data)
     commit(mutation.SET_MODIFIER_SUBGROUPS, subgroups.data.data)
     commit(mutation.SET_MODIFIERS, modifiers.data.data)
+    commit(mutation.SET_FOOD_ICON, foodIcons.data.data)
+    return Promise.resolve(1)
   },
-
   //active item and index already been set to order.item
   setActiveItem({ commit, dispatch, rootState }) {
     //pop needs all modifiers available for this item so we need to fetch modifier from modifeir store
@@ -137,23 +187,25 @@ const actions = {
     const modifierItem = state.itemModifiers.find(
       item => item.itemId == orderItem._id
     )
-
-    //make a copy of item
-    let item = { ...modifierItem.item }
-
-    //copy properties from active order/item
-    item.editMode = orderItem.editMode
-    item.quantity = orderItem.quantity
-    item.orderIndex = orderItem.orderIndex
-    item.modifiable = orderItem.modifiable
+    let item = {}
+    if (typeof modifierItem != 'undefined') {
+      //make a copy of item
+      item = { ...modifierItem.item }
+      //copy properties from active order/item
+      item.editMode = orderItem.editMode
+      item.quantity = orderItem.quantity
+      item.orderIndex = orderItem.orderIndex
+      item.modifiable = orderItem.modifiable
+      //formstate should contain only those fiels which are selected by this order item
+      dispatch('orderForm/populateSelection', orderItem.modifierGroups, {
+        root: true,
+      })
+    } else {
+      item = orderItem
+    }
 
     //set current item with modifiers in modifer store
     commit(mutation.SET_ITEM, item)
-
-    //formstate should contain only those fiels which are selected by this order item
-    dispatch('orderForm/populateSelection', orderItem.modifierGroups, {
-      root: true,
-    })
   },
 
   //find modifiers from all specific to current item and push to current list [item[0].modifiers]
@@ -161,7 +213,6 @@ const actions = {
   assignModifiersToItem({ commit, getters }, item) {
     item.editMode = false
     commit(mutation.SET_ITEM, item)
-
     //commit item modifier only if it was not already in the list
     if (!state.itemModifiers.find(obj => obj.itemId == item._id)) {
       //use updated modifiers
@@ -172,6 +223,8 @@ const actions = {
         item: item,
       })
     }
+
+    return Promise.resolve()
   },
 }
 
@@ -188,8 +241,20 @@ const mutations = {
     state.modifiers = modifiers
   },
 
+  [mutation.SET_FOOD_ICON](state, foodIcons) {
+    state.foodIcons = foodIcons
+  },
+
   [mutation.SET_ITEM](state, item) {
     state.item = item
+  },
+  [mutation.RESET](state) {
+    state.groups = []
+    state.subgroups = []
+    state.modifiers = []
+    state.item = false
+    state.itemModifiers = []
+    state.foodIcons = []
   },
 
   [mutation.SET_ITEM_MODIFIERS](state, { itemId, modifiers, item }) {

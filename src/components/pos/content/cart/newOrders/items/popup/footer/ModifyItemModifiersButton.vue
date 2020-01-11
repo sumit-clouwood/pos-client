@@ -2,30 +2,45 @@
   <button
     type="button"
     class="buttoned colorwhite donebutton"
-    data-dismiss="modal"
-    @click="item && item.modifiable ? addModifierOrder() : false"
+    @click="item && item.modifiable ? addModifierOrder() : updateItemQuantity()"
     :class="
       item.modifiable ? 'catalog-with-modifier' : 'catalog-without-modifiers'
     "
   >
     <img src="img/pos/done.png" alt="done" />
-    <span>Done</span>
+    <span>{{ _t('Apply') }}</span>
   </button>
 </template>
 <script>
 //this footer ll be called only when we come through order
-import { mapActions, mapState } from 'vuex'
+/* global hideModal */
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'ModifyItemModifiersButton',
   props: {},
   methods: {
-    ...mapActions('order', ['addModifierOrder']),
+    addModifierOrder() {
+      this.$store.dispatch('order/addModifierOrder').then(() => {
+        hideModal('#POSOrderItemOptions')
+      })
+    },
+    updateItemQuantity() {
+      this.$store
+        .dispatch(
+          'order/updateQuantity',
+          this.$store.getters['orderForm/quantity']
+        )
+        .then(() => {
+          hideModal('#POSOrderItemOptions')
+        })
+    },
   },
   computed: {
     ...mapState({
       item: state => state.order.item,
     }),
+    ...mapGetters('location', ['_t']),
   },
 }
 </script>

@@ -1,28 +1,57 @@
 <template>
   <div
-    class="location-delivery-area-address"
+    class="location-delivery-area-address color-dashboard-background"
     :class="classAccess"
-    v-if="addresses.length"
+    v-if="getCustomerAddresses.length"
   >
     <div
-      v-for="(address, index) in addresses"
+      v-for="(address, index) in getCustomerAddresses"
       :key="index"
-      class="order-location option-contain cu-delivery-area-location"
+      class="order-location option-contain cu-delivery-area-location color-dashboard-background"
       :class="{ active: activeIndex === index }"
       @click="setActiveCustomer(address, index)"
     >
-      <p>
-        <span>{{ _t('Store:') }} {{ storeName }}</span
-        ><br />
-        <span
-          >{{ _t('Area:') }}
-          {{ getDeliveryArea(address.delivery_area_id) }}</span
-        ><br />
-        {{ address.flat_number }}, {{ address.building }}, {{ address.street }},
-        {{ address.city }}
-      </p>
-      <Buttons v-if="buttons" :id="address._id.$oid" />
+      <div>
+        <p class="color-text-invert">
+          <!--<span
+            v-if="!getDeliveryArea(address.delivery_area_id)"
+            class="text-danger pull-right"
+          >
+            Inactive
+          </span>-->
+          <span class="color-text">{{ _t('Store:') }} {{ storeName }}</span
+          ><br />
+          <span class="color-text-invert">
+            {{ _t('Area:') }}
+            {{ getDeliveryArea(address.delivery_area_id) }}
+          </span>
+          <br />
+          {{ address.flat_number }}, {{ address.building }},
+          {{ address.street }},
+          {{ address.city }}
+          <span class="color-text-invert" v-if="address.min_order_value">
+            <br />
+            {{ _t('Min order') }}
+            {{ formatPrice(address.min_order_value) }}
+          </span>
+          <span
+            class="color-text-invert"
+            v-if="address.special_order_surcharge"
+          >
+            <br />
+            {{ _t('Surcharge') }}
+            {{ formatPrice(address.special_order_surcharge) }}
+          </span>
+        </p>
+        <div class="text-danger" v-if="error">{{ error }}</div>
+        <Buttons v-if="buttons" :id="address._id.$oid" />
+      </div>
     </div>
+  </div>
+  <div v-else>
+    <p>
+      No address available.
+    </p>
   </div>
 </template>
 
@@ -40,7 +69,7 @@ export default {
     Buttons,
   },
   data: function() {
-    return { activeIndex: null }
+    return { activeIndex: null, error: null }
   },
   computed: {
     ...mapState('location', ['location']),
@@ -53,6 +82,7 @@ export default {
     ...mapState({
       storeName: state => state.location.store.name,
     }),
+    ...mapState('checkoutForm', ['msg']),
     /*...mapState({
       country: state =>
         state.location.locationData
@@ -60,19 +90,20 @@ export default {
           : '',
     }),*/
     ...mapGetters('customer', ['getDeliveryArea']),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'formatPrice']),
+    ...mapGetters('customer', ['getCustomerAddresses']),
   },
   methods: {
     setActiveCustomer(address, index) {
-      const selectedCustomerAddressId = address.delivery_area_id
-      const selectedCustomerAddressArea = this.getDeliveryArea(
-        selectedCustomerAddressId
-      )
+      address.delivery_area = this.getDeliveryArea(address.delivery_area_id)
       this.activeIndex = index
-      this.selectedAddress({
-        id: selectedCustomerAddressId,
-        delivery_area: selectedCustomerAddressArea,
-      })
+      this.selectedAddress(address)
+        .then(() => {
+          if (this.msg && this.msg.message.length > 0) {
+            this.msg.message = ''
+          }
+        })
+        .catch(error => (this.error = error))
     },
     ...mapActions('customer', ['selectedAddress']),
   },
@@ -92,17 +123,16 @@ export default {
   right: 5px;
 }
 .addOrders {
-  overflow-y: auto;
+  overflow-y: auto !important;
+  max-height: 21rem;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   touch-action: auto;
-  overflow: hidden;
   display: inline-grid;
   grid-template-columns: 1fr 1fr;
   margin: 0 auto;
   text-align: center;
   width: 100%;
-  margin: 0 auto;
   position: relative;
   grid-gap: 1.25rem;
 }

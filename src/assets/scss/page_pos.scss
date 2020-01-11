@@ -4,7 +4,6 @@ body {
   margin: 0;
   padding: 0;
 }
-
 .new-pos {
   height: 100vh;
   padding: 0;
@@ -13,7 +12,26 @@ body {
   grid-template-columns: $navigation-width 1fr;
   grid-template-rows: $header-height 1fr $footer-height;
 }
-
+.dm-manager {
+  .new-pos{
+    grid-template-columns: $dm-navigation-width 1fr;
+    grid-template-rows: $dm-header-height 1fr $dm-footer-height;
+  }
+}
 .modal-backdrop{
   display: none;
+}
+//Responsive screen
+@media only screen and (max-width: 979px) {
+  .dm-manager {
+    .new-pos{
+      height: unset;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      padding-top: $px40;
+      grid-auto-flow: row;
+    }
+  }
+
 }

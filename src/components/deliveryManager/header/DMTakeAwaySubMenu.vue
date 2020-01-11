@@ -3,19 +3,38 @@
     <div class="dm-delivery-details-btn">
       <ul class="dm-ullist">
         <li
-          class="active"
+          :class="{ active: listType == _t('NEW TAKEAWAY ORDERS') }"
           data-related="new-Collections"
-          @click="updateOrderStatus({ orderStatus: 'new', collected: 'no' })"
+          @click="
+            updateOrderStatus({
+              orderStatus: 'in-progress',
+              collected: 'no',
+              pageId: 'takeaway_new',
+              title: _t('NEW TAKEAWAY ORDERS'),
+              dataRelated: 'new-Collections',
+              section: 'takeaway',
+            })
+          "
         >
-          <a href="#">New Order</a
+          <a role="button">New Order</a
           ><span v-if="orderCount">{{ orderCount.take_away.new_order }}</span>
         </li>
         <li
           class="pick"
           data-related="Waiting-for-Collections"
-          @click="updateOrderStatus({ orderStatus: 'paid', collected: 'no' })"
+          :class="{ active: listType == _t('WAITING FOR COLLECTION') }"
+          @click="
+            updateOrderStatus({
+              orderStatus: 'ready',
+              collected: 'no',
+              pageId: 'takeaway_waiting',
+              title: _t('WAITING FOR COLLECTION'),
+              dataRelated: 'Waiting-for-Collections',
+              section: 'takeaway',
+            })
+          "
         >
-          <a href="#">Waiting for Collections</a
+          <a role="button">Waiting for Collections</a
           ><span v-if="orderCount">{{
             orderCount.take_away.Waiting_for_collection
           }}</span>
@@ -23,33 +42,71 @@
         <li
           class="pick"
           data-related="collected"
-          @click="updateOrderStatus({ orderStatus: 'paid', collected: 'yes' })"
+          :class="{ active: listType == _t('COLLECTED') }"
+          @click="
+            updateOrderStatus({
+              orderStatus: 'finished',
+              collected: 'yes',
+              pageId: 'takeaway_collected',
+              title: _t('COLLECTED'),
+              dataRelated: 'collected',
+              section: 'takeaway',
+            })
+          "
         >
-          <a href="#">Collected</a
+          <a role="button">Collected</a
           ><span v-if="orderCount">{{ orderCount.take_away.collected }}</span>
         </li>
       </ul>
-    </div>
-    <div class="dm-delivery-assistants">
-      <p style="height: 34px;"></p>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+/*global $, deliveryTabs*/
+import { mapState, mapGetters } from 'vuex'
+import DateTime from '@/mixins/DateTime'
 
 export default {
   name: 'DMTakeAwaySubMenu',
   methods: {
     updateOrderStatus: function(orderStatus) {
+      this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
+      this.$store.commit('deliveryManager/SECTION', orderStatus.section)
       this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
+      deliveryTabs(orderStatus.dataRelated)
+      var gt = this
+      $('.dm-ready-order-wrapper').each(function() {
+        let scope = this
+        if ($(scope).css('display') !== 'none') {
+          $(scope)
+            .find('table tbody tr')
+            .each(function() {
+              scope = this
+              let orderTime = $(scope)
+                .find('#storerunningtime')
+                .val()
+              let orderTimer = gt.getTimer(orderTime)
+              $(scope)
+                .find('.runningtimes')
+                .text(orderTimer)
+              // eslint-disable-next-line no-console
+              console.log(orderTimer)
+            })
+        }
+      })
+    },
+    getTimer(dateTime) {
+      return this.orderTimer(dateTime, this.timezoneString)
     },
   },
+  mixins: [DateTime],
   computed: {
     ...mapState({
       orderCount: state => state.deliveryManager.orderCounts,
     }),
+    ...mapState('deliveryManager', ['listType']),
+    ...mapGetters('location', ['_t']),
   },
 }
 </script>

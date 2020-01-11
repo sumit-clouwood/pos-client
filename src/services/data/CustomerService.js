@@ -22,7 +22,16 @@ export default {
   },
   //get the customer along with all previous orders and other required info
   fetchCustomer(customerId) {
-    return DataService.get(`/model/brand_customers/id/${customerId}`, 'brand')
+    if (customerId !== null) {
+      return DataService.get(`/model/brand_customers/id/${customerId}`, 'brand')
+    }
+  },
+
+  customerBuildings() {
+    return DataService.get(
+      `/model/brand_customers/get_customer_buildings`,
+      'brand'
+    )
   },
 
   customerGroupList() {
@@ -33,21 +42,14 @@ export default {
   },
   fetchDeliveryAreas(query) {
     return DataService.get(
-      `/model/brand_store_delivery_areas?query=${query}`,
-      'brand'
+      `/model/store_level_delivery_areas?page_id=store_level_delivery_areas_main_tbl&query=${query}&item_status=true&byColumn=1&limit=9999`
     )
   },
 
-  customerList(...[stores, query, page, orderBy, perPage]) {
+  customerList(...[stores, query, page, orderBy, perPage, pageId]) {
     return DataService.get(
-      `/model/brand_customers?page_id=brand_customers_main_tbl&query=&limit=${perPage}&ascending=0&page=${page}&query=${query}&byColumn=0&store_id=&stores=${stores}&ascending=0&byColumn=0&orderBy=${orderBy}`,
+      `/model/brand_customers?page_id=${pageId}&query=${query}&limit=${perPage}&ascending=0&page=${page}&byColumn=0&ascending=0&byColumn=0&orderBy=${orderBy}&stores=${stores}`,
       'brand'
     )
   },
-
-  /*fetchGiftCards(...[customerId, locationId]) {
-    return DataService.get(
-      `/api/auth/crm/get/CustomerDetails/?customer_id=${customerId}&location_id=${locationId}`
-    )
-  },*/
 }

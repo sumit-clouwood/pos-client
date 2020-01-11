@@ -1,63 +1,116 @@
 <template>
-  <div id="payment-method">
-    <div
-      v-for="(method, key) in methods"
-      :key="key"
-      :class="{ active: activeMethod == method.name }"
-      @click="setMethod(method)"
-      :data-toggle="getToggle(method)"
-      :data-target="getTarget(method)"
-    >
-      <img :src="image(method.icon)" :alt="method.name" :title="method.name" />
-      <br />
-      <label class="shorten-sentence" :title="method.name">
-        {{ method.name }}
-      </label>
+  <div>
+    <div id="payment-method" :class="{ activePayMethod: !payNowCalcHendler }">
+      <carousel
+        ref="paymentmethods"
+        :slides="pmethods"
+        :perPage="4"
+        :width="456"
+        @click="selectMethod"
+      ></carousel>
     </div>
   </div>
 </template>
 
 <script>
+/* global showModal */
 import { mapActions, mapGetters, mapState } from 'vuex'
 import * as CONSTANTS from '@/constants'
+import Carousel from '@/components/util/Carousel.vue'
 
 export default {
   name: 'PaymentMethods',
+  components: {
+    Carousel,
+  },
+
+  data() {
+    return {
+      jqInit: false,
+      getToggle: '',
+      getTarget: '',
+    }
+  },
+  watch: {
+    forceCash(newVal) {
+      if (newVal) {
+        this.$refs.paymentmethods.setActive(
+          this.pmethods.findIndex(pm => pm.name === 'Cash')
+        )
+        this.$store.commit('checkoutForm/forceCash', false)
+      }
+    },
+    payable(newval) {
+      if (!newval) {
+        //this method ll call the forcash inside
+        this.$store.dispatch('checkoutForm/setCashMethod')
+      }
+    },
+  },
   computed: {
-    ...mapGetters('payment', ['methods']),
     ...mapState({
       activeMethod: state => state.checkoutForm.method.name,
-    }),
-    ...mapState({
+      forceCash: state => state.checkoutForm.forceCash,
       selectedModal: state => state.location.setModal,
     }),
+    ...mapGetters(['payNowCalcHendler']),
+    ...mapGetters({
+      pmethods: 'payment/methods',
+      payable: 'checkoutForm/payable',
+    }),
   },
+
   methods: {
-    getToggle(method) {
-      if (method.name == CONSTANTS.LOYALTY) {
-        return 'modal'
-      }
-      return ''
-    },
-    image() {
-      return 'https://fakeimg.pl/46x46/?text=Third&font=lobster%22'
-    },
-    getTarget(method) {
-      if (method.name == CONSTANTS.LOYALTY) {
-        if (this.selectedModal == '#manage-customer') {
-          return '#search-loyalty-customer'
-        } else {
-          this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
-          return '#loyalty-payment'
+    // eslint-disable-next-line no-unused-vars
+    selectMethod({ index, slide }) {
+      //const event = window.event
+      //event.preventDefault()
+      this.setMethod(slide)
+      this.methodCardHendlerChange(slide.priority)
+
+      if (this.$store.getters['checkoutForm/payable'] > 0) {
+        if (slide.type == CONSTANTS.LOYALTY) {
+          if (this.selectedModal == '#manage-customer') {
+            showModal('#search-loyalty-customer')
+          } else {
+            this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
+            showModal('#loyalty-payment')
+          }
         }
       }
       return ''
     },
+
+    image(imgPath) {
+      return imgPath
+    },
     ...mapActions('checkoutForm', ['setMethod']),
+    methodCardHendlerChange(e) {
+      this.$store.dispatch('chooseCurentPayMethod', e)
+    },
   },
 }
 </script>
-<style lang="sass" scoped>
-img
-  height: '46px'
+<style lang="scss">
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
+
+#payment-method {
+  width: 456px;
+
+  img {
+    height: 46px;
+  }
+}
+@include responsive(mobile) {
+  .mobile-payment-methods
+    .pay-body
+    #payment-method
+    .carousel-container
+    .carousel {
+    overflow-y: scroll;
+    height: 40vh;
+  }
+}
 </style>
