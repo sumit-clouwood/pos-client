@@ -10,7 +10,7 @@
     <div class="modal-dialog modal-lg">
       <div class="dialog-body modal-content color-dashboard-background">
         <div class="modal-header mobile">
-          <h3 class="modal-title">Order Detail</h3>
+          <h3 class="modal-title">{{ _t('Order Detail') }}</h3>
           <button
             type="button"
             class="close"

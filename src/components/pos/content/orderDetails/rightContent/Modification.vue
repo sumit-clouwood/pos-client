@@ -34,7 +34,14 @@
           </span>
         </div>
         <div class="modification-history">
-          <span class="font-weight-bold">{{ _t('Old Order Number') }} : </span>
+          <span
+            v-if="orderDetails.order_type !== 'dine_in'"
+            class="font-weight-bold"
+            >{{ _t('Old Order Number') }} :
+          </span>
+          <span class="font-weight-bold" v-else>
+            {{ _t('Items removed') }}</span
+          >
           <span> {{ modification.param2 }} </span>
         </div>
       </div>
