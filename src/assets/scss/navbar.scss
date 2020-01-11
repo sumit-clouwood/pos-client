@@ -11,9 +11,9 @@
   grid-template-columns: 1fr;
   overflow: hidden;
 
-  img{
+  /*img{
     max-width: 100%;
-  }
+  }*/
 
   .logo {
     display: grid;
@@ -257,6 +257,14 @@
   .navigation-list {
     li {
       max-width: $px196 !important;
+    }
+  }
+}
+
+@media only screen and (min-width: 961px) {
+  .navigation{
+    img{
+      max-width: 100%;
     }
   }
 }

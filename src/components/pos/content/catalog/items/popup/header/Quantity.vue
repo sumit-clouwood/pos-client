@@ -4,39 +4,43 @@
       _t('Quantity')
     }}</label>
     <div class="POSItemOptions_quantity_wrapper">
-      <div class="POSItemOptions_quantity_inputs">
-        <button
-          class="qtyminus value-qty color-text-invert"
-          @click="updateFormQuantity('-')"
-        >
-          -
-        </button>
-        <input
-          v-model.number="quantity"
-          min="1"
-          class="qty color-text-invert"
-        />
-        <button
-          class="qtyplus value-qty color-text-invert"
-          @click="updateFormQuantity('+')"
-        >
-          +
-        </button>
-      </div>
-      <div class="POSItemOptions_quantity_submit">
-        <button @click="updateItemQty()" class="color-main color-text-invert">
-          <img src="img/pos/right.png" alt="check" /> Set Quantity
-        </button>
-      </div>
+      <template v-if="show()">
+        <div class="POSItemOptions_quantity_inputs">
+          <button
+            class="qtyminus value-qty color-text-invert"
+            @click="updateFormQuantity('-')"
+          >
+            -
+          </button>
+          <input
+            v-model.number="quantity"
+            min="1"
+            class="qty color-text-invert"
+          />
+          <button
+            class="qtyplus value-qty color-text-invert"
+            @click="updateFormQuantity('+')"
+          >
+            +
+          </button>
+        </div>
+        <div class="POSItemOptions_quantity_submit">
+          <button @click="updateItemQty()" class="color-main color-text-invert">
+            <img src="img/pos/right.png" alt="check" /> Set Quantity
+          </button>
+        </div>
+      </template>
+      <template v-else>{{ quantity }}</template>
     </div>
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Header',
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('order', ['item', 'orderSource']),
     quantity: {
       get() {
         return this.$store.getters['orderForm/quantity']
@@ -47,6 +51,17 @@ export default {
     },
   },
   methods: {
+    show() {
+      let allowed = true
+      if (
+        typeof this.item.no !== 'undefined' &&
+        this.orderSource !== 'backend'
+        //not backend and still editing order? that means its carhop or waiter order
+      ) {
+        allowed = false
+      }
+      return allowed
+    },
     updateFormQuantity(action) {
       if (action == '+') {
         this.$store.commit(
