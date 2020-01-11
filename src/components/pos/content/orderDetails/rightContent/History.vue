@@ -39,9 +39,7 @@
               <span class="color-text">{{ getUserName(history.user) }}</span>
             </td>
             <td class="color-tables-background field-type-select field-name">
-              <span class="color-text"
-                >{{ CONST[history.name] }} {{ history.param2 || '' }}</span
-              >
+              <span class="color-text">{{ CONST[history.name] }}</span>
             </td>
           </tr>
           <!---->
