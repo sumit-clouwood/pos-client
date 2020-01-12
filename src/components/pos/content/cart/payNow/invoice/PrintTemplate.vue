@@ -106,7 +106,7 @@
           </tr>
           <template v-for="(item, key) in order.items">
             <tr :key="'item' + key">
-              <td class="first-col">{{ item.qty }}</td>
+              <td class="first-col" valign="top">{{ item.qty }}</td>
               <td>
                 <div class="food-title">
                   {{ translate_item(item) }}
@@ -138,7 +138,7 @@
                   </template>
                 </template>
               </td>
-              <td class="right-aligned">
+              <td class="right-aligned" valign="top">
                 {{ format_number(item_total(item.no)) }}
               </td>
             </tr>
@@ -155,10 +155,18 @@
                     <span>{{ translate_item_discount(discount) }}</span>
                   </div>
                 </td>
-                <td class="right-aligned table-page-child">
+                <td class="right-aligned table-page-child" valign="top">
                   -{{ format_number(discount.price) }}
                 </td>
               </template>
+            </tr>
+            <tr :key="'note' + key" v-if="item.note">
+              <td class="first-col table-page-child"></td>
+              <td class="table-page-child">
+                <span class="food-title">{{ _t('Note') }}: </span>
+                <i>{{ item.note }}</i>
+              </td>
+              <td class="right-aligned table-page-child"></td>
             </tr>
           </template>
         </tbody>

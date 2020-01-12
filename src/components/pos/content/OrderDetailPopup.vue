@@ -166,6 +166,7 @@ import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
 import CancelOrderPopup from '@/components/pos/content/orderDetails/CancelOrderPopup'
 import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
 import CustomerInformation from '@/components/pos/footer/popups/ManageCustomer/CustomerInformation'
+import * as CONST from '@/constants'
 
 export default {
   name: 'OrderDetailPopup',
@@ -198,9 +199,9 @@ export default {
     modifyOrder(order) {
       let orderId = order._id
       this.$store.dispatch('order/startOrder')
-      this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
-        let order_type = order.order_type || ''
-        if (order_type === 'dine_in') {
+
+      switch (order.order_type) {
+        case CONST.ORDER_TYPE_DINE_IN: {
           let tableData = this.tables.find(
             table => table._id === order.assigned_table_id
           )
@@ -219,17 +220,20 @@ export default {
               '/' +
               orderId,
           })
-        } else {
-          this.$store.commit('order/IS_PAY', 1)
-          this.$store.dispatch('order/modifyOrderTransaction').then(order => {
-            this.$store.dispatch('order/loadCarhopOrder', order._id)
-            this.$router.push({
-              path:
-                this.$store.getters['context/store'] + '/update/' + order._id,
-            })
-          })
+          break
         }
-      })
+        default: {
+          const path =
+            this.$store.getters['context/store'] + '/update/' + order._id
+          if (order.order_type === CONST.ORDER_TYPE_CALL_CENTER) {
+            this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
+              this.$router.push({ path: path })
+            })
+          } else {
+            this.$router.push({ path: path })
+          }
+        }
+      }
     },
   },
 }

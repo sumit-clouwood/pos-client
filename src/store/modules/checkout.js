@@ -446,6 +446,7 @@ const actions = {
           tax: item.tax,
           price: item.netPrice,
           qty: item.quantity,
+          note: item.note,
           originalItem: item,
         }
         if (typeof item.kitchen_invoice !== 'undefined') {
@@ -676,7 +677,7 @@ const actions = {
               if (
                 rootGetters['location/isTokenManager'] &&
                 rootState.order.orderType.OTApi ===
-                  CONSTANTS.ORDER_TYPE_WALK_IN &&
+                  CONSTANTS.ORDER_TYPE_WALKIN &&
                 rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER)
               ) {
                 let tokenNumber = rootState.location.tokeNumber

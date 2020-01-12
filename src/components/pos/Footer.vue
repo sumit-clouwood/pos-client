@@ -362,6 +362,7 @@
     <DineIn />
     <openItem />
     <AddNote />
+    <item-note></item-note>
     <Discount />
     <OnlineOrder />
     <OnlineOrderDetails />
@@ -397,6 +398,7 @@
 import Invoice from '../pos/content/cart/payNow/Invoice'
 import DineIn from './footer/popups/DineIn'
 import AddNote from './footer/popups/AddNote'
+import itemNote from './footer/popups/itemNote'
 import Discount from './footer/popups/Discount'
 import OnlineOrder from './header/popups/OnlineOrder'
 import SendToDelivery from './footer/popups/SendToDelivery'
@@ -440,6 +442,7 @@ export default {
   components: {
     DineIn,
     AddNote,
+    itemNote,
     Discount,
     OnlineOrderDetails,
     OnlineOrder,
