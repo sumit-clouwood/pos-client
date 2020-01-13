@@ -222,6 +222,11 @@ const getters = {
   },
 
   itemModifierDiscount: () => item => {
+    if (item.discountType == CONST.FIXED) {
+      //no fixed discount for modifiers
+      return 0
+    }
+
     if (item.discountedNetPrice) {
       return 0
     }
@@ -235,6 +240,11 @@ const getters = {
   },
 
   itemModifierTaxDiscount: () => item => {
+    if (item.discountType == CONST.FIXED) {
+      //no fixed discount for modifiers
+      return 0
+    }
+
     if (item.discountRate && item.modifiersData && item.modifiersData.length) {
       if (item.discountedNetPrice) {
         return 0
@@ -1021,6 +1031,7 @@ const actions = {
               item.discountRate = discountPercentage
               item.discountedTax = false
               item.discountedNetPrice = false
+              item.discountType = CONST.FIXED
             }
           } else if (discount.discount.type === CONST.VALUE) {
             if (
@@ -1034,6 +1045,7 @@ const actions = {
               item.discountedTax = false
               item.discountedNetPrice = false
             } else {
+              item.discountType = CONST.VALUE
               const itemNetPriceWithModifiers = getters.itemNetPrice(item)
 
               const itemsNetPriceWithModifiers =
@@ -1052,8 +1064,10 @@ const actions = {
               //percentage based discount, use discount.rate here, not discount.value
               //apply discount with modifier price
               item.discountRate = discount.discount.rate
+
               item.discountedTax = false
               item.discountedNetPrice = false
+              item.discountType = CONST.PERCENTAGE
             } else {
               //discount error
               item.discount = false

@@ -131,7 +131,11 @@
                   </div>
                 </td>
                 <td class="right-aligned table-page-child" valign="top">
-                  -{{ format_number(discount.price) }}
+                  -{{
+                    format_number(
+                      parseFloat(discount.price) + parseFloat(discount.tax)
+                    )
+                  }}
                 </td>
               </template>
             </tr>
@@ -480,6 +484,7 @@ export default {
       for (var item_discount of this.order.item_discounts) {
         if (item_discount.for_item == item_no) {
           total -= parseFloat(item_discount.price)
+          total -= parseFloat(item_discount.tax)
         }
       }
       return total
