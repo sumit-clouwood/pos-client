@@ -36,6 +36,7 @@
         </div>
       </div>
     </div>
+    <ModificationPermissions v-if="isModified" />
   </div>
 </template>
 <script>
@@ -43,11 +44,14 @@
 import { mapGetters, mapState } from 'vuex'
 import pay from './common/pay'
 import save from './common/save'
+import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
+
 export default {
   name: 'DineinBtn',
   components: {
     pay,
     save,
+    ModificationPermissions,
   },
   data() {
     return {
@@ -78,7 +82,6 @@ export default {
   },
   methods: {
     payNow() {
-      let validationError = {}
       this.items.find(element => {
         if (typeof element.cover_name == 'undefined') {
           this.checkCover = false
@@ -97,12 +100,7 @@ export default {
 
         this.isModified() ? clickPayNow() : clickPayNow()
       } else {
-        validationError = {
-          status: 'flash_message',
-          flash_message: this._t('Please select a cover for new item.'),
-        }
-        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
-        $('#information-popup').modal('show')
+        this.showErrorMessage('Please select a cover for new item.')
       }
     },
 
