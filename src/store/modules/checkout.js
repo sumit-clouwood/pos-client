@@ -679,10 +679,10 @@ const actions = {
                   CONSTANTS.ORDER_TYPE_WALK_IN &&
                 rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER)
               ) {
-                let tokenNumber = rootState.location.tokeNumber
-                  ? rootState.location.tokeNumber
-                  : localStorage.getItem('token_number')
-                order.token_number = ++tokenNumber
+                let tokenNumber = localStorage.getItem('token_number')
+                  ? localStorage.getItem('token_number')
+                  : rootState.location.tokenNumber
+                order.token_number = tokenNumber
               }
 
               dispatch('addItemsToOrder', {
@@ -1167,10 +1167,13 @@ const actions = {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
             if (state.order.token_number) {
-              commit('location/SET_TOKEN_NUMBER', state.order.token_number, {
+              /* eslint-disable */
+              let tokenNumber = state.order.token_number
+              console.log(tokenNumber);
+              commit('location/SET_TOKEN_NUMBER', tokenNumber, {
                 root: true,
               })
-              localStorage.setItem('token_number', state.order.token_number)
+              localStorage.setItem('token_number', ++tokenNumber)
             }
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('setMessage', {
