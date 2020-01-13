@@ -77,14 +77,15 @@ export default {
     modificationDetails() {
       var modification_records = []
       if (typeof this.orderDetails != 'undefined') {
-        /* eslint-disable */
         for (var history of this.orderDetails.order_history) {
           var modificationHistory = this.orderDetails.order_history.find(
             item =>
               item.name == CONST.ORDER_HISTORY_TYPE_RECORD_NEW_FROM_MODIFIED
           )
           let modifiedFrom = {}
-          if (history.name ===  CONST.ORDER_HISTORY_TYPE_RECORD_NEW_FROM_MODIFIED) {
+          if (
+            history.name === CONST.ORDER_HISTORY_TYPE_RECORD_NEW_FROM_MODIFIED
+          ) {
             modifiedFrom = {
               prefix: this._t(
                 'Order has been created as a modification of another order'
@@ -94,8 +95,8 @@ export default {
                 modificationHistory.created_at,
                 this.timezoneString
               ),
-              reasonPrefix: this._t('Modification Reason'), 
-              reason: '', //TODO not getting modification reasons in response 
+              reasonPrefix: this._t('Modification Reason'),
+              reason: '', //TODO not getting modification reasons in response
               orderPrefix: this._t('Old Order Number'),
               order: this._t(modificationHistory.param1),
               orderNumber: this._t(modificationHistory.param2),
@@ -133,14 +134,14 @@ export default {
     removedItems(oldItems, newItems) {
       let removedItemsArray = oldItems.filter(this.missingItems(newItems))
       return removedItemsArray.map(item => this._t(item.name)).join(', ')
-      
     },
     missingItems(newItems) {
-      return (previousItem) => {
+      return previousItem => {
         return (
-          newItems.filter((newItem) => {
+          newItems.filter(newItem => {
             return (
-              newItem.entity_id == previousItem.entity_id && newItem.no == previousItem.no
+              newItem.entity_id == previousItem.entity_id &&
+              newItem.no == previousItem.no
             )
           }).length == 0
         )
