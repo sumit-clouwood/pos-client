@@ -75,18 +75,18 @@ export default {
     ...mapGetters('location', ['_t']),
     ...mapState('location', ['timezoneString']),
     modificationDetails() {
-      var modification_records = []
+      var modificationRecords = []
       if (typeof this.orderDetails != 'undefined') {
         for (var history of this.orderDetails.order_history) {
           var modificationHistory = this.orderDetails.order_history.find(
             item =>
               item.name == CONST.ORDER_HISTORY_TYPE_RECORD_NEW_FROM_MODIFIED
           )
-          let modifiedFrom = {}
+          let modificationRecord = {}
           if (
             history.name === CONST.ORDER_HISTORY_TYPE_RECORD_NEW_FROM_MODIFIED
           ) {
-            modifiedFrom = {
+            modificationRecord = {
               prefix: this._t(
                 'Order has been created as a modification of another order'
               ),
@@ -101,11 +101,11 @@ export default {
               order: this._t(modificationHistory.param1),
               orderNumber: this._t(modificationHistory.param2),
             }
-            modification_records.push(modifiedFrom)
+            modificationRecords.push(modificationRecord)
           }
 
           if (history.name == CONST.ORDER_HISTORY_TYPE_RECORD_UPDATED) {
-            modifiedFrom = {
+            modificationRecord = {
               prefix: this._t('Order has been updated'),
               by: this.getUserName(history.user),
               at: this.convertDatetime(history.created_at, this.timezoneString),
@@ -115,10 +115,10 @@ export default {
               orderUpdated: true,
               itemsRemoved: this.removedItems(history.param2, history.param3),
             }
-            modification_records.push(modifiedFrom)
+            modificationRecords.push(modificationRecord)
           }
         }
-        return modification_records
+        return modificationRecords
       }
       return ''
     },
@@ -132,20 +132,15 @@ export default {
       })
     },
     removedItems(oldItems, newItems) {
-      let removedItemsArray = oldItems.filter(this.missingItems(newItems))
-      return removedItemsArray.map(item => this._t(item.name)).join(', ')
-    },
-    missingItems(newItems) {
-      return previousItem => {
-        return (
-          newItems.filter(newItem => {
-            return (
-              newItem.entity_id == previousItem.entity_id &&
-              newItem.no == previousItem.no
-            )
-          }).length == 0
-        )
-      }
+      let removedItemsArray = oldItems.filter(
+        oldItem =>
+          !newItems.some(
+            newItem => JSON.stringify(newItem) === JSON.stringify(oldItem)
+          )
+      )
+      if (removedItemsArray.length)
+        return removedItemsArray.map(item => this._t(item.name)).join(', ')
+      else return this._t('Nothing was updated')
     },
   },
 }
