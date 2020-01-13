@@ -89,6 +89,7 @@ export default {
       'itemGrossPrice',
       'orderModifiers',
       'orderType',
+      'itemModifiersPrice',
     ]),
     ...mapGetters('location', ['formatPrice', '_t']),
   },

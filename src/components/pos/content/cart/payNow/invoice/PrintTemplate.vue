@@ -487,7 +487,7 @@ export default {
           total -= parseFloat(item_discount.tax)
         }
       }
-      return total
+      return total < 0 ? '0.00' : total
     },
     //These methods would need to be updated at POS to search for objects in POS store
     //These functions

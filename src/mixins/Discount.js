@@ -15,7 +15,11 @@ export default {
           discountStr = item.discount.rate + ' %'
         } else if (item.discount.type === CONST.FIXED) {
           discountInfo =
-            this.formatPrice(item.discount.value) + ' x ' + item.quantity
+            this.formatPrice(
+              item.discount.value + this.itemModifiersPrice(item)
+            ) +
+            ' x ' +
+            item.quantity
 
           discountStr = this.formatPrice(item.discount.value)
         }
