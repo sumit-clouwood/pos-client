@@ -141,6 +141,10 @@ const actions = {
       let orderTypeLabel = orderData.order_type + '_label'
       orderData.order_no = orderData.orderNumber //Custom Order No to give appropriate field for Habib
       //Final JSON
+      /*get selected table no*/
+      let table_no = rootState.dinein.selectedTable
+        ? rootState.dinein.selectedTable.number
+        : false
       let jsonResponse = {
         status: 'ok',
         brand_logo: locationData.brand.company_logo
@@ -163,11 +167,18 @@ const actions = {
         generate_time: orderData.real_created_datetime,
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
+        token_manager: false,
       }
+      if (orderData.order_type == 'DINE-IN') {
+        jsonResponse.table_number = table_no
+      }
+      let _order = {}
+      _order['printingServers'] = printingServers
+      _order['orderData'] = jsonResponse
       if (window.PrintHandle != undefined) {
-        let _order = {}
         _order['printingServers'] = printingServers
         _order['orderData'] = jsonResponse
+
         window.PrintHandle.Print(
           JSON.stringify(_order),
           function callbackfunction(data) {
@@ -177,6 +188,8 @@ const actions = {
           }
         )
       }
+      // eslint-disable-next-line no-console
+      console.log(_order, 'datatata')
       let x = JSON.stringify(jsonResponse)
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')
