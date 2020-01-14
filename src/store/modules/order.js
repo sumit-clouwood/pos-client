@@ -350,7 +350,9 @@ const actions = {
       item.netPrice = getters.netPrice(item)
 
       //calculated item tax
-      item.tax = item.grossPrice - item.netPrice
+      const unroundNetPrice = item.grossPrice / ((100 + item.tax_sum) / 100)
+      item.netPrice = unroundNetPrice
+      item.tax = item.grossPrice - unroundNetPrice
 
       resolve(item)
     })
