@@ -131,11 +131,7 @@
                   </div>
                 </td>
                 <td class="right-aligned table-page-child" valign="top">
-                  -{{
-                    format_number(
-                      parseFloat(discount.price) + parseFloat(discount.tax)
-                    )
-                  }}
+                  -{{ format_number(discount_total(discount)) }}
                 </td>
               </template>
             </tr>
@@ -466,6 +462,13 @@ export default {
         }
       }
       return results.join(' / ')
+    },
+    discount_total(discount) {
+      if (discount.type === 'value') {
+        return parseFloat(discount.price)
+      } else {
+        return parseFloat(discount.price) + parseFloat(discount.tax)
+      }
     },
     item_total(item_no) {
       var total = 0
