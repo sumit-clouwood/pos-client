@@ -41,7 +41,7 @@
           ]"
           @click="allCategoryHendlerChange"
         >
-          All category
+          {{ _t('All category') }}
           <i
             :class="['fa', 'fa-angle-down', { active: allCategoryHendler }]"
             aria-hidden="true"
@@ -56,7 +56,7 @@
           ]"
           @click="subCategoryHendlerChange"
         >
-          Sub category
+          {{ _t('Sub category') }}
           <i
             :class="['fa', 'fa-angle-down', { active: subCategoryHendler }]"
             aria-hidden="true"
@@ -110,6 +110,7 @@ export default {
     },
     // ...mapActions('category', ['collectSearchItems']),
     searchHendlerChange() {
+      this.searchItems = ''
       this.$store.dispatch('searchHendlerChange')
       this.$store.dispatch('CloseCategoryAndSubCategory')
     },
