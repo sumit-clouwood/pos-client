@@ -52,8 +52,16 @@ const getters = {
     }
 
     order.items.forEach(item => {
-      data.subTotal += Num.round(Num.round(item.price) * Num.round(item.qty))
-      data.totalTax += Num.round(Num.round(item.tax) * Num.round(item.qty))
+      if (
+        item.originalItem.open_item === true &&
+        item.qty.toString().match('.5')
+      ) {
+        data.subTotal += Num.round(Num.round(item.price) * Num.round(item.qty))
+        data.totalTax += Num.truncate2Decimal(item.originalItem.tax * item.qty)
+      } else {
+        data.subTotal += Num.round(Num.round(item.price) * Num.round(item.qty))
+        data.totalTax += Num.round(Num.round(item.tax) * Num.round(item.qty))
+      }
     })
 
     order.item_modifiers.forEach(modifier => {

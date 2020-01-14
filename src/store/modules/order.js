@@ -83,7 +83,11 @@ const getters = {
   totalItemsTax: (state, getters) => {
     let itemsTax = 0
     getters.splitItems.forEach(item => {
-      itemsTax += Num.round(item.tax) * item.quantity
+      if (item.open_item === true && item.quantity.toString().match('.5')) {
+        itemsTax += Num.truncate2Decimal(item.tax * item.quantity)
+      } else {
+        itemsTax += Num.round(item.tax) * item.quantity
+      }
     })
     return itemsTax
   },
