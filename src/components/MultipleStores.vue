@@ -90,6 +90,9 @@ export default {
       this.$store.dispatch('location/fetch')
       bootstrap.fetchData()
       bootstrap.loadUI(this.$store)
+      this.$store.commit('sync/reload', true)
+      this.$store.dispatch('checkout/reset', true)
+      this.$store.commit('order/CLEAR_SELECTED_ORDER')
     },
   },
 }
