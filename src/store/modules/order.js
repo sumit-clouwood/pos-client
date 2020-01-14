@@ -83,11 +83,7 @@ const getters = {
   totalItemsTax: (state, getters) => {
     let itemsTax = 0
     getters.splitItems.forEach(item => {
-      if (item.open_item === true && item.quantity.toString().match('.5')) {
-        itemsTax += Num.truncate2Decimal(item.tax * item.quantity)
-      } else {
-        itemsTax += Num.round(item.tax) * item.quantity
-      }
+      itemsTax += Num.round(item.tax * item.quantity)
     })
     return itemsTax
   },
@@ -174,7 +170,7 @@ const getters = {
   subTotal: (state, getters) => {
     let subTotal = 0
     getters.splitItems.forEach(item => {
-      const itemPrice = Num.round(item.netPrice) * item.quantity
+      const itemPrice = Num.round(item.netPrice * item.quantity)
       const modifiersPrice = getters.itemModifiersPrice(item) * item.quantity
       const itemDiscount = getters.itemNetDiscount(item) * item.quantity
       const modifiersDiscount =
@@ -360,7 +356,9 @@ const actions = {
       item.netPrice = getters.netPrice(item)
 
       //calculated item tax
-      item.tax = item.grossPrice - item.netPrice
+      const unroundNetPrice = item.grossPrice / ((100 + item.tax_sum) / 100)
+      item.netPrice = unroundNetPrice
+      item.tax = item.grossPrice - unroundNetPrice
 
       if (typeof item.orderIndex === 'undefined') {
         item.orderIndex = getters.orderIndex
@@ -392,10 +390,13 @@ const actions = {
     //item gross price is inclusive of tax
     item.grossPrice = getters.grossPrice(item)
     //net price is exclusive of tax, getter ll send unrounded price that is real one
-    item.netPrice = getters.netPrice(item)
     item.note = stateItem.note ? stateItem.note : ''
     //calculated item tax
-    item.tax = Num.round(item.grossPrice - item.netPrice)
+    const unroundNetPrice = item.grossPrice / ((100 + item.tax_sum) / 100)
+    item.netPrice = unroundNetPrice
+
+    item.tax = item.grossPrice - unroundNetPrice
+    //item.tax = Num.round(item.grossPrice - item.netPrice)
 
     if (typeof item.orderIndex === 'undefined') {
       item.orderIndex = getters.orderIndex
@@ -443,7 +444,10 @@ const actions = {
       item.netPrice = getters.netPrice(item)
 
       //calculated item tax, it ll be always calculated on discounted net price
-      item.tax = Num.round(item.grossPrice - item.netPrice)
+      const unroundNetPrice = item.grossPrice / ((100 + item.tax_sum) / 100)
+      item.netPrice = unroundNetPrice
+      item.tax = item.grossPrice - unroundNetPrice
+      //item.tax = Num.round(item.grossPrice - item.netPrice)
 
       //if there is item modifiers data assign it later
       item.modifiersData = []

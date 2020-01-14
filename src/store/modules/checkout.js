@@ -52,31 +52,19 @@ const getters = {
     }
 
     order.items.forEach(item => {
-      if (
-        item.originalItem.open_item === true &&
-        item.qty.toString().match('.5')
-      ) {
-        data.subTotal += Num.round(Num.round(item.price) * Num.round(item.qty))
-        data.totalTax += Num.truncate2Decimal(item.originalItem.tax * item.qty)
-      } else {
-        data.subTotal += Num.round(Num.round(item.price) * Num.round(item.qty))
-        data.totalTax += Num.round(Num.round(item.tax) * Num.round(item.qty))
-      }
+      data.subTotal += item.price * item.qty
+      data.totalTax += item.tax * item.qty
     })
 
     order.item_modifiers.forEach(modifier => {
-      data.subTotal += Num.round(
-        Num.round(modifier.price) * Num.round(modifier.qty)
-      )
-      data.totalTax += Num.round(
-        Num.round(modifier.tax) * Num.round(modifier.qty)
-      )
+      data.subTotal += modifier.price * modifier.qty
+      data.totalTax += modifier.tax * modifier.qty
     })
 
     order.order_surcharges.forEach(surcharge => {
-      data.totalSurcharge += Num.round(surcharge.price)
-      data.surchargeTax += Num.round(surcharge.tax)
-      data.totalTax += Num.round(surcharge.tax)
+      data.totalSurcharge += surcharge.price
+      data.surchargeTax += surcharge.tax
+      data.totalTax += surcharge.tax
     })
 
     order.item_discounts.forEach(discount => {
@@ -375,19 +363,6 @@ const actions = {
         ? Num.round(surcharge.tax_rate).toFixed(2)
         : surcharge.tax_rate
       return surcharge
-    })
-
-    //formatting
-    order.items = order.items.map(item => {
-      item.price = Num.round(item.price).toFixed(2)
-      item.tax = Num.round(item.tax).toFixed(2)
-      return item
-    })
-
-    order.item_modifiers = order.item_modifiers.map(item => {
-      item.price = Num.round(item.price).toFixed(2)
-      item.tax = Num.round(item.tax).toFixed(2)
-      return item
     })
 
     const orderData = getters.calculateOrderTotals(order)
