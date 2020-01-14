@@ -451,9 +451,8 @@ const actions = {
         }
         if (typeof item.kitchen_invoice !== 'undefined') {
           orderItem['kitchen_invoice'] = item.kitchen_invoice
-        }
-        if (typeof item.kitchen_invoice !== 'undefined') {
-          orderItem['kitchen_invoice'] = item.kitchen_invoice
+        } else {
+          orderItem['kitchen_invoice'] = 0
         }
 
         //we are sending item price and modifier prices separtely but sending
@@ -549,6 +548,7 @@ const actions = {
       oitem.cover_no = itemCover
       oitem.guest = rootState.dinein.guests
       oitem.cover_name = itemCoverName
+      oitem.kitchen_invoice = 0
       return oitem
     })
     order.covers = orderCovers

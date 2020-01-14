@@ -150,6 +150,7 @@ export default {
       myElement.scrollTop += 20
     },
     subCategoryHendlerChange() {
+      this.$store.dispatch('category/collectSearchItems', '')
       //this.$store.dispatch('subCategoryHendlerChange')
     },
   },
