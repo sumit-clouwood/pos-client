@@ -18,13 +18,14 @@ const state = {
   searchKeyword: '',
   logoutAction: '',
   brandAccessType: false,
+  storeGroupId: false,
   role: null,
 }
 
 // getters
 
 const getters = {
-  multistore: state => state.brandAccessType === 'multistore',
+  multistore: state => state.brandAccessType === 'store_group',
   allowed: state => resource => {
     if (!state.role) {
       //super admin
@@ -355,6 +356,7 @@ const mutations = {
   [mutation.USER_DETAILS](state, userDetails) {
     state.userDetails = userDetails
     state.brandAccessType = state.userDetails.item.brand_access_type
+    state.storeGroup = state.userDetails.item.store_group
   },
   [mutation.ADD_WAITERS](state, waiters) {
     state.waiters = [...state.waiters, ...waiters]

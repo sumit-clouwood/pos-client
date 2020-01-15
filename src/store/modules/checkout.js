@@ -432,6 +432,12 @@ const actions = {
           note: item.note,
           originalItem: item,
         }
+
+        //add store id with item if available
+        if (item.store_id) {
+          orderItem.store_id = item.store_id
+        }
+        
         if (typeof item.kitchen_invoice !== 'undefined') {
           orderItem['kitchen_invoice'] = item.kitchen_invoice
         } else {

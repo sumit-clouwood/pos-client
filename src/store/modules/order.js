@@ -211,7 +211,7 @@ const getters = {
     if (item.discountedNetPrice) {
       const modifiersTax = getters.itemModifiersTax(item)
       const totalTaxDiscount = item.tax + modifiersTax - item.discountedTax
-      return totalTaxDiscount
+      return Num.round(totalTaxDiscount)
     }
 
     if (item.discountRate) {
@@ -337,7 +337,7 @@ const actions = {
     return Promise.resolve(1)
   },
 
-  prepareItemTax({ rootState }, { item, type }) {
+  prepareItemTax({ rootState, getters }, { item, type }) {
     return new Promise(resolve => {
       if (type === 'open') {
         //find tax for this item
@@ -346,29 +346,34 @@ const actions = {
       }
       //item gross price is inclusive of tax
       item.grossPrice = getters.grossPrice(item)
-      //net price is exclusive of tax, getter ll send unrounded price that is real one
+      //net price is exclusive of tax, netPrice getter ll send unrounded price
       item.netPrice = getters.netPrice(item)
 
-      //calculated item tax
-      const unroundNetPrice = item.grossPrice / ((100 + item.tax_sum) / 100)
-      item.netPrice = unroundNetPrice
-      item.tax = item.grossPrice - unroundNetPrice
+      //calculated item tax, it should be unrounded for precision
+      item.tax = item.grossPrice - item.netPrice
 
       resolve(item)
     })
   },
-  prepareItem({ commit, getters, dispatch }, { item, type }) {
+  prepareItem(
+    { commit, getters, rootGetters, rootState, dispatch },
+    { item, type }
+  ) {
     commit('checkoutForm/RESET', 'process', { root: true })
 
     return new Promise(resolve => {
-
       item.split = false
       item.paid = false
+
+      if (rootGetters['auth/multistore']) {
+        item.store_id = rootState.context.storeId
+      }
 
       if (!item.note) {
         item.note = ''
       }
 
+      //Add no only if it is modification order, DON'T add no with new items, it ll break system
       if (item.no) {
         item.orderIndex = item.no
       }
@@ -550,7 +555,7 @@ const actions = {
               const modifierPrice = modifier.value
                 ? parseFloat(modifier.value)
                 : 0
-              const tax = Num.round((modifierPrice * item.tax_sum) / 100)
+              const tax = (modifierPrice * item.tax_sum) / 100
 
               modifierData.push({
                 modifierId: modifier._id,
@@ -1258,6 +1263,11 @@ const actions = {
             }
             if (typeof orderItem.kitchen_invoice !== 'undefined') {
               item['kitchen_invoice'] = orderItem.kitchen_invoice
+            }
+
+            //add store id if it was there
+            if (orderItem.store_id) {
+              item['store_id'] = orderItem.store_id
             }
 
             if (modifiers.length) {
