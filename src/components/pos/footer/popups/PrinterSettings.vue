@@ -60,7 +60,7 @@ export default {
   name: 'Discount',
   data() {
     return {
-      printerSettings: {printer_type: false, is_kot: false, no_of_copies: 1}
+      printerSettings: {printer_type: false, is_kot: 0, no_of_copies: 1}
     }
   },
   computed: {
@@ -72,7 +72,7 @@ export default {
       // Code Pane reflects in DIMS WEB APP
       // if (window.PrintHandle != null  && window.PrintHandle.GetAgent() === "Dimspos.App") {
       if (window.PrintHandle != null) {
-        window.PrintHandle.SavePrinterPopup(this.printerSettings.printer_type, String(this.printerSettings.no_of_copies), String(this.printerSettings.is_kot), function (data) {
+        window.PrintHandle.SavePrinterPopup(this.printerSettings.printer_type, String(this.printerSettings.no_of_copies), this.printerSettings.is_kot, function (data) {
           // eslint-disable-next-line no-console
           console.log(data)
         })
