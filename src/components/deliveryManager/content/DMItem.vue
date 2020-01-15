@@ -50,7 +50,7 @@
                       "
                     >
                       <span class="select-driver-caption assign_driver">
-                        Select driver
+                        {{ _t('Select driver') }}
                       </span>
                     </span>
                     <button
