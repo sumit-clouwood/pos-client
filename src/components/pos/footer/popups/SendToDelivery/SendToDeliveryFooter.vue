@@ -228,4 +228,15 @@ export default {
     }
   }
 }
+.referal.show .dropdown-menu {
+  max-height: 200px;
+  overflow: auto;
+}
+
+.referal.show .dropdown-menu a {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  margin: 0;
+  font-weight: bold;
+}
 </style>
