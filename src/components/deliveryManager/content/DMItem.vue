@@ -114,10 +114,19 @@
                 </div>
               </div>
               <div class="order-footer">
-                <p class="color-text">
-                  <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
+                <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
+
+                <div class="runningtimes">
+                  <div class="order-address" v-if="order.order_building">
+                    <div class="order-delivery-area">
+                      {{ order.order_flat_number }}, {{ order.order_building }},
+                      {{ order.order_street }},
+                      {{ order.order_city }}
+                    </div>
+                  </div>
                   <span
-                    class="customtime left"
+                    style="font-size: 0.9rem; justify-content:center;"
+                    v-else
                     :id="
                       'createdOrder-' +
                         convertDatetime(
@@ -125,26 +134,16 @@
                           timezoneString
                         )
                     "
-                    style="display: none"
-                  ></span>
-                  <input
-                    type="hidden"
-                    id="storerunningtime"
-                    :value="
-                      convertDatetime(
-                        order.real_created_datetime,
+                    >{{
+                      orderTimer(
+                        convertDatetime(
+                          order.real_created_datetime,
+                          timezoneString
+                        ),
                         timezoneString
                       )
-                    "
-                  />
-                </p>
-                <div class="runningtimes">
-                  <div class="order-delivery-area"></div>
-                  <div class="order-address">
-                    {{ order.order_flat_number }}, {{ order.order_building }},
-                    {{ order.order_street }},
-                    {{ order.order_city }}
-                  </div>
+                    }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -167,6 +166,7 @@ export default {
   data() {
     return {
       orderCount: 2,
+      dateTime: '',
     }
   },
   props: {
@@ -183,6 +183,12 @@ export default {
       branch: state => state.deliveryManager.availableStores,
     }),
     ...mapGetters('deliveryManager', ['orders']),
+  },
+  updated() {
+    clearInterval(this.orderTime)
+  },
+  destroyed() {
+    clearInterval(this.orderTime)
   },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
