@@ -173,8 +173,6 @@ const actions = {
         jsonResponse.table_number = table_no
       }
       let _order = {}
-      _order['printingServers'] = printingServers
-      _order['orderData'] = jsonResponse
       if (window.PrintHandle != undefined) {
         _order['printingServers'] = printingServers
         _order['orderData'] = jsonResponse
