@@ -60,7 +60,7 @@ export default {
   name: 'Discount',
   data() {
     return {
-      printerSettings: {printer_type: false, is_kot: 0, no_of_copies: 1}
+      printerSettings: {printer_type: false, is_kot: false, no_of_copies: 1}
     }
   },
   computed: {
