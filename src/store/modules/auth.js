@@ -17,6 +17,7 @@ const state = {
   cashierEmail: '',
   searchKeyword: '',
   logoutAction: '',
+  brandAccessType: false,
   role: null,
 }
 
@@ -352,6 +353,7 @@ const mutations = {
   },
   [mutation.USER_DETAILS](state, userDetails) {
     state.userDetails = userDetails
+    state.brandAccessType = state.userDetails.item.brand_access_type
   },
   [mutation.ADD_WAITERS](state, waiters) {
     state.waiters = [...state.waiters, ...waiters]
