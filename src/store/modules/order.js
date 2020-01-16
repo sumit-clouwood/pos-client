@@ -71,8 +71,7 @@ const getters = {
   item: state => state.item,
 
   netPrice: () => item => {
-    const netPrice = item.grossPrice / ((100 + item.tax_sum) / 100)
-    return Num.round(netPrice)
+    return item.grossPrice / ((100 + item.tax_sum) / 100)
   },
 
   grossPrice: () => item => {
@@ -83,7 +82,7 @@ const getters = {
   totalItemsTax: (state, getters) => {
     let itemsTax = 0
     getters.splitItems.forEach(item => {
-      itemsTax += Num.round(item.tax) * item.quantity
+      itemsTax += Num.round(item.tax * item.quantity)
     })
     return itemsTax
   },
@@ -170,7 +169,7 @@ const getters = {
   subTotal: (state, getters) => {
     let subTotal = 0
     getters.splitItems.forEach(item => {
-      const itemPrice = Num.round(item.netPrice) * item.quantity
+      const itemPrice = Num.round(item.netPrice * item.quantity)
       const modifiersPrice = getters.itemModifiersPrice(item) * item.quantity
       const itemDiscount = getters.itemNetDiscount(item) * item.quantity
       const modifiersDiscount =
@@ -212,7 +211,7 @@ const getters = {
     if (item.discountedNetPrice) {
       const modifiersTax = getters.itemModifiersTax(item)
       const totalTaxDiscount = item.tax + modifiersTax - item.discountedTax
-      return totalTaxDiscount
+      return Num.round(totalTaxDiscount)
     }
 
     if (item.discountRate) {
@@ -338,318 +337,268 @@ const actions = {
     return Promise.resolve(1)
   },
 
-  prepareItemTax({ rootState }, { item, type }) {
+  prepareItemTax({ rootState, getters }, { item, type }) {
     return new Promise(resolve => {
       if (type === 'open') {
         //find tax for this item
         item.tax_sum = rootState.tax.openItemTax
         item._id = rootState.tax.openItemId
-        resolve(item)
       }
+      //item gross price is inclusive of tax
+      item.grossPrice = getters.grossPrice(item)
+      //net price is exclusive of tax, netPrice getter ll send unrounded price
+      item.netPrice = getters.netPrice(item)
+
+      //calculated item tax, it should be unrounded for precision
+      item.tax = item.grossPrice - item.netPrice
+
       resolve(item)
     })
   },
-  prepareItem({ commit, getters, dispatch }, { item, type }) {
-    return new Promise(resolve => {
-      commit('checkoutForm/RESET', 'process', { root: true })
-      item.split = false
-      item.paid = false
-
-      dispatch('prepareItemTax', { item, type }).then(item => {
-        //item gross price is inclusive of tax
-        item.grossPrice = getters.grossPrice(item)
-        //net price is exclusive of tax, getter ll send unrounded price that is real one
-        item.netPrice = getters.netPrice(item)
-
-        //calculated item tax
-        item.tax = Num.round(item.grossPrice - item.netPrice)
-
-        if (typeof item.orderIndex === 'undefined') {
-          item.orderIndex = getters.orderIndex
-        }
-
-        if (typeof item.quantity === 'undefined') {
-          item.quantity = 1
-        }
-        resolve(item)
-      })
-    })
-  },
-  addOpenItem({ dispatch, commit }, item) {
-    dispatch('prepareItem', { item: item, type: 'open' }).then(item => {
-      //this comes directly from the items menu without modifiers
-      item.modifiable = false
-      commit(mutation.ADD_ORDER_ITEM, item)
-      commit(mutation.SET_TOTAL_ITEMS, state.items.length)
-      //if dine in modify then calculate surcharges after every item has been added so
-      //it won't clear discounts while validating
-      dispatch('surchargeCalculation')
-    })
-    return Promise.resolve()
-  },
-  addToOrder({ state, getters, commit, dispatch }, stateItem) {
-    commit('checkoutForm/RESET', 'process', { root: true })
-    let item = { ...stateItem }
-    item.split = false
-    item.paid = false
-    //item gross price is inclusive of tax
-    item.grossPrice = getters.grossPrice(item)
-    //net price is exclusive of tax, getter ll send unrounded price that is real one
-    item.netPrice = getters.netPrice(item)
-    item.note = stateItem.note ? stateItem.note : ''
-    //calculated item tax
-    item.tax = Num.round(item.grossPrice - item.netPrice)
-
-    if (typeof item.orderIndex === 'undefined') {
-      item.orderIndex = getters.orderIndex
-    }
-
-    if (stateItem.no) {
-      item.orderIndex = stateItem.no
-    }
-
-    //this comes directly from the items menu without modifiers
-    item.modifiable = false
-
-    if (typeof item.quantity === 'undefined') {
-      item.quantity = 1
-    }
-
-    commit(mutation.SET_ITEM, item)
-
-    commit(mutation.ADD_ORDER_ITEM, state.item)
-
-    commit(mutation.SET_TOTAL_ITEMS, state.items.length)
-    //if dine in modify then calculate surcharges after every item has been added so
-    //it won't clear discounts while validating
-    if (!['dine-in-modify'].includes(state.cartType)) {
-      dispatch('surchargeCalculation')
-    }
-  },
-
-  //this function re-adds an item to order if item is in edit mode, it just replaces exiting item in cart
-  addModifierOrder(
-    { commit, getters, rootState, dispatch, rootGetters },
-    item
+  prepareItem(
+    { commit, getters, rootGetters, rootState, dispatch },
+    { item, type }
   ) {
     commit('checkoutForm/RESET', 'process', { root: true })
 
-    return new Promise((resolve, reject) => {
-      if (!item) {
-        item = { ...rootState.modifier.item }
-      }
+    return new Promise(resolve => {
       item.split = false
       item.paid = false
-      //this comes through the modifier popup
-      item.grossPrice = getters.grossPrice(item)
-      //getter will send un rounded value
-      item.netPrice = getters.netPrice(item)
 
-      //calculated item tax, it ll be always calculated on discounted net price
-      item.tax = Num.round(item.grossPrice - item.netPrice)
+      if (rootGetters['auth/multistore']) {
+        item.store_id = rootState.context.storeId
+      }
 
-      //if there is item modifiers data assign it later
-      item.modifiersData = []
       if (!item.note) {
         item.note = ''
+      }
+
+      //Add no only if it is modification order, DON'T add no with new items, it ll break system
+      if (item.no) {
+        item.orderIndex = item.no
       }
 
       if (typeof item.orderIndex === 'undefined') {
         item.orderIndex = getters.orderIndex
       }
 
-      if (item.no) {
-        item.orderIndex = item.no
+      if (typeof item.quantity === 'undefined') {
+        item.quantity = 1
+      }
+
+      dispatch('prepareItemTax', { item, type }).then(item => {
+        resolve(item)
+      })
+    })
+  },
+  addOpenItem({ dispatch, commit }, { item, type }) {
+    return new Promise(resolve => {
+      item.modifiable = false
+      dispatch('prepareItem', { item: item, type: type }).then(item => {
+        //this comes directly from the items menu without modifiers
+        commit(mutation.ADD_ORDER_ITEM, item)
+        dispatch('postCartItem').then(() => resolve())
+      })
+    })
+  },
+  addToOrder({ dispatch, commit }, stateItem) {
+    let item = { ...stateItem }
+
+    item.modifiable = false
+    item.note = stateItem.note ? stateItem.note : ''
+
+    dispatch('prepareItem', { item: item }).then(item => {
+      commit(mutation.SET_ITEM, item)
+      commit(mutation.ADD_ORDER_ITEM, state.item)
+      dispatch('postCartItem')
+    })
+  },
+
+  postCartItem({ dispatch, commit }) {
+    return new Promise(resolve => {
+      //reset the modifier form
+      commit('orderForm/clearSelection', null, { root: true })
+      commit(mutation.SET_TOTAL_ITEMS, state.items.length)
+      //if dine in modify then calculate surcharges after every item has been added so
+      //it won't clear discounts while validating
+      if (!['dine-in-modify'].includes(state.cartType)) {
+        dispatch('surchargeCalculation').then(() => resolve())
+      } else {
+        resolve()
+      }
+    })
+  },
+  //this function re-adds an item to order if item is in edit mode, it just replaces exiting item in cart
+  addModifierOrder({ commit, rootState, dispatch, rootGetters }, item) {
+    return new Promise((resolve, reject) => {
+      if (!item) {
+        item = { ...rootState.modifier.item }
       }
 
       item.modifiable = true
 
-      commit(mutation.SET_ITEM, item)
+      dispatch('prepareItem', { item: item }).then(item => {
+        //if there is item modifiers data assign it later
+        item.modifiersData = []
+        commit(mutation.SET_ITEM, item)
 
-      let itemModifierGroups = []
-      let itemModifiers = []
+        let itemModifierGroups = []
+        let itemModifiers = []
 
-      //adding modifers to item
-      if (item.modifiers && !item.editMode) {
-        /* ***********************************************/
-        /*  ORDER COMING FROM HOLD ORDER                 */
-        /* ***********************************************/
-        const itemModifiersArray = rootGetters['modifier/itemModifiers'](
+        //adding modifers to item
+        if (item.modifiers && !item.editMode) {
+          /* ***********************************************/
+          /*  ORDER COMING FROM HOLD ORDER                 */
+          /* ***********************************************/
+          const itemModifiersArray = rootGetters['modifier/itemModifiers'](
+            item._id
+          )
+          //re check if modifiers still available for the item
+          if (itemModifiersArray.length) {
+            itemModifiersArray.forEach(modifierItem => {
+              modifierItem.modifiers.forEach(modifier => {
+                if (item.modifiers.includes(modifier._id)) {
+                  const subgroup = rootGetters['modifier/getModifierSubgroup'](
+                    modifier._id
+                  )
+                  itemModifiers.push(modifier._id)
+                  itemModifierGroups.push({
+                    groupId: subgroup._id,
+                    itemId: item._id,
+                    limit: subgroup.no_of_selection,
+                    modifierId: modifier._id,
+                    type: subgroup.no_of_selection > 1 ? 'checkbox' : 'radio',
+                  })
+                }
+              })
+            })
+          }
+          //avoid cacthcing again in edit mode
+        } else {
+          /* ***********************************************/
+          /*        New ORDER COMING CATALOG               */
+          /* ***********************************************/
+
+          const modifiers = rootGetters['orderForm/modifiers'].filter(
+            modifier => modifier.itemId == item._id
+          )
+
+          let selectedModifeirGroups = []
+
+          modifiers.forEach(modifier => {
+            itemModifierGroups.push(modifier)
+            selectedModifeirGroups.push(modifier.groupId)
+          })
+
+          //match modifiers with mandatory modifiers for this item, if not matched set error and return false
+          const itemMandatoryModifierGroups = rootGetters[
+            'modifier/itemMandatoryGroups'
+          ](item._id)
+
+          let mandatorySelected = true
+
+          itemMandatoryModifierGroups.forEach(id => {
+            if (!selectedModifeirGroups.includes(id)) {
+              mandatorySelected = false
+            }
+          })
+
+          if (mandatorySelected) {
+            commit('orderForm/setError', false, {
+              root: true,
+            })
+          } else {
+            commit('orderForm/setError', 'Please select at least one item', {
+              root: true,
+            })
+            reject()
+            return false
+          }
+
+          modifiers.forEach(modifier => {
+            if (Array.isArray(modifier.modifierId)) {
+              itemModifiers.push(...modifier.modifierId)
+            } else {
+              itemModifiers.push(modifier.modifierId)
+            }
+          })
+        }
+
+        /*
+          itemModifiers
+            0:"5cfde3211578dd00215271d1"
+            1:"5cfde3211578dd00215271d0"
+          itemModifierGroups
+            0:
+              groupId:"5cfde3211578dd00215271c8"
+              itemId:"5cfde31f1578dd0021527183"
+              limit:81
+              modifierId:"5cfde3211578dd00215271d1"
+              type:"checkbox"
+        */
+        commit(mutation.ADD_MODIFIERS_TO_ITEM, {
+          modifiers: itemModifiers,
+          modifierGroups: itemModifierGroups,
+        })
+
+        //calculating item price based on modifiers selected
+        //since we have just ids attached to item,
+        //we need to consult modifier store for modifier data ie price
+
+        const modifierSubgroups = rootGetters['modifier/itemModifiers'](
           item._id
         )
-        //re check if modifiers still available for the item
-        if (itemModifiersArray.length) {
-          itemModifiersArray.forEach(modifierItem => {
-            modifierItem.modifiers.forEach(modifier => {
-              if (item.modifiers.includes(modifier._id)) {
-                const subgroup = rootGetters['modifier/getModifierSubgroup'](
-                  modifier._id
-                )
-                itemModifiers.push(modifier._id)
-                itemModifierGroups.push({
-                  groupId: subgroup._id,
-                  itemId: item._id,
-                  limit: subgroup.no_of_selection,
-                  modifierId: modifier._id,
-                  type: subgroup.no_of_selection > 1 ? 'checkbox' : 'radio',
-                })
-              }
-            })
+        let modifierData = []
+        modifierSubgroups.forEach(subgroup => {
+          subgroup.modifiers.forEach(modifier => {
+            if (item.modifiers.includes(modifier._id)) {
+              const modifierPrice = modifier.value
+                ? parseFloat(modifier.value)
+                : 0
+              const tax = (modifierPrice * item.tax_sum) / 100
+
+              modifierData.push({
+                modifierId: modifier._id,
+                price: modifierPrice,
+                tax: tax,
+                name: modifier.name,
+                type: subgroup.item_type,
+              })
+            }
           })
-        }
-        //avoid cacthcing again in edit mode
-      } else {
-        /* ***********************************************/
-        /*        New ORDER COMING CATALOG               */
-        /* ***********************************************/
-
-        const modifiers = rootGetters['orderForm/modifiers'].filter(
-          modifier => modifier.itemId == item._id
-        )
-
-        let selectedModifeirGroups = []
-
-        modifiers.forEach(modifier => {
-          itemModifierGroups.push(modifier)
-          selectedModifeirGroups.push(modifier.groupId)
         })
 
-        //match modifiers with mandatory modifiers for this item, if not matched set error and return false
-        const itemMandatoryModifierGroups = rootGetters[
-          'modifier/itemMandatoryGroups'
-        ](item._id)
+        commit(mutation.ADD_MODIFIERS_DATA_TO_ITEM, modifierData)
 
-        let mandatorySelected = true
-
-        itemMandatoryModifierGroups.forEach(id => {
-          if (!selectedModifeirGroups.includes(id)) {
-            mandatorySelected = false
+        if (!item.editMode) {
+          let quantity = 0
+          //coming through hold orders
+          if (typeof item.quantity !== 'undefined') {
+            quantity = item.quantity
           }
-        })
-
-        if (mandatorySelected) {
-          commit('orderForm/setError', false, {
-            root: true,
-          })
-        } else {
-          commit('orderForm/setError', 'Please select at least one item', {
-            root: true,
-          })
-          reject()
-          return false
-        }
-
-        modifiers.forEach(modifier => {
-          if (Array.isArray(modifier.modifierId)) {
-            itemModifiers.push(...modifier.modifierId)
-          } else {
-            itemModifiers.push(modifier.modifierId)
+          if (!quantity) {
+            quantity = rootState.orderForm.quantity || 1
           }
-        })
-      }
-
-      /*
-        itemModifiers
-          0:"5cfde3211578dd00215271d1"
-          1:"5cfde3211578dd00215271d0"
-        itemModifierGroups
-          0:
-            groupId:"5cfde3211578dd00215271c8"
-            itemId:"5cfde31f1578dd0021527183"
-            limit:81
-            modifierId:"5cfde3211578dd00215271d1"
-            type:"checkbox"
-      */
-      commit(mutation.ADD_MODIFIERS_TO_ITEM, {
-        modifiers: itemModifiers,
-        modifierGroups: itemModifierGroups,
-      })
-
-      //calculating item price based on modifiers selected
-      //since we have just ids attached to item,
-      //we need to consult modifier store for modifier data ie price
-
-      const modifierSubgroups = rootGetters['modifier/itemModifiers'](item._id)
-      let modifierData = []
-      modifierSubgroups.forEach(subgroup => {
-        subgroup.modifiers.forEach(modifier => {
-          if (item.modifiers.includes(modifier._id)) {
-            const modifierPrice = modifier.value
-              ? parseFloat(modifier.value)
-              : 0
-            const tax = Num.round((modifierPrice * item.tax_sum) / 100)
-
-            modifierData.push({
-              modifierId: modifier._id,
-              price: modifierPrice,
-              tax: tax,
-              name: modifier.name,
-              type: subgroup.item_type,
-            })
-          }
-        })
-      })
-
-      commit(mutation.ADD_MODIFIERS_DATA_TO_ITEM, modifierData)
-
-      if (!item.editMode) {
-        //update current item with new modifiers
-
-        //check if item exists with same signature
-        /*
-        let itemExists = -1
-
-        state.items.forEach((orderItem, index) => {
-          if (
-            state.item._id == orderItem._id &&
-            orderItem.modifiers.every(modifierId =>
-              state.item.modifiers.includes(modifierId)
-            ) &&
-            orderItem.modifiers.length == state.item.modifiers.length
-          ) {
-            itemExists = index
-          }
-        })
-
-        if (itemExists > -1) {
-          commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, itemExists)
-        } else {
+          commit(mutation.SET_QUANTITY, quantity)
           commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
-        }
-        */
-        let quantity = 0
-        //coming through hold orders
-        if (typeof item.quantity !== 'undefined') {
-          quantity = item.quantity
-        }
-        if (!quantity) {
-          quantity = rootState.orderForm.quantity || 1
-        }
-        commit(mutation.SET_QUANTITY, quantity)
-        commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
-      } else {
-        //edit mode
-        //if the signature was different then modify modifiers,
-        //as we are creating new item and attached modifiers again so its better to just
-        //replace that item in state with existing item
+        } else {
+          //edit mode
+          //if the signature was different then modify modifiers,
+          //as we are creating new item and attached modifiers again so its better to just
+          //replace that item in state with existing item
 
-        const quantity = rootState.orderForm.quantity || 1
-        commit(mutation.SET_QUANTITY, quantity)
+          const quantity = rootState.orderForm.quantity || 1
+          commit(mutation.SET_QUANTITY, quantity)
 
-        commit(mutation.REPLACE_ORDER_ITEM, {
-          item: state.item,
+          commit(mutation.REPLACE_ORDER_ITEM, {
+            item: state.item,
+          })
+        }
+
+        dispatch('postCartItem').then(() => {
+          resolve()
         })
-      }
-
-      if (!['dine-in-modify'].includes(state.cartType)) {
-        dispatch('surchargeCalculation')
-      }
-      //reset the modifier form
-      commit('orderForm/clearSelection', null, { root: true })
-
-      commit(mutation.SET_TOTAL_ITEMS, state.items.length)
-
-      resolve()
+      })
     })
   },
 
@@ -1314,6 +1263,11 @@ const actions = {
             }
             if (typeof orderItem.kitchen_invoice !== 'undefined') {
               item['kitchen_invoice'] = orderItem.kitchen_invoice
+            }
+
+            //add store id if it was there
+            if (orderItem.store_id) {
+              item['store_id'] = orderItem.store_id
             }
 
             if (modifiers.length) {
