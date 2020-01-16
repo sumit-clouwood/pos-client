@@ -18,3 +18,4 @@ export const SET_TERMINAL_CODE = 'SET_TERMINAL_CODE'
 export const SET_TIMEZONES = 'SET_TIMEZONES'
 
 export const SET_MODAL = 'SET_MODAL'
+export const SET_TOKEN_NUMBER = 'SET_TOKEN_NUMBER'

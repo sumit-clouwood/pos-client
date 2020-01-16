@@ -4,6 +4,7 @@ import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 import { compressToBase64 } from 'lz-string'
 import OrderHelper from '@/plugins/helpers/Order'
+import * as PERMS from '@/const/permissions'
 
 // initial state
 const state = {
@@ -547,7 +548,7 @@ const actions = {
       oitem.cover_no = itemCover
       oitem.guest = rootState.dinein.guests
       oitem.cover_name = itemCoverName
-      oitem.kitchen_invoice = 0
+      // oitem.kitchen_invoice = 0
       return oitem
     })
     order.covers = orderCovers
@@ -672,6 +673,18 @@ const actions = {
 
               //adding tip amount
               order.tip_amount = rootState.checkoutForm.tipAmount
+
+              if (
+                rootGetters['location/isTokenManager'] &&
+                rootState.order.orderType.OTApi ===
+                  CONSTANTS.ORDER_TYPE_WALKIN &&
+                rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER)
+              ) {
+                let tokenNumber = localStorage.getItem('token_number')
+                  ? localStorage.getItem('token_number')
+                  : rootState.location.tokenNumber
+                order.token_number = tokenNumber
+              }
 
               dispatch('addItemsToOrder', {
                 order: order,
@@ -920,8 +933,14 @@ const actions = {
   },
   modifyDineOrder(
     { dispatch, rootState, getters, rootGetters, commit },
-    action
+    dataObject
   ) {
+    let action = null
+    if (rootState.dinein.isModified && typeof dataObject != 'undefined') {
+      action = dataObject.action
+    } else {
+      action = dataObject
+    }
     if (action === 'dine-in-order-preview') {
       return new Promise(resolve => {
         commit(mutation.PRINT, true)
@@ -930,6 +949,9 @@ const actions = {
     }
     return new Promise(resolve => {
       dispatch('getModifyOrder').then(order => {
+        if (rootState.dinein.isModified && typeof dataObject != 'undefined') {
+          order = { ...order, ...dataObject.data }
+        }
         //delete order.order_system_status
         delete order.new_real_transition_order_no
         //delete order.real_created_datetime
@@ -948,6 +970,7 @@ const actions = {
                 dispatch('createModifyOrderItemList')
                 dispatch('reset', true)
                 commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
+                commit('dinein/IS_MODIFIED', false, { root: true })
                 resolve()
               } else {
                 //order paid
@@ -956,6 +979,7 @@ const actions = {
                   'SET_ORDER_NUMBER',
                   rootState.order.selectedOrder.item.order_no
                 )
+                commit('dinein/IS_MODIFIED', false, { root: true })
                 if (rootState.order.splitted || rootState.order.splitBill) {
                   commit('order/SET_SPLITTED', true, { root: true })
                   //mark items as paid in current execution
@@ -974,6 +998,7 @@ const actions = {
                       }).then(() => resolve())
                     } else {
                       commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
+                      commit('dinein/IS_MODIFIED', false, { root: true })
                     }
                   })
                   //if splitted once
@@ -1143,7 +1168,15 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
-
+            if (state.order.token_number) {
+              /* eslint-disable */
+              let tokenNumber = state.order.token_number
+              console.log(tokenNumber);
+              commit('location/SET_TOKEN_NUMBER', tokenNumber, {
+                root: true,
+              })
+              localStorage.setItem('token_number', ++tokenNumber)
+            }
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('setMessage', {
               result: 'success',
@@ -1426,7 +1459,11 @@ const actions = {
     ) {
       return dispatch('modifyDeliveryOrder')
     } else if (action === 'modify-backend-order') {
-      return dispatch('modifyBackendOrder', { action: action, data: data })
+      if (rootState.dinein.isModified) {
+        return dispatch('modifyDineOrder', { action: action, data: data })
+      } else {
+        return dispatch('modifyBackendOrder', { action: action, data: data })
+      }
     } else if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
       return dispatch('createHoldOrder')
     } else if (
@@ -1438,7 +1475,11 @@ const actions = {
     ) {
       if (rootState.order.order_status !== 'completed') {
         if (rootState.order.orderId || action === 'dine-in-order-preview') {
-          return dispatch('modifyDineOrder', action)
+          if (rootState.dinein.isModified) {
+            return dispatch('modifyDineOrder', { action: action, data: data })
+          } else {
+            return dispatch('modifyDineOrder', action)
+          }
         } else {
           return dispatch('createDineOrder', action)
         }

@@ -100,6 +100,9 @@
           <img src="img/dinein/guest-user.svg" /> <b> {{ guests }}</b>
         </span>
       </div>
+      <div class="btn btn-success cartBottomBtn" @click="cartBottom">
+        <i aria-hidden="true" class="fa fa-chevron-down"></i>
+      </div>
     </div>
   </div>
 </template>
@@ -125,6 +128,9 @@ export default {
       myStyle: {
         backgroundColor: '#fff',
       },
+      cartItemHeight: 0,
+      cartHeight: 0,
+      cartInitHeight: 0,
     }
   },
   mounted() {
@@ -135,6 +141,12 @@ export default {
         OTApi: 'walk_in',
       })
     }
+  },
+  updated() {
+    let cartHeight = $('.main-orders-list-wrapper').innerHeight()
+    this.cartHeight = cartHeight
+    this.cartInitHeight = cartHeight
+    this.cartItemHeight = $('.main-orders-list').innerHeight()
   },
   computed: {
     ...mapGetters('location', ['_t']),
@@ -206,6 +218,24 @@ export default {
     },
     showDropdown: function() {
       $('.available-covers').toggle()
+    },
+    cartBottom() {
+      this.cartHeight += parseInt(this.cartInitHeight)
+      //alert(this.cartHeight + ' << ' + this.cartItemHeight)
+      if (this.cartHeight >= this.cartItemHeight) {
+        $('.cartBottomBtn').addClass('toggle')
+        this.cartHeight = 0
+        $('.main-orders-list-wrapper').animate(
+          { scrollTop: this.cartHeight },
+          1000
+        )
+        return false
+      }
+      $('.cartBottomBtn').removeClass('toggle')
+      $('.main-orders-list-wrapper').animate(
+        { scrollTop: this.cartHeight },
+        1000
+      )
     },
     hold() {
       $('#holdorder').hide()

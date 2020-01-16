@@ -6,6 +6,7 @@ import Num from '@/plugins/helpers/Num'
 import db from '@/services/network/DB'
 import TimezoneService from '@/services/data/TimezoneService'
 import * as CONST from '@/constants'
+import * as PERMS from '@/const/permissions'
 import router from '../../router'
 
 /* global $, showModal */
@@ -28,6 +29,7 @@ const state = {
   apiDate: '',
   terminalCode: null,
   timezones: [],
+  tokenNumber: null,
 }
 
 // getters
@@ -54,6 +56,12 @@ const getters = {
         }
       }
       return getChildren.length
+    }
+    return false
+  },
+  isTokenManager(state) {
+    if (state.store) {
+      return state.store.token_manager
     }
     return false
   },
@@ -86,7 +94,13 @@ const actions = {
           })
           commit('context/SET_MULTI_STORES', availabeStores, { root: true })
         }
-
+        dispatch(
+          'auth/getAllPrinters',
+          {},
+          {
+            root: true,
+          }
+        )
         commit(mutation.SET_BRAND, storedata.data.brand)
 
         if (storedata.data.store) {
@@ -182,6 +196,23 @@ const actions = {
           }
           if (storedata.data.brand) {
             commit(mutation.SET_BRAND, storedata.data.brand)
+          }
+
+          if (
+            storedata.data.store.token_manager &&
+            rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER) &&
+            storedata.data.store.token_starting_number
+          ) {
+            if (!localStorage.getItem('token_number')) {
+              localStorage.setItem(
+                'token_number',
+                storedata.data.store.token_starting_number
+              )
+            }
+            commit(
+              mutation.SET_TOKEN_NUMBER,
+              localStorage.getItem('token_number')
+            )
           }
 
           commit(mutation.SET_PERMISSION, storedata.data.menu)
@@ -346,6 +377,9 @@ const actions = {
 
 // mutations
 const mutations = {
+  [mutation.SET_TOKEN_NUMBER](state, tokenNumber) {
+    state.tokenNumber = tokenNumber
+  },
   [mutation.USER_SHORT_DETAILS](state, userDetails) {
     state.userShortDetails = userDetails
   },

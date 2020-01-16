@@ -15,7 +15,7 @@
         ><!--<span><img src="images/referal-down.png"></span>-->
         <p v-if="errors !== ''" class="errors text-danger">{{ errors }}</p>
         <p v-if="msg" class="text-info">{{ msg }}</p>
-        <div class="dropdown-menu" v-if="getReferrals">
+        <div id="referralDropdown" class="dropdown-menu" v-if="getReferrals">
           <a
             class="dropdown-item color-text cursor-pointer"
             :class="{ active: referral._id === orderReferralId }"
@@ -34,7 +34,7 @@
           </a>
         </div>
         <div class="dropdown-menu color-text-invert" v-if="!getReferrals">
-          Nothing found
+          {{ _t('Nothing found') }}
         </div>
       </div>
       <datetime
@@ -138,6 +138,7 @@ export default {
         this.errors = `Minimum order values should be ${minOrderValue} for selected delivery address`
       } else {
         if (this.orderSource === 'backend') {
+          this.$store.commit('order/SET_REFERRAL', this.changedReferral)
           showModal('#modificationReason')
         } else {
           $('#confirm_announcement').prop('disabled', true)
@@ -193,6 +194,13 @@ export default {
 }
 </script>
 <style lang="scss">
+#referralDropdown {
+  max-height: 15vh;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    background-color: rgb(233, 233, 233);
+  }
+}
 .showpropermsg .text-danger {
   display: initial;
   padding: 6px;

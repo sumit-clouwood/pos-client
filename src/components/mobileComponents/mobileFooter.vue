@@ -233,7 +233,7 @@ export default {
 @include responsive(mobile) {
   .mobile-footer {
     padding: 10px 20px;
-    display: flex;
+    display: flex !important;
     align-items: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1;

@@ -68,7 +68,7 @@ export default {
 .orders {
   .carhop-running-orders-wrapper {
     overflow: auto;
-    width: calc(100vw - 20px);
+    width: calc(100vw - 60px);
 
     .dropdown-menu.show {
       top: inherit !important;
@@ -154,6 +154,6 @@ export default {
   width: 100%;
   padding-left: 0;
   padding-right: 0;
-  margin-right: 1em;
+  margin-right: 5px;
 }
 </style>

@@ -173,8 +173,6 @@ const actions = {
         jsonResponse.table_number = table_no
       }
       let _order = {}
-      _order['printingServers'] = printingServers
-      _order['orderData'] = jsonResponse
       if (window.PrintHandle != undefined) {
         _order['printingServers'] = printingServers
         _order['orderData'] = jsonResponse
@@ -189,7 +187,7 @@ const actions = {
         )
       }
       // eslint-disable-next-line no-console
-      console.log(_order, 'datatata')
+      console.log(jsonResponse, 'datatata')
       let x = JSON.stringify(jsonResponse)
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')
