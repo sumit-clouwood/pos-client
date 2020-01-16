@@ -68,7 +68,7 @@
     .main-oreders-buttons {
       padding: 0px 0;
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr auto;
       grid-gap: $px10;
       grid-column-start: 1;
       grid-column-end: 3;
@@ -90,14 +90,21 @@
           background-color: $blue-dark;
         }
       }
+      .cartBottomBtn{
+        i{
+          vertical-align: middle;
+        }
+      }
     }
   }
 
   .main-orders-list-wrapper {
     overflow: auto;
     position: relative;
-    padding-right: $px20;
-
+    padding-right: 0;
+    &::-webkit-scrollbar{
+      width: 0;
+    }
     .main-orders-list {
       display: grid;
       grid-template-columns: auto;

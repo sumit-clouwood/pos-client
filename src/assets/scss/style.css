@@ -223,7 +223,7 @@ div#nav-tabContent {
   border: 1px solid #E3E7F2; }
   div#nav-tabContent .nav-tabs .nav-item {
     margin-bottom: -1px;
-    font-size: 20px;
+    font-size: 1.25rem;
     border: medium none !important;
     flex: 1 1 auto;
     justify-content: center;
@@ -2120,6 +2120,33 @@ a:hover {
   grid-gap: 1.25rem;
   grid-template-columns: 1fr 1fr; }
 
+.select-discount {
+  max-height: 300px;
+  overflow: auto; }
+  .select-discount::-webkit-scrollbar {
+    width: 0; }
+
+.discount-footer {
+  padding: 0 0.875rem 1.875rem 1.875rem !important; }
+  .discount-footer .food-arrow {
+    position: absolute;
+    background: rgba(80, 86, 202, 0.7);
+    color: #fff;
+    padding: 0.8125rem 1.625rem;
+    border-radius: 0.25rem;
+    right: 0;
+    cursor: pointer;
+    z-index: 99;
+    width: 4.25rem; }
+    .discount-footer .food-arrow.disable {
+      display: none; }
+    .discount-footer .food-arrow.food-top-arrow {
+      top: 68px;
+      right: 12px; }
+    .discount-footer .food-arrow.food-bottom-arrow {
+      bottom: 86px;
+      right: 12px; }
+
 .dining-option-block.select-discount-option > div > p {
   border-radius: 3px;
   background-color: #f99c32;
@@ -2158,6 +2185,9 @@ a:hover {
   color: #5056ca; }
 
 @media only screen and (min-width: 320px) and (max-width: 960px) {
+  .food-arrow {
+    display: none; }
+
   #select-discount .modal-dialog {
     position: absolute;
     top: 50px;
@@ -2202,6 +2232,15 @@ a:hover {
       #select-discount .modal-dialog .modal-content .modal-footer .btn-announce #discount-save-btn {
         background-color: #64C434;
         border: none; } }
+@media only screen and (min-width: 992px) {
+  .select-discount {
+    margin-top: 2.375rem;
+    margin-bottom: 3.125rem; }
+    .select-discount .select-discount-option {
+      grid-template-columns: repeat(3, 1fr); }
+
+  #select-discount .modal-dialog {
+    max-width: 45%; } }
 #manage-customer .modal-dialog {
   max-width: 58.75rem;
   box-shadow: 0 10px 40px rgba(133, 139, 151, 0.16);
@@ -2272,6 +2311,24 @@ a:hover {
 
 .manage-customer-wrap {
   padding: 0.625rem 1.875rem; }
+  .manage-customer-wrap .food-arrow {
+    position: absolute;
+    background: rgba(80, 86, 202, 0.7);
+    color: #fff;
+    padding: 0.8125rem 1.625rem;
+    border-radius: 0.25rem;
+    right: 0;
+    cursor: pointer;
+    z-index: 99;
+    width: 4.25rem; }
+    .manage-customer-wrap .food-arrow.disable {
+      display: none; }
+    .manage-customer-wrap .food-arrow.cust-top-arrow {
+      top: 70px;
+      right: 30px; }
+    .manage-customer-wrap .food-arrow.cust-bottom-arrow {
+      bottom: 0;
+      right: 30px; }
   .manage-customer-wrap .manage-customer-table span svg {
     /*@include responsive(xs) {
       display: none;
@@ -2303,6 +2360,8 @@ a:hover {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   touch-action: auto; }
+  .manage-customer-table::-webkit-scrollbar {
+    width: 0; }
 
 .holdorders {
   justify-content: flex-end; }
@@ -2318,6 +2377,9 @@ a:hover {
   font-weight: bold !important; }
 
 @media only screen and (min-width: 320px) and (max-width: 960px) {
+  .food-arrow {
+    display: none; }
+
   #manage-customer {
     opacity: 1;
     position: absolute;
@@ -3424,7 +3486,8 @@ div#total-order-past-wrap {
       #add_address .modal-dialog .modal-content .modal-body .left-form > div label span,
       #add_address .modal-dialog .modal-content .modal-body .right-form > div label span {
         color: #f44040;
-        font-size: 1.5rem; }
+        font-size: 1.5rem;
+        line-height: 10px; }
     #add_address .modal-dialog .modal-content .modal-body .left-form > div .selectpicker,
     #add_address .modal-dialog .modal-content .modal-body .right-form > div .selectpicker {
       background-image: url("/assets/images/select-arrow.png");
@@ -4060,13 +4123,39 @@ body {
     grid-template-rows: 6.875rem 1fr;
     padding: 0 1.875rem; }
     .main .main-body .search-field {
-      margin-top: 1.8125rem; }
+      margin-top: 0.625rem; }
     .main .main-body .food-wrapper {
       display: grid;
       grid-template-columns: auto 1fr;
       grid-template-rows: auto;
       grid-gap: 0.625rem;
-      height: calc(100vh - 21.5625rem); }
+      height: calc(100vh - 21.5625rem);
+      position: relative; }
+      .main .main-body .food-wrapper .foodCatScroll::-webkit-scrollbar {
+        width: 0; }
+      .main .main-body .food-wrapper .food-arrow {
+        position: absolute;
+        background: rgba(80, 86, 202, 0.7);
+        color: #fff;
+        padding: 0.8125rem 1.625rem;
+        border-radius: 0.25rem;
+        right: 0;
+        cursor: pointer;
+        z-index: 99;
+        width: 4.25rem; }
+        .main .main-body .food-wrapper .food-arrow.disable {
+          display: none; }
+        .main .main-body .food-wrapper .food-arrow.food-cat-top-arrow {
+          left: 0.9375rem;
+          top: 0; }
+        .main .main-body .food-wrapper .food-arrow.food-cat-bottom-arrow {
+          left: 0.9375rem;
+          bottom: -0.625rem; }
+        .main .main-body .food-wrapper .food-arrow.food-top-arrow {
+          top: 0; }
+        .main .main-body .food-wrapper .food-arrow.food-bottom-arrow {
+          bottom: -0.625rem;
+          right: 0; }
       .main .main-body .food-wrapper .food-categories-wrapper {
         overflow: auto;
         display: grid;
@@ -4139,7 +4228,10 @@ body {
         display: grid;
         grid-template-rows: auto 1fr;
         grid-gap: 20px;
-        overflow-y: auto; }
+        overflow-y: auto;
+        border-right: 1px solid #E3E7F2; }
+        .main .main-body .food-wrapper .food-block::-webkit-scrollbar {
+          width: 0; }
         .main .main-body .food-wrapper .food-block .breadcrumbs {
           padding: 0px 1.25rem;
           height: 3.125rem;
@@ -4296,6 +4388,9 @@ body {
               display: none; }
 
 @media only screen and (min-width: 320px) and (max-width: 960px) {
+  .cartBottomBtn, .food-arrow {
+    display: none; }
+
   .ullist-inventory-location {
     padding: 0 !important;
     position: absolute;
@@ -4317,6 +4412,21 @@ body {
         grid-template-rows: 1fr max-content max-content; }
         .ullist-inventory-location .p-3 .margin220 .loading-modules {
           width: 100%; } }
+@media only screen and (min-width: 992px) {
+  .main .main-body {
+    grid-template-rows: 4.875rem 1fr; }
+    .main .main-body .foodCatScroll {
+      margin-top: 4rem; }
+    .main .main-body .food-wrapper {
+      height: calc(100vh - 19.5625rem); }
+      .main .main-body .food-wrapper .food-block {
+        height: calc(100vh - 19.5625rem);
+        margin-right: -0.3125rem; }
+  .main .cartBottomBtn {
+    Width: 3.125rem; }
+    .main .cartBottomBtn.toggle {
+      -webkit-transform: rotate(180deg);
+      transform: rotate(180deg); } }
 .main-orders {
   padding: 0.3125rem 1.875rem 0;
   display: grid;
@@ -4370,7 +4480,7 @@ body {
     .main-orders .main-orders-contacts .main-oreders-buttons {
       padding: 0px 0;
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr auto;
       grid-gap: 0.625rem;
       grid-column-start: 1;
       grid-column-end: 3;
@@ -4388,10 +4498,14 @@ body {
         transition: 0.2s linear; }
         .main-orders .main-orders-contacts .main-oreders-buttons .button:hover {
           background-color: #3A3E9F; }
+      .main-orders .main-orders-contacts .main-oreders-buttons .cartBottomBtn i {
+        vertical-align: middle; }
   .main-orders .main-orders-list-wrapper {
     overflow: auto;
     position: relative;
-    padding-right: 1.25rem; }
+    padding-right: 0; }
+    .main-orders .main-orders-list-wrapper::-webkit-scrollbar {
+      width: 0; }
     .main-orders .main-orders-list-wrapper .main-orders-list {
       display: grid;
       grid-template-columns: auto;

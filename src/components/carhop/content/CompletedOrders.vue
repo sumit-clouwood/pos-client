@@ -5,10 +5,10 @@
         <table class="responsive-table">
           <thead>
             <tr>
-              <th class="table_header">Order No</th>
-              <th class="table_header">Items</th>
-              <th class="table_header">Amount</th>
-              <th class="table_header">Status</th>
+              <th class="table_header" style="width: 200px">Order No</th>
+              <th class="table_header" style="width: 400px">Items</th>
+              <th class="table_header" width="150px">Amount</th>
+              <th class="table_header text-center" width="200px">Status</th>
             </tr>
           </thead>
           <tbody>

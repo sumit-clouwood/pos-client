@@ -1,5 +1,5 @@
 <template>
-  <div style="overflow-y: scroll;">
+  <div style="overflow-y: scroll;" class="foodCatScroll">
     <div
       v-if="subcategories && subcategories.length"
       :class="[

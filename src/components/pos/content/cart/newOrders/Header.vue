@@ -42,6 +42,9 @@
       >
         {{ _t('Hold') }}
       </div>
+      <div class="btn btn-success cartBottomBtn" @click="cartBottom">
+        <i aria-hidden="true" class="fa fa-chevron-down"></i>
+      </div>
     </div>
   </div>
 </template>
@@ -56,6 +59,13 @@ export default {
   components: {
     DateTimeVue,
   },
+  data() {
+    return {
+      cartItemHeight: 0,
+      cartHeight: 0,
+      cartInitHeight: 0,
+    }
+  },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('order', ['items', 'cartType', 'orderType']),
@@ -64,10 +74,34 @@ export default {
     ...mapState({ offlineCustomer: state => state.customer.offlineData }),
     ...mapState('sync', ['online']),
   },
+  updated() {
+    let cartHeight = $('.main-orders-list-wrapper').innerHeight()
+    this.cartHeight = cartHeight
+    this.cartInitHeight = cartHeight
+    this.cartItemHeight = $('.main-orders-list').innerHeight()
+  },
   methods: {
     removeSelectedCustomer() {
       this.$store.commit('location/SET_MODAL', '#manage-customer')
       this.$store.dispatch('customer/resetCustomer')
+    },
+    cartBottom() {
+      this.cartHeight += parseInt(this.cartInitHeight)
+      //alert(this.cartHeight + ' << ' + this.cartItemHeight)
+      if (this.cartHeight >= this.cartItemHeight) {
+        $('.cartBottomBtn').addClass('toggle')
+        this.cartHeight = 0
+        $('.main-orders-list-wrapper').animate(
+          { scrollTop: this.cartHeight },
+          1000
+        )
+        return false
+      }
+      $('.cartBottomBtn').removeClass('toggle')
+      $('.main-orders-list-wrapper').animate(
+        { scrollTop: this.cartHeight },
+        1000
+      )
     },
     hold() {
       this.$store
@@ -98,4 +132,6 @@ export default {
 <style lang="sass" scoped>
 .hide
   display : none
+  .cartBottomBtn
+    width: 50px
 </style>
