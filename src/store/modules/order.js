@@ -565,8 +565,8 @@ const actions = {
                 type: subgroup.item_type,
               }
 
-              if (rootGetters['auth/multistore']) {
-                selectedModifierData.store_id = rootState.context.storeId
+              if (item.store_id) {
+                selectedModifierData.store_id = item.store_id
               }
 
               modifierData.push(selectedModifierData)
@@ -954,8 +954,8 @@ const actions = {
             value: discount.discount.value,
           }
 
-          if (discount.discount.store_id) {
-            item.discount.store_id = discount.discount.store_id
+          if (item.store_id) {
+            item.discount.store_id = item.store_id
           }
 
           if (discount.discount.type === CONST.FIXED) {
