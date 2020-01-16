@@ -1,5 +1,6 @@
 <template>
   <div
+    id="appUpdateModal"
     class="modal fade"
     role="dialog"
     data-keyboard="false"
@@ -31,6 +32,7 @@
   </div>
 </template>
 <script>
+/* global $ */
 import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'AppNotification',
@@ -53,6 +55,11 @@ export default {
         'sync/setAppUpdateNotification',
         localStorage.getItem('update_available') === 'true' ? true : false
       )
+    }
+  },
+  mounted() {
+    if (this.appUpdateNotification) {
+      $('#appUpdateModal').modal('show')
     }
   },
 }
