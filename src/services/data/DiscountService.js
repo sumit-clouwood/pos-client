@@ -1,15 +1,15 @@
 import DataService from '@/services/DataService'
 
 export default {
-  fetchItemDiscounts(orderType) {
+  fetchItemDiscounts() {
     return DataService.getT(
-      `/model/brand_item_discounts?ascending=1&orderBy=name&byColumn=1&${orderType}=true&limit=99999`
+      `/model/brand_item_discounts?ascending=1&orderBy=name&byColumn=0&limit=99999`
     )
   },
 
-  fetchOrderDiscounts(orderType) {
+  fetchOrderDiscounts() {
     return DataService.getT(
-      `/model/brand_order_discounts?ascending=1&orderBy=name&byColumn=1&${orderType}=true&limit=99999`
+      `/model/brand_order_discounts?ascending=1&orderBy=name&byColumn=0&limit=99999`
     )
   },
 }
