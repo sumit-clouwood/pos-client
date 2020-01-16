@@ -1507,6 +1507,7 @@ const actions = {
                 dispatch('holdOrders/remove', order, { root: true })
                 break
               case 'call_center':
+              case 'takeaway':
                 dispatch(
                   'deliveryManager/fetchDMOrderDetail',
                   {},

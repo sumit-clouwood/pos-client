@@ -318,9 +318,14 @@
             ><span>{{ _t('Settings') }}</span></a
           >
         </li>
-        <li v-if="!isWaiter() && !isCarhop()">
-          <a role="button" class="cursor-pointer"
-            ><svg
+        <li v-if="!isWaiter() && !isCarhop() && isDimsPosApp()">
+          <a
+            data-toggle="modal"
+            data-target="#printer-settings"
+            role="button"
+            class="cursor-pointer printer-setting"
+          >
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
@@ -362,6 +367,7 @@
         </li>
       </ul>
     </ul>
+    <PrinterSettings v-if="isDimsPosApp()" />
   </ul>
 </template>
 <script>
@@ -371,12 +377,14 @@ import AuthService from '@/services/data/AuthService'
 import bootstrap from '@/bootstrap'
 //import SwitchStore from '@/components/commonButtons/SwitchStore'
 import avatar from '@/components/mobileComponents/mobileElements/avatar'
+import PrinterSettings from '../pos/footer/popups/PrinterSettings'
 export default {
   name: 'TopSidebarMenu',
   props: {},
   components: {
     //SwitchStore,
     avatar,
+    PrinterSettings,
   },
   data: function() {
     return {

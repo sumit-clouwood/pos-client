@@ -96,8 +96,9 @@ export default {
   name: 'Menu',
   data() {
     return {
-      topHeight: 0,
-      counter: 0,
+      menuItemHeight: 0,
+      menuHeight: 0,
+      menuInitHeight: 0,
     }
   },
   components: {
@@ -116,6 +117,12 @@ export default {
       modifierImages: 'getImages',
     }), //to preftech modifier images, todo
   },
+  updated() {
+    let menuHeight = $('.navigation-list-wrapper').innerHeight()
+    this.menuHeight = menuHeight
+    this.menuInitHeight = menuHeight
+    this.menuItemHeight = $('.navigation-list').innerHeight()
+  },
   methods: {
     openMultiStore() {
       $('.multi-store-menu-pos').slideToggle()
@@ -130,64 +137,27 @@ export default {
     },
     showMore() {
       // menuShowMore()
-      let navigationListY =
-        document.querySelector('.navigation-list').getBoundingClientRect().top +
-        document.querySelector('.navigation-list').getBoundingClientRect()
-          .height
-      let navigationListWrapperY =
-        document
-          .querySelector('.navigation-list-wrapper')
-          .getBoundingClientRect().top +
-        document
-          .querySelector('.navigation-list-wrapper')
-          .getBoundingClientRect().height
-      if (
-        this.counter <= this.categories.length &&
-        navigationListY + 5 >= navigationListWrapperY
-      ) {
-        this.topHeight += document.querySelector('.nav-item').offsetHeight
-        this.topHeight += 10
-        this.counter++
-      } else {
-        this.topHeight = 0
-        this.counter = 0
+      this.menuHeight += parseInt(this.menuInitHeight)
+      //alert(this.cartHeight + ' << ' + this.cartItemHeight)
+      if (this.menuHeight >= this.menuItemHeight) {
+        $('.slider-btn').removeClass('toggle')
+        this.menuHeight = 0
+        $('.navigation-list-wrapper').animate(
+          { scrollTop: this.menuHeight },
+          1000
+        )
+        return false
       }
-      let myElement = document.querySelector('.navigation-list-wrapper')
-      myElement.scrollTop += 20
+      $('.slider-btn').addClass('toggle')
+      $('.navigation-list-wrapper').animate(
+        { scrollTop: this.menuHeight },
+        1000
+      )
     },
     subCategoryHendlerChange() {
       this.$store.dispatch('category/collectSearchItems', '')
       //this.$store.dispatch('subCategoryHendlerChange')
     },
-  },
-  updated() {
-    $('li.nav-item.arrow-bottom > a > .bt-arrow').click(function(e) {
-      e.preventDefault()
-      let menuHeight = 0
-      $('#menuAccordion li').each(function() {
-        menuHeight = menuHeight + $(this).innerHeight()
-      })
-      let accordionHeight = $('#menuAccordion').innerHeight()
-      if (menuHeight > accordionHeight) {
-        $('#menuAccordion')
-          .stop()
-          .animate({ top: accordionHeight - (menuHeight + 60) + 'px' }, 800)
-      } else {
-        $('.top-arrow').css('display', 'none')
-      }
-      $('.bt-arrow').css('display', 'none')
-      $('.top-arrow').css('display', 'block')
-      return false
-    }),
-      $('li.nav-item.arrow-bottom > a > .top-arrow').click(function(e) {
-        e.preventDefault()
-        $('#menuAccordion')
-          .stop()
-          .animate({ top: 0 + 'px' }, 800)
-        $('.bt-arrow').css('display', 'block')
-        $('.top-arrow').css('display', 'none')
-        return false
-      })
   },
 }
 </script>

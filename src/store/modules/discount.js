@@ -7,6 +7,7 @@ import * as CONST from '@/constants'
 
 // initial state
 const state = {
+  multiStoreOrderDiscount: [],
   //hold data fetched from api
   orderDiscounts: [],
   itemDiscounts: [],
@@ -103,13 +104,18 @@ const getters = {
 
 // actions
 const actions = {
-  async fetchAll({ commit, rootState }) {
+  async fetchAll({ commit, rootState, dispatch }) {
     const [orderDiscounts, itemDiscounts] = await Promise.all([
       DiscountService.fetchOrderDiscounts(rootState.order.orderType.OTApi),
       DiscountService.fetchItemDiscounts(rootState.order.orderType.OTApi),
     ])
-
     commit(mutation.SET_ORDER_DISCOUNTS, orderDiscounts)
+    let OrderDiscountMS = {
+      storeId: rootState.context.storeId,
+      orderTypeChange: false,
+    }
+    dispatch('setMultiStoreOrderData', OrderDiscountMS)
+    /*Here false denote order type is not changed*/
     commit(mutation.SET_ITEM_DISCOUNTS, itemDiscounts)
   },
 
@@ -252,7 +258,26 @@ const actions = {
   // setItemsDiscountAmount({ commit }, discount) {
   //   commit(mutation.SET_ITEMS_DISCOUNT_AMOUNT, discount.discountAmount)
   // },
-
+  setMultiStoreOrderData({ state, commit }, discountData) {
+    commit(mutation.SET_MULTI_STORE_ORDER_DISCOUNTS, discountData)
+    // eslint-disable-next-line no-console
+    console.log(state.multiStoreOrderDiscount)
+  },
+  multiDimensionalUnique(arr) {
+    var uniques = []
+    var itemsFound = {}
+    for (var i = 0, l = arr.length; i < l; i++) {
+      var stringified = JSON.stringify(arr[i])
+      if (itemsFound[stringified]) {
+        continue
+      }
+      uniques.push(arr[i])
+      itemsFound[stringified] = true
+    }
+    // eslint-disable-next-line no-console
+    console.log(uniques)
+    return uniques
+  },
   setOrderDiscount(
     { commit },
     { orderDiscount, taxDiscount, surchargeDiscount }
@@ -280,6 +305,13 @@ const actions = {
 const mutations = {
   [mutation.SET_ORDER_DISCOUNTS](state, orderDiscounts) {
     state.orderDiscounts = orderDiscounts.data.data
+  },
+  [mutation.SET_MULTI_STORE_ORDER_DISCOUNTS](state, discountData) {
+    if (discountData.orderTypeChange) {
+      /*if order type change remove all discount and set again*/
+      state.multiStoreOrderDiscount = []
+    }
+    state.multiStoreOrderDiscount[discountData.storeId] = state.orderDiscounts
   },
   [mutation.SET_ITEM_DISCOUNTS](state, itemDiscounts) {
     state.itemDiscounts = itemDiscounts.data
@@ -366,6 +398,7 @@ const mutations = {
     state.taxDiscountAmount = 0
     state.appliedOrderDiscount = false
     state.currentActiveOrderDiscount = false
+    state.multiStoreOrderDiscount = []
   },
   [mutation.RESET](state) {
     state.currentActiveItemDiscount = false
