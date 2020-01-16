@@ -319,7 +319,12 @@
           >
         </li>
         <li v-if="!isWaiter() && !isCarhop()">
-          <a data-toggle="modal" data-target="#printer-settings" role="button" class="cursor-pointer printer-setting">
+          <a
+            data-toggle="modal"
+            data-target="#printer-settings"
+            role="button"
+            class="cursor-pointer printer-setting"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -336,7 +341,8 @@
                 <circle cx="47.704" cy="18.471" r="1.737" />
                 <circle cx="39.656" cy="18.471" r="1.737" />
               </g></svg
-            ><span>{{ _t('Printers') }}</span></a>
+            ><span>{{ _t('Printers') }}</span></a
+          >
         </li>
       </ul>
       <ul class="dine-footer-navmenu">

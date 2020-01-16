@@ -3913,9 +3913,10 @@ body {
   grid-template-rows: 5.3125rem 1fr 3.75rem 6.25rem;
   justify-content: center;
   grid-template-columns: 1fr;
-  overflow: hidden; }
-  .navigation img {
-    max-width: 100%; }
+  overflow: hidden;
+  /*img{
+    max-width: 100%;
+  }*/ }
   .navigation .logo {
     display: grid;
     grid-template-columns: auto;
@@ -4085,6 +4086,9 @@ body {
 .collapse-menu .navigation-list li {
   max-width: 12.25rem !important; }
 
+@media only screen and (min-width: 961px) {
+  .navigation img {
+    max-width: 100%; } }
 .main {
   display: grid;
   grid-template-columns: 65% 35%; }
