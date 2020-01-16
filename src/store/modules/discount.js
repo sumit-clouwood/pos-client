@@ -254,27 +254,7 @@ const actions = {
   //   commit(mutation.SET_ITEMS_DISCOUNT_AMOUNT, discount.discountAmount)
   // },
   setMultiStoreOrderData({ state, commit }, discountData) {
-    // let storeIds = []
     commit(mutation.SET_MULTI_STORE_ORDER_DISCOUNTS, discountData)
-    /*if (state.multiStoreOrderDiscount.length === 0) {
-      commit(mutation.SET_MULTI_STORE_ORDER_DISCOUNTS, discountData)
-    } else {
-      state.multiStoreOrderDiscount.forEach(store => {
-        storeIds.push(store.storeId)
-      })
-      if (!storeIds.includes(discountData.storeId)) {
-        commit(mutation.SET_MULTI_STORE_ORDER_DISCOUNTS, discountData)
-      }
-
-      // eslint-disable-next-line no-console
-      console.log(state.multiStoreOrderDiscount, storeIds)
-    }*/
-    /*let orderDiscounts = []
-    state.multiStoreOrderDiscount.forEach(store => {
-      store.orderDiscount.forEach(discount => {
-        orderDiscounts.push(discount)
-      })
-    })*/
     // eslint-disable-next-line no-console
     console.log(state.multiStoreOrderDiscount)
   },
