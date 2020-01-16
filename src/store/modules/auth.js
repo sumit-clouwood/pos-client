@@ -25,7 +25,6 @@ const state = {
 // getters
 
 const getters = {
-  multistore: state => state.brandAccessType === 'store_group',
   allowed: state => resource => {
     if (!state.role) {
       //super admin

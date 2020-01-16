@@ -253,9 +253,10 @@ const actions = {
   // setItemsDiscountAmount({ commit }, discount) {
   //   commit(mutation.SET_ITEMS_DISCOUNT_AMOUNT, discount.discountAmount)
   // },
-  setMultiStoreOrderData({ state, commit, dispatch }, discountData) {
-    let storeIds = []
-    if (state.multiStoreOrderDiscount.length === 0) {
+  setMultiStoreOrderData({ state, commit }, discountData) {
+    // let storeIds = []
+    commit(mutation.SET_MULTI_STORE_ORDER_DISCOUNTS, discountData)
+    /*if (state.multiStoreOrderDiscount.length === 0) {
       commit(mutation.SET_MULTI_STORE_ORDER_DISCOUNTS, discountData)
     } else {
       state.multiStoreOrderDiscount.forEach(store => {
@@ -267,21 +268,15 @@ const actions = {
 
       // eslint-disable-next-line no-console
       console.log(state.multiStoreOrderDiscount, storeIds)
-    }
-    let orderDiscounts = []
+    }*/
+    /*let orderDiscounts = []
     state.multiStoreOrderDiscount.forEach(store => {
-      // eslint-disable-next-line no-console
-      console.log(store, 'store')
       store.orderDiscount.forEach(discount => {
         orderDiscounts.push(discount)
       })
-    })
+    })*/
     // eslint-disable-next-line no-console
-    console.log(
-      orderDiscounts,
-      'orderDiscounts',
-      dispatch('multiDimensionalUnique', orderDiscounts)
-    )
+    console.log(state.multiStoreOrderDiscount)
   },
   multiDimensionalUnique(arr) {
     var uniques = []
@@ -331,10 +326,7 @@ const mutations = {
       /*if order type change remove all discount and set again*/
       state.multiStoreOrderDiscount = []
     }
-    state.multiStoreOrderDiscount.push({
-      storeId: discountData.storeId,
-      orderDiscount: state.orderDiscounts,
-    })
+    state.multiStoreOrderDiscount[discountData.storeId] = state.orderDiscounts
   },
   [mutation.SET_ITEM_DISCOUNTS](state, itemDiscounts) {
     state.itemDiscounts = itemDiscounts.data
