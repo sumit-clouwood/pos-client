@@ -111,7 +111,11 @@ export default {
         return false
       }
       this.$store.commit('order/RESET_SPLIT_BILL')
-      bootstrap.loadUI().then(() => {})
+      //load data only when new order is starting
+      if (!this.$store.state.order.items.length) {
+        this.$store.commit('sync/reload', true)
+        bootstrap.loadUI('orderStart').then(() => {})
+      }
 
       this.$store.commit('order/SET_CART_TYPE', 'new')
       this.$store.dispatch('order/startOrder')
@@ -258,7 +262,7 @@ export default {
       border: none;
       border-bottom: 1px solid $gray-middle;
       padding-right: 20px;
-      background: linear-gradient(141deg, #fcfcff 0%, #d7e0e1 51%, #ecebeb 75%);
+      background: #fafafa;
       transition: 0.1s ease-out;
 
       &:not(.color-dashboard-background) {

@@ -43,6 +43,8 @@ const state = {
   totalReservations: { totalPages: 0, pageNumber: 1, limit: 10 },
   billSplit: null,
   processingSplit: false,
+  reservationData: null,
+  isModified: false,
   currentTableReservationData: null,
 }
 const getters = {
@@ -576,6 +578,9 @@ const actions = {
 }
 
 const mutations = {
+  [mutation.IS_MODIFIED](state, isModified) {
+    state.isModified = isModified
+  },
   [mutation.SET_COVER](state, selectedCover) {
     state.selectedCover = selectedCover
   },

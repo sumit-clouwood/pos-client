@@ -6,6 +6,22 @@
     :style="{ direction: template.rtl_supported ? 'rtl' : 'ltr' }"
   >
     <div class="header">
+      <div
+        style="
+          text-align: center;
+          font-weight: 700;
+          padding: 0 0 0.3em 0;
+          font-size: 3em;"
+        v-if="
+          allowed(PERMS.TOKEN_NUMBER) &&
+            isTokenManager &&
+            tokenNumber &&
+            orderType.OTApi === 'walk_in'
+        "
+      >
+        {{ tokenNumber }}
+      </div>
+
       <template v-if="template.show_logo">
         <img class="header-img" :src="company_logo" alt="Logo" />
       </template>
@@ -52,6 +68,15 @@
             <th colspan="3">
               {{ template.order_type_label }}
               <span class="float-right">{{ order_type }}</span>
+            </th>
+          </tr>
+          <tr
+            class="left-aligned"
+            v-if="tableNumber && orderType.OTApi === 'dine_in'"
+          >
+            <th colspan="3">
+              {{ template.table_number_label }}
+              <span class="float-right">{{ tableNumber }}</span>
             </th>
           </tr>
           <tr v-if="crm_module_enabled && customer" class="left-aligned">
@@ -322,8 +347,11 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapGetters('location', ['_t']),
-    ...mapState('location', ['timezoneString']),
+    ...mapGetters('location', ['_t', 'isTokenManager']),
+    ...mapState('location', ['timezoneString', 'tokenNumber']),
+    ...mapGetters('auth', ['allowed']),
+    ...mapState('invoice', ['tableNumber']),
+    ...mapState('order', ['orderType']),
 
     dataBeingLoaded() {
       if (!this.order_to_print || !this.template) {

@@ -125,7 +125,6 @@ export default {
       // eslint-disable-next-line no-undef
       $('.breadcrumbs').show()
       $('.search-field-input').val('')
-      this.$store.commit('sync/reload', true)
       //bootstrap.loadUI().then(() => {})
       this.$store.dispatch('category/browse', item)
     },
@@ -149,6 +148,7 @@ export default {
       )
     },
     subCategoryHendlerChange() {
+      this.$store.dispatch('category/collectSearchItems', '')
       //this.$store.dispatch('subCategoryHendlerChange')
     },
   },

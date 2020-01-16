@@ -319,8 +319,8 @@
           >
         </li>
         <li v-if="!isWaiter() && !isCarhop()">
-          <a role="button" class="cursor-pointer"
-            ><svg
+          <a data-toggle="modal" data-target="#printer-settings" role="button" class="cursor-pointer printer-setting">
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
@@ -336,8 +336,7 @@
                 <circle cx="47.704" cy="18.471" r="1.737" />
                 <circle cx="39.656" cy="18.471" r="1.737" />
               </g></svg
-            ><span>{{ _t('Printers') }}</span></a
-          >
+            ><span>{{ _t('Printers') }}</span></a>
         </li>
       </ul>
       <ul class="dine-footer-navmenu">
@@ -362,6 +361,7 @@
         </li>
       </ul>
     </ul>
+    <PrinterSettings />
   </ul>
 </template>
 <script>
@@ -371,12 +371,14 @@ import AuthService from '@/services/data/AuthService'
 import bootstrap from '@/bootstrap'
 //import SwitchStore from '@/components/commonButtons/SwitchStore'
 import avatar from '@/components/mobileComponents/mobileElements/avatar'
+import PrinterSettings from '../pos/footer/popups/PrinterSettings'
 export default {
   name: 'TopSidebarMenu',
   props: {},
   components: {
     //SwitchStore,
     avatar,
+    PrinterSettings,
   },
   data: function() {
     return {

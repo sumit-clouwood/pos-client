@@ -29,6 +29,7 @@ export default {
   name: 'AmountCalculator',
   computed: {
     ...mapState('checkout', ['changedAmount']),
+    ...mapState('dinein', ['isModified']),
     ...mapState('order', ['orderSource']),
     ...mapGetters('location', ['_t']),
     ...mapState('checkoutForm', ['method', 'processing']),
@@ -69,7 +70,7 @@ export default {
               $('#payment-screen-footer').prop('disabled', true)
 
               this.$store.dispatch('order/startOrder')
-              if (this.orderSource === 'backend') {
+              if (this.orderSource === 'backend' || this.isModified) {
                 showModal('#modificationReason')
               } else {
                 $('#payment-msg').modal('show')

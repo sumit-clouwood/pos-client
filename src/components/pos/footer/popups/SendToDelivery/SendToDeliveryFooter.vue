@@ -138,6 +138,7 @@ export default {
         this.errors = `Minimum order values should be ${minOrderValue} for selected delivery address`
       } else {
         if (this.orderSource === 'backend') {
+          this.$store.commit('order/SET_REFERRAL', this.changedReferral)
           showModal('#modificationReason')
         } else {
           $('#confirm_announcement').prop('disabled', true)

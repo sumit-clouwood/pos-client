@@ -145,7 +145,7 @@ import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredIte
 import DMAssignedDriver from '@/components/deliveryManager/partial/DMAssignedDriver'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import paginate from 'vuejs-paginate'
-import Preloader from '@/components/util/Preloader'
+import Preloader from '@/components/util/progressbar'
 
 /* global $ */
 export default {
