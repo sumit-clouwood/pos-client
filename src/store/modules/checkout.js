@@ -437,7 +437,7 @@ const actions = {
         if (item.store_id) {
           orderItem.store_id = item.store_id
         }
-        
+
         if (typeof item.kitchen_invoice !== 'undefined') {
           orderItem['kitchen_invoice'] = item.kitchen_invoice
         } else {

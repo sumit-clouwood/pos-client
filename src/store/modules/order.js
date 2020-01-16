@@ -557,13 +557,19 @@ const actions = {
                 : 0
               const tax = (modifierPrice * item.tax_sum) / 100
 
-              modifierData.push({
+              let selectedModifierData = {
                 modifierId: modifier._id,
                 price: modifierPrice,
                 tax: tax,
                 name: modifier.name,
                 type: subgroup.item_type,
-              })
+              }
+
+              if (rootGetters['auth/multistore']) {
+                selectedModifierData.store_id = rootState.context.storeId
+              }
+
+              modifierData.push(selectedModifierData)
             }
           })
         })
