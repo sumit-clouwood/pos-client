@@ -168,12 +168,14 @@ const actions = {
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
         token_manager: false,
+        windows_app: false,
       }
       if (orderData.order_type == 'DINE-IN') {
         jsonResponse.table_number = table_no
       }
       let _order = {}
       if (window.PrintHandle != undefined) {
+        jsonResponse.windows_app = true
         _order['printingServers'] = printingServers
         _order['orderData'] = jsonResponse
 
