@@ -7,7 +7,7 @@ const state = {
   rules: null,
   templateId: null,
   tableNumber: null,
-  printers: false,
+  printerConfig: false,
 }
 
 // getters
@@ -53,9 +53,23 @@ const actions = {
     dispatch('getAllPrinters')
   },
   getAllPrinters({ commit }) {
-    InvoiceService.getPrinters().then(response => {
+    /*InvoiceService.getPrinters().then(response => {
       commit(mutation.SET_PRINTERS, response.data)
-    })
+    })*/
+    if (window.PrintHandle != null) {
+      window.PrintHandle.GetAllPrinters(function(data) {
+        let dataObj = JSON.parse(data)
+        this.printers = dataObj.printerlist
+        let printerSetting = {
+          printers: dataObj.printerlist,
+          is_kot: dataObj.printbykot,
+          printCopies: dataObj.printcopies,
+        }
+        commit(mutation.SET_PRINTERS, printerSetting)
+        /*dataObj.printbykot
+        dataObj.printcopies*/
+      })
+    }
   },
   async fetchTemplates({ commit }) {
     const templates = await InvoiceService.fetchTemplates()
@@ -97,7 +111,7 @@ const mutations = {
     state.tableNumber = tableNumber
   },
   [mutation.SET_PRINTERS](state, printers) {
-    state.printers = printers
+    state.printerConfig = printers
   },
   // [mutation.RESET](state) {
   //   state.templateHtml = null

@@ -121,7 +121,7 @@ export default {
         this.isPrint = true
         try {
           setTimeout(() => {
-            // Code Pane reflects in DIMS WEB APP
+            /*// Code Pane reflects in DIMS WEB APP
             if (
               typeof localStorage.getItem('printerConfig') != 'undefined' &&
               window.PrintHandle != null &&
@@ -131,7 +131,7 @@ export default {
                 // eslint-disable-next-line no-console
                 console.log(data)
               })
-            } else {
+            } else*/ {
               //this.$refs.iframe.contentWindow.print()
               let w = this.$refs.iframe.contentWindow
               w.focus()
