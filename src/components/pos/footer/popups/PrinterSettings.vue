@@ -102,8 +102,8 @@ export default {
       if (window.PrintHandle != null) {
         window.PrintHandle.SavePrinterPopup(
           String(this.printerSettings.printer_type),
-          this.printerSettings.no_of_copies,
-          this.printerSettings.is_kot,
+          String(this.printerSettings.no_of_copies),
+          this.printerSettings.is_kot ? 'True' : 'False',
           function(data) {
             // eslint-disable-next-line no-console
             console.log(data)
