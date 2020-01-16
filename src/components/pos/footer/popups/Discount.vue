@@ -141,7 +141,7 @@ export default {
     }),
   },
   updated() {
-    this.discountScroll()
+    //this.discountScroll()
   },
   methods: {
     applyOrderDiscount: function() {
