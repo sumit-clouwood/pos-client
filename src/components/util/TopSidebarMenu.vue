@@ -318,7 +318,7 @@
             ><span>{{ _t('Settings') }}</span></a
           >
         </li>
-        <li v-if="!isWaiter() && !isCarhop()">
+        <li v-if="!isWaiter() && !isCarhop() && isDimsPosApp()">
           <a
             data-toggle="modal"
             data-target="#printer-settings"
@@ -367,7 +367,7 @@
         </li>
       </ul>
     </ul>
-    <PrinterSettings />
+    <PrinterSettings v-if="isDimsPosApp()" />
   </ul>
 </template>
 <script>
