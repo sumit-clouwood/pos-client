@@ -21,7 +21,7 @@
         <div
           class="modal-footer"
           style="padding: 0.875rem 1.875rem 0.875rem 1.875rem; 
-          border-top:1px solid grey;"
+          border-top:1px solid grey; justify-content: center;"
         >
           <button class="tables-btn-style" @click="reloadWindow">
             {{ _t('UPDATE') }}
@@ -73,8 +73,9 @@ export default {
   color: white;
   border: none;
   font-size: 12.75px;
+  font-weight: 400;
 }
 .title {
-  font-size: 14px;
+  font-size: 18px;
 }
 </style>
