@@ -954,6 +954,10 @@ const actions = {
             value: discount.discount.value,
           }
 
+          if (discount.discount.store_id) {
+            item.discount.store_id = discount.discount.store_id
+          }
+
           if (discount.discount.type === CONST.FIXED) {
             const priceDiff = item.grossPrice - discount.discount.value
             const discountPercentage = (priceDiff * 100) / item.grossPrice

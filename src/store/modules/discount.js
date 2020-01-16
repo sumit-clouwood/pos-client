@@ -126,7 +126,7 @@ const actions = {
     )
     commit(mutation.REPLACE_ITEM_DISCOUNTS, newAppliedItemDiscounts)
   },
-  applyItemDiscount({ commit, state, rootState, dispatch }) {
+  applyItemDiscount({ commit, state, rootState, rootGetters, dispatch }) {
     commit('checkoutForm/RESET', 'process', { root: true })
     return new Promise((resolve, reject) => {
       //add extra layer of validation which is handled on component level though
@@ -136,7 +136,7 @@ const actions = {
       } else {
         commit(mutation.CLEAR_ORDER_DISCOUNT)
         if (state.currentActiveItemDiscount) {
-          commit(mutation.APPLY_ITEM_DISCOUNT, {
+          let itemDiscountData = {
             item: rootState.order.item,
             discount: {
               _id: state.currentActiveItemDiscount._id,
@@ -145,7 +145,12 @@ const actions = {
               value: state.currentActiveItemDiscount.value,
               name: state.currentActiveItemDiscount.name,
             },
-          })
+          }
+
+          if (rootGetters['auth/multistore']) {
+            itemDiscountData.discount.store_id = rootState.context.storeId
+          }
+          commit(mutation.APPLY_ITEM_DISCOUNT, itemDiscountData)
         } else {
           dispatch('removeItemDiscount')
         }

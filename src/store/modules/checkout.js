@@ -465,6 +465,10 @@ const actions = {
           itemDiscount.itemId = item._id
           itemDiscount.itemNo = item.orderIndex
           itemDiscount.quantity = item.quantity
+
+          if (item.store_id) {
+            itemDiscount.store_id = item.store_id
+          }
           //undiscountedTax is without modifiers
 
           if (item.discountedNetPrice) {
@@ -499,7 +503,7 @@ const actions = {
       }
     })
     order.item_discounts = item_discounts.map(itemDiscount => {
-      return {
+      let discountData = {
         name: itemDiscount.name,
         type: itemDiscount.type,
         rate:
@@ -511,6 +515,12 @@ const actions = {
         for_item: itemDiscount.itemNo,
         entity_id: itemDiscount.id,
       }
+
+      if (itemDiscount.store_id) {
+        discountData.store_id = itemDiscount.store_id
+      }
+
+      return discountData
     })
 
     order.item_modifiers = itemModifiers
@@ -610,6 +620,10 @@ const actions = {
               } catch (e) {
                 // eslint-disable-next-line no-console
                 console.log(e)
+              }
+
+              if (rootGetters['auth/multistore']) {
+                order.multi_store = true
               }
 
               order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
