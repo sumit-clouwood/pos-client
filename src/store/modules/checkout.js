@@ -347,20 +347,20 @@ const actions = {
     //order level discount
 
     order.item_discounts = order.item_discounts.map(discount => {
-      discount.rate = Num.round(discount.rate).toFixed(2)
-      discount.price = Num.round(discount.price).toFixed(2)
-      discount.tax = Num.round(discount.tax).toFixed(2)
+      discount.rate = Num.round(discount.rate)
+      discount.price = Num.round(discount.price)
+      discount.tax = Num.round(discount.tax)
       return discount
     })
 
     order.order_surcharges = order.order_surcharges.map(surcharge => {
       surcharge.rate = surcharge.rate
-        ? Num.round(surcharge.rate).toFixed(2)
+        ? Num.round(surcharge.rate)
         : surcharge.rate
-      surcharge.price = Num.round(surcharge.price).toFixed(2)
-      surcharge.tax = Num.round(surcharge.tax).toFixed(2)
+      surcharge.price = Num.round(surcharge.price)
+      surcharge.tax = Num.round(surcharge.tax)
       surcharge.tax_rate = surcharge.tax_rate
-        ? Num.round(surcharge.tax_rate).toFixed(2)
+        ? Num.round(surcharge.tax_rate)
         : surcharge.tax_rate
       return surcharge
     })
