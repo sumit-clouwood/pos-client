@@ -187,7 +187,7 @@ const actions = {
         )
       }
       // eslint-disable-next-line no-console
-      console.log(_order, 'datatata')
+      console.log(jsonResponse, 'datatata')
       let x = JSON.stringify(jsonResponse)
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')

@@ -1,5 +1,4 @@
 <template>
-  <!-- Select Discount  -->
   <div class="modal fade" id="printer-settings" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
@@ -24,15 +23,16 @@
                 </option>
               </select>
             </div>
-            <div>
-              <label>Please Choose</label>
+            <div class="printConfg">
+              <label>Print in KOT</label>
               <label>
-                Print in KOT
                 <input
                   type="checkbox"
                   v-model="printerSettings.is_kot"
                   name="printcong"
+                  id="printcongs"
                 />
+                <label for="printcongs"></label>
               </label>
             </div>
             <div>
@@ -125,5 +125,77 @@ export default {
   grid-template-columns: repeat(2, 1fr);
   justify-content: flex-start;
   align-items: center;
+}
+.printer-setting-wrapper {
+  width: 100%;
+}
+.printer-setting-wrapper > div {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  justify-content: flex-start;
+  align-items: center;
+  grid-gap: 3rem;
+}
+.printer-setting-wrapper select,
+.printer-setting-wrapper input {
+  width: 100%;
+  height: 3.125rem;
+  border-radius: 3px;
+  background-color: #ffffff;
+  border: solid 1px #e4e7eb;
+  padding: 5px 10px;
+}
+.printer-setting-wrapper label {
+  font-size: 0.875rem;
+  line-height: normal;
+  letter-spacing: 0.5px;
+  color: #72777c;
+  vertical-align: middle;
+}
+.printConfg {
+  margin: 1rem 0;
+}
+/*Checkboxes styles*/
+.printer-setting-wrapper input[type='checkbox'] {
+  display: none;
+}
+.printer-setting-wrapper input[type='checkbox'] + label {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 20px;
+  font: 14px/20px 'Open Sans', Arial, sans-serif;
+  color: #ddd;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.printer-setting-wrapper input[type='checkbox'] + label:last-child {
+  margin-bottom: 0;
+}
+.printer-setting-wrapper input[type='checkbox'] + label:before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #5056ca;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0.6;
+  -webkit-transition: all 0.12s, border-color 0.08s;
+  transition: all 0.12s, border-color 0.08s;
+}
+.printer-setting-wrapper input[type='checkbox']:checked + label:before {
+  width: 10px;
+  top: -5px;
+  left: 5px;
+  border-radius: 0;
+  opacity: 1;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 </style>
