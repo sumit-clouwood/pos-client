@@ -13,7 +13,7 @@ export default {
   },
   getPrinters() {
     return DataService.get(
-        `/model/store_registered_printers?page_id=store_registered_printers_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=name`
+      `/model/store_registered_printers?page_id=store_registered_printers_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=name`
     )
   },
 }
