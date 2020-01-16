@@ -8,10 +8,18 @@
       <div class="food-bottom-arrow food-arrow" @click="foodBottom">
         <i class="fa fa-chevron-down" aria-hidden="true"></i>
       </div>
-      <div class="food-cat-top-arrow food-arrow" @click="foodCatTop">
+      <div
+        class="food-cat-top-arrow food-arrow"
+        v-if="subcategories.length"
+        @click="foodCatTop"
+      >
         <i class="fa fa-chevron-up" aria-hidden="true"></i>
       </div>
-      <div class="food-cat-bottom-arrow food-arrow" @click="foodCatBottom">
+      <div
+        class="food-cat-bottom-arrow food-arrow"
+        v-if="subcategories.length"
+        @click="foodCatBottom"
+      >
         <i class="fa fa-chevron-down" aria-hidden="true"></i>
       </div>
       <SubMenu v-if="subcategories.length" />
