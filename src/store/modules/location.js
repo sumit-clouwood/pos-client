@@ -94,7 +94,13 @@ const actions = {
           })
           commit('context/SET_MULTI_STORES', availabeStores, { root: true })
         }
-
+        dispatch(
+          'auth/getAllPrinters',
+          {},
+          {
+            root: true,
+          }
+        )
         commit(mutation.SET_BRAND, storedata.data.brand)
 
         if (storedata.data.store) {

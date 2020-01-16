@@ -33,7 +33,10 @@
           />
           <DMItem :actionDetails="waitingOrder" v-else />
         </div>
-        <div class="drivers-filter" :class="{ active: isActive }">
+        <!--<span class="driver-arrow" @click="driverDetailsSidebar">-->
+        <!--<i class="fa fa-chevron-left" aria-hidden="true"></i>-->
+        <!--</span>-->
+        <div class="drivers-filter">
           <div class="table-drivers-filter">
             <div class="upper">
               <div class="select-driver" @click="activateDriveList">
@@ -224,6 +227,9 @@ export default {
     showDropdown: function() {
       $('.dropdown-content').toggle()
     },
+    //    driverDetailsSidebar() {
+    //      $('.drivers-filter').toggleClass('active')
+    //    },
     moreOrder: function(pageNumber) {
       this.$store.commit('deliveryManager/SET_DM_PAGE', pageNumber)
       this.$store.dispatch('deliveryManager/fetchDMOrderDetail')

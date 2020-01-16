@@ -7,6 +7,7 @@ const state = {
   rules: null,
   templateId: null,
   tableNumber: null,
+  printers: false,
 }
 
 // getters
@@ -46,11 +47,16 @@ const getters = {
 
 // actions
 const actions = {
-  async printRules({ commit }) {
+  async printRules({ commit, dispatch }) {
     const rules = await InvoiceService.fetchPrintRules()
     commit(mutation.SET_RULES, rules)
+    dispatch('getAllPrinters')
   },
-
+  getAllPrinters({ commit }) {
+    InvoiceService.getPrinters().then(response => {
+      commit(mutation.SET_PRINTERS, response.data)
+    })
+  },
   async fetchTemplates({ commit }) {
     const templates = await InvoiceService.fetchTemplates()
     commit('SET_PRINT_TEMPLATES', templates)
@@ -89,6 +95,9 @@ const mutations = {
   },
   [mutation.SET_TABLE_NUMBER](state, tableNumber) {
     state.tableNumber = tableNumber
+  },
+  [mutation.SET_PRINTERS](state, printers) {
+    state.printers = printers
   },
   // [mutation.RESET](state) {
   //   state.templateHtml = null

@@ -11,6 +11,12 @@
           </h4>
         </div>
         <div class="modal-body manage-customer-wrap color-dashboard-background">
+          <div class="cust-top-arrow food-arrow" @click="customerTop">
+            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+          </div>
+          <div class="cust-bottom-arrow food-arrow" @click="customerBottom">
+            <i class="fa fa-chevron-down" aria-hidden="true"></i>
+          </div>
           <ManageCustomerHeader />
           <ManageCustomerContent />
         </div>
@@ -22,6 +28,7 @@
 </template>
 
 <script>
+/* global $ */
 import ManageCustomerHeader from './ManageCustomer/ManageCustomerHeader'
 import ManageCustomerContent from './ManageCustomer/ManageCustomerContent'
 import ManageCustomerFooter from './ManageCustomer/ManageCustomerFooter'
@@ -37,6 +44,55 @@ export default {
     ManageCustomerHeader,
     ManageCustomerContent,
     ManageCustomerFooter,
+  },
+  data() {
+    return {
+      custBlockHeight: 0,
+      custBlockInitHeight: 0,
+      custBlockItemHeight: 0,
+    }
+  },
+  updated() {
+    this.custAreaCalculation()
+  },
+  methods: {
+    custAreaCalculation() {
+      let custBlockHeight = $('.manage-customer-table').innerHeight()
+      this.custBlockHeight = custBlockHeight
+      this.custBlockInitHeight = custBlockHeight
+      this.custBlockItemHeight = $('.manage-customer-table > div').innerHeight()
+      $('.cust-bottom-arrow, .cust-top-arrow').removeClass('disable')
+      if (this.custBlockHeight > this.custBlockItemHeight) {
+        $('.cust-bottom-arrow, .cust-top-arrow').addClass('disable')
+      }
+    },
+    customerTop() {
+      if (this.custBlockItemHeight === 0) this.custAreaCalculation()
+      if (this.custBlockHeight <= 0) {
+        $('.cust-top-arrow').addClass('disable')
+        return false
+      }
+      this.custBlockHeight -= parseInt(this.custBlockInitHeight)
+      $('.cust-bottom-arrow').removeClass('disable')
+      $('.manage-customer-table').animate(
+        { scrollTop: this.custBlockHeight },
+        1000
+      )
+    },
+    customerBottom() {
+      if (this.custBlockItemHeight === 0) this.custAreaCalculation()
+      this.custBlockHeight += parseInt(this.custBlockInitHeight)
+      if (this.custBlockHeight >= this.custBlockItemHeight) {
+        this.custBlockHeight -= parseInt(this.custBlockInitHeight)
+        $('.cust-bottom-arrow').addClass('disable')
+        return false
+      }
+      $('.cust-top-arrow').removeClass('disable')
+      $('.manage-customer-table').animate(
+        { scrollTop: this.custBlockHeight },
+        1000
+      )
+    },
   },
 }
 </script>

@@ -548,7 +548,7 @@ const actions = {
       oitem.cover_no = itemCover
       oitem.guest = rootState.dinein.guests
       oitem.cover_name = itemCoverName
-      oitem.kitchen_invoice = 0
+      // oitem.kitchen_invoice = 0
       return oitem
     })
     order.covers = orderCovers
