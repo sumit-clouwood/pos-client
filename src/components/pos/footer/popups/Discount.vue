@@ -140,7 +140,7 @@ export default {
       activeOrderDiscountId: 'activeOrderDiscountId',
     }),
   },
-  updated() {
+  mounted() {
     this.discountScroll()
   },
   methods: {

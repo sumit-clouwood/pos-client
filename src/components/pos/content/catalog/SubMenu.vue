@@ -19,7 +19,6 @@
           :key="item._id"
           :class="{ active: currentSubcategory === item._id }"
           @click.prevent="getSubCatItems(item)"
-          @click="getScrollButtons"
         >
           <img
             v-if="item.sub_category_image != ''"
