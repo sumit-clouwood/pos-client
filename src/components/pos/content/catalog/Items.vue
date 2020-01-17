@@ -97,7 +97,6 @@ export default {
       let foodBlockHeight = $('.food-block').innerHeight()
       let foodBlockInitHeight = foodBlockHeight
       let foodBlockItemHeight = $('.food-menu').innerHeight()
-      $('.food-bottom-arrow, .food-top-arrow').removeClass('disable')
       if (this.foodBlockHeight > this.foodBlockItemHeight) {
         $('.food-bottom-arrow, .food-top-arrow').addClass('disable')
       }
