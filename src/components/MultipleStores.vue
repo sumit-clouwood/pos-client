@@ -10,7 +10,7 @@
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header" style="background-color: rgb(245, 245, 245)">
-          <h4 class="modal-title">Select Store</h4>
+          <h4 class="modal-title">{{ _t('Select Store') }}</h4>
         </div>
         <div class="modal-body stores-list-container">
           <div class="stores-list">
@@ -42,7 +42,7 @@
             class="tables-btn-style"
             data-dismiss="modal"
           >
-            Close
+            {{ _t('Close') }}
           </button>
         </div>
       </div>
@@ -70,6 +70,7 @@ export default {
       'haveMultipleStores',
       'multipleStores',
     ]),
+    ...mapGetters('location', ['_t']),
     ...mapGetters({
       selectedBrand: ['context/brand'],
       defaultStore: ['context/store'],

@@ -121,17 +121,8 @@ export default {
         this.isPrint = true
         try {
           setTimeout(() => {
-            // Code Pane reflects in DIMS WEB APP
-            if (
-              typeof localStorage.getItem('printerConfig') != 'undefined' &&
-              window.PrintHandle != null &&
-              window.PrintHandle.GetAgent() === 'Dimspos.App'
-            ) {
-              window.PrintHandle.GetAllPrinters(function(data) {
-                // eslint-disable-next-line no-console
-                console.log(data)
-              })
-            } else {
+            // Code Pane reflects in DIMS WEB APP window.PrintHandle.GetAgent() !== 'Dimspos.App'
+            if (window.PrintHandle == null) {
               //this.$refs.iframe.contentWindow.print()
               let w = this.$refs.iframe.contentWindow
               w.focus()

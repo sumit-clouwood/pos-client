@@ -95,7 +95,7 @@
       </div>
       <div class="details-item">
         <span class="details-item-name color-text-invert">{{
-          _t('Loyalty Points Earned:')
+          _t('Loyalty Points Earned')
         }}</span>
         <p class="color-text">
           {{

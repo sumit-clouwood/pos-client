@@ -43,7 +43,9 @@
       :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
     >
       <!--<btnBack :param="'item'" />-->
-      <div class="no_item"><h2>No menu item found</h2></div>
+      <div class="no_item">
+        <h2>{{ _t('No menu item found') }}</h2>
+      </div>
     </div>
   </div>
 </template>
@@ -70,6 +72,7 @@ export default {
     ...mapState('location', ['currency']),
     ...mapState('order', ['splitBill', 'selectedOrder']),
     ...mapGetters('order', ['orderType']),
+    ...mapGetters('location', ['_t']),
     ...mapGetters('category', ['items', 'itemByCode']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
