@@ -51,11 +51,19 @@
 </template>
 
 <script>
+/* global $ */
 import { mapState, mapGetters } from 'vuex'
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
 export default {
   name: 'SubMenu',
+  data() {
+    return {
+      foodBlockItemHeight: 0,
+      foodBlockHeight: 0,
+      foodBlockInitHeight: 0,
+    }
+  },
   components: {
     // btnBack,
   },
@@ -70,6 +78,12 @@ export default {
     ...mapGetters('category', ['subcategories', 'items']),
     ...mapGetters(['subCategoryHendler', 'foodMenuHendler']),
   },
+  updated() {
+    this.setScreenScrolls()
+  },
+  mounted() {
+    this.setScreenScrolls()
+  },
   methods: {
     getSubCatItems(item) {
       // eslint-disable-next-line no-undef
@@ -78,6 +92,16 @@ export default {
       $('.search-field-input').val('')
       this.$store.dispatch('category/getItems', item)
       this.$store.dispatch('foodMenuHendlerChange')
+    },
+    setScreenScrolls() {
+      let foodBlockHeight = $('.food-block').innerHeight()
+      this.foodBlockHeight = foodBlockHeight
+      this.foodBlockInitHeight = foodBlockHeight
+      this.foodBlockItemHeight = $('.food-menu').innerHeight()
+      $('.food-bottom-arrow, .food-top-arrow').removeClass('disable')
+      if (this.foodBlockHeight > this.foodBlockItemHeight) {
+        $('.food-bottom-arrow, .food-top-arrow').addClass('disable')
+      }
     },
     // ...mapActions('category', ['getItems']),
   },

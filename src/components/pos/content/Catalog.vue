@@ -2,10 +2,18 @@
   <div class="main-body color-dashboard-background color-text">
     <search />
     <div :class="['food-wrapper', subCategoryHendler ? 'active' : 'notActive']">
-      <div class="food-top-arrow food-arrow" @click="foodTop">
+      <div
+        class="food-top-arrow food-arrow"
+        v-if="categories.length"
+        @click="foodTop"
+      >
         <i class="fa fa-chevron-up" aria-hidden="true"></i>
       </div>
-      <div class="food-bottom-arrow food-arrow" @click="foodBottom">
+      <div
+        class="food-bottom-arrow food-arrow"
+        v-if="categories.length"
+        @click="foodBottom"
+      >
         <i class="fa fa-chevron-down" aria-hidden="true"></i>
       </div>
       <div
@@ -67,6 +75,9 @@ export default {
   updated() {
     this.setScreenScrolls()
   },
+  mounted() {
+    this.setScreenScrolls()
+  },
   methods: {
     setScreenScrolls() {
       let foodBlockHeight = $('.food-block').innerHeight()
@@ -88,7 +99,6 @@ export default {
       }
     },
     foodBottom() {
-      this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
       //alert(this.foodBlockHeight + ' >> ' + this.foodBlockItemHeight)
       if (this.foodBlockHeight >= this.foodBlockItemHeight) {
         this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
@@ -97,6 +107,7 @@ export default {
       }
       $('.food-top-arrow').removeClass('disable')
       $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
+      this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
     },
     foodTop() {
       //alert(this.foodBlockHeight + ' <> ' + this.foodBlockInitHeight)
@@ -118,7 +129,6 @@ export default {
       $('.foodCatScroll').animate({ scrollTop: this.foodCatHeight }, 1000)
     },
     foodCatBottom() {
-      this.foodCatHeight += parseInt(this.foodCatInitHeight)
       if (this.foodCatHeight >= this.foodCatItemHeight) {
         this.foodCatHeight -= parseInt(this.foodCatInitHeight)
         $('.food-cat-bottom-arrow').addClass('disable')
@@ -126,6 +136,7 @@ export default {
       }
       $('.food-cat-top-arrow').removeClass('disable')
       $('.foodCatScroll').animate({ scrollTop: this.foodCatHeight }, 1000)
+      this.foodCatHeight += parseInt(this.foodCatInitHeight)
     },
   },
   computed: {

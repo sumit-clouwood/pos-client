@@ -140,7 +140,7 @@ export default {
       activeOrderDiscountId: 'activeOrderDiscountId',
     }),
   },
-  updated() {
+  mounted() {
     this.discountScroll()
   },
   methods: {
@@ -161,7 +161,6 @@ export default {
     },
     discountScroll() {
       let discountBlockHeight = $('.select-discount').innerHeight()
-      if (this.discountBlockItemHeight === 0) this.discountScroll()
       this.discountBlockHeight = discountBlockHeight
       this.discountBlockInitHeight = discountBlockHeight
       this.discountBlockItemHeight = $('.select-discount-option').innerHeight()
@@ -177,7 +176,6 @@ export default {
     },
     discountBottom() {
       if (this.discountBlockItemHeight === 0) this.discountScroll()
-      this.discountBlockHeight += parseInt(this.discountBlockInitHeight)
       if (this.discountBlockHeight >= this.discountBlockItemHeight) {
         this.discountBlockHeight -= parseInt(this.discountBlockInitHeight)
         $('.discount-footer .food-bottom-arrow').addClass('disable')
@@ -188,6 +186,7 @@ export default {
         { scrollTop: this.discountBlockHeight },
         1000
       )
+      this.discountBlockHeight += parseInt(this.discountBlockInitHeight)
     },
     discountTop() {
       if (this.discountBlockItemHeight === 0) this.discountScroll()

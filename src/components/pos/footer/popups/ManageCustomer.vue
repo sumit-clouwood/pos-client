@@ -52,7 +52,7 @@ export default {
       custBlockItemHeight: 0,
     }
   },
-  updated() {
+  mounted() {
     this.custAreaCalculation()
   },
   methods: {
@@ -81,7 +81,6 @@ export default {
     },
     customerBottom() {
       if (this.custBlockItemHeight === 0) this.custAreaCalculation()
-      this.custBlockHeight += parseInt(this.custBlockInitHeight)
       if (this.custBlockHeight >= this.custBlockItemHeight) {
         this.custBlockHeight -= parseInt(this.custBlockInitHeight)
         $('.cust-bottom-arrow').addClass('disable')
@@ -92,6 +91,7 @@ export default {
         { scrollTop: this.custBlockHeight },
         1000
       )
+      this.custBlockHeight += parseInt(this.custBlockInitHeight)
     },
   },
 }
