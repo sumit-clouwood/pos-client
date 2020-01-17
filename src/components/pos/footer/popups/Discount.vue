@@ -168,7 +168,6 @@ export default {
         '.discount-footer .food-bottom-arrow, .discount-footer .food-top-arrow'
       ).removeClass('disable')
       if (this.discountBlockHeight > this.discountBlockItemHeight) {
-        alert(this.discountBlockHeight > this.discountBlockItemHeight)
         $(
           '.discount-footer .food-bottom-arrow, .discount-footer .food-top-arrow'
         ).addClass('disable')
