@@ -191,6 +191,7 @@ export default {
     discountTop() {
       if (this.discountBlockItemHeight === 0) this.discountScroll()
       if (this.discountBlockHeight <= 0) {
+        this.discountBlockHeight += parseInt(this.discountBlockInitHeight)
         $('.discount-footer .food-top-arrow').addClass('disable')
         return false
       }
