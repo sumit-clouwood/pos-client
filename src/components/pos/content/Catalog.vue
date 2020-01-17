@@ -108,8 +108,9 @@ export default {
     foodBottom() {
       //alert(this.foodBlockHeight + ' >> ' + this.foodBlockItemHeight)
       if (this.foodBlockHeight >= this.foodBlockItemHeight) {
-        this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
         $('.food-bottom-arrow').addClass('disable')
+        this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
+        return false
       }
       $('.food-top-arrow').removeClass('disable')
       $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
@@ -118,11 +119,12 @@ export default {
     foodTop() {
       //alert(this.foodBlockHeight + ' <> ' + this.foodBlockInitHeight)
       if (this.foodBlockHeight <= 0) {
+        this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
         $('.food-top-arrow').addClass('disable')
         return false
       }
-      this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
       $('.food-bottom-arrow').removeClass('disable')
+      this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
       $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
     },
     foodCatTop() {
