@@ -121,7 +121,7 @@
                 <template v-for="(modifier, i) in order.item_modifiers">
                   <template v-if="modifier.for_item == item.no">
                     <div class="food-extra" :key="'modifier' + i">
-                      {{ translate_item_modifier(modifier) }}
+                      {{ translate_item_modifier(modifier, item) }}
                       <span v-if="modifier.price !== 0"
                         >({{
                           format_number(
@@ -537,9 +537,10 @@ export default {
         return ''
       }
     },
-    translate_item_modifier(item) {
+    translate_item_modifier(item, orderItem) {
       var found_item = this.$store.getters['modifier/findModifier'](
-        item.entity_id
+        item.entity_id,
+        orderItem
       )
       if (found_item) {
         return this.translate_entity(found_item, 'name')

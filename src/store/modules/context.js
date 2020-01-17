@@ -39,6 +39,8 @@ const getters = {
       return ''
     }
   },
+  storeName: state => storeId =>
+    state.multiStores.find(store => store._id == storeId).name,
 }
 
 // actions

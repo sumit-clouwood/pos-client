@@ -99,7 +99,7 @@ const getters = {
 
 // actions, often async
 const actions = {
-  fetchAll({ commit, dispatch, rootState }) {
+  fetchAll({ commit, dispatch, rootState, rootGetters }) {
     return new Promise((resolve, reject) => {
       CategoryService.categories()
         .then(response => {
@@ -108,7 +108,15 @@ const actions = {
           CategoryService.subcategories().then(response => {
             commit(mutation.SET_SUBCATEGORIES, response.data.data)
             CategoryService.items().then(response => {
-              commit(mutation.SET_ITEMS, response.data.data)
+              let items = response.data.data
+              //for multistore items we need to set store_id with item
+              if (rootGetters['auth/multistore']) {
+                items = items.map(item => {
+                  item.store_id = rootState.context.storeId
+                  return item
+                })
+              }
+              commit(mutation.SET_ITEMS, items)
               if (!rootState.sync.reloaded) {
                 dispatch('browse', state.categories[0])
               }

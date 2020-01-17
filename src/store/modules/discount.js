@@ -70,7 +70,10 @@ const getters = {
   itemDiscounts: (state, getters, rootState, rootGetters) => {
     let itemDiscounts = state.itemDiscounts
     if (rootGetters['auth/multistore']) {
-      itemDiscounts = state.multistoreItemDiscounts[rootState.context.storeId]
+      const storeId = rootState.order.item
+        ? rootState.order.item.store_id
+        : rootState.context.storeId
+      itemDiscounts = state.multistoreItemDiscounts[storeId]
     }
     if (!itemDiscounts) {
       return []
@@ -419,6 +422,8 @@ const mutations = {
     state.taxDiscountAmount = 0
     state.surchargeDiscountAmount = 0
     state.error = false
+    state.multistoreItemDiscounts = {}
+    state.multistoreOrderDiscounts = {}
   },
 }
 
