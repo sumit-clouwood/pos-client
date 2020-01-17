@@ -86,8 +86,25 @@ export default {
     },
   },
   created() {},
-  beforeDestroy() {},
+  updated() {
+    this.setScreenScrolls()
+  },
   methods: {
+    setScreenScrolls() {
+      let foodBlockHeight = $('.food-block').innerHeight()
+      let foodBlockInitHeight = foodBlockHeight
+      let foodBlockItemHeight = $('.food-menu').innerHeight()
+      $('.food-bottom-arrow, .food-top-arrow').removeClass('disable')
+      if (this.foodBlockHeight > this.foodBlockItemHeight) {
+        $('.food-bottom-arrow, .food-top-arrow').addClass('disable')
+      }
+
+      this.$emit('heights', {
+        foodBlockHeight,
+        foodBlockInitHeight,
+        foodBlockItemHeight,
+      })
+    },
     choosePrice(item) {
       if (item.countries.length !== 0) {
         return item.countries[0].value
