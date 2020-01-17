@@ -37,7 +37,7 @@
         <div v-if="!categories.length" class="text-danger">
           {{ _t('Nothing found to order.') }}
         </div>
-        <Items v-else />
+        <Items @heights="getCurrentHeights" v-else />
       </div>
     </div>
   </div>
@@ -50,7 +50,6 @@ import Breadcrumbs from './catalog/Breadcrumbs'
 import Search from './catalog/Search'
 import SubMenu from './catalog/SubMenu'
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'Catalog',
   props: {
@@ -75,10 +74,18 @@ export default {
   updated() {
     this.setScreenScrolls()
   },
+  beforeUpdate() {
+    this.setScreenScrolls()
+  },
   mounted() {
     this.setScreenScrolls()
   },
   methods: {
+    getCurrentHeights(currentItems) {
+      this.foodBlockHeight = currentItems.foodBlockHeight
+      this.foodBlockInitHeight = currentItems.foodBlockInitHeight
+      this.foodBlockItemHeight = currentItems.foodBlockItemHeight
+    },
     setScreenScrolls() {
       let foodBlockHeight = $('.food-block').innerHeight()
       let foodCatHeight = $('.foodCatScroll').innerHeight()
@@ -101,8 +108,8 @@ export default {
     foodBottom() {
       //alert(this.foodBlockHeight + ' >> ' + this.foodBlockItemHeight)
       if (this.foodBlockHeight >= this.foodBlockItemHeight) {
-        this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
         $('.food-bottom-arrow').addClass('disable')
+        this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
         return false
       }
       $('.food-top-arrow').removeClass('disable')
@@ -112,15 +119,17 @@ export default {
     foodTop() {
       //alert(this.foodBlockHeight + ' <> ' + this.foodBlockInitHeight)
       if (this.foodBlockHeight <= 0) {
+        this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
         $('.food-top-arrow').addClass('disable')
         return false
       }
-      this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
       $('.food-bottom-arrow').removeClass('disable')
+      this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
       $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
     },
     foodCatTop() {
       if (this.foodCatHeight <= 0) {
+        this.foodCatHeight += parseInt(this.foodCatInitHeight)
         $('.food-cat-top-arrow').addClass('disable')
         return false
       }

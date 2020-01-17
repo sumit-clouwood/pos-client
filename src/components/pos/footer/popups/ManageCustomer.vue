@@ -69,6 +69,7 @@ export default {
     customerTop() {
       if (this.custBlockItemHeight === 0) this.custAreaCalculation()
       if (this.custBlockHeight <= 0) {
+        this.custBlockHeight += parseInt(this.custBlockInitHeight)
         $('.cust-top-arrow').addClass('disable')
         return false
       }
