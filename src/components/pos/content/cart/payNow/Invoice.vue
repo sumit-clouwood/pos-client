@@ -121,8 +121,8 @@ export default {
         this.isPrint = true
         try {
           setTimeout(() => {
-            // Code Pane reflects in DIMS WEB APP
-            if (window.PrintHandle.GetAgent() !== 'Dimspos.App') {
+            // Code Pane reflects in DIMS WEB APP window.PrintHandle.GetAgent() !== 'Dimspos.App'
+            if (window.PrintHandle == null) {
               //this.$refs.iframe.contentWindow.print()
               let w = this.$refs.iframe.contentWindow
               w.focus()
