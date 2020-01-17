@@ -51,7 +51,7 @@
               :class="{ active: selectedOrderType.OTApi === 'event' }"
               @click="showReservationSection()"
             >
-              <img src="img/pos/event.svg" />
+              <img src="img/pos/reservation.svg" />
               <span class="color-text-invert">
                 {{ _t('Reservation') }}
               </span>
