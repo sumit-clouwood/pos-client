@@ -52,7 +52,7 @@ export default {
       custBlockItemHeight: 0,
     }
   },
-  updated() {
+  mounted() {
     this.custAreaCalculation()
   },
   methods: {
