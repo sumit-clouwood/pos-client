@@ -280,6 +280,14 @@
         > .walkin-btn{
           height: $px50;
           margin-right: $px10;
+          padding: 0;
+          > a{
+            height: $px50;
+            display: grid;
+            vertical-align: middle;
+            padding: $px6 $px12;
+            align-items: center;
+          }
         }
       }
     }

@@ -388,6 +388,15 @@ button.v-btn.v-btn--icon.theme--light {
     margin-right: 10px;
     min-height: 3.3rem;
   }
+  .change-location > .walkin-btn{
+    padding: 0;
+  }
+  .change-location > .walkin-btn > a{
+    min-height: 3.3rem;
+    padding: 6px 12px;
+    display: grid;
+    align-items: center;
+  }
     .change-location > button > a {
       color: #fff; }
 
