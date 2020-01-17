@@ -116,7 +116,7 @@ export default {
   },
   updated() {
     let menuHeight = $('.navigation-list-wrapper').innerHeight()
-    this.menuHeight = menuHeight
+    this.menuHeighInIt = this.menuHeight = menuHeight
     this.menuInitHeight = menuHeight
     this.menuItemHeight = $('.navigation-list').innerHeight()
   },
@@ -129,23 +129,26 @@ export default {
       this.$store.dispatch('category/browse', item)
     },
     showMore() {
-      // menuShowMore()
-      this.menuHeight += parseInt(this.menuInitHeight)
-      //alert(this.cartHeight + ' << ' + this.cartItemHeight)
+      let menuHeightOld = this.menuHeighInIt
+      //Toggles it up
       if (this.menuHeight >= this.menuItemHeight) {
-        $('.slider-btn').removeClass('toggle')
         this.menuHeight = 0
+        $('.slider-btn').removeClass('toggle')
         $('.navigation-list-wrapper').animate(
           { scrollTop: this.menuHeight },
           1000
         )
+        this.menuHeight = menuHeightOld
         return false
       }
+
+      //Toggles it down
       $('.slider-btn').addClass('toggle')
       $('.navigation-list-wrapper').animate(
         { scrollTop: this.menuHeight },
         1000
       )
+      this.menuHeight += parseInt(this.menuInitHeight)
     },
     subCategoryHendlerChange() {
       this.$store.dispatch('category/collectSearchItems', '')
