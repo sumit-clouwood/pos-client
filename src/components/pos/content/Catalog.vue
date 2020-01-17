@@ -129,6 +129,7 @@ export default {
     },
     foodCatTop() {
       if (this.foodCatHeight <= 0) {
+        this.foodCatHeight += parseInt(this.foodCatInitHeight)
         $('.food-cat-top-arrow').addClass('disable')
         return false
       }
