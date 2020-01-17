@@ -1292,7 +1292,7 @@ const actions = {
               data => data.entity_id === item._id
             )
             if (coverNo.length) {
-              item.coverNo = coverNo[key].cover_no
+              item.coverNo = coverNo[0].cover_no
               if (allCovers !== false && item.coverNo !== '') {
                 let coverDetail = allCovers.filter(
                   cover => cover._id === item.coverNo
