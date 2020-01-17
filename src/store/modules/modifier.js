@@ -285,12 +285,18 @@ const actions = {
     return Promise.resolve()
   },
   //active item and index already been set to order.item
-  setActiveItem({ commit, dispatch, rootState }) {
+  setActiveItem({ commit, dispatch, rootState, rootGetters }) {
     //pop needs all modifiers available for this item so we need to fetch modifier from modifeir store
     //but first we need to get active order so we can find exact item from modifiers
 
     const orderItem = rootState.order.item
-    const modifierItem = getters.stateItemModifiers.find(
+    let stateModifiers = state.itemModifiers
+
+    if (rootGetters['auth/multistore']) {
+      stateModifiers = state.multistoreModifiers[item.store_id]
+    }
+
+    const modifierItem = stateModifiers.find(
       item => item.itemId == orderItem._id
     )
     let item = {}
