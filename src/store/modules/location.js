@@ -145,6 +145,8 @@ const actions = {
           } else {
             showModal('#multiStores')
           }
+        } else {
+          router.push('/')
         }
         resolve()
       })
