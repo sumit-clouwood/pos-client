@@ -49,11 +49,11 @@
             <div
               class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'event' }"
-              @click="setOrderType({ OTview: 'Event', OTApi: 'event' })"
+              @click="showReservationSection()"
             >
               <img src="img/pos/event.svg" />
               <span class="color-text-invert">
-                {{ _t('Event') }}
+                {{ _t('Reservation') }}
               </span>
             </div>
             <div
@@ -115,6 +115,7 @@
 </template>
 
 <script>
+/* global $ */
 import { mapState, mapGetters } from 'vuex'
 import * as CONST from '@/constants'
 
@@ -130,6 +131,7 @@ export default {
     ...mapGetters('location', ['_t']),
     ...mapState('order', ['orderType']),
     ...mapGetters('context', ['store']),
+    ...mapState('dinein', ['activeArea']),
   },
   watch: {
     orderType(newVal, oldVal) {
@@ -181,6 +183,17 @@ export default {
           )
         }
       }
+    },
+    showReservationSection() {
+      this.$router.push('/dine-in' + this.store)
+      this.$store
+        .dispatch('dinein/updateDineInOrderStatus', {
+          title: 'reservation',
+          pageId: '',
+        })
+        .then(() => {
+          $('#' + this.activeArea._id).click()
+        })
     },
   },
 }
