@@ -365,7 +365,7 @@ const actions = {
       item.split = false
       item.paid = false
 
-      if (rootGetters['auth/multistore']) {
+      if (rootGetters['auth/multistore'] && !item.store_id) {
         item.store_id = rootState.context.storeId
       }
 

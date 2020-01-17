@@ -293,7 +293,7 @@ const actions = {
     let stateModifiers = state.itemModifiers
 
     if (rootGetters['auth/multistore']) {
-      stateModifiers = state.multistoreModifiers[item.store_id]
+      stateModifiers = state.multistoreModifiers[orderItem.store_id]
     }
 
     const modifierItem = stateModifiers.find(
