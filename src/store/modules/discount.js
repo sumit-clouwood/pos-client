@@ -140,18 +140,20 @@ const actions = {
     commit(mutation.SET_DISCOUNTS, {
       orderDiscounts: orderDiscounts.data.data,
       itemDiscounts: itemDiscounts.data.data,
-      multistore: rootGetters['auth/multistore']
+      multistore: storeId
+        ? storeId
+        : rootGetters['auth/multistore']
         ? rootState.context.storeId
         : false,
     })
   },
-  fetchMultistore({ rootState, dispatch }) {
+  fetchMultistore({ rootState, dispatch }, stores) {
     //don't repeat in case storeId is provided otherwise it ll just loop in
     //load discounts for all stores both item and order
-    rootState.context.multiStores.forEach(store => {
+    stores.forEach(storeId => {
       //skip current store
-      if (store._id !== rootState.context.storeId) {
-        dispatch('fetchAll', store._id)
+      if (storeId !== rootState.context.storeId) {
+        dispatch('fetchAll', storeId)
       }
     })
   },

@@ -289,13 +289,13 @@ const actions = {
       resolve()
     })
   },
-  fetchMultistore({ rootState, dispatch }) {
+  fetchMultistore({ rootState, dispatch }, stores) {
     //don't repeat in case storeId is provided otherwise it ll just loop in
-    //load modifiers for all stores both item and order
-    rootState.context.multiStores.forEach(store => {
+    //load discounts for all stores both item and order
+    stores.forEach(storeId => {
       //skip current store
-      if (store._id !== rootState.context.storeId) {
-        dispatch('fetchAll', store._id)
+      if (storeId !== rootState.context.storeId) {
+        dispatch('fetchAll', storeId)
       }
     })
   },

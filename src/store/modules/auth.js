@@ -306,7 +306,7 @@ const actions = {
           dispatch('announcement/fetchAll', response.data, {
             root: true,
           }).then(() => {})
-          resolve()
+          resolve(response.data)
         })
       } else {
         reject()
