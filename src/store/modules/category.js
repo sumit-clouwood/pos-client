@@ -153,7 +153,7 @@ const actions = {
               //for multistore items we need to set store_id with item
               if (rootGetters['auth/multistore']) {
                 items = items.map(item => {
-                  item.store_id = rootState.context.storeId
+                  item.store_id = storeId ? storeId : rootState.context.storeId
                   return item
                 })
               }
