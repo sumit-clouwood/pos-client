@@ -145,6 +145,11 @@ export default {
       bootstrap
         .setup(this.$store)
         .then(() => {
+          if (this.$store.getters['auth/multistore']) {
+            this.$store.dispatch('discount/fetchMultistore').then(() => {})
+            this.$store.dispatch('modifier/fetchMultistore').then(() => {})
+          }
+
           setTimeout(() => {
             clearInterval(interval)
             this.progressIncrement = 100
@@ -152,6 +157,7 @@ export default {
           setTimeout(() => {
             this.loading = false
           }, 300)
+
           this.setupServiceWorker()
           this.setupRoutes()
           this.setupExternalScripts()

@@ -131,10 +131,10 @@ const getters = {
 
 // actions
 const actions = {
-  async fetchAll({ commit, rootState, rootGetters }) {
+  async fetchAll({ commit, rootState, rootGetters }, storeId = null) {
     const [orderDiscounts, itemDiscounts] = await Promise.all([
-      DiscountService.fetchOrderDiscounts(rootState.order.orderType.OTApi),
-      DiscountService.fetchItemDiscounts(rootState.order.orderType.OTApi),
+      DiscountService.fetchOrderDiscounts(storeId),
+      DiscountService.fetchItemDiscounts(storeId),
     ])
 
     commit(mutation.SET_DISCOUNTS, {
@@ -143,6 +143,16 @@ const actions = {
       multistore: rootGetters['auth/multistore']
         ? rootState.context.storeId
         : false,
+    })
+  },
+  fetchMultistore({ rootState, dispatch }) {
+    //don't repeat in case storeId is provided otherwise it ll just loop in
+    //load discounts for all stores both item and order
+    rootState.context.multiStores.forEach(store => {
+      //skip current store
+      if (store._id !== rootState.context.storeId) {
+        dispatch('fetchAll', store._id)
+      }
     })
   },
 

@@ -265,24 +265,39 @@ const getters = {
 
 // actions, often async
 const actions = {
-  async fetchAll({ commit, rootState, rootGetters }) {
-    const [groups, subgroups, modifiers, foodIcons] = await Promise.all([
-      ModifierService.groups(),
-      ModifierService.subgroups(),
-      ModifierService.modifiers(),
-      ModifierService.foodIcons(),
-    ])
+  fetchAll({ commit, rootState, rootGetters }, storeId = null) {
+    return new Promise(async resolve => {
+      const [groups, subgroups, modifiers, foodIcons] = await Promise.all([
+        ModifierService.groups(storeId),
+        ModifierService.subgroups(storeId),
+        ModifierService.modifiers(storeId),
+        ModifierService.foodIcons(),
+      ])
 
-    commit(mutation.SET_MODIFIERS, {
-      groups: groups.data.data,
-      subgroups: subgroups.data.data,
-      modifiers: modifiers.data.data,
-      foodIcons: foodIcons.data.data,
-      multistore: rootGetters['auth/multistore']
-        ? rootState.context.storeId
-        : false,
+      commit(mutation.SET_MODIFIERS, {
+        groups: groups.data.data,
+        subgroups: subgroups.data.data,
+        modifiers: modifiers.data.data,
+        foodIcons: foodIcons.data.data,
+        multistore: storeId
+          ? storeId
+          : rootGetters['auth/multistore']
+          ? rootState.context.storeId
+          : false,
+      })
+
+      resolve()
     })
-    return Promise.resolve()
+  },
+  fetchMultistore({ rootState, dispatch }) {
+    //don't repeat in case storeId is provided otherwise it ll just loop in
+    //load modifiers for all stores both item and order
+    rootState.context.multiStores.forEach(store => {
+      //skip current store
+      if (store._id !== rootState.context.storeId) {
+        dispatch('fetchAll', store._id)
+      }
+    })
   },
   //active item and index already been set to order.item
   setActiveItem({ commit, dispatch, rootState, rootGetters }) {
