@@ -146,7 +146,16 @@ const actions = {
             showModal('#multiStores')
           }
         } else {
-          router.push('/')
+          let currentURL = window.location.href
+          if (currentURL.includes('/pos')) {
+            if (
+              router.currentRoute.params &&
+              (!router.currentRoute.params.brand_id ||
+                !router.currentRoute.params.store_id)
+            ) {
+              location.href = currentURL.split('/pos/')[0]
+            }
+          }
         }
         resolve()
       })
