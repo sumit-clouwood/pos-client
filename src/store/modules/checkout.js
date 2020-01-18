@@ -69,20 +69,20 @@ const getters = {
     })
 
     order.item_discounts.forEach(discount => {
-      data.subTotal -= Num.round(discount.price)
-      data.totalTax -= Num.round(discount.tax)
+      data.subTotal -= discount.price
+      data.totalTax -= discount.tax
     })
 
     order.order_discounts.forEach(discount => {
-      data.totalDiscount += Num.round(discount.price)
-      data.totalTax -= Num.round(discount.tax)
+      data.totalDiscount += discount.price
+      data.totalTax -= discount.tax
     })
 
     data.balanceDue =
       data.subTotal + data.totalTax + data.totalSurcharge - data.totalDiscount
 
     if (order.delivery_surcharge) {
-      data.balanceDue += Num.round(order.delivery_surcharge)
+      data.balanceDue += order.delivery_surcharge
     }
     return data
   },
@@ -348,20 +348,13 @@ const actions = {
     //order level discount
 
     order.item_discounts = order.item_discounts.map(discount => {
-      discount.rate = Num.round(discount.rate)
-      discount.price = Num.round(discount.price)
-      discount.tax = Num.round(discount.tax)
       return discount
     })
 
     order.order_surcharges = order.order_surcharges.map(surcharge => {
-      surcharge.rate = surcharge.rate
-        ? Num.round(surcharge.rate)
-        : surcharge.rate
-      surcharge.price = Num.round(surcharge.price)
-      surcharge.tax = Num.round(surcharge.tax)
+      surcharge.rate = surcharge.rate ? surcharge.rate : surcharge.rate
       surcharge.tax_rate = surcharge.tax_rate
-        ? Num.round(surcharge.tax_rate)
+        ? surcharge.tax_rate
         : surcharge.tax_rate
       return surcharge
     })
@@ -448,18 +441,16 @@ const actions = {
         //item discount as total of both discounts
 
         if (item.discount) {
-          let itemDiscountedTax = Num.round(
-            rootGetters['order/itemTaxDiscount'](item)
-          )
+          let itemDiscountedTax = rootGetters['order/itemTaxDiscount'](item)
 
           if (item.discountedNetPrice) {
             const modifiersTax = rootGetters['order/itemModifiersTax'](item)
             itemDiscountedTax = item.tax + modifiersTax - item.discountedTax
           }
 
-          const modifiersDiscountedTax = Num.round(
-            rootGetters['order/itemModifierTaxDiscount'](item)
-          )
+          const modifiersDiscountedTax = rootGetters[
+            'order/itemModifierTaxDiscount'
+          ](item)
 
           let itemDiscount = item.discount
           itemDiscount.itemId = item._id
@@ -475,9 +466,7 @@ const actions = {
             //don't round fixed discount calculations
             itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
           } else {
-            itemDiscount.tax = Num.round(
-              itemDiscountedTax + modifiersDiscountedTax
-            )
+            itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
           }
           itemDiscount.price =
             rootGetters['order/itemNetDiscount'](item) +
@@ -626,9 +615,9 @@ const actions = {
                 console.log(e)
               }
 
-              if (rootGetters['auth/multistore']) {
-                order.multi_store = true
-              }
+              // if (rootGetters['auth/multistore']) {
+              //   order.multi_store = true
+              // }
 
               order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
                 appliedSurcharge => {
@@ -663,9 +652,7 @@ const actions = {
                 const discount = rootState.discount.appliedOrderDiscount
                 const orderDiscount = {
                   name: discount.name,
-                  price: Num.round(
-                    rootGetters['discount/orderDiscountWithoutTax']
-                  ),
+                  price: rootGetters['discount/orderDiscountWithoutTax'],
                   tax: rootState.discount.taxDiscountAmount,
                   type: discount.type,
                   rate:
