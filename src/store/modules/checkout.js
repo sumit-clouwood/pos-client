@@ -487,7 +487,7 @@ const actions = {
 
         if (item.modifiersData && item.modifiersData.length) {
           item.modifiersData.forEach(modifier => {
-            itemModifiers.push({
+            let modifierEntity = {
               entity_id: modifier.modifierId,
               for_item: item.orderIndex,
               price: modifier.price,
@@ -495,7 +495,11 @@ const actions = {
               name: modifier.name,
               qty: item.quantity,
               type: modifier.type,
-            })
+            }
+            if (modifier.store_id) {
+              modifierEntity.store_id = modifier.store_id
+            }
+            itemModifiers.push(modifierEntity)
           })
           //get all modifiers by modifier ids attached to item
         }
