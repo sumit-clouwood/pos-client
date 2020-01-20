@@ -37,13 +37,7 @@ const getters = {
   },
 
   getReferral: state => id => {
-    let referralName = ''
-    state.referrals.find(referral => {
-      if (referral._id === id) {
-        referralName = referral.name
-      }
-    })
-    return referralName
+    return state.referrals.find(referral => referral._id === id)
   },
 
   permitted: state => (pageId, parentId) => {

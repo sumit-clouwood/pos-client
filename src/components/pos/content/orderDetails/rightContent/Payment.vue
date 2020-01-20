@@ -9,7 +9,11 @@
     <div v-if="orderDetails">
       <table
         class="table-responsive"
-        v-if="appliedReferral && orderDetails.order_type === 'call_center'"
+        v-if="
+          appliedReferral &&
+            orderDetails.order_type === CONST.ORDER_TYPE_CALL_CENTER &&
+            appliedReferral.referral_type !== CONST.REFERRAL_TYPE_COD
+        "
       >
         <tr class="receipt-body color-secondary color-text-invert">
           <th class="receipt-heading">{{ _t('Payment Method') }}</th>
@@ -44,18 +48,21 @@
       </table>
 
       <div v-else>
-        <h5 class="text-center pt-2 pb-3">{{ _t('No matching records') }}s</h5>
+        <h5 class="text-center pt-2 pb-3">{{ _t('No matching records') }}</h5>
       </div>
     </div>
 
     <div v-else>
-      <h5 class="text-center pt-2 pb-3">{{ _t('No matching records') }}s</h5>
+      <h5 class="text-center pt-2 pb-3">{{ _t('No matching records') }}</h5>
     </div>
-
     <div v-if="orderDetails">
       <div
         class="receipt-summary"
-        v-if="appliedReferral && orderDetails.order_type === 'call_center'"
+        v-if="
+          appliedReferral &&
+            orderDetails.order_type === CONST.ORDER_TYPE_CALL_CENTER &&
+            appliedReferral.referral_type !== CONST.REFERRAL_TYPE_COD
+        "
       >
         <div class="caption subtotal color-text-invert">
           {{ _t('Total Paid') }}:
@@ -64,6 +71,7 @@
           {{ formatPrice(orderDetails.balance_due) }}
         </div>
       </div>
+
       <div class="receipt-summary" v-else>
         <div class="caption subtotal color-text-invert">
           {{ _t('Total Paid') }}:
