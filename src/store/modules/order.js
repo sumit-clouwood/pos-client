@@ -244,9 +244,15 @@ const getters = {
 
   //ll be called as many times there is a commit on item
   itemGrossPriceDiscounted: (state, getters) => item => {
-    const itemGrossPrice = getters.itemGrossPrice(item)
-    const itemDiscount = getters.itemGrossDiscount(item)
-    return itemGrossPrice * item.quantity - itemDiscount * item.quantity
+    if (item.discount && item.discount.type === CONST.VALUE) {
+      const itemNetPrice = getters.itemNetPrice(item)
+      const itemDiscount = getters.itemGrossDiscount(item)
+      return (itemNetPrice - itemDiscount + item.discountedTax) * item.quantity
+    } else {
+      const itemGrossPrice = getters.itemGrossPrice(item)
+      const itemDiscount = getters.itemGrossDiscount(item)
+      return itemGrossPrice * item.quantity - itemDiscount * item.quantity
+    }
   },
 
   itemGrossPrice: (state, getters) => item => {
