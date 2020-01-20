@@ -65,6 +65,14 @@
           {{ getPlacedBy(orderDetails) }}
         </p>
       </div>
+      <div class="details-item" v-if="orderDetails.table_number">
+        <span class="details-item-name color-text-invert">{{
+          _t('Table Number')
+        }}</span>
+        <p class="color-text">
+          {{ orderDetails.table_number }}
+        </p>
+      </div>
     </div>
     <div v-if="orderDetails.customer">
       <div class="details-item">
@@ -183,10 +191,14 @@ export default {
   mixins: [DateTime],
   methods: {
     makeDate() {
-      this.datetime = this.convertDatetime(
-        this.orderDetails.item.real_created_datetime,
-        this.timezoneString
+      if (
+        this.orderDetails.item &&
+        this.orderDetails.item.real_created_datetime
       )
+        this.datetime = this.convertDatetime(
+          this.orderDetails.item.real_created_datetime,
+          this.timezoneString
+        )
     },
     /*timerClock: function() {
       return this.orderTimer(this.datetime, this.timezoneString)
