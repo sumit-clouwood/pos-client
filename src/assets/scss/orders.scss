@@ -9,6 +9,14 @@
   overflow: hidden;
   background-color: $gray-bg-light;
   grid-column-start: 2;
+  &.mainOrdersDine {
+    grid-template-rows: 1fr min-content;
+    .main-orders-list-wrapper {
+      &::-webkit-scrollbar {
+        width: $px10;
+      }
+    }
+  }
 
   .main-orders-title {
     display: none;
