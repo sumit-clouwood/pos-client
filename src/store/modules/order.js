@@ -71,8 +71,7 @@ const getters = {
   item: state => state.item,
 
   netPrice: () => item => {
-    const netPrice = item.grossPrice / ((100 + item.tax_sum) / 100)
-    return Num.round(netPrice)
+    return item.grossPrice / ((100 + item.tax_sum) / 100)
   },
 
   grossPrice: () => item => {
@@ -83,7 +82,7 @@ const getters = {
   totalItemsTax: (state, getters) => {
     let itemsTax = 0
     getters.splitItems.forEach(item => {
-      itemsTax += Num.round(item.tax) * item.quantity
+      itemsTax += item.tax * item.quantity
     })
     return itemsTax
   },
@@ -101,9 +100,7 @@ const getters = {
   totalItemTaxDiscount: (state, getters) => {
     let itemTaxDiscount = 0
     getters.splitItems.forEach(item => {
-      itemTaxDiscount += Num.round(
-        getters.itemTaxDiscount(item) * item.quantity
-      )
+      itemTaxDiscount += getters.itemTaxDiscount(item) * item.quantity
     })
     return itemTaxDiscount
   },
@@ -111,9 +108,8 @@ const getters = {
   totalModifierTaxDiscount: (state, getters) => {
     let modifiersTaxDiscount = 0
     getters.splitItems.forEach(item => {
-      modifiersTaxDiscount += Num.round(
+      modifiersTaxDiscount +=
         getters.itemModifierTaxDiscount(item) * item.quantity
-      )
     })
     return modifiersTaxDiscount
   },
@@ -122,22 +118,22 @@ const getters = {
     const totalTax = getters.totalTaxWithoutOrderDiscount
     const orderTaxDiscount = rootGetters['discount/taxDiscountAmount']
 
-    return Num.round(totalTax - orderTaxDiscount)
+    return totalTax - orderTaxDiscount
   },
   totalTaxWithoutOrderDiscount: (state, getters, rootState, rootGetters) => {
-    const itemsTax = Num.round(getters.totalItemsTax)
-    const modifiersTax = Num.round(getters.totalModifiersTax)
-    const itemTaxDiscount = Num.round(getters.totalItemTaxDiscount)
-    const modifiersTaxDiscount = Num.round(getters.totalModifierTaxDiscount)
+    const itemsTax = getters.totalItemsTax
+    const modifiersTax = getters.totalModifiersTax
+    const itemTaxDiscount = getters.totalItemTaxDiscount
+    const modifiersTaxDiscount = getters.totalModifierTaxDiscount
 
     const surchargeTax = rootGetters['surcharge/totalTax']
 
-    return Num.round(
+    return (
       itemsTax -
-        itemTaxDiscount +
-        modifiersTax -
-        modifiersTaxDiscount +
-        surchargeTax
+      itemTaxDiscount +
+      modifiersTax -
+      modifiersTaxDiscount +
+      surchargeTax
     )
   },
   orderTotal: (state, getters, rootState, rootGetters) => {
@@ -170,7 +166,7 @@ const getters = {
   subTotal: (state, getters) => {
     let subTotal = 0
     getters.splitItems.forEach(item => {
-      const itemPrice = Num.round(item.netPrice) * item.quantity
+      const itemPrice = item.netPrice * item.quantity
       const modifiersPrice = getters.itemModifiersPrice(item) * item.quantity
       const itemDiscount = getters.itemNetDiscount(item) * item.quantity
       const modifiersDiscount =
@@ -188,7 +184,7 @@ const getters = {
       }
 
       return (
-        Num.round((item.grossPrice * item.discountRate) / 100) +
+        (item.grossPrice * item.discountRate) / 100 +
         getters.itemModifierDiscount(item) +
         getters.itemModifierTaxDiscount(item)
       )
@@ -202,7 +198,7 @@ const getters = {
       if (item.discountedNetPrice) {
         return getters.itemNetPrice(item) - item.discountedNetPrice
       }
-      return Num.round((item.netPrice * item.discountRate) / 100)
+      return (item.netPrice * item.discountRate) / 100
     } else {
       return 0
     }
@@ -216,7 +212,7 @@ const getters = {
     }
 
     if (item.discountRate) {
-      return Num.round((item.tax * item.discountRate) / 100)
+      return (item.tax * item.discountRate) / 100
     }
     return 0
   },
@@ -228,7 +224,7 @@ const getters = {
 
     if (item.discountRate && item.modifiersData && item.modifiersData.length) {
       return item.modifiersData.reduce((discount, modifier) => {
-        return discount + Num.round((modifier.price * item.discountRate) / 100)
+        return discount + (modifier.price * item.discountRate) / 100
       }, 0)
     }
     return 0
@@ -240,7 +236,7 @@ const getters = {
         return 0
       }
       return item.modifiersData.reduce((discount, modifier) => {
-        return discount + Num.round((modifier.tax * item.discountRate) / 100)
+        return discount + (modifier.tax * item.discountRate) / 100
       }, 0)
     }
     return 0
@@ -362,7 +358,7 @@ const actions = {
         item.netPrice = getters.netPrice(item)
 
         //calculated item tax
-        item.tax = Num.round(item.grossPrice - item.netPrice)
+        item.tax = item.grossPrice - item.netPrice
 
         if (typeof item.orderIndex === 'undefined') {
           item.orderIndex = getters.orderIndex
@@ -398,7 +394,7 @@ const actions = {
     item.netPrice = getters.netPrice(item)
     item.note = stateItem.note ? stateItem.note : ''
     //calculated item tax
-    item.tax = Num.round(item.grossPrice - item.netPrice)
+    item.tax = item.grossPrice - item.netPrice
 
     if (typeof item.orderIndex === 'undefined') {
       item.orderIndex = getters.orderIndex
@@ -446,7 +442,7 @@ const actions = {
       item.netPrice = getters.netPrice(item)
 
       //calculated item tax, it ll be always calculated on discounted net price
-      item.tax = Num.round(item.grossPrice - item.netPrice)
+      item.tax = item.grossPrice - item.netPrice
 
       //if there is item modifiers data assign it later
       item.modifiersData = []
@@ -577,7 +573,7 @@ const actions = {
             const modifierPrice = modifier.value
               ? parseFloat(modifier.value)
               : 0
-            const tax = Num.round((modifierPrice * item.tax_sum) / 100)
+            const tax = (modifierPrice * item.tax_sum) / 100
 
             modifierData.push({
               modifierId: modifier._id,
@@ -743,15 +739,13 @@ const actions = {
         //calculated below in respective section
         if (orderDiscount.include_surcharge) {
           totalTax = getters.totalTaxWithoutOrderDiscount
-          orderTotalDiscount = Num.round((subtotal * orderDiscount.rate) / 100)
-          taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
-          surchargeTotalDiscount = Num.round(
-            (totalSurcharge * orderDiscount.rate) / 100
-          )
+          orderTotalDiscount = (subtotal * orderDiscount.rate) / 100
+          taxTotalDiscount = (totalTax * orderDiscount.rate) / 100
+          surchargeTotalDiscount = (totalSurcharge * orderDiscount.rate) / 100
         } else {
-          orderTotalDiscount = Num.round((subtotal * orderDiscount.rate) / 100)
+          orderTotalDiscount = (subtotal * orderDiscount.rate) / 100
           totalTax = getters.totalItemsTax
-          taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
+          taxTotalDiscount = (totalTax * orderDiscount.rate) / 100
           surchargeTotalDiscount = 0
         }
 
@@ -772,13 +766,11 @@ const actions = {
           ) {
             orderTotalDiscount = orderDiscount.max_discount_value
 
-            const percentDiscountOnOrderTotalIncludingSurcharge = Num.round(
+            const percentDiscountOnOrderTotalIncludingSurcharge =
               (orderTotalDiscount * 100) / (subtotal + totalSurcharge)
-            )
 
-            taxTotalDiscount = Num.round(
+            taxTotalDiscount =
               (totalTax * percentDiscountOnOrderTotalIncludingSurcharge) / 100
-            )
             //when calculating percent discount on subtotal we include surcharge as well,
             //so don't need to calculate discount on surcharge again
             surchargeTotalDiscount = 0
@@ -806,14 +798,13 @@ const actions = {
               } else {
                 orderTotalDiscount = orderDiscount.value
 
-                const percentDiscountOnOrderTotalIncludingSurcharge = Num.round(
+                const percentDiscountOnOrderTotalIncludingSurcharge =
                   (orderTotalDiscount * 100) / (subtotal + totalSurcharge)
-                )
 
-                taxTotalDiscount = Num.round(
+                taxTotalDiscount =
                   (totalTax * percentDiscountOnOrderTotalIncludingSurcharge) /
-                    100
-                )
+                  100
+
                 //when calculating percent discount on subtotal we include surcharge as well,
                 //so don't need to calculate discount on surcharge again
                 surchargeTotalDiscount = 0
@@ -846,18 +837,15 @@ const actions = {
                   )
                 )
               } else {
-                orderTotalDiscount = Num.round(
-                  (subtotal * orderDiscount.rate) / 100
-                )
+                orderTotalDiscount = (subtotal * orderDiscount.rate) / 100
+
                 console.log('order total discount', orderTotalDiscount)
-                taxTotalDiscount = Num.round(
-                  (totalTax * orderDiscount.rate) / 100
-                )
+                taxTotalDiscount = (totalTax * orderDiscount.rate) / 100
 
                 console.log('taxTotalDiscount', taxTotalDiscount)
-                surchargeTotalDiscount = Num.round(
+                surchargeTotalDiscount =
                   (totalSurcharge * orderDiscount.rate) / 100
-                )
+
                 console.log('surchargeTotalDiscount', surchargeTotalDiscount)
                 const discountData = {
                   orderDiscount: orderTotalDiscount,
@@ -885,13 +873,11 @@ const actions = {
             orderDiscount.max_discount_value < totalOrderDiscount
           ) {
             orderTotalDiscount = orderDiscount.max_discount_value
-            const percentDiscountOnSubTotal = Num.round(
+            const percentDiscountOnSubTotal =
               (orderTotalDiscount * 100) / subtotal
-            )
 
-            taxTotalDiscount = Num.round(
-              (totalTax * percentDiscountOnSubTotal) / 100
-            )
+            taxTotalDiscount = (totalTax * percentDiscountOnSubTotal) / 100
+
             surchargeTotalDiscount = 0
 
             const discountData = {
@@ -915,12 +901,10 @@ const actions = {
                 )
                 reject(CONST.DISCOUNT_ORDER_ERROR_TOTAL)
               } else {
-                const percentDiscountOnSubTotal = Num.round(
+                const percentDiscountOnSubTotal =
                   (orderDiscount.value * 100) / subtotal
-                )
-                taxTotalDiscount = Num.round(
-                  (totalTax * percentDiscountOnSubTotal) / 100
-                )
+                taxTotalDiscount = (totalTax * percentDiscountOnSubTotal) / 100
+
                 surchargeTotalDiscount = 0
 
                 const discountData = {
@@ -950,14 +934,11 @@ const actions = {
                   )
                 )
               } else {
-                orderTotalDiscount = Num.round(
-                  (subtotal * orderDiscount.rate) / 100
-                )
+                orderTotalDiscount = (subtotal * orderDiscount.rate) / 100
                 //const subtotalWithDiscount = subtotal - orderTotalDiscount
                 totalTax = getters.totalItemsTax
-                taxTotalDiscount = Num.round(
-                  (totalTax * orderDiscount.rate) / 100
-                )
+                taxTotalDiscount = (totalTax * orderDiscount.rate) / 100
+
                 surchargeTotalDiscount = 0
                 const discountData = {
                   orderDiscount: orderTotalDiscount,
