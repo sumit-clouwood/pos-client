@@ -173,11 +173,6 @@ export default {
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('order', ['orderSource']),
   },
-  mounted() {
-    if (this.orderSource == 'backend') {
-      this.$store.dispatch('order/loadCarhopOrder', this.orderDetails._id)
-    }
-  },
   methods: {
     getTotalPrice: function(item) {
       return this.formatPrice(
@@ -274,6 +269,7 @@ export default {
   font-weight: 600;
 }
 .note-td {
+  padding-top: 0;
   border-top: 0;
   padding-left: 1.875rem;
 }

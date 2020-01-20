@@ -131,7 +131,7 @@
                   </div>
                 </td>
                 <td class="right-aligned table-page-child" valign="top">
-                  -{{ format_number(discount.price) }}
+                  -{{ format_number(discount_total(discount)) }}
                 </td>
               </template>
             </tr>
@@ -463,6 +463,13 @@ export default {
       }
       return results.join(' / ')
     },
+    discount_total(discount) {
+      if (discount.type === 'fixed_price') {
+        return parseFloat(discount.price) + parseFloat(discount.tax)
+      } else {
+        return parseFloat(discount.price)
+      }
+    },
     item_total(item_no) {
       var total = 0
       for (var item of this.order.items) {
@@ -480,9 +487,10 @@ export default {
       for (var item_discount of this.order.item_discounts) {
         if (item_discount.for_item == item_no) {
           total -= parseFloat(item_discount.price)
+          total -= parseFloat(item_discount.tax)
         }
       }
-      return total
+      return total < 0 ? '0.00' : total
     },
     //These methods would need to be updated at POS to search for objects in POS store
     //These functions
