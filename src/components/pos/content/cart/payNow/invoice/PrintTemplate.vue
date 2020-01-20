@@ -464,10 +464,10 @@ export default {
       return results.join(' / ')
     },
     discount_total(discount) {
-      if (discount.type === 'value') {
-        return parseFloat(discount.price)
-      } else {
+      if (discount.type === 'fixed_price') {
         return parseFloat(discount.price) + parseFloat(discount.tax)
+      } else {
+        return parseFloat(discount.price)
       }
     },
     item_total(item_no) {
