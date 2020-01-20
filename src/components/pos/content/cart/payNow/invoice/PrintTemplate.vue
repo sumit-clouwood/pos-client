@@ -252,6 +252,11 @@
                 </div>
               </td>
             </tr>
+            <tr class="important" v-if="order.order_type === 'call_center'">
+              <td colspan="3" class="footTotal">
+                Paid by {{ getReferral(order.referral) }}
+              </td>
+            </tr>
             <tr v-if="!preview">
               <td colspan="2">
                 {{ template.tips_label }}
@@ -331,7 +336,7 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'getReferral']),
     ...mapState('location', ['timezoneString']),
     ...mapState('invoice', ['tableNumber']),
     ...mapState('order', ['orderType']),
