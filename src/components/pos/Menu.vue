@@ -127,6 +127,13 @@ export default {
     openMultiStore() {
       $('.multi-store-menu-pos').slideToggle()
       $('.navigation .logo').toggleClass('multistore')
+      let posMenuUpperLogo = $('.logo')
+      $('.main, .header').click(() => {
+        if (posMenuUpperLogo.hasClass('multistore')) {
+          $('.multi-store-menu-pos').slideUp()
+          posMenuUpperLogo.removeClass('multistore')
+        }
+      })
     },
     browse(item) {
       // eslint-disable-next-line no-undef
