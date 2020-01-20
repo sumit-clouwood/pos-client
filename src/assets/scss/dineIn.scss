@@ -832,6 +832,12 @@ div {
              > *{
                margin-left: 10px;
              }
+             > .dinefor-paynow{
+               padding: 0;
+                > a{
+                  padding: $px6 $px12;
+                }
+             }
            }
         }
         .order-moifier-wrapper {
