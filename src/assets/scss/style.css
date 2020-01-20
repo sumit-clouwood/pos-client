@@ -4446,6 +4446,10 @@ body {
   overflow: hidden;
   background-color: #F1F3F6;
   grid-column-start: 2; }
+  .main-orders.mainOrdersDine {
+    grid-template-rows: 1fr min-content; }
+    .main-orders.mainOrdersDine .main-orders-list-wrapper::-webkit-scrollbar {
+      width: 0.625rem; }
   .main-orders .main-orders-title {
     display: none; }
   .main-orders .main-orders-contacts {
@@ -5510,6 +5514,10 @@ div#confirmModal .customer-title {
         grid-gap: 10px; }
         .table-order-view-wrapper > .table-order-view > div .moodifiers-btn-wrapper .running-actions > * {
           margin-left: 10px; }
+        .table-order-view-wrapper > .table-order-view > div .moodifiers-btn-wrapper .running-actions > .dinefor-paynow {
+          padding: 0; }
+          .table-order-view-wrapper > .table-order-view > div .moodifiers-btn-wrapper .running-actions > .dinefor-paynow > a {
+            padding: 0.375rem 0.75rem; }
       .table-order-view-wrapper > .table-order-view > div .order-moifier-wrapper {
         display: flex;
         padding: 5px 0;
