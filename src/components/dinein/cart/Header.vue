@@ -92,7 +92,7 @@
         </button>
       </div>
       <div class="color-main color-text dine-in-table-guest-details-pos">
-        <span class="tables-draw">
+        <span class="tables-draw" v-if="selectedTable">
           <img src="img/dinein/dine-intable.svg" />
           <b> {{ selectedTable.number }}</b>
         </span>
