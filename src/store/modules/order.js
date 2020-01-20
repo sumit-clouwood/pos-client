@@ -369,7 +369,7 @@ const actions = {
       if (!item.note) {
         item.note = ''
       }
-
+      
       //Add no only if it is modification order, DON'T add no with new items, it ll break system
       if (item.no) {
         item.orderIndex = item.no
@@ -533,10 +533,6 @@ const actions = {
               modifierId:"5cfde3211578dd00215271d1"
               type:"checkbox"
         */
-        commit(mutation.ADD_MODIFIERS_TO_ITEM, {
-          modifiers: itemModifiers,
-          modifierGroups: itemModifierGroups,
-        })
 
         //calculating item price based on modifiers selected
         //since we have just ids attached to item,
