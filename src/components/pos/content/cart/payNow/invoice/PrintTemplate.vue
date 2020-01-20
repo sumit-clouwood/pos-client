@@ -81,7 +81,7 @@
           </tr>
           <template v-for="(item, key) in order.items">
             <tr :key="'item' + key">
-              <td class="first-col">{{ item.qty }}</td>
+              <td class="first-col" valign="top">{{ item.qty }}</td>
               <td>
                 <div class="food-title">
                   {{ translate_item(item) }}
@@ -113,7 +113,7 @@
                   </template>
                 </template>
               </td>
-              <td class="right-aligned">
+              <td class="right-aligned" valign="top">
                 {{ format_number(item_total(item.no)) }}
               </td>
             </tr>
@@ -130,10 +130,18 @@
                     <span>{{ translate_item_discount(discount) }}</span>
                   </div>
                 </td>
-                <td class="right-aligned table-page-child">
-                  -{{ format_number(discount.price) }}
+                <td class="right-aligned table-page-child" valign="top">
+                  -{{ format_number(discount_total(discount)) }}
                 </td>
               </template>
+            </tr>
+            <tr :key="'note' + key" v-if="item.note">
+              <td class="first-col table-page-child"></td>
+              <td class="table-page-child">
+                <span class="food-title">{{ _t('Note') }}: </span>
+                <i>{{ item.note }}</i>
+              </td>
+              <td class="right-aligned table-page-child"></td>
             </tr>
           </template>
         </tbody>
@@ -455,6 +463,13 @@ export default {
       }
       return results.join(' / ')
     },
+    discount_total(discount) {
+      if (discount.type === 'value') {
+        return parseFloat(discount.price)
+      } else {
+        return parseFloat(discount.price) + parseFloat(discount.tax)
+      }
+    },
     item_total(item_no) {
       var total = 0
       for (var item of this.order.items) {
@@ -472,9 +487,10 @@ export default {
       for (var item_discount of this.order.item_discounts) {
         if (item_discount.for_item == item_no) {
           total -= parseFloat(item_discount.price)
+          total -= parseFloat(item_discount.tax)
         }
       }
-      return total
+      return total < 0 ? '0.00' : total
     },
     //These methods would need to be updated at POS to search for objects in POS store
     //These functions

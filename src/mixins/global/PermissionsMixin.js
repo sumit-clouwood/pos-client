@@ -11,11 +11,14 @@ Vue.mixin({
     isPermitted(permission) {
       if (store.state.auth.rolePermissions) {
         return store.state.auth.rolePermissions.some(role => {
+          let userDetails = store.state.auth.userDetails.item
+            ? store.state.auth.userDetails.item.name
+            : ''
           return (
             (role.brand_permissions.includes(permission) ||
               role.store_permissions.includes(permission)) &&
             (role.name == store.getters['auth/roleName'] ||
-              (store.state.auth.userDetails.item.name === 'Super Admin' &&
+              (userDetails === 'Super Admin' &&
                 store.getters['auth/roleName'] == ''))
           )
         })

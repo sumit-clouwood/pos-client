@@ -80,24 +80,13 @@
                       LookupData.convertDatetimeCustom(
                         order.real_created_datetime,
                         timezoneString,
-                        'HH:mm A'
+                        'hh:mm a'
                       )
                     }}
                   </p>
-                  <a
-                    :class="
-                      setOrderStatus(
-                        order.order_status,
-                        order.order_system_status
-                      ).class
-                    "
-                    >{{
-                      setOrderStatus(
-                        order.order_status,
-                        order.order_system_status
-                      ).label
-                    }}</a
-                  >
+                  <a :class="setOrderStatus(order.order_system_status).class">{{
+                    setOrderStatus(order.order_system_status).label
+                  }}</a>
                 </div>
               </div>
             </div>
@@ -126,21 +115,20 @@ export default {
   data() {
     return {
       todayDate: moment().format('dddd, LL'),
+      interval: null,
     }
   },
   components: {
     Search,
   },
   mounted() {
-    let scope = this
-    this.$store
-      .dispatch('transactionOrders/getTransactionOrders')
-      .then(function() {
-        scope.$store.dispatch('transactionOrders/selectFirstTransactionOrder', {
-          root: true,
-        })
-        scope.$store.dispatch('transactionDetail')
-      })
+    this.fetchOrders()
+    this.interval = setInterval(() => {
+      this.fetchOrders()
+    }, 1000 * 20)
+  },
+  destroyed() {
+    clearInterval(this.interval)
   },
   computed: {
     ...mapState('location', ['timezoneString']),
@@ -154,14 +142,28 @@ export default {
     ]),
   },
   methods: {
-    setOrderStatus(orderStatus, orderSystemStatus) {
+    fetchOrders() {
+      let scope = this
+      this.$store
+        .dispatch('transactionOrders/getTransactionOrders')
+        .then(function() {
+          scope.$store.dispatch(
+            'transactionOrders/selectFirstTransactionOrder',
+            {
+              root: true,
+            }
+          )
+          scope.$store.dispatch('transactionDetail')
+        })
+    },
+    setOrderStatus(orderStatus) {
       let statusArr = []
-      switch ((orderSystemStatus, orderStatus)) {
-        case 'normal' && 'in-progress':
+      switch (orderStatus) {
+        case 'normal':
           statusArr = { class: 'success', label: 'Success' }
           break
-        case 'normal' && 'finished':
-          statusArr = { class: 'completed', label: 'Completed' }
+        case 'cancelled':
+          statusArr = { class: 'canceled', label: 'Canceled' }
           break
         case 'modified':
           statusArr = { class: 'refunded', label: 'Modified' }
@@ -185,9 +187,3 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
-.completed {
-  background-color: #faa03c;
-  color: #fff;
-}
-</style>

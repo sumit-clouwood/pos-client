@@ -24,6 +24,11 @@ const router = new Router({
       component: Home,
     },
     {
+      path: '/:brand_id/:store_id/order-type/:order_type',
+      name: 'setOrderType',
+      component: Home,
+    },
+    {
       path: '/cashier-login/*',
       name: 'cashierLogin',
       component: CashierLogin,

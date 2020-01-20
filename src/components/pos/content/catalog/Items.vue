@@ -101,7 +101,8 @@ export default {
       if (this.selectedOrder) {
         if (
           (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
-          this.selectedOrder.item.order_status == 'in-progress'
+          this.selectedOrder.item.order_status == 'in-progress' &&
+          this.isCarhop()
         ) {
           return
         }
@@ -110,7 +111,11 @@ export default {
         return false
       }
       this.$store.commit('order/RESET_SPLIT_BILL')
-      bootstrap.loadUI().then(() => {})
+      //load data only when new order is starting
+      if (!this.$store.state.order.items.length) {
+        this.$store.commit('sync/reload', true)
+        bootstrap.loadUI('orderStart').then(() => {})
+      }
 
       this.$store.commit('order/SET_CART_TYPE', 'new')
       this.$store.dispatch('order/startOrder')

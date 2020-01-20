@@ -1,9 +1,9 @@
 import DataService from '@/services/DataService'
 
 export default {
-  fetchAll(orderType) {
+  fetchAll() {
     return DataService.get(
-      `/model/brand_additional_surcharges?ascending=1&orderBy=name&byColumn=1&${orderType}=true`
+      `/model/brand_additional_surcharges?ascending=1&orderBy=name&byColumn=0&limit=99999 `
     )
   },
 }

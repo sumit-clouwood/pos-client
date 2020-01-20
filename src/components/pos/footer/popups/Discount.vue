@@ -63,7 +63,7 @@
           >
             <p>&nbsp;</p>
             <p class="text-danger text-center">
-              <span>{{ _t(orderError) }}</span>
+              <span v-html="_t(orderError)"></span>
             </p>
           </div>
         </div>

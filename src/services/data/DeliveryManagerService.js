@@ -1,9 +1,11 @@
 import DataService from '@/services/DataService'
+import DateTime from '@/mixins/DateTime'
 
 export default {
   getDMOrderDetails(...[query, limit, orderBy, page, pageId, storeId]) {
+    let currentDate = DateTime.getPreviousDayUTCDate()
     return DataService.get(
-      `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}&store_id=${storeId}`
+      `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}&store_id=${storeId}&store_date=${currentDate}~gte`
     )
   },
 

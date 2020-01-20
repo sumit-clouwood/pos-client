@@ -222,6 +222,11 @@ const getters = {
   },
 
   itemModifierDiscount: () => item => {
+    if (item.discountType == CONST.FIXED) {
+      //no fixed discount for modifiers
+      return 0
+    }
+
     if (item.discountedNetPrice) {
       return 0
     }
@@ -235,6 +240,11 @@ const getters = {
   },
 
   itemModifierTaxDiscount: () => item => {
+    if (item.discountType == CONST.FIXED) {
+      //no fixed discount for modifiers
+      return 0
+    }
+
     if (item.discountRate && item.modifiersData && item.modifiersData.length) {
       if (item.discountedNetPrice) {
         return 0
@@ -307,6 +317,14 @@ const getters = {
 
 // actions
 const actions = {
+  addNoteToItem({ commit }, note) {
+    let item = { ...state.item }
+    item.note = note
+    //replace item in cart
+    commit(mutation.REPLACE_ORDER_ITEM, {
+      item: item,
+    })
+  },
   fetchModificationReasons({ state, commit }) {
     if (!state.modificationReasons.length) {
       OrderService.getModifyReasons().then(response => {
@@ -388,7 +406,7 @@ const actions = {
     item.grossPrice = getters.grossPrice(item)
     //net price is exclusive of tax, getter ll send unrounded price that is real one
     item.netPrice = getters.netPrice(item)
-
+    item.note = stateItem.note ? stateItem.note : ''
     //calculated item tax
     item.tax = Num.round(item.grossPrice - item.netPrice)
 
@@ -442,6 +460,9 @@ const actions = {
 
       //if there is item modifiers data assign it later
       item.modifiersData = []
+      if (!item.note) {
+        item.note = ''
+      }
 
       if (typeof item.orderIndex === 'undefined') {
         item.orderIndex = getters.orderIndex
@@ -725,19 +746,39 @@ const actions = {
 
         const subtotal = getters.subTotal
         let totalTax = 0
+        let totalSurcharge = rootGetters['surcharge/surcharge']
+        let totalOrderDiscount = 0
 
-        orderTotalDiscount = Num.round((subtotal * orderDiscount.rate) / 100)
+        //this is used for max discount only and only works for percentage, actual discount is
+        //calculated below in respective section
+        if (orderDiscount.include_surcharge) {
+          totalTax = getters.totalTaxWithoutOrderDiscount
+          orderTotalDiscount = Num.round((subtotal * orderDiscount.rate) / 100)
+          taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
+          surchargeTotalDiscount = Num.round(
+            (totalSurcharge * orderDiscount.rate) / 100
+          )
+        } else {
+          orderTotalDiscount = Num.round((subtotal * orderDiscount.rate) / 100)
+          totalTax = getters.totalItemsTax
+          taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
+          surchargeTotalDiscount = 0
+        }
+
+        totalOrderDiscount =
+          orderTotalDiscount + taxTotalDiscount + surchargeTotalDiscount
 
         if (orderDiscount.include_surcharge) {
           //apply ontotal discount, apply on surcharge and its tax as well
           totalTax = getters.totalTaxWithoutOrderDiscount
 
           console.log('total tax, ', totalTax)
-          const totalSurcharge = rootGetters['surcharge/surcharge']
+          totalSurcharge = rootGetters['surcharge/surcharge']
           console.log('total surcharge', totalSurcharge)
           if (
+            orderDiscount.min_cart_value < subtotal &&
             orderDiscount.max_discount_value &&
-            orderDiscount.max_discount_value < orderTotalDiscount
+            orderDiscount.max_discount_value < totalOrderDiscount
           ) {
             orderTotalDiscount = orderDiscount.max_discount_value
 
@@ -806,7 +847,14 @@ const actions = {
                   CONST.DISCOUNT_ORDER_ERROR_CART,
                   { root: true }
                 )
-                reject(CONST.DISCOUNT_ORDER_ERROR_CART)
+                const minCartValue = rootGetters['location/formatPrice'](
+                  orderDiscount.min_cart_value
+                )
+                reject(
+                  rootGetters['location/_t'](
+                    `Minimum cart value should be <strong>${minCartValue}</strong> to apply <strong>${orderDiscount.name}</strong>`
+                  )
+                )
               } else {
                 orderTotalDiscount = Num.round(
                   (subtotal * orderDiscount.rate) / 100
@@ -842,8 +890,9 @@ const actions = {
           totalTax = getters.totalItemsTax
 
           if (
+            orderDiscount.min_cart_value < subtotal &&
             orderDiscount.max_discount_value &&
-            orderDiscount.max_discount_value < orderTotalDiscount
+            orderDiscount.max_discount_value < totalOrderDiscount
           ) {
             orderTotalDiscount = orderDiscount.max_discount_value
             const percentDiscountOnSubTotal = Num.round(
@@ -902,7 +951,14 @@ const actions = {
                   CONST.DISCOUNT_ORDER_ERROR_CART,
                   { root: true }
                 )
-                reject(CONST.DISCOUNT_ORDER_ERROR_CART)
+                const minCartValue = rootGetters['location/formatPrice'](
+                  orderDiscount.min_cart_value
+                )
+                reject(
+                  rootGetters['location/_t'](
+                    `Minimum cart value should be <strong>${minCartValue}</strong> to apply <strong> ${orderDiscount.name} </strong>`
+                  )
+                )
               } else {
                 orderTotalDiscount = Num.round(
                   (subtotal * orderDiscount.rate) / 100
@@ -932,7 +988,7 @@ const actions = {
     })
   },
 
-  recalculateItemPrices({ commit, rootState, getters, dispatch }) {
+  recalculateItemPrices({ commit, rootState, getters, rootGetters, dispatch }) {
     commit('discount/SET_ORDER_ERROR', false, { root: true })
     return new Promise((resolve, reject) => {
       let discountErrors = {}
@@ -953,7 +1009,31 @@ const actions = {
             value: discount.discount.value,
           }
 
-          if (discount.discount.type === CONST.VALUE) {
+          if (discount.discount.type === CONST.FIXED) {
+            if (discount.discount.value >= item.grossPrice) {
+              //if discount is equal to or greater than acutal item price
+              discountErrors[item.orderIndex] = {
+                item: item,
+                msg: rootGetters['location/_t'](
+                  `Discount is applicable on item price greater than
+                  ${rootGetters['location/formatPrice'](
+                    discount.discount.value
+                  )}`
+                ),
+              }
+              item.discount = false
+              item.discountRate = 0
+              item.discountedTax = false
+              item.discountedNetPrice = false
+            } else {
+              const priceDiff = item.grossPrice - discount.discount.value
+              const discountPercentage = (priceDiff * 100) / item.grossPrice
+              item.discountRate = discountPercentage
+              item.discountedTax = false
+              item.discountedNetPrice = false
+              item.discountType = CONST.FIXED
+            }
+          } else if (discount.discount.type === CONST.VALUE) {
             if (
               discount.discount.value >
               getters.itemNetPrice(item) * item.quantity
@@ -965,6 +1045,7 @@ const actions = {
               item.discountedTax = false
               item.discountedNetPrice = false
             } else {
+              item.discountType = CONST.VALUE
               const itemNetPriceWithModifiers = getters.itemNetPrice(item)
 
               const itemsNetPriceWithModifiers =
@@ -983,8 +1064,10 @@ const actions = {
               //percentage based discount, use discount.rate here, not discount.value
               //apply discount with modifier price
               item.discountRate = discount.discount.rate
+
               item.discountedTax = false
               item.discountedNetPrice = false
+              item.discountType = CONST.PERCENTAGE
             } else {
               //discount error
               item.discount = false
@@ -1169,7 +1252,9 @@ const actions = {
           break
       }
       await Promise.all(promises)
-      dispatch('addOrderToCart', orderDetails.item)
+      dispatch('setDiscounts', orderDetails).then(() => {
+        dispatch('addOrderToCart', orderDetails.item)
+      })
     })
   },
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
@@ -1229,7 +1314,7 @@ const actions = {
         rootState.category.items.forEach(categoryItem => {
           let item = { ...categoryItem }
           item.no = orderItem.no
-
+          item.note = orderItem.note
           if (
             state.selectedOrder &&
             state.selectedOrder.item.order_type === 'dine_in'
@@ -1681,7 +1766,10 @@ const mutations = {
     })
     state.items = filteredItems
   },
-
+  CLEAR_SELECTED_ORDER(state) {
+    state.orderSource = null
+    state.selectedOrder = false
+  },
   [mutation.RESET](state, full = true) {
     if (full) {
       state.items = []

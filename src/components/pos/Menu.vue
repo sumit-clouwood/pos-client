@@ -47,16 +47,11 @@
     </div>
     <router-link
       class="navigation-avatar color-secondary"
-      v-if="userDetails"
+      v-if="userDetails.item"
       :to="'/user-details' + store"
     >
-      <a
-        class="nav-link"
-        role="button"
-        :title="userDetails.item ? userDetails.item.name : ''"
-      >
+      <a class="nav-link" role="button" :title="userDetails.item.name">
         <img
-          v-if="typeof userDetails.item != 'undefined'"
           :src="
             userDetails.item.avatar
               ? userDetails.item.avatar
@@ -65,7 +60,7 @@
           alt="profile"
         />
         <div class="nav-link-user-name color-text-invert">
-          {{ userDetails.item ? userDetails.item.name : '' }}
+          {{ userDetails.item.name }}
         </div>
       </a>
     </router-link>
@@ -123,7 +118,6 @@ export default {
       // eslint-disable-next-line no-undef
       $('.breadcrumbs').show()
       $('.search-field-input').val('')
-      this.$store.commit('sync/reload', true)
       //bootstrap.loadUI().then(() => {})
       this.$store.dispatch('category/browse', item)
     },
@@ -255,18 +249,6 @@ export default {
         width: 8px;
       }
 
-      @keyframes gradientBG {
-        0% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-        100% {
-          background-position: 0% 50%;
-        }
-      }
-
       .navigation-list {
         overflow: auto;
         grid-gap: 0;
@@ -288,13 +270,7 @@ export default {
             display: grid;
             grid-template-columns: min-content 1fr;
             cursor: pointer;
-            background: linear-gradient(
-              141deg,
-              #fcfcff 0%,
-              #d7e0e1 51%,
-              #ecebeb 75%
-            );
-            animation: gradientBG 15s ease infinite;
+            background-color: #fff;
 
             .nav-link-text {
               font-size: 14px;
