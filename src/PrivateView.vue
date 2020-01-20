@@ -152,6 +152,7 @@ export default {
           setTimeout(() => {
             this.loading = false
           }, 300)
+
           this.setupServiceWorker()
           this.setupRoutes()
           this.setupExternalScripts()

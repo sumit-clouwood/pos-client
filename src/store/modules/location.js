@@ -311,11 +311,17 @@ const actions = {
                       reject(error)
                     })
 
-                  resolve(state.locale)
-
                   dispatch('referrals')
+                  const multiStoreIds = storedata.data.available_stores.map(
+                    store => store._id
+                  )
                   dispatch('auth/getUserDetails', storedata.data.user_id, {
                     root: true,
+                  }).then(response => {
+                    resolve({
+                      userDetails: response.item,
+                      stores: multiStoreIds,
+                    })
                   })
                 })
                 .catch(error => {

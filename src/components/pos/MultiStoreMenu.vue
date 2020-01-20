@@ -25,7 +25,7 @@
 /* global $ */
 import { mapGetters, mapState } from 'vuex'
 import DataService from '@/services/DataService'
-import bootstrap from '@/bootstrap'
+//#import bootstrap from '@/bootstrap'
 
 export default {
   name: 'MultiStoreMenu',
@@ -53,7 +53,7 @@ export default {
       $('.navigation .logo').removeClass('multistore')
 
       // this.$store.commit('context/SET_BRAND_ID', this.brand._id, { root: true })
-      this.$store.commit('context/SET_STORE_ID', storeId, { root: true })
+      this.$store.commit('context/SET_STORE_ID', storeId)
       // localStorage.setItem('brand_id', this.brand._id)
       localStorage.setItem('store_id', storeId)
 
@@ -61,9 +61,10 @@ export default {
         brand: this.$store.getters['context/brand'],
         store: this.$store.getters['context/store'],
       })
-      // this.$store.dispatch('location/fetch')
+
+      this.$store.dispatch('location/fetch')
       // bootstrap.fetchData()
-      bootstrap.loadUI(this.$store)
+      //#bootstrap.loadUI(this.$store)
       // this.$store.commit('sync/reload', true)
       // this.$store.dispatch('checkout/reset', true)
       // this.$store.commit('order/CLEAR_SELECTED_ORDER')

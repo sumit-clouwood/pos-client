@@ -2,13 +2,15 @@ import * as mutation from './discount/mutation-types'
 import DiscountService from '@/services/data/DiscountService'
 import Num from '@/plugins/helpers/Num.js'
 import Availability from '@/plugins/helpers/Availability.js'
+import MultistoreHelper from '@/plugins/helpers/Multistore.js'
 import * as CONST from '@/constants'
 //const DISCOUNT_ITEM_ERROR = "Item discount can't be applied."
 
 // initial state
 const state = {
-  multiStoreOrderDiscount: [],
   //hold data fetched from api
+  multistoreOrderDiscounts: {},
+  multistoreItemDiscounts: {},
   orderDiscounts: [],
   itemDiscounts: [],
   //used only for maintaining checked states
@@ -65,27 +67,52 @@ const getters = {
     )
   },
 
-  itemDiscounts: (state, getters, rootState) => {
-    if (!state.itemDiscounts.data) {
-      return state.itemDiscounts
+  itemDiscounts: (state, getters, rootState, rootGetters) => {
+    let itemDiscounts = state.itemDiscounts
+    if (rootGetters['auth/multistore']) {
+      const storeId = rootState.order.item
+        ? rootState.order.item.store_id
+        : rootState.context.storeId
+      itemDiscounts = state.multistoreItemDiscounts[storeId]
     }
-    return state.itemDiscounts.data.filter(discount => {
+    if (!itemDiscounts) {
+      return []
+    }
+
+    return itemDiscounts.filter(discount => {
       if (discount[rootState.order.orderType.OTApi]) {
-        if (discount.for_items.includes(rootState.order.item._id)) {
-          return Availability.available(
-            discount,
-            rootState.location.timezoneString
-          )
-        }
+        return Availability.available(
+          discount,
+          rootState.location.timezoneString
+        )
       }
     })
   },
 
-  orderDiscounts: (state, getters, rootState) => {
-    if (!state.itemDiscounts.data) {
-      return state.orderDiscounts
+  //problem:
+  //there are 3 multi stores, user just loaded one, in that case we are missing data of other two stores
+  //how we ll find common in that case?
+  //solutions:
+  //1- load all the data in loop (call same api with different stores multiple time)
+  //2- backend provides us an api to load all into one api
+  //Note: api ll get only available discounts for each store, so we don't need to filter them base on
+  //      availability explicitly
+  orderDiscounts: (state, getters, rootState, rootGetters) => {
+    let orderDiscounts = state.orderDiscounts
+
+    if (rootGetters['auth/multistore']) {
+      //get common discounts across multistores
+      orderDiscounts = MultistoreHelper.filter(
+        state.multistoreOrderDiscounts,
+        '_id'
+      )
     }
-    return state.orderDiscounts.filter(discount => {
+
+    if (!orderDiscounts) {
+      return []
+    }
+
+    return orderDiscounts.filter(discount => {
       if (discount[rootState.order.orderType.OTApi]) {
         return Availability.available(
           discount,
@@ -104,19 +131,31 @@ const getters = {
 
 // actions
 const actions = {
-  async fetchAll({ commit, rootState, dispatch }) {
+  async fetchAll({ commit, rootState, rootGetters }, storeId = null) {
     const [orderDiscounts, itemDiscounts] = await Promise.all([
-      DiscountService.fetchOrderDiscounts(rootState.order.orderType.OTApi),
-      DiscountService.fetchItemDiscounts(rootState.order.orderType.OTApi),
+      DiscountService.fetchOrderDiscounts(storeId),
+      DiscountService.fetchItemDiscounts(storeId),
     ])
-    commit(mutation.SET_ORDER_DISCOUNTS, orderDiscounts)
-    let OrderDiscountMS = {
-      storeId: rootState.context.storeId,
-      orderTypeChange: false,
-    }
-    dispatch('setMultiStoreOrderData', OrderDiscountMS)
-    /*Here false denote order type is not changed*/
-    commit(mutation.SET_ITEM_DISCOUNTS, itemDiscounts)
+
+    commit(mutation.SET_DISCOUNTS, {
+      orderDiscounts: orderDiscounts.data.data,
+      itemDiscounts: itemDiscounts.data.data,
+      multistore: storeId
+        ? storeId
+        : rootGetters['auth/multistore']
+        ? rootState.context.storeId
+        : false,
+    })
+  },
+  fetchMultistore({ rootState, dispatch }, stores) {
+    //don't repeat in case storeId is provided otherwise it ll just loop in
+    //load discounts for all stores both item and order
+    stores.forEach(storeId => {
+      //skip current store
+      if (storeId !== rootState.context.storeId) {
+        dispatch('fetchAll', storeId)
+      }
+    })
   },
 
   reindexItemDiscounts({ commit }, items) {
@@ -132,7 +171,7 @@ const actions = {
     )
     commit(mutation.REPLACE_ITEM_DISCOUNTS, newAppliedItemDiscounts)
   },
-  applyItemDiscount({ commit, state, rootState, dispatch }) {
+  applyItemDiscount({ commit, state, rootState, rootGetters, dispatch }) {
     commit('checkoutForm/RESET', 'process', { root: true })
     return new Promise((resolve, reject) => {
       //add extra layer of validation which is handled on component level though
@@ -142,7 +181,7 @@ const actions = {
       } else {
         commit(mutation.CLEAR_ORDER_DISCOUNT)
         if (state.currentActiveItemDiscount) {
-          commit(mutation.APPLY_ITEM_DISCOUNT, {
+          let itemDiscountData = {
             item: rootState.order.item,
             discount: {
               _id: state.currentActiveItemDiscount._id,
@@ -151,7 +190,12 @@ const actions = {
               value: state.currentActiveItemDiscount.value,
               name: state.currentActiveItemDiscount.name,
             },
-          })
+          }
+
+          if (rootGetters['auth/multistore']) {
+            itemDiscountData.discount.store_id = rootState.context.storeId
+          }
+          commit(mutation.APPLY_ITEM_DISCOUNT, itemDiscountData)
         } else {
           dispatch('removeItemDiscount')
         }
@@ -253,26 +297,7 @@ const actions = {
   // setItemsDiscountAmount({ commit }, discount) {
   //   commit(mutation.SET_ITEMS_DISCOUNT_AMOUNT, discount.discountAmount)
   // },
-  setMultiStoreOrderData({ state, commit }, discountData) {
-    commit(mutation.SET_MULTI_STORE_ORDER_DISCOUNTS, discountData)
-    // eslint-disable-next-line no-console
-    console.log(state.multiStoreOrderDiscount)
-  },
-  multiDimensionalUnique(arr) {
-    var uniques = []
-    var itemsFound = {}
-    for (var i = 0, l = arr.length; i < l; i++) {
-      var stringified = JSON.stringify(arr[i])
-      if (itemsFound[stringified]) {
-        continue
-      }
-      uniques.push(arr[i])
-      itemsFound[stringified] = true
-    }
-    // eslint-disable-next-line no-console
-    console.log(uniques)
-    return uniques
-  },
+
   setOrderDiscount(
     { commit },
     { orderDiscount, taxDiscount, surchargeDiscount }
@@ -298,18 +323,23 @@ const actions = {
 
 // mutations
 const mutations = {
-  [mutation.SET_ORDER_DISCOUNTS](state, orderDiscounts) {
-    state.orderDiscounts = orderDiscounts.data.data
-  },
-  [mutation.SET_MULTI_STORE_ORDER_DISCOUNTS](state, discountData) {
-    if (discountData.orderTypeChange) {
-      /*if order type change remove all discount and set again*/
-      state.multiStoreOrderDiscount = []
+  [mutation.SET_DISCOUNTS](
+    state,
+    { orderDiscounts, itemDiscounts, multistore }
+  ) {
+    if (multistore) {
+      state.multistoreOrderDiscounts = {
+        ...state.multistoreOrderDiscounts,
+        [multistore]: orderDiscounts,
+      }
+      state.multistoreItemDiscounts = {
+        ...state.multistoreItemDiscounts,
+        [multistore]: itemDiscounts,
+      }
+    } else {
+      state.orderDiscounts = orderDiscounts
+      state.itemDiscounts = itemDiscounts
     }
-    state.multiStoreOrderDiscount[discountData.storeId] = state.orderDiscounts
-  },
-  [mutation.SET_ITEM_DISCOUNTS](state, itemDiscounts) {
-    state.itemDiscounts = itemDiscounts.data
   },
   [mutation.SET_ACTIVE_ITEM_DISCOUNT](state, discount) {
     state.currentActiveItemDiscount = discount
@@ -393,7 +423,6 @@ const mutations = {
     state.taxDiscountAmount = 0
     state.appliedOrderDiscount = false
     state.currentActiveOrderDiscount = false
-    state.multiStoreOrderDiscount = []
   },
   [mutation.RESET](state) {
     state.currentActiveItemDiscount = false
@@ -405,6 +434,8 @@ const mutations = {
     state.taxDiscountAmount = 0
     state.surchargeDiscountAmount = 0
     state.error = false
+    state.multistoreItemDiscounts = {}
+    state.multistoreOrderDiscounts = {}
   },
 }
 

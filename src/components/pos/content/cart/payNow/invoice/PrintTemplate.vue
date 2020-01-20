@@ -121,7 +121,7 @@
                 <template v-for="(modifier, i) in order.item_modifiers">
                   <template v-if="modifier.for_item == item.no">
                     <div class="food-extra" :key="'modifier' + i">
-                      {{ translate_item_modifier(modifier) }}
+                      {{ translate_item_modifier(modifier, item) }}
                       <span v-if="modifier.price !== 0"
                         >({{
                           format_number(
@@ -525,7 +525,7 @@ export default {
     //These methods would need to be updated at POS to search for objects in POS store
     //These functions
     translate_item(orderItem) {
-      var found_item = this.$store.state.category.items.find(
+      var found_item = this.$store.getters['category/items'].find(
         item => item._id == orderItem.entity_id
       )
       if (found_item) {
@@ -537,9 +537,10 @@ export default {
         return ''
       }
     },
-    translate_item_modifier(item) {
+    translate_item_modifier(item, orderItem) {
       var found_item = this.$store.getters['modifier/findModifier'](
-        item.entity_id
+        item.entity_id,
+        orderItem
       )
       if (found_item) {
         return this.translate_entity(found_item, 'name')
@@ -548,7 +549,7 @@ export default {
       }
     },
     translate_item_discount(item) {
-      var found_item = this.$store.state.discount.itemDiscounts.data.find(
+      var found_item = this.$store.getters['discount/itemDiscounts'].find(
         loaded_item => loaded_item._id == item.entity_id
       )
       if (found_item) {
@@ -568,7 +569,7 @@ export default {
       }
     },
     translate_order_discount(item) {
-      var found_item = this.$store.state.discount.orderDiscounts.find(
+      var found_item = this.$store.getters['discount/orderDiscounts'].find(
         loaded_item => loaded_item._id == item.entity_id
       )
       if (found_item) {
