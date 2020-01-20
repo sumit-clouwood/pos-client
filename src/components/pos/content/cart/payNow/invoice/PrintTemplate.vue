@@ -491,6 +491,13 @@ export default {
       }
       return results.join(' / ')
     },
+    discount_total(discount) {
+      if (discount.type === 'fixed_price') {
+        return parseFloat(discount.price) + parseFloat(discount.tax)
+      } else {
+        return parseFloat(discount.price)
+      }
+    },
     item_total(item_no) {
       var total = 0
       for (var item of this.order.items) {
