@@ -391,6 +391,15 @@ button.v-btn.v-btn--icon.theme--light {
   }
     .change-location > button > a {
       color: #fff; }
+  .change-location>.walkin-btn{
+    padding: 0;
+  }
+.change-location>.walkin-btn>a {
+  height: 3.3rem;
+  padding: 6px 12px;
+  display: grid;
+  align-items: center;
+}
 
 div#dm-new-order table, div#dm-delivery-in-progress table {
   display: grid;
