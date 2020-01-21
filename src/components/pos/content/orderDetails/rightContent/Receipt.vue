@@ -89,7 +89,7 @@
                 style="width: 150px;"
                 class="base-price color-tables-background color-text"
               >
-                {{ item.price }}
+                {{ formatPrice(item.price) }}
               </td>
               <td
                 style="width: 60px;"
@@ -172,13 +172,6 @@ export default {
   computed: {
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('order', ['orderSource']),
-  },
-  mounted() {
-    if (this.orderSource == 'backend') {
-      if (this.orderDetails) {
-        this.$store.dispatch('order/loadCarhopOrder', this.orderDetails._id)
-      }
-    }
   },
   methods: {
     getTotalPrice: function(item) {

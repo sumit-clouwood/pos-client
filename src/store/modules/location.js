@@ -36,6 +36,10 @@ const getters = {
     return state.currency + ' ' + Num.round(price, 2).toFixed(2)
   },
 
+  getReferral: state => id => {
+    return state.referrals.find(referral => referral._id === id)
+  },
+
   permitted: state => (pageId, parentId) => {
     typeof parentId == 'undefined' ? null : parentId
     if (state.permissions) {

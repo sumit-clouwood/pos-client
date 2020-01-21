@@ -23,11 +23,7 @@
         <div
           class="main-orders-list-item-subtitle color-text-invert item-exclude"
         >
-          <div>
-            @ {{ formatPrice(itemGrossPrice(item)) }} x
-            {{ item.quantity }}
-            {{ discountInfo(item) }}
-          </div>
+          <div v-html="formatItemDiscount(item)"></div>
         </div>
         <div class="main-orders-list-item-buttons">
           <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
@@ -70,15 +66,16 @@
 <script>
 import Modifiers from './items/Modifiers.vue'
 import Preloader from '@/components/util/Preloader'
-import * as CONST from '@/constants'
 
 import { mapState, mapActions, mapGetters } from 'vuex'
+import Discount from '@/mixins/Discount'
 
 export default {
   name: 'Items',
   data() {
     return {}
   },
+  mixins: [Discount],
   computed: {
     ...mapState({
       currentItem: state => state.order.item._id,
@@ -92,6 +89,7 @@ export default {
       'itemGrossPrice',
       'orderModifiers',
       'orderType',
+      'itemModifiersPrice',
     ]),
     ...mapGetters('location', ['formatPrice', '_t']),
   },
@@ -99,24 +97,6 @@ export default {
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
 
-    discountInfo(item) {
-      if (item.discount) {
-        return (
-          ' - ' +
-          (item.discount.type === CONST.VALUE
-            ? item.discount.value
-            : item.discount.rate + ' %') +
-          ' ( ' +
-          item.discount.name +
-          ' - ' +
-          (item.discount.type == CONST.VALUE
-            ? this.formatPrice(item.discount.value)
-            : item.discount.rate + ' %') +
-          ' )'
-        )
-      }
-      return ''
-    },
     removeCurrentOrder(param) {
       if (this.selectedOrder || this.orderId) {
         if (

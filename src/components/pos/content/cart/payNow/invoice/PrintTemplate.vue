@@ -54,6 +54,15 @@
               <span class="float-right">{{ order_type }}</span>
             </th>
           </tr>
+          <tr
+            class="left-aligned"
+            v-if="tableNumber && orderType.OTApi === 'dine_in'"
+          >
+            <th colspan="3">
+              {{ template.table_number_label }}
+              <span class="float-right">{{ tableNumber }}</span>
+            </th>
+          </tr>
           <tr v-if="crm_module_enabled && customer" class="left-aligned">
             <th colspan="3">
               {{ template.customer_label }}
@@ -131,7 +140,7 @@
                   </div>
                 </td>
                 <td class="right-aligned table-page-child" valign="top">
-                  -{{ format_number(discount.price) }}
+                  -{{ format_number(discount_total(discount)) }}
                 </td>
               </template>
             </tr>
@@ -232,7 +241,12 @@
                 {{ format_number(order_payment.collected) }}
               </td>
             </tr>
-            <tr class="important" v-if="!preview">
+            <tr
+              class="important"
+              v-if="
+                !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
+              "
+            >
               <td colspan="3" class="footTotal">
                 <div>
                   {{ template.total_paid_label }}
@@ -243,7 +257,25 @@
                 </div>
               </td>
             </tr>
-            <tr v-if="!preview">
+            <tr
+              class="important"
+              v-if="order.order_type === CONST.ORDER_TYPE_CALL_CENTER"
+            >
+              <td colspan="3" class="footTotal">
+                {{ referral_data(order.referral) }}
+                {{
+                  referral.referral_type === CONST.REFERRAL_TYPE_COD
+                    ? 'Cash on Delivery'
+                    : 'Paid by ' + referral.name
+                }}
+                <!--Paid by {{ getReferral(order.referral).name }} {{ referral }}-->
+              </td>
+            </tr>
+            <tr
+              v-if="
+                !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
+              "
+            >
               <td colspan="2">
                 {{ template.tips_label }}
               </td>
@@ -251,7 +283,11 @@
                 {{ format_number(order.tip_amount) }}
               </td>
             </tr>
-            <tr v-if="!preview">
+            <tr
+              v-if="
+                !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
+              "
+            >
               <td colspan="2">
                 {{ template.changed_label }}
               </td>
@@ -293,6 +329,7 @@ export default {
   data() {
     return {
       currentBrand: this.$store.state.location.brand,
+      referral: false,
       currentStore: this.$store.state.location.store,
       current_locale: this.$store.state.location.locale,
       company_logo:
@@ -322,8 +359,10 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'getReferral']),
     ...mapState('location', ['timezoneString']),
+    ...mapState('invoice', ['tableNumber']),
+    ...mapState('order', ['orderType']),
 
     dataBeingLoaded() {
       if (!this.order_to_print || !this.template) {
@@ -439,6 +478,9 @@ export default {
     },
   },
   methods: {
+    referral_data(referralId) {
+      this.referral = this.$store.getters['location/getReferral'](referralId)
+    },
     is_ready_to_print() {
       if (this.all_data_fully_loaded) {
         return true
@@ -463,6 +505,13 @@ export default {
       }
       return results.join(' / ')
     },
+    discount_total(discount) {
+      if (discount.type === 'fixed_price') {
+        return parseFloat(discount.price) + parseFloat(discount.tax)
+      } else {
+        return parseFloat(discount.price)
+      }
+    },
     item_total(item_no) {
       var total = 0
       for (var item of this.order.items) {
@@ -480,9 +529,10 @@ export default {
       for (var item_discount of this.order.item_discounts) {
         if (item_discount.for_item == item_no) {
           total -= parseFloat(item_discount.price)
+          total -= parseFloat(item_discount.tax)
         }
       }
-      return total
+      return total < 0 ? '0.00' : total
     },
     //These methods would need to be updated at POS to search for objects in POS store
     //These functions
