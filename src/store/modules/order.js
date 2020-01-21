@@ -179,10 +179,12 @@ const getters = {
 
   itemGrossDiscount: (state, getters) => item => {
     if (item.discountRate) {
-      if (item.discountedNetPrice) {
+      //if value type discount
+      if (item.discountType === CONST.VALUE) {
         return getters.itemNetPrice(item) - item.discountedNetPrice
       }
 
+      //percentage or fixed discount, note: fixed is also applied as percentage discount
       return (
         (item.grossPrice * item.discountRate) / 100 +
         getters.itemModifierDiscount(item) +
@@ -195,9 +197,11 @@ const getters = {
 
   itemNetDiscount: (state, getters) => item => {
     if (item.discountRate) {
-      if (item.discountedNetPrice) {
+      //if value type discount
+      if (item.discountType === CONST.VALUE) {
         return getters.itemNetPrice(item) - item.discountedNetPrice
       }
+      //percentage, fixed discount
       return (item.netPrice * item.discountRate) / 100
     } else {
       return 0
@@ -205,12 +209,13 @@ const getters = {
   },
 
   itemTaxDiscount: (state, getters) => item => {
-    if (item.discountedNetPrice) {
+    //if value type discount
+    if (item.discountType === CONST.VALUE) {
       const modifiersTax = getters.itemModifiersTax(item)
       const totalTaxDiscount = item.tax + modifiersTax - item.discountedTax
       return totalTaxDiscount
     }
-
+    //percentage, fixed
     if (item.discountRate) {
       return (item.tax * item.discountRate) / 100
     }
@@ -223,7 +228,8 @@ const getters = {
       return 0
     }
 
-    if (item.discountedNetPrice) {
+    //if value type discount, already calculated
+    if (item.discountType === CONST.VALUE) {
       return 0
     }
 
@@ -242,7 +248,8 @@ const getters = {
     }
 
     if (item.discountRate && item.modifiersData && item.modifiersData.length) {
-      if (item.discountedNetPrice) {
+      //if value type discount, already calculated
+      if (item.discountType === CONST.VALUE) {
         return 0
       }
       return item.modifiersData.reduce((discount, modifier) => {
