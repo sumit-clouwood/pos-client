@@ -9,7 +9,9 @@
     </div>-->
     <div class="change-location color-main color-text-invert change-brand-web">
       <button class="popup-btn-save" v-if="allowed(PERMS.BRAND_SETTINGS)">
-        <a :href="baseurl('dashboard')">{{ _t('Change Brand') }}</a>
+        <a :href="baseurl('dashboard')" target="_self">{{
+          _t('Change Brand')
+        }}</a>
       </button>
     </div>
   </div>
