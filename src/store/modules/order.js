@@ -1018,6 +1018,7 @@ const actions = {
               item.discount = false
               item.discountRate = 0
               item.discountedTax = false
+              item.discountType = null
               item.discountedNetPrice = false
             } else {
               const priceDiff = item.grossPrice - discount.discount.value
@@ -1038,6 +1039,7 @@ const actions = {
               item.discountRate = 0
               item.discountedTax = false
               item.discountedNetPrice = false
+              item.discountType = null
             } else {
               item.discountType = CONST.VALUE
               const itemNetPriceWithModifiers = getters.itemNetPrice(item)
@@ -1069,6 +1071,7 @@ const actions = {
               item.discountRate = 0
               item.discountedTax = false
               item.discountedNetPrice = false
+              item.discountType = null
             }
           }
         } else {
@@ -1077,6 +1080,7 @@ const actions = {
           item.discountRate = 0
           item.discountedTax = false
           item.discountedNetPrice = false
+          item.discountType = null
         }
         return item
       })
