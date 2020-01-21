@@ -959,11 +959,30 @@ const actions = {
           }
 
           if (discount.discount.type === CONST.FIXED) {
-            const priceDiff = item.grossPrice - discount.discount.value
-            const discountPercentage = (priceDiff * 100) / item.grossPrice
-            item.discountRate = discountPercentage
-            item.discountedTax = false
-            item.discountedNetPrice = false
+            if (discount.discount.value >= item.grossPrice) {
+              //if discount is equal to or greater than acutal item price
+              discountErrors[item.orderIndex] = {
+                item: item,
+                msg: rootGetters['location/_t'](
+                  `Discount is applicable on item price greater than
+                  ${rootGetters['location/formatPrice'](
+                    discount.discount.value
+                  )}`
+                ),
+              }
+              item.discount = false
+              item.discountRate = 0
+              item.discountedTax = false
+              item.discountType = null
+              item.discountedNetPrice = false
+            } else {
+              const priceDiff = item.grossPrice - discount.discount.value
+              const discountPercentage = (priceDiff * 100) / item.grossPrice
+              item.discountRate = discountPercentage
+              item.discountedTax = false
+              item.discountedNetPrice = false
+              item.discountType = CONST.FIXED
+            }
           } else if (discount.discount.type === CONST.VALUE) {
             if (
               discount.discount.value >
@@ -975,6 +994,7 @@ const actions = {
               item.discountRate = 0
               item.discountedTax = false
               item.discountedNetPrice = false
+              item.discountType = null
             } else {
               const itemNetPriceWithModifiers = getters.itemNetPrice(item)
 
@@ -1003,6 +1023,7 @@ const actions = {
               item.discountRate = 0
               item.discountedTax = false
               item.discountedNetPrice = false
+              item.discountType = null
             }
           }
         } else {
@@ -1011,6 +1032,7 @@ const actions = {
           item.discountRate = 0
           item.discountedTax = false
           item.discountedNetPrice = false
+          item.discountType = null
         }
         return item
       })
