@@ -89,7 +89,7 @@
                 style="width: 150px;"
                 class="base-price color-tables-background color-text"
               >
-                {{ item.price }}
+                {{ formatPrice(item.price) }}
               </td>
               <td
                 style="width: 60px;"
