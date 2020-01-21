@@ -37,7 +37,10 @@
               :orderDetails="selectedOrder.item"
               :userDetails="selectedOrder.lookups"
             />
-            <Payment :orderDetails="selectedOrder.item" />
+            <Payment
+              :orderDetails="selectedOrder.item"
+              :lookups="selectedOrder.lookups"
+            />
           </div>
         </div>
         <div class="buttons">
