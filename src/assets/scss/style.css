@@ -4052,6 +4052,9 @@ body {
 .collapse-menu .navigation-list li {
   max-width: 12.25rem !important; }
 
+@media only screen and (min-width: 961px) {
+  .navigation img {
+    max-width: 100%; } }
 .main {
   display: grid;
   grid-template-columns: 65% 35%; }

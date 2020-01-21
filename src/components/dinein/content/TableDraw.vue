@@ -356,6 +356,9 @@ export default {
       this.selectedArea = this.activeArea._id
     }
   },
+  mounted() {
+    this.tableTextTransform = window.PrintHandle ? false : true
+  },
   watch: {
     updateTableArea: function(newValue, oldValue) {
       if (newValue !== oldValue && this.selectedTableData) {
@@ -918,9 +921,6 @@ export default {
           if (this.brand.book_table || this.orderDetails.length) {
             // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
             let range = $('#range')
-            /*let top =
-                                  datum.table_position_coordinate.y / 2 +
-                                    $('#id_' + datum._id).offset().top || 0*/
             let top = datum.table_position_coordinate.y + 20 || 0
             let posX = $('#id_' + datum._id).offset().left
             let tableX = $('#id_' + datum._id).attr('x')
