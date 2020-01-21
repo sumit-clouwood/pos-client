@@ -241,7 +241,12 @@
                 {{ format_number(order_payment.collected) }}
               </td>
             </tr>
-            <tr class="important" v-if="!preview">
+            <tr
+              class="important"
+              v-if="
+                !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
+              "
+            >
               <td colspan="3" class="footTotal">
                 <div>
                   {{ template.total_paid_label }}
@@ -252,7 +257,25 @@
                 </div>
               </td>
             </tr>
-            <tr v-if="!preview">
+            <tr
+              class="important"
+              v-if="order.order_type === CONST.ORDER_TYPE_CALL_CENTER"
+            >
+              <td colspan="3" class="footTotal">
+                {{ referral_data(order.referral) }}
+                {{
+                  referral.referral_type === CONST.REFERRAL_TYPE_COD
+                    ? 'Cash on Delivery'
+                    : 'Paid by ' + referral.name
+                }}
+                <!--Paid by {{ getReferral(order.referral).name }} {{ referral }}-->
+              </td>
+            </tr>
+            <tr
+              v-if="
+                !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
+              "
+            >
               <td colspan="2">
                 {{ template.tips_label }}
               </td>
@@ -260,7 +283,11 @@
                 {{ format_number(order.tip_amount) }}
               </td>
             </tr>
-            <tr v-if="!preview">
+            <tr
+              v-if="
+                !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
+              "
+            >
               <td colspan="2">
                 {{ template.changed_label }}
               </td>
@@ -302,6 +329,7 @@ export default {
   data() {
     return {
       currentBrand: this.$store.state.location.brand,
+      referral: false,
       currentStore: this.$store.state.location.store,
       current_locale: this.$store.state.location.locale,
       company_logo:
@@ -331,7 +359,7 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'getReferral']),
     ...mapState('location', ['timezoneString']),
     ...mapState('invoice', ['tableNumber']),
     ...mapState('order', ['orderType']),
@@ -450,6 +478,9 @@ export default {
     },
   },
   methods: {
+    referral_data(referralId) {
+      this.referral = this.$store.getters['location/getReferral'](referralId)
+    },
     is_ready_to_print() {
       if (this.all_data_fully_loaded) {
         return true
@@ -475,10 +506,10 @@ export default {
       return results.join(' / ')
     },
     discount_total(discount) {
-      if (discount.type === 'value') {
-        return parseFloat(discount.price)
-      } else {
+      if (discount.type === 'fixed_price') {
         return parseFloat(discount.price) + parseFloat(discount.tax)
+      } else {
+        return parseFloat(discount.price)
       }
     },
     item_total(item_no) {
