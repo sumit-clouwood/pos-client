@@ -6,7 +6,6 @@ const state = {
   templates: null,
   rules: null,
   templateId: null,
-  tableNumber: null,
 }
 
 // getters
@@ -86,9 +85,6 @@ const mutations = {
   },
   [mutation.SET_TEMPLATE_ID](state, templateId) {
     state.templateId = templateId
-  },
-  [mutation.SET_TABLE_NUMBER](state, tableNumber) {
-    state.tableNumber = tableNumber
   },
   // [mutation.RESET](state) {
   //   state.templateHtml = null

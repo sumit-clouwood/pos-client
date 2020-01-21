@@ -297,9 +297,6 @@ const actions = {
       .finally(() => commit('SET_PROCESSING', false))
   },
   printInvoice({ commit }, { templateId, order }) {
-    if (order.table_number) {
-      commit('invoice/SET_TABLE_NUMBER', order.table_number, { root: true })
-    }
     commit('invoice/SET_TEMPLATE_ID', templateId, { root: true })
     commit('checkout/SET_ORDER', order.item, { root: true })
     commit('order/SET_ORDER_ID', order.item._id, { root: true })

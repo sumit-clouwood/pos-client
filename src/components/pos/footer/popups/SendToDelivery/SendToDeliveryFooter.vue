@@ -125,6 +125,7 @@ export default {
   methods: {
     selectedReferral(referral) {
       this.changedReferral = referral
+      this.$store.commit('order/SET_REFERRAL', this.changedReferral)
     },
     placeOrder() {
       hidePayNow()
