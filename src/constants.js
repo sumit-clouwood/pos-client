@@ -4,7 +4,7 @@ export const REFERENCE_FIELD_CATEGORY_TO_SUBCATEGORY = '_id'
 
 export const REFERENCE_FIELD_ITEM_TO_CATEGORY = 'category'
 export const REFERENCE_FIELD_CATEGORY_TO_ITEM = '_id'
-
+export const REFERRAL_TYPE_COD = 'cod'
 export const REFERENCE_FIELD_ITEM_TO_SUBCATEGORY = 'sub_category'
 export const REFERENCE_FIELD_SUBCATEGORY_TO_ITEM = '_id'
 export const ORDER_HISTORY_TYPE_RECORD_NEW = 'Created'
