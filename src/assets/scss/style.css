@@ -604,7 +604,14 @@ h6 {
 
 .transaction-orders .header-main .header-main-right .walkin-btn-design > .walkin-btn {
   height: 3.125rem;
-  margin-right: 0.625rem; }
+  margin-right: 0.625rem;
+  padding: 0; }
+  .transaction-orders .header-main .header-main-right .walkin-btn-design > .walkin-btn > a {
+    height: 3.125rem;
+    display: grid;
+    vertical-align: middle;
+    padding: 0.375rem 0.75rem;
+    align-items: center; }
 
 .header .header-main .change-brand-setting {
   display: none !important; }

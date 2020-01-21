@@ -2,10 +2,18 @@
   <div class="main-body color-dashboard-background color-text">
     <search />
     <div :class="['food-wrapper', subCategoryHendler ? 'active' : 'notActive']">
-      <div class="food-top-arrow food-arrow" @click="foodTop">
+      <div
+        class="food-top-arrow food-arrow"
+        v-if="categories.length"
+        @click="foodTop"
+      >
         <i class="fa fa-chevron-up" aria-hidden="true"></i>
       </div>
-      <div class="food-bottom-arrow food-arrow" @click="foodBottom">
+      <div
+        class="food-bottom-arrow food-arrow"
+        v-if="categories.length"
+        @click="foodBottom"
+      >
         <i class="fa fa-chevron-down" aria-hidden="true"></i>
       </div>
       <div
@@ -29,7 +37,7 @@
         <div v-if="!categories.length" class="text-danger">
           {{ _t('Nothing found to order.') }}
         </div>
-        <Items v-else />
+        <Items @heights="getCurrentHeights" v-else />
       </div>
     </div>
   </div>
@@ -42,7 +50,6 @@ import Breadcrumbs from './catalog/Breadcrumbs'
 import Search from './catalog/Search'
 import SubMenu from './catalog/SubMenu'
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'Catalog',
   props: {
@@ -67,7 +74,18 @@ export default {
   updated() {
     this.setScreenScrolls()
   },
+  beforeUpdate() {
+    this.setScreenScrolls()
+  },
+  mounted() {
+    this.setScreenScrolls()
+  },
   methods: {
+    getCurrentHeights(currentItems) {
+      this.foodBlockHeight = currentItems.foodBlockHeight
+      this.foodBlockInitHeight = currentItems.foodBlockInitHeight
+      this.foodBlockItemHeight = currentItems.foodBlockItemHeight
+    },
     setScreenScrolls() {
       let foodBlockHeight = $('.food-block').innerHeight()
       let foodCatHeight = $('.foodCatScroll').innerHeight()
@@ -88,28 +106,30 @@ export default {
       }
     },
     foodBottom() {
-      this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
       //alert(this.foodBlockHeight + ' >> ' + this.foodBlockItemHeight)
       if (this.foodBlockHeight >= this.foodBlockItemHeight) {
-        this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
         $('.food-bottom-arrow').addClass('disable')
+        this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
         return false
       }
       $('.food-top-arrow').removeClass('disable')
       $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
+      this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
     },
     foodTop() {
       //alert(this.foodBlockHeight + ' <> ' + this.foodBlockInitHeight)
       if (this.foodBlockHeight <= 0) {
+        this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
         $('.food-top-arrow').addClass('disable')
         return false
       }
-      this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
       $('.food-bottom-arrow').removeClass('disable')
+      this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
       $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
     },
     foodCatTop() {
       if (this.foodCatHeight <= 0) {
+        this.foodCatHeight += parseInt(this.foodCatInitHeight)
         $('.food-cat-top-arrow').addClass('disable')
         return false
       }
@@ -118,7 +138,6 @@ export default {
       $('.foodCatScroll').animate({ scrollTop: this.foodCatHeight }, 1000)
     },
     foodCatBottom() {
-      this.foodCatHeight += parseInt(this.foodCatInitHeight)
       if (this.foodCatHeight >= this.foodCatItemHeight) {
         this.foodCatHeight -= parseInt(this.foodCatInitHeight)
         $('.food-cat-bottom-arrow').addClass('disable')
@@ -126,6 +145,7 @@ export default {
       }
       $('.food-cat-top-arrow').removeClass('disable')
       $('.foodCatScroll').animate({ scrollTop: this.foodCatHeight }, 1000)
+      this.foodCatHeight += parseInt(this.foodCatInitHeight)
     },
   },
   computed: {

@@ -52,7 +52,7 @@ export default {
       custBlockItemHeight: 0,
     }
   },
-  updated() {
+  mounted() {
     this.custAreaCalculation()
   },
   methods: {
@@ -69,6 +69,7 @@ export default {
     customerTop() {
       if (this.custBlockItemHeight === 0) this.custAreaCalculation()
       if (this.custBlockHeight <= 0) {
+        this.custBlockHeight += parseInt(this.custBlockInitHeight)
         $('.cust-top-arrow').addClass('disable')
         return false
       }
@@ -81,7 +82,6 @@ export default {
     },
     customerBottom() {
       if (this.custBlockItemHeight === 0) this.custAreaCalculation()
-      this.custBlockHeight += parseInt(this.custBlockInitHeight)
       if (this.custBlockHeight >= this.custBlockItemHeight) {
         this.custBlockHeight -= parseInt(this.custBlockInitHeight)
         $('.cust-bottom-arrow').addClass('disable')
@@ -92,6 +92,7 @@ export default {
         { scrollTop: this.custBlockHeight },
         1000
       )
+      this.custBlockHeight += parseInt(this.custBlockInitHeight)
     },
   },
 }

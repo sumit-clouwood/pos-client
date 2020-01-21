@@ -129,20 +129,33 @@ const actions = {
           })
         }
         let path = storedata.data.start_path
-        if (path != null && availabeStores.length === 1) {
-          if (path === 'delivery_home') {
-            path = 'delivery-manager'
-          } else if (path === 'pos') {
-            path = ''
+        if (path != null) {
+          if (availabeStores.length === 1) {
+            if (path !== 'pos') {
+              if (path === 'delivery_home') {
+                path = 'delivery-manager'
+              }
+              let URL = path + rootGetters['context/store']
+              router.push(URL)
+              router.go(router.currentRoute)
+            }
+            dispatch('auth/getUserDetails', storedata.data.user_id, {
+              root: true,
+            })
+          } else {
+            showModal('#multiStores')
           }
-          let URL = path + rootGetters['context/store']
-          router.push(URL)
-          router.go(router.currentRoute)
-          dispatch('auth/getUserDetails', storedata.data.user_id, {
-            root: true,
-          })
         } else {
-          showModal('#multiStores')
+          let currentURL = window.location.href
+          if (currentURL.includes('/pos')) {
+            if (
+              router.currentRoute.params &&
+              (!router.currentRoute.params.brand_id ||
+                !router.currentRoute.params.store_id)
+            ) {
+              location.href = currentURL.split('/pos/')[0]
+            }
+          }
         }
         resolve()
       })

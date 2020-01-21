@@ -43,7 +43,9 @@
       :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
     >
       <!--<btnBack :param="'item'" />-->
-      <div class="no_item"><h2>No menu item found</h2></div>
+      <div class="no_item">
+        <h2>{{ _t('No menu item found') }}</h2>
+      </div>
     </div>
   </div>
 </template>
@@ -70,6 +72,7 @@ export default {
     ...mapState('location', ['currency']),
     ...mapState('order', ['splitBill', 'selectedOrder']),
     ...mapGetters('order', ['orderType']),
+    ...mapGetters('location', ['_t']),
     ...mapGetters('category', ['items', 'itemByCode']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
@@ -86,8 +89,24 @@ export default {
     },
   },
   created() {},
-  beforeDestroy() {},
+  updated() {
+    this.setScreenScrolls()
+  },
   methods: {
+    setScreenScrolls() {
+      let foodBlockHeight = $('.food-block').innerHeight()
+      let foodBlockInitHeight = foodBlockHeight
+      let foodBlockItemHeight = $('.food-menu').innerHeight()
+      if (this.foodBlockHeight > this.foodBlockItemHeight) {
+        $('.food-bottom-arrow, .food-top-arrow').addClass('disable')
+      }
+
+      this.$emit('heights', {
+        foodBlockHeight,
+        foodBlockInitHeight,
+        foodBlockItemHeight,
+      })
+    },
     choosePrice(item) {
       if (item.countries.length !== 0) {
         return item.countries[0].value
