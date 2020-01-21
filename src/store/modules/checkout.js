@@ -1608,6 +1608,14 @@ const actions = {
         store_id: rootState.context.storeId,
       }
       let x = JSON.stringify(jsonResponse)
+      /*
+      Case: print order invoice data was added in Localstorage for IOS APP, IOS webview would get this value and will send information to native printer.
+      Nidhishanker Modi @21 Jan 2020
+      */
+      localStorage.setItem('orderInvoiceData', x)
+      localStorage.setItem('orderInvoiceColData', x)
+      localStorage.setItem('orderInvoiceColData-Test', 'LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum LoremSum Ipsum')
+
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')
       let decodedData = compressToBase64(x)
