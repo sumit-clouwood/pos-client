@@ -1,5 +1,5 @@
 <template>
-  <div class="modal fade" id="open-item" role="dialog">
+  <div class="modal fade" id="generic-open-item" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
@@ -70,6 +70,7 @@ export default {
       item: {
         name: '',
         value: '',
+        type: 'genericOpenItem',
       },
       errors: {},
     }
