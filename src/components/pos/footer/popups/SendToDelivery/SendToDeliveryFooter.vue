@@ -37,6 +37,14 @@
           {{ _t('Nothing found') }}
         </div>
       </div>
+      <button
+        v-if="isLoyaltyEnabled"
+        type="button"
+        class="btn loyalty-button shorten-sentence color-text color-secondary"
+        @click="showLoyaltyPopup()"
+      >
+        {{ _t('Loyalty') }}
+      </button>
       <datetime
         type="datetime"
         title="Schedule"
@@ -61,7 +69,6 @@
         use12-hour
         auto
       ></datetime>
-      <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
     </div>
     <div class="btn-announce">
       <button
@@ -104,6 +111,7 @@ export default {
       errors: '',
       msg: '',
       timeZone: this.$store.state.location.setTimeZone,
+      loyaltyCardEnabled: false,
     }
   },
   computed: {
@@ -117,12 +125,34 @@ export default {
     ...mapState({
       getReferrals: state => state.location.referrals,
     }),
-    ...mapState('customer', ['address']),
+    ...mapState('customer', ['address', 'loyalty']),
     ...mapState('order', ['orderSource']),
     ...mapGetters('order', ['subTotal']),
     ...mapGetters('location', ['_t', 'formatPrice']),
+    ...mapGetters('payment', ['methods']),
+    ...mapState('checkoutForm', ['loyaltyAmount']),
+    isLoyaltyEnabled() {
+      if (
+        typeof this.loyalty.details.call_center_spend_points !== 'undefined'
+      ) {
+        return this.loyalty.details.call_center_spend_points
+      }
+      return false
+    },
   },
   methods: {
+    showLoyaltyPopup() {
+      if (this.methods) {
+        this.methods.forEach(element => {
+          if (element.type === 'loyalty' && this.isLoyaltyEnabled) {
+            this.$store.commit('checkoutForm/setMethod', element)
+            this.loyaltyCardEnabled = true
+          }
+        })
+      }
+      this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
+      showModal('#loyalty-payment')
+    },
     selectedReferral(referral) {
       this.changedReferral = referral
       this.$store.commit('order/SET_REFERRAL', this.changedReferral)
@@ -142,53 +172,65 @@ export default {
           this.$store.commit('order/SET_REFERRAL', this.changedReferral)
           showModal('#modificationReason')
         } else {
-          $('#confirm_announcement').prop('disabled', true)
-          this.msg = 'Sending order for delivery...'
-          this.errors = ''
-          $('#payment-msg').modal('show')
-          this.deliveryOrder({
-            referral: this.changedReferral,
-            futureOrder:
-              this.futureDateTime != ''
-                ? moment(this.futureDateTime).format('YYYY/MM/DD hh:mm')
-                : null,
-          })
-            .then(response => {
-              if (response.message != 'Network Error') {
-                this.msg = ''
-              }
-              // $('#order-confirmation').modal('hide')
-              $('#order-confirmation').modal('hide')
-              setTimeout(function() {
-                $('#confirm_announcement').prop('disabled', false)
-              }, 1000)
+          if (this.loyaltyCardEnabled && this.isLoyaltyEnabled) {
+            this.$store
+              .dispatch('checkoutForm/validateLoyaltyPayment')
+              .then(() => {
+                this.$store.dispatch('checkoutForm/addAmount').then(() => {
+                  this.placeDeliveryOrder()
+                })
+              })
+          } else {
+            this.placeDeliveryOrder()
+          }
+        }
+      }
+    },
+    placeDeliveryOrder() {
+      $('#confirm_announcement').prop('disabled', true)
+      this.msg = 'Sending order for delivery...'
+      this.errors = ''
+      $('#payment-msg').modal('show')
+      this.deliveryOrder({
+        referral: this.changedReferral,
+        futureOrder:
+          this.futureDateTime != ''
+            ? moment(this.futureDateTime).format('YYYY/MM/DD hh:mm')
+            : null,
+      })
+        .then(response => {
+          if (response.message != 'Network Error') {
+            this.msg = ''
+          }
+          $('#order-confirmation').modal('hide')
+          setTimeout(function() {
+            $('#confirm_announcement').prop('disabled', false)
+          }, 1000)
 
-              /*this.$store.commit('order/ORDER_TYPE', {
+          /*this.$store.commit('order/ORDER_TYPE', {
                 OTview: 'Walk In',
                 OTApi: 'walk_in',
               })*/
-            })
-            .catch(response => {
-              this.msg = ''
-              let errors = 'Error: '
+        })
+        .catch(response => {
+          this.msg = ''
+          let errors = 'Error: '
 
-              if (response.status == 'form_errors') {
-                for (let i in response.form_errors) {
-                  response.form_errors[i].forEach(err => (errors += ' ' + err))
-                }
-              } else {
-                errors = response.error
-              }
-              this.errors = errors
+          if (response.status == 'form_errors') {
+            for (let i in response.form_errors) {
+              response.form_errors[i].forEach(err => (errors += ' ' + err))
+            }
+          } else {
+            errors = response.error
+          }
+          this.errors = errors
 
-              $('#payment-msg').modal('hide')
-              $('#order-confirmation').modal('show')
-              setTimeout(function() {
-                $('#confirm_announcement').prop('disabled', false)
-              }, 1000)
-            })
-        }
-      }
+          $('#payment-msg').modal('hide')
+          $('#order-confirmation').modal('show')
+          setTimeout(function() {
+            $('#confirm_announcement').prop('disabled', false)
+          }, 1000)
+        })
     },
     ...mapActions('order', ['deliveryOrder']),
   },
@@ -216,6 +258,15 @@ export default {
     margin-right: 10px;
     margin-bottom: 10px;
   }
+}
+
+.loyalty-button {
+  height: 3.125rem;
+  border-radius: 3px;
+  background-color: #4e535d;
+  color: #fff;
+  padding-left: 0.9375rem;
+  padding-right: 1.5625rem;
 }
 
 @import '../../../../../assets/scss/pixels_rem.scss';
