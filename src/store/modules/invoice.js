@@ -6,7 +6,7 @@ const state = {
   templates: null,
   rules: null,
   templateId: null,
-  printerConfig: false
+  printerConfig: false,
 }
 
 // getters

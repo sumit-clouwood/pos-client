@@ -33,8 +33,8 @@ Vue.mixin({
     isDimsPosApp() {
       // Mixin to check if DIMS POS App
       if (
-          window.PrintHandle != null &&
-          window.PrintHandle.GetAgent() === 'Dimspos.App'
+        window.PrintHandle != null &&
+        window.PrintHandle.GetAgent() === 'Dimspos.App'
       ) {
         return true
       }

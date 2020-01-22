@@ -323,11 +323,11 @@
         </li>
         <li v-if="!isWaiter() && !isCarhop() && isDimsPosApp()">
           <a
-                  data-toggle="modal"
-                  data-target="#printer-settings"
-                  role="button"
-                  class="cursor-pointer printer-setting"
-          ><svg
+            data-toggle="modal"
+            data-target="#printer-settings"
+            role="button"
+            class="cursor-pointer printer-setting"
+            ><svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
