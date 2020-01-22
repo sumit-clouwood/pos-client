@@ -204,9 +204,7 @@ export default {
     getPlacedBy(orderDetail) {
       let name = 'N/A'
       if (orderDetail) {
-        Object.values(orderDetail.lookups.users._id).forEach(details => {
-          name = details.name
-        })
+        name = Object.values(orderDetail.lookups.users._id)[0]['name']
       }
       return name
     },
