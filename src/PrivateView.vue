@@ -172,6 +172,7 @@ export default {
   watch: {
     // eslint-disable-next-line no-unused-vars
     $route(to, from) {
+      // this.$store.commit('deliveryManager/LIST_TYPE', 'New Orders')
       if (this.$route.params.order_id) {
         this.orderId = this.$route.params.order_id
         this.$store.commit('order/RESET_SPLIT_BILL')

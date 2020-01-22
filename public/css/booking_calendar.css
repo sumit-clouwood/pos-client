@@ -257,6 +257,10 @@ div#NewReservation .SCHor .next, div#NewReservation .SCHor .prev{
 #NewReservation .num_guests .btn {
  padding: 12px 0;
 }
+/*webapp*/
+.SCTbl > div > div, .SCTbl {
+ display: grid;
+}
 @media only screen and (min-width: 980px) and (max-width: 1140px){
  
  #NewReservation .modal-dialog {
