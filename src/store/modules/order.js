@@ -351,7 +351,7 @@ const actions = {
     commit(mutation.MARK_SPLIT_ITEMS_PAID)
     return Promise.resolve(1)
   },
-  prepareItemTax({ rootState }, { item, type }) {
+  prepareItemTax({ getters, rootState }, { item, type }) {
     return new Promise(resolve => {
       if (type === 'genericOpenItem') {
         //find tax for this item

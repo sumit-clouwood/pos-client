@@ -96,8 +96,9 @@ export default {
       }
 
       this.$store.dispatch('order/addOpenItem', this.item).then(() => {
-        hideModal('#open-item')
-        this.item = {}
+        this.item.name = ''
+        this.item.value = ''
+        hideModal('#generic-open-item')
       })
     },
   },
