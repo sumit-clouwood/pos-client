@@ -13,6 +13,7 @@ const state = {
     lookup_completed: false,
   },
   kitchenPrint: true,
+  selectedTableRservationData: false,
   bills: null,
   guests: 1,
   updateTableArea: 0,
@@ -142,8 +143,6 @@ const actions = {
       DineInService.getAllBookedTables()
         .then(response => {
           commit(mutation.BOOKED_TABLES, response.data)
-          // eslint-disable-next-line no-console
-          console.log(response.data.data, 'boked data')
           dispatch('getDineInArea').then(() => {
             return resolve()
           })
@@ -681,6 +680,9 @@ const mutations = {
   },
   [mutation.KITCHEN_PRINT](state, status) {
     state.kitchenPrint = status
+  },
+  [mutation.SELECTED_TABLE_RESERVATION](state, reservationData) {
+    state.selectedTableRservationData = reservationData
   },
   [mutation.UPDATE_ITEM_GUEST](state, { item, guest, action }) {
     switch (action) {

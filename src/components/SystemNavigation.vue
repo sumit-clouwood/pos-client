@@ -14,7 +14,7 @@
           title="Dashboard"
           v-if="permitted('dashboard', 'root')"
         >
-          <a class="nav-link-nav" :href="dashboard">
+          <a class="nav-link-nav" :href="dashboard" target="_self">
             <div class="nav-link-text">
               <svg id="dashboard_icon" viewBox="0 0 24 24">
                 <path
@@ -35,7 +35,7 @@
           :title="_t('Menu Setup')"
           v-if="permitted('menu', 'root')"
         >
-          <a class="nav-link-nav" :href="menu">
+          <a class="nav-link-nav" :href="menu" target="_self">
             <div class="nav-link-text">
               <svg id="menu_menu_icon" viewBox="0 0 24 20">
                 <g fill="" fill-rule="nonzero">
@@ -56,7 +56,7 @@
           :title="_t('Store Setup')"
           v-if="permitted('store', 'root')"
         >
-          <a class="nav-link-nav" :href="store">
+          <a class="nav-link-nav" :href="store" target="_self">
             <div class="nav-link-text">
               <svg id="menu_locations_icon" viewBox="0 0 16 24">
                 <path
@@ -77,7 +77,7 @@
           :title="_t('CRM')"
           v-if="permitted('crm', 'root')"
         >
-          <a class="nav-link-nav" :href="crm">
+          <a class="nav-link-nav" :href="crm" target="_self">
             <div class="nav-link-text">
               <svg id="crm_icon" viewBox="0 0 22 24">
                 <path
@@ -99,7 +99,7 @@
           :title="_t('Brands Settings')"
           v-if="permitted('brand', 'root')"
         >
-          <a class="nav-link-nav" :href="brand">
+          <a class="nav-link-nav" :href="brand" target="_self">
             <div class="nav-link-text">
               <svg id="brands_settings_icon" viewBox="0 0 21 18">
                 <path
@@ -122,7 +122,7 @@
           :title="_t('Delivery')"
           v-if="permitted('delivery', 'root')"
         >
-          <a class="nav-link-nav" :href="dm">
+          <a class="nav-link-nav" :href="dm" target="_self">
             <div class="nav-link-text">
               <svg id="delivery_manager_icon" viewBox="0 0 20 21">
                 <path
@@ -143,7 +143,7 @@
           :title="_t('Dispatch')"
           v-if="permitted('dispatch', 'root')"
         >
-          <a class="nav-link-nav" :href="dispatch">
+          <a class="nav-link-nav" :href="dispatch" target="_self">
             <div class="nav-link-text">
               <svg id="dispatch_screen_icon" viewBox="0 0 21 16">
                 <path
@@ -165,7 +165,7 @@
           :title="_t('Super Admin')"
           v-if="permitted('admin', 'root')"
         >
-          <a class="nav-link-nav" :href="sadmin">
+          <a class="nav-link-nav" :href="sadmin" target="_self">
             <div class="nav-link-text">
               <svg id="global_settings_icon" viewBox="0 0 21 21.21">
                 <path

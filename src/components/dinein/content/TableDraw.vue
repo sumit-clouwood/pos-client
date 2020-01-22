@@ -420,6 +420,10 @@ export default {
     },
     ...mapActions('location', ['getUIMenu']),
     newOrder(reservationId, pos) {
+      this.$store.commit(
+        'dinein/SELECTED_TABLE_RESERVATION',
+        this.selectedTableData.number
+      )
       this.getUIMenu()
       let makeId = '#id_' + this.selectedTableId
       $(makeId)
@@ -453,6 +457,10 @@ export default {
     },
     updateOrder(data) {
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
+      this.$store.commit(
+        'dinein/SELECTED_TABLE_RESERVATION',
+        data.orderData.tableNumber
+      )
       this.$store.commit('dinein/RESERVATION_ID', data.orderData.reservationId)
       this.$store.commit('dinein/NUMBER_GUESTS', false)
       this.$store.commit('dinein/TABLE_SPLIT', true)
@@ -879,8 +887,6 @@ export default {
             order => order.tableId === datum._id
           )
           this.setTableColour(a[i], datum)
-          // eslint-disable-next-line no-console
-          console.log(this.orderDetails, 'new sata')
           this.$store.commit(
             'dinein/CURRENT_TABLE_RESERVATION',
             this.orderDetails
