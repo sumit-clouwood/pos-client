@@ -587,11 +587,12 @@ export default {
     })
   },
 
-  updated() {
+  /*updated() {
     this.$nextTick(() => {
-      $('ul.ullist-icons').slick('refresh')
+      alert(3)
+      // $('ul.ullist-icons').slick('refresh')
     })
-  },
+  },*/
 }
 </script>
 

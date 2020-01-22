@@ -56,11 +56,13 @@
           </tr>
           <tr
             class="left-aligned"
-            v-if="tableNumber && orderType.OTApi === 'dine_in'"
+            v-if="selectedTableRservationData && orderType.OTApi === 'dine_in'"
           >
             <th colspan="3">
               {{ template.table_number_label }}
-              <span class="float-right">{{ tableNumber }}</span>
+              <span class="float-right">
+                {{ selectedTableRservationData }}
+              </span>
             </th>
           </tr>
           <tr v-if="crm_module_enabled && customer" class="left-aligned">
@@ -361,7 +363,7 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapGetters('location', ['_t', 'getReferral']),
     ...mapState('location', ['timezoneString']),
-    ...mapState('invoice', ['tableNumber']),
+    ...mapState('dinein', ['selectedTableRservationData']),
     ...mapState('order', ['orderType']),
 
     dataBeingLoaded() {
