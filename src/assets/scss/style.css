@@ -79,7 +79,7 @@ img {
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 3px;
   border-radius: 3px;
-  background-color: #b2becf;
+  background-color: #777a7d;
   margin: 2px; }
 
 ::-webkit-resizer {
@@ -88,7 +88,7 @@ img {
   height: 0; }
 
 ::-webkit-scrollbar {
-  width: 0.5625rem;
+  width: 0.625rem;
   height: 0.1875rem; }
 
 ::-webkit-scrollbar-track-piece {
@@ -581,7 +581,8 @@ h6 {
           grid-gap: 1.25rem;
           padding: 0.9375rem 1.25rem;
           border-bottom: 0.0625rem solid #e3e7f2;
-          align-items: center; }
+          align-items: center;
+          cursor: pointer; }
       .header .header-main .header-main-right .profile-sidebar-header {
         display: grid;
         grid-template-columns: max-content auto max-content;
@@ -3849,7 +3850,13 @@ body {
   grid-row-end: 4;
   background-color: #5056CA;
   display: grid;
-  grid-template-rows: 5.3125rem 1fr 3.75rem 6.25rem; }
+  grid-template-rows: 5.3125rem 1fr 3.75rem 6.25rem;
+  justify-content: center;
+  grid-template-columns: 1fr;
+  overflow: hidden;
+  /*img{
+    max-width: 100%;
+  }*/ }
   .navigation .logo {
     display: grid;
     grid-template-columns: auto;
@@ -3969,9 +3976,22 @@ body {
   grid-template-rows: 5.3125rem 1fr 3.75rem 7.3125rem;
   width: 4.6875rem;
   -webkit-transition: 0.3s ease-out;
-  transition: 0.3s ease-out; }
+  transition: 0.3s ease-out;
+  justify-content: inherit;
+  grid-template-columns: 4.6875rem; }
   .dm-manager .navigation.collapse-menu {
-    width: 12.5rem; }
+    width: 12.5rem;
+    grid-template-columns: 12.5rem; }
+    .dm-manager .navigation.collapse-menu .navigation-avatar {
+      -webkit-transition: width 0.3s;
+      /* For Safari 3.1 to 6.0 */
+      transition: width 0.3s;
+      width: 12.5rem; }
+      .dm-manager .navigation.collapse-menu .navigation-avatar .nav-link {
+        width: 12.5rem;
+        -webkit-transition: width 0.3s;
+        /* For Safari 3.1 to 6.0 */
+        transition: width 0.3s; }
   .dm-manager .navigation .logo {
     width: 4.6875rem; }
   .dm-manager .navigation .navigation-list-wrapper .navigation-list {
@@ -4015,10 +4035,26 @@ body {
           overflow: hidden;
           text-overflow: ellipsis;
           margin-left: 1.25rem; }
+  .dm-manager .navigation .slider-btn {
+    z-index: 9; }
+  .dm-manager .navigation .navigation-avatar {
+    justify-content: inherit;
+    -webkit-transition: width 0.3s;
+    /* For Safari 3.1 to 6.0 */
+    transition: width 0.3s;
+    width: 4.6875rem; }
+    .dm-manager .navigation .navigation-avatar .nav-link {
+      width: 4.6875rem;
+      -webkit-transition: width 0.3s;
+      /* For Safari 3.1 to 6.0 */
+      transition: width 0.3s; }
 
 .collapse-menu .navigation-list li {
   max-width: 12.25rem !important; }
 
+@media only screen and (min-width: 961px) {
+  .navigation img {
+    max-width: 100%; } }
 .main {
   display: grid;
   grid-template-columns: 65% 35%; }
