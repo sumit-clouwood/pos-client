@@ -9,7 +9,7 @@ const state = {
   idbVersion: 1,
   reloaded: false,
   appUpdateNotification: false,
-
+  lastFetch: 0,
   modules: {
     store: CONST.LOADING_STATUS_LOADING,
     catalog: CONST.LOADING_STATUS_LOADING,
@@ -23,7 +23,21 @@ const state = {
 }
 
 // getters
-const getters = {}
+const getters = {
+  lastFetch: state => fmt => {
+    const seconds = (new Date().getTime() - state.lastFetch) / 1000
+    switch (fmt) {
+      case 'm':
+        return seconds / 60
+      case 'h':
+        return seconds / 60 / 60
+      case 'd':
+        return seconds / 60 / 60 / 24
+      default:
+        return seconds
+    }
+  },
+}
 
 // actions
 const actions = {}
@@ -65,6 +79,9 @@ const mutations = {
     state.modules.store = CONST.LOADING_STATUS_LOADING
     state.modules.catalog = CONST.LOADING_STATUS_LOADING
     state.modules.modifiers = CONST.LOADING_STATUS_LOADING
+  },
+  lastFetch(state) {
+    state.lastFetch = new Date().getTime()
   },
 }
 

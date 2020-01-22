@@ -359,7 +359,7 @@ const actions = {
 
   prepareItemTax({ rootState, getters }, { item, type }) {
     return new Promise(resolve => {
-      if (type === 'open') {
+      if (type === 'genericOpenItem') {
         //find tax for this item
         item.tax_sum = rootState.tax.openItemTax
         item._id = rootState.tax.openItemId
@@ -377,13 +377,24 @@ const actions = {
   },
   prepareItem(
     { commit, getters, rootGetters, rootState, dispatch },
-    { item, type }
+    { item, data }
   ) {
     commit('checkoutForm/RESET', 'process', { root: true })
 
     return new Promise(resolve => {
       item.split = false
       item.paid = false
+      //if generic open item, this comes from footer buttons
+      if (data.type === 'genericOpenItem') {
+        item.name = data.name
+        item.value = data.value
+      } else {
+        //this open item comes from backend
+        if (item.open_item === true) {
+          item.value = data.value
+          item.quantity = data.quantity
+        }
+      }
 
       if (rootGetters['auth/multistore'] && !item.store_id) {
         item.store_id = rootState.context.storeId
@@ -406,15 +417,15 @@ const actions = {
         item.quantity = 1
       }
 
-      dispatch('prepareItemTax', { item, type }).then(item => {
+      dispatch('prepareItemTax', { item:item, type: data.type }).then(item => {
         resolve(item)
       })
     })
   },
-  addOpenItem({ dispatch, commit }, { item, type }) {
+  addOpenItem({ dispatch, commit }, { item, data }) {
     return new Promise(resolve => {
       item.modifiable = false
-      dispatch('prepareItem', { item: item, type: type }).then(item => {
+      dispatch('prepareItem', { item, data }).then(item => {
         //this comes directly from the items menu without modifiers
         commit(mutation.ADD_ORDER_ITEM, item)
         dispatch('postCartItem').then(() => resolve())

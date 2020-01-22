@@ -117,14 +117,8 @@ export default {
       }
     },
     addToOrder(item) {
-      if (this.selectedOrder) {
-        if (
-          (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
-          this.selectedOrder.item.order_status == 'in-progress' &&
-          this.isCarhop()
-        ) {
-          return
-        }
+      if (this.selectedOrder && !this.allowed('orders.o.update_order_items')) {
+        return false
       }
       if (this.splitBill) {
         return false
@@ -138,30 +132,27 @@ export default {
 
       this.$store.commit('order/SET_CART_TYPE', 'new')
       this.$store.dispatch('order/startOrder')
+
       $('#POSItemOptions .modifier-option-radio').prop('checked', false)
       $('.food-menu-item').removeClass('active')
       $(this).addClass('active')
-      let cat = this.$store.getters['category/categories'].filter(
-        data => data._id === item.category
-      )
-      let subcat = this.$store.getters['category/subcategories'].filter(
-        data => data._id === item.sub_category
-      )
-      if (typeof cat !== 'undefined') {
-        // this.$store.commit('category/SET_CATEGORY', cat[0])
-      }
-      if (typeof subcat !== 'undefined') {
-        // this.$store.commit('category/SET_SUBCATEGORY', subcat[0])
-      }
+
       this.$store.commit('category/SET_ITEM', item)
       this.$store.commit('checkoutForm/showCalc', true)
       this.$store.commit('orderForm/updateQuantity', 1)
+
       if (this.$store.getters['modifier/hasModifiers'](item)) {
         this.$store.dispatch('modifier/assignModifiersToItem', item)
         this.$store.commit('orderForm/clearSelection')
+        //handle open item inside popup
         showModal('#POSItemOptions')
       } else {
-        this.$store.dispatch('order/addToOrder', item)
+        if (item.open_item === true) {
+          //show popup for open item
+          showModal('#open-item')
+        } else {
+          this.$store.dispatch('order/addToOrder', item)
+        }
       }
       this.$store.dispatch('addItemFood', item)
 

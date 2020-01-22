@@ -358,6 +358,17 @@ const actions = {
     })
   },
 
+  measurementUnits({ rootGetters, commit }) {
+    if (rootGetters['sync/lastFetch']('h') > 12) {
+      LocationService.getMeasurementUnits().then(response => {
+        if (response && response.data) {
+          commit('sync/lastFetch', null, { root: true })
+          commit(mutation.SET_MEASUREMENT_UNITS, response.data)
+        }
+      })
+    }
+  },
+
   formatDate: function({ commit }) {
     let d = new Date(),
       month = '' + (d.getMonth() + 1),

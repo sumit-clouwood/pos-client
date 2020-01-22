@@ -361,6 +361,7 @@
     <!--All popup including online order, because we need to apply few js which are not on header so all popups will be here-->
     <DineIn />
     <openItem />
+    <generic-open-item></generic-open-item>
     <AddNote />
     <item-note></item-note>
     <Discount />
@@ -431,6 +432,7 @@ import WalkinBtn from './footer/buttons/cart/walkin'
 import CarhopBtn from './footer/buttons/cart/carhop'
 import openItemButton from '@/components/pos/openItem/button'
 import openItem from '@/components/pos/openItem/item'
+import genericOpenItem from '@/components/pos/openItem/genericItem'
 
 import * as CONST from '@/constants'
 
@@ -476,6 +478,7 @@ export default {
     CarhopBtn,
     openItemButton,
     openItem,
+    genericOpenItem,
   },
   data() {
     return {
