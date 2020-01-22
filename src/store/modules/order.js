@@ -357,45 +357,37 @@ const actions = {
     return Promise.resolve(1)
   },
 
-  prepareItemTax({ rootState }, { item, type }) {
+  prepareItem({ commit, getters, rootState }, { data }) {
     return new Promise(resolve => {
-      if (type === 'open') {
-        //find tax for this item
-        item.tax_sum = rootState.tax.openItemTax
-        item._id = rootState.tax.openItemId
-        resolve(item)
+      commit('checkoutForm/RESET', 'process', { root: true })
+      let item = { ...rootState.category.item }
+      item.split = false
+      item.paid = false
+
+      if (item.open_item === true) {
+        item.value = data.value
+        item.quantity = data.quantity
+      }
+
+      //item gross price is inclusive of tax
+      item.grossPrice = getters.grossPrice(item)
+      //net price is exclusive of tax, getter ll send unrounded price that is real one
+      item.netPrice = getters.netPrice(item)
+        //calculated item tax
+      item.tax = item.grossPrice - item.netPrice
+
+      if (typeof item.orderIndex === 'undefined') {
+        item.orderIndex = getters.orderIndex
+      }
+
+      if (typeof item.quantity === 'undefined') {
+        item.quantity = 1
       }
       resolve(item)
     })
   },
-  prepareItem({ commit, getters, dispatch }, { item, type }) {
-    return new Promise(resolve => {
-      commit('checkoutForm/RESET', 'process', { root: true })
-      item.split = false
-      item.paid = false
-
-      dispatch('prepareItemTax', { item, type }).then(item => {
-        //item gross price is inclusive of tax
-        item.grossPrice = getters.grossPrice(item)
-        //net price is exclusive of tax, getter ll send unrounded price that is real one
-        item.netPrice = getters.netPrice(item)
-
-        //calculated item tax
-        item.tax = item.grossPrice - item.netPrice
-
-        if (typeof item.orderIndex === 'undefined') {
-          item.orderIndex = getters.orderIndex
-        }
-
-        if (typeof item.quantity === 'undefined') {
-          item.quantity = 1
-        }
-        resolve(item)
-      })
-    })
-  },
-  addOpenItem({ dispatch, commit }, item) {
-    dispatch('prepareItem', { item: item, type: 'open' }).then(item => {
+  addOpenItem({ dispatch, commit }, data) {
+    dispatch('prepareItem', { data: data }).then(item => {
       //this comes directly from the items menu without modifiers
       item.modifiable = false
       commit(mutation.ADD_ORDER_ITEM, item)
@@ -413,11 +405,11 @@ const actions = {
     item.paid = false
     //item gross price is inclusive of tax
     item.grossPrice = getters.grossPrice(item)
-    //net price is exclusive of tax, getter ll send unrounded price that is real one
     item.netPrice = getters.netPrice(item)
-    item.note = stateItem.note ? stateItem.note : ''
     //calculated item tax
     item.tax = item.grossPrice - item.netPrice
+    //net price is exclusive of tax, getter ll send unrounded price that is real one
+    item.note = stateItem.note ? stateItem.note : ''
 
     if (typeof item.orderIndex === 'undefined') {
       item.orderIndex = getters.orderIndex
