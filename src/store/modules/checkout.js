@@ -347,18 +347,6 @@ const actions = {
 
     //order level discount
 
-    order.item_discounts = order.item_discounts.map(discount => {
-      return discount
-    })
-
-    order.order_surcharges = order.order_surcharges.map(surcharge => {
-      surcharge.rate = surcharge.rate ? surcharge.rate : surcharge.rate
-      surcharge.tax_rate = surcharge.tax_rate
-        ? surcharge.tax_rate
-        : surcharge.tax_rate
-      return surcharge
-    })
-
     const orderData = getters.calculateOrderTotals(order)
 
     order.sub_total = orderData.subTotal.toFixed(2)
