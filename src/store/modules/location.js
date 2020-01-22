@@ -40,6 +40,10 @@ const getters = {
     return state.currency + ' ' + Num.round(price, 2).toFixed(2)
   },
 
+  getReferral: state => id => {
+    return state.referrals.find(referral => referral._id === id)
+  },
+
   permitted: state => (pageId, parentId) => {
     typeof parentId == 'undefined' ? null : parentId
     if (state.permissions) {
@@ -437,6 +441,12 @@ const mutations = {
     state.translations = translations
   },
   [mutation.SET_REFERRALS](state, referrals) {
+    /*let referral = []
+    referrals.find(ref => {
+      if (typeof ref.name != 'undefined') {
+        referral.push(ref)
+      }
+    })*/
     state.referrals = referrals
   },
   [mutation.SET_TIMEZONES](state, timezones) {

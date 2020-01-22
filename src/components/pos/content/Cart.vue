@@ -4,7 +4,6 @@
       'main-orders',
       'walkinPOScart',
       { active: items.length && mainOrdersHendler },
-      { mainOrdersDine: orderType.OTApi === 'dine_in' },
     ]"
     class="main-orders color-dashboard-background"
   >
