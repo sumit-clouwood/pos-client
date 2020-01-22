@@ -111,6 +111,7 @@ export default {
     }),
     ...mapGetters('context', ['store']),
     ...mapState('auth', ['userDetails']),
+    ...mapGetters('auth', ['multistore']),
     ...mapGetters(['allCategoryHendler', 'subCategoryHendler']),
     ...mapGetters('category', ['categories', 'getImages']),
     ...mapGetters('modifier', {
@@ -125,15 +126,19 @@ export default {
   },
   methods: {
     openMultiStore() {
-      $('.multi-store-menu-pos').slideToggle()
-      $('.navigation .logo').toggleClass('multistore')
-      let posMenuUpperLogo = $('.logo')
-      $('.main, .header').click(() => {
-        if (posMenuUpperLogo.hasClass('multistore')) {
-          $('.multi-store-menu-pos').slideUp()
-          posMenuUpperLogo.removeClass('multistore')
-        }
-      })
+      if (this.multistore) {
+        $('.multi-store-menu-pos').slideToggle()
+        $('.navigation .logo').toggleClass('multistore')
+        let posMenuUpperLogo = $('.logo')
+        $('.main, .header').click(() => {
+          if (posMenuUpperLogo.hasClass('multistore')) {
+            $('.multi-store-menu-pos').slideUp()
+            posMenuUpperLogo.removeClass('multistore')
+          }
+        })
+      } else {
+        return false
+      }
     },
     browse(item) {
       // eslint-disable-next-line no-undef
