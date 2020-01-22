@@ -767,7 +767,7 @@ const actions = {
           surchargeTotalDiscount = (totalSurcharge * orderDiscount.rate) / 100
         } else {
           orderTotalDiscount = (subtotal * orderDiscount.rate) / 100
-          totalTax = getters.totalItemsTax + getters.totalModifiersTax
+          totalTax = getters.totalItemsTax
           taxTotalDiscount = (totalTax * orderDiscount.rate) / 100
           surchargeTotalDiscount = 0
         }
@@ -888,7 +888,7 @@ const actions = {
           //without surcharge
           //apply offtotal discount, don't calculate discount on surcharge
           //we are not including surcharge tax in total tax for discount
-          totalTax = getters.totalItemsTax + getters.totalModifiersTax
+          totalTax = getters.totalItemsTax
 
           if (
             orderDiscount.min_cart_value < subtotal &&
@@ -959,7 +959,7 @@ const actions = {
               } else {
                 orderTotalDiscount = (subtotal * orderDiscount.rate) / 100
                 //const subtotalWithDiscount = subtotal - orderTotalDiscount
-                totalTax = getters.totalItemsTax + getters.totalModifiersTax
+                totalTax = getters.totalItemsTax
                 taxTotalDiscount = (totalTax * orderDiscount.rate) / 100
 
                 surchargeTotalDiscount = 0

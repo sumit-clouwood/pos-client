@@ -1,6 +1,5 @@
 import * as mutation from './discount/mutation-types'
 import DiscountService from '@/services/data/DiscountService'
-import Num from '@/plugins/helpers/Num.js'
 import Availability from '@/plugins/helpers/Availability.js'
 import * as CONST from '@/constants'
 //const DISCOUNT_ITEM_ERROR = "Item discount can't be applied."
@@ -34,14 +33,11 @@ const state = {
 // getters
 const getters = {
   taxDiscountAmount: state => {
-    return Num.round(state.taxDiscountAmount)
+    return state.taxDiscountAmount
   },
   orderDiscountWithoutTax: state => {
     //discount is already subtracted from tax in tax.js
-    return (
-      Num.round(state.orderDiscountAmount) +
-      Num.round(state.surchargeDiscountAmount)
-    )
+    return state.orderDiscountAmount + state.surchargeDiscountAmount
   },
 
   activeItemDiscountId: state =>
