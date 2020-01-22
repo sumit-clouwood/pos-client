@@ -4043,9 +4043,22 @@ body {
   grid-template-rows: 5.3125rem 1fr 3.75rem 7.3125rem;
   width: 4.6875rem;
   -webkit-transition: 0.3s ease-out;
-  transition: 0.3s ease-out; }
+  transition: 0.3s ease-out;
+  justify-content: inherit;
+  grid-template-columns: 4.6875rem; }
   .dm-manager .navigation.collapse-menu {
-    width: 12.5rem; }
+    width: 12.5rem;
+    grid-template-columns: 12.5rem; }
+    .dm-manager .navigation.collapse-menu .navigation-avatar {
+      -webkit-transition: width 0.3s;
+      /* For Safari 3.1 to 6.0 */
+      transition: width 0.3s;
+      width: 12.5rem; }
+      .dm-manager .navigation.collapse-menu .navigation-avatar .nav-link {
+        width: 12.5rem;
+        -webkit-transition: width 0.3s;
+        /* For Safari 3.1 to 6.0 */
+        transition: width 0.3s; }
   .dm-manager .navigation .logo {
     width: 4.6875rem; }
   .dm-manager .navigation .navigation-list-wrapper .navigation-list {
@@ -4089,6 +4102,19 @@ body {
           overflow: hidden;
           text-overflow: ellipsis;
           margin-left: 1.25rem; }
+  .dm-manager .navigation .slider-btn {
+    z-index: 9; }
+  .dm-manager .navigation .navigation-avatar {
+    justify-content: inherit;
+    -webkit-transition: width 0.3s;
+    /* For Safari 3.1 to 6.0 */
+    transition: width 0.3s;
+    width: 4.6875rem; }
+    .dm-manager .navigation .navigation-avatar .nav-link {
+      width: 4.6875rem;
+      -webkit-transition: width 0.3s;
+      /* For Safari 3.1 to 6.0 */
+      transition: width 0.3s; }
 
 .collapse-menu .navigation-list li {
   max-width: 12.25rem !important; }
