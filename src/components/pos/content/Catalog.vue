@@ -72,14 +72,11 @@ export default {
     SubMenu,
   },
   updated() {
-    this.setScreenScrolls()
+    this.$nextTick(() => {
+      this.setScreenScrolls()
+    })
   },
-  beforeUpdate() {
-    this.setScreenScrolls()
-  },
-  mounted() {
-    this.setScreenScrolls()
-  },
+  mounted() {},
   methods: {
     getCurrentHeights(currentItems) {
       this.foodBlockHeight = currentItems.foodBlockHeight

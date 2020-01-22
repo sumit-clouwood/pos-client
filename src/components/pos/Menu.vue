@@ -115,10 +115,9 @@ export default {
     }), //to preftech modifier images, todo
   },
   updated() {
-    let menuHeight = $('.navigation-list-wrapper').innerHeight()
-    this.menuHeighInIt = this.menuHeight = menuHeight
-    this.menuInitHeight = menuHeight
-    this.menuItemHeight = $('.navigation-list').innerHeight()
+    this.$nextTick(() => {
+      this.posMenu()
+    })
   },
   methods: {
     browse(item) {
@@ -127,6 +126,12 @@ export default {
       $('.search-field-input').val('')
       //bootstrap.loadUI().then(() => {})
       this.$store.dispatch('category/browse', item)
+    },
+    posMenu() {
+      let menuHeight = $('.navigation-list-wrapper').innerHeight()
+      this.menuHeighInIt = this.menuHeight = menuHeight
+      this.menuInitHeight = menuHeight
+      this.menuItemHeight = $('.navigation-list').innerHeight()
     },
     showMore() {
       let menuHeightOld = this.menuHeighInIt
