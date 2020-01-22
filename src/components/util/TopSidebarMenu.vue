@@ -217,7 +217,10 @@
             ><span>{{ _t('Menu Setup') }}</span></a
           >
         </li>
-        <li class="change-brand-setting" v-if="allowed(PERMS.BRAND_SETTINGS)">
+        <li
+          class="change-brand-setting"
+          v-if="isPermitted(PERMISSIONS.BRAND_SETTINGS)"
+        >
           <a :href="dashboard" target="_self">
             <svg
               version="1.1"
@@ -400,7 +403,7 @@ export default {
       },
     },
     ...mapGetters('context', ['store']),
-    ...mapGetters('auth', ['waiter', 'carhop', 'allowed']),
+    ...mapGetters('auth', ['waiter', 'carhop']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType', 'activeArea']),
     ...mapState('sync', ['online']),
