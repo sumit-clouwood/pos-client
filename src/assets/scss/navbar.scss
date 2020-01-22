@@ -187,9 +187,22 @@
     width: $px75;
     -webkit-transition: 0.3s ease-out;
     transition: 0.3s ease-out;
+    justify-content: inherit;
+    grid-template-columns: $px75;
 
     &.collapse-menu {
       width: $px200;
+      grid-template-columns: $px200;
+      .navigation-avatar{
+        -webkit-transition: width 0.3s; /* For Safari 3.1 to 6.0 */
+        transition: width 0.3s;
+        width: $px200;
+        .nav-link{
+          width: $px200;
+          -webkit-transition: width 0.3s; /* For Safari 3.1 to 6.0 */
+          transition: width 0.3s;
+        }
+      }
     }
 
     .logo {
@@ -250,6 +263,20 @@
         }
       }
     }
+    .slider-btn {
+      z-index: 9;
+    }
+    .navigation-avatar{
+      justify-content: inherit;
+      -webkit-transition: width 0.3s; /* For Safari 3.1 to 6.0 */
+      transition: width 0.3s;
+      width: $px75;
+      .nav-link{
+        width: $px75;
+        -webkit-transition: width 0.3s; /* For Safari 3.1 to 6.0 */
+        transition: width 0.3s;
+      }
+    }
   }
 }
 
@@ -257,6 +284,13 @@
   .navigation-list {
     li {
       max-width: $px196 !important;
+    }
+  }
+}
+@media only screen and (min-width: 961px) {
+  .navigation{
+    img{
+      max-width: 100%;
     }
   }
 }
