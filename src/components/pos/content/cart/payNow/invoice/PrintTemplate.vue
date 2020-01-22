@@ -563,7 +563,7 @@ export default {
         }
         return this.translate_entity(found_item, 'name')
       } else {
-        return ''
+        return orderItem.name
       }
     },
     translate_item_modifier(item, orderItem) {

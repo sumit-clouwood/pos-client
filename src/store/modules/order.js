@@ -385,14 +385,16 @@ const actions = {
       item.split = false
       item.paid = false
       //if generic open item, this comes from footer buttons
-      if (data.type === 'genericOpenItem') {
-        item.name = data.name
-        item.value = data.value
-      } else {
-        //this open item comes from backend
-        if (item.open_item === true) {
+      if (data) {
+        if (data.type === 'genericOpenItem') {
+          item.name = data.name
           item.value = data.value
-          item.quantity = data.quantity
+        } else {
+          //this open item comes from backend
+          if (item.open_item === true) {
+            item.value = data.value
+            item.quantity = data.quantity
+          }
         }
       }
 
@@ -417,7 +419,10 @@ const actions = {
         item.quantity = 1
       }
 
-      dispatch('prepareItemTax', { item:item, type: data.type }).then(item => {
+      dispatch('prepareItemTax', {
+        item: item,
+        type: data ? data.type : null,
+      }).then(item => {
         resolve(item)
       })
     })
