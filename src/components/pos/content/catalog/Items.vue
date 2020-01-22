@@ -90,7 +90,9 @@ export default {
   },
   created() {},
   updated() {
-    this.setScreenScrolls()
+    this.$nextTick(() => {
+      this.setScreenScrolls()
+    })
   },
   methods: {
     setScreenScrolls() {
