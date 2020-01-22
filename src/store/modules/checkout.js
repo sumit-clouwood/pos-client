@@ -1606,6 +1606,9 @@ const actions = {
         store_id: rootState.context.storeId,
       }
       let x = JSON.stringify(jsonResponse)
+      //Case: print order invoice data was added in Localstorage for IOS APP, IOS webview would get this value and will send information to native printer.
+      localStorage.setItem('orderInvoiceColData', x)
+
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')
       let decodedData = compressToBase64(x)

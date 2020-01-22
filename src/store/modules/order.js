@@ -179,10 +179,12 @@ const getters = {
 
   itemGrossDiscount: (state, getters) => item => {
     if (item.discountRate) {
-      if (item.discountedNetPrice) {
+      //if value type discount
+      if (item.discountType === CONST.VALUE) {
         return getters.itemNetPrice(item) - item.discountedNetPrice
       }
 
+      //percentage or fixed discount, note: fixed is also applied as percentage discount
       return (
         (item.grossPrice * item.discountRate) / 100 +
         getters.itemModifierDiscount(item) +
@@ -195,9 +197,11 @@ const getters = {
 
   itemNetDiscount: (state, getters) => item => {
     if (item.discountRate) {
-      if (item.discountedNetPrice) {
+      //if value type discount
+      if (item.discountType === CONST.VALUE) {
         return getters.itemNetPrice(item) - item.discountedNetPrice
       }
+      //percentage, fixed discount
       return (item.netPrice * item.discountRate) / 100
     } else {
       return 0
@@ -205,12 +209,13 @@ const getters = {
   },
 
   itemTaxDiscount: (state, getters) => item => {
-    if (item.discountedNetPrice) {
+    //if value type discount
+    if (item.discountType === CONST.VALUE) {
       const modifiersTax = getters.itemModifiersTax(item)
       const totalTaxDiscount = item.tax + modifiersTax - item.discountedTax
       return totalTaxDiscount
     }
-
+    //percentage, fixed
     if (item.discountRate) {
       return (item.tax * item.discountRate) / 100
     }
@@ -223,7 +228,8 @@ const getters = {
       return 0
     }
 
-    if (item.discountedNetPrice) {
+    //if value type discount, already calculated
+    if (item.discountType === CONST.VALUE) {
       return 0
     }
 
@@ -242,7 +248,8 @@ const getters = {
     }
 
     if (item.discountRate && item.modifiersData && item.modifiersData.length) {
-      if (item.discountedNetPrice) {
+      //if value type discount, already calculated
+      if (item.discountType === CONST.VALUE) {
         return 0
       }
       return item.modifiersData.reduce((discount, modifier) => {
@@ -349,33 +356,44 @@ const actions = {
     commit(mutation.MARK_SPLIT_ITEMS_PAID)
     return Promise.resolve(1)
   },
-
-  prepareItemTax({ rootState }, { item, type }) {
+  prepareItemTax({ getters, rootState }, { item, type }) {
     return new Promise(resolve => {
-      if (type === 'open') {
+      if (type === 'genericOpenItem') {
         //find tax for this item
         item.tax_sum = rootState.tax.openItemTax
         item._id = rootState.tax.openItemId
-        resolve(item)
       }
+
+      //item gross price is inclusive of tax
+      item.grossPrice = getters.grossPrice(item)
+      //net price is exclusive of tax, getter ll send unrounded price that is real one
+      item.netPrice = getters.netPrice(item)
+      //calculated item tax
+      item.tax = item.grossPrice - item.netPrice
+
       resolve(item)
     })
   },
-  prepareItem({ commit, getters, dispatch }, { item, type }) {
+
+  prepareItem({ commit, getters, rootState, dispatch }, { data }) {
     return new Promise(resolve => {
       commit('checkoutForm/RESET', 'process', { root: true })
+      let item = { ...rootState.category.item }
       item.split = false
       item.paid = false
+      //if generic open item, this comes from footer buttons
+      if (data.type === 'genericOpenItem') {
+        item.name = data.name
+        item.value = data.value
+      } else {
+        //this open item comes from backend
+        if (item.open_item === true) {
+          item.value = data.value
+          item.quantity = data.quantity
+        }
+      }
 
-      dispatch('prepareItemTax', { item, type }).then(item => {
-        //item gross price is inclusive of tax
-        item.grossPrice = getters.grossPrice(item)
-        //net price is exclusive of tax, getter ll send unrounded price that is real one
-        item.netPrice = getters.netPrice(item)
-
-        //calculated item tax
-        item.tax = item.grossPrice - item.netPrice
-
+      dispatch('prepareItemTax', { item: item, type: data.type }).then(item => {
         if (typeof item.orderIndex === 'undefined') {
           item.orderIndex = getters.orderIndex
         }
@@ -387,8 +405,8 @@ const actions = {
       })
     })
   },
-  addOpenItem({ dispatch, commit }, item) {
-    dispatch('prepareItem', { item: item, type: 'open' }).then(item => {
+  addOpenItem({ dispatch, commit }, data) {
+    dispatch('prepareItem', { data: data }).then(item => {
       //this comes directly from the items menu without modifiers
       item.modifiable = false
       commit(mutation.ADD_ORDER_ITEM, item)
@@ -406,11 +424,11 @@ const actions = {
     item.paid = false
     //item gross price is inclusive of tax
     item.grossPrice = getters.grossPrice(item)
-    //net price is exclusive of tax, getter ll send unrounded price that is real one
     item.netPrice = getters.netPrice(item)
-    item.note = stateItem.note ? stateItem.note : ''
     //calculated item tax
     item.tax = item.grossPrice - item.netPrice
+    //net price is exclusive of tax, getter ll send unrounded price that is real one
+    item.note = stateItem.note ? stateItem.note : ''
 
     if (typeof item.orderIndex === 'undefined') {
       item.orderIndex = getters.orderIndex
@@ -1011,6 +1029,7 @@ const actions = {
               item.discount = false
               item.discountRate = 0
               item.discountedTax = false
+              item.discountType = null
               item.discountedNetPrice = false
             } else {
               const priceDiff = item.grossPrice - discount.discount.value
@@ -1031,6 +1050,7 @@ const actions = {
               item.discountRate = 0
               item.discountedTax = false
               item.discountedNetPrice = false
+              item.discountType = null
             } else {
               item.discountType = CONST.VALUE
               const itemNetPriceWithModifiers = getters.itemNetPrice(item)
@@ -1062,6 +1082,7 @@ const actions = {
               item.discountRate = 0
               item.discountedTax = false
               item.discountedNetPrice = false
+              item.discountType = null
             }
           }
         } else {
@@ -1070,6 +1091,7 @@ const actions = {
           item.discountRate = 0
           item.discountedTax = false
           item.discountedNetPrice = false
+          item.discountType = null
         }
         return item
       })
