@@ -58,7 +58,9 @@
                     :key="i"
                     :class="isOrderCancelledClass"
                   >
-                    <div v-if="order">
+                    <div
+                      v-if="order && order.order_system_status !== 'modified'"
+                    >
                       <div class="moodifiers-btn-wrapper">
                         <div class="progress-order-details">
                           <button
@@ -355,6 +357,8 @@ export default {
   },
   methods: {
     hasOrders(orderDetails) {
+      // eslint-disable-next-line no-console
+      console.log(orderDetails)
       return orderDetails.orders.length
     },
     completeOrder(tableId) {
@@ -451,5 +455,8 @@ button#dropdownMenuButton {
 button#dropdownMenuButton svg {
   display: inline-block;
   vertical-align: middle;
+}
+.table-order-view:empty {
+  display: none;
 }
 </style>
