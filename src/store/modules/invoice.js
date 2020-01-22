@@ -46,7 +46,7 @@ const getters = {
 
 // actions
 const actions = {
-  async printRules({ commit }) {
+  async printRules({ commit, dispatch }) {
     const rules = await InvoiceService.fetchPrintRules()
     commit(mutation.SET_RULES, rules)
     dispatch('getAllPrinters')
