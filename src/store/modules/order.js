@@ -145,7 +145,7 @@ const getters = {
       rootGetters['discount/orderDiscountWithoutTax']
 
     if (amount) {
-      return amount.toFixed(2)
+      return Num.round(amount)
     }
     return 0
   },
@@ -174,7 +174,7 @@ const getters = {
       subTotal += itemPrice + modifiersPrice - itemDiscount - modifiersDiscount
     })
 
-    return Num.round(subTotal)
+    return subTotal
   },
 
   itemGrossDiscount: (state, getters) => item => {
