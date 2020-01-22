@@ -400,7 +400,7 @@ export default {
       },
     },
     ...mapGetters('context', ['store']),
-    ...mapGetters('auth', ['waiter', 'carhop']),
+    ...mapGetters('auth', ['waiter', 'carhop', 'allowed']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType', 'activeArea']),
     ...mapState('sync', ['online']),
