@@ -356,34 +356,53 @@ const actions = {
     commit(mutation.MARK_SPLIT_ITEMS_PAID)
     return Promise.resolve(1)
   },
-
-  prepareItem({ commit, getters, rootState }, { data }) {
+  prepareItemTax({ getters, rootState }, { item, type }) {
     return new Promise(resolve => {
-      commit('checkoutForm/RESET', 'process', { root: true })
-      let item = { ...rootState.category.item }
-      item.split = false
-      item.paid = false
-
-      if (item.open_item === true) {
-        item.value = data.value
-        item.quantity = data.quantity
+      if (type === 'genericOpenItem') {
+        //find tax for this item
+        item.tax_sum = rootState.tax.openItemTax
+        item._id = rootState.tax.openItemId
       }
 
       //item gross price is inclusive of tax
       item.grossPrice = getters.grossPrice(item)
       //net price is exclusive of tax, getter ll send unrounded price that is real one
       item.netPrice = getters.netPrice(item)
-        //calculated item tax
+      //calculated item tax
       item.tax = item.grossPrice - item.netPrice
 
-      if (typeof item.orderIndex === 'undefined') {
-        item.orderIndex = getters.orderIndex
+      resolve(item)
+    })
+  },
+
+  prepareItem({ commit, getters, rootState, dispatch }, { data }) {
+    return new Promise(resolve => {
+      commit('checkoutForm/RESET', 'process', { root: true })
+      let item = { ...rootState.category.item }
+      item.split = false
+      item.paid = false
+      //if generic open item, this comes from footer buttons
+      if (data.type === 'genericOpenItem') {
+        item.name = data.name
+        item.value = data.value
+      } else {
+        //this open item comes from backend
+        if (item.open_item === true) {
+          item.value = data.value
+          item.quantity = data.quantity
+        }
       }
 
-      if (typeof item.quantity === 'undefined') {
-        item.quantity = 1
-      }
-      resolve(item)
+      dispatch('prepareItemTax', { item: item, type: data.type }).then(item => {
+        if (typeof item.orderIndex === 'undefined') {
+          item.orderIndex = getters.orderIndex
+        }
+
+        if (typeof item.quantity === 'undefined') {
+          item.quantity = 1
+        }
+        resolve(item)
+      })
     })
   },
   addOpenItem({ dispatch, commit }, data) {
