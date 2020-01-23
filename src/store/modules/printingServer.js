@@ -3,7 +3,7 @@ import * as mutation from './printingServer/mutation-type'
 import PrintingServerService from '@/services/data/PrintingServerService'
 // import LookupData from '@/plugins/helpers/LookupData'
 // import moment from 'moment-timezone'
-// import { compressToBase64 } from 'lz-string'
+import { compressToBase64 } from 'lz-string'
 const state = {
   kitchenitems: [],
   printingservers: [],
@@ -67,11 +67,13 @@ const actions = {
 
   //Create A JSON Request to send in Local Server API for Generating Invoices from a software.
   // printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
-  // eslint-disable-next-line no-empty-pattern
-  printingServerInvoiceRaw({}, orderData) {
+  printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
+    // printingServerInvoiceRaw({}, orderData) {
     // eslint-disable-next-line no-console
-    console.log(typeof orderData)
-    /*let printingServers = state.printingservers //Get All Printing Servers
+    console.log('IN')
+    // eslint-disable-next-line no-console
+    console.log(orderData)
+    let printingServers = state.printingservers //Get All Printing Servers
     if (printingServers && orderData) {
       let staff = rootState.auth.userDetails
       let customerDetails = rootState.customer
@@ -142,6 +144,10 @@ const actions = {
       let orderTypeLabel = orderData.order_type + '_label'
       orderData.order_no = orderData.orderNumber //Custom Order No to give appropriate field for Habib
       //Final JSON
+      /*get selected table no*/
+      let table_no = rootState.dinein.selectedTable
+        ? rootState.dinein.selectedTable.number
+        : false
       let jsonResponse = {
         status: 'ok',
         brand_logo: locationData.brand.company_logo
@@ -164,8 +170,31 @@ const actions = {
         generate_time: orderData.real_created_datetime,
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
+        token_manager: false,
+        windows_app: false,
       }
+      if (orderData.order_type == 'DINE-IN') {
+        jsonResponse.table_number = table_no
+      }
+      let _order = {}
+      if (window.PrintHandle != null) {
+        jsonResponse.windows_app = true
+        _order['printingServers'] = printingServers
+        _order['orderData'] = jsonResponse
+
+        window.PrintHandle.Print(
+          JSON.stringify(_order),
+          function callbackfunction(data) {
+            //perform your action in case of success or leave empty
+            // eslint-disable-next-line no-console
+            console.log(data.status, 'data')
+          }
+        )
+      }
+      // eslint-disable-next-line no-console
+      // console.log(jsonResponse, 'datatata')
       let x = JSON.stringify(jsonResponse)
+
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')
       let decodedData = compressToBase64(x)
@@ -185,7 +214,7 @@ const actions = {
             h: '300',
             scroll: 'yes ',
           })
-          setTimeout(function() {
+          /*setTimeout(function() {
             // eslint-disable-next-line no-console
             console.log(state.kitchenInvoiceResponse.closed)
             if (
@@ -196,11 +225,11 @@ const actions = {
               console.log('close')
               state.kitchenInvoiceResponse.close()
             }
-          }, 3000)
+          }, 3000)*/
           // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
       }
-    }*/
+    }
   },
 
   // eslint-disable-next-line no-empty-pattern

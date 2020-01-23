@@ -182,7 +182,7 @@
           </router-link>
         </li>
         <li v-if="!isWaiter() && !isCarhop() && permitted('dashboard', 'root')">
-          <a :href="dashboard"
+          <a :href="dashboard" target="_self"
             ><svg data-v-0fe42853="" id="dashboard_icon" viewBox="0 0 24 24">
               <path
                 data-v-0fe42853=""
@@ -194,7 +194,7 @@
           >
         </li>
         <li v-if="!isWaiter() && !isCarhop() && permitted('crm', 'root')">
-          <a :href="crm"
+          <a :href="crm" target="_self"
             ><svg data-v-0fe42853="" id="crm_icon" viewBox="0 0 22 24">
               <path
                 data-v-0fe42853=""
@@ -206,7 +206,7 @@
           >
         </li>
         <li v-if="!isWaiter() && !isCarhop() && permitted('menu', 'root')">
-          <a :href="menu"
+          <a :href="menu" target="_self"
             ><svg data-v-0fe42853="" id="menu_menu_icon" viewBox="0 0 24 20">
               <g data-v-0fe42853="" fill="" fill-rule="nonzero">
                 <path
@@ -221,7 +221,7 @@
           class="change-brand-setting"
           v-if="isPermitted(PERMISSIONS.BRAND_SETTINGS)"
         >
-          <a :href="dashboard">
+          <a :href="dashboard" target="_self">
             <svg
               version="1.1"
               id="Capa_1"
@@ -305,7 +305,7 @@
           >
         </li>
         <li v-if="!isWaiter() && !isCarhop() && permitted('brand', 'root')">
-          <a :href="brand"
+          <a :href="brand" target="_self"
             ><svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -321,8 +321,12 @@
             ><span>{{ _t('Settings') }}</span></a
           >
         </li>
-        <li v-if="!isWaiter() && !isCarhop()">
-          <a role="button" class="cursor-pointer"
+        <li v-if="!isWaiter() && !isCarhop() && isDimsPosApp()">
+          <a
+            data-toggle="modal"
+            data-target="#printer-settings"
+            role="button"
+            class="cursor-pointer printer-setting"
             ><svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -365,6 +369,7 @@
         </li>
       </ul>
     </ul>
+    <PrinterSettings v-if="isDimsPosApp()" />
   </ul>
 </template>
 <script>
@@ -374,12 +379,14 @@ import AuthService from '@/services/data/AuthService'
 import bootstrap from '@/bootstrap'
 //import SwitchStore from '@/components/commonButtons/SwitchStore'
 import avatar from '@/components/mobileComponents/mobileElements/avatar'
+import PrinterSettings from '../pos/footer/popups/PrinterSettings'
 export default {
   name: 'TopSidebarMenu',
   props: {},
   components: {
     //SwitchStore,
     avatar,
+    PrinterSettings,
   },
   data: function() {
     return {

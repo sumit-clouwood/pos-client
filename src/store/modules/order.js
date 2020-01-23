@@ -145,7 +145,7 @@ const getters = {
       rootGetters['discount/orderDiscountWithoutTax']
 
     if (amount) {
-      return amount.toFixed(2)
+      return Num.round(amount)
     }
     return 0
   },
@@ -174,7 +174,7 @@ const getters = {
       subTotal += itemPrice + modifiersPrice - itemDiscount - modifiersDiscount
     })
 
-    return Num.round(subTotal)
+    return subTotal
   },
 
   itemGrossDiscount: (state, getters) => item => {
@@ -767,7 +767,7 @@ const actions = {
           surchargeTotalDiscount = (totalSurcharge * orderDiscount.rate) / 100
         } else {
           orderTotalDiscount = (subtotal * orderDiscount.rate) / 100
-          totalTax = getters.totalItemsTax
+          totalTax = getters.totalItemsTax + getters.totalModifiersTax
           taxTotalDiscount = (totalTax * orderDiscount.rate) / 100
           surchargeTotalDiscount = 0
         }
@@ -888,7 +888,7 @@ const actions = {
           //without surcharge
           //apply offtotal discount, don't calculate discount on surcharge
           //we are not including surcharge tax in total tax for discount
-          totalTax = getters.totalItemsTax
+          totalTax = getters.totalItemsTax + getters.totalModifiersTax
 
           if (
             orderDiscount.min_cart_value < subtotal &&
@@ -959,7 +959,7 @@ const actions = {
               } else {
                 orderTotalDiscount = (subtotal * orderDiscount.rate) / 100
                 //const subtotalWithDiscount = subtotal - orderTotalDiscount
-                totalTax = getters.totalItemsTax
+                totalTax = getters.totalItemsTax + getters.totalModifiersTax
                 taxTotalDiscount = (totalTax * orderDiscount.rate) / 100
 
                 surchargeTotalDiscount = 0
