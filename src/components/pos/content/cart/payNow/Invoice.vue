@@ -57,8 +57,6 @@ export default {
       if (this.preview) {
         return ''
       }
-      /* eslint-disable */
-      console.log(this.order.order_no);
       return (
         this._t('ORDER_DIALOG_TITLE_PREFIX') +
         (this.order.order_no

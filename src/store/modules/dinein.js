@@ -45,6 +45,8 @@ const state = {
   billSplit: null,
   processingSplit: false,
   currentTableReservationData: null,
+  reservationData: null,
+  isModified: false,
 }
 const getters = {
   getCurrentTableRunningReservations: state => {
@@ -554,6 +556,9 @@ const actions = {
 }
 
 const mutations = {
+  [mutation.IS_MODIFIED](state, isModified) {
+    state.isModified = isModified
+  },
   [mutation.SET_COVER](state, selectedCover) {
     state.selectedCover = selectedCover
   },

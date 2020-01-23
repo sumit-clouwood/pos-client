@@ -17,7 +17,10 @@
               item.sub_category_image == '' ? item.sub_category_color : '',
           }"
           :key="item._id"
-          :class="{ active: currentSubcategory === item._id }"
+          :class="{
+            active: currentSubcategory === item._id,
+            cashier_app_sub_item: item.sub_category_image == '',
+          }"
           @click.prevent="getSubCatItems(item)"
         >
           <img
