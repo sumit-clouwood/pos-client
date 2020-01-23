@@ -30,7 +30,8 @@
           class="search-field-input"
           :placeholder="_t('Start typing to get search results')"
           v-model="searchItems"
-          @keyup="searchingItems(searchItems)"
+          @keyup="searchingItems()"
+          @keypress="$event.keyCode == 13 ? $event.preventDefault() : true"
         />
         <div
           :class="[
@@ -82,7 +83,7 @@
 <script>
 /*Global $*/
 import { mapGetters } from 'vuex'
-
+import { bus } from '@/eventBus'
 export default {
   name: 'Search',
   props: {},
@@ -101,12 +102,18 @@ export default {
   },
   mounted() {
     this.searchItems = ''
+    bus.$on('clear-search-input', payLoad => {
+      this.searchItems = payLoad
+      // this.$store.dispatch('category/fetchAll', this.$store.state.context.store)
+    })
   },
   methods: {
-    searchingItems(searchItems) {
-      // eslint-disable-next-line no-undef
-      $('.breadcrumbs').hide()
-      this.$store.dispatch('category/collectSearchItems', searchItems)
+    searchingItems() {
+      if (this.searchItems.trim().length >= 1) {
+        // eslint-disable-next-line no-undef
+        $('.breadcrumbs').hide()
+        this.$store.dispatch('category/collectSearchItems', this.searchItems)
+      }
     },
     // ...mapActions('category', ['collectSearchItems']),
     searchHendlerChange() {

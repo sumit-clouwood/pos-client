@@ -110,13 +110,13 @@ const actions = {
             .toLowerCase()
             .indexOf(searchTerm.toString().toLowerCase()) != -1
         ) {
-          searchedItems.push(order)
+          if (!searchedItems.includes(order)) searchedItems.push(order)
         }
 
         //Searching with Order Item Names
         order.items.map(item => {
           if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
-            searchedItems.push(order)
+            if (!searchedItems.includes(order)) searchedItems.push(order)
           }
         })
 
@@ -134,7 +134,7 @@ const actions = {
               .toLowerCase()
               .indexOf(searchTerm.toString().toLowerCase()) != -1
           ) {
-            searchedItems.push(order)
+            if (!searchedItems.includes(order)) searchedItems.push(order)
           }
         }
       })
