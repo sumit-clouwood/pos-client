@@ -86,7 +86,10 @@ export default {
             .dispatch('category/fetchAll')
             .then(() => {
               if (
-                locationDetails.userDetails.brand_access_type === 'store_group'
+                locationDetails.userDetails.brand_access_type ===
+                  'store_group' ||
+                (locationDetails.availableStoreGroups &&
+                  locationDetails.availableStoreGroups.length)
               ) {
                 this.store.dispatch(
                   'discount/fetchMultistore',

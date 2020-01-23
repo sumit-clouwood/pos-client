@@ -211,6 +211,11 @@ const actions = {
               }
             )
           }
+          let availableStoreGroups =
+            storedata.data.available_store_groups || false
+          commit('auth/AVAILABLE_STORE_GROUPS', availableStoreGroups, {
+            root: true,
+          })
           if (storedata.data.brand) {
             commit(mutation.SET_BRAND, storedata.data.brand)
           }
@@ -325,6 +330,7 @@ const actions = {
                     resolve({
                       userDetails: response.item,
                       stores: multiStoreIds,
+                      availableStoreGroups: availableStoreGroups,
                     })
                   })
                 })
