@@ -18,6 +18,7 @@ const state = {
   searchKeyword: '',
   logoutAction: '',
   brandAccessType: false,
+  availableStoreGroups: false,
   storeGroupId: false,
   role: null,
 }
@@ -40,7 +41,9 @@ const getters = {
     }
     return false
   },
-  multistore: state => state.brandAccessType === 'store_group',
+  multistore: state =>
+    state.brandAccessType === 'store_group' ||
+    (state.availableStoreGroups && state.availableStoreGroups.length),
   roleName: state => {
     if (!state.userDetails) {
       return ''
@@ -360,6 +363,9 @@ const mutations = {
   },
   [mutation.ADD_WAITERS](state, waiters) {
     state.waiters = [...state.waiters, ...waiters]
+  },
+  [mutation.AVAILABLE_STORE_GROUPS](state, availableStoreGroups) {
+    state.availableStoreGroups = availableStoreGroups
   },
   [mutation.SET_ROLE](state, role) {
     state.role = role
