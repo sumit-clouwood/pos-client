@@ -192,7 +192,7 @@ const actions = {
         )
       }
       // eslint-disable-next-line no-console
-      // console.log(jsonResponse, 'datatata')
+      console.log(jsonResponse, 'checkResponce')
       let x = JSON.stringify(jsonResponse)
 
       // let b = new Buffer(x)
