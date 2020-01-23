@@ -120,8 +120,6 @@ export default {
           $('#payment-screen-footer').prop('disabled', true)
           this.$store.commit('checkoutForm/setAction', 'pay')
           this.$store.commit('order/IS_PAY', 1)
-          /* eslint-disable */
-          console.log(this.isModified)
           if (this.orderSource === 'backend' || this.isModified) {
             showModal('#modificationReason')
           } else {
