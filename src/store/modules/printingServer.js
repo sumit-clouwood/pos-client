@@ -67,7 +67,6 @@ const actions = {
 
   //Create A JSON Request to send in Local Server API for Generating Invoices from a software.
   // printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
-  // eslint-disable-next-line no-empty-pattern
   printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
     // printingServerInvoiceRaw({}, orderData) {
     // eslint-disable-next-line no-console
