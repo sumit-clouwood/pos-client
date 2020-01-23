@@ -397,7 +397,6 @@ const actions = {
     document.body.classList.remove('body-rtl')
     document.body.classList.add('body-' + direction)*/
   },
-
   updateModalSelectionDelivery({ commit, rootState }, modalSelection) {
     commit(mutation.SET_MODAL, modalSelection)
     if (!rootState.customer.address && modalSelection != '#loyalty-payment') {

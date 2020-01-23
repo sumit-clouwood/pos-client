@@ -94,11 +94,11 @@ export default {
       this.customerId = this.$route.params.customer_id
       this.addressId = this.$route.params.address_id
       this.groupId = this.$route.params.group_id
-      alert(this.groupId)
       this.$store.dispatch('customer/setAddressForDelivery', {
         customerId: this.customerId,
         addressId: this.addressId,
       })
+      this.$store.dispatch('context/getStoresByGroupID', this.groupId)
     }
   },
 }
