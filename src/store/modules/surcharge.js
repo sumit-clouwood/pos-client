@@ -1,6 +1,7 @@
 import SurchargeService from '@/services/data/SurchargeService'
 import * as mutation from './surcharge/mutation-types'
 import * as CONST from '@/constants'
+import Num from '@/plugins/helpers/Num.js'
 
 const state = {
   surcharges: [],
@@ -10,9 +11,8 @@ const state = {
 const getters = {
   totalTax: state =>
     state.surchargeAmounts.reduce((tax, surcharge) => {
-      return tax + surcharge.tax
+      return tax + Num.round(surcharge.tax)
     }, 0),
-
   tax: () => surcharge => {
     if (surcharge.type === CONST.VALUE) {
       const beforeTax = surcharge.value / ((100 + surcharge.tax_sum) / 100)
@@ -21,7 +21,7 @@ const getters = {
   },
   surcharge: state => {
     return state.surchargeAmounts.reduce((total, surcharge) => {
-      return total + surcharge.amount
+      return total + Num.round(surcharge.amount)
     }, 0)
   },
   surcharges: (state, getters, rootState) =>

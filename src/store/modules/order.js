@@ -71,7 +71,7 @@ const getters = {
   item: state => state.item,
 
   netPrice: () => item => {
-    return item.grossPrice / ((100 + item.tax_sum) / 100)
+    return Num.round(item.grossPrice / ((100 + item.tax_sum) / 100))
   },
 
   grossPrice: () => item => {
@@ -118,7 +118,7 @@ const getters = {
     const totalTax = getters.totalTaxWithoutOrderDiscount
     const orderTaxDiscount = rootGetters['discount/taxDiscountAmount']
 
-    return totalTax - orderTaxDiscount
+    return Num.round(totalTax - orderTaxDiscount)
   },
   totalTaxWithoutOrderDiscount: (state, getters, rootState, rootGetters) => {
     const itemsTax = getters.totalItemsTax
@@ -381,7 +381,7 @@ const actions = {
         item.netPrice = getters.netPrice(item)
 
         //calculated item tax
-        item.tax = item.grossPrice - item.netPrice
+        item.tax = Num.round(item.grossPrice - item.netPrice)
 
         if (typeof item.orderIndex === 'undefined') {
           item.orderIndex = getters.orderIndex
@@ -417,7 +417,7 @@ const actions = {
     item.netPrice = getters.netPrice(item)
     item.note = stateItem.note ? stateItem.note : ''
     //calculated item tax
-    item.tax = item.grossPrice - item.netPrice
+    item.tax = Num.round(item.grossPrice - item.netPrice)
 
     if (typeof item.orderIndex === 'undefined') {
       item.orderIndex = getters.orderIndex
@@ -465,7 +465,7 @@ const actions = {
       item.netPrice = getters.netPrice(item)
 
       //calculated item tax, it ll be always calculated on discounted net price
-      item.tax = item.grossPrice - item.netPrice
+      item.tax = Num.round(item.grossPrice - item.netPrice)
 
       //if there is item modifiers data assign it later
       item.modifiersData = []
@@ -596,7 +596,7 @@ const actions = {
             const modifierPrice = modifier.value
               ? parseFloat(modifier.value)
               : 0
-            const tax = (modifierPrice * item.tax_sum) / 100
+            const tax = Num.round((modifierPrice * item.tax_sum) / 100, 2)
 
             modifierData.push({
               modifierId: modifier._id,
@@ -798,9 +798,9 @@ const actions = {
             //so don't need to calculate discount on surcharge again
             surchargeTotalDiscount = 0
             const discountData = {
-              orderDiscount: orderTotalDiscount,
-              taxDiscount: taxTotalDiscount,
-              surchargeDiscount: surchargeTotalDiscount,
+              orderDiscount: Num.round(orderTotalDiscount),
+              taxDiscount: Num.round(taxTotalDiscount),
+              surchargeDiscount: Num.round(surchargeTotalDiscount),
             }
 
             dispatch('discount/setOrderDiscount', discountData, {
@@ -833,7 +833,7 @@ const actions = {
                 surchargeTotalDiscount = 0
                 const discountData = {
                   orderDiscount: orderTotalDiscount,
-                  taxDiscount: taxTotalDiscount,
+                  taxDiscount: Num.round(taxTotalDiscount),
                   surchargeDiscount: surchargeTotalDiscount,
                 }
 
@@ -871,9 +871,9 @@ const actions = {
 
                 console.log('surchargeTotalDiscount', surchargeTotalDiscount)
                 const discountData = {
-                  orderDiscount: orderTotalDiscount,
-                  taxDiscount: taxTotalDiscount,
-                  surchargeDiscount: surchargeTotalDiscount,
+                  orderDiscount: Num.round(orderTotalDiscount),
+                  taxDiscount: Num.round(taxTotalDiscount),
+                  surchargeDiscount: Num.round(surchargeTotalDiscount),
                 }
                 console.log('order discount data', discountData)
                 dispatch('discount/setOrderDiscount', discountData, {
@@ -905,7 +905,7 @@ const actions = {
 
             const discountData = {
               orderDiscount: orderTotalDiscount,
-              taxDiscount: taxTotalDiscount,
+              taxDiscount: Num.round(taxTotalDiscount),
               surchargeDiscount: surchargeTotalDiscount,
             }
             resolve(discountData)
@@ -932,7 +932,7 @@ const actions = {
 
                 const discountData = {
                   orderDiscount: orderDiscount.value,
-                  taxDiscount: taxTotalDiscount,
+                  taxDiscount: Num.round(taxTotalDiscount),
                   surchargeDiscount: surchargeTotalDiscount,
                 }
                 resolve(discountData)
@@ -964,8 +964,8 @@ const actions = {
 
                 surchargeTotalDiscount = 0
                 const discountData = {
-                  orderDiscount: orderTotalDiscount,
-                  taxDiscount: taxTotalDiscount,
+                  orderDiscount: Num.round(orderTotalDiscount),
+                  taxDiscount: Num.round(taxTotalDiscount),
                   surchargeDiscount: surchargeTotalDiscount,
                 }
                 resolve(discountData)
@@ -1022,6 +1022,7 @@ const actions = {
               item.discountedNetPrice = false
             } else {
               const priceDiff = item.grossPrice - discount.discount.value
+              //don't round the percentage value it ll cause errors
               const discountPercentage = (priceDiff * 100) / item.grossPrice
               item.discountRate = discountPercentage
               item.discountedTax = false
@@ -1049,9 +1050,12 @@ const actions = {
               const itemsDiscountedPrice =
                 itemsNetPriceWithModifiers - discount.discount.value
 
-              item.discountedTax =
+              item.discountedTax = Num.round(
                 (itemsDiscountedPrice * item.tax_sum) / 100 / item.quantity
-              item.discountedNetPrice = itemsDiscountedPrice / item.quantity
+              )
+              item.discountedNetPrice = Num.round(
+                itemsDiscountedPrice / item.quantity
+              )
               item.discountRate = discount.discount.value
             }
           } else {
