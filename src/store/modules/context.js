@@ -59,6 +59,7 @@ const actions = {
     }
     // eslint-disable-next-line no-console
     console.log(groupStores, 'groupStores')
+    localStorage.setItem('groupStores', JSON.stringify(groupStores))
     commit('SET_MULTI_STORES', groupStores)
     // commit('context/SET_MULTI_STORES', availabeStores, { root: true })
   },
