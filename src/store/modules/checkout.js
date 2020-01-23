@@ -415,9 +415,6 @@ const actions = {
         if (typeof item.kitchen_invoice !== 'undefined') {
           orderItem['kitchen_invoice'] = item.kitchen_invoice
         }
-        if (typeof item.kitchen_invoice !== 'undefined') {
-          orderItem['kitchen_invoice'] = item.kitchen_invoice
-        }
 
         //we are sending item price and modifier prices separtely but sending
         //item discount as total of both discounts
@@ -591,9 +588,9 @@ const actions = {
                     entity_id: surcharge._id,
                     name: surcharge.name,
                     type: surcharge.type,
-                    price: appliedSurcharge.amount,
-                    rate: surcharge.rate,
-                    tax: appliedSurcharge.tax,
+                    price: Num.round(appliedSurcharge.amount),
+                    rate: Num.round(surcharge.rate),
+                    tax: Num.round(appliedSurcharge.tax),
                     tax_rate: surcharge.tax_sum,
                     taxable: surcharge.tax_sum ? true : false,
                   }
