@@ -1,51 +1,22 @@
 <template>
-  <div
-    id="multiStoresModal"
-    class="modal fade"
-    role="dialog"
-    data-keyboard="false"
-    data-backdrop="static"
-  >
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: rgb(245, 245, 245)">
-          <h4 class="modal-title">{{ _t('Select Store') }}</h4>
-        </div>
-        <div class="modal-body stores-list-container">
-          <div class="stores-list">
-            <router-link
-              v-for="store in multipleStores"
-              append
-              :key="store._id"
-              :to="selectedBrand + '/' + store._id"
-              v-model="storeId"
-              @click.native="selectedStoreId(store._id)"
-            >
-              <div class="store-picker-single-item">
-                <div class="store-name">{{ store.name }}</div>
-                <div class="store-address">{{ store.address }}</div>
-                <div class="store-address">
-                  {{ store.city }} {{ store.country }}
-                </div>
-                <div class="store-phone">
-                  {{ store.phone }}
-                </div>
-              </div>
-            </router-link>
+  <div class="stores-list-container multi-store-menu-pos">
+    <div class="stores-list">
+      <router-link
+        v-for="store in multipleStores"
+        :key="store._id"
+        :to="selectedBrand + '/' + store._id"
+        v-model="storeId"
+        @click.native="selectedStoreId(store._id)"
+      >
+        <div class="store-picker-single-item">
+          <div class="store-name">{{ store.name }}</div>
+          <!--<div class="store-address">{{ store.address }}</div>
+          <div class="store-address">{{ store.city }} {{ store.country }}</div>-->
+          <div class="store-phone">
+            {{ store.phone }}
           </div>
         </div>
-        <div class="modal-footer">
-          <button
-            v-if="this.$route.params.store_id"
-            type="button"
-            class="tables-btn-style"
-            data-dismiss="modal"
-          >
-            {{ _t('Close') }}
-          </button>
-        </div>
-      </div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -54,10 +25,10 @@
 /* global $ */
 import { mapGetters, mapState } from 'vuex'
 import DataService from '@/services/DataService'
-import bootstrap from '@/bootstrap'
+//#import bootstrap from '@/bootstrap'
 
 export default {
-  name: 'MultiStore',
+  name: 'MultiStoreMenu',
   data() {
     return {
       stores: false,
@@ -71,7 +42,6 @@ export default {
       'haveMultipleStores',
       'multipleStores',
     ]),
-    ...mapGetters('location', ['_t']),
     ...mapGetters({
       selectedBrand: ['context/brand'],
       defaultStore: ['context/store'],
@@ -79,22 +49,25 @@ export default {
   },
   methods: {
     selectedStoreId(storeId) {
-      this.$store.commit('context/SET_BRAND_ID', this.brand._id, { root: true })
-      this.$store.commit('context/SET_STORE_ID', storeId, { root: true })
-      localStorage.setItem('brand_id', this.brand._id)
+      $('.multi-store-menu-pos').slideUp()
+      $('.navigation .logo').removeClass('multistore')
+
+      // this.$store.commit('context/SET_BRAND_ID', this.brand._id, { root: true })
+      this.$store.commit('context/SET_STORE_ID', storeId)
+      // localStorage.setItem('brand_id', this.brand._id)
       localStorage.setItem('store_id', storeId)
 
       DataService.setContext({
         brand: this.$store.getters['context/brand'],
         store: this.$store.getters['context/store'],
       })
-      $('#multiStoresModal').modal('hide')
+
       this.$store.dispatch('location/fetch')
-      bootstrap.fetchData()
-      bootstrap.loadUI(this.$store)
-      this.$store.commit('sync/reload', true)
-      this.$store.dispatch('checkout/reset', true)
-      this.$store.commit('order/CLEAR_SELECTED_ORDER')
+      // bootstrap.fetchData()
+      //#bootstrap.loadUI(this.$store)
+      // this.$store.commit('sync/reload', true)
+      // this.$store.dispatch('checkout/reset', true)
+      // this.$store.commit('order/CLEAR_SELECTED_ORDER')
     },
   },
 }
@@ -166,5 +139,45 @@ export default {
 .modal-dialog {
   max-width: 90% !important;
   min-height: 80% !important;
+}
+
+.multi-store-menu-pos {
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  width: auto;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px;
+  height: 100vh;
+  display: none;
+}
+
+.stores-list-container.multi-store-menu-pos > div {
+  grid-template-columns: 1fr;
+  grid-gap: 10px;
+  border-bottom: 1px solid #dddd;
+}
+
+.stores-list-container.multi-store-menu-pos .store-picker-single-item {
+  padding: 20px 10px;
+  justify-content: center;
+  border-radius: 0;
+  min-height: 85px;
+  align-items: center;
+  display: grid;
+}
+
+.multi-store-menu-pos .store-name {
+  line-height: normal;
+  font-size: 15px;
+}
+
+.multi-store-menu-pos .stores-list {
+  padding: 0;
+}
+@media only screen and (max-width: 991px) {
+  .multi-store-menu-pos {
+    display: none;
+  }
 }
 </style>

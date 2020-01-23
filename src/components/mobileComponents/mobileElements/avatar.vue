@@ -1,6 +1,6 @@
 <template>
   <div class="avatar">
-    <a class="avatar-link" href="">
+    <a class="avatar-link" href="" target="_self">
       <!--<img class="avatar-link-img" :src="profileImage" alt="profile" />-->
       <img
         class="avatar-link-img"

@@ -211,6 +211,11 @@ const actions = {
               }
             )
           }
+          let availableStoreGroups =
+            storedata.data.available_store_groups || false
+          commit('auth/AVAILABLE_STORE_GROUPS', availableStoreGroups, {
+            root: true,
+          })
           if (storedata.data.brand) {
             commit(mutation.SET_BRAND, storedata.data.brand)
           }
@@ -315,11 +320,18 @@ const actions = {
                       reject(error)
                     })
 
-                  resolve(state.locale)
-
                   dispatch('referrals')
+                  const multiStoreIds = storedata.data.available_stores.map(
+                    store => store._id
+                  )
                   dispatch('auth/getUserDetails', storedata.data.user_id, {
                     root: true,
+                  }).then(response => {
+                    resolve({
+                      userDetails: response.item,
+                      stores: multiStoreIds,
+                      availableStoreGroups: availableStoreGroups,
+                    })
                   })
                 })
                 .catch(error => {

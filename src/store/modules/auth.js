@@ -17,6 +17,9 @@ const state = {
   cashierEmail: '',
   searchKeyword: '',
   logoutAction: '',
+  brandAccessType: false,
+  availableStoreGroups: false,
+  storeGroupId: false,
   role: null,
 }
 
@@ -38,6 +41,9 @@ const getters = {
     }
     return false
   },
+  multistore: state =>
+    state.brandAccessType === 'store_group' ||
+    (state.availableStoreGroups && state.availableStoreGroups.length),
   roleName: state => {
     if (!state.userDetails) {
       return ''
@@ -303,7 +309,7 @@ const actions = {
           dispatch('announcement/fetchAll', response.data, {
             root: true,
           }).then(() => {})
-          resolve()
+          resolve(response.data)
         })
       } else {
         reject()
@@ -352,9 +358,14 @@ const mutations = {
   },
   [mutation.USER_DETAILS](state, userDetails) {
     state.userDetails = userDetails
+    state.brandAccessType = state.userDetails.item.brand_access_type
+    state.storeGroup = state.userDetails.item.store_group
   },
   [mutation.ADD_WAITERS](state, waiters) {
     state.waiters = [...state.waiters, ...waiters]
+  },
+  [mutation.AVAILABLE_STORE_GROUPS](state, availableStoreGroups) {
+    state.availableStoreGroups = availableStoreGroups
   },
   [mutation.SET_ROLE](state, role) {
     state.role = role

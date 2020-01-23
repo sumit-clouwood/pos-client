@@ -95,11 +95,13 @@ export default {
         return false
       }
 
-      this.$store.dispatch('order/addOpenItem', this.item).then(() => {
-        this.item.name = ''
-        this.item.value = ''
-        hideModal('#generic-open-item')
-      })
+      this.$store
+        .dispatch('order/addOpenItem', { item: {}, data: this.item })
+        .then(() => {
+          this.item.name = ''
+          this.item.value = ''
+          hideModal('#generic-open-item')
+        })
     },
   },
 }
