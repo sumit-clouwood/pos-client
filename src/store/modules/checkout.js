@@ -1598,7 +1598,12 @@ const actions = {
 // mutations
 const mutations = {
   [mutation.SET_ORDER](state, order) {
-    state.order = order
+    let orderData = { ...order }
+    orderData.windows_app = false
+    if (window.PrintHandle != null) {
+      orderData.windows_app = true
+    }
+    state.order = orderData
   },
   [mutation.SET_PAID_AMOUNT](state, amount) {
     state.paidAmount = amount
