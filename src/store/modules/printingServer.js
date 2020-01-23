@@ -3,7 +3,7 @@ import * as mutation from './printingServer/mutation-type'
 import PrintingServerService from '@/services/data/PrintingServerService'
 // import LookupData from '@/plugins/helpers/LookupData'
 // import moment from 'moment-timezone'
-// import { compressToBase64 } from 'lz-string'
+import { compressToBase64 } from 'lz-string'
 const state = {
   kitchenitems: [],
   printingservers: [],
@@ -94,7 +94,7 @@ const actions = {
         })
         if (orderData.order_delivery_area && customerDetails.deliveryAreas) {
           delivery_area = Object.values(customerDetails.deliveryAreas).find(
-              delivery_area => delivery_area._id === orderData.order_delivery_area
+            delivery_area => delivery_area._id === orderData.order_delivery_area
           )
         }
       }
@@ -103,7 +103,7 @@ const actions = {
       if (kitchenSectionsItems.length) {
         orderData.items.forEach(item => {
           let itemKitchen = kitchenSectionsItems.find(
-              kitchenItem => kitchenItem._id === item.entity_id
+            kitchenItem => kitchenItem._id === item.entity_id
           )
           if (itemKitchen) {
             kitchen_menu_items.push({
@@ -140,20 +140,20 @@ const actions = {
       }
       //Invoice
       let invoiceTemplate = rootState.invoice.templates.data.data.find(
-          invoice => invoice
+        invoice => invoice
       )
       let orderTypeLabel = orderData.order_type + '_label'
       orderData.order_no = orderData.orderNumber //Custom Order No to give appropriate field for Habib
       //Final JSON
       /*get selected table no*/
       let table_no = rootState.dinein.selectedTable
-          ? rootState.dinein.selectedTable.number
-          : false
+        ? rootState.dinein.selectedTable.number
+        : false
       let jsonResponse = {
         status: 'ok',
         brand_logo: locationData.brand.company_logo
-            ? locationData.brand.company_logo
-            : '',
+          ? locationData.brand.company_logo
+          : '',
         order: orderData,
         menu_items: kitchen_menu_items,
         staff: staff.item.name,
@@ -178,18 +178,18 @@ const actions = {
         jsonResponse.table_number = table_no
       }
       let _order = {}
-      if (window.PrintHandle != undefined) {
+      if (window.PrintHandle != null) {
         jsonResponse.windows_app = true
         _order['printingServers'] = printingServers
         _order['orderData'] = jsonResponse
 
         window.PrintHandle.Print(
-            JSON.stringify(_order),
-            function callbackfunction(data) {
-              //perform your action in case of success or leave empty
-              // eslint-disable-next-line no-console
-              console.log(data.status, 'data')
-            }
+          JSON.stringify(_order),
+          function callbackfunction(data) {
+            //perform your action in case of success or leave empty
+            // eslint-disable-next-line no-console
+            console.log(data.status, 'data')
+          }
         )
       }
       // eslint-disable-next-line no-console
@@ -205,11 +205,11 @@ const actions = {
           let APIURL = item.ip_address
           dispatch('centeredPopup', {
             url:
-                APIURL +
-                `/printorder?len=` +
-                decodedData.length +
-                `&data=` +
-                decodedData,
+              APIURL +
+              `/printorder?len=` +
+              decodedData.length +
+              `&data=` +
+              decodedData,
             winName: 'Kitchen invoice printing',
             w: '700',
             h: '300',
