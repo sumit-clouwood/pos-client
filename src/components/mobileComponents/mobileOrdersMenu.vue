@@ -225,6 +225,7 @@ export default {
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
       loyaltyCard: state => state.customer.loyalty.card,
+      selectedCustomer: state => state.customer.customer.name,
     }),
     ...mapState({
       selectedModal: state =>

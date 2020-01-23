@@ -27,7 +27,9 @@
                 class="btn btn-success change-brand-web"
                 v-if="allowed(PERMS.BRAND_SETTINGS)"
               >
-                <a :href="baseurl('delivery')">{{ _t('Change Brand') }}</a>
+                <a :href="baseurl('delivery')" target="_self">{{
+                  _t('Change Brand')
+                }}</a>
               </button>
               <button
                 class="btn btn-success walkin-btn"
