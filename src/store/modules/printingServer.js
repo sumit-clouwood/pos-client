@@ -68,10 +68,13 @@ const actions = {
   //Create A JSON Request to send in Local Server API for Generating Invoices from a software.
   // printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
   // eslint-disable-next-line no-empty-pattern
-  printingServerInvoiceRaw({}, orderData) {
+  printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
+    // printingServerInvoiceRaw({}, orderData) {
     // eslint-disable-next-line no-console
-    console.log(typeof orderData)
-    /*let printingServers = state.printingservers //Get All Printing Servers
+    console.log('IN')
+    // eslint-disable-next-line no-console
+    console.log(orderData)
+    let printingServers = state.printingservers //Get All Printing Servers
     if (printingServers && orderData) {
       let staff = rootState.auth.userDetails
       let customerDetails = rootState.customer
@@ -91,7 +94,7 @@ const actions = {
         })
         if (orderData.order_delivery_area && customerDetails.deliveryAreas) {
           delivery_area = Object.values(customerDetails.deliveryAreas).find(
-            delivery_area => delivery_area._id === orderData.order_delivery_area
+              delivery_area => delivery_area._id === orderData.order_delivery_area
           )
         }
       }
@@ -100,7 +103,7 @@ const actions = {
       if (kitchenSectionsItems.length) {
         orderData.items.forEach(item => {
           let itemKitchen = kitchenSectionsItems.find(
-            kitchenItem => kitchenItem._id === item.entity_id
+              kitchenItem => kitchenItem._id === item.entity_id
           )
           if (itemKitchen) {
             kitchen_menu_items.push({
@@ -137,16 +140,20 @@ const actions = {
       }
       //Invoice
       let invoiceTemplate = rootState.invoice.templates.data.data.find(
-        invoice => invoice
+          invoice => invoice
       )
       let orderTypeLabel = orderData.order_type + '_label'
       orderData.order_no = orderData.orderNumber //Custom Order No to give appropriate field for Habib
       //Final JSON
+      /*get selected table no*/
+      let table_no = rootState.dinein.selectedTable
+          ? rootState.dinein.selectedTable.number
+          : false
       let jsonResponse = {
         status: 'ok',
         brand_logo: locationData.brand.company_logo
-          ? locationData.brand.company_logo
-          : '',
+            ? locationData.brand.company_logo
+            : '',
         order: orderData,
         menu_items: kitchen_menu_items,
         staff: staff.item.name,
@@ -164,8 +171,31 @@ const actions = {
         generate_time: orderData.real_created_datetime,
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
+        token_manager: false,
+        windows_app: false,
       }
+      if (orderData.order_type == 'DINE-IN') {
+        jsonResponse.table_number = table_no
+      }
+      let _order = {}
+      if (window.PrintHandle != undefined) {
+        jsonResponse.windows_app = true
+        _order['printingServers'] = printingServers
+        _order['orderData'] = jsonResponse
+
+        window.PrintHandle.Print(
+            JSON.stringify(_order),
+            function callbackfunction(data) {
+              //perform your action in case of success or leave empty
+              // eslint-disable-next-line no-console
+              console.log(data.status, 'data')
+            }
+        )
+      }
+      // eslint-disable-next-line no-console
+      // console.log(jsonResponse, 'datatata')
       let x = JSON.stringify(jsonResponse)
+
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')
       let decodedData = compressToBase64(x)
@@ -175,17 +205,17 @@ const actions = {
           let APIURL = item.ip_address
           dispatch('centeredPopup', {
             url:
-              APIURL +
-              `/printorder?len=` +
-              decodedData.length +
-              `&data=` +
-              decodedData,
+                APIURL +
+                `/printorder?len=` +
+                decodedData.length +
+                `&data=` +
+                decodedData,
             winName: 'Kitchen invoice printing',
             w: '700',
             h: '300',
             scroll: 'yes ',
           })
-          setTimeout(function() {
+          /*setTimeout(function() {
             // eslint-disable-next-line no-console
             console.log(state.kitchenInvoiceResponse.closed)
             if (
@@ -196,11 +226,11 @@ const actions = {
               console.log('close')
               state.kitchenInvoiceResponse.close()
             }
-          }, 3000)
+          }, 3000)*/
           // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
       }
-    }*/
+    }
   },
 
   // eslint-disable-next-line no-empty-pattern
