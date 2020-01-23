@@ -606,9 +606,9 @@ const actions = {
                 console.log(e)
               }
 
-              // if (rootGetters['auth/multistore']) {
-              //   order.multi_store = true
-              // }
+              if (rootGetters['auth/multistore']) {
+                order.multi_store = true
+              }
 
               order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
                 appliedSurcharge => {
