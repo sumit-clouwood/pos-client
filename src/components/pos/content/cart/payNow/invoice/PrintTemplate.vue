@@ -72,11 +72,13 @@
           </tr>
           <tr
             class="left-aligned"
-            v-if="selectedTable && orderType.OTApi === 'dine_in'"
+            v-if="selectedTableRservationData && orderType.OTApi === 'dine_in'"
           >
             <th colspan="3">
               {{ template.table_number_label }}
-              <span class="float-right">{{ selectedTable.number }}</span>
+              <span class="float-right">
+                {{ selectedTableRservationData }}
+              </span>
             </th>
           </tr>
           <tr v-if="crm_module_enabled && customer" class="left-aligned">
@@ -106,7 +108,9 @@
           </tr>
           <template v-for="(item, key) in order.items">
             <tr :key="'item' + key">
-              <td class="first-col" valign="top">{{ item.qty }}</td>
+              <td class="first-col" valign="top">
+                {{ item.qty }} {{ measurement_unit(item) }}
+              </td>
               <td>
                 <div class="food-title">
                   {{ translate_item(item) }}
@@ -121,7 +125,7 @@
                 <template v-for="(modifier, i) in order.item_modifiers">
                   <template v-if="modifier.for_item == item.no">
                     <div class="food-extra" :key="'modifier' + i">
-                      {{ translate_item_modifier(modifier) }}
+                      {{ translate_item_modifier(modifier, item) }}
                       <span v-if="modifier.price !== 0"
                         >({{
                           format_number(
@@ -378,7 +382,7 @@ export default {
     ...mapGetters('location', ['_t', 'isTokenManager', 'getReferral']),
     ...mapState('location', ['timezoneString', 'tokenNumber']),
     ...mapGetters('auth', ['allowed']),
-    ...mapState('dinein', ['selectedTable']),
+    ...mapState('dinein', ['selectedTableRservationData']),
     ...mapState('order', ['orderType']),
 
     dataBeingLoaded() {
@@ -522,6 +526,12 @@ export default {
       }
       return results.join(' / ')
     },
+    measurement_unit(item) {
+      if (item.measurement_unit) {
+        return item.measurement_unit
+      }
+      return ''
+    },
     discount_total(discount) {
       if (discount.type === 'fixed_price') {
         return parseFloat(discount.price) + parseFloat(discount.tax)
@@ -554,7 +564,7 @@ export default {
     //These methods would need to be updated at POS to search for objects in POS store
     //These functions
     translate_item(orderItem) {
-      var found_item = this.$store.state.category.items.find(
+      var found_item = this.$store.getters['category/items'].find(
         item => item._id == orderItem.entity_id
       )
       if (found_item) {
@@ -563,12 +573,13 @@ export default {
         }
         return this.translate_entity(found_item, 'name')
       } else {
-        return ''
+        return orderItem.name
       }
     },
-    translate_item_modifier(item) {
+    translate_item_modifier(item, orderItem) {
       var found_item = this.$store.getters['modifier/findModifier'](
-        item.entity_id
+        item.entity_id,
+        orderItem
       )
       if (found_item) {
         return this.translate_entity(found_item, 'name')
@@ -577,7 +588,7 @@ export default {
       }
     },
     translate_item_discount(item) {
-      var found_item = this.$store.state.discount.itemDiscounts.data.find(
+      var found_item = this.$store.getters['discount/itemDiscounts'].find(
         loaded_item => loaded_item._id == item.entity_id
       )
       if (found_item) {
@@ -597,7 +608,7 @@ export default {
       }
     },
     translate_order_discount(item) {
-      var found_item = this.$store.state.discount.orderDiscounts.find(
+      var found_item = this.$store.getters['discount/orderDiscounts'].find(
         loaded_item => loaded_item._id == item.entity_id
       )
       if (found_item) {

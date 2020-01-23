@@ -17,6 +17,8 @@ const state = {
   cashierEmail: '',
   searchKeyword: '',
   logoutAction: '',
+  brandAccessType: false,
+  storeGroupId: false,
   role: null,
 }
 
@@ -38,6 +40,7 @@ const getters = {
     }
     return false
   },
+  multistore: state => state.brandAccessType === 'store_group',
   roleName: state => {
     if (!state.userDetails) {
       return ''
@@ -303,7 +306,7 @@ const actions = {
           dispatch('announcement/fetchAll', response.data, {
             root: true,
           }).then(() => {})
-          resolve()
+          resolve(response.data)
         })
       } else {
         reject()
@@ -352,6 +355,8 @@ const mutations = {
   },
   [mutation.USER_DETAILS](state, userDetails) {
     state.userDetails = userDetails
+    state.brandAccessType = state.userDetails.item.brand_access_type
+    state.storeGroup = state.userDetails.item.store_group
   },
   [mutation.ADD_WAITERS](state, waiters) {
     state.waiters = [...state.waiters, ...waiters]

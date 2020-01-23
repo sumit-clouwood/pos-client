@@ -98,10 +98,15 @@ export default {
         return false
       }
 
-      this.$store.dispatch('order/addOpenItem', this.vitem).then(() => {
-        hideModal('#open-item')
-        this.vitem = {}
-      })
+      this.$store
+        .dispatch('order/addOpenItem', {
+          item: this.$store.state.category.item,
+          data: this.vitem,
+        })
+        .then(() => {
+          hideModal('#open-item')
+          this.vitem = {}
+        })
     },
   },
 }
