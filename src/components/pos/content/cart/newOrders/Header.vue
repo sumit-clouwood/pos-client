@@ -87,7 +87,6 @@ export default {
     },
     cartBottom() {
       this.cartHeight += parseInt(this.cartInitHeight)
-      //alert(this.cartHeight + ' << ' + this.cartItemHeight)
       if (this.cartHeight >= this.cartItemHeight) {
         $('.cartBottomBtn').addClass('toggle')
         this.cartHeight = 0
