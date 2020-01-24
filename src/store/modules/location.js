@@ -321,9 +321,17 @@ const actions = {
                     })
 
                   dispatch('referrals')
-                  const multiStoreIds = storedata.data.available_stores.map(
+                  let multiStoreIds = storedata.data.available_stores.map(
                     store => store._id
                   )
+                  let storeId = router.currentRoute.params.group_id || false
+                  if (storeId) {
+                    availableStoreGroups.find(group => {
+                      if (group._id === storeId) {
+                        multiStoreIds = group.group_stores
+                      }
+                    })
+                  }
                   dispatch('auth/getUserDetails', storedata.data.user_id, {
                     root: true,
                   }).then(response => {
