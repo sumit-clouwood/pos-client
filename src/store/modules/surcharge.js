@@ -58,15 +58,18 @@ const actions = {
           let applidSurcharge = {
             id: surcharge._id,
             amount: surcharge.value,
-            tax: getters.tax(surcharge),
-            undiscountedTax: getters.tax(surcharge),
+            tax: Num.round(getters.tax(surcharge)),
+            undiscountedTax: Num.round(getters.tax(surcharge)),
           }
           //Assign variables if Surcharge type is percentage.
           if (surcharge.type === CONST.PERCENTAGE) {
-            applidSurcharge.amount = (subtotal * surcharge.rate) / 100
+            applidSurcharge.amount = Num.round(
+              (subtotal * surcharge.rate) / 100
+            )
 
-            applidSurcharge.tax =
+            applidSurcharge.tax = Num.round(
               (applidSurcharge.amount * surcharge.tax_sum) / 100
+            )
           }
           totalSurcharges.push(applidSurcharge)
         })
