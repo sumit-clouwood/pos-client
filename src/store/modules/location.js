@@ -13,6 +13,7 @@ import router from '../../router'
 // initial state
 const state = {
   currency: 'AED',
+  multiStoreIds: false,
   locale: 'en-US',
   timezone: 'Asia/Dubai',
   timezoneString: 'Asia/Dubai',
@@ -332,6 +333,7 @@ const actions = {
                       }
                     })
                   }
+                  commit(mutation.MULTI_STORE_IDS, multiStoreIds)
                   dispatch('auth/getUserDetails', storedata.data.user_id, {
                     root: true,
                   }).then(response => {
@@ -475,6 +477,9 @@ const mutations = {
   },
   [mutation.SET_TIMEZONES](state, timezones) {
     state.timezones = timezones
+  },
+  [mutation.MULTI_STORE_IDS](state, multiStoreIds) {
+    state.multiStoreIds = multiStoreIds
   },
   [mutation.RESET](state, full = false) {
     state.setModal = '#manage-customer'
