@@ -140,7 +140,20 @@ export default {
     return {
       activeIndex: '',
       error: false,
+      custBlockHeight: 0,
+      custBlockInitHeight: 0,
+      custBlockItemHeight: 0,
     }
+  },
+  watch: {
+    customerDetails(newVal, oldVal) {
+      alert(newVal + '==' + oldVal)
+      if (newVal !== oldVal) {
+        this.$nextTick(() => {
+          this.custAreaCalculation()
+        })
+      }
+    },
   },
   updated() {
     if (this.activeIndex != '') {
@@ -151,6 +164,17 @@ export default {
     // this.props.customerId = customerId
   },
   methods: {
+    custAreaCalculation() {
+      let custBlockHeight = $('.manage-customer-table').innerHeight()
+      this.custBlockHeight = custBlockHeight
+      this.custBlockInitHeight = custBlockHeight
+      this.custBlockItemHeight = $('.manage-customer-table > div').innerHeight()
+      $('.cust-bottom-arrow, .cust-top-arrow').removeClass('disable')
+      alert(this.custBlockHeight + '>>' + this.custBlockItemHeight)
+      if (this.custBlockHeight > this.custBlockItemHeight) {
+        $('.cust-bottom-arrow, .cust-top-arrow').addClass('disable')
+      }
+    },
     setActiveCustomer(index) {
       this.activeIndex = index
     },

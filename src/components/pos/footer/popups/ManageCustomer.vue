@@ -32,12 +32,15 @@
 import ManageCustomerHeader from './ManageCustomer/ManageCustomerHeader'
 import ManageCustomerContent from './ManageCustomer/ManageCustomerContent'
 import ManageCustomerFooter from './ManageCustomer/ManageCustomerFooter'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'ManageCustomer',
   props: {},
   computed: {
+    ...mapState({
+      customerDetails: state => state.customer.customer_list,
+    }),
     ...mapGetters('location', ['_t']),
   },
   components: {
@@ -52,8 +55,20 @@ export default {
       custBlockItemHeight: 0,
     }
   },
-  mounted() {
-    this.custAreaCalculation()
+  updated() {
+    this.$nextTick(() => {
+      this.custAreaCalculation()
+    })
+  },
+  watch: {
+    customerDetails(newVal, oldVal) {
+      alert(newVal + '==' + oldVal)
+      if (newVal !== oldVal) {
+        this.$nextTick(() => {
+          this.custAreaCalculation()
+        })
+      }
+    },
   },
   methods: {
     custAreaCalculation() {
@@ -62,6 +77,7 @@ export default {
       this.custBlockInitHeight = custBlockHeight
       this.custBlockItemHeight = $('.manage-customer-table > div').innerHeight()
       $('.cust-bottom-arrow, .cust-top-arrow').removeClass('disable')
+      alert(this.custBlockHeight + '>>' + this.custBlockItemHeight)
       if (this.custBlockHeight > this.custBlockItemHeight) {
         $('.cust-bottom-arrow, .cust-top-arrow').addClass('disable')
       }
