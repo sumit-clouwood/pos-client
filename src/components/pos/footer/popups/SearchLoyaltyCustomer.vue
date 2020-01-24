@@ -130,6 +130,7 @@ export default {
   },
   methods: {
     loyaltyHendlerChange() {
+      this.searchTerm = ''
       this.$store.dispatch('loyaltyHendlerChange')
     },
     loyaltyAddCustomer: function(target) {

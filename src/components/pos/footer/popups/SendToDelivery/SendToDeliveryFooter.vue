@@ -41,6 +41,7 @@
         v-if="isLoyaltyEnabled"
         type="button"
         class="btn loyalty-button shorten-sentence color-text color-secondary"
+        style="margin-inline-end: auto;"
         @click="showLoyaltyPopup()"
       >
         {{ _t('Loyalty') }}
