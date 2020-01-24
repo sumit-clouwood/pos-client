@@ -606,9 +606,9 @@ const actions = {
                 console.log(e)
               }
 
-              // if (rootGetters['auth/multistore']) {
-              //   order.multi_store = true
-              // }
+              if (rootGetters['auth/multistore']) {
+                order.multi_store = true
+              }
 
               order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
                 appliedSurcharge => {
@@ -1154,9 +1154,7 @@ const actions = {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
             if (state.order.token_number) {
-              /* eslint-disable */
               let tokenNumber = state.order.token_number
-              console.log(tokenNumber);
               commit('location/SET_TOKEN_NUMBER', tokenNumber, {
                 root: true,
               })

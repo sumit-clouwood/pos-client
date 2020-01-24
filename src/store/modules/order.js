@@ -398,6 +398,7 @@ const actions = {
         }
       }
 
+      //if item already have store id don't add because there are chances user is in different store now
       if (rootGetters['auth/multistore'] && !item.store_id) {
         item.store_id = rootState.context.storeId
       }
