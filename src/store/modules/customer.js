@@ -88,8 +88,7 @@ const getters = {
                 dArea.min_order_value = DAStatus.min_order_value
               }
               if (DAStatus.special_order_surcharge) {
-                dArea.special_order_surcharge =
-                  DAStatus.special_order_surcharge
+                dArea.special_order_surcharge = DAStatus.special_order_surcharge
               }
               return dArea
             } else return false
