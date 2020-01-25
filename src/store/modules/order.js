@@ -122,7 +122,7 @@ const getters = {
     const totalTax = getters.totalTaxWithoutOrderDiscount
     const orderTaxDiscount = rootGetters['discount/taxDiscountAmount']
 
-    return totalTax - orderTaxDiscount
+    return Num.round(totalTax - orderTaxDiscount)
   },
   totalTaxWithoutOrderDiscount: (state, getters, rootState, rootGetters) => {
     const itemsTax = Num.round(getters.totalItemsTax)
@@ -374,7 +374,7 @@ const actions = {
       item.netPrice = getters.netPrice(item)
 
       //calculated item tax, it should be unrounded for precision
-      item.tax = item.grossPrice - item.netPrice
+      item.tax = Num.round(item.grossPrice - item.netPrice)
 
       resolve(item)
     })
