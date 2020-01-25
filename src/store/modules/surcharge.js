@@ -1,6 +1,7 @@
 import SurchargeService from '@/services/data/SurchargeService'
 import * as mutation from './surcharge/mutation-types'
 import * as CONST from '@/constants'
+import Num from '@/plugins/helpers/Num.js'
 
 const state = {
   surcharges: [],
