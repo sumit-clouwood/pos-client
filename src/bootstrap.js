@@ -96,6 +96,10 @@ export default {
                   locationDetails.stores
                 )
                 this.store.dispatch(
+                  'customer/fetchMultiStore',
+                  locationDetails.stores
+                )
+                this.store.dispatch(
                   'category/fetchMultistore',
                   locationDetails.stores
                 )

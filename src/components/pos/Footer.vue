@@ -592,7 +592,6 @@ export default {
 
   /*updated() {
     this.$nextTick(() => {
-      alert(3)
       // $('ul.ullist-icons').slick('refresh')
     })
   },*/

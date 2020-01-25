@@ -918,7 +918,6 @@ export default {
             this.popupItemLoader = true
             this.cssClass = 'allowed'
           }
-          // alert(this.popupItemLoader + ' >> ' + this.cssClass)
           if (this.cssClass == 'restricted') return false
           // $('#tooltipdata').hide()
           $('#tooltipdata').show()
@@ -957,7 +956,6 @@ export default {
               /*end square screen code*/
             }
             if (tableX > 3000) left -= 80
-            // alert(window.screen.availHeight + ' > ' + window.screen.availWidth)
             if (top < 0) top = 0
             if (left < 0) left = 0
             range

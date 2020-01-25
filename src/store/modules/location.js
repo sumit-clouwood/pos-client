@@ -13,6 +13,7 @@ import router from '../../router'
 // initial state
 const state = {
   currency: 'AED',
+  multiStoreIds: false,
   locale: 'en-US',
   timezone: 'Asia/Dubai',
   timezoneString: 'Asia/Dubai',
@@ -321,9 +322,18 @@ const actions = {
                     })
 
                   dispatch('referrals')
-                  const multiStoreIds = storedata.data.available_stores.map(
+                  let multiStoreIds = storedata.data.available_stores.map(
                     store => store._id
                   )
+                  let storeId = router.currentRoute.params.group_id || false
+                  if (storeId) {
+                    availableStoreGroups.find(group => {
+                      if (group._id === storeId) {
+                        multiStoreIds = group.group_stores
+                      }
+                    })
+                  }
+                  commit(mutation.MULTI_STORE_IDS, multiStoreIds)
                   dispatch('auth/getUserDetails', storedata.data.user_id, {
                     root: true,
                   }).then(response => {
@@ -467,6 +477,9 @@ const mutations = {
   },
   [mutation.SET_TIMEZONES](state, timezones) {
     state.timezones = timezones
+  },
+  [mutation.MULTI_STORE_IDS](state, multiStoreIds) {
+    state.multiStoreIds = multiStoreIds
   },
   [mutation.RESET](state, full = false) {
     state.setModal = '#manage-customer'
